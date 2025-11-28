@@ -1,44 +1,51 @@
-# Docara Template Project (based on Jigsaw)
+# Docara (based on Jigsaw)
 
-Документация и шаблон проекта на базе статического генератора Docara, построенного поверх [Jigsaw](https://jigsaw.tighten.com/).
+Quick start to install Docara via Composer and initialize a project.
 
-## Установка
+## Install the framework
 
-1. Клонируйте репозиторий сразу с сабмодулями (Docara ядро и папка `stubs/`):
-   ```bash
-   git clone --recurse-submodules git@github.com:simai/ui-doc-template.git
-   cd ui-doc-template
-   ```
-   Если сабмодули не подтянулись, выполните:
-   ```bash
-   git submodule update --init --remote
-   ```
-2. Установите зависимости:
-   ```bash
-   yarn install
-   composer install
-   ```
-3. Настройте переменные среды, создав `.env` в корне:
-   ```text
-   AZURE_KEY=<AZURE_KEY>
-   AZURE_REGION=<AZURE_REGION>
-   AZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com
-   DOCS_DIR=docs
-   ```
-4. Запустите сборку в режиме разработки:
-   ```bash
-   yarn run watch
-   ```
-   Проект будет пересобираться при изменениях.
+```bash
+composer require simai/docara
+```
 
-## Структура
+## Initialize a new project
 
-- `source/` — шаблон сайта.
-- `source/_core/` — сабмодуль с ядром Docara/Jigsaw.
-- `stubs/` — сабмодуль с общими заготовками (stubs) фреймворка.
-- `build_local/` — результат локальной сборки.
-- `config.php` — конфигурация Jigsaw/Docara.
+From an empty project directory:
 
-## Лицензия
+```bash
+php vendor/bin/docara init
+```
+
+This will:
+- copy the base template (stubs),
+- fetch `source/_core` (as submodule or clone),
+- copy template configs from `_core`,
+- run frontend dependency install (`npm/yarn install` in the project root).
+
+## Configure `.env`
+
+Create `.env` in your project root (example):
+
+```text
+AZURE_KEY=<AZURE_KEY>
+AZURE_REGION=<AZURE_REGION>
+AZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com
+DOCS_DIR=docs
+```
+
+## Run
+
+- Development/watch (if defined in your template): `yarn run watch` or `npm run watch`
+- Build: `yarn run prod` / `npm run prod` (or your template’s build script)
+- Translate test: `php vendor/bin/docara translate --test`
+
+## Structure
+
+- `source/` — your site source.
+- `source/_core/` — Docara/Jigsaw core (fetched automatically on init).
+- `stubs/` — template stubs used during `docara init`.
+- `build_*` — build outputs.
+
+## License
 
 MIT

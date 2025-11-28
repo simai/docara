@@ -1,0 +1,48 @@
+#!/usr/bin/env php
+<?php
+
+    use Simai\Docara\Bootstrap\HandleExceptions;
+use Simai\Docara\Console\BuildCommand;
+use Simai\Docara\Console\InitCommand;
+use Simai\Docara\Console\ServeCommand;
+use Simai\Docara\Console\TranslateCommand;
+use Simai\Docara\Container;
+use Simai\Docara\Docara;
+use Simai\Docara\Exceptions\Handler;
+
+define('DOCARA_START', microtime(true));
+
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require __DIR__ . '/vendor/autoload.php';
+}
+
+if (file_exists(getcwd() . '/vendor/autoload.php')) {
+    require getcwd() . '/vendor/autoload.php';
+}
+
+$app = new Container;
+$argv = $_SERVER['argv'] ?? [];
+$isInitCommand = in_array('init', $argv, true);
+if ($isInitCommand) {
+    $app->skipConfigLoading();
+}
+
+$app->singleton(
+    Illuminate\Contracts\Debug\ExceptionHandler::class,
+    Handler::class,
+);
+
+$app->bootstrapWith([
+    HandleExceptions::class,
+]);
+
+$application = new Symfony\Component\Console\Application('Docara', '1.0');
+$application->add($app[InitCommand::class]);
+$application->add(new BuildCommand($app));
+$application->add(new TranslateCommand);
+$application->add(new ServeCommand($app));
+$application->setCatchExceptions(false);
+
+Docara::addUserCommands($application, $app);
+
+$application->run();

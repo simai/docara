@@ -17,7 +17,7 @@ return [
     'production' => false,
     'env' => getenv(),
     'category' => false,
-    'cache' => false,
+    'cache' => true,
     'cachePath' => $projectRoot . '/.cache',
     'siteName' => 'Simai Documentation',
     'siteDescription' => 'Simai framework documentation',
@@ -25,7 +25,7 @@ return [
     'locales' => [
         'en' => 'English',
     ],
-    'pretty' => false,
+    'pretty' => true,
     'defaultLocale' => 'en',
     'lang_path' => 'source/lang',
     'tags' => ['ExampleTag', 'ListWrap'],

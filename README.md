@@ -49,3 +49,4 @@ DOCS_DIR=docs
 ## License
 
 MIT
+

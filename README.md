@@ -38,6 +38,7 @@ DOCS_DIR=docs
 - Development/watch (if defined in your template): `yarn run watch` or `npm run watch`
 - Build: `yarn run prod` / `npm run prod` (or your template’s build script)
 - Translate test: `php vendor/bin/docara translate --test`
+- Update existing project in-place (no delete/archive, keeps `source/_core`): `php vendor/bin/docara init --update`
 
 ## Structure
 
@@ -49,4 +50,3 @@ DOCS_DIR=docs
 ## License
 
 MIT
-

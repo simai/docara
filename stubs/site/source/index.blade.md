@@ -6,6 +6,7 @@ description: Добро пожаловать
 ---
 @php
 $locales = $page->configurator->locales;
+$index = $page->configurator->indexPage;
 @endphp
 
 <script>
@@ -21,7 +22,7 @@ $locales = $page->configurator->locales;
     const cookieLocale = getCookie('locale');
 
     const locale = supportedLocales.includes(cookieLocale) ? cookieLocale : 'ru';
-    const redirectTo = `${locale}/`;
+    const redirectTo = `${locale}/{{$index}}`;
 
     window.location.replace(redirectTo);
 })();

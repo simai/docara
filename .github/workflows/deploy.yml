@@ -28,9 +28,6 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Install JavaScript dependencies
-        run: YARN_IGNORE_ENGINES=1 yarn install
-
       - name: Prepare .env
         run: |
           cat <<'EOF' > .env
@@ -43,8 +40,11 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist
 
-      - name: Build frontend assets
-        run: yarn prod
+      - name: Initialize project (stubs, core, npm/yarn install)
+        env:
+          YARN_IGNORE_ENGINES: 1
+        run: |
+          php vendor/bin/docara init --update
 
       - name: Build static site
         run: php vendor/bin/docara build production
@@ -69,8 +69,6 @@ jobs:
             export XDG_CONFIG_HOME=$PWD/.config
             export XDG_CACHE_HOME=$PWD/.cache
             mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"
-            yarn install
-            composer install --no-dev --prefer-dist --no-interaction
-            yarn prod
+            php vendor/bin/docara init --update
             php vendor/bin/docara build production
             rsync -av --delete /var/www/dev/data/git/ui-doc-template/build_production/ /var/www/dev/data/www/doc.simai.io/

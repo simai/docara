@@ -17,25 +17,33 @@
 
             $docsDir = trim($_ENV['DOCS_DIR'] ?? getenv('DOCS_DIR') ?? 'docs', '/\\');
             $targetDocs = $this->base . '/source/' . $docsDir;
-            $stubDocs = $stubs . '/source/' . $docsDir;
 
-            $preserveDocs = $this->files->isDirectory($targetDocs);
-            $docsBackup = null;
+            foreach (array_diff(scandir($stubs) ?: [], ['.', '..']) as $item) {
+                $src = $stubs . '/' . $item;
+                $dest = $this->base . '/' . $item;
 
-            if ($preserveDocs) {
-                $docsBackup = $this->base . '/source/' . $docsDir . '_backup_' . uniqid();
-                $this->files->move($targetDocs, $docsBackup);
-            }
+                if ($item === 'source' && $this->files->isDirectory($src)) {
+                    foreach (array_diff(scandir($src) ?: [], ['.', '..']) as $sourceItem) {
+                        $srcChild = $src . '/' . $sourceItem;
+                        $destChild = $dest . '/' . $sourceItem;
 
-            $this->files->copyDirectory($stubs, $this->base);
+                        if ($sourceItem === $docsDir && $this->files->isDirectory($targetDocs)) {
+                            continue;
+                        }
 
-            if ($preserveDocs) {
-                if ($this->files->isDirectory($targetDocs)) {
-                    $this->files->deleteDirectory($targetDocs);
+                        if ($this->files->isDirectory($srcChild)) {
+                            $this->files->copyDirectory($srcChild, $destChild);
+                        } else {
+                            $this->files->copy($srcChild, $destChild);
+                        }
+                    }
+                } else {
+                    if ($this->files->isDirectory($src)) {
+                        $this->files->copyDirectory($src, $dest);
+                    } else {
+                        $this->files->copy($src, $dest);
+                    }
                 }
-                $this->files->move($docsBackup, $targetDocs);
-            } elseif ($this->files->isDirectory($stubDocs) && ! $this->files->isDirectory($targetDocs)) {
-                $this->files->copyDirectory($stubDocs, $targetDocs);
             }
 
             if ($existingConfig !== null) {

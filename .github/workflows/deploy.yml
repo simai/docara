@@ -69,6 +69,7 @@ jobs:
             export XDG_CONFIG_HOME=$PWD/.config
             export XDG_CACHE_HOME=$PWD/.cache
             mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"
+            composer install --no-dev --prefer-dist --no-interaction
             php vendor/bin/docara init --update
             php vendor/bin/docara build production
             rsync -av --delete /var/www/dev/data/git/ui-doc-template/build_production/ /var/www/dev/data/www/doc.simai.io/

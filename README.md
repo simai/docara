@@ -39,6 +39,8 @@ DOCS_DIR=docs
 - Build: `yarn run prod` / `npm run prod` (or your template’s build script)
 - Translate test: `php vendor/bin/docara translate --test`
 - Update existing project in-place (no delete/archive, keeps `source/_core`): `php vendor/bin/docara init --update`
+- If you already have your own docs in `source/docs`, they won’t be overwritten; otherwise stubs/docs are copied.
+- If you already have `config.php` in the project root, it will be preserved during init/update.
 
 ## Structure
 

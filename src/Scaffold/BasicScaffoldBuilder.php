@@ -4,12 +4,12 @@
 
     class BasicScaffoldBuilder extends ScaffoldBuilder
     {
-        public function init($preset = null): static
+        public function init($preset = null)
         {
             return $this;
         }
 
-        public function build(): static
+        public function build()
         {
             $stubs = __DIR__ . '/../../stubs/site';
             $configPath = $this->base . '/config.php';
@@ -19,9 +19,6 @@
 
             $targetDocs = $this->base . '/source/docs';
             $stubDocs = $stubs . '/source/docs';
-            if ($this->files->isDirectory($targetDocs) && $this->files->isDirectory($stubDocs)) {
-                $this->files->deleteDirectory($targetDocs);
-            }
             if ($this->files->isDirectory($stubDocs) && ! $this->files->isDirectory($targetDocs)) {
                 $this->files->copyDirectory($stubDocs, $targetDocs);
             }

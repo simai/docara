@@ -255,7 +255,7 @@ class DocaraEventsServiceProvider extends ServiceProvider
                 $count++;
                 $match[3] = preg_replace(
                     '/(\S+)$/u',
-                    '<span class="nowrap">$1<span class="sf-icon">link</span></span>',
+                    '<span class="nowrap">$1<span class="sf-icon sf-icon--rotate-45">link</span></span>',
                     $match[3]
                 );
 

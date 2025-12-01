@@ -77,6 +77,12 @@ jobs:
             export XDG_CONFIG_HOME=$PWD/.config
             export XDG_CACHE_HOME=$PWD/.cache
             mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"
+            cat <<'EOF' > .env
+            DOCS_DIR=docs
+            AZURE_KEY=''
+            AZURE_REGION=''
+            AZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com
+            EOF
             composer install --no-dev --prefer-dist --no-interaction
             php docara init --update
             mkdir -p vendor/bin

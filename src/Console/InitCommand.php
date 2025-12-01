@@ -228,13 +228,14 @@
         private function clearSourceExceptCore(): void
         {
             $sourcePath = $this->base . '/source';
+            $docsDir = trim($_ENV['DOCS_DIR'] ?? getenv('DOCS_DIR') ?? 'docs', '/\\');
             if (! $this->files->isDirectory($sourcePath)) {
                 return;
             }
 
             $items = array_diff(scandir($sourcePath) ?: [], ['.', '..']);
             foreach ($items as $item) {
-                if ($item === '_core') {
+                if ($item === '_core' || $item === $docsDir) {
                     continue;
                 }
                 $full = $sourcePath . DIRECTORY_SEPARATOR . $item;

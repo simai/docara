@@ -1,0 +1,76 @@
+name: Deploy Docara Site
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: DEV
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          coverage: none
+          tools: composer
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install JavaScript dependencies
+        run: YARN_IGNORE_ENGINES=1 yarn install
+
+      - name: Prepare .env
+        run: |
+          cat <<'EOF' > .env
+          DOCS_DIR=docs
+          AZURE_KEY=''
+          AZURE_REGION=''
+          AZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com
+          EOF
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Build frontend assets
+        run: yarn prod
+
+      - name: Build static site
+        run: php vendor/bin/docara build production
+
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ vars.SSH_SERVER }}
+          username: ${{ vars.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ vars.SSH_PORT }}
+          script: |
+            set -e
+            cd /var/www/dev/data/git/ui-doc-template
+            export HOME=/home/git
+            mkdir -p ~/.ssh
+            ssh-keyscan -H github.com >> ~/.ssh/known_hosts
+            git config --global --add safe.directory /var/www/dev/data/git/ui-doc-template
+            git pull --ff-only origin main
+            git submodule update --init --remote
+            export YARN_IGNORE_ENGINES=1
+            export XDG_CONFIG_HOME=$PWD/.config
+            export XDG_CACHE_HOME=$PWD/.cache
+            mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"
+            yarn install
+            composer install --no-dev --prefer-dist --no-interaction
+            yarn prod
+            php vendor/bin/docara build production
+            rsync -av --delete /var/www/dev/data/git/ui-doc-template/build_production/ /var/www/dev/data/www/doc.simai.io/

@@ -17,8 +17,9 @@
 
             $this->files->copyDirectory($stubs, $this->base);
 
-            $targetDocs = $this->base . '/source/docs';
-            $stubDocs = $stubs . '/source/docs';
+            $docsDir = trim($_ENV['DOCS_DIR'] ?? getenv('DOCS_DIR') ?? 'docs', '/\\');
+            $targetDocs = $this->base . '/source/' . $docsDir;
+            $stubDocs = $stubs . '/source/' . $docsDir;
             if ($this->files->isDirectory($stubDocs) && ! $this->files->isDirectory($targetDocs)) {
                 $this->files->copyDirectory($stubDocs, $targetDocs);
             }

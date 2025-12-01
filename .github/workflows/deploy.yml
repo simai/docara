@@ -44,10 +44,10 @@ jobs:
         env:
           YARN_IGNORE_ENGINES: 1
         run: |
-          php vendor/bin/docara init --update
+          php docara init --update
 
       - name: Build static site
-        run: php vendor/bin/docara build production
+        run: php docara build production
 
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v0.1.8
@@ -70,6 +70,6 @@ jobs:
             export XDG_CACHE_HOME=$PWD/.cache
             mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"
             composer install --no-dev --prefer-dist --no-interaction
-            php vendor/bin/docara init --update
-            php vendor/bin/docara build production
+            php docara init --update
+            php docara build production
             rsync -av --delete /var/www/dev/data/git/ui-doc-template/build_production/ /var/www/dev/data/www/doc.simai.io/

@@ -49,8 +49,9 @@ jobs:
       - name: Build frontend assets
         env:
           YARN_IGNORE_ENGINES: 1
-          JIGSAW_BIN: ./docara
         run: |
+          mkdir -p vendor/bin
+          ln -sf "$PWD/docara" vendor/bin/docara
           yarn prod
 
       - name: Build static site
@@ -78,7 +79,8 @@ jobs:
             mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"
             composer install --no-dev --prefer-dist --no-interaction
             php docara init --update
-            export JIGSAW_BIN=./docara
+            mkdir -p vendor/bin
+            ln -sf "$PWD/docara" vendor/bin/docara
             yarn prod
             php docara build production
             rsync -av --delete /var/www/dev/data/git/ui-doc-template/build_production/ /var/www/dev/data/www/doc.simai.io/

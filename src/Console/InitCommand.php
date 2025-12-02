@@ -51,6 +51,13 @@
 
         protected function fire()
         {
+            $envPath = $this->base . '/.env';
+            if (! file_exists($envPath)) {
+                $this->console->error('Missing .env in project root. Please create it (DOCS_DIR, AZURE_*, etc.) and rerun init.');
+
+                return static::FAILURE;
+            }
+
             $updateMode = $this->input->getOption('update');
             $scaffold = $this->getScaffold()->setBase($this->base);
 

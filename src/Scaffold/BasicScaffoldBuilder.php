@@ -15,7 +15,12 @@
             $configPath = $this->base . '/config.php';
             $existingConfig = $this->files->exists($configPath) ? $this->files->get($configPath) : null;
 
-            $docsDir = trim($_ENV['DOCS_DIR'] ?? getenv('DOCS_DIR') ?? 'docs', '/\\');
+            $docsDirEnv = $_ENV['DOCS_DIR'] ?? getenv('DOCS_DIR') ?? null;
+            $docsDir = trim((string) $docsDirEnv, '/\\');
+            if ($docsDir === '') {
+                $docsDir = 'docs';
+            }
+            $stubDocs = $stubs . '/source/' . $docsDir;
             $targetDocs = $this->base . '/source/' . $docsDir;
             $hasDocs = $this->files->isDirectory($targetDocs) || file_exists($targetDocs);
             $this->log("DOCS_DIR={$docsDir}; target docs exists: " . ($hasDocs ? 'yes' : 'no'));
@@ -34,19 +39,36 @@
                             continue;
                         }
 
+                        if (! $this->files->exists($srcChild)) {
+                            $this->log("Skip missing stub entry: {$srcChild}");
+                            continue;
+                        }
+
                         if ($this->files->isDirectory($srcChild)) {
                             $this->files->copyDirectory($srcChild, $destChild);
                             if ($sourceItem === $docsDir) {
                                 $this->log("Copied docs from stubs to {$destChild} (target was missing).");
                             }
                         } else {
+                            $destDir = dirname($destChild);
+                            if (! $this->files->isDirectory($destDir)) {
+                                $this->files->makeDirectory($destDir, 0755, true);
+                            }
                             $this->files->copy($srcChild, $destChild);
                         }
                     }
                 } else {
+                    if (! $this->files->exists($src)) {
+                        $this->log("Skip missing stub entry: {$src}");
+                        continue;
+                    }
                     if ($this->files->isDirectory($src)) {
                         $this->files->copyDirectory($src, $dest);
                     } else {
+                        $destDir = dirname($dest);
+                        if (! $this->files->isDirectory($destDir)) {
+                            $this->files->makeDirectory($destDir, 0755, true);
+                        }
                         $this->files->copy($src, $dest);
                     }
                 }

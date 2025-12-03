@@ -5,6 +5,7 @@
 /composer.json
 /bootstrap.php
 .idea
+.cache/
 yarn.lock
 tailwind.config.js
 webpack.mix.js

@@ -14,6 +14,8 @@
             $stubs = __DIR__ . '/../../stubs/site';
             $configPath = $this->base . '/config.php';
             $existingConfig = $this->files->exists($configPath) ? $this->files->get($configPath) : null;
+            $envPath = $this->base . '/.env';
+            $existingEnv = $this->files->exists($envPath) ? $this->files->get($envPath) : null;
 
             $docsDirEnv = $_ENV['DOCS_DIR'] ?? getenv('DOCS_DIR') ?? null;
             $docsDir = trim((string) $docsDirEnv, '/\\');
@@ -28,6 +30,11 @@
             foreach (array_diff(scandir($stubs) ?: [], ['.', '..']) as $item) {
                 $src = $stubs . '/' . $item;
                 $dest = $this->base . '/' . $item;
+
+                if ($item === '.env' && $existingEnv !== null) {
+                    $this->log('Skip copying .env from stubs because it already exists.');
+                    continue;
+                }
 
                 if ($item === 'source' && $this->files->isDirectory($src)) {
                     foreach (array_diff(scandir($src) ?: [], ['.', '..']) as $sourceItem) {
@@ -76,6 +83,10 @@
 
             if ($existingConfig !== null) {
                 $this->files->put($configPath, $existingConfig);
+            }
+
+            if ($existingEnv !== null) {
+                $this->files->put($envPath, $existingEnv);
             }
 
             return $this;

@@ -7,6 +7,7 @@ description: UniversalInlineParser
 
 # UniversalInlineParser
 
+
 This optional parser handles **single-line inline tags** written as `!type ... !endtype` inside a paragraph. It reuses the same tag specs as the block parser and supports inline attributes.
 
 > Inline tags are disabled unless `CustomTagsExtension` registers the inline parser (Docara core does this).
@@ -14,6 +15,13 @@ This optional parser handles **single-line inline tags** written as `!type ... !
 ---
 
 ## Syntax
+
+
+!example
+
+Use !label .pill #id text inside a sentence !endlabel for quick badges.
+
+!endexample
 
 ```md
 Use !label .pill #id text inside a sentence !endlabel for quick badges.

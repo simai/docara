@@ -1,25 +1,25 @@
----
+﻿---
 extends: _core._layouts.documentation
 section: content
-title: Markdown‑aware Translation
-description: Markdown‑aware Translation
+title: Markdown-aware Translation
+description: Markdown-aware Translation
 ---
 
-# Markdown‑aware Translation 
+# Markdown-aware Translation
 
-This chapter documents the **actual PHP implementation** that extracts translatable text from Markdown, sends it to Azure, and writes translations back **without breaking markup**.
+Docara’s translator (in core) extracts text from Markdown, sends it to Azure, and writes translations back **without breaking markup**.
 
 ---
 
 ## Where it happens
-- **Class:** `App\Helpers\Translate`
+- **Class:** core translator (see `Simai\Docara\Translation`)
 - **Entry:** `generateTranslateContent(string $file, string $lang): string`
-- **Pre‑step:** Front matter is handled separately via `frontMatterParser()` and `translateFromMatter()`.
+- **Pre-step:** front matter is handled separately (`frontMatterParser()`, `translateFromMatter()`).
 
 ---
 
 ## Parser setup
-We build a CommonMark **Environment** with our Custom Tags extension and create a **MarkdownParser** (not a converter):
+CommonMark environment with Custom Tags + core extensions, using a **MarkdownParser** (not converter):
 
 ```php
 private function initParser(): void
@@ -35,7 +35,7 @@ private function initParser(): void
 ---
 
 ## Collecting text nodes
-We parse the Markdown into an AST and walk it. Only **`Text`** nodes are collected; code blocks/inline code are distinct node types and are therefore skipped implicitly.
+Parse to AST, walk, and collect **`Text`** nodes only; code blocks/inline code are separate node types and skipped.
 
 ```php
 $document  = $this->parser->parse($file);
@@ -53,7 +53,7 @@ while ($event = $walker->next()) {
 ```
 
 ### Line ranges of a text segment
-For each `Text` node we bubble up to the nearest **`AbstractBlock`** and use its start/end lines:
+Bubble up to the nearest **`AbstractBlock`** to get start/end lines:
 
 ```php
 private function getNodeLines(Node $node): array
@@ -71,14 +71,14 @@ private function getNodeLines(Node $node): array
 }
 ```
 
-### Filtering non‑linguistic strings
-We only send strings that contain at least one **Unicode letter**:
+### Filtering non-linguistic strings
+Skip strings without letters:
 
 ```php
 if (!preg_match('/\p{L}/u', $text)) continue; // skip numbers, symbols, etc.
 ```
 
-We then build the candidate list:
+Build the candidate list:
 ```php
 $textsToTranslateArray[] = [
   'text'  => $text,
@@ -90,7 +90,7 @@ $textsToTranslateArray[] = [
 ---
 
 ## Cache pass
-Before hitting the provider, we replace any strings found in the cache and only send **misses**.
+Replace any strings found in cache; send only misses:
 
 ```php
 $flatten = array_map(fn($x) => $x['text'], $textsToTranslateArray);
@@ -99,35 +99,32 @@ $keys      = array_keys($textsToTranslateArray);
 $keysAssoc = array_flip($cachedIdx);
 $extracted = array_intersect_key($textsToTranslateArray, $keysAssoc);
 
-// carry cached translations
 foreach ($extracted as $k => $val) {
     $extracted[$k]['translated'] = $flatten[$k];
 }
 
-// keep only misses for API calls
 $textsToTranslateArray = array_values(array_diff_key($textsToTranslateArray, $keysAssoc));
 ```
 
-> **Cache keys** are SHA‑1 over a normalized form of the source string (`normalize()` strips CRLF and collapses horizontal whitespace).
+> Cache keys are SHA-1 over normalized source strings (`normalize()` strips CRLF and collapses whitespace).
 
 ---
 
 ## Batching & sending
-We split the remaining items into **≈ 9000‑char** chunks and call Azure. After each request we throttle by **characters‑per‑minute**.
+Split remaining items into ~9,000-char chunks, call Azure, then throttle by characters-per-minute:
 
 ```php
 $chunks = $this->chunkTextArray($textsToTranslateArray);
 $finalTranslated = [];
 foreach ($chunks as $chunk) {
-    $translatedChunk = $this->translateText($chunk, $lang); // uses curlRequest()
-    $finalTranslated = array_merge($finalTranslated, $translatedChunk);
-
-    $chars = 0; foreach ($chunk as $c) $chars += mb_strlen($c['text']);
+    $translatedChunk   = $this->translateText($chunk, $lang); // uses curlRequest()
+    $finalTranslated   = array_merge($finalTranslated, $translatedChunk);
+    $chars = array_sum(array_map(fn($c) => mb_strlen($c['text']), $chunk));
     $this->throttleByCharsPerMinute($chars);
 }
 ```
 
-`translateText()` maps responses back **by index** and updates the cache:
+`translateText()` maps responses back **by index** and updates cache:
 ```php
 foreach ($textsToTranslate as $i => &$original) {
     $original['translated'] = $translateData[$i]['translations'][0]['text'] ?? $original['text'];
@@ -137,11 +134,11 @@ foreach ($textsToTranslate as $i => &$original) {
 
 ---
 
-## Re‑assembling results in original order
-We merge cached hits (`$extracted`) and fresh translations into a single array aligned to the **original indices**:
+## Re-assembling results in original order
+Merge cached hits and fresh translations, aligned to original indices:
 
 ```php
-$finalBlock = $finalTranslated; // only API results
+$finalBlock = $finalTranslated; // API results
 $i = 0;
 foreach ($keys as $k) {
     if (array_key_exists($k, $extracted)) {
@@ -154,12 +151,8 @@ foreach ($keys as $k) {
 
 ---
 
-## Bottom‑up replacement by line ranges
-We normalize EOLs to `\n`, split into lines, then apply edits **from bottom to top**. For each block we:
-1) slice the affected line range;
-2) find the **last** occurrence of the original text in that slice;
-3) replace it with the translation;
-4) splice the changed lines back into the document.
+## Bottom-up replacement by line ranges
+Normalize EOLs, split into lines, then apply edits **from bottom to top**:
 
 ```php
 $normalized = str_replace("\r\n", "\n", $file);
@@ -179,48 +172,47 @@ foreach (array_reverse($finalTranslated) as $block) {
 return implode("\n", $lines);
 ```
 
-**Exact helper used:**
+**Helper:**
 
 ```php
 private function replace_last_literal(string $haystack, string $search, string $replace): string {
     $pos = mb_strrpos($haystack, $search);
     if ($pos === false) return $haystack;
-    return markdown‑aware-translation.mdmb_substr($haystack, 0, $pos)
+    return mb_substr($haystack, 0, $pos)
          . $replace
          . mb_substr($haystack, $pos + mb_strlen($search));
 }
 ```
 
-> Using the **last** occurrence reduces the chance of touching earlier duplicates within the same block when multiple `Text` nodes share identical content.
+Using the **last** occurrence reduces the chance of touching earlier duplicates within the same block when multiple `Text` nodes share identical content.
 
 ---
 
 ## What remains untouched
 - **Code blocks** (`FencedCode`, `IndentedCode`) and **inline code** (`Code`).
-- **URLs** and link/image destinations; only human‑readable labels/alt text are translated.
+- **URLs** and link/image destinations; only human-readable labels/alt text are translated.
 - **Custom tag attributes**; only inner text content is processed.
 
 ---
 
 ## Edge cases & notes
-- **Start/end lines = 0**: If a node’s ancestor doesn’t expose line info, `start/end` may be `0`. Guard against negative indices when slicing; in practice CommonMark block nodes provide line numbers for author content.
-- **Duplicate phrases in one range**: We target the **last** match in the block. If you need precise targeting for multiple identical phrases, add column offsets.
-- **CRLF**: Input is normalized to LF for processing; output is joined with `\n`.
+- **Start/end lines = 0**: if a node’s ancestor doesn’t expose line info, `start/end` may be `0`. Guard against negative indices when slicing; CommonMark block nodes usually provide line numbers.
+- **Duplicate phrases in one range**: we target the **last** match in the block. For precise targeting of multiple identical phrases, add column offsets.
+- **CRLF**: input is normalized to LF; output is joined with `\n`.
 
 ---
 
 ## Safety checklist
 - [ ] Gather only `Text` nodes (`instanceof Text`).
-- [ ] Skip non‑linguistic strings (`/\p{L}/u`).
-- [ ] De‑dup via cache before sending to the provider.
+- [ ] Skip non-linguistic strings (`/\p{L}/u`).
+- [ ] De-dupe via cache before sending to the provider.
 - [ ] Batch by size and throttle by CPM.
-- [ ] Replace **bottom‑up** using captured line ranges.
+- [ ] Replace **bottom-up** using captured line ranges.
 - [ ] Persist caches after the run.
 
 ---
 
 ## Related code paths
-- **Front matter**: `frontMatterParser()` + `translateFromMatter()`
+- **Front matter**: `frontMatterParser()`, `translateFromMatter()`
 - **PHP arrays**: `translateLangFiles()`, `generateSettingsTranslate()`, `makeContent()`
 - **Azure calls**: `curlRequest()`, `translateText()`
-

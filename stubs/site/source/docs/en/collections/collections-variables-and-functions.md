@@ -15,7 +15,7 @@ These follow the same format as the site-wide variables and helper methods that 
 
 Just as with site-wide variables, collection variables defined in `config.php` can act as defaults, which can be
 overridden by variables of the same name specified in the YAML front matter of a collection item. In fact, top-level
-variables in `config.php` will be overridden by variables of the same name in a collection’s array, which will be
+variables in `config.php` will be overridden by variables of the same name in a collection's array, which will be
 further
 overridden by references in the YAML header of any individual page, allowing you to set up a cascade of variable
 defaults. For example:
@@ -91,7 +91,7 @@ For this regular (non-collection) page, author will be *Default Site Author*, th
 ## Helper Functions
 
 Helper functions can be included in the collection settings array in `config.php`, and will be available to all of that
-collection’s items. The same cascading rules that apply to variables also apply to functions, i.e. functions defined for
+collection's items. The same cascading rules that apply to variables also apply to functions, i.e. functions defined for
 a collection will override a function of the same name defined at the top level. For example:
 
 > config.php

@@ -1,4 +1,4 @@
----
+﻿---
 extends: _core._layouts.documentation
 section: content
 title: Azure Provider & Rate Limiting
@@ -7,7 +7,7 @@ description: Azure Provider & Rate Limiting
 
 # Azure Provider & Rate Limiting (PHP)
 
-This chapter documents the **exact PHP implementation** used by our translator to call Azure Cognitive Services — Translator, batch requests, and throttle by characters‑per‑minute.
+Docara ships a built-in translator (in core) that calls Azure Cognitive Services — Translator, batches requests, and throttles by characters-per-minute.
 
 ---
 
@@ -20,7 +20,7 @@ This chapter documents the **exact PHP implementation** used by our translator t
 
 ```php
 $url = $this->endpoint . '/translate?api-version=3.0&to=' . $toLang;
-// Note: we do not set &from=...; Azure will auto‑detect the source language.
+// We do not set &from=...; Azure auto-detects source language.
 ```
 
 Headers:
@@ -56,14 +56,14 @@ private function curlRequest(array $data, string $toLang): array
     $response = curl_exec($ch);
 
     if (curl_errno($ch)) {
-        echo 'Ошибка CURL: ' . curl_error($ch) . "\n";
+        echo 'ERROR CURL: ' . curl_error($ch) . "\n";
     }
 
     return json_decode($response, true);
 }
 ```
-- **Body format**: JSON array of objects with a single `Text` property, e.g. `[{"Text":"Hello"}, {"Text":"World"}]`.
-- **Response mapping**: array aligned by index with the request.
+- Body format: JSON array of objects with a single `Text` property, e.g. `[{"Text":"Hello"}, {"Text":"World"}]`.
+- Response mapping: array aligned by index with the request.
 
 ---
 
@@ -124,7 +124,7 @@ private function makeContent(array $items, $langContent, $lang, array $keys): mi
 ---
 
 ## Batching (`chunkTextArray`) and where it’s used
-Large Markdown texts are split into **≈ 9,000‑char** batches before sending:
+Large Markdown texts are split into ~9,000-character batches before sending:
 
 ```php
 private function chunkTextArray(array $items, int $maxChars = 9000): array
@@ -171,16 +171,15 @@ $finalTranslated = [];
 foreach ($chunks as $chunk) {
     $translatedChunk   = $this->translateText($chunk, $lang);
     $finalTranslated   = array_merge($finalTranslated, $translatedChunk);
-    $chars = 0;
-    foreach ($chunk as $c) $chars += mb_strlen($c['text']);
+    $chars = array_sum(array_map(fn($c) => mb_strlen($c['text']), $chunk));
     $this->throttleByCharsPerMinute($chars);
 }
 ```
 
 ---
 
-## Throttling by characters‑per‑minute
-The translator enforces a **CPM budget** with a small random jitter per batch.
+## Throttling by characters-per-minute
+The translator enforces a CPM budget with a small random jitter per batch.
 
 ```php
 private function throttleByCharsPerMinute(int $chars): void
@@ -191,8 +190,8 @@ private function throttleByCharsPerMinute(int $chars): void
     usleep((int) round($seconds * 1_000_000));
 }
 ```
-- **Config key**: `chars_per_minute` (put it into `translate.config.php` if needed).
-- The delay is called **after** each request with the size of that batch.
+- Config key: `chars_per_minute` (set in `translate.config.php` if needed).
+- Delay is applied **after** each request with that batch size.
 
 ---
 
@@ -204,7 +203,7 @@ $original['translated'] = $translateData[$index]['translations'][0]['text'] ?? $
 ```
 
 ### Cache API
-We cache by a **stable hash** of the normalized source string:
+We cache by a stable hash of the normalized source string:
 ```php
 private function setCached(string $toLang, string $translatedText, string $originalText): void
 {
@@ -220,20 +219,20 @@ private function getCached(string $toLang, string $originalText): ?string
 ```
 Cache files are persisted under `<cache_dir>/translations/`:
 - `translate_<lang>.json` — key → translated text
-- `hash.json` — per‑file checksums to skip unchanged files
-- `.config.json` — locale names for Jigsaw’s `beforeBuild`
+- `hash.json` — per-file checksums to skip unchanged files
+- `.config.json` — locale names for Docara’s `beforeBuild`
 
 ---
 
 ## Error handling (current behavior)
-- `curlRequest()` prints `Ошибка CURL: ...` when cURL fails and returns `json_decode($response, true)` (which may be `null`).
-- Callers use null‑coalescing fallbacks, e.g. `...['text'] ?? $original` — the original text is kept if the response is missing.
+- `curlRequest()` prints `ERROR CURL: ...` when cURL fails and returns `json_decode($response, true)` (which may be `null`).
+- Callers use null-coalescing fallbacks, e.g. `...['text'] ?? $original` — the original text is kept if the response is missing.
 
-> If you need stricter behavior, add HTTP status checks and retries (see the **Azure Provider** chapter for recommendations).
+> For stricter handling, add HTTP status checks and retries.
 
 ---
 
-## End‑to‑end example (Markdown)
+## End-to-end example (Markdown)
 ```php
 // Gather text nodes with line ranges
 $texts = [
@@ -251,12 +250,11 @@ foreach ($chunks as $chunk) {
     $this->throttleByCharsPerMinute($chars);
 }
 
-// Apply bottom‑up by lines (omitted here; see Markdown chapter)
+// Apply bottom-up by lines (see Markdown chapter)
 ```
 
 ---
 
 ## Notes
-- We rely on **auto‑detect** for the source language; if your base locale is fixed, you can extend `curlRequest()` to append `&from=<base>` from config.
-- Batch size and CPM are implementation defaults; tune them in your config and wrapper logic as needed.
-
+- We rely on **auto-detect** for the source language; if your base locale is fixed, extend `curlRequest()` to append `&from=<base>` from config.
+- Batch size and CPM are defaults; tune them in config/wrapper logic as needed.

@@ -7,8 +7,7 @@ description: Event Listeners
 
 # Event Listeners
 
-Docara provides three events that you can hook into, in order to run custom code before and after your build is
-processed.
+Docara exposes three events you can hook into to run custom code before and after your build is processed.
 !links
 
 - ***A `beforeBuild` event is fired before any `source` files have been processed.*** This gives you an opportunity to
@@ -30,29 +29,26 @@ processed.
 
 ## Registering event listeners as closures
 
-To add an event listener, head over to `bootstrap.php`. There, you can access the event bus with the `$events` variable,
-adding listeners by calling the name of the event:
+Add listeners in `bootstrap.php` via the `$events` bus; call the event name as a method:
 
 > bootstrap.php
 
 ```php 
-$events->beforeBuild(function ($jigsaw) {
+$events->beforeBuild(function ($docara) {
 // your code here
 });
 
-$events->afterCollections(function ($jigsaw) {
+$events->afterCollections(function ($docara) {
 // your code here
 });
 
-$events->afterBuild(function ($jigsaw) {
+$events->afterBuild(function ($docara) {
 // your code here
 });
 ```
 
-At its simplest, you can define your event listeners as closures that accept an instance of `Jigsaw`. The `Jigsaw`
-instance
-contains a number of helper methods to allow you to access information about the site and interact with files and config
-settings.
+Closures receive an instance of `Simai\Docara\Docara`, which includes helper methods to inspect the site and interact
+with files and config.
 
 For example, the following listener will fetch the current weather from an external API, and add it as a variable to
 `config.php`, where it can be referenced in your templates:
@@ -60,14 +56,14 @@ For example, the following listener will fetch the current weather from an exter
 > bootstrap.php
 
 ```php
-$events->beforeBuild(function ($jigsaw) {
+$events->beforeBuild(function ($docara) {
 $url = "http://api.openweathermap.org/data/2.5/weather?" . http_build_query([
-'q' => $jigsaw->getConfig('city'),
-'appid' => $jigsaw->getConfig('openweathermap_api_key'),
+'q' => $docara->getConfig('city'),
+'appid' => $docara->getConfig('openweathermap_api_key'),
 'units' => 'imperial',
 ]);
 
-    $jigsaw->setConfig('current_weather', json_decode(file_get_contents($url))->main);
+    $docara->setConfig('current_weather', json_decode(file_get_contents($url))->main);
 
 });
 ```
@@ -77,8 +73,8 @@ $url = "http://api.openweathermap.org/data/2.5/weather?" . http_build_query([
 ## Registering event listeners as classes
 
 For more complex event listeners, you can specify the name of a class, or an array of class names, instead of a closure.
-These classes can either live directly in `bootstrap.php` or in a separate directory. Listener classes should countain a
-`handle()` method with accepts an instance of `Jigsaw`:
+These classes can either live directly in `bootstrap.php` or in a separate directory. Listener classes should contain a
+`handle()` method that accepts an instance of `Docara`:
 
 > bootstrap.php
 
@@ -95,17 +91,17 @@ $events->afterBuild([GenerateSitemap::class, SendNotification::class]);
 
 namespace App\Listeners;
 
-use TightenCo\Jigsaw\Jigsaw;
+use Simai\Docara\Docara;
 use samdark\sitemap\Sitemap;
 
 class GenerateSitemap
 {
-    public function handle(Jigsaw $jigsaw)
+    public function handle(Docara $docara)
     {
-        $baseUrl = $jigsaw->getConfig('baseUrl');
-        $sitemap = new Sitemap($jigsaw->getDestinationPath() . '/sitemap.xml');
+        $baseUrl = $docara->getConfig('baseUrl');
+        $sitemap = new Sitemap($docara->getDestinationPath() . '/sitemap.xml');
 
-        collect($jigsaw->getOutputPaths())->each(function ($path) use ($baseUrl, $sitemap) {
+        collect($docara->getOutputPaths())->each(function ($path) use ($baseUrl, $sitemap) {
             if (! $this->isAsset($path)) {
                 $sitemap->addItem($baseUrl . $path, time(), Sitemap::DAILY);
             }
@@ -142,92 +138,83 @@ file:
 
 ## Helper methods in $jigsaw
 
-The instance of `Jigsaw` available to each event listener includes the following helper methods:
+The instance of `Docara` available to each event listener includes the following helper methods:
 ---
 `getEnvironment()`
 
-Returns the current environment, e.g. `local` or `production`
+Returns the current environment, e.g. `local` or `production`.
 
 ---
 `getCollections()`
 
-In `beforeBuild`, returns an array of collection names; in ***afterCollections*** and ***afterBuild***, returns a collection of collection items, keyed by collection name.
+Returns collection names (keys) present in site data.
 
 ---
-`getCollection($collection)` (***afterCollections*** and ***afterBuild*** only)
+`getCollection($collection)`
 
-Returns the items in a particular collection, keyed by their `source` filenames. Each item contains the variables
-defined for the collection item, as well as access to all collection item methods like `getContent()`.
+Returns items in a particular collection.
 
 ---
 `getConfig()`
 
-Returns the settings array from `config.php`
+Returns the settings array from `config.php`.
 
 ---
 `getConfig($key)`
 
-Returns a specific setting from `config.php`.
-
-Dot notation (e.g. `getConfig('collections.posts.items')` can be used to get nested items.
+Returns a specific setting from `config.php` (dot notation supported).
 
 ---
 `setConfig($key, $value)`
 
-Adds or modifies a setting in config.php.
-Dot notation can be used to set nested items.
+Adds or modifies a setting in `config.php` (dot notation supported).
 
 ---
 `getSourcePath()`
 
-Returns the absolute path to the `source` directory
+Returns the absolute path to the `source` directory.
 
 ---
 `setSourcePath($path)`
 
-Sets the path to the `source` directory
+Sets the path to the `source` directory.
 
 ---
 `getDestinationPath()`
 
-Returns the absolute path to the `build` directory
+Returns the absolute path to the `build` directory.
 
 ---
 `setDestinationPath($path)`
 
-Sets the path to the `build` directory
+Sets the path to the `build` directory.
 
 ---
-`getPages()` (***afterBuild*** only)
+`getPages()` (after build)
 
-Returns a collection of all output files that were generated. For each item, the key contains the path of the output
-file relative to the `build` directory (e.g. `/posts/my-first-post`), while the value contains the contents of the
-`$page`
-variable for the source file. This exposes the page metadata functions such as `getPath()` and `getModifiedTime()` for
-each
-page, as well as any variables defined in the page’s YAML header.
+Returns a collection of all output pages with their `$page` data.
 
 ---
-`getOutputPaths()` (***afterBuild*** only)
+`getOutputPaths()` (after build)
 
-Returns a collection of paths to the output files that were generated, relative to the `build` directory
+Returns a collection of paths to generated output files, relative to the `build` directory.
 
 ---
 `readSourceFile($fileName)`
 
-Returns the contents of a file in the `source` directory
+Returns the contents of a file in the `source` directory.
 
 ---
 `writeSourceFile($fileName, $contents)`
 
-Allows you to write a file to the `source` directory
+Writes a file to the `source` directory.
 
 ---
 `readOutputFile($fileName)`
 
-Returns the contents of a file in the `build` directory
+Returns the contents of a file in the `build` directory.
 
 ---
 `writeOutputFile($fileName, $contents)`
 
-Allows you to write a file to the `build` directory
+Writes a file to the `build` directory.

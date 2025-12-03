@@ -1,4 +1,4 @@
----
+﻿---
 extends: _core._layouts.documentation
 section: content
 title: Markdown
@@ -7,14 +7,11 @@ description: Markdown
 
 # Markdown
 
-Have some pages you’d rather write in Markdown than Blade? We know the feeling.
+Prefer writing in Markdown instead of Blade? Docara supports `.md` and `.markdown` files with YAML front matter.
 
-Using Markdown in Docara is as simple as using a .markdown or .md extension, and specifying a few details in YAML front
-matter.
+For example, with this layout:
 
-For example, say you have this layout and you’d like to populate the content section using Markdown:
-
-```blade 
+```blade
 <html>
     <head><!-- ... --></head>
     <body>
@@ -23,22 +20,21 @@ For example, say you have this layout and you’d like to populate the content s
 </html>
 ```
 
-If that layout was named master in the _layouts folder, you could create a Markdown page that used this layout like so:
+If that layout is named `master` in the `_layouts` folder, you can create a Markdown page that uses it like so:
 
 ```yaml
 ---
 extends: _layouts.master
 section: content
 ---
-
 # My awesome heading!
 
 My awesome content!
 ```
 
-The end result would be a generated page that looked like this:
+Which generates:
 
-```blade 
+```blade
 <html>
     <head><!-- ... --></head>
     <body>
@@ -50,11 +46,11 @@ The end result would be a generated page that looked like this:
 
 ## Custom front matter variables
 
-Imagine you have a layout named post.blade.php in your _layouts folder that looks like this:
+Suppose you have `post.blade.php` in `_layouts`:
 
-> _layouts/post.blade.php
+> \_layouts/post.blade.php
 
-```blade 
+```blade
 @extends('_layouts.master')
 
 @section('content')
@@ -65,46 +61,43 @@ Imagine you have a layout named post.blade.php in your _layouts folder that look
 @endsection
 ```
 
-You can populate the title and author variables by adding custom keys to the YAML front matter:
+Populate variables via front matter:
 
 > my-post.md
 
-```yaml 
+```yaml
 ---
 extends: _layouts.post
 section: postContent
-title: "Jigsaw is awesome!"
-author: "Adam Wathan"
+title: "Docara is awesome!"
+author: "Simai Docara"
 ---
-
-Jigsaw is one of the greatest static site generators of all time.
+Docara is one of the greatest static site generators of all time.
 ```
 
-…which would generate this:
+Which generates:
 
-```html 
-
+```html
 <html>
-<head><!-- ... --></head>
-<body>
-<h1>Jigsaw is awesome!</h1>
-<h2>by Adam Wathan</h2>
+    <head>
+        <!-- ... -->
+    </head>
+    <body>
+        <h1>Docara is awesome!</h1>
+        <h2>by Simai Docara</h2>
 
-<p>Jigsaw is one of the greatest static site generators of all time.</p>
-</body>
+        <p>Docara is one of the greatest static site generators of all time.</p>
+    </body>
 </html>
 ```
 
 ## Formatting dates
 
-The YAML processor converts any dates that it finds in a Markdown file’s front matter into integer timestamps. When
-outputting a date variable in your Blade template, you can use PHP’s `date()` function to specify a date format. For
-example:
-
+YAML front matter dates are converted to integer timestamps. In Blade, format them with PHP's `date()`:
 
 > my-post.md
 
-```blade 
+```blade
 ---
 extends: _layouts.post
 section: postContent
@@ -112,18 +105,15 @@ date: 2018-02-16
 ---
 ```
 
-> _layouts/post.blade.php
+> \_layouts/post.blade.php
 
-```blade 
-<p>The formatted date is {{ date('F j, Y', $post->date) }}</p>
+```blade
+<p>The formatted date is {{ date('F j, Y', $page->date) }}</p>
 ```
 
 ## Specifying a permalink
 
-You can specify a `permalink` in the YAML front matter to override the default path of a file when your site is built.
-This can be used, for example, to create a custom 404 page that is output to `404.html` (instead of the default
-`404/index.html`):
-
+Set `permalink` in front matter to override the output path (e.g., a custom 404 page at `404.html` instead of `404/index.html`):
 
 > source/404.md
 
@@ -133,6 +123,5 @@ extends: _layouts.master
 section: content
 permalink: 404.html
 ---
-
 ### Sorry, that page does not exist.
 ```

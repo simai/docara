@@ -10,10 +10,9 @@ description: Paths
 ## Default Path Setting
 
 By default, each of your collection items (if they `extend` a parent template) will be assigned a path where the first
-segment is the name of the collection, and the second segment is the filename converted to a URL “slug”—all lowercase,
+segment is the name of the collection, and the second segment is the filename converted to a URL "slug" - all lowercase,
 with words separated by dashes. So the default path for a file named My `First Blog Post.md` in a collection named
-`posts`
-would be `/posts/my-first-blog-post`.
+`posts` would be `/posts/my-first-blog-post`.
 
 Docara gives you the ability to customize your collection paths, however, by adding a `path` key to your collection
 array.
@@ -36,7 +35,7 @@ collection name) are available:
 'path' => '{collection}/{filename}' // 'posts/my first blog post'
 ```
 
-In most cases, when using filenames or titles, you will want to “slugify” them when used as part of a path. To do so,
+In most cases, when using filenames or titles, you will want to "slugify" them when used as part of a path. To do so,
 prepend a separator to the variable name:
 
 ```php 

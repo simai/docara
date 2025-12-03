@@ -7,14 +7,12 @@ description: CustomTagRenderer
 
 # CustomTagRenderer
 
-This component renders `CustomTagNode` instances to HTML within the League CommonMark pipeline. It either delegates to a **per‑tag renderer** (if provided) or falls back to a default wrapper element with rendered children.
-
-> Note: In some repositories the file may be named `CustomTagRender.php` while the class is `CustomTagRenderer`. The class documented here is the renderer used by CommonMark via `NodeRendererInterface`.
+This component renders `CustomTagNode` instances to HTML inside the League CommonMark pipeline. It either delegates to a per-tag renderer (if provided) or falls back to a default wrapper element with rendered children. It lives in Docara core.
 
 ---
 
 ## Location & signature
-- Namespace: `App\Helpers\CommonMark`
+- Namespace: `Simai\Docara\CustomTags`
 - Class: `CustomTagRenderer`
 - Implements: `League\CommonMark\Renderer\NodeRendererInterface`
 
@@ -25,7 +23,9 @@ final readonly class CustomTagRenderer implements NodeRendererInterface
 
     public function render(Node $node, ChildNodeRendererInterface $childRenderer): mixed
     {
-        if (!$node instanceof CustomTagNode) return '';
+        if (! $node instanceof CustomTagNode) {
+            return '';
+        }
         $spec = $this->registry->get($node->getType());
 
         if ($spec?->renderer instanceof \Closure) {
@@ -41,41 +41,44 @@ final readonly class CustomTagRenderer implements NodeRendererInterface
 }
 ```
 
+> Installed by `CustomTagsExtension` alongside `UniversalBlockParser`.
+
 ---
 
 ## Rendering flow
-1. **Type check**: non‑`CustomTagNode` ➜ return empty string.
-2. **Spec lookup**: retrieves the tag’s `CustomTagSpec` from `CustomTagRegistry` by `type()`.
+1. **Type check**: if the node is not `CustomTagNode`, return empty string.
+2. **Spec lookup**: pull the tag's `CustomTagSpec` from `CustomTagRegistry` by `type()`.
 3. **Custom renderer?**
-    - If the spec exposes a closure at `$spec->renderer`, it is invoked as:
-      ```php
-      fn(CustomTagNode $node, ChildNodeRendererInterface $children): mixed
-      ```
-      The closure should return an `HtmlElement` or a string.
+   - If `$spec->renderer` is a closure, it is invoked as:
+   ```php
+   fn(CustomTagNode $node, ChildNodeRendererInterface $children): mixed
+   ```
+   - The closure should return an `HtmlElement` or a string.
 4. **Default rendering**
-    - If no per‑tag renderer is provided, a default `HtmlElement` is returned:
-        - **Tag name**: `$spec->htmlTag` or `'div'` if missing.
-        - **Attributes**: `$node->getAttrs()` (already merged/filtered earlier).
-        - **Children HTML**: `$childRenderer->renderNodes($node->children())`.
+   - If no per-tag renderer exists, return `HtmlElement`:
+     - **Tag name**: `$spec->htmlTag` or `'div'` if missing.
+     - **Attributes**: `$node->getAttrs()` (already merged/filtered).
+     - **Children HTML**: `$childRenderer->renderNodes($node->children())`.
 
 ---
 
-## Per‑tag renderer: how to write one
-A per‑tag renderer gives you full control over the output. Recommended pattern:
+## Per-tag renderer: how to write one
+A per-tag renderer gives full control over the output. Recommended pattern:
 
 ```php
 public function renderer(): ?callable
 {
     return function (CustomTagNode $node, ChildNodeRendererInterface $children): HtmlElement {
         $attrs = $node->getAttrs();
-        $meta  = $node->getMeta();            // e.g., ['openMatch' => ..., 'attrStr' => ...]
+        $meta  = $node->getMeta(); // e.g., ['openMatch' => ..., 'attrStr' => ...]
         $inner = $children->renderNodes($node->children());
 
-        // Read attributes safely; prefer HtmlElement for auto‑escaping
         $classes = $attrs['class'] ?? '';
         $caption = $attrs['caption'] ?? '';
 
-        return new HtmlElement('figure', ['class' => $classes],
+        return new HtmlElement(
+            'figure',
+            ['class' => $classes],
             $inner . ($caption !== '' ? new HtmlElement('figcaption', [], $caption) : '')
         );
     };
@@ -83,41 +86,39 @@ public function renderer(): ?callable
 ```
 
 ### Accessing data
-- **Attributes**: `$node->getAttrs()` — merged defaults + inline, already normalized by `Attrs` and optionally filtered by `attrsFilter($attrs, $meta)`.
-- **Meta**: `$node->getMeta()` — includes `openMatch` (regex captures) and `attrStr` (raw attribute segment).
-- **Children**: `$children->renderNodes($node->children())` — the inner Markdown as HTML.
+- **Attributes**: `$node->getAttrs()` - merged defaults + inline, normalized and optionally filtered by `attrsFilter($attrs, $meta)`.
+- **Meta**: `$node->getMeta()` - includes `openMatch` (regex captures) and `attrStr` (raw attribute segment).
+- **Children**: `$children->renderNodes($node->children())` - the inner Markdown as HTML.
 
-> Prefer `HtmlElement` over manual string concatenation; it handles attribute escaping for you.
+> Prefer `HtmlElement` over manual string concatenation; it handles attribute escaping.
 
 ---
 
 ## Division of responsibilities
-- **Where to normalize/validate attributes?** In the tag’s `attrsFilter($attrs, $meta)`, not in the renderer. Keep renderers focused on structure.
-- **Where are attributes merged?** During block start (see `UniversalBlockParser`) and prior to rendering.
-- **Who chooses the wrapper tag?** The spec’s `htmlTag` for the default path; per‑tag renderers may ignore it and output any structure they need.
+- Normalize/validate attributes in the tag's `attrsFilter($attrs, $meta)`, not in the renderer.
+- Attributes are merged during block start (see `UniversalBlockParser`) before rendering.
+- Default wrapper tag comes from `spec->htmlTag`; per-tag renderers may output any structure they need.
 
 ---
 
 ## Edge cases & behavior
-- **Unknown spec**: If the registry returns `null` (mis‑configuration), the fallback tag defaults to `'div'` with whatever attributes are on the node.
-- **Empty content**: Children may be empty; default path still returns the wrapper element.
-- **Return type**: Return an `HtmlElement` or a string. Avoid returning raw unescaped user input.
+- **Unknown spec**: if the registry returns `null`, the fallback tag defaults to `'div'` with whatever attributes are on the node.
+- **Empty content**: children may be empty; default path still returns the wrapper element.
+- **Return type**: return an `HtmlElement` or a string; avoid emitting unescaped user input.
 
 ---
 
 ## Testing checklist
-- Default path: with no per‑tag renderer, confirm wrapper = `spec.htmlTag` (or `div`) and attributes are present.
+- Default path: with no per-tag renderer, confirm wrapper = `spec->htmlTag` (or `div`) and attributes are present.
 - Custom path: ensure the closure is invoked; verify it uses `$children->renderNodes(...)` and respects attributes.
-- Attributes: double‑check that classes are merged/deduped upstream; renderer should not re‑merge.
+- Attributes: double-check classes are merged/deduped upstream; renderer should not re-merge.
 - Meta usage: if your renderer relies on named captures from `openRegex`, assert they appear in `$node->getMeta()['openMatch']`.
 
 ---
 
-## Migration note (if you saw the old signature)
-Earlier drafts sometimes described `renderer()` as `fn(string $innerHtml, array $attrs): string`. The current implementation passes the **node** and the **child renderer** instead. To adapt:
+## Migration note (old signature)
+Earlier drafts described `renderer()` as `fn(string $innerHtml, array $attrs): string`. The current implementation passes the **node** and the **child renderer** instead. To adapt:
 
 - Get inner HTML via `$children->renderNodes($node->children())`.
 - Get merged attributes via `$node->getAttrs()`.
 - Use `$node->getMeta()` to read regex captures or the raw attribute string if needed.
-
-

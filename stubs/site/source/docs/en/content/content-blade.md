@@ -1,4 +1,4 @@
----
+﻿---
 extends: _core._layouts.documentation
 section: content
 title: Blade Templates & Partials
@@ -7,16 +7,11 @@ description: Blade Templates & Partials
 
 # Blade Templates & Partials
 
-One of the biggest benefits of a templating language is the ability to create reusable layouts and partials. Docara
-gives you access to all the templating features and control structures of Blade that are available in Laravel (learn
-more about Blade layouts in the official Blade documentation).
+One of the biggest benefits of a templating language is the ability to create reusable layouts and partials. Docara gives you access to all the templating features and control structures of Blade that are available in Laravel (see the official Blade docs for more on layouts).
 
 ## Defining a Layout
 
-Layouts themselves are just basic Blade templates that have one or more @yield calls where child templates can render
-their contents.
-
-A basic master layout could look like this:
+Layouts are basic Blade templates with one or more `@yield` calls where child templates can render their contents. A basic master layout could look like this:
 
 ```blade
 <!DOCTYPE html>
@@ -32,7 +27,7 @@ A basic master layout could look like this:
 @yield('content')
 
 <footer>
-    <p>©{{ date('Y') }} Awesome Co</p>
+    <p>&copy; {{ date('Y') }} Awesome Co</p>
 </footer>
 </body>
 </html>
@@ -42,11 +37,9 @@ Docara provides a `/source/_core/_layouts` directory out of the box with a basic
 
 ## Extending a Layout
 
-To extend a layout, create a template that specifies which layout to extend in an `@extends` directive, and which
-section(s) to populate using the `@section` directive:
+To extend a layout, create a template that specifies which layout to extend in an `@extends` directive, and which section(s) to populate using the `@section` directive:
 
 ```blade
-
 @extends('_core._layouts.master')
 
 @section('content')
@@ -56,8 +49,7 @@ section(s) to populate using the `@section` directive:
 @endsection
 ```
 
-Layouts and partials are referenced relative to the `source` directory using dot notation, where each dot represents a
-directory separator in the file name and the `.blade.php` extension omitted.
+Layouts and partials are referenced relative to the `source` directory using dot notation, where each dot represents a directory separator and the `.blade.php` extension is omitted.
 
 ## Partials
 
@@ -108,41 +100,31 @@ That data is then available in your partial as a normal variable:
 
 ## Components
 
-Docara supports both class based and anonymous Blade components.
-
-To display a component, you may use a Blade component tag within one of your Blade templates. Blade component tags start
-with the string x- followed by the kebab case name of the component class:
+Docara supports both class-based and anonymous Blade components. Use a Blade component tag inside your templates. Component tags start with `x-` followed by the kebab-case name:
 
 ```blade
-
-<x-input/>
+<x-input />
 ```
 
-In Jigsaw, views are auto-discovered from the `source/_core/_components` directory; to create an anonymous `<x--style`
-components, you only need to place a Blade template within that directory.
+In Docara, views are auto-discovered from the `source/_core/_components` directory; to create an anonymous `<x-...>` component, place a Blade template in that directory.
 
-Class-based components can be manually registered using $bladeCompiler->component(), as detailed in the Extending Blade
-with custom directives section below; or, they can be auto-discovered by using the Components namespace. To autoload
-class-based components that use the Components namespace, add an autoload entry to your composer.json file:
+Class-based components can be manually registered using `$bladeCompiler->component()`, as detailed in the Extending Blade with custom directives section below; or they can be auto-discovered by using the `Components` namespace. To autoload class-based components that use the `Components` namespace, add an autoload entry to your `composer.json` file:
 
 > composer.json
 
 ```json
 "autoload": {
   "psr-4": {
-  "Components": "where/you/want/to/keep/component/classes/"
+    "Components": "where/you/want/to/keep/component/classes/"
   }
 }
 ```
 
-… and then update Composer’s autoload references by running `composer dump-autoload` in your terminal.
+...and then update Composer's autoload references by running `composer dump-autoload`.
 
 ## Preventing layouts, partials & components from rendering
 
-Since it’s important that layouts, partials and components are never rendered on their own, you need to be able to tell
-Jigsaw when a file shouldn’t be rendered.
-
-To prevent a file or folder from being rendered, simply prefix it with an underscore:
+Since it's important that layouts, partials, and components are never rendered on their own, you need to tell Docara when a file shouldn't be rendered. To prevent a file or folder from being rendered, prefix it with an underscore:
 
 <div class="files">
     <div class="folder folder--open">source
@@ -158,10 +140,9 @@ To prevent a file or folder from being rendered, simply prefix it with an unders
     <div class="ellipsis">...</div>
 </div>
 
-Jigsaw gives you a `/_layouts` directory by default, but you can create any files or directories you need; anything
-prefixed with an underscore will not be rendered directly to `/build_local`.
+Docara gives you a `/_layouts` directory by default, but you can create any files or directories you need; anything prefixed with an underscore will not be rendered directly to `/build_local`.
 
-For example, if you wanted a place to store all of your partials, you could create a directory called `_partials`:
+For example, if you want a place to store your partials, you could create a directory called `_partials`:
 
 <div class="files">
     <div class="folder folder--open">source
@@ -179,39 +160,29 @@ For example, if you wanted a place to store all of your partials, you could crea
     <div class="ellipsis">...</div>
 </div>
 
-Since the `_partials` directory starts with an underscore, those files won’t be rendered when you generate your site,
-but will still be available to @include in your other templates.
+Since the `_partials` directory starts with an underscore, those files won't be rendered when you generate your site, but will still be available to `@include` in your other templates.
 
 ## Extending Blade with custom directives
 
-Jigsaw gives you the ability to extend Blade
-with [custom directives](https://laravel.com/docs/12.x/blade#extending-blade), just as you can with Laravel. To do this,
-create a
-`blade.php` file at the root level of your Jigsaw project (at the same level as `config.php`), and return an array of
-directives keyed by the directive name, each returning a closure.
+Docara lets you extend Blade with [custom directives](https://laravel.com/docs/12.x/blade#extending-blade), just as in Laravel. To do this, create a `blade.php` file at the root level of your Docara project (at the same level as `config.php`), and return an array of directives keyed by the directive name, each returning a closure.
 
-For example, you can create a custom `@datetime($timestamp)` directive to format a given integer timestamp as a date in
-your Blade templates:
+For example, you can create a custom `@datetime($timestamp)` directive to format a given integer timestamp as a date in your Blade templates:
 
 > blade.php
 
-```php 
+```php
 return [
-'datetime' => function ($timestamp) {
-return '<?php echo date("l, F j, Y", ' . $timestamp . '); ?>';
-}
+    'datetime' => function ($timestamp) {
+        return '<?php echo date("l, F j, Y", ' . $timestamp . '); ?>';
+    }
 ];
 ```
 
-Alternatively, the `blade.php` file receives a variable named `$bladeCompiler`, which exposes an instance of
-`\Illuminate\View\Compilers\BladeCompiler`. With this, you can create custom Blade
-directives, [aliased components](https://laravel.com/docs/12.x/blade#extending-blade), named
-`@include` statements, or other extended Blade control structures:
-
+Alternatively, the `blade.php` file receives a variable named `$bladeCompiler`, which exposes an instance of `\Illuminate\View\Compilers\BladeCompiler`. With this, you can create custom Blade directives, [aliased components](https://laravel.com/docs/12.x/blade#extending-blade), named `@include` statements, or other extended Blade control structures:
 
 > blade.php
 
-```php 
+```php
 <?php
 
 /** @var \Illuminate\View\Compilers\BladeCompiler $bladeCompiler */
@@ -227,14 +198,14 @@ $bladeCompiler->include('includes.copyright');
 
 > page.blade.php
 
-```php 
+```php
 <!-- Before -->
 
 @component('_components.alert')
 Pay attention to this!
 @endcomponent
 
-@include('_partials.meta.copyright', ['year' => '2018'])
+@include('_partials.meta.copyright', ['year' => '2025'])
 
 <!-- After -->
 
@@ -242,13 +213,12 @@ Pay attention to this!
 Pay attention to this!
 @endalert
 
-@copyright(['year' => '2018'])
+@copyright(['year' => '2025'])
 ```
 
 ## Specifying Blade hint paths
 
-To use Blade hint paths/namespaces in your markup (for example, `email:components::section`), specify the path to the
-directory using the `viewHintPaths` key in `config.php`:
+To use Blade hint paths/namespaces in your markup (for example, `email:components::section`), specify the path to the directory using the `viewHintPaths` key in `config.php`:
 
 > config.php
 

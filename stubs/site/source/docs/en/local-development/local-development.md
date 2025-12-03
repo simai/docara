@@ -8,20 +8,25 @@ description: Local Development
 # Local Development
 
 ## Set Your Local URL
-To preview your site locally, you’ll first need to create a .env file and specify your local URL in the APP_URL variable:
+
+To preview your site locally, you'll first need to create a .env file and specify your local URL in the APP_URL variable:
+
 ```bash
 APP_URL=http://your_url_here
 ```
 
 ## Using Docara
+
 Docara includes a serve command that makes your site available at http://localhost:8000. You can use this URL directly in your .env file:
 
 ```bash
 APP_URL=http://localhost:8000
 ```
-Once configured, start the local server by running vendor/bin/jigsaw serve.
+
+Once configured, start the local server by running `vendor/bin/jigsaw serve`.
 
 ## Using Valet
+
 Alternatively, you can use Laravel Valet to run your site locally with a .test domain. From your project root, execute this command:
 
 ```bash
@@ -35,49 +40,38 @@ APP_URL=http://my-site.test
 ```
 
 ## Preview Your Site
-To preview your site after setting up your URL, run the dev command from your project root:
+
+To preview your site after setting up your URL, run the dev command from your project root (default scaffold uses Laravel Mix + BrowserSync):
+
 ```bash
 npm run dev
 ```
-```bash
-You’ll see an output similar to this:
 
-VITE v6.3.5  ready in 165 ms
+This builds to `/build_local`, serves it at `http://localhost:3000`, and reloads the page when the build output changes. Static HTML lands in `/build_local`; edits to Markdown/Blade trigger a rebuild, and BrowserSync reloads after the build finishes. Assets are compiled from:
 
-➜  Local:    http://localhost:5173/
-➜  Network: use --host to expose
-➜  press h + enter to show help
+`source/_core/_assets/js/main.js`
 
-JIGSAW v1.8.1  plugin v1.0.1
+`source/_core/_assets/css/main.scss`
 
-LARAVEL    plugin v1.2.0
+If you prefer Vite with HMR, follow the Vite setup in **Compiling Assets**; the scaffold ships with Mix by default, so `npm run dev` runs webpack (Mix) until you switch.
 
-➜  APP_URL: http://mysite.test
+If you do not compile assets at all, you can preview via Jigsaw's `serve` command or Valet; in that case you'll need to run `vendor/bin/jigsaw build local` yourself after edits because there's no watcher.
 
-Initial Docara build completed.
+## BrowserSync (webpack.mix.js)
+
+To avoid early reloads, watch only the built output (not source files) in `webpack.mix.js`:
+
+```js
+mix.docara()
+    .js("source/_core/_assets/js/main.js", "js")
+    .js("source/_core/_assets/js/turbo.js", "js")
+    .options({ processCssUrls: false })
+    .browserSync({
+        server: "build_local",
+        files: ["build_local/**/*"], // watch only built files
+        open: false,
+    })
+    .version();
 ```
-You can then visit your local URL (e.g., http://mysite.test) in your browser to view your site.
 
-Docara generates your static HTML files in the /build_local directory and watches for changes. Any modifications to your content (whether Markdown or Blade files) will automatically trigger a full page reload in your browser.
-
-These reloads are logged in your terminal:
-```bash
-[vite] full reload for source/index.blade.php - build: 265 ms
-```
-Your JavaScript and CSS assets are handled by Vite, which loads them from their default locations:
-
-`
-source/_core/_assets/js/app.js
-`
-
-`
-source/_core/_assets/css/app.css
-`
-
-Vite continuously monitors for changes to these files (or any files they import). This means any edits you make will be instantly reflected in your browser thanks to its Hot Module Replacement (HMR) feature.
-
-These updates are also logged in your terminal:
-```bash
-[vite] (client) hmr update /source/_core/_assets/css/main.css?direct
-```
-If you’re not using Vite (for example, because you don’t need to compile assets), you can simply preview your site using Jigsaw’s serve command or Laravel Valet. Keep in mind that changes to your content won’t automatically trigger a page reload in this scenario. You’ll need to manually run vendor/bin/jigsaw build local to regenerate your site after making edits.
+Key idea: keep `files` scoped to `build_local/**/*` so BrowserSync reloads only after the build is written. Add `reloadDelay` or switch to `proxy`/`port` if needed, but avoid adding `source/**` back into `files`, or you'll bring back early reloads.

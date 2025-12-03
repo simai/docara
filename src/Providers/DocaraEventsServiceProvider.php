@@ -46,6 +46,9 @@
                 $sha = $this->fetchSha();
                 if ($sha) {
                     $docara->setConfig('sha', $sha);
+                    $this->console()->comment("Fetched SHA: {$sha}");
+                } else {
+                    $this->console()->comment('Fetched SHA: null');
                 }
                 $this->setCacheSha($sha);
             } catch (\Throwable $e) {
@@ -78,10 +81,12 @@
 
         private function fetchSha(): ?string
         {
-            $tempConfigPath = $this->tempConfigPath();
-            $tempConfig = $this->readTempConfig($tempConfigPath);
-            if (isset($tempConfig['sha']) && is_string($tempConfig['sha'])) {
-                return $tempConfig['sha'];
+            $cacheFile = $this->app->cachePath('docs-cache.json');
+            if (is_file($cacheFile)) {
+                $cacheJson = json_decode(file_get_contents($cacheFile), true) ?: [];
+                if (isset($cacheJson['sha']) && is_string($cacheJson['sha'])) {
+                    return $cacheJson['sha'];
+                }
             }
 
             $url = 'https://api.github.com/repos/simai/ui/commits/main';
@@ -103,8 +108,9 @@
             $data = json_decode($json, true);
             $sha = $data['sha'] ?? null;
             if ($sha) {
-                $tempConfig['sha'] = $sha;
-                $this->writeTempConfig($tempConfigPath, $tempConfig);
+                $cacheJson = isset($cacheJson) && is_array($cacheJson) ? $cacheJson : [];
+                $cacheJson['sha'] = $sha;
+                file_put_contents($cacheFile, json_encode($cacheJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
             }
 
             return $sha;

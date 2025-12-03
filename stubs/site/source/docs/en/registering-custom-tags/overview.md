@@ -7,7 +7,8 @@ description: Custom Markdown Tags — Overview
 
 # Custom Markdown Tags — Overview
 
-This page introduces our **custom Markdown tag** system: block-level components delimited by `!type` and `!endtype` markers, implemented on top of League CommonMark and wired into Jigsaw.
+This page introduces our **custom Markdown tag** system: block-level components delimited by `!type` and `!endtype`
+markers, implemented on top of League CommonMark and wired into Docara’s parser.
 
 ---
 
@@ -21,16 +22,17 @@ Custom tags are reusable **block components** rendered from Markdown using a con
 !end<type>
 ```
 
-They’re ideal for callouts, examples, embeds, and any structured content that should remain author-friendly while producing consistent HTML.
+They’re ideal for callouts, examples, embeds, and any structured content that should remain author-friendly while
+producing consistent HTML.
 
 ---
 
 ## Anatomy of a tag
 
-* **Open marker**: `!<type>` at the start of a line; may include inline attributes.
-* **Close marker**: `!end<type>` at the start of a line.
-* **Inner content**: parsed as Markdown into HTML, then injected into the tag’s wrapper element.
-* **Wrapper**: by default `<div>`, configurable per tag via `htmlTag()`.
+-   **Open marker**: `!<type>` at the start of a line; may include inline attributes.
+-   **Close marker**: `!end<type>` at the start of a line.
+-   **Inner content**: parsed as Markdown into HTML, then injected into the tag’s wrapper element.
+-   **Wrapper**: by default `<div>`, configurable per tag via `htmlTag()`.
 
 > Nesting of the **same** tag type is allowed by default and can be disabled via `allowNestingSame()`.
 
@@ -40,10 +42,10 @@ They’re ideal for callouts, examples, embeds, and any structured content that 
 
 Attributes on the open line support:
 
-* Key–value pairs with quotes or unquoted: `key="value"`, `key:'value'`, `key=value`
-* Short-hands: `.class` appends to `class`, `#id` sets `id`
-* Multiple classes are merged and **deduplicated**
-* Unicode spaces and smart quotes are normalized for robust parsing
+-   Key–value pairs with quotes or unquoted: `key="value"`, `key:'value'`, `key=value`
+-   Short-hands: `.class` appends to `class`, `#id` sets `id`
+-   Multiple classes are merged and **deduplicated**
+-   Unicode spaces and smart quotes are normalized for robust parsing
 
 > A per-tag `attrsFilter()` can sanitize/transform attributes before rendering.
 
@@ -52,7 +54,8 @@ Attributes on the open line support:
 ## Quick start
 
 1. **Create a tag class** that extends `BaseTag` and returns a unique `type()`.
-2. **Register** the class name in `config.php` under the `tags` array.
+2. **Register** the class name in `config.php` under the `tags` array (Docara’s core provider builds the registry from
+   this list).
 3. **Build the site** so Docara picks up the registry and our custom parser.
 
 ---
@@ -64,7 +67,7 @@ Attributes on the open line support:
 ```php
 namespace App\Helpers\CustomTags;
 
-use App\Helpers\CommonMark\BaseTag;
+use Simai\Docara\CustomTags\BaseTag;
 
 final class ExampleTag extends BaseTag
 {
@@ -89,7 +92,7 @@ final class ExampleTag extends BaseTag
 
 ```html
 <div class="example overflow-hidden radius-1/2 overflow-x-auto mb-4 border">
-  <p><strong>Inside</strong> the example tag.</p>
+    <p><strong>Inside</strong> the example tag.</p>
 </div>
 ```
 
@@ -107,9 +110,10 @@ final class ExampleTag extends BaseTag
 
 ## Docara integration (summary)
 
-* Tag classes live in `App\Helpers\CustomTags` and extend `BaseTag`.
-* Short class names are listed in `config.php => tags`.
-* `bootstrap.php` binds the tag registry and swaps Docara’s default parser with our `Parser`, which installs a `CustomTagExtension` for CommonMark.
+-   Tag classes live in your project namespace, e.g. `App\Helpers\CustomTags` (extend `BaseTag`); short class names are listed in `config.php => tags`.
+-   `CustomTagServiceProvider` builds the runtime registry from those names and binds it into the container.
+-   The provider also swaps `FrontMatterParser` with `Simai\Docara\Parser`, which installs `CustomTagsExtension` and the
+    rest of the CommonMark stack.
 
 > See the dedicated page **Registering Custom Tags** for the exact configuration snippets.
 
@@ -119,20 +123,19 @@ final class ExampleTag extends BaseTag
 
 **Do**
 
-* Keep `baseAttrs()` semantic and minimal
-* Use `attrsFilter()` to normalize/whitelist
-* Provide `renderer()` only when you need full control
+-   Keep `baseAttrs()` semantic and minimal
+-   Use `attrsFilter()` to normalize/whitelist
+-   Provide `renderer()` only when you need full control
 
 **Don’t**
 
-* Hardcode presentation that authors may want to override
-* Depend on fragile attribute formats—prefer tolerant parsing
+-   Hardcode presentation that authors may want to override
+-   Depend on fragile attribute formats—prefer tolerant parsing
 
 ---
 
 ## FAQ (quick)
 
-* **Can I nest tags?** Yes. Same-type nesting can be disabled with `allowNestingSame()`.
-* **How do I change the wrapper element?** Override `htmlTag()` in your tag class.
-* **How do I add default classes?** Return them from `baseAttrs()`; author classes are merged and deduplicated.
-
+-   **Can I nest tags?** Yes. Same-type nesting can be disabled with `allowNestingSame()`.
+-   **How do I change the wrapper element?** Override `htmlTag()` in your tag class.
+-   **How do I add default classes?** Return them from `baseAttrs()`; author classes are merged and deduplicated.

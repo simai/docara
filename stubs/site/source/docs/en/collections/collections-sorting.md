@@ -25,7 +25,7 @@ items by date, for instance, by prepending the date to each filename:
 ## Sorting by a Variable
 
 You can also sort your collection by the values of variables defined in the YAML front matter of each collection item.
-Add a `sort` key to the collection’s array in `config.php`, and specify the name of the field to sort by:
+Add a `sort` key to the collection's array in `config.php`, and specify the name of the field to sort by:
 
 > config.php
 

@@ -15,10 +15,10 @@ final class CustomTagsExtension implements ExtensionInterface
     public function register(EnvironmentBuilderInterface $environment): void
     {
 
-        //             $env->addInlineParser(new UniversalInlineParser($this->registry), 150);
-
         $environment->addBlockStartParser(new UniversalBlockParser($this->registry), 0);
 
         $environment->addRenderer(CustomTagNode::class, new CustomTagRenderer($this->registry));
+        $environment->addRenderer(CustomTagInline::class, new CustomTagRenderer($this->registry));
+        $environment->addInlineParser(new UniversalInlineParser($this->registry), 150);
     }
 }

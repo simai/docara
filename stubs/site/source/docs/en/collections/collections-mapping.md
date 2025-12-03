@@ -1,20 +1,20 @@
 ---
 extends: _core._layouts.documentation
 section: content
-title: Отображение
-description: Отображение
+title: Mapping
+description: Mapping
 ---
 
-# Отображение
+# Mapping
 
-Вы можете нанести на карту элементы своей коллекции, добавив `map` ключ к массиву коллекции в `config.php`и указав параметр
-Обратный вызов, который принимает элемент коллекции. Каждый элемент является экземпляром элемента `TightenCo\Jigsaw\Collection\CollectionItem`
-class, из которого вы можете создать свой собственный пользовательский класс с помощью статического `fromItem()` метод. Ваш пользовательский класс может
-Включите вспомогательные методы, которые могут быть слишком сложными для хранения в массиве config.php.
+You can map over your collection items by adding a `map` key to the collection's array in `config.php`, and specifying a
+callback that accepts the collection item. Each item is an instance of the `Simai\Docara\Collection\CollectionItem`
+class, from which you can instantiate your own custom class using the static `fromItem()` method. Your custom class can
+include helper methods that might be too complex for storing in your config.php array.
 
 > config.php
 
-```php 
+```php
 <?php
 
 return [
@@ -28,13 +28,13 @@ return [
 ];
 ```
 
-Ваш кастомный `Post` должен расширяться `TightenCo\Jigsaw\Collection\CollectionItem`, и может включать вспомогательные функции,
-ссылаться и/или изменять переменные страницы и т.д.:
+Your custom `Post` class should extend `Simai\Docara\Collection\CollectionItem`, and could include helper functions,
+reference and/or modify page variables, etc.:
 
-```php 
+```php
 <?php
 
-use TightenCo\Jigsaw\Collection\CollectionItem;
+use Simai\Docara\Collection\CollectionItem;
 
 class Post extends CollectionItem
 {

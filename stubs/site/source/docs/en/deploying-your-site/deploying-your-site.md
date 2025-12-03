@@ -56,13 +56,13 @@ To deploy a site to S3, first build your site for production:
 ```bash 
 npm run build
 ```
-Then simply follow the steps in Amazon’s static site documentation to deploy your `build_production` folder to your S3
+Then simply follow the steps in Amazon's static site documentation to deploy your `build_production` folder to your S3
 bucket.
 
 ## Using Kinsta Application Hosting
 Kinsta Application Hosting is an affordable, developer-centric cloud host that lets you deploy and host your website.
 
-Before deploying your site, you must make some minor changes—install `serve` by running `npm install serve`, and then update
+Before deploying your site, you must make some minor changes - install `serve` by running `npm install serve`, and then update
 your `package.json` file:
 ```json
 "scripts": {
@@ -75,8 +75,8 @@ This will build your site and start the server automatically.
 Finally, add both the PHP and NodeJS buildpacks in the Processes section of your Kinsta dashboard.
 
 ## Manually
-If you have an existing server that you’d like to use to host your Docara site, all you need to do is get the contents
-`build_production` into a public folder that’s pointed at by the URL you’d like to use.
+If you have an existing server that you'd like to use to host your Docara site, all you need to do is get the contents
+`build_production` into a public folder that's pointed at by the URL you'd like to use.
 
 ## Changing the Source and Destination Directories
 Docara will look for your source files in a `source` directory, and will output your files to a directory named `build_`

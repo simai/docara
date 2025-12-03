@@ -24,7 +24,7 @@ For example, if you have a file named `about-us.blade.php` in your `/source` dir
     <div class="ellipsis">...</div>
 </div>
 
-…it will be rendered as `index.html` in the `/build/about-us` directory:
+It will be rendered as `index.html` in the `/build/about-us` directory:
 
 <div class="files">
     <div class="folder folder--open">build_local
@@ -39,7 +39,7 @@ For example, if you have a file named `about-us.blade.php` in your `/source` dir
     <div class="ellipsis">...</div>
 </div>
 
-This means your “About us” page will be available at `http://example.com/about-us/` instead of
+This means your "About us" page will be available at `http://example.com/about-us/` instead of
 `http://example.com/about-us.html`.
 
 ## Disabling Pretty URLs
@@ -51,3 +51,5 @@ return [
 'pretty' => false,
 ];
 ```
+
+> Note: the current Docara stubs and navigation logic assume `pretty` is `true`. Switching it off can break links and menu generation unless you adjust paths accordingly.

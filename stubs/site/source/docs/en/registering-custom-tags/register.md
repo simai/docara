@@ -7,26 +7,26 @@ description: Register Custom Tags
 
 # Registering Custom Tags
 
-This page walks you through adding a new custom Markdown tag to the project and making it available to the Docara build.
+This page walks you through adding a new custom Markdown tag and making it available to the Docara build.
 
 ---
 
 ## Prerequisites
-- Your tag class must extend `App\Helpers\CommonMark\BaseTag` (or implement `CustomTagInterface`).
-- Composer autoload maps the `App\` namespace to your `source/_core` tree.
-- The Jigsaw build uses our custom `Parser` with the `CustomTagExtension` installed (see **Jigsaw wiring** below).
+- Your tag class must extend `Simai\Docara\CustomTags\BaseTag` (or implement `CustomTagInterface`).
+- Composer autoload maps the app namespace `App\\` to your project source (stubs ship with `App\\ => source/`), where custom tags live (e.g., `source/helpers/CustomTags`).
+- Docara's `Parser` already installs `CustomTagsExtension`; you only need to provide your tag classes and list them in config.
 
 ---
 
 ## Step 1 — Create the tag class
-Place the class under `App\Helpers\CustomTags` and return a unique `type()`.
+Place the class under your project namespace, e.g. `App\Helpers\CustomTags` (stubs include `source/helpers/CustomTags`), and return a unique `type()`.
 
 ```php
 <?php
 
 namespace App\Helpers\CustomTags;
 
-use App\Helpers\CommonMark\BaseTag;
+use Simai\Docara\CustomTags\BaseTag;
 
 final class ExampleTag extends BaseTag
 {
@@ -40,13 +40,13 @@ final class ExampleTag extends BaseTag
 ```
 
 **Notes**
-- `type()` is the marker used in Markdown (`!example` … `!endexample`).
-- `baseAttrs()` provides default attributes; author-supplied attributes are merged (classes are concatenated and de‑duplicated).
+- `type()` is the marker used in Markdown (`!example` ↔ `!endexample`).
+- `baseAttrs()` provides defaults; author-supplied attributes are merged (classes concatenated and deduplicated).
 
 ---
 
 ## Step 2 — Declare the tag in `config.php`
-List the **short** class names (no namespace) under the `tags` array. Each short name is resolved to `App\\Helpers\\CustomTags\\<ShortName>`.
+List the **short** class names (no namespace) under the `tags` array. Each short name is resolved to your tag namespace, e.g. `App\\Helpers\\CustomTags\\<ShortName>`.
 
 ```php
 <?php
@@ -61,47 +61,40 @@ return [
 
 ---
 
-## Step 3 — Jigsaw wiring (bootstrap.php)
-Our `bootstrap.php` binds a tag registry using the `tags` from config and swaps Jigsaw’s front matter parser with our custom `Parser`.
+## Step 3 — Wiring (provided by core)
+`CustomTagServiceProvider` already builds the tag registry from `config('tags')` and binds it into the container. It also swaps `FrontMatterParser` with our `Simai\Docara\Parser`, so Custom Tags are active everywhere Markdown is rendered.
 
 ```php
 <?php
 
-/** @var $container \Illuminate\Container\Container */
-/** @var $events \TightenCo\Jigsaw\Events\EventBus */
+/** @var $app \Illuminate\Container\Container */
 
-use App\Helpers\CommonMark\CustomTagRegistry;
-use App\Helpers\Interface\CustomTagInterface;
-use App\Helpers\Parser;
-use App\Helpers\Tags\TagRegistry;
+use Simai\Docara\CustomTags\CustomTagRegistry; // core registry
+use Simai\Docara\CustomTags\TagRegistry;       // core helper to register specs
+use Simai\Docara\Interface\CustomTagInterface;
+use Simai\Docara\Parser;                       // core parser with CustomTagsExtension
 use TightenCo\Jigsaw\Parsers\FrontMatterParser;
 
-try {
-    $container->bind(CustomTagRegistry::class, function ($c) {
-        $namespace = 'App\\Helpers\\CustomTags\\';
-        $shorts = (array) $c['config']->get('tags', []);
-        $instances = [];
-        foreach ($shorts as $short) {
-            $class = $namespace . $short;
-            if (class_exists($class)) {
-                $obj = new $class(); // If you need DI, see the tip below
-                if ($obj instanceof CustomTagInterface) $instances[] = $obj;
+$app->bind(FrontMatterParser::class, Parser::class);
+
+$app->bind(CustomTagRegistry::class, function ($c) {
+    $namespace = 'App\\Helpers\\CustomTags\\';
+    $shorts = (array) $c['config']->get('tags', []);
+    $instances = [];
+    foreach ($shorts as $short) {
+        $class = $namespace . $short;
+        if (class_exists($class)) {
+            $obj = new $class; // core provider does this
+            if ($obj instanceof CustomTagInterface) {
+                $instances[] = $obj;
             }
         }
-        return TagRegistry::register($instances);
-    });
-} catch (\ReflectionException $e) {
-    // optionally log
-}
-
-try {
-    $container->bind(FrontMatterParser::class, Parser::class);
-} catch (\ReflectionException $e) {
-    // optionally log
-}
+    }
+    return TagRegistry::register($instances);
+});
 ```
 
-**Tip (optional DI)**: If a tag needs constructor dependencies, replace `new $class()` with `$c->make($class)` to let the container resolve them.
+**Tip (optional DI)**: If a tag needs constructor dependencies, override the binding and use `$c->make($class)` instead of `new $class()`.
 
 ---
 
@@ -142,10 +135,10 @@ Expected (simplified):
 
 ## How registration works under the hood
 1. **Config**: `config('tags')` lists tag short names.
-2. **Registry binding**: `bootstrap.php` instantiates these classes and registers them via `TagRegistry::register(...)`.
-3. **Parser binding**: Jigsaw’s `FrontMatterParser` is aliased to our `Parser`, which installs `CustomTagExtension` into the CommonMark environment.
+2. **Registry binding**: provider/boot logic instantiates these classes and registers them via `TagRegistry::register(...)`.
+3. **Parser binding**: `FrontMatterParser` is aliased to `Simai\Docara\Parser`, which installs `CustomTagsExtension` into the CommonMark environment.
 4. **Parsing**: `UniversalBlockParser` matches `openRegex()`/`closeRegex()` for each registered tag and builds `CustomTagNode` ASTs.
-5. **Rendering**: `CustomTagRender` merges attributes, applies `attrsFilter()`, and either calls `renderer()` or emits the default wrapper (`htmlTag()`).
+5. **Rendering**: `CustomTagRenderer` merges attributes, applies `attrsFilter()`, and either calls `renderer()` or emits the default wrapper (`htmlTag()`).
 
 ---
 
@@ -153,12 +146,11 @@ Expected (simplified):
 You can branch on environment to include experimental tags only in `dev`:
 
 ```php
-$container->bind(CustomTagRegistry::class, function ($c) {
+$app->bind(CustomTagRegistry::class, function ($c) {
     $namespace = 'App\\Helpers\\CustomTags\\';
     $shorts = (array) $c['config']->get('tags', []);
 
-    // Example: filter based on an env flag in config
-    $env = $c['config']->get('env'); // adapt to how you expose environment
+    $env = $c['config']->get('env');
     if ($env !== 'production') {
         $shorts[] = 'ExperimentalTag';
     }
@@ -167,16 +159,14 @@ $container->bind(CustomTagRegistry::class, function ($c) {
 });
 ```
 
-(Adjust to your project’s way of exposing environments.)
-
 ---
 
 ## Common pitfalls
-- **Class not found**: Run `composer dump-autoload`, verify namespace and file path under `source/_core/helpers`.
+- **Class not found**: Run `composer dump-autoload`, verify namespace and file path under `source/helpers/CustomTags`.
 - **Not registered**: The short name in `config('tags')` must exactly match the class basename.
 - **Duplicate `type()`**: Ensure every tag’s `type()` is unique; otherwise the first one wins.
 - **Wrong HTML**: Check `htmlTag()`/`renderer()` and confirm `attrsFilter()` isn’t stripping values.
-- **Attributes not parsed**: Make sure your attribute string uses normal quotes/spaces; our parser normalizes Unicode spaces/quotes, but confirm the input is on the **open line**.
+- **Attributes not parsed**: Make sure the attribute string uses normal quotes/spaces; the parser normalizes Unicode spaces/quotes, but input must be on the **open line**.
 
 ---
 
@@ -187,16 +177,14 @@ $container->bind(CustomTagRegistry::class, function ($c) {
 ---
 
 ## Quick checklist
-- [ ] Class in `App/Helpers/CustomTags` extending `BaseTag`
+- [ ] Class in `source/helpers/CustomTags` (or your mapped path) extending `BaseTag`
 - [ ] Unique `type()`
 - [ ] Added to `config.php => tags`
 - [ ] Composer autoload updated (`composer dump-autoload`)
 - [ ] `bootstrap.php` binds registry and custom `Parser`
-- [ ] Jigsaw build/serve restarted (`vendor/bin/jigsaw build` or restart `serve`)
+- [ ] Build/serve restarted (`vendor/bin/jigsaw build` or restart `serve`)
 - [ ] Attributes parse correctly (quoted/unquoted, `.class`, `#id`)
 - [ ] Optional: `attrsFilter()` added for normalization/whitelisting
 - [ ] Optional: `renderer()` implemented for custom HTML
 - [ ] Optional: verify `allowNestingSame()` behavior
 - [ ] Fixture page renders as expected
-
-

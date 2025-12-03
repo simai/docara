@@ -16,19 +16,20 @@ Instead of declaring collections inline in `config.php`, we load them from `sour
 
 1. You set the docs root in `.env`:
 
-   ```text
-   DOCS_DIR=docs
-   ```
+    ```text
+    DOCS_DIR=docs
+    ```
 
 2. The loader reads `source/<DOCS_DIR>/*` (e.g. `source/docs/en`, `source/docs/ru`) and creates **one collection per language**.
 
 3. Each collection is named as `<docs-dir-with-dashes>-<lang>`, for example:
-   - `docs-en`
-   - `docs-ru`
 
-4. The output paths are generated to keep Jigsaw’s *pretty URLs*:
-   - `.../index.md` → `/en/index.html`, `/en/start/index.html`, …
-   - `.../page.md`  → `/en/.../page/index.html`
+    - `docs-en`
+    - `docs-ru`
+
+4. The output paths are generated to keep Jigsaw's _pretty URLs_:
+    - `.../index.md` -> `/en/index.html`, `/en/start/index.html`, ...
+    - `.../page.md` -> `/en/.../page/index.html`
 
 ---
 
@@ -40,7 +41,7 @@ Instead of declaring collections inline in `config.php`, we load them from `sour
 <?php
 
 return [
-    // …
+    // ...
     'collections' => require_once 'source/_core/collections.php',
 ];
 ```
@@ -62,7 +63,7 @@ $collections = [];
 $collectionName = collect(explode('/', trim(str_replace('\\', '/', $_ENV['DOCS_DIR']), '/')))
     ->implode('-');
 
-// Scan language folders: source/<DOCS_DIR>/*  -> en, ru, …
+// Scan language folders: source/<DOCS_DIR>/*  -> en, ru, ...
 foreach (glob('./source/' . $_ENV['DOCS_DIR'] . '/*', GLOB_ONLYDIR) as $dir) {
     $lang = basename($dir);
 
@@ -79,13 +80,13 @@ foreach (glob('./source/' . $_ENV['DOCS_DIR'] . '/*', GLOB_ONLYDIR) as $dir) {
         'path' => function ($page) use ($lang) {
             $relative = trim(str_replace('\\', '/', $page->_meta->relativePath), '/');
 
-            // index.md (root or nested) → no explicit "/index" here;
+            // index.md (root or nested) -> no explicit "/index" here;
             // PrettyOutputPathResolver will add index.html.
             if ($page->_meta->filename === 'index') {
                 return $lang . ($relative ? '/' . $relative : '');
             }
 
-            // other pages → /<lang>/<relative>/<filename>
+            // other pages -> /<lang>/<relative>/<filename>
             return $lang . ($relative ? '/' . $relative : '') . '/' . $page->_meta->filename;
         },
     ];
@@ -98,36 +99,27 @@ return $collections;
 
 ## Example structure
 
-```
-source/
-  docs/
-    en/
-      index.md
-      start/
-        index.md
-        install.md
-      local-development/
-        index.md
-    ru/
-      index.md
-      …
-```
-
-**Build output (simplified):**
-
-```
-build_local/
-  en/
-    index.html
-    start/
-      index.html
-      install/
-        index.html
-    local-development/
-      index.html
-  ru/
-    index.html
-```
+<div class="files">
+    <div class="folder folder--open">source
+        <div class="folder folder--open">docs
+            <div class="folder folder--open">en
+                <div class="file">index.md</div>
+                <div class="folder folder--open">start
+                    <div class="file">index.md</div>
+                    <div class="file">install.md</div>
+                </div>
+                <div class="folder">local-development
+                    <div class="file">index.md</div>
+                </div>
+            </div>
+            <div class="folder folder--open">ru
+                <div class="file">index.md</div>
+                <div class="file">... (per-language sections)</div>
+            </div>
+        </div>
+    </div>
+    <div class="folder">build_local (after build)</div>
+</div>
 
 ---
 
@@ -154,11 +146,11 @@ Collection variables follow the generated names (e.g. `docs-en`, `docs-ru`). If 
 
 ## Notes & gotchas
 
-- Keep folder names URL-friendly (no spaces); prefer `local-development` over `Local Development`.
-- For **root** `index.md` in each language, the path function must return only the language segment (`en`, `ru`) — the resolver will write `index.html` automatically.
-- Clear your build/cache if paths change:
-  ```bash
-  rm -rf build_local/ cache/
-  ```
+-   Keep folder names URL-friendly (no spaces); prefer `local-development` over `Local Development`.
+-   For **root** `index.md` in each language, the path function must return only the language segment (`en`, `ru`) - the resolver will write `index.html` automatically.
+-   Clear your build/cache if paths change:
+    ```bash
+    rm -rf build_local/ .cache/
+    ```
 
-That’s it — this mirrors your current setup while staying consistent with Jigsaw’s conventions.
+That's it - this mirrors your current setup while staying consistent with Jigsaw's conventions.

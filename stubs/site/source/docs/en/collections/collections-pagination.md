@@ -1,19 +1,19 @@
 ---
 extends: _core._layouts.documentation
 section: content
-title: 'Нумерация страниц'
-description: 'Нумерация страниц'
+title: Pagination
+description: Pagination
 ---
 
-# Нумерация страниц
+# Pagination
 
-Вы можете создать шаблон Blade, который отображает элементы коллекции в формате с разбивкой на страницы, добавив в него `pagination`
-в YAML-лице шаблона. Заголовок пагинации должен содержать файл `collection` name и `perPage`
-считать:
+You can create a Blade template that displays your collection items in a paginated format by including a `pagination`
+key in the template's YAML front matter. The pagination header should include the `collection` name and the `perPage`
+count:
 
 > posts.blade.php
 
-```yaml 
+```yaml
 ---
 pagination:
 collection: posts
@@ -23,36 +23,36 @@ perPage: 5
   ...
 ```
 
-> Если вы не предоставите `perPage` В вашем шаблоне можно установить значение по умолчанию для конкретной коллекции, добавив
+> If you don't provide a `perPage` value in your template, a default value can be set for specific collection by adding
 > a
-`perPage` ключ к настройкам коллекции в `config.php`или глобально, добавив метод `perPage` Ключ к верхнему уровню
-`config.php`. В противном случае значение по умолчанию будет равно 10.
+> `perPage` key to the collection's settings in `config.php`, or globally by adding a `perPage` key to the top level of
+> `config.php`. Otherwise, the default value will be 10.
 
-Как только `pagination` был определен в шапке, шаблон будет иметь доступ к специальному `$pagination` переменная
-который имеет несколько признаков:
+Once the `pagination` has been defined in the header, the template will have access to a special `$pagination` variable,
+which has several attributes:
 !links
 
-- `$pagination->items` содержит массив элементов коллекции для текущей страницы
-- `$pagination->currentPage` содержит номер текущей страницы
-- `$pagination->totalPages` содержит общее количество страниц
-- `$pagination->pages` содержит массив путей к каждой странице
-  
-!endlinks
-
-> Обратите внимание, что метод `pages` индексируются по номеру страницы, т.е. они основаны на 1. Таким образом, вы можете ссылаться на пути к странице
-> около
-> номер страницы, т.е. `$pagination->page[1]` вернет путь на первую страницу.
-
-!links
-
-- `$pagination->first` содержит путь к первой странице (такой же, как $pagination->path[1])
-- `$pagination->last` содержит путь к последней странице
-- `$pagination->next` содержит путь к следующей странице
-- `$pagination->previous` содержит путь к предыдущей странице
+-   `$pagination->items` contains an array of collection items for the current page
+-   `$pagination->currentPage` contains the page number of the current page
+-   `$pagination->totalPages` contains the total number of pages
+-   `$pagination->pages` contains an array of paths to each page
 
 !endlinks
 
-Использование этих `$pagination` Вы можете создать набор кнопок пагинации и ссылок:
+> Note that the `pages` are indexed by their page number, i.e. they are 1-based. So you can refer to the paths of a page
+> by
+> the page number, i.e. `$pagination->page[1]` will return the path to the first page.
+
+!links
+
+-   `$pagination->first` contains the path to the first page (the same as $pagination->path[1])
+-   `$pagination->last` contains the path to the last page
+-   `$pagination->next` contains the path to the next page
+-   `$pagination->previous` contains the path to the previous page
+
+!endlinks
+
+Using these `$pagination` attributes, you can build a set of pagination buttons and links:
 
 ```blade
 @if ($previous = $pagination->previous)
@@ -77,12 +77,12 @@ class="{{ $pagination->currentPage == $pageNumber ? 'selected' : '' }}">
 @endif
 ```
 
-Чтобы отобразить элементы на каждой странице, выполните итерацию по параметру `$pagination->items` коллекция:
+To display the items on each page, iterate over the `$pagination->items` collection:
 
 ```blade
 @foreach ($pagination->items as $post)
 <h3><a href="{{ $post->getUrl() }}">{{ $post->title }}</a></h3>
-<p class="text-sm">by {{ $post->author }} • {{ date('F j, Y', $post->date) }}</p>
+<p class="text-sm">by {{ $post->author }} &bull; {{ date('F j, Y', $post->date) }}</p>
 <div>{!! $post->getContent() !!}</div>
 @endforeach
 ```

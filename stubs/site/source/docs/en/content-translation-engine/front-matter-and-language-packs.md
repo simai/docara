@@ -1,18 +1,18 @@
----
+﻿---
 extends: _core._layouts.documentation
 section: content
 title: Front Matter & PHP Language Packs
 description: Front Matter & PHP Language Packs
 ---
 
-# Front Matter & PHP Language Packs 
+# Front Matter & PHP Language Packs
 
-This chapter explains how **front matter** and PHP‑based **language packs** (`.lang.php`, `.settings.php`) are translated and written back, using the actual implementation from `App\Helpers\Translate`.
+How Docara translates **front matter** and PHP-based **language/settings packs** (`.lang.php`, `.settings.php`) using the built-in translator.
 
 ---
 
 ## Where this logic runs
-- **Entry point (per file)**: `translateFiles()`
+- **Entry point (per file)**: `translateFiles()` (core translator)
 - **Helpers**: `frontMatterParser()`, `translateFromMatter()`, `translateLangFiles()`, `generateSettingsTranslate()`, `makeContent()`, `setByPath()`
 - **I/O**: Symfony YAML for front matter; `var_export()` for PHP arrays
 
@@ -64,14 +64,14 @@ Inside `translateFiles()` for `.md` files:
 $frontTranslated    = $this->translateFromMatter($front, $lang);
 $bodyTranslated     = $this->generateTranslateContent($original, $lang);
 $yamlBlock          = "---\n" . Yaml::dump($frontTranslated) . "---\n\n";
-$translated         = $yamlBlock + $bodyTranslated; // concatenation
+$translated         = $yamlBlock . $bodyTranslated;
 ```
-> The YAML dump preserves arrays/scalars and ensures valid front matter.
+> YAML dump preserves arrays/scalars and keeps valid front matter.
 
 ---
 
 ## PHP language packs (`.lang.php`)
-Language pack files return associative arrays of UI strings. They are **loaded**, translated **per value**, and written back.
+Language pack files return associative arrays of UI strings. They are loaded, translated per value, and written back.
 
 ### Loading & caching
 ```php
@@ -80,7 +80,7 @@ $data = include $filePathName; // returns array
 ```
 
 ### Selecting values
-Only **string** values that contain letters are translated; keys in `$cachedKeys` are kept as‑is.
+Only **string** values with letters are translated; cached keys are kept as-is.
 ```php
 $items = $keys = [];
 foreach ($data as $k => $v) {
@@ -92,7 +92,7 @@ foreach ($data as $k => $v) {
 ```
 
 ### Translating & writing
-`makeContent()` calls Azure via `curlRequest()` and writes results back, updating the cache. The final PHP file is generated with `var_export()`:
+`makeContent()` calls Azure via `curlRequest()` and writes results back, updating cache. The final PHP file is generated with `var_export()`:
 ```php
 $translated = $this->makeContent($items, $data, $lang, $keys);
 $phpOut     = "<?php\nreturn " . var_export($translated, true) . ";\n";
@@ -102,7 +102,7 @@ file_put_contents($destPath, $phpOut);
 ---
 
 ## Settings packs (`.settings.php`)
-Settings files may have **nested** translatable values (e.g., a `menu` array). We collect **paths** to each translatable string and write them back with `setByPath()`.
+Settings files may have nested translatable values (e.g., a `menu` array). We collect paths to each translatable string and write them back with `setByPath()`.
 
 ### Collecting candidates
 ```php
@@ -170,17 +170,18 @@ private function setByPath(array &$arr, array $path, mixed $value, string $lang)
     }
 }
 ```
-Finally, we output the resulting array into `<?php return ...;` via `var_export()` exactly like for `.lang.php`.
+
+Write the resulting array to `<?php return ...;` via `var_export()` as for `.lang.php`.
 
 ---
 
 ## Destination paths & structure
-Destination path for a translated file is derived by swapping the base locale suffix with the target language:
+Destination path is derived by swapping the base locale suffix with the target language:
 ```php
 $srcPath  = $file->getPathname();
 $destPath = str_replace("_docs-{$this->config['target_lang']}", "_docs-{$lang}", $srcPath);
 ```
-Directories are created on demand:
+Create directories on demand:
 ```php
 $dir = dirname($destPath);
 if (!is_dir($dir)) mkdir($dir, 0777, true);
@@ -189,16 +190,16 @@ if (!is_dir($dir)) mkdir($dir, 0777, true);
 ---
 
 ## Caching behavior
-All three flows (front matter, `.lang.php`, `.settings.php`) use the same cache API:
-- **Keying**: `normalize($text)` ⇒ SHA‑1 over LF‑normalized, whitespace‑collapsed string.
+All three flows use the same cache API:
+- **Keying**: `normalize($text)` → SHA-1 over LF-normalized, whitespace-collapsed string.
 - **Read**: `[$cachedKeys, $data] = checkCached($data, $lang)` marks cached positions and inlines cached translations.
-- **Write**: `setCached($lang, $translated, $original)` updates the in‑memory cache.
+- **Write**: `setCached($lang, $translated, $original)` updates in-memory cache.
 - **Persist**: `saveCache()` writes `translate_<lang>.json`, `.config.json` (locale names via `Symfony\Component\Intl\Languages`), and `hash.json`.
 
 ---
 
 ## Incremental updates & guards
-- **Per‑file hash**: `hashData[$lang][$filePath] = md5(file)` — unchanged files are skipped on subsequent runs.
+- **Per-file hash**: `hashData[$lang][$filePath] = md5(file)` — unchanged files are skipped on subsequent runs.
 - **Duplicate language guard**: if a target `lang` is already present in Docara `locales`, `translateFiles()` throws:
 ```php
 if (in_array($lang, array_keys($this->usedLocales), true)) {
@@ -211,7 +212,7 @@ if (in_array($lang, array_keys($this->usedLocales), true)) {
 ## Testing checklist
 - Front matter keys in `frontMatter` are translated; others remain intact.
 - `.lang.php`: only string values with letters are translated; arrays/numbers untouched.
-- `.settings.php`: nested paths (e.g., `menu.*`) are translated; non‑string values skipped.
+- `.settings.php`: nested paths (e.g., `menu.*`) are translated; non-string values skipped.
 - Cache hit: repeated runs avoid API calls; outputs are stable.
 - Destination path uses `_docs-<lang>` mirroring the base tree.
 
@@ -221,4 +222,3 @@ if (in_array($lang, array_keys($this->usedLocales), true)) {
 - Keep the `frontMatter` list short and intentional (titles, descriptions).
 - If you need additional nested settings translated (beyond `title` and `menu`), extend `generateSettingsTranslate()` with more path collectors.
 - Consider wrapping `file_put_contents()` with an atomic write (tmp file → rename) in CI.
-

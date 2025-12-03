@@ -1,4 +1,4 @@
-﻿---
+---
 extends: _core._layouts.documentation
 section: content
 title: Azure Provider & Rate Limiting

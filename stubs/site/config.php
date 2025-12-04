@@ -70,18 +70,7 @@ return [
         return $current;
     },
     'gitHubUrl' => function ($page) {
-        $path = str_replace('\\', '/', $page->getPath());
-        $lang = $page->locale();
-        $arPath = explode('/', $path);
-        $arShift = array_slice($arPath, 2);
-
-        if (count($arShift) > 0) {
-            $path = "{$page->env['DOCS_DIR']}/{$lang}" . '/' . implode('/', $arShift) . '.md';
-        } else {
-            $path = "{$page->env['DOCS_DIR']}/{$lang}/index.md";
-        }
-
-        return $path;
+        return $page->configurator->getGitHubUrl($page);
     },
     'isHome' => function ($page) {
         $current = trim($page->getPath(), '/');

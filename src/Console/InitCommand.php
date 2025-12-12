@@ -151,8 +151,14 @@ class InitCommand extends Command
             $this->files->deleteDirectory($corePath);
         }
 
+        $this->cleanupStaleCoreSubmoduleMetadata($coreRelative);
+
         // Try submodule first (use Process to avoid shell-quoting issues on Windows).
         $submoduleAdded = $this->runProcess(['git', 'submodule', 'add', $coreRepo, $coreRelative]);
+        if (! $submoduleAdded && $this->hasLocalModuleMetadata($coreRelative, $coreRepo)) {
+            $this->console->comment('Local metadata for source/_core found; retrying submodule add with --force...');
+            $submoduleAdded = $this->runProcess(['git', 'submodule', 'add', '--force', $coreRepo, $coreRelative]);
+        }
         if ($submoduleAdded) {
             $updateOk = $this->runProcess(['git', 'submodule', 'update', '--init', '--recursive', $coreRelative]);
         }
@@ -195,6 +201,31 @@ class InitCommand extends Command
         }
 
         return true;
+    }
+
+    private function cleanupStaleCoreSubmoduleMetadata(string $coreRelative): void
+    {
+        $moduleDir = $this->base . '/.git/modules/' . $coreRelative;
+        if (! is_dir($moduleDir)) {
+            return;
+        }
+
+        if (! is_dir($this->base . '/' . $coreRelative)) {
+            $this->files->deleteDirectory($moduleDir);
+            $this->console->comment("Removed stale submodule metadata for {$coreRelative}.");
+        }
+    }
+
+    private function hasLocalModuleMetadata(string $coreRelative, string $coreRepo): bool
+    {
+        $configPath = $this->base . '/.git/modules/' . $coreRelative . '/config';
+        if (! is_file($configPath)) {
+            return false;
+        }
+
+        $contents = file_get_contents($configPath);
+
+        return $contents !== false && str_contains($contents, $coreRepo);
     }
 
     private function runCoreCopyScript(): void

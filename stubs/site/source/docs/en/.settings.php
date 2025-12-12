@@ -21,14 +21,14 @@
                 'event-listeners' => 'Event Listeners',
                 'deploying-your-site' => 'Deploying Your Site',
             ),
-
-        'layoutOverrides' => [
-            'matches' => [
-                [
-                    'pattern' => 'collections',
-                    'config' => ['asideRight.enabled' => false],
-                    'category' => true,
-                ],
-            ],
-        ]
+// Overrides example
+//        'layoutOverrides' => [
+//            'matches' => [
+//                [
+//                    'pattern' => 'collections',
+//                    'config' => ['asideRight.enabled' => false],
+//                    'category' => true,
+//                ],
+//            ],
+//        ]
     ];

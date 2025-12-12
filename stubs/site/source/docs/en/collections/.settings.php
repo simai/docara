@@ -13,12 +13,4 @@
             'collections-variables-and-functions' => 'Variables & Helper Functions',
             'collections-remote-collections' => 'Remote Collections',
         ],
-        'layoutOverrides' => [
-            'matches' => [
-                [
-                    'pattern' => 'collections',
-                    'config' => ['asideRight.enabled' => true],
-                ],
-            ],
-        ]
     ];

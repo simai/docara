@@ -151,14 +151,13 @@ class InitCommand extends Command
             $this->files->deleteDirectory($corePath);
         }
 
-        // Try submodule first.
-        $cmd = 'cd ' . escapeshellarg($this->base)
-            . ' && git submodule add ' . escapeshellarg($coreRepo) . ' ' . escapeshellarg($coreRelative)
-            . ' && git submodule update --init --recursive ' . escapeshellarg($coreRelative);
+        // Try submodule first (use Process to avoid shell-quoting issues on Windows).
+        $submoduleAdded = $this->runProcess(['git', 'submodule', 'add', $coreRepo, $coreRelative]);
+        if ($submoduleAdded) {
+            $updateOk = $this->runProcess(['git', 'submodule', 'update', '--init', '--recursive', $coreRelative]);
+        }
 
-        exec($cmd, $output, $status);
-
-        if ($status === 0) {
+        if (isset($updateOk) && $updateOk) {
             $this->console->comment('Submodule source/_core added (simai/ui-doc-core).');
 
             return;
@@ -166,10 +165,9 @@ class InitCommand extends Command
 
         // Fallback: clone without submodule metadata (for non-git consumers).
         $this->console->comment('Submodule setup failed, trying direct clone of source/_core...');
-        $cloneCmd = 'git clone --depth=1 ' . escapeshellarg($coreRepo) . ' ' . escapeshellarg($corePath);
-        exec($cloneCmd, $cOut, $cStatus);
+        $cloneOk = $this->runProcess(['git', 'clone', '--depth=1', $coreRepo, $corePath]);
 
-        if ($cStatus === 0) {
+        if ($cloneOk) {
             // Remove git metadata from the clone to keep it lightweight.
             if ($this->files->isDirectory($corePath . '/.git')) {
                 $this->files->deleteDirectory($corePath . '/.git');
@@ -183,6 +181,20 @@ class InitCommand extends Command
         $this->console->comment("git submodule add {$coreRepo} {$coreRelative}");
         $this->console->comment("git submodule update --init --recursive {$coreRelative}");
         $this->console->comment("or clone manually: git clone {$coreRepo} {$coreRelative}");
+    }
+
+    private function runProcess(array $command): bool
+    {
+        $process = new Process($command, $this->base, null, null, 120);
+        $process->run();
+
+        if (! $process->isSuccessful()) {
+            $this->console->comment("Command failed ({$process->getCommandLine()}): {$process->getErrorOutput()}");
+
+            return false;
+        }
+
+        return true;
     }
 
     private function runCoreCopyScript(): void

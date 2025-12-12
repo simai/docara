@@ -11,6 +11,7 @@ final class CustomTagAdapter
     {
         $type = $tag->type();
         $open = $tag->openRegex();
+        $isContainer = $tag->isContainer;
         if (! $open) {
             throw new \InvalidArgumentException("CustomTag '{$type}' must define openRegex().");
         }
@@ -19,6 +20,7 @@ final class CustomTagAdapter
 
         return new CustomTagSpec(
             type: $type,
+            isContainer: $isContainer,
             openRegex: $open,
             closeRegex: $close,
             htmlTag: $tag->htmlTag(),

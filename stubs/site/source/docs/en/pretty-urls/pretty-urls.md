@@ -12,32 +12,31 @@ original file.
 
 For example, if you have a file named `about-us.blade.php` in your `/source` directory:
 
-<div class="files">
-    <div class="folder folder--open">source
-        <div class="folder">_assets</div>
-        <div class="folder">_layouts</div>
-        <div class="folder">assets</div>
-        <div class="file focus">about-us.blade.php</div>
-        <div class="file">blog.blade.php</div>
-        <div class="file">index.blade.php</div>
-    </div>
-    <div class="ellipsis">...</div>
-</div>
+
+
+!folders
+- source
+    - _assets
+    - _layout
+    - assets
+    -- about-us.blade.php (*)
+    -- blog.blade.php
+    -- index.blade.php
+!endfolders
 
 It will be rendered as `index.html` in the `/build/about-us` directory:
 
-<div class="files">
-    <div class="folder folder--open">build_local
-        <div class="folder folder--open focus">about-us
-            <div class="file">index.html</div>
-        </div>
-        <div class="folder folder--open">blog
-            <div class="file">index.html</div>
-        </div>
-        <div class="file">index.html</div>
-    </div>
-    <div class="ellipsis">...</div>
-</div>
+
+!folders
+- build_*
+  - about-us (*)
+    -- index.html
+  - blog
+    -- index.html
+  -- index.html
+!endfolders
+
+
 
 This means your "About us" page will be available at `http://example.com/about-us/` instead of
 `http://example.com/about-us.html`.

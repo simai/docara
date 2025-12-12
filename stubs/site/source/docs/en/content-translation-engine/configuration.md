@@ -7,7 +7,8 @@ description: Content Translation Engine - Configuration
 
 # Configuration
 
-This chapter documents all configuration options for the translation pipeline and how they affect input/output directories, providers, and the Docara build.
+This chapter documents all configuration options for the translation pipeline and how they affect input/output
+directories, providers, and the Docara build.
 
 ---
 
@@ -46,11 +47,13 @@ The **base locale** to read from (e.g., `en`). Files in `source/_docs-<target_la
 
 ### `languages` (string[], required)
 
-List of **target locales** to produce (e.g., `['ru', 'de']`). For each language, the translator writes/updates `source/_docs-<lang>`.
+List of **target locales** to produce (e.g., `['ru', 'de']`). For each language, the translator writes/updates
+`source/_docs-<lang>`.
 
 ### `output_dir` (string, required)
 
-Root path where localized trees are written. Normally the same as `source_dir` (so folders become siblings like `_docs-en`, `_docs-ru`).
+Root path where localized trees are written. Normally the same as `source_dir` (so folders become siblings like
+`_docs-en`, `_docs-ru`).
 
 ### `preserve_structure` (bool, default: `true`)
 
@@ -62,15 +65,14 @@ Relative (to `main`) or absolute path for translation caches and runtime config.
 
 **Layout (relative to `main`)**:
 
-<div class="files">
-    <div class="folder folder--open">&lt;cache_dir&gt;
-        <div class="folder folder--open">translations
-            <div class="file">translate_&lt;lang&gt;.json (key→translation cache)</div>
-            <div class="file">hash.json (checksum/housekeeping)</div>
-            <div class="file">.config.json (generated locales map for Docara)</div>
-        </div>
-    </div>
-</div>
+!folders
+
+- {$CACHE_DIR}
+    - translations
+      -- translate_{$LANG}.json (key→translation cache)
+      -- hash.json (checksum/housekeeping)
+      -- .config.json (generated locales map for Docara)
+!endfolders
 
 ### `frontMatter` (string[], optional)
 
@@ -98,40 +100,44 @@ AZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com
 
 ## Directory conventions
 
-<div class="files">
-    <div class="folder folder--open">source
-        <div class="folder folder--open">_docs-en (base locale, target_lang)</div>
-        <div class="folder">_docs-ru (generated locale)</div>
-        <div class="folder">_docs-... (other locales)</div>
-    </div>
-</div>
+!folders
 
--   **Input**: `source/_docs-<target_lang>`
--   **Output**: `source/_docs-<lang>` for each entry in `languages`
+- source
+    - docs (default folder)
+        - en (default lang)
+            - ...
+        - ru (other locales)
+            - ...
+!endfolders
+
+- **Input**: `source/{$DOCS_DIR}/{$lang}`
+- **Output**: `source/{$DOCS_DIR}/{$lang}` for each entry in `languages`
 
 **File types translated**
 
--   Markdown/MDX (`.md`), front matter keys listed in `frontMatter`
--   Language packs: `.lang.php`, `.settings.php` (mirrored per locale)
+- Markdown/MDX (`.md`), front matter keys listed in `frontMatter`
+- Language packs: `.lang.php`, `.settings.php` (mirrored per locale)
 
-> The Markdown translator is **AST-aware**: only text nodes are translated; code blocks, inline code, links, and custom tags remain intact.
+> The Markdown translator is **AST-aware**: only text nodes are translated; code blocks, inline code, links, and custom
+> tags remain intact.
 
 ---
 
 ## Docara integration (locales discovery)
 
-During `beforeBuild`, if `<cache_dir>/translations/.config.json` exists, it is **merged** into `config('locales')`. This makes newly generated languages available **without** editing project config.
+During `beforeBuild`, if `<cache_dir>/translations/.config.json` exists, it is **merged** into `config('locales')`. This
+makes newly generated languages available **without** editing project config.
 
 **Example `.config.json` (generated):**
 
 ```json
 {
-    "en": {
-        "name": "English"
-    },
-    "ru": {
-        "name": "Русский"
-    }
+  "en": {
+    "name": "English"
+  },
+  "ru": {
+    "name": "Русский"
+  }
 }
 ```
 
@@ -141,9 +147,9 @@ Place this file at `temp/translations/.config.json` if `cache_dir` is `temp/` an
 
 ## Path resolution & tips
 
--   Prefer **absolute** paths in config (`__DIR__`) to avoid CWD issues.
--   Keep trailing slashes consistent (as in the example) to avoid duplicate separators when concatenating.
--   If you change `cache_dir`, update the Docara bootstrap path which reads `.config.json`.
+- Prefer **absolute** paths in config (`__DIR__`) to avoid CWD issues.
+- Keep trailing slashes consistent (as in the example) to avoid duplicate separators when concatenating.
+- If you change `cache_dir`, update the Docara bootstrap path which reads `.config.json`.
 
 ---
 
@@ -176,18 +182,19 @@ return [
 
 ## Validation checklist
 
--   `source_dir` exists and contains `_docs-<target_lang>`.
--   `output_dir` is writable (or identical to `source_dir`).
--   `languages` is non-empty and does **not** include `target_lang`.
--   `.env` has valid Azure credentials.
--   Docara `beforeBuild` reads `<cache_dir>/translations/.config.json`.
+- `source_dir` exists and contains `_docs-<target_lang>`.
+- `output_dir` is writable (or identical to `source_dir`).
+- `languages` is non-empty and does **not** include `target_lang`.
+- `.env` has valid Azure credentials.
+- Docara `beforeBuild` reads `<cache_dir>/translations/.config.json`.
 
 ---
 
 ## Common mistakes
 
--   **Mismatched cache path**: you configured `cache_dir` but bootstrap still reads `temp/translations/.config.json`. Fix the bootstrap path or set `cache_dir` back to `temp/`.
--   **Confusing `target_lang`**: remember this is the **source** language. Targets go into `languages`.
--   **Relative paths + CWD**: use absolute paths with `__DIR__` to avoid surprises when running from CI.
+- **Mismatched cache path**: you configured `cache_dir` but bootstrap still reads `temp/translations/.config.json`. Fix
+  the bootstrap path or set `cache_dir` back to `temp/`.
+- **Confusing `target_lang`**: remember this is the **source** language. Targets go into `languages`.
+- **Relative paths + CWD**: use absolute paths with `__DIR__` to avoid surprises when running from CI.
 
 ---

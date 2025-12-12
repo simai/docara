@@ -1,6 +1,6 @@
-/build_*/
-/node_modules/
-/vendor/
+build_*/
+node_modules/
+vendor/
 /source/assets/build/
 /composer.json
 /bootstrap.php

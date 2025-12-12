@@ -98,28 +98,21 @@ return $collections;
 ---
 
 ## Example structure
+!folders
+- source
+   - {$DOCS_DIR}
+      - en
+         -- index.md
+         - start
+           -- index.md
+           -- install.md
+         - local-development
+            -- index.md
+      - ru
+         -- index.md
+         -- ... (per-language sections)
+!endfolders
 
-<div class="files">
-    <div class="folder folder--open">source
-        <div class="folder folder--open">docs
-            <div class="folder folder--open">en
-                <div class="file">index.md</div>
-                <div class="folder folder--open">start
-                    <div class="file">index.md</div>
-                    <div class="file">install.md</div>
-                </div>
-                <div class="folder">local-development
-                    <div class="file">index.md</div>
-                </div>
-            </div>
-            <div class="folder folder--open">ru
-                <div class="file">index.md</div>
-                <div class="file">... (per-language sections)</div>
-            </div>
-        </div>
-    </div>
-    <div class="folder">build_local (after build)</div>
-</div>
 
 ---
 

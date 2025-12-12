@@ -82,19 +82,18 @@ Then run `composer translate`.
 
 Relative to project root (`main`):
 
-<div class="files">
-    <div class="folder folder--open">source
-        <div class="folder folder--open">_docs-&lt;target_lang&gt; (input)</div>
-        <div class="folder">_docs-&lt;lang&gt; (outputs per target)</div>
-    </div>
-    <div class="folder folder--open">&lt;cache_dir&gt;
-        <div class="folder folder--open">translations
-            <div class="file">translate_&lt;lang&gt;.json (key→translated string)</div>
-            <div class="file">hash.json (bookkeeping)</div>
-            <div class="file">.config.json (locales map, read by Docara beforeBuild)</div>
-        </div>
-    </div>
-</div>
+!folders
+
+- source
+    - {$DOCS_DIR}
+        - {$lang} 
+- {$CACHE_DIR}
+    - translations
+        -- translate_{$lang}.json (key→translated string)
+        -- hash.json (bookkeeping)
+        -- .config.json (locales map, read by Docara beforeBuild)
+
+!endfolders
 
 ---
 

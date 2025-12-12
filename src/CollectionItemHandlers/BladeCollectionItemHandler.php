@@ -15,12 +15,12 @@ class BladeCollectionItemHandler
         $this->parser = $parser;
     }
 
-    public function shouldHandle($file)
+    public function shouldHandle($file): bool
     {
         return Str::contains($file->getFilename(), '.blade.');
     }
 
-    public function getItemVariables($file)
+    public function getItemVariables($file): array
     {
         $content = $file->getContents();
         $frontMatter = $this->parser->getFrontMatter($content);

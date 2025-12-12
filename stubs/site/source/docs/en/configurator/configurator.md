@@ -31,17 +31,20 @@ Because it is bound in core, templates can access it via `$page->configurator` (
 - Translations: `$page->configurator->getTranslate($key, $page->language)`
 
 ## File/folder conventions (per locale)
-<div class="files">
-    <div class="folder folder--open">source
-        <div class="folder folder--open">_docs-&lt;locale&gt;
-            <div class="file">index.md</div>
-            <div class="file">.settings.php</div>
-            <div class="file">.lang.php</div>
-            <div class="file">page.md</div>
-            <div class="folder">section/...</div>
-        </div>
-    </div>
-</div>
+
+!folders
+- source
+  - {$DOCS_DIR}
+    - {$lang}
+      -- index.md
+      -- .settings.php
+      -- .lang.php
+      -- page.md
+      -- page.blade.php
+      - section
+        - ...
+!endfolders
+
 
 ## Key responsibilities
 - **Translations**: `makeLocales()` loads `.lang.php` per locale into `$translations`.

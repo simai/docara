@@ -16,6 +16,7 @@ class DefaultHandler
 
     public function shouldHandle($file)
     {
+
         return true;
     }
 

@@ -13,5 +13,7 @@
             'custom-tag-node' => 'CustomTagNode & Spec Adapter',
             'custom-tag-extension' => 'CustomTagExtension & Registries',
             'attribute-syntax-and-parsing' => 'Attribute Syntax & Parsing',
+            'integrated-tags' => 'Built-in Tags',
         ]
     ];
+

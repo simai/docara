@@ -10,6 +10,8 @@ final class CustomTagSpec
 
     public string $closeRegex;
 
+    public bool $isContainer;
+
     public string $htmlTag = 'div';
 
     public array $baseAttrs = [];
@@ -22,16 +24,19 @@ final class CustomTagSpec
 
     public function __construct(
         string $type,
+        bool $isContainer,
         string $openRegex,
         string $closeRegex,
         string $htmlTag = 'div',
         array $baseAttrs = [],
         bool $allowNestingSame = true,
         ?callable $attrsFilter = null,
-        ?callable $renderer = null
+        ?callable $renderer = null,
+
     ) {
         $this->type = $type;
         $this->openRegex = $openRegex;
+        $this->isContainer = $isContainer;
         $this->closeRegex = $closeRegex;
         $this->htmlTag = $htmlTag;
         $this->baseAttrs = $baseAttrs;

@@ -8,8 +8,28 @@ class IgnoredHandler
 {
     public function shouldHandle($file): bool
     {
+        $relative = str_replace('\\', '/', $file->getRelativePathname());
+        $basename = $file->getFilename();
+
+        // Skip hidden/dotfiles (.env, .gitignore, etc.)
+        if (str_starts_with($basename, '.')) {
+            return true;
+        }
+
+        // Skip helper classes and config stubs that are not meant for output
+        $infraFiles = ['config.php', 'helpers.php'];
+        if (in_array($relative, $infraFiles, true)) {
+            return true;
+        }
+        if (str_starts_with($relative, 'Helpers/')) {
+            return true;
+        }
+
         $pattern = '#' . preg_quote($_ENV['DOCS_DIR'], '#') . '#';
-        return preg_match('/(^\/*_)/', $file->getRelativePathname()) === 1 || preg_match($pattern, str_replace('\\', '/', $file->getRelativePathname())) === 1;
+
+        // Skip anything under docs dir (handled by CollectionItemHandler) and underscore-prefixed paths
+        return preg_match('/(^\/*_)/', $relative) === 1
+            || preg_match($pattern, $relative) === 1;
     }
 
     public function handle(): Collection

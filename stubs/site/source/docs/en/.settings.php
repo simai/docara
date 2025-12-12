@@ -4,7 +4,7 @@
         'showInMenu' => false,
         'order' => 1,
         'menu' =>
-            array (
+            array(
                 'local-development' => 'Local Development',
                 'generating-your-site' => 'Generating Your Site',
                 'compiling-assets' => 'Compiling Assets',
@@ -21,4 +21,14 @@
                 'event-listeners' => 'Event Listeners',
                 'deploying-your-site' => 'Deploying Your Site',
             ),
+
+        'layoutOverrides' => [
+            'matches' => [
+                [
+                    'pattern' => 'collections',
+                    'config' => ['asideRight.enabled' => false],
+                    'category' => true,
+                ],
+            ],
+        ]
     ];

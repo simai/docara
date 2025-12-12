@@ -60,25 +60,18 @@ This mode works best for large doc sets or when you want distinct landing pages 
 
 ## Directory shape in category mode
 
-<div class="files">
-  <div class="folder folder--open">
-    docs
-    <div class="folder folder--open">
-      en
-      <div class="file">.settings.php</div>
-      <div class="folder folder--open">
-        category1
-        <div class="file">.settings.php</div>
-        <div class="file">category1.md</div>
-      </div>
-        <div class="folder folder--open">
-        category2
-        <div class="file">.settings.php</div>
-        <div class="file">category2.md</div>
-      </div>
-    </div>
-  </div>
-</div>
+!folders
+- {$DOCS_DIR}
+  - {$lang}
+    -- settings.php
+    - category1
+      -- .settings.php
+      -- index.md
+    - category2
+      -- .settings.php
+      -- index.md
+!endfolders
+
 
 ```php
 

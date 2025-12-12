@@ -7,45 +7,48 @@ description: Project Structure
 
 # Project Structure
 
-Now that the custom Markdown tags engine ships inside Docara itself, this page maps the core files that power it, what each piece does, and where you plug in your own tag classes.
+Now that the custom Markdown tags engine ships inside Docara itself, this page maps the core files that power it, what
+each piece does, and where you plug in your own tag classes.
 
 ---
 
 ## Directory tree
 
 Rooted in Docara core at `src/CustomTags`:
+!folders
+- src
+    - CustomTags 
+      -- Attrs.php
+      -- BaseTag.php
+      -- CustomTagAdapter.php
+      -- CustomTagInline.php
+      -- CustomTagNode.php
+      -- CustomTagRegistry.php
+      -- CustomTagRenderer.php
+      -- CustomTagsExtension.php
+      -- CustomTagSpec.php
+      -- TagRegistry.php
+      -- UniversalBlockParser.php
+      -- UniversalInlineParser.php
+    - Interface 
+      -- CustomTagInterface.php
+    - Providers
+      -- ConfiguratorServiceProvider.php
+      -- ...
+    -- Parser.php
+!endfolders
 
-<div class="files">
-    <div class="folder folder--open">src
-        <div class="folder folder--open">CustomTags
-  <div class="file">Attrs.php</div>
-  <div class="file">BaseTag.php</div>
-  <div class="file">CustomTagAdapter.php</div>
-  <div class="file">CustomTagNode.php</div>
-  <div class="file">CustomTagRegistry.php</div>
-  <div class="file">CustomTagRenderer.php</div>
-  <div class="file">CustomTagsExtension.php</div>
-  <div class="file">CustomTagSpec.php</div>
-  <div class="file">TagRegistry.php</div>
-  <div class="file">UniversalBlockParser.php</div>
-  <div class="file">UniversalInlineParser.php</div>
-        </div>
-        <div class="folder folder--open">Interface
-  <div class="file">CustomTagInterface.php</div>
-        </div>
-        <div class="file">Parser.php</div>
-        <div class="folder folder--open">Providers
-  <div class="file">CustomTagServiceProvider.php</div>
-        </div>
-    </div>
-</div>
 
 ---
 
 ## Namespaces & autoload
-- Core classes live under `Simai\Docara\CustomTags\*` (plus `Simai\Docara\Parser` and `Simai\Docara\Interface\CustomTagInterface`).
-- `CustomTagServiceProvider` expects your tag classes under `App\Helpers\CustomTags\` and loads them by short class name from `config('tags')`.
-- Ensure your project composer autoload maps `"App\\": "source/_core"` (or your source dir) and run `composer dump-autoload` after adding/removing tag classes.
+
+- Core classes live under `Simai\Docara\CustomTags\*` (plus `Simai\Docara\Parser` and
+  `Simai\Docara\Interface\CustomTagInterface`).
+- `CustomTagServiceProvider` expects your tag classes under `App\Helpers\CustomTags\` and loads them by short class name
+  from `config('tags')`.
+- Ensure your project composer autoload maps `"App\\": "source/_core"` (or your source dir) and run
+  `composer dump-autoload` after adding/removing tag classes.
 
 ---
 
@@ -70,8 +73,10 @@ Attrs --> parse/merge attributes
 ## Components and responsibilities
 
 ### Authoring API
+
 - **Interface/CustomTagInterface.php**
-    - The formal contract for a tag: `type()`, `openRegex()`, `closeRegex()`, `htmlTag()`, `baseAttrs()`, `allowNestingSame()`, optional `attrsFilter()` and `renderer()`.
+    - The formal contract for a tag: `type()`, `openRegex()`, `closeRegex()`, `htmlTag()`, `baseAttrs()`,
+      `allowNestingSame()`, optional `attrsFilter()` and `renderer()`.
 - **CommonMark/BaseTag.php**
     - Default implementation of the interface with sensible behaviors.
     - Extend this for new tags instead of implementing the interface from scratch.
@@ -79,18 +84,22 @@ Attrs --> parse/merge attributes
     - Your tag classes live in your app. Each returns a unique `type()` and may override defaults.
 
 ### Registration & discovery
+
 - **CommonMark/TagRegistry.php**
     - Helper/factory that accepts an array of tag instances and produces a read-only registry.
 - **CommonMark/CustomTagRegistry.php** (core service)
-    - Container-bound service built by `CustomTagServiceProvider` from `config('tags')` and exposed to the CommonMark layer.
+    - Container-bound service built by `CustomTagServiceProvider` from `config('tags')` and exposed to the CommonMark
+      layer.
 - **Config (`config.php`)**
     - `tags` array lists short class names to register (resolved to `App\Helpers\CustomTags\<Short>`).
 
 ### Parsing layer
+
 - **CommonMark/CustomTagSpec.php**
     - A compiled, immutable spec per tag: type, open/close regex, nesting rules, wrapper tag, base attrs.
 - **CommonMark/UniversalBlockParser.php**
-    - Line-based block parser that recognizes `!type` / `!endtype` using specs from the registry, captures inner Markdown, and builds `CustomTagNode`.
+    - Line-based block parser that recognizes `!type` / `!endtype` using specs from the registry, captures inner
+      Markdown, and builds `CustomTagNode`.
 - **CommonMark/UniversalInlineParser.php**
     - Reserved for inline patterns/shorthands; kept for symmetry and future use.
 - **CommonMark/CustomTagNode.php**
@@ -101,6 +110,7 @@ Attrs --> parse/merge attributes
     - The CommonMark extension entry point; installs the adapter into the environment.
 
 ### Rendering layer
+
 - **CommonMark/CustomTagRenderer.php**
     - Rendering pipeline for `CustomTagNode`:
         1. Parse/normalize inline attributes via **Attrs** and merge with `baseAttrs()`.
@@ -109,6 +119,7 @@ Attrs --> parse/merge attributes
         4. Otherwise, emit `<htmlTag ...attrs>innerHtml</htmlTag>`.
 
 ### Utilities
+
 - **CommonMark/Attrs.php**
     - Robust attribute parsing for the open line:
         - Key-value pairs: `key="value"`, `key:'value'`, unquoted tokens.
@@ -117,6 +128,7 @@ Attrs --> parse/merge attributes
     - Attribute set merging with class de-duplication.
 
 ### Parser integration
+
 - **Parser.php**
     - Core replacement for Jigsaw's `FrontMatterParser`.
     - Builds the CommonMark environment and installs `CustomTagsExtension` so tags work during `build`/`serve`.
@@ -124,6 +136,7 @@ Attrs --> parse/merge attributes
 ---
 
 ## File interaction (lifecycle)
+
 1. `Parser` builds CommonMark environment and installs `CustomTagsExtension`.
 2. `CustomTagsExtension` uses `CustomTagAdapter` to register:
     - `UniversalBlockParser`, `UniversalInlineParser`, and a renderer for `CustomTagNode`.
@@ -136,6 +149,7 @@ Attrs --> parse/merge attributes
 ---
 
 ## Where to add things
+
 - **New tag** -> `App\Helpers\CustomTags/YourTag.php` (extend `BaseTag`), add to `config('tags')`.
 - **New parsing behavior** -> `UniversalBlockParser` / `UniversalInlineParser`.
 - **Custom rendering logic for a specific tag** -> override `renderer()` in your tag class.
@@ -144,6 +158,7 @@ Attrs --> parse/merge attributes
 ---
 
 ## Conventions
+
 - One class per file; class basename matches filename.
 - `type()` must be globally unique across all tags.
 - Keep `baseAttrs()` minimal/semantic; let authors add presentation in Markdown.
@@ -152,6 +167,7 @@ Attrs --> parse/merge attributes
 ---
 
 ## Troubleshooting pointers
+
 - **Tag not recognized**: Check `config('tags')`, namespace, and run `composer dump-autoload`.
 - **Attributes missing**: Confirm they're on the **open line**; check `Attrs` normalization for quotes/spaces.
 - **Wrong wrapper**: Verify `htmlTag()` override; if using `renderer()`, remember it bypasses the default wrapper.

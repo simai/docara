@@ -23,7 +23,7 @@ class MarkdownHandler
         $this->view = $viewRenderer;
     }
 
-    public function shouldHandle($file)
+    public function shouldHandle($file): bool
     {
         return in_array($file->getExtension(), ['markdown', 'md', 'mdown']);
     }
@@ -35,12 +35,12 @@ class MarkdownHandler
 
     public function handle($file, $pageData)
     {
-        $pageData->page->addVariables($this->getPageVariables($file));
 
+        $pageData->page->addVariables($this->getPageVariables($file));
         return $this->buildOutput($file, $pageData);
     }
 
-    private function getPageVariables($file)
+    private function getPageVariables($file): array
     {
         return array_merge(['section' => 'content'], $this->parseFrontMatter($file));
     }
@@ -68,6 +68,7 @@ class MarkdownHandler
 
     private function render($file, $pageData, $extends)
     {
+
         $uniqueFileName = $file->getPathname() . $extends;
 
         if ($cached = $this->getValidCachedFile($file, $uniqueFileName)) {

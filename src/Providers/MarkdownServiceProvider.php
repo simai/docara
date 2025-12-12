@@ -26,7 +26,6 @@ class MarkdownServiceProvider extends ServiceProvider
 
         $this->app->singleton('markdownParser', fn (Container $app) => new MarkdownParser($app[MarkdownParserContract::class]));
 
-        // Make the FrontYAML package use our own Markdown parser internally
         $this->app->bind(FrontYAMLMarkdownParser::class, fn (Container $app) => $app['markdownParser']);
 
         $this->app->bind(Parser::class, function (Container $app) {

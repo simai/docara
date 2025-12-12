@@ -9,6 +9,7 @@
     use Symfony\Component\Console\Helper\ProgressBar;
     use Simai\Docara\Console\ConsoleOutput;
     use Simai\Docara\Multiple\MultipleHandler;
+    use Simai\Docara\Support\Layout;
 
     class Configurator
     {
@@ -202,6 +203,176 @@
 
             return $items;
 
+        }
+
+        /**
+         * Получить layout overrides из .settings.php для конкретного пути.
+         * Поддерживает default (с флагом recursive) и matches (pattern/glob/regex, recursive).
+         *
+         * @param  string  $locale  текущий locale (например, en)
+         * @param  string  $path    путь страницы (может включать locale)
+         */
+        public function getLayoutOverridesForPath(string $locale, string $path): array
+        {
+            $tree = $this->settings[$locale] ?? [];
+            if (empty($tree)) {
+                return [];
+            }
+
+            if (isset($tree[$locale]) && is_array($tree[$locale])) {
+                $tree = $tree[$locale];
+            }
+
+            $normalized = trim(str_replace('\\', '/', $path), '/');
+            $segments = $normalized === '' ? [] : explode('/', $normalized);
+
+            $docsRoot = trim(str_replace(['\\', '/'], '/', $this->docsDir), '/');
+            $docsRoot = $docsRoot === '' ? null : basename($docsRoot);
+            if (! empty($segments) && $docsRoot && $segments[0] === $docsRoot) {
+                array_shift($segments);
+            }
+
+            while (! empty($segments) && $segments[0] === $locale) {
+                array_shift($segments);
+            }
+
+            if (! empty($segments)) {
+                $last = $segments[count($segments) - 1];
+                // Игнорируем скрытые файлы (.settings.php и т.п.)
+                if (str_starts_with($last, '.')) {
+                    return [];
+                }
+                // Снимаем расширение (index.html, slug.html).
+                $lastNoExt = preg_replace('/\.[^.]+$/', '', $last);
+                $segments[count($segments) - 1] = $lastNoExt;
+                // Убираем index из хвоста.
+                if ($lastNoExt === 'index') {
+                    array_pop($segments);
+                }
+            }
+
+            $countSegments = count($segments);
+            if ($countSegments >= 2 && $segments[$countSegments - 1] === $segments[$countSegments - 2]) {
+                array_pop($segments);
+            }
+
+            $overrides = [];
+            $node = $tree;
+            $depth = count($segments);
+
+            for ($i = 0; $i <= $depth; $i++) {
+                $remaining = array_slice($segments, $i);
+                $currentOverrides = $node['current']['layoutOverrides'] ?? null;
+
+                if ($currentOverrides && is_array($currentOverrides)) {
+                    $overrides = Layout::deepMerge(
+                        $overrides,
+                        $this->resolveLayoutOverridesForNode($currentOverrides, $remaining, $segments)
+                    );
+                }
+
+                if ($i === $depth) {
+                    break;
+                }
+
+                $segment = $segments[$i];
+                if (! isset($node['pages'][$segment])) {
+                    break;
+                }
+                $node = $node['pages'][$segment];
+            }
+
+            return $overrides;
+        }
+
+        /**
+         * Применение overrides узла к оставшемуся пути.
+         *
+         * Структура:
+         *  [
+         *    'default' => ['config' => [...], 'recursive' => false],
+         *    'matches' => [
+         *      ['pattern' => 'foo'|'*.md'|'/^bar/', 'config' => [...], 'recursive' => false],
+         *      ...
+         *    ],
+         *  ]
+         */
+        private function resolveLayoutOverridesForNode(array $overrides, array $remainingSegments, array $fullSegments): array
+        {
+            $resolved = [];
+            $depth = count($remainingSegments);
+            $lastSegment = $fullSegments[count($fullSegments) - 1] ?? '';
+            $immediate = $remainingSegments[0] ?? $lastSegment;
+            $remainingPath = implode('/', $remainingSegments);
+            $fullPath = implode('/', $fullSegments);
+            $firstSegment = $fullSegments[0] ?? '';
+
+            $normalizeConfig = static function (array $config) use (&$normalizeConfig): array {
+                $out = [];
+                foreach ($config as $key => $value) {
+                    if (is_string($key) && str_contains($key, '.')) {
+                        data_set($out, $key, $value);
+                    } else {
+                        $out[$key] = is_array($value) ? $normalizeConfig($value) : $value;
+                    }
+                }
+
+                return $out;
+            };
+
+            $matchPattern = static function ($pattern, string $value): bool {
+                if (is_string($pattern) && strlen($pattern) > 2 && str_starts_with($pattern, '/') && str_ends_with($pattern, '/')) {
+                    return @preg_match($pattern, $value) === 1;
+                }
+
+                if (is_string($pattern) && strpbrk($pattern, '*?[') !== false) {
+                    return Str::is($pattern, $value);
+                }
+
+                return (string) $pattern === $value;
+            };
+
+            // default: для текущей папки, recursive=true — для поддеревьев.
+            if (isset($overrides['default']) && is_array($overrides['default'])) {
+                $def = $overrides['default'];
+                // category=true — применить ко всей категории (аналог recursive, но явный флаг).
+                $applyDefault = ($def['recursive'] ?? false) || ($def['category'] ?? false) || $depth <= 1;
+                if ($applyDefault && isset($def['config']) && is_array($def['config'])) {
+                    $resolved = Layout::deepMerge($resolved, $normalizeConfig($def['config']));
+                }
+            }
+
+            // matches: точечные паттерны.
+            if (! empty($overrides['matches']) && is_array($overrides['matches'])) {
+                foreach ($overrides['matches'] as $match) {
+                    if (! is_array($match) || ! isset($match['pattern'])) {
+                        continue;
+                    }
+
+                    $recursive = $match['recursive'] ?? false;
+                    $category = $match['category'] ?? false;
+                    // category=true — применять на всё поддерево, как recursive.
+                    $scopeAllowed = $recursive || $category || $depth <= 1;
+                    if (! $scopeAllowed) {
+                        continue;
+                    }
+
+                    $subject = $recursive ? $remainingPath : $immediate;
+                    $categoryMatch = false;
+                    if ($category) {
+                        $categoryMatch = $matchPattern($match['pattern'], $fullPath)
+                            || $matchPattern($match['pattern'], $firstSegment);
+                    }
+
+                    if (($matchPattern($match['pattern'], $subject) || $categoryMatch)
+                        && isset($match['config'])
+                        && is_array($match['config'])) {
+                        $resolved = Layout::deepMerge($resolved, $normalizeConfig($match['config']));
+                    }
+                }
+            }
+
+            return $resolved;
         }
 
         public function makeSingleStructure(): void
@@ -575,6 +746,44 @@
             }
 
             return $returnArr;
+        }
+
+        /**
+         * Calculate hash of .settings.php files affecting given absolute file path.
+         * Walks from the file's directory up to docsDir/locale root and concatenates mtimes+contents.
+         */
+        public function settingsHashForFile(string $absolutePath): string
+        {
+            $hashCtx = hash_init('md5');
+            $dir = rtrim(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, dirname($absolutePath)), DIRECTORY_SEPARATOR);
+            $rootCandidate = realpath($this->docsDir) ?: $this->docsDir;
+            $root = rtrim(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $rootCandidate), DIRECTORY_SEPARATOR);
+
+            // Если корень не обнаружен или файл вне docsDir — всё равно идём вверх до корня диска,
+            // чтобы не пропустить .settings.php рядом с файлом.
+            while (true) {
+                $settingsFile = $dir . DIRECTORY_SEPARATOR . '.settings.php';
+                if (is_file($settingsFile)) {
+                    hash_update($hashCtx, $settingsFile);
+                    hash_update($hashCtx, (string) filemtime($settingsFile));
+                    $contents = @file_get_contents($settingsFile);
+                    if ($contents !== false) {
+                        hash_update($hashCtx, $contents);
+                    }
+                }
+
+                if ($dir === $root && $root !== '') {
+                    break;
+                }
+
+                $parent = dirname($dir);
+                if ($parent === $dir || $parent === '') {
+                    break;
+                }
+                $dir = $parent;
+            }
+
+            return hash_final($hashCtx);
         }
 
         public function setLocale(string $locale): void

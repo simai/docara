@@ -104,6 +104,7 @@ class InitCommand extends Command
             $this->ensureCoreSubmodule();
             $this->runCoreCopyScript();
             $this->ensureAppPsr4Autoload();
+            $this->ensureValidPackageJson();
             $this->installFrontendDependencies($this->base, 'project root');
 
             $suffix = $scaffold instanceof $this->presetScaffold && $scaffold->package ?
@@ -244,6 +245,42 @@ class InitCommand extends Command
         $encoded = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
         file_put_contents($composerPath, $encoded);
         $this->console->comment('Added App\\ => source/ to composer.json autoload. Run "composer dump-autoload" to apply.');
+    }
+
+    private function ensureValidPackageJson(): void
+    {
+        $packagePath = $this->base . '/package.json';
+        if (! file_exists($packagePath)) {
+            return;
+        }
+
+        $contents = file_get_contents($packagePath);
+        $data = json_decode($contents, true);
+        if (! is_array($data)) {
+            $this->console->comment('Could not parse package.json; skipped version/name normalization.');
+
+            return;
+        }
+
+        $changed = false;
+
+        if (empty($data['name']) || ! is_string($data['name'])) {
+            $data['name'] = 'docara-site';
+            $changed = true;
+        }
+
+        $version = $data['version'] ?? null;
+        $semver = '/^\\d+\\.\\d+\\.\\d+(?:[-+][\\w.]+)?$/';
+        if (empty($version) || ! is_string($version) || ! preg_match($semver, $version)) {
+            $data['version'] = '1.0.0';
+            $changed = true;
+        }
+
+        if ($changed) {
+            $encoded = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
+            file_put_contents($packagePath, $encoded);
+            $this->console->comment('Normalized package.json (name/version). Run "npm install" or "yarn install" again.');
+        }
     }
 
     private function installFrontendDependencies(string $path, string $label): void

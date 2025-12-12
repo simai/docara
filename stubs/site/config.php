@@ -17,7 +17,7 @@ return [
     'production' => false,
     'env' => getenv(),
     'category' => false,
-    'cache' => true,
+    'cache' => false,
     'cachePath' => $projectRoot . '/.cache',
     'siteName' => 'Simai Documentation',
     'siteDescription' => 'Simai framework documentation',
@@ -25,7 +25,7 @@ return [
     'locales' => [
         'en' => 'English',
     ],
-    'pretty' => true,
+    'pretty' => false,
     'defaultLocale' => 'en',
     'lang_path' => 'source/lang',
     'tags' => ['ExampleTag', 'ListWrap'],
@@ -70,7 +70,18 @@ return [
         return $current;
     },
     'gitHubUrl' => function ($page) {
-        return $page->configurator->getGitHubUrl($page);
+        $path = str_replace('\\', '/', $page->getPath());
+        $lang = $page->locale();
+        $arPath = explode('/', $path);
+        $arShift = array_slice($arPath, 2);
+
+        if (count($arShift) > 0) {
+            $path = "{$page->env['DOCS_DIR']}/{$lang}" . '/' . implode('/', $arShift) . '.md';
+        } else {
+            $path = "{$page->env['DOCS_DIR']}/{$lang}/index.md";
+        }
+
+        return $path;
     },
     'isHome' => function ($page) {
         $current = trim($page->getPath(), '/');

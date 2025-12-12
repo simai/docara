@@ -126,39 +126,29 @@ Class-based components can be manually registered using `$bladeCompiler->compone
 
 Since it's important that layouts, partials, and components are never rendered on their own, you need to tell Docara when a file shouldn't be rendered. To prevent a file or folder from being rendered, prefix it with an underscore:
 
-<div class="files">
-    <div class="folder folder--open">source
-        <div class="folder folder--open">_core
-        <div class="folder">_assets</div>
-        <div class="folder folder--open focus">_layouts
-            <div class="file">master.blade.php</div>
-        </div>
-        </div>
-        <div class="folder">assets</div>
-        <div class="file">index.blade.php</div>
-    </div>
-    <div class="ellipsis">...</div>
-</div>
+!folders
+- source
+    - _core
+        - _assets
+        - _layouts (*)
+            -- master.blade.php
+        - ...
+!endfolders
+
 
 Docara gives you a `/_layouts` directory by default, but you can create any files or directories you need; anything prefixed with an underscore will not be rendered directly to `/build_local`.
 
 For example, if you want a place to store your partials, you could create a directory called `_partials`:
+!folders
+- source
+    - _core
+        - _assets
+        - _layouts
+        - _partials
+            -- partial.blade.php
+        - ...
+!endfolders
 
-<div class="files">
-    <div class="folder folder--open">source
-        <div class="folder folder--open">_core
-        <div class="folder">_assets</div>
-        <div class="folder">_layouts</div>
-        <div class="folder folder--open focus">_partials
-            <div class="file">footer.blade.php</div>
-            <div class="file">header.blade.php</div>
-        </div>
-        </div>
-        <div class="folder">assets</div>
-        <div class="file">index.blade.php</div>
-    </div>
-    <div class="ellipsis">...</div>
-</div>
 
 Since the `_partials` directory starts with an underscore, those files won't be rendered when you generate your site, but will still be available to `@include` in your other templates.
 

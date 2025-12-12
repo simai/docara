@@ -3,15 +3,28 @@
 namespace Simai\Docara\CustomTags;
 
 use League\CommonMark\Node\Block\AbstractBlock;
+use League\CommonMark\Node\Block\Document;
 
 final class CustomTagNode extends AbstractBlock
 {
+
     public function __construct(
         private string $type,
         private array $attrs = [],
         private array $meta = [],
+        private bool $isContainer = true
     ) {
         parent::__construct();
+    }
+
+    public function getDocument(): ?Document
+    {
+        $cur = $this;
+        while ($cur->parent() !== null) {
+            $cur = $cur->parent();
+        }
+
+        return $cur instanceof Document ? $cur : null;
     }
 
     public function getType(): string
@@ -21,7 +34,7 @@ final class CustomTagNode extends AbstractBlock
 
     public function isContainer(): bool
     {
-        return true;
+        return $this->isContainer;
     }
 
     public function getAttrs(): array
@@ -45,7 +58,10 @@ final class CustomTagNode extends AbstractBlock
             $this->attrs['class'] = implode(' ', $list);
         }
     }
-
+    public function setMeta($meta): array
+    {
+        return $this->meta = $meta;
+    }
     public function getMeta(): array
     {
         return $this->meta;

@@ -44,15 +44,13 @@ $events->beforeBuild(function (Docara $docara) {
 
 After a translation run, caches are written under `<cache_dir>/translations/`:
 
-<div class="files">
-    <div class="folder folder--open">&lt;cache_dir&gt;
-        <div class="folder folder--open">translations
-            <div class="file">translate_&lt;lang&gt;.json (cache: normalized-string-hash → translated text)</div>
-            <div class="file">hash.json (per-file MD5 to skip unchanged files)</div>
-            <div class="file">.config.json (locales map for Docara beforeBuild)</div>
-        </div>
-    </div>
-</div>
+!folders
+- {$cache-dir}
+   - translations
+      -- {$lang}.json (cache: normalized-string-hash → translated text)
+      -- hash.json (per-file MD5 to skip unchanged files)
+      -- .config.json (locales map for Docara beforeBuild)
+!endfolders
 
 `.config.json` is a flat map `code → display name` (from `Symfony\Component\Intl\Languages::getName()`), e.g.:
 

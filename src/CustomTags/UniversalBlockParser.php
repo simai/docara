@@ -26,7 +26,7 @@ final class UniversalBlockParser implements BlockStartParserInterface
             }
 
             $active = $state->getActiveBlockParser();
-            if ($active && method_exists($active, 'getBlock')) {
+            if (method_exists($active, 'getBlock')) {
                 $blk = $active->getBlock();
                 if ($blk instanceof CustomTagNode
                     && $blk->getType() === $spec->type
@@ -41,11 +41,11 @@ final class UniversalBlockParser implements BlockStartParserInterface
             $attrStr = $m['attrs'] ?? '';
             $userAttrs = Attrs::parseOpenLine($attrStr);
             $attrs = Attrs::merge($spec->baseAttrs, $userAttrs);
-
             $node = new CustomTagNode(
                 $spec->type,
                 $attrs,
-                ['openMatch' => $m, 'attrStr' => $attrStr]
+                ['openMatch' => $m, 'attrStr' => $attrStr],
+                $spec->isContainer ?? true
             );
 
             if ($spec->attrsFilter instanceof \Closure) {
@@ -54,10 +54,13 @@ final class UniversalBlockParser implements BlockStartParserInterface
 
             return BlockStart::of(new class($spec, $node) extends AbstractBlockContinueParser
             {
+                public array $buffer = [];
                 public function __construct(
                     private CustomTagSpec $spec,
                     private CustomTagNode $node
-                ) {}
+                ) {
+
+                }
 
                 public function getBlock(): AbstractBlock
                 {
@@ -66,7 +69,7 @@ final class UniversalBlockParser implements BlockStartParserInterface
 
                 public function isContainer(): bool
                 {
-                    return true;
+                    return $this->node->isContainer();
                 }
 
                 public function canHaveLazyContinuationLines(): bool
@@ -96,9 +99,19 @@ final class UniversalBlockParser implements BlockStartParserInterface
                     return BlockContinue::at($cursor);
                 }
 
-                public function addLine(string $line): void {}
+                public function addLine(string $line): void {
+                    if(!$this->node->isContainer()) {
+                        $this->buffer[] = $line;
+                    }
+                }
 
-                public function closeBlock(): void {}
+                public function closeBlock(): void {
+                    if(!$this->node->isContainer()) {
+                        $this->node->setMeta(array_merge($this->node->getMeta(), [
+                            'raw' => implode("\n", $this->buffer),
+                        ]));
+                    }
+                }
             })->at($cursor);
         }
 

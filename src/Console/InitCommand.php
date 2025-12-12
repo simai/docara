@@ -104,6 +104,7 @@ class InitCommand extends Command
             $this->ensureCoreSubmodule();
             $this->runCoreCopyScript();
             $this->ensureAppPsr4Autoload();
+            $this->ensureDocsCreateComposerScript();
             $this->ensureValidPackageJson();
             $this->installFrontendDependencies($this->base, 'project root');
 
@@ -245,6 +246,49 @@ class InitCommand extends Command
         $encoded = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
         file_put_contents($composerPath, $encoded);
         $this->console->comment('Added App\\ => source/ to composer.json autoload. Run "composer dump-autoload" to apply.');
+    }
+
+    private function ensureDocsCreateComposerScript(): void
+    {
+        $composerPath = $this->base . '/composer.json';
+        if (! file_exists($composerPath)) {
+            $this->console->comment('composer.json not found in project root; skipped docs:create script setup.');
+
+            return;
+        }
+
+        $contents = file_get_contents($composerPath);
+        $data = json_decode($contents, true);
+        if (! is_array($data)) {
+            $this->console->comment('Could not parse composer.json; skipped docs:create script setup.');
+
+            return;
+        }
+
+        $scripts = $data['scripts'] ?? [];
+        $desired = 'php bin/docs-create.php';
+        $current = is_array($scripts) ? ($scripts['docs:create'] ?? null) : null;
+
+        if ($current === $desired) {
+            return;
+        }
+
+        if ($current !== null && $current !== $desired) {
+            $this->console->comment('composer.json already defines docs:create script; leaving it unchanged.');
+
+            return;
+        }
+
+        if (! is_array($scripts)) {
+            $scripts = [];
+        }
+
+        $scripts['docs:create'] = $desired;
+        $data['scripts'] = $scripts;
+
+        $encoded = json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL;
+        file_put_contents($composerPath, $encoded);
+        $this->console->comment('Added docs:create script to composer.json.');
     }
 
     private function ensureValidPackageJson(): void

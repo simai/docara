@@ -17,7 +17,7 @@ return [
     'production' => false,
     'env' => getenv(),
     'category' => false,
-    'cache' => false,
+    'cache' => true,
     'cachePath' => $projectRoot . '/.cache',
     'siteName' => 'Simai Documentation',
     'siteDescription' => 'Simai framework documentation',

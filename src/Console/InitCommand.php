@@ -97,6 +97,7 @@ class InitCommand extends Command
         if ($updateMode) {
             $this->console->comment("Update mode: copying stubs and refreshing dependencies without deleting the project...");
             $this->clearSourceExceptCore();
+            $this->deleteCacheDirectory();
         }
 
         try {
@@ -423,6 +424,15 @@ class InitCommand extends Command
             } else {
                 $this->files->delete($full);
             }
+        }
+    }
+
+    private function deleteCacheDirectory(): void
+    {
+        $cachePath = $this->base . '/.cache';
+        if ($this->files->isDirectory($cachePath)) {
+            $this->files->deleteDirectory($cachePath);
+            $this->console->comment('Removed .cache directory.');
         }
     }
 

@@ -101,7 +101,7 @@ class InitCommand extends Command
 
         try {
             $scaffold->setConsole($this->console)->build();
-            $this->ensureCoreSubmodule();
+            $this->ensureCoreSubmodule($updateMode);
             $this->runCoreCopyScript();
             $this->ensureAppPsr4Autoload();
             $this->ensureDocsCreateComposerScript();
@@ -131,7 +131,7 @@ class InitCommand extends Command
             $this->basicScaffold;
     }
 
-    private function ensureCoreSubmodule(): void
+    private function ensureCoreSubmodule(bool $updateRemote = false): void
     {
         $corePath = $this->base . '/source/_core';
         $coreRelative = 'source/_core';
@@ -143,7 +143,14 @@ class InitCommand extends Command
             return;
         }
 
-        if (file_exists($corePath . '/.git') || is_file($corePath . '/.git')) {
+        $coreHasGit = file_exists($corePath . '/.git') || is_file($corePath . '/.git');
+
+        if ($coreHasGit) {
+            if ($updateRemote) {
+                $this->console->comment('Update mode: pulling latest source/_core (submodule --remote)...');
+                $this->runProcess(['git', 'submodule', 'update', '--init', '--recursive', '--remote', $coreRelative]);
+            }
+
             return;
         }
 

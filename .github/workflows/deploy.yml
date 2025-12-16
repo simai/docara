@@ -86,9 +86,19 @@ jobs:
             mkdir -p ~/.ssh
             ssh-keyscan -H github.com >> ~/.ssh/known_hosts
             if [ ! -f composer.json ]; then
-              # Clean directory so create-project can proceed
-              find . -mindepth 1 -maxdepth 1 -exec rm -rf {} +
-              composer create-project --no-dev --no-interaction simai/docara .
+              cat > composer.json <<'JSON'
+{
+    "name": "docara/deploy-wrapper",
+    "type": "project",
+    "require": {
+        "simai/docara": "^1.0"
+    },
+    "config": {
+        "platform-check": false
+    }
+}
+JSON
+              composer install --no-dev --prefer-dist --no-interaction
             else
               composer require --no-interaction --no-dev --update-no-dev --with-all-dependencies simai/docara
             fi

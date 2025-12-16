@@ -49,6 +49,14 @@ jobs:
       - name: Regenerate autoload
         run: composer dump-autoload -o
 
+      - name: Ensure Babel preset for Mix
+        env:
+          YARN_IGNORE_ENGINES: 1
+        run: |
+          if [ -f package.json ]; then
+            yarn add --dev @babel/preset-env
+          fi
+
       - name: Build frontend assets
         env:
           YARN_IGNORE_ENGINES: 1
@@ -89,6 +97,9 @@ jobs:
             composer install --no-dev --prefer-dist --no-interaction
             php docara init --update
             composer dump-autoload -o
+            if [ -f package.json ]; then
+              yarn add --dev @babel/preset-env
+            fi
             mkdir -p vendor/bin
             ln -sf "$PWD/docara" vendor/bin/docara
             yarn prod

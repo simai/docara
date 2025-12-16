@@ -61,6 +61,9 @@
             $handler = $this->myHandlers->first(function ($handler) use ($file) {
                 return $handler->shouldHandle($file);
             });
+            if (! $handler) {
+                return collect();
+            }
             $name = collect(explode('/', trim(str_replace('\\', '/', $file->getRelativePath()), '/')))
                 ->skip(count($this->docDirArray) + 1)
                 ->implode('/');
@@ -68,7 +71,13 @@
             $name = $name . '/' . $filenameSlug;
             $pageData->setPageVariableToCollectionItem($this->getCollectionName($file), $name);
 
-            $locale = method_exists($pageData->page, 'locale') ? $pageData->page->locale() : ($pageData->page->language ?? '');
+            $page = $pageData->page ?? null;
+            if ($page === null) {
+                return collect();
+            }
+            $locale = (is_object($page) && method_exists($page, 'locale'))
+                ? $page->locale()
+                : ($page->language ?? '');
             $resolvedPath = '/' . ltrim(($locale ? "{$locale}/" : '') . $name, '/');
             $pageData->resolveLayoutForPath($resolvedPath);
             if ($pageData->page === null) {
@@ -104,8 +113,21 @@
 
         public function shouldHandle($file): bool
         {
-            return $this->isInCollectionDirectory($file)
-                && ! Str::startsWith($file->getFilename(), ['.', '_']);
+            if (! $this->isInCollectionDirectory($file)) {
+                return false;
+            }
+
+            $basename = $file->getFilename();
+            if (Str::startsWith($basename, ['.', '_'])) {
+                return false;
+            }
+
+            // Only handle markdown or blade docs here; let other assets fall through to DocsAssetHandler/DefaultHandler.
+            if (Str::contains($basename, '.blade.')) {
+                return true;
+            }
+
+            return in_array(strtolower($file->getExtension()), ['markdown', 'md', 'mdown'], true);
         }
 
         private function isInCollectionDirectory($file): bool

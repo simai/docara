@@ -11,6 +11,7 @@ use Simai\Docara\Configurator;
 use Simai\Docara\File\TemporaryFilesystem;
 use Simai\Docara\Handlers\BladeHandler;
 use Simai\Docara\Handlers\CollectionItemHandler;
+use Simai\Docara\Handlers\DocsAssetHandler;
 use Simai\Docara\Handlers\DefaultHandler;
 use Simai\Docara\Handlers\IgnoredHandler;
 use Simai\Docara\Handlers\MarkdownHandler;
@@ -59,6 +60,8 @@ class CollectionServiceProvider extends ServiceProvider
                 $app[BladeHandler::class],
             ], $app->make(Configurator::class), $app->make(BuildCache::class));
         });
+
+        $this->app->bind(DocsAssetHandler::class, fn () => new DocsAssetHandler);
     }
 
     private function registerPathResolver(): void
@@ -107,6 +110,7 @@ class CollectionServiceProvider extends ServiceProvider
                 $app['consoleOutput'],
                 [
                     $app[CollectionItemHandler::class],
+                    $app[DocsAssetHandler::class],
                     new IgnoredHandler,
                     $app[PaginatedPageHandler::class],
                     $app[MarkdownHandler::class],

@@ -88,6 +88,11 @@ jobs:
             export XDG_CONFIG_HOME=$PWD/.config
             export XDG_CACHE_HOME=$PWD/.cache
             mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"
+            if [ ! -f composer.lock ]; then
+              composer require --no-interaction --no-dev --update-no-dev --with-all-dependencies simai/docara
+            else
+              composer install --no-dev --prefer-dist --no-interaction
+            fi
             composer install --no-dev --prefer-dist --no-interaction
             cat <<'EOF' > .env
             DOCS_DIR=docs

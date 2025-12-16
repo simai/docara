@@ -11,6 +11,8 @@ Docara is our documentation framework, built on top of Jigsaw with extra tooling
 
 Requirements: PHP 8.2+, Composer, Node.js/Yarn (or npm).
 
+!badge [Ready] {type=success size=1}
+
 ## Quick start
 
 1. Install Docara into an empty project:

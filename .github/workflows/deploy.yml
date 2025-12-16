@@ -85,10 +85,6 @@ jobs:
             export HOME=/home/git
             mkdir -p ~/.ssh
             ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-            export YARN_IGNORE_ENGINES=1
-            export XDG_CONFIG_HOME=$PWD/.config
-            export XDG_CACHE_HOME=$PWD/.cache
-            mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"
             if [ ! -f composer.json ]; then
               # Clean directory so create-project can proceed
               find . -mindepth 1 -maxdepth 1 -exec rm -rf {} +
@@ -96,6 +92,10 @@ jobs:
             else
               composer require --no-interaction --no-dev --update-no-dev --with-all-dependencies simai/docara
             fi
+            export YARN_IGNORE_ENGINES=1
+            export XDG_CONFIG_HOME=$PWD/.config
+            export XDG_CACHE_HOME=$PWD/.cache
+            mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"
             cat <<'EOF' > .env
             DOCS_DIR=docs
             AZURE_KEY=''

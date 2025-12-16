@@ -46,6 +46,9 @@ jobs:
         run: |
           php docara init --update
 
+      - name: Regenerate autoload
+        run: composer dump-autoload -o
+
       - name: Build frontend assets
         env:
           YARN_IGNORE_ENGINES: 1
@@ -85,6 +88,7 @@ jobs:
             EOF
             composer install --no-dev --prefer-dist --no-interaction
             php docara init --update
+            composer dump-autoload -o
             mkdir -p vendor/bin
             ln -sf "$PWD/docara" vendor/bin/docara
             yarn prod

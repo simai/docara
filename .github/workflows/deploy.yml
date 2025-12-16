@@ -90,6 +90,8 @@ jobs:
             export XDG_CACHE_HOME=$PWD/.cache
             mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"
             if [ ! -f composer.json ]; then
+              # Clean directory so create-project can proceed
+              find . -mindepth 1 -maxdepth 1 -exec rm -rf {} +
               composer create-project --no-dev --no-interaction simai/docara .
             else
               composer require --no-interaction --no-dev --update-no-dev --with-all-dependencies simai/docara

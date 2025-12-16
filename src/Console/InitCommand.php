@@ -97,12 +97,11 @@ class InitCommand extends Command
         if ($updateMode) {
             $this->console->comment("Update mode: copying stubs and refreshing dependencies without deleting the project...");
             $this->clearSourceExceptCore();
-            $this->deleteCacheDirectory();
         }
 
         try {
             $scaffold->setConsole($this->console)->build();
-            $this->ensureCoreSubmodule($updateMode);
+            $this->ensureCoreSubmodule();
             $this->runCoreCopyScript();
             $this->ensureAppPsr4Autoload();
             $this->ensureDocsCreateComposerScript();
@@ -132,7 +131,7 @@ class InitCommand extends Command
             $this->basicScaffold;
     }
 
-    private function ensureCoreSubmodule(bool $updateRemote = false): void
+    private function ensureCoreSubmodule(): void
     {
         $corePath = $this->base . '/source/_core';
         $coreRelative = 'source/_core';
@@ -144,14 +143,7 @@ class InitCommand extends Command
             return;
         }
 
-        $coreHasGit = file_exists($corePath . '/.git') || is_file($corePath . '/.git');
-
-        if ($coreHasGit) {
-            if ($updateRemote) {
-                $this->console->comment('Update mode: pulling latest source/_core (submodule --remote)...');
-                $this->runProcess(['git', 'submodule', 'update', '--init', '--recursive', '--remote', $coreRelative]);
-            }
-
+        if (file_exists($corePath . '/.git') || is_file($corePath . '/.git')) {
             return;
         }
 
@@ -159,14 +151,8 @@ class InitCommand extends Command
             $this->files->deleteDirectory($corePath);
         }
 
-        $this->cleanupStaleCoreSubmoduleMetadata($coreRelative);
-
         // Try submodule first (use Process to avoid shell-quoting issues on Windows).
         $submoduleAdded = $this->runProcess(['git', 'submodule', 'add', $coreRepo, $coreRelative]);
-        if (! $submoduleAdded && $this->hasLocalModuleMetadata($coreRelative, $coreRepo)) {
-            $this->console->comment('Local metadata for source/_core found; retrying submodule add with --force...');
-            $submoduleAdded = $this->runProcess(['git', 'submodule', 'add', '--force', $coreRepo, $coreRelative]);
-        }
         if ($submoduleAdded) {
             $updateOk = $this->runProcess(['git', 'submodule', 'update', '--init', '--recursive', $coreRelative]);
         }
@@ -209,31 +195,6 @@ class InitCommand extends Command
         }
 
         return true;
-    }
-
-    private function cleanupStaleCoreSubmoduleMetadata(string $coreRelative): void
-    {
-        $moduleDir = $this->base . '/.git/modules/' . $coreRelative;
-        if (! is_dir($moduleDir)) {
-            return;
-        }
-
-        if (! is_dir($this->base . '/' . $coreRelative)) {
-            $this->files->deleteDirectory($moduleDir);
-            $this->console->comment("Removed stale submodule metadata for {$coreRelative}.");
-        }
-    }
-
-    private function hasLocalModuleMetadata(string $coreRelative, string $coreRepo): bool
-    {
-        $configPath = $this->base . '/.git/modules/' . $coreRelative . '/config';
-        if (! is_file($configPath)) {
-            return false;
-        }
-
-        $contents = file_get_contents($configPath);
-
-        return $contents !== false && str_contains($contents, $coreRepo);
     }
 
     private function runCoreCopyScript(): void
@@ -424,15 +385,6 @@ class InitCommand extends Command
             } else {
                 $this->files->delete($full);
             }
-        }
-    }
-
-    private function deleteCacheDirectory(): void
-    {
-        $cachePath = $this->base . '/.cache';
-        if ($this->files->isDirectory($cachePath)) {
-            $this->files->deleteDirectory($cachePath);
-            $this->console->comment('Removed .cache directory.');
         }
     }
 

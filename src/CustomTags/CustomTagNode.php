@@ -12,7 +12,8 @@ final class CustomTagNode extends AbstractBlock
         private string $type,
         private array $attrs = [],
         private array $meta = [],
-        private bool $isContainer = true
+        private bool $isContainer = true,
+        private ?string $htmlTag = null
     ) {
         parent::__construct();
     }
@@ -65,5 +66,15 @@ final class CustomTagNode extends AbstractBlock
     public function getMeta(): array
     {
         return $this->meta;
+    }
+
+    public function getHtmlTag(): ?string
+    {
+        return $this->htmlTag;
+    }
+
+    public function setHtmlTag(?string $htmlTag): void
+    {
+        $this->htmlTag = $htmlTag ? trim($htmlTag) : null;
     }
 }

@@ -33,9 +33,9 @@
 
         public array $flattenMenu;
 
-        public string $indexPage = '';
+        public bool $hasIndexPage = false;
 
-        public array $indexPages = [];
+        public string $indexPage = '';
 
         private MultipleHandler $multipleHandler;
 
@@ -238,14 +238,14 @@
 
             if (! empty($segments)) {
                 $last = $segments[count($segments) - 1];
-
+                // Игнорируем скрытые файлы (.settings.php и т.п.)
                 if (str_starts_with($last, '.')) {
                     return [];
                 }
-
+                // Снимаем расширение (index.html, slug.html).
                 $lastNoExt = preg_replace('/\.[^.]+$/', '', $last);
                 $segments[count($segments) - 1] = $lastNoExt;
-
+                // Убираем index из хвоста.
                 if ($lastNoExt === 'index') {
                     array_pop($segments);
                 }
@@ -285,6 +285,18 @@
             return $overrides;
         }
 
+        /**
+         * Применение overrides узла к оставшемуся пути.
+         *
+         * Структура:
+         *  [
+         *    'default' => ['config' => [...], 'recursive' => false],
+         *    'matches' => [
+         *      ['pattern' => 'foo'|'*.md'|'/^bar/', 'config' => [...], 'recursive' => false],
+         *      ...
+         *    ],
+         *  ]
+         */
         private function resolveLayoutOverridesForNode(array $overrides, array $remainingSegments, array $fullSegments): array
         {
             $resolved = [];
@@ -320,17 +332,17 @@
                 return (string) $pattern === $value;
             };
 
-
+            // default: для текущей папки, recursive=true — для поддеревьев.
             if (isset($overrides['default']) && is_array($overrides['default'])) {
                 $def = $overrides['default'];
-
+                // category=true — применить ко всей категории (аналог recursive, но явный флаг).
                 $applyDefault = ($def['recursive'] ?? false) || ($def['category'] ?? false) || $depth <= 1;
                 if ($applyDefault && isset($def['config']) && is_array($def['config'])) {
                     $resolved = Layout::deepMerge($resolved, $normalizeConfig($def['config']));
                 }
             }
 
-
+            // matches: точечные паттерны.
             if (! empty($overrides['matches']) && is_array($overrides['matches'])) {
                 foreach ($overrides['matches'] as $match) {
                     if (! is_array($match) || ! isset($match['pattern'])) {
@@ -339,6 +351,7 @@
 
                     $recursive = $match['recursive'] ?? false;
                     $category = $match['category'] ?? false;
+                    // category=true — применять на всё поддерево, как recursive.
                     $scopeAllowed = $recursive || $category || $depth <= 1;
                     if (! $scopeAllowed) {
                         continue;
@@ -399,14 +412,10 @@
         public function makeMultipleStructure(): void
         {
             foreach ($this->locales as $locale) {
-                $localeHasIndexPage = false;
-                $localeIndexPage = '';
-
                 foreach ($this->settings[$locale] as $item) {
-                    $itemHasIndex = ! empty($item['current']['has_index']);
-                    if ($itemHasIndex && ! $localeHasIndexPage) {
-                        $localeHasIndexPage = true;
-                        $localeIndexPage = '';
+                    $this->hasIndexPage = ! empty($item['current']['has_index']);
+                    if ($this->hasIndexPage) {
+                        $this->indexPage = '';
                     }
 
                     if (! isset($item['current']['menu']) || ! is_array($item['current']['menu'])) {
@@ -417,9 +426,9 @@
                         $isLink = $this->isLink($menuKey);
                         $path = '/' . $locale . '/' . $menuKey;
 
-                        if (! $localeHasIndexPage && ! $isLink) {
-                            $localeHasIndexPage = true;
-                            $localeIndexPage = $menuKey;
+                        if (! $this->hasIndexPage && ! $isLink) {
+                            $this->hasIndexPage = true;
+                            $this->indexPage = $menuKey;
                         }
 
                         $path = $isLink ? $menuKey : $path;
@@ -447,13 +456,6 @@
                             $this->multipleHandler->setMenu($locale, $menuKey, $menu);
                         }
                     }
-                }
-
-                $this->indexPages[$locale] = $localeIndexPage;
-                if ($locale === $this->locale) {
-                    $this->indexPage = $localeIndexPage;
-                } elseif ($this->indexPage === '' && $localeIndexPage !== '') {
-                    $this->indexPage = $localeIndexPage;
                 }
             }
         }
@@ -638,6 +640,7 @@
                         'key' => $path,
                         'path' => $isLink ? $key : $menuPath,
                         'label' => $value['current']['title'],
+                        // Use the full nested path to point to the exact source file.
                         'file' => $this->buildDocPath($locale, $path),
                     ];
                     $setItem = true;
@@ -756,6 +759,8 @@
             $rootCandidate = realpath($this->docsDir) ?: $this->docsDir;
             $root = rtrim(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $rootCandidate), DIRECTORY_SEPARATOR);
 
+            // Если корень не обнаружен или файл вне docsDir — всё равно идём вверх до корня диска,
+            // чтобы не пропустить .settings.php рядом с файлом.
             while (true) {
                 $settingsFile = $dir . DIRECTORY_SEPARATOR . '.settings.php';
                 if (is_file($settingsFile)) {
@@ -826,18 +831,18 @@
             $dirPath = "{$baseDocs}/{$locale}/{$relative}";
             $basename = $parts ? end($parts) : '';
 
-
+            // Prefer index.md inside the directory if it exists.
             if (is_dir($dirPath)) {
                 if (is_file("{$dirPath}/index.md")) {
                     return "{$dirPath}/index.md";
                 }
-
+                // Fallback: a file named like the directory inside it (e.g., intro/intro.md).
                 if ($basename !== '' && is_file("{$dirPath}/{$basename}.md")) {
                     return "{$dirPath}/{$basename}.md";
                 }
             }
 
-
+            // Default: treat as a direct file path.
             return "{$baseDocs}/{$locale}/{$relative}.md";
         }
 
@@ -845,6 +850,7 @@
         {
             $path = '/' . ltrim($path, '/');
 
+            // For category mode, look inside the specific category's flattened list.
             if ($this->useCategory && isset($this->multipleHandler)) {
                 $segments = explode('/', trim($path, '/'));
                 if (count($segments) >= 2) {
@@ -856,6 +862,7 @@
                 }
             }
 
+            // Fallback to single structure flattened list.
             $flat = $this->realFlatten[$locale] ?? [];
 
             return $this->matchFlattenFile($flat, $path);

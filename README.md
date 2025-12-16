@@ -8,6 +8,17 @@ Quick start to install Docara via Composer and initialize a project.
 composer require simai/docara
 ```
 
+## Configure `.env`
+
+Create `.env` in your project root (example):
+
+```text
+AZURE_KEY=<AZURE_KEY>
+AZURE_REGION=<AZURE_REGION>
+AZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com
+DOCS_DIR=docs
+```
+
 ## Initialize a new project
 
 From an empty project directory:
@@ -22,16 +33,6 @@ This will:
 - copy template configs from `_core`,
 - run frontend dependency install (`npm/yarn install` in the project root).
 
-## Configure `.env`
-
-Create `.env` in your project root (example):
-
-```text
-AZURE_KEY=<AZURE_KEY>
-AZURE_REGION=<AZURE_REGION>
-AZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com
-DOCS_DIR=docs
-```
 
 ## Run
 

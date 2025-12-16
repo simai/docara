@@ -1,30 +1,45 @@
 <?php
 
-namespace Simai\Docara\CustomTags;
+    namespace Simai\Docara\CustomTags;
 
-use League\CommonMark\Node\Node;
-use League\CommonMark\Renderer\ChildNodeRendererInterface;
-use League\CommonMark\Renderer\NodeRendererInterface;
+    use League\CommonMark\Node\Node;
+    use League\CommonMark\Renderer\ChildNodeRendererInterface;
+    use League\CommonMark\Renderer\NodeRendererInterface;
 
-final readonly class CustomTagRenderer implements NodeRendererInterface
-{
-    public function __construct(private CustomTagRegistry $registry) {}
-
-    public function render(Node $node, ChildNodeRendererInterface $childRenderer): mixed
+    final readonly class CustomTagRenderer implements NodeRendererInterface
     {
-        if (! $node instanceof CustomTagNode && ! $node instanceof CustomTagInline) {
-            return '';
-        }
-        $spec = $this->registry->get($node->getType());
+        public function __construct(private CustomTagRegistry $registry) {}
 
-        if ($spec?->renderer instanceof \Closure && $node instanceof CustomTagNode) {
-            return ($spec->renderer)($node, $childRenderer);
-        }
+        public function render(Node $node, ChildNodeRendererInterface $childRenderer): mixed
+        {
+            if (! $node instanceof CustomTagNode && ! $node instanceof CustomTagInline) {
+                return '';
+            }
+            $spec = $this->registry->get($node->getType());
 
-        return new \League\CommonMark\Util\HtmlElement(
-            $spec?->htmlTag ?? 'div',
-            $node->getAttrs(),
-            $childRenderer->renderNodes($node->children())
-        );
+            if ($spec?->renderer instanceof \Closure && $node instanceof CustomTagNode) {
+                return ($spec->renderer)($node, $childRenderer);
+            }
+
+            $htmlTag = $node->getHtmlTag()
+                ?? $spec?->htmlTag
+                ?? ($node instanceof CustomTagInline ? 'span' : 'div');
+
+            $inner = $childRenderer->renderNodes($node->children());
+            if ($inner === '') {
+                $meta = $node->getMeta();
+                if (isset($meta['innerRaw'])) {
+                    $inner = $meta['innerRaw'];
+                }
+                if ($inner === '' && $node instanceof CustomTagNode && isset($meta['raw'])) {
+                    $inner = $meta['raw'];
+                }
+            }
+
+            return new \League\CommonMark\Util\HtmlElement(
+                $htmlTag,
+                $node->getAttrs(),
+                $inner
+            );
+        }
     }
-}

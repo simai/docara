@@ -10,6 +10,7 @@ final class CustomTagInline extends AbstractInline
         private string $type,
         private array $attrs = [],
         private array $meta = [],
+        private ?string $htmlTag = null,
     ) {
         parent::__construct();
     }
@@ -32,5 +33,15 @@ final class CustomTagInline extends AbstractInline
     public function getMeta(): array
     {
         return $this->meta;
+    }
+
+    public function getHtmlTag(): ?string
+    {
+        return $this->htmlTag;
+    }
+
+    public function setHtmlTag(?string $htmlTag): void
+    {
+        $this->htmlTag = $htmlTag ? trim($htmlTag) : null;
     }
 }

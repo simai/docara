@@ -70,7 +70,7 @@
 
         private function renderTree(array $rows): string
         {
-            $html  = '<div class="sf-files flex flex-col gap-1/3">';
+            $html  = '<div class="sf-files-wrap"><div class="sf-files-main"><div class="sf-files flex flex-col gap-1/3">';
             $stack = [];
 
             foreach ($rows as $row) {
@@ -129,7 +129,7 @@
                 $html .= $last['close'];
             }
 
-            $html .= '</div>';
+            $html .= '</div></div></div>';
 
             if(!self::$scriptAdded) {
                 self::$scriptAdded = true;

@@ -79,18 +79,9 @@ jobs:
             set -e
             DEPLOY_DIR=/var/www/dev/data/git/docara-build
             WEBROOT=/var/www/dev/data/www/doc.simai.io
-            REPO=git@github.com:${{ github.repository }}.git
             export HOME=/home/git
             mkdir -p "$DEPLOY_DIR"
-            if [ ! -d "$DEPLOY_DIR/.git" ]; then
-              git clone "$REPO" "$DEPLOY_DIR"
-              cd "$DEPLOY_DIR"
-            else
-              cd "$DEPLOY_DIR"
-              git config --global --add safe.directory "$DEPLOY_DIR"
-              git pull --ff-only origin main
-              git submodule update --init --recursive
-            fi
+            cd "$DEPLOY_DIR"
             mkdir -p ~/.ssh
             ssh-keyscan -H github.com >> ~/.ssh/known_hosts
             export YARN_IGNORE_ENGINES=1
@@ -104,12 +95,12 @@ jobs:
             AZURE_REGION=''
             AZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com
             EOF
-            php docara init --update
+            php vendor/bin/docara init --update
             composer dump-autoload -o
             if [ -f package.json ]; then
               yarn install
               yarn add --dev @babel/preset-env
               yarn prod
             fi
-            php docara build production
+            php vendor/bin/docara build production
             rsync -av --delete "$DEPLOY_DIR/build_production/" "$WEBROOT/"

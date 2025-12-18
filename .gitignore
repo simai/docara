@@ -1,5 +1,5 @@
 /build_*/
-/node_modules/
+node_modules
 /vendor/
 /source/assets/build/
 /composer.json

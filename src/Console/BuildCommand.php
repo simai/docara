@@ -54,9 +54,7 @@ class BuildCommand extends Command
         $this->updateBuildPaths($env);
         $cacheExists = $this->app[TemporaryFilesystem::class]->hasTempDirectory();
 
-        if ($this->input->getOption('pretty') === 'true' && $this->app->config->get('pretty') !== false) {
-            $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
-        }
+        $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
 
         if ($this->input->getOption('quiet')) {
             $verbosity = OutputInterface::VERBOSITY_QUIET;

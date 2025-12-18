@@ -61,7 +61,7 @@
             $handler = $this->myHandlers->first(function ($handler) use ($file) {
                 return $handler->shouldHandle($file);
             });
-            if (! $handler) {
+            if (!$handler) {
                 return collect();
             }
             $name = collect(explode('/', trim(str_replace('\\', '/', $file->getRelativePath()), '/')))
@@ -107,7 +107,6 @@
                 $outputPath = $results->first()->path() . '/' . $results->first()->name();
                 $this->buildCache->store($relative, $contentHash, ['output' => $outputPath]);
             }
-
             return $results;
         }
 

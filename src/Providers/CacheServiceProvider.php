@@ -11,7 +11,7 @@ class CacheServiceProvider extends ServiceProvider
     {
         $this->app->singleton(BuildCache::class, function ($app) {
             $useCache = $app['config']->get('cache');
-            $pretty = $app['config']->get('pretty');
+            $pretty = false;
             $cache = new BuildCache($useCache, $pretty);
             $cache->setGithubSha($app['config']->get('sha'));
             $value = filter_var($useCache, FILTER_VALIDATE_BOOLEAN);

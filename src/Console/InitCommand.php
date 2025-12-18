@@ -128,6 +128,17 @@ ENV;
             }
 
             if ($updateMode) {
+                $cacheDir = $this->base . '/.cache';
+                $buildDirs = glob($this->base . '/build_*', GLOB_ONLYDIR) ?: [];
+                if ($this->files->isDirectory($cacheDir)) {
+                    $this->console->comment("Update mode: removing cache directory {$cacheDir}");
+                    $this->files->deleteDirectory($cacheDir);
+                }
+                foreach ($buildDirs as $buildDir) {
+                    $this->console->comment("Update mode: removing build directory {$buildDir}");
+                    $this->files->deleteDirectory($buildDir);
+                }
+
                 $this->console->comment("Update mode: copying stubs and refreshing dependencies without deleting the project...");
                 $this->clearSourceExceptCore();
             }

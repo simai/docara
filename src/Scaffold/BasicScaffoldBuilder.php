@@ -46,6 +46,12 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
                     $srcChild = $src . '/' . $sourceItem;
                     $destChild = $dest . '/' . $sourceItem;
 
+                    if ($sourceItem === '_core') {
+                        [$copied, $updated, $skipped] = $this->copyDirectoryPreservingUserChanges($srcChild, $destChild);
+                        $this->log("Copied _core (preserve user changes): copied={$copied}, updated={$updated}, skipped={$skipped}");
+                        continue;
+                    }
+
                     if ($sourceItem === $docsDir && $hasDocs) {
                         $this->log("Skip copying docs from stubs ({$sourceItem}) because target exists.");
                         continue;
@@ -104,5 +110,74 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
         } else {
             echo $message . PHP_EOL;
         }
+    }
+
+    /**
+     * Copy directory contents while preserving user changes (whitespace-insensitive hash).
+     * Returns [copied, updated, skipped].
+     */
+    private function copyDirectoryPreservingUserChanges(string $source, string $target): array
+    {
+        $copied = $updated = $skipped = 0;
+
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($source, \FilesystemIterator::SKIP_DOTS)
+        );
+
+        foreach ($iterator as $file) {
+            if (! $file->isFile()) {
+                continue;
+            }
+
+            $relative = ltrim(str_replace('\\', '/', substr($file->getPathname(), strlen($source))), '/');
+            if (str_starts_with($relative, '.git/')) {
+                continue;
+            }
+
+            $dest = rtrim($target, '/\\') . '/' . $relative;
+            $destDir = dirname($dest);
+            if (! $this->files->isDirectory($destDir)) {
+                $this->files->makeDirectory($destDir, 0755, true);
+            }
+
+            if (! $this->files->exists($dest)) {
+                $this->files->copy($file->getPathname(), $dest);
+                $copied++;
+                continue;
+            }
+
+            $srcHash = $this->normalizedHash($file->getPathname());
+            $dstHash = $this->normalizedHash($dest);
+
+            if ($srcHash === $dstHash) {
+                $this->files->copy($file->getPathname(), $dest);
+                $updated++;
+            } else {
+                $skipped++;
+            }
+        }
+
+        return [$copied, $updated, $skipped];
+    }
+
+    /**
+     * Normalize text file content (line endings + whitespace) before hashing.
+     * Binary files are hashed raw.
+     */
+    private function normalizedHash(string $path): string
+    {
+        $contents = @file_get_contents($path);
+        if ($contents === false) {
+            return '';
+        }
+
+        if (str_contains($contents, "\0")) {
+            return md5($contents);
+        }
+
+        $normalized = str_replace(["\r\n", "\r"], "\n", $contents);
+        $normalized = preg_replace('/\s+/', '', $normalized) ?? $normalized;
+
+        return md5($normalized);
     }
 }

@@ -14,7 +14,7 @@ Instead of declaring collections inline in `config.php`, we load them from `sour
 
 ## How it works
 
-1. You set the docs root in `.env`:
+1. Docs root defaults to `docs`. Set `DOCS_DIR` in `.env` only if you need a different folder (the file is created automatically by `docara init`):
 
     ```text
     DOCS_DIR=docs

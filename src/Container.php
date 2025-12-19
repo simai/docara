@@ -116,7 +116,7 @@ class Container extends Illuminate
     private function loadConfiguration(): void
     {
         $config = collect();
-
+        $this->instance('config', $config);
         if (! $this->skipConfigLoading) {
             $files = array_filter([
                 $this->path('config.php'),
@@ -138,10 +138,26 @@ class Container extends Illuminate
             'source' => $this->path('source'),
             'destination' => $this->path('build_{env}'),
         ]);
+        $docsDir = trim($_ENV['DOCS_DIR'] ?? getenv('DOCS_DIR') ?? 'docs', '/\\') ?: 'docs';
+        $config->put('docara.docsDir', $docsDir);
+        $custom = $this->config;
 
+        if ($custom instanceof \Illuminate\Support\Collection) {
+            $custom = $custom->all();
+        } elseif (is_object($custom)) {
+            $custom = get_object_vars($custom);
+        } elseif (!is_array($custom)) {
+            $custom = (array) $custom;
+        }
+        foreach ($custom as $k => $v) {
+            $config->put($k, $v);
+        }
         $config->put('view.compiled', $this->cachePath());
+        $custom = $this->config instanceof \Illuminate\Support\Collection
+            ? $this->config->all()
+            : (array) $this->config;
 
-        $this->instance('config', $config);
+        $this->instance('config', $config->merge($custom));
 
         setlocale(LC_ALL, 'en_US.UTF8');
     }

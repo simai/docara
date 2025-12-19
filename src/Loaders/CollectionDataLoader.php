@@ -136,7 +136,9 @@ class CollectionDataLoader
     private function buildUrls($paths): ?IterableObjectWithDefault
     {
         $urls = collect($paths)->map(function ($path) {
-            $pattern = '#' . preg_quote($_ENV['DOCS_DIR'], '#') . '#';
+            $docsDir = $_ENV['DOCS_DIR'] ?? getenv('DOCS_DIR') ?? 'docs';
+            $docsDir = trim($docsDir, '/\\') ?: 'docs';
+            $pattern = '#' . preg_quote($docsDir, '#') . '#';
             $path = preg_replace($pattern, '', $path);
 
             return rightTrimPath($this->pageSettings->get('baseUrl')) . '/' . trimPath($path);

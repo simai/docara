@@ -6,9 +6,9 @@ node_modules
 /bootstrap.php
 .cache
 .idea
-yarn.lock
+/yarn.lock
 tailwind.config.js
-webpack.mix.js
+/webpack.mix.js
 .env
 temp
 trash

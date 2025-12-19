@@ -1,7 +1,6 @@
 <?php
 namespace Simai\Docara\Translate;
 use Exception;
-use Dotenv\Dotenv;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Exception\CommonMarkException;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
@@ -33,6 +32,7 @@ class Translate
     public string $cachePath;
     private array $files = [];
     public string $targetDir;
+    public string $docsDir;
     private CustomTagRegistry $registry;
     public array $config;
     private MarkdownParser $parser;
@@ -47,14 +47,13 @@ class Translate
         }
         $this->logger = $logger;
         $this->projectRoot = getcwd();
-        if (! isset($_ENV['DOCS_DIR'])) {
-            Dotenv::createImmutable($this->projectRoot)->safeLoad();
-        }
-        $this->subscriptionKey = $_ENV['AZURE_KEY'] ?? '';
-        $this->region = $_ENV['AZURE_REGION'] ?? '';
-        $this->endpoint = $_ENV['AZURE_ENDPOINT'] ?? 'https://api.cognitive.microsofttranslator.com';
+        $this->subscriptionKey = $_ENV['AZURE_KEY'] ?? getenv('AZURE_KEY') ?? '';
+        $this->region = $_ENV['AZURE_REGION'] ?? getenv('AZURE_REGION') ?? '';
+        $this->endpoint = $_ENV['AZURE_ENDPOINT'] ?? getenv('AZURE_ENDPOINT') ?? 'https://api.cognitive.microsofttranslator.com';
         $this->config = require $this->projectRoot . '/translate.config.php';
-        $this->targetDir = $this->config['main'] . "source/{$_ENV['DOCS_DIR']}/{$this->config['default_lang']}";
+        $docsDir = app('config')->get('docara.docsDir', 'docs');
+        $this->docsDir = trim((string) $docsDir, '/\\') ?: 'docs';
+        $this->targetDir = $this->config['main'] . "source/{$this->docsDir}/{$this->config['default_lang']}";
         $this->registerDocaraConfig();
     }
     /**
@@ -303,7 +302,9 @@ class Translate
                     }
                     $hash = md5($content);
                     $srcPath = $file->getPathname();
-                    $destPath = str_replace("{$_ENV['DOCS_DIR']}/{$this->config['default_lang']}", "{$_ENV['DOCS_DIR']}/{$lang}", $srcPath);
+                    $search = "{$this->docsDir}/{$this->config['default_lang']}";
+                    $replace = "{$this->docsDir}/{$lang}";
+                    $destPath = str_replace($search, $replace, $srcPath);
                     if ($lang === $this->config['default_lang']) {
                         $this->log("Skip default {$lang}: {$relativePath}");
                         continue;

@@ -14,7 +14,8 @@ class DocsAssetHandler
     {
         $relative = str_replace('\\', '/', $file->getRelativePathname());
         $basename = $file->getFilename();
-        $docDir = trim($_ENV['DOCS_DIR'] ?? 'docs', '/');
+        $docDir = app('config')->get('docara.docsDir', 'docs');
+        $docDir = trim((string) $docDir, '/');
 
         if (Str::startsWith($basename, ['.', '_'])) {
             return false;
@@ -39,7 +40,8 @@ class DocsAssetHandler
     public function handle($file, $pageData)
     {
         $relativePath = str_replace('\\', '/', $file->getRelativePath());
-        $docDir = trim($_ENV['DOCS_DIR'] ?? 'docs', '/');
+        $docDir = app('config')->get('docara.docsDir', 'docs');
+        $docDir = trim((string) $docDir, '/');
         if (Str::startsWith($relativePath, $docDir . '/')) {
             $relativePath = substr($relativePath, strlen($docDir) + 1);
         }

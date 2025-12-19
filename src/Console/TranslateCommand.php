@@ -44,13 +44,13 @@ class TranslateCommand extends Command
 
     private function testTranslate(): int
     {
-        $endpoint = $_ENV['AZURE_ENDPOINT'] ?? 'https://api.cognitive.microsofttranslator.com';
+        $endpoint = $_ENV['AZURE_ENDPOINT'] ?? getenv('AZURE_ENDPOINT') ?? 'https://api.cognitive.microsofttranslator.com';
         $url = rtrim($endpoint, '/') . '/translate?api-version=3.0&to=en';
         $payload = [['Text' => 'Привет мир']];
         $headers = [
             'Content-Type: application/json',
-            'Ocp-Apim-Subscription-Key: ' . $_ENV['AZURE_KEY'],
-            'Ocp-Apim-Subscription-Region: ' . $_ENV['AZURE_REGION'],
+            'Ocp-Apim-Subscription-Key: ' . ($_ENV['AZURE_KEY'] ?? getenv('AZURE_KEY') ?? ''),
+            'Ocp-Apim-Subscription-Region: ' . ($_ENV['AZURE_REGION'] ?? getenv('AZURE_REGION') ?? ''),
         ];
 
         $ch = curl_init($url);
@@ -99,7 +99,8 @@ class TranslateCommand extends Command
     {
         $missing = [];
         foreach (['DOCS_DIR', 'AZURE_KEY', 'AZURE_REGION'] as $envKey) {
-            if (empty($_ENV[$envKey])) {
+            $value = $_ENV[$envKey] ?? getenv($envKey);
+            if (empty($value)) {
                 $missing[] = $envKey;
             }
         }

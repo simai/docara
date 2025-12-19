@@ -1,0 +1,133 @@
+.docsearch-input {
+  &__main {
+    max-height: 14rem;
+    overflow: auto;
+    gap: var(--sf-space-1\/4);
+  }
+
+  &__holder {
+    position: absolute;
+    top: calc(100% + 6px);
+    background: var(--sf-surface-0);
+    min-width: 100%;
+    width: 100%;
+    right: 0;
+    padding: var(--sf-b6);
+    border-radius: var(--sf-radius-1);
+    border: var(--sf-a1) solid var(--sf-outline-variant);
+    box-shadow: 0px 0px var(--sf-a3) var(--sf-outline-variant);
+    z-index: 10;
+  }
+
+}
+
+.sf-icon {
+  &-button {
+    &.sf-button-search {
+      display: none;
+      @include breakpoint(mobile) {
+        display: flex;
+      }
+    }
+  }
+}
+
+.search {
+  &--result {
+    padding: var(--sf-a8);
+
+    transition: .3s background-color ease;
+    border-radius: var(--sf-radius-1);
+
+    > a {
+      gap: var(--sf-space-1\/4);
+    }
+
+    &:hover {
+      background-color: var(--sf-surface-container-hover);
+    }
+
+    &-title {
+      font-weight: 700;
+      font-size: var(--sf-text--size-1);
+      color: var(--sf-on-surface);
+
+    }
+
+    &-content {
+      font-size: var(--sf-text--size-1);
+      margin: 0;
+      color: var(--sf-on-surface-variant);
+    }
+  }
+
+  &--wrap {
+    @include breakpoint(mobile) {
+      opacity: 0;
+      &.visible {
+        width: 100%;
+        opacity: 1;
+      }
+    }
+
+
+    //max-width: 400px;
+    &.open {
+      .sf {
+        &-input {
+          &-container {}
+          border-color: var(--sf-primary-hover)
+        }
+      }
+    }
+
+
+
+    mark {
+      color: #d20e21;
+    }
+
+    .sf {
+      &-input {
+        .sf-input-inner-label {
+          padding-right: var(--sf-text-height-1);
+        }
+
+        &-body {
+          &--right {
+            padding: 0;
+            right: var(--sf-b6);
+            top: 50%;
+            transform: translate(0, -50%);
+          }
+        }
+
+        &-close {
+          --sf-close--diameter: var(--sf-text-height-1);
+          display: flex;
+          justify-content: center;
+          align-items: anchor-center;
+          width: var(--sf-close--diameter);
+          height: var(--sf-close--diameter);
+          font-size: var(--sf-text-height-1);
+          color: var(--sf-outline);
+          cursor: pointer;
+          border: none;
+          background: transparent;
+          line-height: 1;
+        }
+
+        &-search {
+          &-container {
+            width: var(--sf-f7);
+            position: relative;
+            transition: .3s all ease;
+          }
+        }
+      }
+    }
+  }
+}
+
+
+

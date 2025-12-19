@@ -2,7 +2,11 @@
 
     namespace Simai\Docara\Console;
 
+    use FilesystemIterator;
     use Exception;
+    use Dotenv\Dotenv;
+    use RecursiveDirectoryIterator;
+    use RecursiveIteratorIterator;
     use Symfony\Component\Console\Input\InputArgument;
     use Symfony\Component\Console\Input\InputOption;
     use Symfony\Component\Process\Process;
@@ -16,6 +20,8 @@
         private $base;
 
         private bool $autoloadAdded = false;
+
+        private bool $forceCoreConfigs = false;
 
         private $basicScaffold;
 
@@ -48,12 +54,16 @@
                     InputArgument::OPTIONAL,
                     'Which preset should we use to initialize this project?',
                 )
-                ->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing site in-place (no delete/archive).');
+                ->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing site in-place (no delete/archive).')
+                ->addOption('force-core-configs', null, InputOption::VALUE_NONE, 'Overwrite template configs even if modified locally.');
         }
 
         protected function fire()
         {
             $envPath = $this->base . '/.env';
+            if (file_exists($envPath)) {
+                $this->loadEnv();
+            }
             if (! file_exists($envPath)) {
                 $examplePath = $this->base . '/stubs/site/.env.example';
                 $created = false;
@@ -63,8 +73,9 @@
                 }
 
                 if (! $created) {
+                    $docsDirValue = 'docs';
                     $defaultEnv = <<<ENV
-DOCS_DIR=docs
+DOCS_DIR={$docsDirValue}
 AZURE_KEY=''
 AZURE_REGION=''
 AZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com
@@ -74,6 +85,7 @@ ENV;
 
                 if ($created) {
                     $this->console->comment('Missing .env was created with default values. Update it if needed and rerun init if this was not intended.');
+                    $this->loadEnv();
                 } else {
                     $this->console->error('Missing .env in project root. Please create it (DOCS_DIR, AZURE_*, etc.) and rerun init.');
 
@@ -118,8 +130,10 @@ ENV;
             }
 
             $scaffold = $this->getScaffold()->setBase($this->base);
+            $this->forceCoreConfigs = (bool) $this->input->getOption('force-core-configs');
 
             try {
+                $this->confirmDocsDirExistsOrAsk();
                 $scaffold->init($this->input->getArgument('preset'));
             } catch (Exception $e) {
                 $this->console->error($e->getMessage())->line();
@@ -145,8 +159,8 @@ ENV;
 
             try {
                 $scaffold->setConsole($this->console)->build();
-                $this->ensureCoreSubmodule();
-                $this->runCoreCopyScript();
+            
+                $this->copyTemplateConfigsPreservingUserChanges();
                 $this->ensureAppPsr4Autoload();
                 $this->ensureDocsCreateComposerScript();
                 $this->ensureValidPackageJson();
@@ -222,92 +236,163 @@ ENV;
             };
         }
 
-        private function ensureCoreSubmodule(): void
+        /**
+         * Copy core files from stubs but do not overwrite files the user changed.
+         * Change detection uses a whitespace-insensitive hash (line endings normalized, whitespace removed).
+         *
+         * @return array{int,int} [copied, skipped]
+         */
+        private function copyCorePreservingUserChanges(string $source, string $target): array
         {
-            $corePath = $this->base . '/source/_core';
-            $coreRelative = 'source/_core';
-            $coreRepo = 'https://github.com/simai/ui-doc-core.git';
+            $copied = 0;
+            $skipped = 0;
 
-            if (! is_dir($this->base . '/.git')) {
-                $this->console->comment('Git repo not detected, skipping submodule setup for source/_core.');
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($source, FilesystemIterator::SKIP_DOTS)
+            );
 
-                return;
-            }
-
-            if (file_exists($corePath . '/.git') || is_file($corePath . '/.git')) {
-                return;
-            }
-
-            if ($this->files->exists($corePath)) {
-                $this->files->deleteDirectory($corePath);
-            }
-
-            // Try submodule first (use Process to avoid shell-quoting issues on Windows).
-            $submoduleAdded = $this->runProcess(['git', 'submodule', 'add', $coreRepo, $coreRelative]);
-            if ($submoduleAdded) {
-                $updateOk = $this->runProcess(['git', 'submodule', 'update', '--init', '--recursive', $coreRelative]);
-            }
-
-            if (isset($updateOk) && $updateOk) {
-                $this->console->comment('Submodule source/_core added (simai/ui-doc-core).');
-
-                return;
-            }
-
-            // Fallback: clone without submodule metadata (for non-git consumers).
-            $this->console->comment('Submodule setup failed, trying direct clone of source/_core...');
-            $cloneOk = $this->runProcess(['git', 'clone', '--depth=1', $coreRepo, $corePath]);
-
-            if ($cloneOk) {
-                // Remove git metadata from the clone to keep it lightweight.
-                if ($this->files->isDirectory($corePath . '/.git')) {
-                    $this->files->deleteDirectory($corePath . '/.git');
+            foreach ($iterator as $file) {
+                if (! $file->isFile()) {
+                    continue;
                 }
-                $this->console->comment('Cloned source/_core from simai/ui-doc-core.');
 
-                return;
-            }
+                $relative = ltrim(str_replace('\\', '/', substr($file->getPathname(), strlen($source))), '/');
+                if (str_starts_with($relative, '.git/')) {
+                    continue;
+                }
 
-            $this->console->comment('Could not fetch source/_core automatically. Please run:');
-            $this->console->comment("git submodule add {$coreRepo} {$coreRelative}");
-            $this->console->comment("git submodule update --init --recursive {$coreRelative}");
-            $this->console->comment("or clone manually: git clone {$coreRepo} {$coreRelative}");
-        }
+                $dest = rtrim($target, '/\\') . '/' . $relative;
+                $destDir = dirname($dest);
+                if (! $this->files->isDirectory($destDir)) {
+                    $this->files->makeDirectory($destDir, 0755, true);
+                }
 
-        private function runProcess(array $command): bool
-        {
-            $process = new Process($command, $this->base, null, null, 120);
-            $process->run();
+                if (! $this->files->exists($dest)) {
+                    $this->files->copy($file->getPathname(), $dest);
+                    $copied++;
 
-            if (! $process->isSuccessful()) {
-                $this->console->comment("Command failed ({$process->getCommandLine()}): {$process->getErrorOutput()}");
+                    continue;
+                }
 
-                return false;
-            }
+                $srcHash = $this->normalizedHash($file->getPathname());
+                $dstHash = $this->normalizedHash($dest);
 
-            return true;
-        }
-
-        private function runCoreCopyScript(): void
-        {
-            $script = $this->base . '/source/_core/copy-template-configs.js';
-            if (! file_exists($script)) {
-                return;
-            }
-
-            $this->console->comment('Copying template configs from source/_core...');
-
-            try {
-                $process = new Process(['node', $script], $this->base, null, null, 60);
-                $process->run();
-
-                if (! $process->isSuccessful()) {
-                    $this->console->error('copy-template-configs failed: ' . $process->getErrorOutput());
+                if ($srcHash === $dstHash) {
+                    // Safe to update (same content modulo whitespace).
+                    $this->files->copy($file->getPathname(), $dest);
+                    $copied++;
                 } else {
-                    $this->console->comment('Template configs copied.');
+                    $skipped++;
                 }
-            } catch (\Throwable $e) {
-                $this->console->error("Could not run copy-template-configs.js: {$e->getMessage()}");
+            }
+
+            return [$copied, $skipped];
+        }
+
+        /**
+         * Normalize file content (line endings + whitespace) and hash it.
+         * Binary files keep raw hash to avoid mangling.
+         */
+        private function normalizedHash(string $path): string
+        {
+            $contents = @file_get_contents($path);
+            if ($contents === false) {
+                return '';
+            }
+
+            // Treat binary files (with null byte) as raw hash.
+            if (str_contains($contents, "\0")) {
+                return md5($contents);
+            }
+
+            $normalized = str_replace(["\r\n", "\r"], "\n", $contents);
+            $normalized = preg_replace('/\s+/', '', $normalized) ?? $normalized;
+
+            return md5($normalized);
+        }
+
+        /**
+         * Copy template config/build files from _core without clobbering user changes.
+         */
+        private function copyTemplateConfigsPreservingUserChanges(): void
+        {
+            $core = $this->base . '/source/_core';
+            if (! $this->files->isDirectory($core)) {
+                return;
+            }
+
+            $rootFiles = [
+                'webpack.mix.js',
+                'bootstrap.php',
+                'translate.config.php',
+                'eslint.config.js',
+                'package.json',
+            ];
+
+            $sourceFiles = [
+                '404.blade.php',
+                'favicon.ico',
+            ];
+
+            $stats = ['copied' => 0, 'updated' => 0, 'skipped' => 0, 'forced' => 0];
+
+            foreach ($rootFiles as $file) {
+                $this->copyIfUnchanged("{$core}/{$file}", "{$this->base}/{$file}", $stats);
+            }
+
+            foreach ($sourceFiles as $file) {
+                $this->copyIfUnchanged("{$core}/{$file}", "{$this->base}/source/{$file}", $stats);
+            }
+
+            $this->console->comment(sprintf(
+                'Template configs: copied=%d, updated=%d, forced=%d, skipped=%d',
+                $stats['copied'],
+                $stats['updated'],
+                $stats['forced'],
+                $stats['skipped'],
+            ));
+        }
+
+        /**
+         * Copy $src to $dest if dest missing or has the same normalized hash (whitespace/line endings ignored).
+         */
+        private function copyIfUnchanged(string $src, string $dest, array &$stats): void
+        {
+            if (! $this->files->exists($src)) {
+                return;
+            }
+
+            $destDir = dirname($dest);
+            if (! $this->files->isDirectory($destDir)) {
+                $this->files->makeDirectory($destDir, 0755, true);
+            }
+
+            if (! $this->files->exists($dest)) {
+                $this->files->copy($src, $dest);
+                $stats['copied']++;
+                $this->console->comment("Copied {$src} -> {$dest}");
+
+                return;
+            }
+
+            if ($this->forceCoreConfigs) {
+                $this->files->copy($src, $dest);
+                $stats['forced']++;
+                $this->console->comment("Forced overwrite of {$dest} (--force-core-configs).");
+
+                return;
+            }
+
+            $srcHash = $this->normalizedHash($src);
+            $dstHash = $this->normalizedHash($dest);
+
+            if ($srcHash === $dstHash) {
+                $this->files->copy($src, $dest);
+                $stats['updated']++;
+                $this->console->comment("Updated {$dest} (no user changes detected).");
+            } else {
+                $stats['skipped']++;
+                $this->console->comment("Skipped {$dest} (user changes detected).");
             }
         }
 
@@ -437,6 +522,13 @@ ENV;
 
         private function installFrontendDependencies(string $path, string $label): void
         {
+            $skip = filter_var(getenv('DOCARA_SKIP_FRONTEND_INSTALL') ?? false, FILTER_VALIDATE_BOOLEAN);
+            if ($skip) {
+                $this->console->comment("Skipping frontend dependency install for {$label} (DOCARA_SKIP_FRONTEND_INSTALL=true).");
+
+                return;
+            }
+
             $packageJson = $path . '/package.json';
             if (! file_exists($packageJson)) {
                 return;
@@ -505,5 +597,41 @@ ENV;
             ];
 
             return $this->console->ask('What would you like to do?', 'a', $choices);
+        }
+
+        /**
+         * Warn user if configured DOCS_DIR does not exist; allow them to continue or abort.
+         */
+        private function confirmDocsDirExistsOrAsk(): void
+        {
+            $docsDir = trim($_ENV['DOCS_DIR'] ?? getenv('DOCS_DIR') ?? 'docs', '/\\');
+            $target = $this->base . '/source/' . $docsDir;
+
+            if (is_dir($target)) {
+                return;
+            }
+
+            $this->console
+                ->line()
+                ->comment("<fg=yellow>Warning:</> DOCS_DIR={$docsDir} does not exist at {$target}. Docs stubs will be copied there.")
+                ->line();
+
+            if (! $this->console->confirm('Continue anyway?', true)) {
+                throw new InstallerCommandException('Aborted by user because DOCS_DIR does not exist.');
+            }
+        }
+
+        private function loadEnv(): void
+        {
+            if (! class_exists(Dotenv::class)) {
+                return;
+            }
+
+            try {
+                $dotenv = Dotenv::createImmutable($this->base);
+                $dotenv->safeLoad();
+            } catch (\Throwable) {
+                // Non-fatal: continue with whatever env is available.
+            }
         }
     }

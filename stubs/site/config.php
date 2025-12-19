@@ -1,17 +1,9 @@
 <?php
 
-    use Dotenv\Dotenv;
     use Illuminate\Support\Str;
     use Simai\Docara\Support\Layout;
 
     $projectRoot = getcwd();
-
-    $dotenv = Dotenv::createImmutable(getcwd());
-    $dotenv->safeLoad();
-
-    foreach ((array) getenv() as $k => $v) {
-        $_ENV[$k] = $v;
-    }
 
     $layoutConfiguration = [
         'base' => [

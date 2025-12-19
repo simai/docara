@@ -30,6 +30,10 @@ Because it is bound in core, templates can access it via `$page->configurator` (
 - Breadcrumbs: `$page->configurator->generateBreadCrumbs($page->language, $segments)`
 - Translations: `$page->configurator->getTranslate($key, $page->language)`
 
+## Index resolution and menu fallbacks
+- If `indexPage` is not set in `config.php`, the configurator picks a landing page automatically (locale root `index.md`, else the first real page).
+- For category trees, when a category item has no own `index.md`, the menu now points to the first descendant that does have an index (applies recursively, so nested folders without an index still resolve to the first child with an index).
+
 ## File/folder conventions (per locale)
 
 !folders

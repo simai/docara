@@ -1,24 +1,25 @@
-build_*/
-node_modules/
-vendor/
+/build_*
+node_modules
+/vendor/
 /source/assets/build/
 /composer.json
 /bootstrap.php
+.cache
 .idea
-yarn.lock
+.vscode
+.DS_Store
+Thumbs.db
+/yarn.lock
 tailwind.config.js
-webpack.mix.js
+/webpack.mix.js
 .env
+.env.local
+.env.*.local
 temp
 trash
+/.config
 /translate.config.php
 npm-debug.log
 /package-lock.json
 /source/404.blade.php
 /source/favicon.ico
-
-
-# Optional ignores
-# /build_staging/
-# /build_production/
-# /source/assets/build/

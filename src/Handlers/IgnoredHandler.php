@@ -25,7 +25,9 @@ class IgnoredHandler
             return true;
         }
 
-        $pattern = '#' . preg_quote($_ENV['DOCS_DIR'], '#') . '#';
+        $docDir = app('config')->get('docara.docsDir', 'docs');
+        $docDir = trim((string) $docDir, '/\\') ?: 'docs';
+        $pattern = '#' . preg_quote($docDir, '#') . '#';
 
         // Skip anything under docs dir (handled by CollectionItemHandler) and underscore-prefixed paths
         return preg_match('/(^\/*_)/', $relative) === 1

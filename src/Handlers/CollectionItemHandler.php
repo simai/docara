@@ -28,7 +28,8 @@
             $this->customConfig = $config;
             $this->configurator = $configurator;
             $this->myHandlers = collect($handlers);
-            $this->docDir = trim($_ENV['DOCS_DIR']);
+            $docDir = $this->configurator->container->config->get('docara.docsDir', 'docs');
+            $this->docDir = trim((string) $docDir, '/\\') ?: 'docs';
             $this->docDirArray = explode('/', $this->docDir);
             $this->buildCache = $cache;
         }

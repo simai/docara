@@ -36,6 +36,11 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
                 continue;
             }
 
+            if ($item === '.env.example' && $this->files->exists($dest)) {
+                $this->log('Skip copying .env.example from stubs because it already exists.');
+                continue;
+            }
+
             if ($item === '.gitignore' && $this->files->exists($dest)) {
                 $this->log('Skip copying .gitignore from stubs because it already exists.');
                 continue;

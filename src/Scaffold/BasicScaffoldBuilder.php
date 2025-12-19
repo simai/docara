@@ -36,6 +36,11 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
                 continue;
             }
 
+            if ($item === '.gitignore' && $this->files->exists($dest)) {
+                $this->log('Skip copying .gitignore from stubs because it already exists.');
+                continue;
+            }
+
             if ($item === 'source' && $this->files->isDirectory($src)) {
                 foreach (array_diff(scandir($src) ?: [], ['.', '..']) as $sourceItem) {
                     $srcChild = $src . '/' . $sourceItem;

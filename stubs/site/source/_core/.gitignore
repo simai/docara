@@ -1,7 +1,0 @@
-/build_*/
-/node_modules/
-/vendor/
-/source/assets/build/
-.env
-.idea
-npm-debug.log

@@ -1,0 +1,35 @@
+name: Lint
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          coverage: none
+          tools: composer
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run Pint
+        run: vendor/bin/pint --test
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Markdown lint
+        run: npx --yes markdownlint-cli2 \"**/*.md\" \"!vendor\" \"!node_modules\" \"!build_*\" \"!dist\" \"!public\"

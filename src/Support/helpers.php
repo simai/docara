@@ -2,8 +2,11 @@
 
     use Illuminate\Container\Container;
     use Illuminate\Support\Arr;
+    use Illuminate\Support\Collection;
     use Illuminate\Support\HtmlString;
     use Illuminate\Support\Str;
+    use Simai\Docara\IterableObject;
+    use Simai\Docara\Support\Layout;
     use Symfony\Component\VarDumper\VarDumper;
     use Simai\Docara\Support\Vite;
 
@@ -202,31 +205,109 @@
             $path = method_exists($page, 'getPath') ? (string) $page->getPath() : ($page->_meta->path ?? '/');
 
             $toArray = static function ($value) {
-                return $value instanceof \Simai\Docara\IterableObject ? $value->toArray() : (array) $value;
+                return $value instanceof IterableObject ? $value->toArray() : (array) $value;
             };
 
-            // Если layoutResolved отсутствует — соберём из конфига.
+
             if (! $resolved && $config) {
-                $resolved = \Simai\Docara\Support\Layout::resolve($toArray($config), $path);
+                $resolved = Layout::resolve($toArray($config), $path);
             }
 
             $layoutArray = $toArray($resolved);
             $result = data_get($layoutArray, $key, null);
 
-            // Если ключ лежит внутри layout['base'] (например, когда resolve не сработал) — попробуем достать оттуда.
+
             if ($result === null && isset($layoutArray['base'])) {
                 $result = data_get($layoutArray['base'], $key, null);
             }
 
-            // Если ключа нет (например, layoutResolved устарел) — пересоберём из конфига.
+
             if ($result === null && $config) {
-                $fresh = \Simai\Docara\Support\Layout::resolve($toArray($config), $path);
+                $fresh = Layout::resolve($toArray($config), $path);
                 $layoutArray = $toArray($fresh);
                 $result = data_get($layoutArray, $key, $default);
             }
 
             return $result === null ? $default : $result;
         }
+    }
+
+    function is_enabled($node, bool $default = true): bool
+    {
+        if ($node instanceof Collection) {
+            return $node->get('enabled', $default);
+        }
+        if (is_array($node)) {
+            return (bool) ($node['enabled'] ?? $default);
+        }
+        return $default;
+    }
+
+    function section_enabled($section, bool $default = true): bool
+    {
+        if ($section instanceof IterableObject) {
+            return (bool) $section->get('enabled', $default);
+        }
+
+        if (is_array($section)) {
+            return (bool) ($section['enabled'] ?? $default);
+        }
+
+        return (bool) $section;
+    }
+
+
+    function section_has_enabled_block($section): bool
+    {
+        $blocks = $section instanceof Collection
+            ? $section->get('blocks', [])
+            : ($section['blocks'] ?? []);
+
+        if (!is_array($blocks) || empty($blocks)) {
+            return false;
+        }
+
+        foreach ($blocks as $block) {
+            if (is_enabled($block)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    function left_aside_helper($page, $section): bool
+    {
+        if (!is_enabled($section)) {
+            return false;
+        }
+
+        $blocks = $section instanceof Collection
+            ? $section->get('blocks', [])
+            : ($section['blocks'] ?? []);
+
+        if (!is_array($blocks) || empty($blocks)) {
+            return false;
+        }
+
+        foreach ($blocks as $name => $block) {
+            if (!is_enabled($block)) {
+                continue;
+            }
+
+            if ($name === 'menu') {
+                if (!empty($page->getMenu())) {
+                    return true;
+                }
+                continue;
+            }
+
+
+            return true;
+        }
+
+        return false;
     }
 
     if (! function_exists('layout_enabled')) {
@@ -241,14 +322,21 @@
                 return false;
             }
 
-            if ($section instanceof \Simai\Docara\IterableObject) {
-                return (bool) $section->get('enabled', true);
+
+            if (!section_enabled($section)) {
+                return false;
             }
 
-            if (is_array($section)) {
-                return array_key_exists('enabled', $section) ? (bool) $section['enabled'] : true;
+
+            if ($key === 'asideLeft') {
+                return left_aside_helper($page, $section);
             }
 
-            return (bool) $section;
+
+            $hasBlocks = $section instanceof IterableObject
+                ? $section->get('blocks') !== null
+                : array_key_exists('blocks', (array) $section);
+
+            return !$hasBlocks || section_has_enabled_block($section);
         }
     }

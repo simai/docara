@@ -18,10 +18,12 @@ $index = $page->configurator->indexPage;
     }
 
     const supportedLocales = @json($locales);
-
+    const fallbackLocale = supportedLocales.includes('en') ? 'en' : supportedLocales[0];
     const cookieLocale = getCookie('locale');
 
-    const locale = supportedLocales.includes(cookieLocale) ? cookieLocale : 'ru';
+    const locale = cookieLocale && supportedLocales.includes(cookieLocale)
+        ? cookieLocale
+        : fallbackLocale;
     const redirectTo = `${locale}/{{$index}}`;
 
     window.location.replace(redirectTo);

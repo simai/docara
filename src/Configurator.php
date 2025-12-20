@@ -29,6 +29,8 @@
 
         public string $distPath = '';
 
+        public array $indexRedirects = [];
+
         public array $headings;
 
         public array $menu;
@@ -75,6 +77,7 @@
             $this->distPath = $docara->getDestinationPath();
             $this->useCategory = $docara->getConfig('category');
             $this->indexMenuDirs = $this->container->config->get('docara.indexMenuDirs', []);
+            $this->indexRedirects = [];
             $this->locale = $docara->getConfig('defaultLocale');
             $this->console->writeln(PHP_EOL . "<comment>=== Default locale set is ({$this->locale}) ===</comment>");
             $this->locales = array_keys($locales);
@@ -91,6 +94,7 @@
                 $this->makeSingleStructure();
             }
             $this->makeLocales();
+            $this->container->config->put('docara.indexRedirects', $this->indexRedirects);
         }
 
         private function array_set_deep(&$array, $path, $value, $locale): void
@@ -403,6 +407,7 @@
         {
             foreach ($this->locales as $locale) {
                 $indexAsPageDirs = $this->indexMenuDirs[$locale] ?? [];
+                $this->indexRedirects[$locale] = [];
                 foreach ($this->settings[$locale] as $item) {
                     $this->hasIndexPage = !empty($item['current']['has_index']);
                     if ($this->hasIndexPage) {
@@ -426,6 +431,7 @@
 
                         if (isset($item['pages'][$menuKey]) && is_array($item['pages'][$menuKey])) {
                             $childItem = $item['pages'][$menuKey];
+                            $defaultPath = '/' . $locale . '/' . $menuKey;
                             if (!$item['current']['has_index']) {
                                 $needKey = $this->getFirstPageWithIndex($menuKey, $item['pages'][$menuKey]);
                                 if ($needKey !== null) {
@@ -440,6 +446,9 @@
                                     }
                                     $path = '/' . $locale . '/' . $needKey;
                                 }
+                            }
+                            if (!$isLink && isset($defaultPath) && $path !== $defaultPath) {
+                                $this->indexRedirects[$locale][$defaultPath] = $path;
                             }
                         }
 

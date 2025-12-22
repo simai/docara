@@ -4,7 +4,7 @@ import { SizeObserver } from './helpers/ResizeObserver';
 import setReadModePosition from './helpers/functions';
 import './helpers/SfStickyOffsets';
 
-const locale = getCookie('locale') ?? 'ru';
+const locale = window.currentLocale ?? '';
 
 window.toggleNav = (btn) => {
     btn.closest('.sf-nav-menu-element').classList.toggle('active');

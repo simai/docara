@@ -54,6 +54,7 @@
             $generatedFiles = $this->generateFiles($source, $siteData);
             $this->prepareDirectory($destination, $this->shouldCleanDestination());
             $outputFiles = $this->writeFiles($generatedFiles, $destination);
+            $this->writeIndexRedirects($destination);
             $this->cleanup();
 
             return $outputFiles;
@@ -89,6 +90,50 @@
             if (!$this->useCache) {
                 $this->files->deleteDirectory($this->cachePath);
             }
+        }
+
+        private function writeIndexRedirects(string $destination): void
+        {
+            $redirects = Container::getInstance()->config->get('docara.indexRedirects', []);
+            foreach ($redirects as $locale => $paths) {
+                foreach ($paths as $from => $to) {
+                    $fromPath = trim($from, '/');
+                    $outputPath = resolvePath(urldecode($this->outputPathResolver->path(
+                        $fromPath,
+                        'index',
+                        'html',
+                    )));
+                    $fullPath = rtrim($destination, '/\\') . '/' . ltrim($outputPath, '/');
+
+                    if (file_exists($fullPath)) {
+                        continue;
+                    }
+
+                    $redirectTo = '/' . trim($to, '/') . '/';
+                    $this->prepareDirectory(dirname($fullPath));
+                    file_put_contents($fullPath, $this->redirectTemplate($redirectTo));
+                }
+            }
+        }
+
+        private function redirectTemplate(string $redirectTo): string
+        {
+            $escaped = htmlspecialchars($redirectTo, ENT_QUOTES, 'UTF-8');
+
+            return <<<HTML
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Redirecting…</title>
+    <meta http-equiv="refresh" content="0;url={$escaped}">
+    <link rel="canonical" href="{$escaped}">
+</head>
+<body>
+    <p>Redirecting to <a href="{$escaped}">{$escaped}</a></p>
+</body>
+</html>
+HTML;
         }
 
         private function generateFiles($source, $siteData)

@@ -4,8 +4,17 @@ namespace Simai\Docara\Scaffold;
 
 class BasicScaffoldBuilder extends ScaffoldBuilder
 {
+    protected bool $forceCoreFiles = false;
+
     public function init($preset = null)
     {
+        return $this;
+    }
+
+    public function setForceCoreFiles(bool $force = true): static
+    {
+        $this->forceCoreFiles = $force;
+
         return $this;
     }
 
@@ -52,8 +61,16 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
                     $destChild = $dest . '/' . $sourceItem;
 
                     if ($sourceItem === '_core') {
-                        [$copied, $updated, $skipped] = $this->copyDirectoryPreservingUserChanges($srcChild, $destChild);
-                        $this->log("Copied _core (preserve user changes): copied={$copied}, updated={$updated}, skipped={$skipped}");
+                        if ($this->forceCoreFiles) {
+                            if ($this->files->isDirectory($destChild)) {
+                                $this->files->deleteDirectory($destChild);
+                            }
+                            $this->files->copyDirectory($srcChild, $destChild);
+                            $this->log('Force copied _core (overwrite user changes).');
+                        } else {
+                            [$copied, $updated, $skipped] = $this->copyDirectoryPreservingUserChanges($srcChild, $destChild);
+                            $this->log("Copied _core (preserve user changes): copied={$copied}, updated={$updated}, skipped={$skipped}");
+                        }
                         continue;
                     }
 

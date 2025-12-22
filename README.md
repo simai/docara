@@ -46,8 +46,8 @@ This will:
 
 ## CLI commands
 
--   `php vendor/bin/docara init [--update] [--force-core-configs] [preset]`  
-    Initializes or updates the project. `--force-core-configs` перезаписывает шаблонные конфиги из `_core` даже если вы их меняли (по умолчанию такие файлы пропускаются).
+-   `php vendor/bin/docara init [--update] [--force-core-configs] [--force-core-files] [preset]`  
+    Initializes or updates the project. `--force-core-configs` перезаписывает шаблонные конфиги из `_core` даже если вы их меняли (по умолчанию пропускаем изменённые). `--force-core-files` перезаписывает **весь** `_core` из стубов (игнорируя ваши правки).
 -   `php vendor/bin/docara build [env]` — сборка статики.
 -   `php vendor/bin/docara translate [--test]` — перевод документации (требует AZURE_*).
 

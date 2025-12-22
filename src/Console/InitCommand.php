@@ -55,7 +55,8 @@
                     'Which preset should we use to initialize this project?',
                 )
                 ->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing site in-place (no delete/archive).')
-                ->addOption('force-core-configs', null, InputOption::VALUE_NONE, 'Overwrite template configs even if modified locally.');
+                ->addOption('force-core-configs', null, InputOption::VALUE_NONE, 'Overwrite template configs even if modified locally.')
+                ->addOption('force-core-files', null, InputOption::VALUE_NONE, 'Overwrite all files in source/_core from stubs (ignores user changes).');
         }
 
         protected function fire()
@@ -131,6 +132,10 @@ ENV;
 
             $scaffold = $this->getScaffold()->setBase($this->base);
             $this->forceCoreConfigs = (bool) $this->input->getOption('force-core-configs');
+            $forceCoreFiles = (bool) $this->input->getOption('force-core-files');
+            if (method_exists($scaffold, 'setForceCoreFiles')) {
+                $scaffold->setForceCoreFiles($forceCoreFiles);
+            }
 
             try {
                 $this->confirmDocsDirExistsOrAsk();

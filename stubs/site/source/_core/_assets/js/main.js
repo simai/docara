@@ -12,35 +12,36 @@ window.toggleNav = (btn) => {
 
 let _fusePromise;
 
+let fontsReady = false,
+    turboEnable = false;
+
 function getFuseOnce() {
     if (!_fusePromise) _fusePromise = initFuse();
     return _fusePromise;
 }
 
 function scrollToActiveMenu() {
-    window.addEventListener('DOMContentLoaded', () => {
-        const menu = document.querySelector('.sf-nav-wrap');
-        if (!menu) return;
-        const activeItem = menu.querySelector('.sf-nav-item.active');
-        const activeCategories = Array.from(
-            menu.querySelectorAll('.sf-nav-menu-element.active'),
-        );
+    const menu = document.querySelector('.sf-nav-wrap');
+    if (!menu) return;
+    const activeItem = menu.querySelector('.sf-nav-item.active');
+    const activeCategories = Array.from(
+        menu.querySelectorAll('.sf-nav-menu-element.active'),
+    );
 
-        if (activeItem) {
-            activeItem.scrollIntoView({
-                behavior: 'smooth',
-                block: 'center',
-                container: 'nearest',
-            });
-        }
-        if (!activeItem && activeCategories.length) {
-            activeCategories[activeCategories.length - 1].scrollIntoView({
-                behavior: 'smooth',
-                block: 'nearest',
-                container: 'nearest',
-            });
-        }
-    });
+    if (activeItem) {
+        activeItem.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            container: 'nearest',
+        });
+    }
+    if (!activeItem && activeCategories.length) {
+        activeCategories[activeCategories.length - 1].scrollIntoView({
+            behavior: 'smooth',
+            block: 'nearest',
+            container: 'nearest',
+        });
+    }
 }
 
 window.initSearch = async function initSearch(params = {}) {
@@ -207,7 +208,11 @@ function initNavLinks() {
             .split(',')[0]
             .trim()
             .replace(/^['"]|['"]$/g, '');
+        if(turboEnable && fontsReady) {
+            lockInlineWidth(navLinks, wrap);
+        }
         document.fonts.addEventListener('loadingdone', (event) => {
+            fontsReady = true;
             const hasInter = event.fontfaces.some((f) => f.family === mainFont);
             if (hasInter) {
                 wrap &&
@@ -346,10 +351,16 @@ function init() {
     initReadMode();
 }
 
+const runInit = () => init();
 if (typeof Turbo !== 'undefined') {
-    document.addEventListener('turbo:load', init);
+    turboEnable = true;
+    document.addEventListener('turbo:load', () => {
+        runInit();
+    });
+} else if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', runInit);
 } else {
-    document.addEventListener('DOMContentLoaded', init);
+    runInit();
 }
 
 // alert('Поправить Анимацию сжимания и разжимания контейнера для турбо');
@@ -661,6 +672,8 @@ function lockInlineWidth(items, wrap) {
     measureHost.style.pointerEvents = 'none';
     measureHost.style.left = '-9999px';
     measureHost.style.top = '-9999px';
+    measureHost.style.width = `${wrap.clientWidth}px`;
+
     document.body.appendChild(measureHost);
 
     items.forEach((el) => {
@@ -678,7 +691,6 @@ function lockInlineWidth(items, wrap) {
         const span = probe.querySelector('span');
         const w700 =
             span?.getBoundingClientRect().width || item.getBoundingClientRect().width;
-
         item.style.maxWidth = `${w700}px`;
     });
 

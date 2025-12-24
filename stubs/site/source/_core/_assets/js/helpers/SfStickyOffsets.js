@@ -88,11 +88,13 @@
     };
 
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () {
-            initStickyOffsets();
-        });
+    const run = () => initStickyOffsets();
+
+    if (typeof Turbo !== 'undefined') {
+        document.addEventListener('turbo:load', run);
+    } else if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', run);
     } else {
-        initStickyOffsets();
+        run();
     }
 })(window, document);

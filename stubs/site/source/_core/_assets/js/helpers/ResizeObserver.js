@@ -1,4 +1,4 @@
-import setReadModePosition from './functions';
+import setReadModePosition from "./functions";
 
 export class SizeObserver {
   constructor() {
@@ -9,56 +9,88 @@ export class SizeObserver {
     this.menuResizeWidth = null;
     this.mainResizeQueued = false;
     this.mainResizeWidth = null;
-    this.menuWrap = document.querySelector('.sf-menu-container');
-    this.menu = this.menuWrap.querySelector('#top_menu');
+    this.menuWrap = document.querySelector(".sf-menu-container");
+    this.menu = this.menuWrap?.querySelector("#top_menu") ?? null;
     this.readState = false;
-    this.headerWrap = document.querySelector('.header--wrap');
-    this.body = document.querySelector('body');
-    this.main = document.querySelector('main');
-    this.readMode = document.getElementById('read_mode');
-    this.navMenu = document.getElementById('main_menu');
+    this.headerWrap = document.querySelector(".header--wrap");
+    this.body = document.querySelector("body");
+    this.main = document.querySelector("main");
+    this.readMode = document.getElementById("read_mode");
+    this.navMenu = document.getElementById("main_menu");
     if (this.headerWrap) {
-      this.headerRight = this.headerWrap.querySelector('.header--right');
-      this.logo = this.headerWrap.querySelector('a.logo');
+      this.logo = this.headerWrap.querySelector("a.logo");
+    } else {
+      this.logo = null;
     }
+    this.bindTurboLifecycle();
     this.setObserver();
   }
 
+  refreshElements = () => {
+    this.menuWrap = document.querySelector(".sf-menu-container");
+    this.menu = this.menuWrap?.querySelector("#top_menu") ?? null;
+    this.headerWrap = document.querySelector(".header--wrap");
+    this.logo = this.headerWrap?.querySelector("a.logo") ?? null;
+    this.navMenu = document.getElementById("main_menu");
+    this.body = document.querySelector("body");
+    this.main = document.querySelector("main");
+    this.readMode = document.getElementById("read_mode");
+  };
+
+  bindTurboLifecycle = () => {
+    if (typeof Turbo === "undefined") return;
+    document.addEventListener("turbo:before-render", () => this.disconnect());
+    document.addEventListener("turbo:load", () => {
+      this.refreshElements();
+      this.setObserver();
+      this.init();
+    });
+  };
+
+  disconnect = () => {
+    this.menuObserver?.disconnect();
+    this.mainObserver?.disconnect();
+  };
+
   mutate = (fn) => requestAnimationFrame(fn);
   applyMenuState = (width) => {
-    if (!this.menuWrap) return;
+    if (!this.menuWrap || !this.menu) {
+      this.refreshElements();
+    }
+    if (!this.menuWrap || !this.menu) return;
 
-    // Calculate available width vs required width of the menu content.
     const fallbackWidth = width > 0 ? width : window.innerWidth;
     const available =
-      this.menuWrap.getBoundingClientRect().width ??
-      fallbackWidth;
-    const required = this.menu.scrollWidth || fallbackWidth;
+        this.menuWrap?.getBoundingClientRect().width ?? fallbackWidth;
+    const required = this.menu?.scrollWidth || fallbackWidth;
     const shouldCollapse = required > available;
     if (shouldCollapse) {
       if (this.setCollapsed) return;
       this.mutate(() => {
-        this.menuWrap.classList.add('menu--collapsed', 'p-right-5');
+        this.menuWrap.classList.add("menu--collapsed", "p-right-5");
         window.updateMenuScrollButtons?.();
       });
       this.setCollapsed = true;
     } else {
       if (!this.setCollapsed) return;
       this.mutate(() => {
-        this.menuWrap.classList.remove('menu--collapsed', 'p-right-5');
+        this.menuWrap.classList.remove("menu--collapsed", "p-right-5");
         window.updateMenuScrollButtons?.();
       });
       this.setCollapsed = false;
     }
   };
   applyMainWidth = (width) => {
+    if (!this.menuWrap || !this.navMenu || !this.logo) {
+      this.refreshElements();
+    }
     const w = width | 0;
     if (w === this.lastWidth) return;
     this.lastWidth = w;
     this.placeReadModeForWidth(w);
 
     if (w < 980 && w > 768) {
-      if (this.setTopMenu && this.menuWrap) {
+      if (this.setTopMenu && this.menuWrap && this.logo) {
         this.setTopMenu = false;
         this.mutate(() => this.logo.after(this.menuWrap));
       }
@@ -68,7 +100,7 @@ export class SizeObserver {
         this.mutate(() => this.navMenu.prepend(this.menuWrap));
       }
     } else {
-      if (this.setTopMenu && this.menuWrap) {
+      if (this.setTopMenu && this.menuWrap && this.logo) {
         this.setTopMenu = false;
         this.mutate(() => this.logo.after(this.menuWrap));
       }
@@ -99,6 +131,7 @@ export class SizeObserver {
     }
   };
   setObserver = () => {
+    this.disconnect();
     if (this.menuWrap) {
       this.menuObserver = new ResizeObserver((entries) => {
         for (const entry of entries) {
@@ -113,6 +146,10 @@ export class SizeObserver {
         this.scheduleMainResize(entry.contentRect.width);
       }
     });
+    const target = this.body ?? document.documentElement;
+    if (target) {
+      this.mainObserver.observe(target);
+    }
   };
 
   scheduleMenuResize = (width) => {
@@ -137,14 +174,14 @@ export class SizeObserver {
 
   init() {
     const initialWidth =
-      this.body?.getBoundingClientRect().width ?? window.innerWidth;
+        this.body?.getBoundingClientRect().width ?? window.innerWidth;
     this.applyMainWidth(initialWidth);
-    // Apply menu state once layout is painted to ensure width is available.
+
     requestAnimationFrame(() => {
       const menuWidth =
-        this.menuWrap?.getBoundingClientRect().width ?? window.innerWidth;
+          this.menuWrap?.getBoundingClientRect().width ??
+          window.innerWidth;
       this.applyMenuState(menuWidth);
     });
-    this.mainObserver.observe(this.body);
   }
 }

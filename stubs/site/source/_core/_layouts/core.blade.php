@@ -1,7 +1,7 @@
 @php
-$hasSha = $page->sha ?? 'latest';
-$locale = $page->locale();
-$distPath = "https://cdn.jsdelivr.net/gh/simai/ui@{$hasSha}/distr/"
+    $hasSha = $page->sha ?? 'latest';
+    $locale = $page->locale();
+    $distPath = "https://cdn.jsdelivr.net/gh/simai/ui@{$hasSha}/distr/"
 @endphp
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script>

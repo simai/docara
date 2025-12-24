@@ -14,7 +14,7 @@
             </ul>
         </div>
         <button onclick="navOpen()" id="sf_segment_close"
-                class="sf-icon-button sf-button-segment_close sf-icon-button--size-1 sf-icon-button--on-surface sf-icon-button--link side-menu-instrument">
+                class=" sf-icon-button radius-default sf-button-segment_close sf-icon-button--size-1 sf-icon-button--on-surface sf-icon-button--link side-menu-instrument">
             <i class="sf-icon">close</i>
         </button>
     </div>

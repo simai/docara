@@ -1,5 +1,5 @@
 <div class="sf-more-wrap sf-float-wrap">
-    <button onclick="toggleFloat(this)" title="{{$page->translate('actions')}}" class="sf-icon-button sf-button-settings  sf-icon-button--size-1 sf-icon-button--link sf-icon-button--on-surface">
+    <button onclick="toggleFloat(this)" title="{{$page->translate('actions')}}" class=" sf-icon-button radius-default sf-button-settings  sf-icon-button--size-1 sf-icon-button--link sf-icon-button--on-surface">
         <i class="sf-icon">more_vert</i>
     </button>
     <div class="sf-more-menu bg-surface-overlay">

@@ -68,6 +68,7 @@
         'siteName' => 'Simai Documentation',
         'siteDescription' => 'Simai framework documentation',
         'github' => 'https://github.com/simai/docara/',
+        'turbo' => false,
         'locales' => [
             'en' => 'English',
         ],

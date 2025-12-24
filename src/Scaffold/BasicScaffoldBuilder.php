@@ -5,6 +5,7 @@ namespace Simai\Docara\Scaffold;
 class BasicScaffoldBuilder extends ScaffoldBuilder
 {
     protected bool $forceCoreFiles = false;
+    private ?bool $gitAvailable = null;
 
     public function init($preset = null)
     {
@@ -61,16 +62,13 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
                     $destChild = $dest . '/' . $sourceItem;
 
                     if ($sourceItem === '_core') {
-                        if ($this->forceCoreFiles) {
-                            if ($this->files->isDirectory($destChild)) {
-                                $this->files->deleteDirectory($destChild);
-                            }
-                            $this->files->copyDirectory($srcChild, $destChild);
-                            $this->log('Force copied _core (overwrite user changes).');
-                        } else {
-                            [$copied, $updated, $skipped] = $this->copyDirectoryPreservingUserChanges($srcChild, $destChild);
-                            $this->log("Copied _core (preserve user changes): copied={$copied}, updated={$updated}, skipped={$skipped}");
-                        }
+                        [$copied, $updated, $forced, $skipped, $gitSkipped] = $this->copyDirectoryPreservingUserChanges(
+                            $srcChild,
+                            $destChild,
+                            $this->forceCoreFiles
+                        );
+                        $mode = $this->forceCoreFiles ? 'forceCoreFiles=true' : 'forceCoreFiles=false';
+                        $this->log("Copied _core ({$mode}): copied={$copied}, updated={$updated}, forced={$forced}, skipped={$skipped}, gitSkipped={$gitSkipped}");
                         continue;
                     }
 
@@ -136,11 +134,12 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
 
     /**
      * Copy directory contents while preserving user changes (whitespace-insensitive hash).
-     * Returns [copied, updated, skipped].
+     * If $forceOverwrite is true, overwrite changed files unless they are tracked by Git.
+     * Returns [copied, updated, forced, skipped, gitSkipped].
      */
-    private function copyDirectoryPreservingUserChanges(string $source, string $target): array
+    private function copyDirectoryPreservingUserChanges(string $source, string $target, bool $forceOverwrite = false): array
     {
-        $copied = $updated = $skipped = 0;
+        $copied = $updated = $forced = $skipped = $gitSkipped = 0;
 
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($source, \FilesystemIterator::SKIP_DOTS)
@@ -168,18 +167,27 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
                 continue;
             }
 
+            // If destination is tracked in user's repo, leave it intact.
+            if ($this->isGitTracked($dest)) {
+                $gitSkipped++;
+                continue;
+            }
+
             $srcHash = $this->normalizedHash($file->getPathname());
             $dstHash = $this->normalizedHash($dest);
 
             if ($srcHash === $dstHash) {
                 $this->files->copy($file->getPathname(), $dest);
                 $updated++;
+            } elseif ($forceOverwrite) {
+                $this->files->copy($file->getPathname(), $dest);
+                $forced++;
             } else {
                 $skipped++;
             }
         }
 
-        return [$copied, $updated, $skipped];
+        return [$copied, $updated, $forced, $skipped, $gitSkipped];
     }
 
     /**
@@ -201,5 +209,25 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
         $normalized = preg_replace('/\s+/', '', $normalized) ?? $normalized;
 
         return md5($normalized);
+    }
+
+    private function isGitTracked(string $absolutePath): bool
+    {
+        // Detect git once
+        if ($this->gitAvailable === null) {
+            $status = 0;
+            @exec('git -C ' . escapeshellarg($this->base) . ' rev-parse --is-inside-work-tree', $_, $status);
+            $this->gitAvailable = $status === 0;
+        }
+
+        if (! $this->gitAvailable) {
+            return false;
+        }
+
+        $relative = ltrim(str_replace('\\', '/', substr($absolutePath, strlen($this->base))), '/');
+        $cmd = 'git -C ' . escapeshellarg($this->base) . ' ls-files --error-unmatch ' . escapeshellarg($relative) . ' 2>nul';
+        @exec($cmd, $out, $code);
+
+        return $code === 0;
     }
 }

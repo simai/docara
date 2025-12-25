@@ -53,6 +53,13 @@
 
         public string $docsDir = 'source/docs/';
 
+        /**
+         * Order of top-level categories per locale (for prev/next across categories).
+         *
+         * @var array<string, string[]>
+         */
+        public array $categoryOrder = [];
+
         public Container $container;
 
         private Docara $docara;
@@ -408,6 +415,7 @@
             foreach ($this->locales as $locale) {
                 $indexAsPageDirs = $this->indexMenuDirs[$locale] ?? [];
                 $this->indexRedirects[$locale] = [];
+                $this->categoryOrder[$locale] = [];
                 foreach ($this->settings[$locale] as $item) {
                     $this->hasIndexPage = !empty($item['current']['has_index']);
                     if ($this->hasIndexPage) {
@@ -457,6 +465,9 @@
                             'isLink' => $isLink,
                             'title' => $title,
                         ];
+                        if (! $isLink) {
+                            $this->categoryOrder[$locale][] = $menuKey;
+                        }
 
                         if (!$isLink && isset($item['pages'][$menuKey])) {
                             $menu = $this->buildMenuTree([$menuKey => $item['pages'][$menuKey]] ?? [], '', $locale);
@@ -729,29 +740,91 @@
 
         public function getPrevAndNext(string $path, string $locale): array
         {
-            if (!isset($this->flattenMenu[$locale])) {
+            $normalizedPath = '/' . ltrim($path, '/');
+            $matchPath = $normalizedPath;
+            $category = null;
+
+            // Category mode: use per-category flatten.
+            if ($this->useCategory && isset($this->multipleHandler)) {
+                $segments = explode('/', trim($normalizedPath, '/'));
+                if (count($segments) < 2) {
+                    return [];
+                }
+                $category = $segments[1];
+                // In category mode flattened paths are stored without locale prefix.
+                $matchPath = '/' . implode('/', array_slice($segments, 1));
+                $flattenNav = $this->multipleHandler->flattenByCategory[$locale][$category] ?? [];
+            } else {
+                $flattenNav = $this->flattenMenu[$locale] ?? [];
+            }
+
+            if (empty($flattenNav)) {
                 return [];
             }
-            $flattenNav = $this->flattenMenu[$locale];
+
             $returnArr = [];
-            $needly = 0;
+            $needly = null;
             foreach ($flattenNav as $key => $value) {
-                if (!$value['path']) {
+                if (empty($value['path'])) {
                     continue;
                 }
-                if ($value['path'] === $path) {
+                if ($value['path'] === $matchPath) {
                     $needly = $key;
                     break;
                 }
-
             }
 
-            if ($needly === 0) {
+            if ($needly === null) {
+                return [];
+            }
+
+            if ($needly === 0 && isset($flattenNav[1])) {
                 $returnArr['next'] = $flattenNav[1];
             } else {
-                $returnArr['prev'] = $flattenNav[$needly - 1];
+                if (isset($flattenNav[$needly - 1])) {
+                    $returnArr['prev'] = $flattenNav[$needly - 1];
+                }
                 if (isset($flattenNav[$needly + 1])) {
                     $returnArr['next'] = $flattenNav[$needly + 1];
+                }
+            }
+
+            // Bridge across categories: if no next/prev within category, peek neighbouring category.
+            if ($this->useCategory && $category !== null) {
+                $categories = $this->categoryOrder[$locale] ?? array_keys($this->multipleHandler->flattenByCategory[$locale] ?? []);
+                $catIndex = array_search($category, $categories, true);
+
+                if (!isset($returnArr['next']) && $catIndex !== false) {
+                    $nextCat = $categories[$catIndex + 1] ?? null;
+                    if ($nextCat) {
+                        $nextList = $this->multipleHandler->flattenByCategory[$locale][$nextCat] ?? [];
+                        if (!empty($nextList)) {
+                            $returnArr['next'] = $nextList[0];
+                        }
+                    }
+                }
+
+                if (!isset($returnArr['prev']) && $catIndex !== false) {
+                    $prevCat = $categories[$catIndex - 1] ?? null;
+                    if ($prevCat) {
+                        $prevList = $this->multipleHandler->flattenByCategory[$locale][$prevCat] ?? [];
+                        if (!empty($prevList)) {
+                            $returnArr['prev'] = $prevList[count($prevList) - 1];
+                        }
+                    }
+                }
+            }
+
+            // In category mode prefix locale to returned paths when missing.
+            if ($this->useCategory) {
+                foreach (['prev', 'next'] as $dir) {
+                    if (!isset($returnArr[$dir]['path'])) {
+                        continue;
+                    }
+                    $p = $returnArr[$dir]['path'];
+                    if (is_string($p) && str_starts_with($p, '/') && !str_starts_with($p, '/' . $locale . '/')) {
+                        $returnArr[$dir]['path'] = '/' . $locale . $p;
+                    }
                 }
             }
 

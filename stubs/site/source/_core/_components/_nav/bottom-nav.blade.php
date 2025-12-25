@@ -1,16 +1,22 @@
 @php
     $navigation = $page->getNavItems();
+    $ordered = [];
+    foreach (['prev', 'next'] as $k) {
+        if (isset($navigation[$k])) {
+            $ordered[$k] = $navigation[$k];
+        }
+    }
 @endphp
 
 <section>
     <div class="bottom--navigation flex">
         <div class="bottom--navigation-items w-full flex">
-            @foreach($navigation as $key => $item)
+            @foreach($ordered as $key => $item)
                 @php
-                    $prev = $key == "prev";
+                    $prev = $key === 'prev';
                     $text =  $page->translate($prev ? 'previous' : 'next');
                 @endphp
-                <button type="button" onclick="window.location.href='{{$item['path']}}'" class="sf-button sf-button--size-1 sf-button--on-surface sf-button--link items-cross-end  bottom--navigation-item_{{$key}}">
+                <button type="button" onclick="window.location.href='{{$item['path']}}'" class="sf-button sf-button--size-1 sf-button--on-surface sf-button--link items-cross-end bottom--navigation-item_{{$key}}">
                     @if($prev)
                         <i class="sf-icon">chevron_left</i>
                     @endif
@@ -20,7 +26,7 @@
                             <div>{{$item['label']}}</div>
                         </div>
                     </div>
-                    @if($key == "next")
+                    @if(!$prev)
                         <i class="sf-icon">chevron_right</i>
                     @endif
                 </button>

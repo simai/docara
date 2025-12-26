@@ -938,8 +938,9 @@
                 $segments = explode('/', trim($path, '/'));
                 if (count($segments) >= 2) {
                     $category = $segments[1];
+                    $matchPath = '/' . implode('/', array_slice($segments, 1));
                     $flat = $this->multipleHandler->realFlattenByCategory[$locale][$category] ?? [];
-                    if ($file = $this->matchFlattenFile($flat, $path)) {
+                    if ($file = $this->matchFlattenFile($flat, $matchPath)) {
                         return $file;
                     }
                 }

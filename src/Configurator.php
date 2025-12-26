@@ -330,7 +330,6 @@
 
             if (isset($overrides['default']) && is_array($overrides['default'])) {
                 $def = $overrides['default'];
-                // category=true — применить ко всей категории (аналог recursive, но явный флаг).
                 $applyDefault = ($def['recursive'] ?? false) || ($def['category'] ?? false) || $depth <= 1;
                 if ($applyDefault && isset($def['config']) && is_array($def['config'])) {
                     $resolved = Layout::deepMerge($resolved, $normalizeConfig($def['config']));
@@ -379,6 +378,33 @@
                 $this->realFlatten[$locale] = $pages['flat'];
 
                 $this->menu[$locale] = $this->buildMenuTree($this->settings[$locale] ?? [], '', $locale);
+
+              
+                if ($locale === $this->locale && $this->indexPage === '') {
+                    $rootIndex = rtrim($this->docsDir, '/\\') . "/{$locale}/index.md";
+                    if (!is_file($rootIndex)) {
+                        foreach ($this->flattenMenu[$locale] ?? [] as $item) {
+                            $path = $item['path'] ?? null;
+                            if (!$path || $this->isLink($path)) {
+                                continue;
+                            }
+                            $file = $item['file'] ?? null;
+                            if ($file && !is_file($file)) {
+                                continue;
+                            }
+                            $normalized = ltrim($path, '/');
+                            if (str_starts_with($normalized, $locale . '/')) {
+                                $normalized = substr($normalized, strlen($locale) + 1);
+                            }
+                            if ($normalized === '') {
+                                continue;
+                            }
+                            $this->indexPage = $normalized;
+                            $this->hasIndexPage = true;
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -744,14 +770,13 @@
             $matchPath = $normalizedPath;
             $category = null;
 
-            // Category mode: use per-category flatten.
             if ($this->useCategory && isset($this->multipleHandler)) {
                 $segments = explode('/', trim($normalizedPath, '/'));
                 if (count($segments) < 2) {
                     return [];
                 }
                 $category = $segments[1];
-                // In category mode flattened paths are stored without locale prefix.
+        
                 $matchPath = '/' . implode('/', array_slice($segments, 1));
                 $flattenNav = $this->multipleHandler->flattenByCategory[$locale][$category] ?? [];
             } else {
@@ -789,7 +814,7 @@
                 }
             }
 
-            // Bridge across categories: if no next/prev within category, peek neighbouring category.
+
             if ($this->useCategory && $category !== null) {
                 $categories = $this->categoryOrder[$locale] ?? array_keys($this->multipleHandler->flattenByCategory[$locale] ?? []);
                 $catIndex = array_search($category, $categories, true);
@@ -815,7 +840,7 @@
                 }
             }
 
-            // In category mode prefix locale to returned paths when missing.
+
             if ($this->useCategory) {
                 foreach (['prev', 'next'] as $dir) {
                     if (!isset($returnArr[$dir]['path'])) {
@@ -842,8 +867,7 @@
             $rootCandidate = realpath($this->docsDir) ?: $this->docsDir;
             $root = rtrim(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $rootCandidate), DIRECTORY_SEPARATOR);
 
-            // Если корень не обнаружен или файл вне docsDir — всё равно идём вверх до корня диска,
-            // чтобы не пропустить .settings.php рядом с файлом.
+  
             while (true) {
                 $settingsFile = $dir . DIRECTORY_SEPARATOR . '.settings.php';
                 if (is_file($settingsFile)) {
@@ -914,18 +938,17 @@
             $dirPath = "{$baseDocs}/{$locale}/{$relative}";
             $basename = $parts ? end($parts) : '';
 
-            // Prefer index.md inside the directory if it exists.
+   
             if (is_dir($dirPath)) {
                 if (is_file("{$dirPath}/index.md")) {
                     return "{$dirPath}/index.md";
                 }
-                // Fallback: a file named like the directory inside it (e.g., intro/intro.md).
                 if ($basename !== '' && is_file("{$dirPath}/{$basename}.md")) {
                     return "{$dirPath}/{$basename}.md";
                 }
             }
 
-            // Default: treat as a direct file path.
+       
             return "{$baseDocs}/{$locale}/{$relative}.md";
         }
 
@@ -933,7 +956,6 @@
         {
             $path = '/' . ltrim($path, '/');
 
-            // For category mode, look inside the specific category's flattened list.
             if ($this->useCategory && isset($this->multipleHandler)) {
                 $segments = explode('/', trim($path, '/'));
                 if (count($segments) >= 2) {
@@ -946,7 +968,7 @@
                 }
             }
 
-            // Fallback to single structure flattened list.
+       
             $flat = $this->realFlatten[$locale] ?? [];
 
             return $this->matchFlattenFile($flat, $path);

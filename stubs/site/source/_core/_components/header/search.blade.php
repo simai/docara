@@ -3,8 +3,8 @@
         window.sfSearchNotFound = '{{$page->translate('notFound')}}'
     </script>
     <div class="sf-input-container sf-input-container--1 sf-input-search-container grow-none">
-        <div id="input_search" class="sf-input sf-input--size-1 sf-input--decoration-bordered">
-            <div class="sf-input-field">
+        <div id="input_search" class="sf-input flex sf-input--size-1 sf-input--decoration-bordered">
+            <div class="sf-input-field flex flex-1 justify-start items-center">
                 <i class="sf-icon">search</i>
                 <div class="sf-input-text-container">
                     <div class="sf-input-group">
@@ -13,9 +13,9 @@
                     </div>
                 </div>
                 <button
-                        id="search_close"
-                        type="button"
-                        class="sf-close sf-close--size-1 hidden">
+                    id="search_close"
+                    type="button"
+                    class="sf-close sf-close--size-1 hidden">
                     <i class="sf-icon"></i>
                 </button>
             </div>

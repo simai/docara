@@ -16,7 +16,7 @@
                     $prev = $key === 'prev';
                     $text =  $page->translate($prev ? 'previous' : 'next');
                 @endphp
-                <button type="button" onclick="window.location.href='{{$item['path']}}'" class="sf-button sf-button--size-1 sf-button--on-surface sf-button--link items-cross-end bottom--navigation-item_{{$key}}">
+                <button type="button" onclick="window.location.href='{{$item['path']}}'" class="sf-button flex sf-button--size-1 sf-button--on-surface sf-button--link items-cross-end bottom--navigation-item_{{$key}}">
                     @if($prev)
                         <i class="sf-icon">chevron_left</i>
                     @endif

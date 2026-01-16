@@ -119,13 +119,11 @@ body {
     border-bottom: 1px solid var(--sf-outline-variant);
     box-sizing: border-box;
     max-height: var(--sf-e0);
-    position: sticky;
     top: 0;
     background-color: var(--sf-surface-0);
     gap: var(--sf-d3);
     padding-top: var(--sf-b6);
     padding-bottom: var(--sf-b6);
-    z-index: 100;
     @include breakpoint(tablet) {
       padding-top: var(--sf-a8);
       padding-bottom: var(--sf-a8);

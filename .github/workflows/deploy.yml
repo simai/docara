@@ -100,7 +100,7 @@ jobs:
             AZURE_REGION=''
             AZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com
             EOF
-            php vendor/bin/docara init --update
+            php vendor/bin/docara init --update --force-core-files
             composer dump-autoload -o
             if [ -f package.json ]; then
               yarn install

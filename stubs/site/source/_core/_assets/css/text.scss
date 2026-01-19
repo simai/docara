@@ -9,13 +9,13 @@ body {
 
     ul {
       list-style-type: disc;
-      padding-left: var(--sf-b6);
+      padding-inline-start: var(--sf-b6);
     }
 
 
     table:not(.hljs-ln) {
       width: 100%;
-      text-align: left;
+      text-align: start;
       margin-top: var(--sf-c6);
 
       code {

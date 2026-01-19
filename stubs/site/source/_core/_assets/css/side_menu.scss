@@ -2,14 +2,14 @@
 
   min-width: 200px;
   width: 100%;
-  margin-left: -1px;
+  margin-inline-start: -1px;
   &.read {
     display: none;
   }
   @include breakpoint(midTablet) {
     position: fixed;
     display: flex;
-    left: -100%;
+    inset-inline-start: -100%;
     top: var(--sf-header-height);
     background: var(--sf-surface-0);
     height: calc(100% - var(--sf-header-height));
@@ -19,7 +19,7 @@
     padding: var(--sf-b2);
     border: 0;
     &.active {
-      left: 0;
+      inset-inline-start: 0;
     }
     &-navigation {
       position: relative;
@@ -50,7 +50,7 @@
           bottom: 0;
           content: '';
           position: absolute;
-          left: calc(-1 * calc(var(--sf-c2)));
+          inset-inline-start: calc(-1 * calc(var(--sf-c2)));
           width: 1px;
           background: var(--sf-on-surface);
         }
@@ -79,7 +79,7 @@
     &-bug {
       @include breakpoint(midTablet) {
         position: fixed;
-        right: var(--sf-space-2);
+        inset-inline-end: var(--sf-space-2);
         top: calc(var(--sf-header-height) + var(--sf-a8));
         &.sf-button--on-surface-transparent {
           background-color: color-mix(in srgb, var(--sf-transparent), var(--sf-neutral-50) 30%);

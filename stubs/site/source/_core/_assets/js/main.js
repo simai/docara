@@ -637,18 +637,7 @@ window.langOpen = function (item) {
     const language_switch_panel = item.parentElement.querySelector(
         '.sf-language-switch--language-panel',
     );
-    if (
-        language_switch_panel.classList.contains(
-            'sf-language-switch--language-panel-show',
-        )
-    )
-        language_switch_panel.classList.remove(
-            'sf-language-switch--language-panel-show',
-        );
-    else
-        language_switch_panel.classList.add(
-            'sf-language-switch--language-panel-show',
-        );
+    language_switch_panel.classList.toggle('hidden');
 };
 
 window.langSwitch = function (button) {

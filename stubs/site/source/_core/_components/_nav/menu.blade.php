@@ -18,7 +18,7 @@
                     $activeParent = $page->isActiveParent($node);
                     $activeItem = $page->getPath() === $path;
                 @endphp
-                <li class="sf-nav-menu-element {{$activeParent && !$activeItem ? 'active' : ''}}">
+                <li class="sf-nav-menu-element {{$activeParent && !$activeItem ? 'active' : ''}} text-1 wrap-none">
                     @if (!empty($node['children']))
                         @if($hasPage)
                             <div class="sf-nav-item flex {{ $activeItem   ? 'visited' : '' }} items-center justify-between">
@@ -41,13 +41,13 @@
                         @endif
                     @else
                         <a href="{{ $path }}"
-                           class="sf-nav-menu-element--link sf-nav-item items-center flex sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }}">
+                           class="sf-nav-menu-element--link sf-nav-item items-center flex sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }} text-1 wrap-none inline-flex">
                             <span class="sf-nav-title">{{ $node['title'] }}</span>
                         </a>
                     @endif
                     @elseif ($node['showInMenu'] && $node['path'])
                         <a href="{{ $path }}"
-                           class="sf-nav-menu-element--link sf-nav-item items-center flex sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }}">
+                           class="sf-nav-menu-element--link sf-nav-item items-center flex sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }} text-1 wrap-none inline-flex">
                             <span class="sf-nav-title">{{ $node['title'] }}</span>
                         </a>
                     @endif

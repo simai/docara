@@ -24,7 +24,7 @@
       }
       @include breakpoint(tablet) {
         .aside-wrap {
-          padding-right: 0;
+          padding-inline-end: 0;
           height: auto;
         }
         padding: var(--sf-b2);
@@ -32,7 +32,7 @@
         display: flex;
         background-color: var(--sf-surface-0);
         position: fixed;
-        left: 100%;
+        inset-inline-start: 100%;
         top: var(--sf-header-height);
         bottom: 0;
         width: 100%;
@@ -42,7 +42,7 @@
         flex-direction: column;
         border: 0;
         &.active {
-          left: 0;
+          inset-inline-start: 0;
         }
       }
     }
@@ -65,7 +65,7 @@
     border-radius: var(--sf-radius-1);
     gap: var(--sf-b6);
     position: relative;
-    text-align: left;
+    text-align: start;
 
 
     &.visited {
@@ -88,11 +88,11 @@
     &_button {
       padding: var(--sf-a6);
       position: absolute;
-      left: 0;
+      inset-inline-start: 0;
       top: 50%;
       transform: translateY(-50%);
       + span, + a {
-        padding-left: var(--sf-b6);
+        padding-inline-start: var(--sf-b6);
       }
       i {
         transform: rotate(-90deg);
@@ -155,7 +155,7 @@
 
         > ul {
           display: block;
-          padding-left: var(--sf-b6);
+          padding-inline-start: var(--sf-b6);
         }
       }
 

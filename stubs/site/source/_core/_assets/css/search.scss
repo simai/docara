@@ -11,7 +11,7 @@
     background: var(--sf-surface-0);
     min-width: 100%;
     width: 100%;
-    right: 0;
+    inset-inline-end: 0;
     padding: var(--sf-b6);
     border-radius: var(--sf-radius-1);
     border: var(--sf-a1) solid var(--sf-outline-variant);
@@ -90,13 +90,13 @@
     .sf {
       &-input {
         .sf-input-inner-label {
-          padding-right: var(--sf-text-height-1);
+          padding-inline-end: var(--sf-text-height-1);
         }
 
         &-body {
           &--right {
             padding: 0;
-            right: var(--sf-b6);
+            inset-inline-end: var(--sf-b6);
             top: 50%;
             transform: translate(0, -50%);
           }

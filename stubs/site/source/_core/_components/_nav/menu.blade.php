@@ -18,7 +18,7 @@
                     $activeParent = $page->isActiveParent($node);
                     $activeItem = $page->getPath() === $path;
                 @endphp
-                <li class="sf-nav-menu-element {{$activeParent && !$activeItem ? 'active' : ''}} text-1 wrap-none">
+                <li class="sf-nav-menu-element{{$activeParent && !$activeItem ? ' active ' : ' '}}flex text-1 wrap-none">
                     @if (!empty($node['children']))
                         @if($hasPage)
                             <div class="sf-nav-item flex {{ $activeItem   ? 'visited' : '' }} items-center justify-between">

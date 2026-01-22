@@ -4,10 +4,10 @@ namespace Simai\Docara\Providers;
 
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Support\Collection;
-use Simai\Docara\Cache\BuildCache;
 use Simai\Docara\Configurator;
 use Simai\Docara\Console\ConsoleOutput;
 use Simai\Docara\Docara;
+use Simai\Docara\ShaResolver;
 use Simai\Docara\Support\ServiceProvider;
 
 class DocaraEventsServiceProvider extends ServiceProvider
@@ -42,33 +42,11 @@ class DocaraEventsServiceProvider extends ServiceProvider
             $this->console()->warn("Configurator prepare failed: {$e->getMessage()}");
         }
 
-        $existingSha = $docara->getConfig('sha');
-        $skipShaFetch = filter_var(
-            $docara->getConfig('skipShaFetch') ?? getenv('DOCARA_SKIP_SHA_FETCH') ?? false,
-            FILTER_VALIDATE_BOOLEAN
-        );
-        if ($skipShaFetch) {
-            $this->console()->writeln('<comment>Skipping SHA fetch (DOCARA_SKIP_SHA_FETCH/skipShaFetch).</comment>');
-            $this->setCacheSha($existingSha);
-
-            return;
-        }
-        if ($existingSha) {
-            $this->console()->writeln("<comment>Using existing SHA from config: {$existingSha}</comment>");
-            $this->setCacheSha($existingSha);
-
-            return;
-        }
-
         try {
-            $sha = $this->fetchSha();
+            $sha = $this->app->make(ShaResolver::class)->resolve();
             if ($sha) {
                 $docara->setConfig('sha', $sha);
-                $this->console()->writeln("<comment>Fetched SHA: {$sha}</comment>");
-            } else {
-                $this->console()->writeln('<comment>Fetched SHA: null</comment>');
             }
-            $this->setCacheSha($sha);
         } catch (\Throwable $e) {
             $this->console()->warn("Fetch SHA failed: {$e->getMessage()}");
         }
@@ -95,47 +73,6 @@ class DocaraEventsServiceProvider extends ServiceProvider
         }
 
         return $merged;
-    }
-
-    private function fetchSha(): ?string
-    {
-        $cacheFile = $this->app->cachePath('docs-cache.json');
-        if (is_file($cacheFile)) {
-            $cacheJson = json_decode(file_get_contents($cacheFile), true) ?: [];
-            if (isset($cacheJson['sha']) && is_string($cacheJson['sha'])) {
-                return $cacheJson['sha'];
-            }
-        }
-
-        $url = 'https://api.github.com/repos/simai/ui/commits/main';
-        $context = stream_context_create([
-            'http' => [
-                'header' => [
-                    'User-Agent: Docara',
-                    'Accept: application/vnd.github.v3+json',
-                ],
-                'timeout' => 3,
-            ],
-        ]);
-
-        $json = @file_get_contents($url, false, $context);
-        if (! $json) {
-            return null;
-        }
-
-        $data = json_decode($json, true);
-        $sha = $data['sha'] ?? null;
-        if ($sha) {
-            $cacheJson = isset($cacheJson) && is_array($cacheJson) ? $cacheJson : [];
-            $cacheJson['sha'] = $sha;
-            $dir = dirname($cacheFile);
-            if (! is_dir($dir)) {
-                @mkdir($dir, 0755, true);
-            }
-            file_put_contents($cacheFile, json_encode($cacheJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-        }
-
-        return $sha;
     }
 
     private function normalizeLocales($locales): array
@@ -230,6 +167,7 @@ class DocaraEventsServiceProvider extends ServiceProvider
         return [$headings, $rightMenuHeadings, $plain];
     }
 
+
     /**
      * @throws BindingResolutionException
      */
@@ -246,6 +184,10 @@ class DocaraEventsServiceProvider extends ServiceProvider
                 $relativePath = str_replace($outputPath, '', preg_replace('#[\\/\\\\]index\.html$#i', '', $file->getPathname()));
                 $relativePath = str_replace('\\', '/', $relativePath);
                 $html = file_get_contents($file->getPathname());
+                $moduleArr = $this->app->ruleLoader->findModules($html);
+                if (! empty($moduleArr)) {
+                    $html = $this->injectAssets($html, $moduleArr, $outputPath);
+                }
                 try {
                     $html = $this->injectAnchors($configurator, $relativePath, $html);
                     file_put_contents($file->getPathname(), $html);
@@ -260,6 +202,78 @@ class DocaraEventsServiceProvider extends ServiceProvider
         } catch (\Throwable $e) {
             $this->console()->warn("Write search indexes failed: {$e->getMessage()}");
         }
+    }
+
+    private function injectAssets(string $html, array $moduleArray, string $outputPath): string
+    {
+        $headClosePos = stripos($html, '</head>');
+        if ($headClosePos === false) {
+            return $html;
+        }
+
+        $cssInjection = '';
+        if (! empty($moduleArray['css'])) {
+            $cssUrl = $this->publishAsset($moduleArray['css'], $outputPath, 'css');
+            if ($cssUrl) {
+                $cssInjection = "<link rel=\"stylesheet\" href=\"{$cssUrl}\">";
+            }
+        }
+
+        $scriptTag = '';
+        if(isset($moduleArray['modules']) && !empty($moduleArray['modules'])) {
+            $modules = $moduleArray['modules'];
+            $preloaded = [
+                'modules' => array_keys($modules),
+                'loadedPlugins' => $modules ?? [],
+            ];
+            $json = json_encode($preloaded, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $scriptTag = '<script>window.SF_PRELOADED = ' . $json . ';</script>';
+        }
+
+        $jsInjection = '';
+        if (! empty($moduleArray['js'])) {
+            $jsUrl = $this->publishAsset($moduleArray['js'], $outputPath, 'js');
+            if ($jsUrl) {
+                $jsInjection .= "<script src=\"{$jsUrl}\" defer></script>";
+            }
+        }
+        $jsInjection .= $scriptTag;
+
+        if ($cssInjection !== '') {
+            $cssPos = $this->findCoreCssPosition($html);
+            if ($cssPos === null) {
+                $cssPos = $headClosePos;
+            }
+            $html = substr($html, 0, $cssPos) . $cssInjection . substr($html, $cssPos);
+            $headClosePos = stripos($html, '</head>');
+        }
+
+        if ($jsInjection === '') {
+            return $html;
+        }
+
+        $insertPos = $this->findCoreJsPosition($html) ?? ($headClosePos === false ? strlen($html) : $headClosePos);
+
+        return substr($html, 0, $insertPos) . $jsInjection . substr($html, $insertPos);
+    }
+
+    private function publishAsset(string $sourcePath, string $outputPath, string $ext): ?string
+    {
+        if (! is_file($sourcePath)) {
+            return null;
+        }
+
+        $extDir = $ext === 'js' ? 'js' : 'css';
+        $assetsDir = rtrim($outputPath, '/\\') . '/assets/build/' . $extDir;
+        if (! is_dir($assetsDir)) {
+            @mkdir($assetsDir, 0775, true);
+        }
+
+        $fileName = basename($sourcePath);
+        $destPath = $assetsDir . '/' . $fileName;
+        @copy($sourcePath, $destPath);
+
+        return '/assets/build/' . $extDir . '/' . $fileName;
     }
 
     private function injectAnchors(Configurator $configurator, string $relativePath, string $html): string
@@ -310,19 +324,6 @@ class DocaraEventsServiceProvider extends ServiceProvider
         return $this->app['consoleOutput'];
     }
 
-    private function setCacheSha(?string $sha): void
-    {
-        if (! $this->app->bound(BuildCache::class)) {
-            return;
-        }
-
-        try {
-            $this->app->make(BuildCache::class)->setGithubSha($sha);
-        } catch (\Throwable $e) {
-            $this->console()->warn("Cache SHA update failed: {$e->getMessage()}");
-        }
-    }
-
     private function tempConfigPath(): string
     {
         return $this->app->path('temp/translations/.config.json');
@@ -347,5 +348,23 @@ class DocaraEventsServiceProvider extends ServiceProvider
         }
 
         file_put_contents($path, json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+    }
+
+    private function findCoreJsPosition(string $html): ?int
+    {
+        if (preg_match('/<script[^>]+src=[\"\\\']?[^\"\\\'>]*core\\/js\\/core\\.js[^>]*>/i', $html, $matches, PREG_OFFSET_CAPTURE)) {
+            return $matches[0][1];
+        }
+
+        return null;
+    }
+
+    private function findCoreCssPosition(string $html): ?int
+    {
+        if (preg_match('/<link[^>]+href=[\"\\\']?[^\"\\\'>]*core\\/css\\/core\\.css[^>]*>/i', $html, $matches, PREG_OFFSET_CAPTURE)) {
+            return $matches[0][1] + strlen($matches[0][0]);
+        }
+
+        return null;
     }
 }

@@ -19,6 +19,11 @@ class CacheServiceProvider extends ServiceProvider
                 '<comment>=== Use cache: %s ===</comment>',
                 $value ? 'true' : 'false'
             ));
+            $moduleCache = filter_var($app['config']->get('moduleCache', true), FILTER_VALIDATE_BOOLEAN);
+            $app['consoleOutput']->writeln(sprintf(
+                '<comment>=== Module cache: %s ===</comment>',
+                $moduleCache ? 'true' : 'false'
+            ));
             $customCachePath = $app['config']->get('cachePath');
             $paths = $app['buildPath'];
             $destination = $paths['destination'];

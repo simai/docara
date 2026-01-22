@@ -163,6 +163,7 @@ export class Search {
         ['input', 'focus'].forEach(event => {
             this.input.addEventListener(event, (e) => {
                     const value = e.target.value.trim();
+                    this.openSearch();
                     if (this.results) {
                         if (event === 'focus') {
                             setTimeout(() => {
@@ -190,6 +191,7 @@ export class Search {
             if (event.target !== this.wrap && event.target !== this.searchButton &&
                 !this.searchButton.contains(event.target) && !this.wrap.contains(event.target)) {
                 this.closeSearch();
+                this._debouncedDoSearch.cancel?.();
             }
         });
     }

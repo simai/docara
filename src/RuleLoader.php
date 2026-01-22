@@ -33,6 +33,20 @@
 
         private bool $useModuleCache;
         private bool $loggedModuleCacheDisabled = false;
+        private array $priorityModules = [
+            'container',
+            'display',
+            'flex',
+            'grid',
+            'gap',
+            'column',
+            'width',
+            'height',
+            'aspect-ratio',
+            'element-position',
+            'element-position-ext',
+            'headers',
+        ];
 
         public function __construct(
             string $url,
@@ -112,6 +126,8 @@
 
         public function findModules(string $body): array
         {
+            $body = $this->stripIgnoredBlocks($body);
+            $attributeBlob = $this->collectAttributeBlob($body);
             $pageModules = [];
             $loadedModules = [];
             if (empty($this->rules)) return [];
@@ -120,7 +136,7 @@
                 if (!isset($rule['regex']) || !is_string($rule['regex']) || $rule['regex'] === '') {
                     continue;
                 }
-                $matched = @preg_match($rule['regex'], $body);
+                $matched = @preg_match($rule['regex'], $attributeBlob);
                 if ($matched !== 1) {
                     continue;
                 }
@@ -223,22 +239,12 @@
 
         private function loadModules(array $modules, string $hash): void
         {
-            foreach ($modules as $first => $value) {
+            $flat = $this->flattenModules($modules);
+            $ordered = $this->sortModulesForLoading($flat);
 
-                if (is_array($value) && $this->isRule($value)) {
-                    $this->loadPluginByRule($first, $value, $hash);
-                    continue;
-                }
-
-                if (is_array($value)) {
-                    foreach ($value as $last => $rule) {
-                        if (is_array($rule) && $this->isRule($rule)) {
-                            $this->loadPluginByRule($first . '/' . $last, $rule, $hash);
-                        }
-                    }
-                }
+            foreach ($ordered as $item) {
+                $this->loadPluginByRule($item['key'], $item['rule'], $hash);
             }
-
         }
 
         private function loadPluginByRule(string $key, array $rule, string $hash): void
@@ -247,7 +253,12 @@
 
             foreach ($exts as $ext) {
                 $this->extPerHash[$hash][$ext] = true;
-                $this->log("Loading {$ext} for {$key} ({$rule['type']})");
+                $loadedKey = $key . ':' . $ext;
+                if (isset($this->loadedPlugins[$loadedKey])) {
+                    $this->log("Using cached {$ext} for {$key} ({$rule['type']})");
+                } else {
+                    $this->log("Loading {$ext} for {$key} ({$rule['type']})");
+                }
                 $this->loadAndAppendToCache($key, $rule, $hash, $ext);
 
             }
@@ -431,5 +442,94 @@
             }
 
             return $arOut;
+        }
+
+        private function stripIgnoredBlocks(string $html): string
+        {
+            $patterns = [
+                '~<code\\b[^>]*>.*?</code>~is',
+                '~<pre\\b[^>]*>.*?</pre>~is',
+                '~<(div|section)\\b[^>]*class=["\\\'][^"\\\'>]*monaco[^"\\\'>]*["\\\'][^>]*>.*?</\\1>~is',
+            ];
+
+            return preg_replace($patterns, '', $html);
+        }
+
+        private function collectAttributeBlob(string $html): string
+        {
+            if (trim($html) === '') {
+                return '';
+            }
+
+            $doc = new \DOMDocument();
+            $prev = libxml_use_internal_errors(true);
+            $loaded = $doc->loadHTML('<?xml encoding="UTF-8"><body>' . $html . '</body>');
+            libxml_clear_errors();
+            libxml_use_internal_errors($prev);
+            if (! $loaded || ! $doc->documentElement) {
+                return $html;
+            }
+
+            $attributes = [];
+            $xpath = new \DOMXPath($doc);
+            foreach ($xpath->query('//@*') as $attr) {
+                /** @var \DOMAttr $attr */
+                $attributes[] = $attr->nodeName . '="' . $attr->nodeValue . '"';
+            }
+
+            return implode(' ', $attributes);
+        }
+
+        private function flattenModules(array $modules): array
+        {
+            $list = [];
+            foreach ($modules as $first => $value) {
+                if (is_array($value) && $this->isRule($value)) {
+                    $list[] = ['key' => $first, 'rule' => $value];
+                    continue;
+                }
+
+                if (is_array($value)) {
+                    foreach ($value as $last => $rule) {
+                        if (is_array($rule) && $this->isRule($rule)) {
+                            $list[] = ['key' => $first . '/' . $last, 'rule' => $rule];
+                        }
+                    }
+                }
+            }
+
+            return $list;
+        }
+
+        private function sortModulesForLoading(array $modules): array
+        {
+            $priorityMap = array_flip($this->priorityModules);
+            $maxPriority = count($priorityMap) + 1000;
+
+            usort($modules, function ($a, $b) use ($priorityMap, $maxPriority) {
+                $typeA = $a['rule']['type'] ?? 'utility';
+                $typeB = $b['rule']['type'] ?? 'utility';
+
+                // Load non-utility first, utilities last (so utility CSS can override).
+                if ($typeA === 'utility' && $typeB !== 'utility') {
+                    return 1;
+                }
+                if ($typeA !== 'utility' && $typeB === 'utility') {
+                    return -1;
+                }
+
+                $baseA = $a['rule']['baseName'] ?? '';
+                $baseB = $b['rule']['baseName'] ?? '';
+                $priorityA = $priorityMap[$baseA] ?? $maxPriority;
+                $priorityB = $priorityMap[$baseB] ?? $maxPriority;
+
+                if ($priorityA !== $priorityB) {
+                    return $priorityA <=> $priorityB;
+                }
+
+                return strcmp($a['key'], $b['key']);
+            });
+
+            return $modules;
         }
     }

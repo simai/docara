@@ -1,5 +1,7 @@
 # Docara (based on Jigsaw)
 
+- moduleCache (bool, default: false): включает кеш модульных css/js. При true core.css встраивается в hash.css, core.css из шаблона не грузится отдельно; управляется через DOCARA_MODULE_CACHE или config.php.
+
 Quick start to install Docara via Composer and initialize a project.
 
 ## Install the framework

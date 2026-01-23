@@ -255,7 +255,7 @@
             $cachePath = $this->cachePath();
             $ttl = (int) Env::get('RULE_JSON_TTL', 900);
             $useModuleCache = filter_var(
-                Env::get('DOCARA_MODULE_CACHE', $this['config']->get('moduleCache', true)),
+                Env::get('DOCARA_MODULE_CACHE', $this['config']->get('moduleCache', false)),
                 FILTER_VALIDATE_BOOLEAN
             );
 

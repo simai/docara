@@ -23,6 +23,7 @@ Docara loads `config.php` from your project root (and merges `config.<env>.php` 
 -   `cachePath` — where cache files are stored (default `.cache` in project root).
 -   `lang_path` — path to language files (defaults to `source/lang`).
 -   `buildPath` (set in container, exposed via config) — controls `source` and `destination` roots for builds.
+-   `moduleCache` — bool, default: `false`. Enables per-page module bundle cache. When true, Docara builds `hash.css/js` per page, embeds `core.css` into `hash.css`, removes the standalone `core.css` link from templates, and serves the combined file. Overrides via `DOCARA_MODULE_CACHE`.
 
 ## Metadata & frontend
 

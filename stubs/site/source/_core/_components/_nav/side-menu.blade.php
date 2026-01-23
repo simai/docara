@@ -2,7 +2,7 @@
     <div class="side-menu-navigation">
         <h5 class="sf-side-menu-header">{{$page->translate('navigation')}}</h5>
         <div class="sf-side-menu-list_wrap">
-            <ul id="side_menu_list" class="sf-side-menu-list flex flex-col">
+            <ul id="side_menu_list" class="sf-side-menu-list flex flex-col m-0 p-0">
                 @foreach($page->headings as $heading)
                     @php
                         $padding = $heading['type'] / 2 - 0.5;

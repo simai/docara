@@ -32,6 +32,7 @@
         private ?ConsoleOutput $console = null;
 
         private bool $useModuleCache;
+        private array $coreCssPrepended = [];
 
         public function __construct(
             string $url,
@@ -282,6 +283,11 @@
         {
             $loadedKey = $key . ':' . $ext;
             $hashPath = $this->cachePath . '/' . $hash . '.' . $ext;
+
+            if ($ext === 'css' && $this->useModuleCache) {
+                $this->ensureCoreCssPrepended($hash, $hashPath);
+            }
+
             if (isset($this->loadedPlugins[$loadedKey])) {
                 file_put_contents($hashPath, $this->loadedPlugins[$key . ':' . $ext], FILE_APPEND);
             } else {
@@ -308,6 +314,32 @@
                 file_put_contents($hashPath, $newContent, FILE_APPEND);
                 $this->loadedPlugins[$loadedKey] = $newContent;
             }
+        }
+
+        private function ensureCoreCssPrepended(string $hash, string $hashPath): void
+        {
+            if (isset($this->coreCssPrepended[$hash])) {
+                return;
+            }
+
+            $coreUrl = $this->cdnUrl . '/core/css/core.css';
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 5,
+                ],
+            ]);
+            $content = @file_get_contents($coreUrl, false, $context);
+            if ($content === false) {
+                return;
+            }
+
+            $dir = dirname($hashPath);
+            if (!is_dir($dir)) {
+                @mkdir($dir, 0777, true);
+            }
+
+            file_put_contents($hashPath, $content);
+            $this->coreCssPrepended[$hash] = true;
         }
 
         public function getRuleById(string $id): ?array

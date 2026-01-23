@@ -1,8 +1,5 @@
 .bottom {
   &--navigation {
-    @include breakpoint(mobile) {
-      flex-direction: column;
-    }
     &_text {
       > div {
         &:first-child {

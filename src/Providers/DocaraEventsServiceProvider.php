@@ -211,10 +211,18 @@ class DocaraEventsServiceProvider extends ServiceProvider
             return $html;
         }
 
+        $useModuleCache = filter_var($this->app['config']->get('moduleCache', true), FILTER_VALIDATE_BOOLEAN);
+        if ($useModuleCache && !empty($moduleArray['css'])) {
+            $html = $this->stripCoreCssLink($html);
+            $headClosePos = stripos($html, '</head>');
+        }
+
         $cssInjection = '';
+        $cssPreload = '';
         if (! empty($moduleArray['css'])) {
             $cssUrl = $this->publishAsset($moduleArray['css'], $outputPath, 'css');
             if ($cssUrl) {
+                $cssPreload = "<link rel=\"preload\" as=\"style\" href=\"{$cssUrl}\">";
                 $cssInjection = "<link rel=\"stylesheet\" href=\"{$cssUrl}\">";
             }
         }
@@ -242,9 +250,12 @@ class DocaraEventsServiceProvider extends ServiceProvider
         if ($cssInjection !== '') {
             $cssPos = $this->findCoreCssPosition($html);
             if ($cssPos === null) {
+                $cssPos = $this->findProjectCssPosition($html);
+            }
+            if ($cssPos === null) {
                 $cssPos = $headClosePos;
             }
-            $html = substr($html, 0, $cssPos) . $cssInjection . substr($html, $cssPos);
+            $html = substr($html, 0, $cssPos) . $cssPreload . $cssInjection . substr($html, $cssPos);
             $headClosePos = stripos($html, '</head>');
         }
 
@@ -363,6 +374,20 @@ class DocaraEventsServiceProvider extends ServiceProvider
     {
         if (preg_match('/<link[^>]+href=[\"\\\']?[^\"\\\'>]*core\\/css\\/core\\.css[^>]*>/i', $html, $matches, PREG_OFFSET_CAPTURE)) {
             return $matches[0][1] + strlen($matches[0][0]);
+        }
+
+        return null;
+    }
+
+    private function stripCoreCssLink(string $html): string
+    {
+        return preg_replace('/<link[^>]+href=[\"\\\']?[^\"\\\'>]*core\\/css\\/core\\.css[^>]*>\\s*/i', '', $html, 1);
+    }
+
+    private function findProjectCssPosition(string $html): ?int
+    {
+        if (preg_match('/<link[^>]+href=[\"\\\']?[^\"\\\'>]*assets\\/build\\/css\\/main\\.css[^>]*>/i', $html, $matches, PREG_OFFSET_CAPTURE)) {
+            return $matches[0][1];
         }
 
         return null;

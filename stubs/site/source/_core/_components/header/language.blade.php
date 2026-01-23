@@ -9,7 +9,7 @@
         <i class="sf-icon">language</i>
     </button>
     <div class="sf-language-switch--language-panel bg-surface-overlay hidden" id="language_panel">
-        <ul class="sf-language-switch--language-list flex flex-col w-full">
+        <ul class="sf-language-switch--language-list flex flex-col w-full p-0">
             @foreach($arLocales as $key => $locale)
                     <li class="sf-language-switch--language-item">
                         <button data-locale="{{$key}}" onclick="langSwitch(this)" class="w-full flex items-center content-main-between {{$key === $currentLocale ? 'active' : ''}}" type="button">{{$locale}}</button>

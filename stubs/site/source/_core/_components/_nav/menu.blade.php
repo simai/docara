@@ -5,7 +5,7 @@
 @endphp
 
 @if($level > 0)
-    <ul class="sf-nav-menu-wrap menu-level-{{ $level }}">
+    <ul class="sf-nav-menu-wrap menu-level-{{ $level }} m-top-0 m-bottom-0 p-0">
         @endif
         @foreach ($menuTree as $path => $node)
             @php
@@ -18,7 +18,7 @@
                     $activeParent = $page->isActiveParent($node);
                     $activeItem = $page->getPath() === $path;
                 @endphp
-                <li class="sf-nav-menu-element{{$activeParent && !$activeItem ? ' active ' : ' '}}flex text-1 text-start flex-col wrap-none">
+                <li class="sf-nav-menu-element{{$activeParent && !$activeItem ? ' active ' : ' '}}flex text-1 text-start flex-col whitespace-normal">
                     @if (!empty($node['children']))
                         @if($hasPage)
                             <div class="sf-nav-item relative weight-4 p-y-1/3 p-x-2 gap-3 radius-1 flex text-start line-height-1 {{ $activeItem   ? 'visited' : '' }} items-center justify-between">
@@ -41,13 +41,13 @@
                         @endif
                     @else
                         <a href="{{ $path }}"
-                           class="sf-nav-menu-element--link sf-nav-item items-center flex flex-1 radius-1 text-start line-height-1 p-y-1/3 p-x-2 gap-3 sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }} text-1 wrap-none">
+                           class="sf-nav-menu-element--link sf-nav-item items-center flex flex-1 radius-1 text-start line-height-1 p-y-1/3 p-x-2 gap-3 sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }} text-1 whitespace-normal">
                             <span class="sf-nav-title sf-text-1 weight-4 p-y-1/4">{{ $node['title'] }}</span>
                         </a>
                     @endif
                     @elseif ($node['showInMenu'] && $node['path'])
                         <a href="{{ $path }}"
-                           class="sf-nav-menu-element--link sf-nav-item items-center flex flex-1 radius-1 text-start line-height-1 p-y-1/3 p-x-2 gap-3 sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }} text-1 wrap-none">
+                           class="sf-nav-menu-element--link sf-nav-item items-center flex flex-1 radius-1 text-start line-height-1 p-y-1/3 p-x-2 gap-3 sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }} text-1 whitespace-normal">
                             <span class="sf-nav-title sf-text-1 weight-4 p-y-1/4">{{ $node['title'] }}</span>
                         </a>
                     @endif

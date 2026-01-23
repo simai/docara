@@ -9,8 +9,8 @@
 @endphp
 
 <section>
-    <div class="bottom--navigation flex p-top-c4 gap-1 m-top-auto">
-        <div class="bottom--navigation-items w-full flex gap-1 flex">
+    <div class="bottom--navigation flex flex-col md:flex-row p-top-c4 gap-1 m-top-auto">
+        <div class="bottom--navigation-items w-full flex gap-1">
             @foreach($ordered as $key => $item)
                 @php
                     $prev = $key === 'prev';

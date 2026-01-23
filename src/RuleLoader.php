@@ -147,7 +147,7 @@
                 return [];
             }
 
-            $hash = md5(serialize($pageModules));
+            $hash = md5($this->cdnUrl . '|' . serialize($pageModules));
             if (!isset($this->extPerHash[$hash])) {
                 $this->extPerHash[$hash] = ['js' => false, 'css' => false];
             }

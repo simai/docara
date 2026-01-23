@@ -12,6 +12,8 @@
 
         private int $ttlSeconds;
 
+        private ?string $currentSha = null;
+
         public array $rules = [];
 
         public array $modules = [];
@@ -49,6 +51,7 @@
             $this->delimeterUrl = $delimeterUrl;
             $this->manifest = new PageManifest($this->cachePath . '/page-manifest.json');
             $this->useModuleCache = $useModuleCache;
+            $this->currentSha = $this->extractShaFromUrl($url);
         }
 
         /**
@@ -58,6 +61,15 @@
         {
             $cached = $this->loadCache();
             if ($cached && !$this->isExpired($cached['ts'])) {
+                $this->rules = $this->normalizeRules($cached['rules']);
+                return;
+            }
+
+            // If cache exists and SHA/url matches current config, reuse even if TTL expired.
+            if ($cached
+                && isset($cached['sha'], $cached['url'])
+                && $cached['url'] === $this->url
+                && $cached['sha'] === $this->currentSha) {
                 $this->rules = $this->normalizeRules($cached['rules']);
                 return;
             }
@@ -93,6 +105,17 @@
                 'first' => $parts[0],
                 'last' => $parts[count($parts) - 1],
             ];
+        }
+
+        private function extractShaFromUrl(string $url): ?string
+        {
+            // Expecting ".../simai/ui@<sha>/distr" shape.
+            $matches = [];
+            if (preg_match('#@([^/]+)/distr#', $url, $matches) === 1) {
+                return $matches[1];
+            }
+
+            return null;
         }
 
         private function normalizeRules(array $rules): array
@@ -407,6 +430,8 @@
             $payload = [
                 'ts' => time(),
                 'rules' => $rules,
+                'sha' => $this->currentSha,
+                'url' => $this->url,
             ];
 
             $dir = dirname($this->cachePath . '/rules.json');

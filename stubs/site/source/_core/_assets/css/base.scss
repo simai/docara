@@ -282,53 +282,12 @@ pre {
   position: relative;
 }
 
-
-.sf-language-switch--language-item button {
-  padding: var(--sf-a8) var(--sf-b6);
-  line-height: var(--sf-text-height-1);
-  gap: var(--sf-space1\/2);
-
-  &.active {
-    &:after {
-      font-size: 1.5rem;
-      content: 'check';
-      --sf-icon-line-height: inherit;
-      --sf-icon-font-size: inherit;
-      --sf-icon--fill: 0;
-      --sf-icon--weight: var(--sf-text--weight);
-      --sf-icon--grade: 0;
-      --sf-icon--optical-size: inherit;
-      --sf-icon--font-family: 'Material Symbols Outlined';
-      --sf-icon-color: var(--sf-on-surface-variant);
-      font-variation-settings: "FILL" var(--sf-icon--fill), "wght" var(--sf-icon--weight), "GRAD" var(--sf-icon--grade);
-      color: var(--sf-on-surface);
-      font-family: var(--sf-icon--font-family);
-      font-weight: var(--sf-icon--weight);
-      font-style: normal;
-      line-height: var(--sf-icon-line-height);
-      letter-spacing: normal;
-      text-transform: none;
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      white-space: nowrap;
-      word-wrap: normal;
-      direction: ltr;
-      -webkit-font-feature-settings: 'liga';
-      -webkit-font-smoothing: antialiased;
-      vertical-align: bottom;
-
-    }
-  }
-
-  &:hover, &.active {
-    font-weight: 700;
-  }
+.sf-language-switch--language-panel {
+  top: 100%;
+  left: 0;
 }
 
-.sf-language-switch--language-item .sf-language-switch--check {
-  display: none;
-}
+
 
 
 a {
@@ -465,4 +424,5 @@ main {
     font-size: var(--sf-b4);
   }
 }
+
 

@@ -56,16 +56,9 @@
   }
 
   &-item {
-
-    font-weight: var(--sf-weight--regular);
-    padding: var(--sf-a8) var(--sf-b6);
     color: var(--sf-on-surface);
     line-height: var(--sf-text-height-1);
     transition: .3s background-color ease;
-    border-radius: var(--sf-radius-1);
-    gap: var(--sf-b6);
-    position: relative;
-    text-align: start;
 
 
     &.visited {
@@ -81,24 +74,17 @@
 
   &-title {
     color: var(--sf-on-surface);
-    padding: var(--sf-space-1\/4) 0;
   }
 
   &-toggle {
     &_button {
-      padding: var(--sf-a6);
-      position: absolute;
-      inset-inline-start: 0;
-      top: 50%;
-      transform: translateY(-50%);
       + span, + a {
         padding-inline-start: var(--sf-b6);
       }
       i {
-        transform: rotate(-90deg);
         font-size: var(--sf-c0);
         line-height: var(--sf-c0);
-        color: inherit;
+        transform: rotate(-90deg);
       }
     }
   }
@@ -164,8 +150,6 @@
   }
 
   &-button {
-    font-weight: bold;
-    cursor: pointer;
     color: var(--sf-on-surface);
 
     &:hover {
@@ -187,5 +171,3 @@
     }
   }
 }
-
-

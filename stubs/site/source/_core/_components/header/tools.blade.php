@@ -1,5 +1,5 @@
 <div class="header--right flex gap-1/4 relative">
-    <button class=" sf-icon-button radius-default sf-button-search sf-icon-button--size-1 sf-icon-button--link sf-icon-button--on-surface side-menu-instrument">
+    <button class="sf-icon-button radius-default sf-button-search sf-icon-button--size-1 sf-icon-button--link sf-icon-button--on-surface side-menu-instrument flex sm:hidden">
         <i class="sf-icon">search</i>
     </button>
     <button id="read_mode" onclick="applyReadMode(this)"

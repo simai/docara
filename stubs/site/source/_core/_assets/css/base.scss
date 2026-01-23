@@ -263,52 +263,6 @@ table {
 }
 
 
-.sf-menu {
-  display: inline-flex;
-  gap: var(--sf-c2);
-
-  &-container {
-    margin-inline-start: var(--sf-c8);
-    flex: 1;
-    transition: .3s padding ease;
-    @include breakpoint(tablet) {
-      margin-inline-start: 0;
-      margin-bottom: var(--sf-c2);
-    }
-
-    &:not(.menu--collapsed) {
-      .sf-menu {
-        &-scroll {
-          display: none;
-        }
-      }
-    }
-  }
-
-  &-scroll {
-    inset-inline-start: 0;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 2rem;
-    line-height: 2rem;
-
-    &.right {
-      inset-inline-start: auto;
-      inset-inline-end: 0;
-    }
-  }
-}
-
-
-.sf-menu .sf-menu-item a {
-  color: var(--sf-on-surface);
-  font-weight: var(--sf-weight--medium);
-
-  &:hover {
-    color: var(--sf-primary);
-  }
-}
-
 
 pre {
   code {
@@ -428,7 +382,7 @@ button, a {
 
 .main--content {
   width: 100%;
-/*border-inline: 1px solid var(--sf-outline-variant);*/
+
   > *:last-child {
     margin-bottom: 0;
   }
@@ -437,9 +391,6 @@ button, a {
 
 .sf-container {
   max-width: var(--sf-i2);
-  /*!important;
-     /*justify-content: center;*/
-
   &-main {
     height: fit-content;
   }
@@ -514,5 +465,4 @@ main {
     font-size: var(--sf-b4);
   }
 }
-
 

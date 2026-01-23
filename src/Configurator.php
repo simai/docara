@@ -137,14 +137,24 @@
         {
 
             $items = [];
-            if (empty($this->realFlatten) || !isset($this->realFlatten[$locale])) {
+            $flat = $this->realFlatten[$locale] ?? [];
+            if ($this->useCategory && isset($this->multipleHandler) && count($segments) >= 2) {
+                $category = $segments[1];
+                $flat = $this->multipleHandler->realFlattenByCategory[$locale][$category] ?? $flat;
+            }
+            if (empty($flat)) {
                 return $items;
             }
 
+            $trimmedSegments = $segments;
+            if (!empty($trimmedSegments) && $trimmedSegments[0] === $locale) {
+                array_shift($trimmedSegments);
+            }
+
             $path = '';
-            foreach ($segments as $segment) {
+            foreach ($trimmedSegments as $segment) {
                 $path .= '/' . $segment;
-                foreach ($this->realFlatten[$locale] as $value) {
+                foreach ($flat as $value) {
                     if ($value['path']) {
                         $link = $value['path'];
                     } else {
@@ -379,7 +389,7 @@
 
                 $this->menu[$locale] = $this->buildMenuTree($this->settings[$locale] ?? [], '', $locale);
 
-              
+
                 if ($locale === $this->locale && $this->indexPage === '') {
                     $rootIndex = rtrim($this->docsDir, '/\\') . "/{$locale}/index.md";
                     if (!is_file($rootIndex)) {
@@ -776,7 +786,7 @@
                     return [];
                 }
                 $category = $segments[1];
-        
+
                 $matchPath = '/' . implode('/', array_slice($segments, 1));
                 $flattenNav = $this->multipleHandler->flattenByCategory[$locale][$category] ?? [];
             } else {
@@ -867,7 +877,7 @@
             $rootCandidate = realpath($this->docsDir) ?: $this->docsDir;
             $root = rtrim(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $rootCandidate), DIRECTORY_SEPARATOR);
 
-  
+
             while (true) {
                 $settingsFile = $dir . DIRECTORY_SEPARATOR . '.settings.php';
                 if (is_file($settingsFile)) {
@@ -938,7 +948,7 @@
             $dirPath = "{$baseDocs}/{$locale}/{$relative}";
             $basename = $parts ? end($parts) : '';
 
-   
+
             if (is_dir($dirPath)) {
                 if (is_file("{$dirPath}/index.md")) {
                     return "{$dirPath}/index.md";
@@ -948,7 +958,7 @@
                 }
             }
 
-       
+
             return "{$baseDocs}/{$locale}/{$relative}.md";
         }
 
@@ -968,7 +978,7 @@
                 }
             }
 
-       
+
             $flat = $this->realFlatten[$locale] ?? [];
 
             return $this->matchFlattenFile($flat, $path);

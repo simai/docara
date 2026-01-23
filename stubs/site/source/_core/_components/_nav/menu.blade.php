@@ -18,37 +18,37 @@
                     $activeParent = $page->isActiveParent($node);
                     $activeItem = $page->getPath() === $path;
                 @endphp
-                <li class="sf-nav-menu-element{{$activeParent && !$activeItem ? ' active ' : ' '}}flex text-1 flex-col wrap-none">
+                <li class="sf-nav-menu-element{{$activeParent && !$activeItem ? ' active ' : ' '}}flex text-1 text-start flex-col wrap-none">
                     @if (!empty($node['children']))
                         @if($hasPage)
-                            <div class="sf-nav-item flex {{ $activeItem   ? 'visited' : '' }} items-center justify-between">
-                                <button class="sf-nav-toggle_button flex items-center" onclick="toggleNav(this)"
+                            <div class="sf-nav-item relative weight-4 p-y-1/3 p-x-2 gap-3 radius-1 flex text-start line-height-1 {{ $activeItem   ? 'visited' : '' }} items-center justify-between">
+                                <button class="sf-nav-toggle_button flex items-center p-a6 inline-start-0 top-1/2 absolute translate-y-half"  onclick="toggleNav(this)"
                                         type="button">
                                     <i class="sf-icon">keyboard_arrow_down</i>
                                 </button>
                                 <a href="{{$path}}" class="sf-nav-button flex" type="button">
-                                    <span class="sf-nav-title">{{ $node['title'] }}</span>
+                                    <span class="sf-nav-title sf-text-1 weight-4 p-y-1/4">{{ $node['title'] }}</span>
                                 </a>
                             </div>
                         @else
                             <button onclick="toggleNav(this)"
-                                    class="sf-nav-button sf-nav-item flex items-center" type="button">
-                              <span class="sf-nav-toggle_button flex items-center">
+                                    class="sf-nav-button sf-nav-item relative weight-4 p-y-1/3 p-x-2 gap-3 radius-1 flex text-start line-height-1 items-center relative" type="button">
+                              <span class="sf-nav-toggle_button flex items-center p-a6 inline-start-0 top-1/2 absolute translate-y-half">
                                             <i class="sf-icon">keyboard_arrow_down</i>
                                         </span>
-                                <span class="sf-nav-title">{{ $node['title'] }}</span>
+                                <span class="sf-nav-title sf-text-1 weight-4 p-y-1/4">{{ $node['title'] }}</span>
                             </button>
                         @endif
                     @else
                         <a href="{{ $path }}"
-                           class="sf-nav-menu-element--link sf-nav-item items-center flex sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }} text-1 wrap-none inline-flex">
-                            <span class="sf-nav-title">{{ $node['title'] }}</span>
+                           class="sf-nav-menu-element--link sf-nav-item items-center flex flex-1 radius-1 text-start line-height-1 p-y-1/3 p-x-2 gap-3 sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }} text-1 wrap-none">
+                            <span class="sf-nav-title sf-text-1 weight-4 p-y-1/4">{{ $node['title'] }}</span>
                         </a>
                     @endif
                     @elseif ($node['showInMenu'] && $node['path'])
                         <a href="{{ $path }}"
-                           class="sf-nav-menu-element--link sf-nav-item items-center flex sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }} text-1 wrap-none inline-flex">
-                            <span class="sf-nav-title">{{ $node['title'] }}</span>
+                           class="sf-nav-menu-element--link sf-nav-item items-center flex flex-1 radius-1 text-start line-height-1 p-y-1/3 p-x-2 gap-3 sf-nav-menu--lvl{{ $level }} {{ $page->isActive($path) ? 'active' : '' }} text-1 wrap-none">
+                            <span class="sf-nav-title sf-text-1 weight-4 p-y-1/4">{{ $node['title'] }}</span>
                         </a>
                     @endif
                     @if (!empty($node['children']))
@@ -59,4 +59,3 @@
                 @if($level > 0)
     </ul>
 @endif
-

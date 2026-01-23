@@ -4,7 +4,7 @@
         @if($page->category)
             @includeWhen($section['topMenu']['enabled'], '_core._components.header.top-menu')
         @endif
-        <div class="flex flex-1 content-main-end items-center text-right md:pl-10 gap-x-1">
+        <div class="flex flex-1 content-main-end items-center text-end md:pl-10 gap-x-1">
             @includeWhen($section['search']['enabled'], '_core._components.header.search')
             @includeWhen($section['toolbar']['enabled'], '_core._components.header.tools',['section' => layout_section($page, 'toolbar.items')])
         </div>

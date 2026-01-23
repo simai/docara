@@ -32,21 +32,6 @@
         private ?ConsoleOutput $console = null;
 
         private bool $useModuleCache;
-        private bool $loggedModuleCacheDisabled = false;
-        private array $priorityModules = [
-            'container',
-            'display',
-            'flex',
-            'grid',
-            'gap',
-            'column',
-            'width',
-            'height',
-            'aspect-ratio',
-            'element-position',
-            'element-position-ext',
-            'headers',
-        ];
 
         public function __construct(
             string $url,
@@ -463,7 +448,10 @@
 
             $doc = new \DOMDocument();
             $prev = libxml_use_internal_errors(true);
-            $loaded = $doc->loadHTML('<?xml encoding="UTF-8"><body>' . $html . '</body>');
+            $loaded = $doc->loadHTML(
+                '<?xml encoding="UTF-8">' . $html,
+                LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD
+            );
             libxml_clear_errors();
             libxml_use_internal_errors($prev);
             if (! $loaded || ! $doc->documentElement) {
@@ -503,33 +491,64 @@
 
         private function sortModulesForLoading(array $modules): array
         {
-            $priorityMap = array_flip($this->priorityModules);
-            $maxPriority = count($priorityMap) + 1000;
+            $utility = [];
+            $nonUtility = [];
 
-            usort($modules, function ($a, $b) use ($priorityMap, $maxPriority) {
-                $typeA = $a['rule']['type'] ?? 'utility';
-                $typeB = $b['rule']['type'] ?? 'utility';
-
-                // Load non-utility first, utilities last (so utility CSS can override).
-                if ($typeA === 'utility' && $typeB !== 'utility') {
-                    return 1;
+            foreach ($modules as $item) {
+                $type = $item['rule']['type'] ?? 'utility';
+                if ($type === 'utility') {
+                    $utility[] = $item;
+                } else {
+                    $nonUtility[] = $item;
                 }
-                if ($typeA !== 'utility' && $typeB === 'utility') {
-                    return -1;
-                }
+            }
 
-                $baseA = $a['rule']['baseName'] ?? '';
-                $baseB = $b['rule']['baseName'] ?? '';
-                $priorityA = $priorityMap[$baseA] ?? $maxPriority;
-                $priorityB = $priorityMap[$baseB] ?? $maxPriority;
+            usort($nonUtility, fn ($a, $b) => strcmp($a['key'], $b['key']));
 
-                if ($priorityA !== $priorityB) {
-                    return $priorityA <=> $priorityB;
+            usort($utility, function ($a, $b) {
+                $bpA = $this->breakpointWeight($a['rule']['name'] ?? $a['key'], $a['rule']['fileName'] ?? null);
+                $bpB = $this->breakpointWeight($b['rule']['name'] ?? $b['key'], $b['rule']['fileName'] ?? null);
+                if ($bpA !== $bpB) {
+                    return $bpA <=> $bpB;
                 }
 
                 return strcmp($a['key'], $b['key']);
             });
 
-            return $modules;
+
+            return array_merge($nonUtility, $utility);
+        }
+
+        /**
+         * Breakpoint ordering for utility classes: default < sm < md < lg < xl < 2xl.
+         * Higher weight means later insertion.
+         */
+        private function breakpointWeight(string $name, ?string $fileName = null): int
+        {
+            $weights = [
+                'default' => 0,
+                'base' => 0,
+                'sm' => 10,
+                'md' => 20,
+                'lg' => 30,
+                'xl' => 40,
+                '2xl' => 50,
+            ];
+
+            $lower = strtolower($name);
+            $prefix = 'default';
+            if ($fileName && isset($weights[strtolower($fileName)])) {
+                $prefix = strtolower($fileName);
+            } else {
+                foreach (['sm', 'md', 'lg', 'xl', '2xl'] as $bp) {
+                    $match = str_contains($lower, $bp . ':') || str_contains($lower, $bp . '/') || str_contains($lower, $bp . '\\:');
+                    if ($match) {
+                        $prefix = $bp;
+                        break;
+                    }
+                }
+            }
+
+            return $weights[$prefix] ?? $weights['default'];
         }
     }

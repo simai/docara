@@ -2,7 +2,7 @@
 
 
 @section('body')
-    <section>
+    <section class="flex-1">
         @include('_core._components._nav.breadcrumbs')
 
         <div class="flex flex-col lg:flex-row">

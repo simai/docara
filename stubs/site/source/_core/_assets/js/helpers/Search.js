@@ -263,11 +263,11 @@ export class Search {
             });
 
             const block = document.createElement('div');
-            block.className = 'search--result text-left';
+            block.className = 'search--result text-left p-a8 radius-1';
             block.innerHTML = `
-      <a class="flex flex-col" href="${item.url}">
-        <div class="search--result-title">${highlightedTitle}</div>
-              <p class="search--result-content">${highlightedContent}</p>
+      <a class="flex flex-col gap-1/4" href="${item.url}">
+        <div class="search--result-title sf-text-1 weight-7">${highlightedTitle}</div>
+              <p class="search--result-content sf-text-1 m-0">${highlightedContent}</p>
       </a>
     `;
 

@@ -10,6 +10,7 @@
     use Simai\Docara\Console\ConsoleOutput;
     use Simai\Docara\Multiple\MultipleHandler;
     use Simai\Docara\Support\Layout;
+    use Throwable;
 
     class Configurator
     {
@@ -161,7 +162,16 @@
                         $link = $value['navPath'];
                     }
                     if ($link === $path) {
-                        $items[] = $value;
+                        $item = $value;
+                        if (!empty($item['path']) && ! $this->isLink($item['path'])) {
+                            $normalized = '/' . ltrim($item['path'], '/');
+                            if (!str_starts_with($normalized, '/' . $locale . '/')) {
+                                $item['path'] = '/' . trim($locale . '/' . ltrim($normalized, '/'), '/');
+                            } else {
+                                $item['path'] = $normalized;
+                            }
+                        }
+                        $items[] = $item;
                     }
                 }
             }
@@ -420,7 +430,11 @@
 
         private function getFirstPageWithIndex($key, $item): ?string
         {
-            if ($item['current']['has_index']) {
+            if (!is_array($item) || !isset($item['current']) || !is_array($item['current'])) {
+                return null;
+            }
+
+            if (!empty($item['current']['has_index'])) {
                 return $key;
             }
             if (!empty($item['current']['menu']) && is_array($item['current']['menu'])) {
@@ -435,7 +449,10 @@
                     }
                 }
             } else {
-                return $key . '/' . array_key_first($item['current']['menu']);
+                $first = array_key_first($item['current']['menu'] ?? []);
+                if ($first !== null) {
+                    return $key . '/' . $first;
+                }
             }
 
             return null;
@@ -506,14 +523,72 @@
                         }
 
                         if (!$isLink && isset($item['pages'][$menuKey])) {
+                               try {
                             $menu = $this->buildMenuTree([$menuKey => $item['pages'][$menuKey]] ?? [], '', $locale);
                             $this->topMenu[$locale][$menuKey]['children'] = $item['pages'][$menuKey];
                             $pages = $this->makeFlatten([$menuKey => $item['pages'][$menuKey]], $locale);
 
                             $this->multipleHandler->setFlatten($locale, $menuKey, $pages);
                             $this->multipleHandler->setMenu($locale, $menuKey, $menu);
+
+                            $basePath = '/' . $locale . '/' . $menuKey;
+                        
+                                $this->addNestedIndexRedirects($locale, $basePath, $item['pages'][$menuKey], $indexAsPageDirs);
+                            } catch (Throwable $e) {
+                                $this->console->writeln(sprintf(
+                                    '<error>[addNestedIndexRedirects] locale=%s basePath=%s error=%s</error>',
+                                    $locale,
+                                    $basePath,
+                                    $e->getMessage()
+                                ));
+                                throw $e;
+                            }
                         }
                     }
+                }
+            }
+        }
+
+        /**
+         * Recursively add redirects for nested nodes without index pages in category mode.
+         */
+        private function addNestedIndexRedirects(string $locale, string $basePath, array $node, array $indexAsPageDirs = []): void
+        {
+            if (empty($node['pages']) || !is_array($node['pages'])) {
+                return;
+            }
+
+            foreach ($node['pages'] as $childKey => $childItem) {
+                if ($this->isLink($childKey)) {
+                    continue;
+                }
+
+                // Base path relative to locale (no leading locale segment)
+                $baseRelative = ltrim(preg_replace('#^/' . preg_quote($locale, '#') . '/#', '', $basePath), '/');
+                $childRelativeKey = trim($baseRelative . '/' . $childKey, '/');
+
+                $defaultPath = rtrim($basePath, '/') . '/' . $childKey;
+                $targetPath = $defaultPath;
+                $hasIndex = is_array($childItem) && isset($childItem['current']['has_index'])
+                    ? (bool) $childItem['current']['has_index']
+                    : false;
+
+                if (!$hasIndex) {
+                    $needKey = is_array($childItem) ? $this->getFirstPageWithIndex($childRelativeKey, $childItem) : null;
+                    if ($needKey !== null) {
+                        if (isset($indexAsPageDirs[$needKey])) {
+                            $needKey .= '/index';
+                        }
+                        $targetPath = '/' . $locale . '/' . ltrim($needKey, '/');
+                    }
+                }
+
+                if ($targetPath !== $defaultPath) {
+                    $this->indexRedirects[$locale][$defaultPath] = $targetPath;
+                }
+
+                if (is_array($childItem)) {
+                    $this->addNestedIndexRedirects($locale, $defaultPath, $childItem, $indexAsPageDirs);
                 }
             }
         }
@@ -691,26 +766,33 @@
                 $setItem = false;
                 $fullPath = trim($path, '/');
                 $isLink = $this->isLink($key);
+                $hasIndex = isset($value['current']) && ($value['current']['has_index'] ?? false);
                 if (isset($value['current']) && $value['current']['has_index']) {
                     $finalPath = str_ends_with($fullPath, $path) ? $fullPath : trim($fullPath . '/' . $path, '/');
                     $menuPath = '/' . $finalPath;
+                    $filePath = $this->buildDocPath($locale, $path);
                     $pages['flat'][] = [
                         'key' => $path,
                         'path' => $isLink ? $key : $menuPath,
                         'label' => $value['current']['title'],
-                        'file' => $this->buildDocPath($locale, $path),
+                        'file' => $filePath,
+                        'has_index' => true,
+                        'linkable' => $isLink || $hasIndex,
                     ];
                     $setItem = true;
                 }
                 if (!$setItem && isset($value['current']['title'])) {
                     $finalPath = str_ends_with($fullPath, $path) ? $fullPath : trim($fullPath . '/' . $path, '/');
                     $menuPath = '/' . $finalPath;
+                    $filePath = $this->buildDocPath($locale, $path);
                     $pages['flat'][] = [
                         'key' => $path,
                         'path' => null,
                         'navPath' => $isLink ? $key : $menuPath,
                         'label' => $value['current']['title'],
-                        'file' => $this->buildDocPath($locale, $path),
+                        'file' => $filePath,
+                        'has_index' => false,
+                        'linkable' => false,
                     ];
                 }
                 if (isset($value['current']['menu']) && is_array($value['current']['menu'])) {
@@ -720,11 +802,14 @@
                         }
                         $finalPath = str_ends_with($fullPath, $menuKey) ? $fullPath : trim($fullPath . '/' . $menuKey, '/');
                         $menuPath = '/' . $finalPath;
+                        $filePath = $this->buildDocPath($locale, $finalPath);
                         $pages['flat'][] = [
                             'key' => $menuKey,
                             'path' => $menuPath,
                             'label' => $menuLabel,
-                            'file' => $this->buildDocPath($locale, $finalPath),
+                            'file' => $filePath,
+                            'has_index' => true,
+                            'linkable' => true,
                         ];
                     }
                 }

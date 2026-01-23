@@ -147,8 +147,28 @@
                 return $items;
             }
 
+            $flattenHasLocale = false;
+            $flattenHasNoLocale = false;
+            foreach ($flat as $value) {
+                $candidate = $value['path'] ?? ($value['navPath'] ?? null);
+                if (!is_string($candidate) || $candidate === '') {
+                    continue;
+                }
+                $candidate = '/' . ltrim($candidate, '/');
+                if (str_starts_with($candidate, '/' . $locale . '/')) {
+                    $flattenHasLocale = true;
+                } else {
+                    $flattenHasNoLocale = true;
+                }
+                if ($flattenHasLocale && $flattenHasNoLocale) {
+                    break;
+                }
+            }
+
             $trimmedSegments = $segments;
-            if (!empty($trimmedSegments) && $trimmedSegments[0] === $locale) {
+            if (!empty($trimmedSegments)
+                && $trimmedSegments[0] === $locale
+                && !$flattenHasLocale) {
                 array_shift($trimmedSegments);
             }
 

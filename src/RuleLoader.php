@@ -22,6 +22,7 @@
 
 
         private string $cdnUrl;
+        private bool $isLocalSource = false;
 
         public array $perPageModuleHash = [];
 
@@ -44,14 +45,15 @@
             bool   $useModuleCache = true
         )
         {
-            $this->cdnUrl = $url;
-            $this->url = $this->cdnUrl . '/rule/rule.json';
+            $this->cdnUrl = rtrim($url, "/\\");
+            $this->isLocalSource = ! $this->isRemoteUrl($this->cdnUrl);
+            $this->url = $this->buildResourcePath('rule', 'rule.json');
             $this->cachePath = $cachePath;
             $this->ttlSeconds = $ttlSeconds;
             $this->delimeterUrl = $delimeterUrl;
             $this->manifest = new PageManifest($this->cachePath . '/page-manifest.json');
             $this->useModuleCache = $useModuleCache;
-            $this->currentSha = $this->extractShaFromUrl($url);
+            $this->currentSha = $this->computeSourceVersion();
         }
 
         /**
@@ -59,6 +61,7 @@
          */
         public function getRules(): void
         {
+            $this->currentSha = $this->computeSourceVersion();
             $cached = $this->loadCache();
             if ($cached && !$this->isExpired($cached['ts'])) {
                 $this->rules = $this->normalizeRules($cached['rules']);
@@ -68,6 +71,7 @@
             // If cache exists and SHA/url matches current config, reuse even if TTL expired.
             if ($cached
                 && isset($cached['sha'], $cached['url'])
+                && $cached['sha'] !== null
                 && $cached['url'] === $this->url
                 && $cached['sha'] === $this->currentSha) {
                 $this->rules = $this->normalizeRules($cached['rules']);
@@ -116,6 +120,39 @@
             }
 
             return null;
+        }
+
+        private function computeSourceVersion(): ?string
+        {
+            if ($this->isLocalSource && is_file($this->url)) {
+                $mtime = filemtime($this->url);
+
+                return $mtime !== false ? (string) $mtime : null;
+            }
+
+            return $this->extractShaFromUrl($this->cdnUrl);
+        }
+
+        private function isRemoteUrl(string $value): bool
+        {
+            $scheme = parse_url($value, PHP_URL_SCHEME);
+
+            return in_array($scheme, ['http', 'https'], true);
+        }
+
+        private function buildResourcePath(string ...$parts): string
+        {
+            $normalizedBase = rtrim(str_replace('\\', '/', $this->cdnUrl), '/');
+            $normalizedParts = array_filter(
+                array_map(fn($part) => trim($part, "/\\"), $parts),
+                fn($part) => $part !== ''
+            );
+
+            if (empty($normalizedParts)) {
+                return $normalizedBase;
+            }
+
+            return $normalizedBase . '/' . implode('/', $normalizedParts);
         }
 
         private function normalizeRules(array $rules): array
@@ -314,7 +351,12 @@
             if (isset($this->loadedPlugins[$loadedKey])) {
                 file_put_contents($hashPath, $this->loadedPlugins[$key . ':' . $ext], FILE_APPEND);
             } else {
-                $url = $this->cdnUrl . '/' . $rule['type'] . '/' . $key . '/' . $ext . '/' . $rule['fileName'] . '.' . $ext;
+                $url = $this->buildResourcePath(
+                    $rule['type'],
+                    $key,
+                    $ext,
+                    $rule['fileName'] . '.' . $ext
+                );
 
                 $context = stream_context_create([
                     'http' => [
@@ -345,7 +387,7 @@
                 return;
             }
 
-            $coreUrl = $this->cdnUrl . '/core/css/core.css';
+            $coreUrl = $this->buildResourcePath('core', 'css', 'core.css');
             $context = stream_context_create([
                 'http' => [
                     'timeout' => 5,
@@ -415,11 +457,13 @@
                 }
                 $rules = $decoded['rules'] ?? null;
                 $ts = $decoded['ts'] ?? null;
+                $sha = $decoded['sha'] ?? null;
+                $url = $decoded['url'] ?? null;
                 if (!is_array($rules) || !is_int($ts)) {
                     return null;
                 }
 
-                return ['rules' => $rules, 'ts' => $ts];
+                return ['rules' => $rules, 'ts' => $ts, 'sha' => $sha, 'url' => $url];
             } catch (\Throwable) {
                 return null;
             }
@@ -430,7 +474,7 @@
             $payload = [
                 'ts' => time(),
                 'rules' => $rules,
-                'sha' => $this->currentSha,
+                'sha' => $this->currentSha ?? $this->computeSourceVersion(),
                 'url' => $this->url,
             ];
 

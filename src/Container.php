@@ -251,6 +251,19 @@
         {
             $sha = $this['config']->get('sha');
             $defaultUrl = 'https://cdn.jsdelivr.net/gh/simai/ui@' . ($sha ?: 'latest') . '/distr';
+            $production = filter_var(
+                Env::get('DOCARA_PRODUCTION', $this['config']->get('production', false)),
+                FILTER_VALIDATE_BOOLEAN
+            );
+            $modulePath = Env::get('DOCARA_MODULE_PATH', $this['config']->get('modulePath'));
+            if (! $production && is_string($modulePath) && $modulePath !== '') {
+                $resolved = $this->resolveModulePath($modulePath);
+                $localRule = rtrim(str_replace('\\', '/', $resolved), '/') . '/rule/rule.json';
+                if (is_file($localRule)) {
+                    $defaultUrl = $resolved;
+                }
+            }
+
             $url = Env::get('RULE_JSON_URL', $defaultUrl);
             $cachePath = $this->cachePath();
             $ttl = (int) Env::get('RULE_JSON_TTL', 900);
@@ -262,6 +275,23 @@
             $loader = new RuleLoader($url, $cachePath, $ttl, '/', $useModuleCache);
             $this->instance(RuleLoader::class, $loader);
             $this->instance('ruleLoader', $loader);
+        }
+
+        private function resolveModulePath(string $modulePath): string
+        {
+            $normalized = rtrim($modulePath, "/\\");
+            if ($this->isAbsolutePath($normalized)) {
+                return $normalized;
+            }
+
+            return rtrim($this->path($normalized), "/\\");
+        }
+
+        private function isAbsolutePath(string $path): bool
+        {
+            return str_starts_with($path, '/')
+                || str_starts_with($path, '\\')
+                || preg_match('/^[A-Za-z]:[\/\\\\]/', $path) === 1;
         }
 
         private function registerShaResolver(): void

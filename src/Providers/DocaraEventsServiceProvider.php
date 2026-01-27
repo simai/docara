@@ -146,19 +146,22 @@ class DocaraEventsServiceProvider extends ServiceProvider
 
         if (preg_match_all('/<(h[1-4])(?: [^>]*id="([^"]*)")?[^>]*>(.*?)<\/\1>/si', $html, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $key => $match) {
-                $text = trim(html_entity_decode(strip_tags($match[3])));
+                [$inlineAnchorId, $cleanHeadingHtml] = $this->extractInlineHeadingAnchor($match[3]);
+                $text = trim(html_entity_decode(strip_tags($cleanHeadingHtml)));
                 $id = $configurator->makeUniqueHeadingId($path, $match[1], $key);
                 $issetId = strlen(trim($match[2])) > 0;
                 if ($issetId) {
                     $id = trim($match[2]);
+                } elseif ($inlineAnchorId !== null && $inlineAnchorId !== '') {
+                    $id = $inlineAnchorId;
                 }
-                $fingerPrint = $configurator->mkFingerprint($match[3]);
+                $fingerPrint = $configurator->mkFingerprint($cleanHeadingHtml);
                 $configurator->setFingerprint($id, $fingerPrint);
                 $rightMenuHeadings[$id] = [
                     'level' => $match[1],
                     'id' => $id,
                     'type' => preg_replace('/h/', '', $match[1]),
-                    'anchor' => $match[2],
+                    'anchor' => $match[2] ?: $inlineAnchorId,
                     'text' => $text,
                 ];
             }
@@ -248,13 +251,10 @@ class DocaraEventsServiceProvider extends ServiceProvider
         $jsInjection .= $scriptTag;
 
         if ($cssInjection !== '') {
-            $cssPos = $this->findCoreCssPosition($html);
-            if ($cssPos === null) {
-                $cssPos = $this->findProjectCssPosition($html);
-            }
-            if ($cssPos === null) {
-                $cssPos = $headClosePos;
-            }
+            $cssPos = $this->findCoreCssPosition($html)
+                ?? $this->findProjectCssPosition($html)
+                ?? $this->findFirstScriptPosition($html)
+                ?? $headClosePos;
             $html = substr($html, 0, $cssPos) . $cssPreload . $cssInjection . substr($html, $cssPos);
             $headClosePos = stripos($html, '</head>');
         }
@@ -263,7 +263,10 @@ class DocaraEventsServiceProvider extends ServiceProvider
             return $html;
         }
 
-        $insertPos = $this->findCoreJsPosition($html) ?? ($headClosePos === false ? strlen($html) : $headClosePos);
+        $cssTail = $this->findLastStylesheetPosition($html);
+        $insertPos = $cssTail
+            ?? $this->findCoreJsPosition($html)
+            ?? ($headClosePos === false ? strlen($html) : $headClosePos);
 
         return substr($html, 0, $insertPos) . $jsInjection . substr($html, $insertPos);
     }
@@ -295,7 +298,8 @@ class DocaraEventsServiceProvider extends ServiceProvider
         return preg_replace_callback(
             '/<(h[1-6])( [^>]*)?>(.*?)<\/\1>/si',
             function ($match) use (&$count, $relativePath, $configurator) {
-                $fingerPrint = $configurator->mkFingerprint($match[3]);
+                [$inlineAnchorId, $cleanHeadingHtml] = $this->extractInlineHeadingAnchor($match[3]);
+                $fingerPrint = $configurator->mkFingerprint($cleanHeadingHtml);
                 if (! isset($configurator->fingerPrint[$fingerPrint])) {
                     return $match[0];
                 }
@@ -305,17 +309,38 @@ class DocaraEventsServiceProvider extends ServiceProvider
                     return $match[0];
                 }
                 $id = $configurator->makeUniqueHeadingId($relativePath, $tag, $count);
+                if ($inlineAnchorId !== null && $inlineAnchorId !== '') {
+                    $id = $inlineAnchorId;
+                }
                 $count++;
-                $match[3] = preg_replace(
+                $cleanHeadingHtml = preg_replace(
                     '/(\S+)$/u',
                     '<span class="nowrap">$1<span class="sf-icon sf-icon--rotate-135">link</span></span>',
-                    $match[3]
+                    $cleanHeadingHtml
                 );
 
-                return "<$tag$attrs id=\"$id\"><a href='#{$id}' onclick='copyAnchor(this)' aria-disabled='false' class='header-anchor'>{$match[3]}</a></$tag>";
+                return "<$tag$attrs id=\"$id\"><a href='#{$id}' onclick='copyAnchor(this)' aria-disabled='false' class='header-anchor'>{$cleanHeadingHtml}</a></$tag>";
             },
             $html
         );
+    }
+
+    private function extractInlineHeadingAnchor(string $html): array
+    {
+        $anchorId = null;
+        $cleanHtml = $html;
+
+        if (preg_match('/<a([^>]*)\\bname\\s*=\\s*[\"\\\']([^\"\\\']+)[\"\\\']([^>]*)>(.*?)<\\/a>/si', $html, $match)) {
+            $anchorId = trim($match[2]);
+            $inner = $match[4] ?? '';
+            $cleanHtml = trim(str_replace($match[0], $inner, $html));
+        } elseif (preg_match('/<a((?!href)[^>]*)\\bid\\s*=\\s*[\"\\\']([^\"\\\']+)[\"\\\']((?!href)[^>]*)>(.*?)<\\/a>/si', $html, $match)) {
+            $anchorId = trim($match[2]);
+            $inner = $match[5] ?? '';
+            $cleanHtml = trim(str_replace($match[0], $inner, $html));
+        }
+
+        return [$anchorId, $cleanHtml];
     }
 
     private function writeSearchIndexes(Docara $docara): void
@@ -388,6 +413,27 @@ class DocaraEventsServiceProvider extends ServiceProvider
     {
         if (preg_match('/<link[^>]+href=[\"\\\']?[^\"\\\'>]*assets\\/build\\/css\\/main\\.css[^>]*>/i', $html, $matches, PREG_OFFSET_CAPTURE)) {
             return $matches[0][1];
+        }
+
+        return null;
+    }
+
+    private function findFirstScriptPosition(string $html): ?int
+    {
+        if (preg_match('/<script\\b[^>]*>/i', $html, $matches, PREG_OFFSET_CAPTURE)) {
+            return $matches[0][1];
+        }
+
+        return null;
+    }
+
+    private function findLastStylesheetPosition(string $html): ?int
+    {
+        if (preg_match_all('/<link[^>]+rel=[\"\\\']?stylesheet[^>]*>/i', $html, $matches, PREG_OFFSET_CAPTURE)) {
+            $last = end($matches[0]);
+            if (is_array($last) && isset($last[1])) {
+                return $last[1] + strlen($last[0]);
+            }
         }
 
         return null;

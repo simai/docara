@@ -13,6 +13,7 @@ mix.copy(
     'source/assets/build/css/files'
 );
 mix.sass('source/_core/_assets/css/main.scss', 'css');
+
 mix.webpackConfig({
     stats: {
         all: false,

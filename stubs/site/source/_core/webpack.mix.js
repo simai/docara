@@ -8,7 +8,10 @@ mix.copy('source/_core/_assets/img', 'source/assets/build/img');
 if (fs.existsSync('source/img')) {
     mix.copy('source/img', 'source/assets/build/img');
 }
-mix.copy('source/_core/_assets/fonts', 'source/assets/build/fonts');
+mix.copy(
+    'node_modules/@fontsource-variable/inter/files',
+    'source/assets/build/css/files'
+);
 mix.sass('source/_core/_assets/css/main.scss', 'css');
 mix.webpackConfig({
     stats: {

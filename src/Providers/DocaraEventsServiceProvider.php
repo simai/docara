@@ -245,7 +245,7 @@ class DocaraEventsServiceProvider extends ServiceProvider
         if (! empty($moduleArray['js'])) {
             $jsUrl = $this->publishAsset($moduleArray['js'], $outputPath, 'js');
             if ($jsUrl) {
-                $jsInjection .= "<script src=\"{$jsUrl}\" defer></script>";
+                $jsInjection .= "<script src=\"{$jsUrl}\"></script>";
             }
         }
         $jsInjection .= $scriptTag;

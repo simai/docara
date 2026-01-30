@@ -15,6 +15,9 @@ let _fusePromise;
 let fontsReady = false,
     turboEnable = false;
 
+// Prevent visible smooth scroll on first paint.
+let initialMenuScrollDone = false;
+
 function getFuseOnce() {
     if (!_fusePromise) _fusePromise = initFuse();
     return _fusePromise;
@@ -29,18 +32,45 @@ function scrollToActiveMenu() {
     );
 
     if (activeItem) {
-        activeItem.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-            container: 'nearest',
+        scrollIntoMenu(activeItem, menu, { center: true });
+    } else if (activeCategories.length) {
+        scrollIntoMenu(activeCategories[activeCategories.length - 1], menu, {
+            center: false,
         });
     }
-    if (!activeItem && activeCategories.length) {
-        activeCategories[activeCategories.length - 1].scrollIntoView({
-            behavior: 'smooth',
-            block: 'nearest',
-            container: 'nearest',
+}
+
+function scrollIntoMenu(target, menu, { center = false } = {}) {
+    const targetLeft = center
+        ? target.offsetLeft - (menu.clientWidth - target.offsetWidth) / 2
+        : target.offsetLeft;
+    const maxLeft = menu.scrollWidth - menu.clientWidth;
+    const left = Math.min(Math.max(targetLeft, 0), maxLeft);
+
+    const needsScroll =
+        left < menu.scrollLeft ||
+        left > menu.scrollLeft + menu.clientWidth - target.offsetWidth;
+
+    if (!needsScroll) return;
+
+    const doScroll = (behavior) => {
+        menu.scrollTo({ left, behavior });
+        initialMenuScrollDone = true;
+    };
+
+    if (!initialMenuScrollDone) {
+        // Do it before the first painted frame so пользователь не видит анимацию.
+        const originalBehavior = menu.style.scrollBehavior;
+        menu.style.scrollBehavior = 'auto';
+        requestAnimationFrame(() => {
+            doScroll('auto');
+            // Restore smooth scrolling after the first frame.
+            requestAnimationFrame(() => {
+                menu.style.scrollBehavior = originalBehavior || '';
+            });
         });
+    } else {
+        doScroll('smooth');
     }
 }
 

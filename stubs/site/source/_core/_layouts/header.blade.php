@@ -1,4 +1,4 @@
-<header class="w-full flex z-8 sticky border-b-1 border-outline-variant bg-surface-0 box-border" role="banner">
+<header class="w-full flex z-8 sticky border-bottom-1 border-outline-variant bg-surface-0 box-border" role="banner">
     <div class="header--wrap flex flex-1 items-cross-center container gap-1 px-b6 m-auto">
         @includeWhen($section['logo']['enabled'], '_core._components.header.logo')
         @if($page->category)

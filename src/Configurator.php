@@ -28,6 +28,11 @@
 
         public array $translations = [];
 
+        /**
+         * Raw content collected for translation: [$locale][] = ['path' => string, 'html' => string, 'text' => string]
+         */
+        public array $translateSources = [];
+
         public string $distPath = '';
 
         public array $indexRedirects = [];
@@ -220,6 +225,94 @@
             }
 
             return null;
+        }
+
+        public function extractInlineHeadingAnchor(string $html): array
+        {
+            $anchorId = null;
+            $cleanHtml = $html;
+
+            if (preg_match('/<a([^>]*)\\bname\\s*=\\s*[\"\\\']([^\"\\\']+)[\"\\\']([^>]*)>(.*?)<\\/a>/si', $html, $match)) {
+                $anchorId = trim($match[2]);
+                $inner = $match[4] ?? '';
+                $cleanHtml = trim(str_replace($match[0], $inner, $html));
+            } elseif (preg_match('/<a((?!href)[^>]*)\\bid\\s*=\\s*[\"\\\']([^\"\\\']+)[\"\\\']((?!href)[^>]*)>(.*?)<\\/a>/si', $html, $match)) {
+                $anchorId = trim($match[2]);
+                $inner = $match[5] ?? '';
+                $cleanHtml = trim(str_replace($match[0], $inner, $html));
+            }
+
+            return [$anchorId, $cleanHtml];
+        }
+
+        private function extractHeadings(string $path, string $html): array
+        {
+            $plain = strip_tags($html);
+            $headings = [];
+            $rightMenuHeadings = [];
+
+            if (preg_match_all('/<h2.*?id="(.*?)".*?>(.*?)<\/h2>/si', $html, $matches, PREG_SET_ORDER)) {
+                foreach ($matches as $match) {
+                    $headings[] = [
+                        'anchor' => $match[1],
+                        'text' => trim(html_entity_decode(strip_tags($match[2]))),
+                    ];
+                }
+            }
+
+            if (preg_match_all('/<(h[1-4])(?: [^>]*id="([^"]*)")?[^>]*>(.*?)<\/\1>/si', $html, $matches, PREG_SET_ORDER)) {
+                foreach ($matches as $key => $match) {
+                    [$inlineAnchorId, $cleanHeadingHtml] = $this->extractInlineHeadingAnchor($match[3]);
+                    $text = trim(html_entity_decode(strip_tags($cleanHeadingHtml)));
+                    $id = $this->makeUniqueHeadingId($path, $match[1], $key);
+                    $issetId = strlen(trim($match[2])) > 0;
+                    if ($issetId) {
+                        $id = trim($match[2]);
+                    } elseif ($inlineAnchorId !== null && $inlineAnchorId !== '') {
+                        $id = $inlineAnchorId;
+                    }
+                    $fingerPrint = $this->mkFingerprint($cleanHeadingHtml);
+                    $this->setFingerprint($id, $fingerPrint);
+                    $rightMenuHeadings[$id] = [
+                        'level' => $match[1],
+                        'id' => $id,
+                        'type' => preg_replace('/h/', '', $match[1]),
+                        'anchor' => $match[2] ?: $inlineAnchorId,
+                        'text' => $text,
+                    ];
+                }
+            }
+
+            return [$headings, $rightMenuHeadings, $plain];
+        }
+
+        public function addTranslateSource(PageData $pageData, string $html): void
+        {
+            $locale = $pageData->page->locale() ?? '';
+
+            $path = $pageData->page->getPath() ?? '';
+
+            $title = $pageData->page->title ?? '';
+
+            [$headings, $rightMenuHeadings, $plain] = $this->extractHeadings($path, $html);
+
+            $this->setHeading($path, $rightMenuHeadings);
+            $contentLines = preg_split('/\r\n|\r|\n/', strip_tags($plain));
+            if ($title !== '' && isset($contentLines[0]) && trim($contentLines[0]) === $title) {
+                array_shift($contentLines);
+            }
+
+            $cleanedContent = implode("\n", $contentLines);
+            $pageData->page->set('headings', $rightMenuHeadings);
+
+            $text = trim(strip_tags($html));
+            $this->translateSources[$locale][] = [
+                'url' => $path,
+                'title' => $title,
+                'lang' => $locale,
+                'content' => trim($cleanedContent),
+                'headings' => $headings,
+            ];
         }
 
         private function sortPagesRecursively(array &$pages, array $menu): void
@@ -552,7 +645,7 @@
                             $this->multipleHandler->setMenu($locale, $menuKey, $menu);
 
                             $basePath = '/' . $locale . '/' . $menuKey;
-                        
+
                                 $this->addNestedIndexRedirects($locale, $basePath, $item['pages'][$menuKey], $indexAsPageDirs);
                             } catch (Throwable $e) {
                                 $this->console->writeln(sprintf(

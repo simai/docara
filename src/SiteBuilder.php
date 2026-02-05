@@ -8,6 +8,7 @@
     use Simai\Docara\Console\ConsoleOutput;
     use Simai\Docara\File\Filesystem;
     use Simai\Docara\File\InputFile;
+    use Simai\Docara\RuleLoader;
 
     class SiteBuilder
     {
@@ -168,7 +169,21 @@ HTML;
             $outputPath = $this->getOutputPath($file);
             $directory = dirname($outputPath);
             $this->prepareDirectory("{$destination}/{$directory}");
-            $file->putContents("{$destination}/{$outputPath}");
+
+            $contents = $file->contents();
+            // If content is binary/null (e.g., CopyFile), just delegate to putContents without injections.
+            if (! is_string($contents)) {
+                $file->putContents("{$destination}/{$outputPath}");
+            } else {
+                // inject module assets on the fly (no need for afterBuild scan)
+                $ruleLoader = Container::getInstance()->make(RuleLoader::class);
+                $moduleArr = $ruleLoader->findModules($contents);
+                if (! empty($moduleArr)) {
+                    $contents = $this->injectAssets($contents, $moduleArr, $destination);
+                }
+
+                file_put_contents("{$destination}/{$outputPath}", $contents);
+            }
 
             // Sync page path with final output path so menus/active states use the real URL.
             $webPath = '/' . trim(str_replace('\\', '/', $outputPath), '/');
@@ -262,5 +277,144 @@ HTML;
         private function getFilePermalink($file): ?string
         {
             return $file->data()->page->permalink ? '/' . resolvePath(urldecode($file->data()->page->permalink)) : null;
+        }
+
+        /**
+         * Inject CSS/JS modules into page HTML.
+         */
+        private function injectAssets(string $html, array $moduleArray, string $outputPath): string
+        {
+            $headClosePos = stripos($html, '</head>');
+            if ($headClosePos === false) {
+                return $html;
+            }
+
+            $useModuleCache = filter_var(Container::getInstance()->config->get('moduleCache', true), FILTER_VALIDATE_BOOLEAN);
+            if ($useModuleCache && !empty($moduleArray['css'])) {
+                $html = $this->stripCoreCssLink($html);
+                $headClosePos = stripos($html, '</head>');
+            }
+
+            $cssInjection = '';
+            $cssPreload = '';
+            if (! empty($moduleArray['css'])) {
+                $cssUrl = $this->publishAsset($moduleArray['css'], $outputPath, 'css');
+                if ($cssUrl) {
+                    $cssPreload = "<link rel=\"preload\" as=\"style\" href=\"{$cssUrl}\">";
+                    $cssInjection = "<link rel=\"stylesheet\" href=\"{$cssUrl}\">";
+                }
+            }
+
+            $scriptTag = '';
+            if(isset($moduleArray['modules']) && !empty($moduleArray['modules'])) {
+                $modules = $moduleArray['modules'];
+                $preloaded = [
+                    'modules' => array_keys($modules),
+                    'loadedPlugins' => $modules ?? [],
+                ];
+                $json = json_encode($preloaded, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+                $scriptTag = '<script>window.SF_PRELOADED = ' . $json . ';</script>';
+            }
+
+            $jsInjection = '';
+            if (! empty($moduleArray['js'])) {
+                $jsUrl = $this->publishAsset($moduleArray['js'], $outputPath, 'js');
+                if ($jsUrl) {
+                    $jsInjection .= "<script src=\"{$jsUrl}\"></script>";
+                }
+            }
+            $jsInjection .= $scriptTag;
+
+            if ($cssInjection !== '') {
+                $cssPos = $this->findCoreCssPosition($html)
+                    ?? $this->findProjectCssPosition($html)
+                    ?? $this->findFirstScriptPosition($html)
+                    ?? $headClosePos;
+                $html = substr($html, 0, $cssPos) . $cssPreload . $cssInjection . substr($html, $cssPos);
+                $headClosePos = stripos($html, '</head>');
+            }
+
+            if ($jsInjection === '') {
+                return $html;
+            }
+
+            $cssTail = $this->findLastStylesheetPosition($html);
+            $insertPos = $cssTail
+                ?? $this->findCoreJsPosition($html)
+                ?? ($headClosePos === false ? strlen($html) : $headClosePos);
+
+            return substr($html, 0, $insertPos) . $jsInjection . substr($html, $insertPos);
+        }
+
+        private function publishAsset(string $sourcePath, string $outputPath, string $ext): ?string
+        {
+            if (! is_file($sourcePath)) {
+                return null;
+            }
+
+            $extDir = $ext === 'js' ? 'js' : 'css';
+            $assetsDir = rtrim($outputPath, '/\\') . '/assets/build/' . $extDir;
+            if (! is_dir($assetsDir)) {
+                @mkdir($assetsDir, 0775, true);
+            }
+
+            $fileName = basename($sourcePath);
+            $destPath = $assetsDir . '/' . $fileName;
+            @copy($sourcePath, $destPath);
+
+            return '/assets/build/' . $extDir . '/' . $fileName;
+        }
+
+        private function findCoreJsPosition(string $html): ?int
+        {
+            if (preg_match('/<script[^>]+src=[\"\\\']?[^\"\\\'>]*core\\/js\\/core\\.js[^>]*>/i', $html, $matches, PREG_OFFSET_CAPTURE)) {
+                return $matches[0][1];
+            }
+
+            return null;
+        }
+
+        private function findCoreCssPosition(string $html): ?int
+        {
+            if (preg_match('/<link[^>]+href=[\"\\\']?[^\"\\\'>]*core\\/css\\/core\\.css[^>]*>/i', $html, $matches, PREG_OFFSET_CAPTURE)) {
+                return $matches[0][1] + strlen($matches[0][0]);
+            }
+
+            return null;
+        }
+
+        private function stripCoreCssLink(string $html): string
+        {
+            return preg_replace('/<link[^>]+href=[\"\\\']?[^\"\\\'>]*core\\/css\\/core\\.css[^>]*>\\s*/i', '', $html, 1);
+        }
+
+        private function findProjectCssPosition(string $html): ?int
+        {
+            if (preg_match('/<link[^>]+href=[\"\\\']?[^\"\\\'>]*assets\\/build\\/css\\/main\\.css[^>]*>/i', $html, $matches, PREG_OFFSET_CAPTURE)) {
+                return $matches[0][1];
+            }
+
+            return null;
+        }
+
+        private function findFirstScriptPosition(string $html): ?int
+        {
+            if (preg_match('/<script\\b[^>]*>/i', $html, $matches, PREG_OFFSET_CAPTURE)) {
+                return $matches[0][1];
+            }
+
+            return null;
+        }
+
+        private function findLastStylesheetPosition(string $html): ?int
+        {
+            if (preg_match_all('/<link[^>]+rel=[\"\\\']?stylesheet[^>]*>/i', $html, $matches, PREG_OFFSET_CAPTURE)) {
+                $last = end($matches[0]);
+                if (is_array($last) && isset($last[1])) {
+                    return $last[1] + strlen($last[0]);
+                }
+            }
+
+            return null;
         }
     }

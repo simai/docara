@@ -1,642 +1,636 @@
 <?php
 
-    namespace Simai\Docara;
+namespace Simai\Docara;
 
-    use FilesystemIterator;
-    use Illuminate\Support\Str;
-    use RecursiveDirectoryIterator;
-    use RecursiveIteratorIterator;
-    use Symfony\Component\Console\Helper\ProgressBar;
-    use Simai\Docara\Console\ConsoleOutput;
-    use Simai\Docara\Multiple\MultipleHandler;
-    use Simai\Docara\Support\Layout;
-    use Throwable;
+use FilesystemIterator;
+use Illuminate\Support\Str;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use Simai\Docara\Console\ConsoleOutput;
+use Simai\Docara\Multiple\MultipleHandler;
+use Simai\Docara\Support\Layout;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Throwable;
 
-    class Configurator
+class Configurator
+{
+    public array $locales;
+
+    public array $paths = [];
+
+    public array $settings = [];
+
+    public array $fingerPrint = [];
+
+    public bool $useCategory = false;
+
+    public array $indexMenuDirs = [];
+
+    public array $translations = [];
+
+    /**
+     * Raw content collected for translation: [$locale][] = ['path' => string, 'html' => string, 'text' => string]
+     */
+    public array $translateSources = [];
+
+    public string $distPath = '';
+
+    public array $indexRedirects = [];
+
+    public array $headings;
+
+    public array $menu;
+
+    public array $flattenMenu;
+
+    public bool $hasIndexPage = false;
+
+    public string $indexPage = '';
+
+    private MultipleHandler $multipleHandler;
+
+    public array $topMenu = [];
+
+    public ConsoleOutput $console;
+
+    public array $realFlatten = [];
+
+    public string $locale = 'en';
+
+    public string $docsDir = 'source/docs/';
+
+    /**
+     * Order of top-level categories per locale (for prev/next across categories).
+     *
+     * @var array<string, string[]>
+     */
+    public array $categoryOrder = [];
+
+    public Container $container;
+
+    private Docara $docara;
+
+    public function __construct(Container $container)
     {
-        public array $locales;
-
-        public array $paths = [];
-
-        public array $settings = [];
-
-        public array $fingerPrint = [];
-
-        public bool $useCategory = false;
-
-        public array $indexMenuDirs = [];
-
-        public array $translations = [];
-
-        /**
-         * Raw content collected for translation: [$locale][] = ['path' => string, 'html' => string, 'text' => string]
-         */
-        public array $translateSources = [];
-
-        public string $distPath = '';
-
-        public array $indexRedirects = [];
-
-        public array $headings;
-
-        public array $menu;
-
-        public array $flattenMenu;
-
-        public bool $hasIndexPage = false;
-
-        public string $indexPage = '';
-
-        private MultipleHandler $multipleHandler;
-
-        public array $topMenu = [];
-
-        public ConsoleOutput $console;
-
-        public array $realFlatten = [];
-
-        public string $locale = 'en';
-
-        public string $docsDir = 'source/docs/';
-
-        /**
-         * Order of top-level categories per locale (for prev/next across categories).
-         *
-         * @var array<string, string[]>
-         */
-        public array $categoryOrder = [];
-
-        public Container $container;
-
-        private Docara $docara;
-
-        public function __construct(Container $container)
-        {
-            $this->container = $container;
-            $this->console = $this->container['consoleOutput'];
-            $docsDirEnv = $this->container->config->get('docara.docsDir', 'docs');
-            if (! $docsDirEnv) {
-                $this->console->writeln('<comment>DOCS_DIR is not set; defaulting to "docs".</comment>');
-                $docsDirEnv = 'docs';
-            }
-            $this->docsDir = 'source/' . trim($docsDirEnv, '/\\') . '/';
-            $this->extractImages();
+        $this->container = $container;
+        $this->console = $this->container['consoleOutput'];
+        $docsDirEnv = $this->container->config->get('docara.docsDir', 'docs');
+        if (! $docsDirEnv) {
+            $this->console->writeln('<comment>DOCS_DIR is not set; defaulting to "docs".</comment>');
+            $docsDirEnv = 'docs';
         }
+        $this->docsDir = 'source/' . trim($docsDirEnv, '/\\') . '/';
+        $this->extractImages();
+    }
 
-        public function prepare($locales, $docara): void
-        {
-            $this->console->writeln(PHP_EOL . '<comment>=== Configurator prepare ===</comment>');
-            $this->docara = $docara;
-            $this->distPath = $docara->getDestinationPath();
-            $this->useCategory = $docara->getConfig('category');
-            $this->indexMenuDirs = $this->container->config->get('docara.indexMenuDirs', []);
-            $this->indexRedirects = [];
-            $this->locale = $docara->getConfig('defaultLocale');
-            $this->console->writeln(PHP_EOL . "<comment>=== Default locale set is ({$this->locale}) ===</comment>");
-            $this->locales = array_keys($locales);
-            $this->makeSettings();
-            $value = filter_var($this->useCategory, FILTER_VALIDATE_BOOLEAN);
-            $this->console->writeln(PHP_EOL . sprintf(
-                    '<comment>=== UseCategory: %s ===</comment>',
-                    $value ? 'true' : 'false'
-                ));
-            if ($this->useCategory) {
-                $this->multipleHandler = new MultipleHandler;
-                $this->makeMultipleStructure();
+    public function prepare($locales, $docara): void
+    {
+        $this->console->writeln(PHP_EOL . '<comment>=== Configurator prepare ===</comment>');
+        $this->docara = $docara;
+        $this->distPath = $docara->getDestinationPath();
+        $this->useCategory = $docara->getConfig('category');
+        $this->indexMenuDirs = $this->container->config->get('docara.indexMenuDirs', []);
+        $this->indexRedirects = [];
+        $this->locale = $docara->getConfig('defaultLocale');
+        $this->console->writeln(PHP_EOL . "<comment>=== Default locale set is ({$this->locale}) ===</comment>");
+        $this->locales = array_keys($locales);
+        $this->makeSettings();
+        $value = filter_var($this->useCategory, FILTER_VALIDATE_BOOLEAN);
+        $this->console->writeln(PHP_EOL . sprintf(
+            '<comment>=== UseCategory: %s ===</comment>',
+            $value ? 'true' : 'false'
+        ));
+        if ($this->useCategory) {
+            $this->multipleHandler = new MultipleHandler;
+            $this->makeMultipleStructure();
+        } else {
+            $this->makeSingleStructure();
+        }
+        $this->makeLocales();
+        $this->container->config->put('docara.indexRedirects', $this->indexRedirects);
+    }
+
+    private function array_set_deep(&$array, $path, $value, $locale): void
+    {
+        $segments = explode('/', $path);
+        if ($segments[0] === '') {
+            $segments[0] = $locale;
+        } else {
+            $segments = explode('/', $locale . '/' . $path);
+        }
+        $current = &$array;
+        foreach ($segments as $segment) {
+            if (! isset($current['pages'][$segment])) {
+                $current['pages'][$segment] = [];
+            }
+            $current = &$current['pages'][$segment];
+        }
+        $dir = $this->docsDir . '/' . $locale;
+        if (is_dir($dir . '/' . $path)) {
+            if (is_file($dir . '/' . $path . '/index.md') || is_file($dir . '/' . $path . '/' . $path . '.md')) {
+                $value['has_index'] = true;
             } else {
-                $this->makeSingleStructure();
+                $value['has_index'] = false;
             }
-            $this->makeLocales();
-            $this->container->config->put('docara.indexRedirects', $this->indexRedirects);
+        }
+        if (! isset($value['showInMenu'])) {
+            $value['showInMenu'] = true;
+        }
+        $current['current'] = $value;
+    }
+
+    public function generateBreadCrumbs($locale, $segments): array
+    {
+
+        $items = [];
+        $flat = $this->realFlatten[$locale] ?? [];
+        if ($this->useCategory && isset($this->multipleHandler) && count($segments) >= 2) {
+            $category = $segments[1];
+            $flat = $this->multipleHandler->realFlattenByCategory[$locale][$category] ?? $flat;
+        }
+        if (empty($flat)) {
+            return $items;
         }
 
-        private function array_set_deep(&$array, $path, $value, $locale): void
-        {
-            $segments = explode('/', $path);
-            if ($segments[0] === '') {
-                $segments[0] = $locale;
+        $flattenHasLocale = false;
+        $flattenHasNoLocale = false;
+        foreach ($flat as $value) {
+            $candidate = $value['path'] ?? ($value['navPath'] ?? null);
+            if (! is_string($candidate) || $candidate === '') {
+                continue;
+            }
+            $candidate = '/' . ltrim($candidate, '/');
+            if (str_starts_with($candidate, '/' . $locale . '/')) {
+                $flattenHasLocale = true;
             } else {
-                $segments = explode('/', $locale . '/' . $path);
+                $flattenHasNoLocale = true;
             }
-            $current = &$array;
-            foreach ($segments as $segment) {
-                if (!isset($current['pages'][$segment])) {
-                    $current['pages'][$segment] = [];
-                }
-                $current = &$current['pages'][$segment];
+            if ($flattenHasLocale && $flattenHasNoLocale) {
+                break;
             }
-            $dir = $this->docsDir . '/' . $locale;
-            if (is_dir($dir . '/' . $path)) {
-                if (is_file($dir . '/' . $path . '/index.md') || is_file($dir . '/' . $path . '/' . $path . '.md')) {
-                    $value['has_index'] = true;
-                } else {
-                    $value['has_index'] = false;
-                }
-            }
-            if (!isset($value['showInMenu'])) {
-                $value['showInMenu'] = true;
-            }
-            $current['current'] = $value;
         }
 
-        public function generateBreadCrumbs($locale, $segments): array
-        {
+        $trimmedSegments = $segments;
+        if (! empty($trimmedSegments)
+            && $trimmedSegments[0] === $locale
+            && ! $flattenHasLocale) {
+            array_shift($trimmedSegments);
+        }
 
-            $items = [];
-            $flat = $this->realFlatten[$locale] ?? [];
-            if ($this->useCategory && isset($this->multipleHandler) && count($segments) >= 2) {
-                $category = $segments[1];
-                $flat = $this->multipleHandler->realFlattenByCategory[$locale][$category] ?? $flat;
-            }
-            if (empty($flat)) {
-                return $items;
-            }
-
-            $flattenHasLocale = false;
-            $flattenHasNoLocale = false;
+        $path = '';
+        foreach ($trimmedSegments as $segment) {
+            $path .= '/' . $segment;
             foreach ($flat as $value) {
-                $candidate = $value['path'] ?? ($value['navPath'] ?? null);
-                if (!is_string($candidate) || $candidate === '') {
-                    continue;
-                }
-                $candidate = '/' . ltrim($candidate, '/');
-                if (str_starts_with($candidate, '/' . $locale . '/')) {
-                    $flattenHasLocale = true;
+                if ($value['path']) {
+                    $link = $value['path'];
                 } else {
-                    $flattenHasNoLocale = true;
+                    $link = $value['navPath'];
                 }
-                if ($flattenHasLocale && $flattenHasNoLocale) {
-                    break;
-                }
-            }
-
-            $trimmedSegments = $segments;
-            if (!empty($trimmedSegments)
-                && $trimmedSegments[0] === $locale
-                && !$flattenHasLocale) {
-                array_shift($trimmedSegments);
-            }
-
-            $path = '';
-            foreach ($trimmedSegments as $segment) {
-                $path .= '/' . $segment;
-                foreach ($flat as $value) {
-                    if ($value['path']) {
-                        $link = $value['path'];
-                    } else {
-                        $link = $value['navPath'];
-                    }
-                    if ($link === $path) {
-                        $item = $value;
-                        if (!empty($item['path']) && ! $this->isLink($item['path'])) {
-                            $normalized = '/' . ltrim($item['path'], '/');
-                            if (!str_starts_with($normalized, '/' . $locale . '/')) {
-                                $item['path'] = '/' . trim($locale . '/' . ltrim($normalized, '/'), '/');
-                            } else {
-                                $item['path'] = $normalized;
-                            }
+                if ($link === $path) {
+                    $item = $value;
+                    if (! empty($item['path']) && ! $this->isLink($item['path'])) {
+                        $normalized = '/' . ltrim($item['path'], '/');
+                        if (! str_starts_with($normalized, '/' . $locale . '/')) {
+                            $item['path'] = '/' . trim($locale . '/' . ltrim($normalized, '/'), '/');
+                        } else {
+                            $item['path'] = $normalized;
                         }
-                        $items[] = $item;
                     }
+                    $items[] = $item;
                 }
             }
-
-            return $items;
         }
 
-        public function makeLocales(): void
-        {
-            $this->console->writeln(PHP_EOL . '<comment>=== Making locales from .lang.php... ===</comment>');
-            foreach ($this->locales as $locale) {
-                $locales = [];
-                $file = $this->docsDir . '/' . $locale . '/.lang.php';
-                if (is_file($file)) {
-                    $content = include $file;
-                    $this->translations[$locale] = $content;
+        return $items;
+    }
+
+    public function makeLocales(): void
+    {
+        $this->console->writeln(PHP_EOL . '<comment>=== Making locales from .lang.php... ===</comment>');
+        foreach ($this->locales as $locale) {
+            $locales = [];
+            $file = $this->docsDir . '/' . $locale . '/.lang.php';
+            if (is_file($file)) {
+                $content = include $file;
+                $this->translations[$locale] = $content;
+            }
+        }
+        $this->console->writeln(PHP_EOL . '<comment>=== Making success... ===</comment>');
+    }
+
+    public function getJsTranslations(string $locale): ?array
+    {
+        if (! empty($this->translations[$locale])) {
+            return $this->translations[$locale];
+        }
+
+        return null;
+    }
+
+    public function extractInlineHeadingAnchor(string $html): array
+    {
+        $anchorId = null;
+        $cleanHtml = $html;
+
+        if (preg_match('/<a([^>]*)\\bname\\s*=\\s*[\"\\\']([^\"\\\']+)[\"\\\']([^>]*)>(.*?)<\\/a>/si', $html, $match)) {
+            $anchorId = trim($match[2]);
+            $inner = $match[4] ?? '';
+            $cleanHtml = trim(str_replace($match[0], $inner, $html));
+        } elseif (preg_match('/<a((?!href)[^>]*)\\bid\\s*=\\s*[\"\\\']([^\"\\\']+)[\"\\\']((?!href)[^>]*)>(.*?)<\\/a>/si', $html, $match)) {
+            $anchorId = trim($match[2]);
+            $inner = $match[5] ?? '';
+            $cleanHtml = trim(str_replace($match[0], $inner, $html));
+        }
+
+        return [$anchorId, $cleanHtml];
+    }
+
+    private function extractHeadings(string $path, string $html): array
+    {
+        $plain = strip_tags($html);
+        $headings = [];
+        $rightMenuHeadings = [];
+
+        if (preg_match_all('/<h2.*?id="(.*?)".*?>(.*?)<\/h2>/si', $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $headings[] = [
+                    'anchor' => $match[1],
+                    'text' => trim(html_entity_decode(strip_tags($match[2]))),
+                ];
+            }
+        }
+
+        if (preg_match_all('/<(h[1-4])(?: [^>]*id="([^"]*)")?[^>]*>(.*?)<\/\1>/si', $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $key => $match) {
+                [$inlineAnchorId, $cleanHeadingHtml] = $this->extractInlineHeadingAnchor($match[3]);
+                $text = trim(html_entity_decode(strip_tags($cleanHeadingHtml)));
+                $id = $this->makeUniqueHeadingId($path, $match[1], $key);
+                $issetId = strlen(trim($match[2])) > 0;
+                if ($issetId) {
+                    $id = trim($match[2]);
+                } elseif ($inlineAnchorId !== null && $inlineAnchorId !== '') {
+                    $id = $inlineAnchorId;
                 }
+                $fingerPrint = $this->mkFingerprint($cleanHeadingHtml);
+                $this->setFingerprint($id, $fingerPrint);
+                $rightMenuHeadings[$id] = [
+                    'level' => $match[1],
+                    'id' => $id,
+                    'type' => preg_replace('/h/', '', $match[1]),
+                    'anchor' => $match[2] ?: $inlineAnchorId,
+                    'text' => $text,
+                ];
             }
-            $this->console->writeln(PHP_EOL . '<comment>=== Making success... ===</comment>');
         }
 
-        public function getJsTranslations(string $locale): ?array
-        {
-            if (!empty($this->translations[$locale])) {
-                return $this->translations[$locale];
-            }
+        return [$headings, $rightMenuHeadings, $plain];
+    }
 
-            return null;
+    public function addTranslateSource(PageData $pageData, string $html): void
+    {
+        $locale = $pageData->page->locale() ?? '';
+
+        $path = $pageData->page->getPath() ?? '';
+
+        $title = $pageData->page->title ?? '';
+
+        [$headings, $rightMenuHeadings, $plain] = $this->extractHeadings($path, $html);
+
+        $this->setHeading($path, $rightMenuHeadings);
+        $contentLines = preg_split('/\r\n|\r|\n/', strip_tags($plain));
+        if ($title !== '' && isset($contentLines[0]) && trim($contentLines[0]) === $title) {
+            array_shift($contentLines);
         }
 
-        public function extractInlineHeadingAnchor(string $html): array
-        {
-            $anchorId = null;
-            $cleanHtml = $html;
+        $cleanedContent = implode("\n", $contentLines);
+        $pageData->page->set('headings', $rightMenuHeadings);
+        $this->translateSources[$locale][] = [
+            'url' => $path,
+            'title' => $title,
+            'lang' => $locale,
+            'content' => trim($cleanedContent),
+            'headings' => $headings,
+        ];
+    }
 
-            if (preg_match('/<a([^>]*)\\bname\\s*=\\s*[\"\\\']([^\"\\\']+)[\"\\\']([^>]*)>(.*?)<\\/a>/si', $html, $match)) {
-                $anchorId = trim($match[2]);
-                $inner = $match[4] ?? '';
-                $cleanHtml = trim(str_replace($match[0], $inner, $html));
-            } elseif (preg_match('/<a((?!href)[^>]*)\\bid\\s*=\\s*[\"\\\']([^\"\\\']+)[\"\\\']((?!href)[^>]*)>(.*?)<\\/a>/si', $html, $match)) {
-                $anchorId = trim($match[2]);
-                $inner = $match[5] ?? '';
-                $cleanHtml = trim(str_replace($match[0], $inner, $html));
-            }
+    private function sortPagesRecursively(array &$pages, array $menu): void
+    {
+        $sortedPages = [];
 
-            return [$anchorId, $cleanHtml];
-        }
+        foreach ($menu as $key => $_) {
+            if (isset($pages[$key])) {
 
-        private function extractHeadings(string $path, string $html): array
-        {
-            $plain = strip_tags($html);
-            $headings = [];
-            $rightMenuHeadings = [];
+                if (isset($pages[$key]['pages']) && isset($pages[$key]['current']['menu'])) {
 
-            if (preg_match_all('/<h2.*?id="(.*?)".*?>(.*?)<\/h2>/si', $html, $matches, PREG_SET_ORDER)) {
-                foreach ($matches as $match) {
-                    $headings[] = [
-                        'anchor' => $match[1],
-                        'text' => trim(html_entity_decode(strip_tags($match[2]))),
-                    ];
+                    $this->sortPagesRecursively($pages[$key]['pages'], $pages[$key]['current']['menu']);
                 }
+                $sortedPages[$key] = $pages[$key];
             }
-
-            if (preg_match_all('/<(h[1-4])(?: [^>]*id="([^"]*)")?[^>]*>(.*?)<\/\1>/si', $html, $matches, PREG_SET_ORDER)) {
-                foreach ($matches as $key => $match) {
-                    [$inlineAnchorId, $cleanHeadingHtml] = $this->extractInlineHeadingAnchor($match[3]);
-                    $text = trim(html_entity_decode(strip_tags($cleanHeadingHtml)));
-                    $id = $this->makeUniqueHeadingId($path, $match[1], $key);
-                    $issetId = strlen(trim($match[2])) > 0;
-                    if ($issetId) {
-                        $id = trim($match[2]);
-                    } elseif ($inlineAnchorId !== null && $inlineAnchorId !== '') {
-                        $id = $inlineAnchorId;
-                    }
-                    $fingerPrint = $this->mkFingerprint($cleanHeadingHtml);
-                    $this->setFingerprint($id, $fingerPrint);
-                    $rightMenuHeadings[$id] = [
-                        'level' => $match[1],
-                        'id' => $id,
-                        'type' => preg_replace('/h/', '', $match[1]),
-                        'anchor' => $match[2] ?: $inlineAnchorId,
-                        'text' => $text,
-                    ];
-                }
+        }
+        foreach ($pages as $key => $value) {
+            if (! isset($sortedPages[$key])) {
+                $sortedPages[$key] = $value;
             }
-
-            return [$headings, $rightMenuHeadings, $plain];
         }
 
-        public function addTranslateSource(PageData $pageData, string $html): void
-        {
-            $locale = $pageData->page->locale() ?? '';
+        $pages = $sortedPages;
+    }
 
-            $path = $pageData->page->getPath() ?? '';
-
-            $title = $pageData->page->title ?? '';
-
-            [$headings, $rightMenuHeadings, $plain] = $this->extractHeadings($path, $html);
-
-            $this->setHeading($path, $rightMenuHeadings);
-            $contentLines = preg_split('/\r\n|\r|\n/', strip_tags($plain));
-            if ($title !== '' && isset($contentLines[0]) && trim($contentLines[0]) === $title) {
-                array_shift($contentLines);
+    private function sortPages($items): array
+    {
+        foreach ($items['pages'] as &$item) {
+            $current = $item;
+            if (! isset($current['pages']) || ! isset($current['current']) || ! isset($item['current']['menu'])) {
+                continue;
             }
-
-            $cleanedContent = implode("\n", $contentLines);
-            $pageData->page->set('headings', $rightMenuHeadings);
-
-            $text = trim(strip_tags($html));
-            $this->translateSources[$locale][] = [
-                'url' => $path,
-                'title' => $title,
-                'lang' => $locale,
-                'content' => trim($cleanedContent),
-                'headings' => $headings,
-            ];
+            $this->sortPagesRecursively($item['pages'], $item['current']['menu']);
         }
 
-        private function sortPagesRecursively(array &$pages, array $menu): void
-        {
-            $sortedPages = [];
+        return $items;
 
-            foreach ($menu as $key => $_) {
-                if (isset($pages[$key])) {
+    }
 
-                    if (isset($pages[$key]['pages']) && isset($pages[$key]['current']['menu'])) {
-
-                        $this->sortPagesRecursively($pages[$key]['pages'], $pages[$key]['current']['menu']);
-                    }
-                    $sortedPages[$key] = $pages[$key];
-                }
-            }
-            foreach ($pages as $key => $value) {
-                if (!isset($sortedPages[$key])) {
-                    $sortedPages[$key] = $value;
-                }
-            }
-
-            $pages = $sortedPages;
+    public function getLayoutOverridesForPath(string $locale, string $path): array
+    {
+        $tree = $this->settings[$locale] ?? [];
+        if (empty($tree)) {
+            return [];
         }
 
-        private function sortPages($items): array
-        {
-            foreach ($items['pages'] as &$item) {
-                $current = $item;
-                if (!isset($current['pages']) || !isset($current['current']) || !isset($item['current']['menu'])) {
-                    continue;
-                }
-                $this->sortPagesRecursively($item['pages'], $item['current']['menu']);
-            }
-
-            return $items;
-
+        if (isset($tree[$locale]) && is_array($tree[$locale])) {
+            $tree = $tree[$locale];
         }
 
+        $normalized = trim(str_replace('\\', '/', $path), '/');
+        $segments = $normalized === '' ? [] : explode('/', $normalized);
 
-        public function getLayoutOverridesForPath(string $locale, string $path): array
-        {
-            $tree = $this->settings[$locale] ?? [];
-            if (empty($tree)) {
+        $docsRoot = trim(str_replace(['\\', '/'], '/', $this->docsDir), '/');
+        $docsRoot = $docsRoot === '' ? null : basename($docsRoot);
+        if (! empty($segments) && $docsRoot && $segments[0] === $docsRoot) {
+            array_shift($segments);
+        }
+
+        while (! empty($segments) && $segments[0] === $locale) {
+            array_shift($segments);
+        }
+
+        if (! empty($segments)) {
+            $last = $segments[count($segments) - 1];
+
+            if (str_starts_with($last, '.')) {
                 return [];
             }
 
-            if (isset($tree[$locale]) && is_array($tree[$locale])) {
-                $tree = $tree[$locale];
-            }
+            $lastNoExt = preg_replace('/\.[^.]+$/', '', $last);
+            $segments[count($segments) - 1] = $lastNoExt;
 
-            $normalized = trim(str_replace('\\', '/', $path), '/');
-            $segments = $normalized === '' ? [] : explode('/', $normalized);
-
-            $docsRoot = trim(str_replace(['\\', '/'], '/', $this->docsDir), '/');
-            $docsRoot = $docsRoot === '' ? null : basename($docsRoot);
-            if (!empty($segments) && $docsRoot && $segments[0] === $docsRoot) {
-                array_shift($segments);
-            }
-
-            while (!empty($segments) && $segments[0] === $locale) {
-                array_shift($segments);
-            }
-
-            if (!empty($segments)) {
-                $last = $segments[count($segments) - 1];
-
-                if (str_starts_with($last, '.')) {
-                    return [];
-                }
-
-                $lastNoExt = preg_replace('/\.[^.]+$/', '', $last);
-                $segments[count($segments) - 1] = $lastNoExt;
-
-                if ($lastNoExt === 'index') {
-                    array_pop($segments);
-                }
-            }
-
-            $countSegments = count($segments);
-            if ($countSegments >= 2 && $segments[$countSegments - 1] === $segments[$countSegments - 2]) {
+            if ($lastNoExt === 'index') {
                 array_pop($segments);
             }
-
-            $overrides = [];
-            $node = $tree;
-            $depth = count($segments);
-
-            for ($i = 0; $i <= $depth; $i++) {
-                $remaining = array_slice($segments, $i);
-                $currentOverrides = $node['current']['layoutOverrides'] ?? null;
-
-                if ($currentOverrides && is_array($currentOverrides)) {
-                    $overrides = Layout::deepMerge(
-                        $overrides,
-                        $this->resolveLayoutOverridesForNode($currentOverrides, $remaining, $segments)
-                    );
-                }
-
-                if ($i === $depth) {
-                    break;
-                }
-
-                $segment = $segments[$i];
-                if (!isset($node['pages'][$segment])) {
-                    break;
-                }
-                $node = $node['pages'][$segment];
-            }
-
-            return $overrides;
         }
 
-        private function resolveLayoutOverridesForNode(array $overrides, array $remainingSegments, array $fullSegments): array
-        {
-            $resolved = [];
-            $depth = count($remainingSegments);
-            $lastSegment = $fullSegments[count($fullSegments) - 1] ?? '';
-            $immediate = $remainingSegments[0] ?? $lastSegment;
-            $remainingPath = implode('/', $remainingSegments);
-            $fullPath = implode('/', $fullSegments);
-            $firstSegment = $fullSegments[0] ?? '';
-
-            $normalizeConfig = static function (array $config) use (&$normalizeConfig): array {
-                $out = [];
-                foreach ($config as $key => $value) {
-                    if (is_string($key) && str_contains($key, '.')) {
-                        data_set($out, $key, $value);
-                    } else {
-                        $out[$key] = is_array($value) ? $normalizeConfig($value) : $value;
-                    }
-                }
-
-                return $out;
-            };
-
-            $matchPattern = static function ($pattern, string $value): bool {
-                if (is_string($pattern) && strlen($pattern) > 2 && str_starts_with($pattern, '/') && str_ends_with($pattern, '/')) {
-                    return @preg_match($pattern, $value) === 1;
-                }
-
-                if (is_string($pattern) && strpbrk($pattern, '*?[') !== false) {
-                    return Str::is($pattern, $value);
-                }
-
-                return (string)$pattern === $value;
-            };
-
-            if (isset($overrides['default']) && is_array($overrides['default'])) {
-                $def = $overrides['default'];
-                $applyDefault = ($def['recursive'] ?? false) || ($def['category'] ?? false) || $depth <= 1;
-                if ($applyDefault && isset($def['config']) && is_array($def['config'])) {
-                    $resolved = Layout::deepMerge($resolved, $normalizeConfig($def['config']));
-                }
-            }
-
-            if (!empty($overrides['matches']) && is_array($overrides['matches'])) {
-                foreach ($overrides['matches'] as $match) {
-                    if (!is_array($match) || !isset($match['pattern'])) {
-                        continue;
-                    }
-
-                    $recursive = $match['recursive'] ?? false;
-                    $category = $match['category'] ?? false;
-                    $scopeAllowed = $recursive || $category || $depth <= 1;
-                    if (!$scopeAllowed) {
-                        continue;
-                    }
-
-                    $subject = $recursive ? $remainingPath : $immediate;
-                    $categoryMatch = false;
-                    if ($category) {
-                        $categoryMatch = $matchPattern($match['pattern'], $fullPath)
-                            || $matchPattern($match['pattern'], $firstSegment);
-                    }
-
-                    if (($matchPattern($match['pattern'], $subject) || $categoryMatch)
-                        && isset($match['config'])
-                        && is_array($match['config'])) {
-                        $resolved = Layout::deepMerge($resolved, $normalizeConfig($match['config']));
-                    }
-                }
-            }
-
-            return $resolved;
+        $countSegments = count($segments);
+        if ($countSegments >= 2 && $segments[$countSegments - 1] === $segments[$countSegments - 2]) {
+            array_pop($segments);
         }
 
-        public function makeSingleStructure(): void
-        {
-            foreach ($this->locales as $locale) {
-                $pages = $this->makeFlatten($this->settings[$locale], $locale);
-                $filteredPages = array_filter($pages['flat'], function ($item) {
-                    return $item['path'] !== null;
-                });
-                $this->flattenMenu[$locale] = array_values($filteredPages);
-                $this->realFlatten[$locale] = $pages['flat'];
+        $overrides = [];
+        $node = $tree;
+        $depth = count($segments);
 
-                $this->menu[$locale] = $this->buildMenuTree($this->settings[$locale] ?? [], '', $locale);
+        for ($i = 0; $i <= $depth; $i++) {
+            $remaining = array_slice($segments, $i);
+            $currentOverrides = $node['current']['layoutOverrides'] ?? null;
 
+            if ($currentOverrides && is_array($currentOverrides)) {
+                $overrides = Layout::deepMerge(
+                    $overrides,
+                    $this->resolveLayoutOverridesForNode($currentOverrides, $remaining, $segments)
+                );
+            }
 
-                if ($locale === $this->locale && $this->indexPage === '') {
-                    $rootIndex = rtrim($this->docsDir, '/\\') . "/{$locale}/index.md";
-                    if (!is_file($rootIndex)) {
-                        foreach ($this->flattenMenu[$locale] ?? [] as $item) {
-                            $path = $item['path'] ?? null;
-                            if (!$path || $this->isLink($path)) {
-                                continue;
-                            }
-                            $file = $item['file'] ?? null;
-                            if ($file && !is_file($file)) {
-                                continue;
-                            }
-                            $normalized = ltrim($path, '/');
-                            if (str_starts_with($normalized, $locale . '/')) {
-                                $normalized = substr($normalized, strlen($locale) + 1);
-                            }
-                            if ($normalized === '') {
-                                continue;
-                            }
-                            $this->indexPage = $normalized;
-                            $this->hasIndexPage = true;
-                            break;
+            if ($i === $depth) {
+                break;
+            }
+
+            $segment = $segments[$i];
+            if (! isset($node['pages'][$segment])) {
+                break;
+            }
+            $node = $node['pages'][$segment];
+        }
+
+        return $overrides;
+    }
+
+    private function resolveLayoutOverridesForNode(array $overrides, array $remainingSegments, array $fullSegments): array
+    {
+        $resolved = [];
+        $depth = count($remainingSegments);
+        $lastSegment = $fullSegments[count($fullSegments) - 1] ?? '';
+        $immediate = $remainingSegments[0] ?? $lastSegment;
+        $remainingPath = implode('/', $remainingSegments);
+        $fullPath = implode('/', $fullSegments);
+        $firstSegment = $fullSegments[0] ?? '';
+
+        $normalizeConfig = static function (array $config) use (&$normalizeConfig): array {
+            $out = [];
+            foreach ($config as $key => $value) {
+                if (is_string($key) && str_contains($key, '.')) {
+                    data_set($out, $key, $value);
+                } else {
+                    $out[$key] = is_array($value) ? $normalizeConfig($value) : $value;
+                }
+            }
+
+            return $out;
+        };
+
+        $matchPattern = static function ($pattern, string $value): bool {
+            if (is_string($pattern) && strlen($pattern) > 2 && str_starts_with($pattern, '/') && str_ends_with($pattern, '/')) {
+                return @preg_match($pattern, $value) === 1;
+            }
+
+            if (is_string($pattern) && strpbrk($pattern, '*?[') !== false) {
+                return Str::is($pattern, $value);
+            }
+
+            return (string) $pattern === $value;
+        };
+
+        if (isset($overrides['default']) && is_array($overrides['default'])) {
+            $def = $overrides['default'];
+            $applyDefault = ($def['recursive'] ?? false) || ($def['category'] ?? false) || $depth <= 1;
+            if ($applyDefault && isset($def['config']) && is_array($def['config'])) {
+                $resolved = Layout::deepMerge($resolved, $normalizeConfig($def['config']));
+            }
+        }
+
+        if (! empty($overrides['matches']) && is_array($overrides['matches'])) {
+            foreach ($overrides['matches'] as $match) {
+                if (! is_array($match) || ! isset($match['pattern'])) {
+                    continue;
+                }
+
+                $recursive = $match['recursive'] ?? false;
+                $category = $match['category'] ?? false;
+                $scopeAllowed = $recursive || $category || $depth <= 1;
+                if (! $scopeAllowed) {
+                    continue;
+                }
+
+                $subject = $recursive ? $remainingPath : $immediate;
+                $categoryMatch = false;
+                if ($category) {
+                    $categoryMatch = $matchPattern($match['pattern'], $fullPath)
+                        || $matchPattern($match['pattern'], $firstSegment);
+                }
+
+                if (($matchPattern($match['pattern'], $subject) || $categoryMatch)
+                    && isset($match['config'])
+                    && is_array($match['config'])) {
+                    $resolved = Layout::deepMerge($resolved, $normalizeConfig($match['config']));
+                }
+            }
+        }
+
+        return $resolved;
+    }
+
+    public function makeSingleStructure(): void
+    {
+        foreach ($this->locales as $locale) {
+            $pages = $this->makeFlatten($this->settings[$locale], $locale);
+            $filteredPages = array_filter($pages['flat'], function ($item) {
+                return $item['path'] !== null;
+            });
+            $this->flattenMenu[$locale] = array_values($filteredPages);
+            $this->realFlatten[$locale] = $pages['flat'];
+
+            $this->menu[$locale] = $this->buildMenuTree($this->settings[$locale] ?? [], '', $locale);
+
+            if ($locale === $this->locale && $this->indexPage === '') {
+                $rootIndex = rtrim($this->docsDir, '/\\') . "/{$locale}/index.md";
+                if (! is_file($rootIndex)) {
+                    foreach ($this->flattenMenu[$locale] ?? [] as $item) {
+                        $path = $item['path'] ?? null;
+                        if (! $path || $this->isLink($path)) {
+                            continue;
                         }
+                        $file = $item['file'] ?? null;
+                        if ($file && ! is_file($file)) {
+                            continue;
+                        }
+                        $normalized = ltrim($path, '/');
+                        if (str_starts_with($normalized, $locale . '/')) {
+                            $normalized = substr($normalized, strlen($locale) + 1);
+                        }
+                        if ($normalized === '') {
+                            continue;
+                        }
+                        $this->indexPage = $normalized;
+                        $this->hasIndexPage = true;
+                        break;
                     }
                 }
             }
         }
+    }
 
-        private function getFirstPageWithIndex($key, $item): ?string
-        {
-            if (!is_array($item) || !isset($item['current']) || !is_array($item['current'])) {
-                return null;
-            }
-
-            if (!empty($item['current']['has_index'])) {
-                return $key;
-            }
-            if (!empty($item['current']['menu']) && is_array($item['current']['menu'])) {
-                $menuOrder = array_keys($item['current']['menu']);
-                return  $key . '/' . $menuOrder[0];
-            }
-            if (isset($item['pages'])) {
-                foreach ($item['pages'] as $skey => $page) {
-                    $getKey = $this->getFirstPageWithIndex($key . '/' . $skey, $page);
-                    if ($getKey) {
-                        return $getKey;
-                    }
-                }
-            } else {
-                $first = array_key_first($item['current']['menu'] ?? []);
-                if ($first !== null) {
-                    return $key . '/' . $first;
-                }
-            }
-
+    private function getFirstPageWithIndex($key, $item): ?string
+    {
+        if (! is_array($item) || ! isset($item['current']) || ! is_array($item['current'])) {
             return null;
         }
 
-        private function setEmptyChildrenItemIndex()
-        {
+        if (! empty($item['current']['has_index'])) {
+            return $key;
+        }
+        if (! empty($item['current']['menu']) && is_array($item['current']['menu'])) {
+            $menuOrder = array_keys($item['current']['menu']);
 
+            return $key . '/' . $menuOrder[0];
+        }
+        if (isset($item['pages'])) {
+            foreach ($item['pages'] as $skey => $page) {
+                $getKey = $this->getFirstPageWithIndex($key . '/' . $skey, $page);
+                if ($getKey) {
+                    return $getKey;
+                }
+            }
+        } else {
+            $first = array_key_first($item['current']['menu'] ?? []);
+            if ($first !== null) {
+                return $key . '/' . $first;
+            }
         }
 
-        public function makeMultipleStructure(): void
-        {
-            foreach ($this->locales as $locale) {
-                $indexAsPageDirs = $this->indexMenuDirs[$locale] ?? [];
-                $this->indexRedirects[$locale] = [];
-                $this->categoryOrder[$locale] = [];
-                foreach ($this->settings[$locale] as $item) {
-                    $this->hasIndexPage = !empty($item['current']['has_index']);
-                    if ($this->hasIndexPage) {
-                        $this->indexPage = '';
+        return null;
+    }
+
+    private function setEmptyChildrenItemIndex() {}
+
+    public function makeMultipleStructure(): void
+    {
+        foreach ($this->locales as $locale) {
+            $indexAsPageDirs = $this->indexMenuDirs[$locale] ?? [];
+            $this->indexRedirects[$locale] = [];
+            $this->categoryOrder[$locale] = [];
+            foreach ($this->settings[$locale] as $item) {
+                $this->hasIndexPage = ! empty($item['current']['has_index']);
+                if ($this->hasIndexPage) {
+                    $this->indexPage = '';
+                }
+
+                if (! isset($item['current']['menu']) || ! is_array($item['current']['menu'])) {
+                    continue;
+                }
+
+                foreach ($item['current']['menu'] as $menuKey => $title) {
+                    $isLink = $this->isLink($menuKey);
+                    $path = '/' . $locale . '/' . $menuKey;
+
+                    if (! $this->hasIndexPage && ! $isLink) {
+                        $this->hasIndexPage = true;
+                        $this->indexPage = $menuKey;
                     }
 
-                    if (!isset($item['current']['menu']) || !is_array($item['current']['menu'])) {
-                        continue;
+                    $path = $isLink ? $menuKey : $path;
+
+                    if (isset($item['pages'][$menuKey]) && is_array($item['pages'][$menuKey])) {
+                        $childItem = $item['pages'][$menuKey];
+                        $defaultPath = '/' . $locale . '/' . $menuKey;
+                        if (! $item['current']['has_index']) {
+                            $needKey = $this->getFirstPageWithIndex($menuKey, $item['pages'][$menuKey]);
+                            if ($needKey !== null) {
+                                $path = '/' . $locale . '/' . $needKey;
+                            }
+                        } elseif (! $childItem['current']['has_index']) {
+
+                            $needKey = $this->getFirstPageWithIndex($menuKey, $item['pages'][$menuKey]);
+                            if ($needKey !== null) {
+                                if (isset($indexAsPageDirs[$needKey])) {
+                                    $needKey .= '/index';
+                                }
+                                $path = '/' . $locale . '/' . $needKey;
+                            }
+                        }
+                        if (! $isLink && isset($defaultPath) && $path !== $defaultPath) {
+                            $this->indexRedirects[$locale][$defaultPath] = $path;
+                        }
                     }
 
-                    foreach ($item['current']['menu'] as $menuKey => $title) {
-                        $isLink = $this->isLink($menuKey);
-                        $path = '/' . $locale . '/' . $menuKey;
+                    $this->topMenu[$locale][$menuKey] = [
+                        'path' => $path,
+                        'isLink' => $isLink,
+                        'title' => $title,
+                    ];
+                    if (! $isLink) {
+                        $this->categoryOrder[$locale][] = $menuKey;
+                    }
 
-                        if (!$this->hasIndexPage && !$isLink) {
-                            $this->hasIndexPage = true;
-                            $this->indexPage = $menuKey;
-                        }
-
-                        $path = $isLink ? $menuKey : $path;
-
-                        if (isset($item['pages'][$menuKey]) && is_array($item['pages'][$menuKey])) {
-                            $childItem = $item['pages'][$menuKey];
-                            $defaultPath = '/' . $locale . '/' . $menuKey;
-                            if (!$item['current']['has_index']) {
-                                $needKey = $this->getFirstPageWithIndex($menuKey, $item['pages'][$menuKey]);
-                                if ($needKey !== null) {
-                                    $path = '/' . $locale . '/' . $needKey;
-                                }
-                            } else if (!$childItem['current']['has_index']) {
-
-                                $needKey = $this->getFirstPageWithIndex($menuKey, $item['pages'][$menuKey]);
-                                if ($needKey !== null) {
-                                    if(isset($indexAsPageDirs[$needKey])) {
-                                        $needKey .= '/index';
-                                    }
-                                    $path = '/' . $locale . '/' . $needKey;
-                                }
-                            }
-                            if (!$isLink && isset($defaultPath) && $path !== $defaultPath) {
-                                $this->indexRedirects[$locale][$defaultPath] = $path;
-                            }
-                        }
-
-                        $this->topMenu[$locale][$menuKey] = [
-                            'path' => $path,
-                            'isLink' => $isLink,
-                            'title' => $title,
-                        ];
-                        if (! $isLink) {
-                            $this->categoryOrder[$locale][] = $menuKey;
-                        }
-
-                        if (!$isLink && isset($item['pages'][$menuKey])) {
-                               try {
+                    if (! $isLink && isset($item['pages'][$menuKey])) {
+                        try {
                             $menu = $this->buildMenuTree([$menuKey => $item['pages'][$menuKey]] ?? [], '', $locale);
                             $this->topMenu[$locale][$menuKey]['children'] = $item['pages'][$menuKey];
                             $pages = $this->makeFlatten([$menuKey => $item['pages'][$menuKey]], $locale);
@@ -646,679 +640,672 @@
 
                             $basePath = '/' . $locale . '/' . $menuKey;
 
-                                $this->addNestedIndexRedirects($locale, $basePath, $item['pages'][$menuKey], $indexAsPageDirs);
-                            } catch (Throwable $e) {
-                                $this->console->writeln(sprintf(
-                                    '<error>[addNestedIndexRedirects] locale=%s basePath=%s error=%s</error>',
-                                    $locale,
-                                    $basePath,
-                                    $e->getMessage()
-                                ));
-                                throw $e;
-                            }
+                            $this->addNestedIndexRedirects($locale, $basePath, $item['pages'][$menuKey], $indexAsPageDirs);
+                        } catch (Throwable $e) {
+                            $this->console->writeln(sprintf(
+                                '<error>[addNestedIndexRedirects] locale=%s basePath=%s error=%s</error>',
+                                $locale,
+                                $basePath,
+                                $e->getMessage()
+                            ));
+                            throw $e;
                         }
                     }
                 }
             }
         }
+    }
 
-        /**
-         * Recursively add redirects for nested nodes without index pages in category mode.
-         */
-        private function addNestedIndexRedirects(string $locale, string $basePath, array $node, array $indexAsPageDirs = []): void
-        {
-            if (empty($node['pages']) || !is_array($node['pages'])) {
-                return;
+    /**
+     * Recursively add redirects for nested nodes without index pages in category mode.
+     */
+    private function addNestedIndexRedirects(string $locale, string $basePath, array $node, array $indexAsPageDirs = []): void
+    {
+        if (empty($node['pages']) || ! is_array($node['pages'])) {
+            return;
+        }
+
+        foreach ($node['pages'] as $childKey => $childItem) {
+            if ($this->isLink($childKey)) {
+                continue;
             }
 
-            foreach ($node['pages'] as $childKey => $childItem) {
-                if ($this->isLink($childKey)) {
-                    continue;
-                }
+            // Base path relative to locale (no leading locale segment)
+            $baseRelative = ltrim(preg_replace('#^/' . preg_quote($locale, '#') . '/#', '', $basePath), '/');
+            $childRelativeKey = trim($baseRelative . '/' . $childKey, '/');
 
-                // Base path relative to locale (no leading locale segment)
-                $baseRelative = ltrim(preg_replace('#^/' . preg_quote($locale, '#') . '/#', '', $basePath), '/');
-                $childRelativeKey = trim($baseRelative . '/' . $childKey, '/');
+            $defaultPath = rtrim($basePath, '/') . '/' . $childKey;
+            $targetPath = $defaultPath;
+            $hasIndex = is_array($childItem) && isset($childItem['current']['has_index'])
+                ? (bool) $childItem['current']['has_index']
+                : false;
 
-                $defaultPath = rtrim($basePath, '/') . '/' . $childKey;
-                $targetPath = $defaultPath;
-                $hasIndex = is_array($childItem) && isset($childItem['current']['has_index'])
-                    ? (bool) $childItem['current']['has_index']
-                    : false;
-
-                if (!$hasIndex) {
-                    $needKey = is_array($childItem) ? $this->getFirstPageWithIndex($childRelativeKey, $childItem) : null;
-                    if ($needKey !== null) {
-                        if (isset($indexAsPageDirs[$needKey])) {
-                            $needKey .= '/index';
-                        }
-                        $targetPath = '/' . $locale . '/' . ltrim($needKey, '/');
+            if (! $hasIndex) {
+                $needKey = is_array($childItem) ? $this->getFirstPageWithIndex($childRelativeKey, $childItem) : null;
+                if ($needKey !== null) {
+                    if (isset($indexAsPageDirs[$needKey])) {
+                        $needKey .= '/index';
                     }
+                    $targetPath = '/' . $locale . '/' . ltrim($needKey, '/');
                 }
+            }
 
-                if ($targetPath !== $defaultPath) {
-                    $this->indexRedirects[$locale][$defaultPath] = $targetPath;
-                }
+            if ($targetPath !== $defaultPath) {
+                $this->indexRedirects[$locale][$defaultPath] = $targetPath;
+            }
 
-                if (is_array($childItem)) {
-                    $this->addNestedIndexRedirects($locale, $defaultPath, $childItem, $indexAsPageDirs);
+            if (is_array($childItem)) {
+                $this->addNestedIndexRedirects($locale, $defaultPath, $childItem, $indexAsPageDirs);
+            }
+        }
+    }
+
+    public function makeSettings(): void
+    {
+
+        $total = 0;
+        foreach ($this->locales as $locale) {
+            $dir = $this->docsDir . $locale;
+            if (is_dir($dir)) {
+                foreach (new RecursiveIteratorIterator(
+                    new RecursiveDirectoryIterator($dir)
+                ) as $file) {
+                    if ($file->isFile() && $file->getFilename() === '.settings.php') {
+                        $total++;
+                    }
                 }
             }
         }
-
-        public function makeSettings(): void
-        {
-
-            $total = 0;
+        if ($total > 0) {
+            $this->console->writeln(PHP_EOL . '<comment>=== Searching .settings.php... ===</comment>');
+            $progress = new ProgressBar($this->console, $total);
+            $progress->start();
             foreach ($this->locales as $locale) {
+                $settings = [];
                 $dir = $this->docsDir . $locale;
                 if (is_dir($dir)) {
                     foreach (new RecursiveIteratorIterator(
-                                 new RecursiveDirectoryIterator($dir)
-                             ) as $file) {
+                        new RecursiveDirectoryIterator($dir)
+                    ) as $file) {
                         if ($file->isFile() && $file->getFilename() === '.settings.php') {
-                            $total++;
+                            $progress->advance();
+                            $relativePath = str_replace($dir, '', dirname($file->getPathname()));
+                            $relativePath = ltrim(str_replace('\\', '/', $relativePath), '/');
+                            $this->array_set_deep($settings, $relativePath, include $file->getPathname(), $locale);
                         }
                     }
-                }
-            }
-            if ($total > 0) {
-                $this->console->writeln(PHP_EOL . '<comment>=== Searching .settings.php... ===</comment>');
-                $progress = new ProgressBar($this->console, $total);
-                $progress->start();
-                foreach ($this->locales as $locale) {
-                    $settings = [];
-                    $dir = $this->docsDir . $locale;
-                    if (is_dir($dir)) {
-                        foreach (new RecursiveIteratorIterator(
-                                     new RecursiveDirectoryIterator($dir)
-                                 ) as $file) {
-                            if ($file->isFile() && $file->getFilename() === '.settings.php') {
-                                $progress->advance();
-                                $relativePath = str_replace($dir, '', dirname($file->getPathname()));
-                                $relativePath = ltrim(str_replace('\\', '/', $relativePath), '/');
-                                $this->array_set_deep($settings, $relativePath, include $file->getPathname(), $locale);
-                            }
-                        }
-                        if (!file_exists($this->distPath)) {
-                            mkdir($this->distPath, 0755, true);
-                        }
-
-                        if (empty($settings)) {
-                            return;
-                        }
-
-                        $settings = $this->sortPages($settings);
-                        $this->settings[$locale] = $settings['pages'] ?? [];
-
+                    if (! file_exists($this->distPath)) {
+                        mkdir($this->distPath, 0755, true);
                     }
-                }
-                $progress->finish();
 
-                $this->console->writeln(PHP_EOL . "<comment>=== Success read all ({$total}) .settings.php ===</comment>");
+                    if (empty($settings)) {
+                        return;
+                    }
+
+                    $settings = $this->sortPages($settings);
+                    $this->settings[$locale] = $settings['pages'] ?? [];
+
+                }
             }
+            $progress->finish();
+
+            $this->console->writeln(PHP_EOL . "<comment>=== Success read all ({$total}) .settings.php ===</comment>");
+        }
+    }
+
+    /**
+     * @return array[]
+     */
+    public function makeFlatten(array $items, string $locale): array
+    {
+        $pages = [
+            'flat' => [],
+        ];
+        $this->makeMenu($items, $pages, '', $locale);
+
+        return $pages;
+    }
+
+    public function getMenu(string $locale, array $path = []): array
+    {
+        if ($this->useCategory) {
+            if (count($path) < 2) {
+                return [];
+            }
+            [$locale, $key] = $path;
+
+            return $this->multipleHandler->getMenuByCategory($locale, $key);
+        } else {
+            return $this->menu[$locale] ?? [];
+        }
+    }
+
+    public function getTopMenu(string $locale): array
+    {
+        return $this->topMenu[$locale] ?? [];
+    }
+
+    /**
+     * Build GitHub URL (or repo-relative path) for a page, using DOCS_DIR and locale.
+     */
+    public function getGitHubUrl($page): string
+    {
+        $locale = $page->locale();
+        $relative = trim(str_replace('\\', '/', $page->getPath()), '/');
+        $docPath = $this->findFileForPath($locale, $relative) ?? $this->buildDocPath($locale, $relative);
+
+        $repo = rtrim($page->github ?? '', '/');
+        if ($repo) {
+            return "{$repo}/blob/main/{$docPath}";
         }
 
-        /**
-         * @return array[]
-         */
-        public function makeFlatten(array $items, string $locale): array
-        {
-            $pages = [
-                'flat' => [],
+        return $docPath;
+    }
+
+    public function buildMenuTree(array $items, string $prefix = '', string $locale = 'en'): array
+    {
+        $tree = [];
+
+        foreach ($items as $slug => $item) {
+            if ($this->useCategory && $prefix === '') {
+                $slug = '/' . $locale . '/' . $slug;
+            }
+            $itemsSet = false;
+            $title = $item['current']['title'] ?? null;
+            $hasSub = ! empty($item['pages']);
+            $menu = $item['current']['menu'] ?? [];
+            $isLink = $this->isLink($slug);
+            $currentPath = $prefix ? $prefix . '/' . $slug : $slug;
+
+            if ($prefix === '' && $slug === $locale) {
+                $fullPath = '/' . $locale;
+            } else {
+                $fullPath = '/' . trim($currentPath, '/');
+            }
+            $tree[$fullPath] = [
+                'title' => $title,
+                'path' => $isLink ? $slug : ($item['current']['has_index'] ? $fullPath : null),
+                'isLink' => $isLink,
+                'showInMenu' => $item['current']['showInMenu'],
+                'children' => [],
             ];
-            $this->makeMenu($items, $pages, '', $locale);
 
-            return $pages;
-        }
-
-        public function getMenu(string $locale, array $path = []): array
-        {
-            if ($this->useCategory) {
-                if (count($path) < 2) {
-                    return [];
-                }
-                [$locale, $key] = $path;
-
-                return $this->multipleHandler->getMenuByCategory($locale, $key);
-            } else {
-                return $this->menu[$locale] ?? [];
-            }
-        }
-
-        public function getTopMenu(string $locale): array
-        {
-            return $this->topMenu[$locale] ?? [];
-        }
-
-        /**
-         * Build GitHub URL (or repo-relative path) for a page, using DOCS_DIR and locale.
-         */
-        public function getGitHubUrl($page): string
-        {
-            $locale = $page->locale();
-            $relative = trim(str_replace('\\', '/', $page->getPath()), '/');
-            $docPath = $this->findFileForPath($locale, $relative) ?? $this->buildDocPath($locale, $relative);
-
-            $repo = rtrim($page->github ?? '', '/');
-            if ($repo) {
-                return "{$repo}/blob/main/{$docPath}";
-            }
-
-            return $docPath;
-        }
-
-        public function buildMenuTree(array $items, string $prefix = '', string $locale = 'en'): array
-        {
-            $tree = [];
-
-            foreach ($items as $slug => $item) {
-                if ($this->useCategory && $prefix === '') {
-                    $slug = '/' . $locale . '/' . $slug;
-                }
-                $itemsSet = false;
-                $title = $item['current']['title'] ?? null;
-                $hasSub = !empty($item['pages']);
-                $menu = $item['current']['menu'] ?? [];
-                $isLink = $this->isLink($slug);
-                $currentPath = $prefix ? $prefix . '/' . $slug : $slug;
-
-                if ($prefix === '' && $slug === $locale) {
-                    $fullPath = '/' . $locale;
-                } else {
-                    $fullPath = '/' . trim($currentPath, '/');
-                }
-                $tree[$fullPath] = [
-                    'title' => $title,
-                    'path' => $isLink ? $slug : ($item['current']['has_index'] ? $fullPath : null),
-                    'isLink' => $isLink,
-                    'showInMenu' => $item['current']['showInMenu'],
-                    'children' => [],
-                ];
-
-                if (is_array($menu)) {
-                    foreach ($menu as $menuKey => $menuLabel) {
-                        $isLink = $this->isLink($menuKey);
-                        if (isset($item['pages'][$menuKey])) {
-                            if ($hasSub) {
-                                $itemsSet = true;
-                                $tree[$fullPath]['children'] += $this->buildMenuTree($item['pages'], $currentPath, $locale);
-                            }
-
-                            continue;
+            if (is_array($menu)) {
+                foreach ($menu as $menuKey => $menuLabel) {
+                    $isLink = $this->isLink($menuKey);
+                    if (isset($item['pages'][$menuKey])) {
+                        if ($hasSub) {
+                            $itemsSet = true;
+                            $tree[$fullPath]['children'] += $this->buildMenuTree($item['pages'], $currentPath, $locale);
                         }
 
-                        $menuPath = $fullPath . '/' . $menuKey;
-
-                        $tree[$fullPath]['children'][$menuPath] = [
-                            'title' => $menuLabel,
-                            'path' => $isLink ? $menuKey : $menuPath,
-                            'isLink' => $isLink,
-                            'children' => [],
-                        ];
-                    }
-                }
-                if (!$itemsSet && $hasSub) {
-                    $tree[$fullPath]['children'] += $this->buildMenuTree($item['pages'], $currentPath, $locale);
-                }
-            }
-
-            return $tree;
-        }
-
-        public function isLink(string $string): bool
-        {
-            return Str::startsWith($string, ['http', 'https']);
-        }
-
-        public function makeMenu(array $items, array &$pages, string $prefix = '', string $locale = 'ru'): void
-        {
-            foreach ($items as $key => $value) {
-                $hasChildren = isset($value['pages']) && is_array($value['pages']);
-                $path = trim($prefix . '/' . $key, '/');
-                $setItem = false;
-                $fullPath = trim($path, '/');
-                $isLink = $this->isLink($key);
-                $hasIndex = isset($value['current']) && ($value['current']['has_index'] ?? false);
-                if (isset($value['current']) && $value['current']['has_index']) {
-                    $finalPath = str_ends_with($fullPath, $path) ? $fullPath : trim($fullPath . '/' . $path, '/');
-                    $menuPath = '/' . $finalPath;
-                    $filePath = $this->buildDocPath($locale, $path);
-                    $pages['flat'][] = [
-                        'key' => $path,
-                        'path' => $isLink ? $key : $menuPath,
-                        'label' => $value['current']['title'],
-                        'file' => $filePath,
-                        'has_index' => true,
-                        'linkable' => $isLink || $hasIndex,
-                    ];
-                    $setItem = true;
-                }
-                if (!$setItem && isset($value['current']['title'])) {
-                    $finalPath = str_ends_with($fullPath, $path) ? $fullPath : trim($fullPath . '/' . $path, '/');
-                    $menuPath = '/' . $finalPath;
-                    $filePath = $this->buildDocPath($locale, $path);
-                    $pages['flat'][] = [
-                        'key' => $path,
-                        'path' => null,
-                        'navPath' => $isLink ? $key : $menuPath,
-                        'label' => $value['current']['title'],
-                        'file' => $filePath,
-                        'has_index' => false,
-                        'linkable' => false,
-                    ];
-                }
-                if (isset($value['current']['menu']) && is_array($value['current']['menu'])) {
-                    foreach ($value['current']['menu'] as $menuKey => $menuLabel) {
-                        if (isset($value['pages'][$menuKey]) || $this->isLink($menuKey)) {
-                            continue;
-                        }
-                        $finalPath = str_ends_with($fullPath, $menuKey) ? $fullPath : trim($fullPath . '/' . $menuKey, '/');
-                        $menuPath = '/' . $finalPath;
-                        $filePath = $this->buildDocPath($locale, $finalPath);
-                        $pages['flat'][] = [
-                            'key' => $menuKey,
-                            'path' => $menuPath,
-                            'label' => $menuLabel,
-                            'file' => $filePath,
-                            'has_index' => true,
-                            'linkable' => true,
-                        ];
-                    }
-                }
-
-                if ($hasChildren) {
-                    $this->makeMenu($value['pages'], $pages, $path, $locale);
-                }
-            }
-        }
-
-        public function mkFingerprint(string $html): string
-        {
-            $t = trim(html_entity_decode(strip_tags($html)));
-            $t = preg_replace('/\s+/u', ' ', mb_strtolower($t));
-
-            return md5($t);
-        }
-
-        public function setFingerprint($id, string $fingerprint): void
-        {
-            $this->fingerPrint[$fingerprint] = $id;
-        }
-
-        public function makeUniqueHeadingId($relativePath, $level, $index): string
-        {
-            $base = $relativePath . '-' . $level . '-' . $index;
-
-            return 'h-' . substr(md5($base), 0, 12);
-        }
-
-        public function setHeading($path, $headings): void
-        {
-            $this->headings[$path] = $headings;
-        }
-
-        public function flattenNav(array $items, array &$flat): array
-        {
-
-            foreach ($items as $key => $value) {
-                if (is_array($value) && $key === 'menu') {
-                    $flat = array_merge($flat, $value);
-                } elseif (is_array($value)) {
-                    $this->flattenNav($value, $flat);
-                }
-            }
-
-            return $flat;
-        }
-
-        public function getPrevAndNext(string $path, string $locale): array
-        {
-            $normalizedPath = '/' . ltrim($path, '/');
-            $matchPath = $normalizedPath;
-            $category = null;
-
-            if ($this->useCategory && isset($this->multipleHandler)) {
-                $segments = explode('/', trim($normalizedPath, '/'));
-                if (count($segments) < 2) {
-                    return [];
-                }
-                $category = $segments[1];
-
-                $matchPath = '/' . implode('/', array_slice($segments, 1));
-                $flattenNav = $this->multipleHandler->flattenByCategory[$locale][$category] ?? [];
-            } else {
-                $flattenNav = $this->flattenMenu[$locale] ?? [];
-            }
-
-            if (empty($flattenNav)) {
-                return [];
-            }
-
-            $returnArr = [];
-            $needly = null;
-            foreach ($flattenNav as $key => $value) {
-                if (empty($value['path'])) {
-                    continue;
-                }
-                if ($value['path'] === $matchPath) {
-                    $needly = $key;
-                    break;
-                }
-            }
-
-            if ($needly === null) {
-                return [];
-            }
-
-            if ($needly === 0 && isset($flattenNav[1])) {
-                $returnArr['next'] = $flattenNav[1];
-            } else {
-                if (isset($flattenNav[$needly - 1])) {
-                    $returnArr['prev'] = $flattenNav[$needly - 1];
-                }
-                if (isset($flattenNav[$needly + 1])) {
-                    $returnArr['next'] = $flattenNav[$needly + 1];
-                }
-            }
-
-
-            if ($this->useCategory && $category !== null) {
-                $categories = $this->categoryOrder[$locale] ?? array_keys($this->multipleHandler->flattenByCategory[$locale] ?? []);
-                $catIndex = array_search($category, $categories, true);
-
-                if (!isset($returnArr['next']) && $catIndex !== false) {
-                    $nextCat = $categories[$catIndex + 1] ?? null;
-                    if ($nextCat) {
-                        $nextList = $this->multipleHandler->flattenByCategory[$locale][$nextCat] ?? [];
-                        if (!empty($nextList)) {
-                            $returnArr['next'] = $nextList[0];
-                        }
-                    }
-                }
-
-                if (!isset($returnArr['prev']) && $catIndex !== false) {
-                    $prevCat = $categories[$catIndex - 1] ?? null;
-                    if ($prevCat) {
-                        $prevList = $this->multipleHandler->flattenByCategory[$locale][$prevCat] ?? [];
-                        if (!empty($prevList)) {
-                            $returnArr['prev'] = $prevList[count($prevList) - 1];
-                        }
-                    }
-                }
-            }
-
-
-            if ($this->useCategory) {
-                foreach (['prev', 'next'] as $dir) {
-                    if (!isset($returnArr[$dir]['path'])) {
                         continue;
                     }
-                    $p = $returnArr[$dir]['path'];
-                    if (is_string($p) && str_starts_with($p, '/') && !str_starts_with($p, '/' . $locale . '/')) {
-                        $returnArr[$dir]['path'] = '/' . $locale . $p;
+
+                    $menuPath = $fullPath . '/' . $menuKey;
+
+                    $tree[$fullPath]['children'][$menuPath] = [
+                        'title' => $menuLabel,
+                        'path' => $isLink ? $menuKey : $menuPath,
+                        'isLink' => $isLink,
+                        'children' => [],
+                    ];
+                }
+            }
+            if (! $itemsSet && $hasSub) {
+                $tree[$fullPath]['children'] += $this->buildMenuTree($item['pages'], $currentPath, $locale);
+            }
+        }
+
+        return $tree;
+    }
+
+    public function isLink(string $string): bool
+    {
+        return Str::startsWith($string, ['http', 'https']);
+    }
+
+    public function makeMenu(array $items, array &$pages, string $prefix = '', string $locale = 'ru'): void
+    {
+        foreach ($items as $key => $value) {
+            $hasChildren = isset($value['pages']) && is_array($value['pages']);
+            $path = trim($prefix . '/' . $key, '/');
+            $setItem = false;
+            $fullPath = trim($path, '/');
+            $isLink = $this->isLink($key);
+            $hasIndex = isset($value['current']) && ($value['current']['has_index'] ?? false);
+            if (isset($value['current']) && $value['current']['has_index']) {
+                $finalPath = str_ends_with($fullPath, $path) ? $fullPath : trim($fullPath . '/' . $path, '/');
+                $menuPath = '/' . $finalPath;
+                $filePath = $this->buildDocPath($locale, $path);
+                $pages['flat'][] = [
+                    'key' => $path,
+                    'path' => $isLink ? $key : $menuPath,
+                    'label' => $value['current']['title'],
+                    'file' => $filePath,
+                    'has_index' => true,
+                    'linkable' => $isLink || $hasIndex,
+                ];
+                $setItem = true;
+            }
+            if (! $setItem && isset($value['current']['title'])) {
+                $finalPath = str_ends_with($fullPath, $path) ? $fullPath : trim($fullPath . '/' . $path, '/');
+                $menuPath = '/' . $finalPath;
+                $filePath = $this->buildDocPath($locale, $path);
+                $pages['flat'][] = [
+                    'key' => $path,
+                    'path' => null,
+                    'navPath' => $isLink ? $key : $menuPath,
+                    'label' => $value['current']['title'],
+                    'file' => $filePath,
+                    'has_index' => false,
+                    'linkable' => false,
+                ];
+            }
+            if (isset($value['current']['menu']) && is_array($value['current']['menu'])) {
+                foreach ($value['current']['menu'] as $menuKey => $menuLabel) {
+                    if (isset($value['pages'][$menuKey]) || $this->isLink($menuKey)) {
+                        continue;
+                    }
+                    $finalPath = str_ends_with($fullPath, $menuKey) ? $fullPath : trim($fullPath . '/' . $menuKey, '/');
+                    $menuPath = '/' . $finalPath;
+                    $filePath = $this->buildDocPath($locale, $finalPath);
+                    $pages['flat'][] = [
+                        'key' => $menuKey,
+                        'path' => $menuPath,
+                        'label' => $menuLabel,
+                        'file' => $filePath,
+                        'has_index' => true,
+                        'linkable' => true,
+                    ];
+                }
+            }
+
+            if ($hasChildren) {
+                $this->makeMenu($value['pages'], $pages, $path, $locale);
+            }
+        }
+    }
+
+    public function mkFingerprint(string $html): string
+    {
+        $t = trim(html_entity_decode(strip_tags($html)));
+        $t = preg_replace('/\s+/u', ' ', mb_strtolower($t));
+
+        return md5($t);
+    }
+
+    public function setFingerprint($id, string $fingerprint): void
+    {
+        $this->fingerPrint[$fingerprint] = $id;
+    }
+
+    public function makeUniqueHeadingId($relativePath, $level, $index): string
+    {
+        $base = $relativePath . '-' . $level . '-' . $index;
+
+        return 'h-' . substr(md5($base), 0, 12);
+    }
+
+    public function setHeading($path, $headings): void
+    {
+        $this->headings[$path] = $headings;
+    }
+
+    public function flattenNav(array $items, array &$flat): array
+    {
+
+        foreach ($items as $key => $value) {
+            if (is_array($value) && $key === 'menu') {
+                $flat = array_merge($flat, $value);
+            } elseif (is_array($value)) {
+                $this->flattenNav($value, $flat);
+            }
+        }
+
+        return $flat;
+    }
+
+    public function getPrevAndNext(string $path, string $locale): array
+    {
+        $normalizedPath = '/' . ltrim($path, '/');
+        $matchPath = $normalizedPath;
+        $category = null;
+
+        if ($this->useCategory && isset($this->multipleHandler)) {
+            $segments = explode('/', trim($normalizedPath, '/'));
+            if (count($segments) < 2) {
+                return [];
+            }
+            $category = $segments[1];
+
+            $matchPath = '/' . implode('/', array_slice($segments, 1));
+            $flattenNav = $this->multipleHandler->flattenByCategory[$locale][$category] ?? [];
+        } else {
+            $flattenNav = $this->flattenMenu[$locale] ?? [];
+        }
+
+        if (empty($flattenNav)) {
+            return [];
+        }
+
+        $returnArr = [];
+        $needly = null;
+        foreach ($flattenNav as $key => $value) {
+            if (empty($value['path'])) {
+                continue;
+            }
+            if ($value['path'] === $matchPath) {
+                $needly = $key;
+                break;
+            }
+        }
+
+        if ($needly === null) {
+            return [];
+        }
+
+        if ($needly === 0 && isset($flattenNav[1])) {
+            $returnArr['next'] = $flattenNav[1];
+        } else {
+            if (isset($flattenNav[$needly - 1])) {
+                $returnArr['prev'] = $flattenNav[$needly - 1];
+            }
+            if (isset($flattenNav[$needly + 1])) {
+                $returnArr['next'] = $flattenNav[$needly + 1];
+            }
+        }
+
+        if ($this->useCategory && $category !== null) {
+            $categories = $this->categoryOrder[$locale] ?? array_keys($this->multipleHandler->flattenByCategory[$locale] ?? []);
+            $catIndex = array_search($category, $categories, true);
+
+            if (! isset($returnArr['next']) && $catIndex !== false) {
+                $nextCat = $categories[$catIndex + 1] ?? null;
+                if ($nextCat) {
+                    $nextList = $this->multipleHandler->flattenByCategory[$locale][$nextCat] ?? [];
+                    if (! empty($nextList)) {
+                        $returnArr['next'] = $nextList[0];
                     }
                 }
             }
 
-            return $returnArr;
-        }
-
-        /**
-         * Calculate hash of .settings.php files affecting given absolute file path.
-         * Walks from the file's directory up to docsDir/locale root and concatenates mtimes+contents.
-         */
-        public function settingsHashForFile(string $absolutePath): string
-        {
-            $hashCtx = hash_init('md5');
-            $dir = rtrim(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, dirname($absolutePath)), DIRECTORY_SEPARATOR);
-            $rootCandidate = realpath($this->docsDir) ?: $this->docsDir;
-            $root = rtrim(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $rootCandidate), DIRECTORY_SEPARATOR);
-
-
-            while (true) {
-                $settingsFile = $dir . DIRECTORY_SEPARATOR . '.settings.php';
-                if (is_file($settingsFile)) {
-                    hash_update($hashCtx, $settingsFile);
-                    hash_update($hashCtx, (string)filemtime($settingsFile));
-                    $contents = @file_get_contents($settingsFile);
-                    if ($contents !== false) {
-                        hash_update($hashCtx, $contents);
-                    }
-                }
-
-                if ($dir === $root && $root !== '') {
-                    break;
-                }
-
-                $parent = dirname($dir);
-                if ($parent === $dir || $parent === '') {
-                    break;
-                }
-                $dir = $parent;
-            }
-
-            return hash_final($hashCtx);
-        }
-
-        public function setLocale(string $locale): void
-        {
-            $this->locale = $locale;
-        }
-
-        public function setPaths(array $paths): void
-        {
-            $this->paths = array_merge($paths, $this->paths);
-        }
-
-        public function getTranslate($text, $locale): string
-        {
-            return $this->translations[$locale][$text] ?? '';
-
-        }
-
-        public function getItems($locale): array
-        {
-            return $this->settings[$locale] ?? [];
-        }
-
-        public function extFromMime(string $mimeExt): string
-        {
-            $map = ['jpeg' => 'jpg', 'png' => 'png', 'svg+xml' => 'svg'];
-
-            return $map[$mimeExt] ?? $mimeExt;
-        }
-
-        public function buildDocPath(string $locale, string $relativePath): string
-        {
-            $baseDocs = rtrim($this->docsDir, '/');
-            $relativePath = trim($relativePath, '/');
-            $parts = explode('/', $relativePath);
-            if (isset($parts[0]) && $parts[0] === $locale) {
-                array_shift($parts);
-            }
-
-            if ($relativePath === '' || $relativePath === $locale) {
-                return "{$baseDocs}/{$locale}/index.md";
-            }
-
-            $relative = implode('/', $parts);
-            $dirPath = "{$baseDocs}/{$locale}/{$relative}";
-            $basename = $parts ? end($parts) : '';
-
-
-            if (is_dir($dirPath)) {
-                if (is_file("{$dirPath}/index.md")) {
-                    return "{$dirPath}/index.md";
-                }
-                if ($basename !== '' && is_file("{$dirPath}/{$basename}.md")) {
-                    return "{$dirPath}/{$basename}.md";
-                }
-            }
-
-
-            return "{$baseDocs}/{$locale}/{$relative}.md";
-        }
-
-        private function findFileForPath(string $locale, string $path): ?string
-        {
-            $path = '/' . ltrim($path, '/');
-
-            if ($this->useCategory && isset($this->multipleHandler)) {
-                $segments = explode('/', trim($path, '/'));
-                if (count($segments) >= 2) {
-                    $category = $segments[1];
-                    $matchPath = '/' . implode('/', array_slice($segments, 1));
-                    $flat = $this->multipleHandler->realFlattenByCategory[$locale][$category] ?? [];
-                    if ($file = $this->matchFlattenFile($flat, $matchPath)) {
-                        return $file;
+            if (! isset($returnArr['prev']) && $catIndex !== false) {
+                $prevCat = $categories[$catIndex - 1] ?? null;
+                if ($prevCat) {
+                    $prevList = $this->multipleHandler->flattenByCategory[$locale][$prevCat] ?? [];
+                    if (! empty($prevList)) {
+                        $returnArr['prev'] = $prevList[count($prevList) - 1];
                     }
                 }
             }
-
-
-            $flat = $this->realFlatten[$locale] ?? [];
-
-            return $this->matchFlattenFile($flat, $path);
         }
 
-        private function matchFlattenFile(array $flat, string $path): ?string
-        {
-            foreach ($flat as $item) {
-                $itemPath = $item['path'] ?? ($item['navPath'] ?? null);
-                if ($itemPath === $path) {
-                    return $item['file'] ?? null;
+        if ($this->useCategory) {
+            foreach (['prev', 'next'] as $dir) {
+                if (! isset($returnArr[$dir]['path'])) {
+                    continue;
+                }
+                $p = $returnArr[$dir]['path'];
+                if (is_string($p) && str_starts_with($p, '/') && ! str_starts_with($p, '/' . $locale . '/')) {
+                    $returnArr[$dir]['path'] = '/' . $locale . $p;
+                }
+            }
+        }
+
+        return $returnArr;
+    }
+
+    /**
+     * Calculate hash of .settings.php files affecting given absolute file path.
+     * Walks from the file's directory up to docsDir/locale root and concatenates mtimes+contents.
+     */
+    public function settingsHashForFile(string $absolutePath): string
+    {
+        $hashCtx = hash_init('md5');
+        $dir = rtrim(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, dirname($absolutePath)), DIRECTORY_SEPARATOR);
+        $rootCandidate = realpath($this->docsDir) ?: $this->docsDir;
+        $root = rtrim(str_replace(['\\', '/'], DIRECTORY_SEPARATOR, $rootCandidate), DIRECTORY_SEPARATOR);
+
+        while (true) {
+            $settingsFile = $dir . DIRECTORY_SEPARATOR . '.settings.php';
+            if (is_file($settingsFile)) {
+                hash_update($hashCtx, $settingsFile);
+                hash_update($hashCtx, (string) filemtime($settingsFile));
+                $contents = @file_get_contents($settingsFile);
+                if ($contents !== false) {
+                    hash_update($hashCtx, $contents);
                 }
             }
 
-            return null;
-        }
-
-        public function saveB64AndReturnRel(string $source, string $b64, string $ext): string
-        {
-            $b64 = preg_replace('/\s+/', '', $b64);
-            $bytes = base64_decode($b64, true);
-            if ($bytes === false) {
-                return 'assets/build/img/b64/invalid.' . $ext;
-            }
-            $hash = substr(sha1($bytes), 0, 16);
-            $rel = "assets/build/img/b64/{$hash}.{$ext}";
-            $dst = $source . '/' . $rel;
-            @mkdir(dirname($dst), 0775, true);
-            if (!file_exists($dst)) {
-                file_put_contents($dst, $bytes);
+            if ($dir === $root && $root !== '') {
+                break;
             }
 
-            return $rel;
+            $parent = dirname($dir);
+            if ($parent === $dir || $parent === '') {
+                break;
+            }
+            $dir = $parent;
         }
 
-        public function extractImages(bool $dryRun = false): void
-        {
+        return hash_final($hashCtx);
+    }
 
-            @ini_set('pcre.backtrack_limit', '10000000');
-            @ini_set('pcre.recursion_limit', '100000');
+    public function setLocale(string $locale): void
+    {
+        $this->locale = $locale;
+    }
 
-            $docsDirEnv = $_ENV['DOCS_DIR'] ?? getenv('DOCS_DIR') ?? 'docs';
-            $docsDirEnv = trim($docsDirEnv, '/\\') ?: 'docs';
-            $source = __DIR__ . '/source/' . $docsDirEnv;
-            $scanDirs = glob("{$source}/*", GLOB_ONLYDIR) ?: [];
+    public function setPaths(array $paths): void
+    {
+        $this->paths = array_merge($paths, $this->paths);
+    }
 
-            $reInlineShortcut = '~!\[([^\]]*)\]\(\s*b64:([A-Za-z0-9+/=\s]+)(?:,?\s*ext=([a-z0-9]+))?\s*\)~i';
-            $reInlineDataUri = '~!\[([^\]]*)\]\(\s*data:image/([a-z0-9.+-]+);base64,([A-Za-z0-9+/=\s]+)\s*\)~i';
-            $reRefDataUri = '~^\[([^\]]+)\]:\s*<?\s*data:image/([a-z0-9.+-]+);base64,([A-Za-z0-9+/=\s]+)>?\s*$~im';
+    public function getTranslate($text, $locale): string
+    {
+        return $this->translations[$locale][$text] ?? '';
 
-            $changedFiles = 0;
-            $inlineHits = 0;
-            $refHits = 0;
-            $files = [];
+    }
+
+    public function getItems($locale): array
+    {
+        return $this->settings[$locale] ?? [];
+    }
+
+    public function extFromMime(string $mimeExt): string
+    {
+        $map = ['jpeg' => 'jpg', 'png' => 'png', 'svg+xml' => 'svg'];
+
+        return $map[$mimeExt] ?? $mimeExt;
+    }
+
+    public function buildDocPath(string $locale, string $relativePath): string
+    {
+        $baseDocs = rtrim($this->docsDir, '/');
+        $relativePath = trim($relativePath, '/');
+        $parts = explode('/', $relativePath);
+        if (isset($parts[0]) && $parts[0] === $locale) {
+            array_shift($parts);
+        }
+
+        if ($relativePath === '' || $relativePath === $locale) {
+            return "{$baseDocs}/{$locale}/index.md";
+        }
+
+        $relative = implode('/', $parts);
+        $dirPath = "{$baseDocs}/{$locale}/{$relative}";
+        $basename = $parts ? end($parts) : '';
+
+        if (is_dir($dirPath)) {
+            if (is_file("{$dirPath}/index.md")) {
+                return "{$dirPath}/index.md";
+            }
+            if ($basename !== '' && is_file("{$dirPath}/{$basename}.md")) {
+                return "{$dirPath}/{$basename}.md";
+            }
+        }
+
+        return "{$baseDocs}/{$locale}/{$relative}.md";
+    }
+
+    private function findFileForPath(string $locale, string $path): ?string
+    {
+        $path = '/' . ltrim($path, '/');
+
+        if ($this->useCategory && isset($this->multipleHandler)) {
+            $segments = explode('/', trim($path, '/'));
+            if (count($segments) >= 2) {
+                $category = $segments[1];
+                $matchPath = '/' . implode('/', array_slice($segments, 1));
+                $flat = $this->multipleHandler->realFlattenByCategory[$locale][$category] ?? [];
+                if ($file = $this->matchFlattenFile($flat, $matchPath)) {
+                    return $file;
+                }
+            }
+        }
+
+        $flat = $this->realFlatten[$locale] ?? [];
+
+        return $this->matchFlattenFile($flat, $path);
+    }
+
+    private function matchFlattenFile(array $flat, string $path): ?string
+    {
+        foreach ($flat as $item) {
+            $itemPath = $item['path'] ?? ($item['navPath'] ?? null);
+            if ($itemPath === $path) {
+                return $item['file'] ?? null;
+            }
+        }
+
+        return null;
+    }
+
+    public function saveB64AndReturnRel(string $source, string $b64, string $ext): string
+    {
+        $b64 = preg_replace('/\s+/', '', $b64);
+        $bytes = base64_decode($b64, true);
+        if ($bytes === false) {
+            return 'assets/build/img/b64/invalid.' . $ext;
+        }
+        $hash = substr(sha1($bytes), 0, 16);
+        $rel = "assets/build/img/b64/{$hash}.{$ext}";
+        $dst = $source . '/' . $rel;
+        @mkdir(dirname($dst), 0775, true);
+        if (! file_exists($dst)) {
+            file_put_contents($dst, $bytes);
+        }
+
+        return $rel;
+    }
+
+    public function extractImages(bool $dryRun = false): void
+    {
+
+        @ini_set('pcre.backtrack_limit', '10000000');
+        @ini_set('pcre.recursion_limit', '100000');
+
+        $docsDirEnv = $_ENV['DOCS_DIR'] ?? getenv('DOCS_DIR') ?? 'docs';
+        $docsDirEnv = trim($docsDirEnv, '/\\') ?: 'docs';
+        $source = __DIR__ . '/source/' . $docsDirEnv;
+        $scanDirs = glob("{$source}/*", GLOB_ONLYDIR) ?: [];
+
+        $reInlineShortcut = '~!\[([^\]]*)\]\(\s*b64:([A-Za-z0-9+/=\s]+)(?:,?\s*ext=([a-z0-9]+))?\s*\)~i';
+        $reInlineDataUri = '~!\[([^\]]*)\]\(\s*data:image/([a-z0-9.+-]+);base64,([A-Za-z0-9+/=\s]+)\s*\)~i';
+        $reRefDataUri = '~^\[([^\]]+)\]:\s*<?\s*data:image/([a-z0-9.+-]+);base64,([A-Za-z0-9+/=\s]+)>?\s*$~im';
+
+        $changedFiles = 0;
+        $inlineHits = 0;
+        $refHits = 0;
+        $files = [];
+        foreach ($scanDirs as $dir) {
+            $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(
+                $dir,
+                FilesystemIterator::SKIP_DOTS | FilesystemIterator::CURRENT_AS_FILEINFO
+            ));
+            foreach ($it as $file) {
+                if ($file->isFile() && strtolower($file->getExtension()) === 'md') {
+                    $files[] = $file;
+                }
+            }
+        }
+        $total = count($files);
+        if ($total > 0) {
+            $this->console->writeln(PHP_EOL . '<comment>=== Extracting images ===</comment>');
+            $progress = new ProgressBar($this->console, $total);
+            $progress->start();
             foreach ($scanDirs as $dir) {
                 $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(
                     $dir,
                     FilesystemIterator::SKIP_DOTS | FilesystemIterator::CURRENT_AS_FILEINFO
                 ));
+
                 foreach ($it as $file) {
-                    if ($file->isFile() && strtolower($file->getExtension()) === 'md') {
-                        $files[] = $file;
+                    if (! $file->isFile() || strtolower($file->getExtension()) !== 'md') {
+                        continue;
+                    }
+                    $progress->advance();
+                    $path = $file->getPathname();
+                    $md = file_get_contents($path);
+                    if ($md === false || $md === '') {
+                        continue;
+                    }
+                    $orig = $md;
+
+                    $md = preg_replace_callback($reInlineShortcut, function ($m) use ($source, &$inlineHits) {
+                        $alt = $m[1];
+                        $b64 = $m[2];
+                        $ext = $m[3] ?? 'png';
+                        $rel = $this->saveB64AndReturnRel($source, $b64, $ext);
+                        $inlineHits++;
+
+                        return '![' . $alt . '](/' . $rel . ')';
+                    }, $md);
+
+                    $md = preg_replace_callback($reInlineDataUri, function ($m) use ($source, &$inlineHits) {
+                        $alt = $m[1];
+                        $ext = $this->extFromMime($m[2]);
+                        $b64 = $m[3];
+                        $rel = $this->saveB64AndReturnRel($source, $b64, $ext);
+                        $inlineHits++;
+
+                        return '![' . $alt . '](/' . $rel . ')';
+                    }, $md);
+
+                    $md = preg_replace_callback($reRefDataUri, function ($m) use ($source, &$refHits) {
+                        $label = $m[1];
+                        $ext = $this->extFromMime($m[2]);
+                        $b64 = $m[3];
+                        $rel = $this->saveB64AndReturnRel($source, $b64, $ext);
+                        $refHits++;
+
+                        return '[' . $label . ']: /' . $rel;
+                    }, $md);
+
+                    if ($md !== $orig) {
+                        $changedFiles++;
+                        if ($dryRun) {
+                            echo "[dry-run] would update: {$path}\n";
+                        } else {
+                            file_put_contents($path, $md);
+                            echo "Updated: {$path}\n";
+                        }
                     }
                 }
             }
-            $total = count($files);
-            if ($total > 0) {
-                $this->console->writeln(PHP_EOL . '<comment>=== Extracting images ===</comment>');
-                $progress = new ProgressBar($this->console, $total);
-                $progress->start();
-                foreach ($scanDirs as $dir) {
-                    $it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(
-                        $dir,
-                        FilesystemIterator::SKIP_DOTS | FilesystemIterator::CURRENT_AS_FILEINFO
-                    ));
 
-                    foreach ($it as $file) {
-                        if (!$file->isFile() || strtolower($file->getExtension()) !== 'md') {
-                            continue;
-                        }
-                        $progress->advance();
-                        $path = $file->getPathname();
-                        $md = file_get_contents($path);
-                        if ($md === false || $md === '') {
-                            continue;
-                        }
-                        $orig = $md;
-
-                        $md = preg_replace_callback($reInlineShortcut, function ($m) use ($source, &$inlineHits) {
-                            $alt = $m[1];
-                            $b64 = $m[2];
-                            $ext = $m[3] ?? 'png';
-                            $rel = $this->saveB64AndReturnRel($source, $b64, $ext);
-                            $inlineHits++;
-
-                            return '![' . $alt . '](/' . $rel . ')';
-                        }, $md);
-
-                        $md = preg_replace_callback($reInlineDataUri, function ($m) use ($source, &$inlineHits) {
-                            $alt = $m[1];
-                            $ext = $this->extFromMime($m[2]);
-                            $b64 = $m[3];
-                            $rel = $this->saveB64AndReturnRel($source, $b64, $ext);
-                            $inlineHits++;
-
-                            return '![' . $alt . '](/' . $rel . ')';
-                        }, $md);
-
-                        $md = preg_replace_callback($reRefDataUri, function ($m) use ($source, &$refHits) {
-                            $label = $m[1];
-                            $ext = $this->extFromMime($m[2]);
-                            $b64 = $m[3];
-                            $rel = $this->saveB64AndReturnRel($source, $b64, $ext);
-                            $refHits++;
-
-                            return '[' . $label . ']: /' . $rel;
-                        }, $md);
-
-                        if ($md !== $orig) {
-                            $changedFiles++;
-                            if ($dryRun) {
-                                echo "[dry-run] would update: {$path}\n";
-                            } else {
-                                file_put_contents($path, $md);
-                                echo "Updated: {$path}\n";
-                            }
-                        }
-                    }
-                }
-
-                $progress->finish();
-                $this->console?->writeln(PHP_EOL . sprintf(
-                        '<info>Done</info>: files=%d, inline=%d, refs=%d, changed=%d',
-                        $total,
-                        $inlineHits,
-                        $refHits,
-                        $changedFiles
-                    ));
-            } else {
-                $this->console->writeln(PHP_EOL . '<comment>=== Skip Extracting images 0 files ===</comment>');
-            }
-
+            $progress->finish();
+            $this->console?->writeln(PHP_EOL . sprintf(
+                '<info>Done</info>: files=%d, inline=%d, refs=%d, changed=%d',
+                $total,
+                $inlineHits,
+                $refHits,
+                $changedFiles
+            ));
+        } else {
+            $this->console->writeln(PHP_EOL . '<comment>=== Skip Extracting images 0 files ===</comment>');
         }
 
     }
+}

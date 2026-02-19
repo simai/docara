@@ -171,6 +171,9 @@ body {
   }
 }
 
+.sf-playground {
+    border-radius: var(--dc-code-radius);
+}
 
 [hidden]:where(:not([hidden="until-found"])) {
   display: none;

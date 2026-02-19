@@ -125,3 +125,21 @@ permalink: 404.html
 ---
 ### Sorry, that page does not exist.
 ```
+
+## Internal link normalization (`.md` -> route)
+
+When authors write links like:
+
+```md
+[Layout](../layout/index.md)
+```
+
+Docara can normalize them to route URLs during rendering (for example `/en/utilities/layout` with pretty URLs), instead of leaving `.md` in final `href`.
+
+Recommended behavior:
+- Normalize only internal markdown links (`.md`, `.markdown`, `.mdown`).
+- Preserve query/hash suffixes (`?x=1`, `#section`).
+- Keep locale-aware paths (`/en/...`, `/ru/...`).
+- Resolve via menu/flatten metadata first, and use a safe fallback only when not found.
+
+This keeps docs links stable when page paths are category-driven or index-based.

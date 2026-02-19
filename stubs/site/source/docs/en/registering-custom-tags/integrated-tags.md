@@ -77,3 +77,28 @@ Notes:
 - `isContainer` is false, so inner Markdown/inline tags are not parsed—keep plain lines.
 - Focus can be set on folders or files; children inherit the highlight.
 
+## `!rtags[...]` (responsive badges example)
+
+Use this pattern when you want a compact "utility + supported breakpoints" row right under `h1`.
+
+```markdown
+!rtags[flex-wrap sm md lg xl]
+```
+
+Typical output uses `sf-badge` markup:
+
+```html
+<div class="flex flex-wrap gap-1/3">
+  <span class="sf-badge sf-badge--type-main sf-badge--neutral sf-badge--size-1">
+    <span class="sf-badge-text-container"><span class="sf-badge-text">flex-wrap</span></span>
+  </span>
+  <span class="sf-badge sf-badge--type-outline sf-badge--neutral sf-badge--size-1">
+    <span class="sf-badge-text-container"><span class="sf-badge-text">sm</span></span>
+  </span>
+</div>
+```
+
+Implementation notes:
+- Keep the first badge as the utility name (`flex-wrap`, `grid-column`, etc.).
+- Add only the breakpoints actually supported by your utility (`sm/md/lg/xl/xxl`).
+- Place badges immediately below the page `h1` for consistent scanning.

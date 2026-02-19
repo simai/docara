@@ -87,6 +87,7 @@
             $html = $this->parser->parseMarkdownWithoutFrontMatter(
                 $this->getEscapedMarkdownContent($file),
             );
+            $html = $this->normalizeInternalDocLinks($file, $pageData, $html);
 
             $this->collectTranslateContent($pageData, $html);
             $html = $this->injectAnchorsInline($pageData, $html);
@@ -176,6 +177,216 @@
             }
 
             return strtr($file->getContents(), $replacements);
+        }
+
+        private function normalizeInternalDocLinks($file, $pageData, string $html): string
+        {
+            $configurator = $pageData->page->get('configurator') ?? null;
+            if (! $configurator || ! method_exists($configurator, 'resolvePathByDocFile')) {
+                return $html;
+            }
+
+            $currentLocale = (string) ($pageData->page->locale() ?? $configurator->locale ?? 'en');
+            if ($currentLocale === '') {
+                return $html;
+            }
+
+            $docsRoot = trim(str_replace('\\', '/', $configurator->docsDir ?? 'source/docs/'), '/');
+            $docsRootName = basename($docsRoot);
+            $currentRelativeDir = trim(str_replace('\\', '/', (string) $file->getRelativePath()), '/');
+            $currentRelativeDir = $this->stripDocsLocalePrefix($currentRelativeDir, $currentLocale, $docsRootName);
+            $knownLocales = array_keys((array) ($configurator->locales ?? []));
+
+            return preg_replace_callback(
+                '/(<a\b[^>]*\bhref=)(["\'])([^"\']+)\2/i',
+                function (array $m) use ($configurator, $docsRoot, $currentRelativeDir, $currentLocale, $knownLocales, $docsRootName) {
+                    $rawHref = html_entity_decode($m[3], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                    [$hrefPath, $suffix] = $this->splitHref($rawHref);
+
+                    if (! $this->isMarkdownDocHref($hrefPath)) {
+                        return $m[0];
+                    }
+
+                    [$targetLocale, $targetRelativeDocPath] = $this->resolveDocTarget(
+                        $hrefPath,
+                        $currentLocale,
+                        $currentRelativeDir,
+                        $knownLocales,
+                        $docsRootName
+                    );
+
+                    if ($targetLocale === '' || $targetRelativeDocPath === '') {
+                        return $m[0];
+                    }
+
+                    $docFilePath = trim($docsRoot . '/' . $targetLocale . '/' . ltrim($targetRelativeDocPath, '/'), '/');
+                    $resolvedPath = $configurator->resolvePathByDocFile($targetLocale, $docFilePath);
+
+                    if (! is_string($resolvedPath) || $resolvedPath === '') {
+                        $resolvedPath = $this->fallbackPrettyPath($targetLocale, $targetRelativeDocPath, $configurator);
+                    }
+
+                    if (! is_string($resolvedPath) || $resolvedPath === '') {
+                        return $m[0];
+                    }
+
+                    $normalized = $this->ensureLocalePrefix('/' . ltrim($resolvedPath, '/'), $targetLocale);
+                    $finalHref = htmlspecialchars($normalized . $suffix, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+
+                    return $m[1] . $m[2] . $finalHref . $m[2];
+                },
+                $html
+            );
+        }
+
+        private function splitHref(string $href): array
+        {
+            $suffix = '';
+            $path = $href;
+            $hashPos = strpos($path, '#');
+            if ($hashPos !== false) {
+                $suffix = substr($path, $hashPos) . $suffix;
+                $path = substr($path, 0, $hashPos);
+            }
+            $queryPos = strpos($path, '?');
+            if ($queryPos !== false) {
+                $suffix = substr($path, $queryPos) . $suffix;
+                $path = substr($path, 0, $queryPos);
+            }
+
+            return [$path, $suffix];
+        }
+
+        private function isMarkdownDocHref(string $hrefPath): bool
+        {
+            if ($hrefPath === '' || $hrefPath[0] === '#') {
+                return false;
+            }
+            if (preg_match('/^[a-z][a-z0-9+\-.]*:/i', $hrefPath)) {
+                return false;
+            }
+            if (str_starts_with($hrefPath, '//')) {
+                return false;
+            }
+
+            return (bool) preg_match('/\.(md|markdown|mdown)$/i', $hrefPath);
+        }
+
+        private function resolveDocTarget(
+            string $hrefPath,
+            string $currentLocale,
+            string $currentRelativeDir,
+            array $knownLocales,
+            string $docsRootName
+        ): array {
+            if (str_starts_with($hrefPath, '/')) {
+                $absolute = trim($hrefPath, '/');
+                foreach ($knownLocales as $locale) {
+                    $prefix = trim($locale, '/') . '/';
+                    if ($absolute === $locale) {
+                        return [$locale, 'index.md'];
+                    }
+                    if (str_starts_with($absolute, $prefix)) {
+                        return [$locale, substr($absolute, strlen($prefix))];
+                    }
+
+                    $docsPrefix = trim($docsRootName . '/' . $locale, '/') . '/';
+                    if (str_starts_with($absolute, $docsPrefix)) {
+                        return [$locale, substr($absolute, strlen($docsPrefix))];
+                    }
+                }
+
+                return ['', ''];
+            }
+
+            $resolved = $this->normalizePath(($currentRelativeDir !== '' ? $currentRelativeDir . '/' : '') . $hrefPath);
+
+            return [$currentLocale, ltrim($resolved, '/')];
+        }
+
+        private function fallbackPrettyPath(string $locale, string $relativeDocPath, Configurator $configurator): ?string
+        {
+            $normalized = trim(str_replace('\\', '/', $relativeDocPath), '/');
+            if ($normalized === '') {
+                return null;
+            }
+
+            if (preg_match('/\/index\.(md|markdown|mdown)$/i', $normalized)) {
+                $dir = preg_replace('/\/index\.(md|markdown|mdown)$/i', '', $normalized);
+                $dir = trim((string) $dir, '/');
+                $indexAsPage = $dir !== '' && isset($configurator->indexMenuDirs[$locale][$dir]);
+
+                if ($indexAsPage) {
+                    return '/' . trim($locale . '/' . $dir . '/index', '/');
+                }
+
+                if ($dir === '') {
+                    return '/' . trim($locale, '/');
+                }
+
+                return '/' . trim($locale . '/' . $dir, '/');
+            }
+
+            $withoutExt = preg_replace('/\.(md|markdown|mdown)$/i', '', $normalized);
+            if (! is_string($withoutExt) || $withoutExt === '') {
+                return null;
+            }
+
+            return '/' . trim($locale . '/' . ltrim($withoutExt, '/'), '/');
+        }
+
+        private function normalizePath(string $path): string
+        {
+            $parts = preg_split('#[/\\\\]+#', $path) ?: [];
+            $stack = [];
+
+            foreach ($parts as $part) {
+                if ($part === '' || $part === '.') {
+                    continue;
+                }
+                if ($part === '..') {
+                    array_pop($stack);
+                    continue;
+                }
+                $stack[] = $part;
+            }
+
+            return implode('/', $stack);
+        }
+
+        private function stripDocsLocalePrefix(string $path, string $locale, string $docsRootName): string
+        {
+            $normalized = trim(str_replace('\\', '/', $path), '/');
+            if ($normalized === '') {
+                return '';
+            }
+
+            $withDocs = trim($docsRootName . '/' . $locale, '/') . '/';
+            if (str_starts_with($normalized, $withDocs)) {
+                return substr($normalized, strlen($withDocs));
+            }
+
+            $withLocale = trim($locale, '/') . '/';
+            if (str_starts_with($normalized, $withLocale)) {
+                return substr($normalized, strlen($withLocale));
+            }
+
+            return $normalized;
+        }
+
+        private function ensureLocalePrefix(string $path, string $locale): string
+        {
+            $normalized = '/' . ltrim($path, '/');
+            if ($normalized === '/') {
+                return '/' . trim($locale, '/');
+            }
+
+            $prefix = '/' . trim($locale, '/');
+            if ($normalized === $prefix || str_starts_with($normalized, $prefix . '/')) {
+                return $normalized;
+            }
+
+            return $prefix . $normalized;
         }
 
         private function injectAnchors(Configurator $configurator, string $relativePath, string $html): string

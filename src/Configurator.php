@@ -1182,6 +1182,53 @@ class Configurator
         return null;
     }
 
+    /**
+     * Resolve documentation URL by source markdown file path.
+     */
+    public function resolvePathByDocFile(string $locale, string $docFilePath): ?string
+    {
+        $normalized = trim(str_replace('\\', '/', $docFilePath), '/');
+        if ($normalized === '') {
+            return null;
+        }
+
+        $candidates = [$normalized];
+        if (! str_starts_with($normalized, 'source/')) {
+            $candidates[] = 'source/' . ltrim($normalized, '/');
+        }
+
+        if ($this->useCategory && isset($this->multipleHandler)) {
+            foreach (($this->multipleHandler->realFlattenByCategory[$locale] ?? []) as $flat) {
+                if ($resolved = $this->matchFlattenPathByFile($flat, $candidates)) {
+                    return $resolved;
+                }
+            }
+        }
+
+        $flat = $this->realFlatten[$locale] ?? [];
+
+        return $this->matchFlattenPathByFile($flat, $candidates);
+    }
+
+    private function matchFlattenPathByFile(array $flat, array $candidates): ?string
+    {
+        foreach ($flat as $item) {
+            $file = isset($item['file']) ? trim(str_replace('\\', '/', (string) $item['file']), '/') : '';
+            if ($file === '' || ! in_array($file, $candidates, true)) {
+                continue;
+            }
+
+            $path = $item['path'] ?? ($item['navPath'] ?? null);
+            if (! is_string($path) || $path === '') {
+                continue;
+            }
+
+            return $path;
+        }
+
+        return null;
+    }
+
     public function saveB64AndReturnRel(string $source, string $b64, string $ext): string
     {
         $b64 = preg_replace('/\s+/', '', $b64);

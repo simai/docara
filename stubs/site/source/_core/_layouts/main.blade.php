@@ -5,4 +5,4 @@
 
     @includeWhen(layout_enabled($page, 'asideRight'), '_core._components.aside.aside-right', ['section' => layout_section($page, 'asideRight.blocks')])
 </main>
-<div data-theme-builder="drawer" right="c8" bottom="e1" class="sf-theme-builder"></div>
+<div data-theme-builder="drawer" right="c8" bottom="e1" class="sf-theme-builder z-9"></div>

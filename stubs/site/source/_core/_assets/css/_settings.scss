@@ -25,7 +25,7 @@
       display: none;
       --sf-menu-title-size: var(--sf-b4);
       --sf-menu-title-height: var(--sf-c0);
-      max-height: 260px;
+      max-height: max-content;
       @media (min-width: 960px) {
         --sf-menu-title-size: var(--sf-b6);
         --sf-menu-title-height: var(--sf-c2);
@@ -70,6 +70,9 @@
 
     &:first-child {
       font-size: 14px;
+    }
+    &:nth-child(2) {
+      font-size: 16px;
     }
 
     &:nth-child(3) {

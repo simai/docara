@@ -27,19 +27,19 @@
         private ?BuildCache $buildCache;
 
         public function __construct(
-            Filesystem $files,
-            string $cachePath,
-                       $outputPathResolver,
-            ConsoleOutput $consoleOutput,
-            array $handlers = [],
-            ?BuildCache $buildCache = null,
+        Filesystem $files,
+        string $cachePath,
+        $outputPathResolver,
+        ConsoleOutput $consoleOutput,
+        array $handlers = [],
+        ?BuildCache $buildCache = null,
         ) {
-            $this->files = $files;
-            $this->cachePath = $cachePath;
-            $this->outputPathResolver = $outputPathResolver;
-            $this->consoleOutput = $consoleOutput;
-            $this->handlers = $handlers;
-            $this->buildCache = $buildCache;
+        $this->files = $files;
+        $this->cachePath = $cachePath;
+        $this->outputPathResolver = $outputPathResolver;
+        $this->consoleOutput = $consoleOutput;
+        $this->handlers = $handlers;
+        $this->buildCache = $buildCache;
         }
 
         public function setUseCache($useCache): static
@@ -51,9 +51,22 @@
 
         public function build($source, $destination, $siteData)
         {
-            $this->prepareDirectory($this->cachePath, ! $this->useCache);
+            // Используем кэш только если он включен и есть BuildCache объект
+            if ($this->buildCache && $this->buildCache->isEnabled()) {
+                $this->prepareDirectory($this->cachePath, false);
+            } else {
+                $this->prepareDirectory($this->cachePath, ! $this->useCache);
+            }
+            
+            // Если используем кэш, не очищаем директорию
+            if ($this->buildCache && $this->buildCache->isEnabled()) {
+                $this->prepareDirectory($destination, false);
+            } else {
+                $this->prepareDirectory($destination, $this->shouldCleanDestination());
+            }
+            
             $generatedFiles = $this->generateFiles($source, $siteData);
-            $this->prepareDirectory($destination, $this->shouldCleanDestination());
+            
             $outputFiles = $this->writeFiles($generatedFiles, $destination);
             $this->writeIndexRedirects($destination);
             $this->cleanup();
@@ -68,6 +81,7 @@
 
         private function shouldCleanDestination(): bool
         {
+            // Если используем кэш, не очищаем директорию
             if ($this->buildCache && $this->buildCache->isEnabled()) {
                 return false;
             }
@@ -170,6 +184,23 @@ HTML;
             $directory = dirname($outputPath);
             $this->prepareDirectory("{$destination}/{$directory}");
 
+            // Проверка кэширования
+            if ($this->buildCache && $this->buildCache->isEnabled()) {
+                $contentHash = md5($file->contents());
+                
+                // Если файл уже существует в кэше, пропускаем его
+                if ($this->buildCache->shouldSkip($outputPath, $contentHash)) {
+                    // Синхронизируем страницу с путём для меню/активных состояний
+                    $webPath = '/' . trim(str_replace('\\', '/', $outputPath), '/');
+                    if ($meta->indexAsPage) {
+                        $webPath = substr($webPath, 0, -strlen('index'));
+                    }
+                    $page->_meta->path = rightTrimPath($webPath);
+                    
+                    return $this->getOutputLink($file);
+                }
+            }
+
             $contents = $file->contents();
             // If content is binary/null (e.g., CopyFile), just delegate to putContents without injections.
             if (! is_string($contents)) {
@@ -183,6 +214,16 @@ HTML;
                 }
 
                 file_put_contents("{$destination}/{$outputPath}", $contents);
+            }
+
+            // Если мы используем кэш и файл был успешно записан, сохраняем информацию о нём
+            if ($this->buildCache && $this->buildCache->isEnabled()) {
+                $contentHash = md5($file->contents());
+                $metaInfo = [
+                    'output' => $outputPath,
+                    'updated_at' => time(),
+                ];
+                $this->buildCache->store($outputPath, $contentHash, $metaInfo);
             }
 
             // Sync page path with final output path so menus/active states use the real URL.

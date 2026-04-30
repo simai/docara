@@ -115,7 +115,7 @@ export class Search {
 
     _renderByEvent(results, event) {
         if (event === 'focus') {
-            setTimeout(() => this.renderResults(results), 200);
+            setTimeout(() => this.renderResults(results), 100);
         } else {
             this.renderResults(results);
             this.closeState(this.value !== '');

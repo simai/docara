@@ -35,28 +35,28 @@
         protected static array $commands = [];
 
         public function __construct(
-            Container $app,
-            DataLoader $dataLoader,
-            CollectionRemoteItemLoader $remoteItemLoader,
-            SiteBuilder $siteBuilder,
+        Container $app,
+        DataLoader $dataLoader,
+        CollectionRemoteItemLoader $remoteItemLoader,
+        SiteBuilder $siteBuilder,
         ) {
-            $this->app = $app;
-            $this->dataLoader = $dataLoader;
-            $this->remoteItemLoader = $remoteItemLoader;
-            $this->siteBuilder = $siteBuilder;
-            $this->ruleLoader = $app->make(\Simai\Docara\RuleLoader::class);
+        $this->app = $app;
+        $this->dataLoader = $dataLoader;
+        $this->remoteItemLoader = $remoteItemLoader;
+        $this->siteBuilder = $siteBuilder;
+        $this->ruleLoader = $app->make(\Simai\Docara\RuleLoader::class);
         }
 
         public function build($useCache = false): Docara
         {
-            $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
-            $this->ruleLoader->getRules();
-            return $this->fireEvent('beforeBuild')
-                ->buildCollections()
-                ->fireEvent('afterCollections')
-                ->buildSite($useCache)
-                ->fireEvent('afterBuild')
-                ->cleanup();
+        $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
+        $this->ruleLoader->getRules();
+        return $this->fireEvent('beforeBuild')
+        ->buildCollections()
+        ->fireEvent('afterCollections')
+        ->buildSite($useCache)
+        ->fireEvent('afterBuild')
+        ->cleanup();
         }
 
         public static function registerCommand($command): void

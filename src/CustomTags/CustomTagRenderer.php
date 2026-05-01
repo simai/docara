@@ -5,6 +5,7 @@ namespace Simai\Docara\CustomTags;
 use League\CommonMark\Node\Node;
 use League\CommonMark\Renderer\ChildNodeRendererInterface;
 use League\CommonMark\Renderer\NodeRendererInterface;
+use League\CommonMark\Util\HtmlElement;
 
 final readonly class CustomTagRenderer implements NodeRendererInterface
 {
@@ -36,7 +37,7 @@ final readonly class CustomTagRenderer implements NodeRendererInterface
             }
         }
 
-        return new \League\CommonMark\Util\HtmlElement(
+        return new HtmlElement(
             $htmlTag,
             $node->getAttrs(),
             $inner

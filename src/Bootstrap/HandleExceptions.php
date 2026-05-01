@@ -108,7 +108,7 @@ class HandleExceptions
     /**
      * Handle a deprecation.
      *
-     * @throws \Simai\Docara\Exceptions\DeprecationException
+     * @throws DeprecationException
      */
     private function handleDeprecation(Throwable $e): void
     {

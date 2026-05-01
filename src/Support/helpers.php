@@ -17,15 +17,15 @@ if (! function_exists('app')) {
      * @template TClass of object
      *
      * @param  string|class-string<TClass>|null  $abstract
-     * @return ($abstract is class-string<TClass> ? TClass : ($abstract is null ? \Simai\Docara\Container : mixed))
+     * @return ($abstract is class-string<TClass> ? TClass : ($abstract is null ? Simai\Docara\Container : mixed))
      */
     function app(?string $abstract = null, array $parameters = []): mixed
     {
         if (is_null($abstract)) {
-            return \Simai\Docara\Container::getInstance();
+            return Simai\Docara\Container::getInstance();
         }
 
-        return \Simai\Docara\Container::getInstance()->make($abstract, $parameters);
+        return Simai\Docara\Container::getInstance()->make($abstract, $parameters);
     }
 }
 

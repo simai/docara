@@ -44,7 +44,7 @@ class Docara
         $this->dataLoader = $dataLoader;
         $this->remoteItemLoader = $remoteItemLoader;
         $this->siteBuilder = $siteBuilder;
-        $this->ruleLoader = $app->make(\Simai\Docara\RuleLoader::class);
+        $this->ruleLoader = $app->make(RuleLoader::class);
     }
 
     public function build($useCache = false): Docara
@@ -187,12 +187,12 @@ class Docara
         return $this->app->make(Filesystem::class);
     }
 
-    public function getOutputPaths(): \Illuminate\Support\Collection
+    public function getOutputPaths(): Collection
     {
         return $this->outputPaths ?: collect();
     }
 
-    public function getPages(): \Illuminate\Support\Collection
+    public function getPages(): Collection
     {
         return $this->pageInfo ?: collect();
     }

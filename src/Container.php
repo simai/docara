@@ -5,8 +5,11 @@ namespace Simai\Docara;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidFileException;
 use Illuminate\Container\Container as Illuminate;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Env;
 use Illuminate\Support\Str;
+use Illuminate\View\Factory;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Container extends Illuminate
@@ -144,7 +147,7 @@ class Container extends Illuminate
         $config->put('docara.docsDir', $docsDir);
         $custom = $this->config;
 
-        if ($custom instanceof \Illuminate\Support\Collection) {
+        if ($custom instanceof Collection) {
             $custom = $custom->all();
         } elseif (is_object($custom)) {
             $custom = get_object_vars($custom);
@@ -155,7 +158,7 @@ class Container extends Illuminate
             $config->put($k, $v);
         }
         $config->put('view.compiled', $this->cachePath());
-        $custom = $this->config instanceof \Illuminate\Support\Collection
+        $custom = $this->config instanceof Collection
             ? $this->config->all()
             : (array) $this->config;
 
@@ -235,8 +238,8 @@ class Container extends Illuminate
     private function registerCoreAliases(): void
     {
         foreach ([
-            'app' => [self::class, \Illuminate\Contracts\Container\Container::class, \Psr\Container\ContainerInterface::class],
-            'view' => [\Illuminate\View\Factory::class, \Illuminate\Contracts\View\Factory::class],
+            'app' => [self::class, \Illuminate\Contracts\Container\Container::class, ContainerInterface::class],
+            'view' => [Factory::class, \Illuminate\Contracts\View\Factory::class],
             'ruleLoader' => [RuleLoader::class],
             'shaResolver' => [ShaResolver::class],
         ] as $key => $aliases) {

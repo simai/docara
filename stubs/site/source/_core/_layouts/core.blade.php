@@ -1,7 +1,7 @@
 @php
     $hasSha = $page->sha ?? 'latest';
     $locale = $page->locale();
-    $distPath = "/distr/"
+    $distPath = "https://cdn.jsdelivr.net/gh/simai/ui@{$hasSha}/distr/"
 @endphp
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <script>
@@ -14,6 +14,6 @@
     window.sfPath = "{{$distPath}}";
     window.currentLocale = `{{$locale}}`
 </script>
-<script src="{{'/distr/core/js/core.js'}}"></script>
-<link rel="preload" as="style"  href="{{'/distr/core/css/core.css'}}">
-<link rel="stylesheet" href="{{'/distr/core/css/core.css'}}"/>
+<script src="{{'https://cdn.jsdelivr.net/gh/simai/ui@'. $hasSha . '/distr/core/js/core.js'}}"></script>
+<link rel="preload" as="style"  href="{{'https://cdn.jsdelivr.net/gh/simai/ui@'. $hasSha . '/distr/core/css/core.css'}}">
+<link rel="stylesheet" href="{{'https://cdn.jsdelivr.net/gh/simai/ui@'. $hasSha . '/distr/core/css/core.css'}}"/>

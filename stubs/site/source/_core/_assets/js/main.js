@@ -379,7 +379,9 @@ function init() {
     initMenuScrollButtons();
     initSearch();
     scrollToActiveMenu();
-    initReadMode();
+    window.addEventListener('sf-loader-ready', () => {
+        initReadMode();
+    })
 }
 
 const runInit = () => init();

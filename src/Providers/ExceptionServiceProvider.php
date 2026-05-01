@@ -4,8 +4,8 @@ namespace Simai\Docara\Providers;
 
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\View\ViewException;
-use Spatie\LaravelIgnition\Views\ViewExceptionMapper;
 use Simai\Docara\Support\ServiceProvider;
+use Spatie\LaravelIgnition\Views\ViewExceptionMapper;
 
 class ExceptionServiceProvider extends ServiceProvider
 {

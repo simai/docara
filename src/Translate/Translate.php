@@ -1,5 +1,7 @@
 <?php
+
 namespace Simai\Docara\Translate;
+
 use Exception;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Exception\CommonMarkException;
@@ -13,34 +15,51 @@ use League\CommonMark\Node\Node;
 use League\CommonMark\Parser\MarkdownParser;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Symfony\Component\Intl\Languages;
-use Symfony\Component\Yaml\Yaml;
 use Simai\Docara\CustomTags\CustomTagRegistry;
 use Simai\Docara\CustomTags\CustomTagsExtension;
 use Simai\Docara\CustomTags\TagRegistry;
 use Simai\Docara\Interface\CustomTagInterface;
+use Symfony\Component\Intl\Languages;
+use Symfony\Component\Yaml\Yaml;
+
 class Translate
 {
     public string $subscriptionKey;
+
     public string $region;
+
     public string $projectRoot;
+
     public string $endpoint;
+
     public array $docaraConfig;
+
     public array $usedLocales;
+
     public array $hashData;
+
     public array $prevTranslation;
+
     public string $cachePath;
+
     private array $files = [];
+
     public string $targetDir;
+
     public string $docsDir;
+
     private CustomTagRegistry $registry;
+
     public array $config;
+
     private MarkdownParser $parser;
+
     private $logger;
+
     /**
      * @throws Exception
      */
-    public function __construct(array $params = [], callable $logger = null)
+    public function __construct(array $params = [], ?callable $logger = null)
     {
         if (! isset($params) || ! is_array($params)) {
             throw new Exception('Missing parameters');
@@ -56,6 +75,7 @@ class Translate
         $this->targetDir = $this->config['main'] . "source/{$this->docsDir}/{$this->config['default_lang']}";
         $this->registerDocaraConfig();
     }
+
     /**
      * @throws CommonMarkException
      * @throws Exception
@@ -70,6 +90,7 @@ class Translate
         $this->initParser();
         $this->collectFiles();
     }
+
     /**
      * @throws Exception
      */
@@ -93,14 +114,17 @@ class Translate
         $this->registry = TagRegistry::register($instances);
         $this->usedLocales = $this->docaraConfig['locales'] ?? [];
     }
+
     private function frontMatterParser($originalMarkdown
     ): array {
         $fronMatterParser = new FrontMatterParser(new SymfonyYamlFrontMatterParser);
         $fronMatterDocument = $fronMatterParser->parse($originalMarkdown);
         $frontMatter = $fronMatterDocument->getFrontMatter();
         $content = $fronMatterDocument->getContent();
+
         return [$frontMatter, $content];
     }
+
     private function initParser(): void
     {
         $environment = new Environment([]);
@@ -109,6 +133,7 @@ class Translate
         $environment->addExtension(new FrontMatterExtension);
         $this->parser = new MarkdownParser($environment);
     }
+
     /**
      * @throws CommonMarkException
      */
@@ -133,6 +158,7 @@ class Translate
             $this->translateFiles();
         }
     }
+
     /**
      * @return int[]
      */
@@ -154,8 +180,10 @@ class Translate
                 $arReturn['end'] = $parent->getEndLine();
             }
         }
+
         return $arReturn;
     }
+
     private function chunkTextArray(array $items, int $maxChars = 9000): array
     {
         $chunks = [];
@@ -170,6 +198,7 @@ class Translate
                     $currentLength = 0;
                 }
                 $chunks[] = [$item];
+
                 continue;
             }
             if ($currentLength + $length > $maxChars) {
@@ -183,8 +212,10 @@ class Translate
         if (! empty($currentChunk)) {
             $chunks[] = $currentChunk;
         }
+
         return $chunks;
     }
+
     /**
      * @throws CommonMarkException
      */
@@ -260,20 +291,25 @@ class Translate
                 $replacedLines = explode("\n", $replacedBlockText);
                 array_splice($lines, $startLine - 1, $endLine - $startLine + 1, $replacedLines);
             }
+
             return implode("\n", $lines);
         }
+
         return $file;
     }
+
     private function replace_last_literal(string $haystack, string $search, string $replace): string
     {
         $pos = mb_strrpos($haystack, $search);
         if ($pos === false) {
             return $haystack;
         }
+
         return mb_substr($haystack, 0, $pos)
             . $replace
             . mb_substr($haystack, $pos + mb_strlen($search));
     }
+
     private function mb_ucfirst(string $s, string $enc = 'UTF-8'): string
     {
         if ($s === '') {
@@ -281,8 +317,10 @@ class Translate
         }
         $first = mb_substr($s, 0, 1, $enc);
         $rest = mb_substr($s, 1, null, $enc);
+
         return mb_strtoupper($first, $enc) . $rest;
     }
+
     /**
      * @throws CommonMarkException
      * @throws Exception
@@ -307,10 +345,12 @@ class Translate
                     $destPath = str_replace($search, $replace, $srcPath);
                     if ($lang === $this->config['default_lang']) {
                         $this->log("Skip default {$lang}: {$relativePath}");
+
                         continue;
                     }
                     if (isset($this->hashData[$lang][$filePathName]) && $hash === $this->hashData[$lang][$filePathName]) {
                         $this->log("Skip cached {$lang}: {$relativePath}");
+
                         continue;
                     }
                     $this->log("Translating {$lang}: {$relativePath}");
@@ -350,6 +390,7 @@ class Translate
         }
         $this->saveCache();
     }
+
     private function generateSettingsTranslate(array $settings, string $lang): array
     {
         $paths = [];
@@ -393,8 +434,10 @@ class Translate
             }
             $this->setByPath($settings, $paths[$i], $translated, $lang, $shouldCache);
         }
+
         return $settings;
     }
+
     private function setByPath(array &$arr, array $path, mixed $value, string $lang, bool $shouldCache = true): void
     {
         $ref = &$arr;
@@ -404,6 +447,7 @@ class Translate
                     $this->setCached($lang, $value, $ref[$key]);
                 }
                 $ref[$key] = $value;
+
                 return;
             }
             if (! isset($ref[$key]) || ! is_array($ref[$key])) {
@@ -412,6 +456,7 @@ class Translate
             $ref = &$ref[$key];
         }
     }
+
     private function throttleByCharsPerMinute(int $chars): void
     {
         $limit = $this->config['chars_per_minute'] ?? 30000;
@@ -419,6 +464,7 @@ class Translate
         $seconds += mt_rand(0, 200) / 1000.0;
         usleep((int) round($seconds * 1_000_000));
     }
+
     private function translateLangFiles($langContent, $lang): array
     {
         $items = [];
@@ -430,8 +476,10 @@ class Translate
                 $items[] = ['Text' => $v];
             }
         }
+
         return $this->makeContent($items, $langContent, $lang, $keys);
     }
+
     private function translateFromMatter(array $frontMatter, string $lang): array
     {
         if (
@@ -449,8 +497,10 @@ class Translate
                 $items[] = ['Text' => $v];
             }
         }
+
         return $this->makeContent($items, $frontMatter, $lang, $keys);
     }
+
     private function curlRequest(array $data, string $toLang): array
     {
         $url = $this->endpoint . '/translate?api-version=3.0&to=' . $toLang;
@@ -484,6 +534,7 @@ class Translate
 
         return json_decode($response, true);
     }
+
     private function translateText($textsToTranslate, $toLang): array
     {
         $postData = array_map(fn ($item) => ['Text' => $item['text']], $textsToTranslate);
@@ -497,8 +548,10 @@ class Translate
                 $original['translated'] = $original['text'];
             }
         }
+
         return $textsToTranslate;
     }
+
     private function makeContent(array $items, $langContent, $lang, array $keys): mixed
     {
         if (! $items) {
@@ -512,8 +565,10 @@ class Translate
                 $langContent[$keys[$i]] = $translated;
             }
         }
+
         return $langContent;
     }
+
     private function checkCached(array $original, string $lang): array
     {
         $keys = [];
@@ -527,18 +582,23 @@ class Translate
                 $original[$k] = $translated;
             }
         }
+
         return [$keys, $original];
     }
+
     private function setCached(string $toLang, string $translatedText, string $originalText): void
     {
         $key = $this->normalize($originalText);
         $this->prevTranslation[$toLang][$key] = $translatedText;
     }
+
     private function getCached(string $toLang, string $originalText): ?string
     {
         $key = $this->normalize($originalText);
+
         return $this->prevTranslation[$toLang][$key] ?? null;
     }
+
     private function saveCache(): void
     {
         if (! is_dir($this->cachePath)) {
@@ -554,6 +614,7 @@ class Translate
         file_put_contents($this->cachePath . 'hash.json', json_encode($this->hashData, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
         echo 'Translate complete';
     }
+
     private function loadCache(): void
     {
         if (! is_dir($this->cachePath)) {
@@ -571,12 +632,15 @@ class Translate
             $this->hashData = json_decode(file_get_contents($this->cachePath . 'hash.json'), true) ?: [];
         }
     }
+
     private function normalize(string $s): string
     {
         $s = str_replace(["\r\n", "\r"], "\n", $s);
         $s = preg_replace('/\h+/u', ' ', $s);
+
         return sha1(trim($s));
     }
+
     private function log(string $message, string $level = 'info'): void
     {
         if ($this->logger) {

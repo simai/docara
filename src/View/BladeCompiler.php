@@ -10,7 +10,6 @@ class BladeCompiler extends BaseBladeCompiler
      * Compile the component tags.
      *
      * @param  string  $value
-     * @return string
      */
     protected function compileComponentTags($value): string
     {
@@ -25,8 +24,6 @@ class BladeCompiler extends BaseBladeCompiler
 
     /**
      * Compile the "viteRefresh" statements into valid PHP.
-     *
-     * @return ?string
      */
     protected function compileViteRefresh(): ?string
     {

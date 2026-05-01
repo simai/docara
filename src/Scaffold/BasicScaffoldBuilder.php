@@ -5,6 +5,7 @@ namespace Simai\Docara\Scaffold;
 class BasicScaffoldBuilder extends ScaffoldBuilder
 {
     protected bool $forceCoreFiles = false;
+
     private ?bool $gitAvailable = null;
 
     public function init($preset = null)
@@ -43,16 +44,19 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
 
             if ($item === '.env' && $existingEnv !== null) {
                 $this->log('Skip copying .env from stubs because it already exists.');
+
                 continue;
             }
 
             if ($item === '.env.example' && $this->files->exists($dest)) {
                 $this->log('Skip copying .env.example from stubs because it already exists.');
+
                 continue;
             }
 
             if ($item === '.gitignore' && $this->files->exists($dest)) {
                 $this->log('Skip copying .gitignore from stubs because it already exists.');
+
                 continue;
             }
 
@@ -69,16 +73,19 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
                         );
                         $mode = $this->forceCoreFiles ? 'forceCoreFiles=true' : 'forceCoreFiles=false';
                         $this->log("Copied _core ({$mode}): copied={$copied}, updated={$updated}, forced={$forced}, skipped={$skipped}, gitSkipped={$gitSkipped}");
+
                         continue;
                     }
 
                     if ($sourceItem === $docsDir && $hasDocs) {
                         $this->log("Skip copying docs from stubs ({$sourceItem}) because target exists.");
+
                         continue;
                     }
 
                     if (! $this->files->exists($srcChild)) {
                         $this->log("Skip missing stub entry: {$srcChild}");
+
                         continue;
                     }
 
@@ -98,6 +105,7 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
             } else {
                 if (! $this->files->exists($src)) {
                     $this->log("Skip missing stub entry: {$src}");
+
                     continue;
                 }
                 if ($this->files->isDirectory($src)) {
@@ -164,12 +172,14 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
             if (! $this->files->exists($dest)) {
                 $this->files->copy($file->getPathname(), $dest);
                 $copied++;
+
                 continue;
             }
 
             // If destination is tracked in user's repo, leave it intact.
             if ($this->isGitTracked($dest)) {
                 $gitSkipped++;
+
                 continue;
             }
 

@@ -2,7 +2,6 @@
 
 namespace Simai\Docara\CustomTags;
 
-
 use Simai\Docara\Interface\CustomTagInterface;
 
 final class CustomTagAdapter

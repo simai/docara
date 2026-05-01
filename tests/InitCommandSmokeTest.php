@@ -19,7 +19,7 @@ class InitCommandSmokeTest extends TestCase
         $original = "ORIGINAL\n";
         file_put_contents($docsDir . '/index.md', $original);
 
-        file_put_contents($tmp . '/.env', <<<ENV
+        file_put_contents($tmp . '/.env', <<<'ENV'
 DOCS_DIR=customdocs
 AZURE_KEY=
 AZURE_REGION=
@@ -42,7 +42,7 @@ ENV);
 
     private function deleteDir(string $dir): void
     {
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             return;
         }
 

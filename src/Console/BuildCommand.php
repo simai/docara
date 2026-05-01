@@ -5,14 +5,14 @@ namespace Simai\Docara\Console;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Support\Arr;
+use Simai\Docara\Docara;
+use Simai\Docara\File\ConfigFile;
+use Simai\Docara\File\TemporaryFilesystem;
+use Simai\Docara\PathResolvers\PrettyOutputPathResolver;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
-use Simai\Docara\File\ConfigFile;
-use Simai\Docara\File\TemporaryFilesystem;
-use Simai\Docara\Docara;
-use Simai\Docara\PathResolvers\PrettyOutputPathResolver;
 
 class BuildCommand extends Command
 {

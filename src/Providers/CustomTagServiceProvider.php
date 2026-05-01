@@ -5,8 +5,8 @@ namespace Simai\Docara\Providers;
 use Simai\Docara\CustomTags\CustomTagRegistry;
 use Simai\Docara\CustomTags\TagRegistry;
 use Simai\Docara\Interface\CustomTagInterface;
-use Simai\Docara\Parsers\FrontMatterParser;
 use Simai\Docara\Parser;
+use Simai\Docara\Parsers\FrontMatterParser;
 use Simai\Docara\Support\ServiceProvider;
 
 class CustomTagServiceProvider extends ServiceProvider

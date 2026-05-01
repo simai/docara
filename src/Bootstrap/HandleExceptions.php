@@ -6,11 +6,11 @@ use ErrorException;
 use Exception;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use PHPUnit\Runner\ErrorHandler;
+use Simai\Docara\Container;
+use Simai\Docara\Exceptions\DeprecationException;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\ErrorHandler\Error\FatalError;
 use Throwable;
-use Simai\Docara\Container;
-use Simai\Docara\Exceptions\DeprecationException;
 
 class HandleExceptions
 {

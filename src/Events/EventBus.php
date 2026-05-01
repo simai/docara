@@ -13,13 +13,10 @@ use Simai\Docara\Docara;
  */
 class EventBus
 {
-    /** @var Collection */
     public Collection $beforeBuild;
 
-    /** @var Collection */
     public Collection $afterCollections;
 
-    /** @var Collection */
     public Collection $afterBuild;
 
     public function __construct()

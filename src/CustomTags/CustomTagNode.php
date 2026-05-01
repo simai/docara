@@ -7,7 +7,6 @@ use League\CommonMark\Node\Block\Document;
 
 final class CustomTagNode extends AbstractBlock
 {
-
     public function __construct(
         private string $type,
         private array $attrs = [],
@@ -59,10 +58,12 @@ final class CustomTagNode extends AbstractBlock
             $this->attrs['class'] = implode(' ', $list);
         }
     }
+
     public function setMeta($meta): array
     {
         return $this->meta = $meta;
     }
+
     public function getMeta(): array
     {
         return $this->meta;

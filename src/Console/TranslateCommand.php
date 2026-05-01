@@ -3,8 +3,8 @@
 namespace Simai\Docara\Console;
 
 use Exception;
-use Symfony\Component\Console\Input\InputOption;
 use Simai\Docara\Translate\Translate;
+use Symfony\Component\Console\Input\InputOption;
 
 class TranslateCommand extends Command
 {

@@ -1,35 +1,35 @@
 <?php
 
-    namespace Simai\Docara\Providers;
+namespace Simai\Docara\Providers;
 
-    use Simai\Docara\Cache\BuildCache;
-    use Simai\Docara\Support\ServiceProvider;
+use Simai\Docara\Cache\BuildCache;
+use Simai\Docara\Support\ServiceProvider;
 
-    class CacheServiceProvider extends ServiceProvider
+class CacheServiceProvider extends ServiceProvider
+{
+    public function register(): void
     {
-        public function register(): void
-        {
-            $this->app->singleton(BuildCache::class, function ($app) {
-                $useCache = $app['config']->get('cache');
-                $pretty = filter_var($app['config']->get('pretty', false), FILTER_VALIDATE_BOOLEAN);
-                $cache = new BuildCache($useCache, $pretty);
-                $cache->setGithubSha($app['config']->get('sha'));
-                $value = filter_var($useCache, FILTER_VALIDATE_BOOLEAN);
-                $app['consoleOutput']->writeln(PHP_EOL . sprintf(
-                        '<comment>=== Use cache: %s ===</comment>',
-                        $value ? 'true' : 'false'
-                    ));
-                $moduleCache = filter_var($app['config']->get('moduleCache', true), FILTER_VALIDATE_BOOLEAN);
-                $app['consoleOutput']->writeln(sprintf(
-                    '<comment>=== Module cache: %s ===</comment>',
-                    $moduleCache ? 'true' : 'false'
-                ));
-                $customCachePath = $app['config']->get('cachePath');
-                $paths = $app['buildPath'];
-                $destination = $paths['destination'];
-                $cache->setCachePath($customCachePath ?: $app->cachePath(), $destination);
+        $this->app->singleton(BuildCache::class, function ($app) {
+            $useCache = $app['config']->get('cache');
+            $pretty = filter_var($app['config']->get('pretty', false), FILTER_VALIDATE_BOOLEAN);
+            $cache = new BuildCache($useCache, $pretty);
+            $cache->setGithubSha($app['config']->get('sha'));
+            $value = filter_var($useCache, FILTER_VALIDATE_BOOLEAN);
+            $app['consoleOutput']->writeln(PHP_EOL . sprintf(
+                '<comment>=== Use cache: %s ===</comment>',
+                $value ? 'true' : 'false'
+            ));
+            $moduleCache = filter_var($app['config']->get('moduleCache', true), FILTER_VALIDATE_BOOLEAN);
+            $app['consoleOutput']->writeln(sprintf(
+                '<comment>=== Module cache: %s ===</comment>',
+                $moduleCache ? 'true' : 'false'
+            ));
+            $customCachePath = $app['config']->get('cachePath');
+            $paths = $app['buildPath'];
+            $destination = $paths['destination'];
+            $cache->setCachePath($customCachePath ?: $app->cachePath(), $destination);
 
-                return $cache;
-            });
-        }
+            return $cache;
+        });
     }
+}

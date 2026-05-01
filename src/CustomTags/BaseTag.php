@@ -2,7 +2,6 @@
 
 namespace Simai\Docara\CustomTags;
 
-use League\CommonMark\Node\Block\Document;
 use Simai\Docara\Interface\CustomTagInterface;
 
 abstract class BaseTag implements CustomTagInterface
@@ -12,7 +11,6 @@ abstract class BaseTag implements CustomTagInterface
     public bool $isContainer = true;
 
     public array $html = [];
-
 
     public function openRegex(): string
     {

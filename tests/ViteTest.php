@@ -3,8 +3,8 @@
 namespace Tests;
 
 use PHPUnit\Framework\Attributes\Test;
-use TightenCo\Jigsaw\Jigsaw;
-use TightenCo\Jigsaw\Support\Vite;
+use Simai\Docara\Docara as Jigsaw;
+use Simai\Docara\Support\Vite;
 
 class ViteTest extends TestCase
 {

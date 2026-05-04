@@ -27,7 +27,6 @@ class PageData extends IterableObject
     public function setPagePath($path)
     {
         $this->page->_meta->put('path', $path);
-        var_dump($path);
         $this->updatePageUrl();
         $this->resolveLayoutForPath($path);
     }

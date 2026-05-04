@@ -3,7 +3,7 @@
 namespace Tests;
 
 use PHPUnit\Framework\Attributes\Test;
-use TightenCo\Jigsaw\File\Filesystem;
+use Simai\Docara\File\Filesystem;
 
 class FilesystemTest extends TestCase
 {

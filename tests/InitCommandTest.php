@@ -4,11 +4,11 @@ namespace Tests;
 
 use Mockery;
 use PHPUnit\Framework\Attributes\Test;
+use Simai\Docara\Console\InitCommand;
+use Simai\Docara\Scaffold\BasicScaffoldBuilder;
+use Simai\Docara\Scaffold\PresetScaffoldBuilder;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-use TightenCo\Jigsaw\Console\InitCommand;
-use TightenCo\Jigsaw\Scaffold\BasicScaffoldBuilder;
-use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
 
 class InitCommandTest extends TestCase
 {
@@ -80,7 +80,7 @@ class InitCommandTest extends TestCase
         $console->setInputs(['c']);
         $console->execute([]);
 
-        $this->assertStringContainsString("It looks like you've already run 'docara init' on this project", $console->getDisplay());
+        $this->assertStringContainsString('Detected existing site files: source/', $console->getDisplay());
     }
 
     #[Test]
@@ -95,7 +95,7 @@ class InitCommandTest extends TestCase
         $console->setInputs(['c']);
         $console->execute([]);
 
-        $this->assertStringContainsString("It looks like you've already run 'docara init' on this project", $console->getDisplay());
+        $this->assertStringContainsString('Detected existing site files: config.php', $console->getDisplay());
     }
 
     #[Test]

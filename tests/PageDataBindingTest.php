@@ -6,7 +6,7 @@ use Illuminate\Container\Container;
 use Illuminate\Support\Str;
 use Illuminate\View\Component;
 use PHPUnit\Framework\Attributes\Test;
-use TightenCo\Jigsaw\PageData;
+use Simai\Docara\PageData;
 
 class PageDataBindingTest extends TestCase
 {
@@ -29,9 +29,9 @@ class PageDataBindingTest extends TestCase
 
         $data = json_decode(Str::between($built, '<div>Header: ', '</div>'), true);
 
-        $this->assertEquals($data['page']['view.compiled'], getcwd() . '/cache');
+        $this->assertEquals($data['page']['view.compiled'], getcwd() . '/.cache');
         $this->assertSame('page', $data['page']['_meta']['filename']);
-        $this->assertSame('/page.html', $data['page']['_meta']['path']);
+        $this->assertSame('page.html', $data['page']['_meta']['path']);
         $this->assertSame('/page.html', $data['page']['_meta']['url']);
     }
 }

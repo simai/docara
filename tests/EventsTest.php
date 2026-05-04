@@ -235,7 +235,7 @@ class EventsTest extends TestCase
                 ],
             ]);
         });
-        $yaml_header = implode("\n", ['---', 'extends: _layouts.master', 'section: content', '---']);
+        $yaml_header = implode("\n", ['---', 'extends: _layouts.master', 'section: content', '---', '']);
         $files = $this->setupSource([
             '_layouts' => [
                 'master.blade.php' => "<div>@yield('content')</div>",

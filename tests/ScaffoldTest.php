@@ -3,12 +3,11 @@
 namespace Tests;
 
 use PHPUnit\Framework\Attributes\Test;
-use TightenCo\Jigsaw\Scaffold\BasicScaffoldBuilder;
+use Simai\Docara\Scaffold\BasicScaffoldBuilder;
 
 class ScaffoldTest extends TestCase
 {
     public const EXISTING_FILES = [
-        '.gitignore' => '',
         'bootstrap.php' => '',
         'config.php' => '',
         'gulpfile.js' => '',
@@ -173,7 +172,7 @@ class ScaffoldTest extends TestCase
     #[Test]
     public function jigsaw_dependency_is_restored_to_fresh_composer_dot_json_when_archiving_site()
     {
-        $old_composer = ['require' => ['tightenco/docara' => '^1.2']];
+        $old_composer = ['require' => ['simai/docara' => '^1.2']];
         $existing_site = ['composer.json' => json_encode($old_composer)];
         $this->createSource($existing_site);
         $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($this->tmp);
@@ -197,7 +196,7 @@ class ScaffoldTest extends TestCase
     #[Test]
     public function jigsaw_dependency_is_restored_to_fresh_composer_dot_json_when_deleting_site()
     {
-        $old_composer = ['require' => ['tightenco/docara' => '^1.2']];
+        $old_composer = ['require' => ['simai/docara' => '^1.2']];
         $existing_site = ['composer.json' => json_encode($old_composer)];
         $this->createSource($existing_site);
         $scaffold = $this->app->make(BasicScaffoldBuilder::class)->setBase($this->tmp);

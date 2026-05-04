@@ -37,7 +37,7 @@ class CollectionItemHandler
     private function makeRelativePath($file): string
     {
         $segments = explode('/', trim(str_replace('\\', '/', $file->getRelativePath()), '/'));
-        $segments = array_slice($segments, count($this->docDirArray));
+        $segments = array_slice($segments, $this->isLegacyCollectionFile($file) ? 1 : count($this->docDirArray));
         $segments[] = pathinfo($file->getFilename(), PATHINFO_FILENAME);
 
         return implode('/', array_filter($segments));
@@ -65,11 +65,13 @@ class CollectionItemHandler
         if (! $handler) {
             return collect();
         }
+        $skipSegments = $this->isLegacyCollectionFile($file) ? 1 : count($this->docDirArray) + 1;
         $name = collect(explode('/', trim(str_replace('\\', '/', $file->getRelativePath()), '/')))
-            ->skip(count($this->docDirArray) + 1)
+            ->skip($skipSegments)
+            ->reject(fn ($segment) => $segment === '_tmp')
             ->implode('/');
         $filenameSlug = preg_replace('/(\.blade\.(md|php)|\.md|\.php)$/i', '', $file->getFilename());
-        $name = $name . '/' . $filenameSlug;
+        $name = trim($name . '/' . $filenameSlug, '/');
         $pageData->setPageVariableToCollectionItem($this->getCollectionName($file), $name);
 
         $page = $pageData->page ?? null;
@@ -135,7 +137,13 @@ class CollectionItemHandler
     {
         $base = $file->topLevelDirectory();
 
-        return $base === $this->docDirArray[0] && $this->hasCollectionNamed($this->getCollectionName($file));
+        return ($base === $this->docDirArray[0] || $this->isLegacyCollectionFile($file))
+            && $this->hasCollectionNamed($this->getCollectionName($file));
+    }
+
+    private function isLegacyCollectionFile($file): bool
+    {
+        return $this->hasCollectionNamed(ltrim($file->topLevelDirectory(), '_'));
     }
 
     private function hasCollectionNamed($candidate): bool
@@ -150,6 +158,10 @@ class CollectionItemHandler
 
     protected function getName($file): string
     {
+        if ($this->isLegacyCollectionFile($file)) {
+            return ltrim($file->topLevelDirectory(), '_');
+        }
+
         if (! count($this->docDirArray)) {
             return '';
         }

@@ -5,12 +5,12 @@ namespace Tests;
 use Mockery;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
-use TightenCo\Jigsaw\Console\ConsoleSession;
-use TightenCo\Jigsaw\File\Filesystem;
-use TightenCo\Jigsaw\Scaffold\CustomInstaller;
-use TightenCo\Jigsaw\Scaffold\PresetPackage;
-use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
-use TightenCo\Jigsaw\Scaffold\ProcessRunner;
+use Simai\Docara\Console\ConsoleSession;
+use Simai\Docara\File\Filesystem;
+use Simai\Docara\Scaffold\CustomInstaller;
+use Simai\Docara\Scaffold\PresetPackage;
+use Simai\Docara\Scaffold\PresetScaffoldBuilder;
+use Simai\Docara\Scaffold\ProcessRunner;
 
 class CustomScaffoldInstallerTest extends TestCase
 {
@@ -27,9 +27,11 @@ class CustomScaffoldInstallerTest extends TestCase
             ->setup();
 
         $this->assertFileExists($this->tmpPath('source'));
-        $this->assertFileExists($this->tmpPath('package.json'));
-        $this->assertFileExists($this->tmpPath('vite.config.js'));
+        $this->assertFileExists($this->tmpPath('.env.example'));
+        $this->assertFileExists($this->tmpPath('.gitignore'));
         $this->assertFileExists($this->tmpPath('config.php'));
+        $this->assertFileExists($this->tmpPath('source/_core'));
+        $this->assertFileExists($this->tmpPath('source/docs'));
     }
 
     #[Test]

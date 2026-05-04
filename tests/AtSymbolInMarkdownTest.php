@@ -19,7 +19,7 @@ class AtSymbolInMarkdownTest extends TestCase
         $this->buildSite($files);
 
         $this->assertEquals(
-            '<div><p><a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x74;&#101;&#x73;&#116;&#x40;&#116;&#x65;&#115;&#x74;&#46;&#x63;&#111;&#x6d;">test@test.com</a></p></div>',
+            '<div><p><a href="mailto:test@test.com">test@test.com</a></p></div>',
             $this->clean($files->getChild('build/test.html')->getContent()),
         );
     }

@@ -17,12 +17,17 @@ use League\CommonMark\MarkdownConverter;
 use Mni\FrontYAML\Parser as FrontYamlParser;
 use Simai\Docara\CustomTags\CustomTagRegistry;
 use Simai\Docara\CustomTags\CustomTagsExtension;
+use Simai\Docara\Parsers\CommonMarkParser;
+use Simai\Docara\Parsers\DocaraMarkdownParser;
 use Simai\Docara\CustomTags\TableWrapRenderer;
+use Simai\Docara\Parsers\MarkdownParserContract;
 use Simai\Docara\Parsers\FrontMatterParser as BaseFrontMatterParser;
 
 class Parser extends BaseFrontMatterParser
 {
     private MarkdownConverter $md;
+
+    private ?MarkdownParserContract $overrideParser = null;
 
     private function extractClassFromCell(TableCell $cell): ?string
     {
@@ -56,9 +61,13 @@ class Parser extends BaseFrontMatterParser
         return null;
     }
 
-    public function __construct(FrontYamlParser $frontYaml, CustomTagRegistry $registry)
+    public function __construct(FrontYamlParser $frontYaml, CustomTagRegistry $registry, ?MarkdownParserContract $markdownParser = null)
     {
         parent::__construct($frontYaml);
+        if ($markdownParser && ! $markdownParser instanceof CommonMarkParser && ! $markdownParser instanceof DocaraMarkdownParser) {
+            $this->overrideParser = $markdownParser;
+        }
+
         $config = [
             'html_input' => 'allow',
             'allow_unsafe_links' => true,
@@ -160,6 +169,10 @@ class Parser extends BaseFrontMatterParser
      */
     public function parseMarkdownWithoutFrontMatter($content): string
     {
+        if ($this->overrideParser) {
+            return $this->overrideParser->parse($this->extractContent($content));
+        }
+
         return (string) $this->md->convert($content);
     }
 }

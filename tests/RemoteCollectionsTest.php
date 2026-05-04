@@ -72,7 +72,7 @@ class RemoteCollectionsTest extends TestCase
                 'collection' => [],
             ],
         ]);
-        $yaml_header = implode("\n", ['---', 'extends: _layouts.master', 'section: content', '---']);
+        $yaml_header = implode("\n", ['---', 'extends: _layouts.master', 'section: content', '---', '']);
         $files = $this->setupSource([
             '_layouts' => [
                 'master.blade.php' => "<div>@yield('content')</div>",
@@ -139,7 +139,7 @@ class RemoteCollectionsTest extends TestCase
                 ],
             ],
         ]);
-        $yaml_header = implode("\n", ['---', 'extends: _layouts.master', 'section: content', '---']);
+        $yaml_header = implode("\n", ['---', 'extends: _layouts.master', 'section: content', '---', '']);
 
         $files = $this->setupSource([
             '_layouts' => [
@@ -651,3 +651,4 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 }
+

@@ -182,11 +182,11 @@ HTML;
         $directory = dirname($outputPath);
         $this->prepareDirectory("{$destination}/{$directory}");
 
-        // Проверка кэширования
-        if ($this->buildCache && $this->buildCache->isEnabled()) {
-            $contentHash = md5($file->contents());
+        $contents = $file->contents();
+        $contentHash = is_string($contents) ? md5($contents) : null;
 
-            // Если файл уже существует в кэше, пропускаем его
+        // Проверка кэширования
+        if ($contentHash !== null && $this->buildCache && $this->buildCache->isEnabled()) {
             if ($this->buildCache->shouldSkip($outputPath, $contentHash)) {
                 // Синхронизируем страницу с путём для меню/активных состояний
                 $webPath = '/' . trim(str_replace('\\', '/', $outputPath), '/');
@@ -199,7 +199,6 @@ HTML;
             }
         }
 
-        $contents = $file->contents();
         // If content is binary/null (e.g., CopyFile), just delegate to putContents without injections.
         if (! is_string($contents)) {
             $file->putContents("{$destination}/{$outputPath}");
@@ -215,8 +214,7 @@ HTML;
         }
 
         // Если мы используем кэш и файл был успешно записан, сохраняем информацию о нём
-        if ($this->buildCache && $this->buildCache->isEnabled()) {
-            $contentHash = md5($file->contents());
+        if ($contentHash !== null && $this->buildCache && $this->buildCache->isEnabled()) {
             $metaInfo = [
                 'output' => $outputPath,
                 'updated_at' => time(),

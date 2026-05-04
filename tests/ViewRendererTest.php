@@ -7,7 +7,7 @@ use Illuminate\View\Factory;
 use Mockery;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
-use TightenCo\Jigsaw\View\ViewRenderer;
+use Simai\Docara\View\ViewRenderer;
 
 class ViewRendererTest extends TestCase
 {

@@ -48,7 +48,7 @@ class SiteBuilderTest extends TestCase
         $this->buildSite($files, [], $pretty = true);
 
         $this->assertEquals(
-            '/nested/page',
+            'nested/page',
             $this->clean($files->getChild('build/nested/page/index.html')->getContent()),
         );
     }
@@ -110,7 +110,7 @@ class SiteBuilderTest extends TestCase
         $this->buildSite($files, [], $pretty = true);
 
         $this->assertEquals(
-            $files->getChild('build/page/index.html')->filemtime(),
+            $files->getChild('source/page.blade.php')->filemtime(),
             $this->clean($files->getChild('build/page/index.html')->getContent()),
         );
     }
@@ -148,20 +148,20 @@ class SiteBuilderTest extends TestCase
 
         $source1 = $jigsaw->getPages()->get('/page1');
         $this->assertEquals(
-            $files->getChild('build/page1/index.html')->filemtime(),
+            $files->getChild('source/page1.blade.php')->filemtime(),
             $source1->getModifiedTime(),
         );
         $this->assertEquals('page1', $source1->getFilename());
-        $this->assertEquals('/page1', $source1->getPath());
+        $this->assertEquals('/page1/index.html', $source1->getPath());
         $this->assertEquals('blade.php', $source1->getExtension());
 
         $source2 = $jigsaw->getPages()->get('/nested/page2');
         $this->assertEquals(
-            $files->getChild('build/nested/page2/index.html')->filemtime(),
+            $files->getChild('source/nested/page2.blade.php')->filemtime(),
             $source2->getModifiedTime(),
         );
         $this->assertEquals('page2', $source2->getFilename());
-        $this->assertEquals('/nested/page2', $source2->getPath());
+        $this->assertEquals('/nested/page2/index.html', $source2->getPath());
         $this->assertEquals('blade.php', $source2->getExtension());
         $this->assertEquals('bar', $source2->foo);
     }

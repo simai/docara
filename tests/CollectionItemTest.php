@@ -3,7 +3,7 @@
 namespace Tests;
 
 use PHPUnit\Framework\Attributes\Test;
-use TightenCo\Jigsaw\Collection\CollectionItem;
+use Simai\Docara\Collection\CollectionItem;
 
 class CollectionItemTest extends TestCase
 {
@@ -13,8 +13,8 @@ class CollectionItemTest extends TestCase
         $config = collect(['collections' => ['collection' => []]]);
         $yaml_header = implode("\n", ['---', 'section: content', '---']);
         $files = $this->setupSource([
-            '_collection' => [
-                'item.md' => $yaml_header . '### Collection Item Content',
+            'collection' => [
+                'item.md' => $yaml_header . "\n### Collection Item Content",
             ],
             'test_get_content.blade.php' => '<div>{!! $collection->first()->getContent() !!}</div>',
             'test_to_string.blade.php' => '<div>{!! $collection->first() !!}</div>',
@@ -61,7 +61,7 @@ class CollectionItemTest extends TestCase
             '_layouts' => [
                 'collection_item.blade.php' => '@section(\'content\') @endsection',
             ],
-            '_collection' => [
+            'collection' => [
                 'item.md' => implode("\n", [$builtHeader, '### Collection Item Content']),
                 'filtered.md' => implode("\n", [$filteredHeader, '### Filtered Item Content']),
             ],
@@ -96,7 +96,7 @@ class CollectionItemTest extends TestCase
             '_layouts' => [
                 'item.blade.php' => '@section(\'content\') @endsection',
             ],
-            '_collection' => [
+            'collection' => [
                 'item.blade.php' => implode("\n", [
                     $itemHeader,
                     "@extends('_layouts.item')",
@@ -121,7 +121,7 @@ class CollectionItemTest extends TestCase
             '_layouts' => [
                 'item.blade.php' => '@section(\'content\') @endsection',
             ],
-            '_collection' => [
+            'collection' => [
                 'page.blade.php' => "@extends('_layouts.item')\n" . '{{ $page->getPath() }}',
             ],
         ]);
@@ -142,7 +142,7 @@ class CollectionItemTest extends TestCase
             '_layouts' => [
                 'item.blade.php' => '@section(\'content\') @endsection',
             ],
-            '_collection' => [
+            'collection' => [
                 'nested' => [
                     'page.blade.php' => "@extends('_layouts.item')\n" . '{{ $page->getRelativePath() }}',
                 ],
@@ -165,7 +165,7 @@ class CollectionItemTest extends TestCase
             '_layouts' => [
                 'item.blade.php' => '@section(\'content\') @endsection',
             ],
-            '_collection' => [
+            'collection' => [
                 'page.blade.php' => "@extends('_layouts.item')\n" . '{{ $page->getExtension() }}',
             ],
         ]);
@@ -186,7 +186,7 @@ class CollectionItemTest extends TestCase
             '_layouts' => [
                 'item.blade.php' => '@section(\'content\') @endsection',
             ],
-            '_collection' => [
+            'collection' => [
                 'page1.blade.php' => "@extends('_layouts.item')\n" . '{{ $page->getCollection() }}',
                 'page2.blade.php' => "@extends('_layouts.item')\n" . '{{ $page->getCollectionName() }}',
             ],
@@ -212,7 +212,7 @@ class CollectionItemTest extends TestCase
             '_layouts' => [
                 'item.blade.php' => '@section(\'content\') @endsection',
             ],
-            '_collection' => [
+            'collection' => [
                 'page.blade.php' => "@extends('_layouts.item')\n" . '{{ $page->getSource() }}',
             ],
         ]);
@@ -220,7 +220,7 @@ class CollectionItemTest extends TestCase
         $this->buildSite($files, $config, $pretty = true);
 
         $this->assertEquals(
-            "{$this->tmp}/source/_collection",
+            "{$this->tmp}/source/collection",
             $this->clean($files->getChild('build/collection/page/index.html')->getContent()),
         );
     }
@@ -233,7 +233,7 @@ class CollectionItemTest extends TestCase
             '_layouts' => [
                 'item.blade.php' => '@section(\'content\') @endsection',
             ],
-            '_collection' => [
+            'collection' => [
                 'page.blade.php' => "@extends('_layouts.item')\n" . '{{ $page->getModifiedTime() }}',
             ],
         ]);
@@ -241,7 +241,7 @@ class CollectionItemTest extends TestCase
         $this->buildSite($files, $config, $pretty = true);
 
         $this->assertEquals(
-            $files->getChild('build/collection/page/index.html')->filemtime(),
+            $files->getChild('source/collection/page.blade.php')->filemtime(),
             $this->clean($files->getChild('build/collection/page/index.html')->getContent()),
         );
     }

@@ -62,6 +62,10 @@ class CollectionDataLoader
         $collectionPath = implode('/', $collectionPath);
         $path = "{$this->source}/{$collectionPath}";
         if (! $this->filesystem->exists($path)) {
+            $path = "{$this->source}/_{$collectionPath}";
+        }
+
+        if (! $this->filesystem->exists($path)) {
             return collect();
         }
 

@@ -3,7 +3,7 @@
 namespace Tests;
 
 use PHPUnit\Framework\Attributes\Test;
-use TightenCo\Jigsaw\Jigsaw;
+use Simai\Docara\Docara as Jigsaw;
 
 class JigsawMacroTest extends TestCase
 {

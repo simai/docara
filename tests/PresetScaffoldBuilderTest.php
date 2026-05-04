@@ -6,11 +6,11 @@ use Exception;
 use Mockery;
 use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use PHPUnit\Framework\Attributes\Test;
-use TightenCo\Jigsaw\Scaffold\CustomInstaller;
-use TightenCo\Jigsaw\Scaffold\DefaultInstaller;
-use TightenCo\Jigsaw\Scaffold\PresetPackage;
-use TightenCo\Jigsaw\Scaffold\PresetScaffoldBuilder;
-use TightenCo\Jigsaw\Scaffold\ProcessRunner;
+use Simai\Docara\Scaffold\CustomInstaller;
+use Simai\Docara\Scaffold\DefaultInstaller;
+use Simai\Docara\Scaffold\PresetPackage;
+use Simai\Docara\Scaffold\PresetScaffoldBuilder;
+use Simai\Docara\Scaffold\ProcessRunner;
 
 class PresetScaffoldBuilderTest extends TestCase
 {
@@ -205,7 +205,7 @@ class PresetScaffoldBuilderTest extends TestCase
     {
         $old_composer = [
             'require' => [
-                'tightenco/docara' => '^1.2',
+                'simai/docara' => '^1.2',
                 'test/preset' => '1.0',
             ],
         ];
@@ -227,7 +227,7 @@ class PresetScaffoldBuilderTest extends TestCase
         $this->assertEquals(
             [
                 'require' => [
-                    'tightenco/docara' => '^1.2',
+                    'simai/docara' => '^1.2',
                 ],
             ],
             json_decode(file_get_contents($this->tmpPath('composer.json')), true),
@@ -239,7 +239,7 @@ class PresetScaffoldBuilderTest extends TestCase
     {
         $old_composer = [
             'require' => [
-                'tightenco/docara' => '^1.2',
+                'simai/docara' => '^1.2',
                 'test/preset' => '1.0',
             ],
         ];
@@ -261,10 +261,11 @@ class PresetScaffoldBuilderTest extends TestCase
         $this->assertEquals(
             [
                 'require' => [
-                    'tightenco/docara' => '^1.2',
+                    'simai/docara' => '^1.2',
                 ],
             ],
             json_decode(file_get_contents($this->tmpPath('composer.json')), true),
         );
     }
 }
+

@@ -87,6 +87,7 @@ class MarkdownHandler
         $html = $this->parser->parseMarkdownWithoutFrontMatter(
             $this->getEscapedMarkdownContent($file),
         );
+        $html = str_replace("{{'?php'}}", '?php', $html);
         $html = $this->normalizeInternalDocLinks($file, $pageData, $html);
 
         $this->collectTranslateContent($pageData, $html);
@@ -94,7 +95,7 @@ class MarkdownHandler
 
         $wrapper = $this->view->renderString(
             "@extends('{$extends}')\n" .
-            "@section('{$pageData->page->section}'){$html}@endsection",
+            "@section('{$pageData->page->section}')@verbatim{$html}@endverbatim@endsection",
         );
 
         return $this->view->render(
@@ -165,18 +166,29 @@ class MarkdownHandler
 
     private function getEscapedMarkdownContent($file)
     {
-        $replacements = ['<?php' => "<{{'?php'}}"];
+        $replacements = [];
 
-        if (in_array($file->getFullExtension(), ['markdown', 'md', 'mdown'])) {
+        if ($file->isBladeFile()) {
+            $replacements = ['<?php' => "<{{'?php'}}"];
+        }
+
+        if (! $file->isBladeFile() && in_array($file->getFullExtension(), ['markdown', 'md', 'mdown'])) {
             $replacements = array_merge([
-                '@' => "{{'@'}}",
-                '{@' => '{@',  // Preserve {@ to avoid {{{'@'}} which is invalid Blade (e.g. {@inheritDoc})
                 '{{' => '@{{',
                 '{!!' => '@{!!',
             ], $replacements);
         }
 
         return strtr($file->getContents(), $replacements);
+    }
+
+    private function escapeBladeAtSymbols(string $html): string
+    {
+        $placeholder = '__DOCARA_LITERAL_AT__';
+        $html = str_replace('{@', '{' . $placeholder, $html);
+        $html = str_replace('@', "{{'@'}}", $html);
+
+        return str_replace('{' . $placeholder, '{@', $html);
     }
 
     private function normalizeInternalDocLinks($file, $pageData, string $html): string

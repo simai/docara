@@ -93,7 +93,12 @@ class DocaraEventsServiceProvider extends ServiceProvider
         $index = [];
         $paths = [];
 
-        foreach ($docara->getConfig('collections') as $collectionName => $config) {
+        $collections = $docara->getConfig('collections');
+        if (! is_iterable($collections)) {
+            $collections = [];
+        }
+
+        foreach ($collections as $collectionName => $config) {
             $collection = $docara->getCollection($collectionName);
             foreach ($collection as $page) {
                 $paths[] = $page->getPath();

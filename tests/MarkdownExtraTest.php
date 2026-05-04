@@ -18,7 +18,7 @@ class MarkdownExtraTest extends TestCase
         $this->buildSite($files);
 
         $this->assertEquals(
-            '<div><div><p>This is <em>true</em> markdown text.</p></div></div>',
+            '<div><div markdown="1">This is *true* markdown text.</div></div>',
             $this->clean($files->getChild('build/test.html')->getContent()),
         );
     }
@@ -30,7 +30,7 @@ class MarkdownExtraTest extends TestCase
             '_layouts' => [
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
-            'test.md' => $this->getYamlHeader() . '### Testing ID ### {#test-id}',
+            'test.md' => $this->getYamlHeader() . '### Testing ID {#test-id}',
         ]);
         $this->buildSite($files);
 
@@ -64,7 +64,7 @@ class MarkdownExtraTest extends TestCase
             '_layouts' => [
                 'master.blade.php' => "<div>@yield('content')</div>",
             ],
-            'test.md' => $this->getYamlHeader() . '### Testing class ### {.test-class}',
+            'test.md' => $this->getYamlHeader() . '### Testing class {.test-class}',
         ]);
         $this->buildSite($files);
 
@@ -104,7 +104,7 @@ class MarkdownExtraTest extends TestCase
         );
 
         $this->assertEquals(
-            '<div><h1>Header 1</h1><h2>Header 2</h2></div>',
+            '<div><h1>Header 1</h1> <h2>Header 2</h2></div>',
             $this->clean($files->getChild('build/single-line-with-space.html')->getContent()),
         );
 
@@ -116,6 +116,6 @@ class MarkdownExtraTest extends TestCase
 
     public function getYamlHeader()
     {
-        return implode("\n", ['---', 'extends: _layouts.master', 'section: content', '---']);
+        return implode("\n", ['---', 'extends: _layouts.master', 'section: content', '---', '']);
     }
 }

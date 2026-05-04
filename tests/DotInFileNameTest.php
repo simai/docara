@@ -3,13 +3,13 @@
 namespace Tests;
 
 use PHPUnit\Framework\Attributes\Test;
-use TightenCo\Jigsaw\Handlers\BladeHandler;
-use TightenCo\Jigsaw\Handlers\MarkdownHandler;
-use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\PageData;
-use TightenCo\Jigsaw\PageVariable;
-use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;
-use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
+use Simai\Docara\Handlers\BladeHandler;
+use Simai\Docara\Handlers\MarkdownHandler;
+use Simai\Docara\IterableObject;
+use Simai\Docara\PageData;
+use Simai\Docara\PageVariable;
+use Simai\Docara\PathResolvers\CollectionPathResolver;
+use Simai\Docara\PathResolvers\PrettyOutputPathResolver;
 
 class DotInFileNameTest extends TestCase
 {

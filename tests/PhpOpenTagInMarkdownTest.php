@@ -3,9 +3,9 @@
 namespace Tests;
 
 use PHPUnit\Framework\Attributes\Test;
-use TightenCo\Jigsaw\Handlers\MarkdownHandler;
-use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\PageData;
+use Simai\Docara\Handlers\MarkdownHandler;
+use Simai\Docara\IterableObject;
+use Simai\Docara\PageData;
 
 class PhpOpenTagInMarkdownTest extends TestCase
 {

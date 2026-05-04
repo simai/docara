@@ -10,14 +10,13 @@ class CacheServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(BuildCache::class, function ($app) {
-            $useCache = $app['config']->get('cache');
+            $useCache = filter_var($app['config']->get('cache', false), FILTER_VALIDATE_BOOLEAN);
             $pretty = filter_var($app['config']->get('pretty', false), FILTER_VALIDATE_BOOLEAN);
             $cache = new BuildCache($useCache, $pretty);
             $cache->setGithubSha($app['config']->get('sha'));
-            $value = filter_var($useCache, FILTER_VALIDATE_BOOLEAN);
             $app['consoleOutput']->writeln(PHP_EOL . sprintf(
                 '<comment>=== Use cache: %s ===</comment>',
-                $value ? 'true' : 'false'
+                $useCache ? 'true' : 'false'
             ));
             $moduleCache = filter_var($app['config']->get('moduleCache', true), FILTER_VALIDATE_BOOLEAN);
             $app['consoleOutput']->writeln(sprintf(

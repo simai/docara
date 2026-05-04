@@ -8,14 +8,14 @@ use Illuminate\Support\Str;
 use Illuminate\View\Component;
 use Mockery;
 use PHPUnit\Framework\TestCase as PHPUnit;
-use TightenCo\Jigsaw\Bootstrap\HandleExceptions;
-use TightenCo\Jigsaw\Container;
-use TightenCo\Jigsaw\Exceptions\Handler;
-use TightenCo\Jigsaw\File\Filesystem;
-use TightenCo\Jigsaw\File\InputFile;
-use TightenCo\Jigsaw\Jigsaw;
-use TightenCo\Jigsaw\Loaders\DataLoader;
-use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
+use Simai\Docara\Bootstrap\HandleExceptions;
+use Simai\Docara\Container;
+use Simai\Docara\Docara as Jigsaw;
+use Simai\Docara\Exceptions\Handler;
+use Simai\Docara\File\Filesystem;
+use Simai\Docara\File\InputFile;
+use Simai\Docara\Loaders\DataLoader;
+use Simai\Docara\PathResolvers\PrettyOutputPathResolver;
 
 class TestCase extends PHPUnit
 {
@@ -185,12 +185,15 @@ class TestCase extends PHPUnit
     public function buildSite($vfs = null, $config = [], $pretty = false, $viewPath = '/source')
     {
         $this->app->consoleOutput->setup($verbosity = -1);
-        $this->app->config = collect($this->app->config)->merge($config);
+        $mergedConfig = collect($this->app['config'])->merge($config);
+        $this->app->instance('config', $mergedConfig);
+        $this->app->config = $mergedConfig;
 
-        if ($collections = value($this->app->config->get('collections'))) {
-            $this->app->config->put('collections', collect($collections)->flatMap(function ($value, $key) {
+        if ($collections = value($this->app['config']->get('collections'))) {
+            $this->app['config']->put('collections', collect($collections)->flatMap(function ($value, $key) {
                 return is_array($value) ? [$key => $value] : [$value => []];
             }));
+            $this->app->config = $this->app['config'];
         }
 
         $this->app->buildPath = [

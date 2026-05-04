@@ -2,7 +2,6 @@
 
 namespace Simai\Docara\Parsers;
 
-use Illuminate\Support\Arr;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\Attributes\AttributesExtension;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
@@ -17,19 +16,22 @@ class CommonMarkParser implements MarkdownParserContract
 
     public function __construct()
     {
-        $environment = new Environment(Arr::get(app('config'), 'commonmark.config', []));
+        $commonmark = data_get(app('config')->all(), 'commonmark');
+        $environment = new Environment(data_get($commonmark, 'config', []));
 
         $environment->addExtension(new CommonMarkCoreExtension);
 
-        collect(Arr::get(app('config'), 'commonmark.extensions', [
+        $extensions = is_array($commonmark) && array_key_exists('extensions', $commonmark) ? $commonmark['extensions'] : [
             new AttributesExtension,
             new SmartPunctExtension,
             new StrikethroughExtension,
             new TableExtension,
-        ]))->map(fn ($extension) => $environment->addExtension($extension));
+        ];
+
+        collect($extensions)->map(fn ($extension) => $environment->addExtension($extension));
 
         collect(
-            Arr::get(app('config'), 'commonmark.renderers')
+            data_get($commonmark, 'renderers')
         )->map(fn ($renderer, $nodeClass) => $environment->addRenderer($nodeClass, $renderer));
 
         $this->converter = new MarkdownConverter($environment);
@@ -37,6 +39,7 @@ class CommonMarkParser implements MarkdownParserContract
 
     public function parse(string $text)
     {
+        throw new \RuntimeException('commonmark parse');
         return $this->converter->convert($text);
     }
 }

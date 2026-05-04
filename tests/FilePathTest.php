@@ -2,10 +2,10 @@
 
 namespace Tests;
 
-use TightenCo\Jigsaw\IterableObject;
-use TightenCo\Jigsaw\PageVariable;
-use TightenCo\Jigsaw\PathResolvers\CollectionPathResolver;
-use TightenCo\Jigsaw\PathResolvers\PrettyOutputPathResolver;
+use Simai\Docara\IterableObject;
+use Simai\Docara\PageVariable;
+use Simai\Docara\PathResolvers\CollectionPathResolver;
+use Simai\Docara\PathResolvers\PrettyOutputPathResolver;
 
 class FilePathTest extends TestCase
 {

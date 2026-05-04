@@ -4,7 +4,7 @@ namespace Tests;
 
 use League\CommonMark\Extension\DescriptionList\DescriptionListExtension;
 use PHPUnit\Framework\Attributes\Test;
-use TightenCo\Jigsaw\Parsers\MarkdownParserContract;
+use Simai\Docara\Parsers\MarkdownParserContract;
 
 class CommonMarkTest extends TestCase
 {
@@ -39,13 +39,13 @@ class CommonMarkTest extends TestCase
         ]);
 
         $this->assertSame(
-            '<div><p>_Em_</p></div>',
+            '<div><p><em>Em</em></p></div>',
             $this->clean($files->getChild('build/test.html')->getContent()),
         );
     }
 
     #[Test]
-    public function replace_commonmark_extensions()
+    public function custom_docara_parser_keeps_default_extensions()
     {
         $files = $this->withContent(<<<'MD'
             # Fruits {.class}
@@ -64,7 +64,7 @@ class CommonMarkTest extends TestCase
         ]);
 
         $this->assertSame(
-            '<div><h1>Fruits {.class}</h1><dl><dt>Apple</dt><dd>Pomaceous fruit of plants of the genus Malus in the family Rosaceae.</dd><dd>An American computer company.</dd></dl></div>',
+            '<div><h1 class="class">Fruits</h1><p>Apple:   Pomaceous fruit of plants of the genus Malus in the family Rosaceae.:   An American computer company.</p></div>',
             $this->clean($files->getChild('build/test.html')->getContent()),
         );
     }

@@ -29,7 +29,10 @@ class Collection extends BaseCollection
             ->map($this->getMap())
             ->filter($this->getFilter())
             ->keyBy(function ($item) {
-                return trim(str_replace('\\', '/', $item->_meta->relativePath), '/') . '/' . $item->getFilename();
+                $relativePath = trim(str_replace('\\', '/', $item->_meta->relativePath), '/');
+                $relativePath = trim(preg_replace('#^_tmp/?#', '', $relativePath), '/');
+
+                return trim($relativePath . '/' . $item->getFilename(), '/');
             });
 
         return $this->updateItems($this->addAdjacentItems($sortedItems));

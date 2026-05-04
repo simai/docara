@@ -48,6 +48,7 @@ class SnapshotsTest extends PHPUnit
     {
         // Delete the contents of the output directory in the source to clean up previous builds
         $this->filesystem->deleteDirectory($this->getTestOutputPath($name), true);
+        $this->filesystem->deleteDirectory(static::source($name) . DIRECTORY_SEPARATOR . '.cache');
 
         $jigsaw = realpath(implode('/', array_filter([__DIR__, '..', 'docara'])));
         $arguments = static::$arguments[$name] ?? [];
@@ -78,11 +79,16 @@ class SnapshotsTest extends PHPUnit
 
         collect($this->filesystem->allFiles($this->getTestOutputPath($name), true))->map(function (SplFileInfo $file) use ($name) {
             $this->assertSame(
-                file_get_contents(implode(DIRECTORY_SEPARATOR, array_filter([$this->snapshot($name), $file->getRelativePathname()]))),
-                $file->getContents(),
+                $this->normalizeLineEndings(file_get_contents(implode(DIRECTORY_SEPARATOR, array_filter([$this->snapshot($name), $file->getRelativePathname()])))),
+                $this->normalizeLineEndings($file->getContents()),
                 "Output file '{$file->getRelativePathname()}' does not match snapshot in '{$name}'.",
             );
         });
+    }
+
+    private function normalizeLineEndings(string $contents): string
+    {
+        return str_replace(["\r\n", "\r"], "\n", $contents);
     }
 
     private static function source(string $name = ''): string

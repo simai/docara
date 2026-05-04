@@ -27,8 +27,10 @@ AZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com
 ENV);
 
         try {
-            $binary = realpath(__DIR__ . '/../vendor/bin/docara') ?: 'vendor/bin/docara';
-            $env = ['APP_ENV' => 'test', 'DOCARA_SKIP_FRONTEND_INSTALL' => 'true'];
+            $binary = realpath(__DIR__ . '/../vendor/bin/docara')
+                ?: realpath(__DIR__ . '/../docara')
+                ?: 'docara';
+            $env = ['APP_ENV' => 'test', 'DOCS_DIR' => 'customdocs', 'DOCARA_SKIP_FRONTEND_INSTALL' => 'true'];
             $process = new Process(['php', $binary, 'init', '--update'], $tmp, $env);
             $process->run();
 

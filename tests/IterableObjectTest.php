@@ -3,7 +3,7 @@
 namespace Tests;
 
 use PHPUnit\Framework\Attributes\Test;
-use TightenCo\Jigsaw\IterableObject;
+use Simai\Docara\IterableObject;
 
 class IterableObjectTest extends TestCase
 {

@@ -3,9 +3,9 @@
 namespace Tests;
 
 use PHPUnit\Framework\Attributes\Test;
+use Simai\Docara\Console\Command;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-use TightenCo\Jigsaw\Console\Command;
 
 class CustomCommandTest extends TestCase
 {

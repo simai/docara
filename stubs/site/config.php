@@ -68,6 +68,10 @@ return [
     'cachePath' => $projectRoot . '/.cache',
     'siteName' => 'Simai Documentation',
     'siteDescription' => 'Simai framework documentation',
+    'brand' => [
+        'title' => 'SitePack',
+        'logoSvg' => null,
+    ],
     'github' => 'https://github.com/simai/docara/',
     'turbo' => false,
     'locales' => [

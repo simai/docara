@@ -40,6 +40,7 @@ class CommonMarkParser implements MarkdownParserContract
     public function parse(string $text)
     {
         throw new \RuntimeException('commonmark parse');
+
         return $this->converter->convert($text);
     }
 }

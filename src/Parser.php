@@ -17,11 +17,11 @@ use League\CommonMark\MarkdownConverter;
 use Mni\FrontYAML\Parser as FrontYamlParser;
 use Simai\Docara\CustomTags\CustomTagRegistry;
 use Simai\Docara\CustomTags\CustomTagsExtension;
+use Simai\Docara\CustomTags\TableWrapRenderer;
 use Simai\Docara\Parsers\CommonMarkParser;
 use Simai\Docara\Parsers\DocaraMarkdownParser;
-use Simai\Docara\CustomTags\TableWrapRenderer;
-use Simai\Docara\Parsers\MarkdownParserContract;
 use Simai\Docara\Parsers\FrontMatterParser as BaseFrontMatterParser;
+use Simai\Docara\Parsers\MarkdownParserContract;
 
 class Parser extends BaseFrontMatterParser
 {

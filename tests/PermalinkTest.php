@@ -112,4 +112,3 @@ class PermalinkTest extends TestCase
         $this->assertEquals('/permalink.html', $jigsaw->getOutputPaths()[0]);
     }
 }
-

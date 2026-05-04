@@ -651,4 +651,3 @@ class RemoteCollectionsTest extends TestCase
         );
     }
 }
-

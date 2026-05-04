@@ -268,4 +268,3 @@ class PresetScaffoldBuilderTest extends TestCase
         );
     }
 }
-

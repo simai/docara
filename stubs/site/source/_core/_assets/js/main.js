@@ -172,25 +172,36 @@ window.toggleFloat = function (button) {
 window.addEventListener('Switch:render', (event) => {
     const { detail } = event;
     const { html } = detail;
-    if (html) {
-        const input = html.querySelector('input');
-        switch (html.id) {
-            case 'theme_switch':
-                input.checked = SF.Loader.theme === 'dark';
-                input.addEventListener('change', (event) => {
-                    SF.Loader.changeTheme();
-                });
-                break;
-            case 'widescreen_switch':
-                input.checked = getInitialState('expanded');
-                input.addEventListener('change', () => {
-                    toggleResize();
-                });
-                break;
-        }
-        if (typeof detail.checked === 'function') {
-            detail.checked();
-        }
+
+    if (!html) return;
+
+    const input = html.querySelector('input[type="checkbox"]');
+    if (!input) return;
+
+    switch (html.id) {
+        case 'theme_switch':
+            SF.Switch.setState(input, {
+                checked: SF.Loader.theme === 'dark',
+            });
+
+            input.addEventListener('change', () => {
+                SF.Loader.changeTheme();
+            });
+            break;
+
+        case 'widescreen_switch':
+            SF.Switch.setState(input, {
+                checked: getInitialState('expanded'),
+            });
+
+            input.addEventListener('change', () => {
+                toggleResize();
+            });
+            break;
+    }
+
+    if (typeof detail.checked === 'function') {
+        detail.checked();
     }
 });
 
@@ -381,7 +392,7 @@ function init() {
     scrollToActiveMenu();
     window.addEventListener('sf-loader-ready', () => {
         initReadMode();
-    })
+    });
 }
 
 const runInit = () => init();

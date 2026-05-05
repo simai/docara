@@ -4,7 +4,7 @@
     $brandLogoSvg = $brand['logoSvg'] ?? null;
 @endphp
 
-<a href="/" title="{{ $page->siteName }} home" class="logo sf-logo inline-flex items-center">
+<a href="/" title="{{ $page->siteName }} home" class="logo{{$brandTitle ? ' gap-1 ' : ' '}}sf-logo inline-flex items-center">
     <span class="sf-logo-mark" aria-hidden="true">
         @if($brandLogoSvg)
             {!! $brandLogoSvg !!}

@@ -1,0 +1,25 @@
+{
+  "schema": "larena.evidence_file_map.v1",
+  "package": "larena/docara",
+  "batch": "product-adapters/batch-1/docara-current",
+  "files": [
+    ".larena/launch-context.json",
+    "phpstan.neon.dist",
+    "scripts/lint.php",
+    "scripts/test-placeholder.php",
+    "scripts/validate-larena-package.php",
+    "src/Contracts/DocumentationAssetRef.php",
+    "src/Contracts/DocumentationPage.php",
+    "src/Contracts/DocumentationSection.php",
+    "src/Contracts/DocaraAdminContribution.php",
+    "src/Contracts/DocaraGateway.php",
+    "src/Contracts/PublicationState.php",
+    "src/Contracts/SearchProjection.php",
+    "src/Enums/DocumentationVisibility.php",
+    "src/Enums/PublicationStatus.php",
+    "tests/Unit/DocaraContractTest.php",
+    "tests/Unit/DocaraFailsClosedTest.php"
+  ],
+  "runtime_files_added": false,
+  "contract_skeleton_files_added": true
+}

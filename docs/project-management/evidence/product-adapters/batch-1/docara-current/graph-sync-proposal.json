@@ -1,0 +1,17 @@
+{
+  "schema": "larena.graph_sync_proposal.v1",
+  "package": "larena/docara",
+  "batch": "product-adapters/batch-1/docara-current",
+  "status": "no_canonical_graph_change_requested",
+  "canonical_update_allowed": false,
+  "must_not_apply_automatically": true,
+  "summary": "Docara batch 1 implemented interface-first contract skeletons within the existing package graph boundaries. No canonical graph/spec change is requested.",
+  "implemented_features": [
+    "docara.public_documentation_runtime",
+    "docara.admin_surface",
+    "docara.search_projection"
+  ],
+  "notes": [
+    "Public renderer, routes, admin editor UI, search indexer, import/export and persistence require separate launch records."
+  ]
+}

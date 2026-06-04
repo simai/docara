@@ -1,0 +1,6 @@
+{
+  "schema": "larena.evidence_deviations.v1",
+  "package": "larena/docara",
+  "batch": "product-adapters/batch-1/docara-current",
+  "deviations": []
+}

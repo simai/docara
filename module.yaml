@@ -1,0 +1,14 @@
+package: larena/docara
+title: Larena Docara
+status: repository_prepared
+cluster: product-adapters
+batch: batch-0-clean-pre-codegen-baseline
+features:
+  - docara.admin_surface
+  - docara.public_documentation_runtime
+  - docara.search_projection
+runtime:
+  php: "^8.3"
+  laravel: "^13.0"
+evidence:
+  path: docs/project-management/evidence/product-adapters/batch-0/docara-clean-baseline/

@@ -3,11 +3,11 @@
   "package": "larena/docara",
   "repository_class": "continuation_repository",
   "repository_contains_prior_implementation": true,
-  "launch_record_ref": "specs/implementation-planning/launch-records/docara-batch-3-protected-page-authoring.json",
+  "launch_record_ref": "specs/implementation-planning/launch-records/docara-batch-4-anonymous-published-page.json",
   "specs_repo": "simai/larena-specs",
-  "specs_commit": "10d2a5d22df085ab059cf18774ee08ff170a1c6e",
-  "base_commit": "e6f81c4426dabc179944962acc1bae4930f05a6b",
-  "selected_features": ["docara.admin_surface", "docara.public_documentation_runtime"],
+  "specs_commit": "665f7d8bf5abcd13f06b852f0702e31582b8708e",
+  "base_commit": "5515d4aa9601852ec5327616e6a6afb660621568",
+  "selected_features": ["docara.public_documentation_runtime"],
   "allowed_files": [
     ".larena/launch-context.json",
     "composer.json",
@@ -15,34 +15,23 @@
     "module.yaml",
     "config/larena-docara.php",
     "src/DocaraServiceProvider.php",
-    "src/Authoring/DocumentationPageAuthoringService.php",
-    "src/Audit/DocaraPageAuditEventDescriptor.php",
-    "src/Http/Controllers/DocumentationPageAdminController.php",
-    "routes/admin.php",
-    "resources/views/admin/*.blade.php",
+    "src/Http/Controllers/DocumentationPagePublicController.php",
+    "routes/public.php",
+    "resources/views/public/page.blade.php",
     "tests/TestCase.php",
-    "tests/Feature/DocumentationPageAuthoringTest.php",
+    "tests/Feature/DocumentationPagePublicTest.php",
     "scripts/validate-larena-package.php",
     "scripts/check-evidence.php",
     "tools/larena-scope-check.php"
   ],
   "forbidden_files": [
-    "src/ImportExport/*",
-    "src/Search/*",
     "../admin/*",
     "../auth/*",
     "../access/*",
     "../audit/*",
     "../storage/*"
   ],
-  "forbidden_behavior": [
-    "unprotected_write_route",
-    "auth_or_access_decision_inside_controller",
-    "in_memory_persistence",
-    "unredacted_audit_payload",
-    "public_page_route",
-    "production_rollout"
-  ],
+  "forbidden_behavior": ["draft_visibility", "authenticated_public_route", "write_operation", "raw_html_body_rendering", "production_rollout"],
   "required_evidence_files": [
     "implementation-summary.md",
     "tests.md",
@@ -52,15 +41,15 @@
     "graph-sync-proposal.json",
     "independent-review.md"
   ],
-  "evidence_path": "docs/project-management/evidence/product-adapters/batch-3/docara-protected-page-authoring/",
-  "graph_sync_proposal_path": "docs/project-management/evidence/product-adapters/batch-3/docara-protected-page-authoring/graph-sync-proposal.json",
-  "status": "reviewed",
+  "evidence_path": "docs/project-management/evidence/product-adapters/batch-4/docara-anonymous-published-page/",
+  "graph_sync_proposal_path": "docs/project-management/evidence/product-adapters/batch-4/docara-anonymous-published-page/graph-sync-proposal.json",
+  "status": "coding_started",
   "coding_allowed": true,
   "coding_started": true,
   "repository_enforcement_installed": true,
-  "review_completed": true,
-  "review_evidence_ref": "docs/project-management/evidence/product-adapters/batch-3/docara-protected-page-authoring/independent-review.md",
-  "next_transition": "entry_app_http_integration",
+  "review_completed": false,
+  "review_evidence_ref": "docs/project-management/evidence/product-adapters/batch-4/docara-anonymous-published-page/independent-review.md",
+  "next_transition": "implementation_and_independent_review",
   "test_database_policy": {
     "environment": "local_test_only",
     "database": "isolated temporary file-backed SQLite",
@@ -68,12 +57,12 @@
     "cleanup": "mandatory"
   },
   "local_validation": {
-    "composer_validate_strict": "passed",
-    "validate_larena": "passed",
-    "scope_check": "passed",
-    "quality_gate": "passed_2_contract_scripts_9_feature_tests_50_assertions",
-    "file_backed_http_tests": "passed",
-    "temporary_database_cleanup": "passed",
-    "independent_review": "passed"
+    "composer_validate_strict": "pending",
+    "validate_larena": "pending",
+    "scope_check": "pending",
+    "quality_gate": "pending",
+    "file_backed_http_tests": "pending",
+    "temporary_database_cleanup": "pending",
+    "independent_review": "pending"
   }
 }

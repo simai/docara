@@ -1,8 +1,8 @@
 package: larena/docara
 title: Larena Docara
-status: reviewed
+status: coding_started
 cluster: product-adapters
-batch: docara-batch-3-protected-page-authoring
+batch: docara-batch-4-anonymous-published-page
 features:
   - docara.admin_surface
   - docara.public_documentation_runtime
@@ -11,4 +11,4 @@ runtime:
   php: "^8.3"
   laravel: "^13.0"
 evidence:
-  path: docs/project-management/evidence/product-adapters/batch-3/docara-protected-page-authoring/
+  path: docs/project-management/evidence/product-adapters/batch-4/docara-anonymous-published-page/

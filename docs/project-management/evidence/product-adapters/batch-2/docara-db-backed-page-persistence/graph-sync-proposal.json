@@ -1,0 +1,17 @@
+{
+  "schema": "larena.graph_sync_proposal.v1",
+  "batch": "docara-batch-2-db-backed-page-persistence",
+  "canonical_update_allowed": false,
+  "proposal_status": "candidate_after_independent_review",
+  "observed_capabilities": [
+    "docara.page.file_backed_database_persistence",
+    "docara.page.published_only_lookup",
+    "docara.page.migration_rollback"
+  ],
+  "limitations": [
+    "no_admin_surface",
+    "no_public_route_or_renderer",
+    "no_auth_access_or_audit_integration",
+    "package_batch_only"
+  ]
+}

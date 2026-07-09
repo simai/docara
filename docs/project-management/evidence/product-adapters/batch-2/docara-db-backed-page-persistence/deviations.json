@@ -1,0 +1,12 @@
+{
+  "schema": "larena.batch_deviations.v1",
+  "batch": "docara-batch-2-db-backed-page-persistence",
+  "scope_deviations": [],
+  "implementation_notes": [
+    "Read queries use the explicitly typed Laravel query builder while writes use Eloquent; this avoids ambiguous Eloquent mixin typing without changing persistence behavior.",
+    "The scope checker was corrected to evaluate the migration filename glob already present in allowed_files.",
+    "Composer emits deprecation notices from the installed Composer PHAR under PHP 8.4; the dependency operation and quality gate both exit successfully."
+  ],
+  "production_readiness_claimed": false,
+  "all_packages_readiness_claimed": false
+}

@@ -18,6 +18,8 @@ final readonly class DocumentationPage
         public string $locale,
         public DocumentationVisibility $visibility,
         public PublicationState $publication,
+        public string $title = '',
+        public string $body = '',
         public array $sectionRefs = [],
         public array $assets = [],
     ) {

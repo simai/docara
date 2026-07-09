@@ -43,6 +43,8 @@ $allowedStatuses = [
     'repository_prepared_pending_review',
     'ready_to_code',
     'coding_started',
+    'implementation_written',
+    'reviewed',
     'contract_skeleton_review_passed',
 ];
 if (!in_array((string) ($launchContext['status'] ?? ''), $allowedStatuses, true)) {

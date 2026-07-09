@@ -1,0 +1,18 @@
+{
+  "schema": "larena.batch_file_map.v1",
+  "batch": "docara-batch-2-db-backed-page-persistence",
+  "files": {
+    "src/Contracts/DocumentationPage.php": "adds title and body to the existing page value object",
+    "src/Contracts/DocumentationPageRepository.php": "defines save and page lookup operations",
+    "src/Models/DocumentationPageRecord.php": "maps the package-owned Eloquent record and enum/date casts",
+    "src/Persistence/EloquentDocumentationPageRepository.php": "validates and persists pages and filters published lookup",
+    "src/DocaraServiceProvider.php": "binds the repository and registers migrations",
+    "database/migrations/2026_07_09_000000_create_docara_pages_table.php": "creates and rolls back docara_pages",
+    "tests/TestCase.php": "owns isolated file-backed SQLite setup and mandatory cleanup",
+    "tests/Feature/DocumentationPagePersistenceTest.php": "proves durability, filtering, uniqueness, memory rejection, and rollback",
+    "composer.json": "pins Laravel 13, PHP 8.3 dependency resolution, provider discovery, and Testbench/PHPUnit commands",
+    "composer.lock": "locks exact dependency revisions",
+    "phpunit.xml.dist": "declares the feature test suite",
+    "tools/larena-scope-check.php": "supports glob patterns already declared by the launch record"
+  }
+}

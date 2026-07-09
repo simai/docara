@@ -53,6 +53,7 @@ abstract class TestCase extends OrchestraTestCase
             'foreign_key_constraints' => true,
         ]);
         $app['config']->set('larena-docara.admin.enabled', true);
+        $app['config']->set('larena-docara.public.enabled', true);
         $app['config']->set('larena-auth.admin_entry.enabled', true);
         $app['config']->set('larena-auth.admin_entry.local_testing.enabled', true);
         $app['config']->set('larena-auth.admin_entry.login_mode', 'persistent');

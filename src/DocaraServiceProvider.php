@@ -45,5 +45,9 @@ final class DocaraServiceProvider extends ServiceProvider
             && (bool) $config->get('larena-docara.admin.enabled', false)) {
             $this->loadRoutesFrom(__DIR__ . '/../routes/admin.php');
         }
+        if ($this->app->environment((array) $config->get('larena-docara.public.allowed_environments', ['local', 'testing']))
+            && (bool) $config->get('larena-docara.public.enabled', false)) {
+            $this->loadRoutesFrom(__DIR__ . '/../routes/public.php');
+        }
     }
 }

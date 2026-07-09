@@ -1,6 +1,6 @@
 package: larena/docara
 title: Larena Docara
-status: coding_started
+status: reviewed
 cluster: product-adapters
 batch: docara-batch-4-anonymous-published-page
 features:

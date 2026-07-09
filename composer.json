@@ -12,8 +12,16 @@
   "require": {
     "php": "^8.3",
     "illuminate/database": "^13.0",
-    "illuminate/support": "^13.0"
+    "illuminate/support": "^13.0",
+    "larena/access": "dev-main",
+    "larena/audit": "dev-main",
+    "larena/auth": "dev-main"
   },
+  "repositories": [
+    {"type": "path", "url": "../access", "options": {"symlink": false}},
+    {"type": "path", "url": "../audit", "options": {"symlink": false}},
+    {"type": "path", "url": "../auth", "options": {"symlink": false}}
+  ],
   "autoload": {
     "psr-4": {
       "Larena\\Docara\\": "src/"

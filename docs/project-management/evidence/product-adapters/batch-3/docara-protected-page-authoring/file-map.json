@@ -1,0 +1,15 @@
+{
+  "schema": "larena.evidence_file_map.v1",
+  "status": "implemented",
+  "files": [
+    {"path":"config/larena-docara.php","purpose":"guarded admin route configuration"},
+    {"path":"src/DocaraServiceProvider.php","purpose":"config, views, routes and authoring service composition"},
+    {"path":"src/Authoring/DocumentationPageAuthoringService.php","purpose":"transactional page persistence and audit emission"},
+    {"path":"src/Audit/DocaraPageAuditEventDescriptor.php","purpose":"bounded redaction and retention contract"},
+    {"path":"src/Http/Controllers/DocumentationPageAdminController.php","purpose":"validated authoring HTTP actions"},
+    {"path":"routes/admin.php","purpose":"auth and access protected route set"},
+    {"path":"resources/views/admin/index.blade.php","purpose":"page list screen"},
+    {"path":"resources/views/admin/form.blade.php","purpose":"create edit publish form"},
+    {"path":"tests/Feature/DocumentationPageAuthoringTest.php","purpose":"file-backed protected HTTP acceptance"}
+  ]
+}

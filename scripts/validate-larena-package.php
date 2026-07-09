@@ -41,6 +41,7 @@ if (!str_starts_with((string) ($launchContext['graph_sync_proposal_path'] ?? '')
 }
 $allowedStatuses = [
     'repository_prepared_pending_review',
+    'ready_to_code',
     'coding_started',
     'contract_skeleton_review_passed',
 ];
@@ -49,7 +50,26 @@ if (!in_array((string) ($launchContext['status'] ?? ''), $allowedStatuses, true)
 }
 
 $codingStarted = ($launchContext['coding_started'] ?? null) === true;
-if (!$codingStarted) {
+$codingAllowed = ($launchContext['coding_allowed'] ?? $codingStarted) === true;
+$continuationRepository = ($launchContext['repository_class'] ?? null) === 'continuation_repository'
+    && ($launchContext['repository_contains_prior_implementation'] ?? null) === true;
+$currentPersistenceLaunchRecord = 'specs/implementation-planning/launch-records/docara-batch-2-db-backed-page-persistence.json';
+$legacyContractLaunchRecord = 'specs/implementation-planning/launch-records/docara-batch-1-contract-skeletons-current.json';
+$launchRecordRef = (string) ($launchContext['launch_record_ref'] ?? '');
+
+if (($launchContext['status'] ?? null) === 'ready_to_code') {
+    if ($launchRecordRef !== $currentPersistenceLaunchRecord) {
+        $errors[] = 'ready_to_code requires the current Docara DB-backed persistence launch record.';
+    }
+    if ($codingStarted || $codingAllowed) {
+        $errors[] = 'ready_to_code must keep coding_allowed=false and coding_started=false.';
+    }
+    if (!$continuationRepository) {
+        $errors[] = 'The current Docara persistence batch must identify the existing package as a continuation_repository.';
+    }
+}
+
+if (!$codingStarted && !$continuationRepository) {
     foreach (['src', 'config', 'database', 'routes', 'resources', 'tests', 'lang'] as $runtimePath) {
         if (is_dir($runtimePath)) {
             $errors[] = "{$runtimePath}/ is not allowed before a coding launch record.";
@@ -58,10 +78,15 @@ if (!$codingStarted) {
 }
 
 if ($codingStarted) {
-    if (($launchContext['launch_record_ref'] ?? null) !== 'specs/implementation-planning/launch-records/docara-batch-1-contract-skeletons-current.json') {
-        $errors[] = 'coding_started requires the current Docara batch 1 launch record.';
+    if (!in_array($launchRecordRef, [$legacyContractLaunchRecord, $currentPersistenceLaunchRecord], true)) {
+        $errors[] = 'coding_started requires a recognized Docara launch record.';
     }
+    if (!$codingAllowed && $launchRecordRef === $currentPersistenceLaunchRecord) {
+        $errors[] = 'The current persistence launch requires coding_allowed=true before coding_started.';
+    }
+}
 
+if ($codingStarted || $continuationRepository) {
     $requiredContractFiles = [
         'src/Contracts/DocumentationAssetRef.php',
         'src/Contracts/DocumentationPage.php',
@@ -89,4 +114,6 @@ if ($errors !== []) {
 }
 echo $codingStarted
     ? "Larena Docara contract skeleton launch context is valid.\n"
-    : "Larena Docara clean pre-codegen baseline is valid.\n";
+    : (($launchContext['status'] ?? null) === 'ready_to_code'
+        ? "Larena Docara DB-backed persistence launch context is ready to code.\n"
+        : "Larena Docara clean pre-codegen baseline is valid.\n");

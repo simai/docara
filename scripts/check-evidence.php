@@ -5,8 +5,23 @@ declare(strict_types=1);
 $context = json_decode((string) file_get_contents('.larena/launch-context.json'), true, 512, JSON_THROW_ON_ERROR);
 $evidencePath = rtrim((string) $context['evidence_path'], '/') . '/';
 $proposalPath = (string) $context['graph_sync_proposal_path'];
+$requiredEvidenceFiles = $context['required_evidence_files'] ?? [];
 $errors = [];
-foreach (['README.md', 'implementation-summary.md', 'independent-review.md', 'tests.md', 'smoke.md', 'file-map.json', 'deviations.json', 'graph-sync-proposal.json'] as $required) {
+
+if (!is_array($requiredEvidenceFiles) || $requiredEvidenceFiles === []) {
+    $errors[] = 'required_evidence_files must declare the post-implementation evidence contract.';
+}
+if (!str_starts_with($proposalPath, $evidencePath)) {
+    $errors[] = 'graph_sync_proposal_path must be inside evidence_path.';
+}
+
+$codingStarted = ($context['coding_started'] ?? false) === true;
+if (!$codingStarted && $errors === []) {
+    echo "Post-implementation evidence contract is declared; files are not required before coding_started.\n";
+    exit(0);
+}
+
+foreach ($requiredEvidenceFiles as $required) {
     if (!is_file($evidencePath . $required)) {
         $errors[] = "Missing evidence file: {$evidencePath}{$required}";
     }

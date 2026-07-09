@@ -56,6 +56,7 @@ $codingAllowed = ($launchContext['coding_allowed'] ?? $codingStarted) === true;
 $continuationRepository = ($launchContext['repository_class'] ?? null) === 'continuation_repository'
     && ($launchContext['repository_contains_prior_implementation'] ?? null) === true;
 $currentPersistenceLaunchRecord = 'specs/implementation-planning/launch-records/docara-batch-2-db-backed-page-persistence.json';
+$currentAuthoringLaunchRecord = 'specs/implementation-planning/launch-records/docara-batch-3-protected-page-authoring.json';
 $legacyContractLaunchRecord = 'specs/implementation-planning/launch-records/docara-batch-1-contract-skeletons-current.json';
 $launchRecordRef = (string) ($launchContext['launch_record_ref'] ?? '');
 
@@ -80,7 +81,7 @@ if (!$codingStarted && !$continuationRepository) {
 }
 
 if ($codingStarted) {
-    if (!in_array($launchRecordRef, [$legacyContractLaunchRecord, $currentPersistenceLaunchRecord], true)) {
+    if (!in_array($launchRecordRef, [$legacyContractLaunchRecord, $currentPersistenceLaunchRecord, $currentAuthoringLaunchRecord], true)) {
         $errors[] = 'coding_started requires a recognized Docara launch record.';
     }
     if (!$codingAllowed && $launchRecordRef === $currentPersistenceLaunchRecord) {

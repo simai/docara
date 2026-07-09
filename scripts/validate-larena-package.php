@@ -84,6 +84,47 @@ if ($codingStarted) {
     if (!$codingAllowed && $launchRecordRef === $currentPersistenceLaunchRecord) {
         $errors[] = 'The current persistence launch requires coding_allowed=true before coding_started.';
     }
+
+    if ($launchRecordRef === $currentPersistenceLaunchRecord) {
+        $transitionRequestPath = (string) ($launchContext['transition_request_path'] ?? '');
+        $evidencePath = (string) ($launchContext['evidence_path'] ?? '');
+
+        if ($transitionRequestPath === '' || !str_starts_with($transitionRequestPath, $evidencePath)) {
+            $errors[] = 'coding_started requires transition_request_path inside evidence_path.';
+        } elseif (!is_file($transitionRequestPath)) {
+            $errors[] = 'coding_started transition request file is missing.';
+        } else {
+            $transitionRequest = json_decode(
+                (string) file_get_contents($transitionRequestPath),
+                true,
+                512,
+                JSON_THROW_ON_ERROR
+            );
+            if (($transitionRequest['schema'] ?? null) !== 'larena.process_transition_request.v1') {
+                $errors[] = 'Invalid coding transition request schema.';
+            }
+            if (($transitionRequest['current_state'] ?? null) !== 'ready_to_code'
+                || ($transitionRequest['target_state'] ?? null) !== 'coding_started') {
+                $errors[] = 'Coding transition request must be ready_to_code -> coding_started.';
+            }
+            if (($transitionRequest['launch_record_ref'] ?? null) !== $currentPersistenceLaunchRecord) {
+                $errors[] = 'Coding transition request must reference the current persistence launch record.';
+            }
+            $transitionEvidence = $transitionRequest['evidence_refs'] ?? [];
+            $hasActionGateEvidence = false;
+            if (is_array($transitionEvidence)) {
+                foreach ($transitionEvidence as $ref) {
+                    if (str_contains((string) $ref, 'action-gates')) {
+                        $hasActionGateEvidence = true;
+                        break;
+                    }
+                }
+            }
+            if (!$hasActionGateEvidence) {
+                $errors[] = 'Coding transition request requires action-gate evidence.';
+            }
+        }
+    }
 }
 
 if ($codingStarted || $continuationRepository) {
@@ -113,7 +154,9 @@ if ($errors !== []) {
     exit(1);
 }
 echo $codingStarted
-    ? "Larena Docara contract skeleton launch context is valid.\n"
+    ? ($launchRecordRef === $currentPersistenceLaunchRecord
+        ? "Larena Docara DB-backed persistence coding transition is valid.\n"
+        : "Larena Docara contract skeleton launch context is valid.\n")
     : (($launchContext['status'] ?? null) === 'ready_to_code'
         ? "Larena Docara DB-backed persistence launch context is ready to code.\n"
         : "Larena Docara clean pre-codegen baseline is valid.\n");

@@ -15,9 +15,13 @@ if (!str_starts_with($proposalPath, $evidencePath)) {
     $errors[] = 'graph_sync_proposal_path must be inside evidence_path.';
 }
 
-$codingStarted = ($context['coding_started'] ?? false) === true;
-if (!$codingStarted && $errors === []) {
-    echo "Post-implementation evidence contract is declared; files are not required before coding_started.\n";
+$evidenceRequired = !in_array(
+    (string) ($context['status'] ?? ''),
+    ['ready_to_code', 'coding_started'],
+    true
+);
+if (!$evidenceRequired && $errors === []) {
+    echo "Post-implementation evidence contract is declared; files are not required before implementation_written.\n";
     exit(0);
 }
 

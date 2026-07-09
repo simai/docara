@@ -1,0 +1,21 @@
+{
+  "schema": "larena.process_transition_request.v1",
+  "process_id": "docara-batch-2-db-backed-page-persistence",
+  "state_machine_id": "larena.batch_state_machine",
+  "current_state": "ready_to_code",
+  "target_state": "coding_started",
+  "trigger": "explicit_user_goal_start_signal",
+  "evidence_refs": [
+    "source/output/action-gates/action-gate-report-20260709204527.json",
+    "specs/implementation-planning/launch-records/docara-batch-2-db-backed-page-persistence.json",
+    "source/workflow/2026-07-09-larena-cms-launch.md"
+  ],
+  "launch_record_ref": "specs/implementation-planning/launch-records/docara-batch-2-db-backed-page-persistence.json",
+  "operator": "codex",
+  "created_at": "2026-07-09T20:45:27Z",
+  "limitations": [
+    "isolated_temporary_file_backed_sqlite_only",
+    "no_existing_application_staging_or_live_database",
+    "no_routes_admin_ui_or_public_renderer_in_this_batch"
+  ]
+}

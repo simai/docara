@@ -1,0 +1,17 @@
+{
+  "schema": "larena.docara.developer_beta_file_map.v1",
+  "batch_id": "batch_6_page_preview_publish_unpublish",
+  "files": [
+    {"path": ".larena/launch-context.json", "role": "bounded package launch authority"},
+    {"path": "routes/admin.php", "role": "protected preview and unpublish endpoints"},
+    {"path": "src/Http/Controllers/DocumentationPageAdminController.php", "role": "preview and lifecycle feedback"},
+    {"path": "src/Authoring/DocumentationPageAuthoringService.php", "role": "idempotent publication transitions"},
+    {"path": "resources/views/admin/form.blade.php", "role": "state-aware actions"},
+    {"path": "resources/views/admin/preview.blade.php", "role": "protected escaped preview"},
+    {"path": "tests/Feature/DocumentationPagePublicationLifecycleTest.php", "role": "lifecycle acceptance"}
+  ],
+  "schema_changed": false,
+  "authorization_changed": false,
+  "production_ready": false,
+  "all_41_packages_ready": false
+}

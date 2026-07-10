@@ -1,0 +1,12 @@
+{
+  "schema": "larena.developer_beta.deviations.v1",
+  "batch_id": "batch_6_page_preview_publish_unpublish",
+  "deviations": [
+    {
+      "id": "working_tree_overlay_for_precommit_browser_acceptance",
+      "status": "accepted",
+      "reason": "The new package revision cannot be pinned before commit. The exact bounded working tree was overlaid into the disposable installed target; final root acceptance must pin the subsequently published identical revision."
+    }
+  ],
+  "blockers": []
+}

@@ -12,7 +12,9 @@ Route::prefix((string) config('larena-docara.admin.prefix', 'admin/docara/pages'
         Route::get('/', [DocumentationPageAdminController::class, 'index'])->name('index');
         Route::get('/create', [DocumentationPageAdminController::class, 'create'])->name('create');
         Route::post('/', [DocumentationPageAdminController::class, 'store'])->name('store');
+        Route::get('/{slug}/preview', [DocumentationPageAdminController::class, 'preview'])->name('preview');
         Route::get('/{slug}/edit', [DocumentationPageAdminController::class, 'edit'])->name('edit');
         Route::put('/{slug}', [DocumentationPageAdminController::class, 'update'])->name('update');
         Route::post('/{slug}/publish', [DocumentationPageAdminController::class, 'publish'])->name('publish');
+        Route::post('/{slug}/unpublish', [DocumentationPageAdminController::class, 'unpublish'])->name('unpublish');
     });

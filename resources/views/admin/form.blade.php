@@ -7,9 +7,19 @@
 @section('description', $editing ? 'Update the page content and publication state.' : 'Add a page with a clear title, URL slug and body.')
 @section('actions')
     <a class="larena-button" href="{{ route('larena.docara.admin.pages.index') }}">Back to pages</a>
+    @if ($editing)
+        <a class="larena-button" href="{{ route('larena.docara.admin.pages.preview', ['slug' => $page->slug]) }}">Preview page</a>
+    @endif
 @endsection
 
 @section('content')
+    @if ($editing)
+        <div class="larena-notice" aria-label="Publication status">
+            Current status:
+            <span class="larena-status larena-status-{{ $page->publication->status->value }}">{{ $page->publication->status->value }}</span>
+        </div>
+    @endif
+
     <section class="larena-panel">
         <form class="larena-form" method="post" action="{{ $editing ? route('larena.docara.admin.pages.update', ['slug' => $page->slug]) : route('larena.docara.admin.pages.store') }}">
             @csrf
@@ -33,11 +43,17 @@
             </div>
             <div class="larena-field">
                 <label for="page-status">Status</label>
-                <select id="page-status" name="status" @error('status') aria-invalid="true" aria-describedby="page-status-error" @enderror>
-                    @foreach (['draft' => 'Draft', 'review' => 'In review', 'archived' => 'Archived'] as $value => $label)
-                        <option value="{{ $value }}" @selected(old('status', $page?->publication->status->value ?? 'draft') === $value)>{{ $label }}</option>
-                    @endforeach
-                </select>
+                @if ($editing && $page->publication->status->value === 'published')
+                    <input type="hidden" name="status" value="published">
+                    <select id="page-status" disabled><option selected>Published</option></select>
+                    <span>Use “Unpublish page” to change publication state.</span>
+                @else
+                    <select id="page-status" name="status" @error('status') aria-invalid="true" aria-describedby="page-status-error" @enderror>
+                        @foreach (['draft' => 'Draft', 'review' => 'In review', 'archived' => 'Archived'] as $value => $label)
+                            <option value="{{ $value }}" @selected(old('status', $page?->publication->status->value ?? 'draft') === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                @endif
                 @error('status')<span id="page-status-error" class="larena-field-error">{{ $message }}</span>@enderror
             </div>
             <div class="larena-form-actions">
@@ -46,10 +62,20 @@
         </form>
     </section>
 
-    @if ($editing && $page->publication->status->value !== 'published')
-        <form class="larena-secondary-action" method="post" action="{{ route('larena.docara.admin.pages.publish', ['slug' => $page->slug]) }}">
-            @csrf
-            <button class="larena-button" type="submit">Publish page</button>
-        </form>
+    @if ($editing)
+        <div class="larena-form-actions larena-secondary-action" aria-label="Publication actions">
+            @if ($page->publication->status->value === 'published')
+                <a class="larena-button" href="{{ route('larena.docara.public.show', ['slug' => $page->slug]) }}">View live page</a>
+                <form method="post" action="{{ route('larena.docara.admin.pages.unpublish', ['slug' => $page->slug]) }}">
+                    @csrf
+                    <button class="larena-button" type="submit">Unpublish page</button>
+                </form>
+            @else
+                <form method="post" action="{{ route('larena.docara.admin.pages.publish', ['slug' => $page->slug]) }}">
+                    @csrf
+                    <button class="larena-button larena-button-primary" type="submit">Publish page</button>
+                </form>
+            @endif
+        </div>
     @endif
 @endsection

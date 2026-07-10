@@ -1,0 +1,9 @@
+{
+  "schema": "larena.graph_sync_proposal.v1",
+  "package": "larena/docara",
+  "batch_id": "batch_6_page_preview_publish_unpublish",
+  "proposal": "Record the Developer Beta Page preview and publication lifecycle as reviewed package evidence.",
+  "canonical_update_allowed": false,
+  "runtime_policy_changed": false,
+  "authorization_changed": false
+}

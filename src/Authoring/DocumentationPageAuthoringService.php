@@ -66,11 +66,14 @@ final readonly class DocumentationPageAuthoringService
         if ($current === null) {
             throw new RuntimeException('Documentation page not found.');
         }
+        $page = $input['status'] === PublicationStatus::Published->value
+            ? $this->publishedPageFromInput($current, $input)
+            : $this->pageFromInput($current->pageRef, $input, ((int) $current->publication->version) + 1);
 
         return $this->persist(
             operation: 'updated',
             actor: $actor,
-            page: $this->pageFromInput($current->pageRef, $input, ((int) $current->publication->version) + 1),
+            page: $page,
         );
     }
 
@@ -79,6 +82,9 @@ final readonly class DocumentationPageAuthoringService
         $current = $this->find($slug);
         if ($current === null) {
             throw new RuntimeException('Documentation page not found.');
+        }
+        if ($current->publication->status === PublicationStatus::Published) {
+            return $current;
         }
 
         $page = new DocumentationPage(
@@ -99,6 +105,33 @@ final readonly class DocumentationPageAuthoringService
         return $this->persist('published', $actor, $page);
     }
 
+    public function unpublish(string $slug, string $actor): DocumentationPage
+    {
+        $current = $this->find($slug);
+        if ($current === null) {
+            throw new RuntimeException('Documentation page not found.');
+        }
+        if ($current->publication->status !== PublicationStatus::Published) {
+            return $current;
+        }
+
+        $page = new DocumentationPage(
+            pageRef: $current->pageRef,
+            slug: $current->slug,
+            locale: $current->locale,
+            visibility: DocumentationVisibility::Public,
+            publication: new PublicationState(
+                status: PublicationStatus::Draft,
+                version: (string) (((int) $current->publication->version) + 1),
+                publiclyVisible: false,
+            ),
+            title: $current->title,
+            body: $current->body,
+        );
+
+        return $this->persist('unpublished', $actor, $page);
+    }
+
     /** @param array{title:string, slug:string, body:string, status:string} $input */
     private function pageFromInput(string $pageRef, array $input, int $version): DocumentationPage
     {
@@ -116,6 +149,29 @@ final readonly class DocumentationPageAuthoringService
                 status: $status,
                 version: (string) $version,
                 publiclyVisible: false,
+            ),
+            title: $input['title'],
+            body: $input['body'],
+        );
+    }
+
+    /** @param array{title:string, slug:string, body:string, status:string} $input */
+    private function publishedPageFromInput(DocumentationPage $current, array $input): DocumentationPage
+    {
+        if ($current->publication->status !== PublicationStatus::Published) {
+            throw new RuntimeException('Use the explicit publish operation.');
+        }
+
+        return new DocumentationPage(
+            pageRef: $current->pageRef,
+            slug: $input['slug'],
+            locale: $current->locale,
+            visibility: DocumentationVisibility::Public,
+            publication: new PublicationState(
+                status: PublicationStatus::Published,
+                version: (string) (((int) $current->publication->version) + 1),
+                publiclyVisible: true,
+                publishedAt: $current->publication->publishedAt,
             ),
             title: $input['title'],
             body: $input['body'],

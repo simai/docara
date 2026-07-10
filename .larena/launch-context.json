@@ -3,43 +3,84 @@
   "package": "larena/docara",
   "repository_class": "continuation_repository",
   "repository_contains_prior_implementation": true,
-  "launch_record_ref": "/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/developer-denied-page-update-audit.json",
+  "launch_record_ref": "/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/post-beta-content-site-assembly.json",
   "specs_repo": "simai/larena-specs",
-  "specs_commit": "757a99ffaa351db55b29bb9ac6d7eb4a18d8e23c",
-  "base_commit": "670b582161d835026a5c6ef7a83f74112d92e1f2",
-  "selected_features": ["docara.developer_beta.denied_page_update_audit"],
+  "specs_commit": "665f7d8bf5abcd13f06b852f0702e31582b8708e",
+  "base_commit": "06112180480db9d13043cc2de0453b9a81038047",
+  "selected_features": [
+    "docara.product_navigation",
+    "docara.separated_page_operations",
+    "docara.localized_admin",
+    "docara.public_page_layout",
+    "docara.core_assets_activation"
+  ],
   "allowed_files": [
     ".larena/launch-context.json",
-    "module.yaml",
+    "composer.json",
     "composer.lock",
-    "scripts/validate-larena-package.php",
     "config/larena-docara.php",
-    "src/Http/Middleware/AuditDeniedPageUpdate.php",
-    "tests/Feature/DocumentationPageAuthoringTest.php",
-    "tests/Feature/DocumentationPageDeniedMutationAuditTest.php",
-    "docs/project-management/evidence/developer-beta/denied-page-update-audit/*"
+    "routes/admin.php",
+    "routes/public.php",
+    "src/DocaraServiceProvider.php",
+    "src/Navigation/DocaraAdminNavigationContributor.php",
+    "src/Assets/DocumentationPageAssetManifest.php",
+    "src/Http/Controllers/DocumentationPageAdminController.php",
+    "src/Http/Controllers/DocumentationPagePublicController.php",
+    "src/Http/Controllers/DocumentationPageAssetController.php",
+    "resources/views/admin/index.blade.php",
+    "resources/views/admin/form.blade.php",
+    "resources/views/admin/preview.blade.php",
+    "resources/views/public/layout.blade.php",
+    "resources/views/public/page.blade.php",
+    "resources/css/public-page.css",
+    "resources/lang/en/admin.php",
+    "resources/lang/en/public.php",
+    "resources/lang/ru/admin.php",
+    "resources/lang/ru/public.php",
+    "tests/Feature/*",
+    "tests/Unit/DocumentationPageAssetManifestTest.php",
+    "module.yaml",
+    "scripts/validate-larena-package.php",
+    "docs/project-management/evidence/post-beta-content-site-assembly/*"
   ],
-  "forbidden_files": ["../admin/*", "../access/*", "src/Persistence/*", "database/*", "routes/*"],
+  "forbidden_files": [
+    "database/*",
+    "src/Persistence/*",
+    "../admin/*",
+    "../access/*",
+    "../audit/*",
+    "../auth/*"
+  ],
   "forbidden_behavior": [
     "schema_change",
-    "authorization_policy_broadening",
-    "denied_page_mutation",
+    "authorization_weakening",
+    "full_page_builder",
     "request_body_in_audit",
     "production_readiness_claim"
   ],
-  "required_evidence_files": ["README.md", "implementation-summary.md", "independent-review.md", "tests.md", "smoke.md", "file-map.json", "deviations.json", "graph-sync-proposal.json"],
-  "evidence_path": "docs/project-management/evidence/developer-beta/denied-page-update-audit/",
-  "graph_sync_proposal_path": "docs/project-management/evidence/developer-beta/denied-page-update-audit/graph-sync-proposal.json",
+  "required_evidence_files": [
+    "implementation-summary.md",
+    "tests.md",
+    "file-map.json",
+    "deviations.json",
+    "graph-sync-proposal.json",
+    "independent-review.md"
+  ],
+  "evidence_path": "docs/project-management/evidence/post-beta-content-site-assembly/",
+  "graph_sync_proposal_path": "docs/project-management/evidence/post-beta-content-site-assembly/graph-sync-proposal.json",
   "status": "reviewed",
   "coding_allowed": true,
   "coding_started": true,
   "repository_enforcement_installed": true,
   "review_completed": true,
-  "review_evidence_ref": "docs/project-management/evidence/developer-beta/denied-page-update-audit/independent-review.md",
+  "review_evidence_ref": "docs/project-management/evidence/post-beta-content-site-assembly/independent-review.md",
   "next_transition": "package_publish",
-  "action_gate": {
-    "status": "passed",
-    "evidence": "/Users/rim/Documents/GitHub/larena-workspace/packages/docara/source/output/action-gates/action-gate-report-20260710080635.json"
+  "local_validation": {
+    "lint": "passed_38_files",
+    "analyse": "passed_level_5",
+    "test": "passed_25_tests_252_assertions",
+    "browser": "passed_pages_and_public_layout",
+    "scope_check": "passed"
   },
   "test_database_policy": {
     "environment": "local_test_only",
@@ -47,14 +88,5 @@
     "existing_application_database": "forbidden",
     "cleanup": "mandatory"
   },
-  "local_validation": {
-    "composer_lock_audit_revision": "d9cd34aea2dc2986adcd449ab261df683113fbf2",
-    "lint": "passed_34_files",
-    "analyse": "passed_level_5",
-    "test": "passed_21_tests_217_assertions",
-    "browser_smoke": "passed_disposable_sqlite",
-    "scope_check": "passed_16_files",
-    "evidence_check": "passed",
-    "quality_gate": "passed_for_denied_page_update_audit"
-  }
+  "coding_branch": "main"
 }

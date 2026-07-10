@@ -1,0 +1,7 @@
+{
+  "schema": "larena.graph_sync_proposal.v1",
+  "owner_package": "larena/docara",
+  "proposal": "Record Pages product navigation, split operation permissions and the first Core-activated public Page layout after owner review.",
+  "canonical_update_allowed": false,
+  "status": "proposal_only"
+}

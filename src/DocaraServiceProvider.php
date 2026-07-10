@@ -12,6 +12,8 @@ use Larena\Audit\Runtime\AuditEventPipeline;
 use Larena\Docara\Authoring\DocumentationPageAuthoringService;
 use Larena\Docara\Contracts\DocumentationPageRepository;
 use Larena\Docara\Persistence\EloquentDocumentationPageRepository;
+use Larena\Admin\Navigation\AdminNavigationRegistry;
+use Larena\Docara\Navigation\DocaraAdminNavigationContributor;
 
 final class DocaraServiceProvider extends ServiceProvider
 {
@@ -38,6 +40,12 @@ final class DocaraServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'larena-docara');
+        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'larena-docara');
+
+        if ($this->app->bound(AdminNavigationRegistry::class)) {
+            $this->app->make(AdminNavigationRegistry::class)
+                ->registerContributor(new DocaraAdminNavigationContributor());
+        }
 
         /** @var ConfigRepository $config */
         $config = $this->app->make(ConfigRepository::class);

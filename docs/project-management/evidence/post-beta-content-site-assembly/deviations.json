@@ -1,0 +1,8 @@
+{
+  "schema": "larena.package_evidence_deviations.v1",
+  "deviations": [],
+  "blockers": [],
+  "notes": [
+    "The public route continues to resolve the existing English Page record; interface localization does not claim multilingual content authoring."
+  ]
+}

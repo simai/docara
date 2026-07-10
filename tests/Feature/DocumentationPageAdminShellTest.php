@@ -18,11 +18,11 @@ final class DocumentationPageAdminShellTest extends TestCase
         $this->withSession($this->adminSession())
             ->get('/admin/docara/pages')
             ->assertOk()
-            ->assertSee('data-larena-admin-shell="developer-beta"', false)
+            ->assertSee('data-larena-admin-shell="content-site"', false)
             ->assertSee('data-larena-owner-package="larena/admin"', false)
             ->assertSee('Pages')
             ->assertSee('Create page')
-            ->assertSee('/vendor/larena-admin/admin-shell.css', false)
+            ->assertDontSee('/vendor/larena-admin/admin-shell.css', false)
             ->assertSee('Not production ready');
     }
 
@@ -31,7 +31,7 @@ final class DocumentationPageAdminShellTest extends TestCase
         $this->withSession($this->adminSession())
             ->get('/admin/docara/pages/create')
             ->assertOk()
-            ->assertSee('data-larena-admin-shell="developer-beta"', false)
+            ->assertSee('data-larena-admin-shell="content-site"', false)
             ->assertSee('Create page')
             ->assertSee('Back to pages')
             ->assertSee('page-title', false)

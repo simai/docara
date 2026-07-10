@@ -16,7 +16,8 @@
     "larena/access": "dev-main",
     "larena/admin": "dev-main",
     "larena/audit": "dev-main",
-    "larena/auth": "dev-main"
+    "larena/auth": "dev-main",
+    "larena/core": "dev-main"
   },
   "repositories": [
     {"type": "path", "url": "../access", "options": {"symlink": false}},

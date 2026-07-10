@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed4cc6b7d85bb227afd6dafa49a42abc",
+    "content-hash": "c23fbccd746f27457dc4bf8d6c39b4c6",
     "packages": [
         {
             "name": "brick/math",
@@ -1407,7 +1407,7 @@
             "dist": {
                 "type": "path",
                 "url": "../access",
-                "reference": "8f40c9064d3448273bd780f5e9626b1c70daf681"
+                "reference": "c512eadbc676bdd330237f5a5312280f0f8903a6"
             },
             "require": {
                 "illuminate/http": "^13.0",
@@ -1442,7 +1442,8 @@
                     "@php tests/Unit/AccessFailsClosedTest.php",
                     "@php tests/Unit/AccessGrantDecisionRuntimeTest.php",
                     "@php tests/Unit/AccessGrantDecisionFailsClosedTest.php",
-                    "@php tests/Unit/AccessMiddlewareRuntimeContractTest.php"
+                    "@php tests/Unit/AccessMiddlewareRuntimeContractTest.php",
+                    "@php tests/Unit/AccessOperationAuthorizerTest.php"
                 ],
                 "test:unit": [
                     "@php tests/Unit/AccessDecisionContractTest.php",
@@ -1500,7 +1501,7 @@
             "dist": {
                 "type": "path",
                 "url": "../admin",
-                "reference": "d0d0d06d2288c9ae7facc20fc59a8bd89b80ebc9"
+                "reference": "219be451a63a691918ca014937a6744bb2800e36"
             },
             "require": {
                 "illuminate/console": "^13.0",
@@ -1570,6 +1571,8 @@
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/AdminShellTrackClosureReviewTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/AdminShellPackageOwnedRuntimePlanningTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Feature/DeveloperBetaAdminShellLayoutTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Feature/PostBetaAdminProductShellTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/AdminProductAssetManifestTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/OperatorPreviewRouteProviderParityPlanTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/OperatorGetRenderParitySurfaceTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/OperatorPreviewRouteProviderParityImplementationReadinessTest.php",
@@ -1791,7 +1794,7 @@
             "dist": {
                 "type": "path",
                 "url": "../audit",
-                "reference": "d9cd34aea2dc2986adcd449ab261df683113fbf2"
+                "reference": "d36f31c01695949805b80ec7d1da512abacfd5d7"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -1879,7 +1882,7 @@
             "dist": {
                 "type": "path",
                 "url": "../auth",
-                "reference": "ffbe04ad2f536bc83033e306c2fe10b728c8c70a"
+                "reference": "81f5f951a4080746275e6f6d7308dfcc69b52be4"
             },
             "require": {
                 "illuminate/console": "^13.0",
@@ -10177,7 +10180,8 @@
         "larena/access": 20,
         "larena/admin": 20,
         "larena/audit": 20,
-        "larena/auth": 20
+        "larena/auth": 20,
+        "larena/core": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

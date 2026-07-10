@@ -1,0 +1,35 @@
+:root {
+    color-scheme: light;
+    --larena-public-bg: #f6f8fb;
+    --larena-public-surface: #ffffff;
+    --larena-public-text: #172033;
+    --larena-public-muted: #647087;
+    --larena-public-line: #dfe5ee;
+    --larena-public-primary: #245eea;
+    --larena-public-width: 760px;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+body.larena-public { margin: 0; background: var(--larena-public-bg); color: var(--larena-public-text); }
+.larena-public-skip { position: fixed; z-index: 20; top: 8px; left: 8px; transform: translateY(-150%); border-radius: 8px; background: #fff; padding: 10px 14px; color: var(--larena-public-primary); }
+.larena-public-skip:focus { transform: translateY(0); outline: 3px solid rgba(36,94,234,.3); }
+.larena-public-header { border-bottom: 1px solid var(--larena-public-line); background: rgba(255,255,255,.92); }
+.larena-public-header__inner { display: flex; width: min(1120px, 100%); min-height: 72px; align-items: center; justify-content: space-between; gap: 24px; margin: 0 auto; padding: 0 28px; }
+.larena-public-brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; }
+.larena-public-brand > span { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 9px; background: var(--larena-public-primary); color: #fff; }
+.larena-public-context { color: var(--larena-public-muted); font-size: 14px; }
+.larena-public-main { width: min(var(--larena-public-width), calc(100% - 36px)); margin: 64px auto 96px; outline: none; }
+.larena-public-article { border: 1px solid var(--larena-public-line); border-radius: 18px; background: var(--larena-public-surface); padding: clamp(28px, 6vw, 58px); box-shadow: 0 14px 40px rgba(23,32,51,.07); }
+.larena-public-eyebrow { margin: 0 0 12px; color: var(--larena-public-primary); font-size: 12px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
+.larena-public-article h1 { margin: 0; font-size: clamp(34px, 7vw, 58px); line-height: 1.05; letter-spacing: -.035em; }
+.larena-public-body { margin-top: 30px; color: #344057; font-size: clamp(17px, 2.3vw, 20px); line-height: 1.75; overflow-wrap: anywhere; white-space: pre-wrap; }
+.larena-public-footer { width: min(var(--larena-public-width), calc(100% - 36px)); margin: 0 auto; border-top: 1px solid var(--larena-public-line); padding: 24px 0 48px; color: var(--larena-public-muted); font-size: 13px; }
+.larena-public-footer p { margin: 4px 0; }
+
+@media (max-width: 600px) {
+    .larena-public-header__inner { min-height: 64px; padding: 0 18px; }
+    .larena-public-context { display: none; }
+    .larena-public-main { margin-top: 28px; margin-bottom: 56px; }
+    .larena-public-article { border-radius: 14px; padding: 26px 22px 34px; }
+}

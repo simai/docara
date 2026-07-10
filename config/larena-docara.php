@@ -19,8 +19,10 @@ return [
             'web',
             'larena-auth.entry',
             'larena-auth.admin-required',
-            AuditDeniedPageUpdate::class,
-            'access:docara.page.write',
+            'larena-admin.locale',
         ],
+        'read_middleware' => ['access:docara.page.read'],
+        'write_middleware' => [AuditDeniedPageUpdate::class, 'access:docara.page.write'],
+        'publish_middleware' => ['access:docara.page.publish'],
     ],
 ];

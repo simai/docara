@@ -1,0 +1,32 @@
+{
+  "schema": "larena.package_evidence_file_map.v1",
+  "owner_package": "larena/docara",
+  "runtime": [
+    "config/larena-docara.php",
+    "routes/admin.php",
+    "routes/public.php",
+    "src/DocaraServiceProvider.php",
+    "src/Navigation/DocaraAdminNavigationContributor.php",
+    "src/Assets/DocumentationPageAssetManifest.php",
+    "src/Http/Controllers/DocumentationPageAssetController.php",
+    "src/Http/Controllers/DocumentationPageAdminController.php",
+    "src/Http/Controllers/DocumentationPagePublicController.php",
+    "resources/views/admin/index.blade.php",
+    "resources/views/admin/form.blade.php",
+    "resources/views/admin/preview.blade.php",
+    "resources/views/public/layout.blade.php",
+    "resources/views/public/page.blade.php",
+    "resources/css/public-page.css",
+    "resources/lang/en/admin.php",
+    "resources/lang/ru/admin.php",
+    "resources/lang/en/public.php",
+    "resources/lang/ru/public.php"
+  ],
+  "tests": [
+    "tests/Feature/PostBetaContentSiteAssemblyTest.php",
+    "tests/Feature/DocumentationPageAdminShellTest.php"
+  ],
+  "schema_changed": false,
+  "production_ready": false,
+  "full_page_builder": false
+}

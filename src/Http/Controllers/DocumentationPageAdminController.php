@@ -6,12 +6,14 @@ namespace Larena\Docara\Http\Controllers;
 
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Contracts\View\View;
+use Illuminate\Contracts\Translation\Translator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Routing\Redirector;
 use Illuminate\Validation\Rule;
 use Larena\Docara\Authoring\DocumentationPageAuthoringService;
+use Larena\Access\Runtime\AccessOperationAuthorizer;
 use RuntimeException;
 
 final class DocumentationPageAdminController extends Controller
@@ -20,17 +22,26 @@ final class DocumentationPageAdminController extends Controller
         private readonly DocumentationPageAuthoringService $authoring,
         private readonly ViewFactory $views,
         private readonly Redirector $redirector,
+        private readonly Translator $translator,
+        private readonly AccessOperationAuthorizer $access,
     ) {
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
-        return $this->views->make('larena-docara::admin.index', ['pages' => $this->authoring->list()]);
+        return $this->views->make('larena-docara::admin.index', [
+            'pages' => $this->authoring->list(),
+            'canWrite' => $this->access->authorize($request, 'docara.page.write')->isAllowed(),
+        ]);
     }
 
-    public function create(): View
+    public function create(Request $request): View
     {
-        return $this->views->make('larena-docara::admin.form', ['page' => null]);
+        return $this->views->make('larena-docara::admin.form', [
+            'page' => null,
+            'editing' => false,
+            'canPublish' => $this->access->authorize($request, 'docara.page.publish')->isAllowed(),
+        ]);
     }
 
     public function store(Request $request): RedirectResponse
@@ -39,23 +50,30 @@ final class DocumentationPageAdminController extends Controller
 
         return $this->redirector
             ->route('larena.docara.admin.pages.edit', ['slug' => $page->slug])
-            ->with('status', 'Page created.');
+            ->with('status', $this->translator->get('larena-docara::admin.messages.created'));
     }
 
-    public function edit(string $slug): View
+    public function edit(Request $request, string $slug): View
     {
         $page = $this->authoring->find($slug);
         abort_if($page === null, 404);
 
-        return $this->views->make('larena-docara::admin.form', ['page' => $page]);
+        return $this->views->make('larena-docara::admin.form', [
+            'page' => $page,
+            'editing' => true,
+            'canPublish' => $this->access->authorize($request, 'docara.page.publish')->isAllowed(),
+        ]);
     }
 
-    public function preview(string $slug): View
+    public function preview(Request $request, string $slug): View
     {
         $page = $this->authoring->find($slug);
         abort_if($page === null, 404);
 
-        return $this->views->make('larena-docara::admin.preview', ['page' => $page]);
+        return $this->views->make('larena-docara::admin.preview', [
+            'page' => $page,
+            'canWrite' => $this->access->authorize($request, 'docara.page.write')->isAllowed(),
+        ]);
     }
 
     public function update(Request $request, string $slug): RedirectResponse
@@ -75,7 +93,7 @@ final class DocumentationPageAdminController extends Controller
 
         return $this->redirector
             ->route('larena.docara.admin.pages.edit', ['slug' => $page->slug])
-            ->with('status', 'Page updated.');
+            ->with('status', $this->translator->get('larena-docara::admin.messages.updated'));
     }
 
     public function publish(Request $request, string $slug): RedirectResponse
@@ -88,7 +106,7 @@ final class DocumentationPageAdminController extends Controller
 
         return $this->redirector
             ->route('larena.docara.admin.pages.edit', ['slug' => $page->slug])
-            ->with('status', 'Page published.');
+            ->with('status', $this->translator->get('larena-docara::admin.messages.published'));
     }
 
     public function unpublish(Request $request, string $slug): RedirectResponse
@@ -101,7 +119,7 @@ final class DocumentationPageAdminController extends Controller
 
         return $this->redirector
             ->route('larena.docara.admin.pages.edit', ['slug' => $page->slug])
-            ->with('status', 'Page unpublished.');
+            ->with('status', $this->translator->get('larena-docara::admin.messages.unpublished'));
     }
 
     /** @return array{title:string, slug:string, body:string, status:string} */
@@ -120,8 +138,18 @@ final class DocumentationPageAdminController extends Controller
             'body' => ['required', 'string'],
             'status' => ['required', 'in:'.($allowPublished ? 'draft,review,published,archived' : 'draft,review,archived')],
         ], [
-            'slug.regex' => 'The slug may contain lowercase letters, numbers and single hyphens only.',
-            'slug.unique' => 'A page with this slug already exists.',
+            'title.required' => $this->translator->get('larena-docara::admin.validation.title_required'),
+            'title.string' => $this->translator->get('larena-docara::admin.validation.title_string'),
+            'title.max' => $this->translator->get('larena-docara::admin.validation.title_max'),
+            'slug.required' => $this->translator->get('larena-docara::admin.validation.slug_required'),
+            'slug.string' => $this->translator->get('larena-docara::admin.validation.slug_string'),
+            'slug.max' => $this->translator->get('larena-docara::admin.validation.slug_max'),
+            'slug.regex' => $this->translator->get('larena-docara::admin.validation.slug_format'),
+            'slug.unique' => $this->translator->get('larena-docara::admin.validation.slug_unique'),
+            'body.required' => $this->translator->get('larena-docara::admin.validation.body_required'),
+            'body.string' => $this->translator->get('larena-docara::admin.validation.body_string'),
+            'status.required' => $this->translator->get('larena-docara::admin.validation.status_required'),
+            'status.in' => $this->translator->get('larena-docara::admin.validation.status_invalid'),
         ]);
 
         return $validated;

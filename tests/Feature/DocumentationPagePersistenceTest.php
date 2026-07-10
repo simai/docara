@@ -95,6 +95,8 @@ final class DocumentationPagePersistenceTest extends TestCase
     public function testMigrationRollbackRemovesOwnedTable(): void
     {
         self::assertTrue(Schema::connection('docara_testing')->hasTable('docara_pages'));
+        self::assertTrue(Schema::connection('docara_testing')->hasTable('docara_menus'));
+        self::assertTrue(Schema::connection('docara_testing')->hasTable('docara_menu_items'));
 
         $this->artisan('migrate:rollback', [
             '--database' => 'docara_testing',
@@ -102,6 +104,8 @@ final class DocumentationPagePersistenceTest extends TestCase
         ])->assertSuccessful();
 
         self::assertFalse(Schema::connection('docara_testing')->hasTable('docara_pages'));
+        self::assertFalse(Schema::connection('docara_testing')->hasTable('docara_menus'));
+        self::assertFalse(Schema::connection('docara_testing')->hasTable('docara_menu_items'));
     }
 
     private function page(

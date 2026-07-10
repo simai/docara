@@ -28,7 +28,7 @@
                     <tr>
                         <td data-label="{{ __('larena-docara::admin.columns.page') }}">
                             @if ($canWrite)
-                                <a class="larena-table-title" href="{{ route('larena.docara.admin.pages.edit', ['slug' => $page['slug']]) }}">{{ $page['title'] }}</a>
+                                <a class="larena-table-title" href="{{ route('larena.docara.admin.pages.edit', ['slug' => $page['slug']] + ($page['locale'] === 'ru' ? ['locale' => 'ru'] : [])) }}">{{ $page['title'] }}</a>
                             @else
                                 <strong>{{ $page['title'] }}</strong>
                             @endif
@@ -37,9 +37,9 @@
                         <td data-label="{{ __('larena-docara::admin.columns.status') }}"><span class="larena-status larena-status-{{ $page['status'] }}">{{ __('larena-docara::admin.statuses.'.$page['status']) }}</span></td>
                         <td data-label="{{ __('larena-docara::admin.columns.action') }}">
                             @if ($canWrite)
-                                <a href="{{ route('larena.docara.admin.pages.edit', ['slug' => $page['slug']]) }}">{{ __('larena-docara::admin.actions.edit') }}</a>
+                                <a href="{{ route('larena.docara.admin.pages.edit', ['slug' => $page['slug']] + ($page['locale'] === 'ru' ? ['locale' => 'ru'] : [])) }}">{{ __('larena-docara::admin.actions.edit') }}</a>
                             @else
-                                <a href="{{ route('larena.docara.admin.pages.preview', ['slug' => $page['slug']]) }}">{{ __('larena-docara::admin.actions.preview') }}</a>
+                                <a href="{{ route('larena.docara.admin.pages.preview', ['slug' => $page['slug']] + ($page['locale'] === 'ru' ? ['locale' => 'ru'] : [])) }}">{{ __('larena-docara::admin.actions.preview') }}</a>
                             @endif
                         </td>
                     </tr>

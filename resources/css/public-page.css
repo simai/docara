@@ -20,6 +20,18 @@ body.larena-public { margin: 0; background: var(--larena-public-bg); color: var(
 .larena-public-brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 800; }
 .larena-public-brand > span { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 9px; background: var(--larena-public-primary); color: #fff; }
 .larena-public-context { color: var(--larena-public-muted); font-size: 14px; }
+.larena-public-nav { min-width: 0; }
+.larena-public-nav__list { display: flex; align-items: center; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.larena-public-nav__item { position: relative; }
+.larena-public-nav a { display: inline-flex; min-height: 44px; align-items: center; border-radius: 8px; padding: 8px 11px; color: var(--larena-public-text); font-size: 14px; font-weight: 650; text-decoration: none; }
+.larena-public-nav a:hover { background: var(--larena-public-bg); }
+.larena-public-nav a:focus-visible { outline: 3px solid rgba(36,94,234,.3); outline-offset: 2px; }
+.larena-public-nav a[aria-current="page"] { color: var(--larena-public-primary); }
+.larena-public-nav__list--nested { display: none; position: absolute; z-index: 5; top: 100%; left: 0; min-width: 210px; align-items: stretch; border: 1px solid var(--larena-public-line); border-radius: 10px; background: var(--larena-public-surface); padding: 6px; box-shadow: 0 12px 30px rgba(23,32,51,.12); }
+.larena-public-nav__list--nested .larena-public-nav__item { width: 100%; }
+.larena-public-nav__list--nested a { width: 100%; }
+.larena-public-nav__item:hover > .larena-public-nav__list--nested,
+.larena-public-nav__item:focus-within > .larena-public-nav__list--nested { display: grid; }
 .larena-public-main { width: min(var(--larena-public-width), calc(100% - 36px)); margin: 64px auto 96px; outline: none; }
 .larena-public-article { border: 1px solid var(--larena-public-line); border-radius: 18px; background: var(--larena-public-surface); padding: clamp(28px, 6vw, 58px); box-shadow: 0 14px 40px rgba(23,32,51,.07); }
 .larena-public-eyebrow { margin: 0 0 12px; color: var(--larena-public-primary); font-size: 12px; font-weight: 800; letter-spacing: .09em; text-transform: uppercase; }
@@ -31,6 +43,10 @@ body.larena-public { margin: 0; background: var(--larena-public-bg); color: var(
 @media (max-width: 600px) {
     .larena-public-header__inner { min-height: 64px; padding: 0 18px; }
     .larena-public-context { display: none; }
+    .larena-public-header__inner { flex-wrap: wrap; padding-top: 10px; padding-bottom: 10px; }
+    .larena-public-nav { width: 100%; overflow-x: auto; scrollbar-width: thin; }
+    .larena-public-nav__list { align-items: stretch; }
+    .larena-public-nav__list--nested { display: grid; position: static; min-width: 0; border: 0; padding-left: 14px; box-shadow: none; }
     .larena-public-main { margin-top: 28px; margin-bottom: 56px; }
     .larena-public-article { border-radius: 14px; padding: 26px 22px 34px; }
 }

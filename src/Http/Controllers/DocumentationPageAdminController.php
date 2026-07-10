@@ -52,13 +52,13 @@ final class DocumentationPageAdminController extends Controller
         $page = $this->authoring->create($this->validated($request), $this->actor($request));
 
         return $this->redirector
-            ->route('larena.docara.admin.pages.edit', ['slug' => $page->slug])
+            ->route('larena.docara.admin.pages.edit', $this->pageRouteParams($page))
             ->with('status', $this->translator->get('larena-docara::admin.messages.created'));
     }
 
     public function edit(Request $request, string $slug): View
     {
-        $page = $this->authoring->find($slug);
+        $page = $this->authoring->find($slug, $this->locale($request));
         abort_if($page === null, 404);
 
         return $this->views->make('larena-docara::admin.form', [
@@ -71,7 +71,7 @@ final class DocumentationPageAdminController extends Controller
 
     public function preview(Request $request, string $slug): View
     {
-        $page = $this->authoring->find($slug);
+        $page = $this->authoring->find($slug, $this->locale($request));
         abort_if($page === null, 404);
 
         return $this->views->make('larena-docara::admin.preview', [
@@ -82,7 +82,7 @@ final class DocumentationPageAdminController extends Controller
 
     public function update(Request $request, string $slug): RedirectResponse
     {
-        $current = $this->authoring->find($slug);
+        $current = $this->authoring->find($slug, $this->locale($request));
         abort_if($current === null, 404);
 
         try {
@@ -96,51 +96,54 @@ final class DocumentationPageAdminController extends Controller
         }
 
         return $this->redirector
-            ->route('larena.docara.admin.pages.edit', ['slug' => $page->slug])
+            ->route('larena.docara.admin.pages.edit', $this->pageRouteParams($page))
             ->with('status', $this->translator->get('larena-docara::admin.messages.updated'));
     }
 
     public function publish(Request $request, string $slug): RedirectResponse
     {
         try {
-            $page = $this->authoring->publish($slug, $this->actor($request));
+            $page = $this->authoring->publish($slug, $this->actor($request), $this->locale($request));
         } catch (RuntimeException) {
             abort(404);
         }
 
         return $this->redirector
-            ->route('larena.docara.admin.pages.edit', ['slug' => $page->slug])
+            ->route('larena.docara.admin.pages.edit', $this->pageRouteParams($page))
             ->with('status', $this->translator->get('larena-docara::admin.messages.published'));
     }
 
     public function unpublish(Request $request, string $slug): RedirectResponse
     {
         try {
-            $page = $this->authoring->unpublish($slug, $this->actor($request));
+            $page = $this->authoring->unpublish($slug, $this->actor($request), $this->locale($request));
         } catch (RuntimeException) {
             abort(404);
         }
 
         return $this->redirector
-            ->route('larena.docara.admin.pages.edit', ['slug' => $page->slug])
+            ->route('larena.docara.admin.pages.edit', $this->pageRouteParams($page))
             ->with('status', $this->translator->get('larena-docara::admin.messages.unpublished'));
     }
 
-    /** @return array{title:string, slug:string, body:string, status:string, hero_file_ref?:string|null} */
+    /** @return array{title:string, slug:string, body:string, status:string, locale:string, hero_file_ref?:string|null} */
     private function validated(Request $request, ?string $currentSlug = null, bool $allowPublished = false): array
     {
+        $request->mergeIfMissing(['locale' => 'en']);
+        $locale = (string) $request->input('locale', 'en');
         $uniqueSlug = Rule::unique('docara_pages', 'slug')
-            ->where(static fn ($query) => $query->where('locale', 'en'));
+            ->where(static fn ($query) => $query->where('locale', $locale));
         if ($currentSlug !== null) {
             $uniqueSlug->ignore($currentSlug, 'slug');
         }
 
-        /** @var array{title:string, slug:string, body:string, status:string} $validated */
+        /** @var array{title:string, slug:string, body:string, status:string, locale:string, hero_file_ref?:string|null} $validated */
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $uniqueSlug],
             'body' => ['required', 'string'],
             'status' => ['required', 'in:'.($allowPublished ? 'draft,review,published,archived' : 'draft,review,archived')],
+            'locale' => ['required', 'in:en,ru'],
             'hero_file_ref' => ['nullable', 'string', function (string $attribute, mixed $value, callable $fail): void {
                 if ($value === null || $value === '') { return; }
                 $file = $this->files->find((string) $value);
@@ -174,5 +177,17 @@ final class DocumentationPageAdminController extends Controller
     private function actor(Request $request): string
     {
         return (string) $request->attributes->get('larena_access_actor');
+    }
+
+    private function locale(Request $request): string
+    {
+        $locale = (string) $request->input('locale', $request->query('locale', 'en'));
+        return in_array($locale, ['en', 'ru'], true) ? $locale : 'en';
+    }
+
+    /** @return array{slug:string,locale?:string} */
+    private function pageRouteParams(\Larena\Docara\Contracts\DocumentationPage $page): array
+    {
+        return $page->locale === 'en' ? ['slug' => $page->slug] : ['slug' => $page->slug, 'locale' => $page->locale];
     }
 }

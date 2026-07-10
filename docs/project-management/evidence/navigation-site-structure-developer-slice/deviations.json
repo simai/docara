@@ -1,0 +1,1 @@
+{"schema":"larena.evidence.deviations.v1","deviations":[{"item":"SF5 runtime","decision":"Larena-native semantic SSR informed by SF5 menu/navigation patterns","reason":"bounded developer slice explicitly excludes full SF5 runtime"},{"item":"Page ACL","decision":"global Docara navigation write scope","reason":"per-item ACL is outside this goal"}]}

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 return [
+    'navigation_label' => 'Навигация по сайту',
     'skip_to_content' => 'Перейти к содержимому',
     'site_context' => 'Опубликованный контент',
     'published_page' => 'Опубликованная страница',

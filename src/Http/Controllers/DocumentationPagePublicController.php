@@ -11,6 +11,8 @@ use Illuminate\Routing\Controller;
 use Larena\Docara\Contracts\DocumentationPageRepository;
 use Larena\Docara\Assets\DocumentationPageAssetManifest;
 use Larena\Filesystem\Services\SafeFileService;
+use Illuminate\Http\Request;
+use Larena\Docara\Navigation\DocumentationNavigationService;
 
 final class DocumentationPagePublicController extends Controller
 {
@@ -19,12 +21,14 @@ final class DocumentationPagePublicController extends Controller
         private readonly ViewFactory $views,
         private readonly Application $app,
         private readonly SafeFileService $files,
+        private readonly DocumentationNavigationService $navigation,
     ) {
     }
 
-    public function show(string $slug): View
+    public function show(Request $request, string $slug): View
     {
-        $page = $this->pages->findPublishedByLocaleAndSlug('en', $slug);
+        $locale = in_array($request->query('locale'), ['en', 'ru'], true) ? (string) $request->query('locale') : 'en';
+        $page = $this->pages->findPublishedByLocaleAndSlug($locale, $slug);
         abort_if($page === null, 404);
 
         if (in_array($page->locale, ['en', 'ru'], true)) {
@@ -44,6 +48,7 @@ final class DocumentationPagePublicController extends Controller
             'page' => $page,
             'hero' => $hero,
             'docaraPublicAssets' => DocumentationPageAssetManifest::activation(),
+            'publicNavigation' => $this->navigation->publicTree('main', $page->locale),
         ]);
     }
 }

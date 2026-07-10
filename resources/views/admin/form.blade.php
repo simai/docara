@@ -7,7 +7,7 @@
 @section('actions')
     <a class="larena-button" href="{{ route('larena.docara.admin.pages.index') }}">{{ __('larena-docara::admin.actions.back') }}</a>
     @if ($editing)
-        <a class="larena-button" href="{{ route('larena.docara.admin.pages.preview', ['slug' => $page->slug]) }}">{{ __('larena-docara::admin.actions.preview') }}</a>
+        <a class="larena-button" href="{{ route('larena.docara.admin.pages.preview', ['slug' => $page->slug, 'locale' => $page->locale]) }}">{{ __('larena-docara::admin.actions.preview') }}</a>
     @endif
 @endsection
 
@@ -20,7 +20,7 @@
     @endif
 
     <section class="larena-panel">
-        <form class="larena-form" method="post" action="{{ $editing ? route('larena.docara.admin.pages.update', ['slug' => $page->slug]) : route('larena.docara.admin.pages.store') }}">
+        <form class="larena-form" method="post" action="{{ $editing ? route('larena.docara.admin.pages.update', ['slug' => $page->slug, 'locale' => $page->locale]) : route('larena.docara.admin.pages.store') }}">
             @csrf
             @if ($editing) @method('PUT') @endif
             <div class="larena-form-grid">
@@ -33,6 +33,14 @@
                     <label for="page-slug">{{ __('larena-docara::admin.fields.slug') }}</label>
                     <input id="page-slug" name="slug" value="{{ old('slug', $page?->slug) }}" maxlength="255" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required @error('slug') aria-invalid="true" aria-describedby="page-slug-error" @enderror>
                     @error('slug')<span id="page-slug-error" class="larena-field-error">{{ $message }}</span>@enderror
+                </div>
+                <div class="larena-field">
+                    <label for="page-locale">{{ __('larena-docara::admin.fields.locale') }}</label>
+                    <select id="page-locale" name="locale" required @if($editing) disabled @endif>
+                        <option value="en" @selected(old('locale', $page?->locale ?? 'en') === 'en')>English</option>
+                        <option value="ru" @selected(old('locale', $page?->locale ?? 'en') === 'ru')>Русский</option>
+                    </select>
+                    @if($editing)<input type="hidden" name="locale" value="{{ $page->locale }}">@endif
                 </div>
             </div>
             <div class="larena-field">
@@ -74,15 +82,15 @@
     @if ($editing)
         <div class="larena-form-actions larena-secondary-action" aria-label="{{ __('larena-docara::admin.form.publication_actions') }}">
             @if ($page->publication->status->value === 'published')
-                <a class="larena-button" href="{{ route('larena.docara.public.show', ['slug' => $page->slug]) }}">{{ __('larena-docara::admin.actions.view_live') }}</a>
+                <a class="larena-button" href="{{ route('larena.docara.public.show', ['slug' => $page->slug, 'locale' => $page->locale]) }}">{{ __('larena-docara::admin.actions.view_live') }}</a>
                 @if ($canPublish)
-                    <form method="post" action="{{ route('larena.docara.admin.pages.unpublish', ['slug' => $page->slug]) }}">
+                    <form method="post" action="{{ route('larena.docara.admin.pages.unpublish', ['slug' => $page->slug, 'locale' => $page->locale]) }}">
                         @csrf
                         <button class="larena-button" type="submit">{{ __('larena-docara::admin.actions.unpublish') }}</button>
                     </form>
                 @endif
             @elseif ($canPublish)
-                <form method="post" action="{{ route('larena.docara.admin.pages.publish', ['slug' => $page->slug]) }}">
+                <form method="post" action="{{ route('larena.docara.admin.pages.publish', ['slug' => $page->slug, 'locale' => $page->locale]) }}">
                     @csrf
                     <button class="larena-button larena-button-primary" type="submit">{{ __('larena-docara::admin.actions.publish') }}</button>
                 </form>

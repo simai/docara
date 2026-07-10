@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 return [
-    'navigation' => ['pages' => 'Pages'],
+    'navigation' => ['pages' => 'Pages', 'menus' => 'Menus'],
     'pages' => [
         'title' => 'Pages',
         'eyebrow' => 'Content',
@@ -31,6 +31,7 @@ return [
     'columns' => [
         'page' => 'Page',
         'slug' => 'Slug',
+        'locale' => 'Page language',
         'status' => 'Status',
         'action' => 'Action',
     ],
@@ -73,6 +74,23 @@ return [
         'updated' => 'Page updated.',
         'published' => 'Page published.',
         'unpublished' => 'Page unpublished.',
+    ],
+    'menus' => [
+        'title' => 'Menus', 'eyebrow' => 'Content / Menus', 'heading' => 'Site menus',
+        'description' => 'Build ordered navigation from published Pages.', 'aria_label' => 'Site menus',
+        'create_title' => 'Create menu', 'create_heading' => 'Create site menu', 'create_description' => 'Create one localized menu, then add published Pages.',
+        'edit_description' => 'Code: :code · Locale: :locale', 'settings' => 'Menu settings',
+        'items_heading' => 'Menu structure', 'items_help' => 'Change labels, numeric order and parent items. Lower order values appear first.',
+        'empty_title' => 'No menus yet', 'empty_text' => 'Create the main menu to show published Pages in the public header.',
+        'no_items' => 'This menu has no items.', 'add_item' => 'Add published Page', 'no_published_pages' => 'Publish a Page in this menu locale before adding an item.',
+        'root' => 'Top level', 'active' => 'Active', 'inactive' => 'Inactive',
+        'validation_heading' => 'Check the menu fields', 'delete_heading' => 'Delete menu',
+        'delete_help' => 'The menu and its items disappear from the public header. Pages are not deleted.',
+        'confirm_delete' => 'Delete this menu and all its items?', 'confirm_item_remove' => 'Remove this item from the menu?',
+        'columns' => ['menu' => 'Menu', 'code' => 'Code', 'locale' => 'Locale', 'status' => 'Status', 'action' => 'Action'],
+        'fields' => ['name' => 'Name', 'code' => 'Code', 'code_help' => 'Use main for the public header.', 'locale' => 'Locale', 'active' => 'Show publicly', 'page' => 'Published Page', 'label' => 'Navigation label', 'parent' => 'Parent item', 'order' => 'Order'],
+        'actions' => ['create' => 'Create menu', 'edit' => 'Edit', 'view' => 'View', 'cancel' => 'Cancel', 'save' => 'Save settings', 'save_item' => 'Save item', 'add_item' => 'Add item', 'remove_item' => 'Remove item', 'delete' => 'Delete menu'],
+        'messages' => ['created' => 'Menu created.', 'updated' => 'Menu updated.', 'deleted' => 'Menu deleted.', 'item_created' => 'Menu item added.', 'item_updated' => 'Menu item updated.', 'item_removed' => 'Menu item removed.', 'navigation_menu_exists' => 'A menu with this code and locale already exists.', 'navigation_page_unavailable' => 'Choose an available published Page in this locale.', 'navigation_parent_invalid' => 'Choose a parent from this menu.', 'navigation_cycle' => 'Menu nesting cannot contain a cycle.'],
     ],
     'validation' => [
         'hero_file_invalid' => 'Choose a public image from Larena Files.',

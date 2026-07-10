@@ -2,7 +2,7 @@ package: larena/docara
 title: Larena Docara
 status: reviewed
 cluster: product-adapters
-batch: users-role-presets-developer-slice
+batch: navigation-site-structure-developer-slice
 features:
   - docara.page_operation_descriptors
   - docara.admin_surface
@@ -14,8 +14,12 @@ features:
   - docara.localized_admin
   - docara.public_page_layout
   - docara.core_assets_activation
+  - docara.navigation_persistence
+  - docara.navigation_admin_editor
+  - docara.navigation_public_projection
+  - docara.navigation_safe_audit
 runtime:
   php: "^8.3"
   laravel: "^13.0"
 evidence:
-  path: docs/project-management/evidence/users-role-presets-developer-slice/
+  path: docs/project-management/evidence/navigation-site-structure-developer-slice/

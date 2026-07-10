@@ -20,7 +20,13 @@
     <header class="larena-public-header">
         <div class="larena-public-header__inner">
             <span class="larena-public-brand"><span aria-hidden="true">L</span> Larena</span>
-            <span class="larena-public-context">{{ __('larena-docara::public.site_context') }}</span>
+            @if (($publicNavigation ?? []) !== [])
+                <nav class="larena-public-nav" aria-label="{{ __('larena-docara::public.navigation_label') }}">
+                    @include('larena-docara::public.navigation', ['items' => $publicNavigation, 'nested' => false])
+                </nav>
+            @else
+                <span class="larena-public-context">{{ __('larena-docara::public.site_context') }}</span>
+            @endif
         </div>
     </header>
     <main id="content" class="larena-public-main" tabindex="-1">

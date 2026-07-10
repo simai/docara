@@ -39,6 +39,7 @@ final readonly class DocumentationPageAuthoringService
                 'page_ref' => (string) $record->page_ref,
                 'slug' => (string) $record->slug,
                 'title' => (string) $record->title,
+                'locale' => (string) $record->locale,
                 'status' => (string) $record->publication_status,
                 'published_at' => $record->published_at === null ? null : (string) $record->published_at,
             ])
@@ -46,12 +47,12 @@ final readonly class DocumentationPageAuthoringService
             ->all();
     }
 
-    public function find(string $slug): ?DocumentationPage
+    public function find(string $slug, string $locale = 'en'): ?DocumentationPage
     {
-        return $this->pages->findByLocaleAndSlug('en', $slug);
+        return $this->pages->findByLocaleAndSlug($locale, $slug);
     }
 
-    /** @param array{title:string, slug:string, body:string, status:string} $input */
+    /** @param array{title:string, slug:string, body:string, status:string, locale?:string} $input */
     public function create(array $input, string $actor): DocumentationPage
     {
         return $this->persist(
@@ -61,10 +62,10 @@ final readonly class DocumentationPageAuthoringService
         );
     }
 
-    /** @param array{title:string, slug:string, body:string, status:string} $input */
+    /** @param array{title:string, slug:string, body:string, status:string, locale?:string} $input */
     public function update(string $currentSlug, array $input, string $actor): DocumentationPage
     {
-        $current = $this->find($currentSlug);
+        $current = $this->find($currentSlug, $input['locale'] ?? 'en');
         if ($current === null) {
             throw new RuntimeException('Documentation page not found.');
         }
@@ -79,9 +80,9 @@ final readonly class DocumentationPageAuthoringService
         );
     }
 
-    public function publish(string $slug, string $actor): DocumentationPage
+    public function publish(string $slug, string $actor, string $locale = 'en'): DocumentationPage
     {
-        $current = $this->find($slug);
+        $current = $this->find($slug, $locale);
         if ($current === null) {
             throw new RuntimeException('Documentation page not found.');
         }
@@ -108,9 +109,9 @@ final readonly class DocumentationPageAuthoringService
         return $this->persist('published', $actor, $page);
     }
 
-    public function unpublish(string $slug, string $actor): DocumentationPage
+    public function unpublish(string $slug, string $actor, string $locale = 'en'): DocumentationPage
     {
-        $current = $this->find($slug);
+        $current = $this->find($slug, $locale);
         if ($current === null) {
             throw new RuntimeException('Documentation page not found.');
         }
@@ -136,7 +137,7 @@ final readonly class DocumentationPageAuthoringService
         return $this->persist('unpublished', $actor, $page);
     }
 
-    /** @param array{title:string, slug:string, body:string, status:string} $input */
+    /** @param array{title:string, slug:string, body:string, status:string, locale?:string} $input */
     private function pageFromInput(string $pageRef, array $input, int $version): DocumentationPage
     {
         $status = PublicationStatus::from($input['status']);
@@ -147,7 +148,7 @@ final readonly class DocumentationPageAuthoringService
         return new DocumentationPage(
             pageRef: $pageRef,
             slug: $input['slug'],
-            locale: 'en',
+            locale: $input['locale'] ?? 'en',
             visibility: DocumentationVisibility::Public,
             publication: new PublicationState(
                 status: $status,
@@ -160,7 +161,7 @@ final readonly class DocumentationPageAuthoringService
         );
     }
 
-    /** @param array{title:string, slug:string, body:string, status:string} $input */
+    /** @param array{title:string, slug:string, body:string, status:string, locale?:string} $input */
     private function publishedPageFromInput(DocumentationPage $current, array $input): DocumentationPage
     {
         if ($current->publication->status !== PublicationStatus::Published) {

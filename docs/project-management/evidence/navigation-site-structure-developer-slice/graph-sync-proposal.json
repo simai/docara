@@ -1,0 +1,1 @@
+{"schema":"larena.graph_sync_proposal.v1","package":"larena/docara","status":"proposal_only","capabilities":["docara.navigation.persistence","docara.navigation.admin_editor","docara.navigation.public_projection","docara.navigation.safe_audit"],"canonical_update_allowed":false,"must_not_apply_automatically":true}

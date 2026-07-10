@@ -1,0 +1,11 @@
+{
+  "schema": "larena.graph_sync_proposal.v1",
+  "package": "larena/docara",
+  "batch": "batch_8_denied_role_and_denial_audit",
+  "canonical_update_allowed": false,
+  "proposal_only": true,
+  "proposed_capabilities": [
+    "docara.developer_beta.denied_page_update_audit"
+  ],
+  "production_readiness_changed": false
+}

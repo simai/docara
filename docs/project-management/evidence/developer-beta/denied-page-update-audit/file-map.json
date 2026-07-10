@@ -1,0 +1,16 @@
+{
+  "schema": "larena.docara.batch_file_map.v1",
+  "batch": "batch_8_denied_role_and_denial_audit",
+  "runtime": [
+    "config/larena-docara.php",
+    "src/Http/Middleware/AuditDeniedPageUpdate.php"
+  ],
+  "tests": [
+    "tests/Feature/DocumentationPageAuthoringTest.php",
+    "tests/Feature/DocumentationPageDeniedMutationAuditTest.php"
+  ],
+  "authorization_policy_changed": false,
+  "schema_changed": false,
+  "production_ready": false,
+  "all_41_packages_ready": false
+}

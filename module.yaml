@@ -2,13 +2,14 @@ package: larena/docara
 title: Larena Docara
 status: reviewed
 cluster: product-adapters
-batch: docara-batch-4-anonymous-published-page
+batch: developer-denied-page-update-audit
 features:
   - docara.admin_surface
+  - docara.developer_beta.denied_page_update_audit
   - docara.public_documentation_runtime
   - docara.search_projection
 runtime:
   php: "^8.3"
   laravel: "^13.0"
 evidence:
-  path: docs/project-management/evidence/product-adapters/batch-4/docara-anonymous-published-page/
+  path: docs/project-management/evidence/developer-beta/denied-page-update-audit/

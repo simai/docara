@@ -36,7 +36,15 @@ final class DocumentationPageAuthoringTest extends TestCase
         $page = $this->repository()->findByLocaleAndSlug('en', 'welcome');
         self::assertNotNull($page);
         self::assertSame('Welcome', $page->title);
-        self::assertSame(0, DB::table('larena_audit_events')->count());
+        self::assertSame(1, DB::table('larena_audit_events')->count());
+        self::assertSame(
+            'docara_page_update_denied',
+            DB::table('larena_audit_events')->value('event_type'),
+        );
+        self::assertStringNotContainsString(
+            'Forbidden change',
+            (string) DB::table('larena_audit_events')->value('payload'),
+        );
     }
 
     public function testPersistentAdminCreatesEditsPublishesAndAuditSurvivesReconnect(): void

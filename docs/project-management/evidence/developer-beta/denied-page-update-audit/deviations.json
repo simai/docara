@@ -1,0 +1,10 @@
+{
+  "schema": "larena.docara.batch_deviations.v1",
+  "batch": "batch_8_denied_role_and_denial_audit",
+  "deviations": [],
+  "blockers": [],
+  "notes": [
+    "The browser uses Auth local/testing demo actor mode because persistent first-admin identities intentionally match the current allowed admin wildcard; this does not claim a production role-management UI.",
+    "Only denied PUT update is audited in this bounded batch; create, publish and unpublish denial taxonomy is deferred."
+  ]
+}

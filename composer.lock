@@ -1791,15 +1791,18 @@
             "dist": {
                 "type": "path",
                 "url": "../audit",
-                "reference": "67ed60fd799ef20c0ee08dfe2ba73a95b0f8f63c"
+                "reference": "d9cd34aea2dc2986adcd449ab261df683113fbf2"
             },
             "require": {
                 "illuminate/database": "^13.0",
+                "illuminate/routing": "^13.0",
                 "illuminate/support": "^13.0",
+                "illuminate/view": "^13.0",
                 "php": "^8.3"
             },
             "require-dev": {
                 "laravel/framework": "^13.0",
+                "orchestra/testbench": "^11.0",
                 "phpstan/phpstan": "^2.0"
             },
             "type": "library",
@@ -1822,7 +1825,7 @@
             },
             "scripts": {
                 "test": [
-                    "php tests/Unit/AuditEventContractTest.php && php tests/Unit/AuditFailsClosedTest.php && php tests/Unit/AuditRedactorRuntimeTest.php && php tests/Unit/AuditEventPipelineTest.php && php tests/Unit/AuditEventPipelineFailsClosedTest.php && php tests/Unit/InstallAuditTrailTest.php && php tests/Unit/DatabaseAuditSinkTest.php"
+                    "php tests/Unit/AuditEventContractTest.php && php tests/Unit/AuditFailsClosedTest.php && php tests/Unit/AuditRedactorRuntimeTest.php && php tests/Unit/AuditEventPipelineTest.php && php tests/Unit/AuditEventPipelineFailsClosedTest.php && php tests/Unit/InstallAuditTrailTest.php && php tests/Unit/DatabaseAuditSinkTest.php && php vendor/bin/phpunit tests/Feature/AuditHistoryAdminTest.php"
                 ],
                 "test:unit": [
                     "php tests/Unit/AuditEventContractTest.php && php tests/Unit/AuditFailsClosedTest.php && php tests/Unit/AuditRedactorRuntimeTest.php && php tests/Unit/AuditEventPipelineTest.php && php tests/Unit/AuditEventPipelineFailsClosedTest.php && php tests/Unit/InstallAuditTrailTest.php && php tests/Unit/DatabaseAuditSinkTest.php"

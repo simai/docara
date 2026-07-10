@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 
+use Larena\Docara\Http\Middleware\AuditDeniedPageUpdate;
+
 return [
     'public' => [
         'enabled' => filter_var(getenv('LARENA_DOCARA_PUBLIC_ROUTES') ?: false, FILTER_VALIDATE_BOOL),
@@ -17,6 +19,7 @@ return [
             'web',
             'larena-auth.entry',
             'larena-auth.admin-required',
+            AuditDeniedPageUpdate::class,
             'access:docara.page.write',
         ],
     ],

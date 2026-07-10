@@ -75,6 +75,20 @@ final class EloquentDocumentationPageRepository implements DocumentationPageRepo
         return $record instanceof stdClass ? $this->rowToDomain($record) : null;
     }
 
+    public function findPublishedByPageRef(string $pageRef): ?DocumentationPage
+    {
+        $this->assertDurableConnection();
+
+        $record = $this->table()
+            ->where('page_ref', $pageRef)
+            ->where('visibility', DocumentationVisibility::Public->value)
+            ->where('publication_status', PublicationStatus::Published->value)
+            ->whereNotNull('published_at')
+            ->first();
+
+        return $record instanceof stdClass ? $this->rowToDomain($record) : null;
+    }
+
     /** @return Builder<DocumentationPageRecord> */
     private function query(): Builder
     {

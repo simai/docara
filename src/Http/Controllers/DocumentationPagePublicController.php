@@ -13,6 +13,7 @@ use Larena\Docara\Assets\DocumentationPageAssetManifest;
 use Larena\Filesystem\Services\SafeFileService;
 use Illuminate\Http\Request;
 use Larena\Docara\Navigation\DocumentationNavigationService;
+use Larena\Docara\Settings\DocaraSiteSettingsService;
 
 final class DocumentationPagePublicController extends Controller
 {
@@ -22,6 +23,7 @@ final class DocumentationPagePublicController extends Controller
         private readonly Application $app,
         private readonly SafeFileService $files,
         private readonly DocumentationNavigationService $navigation,
+        private readonly DocaraSiteSettingsService $siteSettings,
     ) {
     }
 
@@ -49,6 +51,40 @@ final class DocumentationPagePublicController extends Controller
             'hero' => $hero,
             'docaraPublicAssets' => DocumentationPageAssetManifest::activation(),
             'publicNavigation' => $this->navigation->publicTree('main', $page->locale),
+            'siteIdentity' => $this->siteSettings->identityFor($page->locale),
+            'isHomepage' => false,
+        ]);
+    }
+
+    public function home(Request $request): View
+    {
+        $homepage = $this->siteSettings->homepage(is_string($request->query('locale')) ? $request->query('locale') : null);
+        abort_if($homepage === null, 404);
+        $page = $homepage['page'];
+        $this->app->setLocale($homepage['locale']);
+
+        $hero = null;
+        if (($page->assets[0] ?? null)?->purpose === 'hero') {
+            try {
+                $record = $this->files->require($page->assets[0]->logicalFileRef);
+                if ($record->getAttribute('visibility') === 'public' && str_starts_with((string) $record->getAttribute('mime_type'), 'image/')) {
+                    $hero = ['url' => $this->files->publicUrl($record), 'alt' => $page->assets[0]->altText ?: $record->getAttribute('alt_text') ?: $record->getAttribute('display_name')];
+                }
+            } catch (\Throwable) {
+                $hero = null;
+            }
+        }
+
+        return $this->views->make('larena-docara::public.page', [
+            'page' => $page,
+            'hero' => $hero,
+            'docaraPublicAssets' => DocumentationPageAssetManifest::activation(),
+            'publicNavigation' => $this->navigation->publicTree('main', $homepage['locale']),
+            'siteIdentity' => [
+                'name' => $homepage['name'], 'description' => $homepage['description'],
+                'logo_url' => $homepage['logo_url'], 'favicon_url' => $homepage['favicon_url'],
+            ],
+            'isHomepage' => true,
         ]);
     }
 }

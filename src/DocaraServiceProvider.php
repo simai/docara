@@ -17,6 +17,7 @@ use Larena\Docara\Persistence\EloquentDocumentationPageRepository;
 use Larena\Admin\Navigation\AdminNavigationRegistry;
 use Larena\Docara\Navigation\DocaraAdminNavigationContributor;
 use Larena\Docara\Navigation\DocumentationNavigationService;
+use Larena\Docara\Settings\DocaraSiteSettingsService;
 
 final class DocaraServiceProvider extends ServiceProvider
 {
@@ -40,6 +41,16 @@ final class DocaraServiceProvider extends ServiceProvider
         $this->app->bind(DocumentationNavigationService::class, static fn (Application $app): DocumentationNavigationService => new DocumentationNavigationService(
             $app->make(DatabaseManager::class), $app->make(AuditEventPipeline::class),
         ));
+        $this->app->bind(DocaraSiteSettingsService::class, static function (Application $app): DocaraSiteSettingsService {
+            $connection = $app->make(DatabaseManager::class)->connection();
+            return new DocaraSiteSettingsService(
+                $app->make(\Larena\Setting\Runtime\SiteSettingStore::class),
+                $app->make(DocumentationPageRepository::class),
+                $app->make(\Larena\Filesystem\Persistence\DatabaseLogicalFileRepository::class),
+                $app->make(\Larena\Filesystem\Services\SafeFileService::class),
+                $connection,
+            );
+        });
     }
 
     public function boot(): void

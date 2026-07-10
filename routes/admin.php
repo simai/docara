@@ -5,6 +5,8 @@ declare(strict_types=1);
 use Illuminate\Support\Facades\Route;
 use Larena\Docara\Http\Controllers\DocumentationPageAdminController;
 use Larena\Docara\Http\Controllers\DocumentationMenuAdminController;
+use Larena\Docara\Http\Controllers\DocaraSiteSettingsAdminController;
+use Larena\Setting\Http\Middleware\AuditDeniedSiteSettingUpdate;
 
 Route::prefix((string) config('larena-docara.admin.prefix', 'admin/docara/pages'))
     ->middleware((array) config('larena-docara.admin.middleware', []))
@@ -46,4 +48,14 @@ Route::prefix((string) config('larena-docara.admin.menu_prefix', 'admin/docara/m
         });
         Route::delete('/{menu}', [DocumentationMenuAdminController::class, 'destroy'])
             ->whereNumber('menu')->middleware((array) config('larena-docara.admin.navigation_delete_middleware', []))->name('destroy');
+    });
+
+Route::prefix((string) config('larena-docara.admin.site_settings_prefix', 'admin/docara/site-settings'))
+    ->middleware((array) config('larena-docara.admin.middleware', []))
+    ->name('larena.docara.admin.site-settings.')
+    ->group(static function (): void {
+        Route::get('/', [DocaraSiteSettingsAdminController::class, 'edit'])
+            ->middleware('access:setting.site.read')->name('edit');
+        Route::put('/', [DocaraSiteSettingsAdminController::class, 'update'])
+            ->middleware([AuditDeniedSiteSettingUpdate::class, 'access:setting.site.write'])->name('update');
     });

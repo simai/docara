@@ -1,0 +1,1 @@
+{"schema":"larena.evidence.deviations.v1","deviations":[{"item":"full SF5 runtime","decision":"Larena-native SSR and package CSS with presentation-only Blade","reason":"bounded goal explicitly excludes full SF5 runtime"},{"item":"theme builder","decision":"one fixed public layout","reason":"theme construction is outside this goal"}]}

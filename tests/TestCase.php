@@ -11,6 +11,7 @@ use Larena\Audit\Providers\AuditServiceProvider;
 use Larena\Auth\Providers\AuthServiceProvider;
 use Larena\Docara\DocaraServiceProvider;
 use Larena\Filesystem\Providers\FilesystemServiceProvider;
+use Larena\Setting\Providers\SettingServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Larena\Access\Runtime\RoleAssignmentService;
 use Larena\Access\Runtime\SystemRolePresetSynchronizer;
@@ -91,6 +92,7 @@ abstract class TestCase extends OrchestraTestCase
             AuditServiceProvider::class,
             AuthServiceProvider::class,
             FilesystemServiceProvider::class,
+            SettingServiceProvider::class,
             DocaraServiceProvider::class,
         ];
     }

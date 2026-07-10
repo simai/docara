@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2eae7184bfd47d2c086c56ff7f351fca",
+    "content-hash": "b75c3adcfd92f6846bac6358f0e4e1ce",
     "packages": [
         {
             "name": "brick/math",
@@ -1407,7 +1407,7 @@
             "dist": {
                 "type": "path",
                 "url": "../access",
-                "reference": "fcfd10a9bf0f2033a9212d134f3a9ec1aa6c8b8b"
+                "reference": "0f922122df88e9fb3d3fc8b5a61a541547efce4e"
             },
             "require": {
                 "illuminate/console": "^13.0",
@@ -2619,6 +2619,142 @@
             "description": "Larena Link: Shared system package for stable, short, temporary, signed, one-time and action links across Larena without exposing physical resources or bypassing auth/access/audit boundaries.",
             "transport-options": {
                 "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "larena/setting",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../setting",
+                "reference": "b4ca8777cb3259c8a07f314f715f5fd7f0a53f83"
+            },
+            "require": {
+                "illuminate/console": "^13.0",
+                "illuminate/database": "^13.0",
+                "illuminate/http": "^13.0",
+                "illuminate/support": "^13.0",
+                "illuminate/view": "^13.0",
+                "larena/access": "dev-main",
+                "larena/audit": "dev-main",
+                "larena/core": "dev-main",
+                "larena/licensing": "dev-main",
+                "php": "^8.3",
+                "ramsey/uuid": "^4.9"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Larena\\Setting\\Providers\\SettingServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Larena\\Setting\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Larena\\Setting\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingContractTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingPreviewPresenterBladePurityTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingFailsClosedTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/InMemorySettingRuntimeTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/InMemorySettingRuntimeFailsClosedTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/InMemorySettingApplyRuntimeTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsPendingChangeDryRunRuntimeTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsPendingChangeReviewQueueFoundationTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsPendingChangePersistencePlanningTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsPendingChangePersistenceDecisionTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsPropertyAdminIntegrationFoundationTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsSchemaRegistryFoundationTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/GuardedSettingsFormSubmissionPlanningTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsFormSubmitIntentSandboxTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsRuntimeFileContextTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsRuntimeTrackFileContextTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsRuntimeTransitiveFileContextTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsDatabaseAdapterSplitTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsEntryAppPathGraphDependencyNormalizationTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsEntryAppPathGraphDependencyFinalSliceTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsMigrationFileAndRowPersistencePolicyDecisionTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsMigrationArtifactMaterializationDecisionTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsMigrationPretendAndSandboxExecutionEvidenceClosureTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsApplicationDatabasePersistenceAdapterDecisionTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsValueApplyRuntimePlanningTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsValueApplyRuntimePreflightTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsValueApplyNegativeGuardContractTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsValueApplyRollbackContractTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/GuardedSettingsValueApplyLocalProofTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsValueApplyDeveloperReviewAndPromotionDecisionTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/GuardedDeveloperPreviewSettingsValueApplyLaunchRecordTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/GuardedDeveloperPreviewSettingsValueApplyRuntimeTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/GuardedRealApplicationDatabaseSettingsApplyRuntimeTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/PackageOwnedSettingsAdminRuntimeTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/AdminSettingsFormReadModelTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/AdminSettingsRuntimePromotionReadinessTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/GuardedSettingsPropertyAdminWritePlanningTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SettingsPendingChangeMigrationReadinessTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/GuardedLocalApplicationDatabasePersistenceConfirmationContractTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Feature/SettingServiceProviderRegistrationTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Feature/SettingCommandProviderMigrationTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Feature/SettingRouteRegistrationBoundaryTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Feature/SettingPreviewAssetBoundaryTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Feature/SettingsAdminRuntimeRouteTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Feature/SiteSettingPersistenceRuntimeTest.php"
+                ],
+                "test:unit": [
+                    "@test"
+                ],
+                "lint": [
+                    "@php scripts/lint.php"
+                ],
+                "analyse": [
+                    "@php scripts/analyse.php"
+                ],
+                "validate:larena": [
+                    "@php scripts/validate-larena-package.php"
+                ],
+                "evidence:check": [
+                    "@php scripts/check-evidence.php"
+                ],
+                "scope:check": [
+                    "@php tools/larena-scope-check.php"
+                ],
+                "quality:gate": [
+                    "@validate:larena",
+                    "@lint",
+                    "@analyse",
+                    "@test",
+                    "@larena:metadata:check",
+                    "@evidence:check",
+                    "@scope:check"
+                ],
+                "larena:metadata:check": [
+                    "@php scripts/check-metadata-sync.php"
+                ]
+            },
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Rim Zabarov",
+                    "homepage": "https://github.com/zabarov"
+                }
+            ],
+            "description": "Larena Settings: Machine-readable settings definitions, runtime value resolution, pending changes and import/export policy.",
+            "transport-options": {
+                "symlink": true,
                 "relative": true
             }
         },
@@ -10280,7 +10416,8 @@
         "larena/audit": 20,
         "larena/auth": 20,
         "larena/core": 20,
-        "larena/filesystem": 20
+        "larena/filesystem": 20,
+        "larena/setting": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

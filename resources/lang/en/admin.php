@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 return [
-    'navigation' => ['pages' => 'Pages', 'menus' => 'Menus'],
+    'navigation' => ['pages' => 'Pages', 'menus' => 'Menus', 'site_settings' => 'Site Settings'],
     'pages' => [
         'title' => 'Pages',
         'eyebrow' => 'Content',
@@ -91,6 +91,25 @@ return [
         'fields' => ['name' => 'Name', 'code' => 'Code', 'code_help' => 'Use main for the public header.', 'locale' => 'Locale', 'active' => 'Show publicly', 'page' => 'Published Page', 'label' => 'Navigation label', 'parent' => 'Parent item', 'order' => 'Order'],
         'actions' => ['create' => 'Create menu', 'edit' => 'Edit', 'view' => 'View', 'cancel' => 'Cancel', 'save' => 'Save settings', 'save_item' => 'Save item', 'add_item' => 'Add item', 'remove_item' => 'Remove item', 'delete' => 'Delete menu'],
         'messages' => ['created' => 'Menu created.', 'updated' => 'Menu updated.', 'deleted' => 'Menu deleted.', 'item_created' => 'Menu item added.', 'item_updated' => 'Menu item updated.', 'item_removed' => 'Menu item removed.', 'navigation_menu_exists' => 'A menu with this code and locale already exists.', 'navigation_page_unavailable' => 'Choose an available published Page in this locale.', 'navigation_parent_invalid' => 'Choose a parent from this menu.', 'navigation_cycle' => 'Menu nesting cannot contain a cycle.'],
+    ],
+    'site_settings' => [
+        'title' => 'Site Settings', 'eyebrow' => 'Settings', 'heading' => 'Site Settings',
+        'description' => 'Set the public site identity, branding, language and homepage.',
+        'identity' => 'Site identity', 'branding' => 'Branding from Files', 'homepage' => 'Language and homepage',
+        'read_only' => 'Your role can view these settings but cannot change them.',
+        'validation_heading' => 'Check the site settings', 'no_image' => 'No image', 'no_page' => 'Not selected',
+        'save' => 'Save site settings', 'saved' => 'Site settings saved.',
+        'fields' => [
+            'name_en' => 'Site name · English', 'name_ru' => 'Site name · Russian',
+            'description_en' => 'Short description · English', 'description_ru' => 'Short description · Russian',
+            'logo' => 'Logo', 'favicon' => 'Favicon', 'default_locale' => 'Default language',
+            'homepage_en' => 'Homepage · English', 'homepage_ru' => 'Homepage · Russian',
+        ],
+        'validation' => [
+            'image' => 'Choose a currently available public image from Files.',
+            'page' => 'Choose a currently published public Page in this language.',
+            'default_homepage' => 'Choose a published homepage for the default language.',
+        ],
     ],
     'validation' => [
         'hero_file_invalid' => 'Choose a public image from Larena Files.',

@@ -2,8 +2,11 @@ package: larena/docara
 title: Larena Docara
 status: reviewed
 cluster: product-adapters
-batch: navigation-site-structure-developer-slice
+batch: site-settings-homepage-developer-slice
 features:
+  - docara.site_settings_adapter
+  - docara.homepage_resolver
+  - docara.public_site_identity
   - docara.page_operation_descriptors
   - docara.admin_surface
   - docara.developer_beta.denied_page_update_audit
@@ -22,4 +25,4 @@ runtime:
   php: "^8.3"
   laravel: "^13.0"
 evidence:
-  path: docs/project-management/evidence/navigation-site-structure-developer-slice/
+  path: docs/project-management/evidence/site-settings-homepage-developer-slice/

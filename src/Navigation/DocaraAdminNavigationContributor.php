@@ -43,6 +43,15 @@ final class DocaraAdminNavigationContributor implements AdminNavigationContribut
             knownLimitations: ['local_testing_only', 'not_production_ready', 'not_full_sf5_runtime'],
             surface: 'product', labelKey: 'larena-docara::admin.navigation.menus',
             activeRoutePattern: 'larena.docara.admin.menus.*',
+        ), new AdminNavigationDescriptor(
+            id: 'docara.site-settings', ownerPackage: $this->ownerPackage(), label: 'Site Settings',
+            routeName: 'larena.docara.admin.site-settings.edit', routeUri: '/admin/docara/site-settings',
+            category: 'settings', state: 'product_available', accessScope: 'setting.site.read',
+            auditEvent: 'site_settings.viewed', statusCap: 'site_settings_homepage_developer_slice',
+            order: 10, group: 'settings', badge: null,
+            knownLimitations: ['local_testing_only', 'not_production_ready', 'not_theme_builder', 'not_full_sf5_runtime'],
+            surface: 'product', labelKey: 'larena-docara::admin.navigation.site_settings',
+            activeRoutePattern: 'larena.docara.admin.site-settings.*',
         )];
     }
 }

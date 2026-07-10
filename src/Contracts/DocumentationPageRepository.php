@@ -11,4 +11,6 @@ interface DocumentationPageRepository
     public function findByLocaleAndSlug(string $locale, string $slug): ?DocumentationPage;
 
     public function findPublishedByLocaleAndSlug(string $locale, string $slug): ?DocumentationPage;
+
+    public function findPublishedByPageRef(string $pageRef): ?DocumentationPage;
 }

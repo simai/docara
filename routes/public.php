@@ -10,6 +10,10 @@ Route::get('/larena/assets/docara/{assetKey}', DocumentationPageAssetController:
     ->where('assetKey', '[a-z0-9][a-z0-9._-]*')
     ->name('larena.docara.assets.show');
 
+Route::get('/', [DocumentationPagePublicController::class, 'home'])
+    ->middleware((array) config('larena-docara.public.middleware', []))
+    ->name('larena.docara.public.home');
+
 Route::prefix((string) config('larena-docara.public.prefix', 'docs'))
     ->middleware((array) config('larena-docara.public.middleware', []))
     ->group(static function (): void {

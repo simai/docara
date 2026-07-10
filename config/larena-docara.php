@@ -16,6 +16,7 @@ return [
         'allowed_environments' => ['local', 'testing'],
         'prefix' => 'admin/docara/pages',
         'menu_prefix' => 'admin/docara/menus',
+        'site_settings_prefix' => 'admin/docara/site-settings',
         'middleware' => [
             'web',
             'larena-auth.entry',

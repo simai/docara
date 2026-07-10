@@ -11,7 +11,7 @@ return new class extends Migration {
     {
         Schema::create('docara_menus', static function (Blueprint $table): void {
             $table->id();
-            $table->uuid('menu_ref')->unique();
+            $table->string('menu_ref', 80)->unique();
             $table->string('code', 80);
             $table->string('name');
             $table->string('locale', 8);
@@ -23,7 +23,7 @@ return new class extends Migration {
 
         Schema::create('docara_menu_items', static function (Blueprint $table): void {
             $table->id();
-            $table->uuid('item_ref')->unique();
+            $table->string('item_ref', 80)->unique();
             $table->foreignId('menu_id')->constrained('docara_menus')->cascadeOnDelete();
             $table->foreignId('parent_id')->nullable()->constrained('docara_menu_items')->nullOnDelete();
             $table->string('page_ref');

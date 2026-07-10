@@ -27,7 +27,7 @@
     @if ($items->isEmpty())<div class="larena-empty larena-empty-compact"><p>{{ __('larena-docara::admin.menus.no_items') }}</p></div>@endif
     <div class="larena-menu-items">
     @foreach ($items as $item)
-        <article class="larena-menu-item" style="--menu-depth: {{ $item->parent_id ? 1 : 0 }}">
+        <article class="larena-menu-item larena-form-card" style="--menu-depth: {{ $item->parent_id ? 1 : 0 }}">
             @if ($canWrite)
                 <form method="post" action="{{ route('larena.docara.admin.menus.items.update', ['menu' => $menu->id, 'item' => $item->id]) }}" class="larena-menu-item__form">@csrf @method('PUT')
                     <div class="larena-field"><label for="item-{{ $item->id }}-label">{{ __('larena-docara::admin.menus.fields.label') }}</label><input id="item-{{ $item->id }}-label" name="label" value="{{ old('label', $item->label) }}" required maxlength="255"></div>
@@ -36,7 +36,7 @@
                     <label class="larena-check"><input type="checkbox" name="is_active" value="1" @checked($item->is_active)> {{ __('larena-docara::admin.menus.fields.active') }}</label>
                     <button class="larena-button" type="submit">{{ __('larena-docara::admin.menus.actions.save_item') }}</button>
                 </form>
-                <form method="post" action="{{ route('larena.docara.admin.menus.items.destroy', ['menu' => $menu->id, 'item' => $item->id]) }}" onsubmit="return confirm('{{ __('larena-docara::admin.menus.confirm_item_remove') }}')">@csrf @method('DELETE')<button class="larena-link-danger" type="submit">{{ __('larena-docara::admin.menus.actions.remove_item') }}</button></form>
+                <form method="post" action="{{ route('larena.docara.admin.menus.items.destroy', ['menu' => $menu->id, 'item' => $item->id]) }}" onsubmit="return confirm('{{ __('larena-docara::admin.menus.confirm_item_remove') }}')">@csrf @method('DELETE')<button class="larena-button larena-button--danger" type="submit">{{ __('larena-docara::admin.menus.actions.remove_item') }}</button></form>
             @else
                 <strong>{{ $item->label }}</strong><span>{{ __('larena-docara::admin.menus.fields.order') }}: {{ $item->sort_order }}</span>
             @endif
@@ -45,7 +45,7 @@
     </div>
 
     @if ($canWrite)
-        <form method="post" action="{{ route('larena.docara.admin.menus.items.store', ['menu' => $menu->id]) }}" class="larena-form larena-menu-add">@csrf
+        <form method="post" action="{{ route('larena.docara.admin.menus.items.store', ['menu' => $menu->id]) }}" class="larena-form larena-form-card larena-menu-add">@csrf
             <h3>{{ __('larena-docara::admin.menus.add_item') }}</h3>
             @if ($pages === [])<p class="larena-alert larena-alert-info">{{ __('larena-docara::admin.menus.no_published_pages') }}</p>@else
                 <div class="larena-field"><label for="new-page">{{ __('larena-docara::admin.menus.fields.page') }}</label><select id="new-page" name="page_ref" required>@foreach($pages as $page)<option value="{{ $page->page_ref }}">{{ $page->title }} · /{{ $page->slug }}</option>@endforeach</select></div>

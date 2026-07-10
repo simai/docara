@@ -1,25 +1,19 @@
 {
-  "schema": "larena.package_launch_context.v1",
-  "package": "larena/docara",
-  "repository_class": "continuation_repository",
-  "repository_contains_prior_implementation": true,
-  "launch_record_ref": "/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/users-role-presets-developer-slice.json",
-  "specs_repo": "simai/larena-specs", "specs_commit": "665f7d8bf5abcd13f06b852f0702e31582b8708e",
-  "base_commit": "5372786ae839c60ecb995cc9fa097e575242648c",
-  "selected_features": ["docara.package_owned_access_operation_descriptors"],
-  "allowed_files": [
-    ".larena/launch-context.json", "composer.lock", "module.yaml", "access.yaml", "src/DocaraServiceProvider.php",
-    "resources/lang/en/operations.php", "resources/lang/ru/operations.php", "tests/TestCase.php", "tests/Feature/DocumentationPageDeniedMutationAuditTest.php", "tests/Unit/PackageOwnedOperationDescriptorTest.php",
-    "scripts/validate-larena-package.php", "tools/larena-scope-check.php", "docs/*",
-    "docs/project-management/evidence/users-role-presets-developer-slice/*"
+  "schema":"larena.package_launch_context.v1","package":"larena/docara","repository_class":"continuation_repository","repository_contains_prior_implementation":true,
+  "launch_record_ref":"/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/media-library-page-assets-developer-slice.json",
+  "specs_repo":"simai/larena-specs","specs_commit":"665f7d8bf5abcd13f06b852f0702e31582b8708e","base_commit":"2b1927c44d5307041eeefa8cb2fe615a4e6a47bd",
+  "selected_features":["docara.page_image_relation","docara.public_media_render","docara.file_use_audit"],
+  "allowed_files":[
+    ".larena/launch-context.json","composer.json","composer.lock","database/migrations/2026_07_10_000003_add_assets_to_docara_pages_table.php",
+    "src/Audit/DocaraPageAssetAuditEventDescriptor.php","src/Authoring/DocumentationPageAuthoringService.php","src/Http/Controllers/DocumentationPageAdminController.php","src/Http/Controllers/DocumentationPagePublicController.php",
+    "src/Models/DocumentationPageRecord.php","src/Persistence/EloquentDocumentationPageRepository.php","src/DocaraServiceProvider.php",
+    "resources/views/admin/form.blade.php","resources/views/public/page.blade.php","resources/css/public-page.css",
+    "resources/lang/en/admin.php","resources/lang/ru/admin.php","tests/TestCase.php","tests/Feature/DocumentationPageAssetTest.php",
+    "scripts/validate-larena-package.php","tools/larena-scope-check.php","docs/*","docs/project-management/evidence/media-library-page-assets-developer-slice/*"
   ],
-  "forbidden_files": ["database/*", "routes/*", "src/Authoring/*", "src/Persistence/*", "../access/*"],
-  "forbidden_behavior": ["page_behavior_change", "central_access_config_ownership", "production_readiness_claim"],
-  "required_evidence_files": ["implementation-summary.md", "tests.md", "file-map.json", "deviations.json", "graph-sync-proposal.json", "independent-review.md"],
-  "evidence_path": "docs/project-management/evidence/users-role-presets-developer-slice/",
-  "graph_sync_proposal_path": "docs/project-management/evidence/users-role-presets-developer-slice/graph-sync-proposal.json",
-  "status": "reviewed", "coding_allowed": true, "coding_started": true, "repository_enforcement_installed": true, "review_completed": true,
-  "next_transition": null,
-  "test_database_policy": {"environment": "local_test_only", "database": "none", "existing_application_database": "forbidden", "cleanup": "not_applicable"},
-  "coding_branch": "main"
+  "forbidden_files":["../file-manager/*","../filesystem/*","../access/*"],"forbidden_behavior":["direct_blob_access","physical_path_render","non_image_public_embed","production_readiness_claim"],
+  "required_evidence_files":["implementation-summary.md","tests.md","file-map.json","deviations.json","graph-sync-proposal.json","independent-review.md"],
+  "evidence_path":"docs/project-management/evidence/media-library-page-assets-developer-slice/","graph_sync_proposal_path":"docs/project-management/evidence/media-library-page-assets-developer-slice/graph-sync-proposal.json",
+  "status":"coding_started","coding_allowed":true,"coding_started":true,"repository_enforcement_installed":true,"review_completed":false,"next_transition":"evidence_recorded",
+  "test_database_policy":{"environment":"local_test_only","database":"disposable_file_sqlite","existing_application_database":"forbidden","cleanup":"required"},"coding_branch":"main"
 }

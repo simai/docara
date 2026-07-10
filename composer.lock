@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c23fbccd746f27457dc4bf8d6c39b4c6",
+    "content-hash": "0c28ac66bed4f431cd507226ff9fb115",
     "packages": [
         {
             "name": "brick/math",
@@ -2241,6 +2241,100 @@
                 }
             ],
             "description": "Larena Dataview: Universal data presentation layer that can render the same structured dataset as table, kanban, calendar, gantt, cards, tree or other reusable views without reimplementing the same UI for every package.",
+            "transport-options": {
+                "symlink": false,
+                "relative": true
+            }
+        },
+        {
+            "name": "larena/filesystem",
+            "version": "dev-main",
+            "dist": {
+                "type": "path",
+                "url": "../filesystem",
+                "reference": "0ac05c98404d7a236a0d7c28bc5286e48b870499"
+            },
+            "require": {
+                "illuminate/database": "^13.0",
+                "illuminate/filesystem": "^13.0",
+                "illuminate/http": "^13.0",
+                "illuminate/routing": "^13.0",
+                "illuminate/support": "^13.0",
+                "php": "^8.3"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^11.1",
+                "phpstan/phpstan": "^2.0",
+                "phpunit/phpunit": "^12.5"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Larena\\Filesystem\\Providers\\FilesystemServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Larena\\Filesystem\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Larena\\Filesystem\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "php -d zend.assertions=1 -d assert.exception=1 tests/Unit/LogicalFileContractTest.php",
+                    "php -d zend.assertions=1 -d assert.exception=1 tests/Unit/FilesystemRuntimeContractTest.php",
+                    "php -d zend.assertions=1 -d assert.exception=1 tests/Unit/FilesystemFailsClosedTest.php",
+                    "php -d zend.assertions=1 -d assert.exception=1 tests/Unit/FilesystemLogicalRuntimeTest.php",
+                    "php -d zend.assertions=1 -d assert.exception=1 tests/Unit/FilesystemProjectionRedactionTest.php",
+                    "php -d zend.assertions=1 -d assert.exception=1 tests/Unit/FilesystemMutationAuditTest.php"
+                ],
+                "test:unit": [
+                    "@test"
+                ],
+                "lint": [
+                    "php scripts/lint.php"
+                ],
+                "analyse": [
+                    "php scripts/analyse.php"
+                ],
+                "validate:larena": [
+                    "php scripts/validate-larena-package.php"
+                ],
+                "evidence:check": [
+                    "php scripts/check-evidence.php"
+                ],
+                "scope:check": [
+                    "php tools/larena-scope-check.php"
+                ],
+                "quality:gate": [
+                    "@validate:larena",
+                    "@lint",
+                    "@analyse",
+                    "@test",
+                    "@larena:metadata:check",
+                    "@evidence:check",
+                    "@scope:check"
+                ],
+                "larena:metadata:check": [
+                    "php scripts/check-metadata-sync.php"
+                ]
+            },
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Rim Zabarov",
+                    "homepage": "https://github.com/zabarov"
+                }
+            ],
+            "description": "Larena Filesystem: File metadata, blob storage abstraction and safe file delivery layer used by content, storage, media, file-manager, link and search surfaces.",
             "transport-options": {
                 "symlink": false,
                 "relative": true
@@ -10185,7 +10279,8 @@
         "larena/admin": 20,
         "larena/audit": 20,
         "larena/auth": 20,
-        "larena/core": 20
+        "larena/core": 20,
+        "larena/filesystem": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

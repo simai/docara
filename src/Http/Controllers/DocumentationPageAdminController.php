@@ -15,6 +15,7 @@ use Illuminate\Validation\Rule;
 use Larena\Docara\Authoring\DocumentationPageAuthoringService;
 use Larena\Access\Runtime\AccessOperationAuthorizer;
 use RuntimeException;
+use Larena\Filesystem\Persistence\DatabaseLogicalFileRepository;
 
 final class DocumentationPageAdminController extends Controller
 {
@@ -24,6 +25,7 @@ final class DocumentationPageAdminController extends Controller
         private readonly Redirector $redirector,
         private readonly Translator $translator,
         private readonly AccessOperationAuthorizer $access,
+        private readonly DatabaseLogicalFileRepository $files,
     ) {
     }
 
@@ -41,6 +43,7 @@ final class DocumentationPageAdminController extends Controller
             'page' => null,
             'editing' => false,
             'canPublish' => $this->access->authorize($request, 'docara.page.publish')->isAllowed(),
+            'availableImages' => $this->availableImages(),
         ]);
     }
 
@@ -62,6 +65,7 @@ final class DocumentationPageAdminController extends Controller
             'page' => $page,
             'editing' => true,
             'canPublish' => $this->access->authorize($request, 'docara.page.publish')->isAllowed(),
+            'availableImages' => $this->availableImages(),
         ]);
     }
 
@@ -122,7 +126,7 @@ final class DocumentationPageAdminController extends Controller
             ->with('status', $this->translator->get('larena-docara::admin.messages.unpublished'));
     }
 
-    /** @return array{title:string, slug:string, body:string, status:string} */
+    /** @return array{title:string, slug:string, body:string, status:string, hero_file_ref?:string|null} */
     private function validated(Request $request, ?string $currentSlug = null, bool $allowPublished = false): array
     {
         $uniqueSlug = Rule::unique('docara_pages', 'slug')
@@ -137,6 +141,13 @@ final class DocumentationPageAdminController extends Controller
             'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $uniqueSlug],
             'body' => ['required', 'string'],
             'status' => ['required', 'in:'.($allowPublished ? 'draft,review,published,archived' : 'draft,review,archived')],
+            'hero_file_ref' => ['nullable', 'string', function (string $attribute, mixed $value, callable $fail): void {
+                if ($value === null || $value === '') { return; }
+                $file = $this->files->find((string) $value);
+                if ($file === null || $file->getAttribute('visibility') !== 'public' || !str_starts_with((string) $file->getAttribute('mime_type'), 'image/')) {
+                    $fail($this->translator->get('larena-docara::admin.validation.hero_file_invalid'));
+                }
+            }],
         ], [
             'title.required' => $this->translator->get('larena-docara::admin.validation.title_required'),
             'title.string' => $this->translator->get('larena-docara::admin.validation.title_string'),
@@ -153,6 +164,11 @@ final class DocumentationPageAdminController extends Controller
         ]);
 
         return $validated;
+    }
+
+    private function availableImages(): iterable
+    {
+        return $this->files->all()->filter(static fn ($file): bool => $file->getAttribute('visibility') === 'public' && str_starts_with((string) $file->getAttribute('mime_type'), 'image/'));
     }
 
     private function actor(Request $request): string

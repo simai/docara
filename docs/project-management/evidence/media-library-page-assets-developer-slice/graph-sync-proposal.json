@@ -1,0 +1,1 @@
+{"schema":"larena.graph_sync_proposal.v1","status":"proposal_only","canonical_update_allowed":false,"goal":"media-library-page-assets-developer-slice","claims":["bounded_developer_slice"],"forbidden_claims":["production_ready","full_dam","all_packages_ready","full_sf5_runtime"]}

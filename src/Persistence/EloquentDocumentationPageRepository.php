@@ -10,6 +10,7 @@ use Illuminate\Database\Query\Builder as QueryBuilder;
 use Carbon\CarbonImmutable;
 use InvalidArgumentException;
 use Larena\Docara\Contracts\DocumentationPage;
+use Larena\Docara\Contracts\DocumentationAssetRef;
 use Larena\Docara\Contracts\DocumentationPageRepository;
 use Larena\Docara\Contracts\PublicationState;
 use Larena\Docara\Enums\DocumentationVisibility;
@@ -35,6 +36,7 @@ final class EloquentDocumentationPageRepository implements DocumentationPageRepo
                 'slug' => $page->slug,
                 'title' => $page->title,
                 'body' => $page->body,
+                'assets' => array_map(static fn (DocumentationAssetRef $asset): array => ['logical_file_ref'=>$asset->logicalFileRef,'purpose'=>$asset->purpose,'alt_text'=>$asset->altText], $page->assets),
                 'locale' => $page->locale,
                 'visibility' => $page->visibility,
                 'publication_status' => $page->publication->status,
@@ -120,8 +122,8 @@ final class EloquentDocumentationPageRepository implements DocumentationPageRepo
             }
         }
 
-        if ($page->sectionRefs !== [] || $page->assets !== []) {
-            throw new InvalidArgumentException('Section and asset persistence is outside the current DB-backed Page batch.');
+        if ($page->sectionRefs !== []) {
+            throw new InvalidArgumentException('Section persistence is outside the current DB-backed Page batch.');
         }
 
         $shouldBePublic = $page->visibility === DocumentationVisibility::Public
@@ -153,6 +155,7 @@ final class EloquentDocumentationPageRepository implements DocumentationPageRepo
             ),
             title: (string) $record->getAttribute('title'),
             body: (string) $record->getAttribute('body'),
+            assets: $this->assets((array) ($record->getAttribute('assets') ?? [])),
         );
     }
 
@@ -178,6 +181,13 @@ final class EloquentDocumentationPageRepository implements DocumentationPageRepo
             ),
             title: (string) $record->title,
             body: (string) $record->body,
+            assets: $this->assets(json_decode((string) ($record->assets ?? '[]'), true) ?: []),
         );
+    }
+
+    /** @param array<int,array<string,mixed>> $items @return list<DocumentationAssetRef> */
+    private function assets(array $items): array
+    {
+        return array_values(array_map(static fn(array $item): DocumentationAssetRef => new DocumentationAssetRef((string)($item['logical_file_ref']??''),(string)($item['purpose']??'hero'),isset($item['alt_text'])?(string)$item['alt_text']:null),$items));
     }
 }

@@ -11,6 +11,8 @@ use Larena\Audit\Contracts\AuditEvent;
 use Larena\Audit\Runtime\AuditEventPipeline;
 use Larena\Docara\Audit\DocaraPageAuditEventDescriptor;
 use Larena\Docara\Contracts\DocumentationPage;
+use Larena\Docara\Contracts\DocumentationAssetRef;
+use Larena\Docara\Audit\DocaraPageAssetAuditEventDescriptor;
 use Larena\Docara\Contracts\DocumentationPageRepository;
 use Larena\Docara\Contracts\PublicationState;
 use Larena\Docara\Enums\DocumentationVisibility;
@@ -100,6 +102,7 @@ final readonly class DocumentationPageAuthoringService
             ),
             title: $current->title,
             body: $current->body,
+            assets: $current->assets,
         );
 
         return $this->persist('published', $actor, $page);
@@ -127,6 +130,7 @@ final readonly class DocumentationPageAuthoringService
             ),
             title: $current->title,
             body: $current->body,
+            assets: $current->assets,
         );
 
         return $this->persist('unpublished', $actor, $page);
@@ -152,6 +156,7 @@ final readonly class DocumentationPageAuthoringService
             ),
             title: $input['title'],
             body: $input['body'],
+            assets: $this->assetsFromInput($input),
         );
     }
 
@@ -175,6 +180,7 @@ final readonly class DocumentationPageAuthoringService
             ),
             title: $input['title'],
             body: $input['body'],
+            assets: $this->assetsFromInput($input),
         );
     }
 
@@ -200,7 +206,25 @@ final readonly class DocumentationPageAuthoringService
                 ],
             ));
 
+            if (in_array($operation, ['created', 'updated'], true)) {
+                foreach ($saved->assets as $asset) {
+                    $assetDescriptor = new DocaraPageAssetAuditEventDescriptor();
+                    $this->audit->route($assetDescriptor, AuditEvent::create(
+                        sourcePackage: $assetDescriptor->sourcePackage(), category: $assetDescriptor->category(), type: $assetDescriptor->type(),
+                        actor: $actor, subject: $saved->pageRef, severity: $assetDescriptor->severity(), retentionClass: $assetDescriptor->retentionClass(),
+                        correlationId: Str::uuid()->toString(), payload: ['page_ref'=>$saved->pageRef,'slug'=>$saved->slug,'logical_file_ref'=>$asset->logicalFileRef,'purpose'=>$asset->purpose],
+                    ));
+                }
+            }
+
             return $saved;
         });
+    }
+
+    /** @param array<string,mixed> $input @return list<DocumentationAssetRef> */
+    private function assetsFromInput(array $input): array
+    {
+        $ref = trim((string) ($input['hero_file_ref'] ?? ''));
+        return $ref === '' ? [] : [new DocumentationAssetRef($ref, 'hero', null)];
     }
 }

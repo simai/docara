@@ -53,8 +53,10 @@ return [
         'current_status' => 'Current status:',
         'publication_actions' => 'Publication actions',
         'unpublish_help' => 'Use “Unpublish page” to change publication state.',
+        'no_hero_file' => 'No image',
     ],
     'fields' => [
+        'hero_file' => 'Page image',
         'title' => 'Title',
         'slug' => 'Slug',
         'body' => 'Body',
@@ -73,6 +75,7 @@ return [
         'unpublished' => 'Page unpublished.',
     ],
     'validation' => [
+        'hero_file_invalid' => 'Choose a public image from Larena Files.',
         'title_required' => 'Enter a page title.',
         'title_string' => 'The page title must be text.',
         'title_max' => 'The page title may not exceed 255 characters.',

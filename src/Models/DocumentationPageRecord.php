@@ -18,6 +18,7 @@ final class DocumentationPageRecord extends Model
         'slug',
         'title',
         'body',
+        'assets',
         'locale',
         'visibility',
         'publication_status',
@@ -32,6 +33,7 @@ final class DocumentationPageRecord extends Model
             'visibility' => DocumentationVisibility::class,
             'publication_status' => PublicationStatus::class,
             'published_at' => 'immutable_datetime',
+            'assets' => 'array',
         ];
     }
 }

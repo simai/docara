@@ -10,6 +10,7 @@ use Larena\Admin\Providers\AdminServiceProvider;
 use Larena\Audit\Providers\AuditServiceProvider;
 use Larena\Auth\Providers\AuthServiceProvider;
 use Larena\Docara\DocaraServiceProvider;
+use Larena\Filesystem\Providers\FilesystemServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Larena\Access\Runtime\RoleAssignmentService;
 use Larena\Access\Runtime\SystemRolePresetSynchronizer;
@@ -71,6 +72,8 @@ abstract class TestCase extends OrchestraTestCase
         ]);
         $app['config']->set('larena-docara.admin.enabled', true);
         $app['config']->set('larena-docara.public.enabled', true);
+        $app['config']->set('larena-filesystem.public_routes.enabled', true);
+        $app['config']->set('filesystems.disks.local', ['driver'=>'local','root'=>sys_get_temp_dir().'/larena-docara-files','throw'=>false]);
         $app['config']->set('larena-auth.admin_entry.enabled', true);
         $app['config']->set('larena-auth.admin_entry.local_testing.enabled', true);
         $app['config']->set('larena-auth.admin_entry.login_mode', 'persistent');
@@ -87,6 +90,7 @@ abstract class TestCase extends OrchestraTestCase
             AdminServiceProvider::class,
             AuditServiceProvider::class,
             AuthServiceProvider::class,
+            FilesystemServiceProvider::class,
             DocaraServiceProvider::class,
         ];
     }

@@ -41,6 +41,16 @@
                 @error('body')<span id="page-body-error" class="larena-field-error">{{ $message }}</span>@enderror
             </div>
             <div class="larena-field">
+                <label for="page-hero">{{ __('larena-docara::admin.fields.hero_file') }}</label>
+                <select id="page-hero" name="hero_file_ref">
+                    <option value="">{{ __('larena-docara::admin.form.no_hero_file') }}</option>
+                    @foreach ($availableImages as $image)
+                        <option value="{{ $image->logical_ref }}" @selected(old('hero_file_ref', data_get($page, 'assets.0.logicalFileRef', '')) === $image->logical_ref)>{{ $image->display_name }} · {{ $image->mime_type }}</option>
+                    @endforeach
+                </select>
+                @error('hero_file_ref')<span class="larena-field-error">{{ $message }}</span>@enderror
+            </div>
+            <div class="larena-field">
                 <label for="page-status">{{ __('larena-docara::admin.fields.status') }}</label>
                 @if ($editing && $page->publication->status->value === 'published')
                     <input type="hidden" name="status" value="published">

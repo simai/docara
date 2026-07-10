@@ -33,11 +33,12 @@
             </div>
             <div class="larena-field">
                 <label for="page-status">Status</label>
-                <select id="page-status" name="status">
+                <select id="page-status" name="status" @error('status') aria-invalid="true" aria-describedby="page-status-error" @enderror>
                     @foreach (['draft' => 'Draft', 'review' => 'In review', 'archived' => 'Archived'] as $value => $label)
                         <option value="{{ $value }}" @selected(old('status', $page?->publication->status->value ?? 'draft') === $value)>{{ $label }}</option>
                     @endforeach
                 </select>
+                @error('status')<span id="page-status-error" class="larena-field-error">{{ $message }}</span>@enderror
             </div>
             <div class="larena-form-actions">
                 <button class="larena-button larena-button-primary" type="submit">Save page</button>

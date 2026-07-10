@@ -10,6 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Routing\Redirector;
+use Illuminate\Validation\Rule;
 use Larena\Docara\Authoring\DocumentationPageAuthoringService;
 use RuntimeException;
 
@@ -36,7 +37,9 @@ final class DocumentationPageAdminController extends Controller
     {
         $page = $this->authoring->create($this->validated($request), $this->actor($request));
 
-        return $this->redirector->route('larena.docara.admin.pages.edit', ['slug' => $page->slug]);
+        return $this->redirector
+            ->route('larena.docara.admin.pages.edit', ['slug' => $page->slug])
+            ->with('status', 'Page created.');
     }
 
     public function edit(string $slug): View
@@ -50,12 +53,14 @@ final class DocumentationPageAdminController extends Controller
     public function update(Request $request, string $slug): RedirectResponse
     {
         try {
-            $page = $this->authoring->update($slug, $this->validated($request), $this->actor($request));
+            $page = $this->authoring->update($slug, $this->validated($request, $slug), $this->actor($request));
         } catch (RuntimeException) {
             abort(404);
         }
 
-        return $this->redirector->route('larena.docara.admin.pages.edit', ['slug' => $page->slug]);
+        return $this->redirector
+            ->route('larena.docara.admin.pages.edit', ['slug' => $page->slug])
+            ->with('status', 'Page updated.');
     }
 
     public function publish(Request $request, string $slug): RedirectResponse
@@ -70,14 +75,23 @@ final class DocumentationPageAdminController extends Controller
     }
 
     /** @return array{title:string, slug:string, body:string, status:string} */
-    private function validated(Request $request): array
+    private function validated(Request $request, ?string $currentSlug = null): array
     {
+        $uniqueSlug = Rule::unique('docara_pages', 'slug')
+            ->where(static fn ($query) => $query->where('locale', 'en'));
+        if ($currentSlug !== null) {
+            $uniqueSlug->ignore($currentSlug, 'slug');
+        }
+
         /** @var array{title:string, slug:string, body:string, status:string} $validated */
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
+            'slug' => ['required', 'string', 'max:255', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/', $uniqueSlug],
             'body' => ['required', 'string'],
             'status' => ['required', 'in:draft,review,archived'],
+        ], [
+            'slug.regex' => 'The slug may contain lowercase letters, numbers and single hyphens only.',
+            'slug.unique' => 'A page with this slug already exists.',
         ]);
 
         return $validated;

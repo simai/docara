@@ -1,0 +1,15 @@
+{
+  "schema": "larena.docara.developer_beta_file_map.v1",
+  "batch_id": "batch_5_page_list_create_edit_validation",
+  "files": [
+    {"path": ".larena/launch-context.json", "role": "bounded package launch authority"},
+    {"path": "scripts/validate-larena-package.php", "role": "recognized batch launch record"},
+    {"path": "src/Http/Controllers/DocumentationPageAdminController.php", "role": "server validation and success feedback"},
+    {"path": "resources/views/admin/form.blade.php", "role": "status field error semantics"},
+    {"path": "tests/Feature/DocumentationPageAuthoringValidationTest.php", "role": "focused authoring acceptance"}
+  ],
+  "schema_changed": false,
+  "authorization_changed": false,
+  "production_ready": false,
+  "all_41_packages_ready": false
+}

@@ -1,0 +1,9 @@
+{
+  "schema": "larena.graph_sync_proposal.v1",
+  "package": "larena/docara",
+  "batch_id": "batch_5_page_list_create_edit_validation",
+  "proposal": "Record Developer Beta Page authoring validation as reviewed package evidence.",
+  "canonical_update_allowed": false,
+  "runtime_policy_changed": false,
+  "authorization_changed": false
+}

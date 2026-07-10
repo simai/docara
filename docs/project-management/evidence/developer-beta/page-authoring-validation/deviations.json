@@ -1,0 +1,12 @@
+{
+  "schema": "larena.developer_beta.deviations.v1",
+  "batch_id": "batch_5_page_list_create_edit_validation",
+  "deviations": [
+    {
+      "id": "working_tree_overlay_for_precommit_browser_acceptance",
+      "status": "accepted",
+      "reason": "The package revision cannot be pinned until it is committed. The clean installer assembled the accepted pinned baseline, then the current bounded Docara tree was overlaid into the disposable vendor directory before browser verification. Final root acceptance will use the committed pinned revision."
+    }
+  ],
+  "blockers": []
+}

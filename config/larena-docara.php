@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Larena\Docara\Http\Middleware\AuditDeniedPageUpdate;
+use Larena\Docara\Http\Middleware\AuditDeniedPagePublish;
 
 return [
     'public' => [
@@ -25,7 +26,7 @@ return [
         ],
         'read_middleware' => ['access:docara.page.read'],
         'write_middleware' => [AuditDeniedPageUpdate::class, 'access:docara.page.write'],
-        'publish_middleware' => ['access:docara.page.publish'],
+        'publish_middleware' => [AuditDeniedPagePublish::class, 'access:docara.page.publish'],
         'navigation_read_middleware' => ['access:docara.navigation.read'],
         'navigation_write_middleware' => ['access:docara.navigation.write'],
         'navigation_delete_middleware' => ['access:docara.navigation.delete'],

@@ -22,7 +22,7 @@ final class DocumentationPageAssetController
         $path = $this->safeResourcePath((string) $asset['resource_path']);
 
         return new Response((string) file_get_contents($path), 200, [
-            'Content-Type' => 'text/css; charset=UTF-8',
+            'Content-Type' => ($asset['kind'] ?? null) === 'js' ? 'application/javascript; charset=UTF-8' : 'text/css; charset=UTF-8',
             'Cache-Control' => 'public, max-age=3600',
             'X-Larena-Owner' => 'larena/docara',
             'X-Larena-Asset-Activation-Owner' => CoreAssetActivationContract::OWNER,

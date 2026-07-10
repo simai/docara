@@ -9,6 +9,8 @@ use Larena\Core\Starter\CoreAssetActivationContract;
 final class DocumentationPageAssetManifest
 {
     public const ASSET_KEY = 'docara.public.page.css';
+    public const EDITOR_CSS_KEY = 'docara.admin.blocks.css';
+    public const EDITOR_JS_KEY = 'docara.admin.blocks.js';
 
     /** @return list<array<string, mixed>> */
     public static function publicationAssets(): array
@@ -33,10 +35,19 @@ final class DocumentationPageAssetManifest
         );
     }
 
+    /** @return list<array<string, mixed>> */
+    public static function editorAssets(): array
+    {
+        return [
+            ['carrier_key' => 'larena/docara:page-block-editor', 'asset_key' => self::EDITOR_CSS_KEY, 'kind' => 'css', 'critical' => false, 'resource_path' => 'resources/css/page-block-editor.css', 'final_path_owned_by_core_assets' => true],
+            ['carrier_key' => 'larena/docara:page-block-editor', 'asset_key' => self::EDITOR_JS_KEY, 'kind' => 'js', 'critical' => false, 'resource_path' => 'resources/js/page-block-editor.js', 'final_path_owned_by_core_assets' => true],
+        ];
+    }
+
     /** @return array<string, mixed>|null */
     public static function asset(string $assetKey): ?array
     {
-        foreach (self::publicationAssets() as $asset) {
+        foreach (array_merge(self::publicationAssets(), self::editorAssets()) as $asset) {
             if ($asset['asset_key'] === $assetKey) {
                 return $asset;
             }

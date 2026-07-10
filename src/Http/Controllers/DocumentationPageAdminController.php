@@ -16,6 +16,9 @@ use Larena\Docara\Authoring\DocumentationPageAuthoringService;
 use Larena\Access\Runtime\AccessOperationAuthorizer;
 use RuntimeException;
 use Larena\Filesystem\Persistence\DatabaseLogicalFileRepository;
+use Larena\Docara\Composition\DocaraPageCompositionService;
+use Larena\Docara\Composition\DocaraPageBlockPresenter;
+use Illuminate\Database\ConnectionInterface;
 
 final class DocumentationPageAdminController extends Controller
 {
@@ -26,6 +29,9 @@ final class DocumentationPageAdminController extends Controller
         private readonly Translator $translator,
         private readonly AccessOperationAuthorizer $access,
         private readonly DatabaseLogicalFileRepository $files,
+        private readonly DocaraPageCompositionService $compositions,
+        private readonly DocaraPageBlockPresenter $blockPresenter,
+        private readonly ConnectionInterface $connection,
     ) {
     }
 
@@ -77,6 +83,8 @@ final class DocumentationPageAdminController extends Controller
         return $this->views->make('larena-docara::admin.preview', [
             'page' => $page,
             'canWrite' => $this->access->authorize($request, 'docara.page.write')->isAllowed(),
+            'compositionBlocks' => $this->blockPresenter->present($this->compositions->draft($page->pageRef)),
+            'compositionMode' => 'draft',
         ]);
     }
 
@@ -103,7 +111,11 @@ final class DocumentationPageAdminController extends Controller
     public function publish(Request $request, string $slug): RedirectResponse
     {
         try {
-            $page = $this->authoring->publish($slug, $this->actor($request), $this->locale($request));
+            $page = $this->connection->transaction(function () use ($slug, $request) {
+                $page = $this->authoring->publish($slug, $this->actor($request), $this->locale($request));
+                $this->compositions->publish($page->pageRef, $this->actor($request));
+                return $page;
+            });
         } catch (RuntimeException) {
             abort(404);
         }

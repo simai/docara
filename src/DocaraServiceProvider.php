@@ -18,6 +18,10 @@ use Larena\Admin\Navigation\AdminNavigationRegistry;
 use Larena\Docara\Navigation\DocaraAdminNavigationContributor;
 use Larena\Docara\Navigation\DocumentationNavigationService;
 use Larena\Docara\Settings\DocaraSiteSettingsService;
+use Larena\Docara\Composition\DocaraPageCompositionService;
+use Larena\Docara\Composition\DocaraPageBlockPresenter;
+use Larena\Layout\Runtime\PageBlockCatalog;
+use Larena\Layout\Runtime\PageCompositionNormalizer;
 
 final class DocaraServiceProvider extends ServiceProvider
 {
@@ -51,6 +55,21 @@ final class DocaraServiceProvider extends ServiceProvider
                 $connection,
             );
         });
+        $this->app->singleton(PageBlockCatalog::class);
+        $this->app->singleton(PageCompositionNormalizer::class, static fn (Application $app): PageCompositionNormalizer => new PageCompositionNormalizer($app->make(PageBlockCatalog::class)));
+        $this->app->bind(DocaraPageCompositionService::class, static function (Application $app): DocaraPageCompositionService {
+            return new DocaraPageCompositionService(
+                $app->make(DatabaseManager::class)->connection(),
+                $app->make(PageBlockCatalog::class),
+                $app->make(PageCompositionNormalizer::class),
+                $app->make(\Larena\Filesystem\Persistence\DatabaseLogicalFileRepository::class),
+                $app->make(AuditEventPipeline::class),
+            );
+        });
+        $this->app->bind(DocaraPageBlockPresenter::class, static fn (Application $app): DocaraPageBlockPresenter => new DocaraPageBlockPresenter(
+            $app->make(\Larena\Filesystem\Persistence\DatabaseLogicalFileRepository::class),
+            $app->make(\Larena\Filesystem\Services\SafeFileService::class),
+        ));
     }
 
     public function boot(): void

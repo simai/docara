@@ -14,6 +14,8 @@ use Larena\Filesystem\Services\SafeFileService;
 use Illuminate\Http\Request;
 use Larena\Docara\Navigation\DocumentationNavigationService;
 use Larena\Docara\Settings\DocaraSiteSettingsService;
+use Larena\Docara\Composition\DocaraPageCompositionService;
+use Larena\Docara\Composition\DocaraPageBlockPresenter;
 
 final class DocumentationPagePublicController extends Controller
 {
@@ -24,6 +26,8 @@ final class DocumentationPagePublicController extends Controller
         private readonly SafeFileService $files,
         private readonly DocumentationNavigationService $navigation,
         private readonly DocaraSiteSettingsService $siteSettings,
+        private readonly DocaraPageCompositionService $compositions,
+        private readonly DocaraPageBlockPresenter $blockPresenter,
     ) {
     }
 
@@ -53,6 +57,8 @@ final class DocumentationPagePublicController extends Controller
             'publicNavigation' => $this->navigation->publicTree('main', $page->locale),
             'siteIdentity' => $this->siteSettings->identityFor($page->locale),
             'isHomepage' => false,
+            'compositionBlocks' => $this->blockPresenter->present($this->compositions->published($page->pageRef)),
+            'compositionMode' => 'published',
         ]);
     }
 
@@ -85,6 +91,8 @@ final class DocumentationPagePublicController extends Controller
                 'logo_url' => $homepage['logo_url'], 'favicon_url' => $homepage['favicon_url'],
             ],
             'isHomepage' => true,
+            'compositionBlocks' => $this->blockPresenter->present($this->compositions->published($page->pageRef)),
+            'compositionMode' => 'published',
         ]);
     }
 }

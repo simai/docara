@@ -19,6 +19,7 @@
     "larena/auth": "dev-main",
     "larena/core": "dev-main",
     "larena/filesystem": "dev-main",
+    "larena/layout": "dev-main",
     "larena/setting": "dev-main"
   },
   "repositories": [

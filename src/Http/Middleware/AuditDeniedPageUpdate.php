@@ -28,7 +28,7 @@ final readonly class AuditDeniedPageUpdate
         if (!$response instanceof Response
             || $response->getStatusCode() !== Response::HTTP_FORBIDDEN
             || !$request->isMethod('PUT')
-            || !$request->routeIs('larena.docara.admin.pages.update')) {
+            || !($request->routeIs('larena.docara.admin.pages.update') || $request->routeIs('larena.docara.admin.pages.blocks.update'))) {
             return $response;
         }
 
@@ -38,7 +38,21 @@ final readonly class AuditDeniedPageUpdate
             return $response;
         }
 
-        $descriptor = new DocaraPageAuditEventDescriptor('update_denied');
+        $composition = $request->routeIs('larena.docara.admin.pages.blocks.update');
+        $descriptor = $composition
+            ? new \Larena\Docara\Audit\DocaraPageCompositionAuditEventDescriptor('update_denied')
+            : new DocaraPageAuditEventDescriptor('update_denied');
+        $payload = [
+            'operation' => $composition ? 'composition_update_denied' : 'update_denied',
+            'slug' => $slug,
+            'status' => 'denied',
+            'reason' => 'permission_denied',
+        ];
+        if ($composition) {
+            $payload['block_count'] = 0;
+            $payload['block_types'] = [];
+        }
+
         $this->audit->route($descriptor, AuditEvent::create(
             sourcePackage: $descriptor->sourcePackage(),
             category: $descriptor->category(),
@@ -48,12 +62,7 @@ final readonly class AuditDeniedPageUpdate
             severity: $descriptor->severity(),
             retentionClass: $descriptor->retentionClass(),
             correlationId: Str::uuid()->toString(),
-            payload: [
-                'operation' => 'update_denied',
-                'slug' => $slug,
-                'status' => 'denied',
-                'reason' => 'permission_denied',
-            ],
+            payload: $payload,
         ));
 
         return $response;

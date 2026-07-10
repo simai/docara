@@ -1,0 +1,25 @@
+{
+  "schema": "larena.evidence.file_map.v1",
+  "persistence": [
+    "database/migrations/2026_07_10_000007_create_docara_page_compositions.php",
+    "src/Composition/DocaraPageCompositionService.php"
+  ],
+  "http": [
+    "src/Http/Controllers/DocumentationPageCompositionController.php",
+    "src/Http/Controllers/DocumentationPageAdminController.php",
+    "src/Http/Controllers/DocumentationPagePublicController.php",
+    "src/Http/Middleware/AuditDeniedPagePublish.php",
+    "src/Http/Middleware/AuditDeniedPageUpdate.php"
+  ],
+  "presentation": [
+    "src/Composition/DocaraPageBlockPresenter.php",
+    "resources/views/admin/blocks.blade.php",
+    "resources/views/blocks",
+    "resources/css/page-block-editor.css",
+    "resources/css/public-page.css",
+    "resources/js/page-block-editor.js"
+  ],
+  "audit": ["src/Audit/DocaraPageCompositionAuditEventDescriptor.php"],
+  "tests": ["tests/Feature/DocumentationPageCompositionTest.php"]
+}
+

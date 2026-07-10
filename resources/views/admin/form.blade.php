@@ -8,6 +8,7 @@
     <a class="larena-button" href="{{ route('larena.docara.admin.pages.index') }}">{{ __('larena-docara::admin.actions.back') }}</a>
     @if ($editing)
         <a class="larena-button" href="{{ route('larena.docara.admin.pages.preview', ['slug' => $page->slug, 'locale' => $page->locale]) }}">{{ __('larena-docara::admin.actions.preview') }}</a>
+        <a class="larena-button" href="{{ route('larena.docara.admin.pages.blocks.edit', ['slug' => $page->slug, 'locale' => $page->locale]) }}">{{ __('larena-docara::admin.actions.compose_blocks') }}</a>
     @endif
 @endsection
 

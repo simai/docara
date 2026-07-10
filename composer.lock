@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b75c3adcfd92f6846bac6358f0e4e1ce",
+    "content-hash": "f50f32b2d3eddf2ae82e0198d3fa95de",
     "packages": [
         {
             "name": "brick/math",
@@ -2346,7 +2346,7 @@
             "dist": {
                 "type": "path",
                 "url": "../layout",
-                "reference": "051f7c82005df84dedd1ca0df668f6dcacb0db5f"
+                "reference": "0a0a57d5e44b53461d8b8b140c4d01c64334cdda"
             },
             "require": {
                 "php": "^8.3"
@@ -10417,6 +10417,7 @@
         "larena/auth": 20,
         "larena/core": 20,
         "larena/filesystem": 20,
+        "larena/layout": 20,
         "larena/setting": 20
     },
     "prefer-stable": true,

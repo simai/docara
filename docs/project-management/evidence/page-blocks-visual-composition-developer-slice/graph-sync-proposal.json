@@ -1,0 +1,14 @@
+{
+  "schema": "larena.graph_sync_proposal.v1",
+  "package": "larena/docara",
+  "status": "proposal_only",
+  "capabilities": [
+    "docara.page_composition_draft",
+    "docara.page_composition_publish",
+    "docara.page_blocks_editor",
+    "docara.page_blocks_public_renderer"
+  ],
+  "canonical_update_allowed": false,
+  "must_not_apply_automatically": true
+}
+

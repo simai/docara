@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use Larena\Docara\Http\Controllers\DocumentationPageAdminController;
 use Larena\Docara\Http\Controllers\DocumentationMenuAdminController;
 use Larena\Docara\Http\Controllers\DocaraSiteSettingsAdminController;
+use Larena\Docara\Http\Controllers\DocumentationPageCompositionController;
 use Larena\Setting\Http\Middleware\AuditDeniedSiteSettingUpdate;
 
 Route::prefix((string) config('larena-docara.admin.prefix', 'admin/docara/pages'))
@@ -15,6 +16,7 @@ Route::prefix((string) config('larena-docara.admin.prefix', 'admin/docara/pages'
         Route::middleware((array) config('larena-docara.admin.read_middleware', []))->group(static function (): void {
             Route::get('/', [DocumentationPageAdminController::class, 'index'])->name('index');
             Route::get('/{slug}/preview', [DocumentationPageAdminController::class, 'preview'])->name('preview');
+            Route::get('/{slug}/blocks', [DocumentationPageCompositionController::class, 'edit'])->name('blocks.edit');
         });
 
         Route::middleware((array) config('larena-docara.admin.write_middleware', []))->group(static function (): void {
@@ -22,6 +24,7 @@ Route::prefix((string) config('larena-docara.admin.prefix', 'admin/docara/pages'
             Route::post('/', [DocumentationPageAdminController::class, 'store'])->name('store');
             Route::get('/{slug}/edit', [DocumentationPageAdminController::class, 'edit'])->name('edit');
             Route::put('/{slug}', [DocumentationPageAdminController::class, 'update'])->name('update');
+            Route::put('/{slug}/blocks', [DocumentationPageCompositionController::class, 'update'])->name('blocks.update');
         });
 
         Route::middleware((array) config('larena-docara.admin.publish_middleware', []))->group(static function (): void {

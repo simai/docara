@@ -22,6 +22,7 @@ return [
         'publish' => 'Publish page',
         'unpublish' => 'Unpublish page',
         'view_live' => 'View live page',
+        'compose_blocks' => 'Compose blocks',
     ],
     'empty' => [
         'title' => 'No pages yet',
@@ -68,6 +69,20 @@ return [
         'eyebrow' => 'Content / Pages / Preview',
         'description' => 'Protected preview of the saved page. This preview is not the public URL.',
         'status' => 'Protected preview · Current status:',
+    ],
+    'blocks' => [
+        'title' => 'Page blocks: :title', 'eyebrow' => 'Content / Pages / Blocks', 'heading' => 'Compose “:title”',
+        'description' => 'Build a saved draft from typed blocks. Public output changes only after publishing.',
+        'read_only' => 'Your role can inspect the saved draft but cannot change or publish it.',
+        'add_label' => 'Block type', 'add' => 'Add block', 'empty' => 'No blocks yet. The published Page keeps its legacy body until a composition is published.',
+        'position' => 'Block :number', 'enabled' => 'Show this block', 'move_up' => 'Move block up', 'move_down' => 'Move block down', 'remove' => 'Remove block',
+        'save_draft' => 'Save draft', 'saved' => 'Page block draft saved.',
+        'publish_heading' => 'Publish the saved draft', 'publish_help' => 'Save changes first. Publishing validates the draft and replaces the public composition.', 'publish' => 'Publish page and blocks',
+        'no_image' => 'No image',
+        'types' => ['text' => 'Text', 'image' => 'Image', 'hero' => 'Hero', 'columns' => 'Two columns', 'cta' => 'Call to action'],
+        'fields' => ['heading' => 'Heading', 'body' => 'Text', 'alignment' => 'Alignment', 'image' => 'Image from Files', 'alt' => 'Alternative text', 'caption' => 'Caption', 'eyebrow' => 'Eyebrow', 'title' => 'Title', 'cta_label' => 'Button label', 'cta_url' => 'Button URL', 'style' => 'Style', 'left_title' => 'Left title', 'left_body' => 'Left text', 'right_title' => 'Right title', 'right_body' => 'Right text'],
+        'options' => ['left' => 'Left', 'center' => 'Center', 'default' => 'Default', 'accent' => 'Accent', 'primary' => 'Primary', 'secondary' => 'Secondary'],
+        'validation' => ['invalid' => 'Check block types, required fields, order and URLs. Only relative, HTTPS and mailto links are allowed.', 'image' => 'Choose a currently available public image from Files.'],
     ],
     'messages' => [
         'created' => 'Page created.',

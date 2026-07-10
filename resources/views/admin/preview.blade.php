@@ -8,6 +8,7 @@
     @if ($canWrite)
         <a class="larena-button" href="{{ route('larena.docara.admin.pages.edit', ['slug' => $page->slug]) }}">{{ __('larena-docara::admin.actions.back_to_edit') }}</a>
     @endif
+    <a class="larena-button" href="{{ route('larena.docara.admin.pages.blocks.edit', ['slug' => $page->slug, 'locale' => $page->locale]) }}">{{ __('larena-docara::admin.actions.compose_blocks') }}</a>
     @if ($page->publication->status->value === 'published')
         <a class="larena-button" href="{{ route('larena.docara.public.show', ['slug' => $page->slug]) }}">{{ __('larena-docara::admin.actions.view_live') }}</a>
     @endif
@@ -18,8 +19,13 @@
         {{ __('larena-docara::admin.preview.status') }}
         <span class="larena-status larena-status-{{ $page->publication->status->value }}">{{ __('larena-docara::admin.statuses.'.$page->publication->status->value) }}</span>
     </div>
-    <article class="larena-panel larena-form" data-larena-page-preview="protected">
+    <link rel="stylesheet" href="{{ route('larena.docara.assets.show', ['assetKey' => 'docara.public.page.css']) }}">
+    <article class="larena-panel larena-form larena-public-article" data-larena-page-preview="protected" data-composition-mode="{{ $compositionMode }}">
         <h2>{{ $page->title }}</h2>
-        <div class="larena-preformatted-content">{{ $page->body }}</div>
+        @if (($compositionBlocks ?? []) !== [])
+            @include('larena-docara::blocks.index', ['blocks' => $compositionBlocks])
+        @else
+            <div class="larena-preformatted-content">{{ $page->body }}</div>
+        @endif
     </article>
 @endsection

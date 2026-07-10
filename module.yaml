@@ -2,8 +2,9 @@ package: larena/docara
 title: Larena Docara
 status: reviewed
 cluster: product-adapters
-batch: post-beta-content-site-assembly
+batch: users-role-presets-developer-slice
 features:
+  - docara.page_operation_descriptors
   - docara.admin_surface
   - docara.developer_beta.denied_page_update_audit
   - docara.public_documentation_runtime
@@ -17,4 +18,4 @@ runtime:
   php: "^8.3"
   laravel: "^13.0"
 evidence:
-  path: docs/project-management/evidence/post-beta-content-site-assembly/
+  path: docs/project-management/evidence/users-role-presets-developer-slice/

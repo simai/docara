@@ -63,6 +63,7 @@ $developerBetaAuthoringValidationLaunchRecord = '/Users/rim/Documents/GitHub/lar
 $developerBetaPublicationLifecycleLaunchRecord = '/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/developer-page-publication-lifecycle.json';
 $developerBetaDeniedPageUpdateLaunchRecord = '/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/developer-denied-page-update-audit.json';
 $postBetaContentSiteAssemblyLaunchRecord = '/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/post-beta-content-site-assembly.json';
+$usersRolePresetsLaunchRecord = '/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/users-role-presets-developer-slice.json';
 $legacyContractLaunchRecord = 'specs/implementation-planning/launch-records/docara-batch-1-contract-skeletons-current.json';
 $launchRecordRef = (string) ($launchContext['launch_record_ref'] ?? '');
 
@@ -84,7 +85,7 @@ if (!$codingStarted && !$continuationRepository) {
 }
 
 if ($codingStarted) {
-    if (!in_array($launchRecordRef, [$legacyContractLaunchRecord, $currentPersistenceLaunchRecord, $currentAuthoringLaunchRecord, $currentPublicLaunchRecord, $developerBetaShellLaunchRecord, $developerBetaAuthoringValidationLaunchRecord, $developerBetaPublicationLifecycleLaunchRecord, $developerBetaDeniedPageUpdateLaunchRecord, $postBetaContentSiteAssemblyLaunchRecord], true)) {
+    if (!in_array($launchRecordRef, [$legacyContractLaunchRecord, $currentPersistenceLaunchRecord, $currentAuthoringLaunchRecord, $currentPublicLaunchRecord, $developerBetaShellLaunchRecord, $developerBetaAuthoringValidationLaunchRecord, $developerBetaPublicationLifecycleLaunchRecord, $developerBetaDeniedPageUpdateLaunchRecord, $postBetaContentSiteAssemblyLaunchRecord, $usersRolePresetsLaunchRecord], true)) {
         $errors[] = 'coding_started requires a recognized Docara launch record.';
     }
     if (!$codingAllowed && $launchRecordRef === $currentPersistenceLaunchRecord) {

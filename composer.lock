@@ -1410,9 +1410,12 @@
                 "reference": "c512eadbc676bdd330237f5a5312280f0f8903a6"
             },
             "require": {
+                "illuminate/console": "^13.0",
+                "illuminate/database": "^13.0",
                 "illuminate/http": "^13.0",
                 "illuminate/routing": "^13.0",
                 "illuminate/support": "^13.0",
+                "larena/audit": "dev-main",
                 "php": "^8.3"
             },
             "require-dev": {
@@ -1443,7 +1446,8 @@
                     "@php tests/Unit/AccessGrantDecisionRuntimeTest.php",
                     "@php tests/Unit/AccessGrantDecisionFailsClosedTest.php",
                     "@php tests/Unit/AccessMiddlewareRuntimeContractTest.php",
-                    "@php tests/Unit/AccessOperationAuthorizerTest.php"
+                    "@php tests/Unit/AccessOperationAuthorizerTest.php",
+                    "@php tests/Unit/PersistentRolePresetRuntimeTest.php"
                 ],
                 "test:unit": [
                     "@php tests/Unit/AccessDecisionContractTest.php",

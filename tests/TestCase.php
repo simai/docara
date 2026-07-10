@@ -10,6 +10,9 @@ use Larena\Admin\Providers\AdminServiceProvider;
 use Larena\Audit\Providers\AuditServiceProvider;
 use Larena\Auth\Providers\AuthServiceProvider;
 use Larena\Docara\DocaraServiceProvider;
+use Illuminate\Support\Facades\DB;
+use Larena\Access\Runtime\RoleAssignmentService;
+use Larena\Access\Runtime\SystemRolePresetSynchronizer;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 abstract class TestCase extends OrchestraTestCase
@@ -30,6 +33,19 @@ abstract class TestCase extends OrchestraTestCase
             '--database' => 'docara_testing',
             '--force' => true,
         ])->assertSuccessful();
+
+        $now = now();
+        DB::table('larena_admin_identities')->insert([
+            'id' => 1, 'email' => 'admin@docara.test', 'display_name' => 'Docara Administrator',
+            'password_hash' => password_hash('Docara-Admin!2026', PASSWORD_DEFAULT),
+            'status' => 'active', 'bootstrapped_at' => $now, 'disabled_at' => null,
+            'created_at' => $now, 'updated_at' => $now,
+        ]);
+        $this->app->make(SystemRolePresetSynchronizer::class)->sync();
+        $this->app->make(RoleAssignmentService::class)->assign(
+            'user:admin_identity:1', SystemRolePresetSynchronizer::ADMINISTRATOR, 'test-bootstrap',
+        );
+        DB::table('larena_audit_events')->delete();
     }
 
     protected function tearDown(): void

@@ -9,6 +9,8 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Database\DatabaseManager;
 use Illuminate\Support\ServiceProvider;
 use Larena\Audit\Runtime\AuditEventPipeline;
+use Larena\Access\Runtime\AccessOperationRegistry;
+use Larena\Access\ValueObjects\AccessOperationDescriptor;
 use Larena\Docara\Authoring\DocumentationPageAuthoringService;
 use Larena\Docara\Contracts\DocumentationPageRepository;
 use Larena\Docara\Persistence\EloquentDocumentationPageRepository;
@@ -38,6 +40,11 @@ final class DocaraServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        $operations = $this->app->make(AccessOperationRegistry::class);
+        $operations->register(new AccessOperationDescriptor('docara.page.read', 'larena/docara', 'larena-docara::operations.page_read', 'docara.page:all', 'read', 'normal'));
+        $operations->register(new AccessOperationDescriptor('docara.page.write', 'larena/docara', 'larena-docara::operations.page_write', 'docara.page:all', 'write', 'high'));
+        $operations->register(new AccessOperationDescriptor('docara.page.publish', 'larena/docara', 'larena-docara::operations.page_publish', 'docara.page:all', 'publish', 'critical'));
+
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'larena-docara');
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'larena-docara');

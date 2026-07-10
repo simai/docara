@@ -6,12 +6,15 @@ namespace Larena\Docara\Tests\Feature;
 
 use Illuminate\Support\Facades\DB;
 use Larena\Docara\Tests\TestCase;
+use Larena\Access\Persistence\PersistentAccessStore;
 
 final class DocumentationPageDeniedMutationAuditTest extends TestCase
 {
     public function testForbiddenActorCannotUpdatePageAndDenialIsAudited(): void
     {
         $adminSession = $this->sessionFor('user:admin_identity:1');
+        self::assertTrue($this->app->make(PersistentAccessStore::class)->isAllowed('user:admin_identity:1', 'audit.history.read'));
+
         $this->withSession($adminSession)
             ->post('/admin/docara/pages', $this->input())
             ->assertRedirect('/admin/docara/pages/secured-page/edit');

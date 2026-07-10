@@ -1,0 +1,12 @@
+schema: larena.access.descriptor.v1
+package: larena/docara
+operations:
+  - code: docara.page.read
+    risk: normal
+    audit: denial
+  - code: docara.page.write
+    risk: high
+    audit: always
+  - code: docara.page.publish
+    risk: critical
+    audit: always

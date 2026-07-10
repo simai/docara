@@ -10,7 +10,7 @@
         @if (($asset['kind'] ?? null) === 'css')
             <link
                 rel="stylesheet"
-                href="{{ $asset['final_path'] }}"
+                href="{{ $asset['final_path'] }}?v={{ \Larena\Docara\Assets\DocumentationPageAssetManifest::ASSET_VERSION }}"
                 data-larena-asset-key="{{ $asset['asset_key'] }}"
                 data-larena-asset-owner="{{ $asset['activation_owner'] }}"
             >

@@ -31,7 +31,8 @@ final class DocumentationPageCompositionTest extends TestCase
             ->assertRedirect('/admin/docara/pages/blocks-en/edit');
         $this->get('/docs/blocks-en')->assertOk()->assertDontSee('Legacy body')
             ->assertSeeInOrder(['Draft hero', 'Draft text', 'Blocks image alt', 'Left column', 'Open blocks'])
-            ->assertSee('data-smart-view="docara.hero"', false)->assertSee('/media/', false);
+            ->assertSee('data-smart-view="docara.hero"', false)->assertSee('/media/', false)
+            ->assertSee('docara.public.page.css?v=page-blocks-v1', false);
 
         self::assertSame(1, DB::table('docara_page_compositions')->count());
         self::assertSame(1, DB::table('docara_page_composition_versions')->count());
@@ -82,6 +83,9 @@ final class DocumentationPageCompositionTest extends TestCase
         $this->get('/docs/invalid-blocks')->assertOk()->assertSee('Fallback remains');
         $this->get('/larena/assets/docara/docara.admin.blocks.css')->assertOk()->assertHeader('Content-Type', 'text/css; charset=UTF-8');
         $this->get('/larena/assets/docara/docara.admin.blocks.js')->assertOk()->assertHeader('Content-Type', 'application/javascript; charset=UTF-8');
+        $css = $this->get('/larena/assets/docara/docara.public.page.css')->assertOk()->getContent();
+        self::assertStringContainsString('.larena-page-block--image img{display:block;width:100%;height:auto', $css);
+        self::assertStringContainsString('.larena-page-block--hero,.larena-page-block--columns{grid-template-columns:1fr}', $css);
     }
 
     /** @return list<array<string,mixed>> */

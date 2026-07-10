@@ -10,8 +10,8 @@
 @endsection
 
 @section('content')
-    <link rel="stylesheet" href="{{ route('larena.docara.assets.show', ['assetKey' => 'docara.admin.blocks.css']) }}">
-    <script src="{{ route('larena.docara.assets.show', ['assetKey' => 'docara.admin.blocks.js']) }}" defer></script>
+    <link rel="stylesheet" href="{{ route('larena.docara.assets.show', ['assetKey' => 'docara.admin.blocks.css', 'v' => \Larena\Docara\Assets\DocumentationPageAssetManifest::ASSET_VERSION]) }}">
+    <script src="{{ route('larena.docara.assets.show', ['assetKey' => 'docara.admin.blocks.js', 'v' => \Larena\Docara\Assets\DocumentationPageAssetManifest::ASSET_VERSION]) }}" defer></script>
 
     @unless ($canWrite)
         <div class="larena-notice" role="status">{{ __('larena-docara::admin.blocks.read_only') }}</div>

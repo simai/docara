@@ -11,6 +11,7 @@ final class DocumentationPageAssetManifest
     public const ASSET_KEY = 'docara.public.page.css';
     public const EDITOR_CSS_KEY = 'docara.admin.blocks.css';
     public const EDITOR_JS_KEY = 'docara.admin.blocks.js';
+    public const ASSET_VERSION = 'page-blocks-v1';
 
     /** @return list<array<string, mixed>> */
     public static function publicationAssets(): array

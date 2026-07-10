@@ -1,3 +1,5 @@
 # Tests
 
-Package validation, syntax, scope and focused automated tests are recorded by the root acceptance packet. Final browser, restart and rollback evidence remains owned by the root goal.
+Package validation, syntax, static analysis, scope and focused automated tests
+passed. Root acceptance additionally proves browser, restart and rollback
+behavior. No production, full DAM, all-package or full SF5 claim is made.

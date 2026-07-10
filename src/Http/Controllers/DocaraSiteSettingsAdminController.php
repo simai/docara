@@ -85,7 +85,7 @@ final class DocaraSiteSettingsAdminController extends Controller
             'homepage_page_ref.ru' => $this->nullable($validated['homepage_page_ref_ru'] ?? null),
         ], (string) $request->attributes->get('larena_access_actor'));
 
-        return $this->redirector->route('larena.docara.admin.site-settings.edit')
+        return $this->redirector->route('larena.docara.admin.site_settings.edit')
             ->with('status', $this->translator->get('larena-docara::admin.site_settings.saved'));
     }
 

@@ -52,7 +52,7 @@ Route::prefix((string) config('larena-docara.admin.menu_prefix', 'admin/docara/m
 
 Route::prefix((string) config('larena-docara.admin.site_settings_prefix', 'admin/docara/site-settings'))
     ->middleware((array) config('larena-docara.admin.middleware', []))
-    ->name('larena.docara.admin.site-settings.')
+    ->name('larena.docara.admin.site_settings.')
     ->group(static function (): void {
         Route::get('/', [DocaraSiteSettingsAdminController::class, 'edit'])
             ->middleware('access:setting.site.read')->name('edit');

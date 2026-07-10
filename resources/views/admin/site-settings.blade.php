@@ -16,7 +16,7 @@
         <div class="larena-alert" role="status">{{ __('larena-docara::admin.site_settings.read_only') }}</div>
     @endunless
 
-    <form class="larena-panel larena-form" method="post" action="{{ route('larena.docara.admin.site-settings.update') }}">
+    <form class="larena-panel larena-form" method="post" action="{{ route('larena.docara.admin.site_settings.update') }}">
         @csrf
         @method('PUT')
         <fieldset @disabled(!$canWrite)>

@@ -8,9 +8,20 @@ use Illuminate\Support\Facades\DB;
 use Larena\Access\Runtime\RoleAssignmentService;
 use Larena\Access\Runtime\SystemRolePresetSynchronizer;
 use Larena\Docara\Tests\TestCase;
+use Larena\Docara\Navigation\DocaraAdminNavigationContributor;
 
 final class DocaraSiteSettingsHomepageTest extends TestCase
 {
+    public function testDocaraAdminNavigationContributionRemainsAtomicAndValid(): void
+    {
+        $descriptors = (new DocaraAdminNavigationContributor())->navigationDescriptors();
+        self::assertCount(3, $descriptors);
+        foreach ($descriptors as $descriptor) {
+            self::assertTrue($descriptor->isValid(), $descriptor->id . ' must remain a valid admin navigation descriptor.');
+        }
+        self::assertSame('docara.site_settings', $descriptors[2]->id);
+    }
+
     public function testAdministratorConfiguresLocalizedPersistentHomepageAndBranding(): void
     {
         $this->publishedPage('docara:page:home-en', 'home', 'English home', 'en');

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f50f32b2d3eddf2ae82e0198d3fa95de",
+    "content-hash": "48a2819b94f8d7fd6255531ad189dd8f",
     "packages": [
         {
             "name": "brick/math",
@@ -2202,7 +2202,8 @@
                 "test": [
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/DataviewContractTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/DataviewFailsClosedTest.php",
-                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/ReadOnlyDataviewTableAdapterTest.php"
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/ReadOnlyDataviewTableAdapterTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/DataviewTableRuntimeTest.php"
                 ],
                 "test:unit": [
                     "@test"
@@ -10416,6 +10417,7 @@
         "larena/audit": 20,
         "larena/auth": 20,
         "larena/core": 20,
+        "larena/dataview": 20,
         "larena/filesystem": 20,
         "larena/layout": 20,
         "larena/setting": 20

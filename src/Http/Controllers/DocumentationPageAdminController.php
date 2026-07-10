@@ -19,6 +19,9 @@ use Larena\Filesystem\Persistence\DatabaseLogicalFileRepository;
 use Larena\Docara\Composition\DocaraPageCompositionService;
 use Larena\Docara\Composition\DocaraPageBlockPresenter;
 use Illuminate\Database\ConnectionInterface;
+use Larena\Admin\Runtime\AdminCollectionDataviewPresenter;
+use Larena\Docara\Dataview\DocumentationPagesSourceProvider;
+use Larena\Docara\Dataview\DocumentationPagesViewDescriptor;
 
 final class DocumentationPageAdminController extends Controller
 {
@@ -32,15 +35,34 @@ final class DocumentationPageAdminController extends Controller
         private readonly DocaraPageCompositionService $compositions,
         private readonly DocaraPageBlockPresenter $blockPresenter,
         private readonly ConnectionInterface $connection,
+        private readonly AdminCollectionDataviewPresenter $dataview,
     ) {
     }
 
     public function index(Request $request): View
     {
-        return $this->views->make('larena-docara::admin.index', [
-            'pages' => $this->authoring->list(),
-            'canWrite' => $this->access->authorize($request, 'docara.page.write')->isAllowed(),
-        ]);
+        $canWrite = $this->access->authorize($request, 'docara.page.write')->isAllowed();
+        $source = new DocumentationPagesSourceProvider(
+            $this->authoring->list(),
+            $canWrite,
+            fn (string $action, array $page): string => route('larena.docara.admin.pages.' . $action, ['slug' => $page['slug']] + ($page['locale'] === 'ru' ? ['locale' => 'ru'] : [])),
+            fn (string $status): string => $this->translator->get('larena-docara::admin.statuses.' . $status),
+            $this->translator->get('larena-docara::admin.actions.' . ($canWrite ? 'edit' : 'preview')),
+        );
+        $dataview = $this->dataview->present($source, DocumentationPagesViewDescriptor::make($source), [
+            'title' => $this->translator->get('larena-docara::admin.columns.page'),
+            'slug' => $this->translator->get('larena-docara::admin.columns.slug'),
+            'status' => $this->translator->get('larena-docara::admin.columns.status'),
+            'action' => $this->translator->get('larena-docara::admin.columns.action'),
+            '_pagination' => $this->translator->get('larena-docara::admin.pages.aria_label'),
+        ], [
+            'title' => $this->translator->get('larena-docara::admin.empty.title'),
+            'text' => $this->translator->get('larena-docara::admin.empty.' . ($canWrite ? 'writer_text' : 'reader_text')),
+            'action_href' => $canWrite ? route('larena.docara.admin.pages.create') : null,
+            'action_label' => $canWrite ? $this->translator->get('larena-docara::admin.actions.create_first') : null,
+        ], $this->translator->get('larena-docara::admin.pages.aria_label'), $request->url(), (int) $request->query('page', '1'));
+
+        return $this->views->make('larena-docara::admin.index', ['dataview' => $dataview, 'canWrite' => $canWrite]);
     }
 
     public function create(Request $request): View

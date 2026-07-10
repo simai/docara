@@ -3,7 +3,7 @@
   "package": "larena/docara",
   "repository_class": "continuation_repository",
   "repository_contains_prior_implementation": true,
-  "launch_record_ref": "/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/page-blocks-visual-composition-developer-slice.json",
+  "launch_record_ref": "/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/admin-ui-runtime-dataview-pages-users.json",
   "specs_repo": "simai/larena-specs",
   "specs_commit": "665f7d8bf5abcd13f06b852f0702e31582b8708e",
   "base_commit": "b7567757a73723e0007cef3672bc9f05eb9fe23d",

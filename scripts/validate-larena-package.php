@@ -68,6 +68,7 @@ $mediaLibraryPageAssetsLaunchRecord = '/Users/rim/Documents/GitHub/larena/docs/p
 $navigationSiteStructureLaunchRecord = '/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/navigation-site-structure-developer-slice.json';
 $siteSettingsHomepageLaunchRecord = '/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/site-settings-homepage-developer-slice.json';
 $pageBlocksVisualCompositionLaunchRecord = '/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/page-blocks-visual-composition-developer-slice.json';
+$adminUiDataviewLaunchRecord = '/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/admin-ui-runtime-dataview-pages-users.json';
 $legacyContractLaunchRecord = 'specs/implementation-planning/launch-records/docara-batch-1-contract-skeletons-current.json';
 $launchRecordRef = (string) ($launchContext['launch_record_ref'] ?? '');
 
@@ -89,7 +90,7 @@ if (!$codingStarted && !$continuationRepository) {
 }
 
 if ($codingStarted) {
-    if (!in_array($launchRecordRef, [$legacyContractLaunchRecord, $currentPersistenceLaunchRecord, $currentAuthoringLaunchRecord, $currentPublicLaunchRecord, $developerBetaShellLaunchRecord, $developerBetaAuthoringValidationLaunchRecord, $developerBetaPublicationLifecycleLaunchRecord, $developerBetaDeniedPageUpdateLaunchRecord, $postBetaContentSiteAssemblyLaunchRecord, $usersRolePresetsLaunchRecord, $mediaLibraryPageAssetsLaunchRecord, $navigationSiteStructureLaunchRecord, $siteSettingsHomepageLaunchRecord, $pageBlocksVisualCompositionLaunchRecord], true)) {
+    if (!in_array($launchRecordRef, [$legacyContractLaunchRecord, $currentPersistenceLaunchRecord, $currentAuthoringLaunchRecord, $currentPublicLaunchRecord, $developerBetaShellLaunchRecord, $developerBetaAuthoringValidationLaunchRecord, $developerBetaPublicationLifecycleLaunchRecord, $developerBetaDeniedPageUpdateLaunchRecord, $postBetaContentSiteAssemblyLaunchRecord, $usersRolePresetsLaunchRecord, $mediaLibraryPageAssetsLaunchRecord, $navigationSiteStructureLaunchRecord, $siteSettingsHomepageLaunchRecord, $pageBlocksVisualCompositionLaunchRecord, $adminUiDataviewLaunchRecord], true)) {
         $errors[] = 'coding_started requires a recognized Docara launch record.';
     }
     if (!$codingAllowed && $launchRecordRef === $currentPersistenceLaunchRecord) {

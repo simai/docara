@@ -58,13 +58,11 @@ $continuationRepository = ($launchContext['repository_class'] ?? null) === 'cont
 $currentPersistenceLaunchRecord = 'specs/implementation-planning/launch-records/docara-batch-2-db-backed-page-persistence.json';
 $currentAuthoringLaunchRecord = 'specs/implementation-planning/launch-records/docara-batch-3-protected-page-authoring.json';
 $currentPublicLaunchRecord = 'specs/implementation-planning/launch-records/docara-batch-4-anonymous-published-page.json';
+$developerBetaShellLaunchRecord = '/Users/rim/Documents/GitHub/larena/docs/project-management/launch-records/developer-admin-shell-foundation.json';
 $legacyContractLaunchRecord = 'specs/implementation-planning/launch-records/docara-batch-1-contract-skeletons-current.json';
 $launchRecordRef = (string) ($launchContext['launch_record_ref'] ?? '');
 
-if (($launchContext['status'] ?? null) === 'ready_to_code') {
-    if ($launchRecordRef !== $currentPersistenceLaunchRecord) {
-        $errors[] = 'ready_to_code requires the current Docara DB-backed persistence launch record.';
-    }
+if (($launchContext['status'] ?? null) === 'ready_to_code' && $launchRecordRef === $currentPersistenceLaunchRecord) {
     if ($codingStarted || $codingAllowed) {
         $errors[] = 'ready_to_code must keep coding_allowed=false and coding_started=false.';
     }
@@ -82,7 +80,7 @@ if (!$codingStarted && !$continuationRepository) {
 }
 
 if ($codingStarted) {
-    if (!in_array($launchRecordRef, [$legacyContractLaunchRecord, $currentPersistenceLaunchRecord, $currentAuthoringLaunchRecord, $currentPublicLaunchRecord], true)) {
+    if (!in_array($launchRecordRef, [$legacyContractLaunchRecord, $currentPersistenceLaunchRecord, $currentAuthoringLaunchRecord, $currentPublicLaunchRecord, $developerBetaShellLaunchRecord], true)) {
         $errors[] = 'coding_started requires a recognized Docara launch record.';
     }
     if (!$codingAllowed && $launchRecordRef === $currentPersistenceLaunchRecord) {

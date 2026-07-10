@@ -1,0 +1,13 @@
+{
+  "schema": "larena.package_evidence_file_map.v1",
+  "files": [
+    {"path": "composer.json", "role": "explicit Admin dependency and local package resolution"},
+    {"path": "composer.lock", "role": "reproducible package test dependencies"},
+    {"path": "resources/views/admin/index.blade.php", "role": "Page list shell consumer"},
+    {"path": "resources/views/admin/form.blade.php", "role": "Page form shell consumer"},
+    {"path": "tests/TestCase.php", "role": "isolated Admin provider test registration"},
+    {"path": "tests/Feature/DocumentationPageAdminShellTest.php", "role": "protected shell integration tests"},
+    {"path": "scripts/validate-larena-package.php", "role": "new launch recognition"},
+    {"path": ".larena/launch-context.json", "role": "current package launch authority"}
+  ]
+}

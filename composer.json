@@ -14,13 +14,24 @@
     "illuminate/database": "^13.0",
     "illuminate/support": "^13.0",
     "larena/access": "dev-main",
+    "larena/admin": "dev-main",
     "larena/audit": "dev-main",
     "larena/auth": "dev-main"
   },
   "repositories": [
     {"type": "path", "url": "../access", "options": {"symlink": false}},
+    {"type": "path", "url": "../admin", "options": {"symlink": false}},
     {"type": "path", "url": "../audit", "options": {"symlink": false}},
-    {"type": "path", "url": "../auth", "options": {"symlink": false}}
+    {"type": "path", "url": "../auth", "options": {"symlink": false}},
+    {"type": "path", "url": "../cockpit", "options": {"symlink": false}},
+    {"type": "path", "url": "../core", "options": {"symlink": false}},
+    {"type": "path", "url": "../dataview", "options": {"symlink": false}},
+    {"type": "path", "url": "../layout", "options": {"symlink": false}},
+    {"type": "path", "url": "../licensing", "options": {"symlink": false}},
+    {"type": "path", "url": "../link", "options": {"symlink": false}},
+    {"type": "path", "url": "../storage", "options": {"symlink": false}},
+    {"type": "path", "url": "../ui", "options": {"symlink": false}},
+    {"type": "path", "url": "../update", "options": {"symlink": false}}
   ],
   "autoload": {
     "psr-4": {
@@ -68,6 +79,6 @@
       "php": "8.3.31"
     }
   },
-  "minimum-stability": "stable",
+  "minimum-stability": "dev",
   "prefer-stable": true
 }

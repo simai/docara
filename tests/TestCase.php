@@ -6,6 +6,7 @@ namespace Larena\Docara\Tests;
 
 use Illuminate\Foundation\Application;
 use Larena\Access\Providers\AccessServiceProvider;
+use Larena\Admin\Providers\AdminServiceProvider;
 use Larena\Audit\Providers\AuditServiceProvider;
 use Larena\Auth\Providers\AuthServiceProvider;
 use Larena\Docara\DocaraServiceProvider;
@@ -57,6 +58,7 @@ abstract class TestCase extends OrchestraTestCase
         $app['config']->set('larena-auth.admin_entry.enabled', true);
         $app['config']->set('larena-auth.admin_entry.local_testing.enabled', true);
         $app['config']->set('larena-auth.admin_entry.login_mode', 'persistent');
+        $app['config']->set('larena-admin.internal_routes.enabled', false);
     }
 
     /** @param Application $app
@@ -66,6 +68,7 @@ abstract class TestCase extends OrchestraTestCase
     {
         return [
             AccessServiceProvider::class,
+            AdminServiceProvider::class,
             AuditServiceProvider::class,
             AuthServiceProvider::class,
             DocaraServiceProvider::class,

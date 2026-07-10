@@ -1,0 +1,7 @@
+{
+  "schema": "larena.graph_sync_proposal.v1",
+  "package": "larena/docara",
+  "proposal": "Recognize docara.developer_beta.admin_shell_consumer as a reviewed presentation capability.",
+  "canonical_update_allowed": false,
+  "status": "proposal_only"
+}

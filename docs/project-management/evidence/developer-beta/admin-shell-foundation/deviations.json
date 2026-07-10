@@ -1,0 +1,17 @@
+{
+  "schema": "larena.package_evidence_deviations.v1",
+  "deviations": [
+    {
+      "id": "servbay_path_for_legacy_composer_scripts",
+      "status": "environment_workaround",
+      "reason": "Existing Composer scripts invoke literal php while the Homebrew PHP link is unusable.",
+      "resolution": "Quality gate ran with ServBay first in PATH; no product behavior was bypassed."
+    },
+    {
+      "id": "minimum_stability_dev",
+      "status": "accepted",
+      "reason": "Admin already requires Larena dev-main packages transitively.",
+      "resolution": "Docara uses minimum-stability dev with prefer-stable and locks exact local package snapshots for tests."
+    }
+  ]
+}

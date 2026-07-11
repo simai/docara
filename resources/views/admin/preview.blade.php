@@ -6,11 +6,11 @@
 @section('description', __('larena-docara::admin.preview.description'))
 @section('actions')
     @if ($canWrite)
-        <a class="larena-button" href="{{ route('larena.docara.admin.pages.edit', ['slug' => $page->slug]) }}">{{ __('larena-docara::admin.actions.back_to_edit') }}</a>
+        {!! \Larena\Ui\SfActionLink::render(route('larena.docara.admin.pages.edit', ['slug' => $page->slug]), __('larena-docara::admin.actions.back_to_edit'))->html !!}
     @endif
-    <a class="larena-button" href="{{ route('larena.docara.admin.pages.blocks.edit', ['slug' => $page->slug, 'locale' => $page->locale]) }}">{{ __('larena-docara::admin.actions.compose_blocks') }}</a>
+    {!! \Larena\Ui\SfActionLink::render(route('larena.docara.admin.pages.blocks.edit', ['slug' => $page->slug, 'locale' => $page->locale]), __('larena-docara::admin.actions.compose_blocks'))->html !!}
     @if ($page->publication->status->value === 'published')
-        <a class="larena-button" href="{{ route('larena.docara.public.show', ['slug' => $page->slug]) }}">{{ __('larena-docara::admin.actions.view_live') }}</a>
+        {!! \Larena\Ui\SfActionLink::render(route('larena.docara.public.show', ['slug' => $page->slug]), __('larena-docara::admin.actions.view_live'))->html !!}
     @endif
 @endsection
 

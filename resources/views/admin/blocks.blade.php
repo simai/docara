@@ -5,8 +5,8 @@
 @section('heading', __('larena-docara::admin.blocks.heading', ['title' => $page->title]))
 @section('description', __('larena-docara::admin.blocks.description'))
 @section('actions')
-    <a class="larena-button" href="{{ route('larena.docara.admin.pages.edit', ['slug' => $page->slug, 'locale' => $page->locale]) }}">{{ __('larena-docara::admin.actions.back_to_edit') }}</a>
-    <a class="larena-button" href="{{ route('larena.docara.admin.pages.preview', ['slug' => $page->slug, 'locale' => $page->locale]) }}">{{ __('larena-docara::admin.actions.preview') }}</a>
+    {!! \Larena\Ui\SfActionLink::render(route('larena.docara.admin.pages.edit', ['slug' => $page->slug, 'locale' => $page->locale]), __('larena-docara::admin.actions.back_to_edit'))->html !!}
+    {!! \Larena\Ui\SfActionLink::render(route('larena.docara.admin.pages.preview', ['slug' => $page->slug, 'locale' => $page->locale]), __('larena-docara::admin.actions.preview'))->html !!}
 @endsection
 
 @section('content')

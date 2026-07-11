@@ -5,7 +5,7 @@
 @section('heading', __('larena-docara::admin.menus.heading'))
 @section('description', __('larena-docara::admin.menus.description'))
 @section('actions')
-    @if ($canWrite)<a class="larena-button larena-button-primary" href="{{ route('larena.docara.admin.menus.create') }}">{{ __('larena-docara::admin.menus.actions.create') }}</a>@endif
+    @if ($canWrite){!! \Larena\Ui\SfActionLink::render(route('larena.docara.admin.menus.create'), __('larena-docara::admin.menus.actions.create'), 'primary', 'default')->html !!}@endif
 @endsection
 
 @section('content')

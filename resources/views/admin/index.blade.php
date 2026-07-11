@@ -6,7 +6,7 @@
 @section('description', __('larena-docara::admin.pages.description'))
 @section('actions')
     @if ($canWrite)
-        <a class="larena-button larena-button-primary" href="{{ route('larena.docara.admin.pages.create') }}">{{ __('larena-docara::admin.actions.create') }}</a>
+        {!! \Larena\Ui\SfActionLink::render(route('larena.docara.admin.pages.create'), __('larena-docara::admin.actions.create'), 'primary', 'default')->html !!}
     @endif
 @endsection
 

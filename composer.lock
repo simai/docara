@@ -1505,7 +1505,7 @@
             "dist": {
                 "type": "path",
                 "url": "../admin",
-                "reference": "85229664433323bcbd099dfa1e37cc11b7e34799"
+                "reference": "9e67c98d569fe76838b2dc7a074232284e20c5f2"
             },
             "require": {
                 "illuminate/console": "^13.0",
@@ -2854,7 +2854,7 @@
             "dist": {
                 "type": "path",
                 "url": "../ui",
-                "reference": "e82941052c9bdbe75fbd0e1bb87756b8d66b4101"
+                "reference": "e731fee31ebbd0252a43abd8c4e27971b390c2fc"
             },
             "require": {
                 "larena/dataview": "dev-main",
@@ -2881,6 +2881,7 @@
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/AdminUiLabRendererTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SourceBackedComponentRegistryTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SmartTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/SfActionLinkTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/FrontendRuntimeAssetResolverTest.php"
                 ],
                 "test:unit": [

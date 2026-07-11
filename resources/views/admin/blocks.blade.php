@@ -14,7 +14,7 @@
     <script src="{{ route('larena.docara.assets.show', ['assetKey' => 'docara.admin.blocks.js', 'v' => \Larena\Docara\Assets\DocumentationPageAssetManifest::ASSET_VERSION]) }}" defer></script>
 
     @unless ($canWrite)
-        <div class="larena-notice" role="status">{{ __('larena-docara::admin.blocks.read_only') }}</div>
+        {!! $blockUi->alert('read_only') !!}
     @endunless
 
     <form class="larena-block-editor" method="post" action="{{ route('larena.docara.admin.pages.blocks.update', ['slug' => $page->slug, 'locale' => $page->locale]) }}" data-page-block-editor>
@@ -25,17 +25,12 @@
             <legend class="larena-sr-only">{{ __('larena-docara::admin.blocks.heading', ['title' => $page->title]) }}</legend>
             @if ($canWrite)
                 <div class="larena-block-toolbar">
-                    <label for="larena-block-type">{{ __('larena-docara::admin.blocks.add_label') }}</label>
-                    <select id="larena-block-type" data-block-type>
-                        @foreach ($definitions as $definition)
-                            <option value="{{ $definition['key'] }}">{{ __('larena-docara::admin.'.$definition['label_key']) }}</option>
-                        @endforeach
-                    </select>
-                    <button class="larena-button" type="button" data-add-block>{{ __('larena-docara::admin.blocks.add') }}</button>
+                    <span data-block-type>{!! $blockUi->typeSelector($definitions) !!}</span>
+                    <span data-add-block>{!! $blockUi->button('add') !!}</span>
                 </div>
             @endif
 
-            <p class="larena-block-empty" data-block-empty @if ($editorBlocks !== []) hidden @endif>{{ __('larena-docara::admin.blocks.empty') }}</p>
+            <div class="larena-block-empty" data-block-empty @if ($editorBlocks !== []) hidden @endif>{!! $blockUi->alert('empty') !!}</div>
             <div class="larena-block-list" data-block-list>
                 @foreach ($editorBlocks as $block)
                     @include('larena-docara::admin.partials.block-card', ['block' => $block, 'readOnly' => !$canWrite])
@@ -50,7 +45,7 @@
         </fieldset>
 
         @if ($canWrite)
-            <div class="larena-form-actions"><button class="larena-button larena-button-primary" type="submit">{{ __('larena-docara::admin.blocks.save_draft') }}</button></div>
+            <div class="larena-form-actions">{!! $blockUi->button('save_draft', 'primary', 'submit') !!}</div>
         @endif
     </form>
 
@@ -59,7 +54,7 @@
             <div><strong>{{ __('larena-docara::admin.blocks.publish_heading') }}</strong><p>{{ __('larena-docara::admin.blocks.publish_help') }}</p></div>
             <form method="post" action="{{ route('larena.docara.admin.pages.publish', ['slug' => $page->slug, 'locale' => $page->locale]) }}">
                 @csrf
-                <button class="larena-button larena-button-primary" type="submit">{{ __('larena-docara::admin.blocks.publish') }}</button>
+                {!! $blockUi->button('publish', 'primary', 'submit') !!}
             </form>
         </div>
     @endif

@@ -12,7 +12,7 @@ final class DocumentationPageAssetManifest
     public const EDITOR_CSS_KEY = 'docara.admin.blocks.css';
     public const EDITOR_JS_KEY = 'docara.admin.blocks.js';
     public const MENU_JS_KEY = 'docara.admin.menus.js';
-    public const ASSET_VERSION = 'page-blocks-v1';
+    public const ASSET_VERSION = 'page-blocks-v5';
 
     /** @return list<array<string, mixed>> */
     public static function publicationAssets(): array

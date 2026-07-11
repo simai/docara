@@ -4,8 +4,7 @@
     if (!editor) return;
     const list = editor.querySelector('[data-block-list]');
     const empty = editor.querySelector('[data-block-empty]');
-    const type = editor.querySelector('[data-block-type]');
-    const add = editor.querySelector('[data-add-block]');
+    const type = editor.querySelector('[data-block-type] sf-dropdown');
     if (!list || !empty) return;
 
     const instanceId = () => {
@@ -17,7 +16,8 @@
     const renumber = () => {
         cards().forEach((card, index) => {
             card.querySelectorAll('[name]').forEach(control => {
-                control.name = control.name.replace(/blocks\[[^\]]+\]/, `blocks[${index}]`);
+                const name = control.getAttribute('name').replace(/blocks\[[^\]]+\]/, `blocks[${index}]`);
+                control.setAttribute('name', name);
             });
             const sort = card.querySelector('[data-block-sort]');
             const position = card.querySelector('[data-block-position]');
@@ -31,11 +31,17 @@
         if (!sibling) return;
         if (direction < 0) list.insertBefore(card, sibling); else list.insertBefore(sibling, card);
         renumber();
-        card.querySelector('button')?.focus();
+        card.querySelector('sf-button')?.focus();
     };
 
-    add?.addEventListener('click', () => {
-        const template = editor.querySelector(`template[data-block-template="${CSS.escape(type.value)}"]`);
+    const addBlock = () => {
+        const dropdownValue = type?.value;
+        const selectedType = typeof dropdownValue === 'string'
+            ? dropdownValue
+            : String(dropdownValue?.value || type?.getAttribute('value') || '');
+        const template = selectedType
+            ? editor.querySelector(`template[data-block-template="${CSS.escape(selectedType)}"]`)
+            : editor.querySelector('template[data-block-template]');
         if (!template) return;
         const index = cards().length;
         const wrapper = document.createElement('div');
@@ -44,15 +50,18 @@
         if (!card) return;
         list.append(card);
         renumber();
-        card.querySelector('input:not([type=hidden]),textarea,select')?.focus();
+        card.querySelector('sf-input,sf-textarea,sf-dropdown,sf-checkbox')?.focus();
+    };
+    editor.addEventListener('click', event => {
+        if (event.target.closest('[data-add-block]')) addBlock();
     });
     list.addEventListener('click', event => {
-        const button = event.target.closest('button');
+        const button = event.target.closest('sf-button');
         const card = event.target.closest('[data-block-card]');
         if (!button || !card) return;
-        if (button.matches('[data-remove-block]')) { card.remove(); renumber(); }
-        if (button.matches('[data-move-up]')) move(card, -1);
-        if (button.matches('[data-move-down]')) move(card, 1);
+        if (button.closest('[data-remove-block]')) { card.remove(); renumber(); }
+        if (button.closest('[data-move-up]')) move(card, -1);
+        if (button.closest('[data-move-down]')) move(card, 1);
     });
     renumber();
 })();

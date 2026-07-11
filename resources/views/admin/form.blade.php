@@ -27,41 +27,13 @@
             <div class="larena-form-grid">
                 {!! $formComponents['title'] !!}
                 {!! $formComponents['slug'] !!}
-                <div class="larena-field">
-                    <label for="page-locale">{{ __('larena-docara::admin.fields.locale') }}</label>
-                    <select id="page-locale" name="locale" required @if($editing) disabled @endif>
-                        <option value="en" @selected(old('locale', $page?->locale ?? 'en') === 'en')>English</option>
-                        <option value="ru" @selected(old('locale', $page?->locale ?? 'en') === 'ru')>Русский</option>
-                    </select>
-                    @if($editing)<input type="hidden" name="locale" value="{{ $page->locale }}">@endif
-                </div>
+                {!! $formComponents['locale'] !!}
+                @if($editing)<input type="hidden" name="locale" value="{{ $page->locale }}">@endif
             </div>
             {!! $formComponents['body'] !!}
-            <div class="larena-field">
-                <label for="page-hero">{{ __('larena-docara::admin.fields.hero_file') }}</label>
-                <select id="page-hero" name="hero_file_ref">
-                    <option value="">{{ __('larena-docara::admin.form.no_hero_file') }}</option>
-                    @foreach ($availableImages as $image)
-                        <option value="{{ $image->logical_ref }}" @selected(old('hero_file_ref', data_get($page, 'assets.0.logicalFileRef', '')) === $image->logical_ref)>{{ $image->display_name }} · {{ $image->mime_type }}</option>
-                    @endforeach
-                </select>
-                @error('hero_file_ref')<span class="larena-field-error">{{ $message }}</span>@enderror
-            </div>
-            <div class="larena-field">
-                <label for="page-status">{{ __('larena-docara::admin.fields.status') }}</label>
-                @if ($editing && $page->publication->status->value === 'published')
-                    <input type="hidden" name="status" value="published">
-                    <select id="page-status" disabled><option selected>{{ __('larena-docara::admin.statuses.published') }}</option></select>
-                    <span>{{ __('larena-docara::admin.form.unpublish_help') }}</span>
-                @else
-                    <select id="page-status" name="status" @error('status') aria-invalid="true" aria-describedby="page-status-error" @enderror>
-                        @foreach (['draft', 'review', 'archived'] as $value)
-                            <option value="{{ $value }}" @selected(old('status', $page?->publication->status->value ?? 'draft') === $value)>{{ __('larena-docara::admin.statuses.'.$value) }}</option>
-                        @endforeach
-                    </select>
-                @endif
-                @error('status')<span id="page-status-error" class="larena-field-error">{{ $message }}</span>@enderror
-            </div>
+            {!! $formComponents['hero'] !!}
+            {!! $formComponents['publication_status'] !!}
+            @if ($editing && $page->publication->status->value === 'published')<input type="hidden" name="status" value="published">@endif
             <div class="larena-form-actions">
                 {!! $formComponents['save'] !!}
             </div>

@@ -18,6 +18,7 @@ use Larena\Docara\Authoring\DocumentationPageAuthoringService;
 use Larena\Docara\Composition\DocaraPageCompositionService;
 use Larena\Filesystem\Persistence\DatabaseLogicalFileRepository;
 use RuntimeException;
+use Larena\Docara\Admin\DocumentationBlockEditorPresenter;
 
 final class DocumentationPageCompositionController extends Controller
 {
@@ -29,6 +30,7 @@ final class DocumentationPageCompositionController extends Controller
         private readonly ViewFactory $views,
         private readonly Redirector $redirector,
         private readonly Translator $translator,
+        private readonly DocumentationBlockEditorPresenter $blockPresenter,
     ) {
     }
 
@@ -46,6 +48,7 @@ final class DocumentationPageCompositionController extends Controller
             'availableImages' => $this->files->all()->filter(static fn ($file): bool => $file->getAttribute('visibility') === 'public' && str_starts_with((string) $file->getAttribute('mime_type'), 'image/')),
             'canWrite' => $this->access->authorize($request, 'docara.page.write')->isAllowed(),
             'canPublish' => $this->access->authorize($request, 'docara.page.publish')->isAllowed(),
+            'blockUi' => $this->blockPresenter,
         ]);
     }
 
@@ -57,6 +60,7 @@ final class DocumentationPageCompositionController extends Controller
         if (!is_array($blocks)) {
             throw ValidationException::withMessages(['blocks' => $this->translator->get('larena-docara::admin.blocks.validation.invalid')]);
         }
+        $blocks = $this->normalizeEmptyFileSelections($blocks);
         try {
             $this->compositions->saveDraft($page->pageRef, $blocks, $this->actor($request));
         } catch (InvalidArgumentException|RuntimeException $exception) {
@@ -97,6 +101,16 @@ final class DocumentationPageCompositionController extends Controller
         return str_contains($exception->getMessage(), 'image_invalid')
             ? $this->translator->get('larena-docara::admin.blocks.validation.image')
             : $this->translator->get('larena-docara::admin.blocks.validation.invalid');
+    }
+
+    /** @param array<int,mixed> $blocks @return array<int,mixed> */
+    private function normalizeEmptyFileSelections(array $blocks): array
+    {
+        foreach ($blocks as &$block) {
+            if (!is_array($block) || !isset($block['settings']) || !is_array($block['settings'])) { continue; }
+            foreach ($block['settings'] as &$value) { if ($value === '__none__') { $value = ''; } }
+        }
+        return $blocks;
     }
 
     private function actor(Request $request): string { return (string) $request->attributes->get('larena_access_actor'); }

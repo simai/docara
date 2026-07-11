@@ -75,8 +75,7 @@ final class DocumentationPageAdminController extends Controller
             'page' => null,
             'editing' => false,
             'canPublish' => $this->access->authorize($request, 'docara.page.publish')->isAllowed(),
-            'availableImages' => $this->availableImages(),
-            'formComponents' => $this->formComponents($request, null),
+            'formComponents' => $this->formComponents($request, null, $this->availableImages()),
         ]);
     }
 
@@ -98,28 +97,36 @@ final class DocumentationPageAdminController extends Controller
             'page' => $page,
             'editing' => true,
             'canPublish' => $this->access->authorize($request, 'docara.page.publish')->isAllowed(),
-            'availableImages' => $this->availableImages(),
-            'formComponents' => $this->formComponents($request, $page),
+            'formComponents' => $this->formComponents($request, $page, $this->availableImages()),
         ]);
     }
 
     /** @return array<string, mixed> */
-    private function formComponents(Request $request, ?DocumentationPage $page): array
+    private function formComponents(Request $request, ?DocumentationPage $page, iterable $availableImages): array
     {
         $errors = $request->session()->get('errors');
         $error = static fn (string $field): string => $errors instanceof ViewErrorBag ? $errors->first($field) : '';
         $title = $page === null ? '' : $page->title;
         $slug = $page === null ? '' : $page->slug;
         $body = $page === null ? '' : $page->body;
+        $locale = $page === null ? 'en' : $page->locale;
+        $publicationStatus = $page === null ? 'draft' : $page->publication->status->value;
+
+        $images = [];
+        foreach ($availableImages as $image) { $images[] = ['text' => (string) $image->display_name . ' · ' . (string) $image->mime_type, 'value' => (string) $image->logical_ref]; }
 
         return $this->formPresenter->present([
             'title' => (string) $request->old('title', $title),
             'slug' => (string) $request->old('slug', $slug),
             'body' => (string) $request->old('body', $body),
+            'locale' => (string) $request->old('locale', $locale),
+            'hero_file_ref' => (string) $request->old('hero_file_ref', data_get($page, 'assets.0.logicalFileRef', '')),
+            'publication_status' => (string) $request->old('status', $publicationStatus),
         ], [
             'title' => $error('title'),
             'slug' => $error('slug'),
             'body' => $error('body'),
+            'locale' => $error('locale'), 'hero_file_ref' => $error('hero_file_ref'), 'status' => $error('status'),
         ], [
             'title' => (string) $this->translator->get('larena-docara::admin.fields.title'),
             'slug' => (string) $this->translator->get('larena-docara::admin.fields.slug'),
@@ -127,7 +134,16 @@ final class DocumentationPageAdminController extends Controller
             'save' => (string) $this->translator->get('larena-docara::admin.actions.save'),
             'publish' => (string) $this->translator->get('larena-docara::admin.actions.publish'),
             'unpublish' => (string) $this->translator->get('larena-docara::admin.actions.unpublish'),
-        ]);
+            'locale' => (string) $this->translator->get('larena-docara::admin.fields.locale'),
+            'hero' => (string) $this->translator->get('larena-docara::admin.fields.hero_file'),
+            'no_hero' => (string) $this->translator->get('larena-docara::admin.form.no_hero_file'),
+            'publication_status' => (string) $this->translator->get('larena-docara::admin.fields.status'),
+            'draft' => (string) $this->translator->get('larena-docara::admin.statuses.draft'),
+            'review' => (string) $this->translator->get('larena-docara::admin.statuses.review'),
+            'published' => (string) $this->translator->get('larena-docara::admin.statuses.published'),
+            'archived' => (string) $this->translator->get('larena-docara::admin.statuses.archived'),
+            'unpublish_help' => (string) $this->translator->get('larena-docara::admin.form.unpublish_help'),
+        ], $images, $page !== null);
     }
 
     public function preview(Request $request, string $slug): View
@@ -196,6 +212,7 @@ final class DocumentationPageAdminController extends Controller
     /** @return array{title:string, slug:string, body:string, status:string, locale:string, hero_file_ref?:string|null} */
     private function validated(Request $request, ?string $currentSlug = null, bool $allowPublished = false): array
     {
+        if ($request->input('hero_file_ref') === '__none__') { $request->merge(['hero_file_ref' => null]); }
         $request->mergeIfMissing(['locale' => 'en']);
         $locale = (string) $request->input('locale', 'en');
         $uniqueSlug = Rule::unique('docara_pages', 'slug')

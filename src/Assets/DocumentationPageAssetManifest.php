@@ -11,6 +11,7 @@ final class DocumentationPageAssetManifest
     public const ASSET_KEY = 'docara.public.page.css';
     public const EDITOR_CSS_KEY = 'docara.admin.blocks.css';
     public const EDITOR_JS_KEY = 'docara.admin.blocks.js';
+    public const MENU_JS_KEY = 'docara.admin.menus.js';
     public const ASSET_VERSION = 'page-blocks-v1';
 
     /** @return list<array<string, mixed>> */
@@ -45,10 +46,23 @@ final class DocumentationPageAssetManifest
         ];
     }
 
+    /** @return list<array<string, mixed>> */
+    public static function menuAssets(): array
+    {
+        return [[
+            'carrier_key' => 'larena/docara:menu-editor',
+            'asset_key' => self::MENU_JS_KEY,
+            'kind' => 'js',
+            'critical' => false,
+            'resource_path' => 'resources/js/menu-editor.js',
+            'final_path_owned_by_core_assets' => true,
+        ]];
+    }
+
     /** @return array<string, mixed>|null */
     public static function asset(string $assetKey): ?array
     {
-        foreach (array_merge(self::publicationAssets(), self::editorAssets()) as $asset) {
+        foreach (array_merge(self::publicationAssets(), self::editorAssets(), self::menuAssets()) as $asset) {
             if ($asset['asset_key'] === $assetKey) {
                 return $asset;
             }

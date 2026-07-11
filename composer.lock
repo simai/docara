@@ -2854,7 +2854,7 @@
             "dist": {
                 "type": "path",
                 "url": "../ui",
-                "reference": "3fc2afbefe8869dffb534437a6e70aa8c1705ca4"
+                "reference": "e82941052c9bdbe75fbd0e1bb87756b8d66b4101"
             },
             "require": {
                 "larena/dataview": "dev-main",

@@ -11,6 +11,33 @@ use Larena\Docara\Tests\TestCase;
 
 final class DocumentationNavigationLifecycleTest extends TestCase
 {
+    public function testMenuAdminUsesSf5ComponentsAndExternalConfirmationAsset(): void
+    {
+        $this->publishedPage('docara:page:home', 'home', 'Home', 'en');
+        $admin = $this->sessionFor('user:admin_identity:1');
+
+        $this->withSession($admin)->get('/admin/docara/menus/create')
+            ->assertOk()->assertSee('<sf-input', false)->assertSee('<sf-dropdown', false)
+            ->assertSee('<sf-checkbox', false)->assertSee('<sf-button', false)
+            ->assertDontSee('<select', false);
+
+        $this->withSession($admin)->post('/admin/docara/menus', [
+            'name' => 'SF5 menu', 'code' => 'sf5', 'locale' => 'en', 'is_active' => '1',
+        ])->assertRedirect('/admin/docara/menus/1/edit');
+
+        $this->withSession($admin)->get('/admin/docara/menus')
+            ->assertOk()->assertSee('<sf-table', false)->assertDontSee('<table', false);
+
+        $this->withSession($admin)->get('/admin/docara/menus/1/edit')
+            ->assertOk()->assertSee('<sf-input', false)->assertSee('<sf-dropdown', false)
+            ->assertSee('<sf-checkbox', false)->assertSee('<sf-button', false)
+            ->assertSee('docara.admin.menus.js', false)->assertDontSee('onsubmit=', false);
+
+        $this->get('/larena/assets/docara/docara.admin.menus.js')
+            ->assertOk()->assertHeader('Content-Type', 'application/javascript; charset=UTF-8')
+            ->assertSee("document.addEventListener('submit'", false);
+    }
+
     public function testAdministratorBuildsPersistentFilteredNestedPublicNavigation(): void
     {
         $this->publishedPage('docara:page:home', 'home', 'Home', 'en');

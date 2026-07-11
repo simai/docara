@@ -1505,7 +1505,7 @@
             "dist": {
                 "type": "path",
                 "url": "../admin",
-                "reference": "219be451a63a691918ca014937a6744bb2800e36"
+                "reference": "85229664433323bcbd099dfa1e37cc11b7e34799"
             },
             "require": {
                 "illuminate/console": "^13.0",
@@ -1576,7 +1576,9 @@
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/AdminShellPackageOwnedRuntimePlanningTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Feature/DeveloperBetaAdminShellLayoutTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Feature/PostBetaAdminProductShellTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Feature/AdminUiLabContractTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/AdminProductAssetManifestTest.php",
+                    "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/AdminProductSfBootTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/OperatorPreviewRouteProviderParityPlanTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/OperatorGetRenderParitySurfaceTest.php",
                     "@php -d zend.assertions=1 -d assert.exception=1 tests/Unit/OperatorPreviewRouteProviderParityImplementationReadinessTest.php",
@@ -1788,7 +1790,7 @@
             ],
             "description": "Larena Admin: Object-based, permission-aware administration platform for package contributions, screens, actions and diagnostics.",
             "transport-options": {
-                "symlink": false,
+                "symlink": true,
                 "relative": true
             }
         },
@@ -1798,7 +1800,7 @@
             "dist": {
                 "type": "path",
                 "url": "../audit",
-                "reference": "d36f31c01695949805b80ec7d1da512abacfd5d7"
+                "reference": "fa615b701f1fdcab8ef51de301a08052cb9fab91"
             },
             "require": {
                 "illuminate/database": "^13.0",
@@ -2055,7 +2057,7 @@
             "dist": {
                 "type": "path",
                 "url": "../core",
-                "reference": "879dc7cb6e2c63322fb149b548302ea07448bdb3"
+                "reference": "72e6662d8ec1a90bcc0cc4023948bff767dfc39c"
             },
             "require": {
                 "illuminate/console": "^13.0",
@@ -2107,7 +2109,8 @@
                     "@php tests/Unit/DataContentClusterSmokeTest.php",
                     "@php tests/Unit/CommandReportPresenterTest.php",
                     "@php tests/Unit/StarterEvidencePathTest.php",
-                    "@php tests/Unit/CoreAssetActivationContractTest.php"
+                    "@php tests/Unit/CoreAssetActivationContractTest.php",
+                    "@php tests/Unit/VerifiedAssetBundlePublisherTest.php"
                 ],
                 "test:unit": [
                     "@php tests/Unit/OperationRuntimeContractTest.php",
@@ -2128,7 +2131,8 @@
                     "@php tests/Unit/DataContentClusterSmokeTest.php",
                     "@php tests/Unit/CommandReportPresenterTest.php",
                     "@php tests/Unit/StarterEvidencePathTest.php",
-                    "@php tests/Unit/CoreAssetActivationContractTest.php"
+                    "@php tests/Unit/CoreAssetActivationContractTest.php",
+                    "@php tests/Unit/VerifiedAssetBundlePublisherTest.php"
                 ],
                 "lint": [
                     "@php scripts/lint.php"
@@ -2169,7 +2173,7 @@
             ],
             "description": "Larena Core: Platform foundation for package registry, operation runtime, compatibility, SitePack portable data standard and shared contracts.",
             "transport-options": {
-                "symlink": false,
+                "symlink": true,
                 "relative": true
             }
         },
@@ -2179,7 +2183,7 @@
             "dist": {
                 "type": "path",
                 "url": "../dataview",
-                "reference": "3d5b5180c9ec5ab7e07ff3b26642278e2dbc7281"
+                "reference": "b84e964b4ed78e1ca08a46c88e7651b02744ee47"
             },
             "require": {
                 "php": "^8.3"
@@ -2243,7 +2247,7 @@
             ],
             "description": "Larena Dataview: Universal data presentation layer that can render the same structured dataset as table, kanban, calendar, gantt, cards, tree or other reusable views without reimplementing the same UI for every package.",
             "transport-options": {
-                "symlink": false,
+                "symlink": true,
                 "relative": true
             }
         },
@@ -2347,7 +2351,7 @@
             "dist": {
                 "type": "path",
                 "url": "../layout",
-                "reference": "0a0a57d5e44b53461d8b8b140c4d01c64334cdda"
+                "reference": "c2f0056a4e4c27ca59b1db751d832830603c8427"
             },
             "require": {
                 "php": "^8.3"
@@ -2408,7 +2412,7 @@
             ],
             "description": "Larena Layout: Universal layout and page composition engine for public pages, admin pages, dashboards, forms, lists, detail pages, documentation pages and widgets in Larena.",
             "transport-options": {
-                "symlink": false,
+                "symlink": true,
                 "relative": true
             }
         },
@@ -2850,7 +2854,7 @@
             "dist": {
                 "type": "path",
                 "url": "../ui",
-                "reference": "246b34e32c8bb60191b153e4bdd3e30720337dc2"
+                "reference": "3fc2afbefe8869dffb534437a6e70aa8c1705ca4"
             },
             "require": {
                 "larena/dataview": "dev-main",

@@ -30,6 +30,15 @@ final class DocaraSiteSettingsHomepageTest extends TestCase
         $this->publicImage('12222222-2222-4222-8222-222222222222', '22222222-2222-4222-8222-222222222222', 'Larena favicon');
 
         $session = $this->sessionFor('user:admin_identity:1');
+        $this->withSession($session)->get('/admin/docara/site-settings')
+            ->assertOk()
+            ->assertSee('<sf-input', false)
+            ->assertSee('<sf-textarea', false)
+            ->assertSee('<sf-dropdown', false)
+            ->assertSee('<sf-list-item', false)
+            ->assertSee('<sf-button', false)
+            ->assertDontSee('<select', false)
+            ->assertDontSee('<textarea', false);
         $this->withSession($session)->put('/admin/docara/site-settings', [
             'name_en' => 'Larena Docs', 'name_ru' => 'Ларена Документы',
             'description_en' => 'Developer documentation', 'description_ru' => 'Документация разработчика',

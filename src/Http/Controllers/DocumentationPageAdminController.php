@@ -22,6 +22,9 @@ use Illuminate\Database\ConnectionInterface;
 use Larena\Admin\Runtime\AdminCollectionDataviewPresenter;
 use Larena\Docara\Dataview\DocumentationPagesSourceProvider;
 use Larena\Docara\Dataview\DocumentationPagesViewDescriptor;
+use Larena\Docara\Contracts\DocumentationPage;
+use Illuminate\Support\ViewErrorBag;
+use Larena\Docara\Admin\DocumentationPageFormPresenter;
 
 final class DocumentationPageAdminController extends Controller
 {
@@ -36,6 +39,7 @@ final class DocumentationPageAdminController extends Controller
         private readonly DocaraPageBlockPresenter $blockPresenter,
         private readonly ConnectionInterface $connection,
         private readonly AdminCollectionDataviewPresenter $dataview,
+        private readonly DocumentationPageFormPresenter $formPresenter,
     ) {
     }
 
@@ -72,6 +76,7 @@ final class DocumentationPageAdminController extends Controller
             'editing' => false,
             'canPublish' => $this->access->authorize($request, 'docara.page.publish')->isAllowed(),
             'availableImages' => $this->availableImages(),
+            'formComponents' => $this->formComponents($request, null),
         ]);
     }
 
@@ -94,6 +99,34 @@ final class DocumentationPageAdminController extends Controller
             'editing' => true,
             'canPublish' => $this->access->authorize($request, 'docara.page.publish')->isAllowed(),
             'availableImages' => $this->availableImages(),
+            'formComponents' => $this->formComponents($request, $page),
+        ]);
+    }
+
+    /** @return array<string, mixed> */
+    private function formComponents(Request $request, ?DocumentationPage $page): array
+    {
+        $errors = $request->session()->get('errors');
+        $error = static fn (string $field): string => $errors instanceof ViewErrorBag ? $errors->first($field) : '';
+        $title = $page === null ? '' : $page->title;
+        $slug = $page === null ? '' : $page->slug;
+        $body = $page === null ? '' : $page->body;
+
+        return $this->formPresenter->present([
+            'title' => (string) $request->old('title', $title),
+            'slug' => (string) $request->old('slug', $slug),
+            'body' => (string) $request->old('body', $body),
+        ], [
+            'title' => $error('title'),
+            'slug' => $error('slug'),
+            'body' => $error('body'),
+        ], [
+            'title' => (string) $this->translator->get('larena-docara::admin.fields.title'),
+            'slug' => (string) $this->translator->get('larena-docara::admin.fields.slug'),
+            'body' => (string) $this->translator->get('larena-docara::admin.fields.body'),
+            'save' => (string) $this->translator->get('larena-docara::admin.actions.save'),
+            'publish' => (string) $this->translator->get('larena-docara::admin.actions.publish'),
+            'unpublish' => (string) $this->translator->get('larena-docara::admin.actions.unpublish'),
         ]);
     }
 

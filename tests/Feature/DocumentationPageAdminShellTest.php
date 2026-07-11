@@ -37,6 +37,10 @@ final class DocumentationPageAdminShellTest extends TestCase
             ->assertSee('page-title', false)
             ->assertSee('page-slug', false)
             ->assertSee('page-body', false)
+            ->assertSee('<sf-input', false)
+            ->assertSee('<sf-textarea', false)
+            ->assertSee('<sf-button', false)
+            ->assertDontSee('<textarea id="page-body"', false)
             ->assertSee('Save page');
     }
 

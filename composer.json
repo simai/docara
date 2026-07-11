@@ -21,7 +21,8 @@
     "larena/dataview": "dev-main",
     "larena/filesystem": "dev-main",
     "larena/layout": "dev-main",
-    "larena/setting": "dev-main"
+    "larena/setting": "dev-main",
+    "larena/ui": "dev-main"
   },
   "repositories": [
     {"type": "path", "url": "../access", "options": {"symlink": false}},

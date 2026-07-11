@@ -61,6 +61,7 @@ return [
         'hero_file' => 'Page image',
         'title' => 'Title',
         'slug' => 'Slug',
+        'locale' => 'Page language',
         'body' => 'Body',
         'status' => 'Status',
     ],

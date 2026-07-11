@@ -16,7 +16,7 @@
     @if ($editing)
         <div class="larena-notice" aria-label="{{ __('larena-docara::admin.form.publication_status') }}">
             {{ __('larena-docara::admin.form.current_status') }}
-            <span class="larena-status larena-status-{{ $page->publication->status->value }}">{{ __('larena-docara::admin.statuses.'.$page->publication->status->value) }}</span>
+            {!! $formComponents['status'](__('larena-docara::admin.statuses.'.$page->publication->status->value), $page->publication->status->value) !!}
         </div>
     @endif
 
@@ -25,16 +25,8 @@
             @csrf
             @if ($editing) @method('PUT') @endif
             <div class="larena-form-grid">
-                <div class="larena-field">
-                    <label for="page-title">{{ __('larena-docara::admin.fields.title') }}</label>
-                    <input id="page-title" name="title" value="{{ old('title', $page?->title) }}" maxlength="255" required @error('title') aria-invalid="true" aria-describedby="page-title-error" @enderror>
-                    @error('title')<span id="page-title-error" class="larena-field-error">{{ $message }}</span>@enderror
-                </div>
-                <div class="larena-field">
-                    <label for="page-slug">{{ __('larena-docara::admin.fields.slug') }}</label>
-                    <input id="page-slug" name="slug" value="{{ old('slug', $page?->slug) }}" maxlength="255" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" required @error('slug') aria-invalid="true" aria-describedby="page-slug-error" @enderror>
-                    @error('slug')<span id="page-slug-error" class="larena-field-error">{{ $message }}</span>@enderror
-                </div>
+                {!! $formComponents['title'] !!}
+                {!! $formComponents['slug'] !!}
                 <div class="larena-field">
                     <label for="page-locale">{{ __('larena-docara::admin.fields.locale') }}</label>
                     <select id="page-locale" name="locale" required @if($editing) disabled @endif>
@@ -44,11 +36,7 @@
                     @if($editing)<input type="hidden" name="locale" value="{{ $page->locale }}">@endif
                 </div>
             </div>
-            <div class="larena-field">
-                <label for="page-body">{{ __('larena-docara::admin.fields.body') }}</label>
-                <textarea id="page-body" name="body" required @error('body') aria-invalid="true" aria-describedby="page-body-error" @enderror>{{ old('body', $page?->body) }}</textarea>
-                @error('body')<span id="page-body-error" class="larena-field-error">{{ $message }}</span>@enderror
-            </div>
+            {!! $formComponents['body'] !!}
             <div class="larena-field">
                 <label for="page-hero">{{ __('larena-docara::admin.fields.hero_file') }}</label>
                 <select id="page-hero" name="hero_file_ref">
@@ -75,7 +63,7 @@
                 @error('status')<span id="page-status-error" class="larena-field-error">{{ $message }}</span>@enderror
             </div>
             <div class="larena-form-actions">
-                <button class="larena-button larena-button-primary" type="submit">{{ __('larena-docara::admin.actions.save') }}</button>
+                {!! $formComponents['save'] !!}
             </div>
         </form>
     </section>
@@ -87,13 +75,13 @@
                 @if ($canPublish)
                     <form method="post" action="{{ route('larena.docara.admin.pages.unpublish', ['slug' => $page->slug, 'locale' => $page->locale]) }}">
                         @csrf
-                        <button class="larena-button" type="submit">{{ __('larena-docara::admin.actions.unpublish') }}</button>
+                        {!! $formComponents['unpublish'] !!}
                     </form>
                 @endif
             @elseif ($canPublish)
                 <form method="post" action="{{ route('larena.docara.admin.pages.publish', ['slug' => $page->slug, 'locale' => $page->locale]) }}">
                     @csrf
-                    <button class="larena-button larena-button-primary" type="submit">{{ __('larena-docara::admin.actions.publish') }}</button>
+                    {!! $formComponents['publish'] !!}
                 </form>
             @endif
         </div>

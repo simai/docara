@@ -109,7 +109,7 @@ final class DocumentationPageAuthoringValidationTest extends TestCase
             ->assertOk()
             ->assertSee('Welcome')
             ->assertSee('/welcome')
-            ->assertSee('draft')
+            ->assertSee('Draft')
             ->assertSee('/admin/docara/pages/welcome/edit', false);
 
         $updated = $this->withSession($session)

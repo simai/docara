@@ -15,9 +15,9 @@
 @endsection
 
 @section('content')
-    <div class="larena-notice" role="status">
+    <div class="larena-form-actions" role="status">
         {{ __('larena-docara::admin.preview.status') }}
-        <span class="larena-status larena-status-{{ $page->publication->status->value }}">{{ __('larena-docara::admin.statuses.'.$page->publication->status->value) }}</span>
+        {!! \Larena\Ui\Smart::render('sf-badge', ['size' => '1/2', 'type' => 'tonal', 'scheme' => $page->publication->status->value === 'published' ? 'success' : 'neutral', 'text' => __('larena-docara::admin.statuses.'.$page->publication->status->value)])->html !!}
     </div>
     <link rel="stylesheet" href="{{ route('larena.docara.assets.show', ['assetKey' => 'docara.public.page.css']) }}">
     <article class="larena-panel larena-form larena-public-article" data-larena-page-preview="protected" data-composition-mode="{{ $compositionMode }}">

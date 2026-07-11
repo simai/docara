@@ -14,7 +14,7 @@
 
 @section('content')
     @if ($editing)
-        <div class="larena-notice" aria-label="{{ __('larena-docara::admin.form.publication_status') }}">
+        <div class="larena-form-actions" aria-label="{{ __('larena-docara::admin.form.publication_status') }}">
             {{ __('larena-docara::admin.form.current_status') }}
             {!! $formComponents['status'](__('larena-docara::admin.statuses.'.$page->publication->status->value), $page->publication->status->value) !!}
         </div>

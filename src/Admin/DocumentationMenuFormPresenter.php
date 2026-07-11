@@ -40,7 +40,7 @@ final readonly class DocumentationMenuFormPresenter
     {
         return [
             'label' => $this->input("item-{$id}-label", 'label', 'label', $label, true, []),
-            'parent' => $this->dropdown("item-{$id}-parent", 'parent_id', 'parent', (string) ($parentId ?? ''), $parents, false),
+            'parent' => $this->dropdown("item-{$id}-parent", 'parent_id', 'parent', $parentId === null ? '__root__' : (string) $parentId, $parents, false),
             'order' => $this->number("item-{$id}-order", $order),
             'active' => $this->checkbox('is_active', $active),
             'save' => $this->button('actions.save_item', 'secondary'),
@@ -54,7 +54,7 @@ final readonly class DocumentationMenuFormPresenter
         return [
             'page' => $this->dropdown('new-page', 'page_ref', 'page', (string) ($old['page_ref'] ?? ''), $pages, true),
             'label' => $this->input('new-label', 'label', 'label', (string) ($old['label'] ?? ''), true, []),
-            'parent' => $this->dropdown('new-parent', 'parent_id', 'parent', (string) ($old['parent_id'] ?? ''), $parents, false),
+            'parent' => $this->dropdown('new-parent', 'parent_id', 'parent', (string) ($old['parent_id'] ?? '__root__'), $parents, false),
             'order' => $this->number('new-order', (int) ($old['sort_order'] ?? 100)),
             'active' => $this->checkbox('is_active', (string) ($old['is_active'] ?? '1') === '1'),
             'submit' => $this->button('actions.add_item', 'primary'),

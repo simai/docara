@@ -83,7 +83,7 @@ final class DocumentationMenuAdminController extends Controller
     {
         $record = $this->navigation->menu($menu);
         $items = $this->navigation->items($menu);
-        $parentOptions = [['text' => $this->translator->get('larena-docara::admin.menus.root'), 'value' => '']];
+        $parentOptions = [['text' => $this->translator->get('larena-docara::admin.menus.root'), 'value' => '__root__']];
         foreach ($items as $item) { $parentOptions[] = ['text' => $item->label, 'value' => (string) $item->id]; }
         $pages = $this->navigation->availablePages((string) $record->locale);
         $pageOptions = array_map(static fn ($page): array => ['text' => $page->title . ' · /' . $page->slug, 'value' => $page->page_ref], $pages);
@@ -94,7 +94,7 @@ final class DocumentationMenuAdminController extends Controller
             'validation' => $this->formPresenter->create(['name' => '', 'code' => '', 'locale' => 'en', 'is_active' => '1'], $this->errors($request))['validation'],
             'settingsComponents' => $this->formPresenter->settings((string) $request->old('name', $record->name), (string) $request->old('is_active', $record->is_active ? '1' : '0') === '1', $this->errors($request)),
             'itemComponents' => $items->mapWithKeys(function ($item) use ($parentOptions): array {
-                $options = array_values(array_filter($parentOptions, static fn (array $option): bool => $option['value'] === '' || $option['value'] !== (string) $item->id));
+                $options = array_values(array_filter($parentOptions, static fn (array $option): bool => $option['value'] !== (string) $item->id));
                 return [$item->id => $this->formPresenter->item($item->id, $item->label, $item->parent_id, $item->sort_order, $item->is_active, $options)];
             }),
             'addComponents' => $this->formPresenter->add($pageOptions, $parentOptions, $request->old()),
@@ -114,6 +114,7 @@ final class DocumentationMenuAdminController extends Controller
     public function storeItem(Request $request, int $menu): RedirectResponse
     {
         $record = $this->navigation->menu($menu);
+        $this->normalizeRootParent($request);
         $input = $request->validate($this->itemRules(true));
         try { $this->navigation->addItem($record, $input, $this->actor($request)); }
         catch (InvalidArgumentException $e) { return back()->withErrors(['page_ref' => $this->message($e->getMessage())])->withInput(); }
@@ -124,6 +125,7 @@ final class DocumentationMenuAdminController extends Controller
     {
         $record = $this->navigation->menu($menu);
         $itemRecord = DocumentationMenuItemRecord::query()->findOrFail($item);
+        $this->normalizeRootParent($request);
         $input = $request->validate($this->itemRules(false));
         try { $this->navigation->updateItem($record, $itemRecord, $input, $this->actor($request)); }
         catch (InvalidArgumentException $e) { return back()->withErrors(["items.{$item}" => $this->message($e->getMessage())])->withInput(); }
@@ -157,6 +159,7 @@ final class DocumentationMenuAdminController extends Controller
     private function actor(Request $request): string { return (string) $request->attributes->get('larena_access_actor'); }
     private function message(string $key): string { return $this->translator->get("larena-docara::admin.menus.messages.{$key}"); }
     private function back(int $menu, string $message): RedirectResponse { return $this->redirector->route('larena.docara.admin.menus.edit', ['menu' => $menu])->with('status', $this->message($message)); }
+    private function normalizeRootParent(Request $request): void { if ($request->input('parent_id') === '__root__') { $request->merge(['parent_id' => null]); } }
     /** @return array<string,string> */
     private function errors(Request $request): array { $bag = $request->session()->get('errors'); return $bag instanceof ViewErrorBag ? array_map(static fn (array $messages): string => (string) ($messages[0] ?? ''), $bag->getBag('default')->getMessages()) : []; }
 }

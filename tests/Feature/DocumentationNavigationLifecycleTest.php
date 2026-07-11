@@ -33,6 +33,12 @@ final class DocumentationNavigationLifecycleTest extends TestCase
             ->assertSee('<sf-checkbox', false)->assertSee('<sf-button', false)
             ->assertSee('docara.admin.menus.js', false)->assertDontSee('onsubmit=', false);
 
+        $this->withSession($admin)->post('/admin/docara/menus/1/items', [
+            'page_ref' => 'docara:page:home', 'label' => 'Root item', 'parent_id' => '__root__',
+            'sort_order' => 10, 'is_active' => '1',
+        ])->assertRedirect('/admin/docara/menus/1/edit');
+        self::assertNull(DB::table('docara_menu_items')->where('menu_id', 1)->value('parent_id'));
+
         $this->get('/larena/assets/docara/docara.admin.menus.js')
             ->assertOk()->assertHeader('Content-Type', 'application/javascript; charset=UTF-8')
             ->assertSee("document.addEventListener('submit'", false);

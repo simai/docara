@@ -50,7 +50,7 @@
   "atlas": {
     "visible": true,
     "title": "Docara page title field",
-    "description": "A package-owned page-title input rendered by SmartManager through the pinned Simai Framework runtime. It exposes presentation props only; Docara retains validation and persistence ownership.",
+    "description": "Enters a Docara page title.",
     "category": "fields",
     "order": 120,
     "status": "developer_testable",
@@ -89,7 +89,7 @@
     "i18n": {
       "en": {
         "title": "Docara page title field",
-        "description": "A package-owned page-title input rendered by SmartManager through the pinned Simai Framework runtime. It exposes presentation props only; Docara retains validation and persistence ownership.",
+        "description": "Enters a Docara page title.",
         "controls": {
           "label": "Label",
           "value": "Value",
@@ -107,7 +107,7 @@
       },
       "ru": {
         "title": "Поле заголовка страницы Docara",
-        "description": "Принадлежащее пакету поле заголовка, которое SmartManager отрисовывает через зафиксированный runtime Simai Framework. Манифест разрешает только параметры представления; проверка и сохранение остаются ответственностью Docara.",
+        "description": "Вводит заголовок страницы Docara.",
         "controls": {
           "label": "Подпись",
           "value": "Значение",

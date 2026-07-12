@@ -70,6 +70,8 @@ final class SmartRegistryContributionTest extends TestCase
 
         self::assertSame('Docara page title field', $english->title);
         self::assertSame('Поле заголовка страницы Docara', $russian->title);
+        self::assertSame('Enters a Docara page title.', $english->description);
+        self::assertSame('Вводит заголовок страницы Docara.', $russian->description);
         self::assertSame(
             array_column($english->controls, 'key'),
             array_column($russian->controls, 'key'),

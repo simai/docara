@@ -26,6 +26,7 @@ final class SmartRegistryContributionTest extends TestCase
         self::assertContains('docara.smart_components', $registry->contributionIds());
         $manifest = $registry->manifest('docara.page_title_field');
         self::assertSame('larena/docara', $manifest->ownerPackage);
+        self::assertSame('ui.sf.element', $manifest->rendererId);
         self::assertSame('sf-input', $manifest->frontendTag);
         self::assertTrue($manifest->isCanonical());
 

@@ -37,7 +37,7 @@
     "property_contract": "string",
     "persistence_binding": "not_authorized"
   },
-  "render": {"strategy": "host", "renderer": "ui.sf_element"},
+  "render": {"strategy": "host", "renderer": "ui.sf.element"},
   "frontend": {"runtime": "simai-framework", "tag": "sf-input"},
   "assets": [
     {"key": "simai.framework.core.css", "kind": "css", "critical": true},

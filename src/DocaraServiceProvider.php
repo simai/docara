@@ -22,12 +22,26 @@ use Larena\Docara\Composition\DocaraPageCompositionService;
 use Larena\Docara\Composition\DocaraPageBlockPresenter;
 use Larena\Layout\Runtime\PageBlockCatalog;
 use Larena\Layout\Runtime\PageCompositionNormalizer;
+use Larena\Docara\Ui\DocaraSmartContribution;
+use Larena\Ui\Registry\SmartRegistry;
+use Larena\Ui\Runtime\SmartManager;
 
 final class DocaraServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/larena-docara.php', 'larena-docara');
+        if (!$this->app->bound(SmartRegistry::class)) {
+            $this->app->singleton(SmartRegistry::class, static fn (): SmartRegistry => SmartRegistry::withDefaults());
+        }
+        if (!$this->app->bound(SmartManager::class)) {
+            $this->app->singleton(SmartManager::class, static fn (Application $app): SmartManager => new SmartManager(
+                $app->make(SmartRegistry::class),
+            ));
+        }
+        $this->app->afterResolving(SmartRegistry::class, static function (SmartRegistry $registry): void {
+            $registry->registerContribution(new DocaraSmartContribution());
+        });
         $this->app->bind(
             DocumentationPageRepository::class,
             EloquentDocumentationPageRepository::class,

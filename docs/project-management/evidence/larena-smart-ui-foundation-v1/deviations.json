@@ -1,0 +1,11 @@
+{
+  "schema": "larena.evidence_deviations.v1",
+  "status": "none",
+  "deviations": [],
+  "nonclaims": {
+    "production_ready": false,
+    "all_packages_ready": false,
+    "data_binding_authorized": false,
+    "effect_execution_authorized": false
+  }
+}

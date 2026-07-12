@@ -91,7 +91,7 @@ final class DocumentationPageCompositionTest extends TestCase
         self::assertStringContainsString('.larena-page-block--hero,.larena-page-block--columns{grid-template-columns:1fr}', $css);
     }
 
-    public function testSf5NoImageSentinelNormalizesAtCompositionBoundary(): void
+    public function testSfNoImageSentinelNormalizesAtCompositionBoundary(): void
     {
         $this->page('docara:page:sentinel', 'sentinel-blocks', 'Sentinel blocks', 'en', 'draft', 'Fallback');
         $session = $this->sessionFor('user:admin_identity:1');

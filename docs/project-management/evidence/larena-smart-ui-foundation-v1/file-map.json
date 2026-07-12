@@ -1,0 +1,23 @@
+{
+  "schema": "larena.evidence_file_map.v1",
+  "status": "package_gate_passed",
+  "package": "larena/docara",
+  "files": [
+    ".larena/launch-context.json",
+    "README.md",
+    "module.yaml",
+    "scripts/validate-larena-package.php",
+    "resources/smart/page-title-field/manifest.json",
+    "src/Ui/DocaraSmartContribution.php",
+    "src/DocaraServiceProvider.php",
+    "src/Admin/DocumentationPageFormPresenter.php",
+    "tests/Feature/SmartRegistryContributionTest.php",
+    "docs/project-management/evidence/larena-smart-ui-foundation-v1/README.md",
+    "docs/project-management/evidence/larena-smart-ui-foundation-v1/implementation-summary.md",
+    "docs/project-management/evidence/larena-smart-ui-foundation-v1/tests.md",
+    "docs/project-management/evidence/larena-smart-ui-foundation-v1/file-map.json",
+    "docs/project-management/evidence/larena-smart-ui-foundation-v1/deviations.json",
+    "docs/project-management/evidence/larena-smart-ui-foundation-v1/graph-sync-proposal.json",
+    "docs/project-management/evidence/larena-smart-ui-foundation-v1/independent-review.md"
+  ]
+}

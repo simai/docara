@@ -1,0 +1,15 @@
+{
+  "schema": "larena.graph_sync_proposal.v1",
+  "status": "proposal_only",
+  "canonical_update_allowed": false,
+  "apply": false,
+  "proposals": [
+    {
+      "id": "docara.page_title_smart_field",
+      "type": "capability_evidence",
+      "owner_package": "larena/docara",
+      "summary": "Docara contributes its page-title field through the canonical shared SmartRegistry and SmartManager path.",
+      "evidence": "docs/project-management/evidence/larena-smart-ui-foundation-v1/implementation-summary.md"
+    }
+  ]
+}

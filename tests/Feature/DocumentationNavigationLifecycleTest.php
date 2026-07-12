@@ -11,7 +11,7 @@ use Larena\Docara\Tests\TestCase;
 
 final class DocumentationNavigationLifecycleTest extends TestCase
 {
-    public function testMenuAdminUsesSf5ComponentsAndExternalConfirmationAsset(): void
+    public function testMenuAdminUsesSfComponentsAndExternalConfirmationAsset(): void
     {
         $this->publishedPage('docara:page:home', 'home', 'Home', 'en');
         $admin = $this->sessionFor('user:admin_identity:1');
@@ -22,7 +22,7 @@ final class DocumentationNavigationLifecycleTest extends TestCase
             ->assertDontSee('<select', false);
 
         $this->withSession($admin)->post('/admin/docara/menus', [
-            'name' => 'SF5 menu', 'code' => 'sf5', 'locale' => 'en', 'is_active' => '1',
+            'name' => 'Simai Framework menu', 'code' => 'sf', 'locale' => 'en', 'is_active' => '1',
         ])->assertRedirect('/admin/docara/menus/1/edit');
 
         $this->withSession($admin)->get('/admin/docara/menus')

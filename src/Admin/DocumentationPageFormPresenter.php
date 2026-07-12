@@ -4,10 +4,27 @@ declare(strict_types=1);
 
 namespace Larena\Docara\Admin;
 
+use Larena\Admin\Assets\AdminProductAssetManifest;
+use Larena\Docara\Ui\DocaraSmartContribution;
+use Larena\Ui\Contracts\FrontendRenderArtifact;
+use Larena\Ui\Registry\SmartRegistry;
+use Larena\Ui\Runtime\SmartManager;
 use Larena\Ui\Smart;
 
 final class DocumentationPageFormPresenter
 {
+    private readonly SmartManager $smartManager;
+
+    public function __construct(?SmartManager $smartManager = null)
+    {
+        if ($smartManager === null) {
+            $registry = SmartRegistry::withDefaults();
+            $registry->registerContribution(new DocaraSmartContribution());
+            $smartManager = new SmartManager($registry);
+        }
+        $this->smartManager = $smartManager;
+    }
+
     /**
      * @param array{title:string,slug:string,body:string,locale:string,hero_file_ref:string,publication_status:string} $values
      * @param array<string,string> $errors
@@ -18,7 +35,7 @@ final class DocumentationPageFormPresenter
     public function present(array $values, array $errors, array $labels, array $images, bool $editing): array
     {
         return [
-            'title' => Smart::render('sf-input', $this->inputProps('page-title', 'title', $labels['title'], $values['title'], $errors['title']))->html,
+            'title' => $this->titleField($labels['title'], $values['title'], $errors['title'])->html(),
             'slug' => Smart::render('sf-input', $this->inputProps('page-slug', 'slug', $labels['slug'], $values['slug'], $errors['slug']))->html,
             'body' => Smart::render('sf-textarea', [
                 'id' => 'page-body',
@@ -53,6 +70,15 @@ final class DocumentationPageFormPresenter
                 'text' => $text,
             ])->html,
         ];
+    }
+
+    public function titleField(string $label, string $value, string $error): FrontendRenderArtifact
+    {
+        return $this->smartManager->render(
+            'docara.page_title_field',
+            $this->inputProps('page-title', 'title', $label, $value, $error),
+            AdminProductAssetManifest::activation(),
+        );
     }
 
     /** @return array<string, mixed> */

@@ -1,0 +1,9 @@
+{
+  "deviations": [],
+  "nonclaims": [
+    "production readiness",
+    "all packages ready",
+    "data binding authorization",
+    "effect execution authorization"
+  ]
+}

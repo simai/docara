@@ -2,7 +2,7 @@ package: larena/docara
 title: Larena Docara
 status: reviewed
 cluster: product-adapters
-batch: site-settings-homepage-developer-slice
+batch: larena-smart-ui-foundation-v1
 features:
   - docara.site_settings_adapter
   - docara.homepage_resolver
@@ -21,8 +21,10 @@ features:
   - docara.navigation_admin_editor
   - docara.navigation_public_projection
   - docara.navigation_safe_audit
+  - docara.package_smart_contribution
+  - docara.page_title_smart_field
 runtime:
   php: "^8.3"
   laravel: "^13.0"
 evidence:
-  path: docs/project-management/evidence/site-settings-homepage-developer-slice/
+  path: docs/project-management/evidence/larena-smart-ui-foundation-v1/

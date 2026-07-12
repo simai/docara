@@ -1,0 +1,12 @@
+{
+  "package": "larena/docara",
+  "files": [
+    "README.md",
+    "module.yaml",
+    "resources/smart/page-title-field/manifest.json",
+    "src/Ui/DocaraSmartContribution.php",
+    "src/DocaraServiceProvider.php",
+    "src/Admin/DocumentationPageFormPresenter.php",
+    "tests/Feature/SmartRegistryContributionTest.php"
+  ]
+}

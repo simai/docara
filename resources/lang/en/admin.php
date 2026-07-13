@@ -11,6 +11,16 @@ return [
         'description' => 'Create, review and publish the pages available on your Larena site.',
         'aria_label' => 'Pages',
     ],
+    'framework_contract' => [
+        'title' => 'Framework contract · Admin collection',
+        'eyebrow' => 'Content / Pages / Framework contract',
+        'heading' => 'Read-only page collection',
+        'description' => 'Real Docara page data rendered from the resolved Simai Framework admin.collection contract.',
+        'summary' => 'Framework building blocks',
+        'compatibility' => 'Compatibility',
+        'recipe' => 'Recipe',
+        'selected' => 'Selected building blocks',
+    ],
     'actions' => [
         'create' => 'Create page',
         'create_first' => 'Create first page',

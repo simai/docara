@@ -25,6 +25,8 @@ use Larena\Docara\Dataview\DocumentationPagesViewDescriptor;
 use Larena\Docara\Contracts\DocumentationPage;
 use Illuminate\Support\ViewErrorBag;
 use Larena\Docara\Admin\DocumentationPageFormPresenter;
+use Larena\Docara\Ui\DocaraFrameworkAdapterContribution;
+use Larena\Ui\Developer\FrameworkCatalogProjection;
 
 final class DocumentationPageAdminController extends Controller
 {
@@ -67,6 +69,45 @@ final class DocumentationPageAdminController extends Controller
         ], $this->translator->get('larena-docara::admin.pages.aria_label'), $request->url(), (int) $request->query('page', '1'));
 
         return $this->views->make('larena-docara::admin.index', ['dataview' => $dataview, 'canWrite' => $canWrite]);
+    }
+
+    public function frameworkContract(Request $request, FrameworkCatalogProjection $frameworkCatalog): View
+    {
+        $frameworkPlan = $frameworkCatalog->plan(DocaraFrameworkAdapterContribution::ADAPTER_ID);
+        $source = new DocumentationPagesSourceProvider(
+            $this->authoring->list(),
+            false,
+            static fn (string $_action, array $page): string => route(
+                'larena.docara.admin.pages.preview',
+                ['slug' => $page['slug']] + ($page['locale'] === 'ru' ? ['locale' => 'ru'] : []),
+            ),
+            fn (string $status): string => $this->translator->get('larena-docara::admin.statuses.' . $status),
+            $this->translator->get('larena-docara::admin.actions.preview'),
+        );
+        $dataview = $this->dataview->present(
+            $source,
+            DocumentationPagesViewDescriptor::make($source),
+            [
+                'title' => $this->translator->get('larena-docara::admin.columns.page'),
+                'slug' => $this->translator->get('larena-docara::admin.columns.slug'),
+                'status' => $this->translator->get('larena-docara::admin.columns.status'),
+                'action' => $this->translator->get('larena-docara::admin.columns.action'),
+                '_pagination' => $this->translator->get('larena-docara::admin.pages.aria_label'),
+            ],
+            [
+                'title' => $this->translator->get('larena-docara::admin.empty.title'),
+                'text' => $this->translator->get('larena-docara::admin.empty.reader_text'),
+            ],
+            $this->translator->get('larena-docara::admin.pages.aria_label'),
+            $request->url(),
+            (int) $request->query('page', '1'),
+            $frameworkPlan,
+        );
+
+        return $this->views->make('larena-docara::admin.framework-contract', [
+            'dataview' => $dataview,
+            'frameworkPlan' => $frameworkPlan,
+        ]);
     }
 
     public function create(Request $request): View

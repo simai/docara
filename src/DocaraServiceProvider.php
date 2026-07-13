@@ -22,7 +22,9 @@ use Larena\Docara\Composition\DocaraPageCompositionService;
 use Larena\Docara\Composition\DocaraPageBlockPresenter;
 use Larena\Layout\Runtime\PageBlockCatalog;
 use Larena\Layout\Runtime\PageCompositionNormalizer;
+use Larena\Docara\Ui\DocaraFrameworkAdapterContribution;
 use Larena\Docara\Ui\DocaraSmartContribution;
+use Larena\Ui\Registry\FrameworkAdapterRegistry;
 use Larena\Ui\Registry\SmartRegistry;
 use Larena\Ui\Runtime\SmartManager;
 
@@ -42,6 +44,12 @@ final class DocaraServiceProvider extends ServiceProvider
         $this->app->afterResolving(SmartRegistry::class, static function (SmartRegistry $registry): void {
             $registry->registerContribution(new DocaraSmartContribution());
         });
+        $this->app->afterResolving(
+            FrameworkAdapterRegistry::class,
+            static function (FrameworkAdapterRegistry $registry, Application $app): void {
+                $app->make(DocaraFrameworkAdapterContribution::class)->contribute($registry);
+            },
+        );
         $this->app->bind(
             DocumentationPageRepository::class,
             EloquentDocumentationPageRepository::class,

@@ -12,6 +12,8 @@ final class DocumentationPageAssetManifest
     public const EDITOR_CSS_KEY = 'docara.admin.blocks.css';
     public const EDITOR_JS_KEY = 'docara.admin.blocks.js';
     public const MENU_JS_KEY = 'docara.admin.menus.js';
+    public const FRAMEWORK_CATALOG_CSS_KEY = 'docara.admin.framework-catalog.css';
+    public const FRAMEWORK_CATALOG_JS_KEY = 'docara.admin.framework-catalog.js';
     public const ASSET_VERSION = 'page-blocks-v5';
 
     /** @return list<array<string, mixed>> */
@@ -59,10 +61,19 @@ final class DocumentationPageAssetManifest
         ]];
     }
 
+    /** @return list<array<string, mixed>> */
+    public static function frameworkCatalogAssets(): array
+    {
+        return [
+            ['carrier_key' => 'larena/docara:framework-catalog', 'asset_key' => self::FRAMEWORK_CATALOG_CSS_KEY, 'kind' => 'css', 'critical' => false, 'resource_path' => 'resources/css/framework-catalog.css', 'final_path_owned_by_core_assets' => true],
+            ['carrier_key' => 'larena/docara:framework-catalog', 'asset_key' => self::FRAMEWORK_CATALOG_JS_KEY, 'kind' => 'js', 'critical' => false, 'resource_path' => 'resources/js/framework-catalog.js', 'final_path_owned_by_core_assets' => true],
+        ];
+    }
+
     /** @return array<string, mixed>|null */
     public static function asset(string $assetKey): ?array
     {
-        foreach (array_merge(self::publicationAssets(), self::editorAssets(), self::menuAssets()) as $asset) {
+        foreach (array_merge(self::publicationAssets(), self::editorAssets(), self::menuAssets(), self::frameworkCatalogAssets()) as $asset) {
             if ($asset['asset_key'] === $assetKey) {
                 return $asset;
             }

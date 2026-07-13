@@ -1,0 +1,145 @@
+[data-larena-framework-explorer] {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: minmax(0, 1fr);
+}
+
+[data-larena-framework-explorer] > * {
+    min-width: 0;
+}
+
+.larena-framework-explorer,
+.larena-framework-demos {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+}
+
+.larena-framework-explorer__header p,
+.larena-framework-demos header p {
+    max-width: 46rem;
+}
+
+.larena-framework-explorer__eyebrow {
+    margin: 0;
+    font-size: .8rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.larena-framework-explorer__controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: .75rem;
+}
+
+.larena-framework-explorer__controls label {
+    display: grid;
+    gap: .35rem;
+}
+
+.larena-framework-explorer__controls input,
+.larena-framework-explorer__controls select,
+.larena-framework-explorer__controls button {
+    min-height: 2.5rem;
+}
+
+.larena-framework-explorer__controls input {
+    min-width: min(24rem, 80vw);
+}
+
+.larena-framework-explorer__results {
+    margin: 0;
+}
+
+.larena-framework-explorer__table-wrap {
+    min-width: 0;
+    overflow-x: auto;
+}
+
+.larena-framework-explorer__table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.larena-framework-explorer__table th,
+.larena-framework-explorer__table td {
+    padding: .75rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid currentColor;
+}
+
+.larena-framework-explorer__table td > strong,
+.larena-framework-explorer__table td > code {
+    display: block;
+}
+
+.larena-framework-explorer__details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .5rem;
+}
+
+.larena-framework-explorer__details dt {
+    font-size: .8rem;
+}
+
+.larena-framework-explorer__details dd {
+    margin: .15rem 0 0;
+}
+
+.larena-framework-demos > article {
+    display: grid;
+    gap: .75rem;
+    min-width: 0;
+    padding: 1rem;
+    border: 1px solid currentColor;
+}
+
+.larena-framework-demos h3,
+.larena-framework-demos p,
+.larena-framework-demos pre {
+    margin: 0;
+}
+
+.larena-framework-demos pre {
+    max-width: 100%;
+    overflow-x: auto;
+}
+
+.larena-framework-demos__preview {
+    padding: 1rem;
+    border: 1px solid currentColor;
+}
+
+.larena-framework-demos__preview span {
+    padding: .75rem;
+    border: 1px solid currentColor;
+}
+
+@media (max-width: 640px) {
+    .larena-framework-explorer__optional {
+        display: none;
+    }
+
+    .larena-framework-explorer__table th,
+    .larena-framework-explorer__table td {
+        padding: .55rem;
+    }
+
+    .larena-framework-explorer__table th:nth-child(2),
+    .larena-framework-explorer__table td:nth-child(2),
+    .larena-framework-explorer__table th:first-child,
+    .larena-framework-explorer__table th:last-child,
+    .larena-framework-explorer__table td:last-child,
+    .larena-framework-explorer__table summary {
+        white-space: nowrap;
+    }
+
+    .larena-framework-explorer__controls input {
+        min-width: 100%;
+    }
+}

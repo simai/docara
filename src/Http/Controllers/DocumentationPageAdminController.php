@@ -27,6 +27,7 @@ use Illuminate\Support\ViewErrorBag;
 use Larena\Docara\Admin\DocumentationPageFormPresenter;
 use Larena\Docara\Ui\DocaraFrameworkAdapterContribution;
 use Larena\Ui\Developer\FrameworkCatalogProjection;
+use Larena\Ui\Smart;
 
 final class DocumentationPageAdminController extends Controller
 {
@@ -74,6 +75,7 @@ final class DocumentationPageAdminController extends Controller
     public function frameworkContract(Request $request, FrameworkCatalogProjection $frameworkCatalog): View
     {
         $frameworkPlan = $frameworkCatalog->plan(DocaraFrameworkAdapterContribution::ADAPTER_ID);
+        $frameworkExplorer = $frameworkCatalog->explorer();
         $source = new DocumentationPagesSourceProvider(
             $this->authoring->list(),
             false,
@@ -107,6 +109,13 @@ final class DocumentationPageAdminController extends Controller
         return $this->views->make('larena-docara::admin.framework-contract', [
             'dataview' => $dataview,
             'frameworkPlan' => $frameworkPlan,
+            'frameworkExplorer' => $frameworkExplorer,
+            'buttonDemo' => Smart::render('sf-button', [
+                'text' => (string) $this->translator->get('larena-docara::admin.framework_contract.button_demo_action'),
+                'type' => 'primary',
+                'size' => '1',
+                'aria-label' => (string) $this->translator->get('larena-docara::admin.framework_contract.button_demo_action'),
+            ])->html,
         ]);
     }
 

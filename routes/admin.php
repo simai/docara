@@ -16,6 +16,7 @@ Route::prefix((string) config('larena-docara.admin.prefix', 'admin/docara/pages'
         Route::middleware((array) config('larena-docara.admin.read_middleware', []))->group(static function (): void {
             Route::get('/', [DocumentationPageAdminController::class, 'index'])->name('index');
             Route::get('/framework-contract/admin-collection', [DocumentationPageAdminController::class, 'frameworkContract'])->name('framework.contract');
+            Route::get('/framework-contract/utilities', [DocumentationPageAdminController::class, 'frameworkUtilities'])->name('framework.utilities');
             Route::get('/{slug}/preview', [DocumentationPageAdminController::class, 'preview'])->name('preview');
             Route::get('/{slug}/blocks', [DocumentationPageCompositionController::class, 'edit'])->name('blocks.edit');
         });

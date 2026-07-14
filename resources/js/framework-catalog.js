@@ -1,5 +1,5 @@
 (() => {
-    const explorer = document.querySelector('[data-larena-framework-explorer]');
+    const explorer = document.querySelector('[data-larena-framework-explorer], [data-larena-utility-explorer]');
     if (!explorer) return;
 
     const controls = explorer.querySelector('[data-framework-catalog-controls]');

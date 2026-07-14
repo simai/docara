@@ -1,10 +1,12 @@
-[data-larena-framework-explorer] {
+[data-larena-framework-explorer],
+[data-larena-utility-explorer] {
     display: grid;
     gap: 2rem;
     grid-template-columns: minmax(0, 1fr);
 }
 
-[data-larena-framework-explorer] > * {
+[data-larena-framework-explorer] > *,
+[data-larena-utility-explorer] > * {
     min-width: 0;
 }
 
@@ -118,6 +120,16 @@
 .larena-framework-demos__preview span {
     padding: .75rem;
     border: 1px solid currentColor;
+}
+
+.larena-framework-explorer__table small {
+    display: block;
+    margin-top: .35rem;
+}
+
+.larena-framework-utility-wide {
+    display: inline-block;
+    min-width: 48rem;
 }
 
 @media (max-width: 640px) {

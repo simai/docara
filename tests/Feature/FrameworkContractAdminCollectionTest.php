@@ -55,6 +55,13 @@ final class FrameworkContractAdminCollectionTest extends TestCase
         $this->withSession($this->sessionFor('user:forbidden'))
             ->get('/admin/docara/pages/framework-contract/admin-collection')
             ->assertForbidden();
+
+        $utilityRoute = $this->app['router']->getRoutes()->getByName('larena.docara.admin.pages.framework.utilities');
+        self::assertNotNull($utilityRoute);
+        self::assertSame('admin/docara/pages/framework-contract/utilities', $utilityRoute->uri());
+        self::assertSame(['GET', 'HEAD'], $utilityRoute->methods());
+        $this->get('/admin/docara/pages/framework-contract/utilities')->assertForbidden();
+        $this->withSession($this->sessionFor('user:forbidden'))->get('/admin/docara/pages/framework-contract/utilities')->assertForbidden();
     }
 
     public function testAdministratorSeesRealPagesThroughResolvedReadOnlyFrameworkPlan(): void
@@ -84,7 +91,7 @@ final class FrameworkContractAdminCollectionTest extends TestCase
             ->assertSee('data-framework-fallback="larena.ui.sf-runtime-bridge"', false)
             ->assertSee('data-production-ready="false"', false)
             ->assertSee('data-larena-framework-explorer', false)
-            ->assertSee('data-framework-registry-count="8"', false)
+            ->assertSee('data-framework-registry-count="14"', false)
             ->assertSee('data-framework-recipe="admin.collection"', false)
             ->assertSee('<sf-table', false)
             ->assertSee('data-larena-read-only="true"', false)
@@ -106,7 +113,7 @@ final class FrameworkContractAdminCollectionTest extends TestCase
             ->assertSee('utility.width')
             ->assertSee('Framework Explorer')
             ->assertSee('Pinned framework contract')
-            ->assertSee('8 records from the exact framework release')
+            ->assertSee('14 records from the exact framework release')
             ->assertSee('docara.admin.framework-catalog.css', false)
             ->assertSee('docara.admin.framework-catalog.js', false)
             ->assertSee("Smart::render('sf-button'", false)
@@ -130,6 +137,43 @@ final class FrameworkContractAdminCollectionTest extends TestCase
         self::assertSame($beforeAuditCount, DB::table('larena_audit_events')->count());
     }
 
+    public function testAdministratorCanInspectReadOnlyUtilityExplorerAndItsSixRecipes(): void
+    {
+        $session = $this->sessionFor('user:admin_identity:1');
+        $beforePages = DB::table('docara_pages')->count();
+        $beforeAudit = DB::table('larena_audit_events')->count();
+
+        $this->withSession($session)
+            ->get('/admin/docara/pages/framework-contract/utilities')
+            ->assertOk()
+            ->assertSee('data-larena-utility-explorer', false)
+            ->assertSee('data-framework-registry-count="11"', false)
+            ->assertSee('Utility Explorer')
+            ->assertSee('11 utility families from the pinned framework contract')
+            ->assertSee('layout.vertical-stack')
+            ->assertSee('layout.balanced-toolbar')
+            ->assertSee('layout.two-column-grid')
+            ->assertSee('layout.card-grid')
+            ->assertSee('layout.centered-container')
+            ->assertSee('layout.scroll-safe-region')
+            ->assertSee('utility.grid-template-columns')
+            ->assertSee('It does not enumerate every allowed class value')
+            ->assertSee('docara.admin.framework-catalog.css', false)
+            ->assertSee('docara.admin.framework-catalog.js', false)
+            ->assertDontSee('/admin/docara/pages/create', false)
+            ->assertDontSee('/admin/docara/pages/contract-page/edit', false);
+
+        $this->withSession($session)
+            ->get('/admin/docara/pages/framework-contract/utilities?locale=ru')
+            ->assertOk()
+            ->assertSee('Обозреватель утилит')
+            ->assertSee('проверенных рецептов макета')
+            ->assertSee('Допустимые значения классов не перечислены');
+
+        self::assertSame($beforePages, DB::table('docara_pages')->count());
+        self::assertSame($beforeAudit, DB::table('larena_audit_events')->count());
+    }
+
     public function testFrameworkContractPathCannotFallThroughToSlugMutationRoutes(): void
     {
         $session = $this->sessionFor('user:admin_identity:1');
@@ -142,6 +186,13 @@ final class FrameworkContractAdminCollectionTest extends TestCase
         $this->withSession($session)->patch($path)->assertMethodNotAllowed();
         $this->withSession($session)->delete($path)->assertMethodNotAllowed();
 
+        self::assertSame($beforePages, DB::table('docara_pages')->count());
+        self::assertSame($beforeAudit, DB::table('larena_audit_events')->count());
+
+        $utilityPath = '/admin/docara/pages/framework-contract/utilities';
+        $this->withSession($session)->post($utilityPath)->assertMethodNotAllowed();
+        $this->withSession($session)->put($utilityPath)->assertMethodNotAllowed();
+        $this->withSession($session)->delete($utilityPath)->assertMethodNotAllowed();
         self::assertSame($beforePages, DB::table('docara_pages')->count());
         self::assertSame($beforeAudit, DB::table('larena_audit_events')->count());
     }

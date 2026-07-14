@@ -28,6 +28,7 @@
                 <h2 id="framework-explorer-heading">{{ __('larena-docara::admin.framework_contract.explorer_heading') }}</h2>
                 <p>{{ __('larena-docara::admin.framework_contract.explorer_description', ['count' => $frameworkExplorer['counts']['total']]) }}</p>
             </header>
+            <p><a href="{{ route('larena.docara.admin.pages.framework.utilities') }}">{{ __('larena-docara::admin.framework_contract.utilities_link') }}</a></p>
 
             <div class="larena-framework-explorer__controls" data-framework-catalog-controls hidden>
                 <label>

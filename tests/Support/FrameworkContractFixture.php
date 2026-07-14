@@ -27,10 +27,16 @@ final class FrameworkContractFixture
                 'utility.width',
             ]),
             self::entry('smart.table', 'smart-component', ['component.buttons']),
+            self::entry('utility.align-items', 'utility'),
+            self::entry('utility.container', 'utility'),
             self::entry('utility.display', 'utility'),
             self::entry('utility.flex-direction', 'utility'),
             self::entry('utility.gap', 'utility'),
+            self::entry('utility.grid-template-columns', 'utility'),
+            self::entry('utility.justify-content', 'utility'),
+            self::entry('utility.margin', 'utility'),
             self::entry('utility.overflow', 'utility'),
+            self::entry('utility.padding', 'utility'),
             self::entry('utility.width', 'utility'),
         ];
         $byKind = [
@@ -74,16 +80,16 @@ final class FrameworkContractFixture
                 }, 64),
             ], ['utility', 'component', 'smart-component', 'recipe']),
             'counts' => [
-                'utility' => 5,
+                'utility' => 11,
                 'component' => 1,
                 'smart-component' => 1,
                 'recipe' => 1,
-                'total' => 8,
+                'total' => 14,
             ],
             'entries' => $entries,
             'indexes' => [
                 'by_kind' => $byKind,
-                'safe_to_suggest' => array_column($entries, 'id'),
+                'safe_to_suggest' => (static function () use ($entries): array { $ids = array_column($entries, 'id'); sort($ids, SORT_STRING); return $ids; })(),
                 'blocked' => [],
                 'recipe_closure' => [
                     'recipe.admin.collection' => [

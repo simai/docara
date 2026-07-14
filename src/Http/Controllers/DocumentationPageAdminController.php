@@ -119,6 +119,13 @@ final class DocumentationPageAdminController extends Controller
         ]);
     }
 
+    public function frameworkUtilities(FrameworkCatalogProjection $frameworkCatalog): View
+    {
+        return $this->views->make('larena-docara::admin.framework-utilities', [
+            'utilityExplorer' => $frameworkCatalog->utilities(),
+        ]);
+    }
+
     public function create(Request $request): View
     {
         return $this->views->make('larena-docara::admin.form', [

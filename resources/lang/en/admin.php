@@ -58,9 +58,15 @@ return [
         'not_declared' => 'Not declared by the registry', 'value_grammar_note' => 'Allowed class values are not enumerated by this registry. Follow the linked source family instead of guessing.',
         'requires' => 'Requires', 'source_references' => 'Source references',
         'live_example' => 'Live example', 'example_value' => 'Spacing value', 'example_source_note' => 'Only the listed values are demonstrated because each is used by the linked upstream playground example.',
+        'open_demo' => 'Open example',
         'gap_vertical_stack_title' => 'Spacing in a vertical stack', 'gap_vertical_stack_description' => 'The same three items use a checked spacing value; only the distance between them changes.',
         'recipes_heading' => ':count checked layout recipes', 'recipes_description' => 'Each example is a Larena composition of existing utility IDs. It is not a new framework primitive.',
         'used_utilities' => 'Uses:', 'demo_one' => 'First item', 'demo_two' => 'Second item', 'demo_three' => 'Third item', 'demo_title' => 'Page title', 'demo_action' => 'Action', 'demo_wide' => 'Wide content remains inside this scroll-safe region.',
+    ],
+    'framework_demo' => [
+        'title' => 'Framework Demonstrator', 'eyebrow' => 'Development / Framework', 'heading' => 'Framework Demonstrator',
+        'description' => 'A source-backed, read-only example of one framework entry.', 'back_to_utilities' => 'Back to Utility Explorer',
+        'entry' => 'Framework entry:', 'preview' => 'Live preview', 'contract' => 'Example contract',
     ],
     'actions' => [
         'create' => 'Create page',

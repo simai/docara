@@ -13,6 +13,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Routing\Redirector;
 use Illuminate\Validation\Rule;
 use Larena\Docara\Authoring\DocumentationPageAuthoringService;
+use Larena\Docara\Assets\DocumentationPageAssetManifest;
 use Larena\Access\Runtime\AccessOperationAuthorizer;
 use RuntimeException;
 use Larena\Filesystem\Persistence\DatabaseLogicalFileRepository;
@@ -123,6 +124,19 @@ final class DocumentationPageAdminController extends Controller
     {
         return $this->views->make('larena-docara::admin.framework-utilities', [
             'utilityExplorer' => $frameworkCatalog->utilities(),
+        ]);
+    }
+
+    public function frameworkDemonstration(string $entryId, FrameworkCatalogProjection $frameworkCatalog): View
+    {
+        $demonstrator = $frameworkCatalog->demonstration($entryId);
+        abort_if($demonstrator === null, 404);
+
+        return $this->views->make('larena-docara::admin.framework-demonstration', $demonstrator + [
+            'frameworkCatalogAssets' => [
+                'css' => route('larena.docara.assets.show', ['assetKey' => DocumentationPageAssetManifest::FRAMEWORK_CATALOG_CSS_KEY, 'v' => DocumentationPageAssetManifest::ASSET_VERSION]),
+                'js' => route('larena.docara.assets.show', ['assetKey' => DocumentationPageAssetManifest::FRAMEWORK_CATALOG_JS_KEY, 'v' => DocumentationPageAssetManifest::ASSET_VERSION]),
+            ],
         ]);
     }
 

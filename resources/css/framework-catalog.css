@@ -111,6 +111,21 @@
     border: 1px solid currentColor;
 }
 
+.larena-framework-demonstration,
+.larena-framework-demonstration__metadata {
+    display: grid;
+    gap: 1rem;
+    min-width: 0;
+    max-width: 52rem;
+}
+
+.larena-framework-demonstration > header h2,
+.larena-framework-demonstration > header p,
+.larena-framework-demonstration__metadata h3,
+.larena-framework-demonstration__metadata p {
+    margin: 0;
+}
+
 .larena-framework-utility-demo h4,
 .larena-framework-utility-demo p,
 .larena-framework-utility-demo pre {

@@ -157,6 +157,12 @@ final class FrameworkContractAdminCollectionTest extends TestCase
             ->assertSee('layout.centered-container')
             ->assertSee('layout.scroll-safe-region')
             ->assertSee('utility.grid-template-columns')
+            ->assertSee('data-framework-utility-demo', false)
+            ->assertSee('utility.gap.vertical-stack')
+            ->assertSee('gap-1')
+            ->assertSee('gap-2')
+            ->assertSee('gap-3')
+            ->assertSee('ui-play:examples/layout/display/index.html')
             ->assertSee('It does not enumerate every allowed class value')
             ->assertSee('docara.admin.framework-catalog.css', false)
             ->assertSee('docara.admin.framework-catalog.js', false)
@@ -168,6 +174,8 @@ final class FrameworkContractAdminCollectionTest extends TestCase
             ->assertOk()
             ->assertSee('Обозреватель утилит')
             ->assertSee('проверенных рецептов макета')
+            ->assertSee('Живой пример')
+            ->assertSee('Значение расстояния')
             ->assertSee('Допустимые значения классов не перечислены');
 
         self::assertSame($beforePages, DB::table('docara_pages')->count());

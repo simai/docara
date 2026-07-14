@@ -103,6 +103,51 @@
     margin: .15rem 0 0;
 }
 
+.larena-framework-utility-demo {
+    display: grid;
+    gap: .75rem;
+    margin: 1rem 0;
+    padding: 1rem;
+    border: 1px solid currentColor;
+}
+
+.larena-framework-utility-demo h4,
+.larena-framework-utility-demo p,
+.larena-framework-utility-demo pre {
+    margin: 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.larena-framework-utility-demo pre {
+    max-width: 100%;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.larena-framework-utility-demo label {
+    display: grid;
+    gap: .35rem;
+    width: min(16rem, 100%);
+}
+
+.larena-framework-utility-demo select {
+    min-height: 2.5rem;
+}
+
+.larena-framework-utility-demo__preview {
+    min-width: 0;
+    padding: 1rem;
+    border: 1px dashed currentColor;
+}
+
+.larena-framework-utility-demo__preview span {
+    display: block;
+    padding: .75rem;
+    border: 1px solid currentColor;
+}
+
 .larena-framework-demos > article {
     display: grid;
     gap: .75rem;

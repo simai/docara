@@ -54,6 +54,31 @@
                                             <div><dt>{{ __('larena-docara::admin.framework_utilities.asset_root') }}</dt><dd><code>{{ $utility['parameters']['asset_root'] }}</code></dd></div>
                                         </dl>
                                         <p>{{ __('larena-docara::admin.framework_utilities.value_grammar_note') }}</p>
+                                        @if ($utility['demonstration'] !== null)
+                                            <section class="larena-framework-utility-demo" data-framework-utility-demo data-framework-base-classes="{{ $utility['demonstration']['base_classes'] }}" aria-labelledby="{{ $utility['demonstration']['id'] }}-heading">
+                                                <header>
+                                                    <p class="larena-framework-explorer__eyebrow">{{ __('larena-docara::admin.framework_utilities.live_example') }}</p>
+                                                    <h4 id="{{ $utility['demonstration']['id'] }}-heading">{{ __('larena-docara::admin.framework_utilities.' . $utility['demonstration']['title_key']) }}</h4>
+                                                    <p>{{ __('larena-docara::admin.framework_utilities.' . $utility['demonstration']['description_key']) }}</p>
+                                                </header>
+                                                <label>
+                                                    <span>{{ __('larena-docara::admin.framework_utilities.example_value') }}</span>
+                                                    <select data-framework-utility-demo-select>
+                                                        @foreach ($utility['demonstration']['variants'] as $variant)
+                                                            <option value="{{ $variant['classes'] }}">{{ $variant['id'] }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                </label>
+                                                <div class="larena-framework-utility-demo__preview {{ $utility['demonstration']['base_classes'] }} {{ $utility['demonstration']['variants'][0]['classes'] }}" data-framework-utility-demo-preview>
+                                                    <span>{{ __('larena-docara::admin.framework_utilities.demo_one') }}</span>
+                                                    <span>{{ __('larena-docara::admin.framework_utilities.demo_two') }}</span>
+                                                    <span>{{ __('larena-docara::admin.framework_utilities.demo_three') }}</span>
+                                                </div>
+                                                <pre><code data-framework-utility-demo-code>&lt;div class=&quot;{{ $utility['demonstration']['base_classes'] }} {{ $utility['demonstration']['variants'][0]['classes'] }}&quot;&gt;…&lt;/div&gt;</code></pre>
+                                                <p>{{ __('larena-docara::admin.framework_utilities.example_source_note') }}</p>
+                                                <details><summary>{{ __('larena-docara::admin.framework_utilities.source_references') }}</summary><ul>@foreach ($utility['demonstration']['source_refs'] as $reference)<li><code>{{ $reference }}</code></li>@endforeach</ul></details>
+                                            </section>
+                                        @endif
                                         @if ($utility['constraints']['requires'] !== [])
                                             <p>{{ __('larena-docara::admin.framework_utilities.requires') }}</p><ul>@foreach ($utility['constraints']['requires'] as $required)<li><code>{{ $required }}</code></li>@endforeach</ul>
                                         @endif

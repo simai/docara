@@ -32,4 +32,18 @@
         update();
         search.focus();
     });
+
+    explorer.querySelectorAll('[data-framework-utility-demo]').forEach((demo) => {
+        const select = demo.querySelector('[data-framework-utility-demo-select]');
+        const preview = demo.querySelector('[data-framework-utility-demo-preview]');
+        const code = demo.querySelector('[data-framework-utility-demo-code]');
+        const baseClasses = demo.dataset.frameworkBaseClasses;
+        if (!select || !preview || !code || !baseClasses) return;
+
+        select.addEventListener('change', () => {
+            const classes = `${baseClasses} ${select.value}`;
+            preview.className = `larena-framework-utility-demo__preview ${classes}`;
+            code.textContent = `<div class="${classes}">…</div>`;
+        });
+    });
 })();

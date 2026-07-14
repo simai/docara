@@ -58,11 +58,13 @@
 
 .larena-framework-explorer__table-wrap {
     min-width: 0;
+    max-width: 100%;
     overflow-x: auto;
 }
 
 .larena-framework-explorer__table {
     width: 100%;
+    table-layout: fixed;
     border-collapse: collapse;
 }
 
@@ -77,6 +79,14 @@
 .larena-framework-explorer__table td > strong,
 .larena-framework-explorer__table td > code {
     display: block;
+}
+
+.larena-framework-explorer__table code,
+.larena-framework-explorer__table dd,
+.larena-framework-demos code,
+.larena-framework-demos li {
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .larena-framework-explorer__details {
@@ -113,8 +123,26 @@
 }
 
 .larena-framework-demos__preview {
+    min-width: 0;
+    max-width: 100%;
     padding: 1rem;
     border: 1px solid currentColor;
+    overflow: hidden;
+}
+
+.larena-framework-demos__preview > * {
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.larena-framework-demos__preview--scroll {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+}
+
+.larena-framework-demos__preview--scroll .larena-framework-utility-wide {
+    max-width: none;
 }
 
 .larena-framework-demos__preview span {

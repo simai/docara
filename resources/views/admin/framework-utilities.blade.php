@@ -74,7 +74,7 @@
                 <article data-framework-utility-recipe="{{ $recipe['id'] }}">
                     <h3>{{ $recipe['title'] }}</h3>
                     <p>{{ $recipe['description'] }}</p>
-                    <div class="larena-framework-demos__preview">
+                    <div class="larena-framework-demos__preview{{ $recipe['id'] === 'layout.scroll-safe-region' ? ' larena-framework-demos__preview--scroll' : '' }}">
                         @if ($recipe['id'] === 'layout.vertical-stack')
                             <div class="{{ $recipe['classes'] }}"><span>{{ __('larena-docara::admin.framework_utilities.demo_one') }}</span><span>{{ __('larena-docara::admin.framework_utilities.demo_two') }}</span><span>{{ __('larena-docara::admin.framework_utilities.demo_three') }}</span></div>
                         @elseif ($recipe['id'] === 'layout.balanced-toolbar')

@@ -52,6 +52,8 @@ class BuildCommand extends Command
         $env = $this->app['env'] = $this->input->getArgument('env');
         $this->includeEnvironmentConfig($env);
         $this->updateBuildPaths($env);
+        $useCache = $this->useCache();
+        $this->app->config->put('cache', $useCache);
         $cacheExists = $this->app[TemporaryFilesystem::class]->hasTempDirectory();
 
         $this->app->instance('outputPathResolver', new PrettyOutputPathResolver);
@@ -65,10 +67,10 @@ class BuildCommand extends Command
         }
 
         $this->consoleOutput->setup($verbosity);
-        $this->consoleOutput->writeIntro($env, $this->useCache(), $cacheExists);
+        $this->consoleOutput->writeIntro($env, $useCache, $cacheExists);
         if ($this->confirmDestination()) {
             try {
-                $this->app->make(Docara::class)->build($this->useCache());
+                $this->app->make(Docara::class)->build($useCache);
             } catch (Throwable $e) {
                 $this->app->make(ExceptionHandler::class)->report($e);
                 $this->app->make(ExceptionHandler::class)->renderForConsole($this->consoleOutput, $e);
@@ -77,7 +79,7 @@ class BuildCommand extends Command
             }
 
             $this->consoleOutput
-                ->writeTime(round(microtime(true) - $startTime, 2), $this->useCache(), $cacheExists)
+                ->writeTime(round(microtime(true) - $startTime, 2), $useCache, $cacheExists)
                 ->writeConclusion();
         }
     }

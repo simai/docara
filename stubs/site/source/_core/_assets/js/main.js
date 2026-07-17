@@ -166,7 +166,8 @@ window.toggleMobileMenu = function (button) {
 
 window.toggleFloat = function (button) {
     const wrap = button.parentNode;
-    wrap.classList.toggle('active');
+    const float = wrap.querySelector('.dc-float-window');
+    float.classList.toggle('hidden');
 };
 
 window.addEventListener('Switch:render', (event) => {
@@ -627,15 +628,11 @@ window.applyReadMode = function (button) {
     const mainContainer = document.querySelector('.container--main');
     const sideMenuNavigation = document.querySelector('.side-menu-navigation');
     [header, navMenu, sideMenuNavigation].forEach((item) => {
-        if (item) {
-            item.classList.toggle('hidden');
-        }
+        item?.classList.toggle('hidden');
     });
 
     [mainContainer, sideMenu].forEach((item) => {
-        if (item) {
-            item.classList.toggle('read');
-        }
+        item?.classList.toggle('read');
     });
 
     if (icon) {
@@ -644,7 +641,7 @@ window.applyReadMode = function (button) {
             body.classList.remove('max-container-8', 'max-container-6');
             body.classList.add('max-container-1', 'read');
             button.classList.add('read');
-            segmentButton.classList.add('hidden');
+            segmentButton?.classList.add('hidden');
             mainContainer.parentNode.insertBefore(button, sideMenu);
             requestAnimationFrame(() => setReadModePosition(mainContainer, button));
         } else {
@@ -653,8 +650,8 @@ window.applyReadMode = function (button) {
             const isExpanded = getInitialState('expanded');
             body.classList.add(`max-container-${isExpanded ? '8' : '6'}`);
             button.classList.remove('read');
-            segmentButton.classList.remove('hidden');
-            sideMenu.removeAttribute('style');
+            segmentButton?.classList.remove('hidden');
+            sideMenu?.removeAttribute('style');
             headerRight.prepend(button);
         }
         toggleLinksWidth();
@@ -669,7 +666,7 @@ window.navOpen = function () {
     const nav = document.getElementById('side_menu');
     const mainMenu = document.getElementById('main_menu');
     nav && nav.classList.toggle('active');
-    if (nav.classList.contains('active')) {
+    if (nav && nav.classList.contains('active')) {
         document.body.classList.add('overflow-hidden');
     } else {
         document.body.classList.remove('overflow-hidden');
@@ -677,12 +674,6 @@ window.navOpen = function () {
     mainMenu && mainMenu.classList.remove('active');
 };
 
-window.langOpen = function (item) {
-    const language_switch_panel = item.parentElement.querySelector(
-        '.sf-language-switch--language-panel',
-    );
-    language_switch_panel.classList.toggle('hidden');
-};
 
 window.langSwitch = function (button) {
     const newLocale = button.dataset.locale;
@@ -738,25 +729,8 @@ window.addEventListener('click', function (e) {
 
     floatContainers.forEach((container) => {
         if (e.target !== container && !container.contains(e.target)) {
-            container.classList.remove('active');
+            const float = container.querySelector('.dc-float-window');
+            float.classList.add('hidden');
         }
     });
-    const langContainer = document.querySelector(
-        '.sf-language-switch--container',
-    );
-    const menu = langContainer?.querySelector(
-        '.sf-language-switch--language-panel-show',
-    );
-    if (!menu) {
-        return false;
-    }
-    if (
-        langContainer &&
-        e.target !== langContainer &&
-        !langContainer.contains(e.target)
-    ) {
-        document
-            .querySelector('.sf-language-switch--language-panel')
-            .classList.remove('sf-language-switch--language-panel-show');
-    }
 });

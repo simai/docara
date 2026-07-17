@@ -3,7 +3,7 @@
             class=" sf-icon-button sf-icon-button--icon radius-default sf-button-settings  sf-icon-button--size-1 sf-icon-button--link sf-icon-button--on-surface">
         <i class="sf-icon">settings</i>
     </button>
-    <div class="sf-settings-menu bg-surface-overlay">
+    <div class="sf-settings-menu flex flex-col w-full p-1/3 gap-1/4 radius-default w-max bg-surface-overlay bg-surface-1 dc-float-window hidden">
         [!Switch](size=1 title='{{$page->translate('dark')}}' on='{{$page->translate('on')}}'
         off='{{$page->translate('off')}}')#theme_switch
         [!Switch](size=1 title='{{$page->translate('wide')}}' on='{{$page->translate('on')}}'

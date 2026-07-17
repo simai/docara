@@ -58,11 +58,17 @@ class CollectionDataLoader
 
     private function buildCollection($collection)
     {
-        $collectionPath = explode('-', $collection->name);
-        $collectionPath = implode('/', $collectionPath);
-        $path = "{$this->source}/{$collectionPath}";
+        $path = "{$this->source}/{$collection->name}";
         if (! $this->filesystem->exists($path)) {
-            $path = "{$this->source}/_{$collectionPath}";
+            $path = "{$this->source}/_{$collection->name}";
+        }
+
+        if (! $this->filesystem->exists($path)) {
+            $collectionPath = implode('/', explode('-', $collection->name));
+            $path = "{$this->source}/{$collectionPath}";
+            if (! $this->filesystem->exists($path)) {
+                $path = "{$this->source}/_{$collectionPath}";
+            }
         }
 
         if (! $this->filesystem->exists($path)) {

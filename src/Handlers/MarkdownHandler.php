@@ -11,6 +11,8 @@ use Simai\Docara\View\ViewRenderer;
 
 class MarkdownHandler
 {
+    private const PHP_OPEN_TAG_PLACEHOLDER = 'DOCARA_PHP_OPEN_TAG_PLACEHOLDER';
+
     private $temporaryFilesystem;
 
     private $parser;
@@ -87,7 +89,7 @@ class MarkdownHandler
         $html = $this->parser->parseMarkdownWithoutFrontMatter(
             $this->getEscapedMarkdownContent($file),
         );
-        $html = str_replace("{{'?php'}}", '?php', $html);
+        $html = str_replace(self::PHP_OPEN_TAG_PLACEHOLDER, '&lt;?php', $html);
         $html = $this->normalizeInternalDocLinks($file, $pageData, $html);
 
         $this->collectTranslateContent($pageData, $html);
@@ -170,13 +172,8 @@ class MarkdownHandler
 
         if ($file->isBladeFile()) {
             $replacements = ['<?php' => "<{{'?php'}}"];
-        }
-
-        if (! $file->isBladeFile() && in_array($file->getFullExtension(), ['markdown', 'md', 'mdown'])) {
-            $replacements = array_merge([
-                '{{' => '@{{',
-                '{!!' => '@{!!',
-            ], $replacements);
+        } elseif (in_array($file->getFullExtension(), ['markdown', 'md', 'mdown'])) {
+            $replacements = ['<?php' => self::PHP_OPEN_TAG_PLACEHOLDER];
         }
 
         return strtr($file->getContents(), $replacements);

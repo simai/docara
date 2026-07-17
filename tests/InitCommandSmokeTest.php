@@ -54,7 +54,7 @@ ENV);
         );
 
         foreach ($items as $item) {
-            $item->isDir() ? rmdir($item->getPathname()) : @unlink($item->getPathname());
+            $item->isDir() ? @rmdir($item->getPathname()) : @unlink($item->getPathname());
         }
 
         @rmdir($dir);

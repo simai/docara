@@ -17,3 +17,9 @@ npm-debug.log
 /package-lock.json
 /source/404.blade.php
 /source/favicon.ico
+/.phpunit.cache/
+/composer.lock
+/figma_variables/
+/retype-badge.html
+/tools/figma-write-bridge/
+/vscode-folder-tree/

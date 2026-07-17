@@ -71,7 +71,7 @@
 
         <div class="p-xs-y-4 border-b">
             <p class="text-xs text-dark-soft text-uppercase">Path:</p>
-            <p class="p-xs-l-2 text-sm">/escape-test-markdown</p>
+            <p class="p-xs-l-2 text-sm">escape-test-markdown</p>
         </div>
 
         <div class="p-xs-y-4 border-b">
@@ -95,29 +95,22 @@
                 <div class="col-xs-8 demo-page">
                         <h2>Testing Escaping</h2>
     <p>Can we have php opening tags here?</p>
-
 <hr>
-
-<p>Start...</p>
-
+Start...
 <hr>
-
-<pre><code class="language-php">&lt;?php
+```php
+&lt;?php
 // Test comment...
-
-public function store()
+<p>public function store()
 {
-    $test = true;
-    {{ a-blade-echo-that-should-remain-in-markdown }}
-    {!! a-blade-danger-echo-that-should-remain-in-markdown !!}
-}
+$test = true;
+{{ a-blade-echo-that-should-remain-in-markdown }}
+{!! a-blade-danger-echo-that-should-remain-in-markdown !!}
+}</p>
+<pre><code>&lt;hr&gt;
+End.
+&lt;hr&gt;
 </code></pre>
-
-<hr>
-
-<p>End.</p>
-
-<hr>
                 </div>
             </div>
         </div>

@@ -306,6 +306,39 @@ function left_aside_helper($page, $section): bool
     return false;
 }
 
+function right_aside_helper($page, $section): bool
+{
+    if (! is_enabled($section)) {
+        return false;
+    }
+
+    $blocks = $section instanceof Collection
+        ? $section->get('blocks', [])
+        : ($section['blocks'] ?? []);
+
+    if (! is_array($blocks) || empty($blocks)) {
+        return false;
+    }
+
+    foreach ($blocks as $name => $block) {
+        if (! is_enabled($block)) {
+            continue;
+        }
+
+        if ($name === 'navigation') {
+            if (! empty($page->headings) && count($page->headings)) {
+                return true;
+            }
+
+            continue;
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
 if (! function_exists('layout_enabled')) {
     /**
      * Check if a layout section (by key) is enabled.
@@ -324,6 +357,10 @@ if (! function_exists('layout_enabled')) {
 
         if ($key === 'asideLeft') {
             return left_aside_helper($page, $section);
+        }
+
+        if ($key === 'asideRight') {
+            return right_aside_helper($page, $section);
         }
 
         $hasBlocks = $section instanceof IterableObject

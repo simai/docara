@@ -22,13 +22,16 @@ class DefaultHandler
 
     public function handle($file, $pageData)
     {
+        $extension = $file->getExtension();
+        $name = $extension ? $file->getBasename('.' . $extension) : $file->getBasename();
+
         return collect([
             new CopyFile(
                 $file,
                 $file->getPathName(),
                 $file->getRelativePath(),
-                $file->getBasename('.' . $file->getExtension()),
-                $file->getExtension(),
+                $name,
+                $extension,
                 $pageData,
             ),
         ]);

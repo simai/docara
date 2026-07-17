@@ -48,7 +48,7 @@ export class SizeObserver {
     const aside = document.createElement("aside");
     aside.id = "main_menu";
     aside.className =
-        "sf-nav-menu w-full sf-nav-menu--left flex flex-col content-main-between p-0 lg:p-y-3 gap-2 sticky overflow-auto";
+        "sf-nav-menu w-full sf-nav-menu--left flex flex-col content-main-between p-1 sm:p-2 lg:p-y-3 gap-2 fixed lg:sticky overflow-auto";
     document.body.appendChild(aside);
     this.fallbackNavMenu = aside;
     this.fallbackNavCreated = true;

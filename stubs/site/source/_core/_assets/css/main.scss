@@ -1,13 +1,14 @@
-@import "functions";
-@import "variables";
-@import "theme.generated";
-@import "text.scss";
-@import "normalize.scss";
-@import "search.scss";
-@import "base";
-@import "menu.scss";
-@import "bottom_menu.scss";
-@import "breadcrumbs.scss";
-@import "side_menu.scss";
-@import "settings.scss";
-
+@layer sf.base {
+  @import "functions";
+  @import "variables";
+  @import "text";
+  @import "normalize";
+  @import "search";
+  @import "base";
+  @import "hero";
+  @import "menu";
+  @import "bottom_menu";
+  @import "breadcrumbs";
+  @import "side_menu";
+  @import "settings";
+}

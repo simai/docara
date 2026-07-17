@@ -28,6 +28,9 @@ $layoutConfiguration = [
                 ],
             ],
         ],
+        'hero' => [
+            'enabled' => false,
+        ],
         'asideLeft' => [
             'enabled' => true,
             'blocks' => [
@@ -40,8 +43,9 @@ $layoutConfiguration = [
             ],
         ],
         'main' => [
-            'innerContent' => ['enabled' => true],
-            'outerContent' => ['enabled' => false, 'mode' => 'iframe', 'src' => null],
+            'tabs' => ['enabled' => false],
+            'features' => ['enabled' => false],
+            'content' => ['enabled' => true],
         ],
         'asideRight' => [
             'enabled' => true,

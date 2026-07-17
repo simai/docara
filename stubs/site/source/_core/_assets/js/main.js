@@ -531,7 +531,7 @@ function getNextOrPrevHiddenItem(container, items, next) {
     return null;
 }
 
-window.updateMenuScrollButtons = function updateMenuScrollButtons() {
+function updateMenuScrollButtons() {
     const menu = document.getElementById('top_menu');
     const container = document.querySelector('.dc-menu-container');
     const leftBtn = document.querySelector('.dc-menu-scroll.left');
@@ -561,6 +561,8 @@ window.updateMenuScrollButtons = function updateMenuScrollButtons() {
     container.classList.toggle('p-left-5', !atStart);
     container.classList.toggle('p-right-5', !atEnd);
 };
+
+window.updateMenuScrollButtons = updateMenuScrollButtons;
 
 window.menuScroll = function (button, next = true) {
     const menu = document.getElementById('top_menu');

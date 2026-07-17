@@ -216,4 +216,27 @@ class ScaffoldTest extends TestCase
 
         $this->assertFileMissing($this->tmpPath('composer.json'));
     }
+
+    #[Test]
+    public function update_mode_does_not_copy_root_source_stubs_when_docs_exist()
+    {
+        $this->createSource([
+            'source' => [
+                'docs' => [
+                    'en' => [
+                        'index.md' => '# Existing docs',
+                    ],
+                ],
+            ],
+        ]);
+
+        $scaffold = $this->app->make(BasicScaffoldBuilder::class)
+            ->setBase($this->tmp)
+            ->setUpdateMode();
+
+        $scaffold->build();
+
+        $this->assertFileExists($this->tmpPath('source/docs/en/index.md'));
+        $this->assertFileMissing($this->tmpPath('source/index.blade.md'));
+    }
 }

@@ -136,6 +136,9 @@ ENV;
         if (method_exists($scaffold, 'setForceCoreFiles')) {
             $scaffold->setForceCoreFiles($forceCoreFiles);
         }
+        if (method_exists($scaffold, 'setUpdateMode')) {
+            $scaffold->setUpdateMode((bool) $updateMode);
+        }
 
         try {
             $this->confirmDocsDirExistsOrAsk();

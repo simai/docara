@@ -6,6 +6,8 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
 {
     protected bool $forceCoreFiles = false;
 
+    protected bool $updateMode = false;
+
     private ?bool $gitAvailable = null;
 
     public function init($preset = null)
@@ -16,6 +18,13 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
     public function setForceCoreFiles(bool $force = true): static
     {
         $this->forceCoreFiles = $force;
+
+        return $this;
+    }
+
+    public function setUpdateMode(bool $updateMode = true): static
+    {
+        $this->updateMode = $updateMode;
 
         return $this;
     }
@@ -79,6 +88,12 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
 
                     if ($sourceItem === $docsDir && $hasDocs) {
                         $this->log("Skip copying docs from stubs ({$sourceItem}) because target exists.");
+
+                        continue;
+                    }
+
+                    if ($this->updateMode && $hasDocs && is_file($srcChild)) {
+                        $this->log("Skip copying source root stub {$sourceItem} in update mode.");
 
                         continue;
                     }

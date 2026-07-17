@@ -17,13 +17,19 @@ function copyStaticAssets() {
     copyIfExists('source/img', 'source/assets/build/img');
 }
 
-function findDocaraBin() {
+function findDocaraCommand() {
     const localBin = normalize('./vendor/bin/docara');
     if (existsSync(localBin)) {
-        return localBin;
+        return {
+            command: 'php',
+            args: [localBin],
+        };
     }
 
-    return 'docara';
+    return {
+        command: 'docara',
+        args: [],
+    };
 }
 
 function runDocaraBuild(env) {
@@ -32,9 +38,10 @@ function runDocaraBuild(env) {
     }
 
     return new Promise((resolveBuild, rejectBuild) => {
-        const child = spawn(findDocaraBin(), ['build', env, '--cache=false'], {
+        const docaraCommand = findDocaraCommand();
+        const child = spawn(docaraCommand.command, [...docaraCommand.args, 'build', env, '--cache=false'], {
             stdio: 'inherit',
-            shell: true,
+            shell: process.platform === 'win32',
         });
 
         child.on('exit', (code) => {

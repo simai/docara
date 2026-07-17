@@ -1,8 +1,8 @@
 ---
 extends: _core._layouts.documentation
 section: content
-title: Главная
-description: Добро пожаловать
+title: Home
+description: Redirecting to your language
 ---
 @php
 $locales = $page->configurator->locales;

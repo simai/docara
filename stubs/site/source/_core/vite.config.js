@@ -32,7 +32,7 @@ function runDocaraBuild(env) {
     }
 
     return new Promise((resolveBuild, rejectBuild) => {
-        const child = spawn(findDocaraBin(), ['build', env], {
+        const child = spawn(findDocaraBin(), ['build', env, '--cache=false'], {
             stdio: 'inherit',
             shell: true,
         });

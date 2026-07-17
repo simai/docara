@@ -238,7 +238,7 @@ HTML;
 
         $pageData = PageData::withPageMetaData($siteData, $meta);
         Container::getInstance()->instance('pageData', $pageData);
-        //        $pageData->resolveLayoutForPath($meta['path'] ?? '/');
+        $pageData->resolveLayoutForPath($meta['path'] ?? '/');
 
         return $this->getHandler($file)->handle($file, $pageData);
     }

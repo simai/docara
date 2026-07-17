@@ -56,9 +56,9 @@ class PageData extends IterableObject
             $perPageOverrides = $configurator->getLayoutOverridesForPath((string) $locale, $path);
             if (! empty($perPageOverrides)) {
                 $resolved = Layout::deepMerge($resolved, $perPageOverrides);
-                $this->page->put('layoutResolved', $resolved);
             }
         }
 
+        $this->page->put('layoutResolved', $resolved);
     }
 }

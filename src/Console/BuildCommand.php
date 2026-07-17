@@ -34,7 +34,7 @@ class BuildCommand extends Command
             ->addArgument('env', InputArgument::OPTIONAL, 'What environment should we use to build?', 'local')
             ->addOption('pretty', null, InputOption::VALUE_REQUIRED, 'Should the site use pretty URLs?', 'true')
             ->addOption('watch', 'w', InputOption::VALUE_NONE, 'Should watch for file changes and rebuild?')
-            ->addOption('cache', 'c', InputOption::VALUE_OPTIONAL, 'Should a cache be used when building the site?', 'false');
+            ->addOption('cache', 'c', InputOption::VALUE_OPTIONAL, 'Should a cache be used when building the site?');
     }
 
     protected function fire()
@@ -164,7 +164,7 @@ class BuildCommand extends Command
 
     private function useCache()
     {
-        $cacheOption = $this->input->getParameterOption(['--cache', '-c'], null);
+        $cacheOption = $this->input->getOption('cache');
 
         if ($cacheOption !== null) {
             return filter_var($cacheOption, FILTER_VALIDATE_BOOLEAN);

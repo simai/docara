@@ -92,7 +92,7 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
                         continue;
                     }
 
-                    if ($this->updateMode && $hasDocs && is_file($srcChild)) {
+                    if ($this->updateMode && $hasDocs && is_file($srcChild) && ! $this->isUpdateModeSourceEntrypoint($sourceItem)) {
                         $this->log("Skip copying source root stub {$sourceItem} in update mode.");
 
                         continue;
@@ -153,6 +153,13 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
         } else {
             echo $message . PHP_EOL;
         }
+    }
+
+    private function isUpdateModeSourceEntrypoint(string $sourceItem): bool
+    {
+        return in_array($sourceItem, [
+            'index.blade.md',
+        ], true);
     }
 
     /**

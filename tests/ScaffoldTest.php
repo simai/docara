@@ -218,7 +218,7 @@ class ScaffoldTest extends TestCase
     }
 
     #[Test]
-    public function update_mode_does_not_copy_root_source_stubs_when_docs_exist()
+    public function update_mode_keeps_source_entrypoint_when_docs_exist()
     {
         $this->createSource([
             'source' => [
@@ -237,6 +237,6 @@ class ScaffoldTest extends TestCase
         $scaffold->build();
 
         $this->assertFileExists($this->tmpPath('source/docs/en/index.md'));
-        $this->assertFileMissing($this->tmpPath('source/index.blade.md'));
+        $this->assertFileExists($this->tmpPath('source/index.blade.md'));
     }
 }

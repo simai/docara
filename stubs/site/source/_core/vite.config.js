@@ -39,7 +39,7 @@ function runDocaraBuild(env) {
 
     return new Promise((resolveBuild, rejectBuild) => {
         const docaraCommand = findDocaraCommand();
-        const child = spawn(docaraCommand.command, [...docaraCommand.args, 'build', env, '--cache=false'], {
+        const child = spawn(docaraCommand.command, [...docaraCommand.args, 'build', env, '--cache', 'false'], {
             stdio: 'inherit',
             shell: process.platform === 'win32',
         });

@@ -56,7 +56,7 @@ yarn run watch
 - source
     - _core
       -- copy-template-configs.js (copies template configs into your docs dir)
-      -- webpack.mix.js (Mix build config)
+      -- vite.config.js (Vite build config)
       -- package.json (scripts + frontend deps)
       -- package.json (scripts + frontend deps)
       -- config.php (shared Docara config)

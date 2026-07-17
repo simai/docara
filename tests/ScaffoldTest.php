@@ -15,7 +15,7 @@ class ScaffoldTest extends TestCase
             'test-source-file.md' => '',
         ],
         'tasks' => [],
-        'webpack.mix.js' => '',
+        'vite.config.js' => '',
         'yarn.lock' => '',
     ];
 

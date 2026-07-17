@@ -7,59 +7,45 @@ description: Generating Your Site
 
 # Generating Your Site
 
-## Build for production
+## Build For Production
 
-To generate your static site for deployment, run the following command:
+To generate your static site for deployment, run:
 
 ```bash
-npm run build
+npm run prod
 ```
 
-You'll see an output similar to this (default scaffold uses Laravel Mix + webpack):
+You will see output similar to this:
 
-```
-Laravel Mix v6.0.49
+```text
+vite v7.x building client environment for production...
+built in 600ms
 
-✔ Compiled Successfully in 0.09s
-Assets (truncated):
-- /js/main.js (112 KiB)
-- /js/turbo.js (208 KiB)
-- /css/main.css (26 KiB)
-- /img/icon-arrow.svg (221 bytes)
-- /img/icon_and_text_logo.svg (3.07 KiB)
-- /img/logo.svg (429 bytes)
-- /img/magnifying-glass.svg (979 bytes)
-- /fonts/... (Inter variable + static variants)
-
-webpack compiled successfully
+Building production site
+Loading collections...
+Building files from source...
+Writing files to destination...
+Site built successfully!
 ```
 
-Your complete static site will be generated in the /build_production directory, ready for deployment.
+Your complete static site will be generated in the `/build_production` directory, ready for deployment.
 
-As the output shows, Mix/webpack compiles, minifies, and versions your assets. This process includes bundling, where Mix combines multiple JavaScript and CSS files into optimized ones. Large font files are included once under `/fonts/` and reused across pages.
-
-The bundled asset paths are referenced in your generated HTML files, like this:
+Vite compiles, minifies, and versions your assets. The bundled asset paths are referenced in generated HTML through `vite()`:
 
 ```html
-<link rel="stylesheet" href="/assets/build/css/main.css?id=xyz" />
-<script defer src="/assets/build/js/main.js?id=abc"></script>
+<link rel="stylesheet" href="/assets/build/css/styles.hash.css">
+<script type="module" src="/assets/build/js/main.hash.js"></script>
 ```
 
-Assets that do not require compilation (e.g., images, fonts) are simply copied from your source/assets directory to the equivalent assets path within /build_production. For example, an image located at source/assets/img/1.png will be copied to /build_production/assets/img/1.png.
-
-This means the paths you use in your original files for these assets remain unchanged:
-
-```html
-<img src="/assets/img/1.png" />
-```
+Assets that do not require compilation, such as core and project images, are copied to `/assets/build/img`.
 
 ## Environments
 
-Often you might want to use different site variables in your development and production environments. For example, in production you might want to render your Google Analytics tracking snippet, but not include it in development so you don�t skew your results.
+Often you might want to use different site variables in your development and production environments. For example, in production you might want to render your analytics tracking snippet, but not include it in development.
 
-Docara makes this simple by allowing you to create additional config.php files for your different environments.
+Docara makes this simple by allowing you to create additional config files for different environments.
 
-Say your base config.php file looks like this:
+Say your base `config.php` file looks like this:
 
 ```php
 <?php
@@ -70,7 +56,7 @@ return [
 ];
 ```
 
-You can override the `staging` variable in your production environment by creating a new file called `config.production.php`:
+You can override the `debug` variable in production by creating `config.production.php`:
 
 ```php
 <?php
@@ -80,21 +66,17 @@ return [
 ];
 ```
 
-This file is merged on top of `config.php`, so you only need to specify the variables that you are changing.
+This file is merged on top of `config.php`, so you only need to specify variables that change.
 
-Note: Variables from environment-specific config files are not merged recursively; only the top-level keys are considered for merging. For collections, you can override this behavior by setting `merge_collection_configs` to true in your main `config.php` file. This is particularly useful if you use collection filtering to disable some collection items, such as draft blog posts, in particular environments.
+## Build For A Specific Environment
 
-## Build for a specific environment
+To build files for a specific environment, set the Vite mode when running the build command:
 
-To build files for a specific environment, set the NODE_ENV variable when running the build command:
-
-```dotenv
-NODE_ENV=staging npm run build
+```bash
+npx vite build --mode staging
 ```
 
-This will output the site to a new folder named build_staging, leaving other build directories (build_local, build_production) untouched.
-
-If you�re not using Mix/Vite to compile assets, you can run Docara's build command directly and pass the environment name:
+The Docara Vite plugin maps `production` mode to `docara build production`; other modes use `docara build local` by default. If you need a custom environment build without compiling assets, run Docara directly:
 
 ```bash
 vendor/bin/docara build staging

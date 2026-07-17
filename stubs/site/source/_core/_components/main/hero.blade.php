@@ -74,12 +74,6 @@
                 </div>
             </div>
         </div>
-{{--        <div class="dc-hero-image absolute inline-start-0 inline-end-0 bottom-0 top-0">--}}
-{{--            <picture>--}}
-{{--                <img class="w-full h-full object-cover"--}}
-{{--                     src="{{ mix('img/hero.png', 'assets/build') }}">--}}
-{{--            </picture>--}}
-{{--        </div>--}}
         <div class="dc-hero--background gr-line-2 absolute inline-start-0 inline-end-0 bottom-0 top-0 z-1"></div>
     </div>
 </section>

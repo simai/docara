@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const filesToCopy = [
-    'webpack.mix.js',
+    'vite.config.js',
     'bootstrap.php',
     'translate.config.php',
     'eslint.config.js',
@@ -30,8 +30,8 @@ filesToCopy.forEach(file => {
 
     if (fs.existsSync(src)) {
         fs.copyFileSync(src, dest);
-        console.log(`✔ copied ${file}`);
+        console.log(`copied ${file}`);
     } else {
-        console.warn(`⚠ ${file} not found in _core`);
+        console.warn(`${file} not found in _core`);
     }
 });

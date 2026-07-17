@@ -327,7 +327,7 @@ ENV;
         }
 
         $rootFiles = [
-            'webpack.mix.js',
+            'vite.config.js',
             'bootstrap.php',
             'translate.config.php',
             'eslint.config.js',

@@ -8,7 +8,7 @@
     <meta property="og:title" content="{{ $page->title ?  $page->title . ' | ' : '' }}{{ $page->siteName }}"/>
     <meta property="og:description" content="{{ $page->description ?? $page->siteDescription }}"/>
     <meta property="og:url" content="{{ $page->getUrl() }}"/>
-    <meta property="og:image" content="{{mix('/img/logo.svg', 'assets/build')}}"/>
+    <meta property="og:image" content="/assets/build/img/logo.svg"/>
     <meta property="og:type" content="website"/>
     <meta name="turbo-refresh-method" content="morph">
     <meta name="twitter:image:alt" content="{{ $page->siteName }}">
@@ -26,7 +26,7 @@
     @stack('meta')
 
     @if ($page->turbo)
-        <script src="{{ mix('js/turbo.js', 'assets/build') }}"></script>
+        <script type="module" src="{{ vite('source/_core/_assets/js/turbo.js') }}"></script>
     @endif
 
     @include('_core._layouts.core')
@@ -39,7 +39,8 @@
         window.sfJsLang = {!! json_encode($jsTranslation, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!};
         </script>
     @endif
-    <link rel="stylesheet" href="{{ mix('css/main.css', 'assets/build') }}">
+    {!! vite_refresh() !!}
+    <link rel="stylesheet" href="{{ vite('source/_core/_assets/css/main.scss') }}">
     <script>
         window.getCookie = function (name) {
             const value = `; ${document.cookie}`;
@@ -47,5 +48,5 @@
             if (parts.length === 2) return parts.pop().split(';').shift();
         }
     </script>
-    <script data-turbo-permanent src="{{ mix('js/main.js', 'assets/build') }}"></script>
+    <script type="module" data-turbo-permanent src="{{ vite('source/_core/_assets/js/main.js') }}"></script>
 </head>

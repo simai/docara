@@ -164,7 +164,13 @@ class BuildCommand extends Command
 
     private function useCache()
     {
-        return $this->input->getOption('cache') !== 'false' || $this->app->config->get('cache');
+        $cacheOption = $this->input->getParameterOption(['--cache', '-c'], null);
+
+        if ($cacheOption !== null) {
+            return filter_var($cacheOption, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        return filter_var($this->app->config->get('cache'), FILTER_VALIDATE_BOOLEAN);
     }
 
     private function includeEnvironmentConfig($env)

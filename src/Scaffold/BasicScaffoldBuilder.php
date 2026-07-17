@@ -235,7 +235,8 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
         }
 
         $relative = ltrim(str_replace('\\', '/', substr($absolutePath, strlen($this->base))), '/');
-        $cmd = 'git -C ' . escapeshellarg($this->base) . ' ls-files --error-unmatch ' . escapeshellarg($relative) . ' 2>nul';
+        $nullDevice = PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null';
+        $cmd = 'git -C ' . escapeshellarg($this->base) . ' ls-files --error-unmatch ' . escapeshellarg($relative) . ' 2>' . escapeshellarg($nullDevice);
         @exec($cmd, $out, $code);
 
         return $code === 0;

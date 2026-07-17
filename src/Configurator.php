@@ -338,6 +338,8 @@ class Configurator
 
     private function sortPages($items): array
     {
+        $this->normalizeSettingsNodes($items['pages']);
+
         foreach ($items['pages'] as &$item) {
             $current = $item;
             if (! isset($current['pages']) || ! isset($current['current']) || ! isset($item['current']['menu'])) {
@@ -348,6 +350,32 @@ class Configurator
 
         return $items;
 
+    }
+
+    private function normalizeSettingsNodes(array &$items): void
+    {
+        foreach ($items as $key => &$item) {
+            if (! is_array($item)) {
+                $item = [];
+            }
+
+            if (! isset($item['current']) || ! is_array($item['current'])) {
+                $item['current'] = [
+                    'title' => Str::headline((string) $key),
+                    'has_index' => false,
+                    'showInMenu' => true,
+                    'menu' => [],
+                ];
+            }
+
+            $item['current']['has_index'] ??= false;
+            $item['current']['showInMenu'] ??= true;
+            $item['current']['menu'] ??= [];
+
+            if (isset($item['pages']) && is_array($item['pages'])) {
+                $this->normalizeSettingsNodes($item['pages']);
+            }
+        }
     }
 
     public function getLayoutOverridesForPath(string $locale, string $path): array
@@ -811,9 +839,15 @@ class Configurator
                 $slug = '/' . $locale . '/' . $slug;
             }
             $itemsSet = false;
-            $title = $item['current']['title'] ?? null;
+            $current = $item['current'] ?? [
+                'title' => null,
+                'has_index' => false,
+                'showInMenu' => true,
+                'menu' => [],
+            ];
+            $title = $current['title'] ?? null;
             $hasSub = ! empty($item['pages']);
-            $menu = $item['current']['menu'] ?? [];
+            $menu = $current['menu'] ?? [];
             $isLink = $this->isLink($slug);
             $currentPath = $prefix ? $prefix . '/' . $slug : $slug;
 
@@ -824,9 +858,9 @@ class Configurator
             }
             $tree[$fullPath] = [
                 'title' => $title,
-                'path' => $isLink ? $slug : ($item['current']['has_index'] ? $fullPath : null),
+                'path' => $isLink ? $slug : (! empty($current['has_index']) ? $fullPath : null),
                 'isLink' => $isLink,
-                'showInMenu' => $item['current']['showInMenu'],
+                'showInMenu' => $current['showInMenu'] ?? true,
                 'children' => [],
             ];
 

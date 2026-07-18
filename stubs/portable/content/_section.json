@@ -3,12 +3,6 @@
   "title": "Документация",
   "preset": "docs",
   "layout": {
-    "max_width": "wide",
-    "sidebar": {
-      "position": "left"
-    }
-  },
-  "navigation": {
-    "enabled": true
+    "max_width": "wide"
   }
 }

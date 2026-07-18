@@ -74,7 +74,8 @@ MARKDOWN;
         self::assertStringNotContainsString('<sf-', $document->markdownWithPlaceholders);
 
         $button = $document->normalizedCalls[0];
-        self::assertSame('ui.button', $button['component']);
+        self::assertSame('docara.component_call.v1', $button['schema']);
+        self::assertSame('ui.button', $button['id']);
         self::assertSame('outline', $button['props']['type']);
         self::assertSame('primary', $button['props']['scheme']);
         self::assertSame('Open <guide>', $button['props']['aria-label']);
@@ -84,7 +85,8 @@ MARKDOWN;
         );
 
         $alert = $document->normalizedCalls[1];
-        self::assertSame('ui.alert', $alert['component']);
+        self::assertSame('docara.component_call.v1', $alert['schema']);
+        self::assertSame('ui.alert', $alert['id']);
         self::assertSame('Heads <up>', $alert['props']['aria-label']);
         self::assertMatchesRegularExpression('/^docara-alert-[a-f0-9]{16}$/', $alert['props']['id']);
         self::assertStringStartsWith('<sf-alert id="' . $alert['props']['id'] . '" data-larena-smart-runtime="sf-v5.3.2-7e836d8a-dd786bba"', $alert['html']);

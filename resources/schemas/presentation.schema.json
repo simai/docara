@@ -1,0 +1,45 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://schemas.simai.io/docara/presentation/v1",
+    "title": "Docara portable presentation fragments",
+    "$defs": {
+        "layout": {
+            "type": "object",
+            "properties": {
+                "$reset": {
+                    "const": true
+                },
+                "max_width": {
+                    "type": "string",
+                    "enum": ["compact", "normal", "wide", "full"]
+                }
+            },
+            "additionalProperties": false
+        },
+        "settings": {
+            "type": "object",
+            "properties": {
+                "$reset": {
+                    "const": true
+                },
+                "theme": {
+                    "type": "string",
+                    "enum": ["system", "light", "dark"]
+                }
+            },
+            "additionalProperties": false
+        },
+        "navigation": {
+            "type": "object",
+            "properties": {
+                "$reset": {
+                    "const": true
+                },
+                "hidden": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}

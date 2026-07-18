@@ -3,10 +3,7 @@
   "title": "Лендинг",
   "preset": "landing",
   "layout": {
-    "max_width": "wide",
-    "sidebar": {
-      "$reset": true
-    }
+    "max_width": "wide"
   },
   "navigation": {
     "hidden": true

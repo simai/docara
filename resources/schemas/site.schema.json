@@ -33,10 +33,6 @@
             "type": "string",
             "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
         },
-        "theme": {
-            "type": "string",
-            "minLength": 1
-        },
         "title": {
             "type": "string",
             "minLength": 1
@@ -46,22 +42,13 @@
             "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
         },
         "layout": {
-            "type": "object"
+            "$ref": "presentation.schema.json#/$defs/layout"
         },
         "settings": {
-            "type": "object"
+            "$ref": "presentation.schema.json#/$defs/settings"
         },
         "navigation": {
-            "type": "object"
-        },
-        "variables": {
-            "type": "object"
-        },
-        "components": {
-            "type": "array",
-            "items": {
-                "$ref": "component-call.schema.json"
-            }
+            "$ref": "presentation.schema.json#/$defs/navigation"
         }
     },
     "additionalProperties": false

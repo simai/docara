@@ -22,12 +22,12 @@ Docara remains a small static-site generator rather than becoming Larena.
 
 ## Current Position
 
-The standalone implementation, accessible browser shell and Larena read-only
-adapter are complete in clean worktrees. Larena consumes the exact canonical
-build export instead of interpreting raw Docara JSON or Markdown again.
-Independent exact-candidate and Human-Centered Simplicity acceptance remain
-open. No production, release, archive, or repository-retirement action is in
-scope.
+The standalone implementation and accessible browser shell are complete in a
+clean worktree. Human-Centered Simplicity pre-acceptance found and removed a
+second no-op component surface and nonfunctional presentation settings. The
+corrected standalone contract is tested; the Larena read-only adapter and its
+exact fixture are being rebound to that corrected export. No production,
+release, archive, or repository-retirement action is in scope.
 
 ## Current Goal
 
@@ -87,9 +87,9 @@ Do not complete the goal until the requirement matrix in this workflow has no
 
 ## Current Remaining
 
-Standalone Batches 1-5 and Larena Batch 6 are implemented and verified. The
-browser portion of Batch 7 includes responsive/theme and keyboard-accessibility
-preflight. Independent exact-candidate acceptance remains open.
+Standalone Batches 1-5 are corrected and verified. Larena Batch 6 is reopened
+only to consume the corrected normalized call shape and presentation contract.
+Independent exact-candidate acceptance remains open.
 
 ## Do Not Complete Until
 
@@ -150,7 +150,7 @@ preflight. Independent exact-candidate acceptance remains open.
 | 3 | `docs`/`landing` presets and portable fixture | focused build and HTML assertions | completed |
 | 4 | `ui.alert`/`ui.button` Markdown calls and asset lock | manifest/props/asset tests, no moving refs | completed |
 | 5 | Legacy `.settings.php` compatibility and clean install | existing suite plus disposable install | completed |
-| 6 | Larena import adapter/proof for the same fixture | package tests and normalized-plan parity | completed |
+| 6 | Larena import adapter/proof for the same fixture | package tests and normalized-plan parity | in-progress |
 | 7 | Browser and reverse acceptance | desktop/mobile, light/dark, independent verdict | in-progress |
 
 ## Requirement Matrix
@@ -166,7 +166,7 @@ preflight. Independent exact-candidate acceptance remains open.
 | Clean install | disposable install log and generated site | pass |
 | Negative validation | invalid fixture matrix | pass |
 | Determinism | repeated plan/build hash comparison | pass |
-| Larena import proof | exact build-export fixture + package adapter tests | pass |
+| Larena import proof | exact corrected build-export fixture + package adapter tests | partial |
 | Responsive/theme smoke | screenshots/assertions for 4 context pairs | pass |
 | Independent acceptance | exact-candidate tester verdict | missing |
 
@@ -261,14 +261,32 @@ fact is required.
     build, and legacy `.settings.php` compatibility.
 - Verification:
   - focused portable suite: 51 tests / 328 assertions, PASS;
-  - complete repository suite after accessibility hardening: 322 tests / 1,019
-    assertions, PASS with PHP 8.4 and UTC;
+  - complete repository suite after strict presentation-contract correction:
+    323 tests / 1,033 assertions, PASS with PHP 8.4 and UTC;
   - Pint, Composer validation, JSON parsing, and `git diff --check`, PASS.
 - Remaining: none.
 
+### HCS correction batch
+
+- Status: standalone completed; Larena rebind in progress.
+- Removed from site/section/page descriptors because they were accepted but not
+  rendered: JSON `components`, `variables`, top-level `theme`, sidebar
+  position, navigation enabled/expanded/order and table-of-contents settings.
+- The only presentation keys in v1 are now strict, typed and shared through one
+  schema: `layout.max_width`, `settings.theme`, and `navigation.hidden`.
+- Markdown remains the single Smart-component authoring surface. Each parsed
+  call now becomes a schema-validated `docara.component_call.v1` projection
+  with `id` and normalized `props` before runtime metadata is attached.
+- The Larena import documentation now describes the implemented canonical
+  export boundary instead of a second raw-tree parser.
+- Verification: focused 43 tests / 283 assertions and full 323 tests / 1,033
+  assertions, PASS.
+- Remaining: regenerate the exact export from the correction commit and bind
+  the Larena adapter/fixture to it.
+
 ### Batch 6
 
-- Status: completed
+- Status: in-progress after HCS correction
 - Done:
   - standalone remains the only owner of raw JSON/Markdown schemas,
     inheritance, directive parsing and `ResolvedPagePlan` construction;
@@ -282,7 +300,7 @@ fact is required.
     collision-safe;
   - valid `@defaults` provenance and literal `DOCARA_COMPONENT_...` prose are
     accepted without weakening declared-placeholder checks.
-- Verification:
+- Previous verification (superseded fixture, retained as diagnostic history):
   - Larena package candidate:
     `771f7dd81a9653a7bc3146ef9b1451976a2e70c5`;
   - exact export: 97,114 bytes, SHA-256
@@ -291,7 +309,8 @@ fact is required.
   - focused package suite: 23 tests / 144 assertions, PASS;
   - full package gate: 70 tests / 874 assertions, PHPStan, lint, evidence and
     scope checks, PASS.
-- Remaining: none for Batch 6.
+- Remaining: accept the corrected call schema and theme path, regenerate the
+  exact fixture, rerun the package gate, and freeze a new Larena candidate.
 
 ### Batch 7
 
@@ -323,12 +342,16 @@ fact is required.
 - HCS preflight caught that an outline on `sf-button` itself is invisible when
   the hydrated custom element uses `display: contents`; the shell now targets
   the real light-DOM button with `:focus-visible`.
+- Removing local-check ignore patterns looked like harmless cleanup but failed
+  the repository-hygiene gate. They were restored as internal protective
+  complexity and remain outside the product/authoring surface.
 
 ## Final Result
 
-- Result: standalone and Larena implementation candidates are ready for one
-  independent cross-repository acceptance pass.
-- Verification: standalone, browser accessibility preflight, exact export
-  parity, and Larena package gates pass.
-- Remaining: exact-candidate independent Tester and HCS verdicts.
+- Result: the corrected standalone contract is ready; the previous Larena
+  fixture is intentionally superseded.
+- Verification: standalone full regression and strict/no-op negative coverage
+  pass.
+- Remaining: corrected Larena fixture/candidate, fresh browser evidence, then
+  exact-candidate independent Tester and HCS verdicts.
 - Follow-up: none outside the goal yet.

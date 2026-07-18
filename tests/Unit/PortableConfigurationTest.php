@@ -51,13 +51,12 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame('content', $plan->configuration['content_root']);
         self::assertSame('framework.lock.json', $plan->configuration['framework_lock']);
         self::assertSame('docs/install', $plan->configuration['slug']);
-        self::assertSame('right', $plan->configuration['layout']['sidebar']['position']);
-        self::assertArrayNotHasKey('width', $plan->configuration['layout']['sidebar']);
-        self::assertSame(['hero', 'content'], $plan->configuration['layout']['slots']);
-        self::assertSame('72rem', $plan->configuration['layout']['content']['max_width']);
-        self::assertSame(['deep'], $plan->configuration['settings']['navigation']['items']);
-        self::assertSame('content/docs/_section.json', $plan->provenance['/layout/sidebar/position']);
-        self::assertSame('content/docs/deep/_section.json', $plan->provenance['/settings/navigation/items']);
+        self::assertSame('full', $plan->configuration['layout']['max_width']);
+        self::assertSame('dark', $plan->configuration['settings']['theme']);
+        self::assertTrue($plan->configuration['navigation']['hidden']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/layout/max_width']);
+        self::assertSame('content/docs/deep/_section.json', $plan->provenance['/settings/theme']);
+        self::assertSame('content/docs/_section.json', $plan->provenance['/navigation/hidden']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/preset']);
         self::assertSame(
             ['site', 'framework-lock', 'section', 'section', 'section', 'section', 'page', 'content'],
@@ -202,13 +201,68 @@ final class PortableConfigurationTest extends TestCase
     public function test_invalid_component_calls_are_rejected_by_the_shared_schema(): void
     {
         foreach ([
-            ['schema' => 'docara.component_call.v2', 'id' => 'ui.alert'],
-            ['schema' => 'docara.component_call.v1', 'id' => 'alert'],
-            ['schema' => 'docara.component_call.v1', 'id' => 'ui.alert', 'unknown' => true],
+            ['schema' => 'docara.component_call.v2', 'id' => 'ui.alert', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'alert', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.card', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.alert'],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.alert', 'props' => [], 'unknown' => true],
         ] as $call) {
             try {
                 (new SchemaRepository)->assertValid($call, 'component-call.schema.json');
                 self::fail('Invalid component call unexpectedly passed schema validation.');
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
+            }
+        }
+    }
+
+    public function test_descriptor_schemas_expose_only_working_presentation_settings(): void
+    {
+        foreach ([
+            ['site.schema.json', [
+                'schema' => 'docara.site.v1',
+                'preset' => 'docs',
+                'framework_lock' => 'framework.lock.json',
+                'layout' => ['max_width' => 'wide'],
+                'settings' => ['theme' => 'system'],
+                'navigation' => ['hidden' => false],
+            ]],
+            ['section.schema.json', [
+                'schema' => 'docara.section.v1',
+                'layout' => ['$reset' => true, 'max_width' => 'compact'],
+                'settings' => ['theme' => 'dark'],
+                'navigation' => ['hidden' => true],
+            ]],
+            ['page.schema.json', [
+                'schema' => 'docara.page.v1',
+                'layout' => ['max_width' => 'full'],
+                'settings' => ['$reset' => true, 'theme' => 'light'],
+                'navigation' => ['$reset' => true],
+            ]],
+        ] as [$schema, $descriptor]) {
+            (new SchemaRepository)->assertValid($descriptor, $schema);
+            $this->addToAssertionCount(1);
+        }
+
+        $site = [
+            'schema' => 'docara.site.v1',
+            'preset' => 'docs',
+            'framework_lock' => 'framework.lock.json',
+        ];
+        foreach ([
+            [$site + ['theme' => 'dark'], 'site.schema.json'],
+            [$site + ['layout' => ['sidebar' => ['position' => 'left']]], 'site.schema.json'],
+            [$site + ['layout' => ['max_width' => '72rem']], 'site.schema.json'],
+            [['schema' => 'docara.section.v1', 'settings' => ['theme' => 'sepia']], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'settings' => ['table_of_contents' => true]], 'section.schema.json'],
+            [['schema' => 'docara.page.v1', 'navigation' => ['enabled' => true]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'navigation' => ['hidden' => 'false']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'components' => []], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'variables' => []], 'page.schema.json'],
+        ] as [$descriptor, $schema]) {
+            try {
+                (new SchemaRepository)->assertValid($descriptor, $schema);
+                self::fail("No-op or invalid presentation settings unexpectedly passed [$schema].");
             } catch (PortableConfigurationException $exception) {
                 self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
             }
@@ -399,44 +453,34 @@ final class PortableConfigurationTest extends TestCase
             'content_root' => 'content',
             'base_url' => '/',
             'default_locale' => 'en',
-            'theme' => 'system',
             'title' => 'Portable docs',
             'locale' => 'en',
             'layout' => [
-                'sidebar' => ['position' => 'left', 'width' => '18rem'],
-                'content' => ['max_width' => '72rem'],
-                'slots' => ['header', 'content', 'footer'],
+                'max_width' => 'normal',
             ],
             'settings' => [
-                'navigation' => ['items' => ['home', 'guides']],
+                'theme' => 'system',
+            ],
+            'navigation' => [
+                'hidden' => false,
             ],
         ]);
         $this->writeJson('framework.lock.json', $this->frameworkLock());
         $this->writeJson('_section.json', [
             'schema' => 'docara.section.v1',
-            'variables' => ['section_depth' => 0],
         ]);
         $this->writeJson('content/_section.json', [
             'schema' => 'docara.section.v1',
-            'variables' => ['section_depth' => 1],
+            'layout' => ['max_width' => 'compact'],
         ]);
         $this->writeJson('content/docs/_section.json', [
             'schema' => 'docara.section.v1',
-            'layout' => [
-                'sidebar' => ['$reset' => true, 'position' => 'right'],
-                'slots' => ['navigation', 'content'],
-            ],
-            'components' => [[
-                'schema' => 'docara.component_call.v1',
-                'id' => 'ui.alert',
-                'props' => ['variant' => 'info'],
-            ]],
+            'layout' => ['max_width' => 'wide'],
+            'navigation' => ['hidden' => true],
         ]);
         $this->writeJson('content/docs/deep/_section.json', [
             'schema' => 'docara.section.v1',
-            'settings' => [
-                'navigation' => ['items' => ['deep']],
-            ],
+            'settings' => ['theme' => 'dark'],
         ]);
         $this->write('content/docs/deep/install.md', "# Install\n\nPortable content.\n");
         $this->writeJson('content/docs/deep/install.page.json', [
@@ -444,15 +488,7 @@ final class PortableConfigurationTest extends TestCase
             'preset' => 'landing',
             'slug' => 'docs/install',
             'locale' => 'en',
-            'layout' => [
-                'slots' => ['hero', 'content'],
-            ],
-            'components' => [[
-                'schema' => 'docara.component_call.v1',
-                'id' => 'ui.button',
-                'props' => ['href' => '/start'],
-                'content' => 'Start',
-            ]],
+            'layout' => ['max_width' => 'full'],
         ]);
     }
 

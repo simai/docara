@@ -92,11 +92,13 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertSame(1, $guidePlan['resolved_page_plan']['contract_version']);
         self::assertSame('docs', $guidePlan['resolved_page_plan']['configuration']['preset']);
         self::assertSame('wide', $guidePlan['resolved_page_plan']['configuration']['layout']['max_width']);
-        self::assertSame('left', $guidePlan['resolved_page_plan']['configuration']['layout']['sidebar']['position']);
-        self::assertTrue($guidePlan['resolved_page_plan']['configuration']['settings']['table_of_contents']);
         self::assertSame(
             ['ui.alert', 'ui.button'],
-            array_column($guidePlan['component_runtime']['normalized_calls'], 'component'),
+            array_column($guidePlan['component_runtime']['normalized_calls'], 'id'),
+        );
+        self::assertSame(
+            ['docara.component_call.v1', 'docara.component_call.v1'],
+            array_column($guidePlan['component_runtime']['normalized_calls'], 'schema'),
         );
         self::assertSame(
             ['docara.json', 'simai-framework.lock.json', 'content/_section.json', 'content/guides/_section.json', 'content/guides/getting-started.page.json', 'content/guides/getting-started.md'],

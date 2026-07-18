@@ -39,12 +39,21 @@ For `content/guides/install.md`, the exact order is:
 6. optional `content/guides/install.page.json`;
 7. `content/guides/install.md` as content.
 
-Objects merge recursively. Lists replace inherited lists. An object beginning
-with `{"$reset": true}` clears the inherited branch to an empty JSON object
-before applying its sibling keys. `{"$reset": true, "$value": ...}` replaces a
-branch with a scalar, list, or non-empty object. To request an empty object, use
-the reset-only form; do not place an empty object in `$value`. Every winning
-value records its source in `provenance`.
+Objects merge recursively and scalar values override inherited values. A known
+presentation object beginning with `{"$reset": true}` clears that inherited
+branch before applying its sibling keys. Every winning value records its source
+in `provenance`.
+
+Version 1 deliberately exposes only settings that both presets actually use:
+
+- `layout.max_width`: `compact`, `normal`, `wide`, or `full`;
+- `settings.theme`: `system`, `light`, or `dark`;
+- `navigation.hidden`: a boolean that removes the page from generated
+  navigation.
+
+These nested objects are strict. Unknown or incorrectly typed keys fail schema
+validation instead of becoming silent no-ops. Smart-components are authored
+only inside Markdown; JSON descriptors do not provide a second component list.
 
 ## Presets
 
@@ -145,10 +154,13 @@ the same lock produce byte-identical output.
 
 ## Larena import boundary
 
-The transferable unit is the content tree plus `docara.json` and
-`simai-framework.lock.json`. Larena should parse it read-only into its own
-resolved-page plan, verify the same hashes, and only then map it to Larena
-storage. Import must not mutate files or the database during validation.
+Standalone Docara is the only interpreter of the content tree, `docara.json`,
+section descriptors, page sidecars and Markdown extensions. It emits the
+canonical `.docara/resolved-page-plans.json` artifact. Larena accepts that
+artifact only with an external SHA-256 receipt, rechecks its canonical hashes
+and exact Framework lock, re-renders component props through its own Smart
+Registry, and then maps the verified plan to Larena contracts. Validation does
+not mutate source files or the database.
 
 The standalone fixture and its Larena adapter are acceptance artifacts. The
 legacy `docara-template` and `docara-mix` repositories must not be archived

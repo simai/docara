@@ -1,7 +1,12 @@
 # Cross-repository pre-acceptance evidence
 
 Date: 2026-07-18
-Status: PASS, pending independent exact-candidate acceptance
+Status: SUPERSEDED by Human-Centered Simplicity correction
+
+This file records the first cross-repository preflight only. Its export and
+Larena candidate are no longer acceptance candidates after strict presentation
+settings and normalized component-call semantics were corrected. A replacement
+exact-candidate record must be produced before independent acceptance.
 
 ## Scope
 

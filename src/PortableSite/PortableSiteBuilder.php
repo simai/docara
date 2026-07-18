@@ -75,7 +75,7 @@ final readonly class PortableSiteBuilder
                 'description' => (string) ($plan->configuration['description'] ?? ''),
                 'locale' => (string) ($plan->configuration['locale'] ?? $site['default_locale'] ?? 'en'),
                 'preset' => (string) ($plan->configuration['preset'] ?? 'docs'),
-                'theme' => (string) data_get($plan->configuration, 'settings.theme', $plan->configuration['theme'] ?? 'system'),
+                'theme' => (string) data_get($plan->configuration, 'settings.theme', 'system'),
                 'max_width' => (string) data_get($plan->configuration, 'layout.max_width', 'normal'),
                 'navigation_hidden' => (bool) data_get($plan->configuration, 'navigation.hidden', false),
                 'url' => $route['url'],

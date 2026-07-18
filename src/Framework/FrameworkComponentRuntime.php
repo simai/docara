@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Framework;
 
+use Simai\Docara\Portable\SchemaRepository;
+
 final readonly class FrameworkComponentRuntime
 {
     private function __construct(
         private FrameworkManifestRepository $manifests,
         private ComponentDirectiveParser $parser,
+        private SchemaRepository $schemas,
         private FrameworkPropsValidator $validator,
         private FrameworkHostRenderer $renderer,
         private FrameworkAssetPlanner $assetPlanner,
@@ -22,6 +25,7 @@ final readonly class FrameworkComponentRuntime
         return new self(
             $repository,
             new ComponentDirectiveParser,
+            new SchemaRepository,
             new FrameworkPropsValidator,
             new FrameworkHostRenderer,
             new FrameworkAssetPlanner($repository, $assetBase),
@@ -35,6 +39,7 @@ final readonly class FrameworkComponentRuntime
         return new self(
             $repository,
             new ComponentDirectiveParser,
+            new SchemaRepository,
             new FrameworkPropsValidator,
             new FrameworkHostRenderer,
             new FrameworkAssetPlanner($repository, $assetBase),
@@ -55,9 +60,13 @@ final readonly class FrameworkComponentRuntime
             $html = $this->renderer->render($manifest, $props, $this->manifests->pairId());
             $renderedHtml[$directive->placeholder] = $html;
             $components[] = $directive->component;
-            $calls[] = [
-                'component' => $directive->component,
+            $portableCall = [
+                'schema' => 'docara.component_call.v1',
+                'id' => $directive->component,
                 'props' => $props,
+            ];
+            $this->schemas->assertValid($portableCall, 'component-call.schema.json');
+            $calls[] = $portableCall + [
                 'ordinal' => $directive->ordinal,
                 'line' => $directive->line,
                 'placeholder' => $directive->placeholder,

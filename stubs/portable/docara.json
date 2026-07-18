@@ -7,15 +7,9 @@
   "default_locale": "ru",
   "base_url": "/",
   "layout": {
-    "max_width": "wide",
-    "sidebar": {
-      "position": "left"
-    }
+    "max_width": "wide"
   },
   "settings": {
     "theme": "system"
-  },
-  "navigation": {
-    "enabled": true
   }
 }

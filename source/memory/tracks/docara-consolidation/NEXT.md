@@ -4,12 +4,12 @@
 
 Track `docara-consolidation` is attached to workflow:
 
-- `source/workflow/2026-07-18-docara-product-ui-restoration.md`
-- workflow title: Workflow: Docara product UI restoration
+- `source/workflow/2026-07-19-docara-product-completion.md`
+- workflow title: Workflow: Docara product completion
 
 ## Next Meaningful Goal
 
-Реализовать следующую продуктовую вертикаль Docara: локальный поиск, правую навигацию по заголовкам, хлебные крошки, переходы назад/вперёд и простые настройки чтения — с наследуемой JSON-конфигурацией, pinned Simai Framework, схемами, отрицательными тестами, публичной документацией, browser evidence и независимой приёмкой, но без публичного релиза или миграции default-веток.
+Довести Docara до целостного локального продукта: ясное многоуровневое меню и active trail, поиск и reading context, адаптивный landing, полный практический каталог typed Markdown/Simai Framework компонентов, полная документация и независимая приёмка одного exact candidate с безопасной публикацией на `docara.test`.
 
 ## Stages
 
@@ -19,15 +19,13 @@ Track `docara-consolidation` is attached to workflow:
 
 ## Next Safe Batch
 
-Start Batch 3 from exact candidate `83d677c7...`: inventory pinned Framework
-and old Docara primitives, define the inherited JSON contract and negative
-tests first, then implement local search, right heading TOC, breadcrumbs,
-previous/next and simple reading settings. Freeze and independently accept one
-exact candidate. Do not start landing work, release integration, default-branch
-migration or `docara-mix` retirement.
+Close the independent UX/designer and exact-archive tester gates for the bounded
+Batch 1 candidate. If they pass, publish that accepted stage to `docara.test`
+through verified staging and rollback, then continue directly into Batch 2:
+deterministic local search derived from published content.
 
 ## Checks
 
-- Read `source/workflow/2026-07-18-docara-product-ui-restoration.md`.
+- Read `source/workflow/2026-07-19-docara-product-completion.md`.
 - Check route/gates before writes.
 - Update this track memory after progress.

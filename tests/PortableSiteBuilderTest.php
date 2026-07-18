@@ -65,6 +65,7 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('data-docara-shell-controller', $html);
             self::assertStringContainsString('railRect.width<=0||railRect.height<=0', $html);
             self::assertStringContainsString("addEventListener('resize',scheduleActiveReveal", $html);
+            self::assertStringContainsString("customElements.whenDefined('sf-icon')", $html);
             self::assertStringContainsString('.sf-theme-button:focus-visible', $html);
             self::assertStringContainsString('sf-button>button:focus-visible', $html);
             self::assertStringContainsString('@7e836d8a9414d5da553fb1ab0404721e5b48769a/', $html);
@@ -83,6 +84,52 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('<sf-icon icon="expand_less" aria-hidden="true"></sf-icon>', $fourthLevel);
         self::assertStringContainsString('href="/guides/platform/configuration/layout/" aria-current="page"', $fourthLevel);
         self::assertGreaterThanOrEqual(3, substr_count($fourthLevel, ' expanded aria-expanded="true"'));
+        $navigationDocument = new \DOMDocument;
+        $previous = libxml_use_internal_errors(true);
+        $navigationDocument->loadHTML($fourthLevel, LIBXML_NOERROR | LIBXML_NOWARNING);
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+        $navigationXpath = new \DOMXPath($navigationDocument);
+        foreach (range(1, 4) as $depth) {
+            self::assertGreaterThanOrEqual(
+                1,
+                $navigationXpath->query(
+                    '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
+                    . '//li[@data-docara-navigation-depth="' . $depth . '"]'
+                    . '/div[contains(concat(" ", normalize-space(@class), " "), " sf-menu-element--level-'
+                    . $depth . ' ")]',
+                )?->length ?? 0,
+                "Desktop navigation depth [$depth] must use the pinned Framework menu level class.",
+            );
+        }
+        self::assertSame(
+            1,
+            $navigationXpath->query(
+                '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
+                . '//li[@data-docara-active-role="page"]//a[@aria-current="page"]',
+            )?->length,
+        );
+        self::assertSame(
+            1,
+            $navigationXpath->query(
+                '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
+                . '//li[@data-docara-active-role="section"]',
+            )?->length,
+        );
+        self::assertSame(
+            2,
+            $navigationXpath->query(
+                '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
+                . '//li[@data-docara-active-role="ancestor"]',
+            )?->length,
+        );
+        self::assertSame(
+            3,
+            $navigationXpath->query(
+                '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
+                . '//*[@data-docara-disclosure][@data-docara-contains-current="true"]',
+            )?->length,
+        );
 
         $brandAssets = glob($this->tmpPath('build_local/_docara/brand/*')) ?: [];
         self::assertCount(1, $brandAssets, 'Identical logo, dark logo and favicon bytes must be deduplicated.');

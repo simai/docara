@@ -1,0 +1,234 @@
+schema: docara.product_capability_matrix.v1
+date: "2026-07-19"
+baseline_revision: "31f468be85d015b962fccc2b4c089204aab1410b"
+purpose: >-
+  Goal acceptance projection. This is not a second Framework registry; each
+  record must be proven from native Markdown, an exact Framework contract, a
+  Docara recipe/generated feature and executable evidence.
+status_legend:
+  pass: accepted on the exact current candidate
+  bounded: useful baseline exists but the required product contract is incomplete
+  required_missing: required by this Goal and not yet implemented/accepted
+  deferred: explicit non-goal with a reason
+capabilities:
+  - id: navigation.hierarchy
+    family: reader_orientation
+    kind: framework_component_recipe
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 1
+    source: simai/ui:distr/component/menu
+  - id: navigation.active_trail
+    family: reader_orientation
+    kind: generated
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 1
+    source: src/PortableSite/PortableNavigationBuilder.php
+  - id: discovery.full_text_search
+    family: discovery
+    kind: generated
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 2
+    source: pending_docara_static_index
+  - id: reading.heading_toc
+    family: reading_context
+    kind: generated
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 3
+    source: pending_heading_outline
+  - id: reading.breadcrumbs
+    family: reading_context
+    kind: generated_recipe
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 3
+    source: pending_navigation_context
+  - id: reading.previous_next
+    family: reading_context
+    kind: generated_recipe
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 3
+    source: pending_navigation_context
+  - id: reading.settings
+    family: reading_context
+    kind: app_behavior
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 4
+    source: src/PortableSite/PortableHtmlRenderer.php
+  - id: layout.landing
+    family: layouts
+    kind: recipe
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 5
+    source: src/PortableSite/PortableHtmlRenderer.php
+  - id: native.headings_and_text
+    family: native_markdown
+    kind: native
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: league/commonmark
+  - id: native.lists_and_quotes
+    family: native_markdown
+    kind: native
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: league/commonmark
+  - id: native.image
+    family: native_markdown
+    kind: native
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: src/PortableSite/PortableSiteBuilder.php
+  - id: native.code
+    family: native_markdown
+    kind: native_recipe
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: src/PortableSite/PortableMarkdownRenderer.php
+  - id: native.table
+    family: native_markdown
+    kind: native_recipe
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: src/PortableSite/PortableMarkdownRenderer.php
+  - id: recipe.card
+    family: composition
+    kind: recipe
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: src/PortableSite/PortableMarkdownRenderer.php
+  - id: recipe.steps
+    family: composition
+    kind: recipe
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: src/PortableSite/PortableMarkdownRenderer.php
+  - id: recipe.tabs
+    family: composition
+    kind: typed_composition
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 7
+    source: pending_typed_composition
+  - id: recipe.columns
+    family: composition
+    kind: typed_composition
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 7
+    source: pending_typed_composition
+  - id: recipe.panel
+    family: composition
+    kind: typed_composition
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 7
+    source: pending_typed_composition
+  - id: recipe.cta_link
+    family: composition
+    kind: recipe
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 5
+    source: pending_landing_recipe
+  - id: smart.alert
+    family: framework_smart
+    kind: smart
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: resources/framework/manifests/ui-alert.json
+  - id: smart.button
+    family: framework_smart
+    kind: smart
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: resources/framework/manifests/ui-button.json
+  - id: smart.badge
+    family: framework_smart
+    kind: smart
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 7
+    source: pending_exact_projection
+  - id: smart.icon
+    family: framework_smart
+    kind: smart
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 7
+    source: pending_exact_projection
+  - id: catalogue.effective_projection
+    family: authoring_system
+    kind: generated
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 6
+    source: pending_capability_projection
+  - id: documentation.four_reading_paths
+    family: documentation
+    kind: content
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 8
+    source: docs/site/content
+  - id: optional.mermaid
+    family: rich_content
+    kind: external_renderer
+    priority: optional
+    baseline: deferred
+    target: deferred
+    reason: requires a separately pinned renderer and security contract
+  - id: optional.math
+    family: rich_content
+    kind: external_renderer
+    priority: optional
+    baseline: deferred
+    target: deferred
+    reason: not needed for the first complete product vertical
+  - id: optional.vendor_embeds
+    family: rich_content
+    kind: embed
+    priority: optional
+    baseline: deferred
+    target: deferred
+    reason: privacy and vendor allowlists require a separate contract

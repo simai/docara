@@ -101,6 +101,7 @@ final readonly class PortableNavigationBuilder
             $node['children'] = $this->activate($node['children'], $activeUrl);
             $node['active'] = is_string($node['url']) && $node['url'] === $activeUrl;
             $node['active_ancestor'] = $this->containsActive($node['children']);
+            $node['current_section'] = $this->containsDirectActivePage($node['children']);
             $node['open'] = $node['active'] || $node['active_ancestor'];
         }
         unset($node);
@@ -113,6 +114,18 @@ final readonly class PortableNavigationBuilder
     {
         foreach ($nodes as $node) {
             if (($node['active'] ?? false) === true || ($node['active_ancestor'] ?? false) === true) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** @param list<array<string, mixed>> $nodes */
+    private function containsDirectActivePage(array $nodes): bool
+    {
+        foreach ($nodes as $node) {
+            if (($node['active'] ?? false) === true) {
                 return true;
             }
         }

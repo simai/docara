@@ -1,11 +1,11 @@
 track_id: "docara-consolidation"
 status: "active"
 owner_skill: "teamlead"
-current_goal: "Реализовать следующую продуктовую вертикаль Docara: локальный поиск, правую навигацию по заголовкам, хлебные крошки, переходы назад/вперёд и простые настройки чтения — с наследуемой JSON-конфигурацией, pinned Simai Framework, схемами, отрицательными тестами, публичной документацией, browser evidence и независимой приёмкой, но без публичного релиза или миграции default-веток."
-current_stage: "planned"
-current_workflow: "source/workflow/2026-07-18-docara-product-ui-restoration.md"
-last_completed_batch: "Batch 2 — hierarchical shell, inherited branding and responsive navigation accepted on exact candidate `83d677c7eb5f22d9ca2f4ac16990fe16eddbe985`."
-next_step: "Start Batch 3 from exact candidate `83d677c7...`: inventory pinned Framework and old Docara primitives, define the inherited JSON contract and negative tests first, then implement local search, right heading TOC, breadcrumbs, previous/next and simple reading settings. Freeze and independently accept one exact candidate. Do not start landing work, release integration, default-branch migration or `docara-mix` retirement."
+current_goal: "Довести Docara до целостного локального продукта: ясное многоуровневое меню и active trail, поиск и reading context, адаптивный landing, полный практический каталог typed Markdown/Simai Framework компонентов, полная документация и независимая приёмка одного exact candidate с безопасной публикацией на `docara.test`."
+current_stage: "`planned`"
+current_workflow: "source/workflow/2026-07-19-docara-product-completion.md"
+last_completed_batch: "The first product vertical was accepted on implementation candidate `83d677c7eb5f22d9ca2f4ac16990fe16eddbe985` and closure commit `31f468be85d015b962fccc2b4c089204aab1410b`."
+next_step: "Close the independent UX/designer and exact-archive tester gates for the bounded Batch 1 candidate. If they pass, publish that accepted stage to `docara.test` through verified staging and rollback, then continue directly into Batch 2: deterministic local search derived from published content."
 blockers: []
 related_tracks: []
-updated_at: "2026-07-18"
+updated_at: "2026-07-19"

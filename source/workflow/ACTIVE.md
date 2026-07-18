@@ -1,35 +1,32 @@
-# Workflow: Docara consolidation and local documentation
+# Workflow: Docara product completion
 
-Date: 2026-07-18
-Status: local_publication_accepted_release_retirement_pending
-Workflow ID: `2026-07-18-docara-consolidation-and-local-docs`
+Date: 2026-07-19
+Status: in-progress
+Workflow ID: `2026-07-19-docara-product-completion`
 Process model: `general_delivery`
-Current state: `evidence_recorded`
+Current state: `planned`
+Target state: `launch_record_ready`
 
-## Final Outcome
+## Goal
 
-Docara is the canonical owner of its generator, starter, schemas, examples,
-Markdown authoring contract, and generated template mirror. Maintained
-consumers have verified Vite migration candidates, the portable route remains
-PHP-only, and the new self-hosted documentation is accepted at
-`https://docara.test/` with backup and rollback evidence.
-
-## Current Goal
-
-Preserve the accepted exact Docara candidate and local publication. Prepare the
-next separately gated release/default-branch integration batch without
-claiming retirement, release readiness, production readiness, or ecosystem
-readiness.
+Complete the remaining local Docara product stages: clear multi-level menu and
+active trail, search and reading context, landing, full typed-component
+catalogue, complete documentation and exact independent acceptance.
 
 ## Source Of Truth
 
-- workflow: `source/workflow/2026-07-18-docara-consolidation-and-local-docs.md`;
-- launch record: `source/workflow/2026-07-18-docara-consolidation-and-local-docs.launch.yaml`;
-- evidence: `source/workflow/evidence/2026-07-18-docara-consolidation-and-local-docs/`.
+- workflow: `source/workflow/2026-07-19-docara-product-completion.md`;
+- launch record: `source/workflow/2026-07-19-docara-product-completion.launch.yaml`;
+- evidence: `source/workflow/evidence/2026-07-19-docara-product-completion/`.
+
+## Current Batch
+
+Batch 0 — reproduce the menu defects, compare official reference products,
+inventory pinned Framework building blocks and freeze the test-first Batch 1
+contract.
 
 ## Next Step
 
-Create an exact release plan for `4a312c1…`, generated mirror publication,
-consumer lock updates, and acceptance. `docara-mix` remains **NOT READY** for
-archive until active default branches have zero references and an independent
-retirement verdict passes.
+Continue directly into the menu hierarchy/active-trail correction when Batch 0
+has no owner or Framework blocker. Public release, default-branch migration and
+repository retirement remain excluded.

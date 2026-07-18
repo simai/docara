@@ -1,10 +1,10 @@
 # Workflow: Docara consolidation and local documentation
 
 Date: 2026-07-18
-Status: exact_candidate_verification_and_local_publication_active
+Status: local_publication_accepted_release_retirement_pending
 Workflow ID: `2026-07-18-docara-consolidation-and-local-docs`
 Process model: `general_delivery`
-Current state: `tests_recorded`
+Current state: `evidence_recorded`
 
 ## Final Outcome
 
@@ -16,10 +16,10 @@ PHP-only, and the new self-hosted documentation is accepted at
 
 ## Current Goal
 
-Freeze and independently accept the exact Docara candidate, then perform the
-gated local backup/swap and browser acceptance. Do not claim a release, publish
-the external mirror, merge consumer branches, or archive `docara-mix` in this
-batch.
+Preserve the accepted exact Docara candidate and local publication. Prepare the
+next separately gated release/default-branch integration batch without
+claiming retirement, release readiness, production readiness, or ecosystem
+readiness.
 
 ## Source Of Truth
 
@@ -29,6 +29,7 @@ batch.
 
 ## Next Step
 
-Complete final exact-candidate gates and commits, obtain independent tester and
-Human-Centered Simplicity verdicts, then publish only the verified static output
-to the local ServBay site with a timestamped backup.
+Create an exact release plan for `4a312c1…`, generated mirror publication,
+consumer lock updates, and acceptance. `docara-mix` remains **NOT READY** for
+archive until active default branches have zero references and an independent
+retirement verdict passes.

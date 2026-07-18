@@ -1,0 +1,284 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.review",
+  "quality_control_id": "human_centered_simplicity",
+  "applicable": true,
+  "task": "Simplify the Docara authoring and quick-start interface while preserving the\naccepted exact candidate and local publication evidence. Then move only\nthrough the next release/default-branch gates needed to publish the generated\nmirror, land the five maintained Vite migrations, prove zero active references,\nand archive `docara-mix` safely. Do not claim retirement or broader readiness\nbefore those gates pass.",
+  "primary_user_outcome": {
+    "id": "UO-DOCARA-START",
+    "actor": "автор документации",
+    "job": "создать и собрать первый portable-сайт без ложных действий",
+    "success_condition": "quick-start содержит только рабочие шаги, а образец кнопки не обещает действие"
+  },
+  "changed_surface_inventory": {
+    "mode": "git_range",
+    "baseline_ref": "725f22b9996b84640a115be63b86be57802477c5",
+    "target_ref": "4a312c1b14cf1e0ed0ad77d32e39b006b2ff9049",
+    "diff_sha256": "5241174170e2a90c101fc53e2d7893c99b83b9549c0b64aafadbbcc9a7db0536",
+    "evidence_paths": [
+      ".gitignore",
+      "docs/site/content/components/button.md",
+      "docs/site/content/start.md"
+    ],
+    "files": [
+      {
+        "path": ".gitignore",
+        "surface_ids": [
+          "generated_output_ignore_rule"
+        ]
+      },
+      {
+        "path": "docs/site/content/components/button.md",
+        "surface_ids": [
+          "button_demo"
+        ]
+      },
+      {
+        "path": "docs/site/content/start.md",
+        "surface_ids": [
+          "portable_quick_start",
+          "quick_start_false_affordance"
+        ]
+      }
+    ]
+  },
+  "necessity_map": [
+    {
+      "id": "portable_quick_start",
+      "surface_type": "screen",
+      "description": "Рабочий PHP-only quick-start",
+      "disposition": "retain",
+      "disclosure": "visible",
+      "justification": {
+        "type": "user_outcome",
+        "ref": "UO-DOCARA-START"
+      }
+    },
+    {
+      "id": "quick_start_false_affordance",
+      "surface_type": "action",
+      "description": "Неработающая кнопка удалена из primary quick-start",
+      "disposition": "remove",
+      "disclosure": "removed",
+      "justification": {
+        "type": "not_needed",
+        "ref": "docs/site/content/start.md"
+      }
+    },
+    {
+      "id": "button_demo",
+      "surface_type": "ui_element",
+      "description": "Образец кнопки явно подписан как демонстрационный и отключён",
+      "disposition": "retain",
+      "disclosure": "progressive",
+      "justification": {
+        "type": "user_outcome",
+        "ref": "UO-DOCARA-START"
+      }
+    },
+    {
+      "id": "generated_output_ignore_rule",
+      "surface_type": "configuration",
+      "description": "Внутреннее правило исключает generated source/output из Git",
+      "disposition": "retain",
+      "disclosure": "internal",
+      "justification": {
+        "type": "maintainability",
+        "ref": ".gitignore"
+      }
+    }
+  ],
+  "removal_review": {
+    "challenged_ids": [
+      "portable_quick_start",
+      "quick_start_false_affordance",
+      "button_demo",
+      "generated_output_ignore_rule"
+    ],
+    "removed_ids": [
+      "quick_start_false_affordance"
+    ],
+    "merged_ids": [],
+    "summary": "Ложное действие удалено; рабочий маршрут и честный disabled demo сохранены."
+  },
+  "simplest_complete_alternative": "Оставить composer/init/build и редактирование Markdown в quick-start; показывать кнопку только как явно disabled demo в каталоге компонентов.",
+  "progressive_disclosure": {
+    "required": true,
+    "strategy": "Primary quick-start содержит только рабочие шаги; визуальный образец раскрывается на отдельной странице Button.",
+    "discoverability_evidence": "docs/site/content/components/button.md",
+    "not_required_reason": ""
+  },
+  "complexity_delta": [
+    {
+      "measure": "false_action_affordances_in_quick_start",
+      "before": 1,
+      "after": 0,
+      "unit": "actions",
+      "interpretation": "Неработающая команда удалена; demo перенесён в честный disabled state.",
+      "justification_ref": "docs/site/content/components/button.md"
+    }
+  ],
+  "automation_review": {
+    "present": false,
+    "simplified_before_automation": false,
+    "stable_process_proven": false,
+    "evidence_ref": ""
+  },
+  "scenario_evidence": [
+    {
+      "scenario": "SC-DOCARA-START",
+      "actor": "автор документации",
+      "steps": [
+        "Открыть quick-start",
+        "Выполнить composer/init/build",
+        "Изменить content/index.md"
+      ],
+      "expected": "Нет неработающих командных элементов.",
+      "actual": "В source и rendered start page отсутствуют «Проверить структуру» и контентный sf-button.",
+      "evidence_ref": "docs/site/content/start.md",
+      "result": "PASS"
+    },
+    {
+      "scenario": "SC-DOCARA-BUTTON-DEMO",
+      "actor": "автор документации",
+      "steps": [
+        "Открыть Button",
+        "Прочитать описание",
+        "Проверить образец"
+      ],
+      "expected": "Demo не обещает действие.",
+      "actual": "Описание называет образец отключённым, props имеют disabled:true, rendered sf-button имеет disabled.",
+      "evidence_ref": "docs/site/content/components/button.md",
+      "result": "PASS"
+    },
+    {
+      "scenario": "SC-DOCARA-OUTPUT-HYGIENE",
+      "actor": "разработчик Docara",
+      "steps": [
+        "Создать generated evidence под source/output",
+        "Проверить Git status"
+      ],
+      "expected": "Generated output не становится частью продуктового diff.",
+      "actual": "Правило /source/output/ присутствует в exact candidate .gitignore.",
+      "evidence_ref": ".gitignore",
+      "result": "PASS"
+    }
+  ],
+  "protected_complexity_review": [
+    {
+      "category": "accessibility",
+      "status": "PRESERVED",
+      "evidence_ref": "docs/site/content/components/button.md"
+    },
+    {
+      "category": "security",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "category": "data_integrity",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "category": "permissions",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "category": "error_handling",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "category": "observability",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "category": "migrations",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "category": "rollback",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    }
+  ],
+  "tester_evidence_review": {
+    "status": "VERIFIED",
+    "verdict_ref": "source/workflow/evidence/2026-07-18-docara-consolidation-and-local-docs/hcs/human-centered-simplicity-tester-verdict.json",
+    "verdict_sha256": "05f69a519d63b8e8c2342e369137fc0333a43a70f080b8a264b0cba495d274cb",
+    "reviewed_surface_ids": [
+      "portable_quick_start",
+      "quick_start_false_affordance",
+      "button_demo",
+      "generated_output_ignore_rule"
+    ],
+    "surface_classifications": [
+      {
+        "surface_id": "portable_quick_start",
+        "classification": "ordinary",
+        "protected_categories": [],
+        "evidence_ref": "docs/site/content/start.md"
+      },
+      {
+        "surface_id": "quick_start_false_affordance",
+        "classification": "ordinary",
+        "protected_categories": [],
+        "evidence_ref": "docs/site/content/start.md"
+      },
+      {
+        "surface_id": "button_demo",
+        "classification": "ordinary",
+        "protected_categories": [],
+        "evidence_ref": "docs/site/content/components/button.md"
+      },
+      {
+        "surface_id": "generated_output_ignore_rule",
+        "classification": "ordinary",
+        "protected_categories": [],
+        "evidence_ref": ".gitignore"
+      }
+    ],
+    "evidence_paths": [
+      ".gitignore",
+      "docs/site/content/components/button.md",
+      "docs/site/content/start.md"
+    ],
+    "evidence_fingerprints": [
+      {
+        "path": ".gitignore",
+        "sha256": "e541133e32f5b4593255273b63b4558a45c3740ce003222786560b4d54c903c9"
+      },
+      {
+        "path": "docs/site/content/components/button.md",
+        "sha256": "6524496022e435c67c1f2d3b0e888430ac83d0095d615728153ef904e529f8b0"
+      },
+      {
+        "path": "docs/site/content/start.md",
+        "sha256": "99b5583d9db7473d95d2a00dc176171865ffa537bdf00daa4f33da30639dc50f"
+      }
+    ],
+    "contradictions": [],
+    "verdict": "PASS"
+  },
+  "residual_complexity": [],
+  "blocking_findings": [],
+  "verdict": "PASS",
+  "workflow_binding": {
+    "workflow_ref": "repo://docara-consolidation/source/workflow/2026-07-18-docara-consolidation-and-local-docs.md",
+    "workflow_sha256": "e40beb79746ca88301bb698bc24b28f7c31af1e579cc0ab7f89b7b397319b30c",
+    "goal_task_sha256": "b001c55119936b21d9cce24907eeb258c23148211ce47d877fae4f1b473cb9c0",
+    "repository_refs": [
+      "repo://docara-consolidation"
+    ],
+    "repository_baselines": [
+      {
+        "repo_ref": "repo://docara-consolidation",
+        "commit_sha": "725f22b9996b84640a115be63b86be57802477c5"
+      }
+    ]
+  }
+}

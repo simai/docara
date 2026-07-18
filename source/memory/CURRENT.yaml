@@ -1,9 +1,13 @@
 project_id: "docara-consolidation"
-updated_at: "2026-07-18"
+updated_at: "2026-07-18T17:58:00+03:00"
 status: "active"
-primary_goal: ""
+primary_goal: "Complete the separately gated Docara release/default-branch integration and retire docara-mix only after zero-reference acceptance."
 active_tracks:
   - docara-consolidation
 current_focus: "docara-consolidation"
-important_blockers: []
-next_global_step: ""
+important_blockers:
+  - "No exact Docara release or generated external mirror has been published."
+  - "Consumer locks/default branches remain on released legacy Docara versions."
+  - "docara-mix active-default zero-reference and independent retirement acceptance are missing."
+next_global_step: "Plan and gate an exact 4a312c1 release, mirror publication, five consumer lock updates, and migration acceptance."
+workflow_sha256: "e40beb79746ca88301bb698bc24b28f7c31af1e579cc0ab7f89b7b397319b30c"

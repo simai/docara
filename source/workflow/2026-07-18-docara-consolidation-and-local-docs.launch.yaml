@@ -3,8 +3,8 @@ workflow_id: "2026-07-18-docara-consolidation-and-local-docs"
 track_id: "docara-consolidation-and-local-docs"
 process_model_id: "general_delivery"
 cycle_id: "coding_batch_cycle"
-current_state: "tests_recorded"
-target_state: "evidence_recorded"
+current_state: "evidence_recorded"
+target_state: "review_ready"
 created_at: "2026-07-18T06:45:00+03:00"
 owner_skill: "teamlead"
 companion_skills:
@@ -23,6 +23,13 @@ base:
   branch: "codex/docara-consolidation"
   revision: "f51debe3e1def82d2dcf611bf820c4517cd65f8f"
   implementation_parent: "26d0641c5df0b9b4e01b40324eaed2d97df30b62"
+candidate:
+  product_revision: "4a312c1b14cf1e0ed0ad77d32e39b006b2ff9049"
+  product_tree: "baef56bd6d9a7955bbd4cda82c54282d4e7f64e9"
+  functional_parent: "725f22b9996b84640a115be63b86be57802477c5"
+  local_served_tree_sha256: "451224dd74da76301bad6888d65c5b42b708640d5aaed4b175a32f404aa63dc4"
+  release_created: false
+  production_readiness_claimed: false
 allowed_files:
   - "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/**"
   - "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consumer-*/**"
@@ -69,6 +76,7 @@ required_gates:
   - "local_runtime_backup_rollback_gate"
 required_evidence:
   - "workflow"
+  - "semantic_acceptance"
   - "batch_0_preparation"
   - "incident_recovery"
   - "framework_component_classification"

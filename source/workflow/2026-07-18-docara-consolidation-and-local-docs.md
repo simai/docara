@@ -1,11 +1,11 @@
 # Workflow: Docara consolidation and local documentation
 
 Date: 2026-07-18
-Status: in-progress, exact-candidate verification and local publication active
+Status: in-progress, local publication accepted; release/default-branch retirement gates remain
 Process model: `general_delivery`
 Cycle: `coding_batch_cycle`
-Current state: `tests_recorded`
-Target state: `evidence_recorded`
+Current state: `evidence_recorded`
+Target state: `review_ready`
 Track ID: docara-consolidation-and-local-docs
 Memory decision: `skip`
 Memory reason: project-local workflow and project memory are authoritative;
@@ -33,15 +33,22 @@ gate passes.
 
 ## Current Position
 
-- The clean implementation worktree is based on the independently accepted
-  portable-contract candidate `f51debe3e1def82d2dcf611bf820c4517cd65f8f`.
-- Batch 0 is complete.
-- Batches 1-3 and 5 are implemented. The canonical owner, generated-mirror
-  contract, Markdown authoring surface, and PHP-only portable build have fresh
-  focused or end-to-end evidence.
+- The exact accepted product candidate is
+  `4a312c1b14cf1e0ed0ad77d32e39b006b2ff9049` with tree
+  `baef56bd6d9a7955bbd4cda82c54282d4e7f64e9`. Its functional parent is
+  `725f22b9996b84640a115be63b86be57802477c5`.
+- Batches 0-5 and 7 are complete. The canonical owner, generated-mirror
+  contract, Markdown authoring surface, PHP-only portable build, exact
+  acceptance, and local publication have durable evidence.
 - The documentation tree has been freshly rebuilt: 39 pages, 398 verified
   quoted local references, and two byte-identical production builds with tree
-  hash `abec753f99654bbe0a57c6b4c117c25fc71a5e9e131a9778059e0ace2f7c6f9a`.
+  hash `451224dd74da76301bad6888d65c5b42b708640d5aaed4b175a32f404aa63dc4`.
+- The same tree is now served at `https://docara.test/`. Static verification,
+  desktop/mobile browser acceptance, both theme modes, console/network checks,
+  and representative component routes pass.
+- The timestamped pre-deploy backup remains at
+  `/Users/rim/Sites/docara.test/.docara-backups/2026-07-18T164341+0300-before-725f22b-build_production`
+  with hash `fdd1da06b21f165a7f3f601100c0eb9bf691e961b7e0f73ba795deb8150d2e8a`.
 - Five maintained consumers have isolated Vite migration branches and passed
   exact Yarn 1.22.22 installation plus production builds against the candidate
   Docara engine. They remain merge-blocked until this Docara candidate has an
@@ -52,27 +59,18 @@ gate passes.
 - `docara-mix` retirement is **NOT READY**.
 - Tabs remain an exact Framework-contract blocker and must not be emulated by a
   local substitute.
+- Independent exact-candidate tester acceptance and Human-Centered Simplicity
+  acceptance are both **PASS**. No release, production, or ecosystem readiness
+  was inferred from those verdicts.
 
 ## Current Goal
 
-Execute the requested consolidation points in order. Their original numbering
-from the user's approved list is preserved here:
-
-2. Make `docara` the only owner of the generator, schemas, starter, and
-   examples.
-3. Move the canonical `docara-template` content into `docara`; if the external
-   repository remains useful, make it a generated and verified mirror only.
-4. Establish Vite as the only supported asset-development tool for active
-   Docara consumers.
-5. Keep the portable end-user build completely free of a Node.js requirement.
-6. Remove active `docara-mix` consumption and archive the repository only
-   after zero-reference and independent retirement acceptance.
-7. Expand the Markdown/Simai Framework authoring surface for alert, button,
-   code, steps, table, and card; hold tabs until its exact Framework contract is
-   repaired and accepted.
-
-After points 2-7, build and locally publish the new Docara documentation at
-   `https://docara.test/` through the same engine.
+Simplify the Docara authoring and quick-start interface while preserving the
+accepted exact candidate and local publication evidence. Then move only
+through the next release/default-branch gates needed to publish the generated
+mirror, land the five maintained Vite migrations, prove zero active references,
+and archive `docara-mix` safely. Do not claim retirement or broader readiness
+before those gates pass.
 
 ## Done When
 
@@ -108,8 +106,8 @@ After points 2-7, build and locally publish the new Docara documentation at
 - completed: establish canonical Docara ownership and portable contracts;
 - completed: implement and verify the generated mirror and Markdown surface;
 - completed: prepare and build-test isolated Vite consumer migrations;
-- in progress: freeze exact candidate, independent acceptance, and local
-  ServBay publication;
+- completed: freeze exact candidate, independent acceptance, and local ServBay
+  publication;
 - blocked by future release/default-branch gates: publish mirror, merge
   consumers, and retire `docara-mix`.
 
@@ -120,26 +118,26 @@ After points 2-7, build and locally publish the new Docara documentation at
 - completed: Batch 4 five maintained consumer build proofs;
 - completed: Batch 5 PHP-only portable proof;
 - blocked: Batch 6 active-default zero-reference and `docara-mix` retirement;
-- in progress: Batch 7 exact acceptance and local publication.
+- completed: Batch 7 exact acceptance and local publication.
 
 ## Batch Matrix
 
 | Batch | Result | Verification | Status |
 | --- | --- | --- | --- |
 | 0 | Clean base, workflow, ownership/inventory, local-runtime preflight, rollback plan | exact SHA, clean isolation, process/project checks, HTTP preflight | completed |
-| 1 | Canonical owner/starter/schema work plus semantic component rendering; incident correction | focused PHP tests, schema negatives, template-export determinism | implemented; exact commit pending |
-| 2 | Russian documentation tree and honest Framework examples | clean docs build, links/assets, content/HCS review | implemented; fresh deterministic build pass |
+| 1 | Canonical owner/starter/schema work plus semantic component rendering; incident correction | focused PHP tests, schema negatives, template-export determinism | accepted in exact candidate `4a312c1…` |
+| 2 | Russian documentation tree and honest Framework examples | clean docs build, links/assets, content/HCS review | accepted; deterministic build and HCS PASS |
 | 3 | Generated external `docara-template` mirror | fail-closed exporter/verifier tests, exact release/tag gate, deterministic fixture export | implemented in Docara; external publication blocked until exact release |
 | 4 | Maintained direct consumers migrated from Mix/webpack to Vite | exact Yarn install and production build per isolated branch | five maintained consumers build-pass; merge blocked by unreleased candidate; legacy `ui-doc-core` not retired |
 | 5 | Node-free portable distribution proof | PHP-only disposable build with Node unavailable, deterministic output | complete; fresh proof pass |
 | 6 | Active-branch zero-reference proof and `docara-mix` retirement | fresh remote/default-branch scan, export/rollback, independent retirement verdict | **NOT READY** |
-| 7 | Atomic local publication and browser acceptance | runtime gate, backup/swap/rollback evidence, desktop/mobile/theme smoke | pending |
+| 7 | Atomic local publication and browser acceptance | runtime gate, backup/swap/rollback evidence, desktop/mobile/theme smoke | completed; static, HTTPS, browser, cleanup and backup checks PASS |
 
 ## Requirement Matrix
 
 | Requirement | Evidence | Current status |
 | --- | --- | --- |
-| Canonical Docara owner | source, schemas, starter, exporter, focused tests | implemented; exact commit pending |
+| Canonical Docara owner | source, schemas, starter, exporter, focused tests | accepted in exact candidate `4a312c1…` |
 | Generated template mirror | exporter/verifier, exact release/tag gate, fixture hashes | implementation and tests pass; external mirror publication awaits release |
 | Vite-only development contract | isolated consumer branches and clean builds | five maintained consumers build-pass; merge awaits exact Docara release; legacy retirement pending |
 | Node-free portable build | isolated PHP-only build log | complete; 3 pages, 7 local references, deterministic hash pass |
@@ -147,8 +145,8 @@ After points 2-7, build and locally publish the new Docara documentation at
 | Documentation authored | `docs/site/**` | complete for bounded Russian v1 corpus |
 | Documentation build | exact candidate build manifest | 39 HTML, 398 links checked, deterministic hash pass |
 | `docara-mix` retirement | zero active refs plus independent verdict | **NOT READY** |
-| Local ServBay publication | backup/swap/rollback and browser evidence | pending |
-| Independent acceptance | exact candidate verdicts | pending |
+| Local ServBay publication | backup/swap/rollback and browser evidence | complete; `https://docara.test/` serves exact accepted tree |
+| Independent acceptance | exact candidate verdicts | tester PASS and HCS PASS |
 
 ## Direct Consumer Inventory
 
@@ -248,9 +246,17 @@ Each batch records exact revisions, commands, exit codes, changed paths,
 semantic outcome, and limitations. Dependency trees, generated production
 output, browser profiles, and secrets remain outside Git.
 
+Semantic acceptance evidence is complete for the exact local product
+candidate: independent tester PASS and Human-Centered Simplicity PASS are
+recorded under the same evidence directory. These verdicts do not promote
+release, production, ecosystem, consumer-migration, or retirement readiness.
+
 ## Human-Centered Simplicity
 
 - quality_controls: `[human_centered_simplicity]`
+- simplicity_repository_refs: `[repo://docara-consolidation]`
+- simplicity_repository_baselines:
+  `[repo://docara-consolidation@725f22b9996b84640a115be63b86be57802477c5]`
 - simplicity_review:
   `source/workflow/evidence/2026-07-18-docara-consolidation-and-local-docs/hcs/human-centered-simplicity-review.json`
 - The review must prefer one canonical source, a small authoring surface,
@@ -269,8 +275,25 @@ recovery source.
 
 ## Next Safe Step
 
-Freeze and commit the exact Docara candidate, complete independent acceptance,
-then perform the gated local `docara.test` backup/swap and browser acceptance.
-Consumer default-branch publication, a Docara release, external template-mirror
-sync, and remote `docara-mix` retirement remain explicitly outside this local
-publication batch.
+Create an exact Docara release candidate from `4a312c1…`, publish and verify the
+generated `docara-template` mirror, update the five maintained consumer locks,
+and accept their migrations before touching default branches. Only after a
+fresh active-default zero-reference scan, rollback/export record, and
+independent retirement PASS may `docara-mix` be archived. That is a separate
+release/retirement batch; the accepted local documentation remains usable now.
+
+## Bottom-up Progress
+
+- Batch completed: Batch 7 exact acceptance, local ServBay publication, browser
+  acceptance, and temporary-directory cleanup.
+- Stage progress: the local publication stage is complete; the remote
+  release/default-branch retirement stage remains.
+- Goal progress: points 2, 3, 5, and 7 are accepted; point 4 has five clean
+  build-passing migration candidates; point 6 remains gated and not ready.
+- Track progress: exact local candidate is evidence-recorded and ready for the
+  next semantic review/release-planning step.
+- Remaining work: exact release, generated mirror publication, consumer lock
+  updates and acceptance, active-default zero-reference proof, independent
+  retirement verdict, and repository archive.
+- Next safe batch or stop reason: stop this bounded local-publication batch;
+  begin the separately gated release/default-branch integration batch next.

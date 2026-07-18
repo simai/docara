@@ -1,11 +1,15 @@
 track_id: "docara-consolidation"
 status: "active"
 owner_skill: "teamlead"
-current_goal: "Execute the requested consolidation points in order. Their original numbering"
-current_stage: "`verification_started`"
+current_goal: "Integrate the accepted Docara candidate through exact release, generated mirror, consumer locks/default branches, and retirement gates."
+current_stage: "evidence_recorded; local documentation accepted"
 current_workflow: "source/workflow/2026-07-18-docara-consolidation-and-local-docs.md"
-last_completed_batch: ""
-next_step: ""
-blockers: []
+last_completed_batch: "Batch 7 exact acceptance, local ServBay publication, browser acceptance, and cleanup"
+next_step: "Create a separately gated exact-release/default-branch integration batch starting from product candidate 4a312c1."
+blockers:
+  - "Exact release and generated mirror publication are pending."
+  - "Five consumer locks/default branches are not migrated."
+  - "Active-default zero-reference and independent docara-mix retirement PASS are pending."
 related_tracks: []
-updated_at: "2026-07-18"
+updated_at: "2026-07-18T17:58:00+03:00"
+workflow_sha256: "e40beb79746ca88301bb698bc24b28f7c31af1e579cc0ab7f89b7b397319b30c"

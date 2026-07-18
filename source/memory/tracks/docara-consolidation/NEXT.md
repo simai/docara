@@ -9,11 +9,14 @@ Track `docara-consolidation` is attached to workflow:
 
 ## Next Meaningful Goal
 
-Preserve the accepted exact Docara candidate and local publication evidence,
-then move only through the next release/default-branch gates needed to publish
-the generated mirror, land the five maintained Vite migrations, prove zero
-active references, and archive `docara-mix` safely. Do not claim retirement or
-broader readiness before those gates pass.
+Preserve the accepted exact candidate and local publication evidence, then
+restore the Docara product shell through the typed portable contract before
+using it as the public product baseline. The correction must cover hierarchical
+navigation, branding, responsive documentation layout, search/TOC foundations,
+landing demonstration and complete user configuration documentation without
+reintroducing a second content language or unpinned Framework assets. Only
+after exact product acceptance should the release/default-branch integration
+and `docara-mix` retirement gates resume.
 
 ## Stages
 
@@ -23,15 +26,20 @@ broader readiness before those gates pass.
 
 ## Next Safe Batch
 
-Create an exact-release/default-branch integration workflow for product
-candidate `4a312c1b14cf1e0ed0ad77d32e39b006b2ff9049`. Gate the release and remote
-writes, publish and verify the generated template mirror, update all five
-consumer locks, repeat their builds and acceptance, and only then run the
-active-default zero-reference and independent retirement gates.
+Preserve `4a312c1…` as the accepted technical-engine baseline. Start the clean
+product-correction branch and implement only the first vertical slice from
+`source/workflow/2026-07-18-docara-product-ui-restoration.md`:
 
-Do not archive `docara-mix` while any gate remains open. The accepted local
-documentation at `https://docara.test/` does not depend on completing this next
-batch.
+1. tree-shaped resolved navigation plus a four-level fixture;
+2. one accepted pinned Framework navigation renderer;
+3. brand/logo/favicon configuration and asset projection;
+4. desktop left rail and accessible mobile-navigation scaffold;
+5. schema, migration and user documentation for the implemented fields;
+6. exact tests and browser evidence.
+
+Do not resume public release, consumer default-branch migration or
+`docara-mix` retirement until the corrected product candidate passes UX,
+design, browser and independent tester acceptance.
 
 ## Checks
 

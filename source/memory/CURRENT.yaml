@@ -1,13 +1,13 @@
 project_id: "docara-consolidation"
-updated_at: "2026-07-18T17:58:00+03:00"
+updated_at: "2026-07-18T19:13:50+03:00"
 status: "active"
-primary_goal: "Complete the separately gated Docara release/default-branch integration and retire docara-mix only after zero-reference acceptance."
+primary_goal: "Restore the complete Docara product shell on the accepted portable engine before public product release."
 active_tracks:
   - docara-consolidation
 current_focus: "docara-consolidation"
 important_blockers:
-  - "No exact Docara release or generated external mirror has been published."
-  - "Consumer locks/default branches remain on released legacy Docara versions."
-  - "docara-mix active-default zero-reference and independent retirement acceptance are missing."
-next_global_step: "Plan and gate an exact 4a312c1 release, mirror publication, five consumer lock updates, and migration acceptance."
-workflow_sha256: "cbe5a03871d0bd69e56f31d10afd873229fbbd3d4b504fb204912a064b657ced"
+  - "Current portable UI is a technical demonstrator: navigation is flat and core documentation-product regions are absent."
+  - "Product UX/design/browser/tester acceptance for the corrected shell is missing."
+  - "Exact release, consumer default-branch integration and docara-mix retirement remain gated after product correction."
+next_global_step: "Start the bounded four-level navigation, branding and responsive docs-shell vertical slice from accepted technical baseline 4a312c1."
+workflow_sha256: "58bcfb890220c4edf7b95180a3bc7d3530bc1c1c3068fffbb2beeaf03ca04d5a"

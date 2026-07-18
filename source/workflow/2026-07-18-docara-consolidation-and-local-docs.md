@@ -1,7 +1,7 @@
 # Workflow: Docara consolidation and local documentation
 
 Date: 2026-07-18
-Status: in-progress, local publication accepted; release/default-branch retirement gates remain
+Status: in-progress, local technical publication accepted; product UI correction and release/default-branch retirement gates remain
 Process model: `general_delivery`
 Cycle: `coding_batch_cycle`
 Current state: `evidence_recorded`
@@ -32,6 +32,20 @@ active default-branch consumers have migrated and an independent retirement
 gate passes.
 
 ## Current Position
+
+- Fresh product review after user acceptance found that the current portable
+  site is a technical demonstrator rather than a complete replacement for the
+  old Docara product shell. The product verdict is `NEEDS_REVISION`; details
+  and the corrected delivery sequence are in
+  `source/workflow/2026-07-18-docara-product-ui-restoration.md`.
+- The current renderer deliberately flattens navigation and does not implement
+  configurable branding, search, right TOC, breadcrumbs, previous/next,
+  locale switching, reading settings or a substantive landing layout. Those
+  are product gaps, not merely missing guide pages.
+- Existing exact build, security, Framework-lock and local-runtime evidence is
+  retained. The earlier HCS PASS remains valid only for its bounded technical
+  artifact and does not establish product-interface parity or release
+  readiness.
 
 - The exact accepted product candidate is
   `4a312c1b14cf1e0ed0ad77d32e39b006b2ff9049` with tree
@@ -65,12 +79,14 @@ gate passes.
 
 ## Current Goal
 
-Simplify the Docara authoring and quick-start interface while preserving the
-accepted exact candidate and local publication evidence. Then move only
-through the next release/default-branch gates needed to publish the generated
-mirror, land the five maintained Vite migrations, prove zero active references,
-and archive `docara-mix` safely. Do not claim retirement or broader readiness
-before those gates pass.
+Preserve the accepted exact candidate and local publication evidence, then
+restore the Docara product shell through the typed portable contract before
+using it as the public product baseline. The correction must cover hierarchical
+navigation, branding, responsive documentation layout, search/TOC foundations,
+landing demonstration and complete user configuration documentation without
+reintroducing a second content language or unpinned Framework assets. Only
+after exact product acceptance should the release/default-branch integration
+and `docara-mix` retirement gates resume.
 
 ## Done When
 
@@ -142,7 +158,7 @@ before those gates pass.
 | Vite-only development contract | isolated consumer branches and clean builds | five maintained consumers build-pass; merge awaits exact Docara release; legacy retirement pending |
 | Node-free portable build | isolated PHP-only build log | complete; 3 pages, 7 local references, deterministic hash pass |
 | Honest component catalogue | Framework classification and renderer tests | alert/button/card/steps/code/table pass; tabs blocked |
-| Documentation authored | `docs/site/**` | complete for bounded Russian v1 corpus |
+| Documentation authored | `docs/site/**` | complete only for the bounded technical v1 surface; product configuration/layout/component documentation is incomplete |
 | Documentation build | exact candidate build manifest | 39 HTML, 398 links checked, deterministic hash pass |
 | `docara-mix` retirement | zero active refs plus independent verdict | **NOT READY** |
 | Local ServBay publication | backup/swap/rollback and browser evidence | complete; `https://docara.test/` serves exact accepted tree |
@@ -280,12 +296,14 @@ recovery source.
 
 ## Next Safe Step
 
-Create an exact Docara release candidate from `4a312c1…`, publish and verify the
-generated `docara-template` mirror, update the five maintained consumer locks,
-and accept their migrations before touching default branches. Only after a
-fresh active-default zero-reference scan, rollback/export record, and
-independent retirement PASS may `docara-mix` be archived. That is a separate
-release/retirement batch; the accepted local documentation remains usable now.
+Preserve `4a312c1…` as the accepted technical-engine baseline and start the
+bounded product UI correction defined in
+`source/workflow/2026-07-18-docara-product-ui-restoration.md`. The first vertical
+slice restores a real tree-shaped navigation contract with a four-level
+fixture, branding/assets and an accessible responsive documentation shell.
+Do not publish this candidate as the new product baseline or resume the
+release/default-branch/retirement sequence until the corrected product
+candidate has exact UX, design, browser and tester acceptance.
 
 ## Bottom-up Progress
 

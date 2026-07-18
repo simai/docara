@@ -98,7 +98,13 @@ class Docara
     public static function addUserCommands($app, $container): void
     {
         foreach (self::$commands as $command) {
-            $app->add(new $command($container));
+            $instance = new $command($container);
+            if (method_exists($app, 'addCommand')) {
+                $app->addCommand($instance);
+
+                continue;
+            }
+            $app->add($instance);
         }
     }
 

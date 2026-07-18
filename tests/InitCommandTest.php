@@ -12,6 +12,28 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class InitCommandTest extends TestCase
 {
+    private string|false $previousFrontendSkip;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->previousFrontendSkip = getenv('DOCARA_SKIP_FRONTEND_INSTALL');
+        putenv('DOCARA_SKIP_FRONTEND_INSTALL=true');
+        $_ENV['DOCARA_SKIP_FRONTEND_INSTALL'] = 'true';
+    }
+
+    protected function tearDown(): void
+    {
+        if ($this->previousFrontendSkip === false) {
+            putenv('DOCARA_SKIP_FRONTEND_INSTALL');
+            unset($_ENV['DOCARA_SKIP_FRONTEND_INSTALL']);
+        } else {
+            putenv('DOCARA_SKIP_FRONTEND_INSTALL=' . $this->previousFrontendSkip);
+            $_ENV['DOCARA_SKIP_FRONTEND_INSTALL'] = $this->previousFrontendSkip;
+        }
+        parent::tearDown();
+    }
+
     #[Test]
     public function init_command_with_no_arguments_uses_basic_scaffold_for_site()
     {

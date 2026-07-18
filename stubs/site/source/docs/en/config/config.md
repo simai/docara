@@ -28,6 +28,12 @@ Docara loads `config.php` from your project root (and merges `config.<env>.php` 
 ## Metadata & frontend
 
 -   `siteName`, `siteDescription` — shown in templates.
+-   `brand` — title, optional trusted inline `logoSvg`, baseUrl-relative
+    `socialImage`, and baseUrl-relative `favicon`. `logoSvg` is raw markup for
+    maintainer-authored configuration only; never source it from content,
+    users, a database, or an external feed.
+-   `footerContent` — optional neutral footer text and URL.
+-   `themeBuilder` — private design/debug surface; keep it `false` on public sites.
 -   `github` — base repo URL for "Edit on GitHub" links.
 -   `locales` — map of locale code to human-readable name; drives language switcher.
 -   `tags` — array of custom tag class short names registered by Docara.
@@ -91,7 +97,15 @@ return [
     'indexPage' => 'config', // optional landing slug
     'locales' => ['en' => 'English'],
     'defaultLocale' => 'en',
-    'siteName' => 'Simai Documentation',
-    'siteDescription' => 'Simai framework documentation',
+    'siteName' => 'Docara Documentation',
+    'siteDescription' => 'Documentation built with Docara and Simai Framework',
+    'brand' => [
+        'title' => 'Docara',
+        'logoSvg' => null,
+        'socialImage' => 'assets/build/img/logo.svg',
+        'favicon' => 'favicon.ico',
+    ],
+    'footerContent' => ['text' => 'Built with Docara', 'url' => 'https://github.com/simai/docara'],
+    'themeBuilder' => false,
 ];
 ```

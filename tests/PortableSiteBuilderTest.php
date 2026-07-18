@@ -120,6 +120,96 @@ final class PortableSiteBuilderTest extends TestCase
     }
 
     #[Test]
+    public function navigation_order_is_inherited_from_sections_overridden_by_pages_and_tied_by_url(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        file_put_contents($this->tmpPath('content/guides/advanced.md'), "# Advanced\n");
+        file_put_contents($this->tmpPath('content/guides/basics.md'), "# Basics\n");
+        file_put_contents($this->tmpPath('content/reference.md'), "# Reference\n");
+        file_put_contents(
+            $this->tmpPath('content/reference.page.json'),
+            json_encode([
+                'schema' => 'docara.page.v1',
+                'navigation' => ['order' => 15],
+            ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+
+        $guidePage = $this->jsonFile($this->tmpPath('content/guides/getting-started.page.json'));
+        $guidePage['navigation'] = ['order' => 5];
+        file_put_contents(
+            $this->tmpPath('content/guides/getting-started.page.json'),
+            json_encode($guidePage, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
+        self::assertSame(1, preg_match(
+            '/<nav class="flex flex-col gap-1"[^>]*>(.*?)<\/nav>/s',
+            $html,
+            $navigation,
+        ));
+        self::assertSame(5, preg_match_all('/href="([^"]+)"/', $navigation[1], $links));
+        self::assertSame([
+            '/guides/getting-started/',
+            '/',
+            '/reference/',
+            '/guides/advanced/',
+            '/guides/basics/',
+        ], $links[1]);
+
+        $diagnostics = $this->jsonFile($this->tmpPath('build_local/.docara/resolved-page-plans.json'));
+        $orders = [];
+        foreach ($diagnostics['pages'] as $record) {
+            $orders[$record['url']] = $record['resolved_page_plan']['configuration']['navigation']['order'] ?? null;
+        }
+        self::assertSame(5, $orders['/guides/getting-started/']);
+        self::assertSame(20, $orders['/guides/advanced/']);
+        self::assertSame(20, $orders['/guides/basics/']);
+    }
+
+    #[Test]
+    public function pages_without_navigation_order_follow_every_explicit_order(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        foreach ([
+            'first' => 0,
+            'middle' => 1000,
+            'later' => 1500,
+            'z-explicit-max' => 2147483647,
+            'a-unspecified' => null,
+        ] as $slug => $order) {
+            file_put_contents($this->tmpPath("content/{$slug}.md"), "# {$slug}\n");
+            if ($order !== null) {
+                file_put_contents(
+                    $this->tmpPath("content/{$slug}.page.json"),
+                    json_encode([
+                        'schema' => 'docara.page.v1',
+                        'navigation' => ['order' => $order],
+                    ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+                );
+            }
+        }
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
+        self::assertSame(1, preg_match(
+            '/<nav class="flex flex-col gap-1"[^>]*>(.*?)<\/nav>/s',
+            $html,
+            $navigation,
+        ));
+        self::assertSame(7, preg_match_all('/href="([^"]+)"/', $navigation[1], $links));
+        self::assertSame([
+            '/first/',
+            '/',
+            '/guides/getting-started/',
+            '/middle/',
+            '/later/',
+            '/z-explicit-max/',
+            '/a-unspecified/',
+        ], $links[1]);
+    }
+
+    #[Test]
     public function clean_cli_install_and_build_work_without_legacy_scaffold(): void
     {
         $site = $this->tmpPath('empty-site');

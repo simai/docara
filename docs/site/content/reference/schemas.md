@@ -1,0 +1,24 @@
+# Схемы JSON
+
+Portable Docara использует JSON Schema Draft 2020-12.
+
+| Schema ID | Файл | Назначение |
+| --- | --- | --- |
+| `docara.site.v1` | `docara.json` | Сайт и общие defaults |
+| `docara.section.v1` | `_section.json` | Наследуемые настройки раздела |
+| `docara.page.v1` | `<page>.page.json` | Настройки одной страницы |
+| `docara.component_call.v1` | Нормализованный вызов | Разрешённый компонент и props |
+| `docara.framework_lock.v1` | `simai-framework.lock.json` | Exact runtime, manifests и assets |
+
+## Общие presentation-поля
+
+- `preset`: `docs` или `landing`;
+- `layout.max_width`: `compact`, `normal`, `wide`, `full`;
+- `settings.theme`: `system`, `light`, `dark`;
+- `navigation.hidden`: boolean;
+- `navigation.order`: целое число от 0 до 2147483647; отсутствие значения означает
+  «после всех страниц с явно заданным порядком».
+
+Page schema дополнительно поддерживает `description` и безопасный `slug`.
+`additionalProperties: false` означает, что опечатка не становится скрытым
+no-op: сборка завершается ошибкой.

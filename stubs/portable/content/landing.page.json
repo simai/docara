@@ -6,6 +6,7 @@
     "max_width": "wide"
   },
   "navigation": {
-    "hidden": true
+    "hidden": true,
+    "order": 30
   }
 }

@@ -10,7 +10,8 @@ description: Installation
 Docara is our documentation framework, built on top of Jigsaw with extra tooling for multi-language docs, collections,
 and automated core updates.
 
-Requirements: PHP 8.2+, Composer, Node.js/Yarn (or npm).
+Requirements for the default maintainer scaffold: PHP 8.2+, Composer, Node.js, and Yarn 1.22.22. The portable
+PHP-only build does not require Node.js.
 
 ## Quick start
 
@@ -29,7 +30,7 @@ Requirements: PHP 8.2+, Composer, Node.js/Yarn (or npm).
     DOCS_DIR=docs
     ```
 
-3. Initialize (copies stubs, fetches `source/_core`, installs npm/yarn deps, preserves existing `source/<DOCS_DIR>` and
+3. Initialize (copies stubs, installs the frozen Yarn dependency graph, preserves existing `source/<DOCS_DIR>` and
    `config.php`; `--update` additionally wipes `.cache` and all `build_*` folders before refreshing):
 
     ```bash
@@ -55,10 +56,9 @@ yarn run watch
 
 - source
     - _core
-      -- copy-template-configs.js (copies template configs into your docs dir)
       -- vite.config.js (Vite build config)
       -- package.json (scripts + frontend deps)
-      -- package.json (scripts + frontend deps)
+      -- yarn.lock (frozen frontend dependency graph)
       -- config.php (shared Docara config)
       -- bootstrap.php (helpers / Docara events )
       -- translate.config.php (translator setup)

@@ -21,6 +21,7 @@ class PortableInitCommandTest extends TestCase
         $this->assertFileExists($this->tmpPath('simai-framework.lock.json'));
         $this->assertFileExists($this->tmpPath('content/guides/getting-started.md'));
         $this->assertFileExists($this->tmpPath('content/guides/getting-started.page.json'));
+        $this->assertFileExists($this->tmpPath('content/index.page.json'));
         $this->assertFileExists($this->tmpPath('content/landing.md'));
         $this->assertFileExists($this->tmpPath('content/landing.page.json'));
 
@@ -42,6 +43,7 @@ class PortableInitCommandTest extends TestCase
         $site = $this->json('docara.json');
         $rootSection = $this->json('content/_section.json');
         $nestedSection = $this->json('content/guides/_section.json');
+        $indexPage = $this->json('content/index.page.json');
         $docsPage = $this->json('content/guides/getting-started.page.json');
         $landingPage = $this->json('content/landing.page.json');
         $lock = $this->json('simai-framework.lock.json');
@@ -49,10 +51,14 @@ class PortableInitCommandTest extends TestCase
         $this->assertSame('docara.site.v1', $site['schema']);
         $this->assertSame('docara.section.v1', $rootSection['schema']);
         $this->assertSame('docara.section.v1', $nestedSection['schema']);
+        $this->assertSame('docara.page.v1', $indexPage['schema']);
         $this->assertSame('docara.page.v1', $docsPage['schema']);
         $this->assertSame('docara.page.v1', $landingPage['schema']);
         $this->assertSame('docs', $docsPage['preset']);
         $this->assertSame('landing', $landingPage['preset']);
+        $this->assertSame(10, $indexPage['navigation']['order']);
+        $this->assertSame(20, $nestedSection['navigation']['order']);
+        $this->assertSame(30, $landingPage['navigation']['order']);
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);

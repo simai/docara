@@ -12,7 +12,8 @@ description: Generating Your Site
 To generate your static site for deployment, run:
 
 ```bash
-npm run prod
+yarn install --frozen-lockfile
+yarn run prod
 ```
 
 You will see output similar to this:
@@ -70,13 +71,7 @@ This file is merged on top of `config.php`, so you only need to specify variable
 
 ## Build For A Specific Environment
 
-To build files for a specific environment, set the Vite mode when running the build command:
-
-```bash
-npx vite build --mode staging
-```
-
-The Docara Vite plugin maps `production` mode to `docara build production`; other modes use `docara build local` by default. If you need a custom environment build without compiling assets, run Docara directly:
+The Docara Vite plugin deliberately maps `production` mode to `docara build production`; every other Vite mode uses `docara build local`. To build a custom Docara environment without compiling frontend assets, run Docara directly:
 
 ```bash
 vendor/bin/docara build staging

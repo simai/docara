@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-    use Simai\Docara\Bootstrap\HandleExceptions;
+use Simai\Docara\Bootstrap\HandleExceptions;
 use Simai\Docara\Console\BuildCommand;
 use Simai\Docara\Console\InitCommand;
 use Simai\Docara\Console\ServeCommand;
@@ -12,12 +12,15 @@ use Simai\Docara\Exceptions\Handler;
 
 define('DOCARA_START', microtime(true));
 
-if (file_exists(__DIR__ . '/vendor/autoload.php')) {
-    require __DIR__ . '/vendor/autoload.php';
+if (file_exists(getcwd() . '/vendor/autoload.php')) {
+    require_once getcwd() . '/vendor/autoload.php';
 }
 
-if (file_exists(getcwd() . '/vendor/autoload.php')) {
-    require getcwd() . '/vendor/autoload.php';
+// The repository-local autoloader is registered last so an exact Docara
+// checkout remains authoritative when it is used to migrate a project that
+// still has an older simai/docara version in its own vendor directory.
+if (file_exists(__DIR__ . '/vendor/autoload.php')) {
+    require_once __DIR__ . '/vendor/autoload.php';
 }
 
 $app = new Container;
@@ -37,10 +40,18 @@ $app->bootstrapWith([
 ]);
 
 $application = new Symfony\Component\Console\Application('Docara', '1.0');
-$application->add($app[InitCommand::class]);
-$application->add(new BuildCommand($app));
-$application->add(new TranslateCommand);
-$application->add(new ServeCommand($app));
+$addCommand = static function ($command) use ($application): void {
+    if (method_exists($application, 'addCommand')) {
+        $application->addCommand($command);
+
+        return;
+    }
+    $application->add($command);
+};
+$addCommand($app[InitCommand::class]);
+$addCommand(new BuildCommand($app));
+$addCommand(new TranslateCommand);
+$addCommand(new ServeCommand($app));
 $application->setCatchExceptions(false);
 
 Docara::addUserCommands($application, $app);

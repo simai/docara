@@ -78,6 +78,7 @@ final readonly class PortableSiteBuilder
                 'theme' => (string) data_get($plan->configuration, 'settings.theme', 'system'),
                 'max_width' => (string) data_get($plan->configuration, 'layout.max_width', 'normal'),
                 'navigation_hidden' => (bool) data_get($plan->configuration, 'navigation.hidden', false),
+                'navigation_order' => data_get($plan->configuration, 'navigation.order'),
                 'url' => $route['url'],
                 'output' => $route['output'],
                 'home_url' => $this->homeUrl((string) ($site['base_url'] ?? '/')),
@@ -269,9 +270,21 @@ final readonly class PortableSiteBuilder
             if ($page['navigation_hidden'] === true) {
                 continue;
             }
-            $items[] = ['title' => (string) $page['title'], 'url' => (string) $page['url']];
+            $items[] = [
+                'title' => (string) $page['title'],
+                'url' => (string) $page['url'],
+                'order' => $page['navigation_order'] === null ? null : (int) $page['navigation_order'],
+            ];
         }
         usort($items, static function (array $left, array $right): int {
+            $leftIsUnspecified = $left['order'] === null;
+            $rightIsUnspecified = $right['order'] === null;
+            if ($leftIsUnspecified !== $rightIsUnspecified) {
+                return $leftIsUnspecified ? 1 : -1;
+            }
+            if ($left['order'] !== $right['order']) {
+                return $left['order'] <=> $right['order'];
+            }
             if ($left['url'] === '/') {
                 return -1;
             }
@@ -282,7 +295,10 @@ final readonly class PortableSiteBuilder
             return strcmp($left['url'], $right['url']);
         });
 
-        return $items;
+        return array_map(
+            static fn (array $item): array => ['title' => $item['title'], 'url' => $item['url']],
+            $items,
+        );
     }
 
     private function prepareDestination(string $root, string $destination): void

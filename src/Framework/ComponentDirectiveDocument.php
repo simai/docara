@@ -22,15 +22,14 @@ final readonly class ComponentDirectiveDocument
     public function hydrate(string $renderedMarkdownHtml): string
     {
         foreach ($this->renderedHtml as $placeholder => $html) {
-            $renderedMarkdownHtml = str_replace(
-                [
-                    '<p>' . $placeholder . '</p>',
-                    '<p>' . $placeholder . '</p>' . "\n",
+            $wrapper = '<p>' . $placeholder . '</p>';
+            if (substr_count($renderedMarkdownHtml, $wrapper) !== 1) {
+                throw new FrameworkComponentException(
+                    'FRAMEWORK_PLACEHOLDER_CARDINALITY_INVALID',
                     $placeholder,
-                ],
-                $html,
-                $renderedMarkdownHtml,
-            );
+                );
+            }
+            $renderedMarkdownHtml = str_replace($wrapper, $html, $renderedMarkdownHtml);
         }
 
         return $renderedMarkdownHtml;

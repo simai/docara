@@ -70,12 +70,19 @@ return [
     'cache' => true,
     'moduleCache' => false,
     'cachePath' => $projectRoot . '/.cache',
-    'siteName' => 'Simai Documentation',
-    'siteDescription' => 'Simai framework documentation',
+    'siteName' => 'Docara Documentation',
+    'siteDescription' => 'Documentation built with Docara and Simai Framework',
     'brand' => [
-        'title' => 'SitePack',
+        'title' => 'Docara',
         'logoSvg' => null,
+        'socialImage' => 'assets/build/img/logo.svg',
+        'favicon' => 'favicon.ico',
     ],
+    'footerContent' => [
+        'text' => 'Built with Docara',
+        'url' => 'https://github.com/simai/docara',
+    ],
+    'themeBuilder' => false,
     'github' => 'https://github.com/simai/docara/',
     'turbo' => false,
     'locales' => [

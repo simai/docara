@@ -40,22 +40,21 @@ jobs:
       - name: Install PHP dependencies
         run: composer install --no-interaction --prefer-dist
 
-      - name: Initialize project (stubs, core, npm/yarn install)
+      - name: Initialize project without an ambient package manager
         env:
-          YARN_IGNORE_ENGINES: 1
+          DOCARA_SKIP_FRONTEND_INSTALL: true
         run: |
-          php docara init --update
+          php docara init --update --force-core-files --force-core-configs
 
       - name: Regenerate autoload
         run: composer dump-autoload -o
 
       - name: Build frontend assets
-        env:
-          YARN_IGNORE_ENGINES: 1
         run: |
           mkdir -p vendor/bin
           ln -sf "$PWD/docara" vendor/bin/docara
-          yarn prod
+          YARN_IGNORE_PATH=1 npx --yes yarn@1.22.22 --no-default-rc install --frozen-lockfile --production=false --non-interactive
+          YARN_IGNORE_PATH=1 npx --yes yarn@1.22.22 --no-default-rc prod
 
       - name: Build static site
         run: php docara build production
@@ -69,6 +68,7 @@ jobs:
           port: ${{ vars.SSH_PORT }}
           script: |
             set -e
+            node -e 'const [major, minor] = process.versions.node.split(".").map(Number); if (!((major === 20 && minor >= 19) || (major === 22 && minor >= 12) || major > 22)) { console.error("Docara requires Node.js 20.19+ or 22.12+."); process.exit(1); }'
             DEPLOY_DIR=/var/www/dev/data/git/docara-build
             WEBROOT=/var/www/dev/data/www/doc.simai.io
             export HOME=/home/git
@@ -76,7 +76,6 @@ jobs:
             cd "$DEPLOY_DIR"
             mkdir -p ~/.ssh
             ssh-keyscan -H github.com >> ~/.ssh/known_hosts
-            export YARN_IGNORE_ENGINES=1
             export XDG_CONFIG_HOME=$PWD/.config
             export XDG_CACHE_HOME=$PWD/.cache
             mkdir -p "$XDG_CONFIG_HOME" "$XDG_CACHE_HOME"
@@ -92,11 +91,11 @@ jobs:
             AZURE_REGION=''
             AZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com
             EOF
-            php vendor/bin/docara init --update --force-core-files
+            DOCARA_SKIP_FRONTEND_INSTALL=true php vendor/bin/docara init --update --force-core-files --force-core-configs
             composer dump-autoload -o
             if [ -f package.json ]; then
-              yarn install
-              yarn prod
+              YARN_IGNORE_PATH=1 npx --yes yarn@1.22.22 --no-default-rc install --frozen-lockfile --production=false --non-interactive
+              YARN_IGNORE_PATH=1 npx --yes yarn@1.22.22 --no-default-rc prod
             fi
             rm -rf .cache
             php vendor/bin/docara build production

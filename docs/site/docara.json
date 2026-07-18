@@ -1,0 +1,15 @@
+{
+  "schema": "docara.site.v1",
+  "title": "Docara",
+  "preset": "docs",
+  "content_root": "content",
+  "framework_lock": "simai-framework.lock.json",
+  "default_locale": "ru",
+  "base_url": "/",
+  "layout": {
+    "max_width": "wide"
+  },
+  "settings": {
+    "theme": "system"
+  }
+}

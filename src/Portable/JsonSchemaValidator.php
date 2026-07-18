@@ -58,6 +58,10 @@ final class JsonSchemaValidator
             if (isset($schema['minimum']) && $data < $schema['minimum']) {
                 $this->fail($pointer, "must be at least {$schema['minimum']}");
             }
+
+            if (isset($schema['maximum']) && $data > $schema['maximum']) {
+                $this->fail($pointer, "must be no more than {$schema['maximum']}");
+            }
         }
 
         if (! is_array($data)) {

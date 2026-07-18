@@ -1,0 +1,11 @@
+track_id: "docara-consolidation"
+status: "active"
+owner_skill: "teamlead"
+current_goal: "Execute the requested consolidation points in order. Their original numbering"
+current_stage: "`verification_started`"
+current_workflow: "source/workflow/2026-07-18-docara-consolidation-and-local-docs.md"
+last_completed_batch: ""
+next_step: ""
+blockers: []
+related_tracks: []
+updated_at: "2026-07-18"

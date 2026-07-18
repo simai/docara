@@ -94,7 +94,7 @@ The helper script `bin/docs-create.php` accepts a `--category=true|false` flag w
 ## Switching the flag
 
 1. Update `config.php` (or set `CATEGORY=true` in `.env` if you prefer environment overrides).
-2. Run `npm run dev` or `npm run build` to rebuild the site so the configurator regenerates the menus.
+2. Run `yarn run dev` or `yarn run prod` to rebuild the site so the configurator regenerates the menus.
 3. Inspect the generated `_site` output: each locale will now expose either a unified sidebar (single mode) or category-specific sidebars with a top-level switcher (category mode).
 
 If a sidebar appears empty after enabling categories, double-check that the `.settings.php` file at the locale root exposes the category key you expect and that the corresponding directory contains Markdown files.

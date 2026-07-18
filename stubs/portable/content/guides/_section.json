@@ -1,5 +1,8 @@
 {
   "schema": "docara.section.v1",
   "title": "Руководства",
-  "preset": "docs"
+  "preset": "docs",
+  "navigation": {
+    "order": 20
+  }
 }

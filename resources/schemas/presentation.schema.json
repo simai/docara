@@ -37,6 +37,11 @@
                 },
                 "hidden": {
                     "type": "boolean"
+                },
+                "order": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647
                 }
             },
             "additionalProperties": false

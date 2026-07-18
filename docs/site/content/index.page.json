@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Docara",
+  "description": "Docara собирает документацию и небольшие сайты из Markdown и строгих JSON-настроек.",
+  "navigation": {
+    "order": 0
+  }
+}

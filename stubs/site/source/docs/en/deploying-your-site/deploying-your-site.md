@@ -18,7 +18,8 @@ The approach we use at Tighten for deploying Docara sites to GitHub pages looks 
 
 1. Build your site for production
     ```bash 
-    npm run build
+    yarn install --frozen-lockfile
+    yarn run prod
     ```
 2. Commit the `build_production` folder to your repository
     ```bash 
@@ -36,7 +37,7 @@ nice with any static site generator.
 To deploy a site to Netlify, first create a `netlify.toml` file with the following configuration:
 ```toml 
 [build]
-command = "npm run build"
+command = "yarn install --frozen-lockfile && yarn run prod"
 publish = "build_production"
 ```
 Push this file to your repository.
@@ -54,25 +55,11 @@ projects.
 
 To deploy a site to S3, first build your site for production:
 ```bash 
-npm run build
+yarn install --frozen-lockfile
+yarn run prod
 ```
 Then simply follow the steps in Amazon's static site documentation to deploy your `build_production` folder to your S3
 bucket.
-
-## Using Kinsta Application Hosting
-Kinsta Application Hosting is an affordable, developer-centric cloud host that lets you deploy and host your website.
-
-Before deploying your site, you must make some minor changes - install `serve` by running `npm install serve`, and then update
-your `package.json` file:
-```json
-"scripts": {
-"build": "composer install && npm run build",
-"start": "serve ./build_production"
-},
-```
-This will build your site and start the server automatically.
-
-Finally, add both the PHP and NodeJS buildpacks in the Processes section of your Kinsta dashboard.
 
 ## Manually
 If you have an existing server that you'd like to use to host your Docara site, all you need to do is get the contents
@@ -123,8 +110,8 @@ return [
 ];
 ```
 
-In this example, running `NODE_ENV=staging npm run build` would output your built files to `dist/staging/public`. Docara will create any directories that do not already exist.
+In this example, running `vendor/bin/docara build staging` would output your built files to `dist/staging/public` without compiling frontend assets. The Vite workflow intentionally maps only `production` to the production Docara environment and all other Vite modes to `local`; it does not infer arbitrary Docara environment names. Docara will create any directories that do not already exist.
 
 You can also assign different source and build paths for different environments by using multiple environment-specific config files.
 
-Source and destination paths in `config.production.php`, for example, will get merged with any build paths that have been defined in `config.php` when running `npm run build`.
+Source and destination paths in `config.production.php`, for example, will get merged with any build paths that have been defined in `config.php` when running `yarn run prod`.

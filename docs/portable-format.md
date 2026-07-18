@@ -72,6 +72,7 @@ Raw HTML is stripped. Rich elements use fenced, JSON-valued component calls:
 ```markdown
 :::ui.alert
 {"type":"warning","title":"Check the lock","supporting-text":"Use an immutable revision."}
+
 :::
 ```
 

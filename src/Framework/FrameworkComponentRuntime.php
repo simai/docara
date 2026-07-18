@@ -104,6 +104,12 @@ final readonly class FrameworkComponentRuntime
         $component = (string) $manifest['key'];
         $preset = $authorProps['preset'] ?? null;
         unset($authorProps['preset']);
+        if ($component === 'ui.alert' && array_key_exists('id', $authorProps)) {
+            throw new FrameworkComponentException(
+                'FRAMEWORK_PROP_MANAGED',
+                'ui.alert:id is generated deterministically by Docara',
+            );
+        }
         if ($preset !== null && ! is_string($preset)) {
             throw new FrameworkComponentException('FRAMEWORK_PRESET_INVALID', $component);
         }

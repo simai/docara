@@ -1,7 +1,8 @@
 import { spawn } from 'node:child_process';
-import { cpSync, existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { dirname, normalize, resolve } from 'node:path';
+import { cpSync, existsSync, mkdirSync, readFileSync, realpathSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { dirname, extname, normalize, relative, resolve, sep } from 'node:path';
 import { defineConfig } from 'vite';
+import fg from 'fast-glob';
 
 function copyIfExists(from, to) {
     if (! existsSync(from)) {
@@ -17,11 +18,150 @@ function copyStaticAssets() {
     copyIfExists('source/img', 'source/assets/build/img');
 }
 
+function rebuildStaticAssets() {
+    rmSync('source/assets/build/img', { recursive: true, force: true });
+    copyStaticAssets();
+}
+
+function staticAssetFiles() {
+    return fg.sync([
+        'source/_core/_assets/img/**/*',
+        'source/img/**/*',
+    ], { onlyFiles: true, dot: true });
+}
+
+function projectPath(path) {
+    const candidate = relative(resolve('.'), resolve(path)).replaceAll('\\', '/');
+    return candidate === '..' || candidate.startsWith('../') ? null : candidate;
+}
+
+function staticAssetRelativePath(path) {
+    const candidate = projectPath(path);
+    if (candidate?.startsWith('source/img/')) {
+        return candidate.slice('source/img/'.length);
+    }
+    if (candidate?.startsWith('source/_core/_assets/img/')) {
+        return candidate.slice('source/_core/_assets/img/'.length);
+    }
+
+    return null;
+}
+
+function syncStaticAsset(path) {
+    const assetPath = staticAssetRelativePath(path);
+    if (assetPath === null) {
+        return false;
+    }
+    const target = resolve('source/assets/build/img', assetPath);
+    const projectSource = resolve('source/img', assetPath);
+    const coreSource = resolve('source/_core/_assets/img', assetPath);
+    const source = existsSync(projectSource) ? projectSource : existsSync(coreSource) ? coreSource : null;
+    if (source === null) {
+        rmSync(target, { force: true });
+        return true;
+    }
+
+    mkdirSync(dirname(target), { recursive: true });
+    cpSync(source, target);
+    return true;
+}
+
+function isDocaraAuthorInput(path) {
+    const candidate = projectPath(path);
+    if (candidate === null
+        || candidate === 'source/hot'
+        || candidate.startsWith('build_')
+        || candidate.startsWith('.cache/')
+        || candidate.startsWith('source/assets/build/')
+        || candidate.startsWith('node_modules/')
+        || candidate.startsWith('vendor/')
+    ) {
+        return false;
+    }
+    if (['config.php', 'bootstrap.php', 'blade.php'].includes(candidate)) {
+        return true;
+    }
+    if (candidate.startsWith('listeners/')) {
+        return candidate.endsWith('.php');
+    }
+
+    return candidate.startsWith('source/')
+        && /\.(?:md|php|html|json|ya?ml)$/i.test(candidate);
+}
+
+function resolveBuildFile(requestUrl) {
+    let requestPath;
+    try {
+        requestPath = decodeURIComponent((requestUrl || '/').split('?')[0]);
+    } catch {
+        return null;
+    }
+    if (requestPath.includes('\0')
+        || requestPath.includes('\\')
+        || requestPath.split('/').includes('..')
+    ) {
+        return null;
+    }
+
+    const buildRoot = resolve('build_local');
+    const relativePath = requestPath === '/' ? 'index.html' : requestPath.replace(/^\/+/, '');
+    let candidate = resolve(buildRoot, relativePath);
+    if (candidate !== buildRoot && ! candidate.startsWith(buildRoot + sep)) {
+        return null;
+    }
+    if (! existsSync(candidate)) {
+        return null;
+    }
+    if (statSync(candidate).isDirectory()) {
+        candidate = resolve(candidate, 'index.html');
+        if (! existsSync(candidate)) {
+            return null;
+        }
+    }
+
+    const realCandidate = realpathSync(candidate);
+    if ((realCandidate !== buildRoot && ! realCandidate.startsWith(buildRoot + sep))
+        || ! statSync(realCandidate).isFile()
+    ) {
+        return null;
+    }
+
+    return realCandidate;
+}
+
+function buildFileContentType(filePath) {
+    const types = {
+        '.html': 'text/html; charset=utf-8',
+        '.css': 'text/css; charset=utf-8',
+        '.js': 'text/javascript; charset=utf-8',
+        '.mjs': 'text/javascript; charset=utf-8',
+        '.json': 'application/json; charset=utf-8',
+        '.map': 'application/json; charset=utf-8',
+        '.svg': 'image/svg+xml',
+        '.png': 'image/png',
+        '.jpg': 'image/jpeg',
+        '.jpeg': 'image/jpeg',
+        '.gif': 'image/gif',
+        '.webp': 'image/webp',
+        '.avif': 'image/avif',
+        '.ico': 'image/x-icon',
+        '.woff': 'font/woff',
+        '.woff2': 'font/woff2',
+        '.ttf': 'font/ttf',
+        '.otf': 'font/otf',
+        '.eot': 'application/vnd.ms-fontobject',
+        '.xml': 'application/xml; charset=utf-8',
+        '.txt': 'text/plain; charset=utf-8',
+    };
+
+    return types[extname(filePath).toLowerCase()] || 'application/octet-stream';
+}
+
 function findDocaraCommand() {
     const localBin = normalize('./vendor/bin/docara');
     if (existsSync(localBin)) {
         return {
-            command: 'php',
+            command: process.env.DOCARA_PHP_BINARY || 'php',
             args: [localBin],
         };
     }
@@ -44,9 +184,18 @@ function runDocaraBuild(env) {
             shell: process.platform === 'win32',
         });
 
-        child.on('exit', (code) => {
-            if (code > 0) {
-                rejectBuild(new Error(`Docara build failed with exit code ${code}.`));
+        let settled = false;
+        child.once('error', (error) => {
+            settled = true;
+            rejectBuild(new Error(`Unable to start Docara build: ${error.message}`));
+        });
+        child.once('close', (code, signal) => {
+            if (settled) {
+                return;
+            }
+            if (code !== 0 || signal !== null) {
+                const outcome = signal !== null ? `signal ${signal}` : `exit code ${String(code)}`;
+                rejectBuild(new Error(`Docara build failed with ${outcome}.`));
                 return;
             }
 
@@ -55,17 +204,8 @@ function runDocaraBuild(env) {
     });
 }
 
-function docara(options = {}) {
+function docara() {
     const modeToEnv = (mode) => mode === 'production' ? 'production' : 'local';
-    const watchFiles = options.watch?.files ?? [
-        'config.php',
-        'bootstrap.php',
-        'blade.php',
-        'listeners/**/*.php',
-        'source/**/*.md',
-        'source/**/*.php',
-        'source/**/*.html',
-    ];
 
     let buildEnv = 'local';
 
@@ -73,8 +213,43 @@ function docara(options = {}) {
         name: 'docara',
         configResolved(config) {
             buildEnv = modeToEnv(config.mode);
+            if (config.command === 'build') {
+                rmSync('source/hot', { force: true });
+            }
+        },
+        buildStart() {
+            ['source/_core/_assets/img', 'source/img']
+                .filter((path) => existsSync(path))
+                .forEach((path) => this.addWatchFile(path));
+            staticAssetFiles().forEach((file) => this.addWatchFile(file));
+        },
+        watchChange(path) {
+            syncStaticAsset(path);
         },
         configureServer(server) {
+            let buildQueue = Promise.resolve();
+            let buildTimer = null;
+            const scheduleBuild = () => {
+                if (buildTimer !== null) {
+                    clearTimeout(buildTimer);
+                }
+                buildTimer = setTimeout(() => {
+                    buildTimer = null;
+                    buildQueue = buildQueue
+                        .then(() => runDocaraBuild('local'))
+                        .catch((error) => {
+                            server.config.logger.error(error.message);
+                        });
+                }, 75);
+            };
+            const handleAuthorChange = (path) => {
+                if (syncStaticAsset(path)) {
+                    return;
+                }
+                if (isDocaraAuthorInput(path)) {
+                    scheduleBuild();
+                }
+            };
             const writeHotFile = () => {
                 const address = server.httpServer?.address();
                 const protocol = server.config.server.https ? 'https' : 'http';
@@ -85,44 +260,56 @@ function docara(options = {}) {
 
                 writeFileSync('source/hot', `${protocol}://${host}:${port}`);
             };
-
-            server.httpServer?.once('listening', () => {
-                writeHotFile();
-                copyStaticAssets();
-                runDocaraBuild('local').catch((error) => {
-                    server.config.logger.error(error.message);
-                });
-            });
-
-            server.httpServer?.once('close', () => {
+            const cleanupHotFile = () => {
                 rmSync('source/hot', { force: true });
-            });
+            };
+            const handleSigint = () => {
+                cleanupHotFile();
+                process.exit(130);
+            };
+            const handleSigterm = () => {
+                cleanupHotFile();
+                process.exit(143);
+            };
 
-            server.watcher.add(watchFiles);
-            server.watcher.on('change', (path) => {
-                const normalizedPath = path.replaceAll('\\', '/');
-                if (normalizedPath.includes('/source/assets/build/')) {
+            cleanupHotFile();
+            process.once('exit', cleanupHotFile);
+            process.prependOnceListener('SIGINT', handleSigint);
+            process.prependOnceListener('SIGTERM', handleSigterm);
+
+            server.middlewares.use((req, res, next) => {
+                const filePath = resolveBuildFile(req.url);
+                if (filePath === null) {
+                    next();
                     return;
                 }
 
-                runDocaraBuild('local').catch((error) => {
-                    server.config.logger.error(error.message);
-                });
+                res.setHeader('Content-Type', buildFileContentType(filePath));
+                res.setHeader('X-Content-Type-Options', 'nosniff');
+                res.statusCode = 200;
+                res.end(req.method === 'HEAD' ? undefined : readFileSync(filePath));
             });
 
-            return () => {
-                server.middlewares.use((req, res, next) => {
-                    const requestPath = req.url === '/' ? '/index.html' : req.url.split('?')[0];
-                    const filePath = resolve('build_local', requestPath.replace(/^\/+/, ''));
+            server.httpServer?.once('listening', () => {
+                writeHotFile();
+                rebuildStaticAssets();
+                scheduleBuild();
+            });
 
-                    if (! existsSync(filePath)) {
-                        next();
-                        return;
-                    }
+            server.httpServer?.once('close', () => {
+                if (buildTimer !== null) {
+                    clearTimeout(buildTimer);
+                }
+                cleanupHotFile();
+                process.removeListener('exit', cleanupHotFile);
+                process.removeListener('SIGINT', handleSigint);
+                process.removeListener('SIGTERM', handleSigterm);
+            });
 
-                    res.end(readFileSync(filePath));
-                });
-            };
+            server.watcher.on('add', handleAuthorChange);
+            server.watcher.on('change', handleAuthorChange);
+            server.watcher.on('unlink', handleAuthorChange);
+
         },
         async closeBundle() {
             copyStaticAssets();

@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Содержание и макет",
+  "description": "Как устроены Markdown-страницы, JSON-настройки, наследование и макеты Docara.",
+  "navigation": {
+    "order": 20
+  }
+}

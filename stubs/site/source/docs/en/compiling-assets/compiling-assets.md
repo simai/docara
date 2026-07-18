@@ -11,17 +11,39 @@ Docara ships with Vite by default. Vite compiles the core JavaScript and SCSS en
 
 ## Setup
 
-Make sure you have Node.js and npm installed, then install deps:
+Use Node.js `^20.19.0 || >=22.12.0` and Yarn Classic exactly `1.22.22`, then
+install the exact dependency set from the committed lockfile:
 
 ```bash
-npm install
+YARN_IGNORE_PATH=1 npx --yes yarn@1.22.22 --no-default-rc install --frozen-lockfile --production=false --non-interactive
 ```
+
+`yarn --version` must print exactly `1.22.22` before `docara init`. Docara owns
+the legacy theme's package manager, exact `engines.node`, dependency graph,
+standard scripts and lockfile. A missing engine is added; a different or
+extended `engines` contract is rejected. It refuses npm locks, extra dependencies, lifecycle/install metadata,
+project `.yarnrc*`, `.yarn/`, `.yarnclean` and `.npmrc` configuration, and
+unsafe filesystem links before changing the project. Project identity,
+descriptive fields, `config`, and additional explicit scripts are preserved.
+`DOCARA_SKIP_FRONTEND_INSTALL=true` skips only the Yarn process; it does not
+skip package/lock merge or scaffold refresh and does not prove frontend
+readiness. A controlled CI caller must immediately run
+`YARN_IGNORE_PATH=1 npx --yes yarn@1.22.22 --no-default-rc install --frozen-lockfile --production=false --non-interactive`
+before a build or deploy.
 
 Key scripts from `package.json`:
 
-- `npm run dev` - start Vite dev server and rebuild Docara on content changes
-- `npm run watch` - run Vite build in watch mode
-- `npm run prod` - production asset build followed by `docara build production`
+- `YARN_IGNORE_PATH=1 npx --yes yarn@1.22.22 --no-default-rc dev` - start Vite dev server and rebuild Docara on content changes
+- `YARN_IGNORE_PATH=1 npx --yes yarn@1.22.22 --no-default-rc watch` - run Vite build in watch mode
+- `YARN_IGNORE_PATH=1 npx --yes yarn@1.22.22 --no-default-rc prod` - production asset build followed by `docara build production`
+
+Vite invokes the local `vendor/bin/docara` through `php`. If the first PHP in
+your shell is not the one used for Composer, set the exact executable before
+running Vite:
+
+```bash
+DOCARA_PHP_BINARY=/absolute/path/to/php yarn prod
+```
 
 ## Vite Config
 

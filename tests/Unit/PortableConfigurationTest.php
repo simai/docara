@@ -54,9 +54,11 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame('full', $plan->configuration['layout']['max_width']);
         self::assertSame('dark', $plan->configuration['settings']['theme']);
         self::assertTrue($plan->configuration['navigation']['hidden']);
+        self::assertSame(5, $plan->configuration['navigation']['order']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/layout/max_width']);
         self::assertSame('content/docs/deep/_section.json', $plan->provenance['/settings/theme']);
         self::assertSame('content/docs/_section.json', $plan->provenance['/navigation/hidden']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/navigation/order']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/preset']);
         self::assertSame(
             ['site', 'framework-lock', 'section', 'section', 'section', 'section', 'page', 'content'],
@@ -128,6 +130,14 @@ final class PortableConfigurationTest extends TestCase
         );
         $section['navigation'] = ['$reset' => true];
         $this->writeJson('content/docs/_section.json', $section);
+        $page = json_decode(
+            (string) file_get_contents($this->path('content/docs/deep/install.page.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        unset($page['navigation']);
+        $this->writeJson('content/docs/deep/install.page.json', $page);
 
         $plan = (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
 
@@ -225,19 +235,19 @@ final class PortableConfigurationTest extends TestCase
                 'framework_lock' => 'framework.lock.json',
                 'layout' => ['max_width' => 'wide'],
                 'settings' => ['theme' => 'system'],
-                'navigation' => ['hidden' => false],
+                'navigation' => ['hidden' => false, 'order' => 2147483647],
             ]],
             ['section.schema.json', [
                 'schema' => 'docara.section.v1',
                 'layout' => ['$reset' => true, 'max_width' => 'compact'],
                 'settings' => ['theme' => 'dark'],
-                'navigation' => ['hidden' => true],
+                'navigation' => ['hidden' => true, 'order' => 20],
             ]],
             ['page.schema.json', [
                 'schema' => 'docara.page.v1',
                 'layout' => ['max_width' => 'full'],
                 'settings' => ['$reset' => true, 'theme' => 'light'],
-                'navigation' => ['$reset' => true],
+                'navigation' => ['$reset' => true, 'order' => 5],
             ]],
         ] as [$schema, $descriptor]) {
             (new SchemaRepository)->assertValid($descriptor, $schema);
@@ -257,6 +267,9 @@ final class PortableConfigurationTest extends TestCase
             [['schema' => 'docara.section.v1', 'settings' => ['table_of_contents' => true]], 'section.schema.json'],
             [['schema' => 'docara.page.v1', 'navigation' => ['enabled' => true]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'navigation' => ['hidden' => 'false']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'navigation' => ['order' => -1]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'navigation' => ['order' => 2147483648]], 'page.schema.json'],
+            [['schema' => 'docara.section.v1', 'navigation' => ['order' => '10']], 'section.schema.json'],
             [['schema' => 'docara.page.v1', 'components' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'variables' => []], 'page.schema.json'],
         ] as [$descriptor, $schema]) {
@@ -476,7 +489,7 @@ final class PortableConfigurationTest extends TestCase
         $this->writeJson('content/docs/_section.json', [
             'schema' => 'docara.section.v1',
             'layout' => ['max_width' => 'wide'],
-            'navigation' => ['hidden' => true],
+            'navigation' => ['hidden' => true, 'order' => 20],
         ]);
         $this->writeJson('content/docs/deep/_section.json', [
             'schema' => 'docara.section.v1',
@@ -489,6 +502,7 @@ final class PortableConfigurationTest extends TestCase
             'slug' => 'docs/install',
             'locale' => 'en',
             'layout' => ['max_width' => 'full'],
+            'navigation' => ['order' => 5],
         ]);
     }
 

@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
+use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
 final class FrameworkComponentRuntimeTest extends TestCase
 {
@@ -104,6 +105,204 @@ MARKDOWN;
         self::assertStringNotContainsString('DOCARA_COMPONENT_', $hydrated);
     }
 
+    public function test_four_space_indented_smart_directives_remain_commonmark_code(): void
+    {
+        $document = $this->runtime()->extract(
+            "    :::ui.button\n    {\"text\":\"Example\"}\n    :::\n",
+            'guide.md',
+        );
+
+        self::assertSame([], $document->normalizedCalls);
+        self::assertStringContainsString(':::ui.button', $document->markdownWithPlaceholders);
+        self::assertStringNotContainsString('DOCARA_COMPONENT_', $document->markdownWithPlaceholders);
+    }
+
+    public function test_legacy_closing_fences_accept_zero_to_three_spaces_and_crlf(): void
+    {
+        foreach (['', ' ', '  ', '   '] as $indent) {
+            $document = $this->runtime()->extract(
+                ":::ui.button\r\n{}\r\n{$indent}:::\r\n",
+                'guide.md',
+            );
+
+            self::assertCount(1, $document->normalizedCalls);
+        }
+    }
+
+    public function test_longer_matching_colon_fences_are_supported(): void
+    {
+        $document = $this->runtime()->extract(
+            "::::ui.button\n{\"text\":\"Long fence\"}\n::::\n",
+            'guide.md',
+        );
+
+        self::assertCount(1, $document->normalizedCalls);
+        self::assertSame('Long fence', $document->normalizedCalls[0]['props']['text']);
+    }
+
+    public function test_portable_and_smart_blocks_are_adjacent_boundaries_in_both_orders(): void
+    {
+        foreach ([
+            ":::card\nCard\n:::\n:::ui.button\n{}\n:::\n",
+            ":::ui.button\n{}\n:::\n:::card\nCard\n:::\n",
+            ":::steps\n1. Step\n:::\n:::ui.button\n{}\n:::\n",
+            ":::steps\r\n1. Step\r\n:::\r\n:::ui.button\r\n{}\r\n:::\r\n",
+        ] as $markdown) {
+            $document = $this->runtime()->extract($markdown, 'guide.md');
+            self::assertCount(1, $document->normalizedCalls);
+
+            $html = (new PortableMarkdownRenderer)->render($document->markdownWithPlaceholders);
+            $hydrated = $document->hydrate($html);
+            self::assertSame(1, substr_count($hydrated, '<section'));
+            self::assertSame(1, substr_count($hydrated, '<sf-button'));
+        }
+    }
+
+    public function test_smart_directive_like_text_inside_inline_code_and_reference_titles_is_literal(): void
+    {
+        foreach ([
+            "Prefix ``\n:::ui.button\n`` suffix\n",
+            "[a\\]b]: /guide/ \"\n:::ui.button\n\"\n[Guide][a\\]b]\n",
+        ] as $markdown) {
+            $document = $this->runtime()->extract($markdown, 'guide.md');
+            self::assertSame([], $document->normalizedCalls);
+            self::assertStringContainsString(':::ui.button', $document->markdownWithPlaceholders);
+        }
+    }
+
+    public function test_smart_and_portable_directives_cannot_be_nested_in_either_direction(): void
+    {
+        foreach ([
+            "::::card\nCard\n:::ui.button\n{}\n:::\n::::\n",
+            "::::steps\n1. Step\n:::ui.alert\n{}\n:::\n::::\n",
+            "::::ui.button\n:::card\nCard\n:::\n::::\n",
+            "::::ui.alert\n:::steps\n1. Step\n:::\n::::\n",
+            "::::ui.button\n1. Fake payload\n:::ui.alert\n{}\n:::\n::::\n",
+            "::::ui.alert\n> Fake payload\n:::ui.button\n{}\n:::\n::::\n",
+        ] as $markdown) {
+            $this->expectFailure(
+                fn () => $this->runtime()->extract($markdown, 'guide.md'),
+                'FRAMEWORK_DIRECTIVE_NESTING_UNSUPPORTED',
+            );
+        }
+    }
+
+    public function test_indented_root_openers_remain_literal_but_lazy_container_openers_fail(): void
+    {
+        foreach ([' ', '  ', '   '] as $indent) {
+            $document = $this->runtime()->extract(
+                "{$indent}::::ui.button\n{$indent}{}\n{$indent}::::\n",
+                'guide.md',
+            );
+            self::assertSame([], $document->normalizedCalls);
+        }
+
+        foreach ([
+            "- Before\n::::ui.button\n{}\n::::\n",
+            "1. Before\n::::ui.button\n{}\n::::\n",
+            "> Before\n::::ui.button\n{}\n::::\n",
+        ] as $markdown) {
+            $this->expectFailure(
+                fn () => $this->runtime()->extract($markdown, 'guide.md'),
+                'FRAMEWORK_DIRECTIVE_INDENTATION_UNSUPPORTED',
+            );
+        }
+    }
+
+    public function test_a_top_level_smart_directive_after_a_closed_list_is_recognized(): void
+    {
+        foreach (["\n\n", "\n\n\n"] as $separator) {
+            $document = $this->runtime()->extract(
+                "1. Before{$separator}:::ui.button\n{}\n:::\n",
+                'guide.md',
+            );
+
+            self::assertCount(1, $document->normalizedCalls);
+        }
+    }
+
+    public function test_smart_directives_inside_list_contained_fences_remain_code(): void
+    {
+        $document = $this->runtime()->extract(
+            "- ```markdown\n  :::ui.button\n  {}\n  :::\n  ```\n",
+            'guide.md',
+        );
+
+        self::assertSame([], $document->normalizedCalls);
+        self::assertStringContainsString(':::ui.button', $document->markdownWithPlaceholders);
+    }
+
+    public function test_smart_directives_inside_html_comments_are_not_executed(): void
+    {
+        $document = $this->runtime()->extract(
+            "<!--\n:::ui.button\n{}\n:::\n-->\n",
+            'guide.md',
+        );
+
+        self::assertSame([], $document->normalizedCalls);
+        self::assertStringContainsString(':::ui.button', $document->markdownWithPlaceholders);
+    }
+
+    public function test_smart_boundaries_do_not_hide_a_following_list_contained_fence(): void
+    {
+        $document = $this->runtime()->extract(<<<'MD'
+:::ui.button
+{}
+:::
+2. ```markdown
+   :::ui.button
+   {}
+   :::
+   ```
+MD, 'guide.md');
+
+        self::assertCount(1, $document->normalizedCalls);
+        self::assertStringContainsString(':::ui.button', $document->markdownWithPlaceholders);
+    }
+
+    public function test_smart_boundaries_preserve_following_html_block_opacity(): void
+    {
+        $document = $this->runtime()->extract(
+            ":::ui.button\n{}\n:::\n<span>\n:::ui.button\n{}\n:::\n</span>\n",
+            'guide.md',
+        );
+
+        self::assertCount(1, $document->normalizedCalls);
+    }
+
+    public function test_indented_smart_directives_fail_instead_of_being_reparented_out_of_a_list(): void
+    {
+        $this->expectFailure(
+            fn () => $this->runtime()->extract(
+                "- Before\n  :::ui.button\n  {}\n  :::\n  After\n",
+                'guide.md',
+            ),
+            'FRAMEWORK_DIRECTIVE_INDENTATION_UNSUPPORTED',
+        );
+    }
+
+    public function test_commonmark_container_state_decides_where_a_smart_fence_closes(): void
+    {
+        $document = $this->runtime()->extract(
+            "- ```markdown\n  :::ui.button\n  {}\n```\n:::ui.button\n{}\n:::\n",
+            'guide.md',
+        );
+
+        self::assertSame([], $document->normalizedCalls);
+        self::assertSame(2, substr_count($document->markdownWithPlaceholders, ':::ui.button'));
+    }
+
+    public function test_four_space_indented_closing_delimiter_does_not_close_a_smart_directive(): void
+    {
+        $this->expectFailure(
+            fn () => $this->runtime()->extract(
+                ":::ui.button\n{}\n    :::\n",
+                'guide.md',
+            ),
+            'FRAMEWORK_DIRECTIVE_UNCLOSED',
+        );
+    }
+
     public function test_asset_plan_is_commit_pinned_and_boot_order_is_deterministic(): void
     {
         $document = $this->runtime()->extract(
@@ -163,6 +362,47 @@ MARKDOWN;
         self::assertSame($first->assetPlan->toArray(), $second->assetPlan->toArray());
     }
 
+    public function test_author_text_cannot_collide_with_a_generated_component_placeholder(): void
+    {
+        $pagePath = 'guide.md';
+        $oldPlaceholder = 'DOCARA_COMPONENT_' . strtoupper(substr(hash(
+            'sha256',
+            $pagePath . "\0" . 1 . "\0" . 'ui.button' . "\0" . 0,
+        ), 0, 24));
+        $document = $this->runtime()->extract(
+            "```text\n{$oldPlaceholder}\n```\n\n:::ui.button\n{}\n:::\n",
+            $pagePath,
+        );
+        $actualPlaceholder = array_key_first($document->renderedHtml);
+        self::assertNotSame($oldPlaceholder, $actualPlaceholder);
+
+        $hydrated = $document->hydrate(
+            "<pre><code>{$oldPlaceholder}</code></pre>\n<p>{$actualPlaceholder}</p>\n",
+        );
+        self::assertStringContainsString("<code>{$oldPlaceholder}</code>", $hydrated);
+        self::assertSame(1, substr_count($hydrated, '<sf-button'));
+    }
+
+    public function test_entity_equivalent_component_placeholder_fails_closed(): void
+    {
+        $pagePath = 'guide.md';
+        $placeholder = 'DOCARA_COMPONENT_' . strtoupper(substr(hash(
+            'sha256',
+            $pagePath . "\0" . 1 . "\0" . 'ui.button' . "\0" . 0,
+        ), 0, 24));
+        $entityEquivalent = str_replace('_', '&#95;', $placeholder);
+        $document = $this->runtime()->extract(
+            "{$entityEquivalent}\n\n:::ui.button\n{}\n:::\n",
+            $pagePath,
+        );
+        $rendered = (new PortableMarkdownRenderer)->render($document->markdownWithPlaceholders);
+
+        $this->expectFailure(
+            fn () => $document->hydrate($rendered),
+            'FRAMEWORK_PLACEHOLDER_CARDINALITY_INVALID',
+        );
+    }
+
     #[DataProvider('invalidDirectiveProvider')]
     public function test_invalid_directives_fail_closed(string $markdown, string $expectedCode): void
     {
@@ -177,15 +417,25 @@ MARKDOWN;
     /** @return iterable<string, array{string, string}> */
     public static function invalidDirectiveProvider(): iterable
     {
+        yield 'invalid UTF-8' => ["\xFF\n:::ui.button\n{}\n:::\n", 'FRAMEWORK_DIRECTIVE_MARKDOWN_INVALID'];
         yield 'malformed JSON' => [":::ui.button\n{\n:::\n", 'FRAMEWORK_DIRECTIVE_JSON_INVALID'];
         yield 'non-object JSON' => [":::ui.button\n[]\n:::\n", 'FRAMEWORK_DIRECTIVE_PROPS_INVALID'];
         yield 'unknown component' => [":::ui.card\n{}\n:::\n", 'FRAMEWORK_COMPONENT_UNSUPPORTED'];
         yield 'unclosed' => [":::ui.alert\n{}\n", 'FRAMEWORK_DIRECTIVE_UNCLOSED'];
         yield 'unknown prop' => [":::ui.button\n{\"onclick\":\"bad\"}\n:::\n", 'FRAMEWORK_PROP_UNKNOWN'];
+        yield 'runtime-managed alert id' => [":::ui.alert\n{\"id\":\"author-id\"}\n:::\n", 'FRAMEWORK_PROP_MANAGED'];
         yield 'invalid constraint' => [":::ui.button\n{\"type\":\"default\",\"scheme\":\"secondary\"}\n:::\n", 'FRAMEWORK_CONSTRAINT_COMBINATION_INVALID'];
         yield 'loading requires disabled' => [":::ui.button\n{\"loading\":true,\"disabled\":false}\n:::\n", 'FRAMEWORK_CONSTRAINT_REQUIREMENT_INVALID'];
         yield 'unknown preset' => [":::ui.button\n{\"preset\":\"invented\"}\n:::\n", 'FRAMEWORK_PRESET_UNKNOWN'];
         yield 'alert dependency outside bounded pair' => [":::ui.alert\n{\"closable\":true}\n:::\n", 'FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME'];
+    }
+
+    public function test_source_directive_marker_count_is_bounded_before_extraction(): void
+    {
+        $this->expectFailure(
+            fn () => $this->runtime()->extract(str_repeat(":::ui.button\n{}\n:::\n", 65), 'large.md'),
+            'FRAMEWORK_DIRECTIVE_LIMIT_EXCEEDED',
+        );
     }
 
     public function test_runtime_and_manifest_lock_mismatches_fail_closed(): void

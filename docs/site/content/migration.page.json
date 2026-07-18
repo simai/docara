@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Миграция",
+  "description": "Переход со старого Docara, docara-template и Laravel Mix, а также диагностика проблем.",
+  "navigation": {
+    "order": 70
+  }
+}

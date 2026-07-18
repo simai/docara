@@ -48,7 +48,7 @@ if ($docsDir === '') {
 
 $collectionName = collect(explode('/', $docsDir))->implode('-');
 
-$indexMenuByLang = [];
+$indexMenuDirs = [];
 
 foreach (glob('./source/' . $docsDir . '/*', GLOB_ONLYDIR) as $dir) {
     $lang = basename($dir);

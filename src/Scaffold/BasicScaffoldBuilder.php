@@ -105,8 +105,8 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
                         continue;
                     }
 
-                    if ($this->updateMode && $hasDocs && is_file($srcChild) && ! $this->isUpdateModeSourceEntrypoint($sourceItem)) {
-                        $this->log("Skip copying source root stub {$sourceItem} in update mode.");
+                    if ($this->updateMode && $this->files->exists($destChild)) {
+                        $this->log("Preserve project-owned source entry {$sourceItem} in update mode.");
 
                         continue;
                     }
@@ -214,13 +214,6 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
         }
     }
 
-    private function isUpdateModeSourceEntrypoint(string $sourceItem): bool
-    {
-        return in_array($sourceItem, [
-            'index.blade.md',
-        ], true);
-    }
-
     /**
      * Copy directory contents while preserving user changes (whitespace-insensitive hash).
      * If $forceOverwrite is true, overwrite changed files unless they are tracked by Git.
@@ -307,7 +300,13 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
         // Detect git once
         if ($this->gitAvailable === null) {
             $status = 0;
-            @exec('git -C ' . escapeshellarg($this->base) . ' rev-parse --is-inside-work-tree', $_, $status);
+            $nullDevice = PHP_OS_FAMILY === 'Windows' ? 'NUL' : '/dev/null';
+            @exec(
+                'git -C ' . escapeshellarg($this->base)
+                . ' rev-parse --is-inside-work-tree 2>' . escapeshellarg($nullDevice),
+                $_,
+                $status,
+            );
             $this->gitAvailable = $status === 0;
         }
 

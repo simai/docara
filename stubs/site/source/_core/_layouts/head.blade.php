@@ -1,3 +1,19 @@
+@php
+    $brand = $page->brand ?? [];
+    $baseUrl = rtrim((string) ($page->baseUrl ?? ''), '/');
+    $brandAssetUrl = static function (?string $value) use ($baseUrl): ?string {
+        if ($value === null || trim($value) === '') {
+            return null;
+        }
+        if (preg_match('#^(?:[a-z][a-z0-9+.-]*:)?//#i', $value) === 1 || str_starts_with($value, 'data:')) {
+            return $value;
+        }
+
+        return ($baseUrl === '' ? '' : $baseUrl) . '/' . ltrim($value, '/');
+    };
+    $socialImageUrl = $brandAssetUrl($brand['socialImage'] ?? null);
+    $faviconUrl = $brandAssetUrl($brand['favicon'] ?? 'favicon.ico');
+@endphp
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +24,9 @@
     <meta property="og:title" content="{{ $page->title ?  $page->title . ' | ' : '' }}{{ $page->siteName }}"/>
     <meta property="og:description" content="{{ $page->description ?? $page->siteDescription }}"/>
     <meta property="og:url" content="{{ $page->getUrl() }}"/>
-    <meta property="og:image" content="/assets/build/img/logo.svg"/>
+    @if($socialImageUrl)
+        <meta property="og:image" content="{{ $socialImageUrl }}"/>
+    @endif
     <meta property="og:type" content="website"/>
     <meta name="turbo-refresh-method" content="morph">
     <meta name="twitter:image:alt" content="{{ $page->siteName }}">
@@ -21,7 +39,9 @@
     <title>{{ $page->siteName }}{{ $page->title ? ' | ' . $page->title : '' }}</title>
 
     <link rel="home" href="{{ $page->baseUrl }}">
-    <link rel="icon" href="/favicon.ico">
+    @if($faviconUrl)
+        <link rel="icon" href="{{ $faviconUrl }}">
+    @endif
 
     @stack('meta')
 

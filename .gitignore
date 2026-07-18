@@ -33,3 +33,6 @@ npm-debug.log
 /vscode-folder-tree/
 /source/workflow/evidence/2026-07-18-declarative-docara-portable-format/independent-acceptance/
 /source/workflow/evidence/2026-07-18-declarative-docara-portable-format/hcs/
+
+# SIMAI project memory runtime logs
+source/logs/

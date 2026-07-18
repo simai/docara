@@ -1,0 +1,6 @@
+tracks:
+  docara-consolidation:
+    status: "active"
+    owner_skill: "teamlead"
+    current_workflow: "source/workflow/2026-07-18-docara-consolidation-and-local-docs.md"
+    last_updated: "2026-07-18"

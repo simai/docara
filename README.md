@@ -53,10 +53,12 @@ manifests:
 ```markdown
 :::ui.alert
 {"type":"info","title":"Ready","supporting-text":"The page was built from Markdown."}
+
 :::
 
 :::ui.button
 {"text":"Continue","size":"1","type":"default","scheme":"primary"}
+
 :::
 ```
 
@@ -117,13 +119,30 @@ This will:
 -   copy the base template (stubs),
 -   copy bundled `source/_core`,
 -   copy template configs from `_core`,
--   run frontend dependency install (`npm/yarn install` in the project root).
+-   run the locked frontend dependency install (`yarn install --frozen-lockfile` in the project root).
 -   If you changed files in `source/_core`, init/update will detect your edits (whitespace-insensitive) and leave those files untouched.
+
+Docara owns the legacy theme's `packageManager`, `engines.node`, `dependencies`,
+`devDependencies`, standard scripts and `yarn.lock`. Before changing `.env`,
+source files, cache or build output, init rejects npm locks, extra packages,
+automatic lifecycle scripts, install metadata, Yarn/npm project configuration,
+unsafe links, an `engines` contract other than the canonical
+`^20.19.0 || >=22.12.0`, and any Yarn version
+other than exactly `1.22.22`. Project name, version, description, `config` and
+additional explicit scripts are preserved.
+
+`DOCARA_SKIP_FRONTEND_INSTALL=true` is intended for controlled CI/migration
+steps. It skips only the Yarn process; it does **not** skip package/lock merge,
+scaffold refresh or any safety check, and it is not proof of frontend
+readiness. A controlled caller must immediately run the exact frozen install
+(`YARN_IGNORE_PATH=1 npx --yes yarn@1.22.22 --no-default-rc install --frozen-lockfile --production=false --non-interactive`)
+before building or
+deploying.
 
 ### Run
 
--   Development/watch (if defined in your template): `yarn run watch` or `npm run watch`
--   Build: `yarn run prod` / `npm run prod` (or your template’s build script)
+-   Development/watch (if defined in your template): `yarn run watch`
+-   Build: `yarn run prod`
 -   Translate test: `php vendor/bin/docara translate --test`
 -   Update existing project in-place (no delete/archive, keeps `source/_core`): `php vendor/bin/docara init --update`
 -   If you already have your own docs in `source/docs`, they won’t be overwritten; otherwise stubs/docs are copied.
@@ -144,17 +163,36 @@ This will:
 -   `stubs/` — template stubs used during `docara init`.
 -   `build_*` — build outputs.
 
-## Lint
+## Quality checks
 
 -   PHP: `vendor/bin/pint --test`
--   Markdown: `npx markdownlint-cli2 "**/*.md" "!vendor" "!node_modules" "!build_*" "!dist" "!public"`
+-   Tests: `php vendor/bin/phpunit`
+-   Generated documentation quoted local `href`/`src` file targets: `php scripts/verify-static-build.php docs/site/build_production`
 
-## Customize the logo
+## Branding and private theme tools
 
--   Replace the SVG at `source/_core/_assets/img/logo.svg` (and, if you use the wide mark, `source/_core/_assets/img/icon_and_text_logo.svg`) with your own asset.
--   If you prefer a different markup (e.g., PNG, text), edit `source/_core/_components/header/logo.blade.php`; it is now a regular file in your repo, not a submodule.
--   Rebuild assets (`yarn prod` / `npm run prod` or your preset’s build) so the new logo is emitted to `assets/build`.
--   Commit/push as usual—`source/_core` is just files, so the logo change lives in your repository.
+Configure visible identity and metadata in project `config.php` instead of
+forking a Docara layout:
+
+```php
+'brand' => [
+    'title' => 'My documentation',
+    'logoSvg' => null,
+    'socialImage' => 'assets/build/img/logo.svg',
+    'favicon' => 'favicon.ico',
+],
+'footerContent' => [
+    'text' => 'Built with Docara',
+    'url' => 'https://github.com/simai/docara',
+],
+```
+
+Relative `socialImage` and `favicon` values are resolved against `baseUrl`, so
+subdirectory deployments remain valid. `brand.logoSvg` is emitted as raw SVG
+markup and is restricted to trusted, maintainer-authored project
+configuration. Never populate it from Markdown, user input, a database or an
+external feed. Keep `themeBuilder` disabled on public documentation; it exposes
+private design/debug tooling and is opt-in only.
 
 ## License
 

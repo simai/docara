@@ -20,7 +20,8 @@ APP_URL=http://localhost:3000
 Docara's default scaffold uses Vite for local development:
 
 ```bash
-npm run dev
+yarn install --frozen-lockfile
+yarn run dev
 ```
 
 This starts Vite at `http://localhost:3000`, writes `source/hot`, and rebuilds Docara into `/build_local` when Markdown, Blade, or config files change. Assets are compiled from:
@@ -31,15 +32,19 @@ This starts Vite at `http://localhost:3000`, writes `source/hot`, and rebuilds D
 
 `source/_core/_assets/css/main.scss`
 
-The Vite plugin serves generated files from `build_local` after internal Vite assets are handled.
+The Vite plugin serves an existing file from `build_local` first. If no generated file matches the request, the middleware passes control to Vite so its internal modules and compiled assets continue to work normally.
 
 ## Watch Build
 
 For a production-like asset build in watch mode:
 
 ```bash
-npm run watch
+yarn run watch
 ```
+
+`yarn watch` observes frontend and static-asset inputs only. Use `yarn dev`
+when Markdown, Blade, or configuration changes must also rebuild and refresh
+the local documentation site.
 
 ## Direct Docara Serve
 

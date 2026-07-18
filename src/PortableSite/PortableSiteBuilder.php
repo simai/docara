@@ -79,11 +79,14 @@ final readonly class PortableSiteBuilder
                 'max_width' => (string) data_get($plan->configuration, 'layout.max_width', 'normal'),
                 'navigation_hidden' => (bool) data_get($plan->configuration, 'navigation.hidden', false),
                 'navigation_order' => data_get($plan->configuration, 'navigation.order'),
+                'search_enabled' => (bool) data_get($plan->configuration, 'search.enabled', false),
+                'search_indexed' => (bool) data_get($plan->configuration, 'search.indexed', true),
                 'url' => $route['url'],
                 'output' => $route['output'],
                 'home_url' => $this->homeUrl((string) ($site['base_url'] ?? '/')),
                 'content_html' => $contentHtml,
                 'components' => $components,
+                'component_calls' => $components->normalizedCalls,
             ];
         }
 
@@ -98,9 +101,38 @@ final readonly class PortableSiteBuilder
             (string) ($site['base_url'] ?? '/'),
             $siteTitle,
         );
+        $searchPlan = null;
+        $searchEnabled = false;
+        foreach ($pages as $page) {
+            if ($page['search_enabled'] === true) {
+                $searchEnabled = true;
+                break;
+            }
+        }
+        if ($searchEnabled) {
+            $searchPlan = (new PortableSearchIndexBuilder)->plan(
+                $pages,
+                $navigation,
+                $this->homeUrl((string) ($site['base_url'] ?? '/')),
+            );
+            foreach ($pages as &$page) {
+                if ($page['search_enabled'] === true) {
+                    $page['search_index_url'] = $searchPlan->indexUrl;
+                    $page['search_runtime_url'] = $searchPlan->runtimeUrl;
+                }
+            }
+            unset($page);
+        }
         $this->prepareDestination($root, $destination);
         $result = collect();
         $diagnostics = [];
+
+        if ($searchPlan instanceof PortableSearchPlan) {
+            $searchDirectory = rtrim($destination, '/\\') . '/_docara';
+            $this->files->ensureDirectoryExists($searchDirectory);
+            $this->files->put($searchDirectory . '/search-index.json', $searchPlan->indexJson);
+            $this->files->put($searchDirectory . '/search.js', $searchPlan->runtime);
+        }
 
         foreach ($pages as $pageIndex => $page) {
             $page['branding'] = $brandPlan['pages'][$pageIndex];

@@ -51,5 +51,11 @@ content/
 Измените `branding` в `docara.json` и структуру `content/`, чтобы получить свой
 макет без правки PHP-шаблонов.
 
+Локальный поиск уже включён через
+`"search": {"enabled": true, "indexed": true}`. Он создаёт статический индекс
+без внешнего сервиса; отдельные страницы можно исключить через
+`search.indexed: false`.
+
 Дальше прочитайте [модель файлов](/authoring/project-files/) и
-[настройки сайта](/authoring/configuration/).
+[настройки сайта](/authoring/configuration/), затем откройте
+[руководство по поиску](/authoring/search/).

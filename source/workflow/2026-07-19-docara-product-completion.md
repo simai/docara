@@ -247,6 +247,7 @@ Do not complete the Goal until:
 | `WS-UX-01` | UX/designer review | official-platform comparison and bounded menu/product shell gate | none | Batch 1 PASS | `batch-1-ux-design-verdict.md` |
 | `WS-SF5-01` | `/root/smart_component_inventory` | pinned utilities/components/Smart-components for menu, search, TOC, settings, landing and catalogue | none | completed | `framework-building-block-map.md` |
 | `WS-DOCS-01` | `/root/docs_catalog_audit` | Retype-style component capability inventory and Docara docs coverage/map | none | completed | `product-capability-matrix.yaml` and catalogue/docs decision |
+| `WS-SEARCH-02` | Docara owner | deterministic local search, schema, runtime, verifier and documentation | this worktree | implementation complete, exact gates pending | Batch 2 tester plus UX/designer verdicts |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.

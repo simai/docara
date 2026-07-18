@@ -3,6 +3,56 @@
 
 declare(strict_types=1);
 
+/** @param list<string> $expected */
+function docaraExactKeys(array $value, array $expected): bool
+{
+    $keys = array_keys($value);
+    sort($keys, SORT_STRING);
+    sort($expected, SORT_STRING);
+
+    return $keys === $expected;
+}
+
+function docaraCanonicalValue(mixed $value): mixed
+{
+    if (! is_array($value)) {
+        return $value;
+    }
+    if (array_is_list($value)) {
+        return array_map(docaraCanonicalValue(...), $value);
+    }
+    ksort($value, SORT_STRING);
+    foreach ($value as $key => $item) {
+        $value[$key] = docaraCanonicalValue($item);
+    }
+
+    return $value;
+}
+
+function docaraCanonicalJson(mixed $value): string
+{
+    return json_encode(
+        docaraCanonicalValue($value),
+        JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION,
+    );
+}
+
+function docaraSearchUrlIsSafe(string $url, string $deploymentBase): bool
+{
+    return preg_match('#\A/(?:(?!\.{1,2}/)[A-Za-z0-9._~-]+/)*\z#D', $url) === 1
+        && str_starts_with($url, $deploymentBase);
+}
+
+function docaraSafeRegularFile(string $path): bool
+{
+    $stat = @lstat($path);
+
+    return ! is_link($path)
+        && is_array($stat)
+        && (($stat['mode'] ?? 0) & 0170000) === 0100000
+        && ($stat['nlink'] ?? 1) === 1;
+}
+
 $rootInput = $argv[1] ?? '';
 if ($rootInput === '' || count($argv) !== 2) {
     fwrite(STDERR, "Usage: php scripts/verify-static-build.php <build-directory>\n");
@@ -92,6 +142,10 @@ $manifestDirectory = $root . '/.docara';
 $manifestPath = $root . '/.docara/resolved-page-plans.json';
 $manifestError = null;
 $manifestOutputs = [];
+$manifestPageRecords = [];
+$searchEnabled = false;
+$expectedSearchSurfaceCount = 0;
+$expectedSearchDocuments = [];
 $manifestDirectoryStat = @lstat($manifestDirectory);
 if (is_link($manifestDirectory)
     || ! is_array($manifestDirectoryStat)
@@ -138,6 +192,7 @@ if (is_link($manifestDirectory)
                     throw new RuntimeException("Resolved page-plan output [$output] is duplicated.");
                 }
                 $outputs[$output] = true;
+                $manifestPageRecords[] = $page;
 
                 $outputPath = $root . '/' . $output;
                 $outputStat = @lstat($outputPath);
@@ -167,6 +222,43 @@ if (is_link($manifestDirectory)
                 }
             }
             $deploymentBase = $configuredBase === '/' ? '/' : '/' . trim($configuredBase, '/') . '/';
+
+            foreach ($manifestPageRecords as $index => $page) {
+                $search = $page['resolved_page_plan']['configuration']['search'] ?? null;
+                if (is_array($search) && ($search['enabled'] ?? false) === true) {
+                    $searchEnabled = true;
+                    $expectedSearchSurfaceCount++;
+                }
+            }
+            if ($searchEnabled) {
+                foreach ($manifestPageRecords as $index => $page) {
+                    $configuration = $page['resolved_page_plan']['configuration'] ?? null;
+                    $search = is_array($configuration) ? ($configuration['search'] ?? null) : null;
+                    if (! is_array($search)
+                        || ! is_bool($search['enabled'] ?? null)
+                        || ! is_bool($search['indexed'] ?? null)
+                    ) {
+                        throw new RuntimeException("Resolved page-plan record [$index] has an incomplete search contract.");
+                    }
+                    if ($search['indexed'] !== true) {
+                        continue;
+                    }
+                    $url = $page['url'] ?? null;
+                    $locale = $configuration['locale'] ?? null;
+                    if (! is_string($url)
+                        || ! docaraSearchUrlIsSafe($url, $deploymentBase)
+                        || ! is_string($locale)
+                        || preg_match('/\A[a-z]{2}(?:-[A-Z]{2})?\z/D', $locale) !== 1
+                    ) {
+                        throw new RuntimeException("Resolved page-plan record [$index] has unsafe search identity fields.");
+                    }
+                    $expectedSearchDocuments[] = $locale . "\0" . $url;
+                }
+                sort($expectedSearchDocuments, SORT_STRING);
+                if ($expectedSearchDocuments === []) {
+                    throw new RuntimeException('Search is enabled but the manifest has no indexed page.');
+                }
+            }
         } catch (Throwable $exception) {
             $manifestError = $exception->getMessage();
         }
@@ -174,6 +266,8 @@ if (is_link($manifestDirectory)
 }
 
 $checked = 0;
+$searchIndexReferences = [];
+$searchRuntimeReferences = [];
 $broken = array_map(
     static fn (string $entry): array => [
         'page' => '@build',
@@ -211,7 +305,31 @@ foreach ($htmlFiles as $htmlFile) {
             'reference' => '@html-base-element',
         ];
     }
-    preg_match_all('/\b(?:href|src)\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/i', $html, $matches, PREG_SET_ORDER);
+    preg_match_all(
+        '/\bdata-docara-search-index\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/i',
+        $html,
+        $searchMatches,
+        PREG_SET_ORDER,
+    );
+    foreach ($searchMatches as $match) {
+        $searchIndexReferences[] = html_entity_decode(
+            $match[1] !== '' ? $match[1] : $match[2],
+            ENT_QUOTES | ENT_HTML5,
+        );
+    }
+    preg_match_all(
+        '/<script\b(?=[^>]*\bdata-docara-search-runtime\b)[^>]*\bsrc\s*=\s*(?:"([^"]*)"|\'([^\']*)\')[^>]*>/i',
+        $html,
+        $runtimeMatches,
+        PREG_SET_ORDER,
+    );
+    foreach ($runtimeMatches as $match) {
+        $searchRuntimeReferences[] = html_entity_decode(
+            $match[1] !== '' ? $match[1] : $match[2],
+            ENT_QUOTES | ENT_HTML5,
+        );
+    }
+    preg_match_all('/\b(?:href|src|data-docara-search-index)\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/i', $html, $matches, PREG_SET_ORDER);
     foreach ($matches as $match) {
         $reference = html_entity_decode($match[1] !== '' ? $match[1] : $match[2], ENT_QUOTES | ENT_HTML5);
         if ($reference === ''
@@ -318,6 +436,150 @@ foreach ($htmlFiles as $htmlFile) {
                 'page' => $relativePage,
                 'reference' => $reference,
                 'target' => $relativeTarget,
+            ];
+        }
+    }
+}
+
+if ($manifestError === null) {
+    $searchIndexPath = $root . '/_docara/search-index.json';
+    $searchRuntimePath = $root . '/_docara/search.js';
+    if (! $searchEnabled) {
+        if (file_exists($searchIndexPath)
+            || file_exists($searchRuntimePath)
+            || $searchIndexReferences !== []
+            || $searchRuntimeReferences !== []
+        ) {
+            $broken[] = [
+                'page' => '@build',
+                'reference' => '@search-artifacts-unexpected',
+                'target' => 'Search artifacts or references exist while search is disabled.',
+            ];
+        }
+    } elseif (! docaraSafeRegularFile($searchIndexPath) || ! docaraSafeRegularFile($searchRuntimePath)) {
+        $broken[] = [
+            'page' => '@build',
+            'reference' => '@search-artifacts-missing',
+            'target' => 'Enabled search requires safe search-index.json and search.js files.',
+        ];
+    } else {
+        try {
+            $searchIndex = json_decode(
+                (string) file_get_contents($searchIndexPath),
+                true,
+                512,
+                JSON_THROW_ON_ERROR,
+            );
+            if (! is_array($searchIndex)
+                || array_is_list($searchIndex)
+                || ! docaraExactKeys(
+                    $searchIndex,
+                    ['schema', 'version', 'algorithm', 'content_sha256', 'documents'],
+                )
+                || ($searchIndex['schema'] ?? null) !== 'docara.search_index.v1'
+                || ($searchIndex['version'] ?? null) !== 1
+                || ($searchIndex['algorithm'] ?? null) !== 'docara-prefix-v1'
+                || ! is_string($searchIndex['content_sha256'] ?? null)
+                || preg_match('/\A[a-f0-9]{64}\z/D', $searchIndex['content_sha256']) !== 1
+                || ! is_array($searchIndex['documents'] ?? null)
+                || ! array_is_list($searchIndex['documents'])
+                || $searchIndex['documents'] === []
+            ) {
+                throw new RuntimeException('Search index root contract is invalid.');
+            }
+
+            $actualSearchDocuments = [];
+            $documentIds = [];
+            $previousIdentity = null;
+            foreach ($searchIndex['documents'] as $index => $document) {
+                if (! is_array($document)
+                    || array_is_list($document)
+                    || ! docaraExactKeys(
+                        $document,
+                        ['id', 'url', 'locale', 'title', 'description', 'trail', 'headings', 'text'],
+                    )
+                    || ! is_string($document['id'] ?? null)
+                    || preg_match('/\A[a-f0-9]{64}\z/D', $document['id']) !== 1
+                    || ! is_string($document['url'] ?? null)
+                    || ! docaraSearchUrlIsSafe($document['url'], $deploymentBase)
+                    || ! is_string($document['locale'] ?? null)
+                    || preg_match('/\A[a-z]{2}(?:-[A-Z]{2})?\z/D', $document['locale']) !== 1
+                    || ! is_string($document['title'] ?? null)
+                    || $document['title'] === ''
+                    || ! is_string($document['description'] ?? null)
+                    || ! is_array($document['trail'] ?? null)
+                    || ! array_is_list($document['trail'])
+                    || ! is_array($document['headings'] ?? null)
+                    || ! array_is_list($document['headings'])
+                    || ! is_string($document['text'] ?? null)
+                ) {
+                    throw new RuntimeException("Search document [$index] has an invalid contract.");
+                }
+                foreach ($document['trail'] as $part) {
+                    if (! is_string($part) || $part === '') {
+                        throw new RuntimeException("Search document [$index] has an invalid trail.");
+                    }
+                }
+                foreach ($document['headings'] as $headingIndex => $heading) {
+                    if (! is_array($heading)
+                        || array_is_list($heading)
+                        || ! docaraExactKeys($heading, ['level', 'text'])
+                        || ! is_int($heading['level'] ?? null)
+                        || $heading['level'] < 1
+                        || $heading['level'] > 6
+                        || ! is_string($heading['text'] ?? null)
+                        || $heading['text'] === ''
+                    ) {
+                        throw new RuntimeException(
+                            "Search document [$index] heading [$headingIndex] has an invalid contract.",
+                        );
+                    }
+                }
+
+                $identity = $document['locale'] . "\0" . $document['url'];
+                if ($previousIdentity !== null && strcmp($previousIdentity, $identity) >= 0) {
+                    throw new RuntimeException('Search documents are not strictly sorted or contain duplicates.');
+                }
+                $previousIdentity = $identity;
+                if (isset($documentIds[$document['id']])) {
+                    throw new RuntimeException('Search document id is duplicated.');
+                }
+                $documentIds[$document['id']] = true;
+                if ($document['id'] !== hash('sha256', $identity)) {
+                    throw new RuntimeException("Search document [$index] id does not match locale and URL.");
+                }
+                $actualSearchDocuments[] = $identity;
+            }
+
+            if ($actualSearchDocuments !== $expectedSearchDocuments) {
+                throw new RuntimeException('Search documents do not exactly match indexed manifest pages.');
+            }
+            $calculatedContentHash = hash('sha256', docaraCanonicalJson($searchIndex['documents']));
+            if (! hash_equals($calculatedContentHash, $searchIndex['content_sha256'])) {
+                throw new RuntimeException('Search content_sha256 does not match canonical documents.');
+            }
+            $runtimeHash = hash_file('sha256', $searchRuntimePath);
+            if (! is_string($runtimeHash)) {
+                throw new RuntimeException('Search runtime hash could not be calculated.');
+            }
+            $expectedIndexReference = $deploymentBase . '_docara/search-index.json?docara_v='
+                . $searchIndex['content_sha256'];
+            $expectedRuntimeReference = $deploymentBase . '_docara/search.js?docara_v=' . $runtimeHash;
+            if (count($searchIndexReferences) !== $expectedSearchSurfaceCount
+                || array_values(array_unique($searchIndexReferences)) !== [$expectedIndexReference]
+            ) {
+                throw new RuntimeException('Search index references do not match the generated content revision.');
+            }
+            if (count($searchRuntimeReferences) !== $expectedSearchSurfaceCount
+                || array_values(array_unique($searchRuntimeReferences)) !== [$expectedRuntimeReference]
+            ) {
+                throw new RuntimeException('Search runtime references do not match the generated byte revision.');
+            }
+        } catch (Throwable $exception) {
+            $broken[] = [
+                'page' => '@build',
+                'reference' => '@search-index-contract',
+                'target' => $exception->getMessage(),
             ];
         }
     }

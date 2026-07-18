@@ -84,7 +84,13 @@ final class PortableConfigurationLoader
         $trace[] = $frameworkTrace;
         $this->assertFrameworkLockSemantics($frameworkLock);
 
-        $result = $this->merger->merge([], ['content_root' => 'content'], '@defaults');
+        $result = $this->merger->merge([], [
+            'content_root' => 'content',
+            'search' => [
+                'enabled' => false,
+                'indexed' => true,
+            ],
+        ], '@defaults');
         $configuration = $result->configuration;
         $provenance = $result->provenance;
 

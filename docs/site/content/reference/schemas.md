@@ -9,6 +9,7 @@ Portable Docara использует JSON Schema Draft 2020-12.
 | `docara.page.v1` | `<page>.page.json` | Настройки одной страницы |
 | `docara.component_call.v1` | Нормализованный вызов | Разрешённый компонент и props |
 | `docara.framework_lock.v1` | `simai-framework.lock.json` | Exact runtime, manifests и assets |
+| `docara.search_index.v1` | `_docara/search-index.json` | Детерминированный локальный поисковый индекс |
 
 ## Общие presentation-поля
 
@@ -21,9 +22,11 @@ Portable Docara использует JSON Schema Draft 2020-12.
 - `navigation.hidden`: boolean;
 - `navigation.order`: целое число от 0 до 2147483647; отсутствие значения означает
   «после всех страниц с явно заданным порядком».
+- `search.enabled`: boolean, выводить локальный поиск в текущей области;
+- `search.indexed`: boolean, включать страницу в поисковый индекс.
 
 Page schema дополнительно поддерживает `description` и безопасный `slug`.
-Ветка `branding`, как `layout`, `settings` и `navigation`, поддерживает
+Ветка `branding`, как `layout`, `settings`, `navigation` и `search`, поддерживает
 только непустой объект настроек: пустые `{}` и `[]` отклоняются как no-op.
 Для очистки наследуемой ветки используйте `{"$reset": true}`; reset можно
 совместить с новыми значениями той же ветки. Внешние файлы branding

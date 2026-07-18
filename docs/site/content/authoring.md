@@ -20,6 +20,7 @@ Markdown, а не вторым списком в конфигурации.
 - [Конфигурация сайта и страниц](/authoring/configuration/)
 - [Наследование настроек](/authoring/inheritance/)
 - [Макеты и навигация](/authoring/layout-and-navigation/)
+- [Локальный поиск](/authoring/search/)
 
 ## Два preset
 

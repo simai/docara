@@ -22,7 +22,8 @@
     "favicon": "assets/favicon.svg"
   },
   "layout": { "max_width": "wide" },
-  "settings": { "theme": "system" }
+  "settings": { "theme": "system" },
+  "search": { "enabled": true, "indexed": true }
 }
 ```
 
@@ -36,6 +37,12 @@ SVG, PNG, JPG, WebP и ICO размером не более 2 МиБ. Сборк
 Брендовые файлы копируются в `_docara/brand` под именем по SHA-256. Одинаковые
 байты публикуются один раз, а `base_url` автоматически добавляется к ссылкам.
 
+`search.enabled` выводит кнопку и локальный поисковый диалог.
+`search.indexed` управляет включением страниц текущей области в индекс. Эти
+настройки наследуются независимо от `navigation.hidden`: скрытую из меню
+страницу можно оставить доступной через поиск. Полный контракт и примеры — в
+[руководстве по поиску](/authoring/search/).
+
 ## `_section.json`
 
 ```json
@@ -43,7 +50,8 @@ SVG, PNG, JPG, WebP и ICO размером не более 2 МиБ. Сборк
   "schema": "docara.section.v1",
   "title": "Руководства",
   "branding": { "label": "Руководство пользователя" },
-  "layout": { "max_width": "normal" }
+  "layout": { "max_width": "normal" },
+  "search": { "indexed": true }
 }
 ```
 
@@ -55,7 +63,8 @@ SVG, PNG, JPG, WebP и ICO размером не более 2 МиБ. Сборк
   "title": "Установка",
   "description": "Как установить проект.",
   "slug": "guides/install",
-  "navigation": { "order": 20 }
+  "navigation": { "order": 20 },
+  "search": { "indexed": true }
 }
 ```
 

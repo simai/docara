@@ -47,6 +47,12 @@ Objects merge recursively, arrays replace inherited arrays, and
 `{"$reset": true}` explicitly clears an inherited object. The `docs` and
 `landing` presets share the same format and Simai Framework runtime.
 
+The starter enables deterministic local search with
+`"search": {"enabled": true, "indexed": true}`. It publishes a locale-aware
+`_docara/search-index.json` and pinned browser runtime, uses no external search
+service, and can exclude a page with `search.indexed: false`. Exclusion from
+search or navigation is not access control; generated HTML remains public.
+
 Portable Markdown can call bounded Smart-components through their real
 manifests:
 

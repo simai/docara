@@ -78,6 +78,22 @@
                 }
             },
             "additionalProperties": false
+        },
+        "search": {
+            "type": "object",
+            "minProperties": 1,
+            "properties": {
+                "$reset": {
+                    "const": true
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "indexed": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false
         }
     }
 }

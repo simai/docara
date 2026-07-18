@@ -33,6 +33,16 @@ final class PortableHtmlRenderer
         $faviconTag = is_string($branding['favicon'] ?? null)
             ? "\n    <link rel=\"icon\" href=\"{$this->escape($branding['favicon'])}\" type=\"{$this->escape((string) $branding['favicon_type'])}\">"
             : '';
+        $searchEnabled = ($page['search_enabled'] ?? false) === true
+            && is_string($page['search_runtime_url'] ?? null)
+            && is_string($page['search_index_url'] ?? null);
+        $searchRuntimeTag = $searchEnabled
+            ? "\n    <script defer src=\"{$this->escape($page['search_runtime_url'])}\" data-docara-search-runtime></script>"
+            : '';
+        $searchStyleTag = $searchEnabled
+            ? "\n    <style data-docara-search-style>" . $this->searchCss() . '</style>'
+            : '';
+        $searchDialog = $searchEnabled ? "\n" . $this->searchDialog($page) : '';
 
         return '<!doctype html>' . "\n"
             . '<html lang="' . $locale . '" class="theme-light">' . "\n"
@@ -42,11 +52,11 @@ final class PortableHtmlRenderer
             . '    <title>' . $title . '</title>' . "\n"
             . '    ' . $this->themeBootstrap((string) $page['theme']) . "\n"
             . $this->indent($assets->headHtml(), 4) . "\n"
-            . '    <style>' . $this->shellCss() . '</style>' . "\n"
+            . '    <style>' . $this->shellCss() . '</style>' . $searchStyleTag . $searchRuntimeTag . "\n"
             . '</head>' . "\n"
             . '<body class="bg-surface">' . "\n"
             . '    <a class="docara-skip-link bg-surface-0 border radius-1 p-1" href="#docara-main">К содержанию</a>' . "\n"
-            . $this->header($page, $navigation) . "\n"
+            . $this->header($page, $navigation, $searchEnabled) . $searchDialog . "\n"
             . $body . "\n"
             . '    ' . $this->shellController() . "\n"
             . '</body>' . "\n"
@@ -79,7 +89,7 @@ final class PortableHtmlRenderer
     }
 
     /** @param array<string, mixed> $page @param list<array<string, mixed>> $navigation */
-    private function header(array $page, array $navigation): string
+    private function header(array $page, array $navigation, bool $searchEnabled): string
     {
         $branding = $page['branding'];
         $brand = $this->brand($branding, (string) $page['home_url']);
@@ -92,15 +102,52 @@ final class PortableHtmlRenderer
                 . '            </div>' . "\n"
                 . '        </details>';
         }
+        $searchTrigger = '';
+        if ($searchEnabled) {
+            $searchTrigger = '            <button type="button" data-docara-search-trigger aria-haspopup="dialog" aria-controls="docara-search-dialog" aria-label="Открыть поиск по документации" class="docara-search-trigger sf-button sf-button--on-surface sf-button--outline sf-button--size-2 flex items-center gap-1 radius-default">' . "\n"
+                . '                <sf-icon icon="search" aria-hidden="true"></sf-icon>' . "\n"
+                . '                <span class="docara-search-trigger-label sf-button-text">Поиск</span>' . "\n"
+                . '                <kbd class="docara-search-shortcut color-on-surface-variant" data-docara-search-shortcut>⌘K</kbd>' . "\n"
+                . '            </button>' . "\n";
+        }
 
         return '    <header class="docara-header sticky top-0 z-2 bg-surface-0 border-bottom-1 border-outline-variant">' . "\n"
             . '        <div class="docara-header-row flex items-center content-main-between gap-2 p-2">' . "\n"
             . $this->indent($brand, 12) . "\n"
-            . '            <button class="sf-theme-button sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1/2 radius-default" data-docara-theme-button type="button" aria-label="Переключить цветовую тему">' . "\n"
-            . '                <sf-icon icon="contrast" aria-hidden="true"></sf-icon>' . "\n"
-            . '            </button>' . "\n"
+            . '            <div class="docara-header-actions flex items-center gap-1">' . "\n"
+            . $searchTrigger
+            . '                <button class="sf-theme-button sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1/2 radius-default" data-docara-theme-button type="button" aria-label="Переключить цветовую тему">' . "\n"
+            . '                    <sf-icon icon="contrast" aria-hidden="true"></sf-icon>' . "\n"
+            . '                </button>' . "\n"
+            . '            </div>' . "\n"
             . '        </div>' . $mobile . "\n"
             . '    </header>';
+    }
+
+    /** @param array<string, mixed> $page */
+    private function searchDialog(array $page): string
+    {
+        return '    <dialog id="docara-search-dialog" data-docara-search-dialog data-docara-search-index="'
+            . $this->escape((string) $page['search_index_url'])
+            . '" class="docara-search-dialog bg-surface-0 border border-outline-variant radius-3 p-0 color-on-surface" aria-labelledby="docara-search-title">' . "\n"
+            . '        <div class="flex flex-col gap-2 p-3">' . "\n"
+            . '            <div class="flex items-center content-main-between gap-2">' . "\n"
+            . '                <h2 id="docara-search-title" class="m-0 weight-7">Поиск по документации</h2>' . "\n"
+            . '                <button type="button" data-docara-search-close class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-2 radius-default" aria-label="Закрыть поиск">' . "\n"
+            . '                    <sf-icon icon="close" aria-hidden="true"></sf-icon>' . "\n"
+            . '                </button>' . "\n"
+            . '            </div>' . "\n"
+            . '            <label class="docara-search-input sf-input sf-input--size-1 sf-input--bordered flex flex-col">' . "\n"
+            . '                <span class="sf-input-label flex"><span class="sf-input-text">Запрос</span></span>' . "\n"
+            . '                <span class="sf-input-field items-cross-center transition flex">' . "\n"
+            . '                    <span class="sf-input-left flex"><sf-icon icon="search" aria-hidden="true"></sf-icon></span>' . "\n"
+            . '                    <input data-docara-search-input class="sf-input-text-container flex-1" type="search" autocomplete="off" spellcheck="false" placeholder="Например, наследование" aria-controls="docara-search-results" aria-describedby="docara-search-status">' . "\n"
+            . '                </span>' . "\n"
+            . '            </label>' . "\n"
+            . '            <p id="docara-search-status" data-docara-search-status data-state="idle" class="docara-search-status color-on-surface-variant m-0" aria-live="polite">Введите минимум 2 символа</p>' . "\n"
+            . '            <ul id="docara-search-results" data-docara-search-results class="sf-list docara-search-results flex flex-col gap-1 m-0 p-0"></ul>' . "\n"
+            . '        </div>' . "\n"
+            . '    </dialog>';
     }
 
     /** @param array<string, string|null> $branding */
@@ -286,6 +333,25 @@ HTML;
     {
         return <<<'CSS'
 html{color-scheme:light dark}.theme-light{color-scheme:light}.theme-dark{color-scheme:dark}body{min-height:100vh;background:var(--sf-surface-1);color:var(--sf-on-surface)}.docara-skip-link{position:fixed;inset-block-start:var(--sf-space-1);inset-inline-start:var(--sf-space-1);z-index:100;transform:translateY(-200%);color:var(--sf-on-surface);text-decoration:none}.docara-skip-link:focus{transform:translateY(0)}.docara-header{min-height:4.5rem}.docara-header-row{max-width:96rem;margin-inline:auto}.docara-brand{min-width:0;text-decoration:none}.docara-brand-mark{display:grid;place-items:center;inline-size:2.25rem;block-size:2.25rem;flex:0 0 auto}.docara-brand-logo{display:block;max-inline-size:100%;max-block-size:100%;object-fit:contain}.docara-brand-logo--dark{display:none}.theme-dark .docara-brand-logo--light:has(+.docara-brand-logo--dark){display:none}.theme-dark .docara-brand-logo--dark{display:block}.docara-brand-copy{min-width:0;line-height:1.15}.docara-brand-label{font-size:.75rem;font-weight:500}.docara-mobile-navigation{display:none}.docara-navigation-link{min-width:0;color:var(--sf-on-surface);text-decoration:none}.docara-navigation-label{min-width:0;color:var(--sf-on-surface)}.docara-navigation-link .sf-menu-element-text,.docara-navigation-label .sf-menu-element-text{overflow-wrap:anywhere}.docara-navigation [data-docara-active-role="ancestor"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-surface-container);--sf-menu-element--border-color:var(--sf-outline-variant)}.docara-navigation [data-docara-active-role="section"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-secondary-container);--sf-menu-element--border-color:var(--sf-outline);border-inline-start-width:2px}.docara-navigation [data-docara-active-role="page"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-primary-container);--sf-menu-element--border-color:var(--sf-primary);border-inline-start-width:4px}.docara-navigation [data-docara-active-role="section"]>.sf-menu-element>.docara-navigation-link,.docara-navigation [data-docara-active-role="section"]>.sf-menu-element>.docara-navigation-label{color:var(--sf-on-secondary-container)}.docara-navigation [data-docara-active-role="page"]>.sf-menu-element>.docara-navigation-link,.docara-navigation [data-docara-active-role="page"]>.sf-menu-element>.docara-navigation-label{color:var(--sf-on-primary-container)}.docara-skip-link:focus-visible,.docara-brand:focus-visible,.docara-navigation-link:focus-visible,.docara-mobile-navigation-summary:focus-visible,.sf-theme-button:focus-visible,[data-docara-disclosure]:focus-visible,sf-button>button:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}.docara-docs-layout{display:grid;grid-template-columns:minmax(14rem,18rem) minmax(0,1fr);max-width:96rem;margin-inline:auto}.docara-sidebar{align-self:start;position:sticky;inset-block-start:5.5rem;max-block-size:calc(100vh - 7rem);overflow:auto}.docara-content{min-width:0;color:var(--sf-on-surface);scroll-margin-block-start:6rem}.docara-content[data-width="compact"]{max-width:45rem}.docara-content[data-width="normal"]{max-width:60rem}.docara-content[data-width="wide"]{max-width:80rem}.docara-content[data-width="full"]{max-width:none}.docara-prose{line-height:1.65}.docara-prose>*+*{margin-block-start:var(--sf-space-2)}.docara-prose h1{font-size:clamp(2rem,5vw,4rem);line-height:1.08;font-weight:750;letter-spacing:-.035em}.docara-prose h2{font-size:clamp(1.45rem,3vw,2.25rem);line-height:1.2;font-weight:700;margin-block-start:var(--sf-space-4)}.docara-prose h3{font-size:1.25rem;line-height:1.3;font-weight:650;margin-block-start:var(--sf-space-3)}.docara-prose p,.docara-prose li{max-width:72ch}.docara-landing{align-items:center;justify-content:center;min-height:calc(100vh - 5rem)}.docara-landing .docara-content{width:min(100%,80rem)}sf-alert,sf-button{display:block}.docara-prose sf-alert,.docara-prose sf-button{margin-block:var(--sf-space-2)}@media(max-width:800px){.docara-header{min-height:auto}.docara-mobile-navigation{display:block;margin:0 var(--sf-space-1) var(--sf-space-1)}.docara-mobile-navigation-summary{cursor:pointer;color:var(--sf-on-surface);font-weight:650}.docara-mobile-navigation-summary::marker{color:var(--sf-primary)}.docara-mobile-navigation-panel{margin-block-start:var(--sf-space-1);max-block-size:min(70vh,36rem);overflow:auto}.docara-docs-layout{grid-template-columns:minmax(0,1fr);padding:var(--sf-space-1)}.docara-sidebar{display:none}.docara-content{padding:var(--sf-space-2);scroll-margin-block-start:7rem}.docara-landing{padding:var(--sf-space-1);min-height:auto}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+CSS;
+    }
+
+    private function searchCss(): string
+    {
+        return <<<'CSS'
+.docara-search-dialog{inline-size:min(calc(100% - 2rem),46rem);max-block-size:min(82vh,48rem);margin:auto;color:var(--sf-on-surface);background:var(--sf-surface-0)}
+.docara-search-dialog:not([open]){display:none}
+.docara-search-dialog::backdrop{background:color-mix(in srgb,var(--sf-on-surface) 34%,transparent);backdrop-filter:blur(2px)}
+.docara-search-results{list-style:none;max-block-size:min(52vh,32rem);overflow:auto}
+.docara-search-result-item{min-width:0}
+.docara-search-result{min-width:0;overflow-wrap:anywhere}
+.docara-search-result:hover,.docara-search-result:focus-visible{background:var(--sf-primary-container);color:var(--sf-on-primary-container);outline:3px solid var(--sf-primary);outline-offset:1px}
+.docara-search-result-context,.docara-search-result-summary{font-size:.875rem;line-height:1.45}
+.docara-search-status[data-state="error"]{color:var(--sf-error)}
+.docara-search-trigger:focus-visible,[data-docara-search-close]:focus-visible,[data-docara-search-input]:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}
+[data-docara-search-close]{min-inline-size:44px;min-block-size:44px}
+.docara-search-shortcut{font:inherit;font-size:.75rem;border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius-1);padding-inline:calc(var(--sf-space-1)/2)}
+@media(max-width:800px){.docara-search-trigger{inline-size:44px;block-size:44px;padding:0}.docara-search-trigger-label,.docara-search-shortcut{display:none}.docara-search-dialog{inline-size:calc(100% - 1rem);max-block-size:calc(100vh - 1rem)}}
 CSS;
     }
 

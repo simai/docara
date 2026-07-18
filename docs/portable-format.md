@@ -55,11 +55,19 @@ documentation:
 - `navigation.hidden`: a boolean that removes the page from generated
   navigation;
 - `navigation.order`: a non-negative stable sibling order.
+- `search.enabled`: show the local-search interface on pages in the current
+  scope;
+- `search.indexed`: include pages in the deterministic local index.
 
 These nested objects are strict and must contain at least one setting. Unknown,
 empty or incorrectly typed branches fail schema validation instead of becoming
-silent no-ops. Smart-components are authored
-only inside Markdown; JSON descriptors do not provide a second component list.
+silent no-ops. Smart-components are authored only inside Markdown; JSON
+descriptors do not provide a second component list.
+
+The `search` branch is inherited and supports the same `{"$reset": true}`
+contract. Navigation visibility and search inclusion are deliberately separate:
+`navigation.hidden: true` does not remove a page from search. Use
+`search.indexed: false` when content must not appear in the index.
 
 ## Presets
 
@@ -152,6 +160,14 @@ The build writes `.docara/resolved-page-plans.json`. For every page it records:
 
 The builder emits no timestamps or absolute local paths. Identical inputs and
 the same lock produce byte-identical output.
+
+When search is enabled, the same preflight also produces
+`_docara/search-index.json` and the pinned `_docara/search.js` browser runtime.
+The index contains only public page URLs, titles, descriptions, navigation
+trails, headings and visible text. It is locale-isolated, loaded only when the
+search dialog first opens and needs no server endpoint or external search
+service. Index and runtime use their own SHA-256 cache revisions, so either can
+change without leaving stale browser code behind.
 
 ## Security boundary
 

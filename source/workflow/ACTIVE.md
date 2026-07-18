@@ -26,7 +26,8 @@ published content and presented with pinned Simai Framework primitives.
 
 ## Next Step
 
-Implement local search test-first. The accepted navigation stage is already
-served locally with matching source/staging/served digests and a preserved
-rollback. Public release, default-branch migration and repository retirement
-remain excluded.
+Commit the completed Batch 2 search candidate, run independent exact-archive
+tester and UX/designer browser acceptance against that exact tree, then publish
+the accepted tree to `docara.test` through staging and rollback. Continue with
+Batch 3 afterwards. Public release, default-branch migration and repository
+retirement remain excluded.

@@ -109,6 +109,30 @@ final readonly class PortableNavigationBuilder
         return $nodes;
     }
 
+    /**
+     * @param  list<array<string, mixed>>  $nodes
+     * @return list<array{title:string,url:string|null}>
+     */
+    public function pathForUrl(array $nodes, string $url): array
+    {
+        foreach ($nodes as $node) {
+            $current = [[
+                'title' => (string) ($node['title'] ?? ''),
+                'url' => is_string($node['url'] ?? null) ? $node['url'] : null,
+            ]];
+            if (($node['url'] ?? null) === $url) {
+                return $current;
+            }
+            $children = is_array($node['children'] ?? null) ? $node['children'] : [];
+            $nested = $this->pathForUrl($children, $url);
+            if ($nested !== []) {
+                return [...$current, ...$nested];
+            }
+        }
+
+        return [];
+    }
+
     /** @param list<array<string, mixed>> $nodes */
     private function containsActive(array $nodes): bool
     {

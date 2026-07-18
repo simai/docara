@@ -18,5 +18,9 @@
   },
   "settings": {
     "theme": "system"
+  },
+  "search": {
+    "enabled": true,
+    "indexed": true
   }
 }

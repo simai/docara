@@ -37,6 +37,8 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertFileExists($this->tmpPath('build_local/guides/getting-started/index.html'));
         self::assertFileExists($this->tmpPath('build_local/guides/platform/configuration/layout/index.html'));
         self::assertFileExists($this->tmpPath('build_local/landing/index.html'));
+        self::assertFileExists($this->tmpPath('build_local/_docara/search-index.json'));
+        self::assertFileExists($this->tmpPath('build_local/_docara/search.js'));
 
         $index = (string) file_get_contents($this->tmpPath('build_local/index.html'));
         $guide = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
@@ -61,6 +63,16 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('id="docara-main" tabindex="-1"', $html);
             self::assertStringContainsString('class="sf-theme-button ', $html);
             self::assertStringContainsString('data-docara-theme-button', $html);
+            self::assertStringContainsString('data-docara-search-trigger', $html);
+            self::assertStringContainsString('data-docara-search-dialog', $html);
+            self::assertStringContainsString('data-docara-search-input', $html);
+            self::assertStringContainsString('data-docara-search-status', $html);
+            self::assertStringContainsString('data-docara-search-results', $html);
+            self::assertStringContainsString('data-docara-search-runtime', $html);
+            self::assertStringContainsString('/_docara/search-index.json?docara_v=', $html);
+            self::assertStringContainsString('/_docara/search.js?docara_v=', $html);
+            self::assertStringNotContainsString('algolia', strtolower($html));
+            self::assertStringNotContainsString('typesense', strtolower($html));
             self::assertStringContainsString('<sf-icon icon="contrast" aria-hidden="true"></sf-icon>', $html);
             self::assertStringContainsString('data-docara-shell-controller', $html);
             self::assertStringContainsString('railRect.width<=0||railRect.height<=0', $html);
@@ -168,9 +180,25 @@ final class PortableSiteBuilderTest extends TestCase
             ['docara.component_call.v1', 'docara.component_call.v1'],
             array_column($guidePlan['component_runtime']['normalized_calls'], 'schema'),
         );
+        self::assertTrue($guidePlan['resolved_page_plan']['configuration']['search']['enabled']);
+        self::assertTrue($guidePlan['resolved_page_plan']['configuration']['search']['indexed']);
         self::assertSame(
             ['docara.json', 'simai-framework.lock.json', 'content/_section.json', 'content/guides/_section.json', 'content/guides/getting-started.page.json', 'content/guides/getting-started.md'],
             array_column($guidePlan['resolved_page_plan']['trace'], 'source'),
+        );
+
+        $searchIndex = $this->jsonFile($this->tmpPath('build_local/_docara/search-index.json'));
+        self::assertSame('docara.search_index.v1', $searchIndex['schema']);
+        self::assertSame('docara-prefix-v1', $searchIndex['algorithm']);
+        self::assertCount(7, $searchIndex['documents']);
+        self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $searchIndex['content_sha256']);
+        $searchText = implode(' ', array_column($searchIndex['documents'], 'text'));
+        self::assertStringContainsString('Наследование работает', $searchText);
+        self::assertStringContainsString('Параметры страницы дополняют настройки родительских разделов.', $searchText);
+        self::assertStringNotContainsString('alert(1)', $searchText);
+        self::assertSame(
+            hash_file('sha256', dirname(__DIR__) . '/resources/portable/search.js'),
+            hash_file('sha256', $this->tmpPath('build_local/_docara/search.js')),
         );
     }
 
@@ -338,6 +366,18 @@ MD;
             $html,
         );
         self::assertStringContainsString('href="/project~/docs/_docara/brand/', $html);
+        self::assertMatchesRegularExpression(
+            '#data-docara-search-index="/project~/docs/_docara/search-index\.json\?docara_v=[a-f0-9]{64}"#',
+            $html,
+        );
+        self::assertMatchesRegularExpression(
+            '#src="/project~/docs/_docara/search\.js\?docara_v=[a-f0-9]{64}"#',
+            $html,
+        );
+        $searchIndex = $this->jsonFile($this->tmpPath('build_local/_docara/search-index.json'));
+        foreach ($searchIndex['documents'] as $document) {
+            self::assertStringStartsWith('/project~/docs/', $document['url']);
+        }
         $diagnostics = (string) file_get_contents(
             $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
         );
@@ -346,6 +386,49 @@ MD;
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework/smart/alert/js/alert.js'));
+    }
+
+    #[Test]
+    public function search_preflight_failures_do_not_clean_existing_output(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $site = $this->jsonFile($this->tmpPath('docara.json'));
+        $site['search'] = ['enabled' => true, 'indexed' => false];
+        file_put_contents(
+            $this->tmpPath('docara.json'),
+            json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('build_local'));
+        file_put_contents($this->tmpPath('build_local/sentinel.txt'), 'keep-output');
+
+        try {
+            $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+            self::fail('An enabled locale without indexed pages unexpectedly passed.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('SEARCH_INDEX_LOCALE_EMPTY', $exception->errorCode);
+        }
+        self::assertSame('keep-output', file_get_contents($this->tmpPath('build_local/sentinel.txt')));
+    }
+
+    #[Test]
+    public function a_fully_disabled_search_emits_no_ui_index_or_runtime(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $site = $this->jsonFile($this->tmpPath('docara.json'));
+        $site['search'] = ['enabled' => false, 'indexed' => true];
+        file_put_contents(
+            $this->tmpPath('docara.json'),
+            json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+
+        self::assertFileDoesNotExist($this->tmpPath('build_local/_docara/search-index.json'));
+        self::assertFileDoesNotExist($this->tmpPath('build_local/_docara/search.js'));
+        $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
+        self::assertStringNotContainsString('data-docara-search-trigger', $html);
+        self::assertStringNotContainsString('data-docara-search-dialog', $html);
+        self::assertStringNotContainsString('data-docara-search-runtime', $html);
     }
 
     #[Test]

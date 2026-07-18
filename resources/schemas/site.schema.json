@@ -52,6 +52,9 @@
         },
         "navigation": {
             "$ref": "presentation.schema.json#/$defs/navigation"
+        },
+        "search": {
+            "$ref": "presentation.schema.json#/$defs/search"
         }
     },
     "additionalProperties": false

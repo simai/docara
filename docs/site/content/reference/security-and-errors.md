@@ -11,6 +11,12 @@ Portable builder работает fail closed. Он не пытается уга
 - `_docara` и `.docara` зарезервированы.
 - Output collision проверяется до очистки существующей сборки.
 - Scalar props экранируются host renderer.
+- Поисковый индекс проходит schema до очистки output; browser runtime принимает
+  только same-origin URL внутри настроенного `base_url` и создаёт результаты
+  через DOM API с `textContent`.
+- `navigation.hidden` и `search.indexed: false` не закрывают доступ к HTML.
+  Поисковый JSON также публичен. Секретные данные нельзя помещать в portable
+  source или собранный сайт.
 
 ## Частые коды
 
@@ -32,6 +38,11 @@ Portable builder работает fail closed. Он не пытается уга
 | `MARKDOWN_BLOCK_LIMIT_EXCEEDED` | Страница содержит больше 64 строк, похожих на открытие `card` или `steps` |
 | `MARKDOWN_BLOCK_PLACEHOLDER_CARDINALITY_INVALID` | Placeholder блока неоднозначен после Markdown-render |
 | `MARKDOWN_STEPS_ORDERED_LIST_REQUIRED` | Steps не содержит один ordered list |
+| `SEARCH_RUNTIME_MISSING` | Закреплённый локальный search runtime отсутствует или не читается |
+| `SEARCH_RUNTIME_INVALID_UTF8` | Search runtime содержит невалидный UTF-8 |
+| `SEARCH_TEXT_INVALID_UTF8` | Видимый текст страницы нельзя безопасно индексировать |
+| `SEARCH_COMPONENT_TEXT_PROJECTION_MISSING` | Для нового Smart-компонента не определены индексируемые текстовые props |
+| `SEARCH_INDEX_LOCALE_EMPTY` | Поиск включён для locale, но в нём не осталось ни одной индексируемой страницы |
 
 Точный код исключения полезнее общего «сборка не работает»: сначала исправьте
 вход, затем повторите ту же команду.

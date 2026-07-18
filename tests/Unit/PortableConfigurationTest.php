@@ -58,6 +58,10 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame('assets/logo.svg', $plan->configuration['branding']['logo']);
         self::assertTrue($plan->configuration['navigation']['hidden']);
         self::assertSame(5, $plan->configuration['navigation']['order']);
+        self::assertFalse($plan->configuration['search']['enabled']);
+        self::assertTrue($plan->configuration['search']['indexed']);
+        self::assertSame('@defaults', $plan->provenance['/search/enabled']);
+        self::assertSame('@defaults', $plan->provenance['/search/indexed']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/layout/max_width']);
         self::assertSame('content/docs/deep/_section.json', $plan->provenance['/settings/theme']);
         self::assertSame('docara.json', $plan->provenance['/branding/logo']);
@@ -242,6 +246,7 @@ final class PortableConfigurationTest extends TestCase
                 'layout' => ['max_width' => 'wide'],
                 'settings' => ['theme' => 'system'],
                 'navigation' => ['hidden' => false, 'order' => 2147483647],
+                'search' => ['enabled' => true, 'indexed' => true],
                 'branding' => [
                     'title' => 'Product',
                     'label' => 'Docs',
@@ -255,6 +260,7 @@ final class PortableConfigurationTest extends TestCase
                 'layout' => ['$reset' => true, 'max_width' => 'compact'],
                 'settings' => ['theme' => 'dark'],
                 'navigation' => ['hidden' => true, 'order' => 20],
+                'search' => ['$reset' => true, 'indexed' => false],
                 'branding' => ['$reset' => true, 'title' => 'Section product'],
             ]],
             ['page.schema.json', [
@@ -262,6 +268,7 @@ final class PortableConfigurationTest extends TestCase
                 'layout' => ['max_width' => 'full'],
                 'settings' => ['$reset' => true, 'theme' => 'light'],
                 'navigation' => ['$reset' => true, 'order' => 5],
+                'search' => ['enabled' => false],
                 'branding' => ['label' => 'Reference'],
             ]],
         ] as [$schema, $descriptor]) {
@@ -285,6 +292,9 @@ final class PortableConfigurationTest extends TestCase
             [['schema' => 'docara.page.v1', 'navigation' => ['order' => -1]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'navigation' => ['order' => 2147483648]], 'page.schema.json'],
             [['schema' => 'docara.section.v1', 'navigation' => ['order' => '10']], 'section.schema.json'],
+            [['schema' => 'docara.page.v1', 'search' => ['enabled' => 'true']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'search' => ['indexed' => 1]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'search' => ['unknown' => true]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'branding' => ['unknown' => true]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'branding' => ['title' => '']], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'branding' => ['label' => '']], 'page.schema.json'],
@@ -295,6 +305,7 @@ final class PortableConfigurationTest extends TestCase
             [['schema' => 'docara.page.v1', 'layout' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'settings' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'navigation' => []], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'search' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'components' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'variables' => []], 'page.schema.json'],
         ] as [$descriptor, $schema]) {
@@ -320,6 +331,47 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/branding/title']);
         self::assertArrayNotHasKey('/branding/logo', $plan->provenance);
         self::assertArrayNotHasKey('/branding/label', $plan->provenance);
+    }
+
+    public function test_search_inherits_through_sections_and_page_reset_records_exact_provenance(): void
+    {
+        $site = json_decode((string) file_get_contents($this->path('docara.json')), true, 512, JSON_THROW_ON_ERROR);
+        $site['search'] = ['enabled' => true, 'indexed' => true];
+        $this->writeJson('docara.json', $site);
+
+        $section = json_decode(
+            (string) file_get_contents($this->path('content/docs/_section.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $section['search'] = ['indexed' => false];
+        $this->writeJson('content/docs/_section.json', $section);
+
+        $deep = json_decode(
+            (string) file_get_contents($this->path('content/docs/deep/_section.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $deep['search'] = ['enabled' => false];
+        $this->writeJson('content/docs/deep/_section.json', $deep);
+
+        $page = json_decode(
+            (string) file_get_contents($this->path('content/docs/deep/install.page.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $page['search'] = ['$reset' => true, 'enabled' => true, 'indexed' => true];
+        $this->writeJson('content/docs/deep/install.page.json', $page);
+
+        $plan = (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+
+        self::assertSame(['enabled' => true, 'indexed' => true], $plan->configuration['search']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/search']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/search/enabled']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/search/indexed']);
     }
 
     public function test_moving_framework_references_are_rejected(): void

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
+use Simai\Docara\Portable\CanonicalJson;
 use Symfony\Component\Process\Process;
 use Tests\TestCase;
 
@@ -284,6 +285,83 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertStringContainsString('unexpected.pipe', $special->getOutput());
     }
 
+    #[Test]
+    public function search_artifacts_hashes_and_manifest_urls_are_verified_fail_closed(): void
+    {
+        foreach (['/' => 'root', '/project/docs/' => 'nested'] as $baseUrl => $case) {
+            $valid = $this->createSearchBuild("search-valid-$case", $baseUrl);
+            $pass = $this->verify($valid);
+            self::assertSame(0, $pass->getExitCode(), $pass->getErrorOutput() . $pass->getOutput());
+
+            $missing = $this->createSearchBuild("search-missing-$case", $baseUrl);
+            unlink($missing . '/_docara/search-index.json');
+            $missingResult = $this->verify($missing);
+            self::assertSame(1, $missingResult->getExitCode());
+            self::assertStringContainsString('@search-artifacts-missing', $missingResult->getOutput());
+
+            $malformed = $this->createSearchBuild("search-malformed-$case", $baseUrl);
+            file_put_contents($malformed . '/_docara/search-index.json', '{not-json');
+            $malformedResult = $this->verify($malformed);
+            self::assertSame(1, $malformedResult->getExitCode());
+            self::assertStringContainsString('@search-index-contract', $malformedResult->getOutput());
+
+            $wrongHash = $this->createSearchBuild("search-wrong-hash-$case", $baseUrl);
+            $index = json_decode(
+                (string) file_get_contents($wrongHash . '/_docara/search-index.json'),
+                true,
+                flags: JSON_THROW_ON_ERROR,
+            );
+            $index['content_sha256'] = str_repeat('0', 64);
+            file_put_contents(
+                $wrongHash . '/_docara/search-index.json',
+                json_encode($index, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+            );
+            $wrongHashResult = $this->verify($wrongHash);
+            self::assertSame(1, $wrongHashResult->getExitCode());
+            self::assertStringContainsString('content_sha256', $wrongHashResult->getOutput());
+
+            $outside = $this->createSearchBuild("search-outside-$case", $baseUrl);
+            $index = json_decode(
+                (string) file_get_contents($outside . '/_docara/search-index.json'),
+                true,
+                flags: JSON_THROW_ON_ERROR,
+            );
+            $index['documents'][0]['url'] = '/outside/';
+            $index['documents'][0]['id'] = hash(
+                'sha256',
+                $index['documents'][0]['locale'] . "\0" . $index['documents'][0]['url'],
+            );
+            $index['content_sha256'] = hash('sha256', CanonicalJson::encode($index['documents']));
+            file_put_contents(
+                $outside . '/_docara/search-index.json',
+                json_encode($index, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+            );
+            $outsideResult = $this->verify($outside);
+            self::assertSame(1, $outsideResult->getExitCode());
+            self::assertStringContainsString('@search-index-contract', $outsideResult->getOutput());
+
+            $unmanifested = $this->createSearchBuild("search-unmanifested-$case", $baseUrl);
+            $index = json_decode(
+                (string) file_get_contents($unmanifested . '/_docara/search-index.json'),
+                true,
+                flags: JSON_THROW_ON_ERROR,
+            );
+            $index['documents'][1]['url'] = $baseUrl === '/' ? '/missing/' : $baseUrl . 'missing/';
+            $index['documents'][1]['id'] = hash(
+                'sha256',
+                $index['documents'][1]['locale'] . "\0" . $index['documents'][1]['url'],
+            );
+            $index['content_sha256'] = hash('sha256', CanonicalJson::encode($index['documents']));
+            file_put_contents(
+                $unmanifested . '/_docara/search-index.json',
+                json_encode($index, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+            );
+            $unmanifestedResult = $this->verify($unmanifested);
+            self::assertSame(1, $unmanifestedResult->getExitCode());
+            self::assertStringContainsString('do not exactly match', $unmanifestedResult->getOutput());
+        }
+    }
+
     /** @param list<string> $outputs */
     private function writeResolvedPlans(string $build, string $baseUrl, array $outputs = ['index.html']): void
     {
@@ -294,6 +372,81 @@ final class StaticBuildVerifierTest extends TestCase
                 'resolved_page_plan' => ['configuration' => ['base_url' => $baseUrl]],
             ], $outputs),
         ]);
+    }
+
+    private function createSearchBuild(string $name, string $baseUrl): string
+    {
+        $build = $this->tmpPath($name);
+        $this->filesystem->ensureDirectoryExists($build . '/.docara');
+        $this->filesystem->ensureDirectoryExists($build . '/_docara');
+        $this->filesystem->ensureDirectoryExists($build . '/guide');
+        $runtime = '(function(){"use strict";}());';
+        file_put_contents($build . '/_docara/search.js', $runtime);
+
+        $pages = [
+            ['output' => 'index.html', 'url' => $baseUrl, 'title' => 'Home'],
+            [
+                'output' => 'guide/index.html',
+                'url' => $baseUrl === '/' ? '/guide/' : $baseUrl . 'guide/',
+                'title' => 'Guide',
+            ],
+        ];
+        $documents = array_map(static function (array $page): array {
+            return [
+                'id' => hash('sha256', 'ru' . "\0" . $page['url']),
+                'url' => $page['url'],
+                'locale' => 'ru',
+                'title' => $page['title'],
+                'description' => '',
+                'trail' => [],
+                'headings' => [['level' => 1, 'text' => $page['title']]],
+                'text' => $page['title'],
+            ];
+        }, $pages);
+        usort($documents, static fn (array $left, array $right): int => [
+            $left['locale'],
+            $left['url'],
+        ] <=> [
+            $right['locale'],
+            $right['url'],
+        ]);
+        $contentHash = hash('sha256', CanonicalJson::encode($documents));
+        file_put_contents(
+            $build . '/_docara/search-index.json',
+            CanonicalJson::encodePretty([
+                'schema' => 'docara.search_index.v1',
+                'version' => 1,
+                'algorithm' => 'docara-prefix-v1',
+                'content_sha256' => $contentHash,
+                'documents' => $documents,
+            ]),
+        );
+        $runtimeHash = hash('sha256', $runtime);
+        $searchIndexUrl = $baseUrl . '_docara/search-index.json?docara_v=' . $contentHash;
+        $runtimeUrl = $baseUrl . '_docara/search.js?docara_v=' . $runtimeHash;
+        foreach ($pages as $page) {
+            $directory = dirname($build . '/' . $page['output']);
+            $this->filesystem->ensureDirectoryExists($directory);
+            file_put_contents(
+                $build . '/' . $page['output'],
+                '<dialog data-docara-search-index="' . $searchIndexUrl . '"></dialog>'
+                . '<script defer src="' . $runtimeUrl . '" data-docara-search-runtime></script>',
+            );
+        }
+        $this->writeManifest($build, [
+            'schema' => 'docara.resolved_page_plans.v1',
+            'pages' => array_map(static fn (array $page): array => [
+                'output' => $page['output'],
+                'url' => $page['url'],
+                'resolved_page_plan' => ['configuration' => [
+                    'base_url' => $baseUrl,
+                    'locale' => 'ru',
+                    'search' => ['enabled' => true, 'indexed' => true],
+                ]],
+            ], $pages),
+        ]);
+
+        return $build;
     }
 
     /** @param array<string, mixed> $manifest */

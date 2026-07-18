@@ -7,6 +7,8 @@ Framework-ассеты и диагностический файл:
 build_production/
   index.html
   section/page/index.html
+  _docara/search-index.json
+  _docara/search.js
   _docara/framework/
   .docara/resolved-page-plans.json
 ```
@@ -14,6 +16,12 @@ build_production/
 HTML можно обслуживать обычным статическим веб-сервером. Значение `base_url`
 должно совпадать с префиксом размещения: `/` для корня домена или безопасный
 путь вроде `/project/docs/` для вложенного размещения.
+
+Файлы поиска появляются только когда `search.enabled: true` хотя бы для одной
+страницы. Индекс строится до очистки destination, проходит JSON Schema и
+содержит только URL опубликованных страниц, locale, заголовки, описания,
+навигационный путь и видимый текст. Браузер загружает его лениво. Индекс и
+runtime имеют независимые SHA-256 query revisions.
 
 Проверка артефакта читает `base_url` из
 `.docara/resolved-page-plans.json`: совпадающий deployment-префикс удаляется

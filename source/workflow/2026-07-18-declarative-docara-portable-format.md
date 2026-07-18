@@ -3,8 +3,8 @@
 Date: 2026-07-18
 Status: in-progress
 Process model: `general_delivery`
-Current state: `implementation_written`
-Target state: `implementation_written`
+Current state: `tests_recorded`
+Target state: `tests_recorded`
 
 ## Track
 
@@ -22,10 +22,12 @@ Docara remains a small static-site generator rather than becoming Larena.
 
 ## Current Position
 
-The standalone implementation and its browser evidence are complete in the
-clean worktree. The same fixture is being validated by the Larena read-only
-import adapter; independent exact-candidate acceptance remains open. No
-production, release, archive, or repository-retirement action is in scope.
+The standalone implementation, accessible browser shell and Larena read-only
+adapter are complete in clean worktrees. Larena consumes the exact canonical
+build export instead of interpreting raw Docara JSON or Markdown again.
+Independent exact-candidate and Human-Centered Simplicity acceptance remain
+open. No production, release, archive, or repository-retirement action is in
+scope.
 
 ## Current Goal
 
@@ -85,8 +87,9 @@ Do not complete the goal until the requirement matrix in this workflow has no
 
 ## Current Remaining
 
-Standalone Batches 1-5 are implemented and verified. The browser portion of
-Batch 7 is complete. Larena parity and independent acceptance remain open.
+Standalone Batches 1-5 and Larena Batch 6 are implemented and verified. The
+browser portion of Batch 7 includes responsive/theme and keyboard-accessibility
+preflight. Independent exact-candidate acceptance remains open.
 
 ## Do Not Complete Until
 
@@ -147,7 +150,7 @@ Batch 7 is complete. Larena parity and independent acceptance remain open.
 | 3 | `docs`/`landing` presets and portable fixture | focused build and HTML assertions | completed |
 | 4 | `ui.alert`/`ui.button` Markdown calls and asset lock | manifest/props/asset tests, no moving refs | completed |
 | 5 | Legacy `.settings.php` compatibility and clean install | existing suite plus disposable install | completed |
-| 6 | Larena import adapter/proof for the same fixture | package tests and normalized-plan parity | in-progress |
+| 6 | Larena import adapter/proof for the same fixture | package tests and normalized-plan parity | completed |
 | 7 | Browser and reverse acceptance | desktop/mobile, light/dark, independent verdict | in-progress |
 
 ## Requirement Matrix
@@ -163,7 +166,7 @@ Batch 7 is complete. Larena parity and independent acceptance remain open.
 | Clean install | disposable install log and generated site | pass |
 | Negative validation | invalid fixture matrix | pass |
 | Determinism | repeated plan/build hash comparison | pass |
-| Larena import proof | package adapter tests using same fixture | missing |
+| Larena import proof | exact build-export fixture + package adapter tests | pass |
 | Responsive/theme smoke | screenshots/assertions for 4 context pairs | pass |
 | Independent acceptance | exact-candidate tester verdict | missing |
 
@@ -196,6 +199,13 @@ the repository.
   the repository.
 - Bind final independent acceptance to one exact candidate revision and every
   row of the requirement matrix.
+
+## Human-Centered Simplicity
+
+- quality_controls: `[human_centered_simplicity]`
+- simplicity_review: `source/workflow/evidence/2026-07-18-declarative-docara-portable-format/hcs/human-centered-simplicity-review.json`
+- simplicity_repository_refs: `[repo://docara-worktree-declarative, repo://larena-docara]`
+- simplicity_repository_baselines: `[repo://docara-worktree-declarative@ba7724ae3d9e2b99388098637b81a35a2646e6a4, repo://larena-docara@8437fdae95fbfe024135fb1c10f8361ebc0e3422]`
 
 ## Personal Memory Context
 
@@ -251,18 +261,37 @@ fact is required.
     build, and legacy `.settings.php` compatibility.
 - Verification:
   - focused portable suite: 51 tests / 328 assertions, PASS;
-  - complete repository suite: 322 tests / 996 assertions, PASS;
+  - complete repository suite after accessibility hardening: 322 tests / 1,019
+    assertions, PASS with PHP 8.4 and UTC;
   - Pint, Composer validation, JSON parsing, and `git diff --check`, PASS.
 - Remaining: none.
 
 ### Batch 6
 
-- Status: in-progress
-- Done: Larena adapter implementation and focused tests are prepared against
-  the shared fixture.
-- Remaining: bind the adapter evidence to the exact standalone candidate,
-  confirm cross-repository hash/plan parity, and commit the Larena candidate.
-- Next: complete the Larena adapter after the standalone SHA is available.
+- Status: completed
+- Done:
+  - standalone remains the only owner of raw JSON/Markdown schemas,
+    inheritance, directive parsing and `ResolvedPagePlan` construction;
+  - Larena consumes only `.docara/resolved-page-plans.json` with a required
+    immutable SHA-256 receipt;
+  - canonical plan hashes, source trace, exact Framework lock, manifests,
+    component calls and placeholders are checked fail-closed;
+  - component props are rendered again through Larena `SmartRegistry` and
+    `SmartManager` without trusting exported HTML;
+  - source-path-derived page identity is stable across content revisions and
+    collision-safe;
+  - valid `@defaults` provenance and literal `DOCARA_COMPONENT_...` prose are
+    accepted without weakening declared-placeholder checks.
+- Verification:
+  - Larena package candidate:
+    `771f7dd81a9653a7bc3146ef9b1451976a2e70c5`;
+  - exact export: 97,114 bytes, SHA-256
+    `ed3c3f7f83ce39e24fe502d8c6f3cf1607b784d0bbdf59c25c826f18032679af`;
+  - exact regeneration is byte-for-byte equal to the Larena fixture;
+  - focused package suite: 23 tests / 144 assertions, PASS;
+  - full package gate: 70 tests / 874 assertions, PHPStan, lint, evidence and
+    scope checks, PASS.
+- Remaining: none for Batch 6.
 
 ### Batch 7
 
@@ -272,7 +301,11 @@ fact is required.
   - desktop/mobile and light/dark screenshots;
   - real `sf-alert`, `sf-icon`, and `sf-button` hydration;
   - exact local Smart requests, zero console errors/warnings, no horizontal
-    overflow, working theme persistence, and visible Material Symbols glyph.
+    overflow, working theme persistence, and visible Material Symbols glyph;
+  - skip link, `aria-current`, no positive `tabindex`, visible focus for native
+    and Smart buttons, and distinct system/light/dark accessible theme names;
+  - keyboard preflight proves skip-link focus transfer and Enter/Space theme
+    activation while focus remains on the toggle.
 - Remaining: independent tester verdict against the exact standalone and
   Larena candidate revisions.
 - Next: prepare the immutable tester assignment after both commits exist.
@@ -287,11 +320,15 @@ fact is required.
 - Pre-commit reverse review found and closed three boundary defects before the
   candidate commit: partial legacy/portable mixing, lexical root-symlink
   normalization, and empty-object type loss in published diagnostics.
+- HCS preflight caught that an outline on `sf-button` itself is invisible when
+  the hydrated custom element uses `display: contents`; the shell now targets
+  the real light-DOM button with `:focus-visible`.
 
 ## Final Result
 
-- Result: standalone candidate implementation ready; cross-repository and
-  independent acceptance remain open.
-- Verification: standalone implementation and browser evidence pass.
-- Remaining: Larena parity candidate and exact-candidate independent verdict.
+- Result: standalone and Larena implementation candidates are ready for one
+  independent cross-repository acceptance pass.
+- Verification: standalone, browser accessibility preflight, exact export
+  parity, and Larena package gates pass.
+- Remaining: exact-candidate independent Tester and HCS verdicts.
 - Follow-up: none outside the goal yet.

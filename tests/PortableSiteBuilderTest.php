@@ -43,6 +43,8 @@ final class PortableSiteBuilderTest extends TestCase
 
         self::assertStringContainsString('docara-docs-layout gap-3 p-3', $index);
         self::assertStringContainsString('class="docara-landing flex flex-col gap-4 p-4"', $landing);
+        self::assertStringContainsString('aria-current="page"', $index);
+        self::assertStringContainsString('aria-current="page"', $guide);
         self::assertStringContainsString('<sf-alert', $index);
         self::assertStringContainsString('<sf-alert', $guide);
         self::assertStringContainsString('<sf-button', $guide);
@@ -53,7 +55,14 @@ final class PortableSiteBuilderTest extends TestCase
         foreach ([$index, $guide, $landing] as $html) {
             self::assertStringContainsString('theme-light', $html);
             self::assertStringContainsString('theme-dark', $html);
+            self::assertStringContainsString('href="#docara-main">К содержанию</a>', $html);
+            self::assertStringContainsString('id="docara-main" tabindex="-1"', $html);
             self::assertStringContainsString('id="docara-theme-toggle"', $html);
+            self::assertStringContainsString('aria-live="polite"', $html);
+            self::assertStringContainsString("Переключить на '+actions[next]+' тему", $html);
+            self::assertStringNotContainsString('aria-pressed', $html);
+            self::assertStringContainsString('.docara-theme-toggle:focus-visible', $html);
+            self::assertStringContainsString('sf-button>button:focus-visible', $html);
             self::assertStringContainsString('@7e836d8a9414d5da553fb1ab0404721e5b48769a/', $html);
             self::assertStringNotContainsString('simai/ui-smart@', $html);
             self::assertStringContainsString('window.sfSmartPath="/_docara/framework"', $html);

@@ -212,9 +212,9 @@ Do not complete the Goal until:
 
 ## Current Remaining
 
-- Milestones remaining: 5 of 5.
-- Batches remaining: 10 of 10.
-- Active batch: Batch 0.
+- Milestones remaining: 4 of 5.
+- Batches remaining: 8 of 10.
+- Active batch: Batch 2.
 - Goal status: `in-progress`.
 
 ## Do Not Complete Until
@@ -337,16 +337,19 @@ was discovered.
 
 ## Next Safe Batch
 
-Close the independent UX/designer and exact-archive tester gates for the bounded
-Batch 1 candidate. If they pass, publish that accepted stage to `docara.test`
-through verified staging and rollback, then continue directly into Batch 2:
-deterministic local search derived from published content.
+Implement Batch 2 test-first from accepted candidate `d4ce688b…`:
+deterministic local search derived from published content, with a canonical
+local index, Framework presentation, keyboard/mobile behavior and no external
+runtime service. Batch 1 is already published locally with rollback evidence.
 
 ## Last Completed Batch
 
 The first product vertical was accepted on implementation candidate `83d677c7eb5f22d9ca2f4ac16990fe16eddbe985` and closure commit `31f468be85d015b962fccc2b4c089204aab1410b`.
 
-Batch 0 product/Framework decisions are complete. Batch 1 implementation,
-root automated/browser/HCS checks and the independent bounded UX/designer gate
-pass in the working tree. The exact-archive tester gate remains open until the
-candidate is committed.
+Batch 0 product/Framework decisions and Batch 1 navigation correction are
+complete. UX/designer and exact-archive tester returned bounded PASS for
+candidate `d4ce688b38c6a29c2b57aaac2f8fe132f05b26b9`; this does not accept later
+product stages or the whole Goal. The matching build is served at
+`docara.test`; source, staging and served tree digest
+`e14c35e5852e2ec44375d22621d6fe704b8270ec2eb5cf45cb6f262dc0cd5530`
+matches, and the previous tree remains available for rollback.

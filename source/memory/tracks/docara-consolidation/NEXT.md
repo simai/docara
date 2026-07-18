@@ -19,10 +19,10 @@ Track `docara-consolidation` is attached to workflow:
 
 ## Next Safe Batch
 
-Close the independent UX/designer and exact-archive tester gates for the bounded
-Batch 1 candidate. If they pass, publish that accepted stage to `docara.test`
-through verified staging and rollback, then continue directly into Batch 2:
-deterministic local search derived from published content.
+Implement Batch 2 test-first from accepted candidate `d4ce688b…`:
+deterministic local search derived from published content, with a canonical
+local index, Framework presentation, keyboard/mobile behavior and no external
+runtime service. Batch 1 is already published locally with rollback evidence.
 
 ## Checks
 

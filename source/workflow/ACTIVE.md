@@ -21,12 +21,12 @@ catalogue, complete documentation and exact independent acceptance.
 
 ## Current Batch
 
-Batch 0 — reproduce the menu defects, compare official reference products,
-inventory pinned Framework building blocks and freeze the test-first Batch 1
-contract.
+Batch 2 — deterministic local full-text search derived at build time from the
+published content and presented with pinned Simai Framework primitives.
 
 ## Next Step
 
-Continue directly into the menu hierarchy/active-trail correction when Batch 0
-has no owner or Framework blocker. Public release, default-branch migration and
-repository retirement remain excluded.
+Implement local search test-first. The accepted navigation stage is already
+served locally with matching source/staging/served digests and a preserved
+rollback. Public release, default-branch migration and repository retirement
+remain excluded.

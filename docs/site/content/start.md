@@ -37,13 +37,5 @@ content/
 Откройте `content/index.md`, измените заголовок или текст и повторите сборку.
 Настройки страницы можно вынести в соседний `index.page.json`.
 
-:::ui.button
-{"text":"Проверить структуру","size":"1","type":"outline","scheme":"primary","loading":false,"disabled":false,"native-type":"button","aria-label":"Проверить структуру переносимого проекта"}
-
-:::
-
-Кнопка выше демонстрирует отрисовку Smart-компонента. В статическом сайте она
-не получает прикладное действие автоматически.
-
 Дальше прочитайте [модель файлов](/authoring/project-files/) и
 [настройки сайта](/authoring/configuration/).

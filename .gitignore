@@ -2,6 +2,7 @@
 node_modules
 /vendor/
 /source/assets/build/
+/source/output/
 /composer.json
 /bootstrap.php
 .cache

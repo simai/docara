@@ -138,11 +138,11 @@ final readonly class PortableNavigationBuilder
      * foo/index.md + foo/ semantically equivalent.
      *
      * @param  array<string, mixed>  $page
-     * @param  array{title?: string|null, order?: int|null}  $metadata
+     * @param  array{title?: string|null, order?: int|null, order_reset?: bool}  $metadata
      */
     private function navigationTitle(array $page, array $metadata): string
     {
-        if ($this->hasPageSidecarProvenance($page, '/title')) {
+        if ($this->hasExactPageSidecarProvenance($page, '/title')) {
             return (string) $page['title'];
         }
 
@@ -152,44 +152,47 @@ final readonly class PortableNavigationBuilder
     }
 
     /**
-     * Resolved page order wins. An explicit page-level reset is allowed to
-     * clear inherited section order; otherwise sibling page branches inherit
-     * the matching directory metadata just like index branches do.
+     * An explicit page value wins, an explicit page reset clears the order,
+     * and matching directory metadata wins over a more distant inherited
+     * value. This keeps sibling and index overview forms equivalent.
      *
      * @param  array<string, mixed>  $page
-     * @param  array{title?: string|null, order?: int|null}  $metadata
+     * @param  array{title?: string|null, order?: int|null, order_reset?: bool}  $metadata
      */
     private function navigationOrder(array $page, array $metadata, mixed $fallback): ?int
     {
+        if ($this->hasExactPageSidecarProvenance($page, '/navigation/order')) {
+            return is_int($page['navigation_order'] ?? null)
+                ? $page['navigation_order']
+                : null;
+        }
+        if ($this->hasExactPageSidecarProvenance($page, '/navigation')) {
+            return null;
+        }
+        if (is_int($metadata['order'] ?? null)) {
+            return $metadata['order'];
+        }
+        if (($metadata['order_reset'] ?? false) === true) {
+            return null;
+        }
         if (is_int($page['navigation_order'] ?? null)) {
             return $page['navigation_order'];
         }
-        if ($this->hasPageSidecarProvenance($page, '/navigation')) {
-            return null;
-        }
 
-        return is_int($metadata['order'] ?? null)
-            ? $metadata['order']
-            : (is_int($fallback) ? $fallback : null);
+        return is_int($fallback) ? $fallback : null;
     }
 
     /** @param array<string, mixed> $page */
-    private function hasPageSidecarProvenance(array $page, string $pointer): bool
+    private function hasExactPageSidecarProvenance(array $page, string $pointer): bool
     {
         $plan = $page['plan'] ?? null;
         if (! $plan instanceof ResolvedPagePlan) {
             return false;
         }
 
-        foreach ($plan->provenance as $candidate => $source) {
-            if (($candidate === $pointer || str_starts_with($candidate, $pointer . '/'))
-                && str_ends_with($source, '.page.json')
-            ) {
-                return true;
-            }
-        }
+        $source = $plan->provenance[$pointer] ?? null;
 
-        return false;
+        return is_string($source) && str_ends_with($source, '.page.json');
     }
 
     /** @param list<array<string, mixed>> $nodes @return list<array<string, mixed>> */
@@ -235,7 +238,7 @@ final readonly class PortableNavigationBuilder
         return substr($pagePath, strlen($prefix));
     }
 
-    /** @return array<string, array{title?: string, order?: int|null}> */
+    /** @return array<string, array{title?: string|null, order?: int|null, order_reset?: bool}> */
     private function sectionMetadata(string $contentPath): array
     {
         $metadata = [];
@@ -279,11 +282,16 @@ final readonly class PortableNavigationBuilder
             if (! is_array($descriptor)) {
                 continue;
             }
+            $navigation = is_array($descriptor['navigation'] ?? null)
+                ? $descriptor['navigation']
+                : [];
             $metadata[$relativeDirectory] = [
                 'title' => is_string($descriptor['title'] ?? null) ? $descriptor['title'] : null,
-                'order' => is_int($descriptor['navigation']['order'] ?? null)
-                    ? $descriptor['navigation']['order']
+                'order' => is_int($navigation['order'] ?? null)
+                    ? $navigation['order']
                     : null,
+                'order_reset' => ($navigation['$reset'] ?? false) === true
+                    && ! array_key_exists('order', $navigation),
             ];
         }
 

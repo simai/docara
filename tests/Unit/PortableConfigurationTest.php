@@ -120,6 +120,7 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame(['theme' => 'system'], $resolved->configuration['settings']);
         self::assertNull($resolved->configuration['accent']);
         self::assertArrayNotHasKey('/layout/sidebar/width', $resolved->provenance);
+        self::assertSame('section/_section.json', $resolved->provenance['/layout/sidebar']);
         self::assertSame('section/_section.json', $resolved->provenance['/layout/sidebar/position']);
         self::assertSame('section/_section.json', $resolved->provenance['/layout/slots']);
         self::assertSame('section/_section.json', $resolved->provenance['/accent']);

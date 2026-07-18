@@ -218,18 +218,26 @@ final class PortableHtmlRenderer
     var rail=document.querySelector('.docara-sidebar');
     var active=rail&&rail.querySelector('[aria-current="page"]');
     if(!rail||!active||rail.dataset.docaraActiveRevealed)return;
-    rail.dataset.docaraActiveRevealed='1';
     var railRect=rail.getBoundingClientRect();
     var activeRect=active.getBoundingClientRect();
+    if(railRect.width<=0||railRect.height<=0||activeRect.width<=0||activeRect.height<=0)return;
+    rail.dataset.docaraActiveRevealed='1';
     var inset=8;
     if(activeRect.bottom>railRect.bottom-inset){rail.scrollTop+=activeRect.bottom-(railRect.bottom-inset)}
     else if(activeRect.top<railRect.top+inset){rail.scrollTop+=activeRect.top-(railRect.top+inset)}
+    window.removeEventListener('resize',scheduleActiveReveal);
+  }
+  var activeRevealFrame=0;
+  function scheduleActiveReveal(){
+    if(activeRevealFrame)return;
+    activeRevealFrame=requestAnimationFrame(function(){activeRevealFrame=0;revealActiveNavigation()});
   }
   bindShell();
   function revealWhenReady(){
     var fonts=document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve();
-    fonts.then(function(){requestAnimationFrame(revealActiveNavigation)});
+    fonts.then(scheduleActiveReveal);
   }
+  window.addEventListener('resize',scheduleActiveReveal,{passive:true});
   if(document.readyState==='complete'){revealWhenReady()}
   else{window.addEventListener('load',revealWhenReady,{once:true})}
   new MutationObserver(bindShell).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','expanded','aria-expanded']});

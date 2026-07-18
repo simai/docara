@@ -75,6 +75,10 @@ final class ConfigurationMerger
             unset($override['$reset']);
             $base = [];
             $resetToEmptyObject = $override === [];
+            // Keep the reset itself in provenance even when the same layer
+            // immediately adds new child values. Consumers must be able to
+            // distinguish a branch reset from an ordinary partial override.
+            $this->recordProvenance($provenance, $pointer, $source);
         } elseif (array_key_exists('$value', $override)) {
             throw new PortableConfigurationException(
                 'RESET_DIRECTIVE_INVALID',
@@ -91,8 +95,6 @@ final class ConfigurationMerger
         }
 
         if ($resetToEmptyObject) {
-            $this->recordProvenance($provenance, $pointer, $source);
-
             return new \stdClass;
         }
 

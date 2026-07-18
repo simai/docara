@@ -63,6 +63,8 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('data-docara-theme-button', $html);
             self::assertStringContainsString('<sf-icon icon="contrast" aria-hidden="true"></sf-icon>', $html);
             self::assertStringContainsString('data-docara-shell-controller', $html);
+            self::assertStringContainsString('railRect.width<=0||railRect.height<=0', $html);
+            self::assertStringContainsString("addEventListener('resize',scheduleActiveReveal", $html);
             self::assertStringContainsString('.sf-theme-button:focus-visible', $html);
             self::assertStringContainsString('sf-button>button:focus-visible', $html);
             self::assertStringContainsString('@7e836d8a9414d5da553fb1ab0404721e5b48769a/', $html);
@@ -320,7 +322,56 @@ MD;
     }
 
     #[Test]
-    public function equivalent_overview_forms_honor_section_metadata_page_title_and_navigation_reset(): void
+    public function equivalent_overview_forms_prefer_matching_section_order_over_inherited_order(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $site = $this->jsonFile($this->tmpPath('docara.json'));
+        $site['navigation'] = ['order' => 100];
+        file_put_contents(
+            $this->tmpPath('docara.json'),
+            json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+
+        foreach (['sibling' => false, 'indexed' => true] as $slug => $usesIndex) {
+            $this->filesystem->ensureDirectoryExists($this->tmpPath("content/$slug"));
+            $overview = $usesIndex ? "content/$slug/index.md" : "content/$slug.md";
+            $sidecar = $usesIndex ? "content/$slug/index.page.json" : "content/$slug.page.json";
+            file_put_contents($this->tmpPath($overview), "# Markdown $slug\n");
+            file_put_contents($this->tmpPath("content/$slug/child.md"), "# Child $slug\n");
+            file_put_contents(
+                $this->tmpPath("content/$slug/_section.json"),
+                json_encode([
+                    'schema' => 'docara.section.v1',
+                    'title' => "Section $slug",
+                    'navigation' => ['order' => $usesIndex ? 1 : 2],
+                ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+            );
+            file_put_contents(
+                $this->tmpPath($sidecar),
+                json_encode([
+                    'schema' => 'docara.page.v1',
+                    'title' => "Page $slug",
+                    // A child override is not a reset of the navigation branch.
+                    'navigation' => ['hidden' => false],
+                ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+            );
+        }
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
+
+        self::assertStringContainsString('<span class="sf-menu-element-text">Page indexed</span>', $html);
+        self::assertStringContainsString('<span class="sf-menu-element-text">Page sibling</span>', $html);
+        self::assertStringNotContainsString('Section indexed', $html);
+        self::assertStringNotContainsString('Section sibling', $html);
+
+        $links = $this->desktopNavigationLinks($html, topLevelOnly: true);
+        self::assertLessThan(array_search('/sibling/', $links, true), array_search('/indexed/', $links, true));
+        self::assertLessThan(array_search('/', $links, true), array_search('/sibling/', $links, true));
+    }
+
+    #[Test]
+    public function equivalent_overview_forms_prefer_explicit_page_order_over_matching_section_order(): void
     {
         $this->copyPortableFixture($this->tmp);
 
@@ -343,7 +394,8 @@ MD;
                 json_encode([
                     'schema' => 'docara.page.v1',
                     'title' => "Page $slug",
-                    'navigation' => ['$reset' => true],
+                    // Reverse the metadata order and place both before home.
+                    'navigation' => ['order' => $usesIndex ? 6 : 5],
                 ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
             );
         }
@@ -351,10 +403,78 @@ MD;
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
         $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
 
-        self::assertStringContainsString('<span class="sf-menu-element-text">Page indexed</span>', $html);
-        self::assertStringContainsString('<span class="sf-menu-element-text">Page sibling</span>', $html);
-        self::assertStringNotContainsString('Section indexed', $html);
-        self::assertStringNotContainsString('Section sibling', $html);
+        $links = $this->desktopNavigationLinks($html, topLevelOnly: true);
+        self::assertLessThan(array_search('/indexed/', $links, true), array_search('/sibling/', $links, true));
+        self::assertLessThan(array_search('/', $links, true), array_search('/indexed/', $links, true));
+    }
+
+    #[Test]
+    public function equivalent_overview_forms_honor_page_navigation_reset_with_sibling_values(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+
+        foreach (['sibling' => false, 'indexed' => true] as $slug => $usesIndex) {
+            $this->filesystem->ensureDirectoryExists($this->tmpPath("content/$slug"));
+            $overview = $usesIndex ? "content/$slug/index.md" : "content/$slug.md";
+            $sidecar = $usesIndex ? "content/$slug/index.page.json" : "content/$slug.page.json";
+            file_put_contents($this->tmpPath($overview), "# Markdown $slug\n");
+            file_put_contents($this->tmpPath("content/$slug/child.md"), "# Child $slug\n");
+            file_put_contents(
+                $this->tmpPath("content/$slug/_section.json"),
+                json_encode([
+                    'schema' => 'docara.section.v1',
+                    'title' => "Section $slug",
+                    'navigation' => ['order' => $usesIndex ? 1 : 2],
+                ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+            );
+            file_put_contents(
+                $this->tmpPath($sidecar),
+                json_encode([
+                    'schema' => 'docara.page.v1',
+                    'title' => "Page $slug",
+                    'navigation' => ['$reset' => true, 'hidden' => false],
+                ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+            );
+        }
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
+
+        $links = $this->desktopNavigationLinks($html, topLevelOnly: true);
+        self::assertLessThan(array_search('/indexed/', $links, true), array_search('/guides/', $links, true));
+        self::assertLessThan(array_search('/sibling/', $links, true), array_search('/guides/', $links, true));
+    }
+
+    #[Test]
+    public function equivalent_overview_forms_honor_matching_section_navigation_reset(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $site = $this->jsonFile($this->tmpPath('docara.json'));
+        // A low inherited order makes this test fail if the sibling overview
+        // accidentally keeps it instead of honoring the matching reset.
+        $site['navigation'] = ['order' => 10];
+        file_put_contents(
+            $this->tmpPath('docara.json'),
+            json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+
+        foreach (['sibling' => false, 'indexed' => true] as $slug => $usesIndex) {
+            $this->filesystem->ensureDirectoryExists($this->tmpPath("content/$slug"));
+            $overview = $usesIndex ? "content/$slug/index.md" : "content/$slug.md";
+            file_put_contents($this->tmpPath($overview), "# Markdown $slug\n");
+            file_put_contents($this->tmpPath("content/$slug/child.md"), "# Child $slug\n");
+            file_put_contents(
+                $this->tmpPath("content/$slug/_section.json"),
+                json_encode([
+                    'schema' => 'docara.section.v1',
+                    'title' => "Section $slug",
+                    'navigation' => ['$reset' => true, 'hidden' => false],
+                ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+            );
+        }
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
 
         $links = $this->desktopNavigationLinks($html, topLevelOnly: true);
         self::assertLessThan(array_search('/indexed/', $links, true), array_search('/guides/', $links, true));

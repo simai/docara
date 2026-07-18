@@ -55,12 +55,17 @@ class InitCommand extends Command
                 'Which preset should we use to initialize this project?',
             )
             ->addOption('update', 'u', InputOption::VALUE_NONE, 'Update existing site in-place (no delete/archive).')
+            ->addOption('portable', null, InputOption::VALUE_NONE, 'Initialize the portable JSON/Markdown site format.')
             ->addOption('force-core-configs', null, InputOption::VALUE_NONE, 'Overwrite template configs even if modified locally.')
             ->addOption('force-core-files', null, InputOption::VALUE_NONE, 'Overwrite all files in source/_core from stubs (ignores user changes).');
     }
 
     protected function fire()
     {
+        if ((bool) $this->input->getOption('portable')) {
+            return $this->firePortable();
+        }
+
         $envPath = $this->base . '/.env';
         if (file_exists($envPath)) {
             $this->loadEnv();
@@ -198,6 +203,62 @@ ENV;
         }
     }
 
+    /**
+     * Initialize the opt-in portable site format without invoking the legacy
+     * source/_core, Composer autoload or frontend dependency setup.
+     */
+    private function firePortable(): int
+    {
+        $preset = (string) $this->input->getArgument('preset');
+        if ($preset !== '') {
+            $this->console->error('Portable mode does not accept a legacy preset argument. Configure the preset in docara.json.');
+
+            return static::FAILURE;
+        }
+
+        $updateMode = (bool) $this->input->getOption('update');
+        $portableMarkers = $this->detectPortableSite();
+        $legacyMarkers = $this->detectExistingSite();
+
+        if ($legacyMarkers !== []) {
+            $this->console
+                ->error('Refusing to migrate an existing legacy site implicitly.')
+                ->comment('Portable mode requires a clean directory. Migrate legacy sites with a dedicated migration workflow.');
+
+            return static::FAILURE;
+        }
+
+        if ($portableMarkers !== [] && ! $updateMode) {
+            $this->console
+                ->error('Detected an existing portable site: ' . implode(', ', $portableMarkers))
+                ->comment('Run "docara init --portable --update" to add missing portable scaffold files without overwriting JSON or Markdown.');
+
+            return static::FAILURE;
+        }
+
+        try {
+            $this->basicScaffold
+                ->setBase($this->base)
+                ->setPortableMode()
+                ->setUpdateMode($updateMode)
+                ->setConsole($this->console)
+                ->build();
+        } catch (InstallerCommandException $e) {
+            $this->console->error($e->getMessage());
+
+            return static::FAILURE;
+        }
+
+        $this->console
+            ->line()
+            ->info($updateMode
+                ? 'Your portable Docara site was updated without overwriting existing JSON or Markdown.'
+                : 'Your portable Docara site was initialized successfully.')
+            ->line();
+
+        return static::SUCCESS;
+    }
+
     protected function getScaffold()
     {
         return $this->input->getArgument('preset') ?
@@ -220,6 +281,28 @@ ENV;
 
         if ($this->files->exists($this->base . '/source')) {
             $existing[] = 'source/';
+        }
+
+        return $existing;
+    }
+
+    /**
+     * Detects markers of the opt-in portable format.
+     *
+     * @return array<string>
+     */
+    private function detectPortableSite(): array
+    {
+        $existing = [];
+
+        foreach ([
+            'docara.json',
+            'simai-framework.lock.json',
+            'content',
+        ] as $path) {
+            if ($this->files->exists($this->base . '/' . $path)) {
+                $existing[] = is_dir($this->base . '/' . $path) ? $path . '/' : $path;
+            }
         }
 
         return $existing;

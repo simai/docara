@@ -8,6 +8,8 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
 
     protected bool $updateMode = false;
 
+    protected bool $portableMode = false;
+
     private ?bool $gitAvailable = null;
 
     public function init($preset = null)
@@ -29,8 +31,19 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
         return $this;
     }
 
+    public function setPortableMode(bool $portableMode = true): static
+    {
+        $this->portableMode = $portableMode;
+
+        return $this;
+    }
+
     public function build()
     {
+        if ($this->portableMode) {
+            return $this->buildPortable();
+        }
+
         $stubs = __DIR__ . '/../../stubs/site';
         $configPath = $this->base . '/config.php';
         $existingConfig = $this->files->exists($configPath) ? $this->files->get($configPath) : null;
@@ -142,6 +155,52 @@ class BasicScaffoldBuilder extends ScaffoldBuilder
         if ($existingEnv !== null) {
             $this->files->put($envPath, $existingEnv);
         }
+
+        return $this;
+    }
+
+    /**
+     * Copy the portable site fixture. In update mode every existing file is
+     * preserved; in particular JSON contracts and Markdown content are never
+     * replaced by a package update.
+     */
+    private function buildPortable(): static
+    {
+        $stubs = __DIR__ . '/../../stubs/portable';
+        if (! $this->files->isDirectory($stubs)) {
+            throw new InstallerCommandException("Portable scaffold was not found at {$stubs}.");
+        }
+
+        $copied = 0;
+        $preserved = 0;
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($stubs, \FilesystemIterator::SKIP_DOTS)
+        );
+
+        foreach ($iterator as $file) {
+            if (! $file->isFile()) {
+                continue;
+            }
+
+            $relative = ltrim(str_replace('\\', '/', substr($file->getPathname(), strlen($stubs))), '/');
+            $destination = rtrim($this->base, '/\\') . '/' . $relative;
+
+            if ($this->files->exists($destination)) {
+                $preserved++;
+
+                continue;
+            }
+
+            $directory = dirname($destination);
+            if (! $this->files->isDirectory($directory)) {
+                $this->files->makeDirectory($directory, 0755, true);
+            }
+
+            $this->files->copy($file->getPathname(), $destination);
+            $copied++;
+        }
+
+        $this->log("Portable scaffold: copied={$copied}, preserved={$preserved}");
 
         return $this;
     }

@@ -1,0 +1,394 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://schemas.simai.io/docara/framework-lock/v1",
+    "title": "Docara wrapper for a pinned Simai Framework runtime",
+    "type": "object",
+    "required": ["schema", "runtime", "manifests", "asset_projection", "nonclaims"],
+    "properties": {
+        "schema": {
+            "type": "string",
+            "const": "docara.framework_lock.v1"
+        },
+        "version": {
+            "type": "integer",
+            "const": 1
+        },
+        "runtime": {
+            "type": "object",
+            "required": [
+                "schema",
+                "runtime",
+                "pair_id",
+                "bundle_id",
+                "publication_profile",
+                "tag",
+                "ui",
+                "ui_smart",
+                "framework_registry",
+                "boot",
+                "components"
+            ],
+            "properties": {
+                "schema": {
+                    "type": "string",
+                    "const": "larena.ui.frontend_runtime_lock.v3"
+                },
+                "runtime": {
+                    "type": "string",
+                    "const": "simai-framework"
+                },
+                "pair_id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._-]+$"
+                },
+                "bundle_id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._-]+$"
+                },
+                "publication_profile": {
+                    "type": "string",
+                    "const": "verified-release-artifact-v1"
+                },
+                "tag": {
+                    "type": "string",
+                    "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+                },
+                "ui": {
+                    "$ref": "#/$defs/ui_source"
+                },
+                "ui_smart": {
+                    "$ref": "#/$defs/ui_smart_source"
+                },
+                "framework_registry": {
+                    "$ref": "#/$defs/framework_registry"
+                },
+                "boot": {
+                    "$ref": "#/$defs/boot"
+                },
+                "components": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": {
+                        "$ref": "#/$defs/runtime_component"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "manifests": {
+            "type": "object",
+            "required": ["ui.button", "ui.alert"],
+            "properties": {
+                "ui.button": {
+                    "$ref": "#/$defs/manifest"
+                },
+                "ui.alert": {
+                    "$ref": "#/$defs/manifest"
+                }
+            },
+            "additionalProperties": false
+        },
+        "asset_projection": {
+            "type": "object",
+            "required": ["schema", "mount", "source", "files"],
+            "properties": {
+                "schema": {
+                    "type": "string",
+                    "const": "docara.framework_asset_projection.v1"
+                },
+                "mount": {
+                    "type": "string",
+                    "const": "_docara/framework"
+                },
+                "source": {
+                    "type": "object",
+                    "required": ["provider", "revision"],
+                    "properties": {
+                        "provider": {
+                            "type": "string",
+                            "const": "simai/ui-smart"
+                        },
+                        "revision": {
+                            "type": "string",
+                            "format": "docara-immutable-revision"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "files": {
+                    "type": "object",
+                    "required": [
+                        "smart/alert/js/alert.js",
+                        "smart/buttons/js/buttons.js",
+                        "smart/icons/js/icons.js"
+                    ],
+                    "properties": {
+                        "smart/alert/js/alert.js": {"$ref": "#/$defs/projected_asset"},
+                        "smart/buttons/js/buttons.js": {"$ref": "#/$defs/projected_asset"},
+                        "smart/icons/js/icons.js": {"$ref": "#/$defs/projected_asset"}
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "nonclaims": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+                "type": "string",
+                "minLength": 1
+            }
+        }
+    },
+    "additionalProperties": false,
+    "$defs": {
+        "projected_asset": {
+            "type": "object",
+            "required": ["sha256"],
+            "properties": {
+                "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                }
+            },
+            "additionalProperties": false
+        },
+        "publication_source": {
+            "type": "object",
+            "required": ["tag", "commit", "tree", "mount", "sha256", "files"],
+            "properties": {
+                "tag": {
+                    "type": "string",
+                    "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+                },
+                "commit": {
+                    "type": "string",
+                    "format": "docara-immutable-revision"
+                },
+                "tree": {
+                    "type": "string",
+                    "format": "docara-relative-path"
+                },
+                "mount": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._-]*$"
+                },
+                "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                },
+                "files": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            },
+            "additionalProperties": false
+        },
+        "ui_source": {
+            "type": "object",
+            "required": ["tag", "commit", "tree", "mount", "sha256", "files"],
+            "properties": {
+                "tag": {
+                    "type": "string",
+                    "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+                },
+                "commit": {
+                    "type": "string",
+                    "format": "docara-immutable-revision"
+                },
+                "tree": {
+                    "type": "string",
+                    "const": "distr"
+                },
+                "mount": {
+                    "type": "string",
+                    "const": "ui"
+                },
+                "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                },
+                "files": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            },
+            "additionalProperties": false
+        },
+        "ui_smart_source": {
+            "type": "object",
+            "required": ["tag", "commit", "tree", "mount", "sha256", "files"],
+            "properties": {
+                "tag": {
+                    "type": "string",
+                    "pattern": "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+                },
+                "commit": {
+                    "type": "string",
+                    "format": "docara-immutable-revision"
+                },
+                "tree": {
+                    "type": "string",
+                    "const": "smart"
+                },
+                "mount": {
+                    "type": "string",
+                    "const": "smart"
+                },
+                "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                },
+                "files": {
+                    "type": "integer",
+                    "minimum": 1
+                }
+            },
+            "additionalProperties": false
+        },
+        "framework_registry": {
+            "type": "object",
+            "required": ["schema_id", "compatibility_id", "profile", "relative_path", "file_sha256", "source"],
+            "properties": {
+                "schema_id": {
+                    "type": "string",
+                    "const": "simai.framework.contract-registry"
+                },
+                "compatibility_id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._-]+$"
+                },
+                "profile": {
+                    "type": "string",
+                    "const": "plain-assets-v1"
+                },
+                "relative_path": {
+                    "type": "string",
+                    "format": "docara-relative-path"
+                },
+                "file_sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                },
+                "source": {
+                    "$ref": "#/$defs/framework_registry_source"
+                }
+            },
+            "additionalProperties": false
+        },
+        "framework_registry_source": {
+            "type": "object",
+            "required": ["commit", "tree", "tree_oid", "mount", "sha256", "files"],
+            "properties": {
+                "commit": {
+                    "type": "string",
+                    "format": "docara-immutable-revision"
+                },
+                "tree": {
+                    "type": "string",
+                    "const": "contracts/generated"
+                },
+                "tree_oid": {
+                    "type": "string",
+                    "format": "docara-immutable-revision"
+                },
+                "mount": {
+                    "type": "string",
+                    "const": "contract"
+                },
+                "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                },
+                "files": {
+                    "type": "integer",
+                    "const": 1
+                }
+            },
+            "additionalProperties": false
+        },
+        "boot": {
+            "type": "object",
+            "required": ["css", "javascript", "smart_base", "ui_base", "smart_base_path"],
+            "properties": {
+                "css": {
+                    "type": "string",
+                    "format": "docara-relative-path"
+                },
+                "javascript": {
+                    "type": "string",
+                    "format": "docara-relative-path"
+                },
+                "smart_base": {
+                    "type": "string",
+                    "format": "docara-relative-path"
+                },
+                "ui_base": {
+                    "type": "string",
+                    "format": "docara-relative-directory"
+                },
+                "smart_base_path": {
+                    "type": "string",
+                    "format": "docara-relative-directory"
+                }
+            },
+            "additionalProperties": false
+        },
+        "runtime_component": {
+            "type": "object",
+            "required": ["source", "javascript", "css", "attributes"],
+            "properties": {
+                "source": {
+                    "type": "string",
+                    "format": "docara-relative-path"
+                },
+                "javascript": {
+                    "type": "string",
+                    "format": "docara-relative-path"
+                },
+                "css": {
+                    "type": ["string", "null"],
+                    "format": "docara-relative-path"
+                },
+                "requires": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                },
+                "attributes": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "manifest": {
+            "type": "object",
+            "required": ["provider", "provider_revision", "sha256"],
+            "properties": {
+                "provider": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9][a-z0-9._/-]*$"
+                },
+                "provider_revision": {
+                    "type": "string",
+                    "format": "docara-immutable-revision"
+                },
+                "sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}

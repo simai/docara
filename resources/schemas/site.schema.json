@@ -1,0 +1,68 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://schemas.simai.io/docara/site/v1",
+    "title": "Docara portable site",
+    "type": "object",
+    "required": ["schema", "preset", "framework_lock"],
+    "properties": {
+        "schema": {
+            "type": "string",
+            "const": "docara.site.v1"
+        },
+        "version": {
+            "type": "integer",
+            "const": 1
+        },
+        "preset": {
+            "type": "string",
+            "enum": ["docs", "landing"]
+        },
+        "framework_lock": {
+            "type": "string",
+            "format": "docara-relative-path"
+        },
+        "content_root": {
+            "type": "string",
+            "format": "docara-relative-path"
+        },
+        "base_url": {
+            "type": "string",
+            "pattern": "^(?:/|/(?!\\.{1,2}(?:/|$))[A-Za-z0-9._~-]+(?:/(?!\\.{1,2}(?:/|$))[A-Za-z0-9._~-]+)*/?)$"
+        },
+        "default_locale": {
+            "type": "string",
+            "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+        },
+        "theme": {
+            "type": "string",
+            "minLength": 1
+        },
+        "title": {
+            "type": "string",
+            "minLength": 1
+        },
+        "locale": {
+            "type": "string",
+            "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+        },
+        "layout": {
+            "type": "object"
+        },
+        "settings": {
+            "type": "object"
+        },
+        "navigation": {
+            "type": "object"
+        },
+        "variables": {
+            "type": "object"
+        },
+        "components": {
+            "type": "array",
+            "items": {
+                "$ref": "component-call.schema.json"
+            }
+        }
+    },
+    "additionalProperties": false
+}

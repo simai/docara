@@ -1,0 +1,14 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Документация",
+  "preset": "docs",
+  "layout": {
+    "max_width": "wide",
+    "sidebar": {
+      "position": "left"
+    }
+  },
+  "navigation": {
+    "enabled": true
+  }
+}

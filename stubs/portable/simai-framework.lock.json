@@ -1,0 +1,153 @@
+{
+  "schema": "docara.framework_lock.v1",
+  "runtime": {
+    "schema": "larena.ui.frontend_runtime_lock.v3",
+    "runtime": "simai-framework",
+    "pair_id": "sf-v5.3.2-7e836d8a-dd786bba",
+    "bundle_id": "sf-v5.3.2-7e836d8a-dd786bba-registry-2c596327-verified-release-artifact-v1",
+    "publication_profile": "verified-release-artifact-v1",
+    "tag": "v5.3.2",
+    "ui": {
+      "tag": "v5.3.2",
+      "commit": "7e836d8a9414d5da553fb1ab0404721e5b48769a",
+      "tree": "distr",
+      "mount": "ui",
+      "sha256": "481eabfafc259ab71cd11aff19f9358cdbd2b6709f85e7e8c39620ce9cace8d7",
+      "files": 2596
+    },
+    "ui_smart": {
+      "tag": "v5.3.1",
+      "commit": "dd786bbae98391fb21df9b4e1e6cd402ead0614c",
+      "tree": "smart",
+      "mount": "smart",
+      "sha256": "1c2eacbc58f3deb1d351b11dfb5da6755502386bb1224554754477bc700c9262",
+      "files": 112
+    },
+    "framework_registry": {
+      "schema_id": "simai.framework.contract-registry",
+      "compatibility_id": "sf-v5.3.2-7e836d8a-dd786bba",
+      "profile": "plain-assets-v1",
+      "relative_path": "contract/contracts/generated/framework-contract-registry.json",
+      "file_sha256": "2c5963276d31af09770fe41cad04826c04b634f7b2d798d9b0e32864517346b7",
+      "source": {
+        "commit": "b7e8a2e810c0d49e31cb749a7ab34c373dd48bc6",
+        "tree": "contracts/generated",
+        "tree_oid": "ed200af53182334542b48fb7402e219068091bd4",
+        "mount": "contract",
+        "sha256": "0f915061c3664571f8ce522793ed7192889b8eb19e4c62490440926449a13f9b",
+        "files": 1
+      }
+    },
+    "boot": {
+      "css": "ui/distr/core/css/core.css",
+      "javascript": "ui/distr/core/js/core.js",
+      "smart_base": "ui/distr/core/js/smart-base.js",
+      "ui_base": "ui/distr/",
+      "smart_base_path": "smart/"
+    },
+    "components": {
+      "sf-icon": {
+        "source": "smart/icons",
+        "javascript": "smart/smart/icons/js/icons.js",
+        "css": null,
+        "attributes": ["icon", "size", "scheme", "aria-label", "id", "class"]
+      },
+      "sf-button": {
+        "source": "smart/buttons",
+        "javascript": "smart/smart/buttons/js/buttons.js",
+        "css": null,
+        "attributes": ["template", "size", "type", "scheme", "text", "icon", "icon-left", "icon-right", "icon-position", "text-position", "tightness", "radius", "root-class", "loading", "disabled", "native-type", "aria-label", "id", "class"]
+      },
+      "sf-table": {
+        "source": "smart/table",
+        "javascript": "smart/smart/table/js/table.js",
+        "css": "smart/smart/table/css/table.css",
+        "attributes": ["template", "root-class", "selectable", "settings", "actions", "aria-label", "id", "class"]
+      },
+      "sf-badge": {
+        "source": "smart/badges",
+        "javascript": "smart/smart/badges/js/badges.js",
+        "css": null,
+        "attributes": ["template", "size", "type", "scheme", "text", "icon", "icon-left", "icon-right", "icon-position", "aria-label", "id", "class"]
+      },
+      "sf-alert": {
+        "source": "smart/alert",
+        "javascript": "smart/smart/alert/js/alert.js",
+        "css": null,
+        "requires": ["sf-icon"],
+        "attributes": ["type", "variant", "icon", "title", "supporting-text", "action-text", "action", "secondary-action-text", "secondary-action", "closable", "aria-label", "id", "class"]
+      },
+      "sf-pagination": {
+        "source": "smart/pagination",
+        "javascript": "smart/smart/pagination/js/pagination.js",
+        "css": null,
+        "attributes": ["current", "total", "top", "main", "bottom", "top-class", "main-class", "bottom-class", "show-more-text", "page-sizes", "page-size-label", "actions", "action", "action-apply-text", "action-for-all-label", "aria-label", "id", "class"]
+      },
+      "sf-input": {
+        "source": "smart/inputs",
+        "javascript": "smart/smart/inputs/js/inputs.js",
+        "css": "smart/smart/inputs/css/inputs.css",
+        "attributes": ["template", "size", "type", "label", "required", "placeholder", "hint", "name", "value", "default-value", "input-type", "autocomplete", "left-icon", "right-text", "hint-icon", "disabled", "error", "min", "max", "step", "mask", "mask-pattern", "mask-options", "mask-placeholder-char", "aria-label", "id", "class"]
+      },
+      "sf-modal": {
+        "source": "smart/modal",
+        "javascript": "smart/smart/modal/js/modal.js",
+        "css": null,
+        "attributes": ["template", "modal-id", "title", "text", "open", "overlay", "display", "width", "height", "blur", "blur-type", "surface-padding", "src", "slot", "aria-label", "id", "class"]
+      },
+      "sf-textarea": {
+        "source": "smart/textarea",
+        "javascript": "smart/smart/textarea/js/textarea.js",
+        "css": null,
+        "attributes": ["template", "size", "type", "label", "required", "rows", "placeholder", "hint", "name", "value", "disabled", "error", "mask", "mask-pattern", "mask-options", "aria-label", "id", "class"]
+      },
+      "sf-dropdown": {
+        "source": "smart/dropdown",
+        "javascript": "smart/smart/dropdown/js/dropdown.js",
+        "css": null,
+        "attributes": ["template", "size", "type", "mode", "multiple", "portal", "value", "name", "label", "required", "placeholder", "search-placeholder", "search", "disabled", "aria-label", "id", "class"]
+      },
+      "sf-checkbox": {
+        "source": "smart/checkbox",
+        "javascript": "smart/smart/checkbox/js/checkbox.js",
+        "css": "smart/smart/checkbox/css/checkbox.css",
+        "attributes": ["size", "label", "description", "help", "position", "root-class", "checked", "disabled", "indeterminate", "name", "value", "error", "id", "class"]
+      }
+    }
+  },
+  "manifests": {
+    "ui.button": {
+      "provider": "larena/ui",
+      "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+      "sha256": "84f61a452422814ef4ca11e5c5787ba48cdb36e923466c6309a8d389b84576fb"
+    },
+    "ui.alert": {
+      "provider": "larena/ui",
+      "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+      "sha256": "699b79d012d8e8af9a55f013ff19bafbc421cd16ee37990cb5ff070a0b1f490f"
+    }
+  },
+  "asset_projection": {
+    "schema": "docara.framework_asset_projection.v1",
+    "mount": "_docara/framework",
+    "source": {
+      "provider": "simai/ui-smart",
+      "revision": "dd786bbae98391fb21df9b4e1e6cd402ead0614c"
+    },
+    "files": {
+      "smart/alert/js/alert.js": {
+        "sha256": "e994066dd2a7f9c4d15c573ea66bb47ccb0f12c24f4cf2e7dedee29eaddf9f1c"
+      },
+      "smart/buttons/js/buttons.js": {
+        "sha256": "fe977fc7c608b7bacb79b7641a302c30a6195659ac2351594ae5aef0656d0a27"
+      },
+      "smart/icons/js/icons.js": {
+        "sha256": "c810be681b51f98002e01fb8852e992e454fa607af005033f9cc10309016fa09"
+      }
+    }
+  },
+  "nonclaims": [
+    "production_ready",
+    "all_framework_components_ready"
+  ]
+}

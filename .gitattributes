@@ -3,3 +3,10 @@
 /.idea export-ignore
 /.gitmodules export-ignore
 /.gitignore export-ignore
+/source/workflow export-ignore
+/source/output export-ignore
+/source/handoff export-ignore
+/source/memory export-ignore
+resources/framework/runtime-lock.json -text
+resources/framework/manifests/*.json -text
+resources/framework/assets/** -text

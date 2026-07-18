@@ -10,6 +10,7 @@ use Illuminate\Support\Env;
 use Illuminate\Support\Str;
 use Illuminate\View\Factory;
 use Psr\Container\ContainerInterface;
+use Simai\Docara\Framework\FrameworkLock;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
 class Container extends Illuminate
@@ -163,8 +164,69 @@ class Container extends Illuminate
             : (array) $this->config;
 
         $this->instance('config', $config->merge($custom));
+        $this->applyPortableBootstrapConfiguration();
 
         setlocale(LC_ALL, 'en_US.UTF8');
+    }
+
+    /**
+     * Portable projects fail closed before the legacy SHA/rule bootstrap can
+     * fall back to a moving Framework reference.
+     */
+    private function applyPortableBootstrapConfiguration(): void
+    {
+        $sitePath = $this->path('docara.json');
+        if (! is_file($sitePath)) {
+            return;
+        }
+
+        try {
+            $site = json_decode((string) file_get_contents($sitePath), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $exception) {
+            throw new \RuntimeException('Portable docara.json is not valid JSON.', 0, $exception);
+        }
+
+        if (! is_array($site) || ($site['schema'] ?? null) !== 'docara.site.v1') {
+            throw new \RuntimeException('Portable docara.json must use schema [docara.site.v1].');
+        }
+
+        $relativeLock = $site['framework_lock'] ?? null;
+        if (! is_string($relativeLock) || ! $this->isSafePortableRelativePath($relativeLock)) {
+            throw new \RuntimeException('Portable docara.json must reference a safe relative framework_lock.');
+        }
+
+        $lockPath = $this->path(...explode('/', $relativeLock));
+        if (is_link($lockPath) || ! is_file($lockPath)) {
+            throw new \RuntimeException("Portable Framework lock [$relativeLock] was not found or is unsafe.");
+        }
+
+        $lock = FrameworkLock::fromJsonFile($lockPath);
+        $uiRevision = $lock->runtime()['ui']['commit'] ?? null;
+        if (! is_string($uiRevision) || preg_match('/^[a-f0-9]{40}$/', $uiRevision) !== 1) {
+            throw new \RuntimeException('Portable Framework lock does not contain an immutable UI revision.');
+        }
+
+        $this['config']->put('docara.portable', true);
+        $this['config']->put('docara.portable.sitePath', $sitePath);
+        $this['config']->put('docara.portable.frameworkLockPath', $lockPath);
+        $this['config']->put('docara.portable.frameworkLock', $lock->toArray());
+        $this['config']->put('skipShaFetch', true);
+        $this['config']->put('sha', $uiRevision);
+    }
+
+    private function isSafePortableRelativePath(string $path): bool
+    {
+        if ($path === '' || str_contains($path, "\0") || str_contains($path, '\\') || str_starts_with($path, '/')) {
+            return false;
+        }
+
+        foreach (explode('/', $path) as $segment) {
+            if ($segment === '' || $segment === '.' || $segment === '..') {
+                return false;
+            }
+        }
+
+        return preg_match('/^[A-Za-z]:/', $path) !== 1;
     }
 
     public function skipConfigLoading(bool $skip = true): void
@@ -266,7 +328,9 @@ class Container extends Illuminate
             }
         }
 
-        $url = Env::get('RULE_JSON_URL', $defaultUrl);
+        $url = $this['config']->get('docara.portable')
+            ? $defaultUrl
+            : Env::get('RULE_JSON_URL', $defaultUrl);
         $cachePath = $this->cachePath();
         $ttl = (int) Env::get('RULE_JSON_TTL', 900);
         $useModuleCache = filter_var(

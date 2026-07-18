@@ -9,6 +9,7 @@ use Illuminate\Support\Traits\Macroable;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Loaders\CollectionRemoteItemLoader;
 use Simai\Docara\Loaders\DataLoader;
+use Simai\Docara\PortableSite\PortableSiteBuilder;
 
 class Docara
 {
@@ -49,6 +50,10 @@ class Docara
 
     public function build($useCache = false): Docara
     {
+        if ((bool) $this->app->config->get('docara.portable', false)) {
+            return $this->buildPortable();
+        }
+
         $this->siteData = $this->dataLoader->loadSiteData($this->app->config);
         $this->ruleLoader->getRules();
 
@@ -58,6 +63,23 @@ class Docara
             ->buildSite($useCache)
             ->fireEvent('afterBuild')
             ->cleanup();
+    }
+
+    /**
+     * The portable JSON + Markdown mode is deliberately isolated from the
+     * legacy .settings.php/rule-loader pipeline. This keeps existing Docara
+     * projects byte-for-byte on their established build path.
+     */
+    protected function buildPortable(): Docara
+    {
+        $this->siteData = collect();
+        $this->pageInfo = $this->app->make(PortableSiteBuilder::class)->build(
+            $this->app->path(),
+            $this->getDestinationPath(),
+        );
+        $this->outputPaths = $this->pageInfo->keys();
+
+        return $this;
     }
 
     public static function registerCommand($command): void

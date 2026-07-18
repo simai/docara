@@ -32,13 +32,15 @@ final class PortableSiteBuilderTest extends TestCase
 
         $result = $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
-        self::assertCount(3, $result);
+        self::assertCount(7, $result);
         self::assertFileExists($this->tmpPath('build_local/index.html'));
         self::assertFileExists($this->tmpPath('build_local/guides/getting-started/index.html'));
+        self::assertFileExists($this->tmpPath('build_local/guides/platform/configuration/layout/index.html'));
         self::assertFileExists($this->tmpPath('build_local/landing/index.html'));
 
         $index = (string) file_get_contents($this->tmpPath('build_local/index.html'));
         $guide = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
+        $fourthLevel = (string) file_get_contents($this->tmpPath('build_local/guides/platform/configuration/layout/index.html'));
         $landing = (string) file_get_contents($this->tmpPath('build_local/landing/index.html'));
 
         self::assertStringContainsString('docara-docs-layout gap-3 p-3', $index);
@@ -52,23 +54,37 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringNotContainsString('<script id="unsafe">', $index);
         self::assertStringNotContainsString('alert(1)', $index);
 
-        foreach ([$index, $guide, $landing] as $html) {
+        foreach ([$index, $guide, $fourthLevel, $landing] as $html) {
             self::assertStringContainsString('theme-light', $html);
             self::assertStringContainsString('theme-dark', $html);
             self::assertStringContainsString('href="#docara-main">К содержанию</a>', $html);
             self::assertStringContainsString('id="docara-main" tabindex="-1"', $html);
-            self::assertStringContainsString('id="docara-theme-toggle"', $html);
-            self::assertStringContainsString('aria-live="polite"', $html);
-            self::assertStringContainsString("Переключить на '+actions[next]+' тему", $html);
-            self::assertStringNotContainsString('aria-pressed', $html);
-            self::assertStringContainsString('.docara-theme-toggle:focus-visible', $html);
+            self::assertStringContainsString('class="sf-theme-button ', $html);
+            self::assertStringContainsString('data-docara-theme-button', $html);
+            self::assertStringContainsString('<sf-icon icon="contrast" aria-hidden="true"></sf-icon>', $html);
+            self::assertStringContainsString('data-docara-shell-controller', $html);
+            self::assertStringContainsString('.sf-theme-button:focus-visible', $html);
             self::assertStringContainsString('sf-button>button:focus-visible', $html);
             self::assertStringContainsString('@7e836d8a9414d5da553fb1ab0404721e5b48769a/', $html);
             self::assertStringNotContainsString('simai/ui-smart@', $html);
             self::assertStringContainsString('window.sfSmartPath="/_docara/framework"', $html);
             self::assertStringContainsString('/distr/fonts/MaterialSymbols-Outlined.woff2', $html);
             self::assertDoesNotMatchRegularExpression('~@(?:main|master|latest)(?:/|$)~i', $html);
+            self::assertStringContainsString('class="docara-brand-logo docara-brand-logo--light"', $html);
+            self::assertStringContainsString('<link rel="icon" href="/_docara/brand/', $html);
         }
+        self::assertStringContainsString('id="docara-mobile-navigation"', $guide);
+        self::assertStringContainsString('data-docara-navigation-depth="4"', $fourthLevel);
+        self::assertStringContainsString('<sf-icon icon="expand_less" aria-hidden="true"></sf-icon>', $fourthLevel);
+        self::assertStringContainsString('href="/guides/platform/configuration/layout/" aria-current="page"', $fourthLevel);
+        self::assertGreaterThanOrEqual(3, substr_count($fourthLevel, ' expanded aria-expanded="true"'));
+
+        $brandAssets = glob($this->tmpPath('build_local/_docara/brand/*')) ?: [];
+        self::assertCount(1, $brandAssets, 'Identical logo, dark logo and favicon bytes must be deduplicated.');
+        self::assertSame(
+            hash_file('sha256', $this->tmpPath('assets/docara-mark.svg')),
+            hash_file('sha256', $brandAssets[0]),
+        );
 
         foreach ([
             'smart/alert/js/alert.js' => 'e994066dd2a7f9c4d15c573ea66bb47ccb0f12c24f4cf2e7dedee29eaddf9f1c',
@@ -86,7 +102,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertDoesNotMatchRegularExpression('/"navigation":\s*\[\]/', $diagnosticJson);
         $diagnostics = $this->jsonFile($diagnosticPath);
         self::assertSame('docara.resolved_page_plans.v1', $diagnostics['schema']);
-        self::assertCount(3, $diagnostics['pages']);
+        self::assertCount(7, $diagnostics['pages']);
         $guidePlan = collect($diagnostics['pages'])->firstWhere('output', 'guides/getting-started/index.html');
         self::assertIsArray($guidePlan);
         self::assertSame(1, $guidePlan['resolved_page_plan']['contract_version']);
@@ -143,19 +159,17 @@ final class PortableSiteBuilderTest extends TestCase
 
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
         $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
-        self::assertSame(1, preg_match(
-            '/<nav class="flex flex-col gap-1"[^>]*>(.*?)<\/nav>/s',
-            $html,
-            $navigation,
-        ));
-        self::assertSame(5, preg_match_all('/href="([^"]+)"/', $navigation[1], $links));
         self::assertSame([
-            '/guides/getting-started/',
             '/',
             '/reference/',
+            '/guides/',
+            '/guides/getting-started/',
             '/guides/advanced/',
             '/guides/basics/',
-        ], $links[1]);
+            '/guides/platform/',
+            '/guides/platform/configuration/',
+            '/guides/platform/configuration/layout/',
+        ], $this->desktopNavigationLinks($html));
 
         $diagnostics = $this->jsonFile($this->tmpPath('build_local/.docara/resolved-page-plans.json'));
         $orders = [];
@@ -192,21 +206,15 @@ final class PortableSiteBuilderTest extends TestCase
 
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
         $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
-        self::assertSame(1, preg_match(
-            '/<nav class="flex flex-col gap-1"[^>]*>(.*?)<\/nav>/s',
-            $html,
-            $navigation,
-        ));
-        self::assertSame(7, preg_match_all('/href="([^"]+)"/', $navigation[1], $links));
         self::assertSame([
             '/first/',
             '/',
-            '/guides/getting-started/',
+            '/guides/',
             '/middle/',
             '/later/',
             '/z-explicit-max/',
             '/a-unspecified/',
-        ], $links[1]);
+        ], $this->desktopNavigationLinks($html, topLevelOnly: true));
     }
 
     #[Test]
@@ -229,9 +237,11 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertSame(0, $build->getExitCode(), $build->getErrorOutput() . $build->getOutput());
         self::assertFileExists($site . '/build_local/index.html');
         self::assertFileExists($site . '/build_local/guides/getting-started/index.html');
+        self::assertFileExists($site . '/build_local/guides/platform/configuration/layout/index.html');
         self::assertFileExists($site . '/build_local/landing/index.html');
         self::assertFileExists($site . '/build_local/.docara/resolved-page-plans.json');
         self::assertFileExists($site . '/build_local/_docara/framework/smart/alert/js/alert.js');
+        self::assertCount(1, glob($site . '/build_local/_docara/brand/*') ?: []);
     }
 
     #[Test]
@@ -275,6 +285,7 @@ MD;
             'window.sfSmartPath="/project~/docs/_docara/framework"',
             $html,
         );
+        self::assertStringContainsString('href="/project~/docs/_docara/brand/', $html);
         $diagnostics = (string) file_get_contents(
             $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
         );
@@ -283,6 +294,94 @@ MD;
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework/smart/alert/js/alert.js'));
+    }
+
+    #[Test]
+    public function page_and_directory_nodes_merge_and_repeated_segments_keep_their_links(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('content/foo/foo'));
+        file_put_contents($this->tmpPath('content/foo.md'), "# Первый Foo\n");
+        file_put_contents($this->tmpPath('content/foo/foo/index.md'), "# Второй Foo\n");
+        file_put_contents($this->tmpPath('content/foo/foo/deep.md'), "# Глубокая страница\n");
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        $html = (string) file_get_contents($this->tmpPath('build_local/foo/foo/deep/index.html'));
+
+        $links = $this->desktopNavigationLinks($html);
+        self::assertSame(1, count(array_keys($links, '/foo/', true)));
+        self::assertSame(1, count(array_keys($links, '/foo/foo/', true)));
+        self::assertContains('/foo/foo/deep/', $links);
+        self::assertStringContainsString('data-docara-navigation-depth="3"', $html);
+        self::assertStringContainsString('href="/foo/foo/deep/" aria-current="page"', $html);
+    }
+
+    #[Test]
+    public function brand_asset_failures_are_controlled_and_do_not_clean_existing_output(): void
+    {
+        foreach (['missing', 'unsupported', 'oversized', 'build-source'] as $case) {
+            $siteRoot = $this->tmpPath('brand-' . $case);
+            $this->copyPortableFixture($siteRoot);
+            $this->filesystem->ensureDirectoryExists($siteRoot . '/build_local');
+            file_put_contents($siteRoot . '/build_local/sentinel.txt', 'keep-output');
+            $site = $this->jsonFile($siteRoot . '/docara.json');
+
+            if ($case === 'missing') {
+                $site['branding']['logo'] = 'assets/missing.svg';
+                $expected = 'BRAND_ASSET_NOT_FOUND';
+            } elseif ($case === 'unsupported') {
+                file_put_contents($siteRoot . '/assets/logo.txt', 'not-an-image');
+                $site['branding']['logo'] = 'assets/logo.txt';
+                $expected = 'BRAND_ASSET_TYPE_FORBIDDEN';
+            } elseif ($case === 'oversized') {
+                file_put_contents($siteRoot . '/assets/large.svg', str_repeat('x', 2097153));
+                $site['branding']['logo'] = 'assets/large.svg';
+                $expected = 'BRAND_ASSET_TOO_LARGE';
+            } else {
+                file_put_contents($siteRoot . '/build_local/logo.svg', '<svg xmlns="http://www.w3.org/2000/svg"/>');
+                $site['branding']['logo'] = 'build_local/logo.svg';
+                $expected = 'BRAND_ASSET_PATH_INVALID';
+            }
+            file_put_contents(
+                $siteRoot . '/docara.json',
+                json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+            );
+
+            try {
+                $this->builder()->build($siteRoot, $siteRoot . '/build_local');
+                self::fail("Unsafe brand asset case [$case] unexpectedly passed.");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($expected, $exception->errorCode);
+            }
+            self::assertSame('keep-output', file_get_contents($siteRoot . '/build_local/sentinel.txt'));
+        }
+    }
+
+    #[Test]
+    public function symbolic_link_brand_assets_fail_before_existing_output_is_cleaned(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $outside = $this->tmpPath('outside-logo.svg');
+        file_put_contents($outside, '<svg xmlns="http://www.w3.org/2000/svg"/>');
+        if (! @symlink($outside, $this->tmpPath('assets/link.svg'))) {
+            self::markTestSkipped('Symbolic links are not supported by this test environment.');
+        }
+        $site = $this->jsonFile($this->tmpPath('docara.json'));
+        $site['branding']['logo'] = 'assets/link.svg';
+        file_put_contents(
+            $this->tmpPath('docara.json'),
+            json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('build_local'));
+        file_put_contents($this->tmpPath('build_local/sentinel.txt'), 'keep-output');
+
+        try {
+            $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+            self::fail('A symbolic-link brand asset unexpectedly passed.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('BRAND_ASSET_SYMLINK_FORBIDDEN', $exception->errorCode);
+        }
+        self::assertSame('keep-output', file_get_contents($this->tmpPath('build_local/sentinel.txt')));
     }
 
     #[Test]
@@ -413,6 +512,28 @@ MD;
     private function jsonFile(string $path): array
     {
         return json_decode((string) file_get_contents($path), true, flags: JSON_THROW_ON_ERROR);
+    }
+
+    /** @return list<string> */
+    private function desktopNavigationLinks(string $html, bool $topLevelOnly = false): array
+    {
+        $document = new \DOMDocument;
+        $previous = libxml_use_internal_errors(true);
+        $document->loadHTML($html, LIBXML_NOERROR | LIBXML_NOWARNING);
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+        $xpath = new \DOMXPath($document);
+        $query = $topLevelOnly
+            ? '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]/nav/ul/li/div/*[@data-docara-menu-link]'
+            : '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]//*[@data-docara-menu-link]';
+        $links = [];
+        foreach ($xpath->query($query) ?: [] as $node) {
+            if ($node instanceof \DOMElement) {
+                $links[] = $node->getAttribute('href');
+            }
+        }
+
+        return $links;
     }
 
     /** @return array<string, string> */

@@ -21,6 +21,8 @@ class PortableInitCommandTest extends TestCase
         $this->assertFileExists($this->tmpPath('simai-framework.lock.json'));
         $this->assertFileExists($this->tmpPath('content/guides/getting-started.md'));
         $this->assertFileExists($this->tmpPath('content/guides/getting-started.page.json'));
+        $this->assertFileExists($this->tmpPath('content/guides/platform/configuration/layout.md'));
+        $this->assertFileExists($this->tmpPath('assets/docara-mark.svg'));
         $this->assertFileExists($this->tmpPath('content/index.page.json'));
         $this->assertFileExists($this->tmpPath('content/landing.md'));
         $this->assertFileExists($this->tmpPath('content/landing.page.json'));
@@ -49,6 +51,10 @@ class PortableInitCommandTest extends TestCase
         $lock = $this->json('simai-framework.lock.json');
 
         $this->assertSame('docara.site.v1', $site['schema']);
+        $this->assertSame('Docara', $site['branding']['title']);
+        $this->assertSame('assets/docara-mark.svg', $site['branding']['logo']);
+        $this->assertSame('assets/docara-mark.svg', $site['branding']['logo_dark']);
+        $this->assertSame('assets/docara-mark.svg', $site['branding']['favicon']);
         $this->assertSame('docara.section.v1', $rootSection['schema']);
         $this->assertSame('docara.section.v1', $nestedSection['schema']);
         $this->assertSame('docara.page.v1', $indexPage['schema']);

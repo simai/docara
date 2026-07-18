@@ -53,10 +53,15 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame('docs/install', $plan->configuration['slug']);
         self::assertSame('full', $plan->configuration['layout']['max_width']);
         self::assertSame('dark', $plan->configuration['settings']['theme']);
+        self::assertSame('Portable brand', $plan->configuration['branding']['title']);
+        self::assertSame('Deep documentation', $plan->configuration['branding']['label']);
+        self::assertSame('assets/logo.svg', $plan->configuration['branding']['logo']);
         self::assertTrue($plan->configuration['navigation']['hidden']);
         self::assertSame(5, $plan->configuration['navigation']['order']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/layout/max_width']);
         self::assertSame('content/docs/deep/_section.json', $plan->provenance['/settings/theme']);
+        self::assertSame('docara.json', $plan->provenance['/branding/logo']);
+        self::assertSame('content/docs/deep/_section.json', $plan->provenance['/branding/label']);
         self::assertSame('content/docs/_section.json', $plan->provenance['/navigation/hidden']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/navigation/order']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/preset']);
@@ -236,18 +241,27 @@ final class PortableConfigurationTest extends TestCase
                 'layout' => ['max_width' => 'wide'],
                 'settings' => ['theme' => 'system'],
                 'navigation' => ['hidden' => false, 'order' => 2147483647],
+                'branding' => [
+                    'title' => 'Product',
+                    'label' => 'Docs',
+                    'logo' => 'assets/logo.svg',
+                    'logo_dark' => 'assets/logo-dark.svg',
+                    'favicon' => 'assets/favicon.ico',
+                ],
             ]],
             ['section.schema.json', [
                 'schema' => 'docara.section.v1',
                 'layout' => ['$reset' => true, 'max_width' => 'compact'],
                 'settings' => ['theme' => 'dark'],
                 'navigation' => ['hidden' => true, 'order' => 20],
+                'branding' => ['$reset' => true, 'title' => 'Section product'],
             ]],
             ['page.schema.json', [
                 'schema' => 'docara.page.v1',
                 'layout' => ['max_width' => 'full'],
                 'settings' => ['$reset' => true, 'theme' => 'light'],
                 'navigation' => ['$reset' => true, 'order' => 5],
+                'branding' => ['label' => 'Reference'],
             ]],
         ] as [$schema, $descriptor]) {
             (new SchemaRepository)->assertValid($descriptor, $schema);
@@ -270,6 +284,12 @@ final class PortableConfigurationTest extends TestCase
             [['schema' => 'docara.page.v1', 'navigation' => ['order' => -1]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'navigation' => ['order' => 2147483648]], 'page.schema.json'],
             [['schema' => 'docara.section.v1', 'navigation' => ['order' => '10']], 'section.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['unknown' => true]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['title' => '']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['label' => '']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['logo' => '/absolute/logo.svg']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['logo' => '../logo.svg']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['logo' => 'assets\\logo.svg']], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'components' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'variables' => []], 'page.schema.json'],
         ] as [$descriptor, $schema]) {
@@ -280,6 +300,21 @@ final class PortableConfigurationTest extends TestCase
                 self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
             }
         }
+    }
+
+    public function test_branding_reset_clears_inherited_assets_and_records_new_provenance(): void
+    {
+        $this->writeJson('content/docs/deep/install.page.json', [
+            'schema' => 'docara.page.v1',
+            'branding' => ['$reset' => true, 'title' => 'Page brand'],
+        ]);
+
+        $plan = (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+
+        self::assertSame(['title' => 'Page brand'], $plan->configuration['branding']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/branding/title']);
+        self::assertArrayNotHasKey('/branding/logo', $plan->provenance);
+        self::assertArrayNotHasKey('/branding/label', $plan->provenance);
     }
 
     public function test_moving_framework_references_are_rejected(): void
@@ -474,6 +509,12 @@ final class PortableConfigurationTest extends TestCase
             'settings' => [
                 'theme' => 'system',
             ],
+            'branding' => [
+                'title' => 'Portable brand',
+                'logo' => 'assets/logo.svg',
+                'logo_dark' => 'assets/logo-dark.svg',
+                'favicon' => 'assets/favicon.svg',
+            ],
             'navigation' => [
                 'hidden' => false,
             ],
@@ -494,6 +535,7 @@ final class PortableConfigurationTest extends TestCase
         $this->writeJson('content/docs/deep/_section.json', [
             'schema' => 'docara.section.v1',
             'settings' => ['theme' => 'dark'],
+            'branding' => ['label' => 'Deep documentation'],
         ]);
         $this->write('content/docs/deep/install.md', "# Install\n\nPortable content.\n");
         $this->writeJson('content/docs/deep/install.page.json', [

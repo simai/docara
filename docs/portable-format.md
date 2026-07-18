@@ -44,12 +44,17 @@ presentation object beginning with `{"$reset": true}` clears that inherited
 branch before applying its sibling keys. Every winning value records its source
 in `provenance`.
 
-Version 1 deliberately exposes only settings that both presets actually use:
+Version 1 exposes only settings with a working renderer, validation, tests and
+documentation:
 
+- `branding.title` and optional `branding.label`;
+- `branding.logo`, `branding.logo_dark` and `branding.favicon`: root-relative
+  image paths;
 - `layout.max_width`: `compact`, `normal`, `wide`, or `full`;
 - `settings.theme`: `system`, `light`, or `dark`;
 - `navigation.hidden`: a boolean that removes the page from generated
-  navigation.
+  navigation;
+- `navigation.order`: a non-negative stable sibling order.
 
 These nested objects are strict. Unknown or incorrectly typed keys fail schema
 validation instead of becoming silent no-ops. Smart-components are authored
@@ -59,11 +64,21 @@ only inside Markdown; JSON descriptors do not provide a second component list.
 
 Version 1 contains two presentation presets:
 
-- `docs` — header, navigation and readable content column;
+- `docs` — branded header, sticky hierarchical navigation and readable content
+  column;
 - `landing` — a focused page without documentation navigation.
 
 Presets are render recipes, not different content types. A page changes preset
 through its sidecar and keeps the same Markdown and component-call syntax.
+
+The docs tree is derived from Markdown source paths, not public slugs. A page
+such as `guides.md` or `guides/index.md` is merged with the `guides/` directory
+into one linked branch. Directories without an overview page remain
+disclosure-only groups. The semantic tree has no depth cap; the shipped fixture
+and pinned Core `.sf-menu` acceptance prove four visible levels. Active links
+use `aria-current`, their ancestors open automatically, and mobile navigation
+uses a collapsed native disclosure instead of placing the entire tree before
+the article.
 
 ## Markdown extensions
 
@@ -148,6 +163,9 @@ the same lock produce byte-identical output.
 - component output is rendered by the host adapter with escaped scalar props;
 - page slugs and `base_url` use a portable path alphabet;
 - `_docara` and `.docara` are reserved output namespaces;
+- brand assets reject absolute/traversal/build/reserved paths, symbolic links,
+  unsupported image types and files over 2 MiB before destination cleanup;
+- accepted brand bytes are content-addressed and SHA-256 verified after copy;
 - the builder only cleans a direct `build` or `build_*` directory inside the
   site root, never a symlink or a path overlapping content/lock inputs;
 - generated-page and content-asset output collisions fail before cleaning an

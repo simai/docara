@@ -6,6 +6,13 @@
   "framework_lock": "simai-framework.lock.json",
   "default_locale": "ru",
   "base_url": "/",
+  "branding": {
+    "title": "Docara",
+    "label": "Документация",
+    "logo": "assets/docara-mark.svg",
+    "logo_dark": "assets/docara-mark.svg",
+    "favicon": "assets/docara-mark.svg"
+  },
   "layout": {
     "max_width": "wide"
   },

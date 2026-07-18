@@ -1,9 +1,6 @@
 {
   "schema": "docara.section.v1",
   "title": "Содержание и макет",
-  "navigation": {
-    "hidden": true
-  },
   "layout": {
     "max_width": "normal"
   }

@@ -3,8 +3,8 @@
 Date: 2026-07-18
 Status: in progress
 Process model: `general_delivery`
-Current state: `repository_prepared`
-Target state: `ready_to_code`
+Current state: `tests_recorded`
+Target state: `tests_recorded`
 Owner: `docara`
 Companions: `sf5`, `ux`, `designer`, `docs`, `dev`, `tester`, `ops`
 Memory decision: `inject`
@@ -496,3 +496,32 @@ The first implementation batch is bounded to the `docs` shell vertical slice:
 Release, mirror publication, consumer default-branch migration and
 `docara-mix` retirement remain separate gated work after the corrected product
 candidate passes acceptance.
+
+## First Vertical Implementation Status
+
+Implementation is complete and awaiting independent acceptance on an exact
+candidate commit.
+
+- Batch 0: completed — clean technical base, workflow, component decision,
+  action gate and rollback plan.
+- Batch 1: completed — unrestricted semantic tree, real four-level starter and
+  documentation fixtures, active trail, direct links and disclosures.
+- Batch 2: completed — inherited branding, safe content-addressed asset
+  publication, desktop rail, mobile disclosure and pinned Framework theme/icon
+  contracts.
+- Browser acceptance: PASS for desktop, mobile 390 px, light/dark, keyboard
+  Enter, Escape/focus return, no overflow and a clean final runtime log.
+- Local ServBay publication: PASS with exact matching digest and three preserved
+  rollback points.
+- Independent UX/design and tester verdicts: pending exact candidate commit.
+
+Evidence:
+
+- `source/workflow/evidence/2026-07-18-docara-product-ui-restoration/implementation-verification.md`
+- `source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md`
+- `source/workflow/evidence/2026-07-18-docara-product-ui-restoration/local-deployment-and-rollback.md`
+
+The current goal may close after exact candidate acceptance. The broader track
+remains active: Batch 3 (search, right TOC, breadcrumbs, previous/next and
+reading settings), Batch 4 (landing/component system), and final product-level
+Batch 5 acceptance are intentionally not claimed by this vertical.

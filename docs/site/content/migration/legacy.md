@@ -20,3 +20,23 @@ Legacy Docara хранит контент в `source/<DOCS_DIR>`, настрой
 Collections, Blade, PHP callbacks, Azure translation и произвольные custom tags
 не имеют автоматического эквивалента в portable v1. Их нужно оценивать
 отдельно, а не переносить как скрытые no-op поля.
+
+## Бренд и навигация
+
+| Legacy `config.php` | Portable JSON |
+| --- | --- |
+| `siteName` | `title` как совместимый текстовый fallback |
+| `brand.title` | `branding.title` |
+| `brand.logoSvg` | сохраните SVG отдельным файлом и укажите `branding.logo` |
+| `brand.favicon` | `branding.favicon` |
+| отдельный тёмный логотип | `branding.logo_dark` |
+| callback `getMenu` | дерево автоматически строится из структуры Markdown |
+
+Сначала сохраните inline `logoSvg` в корневом `assets/logo.svg`; произвольный
+SVG-код больше не вставляется в шаблон. Старое рекурсивное меню переносить не
+нужно: создайте соответствующие каталоги, страницы-разделы и `_section.json`
+с `title`/`navigation.order`.
+
+Search, правый TOC, breadcrumbs, previous/next, locale/version switch и
+`socialImage` пока не имеют принятых portable-полей. Их нельзя переносить как
+неработающие настройки: они входят в следующие продуктовые вертикали.

@@ -20,6 +20,8 @@ composer.lock
 vendor/              # локальные PHP-зависимости; не часть starter/mirror
 docara.json
 simai-framework.lock.json
+assets/
+  docara-mark.svg
 content/
   _section.json
   index.md
@@ -28,14 +30,26 @@ content/
   landing.page.json
   guides/
     _section.json
+    index.md
     getting-started.md
     getting-started.page.json
+    platform/
+      _section.json
+      index.md
+      configuration/
+        _section.json
+        index.md
+        layout.md
 ```
 
 ## Измените первую страницу
 
 Откройте `content/index.md`, измените заголовок или текст и повторите сборку.
 Настройки страницы можно вынести в соседний `index.page.json`.
+
+Готовый starter уже содержит логотип и настоящее дерево из четырёх уровней.
+Измените `branding` в `docara.json` и структуру `content/`, чтобы получить свой
+макет без правки PHP-шаблонов.
 
 Дальше прочитайте [модель файлов](/authoring/project-files/) и
 [настройки сайта](/authoring/configuration/).

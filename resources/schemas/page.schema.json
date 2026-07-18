@@ -32,6 +32,9 @@
             "type": "string",
             "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
         },
+        "branding": {
+            "$ref": "presentation.schema.json#/$defs/branding"
+        },
         "layout": {
             "$ref": "presentation.schema.json#/$defs/layout"
         },

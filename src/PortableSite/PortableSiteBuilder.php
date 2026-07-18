@@ -87,18 +87,24 @@ final readonly class PortableSiteBuilder
             ];
         }
 
-        $navigation = $this->navigation($pages);
+        $navigationBuilder = new PortableNavigationBuilder;
+        $navigation = $navigationBuilder->build($pages, $contentRoot, $contentPath);
         $contentAssets = $this->contentAssets($contentPath, array_keys($outputs));
-        $this->prepareDestination($root, $destination);
         $siteTitle = (string) ($site['title'] ?? 'Docara');
+        $brandPublisher = new PortableBrandAssetPlanner($this->files);
+        $brandPlan = $brandPublisher->plan(
+            $root,
+            $pages,
+            (string) ($site['base_url'] ?? '/'),
+            $siteTitle,
+        );
+        $this->prepareDestination($root, $destination);
         $result = collect();
         $diagnostics = [];
 
-        foreach ($pages as $page) {
-            $activeNavigation = array_map(
-                static fn (array $item): array => $item + ['active' => $item['url'] === $page['url']],
-                $navigation,
-            );
+        foreach ($pages as $pageIndex => $page) {
+            $page['branding'] = $brandPlan['pages'][$pageIndex];
+            $activeNavigation = $navigationBuilder->activate($navigation, (string) $page['url']);
             $outputPath = rtrim($destination, '/\\') . '/' . $page['output'];
             $this->files->ensureDirectoryExists(dirname($outputPath));
             $rendered = $this->html->render($page, $activeNavigation, $siteTitle, $page['components']->assetPlan);
@@ -118,6 +124,7 @@ final readonly class PortableSiteBuilder
         }
 
         $this->copyContentAssets($contentAssets, $destination);
+        $brandPublisher->publish($brandPlan['assets'], $destination);
         /** @var ResolvedPagePlan $firstPlan */
         $firstPlan = $pages[0]['plan'];
         $this->publishFrameworkAssets($firstPlan->frameworkLock, $destination);
@@ -260,45 +267,6 @@ final readonly class PortableSiteBuilder
         $base = trim($baseUrl, '/');
 
         return $base === '' ? '/' : '/' . $base . '/';
-    }
-
-    /** @param list<array<string, mixed>> $pages @return list<array<string, string>> */
-    private function navigation(array $pages): array
-    {
-        $items = [];
-        foreach ($pages as $page) {
-            if ($page['navigation_hidden'] === true) {
-                continue;
-            }
-            $items[] = [
-                'title' => (string) $page['title'],
-                'url' => (string) $page['url'],
-                'order' => $page['navigation_order'] === null ? null : (int) $page['navigation_order'],
-            ];
-        }
-        usort($items, static function (array $left, array $right): int {
-            $leftIsUnspecified = $left['order'] === null;
-            $rightIsUnspecified = $right['order'] === null;
-            if ($leftIsUnspecified !== $rightIsUnspecified) {
-                return $leftIsUnspecified ? 1 : -1;
-            }
-            if ($left['order'] !== $right['order']) {
-                return $left['order'] <=> $right['order'];
-            }
-            if ($left['url'] === '/') {
-                return -1;
-            }
-            if ($right['url'] === '/') {
-                return 1;
-            }
-
-            return strcmp($left['url'], $right['url']);
-        });
-
-        return array_map(
-            static fn (array $item): array => ['title' => $item['title'], 'url' => $item['url']],
-            $items,
-        );
     }
 
     private function prepareDestination(string $root, string $destination): void

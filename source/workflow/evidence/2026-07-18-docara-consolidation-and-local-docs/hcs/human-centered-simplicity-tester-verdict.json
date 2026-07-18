@@ -8,26 +8,20 @@
     "identity": "docara_hcs_audit"
   },
   "scope_binding": {
-    "task_sha256": "b001c55119936b21d9cce24907eeb258c23148211ce47d877fae4f1b473cb9c0",
-    "review_payload_sha256": "3d7a117158021ff7cdc241479208f0a55ab849705e5250aa43a2d5c0bd97deed",
-    "workflow_ref": "repo://docara-consolidation/source/workflow/2026-07-18-docara-consolidation-and-local-docs.md",
-    "workflow_sha256": "e40beb79746ca88301bb698bc24b28f7c31af1e579cc0ab7f89b7b397319b30c",
+    "task_sha256": "90b62c023e9b3c8b485038f7894eeabce91dd1c3cc403180f4d75de10d41dc42",
+    "review_payload_sha256": "ed53a4c8bcdfd8b9217318792aad075dd5a3033ecb79454343de4121900ef0e3",
+    "workflow_ref": "",
+    "workflow_sha256": "",
     "repository_refs": [
       "repo://docara-consolidation"
     ],
-    "repository_baselines": [
-      {
-        "repo_ref": "repo://docara-consolidation",
-        "commit_sha": "725f22b9996b84640a115be63b86be57802477c5"
-      }
-    ]
+    "repository_baselines": []
   },
   "status": "VERIFIED",
   "reviewed_surface_ids": [
     "portable_quick_start",
     "quick_start_false_affordance",
-    "button_demo",
-    "generated_output_ignore_rule"
+    "button_demo"
   ],
   "surface_classifications": [
     {
@@ -47,24 +41,13 @@
       "classification": "ordinary",
       "protected_categories": [],
       "evidence_ref": "docs/site/content/components/button.md"
-    },
-    {
-      "surface_id": "generated_output_ignore_rule",
-      "classification": "ordinary",
-      "protected_categories": [],
-      "evidence_ref": ".gitignore"
     }
   ],
   "evidence_paths": [
-    ".gitignore",
     "docs/site/content/components/button.md",
     "docs/site/content/start.md"
   ],
   "evidence_fingerprints": [
-    {
-      "path": ".gitignore",
-      "sha256": "e541133e32f5b4593255273b63b4558a45c3740ce003222786560b4d54c903c9"
-    },
     {
       "path": "docs/site/content/components/button.md",
       "sha256": "6524496022e435c67c1f2d3b0e888430ac83d0095d615728153ef904e529f8b0"
@@ -75,13 +58,6 @@
     }
   ],
   "commands": [
-    {
-      "command": "git show 4a312c1b14cf1e0ed0ad77d32e39b006b2ff9049:.gitignore",
-      "exit_code": 0,
-      "result": "PASS",
-      "output_ref": ".gitignore",
-      "output_sha256": "e541133e32f5b4593255273b63b4558a45c3740ce003222786560b4d54c903c9"
-    },
     {
       "command": "git show 4a312c1b14cf1e0ed0ad77d32e39b006b2ff9049:docs/site/content/start.md",
       "exit_code": 0,

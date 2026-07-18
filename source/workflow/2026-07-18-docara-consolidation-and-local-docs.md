@@ -262,6 +262,11 @@ release, production, ecosystem, consumer-migration, or retirement readiness.
 - The review must prefer one canonical source, a small authoring surface,
   visible blockers, and examples that explain user intent rather than build
   internals.
+- Exact-candidate HCS review is PASS in artifact-comparison mode. The central
+  checker cannot currently bind that mode to this carrier workflow: it both
+  requires a non-empty Git baseline and forbids artifact comparison whenever
+  such a baseline exists. The immutable exact-candidate verdict is retained;
+  the workflow-binding policy gap is recorded without fabricating a PASS.
 
 ## Incident Recovery
 

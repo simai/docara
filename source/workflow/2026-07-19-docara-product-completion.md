@@ -213,8 +213,8 @@ Do not complete the Goal until:
 ## Current Remaining
 
 - Milestones remaining: 4 of 5.
-- Batches remaining: 8 of 10.
-- Active batch: Batch 2.
+- Batches remaining: 7 of 10.
+- Active batch: Batch 3.
 - Goal status: `in-progress`.
 
 ## Do Not Complete Until
@@ -243,11 +243,12 @@ Do not complete the Goal until:
 
 | ID | Role | Scope | Write scope | Status | Integration gate |
 | --- | --- | --- | --- | --- | --- |
-| `WS-CORE-01` | Docara owner | workflow, current renderer/menu reproduction and critical path | this worktree | Batch 1 implementation complete, gates pending | root integration review |
+| `WS-CORE-01` | Docara owner | workflow, current renderer/menu reproduction and critical path | this worktree | Batch 1 accepted and published locally | Batch 1 exact tester, UX/design and publication PASS |
 | `WS-UX-01` | UX/designer review | official-platform comparison and bounded menu/product shell gate | none | Batch 1 PASS | `batch-1-ux-design-verdict.md` |
 | `WS-SF5-01` | `/root/smart_component_inventory` | pinned utilities/components/Smart-components for menu, search, TOC, settings, landing and catalogue | none | completed | `framework-building-block-map.md` |
 | `WS-DOCS-01` | `/root/docs_catalog_audit` | Retype-style component capability inventory and Docara docs coverage/map | none | completed | `product-capability-matrix.yaml` and catalogue/docs decision |
-| `WS-SEARCH-02` | Docara owner | deterministic local search, schema, runtime, verifier and documentation | this worktree | implementation complete, exact gates pending | Batch 2 tester plus UX/designer verdicts |
+| `WS-SEARCH-02` | Docara owner | deterministic local search, schema, runtime, verifier and documentation | this worktree | accepted and published locally | Batch 2 exact tester, HCS, UX/designer and publication PASS |
+| `WS-READING-03` | Docara owner with UX/designer | breadcrumbs, page outline and previous/next navigation from one navigation tree | this worktree | active | Batch 3 tests, exact UX/design and tester verdicts |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -338,10 +339,11 @@ was discovered.
 
 ## Next Safe Batch
 
-Implement Batch 2 test-first from accepted candidate `d4ce688b…`:
-deterministic local search derived from published content, with a canonical
-local index, Framework presentation, keyboard/mobile behavior and no external
-runtime service. Batch 1 is already published locally with rollback evidence.
+Implement Batch 3 test-first from accepted candidate `df82a5fa…`: derive
+breadcrumbs, the current-page outline and previous/next navigation from the
+same canonical navigation/content plans. Use native semantics and exact pinned
+Simai Framework primitives, keep the right outline compact on narrow screens,
+and add inherited fail-closed configuration without a second registry.
 
 ## Last Completed Batch
 
@@ -354,3 +356,12 @@ product stages or the whole Goal. The matching build is served at
 `docara.test`; source, staging and served tree digest
 `e14c35e5852e2ec44375d22621d6fe704b8270ec2eb5cf45cb6f262dc0cd5530`
 matches, and the previous tree remains available for rollback.
+
+Batch 2 deterministic local search is accepted on candidate
+`df82a5fa82a96263c3f8af4e900a9c5a665f9412` (tree
+`224e9acf512ec8d53f50a6275a594423e34ddf3c`). Exact tester, HCS/source and
+UX/designer/browser gates returned bounded PASS. The verified build is served
+at `docara.test`; source, staging and served tree digest
+`81945efbe610a54986586a2a61f16e64556528e235596fb016330923f450fd1f`
+matches, while the Batch 1 tree remains preserved for rollback. This does not
+accept Batch 3 or the wider Goal.

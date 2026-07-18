@@ -1,7 +1,8 @@
 # Batch 2 — deterministic local search implementation
 
-Status: corrected implementation complete, independent exact-candidate
-reacceptance pending.
+Status: `PASS` for corrected candidate
+`df82a5fa82a96263c3f8af4e900a9c5a665f9412`; independently accepted and
+published to the local test site with rollback evidence.
 
 ## Product result
 
@@ -54,10 +55,10 @@ build-to-verifier regression, enters error state before early browser
 rejection, uses `sf-button-text-container` plus a native unprojected `<ul>`,
 and rejects cross-base documents with a dedicated negative test.
 
-## Verification before corrected candidate commit
+## Corrected exact-candidate verification
 
 - focused search/config/builder tests: PASS;
-- static verifier suite: `11 tests, 91 assertions`, PASS;
+- static verifier suite: `12 tests, 92 assertions`, PASS;
 - focused correction/search/builder/verifier tests: `39 tests, 414 assertions`,
   PASS;
 - canonical starter with only `default_locale`: build and static verifier PASS;
@@ -68,8 +69,12 @@ and rejects cross-base documents with a dedicated negative test.
 - static verifier: `3831` local references, `0` broken;
 - two consecutive production tree aggregates:
   `81945efbe610a54986586a2a61f16e64556528e235596fb016330923f450fd1f`;
-- prior browser matrix passed except the early invalid-revision error state;
-  the correction requires a new exact browser reacceptance before publication.
+- corrected exact browser matrix: PASS for valid results, visible invalid
+  revision/origin/path state, keyboard, desktop/mobile, light/dark, malicious
+  text, target size and no-overflow scenarios;
+- exact HCS/source review: PASS for the complete 39-file Batch 2 diff;
+- local publication: PASS with source/staging/served digest equality and the
+  previous served tree retained for rollback.
 
 This evidence does not claim completion of the product Goal, public release or
 production readiness.

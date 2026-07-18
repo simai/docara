@@ -21,13 +21,14 @@ catalogue, complete documentation and exact independent acceptance.
 
 ## Current Batch
 
-Batch 2 — deterministic local full-text search derived at build time from the
-published content and presented with pinned Simai Framework primitives.
+Batch 3 — breadcrumbs, current-page heading outline and previous/next page
+navigation derived from the canonical Docara content and navigation plans.
 
 ## Next Step
 
-Commit the corrected Batch 2 candidate, re-run independent exact-archive
-tester, HCS/source and UX/designer browser acceptance against that exact tree,
-then publish only the accepted tree to `docara.test` through staging and
-rollback. Continue with Batch 3 afterwards. Public release, default-branch
-migration and repository retirement remain excluded.
+Implement the Batch 3 configuration and rendering contract test-first, using
+one source of truth and exact pinned Simai Framework primitives. Verify native
+semantics, Unicode/duplicate heading anchors, responsive outline behavior,
+active context and previous/next order before exact tester and UX/designer
+acceptance. Public release, default-branch migration and repository retirement
+remain excluded.

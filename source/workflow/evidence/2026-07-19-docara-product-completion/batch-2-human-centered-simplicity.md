@@ -6,13 +6,15 @@ Scope: the complete 39-file Batch 2 diff from the accepted Batch 1 closure to
 the next exact search candidate. This is a bounded batch review, not the final
 Goal-wide HCS gate.
 
-Verdict: `PENDING_EXACT_REACCEPTANCE`.
+Verdict: `PASS` for corrected Batch 2 candidate
+`df82a5fa82a96263c3f8af4e900a9c5a665f9412` (tree
+`224e9acf512ec8d53f50a6275a594423e34ddf3c`).
 
 The first exact review of `1d9bfed313efc7be725b577e53ce1b9271ec76d4`
-returned `CORRECTION_REQUIRED`. The four findings are recorded below and have
-implementation corrections in the working tree. PASS can be recorded only
-after a new immutable candidate passes the independent exact HCS, tester and
-UX/browser gates.
+returned `CORRECTION_REQUIRED`. The four findings below were corrected and the
+new immutable candidate independently passed exact HCS/source, tester and
+UX/browser reacceptance. This remains a bounded Batch 2 verdict rather than a
+Goal-wide claim.
 
 ## Primary outcome
 
@@ -104,8 +106,17 @@ First candidate `1d9bfed...`:
   passed except invalid index-revision status;
 - exact HCS/source review: four findings, therefore no PASS.
 
-The first candidate's green checks are historical evidence only. A corrected
-candidate must be archived and re-run independently before this verdict changes.
+Corrected candidate `df82a5fa...`:
+
+- exact-archive tester: `447 tests, 2205 assertions`; focused search matrix
+  `63 tests, 569 assertions`; static verifier `12 tests, 92 assertions`;
+- two deterministic production builds: 42 HTML pages, 3831 local references,
+  zero broken and matching tree digest
+  `81945efbe610a54986586a2a61f16e64556528e235596fb016330923f450fd1f`;
+- exact UX/browser: valid search, failure states, keyboard, desktop/mobile,
+  themes, malicious text and no-overflow matrix passed;
+- exact HCS/source review: all four findings closed and the complete 39-file
+  inventory confirmed.
 
 ## Closed findings in the correction tree
 
@@ -131,6 +142,5 @@ candidate must be archived and re-run independently before this verdict changes.
 
 ## Blocking findings
 
-No implementation finding is intentionally left open in the correction tree.
-The blocking item is procedural and real: exact HCS, tester and UX/browser
-reacceptance for the new immutable candidate is still required.
+None for bounded Batch 2. Later Docara product batches, unified Goal acceptance,
+public release and production readiness remain outside this verdict.

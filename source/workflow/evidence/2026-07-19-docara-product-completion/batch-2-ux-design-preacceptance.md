@@ -1,4 +1,4 @@
-# Batch 2 — UX and design pre-acceptance
+# Batch 2 — UX and design acceptance
 
 Review mode: `$ux` redesign-refactor and design-system alignment plus
 `$designer` project-native review. External behavioral references were
@@ -38,6 +38,17 @@ invalid index revision/origin/path rejected its promise before the dialog
 entered the visible `error` state. All other desktop/mobile, theme, keyboard,
 focus, malicious-payload and responsive scenarios passed.
 
-The correction sets the visible error state before the early rejection. Final
-verdict remains pending an independent browser recheck of the next exact
-committed candidate, including bad revision and wrong origin/path corpora.
+The correction sets the visible error state before the early rejection.
+Independent reacceptance of exact candidate `df82a5fa...` returned `PASS`:
+
+- bad revision and wrong origin/path/query produce understandable visible error
+  state, zero result links and no navigation or execution;
+- query `наследование` returns five results with `/authoring/inheritance/`
+  first;
+- exact Simai Framework mappings are present and the ghost `sf-list` mapping
+  is absent;
+- desktop and `390x844` mobile layouts have no positive horizontal overflow;
+- mobile search and close targets meet the 44 CSS-pixel minimum.
+
+This is a bounded Batch 2 verdict, not acceptance of later reading, landing,
+catalogue or release stages.

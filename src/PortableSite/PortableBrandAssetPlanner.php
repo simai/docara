@@ -27,6 +27,12 @@ final readonly class PortableBrandAssetPlanner
         foreach ($pages as $index => $page) {
             $configuration = $page['plan']->configuration;
             $branding = is_array($configuration['branding'] ?? null) ? $configuration['branding'] : [];
+            if (is_string($branding['logo_dark'] ?? null) && ! is_string($branding['logo'] ?? null)) {
+                throw new PortableConfigurationException(
+                    'BRAND_DARK_LOGO_REQUIRES_LOGO',
+                    'branding.logo_dark requires a default branding.logo asset.',
+                );
+            }
             $resolved = [
                 'title' => (string) ($branding['title'] ?? $siteTitle),
                 'label' => is_string($branding['label'] ?? null) ? $branding['label'] : null,

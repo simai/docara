@@ -71,6 +71,9 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('/distr/fonts/MaterialSymbols-Outlined.woff2', $html);
             self::assertDoesNotMatchRegularExpression('~@(?:main|master|latest)(?:/|$)~i', $html);
             self::assertStringContainsString('class="docara-brand-logo docara-brand-logo--light"', $html);
+            self::assertStringContainsString('class="docara-brand-logo docara-brand-logo--light" src="', $html);
+            self::assertStringContainsString('" alt="">', $html);
+            self::assertStringNotContainsString('alt="Docara"', $html);
             self::assertStringContainsString('<link rel="icon" href="/_docara/brand/', $html);
         }
         self::assertStringContainsString('id="docara-mobile-navigation"', $guide);
@@ -317,9 +320,51 @@ MD;
     }
 
     #[Test]
+    public function equivalent_overview_forms_honor_section_metadata_page_title_and_navigation_reset(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+
+        foreach (['sibling' => false, 'indexed' => true] as $slug => $usesIndex) {
+            $this->filesystem->ensureDirectoryExists($this->tmpPath("content/$slug"));
+            $overview = $usesIndex ? "content/$slug/index.md" : "content/$slug.md";
+            $sidecar = $usesIndex ? "content/$slug/index.page.json" : "content/$slug.page.json";
+            file_put_contents($this->tmpPath($overview), "# Markdown $slug\n");
+            file_put_contents($this->tmpPath("content/$slug/child.md"), "# Child $slug\n");
+            file_put_contents(
+                $this->tmpPath("content/$slug/_section.json"),
+                json_encode([
+                    'schema' => 'docara.section.v1',
+                    'title' => "Section $slug",
+                    'navigation' => ['order' => $usesIndex ? 1 : 2],
+                ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+            );
+            file_put_contents(
+                $this->tmpPath($sidecar),
+                json_encode([
+                    'schema' => 'docara.page.v1',
+                    'title' => "Page $slug",
+                    'navigation' => ['$reset' => true],
+                ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+            );
+        }
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
+
+        self::assertStringContainsString('<span class="sf-menu-element-text">Page indexed</span>', $html);
+        self::assertStringContainsString('<span class="sf-menu-element-text">Page sibling</span>', $html);
+        self::assertStringNotContainsString('Section indexed', $html);
+        self::assertStringNotContainsString('Section sibling', $html);
+
+        $links = $this->desktopNavigationLinks($html, topLevelOnly: true);
+        self::assertLessThan(array_search('/indexed/', $links, true), array_search('/guides/', $links, true));
+        self::assertLessThan(array_search('/sibling/', $links, true), array_search('/guides/', $links, true));
+    }
+
+    #[Test]
     public function brand_asset_failures_are_controlled_and_do_not_clean_existing_output(): void
     {
-        foreach (['missing', 'unsupported', 'oversized', 'build-source'] as $case) {
+        foreach (['missing', 'unsupported', 'oversized', 'build-source', 'dark-without-default'] as $case) {
             $siteRoot = $this->tmpPath('brand-' . $case);
             $this->copyPortableFixture($siteRoot);
             $this->filesystem->ensureDirectoryExists($siteRoot . '/build_local');
@@ -337,10 +382,13 @@ MD;
                 file_put_contents($siteRoot . '/assets/large.svg', str_repeat('x', 2097153));
                 $site['branding']['logo'] = 'assets/large.svg';
                 $expected = 'BRAND_ASSET_TOO_LARGE';
-            } else {
+            } elseif ($case === 'build-source') {
                 file_put_contents($siteRoot . '/build_local/logo.svg', '<svg xmlns="http://www.w3.org/2000/svg"/>');
                 $site['branding']['logo'] = 'build_local/logo.svg';
                 $expected = 'BRAND_ASSET_PATH_INVALID';
+            } else {
+                unset($site['branding']['logo']);
+                $expected = 'BRAND_DARK_LOGO_REQUIRES_LOGO';
             }
             file_put_contents(
                 $siteRoot . '/docara.json',

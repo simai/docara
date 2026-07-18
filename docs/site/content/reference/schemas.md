@@ -15,7 +15,7 @@ Portable Docara использует JSON Schema Draft 2020-12.
 - `preset`: `docs` или `landing`;
 - `branding.title`, `branding.label`;
 - `branding.logo`, `branding.logo_dark`, `branding.favicon`: безопасные пути
-  от корня проекта;
+  от корня проекта; `logo_dark` требует основной `logo`;
 - `layout.max_width`: `compact`, `normal`, `wide`, `full`;
 - `settings.theme`: `system`, `light`, `dark`;
 - `navigation.hidden`: boolean;
@@ -24,6 +24,7 @@ Portable Docara использует JSON Schema Draft 2020-12.
 
 Page schema дополнительно поддерживает `description` и безопасный `slug`.
 Ветка `branding`, как `layout`, `settings` и `navigation`, поддерживает
+только непустой объект настроек: пустые `{}` и `[]` отклоняются как no-op.
 `{"$reset": true}`. Внешние файлы branding дополнительно проверяются во время
 сборки: тип, размер, существование, symlink и зарезервированный путь.
 `additionalProperties: false` означает, что опечатка не становится скрытым

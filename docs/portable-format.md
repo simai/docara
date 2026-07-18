@@ -49,15 +49,16 @@ documentation:
 
 - `branding.title` and optional `branding.label`;
 - `branding.logo`, `branding.logo_dark` and `branding.favicon`: root-relative
-  image paths;
+  image paths; `logo_dark` is an override and therefore requires `logo`;
 - `layout.max_width`: `compact`, `normal`, `wide`, or `full`;
 - `settings.theme`: `system`, `light`, or `dark`;
 - `navigation.hidden`: a boolean that removes the page from generated
   navigation;
 - `navigation.order`: a non-negative stable sibling order.
 
-These nested objects are strict. Unknown or incorrectly typed keys fail schema
-validation instead of becoming silent no-ops. Smart-components are authored
+These nested objects are strict and must contain at least one setting. Unknown,
+empty or incorrectly typed branches fail schema validation instead of becoming
+silent no-ops. Smart-components are authored
 only inside Markdown; JSON descriptors do not provide a second component list.
 
 ## Presets

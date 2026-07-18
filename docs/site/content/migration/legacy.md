@@ -29,7 +29,7 @@ Collections, Blade, PHP callbacks, Azure translation и произвольные
 | `brand.title` | `branding.title` |
 | `brand.logoSvg` | сохраните SVG отдельным файлом и укажите `branding.logo` |
 | `brand.favicon` | `branding.favicon` |
-| отдельный тёмный логотип | `branding.logo_dark` |
+| отдельный тёмный логотип | `branding.logo_dark` вместе с обязательным `branding.logo` |
 | callback `getMenu` | дерево автоматически строится из структуры Markdown |
 
 Сначала сохраните inline `logoSvg` в корневом `assets/logo.svg`; произвольный

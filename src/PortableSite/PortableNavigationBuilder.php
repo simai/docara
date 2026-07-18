@@ -6,6 +6,7 @@ namespace Simai\Docara\PortableSite;
 
 use JsonException;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\Portable\ResolvedPagePlan;
 use Simai\Docara\Portable\SchemaRepository;
 
 final readonly class PortableNavigationBuilder
@@ -68,15 +69,18 @@ final readonly class PortableNavigationBuilder
                 }
                 $directory = implode('/', $segments);
                 $metadata = $sections[$directory] ?? [];
-                $branch['title'] = (string) ($metadata['title'] ?? $page['title']);
+                $branch['title'] = $this->navigationTitle($page, $metadata);
                 $branch['url'] = (string) $page['url'];
-                $branch['order'] = $page['navigation_order'] ?? $branch['order'];
+                $branch['order'] = $this->navigationOrder($page, $metadata, $branch['order']);
                 unset($branch);
 
                 continue;
             }
 
             $node = $this->pageNode($page, $relative);
+            $metadata = $sections[$withoutExtension] ?? [];
+            $node['title'] = $this->navigationTitle($page, $metadata);
+            $node['order'] = $this->navigationOrder($page, $metadata, $node['order']);
             if (isset($cursor[(string) $filename])) {
                 $node['children'] = $cursor[(string) $filename]['children'];
             }
@@ -126,6 +130,66 @@ final readonly class PortableNavigationBuilder
             'order' => $page['navigation_order'] === null ? null : (int) $page['navigation_order'],
             'children' => [],
         ];
+    }
+
+    /**
+     * A section descriptor names the linked branch unless the page sidecar
+     * explicitly names the overview page. This keeps foo.md + foo/ and
+     * foo/index.md + foo/ semantically equivalent.
+     *
+     * @param  array<string, mixed>  $page
+     * @param  array{title?: string|null, order?: int|null}  $metadata
+     */
+    private function navigationTitle(array $page, array $metadata): string
+    {
+        if ($this->hasPageSidecarProvenance($page, '/title')) {
+            return (string) $page['title'];
+        }
+
+        return is_string($metadata['title'] ?? null)
+            ? $metadata['title']
+            : (string) $page['title'];
+    }
+
+    /**
+     * Resolved page order wins. An explicit page-level reset is allowed to
+     * clear inherited section order; otherwise sibling page branches inherit
+     * the matching directory metadata just like index branches do.
+     *
+     * @param  array<string, mixed>  $page
+     * @param  array{title?: string|null, order?: int|null}  $metadata
+     */
+    private function navigationOrder(array $page, array $metadata, mixed $fallback): ?int
+    {
+        if (is_int($page['navigation_order'] ?? null)) {
+            return $page['navigation_order'];
+        }
+        if ($this->hasPageSidecarProvenance($page, '/navigation')) {
+            return null;
+        }
+
+        return is_int($metadata['order'] ?? null)
+            ? $metadata['order']
+            : (is_int($fallback) ? $fallback : null);
+    }
+
+    /** @param array<string, mixed> $page */
+    private function hasPageSidecarProvenance(array $page, string $pointer): bool
+    {
+        $plan = $page['plan'] ?? null;
+        if (! $plan instanceof ResolvedPagePlan) {
+            return false;
+        }
+
+        foreach ($plan->provenance as $candidate => $source) {
+            if (($candidate === $pointer || str_starts_with($candidate, $pointer . '/'))
+                && str_ends_with($source, '.page.json')
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** @param list<array<string, mixed>> $nodes @return list<array<string, mixed>> */

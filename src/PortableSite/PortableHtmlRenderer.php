@@ -113,7 +113,7 @@ final class PortableHtmlRenderer
         $mark = '';
         if (is_string($branding['logo'] ?? null)) {
             $mark = '<span class="docara-brand-mark">'
-                . '<img class="docara-brand-logo docara-brand-logo--light" src="' . $this->escape($branding['logo']) . '" alt="' . $title . '">';
+                . '<img class="docara-brand-logo docara-brand-logo--light" src="' . $this->escape($branding['logo']) . '" alt="">';
             if (is_string($branding['logo_dark'] ?? null)) {
                 $mark .= '<img class="docara-brand-logo docara-brand-logo--dark" src="'
                     . $this->escape($branding['logo_dark']) . '" alt="">';
@@ -214,7 +214,24 @@ final class PortableHtmlRenderer
     document.querySelectorAll('[data-docara-menu-link]').forEach(protectNativeLink);
     document.querySelectorAll('.sf-menu-item').forEach(syncDisclosure);
   }
+  function revealActiveNavigation(){
+    var rail=document.querySelector('.docara-sidebar');
+    var active=rail&&rail.querySelector('[aria-current="page"]');
+    if(!rail||!active||rail.dataset.docaraActiveRevealed)return;
+    rail.dataset.docaraActiveRevealed='1';
+    var railRect=rail.getBoundingClientRect();
+    var activeRect=active.getBoundingClientRect();
+    var inset=8;
+    if(activeRect.bottom>railRect.bottom-inset){rail.scrollTop+=activeRect.bottom-(railRect.bottom-inset)}
+    else if(activeRect.top<railRect.top+inset){rail.scrollTop+=activeRect.top-(railRect.top+inset)}
+  }
   bindShell();
+  function revealWhenReady(){
+    var fonts=document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve();
+    fonts.then(function(){requestAnimationFrame(revealActiveNavigation)});
+  }
+  if(document.readyState==='complete'){revealWhenReady()}
+  else{window.addEventListener('load',revealWhenReady,{once:true})}
   new MutationObserver(bindShell).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','expanded','aria-expanded']});
   var mobile=document.getElementById('docara-mobile-navigation');
   if(mobile){

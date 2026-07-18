@@ -1,10 +1,10 @@
 # Workflow: Docara product UI restoration
 
 Date: 2026-07-18
-Status: in progress
+Status: first vertical accepted; Batch 3 ready
 Process model: `general_delivery`
-Current state: `tests_recorded`
-Target state: `tests_recorded`
+Current state: `planned`
+Target state: `launch_record_ready`
 Owner: `docara`
 Companions: `sf5`, `ux`, `designer`, `docs`, `dev`, `tester`, `ops`
 Memory decision: `inject`
@@ -33,13 +33,32 @@ build remains PHP-only.
 
 ## Current Goal
 
-Preserve `4a312c1…` as the accepted technical baseline and prepare the first
-product-correction vertical slice: tree-shaped navigation with a real
-four-level fixture, branding/assets, and an accessible responsive docs shell.
-Do not resume public release/default-branch integration until that corrected
-surface has exact UX, design, browser and tester acceptance.
+Реализовать следующую продуктовую вертикаль Docara: локальный поиск, правую навигацию по заголовкам, хлебные крошки, переходы назад/вперёд и простые настройки чтения — с наследуемой JSON-конфигурацией, pinned Simai Framework, схемами, отрицательными тестами, публичной документацией, browser evidence и независимой приёмкой, но без публичного релиза или миграции default-веток.
 
 ## Done When
+
+- local search is keyboard-accessible, deterministic and derived from the
+  published content without an external runtime dependency;
+- the right heading TOC, breadcrumbs and previous/next links are derived from
+  one resolved page/tree contract and remain useful on responsive layouts;
+- reading settings expose only accepted controls, preserve strong defaults and
+  work in light and dark themes;
+- each new configuration field has a strict schema, negative tests,
+  inheritance/reset behavior, migration notes and public documentation;
+- one exact candidate passes static, keyboard, responsive, browser, UX/design,
+  Human-Centered Simplicity and independent tester acceptance;
+- release integration, default-branch migration, landing/component work and
+  `docara-mix` retirement remain explicitly outside the goal.
+
+## Completed Goal
+
+Первая продуктовая вертикаль от принятого технического основания `4a312c1...`
+завершена: неограниченное семантическое дерево и четырёхуровневая навигация,
+закреплённый Framework renderer, наследуемый бренд, logo/dark logo/favicon,
+desktop rail и доступная мобильная навигация приняты на exact candidate
+`83d677c7eb5f22d9ca2f4ac16990fe16eddbe985`.
+
+## Completed Goal Acceptance
 
 - the resolved navigation contract preserves the folder hierarchy and active
   trail without a fixed internal depth cap;
@@ -439,11 +458,26 @@ and UX/design verdicts must bind to one exact candidate revision.
 
 ## Human-Centered Simplicity
 
+- quality_controls: `[human_centered_simplicity]`
+- simplicity_repository_refs: `[repo://docara-consolidation]`
+- simplicity_repository_baselines:
+  `[repo://docara-consolidation@4a312c1b14cf1e0ed0ad77d32e39b006b2ff9049]`
+- simplicity_review:
+  `source/workflow/evidence/2026-07-18-docara-product-ui-restoration/hcs/human-centered-simplicity-review.json`
+
 The product correction keeps `human_centered_simplicity` as a quality control.
 The default UI should expose the primary reading and discovery actions while
 putting optional branding, layout and advanced controls behind progressive
 configuration. Search, hierarchical navigation and reading context are core
 task support, not removable visual clutter.
+
+The standalone artifact-scoped review and its independent tester projection
+PASS for the four explicitly inventoried surfaces. This is not a
+file-by-file HCS classification of the complete candidate diff; exact-candidate
+acceptance comes separately from the code/contract, browser/UX and archive
+tester verdicts. The central workflow-binding policy still cannot combine an
+artifact comparison with its required Git baseline; that separate control-plane
+gap is recorded without fabricating a carrier PASS.
 
 ## Kaizen
 
@@ -478,29 +512,44 @@ No canonical skill or graph change is proposed from this planning batch.
   `https://docara.test/landing/` -> 404, old reference -> 200;
 - browser comparison of desktop/mobile structure and console state.
 
+## Batch 3 Plan
+
+Work only on top of accepted candidate `83d677c7...`:
+
+1. inventory existing search, heading-navigation, breadcrumb, previous/next and
+   reading-setting primitives in the pinned Framework and old Docara;
+2. define the smallest inherited JSON contract and write schema/negative tests
+   before rendering;
+3. add deterministic local search data, right heading TOC, breadcrumbs and
+   previous/next derived from the resolved page tree;
+4. expose only useful reading controls with strong defaults and progressive
+   disclosure;
+5. update public configuration/layout documentation and legacy migration notes;
+6. freeze one exact candidate and repeat keyboard, responsive, theme, browser,
+   UX/design and independent tester acceptance.
+
+Landing blocks and the full component catalogue remain Batch 4. Release,
+mirror publication, consumer default-branch migration and `docara-mix`
+retirement remain outside this batch.
+
 ## Next Safe Batch
 
-Do not start the previously proposed public release/default-branch integration
-from `4a312c1...` as the product baseline. Preserve that exact candidate as the
-accepted technical engine and start a clean product-correction branch from it.
+Start Batch 3 from exact candidate `83d677c7...`: inventory pinned Framework
+and old Docara primitives, define the inherited JSON contract and negative
+tests first, then implement local search, right heading TOC, breadcrumbs,
+previous/next and simple reading settings. Freeze and independently accept one
+exact candidate. Do not start landing work, release integration, default-branch
+migration or `docara-mix` retirement.
 
-The first implementation batch is bounded to the `docs` shell vertical slice:
+## Last Completed Batch
 
-1. tree-shaped resolved navigation contract and four-level fixture;
-2. pinned Framework menu/tree evaluation and one accepted renderer;
-3. brand/logo/favicon configuration and asset projection;
-4. desktop left rail plus accessible mobile navigation scaffold;
-5. schema, migration and public docs for only those implemented fields;
-6. exact tests and browser evidence before search/TOC work begins.
-
-Release, mirror publication, consumer default-branch migration and
-`docara-mix` retirement remain separate gated work after the corrected product
-candidate passes acceptance.
+Batch 2 — hierarchical shell, inherited branding and responsive navigation accepted on exact candidate `83d677c7eb5f22d9ca2f4ac16990fe16eddbe985`.
 
 ## First Vertical Implementation Status
 
-Implementation is complete and awaiting independent acceptance on an exact
-candidate commit.
+The first vertical is independently accepted on exact candidate
+`83d677c7eb5f22d9ca2f4ac16990fe16eddbe985`, tree
+`4956ff452b516ace2df744ee34b276881437adb9`.
 
 - Batch 0: completed — clean technical base, workflow, component decision,
   action gate and rollback plan.
@@ -509,19 +558,32 @@ candidate commit.
 - Batch 2: completed — inherited branding, safe content-addressed asset
   publication, desktop rail, mobile disclosure and pinned Framework theme/icon
   contracts.
-- Browser acceptance: PASS for desktop, mobile 390 px, light/dark, keyboard
-  Enter, Escape/focus return, no overflow and a clean final runtime log.
-- Local ServBay publication: PASS with exact matching digest and three preserved
-  rollback points.
-- Independent UX/design and tester verdicts: pending exact candidate commit.
+- Browser acceptance: PASS for desktop, cold mobile 390 px to same-tab desktop
+  resize, light/dark, keyboard Enter, Escape/focus return, manual rail scroll,
+  no overflow and a clean final runtime log.
+- Local ServBay publication: PASS with matching source/staging/served digest
+  `94872dc…` and a preserved timestamped rollback chain.
+- Independent code/contract, UX/design/browser and exact-archive tester
+  verdicts: PASS.
+- Artifact-scoped HCS comparison: PASS for the four explicitly inventoried
+  surfaces; it is not claimed as complete candidate-diff coverage, and the
+  workflow-binding policy gap remains separately documented.
+- The sanitized Bitrix24 completion report was prepared, but external delivery
+  was not attempted again after the transport required explicit authorization
+  for this exact message; no webhook or token was exposed.
 
 Evidence:
 
 - `source/workflow/evidence/2026-07-18-docara-product-ui-restoration/implementation-verification.md`
 - `source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md`
 - `source/workflow/evidence/2026-07-18-docara-product-ui-restoration/local-deployment-and-rollback.md`
+- `source/workflow/evidence/2026-07-18-docara-product-ui-restoration/code-contract-review.md`
+- `source/workflow/evidence/2026-07-18-docara-product-ui-restoration/ux-design-verdict.md`
+- `source/workflow/evidence/2026-07-18-docara-product-ui-restoration/independent-tester-verdict.md`
+- `source/workflow/evidence/2026-07-18-docara-product-ui-restoration/hcs/human-centered-simplicity-review.json`
 
-The current goal may close after exact candidate acceptance. The broader track
-remains active: Batch 3 (search, right TOC, breadcrumbs, previous/next and
-reading settings), Batch 4 (landing/component system), and final product-level
-Batch 5 acceptance are intentionally not claimed by this vertical.
+The previous first-vertical goal is complete. The broader track remains active:
+Batch 3
+(search, right TOC, breadcrumbs, previous/next and reading settings), Batch 4
+(landing/component system), and final product-level Batch 5 acceptance are
+intentionally not claimed by this vertical.

@@ -1,7 +1,8 @@
 # First product vertical: implementation verification
 
 Date: 2026-07-18
-Candidate: pending the implementation commit created after these checks
+Candidate: `83d677c7eb5f22d9ca2f4ac16990fe16eddbe985`
+Candidate tree: `4956ff452b516ace2df744ee34b276881437adb9`
 Accepted technical ancestor:
 `4a312c1b14cf1e0ed0ad77d32e39b006b2ff9049`
 
@@ -23,6 +24,17 @@ shell instead of flattening every page into one list.
 - Brand files are validated before destination cleanup, published under a
   content-addressed `_docara/brand/` path, deduplicated, and verified after
   copy.
+- `logo_dark` without a default `logo` fails before destination cleanup;
+  decorative logos no longer duplicate the visible brand name for assistive
+  technology.
+- Empty presentation branches fail strict schema validation. The documented
+  `foo.md` / `foo/index.md` overview forms now share one tested precedence:
+  explicit page order, explicit page reset, matching section order/reset,
+  then inherited fallback. A child override such as `hidden=false` is not
+  misclassified as a reset.
+- Initial active-page reveal waits for real sidebar geometry, survives a cold
+  mobile-to-desktop resize, changes only sidebar scroll, and stops after the
+  first successful reveal so later user scrolling is preserved.
 - The shell uses the released Core `.sf-theme-button` and the already bundled
   pinned `<sf-icon>` Smart component. No Framework owner repository changed.
 
@@ -40,6 +52,7 @@ shell instead of flattening every page into one list.
 ## Main implementation surfaces
 
 - `src/PortableSite/PortableNavigationBuilder.php`
+- `src/Portable/ConfigurationMerger.php`
 - `src/PortableSite/PortableBrandAssetPlanner.php`
 - `src/PortableSite/PortableSiteBuilder.php`
 - `src/PortableSite/PortableHtmlRenderer.php`
@@ -55,13 +68,14 @@ shell instead of flattening every page into one list.
 The suite covers schema rejection, inheritance and `$reset`, missing or
 unsupported brand files, oversized files, symlinks, generated-output sources,
 pre-clean failure, digest verification, base URLs, asset deduplication,
-page-plus-directory merging, repeated path segments, recursive ordering,
-active/open state, four levels, and a clean seven-page starter build.
+page-plus-directory merging, repeated path segments, all four ordering/reset
+precedence layers, recursive ordering, active/open state, four levels, and a
+clean seven-page starter build.
 
 The generated documentation build contains 41 HTML pages and 3574 checked
 local references with no broken reference. Its final tree digest is:
 
-`4568e6d8e48d45144d7b39bcd26ed8204c9428319a0210dd5b80511384270a46`
+`94872dc8627fac21cbc5c0fed8f6a9515b7fdb35d7e75580b49656ce4162eccf`
 
 ## Verification commands
 
@@ -75,7 +89,7 @@ git diff --check
 
 Final results:
 
-- PHPUnit: PASS, 428 tests and 1992 assertions in 4 minutes 22 seconds;
+- PHPUnit: PASS, 432 tests and 2031 assertions in 2 minutes 42 seconds;
 - Pint: PASS;
 - schema and configuration JSON parse: PASS for all six changed contracts;
 - static verifier: PASS, 41 pages, 3574 references, `broken: []`;

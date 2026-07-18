@@ -1,16 +1,11 @@
 track_id: "docara-consolidation"
 status: "active"
 owner_skill: "teamlead"
-current_goal: "Restore the complete Docara product shell through the typed portable contract before public product release."
-current_stage: "product_requirements_recorded; technical baseline preserved"
-current_workflow: "source/workflow/2026-07-18-docara-consolidation-and-local-docs.md"
-last_completed_batch: "Read-only product audit of current, legacy, Framework and external documentation-system references"
-next_step: "Implement a four-level tree-shaped navigation contract, branding/assets and accessible responsive docs-shell vertical slice."
-blockers:
-  - "Current portable UI is not an accepted product baseline."
-  - "Search and right TOC lack accepted generic Framework Smart-components."
-  - "The released Smart runtime does not yet include sf-drawer."
-  - "Release/default-branch integration and docara-mix retirement must wait for corrected product acceptance."
+current_goal: "Реализовать следующую продуктовую вертикаль Docara: локальный поиск, правую навигацию по заголовкам, хлебные крошки, переходы назад/вперёд и простые настройки чтения — с наследуемой JSON-конфигурацией, pinned Simai Framework, схемами, отрицательными тестами, публичной документацией, browser evidence и независимой приёмкой, но без публичного релиза или миграции default-веток."
+current_stage: "planned"
+current_workflow: "source/workflow/2026-07-18-docara-product-ui-restoration.md"
+last_completed_batch: "Batch 2 — hierarchical shell, inherited branding and responsive navigation accepted on exact candidate `83d677c7eb5f22d9ca2f4ac16990fe16eddbe985`."
+next_step: "Start Batch 3 from exact candidate `83d677c7...`: inventory pinned Framework and old Docara primitives, define the inherited JSON contract and negative tests first, then implement local search, right heading TOC, breadcrumbs, previous/next and simple reading settings. Freeze and independently accept one exact candidate. Do not start landing work, release integration, default-branch migration or `docara-mix` retirement."
+blockers: []
 related_tracks: []
-updated_at: "2026-07-18T19:13:50+03:00"
-workflow_sha256: "58bcfb890220c4edf7b95180a3bc7d3530bc1c1c3068fffbb2beeaf03ca04d5a"
+updated_at: "2026-07-18"

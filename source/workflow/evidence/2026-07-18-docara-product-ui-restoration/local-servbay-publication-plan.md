@@ -6,13 +6,13 @@ Source:
 `docs/site/build_production`
 
 Source tree digest before publication:
-`55f591ada243908dce687f044ce93bc6613fd108a280c1b179a73066d6448652`
+`94872dc8627fac21cbc5c0fed8f6a9515b7fdb35d7e75580b49656ce4162eccf`
 
 Final corrected source/served tree digest:
-`4568e6d8e48d45144d7b39bcd26ed8204c9428319a0210dd5b80511384270a46`
+`94872dc8627fac21cbc5c0fed8f6a9515b7fdb35d7e75580b49656ce4162eccf`
 
 Current served tree digest before publication:
-`451224dd74da76301bad6888d65c5b42b708640d5aaed4b175a32f404aa63dc4`
+`d1ce27750983da6d7c337f0010486fd44a759746d1b3cfeb8d75c544aa5d9131`
 
 ## Safe write
 
@@ -20,7 +20,7 @@ Current served tree digest before publication:
    `/Users/rim/Sites/docara.test`.
 2. Run `scripts/verify-static-build.php` against that staging tree.
 3. Move the currently served `build_production` to
-   `.docara-backups/product-ui-20260718-2025/build_production`.
+   `.docara-backups/product-ui-final-20260718-215550/build_production`.
 4. Atomically rename the verified staging directory to `build_production`.
 5. Verify the published digest, HTTP 200, local references and browser shell.
 

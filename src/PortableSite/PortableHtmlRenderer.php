@@ -106,7 +106,7 @@ final class PortableHtmlRenderer
         if ($searchEnabled) {
             $searchTrigger = '            <button type="button" data-docara-search-trigger aria-haspopup="dialog" aria-controls="docara-search-dialog" aria-label="Открыть поиск по документации" class="docara-search-trigger sf-button sf-button--on-surface sf-button--outline sf-button--size-2 flex items-center gap-1 radius-default">' . "\n"
                 . '                <sf-icon icon="search" aria-hidden="true"></sf-icon>' . "\n"
-                . '                <span class="docara-search-trigger-label sf-button-text">Поиск</span>' . "\n"
+                . '                <span class="docara-search-trigger-label sf-button-text-container">Поиск</span>' . "\n"
                 . '                <kbd class="docara-search-shortcut color-on-surface-variant" data-docara-search-shortcut>⌘K</kbd>' . "\n"
                 . '            </button>' . "\n";
         }
@@ -145,7 +145,7 @@ final class PortableHtmlRenderer
             . '                </span>' . "\n"
             . '            </label>' . "\n"
             . '            <p id="docara-search-status" data-docara-search-status data-state="idle" class="docara-search-status color-on-surface-variant m-0" aria-live="polite">Введите минимум 2 символа</p>' . "\n"
-            . '            <ul id="docara-search-results" data-docara-search-results class="sf-list docara-search-results flex flex-col gap-1 m-0 p-0"></ul>' . "\n"
+            . '            <ul id="docara-search-results" data-docara-search-results class="docara-search-results flex flex-col gap-1 m-0 p-0"></ul>' . "\n"
             . '        </div>' . "\n"
             . '    </dialog>';
     }

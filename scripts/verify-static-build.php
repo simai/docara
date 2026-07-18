@@ -244,7 +244,7 @@ if (is_link($manifestDirectory)
                         continue;
                     }
                     $url = $page['url'] ?? null;
-                    $locale = $configuration['locale'] ?? null;
+                    $locale = $configuration['locale'] ?? $configuration['default_locale'] ?? null;
                     if (! is_string($url)
                         || ! docaraSearchUrlIsSafe($url, $deploymentBase)
                         || ! is_string($locale)

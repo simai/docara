@@ -68,6 +68,8 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('data-docara-search-input', $html);
             self::assertStringContainsString('data-docara-search-status', $html);
             self::assertStringContainsString('data-docara-search-results', $html);
+            self::assertStringContainsString('docara-search-trigger-label sf-button-text-container', $html);
+            self::assertStringNotContainsString('class="sf-list docara-search-results', $html);
             self::assertStringContainsString('data-docara-search-runtime', $html);
             self::assertStringContainsString('/_docara/search-index.json?docara_v=', $html);
             self::assertStringContainsString('/_docara/search.js?docara_v=', $html);
@@ -213,6 +215,23 @@ final class PortableSiteBuilderTest extends TestCase
         $builder->build($this->tmp, $this->tmpPath('build_local'));
 
         self::assertSame($first, $this->treeHashes($this->tmpPath('build_local')));
+    }
+
+    #[Test]
+    public function canonical_starter_build_with_default_locale_passes_static_verification(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $this->builder()->build($this->tmp, $this->tmpPath('build_production'));
+
+        $process = new Process([
+            PHP_BINARY,
+            'scripts/verify-static-build.php',
+            $this->tmpPath('build_production'),
+        ], dirname(__DIR__));
+        $process->run();
+
+        self::assertSame(0, $process->getExitCode(), $process->getErrorOutput() . $process->getOutput());
+        self::assertStringContainsString('"broken": []', $process->getOutput());
     }
 
     #[Test]

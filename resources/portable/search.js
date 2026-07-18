@@ -162,6 +162,7 @@
             || indexUrl.hash
             || Array.from(indexUrl.searchParams.keys()).length !== 1
             || !/^[a-f0-9]{64}$/.test(indexUrl.searchParams.get('docara_v') || '')) {
+            setStatus(copy.error, 'error');
             indexPromise = Promise.reject(new Error('SEARCH_INDEX_ORIGIN_INVALID'));
             return indexPromise;
         }

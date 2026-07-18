@@ -362,6 +362,24 @@ final class StaticBuildVerifierTest extends TestCase
         }
     }
 
+    #[Test]
+    public function search_uses_the_inherited_default_locale_when_page_locale_is_not_explicit(): void
+    {
+        $build = $this->createSearchBuild('search-default-locale', '/');
+        $manifestPath = $build . '/.docara/resolved-page-plans.json';
+        $manifest = json_decode((string) file_get_contents($manifestPath), true, flags: JSON_THROW_ON_ERROR);
+        foreach ($manifest['pages'] as &$page) {
+            unset($page['resolved_page_plan']['configuration']['locale']);
+            $page['resolved_page_plan']['configuration']['default_locale'] = 'ru';
+        }
+        unset($page);
+        $this->writeManifest($build, $manifest);
+
+        $result = $this->verify($build);
+
+        self::assertSame(0, $result->getExitCode(), $result->getErrorOutput() . $result->getOutput());
+    }
+
     /** @param list<string> $outputs */
     private function writeResolvedPlans(string $build, string $baseUrl, array $outputs = ['index.html']): void
     {

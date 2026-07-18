@@ -22,6 +22,7 @@ final readonly class PortableSearchIndexBuilder
      */
     public function plan(array $pages, array $navigation, string $baseUrl): PortableSearchPlan
     {
+        $deploymentBase = $baseUrl === '/' ? '/' : '/' . trim($baseUrl, '/') . '/';
         $runtime = @file_get_contents($this->runtimePath);
         if (! is_string($runtime) || $runtime === '') {
             throw new PortableConfigurationException(
@@ -48,6 +49,12 @@ final readonly class PortableSearchIndexBuilder
                 continue;
             }
             $url = (string) ($page['url'] ?? '');
+            if (! str_starts_with($url, $deploymentBase)) {
+                throw new PortableConfigurationException(
+                    'SEARCH_DOCUMENT_OUTSIDE_BASE',
+                    "Search document URL [$url] is outside deployment base [$deploymentBase].",
+                );
+            }
             $extracted = $this->extractor->extract(
                 (string) ($page['content_html'] ?? ''),
                 is_array($page['component_calls'] ?? null) ? $page['component_calls'] : [],
@@ -92,7 +99,7 @@ final readonly class PortableSearchIndexBuilder
             'documents' => $documents,
         ];
         $this->schemas->assertValid($index, 'search-index.schema.json');
-        $prefix = rtrim($baseUrl, '/');
+        $prefix = rtrim($deploymentBase, '/');
         $runtimeHash = hash('sha256', $runtime);
 
         return new PortableSearchPlan(

@@ -33,16 +33,16 @@ final class PortableSearchIndexBuilderTest extends TestCase
     public function it_builds_a_canonical_locale_isolated_index_and_framework_urls(): void
     {
         $pages = [
-            $this->page('/guides/setup/', 'ru', 'Установка', '<h1>Установка</h1><p>Все ёлки зелёные.</p>'),
-            $this->page('/hidden/', 'ru', 'Скрытая в меню', '<h1>Скрытая</h1><p>Но доступна поиску.</p>'),
-            $this->page('/en/start/', 'en', 'Start', '<h1>Start</h1><p>Local search.</p>'),
+            $this->page('/project/guides/setup/', 'ru', 'Установка', '<h1>Установка</h1><p>Все ёлки зелёные.</p>'),
+            $this->page('/project/hidden/', 'ru', 'Скрытая в меню', '<h1>Скрытая</h1><p>Но доступна поиску.</p>'),
+            $this->page('/project/en/start/', 'en', 'Start', '<h1>Start</h1><p>Local search.</p>'),
         ];
         $navigation = [[
             'title' => 'Руководства',
-            'url' => '/guides/',
+            'url' => '/project/guides/',
             'children' => [[
                 'title' => 'Установка',
-                'url' => '/guides/setup/',
+                'url' => '/project/guides/setup/',
                 'children' => [],
             ]],
         ]];
@@ -53,7 +53,10 @@ final class PortableSearchIndexBuilderTest extends TestCase
         self::assertSame('docara-prefix-v1', $plan->index['algorithm']);
         self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $plan->contentHash);
         self::assertSame(hash_file('sha256', $this->runtime), $plan->runtimeHash);
-        self::assertSame(['/en/start/', '/guides/setup/', '/hidden/'], array_column($plan->index['documents'], 'url'));
+        self::assertSame(
+            ['/project/en/start/', '/project/guides/setup/', '/project/hidden/'],
+            array_column($plan->index['documents'], 'url'),
+        );
         self::assertSame(['Руководства'], $plan->index['documents'][1]['trail']);
         self::assertSame([], $plan->index['documents'][2]['trail']);
         self::assertSame(
@@ -157,6 +160,21 @@ final class PortableSearchIndexBuilderTest extends TestCase
             } catch (PortableConfigurationException $exception) {
                 self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
             }
+        }
+    }
+
+    #[Test]
+    public function it_rejects_a_document_outside_the_deployment_base(): void
+    {
+        try {
+            $this->builder()->plan(
+                [$this->page('/outside/', 'ru', 'Вне базы', '<p>Текст</p>')],
+                [],
+                '/project/',
+            );
+            self::fail('A search document outside deployment base unexpectedly passed.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('SEARCH_DOCUMENT_OUTSIDE_BASE', $exception->errorCode);
         }
     }
 

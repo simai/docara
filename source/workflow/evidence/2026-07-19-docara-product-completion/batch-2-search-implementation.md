@@ -1,6 +1,7 @@
 # Batch 2 — deterministic local search implementation
 
-Status: implementation complete, independent exact-candidate acceptance pending.
+Status: corrected implementation complete, independent exact-candidate
+reacceptance pending.
 
 ## Product result
 
@@ -37,20 +38,38 @@ index before destination cleanup. The static verifier independently checks:
 `navigation.hidden` and `search.indexed: false` are not access control. HTML and
 the local JSON index are public static artifacts.
 
-## Verification before candidate commit
+## First exact-candidate correction
+
+Candidate `1d9bfed313efc7be725b577e53ce1b9271ec76d4` passed the full
+automated suite but was not accepted. Independent HCS/source and UX/browser
+review found four contract gaps:
+
+- verifier ignored inherited `default_locale` while the builder used it;
+- invalid index revision/origin/path rejected before the visible error state;
+- the trigger/list markup used two inexact Framework class mappings;
+- direct search planning did not reject a document outside `base_url`.
+
+The correction tree aligns effective locale, adds the canonical starter
+build-to-verifier regression, enters error state before early browser
+rejection, uses `sf-button-text-container` plus a native unprojected `<ul>`,
+and rejects cross-base documents with a dedicated negative test.
+
+## Verification before corrected candidate commit
 
 - focused search/config/builder tests: PASS;
 - static verifier suite: `11 tests, 91 assertions`, PASS;
-- full PHPUnit: `444 tests, 2193 assertions`, PASS on PHP 8.2.29;
+- focused correction/search/builder/verifier tests: `39 tests, 414 assertions`,
+  PASS;
+- canonical starter with only `default_locale`: build and static verifier PASS;
+- full PHPUnit: `447 tests, 2205 assertions`, PASS on PHP 8.2.29;
 - Pint: PASS;
 - `node --check resources/portable/search.js`: PASS;
 - production build: `42` HTML pages;
 - static verifier: `3831` local references, `0` broken;
-- two consecutive production trees:
-  `f8567047548733a852e2ccd0fdf358798da3074fe837bde20be8fbc3b0011486`;
-- browser smoke: title result first for `наследование`, one Escape closes and
-  restores focus, empty-result Tab loop is contained, `390x844` targets are
-  `44x44`, page overflow is `0`.
+- two consecutive production tree aggregates:
+  `81945efbe610a54986586a2a61f16e64556528e235596fb016330923f450fd1f`;
+- prior browser matrix passed except the early invalid-revision error state;
+  the correction requires a new exact browser reacceptance before publication.
 
 This evidence does not claim completion of the product Goal, public release or
 production readiness.

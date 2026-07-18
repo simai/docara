@@ -26,8 +26,8 @@ published content and presented with pinned Simai Framework primitives.
 
 ## Next Step
 
-Commit the completed Batch 2 search candidate, run independent exact-archive
-tester and UX/designer browser acceptance against that exact tree, then publish
-the accepted tree to `docara.test` through staging and rollback. Continue with
-Batch 3 afterwards. Public release, default-branch migration and repository
-retirement remain excluded.
+Commit the corrected Batch 2 candidate, re-run independent exact-archive
+tester, HCS/source and UX/designer browser acceptance against that exact tree,
+then publish only the accepted tree to `docara.test` through staging and
+rollback. Continue with Batch 3 afterwards. Public release, default-branch
+migration and repository retirement remain excluded.

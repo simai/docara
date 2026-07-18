@@ -31,5 +31,13 @@ Only five necessary surfaces are visible: header trigger, dialog, input, live
 status and result list. There are no filters, recent searches, pagination,
 server options or AI controls in this batch.
 
-Final verdict is intentionally pending an independent browser recheck of the
-exact committed candidate.
+## First exact verdict and correction
+
+The exact browser review of `1d9bfed...` returned `CORRECTION_REQUIRED`: an
+invalid index revision/origin/path rejected its promise before the dialog
+entered the visible `error` state. All other desktop/mobile, theme, keyboard,
+focus, malicious-payload and responsive scenarios passed.
+
+The correction sets the visible error state before the early rejection. Final
+verdict remains pending an independent browser recheck of the next exact
+committed candidate, including bad revision and wrong origin/path corpora.

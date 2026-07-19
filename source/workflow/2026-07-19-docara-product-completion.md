@@ -298,6 +298,14 @@ structured observations, source references, component decisions, tests,
 digests, verdicts and limitations. Generated dependency trees, browser profiles
 and disposable builds remain outside Git.
 
+This is a private local workflow. Absolute local paths are allowed only inside
+`source/workflow` launch, action-gate, publication and rollback evidence when
+they are operational allowlists or exact local recovery locators. They are
+forbidden in product and distribution surfaces. References to disposable
+`/private/tmp` diagnostics are supplemental only: the committed verdict,
+commands, hashes and result summaries are the durable evidence. These workflow
+paths are excluded from any public release payload.
+
 ## Evidence Plan
 
 - bind all evidence to exact baseline/candidate revisions;

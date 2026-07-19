@@ -1,3 +1,3 @@
-## Понятный заголовок
+## Clear heading
 
-Абзац может содержать **важный текст**, *акцент* и ~~устаревшую формулировку~~.
+A paragraph can contain **important text**, *emphasis* and ~~outdated wording~~.

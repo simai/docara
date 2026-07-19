@@ -29,17 +29,24 @@ final readonly class FrameworkConsumerPolicy
                 'value' => true,
                 'code' => 'FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME',
                 'reason' => 'ui.alert:closable requires sf-icon-button, which is absent from the pinned runtime pair',
+            ], [
+                'prop' => 'type',
+                'value' => 'success',
+                'code' => 'FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME',
+                'reason' => 'ui.alert:type=success has a transparent status icon in the pinned Framework stylesheet',
             ]],
             'omitted_assets' => [
                 'simai.framework.bridge.js' => 'The Larena backend event bridge is excluded because portable Docara admits no backend handler, data-binding or effect contract.',
             ],
             'excluded_states' => [
                 'closable' => ['prop' => 'closable', 'value' => true],
+                'success' => ['prop' => 'type', 'value' => 'success'],
             ],
             'description' => 'Reports a result, warning, or error as presentation-only content in portable Docara.',
             'limitations' => [
                 'The id property is generated deterministically by Docara.',
                 'closable=true is not admitted by the current bounded runtime.',
+                'type=success is not admitted because the pinned Framework stylesheet renders its status icon transparent.',
                 'The Larena backend event bridge is intentionally omitted; portable Docara renders this component without backend handlers.',
             ],
         ],
@@ -154,6 +161,19 @@ final readonly class FrameworkConsumerPolicy
     public function limitations(string $component): array
     {
         return $this->policy($component)['limitations'];
+    }
+
+    /** @return list<mixed> */
+    public function blockedValues(string $component, string $property): array
+    {
+        $values = [];
+        foreach ($this->policy($component)['blocked'] as $blocked) {
+            if ($blocked['prop'] === $property) {
+                $values[] = $blocked['value'];
+            }
+        }
+
+        return $values;
     }
 
     /** @return list<string> */

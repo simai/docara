@@ -4,6 +4,22 @@
     "category": "technical_content",
     "title": "Enhanced code",
     "description": "Syntax highlighting and an accessible copy action for fenced code.",
+    "presentation": {
+        "ru": {
+            "title": "Расширенный блок кода",
+            "description": "Подсветка синтаксиса и доступное копирование содержимого блока кода.",
+            "limitations": [
+                "Доступные внешние файлы пока не образуют принятый контракт авторинга, ассетов и доступности."
+            ],
+            "states": {},
+            "parameters": {},
+            "gap": {
+                "reason": "Нет точной проекции Docara, закрепляющей подсветку, копирование и их доступное поведение.",
+                "fallback": "Используйте поддерживаемый семантический вывод native.code.",
+                "admission_condition": "Закрепить точный контракт ассетов и доступности, затем добавить детерминированную проекцию, тесты, документацию и браузерную приёмку."
+            }
+        }
+    },
     "lifecycle": "framework_gap",
     "authoring": {
         "syntax": "unavailable",

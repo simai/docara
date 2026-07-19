@@ -1,4 +1,4 @@
-- Первый пункт
-- Второй пункт
+- First item
+- Second item
 
-> Хорошая документация помогает выполнить задачу.
+> Good documentation helps people complete a task.

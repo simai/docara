@@ -6,6 +6,22 @@
     "category": "navigation",
     "title": "CTA link",
     "description": "Turns one safe Markdown link into a prominent native navigation action.",
+    "presentation": {
+        "ru": {
+            "title": "Призыв к действию",
+            "description": "Превращает одну безопасную ссылку Markdown в заметное навигационное действие.",
+            "limitations": [
+                "Содержимое должно включать ровно одну безопасную ссылку Markdown.",
+                "Результат остаётся обычной ссылкой и не заявляет выполнение действия Smart-компонентом."
+            ],
+            "states": {
+                "default": "Обычное состояние",
+                "focus": "Фокус"
+            },
+            "parameters": {},
+            "example_ref": "resources/component-catalog/examples/docara.cta.ru.md"
+        }
+    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "directive",
@@ -27,7 +43,7 @@
         "renderer": true,
         "tests": true,
         "docs": true,
-        "demo": false
+        "demo": true
     },
     "docs_ref": "docs/site/content/components/cta.md",
     "example_ref": "resources/component-catalog/examples/docara.cta.md",

@@ -51,22 +51,75 @@ final class PortableConfigurationLoader
 
     public function resolve(string $page): ResolvedPagePlan
     {
-        $page = $this->normalizeRelativePath($page);
+        $page = $this->normalizePage($page);
+        $pagePath = $this->confinedFile($page, true);
+        [$configuration, $frameworkLock, $trace, $provenance] =
+            $this->resolveInheritedConfiguration($page, true);
 
+        $markdown = @file_get_contents($pagePath);
+        if (! is_string($markdown)) {
+            throw new PortableConfigurationException(
+                'PORTABLE_FILE_READ_FAILED',
+                "Portable page [$page] could not be read.",
+            );
+        }
+        $trace[] = $this->trace('content', $page, $markdown, null);
+
+        return new ResolvedPagePlan(
+            $page,
+            $markdown,
+            $configuration,
+            $frameworkLock,
+            $trace,
+            $provenance,
+        );
+    }
+
+    /**
+     * Resolve site and section inheritance for a generated page without
+     * pretending that an authored Markdown file or page sidecar exists.
+     */
+    public function resolveGeneratedBase(string $page): ResolvedPagePlan
+    {
+        $page = $this->normalizePage($page);
+        [$configuration, $frameworkLock, $trace, $provenance] =
+            $this->resolveInheritedConfiguration($page, false);
+
+        return new ResolvedPagePlan(
+            $page,
+            '',
+            $configuration,
+            $frameworkLock,
+            $trace,
+            $provenance,
+        );
+    }
+
+    private function normalizePage(string $page): string
+    {
+        $page = $this->normalizeRelativePath($page);
         if (! in_array(strtolower((string) pathinfo($page, PATHINFO_EXTENSION)), ['md', 'markdown'], true)) {
             throw new PortableConfigurationException('PAGE_EXTENSION_INVALID', 'Portable pages must use .md or .markdown.');
         }
 
-        $pagePath = $this->confinedFile($page, true);
+        return $page;
+    }
+
+    /**
+     * @return array{
+     *     0: array<string, mixed>,
+     *     1: array<string, mixed>,
+     *     2: list<array<string, mixed>>,
+     *     3: array<string, string>
+     * }
+     */
+    private function resolveInheritedConfiguration(string $page, bool $includePageSidecar): array
+    {
         $trace = [];
-        $provenance = [];
-        $configuration = [];
 
         [$site, $siteTrace] = $this->loadJson('docara.json', 'site.schema.json', 'site', true);
         $trace[] = $siteTrace;
-
         $contentRoot = (string) ($site['content_root'] ?? 'content');
-
         if (! str_starts_with($page, $contentRoot . '/')) {
             throw new PortableConfigurationException(
                 'PAGE_OUTSIDE_CONTENT_ROOT',
@@ -111,7 +164,6 @@ final class PortableConfigurationLoader
 
         foreach ($this->sectionFilesFor($page) as $sectionFile) {
             [$section, $sectionTrace] = $this->loadJson($sectionFile, 'section.schema.json', 'section', false);
-
             if ($section === null) {
                 continue;
             }
@@ -127,38 +179,23 @@ final class PortableConfigurationLoader
             $provenance = $result->provenance;
         }
 
-        $sidecar = $this->pageSidecar($page);
-        [$pageConfiguration, $pageTrace] = $this->loadJson($sidecar, 'page.schema.json', 'page', false);
-
-        if ($pageConfiguration !== null) {
-            $trace[] = $pageTrace;
-            $result = $this->merger->merge(
-                $configuration,
-                $this->configurationPayload($pageConfiguration),
-                $sidecar,
-                $provenance,
-            );
-            $configuration = $result->configuration;
-            $provenance = $result->provenance;
+        if ($includePageSidecar) {
+            $sidecar = $this->pageSidecar($page);
+            [$pageConfiguration, $pageTrace] = $this->loadJson($sidecar, 'page.schema.json', 'page', false);
+            if ($pageConfiguration !== null) {
+                $trace[] = $pageTrace;
+                $result = $this->merger->merge(
+                    $configuration,
+                    $this->configurationPayload($pageConfiguration),
+                    $sidecar,
+                    $provenance,
+                );
+                $configuration = $result->configuration;
+                $provenance = $result->provenance;
+            }
         }
 
-        $markdown = @file_get_contents($pagePath);
-        if (! is_string($markdown)) {
-            throw new PortableConfigurationException(
-                'PORTABLE_FILE_READ_FAILED',
-                "Portable page [$page] could not be read.",
-            );
-        }
-        $trace[] = $this->trace('content', $page, $markdown, null);
-
-        return new ResolvedPagePlan(
-            $page,
-            $markdown,
-            $configuration,
-            $frameworkLock,
-            $trace,
-            $provenance,
-        );
+        return [$configuration, $frameworkLock, $trace, $provenance];
     }
 
     /**

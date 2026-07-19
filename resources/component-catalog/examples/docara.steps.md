@@ -1,5 +1,5 @@
 :::steps
-1. Подготовьте Markdown.
-2. Проверьте JSON.
-3. Соберите статический сайт.
+1. Prepare the Markdown.
+2. Validate the JSON.
+3. Build the static site.
 :::

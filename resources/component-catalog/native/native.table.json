@@ -4,6 +4,18 @@
     "category": "technical_content",
     "title": "Markdown table",
     "description": "Presents small comparison or reference data in a scroll-safe semantic table.",
+    "presentation": {
+        "ru": {
+            "title": "Таблица Markdown",
+            "description": "Показывает небольшие сравнительные или справочные данные в семантической таблице с безопасной прокруткой.",
+            "limitations": [
+                "Это обычная таблица Markdown, а не структурированный контракт представления данных."
+            ],
+            "states": {},
+            "parameters": {},
+            "example_ref": "resources/component-catalog/examples/native.table.ru.md"
+        }
+    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "markdown",
@@ -21,7 +33,7 @@
         "renderer": true,
         "tests": true,
         "docs": true,
-        "demo": false
+        "demo": true
     },
     "docs_ref": "docs/site/content/components/table.md",
     "example_ref": "resources/component-catalog/examples/native.table.md",

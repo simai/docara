@@ -4,6 +4,22 @@
     "category": "status",
     "title": "Badge",
     "description": "A compact status label based on an exact upstream Smart manifest.",
+    "presentation": {
+        "ru": {
+            "title": "Метка статуса",
+            "description": "Компактная метка состояния на основе точного внешнего манифеста Smart-компонента.",
+            "limitations": [
+                "Внешний манифест существует, но ещё не принят Docara."
+            ],
+            "states": {},
+            "parameters": {},
+            "gap": {
+                "reason": "В Docara нет встроенного манифеста метки, неизменяемой записи блокировки, опубликованных ассетов и тестов авторинга.",
+                "fallback": "Используйте обычный выделенный текст, который прямо называет состояние.",
+                "admission_condition": "Встроить точный внешний манифест, закрепить ревизию поставщика и ассеты, запретить управляемые автором ID и пройти проверку схемы, рендеринга, документации и браузера."
+            }
+        }
+    },
     "lifecycle": "admission_pending",
     "authoring": {
         "syntax": "proposed_directive",

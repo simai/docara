@@ -108,6 +108,44 @@ final class PortableConfigurationTest extends TestCase
         self::assertStringNotContainsString($this->root, CanonicalJson::encode($serialized));
     }
 
+    public function test_generated_base_inherits_real_sections_without_an_authored_page_or_sidecar(): void
+    {
+        $this->writeJson('content/components/_section.json', [
+            'schema' => 'docara.section.v1',
+            'locale' => 'ru',
+            'layout' => ['max_width' => 'full'],
+            'settings' => ['theme' => 'light'],
+        ]);
+        $this->writeJson('content/components/catalog/index.page.json', [
+            'schema' => 'docara.page.v1',
+            'preset' => 'landing',
+            'locale' => 'en',
+            'settings' => ['theme' => 'dark'],
+        ]);
+
+        $plan = (new PortableConfigurationLoader($this->root))
+            ->resolveGeneratedBase('content/components/catalog/index.md');
+
+        self::assertSame('content/components/catalog/index.md', $plan->page);
+        self::assertSame('', $plan->markdown);
+        self::assertSame('ru', $plan->configuration['locale']);
+        self::assertSame('full', $plan->configuration['layout']['max_width']);
+        self::assertSame('light', $plan->configuration['settings']['theme']);
+        self::assertSame('content/components/_section.json', $plan->provenance['/locale']);
+        self::assertSame('content/components/_section.json', $plan->provenance['/settings/theme']);
+        self::assertSame(
+            [
+                'docara.json',
+                'framework.lock.json',
+                '_section.json',
+                'content/_section.json',
+                'content/components/_section.json',
+            ],
+            array_column($plan->trace, 'source'),
+        );
+        self::assertNotContains('content/components/catalog/index.page.json', array_column($plan->trace, 'source'));
+    }
+
     public function test_arrays_replace_objects_merge_and_reset_clears_a_branch_and_its_provenance(): void
     {
         $merger = new ConfigurationMerger;

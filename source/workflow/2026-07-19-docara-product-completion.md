@@ -254,7 +254,7 @@ Do not complete the Goal until:
 | `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | accepted and published locally | exact HCS/tester/browser, independent visual/evidence audit and served smoke PASS |
 | `WS-LANDING-05` | Docara owner with UX/designer | landing recipe and responsive demonstration from pinned Framework building blocks | this worktree | accepted and published locally | exact tester, HCS/source/security, native-Chrome UX/design and served smoke PASS |
 | `WS-CATALOG-CONTRACT-06` | Docara owner with Framework consultation | one effective component projection, typed definitions and lifecycle/gap contract | this worktree | accepted and published locally | schemas, negative matrix, deterministic projection, exact tester, complete-diff HCS and browser/publication PASS |
-| `WS-LIVE-CATALOG-07` | Docara owner with docs, UX and designer | generated component catalogue, generic detail page, exact examples and `docara.columns` | this worktree | implementation in progress | deterministic pages/examples, schema and negative matrix, exact tester, complete-diff HCS, browser/UX/design and publication PASS |
+| `WS-LIVE-CATALOG-07` | Docara owner with docs, UX and designer | generated component catalogue, generic detail page, exact examples and `docara.columns` | this worktree | mutable implementation verified; immutable candidate pending | deterministic pages/examples, schema and negative matrix, exact tester, complete-diff HCS, browser/UX/design and publication PASS |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -345,12 +345,12 @@ was discovered.
 
 ## Next Safe Batch
 
-Implement Batch 7 test-first from the accepted EffectiveComponentCatalog.
-Generate a compact index and generic detail page, attach one exact fixture to
-every supported record and add the bounded `docara.columns` recipe. Require
-deterministic/static checks, independent archive, complete-diff
-HCS/source/security and native-Chrome UX/design acceptance for one immutable
-candidate. Keep the accepted Batch 6 build served until all Batch 7 gates pass.
+Commit the verified Batch 7 implementation as one immutable candidate. Require
+independent exact-archive tester, complete-diff HCS/source/security and
+native-Chrome UX/design acceptance for that exact SHA, then publish through
+staging with rollback and matching digests. Continue directly to Batch 8 only
+after the bounded Batch 7 closure. Keep the accepted Batch 6 build served until
+all Batch 7 gates pass.
 
 ## Last Completed Batch
 
@@ -415,3 +415,14 @@ matches, and the accepted Batch 5 tree remains preserved for rollback at
 `.docara-backups/product-completion-catalog-contract-68a960f-20260719-152452`.
 This accepts and publishes Batch 6 only; Batch 7 and the wider Goal remain
 in progress.
+
+Batch 7 mutable implementation is complete and candidate preparation is
+recorded in `batch-7-live-catalog-implementation.md`. The single generated
+projection contains 17 records, 12 supported live examples, one index and 12
+generic details; `docara.columns` closes the required responsive layout recipe.
+Two clean production builds are byte-identical at
+`dc6e2a997314a2497da29af3e696937d7f46aee2a832ed3166e2862cdd963675`
+with 70 files, 60 HTML pages and 6477 verified local references. The complete
+sequential suite passes with 534 tests and 3923 assertions. This is mutable
+pre-acceptance evidence only: no Batch 7 candidate, publication or wider Goal
+claim exists until the exact gates pass.

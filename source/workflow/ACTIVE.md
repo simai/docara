@@ -26,17 +26,18 @@ typed `docara.columns` layout recipe.
 
 ## Next Step
 
-Batch 6 candidate `68a960ff1debde48664aa8541413dbef208612ee`
-passed independent exact tester, native-Chrome UX/design and
-Human-Centered Simplicity/source/security gates. Its exact build is served
-locally with matching source/staging/served digest
-`16bbdd52e2dc0e0c058c02dfbc61e3dd824fa2e59be23b45848f587d83a3fc50`;
-the accepted Batch 5 tree is the timestamped rollback.
+Batch 7 mutable implementation is verified and ready to become one immutable
+candidate. It derives 17 records, 12 supported examples, one generated index
+and 12 generated detail pages from the accepted
+EffectiveComponentCatalog. Two clean production builds are byte-identical:
+70 files, 60 HTML pages, 6477 checked local references and digest
+`dc6e2a997314a2497da29af3e696937d7f46aee2a832ed3166e2862cdd963675`.
+The complete sequential suite passes with 534 tests and 3923 assertions.
 
-Implement Batch 7 test-first from the accepted EffectiveComponentCatalog:
-generate one compact catalogue and one generic detail template, add exact
-example fixtures and close the required `docara.columns` recipe without a
-second registry or Framework owner write. Keep the accepted Batch 6 build
-served until one immutable Batch 7 candidate passes exact tester,
-complete-diff HCS/source/security and native-Chrome UX/design gates. Public
-release, default-branch migration and repository retirement remain excluded.
+Create the Batch 7 candidate commit, then require independent exact-archive
+tester, complete-diff Human-Centered Simplicity/source/security and
+native-Chrome UX/design verdicts for that exact SHA. Publish only after all
+three gates pass, using staging, a timestamped rollback and matching
+source/staging/served digests. Then continue directly to Batch 8. Public
+release, default-branch migration, Framework owner writes and repository
+retirement remain excluded.

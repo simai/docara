@@ -4,6 +4,22 @@
     "category": "structured_data",
     "title": "Data view",
     "description": "A structured data and settings contract for interactive data presentation.",
+    "presentation": {
+        "ru": {
+            "title": "Представление данных",
+            "description": "Структурированный контракт данных и настроек для интерактивного представления информации.",
+            "limitations": [
+                "Эта задача отличается от вывода небольшой таблицы Markdown."
+            ],
+            "states": {},
+            "parameters": {},
+            "gap": {
+                "reason": "Для Docara не принят ограниченный переносимый контракт источника данных, настроек, взаимодействия и рендеринга.",
+                "fallback": "Для небольших справочных данных используйте поддерживаемый native.table.",
+                "admission_condition": "Определить отдельный переносимый контракт данных и настроек с детерминированным рендерингом, доступностью, тестами и документацией."
+            }
+        }
+    },
     "lifecycle": "deferred",
     "authoring": {
         "syntax": "unavailable",

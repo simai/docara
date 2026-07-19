@@ -4,6 +4,18 @@
     "category": "technical_content",
     "title": "Semantic code",
     "description": "Renders inline and fenced Markdown code with semantic markup and safe overflow.",
+    "presentation": {
+        "ru": {
+            "title": "Код",
+            "description": "Выводит фрагменты и блоки кода из Markdown в семантической разметке с безопасной горизонтальной прокруткой.",
+            "limitations": [
+                "Подсветка синтаксиса и кнопка копирования пока не входят в принятый контракт."
+            ],
+            "states": {},
+            "parameters": {},
+            "example_ref": "resources/component-catalog/examples/native.code.ru.md"
+        }
+    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "markdown",
@@ -21,7 +33,7 @@
         "renderer": true,
         "tests": true,
         "docs": true,
-        "demo": false
+        "demo": true
     },
     "docs_ref": "docs/site/content/components/code.md",
     "example_ref": "resources/component-catalog/examples/native.code.md",

@@ -6,6 +6,19 @@
     "category": "content_structure",
     "title": "Steps",
     "description": "Shows a short ordered sequence of actions.",
+    "presentation": {
+        "ru": {
+            "title": "Шаги",
+            "description": "Показывает короткую упорядоченную последовательность действий.",
+            "limitations": [
+                "Содержимое должно включать ровно один нумерованный список Markdown.",
+                "Вложенные директивы Docara не поддерживаются."
+            ],
+            "states": {},
+            "parameters": {},
+            "example_ref": "resources/component-catalog/examples/docara.steps.ru.md"
+        }
+    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "directive",
@@ -24,7 +37,7 @@
         "renderer": true,
         "tests": true,
         "docs": true,
-        "demo": false
+        "demo": true
     },
     "docs_ref": "docs/site/content/components/steps.md",
     "example_ref": "resources/component-catalog/examples/docara.steps.md",

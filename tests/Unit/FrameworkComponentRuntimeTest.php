@@ -471,6 +471,7 @@ MD, 'guide.md');
         yield 'loading requires disabled' => [":::ui.button\n{\"loading\":true,\"disabled\":false}\n:::\n", 'FRAMEWORK_CONSTRAINT_REQUIREMENT_INVALID'];
         yield 'unknown preset' => [":::ui.button\n{\"preset\":\"invented\"}\n:::\n", 'FRAMEWORK_PRESET_UNKNOWN'];
         yield 'alert dependency outside bounded pair' => [":::ui.alert\n{\"closable\":true}\n:::\n", 'FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME'];
+        yield 'alert success icon defect outside bounded pair' => [":::ui.alert\n{\"type\":\"success\"}\n:::\n", 'FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME'];
     }
 
     public function test_source_directive_marker_count_is_bounded_before_extraction(): void

@@ -1,4 +1,4 @@
 :::ui.alert
-{"type":"success","variant":"default","title":"Сборка завершена","supporting-text":"JSON и Markdown прошли проверку.","closable":false,"aria-label":"Сборка завершена успешно"}
+{"type":"info","variant":"default","title":"Verified Smart component","supporting-text":"This example uses the exact pinned Simai Framework contract.","closable":false,"aria-label":"Verified Smart component"}
 
 :::

@@ -44,12 +44,15 @@ final class PortableSiteBuilderTest extends TestCase
 
         $result = $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
-        self::assertCount(7, $result);
+        self::assertCount(20, $result);
         self::assertFileExists($this->tmpPath('build_local/index.html'));
         self::assertFileExists($this->tmpPath('build_local/guides/getting-started/index.html'));
         self::assertFileExists($this->tmpPath('build_local/guides/platform/configuration/layout/index.html'));
         self::assertFileExists($this->tmpPath('build_local/landing/index.html'));
         self::assertFileExists($this->tmpPath('build_local/_docara/component-catalog.json'));
+        self::assertFileExists($this->tmpPath('build_local/.docara/component-catalog-pages.json'));
+        self::assertFileExists($this->tmpPath('build_local/components/catalog/index.html'));
+        self::assertFileExists($this->tmpPath('build_local/components/catalog/docara.columns/index.html'));
         self::assertFileExists($this->tmpPath('build_local/_docara/search-index.json'));
         self::assertFileExists($this->tmpPath('build_local/_docara/search.js'));
 
@@ -155,6 +158,7 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('[data-docara-reader-settings-trigger]:focus-visible', $html);
             self::assertStringContainsString('data-docara-reader-settings-close', $html);
             self::assertStringContainsString('[data-docara-reader-settings-close]:focus-visible', $html);
+            self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $html);
             self::assertStringContainsString('sf-button>button:focus-visible', $html);
             self::assertStringContainsString('@7e836d8a9414d5da553fb1ab0404721e5b48769a/', $html);
             self::assertStringNotContainsString('simai/ui-smart@', $html);
@@ -299,7 +303,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertDoesNotMatchRegularExpression('/"navigation":\s*\[\]/', $diagnosticJson);
         $diagnostics = $this->jsonFile($diagnosticPath);
         self::assertSame('docara.resolved_page_plans.v1', $diagnostics['schema']);
-        self::assertCount(7, $diagnostics['pages']);
+        self::assertCount(20, $diagnostics['pages']);
         $guidePlan = collect($diagnostics['pages'])->firstWhere('output', 'guides/getting-started/index.html');
         self::assertIsArray($guidePlan);
         self::assertSame(1, $guidePlan['resolved_page_plan']['contract_version']);
@@ -323,7 +327,7 @@ final class PortableSiteBuilderTest extends TestCase
         $searchIndex = $this->jsonFile($this->tmpPath('build_local/_docara/search-index.json'));
         self::assertSame('docara.search_index.v1', $searchIndex['schema']);
         self::assertSame('docara-prefix-v1', $searchIndex['algorithm']);
-        self::assertCount(6, $searchIndex['documents']);
+        self::assertCount(19, $searchIndex['documents']);
         self::assertNotContains('/landing/', array_column($searchIndex['documents'], 'url'));
         self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $searchIndex['content_sha256']);
         $searchText = implode(' ', array_column($searchIndex['documents'], 'text'));
@@ -491,6 +495,7 @@ final class PortableSiteBuilderTest extends TestCase
             '/guides/platform/',
             '/guides/platform/configuration/',
             '/guides/platform/configuration/layout/',
+            '/components/catalog/',
         ], $this->desktopNavigationLinks($html));
 
         $diagnostics = $this->jsonFile($this->tmpPath('build_local/.docara/resolved-page-plans.json'));

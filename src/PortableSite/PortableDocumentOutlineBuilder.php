@@ -62,7 +62,9 @@ final readonly class PortableDocumentOutlineBuilder
         $xpath = new DOMXPath($document);
         $headings = [];
         foreach ($xpath->query(
-            '//*[@id="docara-outline-root"]//*[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6]',
+            '//*[@id="docara-outline-root"]//*'
+            . '[self::h1 or self::h2 or self::h3 or self::h4 or self::h5 or self::h6]'
+            . '[not(ancestor::*[@data-docara-outline-exclude])]',
         ) ?: [] as $heading) {
             if ($heading instanceof DOMElement) {
                 $headings[] = $heading;

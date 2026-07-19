@@ -4,6 +4,8 @@ namespace Simai\Docara\Console;
 
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Arr;
+use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -63,12 +65,74 @@ class ServeCommand extends Command
                 '--quiet' => $this->input->getOption('quiet'),
                 '--verbose' => $this->input->getOption('verbose'),
             ]);
-            $buildCmd->run($buildArgs, $this->output);
+            $buildStatus = $buildCmd->run($buildArgs, $this->output);
+            if ($buildStatus !== static::SUCCESS) {
+                return $buildStatus;
+            }
         }
 
-        $this->console->info("Server started on http://{$host}:{$port}");
+        $address = $this->serverAddress($host, $port);
+        $buildPath = $this->getBuildPath($env);
 
-        passthru("php -S {$host}:{$port} -t " . escapeshellarg($this->getBuildPath($env)));
+        $this->console->info("Server started on http://{$address}");
+
+        return $this->runPreviewServer($address, $buildPath);
+    }
+
+    protected function runPreviewServer(string $address, string $buildPath): int
+    {
+        $status = static::FAILURE;
+        passthru($this->buildPreviewServerCommand($address, $buildPath), $status);
+
+        return $status;
+    }
+
+    protected function buildPreviewServerCommand(string $address, string $buildPath): string
+    {
+        $arguments = [
+            PHP_BINARY,
+            '-S',
+            $address,
+            '-t',
+            $buildPath,
+            $this->previewRouterPath(),
+        ];
+
+        return implode(' ', array_map('escapeshellarg', $arguments));
+    }
+
+    private function serverAddress(mixed $host, mixed $port): string
+    {
+        if (
+            ! is_string($host)
+            || preg_match(
+                '/\A(?:localhost|[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?|\[[0-9A-Fa-f:.]+\])\z/D',
+                $host,
+            ) !== 1
+        ) {
+            throw new InvalidArgumentException('The preview host contains unsupported characters.');
+        }
+
+        $port = is_int($port) ? (string) $port : $port;
+        if (
+            ! is_string($port)
+            || preg_match('/\A[1-9][0-9]{0,4}\z/D', $port) !== 1
+            || (int) $port > 65535
+        ) {
+            throw new InvalidArgumentException('The preview port must be an integer between 1 and 65535.');
+        }
+
+        return "{$host}:{$port}";
+    }
+
+    private function previewRouterPath(): string
+    {
+        $path = dirname(__DIR__, 2) . '/resources/portable/static-router.php';
+        if (! is_file($path)) {
+            throw new RuntimeException("The Docara preview router is missing: {$path}");
+        }
+
+        return $path;
     }
 
     private function getBuildPath($env)

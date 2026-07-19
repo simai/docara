@@ -1,3 +1,3 @@
-[Открыть руководство по началу работы](/start/)
+[Back to the catalog](../)
 
-![Знак Docara](/assets/docara-mark.svg)
+![Docara mark](../../../_docara/component-catalog/docara-mark.svg)

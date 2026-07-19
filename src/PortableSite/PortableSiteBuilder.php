@@ -101,6 +101,45 @@ final readonly class PortableSiteBuilder
             ];
         }
 
+        $catalogBasePlan = $loader->resolveGeneratedBase(
+            $contentRoot . '/components/catalog/index.md',
+        );
+        if (CanonicalJson::encode($catalogBasePlan->frameworkLock) !== $frameworkLockCanonical) {
+            throw new PortableConfigurationException(
+                'FRAMEWORK_LOCK_CHANGED_DURING_BUILD',
+                'The Framework lock changed while the generated component catalogue was being resolved.',
+            );
+        }
+        if (! $runtime instanceof FrameworkComponentRuntime) {
+            throw new PortableConfigurationException(
+                'FRAMEWORK_RUNTIME_MISSING',
+                'The component runtime was not initialized for the portable build.',
+            );
+        }
+        $effectiveComponentCatalog = EffectiveComponentCatalogBuilder::bundled(
+            FrameworkLock::fromArray($catalogBasePlan->frameworkLock),
+        )->build();
+        $componentCatalogProjector = new PortableComponentCatalogProjector($this->markdown);
+        $componentCatalogProjection = $componentCatalogProjector->project(
+            catalog: $effectiveComponentCatalog,
+            runtime: $runtime,
+            basePlan: $catalogBasePlan,
+            contentRoot: $contentRoot,
+            baseUrl: (string) ($site['base_url'] ?? '/'),
+            homeUrl: $this->homeUrl((string) ($site['base_url'] ?? '/')),
+            reservedDocumentIds: $this->html->reservedDocumentIds(),
+        );
+        foreach ($componentCatalogProjection['pages'] as $catalogPage) {
+            if (isset($outputs[$catalogPage['output']])) {
+                throw new PortableConfigurationException(
+                    'COMPONENT_CATALOG_ROUTE_COLLISION',
+                    "Authored page [{$outputs[$catalogPage['output']]}] shadows generated component catalogue route [{$catalogPage['output']}].",
+                );
+            }
+            $outputs[$catalogPage['output']] = '@docara/component-catalog';
+            $pages[] = $catalogPage;
+        }
+
         $navigationBuilder = new PortableNavigationBuilder;
         $topology = $navigationBuilder->build($pages, $contentRoot, $contentPath);
         $navigation = $navigationBuilder->visible($topology);
@@ -113,7 +152,6 @@ final readonly class PortableSiteBuilder
             (string) ($site['base_url'] ?? '/'),
             $siteTitle,
         );
-        $searchPlan = null;
         $searchEnabled = false;
         foreach ($pages as $page) {
             if ($page['search_enabled'] === true) {
@@ -121,6 +159,7 @@ final readonly class PortableSiteBuilder
                 break;
             }
         }
+        $searchPlan = null;
         if ($searchEnabled) {
             $searchPlan = (new PortableSearchIndexBuilder)->plan(
                 $pages,
@@ -135,13 +174,7 @@ final readonly class PortableSiteBuilder
             }
             unset($page);
         }
-        /** @var ResolvedPagePlan $firstPlan */
-        $firstPlan = $pages[0]['plan'];
-        $componentCatalogJson = CanonicalJson::encodePretty(
-            EffectiveComponentCatalogBuilder::bundled(
-                FrameworkLock::fromArray($firstPlan->frameworkLock),
-            )->build(),
-        );
+        $componentCatalogJson = CanonicalJson::encodePretty($effectiveComponentCatalog);
 
         $this->prepareDestination($root, $destination);
         $result = collect();
@@ -150,6 +183,24 @@ final readonly class PortableSiteBuilder
         $docaraOutputDirectory = rtrim($destination, '/\\') . '/_docara';
         $this->files->ensureDirectoryExists($docaraOutputDirectory);
         $this->files->put($docaraOutputDirectory . '/component-catalog.json', $componentCatalogJson);
+        $catalogReceiptPath = rtrim($destination, '/\\') . '/.docara/component-catalog-pages.json';
+        $this->files->ensureDirectoryExists(dirname($catalogReceiptPath));
+        $this->files->put(
+            $catalogReceiptPath,
+            $this->prettyCanonicalJson($componentCatalogProjection['receipt']),
+        );
+        foreach ($componentCatalogProjector->assets() as $relative => $bytes) {
+            $assetPath = rtrim($destination, '/\\') . '/' . $relative;
+            $this->files->ensureDirectoryExists(dirname($assetPath));
+            if ($this->files->put($assetPath, $bytes) === false
+                || ! hash_equals(hash('sha256', $bytes), (string) hash_file('sha256', $assetPath))
+            ) {
+                throw new PortableConfigurationException(
+                    'COMPONENT_CATALOG_ASSET_PUBLICATION_FAILED',
+                    $relative,
+                );
+            }
+        }
 
         if ($searchPlan instanceof PortableSearchPlan) {
             $this->files->put($docaraOutputDirectory . '/search-index.json', $searchPlan->indexJson);
@@ -168,10 +219,26 @@ final readonly class PortableSiteBuilder
             $page['next'] = $page['reading_previous_next'] === true
                 ? $readingContext['next']
                 : null;
+            if (isset($page['component_catalog_kind'])) {
+                $page['breadcrumbs'] = $page['reading_breadcrumbs'] === true
+                    ? $page['component_catalog_breadcrumbs']
+                    : [];
+                $page['previous'] = $page['reading_previous_next'] === true
+                    ? $page['component_catalog_previous']
+                    : null;
+                $page['next'] = $page['reading_previous_next'] === true
+                    ? $page['component_catalog_next']
+                    : null;
+            }
             if ($page['reading_toc'] !== true) {
                 $page['outline'] = [];
             }
-            $activeNavigation = $navigationBuilder->activate($navigation, (string) $page['url']);
+            $activeNavigation = $navigationBuilder->activate(
+                $navigation,
+                ($page['component_catalog_kind'] ?? null) === 'detail'
+                    ? (string) $page['component_catalog_index_url']
+                    : (string) $page['url'],
+            );
             $outputPath = rtrim($destination, '/\\') . '/' . $page['output'];
             $this->files->ensureDirectoryExists(dirname($outputPath));
             $rendered = $this->html->render($page, $activeNavigation, $siteTitle, $page['components']->assetPlan);
@@ -192,7 +259,7 @@ final readonly class PortableSiteBuilder
 
         $this->copyContentAssets($contentAssets, $destination);
         $brandPublisher->publish($brandPlan['assets'], $destination);
-        $this->publishFrameworkAssets($firstPlan->frameworkLock, $destination);
+        $this->publishFrameworkAssets($catalogBasePlan->frameworkLock, $destination);
         $diagnosticPath = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
         $this->files->ensureDirectoryExists(dirname($diagnosticPath));
         $this->files->put($diagnosticPath, $this->prettyCanonicalJson([

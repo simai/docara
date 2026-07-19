@@ -73,20 +73,28 @@ final readonly class EffectiveComponentCatalogValidator
         foreach ($entries as $entry) {
             $this->assertFamilyContract($entry, $catalog);
             $lifecycle = $entry['lifecycle'] ?? null;
+            $this->assertPresentationContract($entry);
             if ($lifecycle === 'supported') {
                 $verification = $entry['verification'] ?? null;
                 if (! is_array($verification)
                     || ($verification['renderer'] ?? null) !== true
                     || ($verification['tests'] ?? null) !== true
                     || ($verification['docs'] ?? null) !== true
+                    || ($verification['demo'] ?? null) !== true
                     || ! is_string($entry['example_ref'] ?? null)
                 ) {
                     throw new PortableConfigurationException(
                         'COMPONENT_CATALOG_SUPPORTED_EVIDENCE_REQUIRED',
-                        'Every supported catalogue entry needs renderer, tests, docs and an example fixture.',
+                        'Every supported catalogue entry needs renderer, tests, docs, demo and an example fixture.',
                     );
                 }
             } else {
+                if (($entry['verification']['demo'] ?? null) !== false) {
+                    throw new PortableConfigurationException(
+                        'COMPONENT_CATALOG_UNSUPPORTED_DEMO_FORBIDDEN',
+                        'An unavailable catalogue entry cannot claim a live demo.',
+                    );
+                }
                 $gap = $entry['gap'] ?? null;
                 foreach (['owner', 'reason', 'fallback', 'admission_condition'] as $key) {
                     if (! is_array($gap) || ! is_string($gap[$key] ?? null) || trim($gap[$key]) === '') {
@@ -134,6 +142,113 @@ final readonly class EffectiveComponentCatalogValidator
         }
 
         $this->schemas->assertValid($catalog, 'effective-component-catalog.schema.json');
+    }
+
+    /** @param array<string, mixed> $entry */
+    private function assertPresentationContract(array $entry): void
+    {
+        $presentation = $entry['presentation']['ru'] ?? null;
+        $limitations = $entry['limitations'] ?? null;
+        if (! is_array($presentation)
+            || ! is_array($limitations)
+            || ! is_array($presentation['limitations'] ?? null)
+            || count($presentation['limitations']) !== count($limitations)
+        ) {
+            throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_PRESENTATION_INVALID',
+                'The Russian presentation for [' . (string) ($entry['id'] ?? '')
+                . '] must translate every catalogue limitation exactly once.',
+            );
+        }
+        $stateLabels = $presentation['states'] ?? null;
+        $states = $entry['states'] ?? null;
+        if (! is_array($stateLabels)
+            || ($stateLabels !== [] && array_is_list($stateLabels))
+            || ! is_array($states)
+            || $this->sortedStrings(array_keys($stateLabels)) !== $this->sortedStrings($states)
+        ) {
+            throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_PRESENTATION_INVALID',
+                'The Russian presentation for [' . (string) ($entry['id'] ?? '')
+                . '] must label every admitted state exactly once.',
+            );
+        }
+        $parameterPresentations = $presentation['parameters'] ?? null;
+        $parameters = $entry['authoring']['parameters'] ?? null;
+        if (! is_array($parameterPresentations)
+            || ($parameterPresentations !== [] && array_is_list($parameterPresentations))
+            || ! is_array($parameters)
+            || $this->sortedStrings(array_keys($parameterPresentations))
+                !== $this->sortedStrings(array_column($parameters, 'name'))
+        ) {
+            throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_PRESENTATION_INVALID',
+                'The Russian presentation for [' . (string) ($entry['id'] ?? '')
+                . '] must describe every author parameter exactly once.',
+            );
+        }
+        foreach ($parameters as $parameter) {
+            if (! is_array($parameter) || ! is_string($parameter['name'] ?? null)) {
+                continue;
+            }
+            $localizedValues = $parameterPresentations[$parameter['name']]['values'] ?? null;
+            $values = $parameter['values'] ?? null;
+            if (is_array($values)) {
+                if (! is_array($localizedValues)
+                    || ($localizedValues !== [] && array_is_list($localizedValues))
+                    || $this->sortedStrings(array_keys($localizedValues))
+                        !== $this->sortedStrings(array_map('strval', $values))
+                ) {
+                    throw new PortableConfigurationException(
+                        'COMPONENT_CATALOG_PRESENTATION_INVALID',
+                        'The Russian presentation for [' . (string) ($entry['id'] ?? '')
+                        . ':' . $parameter['name'] . '] must label every value exactly once.',
+                    );
+                }
+            } elseif ($localizedValues !== null) {
+                throw new PortableConfigurationException(
+                    'COMPONENT_CATALOG_PRESENTATION_INVALID',
+                    'A parameter without enumerated values cannot declare localized value labels.',
+                );
+            }
+        }
+
+        $supported = ($entry['lifecycle'] ?? null) === 'supported';
+        if ($supported && ! is_string($presentation['example_ref'] ?? null)) {
+            throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_PRESENTATION_INVALID',
+                'Every supported catalogue entry needs a localized Russian example fixture.',
+            );
+        }
+        if (! $supported && array_key_exists('example_ref', $presentation)) {
+            throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_PRESENTATION_INVALID',
+                'Unavailable catalogue entries cannot present a localized live example.',
+            );
+        }
+        if ($supported && array_key_exists('gap', $presentation)) {
+            throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_PRESENTATION_INVALID',
+                'Supported catalogue entries cannot present an availability gap.',
+            );
+        }
+        if (! $supported && ! is_array($presentation['gap'] ?? null)) {
+            throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_PRESENTATION_INVALID',
+                'Unavailable catalogue entries need a localized availability explanation.',
+            );
+        }
+    }
+
+    /** @param array<int, mixed> $values
+     * @return list<string>
+     */
+    private function sortedStrings(array $values): array
+    {
+        $values = array_map('strval', $values);
+        sort($values, SORT_STRING);
+
+        return array_values($values);
     }
 
     /** @param array<string, mixed> $entry @param array<string, mixed> $catalog */
@@ -251,6 +366,14 @@ final readonly class EffectiveComponentCatalogValidator
         foreach (['docs_ref', 'example_ref'] as $key) {
             if (is_string($entry[$key] ?? null)) {
                 $paths[] = $entry[$key];
+            }
+        }
+        $presentation = $entry['presentation'] ?? null;
+        if (is_array($presentation)) {
+            foreach ($presentation as $localized) {
+                if (is_array($localized) && is_string($localized['example_ref'] ?? null)) {
+                    $paths[] = $localized['example_ref'];
+                }
             }
         }
         $provenance = $entry['provenance'] ?? null;

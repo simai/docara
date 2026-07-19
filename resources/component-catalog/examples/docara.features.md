@@ -1,5 +1,5 @@
 :::features
-- **Markdown.** Содержание остаётся читаемым исходным текстом.
-- **JSON.** Настройки наследуются и проверяются схемами.
-- **PHP.** Переносимая сборка не требует Node.js.
+- **Markdown.** Content remains readable source text.
+- **JSON.** Settings inherit and validate against schemas.
+- **PHP.** The portable build does not require Node.js.
 :::

@@ -1,23 +1,23 @@
 :::columns
 ### Markdown
 
-Содержание остаётся читаемым исходным текстом.
+Content remains readable source text.
 
 ---
 
 ### JSON
 
-Настройки наследуются и проверяются схемами.
+Settings inherit and validate against schemas.
 
 ---
 
 ### PHP
 
-Переносимая сборка не требует Node.js.
+The portable build does not require Node.js.
 
 ---
 
 ### Simai Framework
 
-Макет использует проверенные адаптивные утилиты.
+The layout uses verified responsive utilities.
 :::

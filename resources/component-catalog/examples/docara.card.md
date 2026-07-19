@@ -1,5 +1,5 @@
 :::card
-### Переносимый проект
+### Portable project
 
-Markdown и JSON можно хранить рядом с кодом и проверять через Git.
+Markdown and JSON stay next to the code and can be reviewed through Git.
 :::

@@ -68,20 +68,24 @@ class BuildCommand extends Command
 
         $this->consoleOutput->setup($verbosity);
         $this->consoleOutput->writeIntro($env, $useCache, $cacheExists);
-        if ($this->confirmDestination()) {
-            try {
-                $this->app->make(Docara::class)->build($useCache);
-            } catch (Throwable $e) {
-                $this->app->make(ExceptionHandler::class)->report($e);
-                $this->app->make(ExceptionHandler::class)->renderForConsole($this->consoleOutput, $e);
-
-                return static::FAILURE;
-            }
-
-            $this->consoleOutput
-                ->writeTime(round(microtime(true) - $startTime, 2), $useCache, $cacheExists)
-                ->writeConclusion();
+        if (! $this->confirmDestination()) {
+            return static::FAILURE;
         }
+
+        try {
+            $this->app->make(Docara::class)->build($useCache);
+        } catch (Throwable $e) {
+            $this->app->make(ExceptionHandler::class)->report($e);
+            $this->app->make(ExceptionHandler::class)->renderForConsole($this->consoleOutput, $e);
+
+            return static::FAILURE;
+        }
+
+        $this->consoleOutput
+            ->writeTime(round(microtime(true) - $startTime, 2), $useCache, $cacheExists)
+            ->writeConclusion();
+
+        return static::SUCCESS;
     }
 
     private function watch()

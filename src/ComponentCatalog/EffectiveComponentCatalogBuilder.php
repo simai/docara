@@ -207,6 +207,7 @@ final readonly class EffectiveComponentCatalogBuilder
                 'manifest_sha256' => (string) $lockRecord['sha256'],
                 'runtime_pair' => $this->frameworkLock->pairId(),
             ]);
+            $this->assertSmartPresentationNarrowing($key, $entry, $manifest);
             $entries[] = $entry;
         }
 
@@ -315,6 +316,17 @@ final readonly class EffectiveComponentCatalogBuilder
                         "Smart manifest enum [$component:$name] cannot be projected safely.",
                     );
                 }
+                $blockedValues = $this->consumerPolicy->blockedValues($component, $name);
+                $schema['enum'] = array_values(array_filter(
+                    $schema['enum'],
+                    static fn (mixed $value): bool => ! in_array($value, $blockedValues, true),
+                ));
+                if ($schema['enum'] === []) {
+                    throw new PortableConfigurationException(
+                        'COMPONENT_CATALOG_SMART_PROP_ENUM_INVALID',
+                        "Smart manifest enum [$component:$name] is empty after consumer narrowing.",
+                    );
+                }
                 $encodedValues = [];
                 foreach ($schema['enum'] as $value) {
                     $this->assertCatalogConstraintScalar($component, $value);
@@ -368,6 +380,55 @@ final readonly class EffectiveComponentCatalogBuilder
         );
 
         return $parameters;
+    }
+
+    /** @param array<string, mixed> $entry @param array<string, mixed> $manifest */
+    private function assertSmartPresentationNarrowing(
+        string $component,
+        array $entry,
+        array $manifest,
+    ): void {
+        $presentation = $entry['presentation']['ru'] ?? null;
+        $i18n = $manifest['atlas']['i18n']['ru'] ?? null;
+        if (! is_array($presentation)
+            || ! is_array($i18n)
+            || ! is_string($i18n['title'] ?? null)
+            || ($presentation['title'] ?? null) !== $i18n['title']
+        ) {
+            throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_SMART_PRESENTATION_MISMATCH',
+                "Smart catalogue presentation for [$component] does not match its exact manifest.",
+            );
+        }
+        $controls = is_array($i18n['controls'] ?? null) ? $i18n['controls'] : [];
+        $options = is_array($i18n['options'] ?? null) ? $i18n['options'] : [];
+        $parameters = is_array($presentation['parameters'] ?? null)
+            ? $presentation['parameters']
+            : [];
+        foreach ($parameters as $name => $parameter) {
+            if (! is_string($name) || ! is_array($parameter)) {
+                continue;
+            }
+            if (isset($controls[$name]) && ($parameter['label'] ?? null) !== $controls[$name]) {
+                throw new PortableConfigurationException(
+                    'COMPONENT_CATALOG_SMART_PRESENTATION_MISMATCH',
+                    "Smart catalogue parameter label [$component:$name] conflicts with its exact manifest.",
+                );
+            }
+            if (! is_array($parameter['values'] ?? null) || ! is_array($options[$name] ?? null)) {
+                continue;
+            }
+            foreach ($parameter['values'] as $value => $label) {
+                if (array_key_exists($value, $options[$name])
+                    && $label !== $options[$name][$value]
+                ) {
+                    throw new PortableConfigurationException(
+                        'COMPONENT_CATALOG_SMART_PRESENTATION_MISMATCH',
+                        "Smart catalogue value label [$component:$name:$value] conflicts with its exact manifest.",
+                    );
+                }
+            }
+        }
     }
 
     /**
@@ -638,6 +699,23 @@ final readonly class EffectiveComponentCatalogBuilder
         foreach ($catalog['entries'] as $entry) {
             foreach (['docs_ref', 'example_ref'] as $key) {
                 $path = $entry[$key] ?? null;
+                if (! is_string($path)) {
+                    continue;
+                }
+                $absolute = $this->packageRoot . '/' . $path;
+                if (is_link($absolute) || ! is_file($absolute)) {
+                    throw new PortableConfigurationException(
+                        'COMPONENT_CATALOG_REFERENCE_MISSING',
+                        "Catalogue reference [$path] is missing or unsafe.",
+                    );
+                }
+            }
+            $presentation = $entry['presentation'] ?? null;
+            if (! is_array($presentation)) {
+                continue;
+            }
+            foreach ($presentation as $localized) {
+                $path = is_array($localized) ? ($localized['example_ref'] ?? null) : null;
                 if (! is_string($path)) {
                     continue;
                 }

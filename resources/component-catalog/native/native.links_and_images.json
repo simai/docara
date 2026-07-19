@@ -4,6 +4,21 @@
     "category": "prose",
     "title": "Links and images",
     "description": "Adds safe destinations and images with author-provided accessible text.",
+    "presentation": {
+        "ru": {
+            "title": "Ссылки и изображения",
+            "description": "Добавляет безопасные ссылки и изображения с заданным автором доступным описанием.",
+            "limitations": [
+                "Небезопасные протоколы ссылок отклоняются.",
+                "Автор отвечает за содержательный альтернативный текст изображений."
+            ],
+            "states": {
+                "link_focus": "Фокус ссылки"
+            },
+            "parameters": {},
+            "example_ref": "resources/component-catalog/examples/native.links_and_images.ru.md"
+        }
+    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "markdown",
@@ -25,7 +40,7 @@
         "renderer": true,
         "tests": true,
         "docs": true,
-        "demo": false
+        "demo": true
     },
     "docs_ref": "docs/site/content/authoring/markdown.md",
     "example_ref": "resources/component-catalog/examples/native.links_and_images.md",

@@ -6,6 +6,18 @@
     "category": "content_structure",
     "title": "Card",
     "description": "Groups related Markdown content on a neutral bounded surface.",
+    "presentation": {
+        "ru": {
+            "title": "Карточка",
+            "description": "Объединяет связанное содержимое Markdown на нейтральной визуально ограниченной поверхности.",
+            "limitations": [
+                "Вложенные типизированные директивы Docara не поддерживаются."
+            ],
+            "states": {},
+            "parameters": {},
+            "example_ref": "resources/component-catalog/examples/docara.card.ru.md"
+        }
+    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "directive",
@@ -24,7 +36,7 @@
         "renderer": true,
         "tests": true,
         "docs": true,
-        "demo": false
+        "demo": true
     },
     "docs_ref": "docs/site/content/components/card.md",
     "example_ref": "resources/component-catalog/examples/docara.card.md",

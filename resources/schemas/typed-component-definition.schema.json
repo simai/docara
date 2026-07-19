@@ -11,6 +11,7 @@
         "category",
         "title",
         "description",
+        "presentation",
         "lifecycle",
         "authoring",
         "states",
@@ -44,6 +45,9 @@
         },
         "description": {
             "$ref": "component-catalog-entry.schema.json#/$defs/non_empty_string"
+        },
+        "presentation": {
+            "$ref": "component-catalog-entry.schema.json#/$defs/presentation"
         },
         "lifecycle": {
             "type": "string",

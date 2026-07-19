@@ -1,4 +1,4 @@
-| Файл | Роль |
+| File | Role |
 | --- | --- |
-| `docara.json` | Настройки сайта |
-| `_section.json` | Настройки раздела |
+| `docara.json` | Site settings |
+| `_section.json` | Section settings |

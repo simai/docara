@@ -1,3 +1,3 @@
 :::cta
-[Начать работу](/start/)
+[Back to the catalog](../)
 :::

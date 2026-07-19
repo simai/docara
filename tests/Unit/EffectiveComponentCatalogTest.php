@@ -105,6 +105,21 @@ final class EffectiveComponentCatalogTest extends TestCase
         ] as $id) {
             self::assertSame('supported', $lifecycles[$id] ?? null, $id);
         }
+        foreach ($first['entries'] as $entry) {
+            self::assertIsArray($entry['presentation']['ru'] ?? null, (string) $entry['id']);
+            self::assertNotSame('', trim((string) $entry['presentation']['ru']['title']), (string) $entry['id']);
+            self::assertNotSame('', trim((string) $entry['presentation']['ru']['description']), (string) $entry['id']);
+            self::assertCount(
+                count($entry['limitations']),
+                $entry['presentation']['ru']['limitations'],
+                (string) $entry['id'],
+            );
+            if ($entry['lifecycle'] === 'supported') {
+                self::assertArrayNotHasKey('gap', $entry['presentation']['ru'], (string) $entry['id']);
+            } else {
+                self::assertIsArray($entry['presentation']['ru']['gap'] ?? null, (string) $entry['id']);
+            }
+        }
         self::assertSame('admission_pending', $lifecycles['ui.badge'] ?? null);
         self::assertSame('framework_gap', $lifecycles['content.icon'] ?? null);
         self::assertSame('framework_gap', $lifecycles['native.code.enhanced'] ?? null);
@@ -114,9 +129,23 @@ final class EffectiveComponentCatalogTest extends TestCase
         $alert = $first['entries'][array_search('ui.alert', $ids, true)];
         self::assertSame('framework_smart', $alert['family']);
         self::assertSame(':::ui.alert', $alert['authoring']['call']);
-        self::assertSame(['default', 'info', 'success', 'warning', 'danger'], $alert['states']);
+        self::assertSame(['default', 'info', 'warning', 'danger'], $alert['states']);
         self::assertContains('closable=true is not admitted by the current bounded runtime.', $alert['limitations']);
-        self::assertSame(['closable'], $alert['consumer_policy']['excluded_states']);
+        self::assertContains(
+            'type=success is not admitted because the pinned Framework stylesheet renders its status icon transparent.',
+            $alert['limitations'],
+        );
+        self::assertSame(['closable', 'success'], $alert['consumer_policy']['excluded_states']);
+        $alertParameters = array_column($alert['authoring']['parameters'], null, 'name');
+        self::assertSame(
+            ['clear', 'info', 'danger', 'warning'],
+            $alertParameters['type']['values'],
+        );
+        self::assertSame(
+            array_keys($alertParameters),
+            array_keys($alert['presentation']['ru']['parameters']),
+        );
+        self::assertSame('Уведомление', $alert['presentation']['ru']['title']);
         self::assertSame(
             'resources/framework/manifests/ui-alert.json',
             $alert['provenance']['manifest_ref'],
@@ -236,8 +265,10 @@ final class EffectiveComponentCatalogTest extends TestCase
                 self::assertTrue($entry['verification']['renderer']);
                 self::assertTrue($entry['verification']['tests']);
                 self::assertTrue($entry['verification']['docs']);
+                self::assertTrue($entry['verification']['demo']);
                 self::assertArrayHasKey('example_ref', $entry);
             } else {
+                self::assertFalse($entry['verification']['demo']);
                 self::assertNotSame('', $entry['gap']['owner'] ?? '');
                 self::assertNotSame('', $entry['gap']['reason'] ?? '');
                 self::assertNotSame('', $entry['gap']['fallback'] ?? '');
@@ -265,10 +296,22 @@ final class EffectiveComponentCatalogTest extends TestCase
         $missingEvidence['entries'][$supportedIndex]['verification']['tests'] = false;
         $cases[] = [$missingEvidence, 'COMPONENT_CATALOG_SUPPORTED_EVIDENCE_REQUIRED'];
 
+        $missingDemo = $catalog;
+        $missingDemo['entries'][$supportedIndex]['verification']['demo'] = false;
+        $cases[] = [$missingDemo, 'COMPONENT_CATALOG_SUPPORTED_EVIDENCE_REQUIRED'];
+
         $missingGap = $catalog;
         $gapIndex = array_search('content.icon', array_column($missingGap['entries'], 'id'), true);
         unset($missingGap['entries'][$gapIndex]['gap']['fallback']);
         $cases[] = [$missingGap, 'COMPONENT_CATALOG_GAP_EXPLANATION_REQUIRED'];
+
+        $unsupportedDemo = $catalog;
+        $unsupportedDemo['entries'][$gapIndex]['verification']['demo'] = true;
+        $cases[] = [$unsupportedDemo, 'COMPONENT_CATALOG_UNSUPPORTED_DEMO_FORBIDDEN'];
+
+        $missingLocalizedExample = $catalog;
+        unset($missingLocalizedExample['entries'][$supportedIndex]['presentation']['ru']['example_ref']);
+        $cases[] = [$missingLocalizedExample, 'COMPONENT_CATALOG_PRESENTATION_INVALID'];
 
         $unsafePath = $catalog;
         $unsafePath['entries'][0]['docs_ref'] = '/Users/example/private.md';
@@ -347,7 +390,7 @@ final class EffectiveComponentCatalogTest extends TestCase
         $policy = new FrameworkConsumerPolicy;
 
         self::assertSame(
-            ['default', 'info', 'success', 'warning', 'danger'],
+            ['default', 'info', 'warning', 'danger'],
             $policy->admittedStates('ui.alert', $manifest['atlas']['states']),
         );
 
@@ -377,47 +420,47 @@ final class EffectiveComponentCatalogTest extends TestCase
             ],
             'native.headings_and_text' => [
                 'markdown' => [
-                    '## Понятный заголовок',
-                    '**важный текст**',
-                    '*акцент*',
-                    '~~устаревшую формулировку~~',
+                    '## Clear heading',
+                    '**important text**',
+                    '*emphasis*',
+                    '~~outdated wording~~',
                 ],
                 'html' => [
-                    '<h2>Понятный заголовок</h2>',
-                    '<strong>важный текст</strong>',
-                    '<em>акцент</em>',
-                    '<del>устаревшую формулировку</del>',
+                    '<h2>Clear heading</h2>',
+                    '<strong>important text</strong>',
+                    '<em>emphasis</em>',
+                    '<del>outdated wording</del>',
                 ],
             ],
             'native.links_and_images' => [
                 'markdown' => [
-                    '[Открыть руководство по началу работы](/start/)',
-                    '![Знак Docara](/assets/docara-mark.svg)',
+                    '[Back to the catalog](../)',
+                    '![Docara mark](../../../_docara/component-catalog/docara-mark.svg)',
                 ],
                 'html' => [
-                    '<a href="/start/">Открыть руководство по началу работы</a>',
-                    '<img src="/assets/docara-mark.svg" alt="Знак Docara" />',
+                    '<a href="../">Back to the catalog</a>',
+                    '<img src="../../../_docara/component-catalog/docara-mark.svg" alt="Docara mark" />',
                 ],
             ],
             'native.lists_and_quotes' => [
                 'markdown' => [
-                    '- Первый пункт',
-                    '> Хорошая документация помогает выполнить задачу.',
+                    '- First item',
+                    '> Good documentation helps people complete a task.',
                 ],
                 'html' => [
-                    '<li>Первый пункт</li>',
+                    '<li>First item</li>',
                     '<blockquote>',
-                    'Хорошая документация помогает выполнить задачу.',
+                    'Good documentation helps people complete a task.',
                 ],
             ],
             'native.table' => [
                 'markdown' => [
-                    '| Файл | Роль |',
-                    '| `docara.json` | Настройки сайта |',
+                    '| File | Role |',
+                    '| `docara.json` | Site settings |',
                 ],
                 'html' => [
                     '<div class="overflow-auto"><table class="table table-border table-stripe">',
-                    '<th>Файл</th>',
+                    '<th>File</th>',
                     '<code>docara.json</code>',
                 ],
             ],
@@ -425,7 +468,7 @@ final class EffectiveComponentCatalogTest extends TestCase
         $typedIdentity = [
             'docara.card' => [
                 '<section class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1">',
-                '<h3>Переносимый проект</h3>',
+                '<h3>Portable project</h3>',
             ],
             'docara.columns' => [
                 '<section data-docara-block="columns" data-docara-columns="4" class="grid grid-col-1 md:grid-col-2 lg:grid-col-4 gap-2">',
@@ -433,7 +476,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             ],
             'docara.cta' => [
                 '<a data-docara-block="cta" class="docara-cta-link sf-button',
-                '<span class="sf-button-text-container">Начать работу</span>',
+                '<span class="sf-button-text-container">Back to the catalog</span>',
             ],
             'docara.features' => [
                 '<ul data-docara-block="features" class="docara-feature-grid',
@@ -477,6 +520,20 @@ final class EffectiveComponentCatalogTest extends TestCase
             $document = $runtime->extract($markdown, $entry['example_ref']);
             $html = $document->hydrate($renderer->render($document->markdownWithPlaceholders));
             self::assertNotSame('', trim($html), $entry['id']);
+            $localizedReference = $entry['presentation']['ru']['example_ref'] ?? null;
+            self::assertIsString($localizedReference, $entry['id']);
+            self::assertStringEndsWith('.ru.md', $localizedReference, $entry['id']);
+            self::assertNotSame($entry['example_ref'], $localizedReference, $entry['id']);
+            $localizedMarkdown = file_get_contents($root . '/' . $localizedReference);
+            self::assertIsString($localizedMarkdown, $entry['id']);
+            $localizedDocument = $runtime->extract($localizedMarkdown, $localizedReference);
+            self::assertNotSame(
+                '',
+                trim($localizedDocument->hydrate(
+                    $renderer->render($localizedDocument->markdownWithPlaceholders),
+                )),
+                $entry['id'],
+            );
 
             if ($entry['family'] === 'native_markdown') {
                 self::assertSame([], $document->normalizedCalls, $entry['id']);
@@ -579,6 +636,16 @@ final class EffectiveComponentCatalogTest extends TestCase
                 self::fail('Smart metadata unexpectedly widened exact manifest states.');
             } catch (PortableConfigurationException $exception) {
                 self::assertSame('COMPONENT_CATALOG_SMART_METADATA_WIDENS_MANIFEST', $exception->errorCode);
+            }
+            copy($root . '/resources/component-catalog/smart/ui.alert.json', $alertPath);
+            $alert = json_decode((string) file_get_contents($alertPath), true, flags: JSON_THROW_ON_ERROR);
+            $alert['presentation']['ru']['title'] = 'Другой заголовок';
+            file_put_contents($alertPath, json_encode($alert, JSON_THROW_ON_ERROR));
+            try {
+                $makeBuilder()->build();
+                self::fail('Smart presentation conflicting with exact manifest i18n unexpectedly passed.');
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('COMPONENT_CATALOG_SMART_PRESENTATION_MISMATCH', $exception->errorCode);
             }
             copy($root . '/resources/component-catalog/smart/ui.alert.json', $alertPath);
             copy($alertPath, $smartDirectory . '/duplicate-alert.json');

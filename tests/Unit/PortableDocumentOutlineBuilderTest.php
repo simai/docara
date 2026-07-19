@@ -83,6 +83,21 @@ final class PortableDocumentOutlineBuilderTest extends TestCase
     }
 
     #[Test]
+    public function generated_demo_headings_do_not_pollute_the_document_outline(): void
+    {
+        $result = (new PortableDocumentOutlineBuilder)->build(
+            '<h1>Component</h1><h2>Example</h2>'
+            . '<div data-docara-outline-exclude><h2>Demo heading</h2></div>'
+            . '<h2>Parameters</h2>',
+            3,
+        );
+
+        self::assertSame(['Example', 'Parameters'], array_column($result['items'], 'text'));
+        self::assertStringNotContainsString('id="demo-heading"', $result['html']);
+        self::assertStringContainsString('<h2>Demo heading</h2>', $result['html']);
+    }
+
+    #[Test]
     public function generated_heading_ids_do_not_collide_with_reserved_shell_ids(): void
     {
         $result = (new PortableDocumentOutlineBuilder)->build(

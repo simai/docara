@@ -212,9 +212,9 @@ Do not complete the Goal until:
 
 ## Current Remaining
 
-- Milestones remaining: 4 of 5.
-- Batches remaining: 6 of 10.
-- Active batch: Batch 4.
+- Milestones remaining: 3 of 5.
+- Batches remaining: 5 of 10.
+- Active batch: Batch 5.
 - Goal status: `in-progress`.
 
 ## Do Not Complete Until
@@ -249,7 +249,8 @@ Do not complete the Goal until:
 | `WS-DOCS-01` | `/root/docs_catalog_audit` | Retype-style component capability inventory and Docara docs coverage/map | none | completed | `product-capability-matrix.yaml` and catalogue/docs decision |
 | `WS-SEARCH-02` | Docara owner | deterministic local search, schema, runtime, verifier and documentation | this worktree | accepted and published locally | Batch 2 exact tester, HCS, UX/designer and publication PASS |
 | `WS-READING-03` | Docara owner with UX/designer | breadcrumbs, page outline and previous/next navigation from one navigation tree | this worktree | accepted and published locally | Batch 3 exact tester, HCS, UX/design/browser and publication PASS |
-| `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | exact HCS/tester PASS; native browser blocked pending explicit user approval or transport recovery | physical keyboard browser PASS and served smoke |
+| `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | accepted and published locally | exact HCS/tester/browser, independent visual/evidence audit and served smoke PASS |
+| `WS-LANDING-05` | Docara owner with UX/designer | landing recipe and responsive demonstration from pinned Framework building blocks | this worktree | ready | test-first schema/rendering plus responsive UX/design/browser acceptance |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -340,14 +341,12 @@ was discovered.
 
 ## Next Safe Batch
 
-Candidate `d26fa66c6d6a5a36ec113288e6fce29f2f6b1a0e` has exact bounded HCS
-and non-browser tester PASS. Native Chrome could not be launched because the
-external approval transport reached its explicit usage limit and prohibited a
-rerun or indirect workaround. Request explicit user approval after disclosing
-that blocker, or wait for transport recovery, then run the physical
-`Cmd/Ctrl+K`, focus, responsive and disabled-storage matrix from the exact
-candidate. Publish only after that PASS and a served-site keyboard smoke; keep
-accepted Batch 3 served until then.
+Start Batch 5 from the accepted Batch 4 closure. Inventory the current
+`landing` preset and exact pinned Framework utilities/components, record one
+responsive landing recipe decision, then add the schema/rendering contract and
+a real documentation demo test-first. Do not create a generic Docara primitive
+when an exact Framework building block already owns the job. Keep the accepted
+Batch 4 build served until the next immutable candidate passes its own gates.
 
 ## Last Completed Batch
 
@@ -378,3 +377,14 @@ is served at `docara.test`; source, staging and served digest
 `826c8a0dac97bc1a17f7b5926d05908d14424fa410631a35f6e374403656654b`
 matches, while the Batch 2 tree remains preserved for rollback. This does not
 accept Batch 4 or the wider Goal.
+
+Batch 4 reader settings and responsive integration are accepted on candidate
+`d26fa66c6d6a5a36ec113288e6fce29f2f6b1a0e` (tree
+`aa20ad5d0d95f82149a30d189dd5fa9d78163d4a`). Exact HCS, independent
+non-browser tester, native-Chrome browser, independent visual/evidence review
+and served-site gates returned bounded PASS. The verified build is served at
+`docara.test`; source, staging and served digest
+`9cf966409f87a568fbd6a79efc12c6922369dc5ce5fe92adcbdff074e297e67f`
+matches, while the accepted Batch 3 tree remains preserved for rollback at
+`.docara-backups/product-completion-settings-d26fa66-20260719-094411`.
+This closes Milestone 2, not Batch 5 or the wider Goal.

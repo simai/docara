@@ -5,11 +5,15 @@ purpose: >-
   Goal acceptance projection. This is not a second Framework registry; each
   record must be proven from native Markdown, an exact Framework contract, a
   Docara recipe/generated feature and executable evidence.
+projection_state: implementation_complete_pending_unified_exact_acceptance
 status_legend:
-  pass: accepted on the exact current candidate
+  pass: required final outcome, valid only with the unified exact-candidate verdict
   bounded: useful baseline exists but the required product contract is incomplete
   required_missing: required by this Goal and not yet implemented/accepted
   deferred: explicit non-goal with a reason
+field_semantics:
+  baseline: historical state at baseline_revision
+  target: required state evaluated by the unified exact-candidate acceptance
 capabilities:
   - id: navigation.hierarchy
     family: reader_orientation
@@ -34,7 +38,7 @@ capabilities:
     baseline: required_missing
     target: pass
     batch: 2
-    source: pending_docara_static_index
+    source: src/PortableSite/PortableSearchIndexBuilder.php
   - id: reading.heading_toc
     family: reading_context
     kind: generated
@@ -42,7 +46,7 @@ capabilities:
     baseline: required_missing
     target: pass
     batch: 3
-    source: pending_heading_outline
+    source: src/PortableSite/PortableDocumentOutlineBuilder.php
   - id: reading.breadcrumbs
     family: reading_context
     kind: generated_recipe
@@ -50,7 +54,7 @@ capabilities:
     baseline: required_missing
     target: pass
     batch: 3
-    source: pending_navigation_context
+    source: src/PortableSite/PortableNavigationBuilder.php
   - id: reading.previous_next
     family: reading_context
     kind: generated_recipe
@@ -58,7 +62,7 @@ capabilities:
     baseline: required_missing
     target: pass
     batch: 3
-    source: pending_navigation_context
+    source: src/PortableSite/PortableNavigationBuilder.php
   - id: reading.settings
     family: reading_context
     kind: app_behavior
@@ -150,7 +154,7 @@ capabilities:
     baseline: required_missing
     target: pass
     batch: 7
-    source: pending_typed_composition
+    source: resources/component-catalog/typed/docara.columns.json
   - id: recipe.panel
     family: composition
     kind: typed_composition_recipe
@@ -166,7 +170,7 @@ capabilities:
     baseline: required_missing
     target: pass
     batch: 5
-    source: pending_landing_recipe
+    source: resources/component-catalog/typed/docara.cta.json
   - id: smart.alert
     family: framework_smart
     kind: smart
@@ -212,15 +216,15 @@ capabilities:
     baseline: required_missing
     target: pass
     batch: 6
-    source: pending_capability_projection
-  - id: documentation.four_reading_paths
+    source: src/ComponentCatalog/EffectiveComponentCatalogBuilder.php
+  - id: documentation.five_audience_paths
     family: documentation
     kind: content
     priority: required
     baseline: required_missing
     target: pass
     batch: 8
-    source: docs/site/content
+    source: tests/Unit/DocumentationContractTest.php
   - id: optional.mermaid
     family: rich_content
     kind: external_renderer

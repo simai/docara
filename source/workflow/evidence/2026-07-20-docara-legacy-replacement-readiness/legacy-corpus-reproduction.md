@@ -35,21 +35,28 @@ Normalization:
 
 1. find every regular `*.md`;
 2. remove the source root and `.md`;
-3. map `index.md` to `/en/`;
-4. map nested `*/index.md` to `/en/*/`;
-5. map other files to `/en/<relative>/`;
-6. use the same sort/LF/SHA-256 procedure.
+3. map root `index.md` to `/en/`;
+4. for every other file, start with `/en/<relative-without-extension>/`;
+5. if the final filename equals its parent directory name, remove that
+   duplicate final segment: for example, `collections/collections.md` becomes
+   `/en/collections/`;
+6. preserve every other final filename:
+   `collections/collections-categories.md` becomes
+   `/en/collections/collections-categories/`;
+7. use the same UTF-8 sort/LF/SHA-256 procedure.
 
 Result:
 
 - route count: `47`;
 - canonical SHA-256:
-  `ee1d619b93b35d56a046cba93daa0109e04611d38a89b494832c9e52e784e6a6`.
+  `e57931bbec8b47119a9cbd799538f0275014a7381650b4e24c8293f1f9e0f9c9`.
 
 ## Reconciliation
 
 The 48 served routes are exactly `/` plus the 47 source-derived English
-routes. Set comparison with `redirect-corpus.json` has:
+routes after the same-name terminal-segment collapse above. Set comparison
+between the transformed source routes, served routes and
+`redirect-corpus.json` has:
 
 - missing routes: `0`;
 - extra routes: `0`;

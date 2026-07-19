@@ -30,11 +30,12 @@ equivalent.
 JSON field `version: 1` remains the schema-contract version. It is not the
 documentation release.
 
-Every site declares one `documentation_version`, exposed in generated metadata
-and the local search receipt. It is informational within the build and does
-not silently alter routes. Several documentation versions are separate
-immutable site variants under distinct `base_url` values. Portable v1 has no
-dynamic version switch or fallback.
+Every site declares one `documentation_version`, exposed in generated HTML
+metadata, resolved plans and the redirect receipt. The search index belongs to
+that isolated build but does not duplicate the version field. The version is
+informational within the build and does not silently alter routes. Several
+documentation versions are separate immutable site variants under distinct
+`base_url` values. Portable v1 has no dynamic version switch or fallback.
 
 ## Redirects
 
@@ -62,7 +63,7 @@ The live legacy stand contains 48 HTML routes: `/` plus 47 English `/en/**`
 routes. Its canonical live-path fingerprint is
 `b56d73df2da3059fbca3808124c81baade25f09513cd7f90f4f053fd7ca2fcfa`.
 The independently derived 47-Markdown source corpus fingerprint is
-`ee1d619b93b35d56a046cba93daa0109e04611d38a89b494832c9e52e784e6a6`.
+`e57931bbec8b47119a9cbd799538f0275014a7381650b4e24c8293f1f9e0f9c9`.
 Both digests use UTF-8 routes sorted by code point, one route per LF, with a
 final LF, so they can be reproduced from the served and source trees.
 

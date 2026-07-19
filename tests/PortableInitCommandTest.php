@@ -65,6 +65,16 @@ class PortableInitCommandTest extends TestCase
         $this->assertSame(10, $indexPage['navigation']['order']);
         $this->assertSame(20, $nestedSection['navigation']['order']);
         $this->assertSame(30, $landingPage['navigation']['order']);
+        $this->assertTrue($landingPage['navigation']['hidden']);
+        $this->assertFalse($landingPage['search']['enabled']);
+        $this->assertFalse($landingPage['search']['indexed']);
+
+        $landing = file_get_contents($this->tmpPath('content/landing.md'));
+        $this->assertIsString($landing);
+        $this->assertStringContainsString(':::cta', $landing);
+        $this->assertStringContainsString('[Начать работу](/guides/getting-started/)', $landing);
+        $this->assertStringContainsString(':::features', $landing);
+        $this->assertStringNotContainsString(':::ui.button', $landing);
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);

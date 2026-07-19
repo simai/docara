@@ -58,6 +58,101 @@ MD;
     }
 
     #[Test]
+    public function it_renders_typed_landing_recipes_with_native_links_and_framework_utilities(): void
+    {
+        $markdown = <<<'MD'
+:::cta
+[Начать работу](/start/ "Быстрый старт")
+:::
+
+:::features
+- **Пишите в Markdown.** Страницы и код хранятся рядом с проектом.
+- *Настраивайте через [JSON](/json/).* Макет наследуется и проверяется схемой.
+- **Собирайте на `PHP`.** ~~Случайность~~ исключена.
+:::
+MD;
+
+        $html = (new PortableMarkdownRenderer)->render($markdown);
+
+        self::assertStringContainsString(
+            '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 bg-primary color-on-primary p-1/2 line-none radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start" href="/start/" title="Быстрый старт"><span class="sf-button-text-container">Начать работу</span></a>',
+            $html,
+        );
+        self::assertStringContainsString(
+            '<ul data-docara-block="features" class="docara-feature-grid grid grid-col-1 lg:grid-col-3 gap-2 list-none m-0 p-0">',
+            $html,
+        );
+        self::assertSame(3, substr_count(
+            $html,
+            '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1">',
+        ));
+        self::assertStringNotContainsString('<sf-button', $html);
+        self::assertStringNotContainsString('docara-feature-card', $html);
+    }
+
+    #[Test]
+    public function cta_requires_exactly_one_safe_markdown_link(): void
+    {
+        $cases = [
+            [":::cta\nPlain text\n:::\n", 'MARKDOWN_CTA_LINK_REQUIRED'],
+            [":::cta\n[One](/one/) and [Two](/two/)\n:::\n", 'MARKDOWN_CTA_LINK_REQUIRED'],
+            [":::cta\nBefore [One](/one/)\n:::\n", 'MARKDOWN_CTA_LINK_REQUIRED'],
+            [":::cta\n[Unsafe](javascript:alert(1))\n:::\n", 'MARKDOWN_CTA_LINK_UNSAFE'],
+            [":::cta\n[Unsafe](data:image/png;base64,AA)\n:::\n", 'MARKDOWN_CTA_LINK_UNSAFE'],
+            [":::cta\n[![Image](/image.png)](/start/)\n:::\n", 'MARKDOWN_CTA_LINK_REQUIRED'],
+            [":::cta\n[`Inline code`](/start/)\n:::\n", 'MARKDOWN_CTA_LINK_REQUIRED'],
+            [":::cta\n[Text <span>HTML</span>](/start/)\n:::\n", 'MARKDOWN_CTA_LINK_REQUIRED'],
+            [":::cta\n[\u{00A0}](/empty/)\n:::\n", 'MARKDOWN_CTA_LINK_REQUIRED'],
+            [":::cta\n[\u{200B}](/empty/)\n:::\n", 'MARKDOWN_CTA_LINK_REQUIRED'],
+            [":::cta\n[\u{FE0F}](/empty/)\n:::\n", 'MARKDOWN_CTA_LINK_REQUIRED'],
+            [":::cta\n[\u{0301}](/empty/)\n:::\n", 'MARKDOWN_CTA_LINK_REQUIRED'],
+        ];
+
+        foreach ($cases as [$markdown, $expected]) {
+            try {
+                (new PortableMarkdownRenderer)->render($markdown);
+                self::fail("Invalid CTA unexpectedly rendered for [$expected].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($expected, $exception->errorCode);
+            }
+        }
+    }
+
+    #[Test]
+    public function features_requires_one_flat_unordered_list_with_two_to_six_items(): void
+    {
+        $cases = [
+            [":::features\n1. Ordered\n2. List\n:::\n", 'MARKDOWN_FEATURES_UNORDERED_LIST_REQUIRED'],
+            [":::features\nPlain text\n:::\n", 'MARKDOWN_FEATURES_UNORDERED_LIST_REQUIRED'],
+            [":::features\n- Only one\n:::\n", 'MARKDOWN_FEATURES_ITEM_COUNT_INVALID'],
+            [":::features\n- \n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID'],
+            [":::features\n- [ ](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED'],
+            [":::features\n- [\u{00A0}](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED'],
+            [":::features\n- [\u{200B}](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED'],
+            [":::features\n- [\u{FE0F}](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED'],
+            [":::features\n- [\u{0301}](/empty/)\n- Text\n:::\n", 'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED'],
+            [":::features\n- One\n  - Nested\n- Two\n:::\n", 'MARKDOWN_FEATURES_UNORDERED_LIST_REQUIRED'],
+            [":::features\n- First paragraph\n\n  Second paragraph\n- Two\n:::\n", 'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID'],
+            [":::features\n- ![Image only](/image.png)\n- Two\n:::\n", 'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID'],
+            [":::features\n- First <span>inline HTML</span>\n- Two\n:::\n", 'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID'],
+            [":::features\n- First\n\n      indented code\n- Two\n:::\n", 'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID'],
+            [
+                ":::features\n- One\n- Two\n- Three\n- Four\n- Five\n- Six\n- Seven\n:::\n",
+                'MARKDOWN_FEATURES_ITEM_COUNT_INVALID',
+            ],
+        ];
+
+        foreach ($cases as [$markdown, $expected]) {
+            try {
+                (new PortableMarkdownRenderer)->render($markdown);
+                self::fail("Invalid feature list unexpectedly rendered for [$expected].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($expected, $exception->errorCode);
+            }
+        }
+    }
+
+    #[Test]
     public function directives_inside_code_fences_remain_code(): void
     {
         $html = (new PortableMarkdownRenderer)->render("```text\n:::card\nText\n\n:::\n```\n");
@@ -432,8 +527,13 @@ MD);
     #[Test]
     public function portable_blocks_reject_smart_components_instead_of_rendering_them_as_text(): void
     {
-        foreach (['card', 'steps'] as $outer) {
+        foreach (['card', 'steps', 'cta', 'features'] as $outer) {
             $body = $outer === 'steps' ? "1. First step\n" : "Card body\n";
+            if ($outer === 'cta') {
+                $body = "[Start](/start/)\n";
+            } elseif ($outer === 'features') {
+                $body = "- First\n- Second\n";
+            }
             foreach (['ui.button', 'ui.alert'] as $inner) {
                 try {
                     (new PortableMarkdownRenderer)->render(
@@ -450,7 +550,7 @@ MD);
     #[Test]
     public function steps_rejects_nested_portable_blocks_with_the_nesting_error(): void
     {
-        foreach (['card', 'steps'] as $inner) {
+        foreach (['card', 'steps', 'cta', 'features'] as $inner) {
             try {
                 (new PortableMarkdownRenderer)->render(
                     "::::steps\n1. First step\n:::{$inner}\nNested\n:::\n::::\n",

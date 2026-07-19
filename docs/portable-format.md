@@ -88,6 +88,19 @@ Version 1 contains two presentation presets:
 
 Presets are render recipes, not different content types. A page changes preset
 through its sidecar and keeps the same Markdown and component-call syntax.
+The landing preset renders an open content composition without the
+documentation tree, breadcrumb, outline or previous/next surfaces. Its starter
+uses native headings and fenced code plus two typed Docara recipes:
+
+- `:::cta` accepts exactly one safe Markdown link and keeps it a native anchor
+  styled with Simai Framework button classes;
+- `:::features` accepts one flat unordered list with two to six items, each
+  containing one plain Markdown paragraph with bounded inline content, and lays
+  them out with the Framework one-to-three-column responsive grid.
+
+These recipes add no JavaScript or runtime asset. They fail closed for malformed
+or nested bodies and remain available to the `docs` preset as ordinary typed
+Markdown composition.
 
 The docs tree is derived from Markdown source paths, not public slugs. A page
 such as `guides.md` or `guides/index.md` is merged with the `guides/` directory
@@ -132,6 +145,10 @@ Calls are allowed only when all of the following are true:
 The first bounded projection supports `ui.alert` and `ui.button`. Future
 Retype-like extensions should be added through the same manifest path, not as
 arbitrary HTML or an unrelated shortcode engine.
+
+`ui.button` represents an application action and its exact manifest has no
+`href`. Authors must use `:::cta` when the intended result is navigation; Docara
+does not attach an invented click handler to a Smart button.
 
 The accepted pair does not provide the `sf-icon-button` dependency used by a
 closable alert. Therefore `ui.alert` with `closable: true` fails closed in this

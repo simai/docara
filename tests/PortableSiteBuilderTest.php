@@ -57,7 +57,46 @@ final class PortableSiteBuilderTest extends TestCase
         $landing = (string) file_get_contents($this->tmpPath('build_local/landing/index.html'));
 
         self::assertStringContainsString('docara-docs-layout gap-3 p-3', $index);
-        self::assertStringContainsString('class="docara-landing flex flex-col gap-4 p-4"', $landing);
+        self::assertStringContainsString('class="docara-landing p-4"', $landing);
+        self::assertStringContainsString(
+            'class="docara-content docara-prose flex flex-col gap-2"',
+            $landing,
+        );
+        self::assertStringNotContainsString(
+            'docara-content docara-prose bg-surface-0 border radius-3',
+            $landing,
+        );
+        self::assertStringContainsString(
+            '<a data-docara-block="cta" class="docara-cta-link sf-button',
+            $landing,
+        );
+        self::assertStringContainsString('href="/guides/getting-started/"', $landing);
+        self::assertStringContainsString(
+            'data-docara-block="features" class="docara-feature-grid grid grid-col-1 lg:grid-col-3',
+            $landing,
+        );
+        self::assertStringContainsString(
+            'bg-primary color-on-primary p-1/2 line-none',
+            $landing,
+        );
+        self::assertStringContainsString(
+            '.docara-feature-grid>li{min-width:0;max-width:none}',
+            $landing,
+        );
+        self::assertStringContainsString(
+            '.docara-landing pre code{white-space:pre-wrap;overflow-wrap:anywhere}',
+            $landing,
+        );
+        self::assertStringContainsString(
+            '<code class="language-shell">composer require simai/docara' . "\n"
+                . 'php vendor/bin/docara init --portable' . "\n"
+                . 'php vendor/bin/docara build local',
+            $landing,
+        );
+        self::assertStringNotContainsString(
+            "\n            php vendor/bin/docara",
+            $landing,
+        );
         self::assertStringContainsString('aria-current="page"', $index);
         self::assertStringContainsString('aria-current="page"', $guide);
         self::assertStringContainsString('data-docara-breadcrumbs', $guide);
@@ -81,7 +120,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('<sf-alert', $index);
         self::assertStringContainsString('<sf-alert', $guide);
         self::assertStringContainsString('<sf-button', $guide);
-        self::assertStringContainsString('<sf-button', $landing);
+        self::assertStringNotContainsString('<sf-button', $landing);
         self::assertStringNotContainsString('<script id="unsafe">', $index);
         self::assertStringNotContainsString('alert(1)', $index);
 
@@ -106,18 +145,6 @@ final class PortableSiteBuilderTest extends TestCase
                 strpos($html, 'docara.framework.storage.compatibility') < strpos($html, 'data-docara-theme-bootstrap'),
                 'The volatile Framework storage guard must run before Docara reads the reader preference.',
             );
-            self::assertStringContainsString('data-docara-search-trigger', $html);
-            self::assertStringContainsString('data-docara-search-dialog', $html);
-            self::assertStringContainsString('data-docara-search-input', $html);
-            self::assertStringContainsString('data-docara-search-status', $html);
-            self::assertStringContainsString('data-docara-search-results', $html);
-            self::assertStringContainsString('docara-search-trigger-label sf-button-text-container', $html);
-            self::assertStringNotContainsString('class="sf-list docara-search-results', $html);
-            self::assertStringContainsString('data-docara-search-runtime', $html);
-            self::assertStringContainsString('/_docara/search-index.json?docara_v=', $html);
-            self::assertStringContainsString('/_docara/search.js?docara_v=', $html);
-            self::assertStringNotContainsString('algolia', strtolower($html));
-            self::assertStringNotContainsString('typesense', strtolower($html));
             self::assertStringContainsString('<sf-icon icon="tune" aria-hidden="true"></sf-icon>', $html);
             self::assertStringContainsString('data-docara-shell-controller', $html);
             self::assertStringContainsString('railRect.width<=0||railRect.height<=0', $html);
@@ -138,6 +165,23 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringNotContainsString('alt="Docara"', $html);
             self::assertStringContainsString('<link rel="icon" href="/_docara/brand/', $html);
         }
+        foreach ([$index, $guide, $fourthLevel] as $html) {
+            self::assertStringContainsString('data-docara-search-trigger', $html);
+            self::assertStringContainsString('data-docara-search-dialog', $html);
+            self::assertStringContainsString('data-docara-search-input', $html);
+            self::assertStringContainsString('data-docara-search-status', $html);
+            self::assertStringContainsString('data-docara-search-results', $html);
+            self::assertStringContainsString('docara-search-trigger-label sf-button-text-container', $html);
+            self::assertStringNotContainsString('class="sf-list docara-search-results', $html);
+            self::assertStringContainsString('data-docara-search-runtime', $html);
+            self::assertStringContainsString('/_docara/search-index.json?docara_v=', $html);
+            self::assertStringContainsString('/_docara/search.js?docara_v=', $html);
+            self::assertStringNotContainsString('algolia', strtolower($html));
+            self::assertStringNotContainsString('typesense', strtolower($html));
+        }
+        self::assertStringNotContainsString('data-docara-search-trigger', $landing);
+        self::assertStringNotContainsString('<dialog id="docara-search-dialog"', $landing);
+        self::assertStringNotContainsString('data-docara-search-runtime', $landing);
         self::assertStringContainsString('id="docara-mobile-navigation"', $guide);
         self::assertStringContainsString('data-docara-navigation-depth="4"', $fourthLevel);
         self::assertStringContainsString('<sf-icon icon="expand_less" aria-hidden="true"></sf-icon>', $fourthLevel);
@@ -277,7 +321,8 @@ final class PortableSiteBuilderTest extends TestCase
         $searchIndex = $this->jsonFile($this->tmpPath('build_local/_docara/search-index.json'));
         self::assertSame('docara.search_index.v1', $searchIndex['schema']);
         self::assertSame('docara-prefix-v1', $searchIndex['algorithm']);
-        self::assertCount(7, $searchIndex['documents']);
+        self::assertCount(6, $searchIndex['documents']);
+        self::assertNotContains('/landing/', array_column($searchIndex['documents'], 'url'));
         self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $searchIndex['content_sha256']);
         $searchText = implode(' ', array_column($searchIndex['documents'], 'text'));
         self::assertStringContainsString('Наследование работает', $searchText);

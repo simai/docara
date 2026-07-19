@@ -441,6 +441,10 @@ MD, 'guide.md');
             fn () => $this->runtime()->extract(str_repeat(":::ui.button\n{}\n:::\n", 65), 'large.md'),
             'FRAMEWORK_DIRECTIVE_LIMIT_EXCEEDED',
         );
+        $this->expectFailure(
+            fn () => $this->runtime()->extract(str_repeat(":::features\n- One\n- Two\n:::\n", 65), 'large.md'),
+            'MARKDOWN_BLOCK_LIMIT_EXCEEDED',
+        );
     }
 
     public function test_runtime_and_manifest_lock_mismatches_fail_closed(): void

@@ -11,6 +11,34 @@ Portable Docara использует два preset:
 `settings.theme` принимает `system`, `light` или `dark`.
 Отдельно описаны [выбор темы читателем, сохранение и сброс](/authoring/reader-settings/).
 
+## Лендинг
+
+Preset `landing` использует ту же шапку, тему, Markdown и наследуемый JSON, но
+не выводит дерево документации, хлебные крошки, оглавление и переходы между
+страницами. Рабочий пример: [посмотреть живой лендинг](/landing/).
+
+```json
+{
+  "schema": "docara.page.v1",
+  "title": "Лендинг",
+  "preset": "landing",
+  "layout": {
+    "max_width": "wide"
+  },
+  "navigation": {
+    "hidden": true
+  },
+  "search": {
+    "enabled": false,
+    "indexed": false
+  }
+}
+```
+
+Hero остаётся обычными H1 и абзацем Markdown. Для основного перехода используйте
+[CTA-ссылку](/components/cta/), для короткого набора преимуществ —
+[список возможностей](/components/features/), а для команд — fenced code block.
+
 Для меню доступны два параметра:
 
 - `navigation.hidden` исключает страницу из глобального меню;

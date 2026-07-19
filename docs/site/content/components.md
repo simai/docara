@@ -2,8 +2,9 @@
 
 Docara использует два разных механизма. `ui.alert` и `ui.button` являются
 Smart-компонентами с manifest, проверкой props и зафиксированными ассетами.
-Карточки и шаги — семантические Markdown-блоки, оформленные утилитами Simai
-Framework. Код и таблицы остаются стандартным Markdown.
+Карточки, шаги, CTA-ссылки и списки возможностей — семантические
+Markdown-блоки, оформленные утилитами Simai Framework. Код и таблицы остаются
+стандартным Markdown.
 
 | Элемент | Способ | Статус в текущем контуре |
 | --- | --- | --- |
@@ -11,6 +12,8 @@ Framework. Код и таблицы остаются стандартным Mark
 | Button | `:::ui.button` | Доступен |
 | Card | `:::card` | Доступен |
 | Steps | `:::steps` | Доступен |
+| CTA-ссылка | `:::cta` | Доступен |
+| Список возможностей | `:::features` | Доступен |
 | Code | fenced code | Доступен |
 | Table | Markdown table | Доступен |
 | Tabs | Smart/slot contract | Временно недоступен |
@@ -22,6 +25,8 @@ Framework. Код и таблицы остаются стандартным Mark
 - [Button](/components/button/)
 - [Card](/components/card/)
 - [Steps](/components/steps/)
+- [CTA-ссылка](/components/cta/)
+- [Список возможностей](/components/features/)
 - [Code](/components/code/)
 - [Table](/components/table/)
 - [Tabs](/components/tabs/)

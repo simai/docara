@@ -1,13 +1,14 @@
 {
   "schema": "docara.page.v1",
-  "title": "Лендинг",
+  "title": "Лендинг Docara",
+  "description": "Адаптивный лендинг Docara из Markdown-рецептов и утилит Simai Framework.",
   "preset": "landing",
   "layout": {
     "max_width": "wide"
   },
   "navigation": {
     "hidden": true,
-    "order": 30
+    "order": 100
   },
   "search": {
     "enabled": false,

@@ -33,7 +33,7 @@ final readonly class DirectiveBlockStartParser implements BlockStartParserInterf
         // The inspector filters the requested family after pairing, but a
         // foreign-family block still prevents an adjacent opener from being
         // swallowed as paragraph continuation.
-        $pattern = '/^(:{3,})(card|steps|ui\.[a-z][a-z0-9._-]*)[ \t]*$/u';
+        $pattern = '/^(:{3,})(card|steps|cta|features|ui\.[a-z][a-z0-9._-]*)[ \t]*$/u';
         if (preg_match($pattern, $cursor->getLine(), $match) !== 1) {
             return BlockStart::none();
         }

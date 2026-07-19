@@ -28,17 +28,24 @@ final class ComponentDirectiveParser
                 $markdown,
                 DirectiveBlockStartParser::PORTABLE,
             );
-            foreach ($portableInspection['directives'] as $portable) {
-                if ($this->inspector->containsDirectiveLikeOpening(
-                    $portable['body'],
-                    DirectiveBlockStartParser::FRAMEWORK,
-                )) {
-                    throw new FrameworkComponentException(
-                        'FRAMEWORK_DIRECTIVE_NESTING_UNSUPPORTED',
-                        $portable['name'] . ':' . $portable['start_line'],
-                    );
-                }
+        } catch (DirectiveLimitExceeded $exception) {
+            throw new FrameworkComponentException(
+                'MARKDOWN_BLOCK_LIMIT_EXCEEDED',
+                $exception->getMessage(),
+            );
+        }
+        foreach ($portableInspection['directives'] as $portable) {
+            if ($this->inspector->containsDirectiveLikeOpening(
+                $portable['body'],
+                DirectiveBlockStartParser::FRAMEWORK,
+            )) {
+                throw new FrameworkComponentException(
+                    'FRAMEWORK_DIRECTIVE_NESTING_UNSUPPORTED',
+                    $portable['name'] . ':' . $portable['start_line'],
+                );
             }
+        }
+        try {
             $inspection = $this->inspector->inspectDirectives($markdown, DirectiveBlockStartParser::FRAMEWORK);
         } catch (DirectiveLimitExceeded $exception) {
             throw new FrameworkComponentException(

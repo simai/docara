@@ -7,11 +7,21 @@ namespace Simai\Docara\PortableSite;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
+use League\CommonMark\Extension\CommonMark\Node\Block\ListItem;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Emphasis;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
 use League\CommonMark\Extension\SmartPunct\SmartPunctExtension;
+use League\CommonMark\Extension\Strikethrough\Strikethrough;
 use League\CommonMark\Extension\Strikethrough\StrikethroughExtension;
 use League\CommonMark\Extension\Table\TableExtension;
 use League\CommonMark\MarkdownConverter;
+use League\CommonMark\Node\Block\Paragraph;
+use League\CommonMark\Node\Inline\Newline;
+use League\CommonMark\Node\Inline\Text;
 use League\CommonMark\Output\RenderedContentInterface;
+use League\CommonMark\Util\RegexHelper;
 use Simai\Docara\Markdown\CommonMarkInspector;
 use Simai\Docara\Markdown\DirectiveBlockStartParser;
 use Simai\Docara\Markdown\DirectiveLimitExceeded;
@@ -69,6 +79,8 @@ final class PortableMarkdownRenderer
                 'card' => '<section class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1">'
                     . (string) $content . '</section>',
                 'steps' => $this->renderSteps($content),
+                'cta' => $this->renderCta($content),
+                'features' => $this->renderFeatures($content),
             };
             $wrapper = '<p>' . $block['placeholder'] . '</p>';
             if (substr_count($html, $wrapper) !== 1) {
@@ -217,7 +229,7 @@ final class PortableMarkdownRenderer
         }
         foreach ($lines as $index => $line) {
             $lineNumber = $index + 1;
-            if (preg_match('/^( {0,3}):{3,}(?:card|steps)[ \t]*$/u', $line, $match) !== 1
+            if (preg_match('/^( {0,3}):{3,}(?:card|steps|cta|features)[ \t]*$/u', $line, $match) !== 1
                 || isset($recognized[$lineNumber])
                 || isset($ownedBodyLines[$lineNumber])
                 || isset($inspection['code_lines'][$lineNumber])
@@ -273,6 +285,167 @@ final class PortableMarkdownRenderer
 
         return '<section class="bg-surface-0 border border-outline-variant radius-2 p-3">'
             . $content . '</section>';
+    }
+
+    private function renderCta(RenderedContentInterface $rendered): string
+    {
+        $paragraph = $rendered->getDocument()->firstChild();
+        $link = $paragraph?->firstChild();
+        if (! $paragraph instanceof Paragraph
+            || $paragraph->next() !== null
+            || ! $link instanceof Link
+            || $link->next() !== null
+        ) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_CTA_LINK_REQUIRED',
+                'A CTA block must contain exactly one Markdown link.',
+            );
+        }
+        if (preg_match(RegexHelper::REGEX_UNSAFE_PROTOCOL, $link->getUrl()) === 1) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_CTA_LINK_UNSAFE',
+                'A CTA block cannot use an unsafe link protocol.',
+            );
+        }
+
+        $label = '';
+        $walker = $link->walker();
+        while (($event = $walker->next()) !== null) {
+            if (! $event->isEntering()) {
+                continue;
+            }
+            $node = $event->getNode();
+            if (! $node instanceof Link
+                && ! $node instanceof Text
+                && ! $node instanceof Emphasis
+                && ! $node instanceof Strong
+                && ! $node instanceof Newline
+                && ! $node instanceof Strikethrough
+            ) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_CTA_LINK_REQUIRED',
+                    'A CTA block link may contain only bounded textual Markdown.',
+                );
+            }
+            if ($node instanceof Text) {
+                $label .= $node->getLiteral();
+            }
+        }
+        if (! $this->containsVisibleText($label)) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_CTA_LINK_REQUIRED',
+                'A CTA block link must have an accessible text label.',
+            );
+        }
+
+        $content = trim((string) $rendered);
+        if (preg_match('/^<p><a(?<attributes>[^>]*)>(?<label>.*)<\/a><\/p>$/su', $content, $match) !== 1) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_CTA_LINK_REQUIRED',
+                'A CTA block could not be represented as one native link.',
+            );
+        }
+
+        return '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 bg-primary color-on-primary p-1/2 line-none radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start"'
+            . $match['attributes'] . '><span class="sf-button-text-container">'
+            . $match['label'] . '</span></a>';
+    }
+
+    private function renderFeatures(RenderedContentInterface $rendered): string
+    {
+        $root = $rendered->getDocument()->firstChild();
+        $listCount = 0;
+        $walker = $rendered->getDocument()->walker();
+        while (($event = $walker->next()) !== null) {
+            if ($event->isEntering() && $event->getNode() instanceof ListBlock) {
+                $listCount++;
+            }
+        }
+        if (! $root instanceof ListBlock
+            || $root->getListData()->type !== ListBlock::TYPE_BULLET
+            || $root->next() !== null
+            || $listCount !== 1
+        ) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_FEATURES_UNORDERED_LIST_REQUIRED',
+                'A features block must contain one flat unordered Markdown list.',
+            );
+        }
+
+        $items = iterator_to_array($root->children());
+        if (count($items) < 2 || count($items) > 6) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_FEATURES_ITEM_COUNT_INVALID',
+                'A features block must contain between two and six list items.',
+            );
+        }
+
+        foreach ($items as $item) {
+            if (! $item instanceof ListItem) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID',
+                    'Every features block item must contain one plain Markdown paragraph.',
+                );
+            }
+            $paragraph = $item->firstChild();
+            if (! $paragraph instanceof Paragraph || $paragraph->next() !== null) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID',
+                    'Every features block item must contain one plain Markdown paragraph.',
+                );
+            }
+
+            $text = '';
+            $itemWalker = $paragraph->walker();
+            while (($event = $itemWalker->next()) !== null) {
+                if (! $event->isEntering()) {
+                    continue;
+                }
+                $node = $event->getNode();
+                if (! $node instanceof Paragraph
+                    && ! $node instanceof Text
+                    && ! $node instanceof Code
+                    && ! $node instanceof Emphasis
+                    && ! $node instanceof Strong
+                    && ! $node instanceof Link
+                    && ! $node instanceof Newline
+                    && ! $node instanceof Strikethrough
+                ) {
+                    throw new PortableConfigurationException(
+                        'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID',
+                        'A features block item contains unsupported Markdown content.',
+                    );
+                }
+                if ($node instanceof Text || $node instanceof Code) {
+                    $text .= $node->getLiteral();
+                }
+            }
+            if (! $this->containsVisibleText($text)) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED',
+                    'Every features block item must contain visible text.',
+                );
+            }
+        }
+
+        $content = trim((string) $rendered);
+        $content = preg_replace(
+            '/^<ul>/',
+            '<ul data-docara-block="features" class="docara-feature-grid grid grid-col-1 lg:grid-col-3 gap-2 list-none m-0 p-0">',
+            $content,
+            1,
+        ) ?? $content;
+
+        return preg_replace(
+            '/<li>/',
+            '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1">',
+            $content,
+        ) ?? $content;
+    }
+
+    private function containsVisibleText(string $text): bool
+    {
+        return preg_match('/[\p{L}\p{N}\p{P}\p{S}]/u', $text) === 1;
     }
 
     private function decorateNativeMarkdown(string $html): string

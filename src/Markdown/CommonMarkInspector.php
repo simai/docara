@@ -68,9 +68,9 @@ final class CommonMarkInspector
                 continue;
             }
             $pattern = match ($family) {
-                DirectiveBlockStartParser::PORTABLE => '/^:{3,}(?:card|steps)[ \t]*$/u',
+                DirectiveBlockStartParser::PORTABLE => '/^:{3,}(?:card|steps|cta|features)[ \t]*$/u',
                 DirectiveBlockStartParser::FRAMEWORK => '/^:{3,}ui\.[a-z][a-z0-9._-]*[ \t]*$/u',
-                default => '/^:{3,}(?:card|steps|ui\.[a-z][a-z0-9._-]*)[ \t]*$/u',
+                default => '/^:{3,}(?:card|steps|cta|features|ui\.[a-z][a-z0-9._-]*)[ \t]*$/u',
             };
             if (preg_match($pattern, $line) === 1) {
                 return true;
@@ -109,7 +109,9 @@ final class CommonMarkInspector
         if (! is_array($lines)) {
             return $this->inspect($markdown);
         }
-        $openingPattern = '/^:{3,}(?:card|steps|ui\.[a-z][a-z0-9._-]*)[ \t]*$/u';
+        $openingPattern = $family === DirectiveBlockStartParser::PORTABLE
+            ? '/^:{3,}(?:card|steps|cta|features)[ \t]*$/u'
+            : '/^:{3,}ui\.[a-z][a-z0-9._-]*[ \t]*$/u';
         $sourceMarkers = 0;
         foreach ($lines as $line) {
             if (preg_match($openingPattern, $line) !== 1) {
@@ -275,7 +277,7 @@ final class CommonMarkInspector
     private function belongsToFamily(string $name, string $family): bool
     {
         return $family === DirectiveBlockStartParser::PORTABLE
-            ? in_array($name, ['card', 'steps'], true)
+            ? in_array($name, ['card', 'steps', 'cta', 'features'], true)
             : str_starts_with($name, 'ui.');
     }
 

@@ -36,11 +36,17 @@ Portable builder работает fail closed. Он не пытается уга
 | `FRAMEWORK_DIRECTIVE_INDENTATION_UNSUPPORTED` | Smart-директива вложена в CommonMark-контейнер через отступ |
 | `FRAMEWORK_DIRECTIVE_LIMIT_EXCEEDED` | Страница содержит больше 64 строк, похожих на открытие Smart-директивы |
 | `FRAMEWORK_PLACEHOLDER_CARDINALITY_INVALID` | Placeholder компонента неоднозначен после Markdown-render |
-| `MARKDOWN_BLOCK_UNCLOSED` | `card` или `steps` не закрыт |
-| `MARKDOWN_BLOCK_INDENTATION_UNSUPPORTED` | `card` или `steps` начинается с отступа внутри контейнера |
-| `MARKDOWN_BLOCK_LIMIT_EXCEEDED` | Страница содержит больше 64 строк, похожих на открытие `card` или `steps` |
+| `MARKDOWN_BLOCK_UNCLOSED` | Композиционный Markdown-блок не закрыт |
+| `MARKDOWN_BLOCK_INDENTATION_UNSUPPORTED` | Композиционный Markdown-блок начинается с отступа внутри контейнера |
+| `MARKDOWN_BLOCK_LIMIT_EXCEEDED` | Страница содержит больше 64 строк, похожих на открытие typed-блоков |
 | `MARKDOWN_BLOCK_PLACEHOLDER_CARDINALITY_INVALID` | Placeholder блока неоднозначен после Markdown-render |
 | `MARKDOWN_STEPS_ORDERED_LIST_REQUIRED` | Steps не содержит один ordered list |
+| `MARKDOWN_CTA_LINK_REQUIRED` | CTA не содержит ровно одну Markdown-ссылку с текстом |
+| `MARKDOWN_CTA_LINK_UNSAFE` | CTA использует небезопасный протокол ссылки |
+| `MARKDOWN_FEATURES_UNORDERED_LIST_REQUIRED` | Features не содержит один плоский unordered list |
+| `MARKDOWN_FEATURES_ITEM_COUNT_INVALID` | Features содержит меньше двух или больше шести пунктов |
+| `MARKDOWN_FEATURES_ITEM_CONTENT_INVALID` | Пункт Features содержит не один обычный Markdown-абзац или неподдерживаемый inline-элемент |
+| `MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED` | Один из пунктов Features не содержит видимого текста |
 | `SEARCH_RUNTIME_MISSING` | Закреплённый локальный search runtime отсутствует или не читается |
 | `SEARCH_RUNTIME_INVALID_UTF8` | Search runtime содержит невалидный UTF-8 |
 | `SEARCH_TEXT_INVALID_UTF8` | Видимый текст страницы нельзя безопасно индексировать |

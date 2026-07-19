@@ -75,6 +75,25 @@ manifests:
 :::
 ```
 
+Portable Markdown also includes semantic recipes composed from Simai Framework
+utilities. `:::cta` requires one native Markdown link; `:::features` requires a
+flat unordered list with two to six single-paragraph items:
+
+```markdown
+:::cta
+[Start](/guides/getting-started/)
+:::
+
+:::features
+- **Markdown.** Keep content readable.
+- **JSON.** Inherit validated settings.
+- **PHP.** Build the portable static result.
+:::
+```
+
+Use `ui.button` for an application action and `cta` for navigation. Docara does
+not invent an `href` for the exact button manifest.
+
 Every generated page receives a human- and machine-readable resolved plan in
 `build_local/.docara/resolved-page-plans.json`. Framework assets use exact
 revisions from `simai-framework.lock.json`; moving `main` or `latest` references

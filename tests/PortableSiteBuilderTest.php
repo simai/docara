@@ -164,6 +164,8 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringNotContainsString("document.execCommand('copy')", $html);
             self::assertStringContainsString('background:transparent;border:0;border-radius:0;box-shadow:none', $html);
             self::assertStringContainsString('.docara-code-block>.sf--highlight-head button{min-inline-size:44px;min-block-size:44px}', $html);
+            self::assertStringContainsString('.docara-mobile-navigation-trigger{min-inline-size:44px;min-block-size:44px}', $html);
+            self::assertStringContainsString('.docara-outline-trigger{min-block-size:44px}', $html);
             self::assertStringContainsString("dialog.addEventListener('cancel'", $html);
             self::assertStringContainsString('if(event.target===dialog){closeSheet()}', $html);
             self::assertStringContainsString('[data-docara-reader-settings-trigger]:focus-visible', $html);

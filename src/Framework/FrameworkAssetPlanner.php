@@ -53,6 +53,10 @@ final readonly class FrameworkAssetPlanner
         ];
 
         $assets = [[
+            'key' => 'docara.framework.storage.compatibility',
+            'kind' => 'boot',
+            'content' => $this->storageFallbackRuntime(),
+        ], [
             'key' => 'simai.framework.boot',
             'kind' => 'boot',
             // Core webpack chunks are concatenated onto sfPath, so the
@@ -181,6 +185,13 @@ final readonly class FrameworkAssetPlanner
             . 'function watch(){mark(document);if(!document.body)return;new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(mark)})}).observe(document.body,{childList:true,subtree:true})}'
             . 'function start(){var ready=document.fonts&&document.fonts.load?document.fonts.load("400 24px \\"Docara Material Symbols\\""):Promise.resolve([true]);ready.then(function(faces){if(faces&&faces.length){document.documentElement.dataset.docaraFullFontReady="true";watch()}}).catch(function(){})}'
             . 'if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",start,{once:true})}else{start()}})();';
+    }
+
+    private function storageFallbackRuntime(): string
+    {
+        return "(function(){function nativeStorage(){var storage,probe='__docara_sf_probe_'+Math.random().toString(36).slice(2);try{storage=window.localStorage;if(!storage)return null;storage.setItem(probe,'1');return storage.getItem(probe)==='1'?storage:null}catch(error){return null}finally{if(storage){try{storage.removeItem(probe)}catch(error){}}}}"
+            . "if(nativeStorage())return;var values=Object.create(null),keys=[];var storage={key:function(index){index=Number(index);return Number.isInteger(index)&&index>=0&&index<keys.length?keys[index]:null},getItem:function(key){key=String(key);return Object.prototype.hasOwnProperty.call(values,key)?values[key]:null},setItem:function(key,value){key=String(key);if(!Object.prototype.hasOwnProperty.call(values,key)){keys.push(key)}values[key]=String(value)},removeItem:function(key){key=String(key);if(!Object.prototype.hasOwnProperty.call(values,key))return;delete values[key];keys.splice(keys.indexOf(key),1)},clear:function(){values=Object.create(null);keys=[]}};Object.defineProperty(storage,'length',{enumerable:true,get:function(){return keys.length}});"
+            . "try{Object.defineProperty(window,'localStorage',{configurable:true,enumerable:true,value:storage})}catch(error){try{window.localStorage=storage}catch(ignored){}}try{if(window.localStorage===storage){document.documentElement.dataset.docaraFrameworkStorage='memory'}}catch(error){}})();";
     }
 
     /** @param list<array<string, mixed>> $assets */

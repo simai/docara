@@ -100,6 +100,12 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('data-docara-reader-settings-reset', $html);
             self::assertStringNotContainsString('class="sf-theme-button ', $html);
             self::assertStringContainsString('"theme":false', $html);
+            self::assertStringContainsString('docara.framework.storage.compatibility', $html);
+            self::assertStringContainsString('docaraFrameworkStorage', $html);
+            self::assertTrue(
+                strpos($html, 'docara.framework.storage.compatibility') < strpos($html, 'data-docara-theme-bootstrap'),
+                'The volatile Framework storage guard must run before Docara reads the reader preference.',
+            );
             self::assertStringContainsString('data-docara-search-trigger', $html);
             self::assertStringContainsString('data-docara-search-dialog', $html);
             self::assertStringContainsString('data-docara-search-input', $html);
@@ -118,6 +124,8 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString("addEventListener('resize',scheduleActiveReveal", $html);
             self::assertStringContainsString("customElements.whenDefined('sf-icon')", $html);
             self::assertStringContainsString('[data-docara-reader-settings-trigger]:focus-visible', $html);
+            self::assertStringContainsString('data-docara-reader-settings-close', $html);
+            self::assertStringContainsString('[data-docara-reader-settings-close]:focus-visible', $html);
             self::assertStringContainsString('sf-button>button:focus-visible', $html);
             self::assertStringContainsString('@7e836d8a9414d5da553fb1ab0404721e5b48769a/', $html);
             self::assertStringNotContainsString('simai/ui-smart@', $html);
@@ -144,6 +152,8 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('localStorage.getItem', $index);
         self::assertStringContainsString('localStorage.setItem', $index);
         self::assertStringContainsString('localStorage.removeItem', $index);
+        self::assertStringContainsString("frameworkMemory(){return document.documentElement.dataset.docaraFrameworkStorage==='memory'}", $index);
+        self::assertStringContainsString('if(!frameworkMemory()){try{window.localStorage.setItem', $index);
         self::assertStringContainsString("volatile=''", $index);
         self::assertStringContainsString('persisted:persisted', $index);
         self::assertStringContainsString('syncExternal', $index);

@@ -311,6 +311,7 @@ MD, 'guide.md');
         );
 
         self::assertSame([
+            'docara.framework.storage.compatibility',
             'simai.framework.boot',
             'simai.framework.core.css',
             'simai.framework.utility.full.css',
@@ -334,6 +335,10 @@ MD, 'guide.md');
         self::assertStringContainsString('/distr/\\";window.sfSmartPath=\\"/_docara/framework', $serialized);
         self::assertStringContainsString('/distr/fonts/MaterialSymbols-Outlined.woff2', $serialized);
         self::assertStringContainsString('docaraFullFontReady', $serialized);
+        self::assertStringContainsString("Object.defineProperty(window,'localStorage'", $serialized);
+        self::assertStringContainsString('docaraFrameworkStorage', $serialized);
+        self::assertStringContainsString('key:function(index)', $serialized);
+        self::assertStringNotContainsString('sessionStorage', $serialized);
         self::assertStringContainsString('"kind":"smart_javascript"', $serialized);
         self::assertMatchesRegularExpression(
             '#/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-7e836d8a-dd786bba-[a-f0-9]{16}#',

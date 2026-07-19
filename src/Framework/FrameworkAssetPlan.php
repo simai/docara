@@ -18,7 +18,8 @@ final readonly class FrameworkAssetPlan
         foreach ($this->assets as $asset) {
             $kind = $asset['kind'] ?? null;
             if ($kind === 'boot') {
-                $html[] = '<script data-docara-framework-boot="' . $this->escape($this->runtimePair) . '">'
+                $html[] = '<script data-docara-framework-boot="' . $this->escape($this->runtimePair)
+                    . '" data-docara-framework-asset="' . $this->escape((string) $asset['key']) . '">'
                     . (string) $asset['content'] . '</script>';
 
                 continue;

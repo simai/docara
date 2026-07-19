@@ -213,8 +213,8 @@ Do not complete the Goal until:
 ## Current Remaining
 
 - Milestones remaining: 4 of 5.
-- Batches remaining: 7 of 10.
-- Active batch: Batch 3.
+- Batches remaining: 6 of 10.
+- Active batch: Batch 4.
 - Goal status: `in-progress`.
 
 ## Do Not Complete Until
@@ -248,7 +248,8 @@ Do not complete the Goal until:
 | `WS-FRAMEWORK-01` | `/root/smart_component_inventory` | pinned utilities/components/Smart-components for menu, search, TOC, settings, landing and catalogue | none | completed | `framework-building-block-map.md` |
 | `WS-DOCS-01` | `/root/docs_catalog_audit` | Retype-style component capability inventory and Docara docs coverage/map | none | completed | `product-capability-matrix.yaml` and catalogue/docs decision |
 | `WS-SEARCH-02` | Docara owner | deterministic local search, schema, runtime, verifier and documentation | this worktree | accepted and published locally | Batch 2 exact tester, HCS, UX/designer and publication PASS |
-| `WS-READING-03` | Docara owner with UX/designer | breadcrumbs, page outline and previous/next navigation from one navigation tree | this worktree | candidate-ready; exact acceptance pending | Batch 3 tests, exact UX/design and tester verdicts |
+| `WS-READING-03` | Docara owner with UX/designer | breadcrumbs, page outline and previous/next navigation from one navigation tree | this worktree | accepted and published locally | Batch 3 exact tester, HCS, UX/design/browser and publication PASS |
+| `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | active | Batch 4 decision, tests, exact UX/design and tester verdicts |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -339,10 +340,10 @@ was discovered.
 
 ## Next Safe Batch
 
-Create the immutable Batch 3 candidate from the verified worktree, run
-independent exact-archive tester and complete-diff HCS acceptance against that
-same SHA, then publish the accepted build to `docara.test` through staging,
-backup and digest gates. Only after closure start Batch 4 reading settings.
+Implement Batch 4 test-first from accepted Batch 3 candidate `73eae43…`:
+define the smallest useful reader-settings contract, reuse pinned Framework
+controls and theme tokens, preserve strong defaults and make responsive,
+keyboard and persistence behavior explicit before implementation.
 
 ## Last Completed Batch
 
@@ -365,8 +366,11 @@ at `docara.test`; source, staging and served tree digest
 matches, while the Batch 1 tree remains preserved for rollback. This does not
 accept Batch 3 or the wider Goal.
 
-Batch 3 reading-context implementation is candidate-ready. The isolated full
-suite (`464 tests, 2308 assertions`), deterministic build, static verifier,
-documentation audit, implementation reverse-audit and UX/designer/browser
-preacceptance pass. Exact-candidate tester/HCS acceptance and safe local
-publication remain required before this batch is accepted.
+Batch 3 reading context is accepted on candidate
+`73eae43b9e8f715c0dc978390f4e60a1011465c9` (tree
+`0f1aa5544dabf9631550a349caa9641f04384bd3`). Exact tester, complete-diff HCS
+and exact UX/designer/browser gates returned bounded PASS. The verified build
+is served at `docara.test`; source, staging and served digest
+`826c8a0dac97bc1a17f7b5926d05908d14424fa410631a35f6e374403656654b`
+matches, while the Batch 2 tree remains preserved for rollback. This does not
+accept Batch 4 or the wider Goal.

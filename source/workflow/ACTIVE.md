@@ -21,14 +21,14 @@ catalogue, complete documentation and exact independent acceptance.
 
 ## Current Batch
 
-Batch 3 — breadcrumbs, current-page heading outline and previous/next page
-navigation derived from the canonical Docara content and navigation plans.
+Batch 4 — simple reader settings and responsive integration on the accepted
+search, navigation and reading-context shell.
 
 ## Next Step
 
-Create the immutable Batch 3 candidate from the verified worktree. Run
-independent exact-archive tester and complete-diff HCS acceptance against the
-same SHA, then publish it to `docara.test` only through staging, backup,
-verification and matching-digest gates. After Batch 3 closure continue with
-Batch 4 reading settings. Public release, default-branch migration and
-repository retirement remain excluded.
+Define the smallest useful reader-settings outcome and its inherited author
+defaults, browser persistence, reset, keyboard, responsive and light/dark
+contract. Inventory exact pinned Framework controls before implementation,
+then build Batch 4 test-first without a second theme or settings system.
+Public release, default-branch migration and repository retirement remain
+excluded.

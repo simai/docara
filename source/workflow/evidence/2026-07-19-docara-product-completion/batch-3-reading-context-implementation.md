@@ -1,7 +1,8 @@
 # Batch 3 — reading context implementation
 
 Baseline closure: `f482ced`
-Status: candidate-ready; exact-archive acceptance and local publication pending.
+Accepted candidate: `73eae43b9e8f715c0dc978390f4e60a1011465c9`
+Status: `PASS`; independently accepted and published to the local test site.
 
 ## Product result
 
@@ -66,7 +67,15 @@ concurrently with an auditor that cleaned the shared fixture directory and
 therefore reported only disappearing `.cache` and `tests/fixtures/tmp` paths.
 The later isolated run above is the valid result.
 
+## Acceptance closure
+
+Independent exact tester, complete-diff HCS and exact browser/UX/design
+verdicts are `PASS`. The accepted archive build is served at
+`https://docara.test/`; source, staging and served digest
+`826c8a0dac97bc1a17f7b5926d05908d14424fa410631a35f6e374403656654b`
+matches, and the prior Batch 2 build is preserved for rollback.
+
 ## Nonclaims
 
-This record does not yet accept an immutable Batch 3 candidate, local
-publication, Batch 4, the wider Goal, public release or production readiness.
+This record accepts Batch 3 only. It does not accept Batch 4, the wider Goal,
+public release or production readiness.

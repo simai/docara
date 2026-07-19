@@ -1,8 +1,8 @@
 # Batch 3 — Human-Centered Simplicity preacceptance
 
 Baseline: `f482ced`
-Status: complete-diff inventory prepared; exact-candidate independent verdict
-pending.
+Candidate: `73eae43b9e8f715c0dc978390f4e60a1011465c9`
+Status: `PASS` from independent complete-diff review.
 
 ## Primary outcome
 
@@ -54,8 +54,14 @@ behavior.
 - missing previous/next boundaries render no disabled fake control;
 - landing pages receive none of the documentation-only chrome.
 
-## Pending gate
+## Exact verdict
 
-An independent reviewer must bind this inventory to the immutable candidate
-commit and verify that every candidate file is represented. Until then this is
-preacceptance, not a final HCS PASS.
+The independent reviewer confirmed the candidate is a direct child of the
+baseline, `git diff --check` passes and the exact diff contains `43` files
+(`35` modified, `8` added). Every file is covered by the inventory above,
+including this file as `this file`.
+
+No second registry, local Framework fork, duplicate configuration truth or
+accidental product surface was found. Shell id reservation is a bounded
+collision-safety list, not a competing registry, and static verification
+detects drift. Verdict: `PASS` for Batch 3 only.

@@ -16,8 +16,10 @@ final readonly class DirectiveBlockStartParser implements BlockStartParserInterf
 
     public const FRAMEWORK = 'framework';
 
-    public function __construct(private string $family)
-    {
+    public function __construct(
+        private string $family,
+        private DirectiveOpeningMatcher $matcher,
+    ) {
         if (! in_array($family, [self::PORTABLE, self::FRAMEWORK], true)) {
             throw new InvalidArgumentException("Unknown directive family [$family].");
         }
@@ -33,7 +35,7 @@ final readonly class DirectiveBlockStartParser implements BlockStartParserInterf
         // The inspector filters the requested family after pairing, but a
         // foreign-family block still prevents an adjacent opener from being
         // swallowed as paragraph continuation.
-        $opening = self::matchOpening($cursor->getLine());
+        $opening = $this->matcher->match($cursor->getLine());
         if ($opening === null) {
             return BlockStart::none();
         }
@@ -42,20 +44,5 @@ final readonly class DirectiveBlockStartParser implements BlockStartParserInterf
         $block = new DirectiveBlock($opening['name'], $opening['fence_length']);
 
         return BlockStart::of(new DirectiveBlockContinueParser($block))->at($cursor);
-    }
-
-    /** @return array{name: string, fence_length: int, family: string}|null */
-    public static function matchOpening(string $line): ?array
-    {
-        $pattern = '/^(:{3,})(card|steps|cta|features|ui\.[a-z][a-z0-9._-]*)[ \t]*$/u';
-        if (preg_match($pattern, $line, $match) !== 1) {
-            return null;
-        }
-
-        return [
-            'name' => $match[2],
-            'fence_length' => strlen($match[1]),
-            'family' => str_starts_with($match[2], 'ui.') ? self::FRAMEWORK : self::PORTABLE,
-        ];
     }
 }

@@ -1,0 +1,37 @@
+{
+    "id": "content.icon",
+    "family": "requirement",
+    "category": "content",
+    "title": "Icon content",
+    "description": "A canonical accessible icon authoring contract for documentation content.",
+    "lifecycle": "framework_gap",
+    "authoring": {
+        "syntax": "unavailable",
+        "call": null,
+        "jobs": [
+            "add_semantic_icon"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "limitations": [
+        "Runtime bytes do not establish a safe authoring API."
+    ],
+    "verification": {
+        "renderer": false,
+        "tests": false,
+        "docs": false,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components.md",
+    "provenance": {
+        "source_kind": "product_requirement",
+        "framework_owner": "larena/ui"
+    },
+    "gap": {
+        "owner": "larena/ui",
+        "reason": "The pinned runtime contains an icon element but no canonical authoring manifest.",
+        "fallback": "Use meaningful text or a Unicode symbol that remains understandable without decoration.",
+        "admission_condition": "Publish and pin a canonical icon authoring and accessibility contract, then add Docara schema, rendering, tests and documentation."
+    }
+}

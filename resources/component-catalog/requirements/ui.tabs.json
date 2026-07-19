@@ -1,0 +1,38 @@
+{
+    "id": "ui.tabs",
+    "family": "requirement",
+    "category": "navigation",
+    "title": "Tabs",
+    "description": "An accessible tab set with complete keyboard, focus and ARIA relationships.",
+    "lifecycle": "framework_gap",
+    "authoring": {
+        "syntax": "unavailable",
+        "call": null,
+        "jobs": [
+            "switch_content_panels"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "limitations": [
+        "The pinned Core and Smart sources do not provide the complete accepted accessibility contract.",
+        "Docara has no admitted tabs manifest or runtime lock record."
+    ],
+    "verification": {
+        "renderer": false,
+        "tests": false,
+        "docs": false,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components/tabs.md",
+    "provenance": {
+        "source_kind": "product_requirement",
+        "framework_owner": "simai/ui and larena/ui"
+    },
+    "gap": {
+        "owner": "simai/ui and larena/ui",
+        "reason": "Keyboard focus movement, Home and End behaviour, stable tab-panel ARIA linkage and an admitted manifest are incomplete.",
+        "fallback": "Use headings and source-ordered sequential sections.",
+        "admission_condition": "Publish a canonical accessible tabs contract and manifest, pin a new immutable Framework pair and provider revision, then pass Docara schema, asset, rendering and browser acceptance."
+    }
+}

@@ -4,12 +4,20 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Framework;
 
+use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\Portable\SchemaRepository;
+
 final readonly class FrameworkLock
 {
     /** @param array<string, mixed> $data */
     private function __construct(private array $data)
     {
         $this->assertValid();
+        try {
+            (new SchemaRepository)->assertValid($data, 'framework-lock.schema.json');
+        } catch (PortableConfigurationException $exception) {
+            throw new FrameworkComponentException('FRAMEWORK_LOCK_SCHEMA_INVALID', $exception->getMessage());
+        }
     }
 
     /** @param array<string, mixed> $data */
@@ -71,6 +79,15 @@ final readonly class FrameworkLock
         return $record;
     }
 
+    /** @return list<string> */
+    public function manifestKeys(): array
+    {
+        $keys = array_keys($this->data['manifests']);
+        sort($keys, SORT_STRING);
+
+        return $keys;
+    }
+
     /** @return array<string, mixed> */
     public function toArray(): array
     {
@@ -100,9 +117,13 @@ final readonly class FrameworkLock
         if (! is_array($manifests)) {
             throw new FrameworkComponentException('FRAMEWORK_MANIFEST_LOCKS_INVALID');
         }
-        foreach (['ui.button', 'ui.alert'] as $key) {
-            $record = $manifests[$key] ?? null;
-            if (! is_array($record)
+        if ($manifests === [] || array_is_list($manifests)) {
+            throw new FrameworkComponentException('FRAMEWORK_MANIFEST_LOCKS_INVALID');
+        }
+        foreach ($manifests as $key => $record) {
+            if (! is_string($key)
+                || preg_match('/\Aui(?:\.[a-z][a-z0-9_]*)+\z/D', $key) !== 1
+                || ! is_array($record)
                 || ($record['provider'] ?? null) !== 'larena/ui'
                 || ! $this->isCommit($record['provider_revision'] ?? null)
                 || ! $this->isSha256($record['sha256'] ?? null)
@@ -112,27 +133,22 @@ final readonly class FrameworkLock
         }
 
         $projection = $this->data['asset_projection'] ?? null;
-        $expectedFiles = [
-            'smart/alert/js/alert.js',
-            'smart/buttons/js/buttons.js',
-            'smart/icons/js/icons.js',
-        ];
-        $actualFiles = is_array($projection['files'] ?? null) ? array_keys($projection['files']) : [];
-        sort($actualFiles, SORT_STRING);
-        sort($expectedFiles, SORT_STRING);
         if (! is_array($projection)
             || ($projection['schema'] ?? null) !== 'docara.framework_asset_projection.v1'
             || ($projection['mount'] ?? null) !== '_docara/framework'
             || ($projection['source']['provider'] ?? null) !== 'simai/ui-smart'
             || ($projection['source']['revision'] ?? null) !== ($runtime['ui_smart']['commit'] ?? null)
             || ! is_array($projection['files'] ?? null)
-            || $actualFiles !== $expectedFiles
+            || $projection['files'] === []
+            || array_is_list($projection['files'])
         ) {
             throw new FrameworkComponentException('FRAMEWORK_ASSET_PROJECTION_INVALID');
         }
-        foreach ($expectedFiles as $relativePath) {
-            $record = $projection['files'][$relativePath] ?? null;
-            if (! is_array($record)
+        foreach ($projection['files'] as $relativePath => $record) {
+            if (! is_string($relativePath)
+                || ! $this->isSafeRelativePath($relativePath)
+                || ! str_starts_with($relativePath, 'smart/')
+                || ! is_array($record)
                 || array_keys($record) !== ['sha256']
                 || ! $this->isSha256($record['sha256'] ?? null)
             ) {
@@ -185,5 +201,19 @@ final readonly class FrameworkLock
     private function isIdentifier(mixed $value): bool
     {
         return is_string($value) && preg_match('/^[a-z0-9][a-z0-9._-]+$/', $value) === 1;
+    }
+
+    private function isSafeRelativePath(string $path): bool
+    {
+        if ($path === '' || str_starts_with($path, '/') || str_contains($path, '\\') || str_contains($path, "\0")) {
+            return false;
+        }
+        foreach (explode('/', $path) as $segment) {
+            if ($segment === '' || $segment === '.' || $segment === '..') {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

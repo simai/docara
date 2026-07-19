@@ -1,0 +1,35 @@
+{
+    "id": "docara.features",
+    "name": "features",
+    "renderer": "docara.features.v1",
+    "family": "docara_typed",
+    "category": "content_structure",
+    "title": "Feature list",
+    "description": "Presents a short source-ordered list of product capabilities as a responsive grid.",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive",
+        "call": ":::features",
+        "jobs": [
+            "summarize_features"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "limitations": [
+        "The body must contain one flat unordered list with two to six items.",
+        "Nested lists, blocks and Docara directives are not accepted."
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components/features.md",
+    "example_ref": "resources/component-catalog/examples/docara.features.md",
+    "provenance": {
+        "source_kind": "typed_definition",
+        "definition_ref": "resources/component-catalog/typed/docara.features.json"
+    }
+}

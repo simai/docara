@@ -6,6 +6,7 @@ namespace Simai\Docara\PortableSite;
 
 use Illuminate\Support\Collection;
 use JsonException;
+use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
@@ -43,6 +44,7 @@ final readonly class PortableSiteBuilder
         $pages = [];
         $outputs = [];
         $frameworkLockCanonical = null;
+        $runtime = null;
         foreach ($pagePaths as $pagePath) {
             $plan = $loader->resolve($pagePath);
             $currentFrameworkLock = CanonicalJson::encode($plan->frameworkLock);
@@ -53,7 +55,7 @@ final readonly class PortableSiteBuilder
                 );
             }
             $frameworkLockCanonical ??= $currentFrameworkLock;
-            $runtime = FrameworkComponentRuntime::fromLock(
+            $runtime ??= FrameworkComponentRuntime::fromLock(
                 $plan->frameworkLock,
                 $this->frameworkAssetBase($plan->frameworkLock, (string) ($site['base_url'] ?? '/')),
             );
@@ -133,15 +135,25 @@ final readonly class PortableSiteBuilder
             }
             unset($page);
         }
+        /** @var ResolvedPagePlan $firstPlan */
+        $firstPlan = $pages[0]['plan'];
+        $componentCatalogJson = CanonicalJson::encodePretty(
+            EffectiveComponentCatalogBuilder::bundled(
+                FrameworkLock::fromArray($firstPlan->frameworkLock),
+            )->build(),
+        );
+
         $this->prepareDestination($root, $destination);
         $result = collect();
         $diagnostics = [];
 
+        $docaraOutputDirectory = rtrim($destination, '/\\') . '/_docara';
+        $this->files->ensureDirectoryExists($docaraOutputDirectory);
+        $this->files->put($docaraOutputDirectory . '/component-catalog.json', $componentCatalogJson);
+
         if ($searchPlan instanceof PortableSearchPlan) {
-            $searchDirectory = rtrim($destination, '/\\') . '/_docara';
-            $this->files->ensureDirectoryExists($searchDirectory);
-            $this->files->put($searchDirectory . '/search-index.json', $searchPlan->indexJson);
-            $this->files->put($searchDirectory . '/search.js', $searchPlan->runtime);
+            $this->files->put($docaraOutputDirectory . '/search-index.json', $searchPlan->indexJson);
+            $this->files->put($docaraOutputDirectory . '/search.js', $searchPlan->runtime);
         }
 
         foreach ($pages as $pageIndex => $page) {
@@ -180,8 +192,6 @@ final readonly class PortableSiteBuilder
 
         $this->copyContentAssets($contentAssets, $destination);
         $brandPublisher->publish($brandPlan['assets'], $destination);
-        /** @var ResolvedPagePlan $firstPlan */
-        $firstPlan = $pages[0]['plan'];
         $this->publishFrameworkAssets($firstPlan->frameworkLock, $destination);
         $diagnosticPath = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
         $this->files->ensureDirectoryExists(dirname($diagnosticPath));

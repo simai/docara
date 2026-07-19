@@ -6,8 +6,16 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Simai\Docara\Framework\FrameworkAdmissionPreflight;
+use Simai\Docara\Framework\FrameworkAssetPlanner;
 use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
+use Simai\Docara\Framework\FrameworkConsumerPolicy;
+use Simai\Docara\Framework\FrameworkHostRenderer;
+use Simai\Docara\Framework\FrameworkLock;
+use Simai\Docara\Framework\FrameworkManifestRepository;
+use Simai\Docara\Framework\FrameworkPropsValidator;
+use Simai\Docara\Markdown\DirectiveOpeningMatcher;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
 final class FrameworkComponentRuntimeTest extends TestCase
@@ -351,6 +359,28 @@ MD, 'guide.md');
         );
     }
 
+    public function test_asset_dependencies_are_derived_from_the_runtime_graph(): void
+    {
+        $button = $this->runtime()->extract(
+            ":::ui.button\n{}\n:::\n",
+            'index.md',
+        );
+        $buttonAssets = array_column($button->assetPlan->assets, 'key');
+        self::assertContains('simai.framework.sf_button.js', $buttonAssets);
+        self::assertNotContains('simai.framework.sf_icon.js', $buttonAssets);
+        self::assertNotContains('simai.framework.sf_alert.js', $buttonAssets);
+
+        $alert = $this->runtime()->extract(
+            ":::ui.alert\n{}\n:::\n",
+            'index.md',
+        );
+        $alertAssets = array_column($alert->assetPlan->assets, 'key');
+        self::assertLessThan(
+            array_search('simai.framework.sf_alert.js', $alertAssets, true),
+            array_search('simai.framework.sf_icon.js', $alertAssets, true),
+        );
+    }
+
     public function test_equivalent_author_json_is_deterministic(): void
     {
         $first = $this->runtime()->extract(
@@ -425,7 +455,15 @@ MD, 'guide.md');
         yield 'invalid UTF-8' => ["\xFF\n:::ui.button\n{}\n:::\n", 'FRAMEWORK_DIRECTIVE_MARKDOWN_INVALID'];
         yield 'malformed JSON' => [":::ui.button\n{\n:::\n", 'FRAMEWORK_DIRECTIVE_JSON_INVALID'];
         yield 'non-object JSON' => [":::ui.button\n[]\n:::\n", 'FRAMEWORK_DIRECTIVE_PROPS_INVALID'];
+        yield 'hyphenated component id' => [":::ui.foo-bar\n{}\n:::\n", 'FRAMEWORK_COMPONENT_ID_INVALID'];
+        yield 'trailing component id separator' => [":::ui.foo.\n{}\n:::\n", 'FRAMEWORK_COMPONENT_ID_INVALID'];
+        yield 'repeated component id separator' => [":::ui.foo..bar\n{}\n:::\n", 'FRAMEWORK_COMPONENT_ID_INVALID'];
+        yield 'uppercase component id' => [":::ui.Button\n{}\n:::\n", 'FRAMEWORK_COMPONENT_ID_INVALID'];
+        yield 'slash component id' => [":::ui/button\n{}\n:::\n", 'FRAMEWORK_COMPONENT_ID_INVALID'];
+        yield 'unicode component id' => [":::ui.é\n{}\n:::\n", 'FRAMEWORK_COMPONENT_ID_INVALID'];
+        yield 'colon component id' => [":::ui.foo:bar\n{}\n:::\n", 'FRAMEWORK_COMPONENT_ID_INVALID'];
         yield 'unknown component' => [":::ui.card\n{}\n:::\n", 'FRAMEWORK_COMPONENT_UNSUPPORTED'];
+        yield 'unadmitted Framework component' => [":::ui.badge\n{}\n:::\n", 'FRAMEWORK_COMPONENT_UNSUPPORTED'];
         yield 'unclosed' => [":::ui.alert\n{}\n", 'FRAMEWORK_DIRECTIVE_UNCLOSED'];
         yield 'unknown prop' => [":::ui.button\n{\"onclick\":\"bad\"}\n:::\n", 'FRAMEWORK_PROP_UNKNOWN'];
         yield 'runtime-managed alert id' => [":::ui.alert\n{\"id\":\"author-id\"}\n:::\n", 'FRAMEWORK_PROP_MANAGED'];
@@ -445,6 +483,28 @@ MD, 'guide.md');
             fn () => $this->runtime()->extract(str_repeat(":::features\n- One\n- Two\n:::\n", 65), 'large.md'),
             'MARKDOWN_BLOCK_LIMIT_EXCEEDED',
         );
+    }
+
+    public function test_portable_directive_names_cannot_shadow_the_reserved_framework_namespace(): void
+    {
+        foreach (['ui', 'ui_badge', 'ui-badge', 'uiutility'] as $name) {
+            try {
+                new DirectiveOpeningMatcher([$name]);
+                self::fail("Portable directive [$name] unexpectedly entered the reserved ui namespace.");
+            } catch (\InvalidArgumentException $exception) {
+                self::assertStringContainsString('reserved ui namespace', $exception->getMessage());
+            }
+        }
+        try {
+            new DirectiveOpeningMatcher(['feature-card']);
+            self::fail('A portable directive name outside the typed-definition grammar unexpectedly passed.');
+        } catch (\InvalidArgumentException $exception) {
+            self::assertStringContainsString('safe lower-case identifiers', $exception->getMessage());
+        }
+
+        $opening = (new DirectiveOpeningMatcher(['card']))->match(':::ui-badge');
+        self::assertIsArray($opening);
+        self::assertSame('framework', $opening['family']);
     }
 
     public function test_combined_directive_marker_count_is_bounded_before_cross_family_parsing(): void
@@ -517,6 +577,237 @@ MD, 'guide.md');
             fn () => FrameworkComponentRuntime::fromLock($projectionHashMismatch)->extract(":::ui.alert\n{}\n:::\n", 'index.md'),
             'FRAMEWORK_BUNDLED_ASSET_HASH_MISMATCH',
         );
+
+        $unexpectedLockField = $this->lock();
+        $unexpectedLockField['unexpected'] = 'not admitted';
+        $this->expectFailure(
+            fn () => FrameworkComponentRuntime::fromLock($unexpectedLockField),
+            'FRAMEWORK_LOCK_SCHEMA_INVALID',
+        );
+    }
+
+    public function test_manifest_upstream_revision_must_match_the_exact_smart_runtime_revision(): void
+    {
+        $temporary = sys_get_temp_dir() . '/docara-framework-' . bin2hex(random_bytes(8));
+        self::assertTrue(mkdir($temporary . '/manifests', 0700, true));
+        copy($this->root() . '/resources/framework/runtime-lock.json', $temporary . '/runtime-lock.json');
+        $manifest = json_decode(
+            (string) file_get_contents($this->root() . '/resources/framework/manifests/ui-alert.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $manifest['provenance']['upstream_revision'] = str_repeat('a', 40);
+        $bytes = json_encode($manifest, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
+        file_put_contents($temporary . '/manifests/ui-alert.json', $bytes);
+        $lock = $this->lock();
+        $lock['manifests']['ui.alert']['sha256'] = hash('sha256', $bytes);
+
+        try {
+            $repository = new FrameworkManifestRepository(FrameworkLock::fromArray($lock), $temporary);
+            $this->expectFailure(
+                fn () => $repository->get('ui.alert'),
+                'FRAMEWORK_MANIFEST_UPSTREAM_REVISION_MISMATCH',
+            );
+        } finally {
+            @unlink($temporary . '/manifests/ui-alert.json');
+            @unlink($temporary . '/runtime-lock.json');
+            @rmdir($temporary . '/manifests');
+            @rmdir($temporary);
+        }
+    }
+
+    public function test_each_manifest_must_cover_critical_assets_from_its_own_dependency_closure(): void
+    {
+        $temporary = sys_get_temp_dir() . '/docara-framework-' . bin2hex(random_bytes(8));
+        $this->copyDirectory($this->root() . '/resources/framework', $temporary);
+        $buttonPath = $temporary . '/manifests/ui-button.json';
+        $button = json_decode((string) file_get_contents($buttonPath), true, flags: JSON_THROW_ON_ERROR);
+        $button['assets'][] = [
+            'key' => 'simai.framework.sf_alert.js',
+            'kind' => 'javascript',
+            'critical' => true,
+        ];
+        $bytes = json_encode($button, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
+        file_put_contents($buttonPath, $bytes);
+        $lock = $this->lock();
+        $lock['manifests']['ui.button']['sha256'] = hash('sha256', $bytes);
+
+        try {
+            $repository = new FrameworkManifestRepository(FrameworkLock::fromArray($lock), $temporary);
+            $policy = new FrameworkConsumerPolicy;
+            $this->expectFailure(
+                fn () => (new FrameworkAdmissionPreflight(
+                    $repository,
+                    $policy,
+                    new FrameworkPropsValidator,
+                    new FrameworkHostRenderer,
+                    new FrameworkAssetPlanner($repository, '/_docara/framework'),
+                ))->assertReady(),
+                'FRAMEWORK_CRITICAL_ASSET_UNACCOUNTED',
+            );
+        } finally {
+            $this->removeDirectory($temporary);
+        }
+    }
+
+    public function test_full_projection_must_exactly_match_the_admitted_component_closure(): void
+    {
+        $temporary = sys_get_temp_dir() . '/docara-framework-' . bin2hex(random_bytes(8));
+        $this->copyDirectory($this->root() . '/resources/framework', $temporary);
+        $relativePath = 'smart/unused/js/unused.js';
+        $bytes = 'unused';
+        self::assertTrue(mkdir(dirname($temporary . '/assets/' . $relativePath), 0700, true));
+        file_put_contents($temporary . '/assets/' . $relativePath, $bytes);
+        $lock = $this->lock();
+        $lock['asset_projection']['files'][$relativePath] = [
+            'sha256' => hash('sha256', $bytes),
+        ];
+
+        try {
+            $repository = new FrameworkManifestRepository(FrameworkLock::fromArray($lock), $temporary);
+            $this->expectFailure(
+                fn () => (new FrameworkAssetPlanner(
+                    $repository,
+                    '/_docara/framework',
+                ))->assertExactProjection($repository->keys()),
+                'FRAMEWORK_ASSET_PROJECTION_CLOSURE_MISMATCH',
+            );
+        } finally {
+            $this->removeDirectory($temporary);
+        }
+    }
+
+    public function test_every_admitted_manifest_preset_is_validated_during_preflight(): void
+    {
+        $temporary = sys_get_temp_dir() . '/docara-framework-' . bin2hex(random_bytes(8));
+        $this->copyDirectory($this->root() . '/resources/framework', $temporary);
+        $buttonPath = $temporary . '/manifests/ui-button.json';
+        $button = json_decode((string) file_get_contents($buttonPath), true, flags: JSON_THROW_ON_ERROR);
+        $button['presets']['broken'] = ['props' => ['type' => 'not-an-enum']];
+        $bytes = json_encode($button, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
+        file_put_contents($buttonPath, $bytes);
+        $lock = $this->lock();
+        $lock['manifests']['ui.button']['sha256'] = hash('sha256', $bytes);
+
+        try {
+            $repository = new FrameworkManifestRepository(FrameworkLock::fromArray($lock), $temporary);
+            $policy = new FrameworkConsumerPolicy;
+            $this->expectFailure(
+                fn () => (new FrameworkAdmissionPreflight(
+                    $repository,
+                    $policy,
+                    new FrameworkPropsValidator,
+                    new FrameworkHostRenderer,
+                    new FrameworkAssetPlanner($repository, '/_docara/framework'),
+                ))->assertReady(),
+                'FRAMEWORK_PRESET_CONTRACT_INVALID',
+            );
+        } finally {
+            $this->removeDirectory($temporary);
+        }
+    }
+
+    public function test_locked_framework_sources_must_be_regular_contained_single_link_files(): void
+    {
+        $manifestRoot = sys_get_temp_dir() . '/docara-framework-' . bin2hex(random_bytes(8));
+        $assetRoot = sys_get_temp_dir() . '/docara-framework-' . bin2hex(random_bytes(8));
+        $this->copyDirectory($this->root() . '/resources/framework', $manifestRoot);
+        $this->copyDirectory($this->root() . '/resources/framework', $assetRoot);
+
+        try {
+            $manifestPath = $manifestRoot . '/manifests/ui-alert.json';
+            unlink($manifestPath);
+            self::assertTrue(symlink(
+                $this->root() . '/resources/framework/manifests/ui-alert.json',
+                $manifestPath,
+            ));
+            $manifestRepository = new FrameworkManifestRepository(
+                FrameworkLock::fromArray($this->lock()),
+                $manifestRoot,
+            );
+            $this->expectFailure(
+                fn () => $manifestRepository->get('ui.alert'),
+                'FRAMEWORK_MANIFEST_SOURCE_UNSAFE',
+            );
+
+            $assetPath = $assetRoot . '/assets/smart/buttons/js/buttons.js';
+            $alias = $assetRoot . '/buttons-hardlink-source.js';
+            self::assertTrue(link($assetPath, $alias));
+            $assetRepository = new FrameworkManifestRepository(
+                FrameworkLock::fromArray($this->lock()),
+                $assetRoot,
+            );
+            $this->expectFailure(
+                fn () => $assetRepository->bundledAsset('smart/buttons/js/buttons.js'),
+                'FRAMEWORK_BUNDLED_ASSET_UNSAFE',
+            );
+        } finally {
+            $this->removeDirectory($manifestRoot);
+            $this->removeDirectory($assetRoot);
+        }
+    }
+
+    #[DataProvider('invalidManifestAuthoringContractCases')]
+    public function test_manifest_authoring_contract_is_fail_closed(
+        string $case,
+        string $expectedCode,
+    ): void {
+        $temporary = sys_get_temp_dir() . '/docara-framework-' . bin2hex(random_bytes(8));
+        $this->copyDirectory($this->root() . '/resources/framework', $temporary);
+        $buttonPath = $temporary . '/manifests/ui-button.json';
+        $button = json_decode((string) file_get_contents($buttonPath), true, flags: JSON_THROW_ON_ERROR);
+
+        if ($case === 'invalid_pattern') {
+            $button['props']['properties']['bad-pattern'] = ['type' => 'string', 'pattern' => '['];
+        } elseif ($case === 'constraint_value_type') {
+            $button['constraints']['requires'][0]['when']['loading'] = 'true';
+        } elseif ($case === 'unknown_mirror_target') {
+            $button['atlas']['controls'][0]['mirror_props'] = ['unknown-prop'];
+        } elseif ($case === 'incompatible_mirror_target') {
+            $button['atlas']['controls'][4]['mirror_props'] = ['aria-label'];
+        } elseif ($case === 'readiness_widening') {
+            $button['atlas']['readiness']['safe_to_render'] = false;
+        } else {
+            self::fail("Unknown manifest authoring test case [$case].");
+        }
+
+        $bytes = json_encode($button, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
+        file_put_contents($buttonPath, $bytes);
+        $lock = $this->lock();
+        $lock['manifests']['ui.button']['sha256'] = hash('sha256', $bytes);
+
+        try {
+            $repository = new FrameworkManifestRepository(FrameworkLock::fromArray($lock), $temporary);
+            $this->expectFailure(
+                fn () => $repository->get('ui.button'),
+                $expectedCode,
+            );
+        } finally {
+            $this->removeDirectory($temporary);
+        }
+    }
+
+    /** @return iterable<string, array{string, string}> */
+    public static function invalidManifestAuthoringContractCases(): iterable
+    {
+        yield 'invalid optional regex' => ['invalid_pattern', 'FRAMEWORK_MANIFEST_PROP_PATTERN_INVALID'];
+        yield 'constraint value has wrong property type' => [
+            'constraint_value_type',
+            'FRAMEWORK_MANIFEST_CONSTRAINT_INVALID',
+        ];
+        yield 'control mirrors an unknown property' => [
+            'unknown_mirror_target',
+            'FRAMEWORK_MANIFEST_CONTROL_INVALID',
+        ];
+        yield 'control mirrors an incompatible property schema' => [
+            'incompatible_mirror_target',
+            'FRAMEWORK_MANIFEST_CONTROL_INVALID',
+        ];
+        yield 'manifest cannot promote false render readiness' => [
+            'readiness_widening',
+            'FRAMEWORK_MANIFEST_READINESS_NOT_ADMITTED',
+        ];
     }
 
     public function test_asset_projection_is_object_order_independent_and_asset_base_is_fail_closed(): void
@@ -571,5 +862,37 @@ MD, 'guide.md');
         } catch (FrameworkComponentException $exception) {
             self::assertSame($expectedCode, $exception->errorCode);
         }
+    }
+
+    private function copyDirectory(string $source, string $destination): void
+    {
+        self::assertTrue(mkdir($destination, 0700, true));
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($source, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::SELF_FIRST,
+        );
+        foreach ($iterator as $item) {
+            $target = $destination . '/' . $iterator->getSubPathName();
+            if ($item->isDir()) {
+                mkdir($target, 0700, true);
+            } else {
+                copy($item->getPathname(), $target);
+            }
+        }
+    }
+
+    private function removeDirectory(string $directory): void
+    {
+        if (! is_dir($directory)) {
+            return;
+        }
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST,
+        );
+        foreach ($iterator as $item) {
+            $item->isDir() ? rmdir($item->getPathname()) : unlink($item->getPathname());
+        }
+        rmdir($directory);
     }
 }

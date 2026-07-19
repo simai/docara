@@ -1,0 +1,36 @@
+{
+    "id": "native.links_and_images",
+    "family": "native_markdown",
+    "category": "prose",
+    "title": "Links and images",
+    "description": "Adds safe destinations and images with author-provided accessible text.",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "markdown",
+        "call": "[label](url) and ![alt](url)",
+        "jobs": [
+            "link_content",
+            "illustrate_content"
+        ],
+        "parameters": []
+    },
+    "states": [
+        "link_focus"
+    ],
+    "limitations": [
+        "Unsafe link protocols are rejected.",
+        "Authors remain responsible for useful image alternative text."
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/authoring/markdown.md",
+    "example_ref": "resources/component-catalog/examples/native.links_and_images.md",
+    "provenance": {
+        "source_kind": "portable_markdown_profile",
+        "profile_id": "docara.portable_markdown_profile.v1"
+    }
+}

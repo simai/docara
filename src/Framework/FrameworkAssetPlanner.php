@@ -103,15 +103,7 @@ final readonly class FrameworkAssetPlanner
         }
         sort($tags, SORT_STRING);
 
-        $orderedTags = [];
-        if (in_array('sf-alert', $tags, true) || in_array('sf-button', $tags, true)) {
-            $orderedTags[] = 'sf-icon';
-        }
-        foreach ($tags as $tag) {
-            $orderedTags[] = $tag;
-        }
-
-        foreach (array_values(array_unique($orderedTags)) as $tag) {
+        foreach ($this->orderedRuntimeTags($tags, $runtime) as $tag) {
             $component = $runtime['components'][$tag] ?? null;
             if (! is_array($component) || ! is_string($component['javascript'] ?? null)) {
                 throw new FrameworkComponentException('FRAMEWORK_RUNTIME_COMPONENT_MISSING', $tag);
@@ -139,6 +131,114 @@ final readonly class FrameworkAssetPlanner
         $this->assertImmutable($assets);
 
         return new FrameworkAssetPlan($this->repository->pairId(), $assets);
+    }
+
+    /** @param list<string> $componentKeys */
+    public function assertExactProjection(array $componentKeys): FrameworkAssetPlan
+    {
+        $plan = $this->plan($componentKeys);
+        $expected = array_keys($this->repository->assetProjection()['files']);
+        sort($expected, SORT_STRING);
+
+        // Validate every locked file before an output directory can be
+        // cleaned, including a file that is not reachable from any admitted
+        // component. The exact closure check below then rejects such extras.
+        foreach ($expected as $relativePath) {
+            $this->repository->bundledAsset($relativePath);
+        }
+
+        $actual = [];
+        $prefix = rtrim($this->assetBase, '/') . '/';
+        foreach ($plan->assets as $asset) {
+            $url = $asset['url'] ?? null;
+            if (! is_string($url)) {
+                continue;
+            }
+            $path = parse_url($url, PHP_URL_PATH);
+            if (! is_string($path) || ! str_starts_with($path, $prefix)) {
+                continue;
+            }
+            $relativePath = rawurldecode(substr($path, strlen($prefix)));
+            if ($relativePath === '' || str_contains($relativePath, "\0")) {
+                throw new FrameworkComponentException(
+                    'FRAMEWORK_ASSET_PROJECTION_CLOSURE_MISMATCH',
+                    $relativePath,
+                );
+            }
+            $actual[] = $relativePath;
+        }
+        $actual = array_values(array_unique($actual));
+        sort($actual, SORT_STRING);
+        if ($actual !== $expected) {
+            throw new FrameworkComponentException(
+                'FRAMEWORK_ASSET_PROJECTION_CLOSURE_MISMATCH',
+                implode(',', array_values(array_diff($expected, $actual))),
+            );
+        }
+
+        return $plan;
+    }
+
+    /**
+     * @param  list<string>  $tags
+     * @param  array<string, mixed>  $runtime
+     * @return list<string>
+     */
+    private function orderedRuntimeTags(array $tags, array $runtime): array
+    {
+        $ordered = [];
+        $visiting = [];
+        $visited = [];
+        foreach ($tags as $tag) {
+            $this->visitRuntimeTag($tag, $runtime, $ordered, $visiting, $visited);
+        }
+
+        return $ordered;
+    }
+
+    /**
+     * @param  array<string, mixed>  $runtime
+     * @param  list<string>  $ordered
+     * @param  array<string, true>  $visiting
+     * @param  array<string, true>  $visited
+     */
+    private function visitRuntimeTag(
+        string $tag,
+        array $runtime,
+        array &$ordered,
+        array &$visiting,
+        array &$visited,
+    ): void {
+        if (isset($visited[$tag])) {
+            return;
+        }
+        if (isset($visiting[$tag])) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_DEPENDENCY_CYCLE', $tag);
+        }
+
+        $component = $runtime['components'][$tag] ?? null;
+        if (! is_array($component)) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_COMPONENT_MISSING', $tag);
+        }
+        $requires = $component['requires'] ?? [];
+        if (! is_array($requires) || ! array_is_list($requires)) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_DEPENDENCY_INVALID', $tag);
+        }
+        foreach ($requires as $dependency) {
+            if (! is_string($dependency) || preg_match('/^sf-[a-z][a-z0-9-]*$/D', $dependency) !== 1) {
+                throw new FrameworkComponentException('FRAMEWORK_RUNTIME_DEPENDENCY_INVALID', $tag);
+            }
+        }
+        $requires = array_values(array_unique($requires));
+        sort($requires, SORT_STRING);
+
+        $visiting[$tag] = true;
+        foreach ($requires as $dependency) {
+            $this->visitRuntimeTag($dependency, $runtime, $ordered, $visiting, $visited);
+        }
+        unset($visiting[$tag]);
+        $visited[$tag] = true;
+        $ordered[] = $tag;
     }
 
     private function uiUrl(string $commit, string $lockedPath): string

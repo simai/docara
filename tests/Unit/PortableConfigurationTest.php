@@ -230,10 +230,24 @@ final class PortableConfigurationTest extends TestCase
 
     public function test_invalid_component_calls_are_rejected_by_the_shared_schema(): void
     {
+        (new SchemaRepository)->assertValid([
+            'schema' => 'docara.component_call.v1',
+            'id' => 'ui.unadmitted_example',
+            'props' => [],
+        ], 'component-call.schema.json');
+        (new SchemaRepository)->assertValid([
+            'schema' => 'docara.component_call.v1',
+            'id' => 'ui.data.table_row',
+            'props' => [],
+        ], 'component-call.schema.json');
+
         foreach ([
             ['schema' => 'docara.component_call.v2', 'id' => 'ui.alert', 'props' => []],
             ['schema' => 'docara.component_call.v1', 'id' => 'alert', 'props' => []],
-            ['schema' => 'docara.component_call.v1', 'id' => 'ui.card', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.Badge', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.foo-bar', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.foo.', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.foo..bar', 'props' => []],
             ['schema' => 'docara.component_call.v1', 'id' => 'ui.alert'],
             ['schema' => 'docara.component_call.v1', 'id' => 'ui.alert', 'props' => [], 'unknown' => true],
         ] as $call) {
@@ -484,6 +498,23 @@ final class PortableConfigurationTest extends TestCase
         $this->expectExceptionMessage('[SCHEMA_VALIDATION_FAILED]');
 
         (new SchemaRepository)->assertValid($lock, 'framework-lock.schema.json');
+    }
+
+    public function test_framework_lock_rejects_noncanonical_smart_component_ids(): void
+    {
+        foreach (['ui.foo-bar', 'ui.foo.', 'ui.foo..bar'] as $component) {
+            $lock = $this->frameworkLock();
+            $lock['manifests'][$component] = $lock['manifests']['ui.button'];
+            unset($lock['manifests']['ui.button']);
+            $this->writeJson('framework.lock.json', $lock);
+
+            try {
+                (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+                self::fail("Noncanonical Framework component id [$component] unexpectedly passed.");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('FRAMEWORK_MANIFEST_LOCK_INVALID', $exception->errorCode);
+            }
+        }
     }
 
     public function test_base_url_and_page_slug_use_the_same_portable_path_alphabet(): void

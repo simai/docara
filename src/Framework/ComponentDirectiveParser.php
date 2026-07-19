@@ -7,13 +7,19 @@ namespace Simai\Docara\Framework;
 use Simai\Docara\Markdown\CommonMarkInspector;
 use Simai\Docara\Markdown\DirectiveBlockStartParser;
 use Simai\Docara\Markdown\DirectiveLimitExceeded;
+use Simai\Docara\Markdown\DirectiveOpeningMatcher;
 
 final class ComponentDirectiveParser
 {
     private CommonMarkInspector $inspector;
 
-    public function __construct()
+    /** @var array<string, true> */
+    private array $supportedComponents;
+
+    /** @param list<string> $supportedComponents */
+    public function __construct(array $supportedComponents)
     {
+        $this->supportedComponents = array_fill_keys($supportedComponents, true);
         $this->inspector = new CommonMarkInspector;
     }
 
@@ -86,7 +92,13 @@ final class ComponentDirectiveParser
 
             $parsed = $byStartLine[$lineNumber];
             $component = $parsed['name'];
-            if (! in_array($component, ['ui.alert', 'ui.button'], true)) {
+            if (! DirectiveOpeningMatcher::isCanonicalFrameworkName($component)) {
+                throw new FrameworkComponentException(
+                    'FRAMEWORK_COMPONENT_ID_INVALID',
+                    $component . ':' . $lineNumber,
+                );
+            }
+            if (! isset($this->supportedComponents[$component])) {
                 throw new FrameworkComponentException('FRAMEWORK_COMPONENT_UNSUPPORTED', $component . ':' . $lineNumber);
             }
             $startLine = $parsed['start_line'];
@@ -185,7 +197,7 @@ final class ComponentDirectiveParser
         }
         foreach ($lines as $index => $line) {
             $lineNumber = $index + 1;
-            if (preg_match('/^( {0,3}):{3,}ui\.[a-z][a-z0-9._-]*[ \t]*$/u', $line, $match) !== 1
+            if (! $this->inspector->isDirectivePlacementLine($line, DirectiveBlockStartParser::FRAMEWORK)
                 || isset($recognized[$lineNumber])
                 || isset($ownedBodyLines[$lineNumber])
                 || isset($inspection['code_lines'][$lineNumber])

@@ -1,0 +1,37 @@
+{
+    "id": "ui.dataview",
+    "family": "requirement",
+    "category": "structured_data",
+    "title": "Data view",
+    "description": "A structured data and settings contract for interactive data presentation.",
+    "lifecycle": "deferred",
+    "authoring": {
+        "syntax": "unavailable",
+        "call": null,
+        "jobs": [
+            "present_structured_data"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "limitations": [
+        "This is a different author job from a small Markdown table."
+    ],
+    "verification": {
+        "renderer": false,
+        "tests": false,
+        "docs": false,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components/table.md",
+    "provenance": {
+        "source_kind": "product_requirement",
+        "framework_owner": "larena/ui"
+    },
+    "gap": {
+        "owner": "simai/docara and larena/ui",
+        "reason": "No bounded portable data source, settings, interaction and rendering contract is accepted for Docara.",
+        "fallback": "Use the supported native.table entry for small reference data.",
+        "admission_condition": "Define a separate portable data and settings contract with deterministic rendering, accessibility, tests and documentation."
+    }
+}

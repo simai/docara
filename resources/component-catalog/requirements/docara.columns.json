@@ -1,0 +1,37 @@
+{
+    "id": "docara.columns",
+    "family": "requirement",
+    "category": "layout",
+    "title": "Columns",
+    "description": "A source-ordered responsive column recipe for bounded Markdown regions.",
+    "lifecycle": "admission_pending",
+    "authoring": {
+        "syntax": "proposed_directive",
+        "call": ":::columns",
+        "jobs": [
+            "arrange_related_regions"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "limitations": [
+        "The proposed directive is not executable in Batch 6."
+    ],
+    "verification": {
+        "renderer": false,
+        "tests": false,
+        "docs": false,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components.md",
+    "provenance": {
+        "source_kind": "product_requirement",
+        "framework_owner": "simai/docara"
+    },
+    "gap": {
+        "owner": "simai/docara",
+        "reason": "The strict region syntax, renderer and authoring validation are not yet admitted.",
+        "fallback": "Keep regions as source-ordered Markdown sections that stack naturally on every viewport.",
+        "admission_condition": "Accept a bounded two-to-four-region syntax with renderer, negative tests, documentation and responsive browser evidence."
+    }
+}

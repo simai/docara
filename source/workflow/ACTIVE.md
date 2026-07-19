@@ -4,8 +4,8 @@ Date: 2026-07-19
 Status: in-progress
 Workflow ID: `2026-07-19-docara-product-completion`
 Process model: `general_delivery`
-Current state: `implementation_ready`
-Target state: `launch_record_ready`
+Current state: `tests_recorded`
+Target state: `evidence_recorded`
 
 ## Goal
 
@@ -33,8 +33,8 @@ matching source/staging/served digest
 `c0d38e6badc833eaa29cf0f0482d4306c10aca943e993e79ffa629497a5b3060`.
 The accepted Batch 4 tree remains available as the timestamped rollback.
 
-Implement Batch 6 test-first from one derived projection of the enabled native
-Markdown profile, Docara-owned typed definitions and exact Smart manifests
-admitted by the immutable Framework lock. Do not create a second Framework
-registry or a visual catalogue yet. Public release, default-branch migration
-and repository retirement remain excluded.
+Cut the immutable Batch 6 candidate from the verified implementation, then run
+independent exact-archive, complete-diff HCS/source/security and bounded
+native-Chrome acceptance for that same revision. Keep the accepted Batch 5
+build served until every Batch 6 gate passes. Public release, default-branch
+migration and repository retirement remain excluded.

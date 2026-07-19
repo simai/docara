@@ -134,11 +134,15 @@ capabilities:
   - id: recipe.tabs
     family: composition
     kind: typed_composition
-    priority: required
-    baseline: required_missing
-    target: pass
+    priority: optional
+    baseline: deferred
+    target: deferred
     batch: 7
-    source: pending_typed_composition
+    source: resources/component-catalog/requirements/ui.tabs.json
+    reason: >-
+      sequential headings and sections cover the current documentation job;
+      interactive tabs require a separately accepted keyboard, focus, ARIA and
+      immutable Framework admission contract
   - id: recipe.columns
     family: composition
     kind: typed_composition
@@ -149,12 +153,12 @@ capabilities:
     source: pending_typed_composition
   - id: recipe.panel
     family: composition
-    kind: typed_composition
+    kind: typed_composition_recipe
     priority: required
-    baseline: required_missing
+    baseline: bounded
     target: pass
     batch: 7
-    source: pending_typed_composition
+    source: resources/component-catalog/typed/docara.card.json
   - id: recipe.cta_link
     family: composition
     kind: recipe
@@ -182,19 +186,25 @@ capabilities:
   - id: smart.badge
     family: framework_smart
     kind: smart
-    priority: required
-    baseline: required_missing
-    target: pass
+    priority: optional
+    baseline: deferred
+    target: deferred
     batch: 7
-    source: pending_exact_projection
+    source: resources/component-catalog/requirements/ui.badge.json
+    reason: >-
+      plain emphasized status text covers the current job; exact manifest,
+      lock, asset, schema and browser admission remains separate owner work
   - id: smart.icon
     family: framework_smart
     kind: smart
-    priority: required
-    baseline: required_missing
-    target: pass
+    priority: optional
+    baseline: deferred
+    target: deferred
     batch: 7
-    source: pending_exact_projection
+    source: resources/component-catalog/requirements/content.icon.json
+    reason: >-
+      the product shell may use its pinned icon dependency, but public Markdown
+      authoring needs a separate semantic and accessibility contract
   - id: catalogue.effective_projection
     family: authoring_system
     kind: generated

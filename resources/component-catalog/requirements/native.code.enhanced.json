@@ -1,0 +1,37 @@
+{
+    "id": "native.code.enhanced",
+    "family": "requirement",
+    "category": "technical_content",
+    "title": "Enhanced code",
+    "description": "Syntax highlighting and an accessible copy action for fenced code.",
+    "lifecycle": "framework_gap",
+    "authoring": {
+        "syntax": "unavailable",
+        "call": null,
+        "jobs": [
+            "enhance_code"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "limitations": [
+        "Available upstream bytes are not an admitted authoring, asset or accessibility contract."
+    ],
+    "verification": {
+        "renderer": false,
+        "tests": false,
+        "docs": false,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components/code.md",
+    "provenance": {
+        "source_kind": "product_requirement",
+        "framework_owner": "simai/docara"
+    },
+    "gap": {
+        "owner": "simai/docara",
+        "reason": "No exact Docara projection pins highlighting and copy assets with their accessible behaviour.",
+        "fallback": "Use the supported semantic native.code rendering.",
+        "admission_condition": "Pin an exact asset and accessibility contract, then add deterministic projection, tests, documentation and browser acceptance."
+    }
+}

@@ -72,7 +72,7 @@ physically present file is not sufficient evidence.
 ## Source anchors
 
 - Docara lock: `docs/site/simai-framework.lock.json`;
-- portable manifest allowlist:
+- lock-derived manifest discovery and byte verification:
   `src/Framework/FrameworkManifestRepository.php`;
 - portable projection validator: `src/Framework/FrameworkLock.php`;
 - Framework plan: `src/Framework/FrameworkAssetPlanner.php`;

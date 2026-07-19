@@ -1,0 +1,40 @@
+{
+    "id": "ui.button",
+    "family": "framework_smart",
+    "category": "actions",
+    "title": "Button",
+    "description": "Renders a bounded visual action control; portable Docara does not bind data, navigate, or execute an effect.",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive_json",
+        "call": ":::ui.button",
+        "jobs": [
+            "show_action_control"
+        ],
+        "parameters": []
+    },
+    "states": [
+        "default",
+        "hover",
+        "focus",
+        "active",
+        "loading",
+        "disabled"
+    ],
+    "limitations": [
+        "Docara renders the control but does not bind application data or execute an effect.",
+        "Navigation remains the job of a native link or docara.cta."
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components/button.md",
+    "example_ref": "resources/component-catalog/examples/ui.button.md",
+    "provenance": {
+        "source_kind": "smart_consumer_metadata",
+        "manifest_ref": "resources/framework/manifests/ui-button.json"
+    }
+}

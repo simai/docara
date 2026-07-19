@@ -5,12 +5,27 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
+use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
+use Simai\Docara\File\Filesystem;
+use Simai\Docara\Framework\FrameworkConsumerPolicy;
+use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Portable\CanonicalJson;
+use Simai\Docara\PortableSite\PortableHtmlRenderer;
+use Simai\Docara\PortableSite\PortableMarkdownRenderer;
+use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Symfony\Component\Process\Process;
 use Tests\TestCase;
 
 final class StaticBuildVerifierTest extends TestCase
 {
+    private const FRAMEWORK_PAIR = 'sf-v5.3.2-7e836d8a-dd786bba';
+
+    private const FRAMEWORK_PROVIDER_REVISION = '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663';
+
+    private const FRAMEWORK_SMART_REVISION = 'dd786bbae98391fb21df9b4e1e6cd402ead0614c';
+
+    private const SUPPORTED_COMPONENTS = ['ui.alert', 'ui.button'];
+
     #[Test]
     public function empty_or_broken_builds_fail_and_complete_builds_pass(): void
     {
@@ -29,6 +44,16 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertSame(0, $complete->getExitCode(), $complete->getErrorOutput());
         self::assertStringContainsString('"html_pages": 1', $complete->getOutput());
         self::assertStringContainsString('"local_references_checked": 1', $complete->getOutput());
+
+        $sentinel = $this->tmpPath('project-config-loaded');
+        file_put_contents(
+            $this->tmpPath('config.php'),
+            '<?php file_put_contents(' . var_export($sentinel, true) . ", 'loaded'); return [];\n",
+        );
+        $cli = $this->verifyViaCli($build);
+        self::assertSame(0, $cli->getExitCode(), $cli->getErrorOutput() . $cli->getOutput());
+        self::assertStringContainsString('"html_pages": 1', $cli->getOutput());
+        self::assertFileDoesNotExist($sentinel, 'verify-static must not execute project PHP configuration.');
 
         unlink($build . '/asset.css');
         $broken = $this->verify($build);
@@ -416,6 +441,155 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertSame(0, $result->getExitCode(), $result->getErrorOutput() . $result->getOutput());
     }
 
+    #[Test]
+    public function generated_component_catalogue_is_required_hash_bound_and_fail_closed(): void
+    {
+        $source = $this->tmpPath('component-catalogue-source');
+        $build = $source . '/build_catalogue';
+        $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $source);
+        (new PortableSiteBuilder(
+            new Filesystem,
+            new PortableMarkdownRenderer,
+            new PortableHtmlRenderer,
+        ))->build($source, $build);
+
+        $catalogPath = $build . '/_docara/component-catalog.json';
+        $plansPath = $build . '/.docara/resolved-page-plans.json';
+        $originalCatalog = (string) file_get_contents($catalogPath);
+        $originalPlans = (string) file_get_contents($plansPath);
+        $valid = $this->verify($build);
+        self::assertSame(0, $valid->getExitCode(), $valid->getErrorOutput() . $valid->getOutput());
+
+        $plans = json_decode($originalPlans, true, flags: JSON_THROW_ON_ERROR);
+        foreach ($plans['pages'] as &$page) {
+            $page['resolved_page_plan']['framework_lock']['unexpected'] = 'accepted';
+        }
+        unset($page);
+        $this->writeJson($plansPath, $plans);
+        $unknownLockField = $this->verify($build);
+        self::assertSame(1, $unknownLockField->getExitCode(), $unknownLockField->getOutput());
+        self::assertStringContainsString('@framework-asset-projection', $unknownLockField->getOutput());
+        self::assertStringContainsString('not an allowed property', $unknownLockField->getOutput());
+        file_put_contents($plansPath, $originalPlans);
+
+        $buttonAssetPath = $build . '/_docara/framework/smart/buttons/js/buttons.js';
+        $buttonAsset = (string) file_get_contents($buttonAssetPath);
+        unlink($buttonAssetPath);
+        $missingAsset = $this->verify($build);
+        self::assertSame(1, $missingAsset->getExitCode(), $missingAsset->getOutput());
+        self::assertStringContainsString('@framework-asset-projection', $missingAsset->getOutput());
+        self::assertStringContainsString('missing or unsafe', $missingAsset->getOutput());
+        file_put_contents($buttonAssetPath, $buttonAsset);
+
+        file_put_contents($build . '/_docara/framework/unexpected.js', 'unexpected');
+        $unexpectedAsset = $this->verify($build);
+        self::assertSame(1, $unexpectedAsset->getExitCode(), $unexpectedAsset->getOutput());
+        self::assertStringContainsString('@framework-asset-projection', $unexpectedAsset->getOutput());
+        self::assertStringContainsString('do not exactly match', $unexpectedAsset->getOutput());
+        unlink($build . '/_docara/framework/unexpected.js');
+
+        unlink($catalogPath);
+        $missing = $this->verify($build);
+        self::assertSame(1, $missing->getExitCode(), $missing->getErrorOutput() . $missing->getOutput());
+        self::assertStringContainsString('@component-catalog-contract', $missing->getOutput());
+        self::assertStringContainsString('missing or unsafe', $missing->getOutput());
+
+        file_put_contents($catalogPath, $originalCatalog);
+        $catalog = json_decode($originalCatalog, true, flags: JSON_THROW_ON_ERROR);
+        $catalog['entries'][0]['docs_ref'] = 'docs/tampered-component.md';
+        $this->writeJson($catalogPath, $catalog);
+        $hashTamper = $this->verify($build);
+        self::assertSame(
+            1,
+            $hashTamper->getExitCode(),
+            $hashTamper->getErrorOutput() . $hashTamper->getOutput(),
+        );
+        self::assertStringContainsString('@component-catalog-contract', $hashTamper->getOutput());
+        self::assertStringContainsString('content_sha256', $hashTamper->getOutput());
+
+        $catalog = json_decode($originalCatalog, true, flags: JSON_THROW_ON_ERROR);
+        $supportedIndex = array_search(
+            'supported',
+            array_column($catalog['entries'], 'lifecycle'),
+            true,
+        );
+        self::assertIsInt($supportedIndex);
+        $catalog['entries'][$supportedIndex]['verification']['docs'] = false;
+        $catalog['content_sha256'] = hash('sha256', CanonicalJson::encode($catalog['entries']));
+        $this->writeJson($catalogPath, $catalog);
+        $incompleteEvidence = $this->verify($build);
+        self::assertSame(
+            1,
+            $incompleteEvidence->getExitCode(),
+            $incompleteEvidence->getErrorOutput() . $incompleteEvidence->getOutput(),
+        );
+        self::assertStringContainsString('@component-catalog-contract', $incompleteEvidence->getOutput());
+        self::assertStringContainsString('incomplete evidence', $incompleteEvidence->getOutput());
+
+        $catalog = json_decode($originalCatalog, true, flags: JSON_THROW_ON_ERROR);
+        $nativeIndex = array_search(
+            'native.code',
+            array_column($catalog['entries'], 'id'),
+            true,
+        );
+        self::assertIsInt($nativeIndex);
+        $catalog['entries'][$nativeIndex]['family'] = 'requirement';
+        $catalog['content_sha256'] = hash('sha256', CanonicalJson::encode($catalog['entries']));
+        $this->writeJson($catalogPath, $catalog);
+        $familyDrift = $this->verify($build);
+        self::assertSame(1, $familyDrift->getExitCode(), $familyDrift->getOutput());
+        self::assertStringContainsString('@component-catalog-contract', $familyDrift->getOutput());
+        self::assertStringContainsString('incorrectly executable', $familyDrift->getOutput());
+
+        $catalog = json_decode($originalCatalog, true, flags: JSON_THROW_ON_ERROR);
+        $smartIndex = array_search('ui.alert', array_column($catalog['entries'], 'id'), true);
+        self::assertIsInt($smartIndex);
+        $catalog['entries'][$smartIndex]['consumer_policy']['managed_properties'] = [];
+        $catalog['entries'][$smartIndex]['consumer_policy']['forbidden_inputs'] = [];
+        $catalog['entries'][$smartIndex]['consumer_policy']['omitted_assets'] = [];
+        $catalog['content_sha256'] = hash('sha256', CanonicalJson::encode($catalog['entries']));
+        $this->writeJson($catalogPath, $catalog);
+        $plans = json_decode((string) file_get_contents($plansPath), true, flags: JSON_THROW_ON_ERROR);
+        $policies = [];
+        foreach ($catalog['entries'] as $entry) {
+            if (($entry['family'] ?? null) === 'framework_smart') {
+                $policies[$entry['id']] = $entry['consumer_policy'];
+            }
+        }
+        foreach ($plans['pages'] as &$page) {
+            $page['component_runtime']['diagnostics']['consumer_policy_sha256'] = hash(
+                'sha256',
+                CanonicalJson::encode($policies),
+            );
+        }
+        unset($page);
+        $this->writeJson($plansPath, $plans);
+        $policyWidening = $this->verify($build);
+        self::assertSame(1, $policyWidening->getExitCode(), $policyWidening->getOutput());
+        self::assertStringContainsString('@component-catalog-contract', $policyWidening->getOutput());
+        self::assertStringContainsString('trusted source projection', $policyWidening->getOutput());
+
+        $catalog = json_decode($originalCatalog, true, flags: JSON_THROW_ON_ERROR);
+        $smartIndex = array_search('ui.alert', array_column($catalog['entries'], 'id'), true);
+        self::assertIsInt($smartIndex);
+        $catalog['entries'][$smartIndex]['provenance']['manifest_sha256'] = str_repeat('f', 64);
+        $catalog['content_sha256'] = hash('sha256', CanonicalJson::encode($catalog['entries']));
+        $this->writeJson($catalogPath, $catalog);
+        $plans = json_decode((string) file_get_contents($plansPath), true, flags: JSON_THROW_ON_ERROR);
+        foreach ($plans['pages'] as &$page) {
+            $page['component_runtime']['diagnostics']['consumer_policy_sha256'] = hash(
+                'sha256',
+                CanonicalJson::encode($this->syntheticComponentPolicies()),
+            );
+        }
+        unset($page);
+        $this->writeJson($plansPath, $plans);
+        $provenanceTamper = $this->verify($build);
+        self::assertSame(1, $provenanceTamper->getExitCode(), $provenanceTamper->getOutput());
+        self::assertStringContainsString('@component-catalog-contract', $provenanceTamper->getOutput());
+        self::assertStringContainsString('trusted source projection', $provenanceTamper->getOutput());
+    }
+
     /** @param list<string> $outputs */
     private function writeResolvedPlans(string $build, string $baseUrl, array $outputs = ['index.html']): void
     {
@@ -506,10 +680,84 @@ final class StaticBuildVerifierTest extends TestCase
     /** @param array<string, mixed> $manifest */
     private function writeManifest(string $build, array $manifest): void
     {
+        if (is_array($manifest['pages'] ?? null)) {
+            foreach ($manifest['pages'] as &$page) {
+                if (! is_array($page) || array_key_exists('component_runtime', $page)) {
+                    continue;
+                }
+                $page['component_runtime'] = [
+                    'diagnostics' => [
+                        'runtime_pair' => self::FRAMEWORK_PAIR,
+                        'provider_revision' => self::FRAMEWORK_PROVIDER_REVISION,
+                        'supported_components' => self::SUPPORTED_COMPONENTS,
+                        'consumer_policy_sha256' => hash(
+                            'sha256',
+                            CanonicalJson::encode($this->syntheticComponentPolicies()),
+                        ),
+                    ],
+                ];
+                $page['resolved_page_plan']['framework_lock'] ??= $this->frameworkLock();
+            }
+            unset($page);
+        }
         $this->filesystem->ensureDirectoryExists($build . '/.docara');
+        $this->writeJson($build . '/.docara/resolved-page-plans.json', $manifest);
+        $this->writeComponentCatalog($build);
+        $this->writeFrameworkAssets($build);
+    }
+
+    private function writeComponentCatalog(string $build): void
+    {
+        $catalog = EffectiveComponentCatalogBuilder::bundled(
+            FrameworkLock::fromArray($this->frameworkLock()),
+        )->build();
+        $this->filesystem->ensureDirectoryExists($build . '/_docara');
+        $this->writeJson($build . '/_docara/component-catalog.json', $catalog);
+    }
+
+    /** @return array<string, array<string, mixed>> */
+    private function syntheticComponentPolicies(): array
+    {
+        $policy = new FrameworkConsumerPolicy;
+        $policies = [];
+        foreach (self::SUPPORTED_COMPONENTS as $component) {
+            $policies[$component] = $policy->catalogMetadata($component);
+        }
+
+        return $policies;
+    }
+
+    /** @return array<string, mixed> */
+    private function frameworkLock(): array
+    {
+        return json_decode(
+            (string) file_get_contents(dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+    }
+
+    private function writeFrameworkAssets(string $build): void
+    {
+        $root = dirname(__DIR__, 2);
+        foreach (array_keys($this->frameworkLock()['asset_projection']['files']) as $relativePath) {
+            $source = $root . '/resources/framework/assets/' . $relativePath;
+            $target = $build . '/_docara/framework/' . $relativePath;
+            $this->filesystem->ensureDirectoryExists(dirname($target));
+            file_put_contents($target, (string) file_get_contents($source));
+        }
+    }
+
+    /** @param array<string, mixed> $value */
+    private function writeJson(string $path, array $value): void
+    {
         file_put_contents(
-            $build . '/.docara/resolved-page-plans.json',
-            json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL,
+            $path,
+            json_encode(
+                $value,
+                JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+            ) . PHP_EOL,
         );
     }
 
@@ -520,6 +768,21 @@ final class StaticBuildVerifierTest extends TestCase
             'scripts/verify-static-build.php',
             $build,
         ], dirname(__DIR__, 2));
+        $process->run();
+
+        return $process;
+    }
+
+    private function verifyViaCli(string $build): Process
+    {
+        $root = dirname(__DIR__, 2);
+        $process = new Process([
+            PHP_BINARY,
+            $root . '/docara',
+            'verify-static',
+            $build,
+            '--no-interaction',
+        ], $this->tmp);
         $process->run();
 
         return $process;

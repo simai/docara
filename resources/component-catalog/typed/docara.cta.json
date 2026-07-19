@@ -1,0 +1,38 @@
+{
+    "id": "docara.cta",
+    "name": "cta",
+    "renderer": "docara.cta.v1",
+    "family": "docara_typed",
+    "category": "navigation",
+    "title": "CTA link",
+    "description": "Turns one safe Markdown link into a prominent native navigation action.",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive",
+        "call": ":::cta",
+        "jobs": [
+            "primary_navigation_action"
+        ],
+        "parameters": []
+    },
+    "states": [
+        "default",
+        "focus"
+    ],
+    "limitations": [
+        "The body must contain exactly one safe Markdown link.",
+        "The result is a native link and does not claim an executable Smart action."
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components/cta.md",
+    "example_ref": "resources/component-catalog/examples/docara.cta.md",
+    "provenance": {
+        "source_kind": "typed_definition",
+        "definition_ref": "resources/component-catalog/typed/docara.cta.json"
+    }
+}

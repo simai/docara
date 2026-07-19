@@ -1,0 +1,37 @@
+{
+    "id": "ui.badge",
+    "family": "requirement",
+    "category": "status",
+    "title": "Badge",
+    "description": "A compact status label based on an exact upstream Smart manifest.",
+    "lifecycle": "admission_pending",
+    "authoring": {
+        "syntax": "proposed_directive",
+        "call": ":::ui.badge",
+        "jobs": [
+            "label_status"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "limitations": [
+        "The upstream manifest exists, but Docara has not admitted it."
+    ],
+    "verification": {
+        "renderer": false,
+        "tests": false,
+        "docs": false,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components.md",
+    "provenance": {
+        "source_kind": "product_requirement",
+        "framework_owner": "larena/ui"
+    },
+    "gap": {
+        "owner": "simai/docara",
+        "reason": "Docara has no bundled badge manifest, immutable lock record, projected assets or authoring tests.",
+        "fallback": "Use plain emphasized text that states the status directly.",
+        "admission_condition": "Bundle the exact upstream manifest, pin its provider revision and assets, forbid author-managed IDs, and pass schema, rendering, documentation and browser acceptance."
+    }
+}

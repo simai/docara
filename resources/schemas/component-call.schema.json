@@ -11,7 +11,7 @@
         },
         "id": {
             "type": "string",
-            "enum": ["ui.alert", "ui.button"]
+            "pattern": "^ui(?:\\.[a-z][a-z0-9_]*)+$"
         },
         "props": {
             "type": "object"

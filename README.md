@@ -30,7 +30,7 @@ generated project contains:
 
 ```text
 docara.json                       site defaults
-simai-framework.lock.json         immutable Framework runtime
+simai-framework.lock.json         immutable Simai Framework runtime
 content/_section.json             settings inherited by all content
 content/guides/_section.json      nested section settings
 content/page.md                   Markdown content
@@ -91,19 +91,29 @@ flat unordered list with two to six single-paragraph items:
 :::
 ```
 
-Use `ui.button` for an application action and `cta` for navigation. Docara does
-not invent an `href` for the exact button manifest.
+Use `ui.button` to render a visual action control; portable Docara does not bind
+or execute the action. Use `cta` for navigation. Docara does not invent an
+`href` for the exact button manifest.
+
+Every portable build also writes
+`<build-directory>/_docara/component-catalog.json`. This deterministic
+`docara.effective_component_catalog.v1` projection describes the native
+Markdown, typed Docara and Smart Simai Framework elements that the exact build
+can use, together with known pending, gap and deferred requirements. It is
+derived from the portable Markdown profile, typed definitions and the exact
+Simai Framework lock; it is not a second Simai Framework registry and cannot
+admit a Smart-component on its own.
 
 Every generated page receives a human- and machine-readable resolved plan in
-`build_local/.docara/resolved-page-plans.json`. Framework assets use exact
+`<build-directory>/.docara/resolved-page-plans.json`. Simai Framework assets use exact
 revisions from `simai-framework.lock.json`; moving `main` or `latest` references
 are rejected. Exact Smart assets for the bounded `ui.alert` and `ui.button`
-surface are copied to `build_local/_docara/framework/` and addressed with a
+surface are copied to `<build-directory>/_docara/framework/` and addressed with a
 cache version derived from the accepted runtime pair and canonical asset
 projection. Simai Framework Core and the Material Symbols font still use
 an exact-commit jsDelivr URL, so this prototype is not an offline build.
 
-`ui.alert` with `closable: true` is intentionally rejected: the accepted
+`ui.alert` with `closable: true` is intentionally rejected: the accepted Simai
 Framework pair does not contain the required `sf-icon-button` Smart dependency.
 It will become available only after that dependency is added to a future pinned
 runtime contract.
@@ -186,6 +196,7 @@ deploying.
 -   `php vendor/bin/docara init [--update] [--force-core-configs] [--force-core-files] [preset]`  
     Initializes or updates the project. `--force-core-configs` overwrites template configs from `_core` even if you changed them (by default changed files are skipped). `--force-core-files` overwrites the **entire** `_core` tree from stubs (ignoring your edits), but files that are already tracked in your git repo are never overwritten, even with this flag.
 -   `php vendor/bin/docara build [env]` — build the site for the given environment.
+-   `php vendor/bin/docara verify-static [build-directory]` — verify the generated portable build; the directory defaults to `build_production`.
 -   `php vendor/bin/docara translate [--test]` — translate docs (requires AZURE_*), `--test` for a dry run.
 
 ## Legacy structure
@@ -195,11 +206,11 @@ deploying.
 -   `stubs/` — template stubs used during `docara init`.
 -   `build_*` — build outputs.
 
-## Quality checks
+## Source-repository quality checks
 
 -   PHP: `vendor/bin/pint --test`
 -   Tests: `php vendor/bin/phpunit`
--   Generated documentation quoted local `href`/`src` file targets: `php scripts/verify-static-build.php docs/site/build_production`
+-   Maintainer verification of the generated documentation build: `php ./docara verify-static docs/site/build_production`
 
 ## Branding and private theme tools
 

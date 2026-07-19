@@ -1,0 +1,32 @@
+{
+    "id": "native.headings_and_text",
+    "family": "native_markdown",
+    "category": "prose",
+    "title": "Headings and text",
+    "description": "Structures prose with headings, paragraphs, emphasis, strong text and strikethrough.",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "markdown",
+        "call": "# Heading",
+        "jobs": [
+            "structure_prose"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "limitations": [
+        "Raw HTML is not accepted as an authoring shortcut."
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/authoring/markdown.md",
+    "example_ref": "resources/component-catalog/examples/native.headings_and_text.md",
+    "provenance": {
+        "source_kind": "portable_markdown_profile",
+        "profile_id": "docara.portable_markdown_profile.v1"
+    }
+}

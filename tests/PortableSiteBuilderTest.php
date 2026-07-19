@@ -6,6 +6,7 @@ namespace Tests;
 
 use PHPUnit\Framework\Attributes\Test;
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableHtmlRenderer;
@@ -48,6 +49,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertFileExists($this->tmpPath('build_local/guides/getting-started/index.html'));
         self::assertFileExists($this->tmpPath('build_local/guides/platform/configuration/layout/index.html'));
         self::assertFileExists($this->tmpPath('build_local/landing/index.html'));
+        self::assertFileExists($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertFileExists($this->tmpPath('build_local/_docara/search-index.json'));
         self::assertFileExists($this->tmpPath('build_local/_docara/search.js'));
 
@@ -332,6 +334,19 @@ final class PortableSiteBuilderTest extends TestCase
             hash_file('sha256', dirname(__DIR__) . '/resources/portable/search.js'),
             hash_file('sha256', $this->tmpPath('build_local/_docara/search.js')),
         );
+        $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
+        self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
+        self::assertSame('sf-v5.3.2-7e836d8a-dd786bba', $componentCatalog['framework_pair']);
+        self::assertCount(17, $componentCatalog['entries']);
+        self::assertEquals(
+            [
+                'catalog_is_canonical_framework_registry' => false,
+                'all_framework_components_supported' => false,
+                'production_ready' => false,
+                'public_release_ready' => false,
+            ],
+            $componentCatalog['nonclaims'],
+        );
         $searchRuntime = (string) file_get_contents($this->tmpPath('build_local/_docara/search.js'));
         self::assertStringContainsString(
             "document.querySelector('[data-docara-reader-settings-dialog]')",
@@ -550,6 +565,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertFileExists($site . '/build_local/guides/getting-started/index.html');
         self::assertFileExists($site . '/build_local/guides/platform/configuration/layout/index.html');
         self::assertFileExists($site . '/build_local/landing/index.html');
+        self::assertFileExists($site . '/build_local/_docara/component-catalog.json');
         self::assertFileExists($site . '/build_local/.docara/resolved-page-plans.json');
         self::assertFileExists($site . '/build_local/_docara/framework/smart/alert/js/alert.js');
         self::assertCount(1, glob($site . '/build_local/_docara/brand/*') ?: []);
@@ -909,6 +925,31 @@ MD;
             self::fail('A symbolic-link brand asset unexpectedly passed.');
         } catch (PortableConfigurationException $exception) {
             self::assertSame('BRAND_ASSET_SYMLINK_FORBIDDEN', $exception->errorCode);
+        }
+        self::assertSame('keep-output', file_get_contents($this->tmpPath('build_local/sentinel.txt')));
+    }
+
+    #[Test]
+    public function incomplete_or_extra_framework_projection_fails_before_existing_output_is_cleaned(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $lockPath = $this->tmpPath('simai-framework.lock.json');
+        $lock = $this->jsonFile($lockPath);
+        $lock['asset_projection']['files']['smart/unused/js/unused.js'] = [
+            'sha256' => str_repeat('a', 64),
+        ];
+        file_put_contents(
+            $lockPath,
+            json_encode($lock, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('build_local'));
+        file_put_contents($this->tmpPath('build_local/sentinel.txt'), 'keep-output');
+
+        try {
+            $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+            self::fail('An incomplete extra Framework projection unexpectedly passed.');
+        } catch (FrameworkComponentException $exception) {
+            self::assertSame('FRAMEWORK_BUNDLED_ASSET_MISSING', $exception->errorCode);
         }
         self::assertSame('keep-output', file_get_contents($this->tmpPath('build_local/sentinel.txt')));
     }

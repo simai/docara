@@ -1,0 +1,35 @@
+{
+    "id": "docara.steps",
+    "name": "steps",
+    "renderer": "docara.steps.v1",
+    "family": "docara_typed",
+    "category": "content_structure",
+    "title": "Steps",
+    "description": "Shows a short ordered sequence of actions.",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive",
+        "call": ":::steps",
+        "jobs": [
+            "explain_sequence"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "limitations": [
+        "The body must contain exactly one ordered Markdown list.",
+        "Nested Docara directives are not accepted."
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components/steps.md",
+    "example_ref": "resources/component-catalog/examples/docara.steps.md",
+    "provenance": {
+        "source_kind": "typed_definition",
+        "definition_ref": "resources/component-catalog/typed/docara.steps.json"
+    }
+}

@@ -22,10 +22,14 @@ final class CommonMarkInspector
 
     private MarkdownParser $parser;
 
+    private DirectiveOpeningMatcher $directiveMatcher;
+
     /** @param null|Closure(string): void $onDirectiveIteration */
     public function __construct(
         private readonly ?Closure $onDirectiveIteration = null,
+        ?DirectiveOpeningMatcher $directiveMatcher = null,
     ) {
+        $this->directiveMatcher = $directiveMatcher ?? DirectiveOpeningMatcher::bundled();
         $environment = new Environment([
             'html_input' => 'strip',
             'allow_unsafe_links' => false,
@@ -70,12 +74,7 @@ final class CommonMarkInspector
             if (isset($inspection['code_lines'][$lineNumber])) {
                 continue;
             }
-            $pattern = match ($family) {
-                DirectiveBlockStartParser::PORTABLE => '/^:{3,}(?:card|steps|cta|features)[ \t]*$/u',
-                DirectiveBlockStartParser::FRAMEWORK => '/^:{3,}ui\.[a-z][a-z0-9._-]*[ \t]*$/u',
-                default => '/^:{3,}(?:card|steps|cta|features|ui\.[a-z][a-z0-9._-]*)[ \t]*$/u',
-            };
-            if (preg_match($pattern, $line) === 1) {
+            if ($this->directiveMatcher->matches($line, $family)) {
                 return true;
             }
         }
@@ -112,7 +111,10 @@ final class CommonMarkInspector
             'max_nesting_level' => 100,
         ]);
         $environment->addExtension(new CommonMarkCoreExtension);
-        $environment->addBlockStartParser(new DirectiveBlockStartParser($family), 200);
+        $environment->addBlockStartParser(
+            new DirectiveBlockStartParser($family, $this->directiveMatcher),
+            200,
+        );
 
         $inspection = $this->inspect($markdown);
         $workingLines = $lines;
@@ -178,7 +180,7 @@ final class CommonMarkInspector
     {
         $sourceMarkers = 0;
         foreach ($lines as $line) {
-            $opening = DirectiveBlockStartParser::matchOpening($line);
+            $opening = $this->directiveMatcher->match($line);
             if ($opening === null) {
                 continue;
             }
@@ -288,9 +290,17 @@ final class CommonMarkInspector
 
     private function belongsToFamily(string $name, string $family): bool
     {
-        return $family === DirectiveBlockStartParser::PORTABLE
-            ? in_array($name, ['card', 'steps', 'cta', 'features'], true)
-            : str_starts_with($name, 'ui.');
+        return $this->directiveMatcher->belongsToFamily($name, $family);
+    }
+
+    public function isDirectiveOpeningLine(string $line, ?string $family = null): bool
+    {
+        return $this->directiveMatcher->matches($line, $family);
+    }
+
+    public function isDirectivePlacementLine(string $line, ?string $family = null): bool
+    {
+        return $this->directiveMatcher->matchesPlacement($line, $family);
     }
 
     /** @param list<string> $lines */

@@ -1,0 +1,31 @@
+{
+    "id": "native.lists_and_quotes",
+    "family": "native_markdown",
+    "category": "prose",
+    "title": "Lists and quotes",
+    "description": "Expresses ordered or unordered collections and semantic quotations.",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "markdown",
+        "call": "- item and > quote",
+        "jobs": [
+            "list_items",
+            "quote_content"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "limitations": [],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/authoring/markdown.md",
+    "example_ref": "resources/component-catalog/examples/native.lists_and_quotes.md",
+    "provenance": {
+        "source_kind": "portable_markdown_profile",
+        "profile_id": "docara.portable_markdown_profile.v1"
+    }
+}

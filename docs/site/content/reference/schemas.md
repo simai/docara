@@ -7,9 +7,49 @@ Portable Docara использует JSON Schema Draft 2020-12.
 | `docara.site.v1` | `docara.json` | Сайт и общие defaults |
 | `docara.section.v1` | `_section.json` | Наследуемые настройки раздела |
 | `docara.page.v1` | `<page>.page.json` | Настройки одной страницы |
-| `docara.component_call.v1` | Нормализованный вызов | Разрешённый компонент и props |
+| `docara.component_call.v1` | Нормализованный вызов | Грамматика ID и props; допуск определяет lock/runtime |
 | `docara.framework_lock.v1` | `simai-framework.lock.json` | Exact runtime, manifests и assets |
+| `https://schemas.simai.io/docara/component-catalog-entry/v1` | Package source record | Общая форма записи эффективного каталога |
+| `https://schemas.simai.io/docara/typed-component-definition/v1` | `resources/component-catalog/typed/*.json` | Определение typed-компонента Docara |
+| `docara.effective_component_catalog.v1` (`$id`: `https://schemas.simai.io/docara/effective-component-catalog/v1`) | `_docara/component-catalog.json` | Производная проекция компонентов конкретной сборки |
 | `docara.search_index.v1` | `_docara/search-index.json` | Детерминированный локальный поисковый индекс |
+
+## Эффективный каталог компонентов
+
+`docara.effective_component_catalog.v1` объединяет native Markdown profile,
+typed-компоненты Docara и Smart-компоненты, допущенные точным Simai Framework
+lock. Дополнительные записи `requirement` фиксируют известные потребности, но
+не являются исполняемыми компонентами.
+
+Корневой объект содержит:
+
+- `framework_pair` и immutable `provider_revision`;
+- отсортированный по `id` массив `entries`;
+- `content_sha256` канонического массива записей;
+- обязательные `nonclaims`, запрещающие трактовать проекцию как канонический
+  реестр Simai Framework, готовность всех компонентов, production readiness
+  или public-release readiness.
+
+Lifecycle записи принимает одно из четырёх значений: `supported`,
+`admission_pending`, `framework_gap`, `deferred`. Для `supported` обязательны
+renderer, tests, docs и example evidence. Для остальных состояний обязательны
+owner, reason, fallback и admission condition.
+
+Для Smart-записи `authoring.parameters[].required` относится только к явному
+вводу автора. Значение `false` разрешает пропустить параметр, но само по себе
+не обещает default. Поле `default` публикуется только при наличии точного
+базового значения в `atlas.example_props`; иначе свойство остаётся
+отсутствующим до preset или явного ввода. Поле `validation` сохраняет границы
+длины, pattern и числовой диапазон, а `mirrors` — условное заполнение другого
+свойства из явного авторского ввода. Необязательный `preset` и точные
+`authoring.constraints.allowed_combinations`/`requires` также выводятся из
+manifest и не редактируются вручную.
+
+Путь `_docara/component-catalog.json` относится к output сборки; публичный URL
+равен `<base_url>_docara/component-catalog.json`. Автор сайта не редактирует
+этот файл и не может через него, Markdown или presentation JSON добавить
+Smart-компонент: допуск определяется точным
+`simai-framework.lock.json` и совпадающим bundled manifest.
 
 ## Общие presentation-поля
 

@@ -6,6 +6,7 @@ use Simai\Docara\Console\BuildCommand;
 use Simai\Docara\Console\InitCommand;
 use Simai\Docara\Console\ServeCommand;
 use Simai\Docara\Console\TranslateCommand;
+use Simai\Docara\Console\VerifyStaticCommand;
 use Simai\Docara\Container;
 use Simai\Docara\Docara;
 use Simai\Docara\Exceptions\Handler;
@@ -25,8 +26,9 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 
 $app = new Container;
 $argv = $_SERVER['argv'] ?? [];
-$isInitCommand = in_array('init', $argv, true);
-if ($isInitCommand) {
+$isConfigurationIndependentCommand = in_array('init', $argv, true)
+    || in_array('verify-static', $argv, true);
+if ($isConfigurationIndependentCommand) {
     $app->skipConfigLoading();
 }
 
@@ -52,6 +54,7 @@ $addCommand($app[InitCommand::class]);
 $addCommand(new BuildCommand($app));
 $addCommand(new TranslateCommand);
 $addCommand(new ServeCommand($app));
+$addCommand(new VerifyStaticCommand($app));
 $application->setCatchExceptions(false);
 
 Docara::addUserCommands($application, $app);

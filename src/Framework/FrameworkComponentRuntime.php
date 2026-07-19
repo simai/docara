@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Framework;
 
+use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\SchemaRepository;
 
 final readonly class FrameworkComponentRuntime
@@ -15,34 +16,50 @@ final readonly class FrameworkComponentRuntime
         private FrameworkPropsValidator $validator,
         private FrameworkHostRenderer $renderer,
         private FrameworkAssetPlanner $assetPlanner,
+        private FrameworkConsumerPolicy $consumerPolicy,
+        private FrameworkManifestContract $manifestContract,
     ) {}
 
     /** @param array<string, mixed> $lock */
     public static function fromLock(array $lock, string $assetBase = '/_docara/framework'): self
     {
-        $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($lock));
-
-        return new self(
-            $repository,
-            new ComponentDirectiveParser,
-            new SchemaRepository,
-            new FrameworkPropsValidator,
-            new FrameworkHostRenderer,
-            new FrameworkAssetPlanner($repository, $assetBase),
+        return self::create(
+            FrameworkManifestRepository::bundled(FrameworkLock::fromArray($lock)),
+            $assetBase,
         );
     }
 
     public static function fromLockFile(string $path, string $assetBase = '/_docara/framework'): self
     {
-        $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromJsonFile($path));
+        return self::create(
+            FrameworkManifestRepository::bundled(FrameworkLock::fromJsonFile($path)),
+            $assetBase,
+        );
+    }
+
+    private static function create(FrameworkManifestRepository $repository, string $assetBase): self
+    {
+        $propsValidator = new FrameworkPropsValidator;
+        $renderer = new FrameworkHostRenderer;
+        $assetPlanner = new FrameworkAssetPlanner($repository, $assetBase);
+        $consumerPolicy = new FrameworkConsumerPolicy;
+        (new FrameworkAdmissionPreflight(
+            $repository,
+            $consumerPolicy,
+            $propsValidator,
+            $renderer,
+            $assetPlanner,
+        ))->assertReady();
 
         return new self(
             $repository,
-            new ComponentDirectiveParser,
+            new ComponentDirectiveParser($repository->keys()),
             new SchemaRepository,
-            new FrameworkPropsValidator,
-            new FrameworkHostRenderer,
-            new FrameworkAssetPlanner($repository, $assetBase),
+            $propsValidator,
+            $renderer,
+            $assetPlanner,
+            $consumerPolicy,
+            new FrameworkManifestContract,
         );
     }
 
@@ -73,7 +90,7 @@ final readonly class FrameworkComponentRuntime
                 'html' => $html,
                 'manifest_version' => (string) $manifest['version'],
                 'provider' => (string) $manifest['owner_package'],
-                'provider_revision' => FrameworkManifestRepository::PROVIDER_REVISION,
+                'provider_revision' => $this->manifests->providerRevision($directive->component),
             ];
         }
 
@@ -87,8 +104,9 @@ final readonly class FrameworkComponentRuntime
                 'mode' => 'bounded_consumer_verified',
                 'runtime_pair' => $this->manifests->pairId(),
                 'provider' => 'larena/ui',
-                'provider_revision' => FrameworkManifestRepository::PROVIDER_REVISION,
-                'supported_components' => ['ui.alert', 'ui.button'],
+                'provider_revision' => $this->manifests->providerRevision($this->manifests->keys()[0]),
+                'supported_components' => $this->manifests->keys(),
+                'consumer_policy_sha256' => $this->consumerPolicyHash(),
                 'nonclaims' => $this->manifests->nonclaims(),
             ],
         );
@@ -104,12 +122,8 @@ final readonly class FrameworkComponentRuntime
         $component = (string) $manifest['key'];
         $preset = $authorProps['preset'] ?? null;
         unset($authorProps['preset']);
-        if ($component === 'ui.alert' && array_key_exists('id', $authorProps)) {
-            throw new FrameworkComponentException(
-                'FRAMEWORK_PROP_MANAGED',
-                'ui.alert:id is generated deterministically by Docara',
-            );
-        }
+        $this->consumerPolicy->assertNarrowing($component, $manifest);
+        $this->consumerPolicy->assertAuthorProps($component, $authorProps);
         if ($preset !== null && ! is_string($preset)) {
             throw new FrameworkComponentException('FRAMEWORK_PRESET_INVALID', $component);
         }
@@ -128,26 +142,18 @@ final readonly class FrameworkComponentRuntime
         }
         $props = array_replace($props, $authorProps);
 
-        foreach (is_array($manifest['atlas']['controls'] ?? null) ? $manifest['atlas']['controls'] : [] as $control) {
-            if (! is_array($control) || ! is_string($control['key'] ?? null) || ! array_key_exists($control['key'], $authorProps)) {
+        foreach ($this->manifestContract->mirrorMap($component, $manifest) as $source => $targets) {
+            if (! array_key_exists($source, $authorProps)) {
                 continue;
             }
-            foreach (is_array($control['mirror_props'] ?? null) ? $control['mirror_props'] : [] as $mirror) {
-                if (is_string($mirror) && ! array_key_exists($mirror, $authorProps)) {
-                    $props[$mirror] = $authorProps[$control['key']];
+            foreach ($targets as $target) {
+                if (! array_key_exists($target, $authorProps)) {
+                    $props[$target] = $authorProps[$source];
                 }
             }
         }
 
-        if ($component === 'ui.alert') {
-            $props['id'] = 'docara-alert-' . substr(hash('sha256', $pagePath . "\0" . $ordinal), 0, 16);
-            if (($props['closable'] ?? false) === true) {
-                throw new FrameworkComponentException(
-                    'FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME',
-                    'ui.alert:closable requires sf-icon-button, which is absent from the pinned runtime pair',
-                );
-            }
-        }
+        $props = $this->consumerPolicy->apply($component, $props, $pagePath, $ordinal);
 
         $ordered = [];
         foreach (array_keys($manifest['props']['properties']) as $key) {
@@ -162,5 +168,15 @@ final readonly class FrameworkComponentRuntime
         }
 
         return $ordered;
+    }
+
+    private function consumerPolicyHash(): string
+    {
+        $policies = [];
+        foreach ($this->manifests->keys() as $key) {
+            $policies[$key] = $this->consumerPolicy->catalogMetadata($key);
+        }
+
+        return hash('sha256', CanonicalJson::encode($policies));
     }
 }

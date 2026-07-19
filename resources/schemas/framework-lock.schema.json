@@ -77,16 +77,13 @@
         },
         "manifests": {
             "type": "object",
-            "required": ["ui.button", "ui.alert"],
-            "properties": {
-                "ui.button": {
-                    "$ref": "#/$defs/manifest"
-                },
-                "ui.alert": {
-                    "$ref": "#/$defs/manifest"
-                }
+            "minProperties": 1,
+            "propertyNames": {
+                "pattern": "^ui(?:\\.[a-z][a-z0-9_]*)+$"
             },
-            "additionalProperties": false
+            "additionalProperties": {
+                "$ref": "#/$defs/manifest"
+            }
         },
         "asset_projection": {
             "type": "object",
@@ -117,17 +114,10 @@
                 },
                 "files": {
                     "type": "object",
-                    "required": [
-                        "smart/alert/js/alert.js",
-                        "smart/buttons/js/buttons.js",
-                        "smart/icons/js/icons.js"
-                    ],
-                    "properties": {
-                        "smart/alert/js/alert.js": {"$ref": "#/$defs/projected_asset"},
-                        "smart/buttons/js/buttons.js": {"$ref": "#/$defs/projected_asset"},
-                        "smart/icons/js/icons.js": {"$ref": "#/$defs/projected_asset"}
-                    },
-                    "additionalProperties": false
+                    "minProperties": 1,
+                    "additionalProperties": {
+                        "$ref": "#/$defs/projected_asset"
+                    }
                 }
             },
             "additionalProperties": false

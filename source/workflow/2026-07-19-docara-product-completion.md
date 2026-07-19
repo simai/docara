@@ -3,8 +3,8 @@
 Date: 2026-07-19
 Status: in-progress
 Process model: `general_delivery`
-Current state: `planned`
-Target state: `launch_record_ready`
+Current state: `tests_recorded`
+Target state: `evidence_recorded`
 Project mode: `productization`
 Requested level: `goal`
 Recommended level: `goal`
@@ -104,8 +104,10 @@ patterns. Their implementation stacks are not dependencies.
 ## Product Principles
 
 1. Use one portable JSON shell/configuration contract plus Markdown content.
-2. Use Framework utilities for layout, components for presentation and local
-   interaction, and Smart-components only for state/data/side effects.
+2. Use Framework utilities for layout, components for presentation and
+   Smart-components only through their exact canonical manifest/runtime
+   contract. Rendering, data binding and effect readiness remain separate
+   machine-readable capabilities and are never inferred from the word Smart.
 3. Prefer an existing pinned Framework primitive; record a framework gap before
    creating a Docara-specific adapter, and do not silently create a generic
    duplicate.
@@ -251,7 +253,7 @@ Do not complete the Goal until:
 | `WS-READING-03` | Docara owner with UX/designer | breadcrumbs, page outline and previous/next navigation from one navigation tree | this worktree | accepted and published locally | Batch 3 exact tester, HCS, UX/design/browser and publication PASS |
 | `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | accepted and published locally | exact HCS/tester/browser, independent visual/evidence audit and served smoke PASS |
 | `WS-LANDING-05` | Docara owner with UX/designer | landing recipe and responsive demonstration from pinned Framework building blocks | this worktree | accepted and published locally | exact tester, HCS/source/security, native-Chrome UX/design and served smoke PASS |
-| `WS-CATALOG-CONTRACT-06` | Docara owner with Framework consultation | one effective component projection, typed definitions and lifecycle/gap contract | this worktree | implementation-ready | schemas, negative matrix, deterministic projection, complete-diff HCS and exact tester PASS |
+| `WS-CATALOG-CONTRACT-06` | Docara owner with Framework consultation | one effective component projection, typed definitions and lifecycle/gap contract | this worktree | implementation and mutable verification complete; exact candidate pending | schemas, negative matrix, deterministic projection, complete-diff HCS and exact tester PASS |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -342,12 +344,10 @@ was discovered.
 
 ## Next Safe Batch
 
-Cut a successor Batch 5 candidate containing the shared 64-marker preflight
-correction for `B5-HCS-P2-001`. Require independent exact tester,
-native-Chrome UX/design and source/HCS/security PASS for that exact revision.
-Keep the accepted Batch 4 build served until the successor passes all three
-gates. Do not create a generic Docara primitive when an exact Framework
-building block already owns the job.
+Cut one exact Batch 6 candidate from the verified implementation. Require
+independent archive, complete-diff HCS/source/security and bounded browser
+acceptance for that same revision. Keep the accepted Batch 5 build served until
+all Batch 6 gates pass.
 
 ## Last Completed Batch
 
@@ -391,11 +391,12 @@ matches, while the accepted Batch 3 tree remains preserved for rollback at
 This closes Milestone 2, not Batch 5 or the wider Goal.
 
 The first Batch 5 candidate
-`68fba097d6d629ad77937a09a6c16b25ea709850` passed its original exact tester
-and browser slices but remains rejected and unpublished. Exact source/HCS
-review found `B5-HCS-P2-001`: family-specific marker counting did not bound the
-shared cross-family iterative parser. A successor correction now defines one
-global 64-marker typed/Smart budget, rejects before CommonMark iteration and
-preserves the triggering family's stable public error code. Mutable tests,
-format, syntax, JSON, two deterministic builds and static verification pass;
-the successor still requires all exact acceptance gates.
+`68fba097d6d629ad77937a09a6c16b25ea709850` remains rejected and unpublished.
+Its corrected successor `918919046a2863a67a306678ad225dbda4549666`
+passed independent exact tester, native-Chrome UX/design and complete-diff
+HCS/source/security gates. Closure commit
+`8c241f5b088ed92934274cad28659060a892a514` records the accepted local
+publication. Source, staging and served digest
+`c0d38e6badc833eaa29cf0f0482d4306c10aca943e993e79ffa629497a5b3060`
+matches, and the accepted Batch 4 tree remains available for rollback. Batch 6
+and the wider Goal are not accepted by this result.

@@ -1,0 +1,32 @@
+{
+    "id": "native.table",
+    "family": "native_markdown",
+    "category": "technical_content",
+    "title": "Markdown table",
+    "description": "Presents small comparison or reference data in a scroll-safe semantic table.",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "markdown",
+        "call": "| Column |",
+        "jobs": [
+            "compare_small_datasets"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "limitations": [
+        "This is a native Markdown table, not a structured DataView contract."
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components/table.md",
+    "example_ref": "resources/component-catalog/examples/native.table.md",
+    "provenance": {
+        "source_kind": "portable_markdown_profile",
+        "profile_id": "docara.portable_markdown_profile.v1"
+    }
+}

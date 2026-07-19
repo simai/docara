@@ -28,6 +28,16 @@ php vendor/bin/docara build [environment]
 php vendor/bin/docara serve [environment] --host=localhost --port=8000 [--no-build]
 ```
 
+## `verify-static`
+
+```bash
+php vendor/bin/docara verify-static [build-directory]
+```
+
+Команда проверяет локальные ссылки, manifest результатов, поиск, эффективный
+каталог компонентов и точную проекцию ассетов Simai Framework. Если аргумент
+не указан, проверяется `build_production`.
+
 ## Legacy-команды
 
 `translate`, обычный `init` и frontend-команды из `source/_core` относятся к

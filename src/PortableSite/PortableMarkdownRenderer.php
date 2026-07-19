@@ -4,27 +4,25 @@ declare(strict_types=1);
 
 namespace Simai\Docara\PortableSite;
 
-use League\CommonMark\Environment\Environment;
-use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
 use League\CommonMark\Extension\CommonMark\Node\Block\ListItem;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Emphasis;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
-use League\CommonMark\Extension\SmartPunct\SmartPunctExtension;
 use League\CommonMark\Extension\Strikethrough\Strikethrough;
-use League\CommonMark\Extension\Strikethrough\StrikethroughExtension;
-use League\CommonMark\Extension\Table\TableExtension;
 use League\CommonMark\MarkdownConverter;
 use League\CommonMark\Node\Block\Paragraph;
 use League\CommonMark\Node\Inline\Newline;
 use League\CommonMark\Node\Inline\Text;
 use League\CommonMark\Output\RenderedContentInterface;
 use League\CommonMark\Util\RegexHelper;
+use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
+use Simai\Docara\ComponentCatalog\TypedRendererId;
 use Simai\Docara\Markdown\CommonMarkInspector;
 use Simai\Docara\Markdown\DirectiveBlockStartParser;
 use Simai\Docara\Markdown\DirectiveLimitExceeded;
+use Simai\Docara\Markdown\DirectiveOpeningMatcher;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final class PortableMarkdownRenderer
@@ -33,20 +31,18 @@ final class PortableMarkdownRenderer
 
     private CommonMarkInspector $inspector;
 
-    public function __construct()
-    {
-        $environment = new Environment([
-            'html_input' => 'strip',
-            'allow_unsafe_links' => false,
-            'max_nesting_level' => 100,
-        ]);
-        $environment->addExtension(new CommonMarkCoreExtension);
-        $environment->addExtension(new SmartPunctExtension);
-        $environment->addExtension(new StrikethroughExtension);
-        $environment->addExtension(new TableExtension);
+    private TypedComponentDefinitionRepository $definitions;
 
-        $this->converter = new MarkdownConverter($environment);
-        $this->inspector = new CommonMarkInspector;
+    public function __construct(
+        ?PortableMarkdownProfile $profile = null,
+        ?TypedComponentDefinitionRepository $definitions = null,
+    ) {
+        $profile ??= PortableMarkdownProfile::bundled();
+        $this->definitions = $definitions ?? TypedComponentDefinitionRepository::bundled();
+        $this->converter = new MarkdownConverter($profile->environment());
+        $this->inspector = new CommonMarkInspector(
+            directiveMatcher: new DirectiveOpeningMatcher($this->definitions->names()),
+        );
     }
 
     public function render(string $markdown): string
@@ -75,12 +71,11 @@ final class PortableMarkdownRenderer
                 $blockMarkdown = $referenceDefinitions . "\n\n" . $blockMarkdown;
             }
             $content = $this->converter->convert($blockMarkdown);
-            $rendered = match ($block['type']) {
-                'card' => '<section class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1">'
-                    . (string) $content . '</section>',
-                'steps' => $this->renderSteps($content),
-                'cta' => $this->renderCta($content),
-                'features' => $this->renderFeatures($content),
+            $rendered = match (TypedRendererId::from($block['renderer'])) {
+                TypedRendererId::Card => $this->renderCard($content),
+                TypedRendererId::Steps => $this->renderSteps($content),
+                TypedRendererId::Cta => $this->renderCta($content),
+                TypedRendererId::Features => $this->renderFeatures($content),
             };
             $wrapper = '<p>' . $block['placeholder'] . '</p>';
             if (substr_count($html, $wrapper) !== 1) {
@@ -102,7 +97,7 @@ final class PortableMarkdownRenderer
      *
      * @return array{
      *     0: string,
-     *     1: list<array{type: string, markdown: string, placeholder: string}>,
+     *     1: list<array{type: string, renderer: string, markdown: string, placeholder: string}>,
      *     2: string
      * }
      */
@@ -142,6 +137,7 @@ final class PortableMarkdownRenderer
 
             $directive = $byStartLine[$lineNumber];
             $type = $directive['name'];
+            $definition = $this->definitions->byName($type);
             $bodyMarkdown = $directive['body'];
             $startLine = $directive['start_line'];
             if ($directive['closed'] !== true) {
@@ -181,6 +177,7 @@ final class PortableMarkdownRenderer
                 || in_array($placeholder, array_column($blocks, 'placeholder'), true));
             $blocks[] = [
                 'type' => $type,
+                'renderer' => (string) $definition['renderer'],
                 'markdown' => $bodyMarkdown,
                 'placeholder' => $placeholder,
             ];
@@ -229,7 +226,7 @@ final class PortableMarkdownRenderer
         }
         foreach ($lines as $index => $line) {
             $lineNumber = $index + 1;
-            if (preg_match('/^( {0,3}):{3,}(?:card|steps|cta|features)[ \t]*$/u', $line, $match) !== 1
+            if (! $this->inspector->isDirectivePlacementLine($line, DirectiveBlockStartParser::PORTABLE)
                 || isset($recognized[$lineNumber])
                 || isset($ownedBodyLines[$lineNumber])
                 || isset($inspection['code_lines'][$lineNumber])
@@ -285,6 +282,12 @@ final class PortableMarkdownRenderer
 
         return '<section class="bg-surface-0 border border-outline-variant radius-2 p-3">'
             . $content . '</section>';
+    }
+
+    private function renderCard(RenderedContentInterface $rendered): string
+    {
+        return '<section class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1">'
+            . (string) $rendered . '</section>';
     }
 
     private function renderCta(RenderedContentInterface $rendered): string

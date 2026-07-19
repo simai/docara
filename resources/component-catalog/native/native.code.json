@@ -1,0 +1,32 @@
+{
+    "id": "native.code",
+    "family": "native_markdown",
+    "category": "technical_content",
+    "title": "Semantic code",
+    "description": "Renders inline and fenced Markdown code with semantic markup and safe overflow.",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "markdown",
+        "call": "```language",
+        "jobs": [
+            "show_code"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "limitations": [
+        "Syntax highlighting and a copy control are not part of the admitted contract."
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components/code.md",
+    "example_ref": "resources/component-catalog/examples/native.code.md",
+    "provenance": {
+        "source_kind": "portable_markdown_profile",
+        "profile_id": "docara.portable_markdown_profile.v1"
+    }
+}

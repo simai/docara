@@ -25,7 +25,8 @@ must not make the standalone format depend on Larena internals.
 
 ## Files and inheritance
 
-`docara.json` defines the site-wide defaults and the immutable Framework lock.
+`docara.json` defines the site-wide defaults and references the separate
+immutable Simai Framework lock file.
 Each `_section.json` applies to its directory and all descendants. A page may
 have a sidecar named `<page>.page.json`.
 
@@ -96,7 +97,7 @@ uses native headings and fenced code plus two typed Docara recipes:
   styled with Simai Framework button classes;
 - `:::features` accepts one flat unordered list with two to six items, each
   containing one plain Markdown paragraph with bounded inline content, and lays
-  them out with the Framework one-to-three-column responsive grid.
+  them out with the Simai Framework one-to-three-column responsive grid.
 
 These recipes add no JavaScript or runtime asset. They fail closed for malformed
 or nested bodies and remain available to the `docs` preset as ordinary typed
@@ -136,19 +137,21 @@ Raw HTML is stripped. Rich elements use fenced, JSON-valued component calls:
 
 Calls are allowed only when all of the following are true:
 
-1. the component is present in the versioned component-call contract;
-2. a bundled real Larena manifest describes its props and host renderer;
-3. the manifest provider revision and bytes match the Framework lock;
-4. every prop passes the manifest schema and constraints;
-5. the runtime asset plan contains only immutable revisions.
+1. the identifier has valid `ui.*` syntax;
+2. the exact Simai Framework lock admits that identifier;
+3. a bundled real Larena manifest describes its props and host renderer;
+4. the manifest provider revision and bytes match the Simai Framework lock;
+5. every prop passes the manifest schema and constraints;
+6. the runtime asset plan contains only immutable revisions.
 
 The first bounded projection supports `ui.alert` and `ui.button`. Future
 Retype-like extensions should be added through the same manifest path, not as
 arbitrary HTML or an unrelated shortcode engine.
 
-`ui.button` represents an application action and its exact manifest has no
-`href`. Authors must use `:::cta` when the intended result is navigation; Docara
-does not attach an invented click handler to a Smart button.
+`ui.button` renders a visual action control, but portable Docara does not bind
+or execute an action. Its exact manifest has no `href`. Authors must use
+`:::cta` when the intended result is navigation; Docara does not attach an
+invented click handler to a Smart button.
 
 The accepted pair does not provide the `sf-icon-button` dependency used by a
 closable alert. Therefore `ui.alert` with `closable: true` fails closed in this
@@ -183,6 +186,48 @@ builds require a later, separately accepted Core projection.
 The lock is a consumer-verified bounded bundle. It does not assert ecosystem,
 production or all-components readiness. `main`, `master`, `latest` and other
 moving references fail closed.
+
+## Effective component catalogue
+
+Every portable build writes `_docara/component-catalog.json` with schema
+`docara.effective_component_catalog.v1`. It is one deterministic derived
+projection of the elements effective for that build, not another manually
+maintained component registry.
+
+The projection combines three executable authoring families:
+
+- `native_markdown` — the bounded portable Markdown profile;
+- `docara_typed` — typed Docara directives with owned renderers;
+- `framework_smart` — Smart-components admitted by the exact Simai Framework
+  lock and narrowed by Docara's consumer policy.
+
+Non-executable `requirement` records keep known needs visible without making
+them callable. Every entry has one lifecycle:
+
+- `supported` — renderer, tests, documentation and example evidence exist; a
+  Smart-component is also admitted by the exact lock;
+- `admission_pending` — the owner work is understood, but admission evidence is
+  incomplete;
+- `framework_gap` — the accepted pair lacks the complete authoring, asset,
+  dependency or accessibility contract; discoverable runtime bytes alone do
+  not close this gap;
+- `deferred` — the need is recorded but intentionally outside the current
+  delivery boundary.
+
+Supported entries are sorted by ID and the catalogue records a canonical
+`content_sha256`. Unavailable entries must name the owner, reason, fallback and
+admission condition. Project JSON, Markdown and catalogue metadata cannot widen
+the Smart surface: only a matching immutable lock record and bundled manifest
+can do that.
+
+Critical manifest assets are fail-closed: each one must appear in the derived
+asset plan or in an explicit narrowing consumer policy. Portable Docara records
+the Larena backend event bridge as an intentional omission because this
+standalone surface admits no backend handler, data-binding or effect contract.
+
+The projection explicitly states that it is not the canonical Simai Framework
+registry, does not cover all Simai Framework components and makes no production
+or public-release readiness claim.
 
 ## Explainability and determinism
 
@@ -232,7 +277,7 @@ Standalone Docara is the only interpreter of the content tree, `docara.json`,
 section descriptors, page sidecars and Markdown extensions. It emits the
 canonical `.docara/resolved-page-plans.json` artifact. Larena accepts that
 artifact only with an external SHA-256 receipt, rechecks its canonical hashes
-and exact Framework lock, re-renders component props through its own Smart
+and exact Simai Framework lock, re-renders component props through its own Smart
 Registry, and then maps the verified plan to Larena contracts. Validation does
 not mutate source files or the database.
 

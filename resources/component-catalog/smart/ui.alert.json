@@ -1,0 +1,38 @@
+{
+    "id": "ui.alert",
+    "family": "framework_smart",
+    "category": "feedback",
+    "title": "Alert",
+    "description": "Reports a result, warning, or error as presentation-only content in portable Docara.",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive_json",
+        "call": ":::ui.alert",
+        "jobs": [
+            "report_status"
+        ],
+        "parameters": []
+    },
+    "states": [
+        "default",
+        "info",
+        "success",
+        "warning",
+        "danger"
+    ],
+    "limitations": [
+        "closable=true is not admitted by the current bounded runtime."
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components/alert.md",
+    "example_ref": "resources/component-catalog/examples/ui.alert.md",
+    "provenance": {
+        "source_kind": "smart_consumer_metadata",
+        "manifest_ref": "resources/framework/manifests/ui-alert.json"
+    }
+}

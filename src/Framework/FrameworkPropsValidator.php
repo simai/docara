@@ -31,6 +31,9 @@ final class FrameworkPropsValidator
             if (is_string($value)) {
                 $this->assertStringRules($component, $name, $value, $property);
             }
+            if (is_int($value) || is_float($value)) {
+                $this->assertNumericRules($component, $name, $value, $property);
+            }
         }
 
         foreach (is_array($schema['required'] ?? null) ? $schema['required'] : [] as $required) {
@@ -40,6 +43,27 @@ final class FrameworkPropsValidator
         }
 
         $this->assertConstraints($component, is_array($manifest['constraints'] ?? null) ? $manifest['constraints'] : [], $props);
+    }
+
+    /** @param array<string, mixed> $property */
+    private function assertNumericRules(
+        string $component,
+        string $name,
+        int|float $value,
+        array $property,
+    ): void {
+        if (array_key_exists('minimum', $property)
+            && ((! is_int($property['minimum']) && ! is_float($property['minimum']))
+                || $value < $property['minimum'])
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_PROP_MINIMUM_INVALID', $component . ':' . $name);
+        }
+        if (array_key_exists('maximum', $property)
+            && ((! is_int($property['maximum']) && ! is_float($property['maximum']))
+                || $value > $property['maximum'])
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_PROP_MAXIMUM_INVALID', $component . ':' . $name);
+        }
     }
 
     /** @param array<string, mixed> $property */

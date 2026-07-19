@@ -2,7 +2,8 @@
 
 Date: 2026-07-19
 Parent candidate: `adad417a9ea6cad98bc79650710a4d4e732f8cac`
-Status: candidate preparation complete; immutable and browser acceptance pending
+Status: candidate `4812b19eb4cf99f0a9fba739d726d77659ef6dd8`
+superseded by exact HCS before acceptance
 
 ## Bounded correction
 
@@ -10,12 +11,17 @@ Status: candidate preparation complete; immutable and browser acceptance pending
 search-trigger click listener. The document-level `Cmd/Ctrl+K` handler called
 the shared `openSearch()` function directly and bypassed that listener.
 
-The correction keeps one ownership boundary:
+The intended correction boundary was:
 
 - the portable search runtime discovers the existing reader-settings dialog;
 - `openSearch()` closes it before it calls `dialog.showModal()`;
 - no Framework asset, theme contract, component registry or public API changes;
 - no new visual primitive or parallel interaction system.
+
+Exact HCS later found that candidate `4812b19…` had not fully achieved the
+first statement: the old shell-level search-trigger click listener still
+closed settings in addition to the shared `openSearch()` boundary. The
+candidate was stopped and superseded rather than accepted.
 
 ## Test-first evidence
 
@@ -62,3 +68,17 @@ indirect workaround. Therefore this file does **not** claim browser PASS,
 Batch 4 acceptance, publication, production or wider-Goal readiness. The new
 immutable candidate may receive automated/source verdicts, but its exact
 physical-keyboard browser gate remains mandatory before local publication.
+
+## Successor correction
+
+The duplicate-owner assertion was added first and failed on `4812b19…` at 1
+test and 298 assertions. The obsolete `searchTrigger` variable and click
+listener were then removed from the shell controller; the focused test passed
+with 1 test and 299 assertions. The active workflow was advanced to this
+successor-correction state. The successor working tree then passed the full
+suite with 465 tests and 2387 assertions, Pint, Composer strict, PHP/JavaScript
+syntax and `git diff --check`. Two clean production builds were byte-identical;
+each contained 44 HTML pages, 4535 checked local references and zero broken
+references, with common digest
+`9cf966409f87a568fbd6a79efc12c6922369dc5ce5fe92adcbdff074e297e67f`.
+Exact successor acceptance remains pending.

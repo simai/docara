@@ -297,6 +297,12 @@ final class PortableSiteBuilderTest extends TestCase
             strpos($searchRuntime, 'readerSettings.close()') < strpos($searchRuntime, 'dialog.showModal()'),
             'The physical search shortcut must close reader settings before search becomes modal.',
         );
+        self::assertStringNotContainsString("var searchTrigger=document.querySelector('[data-docara-search-trigger]');", $index);
+        self::assertStringNotContainsString(
+            "searchTrigger.addEventListener('click',function(){if(settingsDialog.open){settingsDialog.close()}})",
+            $index,
+            'Search/settings mutual exclusion must have one shared owner in openSearch().',
+        );
     }
 
     #[Test]

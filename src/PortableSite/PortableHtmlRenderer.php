@@ -509,7 +509,6 @@ final class PortableHtmlRenderer
   var settingsReset=document.querySelector('[data-docara-reader-settings-reset]');
   var settingsStatus=document.querySelector('[data-docara-reader-settings-status]');
   var themeOptions=Array.from(document.querySelectorAll('[data-docara-theme-option]'));
-  var searchTrigger=document.querySelector('[data-docara-search-trigger]');
   var searchDialog=document.querySelector('[data-docara-search-dialog]');
   function announceSettings(message){if(settingsStatus){settingsStatus.textContent='';requestAnimationFrame(function(){settingsStatus.textContent=message})}}
   function syncReaderSettings(){
@@ -539,7 +538,6 @@ final class PortableHtmlRenderer
     if(settingsReset){
       settingsReset.addEventListener('click',function(){readerTheme.reset();syncReaderSettings();announceSettings('Восстановлена настройка темы сайта.')});
     }
-    if(searchTrigger){searchTrigger.addEventListener('click',function(){if(settingsDialog.open){settingsDialog.close()}})}
     var systemTheme=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)');
     if(systemTheme){systemTheme.addEventListener('change',function(){if(document.documentElement.dataset.docaraThemePreference==='system'){readerTheme.apply('system',document.documentElement.dataset.docaraThemeSource||'site')}})}
     window.addEventListener('storage',function(event){if(event.key===readerTheme.key){var preference=readerTheme.syncExternal();readerTheme.apply(preference.mode,preference.source);syncReaderSettings()}});

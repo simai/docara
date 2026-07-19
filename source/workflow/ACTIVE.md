@@ -21,14 +21,15 @@ catalogue, complete documentation and exact independent acceptance.
 
 ## Current Batch
 
-Batch 4 correction — real-keyboard mutual exclusion between reader settings
-and search on the accepted Batch 3 shell.
+Batch 4 successor-candidate acceptance — single-owner mutual exclusion between
+reader settings and search on the accepted Batch 3 shell.
 
 ## Next Step
 
-Add the physical `Cmd+K` regression first, then ensure opening search closes an
-open reader-settings dialog before search becomes open. Preserve the accepted
-storage compatibility behavior and repeat exact keyboard/browser/tester gates
-on a new immutable candidate. The served site has already been rolled back to
-accepted Batch 3. Public release, default-branch migration and repository
-retirement remain excluded.
+Bind the current successor commit to its exact SHA/tree and repeat exact
+source/tester gates. Its test-first correction has removed the duplicate shell
+listener while retaining the shared physical `Cmd/Ctrl+K` regression. The
+native-Chrome keyboard gate remains pending because the external execution
+transport reached its explicit usage limit; do not publish or lower the gate.
+The served site remains accepted Batch 3. Public release, default-branch
+migration and repository retirement remain excluded.

@@ -249,7 +249,7 @@ Do not complete the Goal until:
 | `WS-DOCS-01` | `/root/docs_catalog_audit` | Retype-style component capability inventory and Docara docs coverage/map | none | completed | `product-capability-matrix.yaml` and catalogue/docs decision |
 | `WS-SEARCH-02` | Docara owner | deterministic local search, schema, runtime, verifier and documentation | this worktree | accepted and published locally | Batch 2 exact tester, HCS, UX/designer and publication PASS |
 | `WS-READING-03` | Docara owner with UX/designer | breadcrumbs, page outline and previous/next navigation from one navigation tree | this worktree | accepted and published locally | Batch 3 exact tester, HCS, UX/design/browser and publication PASS |
-| `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | correction active after served keyboard smoke | real-keyboard mutual exclusion, focused regression, exact browser/tester closure |
+| `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | successor candidate ready; exact acceptance pending | single mutual-exclusion owner, honest workflow state, exact browser/tester closure |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -340,12 +340,12 @@ was discovered.
 
 ## Next Safe Batch
 
-Correct Batch 4 from candidate `adad417a…`: reproduce the physical `Cmd+K`
-path while reader settings are open, add the browser-level regression first,
-then guarantee that opening search closes settings before search becomes open.
-Repeat the affected keyboard/mutual-exclusion matrix from a new immutable
-candidate and publish only after the served-site smoke passes. Keep the exact
-storage and Framework corrections unchanged.
+Use the successor candidate carrying this workflow state. Its test-first
+correction removes the old shell click-listener, keeps the shared
+`openSearch()` invariant and records rejected candidate `4812b19…`. Bind the
+exact candidate SHA/tree, then repeat exact source/tester acceptance and the
+physical `Cmd/Ctrl+K` browser matrix. Publish only after the served-site smoke
+passes; keep accepted Batch 3 served until then.
 
 ## Last Completed Batch
 

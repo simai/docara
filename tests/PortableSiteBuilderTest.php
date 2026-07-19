@@ -90,8 +90,15 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('theme-dark', $html);
             self::assertStringContainsString('href="#docara-main">К содержанию</a>', $html);
             self::assertStringContainsString('id="docara-main" tabindex="-1"', $html);
-            self::assertStringContainsString('class="sf-theme-button ', $html);
-            self::assertStringContainsString('data-docara-theme-button', $html);
+            self::assertStringContainsString('data-docara-reader-settings-trigger', $html);
+            self::assertStringContainsString('aria-haspopup="dialog"', $html);
+            self::assertStringContainsString('data-docara-reader-settings-dialog', $html);
+            self::assertStringContainsString('data-docara-theme-option', $html);
+            self::assertStringContainsString('value="system"', $html);
+            self::assertStringContainsString('value="light"', $html);
+            self::assertStringContainsString('value="dark"', $html);
+            self::assertStringContainsString('data-docara-reader-settings-reset', $html);
+            self::assertStringNotContainsString('class="sf-theme-button ', $html);
             self::assertStringContainsString('data-docara-search-trigger', $html);
             self::assertStringContainsString('data-docara-search-dialog', $html);
             self::assertStringContainsString('data-docara-search-input', $html);
@@ -104,12 +111,12 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('/_docara/search.js?docara_v=', $html);
             self::assertStringNotContainsString('algolia', strtolower($html));
             self::assertStringNotContainsString('typesense', strtolower($html));
-            self::assertStringContainsString('<sf-icon icon="contrast" aria-hidden="true"></sf-icon>', $html);
+            self::assertStringContainsString('<sf-icon icon="tune" aria-hidden="true"></sf-icon>', $html);
             self::assertStringContainsString('data-docara-shell-controller', $html);
             self::assertStringContainsString('railRect.width<=0||railRect.height<=0', $html);
             self::assertStringContainsString("addEventListener('resize',scheduleActiveReveal", $html);
             self::assertStringContainsString("customElements.whenDefined('sf-icon')", $html);
-            self::assertStringContainsString('.sf-theme-button:focus-visible', $html);
+            self::assertStringContainsString('[data-docara-reader-settings-trigger]:focus-visible', $html);
             self::assertStringContainsString('sf-button>button:focus-visible', $html);
             self::assertStringContainsString('@7e836d8a9414d5da553fb1ab0404721e5b48769a/', $html);
             self::assertStringNotContainsString('simai/ui-smart@', $html);
@@ -129,6 +136,16 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertGreaterThanOrEqual(3, substr_count($fourthLevel, ' expanded aria-expanded="true"'));
         self::assertStringContainsString('data-docara-breadcrumbs data-max-items="5"', $fourthLevel);
         self::assertStringNotContainsString('data-sf-breadcrumbs-generated="ellipsis"', $fourthLevel);
+
+        self::assertSame(3, substr_count($index, '<input data-docara-theme-option'));
+        self::assertStringContainsString('docara.reader.theme.v1', $index);
+        self::assertStringContainsString("matchMedia('(prefers-color-scheme: dark)')", $index);
+        self::assertStringContainsString('localStorage.getItem', $index);
+        self::assertStringContainsString('localStorage.setItem', $index);
+        self::assertStringContainsString('localStorage.removeItem', $index);
+        self::assertStringContainsString('sf-theme=', $index);
+        self::assertStringNotContainsString('<sf-modal', $index);
+        self::assertStringNotContainsString('<sf-dropdown', $index);
 
         $guideDocument = new \DOMDocument;
         $previous = libxml_use_internal_errors(true);
@@ -268,6 +285,29 @@ final class PortableSiteBuilderTest extends TestCase
         $builder->build($this->tmp, $this->tmpPath('build_local'));
 
         self::assertSame($first, $this->treeHashes($this->tmpPath('build_local')));
+    }
+
+    #[Test]
+    public function reader_settings_keep_the_inherited_author_theme_as_the_reset_target(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $sectionPath = $this->tmpPath('content/guides/_section.json');
+        $section = $this->jsonFile($sectionPath);
+        $section['settings'] = ['theme' => 'dark'];
+        file_put_contents(
+            $sectionPath,
+            json_encode($section, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+
+        $html = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
+        self::assertStringContainsString('data-configured-theme="dark"', $html);
+        self::assertStringContainsString('var configured="dark"', $html);
+        self::assertMatchesRegularExpression(
+            '~data-docara-theme-option name="docara-reader-theme" type="radio" value="dark" checked~',
+            $html,
+        );
     }
 
     #[Test]
@@ -541,8 +581,8 @@ MD;
         self::assertFileDoesNotExist($this->tmpPath('build_local/_docara/search-index.json'));
         self::assertFileDoesNotExist($this->tmpPath('build_local/_docara/search.js'));
         $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
-        self::assertStringNotContainsString('data-docara-search-trigger', $html);
-        self::assertStringNotContainsString('data-docara-search-dialog', $html);
+        self::assertStringNotContainsString('<button type="button" data-docara-search-trigger', $html);
+        self::assertStringNotContainsString('<dialog id="docara-search-dialog"', $html);
         self::assertStringNotContainsString('data-docara-search-runtime', $html);
     }
 

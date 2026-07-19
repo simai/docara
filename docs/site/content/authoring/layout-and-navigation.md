@@ -9,6 +9,7 @@ Portable Docara использует два preset:
 
 `layout.max_width` принимает `compact`, `normal`, `wide` или `full`.
 `settings.theme` принимает `system`, `light` или `dark`.
+Отдельно описаны [выбор темы читателем, сохранение и сброс](/authoring/reader-settings/).
 
 Для меню доступны два параметра:
 

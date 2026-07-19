@@ -18,6 +18,10 @@ final class PortableHtmlRenderer
             'docara-search-title',
             'docara-search-status',
             'docara-search-results',
+            'docara-reader-settings-dialog',
+            'docara-reader-settings-title',
+            'docara-reader-settings-help',
+            'docara-reader-settings-status',
         ];
     }
 
@@ -56,6 +60,7 @@ final class PortableHtmlRenderer
             ? "\n    <style data-docara-search-style>" . $this->searchCss() . '</style>'
             : '';
         $searchDialog = $searchEnabled ? "\n" . $this->searchDialog($page) : '';
+        $readerSettingsDialog = "\n" . $this->readerSettingsDialog($page);
 
         return '<!doctype html>' . "\n"
             . '<html lang="' . $locale . '" class="theme-light">' . "\n"
@@ -69,7 +74,7 @@ final class PortableHtmlRenderer
             . '</head>' . "\n"
             . '<body class="bg-surface">' . "\n"
             . '    <a class="docara-skip-link bg-surface-0 border radius-1 p-1" href="#docara-main">К содержанию</a>' . "\n"
-            . $this->header($page, $navigation, $searchEnabled) . $searchDialog . "\n"
+            . $this->header($page, $navigation, $searchEnabled) . $searchDialog . $readerSettingsDialog . "\n"
             . $body . "\n"
             . '    ' . $this->shellController() . "\n"
             . '</body>' . "\n"
@@ -239,8 +244,8 @@ final class PortableHtmlRenderer
             . $this->indent($brand, 12) . "\n"
             . '            <div class="docara-header-actions flex items-center gap-1">' . "\n"
             . $searchTrigger
-            . '                <button class="sf-theme-button sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-2 radius-default" data-docara-theme-button type="button" aria-label="Переключить цветовую тему">' . "\n"
-            . '                    <sf-icon icon="contrast" aria-hidden="true"></sf-icon>' . "\n"
+            . '                <button class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-2 radius-default" data-docara-reader-settings-trigger type="button" aria-haspopup="dialog" aria-controls="docara-reader-settings-dialog" aria-label="Открыть настройки чтения">' . "\n"
+            . '                    <sf-icon icon="tune" aria-hidden="true"></sf-icon>' . "\n"
             . '                </button>' . "\n"
             . '            </div>' . "\n"
             . '        </div>' . $mobile . "\n"
@@ -270,6 +275,55 @@ final class PortableHtmlRenderer
             . '            <p id="docara-search-status" data-docara-search-status data-state="idle" class="docara-search-status color-on-surface-variant m-0" aria-live="polite">Введите минимум 2 символа</p>' . "\n"
             . '            <ul id="docara-search-results" data-docara-search-results class="docara-search-results flex flex-col gap-1 m-0 p-0"></ul>' . "\n"
             . '        </div>' . "\n"
+            . '    </dialog>';
+    }
+
+    /** @param array<string, mixed> $page */
+    private function readerSettingsDialog(array $page): string
+    {
+        $configuredTheme = in_array($page['theme'] ?? null, ['system', 'light', 'dark'], true)
+            ? (string) $page['theme']
+            : 'system';
+        $options = [
+            'system' => ['Как в системе', 'Автоматически следует настройке устройства.'],
+            'light' => ['Светлая', 'Светлое оформление на всех страницах.'],
+            'dark' => ['Тёмная', 'Тёмное оформление на всех страницах.'],
+        ];
+        $optionHtml = [];
+        foreach ($options as $value => [$title, $description]) {
+            $checked = $value === $configuredTheme ? ' checked' : '';
+            $optionHtml[] = '                <label class="sf-radio-button sf-radio-button--size-1 flex items-cross-start gap-1 p-1 radius-1 cursor-pointer transition">' . "\n"
+                . '                    <span class="sf-radio-button-box transition flex items-cross-center content-main-center">'
+                . '<input data-docara-theme-option name="docara-reader-theme" type="radio" value="'
+                . $value . '"' . $checked . '><span class="sf-radio-button-mark"></span></span>' . "\n"
+                . '                    <span class="sf-radio-button-container flex flex-col">'
+                . '<span class="sf-radio-button-top flex"><span class="sf-radio-button-text">'
+                . $title . '</span></span><span class="sf-radio-button-description">'
+                . $description . '</span></span>' . "\n"
+                . '                </label>';
+        }
+
+        return '    <dialog id="docara-reader-settings-dialog" data-docara-reader-settings-dialog data-configured-theme="'
+            . $this->escape($configuredTheme)
+            . '" class="docara-reader-settings-dialog bg-surface-0 border border-outline-variant radius-3 p-0 color-on-surface" aria-labelledby="docara-reader-settings-title">' . "\n"
+            . '        <form method="dialog" class="flex flex-col gap-2 p-3">' . "\n"
+            . '            <div class="flex items-center content-main-between gap-2">' . "\n"
+            . '                <h2 id="docara-reader-settings-title" class="m-0 weight-7">Настройки чтения</h2>' . "\n"
+            . '                <button value="close" class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-2 radius-default" aria-label="Закрыть настройки чтения">' . "\n"
+            . '                    <sf-icon icon="close" aria-hidden="true"></sf-icon>' . "\n"
+            . '                </button>' . "\n"
+            . '            </div>' . "\n"
+            . '            <fieldset class="docara-reader-settings-group flex flex-col gap-1 m-0 p-0 border-none" aria-describedby="docara-reader-settings-help">' . "\n"
+            . '                <legend class="weight-6 p-0">Оформление</legend>' . "\n"
+            . '                <p id="docara-reader-settings-help" class="color-on-surface-variant m-0">Выберите тему для этого браузера.</p>' . "\n"
+            . implode("\n", $optionHtml) . "\n"
+            . '            </fieldset>' . "\n"
+            . '            <div class="flex content-main-start">' . "\n"
+            . '                <button type="button" hidden data-docara-reader-settings-reset class="sf-button sf-button--link sf-button--on-surface sf-button--size-1 radius-default">'
+            . '<span class="sf-button-text-container">Вернуть настройку сайта</span></button>' . "\n"
+            . '            </div>' . "\n"
+            . '            <p id="docara-reader-settings-status" data-docara-reader-settings-status class="sr-only" aria-live="polite"></p>' . "\n"
+            . '        </form>' . "\n"
             . '    </dialog>';
     }
 
@@ -375,10 +429,16 @@ final class PortableHtmlRenderer
         $json = json_encode($configured, JSON_THROW_ON_ERROR);
 
         return '<script data-docara-theme-bootstrap>(function(){var configured=' . $json
-            . ",cookie=(document.cookie.split('; ').find(function(value){return value.indexOf('sf-theme=')===0})||'').split('=')[1]||'';"
-            . "var mode=/^(light|dark)$/.test(cookie)?cookie:configured;if(!cookie&&/^(light|dark)$/.test(configured)){document.cookie='sf-theme='+configured+'; Path=/; Max-Age=31536000; SameSite=Lax'}"
-            . "var dark=mode==='dark'||(mode==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);"
-            . "var root=document.documentElement;root.classList.remove('theme-light','theme-dark');root.classList.add(dark?'theme-dark':'theme-light');"
+            . ",key='docara.reader.theme.v1',valid=/^(system|light|dark)$/;"
+            . "function stored(){try{var value=window.localStorage.getItem(key)||'';return valid.test(value)?value:''}catch(error){return''}}"
+            . "function legacy(){var value=(document.cookie.split('; ').find(function(item){return item.indexOf('sf-theme=')===0})||'').split('=')[1]||'';return /^(light|dark)$/.test(value)?value:''}"
+            . "function clearLegacy(){document.cookie='sf-theme=; Path=/; Max-Age=0; SameSite=Lax'}"
+            . "function projectLegacy(mode){if(/^(light|dark)$/.test(mode)){document.cookie='sf-theme='+mode+'; Path=/; Max-Age=31536000; SameSite=Lax'}else{clearLegacy()}}"
+            . "function apply(mode,source){if(!valid.test(mode)){mode='system'}var dark=mode==='dark'||(mode==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);var root=document.documentElement;root.classList.remove('theme-light','theme-dark');root.classList.add(dark?'theme-dark':'theme-light');root.dataset.docaraThemePreference=mode;root.dataset.docaraThemeSource=source;return mode}"
+            . "function preference(){var reader=stored(),old=reader?'':legacy();return{mode:reader||old||configured,source:reader?'reader':(old?'legacy':'site')}}"
+            . "function set(mode){if(!valid.test(mode)){return false}try{window.localStorage.setItem(key,mode)}catch(error){}projectLegacy(mode);apply(mode,'reader');return true}"
+            . "function reset(){try{window.localStorage.removeItem(key)}catch(error){}clearLegacy();apply(configured,'site')}"
+            . "var initial=preference();apply(initial.mode,initial.source);window.DocaraReaderTheme={configured:configured,key:key,apply:apply,preference:preference,set:set,reset:reset,hasOverride:function(){return stored()!==''||legacy()!==''}};"
             . 'window.SF_BOOT_CONFIG=window.SF_BOOT_CONFIG||{};window.SF_BOOT_CONFIG.preloader={enabled:false};})();</script>';
     }
 
@@ -442,11 +502,44 @@ final class PortableHtmlRenderer
     var summary=mobile.querySelector('summary');
     mobile.addEventListener('keydown',function(event){if(event.key==='Escape'&&mobile.open){event.preventDefault();mobile.open=false;summary.focus()}});
   }
-  var themeButton=document.querySelector('[data-docara-theme-button]');
-  if(themeButton){
-    function syncThemeLabel(){var dark=document.documentElement.classList.contains('theme-dark');themeButton.setAttribute('aria-label','Переключить на '+(dark?'светлую':'тёмную')+' тему')}
-    syncThemeLabel();
-    new MutationObserver(syncThemeLabel).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+  var readerTheme=window.DocaraReaderTheme;
+  var settingsTrigger=document.querySelector('[data-docara-reader-settings-trigger]');
+  var settingsDialog=document.querySelector('[data-docara-reader-settings-dialog]');
+  var settingsReset=document.querySelector('[data-docara-reader-settings-reset]');
+  var settingsStatus=document.querySelector('[data-docara-reader-settings-status]');
+  var themeOptions=Array.from(document.querySelectorAll('[data-docara-theme-option]'));
+  var searchTrigger=document.querySelector('[data-docara-search-trigger]');
+  var searchDialog=document.querySelector('[data-docara-search-dialog]');
+  function announceSettings(message){if(settingsStatus){settingsStatus.textContent='';requestAnimationFrame(function(){settingsStatus.textContent=message})}}
+  function syncReaderSettings(){
+    if(!readerTheme)return;
+    var preference=readerTheme.preference();
+    themeOptions.forEach(function(option){option.checked=option.value===preference.mode});
+    if(settingsReset){settingsReset.hidden=!readerTheme.hasOverride()}
+  }
+  if(settingsTrigger&&settingsDialog&&readerTheme){
+    settingsTrigger.addEventListener('click',function(){
+      if(searchDialog&&searchDialog.open){searchDialog.close()}
+      if(!settingsDialog.open){settingsDialog.showModal()}
+      syncReaderSettings();
+      requestAnimationFrame(function(){var selected=themeOptions.find(function(option){return option.checked});if(selected){selected.focus()}});
+    });
+    settingsDialog.addEventListener('close',function(){settingsTrigger.focus()});
+    themeOptions.forEach(function(option){
+      option.addEventListener('change',function(){
+        if(!option.checked||!readerTheme.set(option.value))return;
+        syncReaderSettings();
+        announceSettings('Тема сохранена: '+option.closest('label').querySelector('.sf-radio-button-text').textContent+'.');
+      });
+    });
+    if(settingsReset){
+      settingsReset.addEventListener('click',function(){readerTheme.reset();syncReaderSettings();announceSettings('Восстановлена настройка темы сайта.')});
+    }
+    if(searchTrigger){searchTrigger.addEventListener('click',function(){if(settingsDialog.open){settingsDialog.close()}})}
+    var systemTheme=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)');
+    if(systemTheme){systemTheme.addEventListener('change',function(){if(document.documentElement.dataset.docaraThemePreference==='system'){readerTheme.apply('system',document.documentElement.dataset.docaraThemeSource||'site')}})}
+    window.addEventListener('storage',function(event){if(event.key===readerTheme.key){var preference=readerTheme.preference();readerTheme.apply(preference.mode,preference.source);syncReaderSettings()}});
+    syncReaderSettings();
   }
 })();</script>
 HTML;
@@ -457,7 +550,7 @@ HTML;
         return <<<'CSS'
 .docara-brand{min-block-size:44px}
 .sf-breadcrumbs-item--link{min-inline-size:44px}
-html{color-scheme:light dark}.theme-light{color-scheme:light}.theme-dark{color-scheme:dark}body{min-height:100vh;background:var(--sf-surface-1);color:var(--sf-on-surface)}.docara-skip-link{position:fixed;inset-block-start:var(--sf-space-1);inset-inline-start:var(--sf-space-1);z-index:100;transform:translateY(-200%);color:var(--sf-on-surface);text-decoration:none}.docara-skip-link:focus{transform:translateY(0)}.docara-header{min-height:4.5rem}.docara-header-row{max-width:104rem;margin-inline:auto}.docara-brand{min-width:0;text-decoration:none}.docara-brand-mark{display:grid;place-items:center;inline-size:2.25rem;block-size:2.25rem;flex:0 0 auto}.docara-brand-logo{display:block;max-inline-size:100%;max-block-size:100%;object-fit:contain}.docara-brand-logo--dark{display:none}.theme-dark .docara-brand-logo--light:has(+.docara-brand-logo--dark){display:none}.theme-dark .docara-brand-logo--dark{display:block}.docara-brand-copy{min-width:0;line-height:1.15}.docara-brand-label{font-size:.75rem;font-weight:500}.sf-theme-button,[data-docara-disclosure]{min-inline-size:44px;min-block-size:44px}.docara-mobile-navigation,.docara-outline-mobile{display:none}.docara-navigation-link{min-width:0;min-block-size:44px;color:var(--sf-on-surface);text-decoration:none}.docara-navigation-label{min-width:0;color:var(--sf-on-surface)}.docara-navigation-link .sf-menu-element-text,.docara-navigation-label .sf-menu-element-text{overflow-wrap:anywhere}.docara-navigation [data-docara-active-role="ancestor"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-surface-container);--sf-menu-element--border-color:var(--sf-outline-variant)}.docara-navigation [data-docara-active-role="section"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-secondary-container);--sf-menu-element--border-color:var(--sf-outline);border-inline-start-width:2px}.docara-navigation [data-docara-active-role="page"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-primary-container);--sf-menu-element--border-color:var(--sf-primary);border-inline-start-width:4px}.docara-navigation [data-docara-active-role="section"]>.sf-menu-element>.docara-navigation-link,.docara-navigation [data-docara-active-role="section"]>.sf-menu-element>.docara-navigation-label{color:var(--sf-on-secondary-container)}.docara-navigation [data-docara-active-role="page"]>.sf-menu-element>.docara-navigation-link,.docara-navigation [data-docara-active-role="page"]>.sf-menu-element>.docara-navigation-label{color:var(--sf-on-primary-container)}.docara-skip-link:focus-visible,.docara-brand:focus-visible,.docara-navigation-link:focus-visible,.docara-mobile-navigation-summary:focus-visible,.docara-outline-mobile-summary:focus-visible,.docara-outline-link:focus-visible,.docara-document-link:focus-visible,.sf-breadcrumbs-item--link:focus-visible,.sf-theme-button:focus-visible,[data-docara-disclosure]:focus-visible,sf-button>button:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}.docara-docs-layout{display:grid;grid-template-columns:minmax(14rem,18rem) minmax(0,1fr);max-width:104rem;margin-inline:auto}.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(14rem,18rem) minmax(0,1fr) minmax(12rem,15rem)}.docara-sidebar,.docara-outline-rail{align-self:start;position:sticky;inset-block-start:6rem;max-block-size:calc(100vh - 7.5rem);overflow:auto}.docara-reading-column,.docara-content{min-width:0}.docara-content{color:var(--sf-on-surface);scroll-margin-block-start:6rem}.docara-content[data-width="compact"]{max-width:45rem}.docara-content[data-width="normal"]{max-width:60rem}.docara-content[data-width="wide"]{max-width:80rem}.docara-content[data-width="full"]{max-width:none}.sf-breadcrumbs{min-width:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-inline:contain}.sf-breadcrumbs-item--link{min-block-size:44px}.docara-outline-list{list-style:none}.docara-outline-item[data-docara-outline-level="3"]{padding-inline-start:var(--sf-space-1)}.docara-outline-item[data-docara-outline-level="4"],.docara-outline-item[data-docara-outline-level="5"],.docara-outline-item[data-docara-outline-level="6"]{padding-inline-start:var(--sf-space-2)}.docara-outline-link,.docara-document-link{min-block-size:44px;overflow-wrap:anywhere}.docara-outline-mobile-summary{cursor:pointer}.docara-previous-next{margin-block-start:var(--sf-space-4)}.docara-document-link--next{text-align:end}.docara-prose{line-height:1.65}.docara-prose>*+*{margin-block-start:var(--sf-space-2)}.docara-prose h1{font-size:clamp(2rem,5vw,4rem);line-height:1.08;font-weight:750;letter-spacing:-.035em}.docara-prose h2{font-size:clamp(1.45rem,3vw,2.25rem);line-height:1.2;font-weight:700;margin-block-start:var(--sf-space-4)}.docara-prose h3{font-size:1.25rem;line-height:1.3;font-weight:650;margin-block-start:var(--sf-space-3)}.docara-prose h1[id],.docara-prose h2[id],.docara-prose h3[id],.docara-prose h4[id],.docara-prose h5[id],.docara-prose h6[id]{scroll-margin-block-start:6rem}.docara-prose p,.docara-prose li{max-width:72ch}.docara-landing{align-items:center;justify-content:center;min-height:calc(100vh - 5rem)}.docara-landing .docara-content{width:min(100%,80rem)}sf-alert,sf-button{display:block}.docara-prose sf-alert,.docara-prose sf-button{margin-block:var(--sf-space-2)}@media(max-width:1152px){.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(14rem,18rem) minmax(0,1fr)}.docara-outline-rail{display:none}.docara-outline-mobile{display:block}}@media(max-width:800px){.docara-header{min-height:auto}.docara-mobile-navigation{display:block;margin:0 var(--sf-space-1) var(--sf-space-1)}.docara-mobile-navigation-summary{min-block-size:44px;cursor:pointer;color:var(--sf-on-surface);font-weight:650}.docara-mobile-navigation-summary::marker,.docara-outline-mobile-summary::marker{color:var(--sf-primary)}.docara-mobile-navigation-panel{margin-block-start:var(--sf-space-1);max-block-size:min(70vh,36rem);overflow:auto}.docara-docs-layout,.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(0,1fr);padding:var(--sf-space-1)}.docara-sidebar{display:none}.docara-content{padding:var(--sf-space-2);scroll-margin-block-start:7rem}.docara-prose h1[id],.docara-prose h2[id],.docara-prose h3[id],.docara-prose h4[id],.docara-prose h5[id],.docara-prose h6[id]{scroll-margin-block-start:8rem}.docara-landing{padding:var(--sf-space-1);min-height:auto}}@media(max-width:600px){.docara-previous-next{flex-direction:column}.docara-document-link--next{text-align:start}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+html{color-scheme:light dark}.theme-light{color-scheme:light}.theme-dark{color-scheme:dark}body{min-height:100vh;background:var(--sf-surface-1);color:var(--sf-on-surface)}.docara-skip-link{position:fixed;inset-block-start:var(--sf-space-1);inset-inline-start:var(--sf-space-1);z-index:100;transform:translateY(-200%);color:var(--sf-on-surface);text-decoration:none}.docara-skip-link:focus{transform:translateY(0)}.docara-header{min-height:4.5rem}.docara-header-row{max-width:104rem;margin-inline:auto}.docara-brand{min-width:0;text-decoration:none}.docara-brand-mark{display:grid;place-items:center;inline-size:2.25rem;block-size:2.25rem;flex:0 0 auto}.docara-brand-logo{display:block;max-inline-size:100%;max-block-size:100%;object-fit:contain}.docara-brand-logo--dark{display:none}.theme-dark .docara-brand-logo--light:has(+.docara-brand-logo--dark){display:none}.theme-dark .docara-brand-logo--dark{display:block}.docara-brand-copy{min-width:0;line-height:1.15}.docara-brand-label{font-size:.75rem;font-weight:500}[data-docara-reader-settings-trigger],[data-docara-disclosure]{min-inline-size:44px;min-block-size:44px}.docara-mobile-navigation,.docara-outline-mobile{display:none}.docara-navigation-link{min-width:0;min-block-size:44px;color:var(--sf-on-surface);text-decoration:none}.docara-navigation-label{min-width:0;color:var(--sf-on-surface)}.docara-navigation-link .sf-menu-element-text,.docara-navigation-label .sf-menu-element-text{overflow-wrap:anywhere}.docara-navigation [data-docara-active-role="ancestor"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-surface-container);--sf-menu-element--border-color:var(--sf-outline-variant)}.docara-navigation [data-docara-active-role="section"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-secondary-container);--sf-menu-element--border-color:var(--sf-outline);border-inline-start-width:2px}.docara-navigation [data-docara-active-role="page"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-primary-container);--sf-menu-element--border-color:var(--sf-primary);border-inline-start-width:4px}.docara-navigation [data-docara-active-role="section"]>.sf-menu-element>.docara-navigation-link,.docara-navigation [data-docara-active-role="section"]>.sf-menu-element>.docara-navigation-label{color:var(--sf-on-secondary-container)}.docara-navigation [data-docara-active-role="page"]>.sf-menu-element>.docara-navigation-link,.docara-navigation [data-docara-active-role="page"]>.sf-menu-element>.docara-navigation-label{color:var(--sf-on-primary-container)}.docara-skip-link:focus-visible,.docara-brand:focus-visible,.docara-navigation-link:focus-visible,.docara-mobile-navigation-summary:focus-visible,.docara-outline-mobile-summary:focus-visible,.docara-outline-link:focus-visible,.docara-document-link:focus-visible,.sf-breadcrumbs-item--link:focus-visible,[data-docara-reader-settings-trigger]:focus-visible,[data-docara-reader-settings-reset]:focus-visible,[data-docara-disclosure]:focus-visible,sf-button>button:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}.docara-docs-layout{display:grid;grid-template-columns:minmax(14rem,18rem) minmax(0,1fr);max-width:104rem;margin-inline:auto}.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(14rem,18rem) minmax(0,1fr) minmax(12rem,15rem)}.docara-sidebar,.docara-outline-rail{align-self:start;position:sticky;inset-block-start:6rem;max-block-size:calc(100vh - 7.5rem);overflow:auto}.docara-reading-column,.docara-content{min-width:0}.docara-content{color:var(--sf-on-surface);scroll-margin-block-start:6rem}.docara-content[data-width="compact"]{max-width:45rem}.docara-content[data-width="normal"]{max-width:60rem}.docara-content[data-width="wide"]{max-width:80rem}.docara-content[data-width="full"]{max-width:none}.sf-breadcrumbs{min-width:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-inline:contain}.sf-breadcrumbs-item--link{min-block-size:44px}.docara-outline-list{list-style:none}.docara-outline-item[data-docara-outline-level="3"]{padding-inline-start:var(--sf-space-1)}.docara-outline-item[data-docara-outline-level="4"],.docara-outline-item[data-docara-outline-level="5"],.docara-outline-item[data-docara-outline-level="6"]{padding-inline-start:var(--sf-space-2)}.docara-outline-link,.docara-document-link{min-block-size:44px;overflow-wrap:anywhere}.docara-outline-mobile-summary{cursor:pointer}.docara-previous-next{margin-block-start:var(--sf-space-4)}.docara-document-link--next{text-align:end}.docara-prose{line-height:1.65}.docara-prose>*+*{margin-block-start:var(--sf-space-2)}.docara-prose h1{font-size:clamp(2rem,5vw,4rem);line-height:1.08;font-weight:750;letter-spacing:-.035em}.docara-prose h2{font-size:clamp(1.45rem,3vw,2.25rem);line-height:1.2;font-weight:700;margin-block-start:var(--sf-space-4)}.docara-prose h3{font-size:1.25rem;line-height:1.3;font-weight:650;margin-block-start:var(--sf-space-3)}.docara-prose h1[id],.docara-prose h2[id],.docara-prose h3[id],.docara-prose h4[id],.docara-prose h5[id],.docara-prose h6[id]{scroll-margin-block-start:6rem}.docara-prose p,.docara-prose li{max-width:72ch}.docara-landing{align-items:center;justify-content:center;min-height:calc(100vh - 5rem)}.docara-landing .docara-content{width:min(100%,80rem)}.docara-reader-settings-dialog{inline-size:min(calc(100% - 2rem),32rem);max-block-size:min(82vh,40rem);margin:auto;color:var(--sf-on-surface);background:var(--sf-surface-0)}.docara-reader-settings-dialog:not([open]){display:none}.docara-reader-settings-dialog::backdrop{background:color-mix(in srgb,var(--sf-on-surface) 34%,transparent);backdrop-filter:blur(2px)}.docara-reader-settings-group{min-inline-size:0}.docara-reader-settings-group>.sf-radio-button{min-block-size:44px}.docara-reader-settings-group>.sf-radio-button:hover{background:var(--sf-surface-transparent-hover)}.docara-reader-settings-dialog [value="close"]{min-inline-size:44px;min-block-size:44px}[data-docara-reader-settings-reset]{min-block-size:44px}sf-alert,sf-button{display:block}.docara-prose sf-alert,.docara-prose sf-button{margin-block:var(--sf-space-2)}@media(max-width:1152px){.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(14rem,18rem) minmax(0,1fr)}.docara-outline-rail{display:none}.docara-outline-mobile{display:block}}@media(max-width:800px){.docara-header{min-height:auto}.docara-mobile-navigation{display:block;margin:0 var(--sf-space-1) var(--sf-space-1)}.docara-mobile-navigation-summary{min-block-size:44px;cursor:pointer;color:var(--sf-on-surface);font-weight:650}.docara-mobile-navigation-summary::marker,.docara-outline-mobile-summary::marker{color:var(--sf-primary)}.docara-mobile-navigation-panel{margin-block-start:var(--sf-space-1);max-block-size:min(70vh,36rem);overflow:auto}.docara-docs-layout,.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(0,1fr);padding:var(--sf-space-1)}.docara-sidebar{display:none}.docara-content{padding:var(--sf-space-2);scroll-margin-block-start:7rem}.docara-prose h1[id],.docara-prose h2[id],.docara-prose h3[id],.docara-prose h4[id],.docara-prose h5[id],.docara-prose h6[id]{scroll-margin-block-start:8rem}.docara-landing{padding:var(--sf-space-1);min-height:auto}}@media(max-width:600px){.docara-previous-next{flex-direction:column}.docara-document-link--next{text-align:start}.docara-reader-settings-dialog{inline-size:calc(100% - 1rem);max-block-size:calc(100vh - 1rem)}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
 CSS;
     }
 

@@ -2,14 +2,14 @@
     "id": "native.code",
     "family": "native_markdown",
     "category": "technical_content",
-    "title": "Semantic code",
-    "description": "Renders inline and fenced Markdown code with semantic markup and safe overflow.",
+    "title": "Code",
+    "description": "Renders inline and fenced Markdown code; the pinned Simai Framework progressively adds one language-and-copy header, syntax highlighting and line numbers.",
     "presentation": {
         "ru": {
             "title": "Код",
-            "description": "Выводит фрагменты и блоки кода из Markdown в семантической разметке с безопасной горизонтальной прокруткой.",
+            "description": "Выводит фрагменты и блоки кода из Markdown. Закреплённый Simai Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.",
             "limitations": [
-                "Подсветка синтаксиса и кнопка копирования пока не входят в принятый контракт."
+                "Без загрузки закреплённого runtime остаётся читаемый статический pre/code; тонкие настройки подсветки и строк не предоставляются."
             ],
             "states": {},
             "parameters": {},
@@ -27,7 +27,7 @@
     },
     "states": [],
     "limitations": [
-        "Syntax highlighting and a copy control are not part of the admitted contract."
+        "Without the pinned runtime the readable static pre/code fallback remains; fine-grained highlighting and line controls are not exposed."
     ],
     "verification": {
         "renderer": true,

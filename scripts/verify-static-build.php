@@ -13,6 +13,7 @@ use Simai\Docara\Portable\SchemaRepository;
 use Simai\Docara\PortableSite\PortableComponentCatalogProjector;
 use Simai\Docara\PortableSite\PortableHtmlRenderer;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
+use Simai\Docara\PortableSite\PortableRedirectPublisher;
 
 function docaraBootstrapTrustedSource(): void
 {
@@ -91,6 +92,167 @@ function docaraCanonicalJson(mixed $value): string
         docaraCanonicalValue($value),
         JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRESERVE_ZERO_FRACTION,
     );
+}
+
+/**
+ * @param  list<string>  $pageOutputs
+ * @param  list<array<string, mixed>>  $pageRecords
+ * @return list<string>
+ */
+function docaraRedirectOutputs(
+    string $root,
+    string $deploymentBase,
+    array $pageOutputs,
+    array $pageRecords,
+    string $locale,
+    string $documentationVersion,
+    ?string $expectedSource,
+): array {
+    $receiptPath = $root . '/.docara/redirects.json';
+    if (! file_exists($receiptPath) && ! is_link($receiptPath)) {
+        if ($expectedSource !== null) {
+            throw new RuntimeException('Configured redirects require a safe redirect receipt.');
+        }
+
+        return [];
+    }
+    if ($expectedSource === null) {
+        throw new RuntimeException('A redirect receipt exists while redirects are not configured.');
+    }
+    if (! docaraSafeRegularFile($receiptPath)) {
+        throw new RuntimeException('Redirect receipt is missing or unsafe.');
+    }
+
+    docaraBootstrapTrustedSource();
+    $receipt = json_decode(
+        (string) file_get_contents($receiptPath),
+        true,
+        512,
+        JSON_THROW_ON_ERROR,
+    );
+    (new SchemaRepository)->assertValid($receipt, 'redirect-receipt.schema.json');
+    if (! is_array($receipt)
+        || ($receipt['base_url'] ?? null) !== $deploymentBase
+        || ($receipt['locale'] ?? null) !== $locale
+        || ($receipt['documentation_version'] ?? null) !== $documentationVersion
+        || ($receipt['source'] ?? null) !== $expectedSource
+    ) {
+        throw new RuntimeException('Redirect receipt build identity does not match the resolved page plans.');
+    }
+
+    $records = $receipt['redirects'] ?? null;
+    if (! is_array($records) || ! array_is_list($records)) {
+        throw new RuntimeException('Redirect receipt does not contain a redirect list.');
+    }
+    if (! hash_equals(
+        hash('sha256', docaraCanonicalJson($records)),
+        (string) ($receipt['content_sha256'] ?? ''),
+    )) {
+        throw new RuntimeException('Redirect receipt content_sha256 does not match canonical records.');
+    }
+
+    $targets = [];
+    foreach ($pageRecords as $page) {
+        $output = $page['output'] ?? null;
+        $url = $page['url'] ?? null;
+        if (is_string($output) && is_string($url)) {
+            $targets[$output] = $url;
+        }
+    }
+    $reservedOutputs = array_fill_keys($pageOutputs, true);
+    $sourceRoutes = [];
+    foreach ($records as $record) {
+        if (is_array($record) && is_string($record['from'] ?? null)) {
+            $sourceRoutes[$record['from']] = true;
+        }
+    }
+
+    $outputs = [];
+    $sourceDescriptorRecords = [];
+    $previousFrom = null;
+    foreach ($records as $index => $record) {
+        if (! is_array($record)
+            || ! docaraExactKeys($record, ['from', 'to', 'url', 'target_url', 'output'])
+        ) {
+            throw new RuntimeException("Redirect receipt record [$index] has an invalid shape.");
+        }
+        foreach (['from', 'url', 'target_url', 'output'] as $field) {
+            if (! is_string($record[$field] ?? null) || $record[$field] === '') {
+                throw new RuntimeException("Redirect receipt record [$index] has an invalid [$field].");
+            }
+        }
+        if (! is_string($record['to'] ?? null)) {
+            throw new RuntimeException("Redirect receipt record [$index] has an invalid [to].");
+        }
+        $from = $record['from'];
+        $to = $record['to'];
+        $sourceDescriptorRecords[] = [
+            'from' => $from,
+            'to' => $to,
+        ];
+        $slugPattern = '/\A[a-z0-9](?:[a-z0-9._-]*[a-z0-9_-])?(?:\/[a-z0-9](?:[a-z0-9._-]*[a-z0-9_-])?)*\z/D';
+        $targetSlugPattern = '/\A(?:[a-z0-9](?:[a-z0-9._-]*[a-z0-9_-])?(?:\/[a-z0-9](?:[a-z0-9._-]*[a-z0-9_-])?)*)?\z/D';
+        if (preg_match($slugPattern, $from) !== 1
+            || preg_match($targetSlugPattern, $to) !== 1
+            || ! docaraSearchUrlIsSafe($record['url'], $deploymentBase)
+            || ! docaraSearchUrlIsSafe($record['target_url'], $deploymentBase)
+        ) {
+            throw new RuntimeException("Redirect receipt record [$index] contains an unsafe route.");
+        }
+        if ($previousFrom !== null && strcmp($previousFrom, $from) >= 0) {
+            throw new RuntimeException('Redirect receipt records are not strictly sorted or contain duplicates.');
+        }
+        $previousFrom = $from;
+        if ($from === $to || isset($sourceRoutes[$to])) {
+            throw new RuntimeException("Redirect [$from] forms a chain or loop.");
+        }
+
+        $output = $from . '/index.html';
+        $targetOutput = $to === '' ? 'index.html' : $to . '/index.html';
+        $expectedUrl = $deploymentBase . $from . '/';
+        $expectedTargetRoute = $to === '' ? $deploymentBase : $deploymentBase . $to . '/';
+        $expectedTargetUrl = $targets[$targetOutput] ?? null;
+        if ($record['output'] !== $output
+            || $record['url'] !== $expectedUrl
+            || ! is_string($expectedTargetUrl)
+            || $expectedTargetUrl !== $expectedTargetRoute
+            || $record['target_url'] !== $expectedTargetUrl
+        ) {
+            throw new RuntimeException("Redirect [$from] does not match exact generated routes.");
+        }
+        if (isset($reservedOutputs[$output]) || isset($outputs[$output])) {
+            throw new RuntimeException("Redirect output [$output] collides with another generated HTML output.");
+        }
+        if (! docaraSafeRegularFile($root . '/' . $output)) {
+            throw new RuntimeException("Redirect output [$output] is missing or unsafe.");
+        }
+        $actualBytes = file_get_contents($root . '/' . $output);
+        $expectedBytes = PortableRedirectPublisher::renderPage(
+            $record,
+            $locale,
+            $documentationVersion,
+        );
+        if (! is_string($actualBytes) || ! hash_equals($expectedBytes, $actualBytes)) {
+            throw new RuntimeException("Redirect output [$output] does not match its deterministic receipt.");
+        }
+        $outputs[$output] = true;
+    }
+    $canonicalSource = [
+        'schema' => 'docara.redirects.v1',
+        'version' => 1,
+        'redirects' => $sourceDescriptorRecords,
+    ];
+    if (! hash_equals(
+        hash('sha256', docaraCanonicalJson($canonicalSource)),
+        (string) ($receipt['source_sha256'] ?? ''),
+    )) {
+        throw new RuntimeException('Redirect receipt source_sha256 does not match canonical source descriptors.');
+    }
+
+    $outputs = array_keys($outputs);
+    sort($outputs, SORT_STRING);
+
+    return $outputs;
 }
 
 function docaraSearchUrlIsSafe(string $url, string $deploymentBase): bool
@@ -1337,6 +1499,10 @@ $expectedFrameworkSmartRevision = null;
 $expectedSupportedComponents = null;
 $expectedConsumerPolicyHash = null;
 $expectedFrameworkLock = null;
+$expectedBuildLocale = null;
+$expectedDocumentationVersion = null;
+$expectedRedirectSource = null;
+$redirectSourceInitialized = false;
 $trustedCatalog = null;
 $trustedCatalogVerified = false;
 $manifestDirectoryStat = @lstat($manifestDirectory);
@@ -1369,11 +1535,53 @@ if (is_link($manifestDirectory)
                 if (! is_array($page)) {
                     throw new RuntimeException("Resolved page-plan record [$index] must be an object.");
                 }
-                $base = $page['resolved_page_plan']['configuration']['base_url'] ?? null;
+                $configuration = $page['resolved_page_plan']['configuration'] ?? null;
+                if (! is_array($configuration)) {
+                    throw new RuntimeException("Resolved page-plan record [$index] has no configuration.");
+                }
+                $base = $configuration['base_url'] ?? null;
                 if (! is_string($base) || $base === '') {
                     throw new RuntimeException("Resolved page-plan record [$index] is missing base_url.");
                 }
                 $bases[$base] = true;
+                $pageLocale = $configuration['locale']
+                    ?? $configuration['default_locale']
+                    ?? 'en';
+                $buildLocale = $configuration['default_locale']
+                    ?? $configuration['locale']
+                    ?? 'en';
+                $documentationVersion = $configuration['documentation_version'] ?? 'current';
+                if (! is_string($pageLocale)
+                    || ! is_string($buildLocale)
+                    || ! is_string($documentationVersion)
+                    || preg_match('/\A[a-z]{2}(?:-[A-Z]{2})?\z/D', $pageLocale) !== 1
+                    || preg_match('/\A[a-z]{2}(?:-[A-Z]{2})?\z/D', $buildLocale) !== 1
+                    || preg_match('/\A[A-Za-z0-9](?:[A-Za-z0-9._-]{0,62}[A-Za-z0-9])?\z/D', $documentationVersion) !== 1
+                ) {
+                    throw new RuntimeException("Resolved page-plan record [$index] has invalid locale or documentation version metadata.");
+                }
+                if ($pageLocale !== $buildLocale) {
+                    throw new RuntimeException("Resolved page-plan record [$index] does not match the one-locale build contract.");
+                }
+                $redirectSource = $configuration['redirects_file'] ?? null;
+                if ($redirectSource !== null
+                    && (! is_string($redirectSource) || ! docaraCatalogSafePath($redirectSource))
+                ) {
+                    throw new RuntimeException("Resolved page-plan record [$index] has an unsafe redirect source.");
+                }
+                if (! $redirectSourceInitialized) {
+                    $expectedRedirectSource = $redirectSource;
+                    $redirectSourceInitialized = true;
+                } elseif ($redirectSource !== $expectedRedirectSource) {
+                    throw new RuntimeException('Resolved pages do not share one redirect source contract.');
+                }
+                $expectedBuildLocale ??= $buildLocale;
+                $expectedDocumentationVersion ??= $documentationVersion;
+                if ($buildLocale !== $expectedBuildLocale
+                    || $documentationVersion !== $expectedDocumentationVersion
+                ) {
+                    throw new RuntimeException('Resolved pages do not share one locale and documentation version.');
+                }
 
                 $output = $page['output'] ?? null;
                 if (! is_string($output)
@@ -1468,6 +1676,17 @@ if (is_link($manifestDirectory)
                 }
             }
             $deploymentBase = $configuredBase === '/' ? '/' : '/' . trim($configuredBase, '/') . '/';
+            $manifestBuild = $manifest['build'] ?? null;
+            if ($manifestBuild !== null
+                && (
+                    ! is_array($manifestBuild)
+                    || ! docaraExactKeys($manifestBuild, ['locale', 'documentation_version'])
+                    || ($manifestBuild['locale'] ?? null) !== $expectedBuildLocale
+                    || ($manifestBuild['documentation_version'] ?? null) !== $expectedDocumentationVersion
+                )
+            ) {
+                throw new RuntimeException('Resolved build metadata does not match page locale and version metadata.');
+            }
 
             foreach ($manifestPageRecords as $index => $page) {
                 $search = $page['resolved_page_plan']['configuration']['search'] ?? null;
@@ -1508,6 +1727,25 @@ if (is_link($manifestDirectory)
         } catch (Throwable $exception) {
             $manifestError = $exception->getMessage();
         }
+    }
+}
+
+$redirectError = null;
+if ($manifestError === null) {
+    try {
+        $redirectOutputs = docaraRedirectOutputs(
+            $root,
+            $deploymentBase,
+            $manifestOutputs,
+            $manifestPageRecords,
+            (string) ($expectedBuildLocale ?? 'en'),
+            (string) ($expectedDocumentationVersion ?? 'current'),
+            $expectedRedirectSource,
+        );
+        $manifestOutputs = [...$manifestOutputs, ...$redirectOutputs];
+        sort($manifestOutputs, SORT_STRING);
+    } catch (Throwable $exception) {
+        $redirectError = $exception->getMessage();
     }
 }
 
@@ -1553,6 +1791,9 @@ array_push($broken, ...$htmlIdProblems);
 if ($manifestError !== null) {
     $broken[] = ['page' => '@build', 'reference' => '@resolved-page-plans', 'target' => $manifestError];
 } else {
+    if ($redirectError !== null) {
+        $broken[] = ['page' => '@build', 'reference' => '@redirect-contract', 'target' => $redirectError];
+    }
     $actualHtmlOutputs = array_map(
         static fn (string $path): string => str_replace('\\', '/', substr($path, strlen($root) + 1)),
         $htmlFiles,

@@ -14,6 +14,11 @@ Portable builder работает fail closed. Он не пытается уга
 - Raw HTML удаляется; небезопасные ссылки запрещаются.
 - `_docara` и `.docara` зарезервированы.
 - Output collision проверяется до очистки существующей сборки.
+- Redirects принимают только внутренние source/target без query и fragment;
+  collision, self redirect, chain, cycle и отсутствующий target отклоняются
+  до очистки существующей сборки.
+- Все страницы одной сборки обязаны иметь `locale`, совпадающий с
+  `default_locale`.
 - Scalar props экранируются host renderer.
 - Поисковый индекс проходит schema до очистки output; browser runtime принимает
   только same-origin URL внутри настроенного `base_url` и создаёт результаты

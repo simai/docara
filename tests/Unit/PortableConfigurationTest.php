@@ -594,6 +594,53 @@ final class PortableConfigurationTest extends TestCase
         }
     }
 
+    public function test_redirect_descriptors_are_local_versioned_and_fail_closed(): void
+    {
+        (new SchemaRepository)->assertValid([
+            'schema' => 'docara.site.v1',
+            'preset' => 'docs',
+            'framework_lock' => 'framework.lock.json',
+            'documentation_version' => '2.4.0-rc.1',
+            'redirects_file' => 'config/redirects.json',
+        ], 'site.schema.json');
+        (new SchemaRepository)->assertValid([
+            'schema' => 'docara.redirects.v1',
+            'version' => 1,
+            'redirects' => [
+                ['from' => 'old/path', 'to' => 'guides/getting-started'],
+                ['from' => 'home-old', 'to' => ''],
+            ],
+        ], 'redirects.schema.json');
+        try {
+            (new SchemaRepository)->assertValid([
+                'schema' => 'docara.redirects.v1',
+                'redirects' => [],
+            ], 'redirects.schema.json');
+            self::fail('A redirect descriptor without an explicit schema version unexpectedly passed.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
+        }
+
+        foreach ([
+            ['from' => '../outside', 'to' => 'guides'],
+            ['from' => 'old', 'to' => 'https://example.com'],
+            ['from' => 'old?query=1', 'to' => 'guides'],
+            ['from' => 'old#fragment', 'to' => 'guides'],
+            ['from' => '/absolute', 'to' => 'guides'],
+        ] as $redirect) {
+            try {
+                (new SchemaRepository)->assertValid([
+                    'schema' => 'docara.redirects.v1',
+                    'version' => 1,
+                    'redirects' => [$redirect],
+                ], 'redirects.schema.json');
+                self::fail('Unsafe redirect descriptor unexpectedly passed.');
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
+            }
+        }
+    }
+
     public function test_framework_asset_projection_semantics_are_centralized_and_fail_closed(): void
     {
         $lock = $this->frameworkLock();

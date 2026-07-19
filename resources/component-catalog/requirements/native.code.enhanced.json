@@ -2,21 +2,21 @@
     "id": "native.code.enhanced",
     "family": "requirement",
     "category": "technical_content",
-    "title": "Enhanced code",
-    "description": "Syntax highlighting and an accessible copy action for fenced code.",
+    "title": "Configurable code",
+    "description": "Editor-grade code blocks with optional line numbers, highlighted lines, diff states and other author controls.",
     "presentation": {
         "ru": {
-            "title": "Расширенный блок кода",
-            "description": "Подсветка синтаксиса и доступное копирование содержимого блока кода.",
+            "title": "Настраиваемый блок кода",
+            "description": "Расширенный блок с управлением номерами строк, выделенными строками, diff-состояниями и другими параметрами автора.",
             "limitations": [
-                "Доступные внешние файлы пока не образуют принятый контракт авторинга, ассетов и доступности."
+                "Текущий Framework-компонент намеренно работает без тонких параметров автора."
             ],
             "states": {},
             "parameters": {},
             "gap": {
-                "reason": "Нет точной проекции Docara, закрепляющей подсветку, копирование и их доступное поведение.",
-                "fallback": "Используйте поддерживаемый семантический вывод native.code.",
-                "admission_condition": "Закрепить точный контракт ассетов и доступности, затем добавить детерминированную проекцию, тесты, документацию и браузерную приёмку."
+                "reason": "Нет принятого контракта для опциональных номеров, выделенных строк, diff-состояний и других editor-grade параметров.",
+                "fallback": "Используйте native.code: язык, копирование, подсветка, номера строк и локальная прокрутка уже предоставляются закреплённым Simai Framework.",
+                "admission_condition": "Добавить параметры в компонент Simai Framework, закрепить доступность и fallback, затем принять их в Docara с тестами, документацией и браузерной проверкой."
             }
         }
     },
@@ -31,7 +31,7 @@
     },
     "states": [],
     "limitations": [
-        "Available upstream bytes are not an admitted authoring, asset or accessibility contract."
+        "Fine-grained author controls are not part of the admitted Framework contract."
     ],
     "verification": {
         "renderer": false,
@@ -46,8 +46,8 @@
     },
     "gap": {
         "owner": "simai/docara",
-        "reason": "No exact Docara projection pins highlighting and copy assets with their accessible behaviour.",
-        "fallback": "Use the supported semantic native.code rendering.",
-        "admission_condition": "Pin an exact asset and accessibility contract, then add deterministic projection, tests, documentation and browser acceptance."
+        "reason": "No admitted contract exposes optional line numbers, highlighted lines, diff states or other editor-grade controls.",
+        "fallback": "Use native.code; the pinned Simai Framework already provides language, copy, syntax highlighting, line numbers and local overflow.",
+        "admission_condition": "Add the controls to Simai Framework with accessibility and fallback contracts, then admit them through deterministic projection, tests, documentation and browser acceptance."
     }
 }

@@ -21,8 +21,16 @@ legacy tags. Выберите поддерживаемый native Markdown, type
 
 Девять ручных страниц компонентов выведены в пользу generated catalog. Таблица
 старых и новых маршрутов находится на [странице миграции](/migration/).
-Обязательную публичную совместимость обеспечьте отдельным hosting redirect и
-проверьте его до переключения.
+Проверьте, что `docara.json` указывает `redirects_file`, source присутствует в
+нём, target существует, а build содержит `.docara/redirects.json`. Не
+подменяйте декларативный список непроверяемым hosting-only redirect.
+
+## Страница имеет другой язык
+
+Один portable build не смешивает locales. Значение `locale` в section/page
+может только повторять `default_locale`; другое значение отклоняется. Соберите
+другой язык отдельным site variant с собственными output и `base_url`. Docara
+не выполняет скрытый fallback и не перенаправляет English URL на Russian URL.
 
 ## `init --portable` отказывается работать в каталоге
 

@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
+use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableHtmlRenderer;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
@@ -61,7 +62,10 @@ final class PortableSiteBuilderTest extends TestCase
         $fourthLevel = (string) file_get_contents($this->tmpPath('build_local/guides/platform/configuration/layout/index.html'));
         $landing = (string) file_get_contents($this->tmpPath('build_local/landing/index.html'));
 
-        self::assertStringContainsString('docara-docs-layout gap-3 p-3', $index);
+        self::assertStringContainsString('docara-docs-layout gap-0', $index);
+        self::assertStringNotContainsString('docara-sidebar bg-surface-0 border radius-2', $index);
+        self::assertStringNotContainsString('docara-content bg-surface-0 border radius-2', $index);
+        self::assertStringNotContainsString('docara-outline-rail bg-surface-0 border radius-2', $guide);
         self::assertStringContainsString('class="docara-landing p-4"', $landing);
         self::assertStringContainsString(
             'class="docara-content docara-prose flex flex-col gap-2"',
@@ -88,10 +92,8 @@ final class PortableSiteBuilderTest extends TestCase
             '.docara-feature-grid>li{min-width:0;max-width:none}',
             $landing,
         );
-        self::assertStringContainsString(
-            '.docara-landing pre code{white-space:pre-wrap;overflow-wrap:anywhere}',
-            $landing,
-        );
+        self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:transparent;', $landing);
+        self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre}', $landing);
         self::assertStringContainsString(
             '<code class="language-shell">composer require simai/docara' . "\n"
                 . 'php vendor/bin/docara init --portable' . "\n"
@@ -120,7 +122,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('rel="next" href="/guides/platform/"', $guide);
         self::assertStringNotContainsString('data-docara-breadcrumbs', $landing);
         self::assertStringNotContainsString('<nav data-docara-outline', $landing);
-        self::assertStringNotContainsString('<details data-docara-outline-mobile', $landing);
+        self::assertStringNotContainsString('data-docara-outline-mobile', $landing);
         self::assertStringNotContainsString('<nav data-docara-previous-next', $landing);
         self::assertStringContainsString('<sf-alert', $index);
         self::assertStringContainsString('<sf-alert', $guide);
@@ -132,6 +134,8 @@ final class PortableSiteBuilderTest extends TestCase
         foreach ([$index, $guide, $fourthLevel, $landing] as $html) {
             self::assertStringContainsString('theme-light', $html);
             self::assertStringContainsString('theme-dark', $html);
+            self::assertStringContainsString('data-docara-documentation-version="current"', $html);
+            self::assertStringContainsString('<meta name="docara:documentation-version" content="current">', $html);
             self::assertStringContainsString('href="#docara-main">К содержанию</a>', $html);
             self::assertStringContainsString('id="docara-main" tabindex="-1"', $html);
             self::assertStringContainsString('data-docara-reader-settings-trigger', $html);
@@ -155,6 +159,13 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('railRect.width<=0||railRect.height<=0', $html);
             self::assertStringContainsString("addEventListener('resize',scheduleActiveReveal", $html);
             self::assertStringContainsString("customElements.whenDefined('sf-icon')", $html);
+            self::assertStringNotContainsString('data-docara-code-copy', $html);
+            self::assertStringNotContainsString('navigator.clipboard.writeText(text)', $html);
+            self::assertStringNotContainsString("document.execCommand('copy')", $html);
+            self::assertStringContainsString('background:transparent;border:0;border-radius:0;box-shadow:none', $html);
+            self::assertStringContainsString('.docara-code-block>.sf--highlight-head button{min-inline-size:44px;min-block-size:44px}', $html);
+            self::assertStringContainsString("dialog.addEventListener('cancel'", $html);
+            self::assertStringContainsString('if(event.target===dialog){closeSheet()}', $html);
             self::assertStringContainsString('[data-docara-reader-settings-trigger]:focus-visible', $html);
             self::assertStringContainsString('data-docara-reader-settings-close', $html);
             self::assertStringContainsString('[data-docara-reader-settings-close]:focus-visible', $html);
@@ -189,6 +200,13 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringNotContainsString('<dialog id="docara-search-dialog"', $landing);
         self::assertStringNotContainsString('data-docara-search-runtime', $landing);
         self::assertStringContainsString('id="docara-mobile-navigation"', $guide);
+        self::assertStringContainsString('id="docara-mobile-navigation-title"', $guide);
+        self::assertStringContainsString('id="docara-outline-dialog"', $guide);
+        self::assertStringContainsString('data-docara-sheet-trigger', $guide);
+        self::assertStringContainsString('data-docara-transient-dialog', $guide);
+        self::assertStringContainsString("document.addEventListener('docara:open-transient'", $guide);
+        self::assertStringContainsString('block-size:100dvh', $guide);
+        self::assertStringNotContainsString('<details id="docara-mobile-navigation"', $guide);
         self::assertStringContainsString('data-docara-navigation-depth="4"', $fourthLevel);
         self::assertStringContainsString('<sf-icon icon="expand_less" aria-hidden="true"></sf-icon>', $fourthLevel);
         self::assertStringContainsString('href="/guides/platform/configuration/layout/" aria-current="page"', $fourthLevel);
@@ -227,7 +245,7 @@ final class PortableSiteBuilderTest extends TestCase
             $desktopOutline[] = $link->attributes?->getNamedItem('href')?->nodeValue;
         }
         $mobileOutline = [];
-        foreach ($guideXpath->query('//details[@data-docara-outline-mobile]//a[contains(@class, "docara-outline-link")]') ?: [] as $link) {
+        foreach ($guideXpath->query('//dialog[@id="docara-outline-dialog"]//a[contains(@class, "docara-outline-link")]') ?: [] as $link) {
             $mobileOutline[] = $link->attributes?->getNamedItem('href')?->nodeValue;
         }
         self::assertNotSame([], $desktopOutline);
@@ -353,13 +371,13 @@ final class PortableSiteBuilderTest extends TestCase
         );
         $searchRuntime = (string) file_get_contents($this->tmpPath('build_local/_docara/search.js'));
         self::assertStringContainsString(
-            "document.querySelector('[data-docara-reader-settings-dialog]')",
+            "document.dispatchEvent(new CustomEvent('docara:open-transient'",
             $searchRuntime,
         );
-        self::assertStringContainsString('if (readerSettings && readerSettings.open) readerSettings.close();', $searchRuntime);
+        self::assertStringContainsString('detail: { id: dialog.id }', $searchRuntime);
         self::assertTrue(
-            strpos($searchRuntime, 'readerSettings.close()') < strpos($searchRuntime, 'dialog.showModal()'),
-            'The physical search shortcut must close reader settings before search becomes modal.',
+            strpos($searchRuntime, "new CustomEvent('docara:open-transient'") < strpos($searchRuntime, 'dialog.showModal()'),
+            'Search must request shared transient-dialog exclusivity before it becomes modal.',
         );
         self::assertStringNotContainsString("var searchTrigger=document.querySelector('[data-docara-search-trigger]');", $index);
         self::assertStringNotContainsString(
@@ -455,7 +473,7 @@ final class PortableSiteBuilderTest extends TestCase
 
         self::assertStringNotContainsString('<nav data-docara-breadcrumbs', $html);
         self::assertStringNotContainsString('<nav data-docara-outline', $html);
-        self::assertStringNotContainsString('<details data-docara-outline-mobile', $html);
+        self::assertStringNotContainsString('data-docara-outline-mobile', $html);
         self::assertStringNotContainsString('<nav data-docara-previous-next', $html);
         self::assertStringContainsString('<h1 id="быстрый-старт">Быстрый старт</h1>', $html);
         self::assertStringContainsString('<h2 id="параметры">Параметры</h2>', $html);
@@ -638,6 +656,219 @@ MD;
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework/smart/alert/js/alert.js'));
+    }
+
+    #[Test]
+    public function redirects_are_deterministic_scoped_to_the_build_and_bound_to_exact_generated_pages(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $site = $this->jsonFile($this->tmpPath('docara.json'));
+        $site['base_url'] = '/project~/docs/';
+        $site['documentation_version'] = '2.4.0';
+        file_put_contents(
+            $this->tmpPath('docara.json'),
+            json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+        file_put_contents(
+            $this->tmpPath('content/landing.md'),
+            str_replace(
+                '/guides/getting-started/',
+                '/project~/docs/guides/getting-started/',
+                (string) file_get_contents($this->tmpPath('content/landing.md')),
+            ),
+        );
+        $redirectSource = $this->jsonFile($this->tmpPath('redirects.json'));
+        $redirectSource['redirects'][] = ['from' => 'home-old', 'to' => ''];
+        file_put_contents(
+            $this->tmpPath('redirects.json'),
+            json_encode(
+                $redirectSource,
+                JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES,
+            ) . "\n",
+        );
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+
+        $receiptPath = $this->tmpPath('build_local/.docara/redirects.json');
+        self::assertFileExists($receiptPath);
+        $receipt = $this->jsonFile($receiptPath);
+        self::assertSame('docara.redirect_receipt.v1', $receipt['schema']);
+        self::assertSame('/project~/docs/', $receipt['base_url']);
+        self::assertSame('ru', $receipt['locale']);
+        self::assertSame('2.4.0', $receipt['documentation_version']);
+        $sourceDocument = $this->jsonFile($this->tmpPath('redirects.json'));
+        usort(
+            $sourceDocument['redirects'],
+            static fn (array $left, array $right): int => [
+                $left['from'],
+                $left['to'],
+            ] <=> [
+                $right['from'],
+                $right['to'],
+            ],
+        );
+        self::assertSame(
+            hash('sha256', CanonicalJson::encode($sourceDocument)),
+            $receipt['source_sha256'],
+        );
+        self::assertSame(
+            hash('sha256', CanonicalJson::encode($receipt['redirects'])),
+            $receipt['content_sha256'],
+        );
+        self::assertSame(
+            array_values(array_unique(array_column($receipt['redirects'], 'from'))),
+            array_column($receipt['redirects'], 'from'),
+        );
+        $sortedSources = array_column($receipt['redirects'], 'from');
+        sort($sortedSources, SORT_STRING);
+        self::assertSame($sortedSources, array_column($receipt['redirects'], 'from'));
+
+        $button = collect($receipt['redirects'])->firstWhere('from', 'components/button');
+        self::assertIsArray($button);
+        self::assertSame('components/button/index.html', $button['output']);
+        self::assertSame('/project~/docs/components/button/', $button['url']);
+        self::assertSame('/project~/docs/components/catalog/ui.button/', $button['target_url']);
+        $html = (string) file_get_contents(
+            $this->tmpPath('build_local/components/button/index.html'),
+        );
+        self::assertStringContainsString('<meta name="robots" content="noindex,follow">', $html);
+        self::assertStringContainsString(
+            '<link rel="canonical" href="/project~/docs/components/catalog/ui.button/">',
+            $html,
+        );
+        self::assertStringContainsString(
+            '<meta http-equiv="refresh" content="0; url=/project~/docs/components/catalog/ui.button/">',
+            $html,
+        );
+        self::assertStringContainsString(
+            '<a href="/project~/docs/components/catalog/ui.button/">',
+            $html,
+        );
+        self::assertStringContainsString(
+            'data-docara-documentation-version="2.4.0"',
+            $html,
+        );
+        $home = collect($receipt['redirects'])->firstWhere('from', 'home-old');
+        self::assertIsArray($home);
+        self::assertSame('', $home['to']);
+        self::assertSame('/project~/docs/', $home['target_url']);
+
+        $manifest = $this->jsonFile(
+            $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
+        );
+        self::assertSame('ru', $manifest['build']['locale']);
+        self::assertSame('2.4.0', $manifest['build']['documentation_version']);
+
+        $firstTree = $this->treeHashes($this->tmpPath('build_local'));
+        $sourceDocument['redirects'] = array_reverse($sourceDocument['redirects']);
+        file_put_contents(
+            $this->tmpPath('redirects.json'),
+            json_encode($sourceDocument, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES),
+        );
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        self::assertSame(
+            $firstTree,
+            $this->treeHashes($this->tmpPath('build_local')),
+            'Redirect source formatting and record order must not change generated bytes.',
+        );
+
+        $process = new Process([
+            PHP_BINARY,
+            'scripts/verify-static-build.php',
+            $this->tmpPath('build_local'),
+        ], dirname(__DIR__));
+        $process->run();
+        self::assertSame(0, $process->getExitCode(), $process->getErrorOutput() . $process->getOutput());
+    }
+
+    #[Test]
+    public function redirect_and_locale_preflight_failures_preserve_existing_output(): void
+    {
+        $cases = [
+            'locale' => 'PORTABLE_BUILD_LOCALE_MISMATCH',
+            'missing-target' => 'PORTABLE_REDIRECT_TARGET_NOT_FOUND',
+            'chain' => 'PORTABLE_REDIRECT_CHAIN_FORBIDDEN',
+            'page-collision' => 'PORTABLE_REDIRECT_PAGE_COLLISION',
+        ];
+        foreach ($cases as $case => $expectedCode) {
+            $siteRoot = $this->tmpPath('redirect-preflight-' . $case);
+            $this->copyPortableFixture($siteRoot);
+            $this->filesystem->ensureDirectoryExists($siteRoot . '/build_local');
+            file_put_contents($siteRoot . '/build_local/sentinel.txt', 'keep-output');
+
+            if ($case === 'locale') {
+                $pagePath = $siteRoot . '/content/guides/getting-started.page.json';
+                $page = $this->jsonFile($pagePath);
+                $page['locale'] = 'en';
+                file_put_contents(
+                    $pagePath,
+                    json_encode($page, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+                );
+            } else {
+                $redirects = $this->jsonFile($siteRoot . '/redirects.json');
+                if ($case === 'missing-target') {
+                    $redirects['redirects'] = [['from' => 'old', 'to' => 'missing']];
+                } elseif ($case === 'chain') {
+                    $redirects['redirects'] = [
+                        ['from' => 'old', 'to' => 'older'],
+                        ['from' => 'older', 'to' => 'guides'],
+                    ];
+                } else {
+                    $redirects['redirects'] = [['from' => 'guides', 'to' => 'components/catalog']];
+                }
+                file_put_contents(
+                    $siteRoot . '/redirects.json',
+                    json_encode($redirects, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+                );
+            }
+
+            try {
+                $this->builder()->build($siteRoot, $siteRoot . '/build_local');
+                self::fail("Unsafe redirect preflight case [$case] unexpectedly passed.");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($expectedCode, $exception->errorCode);
+            }
+            self::assertSame(
+                'keep-output',
+                file_get_contents($siteRoot . '/build_local/sentinel.txt'),
+            );
+        }
+    }
+
+    #[Test]
+    public function symlinked_and_hardlinked_redirect_sources_are_rejected_before_cleaning(): void
+    {
+        foreach (['symlink', 'hardlink'] as $kind) {
+            $siteRoot = $this->tmpPath('redirect-source-' . $kind);
+            $outside = $this->tmpPath('redirect-source-' . $kind . '-outside.json');
+            $this->copyPortableFixture($siteRoot);
+            file_put_contents($outside, (string) file_get_contents($siteRoot . '/redirects.json'));
+            unlink($siteRoot . '/redirects.json');
+            self::assertTrue(
+                $kind === 'symlink'
+                    ? symlink($outside, $siteRoot . '/redirects.json')
+                    : link($outside, $siteRoot . '/redirects.json'),
+            );
+            $this->filesystem->ensureDirectoryExists($siteRoot . '/build_local');
+            file_put_contents($siteRoot . '/build_local/sentinel.txt', 'keep-output');
+
+            try {
+                $this->builder()->build($siteRoot, $siteRoot . '/build_local');
+                self::fail("Unsafe redirect source case [$kind] unexpectedly passed.");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame(
+                    $kind === 'symlink'
+                        ? 'PORTABLE_REDIRECT_SOURCE_SYMLINK_FORBIDDEN'
+                        : 'PORTABLE_REDIRECT_SOURCE_UNSAFE',
+                    $exception->errorCode,
+                );
+            }
+            self::assertSame(
+                'keep-output',
+                file_get_contents($siteRoot . '/build_local/sentinel.txt'),
+            );
+            self::assertStringStartsWith('{', (string) file_get_contents($outside));
+        }
     }
 
     #[Test]

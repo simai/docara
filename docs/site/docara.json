@@ -5,6 +5,8 @@
   "content_root": "content",
   "framework_lock": "simai-framework.lock.json",
   "default_locale": "ru",
+  "documentation_version": "current",
+  "redirects_file": "redirects.json",
   "base_url": "/",
   "branding": {
     "title": "Docara",

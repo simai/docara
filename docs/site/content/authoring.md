@@ -4,6 +4,7 @@
 
 - Markdown хранит текст и структуру содержания;
 - `docara.json` задаёт сайт;
+- `redirects.json` сохраняет обязательные старые внутренние URL;
 - `_section.json` задаёт наследуемые значения ветки;
 - `<page>.page.json` уточняет одну страницу;
 - generator создаёт HTML, indexes и диагностические artifacts.
@@ -24,12 +25,13 @@
 3. [Настройте сайт, раздел или страницу](/authoring/configuration/).
 4. [Проверьте наследование и `$reset`](/authoring/inheritance/).
 5. [Выберите `docs` или `landing`](/authoring/layout-and-navigation/).
-6. При необходимости [найдите компонент](/components/catalog/).
-7. [Соберите и проверьте результат](/build/verify/).
+6. При изменении URL [объявите redirect](/authoring/redirects/).
+7. При необходимости [найдите компонент](/components/catalog/).
+8. [Соберите и проверьте результат](/build/verify/).
 
 ## Не редактируйте output
 
-`build_*`, `.docara/resolved-page-plans.json` и
+`build_*`, `.docara/resolved-page-plans.json`, `.docara/redirects.json` и
 `_docara/component-catalog.json` создаются заново. Если результат неверен,
 исправьте исходный Markdown/JSON и повторите сборку.
 

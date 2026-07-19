@@ -1,0 +1,39 @@
+{
+  "schema": "docara.replacement_scenario_matrix.v1",
+  "version": 1,
+  "viewports": [
+    {"width": 1440, "height": 900},
+    {"width": 768, "height": 900},
+    {"width": 390, "height": 844}
+  ],
+  "pages": [
+    {"id": "home", "url": "/", "jobs": ["landing", "brand", "theme"]},
+    {"id": "start", "url": "/start/", "jobs": ["read", "search", "code", "previous_next"]},
+    {"id": "four_levels", "url": "/authoring/layout-and-navigation/hierarchy/four-level/", "jobs": ["navigation", "active_trail"]},
+    {"id": "catalog", "url": "/components/catalog/", "jobs": ["filter", "navigation", "outline"]},
+    {"id": "code_detail", "url": "/components/catalog/native.code/", "jobs": ["code", "copy", "catalog_contract"]},
+    {"id": "extension", "url": "/development/extensions/", "jobs": ["migration_boundary", "outline"]},
+    {"id": "redirect", "url": "/components/code/", "jobs": ["redirect"]},
+    {"id": "missing", "url": "/__docara_missing_replacement_probe__/", "jobs": ["not_found"]}
+  ],
+  "interactions": [
+    "navigation_open_close",
+    "outline_open_close",
+    "focus_containment",
+    "escape",
+    "outside_dismissal",
+    "focus_restore",
+    "search",
+    "reader_theme",
+    "copy_code",
+    "anchor_navigation"
+  ],
+  "invariants": [
+    "article_geometry_change_le_1px_when_overlay_opens",
+    "touch_targets_ge_44px",
+    "no_horizontal_page_overflow",
+    "active_page_visible",
+    "one_code_surface",
+    "zero_console_errors"
+  ]
+}

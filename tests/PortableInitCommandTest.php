@@ -18,6 +18,7 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame(Command::SUCCESS, $status, $console->getDisplay());
         $this->assertFileExists($this->tmpPath('docara.json'));
+        $this->assertFileExists($this->tmpPath('redirects.json'));
         $this->assertFileExists($this->tmpPath('simai-framework.lock.json'));
         $this->assertFileExists($this->tmpPath('content/guides/getting-started.md'));
         $this->assertFileExists($this->tmpPath('content/guides/getting-started.page.json'));
@@ -51,6 +52,8 @@ class PortableInitCommandTest extends TestCase
         $lock = $this->json('simai-framework.lock.json');
 
         $this->assertSame('docara.site.v1', $site['schema']);
+        $this->assertSame('current', $site['documentation_version']);
+        $this->assertSame('redirects.json', $site['redirects_file']);
         $this->assertSame('Docara', $site['branding']['title']);
         $this->assertSame('assets/docara-mark.svg', $site['branding']['logo']);
         $this->assertSame('assets/docara-mark.svg', $site['branding']['logo_dark']);

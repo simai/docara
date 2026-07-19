@@ -653,7 +653,7 @@ final class StaticBuildVerifierTest extends TestCase
         $localeDrift = $this->verify($build);
         self::assertSame(1, $localeDrift->getExitCode(), $localeDrift->getOutput());
         self::assertStringContainsString(
-            'trusted page projection',
+            'Resolved pages do not share one locale and documentation version.',
             $localeDrift->getOutput(),
         );
     }
@@ -902,6 +902,77 @@ final class StaticBuildVerifierTest extends TestCase
             self::assertStringContainsString('docara.card/index.html', $detailResult->getOutput());
             self::assertStringStartsWith('<!doctype html>', (string) file_get_contents($outsideDetail));
         }
+    }
+
+    #[Test]
+    public function redirect_receipts_and_redirect_html_are_verified_fail_closed(): void
+    {
+        $validBuild = $this->createGeneratedCatalogBuild('redirect-contract-valid');
+        $valid = $this->verify($validBuild);
+        self::assertSame(0, $valid->getExitCode(), $valid->getOutput());
+
+        $missingBuild = $this->createGeneratedCatalogBuild('redirect-contract-missing');
+        $receiptPath = $missingBuild . '/.docara/redirects.json';
+        $receipt = $this->readJson($receiptPath);
+        foreach ($receipt['redirects'] as $redirect) {
+            $this->filesystem->deleteDirectory(
+                dirname($missingBuild . '/' . $redirect['output']),
+            );
+        }
+        unlink($receiptPath);
+        $missing = $this->verify($missingBuild);
+        self::assertSame(1, $missing->getExitCode(), $missing->getOutput());
+        self::assertStringContainsString('@redirect-contract', $missing->getOutput());
+        self::assertStringContainsString('Configured redirects require', $missing->getOutput());
+
+        $htmlBuild = $this->createGeneratedCatalogBuild('redirect-contract-html-tamper');
+        $htmlPath = $htmlBuild . '/components/button/index.html';
+        file_put_contents(
+            $htmlPath,
+            str_replace(
+                'noindex,follow',
+                'index,follow',
+                (string) file_get_contents($htmlPath),
+            ),
+        );
+        $htmlTamper = $this->verify($htmlBuild);
+        self::assertSame(1, $htmlTamper->getExitCode(), $htmlTamper->getOutput());
+        self::assertStringContainsString('@redirect-contract', $htmlTamper->getOutput());
+        self::assertStringContainsString('deterministic receipt', $htmlTamper->getOutput());
+
+        $hashBuild = $this->createGeneratedCatalogBuild('redirect-contract-hash-tamper');
+        $receiptPath = $hashBuild . '/.docara/redirects.json';
+        $receipt = $this->readJson($receiptPath);
+        $receipt['content_sha256'] = str_repeat('f', 64);
+        $this->writeJson($receiptPath, $receipt);
+        $hashTamper = $this->verify($hashBuild);
+        self::assertSame(1, $hashTamper->getExitCode(), $hashTamper->getOutput());
+        self::assertStringContainsString('@redirect-contract', $hashTamper->getOutput());
+        self::assertStringContainsString('content_sha256', $hashTamper->getOutput());
+
+        $sourceHashBuild = $this->createGeneratedCatalogBuild('redirect-contract-source-hash-tamper');
+        $receiptPath = $sourceHashBuild . '/.docara/redirects.json';
+        $receipt = $this->readJson($receiptPath);
+        $receipt['source_sha256'] = str_repeat('f', 64);
+        $this->writeJson($receiptPath, $receipt);
+        $sourceHashTamper = $this->verify($sourceHashBuild);
+        self::assertSame(1, $sourceHashTamper->getExitCode(), $sourceHashTamper->getOutput());
+        self::assertStringContainsString('@redirect-contract', $sourceHashTamper->getOutput());
+        self::assertStringContainsString('source_sha256', $sourceHashTamper->getOutput());
+
+        $routeBuild = $this->createGeneratedCatalogBuild('redirect-contract-route-tamper');
+        $receiptPath = $routeBuild . '/.docara/redirects.json';
+        $receipt = $this->readJson($receiptPath);
+        $receipt['redirects'][0]['target_url'] = '/forged/';
+        $receipt['content_sha256'] = hash(
+            'sha256',
+            CanonicalJson::encode($receipt['redirects']),
+        );
+        $this->writeJson($receiptPath, $receipt);
+        $routeTamper = $this->verify($routeBuild);
+        self::assertSame(1, $routeTamper->getExitCode(), $routeTamper->getOutput());
+        self::assertStringContainsString('@redirect-contract', $routeTamper->getOutput());
+        self::assertStringContainsString('exact generated routes', $routeTamper->getOutput());
     }
 
     /** @param list<string> $outputs */

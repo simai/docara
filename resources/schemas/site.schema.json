@@ -33,6 +33,14 @@
             "type": "string",
             "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
         },
+        "documentation_version": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,62}[A-Za-z0-9])?$"
+        },
+        "redirects_file": {
+            "type": "string",
+            "format": "docara-relative-path"
+        },
         "title": {
             "type": "string",
             "minLength": 1

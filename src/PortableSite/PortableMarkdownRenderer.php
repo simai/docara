@@ -495,11 +495,18 @@ final class PortableMarkdownRenderer
         );
         $html = str_replace('</table>', '</table></div>', $html);
 
-        return str_replace(
-            '<pre>',
-            '<pre class="bg-surface-container border border-outline-variant radius-2 p-2 overflow-auto">',
+        return preg_replace_callback(
+            '/<pre><code(?P<attributes>[^>]*)>(?P<content>.*?)<\/code><\/pre>/s',
+            function (array $matches): string {
+                $attributes = (string) ($matches['attributes'] ?? '');
+
+                return '<div data-docara-code-block class="source docara-code-block bg-surface-container border border-outline-variant radius-2 m-0">'
+                    . '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code'
+                    . $attributes . '>' . (string) ($matches['content'] ?? '') . '</code></pre>'
+                    . '</div>';
+            },
             $html,
-        );
+        ) ?? $html;
     }
 
     /** @return array<string, mixed> */

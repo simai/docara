@@ -1,8 +1,9 @@
 project_id: "docara-consolidation"
-updated_at: "2026-07-19"
-status: "idle"
-primary_goal: "Restore the complete Docara product shell on the accepted portable engine before public product release."
-active_tracks: []
-current_focus: null
+updated_at: "2026-07-20T02:15:48+03:00"
+status: "active"
+primary_goal: "Make portable Docara replacement-ready relative to the retained legacy reference without public release, default-branch migration or repository retirement."
+active_tracks:
+  - "docara-consolidation"
+current_focus: "source/workflow/2026-07-20-docara-legacy-replacement-readiness.md"
 important_blockers: []
-next_global_step: "No active batch. Use the accepted local product at https://docara.test/; start a separate gated Goal for public release, default-branch migration, Framework-owner work or repository retirement."
+next_global_step: "Create the immutable replacement-ready candidate, execute exact-archive browser/HCS/tester acceptance, then publish the accepted build locally with backup and rollback evidence."

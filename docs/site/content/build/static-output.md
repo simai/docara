@@ -11,6 +11,8 @@ build_production/
   _docara/search.js
   _docara/framework/
   .docara/resolved-page-plans.json
+  .docara/redirects.json
+  old/route/index.html
 ```
 
 HTML можно обслуживать обычным статическим веб-сервером. Значение `base_url`
@@ -29,10 +31,15 @@ runtime имеют независимые SHA-256 query revisions.
 путь отклоняется.
 
 Verifier требует exact schema manifest, непустой список страниц и точное
-совпадение его `output` со всеми HTML-файлами результата. Отсутствующий,
-дублированный, лишний, symlink- или hardlink-output отклоняется. Элемент HTML
-`<base>` запрещён, чтобы относительные quoted `href`/`src` всегда разрешались
-одинаково verifier-ом и браузером.
+совпадение его `output` и redirect receipt со всеми HTML-файлами результата.
+Отсутствующий, дублированный, лишний, symlink- или hardlink-output отклоняется.
+Элемент HTML `<base>` запрещён, чтобы относительные quoted `href`/`src` всегда
+разрешались одинаково verifier-ом и браузером.
+
+Если `redirects_file` не пуст, `.docara/redirects.json` фиксирует SHA-256
+source, locale, версию документации, `base_url`, source/target URL и output
+каждого redirect. Redirect HTML содержит canonical, `noindex`, meta refresh и
+обычную видимую ссылку на один и тот же внутренний target.
 
 Локальные ссылки с `#fragment` проверяются против фактических HTML `id` — как в
 сыром Unicode, так и в percent-encoded форме. Основные диагностические маркеры:

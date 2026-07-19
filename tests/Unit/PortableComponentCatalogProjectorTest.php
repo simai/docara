@@ -314,7 +314,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             $this->tmpPath('content/aaa.page.json'),
             json_encode([
                 'schema' => 'docara.page.v1',
-                'locale' => 'en',
+                'locale' => 'ru',
                 'settings' => ['theme' => 'dark'],
             ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
         );

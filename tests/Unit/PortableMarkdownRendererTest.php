@@ -50,11 +50,49 @@ MD;
             $html,
         );
         self::assertStringContainsString(
-            '<pre class="bg-surface-container border border-outline-variant radius-2 p-2 overflow-auto"><code class="language-php">',
+            '<div data-docara-code-block class="source docara-code-block bg-surface-container border border-outline-variant radius-2 m-0">',
             $html,
         );
+        self::assertStringNotContainsString('data-docara-code-language', $html);
+        self::assertStringNotContainsString('data-docara-code-copy', $html);
+        self::assertStringContainsString(
+            '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code class="language-php">',
+            $html,
+        );
+        self::assertSame(1, substr_count($html, 'data-docara-code-block'));
+        self::assertSame(1, substr_count(
+            strstr($html, '<div data-docara-code-block') ?: '',
+            ' border ',
+        ));
         self::assertStringNotContainsString('docara-card', $html);
         self::assertStringNotContainsString('docara-steps', $html);
+    }
+
+    #[Test]
+    public function fenced_code_has_one_framework_owned_surface_and_preserves_source_text(): void
+    {
+        $markdown = <<<'MD'
+Before `inline`.
+
+```shell
+printf '<Docara> & exact'
+  second line
+```
+MD;
+
+        $html = (new PortableMarkdownRenderer)->render($markdown);
+
+        self::assertSame(1, substr_count($html, '<div data-docara-code-block'));
+        self::assertSame(1, substr_count($html, ' border border-outline-variant'));
+        self::assertStringContainsString('class="source docara-code-block', $html);
+        self::assertStringNotContainsString('data-docara-code-language', $html);
+        self::assertStringNotContainsString('data-docara-code-copy', $html);
+        self::assertStringContainsString(
+            "<code class=\"language-shell\">printf '&lt;Docara&gt; &amp; exact'\n  second line\n</code>",
+            $html,
+        );
+        self::assertStringNotContainsString('<pre class="bg-surface-container', $html);
+        self::assertStringContainsString('<p>Before <code>inline</code>.</p>', $html);
     }
 
     #[Test]

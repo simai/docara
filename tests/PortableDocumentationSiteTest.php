@@ -57,7 +57,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertIsString($site);
         $build = $site . '/build_test';
 
-        self::assertCount(43, $this->filesWithExtension($source . '/content', 'md'));
+        self::assertCount(44, $this->filesWithExtension($source . '/content', 'md'));
 
         $pages = (new PortableSiteBuilder(
             $filesystem,
@@ -68,6 +68,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $htmlPages = $this->filesWithExtension($build, 'html');
         $catalog = $this->json($build . '/_docara/component-catalog.json');
         $receipt = $this->json($build . '/.docara/component-catalog-pages.json');
+        $redirectReceipt = $this->json($build . '/.docara/redirects.json');
         $search = $this->json($build . '/_docara/search-index.json');
         $supported = array_values(array_filter(
             $catalog['entries'],
@@ -78,13 +79,14 @@ final class PortableDocumentationSiteTest extends PHPUnit
             static fn (array $entry): bool => $entry['lifecycle'] !== 'supported',
         ));
 
-        self::assertCount(56, $pages);
-        self::assertCount(56, $htmlPages);
-        self::assertCount(55, $search['documents']);
+        self::assertCount(57, $pages);
+        self::assertCount(66, $htmlPages);
+        self::assertCount(56, $search['documents']);
         self::assertCount(17, $catalog['entries']);
         self::assertCount(12, $supported);
         self::assertCount(5, $unavailable);
         self::assertCount(12, $receipt['pages']);
+        self::assertCount(9, $redirectReceipt['redirects']);
         $extensionsSearchDocument = array_values(array_filter(
             $search['documents'],
             static fn (array $document): bool => $document['url'] === '/development/extensions/',
@@ -113,9 +115,14 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $catalogIndex = (string) file_get_contents($build . '/' . $receipt['index']['output']);
         self::assertStringContainsString(
-            'scroll-margin-block-start:10rem',
+            'scroll-margin-block-start:4.5rem',
             $catalogIndex,
-            'Mobile heading anchors must reserve enough space for the complete sticky header.',
+            'Heading anchors must reserve space for the compact sticky documentation header.',
+        );
+        self::assertStringContainsString(
+            'scroll-margin-block-start:4rem',
+            $catalogIndex,
+            'Mobile heading anchors must reserve space for the compact mobile header.',
         );
         foreach ($unavailable as $entry) {
             self::assertStringContainsString(
@@ -126,9 +133,16 @@ final class PortableDocumentationSiteTest extends PHPUnit
         }
 
         foreach (self::RETIRED_COMPONENT_SLUGS as $slug) {
-            self::assertFileDoesNotExist(
-                $build . "/components/$slug/index.html",
-                "Retired manual component route [$slug] unexpectedly returned.",
+            self::assertContains(
+                "components/$slug",
+                array_column($redirectReceipt['redirects'], 'from'),
+                "Retired manual component route [$slug] has no declarative migration redirect.",
+            );
+            $redirectHtml = (string) file_get_contents($build . "/components/$slug/index.html");
+            self::assertStringContainsString(
+                '<meta name="robots" content="noindex,follow">',
+                $redirectHtml,
+                "Retired manual component route [$slug] is not a safe redirect page.",
             );
         }
 
@@ -151,7 +165,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             JSON_THROW_ON_ERROR,
         );
         self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
-        self::assertSame(56, $report['html_pages'] ?? null);
+        self::assertSame(66, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
     }

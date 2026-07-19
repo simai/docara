@@ -450,7 +450,8 @@ final class EffectiveComponentCatalogTest extends TestCase
             'native.code' => [
                 'markdown' => ['```php', "\$site = 'Docara';"],
                 'html' => [
-                    '<pre class="bg-surface-container border border-outline-variant radius-2 p-2 overflow-auto"><code class="language-php">',
+                    '<div data-docara-code-block class="source docara-code-block bg-surface-container border border-outline-variant radius-2 m-0">',
+                    '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code class="language-php">',
                     "\$site = 'Docara';",
                 ],
             ],

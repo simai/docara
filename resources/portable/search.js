@@ -10,7 +10,6 @@
     var results = dialog.querySelector('[data-docara-search-results]');
     var closeButton = dialog.querySelector('[data-docara-search-close]');
     var shortcut = trigger.querySelector('[data-docara-search-shortcut]');
-    var readerSettings = document.querySelector('[data-docara-reader-settings-dialog]');
     var locale = document.documentElement.lang || 'en';
     var copy = locale.toLowerCase().startsWith('ru') ? {
         idle: 'Введите минимум 2 символа',
@@ -281,11 +280,14 @@
     }
 
     function openSearch() {
-        if (readerSettings && readerSettings.open) readerSettings.close();
+        document.dispatchEvent(new CustomEvent('docara:open-transient', {
+            detail: { id: dialog.id }
+        }));
         if (!dialog.open) {
             if (typeof dialog.showModal === 'function') dialog.showModal();
             else dialog.setAttribute('open', '');
         }
+        trigger.setAttribute('aria-expanded', 'true');
         window.requestAnimationFrame(function () { input.focus(); });
         loadIndex().then(render).catch(function () {});
     }
@@ -294,6 +296,7 @@
         if (typeof dialog.close === 'function' && dialog.open) dialog.close();
         else {
             dialog.removeAttribute('open');
+            trigger.setAttribute('aria-expanded', 'false');
             trigger.focus();
         }
     }
@@ -344,7 +347,10 @@
         event.preventDefault();
         closeSearch();
     });
-    dialog.addEventListener('close', function () { trigger.focus(); });
+    dialog.addEventListener('close', function () {
+        trigger.setAttribute('aria-expanded', 'false');
+        trigger.focus();
+    });
     document.addEventListener('keydown', function (event) {
         if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
             event.preventDefault();

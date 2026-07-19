@@ -33,6 +33,8 @@ final readonly class PortableSiteBuilder
         $loader = new PortableConfigurationLoader($root);
         $root = $this->realDirectory($root, 'PORTABLE_ROOT_INVALID');
         $site = $this->siteConfiguration($root);
+        $buildLocale = (string) ($site['default_locale'] ?? $site['locale'] ?? 'en');
+        $documentationVersion = (string) ($site['documentation_version'] ?? 'current');
         $contentRoot = (string) ($site['content_root'] ?? 'content');
         $contentPath = $this->confinedDirectory($root, $contentRoot);
         $this->assertDestinationInputBoundary($root, $destination, $contentPath, $site);
@@ -80,7 +82,8 @@ final readonly class PortableSiteBuilder
                 'page_path' => $pagePath,
                 'title' => $this->pageTitle($plan),
                 'description' => (string) ($plan->configuration['description'] ?? ''),
-                'locale' => (string) ($plan->configuration['locale'] ?? $site['default_locale'] ?? 'en'),
+                'locale' => (string) ($plan->configuration['locale'] ?? $buildLocale),
+                'documentation_version' => $documentationVersion,
                 'preset' => (string) ($plan->configuration['preset'] ?? 'docs'),
                 'theme' => (string) data_get($plan->configuration, 'settings.theme', 'system'),
                 'max_width' => (string) data_get($plan->configuration, 'layout.max_width', 'normal'),
@@ -137,13 +140,32 @@ final readonly class PortableSiteBuilder
                 );
             }
             $outputs[$catalogPage['output']] = '@docara/component-catalog';
+            $catalogPage['documentation_version'] = $documentationVersion;
             $pages[] = $catalogPage;
+        }
+
+        foreach ($pages as $page) {
+            if (($page['locale'] ?? null) !== $buildLocale) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_BUILD_LOCALE_MISMATCH',
+                    "Page [{$page['page_path']}] locale [{$page['locale']}] does not match build locale [$buildLocale].",
+                );
+            }
         }
 
         $navigationBuilder = new PortableNavigationBuilder;
         $topology = $navigationBuilder->build($pages, $contentRoot, $contentPath);
         $navigation = $navigationBuilder->visible($topology);
         $contentAssets = $this->contentAssets($contentPath, array_keys($outputs));
+        $redirectPublisher = new PortableRedirectPublisher($this->files);
+        $redirectPlan = $redirectPublisher->plan(
+            $root,
+            $site,
+            $pages,
+            $contentAssets,
+            $buildLocale,
+            $documentationVersion,
+        );
         $siteTitle = (string) ($site['title'] ?? 'Docara');
         $brandPublisher = new PortableBrandAssetPlanner($this->files);
         $brandPlan = $brandPublisher->plan(
@@ -257,6 +279,7 @@ final readonly class PortableSiteBuilder
             $result->put((string) $page['url'], $record);
         }
 
+        $redirectPublisher->publish($redirectPlan, $destination);
         $this->copyContentAssets($contentAssets, $destination);
         $brandPublisher->publish($brandPlan['assets'], $destination);
         $this->publishFrameworkAssets($catalogBasePlan->frameworkLock, $destination);
@@ -264,6 +287,10 @@ final readonly class PortableSiteBuilder
         $this->files->ensureDirectoryExists(dirname($diagnosticPath));
         $this->files->put($diagnosticPath, $this->prettyCanonicalJson([
             'schema' => 'docara.resolved_page_plans.v1',
+            'build' => [
+                'locale' => $buildLocale,
+                'documentation_version' => $documentationVersion,
+            ],
             'pages' => $diagnostics,
         ]));
 
@@ -446,6 +473,9 @@ final readonly class PortableSiteBuilder
             $root . '/' . $frameworkLock,
             $root . '/docara.json',
         ];
+        if (is_string($site['redirects_file'] ?? null)) {
+            $inputs[] = $root . '/' . $site['redirects_file'];
+        }
 
         foreach ($inputs as $input) {
             $normalizedInput = rtrim(str_replace('\\', '/', $input), '/');

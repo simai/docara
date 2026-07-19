@@ -1,0 +1,240 @@
+schema: docara.legacy_capability_ledger.v1
+version: 1
+baseline:
+  source_revision: a065fd46f941c77d6cde1b45c73578020488e2f0
+  legacy_runtime: retained_compatibility_contour
+  portable_runtime: primary_product_contour
+nonclaims:
+  legacy_runtime_removed: false
+  all_legacy_projects_automatically_migratable: false
+  public_release_ready: false
+decisions:
+  - id: installation_scaffold
+    legacy_surface: Composer scaffold and PHP configuration
+    decision: replace
+    rationale: Portable projects need an explicit bounded source model.
+    user_impact: New projects use the portable starter.
+    migration: Run init --portable in a new directory and move supported content.
+    evidence:
+      - tests/PortableInitCommandTest.php
+      - docs/site/content/start.md
+  - id: markdown_content
+    legacy_surface: Markdown and front matter
+    decision: migrate
+    rationale: Markdown remains the primary content format; metadata becomes typed JSON.
+    user_impact: Content is retained after unsupported executable syntax is removed.
+    migration: Move Markdown and express metadata in page sidecars.
+    evidence:
+      - src/PortableSite/PortableMarkdownRenderer.php
+      - docs/site/content/authoring/markdown.md
+  - id: php_configuration
+    legacy_surface: config.php, .settings.php and callbacks
+    decision: replace
+    rationale: Executable project configuration prevents portable deterministic builds.
+    user_impact: Configuration becomes declarative and fail-closed.
+    migration: Map accepted fields to docara.json, _section.json and page sidecars.
+    evidence:
+      - src/Portable/PortableConfigurationLoader.php
+      - docs/site/content/authoring/configuration.md
+  - id: configuration_inheritance
+    legacy_surface: Configurator layout and override callbacks
+    decision: replace
+    rationale: Provenance-aware JSON inheritance is deterministic and explainable.
+    user_impact: Authors can see exactly which file owns a value.
+    migration: Move inherited settings to the nearest section JSON.
+    evidence:
+      - src/Portable/ConfigurationMerger.php
+      - docs/site/content/authoring/inheritance.md
+  - id: category_mode
+    legacy_surface: Callback-owned category navigation modes
+    decision: retire
+    rationale: One generated topology avoids parallel navigation semantics.
+    user_impact: Category-specific callback menus are not executed.
+    migration: Represent categories as folders and section overview pages.
+    evidence:
+      - src/PortableSite/PortableNavigationBuilder.php
+      - docs/site/content/authoring/layout-and-navigation.md
+  - id: navigation_and_reading_context
+    legacy_surface: Menu, breadcrumbs, outline and previous/next callbacks
+    decision: replace
+    rationale: A single Markdown topology can generate every reading surface.
+    user_impact: Four levels, active trail and adjacent pages remain available.
+    migration: Preserve hierarchy with folders, overview pages and navigation.order.
+    evidence:
+      - tests/PortableSiteBuilderTest.php
+      - docs/site/content/authoring/reading-context.md
+  - id: search
+    legacy_surface: Locale search files and runtime-specific search
+    decision: replace
+    rationale: The portable build owns a deterministic local index.
+    user_impact: Search works without an external service.
+    migration: Enable search in JSON and rebuild the site.
+    evidence:
+      - src/PortableSite/PortableSearchIndexBuilder.php
+      - docs/site/content/authoring/search.md
+  - id: branding_and_theme
+    legacy_surface: Inline logo, favicon and theme controls
+    decision: replace
+    rationale: Typed asset paths and Framework themes are safer than injected markup.
+    user_impact: Brand assets and system/light/dark themes remain configurable.
+    migration: Store brand files under assets and reference them from branding JSON.
+    evidence:
+      - src/PortableSite/PortableBrandAssetPlanner.php
+      - docs/site/content/authoring/configuration.md
+  - id: social_image
+    legacy_surface: socialImage metadata
+    decision: defer
+    rationale: Public social metadata belongs to a later SEO and release contract.
+    user_impact: Portable v1 does not emit a configurable social image.
+    migration: Keep the legacy publication metadata until the public contract is admitted.
+    evidence:
+      - docs/site/content/migration/legacy.md
+  - id: pretty_urls
+    legacy_surface: Permalink and pretty URL settings
+    decision: replace
+    rationale: Slug and base_url provide one deterministic trailing-slash policy.
+    user_impact: Stable internal routes are supported.
+    migration: Set page slug only when the filesystem-derived route is insufficient.
+    evidence:
+      - src/PortableSite/PortableSiteBuilder.php
+      - tests/PortableSiteBuilderTest.php
+  - id: build_and_preview
+    legacy_surface: Jigsaw build and local development server
+    decision: replace
+    rationale: Author builds must not require Node.js or execute project PHP.
+    user_impact: Build, verify-static and serve are PHP-only.
+    migration: Use the portable CLI and keep Vite only for maintainers of theme assets.
+    evidence:
+      - src/Console/BuildCommand.php
+      - src/Console/ServeCommand.php
+  - id: deployment
+    legacy_surface: Generated static deployment
+    decision: replace
+    rationale: Immutable staging, digest comparison and rollback are explicit.
+    user_impact: Publication remains static but gains a verifiable handoff.
+    migration: Build into a versioned directory, verify, smoke and switch atomically.
+    evidence:
+      - docs/site/content/build/publish.md
+  - id: custom_404
+    legacy_surface: Custom 404 Blade template
+    decision: defer
+    rationale: A branded generated 404 and HTTP preview contract need their own bounded batch.
+    user_impact: Hosting or the retained legacy contour owns the custom page for now.
+    migration: Keep the existing 404 until a portable 404 contract is admitted.
+    evidence:
+      - resources/portable/static-router.php
+      - tests/ServeCommandTest.php
+  - id: blade_layouts
+    legacy_surface: Blade layouts, partials, directives and PHP templates
+    decision: retire
+    rationale: Executable templates contradict the portable content boundary.
+    user_impact: Blade is not interpreted by portable v1.
+    migration: Convert presentation to Markdown, typed Docara blocks or admitted Smart components.
+    evidence:
+      - docs/site/content/migration/legacy.md
+  - id: executable_content_files
+    legacy_surface: Executable .blade.js, .blade.json, .blade.xml and similar files
+    decision: retire
+    rationale: Generated arbitrary files would reintroduce project code execution.
+    user_impact: Only inert source assets are copied.
+    migration: Pre-generate files outside Docara and publish them as ordinary assets.
+    evidence:
+      - src/PortableSite/PortableSiteBuilder.php
+  - id: page_variables_and_helpers
+    legacy_surface: Page variables and helper methods
+    decision: replace
+    rationale: Typed JSON plus resolved plan provenance covers accepted presentation metadata.
+    user_impact: Arbitrary helper execution is removed.
+    migration: Use configuration fields; pre-compute unsupported values before build.
+    evidence:
+      - src/Portable/ResolvedPagePlan.php
+      - docs/site/content/reference/resolved-plan.md
+  - id: collections
+    legacy_surface: Collections, pagination, filtering, mapping and sorting
+    decision: retire
+    rationale: A content build must not become an application/data runtime.
+    user_impact: Portable v1 does not query or transform collections.
+    migration: Generate Markdown or JSON through a separate ingestion process before build.
+    evidence:
+      - docs/site/content/migration/legacy.md
+  - id: remote_collections
+    legacy_surface: Remote collections and API loading
+    decision: retire
+    rationale: Network-dependent builds are not deterministic or portable.
+    user_impact: The builder performs no remote ingestion.
+    migration: Fetch, validate and freeze remote data in a separate pipeline.
+    evidence:
+      - docs/site/content/migration/legacy.md
+  - id: events_and_callbacks
+    legacy_surface: PHP events and project callbacks
+    decision: retire
+    rationale: Project-owned executable hooks violate the trusted-source boundary.
+    user_impact: Portable builds do not execute callbacks.
+    migration: Propose a core-owned typed extension with schema, tests and evidence.
+    evidence:
+      - docs/site/content/development/extensions.md
+  - id: azure_translation
+    legacy_surface: Azure translation and build-time locale merge
+    decision: retire
+    rationale: Translation is an authoring workflow, not a hidden build side effect.
+    user_impact: No credential or network call occurs during build.
+    migration: Translate outside the builder and commit reviewed locale content.
+    evidence:
+      - docs/site/content/migration/legacy.md
+  - id: arbitrary_custom_tags
+    legacy_surface: Custom tags, classes, attributes and parsers
+    decision: retire
+    rationale: An allow-listed typed component contract is safer and teachable.
+    user_impact: Unknown directives fail instead of silently rendering.
+    migration: Prefer native Markdown, then a typed Docara block, then an admitted Smart component.
+    evidence:
+      - src/Markdown/DirectiveOpeningMatcher.php
+      - docs/site/content/components/syntax.md
+  - id: integrated_legacy_tags
+    legacy_surface: "!example, !links, !folders and !rtags"
+    decision: migrate
+    rationale: Their reader jobs can be expressed without keeping the legacy parser.
+    user_impact: Syntax changes while the information remains representable.
+    migration: Use fenced code/card, native lists, a tree fallback and explicit component requirements.
+    evidence:
+      - docs/site/content/components.md
+  - id: locale_switch
+    legacy_surface: Dynamic locale switcher
+    decision: migrate
+    rationale: One build per locale prevents mixed navigation and search semantics.
+    user_impact: Switching happens between explicit site variants, not pages inside one build.
+    migration: Publish each locale under a distinct base URL and link only verified variants.
+    evidence:
+      - docs/site/content/authoring/configuration.md
+  - id: documentation_version_switch
+    legacy_surface: Version selector
+    decision: defer
+    rationale: Dynamic switching requires an admitted variant manifest.
+    user_impact: Each build declares one documentation version.
+    migration: Publish immutable versions at distinct base URLs.
+    evidence:
+      - docs/site/content/authoring/configuration.md
+  - id: reader_width_and_text_size
+    legacy_surface: Wide mode and text-size controls
+    decision: defer
+    rationale: Browser zoom and author-owned max_width cover the current proven jobs.
+    user_impact: Theme is the only mandatory reader preference in portable v1.
+    migration: Retain legacy controls only where a measured accessibility need exists.
+    evidence:
+      - docs/site/content/authoring/reader-settings.md
+  - id: fullscreen
+    legacy_surface: Fullscreen reading control
+    decision: retire
+    rationale: It duplicates a browser capability without a distinct documentation job.
+    user_impact: No custom fullscreen button is shown.
+    migration: Use the browser fullscreen command when needed.
+    evidence:
+      - docs/site/content/authoring/reader-settings.md
+  - id: edit_and_report_links
+    legacy_surface: Edit article and report issue toolbar
+    decision: defer
+    rationale: Safe project links need an explicit repository and URL schema.
+    user_impact: Portable v1 does not guess external project actions.
+    migration: Keep project-owned links outside Docara until the schema is admitted.
+    evidence:
+      - docs/site/content/migration/legacy.md

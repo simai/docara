@@ -26,6 +26,7 @@ php vendor/bin/docara verify-static
 - duplicate HTML IDs и fragment encoding;
 - опубликованные content assets;
 - search index и pinned search runtime;
+- redirect receipt, статические redirect pages и их targets;
 - effective component catalog и generated catalog pages;
 - точная asset projection Simai Framework;
 - отсутствие лишней или пропавшей поверхности, охваченной manifest.

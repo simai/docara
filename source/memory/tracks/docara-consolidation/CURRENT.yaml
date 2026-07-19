@@ -1,11 +1,11 @@
 track_id: "docara-consolidation"
-status: "completed"
+status: "active"
 owner_skill: "teamlead"
-current_goal: "Довести Docara до целостного локального продукта: ясное многоуровневое меню и active trail, поиск и reading context, адаптивный landing, полный практический каталог typed Markdown/Simai Framework компонентов, полная документация и независимая приёмка одного exact candidate с безопасной публикацией на `docara.test`."
-current_stage: "evidence_recorded"
-current_workflow: "source/workflow/2026-07-19-docara-product-completion.md"
-last_completed_batch: "Batch 9 and the complete local-product Goal passed exact tester, complete-diff HCS, native-Chrome UX/design and served publication acceptance on candidate de87bdef224d518d1c707286d4640be0238d34bc."
-next_step: "None inside this completed Goal. Public release, default-branch migration, Framework-owner improvements and repository retirement remain separate, explicitly gated work. The locally accepted product can now be used and evaluated at `https://docara.test/`."
+current_goal: "Довести текущую portable Docara до состояния replacement-ready относительно legacy: capability decisions, redirects, облегчённый shell, overlay mobile navigation, code blocks, locale/version и comparative exact-candidate acceptance."
+current_stage: "exact_candidate_pending"
+current_workflow: "source/workflow/2026-07-20-docara-legacy-replacement-readiness.md"
+last_completed_batch: "Replacement-readiness Batches 0-6 completed in the working tree: contracts, redirects, locale/version, HCS shell, overlay navigation, Framework-owned code and full mutable regression."
+next_step: "Commit one immutable candidate, test only exact archives, obtain independent tester PASS, then publish the accepted build to docara.test with ops backup and rollback evidence."
 blockers: []
 related_tracks: []
-updated_at: "2026-07-19"
+updated_at: "2026-07-20"

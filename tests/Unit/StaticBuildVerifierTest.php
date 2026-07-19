@@ -97,6 +97,42 @@ final class StaticBuildVerifierTest extends TestCase
     }
 
     #[Test]
+    public function local_fragments_resolve_unicode_ids_and_duplicate_or_missing_ids_fail_closed(): void
+    {
+        $build = $this->tmpPath('fragment-build');
+        $this->filesystem->ensureDirectoryExists($build . '/guide');
+        $this->writeResolvedPlans($build, '/', ['index.html', 'guide/index.html']);
+        file_put_contents(
+            $build . '/index.html',
+            '<h1 id="home">Home</h1>'
+            . '<h2 id="привет-мир">Привет</h2>'
+            . '<a href="#привет-мир">Raw Unicode</a>'
+            . '<a href="#%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D1%82-%D0%BC%D0%B8%D1%80">Encoded Unicode</a>'
+            . '<a href="/guide/#target">Guide target</a>',
+        );
+        file_put_contents($build . '/guide/index.html', '<h1 id="target">Guide</h1><a href="/#home">Home</a>');
+
+        $complete = $this->verify($build);
+        self::assertSame(0, $complete->getExitCode(), $complete->getErrorOutput() . $complete->getOutput());
+
+        file_put_contents($build . '/guide/index.html', '<h1 id="target">Guide</h1><p id="target">Duplicate</p>');
+        $duplicate = $this->verify($build);
+        self::assertSame(1, $duplicate->getExitCode());
+        self::assertStringContainsString('@duplicate-html-id', $duplicate->getOutput());
+
+        file_put_contents($build . '/guide/index.html', '<h1 id="target">Guide</h1>');
+        file_put_contents($build . '/index.html', '<a href="/guide/#missing">Missing</a>');
+        $missing = $this->verify($build);
+        self::assertSame(1, $missing->getExitCode());
+        self::assertStringContainsString('@missing-fragment', $missing->getOutput());
+
+        file_put_contents($build . '/index.html', '<h1 id="home">Home</h1><a href="#%ZZ">Unsafe</a>');
+        $unsafe = $this->verify($build);
+        self::assertSame(1, $unsafe->getExitCode());
+        self::assertStringContainsString('@unsafe-fragment-encoding', $unsafe->getOutput());
+    }
+
+    #[Test]
     public function symlinked_html_or_asset_entries_are_rejected_without_following_external_targets(): void
     {
         $build = $this->tmpPath('symlink-build');

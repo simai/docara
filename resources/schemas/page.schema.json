@@ -46,6 +46,9 @@
         },
         "search": {
             "$ref": "presentation.schema.json#/$defs/search"
+        },
+        "reading": {
+            "$ref": "presentation.schema.json#/$defs/reading"
         }
     },
     "additionalProperties": false

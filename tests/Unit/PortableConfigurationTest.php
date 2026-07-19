@@ -60,8 +60,18 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame(5, $plan->configuration['navigation']['order']);
         self::assertFalse($plan->configuration['search']['enabled']);
         self::assertTrue($plan->configuration['search']['indexed']);
+        self::assertSame([
+            'breadcrumbs' => true,
+            'toc' => true,
+            'toc_depth' => 3,
+            'previous_next' => true,
+        ], $plan->configuration['reading']);
         self::assertSame('@defaults', $plan->provenance['/search/enabled']);
         self::assertSame('@defaults', $plan->provenance['/search/indexed']);
+        self::assertSame('@defaults', $plan->provenance['/reading/breadcrumbs']);
+        self::assertSame('@defaults', $plan->provenance['/reading/toc']);
+        self::assertSame('@defaults', $plan->provenance['/reading/toc_depth']);
+        self::assertSame('@defaults', $plan->provenance['/reading/previous_next']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/layout/max_width']);
         self::assertSame('content/docs/deep/_section.json', $plan->provenance['/settings/theme']);
         self::assertSame('docara.json', $plan->provenance['/branding/logo']);
@@ -247,6 +257,12 @@ final class PortableConfigurationTest extends TestCase
                 'settings' => ['theme' => 'system'],
                 'navigation' => ['hidden' => false, 'order' => 2147483647],
                 'search' => ['enabled' => true, 'indexed' => true],
+                'reading' => [
+                    'breadcrumbs' => true,
+                    'toc' => true,
+                    'toc_depth' => 6,
+                    'previous_next' => true,
+                ],
                 'branding' => [
                     'title' => 'Product',
                     'label' => 'Docs',
@@ -261,6 +277,7 @@ final class PortableConfigurationTest extends TestCase
                 'settings' => ['theme' => 'dark'],
                 'navigation' => ['hidden' => true, 'order' => 20],
                 'search' => ['$reset' => true, 'indexed' => false],
+                'reading' => ['$reset' => true, 'toc_depth' => 2],
                 'branding' => ['$reset' => true, 'title' => 'Section product'],
             ]],
             ['page.schema.json', [
@@ -269,6 +286,7 @@ final class PortableConfigurationTest extends TestCase
                 'settings' => ['$reset' => true, 'theme' => 'light'],
                 'navigation' => ['$reset' => true, 'order' => 5],
                 'search' => ['enabled' => false],
+                'reading' => ['breadcrumbs' => false, 'toc' => false, 'previous_next' => false],
                 'branding' => ['label' => 'Reference'],
             ]],
         ] as [$schema, $descriptor]) {
@@ -295,6 +313,13 @@ final class PortableConfigurationTest extends TestCase
             [['schema' => 'docara.page.v1', 'search' => ['enabled' => 'true']], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'search' => ['indexed' => 1]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'search' => ['unknown' => true]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['breadcrumbs' => 'true']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['toc' => 1]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['previous_next' => null]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['toc_depth' => 1]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['toc_depth' => 7]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['toc_depth' => '3']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['unknown' => true]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'branding' => ['unknown' => true]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'branding' => ['title' => '']], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'branding' => ['label' => '']], 'page.schema.json'],
@@ -306,6 +331,7 @@ final class PortableConfigurationTest extends TestCase
             [['schema' => 'docara.page.v1', 'settings' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'navigation' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'search' => []], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'components' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'variables' => []], 'page.schema.json'],
         ] as [$descriptor, $schema]) {
@@ -372,6 +398,57 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/search']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/search/enabled']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/search/indexed']);
+    }
+
+    public function test_reading_inherits_through_sections_and_page_reset_records_exact_provenance(): void
+    {
+        $site = json_decode((string) file_get_contents($this->path('docara.json')), true, 512, JSON_THROW_ON_ERROR);
+        $site['reading'] = [
+            'breadcrumbs' => false,
+            'toc' => true,
+            'toc_depth' => 4,
+            'previous_next' => false,
+        ];
+        $this->writeJson('docara.json', $site);
+
+        $section = json_decode(
+            (string) file_get_contents($this->path('content/docs/_section.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $section['reading'] = ['toc_depth' => 5];
+        $this->writeJson('content/docs/_section.json', $section);
+
+        $page = json_decode(
+            (string) file_get_contents($this->path('content/docs/deep/install.page.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $page['reading'] = [
+            '$reset' => true,
+            'breadcrumbs' => true,
+            'toc' => false,
+            'toc_depth' => 2,
+            'previous_next' => true,
+        ];
+        $this->writeJson('content/docs/deep/install.page.json', $page);
+
+        $plan = (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+
+        self::assertSame([
+            'breadcrumbs' => true,
+            'toc' => false,
+            'toc_depth' => 2,
+            'previous_next' => true,
+        ], $plan->configuration['reading']);
+        foreach (['breadcrumbs', 'toc', 'toc_depth', 'previous_next'] as $field) {
+            self::assertSame(
+                'content/docs/deep/install.page.json',
+                $plan->provenance['/reading/' . $field],
+            );
+        }
     }
 
     public function test_moving_framework_references_are_rejected(): void

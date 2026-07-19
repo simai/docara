@@ -24,9 +24,29 @@ Portable Docara использует JSON Schema Draft 2020-12.
   «после всех страниц с явно заданным порядком».
 - `search.enabled`: boolean, выводить локальный поиск в текущей области;
 - `search.indexed`: boolean, включать страницу в поисковый индекс.
+- `reading.breadcrumbs`: boolean, показывать путь до текущей страницы;
+- `reading.toc`: boolean, показывать оглавление страницы;
+- `reading.toc_depth`: целое число от 2 до 6, последний уровень заголовка в
+  оглавлении;
+- `reading.previous_next`: boolean, показывать соседние страницы документации.
+
+Значения `reading` по умолчанию: `breadcrumbs: true`, `toc: true`,
+`toc_depth: 3`, `previous_next: true`. Допустимая глубина — только целое число
+2–6. Значения `1`, `7`, строка `"3"`, строка вместо boolean, пустой объект `{}`
+и неизвестное поле отклоняются schema до записи результата.
+
+```json
+{
+  "schema": "docara.page.v1",
+  "reading": { "toc_depth": 7 }
+}
+```
+
+Этот пример намеренно невалиден: Docara не исправляет опечатки или диапазоны
+молча.
 
 Page schema дополнительно поддерживает `description` и безопасный `slug`.
-Ветка `branding`, как `layout`, `settings`, `navigation` и `search`, поддерживает
+Ветка `branding`, как `layout`, `settings`, `navigation`, `search` и `reading`, поддерживает
 только непустой объект настроек: пустые `{}` и `[]` отклоняются как no-op.
 Для очистки наследуемой ветки используйте `{"$reset": true}`; reset можно
 совместить с новыми значениями той же ветки. Внешние файлы branding

@@ -107,6 +107,9 @@ class PortableInitCommandTest extends TestCase
         $this->assertIsString($markdown);
         $this->assertMatchesRegularExpression('/:::ui\.alert\R\{.+\}\R:::/', $markdown);
         $this->assertMatchesRegularExpression('/:::ui\.button\R\{.+\}\R:::/', $markdown);
+        $this->assertStringContainsString('## Что проверить', $markdown);
+        $this->assertStringContainsString('### Следующий шаг', $markdown);
+        $this->assertStringContainsString('[следующий шаг](#следующий-шаг)', $markdown);
 
         preg_match('/:::ui\.button\R(\{.+\})\R:::/', $markdown, $matches);
         $button = json_decode($matches[1], true, flags: JSON_THROW_ON_ERROR);

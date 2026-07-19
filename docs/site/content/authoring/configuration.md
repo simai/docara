@@ -23,7 +23,13 @@
   },
   "layout": { "max_width": "wide" },
   "settings": { "theme": "system" },
-  "search": { "enabled": true, "indexed": true }
+  "search": { "enabled": true, "indexed": true },
+  "reading": {
+    "breadcrumbs": true,
+    "toc": true,
+    "toc_depth": 3,
+    "previous_next": true
+  }
 }
 ```
 
@@ -43,6 +49,16 @@ SVG, PNG, JPG, WebP и ICO размером не более 2 МиБ. Сборк
 страницу можно оставить доступной через поиск. Полный контракт и примеры — в
 [руководстве по поиску](/authoring/search/).
 
+`reading` управляет контекстом чтения страниц preset `docs`:
+
+- `breadcrumbs` — путь от главной до текущей страницы;
+- `toc` — оглавление по заголовкам страницы;
+- `toc_depth` — последний включаемый уровень заголовка от 2 до 6;
+- `previous_next` — переходы к соседним страницам в порядке дерева.
+
+Это наследуемая ветка. Подробные правила, адаптивное поведение и примеры
+отключения находятся в [руководстве по контексту чтения](/authoring/reading-context/).
+
 ## `_section.json`
 
 ```json
@@ -51,7 +67,8 @@ SVG, PNG, JPG, WebP и ICO размером не более 2 МиБ. Сборк
   "title": "Руководства",
   "branding": { "label": "Руководство пользователя" },
   "layout": { "max_width": "normal" },
-  "search": { "indexed": true }
+  "search": { "indexed": true },
+  "reading": { "toc_depth": 4 }
 }
 ```
 
@@ -64,7 +81,8 @@ SVG, PNG, JPG, WebP и ICO размером не более 2 МиБ. Сборк
   "description": "Как установить проект.",
   "slug": "guides/install",
   "navigation": { "order": 20 },
-  "search": { "indexed": true }
+  "search": { "indexed": true },
+  "reading": { "previous_next": false }
 }
 ```
 

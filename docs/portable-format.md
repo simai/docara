@@ -57,7 +57,11 @@ documentation:
 - `navigation.order`: a non-negative stable sibling order.
 - `search.enabled`: show the local-search interface on pages in the current
   scope;
-- `search.indexed`: include pages in the deterministic local index.
+- `search.indexed`: include pages in the deterministic local index;
+- `reading.breadcrumbs`: show the path from the site home to the current page;
+- `reading.toc`: show a page outline;
+- `reading.toc_depth`: include headings through level 2–6;
+- `reading.previous_next`: show adjacent documentation pages.
 
 These nested objects are strict and must contain at least one setting. Unknown,
 empty or incorrectly typed branches fail schema validation instead of becoming
@@ -68,6 +72,11 @@ The `search` branch is inherited and supports the same `{"$reset": true}`
 contract. Navigation visibility and search inclusion are deliberately separate:
 `navigation.hidden: true` does not remove a page from search. Use
 `search.indexed: false` when content must not appear in the index.
+
+The `reading` branch is inherited independently and supports the same reset
+contract. Its UI is emitted only by the `docs` preset. Stable heading IDs are
+still generated when `reading.toc` is false so incoming fragment links do not
+depend on whether the outline is visible.
 
 ## Presets
 
@@ -88,6 +97,18 @@ and pinned Core `.sf-menu` acceptance prove four visible levels. Active links
 use `aria-current`, their ancestors open automatically, and mobile navigation
 uses a collapsed native disclosure instead of placing the entire tree before
 the article.
+
+The canonical tree is also the source for breadcrumbs and previous/next links.
+Hidden pages remain in that topology so their real ancestry is preserved, but
+they are removed from the visible menu and skipped as adjacency targets. A
+hidden overview with visible descendants remains as an unlinked menu group.
+Adjacent pages are depth-first, locale-isolated `docs` pages; landing pages are
+not inserted into a documentation reading sequence.
+
+Every H1–H6 receives a deterministic Unicode ID. The outline includes H2
+through `reading.toc_depth`, duplicate slugs receive `-1`, `-2` suffixes, and
+punctuation-only headings use `section`. The static verifier rejects duplicate
+HTML IDs and unresolved local fragments.
 
 ## Markdown extensions
 

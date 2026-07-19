@@ -8,6 +8,19 @@ use Simai\Docara\Framework\FrameworkAssetPlan;
 
 final class PortableHtmlRenderer
 {
+    /** @return list<string> */
+    public function reservedDocumentIds(): array
+    {
+        return [
+            'docara-main',
+            'docara-mobile-navigation',
+            'docara-search-dialog',
+            'docara-search-title',
+            'docara-search-status',
+            'docara-search-results',
+        ];
+    }
+
     /**
      * @param  array<string, mixed>  $page
      * @param  list<array<string, mixed>>  $navigation
@@ -66,15 +79,125 @@ final class PortableHtmlRenderer
     /** @param array<string, mixed> $page @param list<array<string, mixed>> $navigation */
     private function documentation(array $page, array $navigation): string
     {
-        return '    <div class="docara-docs-layout gap-3 p-3">' . "\n"
+        $outline = is_array($page['outline'] ?? null) ? $page['outline'] : [];
+        $breadcrumbs = is_array($page['breadcrumbs'] ?? null) ? $page['breadcrumbs'] : [];
+        $hasOutline = $outline !== [];
+        $breadcrumbHtml = $breadcrumbs === [] ? '' : $this->breadcrumbs($breadcrumbs) . "\n";
+        $mobileOutline = $hasOutline ? $this->mobileOutline($outline) . "\n" : '';
+        $desktopOutline = $hasOutline
+            ? "\n" . '        <aside class="docara-outline-rail bg-surface-0 border radius-2 p-2">' . "\n"
+                . $this->indent($this->outlineNavigation($outline, true), 12) . "\n"
+                . '        </aside>'
+            : '';
+        $previousNext = $this->previousNext(
+            is_array($page['previous'] ?? null) ? $page['previous'] : null,
+            is_array($page['next'] ?? null) ? $page['next'] : null,
+        );
+
+        return '    <div class="docara-docs-layout gap-3 p-3" data-outline="'
+            . ($hasOutline ? 'true' : 'false') . '">' . "\n"
             . '        <aside class="docara-sidebar bg-surface-0 border radius-2 p-2">' . "\n"
             . $this->indent($this->navigation($navigation, 'Разделы документации'), 12) . "\n"
             . '        </aside>' . "\n"
-            . '        <main id="docara-main" tabindex="-1" class="docara-content docara-prose bg-surface-0 border radius-2 p-3" data-width="'
+            . '        <div class="docara-reading-column flex flex-col gap-2">' . "\n"
+            . ($breadcrumbHtml === '' ? '' : $this->indent($breadcrumbHtml, 12))
+            . ($mobileOutline === '' ? '' : $this->indent($mobileOutline, 12))
+            . '            <main id="docara-main" tabindex="-1" class="docara-content bg-surface-0 border radius-2 p-3" data-width="'
             . $this->escape((string) $page['max_width']) . '">' . "\n"
-            . $this->indent((string) $page['content_html'], 12) . "\n"
-            . '        </main>' . "\n"
+            . '                <article class="docara-prose">' . "\n"
+            . $this->indent((string) $page['content_html'], 20) . "\n"
+            . '                </article>'
+            . ($previousNext === '' ? '' : "\n" . $this->indent($previousNext, 16)) . "\n"
+            . '            </main>' . "\n"
+            . '        </div>' . $desktopOutline . "\n"
             . '    </div>';
+    }
+
+    /** @param list<array{title: string, url: string|null}> $breadcrumbs */
+    private function breadcrumbs(array $breadcrumbs): string
+    {
+        $items = [];
+        $last = count($breadcrumbs) - 1;
+        foreach ($breadcrumbs as $index => $breadcrumb) {
+            if ($index > 0) {
+                $items[] = '<span class="sf-breadcrumbs-item sf-breadcrumbs-item--default" data-sf-breadcrumb-separator="true" aria-hidden="true">'
+                    . '<span class="sf-breadcrumbs-item-container flex items-cross-center">'
+                    . '<sf-icon icon="chevron_right" aria-hidden="true"></sf-icon></span></span>';
+            }
+            $title = $this->escape((string) ($breadcrumb['title'] ?? ''));
+            if ($index < $last && is_string($breadcrumb['url'] ?? null)) {
+                $items[] = '<a class="sf-breadcrumbs-item sf-breadcrumbs-item--link flex items-cross-center decoration-none" href="'
+                    . $this->escape($breadcrumb['url']) . '"><span class="sf-breadcrumbs-item-container flex items-cross-center">'
+                    . $title . '</span></a>';
+            } else {
+                $current = $index === $last ? ' aria-current="page"' : '';
+                $items[] = '<span class="sf-breadcrumbs-item sf-breadcrumbs-item--default"' . $current
+                    . '><span class="sf-breadcrumbs-item-container flex items-cross-center">'
+                    . $title . '</span></span>';
+            }
+        }
+
+        return '<nav data-docara-breadcrumbs data-max-items="' . count($breadcrumbs)
+            . '" class="sf-breadcrumbs flex" aria-label="Хлебные крошки">'
+            . implode('', $items) . '</nav>';
+    }
+
+    /** @param list<array{id: string, level: int, text: string}> $outline */
+    private function mobileOutline(array $outline): string
+    {
+        return '<details data-docara-outline-mobile class="docara-outline-mobile bg-surface-0 border radius-2">' . "\n"
+            . '    <summary class="docara-outline-mobile-summary p-2 weight-6">На этой странице</summary>' . "\n"
+            . '    <div class="p-2">' . "\n"
+            . $this->indent($this->outlineNavigation($outline, false), 8) . "\n"
+            . '    </div>' . "\n"
+            . '</details>';
+    }
+
+    /** @param list<array{id: string, level: int, text: string}> $outline */
+    private function outlineNavigation(array $outline, bool $withTitle): string
+    {
+        $items = [];
+        foreach ($outline as $heading) {
+            $level = max(2, min(6, (int) ($heading['level'] ?? 2)));
+            $items[] = '<li class="docara-outline-item" data-docara-outline-level="' . $level . '">'
+                . '<a class="docara-outline-link flex items-cross-center radius-1 p-1 color-on-surface-variant decoration-none" href="#'
+                . $this->escape((string) ($heading['id'] ?? '')) . '">'
+                . $this->escape((string) ($heading['text'] ?? '')) . '</a></li>';
+        }
+        $title = $withTitle ? '<p class="m-0 weight-7">На этой странице</p>' . "\n" : '';
+
+        return '<nav data-docara-outline aria-label="На этой странице" class="flex flex-col gap-1">' . "\n"
+            . $this->indent($title . '<ul class="docara-outline-list flex flex-col gap-1 m-0 p-0">'
+                . implode('', $items) . '</ul>', 4) . "\n"
+            . '</nav>';
+    }
+
+    /**
+     * @param  array{title?: string, url?: string}|null  $previous
+     * @param  array{title?: string, url?: string}|null  $next
+     */
+    private function previousNext(?array $previous, ?array $next): string
+    {
+        if ($previous === null && $next === null) {
+            return '';
+        }
+
+        $links = [];
+        if (is_string($previous['url'] ?? null)) {
+            $links[] = '<a class="docara-document-link docara-document-link--previous flex flex-1 items-cross-center gap-1 bg-surface-container border border-outline-variant radius-2 p-2 color-on-surface decoration-none" rel="prev" href="'
+                . $this->escape($previous['url']) . '"><sf-icon icon="arrow_back" aria-hidden="true"></sf-icon>'
+                . '<span class="flex flex-col"><span class="color-on-surface-variant">Предыдущая</span>'
+                . '<span class="weight-6">' . $this->escape((string) ($previous['title'] ?? '')) . '</span></span></a>';
+        }
+        if (is_string($next['url'] ?? null)) {
+            $links[] = '<a class="docara-document-link docara-document-link--next flex flex-1 items-cross-center content-main-between gap-1 bg-surface-container border border-outline-variant radius-2 p-2 color-on-surface decoration-none" rel="next" href="'
+                . $this->escape($next['url']) . '"><span class="flex flex-col"><span class="color-on-surface-variant">Следующая</span>'
+                . '<span class="weight-6">' . $this->escape((string) ($next['title'] ?? '')) . '</span></span>'
+                . '<sf-icon icon="arrow_forward" aria-hidden="true"></sf-icon></a>';
+        }
+
+        return '<nav data-docara-previous-next class="docara-previous-next flex gap-2" aria-label="Переходы между страницами">'
+            . implode('', $links) . '</nav>';
     }
 
     /** @param array<string, mixed> $page */
@@ -96,7 +219,7 @@ final class PortableHtmlRenderer
         $mobile = '';
         if ($page['preset'] === 'docs') {
             $mobile = "\n" . '        <details id="docara-mobile-navigation" class="docara-mobile-navigation">' . "\n"
-                . '            <summary class="docara-mobile-navigation-summary border radius-1 p-1">Разделы</summary>' . "\n"
+                . '            <summary class="docara-mobile-navigation-summary flex items-cross-center border radius-1 p-1">Разделы</summary>' . "\n"
                 . '            <div class="docara-mobile-navigation-panel bg-surface-0 border radius-2 p-2">' . "\n"
                 . $this->indent($this->navigation($navigation, 'Мобильная навигация по документации'), 16) . "\n"
                 . '            </div>' . "\n"
@@ -116,7 +239,7 @@ final class PortableHtmlRenderer
             . $this->indent($brand, 12) . "\n"
             . '            <div class="docara-header-actions flex items-center gap-1">' . "\n"
             . $searchTrigger
-            . '                <button class="sf-theme-button sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1/2 radius-default" data-docara-theme-button type="button" aria-label="Переключить цветовую тему">' . "\n"
+            . '                <button class="sf-theme-button sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-2 radius-default" data-docara-theme-button type="button" aria-label="Переключить цветовую тему">' . "\n"
             . '                    <sf-icon icon="contrast" aria-hidden="true"></sf-icon>' . "\n"
             . '                </button>' . "\n"
             . '            </div>' . "\n"
@@ -332,7 +455,9 @@ HTML;
     private function shellCss(): string
     {
         return <<<'CSS'
-html{color-scheme:light dark}.theme-light{color-scheme:light}.theme-dark{color-scheme:dark}body{min-height:100vh;background:var(--sf-surface-1);color:var(--sf-on-surface)}.docara-skip-link{position:fixed;inset-block-start:var(--sf-space-1);inset-inline-start:var(--sf-space-1);z-index:100;transform:translateY(-200%);color:var(--sf-on-surface);text-decoration:none}.docara-skip-link:focus{transform:translateY(0)}.docara-header{min-height:4.5rem}.docara-header-row{max-width:96rem;margin-inline:auto}.docara-brand{min-width:0;text-decoration:none}.docara-brand-mark{display:grid;place-items:center;inline-size:2.25rem;block-size:2.25rem;flex:0 0 auto}.docara-brand-logo{display:block;max-inline-size:100%;max-block-size:100%;object-fit:contain}.docara-brand-logo--dark{display:none}.theme-dark .docara-brand-logo--light:has(+.docara-brand-logo--dark){display:none}.theme-dark .docara-brand-logo--dark{display:block}.docara-brand-copy{min-width:0;line-height:1.15}.docara-brand-label{font-size:.75rem;font-weight:500}.docara-mobile-navigation{display:none}.docara-navigation-link{min-width:0;color:var(--sf-on-surface);text-decoration:none}.docara-navigation-label{min-width:0;color:var(--sf-on-surface)}.docara-navigation-link .sf-menu-element-text,.docara-navigation-label .sf-menu-element-text{overflow-wrap:anywhere}.docara-navigation [data-docara-active-role="ancestor"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-surface-container);--sf-menu-element--border-color:var(--sf-outline-variant)}.docara-navigation [data-docara-active-role="section"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-secondary-container);--sf-menu-element--border-color:var(--sf-outline);border-inline-start-width:2px}.docara-navigation [data-docara-active-role="page"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-primary-container);--sf-menu-element--border-color:var(--sf-primary);border-inline-start-width:4px}.docara-navigation [data-docara-active-role="section"]>.sf-menu-element>.docara-navigation-link,.docara-navigation [data-docara-active-role="section"]>.sf-menu-element>.docara-navigation-label{color:var(--sf-on-secondary-container)}.docara-navigation [data-docara-active-role="page"]>.sf-menu-element>.docara-navigation-link,.docara-navigation [data-docara-active-role="page"]>.sf-menu-element>.docara-navigation-label{color:var(--sf-on-primary-container)}.docara-skip-link:focus-visible,.docara-brand:focus-visible,.docara-navigation-link:focus-visible,.docara-mobile-navigation-summary:focus-visible,.sf-theme-button:focus-visible,[data-docara-disclosure]:focus-visible,sf-button>button:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}.docara-docs-layout{display:grid;grid-template-columns:minmax(14rem,18rem) minmax(0,1fr);max-width:96rem;margin-inline:auto}.docara-sidebar{align-self:start;position:sticky;inset-block-start:5.5rem;max-block-size:calc(100vh - 7rem);overflow:auto}.docara-content{min-width:0;color:var(--sf-on-surface);scroll-margin-block-start:6rem}.docara-content[data-width="compact"]{max-width:45rem}.docara-content[data-width="normal"]{max-width:60rem}.docara-content[data-width="wide"]{max-width:80rem}.docara-content[data-width="full"]{max-width:none}.docara-prose{line-height:1.65}.docara-prose>*+*{margin-block-start:var(--sf-space-2)}.docara-prose h1{font-size:clamp(2rem,5vw,4rem);line-height:1.08;font-weight:750;letter-spacing:-.035em}.docara-prose h2{font-size:clamp(1.45rem,3vw,2.25rem);line-height:1.2;font-weight:700;margin-block-start:var(--sf-space-4)}.docara-prose h3{font-size:1.25rem;line-height:1.3;font-weight:650;margin-block-start:var(--sf-space-3)}.docara-prose p,.docara-prose li{max-width:72ch}.docara-landing{align-items:center;justify-content:center;min-height:calc(100vh - 5rem)}.docara-landing .docara-content{width:min(100%,80rem)}sf-alert,sf-button{display:block}.docara-prose sf-alert,.docara-prose sf-button{margin-block:var(--sf-space-2)}@media(max-width:800px){.docara-header{min-height:auto}.docara-mobile-navigation{display:block;margin:0 var(--sf-space-1) var(--sf-space-1)}.docara-mobile-navigation-summary{cursor:pointer;color:var(--sf-on-surface);font-weight:650}.docara-mobile-navigation-summary::marker{color:var(--sf-primary)}.docara-mobile-navigation-panel{margin-block-start:var(--sf-space-1);max-block-size:min(70vh,36rem);overflow:auto}.docara-docs-layout{grid-template-columns:minmax(0,1fr);padding:var(--sf-space-1)}.docara-sidebar{display:none}.docara-content{padding:var(--sf-space-2);scroll-margin-block-start:7rem}.docara-landing{padding:var(--sf-space-1);min-height:auto}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+.docara-brand{min-block-size:44px}
+.sf-breadcrumbs-item--link{min-inline-size:44px}
+html{color-scheme:light dark}.theme-light{color-scheme:light}.theme-dark{color-scheme:dark}body{min-height:100vh;background:var(--sf-surface-1);color:var(--sf-on-surface)}.docara-skip-link{position:fixed;inset-block-start:var(--sf-space-1);inset-inline-start:var(--sf-space-1);z-index:100;transform:translateY(-200%);color:var(--sf-on-surface);text-decoration:none}.docara-skip-link:focus{transform:translateY(0)}.docara-header{min-height:4.5rem}.docara-header-row{max-width:104rem;margin-inline:auto}.docara-brand{min-width:0;text-decoration:none}.docara-brand-mark{display:grid;place-items:center;inline-size:2.25rem;block-size:2.25rem;flex:0 0 auto}.docara-brand-logo{display:block;max-inline-size:100%;max-block-size:100%;object-fit:contain}.docara-brand-logo--dark{display:none}.theme-dark .docara-brand-logo--light:has(+.docara-brand-logo--dark){display:none}.theme-dark .docara-brand-logo--dark{display:block}.docara-brand-copy{min-width:0;line-height:1.15}.docara-brand-label{font-size:.75rem;font-weight:500}.sf-theme-button,[data-docara-disclosure]{min-inline-size:44px;min-block-size:44px}.docara-mobile-navigation,.docara-outline-mobile{display:none}.docara-navigation-link{min-width:0;min-block-size:44px;color:var(--sf-on-surface);text-decoration:none}.docara-navigation-label{min-width:0;color:var(--sf-on-surface)}.docara-navigation-link .sf-menu-element-text,.docara-navigation-label .sf-menu-element-text{overflow-wrap:anywhere}.docara-navigation [data-docara-active-role="ancestor"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-surface-container);--sf-menu-element--border-color:var(--sf-outline-variant)}.docara-navigation [data-docara-active-role="section"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-secondary-container);--sf-menu-element--border-color:var(--sf-outline);border-inline-start-width:2px}.docara-navigation [data-docara-active-role="page"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-primary-container);--sf-menu-element--border-color:var(--sf-primary);border-inline-start-width:4px}.docara-navigation [data-docara-active-role="section"]>.sf-menu-element>.docara-navigation-link,.docara-navigation [data-docara-active-role="section"]>.sf-menu-element>.docara-navigation-label{color:var(--sf-on-secondary-container)}.docara-navigation [data-docara-active-role="page"]>.sf-menu-element>.docara-navigation-link,.docara-navigation [data-docara-active-role="page"]>.sf-menu-element>.docara-navigation-label{color:var(--sf-on-primary-container)}.docara-skip-link:focus-visible,.docara-brand:focus-visible,.docara-navigation-link:focus-visible,.docara-mobile-navigation-summary:focus-visible,.docara-outline-mobile-summary:focus-visible,.docara-outline-link:focus-visible,.docara-document-link:focus-visible,.sf-breadcrumbs-item--link:focus-visible,.sf-theme-button:focus-visible,[data-docara-disclosure]:focus-visible,sf-button>button:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}.docara-docs-layout{display:grid;grid-template-columns:minmax(14rem,18rem) minmax(0,1fr);max-width:104rem;margin-inline:auto}.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(14rem,18rem) minmax(0,1fr) minmax(12rem,15rem)}.docara-sidebar,.docara-outline-rail{align-self:start;position:sticky;inset-block-start:6rem;max-block-size:calc(100vh - 7.5rem);overflow:auto}.docara-reading-column,.docara-content{min-width:0}.docara-content{color:var(--sf-on-surface);scroll-margin-block-start:6rem}.docara-content[data-width="compact"]{max-width:45rem}.docara-content[data-width="normal"]{max-width:60rem}.docara-content[data-width="wide"]{max-width:80rem}.docara-content[data-width="full"]{max-width:none}.sf-breadcrumbs{min-width:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-inline:contain}.sf-breadcrumbs-item--link{min-block-size:44px}.docara-outline-list{list-style:none}.docara-outline-item[data-docara-outline-level="3"]{padding-inline-start:var(--sf-space-1)}.docara-outline-item[data-docara-outline-level="4"],.docara-outline-item[data-docara-outline-level="5"],.docara-outline-item[data-docara-outline-level="6"]{padding-inline-start:var(--sf-space-2)}.docara-outline-link,.docara-document-link{min-block-size:44px;overflow-wrap:anywhere}.docara-outline-mobile-summary{cursor:pointer}.docara-previous-next{margin-block-start:var(--sf-space-4)}.docara-document-link--next{text-align:end}.docara-prose{line-height:1.65}.docara-prose>*+*{margin-block-start:var(--sf-space-2)}.docara-prose h1{font-size:clamp(2rem,5vw,4rem);line-height:1.08;font-weight:750;letter-spacing:-.035em}.docara-prose h2{font-size:clamp(1.45rem,3vw,2.25rem);line-height:1.2;font-weight:700;margin-block-start:var(--sf-space-4)}.docara-prose h3{font-size:1.25rem;line-height:1.3;font-weight:650;margin-block-start:var(--sf-space-3)}.docara-prose h1[id],.docara-prose h2[id],.docara-prose h3[id],.docara-prose h4[id],.docara-prose h5[id],.docara-prose h6[id]{scroll-margin-block-start:6rem}.docara-prose p,.docara-prose li{max-width:72ch}.docara-landing{align-items:center;justify-content:center;min-height:calc(100vh - 5rem)}.docara-landing .docara-content{width:min(100%,80rem)}sf-alert,sf-button{display:block}.docara-prose sf-alert,.docara-prose sf-button{margin-block:var(--sf-space-2)}@media(max-width:1152px){.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(14rem,18rem) minmax(0,1fr)}.docara-outline-rail{display:none}.docara-outline-mobile{display:block}}@media(max-width:800px){.docara-header{min-height:auto}.docara-mobile-navigation{display:block;margin:0 var(--sf-space-1) var(--sf-space-1)}.docara-mobile-navigation-summary{min-block-size:44px;cursor:pointer;color:var(--sf-on-surface);font-weight:650}.docara-mobile-navigation-summary::marker,.docara-outline-mobile-summary::marker{color:var(--sf-primary)}.docara-mobile-navigation-panel{margin-block-start:var(--sf-space-1);max-block-size:min(70vh,36rem);overflow:auto}.docara-docs-layout,.docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(0,1fr);padding:var(--sf-space-1)}.docara-sidebar{display:none}.docara-content{padding:var(--sf-space-2);scroll-margin-block-start:7rem}.docara-prose h1[id],.docara-prose h2[id],.docara-prose h3[id],.docara-prose h4[id],.docara-prose h5[id],.docara-prose h6[id]{scroll-margin-block-start:8rem}.docara-landing{padding:var(--sf-space-1);min-height:auto}}@media(max-width:600px){.docara-previous-next{flex-direction:column}.docara-document-link--next{text-align:start}}@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
 CSS;
     }
 
@@ -348,6 +473,7 @@ CSS;
 .docara-search-result:hover,.docara-search-result:focus-visible{background:var(--sf-primary-container);color:var(--sf-on-primary-container);outline:3px solid var(--sf-primary);outline-offset:1px}
 .docara-search-result-context,.docara-search-result-summary{font-size:.875rem;line-height:1.45}
 .docara-search-status[data-state="error"]{color:var(--sf-error)}
+.docara-search-trigger{min-block-size:44px}
 .docara-search-trigger:focus-visible,[data-docara-search-close]:focus-visible,[data-docara-search-input]:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}
 [data-docara-search-close]{min-inline-size:44px;min-block-size:44px}
 .docara-search-shortcut{font:inherit;font-size:.75rem;border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius-1);padding-inline:calc(var(--sf-space-1)/2)}

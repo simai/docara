@@ -53,6 +53,13 @@ The starter enables deterministic local search with
 service, and can exclude a page with `search.indexed: false`. Exclusion from
 search or navigation is not access control; generated HTML remains public.
 
+Documentation pages also enable the inherited `reading` contract: breadcrumbs,
+a depth-limited page outline and previous/next links. They are derived from the
+same canonical content topology as the menu. Deterministic Unicode heading IDs remain
+available even when the visible outline is disabled, and the static verifier
+rejects duplicate or unresolved fragments. Renaming a heading changes its
+generated fragment, so published deep links must be checked during migration.
+
 Portable Markdown can call bounded Smart-components through their real
 manifests:
 

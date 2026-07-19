@@ -90,6 +90,12 @@ final class PortableConfigurationLoader
                 'enabled' => false,
                 'indexed' => true,
             ],
+            'reading' => [
+                'breadcrumbs' => true,
+                'toc' => true,
+                'toc_depth' => 3,
+                'previous_next' => true,
+            ],
         ], '@defaults');
         $configuration = $result->configuration;
         $provenance = $result->provenance;

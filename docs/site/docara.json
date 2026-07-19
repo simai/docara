@@ -22,5 +22,11 @@
   "search": {
     "enabled": true,
     "indexed": true
+  },
+  "reading": {
+    "breadcrumbs": true,
+    "toc": true,
+    "toc_depth": 3,
+    "previous_next": true
   }
 }

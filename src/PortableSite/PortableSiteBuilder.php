@@ -58,7 +58,12 @@ final readonly class PortableSiteBuilder
                 $this->frameworkAssetBase($plan->frameworkLock, (string) ($site['base_url'] ?? '/')),
             );
             $components = $runtime->extract($plan->markdown, $plan->page);
-            $contentHtml = $components->hydrate($this->markdown->render($components->markdownWithPlaceholders));
+            $outline = (new PortableDocumentOutlineBuilder)->build(
+                $this->markdown->render($components->markdownWithPlaceholders),
+                (int) data_get($plan->configuration, 'reading.toc_depth', 3),
+                $this->html->reservedDocumentIds(),
+            );
+            $contentHtml = $components->hydrate($outline['html']);
             $route = $this->route($plan, $contentRoot, (string) ($site['base_url'] ?? '/'));
             if (isset($outputs[$route['output']])) {
                 throw new PortableConfigurationException(
@@ -81,6 +86,10 @@ final readonly class PortableSiteBuilder
                 'navigation_order' => data_get($plan->configuration, 'navigation.order'),
                 'search_enabled' => (bool) data_get($plan->configuration, 'search.enabled', false),
                 'search_indexed' => (bool) data_get($plan->configuration, 'search.indexed', true),
+                'reading_breadcrumbs' => (bool) data_get($plan->configuration, 'reading.breadcrumbs', true),
+                'reading_toc' => (bool) data_get($plan->configuration, 'reading.toc', true),
+                'reading_previous_next' => (bool) data_get($plan->configuration, 'reading.previous_next', true),
+                'outline' => $outline['items'],
                 'url' => $route['url'],
                 'output' => $route['output'],
                 'home_url' => $this->homeUrl((string) ($site['base_url'] ?? '/')),
@@ -91,7 +100,8 @@ final readonly class PortableSiteBuilder
         }
 
         $navigationBuilder = new PortableNavigationBuilder;
-        $navigation = $navigationBuilder->build($pages, $contentRoot, $contentPath);
+        $topology = $navigationBuilder->build($pages, $contentRoot, $contentPath);
+        $navigation = $navigationBuilder->visible($topology);
         $contentAssets = $this->contentAssets($contentPath, array_keys($outputs));
         $siteTitle = (string) ($site['title'] ?? 'Docara');
         $brandPublisher = new PortableBrandAssetPlanner($this->files);
@@ -112,7 +122,7 @@ final readonly class PortableSiteBuilder
         if ($searchEnabled) {
             $searchPlan = (new PortableSearchIndexBuilder)->plan(
                 $pages,
-                $navigation,
+                $topology,
                 $this->homeUrl((string) ($site['base_url'] ?? '/')),
             );
             foreach ($pages as &$page) {
@@ -136,6 +146,19 @@ final readonly class PortableSiteBuilder
 
         foreach ($pages as $pageIndex => $page) {
             $page['branding'] = $brandPlan['pages'][$pageIndex];
+            $readingContext = $navigationBuilder->readingContextForUrl($topology, (string) $page['url']);
+            $page['breadcrumbs'] = $page['reading_breadcrumbs'] === true
+                ? $readingContext['breadcrumbs']
+                : [];
+            $page['previous'] = $page['reading_previous_next'] === true
+                ? $readingContext['previous']
+                : null;
+            $page['next'] = $page['reading_previous_next'] === true
+                ? $readingContext['next']
+                : null;
+            if ($page['reading_toc'] !== true) {
+                $page['outline'] = [];
+            }
             $activeNavigation = $navigationBuilder->activate($navigation, (string) $page['url']);
             $outputPath = rtrim($destination, '/\\') . '/' . $page['output'];
             $this->files->ensureDirectoryExists(dirname($outputPath));

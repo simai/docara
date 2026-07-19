@@ -25,9 +25,20 @@ final class PortableSiteBuilderTest extends TestCase
             $this->tmpPath('content/guides/_section.json'),
             json_encode($section, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
         );
+        $guidePage = $this->jsonFile($this->tmpPath('content/guides/getting-started.page.json'));
+        $guidePage['navigation'] = ['order' => 10];
+        file_put_contents(
+            $this->tmpPath('content/guides/getting-started.page.json'),
+            json_encode($guidePage, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
         file_put_contents(
             $this->tmpPath('content/index.md'),
             file_get_contents($this->tmpPath('content/index.md')) . "\n<script id=\"unsafe\">alert(1)</script>\n",
+        );
+        file_put_contents(
+            $this->tmpPath('content/guides/getting-started.md'),
+            file_get_contents($this->tmpPath('content/guides/getting-started.md'))
+            . "\n## Параметры\n\nОписание параметров.\n\n### Наследование\n\nОписание наследования.\n",
         );
 
         $result = $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
@@ -49,6 +60,24 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('class="docara-landing flex flex-col gap-4 p-4"', $landing);
         self::assertStringContainsString('aria-current="page"', $index);
         self::assertStringContainsString('aria-current="page"', $guide);
+        self::assertStringContainsString('data-docara-breadcrumbs', $guide);
+        self::assertMatchesRegularExpression('~data-docara-breadcrumbs data-max-items="[3-9][0-9]*"~', $guide);
+        self::assertStringContainsString('class="sf-breadcrumbs flex"', $guide);
+        self::assertStringContainsString('sf-breadcrumbs-item--link', $guide);
+        self::assertStringContainsString('sf-breadcrumbs-item--default', $guide);
+        self::assertStringContainsString('aria-current="page"', $guide);
+        self::assertStringContainsString('data-docara-outline', $guide);
+        self::assertStringContainsString('data-docara-outline-mobile', $guide);
+        self::assertStringContainsString('href="#параметры"', $guide);
+        self::assertStringContainsString('<h2 id="параметры">Параметры</h2>', $guide);
+        self::assertStringContainsString('<h3 id="наследование">Наследование</h3>', $guide);
+        self::assertStringContainsString('data-docara-previous-next', $guide);
+        self::assertStringContainsString('rel="prev" href="/guides/"', $guide);
+        self::assertStringContainsString('rel="next" href="/guides/platform/"', $guide);
+        self::assertStringNotContainsString('data-docara-breadcrumbs', $landing);
+        self::assertStringNotContainsString('<nav data-docara-outline', $landing);
+        self::assertStringNotContainsString('<details data-docara-outline-mobile', $landing);
+        self::assertStringNotContainsString('<nav data-docara-previous-next', $landing);
         self::assertStringContainsString('<sf-alert', $index);
         self::assertStringContainsString('<sf-alert', $guide);
         self::assertStringContainsString('<sf-button', $guide);
@@ -98,6 +127,30 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('<sf-icon icon="expand_less" aria-hidden="true"></sf-icon>', $fourthLevel);
         self::assertStringContainsString('href="/guides/platform/configuration/layout/" aria-current="page"', $fourthLevel);
         self::assertGreaterThanOrEqual(3, substr_count($fourthLevel, ' expanded aria-expanded="true"'));
+        self::assertStringContainsString('data-docara-breadcrumbs data-max-items="5"', $fourthLevel);
+        self::assertStringNotContainsString('data-sf-breadcrumbs-generated="ellipsis"', $fourthLevel);
+
+        $guideDocument = new \DOMDocument;
+        $previous = libxml_use_internal_errors(true);
+        $guideDocument->loadHTML($guide, LIBXML_NOERROR | LIBXML_NOWARNING);
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+        $guideXpath = new \DOMXPath($guideDocument);
+        self::assertSame(
+            1,
+            $guideXpath->query('//nav[@data-docara-breadcrumbs]//*[@aria-current="page"]')?->length,
+        );
+        $desktopOutline = [];
+        foreach ($guideXpath->query('//aside[contains(@class, "docara-outline-rail")]//a[contains(@class, "docara-outline-link")]') ?: [] as $link) {
+            $desktopOutline[] = $link->attributes?->getNamedItem('href')?->nodeValue;
+        }
+        $mobileOutline = [];
+        foreach ($guideXpath->query('//details[@data-docara-outline-mobile]//a[contains(@class, "docara-outline-link")]') ?: [] as $link) {
+            $mobileOutline[] = $link->attributes?->getNamedItem('href')?->nodeValue;
+        }
+        self::assertNotSame([], $desktopOutline);
+        self::assertSame($desktopOutline, $mobileOutline);
+
         $navigationDocument = new \DOMDocument;
         $previous = libxml_use_internal_errors(true);
         $navigationDocument->loadHTML($fourthLevel, LIBXML_NOERROR | LIBXML_NOWARNING);
@@ -221,7 +274,16 @@ final class PortableSiteBuilderTest extends TestCase
     public function canonical_starter_build_with_default_locale_passes_static_verification(): void
     {
         $this->copyPortableFixture($this->tmp);
+        file_put_contents(
+            $this->tmpPath('content/index.md'),
+            file_get_contents($this->tmpPath('content/index.md')) . "\n## Docara main\n",
+        );
         $this->builder()->build($this->tmp, $this->tmpPath('build_production'));
+
+        self::assertStringContainsString(
+            'id="docara-main-1"',
+            (string) file_get_contents($this->tmpPath('build_production/index.html')),
+        );
 
         $process = new Process([
             PHP_BINARY,
@@ -232,6 +294,36 @@ final class PortableSiteBuilderTest extends TestCase
 
         self::assertSame(0, $process->getExitCode(), $process->getErrorOutput() . $process->getOutput());
         self::assertStringContainsString('"broken": []', $process->getOutput());
+    }
+
+    #[Test]
+    public function page_can_hide_all_reading_surfaces_without_losing_stable_heading_anchors(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $page = $this->jsonFile($this->tmpPath('content/guides/getting-started.page.json'));
+        $page['reading'] = [
+            'breadcrumbs' => false,
+            'toc' => false,
+            'previous_next' => false,
+        ];
+        file_put_contents(
+            $this->tmpPath('content/guides/getting-started.page.json'),
+            json_encode($page, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+        file_put_contents(
+            $this->tmpPath('content/guides/getting-started.md'),
+            "# Быстрый старт\n\n## Параметры\n\nТекст.\n",
+        );
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        $html = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
+
+        self::assertStringNotContainsString('<nav data-docara-breadcrumbs', $html);
+        self::assertStringNotContainsString('<nav data-docara-outline', $html);
+        self::assertStringNotContainsString('<details data-docara-outline-mobile', $html);
+        self::assertStringNotContainsString('<nav data-docara-previous-next', $html);
+        self::assertStringContainsString('<h1 id="быстрый-старт">Быстрый старт</h1>', $html);
+        self::assertStringContainsString('<h2 id="параметры">Параметры</h2>', $html);
     }
 
     #[Test]
@@ -314,6 +406,10 @@ final class PortableSiteBuilderTest extends TestCase
             '/z-explicit-max/',
             '/a-unspecified/',
         ], $this->desktopNavigationLinks($html, topLevelOnly: true));
+
+        $first = (string) file_get_contents($this->tmpPath('build_local/first/index.html'));
+        self::assertStringContainsString('data-docara-breadcrumbs', $first);
+        self::assertStringContainsString('href="/"><span class="sf-breadcrumbs-item-container', $first);
     }
 
     #[Test]

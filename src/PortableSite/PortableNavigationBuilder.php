@@ -25,10 +25,6 @@ final readonly class PortableNavigationBuilder
         $tree = [];
 
         foreach ($pages as $page) {
-            if (($page['navigation_hidden'] ?? false) === true) {
-                continue;
-            }
-
             $relative = $this->relativePagePath((string) $page['page_path'], $contentRoot);
             $withoutExtension = preg_replace('/\.(?:md|markdown)$/i', '', $relative) ?? $relative;
             $segments = explode('/', $withoutExtension);
@@ -52,6 +48,9 @@ final readonly class PortableNavigationBuilder
                         'title' => (string) ($metadata['title'] ?? $this->humanize($segment)),
                         'url' => null,
                         'order' => $metadata['order'] ?? null,
+                        'hidden' => false,
+                        'locale' => null,
+                        'preset' => null,
                         'children' => [],
                     ];
                 }
@@ -72,6 +71,9 @@ final readonly class PortableNavigationBuilder
                 $branch['title'] = $this->navigationTitle($page, $metadata);
                 $branch['url'] = (string) $page['url'];
                 $branch['order'] = $this->navigationOrder($page, $metadata, $branch['order']);
+                $branch['hidden'] = ($page['navigation_hidden'] ?? false) === true;
+                $branch['locale'] = is_string($page['locale'] ?? null) ? $page['locale'] : null;
+                $branch['preset'] = is_string($page['preset'] ?? null) ? $page['preset'] : null;
                 unset($branch);
 
                 continue;
@@ -89,6 +91,34 @@ final readonly class PortableNavigationBuilder
         }
 
         return $this->sortNodes(array_values($tree));
+    }
+
+    /**
+     * Project the canonical topology into the global menu without losing
+     * hidden pages from breadcrumbs and document adjacency.
+     *
+     * @param  list<array<string, mixed>>  $nodes
+     * @return list<array<string, mixed>>
+     */
+    public function visible(array $nodes): array
+    {
+        $visible = [];
+        foreach ($nodes as $node) {
+            $children = is_array($node['children'] ?? null)
+                ? $this->visible(array_values($node['children']))
+                : [];
+            $hidden = ($node['hidden'] ?? false) === true;
+            if ($children === [] && ($hidden || ! is_string($node['url'] ?? null))) {
+                continue;
+            }
+            $node['children'] = $children;
+            if ($hidden) {
+                $node['url'] = null;
+            }
+            $visible[] = $node;
+        }
+
+        return $visible;
     }
 
     /**
@@ -133,6 +163,89 @@ final readonly class PortableNavigationBuilder
         return [];
     }
 
+    /**
+     * @param  list<array<string, mixed>>  $nodes
+     * @return array{
+     *     breadcrumbs: list<array{title: string, url: string|null}>,
+     *     previous: array{title: string, url: string}|null,
+     *     next: array{title: string, url: string}|null
+     * }
+     */
+    public function readingContextForUrl(array $nodes, string $url): array
+    {
+        $empty = ['breadcrumbs' => [], 'previous' => null, 'next' => null];
+        $path = $this->pathForUrl($nodes, $url);
+        if ($path === []) {
+            return $empty;
+        }
+
+        $pages = $this->linkedPages($nodes);
+        $currentIndex = null;
+        foreach ($pages as $index => $page) {
+            if ($page['url'] === $url) {
+                $currentIndex = $index;
+                break;
+            }
+        }
+        if ($currentIndex === null) {
+            return $empty;
+        }
+
+        $current = $pages[$currentIndex];
+        $breadcrumbs = $path;
+        $home = $this->homeNode($nodes);
+        if ($home !== null && $home['url'] !== $url) {
+            array_unshift($breadcrumbs, [
+                'title' => $home['title'],
+                'url' => $home['url'],
+            ]);
+        }
+        if (count($breadcrumbs) === 1) {
+            $breadcrumbs = [];
+        }
+
+        $previous = null;
+        for ($index = $currentIndex - 1; $index >= 0; $index--) {
+            if ($this->isAdjacentTarget($pages[$index], $current)) {
+                $previous = [
+                    'title' => $pages[$index]['title'],
+                    'url' => $pages[$index]['url'],
+                ];
+                break;
+            }
+        }
+        $next = null;
+        for ($index = $currentIndex + 1, $count = count($pages); $index < $count; $index++) {
+            if ($this->isAdjacentTarget($pages[$index], $current)) {
+                $next = [
+                    'title' => $pages[$index]['title'],
+                    'url' => $pages[$index]['url'],
+                ];
+                break;
+            }
+        }
+
+        return compact('breadcrumbs', 'previous', 'next');
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $nodes
+     * @return array{title: string, url: string}|null
+     */
+    private function homeNode(array $nodes): ?array
+    {
+        foreach ($nodes as $node) {
+            if (($node['key'] ?? null) === '@home' && is_string($node['url'] ?? null)) {
+                return [
+                    'title' => (string) ($node['title'] ?? ''),
+                    'url' => $node['url'],
+                ];
+            }
+        }
+
+        return null;
+    }
+
     /** @param list<array<string, mixed>> $nodes */
     private function containsActive(array $nodes): bool
     {
@@ -165,8 +278,46 @@ final readonly class PortableNavigationBuilder
             'title' => (string) $page['title'],
             'url' => (string) $page['url'],
             'order' => $page['navigation_order'] === null ? null : (int) $page['navigation_order'],
+            'hidden' => ($page['navigation_hidden'] ?? false) === true,
+            'locale' => is_string($page['locale'] ?? null) ? $page['locale'] : null,
+            'preset' => is_string($page['preset'] ?? null) ? $page['preset'] : null,
             'children' => [],
         ];
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $nodes
+     * @return list<array{title: string, url: string, hidden: bool, locale: string|null, preset: string|null}>
+     */
+    private function linkedPages(array $nodes): array
+    {
+        $pages = [];
+        foreach ($nodes as $node) {
+            if (is_string($node['url'] ?? null)) {
+                $pages[] = [
+                    'title' => (string) ($node['title'] ?? ''),
+                    'url' => $node['url'],
+                    'hidden' => ($node['hidden'] ?? false) === true,
+                    'locale' => is_string($node['locale'] ?? null) ? $node['locale'] : null,
+                    'preset' => is_string($node['preset'] ?? null) ? $node['preset'] : null,
+                ];
+            }
+            $children = is_array($node['children'] ?? null) ? array_values($node['children']) : [];
+            array_push($pages, ...$this->linkedPages($children));
+        }
+
+        return $pages;
+    }
+
+    /**
+     * @param  array{title: string, url: string, hidden: bool, locale: string|null, preset: string|null}  $candidate
+     * @param  array{title: string, url: string, hidden: bool, locale: string|null, preset: string|null}  $current
+     */
+    private function isAdjacentTarget(array $candidate, array $current): bool
+    {
+        return $candidate['hidden'] === false
+            && $candidate['preset'] === 'docs'
+            && $candidate['locale'] === $current['locale'];
     }
 
     /**

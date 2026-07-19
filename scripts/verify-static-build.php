@@ -53,6 +53,42 @@ function docaraSafeRegularFile(string $path): bool
         && ($stat['nlink'] ?? 1) === 1;
 }
 
+/** @return array{ids: array<string, true>, duplicates: list<string>} */
+function docaraHtmlIdInventory(string $html): array
+{
+    $document = new DOMDocument('1.0', 'UTF-8');
+    $previous = libxml_use_internal_errors(true);
+    $loaded = $document->loadHTML(
+        '<?xml encoding="UTF-8">' . $html,
+        LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_COMPACT,
+    );
+    libxml_clear_errors();
+    libxml_use_internal_errors($previous);
+    if ($loaded !== true) {
+        throw new RuntimeException('Generated HTML could not be parsed for fragment verification.');
+    }
+
+    $ids = [];
+    $duplicates = [];
+    $xpath = new DOMXPath($document);
+    foreach ($xpath->query('//*[@id]') ?: [] as $node) {
+        if (! $node instanceof DOMElement) {
+            continue;
+        }
+        $id = $node->getAttribute('id');
+        if ($id === '') {
+            continue;
+        }
+        if (isset($ids[$id])) {
+            $duplicates[] = $id;
+        }
+        $ids[$id] = true;
+    }
+    sort($duplicates, SORT_STRING);
+
+    return ['ids' => $ids, 'duplicates' => array_values(array_unique($duplicates))];
+}
+
 $rootInput = $argv[1] ?? '';
 if ($rootInput === '' || count($argv) !== 2) {
     fwrite(STDERR, "Usage: php scripts/verify-static-build.php <build-directory>\n");
@@ -265,6 +301,33 @@ if (is_link($manifestDirectory)
     }
 }
 
+$htmlIds = [];
+$htmlIdProblems = [];
+foreach ($htmlFiles as $htmlFile) {
+    $relativePage = str_replace('\\', '/', substr($htmlFile, strlen($root) + 1));
+    $html = file_get_contents($htmlFile);
+    if (! is_string($html)) {
+        continue;
+    }
+    try {
+        $inventory = docaraHtmlIdInventory($html);
+        $htmlIds[$relativePage] = $inventory['ids'];
+        foreach ($inventory['duplicates'] as $duplicate) {
+            $htmlIdProblems[] = [
+                'page' => $relativePage,
+                'reference' => '@duplicate-html-id',
+                'target' => $duplicate,
+            ];
+        }
+    } catch (Throwable $exception) {
+        $htmlIdProblems[] = [
+            'page' => $relativePage,
+            'reference' => '@html-fragment-inventory',
+            'target' => $exception->getMessage(),
+        ];
+    }
+}
+
 $checked = 0;
 $searchIndexReferences = [];
 $searchRuntimeReferences = [];
@@ -276,6 +339,7 @@ $broken = array_map(
     ],
     $unsafeArtifactEntries,
 );
+array_push($broken, ...$htmlIdProblems);
 if ($manifestError !== null) {
     $broken[] = ['page' => '@build', 'reference' => '@resolved-page-plans', 'target' => $manifestError];
 } else {
@@ -333,7 +397,6 @@ foreach ($htmlFiles as $htmlFile) {
     foreach ($matches as $match) {
         $reference = html_entity_decode($match[1] !== '' ? $match[1] : $match[2], ENT_QUOTES | ENT_HTML5);
         if ($reference === ''
-            || str_starts_with($reference, '#')
             || str_starts_with($reference, '//')
             || preg_match('/\A[a-z][a-z0-9+.-]*:/i', $reference) === 1
         ) {
@@ -341,6 +404,8 @@ foreach ($htmlFiles as $htmlFile) {
         }
 
         $checked++;
+        $fragmentOffset = strpos($reference, '#');
+        $encodedFragment = $fragmentOffset === false ? null : substr($reference, $fragmentOffset + 1);
         $encodedPath = preg_split('/[?#]/', $reference, 2)[0] ?? '';
         if (str_contains($encodedPath, '\\')
             || preg_match('/%(?![0-9A-Fa-f]{2})/', $encodedPath) === 1
@@ -437,6 +502,37 @@ foreach ($htmlFiles as $htmlFile) {
                 'reference' => $reference,
                 'target' => $relativeTarget,
             ];
+
+            continue;
+        }
+
+        if ($encodedFragment !== null && $encodedFragment !== '' && str_ends_with($relativeTarget, '.html')) {
+            if (preg_match('/%(?![0-9A-Fa-f]{2})/', $encodedFragment) === 1) {
+                $broken[] = [
+                    'page' => $relativePage,
+                    'reference' => $reference,
+                    'target' => '@unsafe-fragment-encoding',
+                ];
+
+                continue;
+            }
+            $fragment = rawurldecode($encodedFragment);
+            if (str_contains($fragment, "\0") || preg_match('//u', $fragment) !== 1) {
+                $broken[] = [
+                    'page' => $relativePage,
+                    'reference' => $reference,
+                    'target' => '@unsafe-fragment-encoding',
+                ];
+
+                continue;
+            }
+            if (! isset($htmlIds[$relativeTarget][$fragment])) {
+                $broken[] = [
+                    'page' => $relativePage,
+                    'reference' => $reference,
+                    'target' => '@missing-fragment:' . $fragment,
+                ];
+            }
         }
     }
 }

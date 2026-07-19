@@ -26,9 +26,9 @@ navigation derived from the canonical Docara content and navigation plans.
 
 ## Next Step
 
-Implement the Batch 3 configuration and rendering contract test-first, using
-one source of truth and exact pinned Simai Framework primitives. Verify native
-semantics, Unicode/duplicate heading anchors, responsive outline behavior,
-active context and previous/next order before exact tester and UX/designer
-acceptance. Public release, default-branch migration and repository retirement
-remain excluded.
+Create the immutable Batch 3 candidate from the verified worktree. Run
+independent exact-archive tester and complete-diff HCS acceptance against the
+same SHA, then publish it to `docara.test` only through staging, backup,
+verification and matching-digest gates. After Batch 3 closure continue with
+Batch 4 reading settings. Public release, default-branch migration and
+repository retirement remain excluded.

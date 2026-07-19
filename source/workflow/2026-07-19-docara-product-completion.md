@@ -245,10 +245,10 @@ Do not complete the Goal until:
 | --- | --- | --- | --- | --- | --- |
 | `WS-CORE-01` | Docara owner | workflow, current renderer/menu reproduction and critical path | this worktree | Batch 1 accepted and published locally | Batch 1 exact tester, UX/design and publication PASS |
 | `WS-UX-01` | UX/designer review | official-platform comparison and bounded menu/product shell gate | none | Batch 1 PASS | `batch-1-ux-design-verdict.md` |
-| `WS-SF5-01` | `/root/smart_component_inventory` | pinned utilities/components/Smart-components for menu, search, TOC, settings, landing and catalogue | none | completed | `framework-building-block-map.md` |
+| `WS-FRAMEWORK-01` | `/root/smart_component_inventory` | pinned utilities/components/Smart-components for menu, search, TOC, settings, landing and catalogue | none | completed | `framework-building-block-map.md` |
 | `WS-DOCS-01` | `/root/docs_catalog_audit` | Retype-style component capability inventory and Docara docs coverage/map | none | completed | `product-capability-matrix.yaml` and catalogue/docs decision |
 | `WS-SEARCH-02` | Docara owner | deterministic local search, schema, runtime, verifier and documentation | this worktree | accepted and published locally | Batch 2 exact tester, HCS, UX/designer and publication PASS |
-| `WS-READING-03` | Docara owner with UX/designer | breadcrumbs, page outline and previous/next navigation from one navigation tree | this worktree | active | Batch 3 tests, exact UX/design and tester verdicts |
+| `WS-READING-03` | Docara owner with UX/designer | breadcrumbs, page outline and previous/next navigation from one navigation tree | this worktree | candidate-ready; exact acceptance pending | Batch 3 tests, exact UX/design and tester verdicts |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -339,11 +339,10 @@ was discovered.
 
 ## Next Safe Batch
 
-Implement Batch 3 test-first from accepted candidate `df82a5fa…`: derive
-breadcrumbs, the current-page outline and previous/next navigation from the
-same canonical navigation/content plans. Use native semantics and exact pinned
-Simai Framework primitives, keep the right outline compact on narrow screens,
-and add inherited fail-closed configuration without a second registry.
+Create the immutable Batch 3 candidate from the verified worktree, run
+independent exact-archive tester and complete-diff HCS acceptance against that
+same SHA, then publish the accepted build to `docara.test` through staging,
+backup and digest gates. Only after closure start Batch 4 reading settings.
 
 ## Last Completed Batch
 
@@ -365,3 +364,9 @@ at `docara.test`; source, staging and served tree digest
 `81945efbe610a54986586a2a61f16e64556528e235596fb016330923f450fd1f`
 matches, while the Batch 1 tree remains preserved for rollback. This does not
 accept Batch 3 or the wider Goal.
+
+Batch 3 reading-context implementation is candidate-ready. The isolated full
+suite (`464 tests, 2308 assertions`), deterministic build, static verifier,
+documentation audit, implementation reverse-audit and UX/designer/browser
+preacceptance pass. Exact-candidate tester/HCS acceptance and safe local
+publication remain required before this batch is accepted.

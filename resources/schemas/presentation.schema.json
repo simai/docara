@@ -94,6 +94,30 @@
                 }
             },
             "additionalProperties": false
+        },
+        "reading": {
+            "type": "object",
+            "minProperties": 1,
+            "properties": {
+                "$reset": {
+                    "const": true
+                },
+                "breadcrumbs": {
+                    "type": "boolean"
+                },
+                "toc": {
+                    "type": "boolean"
+                },
+                "toc_depth": {
+                    "type": "integer",
+                    "minimum": 2,
+                    "maximum": 6
+                },
+                "previous_next": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false
         }
     }
 }

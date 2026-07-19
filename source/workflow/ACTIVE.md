@@ -1,10 +1,10 @@
 # Workflow: Docara product completion
 
 Date: 2026-07-19
-Status: in-progress
+Status: completed
 Workflow ID: `2026-07-19-docara-product-completion`
 Process model: `general_delivery`
-Current state: `tests_recorded`
+Current state: `evidence_recorded`
 Target state: `evidence_recorded`
 
 ## Goal
@@ -21,37 +21,26 @@ catalogue, complete documentation and exact independent acceptance.
 
 ## Current Batch
 
-Batch 9 — freeze the complete Batch 8 product candidate and run unified
-exact-archive, complete-diff HCS/source/security, native-Chrome UX/design and
-local-publication acceptance for the entire Goal.
+None. Batch 9 and the complete local-product Goal are accepted and closed.
 
-## Next Step
+## Accepted Outcome
 
-Batch 7 candidate `a5cc0e7ddd3a4ef218381e3e4129825eedf6d671`
+Immutable candidate `de87bdef224d518d1c707286d4640be0238d34bc`
 passed independent exact-archive tester, complete-diff Human-Centered
-Simplicity/source/security and native-Chrome UX/design gates. Its exact build
-is served at `docara.test` with digest
-`dc6e2a997314a2497da29af3e696937d7f46aee2a832ed3166e2862cdd963675`;
-the exact accepted Batch 6 tree is retained at
-`.docara-backups/product-completion-live-catalog-a5cc0e7-20260719-182708`.
+Simplicity/source/docs/security and native-Chrome UX/design gates.
 
-The corrected immutable candidate
-`4164ba2aa890a711b58a2ea016c4f4fbb77ef865` passed independent exact-archive
-tester and complete-diff Human-Centered Simplicity/source/security gates, but
-native-Chrome acceptance rejected it at 390 pixels: an outline link placed its
-heading at 111.84 pixels while the sticky header ended at 127 pixels.
+Its exact build is served at `https://docara.test/`:
 
-The bounded test-first correction increases only the mobile heading anchor
-reserve from 8rem to 10rem. During full regression, an existing preview test
-deterministically deadlocked because Symfony Process output was not drained;
-the test harness now drains its child pipes while the production router remains
-unchanged. The full suite passes 541 tests with 4,305 assertions and two clean
-builds reproduce digest
-`502e43119ea2f2fc6ce358042858937060a67c4aa3d4d5ac0295e3d19c8e782f`.
+- 56 HTML pages;
+- 5,793 verified local references, zero broken;
+- canonical source/staging/served digest
+  `502e43119ea2f2fc6ce358042858937060a67c4aa3d4d5ac0295e3d19c8e782f`;
+- desktop 1440 and cold-mobile 390 served smoke: `PASS`;
+- console errors/warnings and unexpected local resource failures: zero.
 
-Freeze the commit containing both bounded corrections and repeat the
-exact-archive, complete-diff and complete native-Chrome matrices on that same
-SHA. Keep Batch 7 served until every gate passes, then publish through staging
-with a timestamped rollback and matching source/staging/served digests. Public
-release, default-branch migration, Framework owner writes and repository
-retirement remain excluded.
+The immediate pre-publication Batch 7 state is retained at:
+
+`/Users/rim/Sites/docara.test/.docara-backups/product-completion-docs-de87bde-20260719-213128/build_production`
+
+Public release, default-branch migration, Framework owner writes and repository
+retirement were not performed. Any such work requires a separate Goal.

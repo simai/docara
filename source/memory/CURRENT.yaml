@@ -1,9 +1,8 @@
 project_id: "docara-consolidation"
 updated_at: "2026-07-19"
-status: "active"
+status: "idle"
 primary_goal: "Restore the complete Docara product shell on the accepted portable engine before public product release."
-active_tracks:
-  - docara-consolidation
-current_focus: "docara-consolidation"
+active_tracks: []
+current_focus: null
 important_blockers: []
-next_global_step: "Continue Batch 7 from accepted local Batch 6 candidate 68a960ff: generate the live component catalogue and generic detail page, add exact examples and the typed docara.columns recipe, then run exact tester, complete-diff HCS, native-Chrome UX/design and staged local publication."
+next_global_step: "No active batch. Use the accepted local product at https://docara.test/; start a separate gated Goal for public release, default-branch migration, Framework-owner work or repository retirement."

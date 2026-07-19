@@ -7,25 +7,32 @@ Track `docara-consolidation` is attached to workflow:
 - `source/workflow/2026-07-19-docara-product-completion.md`
 - workflow title: Workflow: Docara product completion
 
-## Next Meaningful Goal
+## Completed Goal
 
-Довести Docara до целостного локального продукта: ясное многоуровневое меню и active trail, поиск и reading context, адаптивный landing, полный практический каталог typed Markdown/Simai Framework компонентов, полная документация и независимая приёмка одного exact candidate с безопасной публикацией на `docara.test`.
+Docara доведена до целостного локального продукта и опубликована на
+`https://docara.test/` из exact candidate
+`de87bdef224d518d1c707286d4640be0238d34bc`.
 
-## Stages
+## Result
 
-1. Restore current state from the workflow and project memory.
-2. Execute the next safe batch from the workflow.
-3. Update track memory after the batch.
+- exact source/staging/served digest:
+  `502e43119ea2f2fc6ce358042858937060a67c4aa3d4d5ac0295e3d19c8e782f`;
+- exact tester, complete-diff HCS/source/docs/security, native-Chrome
+  UX/design and served-browser publication verdicts: `PASS`;
+- retained rollback:
+  `/Users/rim/Sites/docara.test/.docara-backups/product-completion-docs-de87bde-20260719-213128/build_production`.
 
 ## Next Safe Batch
 
-Implement Batch 2 test-first from accepted candidate `d4ce688b…`:
-deterministic local search derived from published content, with a canonical
-local index, Framework presentation, keyboard/mobile behavior and no external
-runtime service. Batch 1 is already published locally with rollback evidence.
+None inside this completed Goal. Public release, default-branch migration,
+Framework-owner improvements and repository retirement remain separate,
+explicitly gated work. The locally accepted product can now be used and
+evaluated at `https://docara.test/`.
 
-## Checks
+## Checks For Any Future Goal
 
-- Read `source/workflow/2026-07-19-docara-product-completion.md`.
-- Check route/gates before writes.
-- Update this track memory after progress.
+- restore the accepted state from
+  `source/workflow/2026-07-19-docara-product-completion.md`;
+- keep public release, default-branch migration, Framework-owner changes and
+  repository retirement in separate gated workflows;
+- do not weaken the exact revisions or readiness nonclaims.

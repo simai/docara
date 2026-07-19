@@ -1,11 +1,11 @@
 track_id: "docara-consolidation"
-status: "active"
+status: "completed"
 owner_skill: "teamlead"
 current_goal: "Довести Docara до целостного локального продукта: ясное многоуровневое меню и active trail, поиск и reading context, адаптивный landing, полный практический каталог typed Markdown/Simai Framework компонентов, полная документация и независимая приёмка одного exact candidate с безопасной публикацией на `docara.test`."
-current_stage: "`planned`"
+current_stage: "evidence_recorded"
 current_workflow: "source/workflow/2026-07-19-docara-product-completion.md"
-last_completed_batch: "The first product vertical was accepted on implementation candidate `83d677c7eb5f22d9ca2f4ac16990fe16eddbe985` and closure commit `31f468be85d015b962fccc2b4c089204aab1410b`."
-next_step: "Implement Batch 2 test-first from accepted candidate `d4ce688b…`: deterministic local search derived from published content, with a canonical local index, Framework presentation, keyboard/mobile behavior and no external runtime service. Batch 1 is already published locally with rollback evidence."
+last_completed_batch: "Batch 9 and the complete local-product Goal passed exact tester, complete-diff HCS, native-Chrome UX/design and served publication acceptance on candidate de87bdef224d518d1c707286d4640be0238d34bc."
+next_step: "None inside this completed Goal. Public release, default-branch migration, Framework-owner improvements and repository retirement remain separate, explicitly gated work. The locally accepted product can now be used and evaluated at `https://docara.test/`."
 blockers: []
 related_tracks: []
 updated_at: "2026-07-19"

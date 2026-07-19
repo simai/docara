@@ -1,6 +1,6 @@
 tracks:
   docara-consolidation:
-    status: "active"
+    status: "completed"
     owner_skill: "teamlead"
     current_workflow: "source/workflow/2026-07-19-docara-product-completion.md"
     last_updated: "2026-07-19"

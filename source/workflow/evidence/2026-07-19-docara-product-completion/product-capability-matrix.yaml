@@ -5,7 +5,7 @@ purpose: >-
   Goal acceptance projection. This is not a second Framework registry; each
   record must be proven from native Markdown, an exact Framework contract, a
   Docara recipe/generated feature and executable evidence.
-projection_state: implementation_complete_pending_unified_exact_acceptance
+projection_state: accepted_local_product_no_release_claim
 status_legend:
   pass: required final outcome, valid only with the unified exact-candidate verdict
   bounded: useful baseline exists but the required product contract is incomplete

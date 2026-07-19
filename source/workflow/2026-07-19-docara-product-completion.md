@@ -1,9 +1,9 @@
 # Workflow: Docara product completion
 
 Date: 2026-07-19
-Status: in-progress
+Status: completed
 Process model: `general_delivery`
-Current state: `tests_recorded`
+Current state: `evidence_recorded`
 Target state: `evidence_recorded`
 Project mode: `productization`
 Requested level: `goal`
@@ -214,10 +214,10 @@ Do not complete the Goal until:
 
 ## Current Remaining
 
-- Milestones remaining: 2 of 5.
-- Batches remaining: 1 of 10.
-- Active batch: Batch 9 unified acceptance of the Batch 8 product candidate.
-- Goal status: `in-progress`.
+- Milestones remaining: 0 of 5.
+- Batches remaining: 0 of 10.
+- Active batch: none.
+- Goal status: `completed`.
 
 ## Do Not Complete Until
 
@@ -255,7 +255,7 @@ Do not complete the Goal until:
 | `WS-LANDING-05` | Docara owner with UX/designer | landing recipe and responsive demonstration from pinned Framework building blocks | this worktree | accepted and published locally | exact tester, HCS/source/security, native-Chrome UX/design and served smoke PASS |
 | `WS-CATALOG-CONTRACT-06` | Docara owner with Framework consultation | one effective component projection, typed definitions and lifecycle/gap contract | this worktree | accepted and published locally | schemas, negative matrix, deterministic projection, exact tester, complete-diff HCS and browser/publication PASS |
 | `WS-LIVE-CATALOG-07` | Docara owner with docs, UX and designer | generated component catalogue, generic detail page, exact examples and `docara.columns` | this worktree | accepted and published locally | deterministic pages/examples, schema and negative matrix, exact tester, complete-diff HCS, browser/UX/design and publication PASS |
-| `WS-DOCS-08` | Docs owner with Docara implementation | task-oriented beginner, author, migration, maintainer and extension paths with canonical component references | this worktree | mobile anchor correction implemented after exact browser attempt 1; new immutable unified acceptance pending | documentation contract/example/site tests, exact deterministic build/static verifier and browser acceptance PASS |
+| `WS-DOCS-08` | Docs owner with Docara implementation | task-oriented beginner, author, migration, maintainer and extension paths with canonical component references | this worktree | accepted and published locally on exact candidate `de87bdef…` | documentation contract/example/site tests, exact deterministic build/static verifier and browser acceptance PASS |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -354,15 +354,10 @@ was discovered.
 
 ## Next Safe Batch
 
-Freeze the verified Batch 8 tree as one local immutable product candidate.
-From its exact archive, run the complete sequential suite, deterministic
-double build, static verifier and final requirement matrix. Independently
-inventory the complete Goal diff from baseline
-`31f468be85d015b962fccc2b4c089204aab1410b`, then run native-Chrome UX/design
-acceptance at 1440, 768 and 390 pixels across menu, search, reading context,
-settings, landing, catalogue and the five documentation paths. Publish to
-`docara.test` only after every exact gate returns `PASS`, with staging,
-timestamped rollback and matching source/staging/served digests.
+None inside this completed Goal. Public release, default-branch migration,
+Framework-owner improvements and repository retirement remain separate,
+explicitly gated work. The locally accepted product can now be used and
+evaluated at `https://docara.test/`.
 
 ## Last Completed Batch
 
@@ -476,5 +471,27 @@ focused RED-to-GREEN evidence is recorded in
 `batch-9-mobile-anchor-correction.md`. The same precommit run exposed and then
 closed a deterministic stderr-pipe backpressure defect in the preview
 test harness without changing the production router; the diagnosis and 5/5
-retest are recorded in `batch-9-test-harness-backpressure-correction.md`. A
-new immutable candidate must repeat all exact gates before local publication.
+retest are recorded in `batch-9-test-harness-backpressure-correction.md`.
+
+Final candidate `de87bdef224d518d1c707286d4640be0238d34bc` (tree
+`7c0c20678aff65858e29e9be4dd304ddd44ba17b`) passed independent exact-archive
+tester, full baseline-to-candidate Human-Centered
+Simplicity/source/docs/security and native-Chrome UX/design acceptance. The
+full sequential suite passed 541 tests with 4,305 assertions; two clean builds
+were byte-identical at
+`502e43119ea2f2fc6ce358042858937060a67c4aa3d4d5ac0295e3d19c8e782f`,
+and the exact verifier checked 56 HTML pages and 5,793 local references with
+zero broken.
+
+The exact build was published through verified staging and same-filesystem
+directory renames to `https://docara.test/`. Source, staging and served
+digests match. Desktop and cold-mobile served smoke passed menu, active trail,
+search, reading context, landing, catalogue, component, theme, anchor,
+overflow, console, resource and missing-route checks. The prior Batch 7 tree
+is retained at
+`.docara-backups/product-completion-docs-de87bde-20260719-213128`.
+
+This closes Milestones 4 and 5, Batch 8, Batch 9 and the complete local-product
+Goal. It does not claim public release, production readiness, readiness of all
+Simai Framework components, default-branch migration, Framework-owner changes
+or repository retirement.

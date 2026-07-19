@@ -35,22 +35,23 @@ is served at `docara.test` with digest
 the exact accepted Batch 6 tree is retained at
 `.docara-backups/product-completion-live-catalog-a5cc0e7-20260719-182708`.
 
-The first Batch 8 candidate `fe990afeb22c42b68ae498ae7104b304fc0b98d2`
-was rejected by native-Chrome preacceptance because the exact query
-`расширение` returned no result and the generated component catalogue had no
-filter. The bounded correction passes 541 tests with 4,304 assertions, Pint,
-Composer validation and diff checks. Two clean builds reproduce digest
-`e60f6bbea7b59de84184025fe6322781db605067afb60ffbc2ea9cdf48576972`
-with 43 authored pages, 56 HTML pages, 55 search documents, 13 generated
-catalogue surfaces, no old manual component routes and 5,793 verified local
-references with zero broken.
+The corrected immutable candidate
+`4164ba2aa890a711b58a2ea016c4f4fbb77ef865` passed independent exact-archive
+tester and complete-diff Human-Centered Simplicity/source/security gates, but
+native-Chrome acceptance rejected it at 390 pixels: an outline link placed its
+heading at 111.84 pixels while the sticky header ended at 127 pixels.
 
-Freeze the corrected local immutable candidate. Accept it only after independent
-exact-archive full tests/build/static verification, a complete inventory from
-Goal baseline `31f468be85d015b962fccc2b4c089204aab1410b`, and native-Chrome checks at
-1440, 768 and 390 pixels for menu, search, breadcrumbs/TOC/previous-next,
-settings, landing, catalogue/details and the beginner/author/migration/
-maintainer/extension documentation paths. Keep Batch 7 served until every gate
-passes, then publish through staging with a timestamped rollback and matching
-digests. Public release, default-branch migration, Framework owner writes and
-repository retirement remain excluded.
+The bounded test-first correction increases only the mobile heading anchor
+reserve from 8rem to 10rem. During full regression, an existing preview test
+deterministically deadlocked because Symfony Process output was not drained;
+the test harness now drains its child pipes while the production router remains
+unchanged. The full suite passes 541 tests with 4,305 assertions and two clean
+builds reproduce digest
+`502e43119ea2f2fc6ce358042858937060a67c4aa3d4d5ac0295e3d19c8e782f`.
+
+Freeze the commit containing both bounded corrections and repeat the
+exact-archive, complete-diff and complete native-Chrome matrices on that same
+SHA. Keep Batch 7 served until every gate passes, then publish through staging
+with a timestamped rollback and matching source/staging/served digests. Public
+release, default-branch migration, Framework owner writes and repository
+retirement remain excluded.

@@ -255,7 +255,7 @@ Do not complete the Goal until:
 | `WS-LANDING-05` | Docara owner with UX/designer | landing recipe and responsive demonstration from pinned Framework building blocks | this worktree | accepted and published locally | exact tester, HCS/source/security, native-Chrome UX/design and served smoke PASS |
 | `WS-CATALOG-CONTRACT-06` | Docara owner with Framework consultation | one effective component projection, typed definitions and lifecycle/gap contract | this worktree | accepted and published locally | schemas, negative matrix, deterministic projection, exact tester, complete-diff HCS and browser/publication PASS |
 | `WS-LIVE-CATALOG-07` | Docara owner with docs, UX and designer | generated component catalogue, generic detail page, exact examples and `docara.columns` | this worktree | accepted and published locally | deterministic pages/examples, schema and negative matrix, exact tester, complete-diff HCS, browser/UX/design and publication PASS |
-| `WS-DOCS-08` | Docs owner with Docara implementation | task-oriented beginner, author, migration, maintainer and extension paths with canonical component references | this worktree | browser findability correction implemented; corrected immutable unified acceptance pending | documentation contract/example/site tests, exact deterministic build/static verifier and browser acceptance PASS |
+| `WS-DOCS-08` | Docs owner with Docara implementation | task-oriented beginner, author, migration, maintainer and extension paths with canonical component references | this worktree | mobile anchor correction implemented after exact browser attempt 1; new immutable unified acceptance pending | documentation contract/example/site tests, exact deterministic build/static verifier and browser acceptance PASS |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -461,3 +461,20 @@ the focused suite passes 17 tests with 945 assertions and the full sequential
 suite passes 541 tests with 4,285 assertions. This is not immutable acceptance:
 Batch 8, Milestone 4, Batch 9 and the Goal remain pending the unified exact
 tester, complete-diff HCS/source/security and native-Chrome UX/design gates.
+
+Candidate `4164ba2aa890a711b58a2ea016c4f4fbb77ef865` then closed the exact
+`расширение` search and generated-catalogue filtering findings. It passed the
+independent exact-archive tester and complete-diff Human-Centered
+Simplicity/source/security gates, but native-Chrome attempt 1 returned
+`CORRECTION_REQUIRED`: at 390 pixels the computed heading anchor reserve was
+112 pixels while the sticky header ended at 127 pixels. The candidate remains
+immutable and unpublished.
+
+The follow-up correction changes only the generated mobile heading reserve
+from 8rem to 10rem and adds a real-documentation regression assertion. Its
+focused RED-to-GREEN evidence is recorded in
+`batch-9-mobile-anchor-correction.md`. The same precommit run exposed and then
+closed a deterministic stderr-pipe backpressure defect in the preview
+test harness without changing the production router; the diagnosis and 5/5
+retest are recorded in `batch-9-test-harness-backpressure-correction.md`. A
+new immutable candidate must repeat all exact gates before local publication.

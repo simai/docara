@@ -2,7 +2,7 @@
 
 Date: 2026-07-19
 Starting candidate: `fe990afeb22c42b68ae498ae7104b304fc0b98d2`
-Status: `CORRECTION_READY_FOR_EXACT_ACCEPTANCE`
+Status: `SUPERSEDED_BY_MOBILE_ANCHOR_CORRECTION`
 
 ## Why the first candidate was rejected
 
@@ -75,3 +75,12 @@ complete-baseline Human-Centered Simplicity/source/security review and
 native-Chrome matrix at 1440, 768 and 390 pixels. The Goal and local
 publication remain pending until all three independent gates pass on the same
 SHA.
+
+## Exact acceptance result
+
+Candidate `4164ba2aa890a711b58a2ea016c4f4fbb77ef865` passed the independent
+exact-archive tester and complete-diff Human-Centered
+Simplicity/source/security gates, but native-Chrome acceptance returned
+`CORRECTION_REQUIRED`: at 390 pixels a heading target landed under the sticky
+header. The candidate remains immutable and unpublished. The bounded follow-up
+is recorded in `batch-9-mobile-anchor-correction.md`.

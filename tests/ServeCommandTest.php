@@ -161,13 +161,13 @@ class ServeCommandTest extends TestCase
         try {
             $this->waitForServer($port, $server);
 
-            $pretty = $this->request($port, '/components/catalog/docara.columns/');
-            $exactIndex = $this->request($port, '/components/catalog/docara.columns/index.html');
-            $exact = $this->request($port, '/assets/app.css');
-            $missing = $this->request($port, '/missing/');
-            $traversal = $this->request($port, '/%2e%2e/outside.txt');
-            $php = $this->request($port, '/danger.php');
-            $write = $this->request($port, '/assets/app.css', 'POST');
+            $pretty = $this->request($server, $port, '/components/catalog/docara.columns/');
+            $exactIndex = $this->request($server, $port, '/components/catalog/docara.columns/index.html');
+            $exact = $this->request($server, $port, '/assets/app.css');
+            $missing = $this->request($server, $port, '/missing/');
+            $traversal = $this->request($server, $port, '/%2e%2e/outside.txt');
+            $php = $this->request($server, $port, '/danger.php');
+            $write = $this->request($server, $port, '/assets/app.css', 'POST');
 
             $this->assertSame(200, $pretty['status']);
             $this->assertSame('<h1>Dotted route works</h1>', $pretty['body']);
@@ -230,8 +230,11 @@ class ServeCommandTest extends TestCase
     /**
      * @return array{status: int, headers: string, body: string}
      */
-    private function request(int $port, string $target, string $method = 'GET'): array
+    private function request(Process $server, int $port, string $target, string $method = 'GET'): array
     {
+        $server->getIncrementalOutput();
+        $server->getIncrementalErrorOutput();
+
         $socket = stream_socket_client(
             "tcp://127.0.0.1:{$port}",
             $errorCode,

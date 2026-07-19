@@ -112,6 +112,11 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertFileExists($build . '/' . $receipt['index']['output']);
 
         $catalogIndex = (string) file_get_contents($build . '/' . $receipt['index']['output']);
+        self::assertStringContainsString(
+            'scroll-margin-block-start:10rem',
+            $catalogIndex,
+            'Mobile heading anchors must reserve enough space for the complete sticky header.',
+        );
         foreach ($unavailable as $entry) {
             self::assertStringContainsString(
                 'data-docara-component-gap="' . $entry['id'] . '"',

@@ -448,7 +448,7 @@ preacceptance `PASS`. It contains 43 authored pages and produces 56 HTML pages,
 55 search documents and 13 generated catalogue surfaces; all nine duplicate
 manual component routes are absent. The real static verifier checks 5,793
 local references with zero broken, two clean builds reproduce digest
-`c5adf0f09fefe2c59b483abac482f1414b6b71b2687b6d9214231aae25f52034`,
+`69e1fb2a341b43806ad8e00e14158b2234b0e79b5021efe1b047293d981bcc9e`,
 the focused suite passes 17 tests with 945 assertions and the full sequential
 suite passes 541 tests with 4,285 assertions. This is not immutable acceptance:
 Batch 8, Milestone 4, Batch 9 and the Goal remain pending the unified exact

@@ -60,7 +60,12 @@ Two clean production builds from the same mutable tree are byte-identical:
 - static local references checked: 5,793;
 - broken references: 0;
 - canonical path-independent digest:
-  `c5adf0f09fefe2c59b483abac482f1414b6b71b2687b6d9214231aae25f52034`.
+  `69e1fb2a341b43806ad8e00e14158b2234b0e79b5021efe1b047293d981bcc9e`.
+
+The digest algorithm processes files in sorted relative-path order and feeds
+SHA-256 with each UTF-8 relative path, one NUL byte and the raw 32-byte
+SHA-256 digest of the file. This reproduces the algorithm used for prior
+accepted local publications and is independent of the absolute build path.
 
 ## Review findings
 

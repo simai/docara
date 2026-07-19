@@ -37,7 +37,7 @@ the exact accepted Batch 6 tree is retained at
 
 Batch 8 mutable implementation passes 541 tests with 4,285 assertions, Pint,
 Composer validation, JSON and diff checks. Two clean builds reproduce digest
-`c5adf0f09fefe2c59b483abac482f1414b6b71b2687b6d9214231aae25f52034`
+`69e1fb2a341b43806ad8e00e14158b2234b0e79b5021efe1b047293d981bcc9e`
 with 43 authored pages, 56 HTML pages, 55 search documents, 13 generated
 catalogue surfaces, no old manual component routes and 5,793 verified local
 references with zero broken.

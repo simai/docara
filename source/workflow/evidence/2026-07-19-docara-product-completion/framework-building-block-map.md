@@ -77,9 +77,9 @@ physically present file is not sufficient evidence.
 - portable projection validator: `src/Framework/FrameworkLock.php`;
 - Framework plan: `src/Framework/FrameworkAssetPlanner.php`;
 - Core menu exact source:
-  `simai/ui@7e836d8a...:distr/component/menu/`;
-- current loader contract:
-  `/Users/rim/Documents/GitHub/ui-loader/src/component/menu/js/_menu.js`.
+  `simai/ui@7e836d8a9414d5da553fb1ab0404721e5b48769a:distr/component/menu/`;
+- loader contract inspected at the exact read-only revision:
+  `simai/ui-loader@5560df691a76ef949b73c68c0414ca58bde676cd:src/component/menu/js/_menu.js`.
 
 ## Nonclaims
 

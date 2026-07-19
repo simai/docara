@@ -168,6 +168,8 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('.docara-outline-trigger{min-block-size:44px}', $html);
             self::assertStringContainsString("dialog.addEventListener('cancel'", $html);
             self::assertStringContainsString('if(event.target===dialog){closeSheet()}', $html);
+            self::assertStringContainsString('function trapDialogTab(dialog,event)', $html);
+            self::assertStringContainsString("settingsDialog.addEventListener('keydown',function(event){trapDialogTab(settingsDialog,event)})", $html);
             self::assertStringContainsString('[data-docara-reader-settings-trigger]:focus-visible', $html);
             self::assertStringContainsString('data-docara-reader-settings-close', $html);
             self::assertStringContainsString('[data-docara-reader-settings-close]:focus-visible', $html);

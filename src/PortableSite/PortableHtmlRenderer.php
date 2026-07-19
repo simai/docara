@@ -541,6 +541,19 @@ final class PortableHtmlRenderer
   function requestTransient(dialog){
     document.dispatchEvent(new CustomEvent('docara:open-transient',{detail:{id:dialog.id}}));
   }
+  function trapDialogTab(dialog,event){
+    if(event.key!=='Tab')return;
+    var focusable=Array.from(dialog.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'))
+      .filter(function(element){
+        if(element.hidden||element.getClientRects().length===0)return false;
+        return !(element.matches('input[type="radio"]')&&!element.checked);
+      });
+    if(!focusable.length)return;
+    var first=focusable[0],last=focusable[focusable.length-1];
+    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
+    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
+    else if(!dialog.contains(document.activeElement)){event.preventDefault();(event.shiftKey?last:first).focus()}
+  }
   function bindSheet(dialog){
     var trigger=document.querySelector('[data-docara-sheet-trigger][aria-controls="'+dialog.id+'"]');
     var closeButton=dialog.querySelector('[data-docara-sheet-close]');
@@ -566,15 +579,7 @@ final class PortableHtmlRenderer
     dialog.querySelectorAll('a[href]').forEach(function(link){link.addEventListener('click',closeSheet)});
     dialog.addEventListener('click',function(event){if(event.target===dialog){closeSheet()}});
     dialog.addEventListener('cancel',function(event){event.preventDefault();closeSheet()});
-    dialog.addEventListener('keydown',function(event){
-      if(event.key!=='Tab')return;
-      var focusable=Array.from(dialog.querySelectorAll('a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])'))
-        .filter(function(element){return !element.hidden});
-      if(!focusable.length)return;
-      var first=focusable[0],last=focusable[focusable.length-1];
-      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
-      else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
-    });
+    dialog.addEventListener('keydown',function(event){trapDialogTab(dialog,event)});
     dialog.addEventListener('close',function(){trigger.setAttribute('aria-expanded','false');trigger.focus()});
     window.addEventListener('resize',function(){
       var unavailable=(dialog.id==='docara-mobile-navigation'&&window.matchMedia('(min-width: 801px)').matches)
@@ -658,6 +663,7 @@ final class PortableHtmlRenderer
       requestAnimationFrame(function(){var selected=themeOptions.find(function(option){return option.checked});if(selected){selected.focus()}});
     });
     settingsDialog.addEventListener('close',function(){settingsTrigger.setAttribute('aria-expanded','false');settingsTrigger.focus()});
+    settingsDialog.addEventListener('keydown',function(event){trapDialogTab(settingsDialog,event)});
     themeOptions.forEach(function(option){
       option.addEventListener('change',function(){
         if(!option.checked)return;

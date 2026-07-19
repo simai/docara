@@ -1,8 +1,9 @@
 # Миграция
 
-`docara init --portable` намеренно не переписывает существующий legacy-проект.
-Миграция должна быть отдельной проверяемой операцией: сохранить исходники,
-преобразовать конфигурацию, собрать новый сайт и сравнить маршруты и содержание.
+`docara init --portable` создаёт новый переносимый проект и намеренно не
+переписывает существующий legacy-проект. Миграция — отдельная проверяемая
+операция: сохраните исходники, перенесите поддерживаемые данные, соберите оба
+варианта и сравните публичный результат.
 
 :::ui.alert
 {"type":"info","variant":"default","title":"Без скрытой конвертации","supporting-text":"Существующие config.php, .settings.php и source/_core остаются нетронутыми, пока владелец явно не запускает миграцию.","closable":false,"aria-label":"Переносимый режим не меняет legacy проект автоматически"}
@@ -16,5 +17,40 @@
 - [С Mix на Vite](/migration/mix-to-vite/)
 - [Диагностика частых проблем](/migration/troubleshooting/)
 
-Архивирование `docara-mix` допустимо только после подтверждённой миграции всех
-активных потребителей и отдельной приёмки нулевых ссылок.
+## Общий безопасный порядок
+
+1. Зафиксируйте исходную revision, рабочую сборку и список публичных URL.
+2. Создайте отдельный portable-каталог; не запускайте update поверх legacy.
+3. Перенесите Markdown, ассеты и только поддерживаемые настройки.
+4. Соберите старый и новый сайты, затем сравните содержание, ссылки и
+   адаптивное поведение.
+5. Подготовьте резервную копию опубликованного каталога и проверенный rollback.
+6. Переключайте document root только после `verify-static` и browser-приёмки.
+
+Portable output собирается PHP-командой и не требует Node.js. Vite нужен только
+разработчику, который меняет исходные ассеты темы.
+
+## Выведенные ручные маршруты компонентов
+
+Компоненты теперь документируются одним сгенерированным каталогом. Markdown
+redirect-stubs намеренно не создаются:
+
+| Старый маршрут | Текущий источник |
+| --- | --- |
+| `/components/alert/` | [`ui.alert`](/components/catalog/ui.alert/) |
+| `/components/button/` | [`ui.button`](/components/catalog/ui.button/) |
+| `/components/card/` | [`docara.card`](/components/catalog/docara.card/) |
+| `/components/code/` | [`native.code`](/components/catalog/native.code/) |
+| `/components/cta/` | [`docara.cta`](/components/catalog/docara.cta/) |
+| `/components/features/` | [`docara.features`](/components/catalog/docara.features/) |
+| `/components/steps/` | [`docara.steps`](/components/catalog/docara.steps/) |
+| `/components/table/` | [`native.table`](/components/catalog/native.table/) |
+| `/components/tabs/` | [запись `ui.tabs` в каталоге](/components/catalog/) |
+
+Если публичный сайт обязан сохранить старые URL, добавьте отдельно проверяемый
+redirect/alias на уровне hosting. Не возвращайте дублирующие страницы в
+Markdown.
+
+Пакет `docara-mix` не нужен новым проектам. Архивировать его можно только после
+миграции всех активных потребителей, clean build/watch проверки и
+подтверждённого zero-reference scan.

@@ -41,7 +41,7 @@
         "docs": false,
         "demo": false
     },
-    "docs_ref": "docs/site/content/components/tabs.md",
+    "docs_ref": "docs/site/content/components.md",
     "provenance": {
         "source_kind": "product_requirement",
         "framework_owner": "simai/ui and larena/ui"

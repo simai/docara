@@ -35,7 +35,7 @@
         "docs": true,
         "demo": true
     },
-    "docs_ref": "docs/site/content/components/table.md",
+    "docs_ref": "docs/site/content/authoring/markdown.md",
     "example_ref": "resources/component-catalog/examples/native.table.md",
     "provenance": {
         "source_kind": "portable_markdown_profile",

@@ -17,7 +17,8 @@ Portable режим определяется наличием `docara.json` со
 4. Отрендерить Markdown и назначить детерминированные якоря до Smart hydration.
 5. Построить маршруты, каноническую топологию и asset plan.
 6. Получить из одной топологии видимое меню, breadcrumbs и previous/next.
-7. Записать HTML, ассеты и resolved page plans.
+7. Построить эффективный каталог и сгенерировать его index/detail страницы.
+8. Записать HTML, ассеты, search index, catalogue receipt и resolved page plans.
 
 :::
 
@@ -30,5 +31,22 @@ Outline builder работает с безопасным HTML Markdown до по
 Smart-компонентов. Он назначает H1–H6 уникальные Unicode `id`, а renderer
 выводит H2–H6 только до `reading.toc_depth`.
 
+## Источники и производные поверхности
+
+- `resources/component-catalog/native`, `typed`, `smart` и `requirements`
+  содержат owner-записи возможностей;
+- exact Framework lock и manifests ограничивают Smart admission;
+- `EffectiveComponentCatalogBuilder` создаёт один проверяемый каталог;
+- `PortableComponentCatalogProjector` использует один общий index/detail shape;
+- `_docara/component-catalog.json`, generated HTML и page receipt являются
+  производными результатами, а не вторым источником истины.
+
+Локализованный текст и exact fixture находятся рядом с canonical записью.
+Отдельные ручные страницы для каждого компонента не нужны.
+
 Файлы являются источником истины; база данных, runtime CRUD, роли и workflow не
 входят в standalone Docara.
+
+Пользовательская сборка остаётся PHP-only. Browser JavaScript в готовом
+статическом сайте не означает, что автору нужен Node.js; Vite используется
+только maintainer-контуром исходных ассетов темы.

@@ -1,22 +1,39 @@
 # Сборка и публикация
 
-Обычному автору не нужен frontend toolchain. Команда Docara читает Markdown и
-JSON, проверяет Framework lock и записывает готовый статический сайт.
+Обычному автору не нужен frontend toolchain. PHP-команда читает Markdown и
+JSON, проверяет Framework lock и создаёт готовый статический каталог.
+
+## Безопасный путь
 
 :::steps
-1. Проверьте исходники командой `php vendor/bin/docara build local`.
-2. Для итогового каталога выполните `php vendor/bin/docara build production`.
-3. Проверьте HTML, внутренние ссылки, ассеты и файл `.docara/resolved-page-plans.json`.
-4. Размещайте только собранный каталог на выбранном статическом хостинге.
+1. Соберите `production` output.
+2. Проверьте его командой `verify-static`.
+3. Откройте тот же output по HTTP через `serve --no-build`.
+4. Перед публикацией перенесите проверенный каталог в staging.
+5. Сравните digest, выполните smoke и только затем переключите traffic.
+6. При ошибке верните сохранённый предыдущий каталог.
 
 :::
 
-## Подробнее
+```bash
+php vendor/bin/docara build production
+php vendor/bin/docara verify-static build_production
+php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
+```
+
+Preview блокирует терминал до `Ctrl+C`. Не используйте `file://`.
+
+## Руководства
 
 - [PHP-only сборка](/build/php-only/)
 - [Локальный просмотр](/build/local-preview/)
 - [Статический результат](/build/static-output/)
 - [Воспроизводимость](/build/determinism/)
+- [Проверка output](/build/verify/)
+- [Staged-публикация и rollback](/build/publish/)
 
-Vite относится к изменению исходных ассетов темы разработчиком Docara и
-описан отдельно в [разделе разработки](/development/vite-assets/).
+Vite нужен только maintainer-разработчику исходных ассетов темы. Он не входит в
+portable author/build path.
+
+Успешный local verify не является автоматическим разрешением публичного
+release или production deployment.

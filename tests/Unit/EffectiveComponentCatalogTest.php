@@ -278,6 +278,42 @@ final class EffectiveComponentCatalogTest extends TestCase
     }
 
     #[Test]
+    public function every_entry_points_to_its_exact_authored_documentation_owner(): void
+    {
+        $catalog = $this->builder()->build();
+        $actual = array_column($catalog['entries'], 'docs_ref', 'id');
+        $expected = [
+            'content.icon' => 'docs/site/content/components.md',
+            'docara.card' => 'docs/site/content/components/syntax.md',
+            'docara.columns' => 'docs/site/content/components/syntax.md',
+            'docara.cta' => 'docs/site/content/components/syntax.md',
+            'docara.features' => 'docs/site/content/components/syntax.md',
+            'docara.steps' => 'docs/site/content/components/syntax.md',
+            'native.code' => 'docs/site/content/authoring/markdown.md',
+            'native.code.enhanced' => 'docs/site/content/components.md',
+            'native.headings_and_text' => 'docs/site/content/authoring/markdown.md',
+            'native.links_and_images' => 'docs/site/content/authoring/markdown.md',
+            'native.lists_and_quotes' => 'docs/site/content/authoring/markdown.md',
+            'native.table' => 'docs/site/content/authoring/markdown.md',
+            'ui.alert' => 'docs/site/content/components/syntax.md',
+            'ui.badge' => 'docs/site/content/components.md',
+            'ui.button' => 'docs/site/content/components/syntax.md',
+            'ui.dataview' => 'docs/site/content/components.md',
+            'ui.tabs' => 'docs/site/content/components.md',
+        ];
+
+        self::assertSame($expected, $actual);
+        foreach ($actual as $id => $docsReference) {
+            self::assertFileExists(dirname(__DIR__, 2) . '/' . $docsReference, $id);
+            self::assertStringNotContainsString(
+                '/components/catalog/',
+                $docsReference,
+                "$id must reference authored guidance, not generated output.",
+            );
+        }
+    }
+
+    #[Test]
     public function semantic_validator_rejects_duplicate_order_evidence_gap_path_and_overclaim_regressions(): void
     {
         $catalog = $this->builder()->build();

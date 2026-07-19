@@ -1,293 +1,231 @@
-# Portable Docara format
+# Переносимый формат Docara
 
-## Decision
+## Решение
 
-The portable format lives in the main `simai/docara` repository as an explicit
-mode. A third long-lived Docara implementation would create another runtime,
-another release line and another migration problem. Isolation is achieved by a
-format marker (`docara.json`) and a separate builder, not by another product.
+Переносимый формат развивается в основном репозитории `simai/docara` как
+явный режим. Отдельная третья реализация означала бы ещё один runtime, release
+line и migration path.
 
-The existing Blade/Jigsaw path remains available and is not implicitly
-migrated. `docara init --portable` refuses to rewrite a legacy project.
+Legacy Blade/Jigsaw остаётся доступным для существующих проектов.
+`docara init --portable` не преобразует legacy-проект неявно.
 
-## Product boundary
+## Граница продукта
 
-Portable Docara is intentionally smaller than Larena:
+Переносимый Docara намеренно меньше Larena:
 
-- files are the source of truth;
-- Markdown is the content store;
-- JSON controls presentation and inherited section defaults;
-- output is a deterministic static site;
-- there is no database, administration panel, workflow, roles or runtime CRUD.
+- файлы являются источником истины;
+- Markdown хранит содержание;
+- JSON задаёт проверяемое представление и наследуемые настройки;
+- результатом является детерминированный статический сайт;
+- нет базы данных, административной панели, workflow, ролей и runtime CRUD.
 
-Larena can import the same contract and add those application capabilities. It
-must not make the standalone format depend on Larena internals.
+Обычному автору нужны PHP и Composer. Vite относится только к разработке
+исходных ассетов темы и не является зависимостью переносимой сборки.
 
-## Files and inheritance
+## Файлы
 
-`docara.json` defines the site-wide defaults and references the separate
-immutable Simai Framework lock file.
-Each `_section.json` applies to its directory and all descendants. A page may
-have a sidecar named `<page>.page.json`.
+```text
+docara.json
+simai-framework.lock.json
+assets/
+content/
+  _section.json
+  index.md
+  index.page.json
+  guides/
+    _section.json
+    install.md
+    install.page.json
+```
 
-For `content/guides/install.md`, the exact order is:
+`docara.json` определяет сайт и указывает отдельный immutable Framework lock.
+Каждый `_section.json` действует на свой каталог и потомков. Sidecar
+`<page>.page.json` относится только к соседней Markdown-странице.
 
-1. built-in defaults;
+Для `content/guides/install.md` порядок фиксирован:
+
+1. встроенные значения;
 2. `docara.json`;
-3. optional root `_section.json`;
+3. необязательный корневой `_section.json`;
 4. `content/_section.json`;
 5. `content/guides/_section.json`;
-6. optional `content/guides/install.page.json`;
-7. `content/guides/install.md` as content.
+6. `content/guides/install.page.json`;
+7. Markdown как содержание.
 
-Objects merge recursively and scalar values override inherited values. A known
-presentation object beginning with `{"$reset": true}` clears that inherited
-branch before applying its sibling keys. Every winning value records its source
-in `provenance`.
+Объекты объединяются рекурсивно, массивы заменяются целиком, скалярное значение
+заменяет унаследованное. Отсутствующее поле продолжает наследоваться.
+`{"$reset": true}` сначала удаляет унаследованную ветку; соседние ключи затем
+заполняют её заново. Reset без соседних ключей сохраняется в resolved plan как
+пустой объект.
 
-Version 1 exposes only settings with a working renderer, validation, tests and
-documentation:
+Каждое итоговое значение и сам reset имеют источник в `provenance`.
 
-- `branding.title` and optional `branding.label`;
-- `branding.logo`, `branding.logo_dark` and `branding.favicon`: root-relative
-  image paths; `logo_dark` is an override and therefore requires `logo`;
-- `layout.max_width`: `compact`, `normal`, `wide`, or `full`;
-- `settings.theme`: `system`, `light`, or `dark`;
-- `navigation.hidden`: a boolean that removes the page from generated
-  navigation;
-- `navigation.order`: a non-negative stable sibling order.
-- `search.enabled`: show the local-search interface on pages in the current
-  scope;
-- `search.indexed`: include pages in the deterministic local index;
-- `reading.breadcrumbs`: show the path from the site home to the current page;
-- `reading.toc`: show a page outline;
-- `reading.toc_depth`: include headings through level 2–6;
-- `reading.previous_next`: show adjacent documentation pages.
+## Defaults и starter
 
-These nested objects are strict and must contain at least one setting. Unknown,
-empty or incorrectly typed branches fail schema validation instead of becoming
-silent no-ops. Smart-components are authored only inside Markdown; JSON
-descriptors do not provide a second component list.
+Встроенный resolver гарантирует:
 
-The `search` branch is inherited and supports the same `{"$reset": true}`
-contract. Navigation visibility and search inclusion are deliberately separate:
-`navigation.hidden: true` does not remove a page from search. Use
-`search.indexed: false` when content must not appear in the index.
+- `content_root: "content"`;
+- `search.enabled: false`;
+- `search.indexed: true`;
+- `reading.breadcrumbs: true`;
+- `reading.toc: true`;
+- `reading.toc_depth: 3`;
+- `reading.previous_next: true`.
 
-The `reading` branch is inherited independently and supports the same reset
-contract. Its UI is emitted only by the `docs` preset. Stable heading IDs are
-still generated when `reading.toc` is false so incoming fragment links do not
-depend on whether the outline is visible.
+Это не то же самое, что пример starter. Поставляемый starter дополнительно
+выбирает `docs`, русский locale, корневой `base_url`, бренд, широкий макет,
+системную тему и включает интерфейс локального поиска. Эти значения принадлежат
+`docara.json` starter и могут быть изменены владельцем сайта.
+
+Проверить итог и источник каждого поля можно в
+`build_<environment>/.docara/resolved-page-plans.json`.
+
+## Presentation scopes
+
+Наследуемые ветки `branding`, `layout`, `settings`, `navigation`, `search` и
+`reading` доступны на уровне сайта, раздела и страницы. `preset`, `title` и
+`locale` также могут уточняться в section/page descriptor. Только сайт задаёт
+`framework_lock`, `content_root`, `base_url` и `default_locale`. Только page
+sidecar задаёт `description` и `slug`.
+
+Ветки строгие: неизвестное поле, неправильный тип, пустой `{}` или `[]`
+отклоняются. Чтобы очистить ветку, используйте явный reset.
 
 ## Presets
 
-Version 1 contains two presentation presets:
+Формат содержит два presentation recipe:
 
-- `docs` — branded header, sticky hierarchical navigation and readable content
-  column;
-- `landing` — a focused page without documentation navigation.
+- `docs` — брендовая шапка, иерархическая навигация, breadcrumbs, outline и
+  previous/next согласно настройкам;
+- `landing` — сфокусированная страница без документационного дерева и reading
+  context.
 
-Presets are render recipes, not different content types. A page changes preset
-through its sidecar and keeps the same Markdown and component-call syntax.
-The landing preset renders an open content composition without the
-documentation tree, breadcrumb, outline or previous/next surfaces. Its starter
-uses native headings and fenced code plus two typed Docara recipes:
+Preset не меняет формат содержания. Одна Markdown-страница становится
+лендингом через page sidecar:
 
-- `:::cta` accepts exactly one safe Markdown link and keeps it a native anchor
-  styled with Simai Framework button classes;
-- `:::features` accepts one flat unordered list with two to six items, each
-  containing one plain Markdown paragraph with bounded inline content, and lays
-  them out with the Simai Framework one-to-three-column responsive grid.
-
-These recipes add no JavaScript or runtime asset. They fail closed for malformed
-or nested bodies and remain available to the `docs` preset as ordinary typed
-Markdown composition.
-
-The docs tree is derived from Markdown source paths, not public slugs. A page
-such as `guides.md` or `guides/index.md` is merged with the `guides/` directory
-into one linked branch. Directories without an overview page remain
-disclosure-only groups. The semantic tree has no depth cap; the shipped fixture
-and pinned Core `.sf-menu` acceptance prove four visible levels. Active links
-use `aria-current`, their ancestors open automatically, and mobile navigation
-uses a collapsed native disclosure instead of placing the entire tree before
-the article.
-
-The canonical tree is also the source for breadcrumbs and previous/next links.
-Hidden pages remain in that topology so their real ancestry is preserved, but
-they are removed from the visible menu and skipped as adjacency targets. A
-hidden overview with visible descendants remains as an unlinked menu group.
-Adjacent pages are depth-first, locale-isolated `docs` pages; landing pages are
-not inserted into a documentation reading sequence.
-
-Every H1–H6 receives a deterministic Unicode ID. The outline includes H2
-through `reading.toc_depth`, duplicate slugs receive `-1`, `-2` suffixes, and
-punctuation-only headings use `section`. The static verifier rejects duplicate
-HTML IDs and unresolved local fragments.
-
-## Markdown extensions
-
-Raw HTML is stripped. Rich elements use fenced, JSON-valued component calls:
-
-```markdown
-:::ui.alert
-{"type":"warning","title":"Check the lock","supporting-text":"Use an immutable revision."}
-
-:::
+```json
+{
+  "schema": "docara.page.v1",
+  "title": "Лендинг",
+  "preset": "landing",
+  "layout": { "max_width": "wide" },
+  "navigation": { "hidden": true },
+  "search": { "enabled": false, "indexed": false }
+}
 ```
 
-Calls are allowed only when all of the following are true:
+Навигационное дерево выводится из путей Markdown, а не из публичного `slug`.
+Overview-файл и одноимённый каталог образуют одну ветку. Текущая страница
+получает `aria-current`, предки раскрываются, а мобильная версия использует
+нативный disclosure.
 
-1. the identifier has valid `ui.*` syntax;
-2. the exact Simai Framework lock admits that identifier;
-3. a bundled real Larena manifest describes its props and host renderer;
-4. the manifest provider revision and bytes match the Simai Framework lock;
-5. every prop passes the manifest schema and constraints;
-6. the runtime asset plan contains only immutable revisions.
+Hidden page сохраняет реальную ancestry, но не показывается в меню и
+previous/next. `navigation.hidden` не является контролем доступа и не
+исключает страницу из поиска автоматически.
 
-The first bounded projection supports `ui.alert` and `ui.button`. Future
-Retype-like extensions should be added through the same manifest path, not as
-arbitrary HTML or an unrelated shortcode engine.
+## Markdown и компоненты
 
-`ui.button` renders a visual action control, but portable Docara does not bind
-or execute an action. Its exact manifest has no `href`. Authors must use
-`:::cta` when the intended result is navigation; Docara does not attach an
-invented click handler to a Smart button.
+Raw HTML удаляется, небезопасные ссылки запрещаются. Богатые элементы
+вызываются fenced-директивами, а не произвольным HTML или вторым списком в
+конфигурации.
 
-The accepted pair does not provide the `sf-icon-button` dependency used by a
-closable alert. Therefore `ui.alert` with `closable: true` fails closed in this
-prototype instead of silently rendering a partially working component.
+Исполняемые возможности принадлежат трём семействам:
+
+- bounded native Markdown;
+- typed-компоненты Docara с собственным renderer;
+- Smart-компоненты Simai Framework, допущенные точным lock и manifest.
+
+Точная доступность не перечисляется в этом документе. Каждая сборка создаёт:
+
+- `_docara/component-catalog.json`;
+- `/components/catalog/`;
+- detail-route только для записей lifecycle `supported`.
+
+Недоступная requirement-запись показывает owner, причину, fallback и условие
+допуска, но не становится исполняемым синтаксисом.
+
+Производный каталог не является вторым реестром Simai Framework и не может сам
+расширить Smart surface. Exact call, параметры, состояния, ограничения,
+пример и provenance смотрите в generated catalog конкретной сборки.
 
 ## Simai Framework runtime
 
-`simai-framework.lock.json` wraps the exact Larena frontend runtime lock, the
-hashes of the component manifests used by Docara and an `asset_projection`
-record. CSS, utilities, core runtime, Smart base and component dependencies are
-emitted in deterministic boot order.
+`simai-framework.lock.json` связывает immutable Core/Smart revisions, manifests,
+consumer policy, hashes и asset projection. Moving references вроде `main`,
+`master` и `latest` отклоняются.
 
-The initial projection uses two deliberately different publication paths:
+План ассетов строится детерминированно и проверяется до публикации. Локальные
+байты должны совпадать с ожидаемым SHA-256. Наличие runtime-файла без полного
+authoring, dependency, accessibility и host contract не означает допуск
+компонента.
 
-- Simai Framework Core and the Material Symbols font load from jsDelivr at the
-  exact `simai/ui` commit `7e836d8a9414d5da553fb1ab0404721e5b48769a`;
-- the exact `alert`, `button` and `icon` Smart JavaScript files from
-  `simai/ui-smart@dd786bbae98391fb21df9b4e1e6cd402ead0614c` are verified against
-  SHA-256, copied into the reserved `_docara/framework` output namespace and
-  addressed with a deterministic cache version derived from the accepted
-  runtime pair plus the canonical asset-projection hash.
+Текущий переносимый контур может использовать точные сетевые Core-ассеты.
+Поэтому PHP-only означает отсутствие Node.js в author/build path, а не
+полностью offline browser runtime.
 
-The bounded adapter uses that exact full Material Symbols font and marks
-Framework icons ready only after the browser confirms that the font loaded.
-Dynamic icon nodes are observed as well. This avoids the mutable icon-subset
-service while keeping the Framework component markup and icon implementation.
+## Explainability и determinism
 
-There is no `ui-smart` CDN fallback: a missing or changed bundled byte fails the
-build. Core remains an exact-revision network dependency, so fully offline
-builds require a later, separately accepted Core projection.
+Сборка пишет `.docara/resolved-page-plans.json`. Для каждой страницы там есть:
 
-The lock is a consumer-verified bounded bundle. It does not assert ecosystem,
-production or all-components readiness. `main`, `master`, `latest` and other
-moving references fail closed.
-
-## Effective component catalogue
-
-Every portable build writes `_docara/component-catalog.json` with schema
-`docara.effective_component_catalog.v1`. It is one deterministic derived
-projection of the elements effective for that build, not another manually
-maintained component registry.
-
-The projection combines three executable authoring families:
-
-- `native_markdown` — the bounded portable Markdown profile;
-- `docara_typed` — typed Docara directives with owned renderers;
-- `framework_smart` — Smart-components admitted by the exact Simai Framework
-  lock and narrowed by Docara's consumer policy.
-
-Non-executable `requirement` records keep known needs visible without making
-them callable. Every entry has one lifecycle:
-
-- `supported` — renderer, tests, documentation and example evidence exist; a
-  Smart-component is also admitted by the exact lock;
-- `admission_pending` — the owner work is understood, but admission evidence is
-  incomplete;
-- `framework_gap` — the accepted pair lacks the complete authoring, asset,
-  dependency or accessibility contract; discoverable runtime bytes alone do
-  not close this gap;
-- `deferred` — the need is recorded but intentionally outside the current
-  delivery boundary.
-
-Supported entries are sorted by ID and the catalogue records a canonical
-`content_sha256`. Unavailable entries must name the owner, reason, fallback and
-admission condition. Project JSON, Markdown and catalogue metadata cannot widen
-the Smart surface: only a matching immutable lock record and bundled manifest
-can do that.
-
-Critical manifest assets are fail-closed: each one must appear in the derived
-asset plan or in an explicit narrowing consumer policy. Portable Docara records
-the Larena backend event bridge as an intentional omission because this
-standalone surface admits no backend handler, data-binding or effect contract.
-
-The projection explicitly states that it is not the canonical Simai Framework
-registry, does not cover all Simai Framework components and makes no production
-or public-release readiness claim.
-
-## Explainability and determinism
-
-The build writes `.docara/resolved-page-plans.json`. For every page it records:
-
-- the merged configuration;
-- ordered input trace with SHA-256;
-- value provenance;
+- итоговая configuration;
+- упорядоченный trace входов с SHA-256;
+- provenance каждого значения;
 - canonical plan hash;
-- normalized Smart-component calls;
+- нормализованные component calls;
 - exact asset plan;
-- output file and public URL.
+- output и public URL.
 
-The builder emits no timestamps or absolute local paths. Identical inputs and
-the same lock produce byte-identical output.
+Этот файл диагностический. Его нельзя редактировать вместо Markdown или JSON.
 
-When search is enabled, the same preflight also produces
-`_docara/search-index.json` and the pinned `_docara/search.js` browser runtime.
-The index contains only public page URLs, titles, descriptions, navigation
-trails, headings and visible text. It is locale-isolated, loaded only when the
-search dialog first opens and needs no server endpoint or external search
-service. Index and runtime use their own SHA-256 cache revisions, so either can
-change without leaving stale browser code behind.
+Сборка не добавляет timestamp или локальные абсолютные пути. Одинаковые входы и
+один lock должны давать byte-identical output.
+
+Если поиск включён, создаются `_docara/search-index.json` и закреплённый
+browser runtime. Индекс содержит только публичный текст страниц, locale
+изолируется, а внешний сервис поиска не нужен.
+
+## Build, verification и публикация
+
+```bash
+php vendor/bin/docara build production
+php vendor/bin/docara verify-static build_production
+php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
+```
+
+Preview работает по HTTP и блокирует терминал до `Ctrl+C`. `file://` не
+проверяет маршруты и `base_url`.
+
+Публикация должна брать только успешно проверенный каталог: build → verify →
+staging → digest comparison → smoke → switch → rollback при ошибке. Секреты и
+credentials не входят в source или output Docara.
 
 ## Security boundary
 
-- configuration paths must be relative and remain inside the site root;
-- a direct root symlink, including a lexically disguised `root/` or `root/.`, is
-  rejected; system/ancestor aliases are resolved once and every input path
-  below that resolved root rejects symlink traversal;
-- schemas reject unknown top-level fields;
-- Markdown unsafe links and raw HTML are disabled;
-- component output is rendered by the host adapter with escaped scalar props;
-- page slugs and `base_url` use a portable path alphabet;
-- `_docara` and `.docara` are reserved output namespaces;
-- brand assets reject absolute/traversal/build/reserved paths, symbolic links,
-  unsupported image types and files over 2 MiB before destination cleanup;
-- accepted brand bytes are content-addressed and SHA-256 verified after copy;
-- the builder only cleans a direct `build` or `build_*` directory inside the
-  site root, never a symlink or a path overlapping content/lock inputs;
-- generated-page and content-asset output collisions fail before cleaning an
-  existing destination.
+- configuration paths относительны и остаются внутри корня сайта;
+- root/content/lock/destination symlink отклоняется;
+- schemas запрещают неизвестные поля;
+- unsafe Markdown links и raw HTML не исполняются;
+- scalar props экранируются host renderer;
+- `_docara` и `.docara` зарезервированы;
+- brand assets проверяются по пути, типу, размеру и SHA-256;
+- output collision проверяется до очистки существующего destination;
+- static verifier проверяет маршруты, fragments, assets, search, resolved plans,
+  component catalog и Framework projection;
+- hidden/search flags не являются авторизацией: готовый HTML публичен.
 
 ## Larena import boundary
 
-Standalone Docara is the only interpreter of the content tree, `docara.json`,
-section descriptors, page sidecars and Markdown extensions. It emits the
-canonical `.docara/resolved-page-plans.json` artifact. Larena accepts that
-artifact only with an external SHA-256 receipt, rechecks its canonical hashes
-and exact Simai Framework lock, re-renders component props through its own Smart
-Registry, and then maps the verified plan to Larena contracts. Validation does
-not mutate source files or the database.
+Standalone Docara интерпретирует content tree, JSON descriptors и Markdown и
+выдаёт канонический resolved-plan artifact. Larena может принять его только как
+внешний проверяемый input: сверить receipt, hashes и Framework lock, затем
+применить собственные application contracts.
 
-The standalone fixture and its Larena adapter are acceptance artifacts. The
-legacy `docara-template` and `docara-mix` repositories must not be archived
-until their consumers are inventoried, migrated and independently accepted.
+Standalone-формат не зависит от внутренних классов Larena.
 
 ## Release boundary
 
-This is a local compatibility prototype, not a public release candidate. The
-inspected `ui-smart` source revision does not contain a license file. Public
-push, package publication, tag or release containing its projected JavaScript
-requires an explicit owner/legal redistribution decision first.
+Этот контракт не является заявлением о production, полном покрытии компонентов,
+полностью offline runtime или готовом публичном release. Публикация пакета,
+тега и upstream-ассетов требует отдельной exact-candidate, license и owner
+приёмки. Legacy-репозитории нельзя архивировать только на основании этой
+документации.

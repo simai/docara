@@ -4,6 +4,11 @@
 метаданных каталога. Единственный admission authority — точный
 `simai-framework.lock.json`.
 
+Сначала пройдите общий выбор уровня в
+[руководстве по развитию возможностей](/development/extensions/). Этот раздел
+описывает только случай, когда native Markdown и typed-компонент Docara уже не
+решают задачу.
+
 Минимальный принимаемый набор:
 
 1. подтвердить, что задачу нельзя решить native Markdown или существующим
@@ -20,7 +25,8 @@
 6. добавить positive и negative props, constraint, dependency и lock tests;
 7. проверить в браузере поведение, клавиатуру, темы, адаптивность и
    доступность;
-8. добавить страницу и пример компонента в документацию.
+8. добавить локализованный exact fixture; generated catalog создаст страницу
+   компонента автоматически.
 
 Каждый critical asset из manifest должен либо присутствовать в вычисленном
 asset plan, либо быть назван в сужающей consumer-policy с конкретной причиной.
@@ -61,8 +67,8 @@ manifest в исходном порядке за вычетом
 Docara, а не копируется из более широкого upstream-описания.
 
 Для простых семантических конструкций сначала проверьте, достаточно ли
-обычного Markdown и утилит Simai Framework, как в `card`, `steps`, code и
-table.
+обычного Markdown или typed-рецепта Docara. Точные поддерживаемые вызовы,
+параметры и примеры находятся в [generated catalog](/components/catalog/).
 
 ## Как зафиксировать ещё не готовую потребность
 
@@ -73,10 +79,10 @@ owner, reason, fallback и admission condition. Она делает дефици
 не разрешает директиву.
 
 Requirement-запись никогда не переключается в `supported` на месте. После
-готовности она удаляется или помечается завершённой владельцем, а исполняемая
-возможность появляется из своего authoritative source: native profile, typed
-definition либо Smart metadata с точным lock admission. Для исполняемой записи
-обязательны renderer, тесты, документация и example fixture. Каталог
+готовности она удаляется, а исполняемая возможность появляется из своего
+authoritative source: native profile, typed definition либо Smart metadata с
+точным lock admission. Для исполняемой записи обязательны renderer, тесты,
+документация и example fixture. Каталог
 `_docara/component-catalog.json` в output сборки не является каноническим
 реестром Simai Framework и не подтверждает production или public-release
 readiness.

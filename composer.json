@@ -1,6 +1,6 @@
 {
     "name": "simai/docara",
-    "description": "Simple static sites with Laravel's Blade. based on tightenco/jigsaw",
+    "description": "Static Markdown and validated JSON sites with Simai Framework, with legacy Blade/Jigsaw compatibility",
     "keywords": [
         "blade",
         "laravel",

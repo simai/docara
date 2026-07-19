@@ -1,30 +1,40 @@
 # Содержание и макет
 
-В переносимом режиме файлы являются источником истины: Markdown хранит
-содержание, JSON задаёт проверяемые настройки, а генератор создаёт статические
-HTML-страницы.
+В переносимом Docara файлы являются источником истины:
+
+- Markdown хранит текст и структуру содержания;
+- `docara.json` задаёт сайт;
+- `_section.json` задаёт наследуемые значения ветки;
+- `<page>.page.json` уточняет одну страницу;
+- generator создаёт HTML, indexes и диагностические artifacts.
 
 :::card
-### Главное правило
+### Простое правило
 
-Пишите обычное содержание в Markdown. Используйте JSON только для настроек
-сайта, раздела или конкретной страницы. Smart-компоненты вызываются из
-Markdown, а не вторым списком в конфигурации.
+Начинайте с обычного Markdown. Добавляйте JSON только для представления и
+навигации. Выбирайте компонент только тогда, когда Markdown недостаточно, и
+берите точный вызов из generated catalog.
 
 :::
 
-## Руководства
+## Путь автора
 
-- [Файлы проекта](/authoring/project-files/)
-- [Markdown](/authoring/markdown/)
-- [Конфигурация сайта и страниц](/authoring/configuration/)
-- [Наследование настроек](/authoring/inheritance/)
-- [Макеты и навигация](/authoring/layout-and-navigation/)
-- [Контекст чтения](/authoring/reading-context/)
-- [Локальный поиск](/authoring/search/)
+1. [Разберитесь с файлами проекта](/authoring/project-files/).
+2. [Напишите страницу в Markdown](/authoring/markdown/).
+3. [Настройте сайт, раздел или страницу](/authoring/configuration/).
+4. [Проверьте наследование и `$reset`](/authoring/inheritance/).
+5. [Выберите `docs` или `landing`](/authoring/layout-and-navigation/).
+6. При необходимости [найдите компонент](/components/catalog/).
+7. [Соберите и проверьте результат](/build/verify/).
 
-## Два preset
+## Не редактируйте output
 
-`docs` показывает шапку, навигацию и читаемую область содержания. `landing`
-создаёт сфокусированную страницу без меню документации. Оба preset используют
-один Markdown и один Framework runtime.
+`build_*`, `.docara/resolved-page-plans.json` и
+`_docara/component-catalog.json` создаются заново. Если результат неверен,
+исправьте исходный Markdown/JSON и повторите сборку.
+
+## Общая технология двух preset
+
+`docs` и `landing` используют один content format, Framework lock и правила
+безопасности. Отличается только presentation recipe: документационный контекст
+или сфокусированная страница.

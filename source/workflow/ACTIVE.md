@@ -4,8 +4,8 @@ Date: 2026-07-19
 Status: in-progress
 Workflow ID: `2026-07-19-docara-product-completion`
 Process model: `general_delivery`
-Current state: `evidence_recorded`
-Target state: `implementation_started`
+Current state: `tests_recorded`
+Target state: `evidence_recorded`
 
 ## Goal
 
@@ -21,9 +21,9 @@ catalogue, complete documentation and exact independent acceptance.
 
 ## Current Batch
 
-Batch 8 — complete task-oriented user, author, migration, maintainer and
-extension-development documentation without duplicating generated component
-facts.
+Batch 9 — freeze the complete Batch 8 product candidate and run unified
+exact-archive, complete-diff HCS/source/security, native-Chrome UX/design and
+local-publication acceptance for the entire Goal.
 
 ## Next Step
 
@@ -35,11 +35,19 @@ is served at `docara.test` with digest
 the exact accepted Batch 6 tree is retained at
 `.docara-backups/product-completion-live-catalog-a5cc0e7-20260719-182708`.
 
-Implement the recorded Batch 8 plan test-first: normalize all 17 `docs_ref`
-owners, remove nine manual component-detail duplicates, add five missing
-task-oriented pages, repair links and update entry-point, authoring, build,
-migration and development guidance. Require 56 HTML pages, 55 search
-documents, 13 generated catalogue surfaces, zero old manual routes and zero
-broken references. Keep Batch 7 served until the immutable Batch 8 candidate
-passes exact automated and browser acceptance. Public release, default-branch
-migration, Framework owner writes and repository retirement remain excluded.
+Batch 8 mutable implementation passes 541 tests with 4,285 assertions, Pint,
+Composer validation, JSON and diff checks. Two clean builds reproduce digest
+`c5adf0f09fefe2c59b483abac482f1414b6b71b2687b6d9214231aae25f52034`
+with 43 authored pages, 56 HTML pages, 55 search documents, 13 generated
+catalogue surfaces, no old manual component routes and 5,793 verified local
+references with zero broken.
+
+Create one local immutable candidate. Accept it only after independent
+exact-archive full tests/build/static verification, a complete inventory from
+Goal baseline `31f468be85d015b962fccc2b4c089204aab1410b`, and native-Chrome checks at
+1440, 768 and 390 pixels for menu, search, breadcrumbs/TOC/previous-next,
+settings, landing, catalogue/details and the beginner/author/migration/
+maintainer/extension documentation paths. Keep Batch 7 served until every gate
+passes, then publish through staging with a timestamped rollback and matching
+digests. Public release, default-branch migration, Framework owner writes and
+repository retirement remain excluded.

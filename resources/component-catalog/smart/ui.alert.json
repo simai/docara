@@ -89,7 +89,7 @@
         "docs": true,
         "demo": true
     },
-    "docs_ref": "docs/site/content/components/alert.md",
+    "docs_ref": "docs/site/content/components/syntax.md",
     "example_ref": "resources/component-catalog/examples/ui.alert.md",
     "provenance": {
         "source_kind": "smart_consumer_metadata",

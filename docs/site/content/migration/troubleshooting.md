@@ -1,43 +1,57 @@
 # Диагностика частых проблем
 
-## `SCHEMA_VALIDATION_FAILED`
+Эта страница относится к переходу со старой Docara. Общие ошибки новой сборки
+разобраны в [решении проблем](/troubleshooting/).
 
-Проверьте имя поля, тип и допустимые enum в [справочнике схем](/reference/schemas/).
-Не добавляйте неизвестное поле «на будущее».
+## Старые настройки не влияют на страницу
 
-## `FRAMEWORK_PROP_REQUIRED`
+Portable режим не читает `config.php`, `.settings.php` и `source/_core`.
+Перенесите только поддерживаемые значения в `docara.json`, `_section.json` или
+`<page>.page.json`, затем проверьте
+[разрешённый план страницы](/reference/resolved-plan/).
 
-Это означает несовместимость принятого manifest и его безопасных defaults, а
-не просьбу копировать внутренние props в каждый Markdown-вызов. Автор задаёт
-только параметры из страницы компонента; Docara дополняет зафиксированные
-defaults и валидирует итоговый вызов.
+## После переноса пропал custom tag или Blade
 
-## `FRAMEWORK_PROP_MANAGED`
+Portable Markdown не исполняет Blade, PHP callbacks, raw HTML и произвольные
+legacy tags. Выберите поддерживаемый native Markdown, typed-компонент Docara
+или Smart-компонент из [каталога](/components/catalog/). Если эквивалента нет,
+зафиксируйте потребность как requirement, а не как скрытый no-op.
 
-Prop управляется движком. Например, `ui.alert:id` Docara вычисляет
-детерминированно; удалите его из авторского JSON.
+## Старый URL компонента возвращает 404
 
-## `FRAMEWORK_COMPONENT_UNSUPPORTED`
+Девять ручных страниц компонентов выведены в пользу generated catalog. Таблица
+старых и новых маршрутов находится на [странице миграции](/migration/).
+Обязательную публичную совместимость обеспечьте отдельным hosting redirect и
+проверьте его до переключения.
 
-Компонент отсутствует в принятом component-call contract. Наличие похожего
-custom element в upstream Framework не разрешает использовать его по аналогии.
+## `init --portable` отказывается работать в каталоге
 
-## Tabs не собирается
+Это ожидаемо, если найдены legacy `config.php`, `.settings.php`, `source/` или
+существующие starter-файлы. Создайте отдельный пустой каталог. Не удаляйте
+исходники только ради прохождения preflight.
 
-Это ожидаемый blocker текущего контура: exact asset/slot contract ещё не принят.
-Используйте последовательные Markdown-разделы.
+## Portable build просит Node.js
 
-## Closable Alert отклонён
+Обычный portable build не должен запускать Node. Проверьте, что вы используете
+`php vendor/bin/docara build ...`, а не legacy Mix/Vite script. Node и Vite
+относятся только к разработке исходных ассетов темы.
 
-В текущей projection отсутствует `sf-icon-button`; задайте `closable: false`.
+## После миграции меню или порядок отличаются
 
-## Сайт без оформления
+Создайте каталоги и страницы-разделы, затем задайте `title` и
+`navigation.order` в `_section.json`. Не переносите готовый HTML меню или
+callback `getMenu`. Проверьте активный путь и вложенность на desktop и mobile.
 
-Проверьте Network для exact Core CSS/JS и локальных файлов
-`_docara/framework`. Текущий Core является сетевой exact-commit зависимостью.
+## Нельзя архивировать docara-mix
 
-## Неверная ссылка
+Zero-reference scan ещё нашёл package, config, lockfile, CI или documentation
+consumer. Завершите миграцию каждого найденного проекта и повторите его clean
+install/build/watch acceptance. Само архивирование repository не исправляет
+активные зависимости.
 
-Portable renderer не преобразует `.md` в route автоматически. В опубликованном
-содержании используйте итоговые URL вида `/section/page/` и проверяйте все
-внутренние ссылки после сборки.
+## Новый сайт готов, но переключение рискованно
+
+Не переключайте hosting без timestamped backup текущего каталога, записанного
+document root, проверенного rollback и сравнения обязательных URL. Сначала
+проверьте staging через HTTP, затем сохраните digests staging и опубликованного
+дерева.

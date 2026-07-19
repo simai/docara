@@ -39,7 +39,7 @@
         "docs": true,
         "demo": true
     },
-    "docs_ref": "docs/site/content/components/steps.md",
+    "docs_ref": "docs/site/content/components/syntax.md",
     "example_ref": "resources/component-catalog/examples/docara.steps.md",
     "provenance": {
         "source_kind": "typed_definition",

@@ -1,0 +1,165 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests;
+
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\TestCase as PHPUnit;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use Simai\Docara\File\Filesystem;
+use Simai\Docara\PortableSite\PortableHtmlRenderer;
+use Simai\Docara\PortableSite\PortableMarkdownRenderer;
+use Simai\Docara\PortableSite\PortableSiteBuilder;
+use SplFileInfo;
+use Symfony\Component\Process\Process;
+
+final class PortableDocumentationSiteTest extends PHPUnit
+{
+    private const RETIRED_COMPONENT_SLUGS = [
+        'alert',
+        'button',
+        'card',
+        'code',
+        'cta',
+        'features',
+        'steps',
+        'table',
+        'tabs',
+    ];
+
+    private string $temporary;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->temporary = sys_get_temp_dir() . '/docara-documentation-' . bin2hex(random_bytes(8));
+        self::assertTrue(mkdir($this->temporary, 0700));
+    }
+
+    protected function tearDown(): void
+    {
+        (new Filesystem)->deleteDirectory($this->temporary);
+
+        parent::tearDown();
+    }
+
+    #[Test]
+    public function real_documentation_build_matches_the_exact_product_matrix_and_static_verifier(): void
+    {
+        $source = dirname(__DIR__) . '/docs/site';
+        $site = $this->temporary . '/documentation-site';
+        $filesystem = new Filesystem;
+        $filesystem->copyDirectory($source, $site);
+        $site = realpath($site);
+        self::assertIsString($site);
+        $build = $site . '/build_test';
+
+        self::assertCount(43, $this->filesWithExtension($source . '/content', 'md'));
+
+        $pages = (new PortableSiteBuilder(
+            $filesystem,
+            new PortableMarkdownRenderer,
+            new PortableHtmlRenderer,
+        ))->build($site, $build);
+
+        $htmlPages = $this->filesWithExtension($build, 'html');
+        $catalog = $this->json($build . '/_docara/component-catalog.json');
+        $receipt = $this->json($build . '/.docara/component-catalog-pages.json');
+        $search = $this->json($build . '/_docara/search-index.json');
+        $supported = array_values(array_filter(
+            $catalog['entries'],
+            static fn (array $entry): bool => $entry['lifecycle'] === 'supported',
+        ));
+        $unavailable = array_values(array_filter(
+            $catalog['entries'],
+            static fn (array $entry): bool => $entry['lifecycle'] !== 'supported',
+        ));
+
+        self::assertCount(56, $pages);
+        self::assertCount(56, $htmlPages);
+        self::assertCount(55, $search['documents']);
+        self::assertCount(17, $catalog['entries']);
+        self::assertCount(12, $supported);
+        self::assertCount(5, $unavailable);
+        self::assertCount(12, $receipt['pages']);
+        self::assertSame(
+            13,
+            1 + count($receipt['pages']),
+            'The generated catalogue surface must be one index plus twelve supported details.',
+        );
+        self::assertSame(
+            array_column($supported, 'id'),
+            array_column($receipt['pages'], 'id'),
+        );
+        self::assertFileExists($build . '/' . $receipt['index']['output']);
+
+        $catalogIndex = (string) file_get_contents($build . '/' . $receipt['index']['output']);
+        foreach ($unavailable as $entry) {
+            self::assertStringContainsString(
+                'data-docara-component-gap="' . $entry['id'] . '"',
+                $catalogIndex,
+                (string) $entry['id'],
+            );
+        }
+
+        foreach (self::RETIRED_COMPONENT_SLUGS as $slug) {
+            self::assertFileDoesNotExist(
+                $build . "/components/$slug/index.html",
+                "Retired manual component route [$slug] unexpectedly returned.",
+            );
+        }
+
+        $verification = new Process([
+            PHP_BINARY,
+            dirname(__DIR__) . '/scripts/verify-static-build.php',
+            $build,
+        ]);
+        $verification->setTimeout(60);
+        $verification->run();
+
+        self::assertTrue(
+            $verification->isSuccessful(),
+            $verification->getErrorOutput() . "\n" . $verification->getOutput(),
+        );
+        $report = json_decode(
+            $verification->getOutput(),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
+        self::assertSame(56, $report['html_pages'] ?? null);
+        self::assertSame([], $report['broken'] ?? null);
+        self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
+    }
+
+    /** @return list<string> */
+    private function filesWithExtension(string $root, string $extension): array
+    {
+        $paths = [];
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($root, RecursiveDirectoryIterator::SKIP_DOTS),
+        );
+        /** @var SplFileInfo $file */
+        foreach ($iterator as $file) {
+            if ($file->isFile() && strtolower($file->getExtension()) === strtolower($extension)) {
+                $paths[] = $file->getPathname();
+            }
+        }
+        sort($paths, SORT_STRING);
+
+        return $paths;
+    }
+
+    /** @return array<string, mixed> */
+    private function json(string $path): array
+    {
+        $decoded = json_decode((string) file_get_contents($path), true, flags: JSON_THROW_ON_ERROR);
+        self::assertIsArray($decoded);
+
+        return $decoded;
+    }
+}

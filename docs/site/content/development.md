@@ -10,11 +10,16 @@
 
 ## Руководства
 
+- [Начало работы с repository](/development/getting-started/)
 - [Архитектура](/development/architecture/)
+- [Развитие возможностей](/development/extensions/)
 - [Vite и ассеты](/development/vite-assets/)
 - [Framework-компоненты](/development/framework-components/)
 - [Starter и template-зеркало](/development/starter-mirror/)
 - [Тестирование](/development/testing/)
 
-Изменения компонентов не должны обходить manifest, exact revision, props
-validation и browser acceptance.
+Начинайте с самого простого уровня расширения: native Markdown, затем
+typed-компонент Docara, затем Smart-компонент из exact Framework lock. Если
+исполняемого контракта ещё нет, добавьте requirement с явной безопасной
+заменой. Изменения не должны обходить schema, manifest, exact revision,
+negative tests и browser acceptance.

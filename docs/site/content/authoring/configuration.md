@@ -1,9 +1,36 @@
 # Конфигурация
 
-Все JSON-файлы имеют поле `schema`. Неизвестные поля и значения неправильного
-типа завершают сборку ошибкой.
+Docara читает три вида JSON:
 
-## `docara.json`
+| Уровень | Файл | Область |
+| --- | --- | --- |
+| Сайт | `docara.json` | Все страницы |
+| Раздел | `_section.json` | Каталог и все потомки |
+| Страница | `<page>.page.json` | Одна Markdown-страница |
+
+Каждый файл содержит поле `schema`. Неизвестное поле, неправильный тип, пустая
+presentation-ветка и невалидный путь останавливают сборку.
+
+## Встроенные значения и starter — не одно и то же
+
+Resolver начинает с небольшого встроенного набора:
+
+| Поле | Встроенное значение |
+| --- | --- |
+| `content_root` | `"content"` |
+| `search.enabled` | `false` |
+| `search.indexed` | `true` |
+| `reading.breadcrumbs` | `true` |
+| `reading.toc` | `true` |
+| `reading.toc_depth` | `3` |
+| `reading.previous_next` | `true` |
+
+Поставляемый starter затем задаёт свои project-owned значения в
+`docara.json`: preset `docs`, русский locale, корневой `base_url`, бренд,
+широкий макет, системную тему и включённый интерфейс поиска. Это не скрытые
+defaults — их можно увидеть и изменить в файле проекта.
+
+## Пример `docara.json`
 
 ```json
 {
@@ -33,37 +60,42 @@
 }
 ```
 
-`branding.title` показывается в шапке. `branding.label` — необязательная короткая
-подпись. `logo`, `logo_dark` и `favicon` — пути от корня проекта. Допустимы
-SVG, PNG, JPG, WebP и ICO размером не более 2 МиБ. Сборка проверяет, что файл
-существует, не является символической ссылкой и не находится в `build*` или
-служебном `_docara`. `logo_dark` заменяет основной логотип только в тёмной теме,
-поэтому его нельзя задавать без `logo`.
+`framework_lock` и `content_root` разрешены только на уровне сайта.
+`base_url` задавайте до production-сборки: например, `"/"` для корня домена или
+`"/docs/"` для публикации в подкаталоге.
 
-Брендовые файлы копируются в `_docara/brand` под именем по SHA-256. Одинаковые
-байты публикуются один раз, а `base_url` автоматически добавляется к ссылкам.
+## Что можно задавать на каждом уровне
 
-`settings.theme` задаёт унаследованную тему первого посещения. Читатель может
-выбрать системную, светлую или тёмную тему в шапке и затем
-[вернуть настройку сайта](/authoring/reader-settings/).
+| Поле | Site | Section | Page |
+| --- | :---: | :---: | :---: |
+| `preset`, `title`, `locale` | ✓ | ✓ | ✓ |
+| `branding`, `layout`, `settings` | ✓ | ✓ | ✓ |
+| `navigation`, `search`, `reading` | ✓ | ✓ | ✓ |
+| `framework_lock`, `content_root`, `base_url`, `default_locale` | ✓ | — | — |
+| `description`, `slug` | — | — | ✓ |
 
-`search.enabled` выводит кнопку и локальный поисковый диалог.
-`search.indexed` управляет включением страниц текущей области в индекс. Эти
-настройки наследуются независимо от `navigation.hidden`: скрытую из меню
-страницу можно оставить доступной через поиск. Полный контракт и примеры — в
-[руководстве по поиску](/authoring/search/).
+`schema` обязателен на каждом уровне. `version` необязателен и, если указан,
+равен `1`.
 
-`reading` управляет контекстом чтения страниц preset `docs`:
+## Presentation-ветки
 
-- `breadcrumbs` — путь от главной до текущей страницы;
-- `toc` — оглавление по заголовкам страницы;
-- `toc_depth` — последний включаемый уровень заголовка от 2 до 6;
-- `previous_next` — переходы к соседним страницам в порядке дерева.
+- `branding`: title, label, обычный/тёмный logo и favicon;
+- `layout.max_width`: `compact`, `normal`, `wide`, `full`;
+- `settings.theme`: `system`, `light`, `dark`;
+- `navigation.hidden`: убрать страницу из меню;
+- `navigation.order`: неотрицательный порядок среди siblings;
+- `search.enabled`: показать локальный search UI;
+- `search.indexed`: включить страницу в индекс;
+- `reading`: breadcrumbs, outline depth и previous/next.
 
-Это наследуемая ветка. Подробные правила, адаптивное поведение и примеры
-отключения находятся в [руководстве по контексту чтения](/authoring/reading-context/).
+Brand assets задаются безопасными путями от корня проекта. Допустимы SVG, PNG,
+JPG, WebP и ICO до 2 МиБ. Symlink, reserved/build path и тёмный logo без
+основного logo отклоняются.
 
-## `_section.json`
+`navigation.hidden` и `search.indexed: false` не закрывают доступ к HTML.
+Секретное содержание нельзя помещать в source или output.
+
+## Раздел
 
 ```json
 {
@@ -76,7 +108,7 @@ SVG, PNG, JPG, WebP и ICO размером не более 2 МиБ. Сборк
 }
 ```
 
-## Page sidecar
+## Страница
 
 ```json
 {
@@ -85,11 +117,35 @@ SVG, PNG, JPG, WebP и ICO размером не более 2 МиБ. Сборк
   "description": "Как установить проект.",
   "slug": "guides/install",
   "navigation": { "order": 20 },
-  "search": { "indexed": true },
   "reading": { "previous_next": false }
 }
 ```
 
-Полный перечень допустимых полей смотрите в [справочнике схем](/reference/schemas/).
-Неизвестное поле не игнорируется: сборка останавливается до очистки предыдущего
-результата.
+## Отсутствие, пустой объект и reset
+
+- отсутствующее поле продолжает наследоваться;
+- `{}` и `[]` недопустимы для presentation-ветки;
+- `{"$reset": true}` очищает всю унаследованную ветку;
+- reset с соседними полями сначала очищает ветку, затем задаёт новые значения.
+
+Подробные примеры: [наследование настроек](/authoring/inheritance/).
+
+## Как узнать, откуда пришло значение
+
+После сборки откройте:
+
+```text
+build_<environment>/.docara/resolved-page-plans.json
+```
+
+Найдите страницу по `output` или `url`, затем:
+
+1. посмотрите итог в `resolved_page_plan.configuration`;
+2. возьмите JSON Pointer поля, например `/layout/max_width`;
+3. найдите тот же pointer в `provenance`;
+4. проверьте указанный source в `trace` и его SHA-256.
+
+`@defaults` означает встроенное значение. `docara.json`, `_section.json` или
+page sidecar показывают точный владеющий файл.
+
+Полный перечень и ограничения: [справочник schemas](/reference/schemas/).

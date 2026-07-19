@@ -2,9 +2,11 @@
 
 Старый `docara-template` хранит собственные `source/docs`, `config.php`,
 `.settings.php`, Codespaces-окружение и Node-настройку. Это второй изменяемый
-источник starter и поэтому может расходиться с основным пакетом.
+источник starter и поэтому может расходиться с основным пакетом. Для новой
+Docara отдельный вручную поддерживаемый template-репозиторий не нужен:
+canonical starter принадлежит пакету `simai/docara`.
 
-Для нового portable-проекта:
+## Создайте новый проект
 
 1. создайте пустой каталог и выполните `composer require simai/docara`;
 2. запустите `php vendor/bin/docara init --portable`;
@@ -13,5 +15,22 @@
 5. не копируйте Mix/Vite scripts, `.settings.php`, `.lang.php` или `source/_core`;
 6. выполните PHP-only build и проверку ссылок.
 
-После консолидации отдельный repository template допустим только как
-автоматически сгенерированное зеркало canonical starter.
+```bash
+php vendor/bin/docara build production
+php vendor/bin/docara verify-static build_production
+php vendor/bin/docara serve production --host=localhost --port=8000 --no-build
+```
+
+Остановите preview через `Ctrl+C`. Проверьте маршруты и содержание до
+переключения hosting.
+
+## Что делать с прежним repository
+
+После консолидации repository template допустим только как автоматически
+сгенерированное зеркало canonical starter для кнопки template или Codespaces.
+Его содержимое нельзя редактировать независимо. Если зеркало не нужно
+потребителям, отдельный repository можно архивировать после zero-reference
+scan; удалять историю для завершения миграции не требуется.
+
+Точный maintainer-контракт зеркала описан в
+[Starter и template-зеркало](/development/starter-mirror/).

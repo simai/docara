@@ -1,7 +1,7 @@
 {
   "schema": "docara.page.v1",
   "title": "Сборка и публикация",
-  "description": "PHP-only сборка, локальный просмотр и статический результат Docara.",
+  "description": "PHP-only сборка, проверка, staged-публикация и rollback статического сайта Docara.",
   "navigation": {
     "order": 40
   }

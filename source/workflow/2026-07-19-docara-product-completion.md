@@ -3,8 +3,8 @@
 Date: 2026-07-19
 Status: in-progress
 Process model: `general_delivery`
-Current state: `evidence_recorded`
-Target state: `implementation_started`
+Current state: `tests_recorded`
+Target state: `evidence_recorded`
 Project mode: `productization`
 Requested level: `goal`
 Recommended level: `goal`
@@ -215,8 +215,8 @@ Do not complete the Goal until:
 ## Current Remaining
 
 - Milestones remaining: 2 of 5.
-- Batches remaining: 2 of 10.
-- Active batch: Batch 8.
+- Batches remaining: 1 of 10.
+- Active batch: Batch 9 unified acceptance of the Batch 8 product candidate.
 - Goal status: `in-progress`.
 
 ## Do Not Complete Until
@@ -255,7 +255,7 @@ Do not complete the Goal until:
 | `WS-LANDING-05` | Docara owner with UX/designer | landing recipe and responsive demonstration from pinned Framework building blocks | this worktree | accepted and published locally | exact tester, HCS/source/security, native-Chrome UX/design and served smoke PASS |
 | `WS-CATALOG-CONTRACT-06` | Docara owner with Framework consultation | one effective component projection, typed definitions and lifecycle/gap contract | this worktree | accepted and published locally | schemas, negative matrix, deterministic projection, exact tester, complete-diff HCS and browser/publication PASS |
 | `WS-LIVE-CATALOG-07` | Docara owner with docs, UX and designer | generated component catalogue, generic detail page, exact examples and `docara.columns` | this worktree | accepted and published locally | deterministic pages/examples, schema and negative matrix, exact tester, complete-diff HCS, browser/UX/design and publication PASS |
-| `WS-DOCS-08` | Docs owner with Docara implementation | task-oriented beginner, author, migration, maintainer and extension paths with canonical component references | this worktree | exact plan ready; implementation not started | documentation contract/example/site tests, exact deterministic build/static verifier and browser acceptance PASS |
+| `WS-DOCS-08` | Docs owner with Docara implementation | task-oriented beginner, author, migration, maintainer and extension paths with canonical component references | this worktree | implementation and mutable automated preacceptance PASS; immutable unified acceptance pending | documentation contract/example/site tests, exact deterministic build/static verifier and browser acceptance PASS |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -346,14 +346,15 @@ was discovered.
 
 ## Next Safe Batch
 
-Implement Batch 8 from `batch-8-complete-documentation-plan.md`. Normalize all
-17 `docs_ref` values, delete nine duplicate manual component pages, add five
-task-oriented pages and repair the beginner, configuration, layout, build,
-publish, migration, maintainer and extension paths. Add contract, example and
-full-site tests before content changes. Require 56 HTML pages, 55 search
-documents, 13 generated catalogue surfaces, no legacy manual component routes
-and zero broken references. Keep accepted Batch 7 served until one immutable
-Batch 8 candidate passes exact automated and browser acceptance.
+Freeze the verified Batch 8 tree as one local immutable product candidate.
+From its exact archive, run the complete sequential suite, deterministic
+double build, static verifier and final requirement matrix. Independently
+inventory the complete Goal diff from baseline
+`31f468be85d015b962fccc2b4c089204aab1410b`, then run native-Chrome UX/design
+acceptance at 1440, 768 and 390 pixels across menu, search, reading context,
+settings, landing, catalogue and the five documentation paths. Publish to
+`docara.test` only after every exact gate returns `PASS`, with staging,
+timestamped rollback and matching source/staging/served digests.
 
 ## Last Completed Batch
 
@@ -441,3 +442,14 @@ matches. The exact accepted Batch 6 tree remains preserved for rollback at
 `.docara-backups/product-completion-live-catalog-a5cc0e7-20260719-182708`.
 This closes Milestone 3 and accepts and publishes Batch 7 only. Batch 8, Batch
 9 and the wider Goal remain in progress.
+
+Batch 8 complete documentation implementation has mutable automated
+preacceptance `PASS`. It contains 43 authored pages and produces 56 HTML pages,
+55 search documents and 13 generated catalogue surfaces; all nine duplicate
+manual component routes are absent. The real static verifier checks 5,793
+local references with zero broken, two clean builds reproduce digest
+`c5adf0f09fefe2c59b483abac482f1414b6b71b2687b6d9214231aae25f52034`,
+the focused suite passes 17 tests with 945 assertions and the full sequential
+suite passes 541 tests with 4,285 assertions. This is not immutable acceptance:
+Batch 8, Milestone 4, Batch 9 and the Goal remain pending the unified exact
+tester, complete-diff HCS/source/security and native-Chrome UX/design gates.

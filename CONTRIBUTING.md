@@ -1,41 +1,64 @@
-# Contributing
+# Вклад в Docara
 
-Contributions are **welcome** and will be fully **credited**.
+Спасибо за желание улучшить Docara. Делайте одно связное изменение за pull
+request и сначала проверяйте, не решена ли задача в существующем issue или
+изменении.
 
-Please read and understand the contribution guide before creating an issue or pull request.
+## Окружение
 
-## Etiquette
+- PHP 8.2 или новее в диапазоне, разрешённом `composer.json`;
+- Composer;
+- Node.js только при изменении исходных ассетов темы через Vite.
 
-Be kind.
+Установите зависимости:
 
-## Viability
+```bash
+composer install
+```
 
-When requesting or submitting new features, first consider whether it might be useful to others. Open source projects are used by many developers, who may have entirely different needs to your own. Think about whether or not your feature is likely to be used by other users of the project.
+## Перед изменением
 
-## Procedure
+1. Воспроизведите проблему или зафиксируйте ожидаемый пользовательский
+   результат.
+2. Определите владеющий контракт: Markdown/JSON, schema, генератор, Framework
+   lock или legacy-контур.
+3. Не редактируйте `build_*`, `.docara` и другие производные файлы вручную.
+4. Не расширяйте список компонентов только документацией: доступность выводится
+   из точного каталога и проверяемых исходных записей.
 
-Before filing an issue:
+## Проверки
 
-- Attempt to replicate the problem, to ensure that it wasn't a coincidental incident.
-- Check to make sure your feature suggestion isn't already present within the project.
-- Check the pull requests tab to ensure that the bug doesn't have a fix in progress.
-- Check the pull requests tab to ensure that the feature isn't already in progress.
+Запустите из корня репозитория:
 
-Before submitting a pull request:
+```bash
+php vendor/bin/phpunit
+php vendor/bin/pint --test
+```
 
-- Check the codebase to ensure that your feature doesn't already exist.
-- Check the pull requests to ensure that another person hasn't already submitted the feature or fix.
+Если менялась документация или поведение переносимого сайта:
 
-## Requirements
+```bash
+cd docs/site
+php ../../docara build production
+php ../../docara verify-static build_production
+```
 
-If the project maintainer has any additional requirements, you will find them listed here.
+Проверяйте документацию из HTTP preview, а не через `file://`:
 
-- **[PSR-2 Coding Standard](https://github.com/php-fig/fig-standards/blob/master/accepted/PSR-2-coding-style-guide.md)** - The easiest way to apply the conventions is to install [PHP Code Sniffer](https://github.com/PHPCSStandards/PHP_CodeSniffer/).
-    
-    Run phpcs using the PSR-2 standard with: `phpcs --standard=PSR2 ./src`
+```bash
+php ../../docara serve production --host=127.0.0.1 --port=8000 --no-build
+```
 
-- **Tlint styles** - Tighten-specific styles. Tlint is built for apps, so there are some settings that might not make sense in a package, but [download Tlint](https://github.com/tightenco/tlint) and run it on your pull requests to see if it suggests any reasonable changes.
+Остановите сервер сочетанием `Ctrl+C`.
 
-    Run tlint with: `tlint lint ./src`
+## Требования к результату
 
-- **One pull request per feature** - If you want to do more than one thing, send multiple pull requests.
+- команды и JSON-примеры соответствуют текущим CLI и schemas;
+- пользовательские пути заканчиваются наблюдаемым результатом;
+- Simai Framework называется единообразно, без внутренних обозначений версии;
+- нет заявлений о production, публичном релизе или всех компонентах без
+  отдельного evidence;
+- проверка выполняется на точном immutable candidate, а не на случайной
+  изменяемой сборке;
+- в изменении нет секретов, локальных абсолютных путей и сгенерированного
+  output.

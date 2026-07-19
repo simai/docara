@@ -47,6 +47,8 @@ An installed Chrome instance exercised a clean production build.
 - trigger and close targets are `48 x 48`; choice rows exceed the 44 px target;
 - exact Core radio CSS and JavaScript load from pinned commit
   `7e836d8a9414d5da553fb1ab0404721e5b48769a`;
+- the exact Core binary theme bootstrap is disabled through its boot contract,
+  so it cannot overwrite the resolved author or reader preference;
 - no Smart modal or dropdown resource is requested;
 - console errors: zero; console warnings: zero; failed requests: zero.
 

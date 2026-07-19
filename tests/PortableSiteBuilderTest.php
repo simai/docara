@@ -99,6 +99,7 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('value="dark"', $html);
             self::assertStringContainsString('data-docara-reader-settings-reset', $html);
             self::assertStringNotContainsString('class="sf-theme-button ', $html);
+            self::assertStringContainsString('"theme":false', $html);
             self::assertStringContainsString('data-docara-search-trigger', $html);
             self::assertStringContainsString('data-docara-search-dialog', $html);
             self::assertStringContainsString('data-docara-search-input', $html);
@@ -143,6 +144,10 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('localStorage.getItem', $index);
         self::assertStringContainsString('localStorage.setItem', $index);
         self::assertStringContainsString('localStorage.removeItem', $index);
+        self::assertStringContainsString("volatile=''", $index);
+        self::assertStringContainsString('persisted:persisted', $index);
+        self::assertStringContainsString('syncExternal', $index);
+        self::assertStringContainsString('Браузер не разрешил сохранить выбор', $index);
         self::assertStringContainsString('sf-theme=', $index);
         self::assertStringNotContainsString('<sf-modal', $index);
         self::assertStringNotContainsString('<sf-dropdown', $index);

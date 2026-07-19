@@ -25,6 +25,9 @@ No account, request, database, service or portable Node.js runtime was added.
   tokens; Docara owns only preference selection and dialog orchestration;
 - `.sf-theme-button` is removed so the pinned binary Framework handler cannot
   run in parallel;
+- the pinned Core `theme: false` boot option disables its later binary
+  OS/cookie bootstrap, preventing it from overwriting Docara's resolved author
+  default or tri-state reader choice;
 - no Smart modal/dropdown, new dependency, Framework fork or asset-projection
   change was introduced.
 
@@ -36,6 +39,8 @@ No account, request, database, service or portable Node.js runtime was added.
 - compatibility: explicit light/dark also projects `sf-theme`; system and reset
   clear the cookie;
 - invalid or unavailable storage falls back safely;
+- a denied storage write keeps the radio, theme and reset coherent on the
+  current page and produces an honest non-persistence status;
 - a live system media-query change is applied only while the effective reader
   preference is `system`;
 - a storage event synchronizes other tabs.
@@ -45,19 +50,17 @@ No account, request, database, service or portable Node.js runtime was added.
 The generated-HTML assertion was changed first and failed on the accepted
 baseline because the new settings trigger did not exist. After implementation:
 
-- focused renderer test: `1 test`, `264 assertions`, PASS;
-- focused portable configuration/outline/builder group: `53 tests`, `546
-  assertions`, PASS;
-- inherited author-theme/reset-target pair: `2 tests`, `267 assertions`, PASS;
-- full PHPUnit: `465 tests`, `2348 assertions`, PASS;
+- focused corrected renderer/author-theme pair: `2 tests`, `275 assertions`,
+  PASS;
+- full PHPUnit after correction: `465 tests`, `2356 assertions`, PASS;
 - Pint: PASS;
 - Composer strict validation: PASS;
 - four generated inline scripts: JavaScript syntax PASS;
 - `git diff --check`: PASS;
 - production static verifier: `44` HTML pages, `4535` local references, zero
   broken;
-- two consecutive production builds: identical tree digest
-  `c0884bf575fe9047875270734e55f98b8cd13308e02b47b5dbc3b2791bb5a11d`.
+- two consecutive production builds: identical relative tree digest
+  `9998f8a2e0b011a95e2c061e1f392bf4e877ae86ee3acf323bf30ef038bd7f53`.
 
 ## Documentation
 

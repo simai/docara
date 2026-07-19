@@ -39,6 +39,10 @@ final readonly class FrameworkAssetPlanner
         $bootConfiguration = [
             'cacheVersion' => $cacheVersion,
             'pluginListVersion' => $pairId,
+            // Docara resolves the author default and the reader's tri-state
+            // preference before Core loads. Disable Core's binary OS/cookie
+            // bootstrap so it cannot overwrite that resolved theme.
+            'theme' => false,
             'icons' => [
                 'enabled' => false,
                 'accumulate' => false,

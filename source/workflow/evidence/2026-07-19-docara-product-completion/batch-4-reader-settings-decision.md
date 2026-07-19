@@ -56,6 +56,12 @@ No Framework repository or portable asset projection changes are required.
 | reset/close | Core button and icon-button classes | native button semantics |
 | colors | `theme-light` / `theme-dark` and Framework tokens | no parallel palette or component |
 
+Portable Docara sets the pinned Core boot option `theme: false`. Core's default
+binary OS/cookie bootstrap would otherwise run after Docara's early tri-state
+resolver and could overwrite an explicit author default. This option disables
+only that automatic bootstrap; Docara still renders the exact Framework theme
+classes, tokens and components.
+
 The exact Smart lock contains modal and dropdown records, but their assets are
 not admitted to the portable projection. Promoting either for a three-choice
 settings form would add a compatibility transaction without improving the
@@ -66,6 +72,8 @@ backlog proposal until the Docara interaction is accepted in practice.
 
 - key: `docara.reader.theme.v1`;
 - storage: browser `localStorage`, guarded because storage access can fail;
+- a denied write keeps a volatile current-page override, exposes reset and
+  reports unavailable persistence instead of claiming success;
 - accepted values: `system`, `light`, `dark`; every other value is ignored;
 - fallback order: valid reader value, legacy valid `sf-theme` cookie, inherited
   author default, then `system`;
@@ -104,6 +112,7 @@ settings-dialog interaction.
 | configuration | existing strict `system/light/dark` schema, inheritance and negative `sepia` tests remain green |
 | generated HTML | one trigger, one dialog, exactly three options, reset and status, no Smart modal/dropdown |
 | runtime | guarded restore/write/remove, legacy migration, reset, system media listener, no binary Framework hook |
+| Framework integration | Core binary theme bootstrap disabled before `core.js`; author light/dark survives the opposite OS preference |
 | deterministic build | two clean builds have the same digest and zero broken links |
 | browser desktop/mobile | open/change/persist/reload/reset/Escape/focus/system/light/dark/no-overflow/console matrix |
 | exact acceptance | independent tester and UX/design verdicts bind to the same candidate SHA |

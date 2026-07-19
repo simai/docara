@@ -215,8 +215,8 @@ Do not complete the Goal until:
 ## Current Remaining
 
 - Milestones remaining: 3 of 5.
-- Batches remaining: 4 of 10.
-- Active batch: Batch 6.
+- Batches remaining: 3 of 10.
+- Active batch: Batch 7.
 - Goal status: `in-progress`.
 
 ## Do Not Complete Until
@@ -253,7 +253,8 @@ Do not complete the Goal until:
 | `WS-READING-03` | Docara owner with UX/designer | breadcrumbs, page outline and previous/next navigation from one navigation tree | this worktree | accepted and published locally | Batch 3 exact tester, HCS, UX/design/browser and publication PASS |
 | `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | accepted and published locally | exact HCS/tester/browser, independent visual/evidence audit and served smoke PASS |
 | `WS-LANDING-05` | Docara owner with UX/designer | landing recipe and responsive demonstration from pinned Framework building blocks | this worktree | accepted and published locally | exact tester, HCS/source/security, native-Chrome UX/design and served smoke PASS |
-| `WS-CATALOG-CONTRACT-06` | Docara owner with Framework consultation | one effective component projection, typed definitions and lifecycle/gap contract | this worktree | implementation and mutable verification complete; exact candidate pending | schemas, negative matrix, deterministic projection, complete-diff HCS and exact tester PASS |
+| `WS-CATALOG-CONTRACT-06` | Docara owner with Framework consultation | one effective component projection, typed definitions and lifecycle/gap contract | this worktree | accepted and published locally | schemas, negative matrix, deterministic projection, exact tester, complete-diff HCS and browser/publication PASS |
+| `WS-LIVE-CATALOG-07` | Docara owner with docs, UX and designer | generated component catalogue, generic detail page, exact examples and `docara.columns` | this worktree | implementation in progress | deterministic pages/examples, schema and negative matrix, exact tester, complete-diff HCS, browser/UX/design and publication PASS |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -344,10 +345,12 @@ was discovered.
 
 ## Next Safe Batch
 
-Cut one exact Batch 6 candidate from the verified implementation. Require
-independent archive, complete-diff HCS/source/security and bounded browser
-acceptance for that same revision. Keep the accepted Batch 5 build served until
-all Batch 6 gates pass.
+Implement Batch 7 test-first from the accepted EffectiveComponentCatalog.
+Generate a compact index and generic detail page, attach one exact fixture to
+every supported record and add the bounded `docara.columns` recipe. Require
+deterministic/static checks, independent archive, complete-diff
+HCS/source/security and native-Chrome UX/design acceptance for one immutable
+candidate. Keep the accepted Batch 6 build served until all Batch 7 gates pass.
 
 ## Last Completed Batch
 
@@ -400,3 +403,15 @@ publication. Source, staging and served digest
 `c0d38e6badc833eaa29cf0f0482d4306c10aca943e993e79ffa629497a5b3060`
 matches, and the accepted Batch 4 tree remains available for rollback. Batch 6
 and the wider Goal are not accepted by this result.
+
+Batch 6 effective component contract is accepted on candidate
+`68a960ff1debde48664aa8541413dbef208612ee` (tree
+`9363f21c63e516ee4b97772f097b70aa52ff412f`). Independent exact-archive
+tester, complete-diff Human-Centered Simplicity/source/security and
+native-Chrome UX/design gates returned bounded PASS. The verified build is
+served at `docara.test`; source, staging and served digest
+`16bbdd52e2dc0e0c058c02dfbc61e3dd824fa2e59be23b45848f587d83a3fc50`
+matches, and the accepted Batch 5 tree remains preserved for rollback at
+`.docara-backups/product-completion-catalog-contract-68a960f-20260719-152452`.
+This accepts and publishes Batch 6 only; Batch 7 and the wider Goal remain
+in progress.

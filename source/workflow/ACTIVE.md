@@ -21,20 +21,22 @@ catalogue, complete documentation and exact independent acceptance.
 
 ## Current Batch
 
-Batch 6 — one deterministic effective component catalogue contract, typed
-component definitions and corrected capability projection.
+Batch 7 — one generated live component catalogue, generic detail page and the
+typed `docara.columns` layout recipe.
 
 ## Next Step
 
-Batch 5 successor `918919046a2863a67a306678ad225dbda4549666`
+Batch 6 candidate `68a960ff1debde48664aa8541413dbef208612ee`
 passed independent exact tester, native-Chrome UX/design and
-Human-Centered Simplicity/source/security gates and is served locally with
-matching source/staging/served digest
-`c0d38e6badc833eaa29cf0f0482d4306c10aca943e993e79ffa629497a5b3060`.
-The accepted Batch 4 tree remains available as the timestamped rollback.
+Human-Centered Simplicity/source/security gates. Its exact build is served
+locally with matching source/staging/served digest
+`16bbdd52e2dc0e0c058c02dfbc61e3dd824fa2e59be23b45848f587d83a3fc50`;
+the accepted Batch 5 tree is the timestamped rollback.
 
-Cut the immutable Batch 6 candidate from the verified implementation, then run
-independent exact-archive, complete-diff HCS/source/security and bounded
-native-Chrome acceptance for that same revision. Keep the accepted Batch 5
-build served until every Batch 6 gate passes. Public release, default-branch
-migration and repository retirement remain excluded.
+Implement Batch 7 test-first from the accepted EffectiveComponentCatalog:
+generate one compact catalogue and one generic detail template, add exact
+example fixtures and close the required `docara.columns` recipe without a
+second registry or Framework owner write. Keep the accepted Batch 6 build
+served until one immutable Batch 7 candidate passes exact tester,
+complete-diff HCS/source/security and native-Chrome UX/design gates. Public
+release, default-branch migration and repository retirement remain excluded.

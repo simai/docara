@@ -6,4 +6,4 @@ active_tracks:
   - docara-consolidation
 current_focus: "docara-consolidation"
 important_blockers: []
-next_global_step: "Start Batch 3 from exact candidate 83d677c7: search, right heading TOC, breadcrumbs, previous/next and simple reading settings, then exact independent acceptance."
+next_global_step: "Continue Batch 7 from accepted local Batch 6 candidate 68a960ff: generate the live component catalogue and generic detail page, add exact examples and the typed docara.columns recipe, then run exact tester, complete-diff HCS, native-Chrome UX/design and staged local publication."

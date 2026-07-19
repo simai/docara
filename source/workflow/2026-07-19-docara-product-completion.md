@@ -249,7 +249,7 @@ Do not complete the Goal until:
 | `WS-DOCS-01` | `/root/docs_catalog_audit` | Retype-style component capability inventory and Docara docs coverage/map | none | completed | `product-capability-matrix.yaml` and catalogue/docs decision |
 | `WS-SEARCH-02` | Docara owner | deterministic local search, schema, runtime, verifier and documentation | this worktree | accepted and published locally | Batch 2 exact tester, HCS, UX/designer and publication PASS |
 | `WS-READING-03` | Docara owner with UX/designer | breadcrumbs, page outline and previous/next navigation from one navigation tree | this worktree | accepted and published locally | Batch 3 exact tester, HCS, UX/design/browser and publication PASS |
-| `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | active | Batch 4 decision, tests, exact UX/design and tester verdicts |
+| `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | correction active after served keyboard smoke | real-keyboard mutual exclusion, focused regression, exact browser/tester closure |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -340,10 +340,12 @@ was discovered.
 
 ## Next Safe Batch
 
-Implement Batch 4 test-first from accepted Batch 3 candidate `73eae43…`:
-define the smallest useful reader-settings contract, reuse pinned Framework
-controls and theme tokens, preserve strong defaults and make responsive,
-keyboard and persistence behavior explicit before implementation.
+Correct Batch 4 from candidate `adad417a…`: reproduce the physical `Cmd+K`
+path while reader settings are open, add the browser-level regression first,
+then guarantee that opening search closes settings before search becomes open.
+Repeat the affected keyboard/mutual-exclusion matrix from a new immutable
+candidate and publish only after the served-site smoke passes. Keep the exact
+storage and Framework corrections unchanged.
 
 ## Last Completed Batch
 

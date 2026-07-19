@@ -10,6 +10,7 @@
     var results = dialog.querySelector('[data-docara-search-results]');
     var closeButton = dialog.querySelector('[data-docara-search-close]');
     var shortcut = trigger.querySelector('[data-docara-search-shortcut]');
+    var readerSettings = document.querySelector('[data-docara-reader-settings-dialog]');
     var locale = document.documentElement.lang || 'en';
     var copy = locale.toLowerCase().startsWith('ru') ? {
         idle: 'Введите минимум 2 символа',
@@ -280,6 +281,7 @@
     }
 
     function openSearch() {
+        if (readerSettings && readerSettings.open) readerSettings.close();
         if (!dialog.open) {
             if (typeof dialog.showModal === 'function') dialog.showModal();
             else dialog.setAttribute('open', '');

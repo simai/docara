@@ -21,14 +21,14 @@ catalogue, complete documentation and exact independent acceptance.
 
 ## Current Batch
 
-Batch 4 — simple reader settings and responsive integration on the accepted
-search, navigation and reading-context shell.
+Batch 4 correction — real-keyboard mutual exclusion between reader settings
+and search on the accepted Batch 3 shell.
 
 ## Next Step
 
-Define the smallest useful reader-settings outcome and its inherited author
-defaults, browser persistence, reset, keyboard, responsive and light/dark
-contract. Inventory exact pinned Framework controls before implementation,
-then build Batch 4 test-first without a second theme or settings system.
-Public release, default-branch migration and repository retirement remain
-excluded.
+Add the physical `Cmd+K` regression first, then ensure opening search closes an
+open reader-settings dialog before search becomes open. Preserve the accepted
+storage compatibility behavior and repeat exact keyboard/browser/tester gates
+on a new immutable candidate. The served site has already been rolled back to
+accepted Batch 3. Public release, default-branch migration and repository
+retirement remain excluded.

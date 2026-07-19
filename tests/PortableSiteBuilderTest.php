@@ -287,6 +287,16 @@ final class PortableSiteBuilderTest extends TestCase
             hash_file('sha256', dirname(__DIR__) . '/resources/portable/search.js'),
             hash_file('sha256', $this->tmpPath('build_local/_docara/search.js')),
         );
+        $searchRuntime = (string) file_get_contents($this->tmpPath('build_local/_docara/search.js'));
+        self::assertStringContainsString(
+            "document.querySelector('[data-docara-reader-settings-dialog]')",
+            $searchRuntime,
+        );
+        self::assertStringContainsString('if (readerSettings && readerSettings.open) readerSettings.close();', $searchRuntime);
+        self::assertTrue(
+            strpos($searchRuntime, 'readerSettings.close()') < strpos($searchRuntime, 'dialog.showModal()'),
+            'The physical search shortcut must close reader settings before search becomes modal.',
+        );
     }
 
     #[Test]

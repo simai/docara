@@ -3,8 +3,8 @@
 Date: 2026-07-19
 Status: in-progress
 Process model: `general_delivery`
-Current state: `tests_recorded`
-Target state: `evidence_recorded`
+Current state: `evidence_recorded`
+Target state: `implementation_started`
 Project mode: `productization`
 Requested level: `goal`
 Recommended level: `goal`
@@ -214,9 +214,9 @@ Do not complete the Goal until:
 
 ## Current Remaining
 
-- Milestones remaining: 3 of 5.
-- Batches remaining: 3 of 10.
-- Active batch: Batch 7.
+- Milestones remaining: 2 of 5.
+- Batches remaining: 2 of 10.
+- Active batch: Batch 8.
 - Goal status: `in-progress`.
 
 ## Do Not Complete Until
@@ -254,7 +254,8 @@ Do not complete the Goal until:
 | `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | accepted and published locally | exact HCS/tester/browser, independent visual/evidence audit and served smoke PASS |
 | `WS-LANDING-05` | Docara owner with UX/designer | landing recipe and responsive demonstration from pinned Framework building blocks | this worktree | accepted and published locally | exact tester, HCS/source/security, native-Chrome UX/design and served smoke PASS |
 | `WS-CATALOG-CONTRACT-06` | Docara owner with Framework consultation | one effective component projection, typed definitions and lifecycle/gap contract | this worktree | accepted and published locally | schemas, negative matrix, deterministic projection, exact tester, complete-diff HCS and browser/publication PASS |
-| `WS-LIVE-CATALOG-07` | Docara owner with docs, UX and designer | generated component catalogue, generic detail page, exact examples and `docara.columns` | this worktree | mutable implementation verified; immutable candidate pending | deterministic pages/examples, schema and negative matrix, exact tester, complete-diff HCS, browser/UX/design and publication PASS |
+| `WS-LIVE-CATALOG-07` | Docara owner with docs, UX and designer | generated component catalogue, generic detail page, exact examples and `docara.columns` | this worktree | accepted and published locally | deterministic pages/examples, schema and negative matrix, exact tester, complete-diff HCS, browser/UX/design and publication PASS |
+| `WS-DOCS-08` | Docs owner with Docara implementation | task-oriented beginner, author, migration, maintainer and extension paths with canonical component references | this worktree | exact plan ready; implementation not started | documentation contract/example/site tests, exact deterministic build/static verifier and browser acceptance PASS |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -345,12 +346,14 @@ was discovered.
 
 ## Next Safe Batch
 
-Commit the verified Batch 7 implementation as one immutable candidate. Require
-independent exact-archive tester, complete-diff HCS/source/security and
-native-Chrome UX/design acceptance for that exact SHA, then publish through
-staging with rollback and matching digests. Continue directly to Batch 8 only
-after the bounded Batch 7 closure. Keep the accepted Batch 6 build served until
-all Batch 7 gates pass.
+Implement Batch 8 from `batch-8-complete-documentation-plan.md`. Normalize all
+17 `docs_ref` values, delete nine duplicate manual component pages, add five
+task-oriented pages and repair the beginner, configuration, layout, build,
+publish, migration, maintainer and extension paths. Add contract, example and
+full-site tests before content changes. Require 56 HTML pages, 55 search
+documents, 13 generated catalogue surfaces, no legacy manual component routes
+and zero broken references. Keep accepted Batch 7 served until one immutable
+Batch 8 candidate passes exact automated and browser acceptance.
 
 ## Last Completed Batch
 
@@ -426,3 +429,15 @@ with 70 files, 60 HTML pages and 6477 verified local references. The complete
 sequential suite passes with 534 tests and 3923 assertions. This is mutable
 pre-acceptance evidence only: no Batch 7 candidate, publication or wider Goal
 claim exists until the exact gates pass.
+
+Batch 7 live component catalogue is accepted on candidate
+`a5cc0e7ddd3a4ef218381e3e4129825eedf6d671` (tree
+`ec09ea5249a43c712729cbb74ab03e736987a353`). Independent exact-archive tester,
+complete-diff Human-Centered Simplicity/source/security and native-Chrome
+UX/design gates returned `PASS`. The exact build is served at `docara.test`;
+source, staging and served digest
+`dc6e2a997314a2497da29af3e696937d7f46aee2a832ed3166e2862cdd963675`
+matches. The exact accepted Batch 6 tree remains preserved for rollback at
+`.docara-backups/product-completion-live-catalog-a5cc0e7-20260719-182708`.
+This closes Milestone 3 and accepts and publishes Batch 7 only. Batch 8, Batch
+9 and the wider Goal remain in progress.

@@ -21,15 +21,16 @@ catalogue, complete documentation and exact independent acceptance.
 
 ## Current Batch
 
-Batch 4 successor-candidate acceptance — single-owner mutual exclusion between
-reader settings and search on the accepted Batch 3 shell.
+Batch 4 successor browser acceptance — exact source/HCS and non-browser tester
+gates passed for the single-owner correction.
 
 ## Next Step
 
-Bind the current successor commit to its exact SHA/tree and repeat exact
-source/tester gates. Its test-first correction has removed the duplicate shell
-listener while retaining the shared physical `Cmd/Ctrl+K` regression. The
-native-Chrome keyboard gate remains pending because the external execution
-transport reached its explicit usage limit; do not publish or lower the gate.
-The served site remains accepted Batch 3. Public release, default-branch
+Candidate `d26fa66c6d6a5a36ec113288e6fce29f2f6b1a0e` has exact bounded HCS
+and non-browser tester PASS. The native-Chrome keyboard gate is blocked because
+the external approval transport reached its explicit usage limit and forbade a
+rerun or indirect workaround. Ask the user for explicit approval after this
+disclosure, or wait for transport recovery; then run physical `Cmd/Ctrl+K`,
+focus, responsive and disabled-storage acceptance. Do not publish or lower the
+gate. The served site remains accepted Batch 3. Public release, default-branch
 migration and repository retirement remain excluded.

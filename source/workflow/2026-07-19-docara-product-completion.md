@@ -249,7 +249,7 @@ Do not complete the Goal until:
 | `WS-DOCS-01` | `/root/docs_catalog_audit` | Retype-style component capability inventory and Docara docs coverage/map | none | completed | `product-capability-matrix.yaml` and catalogue/docs decision |
 | `WS-SEARCH-02` | Docara owner | deterministic local search, schema, runtime, verifier and documentation | this worktree | accepted and published locally | Batch 2 exact tester, HCS, UX/designer and publication PASS |
 | `WS-READING-03` | Docara owner with UX/designer | breadcrumbs, page outline and previous/next navigation from one navigation tree | this worktree | accepted and published locally | Batch 3 exact tester, HCS, UX/design/browser and publication PASS |
-| `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | successor candidate ready; exact acceptance pending | single mutual-exclusion owner, honest workflow state, exact browser/tester closure |
+| `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | exact HCS/tester PASS; native browser blocked pending explicit user approval or transport recovery | physical keyboard browser PASS and served smoke |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.
@@ -340,12 +340,14 @@ was discovered.
 
 ## Next Safe Batch
 
-Use the successor candidate carrying this workflow state. Its test-first
-correction removes the old shell click-listener, keeps the shared
-`openSearch()` invariant and records rejected candidate `4812b19…`. Bind the
-exact candidate SHA/tree, then repeat exact source/tester acceptance and the
-physical `Cmd/Ctrl+K` browser matrix. Publish only after the served-site smoke
-passes; keep accepted Batch 3 served until then.
+Candidate `d26fa66c6d6a5a36ec113288e6fce29f2f6b1a0e` has exact bounded HCS
+and non-browser tester PASS. Native Chrome could not be launched because the
+external approval transport reached its explicit usage limit and prohibited a
+rerun or indirect workaround. Request explicit user approval after disclosing
+that blocker, or wait for transport recovery, then run the physical
+`Cmd/Ctrl+K`, focus, responsive and disabled-storage matrix from the exact
+candidate. Publish only after that PASS and a served-site keyboard smoke; keep
+accepted Batch 3 served until then.
 
 ## Last Completed Batch
 

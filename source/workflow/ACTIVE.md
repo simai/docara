@@ -4,7 +4,7 @@ Date: 2026-07-19
 Status: in-progress
 Workflow ID: `2026-07-19-docara-product-completion`
 Process model: `general_delivery`
-Current state: `implementation_ready_pending_exact_acceptance`
+Current state: `implementation_ready`
 Target state: `launch_record_ready`
 
 ## Goal
@@ -21,16 +21,20 @@ catalogue, complete documentation and exact independent acceptance.
 
 ## Current Batch
 
-Batch 5 — landing recipe, responsive demonstration and combined directive
-budget correction.
+Batch 6 — one deterministic effective component catalogue contract, typed
+component definitions and corrected capability projection.
 
 ## Next Step
 
-Batch 4 candidate `d26fa66c6d6a5a36ec113288e6fce29f2f6b1a0e` remains
-accepted and served locally. The first Batch 5 candidate
-`68fba097d6d629ad77937a09a6c16b25ea709850` remains rejected after
-`B5-HCS-P2-001` found an unbounded cross-family parser path. The shared
-64-marker preflight correction now passes mutable verification. Create a new
-immutable candidate and require independent exact tester, native-Chrome
-UX/design and source/HCS/security PASS before local publication. Public
-release, default-branch migration and repository retirement remain excluded.
+Batch 5 successor `918919046a2863a67a306678ad225dbda4549666`
+passed independent exact tester, native-Chrome UX/design and
+Human-Centered Simplicity/source/security gates and is served locally with
+matching source/staging/served digest
+`c0d38e6badc833eaa29cf0f0482d4306c10aca943e993e79ffa629497a5b3060`.
+The accepted Batch 4 tree remains available as the timestamped rollback.
+
+Implement Batch 6 test-first from one derived projection of the enabled native
+Markdown profile, Docara-owned typed definitions and exact Smart manifests
+admitted by the immutable Framework lock. Do not create a second Framework
+registry or a visual catalogue yet. Public release, default-branch migration
+and repository retirement remain excluded.

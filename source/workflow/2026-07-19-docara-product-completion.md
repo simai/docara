@@ -213,8 +213,8 @@ Do not complete the Goal until:
 ## Current Remaining
 
 - Milestones remaining: 3 of 5.
-- Batches remaining: 5 of 10.
-- Active batch: Batch 5.
+- Batches remaining: 4 of 10.
+- Active batch: Batch 6.
 - Goal status: `in-progress`.
 
 ## Do Not Complete Until
@@ -250,7 +250,8 @@ Do not complete the Goal until:
 | `WS-SEARCH-02` | Docara owner | deterministic local search, schema, runtime, verifier and documentation | this worktree | accepted and published locally | Batch 2 exact tester, HCS, UX/designer and publication PASS |
 | `WS-READING-03` | Docara owner with UX/designer | breadcrumbs, page outline and previous/next navigation from one navigation tree | this worktree | accepted and published locally | Batch 3 exact tester, HCS, UX/design/browser and publication PASS |
 | `WS-SETTINGS-04` | Docara owner with UX/designer | simple reader settings and responsive integration | this worktree | accepted and published locally | exact HCS/tester/browser, independent visual/evidence audit and served smoke PASS |
-| `WS-LANDING-05` | Docara owner with UX/designer | landing recipe and responsive demonstration from pinned Framework building blocks | this worktree | ready | test-first schema/rendering plus responsive UX/design/browser acceptance |
+| `WS-LANDING-05` | Docara owner with UX/designer | landing recipe and responsive demonstration from pinned Framework building blocks | this worktree | accepted and published locally | exact tester, HCS/source/security, native-Chrome UX/design and served smoke PASS |
+| `WS-CATALOG-CONTRACT-06` | Docara owner with Framework consultation | one effective component projection, typed definitions and lifecycle/gap contract | this worktree | implementation-ready | schemas, negative matrix, deterministic projection, complete-diff HCS and exact tester PASS |
 
 Subagents must stop after their bounded read-only deliverable. Extra ideas go
 to backlog unless they are required by this Goal.

@@ -471,7 +471,7 @@ final class PortableMarkdownRenderer
             return $this->inspector->inspectDirectives($markdown, DirectiveBlockStartParser::PORTABLE);
         } catch (DirectiveLimitExceeded $exception) {
             throw new PortableConfigurationException(
-                'MARKDOWN_BLOCK_LIMIT_EXCEEDED',
+                $this->directiveLimitErrorCode($exception),
                 $exception->getMessage(),
             );
         }
@@ -484,9 +484,16 @@ final class PortableMarkdownRenderer
             return $this->inspector->inspectDirectives($markdown, DirectiveBlockStartParser::FRAMEWORK);
         } catch (DirectiveLimitExceeded $exception) {
             throw new PortableConfigurationException(
-                'MARKDOWN_BLOCK_LIMIT_EXCEEDED',
+                $this->directiveLimitErrorCode($exception),
                 $exception->getMessage(),
             );
         }
+    }
+
+    private function directiveLimitErrorCode(DirectiveLimitExceeded $exception): string
+    {
+        return $exception->family === DirectiveBlockStartParser::FRAMEWORK
+            ? 'FRAMEWORK_DIRECTIVE_LIMIT_EXCEEDED'
+            : 'MARKDOWN_BLOCK_LIMIT_EXCEEDED';
     }
 }

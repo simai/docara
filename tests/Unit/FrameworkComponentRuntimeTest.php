@@ -447,6 +447,33 @@ MD, 'guide.md');
         );
     }
 
+    public function test_combined_directive_marker_count_is_bounded_before_cross_family_parsing(): void
+    {
+        $portable = ":::features\n- One\n- Two\n:::\n";
+        $framework = ":::ui.button\n{}\n:::\n";
+
+        $boundary = $this->runtime()->extract(
+            str_repeat($portable, 32) . str_repeat($framework, 32),
+            'mixed-boundary.md',
+        );
+        self::assertCount(32, $boundary->normalizedCalls);
+
+        $this->expectFailure(
+            fn () => $this->runtime()->extract(
+                str_repeat($portable, 32) . str_repeat($framework, 33),
+                'mixed-framework-overflow.md',
+            ),
+            'FRAMEWORK_DIRECTIVE_LIMIT_EXCEEDED',
+        );
+        $this->expectFailure(
+            fn () => $this->runtime()->extract(
+                str_repeat($framework, 32) . str_repeat($portable, 33),
+                'mixed-portable-overflow.md',
+            ),
+            'MARKDOWN_BLOCK_LIMIT_EXCEEDED',
+        );
+    }
+
     public function test_runtime_and_manifest_lock_mismatches_fail_closed(): void
     {
         $providerMismatch = $this->lock();

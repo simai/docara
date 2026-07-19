@@ -30,7 +30,7 @@ final class ComponentDirectiveParser
             );
         } catch (DirectiveLimitExceeded $exception) {
             throw new FrameworkComponentException(
-                'MARKDOWN_BLOCK_LIMIT_EXCEEDED',
+                $this->directiveLimitErrorCode($exception),
                 $exception->getMessage(),
             );
         }
@@ -49,7 +49,7 @@ final class ComponentDirectiveParser
             $inspection = $this->inspector->inspectDirectives($markdown, DirectiveBlockStartParser::FRAMEWORK);
         } catch (DirectiveLimitExceeded $exception) {
             throw new FrameworkComponentException(
-                'FRAMEWORK_DIRECTIVE_LIMIT_EXCEEDED',
+                $this->directiveLimitErrorCode($exception),
                 $exception->getMessage(),
             );
         }
@@ -154,12 +154,19 @@ final class ComponentDirectiveParser
             }
         } catch (DirectiveLimitExceeded $exception) {
             throw new FrameworkComponentException(
-                'FRAMEWORK_DIRECTIVE_LIMIT_EXCEEDED',
+                $this->directiveLimitErrorCode($exception),
                 $exception->getMessage(),
             );
         }
 
         return false;
+    }
+
+    private function directiveLimitErrorCode(DirectiveLimitExceeded $exception): string
+    {
+        return $exception->family === DirectiveBlockStartParser::FRAMEWORK
+            ? 'FRAMEWORK_DIRECTIVE_LIMIT_EXCEEDED'
+            : 'MARKDOWN_BLOCK_LIMIT_EXCEEDED';
     }
 
     /** @param array<string, mixed> $inspection */

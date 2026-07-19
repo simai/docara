@@ -587,6 +587,32 @@ MD);
     }
 
     #[Test]
+    public function combined_directive_marker_count_is_bounded_before_cross_family_parsing(): void
+    {
+        $portable = ":::card\nBody\n:::\n";
+        $framework = ":::ui.button\n{}\n:::\n";
+        $cases = [
+            [
+                str_repeat($portable, 32) . str_repeat($framework, 33),
+                'FRAMEWORK_DIRECTIVE_LIMIT_EXCEEDED',
+            ],
+            [
+                str_repeat($framework, 32) . str_repeat($portable, 33),
+                'MARKDOWN_BLOCK_LIMIT_EXCEEDED',
+            ],
+        ];
+
+        foreach ($cases as [$markdown, $expected]) {
+            try {
+                (new PortableMarkdownRenderer)->render($markdown);
+                self::fail("A mixed-family directive overflow unexpectedly rendered for [$expected].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($expected, $exception->errorCode);
+            }
+        }
+    }
+
+    #[Test]
     public function very_long_matching_fences_do_not_become_dynamic_regex_quantifiers(): void
     {
         foreach ([65535, 65536] as $length) {

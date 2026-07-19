@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Markdown;
 
+use Closure;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\CommonMark\Node\Block\BlockQuote;
@@ -21,8 +22,10 @@ final class CommonMarkInspector
 
     private MarkdownParser $parser;
 
-    public function __construct()
-    {
+    /** @param null|Closure(string): void $onDirectiveIteration */
+    public function __construct(
+        private readonly ?Closure $onDirectiveIteration = null,
+    ) {
         $environment = new Environment([
             'html_input' => 'strip',
             'allow_unsafe_links' => false,
@@ -97,6 +100,12 @@ final class CommonMarkInspector
      */
     public function inspectDirectives(string $markdown, string $family): array
     {
+        $lines = preg_split('/\r\n|\n|\r/u', $markdown);
+        if (! is_array($lines)) {
+            return $this->inspect($markdown);
+        }
+        $this->assertCombinedSourceDirectiveMarkerLimit($lines);
+
         $environment = new Environment([
             'html_input' => 'strip',
             'allow_unsafe_links' => false,
@@ -104,28 +113,6 @@ final class CommonMarkInspector
         ]);
         $environment->addExtension(new CommonMarkCoreExtension);
         $environment->addBlockStartParser(new DirectiveBlockStartParser($family), 200);
-
-        $lines = preg_split('/\r\n|\n|\r/u', $markdown);
-        if (! is_array($lines)) {
-            return $this->inspect($markdown);
-        }
-        $openingPattern = $family === DirectiveBlockStartParser::PORTABLE
-            ? '/^:{3,}(?:card|steps|cta|features)[ \t]*$/u'
-            : '/^:{3,}ui\.[a-z][a-z0-9._-]*[ \t]*$/u';
-        $sourceMarkers = 0;
-        foreach ($lines as $line) {
-            if (preg_match($openingPattern, $line) !== 1) {
-                continue;
-            }
-            $sourceMarkers++;
-            if ($sourceMarkers > self::MAX_SOURCE_DIRECTIVE_MARKERS) {
-                throw new DirectiveLimitExceeded(
-                    'A Markdown page may contain at most '
-                    . self::MAX_SOURCE_DIRECTIVE_MARKERS
-                    . ' directive-like opening markers.',
-                );
-            }
-        }
 
         $inspection = $this->inspect($markdown);
         $workingLines = $lines;
@@ -138,6 +125,9 @@ final class CommonMarkInspector
             $markers = $this->inspectDocument($parser->parse($workingMarkdown))['directives'];
             if ($markers === []) {
                 break;
+            }
+            if ($this->onDirectiveIteration !== null) {
+                ($this->onDirectiveIteration)($family);
             }
 
             $marker = $markers[0];
@@ -181,6 +171,28 @@ final class CommonMarkInspector
         $inspection['directives'] = $directives;
 
         return $inspection;
+    }
+
+    /** @param list<string> $lines */
+    private function assertCombinedSourceDirectiveMarkerLimit(array $lines): void
+    {
+        $sourceMarkers = 0;
+        foreach ($lines as $line) {
+            $opening = DirectiveBlockStartParser::matchOpening($line);
+            if ($opening === null) {
+                continue;
+            }
+
+            $sourceMarkers++;
+            if ($sourceMarkers > self::MAX_SOURCE_DIRECTIVE_MARKERS) {
+                throw new DirectiveLimitExceeded(
+                    $opening['family'],
+                    'A Markdown page may contain at most '
+                    . self::MAX_SOURCE_DIRECTIVE_MARKERS
+                    . ' combined Docara and Smart directive-like opening markers.',
+                );
+            }
+        }
     }
 
     /** @return array<string, mixed> */

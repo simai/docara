@@ -34,11 +34,11 @@ Portable builder работает fail closed. Он не пытается уга
 | `FRAMEWORK_PROP_REQUIRED` | Manifest не дал обязательный prop после применения defaults |
 | `FRAMEWORK_PROP_MANAGED` | Автор попытался задать prop, которым управляет Docara |
 | `FRAMEWORK_DIRECTIVE_INDENTATION_UNSUPPORTED` | Smart-директива вложена в CommonMark-контейнер через отступ |
-| `FRAMEWORK_DIRECTIVE_LIMIT_EXCEEDED` | Страница содержит больше 64 строк, похожих на открытие Smart-директивы |
+| `FRAMEWORK_DIRECTIVE_LIMIT_EXCEEDED` | Общий лимит 64 строк typed/Smart-директив превышен строкой Smart-директивы |
 | `FRAMEWORK_PLACEHOLDER_CARDINALITY_INVALID` | Placeholder компонента неоднозначен после Markdown-render |
 | `MARKDOWN_BLOCK_UNCLOSED` | Композиционный Markdown-блок не закрыт |
 | `MARKDOWN_BLOCK_INDENTATION_UNSUPPORTED` | Композиционный Markdown-блок начинается с отступа внутри контейнера |
-| `MARKDOWN_BLOCK_LIMIT_EXCEEDED` | Страница содержит больше 64 строк, похожих на открытие typed-блоков |
+| `MARKDOWN_BLOCK_LIMIT_EXCEEDED` | Общий лимит 64 строк typed/Smart-директив превышен строкой typed-блока |
 | `MARKDOWN_BLOCK_PLACEHOLDER_CARDINALITY_INVALID` | Placeholder блока неоднозначен после Markdown-render |
 | `MARKDOWN_STEPS_ORDERED_LIST_REQUIRED` | Steps не содержит один ordered list |
 | `MARKDOWN_CTA_LINK_REQUIRED` | CTA не содержит ровно одну Markdown-ссылку с текстом |

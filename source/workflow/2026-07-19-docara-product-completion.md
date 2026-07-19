@@ -341,12 +341,12 @@ was discovered.
 
 ## Next Safe Batch
 
-Start Batch 5 from the accepted Batch 4 closure. Inventory the current
-`landing` preset and exact pinned Framework utilities/components, record one
-responsive landing recipe decision, then add the schema/rendering contract and
-a real documentation demo test-first. Do not create a generic Docara primitive
-when an exact Framework building block already owns the job. Keep the accepted
-Batch 4 build served until the next immutable candidate passes its own gates.
+Cut a successor Batch 5 candidate containing the shared 64-marker preflight
+correction for `B5-HCS-P2-001`. Require independent exact tester,
+native-Chrome UX/design and source/HCS/security PASS for that exact revision.
+Keep the accepted Batch 4 build served until the successor passes all three
+gates. Do not create a generic Docara primitive when an exact Framework
+building block already owns the job.
 
 ## Last Completed Batch
 
@@ -388,3 +388,13 @@ and served-site gates returned bounded PASS. The verified build is served at
 matches, while the accepted Batch 3 tree remains preserved for rollback at
 `.docara-backups/product-completion-settings-d26fa66-20260719-094411`.
 This closes Milestone 2, not Batch 5 or the wider Goal.
+
+The first Batch 5 candidate
+`68fba097d6d629ad77937a09a6c16b25ea709850` passed its original exact tester
+and browser slices but remains rejected and unpublished. Exact source/HCS
+review found `B5-HCS-P2-001`: family-specific marker counting did not bound the
+shared cross-family iterative parser. A successor correction now defines one
+global 64-marker typed/Smart budget, rejects before CommonMark iteration and
+preserves the triggering family's stable public error code. Mutable tests,
+format, syntax, JSON, two deterministic builds and static verification pass;
+the successor still requires all exact acceptance gates.

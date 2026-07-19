@@ -91,6 +91,173 @@ MD;
     }
 
     #[Test]
+    public function columns_render_two_to_four_source_ordered_regions_with_exact_framework_layout(): void
+    {
+        $cases = [
+            2 => 'grid grid-col-1 md:grid-col-2 gap-2',
+            3 => 'grid grid-col-1 md:grid-col-2 lg:grid-col-3 gap-2',
+            4 => 'grid grid-col-1 md:grid-col-2 lg:grid-col-4 gap-2',
+        ];
+
+        foreach ($cases as $count => $classes) {
+            $regions = [];
+            for ($region = 1; $region <= $count; $region++) {
+                $regions[] = "### Region {$region}\n\nSource ordered content {$region}.";
+            }
+            $markdown = ":::columns\n"
+                . implode("\n\n---\n\n", $regions)
+                . "\n:::\n";
+
+            $renderer = new PortableMarkdownRenderer;
+            $first = $renderer->render($markdown);
+            $second = $renderer->render($markdown);
+
+            self::assertSame($first, $second, "{$count} columns must render deterministically.");
+            self::assertStringContainsString(
+                '<section data-docara-block="columns" data-docara-columns="' . $count
+                . '" class="' . $classes . '">',
+                $first,
+            );
+            self::assertSame($count, substr_count($first, '<div class="min-w-0">'));
+            self::assertStringNotContainsString('<hr', $first);
+            $cursor = -1;
+            for ($region = 1; $region <= $count; $region++) {
+                $position = strpos($first, "Region {$region}");
+                self::assertIsInt($position);
+                self::assertGreaterThan($cursor, $position, 'Column regions must preserve source order.');
+                $cursor = $position;
+            }
+        }
+    }
+
+    #[Test]
+    public function columns_use_only_exact_top_level_commonmark_thematic_breaks_as_separators(): void
+    {
+        $markdown = <<<'MD'
+:::columns
+### First region
+
+```text
+---
+```
+
+> ---
+
+- Before
+
+  ---
+
+  After
+
+---
+
+### Second region
+
+The exact root separator is consumed.
+:::
+MD;
+
+        $html = (new PortableMarkdownRenderer)->render($markdown);
+
+        self::assertStringContainsString('data-docara-columns="2"', $html);
+        self::assertSame(2, substr_count($html, '<div class="min-w-0">'));
+        self::assertStringContainsString("class=\"language-text\">---\n</code>", $html);
+        self::assertStringContainsString('<blockquote>', $html);
+        self::assertStringContainsString('<ul>', $html);
+    }
+
+    #[Test]
+    public function columns_fail_closed_for_invalid_region_and_separator_contracts(): void
+    {
+        $cases = [
+            [
+                ":::columns\nOnly one region.\n:::\n",
+                'MARKDOWN_COLUMNS_REGION_COUNT_INVALID',
+            ],
+            [
+                ":::columns\nOne\n\n***\n\nTwo\n:::\n",
+                'MARKDOWN_COLUMNS_REGION_COUNT_INVALID',
+            ],
+            [
+                ":::columns\n---\n\nTwo\n:::\n",
+                'MARKDOWN_COLUMNS_REGION_EMPTY',
+            ],
+            [
+                ":::columns\nOne\n\n---\n\n---\n\nThree\n:::\n",
+                'MARKDOWN_COLUMNS_REGION_EMPTY',
+            ],
+            [
+                ":::columns\nOne\n\n---\nTwo\n:::\n",
+                'MARKDOWN_COLUMNS_SEPARATOR_INVALID',
+            ],
+            [
+                ":::columns\nOne\n---\n\nTwo\n:::\n",
+                'MARKDOWN_COLUMNS_REGION_COUNT_INVALID',
+            ],
+            [
+                ":::columns\nOne\n\n--- \n\nTwo\n:::\n",
+                'MARKDOWN_COLUMNS_REGION_COUNT_INVALID',
+            ],
+            [
+                ":::columns\n<!-- stripped -->\n\n---\n\nTwo\n:::\n",
+                'MARKDOWN_COLUMNS_REGION_EMPTY',
+            ],
+            [
+                ":::columns\nOne\n\n---\n\nTwo\n\n---\n\nThree\n\n---\n\nFour\n\n---\n\nFive\n:::\n",
+                'MARKDOWN_COLUMNS_REGION_COUNT_INVALID',
+            ],
+        ];
+
+        foreach ($cases as [$markdown, $expected]) {
+            try {
+                (new PortableMarkdownRenderer)->render($markdown);
+                self::fail("Invalid columns unexpectedly rendered for [$expected].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($expected, $exception->errorCode);
+            }
+        }
+    }
+
+    #[Test]
+    public function columns_share_page_level_references_without_per_region_syntax(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+:::columns
+[First][guide]
+
+---
+
+[Second][guide]
+:::
+
+[guide]: /guide/ "Guide"
+MD);
+
+        self::assertSame(2, substr_count($html, 'href="/guide/" title="Guide"'));
+        self::assertStringNotContainsString('<hr', $html);
+    }
+
+    #[Test]
+    public function columns_reject_nested_typed_and_smart_directives(): void
+    {
+        foreach (['card', 'ui.alert'] as $inner) {
+            $innerBody = $inner === 'card' ? "Nested card\n" : "{}\n";
+
+            try {
+                (new PortableMarkdownRenderer)->render(
+                    "::::columns\n"
+                    . "First region\n\n---\n\nSecond region\n\n"
+                    . ":::{$inner}\n{$innerBody}:::\n"
+                    . "::::\n",
+                );
+                self::fail("Nested [$inner] unexpectedly survived [columns].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('MARKDOWN_BLOCK_NESTING_UNSUPPORTED', $exception->errorCode);
+            }
+        }
+    }
+
+    #[Test]
     public function cta_requires_exactly_one_safe_markdown_link(): void
     {
         $cases = [

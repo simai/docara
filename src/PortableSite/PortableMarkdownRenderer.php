@@ -33,6 +33,8 @@ final class PortableMarkdownRenderer
 
     private TypedComponentDefinitionRepository $definitions;
 
+    private PortableColumnRegionParser $columnRegions;
+
     public function __construct(
         ?PortableMarkdownProfile $profile = null,
         ?TypedComponentDefinitionRepository $definitions = null,
@@ -43,6 +45,7 @@ final class PortableMarkdownRenderer
         $this->inspector = new CommonMarkInspector(
             directiveMatcher: new DirectiveOpeningMatcher($this->definitions->names()),
         );
+        $this->columnRegions = new PortableColumnRegionParser($this->inspector);
     }
 
     public function render(string $markdown): string
@@ -70,12 +73,16 @@ final class PortableMarkdownRenderer
             if ($referenceDefinitions !== '') {
                 $blockMarkdown = $referenceDefinitions . "\n\n" . $blockMarkdown;
             }
-            $content = $this->converter->convert($blockMarkdown);
-            $rendered = match (TypedRendererId::from($block['renderer'])) {
-                TypedRendererId::Card => $this->renderCard($content),
-                TypedRendererId::Steps => $this->renderSteps($content),
-                TypedRendererId::Cta => $this->renderCta($content),
-                TypedRendererId::Features => $this->renderFeatures($content),
+            $renderer = TypedRendererId::from($block['renderer']);
+            $rendered = match ($renderer) {
+                TypedRendererId::Card => $this->renderCard($this->converter->convert($blockMarkdown)),
+                TypedRendererId::Columns => $this->renderColumns(
+                    $block['markdown'],
+                    $referenceDefinitions,
+                ),
+                TypedRendererId::Steps => $this->renderSteps($this->converter->convert($blockMarkdown)),
+                TypedRendererId::Cta => $this->renderCta($this->converter->convert($blockMarkdown)),
+                TypedRendererId::Features => $this->renderFeatures($this->converter->convert($blockMarkdown)),
             };
             $wrapper = '<p>' . $block['placeholder'] . '</p>';
             if (substr_count($html, $wrapper) !== 1) {
@@ -444,6 +451,34 @@ final class PortableMarkdownRenderer
             '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1">',
             $content,
         ) ?? $content;
+    }
+
+    private function renderColumns(string $markdown, string $referenceDefinitions): string
+    {
+        $regions = $this->columnRegions->parse($markdown);
+        $count = count($regions);
+        $classes = match ($count) {
+            2 => 'grid grid-col-1 md:grid-col-2 gap-2',
+            3 => 'grid grid-col-1 md:grid-col-2 lg:grid-col-3 gap-2',
+            4 => 'grid grid-col-1 md:grid-col-2 lg:grid-col-4 gap-2',
+        };
+        $content = [];
+        foreach ($regions as $region) {
+            if ($referenceDefinitions !== '') {
+                $region = $referenceDefinitions . "\n\n" . $region;
+            }
+            $html = trim((string) $this->converter->convert($region));
+            if ($html === '') {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_COLUMNS_REGION_EMPTY',
+                    'Every columns region must render visible Markdown content.',
+                );
+            }
+            $content[] = '<div class="min-w-0">' . $html . '</div>';
+        }
+
+        return '<section data-docara-block="columns" data-docara-columns="' . $count
+            . '" class="' . $classes . '">' . implode('', $content) . '</section>';
     }
 
     private function containsVisibleText(string $text): bool

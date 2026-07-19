@@ -26,15 +26,21 @@ final class EffectiveComponentCatalogTest extends TestCase
     {
         $repository = TypedComponentDefinitionRepository::bundled();
 
-        self::assertSame(['card', 'cta', 'features', 'steps'], $repository->names());
+        self::assertSame(['card', 'columns', 'cta', 'features', 'steps'], $repository->names());
         self::assertSame([
             'docara.card',
+            'docara.columns',
             'docara.cta',
             'docara.features',
             'docara.steps',
         ], array_column($repository->all(), 'id'));
         self::assertSame('docara.card.v1', $repository->byName('card')['renderer']);
+        self::assertSame('docara.columns.v1', $repository->byName('columns')['renderer']);
         self::assertNull($repository->findByName('panel'));
+        self::assertFileDoesNotExist(
+            dirname(__DIR__, 2) . '/resources/component-catalog/requirements/docara.columns.json',
+            'A promoted component must have exactly one typed owner record.',
+        );
     }
 
     #[Test]
@@ -90,6 +96,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'native.lists_and_quotes',
             'native.table',
             'docara.card',
+            'docara.columns',
             'docara.cta',
             'docara.features',
             'docara.steps',
@@ -98,7 +105,6 @@ final class EffectiveComponentCatalogTest extends TestCase
         ] as $id) {
             self::assertSame('supported', $lifecycles[$id] ?? null, $id);
         }
-        self::assertSame('admission_pending', $lifecycles['docara.columns'] ?? null);
         self::assertSame('admission_pending', $lifecycles['ui.badge'] ?? null);
         self::assertSame('framework_gap', $lifecycles['content.icon'] ?? null);
         self::assertSame('framework_gap', $lifecycles['native.code.enhanced'] ?? null);
@@ -421,6 +427,10 @@ final class EffectiveComponentCatalogTest extends TestCase
                 '<section class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1">',
                 '<h3>Переносимый проект</h3>',
             ],
+            'docara.columns' => [
+                '<section data-docara-block="columns" data-docara-columns="4" class="grid grid-col-1 md:grid-col-2 lg:grid-col-4 gap-2">',
+                '<div class="min-w-0">',
+            ],
             'docara.cta' => [
                 '<a data-docara-block="cta" class="docara-cta-link sf-button',
                 '<span class="sf-button-text-container">Начать работу</span>',
@@ -442,7 +452,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             $catalog['entries'],
             static fn (array $entry): bool => ($entry['lifecycle'] ?? null) === 'supported',
         ));
-        self::assertCount(11, $supported);
+        self::assertCount(12, $supported);
         $expectedIds = array_merge(
             array_keys($nativeIdentity),
             array_keys($typedIdentity),

@@ -12,6 +12,7 @@ use League\CommonMark\Extension\CommonMark\Node\Block\FencedCode;
 use League\CommonMark\Extension\CommonMark\Node\Block\HtmlBlock;
 use League\CommonMark\Extension\CommonMark\Node\Block\IndentedCode;
 use League\CommonMark\Extension\CommonMark\Node\Block\ListItem;
+use League\CommonMark\Extension\CommonMark\Node\Block\ThematicBreak;
 use League\CommonMark\Node\Block\AbstractBlock;
 use League\CommonMark\Node\Block\Document;
 use League\CommonMark\Parser\MarkdownParser;
@@ -44,6 +45,7 @@ final class CommonMarkInspector
      *     code_lines: array<int, true>,
      *     literal_code_lines: array<int, true>,
      *     nested_lines: array<int, true>,
+     *     top_level_thematic_break_lines: array<int, true>,
      *     references: list<array{label: string, destination: string, title: string}>,
      *     directives: list<array{name: string, start_line: int, end_line: int, body: string, closed: bool, fence_length: int}>
      * }
@@ -93,6 +95,7 @@ final class CommonMarkInspector
      *     code_lines: array<int, true>,
      *     literal_code_lines: array<int, true>,
      *     nested_lines: array<int, true>,
+     *     top_level_thematic_break_lines: array<int, true>,
      *     references: list<array{label: string, destination: string, title: string}>,
      *     directives: list<array{name: string, start_line: int, end_line: int, body: string, closed: bool, fence_length: int}>
      * }
@@ -203,6 +206,7 @@ final class CommonMarkInspector
         $codeLines = [];
         $literalCodeLines = [];
         $nestedLines = [];
+        $topLevelThematicBreakLines = [];
         $directives = [];
         $walker = $document->walker();
         while (($event = $walker->next()) !== null) {
@@ -223,6 +227,13 @@ final class CommonMarkInspector
                         'closed' => $node->isClosed(),
                         'fence_length' => $node->fenceLength(),
                     ];
+                }
+            }
+
+            if ($node instanceof ThematicBreak && $node->parent() instanceof Document) {
+                $start = $node->getStartLine();
+                if ($start !== null) {
+                    $topLevelThematicBreakLines[$start] = true;
                 }
             }
 
@@ -262,6 +273,7 @@ final class CommonMarkInspector
             'code_lines' => $codeLines,
             'literal_code_lines' => $literalCodeLines,
             'nested_lines' => $nestedLines,
+            'top_level_thematic_break_lines' => $topLevelThematicBreakLines,
             'references' => $references,
             'directives' => $directives,
         ];

@@ -1,0 +1,40 @@
+{
+    "id": "docara.columns",
+    "name": "columns",
+    "renderer": "docara.columns.v1",
+    "family": "docara_typed",
+    "category": "layout",
+    "title": "Columns",
+    "description": "Arranges two to four source-ordered Markdown regions in a responsive Simai Framework grid.",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive",
+        "call": ":::columns",
+        "jobs": [
+            "arrange_related_regions"
+        ],
+        "parameters": []
+    },
+    "states": [
+        "stacked",
+        "responsive_columns"
+    ],
+    "limitations": [
+        "The body must contain between two and four non-empty Markdown regions.",
+        "Regions must use an exact top-level --- separator surrounded by blank lines.",
+        "Nested Docara typed directives and Smart components are not accepted.",
+        "Column order always follows source order."
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/components.md",
+    "example_ref": "resources/component-catalog/examples/docara.columns.md",
+    "provenance": {
+        "source_kind": "typed_definition",
+        "definition_ref": "resources/component-catalog/typed/docara.columns.json"
+    }
+}

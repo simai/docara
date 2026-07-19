@@ -35,14 +35,17 @@ is served at `docara.test` with digest
 the exact accepted Batch 6 tree is retained at
 `.docara-backups/product-completion-live-catalog-a5cc0e7-20260719-182708`.
 
-Batch 8 mutable implementation passes 541 tests with 4,285 assertions, Pint,
-Composer validation, JSON and diff checks. Two clean builds reproduce digest
-`69e1fb2a341b43806ad8e00e14158b2234b0e79b5021efe1b047293d981bcc9e`
+The first Batch 8 candidate `fe990afeb22c42b68ae498ae7104b304fc0b98d2`
+was rejected by native-Chrome preacceptance because the exact query
+`расширение` returned no result and the generated component catalogue had no
+filter. The bounded correction passes 541 tests with 4,304 assertions, Pint,
+Composer validation and diff checks. Two clean builds reproduce digest
+`e60f6bbea7b59de84184025fe6322781db605067afb60ffbc2ea9cdf48576972`
 with 43 authored pages, 56 HTML pages, 55 search documents, 13 generated
 catalogue surfaces, no old manual component routes and 5,793 verified local
 references with zero broken.
 
-Create one local immutable candidate. Accept it only after independent
+Freeze the corrected local immutable candidate. Accept it only after independent
 exact-archive full tests/build/static verification, a complete inventory from
 Goal baseline `31f468be85d015b962fccc2b4c089204aab1410b`, and native-Chrome checks at
 1440, 768 and 390 pixels for menu, search, breadcrumbs/TOC/previous-next,

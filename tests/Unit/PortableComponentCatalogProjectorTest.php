@@ -56,6 +56,31 @@ final class PortableComponentCatalogProjectorTest extends TestCase
 
         $index = (string) file_get_contents($build . '/components/catalog/index.html');
         self::assertStringContainsString('data-docara-component-catalog-index', $index);
+        self::assertStringContainsString('data-docara-component-filter', $index);
+        self::assertStringContainsString('data-docara-component-filter-query', $index);
+        self::assertStringContainsString('data-docara-component-filter-family', $index);
+        self::assertStringContainsString('data-docara-component-filter-availability', $index);
+        self::assertStringContainsString('data-docara-component-filter-status', $index);
+        self::assertStringContainsString('data-docara-component-filter-reset', $index);
+        self::assertStringContainsString('data-docara-component-filter-empty', $index);
+        self::assertStringContainsString('data-docara-component-filter-controller', $index);
+        self::assertSame(17, substr_count($index, 'data-docara-component-item='));
+        self::assertStringContainsString(
+            'data-docara-component-family="framework_smart"',
+            $index,
+        );
+        self::assertStringContainsString(
+            'data-docara-component-availability="unavailable"',
+            $index,
+        );
+        self::assertStringContainsString(
+            'data-docara-component-search="ui.button Кнопка Выводит визуальный элемент действия;',
+            $index,
+        );
+        self::assertStringContainsString(
+            'data-docara-component-search="ui.tabs Вкладки Доступный набор вкладок',
+            $index,
+        );
         self::assertStringContainsString('Smart-компоненты Simai Framework', $index);
         self::assertStringContainsString('Недоступно сейчас', $index);
         self::assertStringContainsString('>Колонки<', $index);
@@ -138,6 +163,10 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         $alert = (string) file_get_contents($build . '/components/catalog/ui.alert/index.html');
 
         self::assertStringContainsString('>Component catalog<', $index);
+        self::assertStringContainsString('>Find a component<', $index);
+        self::assertStringContainsString('>All types<', $index);
+        self::assertStringContainsString('>All availability states<', $index);
+        self::assertStringContainsString('>Reset filters<', $index);
         self::assertStringContainsString('>Docara components<', $index);
         self::assertStringContainsString('>Simai Framework Smart components<', $index);
         self::assertStringContainsString('>Unavailable in this build<', $index);

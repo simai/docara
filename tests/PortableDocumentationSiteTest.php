@@ -85,6 +85,21 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(12, $supported);
         self::assertCount(5, $unavailable);
         self::assertCount(12, $receipt['pages']);
+        $extensionsSearchDocument = array_values(array_filter(
+            $search['documents'],
+            static fn (array $document): bool => $document['url'] === '/development/extensions/',
+        ));
+        self::assertCount(1, $extensionsSearchDocument);
+        self::assertStringContainsString(
+            'расширение',
+            mb_strtolower(implode(' ', [
+                $extensionsSearchDocument[0]['title'],
+                $extensionsSearchDocument[0]['description'],
+                ...array_column($extensionsSearchDocument[0]['headings'], 'text'),
+                $extensionsSearchDocument[0]['text'],
+            ])),
+            'The development page must be discoverable by the exact reader query [расширение].',
+        );
         self::assertSame(
             13,
             1 + count($receipt['pages']),

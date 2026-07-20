@@ -11,3 +11,13 @@ The exact accepted build consumes immutable Simai Framework revisions and
 keeps Markdown as content plus strict inherited JSON as the shell/configuration
 contract. The generated component catalogue is a projection, not a second
 Framework registry.
+
+## 2026-07-20 — replacement contract
+
+Legacy is a compatibility and migration reference, not the frontend runtime to
+restore. Portable Docara uses explicit capability dispositions, one
+locale/version per build, declarative same-site redirects, a content-first
+shell, modal mobile navigation and one Framework-owned code surface.
+
+Local replacement readiness does not imply public release, default-branch
+migration or repository retirement.

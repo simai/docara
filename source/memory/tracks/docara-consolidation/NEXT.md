@@ -1,38 +1,28 @@
 # Next Step
 
-## Active Goal
+## Where We Stopped
 
-Portable Docara must become replacement-ready relative to the retained legacy
-reference without public release, default-branch migration or repository
-retirement.
+The replacement-readiness Goal is complete:
+
+- product candidate:
+  `2640503ba14913aa83bc3b4343c86966a807e29f`;
+- served target: `https://docara.test/`;
+- canonical served digest:
+  `a16d61252837c8d23102e2285a948d7a81c513150080f09b2e9095c31ba475f4`;
+- technical, browser, HCS and local publication evidence: `PASS`;
+- previous accepted build retained in two verified rollback trees.
 
 Canonical workflow:
 
 `source/workflow/2026-07-20-docara-legacy-replacement-readiness.md`
 
-## Baseline
+## Separate Future Goals
 
-- accepted candidate:
-  `de87bdef224d518d1c707286d4640be0238d34bc`;
-- accepted served digest:
-  `502e43119ea2f2fc6ce358042858937060a67c4aa3d4d5ac0295e3d19c8e782f`;
-- target: `https://docara.test/`;
-- reference: `https://docara-legacy.test/en/`.
+Choose one explicitly before more work:
 
-## Current Batch
+1. optional product polish: search synonyms, Framework copy-label
+   localization, secondary copy target and a declared multi-browser matrix;
+2. public release and default-branch migration;
+3. repository retirement, only after independent consumer migration proof.
 
-Batch 7: immutable replacement-ready candidate, exact-archive regression,
-comparative browser/HCS and independent tester verdict.
-
-## Next Safe Action
-
-Commit the verified working tree as one candidate, test only exact archives,
-then publish only the independently accepted build to the local stand with
-backup, rollback and digest evidence.
-
-## Hard Boundaries
-
-- no public release, push, merge, tag or default-branch mutation;
-- no repository/worktree archive or deletion;
-- no Framework owner writes or moving assets;
-- no local-site replacement before backup/rollback/digest preflight.
+None of these is authorized or implied by the completed local Goal.

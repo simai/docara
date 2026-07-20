@@ -1,11 +1,11 @@
 track_id: "docara-consolidation"
-status: "active"
+status: "goal_completed"
 owner_skill: "teamlead"
-current_goal: "Довести текущую portable Docara до состояния replacement-ready относительно legacy: capability decisions, redirects, облегчённый shell, overlay mobile navigation, code blocks, locale/version и comparative exact-candidate acceptance."
-current_stage: "exact_candidate_pending"
+current_goal: "Portable Docara is replacement-ready relative to legacy on the accepted local contour."
+current_stage: "replacement_ready_local"
 current_workflow: "source/workflow/2026-07-20-docara-legacy-replacement-readiness.md"
-last_completed_batch: "Replacement-readiness Batches 0-6 completed in the working tree: contracts, redirects, locale/version, HCS shell, overlay navigation, Framework-owned code and full mutable regression."
-next_step: "Commit one immutable candidate, test only exact archives, obtain independent tester PASS, then publish the accepted build to docara.test with ops backup and rollback evidence."
+last_completed_batch: "Batch 8: exact candidate 2640503 published to local docara.test with verified backup, rollback, served digest and browser proof."
+next_step: "Select a separate future Goal; public release, default-branch migration and repository retirement are not implied."
 blockers: []
 related_tracks: []
-updated_at: "2026-07-20"
+updated_at: "2026-07-20T03:40:00+03:00"

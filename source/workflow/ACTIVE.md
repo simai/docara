@@ -1,10 +1,10 @@
 # Workflow: Docara legacy replacement readiness
 
 Date: 2026-07-20
-Status: active
+Status: completed
 Workflow ID: `2026-07-20-docara-legacy-replacement-readiness`
 Process model: `full_qa`
-Current state: `tests_recorded`
+Current state: `evidence_recorded`
 Target state: `evidence_recorded`
 
 ## Goal
@@ -23,8 +23,7 @@ release, default-branch migration and repository retirement out of scope.
 
 ## Current Batch
 
-Batch 7: immutable candidate, exact-archive regression, comparative browser/HCS
-and independent tester acceptance.
+None. The replacement-readiness Goal is complete.
 
 ## Baseline
 
@@ -33,11 +32,21 @@ and the served `docara.test` build remain the accepted regression baseline.
 This Goal adds replacement-ready contracts and comparative evidence; it does
 not reinterpret the previous local-product acceptance.
 
-## Verified Working-Tree Result
+## Accepted Candidate
 
-- Batches 0–6 completed;
-- full PHPUnit: 547 tests / 4,449 assertions;
+- immutable candidate:
+  `2640503ba14913aa83bc3b4343c86966a807e29f`;
+- canonical build digest:
+  `a16d61252837c8d23102e2285a948d7a81c513150080f09b2e9095c31ba475f4`;
+- full PHPUnit: 548 tests / 4,474 assertions;
 - two deterministic builds: 66 HTML pages, 6,033 references, zero broken;
-- working build digest:
-  `c1b105efeb75e7688573e18a5aac6a90b9eac386e02c2f5e1d4e4ec33ac0b9e9`;
-- exact candidate and local publication still pending.
+- technical and HCS: `PASS`;
+- root browser: `PASS`;
+- independent UX/design: `PASS_WITH_NOTES`, no blockers;
+- local publication, served digest and browser proof: `PASS`.
+
+## Result
+
+Portable Docara is replacement-ready for the accepted local contour and is
+served at `https://docara.test/`. Public release, default-branch migration and
+repository retirement are not started.

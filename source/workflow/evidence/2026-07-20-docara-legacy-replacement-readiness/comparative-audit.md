@@ -1,7 +1,7 @@
 # Comparative audit: portable Docara vs legacy
 
 Date: 2026-07-20
-Status: working-tree implementation verified; exact candidate pending
+Status: replacement-ready on the accepted local contour
 
 ## Verdict
 
@@ -94,10 +94,20 @@ Framework runtime.
 - Fine-grained code options such as highlighted lines, diff modes and optional
   line numbers remain a Framework gap.
 
+## Exact-candidate acceptance
+
+Candidate `2640503ba14913aa83bc3b4343c86966a807e29f` passed independent
+technical and HCS gates. The root browser matrix passed all 27 route/viewport
+combinations; independent UX/design returned `PASS_WITH_NOTES` with no
+blockers. The non-blocking notes are recorded in the Batch 7 verdict and do not
+weaken any Goal criterion.
+
 ## Remaining acceptance boundary
 
-The implementation is not yet declared replacement-ready. It still requires
-one immutable candidate, exact-archive rebuild/test/browser/HCS evidence, an
-independent tester PASS for that SHA and a separate local publication with
-backup, rollback and served-digest proof. Public release, default-branch
-migration and repository archival remain out of scope.
+There is no remaining acceptance boundary inside this Goal. The exact accepted
+build is served at `https://docara.test/`; its digest, static references,
+representative HTTPS routes and native-Chrome interactions passed after the
+atomic swap. Two verified rollback trees retain the previous accepted build.
+
+Public release, default-branch migration and repository archival remain
+separate future Goals.

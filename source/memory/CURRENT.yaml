@@ -1,9 +1,9 @@
 project_id: "docara-consolidation"
-updated_at: "2026-07-20T02:15:48+03:00"
-status: "active"
-primary_goal: "Make portable Docara replacement-ready relative to the retained legacy reference without public release, default-branch migration or repository retirement."
+updated_at: "2026-07-20T03:40:00+03:00"
+status: "ready_for_next_goal"
+primary_goal: "Completed: portable Docara is replacement-ready on the accepted local contour."
 active_tracks:
-  - "docara-consolidation"
+  - docara-consolidation
 current_focus: "source/workflow/2026-07-20-docara-legacy-replacement-readiness.md"
 important_blockers: []
-next_global_step: "Create the immutable replacement-ready candidate, execute exact-archive browser/HCS/tester acceptance, then publish the accepted build locally with backup and rollback evidence."
+next_global_step: "Choose a separate Goal for optional polish/cross-browser coverage or for public release and default-branch migration; do not infer repository retirement."

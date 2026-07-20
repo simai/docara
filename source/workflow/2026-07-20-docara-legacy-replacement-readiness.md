@@ -1,11 +1,11 @@
 # Workflow: Docara legacy replacement readiness
 
 Date: 2026-07-20
-Status: active
+Status: completed
 Workflow ID: `2026-07-20-docara-legacy-replacement-readiness`
 Track ID: `docara-consolidation`
 Process model: `full_qa`
-Current state: `tests_recorded`
+Current state: `evidence_recorded`
 Target state: `evidence_recorded`
 Project mode: `productization`
 Requested level: `goal`
@@ -188,6 +188,9 @@ changed-surface inventory must cover every file in the exact
 baseline-to-candidate diff. Current UX audit facts are planning evidence, not a
 tester verdict.
 
+- simplicity_review:
+  `.hcs-audit/review.json`
+
 Primary human outcome: a reader reaches and reads the requested documentation
 quickly while an author can migrate legacy content without hidden loss.
 Protective complexity includes semantic navigation, focus management, schema
@@ -221,7 +224,7 @@ Evidence root:
 | IA, mobile interaction, accessibility | `ux` | author / gatekeeper |
 | Visual hierarchy and design quality | `designer` | reviewer |
 | QA matrix and final verdict | `tester` | independent gatekeeper |
-| Local publication/rollback | `ops` | gatekeeper |
+| Local publication/rollback | `ops` | completed gatekeeper |
 
 ## Workstream Register
 
@@ -229,8 +232,8 @@ Evidence root:
 | --- | --- | --- | --- |
 | Legacy capability/redirect/locale inventory | `docs` + `docara` | completed | capability ledger, product decisions and redirect corpus |
 | Shell/mobile/code implementation map | `ux` + `designer` + `sf5` | completed | comparative audit and Framework-owned code decision |
-| Replacement QA matrix | `tester` | prepared | QA artifacts and exact-candidate protocol |
-| Critical-path implementation | `docara` + `dev` | working-tree verified | changed source/tests/docs; candidate pending |
+| Replacement QA matrix | `tester` | exact candidate accepted | Batch 7 exact technical, browser/UX/design and HCS verdicts |
+| Critical-path implementation | `docara` + `dev` | immutable candidate accepted | candidate `2640503ba14913aa83bc3b4343c86966a807e29f` |
 
 ## Safety And Gates
 
@@ -245,31 +248,35 @@ Evidence root:
 
 ## Current Batch
 
-Batch 7 — create one immutable candidate, rebuild and retest it only from exact
-archives, complete the comparative browser/HCS matrix and obtain an independent
-tester verdict for the same SHA.
+None. Batch 8 completed and exact candidate
+`2640503ba14913aa83bc3b4343c86966a807e29f` is served on the local
+`docara.test` stand with verified backup, rollback, digest and browser
+evidence.
 
-## Current Remaining
+## Completed Batches
 
-- milestones remaining: 1 of 3;
-- batches remaining: 2 of 9;
-- active batch: Batch 7;
-- goal status: active.
-
-Completed in the mutable working tree:
+Completed and accepted for the immutable candidate:
 
 - Batches 0–2: legacy capability ledger, locale/version decision and
   fail-closed deterministic redirects;
 - Batches 3–5: content-first shell, native overlay navigation/outline and one
   Framework-owned code surface;
-- Batch 6: documentation, PHP lint, structured data, Composer/platform, Pint,
-  547 PHPUnit tests / 4,449 assertions, two byte-identical builds, 66 HTML
-  pages and 6,033 local references with zero broken.
+- Batch 6: documentation and full working-tree regression;
+- Batch 7: exact candidate
+  `2640503ba14913aa83bc3b4343c86966a807e29f`, 548 PHPUnit tests / 4,474
+  assertions, two byte-identical builds, 66 HTML pages, 6,033 local references
+  with zero broken, technical `PASS`, root browser `PASS`, independent
+  UX/design `PASS_WITH_NOTES` without blockers and HCS `PASS`.
 
-Mutable build tree digest:
-`c1b105efeb75e7688573e18a5aac6a90b9eac386e02c2f5e1d4e4ec33ac0b9e9`.
-This is pre-candidate evidence only and cannot replace exact-candidate
-acceptance.
+Exact canonical build digest:
+`a16d61252837c8d23102e2285a948d7a81c513150080f09b2e9095c31ba475f4`.
+
+## Current Remaining
+
+- milestones remaining: 0 of 3;
+- batches remaining: 0 of 9;
+- active batch: none;
+- goal status: completed.
 
 ## Stop Conditions
 
@@ -284,8 +291,36 @@ acceptance.
   necessary;
 - secret or external credential is required.
 
-## Next
+## Result
 
-Create the immutable candidate, execute Batch 7 from exact archives, then
-publish only the accepted build to the local `docara.test` stand under the
-Batch 8 ops backup/rollback contract.
+Portable Docara is replacement-ready for the accepted local contour. The
+exact accepted build is served at `https://docara.test/`, reproduces canonical
+digest
+`a16d61252837c8d23102e2285a948d7a81c513150080f09b2e9095c31ba475f4`,
+passes static and browser evidence, and retains two verified rollback trees.
+
+Public release, default-branch migration and repository retirement remain
+separate future Goals.
+
+## Verification
+
+- independent exact technical verdict: `PASS`;
+- root exact browser matrix: `PASS`, 27/27;
+- independent UX/design: `PASS_WITH_NOTES`, no blockers;
+- complete-diff HCS: `PASS`, P0/P1/P2 all zero;
+- local action gate: `success`, no warning or blocker;
+- served static verifier: 66 HTML pages, 6,033 references, zero broken;
+- served canonical digest:
+  `a16d61252837c8d23102e2285a948d7a81c513150080f09b2e9095c31ba475f4`;
+- served native-Chrome matrix: 27/27;
+- rollback trees reproduce previous digest
+  `502e43119ea2f2fc6ce358042858937060a67c4aa3d4d5ac0295e3d19c8e782f`.
+
+## Kaizen Review
+
+Lessons learned: a static verifier must validate a single resolved build
+identity across the manifest and every generated HTML page. Counting files and
+links alone can produce a false-green result when locale or documentation
+version metadata is forged or missing. This lesson is already encoded in the
+fail-closed verifier and four negative regression tests; no additional current
+scope is required.

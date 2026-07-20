@@ -1,10 +1,10 @@
 # Workflow: browsable declarative preview
 
 Date: 2026-07-20
-Status: in_progress
+Status: completed
 Workflow ID: `2026-07-20-declarative-preview`
 Process model: `general_delivery`
-Current state: `validation_passed_pending_local_deployment`
+Current state: `evidence_recorded`
 Target state: `evidence_recorded`
 Parent track: `docara-consolidation`
 
@@ -63,8 +63,8 @@ Forbidden:
 | 2 | Builder publication, preview index and diagnostics | integration tests | completed |
 | 3 | Detailed chain and inspection documentation | docs contract | completed |
 | 4 | Full regression and deterministic builds | PHPUnit/verifier | completed |
-| 5 | Staging, backup, local deployment and browser review | runtime/browser evidence | in_progress |
-| 6 | Reverse-outcome acceptance and closure | requirement matrix | pending |
+| 5 | Staging, backup, local deployment and browser review | runtime/browser evidence | completed |
+| 6 | Reverse-outcome acceptance and closure | requirement matrix | completed |
 
 ## Design
 
@@ -148,6 +148,6 @@ Required:
 
 ## Next
 
-Commit the validated candidate, run the local runtime action gate, stage and
-verify the exact build, create a complete backup, switch only
-`build_production`, then perform curl and browser acceptance.
+Use the catalogue and detailed documentation to inspect the current vertical
+slice. Expanding the declarative publisher beyond shadow mode requires a
+separate goal and independent acceptance; it is not implied by this closure.

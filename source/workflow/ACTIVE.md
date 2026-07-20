@@ -1,10 +1,10 @@
 # Workflow: browsable declarative preview
 
 Date: 2026-07-20
-Status: in_progress
+Status: completed
 Workflow ID: `2026-07-20-declarative-preview`
 Process model: `general_delivery`
-Current state: `validation_passed_pending_local_deployment`
+Current state: `evidence_recorded`
 Target state: `evidence_recorded`
 
 ## Goal
@@ -23,7 +23,7 @@ unchanged legacy site.
 
 ## Current Batch
 
-Batch 5: staged local deployment and browser acceptance.
+All batches completed.
 
 ## Baseline
 
@@ -32,7 +32,9 @@ Starting revision `ab1507a`; accepted legacy renderer SHA-256:
 
 ## Result
 
-The declarative content and shell plans are now browsable for all 45 authored
-documentation pages. Full tests, static verification and two deterministic
-production builds pass. The accepted legacy renderer remains the normal
-publisher; local staged deployment is the only unfinished batch.
+The declarative content and shell plans are browsable for all 45 authored
+documentation pages at
+`https://docara.test/_docara/declarative-preview/`. Full tests, static
+verification, deterministic builds, staged deployment and desktop/mobile
+browser acceptance pass. The accepted legacy renderer remains the normal
+publisher.

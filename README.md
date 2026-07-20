@@ -61,7 +61,7 @@ content/
 ```text
 встроенные значения
 → docara.json
-→ _section.json от корня к странице
+→ section.json от корня к странице
 → <page>.page.json
 → Markdown как содержание
 ```

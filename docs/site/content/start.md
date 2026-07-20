@@ -82,7 +82,7 @@ redirects.json
 simai-framework.lock.json
 assets/
 content/
-  _section.json
+  section.json
   index.md
   index.page.json
   landing.md
@@ -99,7 +99,7 @@ content/
 5. Перезапустите HTTP preview или запустите `serve production` без
    `--no-build`, чтобы сначала пересобрать сайт.
 
-Настройки всего сайта находятся в `docara.json`, раздела — в `_section.json`,
+Настройки всего сайта находятся в `docara.json`, раздела — в `section.json`,
 страницы — в соседнем `<page>.page.json`.
 
 Starter задаёт один `default_locale`, одну `documentation_version` и

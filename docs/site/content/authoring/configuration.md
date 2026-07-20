@@ -5,7 +5,7 @@ Docara читает три вида JSON:
 | Уровень | Файл | Область |
 | --- | --- | --- |
 | Сайт | `docara.json` | Все страницы |
-| Раздел | `_section.json` | Каталог и все потомки |
+| Раздел | `section.json` | Каталог и все потомки |
 | Страница | `<page>.page.json` | Одна Markdown-страница |
 
 Каждый файл содержит поле `schema`. Неизвестное поле, неправильный тип, пустая
@@ -176,7 +176,7 @@ build_<environment>/.docara/resolved-page-plans.json
 3. найдите тот же pointer в `provenance`;
 4. проверьте указанный source в `trace` и его SHA-256.
 
-`@defaults` означает встроенное значение. `docara.json`, `_section.json` или
+`@defaults` означает встроенное значение. `docara.json`, `section.json` или
 page sidecar показывают точный владеющий файл.
 
 Полный перечень и ограничения: [справочник schemas](/reference/schemas/).

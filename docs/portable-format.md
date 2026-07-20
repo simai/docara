@@ -30,27 +30,29 @@ redirects.json
 simai-framework.lock.json
 assets/
 content/
-  _section.json
+  section.json
   index.md
   index.page.json
   guides/
-    _section.json
+    section.json
     install.md
     install.page.json
 ```
 
 `docara.json` определяет сайт, язык и версию документации, указывает отдельный
 immutable Framework lock и при необходимости файл декларативных redirects.
-Каждый `_section.json` действует на свой каталог и потомков. Sidecar
+Каждый `section.json` действует на свой каталог и потомков. Sidecar
 `<page>.page.json` относится только к соседней Markdown-странице.
+Имя дескриптора раздела всегда `section.json`, без начального подчёркивания.
+Устаревшее `_section.json` не поддерживается: переименуйте файл перед сборкой.
 
 Для `content/guides/install.md` порядок фиксирован:
 
 1. встроенные значения;
 2. `docara.json`;
-3. необязательный корневой `_section.json`;
-4. `content/_section.json`;
-5. `content/guides/_section.json`;
+3. необязательный корневой `section.json`;
+4. `content/section.json`;
+5. `content/guides/section.json`;
 6. `content/guides/install.page.json`;
 7. Markdown как содержание.
 

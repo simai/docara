@@ -27,7 +27,7 @@ control.
 
 The generated `simai-framework.lock.json` pins the exact Simai Framework
 runtime used by the starter. Site content lives in `content/`, while
-`docara.json`, `_section.json`, and page sidecars control presentation and
+`docara.json`, `section.json`, and page sidecars control presentation and
 navigation.
 
 `docara-template-mirror.json` records every mirrored payload file, its exact

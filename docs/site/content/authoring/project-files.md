@@ -11,11 +11,11 @@ assets/
   logo-dark.svg
   favicon.svg
 content/
-  _section.json
+  section.json
   index.md
   index.page.json
   guides/
-    _section.json
+    section.json
     install.md
     install.page.json
 ```
@@ -23,9 +23,14 @@ content/
 `docara.json` задаёт общие параметры и указывает `redirects_file`.
 `redirects.json` хранит старые внутренние маршруты и их существующие targets;
 если совместимость URL не нужна, поле и файл можно не создавать. Каждый
-`_section.json` действует на свой каталог и потомков. Sidecar
+`section.json` действует на свой каталог и потомков. Sidecar
 `<page>.page.json` переопределяет настройки одной страницы. Markdown остаётся
 содержанием.
+
+Для всех уровней используется одно имя `section.json`, без начального
+подчёркивания. Если в старом проекте остался `_section.json`, переименуйте его:
+сборка остановится с кодом `SECTION_DESCRIPTOR_LEGACY_NAME`, чтобы настройки
+не потерялись незаметно.
 
 `build_local` и `build_production` — результаты сборки, а не источник истины.
 Служебные `_docara` и `.docara` зарезервированы генератором.

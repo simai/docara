@@ -253,18 +253,29 @@ final class PortableConfigurationLoader
      */
     private function sectionFilesFor(string $page): array
     {
-        $files = ['_section.json'];
+        $directories = [''];
         $directory = (string) pathinfo($page, PATHINFO_DIRNAME);
 
-        if ($directory === '.' || $directory === '') {
-            return $files;
+        if ($directory !== '.' && $directory !== '') {
+            $current = '';
+
+            foreach (explode('/', $directory) as $segment) {
+                $current = $current === '' ? $segment : "$current/$segment";
+                $directories[] = $current;
+            }
         }
 
-        $current = '';
-
-        foreach (explode('/', $directory) as $segment) {
-            $current = $current === '' ? $segment : "$current/$segment";
-            $files[] = "$current/_section.json";
+        $files = [];
+        foreach ($directories as $sectionDirectory) {
+            $canonical = $sectionDirectory === '' ? 'section.json' : "$sectionDirectory/section.json";
+            $legacy = $sectionDirectory === '' ? '_section.json' : "$sectionDirectory/_section.json";
+            if ($this->confinedFile($legacy, false) !== null) {
+                throw new PortableConfigurationException(
+                    'SECTION_DESCRIPTOR_LEGACY_NAME',
+                    "Rename portable section descriptor [$legacy] to [$canonical].",
+                );
+            }
+            $files[] = $canonical;
         }
 
         return $files;

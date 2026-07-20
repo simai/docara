@@ -1,0 +1,31 @@
+schema_version: "1.0.0"
+workflow_id: "2026-07-20-section-descriptor-rename"
+process_model_id: "general_delivery"
+cycle_id: "coding_batch_cycle"
+state: "review_ready"
+target_state: "review_ready"
+owner_skill: "docara"
+companion_skills:
+  - "dev"
+  - "docs"
+  - "tester"
+  - "ops"
+approved_by_user: true
+repository: "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation"
+branch: "codex/docara-consolidation"
+allowed_actions:
+  - "rename_portable_section_descriptor"
+  - "update_tests_starter_and_documentation"
+  - "build_and_verify_static_site"
+  - "publish_local_docara_test_with_rollback"
+forbidden_actions:
+  - "public_release"
+  - "push_merge_or_tag"
+  - "framework_owner_write"
+  - "secret_or_database_write"
+evidence_path: "source/workflow/evidence/2026-07-20-section-descriptor-rename"
+stop_conditions:
+  - "unrelated_worktree_change"
+  - "legacy_descriptor_cannot_fail_closed"
+  - "backup_or_rollback_unavailable"
+  - "test_or_browser_regression"

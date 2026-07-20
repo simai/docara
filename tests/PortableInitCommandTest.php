@@ -44,8 +44,8 @@ class PortableInitCommandTest extends TestCase
         $this->assertSame(Command::SUCCESS, $status);
 
         $site = $this->json('docara.json');
-        $rootSection = $this->json('content/_section.json');
-        $nestedSection = $this->json('content/guides/_section.json');
+        $rootSection = $this->json('content/section.json');
+        $nestedSection = $this->json('content/guides/section.json');
         $indexPage = $this->json('content/index.page.json');
         $docsPage = $this->json('content/guides/getting-started.page.json');
         $landingPage = $this->json('content/landing.page.json');

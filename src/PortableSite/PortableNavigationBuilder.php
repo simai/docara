@@ -437,7 +437,22 @@ final readonly class PortableNavigationBuilder
             if ($file->isLink()) {
                 throw new PortableConfigurationException('SYMLINK_FORBIDDEN', 'Portable content cannot contain symbolic links.');
             }
-            if (! $file->isFile() || $file->getFilename() !== '_section.json') {
+            if (! $file->isFile()) {
+                continue;
+            }
+            $relativeFile = ltrim(str_replace(
+                '\\',
+                '/',
+                substr($file->getPathname(), strlen($contentPath)),
+            ), '/');
+            if ($file->getFilename() === '_section.json') {
+                $canonical = ($file->getPath() === $contentPath ? '' : dirname($relativeFile) . '/') . 'section.json';
+                throw new PortableConfigurationException(
+                    'SECTION_DESCRIPTOR_LEGACY_NAME',
+                    "Rename portable section descriptor [$relativeFile] to [$canonical].",
+                );
+            }
+            if ($file->getFilename() !== 'section.json') {
                 continue;
             }
 
@@ -454,7 +469,7 @@ final readonly class PortableNavigationBuilder
             if (! is_string($contents)) {
                 throw new PortableConfigurationException(
                     'PORTABLE_FILE_READ_FAILED',
-                    "Portable input [$relativeDirectory/_section.json] could not be read.",
+                    "Portable input [$relativeDirectory/section.json] could not be read.",
                 );
             }
             try {
@@ -462,7 +477,7 @@ final readonly class PortableNavigationBuilder
             } catch (JsonException $exception) {
                 throw new PortableConfigurationException(
                     'JSON_INVALID',
-                    "File [$relativeDirectory/_section.json] is not valid JSON.",
+                    "File [$relativeDirectory/section.json] is not valid JSON.",
                     $exception,
                 );
             }

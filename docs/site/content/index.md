@@ -29,7 +29,7 @@ JSON, интерфейс строится на Simai Framework.
 :::card
 ### Файлы принадлежат автору
 
-Markdown хранит содержание. `docara.json`, `_section.json` и page sidecar
+Markdown хранит содержание. `docara.json`, `section.json` и page sidecar
 описывают сайт, раздел и страницу. Производный `build_*` не редактируется.
 
 :::

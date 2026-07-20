@@ -6,7 +6,7 @@ unknown fields, неверные типы и unsafe paths.
 | Schema ID | Source/output | Назначение |
 | --- | --- | --- |
 | `docara.site.v1` | `docara.json` | Site contract |
-| `docara.section.v1` | `_section.json` | Наследуемый section contract |
+| `docara.section.v1` | `section.json` | Наследуемый section contract |
 | `docara.page.v1` | `<page>.page.json` | Page contract |
 | `docara.redirects.v1` | Файл из `redirects_file` | Декларативные внутренние redirects |
 | `docara.redirect_receipt.v1` | `.docara/redirects.json` | Проверяемый результат публикации redirects |

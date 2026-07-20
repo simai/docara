@@ -47,8 +47,13 @@ Collections, Blade, PHP callbacks, Azure translation и произвольные
 
 Сначала сохраните inline `logoSvg` в корневом `assets/logo.svg`; произвольный
 SVG-код больше не вставляется в шаблон. Старое рекурсивное меню переносить не
-нужно: создайте соответствующие каталоги, страницы-разделы и `_section.json`
+нужно: создайте соответствующие каталоги, страницы-разделы и `section.json`
 с `title`/`navigation.order`.
+
+Если предыдущий прототип portable-проекта использовал `_section.json`,
+переименуйте каждый такой файл в `section.json`. Старое имя намеренно вызывает
+`SECTION_DESCRIPTOR_LEGACY_NAME`: Docara не выбирает один из двух файлов и не
+игнорирует настройки молча.
 
 Legacy `layout.base.header.blocks.search.enabled` заменяется portable-полем
 `search.enabled`. Старые `search-index_<lang>.json`, Fuse/Bitrix runtime,

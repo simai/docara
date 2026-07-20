@@ -511,8 +511,16 @@ final readonly class PortableSiteBuilder
             }
             $name = $file->getFilename();
             $extension = strtolower($file->getExtension());
+            if ($name === '_section.json') {
+                $relative = ltrim(str_replace('\\', '/', substr($file->getPathname(), strlen($contentPath))), '/');
+                $canonical = ($file->getPath() === $contentPath ? '' : dirname($relative) . '/') . 'section.json';
+                throw new PortableConfigurationException(
+                    'SECTION_DESCRIPTOR_LEGACY_NAME',
+                    "Rename portable section descriptor [$relative] to [$canonical].",
+                );
+            }
             if (in_array($extension, ['md', 'markdown'], true)
-                || $name === '_section.json'
+                || $name === 'section.json'
                 || str_ends_with($name, '.page.json')
             ) {
                 continue;

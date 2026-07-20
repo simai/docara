@@ -6,7 +6,7 @@
 ## Старые настройки не влияют на страницу
 
 Portable режим не читает `config.php`, `.settings.php` и `source/_core`.
-Перенесите только поддерживаемые значения в `docara.json`, `_section.json` или
+Перенесите только поддерживаемые значения в `docara.json`, `section.json` или
 `<page>.page.json`, затем проверьте
 [разрешённый план страницы](/reference/resolved-plan/).
 
@@ -47,7 +47,7 @@ legacy tags. Выберите поддерживаемый native Markdown, type
 ## После миграции меню или порядок отличаются
 
 Создайте каталоги и страницы-разделы, затем задайте `title` и
-`navigation.order` в `_section.json`. Не переносите готовый HTML меню или
+`navigation.order` в `section.json`. Не переносите готовый HTML меню или
 callback `getMenu`. Проверьте активный путь и вложенность на desktop и mobile.
 
 ## Нельзя архивировать docara-mix

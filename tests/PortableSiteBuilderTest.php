@@ -21,10 +21,10 @@ final class PortableSiteBuilderTest extends TestCase
     public function it_builds_docs_landing_inheritance_components_and_explainable_plans(): void
     {
         $this->copyPortableFixture($this->tmp);
-        $section = $this->jsonFile($this->tmpPath('content/guides/_section.json'));
+        $section = $this->jsonFile($this->tmpPath('content/guides/section.json'));
         $section['navigation'] = ['$reset' => true];
         file_put_contents(
-            $this->tmpPath('content/guides/_section.json'),
+            $this->tmpPath('content/guides/section.json'),
             json_encode($section, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
         );
         $guidePage = $this->jsonFile($this->tmpPath('content/guides/getting-started.page.json'));
@@ -342,7 +342,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertTrue($guidePlan['resolved_page_plan']['configuration']['search']['enabled']);
         self::assertTrue($guidePlan['resolved_page_plan']['configuration']['search']['indexed']);
         self::assertSame(
-            ['docara.json', 'simai-framework.lock.json', 'content/_section.json', 'content/guides/_section.json', 'content/guides/getting-started.page.json', 'content/guides/getting-started.md'],
+            ['docara.json', 'simai-framework.lock.json', 'content/section.json', 'content/guides/section.json', 'content/guides/getting-started.page.json', 'content/guides/getting-started.md'],
             array_column($guidePlan['resolved_page_plan']['trace'], 'source'),
         );
 
@@ -405,10 +405,35 @@ final class PortableSiteBuilderTest extends TestCase
     }
 
     #[Test]
+    public function legacy_section_descriptor_name_fails_before_existing_output_is_cleaned(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        rename(
+            $this->tmpPath('content/guides/section.json'),
+            $this->tmpPath('content/guides/_section.json'),
+        );
+        mkdir($this->tmpPath('build_local'), 0777, true);
+        file_put_contents($this->tmpPath('build_local/keep.txt'), 'previous build');
+
+        try {
+            $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+            self::fail('Legacy section descriptor name unexpectedly passed.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('SECTION_DESCRIPTOR_LEGACY_NAME', $exception->errorCode);
+            self::assertStringContainsString(
+                'Rename portable section descriptor [content/guides/_section.json] to [content/guides/section.json].',
+                $exception->getMessage(),
+            );
+        }
+
+        self::assertSame('previous build', file_get_contents($this->tmpPath('build_local/keep.txt')));
+    }
+
+    #[Test]
     public function reader_settings_keep_the_inherited_author_theme_as_the_reset_target(): void
     {
         $this->copyPortableFixture($this->tmp);
-        $sectionPath = $this->tmpPath('content/guides/_section.json');
+        $sectionPath = $this->tmpPath('content/guides/section.json');
         $section = $this->jsonFile($sectionPath);
         $section['settings'] = ['theme' => 'dark'];
         file_put_contents(
@@ -956,7 +981,7 @@ MD;
             file_put_contents($this->tmpPath($overview), "# Markdown $slug\n");
             file_put_contents($this->tmpPath("content/$slug/child.md"), "# Child $slug\n");
             file_put_contents(
-                $this->tmpPath("content/$slug/_section.json"),
+                $this->tmpPath("content/$slug/section.json"),
                 json_encode([
                     'schema' => 'docara.section.v1',
                     'title' => "Section $slug",
@@ -999,7 +1024,7 @@ MD;
             file_put_contents($this->tmpPath($overview), "# Markdown $slug\n");
             file_put_contents($this->tmpPath("content/$slug/child.md"), "# Child $slug\n");
             file_put_contents(
-                $this->tmpPath("content/$slug/_section.json"),
+                $this->tmpPath("content/$slug/section.json"),
                 json_encode([
                     'schema' => 'docara.section.v1',
                     'title' => "Section $slug",
@@ -1037,7 +1062,7 @@ MD;
             file_put_contents($this->tmpPath($overview), "# Markdown $slug\n");
             file_put_contents($this->tmpPath("content/$slug/child.md"), "# Child $slug\n");
             file_put_contents(
-                $this->tmpPath("content/$slug/_section.json"),
+                $this->tmpPath("content/$slug/section.json"),
                 json_encode([
                     'schema' => 'docara.section.v1',
                     'title' => "Section $slug",
@@ -1081,7 +1106,7 @@ MD;
             file_put_contents($this->tmpPath($overview), "# Markdown $slug\n");
             file_put_contents($this->tmpPath("content/$slug/child.md"), "# Child $slug\n");
             file_put_contents(
-                $this->tmpPath("content/$slug/_section.json"),
+                $this->tmpPath("content/$slug/section.json"),
                 json_encode([
                     'schema' => 'docara.section.v1',
                     'title' => "Section $slug",

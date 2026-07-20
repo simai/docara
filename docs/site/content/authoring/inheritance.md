@@ -5,9 +5,9 @@
 :::steps
 1. Встроенные значения Docara.
 2. `docara.json`.
-3. Необязательный корневой `_section.json`.
-4. `content/_section.json`.
-5. `content/guides/_section.json`.
+3. Необязательный корневой `section.json`.
+4. `content/section.json`.
+5. `content/guides/section.json`.
 6. `content/guides/install.page.json`.
 7. Markdown как содержание.
 

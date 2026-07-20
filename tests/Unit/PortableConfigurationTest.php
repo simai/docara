@@ -73,10 +73,10 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame('@defaults', $plan->provenance['/reading/toc_depth']);
         self::assertSame('@defaults', $plan->provenance['/reading/previous_next']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/layout/max_width']);
-        self::assertSame('content/docs/deep/_section.json', $plan->provenance['/settings/theme']);
+        self::assertSame('content/docs/deep/section.json', $plan->provenance['/settings/theme']);
         self::assertSame('docara.json', $plan->provenance['/branding/logo']);
-        self::assertSame('content/docs/deep/_section.json', $plan->provenance['/branding/label']);
-        self::assertSame('content/docs/_section.json', $plan->provenance['/navigation/hidden']);
+        self::assertSame('content/docs/deep/section.json', $plan->provenance['/branding/label']);
+        self::assertSame('content/docs/section.json', $plan->provenance['/navigation/hidden']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/navigation/order']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/preset']);
         self::assertSame(
@@ -87,10 +87,10 @@ final class PortableConfigurationTest extends TestCase
             [
                 'docara.json',
                 'framework.lock.json',
-                '_section.json',
-                'content/_section.json',
-                'content/docs/_section.json',
-                'content/docs/deep/_section.json',
+                'section.json',
+                'content/section.json',
+                'content/docs/section.json',
+                'content/docs/deep/section.json',
                 'content/docs/deep/install.page.json',
                 'content/docs/deep/install.md',
             ],
@@ -110,7 +110,7 @@ final class PortableConfigurationTest extends TestCase
 
     public function test_generated_base_inherits_real_sections_without_an_authored_page_or_sidecar(): void
     {
-        $this->writeJson('content/components/_section.json', [
+        $this->writeJson('content/components/section.json', [
             'schema' => 'docara.section.v1',
             'locale' => 'ru',
             'layout' => ['max_width' => 'full'],
@@ -131,15 +131,15 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame('ru', $plan->configuration['locale']);
         self::assertSame('full', $plan->configuration['layout']['max_width']);
         self::assertSame('light', $plan->configuration['settings']['theme']);
-        self::assertSame('content/components/_section.json', $plan->provenance['/locale']);
-        self::assertSame('content/components/_section.json', $plan->provenance['/settings/theme']);
+        self::assertSame('content/components/section.json', $plan->provenance['/locale']);
+        self::assertSame('content/components/section.json', $plan->provenance['/settings/theme']);
         self::assertSame(
             [
                 'docara.json',
                 'framework.lock.json',
-                '_section.json',
-                'content/_section.json',
-                'content/components/_section.json',
+                'section.json',
+                'content/section.json',
+                'content/components/section.json',
             ],
             array_column($plan->trace, 'source'),
         );
@@ -165,29 +165,29 @@ final class PortableConfigurationTest extends TestCase
             ],
             'settings' => [],
             'accent' => ['$reset' => true, '$value' => null],
-        ], 'section/_section.json', $base->provenance);
+        ], 'section/section.json', $base->provenance);
 
         self::assertSame(['position' => 'right'], $resolved->configuration['layout']['sidebar']);
         self::assertSame(['hero', 'content'], $resolved->configuration['layout']['slots']);
         self::assertSame(['theme' => 'system'], $resolved->configuration['settings']);
         self::assertNull($resolved->configuration['accent']);
         self::assertArrayNotHasKey('/layout/sidebar/width', $resolved->provenance);
-        self::assertSame('section/_section.json', $resolved->provenance['/layout/sidebar']);
-        self::assertSame('section/_section.json', $resolved->provenance['/layout/sidebar/position']);
-        self::assertSame('section/_section.json', $resolved->provenance['/layout/slots']);
-        self::assertSame('section/_section.json', $resolved->provenance['/accent']);
+        self::assertSame('section/section.json', $resolved->provenance['/layout/sidebar']);
+        self::assertSame('section/section.json', $resolved->provenance['/layout/sidebar/position']);
+        self::assertSame('section/section.json', $resolved->provenance['/layout/slots']);
+        self::assertSame('section/section.json', $resolved->provenance['/accent']);
     }
 
     public function test_reset_only_preserves_an_empty_json_object_in_the_resolved_page_plan(): void
     {
         $section = json_decode(
-            (string) file_get_contents($this->path('content/docs/_section.json')),
+            (string) file_get_contents($this->path('content/docs/section.json')),
             true,
             512,
             JSON_THROW_ON_ERROR,
         );
         $section['navigation'] = ['$reset' => true];
-        $this->writeJson('content/docs/_section.json', $section);
+        $this->writeJson('content/docs/section.json', $section);
         $page = json_decode(
             (string) file_get_contents($this->path('content/docs/deep/install.page.json')),
             true,
@@ -203,7 +203,7 @@ final class PortableConfigurationTest extends TestCase
         $canonical = CanonicalJson::encode($plan->toArray());
         self::assertStringContainsString('"navigation":{}', $canonical);
         self::assertStringNotContainsString('"navigation":[]', $canonical);
-        self::assertSame('content/docs/_section.json', $plan->provenance['/navigation']);
+        self::assertSame('content/docs/section.json', $plan->provenance['/navigation']);
     }
 
     public function test_the_canonical_hash_is_stable_for_the_same_semantic_plan(): void
@@ -258,12 +258,46 @@ final class PortableConfigurationTest extends TestCase
 
     public function test_malformed_json_is_rejected(): void
     {
-        file_put_contents($this->path('content/docs/_section.json'), '{"schema":"docara.section.v1",');
+        file_put_contents($this->path('content/docs/section.json'), '{"schema":"docara.section.v1",');
 
         $this->expectException(PortableConfigurationException::class);
         $this->expectExceptionMessage('[JSON_INVALID]');
 
         (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+    }
+
+    public function test_legacy_section_descriptor_name_is_rejected_with_rename_instruction(): void
+    {
+        rename(
+            $this->path('content/docs/section.json'),
+            $this->path('content/docs/_section.json'),
+        );
+
+        try {
+            (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+            self::fail('Legacy section descriptor name unexpectedly passed.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('SECTION_DESCRIPTOR_LEGACY_NAME', $exception->errorCode);
+            self::assertStringContainsString(
+                'Rename portable section descriptor [content/docs/_section.json] to [content/docs/section.json].',
+                $exception->getMessage(),
+            );
+        }
+    }
+
+    public function test_legacy_section_descriptor_is_rejected_when_canonical_descriptor_also_exists(): void
+    {
+        copy(
+            $this->path('content/docs/section.json'),
+            $this->path('content/docs/_section.json'),
+        );
+
+        try {
+            (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+            self::fail('Ambiguous section descriptors unexpectedly passed.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('SECTION_DESCRIPTOR_LEGACY_NAME', $exception->errorCode);
+        }
     }
 
     public function test_invalid_component_calls_are_rejected_by_the_shared_schema(): void
@@ -418,22 +452,22 @@ final class PortableConfigurationTest extends TestCase
         $this->writeJson('docara.json', $site);
 
         $section = json_decode(
-            (string) file_get_contents($this->path('content/docs/_section.json')),
+            (string) file_get_contents($this->path('content/docs/section.json')),
             true,
             512,
             JSON_THROW_ON_ERROR,
         );
         $section['search'] = ['indexed' => false];
-        $this->writeJson('content/docs/_section.json', $section);
+        $this->writeJson('content/docs/section.json', $section);
 
         $deep = json_decode(
-            (string) file_get_contents($this->path('content/docs/deep/_section.json')),
+            (string) file_get_contents($this->path('content/docs/deep/section.json')),
             true,
             512,
             JSON_THROW_ON_ERROR,
         );
         $deep['search'] = ['enabled' => false];
-        $this->writeJson('content/docs/deep/_section.json', $deep);
+        $this->writeJson('content/docs/deep/section.json', $deep);
 
         $page = json_decode(
             (string) file_get_contents($this->path('content/docs/deep/install.page.json')),
@@ -464,13 +498,13 @@ final class PortableConfigurationTest extends TestCase
         $this->writeJson('docara.json', $site);
 
         $section = json_decode(
-            (string) file_get_contents($this->path('content/docs/_section.json')),
+            (string) file_get_contents($this->path('content/docs/section.json')),
             true,
             512,
             JSON_THROW_ON_ERROR,
         );
         $section['reading'] = ['toc_depth' => 5];
-        $this->writeJson('content/docs/_section.json', $section);
+        $this->writeJson('content/docs/section.json', $section);
 
         $page = json_decode(
             (string) file_get_contents($this->path('content/docs/deep/install.page.json')),
@@ -770,19 +804,19 @@ final class PortableConfigurationTest extends TestCase
             ],
         ]);
         $this->writeJson('framework.lock.json', $this->frameworkLock());
-        $this->writeJson('_section.json', [
+        $this->writeJson('section.json', [
             'schema' => 'docara.section.v1',
         ]);
-        $this->writeJson('content/_section.json', [
+        $this->writeJson('content/section.json', [
             'schema' => 'docara.section.v1',
             'layout' => ['max_width' => 'compact'],
         ]);
-        $this->writeJson('content/docs/_section.json', [
+        $this->writeJson('content/docs/section.json', [
             'schema' => 'docara.section.v1',
             'layout' => ['max_width' => 'wide'],
             'navigation' => ['hidden' => true, 'order' => 20],
         ]);
-        $this->writeJson('content/docs/deep/_section.json', [
+        $this->writeJson('content/docs/deep/section.json', [
             'schema' => 'docara.section.v1',
             'settings' => ['theme' => 'dark'],
             'branding' => ['label' => 'Deep documentation'],

@@ -352,7 +352,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         $this->copyPortableFixture($this->tmp);
         $this->filesystem->ensureDirectoryExists($this->tmpPath('content/components/catalog'));
         file_put_contents(
-            $this->tmpPath('content/components/catalog/_section.json'),
+            $this->tmpPath('content/components/catalog/section.json'),
             json_encode([
                 'schema' => 'docara.section.v1',
                 'layout' => ['max_width' => 'full'],

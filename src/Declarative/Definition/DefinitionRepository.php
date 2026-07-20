@@ -47,6 +47,10 @@ final class DefinitionRepository
             'path' => 'smart/ui.alert/views/default.json',
             'schema' => 'declarative-smart-view.schema.json',
         ],
+        'smart-view:ui.button:default' => [
+            'path' => 'smart/ui.button/views/default.json',
+            'schema' => 'declarative-smart-view.schema.json',
+        ],
         'smart-manifest:docara.header' => [
             'path' => 'smart/docara.header/manifest.json',
             'schema' => 'declarative-smart-manifest.schema.json',

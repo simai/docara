@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace Tests;
 
 use PHPUnit\Framework\Attributes\Test;
+use Simai\Docara\Declarative\DeclarativePageResult;
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\Framework\FrameworkAssetPlan;
 use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\PortableSite\LegacyPortablePagePublisher;
 use Simai\Docara\PortableSite\PortableHtmlRenderer;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
+use Simai\Docara\PortableSite\PortablePagePublisher;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Symfony\Component\Process\Process;
 
@@ -67,6 +71,12 @@ final class PortableSiteBuilderTest extends TestCase
         $guide = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
         $fourthLevel = (string) file_get_contents($this->tmpPath('build_local/guides/platform/configuration/layout/index.html'));
         $landing = (string) file_get_contents($this->tmpPath('build_local/landing/index.html'));
+        $shellCss = (string) file_get_contents(
+            $this->tmpPath('build_local/_docara/declarative-shell.css'),
+        );
+        $shellRuntime = (string) file_get_contents(
+            $this->tmpPath('build_local/_docara/declarative-shell.js'),
+        );
 
         self::assertStringContainsString('docara-docs-layout gap-0', $index);
         self::assertStringNotContainsString('docara-sidebar bg-surface-0 border radius-2', $index);
@@ -96,10 +106,18 @@ final class PortableSiteBuilderTest extends TestCase
         );
         self::assertStringContainsString(
             '.docara-feature-grid>li{min-width:0;max-width:none}',
+            $shellCss,
+        );
+        self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:transparent;', $shellCss);
+        self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre}', $shellCss);
+        self::assertStringContainsString(
+            'href="/_docara/declarative-shell.css" data-docara-declarative-shell-style',
             $landing,
         );
-        self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:transparent;', $landing);
-        self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre}', $landing);
+        self::assertStringContainsString(
+            'src="/_docara/declarative-shell.js" data-docara-shell-controller',
+            $landing,
+        );
         self::assertStringContainsString(
             '<code class="language-shell">composer require simai/docara' . "\n"
                 . 'php vendor/bin/docara init --portable' . "\n"
@@ -138,6 +156,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringNotContainsString('alert(1)', $index);
 
         foreach ([$index, $guide, $fourthLevel, $landing] as $html) {
+            $surface = $html . $shellCss . $shellRuntime;
             self::assertStringContainsString('theme-light', $html);
             self::assertStringContainsString('theme-dark', $html);
             self::assertStringContainsString('data-docara-documentation-version="current"', $html);
@@ -162,25 +181,25 @@ final class PortableSiteBuilderTest extends TestCase
             );
             self::assertStringContainsString('<sf-icon icon="tune" aria-hidden="true"></sf-icon>', $html);
             self::assertStringContainsString('data-docara-shell-controller', $html);
-            self::assertStringContainsString('railRect.width<=0||railRect.height<=0', $html);
-            self::assertStringContainsString("addEventListener('resize',scheduleActiveReveal", $html);
-            self::assertStringContainsString("customElements.whenDefined('sf-icon')", $html);
+            self::assertStringContainsString('railRect.width<=0||railRect.height<=0', $surface);
+            self::assertStringContainsString("addEventListener('resize',scheduleActiveReveal", $surface);
+            self::assertStringContainsString("customElements.whenDefined('sf-icon')", $surface);
             self::assertStringNotContainsString('data-docara-code-copy', $html);
-            self::assertStringNotContainsString('navigator.clipboard.writeText(text)', $html);
-            self::assertStringNotContainsString("document.execCommand('copy')", $html);
-            self::assertStringContainsString('background:transparent;border:0;border-radius:0;box-shadow:none', $html);
-            self::assertStringContainsString('.docara-code-block>.sf--highlight-head button{min-inline-size:44px;min-block-size:44px}', $html);
-            self::assertStringContainsString('.docara-mobile-navigation-trigger{min-inline-size:44px;min-block-size:44px}', $html);
-            self::assertStringContainsString('.docara-outline-trigger{min-block-size:44px}', $html);
-            self::assertStringContainsString("dialog.addEventListener('cancel'", $html);
-            self::assertStringContainsString('if(event.target===dialog){closeSheet()}', $html);
-            self::assertStringContainsString('function trapDialogTab(dialog,event)', $html);
-            self::assertStringContainsString("settingsDialog.addEventListener('keydown',function(event){trapDialogTab(settingsDialog,event)})", $html);
-            self::assertStringContainsString('[data-docara-reader-settings-trigger]:focus-visible', $html);
+            self::assertStringNotContainsString('navigator.clipboard.writeText(text)', $surface);
+            self::assertStringNotContainsString("document.execCommand('copy')", $surface);
+            self::assertStringContainsString('background:transparent;border:0;border-radius:0;box-shadow:none', $surface);
+            self::assertStringContainsString('.docara-code-block>.sf--highlight-head button{min-inline-size:44px;min-block-size:44px}', $surface);
+            self::assertStringContainsString('.docara-mobile-navigation-trigger{min-inline-size:44px;min-block-size:44px}', $surface);
+            self::assertStringContainsString('.docara-outline-trigger{min-block-size:44px}', $surface);
+            self::assertStringContainsString("dialog.addEventListener('cancel'", $surface);
+            self::assertStringContainsString('if(event.target===dialog){closeSheet()}', $surface);
+            self::assertStringContainsString('function trapDialogTab(dialog,event)', $surface);
+            self::assertStringContainsString("settingsDialog.addEventListener('keydown',function(event){trapDialogTab(settingsDialog,event)})", $surface);
+            self::assertStringContainsString('[data-docara-reader-settings-trigger]:focus-visible', $surface);
             self::assertStringContainsString('data-docara-reader-settings-close', $html);
-            self::assertStringContainsString('[data-docara-reader-settings-close]:focus-visible', $html);
-            self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $html);
-            self::assertStringContainsString('sf-button>button:focus-visible', $html);
+            self::assertStringContainsString('[data-docara-reader-settings-close]:focus-visible', $surface);
+            self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
+            self::assertStringContainsString('sf-button>button:focus-visible', $surface);
             self::assertStringContainsString('@7e836d8a9414d5da553fb1ab0404721e5b48769a/', $html);
             self::assertStringNotContainsString('simai/ui-smart@', $html);
             self::assertStringContainsString('window.sfSmartPath="/_docara/framework"', $html);
@@ -214,8 +233,8 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('id="docara-outline-dialog"', $guide);
         self::assertStringContainsString('data-docara-sheet-trigger', $guide);
         self::assertStringContainsString('data-docara-transient-dialog', $guide);
-        self::assertStringContainsString("document.addEventListener('docara:open-transient'", $guide);
-        self::assertStringContainsString('block-size:100dvh', $guide);
+        self::assertStringContainsString("document.addEventListener('docara:open-transient'", $shellRuntime);
+        self::assertStringContainsString('block-size:100dvh', $shellCss);
         self::assertStringNotContainsString('<details id="docara-mobile-navigation"', $guide);
         self::assertStringContainsString('data-docara-navigation-depth="4"', $fourthLevel);
         self::assertStringContainsString('<sf-icon icon="expand_less" aria-hidden="true"></sf-icon>', $fourthLevel);
@@ -235,7 +254,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString("volatile=''", $index);
         self::assertStringContainsString('persisted:persisted', $index);
         self::assertStringContainsString('syncExternal', $index);
-        self::assertStringContainsString('Браузер не разрешил сохранить выбор', $index);
+        self::assertStringContainsString('Браузер не разрешил сохранить выбор', $shellRuntime);
         self::assertStringContainsString('sf-theme=', $index);
         self::assertStringNotContainsString('<sf-modal', $index);
         self::assertStringNotContainsString('<sf-dropdown', $index);
@@ -375,19 +394,23 @@ final class PortableSiteBuilderTest extends TestCase
             ['docara.component_call.v1', 'docara.component_call.v1'],
             array_column($guidePlan['component_runtime']['normalized_calls'], 'schema'),
         );
-        self::assertSame('not_in_vertical_slice', $guidePlan['declarative_pipeline']['status']);
-        self::assertSame(['ui.button'], $guidePlan['declarative_pipeline']['unsupported_components']);
+        self::assertSame('rendered', $guidePlan['declarative_pipeline']['status']);
+        self::assertSame([], $guidePlan['declarative_unsupported_components'] ?? []);
+        self::assertSame(
+            ['ui.alert', 'ui.button'],
+            array_column($guidePlan['declarative_pipeline']['semantic_parity']['declarative']['smart'], 'smart'),
+        );
         $previewReceipt = $this->jsonFile(
             $this->tmpPath('build_local/_docara/declarative-preview/index.json'),
         );
         self::assertSame('docara.declarative_preview_receipt.v1', $previewReceipt['schema']);
         self::assertCount(7, $previewReceipt['pages']);
-        self::assertCount(6, array_filter(
+        self::assertCount(7, array_filter(
             $previewReceipt['pages'],
             static fn (array $page): bool => $page['status'] === 'rendered',
         ));
         self::assertSame(
-            ['full_visual_parity' => false, 'primary_publisher_switched' => false, 'production_ready' => false],
+            ['full_visual_parity' => false, 'primary_publisher_switched' => true, 'production_ready' => false],
             $previewReceipt['nonclaims'],
         );
         $previewHome = (string) file_get_contents(
@@ -1421,6 +1444,107 @@ MD;
         self::assertSame('keep-output', file_get_contents($this->tmpPath('build_local/sentinel.txt')));
     }
 
+    #[Test]
+    public function declarative_publication_is_transactional_and_keeps_the_previous_build_on_late_failure(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('build_local'));
+        file_put_contents($this->tmpPath('build_local/sentinel.txt'), 'accepted-build');
+        $publisher = new class implements PortablePagePublisher
+        {
+            public function id(): string
+            {
+                return 'test.failing_publisher';
+            }
+
+            public function render(
+                array $page,
+                array $navigation,
+                string $siteTitle,
+                FrameworkAssetPlan $assets,
+                ?DeclarativePageResult $declarative,
+            ): string {
+                throw new \RuntimeException('simulated late publisher failure');
+            }
+        };
+        $builder = new PortableSiteBuilder(
+            new Filesystem,
+            new PortableMarkdownRenderer,
+            new PortableHtmlRenderer,
+            $publisher,
+        );
+
+        try {
+            $builder->build($this->tmp, $this->tmpPath('build_local'));
+            self::fail('A failing publisher unexpectedly replaced the accepted build.');
+        } catch (\RuntimeException $exception) {
+            self::assertSame('simulated late publisher failure', $exception->getMessage());
+        }
+
+        self::assertSame('accepted-build', file_get_contents($this->tmpPath('build_local/sentinel.txt')));
+        self::assertDirectoryDoesNotExist($this->tmpPath('build_local.docara-candidate'));
+    }
+
+    #[Test]
+    public function immutable_legacy_renderer_remains_an_explicit_url_compatible_rollback(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        self::assertSame(
+            'a28e914128a55143ce13e21c8bebc2216b5144919c6dbb2e5dfee366229125d0',
+            hash_file('sha256', dirname(__DIR__) . '/src/PortableSite/PortableHtmlRenderer.php'),
+        );
+
+        $declarative = $this->builder()->build(
+            $this->tmp,
+            $this->tmpPath('build_declarative'),
+        );
+        $legacy = new PortableSiteBuilder(
+            new Filesystem,
+            new PortableMarkdownRenderer,
+            new PortableHtmlRenderer,
+            new LegacyPortablePagePublisher(new PortableHtmlRenderer),
+        );
+        $rollback = $legacy->build($this->tmp, $this->tmpPath('build_legacy'));
+
+        self::assertSame($declarative->keys()->all(), $rollback->keys()->all());
+        $declarativeHtml = array_values(array_filter(
+            array_keys($this->treeHashes($this->tmpPath('build_declarative'))),
+            static fn (string $path): bool => str_ends_with($path, '.html'),
+        ));
+        $legacyHtml = array_values(array_filter(
+            array_keys($this->treeHashes($this->tmpPath('build_legacy'))),
+            static fn (string $path): bool => str_ends_with($path, '.html'),
+        ));
+        self::assertSame($declarativeHtml, $legacyHtml);
+        $declarativeDiagnostics = $this->jsonFile(
+            $this->tmpPath('build_declarative/.docara/resolved-page-plans.json'),
+        );
+        $legacyDiagnostics = $this->jsonFile(
+            $this->tmpPath('build_legacy/.docara/resolved-page-plans.json'),
+        );
+        self::assertSame(
+            ['docara.declarative_page_publisher.v1'],
+            array_values(array_unique(array_map(
+                static fn (array $page): string => (string) $page['publisher']['id'],
+                $declarativeDiagnostics['pages'],
+            ))),
+        );
+        self::assertSame(
+            ['docara.legacy_html_renderer.v1'],
+            array_values(array_unique(array_map(
+                static fn (array $page): string => (string) $page['publisher']['id'],
+                $legacyDiagnostics['pages'],
+            ))),
+        );
+        self::assertSame(
+            [true],
+            array_values(array_unique(array_map(
+                static fn (array $page): bool => (bool) $page['publisher']['rollback'],
+                $legacyDiagnostics['pages'],
+            ))),
+        );
+    }
+
     private function builder(): PortableSiteBuilder
     {
         return new PortableSiteBuilder(
@@ -1451,7 +1575,9 @@ MD;
         libxml_use_internal_errors($previous);
         $xpath = new \DOMXPath($document);
         $query = $topLevelOnly
-            ? '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]/nav/ul/li/div/*[@data-docara-menu-link]'
+            ? '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
+                . '//nav[contains(concat(" ", normalize-space(@class), " "), " docara-navigation ")]'
+                . '/ul/li/div/*[@data-docara-menu-link]'
             : '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]//*[@data-docara-menu-link]';
         $links = [];
         foreach ($xpath->query($query) ?: [] as $node) {

@@ -19,12 +19,23 @@ final readonly class DeclarativePageRenderer
         private array $reservedDocumentIds = [],
     ) {}
 
-    public function render(ResolvedRenderPlan $plan): RenderArtifact
-    {
+    public function render(
+        ResolvedRenderPlan $plan,
+        ?string $trustedGeneratedMainHtml = null,
+    ): RenderArtifact {
         $regions = [];
         $assets = $plan->assets;
         $sectionEvidence = [];
         foreach ($plan->regions as $region => $sections) {
+            if ($region === 'main' && $trustedGeneratedMainHtml !== null) {
+                $regions[$region] = $trustedGeneratedMainHtml;
+                $sectionEvidence[] = [
+                    'source' => '@docara/generated-content',
+                    'sha256' => hash('sha256', $trustedGeneratedMainHtml),
+                ];
+
+                continue;
+            }
             $renderedSections = [];
             foreach ($sections as $section) {
                 $artifact = $this->section($section);
@@ -62,6 +73,10 @@ final readonly class DeclarativePageRenderer
             [
                 'runtime' => 'docara.declarative.v1',
                 'outline' => $outline['items'],
+                'regions' => $regions,
+                'main_source' => $trustedGeneratedMainHtml === null
+                    ? 'resolved_blocks'
+                    : 'trusted_generated_projection',
             ],
             [
                 'plan_hash' => $plan->canonicalHash(),

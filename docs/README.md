@@ -19,6 +19,8 @@
 [`declarative-rendering-pipeline.md`](declarative-rendering-pipeline.md).
 Пути всех входов, стадий, preview-результатов и способов проверки собраны в
 [`declarative-preview.md`](declarative-preview.md).
+Текущий список ещё не выпущенных изменений находится в
+[`changes.md`](changes.md).
 
 ## Источники истины
 

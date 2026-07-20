@@ -23,7 +23,7 @@ final class DocumentParser
 
     public function __construct()
     {
-        $this->directives = new ComponentDirectiveParser(['ui.alert']);
+        $this->directives = new ComponentDirectiveParser(['ui.alert', 'ui.button']);
         $environment = new Environment([
             'html_input' => 'strip',
             'allow_unsafe_links' => false,

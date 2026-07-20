@@ -6,6 +6,7 @@ namespace Simai\Docara\Declarative\Rendering;
 
 use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
 use Simai\Docara\Declarative\Rendering\View\AlertViewModel;
+use Simai\Docara\Declarative\Rendering\View\ButtonViewModel;
 use Simai\Docara\Declarative\Rendering\View\HeaderViewModel;
 use Simai\Docara\Declarative\Rendering\View\NavigationItemViewModel;
 use Simai\Docara\Declarative\Rendering\View\NavigationViewModel;
@@ -31,6 +32,29 @@ final class ViewModelFactory
             $this->escape((string) $props['aria-label']),
             (bool) $props['closable'],
             isset($props['icon']) ? $this->escape((string) $props['icon']) : null,
+        );
+    }
+
+    public function button(ResolvedSmartPlan $plan): ButtonViewModel
+    {
+        if ($plan->smart !== 'ui.button') {
+            throw new \InvalidArgumentException('SMART_VIEW_MODEL_UNSUPPORTED');
+        }
+        $props = $plan->props;
+
+        return new ButtonViewModel(
+            $this->escape((string) $plan->provenance['runtime_pair']),
+            $this->escape((string) $props['text']),
+            $this->escape((string) $props['size']),
+            $this->escape((string) $props['type']),
+            $this->escape((string) $props['scheme']),
+            $this->escape((string) $props['native-type']),
+            $this->escape((string) $props['aria-label']),
+            isset($props['radius']) && $props['radius'] !== ''
+                ? $this->escape((string) $props['radius'])
+                : null,
+            (bool) $props['loading'],
+            (bool) $props['disabled'],
         );
     }
 
@@ -102,8 +126,8 @@ final class ViewModelFactory
                 (bool) $node['current_section'],
                 (bool) $node['open'],
                 $children !== [],
+                $this->navigationItems($children, $depth + 1),
             );
-            array_push($items, ...$this->navigationItems($children, $depth + 1));
         }
 
         return $items;

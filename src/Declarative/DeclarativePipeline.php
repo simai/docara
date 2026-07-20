@@ -59,4 +59,35 @@ final readonly class DeclarativePipeline
 
         return new DeclarativePageResult($plan, $this->renderer->render($plan));
     }
+
+    public function buildGenerated(
+        string $markdown,
+        string $source,
+        string $pageKey,
+        string $title,
+        int $outlineDepth,
+        string $trustedMainHtml,
+        ?PageCompositionContext $composition = null,
+        array $layoutConfiguration = [],
+        array $configurationProvenance = [],
+    ): DeclarativePageResult {
+        if (trim($trustedMainHtml) === '') {
+            throw new \InvalidArgumentException('DECLARATIVE_GENERATED_CONTENT_REQUIRED');
+        }
+        $document = $this->parser->parse($markdown, $source);
+        $plan = $this->compiler->compile(
+            $document,
+            $pageKey,
+            $title,
+            $outlineDepth,
+            $composition,
+            $layoutConfiguration,
+            $configurationProvenance,
+        );
+
+        return new DeclarativePageResult(
+            $plan,
+            $this->renderer->render($plan, $trustedMainHtml),
+        );
+    }
 }

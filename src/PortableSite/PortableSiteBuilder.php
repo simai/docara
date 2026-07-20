@@ -28,11 +28,28 @@ use Simai\Docara\Portable\SchemaRepository;
 
 final readonly class PortableSiteBuilder
 {
+    private PortablePagePublisher $publisher;
+
     public function __construct(
         private Filesystem $files,
         private PortableMarkdownRenderer $markdown,
         private PortableHtmlRenderer $html,
-    ) {}
+        ?PortablePagePublisher $publisher = null,
+    ) {
+        $rollback = getenv('DOCARA_PORTABLE_PUBLISHER');
+        if ($publisher instanceof PortablePagePublisher) {
+            $this->publisher = $publisher;
+        } elseif ($rollback === false || $rollback === '' || $rollback === 'declarative') {
+            $this->publisher = new DeclarativePortablePagePublisher;
+        } elseif ($rollback === 'legacy') {
+            $this->publisher = new LegacyPortablePagePublisher($html);
+        } else {
+            throw new PortableConfigurationException(
+                'PORTABLE_PUBLISHER_INVALID',
+                'DOCARA_PORTABLE_PUBLISHER must be [declarative] or [legacy].',
+            );
+        }
+    }
 
     /** @return Collection<string, array<string, mixed>> */
     public function build(string $root, string $destination): Collection
@@ -47,6 +64,8 @@ final readonly class PortableSiteBuilder
         $contentRoot = (string) ($site['content_root'] ?? 'content');
         $contentPath = $this->confinedDirectory($root, $contentRoot);
         $this->assertDestinationInputBoundary($root, $destination, $contentPath, $site);
+        $finalDestination = $destination;
+        $destination = $this->candidateDestination($root, $finalDestination);
         $pagePaths = $this->markdownFiles($root, $contentPath);
         if ($pagePaths === []) {
             throw new PortableConfigurationException('PORTABLE_CONTENT_EMPTY', 'Portable content does not contain Markdown pages.');
@@ -91,7 +110,10 @@ final readonly class PortableSiteBuilder
                 static fn (array $call): string => (string) ($call['id'] ?? ''),
                 $components->normalizedCalls,
             )));
-            $unsupportedDeclarativeComponents = array_values(array_diff($componentIds, ['ui.alert']));
+            $unsupportedDeclarativeComponents = array_values(array_diff(
+                $componentIds,
+                ['ui.alert', 'ui.button'],
+            ));
             sort($unsupportedDeclarativeComponents, SORT_STRING);
 
             $pages[] = [
@@ -219,245 +241,310 @@ final readonly class PortableSiteBuilder
         $componentCatalogJson = CanonicalJson::encodePretty($effectiveComponentCatalog);
 
         $this->prepareDestination($root, $destination);
-        $result = collect();
-        $diagnostics = [];
-        $previewRecords = [];
-        $previewRenderer = new DeclarativePreviewRenderer;
-        $previewProjector = new DeclarativePreviewLinkProjector;
-        $previewAssetPlan = null;
+        try {
+            $result = collect();
+            $diagnostics = [];
+            $previewRecords = [];
+            $previewRenderer = new DeclarativePreviewRenderer;
+            $previewProjector = new DeclarativePreviewLinkProjector;
+            $previewAssetPlan = null;
 
-        $docaraOutputDirectory = rtrim($destination, '/\\') . '/_docara';
-        $this->files->ensureDirectoryExists($docaraOutputDirectory);
-        $this->files->put($docaraOutputDirectory . '/component-catalog.json', $componentCatalogJson);
-        $catalogReceiptPath = rtrim($destination, '/\\') . '/.docara/component-catalog-pages.json';
-        $this->files->ensureDirectoryExists(dirname($catalogReceiptPath));
-        $this->files->put(
-            $catalogReceiptPath,
-            $this->prettyCanonicalJson($componentCatalogProjection['receipt']),
-        );
-        foreach ($componentCatalogProjector->assets() as $relative => $bytes) {
-            $assetPath = rtrim($destination, '/\\') . '/' . $relative;
-            $this->files->ensureDirectoryExists(dirname($assetPath));
-            if ($this->files->put($assetPath, $bytes) === false
-                || ! hash_equals(hash('sha256', $bytes), (string) hash_file('sha256', $assetPath))
-            ) {
-                throw new PortableConfigurationException(
-                    'COMPONENT_CATALOG_ASSET_PUBLICATION_FAILED',
-                    $relative,
-                );
-            }
-        }
-
-        if ($searchPlan instanceof PortableSearchPlan) {
-            $this->files->put($docaraOutputDirectory . '/search-index.json', $searchPlan->indexJson);
-            $this->files->put($docaraOutputDirectory . '/search.js', $searchPlan->runtime);
-        }
-
-        foreach ($pages as $pageIndex => $page) {
-            $page['branding'] = $brandPlan['pages'][$pageIndex];
-            $readingContext = $navigationBuilder->readingContextForUrl($topology, (string) $page['url']);
-            $page['breadcrumbs'] = $page['reading_breadcrumbs'] === true
-                ? $readingContext['breadcrumbs']
-                : [];
-            $page['previous'] = $page['reading_previous_next'] === true
-                ? $readingContext['previous']
-                : null;
-            $page['next'] = $page['reading_previous_next'] === true
-                ? $readingContext['next']
-                : null;
-            if (isset($page['component_catalog_kind'])) {
-                $page['breadcrumbs'] = $page['reading_breadcrumbs'] === true
-                    ? $page['component_catalog_breadcrumbs']
-                    : [];
-                $page['previous'] = $page['reading_previous_next'] === true
-                    ? $page['component_catalog_previous']
-                    : null;
-                $page['next'] = $page['reading_previous_next'] === true
-                    ? $page['component_catalog_next']
-                    : null;
-            }
-            if ($page['reading_toc'] !== true) {
-                $page['outline'] = [];
-            }
-            $activeNavigation = $navigationBuilder->activate(
-                $navigation,
-                ($page['component_catalog_kind'] ?? null) === 'detail'
-                    ? (string) $page['component_catalog_index_url']
-                    : (string) $page['url'],
+            $docaraOutputDirectory = rtrim($destination, '/\\') . '/_docara';
+            $this->files->ensureDirectoryExists($docaraOutputDirectory);
+            $this->files->put($docaraOutputDirectory . '/component-catalog.json', $componentCatalogJson);
+            $catalogReceiptPath = rtrim($destination, '/\\') . '/.docara/component-catalog-pages.json';
+            $this->files->ensureDirectoryExists(dirname($catalogReceiptPath));
+            $this->files->put(
+                $catalogReceiptPath,
+                $this->prettyCanonicalJson($componentCatalogProjection['receipt']),
             );
-            if (($page['declarative_supported'] ?? false) === true) {
-                /** @var ResolvedPagePlan $declarativePlan */
-                $declarativePlan = $page['plan'];
-                $composition = PageCompositionContext::fromBuilder(
-                    $page['branding'],
-                    (string) $page['home_url'],
-                    $activeNavigation,
-                    $page['outline'],
-                );
-                $declarativePipeline ??= DeclarativePipeline::bundled(
-                    $declarativePlan->frameworkLock,
-                    $this->markdown,
-                    $this->html->reservedDocumentIds(),
-                );
-                $declarative = $declarativePipeline->build(
-                    $declarativePlan->markdown,
-                    $declarativePlan->page,
-                    (string) $page['output'],
-                    (string) $page['title'],
-                    (int) data_get($declarativePlan->configuration, 'reading.toc_depth', 3),
-                    $composition,
-                    is_array($declarativePlan->configuration['layout'] ?? null)
-                        ? $declarativePlan->configuration['layout']
-                        : [],
-                    $declarativePlan->provenance,
-                );
-                $parity = (new SemanticParityChecker)->assertEquivalent(
-                    (string) $page['title'],
-                    (string) $page['content_html'],
-                    $page['components']->normalizedCalls,
-                    $declarative,
-                );
-                $shellParity = (new ShellStructuralParityChecker)->assertEquivalent(
-                    $composition,
-                    $declarative->plan,
-                );
-                $larenaContract = (new LarenaContractAdapter)->adapt($declarative->plan);
-                $page['declarative_pipeline'] = $declarative->toArray() + [
-                    'semantic_parity' => $parity->toArray(),
-                    'shell_structural_parity' => $shellParity->toArray(),
-                    'larena_contract' => [
-                        'schema' => $larenaContract->payload['schema'],
-                        'canonical_hash' => $larenaContract->canonicalHash(),
-                        'semantic_parity' => $larenaContract->semantics
-                            === $declarative->plan->semanticProjection()
-                            ? 'pass'
-                            : 'fail',
-                    ],
-                ];
-                $previewUrl = $previewRoutes->previewUrl((string) $page['url']);
-                $previewOutput = $previewRoutes->previewOutput((string) $page['url']);
-                if ($previewUrl === null || $previewOutput === null) {
+            foreach ($componentCatalogProjector->assets() as $relative => $bytes) {
+                $assetPath = rtrim($destination, '/\\') . '/' . $relative;
+                $this->files->ensureDirectoryExists(dirname($assetPath));
+                if ($this->files->put($assetPath, $bytes) === false
+                    || ! hash_equals(hash('sha256', $bytes), (string) hash_file('sha256', $assetPath))
+                ) {
                     throw new PortableConfigurationException(
-                        'DECLARATIVE_PREVIEW_ROUTE_REQUIRED',
-                        "Declarative page [{$page['url']}] has no preview route.",
+                        'COMPONENT_CATALOG_ASSET_PUBLICATION_FAILED',
+                        $relative,
                     );
                 }
-                $previewHtml = $previewRenderer->page(
-                    (string) $page['locale'],
-                    $documentationVersion,
-                    (string) $page['title'],
-                    (string) $page['url'],
-                    $previewRoutes->indexUrl,
-                    $previewProjector->project(
-                        $declarative->artifact->html,
-                        $previewRoutes,
-                    ),
-                    $page['components']->assetPlan,
-                );
-                $previewPath = rtrim($destination, '/\\') . '/' . $previewOutput;
-                $this->files->ensureDirectoryExists(dirname($previewPath));
-                $this->files->put($previewPath, $previewHtml);
-                $page['declarative_pipeline']['preview'] = [
-                    'status' => 'rendered',
-                    'url' => $previewUrl,
-                    'output' => $previewOutput,
-                    'html_sha256' => hash('sha256', $previewHtml),
-                    'legacy_url' => (string) $page['url'],
-                ];
-            } elseif (array_key_exists('declarative_unsupported_components', $page)) {
-                $page['declarative_pipeline'] = [
-                    'status' => 'not_in_vertical_slice',
-                    'unsupported_components' => $page['declarative_unsupported_components'],
-                    'supported_components' => ['ui.alert'],
-                ];
             }
-            if (array_key_exists('declarative_supported', $page)) {
-                $previewAssetPlan ??= $page['components']->assetPlan;
-                $previewRecords[] = [
-                    'title' => (string) $page['title'],
-                    'legacy_url' => (string) $page['url'],
-                    'preview_url' => $page['declarative_pipeline']['preview']['url'] ?? null,
-                    'preview_output' => $page['declarative_pipeline']['preview']['output'] ?? null,
-                    'status' => $page['declarative_pipeline']['preview']['status'] ?? 'skipped',
-                    'unsupported_components' => $page['declarative_unsupported_components'],
-                    'html_sha256' => $page['declarative_pipeline']['preview']['html_sha256'] ?? null,
-                ];
-            }
-            $outputPath = rtrim($destination, '/\\') . '/' . $page['output'];
-            $this->files->ensureDirectoryExists(dirname($outputPath));
-            $rendered = $this->html->render($page, $activeNavigation, $siteTitle, $page['components']->assetPlan);
-            $this->files->put($outputPath, $rendered);
 
-            /** @var ResolvedPagePlan $plan */
-            $plan = $page['plan'];
-            $record = [
-                'canonical_hash' => $plan->canonicalHash(),
-                'output' => $page['output'],
-                'url' => $page['url'],
-                'resolved_page_plan' => $plan->toArray(),
-                'component_runtime' => $page['components']->toArray(),
-                'declarative_pipeline' => $page['declarative_pipeline'] ?? [
-                    'status' => 'not_applicable_generated_page',
+            if ($searchPlan instanceof PortableSearchPlan) {
+                $this->files->put($docaraOutputDirectory . '/search-index.json', $searchPlan->indexJson);
+                $this->files->put($docaraOutputDirectory . '/search.js', $searchPlan->runtime);
+            }
+
+            foreach ($pages as $pageIndex => $page) {
+                $declarative = null;
+                $page['branding'] = $brandPlan['pages'][$pageIndex];
+                $readingContext = $navigationBuilder->readingContextForUrl($topology, (string) $page['url']);
+                $page['breadcrumbs'] = $page['reading_breadcrumbs'] === true
+                    ? $readingContext['breadcrumbs']
+                    : [];
+                $page['previous'] = $page['reading_previous_next'] === true
+                    ? $readingContext['previous']
+                    : null;
+                $page['next'] = $page['reading_previous_next'] === true
+                    ? $readingContext['next']
+                    : null;
+                if (isset($page['component_catalog_kind'])) {
+                    $page['breadcrumbs'] = $page['reading_breadcrumbs'] === true
+                        ? $page['component_catalog_breadcrumbs']
+                        : [];
+                    $page['previous'] = $page['reading_previous_next'] === true
+                        ? $page['component_catalog_previous']
+                        : null;
+                    $page['next'] = $page['reading_previous_next'] === true
+                        ? $page['component_catalog_next']
+                        : null;
+                }
+                if ($page['reading_toc'] !== true) {
+                    $page['outline'] = [];
+                }
+                $activeNavigation = $navigationBuilder->activate(
+                    $navigation,
+                    ($page['component_catalog_kind'] ?? null) === 'detail'
+                        ? (string) $page['component_catalog_index_url']
+                        : (string) $page['url'],
+                );
+                if (($page['declarative_supported'] ?? false) === true
+                    || isset($page['component_catalog_kind'])
+                ) {
+                    /** @var ResolvedPagePlan $declarativePlan */
+                    $declarativePlan = $page['plan'];
+                    $composition = PageCompositionContext::fromBuilder(
+                        $page['branding'],
+                        (string) $page['home_url'],
+                        $activeNavigation,
+                        $page['outline'],
+                    );
+                    $declarativePipeline ??= DeclarativePipeline::bundled(
+                        $declarativePlan->frameworkLock,
+                        $this->markdown,
+                        $this->html->reservedDocumentIds(),
+                    );
+                    $declarativeArguments = [
+                        $declarativePlan->markdown,
+                        $declarativePlan->page,
+                        (string) $page['output'],
+                        (string) $page['title'],
+                        (int) data_get($declarativePlan->configuration, 'reading.toc_depth', 3),
+                    ];
+                    $layoutConfiguration = is_array($declarativePlan->configuration['layout'] ?? null)
+                        ? $declarativePlan->configuration['layout']
+                        : [];
+                    $declarative = isset($page['component_catalog_kind'])
+                        ? $declarativePipeline->buildGenerated(
+                            $declarativeArguments[0],
+                            $declarativeArguments[1],
+                            $declarativeArguments[2],
+                            $declarativeArguments[3],
+                            $declarativeArguments[4],
+                            (string) $page['content_html'],
+                            $composition,
+                            $layoutConfiguration,
+                            $declarativePlan->provenance,
+                        )
+                        : $declarativePipeline->build(
+                            $declarativeArguments[0],
+                            $declarativeArguments[1],
+                            $declarativeArguments[2],
+                            $declarativeArguments[3],
+                            $declarativeArguments[4],
+                            $composition,
+                            $layoutConfiguration,
+                            $declarativePlan->provenance,
+                        );
+                    if (isset($page['component_catalog_kind'])) {
+                        $generatedHash = hash('sha256', (string) $page['content_html']);
+                        $declarativeHash = hash(
+                            'sha256',
+                            (string) ($declarative->artifact->hydration['regions']['main'] ?? ''),
+                        );
+                        if (! hash_equals($generatedHash, $declarativeHash)) {
+                            throw new PortableConfigurationException(
+                                'DECLARATIVE_GENERATED_CONTENT_PARITY_FAILED',
+                                "Generated page [{$page['url']}] changed during declarative projection.",
+                            );
+                        }
+                        $parity = [
+                            'status' => 'pass',
+                            'mode' => 'trusted_generated_projection',
+                            'legacy_hash' => $generatedHash,
+                            'declarative_hash' => $declarativeHash,
+                        ];
+                    } else {
+                        $parity = (new SemanticParityChecker)->assertEquivalent(
+                            (string) $page['title'],
+                            (string) $page['content_html'],
+                            $page['components']->normalizedCalls,
+                            $declarative,
+                        )->toArray();
+                    }
+                    $shellParity = (new ShellStructuralParityChecker)->assertEquivalent(
+                        $composition,
+                        $declarative->plan,
+                    );
+                    $larenaContract = (new LarenaContractAdapter)->adapt($declarative->plan);
+                    $page['declarative_pipeline'] = $declarative->toArray() + [
+                        'semantic_parity' => $parity,
+                        'shell_structural_parity' => $shellParity->toArray(),
+                        'larena_contract' => [
+                            'schema' => $larenaContract->payload['schema'],
+                            'canonical_hash' => $larenaContract->canonicalHash(),
+                            'semantic_parity' => $larenaContract->semantics
+                                === $declarative->plan->semanticProjection()
+                                ? 'pass'
+                                : 'fail',
+                        ],
+                    ];
+                    if (! isset($page['component_catalog_kind'])) {
+                        $previewUrl = $previewRoutes->previewUrl((string) $page['url']);
+                        $previewOutput = $previewRoutes->previewOutput((string) $page['url']);
+                        if ($previewUrl === null || $previewOutput === null) {
+                            throw new PortableConfigurationException(
+                                'DECLARATIVE_PREVIEW_ROUTE_REQUIRED',
+                                "Declarative page [{$page['url']}] has no preview route.",
+                            );
+                        }
+                        $previewHtml = $previewRenderer->page(
+                            (string) $page['locale'],
+                            $documentationVersion,
+                            (string) $page['title'],
+                            (string) $page['url'],
+                            $previewRoutes->indexUrl,
+                            $previewProjector->project(
+                                $declarative->artifact->html,
+                                $previewRoutes,
+                            ),
+                            $page['components']->assetPlan,
+                        );
+                        $previewPath = rtrim($destination, '/\\') . '/' . $previewOutput;
+                        $this->files->ensureDirectoryExists(dirname($previewPath));
+                        $this->files->put($previewPath, $previewHtml);
+                        $page['declarative_pipeline']['preview'] = [
+                            'status' => 'rendered',
+                            'url' => $previewUrl,
+                            'output' => $previewOutput,
+                            'html_sha256' => hash('sha256', $previewHtml),
+                            'legacy_url' => (string) $page['url'],
+                        ];
+                    }
+                } elseif (array_key_exists('declarative_unsupported_components', $page)) {
+                    $page['declarative_pipeline'] = [
+                        'status' => 'not_in_vertical_slice',
+                        'unsupported_components' => $page['declarative_unsupported_components'],
+                        'supported_components' => ['ui.alert', 'ui.button'],
+                    ];
+                }
+                if (array_key_exists('declarative_supported', $page)) {
+                    $previewAssetPlan ??= $page['components']->assetPlan;
+                    $previewRecords[] = [
+                        'title' => (string) $page['title'],
+                        'legacy_url' => (string) $page['url'],
+                        'preview_url' => $page['declarative_pipeline']['preview']['url'] ?? null,
+                        'preview_output' => $page['declarative_pipeline']['preview']['output'] ?? null,
+                        'status' => $page['declarative_pipeline']['preview']['status'] ?? 'skipped',
+                        'unsupported_components' => $page['declarative_unsupported_components'],
+                        'html_sha256' => $page['declarative_pipeline']['preview']['html_sha256'] ?? null,
+                    ];
+                }
+                $outputPath = rtrim($destination, '/\\') . '/' . $page['output'];
+                $this->files->ensureDirectoryExists(dirname($outputPath));
+                $rendered = $this->publisher->render(
+                    $page,
+                    $activeNavigation,
+                    $siteTitle,
+                    $page['components']->assetPlan,
+                    $declarative,
+                );
+                $this->files->put($outputPath, $rendered);
+
+                /** @var ResolvedPagePlan $plan */
+                $plan = $page['plan'];
+                $record = [
+                    'canonical_hash' => $plan->canonicalHash(),
+                    'output' => $page['output'],
+                    'url' => $page['url'],
+                    'resolved_page_plan' => $plan->toArray(),
+                    'component_runtime' => $page['components']->toArray(),
+                    'publisher' => [
+                        'id' => $this->publisher->id(),
+                        'html_sha256' => hash('sha256', $rendered),
+                        'rollback' => $this->publisher instanceof LegacyPortablePagePublisher,
+                    ],
+                    'declarative_pipeline' => $page['declarative_pipeline'] ?? [
+                        'status' => 'not_applicable_generated_page',
+                    ],
+                ];
+                $diagnostics[] = $record;
+                $result->put((string) $page['url'], $record);
+            }
+            if (! $previewAssetPlan instanceof FrameworkAssetPlan) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_PREVIEW_ASSET_PLAN_REQUIRED',
+                    'Declarative preview requires an authored page asset plan.',
+                );
+            }
+            $previewIndexHtml = $previewRenderer->index(
+                $buildLocale,
+                $documentationVersion,
+                $siteTitle,
+                $previewRoutes->receiptUrl,
+                $previewRecords,
+                $previewAssetPlan,
+            );
+            $previewIndexPath = rtrim($destination, '/\\') . '/' . $previewRoutes->indexOutput;
+            $this->files->ensureDirectoryExists(dirname($previewIndexPath));
+            $this->files->put($previewIndexPath, $previewIndexHtml);
+            $previewReceipt = [
+                'schema' => 'docara.declarative_preview_receipt.v1',
+                'build' => [
+                    'locale' => $buildLocale,
+                    'documentation_version' => $documentationVersion,
+                ],
+                'index' => [
+                    'url' => $previewRoutes->indexUrl,
+                    'output' => $previewRoutes->indexOutput,
+                    'html_sha256' => hash('sha256', $previewIndexHtml),
+                ],
+                'routes' => $previewRoutes->toArray(),
+                'pages' => $previewRecords,
+                'nonclaims' => [
+                    'primary_publisher_switched' => true,
+                    'full_visual_parity' => false,
+                    'production_ready' => false,
                 ],
             ];
-            $diagnostics[] = $record;
-            $result->put((string) $page['url'], $record);
-        }
-        if (! $previewAssetPlan instanceof FrameworkAssetPlan) {
-            throw new PortableConfigurationException(
-                'DECLARATIVE_PREVIEW_ASSET_PLAN_REQUIRED',
-                'Declarative preview requires an authored page asset plan.',
+            $this->files->put(
+                rtrim($destination, '/\\') . '/' . $previewRoutes->receiptOutput,
+                $this->prettyCanonicalJson($previewReceipt),
             );
-        }
-        $previewIndexHtml = $previewRenderer->index(
-            $buildLocale,
-            $documentationVersion,
-            $siteTitle,
-            $previewRoutes->receiptUrl,
-            $previewRecords,
-            $previewAssetPlan,
-        );
-        $previewIndexPath = rtrim($destination, '/\\') . '/' . $previewRoutes->indexOutput;
-        $this->files->ensureDirectoryExists(dirname($previewIndexPath));
-        $this->files->put($previewIndexPath, $previewIndexHtml);
-        $previewReceipt = [
-            'schema' => 'docara.declarative_preview_receipt.v1',
-            'build' => [
-                'locale' => $buildLocale,
-                'documentation_version' => $documentationVersion,
-            ],
-            'index' => [
-                'url' => $previewRoutes->indexUrl,
-                'output' => $previewRoutes->indexOutput,
-                'html_sha256' => hash('sha256', $previewIndexHtml),
-            ],
-            'routes' => $previewRoutes->toArray(),
-            'pages' => $previewRecords,
-            'nonclaims' => [
-                'primary_publisher_switched' => false,
-                'full_visual_parity' => false,
-                'production_ready' => false,
-            ],
-        ];
-        $this->files->put(
-            rtrim($destination, '/\\') . '/' . $previewRoutes->receiptOutput,
-            $this->prettyCanonicalJson($previewReceipt),
-        );
 
-        $redirectPublisher->publish($redirectPlan, $destination);
-        $this->copyContentAssets($contentAssets, $destination);
-        $brandPublisher->publish($brandPlan['assets'], $destination);
-        $this->publishFrameworkAssets($catalogBasePlan->frameworkLock, $destination);
-        $diagnosticPath = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
-        $this->files->ensureDirectoryExists(dirname($diagnosticPath));
-        $this->files->put($diagnosticPath, $this->prettyCanonicalJson([
-            'schema' => 'docara.resolved_page_plans.v1',
-            'build' => [
-                'locale' => $buildLocale,
-                'documentation_version' => $documentationVersion,
-            ],
-            'pages' => $diagnostics,
-        ]));
+            $redirectPublisher->publish($redirectPlan, $destination);
+            $this->copyContentAssets($contentAssets, $destination);
+            $brandPublisher->publish($brandPlan['assets'], $destination);
+            $this->publishFrameworkAssets($catalogBasePlan->frameworkLock, $destination);
+            $this->publishPagePublisherAssets($destination);
+            $diagnosticPath = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
+            $this->files->ensureDirectoryExists(dirname($diagnosticPath));
+            $this->files->put($diagnosticPath, $this->prettyCanonicalJson([
+                'schema' => 'docara.resolved_page_plans.v1',
+                'build' => [
+                    'locale' => $buildLocale,
+                    'documentation_version' => $documentationVersion,
+                ],
+                'pages' => $diagnostics,
+            ]));
+            $this->promoteCandidate($root, $destination, $finalDestination);
+        } catch (\Throwable $exception) {
+            if ($this->files->isDirectory($destination) && ! is_link($destination)) {
+                $this->files->deleteDirectory($destination);
+            }
+            throw $exception;
+        }
 
         return $result;
     }
@@ -601,6 +688,71 @@ final readonly class PortableSiteBuilder
         } else {
             $this->files->makeDirectory($destination, 0755, true);
         }
+    }
+
+    private function candidateDestination(string $root, string $destination): string
+    {
+        $this->assertDestinationShape($root, $destination);
+        $candidate = rtrim($destination, '/\\') . '.docara-candidate';
+        $this->assertDestinationShape($root, $candidate);
+
+        return $candidate;
+    }
+
+    private function promoteCandidate(string $root, string $candidate, string $destination): void
+    {
+        $this->assertDestinationShape($root, $candidate);
+        $this->assertDestinationShape($root, $destination);
+        if (is_link($candidate) || ! $this->files->isDirectory($candidate)) {
+            throw new PortableConfigurationException(
+                'DESTINATION_CANDIDATE_INVALID',
+                'The completed portable build candidate is missing or unsafe.',
+            );
+        }
+
+        $rollback = rtrim($destination, '/\\') . '.docara-rollback';
+        $this->assertDestinationShape($root, $rollback);
+        if (is_link($rollback)) {
+            throw new PortableConfigurationException(
+                'DESTINATION_ROLLBACK_SYMLINK_FORBIDDEN',
+                'Portable builds refuse to replace a symbolic-link rollback directory.',
+            );
+        }
+        if ($this->files->isDirectory($rollback) && ! $this->files->deleteDirectory($rollback)) {
+            throw new PortableConfigurationException(
+                'DESTINATION_ROLLBACK_CLEANUP_FAILED',
+                'A stale portable build rollback directory could not be removed.',
+            );
+        }
+
+        $hasCurrent = $this->files->isDirectory($destination);
+        if ($hasCurrent && ! @rename($destination, $rollback)) {
+            throw new PortableConfigurationException(
+                'DESTINATION_ROLLBACK_PREPARE_FAILED',
+                'The current portable build could not be moved to the rollback directory.',
+            );
+        }
+        if (@rename($candidate, $destination)) {
+            if ($hasCurrent && ! $this->files->deleteDirectory($rollback)) {
+                throw new PortableConfigurationException(
+                    'DESTINATION_ROLLBACK_CLEANUP_FAILED',
+                    'The accepted portable build was published, but its rollback directory could not be removed.',
+                );
+            }
+
+            return;
+        }
+
+        if ($hasCurrent && ! @rename($rollback, $destination)) {
+            throw new PortableConfigurationException(
+                'DESTINATION_PROMOTION_AND_RESTORE_FAILED',
+                'The portable candidate could not be published and the previous build could not be restored.',
+            );
+        }
+        throw new PortableConfigurationException(
+            'DESTINATION_PROMOTION_FAILED',
+            'The portable candidate could not be published; the previous build was restored.',
+        );
     }
 
     private function assertDestinationShape(string $root, string $destination): void
@@ -765,6 +917,38 @@ final readonly class PortableSiteBuilder
                 throw new PortableConfigurationException(
                     'FRAMEWORK_ASSET_PUBLICATION_FAILED',
                     "Framework asset [$relativePath] could not be published deterministically.",
+                );
+            }
+        }
+    }
+
+    private function publishPagePublisherAssets(string $destination): void
+    {
+        if (! $this->publisher instanceof DeclarativePortablePagePublisher) {
+            return;
+        }
+        foreach (['declarative-shell.css', 'declarative-shell.js'] as $name) {
+            $source = dirname(__DIR__, 2) . '/resources/portable/' . $name;
+            if (! is_file($source) || is_link($source)) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_PUBLISHER_ASSET_MISSING',
+                    "Declarative publisher asset [$name] is missing or unsafe.",
+                );
+            }
+            $bytes = file_get_contents($source);
+            if (! is_string($bytes) || $bytes === '') {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_PUBLISHER_ASSET_INVALID',
+                    "Declarative publisher asset [$name] is invalid.",
+                );
+            }
+            $target = rtrim($destination, '/\\') . '/_docara/' . $name;
+            if ($this->files->put($target, $bytes) === false
+                || ! hash_equals(hash('sha256', $bytes), (string) hash_file('sha256', $target))
+            ) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_PUBLISHER_ASSET_PUBLICATION_FAILED',
+                    $name,
                 );
             }
         }

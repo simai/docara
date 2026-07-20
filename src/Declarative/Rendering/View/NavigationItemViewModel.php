@@ -6,6 +6,7 @@ namespace Simai\Docara\Declarative\Rendering\View;
 
 final readonly class NavigationItemViewModel
 {
+    /** @param list<NavigationItemViewModel> $children */
     public function __construct(
         public string $key,
         public string $title,
@@ -17,5 +18,6 @@ final readonly class NavigationItemViewModel
         public bool $currentSection,
         public bool $open,
         public bool $hasChildren,
+        public array $children = [],
     ) {}
 }

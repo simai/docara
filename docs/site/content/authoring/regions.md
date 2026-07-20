@@ -30,10 +30,9 @@
 }
 ```
 
-В [декларативной версии этой страницы](/_docara/declarative-preview/pages/authoring/regions/)
+В основном результате и
+[диагностическом preview](/_docara/declarative-preview/pages/authoring/regions/)
 остаётся шапка и основное содержимое, а оба `aside` отсутствуют в HTML.
-Legacy-страница продолжает использовать принятый renderer до отдельного
-переключения публикации.
 
 Настройку можно положить в:
 

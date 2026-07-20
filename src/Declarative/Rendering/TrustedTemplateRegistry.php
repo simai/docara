@@ -11,11 +11,14 @@ final readonly class TrustedTemplateRegistry
     /** @var array<string, array{path:string,renderer:string}> */
     private const TEMPLATES = [
         'smart.ui.alert.default' => ['path' => 'smart/ui.alert/templates/default.php', 'renderer' => 'php'],
+        'smart.ui.button.default' => ['path' => 'smart/ui.button/templates/default.php', 'renderer' => 'php'],
         'smart.docara.header.default' => ['path' => 'smart/docara.header/templates/default.php', 'renderer' => 'php'],
         'smart.docara.navigation.default' => ['path' => 'smart/docara.navigation/templates/default.blade.php', 'renderer' => 'blade'],
+        'smart.docara.navigation.item' => ['path' => 'smart/docara.navigation/templates/item.php', 'renderer' => 'php'],
         'smart.docara.outline.default' => ['path' => 'smart/docara.outline/templates/default.php', 'renderer' => 'php'],
         'preview.docara.page' => ['path' => 'previews/templates/page.php', 'renderer' => 'php'],
         'preview.docara.index' => ['path' => 'previews/templates/index.php', 'renderer' => 'php'],
+        'publisher.docara.page' => ['path' => 'publisher/templates/page.php', 'renderer' => 'php'],
     ];
 
     public function __construct(

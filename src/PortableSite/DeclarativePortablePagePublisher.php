@@ -1,0 +1,186 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Simai\Docara\PortableSite;
+
+use Simai\Docara\Declarative\DeclarativePageResult;
+use Simai\Docara\Declarative\Rendering\TrustedTemplateRegistry;
+use Simai\Docara\Declarative\Rendering\View\PortablePageViewModel;
+use Simai\Docara\Framework\FrameworkAssetPlan;
+use Simai\Docara\Portable\PortableConfigurationException;
+
+final readonly class DeclarativePortablePagePublisher implements PortablePagePublisher
+{
+    public function __construct(
+        private TrustedTemplateRegistry $templates = new TrustedTemplateRegistry,
+    ) {}
+
+    public function id(): string
+    {
+        return 'docara.declarative_page_publisher.v1';
+    }
+
+    public function render(
+        array $page,
+        array $navigation,
+        string $siteTitle,
+        FrameworkAssetPlan $assets,
+        ?DeclarativePageResult $declarative,
+    ): string {
+        if (! $declarative instanceof DeclarativePageResult) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_PRIMARY_INPUT_REQUIRED',
+                "Page [{$page['url']}] has no declarative publication input.",
+            );
+        }
+        $regions = $declarative->artifact->hydration['regions'] ?? null;
+        if (! is_array($regions)
+            || array_keys($regions) !== ['header', 'sidebar', 'main', 'outline', 'footer']
+        ) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_PRIMARY_REGIONS_REQUIRED',
+                "Page [{$page['url']}] has no complete declarative region projection.",
+            );
+        }
+        if (($page['outline'] ?? []) === []) {
+            $regions['outline'] = '';
+        }
+        $regions['sidebar_mobile'] = $this->mobileClone($regions['sidebar']);
+        $regions['outline_mobile'] = $this->mobileClone($regions['outline']);
+        $branding = is_array($page['branding'] ?? null) ? $page['branding'] : [];
+        $brandTitle = (string) ($branding['title'] ?? $siteTitle);
+        $configuredTheme = in_array($page['theme'] ?? null, ['system', 'light', 'dark'], true)
+            ? (string) $page['theme']
+            : 'system';
+        $searchEnabled = ($page['search_enabled'] ?? false) === true
+            && is_string($page['search_runtime_url'] ?? null)
+            && is_string($page['search_index_url'] ?? null);
+        $assetBase = rtrim((string) $page['home_url'], '/') . '/_docara';
+        if (! str_starts_with($assetBase, '/')) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_PRIMARY_ASSET_BASE_INVALID',
+                "Page [{$page['url']}] has an unsafe publisher asset base.",
+            );
+        }
+
+        $view = new PortablePageViewModel(
+            $this->escape((string) $page['locale']),
+            $this->escape((string) ($page['documentation_version'] ?? 'current')),
+            $this->escape((string) $page['title'] . ' — ' . $brandTitle),
+            trim((string) ($page['description'] ?? '')) === ''
+                ? null
+                : $this->escape((string) $page['description']),
+            is_string($branding['favicon'] ?? null)
+                ? $this->escape($branding['favicon'])
+                : null,
+            is_string($branding['favicon_type'] ?? null)
+                ? $this->escape($branding['favicon_type'])
+                : null,
+            $assets->headHtml(),
+            $this->themeBootstrap($configuredTheme),
+            (string) $page['preset'] === 'landing' ? 'landing' : 'docs',
+            $this->escape((string) $page['max_width']),
+            $searchEnabled,
+            $searchEnabled ? $this->escape((string) $page['search_runtime_url']) : null,
+            $searchEnabled ? $this->escape((string) $page['search_index_url']) : null,
+            $this->escape($assetBase . '/declarative-shell.css'),
+            $this->escape($assetBase . '/declarative-shell.js'),
+            $regions,
+            $this->breadcrumbs(is_array($page['breadcrumbs'] ?? null) ? $page['breadcrumbs'] : []),
+            $this->readingLink(is_array($page['previous'] ?? null) ? $page['previous'] : null),
+            $this->readingLink(is_array($page['next'] ?? null) ? $page['next'] : null),
+            $this->themeOptions($configuredTheme),
+            $this->escape($configuredTheme),
+        );
+
+        return $this->templates->render('publisher.docara.page', ['view' => $view]);
+    }
+
+    /** @param list<array<string, mixed>> $items
+     * @return list<array{title:string,url:?string,current:bool}>
+     */
+    private function breadcrumbs(array $items): array
+    {
+        $result = [];
+        $last = count($items) - 1;
+        foreach ($items as $index => $item) {
+            $result[] = [
+                'title' => $this->escape((string) ($item['title'] ?? '')),
+                'url' => is_string($item['url'] ?? null) ? $this->escape($item['url']) : null,
+                'current' => $index === $last,
+            ];
+        }
+
+        return $result;
+    }
+
+    /** @param array<string, mixed>|null $link
+     * @return array{title:string,url:string}|null
+     */
+    private function readingLink(?array $link): ?array
+    {
+        if (! is_string($link['url'] ?? null)) {
+            return null;
+        }
+
+        return [
+            'title' => $this->escape((string) ($link['title'] ?? '')),
+            'url' => $this->escape($link['url']),
+        ];
+    }
+
+    /** @return list<array{value:string,title:string,description:string,checked:bool}> */
+    private function themeOptions(string $configured): array
+    {
+        return [
+            [
+                'value' => 'system',
+                'title' => 'Как в системе',
+                'description' => 'Автоматически следует настройке устройства.',
+                'checked' => $configured === 'system',
+            ],
+            [
+                'value' => 'light',
+                'title' => 'Светлая',
+                'description' => 'Светлое оформление на всех страницах.',
+                'checked' => $configured === 'light',
+            ],
+            [
+                'value' => 'dark',
+                'title' => 'Тёмная',
+                'description' => 'Тёмное оформление на всех страницах.',
+                'checked' => $configured === 'dark',
+            ],
+        ];
+    }
+
+    private function themeBootstrap(string $configured): string
+    {
+        $json = json_encode($configured, JSON_THROW_ON_ERROR);
+
+        return '<script data-docara-theme-bootstrap>(function(){var configured=' . $json
+            . ",key='docara.reader.theme.v1',valid=/^(system|light|dark)$/,volatile='';"
+            . "function frameworkMemory(){return document.documentElement.dataset.docaraFrameworkStorage==='memory'}"
+            . "function stored(){if(frameworkMemory())return'';try{var value=window.localStorage.getItem(key)||'';return valid.test(value)?value:''}catch(error){return''}}"
+            . "function legacy(){var value=(document.cookie.split('; ').find(function(item){return item.indexOf('sf-theme=')===0})||'').split('=')[1]||'';return /^(light|dark)$/.test(value)?value:''}"
+            . "function clearLegacy(){document.cookie='sf-theme=; Path=/; Max-Age=0; SameSite=Lax'}"
+            . "function projectLegacy(mode){if(/^(light|dark)$/.test(mode)){document.cookie='sf-theme='+mode+'; Path=/; Max-Age=31536000; SameSite=Lax';return legacy()===mode}clearLegacy();return legacy()===''}"
+            . "function apply(mode,source){if(!valid.test(mode)){mode='system'}var dark=mode==='dark'||(mode==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);var root=document.documentElement;root.classList.remove('theme-light','theme-dark');root.classList.add(dark?'theme-dark':'theme-light');root.dataset.docaraThemePreference=mode;root.dataset.docaraThemeSource=source;return mode}"
+            . "function preference(){var reader=volatile||stored(),old=reader?'':legacy();return{mode:reader||old||configured,source:reader?'reader':(old?'legacy':'site')}}"
+            . "function set(mode){if(!valid.test(mode)){return{applied:false,persisted:false}}var persisted=false;if(!frameworkMemory()){try{window.localStorage.setItem(key,mode);persisted=window.localStorage.getItem(key)===mode}catch(error){}}var cookiePersisted=projectLegacy(mode);if(/^(light|dark)$/.test(mode)){persisted=persisted||cookiePersisted}volatile=persisted?'':mode;apply(mode,'reader');return{applied:true,persisted:persisted}}"
+            . "function reset(){volatile='';if(!frameworkMemory()){try{window.localStorage.removeItem(key)}catch(error){}}clearLegacy();apply(configured,'site')}"
+            . "var initial=preference();apply(initial.mode,initial.source);window.DocaraReaderTheme={configured:configured,key:key,apply:apply,preference:preference,set:set,reset:reset,syncExternal:function(){volatile='';return preference()},hasOverride:function(){return volatile!==''||stored()!==''||legacy()!==''}};"
+            . 'window.SF_BOOT_CONFIG=window.SF_BOOT_CONFIG||{};window.SF_BOOT_CONFIG.preloader={enabled:false};})();</script>';
+    }
+
+    private function mobileClone(string $html): string
+    {
+        return preg_replace('/\\s+id="[^"]+"/', '', $html) ?? $html;
+    }
+
+    private function escape(string $value): string
+    {
+        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+}

@@ -1,11 +1,11 @@
 track_id: "docara-consolidation"
-status: "ready_for_next_goal"
-owner_skill: "teamlead"
-current_goal: "Declarative Layout -> Region -> Section -> Block -> Smart composition contract accepted."
+status: "completed"
+owner_skill: "docara"
+current_goal: "Declarative primary publisher migration"
 current_stage: "`evidence_recorded`"
-current_workflow: "source/workflow/2026-07-20-declarative-view-composition-contract.md"
-last_completed_batch: "Reverse completion audit, local deployment and browser acceptance."
-next_step: "Plan a separate full-shell migration from the accepted legacy publisher to the declarative contract."
+current_workflow: "source/workflow/2026-07-20-declarative-primary-publisher-migration.md"
+last_completed_batch: "7"
+next_step: "No active batch; select a new goal before push, release or legacy rollback removal."
 blockers: []
 related_tracks: []
 updated_at: "2026-07-20"

@@ -1,33 +1,34 @@
-# Workflow: declarative view composition contract
+# Workflow: declarative primary publisher migration
 
 Date: 2026-07-20
 Status: completed
-Workflow ID: `2026-07-20-declarative-view-composition-contract`
+Workflow ID: `2026-07-20-declarative-primary-publisher-migration`
 Process model: `general_delivery`
 Current state: `evidence_recorded`
 Target state: `evidence_recorded`
 
 ## Goal
 
-Develop the accepted region contract into reusable Layout, Section and Block
-definitions with stable calls, slots, safe Framework View Trees, a complete
-resolved plan and registered Blade leaves.
+Replace the primary portable page publisher with the accepted declarative
+`Layout -> Region -> Section -> Block -> Smart` chain while preserving current
+URLs, capabilities, deterministic builds and explicit rollback.
 
 ## Source Of Truth
 
 - workflow:
-  `source/workflow/2026-07-20-declarative-view-composition-contract.md`;
+  `source/workflow/2026-07-20-declarative-primary-publisher-migration.md`;
 - evidence:
-  `source/workflow/evidence/2026-07-20-declarative-view-composition-contract/`.
+  `source/workflow/evidence/2026-07-20-declarative-primary-publisher-migration/`.
 
 ## Result
 
-The bounded contract is accepted. Docara now resolves stable Section and Block
-instances, named slots, registered Smart calls and safe Framework View Trees
-into `docara.resolved_render_plan.v2`. The exact local build is published at
-`https://docara.test/` and passed static and browser acceptance.
+Primary portable publication now uses
+`Layout -> Region -> Section -> Block -> Smart` for authored pages, landing
+pages and the generated component catalogue. Full PHP/static/deterministic and
+desktop/mobile browser acceptance passed; the exact candidate is published on
+the local test site with an explicit backup and legacy publisher rollback.
 
-## Nonclaim
+## Nonclaims
 
-The accepted legacy renderer remains byte-identical and the primary publisher
-until a later full-shell migration and acceptance goal.
+No push, merge, tag, release, production deploy or readiness claim is part of
+this workflow.

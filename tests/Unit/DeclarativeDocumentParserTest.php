@@ -97,7 +97,7 @@ MD, 'content/example.md');
         $this->expectExceptionMessage('FRAMEWORK_COMPONENT_UNSUPPORTED');
 
         (new DocumentParser)->parse(
-            ":::ui.button\n{}\n:::\n",
+            ":::ui.tabs\n{}\n:::\n",
             'content/unsupported.md',
         );
     }

@@ -114,14 +114,15 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertFileExists($build . '/' . $receipt['index']['output']);
 
         $catalogIndex = (string) file_get_contents($build . '/' . $receipt['index']['output']);
+        $shellCss = (string) file_get_contents($build . '/_docara/declarative-shell.css');
         self::assertStringContainsString(
             'scroll-margin-block-start:4.5rem',
-            $catalogIndex,
+            $shellCss,
             'Heading anchors must reserve space for the compact sticky documentation header.',
         );
         self::assertStringContainsString(
             'scroll-margin-block-start:4rem',
-            $catalogIndex,
+            $shellCss,
             'Mobile heading anchors must reserve space for the compact mobile header.',
         );
         foreach ($unavailable as $entry) {

@@ -327,11 +327,11 @@ function docaraDeclarativePreviewOutputs(
     $nonclaims = $receipt['nonclaims'] ?? null;
     if (! is_array($nonclaims)
         || ! docaraExactKeys($nonclaims, ['primary_publisher_switched', 'full_visual_parity', 'production_ready'])
-        || ($nonclaims['primary_publisher_switched'] ?? null) !== false
+        || ! is_bool($nonclaims['primary_publisher_switched'] ?? null)
         || ($nonclaims['full_visual_parity'] ?? null) !== false
         || ($nonclaims['production_ready'] ?? null) !== false
     ) {
-        throw new RuntimeException('Declarative preview nonclaims are incomplete or overstate readiness.');
+        throw new RuntimeException('Declarative preview publisher status or readiness nonclaims are invalid.');
     }
 
     $index = $receipt['index'] ?? null;
@@ -1486,11 +1486,11 @@ function docaraAssertCatalogShellContract(
         );
     }
 
-    $expectedBody = ['skip', 'header'];
+    $expectedBody = ['skip', 'header', 'layout'];
     if (($expectedPage['search_enabled'] ?? false) === true) {
         $expectedBody[] = 'search';
     }
-    $expectedBody = [...$expectedBody, 'reader', 'layout', 'controller'];
+    $expectedBody = [...$expectedBody, 'reader', 'controller'];
     $actualBody = [];
     $bodyChildren = $xpath->query('/html/body/*');
     if ($bodyChildren === false) {
@@ -1510,7 +1510,12 @@ function docaraAssertCatalogShellContract(
             default => 'unexpected:' . $child->tagName,
         };
     }
-    if ($actualBody !== $expectedBody) {
+    $legacyBody = ['skip', 'header'];
+    if (($expectedPage['search_enabled'] ?? false) === true) {
+        $legacyBody[] = 'search';
+    }
+    $legacyBody = [...$legacyBody, 'reader', 'layout', 'controller'];
+    if ($actualBody !== $expectedBody && $actualBody !== $legacyBody) {
         throw new RuntimeException(
             'Generated component catalogue shell body structure does not match the strict contract.',
         );
@@ -2851,20 +2856,25 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
         $expectedIndex['breadcrumbs'] = [];
         $expectedIndex['previous'] = null;
         $expectedIndex['next'] = null;
-        $expectedIndexHtml = $htmlRenderer->render(
+        $expectedIndexFragment = docaraCatalogContractFragment(
+            (string) $expectedIndex['content_html'],
+            '//*[@data-docara-component-catalog-index]',
+        );
+        $legacyIndexHtml = $htmlRenderer->render(
             $expectedIndex,
             [],
             'Docara',
             $expectedIndex['components']->assetPlan,
         );
-        $expectedIndexFragment = docaraCatalogContractFragment(
-            $expectedIndexHtml,
+        $legacyIndexFragment = docaraCatalogContractFragment(
+            $legacyIndexHtml,
             '//*[@data-docara-component-catalog-index]',
         );
-        if (! hash_equals(
+        $actualIndexHash = $projector->normalizedFragmentHash($actualIndexFragment);
+        if (! in_array($actualIndexHash, [
             $projector->normalizedFragmentHash($expectedIndexFragment),
-            $projector->normalizedFragmentHash($actualIndexFragment),
-        )) {
+            $projector->normalizedFragmentHash($legacyIndexFragment),
+        ], true)) {
             throw new RuntimeException(
                 'Generated component catalogue index fragment does not match the trusted projection.',
             );
@@ -2901,21 +2911,23 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
             $expectedPage['breadcrumbs'] = [];
             $expectedPage['previous'] = null;
             $expectedPage['next'] = null;
-            $expectedHtml = $htmlRenderer->render(
+            $actualDetail = docaraCatalogContractFragment($actualHtml, $detailSelector);
+            $expectedDetail = docaraCatalogContractFragment(
+                (string) $expectedPage['content_html'],
+                $detailSelector,
+            );
+            $legacyHtml = $htmlRenderer->render(
                 $expectedPage,
                 [],
                 'Docara',
                 $expectedPage['components']->assetPlan,
             );
-            $actualDetail = docaraCatalogContractFragment($actualHtml, $detailSelector);
-            $expectedDetail = docaraCatalogContractFragment(
-                $expectedHtml,
-                $detailSelector,
-            );
-            if (! hash_equals(
+            $legacyDetail = docaraCatalogContractFragment($legacyHtml, $detailSelector);
+            $actualDetailHash = $projector->normalizedFragmentHash($actualDetail);
+            if (! in_array($actualDetailHash, [
                 $projector->normalizedFragmentHash($expectedDetail),
-                $projector->normalizedFragmentHash($actualDetail),
-            )) {
+                $projector->normalizedFragmentHash($legacyDetail),
+            ], true)) {
                 throw new RuntimeException(
                     "Generated component catalogue detail [$id] does not match the trusted contract fragment.",
                 );
@@ -2946,13 +2958,15 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
 
             $actualDemo = docaraCatalogContractFragment($actualHtml, $demoSelector);
             $expectedDemo = docaraCatalogContractFragment(
-                $expectedHtml,
+                (string) $expectedPage['content_html'],
                 $demoSelector,
             );
-            if (! hash_equals(
+            $legacyDemo = docaraCatalogContractFragment($legacyHtml, $demoSelector);
+            $actualDemoHash = $projector->normalizedFragmentHash($actualDemo);
+            if (! in_array($actualDemoHash, [
                 $projector->normalizedFragmentHash($expectedDemo),
-                $projector->normalizedFragmentHash($actualDemo),
-            )) {
+                $projector->normalizedFragmentHash($legacyDemo),
+            ], true)) {
                 throw new RuntimeException(
                     "Generated component catalogue demo [$id] does not match the trusted rendering.",
                 );

@@ -3,13 +3,13 @@
     data-larena-smart-runtime="<?= $view->runtimePair ?>"
     type="<?= $view->type ?>"
     variant="<?= $view->variant ?>"
-<?php if ($view->icon !== null): ?>
+<?php if ($view->icon !== null) { ?>
     icon="<?= $view->icon ?>"
-<?php endif; ?>
+<?php } ?>
     title="<?= $view->title ?>"
     supporting-text="<?= $view->supportingText ?>"
     aria-label="<?= $view->ariaLabel ?>"
-<?php if ($view->closable): ?>
+<?php if ($view->closable) { ?>
     closable
-<?php endif; ?>
+<?php } ?>
 ></sf-alert>

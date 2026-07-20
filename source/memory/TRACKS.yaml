@@ -1,6 +1,6 @@
 tracks:
   docara-consolidation:
-    status: "ready_for_next_goal"
-    owner_skill: "teamlead"
-    current_workflow: "source/workflow/2026-07-20-declarative-view-composition-contract.md"
+    status: "completed"
+    owner_skill: "docara"
+    current_workflow: "source/workflow/2026-07-20-declarative-primary-publisher-migration.md"
     last_updated: "2026-07-20"

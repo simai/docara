@@ -3,5 +3,5 @@
   "key": "content.smart",
   "kind": "smart",
   "renderer": "block.smart",
-  "allowed_smart": ["ui.alert"]
+  "allowed_smart": ["ui.alert", "ui.button"]
 }

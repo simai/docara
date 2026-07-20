@@ -13,12 +13,15 @@ Portable режим определяется наличием `docara.json` со
 :::steps
 1. Загрузить и проверить site, section, page и Framework lock.
 2. Разрешить наследование и provenance каждой страницы.
-3. Проверить Markdown-директивы и props по manifest.
-4. Отрендерить Markdown и назначить детерминированные якоря до Smart hydration.
+3. Преобразовать Markdown и Smart-вызовы в типизированный `DocumentAst`.
+4. Разрешить `Layout -> Region -> Section -> Block -> Smart`.
 5. Построить маршруты, каноническую топологию и asset plan.
 6. Получить из одной топологии видимое меню, breadcrumbs и previous/next.
-7. Построить эффективный каталог и сгенерировать его index/detail страницы.
-8. Записать HTML, ассеты, search index, catalogue receipt и resolved page plans.
+7. Отрендерить regions через trusted templates и immutable view models.
+8. Построить эффективный каталог и сгенерировать его index/detail страницы.
+9. Собрать полный документ через зарегистрированный publisher template.
+10. Записать кандидатный HTML, общие shell assets, search index, receipts и plans.
+11. Только после полного успеха транзакционно заменить действующий `build_*`.
 
 :::
 
@@ -46,6 +49,10 @@ Smart-компонентов. Он назначает H1–H6 уникальны
 
 Файлы являются источником истины; база данных, runtime CRUD, роли и workflow не
 входят в standalone Docara.
+
+Полный документ находится в `resources/publisher/templates/page.php`;
+продуктовые Smart-шаблоны — в `resources/smart`; CSS/JS оболочки —
+в `resources/portable`. Builder не содержит HTML, CSS или client runtime.
 
 Пользовательская сборка остаётся PHP-only. Browser JavaScript в готовом
 статическом сайте не означает, что автору нужен Node.js; Vite используется

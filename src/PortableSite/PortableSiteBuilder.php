@@ -145,6 +145,7 @@ final readonly class PortableSiteBuilder
             ];
         }
 
+        $authoredPages = $pages;
         $catalogBasePlan = $loader->resolveGeneratedBase(
             $contentRoot . '/components/catalog/index.md',
         );
@@ -183,6 +184,41 @@ final readonly class PortableSiteBuilder
             $outputs[$catalogPage['output']] = '@docara/component-catalog';
             $catalogPage['documentation_version'] = $documentationVersion;
             $pages[] = $catalogPage;
+        }
+
+        $declarativeExampleProjector = new PortableDeclarativeExampleProjector;
+        $declarativeExampleProjection = null;
+        if ($declarativeExampleProjector->exists($root)) {
+            $exampleBasePlan = $loader->resolveGeneratedBase(
+                $contentRoot . '/examples/index.md',
+            );
+            if (CanonicalJson::encode($exampleBasePlan->frameworkLock) !== $frameworkLockCanonical) {
+                throw new PortableConfigurationException(
+                    'FRAMEWORK_LOCK_CHANGED_DURING_BUILD',
+                    'The Framework lock changed while declarative examples were being resolved.',
+                );
+            }
+            $declarativeExampleProjection = $declarativeExampleProjector->project(
+                root: $root,
+                authoredPages: $authoredPages,
+                runtime: $runtime,
+                basePlan: $exampleBasePlan,
+                contentRoot: $contentRoot,
+                baseUrl: (string) ($site['base_url'] ?? '/'),
+                homeUrl: $this->homeUrl((string) ($site['base_url'] ?? '/')),
+                reservedDocumentIds: $this->html->reservedDocumentIds(),
+            );
+            foreach ($declarativeExampleProjection['pages'] as $examplePage) {
+                if (isset($outputs[$examplePage['output']])) {
+                    throw new PortableConfigurationException(
+                        'DECLARATIVE_EXAMPLE_ROUTE_COLLISION',
+                        "Page [{$outputs[$examplePage['output']]}] shadows declarative example route [{$examplePage['output']}].",
+                    );
+                }
+                $outputs[$examplePage['output']] = '@docara/declarative-examples';
+                $examplePage['documentation_version'] = $documentationVersion;
+                $pages[] = $examplePage;
+            }
         }
 
         foreach ($pages as $page) {
@@ -258,6 +294,17 @@ final readonly class PortableSiteBuilder
                 $catalogReceiptPath,
                 $this->prettyCanonicalJson($componentCatalogProjection['receipt']),
             );
+            if (is_array($declarativeExampleProjection)) {
+                $exampleReceipt = $this->prettyCanonicalJson($declarativeExampleProjection['receipt']);
+                $this->files->put(
+                    rtrim($destination, '/\\') . '/.docara/declarative-example-pages.json',
+                    $exampleReceipt,
+                );
+                $this->files->put(
+                    $docaraOutputDirectory . '/declarative-examples.json',
+                    $exampleReceipt,
+                );
+            }
             foreach ($componentCatalogProjector->assets() as $relative => $bytes) {
                 $assetPath = rtrim($destination, '/\\') . '/' . $relative;
                 $this->files->ensureDirectoryExists(dirname($assetPath));
@@ -300,6 +347,17 @@ final readonly class PortableSiteBuilder
                         ? $page['component_catalog_next']
                         : null;
                 }
+                if (isset($page['declarative_example_kind'])) {
+                    $page['breadcrumbs'] = $page['reading_breadcrumbs'] === true
+                        ? $page['declarative_example_breadcrumbs']
+                        : [];
+                    $page['previous'] = $page['reading_previous_next'] === true
+                        ? $page['declarative_example_previous']
+                        : null;
+                    $page['next'] = $page['reading_previous_next'] === true
+                        ? $page['declarative_example_next']
+                        : null;
+                }
                 if ($page['reading_toc'] !== true) {
                     $page['outline'] = [];
                 }
@@ -307,10 +365,13 @@ final readonly class PortableSiteBuilder
                     $navigation,
                     ($page['component_catalog_kind'] ?? null) === 'detail'
                         ? (string) $page['component_catalog_index_url']
-                        : (string) $page['url'],
+                        : (($page['declarative_example_kind'] ?? null) === 'detail'
+                            ? (string) $page['declarative_example_index_url']
+                            : (string) $page['url']),
                 );
                 if (($page['declarative_supported'] ?? false) === true
                     || isset($page['component_catalog_kind'])
+                    || isset($page['declarative_example_kind'])
                 ) {
                     /** @var ResolvedPagePlan $declarativePlan */
                     $declarativePlan = $page['plan'];
@@ -335,7 +396,9 @@ final readonly class PortableSiteBuilder
                     $layoutConfiguration = is_array($declarativePlan->configuration['layout'] ?? null)
                         ? $declarativePlan->configuration['layout']
                         : [];
-                    $declarative = isset($page['component_catalog_kind'])
+                    $generatedProjection = isset($page['component_catalog_kind'])
+                        || isset($page['declarative_example_kind']);
+                    $declarative = $generatedProjection
                         ? $declarativePipeline->buildGenerated(
                             $declarativeArguments[0],
                             $declarativeArguments[1],
@@ -357,7 +420,7 @@ final readonly class PortableSiteBuilder
                             $layoutConfiguration,
                             $declarativePlan->provenance,
                         );
-                    if (isset($page['component_catalog_kind'])) {
+                    if ($generatedProjection) {
                         $generatedHash = hash('sha256', (string) $page['content_html']);
                         $declarativeHash = hash(
                             'sha256',
@@ -400,7 +463,7 @@ final readonly class PortableSiteBuilder
                                 : 'fail',
                         ],
                     ];
-                    if (! isset($page['component_catalog_kind'])) {
+                    if (! $generatedProjection) {
                         $previewUrl = $previewRoutes->previewUrl((string) $page['url']);
                         $previewOutput = $previewRoutes->previewOutput((string) $page['url']);
                         if ($previewUrl === null || $previewOutput === null) {

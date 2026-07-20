@@ -65,6 +65,39 @@ final class StaticBuildVerifierTest extends TestCase
     }
 
     #[Test]
+    public function declarative_example_receipt_and_rendered_exact_sources_are_verified_fail_closed(): void
+    {
+        $site = $this->tmpPath('declarative-example-site');
+        $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $site);
+        $this->installDeclarativeExampleFixture($site);
+        $build = $site . '/build_local';
+        (new PortableSiteBuilder(
+            new Filesystem,
+            new PortableMarkdownRenderer,
+            new PortableHtmlRenderer,
+        ))->build($site, $build);
+
+        $valid = $this->verify($build, normalizeBuildIdentity: false);
+        self::assertSame(0, $valid->getExitCode(), $valid->getErrorOutput() . $valid->getOutput());
+
+        $publicPath = $build . '/_docara/declarative-examples.json';
+        $privatePath = $build . '/.docara/declarative-example-pages.json';
+        $receipt = $this->readJson($publicPath);
+        $receipt['pages'][0]['sources'][1]['sha256'] = str_repeat('0', 64);
+        $receipt['content_sha256'] = hash('sha256', CanonicalJson::encode([
+            'index' => $receipt['index'],
+            'pages' => $receipt['pages'],
+        ]));
+        $this->writeJson($publicPath, $receipt);
+        $this->writeJson($privatePath, $receipt);
+
+        $tampered = $this->verify($build, normalizeBuildIdentity: false);
+        self::assertSame(1, $tampered->getExitCode());
+        self::assertStringContainsString('@declarative-examples-contract', $tampered->getOutput());
+        self::assertStringContainsString('does not match rendered exact code', $tampered->getOutput());
+    }
+
+    #[Test]
     public function nested_deployment_base_is_removed_only_from_matching_absolute_local_references(): void
     {
         $build = $this->tmpPath('nested-build');
@@ -1357,6 +1390,44 @@ final class StaticBuildVerifierTest extends TestCase
         )->build();
         $this->filesystem->ensureDirectoryExists($build . '/_docara');
         $this->writeJson($build . '/_docara/component-catalog.json', $catalog);
+    }
+
+    private function installDeclarativeExampleFixture(string $site): void
+    {
+        $this->filesystem->ensureDirectoryExists($site . '/examples');
+        $this->filesystem->ensureDirectoryExists($site . '/content/example-results');
+        $this->writeJson($site . '/content/example-results/section.json', [
+            'schema' => 'docara.section.v1',
+            'navigation' => ['hidden' => true],
+            'search' => ['indexed' => false],
+        ]);
+        file_put_contents(
+            $site . '/content/example-results/button.md',
+            "# Button\n\n:::ui.button\n{\"text\":\"Continue\",\"preset\":\"primary\"}\n:::\n",
+        );
+        $this->writeJson($site . '/content/example-results/button.page.json', [
+            'schema' => 'docara.page.v1',
+            'title' => 'Button',
+        ]);
+        $this->writeJson($site . '/examples/smart-button.json', [
+            'schema' => 'docara.declarative_example.v1',
+            'id' => 'smart-button',
+            'title' => 'Smart Button',
+            'description' => 'A real Smart component example.',
+            'category' => 'smart',
+            'order' => 10,
+            'result_page' => 'content/example-results/button.md',
+            'preview' => 'compact',
+            'sources' => [[
+                'label' => 'Markdown',
+                'path' => 'content/example-results/button.md',
+                'language' => 'markdown',
+            ], [
+                'label' => 'Page settings',
+                'path' => 'content/example-results/button.page.json',
+                'language' => 'json',
+            ]],
+        ]);
     }
 
     /** @return array<string, array<string, mixed>> */

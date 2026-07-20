@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.check",
+  "quality_control_id": "human_centered_simplicity",
+  "review": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/human-centered-simplicity.json",
+  "contract_source": "graph/specs/objects/policy.mirai_graph.human-centered-simplicity.json",
+  "applicable": true,
+  "claimed_verdict": "PASS",
+  "verdict": "PASS",
+  "summary": {
+    "necessity_item_count": 4,
+    "changed_surface_inventory_mode": "artifact_comparison",
+    "changed_surface_file_count": 1,
+    "changed_surface_inventory_hash": "9e127eaf9f0a5c8f46f5e25f5b87830e5f8ea2c352d418655aa1117de1ca107b",
+    "changed_surface_repository_count": 1,
+    "detected_protected_categories": [
+      "data_integrity"
+    ],
+    "challenged_item_count": 4,
+    "removed_item_count": 0,
+    "merged_item_count": 0,
+    "progressive_item_count": 1,
+    "complexity_measure_count": 2,
+    "scenario_count": 2,
+    "protected_complexity_review_count": 8,
+    "tester_evidence_path_count": 3,
+    "tester_evidence_fingerprint_count": 3,
+    "tester_surface_classification_count": 4,
+    "residual_complexity_count": 1,
+    "protected_category_count": 8
+  },
+  "warnings": [],
+  "blockers": [],
+  "status": "success"
+}

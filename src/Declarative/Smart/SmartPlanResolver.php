@@ -7,6 +7,7 @@ namespace Simai\Docara\Declarative\Smart;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Document\SmartCallNode;
 use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
+use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkConsumerPolicy;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestContract;
@@ -36,17 +37,33 @@ final readonly class SmartPlanResolver
         $manifest = $this->manifests->get($call->smart);
         $view = $this->definitions->smartView($call->smart, $call->view);
         $this->consumerPolicy->assertNarrowing($call->smart, $manifest);
-        $this->consumerPolicy->assertAuthorProps($call->smart, $call->props);
+        $authorProps = $call->props;
+        $preset = $authorProps['preset'] ?? null;
+        unset($authorProps['preset']);
+        $this->consumerPolicy->assertAuthorProps($call->smart, $authorProps);
+        if ($preset !== null && ! is_string($preset)) {
+            throw new FrameworkComponentException('FRAMEWORK_PRESET_INVALID', $call->smart);
+        }
 
         $props = $manifest['atlas']['example_props'];
-        $props = array_replace($props, $call->props);
+        if ($preset !== null) {
+            $presetProps = $manifest['presets'][$preset]['props'] ?? null;
+            if (! is_array($presetProps)) {
+                throw new FrameworkComponentException(
+                    'FRAMEWORK_PRESET_UNKNOWN',
+                    $call->smart . ':' . $preset,
+                );
+            }
+            $props = array_replace($props, $presetProps);
+        }
+        $props = array_replace($props, $authorProps);
         foreach ($this->manifestContract->mirrorMap($call->smart, $manifest) as $source => $targets) {
-            if (! array_key_exists($source, $call->props)) {
+            if (! array_key_exists($source, $authorProps)) {
                 continue;
             }
             foreach ($targets as $target) {
-                if (! array_key_exists($target, $call->props)) {
-                    $props[$target] = $call->props[$source];
+                if (! array_key_exists($target, $authorProps)) {
+                    $props[$target] = $authorProps[$source];
                 }
             }
         }

@@ -1,0 +1,14 @@
+{
+  "schema": "docara.declarative_example.v1",
+  "id": "smart-button",
+  "title": "Smart-компонент Button",
+  "description": "Кнопка с проверяемыми параметрами вместо произвольной HTML-разметки.",
+  "category": "smart",
+  "order": 70,
+  "result_page": "content/demonstrator-results/smart-button.md",
+  "preview": "compact",
+  "sources": [
+    {"label": "Markdown и вызов Smart-компонента", "path": "content/demonstrator-results/smart-button.md", "language": "markdown"},
+    {"label": "Настройки страницы", "path": "content/demonstrator-results/smart-button.page.json", "language": "json"}
+  ]
+}

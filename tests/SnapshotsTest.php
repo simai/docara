@@ -53,7 +53,11 @@ class SnapshotsTest extends PHPUnit
         $jigsaw = realpath(implode('/', array_filter([__DIR__, '..', 'docara'])));
         $arguments = static::$arguments[$name] ?? [];
 
-        $build = new Process(array_merge([PHP_BINARY, $jigsaw, 'build'], $arguments, ['-vvv']), static::source($name));
+        $build = new Process(array_merge(
+            [PHP_BINARY, '-d', 'date.timezone=UTC', $jigsaw, 'build'],
+            $arguments,
+            ['-vvv'],
+        ), static::source($name));
         $build->run();
 
         if (! $build->isSuccessful()) {

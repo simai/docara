@@ -1,11 +1,11 @@
 track_id: "docara-consolidation"
 status: "completed"
 owner_skill: "docara"
-current_goal: "Declarative primary publisher migration"
-current_stage: "`evidence_recorded`"
-current_workflow: "source/workflow/2026-07-20-declarative-primary-publisher-migration.md"
-last_completed_batch: "7"
-next_step: "No active batch; select a new goal before push, release or legacy rollback removal."
+current_goal: "Create a universal Docara demonstrator for declarative layouts, regions, inheritance, presets and Smart components."
+current_stage: "`review_ready`"
+current_workflow: "source/workflow/2026-07-21-declarative-layout-demonstrator.md"
+last_completed_batch: "Batch 7: reverse audit, simplicity verdict, project memory and commit"
+next_step: "Choose the next product goal after reviewing the accepted catalogue at /examples/."
 blockers: []
 related_tracks: []
-updated_at: "2026-07-20"
+updated_at: "2026-07-21"

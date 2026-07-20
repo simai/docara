@@ -1,0 +1,14 @@
+{
+  "schema": "docara.declarative_example.v1",
+  "id": "regions-disabled",
+  "title": "Отключение областей",
+  "description": "Показывает, как убрать sidebar и outline без пустых контейнеров и лишней мобильной навигации.",
+  "category": "regions",
+  "order": 20,
+  "result_page": "content/demonstrator-results/regions-disabled.md",
+  "preview": "normal",
+  "sources": [
+    {"label": "Markdown страницы", "path": "content/demonstrator-results/regions-disabled.md", "language": "markdown"},
+    {"label": "Настройки страницы", "path": "content/demonstrator-results/regions-disabled.page.json", "language": "json"}
+  ]
+}

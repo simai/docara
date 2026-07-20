@@ -26,8 +26,9 @@
 4. [Проверьте наследование и `$reset`](/authoring/inheritance/).
 5. [Выберите `docs` или `landing`](/authoring/layout-and-navigation/).
 6. При изменении URL [объявите redirect](/authoring/redirects/).
-7. При необходимости [найдите компонент](/components/catalog/).
-8. [Соберите и проверьте результат](/build/verify/).
+7. [Сравните живые макеты и их точные исходники](/examples/).
+8. При необходимости [найдите компонент](/components/catalog/).
+9. [Соберите и проверьте результат](/build/verify/).
 
 ## Не редактируйте output
 

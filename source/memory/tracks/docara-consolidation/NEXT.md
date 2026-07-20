@@ -1,16 +1,23 @@
-# Track closed
+# Next Step
 
 ## Where We Stopped
 
-Workflow completed:
+The declarative layout demonstrator is accepted and published locally at
+`https://docara.test/examples/`. Its workflow and evidence are stored in:
 
-- `source/workflow/2026-07-20-declarative-primary-publisher-migration.md`
-- primary portable publisher is declarative;
-- exact accepted build is served at `https://docara.test/`;
-- legacy publisher and local backup remain available for rollback;
-- no push, merge, tag, release or production deployment was performed.
+- `source/workflow/2026-07-21-declarative-layout-demonstrator.md`;
+- `source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/`.
+
+## Result
+
+Seven examples cover region composition and disablement, inherited settings,
+the `docs` and `landing` presets, and two Smart components. The same primary
+generator produces the live result and the exact source catalogue.
 
 ## Next Meaningful Goal
 
-Not selected. A public push/release or removal of the legacy rollback requires
-a separate goal and its own acceptance boundary.
+Review the catalogue as a product surface, then choose one bounded extension:
+broader region content/branding recipes, a larger Smart-component example
+corpus, or preparation of the branch for independent developer review.
+
+No push, release or production-readiness claim is part of the completed goal.

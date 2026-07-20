@@ -19,6 +19,8 @@ final readonly class TrustedTemplateRegistry
         'preview.docara.page' => ['path' => 'previews/templates/page.php', 'renderer' => 'php'],
         'preview.docara.index' => ['path' => 'previews/templates/index.php', 'renderer' => 'php'],
         'publisher.docara.page' => ['path' => 'publisher/templates/page.php', 'renderer' => 'php'],
+        'demonstrator.docara.index' => ['path' => 'demonstrator/templates/index.php', 'renderer' => 'php'],
+        'demonstrator.docara.detail' => ['path' => 'demonstrator/templates/detail.php', 'renderer' => 'php'],
     ];
 
     public function __construct(

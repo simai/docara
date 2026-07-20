@@ -1,0 +1,13 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Preset landing",
+  "description": "Сфокусированный макет без документационной оболочки.",
+  "preset": "landing",
+  "layout": {
+    "max_width": "wide"
+  },
+  "search": {
+    "enabled": false,
+    "indexed": false
+  }
+}

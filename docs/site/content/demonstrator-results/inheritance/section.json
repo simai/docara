@@ -1,0 +1,11 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Наследуемый раздел",
+  "layout": {
+    "max_width": "compact"
+  },
+  "reading": {
+    "toc": false,
+    "previous_next": false
+  }
+}

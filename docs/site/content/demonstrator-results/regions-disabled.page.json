@@ -1,0 +1,12 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Отключение необязательных областей",
+  "description": "Sidebar и outline отключены без пустых оболочек.",
+  "layout": {
+    "max_width": "normal",
+    "regions": {
+      "sidebar": {"enabled": false},
+      "outline": {"enabled": false}
+    }
+  }
+}

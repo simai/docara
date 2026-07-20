@@ -30,8 +30,12 @@
   компонентах.
 - `/components/catalog/` генерируется при сборке и является единственным
   детальным справочником компонентов.
+- `docs/site/examples/*.json` связывает реальные скрытые Markdown-страницы с
+  `/examples/`; detail-поверхность показывает живой результат и точные
+  исходные файлы без второго renderer.
 - `_docara/component-catalog.json` и
-  `.docara/resolved-page-plans.json` — диагностические результаты, а не
+  `.docara/resolved-page-plans.json`,
+  `_docara/declarative-examples.json` — диагностические результаты, а не
   редактируемые источники.
 
 Не создавайте ручную страницу с копией параметров, состояний или ограничений

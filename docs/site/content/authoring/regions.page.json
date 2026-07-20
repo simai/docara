@@ -4,15 +4,5 @@
   "description": "Как включать, отключать и декларативно наполнять header, sidebar, main, outline и footer.",
   "navigation": {
     "order": 25
-  },
-  "layout": {
-    "regions": {
-      "sidebar": {
-        "enabled": false
-      },
-      "outline": {
-        "enabled": false
-      }
-    }
   }
 }

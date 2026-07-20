@@ -24,7 +24,7 @@
         <div class="docara-header-row flex items-center content-main-between gap-2 p-1">
             <?= $view->regions['header'] ?>
             <div class="docara-header-actions flex items-center gap-1">
-<?php if ($view->preset === 'docs') { ?>
+<?php if ($view->preset === 'docs' && $view->regions['sidebar'] !== '') { ?>
                 <button type="button" data-docara-sheet-trigger aria-haspopup="dialog" aria-controls="docara-mobile-navigation" aria-expanded="false" class="docara-mobile-navigation-trigger sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-2 radius-default" aria-label="Открыть разделы документации">
                     <sf-icon icon="menu" aria-hidden="true"></sf-icon>
                 </button>
@@ -41,7 +41,7 @@
                 </button>
             </div>
         </div>
-<?php if ($view->preset === 'docs') { ?>
+<?php if ($view->preset === 'docs' && $view->regions['sidebar'] !== '') { ?>
         <dialog id="docara-mobile-navigation" data-docara-sheet data-docara-transient-dialog class="docara-mobile-sheet docara-mobile-navigation bg-surface-0 p-0 color-on-surface" aria-labelledby="docara-mobile-navigation-title">
             <div class="docara-mobile-sheet-header flex items-center content-main-between gap-2 p-2 border-bottom-1 border-outline-variant">
                 <h2 id="docara-mobile-navigation-title" class="m-0 weight-7">Разделы</h2>
@@ -58,8 +58,10 @@
         <article class="docara-content docara-prose flex flex-col gap-2" data-width="<?= $view->maxWidth ?>"><?= $view->regions['main'] ?></article>
     </main>
 <?php } else { ?>
-    <div class="docara-docs-layout gap-0" data-outline="<?= $view->regions['outline'] === '' ? 'false' : 'true' ?>">
+    <div class="docara-docs-layout gap-0" data-sidebar="<?= $view->regions['sidebar'] === '' ? 'false' : 'true' ?>" data-outline="<?= $view->regions['outline'] === '' ? 'false' : 'true' ?>">
+<?php if ($view->regions['sidebar'] !== '') { ?>
         <aside class="docara-sidebar p-2" data-docara-region="sidebar"><?= $view->regions['sidebar'] ?></aside>
+<?php } ?>
         <div class="docara-reading-column flex flex-col gap-2 p-3">
 <?php if ($view->breadcrumbs !== []) { ?>
             <nav data-docara-breadcrumbs data-max-items="<?= count($view->breadcrumbs) ?>" class="sf-breadcrumbs flex" aria-label="Хлебные крошки">

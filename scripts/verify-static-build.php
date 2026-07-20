@@ -464,6 +464,163 @@ function docaraDeclarativePreviewOutputs(
     return $outputs;
 }
 
+/** @param list<array<string, mixed>> $pageRecords */
+function docaraDeclarativeExampleOutputs(
+    string $root,
+    string $deploymentBase,
+    array $pageRecords,
+): void {
+    $publicPath = $root . '/_docara/declarative-examples.json';
+    $privatePath = $root . '/.docara/declarative-example-pages.json';
+    $publicExists = file_exists($publicPath) || is_link($publicPath);
+    $privateExists = file_exists($privatePath) || is_link($privatePath);
+    if (! $publicExists && ! $privateExists) {
+        return;
+    }
+    if (! $publicExists || ! $privateExists
+        || ! docaraSafeRegularFile($publicPath)
+        || ! docaraSafeRegularFile($privatePath)
+    ) {
+        throw new RuntimeException('Declarative example receipts are incomplete or unsafe.');
+    }
+    $publicBytes = file_get_contents($publicPath);
+    $privateBytes = file_get_contents($privatePath);
+    if (! is_string($publicBytes)
+        || ! is_string($privateBytes)
+        || ! hash_equals(hash('sha256', $publicBytes), hash('sha256', $privateBytes))
+    ) {
+        throw new RuntimeException('Public and private declarative example receipts differ.');
+    }
+    $receipt = json_decode($publicBytes, true, 512, JSON_THROW_ON_ERROR);
+    if (! is_array($receipt)
+        || ! docaraExactKeys($receipt, ['schema', 'version', 'content_sha256', 'index', 'pages'])
+        || ($receipt['schema'] ?? null) !== 'docara.declarative_examples.v1'
+        || ($receipt['version'] ?? null) !== 1
+        || ! is_array($receipt['index'] ?? null)
+        || ! docaraExactKeys($receipt['index'], ['route', 'output'])
+        || ! is_array($receipt['pages'] ?? null)
+        || ! array_is_list($receipt['pages'])
+        || $receipt['pages'] === []
+    ) {
+        throw new RuntimeException('Declarative example receipt has an unsupported contract.');
+    }
+    $core = ['index' => $receipt['index'], 'pages' => $receipt['pages']];
+    if (! is_string($receipt['content_sha256'] ?? null)
+        || ! hash_equals(hash('sha256', docaraCanonicalJson($core)), $receipt['content_sha256'])
+    ) {
+        throw new RuntimeException('Declarative example receipt content hash is invalid.');
+    }
+
+    $manifestByOutput = [];
+    $outputByRoute = [];
+    foreach ($pageRecords as $page) {
+        if (is_array($page)
+            && is_string($page['output'] ?? null)
+            && is_string($page['url'] ?? null)
+        ) {
+            $manifestByOutput[$page['output']] = $page['url'];
+            $outputByRoute[$page['url']] = $page['output'];
+        }
+    }
+    $expectedIndexRoute = rtrim($deploymentBase, '/') . '/examples/';
+    if ($receipt['index']['route'] !== $expectedIndexRoute
+        || $receipt['index']['output'] !== 'examples/index.html'
+        || ($manifestByOutput['examples/index.html'] ?? null) !== $expectedIndexRoute
+        || ! docaraSafeRegularFile($root . '/examples/index.html')
+    ) {
+        throw new RuntimeException('Declarative example index does not match the primary page manifest.');
+    }
+
+    $ids = [];
+    $outputs = [];
+    foreach ($receipt['pages'] as $index => $page) {
+        if (! is_array($page)
+            || ! docaraExactKeys($page, [
+                'id', 'category', 'descriptor', 'descriptor_sha256', 'route',
+                'output', 'result_page', 'result_route', 'sources',
+            ])
+            || ! is_string($page['id'] ?? null)
+            || preg_match('/\A[a-z][a-z0-9]*(?:-[a-z0-9]+)*\z/D', $page['id']) !== 1
+            || isset($ids[$page['id']])
+            || ! is_string($page['output'] ?? null)
+            || ! docaraCatalogSafePath($page['output'])
+            || isset($outputs[$page['output']])
+            || ! is_string($page['route'] ?? null)
+            || ($manifestByOutput[$page['output']] ?? null) !== $page['route']
+            || ! is_string($page['result_route'] ?? null)
+            || ! isset($outputByRoute[$page['result_route']])
+            || ! is_array($page['sources'] ?? null)
+            || ! array_is_list($page['sources'])
+            || $page['sources'] === []
+        ) {
+            throw new RuntimeException("Declarative example record [$index] is invalid.");
+        }
+        $ids[$page['id']] = true;
+        $outputs[$page['output']] = true;
+        $htmlPath = $root . '/' . $page['output'];
+        if (! docaraSafeRegularFile($htmlPath)) {
+            throw new RuntimeException("Declarative example detail [{$page['id']}] is missing or unsafe.");
+        }
+        $html = file_get_contents($htmlPath);
+        if (! is_string($html)) {
+            throw new RuntimeException("Declarative example detail [{$page['id']}] cannot be read.");
+        }
+        $document = new DOMDocument('1.0', 'UTF-8');
+        $previous = libxml_use_internal_errors(true);
+        $loaded = $document->loadHTML(
+            '<?xml encoding="UTF-8">' . $html,
+            LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_COMPACT,
+        );
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+        if ($loaded !== true) {
+            throw new RuntimeException("Declarative example detail [{$page['id']}] is invalid HTML.");
+        }
+        $xpath = new DOMXPath($document);
+        $iframes = $xpath->query('//*[@data-docara-demonstrator-detail]//iframe');
+        if ($iframes === false
+            || $iframes->length !== 1
+            || ! $iframes->item(0) instanceof DOMElement
+            || $iframes->item(0)->getAttribute('src') !== $page['result_route']
+        ) {
+            throw new RuntimeException("Declarative example detail [{$page['id']}] has a wrong live result.");
+        }
+        $sourceNodes = $xpath->query(
+            '//*[@data-docara-demonstrator-detail]//article[header/code and pre/code]',
+        );
+        $renderedSources = [];
+        foreach ($sourceNodes ?: [] as $sourceNode) {
+            if (! $sourceNode instanceof DOMElement) {
+                continue;
+            }
+            $pathNode = $xpath->query('./header/code', $sourceNode)?->item(0);
+            $codeNode = $xpath->query('./pre/code', $sourceNode)?->item(0);
+            if ($pathNode instanceof DOMElement && $codeNode instanceof DOMElement) {
+                $renderedSources[$pathNode->textContent] = hash('sha256', $codeNode->textContent);
+            }
+        }
+        foreach ($page['sources'] as $sourceIndex => $source) {
+            if (! is_array($source)
+                || ! docaraExactKeys($source, ['path', 'sha256'])
+                || ! is_string($source['path'] ?? null)
+                || ! docaraCatalogSafePath($source['path'])
+                || ! is_string($source['sha256'] ?? null)
+                || preg_match('/\A[a-f0-9]{64}\z/D', $source['sha256']) !== 1
+                || ($renderedSources[$source['path']] ?? null) !== $source['sha256']
+            ) {
+                throw new RuntimeException(
+                    "Declarative example source [{$page['id']}:$sourceIndex] does not match rendered exact code.",
+                );
+            }
+        }
+        if (($page['sources'][0]['path'] ?? null) !== $page['descriptor']
+            || ($page['sources'][0]['sha256'] ?? null) !== $page['descriptor_sha256']
+        ) {
+            throw new RuntimeException("Declarative example descriptor [{$page['id']}] is inconsistent.");
+        }
+    }
+}
+
 function docaraCatalogStringList(mixed $value, bool $nonEmpty = false): bool
 {
     if (! is_array($value)
@@ -1984,6 +2141,19 @@ if ($manifestError === null) {
     }
 }
 
+$declarativeExamplesError = null;
+if ($manifestError === null) {
+    try {
+        docaraDeclarativeExampleOutputs(
+            $root,
+            $deploymentBase,
+            $manifestPageRecords,
+        );
+    } catch (Throwable $exception) {
+        $declarativeExamplesError = $exception->getMessage();
+    }
+}
+
 $htmlBuildIdentityProblems = [];
 if ($manifestError === null) {
     foreach ($manifestPageRecords as $page) {
@@ -2069,6 +2239,13 @@ if ($manifestError !== null) {
             'page' => '@build',
             'reference' => '@declarative-preview',
             'target' => $declarativePreviewError,
+        ];
+    }
+    if ($declarativeExamplesError !== null) {
+        $broken[] = [
+            'page' => '@build',
+            'reference' => '@declarative-examples-contract',
+            'target' => $declarativeExamplesError,
         ];
     }
     $actualHtmlOutputs = array_map(

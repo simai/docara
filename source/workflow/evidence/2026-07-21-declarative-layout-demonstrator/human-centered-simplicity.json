@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.review",
+  "quality_control_id": "human_centered_simplicity",
+  "applicable": true,
+  "task": "Создать в Docara универсальный демонстратор декларативных макетов: отдельные примеры включения, отключения и наполнения областей, наследования настроек, разных layout preset и Smart-компонентов. Каждый пример должен собираться тем же основным генератором, иметь исходный Markdown/JSON, показывать результат и код конфигурации, не нарушать навигацию основной документации и проходить статическую и браузерную проверку.",
+  "primary_user_outcome": {
+    "id": "UO-DOCARA-DEMO-1",
+    "actor": "автор Docara",
+    "job": "найти нужную возможность, увидеть настоящий результат и скопировать точные минимальные исходники",
+    "success_condition": "один каталог объясняет семь сценариев без изучения внутреннего PHP-кода"
+  },
+  "changed_surface_inventory": {
+    "mode": "artifact_comparison",
+    "baseline_ref": "declarative-demonstrator:before",
+    "target_ref": "declarative-demonstrator:after",
+    "diff_sha256": "9e127eaf9f0a5c8f46f5e25f5b87830e5f8ea2c352d418655aa1117de1ca107b",
+    "evidence_paths": [
+      "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"
+    ],
+    "files": [{
+      "path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md",
+      "surface_ids": ["catalog", "detail", "receipt", "safety"]
+    }]
+  },
+  "necessity_map": [
+    {
+      "id": "catalog",
+      "surface_type": "screen",
+      "description": "Один список задач с названием, категорией и назначением примера",
+      "disposition": "retain",
+      "disclosure": "visible",
+      "justification": {"type": "user_outcome", "ref": "UO-DOCARA-DEMO-1"}
+    },
+    {
+      "id": "detail",
+      "surface_type": "screen",
+      "description": "Generic detail с живым результатом и точными исходными файлами",
+      "disposition": "retain",
+      "disclosure": "progressive",
+      "justification": {"type": "user_outcome", "ref": "UO-DOCARA-DEMO-1"}
+    },
+    {
+      "id": "receipt",
+      "surface_type": "protective_control",
+      "description": "Machine-readable binding маршрутов и SHA-256 показанных источников",
+      "disposition": "retain",
+      "disclosure": "internal",
+      "justification": {"type": "data_integrity", "ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"}
+    },
+    {
+      "id": "safety",
+      "surface_type": "protective_control",
+      "description": "Fail-closed schema, path, symlink, collision and destination guards",
+      "disposition": "retain",
+      "disclosure": "internal",
+      "justification": {"type": "security", "ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"}
+    }
+  ],
+  "removal_review": {
+    "challenged_ids": ["catalog", "detail", "receipt", "safety"],
+    "removed_ids": [],
+    "merged_ids": [],
+    "summary": "В каталоге оставлены только выбор задачи и короткое назначение; результат и код перенесены на одну generic detail-страницу, защитные проверки скрыты внутри сборки."
+  },
+  "simplest_complete_alternative": "Один генерируемый каталог, одна generic detail-страница и один JSON-дескриптор на реальную скрытую Markdown-страницу.",
+  "progressive_disclosure": {
+    "required": true,
+    "strategy": "Каталог показывает только задачу; detail сначала показывает результат, затем сгруппированные точные источники.",
+    "discoverability_evidence": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md",
+    "not_required_reason": ""
+  },
+  "complexity_delta": [
+    {
+      "measure": "handwritten_detail_templates_per_example",
+      "before": 1,
+      "after": 0,
+      "unit": "templates",
+      "interpretation": "Все примеры используют одну generic detail-поверхность.",
+      "justification_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"
+    },
+    {
+      "measure": "visible_catalog_fields_per_example",
+      "before": 6,
+      "after": 3,
+      "unit": "fields",
+      "interpretation": "Первичная карточка оставляет категорию, название и назначение; код раскрывается дальше.",
+      "justification_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md"
+    }
+  ],
+  "automation_review": {
+    "present": false,
+    "simplified_before_automation": false,
+    "stable_process_proven": false,
+    "evidence_ref": ""
+  },
+  "scenario_evidence": [
+    {
+      "scenario": "SC-DEMO-1",
+      "actor": "автор Docara",
+      "steps": ["Открыть каталог", "Выбрать отключение областей", "Сравнить результат и JSON"],
+      "expected": "Результат и минимальные исходники доступны из одного маршрута.",
+      "actual": "В каталоге семь карточек; detail показывает iframe и три exact source block.",
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md",
+      "result": "PASS"
+    },
+    {
+      "scenario": "SC-DEMO-2",
+      "actor": "автор Docara",
+      "steps": ["Открыть Smart Button", "Проверить результат", "Проверить Markdown вызова"],
+      "expected": "Smart-компонент рендерится реальным Framework runtime.",
+      "actual": "sf-button гидратирован в кнопку Продолжить; ошибок браузера нет.",
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md",
+      "result": "PASS"
+    }
+  ],
+  "protected_complexity_review": [
+    {"category": "accessibility", "status": "PRESERVED", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md"},
+    {"category": "security", "status": "PRESERVED", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"},
+    {"category": "data_integrity", "status": "PRESERVED", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"},
+    {"category": "permissions", "status": "NOT_APPLICABLE", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"},
+    {"category": "error_handling", "status": "PRESERVED", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"},
+    {"category": "observability", "status": "PRESERVED", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"},
+    {"category": "migrations", "status": "NOT_APPLICABLE", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"},
+    {"category": "rollback", "status": "PRESERVED", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/deployment.md"}
+  ],
+  "tester_evidence_review": {
+    "status": "VERIFIED",
+    "verdict_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/human-centered-simplicity-tester-verdict.json",
+    "verdict_sha256": "a058342617e414147df45f01be9e20a7cef6ed6f0bee33e9f925bc49d99e5f66",
+    "reviewed_surface_ids": ["catalog", "detail", "receipt", "safety"],
+    "surface_classifications": [
+      {"surface_id": "catalog", "classification": "ordinary", "protected_categories": [], "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md"},
+      {"surface_id": "detail", "classification": "ordinary", "protected_categories": [], "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md"},
+      {"surface_id": "receipt", "classification": "protective", "protected_categories": ["data_integrity", "observability"], "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"},
+      {"surface_id": "safety", "classification": "protective", "protected_categories": ["security", "error_handling"], "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"}
+    ],
+    "evidence_paths": [
+      "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md",
+      "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/deployment.md",
+      "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"
+    ],
+    "evidence_fingerprints": [
+      {"path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md", "sha256": "3d76f6d1cb28097af057bcffab033d09a438ffe615d0bafc9d428b523310881a"},
+      {"path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/deployment.md", "sha256": "5e5704f96f37c6f572ca67a165c4757afabac64580a04998ed5c5f0cb126058f"},
+      {"path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md", "sha256": "60d8982223f8aa2615de59215f27aa3bc4e04ea436b62ed0096174a07b7e0071"}
+    ],
+    "contradictions": [],
+    "verdict": "PASS"
+  },
+  "residual_complexity": [
+    {
+      "description": "Protective receipt, hashes and fail-closed validation remain internal complexity.",
+      "category": "data_integrity",
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"
+    }
+  ],
+  "blocking_findings": [],
+  "verdict": "PASS"
+}

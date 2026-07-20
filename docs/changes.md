@@ -15,6 +15,12 @@
   полной успешной публикации кандидатного каталога.
 - `.docara/resolved-page-plans.json` фиксирует publisher ID и SHA-256 каждой
   страницы.
+- Добавлен `/examples/`: семь живых примеров областей, наследования, preset и
+  Smart-компонентов с точными Markdown/JSON-источниками и хешированным receipt.
+- Отключённые `sidebar` и `outline` больше не оставляют пустые layout-колонки
+  или мобильную кнопку меню.
+- Декларативный Smart resolver применяет manifest preset так же, как portable
+  Framework runtime.
 - Побайтово сохранённый `PortableHtmlRenderer` доступен как ограниченный
   rollback через `DOCARA_PORTABLE_PUBLISHER=legacy`.
 

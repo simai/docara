@@ -72,6 +72,12 @@ jobs:
             DEPLOY_DIR=/var/www/dev/data/git/docara-build
             WEBROOT=/var/www/dev/data/www/doc.simai.io
             export HOME=/home/git
+            if [ -d "$DEPLOY_DIR" ]; then
+              case "$DEPLOY_DIR" in
+                /var/www/dev/data/git/docara-build) rm -rf "$DEPLOY_DIR" ;;
+                *) echo "Refusing to remove unexpected DEPLOY_DIR=$DEPLOY_DIR" >&2; exit 1 ;;
+              esac
+            fi
             mkdir -p "$DEPLOY_DIR"
             cd "$DEPLOY_DIR"
             mkdir -p ~/.ssh

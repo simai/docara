@@ -8,28 +8,26 @@ use Simai\Docara\Portable\PortableConfigurationException;
 
 final readonly class TrustedTemplateRegistry
 {
-    /** @var array<string, string> */
+    /** @var array<string, array{path:string,renderer:string}> */
     private const TEMPLATES = [
-        'layout.docara.docs' => 'layouts/templates/docara.docs.php',
-        'section.docara.article' => 'sections/templates/docara.article.php',
-        'section.docara.shell' => 'sections/templates/docara.shell.php',
-        'smart.ui.alert.default' => 'smart/ui.alert/templates/default.php',
-        'smart.docara.header.default' => 'smart/docara.header/templates/default.php',
-        'smart.docara.navigation.default' => 'smart/docara.navigation/templates/default.php',
-        'smart.docara.outline.default' => 'smart/docara.outline/templates/default.php',
-        'preview.docara.page' => 'previews/templates/page.php',
-        'preview.docara.index' => 'previews/templates/index.php',
+        'smart.ui.alert.default' => ['path' => 'smart/ui.alert/templates/default.php', 'renderer' => 'php'],
+        'smart.docara.header.default' => ['path' => 'smart/docara.header/templates/default.php', 'renderer' => 'php'],
+        'smart.docara.navigation.default' => ['path' => 'smart/docara.navigation/templates/default.blade.php', 'renderer' => 'blade'],
+        'smart.docara.outline.default' => ['path' => 'smart/docara.outline/templates/default.php', 'renderer' => 'php'],
+        'preview.docara.page' => ['path' => 'previews/templates/page.php', 'renderer' => 'php'],
+        'preview.docara.index' => ['path' => 'previews/templates/index.php', 'renderer' => 'php'],
     ];
 
     public function __construct(
         private string $resourceRoot = __DIR__ . '/../../../resources',
+        private RegisteredBladeRenderer $blade = new RegisteredBladeRenderer,
     ) {}
 
     /** @param array<string, object> $context */
     public function render(string $templateId, array $context): string
     {
-        $relative = self::TEMPLATES[$templateId] ?? null;
-        if (! is_string($relative)) {
+        $record = self::TEMPLATES[$templateId] ?? null;
+        if (! is_array($record)) {
             throw new PortableConfigurationException(
                 'DECLARATIVE_TEMPLATE_NOT_ALLOWED',
                 "Template [$templateId] is not registered.",
@@ -48,7 +46,7 @@ final readonly class TrustedTemplateRegistry
         }
 
         $root = realpath($this->resourceRoot);
-        $path = $this->resourceRoot . '/' . $relative;
+        $path = $this->resourceRoot . '/' . $record['path'];
         $real = realpath($path);
         $stat = @lstat($path);
         if ($root === false
@@ -77,7 +75,9 @@ final readonly class TrustedTemplateRegistry
                 throw $exception;
             }
         };
-        $html = $render($real, $context);
+        $html = $record['renderer'] === 'blade'
+            ? $this->blade->render($real, $context)
+            : $render($real, $context);
         if ($html === '') {
             throw new PortableConfigurationException(
                 'DECLARATIVE_TEMPLATE_EMPTY',

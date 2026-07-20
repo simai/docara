@@ -1,11 +1,11 @@
 track_id: "docara-consolidation"
 status: "ready_for_next_goal"
 owner_skill: "teamlead"
-current_goal: "Author-facing inherited Region Composition Contract with local demonstration — accepted."
-current_stage: "evidence_recorded"
-current_workflow: "source/workflow/2026-07-20-region-composition-contract.md"
-last_completed_batch: "Completed, deployed and accepted the Region Composition Contract."
-next_step: "Define a bounded workflow for typed breadcrumbs and previous/next reading context."
+current_goal: "Declarative Layout -> Region -> Section -> Block -> Smart composition contract accepted."
+current_stage: "`evidence_recorded`"
+current_workflow: "source/workflow/2026-07-20-declarative-view-composition-contract.md"
+last_completed_batch: "Reverse completion audit, local deployment and browser acceptance."
+next_step: "Plan a separate full-shell migration from the accepted legacy publisher to the declarative contract."
 blockers: []
 related_tracks: []
 updated_at: "2026-07-20"

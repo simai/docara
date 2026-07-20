@@ -75,14 +75,10 @@ final class DeclarativeRegionCompositionTest extends TestCase
     public function test_smart_data_binding_is_fail_closed_by_region(): void
     {
         $layout = RegionCompositionResolver::defaults();
-        $layout['regions']['header']['sections'][0]['blocks'][0] = [
-            'block' => 'shell.smart',
-            'smart' => 'docara.outline',
-            'bind' => 'outline',
-        ];
+        $layout['regions']['header']['sections'][0]['section'] = 'docara.outline';
 
         $this->expectException(PortableConfigurationException::class);
-        $this->expectExceptionMessage('DECLARATIVE_REGION_BINDING_FORBIDDEN');
+        $this->expectExceptionMessage('DECLARATIVE_REGION_SECTION_INVALID');
 
         DeclarativePageCompiler::bundled($this->frameworkLock())->compile(
             (new DocumentParser)->parse('# Binding', 'content/binding.md'),

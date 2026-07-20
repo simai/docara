@@ -1,0 +1,19 @@
+{
+  "schema": "docara.section.v1",
+  "key": "docara.navigation",
+  "type": "navigation",
+  "view": "section.docara.shell",
+  "allowed_regions": ["sidebar"],
+  "slots": ["content"],
+  "allowed_blocks": ["shell.smart"],
+  "blocks": [
+    {
+      "id": "navigation",
+      "block": "shell.smart",
+      "slot": "content",
+      "smart": "docara.navigation",
+      "bind": "navigation",
+      "props": {"maximum_depth": 4}
+    }
+  ]
+}

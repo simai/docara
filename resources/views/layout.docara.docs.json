@@ -1,0 +1,24 @@
+{
+  "schema": "docara.view_tree.v1",
+  "key": "layout.docara.docs",
+  "tree": {
+    "kind": "element",
+    "tag": "article",
+    "identity": "page",
+    "utilities": ["flex", "flex-col", "min-h-screen", "w-full"],
+    "children": [
+      {"kind": "region", "region": "header", "tag": "header"},
+      {
+        "kind": "element",
+        "tag": "div",
+        "utilities": ["flex", "flex-col", "lg:flex-row", "w-full"],
+        "children": [
+          {"kind": "region", "region": "sidebar", "tag": "aside"},
+          {"kind": "region", "region": "main", "tag": "main"},
+          {"kind": "region", "region": "outline", "tag": "aside"}
+        ]
+      },
+      {"kind": "region", "region": "footer", "tag": "footer"}
+    ]
+  }
+}

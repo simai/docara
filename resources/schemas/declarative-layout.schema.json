@@ -2,11 +2,11 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.simai.io/docara/declarative-layout/v1",
   "type": "object",
-  "required": ["schema", "key", "template", "regions", "assets"],
+  "required": ["schema", "key", "view", "regions", "assets"],
   "properties": {
     "schema": {"type": "string", "const": "docara.layout.v1"},
     "key": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
-    "template": {"type": "string", "pattern": "^layout\\.[a-z][a-z0-9_.-]+$"},
+    "view": {"type": "string", "pattern": "^layout\\.[a-z][a-z0-9_.-]+$"},
     "regions": {
       "type": "object",
       "required": ["header", "sidebar", "main", "outline", "footer"],

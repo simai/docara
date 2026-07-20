@@ -44,19 +44,23 @@ Page -> Region -> Section -> Block -> Smart
 - `outline`;
 - `footer`.
 
-Layout владеет областями и shell template, но не внутренним устройством
-section. `docara.article` собирает блоки документа, а блок
-`content.smart` ссылается на уже разрешённый Smart-план. `docara.shell`
-размещает продуктовые составные Smart-компоненты в `header`, `sidebar` и
-`outline`; footer пока остаётся явно пустой необязательной областью.
+Layout владеет областями и безопасным View Tree, но не внутренним устройством
+section. `docara.article` собирает блоки документа в именованный слот, а блок
+`content.smart` ссылается на уже разрешённый Smart-план. Общий
+`section.docara.shell` является безопасным presentation view, а
+зарегистрированные определения
+`docara.header`, `docara.navigation` и `docara.outline` размещают продуктовые
+Smart-компоненты в своих областях; footer пока остаётся явно пустой
+необязательной областью.
 
 Состав оболочки больше не выбирается жёсткими ветками компилятора.
 `layout.regions` после наследования site -> section -> page задаёт:
 
 - включена ли область;
-- какие зарегистрированные sections она содержит;
-- какие registered blocks и Smart-компоненты входят в section;
-- к какому фиксированному набору данных привязан Smart.
+- какие зарегистрированные Section calls с устойчивыми ID она содержит.
+
+Слоты, Block calls, Smart и фиксированный binding принадлежат переиспользуемому
+Section definition. Они не копируются в пользовательские настройки.
 
 Resolver дополняет структурные defaults, проверяет обязательный `main` и
 fail closed отклоняет Smart не в своей области или с неправильным binding.
@@ -67,14 +71,16 @@ Renderer не выводит HTML-контейнер отключённой об
 | Слой | Источник |
 | --- | --- |
 | Layout | `resources/layouts/docara.docs.json` |
-| Sections | `resources/sections/docara.article.json`, `resources/sections/docara.shell.json` |
+| Sections | `resources/sections/docara.article.json`, `docara.header.json`, `docara.navigation.json`, `docara.outline.json` |
 | Blocks | `resources/blocks/*.json` |
+| Safe View Trees | `resources/views/*.json` |
+| Framework utility projection | `resources/framework/view-utilities.json` |
 | Smart manifests и views | `resources/smart/*/manifest.json`, `resources/smart/*/views/default.json` |
 | JSON schemas | `resources/schemas/declarative-*.schema.json` |
 | Typed AST | `src/Declarative/Document` |
 | Immutable plan | `src/Declarative/Plan` |
 | Compiler | `src/Declarative/DeclarativePageCompiler.php` |
-| Trusted rendering | `src/Declarative/Rendering` |
+| Safe View Tree и registered Blade rendering | `src/Declarative/Rendering` |
 | Larena adapter | `src/Declarative/Adapter` |
 
 ## Smart-компонент `ui.alert`
@@ -93,11 +99,12 @@ Renderer не выводит HTML-контейнер отключённой об
 2. view `default` выбирает только зарегистрированный template ID;
 3. consumer policy сужает manifest и добавляет управляемые значения;
 4. props проверяются по manifest;
-5. template registry допускает только известный локальный файл;
+5. template registry допускает только известный локальный renderer ID;
 6. template получает готовый immutable view model;
 7. renderer возвращает HTML, assets и provenance.
 
-Автор не может передать путь к PHP-файлу, callback или класс. Template registry
+Автор не может передать путь к PHP/Blade-файлу, исходник Blade, HTML, callback
+или класс. Template registry
 использует фиксированный allowlist и дополнительно отклоняет symlink,
 необычный hard link, путь вне `resources` и нетипизированный context.
 
@@ -158,6 +165,10 @@ presentation-only и не выполнять рекурсивную подгот
 расширяется молча.
 
 ## Граница с Larena
+
+`ResolvedRenderPlan` v2 полностью раскрывает Layout/Region/Section/Slot/Block/
+Smart, safe View Trees, assets, provenance и diagnostics. Это генерируемый
+артефакт, а не второй редактируемый источник.
 
 `LarenaContractAdapter` не переносит в Docara хранилище, маршрутизацию, права,
 редактор или runtime Larena. Он доказывает, что один `ResolvedRenderPlan` можно

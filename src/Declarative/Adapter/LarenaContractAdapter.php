@@ -31,7 +31,8 @@ final class LarenaContractAdapter
                 ],
                 'layout' => [
                     'key' => $plan->layout->key,
-                    'template' => $plan->layout->template,
+                    'view' => $plan->layout->view,
+                    'view_tree' => $plan->layout->viewTree,
                     'regions' => array_keys($plan->layout->regions),
                     'region_configuration' => array_map(
                         static fn ($region): array => [
@@ -46,9 +47,10 @@ final class LarenaContractAdapter
                 'assets' => $plan->assets,
                 'source' => [
                     'adapter' => 'docara.larena_contract_adapter.v1',
-                    'docara_plan_schema' => 'docara.resolved_render_plan.v1',
+                    'docara_plan_schema' => 'docara.resolved_render_plan.v2',
                     'docara_plan_hash' => $plan->canonicalHash(),
                 ],
+                'diagnostics' => $plan->diagnostics,
             ],
             $plan->semanticProjection(),
         );
@@ -62,6 +64,9 @@ final class LarenaContractAdapter
             'section' => $section->section,
             'type' => $section->type,
             'region' => $section->region,
+            'view' => $section->view,
+            'view_tree' => $section->viewTree,
+            'slots' => $section->slots,
             'blocks' => array_map(
                 fn (ResolvedBlockPlan $block): array => $this->block($block),
                 $section->blocks,
@@ -75,6 +80,7 @@ final class LarenaContractAdapter
         return [
             'id' => $block->id,
             'block' => $block->block,
+            'slot' => $block->slot,
             'renderer' => $block->renderer,
             'data' => $block->data,
             'smart' => $block->smart === null ? null : [

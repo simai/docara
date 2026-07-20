@@ -1,0 +1,18 @@
+{
+  "schema": "docara.section.v1",
+  "key": "docara.header",
+  "type": "navigation",
+  "view": "section.docara.shell",
+  "allowed_regions": ["header"],
+  "slots": ["content"],
+  "allowed_blocks": ["shell.smart"],
+  "blocks": [
+    {
+      "id": "branding",
+      "block": "shell.smart",
+      "slot": "content",
+      "smart": "docara.header",
+      "bind": "branding"
+    }
+  ]
+}

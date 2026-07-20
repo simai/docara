@@ -2,5 +2,6 @@
   "schema": "docara.block.v1",
   "key": "shell.smart",
   "kind": "smart",
-  "renderer": "block.smart"
+  "renderer": "block.smart",
+  "allowed_smart": ["docara.header", "docara.navigation", "docara.outline"]
 }

@@ -13,6 +13,11 @@
 | `canonical_hash` | Хэш канонического плана |
 | `component_runtime` | Вызовы компонентов и asset plan |
 | `output`, `url` | Физический и публичный маршруты |
+| `declarative.plan.schema` | Версия полного `docara.resolved_render_plan.v2` |
+| `declarative.plan.layout.view_tree` | Разрешённый безопасный каркас макета |
+| `declarative.plan.regions.*[].slots` | Именованные слоты экземпляра Section |
+| `declarative.plan.regions.*[].blocks` | Block calls со stable ID, slot и Smart |
+| `declarative.plan.diagnostics` | Результат композиции и View Tree validation |
 
 План не является вторым источником для редактирования. Это генерируемый
 диагностический и интеграционный артефакт. Изменяйте Markdown или JSON, затем

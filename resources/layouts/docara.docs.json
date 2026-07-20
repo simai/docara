@@ -1,7 +1,7 @@
 {
   "schema": "docara.layout.v1",
   "key": "docara.docs",
-  "template": "layout.docara.docs",
+  "view": "layout.docara.docs",
   "regions": {
     "header": {"required": false, "section_types": ["navigation"]},
     "sidebar": {"required": false, "section_types": ["navigation"]},

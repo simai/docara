@@ -14,6 +14,7 @@ final readonly class ResolvedRenderPlan
      * @param  array<string, list<ResolvedSectionPlan>>  $regions
      * @param  list<string>  $assets
      * @param  array<string, mixed>  $provenance
+     * @param  list<array<string, mixed>>  $diagnostics
      */
     public function __construct(
         public string $pageKey,
@@ -24,6 +25,7 @@ final readonly class ResolvedRenderPlan
         public array $regions,
         public array $assets,
         public array $provenance,
+        public array $diagnostics,
     ) {
         if ($pageKey === ''
             || trim($title) === ''
@@ -39,7 +41,7 @@ final readonly class ResolvedRenderPlan
     public function toArray(): array
     {
         return [
-            'schema' => 'docara.resolved_render_plan.v1',
+            'schema' => 'docara.resolved_render_plan.v2',
             'page_key' => $this->pageKey,
             'title' => $this->title,
             'outline_depth' => $this->outlineDepth,
@@ -54,6 +56,7 @@ final readonly class ResolvedRenderPlan
             ),
             'assets' => $this->assets,
             'provenance' => $this->provenance,
+            'diagnostics' => $this->diagnostics,
         ];
     }
 

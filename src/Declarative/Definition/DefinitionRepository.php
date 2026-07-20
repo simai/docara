@@ -19,8 +19,16 @@ final class DefinitionRepository
             'path' => 'sections/docara.article.json',
             'schema' => 'declarative-section.schema.json',
         ],
-        'section:docara.shell' => [
-            'path' => 'sections/docara.shell.json',
+        'section:docara.header' => [
+            'path' => 'sections/docara.header.json',
+            'schema' => 'declarative-section.schema.json',
+        ],
+        'section:docara.navigation' => [
+            'path' => 'sections/docara.navigation.json',
+            'schema' => 'declarative-section.schema.json',
+        ],
+        'section:docara.outline' => [
+            'path' => 'sections/docara.outline.json',
             'schema' => 'declarative-section.schema.json',
         ],
         'block:content.markdown' => [
@@ -63,6 +71,18 @@ final class DefinitionRepository
             'path' => 'smart/docara.outline/views/default.json',
             'schema' => 'declarative-smart-view.schema.json',
         ],
+        'view:layout.docara.docs' => [
+            'path' => 'views/layout.docara.docs.json',
+            'schema' => 'declarative-view-tree.schema.json',
+        ],
+        'view:section.docara.article' => [
+            'path' => 'views/section.docara.article.json',
+            'schema' => 'declarative-view-tree.schema.json',
+        ],
+        'view:section.docara.shell' => [
+            'path' => 'views/section.docara.shell.json',
+            'schema' => 'declarative-view-tree.schema.json',
+        ],
     ];
 
     /** @var array<string, array<string, mixed>> */
@@ -101,6 +121,12 @@ final class DefinitionRepository
     public function smartManifest(string $smart): array
     {
         return $this->definition('smart-manifest:' . $smart);
+    }
+
+    /** @return array<string, mixed> */
+    public function view(string $key): array
+    {
+        return $this->definition('view:' . $key);
     }
 
     /** @return array<string, mixed> */

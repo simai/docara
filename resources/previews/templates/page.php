@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex,nofollow">
     <meta name="docara:documentation-version" content="<?= $view->documentationVersion ?>">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'/%3E">
     <title><?= $view->title ?></title>
 <?= $view->headHtml ?>
 </head>

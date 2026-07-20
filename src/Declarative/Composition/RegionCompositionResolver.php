@@ -19,36 +19,23 @@ final readonly class RegionCompositionResolver
                 'header' => [
                     'enabled' => true,
                     'sections' => [[
-                        'section' => 'docara.shell',
-                        'blocks' => [[
-                            'block' => 'shell.smart',
-                            'smart' => 'docara.header',
-                            'bind' => 'branding',
-                        ]],
+                        'id' => 'site-header',
+                        'section' => 'docara.header',
                     ]],
                 ],
                 'sidebar' => [
                     'enabled' => true,
                     'sections' => [[
-                        'section' => 'docara.shell',
-                        'blocks' => [[
-                            'block' => 'shell.smart',
-                            'smart' => 'docara.navigation',
-                            'bind' => 'navigation',
-                            'props' => ['maximum_depth' => 4],
-                        ]],
+                        'id' => 'docs-navigation',
+                        'section' => 'docara.navigation',
                     ]],
                 ],
                 'main' => ['enabled' => true, 'sections' => []],
                 'outline' => [
                     'enabled' => true,
                     'sections' => [[
-                        'section' => 'docara.shell',
-                        'blocks' => [[
-                            'block' => 'shell.smart',
-                            'smart' => 'docara.outline',
-                            'bind' => 'outline',
-                        ]],
+                        'id' => 'page-outline',
+                        'section' => 'docara.outline',
                     ]],
                 ],
                 'footer' => ['enabled' => false, 'sections' => []],
@@ -67,6 +54,7 @@ final readonly class RegionCompositionResolver
      */
     public function resolve(array $layout, array $provenance = []): array
     {
+        $this->assertNoExecutableSurface($layout);
         $defaults = self::defaults();
         $key = $layout['key'] ?? $defaults['key'];
         $configuredRegions = $layout['regions'] ?? [];
@@ -116,6 +104,31 @@ final readonly class RegionCompositionResolver
         ];
     }
 
+    /** @param array<string, mixed> $configuration */
+    private function assertNoExecutableSurface(array $configuration, string $pointer = '/layout'): void
+    {
+        foreach ($configuration as $key => $value) {
+            if (is_string($key)
+                && preg_match('/(?:template|blade|html|callback|callable|php|script|style|path)/i', $key) === 1
+            ) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_AUTHOR_EXECUTABLE_SURFACE_FORBIDDEN',
+                    "Authored executable or template surface [$pointer/$key] is forbidden.",
+                );
+            }
+            if (is_array($value)) {
+                $this->assertNoExecutableSurface($value, $pointer . '/' . $key);
+            } elseif (is_string($value)
+                && preg_match('/(?:<\\?php|<script\\b|<style\\b|@php\\b|javascript:)/i', $value) === 1
+            ) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_AUTHOR_EXECUTABLE_SURFACE_FORBIDDEN',
+                    "Authored executable content [$pointer/$key] is forbidden.",
+                );
+            }
+        }
+    }
+
     /** @param list<array<string, mixed>> $sections */
     private function assertSections(string $region, array $sections): void
     {
@@ -125,54 +138,28 @@ final readonly class RegionCompositionResolver
                 'The main region is populated from the authored Markdown document and cannot declare shell sections.',
             );
         }
+        $ids = [];
         foreach ($sections as $section) {
-            if (! is_array($section)
-                || ($section['section'] ?? null) !== 'docara.shell'
-                || ! is_array($section['blocks'] ?? null)
-                || ! array_is_list($section['blocks'])
-                || $section['blocks'] === []
+            $id = is_array($section) ? ($section['id'] ?? null) : null;
+            $sectionKey = is_array($section) ? ($section['section'] ?? null) : null;
+            $expected = [
+                'header' => 'docara.header',
+                'sidebar' => 'docara.navigation',
+                'outline' => 'docara.outline',
+            ][$region] ?? null;
+            if (! is_string($id)
+                || preg_match('/^[a-z][a-z0-9_.-]+$/D', $id) !== 1
+                || isset($ids[$id])
+                || ! is_string($sectionKey)
+                || $sectionKey !== $expected
+                || array_keys($section) !== ['id', 'section']
             ) {
                 throw new PortableConfigurationException(
                     'DECLARATIVE_REGION_SECTION_INVALID',
                     "Declarative region [$region] contains an invalid section call.",
                 );
             }
-            foreach ($section['blocks'] as $block) {
-                $this->assertBlock($region, $block);
-            }
-        }
-    }
-
-    private function assertBlock(string $region, mixed $block): void
-    {
-        if (! is_array($block) || ($block['block'] ?? null) !== 'shell.smart') {
-            throw new PortableConfigurationException(
-                'DECLARATIVE_REGION_BLOCK_INVALID',
-                "Declarative region [$region] contains an invalid block call.",
-            );
-        }
-        $smart = $block['smart'] ?? null;
-        $bind = $block['bind'] ?? null;
-        $expected = [
-            'docara.header' => ['region' => 'header', 'bind' => 'branding'],
-            'docara.navigation' => ['region' => 'sidebar', 'bind' => 'navigation'],
-            'docara.outline' => ['region' => 'outline', 'bind' => 'outline'],
-        ][$smart] ?? null;
-        if ($expected === null || $expected['region'] !== $region || $expected['bind'] !== $bind) {
-            throw new PortableConfigurationException(
-                'DECLARATIVE_REGION_BINDING_FORBIDDEN',
-                "Smart component [$smart] cannot bind [$bind] in region [$region].",
-            );
-        }
-        $props = $block['props'] ?? [];
-        if (! is_array($props)
-            || ($smart !== 'docara.navigation' && $props !== [])
-            || ($smart === 'docara.navigation' && ($props['maximum_depth'] ?? 4) !== 4)
-        ) {
-            throw new PortableConfigurationException(
-                'DECLARATIVE_REGION_PROPS_INVALID',
-                "Smart component [$smart] contains unsupported authored props.",
-            );
+            $ids[$id] = true;
         }
     }
 }

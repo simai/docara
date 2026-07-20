@@ -10,6 +10,7 @@ final readonly class ResolvedBlockPlan
     public function __construct(
         public string $id,
         public string $block,
+        public string $slot,
         public string $renderer,
         public array $data,
         public ?ResolvedSmartPlan $smart,
@@ -22,6 +23,7 @@ final readonly class ResolvedBlockPlan
         return [
             'id' => $this->id,
             'block' => $this->block,
+            'slot' => $this->slot,
             'renderer' => $this->renderer,
             'data' => $this->data,
             'smart' => $this->smart?->toArray(),

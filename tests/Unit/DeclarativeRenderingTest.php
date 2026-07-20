@@ -72,13 +72,12 @@ MD, 'content/install.md'),
     public function test_templates_are_presentation_only_and_assets_are_not_embedded(): void
     {
         $root = dirname(__DIR__, 2) . '/resources';
-        $templates = [
-            ...glob($root . '/layouts/templates/*.php') ?: [],
-            ...glob($root . '/sections/templates/*.php') ?: [],
+        $templates = array_values(array_unique([
             ...glob($root . '/smart/*/templates/*.php') ?: [],
+            ...glob($root . '/smart/*/templates/*.blade.php') ?: [],
             ...glob($root . '/previews/templates/*.php') ?: [],
-        ];
-        self::assertCount(9, $templates);
+        ]));
+        self::assertCount(6, $templates);
         foreach ($templates as $template) {
             $source = (string) file_get_contents($template);
             self::assertStringNotContainsString('<style', $source);
@@ -89,6 +88,7 @@ MD, 'content/install.md'),
             self::assertStringNotContainsString('include ', $source);
             self::assertStringNotContainsString('file_get_contents', $source);
             self::assertStringNotContainsString('htmlspecialchars', $source);
+            self::assertStringNotContainsString('@php', $source);
         }
     }
 

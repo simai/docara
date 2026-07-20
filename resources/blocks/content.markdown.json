@@ -2,5 +2,6 @@
   "schema": "docara.block.v1",
   "key": "content.markdown",
   "kind": "content",
-  "renderer": "block.markdown"
+  "renderer": "block.markdown",
+  "allowed_smart": []
 }

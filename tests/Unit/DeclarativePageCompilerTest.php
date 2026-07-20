@@ -55,7 +55,7 @@ MD, 'content/install.md');
         self::assertMatchesRegularExpression('/^docara-alert-[a-f0-9]{16}$/', $smart->props['id']);
         self::assertContains('simai.framework.sf_alert.js', $plan->assets);
         self::assertNotContains('simai.framework.bridge.js', $plan->assets);
-        self::assertSame('docara.resolved_render_plan.v1', $plan->toArray()['schema']);
+        self::assertSame('docara.resolved_render_plan.v2', $plan->toArray()['schema']);
         self::assertSame(
             $plan->canonicalHash(),
             DeclarativePageCompiler::bundled($this->frameworkLock())

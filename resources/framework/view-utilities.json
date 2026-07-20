@@ -1,0 +1,20 @@
+{
+  "schema": "docara.framework_view_utilities.v1",
+  "compatibility_id": "sf-v5.3.2-7e836d8a-dd786bba",
+  "registry_sha256": "2c5963276d31af09770fe41cad04826c04b634f7b2d798d9b0e32864517346b7",
+  "utilities": [
+    "border-bottom",
+    "border-outline-variant",
+    "flex",
+    "flex-col",
+    "gap-1",
+    "gap-2",
+    "lg:flex-row",
+    "m-0",
+    "min-h-screen",
+    "p-0",
+    "p-2",
+    "surface-0",
+    "w-full"
+  ]
+}

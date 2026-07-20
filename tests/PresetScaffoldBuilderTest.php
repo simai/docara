@@ -61,15 +61,16 @@ class PresetScaffoldBuilderTest extends TestCase
     #[DoesNotPerformAssertions]
     public function package_is_loaded_via_composer_if_not_found_locally()
     {
-        $process = Mockery::spy(ProcessRunner::class);
+        $process = Mockery::mock(ProcessRunner::class);
+        $process->shouldReceive('run')
+            ->once()
+            ->with('composer require test/other-package');
         $this->app->instance(PresetPackage::class, new PresetPackage(new DefaultInstaller, new CustomInstaller, $process));
         $preset = $this->app->make(PresetScaffoldBuilder::class);
         $this->createSource(['vendor' => ['test' => ['package' => []]]]);
         $preset->base = $this->tmp;
 
         $preset->init('test/other-package');
-
-        $process->shouldHaveReceived('run')->with('composer require test/other-package');
     }
 
     #[Test]

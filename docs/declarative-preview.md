@@ -70,6 +70,9 @@ Portable loader проверяет JSON schemas и собирает `ResolvedPag
 - `resources/layouts/docara.docs.json` объявляет layout и области;
 - `resources/sections/*.json` описывают состав областей;
 - `resources/blocks/*.json` описывают блоки;
+- `resources/views/*.json` описывает безопасный каркас Layout и слоты Section;
+- `resources/framework/view-utilities.json` фиксирует допустимые утилиты
+  Simai Framework;
 - `resources/smart/*` содержит manifests и view descriptors.
 
 После построения меню и outline
@@ -85,9 +88,11 @@ Page -> Region -> Section -> Block -> Smart
 
 `src/Declarative/Rendering/DeclarativePageRenderer.php` превращает план в
 `RenderArtifact`. Пути к PHP-шаблонам не приходят из контента:
-`src/Declarative/Rendering/TrustedTemplateRegistry.php` допускает только
-известные template IDs. Шаблоны находятся отдельно в `resources` и получают
-подготовленные immutable view models.
+`ViewTreeRenderer` строит каркас только из разрешённых тегов, атрибутов и
+Framework-утилит. `TrustedTemplateRegistry` допускает только известные renderer
+IDs; сложное меню использует зарегистрированный Blade leaf и получает
+подготовленную immutable view model. Пользовательский JSON не содержит
+шаблонов или путей.
 
 ### 5. Доказательство эквивалентности
 

@@ -7,8 +7,6 @@ namespace Simai\Docara\Declarative\Rendering;
 use Simai\Docara\Declarative\Plan\ResolvedBlockPlan;
 use Simai\Docara\Declarative\Plan\ResolvedRenderPlan;
 use Simai\Docara\Declarative\Plan\ResolvedSectionPlan;
-use Simai\Docara\Declarative\Rendering\View\PageViewModel;
-use Simai\Docara\Declarative\Rendering\View\SectionViewModel;
 use Simai\Docara\PortableSite\PortableDocumentOutlineBuilder;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
@@ -17,7 +15,7 @@ final readonly class DeclarativePageRenderer
     public function __construct(
         private PortableMarkdownRenderer $markdown,
         private SmartRenderer $smart = new SmartRenderer,
-        private TrustedTemplateRegistry $templates = new TrustedTemplateRegistry,
+        private ViewTreeRenderer $viewTrees = new ViewTreeRenderer,
         private array $reservedDocumentIds = [],
     ) {}
 
@@ -45,18 +43,21 @@ final readonly class DeclarativePageRenderer
         $assets = array_values(array_unique($assets));
         sort($assets, SORT_STRING);
 
-        $view = new PageViewModel(
-            $this->escape($plan->pageKey),
-            $this->escape($plan->title),
-            $regions,
-            array_map(
-                static fn ($region): bool => $region->enabled,
-                $plan->layout->regions,
-            ),
-        );
+        $identity = [
+            'page_key' => $plan->pageKey,
+            'page_title' => $plan->title,
+        ];
+        foreach ($plan->layout->regions as $region => $descriptor) {
+            $identity['enabled:' . $region] = $descriptor->enabled ? 'true' : 'false';
+        }
 
         return new RenderArtifact(
-            $this->templates->render($plan->layout->template, ['view' => $view]),
+            $this->viewTrees->render(
+                $plan->layout->viewTree['tree'],
+                $regions,
+                [],
+                $identity,
+            ),
             $assets,
             [
                 'runtime' => 'docara.declarative.v1',
@@ -72,29 +73,26 @@ final readonly class DeclarativePageRenderer
 
     private function section(ResolvedSectionPlan $section): RenderArtifact
     {
-        $content = [];
+        $slots = array_fill_keys($section->slots, '');
         $assets = [];
         $blocks = [];
         foreach ($section->blocks as $block) {
             $artifact = $this->block($block);
-            $content[] = $artifact->html;
+            $slots[$block->slot] .= $artifact->html;
             array_push($assets, ...$artifact->assets);
             $blocks[] = $artifact->provenance;
         }
 
-        $view = new SectionViewModel(
-            $this->escape($section->id),
-            $this->escape($section->section),
-            $this->escape($section->region),
-            implode('', $content),
-        );
-
         return new RenderArtifact(
-            $this->templates->render(
-                $section->section === 'docara.shell'
-                    ? 'section.docara.shell'
-                    : 'section.docara.article',
-                ['view' => $view],
+            $this->viewTrees->render(
+                $section->viewTree['tree'],
+                [],
+                $slots,
+                [
+                    'section_id' => $section->id,
+                    'section_key' => $section->section,
+                    'section_region' => $section->region,
+                ],
             ),
             array_values(array_unique($assets)),
             [],
@@ -117,10 +115,5 @@ final readonly class DeclarativePageRenderer
         }
 
         throw new \InvalidArgumentException('DECLARATIVE_BLOCK_RENDERER_UNSUPPORTED');
-    }
-
-    private function escape(string $value): string
-    {
-        return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 }

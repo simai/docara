@@ -1,0 +1,12 @@
+{
+  "schema": "docara.view_tree.v1",
+  "key": "section.docara.shell",
+  "tree": {
+    "kind": "element",
+    "tag": "section",
+    "identity": "section",
+    "children": [
+      {"kind": "slot", "slot": "content"}
+    ]
+  }
+}

@@ -16,6 +16,7 @@ use Simai\Docara\Declarative\Plan\ResolvedBlockPlan;
 use Simai\Docara\Declarative\Plan\ResolvedRenderPlan;
 use Simai\Docara\Declarative\Plan\ResolvedSectionPlan;
 use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
+use Simai\Docara\Declarative\Rendering\ViewTreeInspector;
 use Simai\Docara\Declarative\Smart\CompositeSmartPlanResolver;
 use Simai\Docara\Declarative\Smart\SmartPlanResolver;
 use Simai\Docara\Portable\PortableConfigurationException;
@@ -27,6 +28,7 @@ final readonly class DeclarativePageCompiler
         private SmartPlanResolver $smart,
         private CompositeSmartPlanResolver $composites = new CompositeSmartPlanResolver,
         private RegionCompositionResolver $regionComposition = new RegionCompositionResolver,
+        private ViewTreeInspector $viewTrees = new ViewTreeInspector,
     ) {}
 
     /** @param array<string, mixed> $frameworkLock */
@@ -90,6 +92,9 @@ final readonly class DeclarativePageCompiler
             'docara.article',
             (string) $sectionDefinition['type'],
             'main',
+            (string) $sectionDefinition['view'],
+            $this->viewTree((string) $sectionDefinition['view']),
+            $sectionDefinition['slots'],
             $blocks,
             [
                 'definition' => (string) $sectionDefinition['_source'],
@@ -107,15 +112,36 @@ final readonly class DeclarativePageCompiler
                 if ($region === 'main' || ! $regionConfiguration['enabled']) {
                     continue;
                 }
-                foreach ($regionConfiguration['sections'] as $index => $sectionConfiguration) {
+                foreach ($regionConfiguration['sections'] as $sectionConfiguration) {
                     $regions[$region][] = $this->configuredShellSection(
                         $pageKey,
                         $region,
-                        $index,
                         $sectionConfiguration,
                         $composition,
                         $layout,
                     );
+                }
+            }
+        }
+        $sectionIds = [];
+        $blockIds = [];
+        foreach ($regions as $regionSections) {
+            foreach ($regionSections as $resolvedSection) {
+                if (isset($sectionIds[$resolvedSection->id])) {
+                    throw new PortableConfigurationException(
+                        'DECLARATIVE_SECTION_INSTANCE_ID_DUPLICATED',
+                        "Section instance ID [{$resolvedSection->id}] is duplicated.",
+                    );
+                }
+                $sectionIds[$resolvedSection->id] = true;
+                foreach ($resolvedSection->blocks as $resolvedBlock) {
+                    if (isset($blockIds[$resolvedBlock->id])) {
+                        throw new PortableConfigurationException(
+                            'DECLARATIVE_BLOCK_INSTANCE_ID_DUPLICATED',
+                            "Block instance ID [{$resolvedBlock->id}] is duplicated.",
+                        );
+                    }
+                    $blockIds[$resolvedBlock->id] = true;
                 }
             }
         }
@@ -133,6 +159,24 @@ final readonly class DeclarativePageCompiler
         }
         $assets = array_values(array_unique($assets));
         sort($assets, SORT_STRING);
+        $layoutInspection = $this->viewTrees->inspect($layout->viewTree['tree']);
+        if ($layoutInspection['regions'] !== array_keys($layout->regions)) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_LAYOUT_VIEW_REGIONS_MISMATCH',
+                'The layout View Tree must place every declared region exactly once and in descriptor order.',
+            );
+        }
+        foreach ($regions as $regionSections) {
+            foreach ($regionSections as $resolvedSection) {
+                $inspection = $this->viewTrees->inspect($resolvedSection->viewTree['tree']);
+                if ($inspection['slots'] !== $resolvedSection->slots) {
+                    throw new PortableConfigurationException(
+                        'DECLARATIVE_SECTION_VIEW_SLOTS_MISMATCH',
+                        "Section [{$resolvedSection->section}] View Tree slots do not match its definition.",
+                    );
+                }
+            }
+        }
 
         return new ResolvedRenderPlan(
             $pageKey,
@@ -147,6 +191,25 @@ final readonly class DeclarativePageCompiler
                 'document_hash' => $document->canonicalHash(),
                 'composition' => $composition?->toArray(),
                 'region_composition' => $regionComposition,
+                'view_runtime' => $layoutInspection['utility_registry'],
+            ],
+            [
+                [
+                    'code' => 'COMPOSITION_EXPANDED',
+                    'status' => 'pass',
+                    'regions' => count($regions),
+                    'sections' => array_sum(array_map('count', $regions)),
+                ],
+                [
+                    'code' => 'SAFE_VIEW_TREE_VALIDATED',
+                    'status' => 'pass',
+                    'layout_nodes' => $layoutInspection['nodes'],
+                    'framework_compatibility_id' => $layoutInspection['utility_registry']['compatibility_id'],
+                ],
+                [
+                    'code' => 'AUTHOR_EXECUTABLE_SURFACES',
+                    'status' => 'absent',
+                ],
             ],
         );
     }
@@ -155,7 +218,6 @@ final readonly class DeclarativePageCompiler
     private function configuredShellSection(
         string $pageKey,
         string $region,
-        int $sectionIndex,
         array $configuration,
         PageCompositionContext $composition,
         LayoutDescriptor $layout,
@@ -171,16 +233,17 @@ final readonly class DeclarativePageCompiler
             );
         }
         $blocks = [];
-        foreach ($configuration['blocks'] as $blockIndex => $blockConfiguration) {
+        foreach ($definition['blocks'] as $blockConfiguration) {
             $smart = (string) $blockConfiguration['smart'];
             $nodeId = 'smart-' . substr(
-                hash('sha256', $pageKey . "\0" . $region . "\0" . $sectionIndex . "\0" . $blockIndex . "\0" . $smart),
+                hash('sha256', $pageKey . "\0" . $region . "\0" . $configuration['id'] . "\0" . $blockConfiguration['id'] . "\0" . $smart),
                 0,
                 20,
             );
             $blocks[] = $this->block(
-                'block-' . substr(hash('sha256', $nodeId . "\0" . $blockConfiguration['block']), 0, 20),
+                (string) $configuration['id'] . '.' . $blockConfiguration['id'],
                 (string) $blockConfiguration['block'],
+                (string) $blockConfiguration['slot'],
                 ['binding' => (string) $blockConfiguration['bind']],
                 $this->composites->resolve(
                     $smart,
@@ -192,14 +255,13 @@ final readonly class DeclarativePageCompiler
         }
 
         return new ResolvedSectionPlan(
-            'section-' . substr(
-                hash('sha256', $pageKey . "\0" . $region . "\0" . $sectionIndex . "\0" . $sectionKey),
-                0,
-                20,
-            ),
+            (string) $configuration['id'],
             $sectionKey,
             (string) $definition['type'],
             $region,
+            (string) $definition['view'],
+            $this->viewTree((string) $definition['view']),
+            $definition['slots'],
             $blocks,
             [
                 'definition' => (string) $definition['_source'],
@@ -257,7 +319,8 @@ final readonly class DeclarativePageCompiler
 
         return new LayoutDescriptor(
             (string) $definition['key'],
-            (string) $definition['template'],
+            (string) $definition['view'],
+            $this->viewTree((string) $definition['view']),
             $regions,
             $definition['assets'],
             [
@@ -274,6 +337,7 @@ final readonly class DeclarativePageCompiler
         return $this->block(
             $node->id(),
             'content.markdown',
+            'content',
             ['markdown' => $node->markdown, 'source' => $node->span()->toArray()],
             null,
             $section,
@@ -286,6 +350,7 @@ final readonly class DeclarativePageCompiler
         return $this->block(
             $node->id(),
             'content.smart',
+            'content',
             ['source' => $node->span()->toArray()],
             $this->smart->resolve($node),
             $section,
@@ -299,6 +364,7 @@ final readonly class DeclarativePageCompiler
     private function block(
         string $id,
         string $key,
+        string $slot,
         array $data,
         ?ResolvedSmartPlan $smart,
         array $section,
@@ -309,11 +375,24 @@ final readonly class DeclarativePageCompiler
                 "Block [$key] is not allowed in section [{$section['key']}].",
             );
         }
+        if (! in_array($slot, $section['slots'], true)) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_BLOCK_SLOT_FORBIDDEN',
+                "Block [$key] cannot target slot [$slot] in section [{$section['key']}].",
+            );
+        }
         $definition = $this->definitions->block($key);
+        if ($smart !== null && ! in_array($smart->smart, $definition['allowed_smart'], true)) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_BLOCK_SMART_FORBIDDEN',
+                "Smart component [{$smart->smart}] is not allowed by block [$key].",
+            );
+        }
 
         return new ResolvedBlockPlan(
             $id,
             $key,
+            $slot,
             (string) $definition['renderer'],
             $data,
             $smart,
@@ -322,5 +401,20 @@ final readonly class DeclarativePageCompiler
                 'sha256' => (string) $definition['_sha256'],
             ],
         );
+    }
+
+    /** @return array<string, mixed> */
+    private function viewTree(string $view): array
+    {
+        $definition = $this->definitions->view($view);
+
+        return [
+            'key' => $definition['key'],
+            'tree' => $definition['tree'],
+            'provenance' => [
+                'definition' => $definition['_source'],
+                'sha256' => $definition['_sha256'],
+            ],
+        ];
     }
 }

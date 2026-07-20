@@ -61,17 +61,8 @@ Page -> Region -> Section -> Block -> Smart
         "enabled": true,
         "sections": [
           {
-            "section": "docara.shell",
-            "blocks": [
-              {
-                "block": "shell.smart",
-                "smart": "docara.navigation",
-                "bind": "navigation",
-                "props": {
-                  "maximum_depth": 4
-                }
-              }
-            ]
+            "id": "docs-navigation",
+            "section": "docara.navigation"
           }
         ]
       }
@@ -80,8 +71,11 @@ Page -> Region -> Section -> Block -> Smart
 }
 ```
 
-`bind` не является выражением. Это фиксированная безопасная привязка данных,
-подготовленных builder:
+Пользовательский файл содержит только устойчивый ID экземпляра и ссылку на
+зарегистрированную секцию. Слоты, блок `shell.smart`, Smart-компонент,
+`maximum_depth` и привязка данных находятся в определении
+`resources/sections/docara.navigation.json`, а не копируются на каждую
+страницу:
 
 | Smart-компонент | Область | Bind |
 | --- | --- | --- |
@@ -89,8 +83,25 @@ Page -> Region -> Section -> Block -> Smart
 | `docara.navigation` | `sidebar` | `navigation` |
 | `docara.outline` | `outline` | `outline` |
 
-Другую комбинацию сборка отклонит. JSON не может выбрать PHP-файл, class,
-callback или произвольный template path.
+Другую комбинацию сборка отклонит. Пользовательский JSON не может передать
+блоки из внутреннего определения, PHP, Blade, HTML, class, callback или путь к
+шаблону.
+
+## Как формируется разметка
+
+Layout и Section ссылаются на зарегистрированные безопасные View Tree:
+
+```text
+Layout View Tree -> Region
+Section View Tree -> Slot -> Block -> Smart
+```
+
+View Tree хранится в `resources/views/*.json`. Он допускает только ограниченный
+набор семантических тегов, безопасные атрибуты и точную проекцию утилит Simai
+Framework. Неизвестный класс, тег, повторная область или повторный слот
+завершают сборку ошибкой. Сложные presentation leaves могут использовать Blade
+только через внутренний реестр Docara; путь к Blade никогда не поступает из
+авторского файла.
 
 ## Что нельзя отключить
 

@@ -2,12 +2,17 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.simai.io/docara/declarative-block/v1",
   "type": "object",
-  "required": ["schema", "key", "kind", "renderer"],
+  "required": ["schema", "key", "kind", "renderer", "allowed_smart"],
   "properties": {
     "schema": {"type": "string", "const": "docara.block.v1"},
     "key": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
     "kind": {"type": "string", "enum": ["content", "smart"]},
-    "renderer": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"}
+    "renderer": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+    "allowed_smart": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+      "uniqueItems": true
+    }
   },
   "additionalProperties": false
 }

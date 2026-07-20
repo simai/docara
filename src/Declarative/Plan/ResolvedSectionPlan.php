@@ -12,6 +12,9 @@ final readonly class ResolvedSectionPlan
         public string $section,
         public string $type,
         public string $region,
+        public string $view,
+        public array $viewTree,
+        public array $slots,
         public array $blocks,
         public array $provenance,
     ) {}
@@ -24,6 +27,9 @@ final readonly class ResolvedSectionPlan
             'section' => $this->section,
             'type' => $this->type,
             'region' => $this->region,
+            'view' => $this->view,
+            'view_tree' => $this->viewTree,
+            'slots' => $this->slots,
             'blocks' => array_map(
                 static fn (ResolvedBlockPlan $block): array => $block->toArray(),
                 $this->blocks,

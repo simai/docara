@@ -13,12 +13,13 @@ final readonly class LayoutDescriptor
      */
     public function __construct(
         public string $key,
-        public string $template,
+        public string $view,
+        public array $viewTree,
         public array $regions,
         public array $assets,
         public array $provenance,
     ) {
-        if ($key === '' || $template === '' || array_keys($regions) !== [
+        if ($key === '' || $view === '' || $viewTree === [] || array_keys($regions) !== [
             'header',
             'sidebar',
             'main',
@@ -34,7 +35,8 @@ final readonly class LayoutDescriptor
     {
         return [
             'key' => $this->key,
-            'template' => $this->template,
+            'view' => $this->view,
+            'view_tree' => $this->viewTree,
             'regions' => array_map(
                 static fn (LayoutRegion $region): array => $region->toArray(),
                 $this->regions,

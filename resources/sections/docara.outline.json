@@ -1,0 +1,18 @@
+{
+  "schema": "docara.section.v1",
+  "key": "docara.outline",
+  "type": "navigation",
+  "view": "section.docara.shell",
+  "allowed_regions": ["outline"],
+  "slots": ["content"],
+  "allowed_blocks": ["shell.smart"],
+  "blocks": [
+    {
+      "id": "outline",
+      "block": "shell.smart",
+      "slot": "content",
+      "smart": "docara.outline",
+      "bind": "outline"
+    }
+  ]
+}

@@ -108,9 +108,10 @@ layout contract.
 
 `layout.regions` описывает каркас через
 Page -> Region -> Section -> Block -> Smart. Простая форма меняет только
-`enabled`; расширенная использует зарегистрированные `docara.shell`,
-`shell.smart`, `docara.header`, `docara.navigation`, `docara.outline` и
-фиксированные bindings. Произвольные template paths и callbacks запрещены.
+`enabled`; расширенная использует зарегистрированные Section calls
+`docara.header`, `docara.navigation` и `docara.outline`. Их слоты, blocks,
+Smart и фиксированные bindings определены отдельно. Произвольные template
+paths и callbacks запрещены.
 Обязательный `main` выключить нельзя.
 
 ## Presets

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Declarative;
 
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
+use Simai\Docara\Declarative\Composition\RegionCompositionResolver;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Document\DocumentAst;
 use Simai\Docara\Declarative\Document\MarkdownNode;
@@ -25,6 +26,7 @@ final readonly class DeclarativePageCompiler
         private DefinitionRepository $definitions,
         private SmartPlanResolver $smart,
         private CompositeSmartPlanResolver $composites = new CompositeSmartPlanResolver,
+        private RegionCompositionResolver $regionComposition = new RegionCompositionResolver,
     ) {}
 
     /** @param array<string, mixed> $frameworkLock */
@@ -42,9 +44,19 @@ final readonly class DeclarativePageCompiler
         string $title,
         int $outlineDepth = 3,
         ?PageCompositionContext $composition = null,
+        array $layoutConfiguration = [],
+        array $configurationProvenance = [],
     ): ResolvedRenderPlan {
-        $layoutDefinition = $this->definitions->layout('docara.docs');
-        $layout = $this->layout($layoutDefinition);
+        $regionComposition = $this->regionComposition->resolve(
+            $layoutConfiguration,
+            $configurationProvenance,
+        );
+        $layoutDefinition = $this->definitions->layout($regionComposition['key']);
+        $layout = $this->layout(
+            $layoutDefinition,
+            $regionComposition['regions'],
+            $regionComposition['provenance'],
+        );
         $sectionDefinition = $this->definitions->section('docara.article');
         if (! in_array('main', $sectionDefinition['allowed_regions'], true)
             || ! in_array((string) $sectionDefinition['type'], $layout->regions['main']->sectionTypes, true)
@@ -86,36 +98,26 @@ final readonly class DeclarativePageCompiler
         );
         $regions = [];
         foreach (array_keys($layout->regions) as $region) {
-            $regions[$region] = $region === 'main' ? [$section] : [];
+            $regions[$region] = $region === 'main' && $layout->regions[$region]->enabled
+                ? [$section]
+                : [];
         }
         if ($composition !== null) {
-            $regions['header'] = [
-                $this->shellSection(
-                    $pageKey,
-                    'header',
-                    'docara.header',
-                    ['branding' => $composition->branding],
-                    $layout,
-                ),
-            ];
-            $regions['sidebar'] = [
-                $this->shellSection(
-                    $pageKey,
-                    'sidebar',
-                    'docara.navigation',
-                    ['items' => $composition->navigation, 'maximum_depth' => 4],
-                    $layout,
-                ),
-            ];
-            $regions['outline'] = [
-                $this->shellSection(
-                    $pageKey,
-                    'outline',
-                    'docara.outline',
-                    ['items' => $composition->outline],
-                    $layout,
-                ),
-            ];
+            foreach ($regionComposition['regions'] as $region => $regionConfiguration) {
+                if ($region === 'main' || ! $regionConfiguration['enabled']) {
+                    continue;
+                }
+                foreach ($regionConfiguration['sections'] as $index => $sectionConfiguration) {
+                    $regions[$region][] = $this->configuredShellSection(
+                        $pageKey,
+                        $region,
+                        $index,
+                        $sectionConfiguration,
+                        $composition,
+                        $layout,
+                    );
+                }
+            }
         }
 
         $assets = $layout->assets;
@@ -144,42 +146,61 @@ final readonly class DeclarativePageCompiler
                 'compiler' => 'docara.declarative_page_compiler.v1',
                 'document_hash' => $document->canonicalHash(),
                 'composition' => $composition?->toArray(),
+                'region_composition' => $regionComposition,
             ],
         );
     }
 
-    /** @param array<string, mixed> $props */
-    private function shellSection(
+    /** @param array<string, mixed> $configuration */
+    private function configuredShellSection(
         string $pageKey,
         string $region,
-        string $smart,
-        array $props,
+        int $sectionIndex,
+        array $configuration,
+        PageCompositionContext $composition,
         LayoutDescriptor $layout,
     ): ResolvedSectionPlan {
-        $definition = $this->definitions->section('docara.shell');
+        $sectionKey = (string) $configuration['section'];
+        $definition = $this->definitions->section($sectionKey);
         if (! in_array($region, $definition['allowed_regions'], true)
             || ! in_array((string) $definition['type'], $layout->regions[$region]->sectionTypes, true)
         ) {
             throw new PortableConfigurationException(
                 'DECLARATIVE_SECTION_REGION_FORBIDDEN',
-                "Section [docara.shell] is not allowed in region [$region].",
+                "Section [$sectionKey] is not allowed in region [$region].",
             );
         }
-        $nodeId = 'smart-' . substr(hash('sha256', $pageKey . "\0" . $smart), 0, 20);
-        $block = $this->block(
-            'block-' . substr(hash('sha256', $nodeId . "\0shell.smart"), 0, 20),
-            'shell.smart',
-            [],
-            $this->composites->resolve($smart, $nodeId, $props),
-            $definition,
-        );
+        $blocks = [];
+        foreach ($configuration['blocks'] as $blockIndex => $blockConfiguration) {
+            $smart = (string) $blockConfiguration['smart'];
+            $nodeId = 'smart-' . substr(
+                hash('sha256', $pageKey . "\0" . $region . "\0" . $sectionIndex . "\0" . $blockIndex . "\0" . $smart),
+                0,
+                20,
+            );
+            $blocks[] = $this->block(
+                'block-' . substr(hash('sha256', $nodeId . "\0" . $blockConfiguration['block']), 0, 20),
+                (string) $blockConfiguration['block'],
+                ['binding' => (string) $blockConfiguration['bind']],
+                $this->composites->resolve(
+                    $smart,
+                    $nodeId,
+                    $this->boundProps($blockConfiguration, $composition),
+                ),
+                $definition,
+            );
+        }
 
         return new ResolvedSectionPlan(
-            'section-' . substr(hash('sha256', $pageKey . "\0" . $region . "\0docara.shell"), 0, 20),
-            'docara.shell',
+            'section-' . substr(
+                hash('sha256', $pageKey . "\0" . $region . "\0" . $sectionIndex . "\0" . $sectionKey),
+                0,
+                20,
+            ),
+            $sectionKey,
             (string) $definition['type'],
             $region,
-            [$block],
+            $blocks,
             [
                 'definition' => (string) $definition['_source'],
                 'sha256' => (string) $definition['_sha256'],
@@ -187,14 +208,49 @@ final readonly class DeclarativePageCompiler
         );
     }
 
-    /** @param array<string, mixed> $definition */
-    private function layout(array $definition): LayoutDescriptor
+    /**
+     * @param  array<string, mixed>  $block
+     * @return array<string, mixed>
+     */
+    private function boundProps(array $block, PageCompositionContext $composition): array
     {
+        return match ($block['bind']) {
+            'branding' => ['branding' => $composition->branding],
+            'navigation' => [
+                'items' => $composition->navigation,
+                'maximum_depth' => (int) ($block['props']['maximum_depth'] ?? 4),
+            ],
+            'outline' => ['items' => $composition->outline],
+            default => throw new PortableConfigurationException(
+                'DECLARATIVE_REGION_BINDING_FORBIDDEN',
+                "Unknown declarative region binding [{$block['bind']}].",
+            ),
+        };
+    }
+
+    /**
+     * @param  array<string, mixed>  $definition
+     * @param  array<string, array{enabled:bool,sections:list<array<string,mixed>>}>  $configuration
+     * @param  array<string, string>  $configurationProvenance
+     */
+    private function layout(
+        array $definition,
+        array $configuration,
+        array $configurationProvenance,
+    ): LayoutDescriptor {
         $regions = [];
         foreach ($definition['regions'] as $key => $region) {
+            $enabled = $configuration[$key]['enabled'];
+            if ((bool) $region['required'] && ! $enabled) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_REQUIRED_REGION_DISABLED',
+                    "Required region [$key] cannot be disabled.",
+                );
+            }
             $regions[$key] = new LayoutRegion(
                 (string) $key,
                 (bool) $region['required'],
+                $enabled,
                 $region['section_types'],
             );
         }
@@ -207,6 +263,7 @@ final readonly class DeclarativePageCompiler
             [
                 'definition' => (string) $definition['_source'],
                 'sha256' => (string) $definition['_sha256'],
+                'configuration' => $configurationProvenance,
             ],
         );
     }

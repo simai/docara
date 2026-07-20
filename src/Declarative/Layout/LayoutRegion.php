@@ -10,9 +10,10 @@ final readonly class LayoutRegion
     public function __construct(
         public string $key,
         public bool $required,
+        public bool $enabled,
         public array $sectionTypes,
     ) {
-        if ($key === '' || $sectionTypes === []) {
+        if ($key === '' || $sectionTypes === [] || ($required && ! $enabled)) {
             throw new \InvalidArgumentException('LAYOUT_REGION_INVALID');
         }
     }
@@ -23,6 +24,7 @@ final readonly class LayoutRegion
         return [
             'key' => $this->key,
             'required' => $this->required,
+            'enabled' => $this->enabled,
             'section_types' => $this->sectionTypes,
         ];
     }

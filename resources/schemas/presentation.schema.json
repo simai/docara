@@ -40,9 +40,110 @@
                 "$reset": {
                     "const": true
                 },
+                "key": {
+                    "type": "string",
+                    "enum": ["docara.docs"]
+                },
                 "max_width": {
                     "type": "string",
                     "enum": ["compact", "normal", "wide", "full"]
+                },
+                "regions": {
+                    "$ref": "#/$defs/regions"
+                }
+            },
+            "additionalProperties": false
+        },
+        "regions": {
+            "type": "object",
+            "minProperties": 1,
+            "properties": {
+                "$reset": {
+                    "const": true
+                },
+                "header": {
+                    "$ref": "#/$defs/region"
+                },
+                "sidebar": {
+                    "$ref": "#/$defs/region"
+                },
+                "main": {
+                    "$ref": "#/$defs/region"
+                },
+                "outline": {
+                    "$ref": "#/$defs/region"
+                },
+                "footer": {
+                    "$ref": "#/$defs/region"
+                }
+            },
+            "additionalProperties": false
+        },
+        "region": {
+            "type": "object",
+            "minProperties": 1,
+            "properties": {
+                "$reset": {
+                    "const": true
+                },
+                "enabled": {
+                    "type": "boolean"
+                },
+                "sections": {
+                    "type": "array",
+                    "maxItems": 8,
+                    "items": {
+                        "$ref": "#/$defs/region_section"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "region_section": {
+            "type": "object",
+            "required": ["section", "blocks"],
+            "properties": {
+                "section": {
+                    "type": "string",
+                    "enum": ["docara.shell"]
+                },
+                "blocks": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 8,
+                    "items": {
+                        "$ref": "#/$defs/region_block"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "region_block": {
+            "type": "object",
+            "required": ["block", "smart", "bind"],
+            "properties": {
+                "block": {
+                    "type": "string",
+                    "enum": ["shell.smart"]
+                },
+                "smart": {
+                    "type": "string",
+                    "enum": ["docara.header", "docara.navigation", "docara.outline"]
+                },
+                "bind": {
+                    "type": "string",
+                    "enum": ["branding", "navigation", "outline"]
+                },
+                "props": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "properties": {
+                        "maximum_depth": {
+                            "type": "integer",
+                            "const": 4
+                        }
+                    },
+                    "additionalProperties": false
                 }
             },
             "additionalProperties": false

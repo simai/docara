@@ -1,40 +1,36 @@
-# Workflow: browsable declarative preview
+# Workflow: declarative region composition contract
 
 Date: 2026-07-20
 Status: completed
-Workflow ID: `2026-07-20-declarative-preview`
+Workflow ID: `2026-07-20-region-composition-contract`
 Process model: `general_delivery`
 Current state: `evidence_recorded`
 Target state: `evidence_recorded`
 
 ## Goal
 
-Publish a safe, browsable preview of the accepted declarative chain next to the
-unchanged legacy site.
+Expose the accepted Page -> Region -> Section -> Block -> Smart model as a
+safe, inheritable author contract for site, section and page descriptors.
 
 ## Source Of Truth
 
 - workflow:
-  `source/workflow/2026-07-20-declarative-preview.md`;
+  `source/workflow/2026-07-20-region-composition-contract.md`;
 - launch record:
-  `source/workflow/2026-07-20-declarative-preview.launch.yaml`;
+  `source/workflow/2026-07-20-region-composition-contract.launch.yaml`;
 - evidence:
-  `source/workflow/evidence/2026-07-20-declarative-preview/`.
-
-## Current Batch
-
-All batches completed.
-
-## Baseline
-
-Starting revision `ab1507a`; accepted legacy renderer SHA-256:
-`a28e914128a55143ce13e21c8bebc2216b5144919c6dbb2e5dfee366229125d0`.
+  `source/workflow/evidence/2026-07-20-region-composition-contract/`.
 
 ## Result
 
-The declarative content and shell plans are browsable for all 45 authored
-documentation pages at
-`https://docara.test/_docara/declarative-preview/`. Full tests, static
-verification, deterministic builds, staged deployment and desktop/mobile
-browser acceptance pass. The accepted legacy renderer remains the normal
-publisher.
+The contract is implemented, documented, deployed to the reversible local
+`docara.test` build and accepted by focused/full tests, deterministic build,
+static verification and desktop/mobile browser checks.
+
+The next recommended bounded goal is typed breadcrumbs plus previous/next
+reading context.
+
+## Nonclaim
+
+The accepted legacy renderer remains the primary publisher until a later
+full-shell migration and acceptance goal.

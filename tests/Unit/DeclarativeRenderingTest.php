@@ -37,9 +37,10 @@ MD, 'content/install.md'),
         $artifact = (new DeclarativePageRenderer(new PortableMarkdownRenderer))->render($plan);
 
         self::assertStringContainsString('data-docara-declarative-page="install"', $artifact->html);
-        foreach (['header', 'sidebar', 'main', 'outline', 'footer'] as $region) {
+        foreach (['header', 'sidebar', 'main', 'outline'] as $region) {
             self::assertSame(1, substr_count($artifact->html, 'data-docara-region="' . $region . '"'));
         }
+        self::assertStringNotContainsString('data-docara-region="footer"', $artifact->html);
         self::assertStringContainsString('data-docara-section="docara.article"', $artifact->html);
         self::assertStringContainsString('<h1 id="installation">Installation</h1>', $artifact->html);
         self::assertStringContainsString('href="/guide/"', $artifact->html);

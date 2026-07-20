@@ -2,5 +2,5 @@ tracks:
   docara-consolidation:
     status: "ready_for_next_goal"
     owner_skill: "teamlead"
-    current_workflow: "source/workflow/2026-07-20-declarative-shell-regions.md"
+    current_workflow: "source/workflow/2026-07-20-region-composition-contract.md"
     last_updated: "2026-07-20"

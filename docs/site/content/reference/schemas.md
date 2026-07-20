@@ -61,7 +61,11 @@ Invalid-пример документирует ожидаемую ошибку;
 ## Presentation branches
 
 - `branding`: non-empty title/label/brand asset settings;
+- `layout.key`: registered value `docara.docs`;
 - `layout.max_width`: `compact`, `normal`, `wide`, `full`;
+- `layout.regions.<name>.enabled`: boolean;
+- `layout.regions.<name>.sections`: ordered registered
+  Section -> Block -> Smart calls;
 - `settings.theme`: `system`, `light`, `dark`;
 - `navigation.hidden`: boolean;
 - `navigation.order`: integer `0..2147483647`;
@@ -80,6 +84,16 @@ Resolver устанавливает:
 ```json
 {
   "content_root": "content",
+  "layout": {
+    "key": "docara.docs",
+    "regions": {
+      "header": { "enabled": true },
+      "sidebar": { "enabled": true },
+      "main": { "enabled": true },
+      "outline": { "enabled": true },
+      "footer": { "enabled": false }
+    }
+  },
   "search": {
     "enabled": false,
     "indexed": true
@@ -92,6 +106,11 @@ Resolver устанавливает:
   }
 }
 ```
+
+Структурные defaults областей восстанавливаются после branch reset. `main`
+является обязательной областью и не может быть выключен. Допустимые
+section/block/Smart IDs и фиксированные data bindings дополнительно
+проверяются runtime resolver.
 
 Значения starter, например включённый search UI, приходят из поставляемого
 `docara.json`, а не из скрытого default.

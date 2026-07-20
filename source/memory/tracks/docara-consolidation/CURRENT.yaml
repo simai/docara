@@ -1,11 +1,11 @@
 track_id: "docara-consolidation"
 status: "ready_for_next_goal"
 owner_skill: "teamlead"
-current_goal: "Typed header, sidebar and outline composition accepted in shadow mode."
-current_stage: "`evidence_recorded`"
-current_workflow: "source/workflow/2026-07-20-declarative-shell-regions.md"
-last_completed_batch: "Separated exact-candidate acceptance for declarative shell regions."
-next_step: "Select breadcrumbs and previous/next reading context or another bounded shell slice."
+current_goal: "Author-facing inherited Region Composition Contract with local demonstration — accepted."
+current_stage: "evidence_recorded"
+current_workflow: "source/workflow/2026-07-20-region-composition-contract.md"
+last_completed_batch: "Completed, deployed and accepted the Region Composition Contract."
+next_step: "Define a bounded workflow for typed breadcrumbs and previous/next reading context."
 blockers: []
 related_tracks: []
 updated_at: "2026-07-20"

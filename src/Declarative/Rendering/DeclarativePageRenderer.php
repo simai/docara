@@ -49,6 +49,10 @@ final readonly class DeclarativePageRenderer
             $this->escape($plan->pageKey),
             $this->escape($plan->title),
             $regions,
+            array_map(
+                static fn ($region): bool => $region->enabled,
+                $plan->layout->regions,
+            ),
         );
 
         return new RenderArtifact(

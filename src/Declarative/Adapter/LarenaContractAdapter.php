@@ -33,6 +33,14 @@ final class LarenaContractAdapter
                     'key' => $plan->layout->key,
                     'template' => $plan->layout->template,
                     'regions' => array_keys($plan->layout->regions),
+                    'region_configuration' => array_map(
+                        static fn ($region): array => [
+                            'required' => $region->required,
+                            'enabled' => $region->enabled,
+                            'section_types' => $region->sectionTypes,
+                        ],
+                        $plan->layout->regions,
+                    ),
                 ],
                 'regions' => $regions,
                 'assets' => $plan->assets,

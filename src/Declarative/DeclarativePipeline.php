@@ -43,6 +43,8 @@ final readonly class DeclarativePipeline
         string $title,
         int $outlineDepth,
         ?PageCompositionContext $composition = null,
+        array $layoutConfiguration = [],
+        array $configurationProvenance = [],
     ): DeclarativePageResult {
         $document = $this->parser->parse($markdown, $source);
         $plan = $this->compiler->compile(
@@ -51,6 +53,8 @@ final readonly class DeclarativePipeline
             $title,
             $outlineDepth,
             $composition,
+            $layoutConfiguration,
+            $configurationProvenance,
         );
 
         return new DeclarativePageResult($plan, $this->renderer->render($plan));

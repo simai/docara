@@ -306,6 +306,10 @@ final readonly class PortableSiteBuilder
                     (string) $page['title'],
                     (int) data_get($declarativePlan->configuration, 'reading.toc_depth', 3),
                     $composition,
+                    is_array($declarativePlan->configuration['layout'] ?? null)
+                        ? $declarativePlan->configuration['layout']
+                        : [],
+                    $declarativePlan->provenance,
                 );
                 $parity = (new SemanticParityChecker)->assertEquivalent(
                     (string) $page['title'],

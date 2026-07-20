@@ -3,6 +3,7 @@
 namespace Simai\Docara\Portable;
 
 use JsonException;
+use Simai\Docara\Declarative\Composition\RegionCompositionResolver;
 use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkLock;
 
@@ -139,6 +140,7 @@ final class PortableConfigurationLoader
 
         $result = $this->merger->merge([], [
             'content_root' => 'content',
+            'layout' => RegionCompositionResolver::defaults(),
             'search' => [
                 'enabled' => false,
                 'indexed' => true,
@@ -195,7 +197,42 @@ final class PortableConfigurationLoader
             }
         }
 
+        [$configuration, $provenance] = $this->normalizeStructuralLayout(
+            $configuration,
+            $provenance,
+        );
+
         return [$configuration, $frameworkLock, $trace, $provenance];
+    }
+
+    /**
+     * Structural layout defaults are invariants, not optional presentation
+     * decoration. A branch reset removes inherited author values and then
+     * restores these registered defaults so the resolved plan stays complete.
+     *
+     * @param  array<string, mixed>  $configuration
+     * @param  array<string, string>  $provenance
+     * @return array{0:array<string,mixed>,1:array<string,string>}
+     */
+    private function normalizeStructuralLayout(array $configuration, array $provenance): array
+    {
+        $layout = is_array($configuration['layout'] ?? null)
+            ? $configuration['layout']
+            : [];
+        $resolved = (new RegionCompositionResolver)->resolve($layout, $provenance);
+        $layout['key'] = $resolved['key'];
+        $layout['regions'] = $resolved['regions'];
+        $configuration['layout'] = $layout;
+
+        $provenance['/layout/key'] ??= '@defaults';
+        foreach ($resolved['regions'] as $region => $regionConfiguration) {
+            $pointer = '/layout/regions/' . $region;
+            $provenance[$pointer . '/enabled'] ??= '@defaults';
+            $provenance[$pointer . '/sections'] ??= '@defaults';
+        }
+        ksort($provenance, SORT_STRING);
+
+        return [$configuration, $provenance];
     }
 
     /**

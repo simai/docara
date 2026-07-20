@@ -15,12 +15,23 @@ final class ShellStructuralParityChecker
         PageCompositionContext $context,
         ResolvedRenderPlan $plan,
     ): ShellStructuralParityResult {
-        $expected = $context->toArray();
-        $actual = [
-            'branding' => $this->props($plan, 'header', 'docara.header')['branding'] ?? null,
-            'navigation' => $this->props($plan, 'sidebar', 'docara.navigation')['items'] ?? null,
-            'outline' => $this->props($plan, 'outline', 'docara.outline')['items'] ?? null,
-        ];
+        $expected = [];
+        $actual = [];
+        foreach ([
+            'header' => ['key' => 'branding', 'smart' => 'docara.header', 'prop' => 'branding'],
+            'sidebar' => ['key' => 'navigation', 'smart' => 'docara.navigation', 'prop' => 'items'],
+            'outline' => ['key' => 'outline', 'smart' => 'docara.outline', 'prop' => 'items'],
+        ] as $region => $binding) {
+            if (! $plan->layout->regions[$region]->enabled) {
+                continue;
+            }
+            $expected[$binding['key']] = $context->toArray()[$binding['key']];
+            $actual[$binding['key']] = $this->props(
+                $plan,
+                $region,
+                $binding['smart'],
+            )[$binding['prop']] ?? null;
+        }
         $result = new ShellStructuralParityResult($expected === $actual, $expected, $actual);
         if (! $result->passed) {
             throw new PortableConfigurationException(

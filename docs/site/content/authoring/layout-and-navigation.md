@@ -10,6 +10,11 @@
 Оба preset используют тот же Markdown, JSON, Framework lock и правила
 безопасности.
 
+Сам каркас описывается именованными областями `header`, `sidebar`, `main`,
+`outline`, `footer`. Их включение, наследование и безопасное наполнение
+секциями и Smart-компонентами разобраны отдельно:
+[области макета](/authoring/regions/).
+
 ## Рецепт документационной страницы
 
 Создайте `content/guides/install.md`, затем соседний
@@ -71,6 +76,8 @@ php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 ## Ширина и тема
 
 `layout.max_width` принимает `compact`, `normal`, `wide`, `full`.
+`layout.key` выбирает зарегистрированный макет; сейчас доступен
+`docara.docs`. `layout.regions` управляет его областями.
 `settings.theme` принимает `system`, `light`, `dark`.
 
 Тема из JSON задаёт первое посещение; пользовательский выбор в браузере

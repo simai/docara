@@ -2,10 +2,10 @@
 
 ## Where We Stopped
 
-Track `docara-consolidation` is attached to workflow:
+Track `docara-consolidation` completed and accepted:
 
-- `source/workflow/2026-07-20-declarative-shell-regions.md`
-- workflow title: Workflow: declarative documentation shell regions
+- `source/workflow/2026-07-20-region-composition-contract.md`
+- workflow title: Workflow: declarative region composition contract
 
 ## Next Meaningful Goal
 
@@ -15,17 +15,18 @@ context.
 
 ## Stages
 
-1. Confirm the next bounded goal and its exact nonclaims.
-2. Create a new workflow and launch record.
-3. Keep `PortableHtmlRenderer` as publisher until full-shell acceptance.
+1. Map existing breadcrumb and previous/next sources read-only.
+2. Define their typed data and Smart composition contracts.
+3. Create a new workflow and launch record only after fixing exact nonclaims.
+4. Keep `PortableHtmlRenderer` as publisher until full-shell acceptance.
 
 ## Next Safe Batch
 
-Perform read-only mapping of breadcrumbs and previous/next data into the shared
-Page -> Region -> Section -> Block -> Smart vocabulary.
+Perform read-only mapping of breadcrumbs and previous/next data into the
+accepted Page -> Region -> Section -> Block -> Smart vocabulary.
 
 ## Checks
 
-- Read `source/workflow/2026-07-20-declarative-shell-regions.md`.
+- Read `source/workflow/2026-07-20-region-composition-contract.md`.
 - Check route/gates before writes.
 - Update this track memory after progress.

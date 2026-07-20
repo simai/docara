@@ -67,7 +67,7 @@ final class DocumentationContractTest extends TestCase
         }
 
         $documents = $this->markdownDocuments();
-        self::assertCount(45, $documents, 'The authored documentation inventory must stay exact.');
+        self::assertCount(46, $documents, 'The authored documentation inventory must stay exact.');
 
         foreach ($documents as $path) {
             $markdown = (string) file_get_contents($path);

@@ -659,6 +659,67 @@ final class StaticBuildVerifierTest extends TestCase
     }
 
     #[Test]
+    public function resolved_build_and_html_locale_version_identity_fail_closed(): void
+    {
+        $mutations = [
+            'html-lang' => static function (string $build): void {
+                $path = $build . '/index.html';
+                $html = (string) file_get_contents($path);
+                file_put_contents($path, str_replace('lang="ru"', 'lang="en"', $html));
+            },
+            'html-version-attribute' => static function (string $build): void {
+                $path = $build . '/index.html';
+                $html = (string) file_get_contents($path);
+                file_put_contents(
+                    $path,
+                    str_replace(
+                        'data-docara-documentation-version="current"',
+                        'data-docara-documentation-version="forged"',
+                        $html,
+                    ),
+                );
+            },
+            'html-version-meta' => static function (string $build): void {
+                $path = $build . '/index.html';
+                $html = (string) file_get_contents($path);
+                file_put_contents(
+                    $path,
+                    str_replace(
+                        'name="docara:documentation-version" content="current"',
+                        'name="docara:documentation-version" content="forged"',
+                        $html,
+                    ),
+                );
+            },
+        ];
+
+        foreach ($mutations as $case => $mutate) {
+            $build = $this->createGeneratedCatalogBuild('build-identity-' . $case);
+            $mutate($build);
+            $result = $this->verify($build, false);
+            self::assertSame(1, $result->getExitCode(), $result->getOutput());
+            self::assertStringContainsString('@page-build-identity', $result->getOutput());
+        }
+
+        $missingBuild = $this->createGeneratedCatalogBuild('build-identity-missing-manifest-build');
+        $manifestPath = $missingBuild . '/.docara/resolved-page-plans.json';
+        $manifest = $this->readJson($manifestPath);
+        unset($manifest['build']);
+        $this->writeJson($manifestPath, $manifest);
+        $missingBuildResult = $this->verify($missingBuild, false);
+        self::assertSame(
+            1,
+            $missingBuildResult->getExitCode(),
+            $missingBuildResult->getOutput(),
+        );
+        self::assertStringContainsString('@resolved-page-plans', $missingBuildResult->getOutput());
+        self::assertStringContainsString(
+            'Resolved build metadata is required',
+            $missingBuildResult->getOutput(),
+        );
+    }
+
+    #[Test]
     public function generated_component_catalogue_pages_fail_closed_on_receipt_inventory_and_semantic_drift(): void
     {
         $missingReceipt = $this->createGeneratedCatalogBuild('catalog-pages-missing-receipt');
@@ -1123,6 +1184,22 @@ final class StaticBuildVerifierTest extends TestCase
             }
             unset($page);
         }
+        if (($manifest['schema'] ?? null) === 'docara.resolved_page_plans.v1'
+            && is_array($manifest['pages'] ?? null)
+            && array_is_list($manifest['pages'])
+            && $manifest['pages'] !== []
+            && ! array_key_exists('build', $manifest)
+        ) {
+            $configuration = $manifest['pages'][0]['resolved_page_plan']['configuration'] ?? null;
+            if (is_array($configuration)) {
+                $manifest['build'] = [
+                    'documentation_version' => $configuration['documentation_version'] ?? 'current',
+                    'locale' => $configuration['default_locale']
+                        ?? $configuration['locale']
+                        ?? 'en',
+                ];
+            }
+        }
         if ($this->manifestSupportsComponentCatalogProjection($manifest)) {
             $manifest = $this->appendComponentCatalogProjection($build, $manifest);
         }
@@ -1328,8 +1405,11 @@ final class StaticBuildVerifierTest extends TestCase
         );
     }
 
-    private function verify(string $build): Process
+    private function verify(string $build, bool $normalizeBuildIdentity = true): Process
     {
+        if ($normalizeBuildIdentity) {
+            $this->normalizeBuildIdentityFixture($build);
+        }
         $process = new Process([
             PHP_BINARY,
             'scripts/verify-static-build.php',
@@ -1342,6 +1422,7 @@ final class StaticBuildVerifierTest extends TestCase
 
     private function verifyViaCli(string $build): Process
     {
+        $this->normalizeBuildIdentityFixture($build);
         $root = dirname(__DIR__, 2);
         $process = new Process([
             PHP_BINARY,
@@ -1353,5 +1434,56 @@ final class StaticBuildVerifierTest extends TestCase
         $process->run();
 
         return $process;
+    }
+
+    private function normalizeBuildIdentityFixture(string $build): void
+    {
+        $manifestPath = $build . '/.docara/resolved-page-plans.json';
+        if (! is_file($manifestPath)) {
+            return;
+        }
+        try {
+            $manifest = $this->readJson($manifestPath);
+        } catch (\Throwable) {
+            return;
+        }
+        $pages = $manifest['pages'] ?? null;
+        if (! is_array($pages) || ! array_is_list($pages)) {
+            return;
+        }
+        foreach ($pages as $page) {
+            if (! is_array($page) || ! is_string($page['output'] ?? null)) {
+                continue;
+            }
+            $path = $build . '/' . $page['output'];
+            $stat = @lstat($path);
+            if (is_link($path)
+                || ! is_array($stat)
+                || (($stat['mode'] ?? 0) & 0170000) !== 0100000
+                || ($stat['nlink'] ?? 1) > 1
+            ) {
+                continue;
+            }
+            $html = (string) file_get_contents($path);
+            if (preg_match('/<html\b/i', $html) === 1) {
+                continue;
+            }
+            $configuration = $page['resolved_page_plan']['configuration'] ?? [];
+            $locale = is_array($configuration)
+                ? ($configuration['locale'] ?? $configuration['default_locale'] ?? 'en')
+                : 'en';
+            $documentationVersion = is_array($configuration)
+                ? ($configuration['documentation_version'] ?? 'current')
+                : 'current';
+            file_put_contents(
+                $path,
+                '<!doctype html><html lang="' . htmlspecialchars((string) $locale, ENT_QUOTES)
+                . '" data-docara-documentation-version="'
+                . htmlspecialchars((string) $documentationVersion, ENT_QUOTES)
+                . '"><head><meta name="docara:documentation-version" content="'
+                . htmlspecialchars((string) $documentationVersion, ENT_QUOTES)
+                . '"></head><body>' . $html . '</body></html>',
+            );
+        }
     }
 }

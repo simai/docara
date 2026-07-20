@@ -900,6 +900,48 @@ function docaraHtmlIdInventory(string $html): array
     return ['ids' => $ids, 'duplicates' => array_values(array_unique($duplicates))];
 }
 
+function docaraAssertHtmlBuildIdentity(
+    string $html,
+    string $locale,
+    string $documentationVersion,
+): void {
+    $document = new DOMDocument('1.0', 'UTF-8');
+    $previous = libxml_use_internal_errors(true);
+    $loaded = $document->loadHTML(
+        '<?xml encoding="UTF-8">' . $html,
+        LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING | LIBXML_COMPACT,
+    );
+    libxml_clear_errors();
+    libxml_use_internal_errors($previous);
+    if ($loaded !== true) {
+        throw new RuntimeException('Generated HTML could not be parsed for build identity verification.');
+    }
+
+    $root = $document->documentElement;
+    if (! $root instanceof DOMElement
+        || strtolower($root->tagName) !== 'html'
+        || $root->getAttribute('lang') !== $locale
+        || $root->getAttribute('data-docara-documentation-version') !== $documentationVersion
+    ) {
+        throw new RuntimeException(
+            'Generated HTML root does not match the resolved locale and documentation version.',
+        );
+    }
+
+    $nodes = (new DOMXPath($document))->query(
+        '//meta[@name="docara:documentation-version"]',
+    );
+    if ($nodes === false
+        || $nodes->length !== 1
+        || ! $nodes->item(0) instanceof DOMElement
+        || $nodes->item(0)->getAttribute('content') !== $documentationVersion
+    ) {
+        throw new RuntimeException(
+            'Generated HTML requires one documentation-version meta matching the resolved build.',
+        );
+    }
+}
+
 function docaraAssertTrustedPackagedDirectory(string $packageRoot, string $relative): void
 {
     if (! docaraCatalogSafePath($relative)) {
@@ -1677,15 +1719,14 @@ if (is_link($manifestDirectory)
             }
             $deploymentBase = $configuredBase === '/' ? '/' : '/' . trim($configuredBase, '/') . '/';
             $manifestBuild = $manifest['build'] ?? null;
-            if ($manifestBuild !== null
-                && (
-                    ! is_array($manifestBuild)
-                    || ! docaraExactKeys($manifestBuild, ['locale', 'documentation_version'])
-                    || ($manifestBuild['locale'] ?? null) !== $expectedBuildLocale
-                    || ($manifestBuild['documentation_version'] ?? null) !== $expectedDocumentationVersion
-                )
+            if (! is_array($manifestBuild)
+                || ! docaraExactKeys($manifestBuild, ['locale', 'documentation_version'])
+                || ($manifestBuild['locale'] ?? null) !== $expectedBuildLocale
+                || ($manifestBuild['documentation_version'] ?? null) !== $expectedDocumentationVersion
             ) {
-                throw new RuntimeException('Resolved build metadata does not match page locale and version metadata.');
+                throw new RuntimeException(
+                    'Resolved build metadata is required and must match page locale and version metadata.',
+                );
             }
 
             foreach ($manifestPageRecords as $index => $page) {
@@ -1749,6 +1790,40 @@ if ($manifestError === null) {
     }
 }
 
+$htmlBuildIdentityProblems = [];
+if ($manifestError === null) {
+    foreach ($manifestPageRecords as $page) {
+        $output = $page['output'] ?? null;
+        $configuration = $page['resolved_page_plan']['configuration'] ?? null;
+        if (! is_string($output) || ! is_array($configuration)) {
+            continue;
+        }
+        $locale = $configuration['locale']
+            ?? $configuration['default_locale']
+            ?? 'en';
+        $documentationVersion = $configuration['documentation_version']
+            ?? 'current';
+        $html = file_get_contents($root . '/' . $output);
+        try {
+            if (! is_string($locale)
+                || ! is_string($documentationVersion)
+                || ! is_string($html)
+            ) {
+                throw new RuntimeException(
+                    'Resolved page HTML identity inputs are incomplete.',
+                );
+            }
+            docaraAssertHtmlBuildIdentity($html, $locale, $documentationVersion);
+        } catch (Throwable $exception) {
+            $htmlBuildIdentityProblems[] = [
+                'page' => $output,
+                'reference' => '@page-build-identity',
+                'target' => $exception->getMessage(),
+            ];
+        }
+    }
+}
+
 $htmlIds = [];
 $htmlIdProblems = [];
 foreach ($htmlFiles as $htmlFile) {
@@ -1788,6 +1863,7 @@ $broken = array_map(
     $unsafeArtifactEntries,
 );
 array_push($broken, ...$htmlIdProblems);
+array_push($broken, ...$htmlBuildIdentityProblems);
 if ($manifestError !== null) {
     $broken[] = ['page' => '@build', 'reference' => '@resolved-page-plans', 'target' => $manifestError];
 } else {

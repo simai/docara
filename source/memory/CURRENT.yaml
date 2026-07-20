@@ -1,9 +1,9 @@
 project_id: "docara-consolidation"
-updated_at: "2026-07-20T03:40:00+03:00"
-status: "ready_for_next_goal"
-primary_goal: "Completed: portable Docara is replacement-ready on the accepted local contour."
+updated_at: "2026-07-20T16:48:28+03:00"
+status: "acceptance_pending"
+primary_goal: "Implement the first declarative rendering pipeline vertical slice shared conceptually with Larena."
 active_tracks:
   - docara-consolidation
-current_focus: "source/workflow/2026-07-20-docara-legacy-replacement-readiness.md"
+current_focus: "source/workflow/2026-07-20-declarative-rendering-pipeline.md"
 important_blockers: []
-next_global_step: "Choose a separate Goal for optional polish/cross-browser coverage or for public release and default-branch migration; do not infer repository retirement."
+next_global_step: "Run separated reverse-outcome acceptance against the immutable declarative rendering candidate."

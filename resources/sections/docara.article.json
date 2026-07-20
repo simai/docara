@@ -1,0 +1,7 @@
+{
+  "schema": "docara.section.v1",
+  "key": "docara.article",
+  "type": "content",
+  "allowed_regions": ["main"],
+  "allowed_blocks": ["content.markdown", "content.smart"]
+}

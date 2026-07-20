@@ -1,0 +1,13 @@
+{
+  "schema": "docara.layout.v1",
+  "key": "docara.docs",
+  "template": "layout.docara.docs",
+  "regions": {
+    "header": {"required": true, "section_types": ["navigation"]},
+    "sidebar": {"required": false, "section_types": ["navigation"]},
+    "main": {"required": true, "section_types": ["content"]},
+    "outline": {"required": false, "section_types": ["navigation"]},
+    "footer": {"required": false, "section_types": ["content", "navigation"]}
+  },
+  "assets": ["simai.framework", "docara.reader"]
+}

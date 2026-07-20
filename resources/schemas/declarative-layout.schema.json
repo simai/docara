@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.simai.io/docara/declarative-layout/v1",
+  "type": "object",
+  "required": ["schema", "key", "template", "regions", "assets"],
+  "properties": {
+    "schema": {"type": "string", "const": "docara.layout.v1"},
+    "key": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+    "template": {"type": "string", "pattern": "^layout\\.[a-z][a-z0-9_.-]+$"},
+    "regions": {
+      "type": "object",
+      "required": ["header", "sidebar", "main", "outline", "footer"],
+      "properties": {
+        "header": {"$ref": "#/$defs/region"},
+        "sidebar": {"$ref": "#/$defs/region"},
+        "main": {"$ref": "#/$defs/region"},
+        "outline": {"$ref": "#/$defs/region"},
+        "footer": {"$ref": "#/$defs/region"}
+      },
+      "additionalProperties": false
+    },
+    "assets": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "region": {
+      "type": "object",
+      "required": ["required", "section_types"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "section_types": {
+          "type": "array",
+          "items": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+          "uniqueItems": true
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

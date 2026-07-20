@@ -326,6 +326,23 @@ final class PortableSiteBuilderTest extends TestCase
         $diagnostics = $this->jsonFile($diagnosticPath);
         self::assertSame('docara.resolved_page_plans.v1', $diagnostics['schema']);
         self::assertCount(20, $diagnostics['pages']);
+        $indexPlan = collect($diagnostics['pages'])->firstWhere('output', 'index.html');
+        self::assertIsArray($indexPlan);
+        self::assertSame('rendered', $indexPlan['declarative_pipeline']['status']);
+        self::assertSame('pass', $indexPlan['declarative_pipeline']['semantic_parity']['status']);
+        self::assertSame(
+            'larena.layout.resolved_render_plan.v1',
+            $indexPlan['declarative_pipeline']['larena_contract']['schema'],
+        );
+        self::assertSame('pass', $indexPlan['declarative_pipeline']['larena_contract']['semantic_parity']);
+        self::assertSame(
+            ['footer', 'header', 'main', 'outline', 'sidebar'],
+            array_keys($indexPlan['declarative_pipeline']['plan']['regions']),
+        );
+        self::assertSame(
+            'ui.alert',
+            $indexPlan['declarative_pipeline']['semantic_parity']['declarative']['smart'][0]['smart'],
+        );
         $guidePlan = collect($diagnostics['pages'])->firstWhere('output', 'guides/getting-started/index.html');
         self::assertIsArray($guidePlan);
         self::assertSame(1, $guidePlan['resolved_page_plan']['contract_version']);
@@ -339,6 +356,8 @@ final class PortableSiteBuilderTest extends TestCase
             ['docara.component_call.v1', 'docara.component_call.v1'],
             array_column($guidePlan['component_runtime']['normalized_calls'], 'schema'),
         );
+        self::assertSame('not_in_vertical_slice', $guidePlan['declarative_pipeline']['status']);
+        self::assertSame(['ui.button'], $guidePlan['declarative_pipeline']['unsupported_components']);
         self::assertTrue($guidePlan['resolved_page_plan']['configuration']['search']['enabled']);
         self::assertTrue($guidePlan['resolved_page_plan']['configuration']['search']['indexed']);
         self::assertSame(

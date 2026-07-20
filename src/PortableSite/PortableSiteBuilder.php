@@ -7,6 +7,9 @@ namespace Simai\Docara\PortableSite;
 use Illuminate\Support\Collection;
 use JsonException;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
+use Simai\Docara\Declarative\Adapter\LarenaContractAdapter;
+use Simai\Docara\Declarative\DeclarativePipeline;
+use Simai\Docara\Declarative\Semantic\SemanticParityChecker;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
@@ -47,6 +50,7 @@ final readonly class PortableSiteBuilder
         $outputs = [];
         $frameworkLockCanonical = null;
         $runtime = null;
+        $declarativePipeline = null;
         foreach ($pagePaths as $pagePath) {
             $plan = $loader->resolve($pagePath);
             $currentFrameworkLock = CanonicalJson::encode($plan->frameworkLock);
@@ -76,11 +80,56 @@ final readonly class PortableSiteBuilder
                 );
             }
             $outputs[$route['output']] = $pagePath;
+            $title = $this->pageTitle($plan);
+            $componentIds = array_values(array_unique(array_map(
+                static fn (array $call): string => (string) ($call['id'] ?? ''),
+                $components->normalizedCalls,
+            )));
+            $unsupportedDeclarativeComponents = array_values(array_diff($componentIds, ['ui.alert']));
+            if ($unsupportedDeclarativeComponents === []) {
+                $declarativePipeline ??= DeclarativePipeline::bundled(
+                    $plan->frameworkLock,
+                    $this->markdown,
+                    $this->html->reservedDocumentIds(),
+                );
+                $declarative = $declarativePipeline->build(
+                    $plan->markdown,
+                    $plan->page,
+                    $route['output'],
+                    $title,
+                    (int) data_get($plan->configuration, 'reading.toc_depth', 3),
+                );
+                $parity = (new SemanticParityChecker)->assertEquivalent(
+                    $title,
+                    $contentHtml,
+                    $components->normalizedCalls,
+                    $declarative,
+                );
+                $larenaContract = (new LarenaContractAdapter)->adapt($declarative->plan);
+                $declarativeDiagnostic = $declarative->toArray() + [
+                    'semantic_parity' => $parity->toArray(),
+                    'larena_contract' => [
+                        'schema' => $larenaContract->payload['schema'],
+                        'canonical_hash' => $larenaContract->canonicalHash(),
+                        'semantic_parity' => $larenaContract->semantics
+                            === $declarative->plan->semanticProjection()
+                            ? 'pass'
+                            : 'fail',
+                    ],
+                ];
+            } else {
+                sort($unsupportedDeclarativeComponents, SORT_STRING);
+                $declarativeDiagnostic = [
+                    'status' => 'not_in_vertical_slice',
+                    'unsupported_components' => $unsupportedDeclarativeComponents,
+                    'supported_components' => ['ui.alert'],
+                ];
+            }
 
             $pages[] = [
                 'plan' => $plan,
                 'page_path' => $pagePath,
-                'title' => $this->pageTitle($plan),
+                'title' => $title,
                 'description' => (string) ($plan->configuration['description'] ?? ''),
                 'locale' => (string) ($plan->configuration['locale'] ?? $buildLocale),
                 'documentation_version' => $documentationVersion,
@@ -101,6 +150,7 @@ final readonly class PortableSiteBuilder
                 'content_html' => $contentHtml,
                 'components' => $components,
                 'component_calls' => $components->normalizedCalls,
+                'declarative_pipeline' => $declarativeDiagnostic,
             ];
         }
 
@@ -274,6 +324,9 @@ final readonly class PortableSiteBuilder
                 'url' => $page['url'],
                 'resolved_page_plan' => $plan->toArray(),
                 'component_runtime' => $page['components']->toArray(),
+                'declarative_pipeline' => $page['declarative_pipeline'] ?? [
+                    'status' => 'not_applicable_generated_page',
+                ],
             ];
             $diagnostics[] = $record;
             $result->put((string) $page['url'], $record);

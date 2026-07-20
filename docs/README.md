@@ -15,6 +15,9 @@
 | Мигрирующий проект | `content/migration.md` | Явный переход без скрытого преобразования |
 | Разработчик Docara | `content/development.md` | Локальная проверка и безопасное расширение |
 
+Архитектура нового разделённого конвейера описана в
+[`declarative-rendering-pipeline.md`](declarative-rendering-pipeline.md).
+
 ## Источники истины
 
 - Markdown и JSON в `docs/site` владеют объяснением пользовательских задач.

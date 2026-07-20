@@ -1,6 +1,6 @@
 tracks:
   docara-consolidation:
-    status: "ready_for_next_goal"
+    status: "acceptance_pending"
     owner_skill: "teamlead"
-    current_workflow: "source/workflow/2026-07-20-docara-legacy-replacement-readiness.md"
+    current_workflow: "source/workflow/2026-07-20-declarative-rendering-pipeline.md"
     last_updated: "2026-07-20"

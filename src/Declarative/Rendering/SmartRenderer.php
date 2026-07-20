@@ -17,6 +17,9 @@ final readonly class SmartRenderer
     {
         $view = match ($plan->smart) {
             'ui.alert' => $this->viewModels->alert($plan),
+            'docara.header' => $this->viewModels->header($plan),
+            'docara.navigation' => $this->viewModels->navigation($plan),
+            'docara.outline' => $this->viewModels->outline($plan),
             default => throw new \InvalidArgumentException('SMART_RENDERER_UNSUPPORTED'),
         };
 
@@ -24,7 +27,9 @@ final readonly class SmartRenderer
             $this->templates->render($plan->template, ['view' => $view]),
             $plan->assets,
             [
-                'runtime' => 'simai-framework',
+                'runtime' => str_starts_with($plan->smart, 'ui.')
+                    ? 'simai-framework'
+                    : 'docara.smart.template',
                 'smart' => $plan->smart,
                 'view' => $plan->view,
             ],

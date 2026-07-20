@@ -19,6 +19,10 @@ final class DefinitionRepository
             'path' => 'sections/docara.article.json',
             'schema' => 'declarative-section.schema.json',
         ],
+        'section:docara.shell' => [
+            'path' => 'sections/docara.shell.json',
+            'schema' => 'declarative-section.schema.json',
+        ],
         'block:content.markdown' => [
             'path' => 'blocks/content.markdown.json',
             'schema' => 'declarative-block.schema.json',
@@ -27,8 +31,36 @@ final class DefinitionRepository
             'path' => 'blocks/content.smart.json',
             'schema' => 'declarative-block.schema.json',
         ],
+        'block:shell.smart' => [
+            'path' => 'blocks/shell.smart.json',
+            'schema' => 'declarative-block.schema.json',
+        ],
         'smart-view:ui.alert:default' => [
             'path' => 'smart/ui.alert/views/default.json',
+            'schema' => 'declarative-smart-view.schema.json',
+        ],
+        'smart-manifest:docara.header' => [
+            'path' => 'smart/docara.header/manifest.json',
+            'schema' => 'declarative-smart-manifest.schema.json',
+        ],
+        'smart-view:docara.header:default' => [
+            'path' => 'smart/docara.header/views/default.json',
+            'schema' => 'declarative-smart-view.schema.json',
+        ],
+        'smart-manifest:docara.navigation' => [
+            'path' => 'smart/docara.navigation/manifest.json',
+            'schema' => 'declarative-smart-manifest.schema.json',
+        ],
+        'smart-view:docara.navigation:default' => [
+            'path' => 'smart/docara.navigation/views/default.json',
+            'schema' => 'declarative-smart-view.schema.json',
+        ],
+        'smart-manifest:docara.outline' => [
+            'path' => 'smart/docara.outline/manifest.json',
+            'schema' => 'declarative-smart-manifest.schema.json',
+        ],
+        'smart-view:docara.outline:default' => [
+            'path' => 'smart/docara.outline/views/default.json',
             'schema' => 'declarative-smart-view.schema.json',
         ],
     ];
@@ -63,6 +95,12 @@ final class DefinitionRepository
     public function smartView(string $smart, string $view): array
     {
         return $this->definition('smart-view:' . $smart . ':' . $view);
+    }
+
+    /** @return array<string, mixed> */
+    public function smartManifest(string $smart): array
+    {
+        return $this->definition('smart-manifest:' . $smart);
     }
 
     /** @return array<string, mixed> */

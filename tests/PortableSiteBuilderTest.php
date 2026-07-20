@@ -330,6 +330,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertIsArray($indexPlan);
         self::assertSame('rendered', $indexPlan['declarative_pipeline']['status']);
         self::assertSame('pass', $indexPlan['declarative_pipeline']['semantic_parity']['status']);
+        self::assertSame('pass', $indexPlan['declarative_pipeline']['shell_structural_parity']['status']);
         self::assertSame(
             'larena.layout.resolved_render_plan.v1',
             $indexPlan['declarative_pipeline']['larena_contract']['schema'],
@@ -338,6 +339,13 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertSame(
             ['footer', 'header', 'main', 'outline', 'sidebar'],
             array_keys($indexPlan['declarative_pipeline']['plan']['regions']),
+        );
+        self::assertCount(1, $indexPlan['declarative_pipeline']['plan']['regions']['header']);
+        self::assertCount(1, $indexPlan['declarative_pipeline']['plan']['regions']['sidebar']);
+        self::assertCount(1, $indexPlan['declarative_pipeline']['plan']['regions']['outline']);
+        self::assertSame(
+            'docara.navigation',
+            $indexPlan['declarative_pipeline']['plan']['regions']['sidebar'][0]['blocks'][0]['smart']['smart'],
         );
         self::assertSame(
             'ui.alert',

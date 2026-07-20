@@ -72,10 +72,11 @@ MD, 'content/install.md'),
     {
         $root = dirname(__DIR__, 2) . '/resources';
         $templates = [
-            $root . '/layouts/templates/docara.docs.php',
-            $root . '/sections/templates/docara.article.php',
-            $root . '/smart/ui.alert/templates/default.php',
+            ...glob($root . '/layouts/templates/*.php') ?: [],
+            ...glob($root . '/sections/templates/*.php') ?: [],
+            ...glob($root . '/smart/*/templates/*.php') ?: [],
         ];
+        self::assertCount(7, $templates);
         foreach ($templates as $template) {
             $source = (string) file_get_contents($template);
             self::assertStringNotContainsString('<style', $source);

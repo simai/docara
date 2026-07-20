@@ -6,6 +6,11 @@ namespace Simai\Docara\Declarative\Rendering;
 
 use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
 use Simai\Docara\Declarative\Rendering\View\AlertViewModel;
+use Simai\Docara\Declarative\Rendering\View\HeaderViewModel;
+use Simai\Docara\Declarative\Rendering\View\NavigationItemViewModel;
+use Simai\Docara\Declarative\Rendering\View\NavigationViewModel;
+use Simai\Docara\Declarative\Rendering\View\OutlineItemViewModel;
+use Simai\Docara\Declarative\Rendering\View\OutlineViewModel;
 
 final class ViewModelFactory
 {
@@ -27,6 +32,81 @@ final class ViewModelFactory
             (bool) $props['closable'],
             isset($props['icon']) ? $this->escape((string) $props['icon']) : null,
         );
+    }
+
+    public function header(ResolvedSmartPlan $plan): HeaderViewModel
+    {
+        $branding = $plan->props['branding'];
+
+        return new HeaderViewModel(
+            $this->escape((string) $branding['title']),
+            $branding['label'] === null ? null : $this->escape((string) $branding['label']),
+            $this->escape((string) $branding['home_url']),
+            $branding['logo'] === null ? null : $this->escape((string) $branding['logo']),
+            $branding['logo_dark'] === null ? null : $this->escape((string) $branding['logo_dark']),
+        );
+    }
+
+    public function navigation(ResolvedSmartPlan $plan): NavigationViewModel
+    {
+        return new NavigationViewModel(
+            $this->navigationItems($plan->props['items']),
+            (int) $plan->props['maximum_depth'],
+        );
+    }
+
+    public function outline(ResolvedSmartPlan $plan): OutlineViewModel
+    {
+        $items = [];
+        foreach ($plan->props['items'] as $item) {
+            $level = (int) $item['level'];
+            $items[] = new OutlineItemViewModel(
+                $this->escape((string) $item['id']),
+                $level,
+                $this->escape((string) $item['text']),
+                match ($level) {
+                    2 => '',
+                    3 => 'pl-2',
+                    4 => 'pl-4',
+                    5 => 'pl-6',
+                    default => 'pl-8',
+                },
+            );
+        }
+
+        return new OutlineViewModel($items);
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $nodes
+     * @return list<NavigationItemViewModel>
+     */
+    private function navigationItems(array $nodes, int $depth = 1): array
+    {
+        $items = [];
+        foreach ($nodes as $node) {
+            $children = $node['children'];
+            $items[] = new NavigationItemViewModel(
+                $this->escape((string) $node['key']),
+                $this->escape((string) $node['title']),
+                $node['url'] === null ? null : $this->escape((string) $node['url']),
+                $depth,
+                match ($depth) {
+                    1 => '',
+                    2 => 'pl-2',
+                    3 => 'pl-4',
+                    default => 'pl-6',
+                },
+                (bool) $node['active'],
+                (bool) $node['active_ancestor'],
+                (bool) $node['current_section'],
+                (bool) $node['open'],
+                $children !== [],
+            );
+            array_push($items, ...$this->navigationItems($children, $depth + 1));
+        }
+
+        return $items;
     }
 
     private function escape(string $value): string

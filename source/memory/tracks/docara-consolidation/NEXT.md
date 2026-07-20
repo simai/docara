@@ -2,27 +2,30 @@
 
 ## Where We Stopped
 
-The replacement-readiness Goal is complete:
+Track `docara-consolidation` is attached to workflow:
 
-- product candidate:
-  `2640503ba14913aa83bc3b4343c86966a807e29f`;
-- served target: `https://docara.test/`;
-- canonical served digest:
-  `a16d61252837c8d23102e2285a948d7a81c513150080f09b2e9095c31ba475f4`;
-- technical, browser, HCS and local publication evidence: `PASS`;
-- previous accepted build retained in two verified rollback trees.
+- `source/workflow/2026-07-20-declarative-shell-regions.md`
+- workflow title: Workflow: declarative documentation shell regions
 
-Canonical workflow:
+## Next Meaningful Goal
 
-`source/workflow/2026-07-20-docara-legacy-replacement-readiness.md`
+Extend the accepted shadow declarative pipeline from the article body to the
+documentation shell data: header, sidebar and outline must be populated by
+typed Page -> Section -> Block -> Smart plans that can be projected to Larena
+without changing the published legacy renderer.
 
-## Separate Future Goals
+## Stages
 
-Choose one explicitly before more work:
+1. Restore current state from the workflow and project memory.
+2. Execute the next safe batch from the workflow.
+3. Update track memory after the batch.
 
-1. optional product polish: search synonyms, Framework copy-label
-   localization, secondary copy target and a declared multi-browser matrix;
-2. public release and default-branch migration;
-3. repository retirement, only after independent consumer migration proof.
+## Next Safe Batch
 
-None of these is authorized or implied by the completed local Goal.
+Open the workflow and run the next safe batch.
+
+## Checks
+
+- Read `source/workflow/2026-07-20-declarative-shell-regions.md`.
+- Check route/gates before writes.
+- Update this track memory after progress.

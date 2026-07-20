@@ -1,6 +1,6 @@
 tracks:
   docara-consolidation:
-    status: "ready_for_next_goal"
+    status: "active"
     owner_skill: "teamlead"
-    current_workflow: "source/workflow/2026-07-20-declarative-rendering-pipeline.md"
+    current_workflow: "source/workflow/2026-07-20-declarative-shell-regions.md"
     last_updated: "2026-07-20"

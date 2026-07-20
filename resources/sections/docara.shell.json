@@ -1,0 +1,7 @@
+{
+  "schema": "docara.section.v1",
+  "key": "docara.shell",
+  "type": "navigation",
+  "allowed_regions": ["header", "sidebar", "outline"],
+  "allowed_blocks": ["shell.smart"]
+}

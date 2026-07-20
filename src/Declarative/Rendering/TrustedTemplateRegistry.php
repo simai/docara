@@ -12,7 +12,11 @@ final readonly class TrustedTemplateRegistry
     private const TEMPLATES = [
         'layout.docara.docs' => 'layouts/templates/docara.docs.php',
         'section.docara.article' => 'sections/templates/docara.article.php',
+        'section.docara.shell' => 'sections/templates/docara.shell.php',
         'smart.ui.alert.default' => 'smart/ui.alert/templates/default.php',
+        'smart.docara.header.default' => 'smart/docara.header/templates/default.php',
+        'smart.docara.navigation.default' => 'smart/docara.navigation/templates/default.php',
+        'smart.docara.outline.default' => 'smart/docara.outline/templates/default.php',
     ];
 
     public function __construct(

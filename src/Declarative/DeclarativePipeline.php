@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Declarative;
 
+use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\Document\DocumentParser;
 use Simai\Docara\Declarative\Rendering\DeclarativePageRenderer;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
@@ -41,9 +42,16 @@ final readonly class DeclarativePipeline
         string $pageKey,
         string $title,
         int $outlineDepth,
+        ?PageCompositionContext $composition = null,
     ): DeclarativePageResult {
         $document = $this->parser->parse($markdown, $source);
-        $plan = $this->compiler->compile($document, $pageKey, $title, $outlineDepth);
+        $plan = $this->compiler->compile(
+            $document,
+            $pageKey,
+            $title,
+            $outlineDepth,
+            $composition,
+        );
 
         return new DeclarativePageResult($plan, $this->renderer->render($plan));
     }

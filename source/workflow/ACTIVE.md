@@ -1,38 +1,36 @@
-# Workflow: declarative rendering pipeline vertical slice
+# Workflow: declarative documentation shell regions
 
 Date: 2026-07-20
-Status: completed
-Workflow ID: `2026-07-20-declarative-rendering-pipeline`
+Status: in_progress
+Workflow ID: `2026-07-20-declarative-shell-regions`
 Process model: `general_delivery`
-Current state: `evidence_recorded`
+Current state: `ready_to_code`
 Target state: `evidence_recorded`
 
 ## Goal
 
-Implement the first Docara vertical slice of the shared declarative rendering
-pipeline intended for later Larena consumption.
+Populate the declarative documentation shell with typed header, sidebar and
+outline Smart composition while preserving the accepted published renderer.
 
 ## Source Of Truth
 
 - workflow:
-  `source/workflow/2026-07-20-declarative-rendering-pipeline.md`;
+  `source/workflow/2026-07-20-declarative-shell-regions.md`;
 - launch record:
-  `source/workflow/2026-07-20-declarative-rendering-pipeline.launch.yaml`;
+  `source/workflow/2026-07-20-declarative-shell-regions.launch.yaml`;
 - evidence:
-  `source/workflow/evidence/2026-07-20-declarative-rendering-pipeline/`.
+  `source/workflow/evidence/2026-07-20-declarative-shell-regions/`.
 
 ## Current Batch
 
-None. The vertical slice is complete.
+Batch 1: typed shell composition context and populated region plans.
 
 ## Baseline
 
-Starting revision `922c00e`; accepted legacy renderer SHA-256:
+Starting revision `891bd4c`; accepted legacy renderer SHA-256:
 `a28e914128a55143ce13e21c8bebc2216b5144919c6dbb2e5dfee366229125d0`.
 
 ## Result
 
-Candidate `a29c1ab03462415879ec7383e6cf53e1dcccb1c2` passed the complete
-requirement matrix. The new pipeline is shadow-only; legacy HTML remains
-published. Public release, local publication, default-branch migration and
-legacy renderer removal are not part of this result.
+The first article-body slice is accepted. Header, sidebar and outline are now
+the active missing capability. The new pipeline remains shadow-only.

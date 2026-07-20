@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Declarative;
 
+use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Document\DocumentAst;
 use Simai\Docara\Declarative\Document\MarkdownNode;
@@ -14,6 +15,7 @@ use Simai\Docara\Declarative\Plan\ResolvedBlockPlan;
 use Simai\Docara\Declarative\Plan\ResolvedRenderPlan;
 use Simai\Docara\Declarative\Plan\ResolvedSectionPlan;
 use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
+use Simai\Docara\Declarative\Smart\CompositeSmartPlanResolver;
 use Simai\Docara\Declarative\Smart\SmartPlanResolver;
 use Simai\Docara\Portable\PortableConfigurationException;
 
@@ -22,6 +24,7 @@ final readonly class DeclarativePageCompiler
     public function __construct(
         private DefinitionRepository $definitions,
         private SmartPlanResolver $smart,
+        private CompositeSmartPlanResolver $composites = new CompositeSmartPlanResolver,
     ) {}
 
     /** @param array<string, mixed> $frameworkLock */
@@ -38,6 +41,7 @@ final readonly class DeclarativePageCompiler
         string $pageKey,
         string $title,
         int $outlineDepth = 3,
+        ?PageCompositionContext $composition = null,
     ): ResolvedRenderPlan {
         $layoutDefinition = $this->definitions->layout('docara.docs');
         $layout = $this->layout($layoutDefinition);
@@ -84,13 +88,46 @@ final readonly class DeclarativePageCompiler
         foreach (array_keys($layout->regions) as $region) {
             $regions[$region] = $region === 'main' ? [$section] : [];
         }
+        if ($composition !== null) {
+            $regions['header'] = [
+                $this->shellSection(
+                    $pageKey,
+                    'header',
+                    'docara.header',
+                    ['branding' => $composition->branding],
+                    $layout,
+                ),
+            ];
+            $regions['sidebar'] = [
+                $this->shellSection(
+                    $pageKey,
+                    'sidebar',
+                    'docara.navigation',
+                    ['items' => $composition->navigation, 'maximum_depth' => 4],
+                    $layout,
+                ),
+            ];
+            $regions['outline'] = [
+                $this->shellSection(
+                    $pageKey,
+                    'outline',
+                    'docara.outline',
+                    ['items' => $composition->outline],
+                    $layout,
+                ),
+            ];
+        }
 
         $assets = $layout->assets;
-        foreach ($blocks as $block) {
-            if ($block->smart === null) {
-                continue;
+        foreach ($regions as $sections) {
+            foreach ($sections as $regionSection) {
+                foreach ($regionSection->blocks as $block) {
+                    if ($block->smart === null) {
+                        continue;
+                    }
+                    array_push($assets, ...$block->smart->assets);
+                }
             }
-            array_push($assets, ...$block->smart->assets);
         }
         $assets = array_values(array_unique($assets));
         sort($assets, SORT_STRING);
@@ -106,6 +143,46 @@ final readonly class DeclarativePageCompiler
             [
                 'compiler' => 'docara.declarative_page_compiler.v1',
                 'document_hash' => $document->canonicalHash(),
+                'composition' => $composition?->toArray(),
+            ],
+        );
+    }
+
+    /** @param array<string, mixed> $props */
+    private function shellSection(
+        string $pageKey,
+        string $region,
+        string $smart,
+        array $props,
+        LayoutDescriptor $layout,
+    ): ResolvedSectionPlan {
+        $definition = $this->definitions->section('docara.shell');
+        if (! in_array($region, $definition['allowed_regions'], true)
+            || ! in_array((string) $definition['type'], $layout->regions[$region]->sectionTypes, true)
+        ) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_SECTION_REGION_FORBIDDEN',
+                "Section [docara.shell] is not allowed in region [$region].",
+            );
+        }
+        $nodeId = 'smart-' . substr(hash('sha256', $pageKey . "\0" . $smart), 0, 20);
+        $block = $this->block(
+            'block-' . substr(hash('sha256', $nodeId . "\0shell.smart"), 0, 20),
+            'shell.smart',
+            [],
+            $this->composites->resolve($smart, $nodeId, $props),
+            $definition,
+        );
+
+        return new ResolvedSectionPlan(
+            'section-' . substr(hash('sha256', $pageKey . "\0" . $region . "\0docara.shell"), 0, 20),
+            'docara.shell',
+            (string) $definition['type'],
+            $region,
+            [$block],
+            [
+                'definition' => (string) $definition['_source'],
+                'sha256' => (string) $definition['_sha256'],
             ],
         );
     }

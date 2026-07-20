@@ -1,0 +1,37 @@
+{
+  "schema": "larena.ui.smart_manifest.v1",
+  "key": "docara.navigation",
+  "version": "1.0.0",
+  "owner_package": "simai/docara",
+  "kind": "composite",
+  "props": {
+    "type": "object",
+    "properties": {
+      "items": {"type": "array"},
+      "maximum_depth": {"type": "integer", "minimum": 1, "maximum": 4}
+    },
+    "required": ["items", "maximum_depth"],
+    "additionalProperties": false
+  },
+  "slots": {},
+  "events": {},
+  "views": {"default": {}},
+  "presets": {},
+  "constraints": {},
+  "render": {"strategy": "host", "renderer": "docara.smart.template"},
+  "frontend": {"runtime": null, "tag": null},
+  "assets": [
+    {"key": "simai.framework.core.css", "kind": "css", "critical": true}
+  ],
+  "atlas": {
+    "visible": true,
+    "title": "Documentation navigation",
+    "description": "Displays a four-level documentation tree and its active path.",
+    "category": "navigation",
+    "status": "shadow_testable"
+  },
+  "provenance": {
+    "source": "simai/docara",
+    "reference_status": "product_owned"
+  }
+}

@@ -86,7 +86,12 @@ final readonly class DeclarativePageRenderer
         );
 
         return new RenderArtifact(
-            $this->templates->render('section.docara.article', ['view' => $view]),
+            $this->templates->render(
+                $section->section === 'docara.shell'
+                    ? 'section.docara.shell'
+                    : 'section.docara.article',
+                ['view' => $view],
+            ),
             array_values(array_unique($assets)),
             [],
             $section->provenance + ['blocks' => $blocks],

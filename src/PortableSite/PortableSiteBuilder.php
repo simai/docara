@@ -8,8 +8,10 @@ use Illuminate\Support\Collection;
 use JsonException;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
 use Simai\Docara\Declarative\Adapter\LarenaContractAdapter;
+use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\DeclarativePipeline;
 use Simai\Docara\Declarative\Semantic\SemanticParityChecker;
+use Simai\Docara\Declarative\Semantic\ShellStructuralParityChecker;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
@@ -86,45 +88,7 @@ final readonly class PortableSiteBuilder
                 $components->normalizedCalls,
             )));
             $unsupportedDeclarativeComponents = array_values(array_diff($componentIds, ['ui.alert']));
-            if ($unsupportedDeclarativeComponents === []) {
-                $declarativePipeline ??= DeclarativePipeline::bundled(
-                    $plan->frameworkLock,
-                    $this->markdown,
-                    $this->html->reservedDocumentIds(),
-                );
-                $declarative = $declarativePipeline->build(
-                    $plan->markdown,
-                    $plan->page,
-                    $route['output'],
-                    $title,
-                    (int) data_get($plan->configuration, 'reading.toc_depth', 3),
-                );
-                $parity = (new SemanticParityChecker)->assertEquivalent(
-                    $title,
-                    $contentHtml,
-                    $components->normalizedCalls,
-                    $declarative,
-                );
-                $larenaContract = (new LarenaContractAdapter)->adapt($declarative->plan);
-                $declarativeDiagnostic = $declarative->toArray() + [
-                    'semantic_parity' => $parity->toArray(),
-                    'larena_contract' => [
-                        'schema' => $larenaContract->payload['schema'],
-                        'canonical_hash' => $larenaContract->canonicalHash(),
-                        'semantic_parity' => $larenaContract->semantics
-                            === $declarative->plan->semanticProjection()
-                            ? 'pass'
-                            : 'fail',
-                    ],
-                ];
-            } else {
-                sort($unsupportedDeclarativeComponents, SORT_STRING);
-                $declarativeDiagnostic = [
-                    'status' => 'not_in_vertical_slice',
-                    'unsupported_components' => $unsupportedDeclarativeComponents,
-                    'supported_components' => ['ui.alert'],
-                ];
-            }
+            sort($unsupportedDeclarativeComponents, SORT_STRING);
 
             $pages[] = [
                 'plan' => $plan,
@@ -150,7 +114,8 @@ final readonly class PortableSiteBuilder
                 'content_html' => $contentHtml,
                 'components' => $components,
                 'component_calls' => $components->normalizedCalls,
-                'declarative_pipeline' => $declarativeDiagnostic,
+                'declarative_supported' => $unsupportedDeclarativeComponents === [],
+                'declarative_unsupported_components' => $unsupportedDeclarativeComponents,
             ];
         }
 
@@ -311,6 +276,58 @@ final readonly class PortableSiteBuilder
                     ? (string) $page['component_catalog_index_url']
                     : (string) $page['url'],
             );
+            if (($page['declarative_supported'] ?? false) === true) {
+                /** @var ResolvedPagePlan $declarativePlan */
+                $declarativePlan = $page['plan'];
+                $composition = PageCompositionContext::fromBuilder(
+                    $page['branding'],
+                    (string) $page['home_url'],
+                    $activeNavigation,
+                    $page['outline'],
+                );
+                $declarativePipeline ??= DeclarativePipeline::bundled(
+                    $declarativePlan->frameworkLock,
+                    $this->markdown,
+                    $this->html->reservedDocumentIds(),
+                );
+                $declarative = $declarativePipeline->build(
+                    $declarativePlan->markdown,
+                    $declarativePlan->page,
+                    (string) $page['output'],
+                    (string) $page['title'],
+                    (int) data_get($declarativePlan->configuration, 'reading.toc_depth', 3),
+                    $composition,
+                );
+                $parity = (new SemanticParityChecker)->assertEquivalent(
+                    (string) $page['title'],
+                    (string) $page['content_html'],
+                    $page['components']->normalizedCalls,
+                    $declarative,
+                );
+                $shellParity = (new ShellStructuralParityChecker)->assertEquivalent(
+                    $composition,
+                    $declarative->plan,
+                );
+                $larenaContract = (new LarenaContractAdapter)->adapt($declarative->plan);
+                $page['declarative_pipeline'] = $declarative->toArray() + [
+                    'semantic_parity' => $parity->toArray(),
+                    'shell_structural_parity' => $shellParity->toArray(),
+                    'larena_contract' => [
+                        'schema' => $larenaContract->payload['schema'],
+                        'canonical_hash' => $larenaContract->canonicalHash(),
+                        'semantic_parity' => $larenaContract->semantics
+                            === $declarative->plan->semanticProjection()
+                            ? 'pass'
+                            : 'fail',
+                    ],
+                ];
+            } elseif (array_key_exists('declarative_unsupported_components', $page)) {
+                $page['declarative_pipeline'] = [
+                    'status' => 'not_in_vertical_slice',
+                    'unsupported_components' => $page['declarative_unsupported_components'],
+                    'supported_components' => ['ui.alert'],
+                ];
+            }
             $outputPath = rtrim($destination, '/\\') . '/' . $page['output'];
             $this->files->ensureDirectoryExists(dirname($outputPath));
             $rendered = $this->html->render($page, $activeNavigation, $siteTitle, $page['components']->assetPlan);

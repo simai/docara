@@ -1,11 +1,11 @@
 track_id: "docara-consolidation"
-status: "goal_completed"
+status: "active"
 owner_skill: "teamlead"
-current_goal: "Portable Docara is replacement-ready relative to legacy on the accepted local contour."
-current_stage: "replacement_ready_local"
-current_workflow: "source/workflow/2026-07-20-docara-legacy-replacement-readiness.md"
-last_completed_batch: "Batch 8: exact candidate 2640503 published to local docara.test with verified backup, rollback, served digest and browser proof."
-next_step: "Select a separate future Goal; public release, default-branch migration and repository retirement are not implied."
+current_goal: "Extend the accepted shadow declarative pipeline from the article body to the"
+current_stage: "`implementation_verified`"
+current_workflow: "source/workflow/2026-07-20-declarative-shell-regions.md"
+last_completed_batch: ""
+next_step: ""
 blockers: []
 related_tracks: []
-updated_at: "2026-07-20T03:40:00+03:00"
+updated_at: "2026-07-20"

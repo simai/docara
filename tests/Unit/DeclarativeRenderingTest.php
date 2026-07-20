@@ -75,8 +75,9 @@ MD, 'content/install.md'),
             ...glob($root . '/layouts/templates/*.php') ?: [],
             ...glob($root . '/sections/templates/*.php') ?: [],
             ...glob($root . '/smart/*/templates/*.php') ?: [],
+            ...glob($root . '/previews/templates/*.php') ?: [],
         ];
-        self::assertCount(7, $templates);
+        self::assertCount(9, $templates);
         foreach ($templates as $template) {
             $source = (string) file_get_contents($template);
             self::assertStringNotContainsString('<style', $source);

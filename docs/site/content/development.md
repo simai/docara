@@ -12,6 +12,7 @@
 
 - [Начало работы с repository](/development/getting-started/)
 - [Архитектура](/development/architecture/)
+- [Декларативный preview](/development/declarative-preview/)
 - [Развитие возможностей](/development/extensions/)
 - [Vite и ассеты](/development/vite-assets/)
 - [Framework-компоненты](/development/framework-components/)

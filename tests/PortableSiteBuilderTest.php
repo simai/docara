@@ -56,6 +56,12 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertFileExists($this->tmpPath('build_local/components/catalog/docara.columns/index.html'));
         self::assertFileExists($this->tmpPath('build_local/_docara/search-index.json'));
         self::assertFileExists($this->tmpPath('build_local/_docara/search.js'));
+        self::assertFileExists($this->tmpPath('build_local/_docara/declarative-preview/index.html'));
+        self::assertFileExists($this->tmpPath('build_local/_docara/declarative-preview/index.json'));
+        self::assertFileExists($this->tmpPath('build_local/_docara/declarative-preview/pages/index.html'));
+        self::assertFileExists(
+            $this->tmpPath('build_local/_docara/declarative-preview/pages/guides/index.html'),
+        );
 
         $index = (string) file_get_contents($this->tmpPath('build_local/index.html'));
         $guide = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
@@ -347,6 +353,11 @@ final class PortableSiteBuilderTest extends TestCase
             'docara.navigation',
             $indexPlan['declarative_pipeline']['plan']['regions']['sidebar'][0]['blocks'][0]['smart']['smart'],
         );
+        self::assertSame('rendered', $indexPlan['declarative_pipeline']['preview']['status']);
+        self::assertSame(
+            '/_docara/declarative-preview/pages/',
+            $indexPlan['declarative_pipeline']['preview']['url'],
+        );
         self::assertSame(
             'ui.alert',
             $indexPlan['declarative_pipeline']['semantic_parity']['declarative']['smart'][0]['smart'],
@@ -366,6 +377,27 @@ final class PortableSiteBuilderTest extends TestCase
         );
         self::assertSame('not_in_vertical_slice', $guidePlan['declarative_pipeline']['status']);
         self::assertSame(['ui.button'], $guidePlan['declarative_pipeline']['unsupported_components']);
+        $previewReceipt = $this->jsonFile(
+            $this->tmpPath('build_local/_docara/declarative-preview/index.json'),
+        );
+        self::assertSame('docara.declarative_preview_receipt.v1', $previewReceipt['schema']);
+        self::assertCount(7, $previewReceipt['pages']);
+        self::assertCount(6, array_filter(
+            $previewReceipt['pages'],
+            static fn (array $page): bool => $page['status'] === 'rendered',
+        ));
+        self::assertSame(
+            ['full_visual_parity' => false, 'primary_publisher_switched' => false, 'production_ready' => false],
+            $previewReceipt['nonclaims'],
+        );
+        $previewHome = (string) file_get_contents(
+            $this->tmpPath('build_local/_docara/declarative-preview/pages/index.html'),
+        );
+        self::assertStringContainsString('Декларативный preview', $previewHome);
+        self::assertStringContainsString(
+            'href="/_docara/declarative-preview/pages/guides/" data-docara-original-href="/guides/"',
+            $previewHome,
+        );
         self::assertTrue($guidePlan['resolved_page_plan']['configuration']['search']['enabled']);
         self::assertTrue($guidePlan['resolved_page_plan']['configuration']['search']['indexed']);
         self::assertSame(
@@ -503,6 +535,39 @@ final class PortableSiteBuilderTest extends TestCase
 
         self::assertSame(0, $process->getExitCode(), $process->getErrorOutput() . $process->getOutput());
         self::assertStringContainsString('"broken": []', $process->getOutput());
+    }
+
+    #[Test]
+    public function static_verification_rejects_a_tampered_declarative_preview_receipt(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $this->builder()->build($this->tmp, $this->tmpPath('build_production'));
+        $receiptPath = $this->tmpPath(
+            'build_production/_docara/declarative-preview/index.json',
+        );
+        $receipt = $this->jsonFile($receiptPath);
+        $receipt['index']['html_sha256'] = str_repeat('0', 64);
+        file_put_contents(
+            $receiptPath,
+            CanonicalJson::encodePretty($receipt),
+        );
+
+        $process = new Process([
+            PHP_BINARY,
+            'scripts/verify-static-build.php',
+            $this->tmpPath('build_production'),
+        ], dirname(__DIR__));
+        $process->run();
+
+        self::assertSame(1, $process->getExitCode());
+        self::assertStringContainsString(
+            '"reference": "@declarative-preview"',
+            $process->getOutput(),
+        );
+        self::assertStringContainsString(
+            'is missing, unsafe or has a wrong hash',
+            $process->getOutput(),
+        );
     }
 
     #[Test]

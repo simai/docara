@@ -17,6 +17,8 @@ final readonly class TrustedTemplateRegistry
         'smart.docara.header.default' => 'smart/docara.header/templates/default.php',
         'smart.docara.navigation.default' => 'smart/docara.navigation/templates/default.php',
         'smart.docara.outline.default' => 'smart/docara.outline/templates/default.php',
+        'preview.docara.page' => 'previews/templates/page.php',
+        'preview.docara.index' => 'previews/templates/index.php',
     ];
 
     public function __construct(

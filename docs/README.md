@@ -17,6 +17,8 @@
 
 Архитектура нового разделённого конвейера описана в
 [`declarative-rendering-pipeline.md`](declarative-rendering-pipeline.md).
+Пути всех входов, стадий, preview-результатов и способов проверки собраны в
+[`declarative-preview.md`](declarative-preview.md).
 
 ## Источники истины
 

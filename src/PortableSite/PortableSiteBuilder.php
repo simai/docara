@@ -10,9 +10,13 @@ use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
 use Simai\Docara\Declarative\Adapter\LarenaContractAdapter;
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\DeclarativePipeline;
+use Simai\Docara\Declarative\Preview\DeclarativePreviewLinkProjector;
+use Simai\Docara\Declarative\Preview\DeclarativePreviewRenderer;
+use Simai\Docara\Declarative\Preview\DeclarativePreviewRouteMap;
 use Simai\Docara\Declarative\Semantic\SemanticParityChecker;
 use Simai\Docara\Declarative\Semantic\ShellStructuralParityChecker;
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\Framework\FrameworkAssetPlan;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
@@ -167,6 +171,7 @@ final readonly class PortableSiteBuilder
                 );
             }
         }
+        $previewRoutes = DeclarativePreviewRouteMap::fromPages($pages);
 
         $navigationBuilder = new PortableNavigationBuilder;
         $topology = $navigationBuilder->build($pages, $contentRoot, $contentPath);
@@ -216,6 +221,10 @@ final readonly class PortableSiteBuilder
         $this->prepareDestination($root, $destination);
         $result = collect();
         $diagnostics = [];
+        $previewRecords = [];
+        $previewRenderer = new DeclarativePreviewRenderer;
+        $previewProjector = new DeclarativePreviewLinkProjector;
+        $previewAssetPlan = null;
 
         $docaraOutputDirectory = rtrim($destination, '/\\') . '/_docara';
         $this->files->ensureDirectoryExists($docaraOutputDirectory);
@@ -321,11 +330,53 @@ final readonly class PortableSiteBuilder
                             : 'fail',
                     ],
                 ];
+                $previewUrl = $previewRoutes->previewUrl((string) $page['url']);
+                $previewOutput = $previewRoutes->previewOutput((string) $page['url']);
+                if ($previewUrl === null || $previewOutput === null) {
+                    throw new PortableConfigurationException(
+                        'DECLARATIVE_PREVIEW_ROUTE_REQUIRED',
+                        "Declarative page [{$page['url']}] has no preview route.",
+                    );
+                }
+                $previewHtml = $previewRenderer->page(
+                    (string) $page['locale'],
+                    $documentationVersion,
+                    (string) $page['title'],
+                    (string) $page['url'],
+                    $previewRoutes->indexUrl,
+                    $previewProjector->project(
+                        $declarative->artifact->html,
+                        $previewRoutes,
+                    ),
+                    $page['components']->assetPlan,
+                );
+                $previewPath = rtrim($destination, '/\\') . '/' . $previewOutput;
+                $this->files->ensureDirectoryExists(dirname($previewPath));
+                $this->files->put($previewPath, $previewHtml);
+                $page['declarative_pipeline']['preview'] = [
+                    'status' => 'rendered',
+                    'url' => $previewUrl,
+                    'output' => $previewOutput,
+                    'html_sha256' => hash('sha256', $previewHtml),
+                    'legacy_url' => (string) $page['url'],
+                ];
             } elseif (array_key_exists('declarative_unsupported_components', $page)) {
                 $page['declarative_pipeline'] = [
                     'status' => 'not_in_vertical_slice',
                     'unsupported_components' => $page['declarative_unsupported_components'],
                     'supported_components' => ['ui.alert'],
+                ];
+            }
+            if (array_key_exists('declarative_supported', $page)) {
+                $previewAssetPlan ??= $page['components']->assetPlan;
+                $previewRecords[] = [
+                    'title' => (string) $page['title'],
+                    'legacy_url' => (string) $page['url'],
+                    'preview_url' => $page['declarative_pipeline']['preview']['url'] ?? null,
+                    'preview_output' => $page['declarative_pipeline']['preview']['output'] ?? null,
+                    'status' => $page['declarative_pipeline']['preview']['status'] ?? 'skipped',
+                    'unsupported_components' => $page['declarative_unsupported_components'],
+                    'html_sha256' => $page['declarative_pipeline']['preview']['html_sha256'] ?? null,
                 ];
             }
             $outputPath = rtrim($destination, '/\\') . '/' . $page['output'];
@@ -348,6 +399,46 @@ final readonly class PortableSiteBuilder
             $diagnostics[] = $record;
             $result->put((string) $page['url'], $record);
         }
+        if (! $previewAssetPlan instanceof FrameworkAssetPlan) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_PREVIEW_ASSET_PLAN_REQUIRED',
+                'Declarative preview requires an authored page asset plan.',
+            );
+        }
+        $previewIndexHtml = $previewRenderer->index(
+            $buildLocale,
+            $documentationVersion,
+            $siteTitle,
+            $previewRoutes->receiptUrl,
+            $previewRecords,
+            $previewAssetPlan,
+        );
+        $previewIndexPath = rtrim($destination, '/\\') . '/' . $previewRoutes->indexOutput;
+        $this->files->ensureDirectoryExists(dirname($previewIndexPath));
+        $this->files->put($previewIndexPath, $previewIndexHtml);
+        $previewReceipt = [
+            'schema' => 'docara.declarative_preview_receipt.v1',
+            'build' => [
+                'locale' => $buildLocale,
+                'documentation_version' => $documentationVersion,
+            ],
+            'index' => [
+                'url' => $previewRoutes->indexUrl,
+                'output' => $previewRoutes->indexOutput,
+                'html_sha256' => hash('sha256', $previewIndexHtml),
+            ],
+            'routes' => $previewRoutes->toArray(),
+            'pages' => $previewRecords,
+            'nonclaims' => [
+                'primary_publisher_switched' => false,
+                'full_visual_parity' => false,
+                'production_ready' => false,
+            ],
+        ];
+        $this->files->put(
+            rtrim($destination, '/\\') . '/' . $previewRoutes->receiptOutput,
+            $this->prettyCanonicalJson($previewReceipt),
+        );
 
         $redirectPublisher->publish($redirectPlan, $destination);
         $this->copyContentAssets($contentAssets, $destination);

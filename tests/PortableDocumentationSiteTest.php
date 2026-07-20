@@ -57,7 +57,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertIsString($site);
         $build = $site . '/build_test';
 
-        self::assertCount(44, $this->filesWithExtension($source . '/content', 'md'));
+        self::assertCount(45, $this->filesWithExtension($source . '/content', 'md'));
 
         $pages = (new PortableSiteBuilder(
             $filesystem,
@@ -79,9 +79,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
             static fn (array $entry): bool => $entry['lifecycle'] !== 'supported',
         ));
 
-        self::assertCount(57, $pages);
-        self::assertCount(66, $htmlPages);
-        self::assertCount(56, $search['documents']);
+        self::assertCount(58, $pages);
+        self::assertCount(113, $htmlPages);
+        self::assertCount(57, $search['documents']);
         self::assertCount(17, $catalog['entries']);
         self::assertCount(12, $supported);
         self::assertCount(5, $unavailable);
@@ -165,7 +165,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             JSON_THROW_ON_ERROR,
         );
         self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
-        self::assertSame(66, $report['html_pages'] ?? null);
+        self::assertSame(113, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
     }

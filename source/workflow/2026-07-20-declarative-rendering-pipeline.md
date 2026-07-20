@@ -1,11 +1,11 @@
 # Workflow: declarative rendering pipeline vertical slice
 
 Date: 2026-07-20
-Status: acceptance_pending
+Status: completed
 Workflow ID: `2026-07-20-declarative-rendering-pipeline`
 Process model: `general_delivery`
-Current state: `review_ready`
-Target state: `review_ready`
+Current state: `evidence_recorded`
+Target state: `evidence_recorded`
 Parent track: `docara-consolidation`
 
 ## Goal
@@ -69,7 +69,7 @@ Forbidden:
 | 4 | Builder shadow integration and semantic parity | integration fixture | completed |
 | 5 | Larena contract adapter parity | adapter fixture | completed |
 | 6 | Full regression, deterministic build, evidence | PHPUnit/build/verifier | completed |
-| 7 | Independent reverse-outcome acceptance | requirement matrix verdict | in_progress |
+| 7 | Independent reverse-outcome acceptance | requirement matrix verdict | completed |
 
 ## Design Invariants
 
@@ -141,6 +141,6 @@ Required:
 
 ## Next
 
-Create an immutable implementation candidate and run the separated
-reverse-outcome acceptance against the complete requirement matrix. Do not
-delete or switch away from the legacy renderer.
+Choose the next bounded vertical slice. The recommended direction is one
+structural Smart-component plus declarative header/sidebar/outline composition.
+Do not delete or switch away from the legacy renderer in that Goal.

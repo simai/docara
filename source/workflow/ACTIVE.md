@@ -1,11 +1,11 @@
 # Workflow: declarative rendering pipeline vertical slice
 
 Date: 2026-07-20
-Status: acceptance_pending
+Status: completed
 Workflow ID: `2026-07-20-declarative-rendering-pipeline`
 Process model: `general_delivery`
-Current state: `review_ready`
-Target state: `review_ready`
+Current state: `evidence_recorded`
+Target state: `evidence_recorded`
 
 ## Goal
 
@@ -23,7 +23,7 @@ pipeline intended for later Larena consumption.
 
 ## Current Batch
 
-Batch 7: separated reverse-outcome acceptance against the immutable candidate.
+None. The vertical slice is complete.
 
 ## Baseline
 
@@ -32,7 +32,7 @@ Starting revision `922c00e`; accepted legacy renderer SHA-256:
 
 ## Result
 
-Implementation and regression verification are complete. The new pipeline is
-shadow-only; legacy HTML remains published. Public release, local publication,
-default-branch migration and legacy renderer removal are not part of this
-candidate.
+Candidate `a29c1ab03462415879ec7383e6cf53e1dcccb1c2` passed the complete
+requirement matrix. The new pipeline is shadow-only; legacy HTML remains
+published. Public release, local publication, default-branch migration and
+legacy renderer removal are not part of this result.

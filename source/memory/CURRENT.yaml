@@ -1,9 +1,9 @@
 project_id: "docara-consolidation"
-updated_at: "2026-07-20T16:48:28+03:00"
-status: "acceptance_pending"
+updated_at: "2026-07-20T16:58:00+03:00"
+status: "ready_for_next_goal"
 primary_goal: "Implement the first declarative rendering pipeline vertical slice shared conceptually with Larena."
 active_tracks:
   - docara-consolidation
 current_focus: "source/workflow/2026-07-20-declarative-rendering-pipeline.md"
 important_blockers: []
-next_global_step: "Run separated reverse-outcome acceptance against the immutable declarative rendering candidate."
+next_global_step: "Select the next bounded declarative rendering slice; keep the legacy renderer as the published fallback."

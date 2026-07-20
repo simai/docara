@@ -1,0 +1,262 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.review",
+  "quality_control_id": "human_centered_simplicity",
+  "applicable": true,
+  "task": "Упростить код и конфигурацию переносимой Docara: использовать одно имя section.json без скрытой потери настроек.",
+  "primary_user_outcome": {
+    "id": "UO-DOCARA-SECTION-NAME",
+    "actor": "автор документации",
+    "job": "настроить раздел через очевидно названный JSON-файл",
+    "success_condition": "section.json наследуется предсказуемо, а старое имя вызывает понятную ошибку"
+  },
+  "changed_surface_inventory": {
+    "mode": "artifact_comparison",
+    "baseline_ref": "250a12f",
+    "target_ref": "b9b95ac807db9a67a4b3a1e4bfec1e78374eb816",
+    "diff_sha256": "5b520888549bf028dc52c2728ff774ff8c5e8c5cb7fd853010e294749cc546a3",
+    "evidence_paths": [
+      "docs/site/content/authoring/project-files.md",
+      "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md",
+      "src/Portable/PortableConfigurationLoader.php",
+      "tests/PortableSiteBuilderTest.php"
+    ],
+    "files": [
+      {
+        "path": "docs/site/content/authoring/project-files.md",
+        "surface_ids": ["canonical_filename_docs"]
+      },
+      {
+        "path": "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md",
+        "surface_ids": ["verified_local_publication"]
+      },
+      {
+        "path": "src/Portable/PortableConfigurationLoader.php",
+        "surface_ids": ["legacy_name_error"]
+      },
+      {
+        "path": "tests/PortableSiteBuilderTest.php",
+        "surface_ids": ["output_data_guard"]
+      }
+    ]
+  },
+  "necessity_map": [
+    {
+      "id": "canonical_filename_docs",
+      "surface_type": "configuration",
+      "description": "Одно имя section.json во всех уровнях проекта",
+      "disposition": "retain",
+      "disclosure": "visible",
+      "justification": {
+        "type": "user_outcome",
+        "ref": "UO-DOCARA-SECTION-NAME"
+      }
+    },
+    {
+      "id": "legacy_name_error",
+      "surface_type": "protective_control",
+      "description": "Явная ошибка и точная инструкция для старого имени",
+      "disposition": "retain",
+      "disclosure": "visible",
+      "justification": {
+        "type": "error_handling",
+        "ref": "src/Portable/PortableConfigurationLoader.php"
+      }
+    },
+    {
+      "id": "output_data_guard",
+      "surface_type": "protective_control",
+      "description": "Целостность данных предыдущей сборки сохраняется до успешной проверки",
+      "disposition": "retain",
+      "disclosure": "internal",
+      "justification": {
+        "type": "data_integrity",
+        "ref": "tests/PortableSiteBuilderTest.php"
+      }
+    },
+    {
+      "id": "verified_local_publication",
+      "surface_type": "protective_control",
+      "description": "Backup, атомарная публикация и браузерная приёмка",
+      "disposition": "retain",
+      "disclosure": "internal",
+      "justification": {
+        "type": "rollback",
+        "ref": "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md"
+      }
+    }
+  ],
+  "removal_review": {
+    "challenged_ids": [
+      "canonical_filename_docs",
+      "legacy_name_error",
+      "output_data_guard",
+      "verified_local_publication"
+    ],
+    "removed_ids": [],
+    "merged_ids": [],
+    "summary": "Видимое соглашение сведено к одному имени; защита миграции, данных и rollback сохранена."
+  },
+  "simplest_complete_alternative": "Один канонический section.json и одна fail-closed ошибка с точным путём переименования; без alias, переключателя или автоматического rename.",
+  "progressive_disclosure": {
+    "required": true,
+    "strategy": "Обычная документация показывает только section.json; старое имя объясняется только на страницах миграции и диагностики.",
+    "discoverability_evidence": "docs/site/content/authoring/project-files.md",
+    "not_required_reason": ""
+  },
+  "complexity_delta": [
+    {
+      "measure": "section_descriptor_names",
+      "before": 2,
+      "after": 1,
+      "unit": "naming conventions",
+      "interpretation": "docara.json и section.json теперь следуют одному очевидному соглашению без начального подчёркивания.",
+      "justification_ref": "docs/site/content/authoring/project-files.md"
+    }
+  ],
+  "automation_review": {
+    "present": false,
+    "simplified_before_automation": false,
+    "stable_process_proven": false,
+    "evidence_ref": ""
+  },
+  "scenario_evidence": [
+    {
+      "scenario": "SC-DOCARA-CANONICAL-SECTION",
+      "actor": "автор документации",
+      "steps": ["Создать section.json", "Собрать сайт", "Проверить наследование"],
+      "expected": "Настройки раздела применяются и provenance содержит новый путь.",
+      "actual": "Focused suite, production build and static verifier pass.",
+      "evidence_ref": "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md",
+      "result": "PASS"
+    },
+    {
+      "scenario": "SC-DOCARA-LEGACY-SECTION",
+      "actor": "автор старого portable-проекта",
+      "steps": ["Оставить _section.json", "Запустить сборку", "Прочитать ошибку"],
+      "expected": "Сборка останавливается до очистки результата и указывает новое имя.",
+      "actual": "SECTION_DESCRIPTOR_LEGACY_NAME and output-preservation tests pass.",
+      "evidence_ref": "tests/PortableSiteBuilderTest.php",
+      "result": "PASS"
+    }
+  ],
+  "protected_complexity_review": [
+    {
+      "category": "accessibility",
+      "status": "PRESERVED",
+      "evidence_ref": "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md"
+    },
+    {
+      "category": "security",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "src/Portable/PortableConfigurationLoader.php"
+    },
+    {
+      "category": "data_integrity",
+      "status": "PRESERVED",
+      "evidence_ref": "tests/PortableSiteBuilderTest.php"
+    },
+    {
+      "category": "permissions",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "src/Portable/PortableConfigurationLoader.php"
+    },
+    {
+      "category": "error_handling",
+      "status": "PRESERVED",
+      "evidence_ref": "src/Portable/PortableConfigurationLoader.php"
+    },
+    {
+      "category": "observability",
+      "status": "PRESERVED",
+      "evidence_ref": "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md"
+    },
+    {
+      "category": "migrations",
+      "status": "PRESERVED",
+      "evidence_ref": "docs/site/content/authoring/project-files.md"
+    },
+    {
+      "category": "rollback",
+      "status": "PRESERVED",
+      "evidence_ref": "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md"
+    }
+  ],
+  "tester_evidence_review": {
+    "status": "VERIFIED",
+    "verdict_ref": "source/workflow/evidence/2026-07-20-section-descriptor-rename/hcs/human-centered-simplicity-tester-verdict.json",
+    "verdict_sha256": "a395f7dc6d85525d405f073c136f3733f69b01794035feb7d9968027eab9bf4b",
+    "reviewed_surface_ids": [
+      "canonical_filename_docs",
+      "legacy_name_error",
+      "output_data_guard",
+      "verified_local_publication"
+    ],
+    "surface_classifications": [
+      {
+        "surface_id": "canonical_filename_docs",
+        "classification": "ordinary",
+        "protected_categories": [],
+        "evidence_ref": "docs/site/content/authoring/project-files.md"
+      },
+      {
+        "surface_id": "legacy_name_error",
+        "classification": "protective",
+        "protected_categories": ["error_handling"],
+        "evidence_ref": "src/Portable/PortableConfigurationLoader.php"
+      },
+      {
+        "surface_id": "output_data_guard",
+        "classification": "protective",
+        "protected_categories": ["data_integrity"],
+        "evidence_ref": "tests/PortableSiteBuilderTest.php"
+      },
+      {
+        "surface_id": "verified_local_publication",
+        "classification": "protective",
+        "protected_categories": ["observability", "rollback"],
+        "evidence_ref": "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md"
+      }
+    ],
+    "evidence_paths": [
+      "docs/site/content/authoring/project-files.md",
+      "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md",
+      "src/Portable/PortableConfigurationLoader.php",
+      "tests/PortableSiteBuilderTest.php"
+    ],
+    "evidence_fingerprints": [
+      {
+        "path": "docs/site/content/authoring/project-files.md",
+        "sha256": "82e93b3bc2af7ba8497163bd17da9c262be29bc73b2dc49ff17302026d5ceb13"
+      },
+      {
+        "path": "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md",
+        "sha256": "5cf8084c9a8d94874219a71b78106c271ce31036d2c04fa3f64695ad48e39cbd"
+      },
+      {
+        "path": "src/Portable/PortableConfigurationLoader.php",
+        "sha256": "4f06b1534839ab1212b4856effdb4ef9abf615c7d725b8186310cb0a28e4c608"
+      },
+      {
+        "path": "tests/PortableSiteBuilderTest.php",
+        "sha256": "c3ec505d74f620ae05d1382e8679c9869c6abeccdcf68f1f6054945232229d7f"
+      }
+    ],
+    "contradictions": [],
+    "verdict": "PASS"
+  },
+  "residual_complexity": [
+    {
+      "description": "Fail-closed проверка старого имени",
+      "category": "error_handling",
+      "evidence_ref": "src/Portable/PortableConfigurationLoader.php"
+    },
+    {
+      "description": "Backup и rollback локальной публикации",
+      "category": "rollback",
+      "evidence_ref": "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md"
+    }
+  ],
+  "blocking_findings": [],
+  "verdict": "PASS"
+}

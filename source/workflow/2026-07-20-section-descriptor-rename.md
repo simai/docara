@@ -1,9 +1,9 @@
 # Workflow: canonical `section.json`
 
 Date: 2026-07-20
-Status: verification-ready
+Status: completed
 Process model: `general_delivery`
-Current state: `review_ready`
+Current state: `completed`
 Target state: `review_ready`
 
 ## Goal
@@ -68,7 +68,7 @@ rename or second descriptor registry is intentionally excluded.
 | 3 | Current documentation and examples | zero current-contract legacy references | completed |
 | 4 | Full regression and deterministic documentation build | PHPUnit, static verifier, identical build check | completed |
 | 5 | Local backup, atomic publication and QA | digest, HTTPS, browser, rollback proof | completed |
-| 6 | Evidence, simplicity verdict and commit | HCS validator, diff check, clean worktree | in-progress |
+| 6 | Evidence, simplicity verdict and commit | HCS validator, diff check, clean worktree | completed |
 
 ## Risks And Protections
 
@@ -96,8 +96,10 @@ Root:
 - The deterministic static build passes 6036 link checks across 66 pages.
 - `docara.test` serves the verified build after backup and atomic swap.
 - Desktop and 390 px browser acceptance passed without console errors.
+- Implementation candidate `b9b95ac` is committed.
+- Human-centered simplicity validator and tester verdict: PASS.
 
 ## Next
 
-Record the human-centered simplicity review, commit the candidate, run final
-repository gates and close the workflow.
+No implementation work remains in this workflow. Public push, release, merge
+and package publication remain outside its scope.

@@ -65,8 +65,15 @@ portable routes.
 
 ## Полный первый путь
 
+До публичного release portable-команды проверяются с exact GitHub candidate.
+Обычный стабильный пакет `1.x` не поддерживает `--portable`.
+
 ```bash
-composer require simai/docara
+composer init --name=example/docara-site --no-interaction
+composer config minimum-stability dev
+composer config prefer-stable true
+composer config repositories.docara '{"type":"vcs","url":"https://github.com/simai/docara.git","no-api":true}' --json
+composer require 'simai/docara:dev-codex/docara-consolidation#2640503ba14913aa83bc3b4343c86966a807e29f' --prefer-source
 php vendor/bin/docara init --portable
 php vendor/bin/docara build production
 php vendor/bin/docara verify-static build_production

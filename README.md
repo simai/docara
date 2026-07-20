@@ -14,15 +14,26 @@ JSON-файлы задают настройки, а Simai Framework отвеча
 
 ## Первая переносимая сборка
 
-Выполните команды в пустом каталоге:
+Portable Docara пока не выпущена как стабильный Composer package. Обычная
+команда `composer require simai/docara` устанавливает legacy-линию `1.x`, в
+которой параметра `--portable` нет. До отдельного публичного release
+используйте принятый immutable GitHub candidate:
 
 ```bash
-composer require simai/docara
+composer init --name=example/docara-site --no-interaction
+composer config minimum-stability dev
+composer config prefer-stable true
+composer config repositories.docara '{"type":"vcs","url":"https://github.com/simai/docara.git","no-api":true}' --json
+composer require 'simai/docara:dev-codex/docara-consolidation#2640503ba14913aa83bc3b4343c86966a807e29f' --prefer-source
 php vendor/bin/docara init --portable
 php vendor/bin/docara build production
 php vendor/bin/docara verify-static build_production
 php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 ```
+
+Эти команды предназначены для проверки GitHub candidate, а не объявляют
+стабильный или production-ready release. После выпуска Docara отдельная
+release-инструкция заменит временную VCS-установку точной версией пакета.
 
 После строки `Server started on http://127.0.0.1:8000` откройте этот адрес в
 браузере. Вы должны увидеть стартовую страницу Docara. Сервер работает в

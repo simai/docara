@@ -4,6 +4,33 @@
 Не правьте файлы внутри `build_local` или `build_production`: следующая сборка
 заменит их.
 
+## Параметр `--portable` не существует
+
+Проверьте установленную версию:
+
+```bash
+composer show simai/docara
+php vendor/bin/docara init --help
+```
+
+Стабильная линия `1.x` является legacy Blade/Jigsaw Docara и не содержит
+`--portable`. Не заменяйте portable-команду обычным `docara init`: он создаст
+проект другого формата.
+
+Пока отдельный portable release не опубликован, установите exact GitHub
+candidate по командам из [быстрого старта](/start/). После установки в
+`composer.lock` должны быть одновременно записаны:
+
+```text
+version: dev-codex/docara-consolidation
+source.reference: 2640503ba14913aa83bc3b4343c86966a807e29f
+```
+
+Если Composer пытается использовать GitHub API и запрашивает credentials,
+проверьте, что repository объявлен с `"no-api": true`, как в быстром старте.
+Предупреждения deprecation от старого Composer под новым PHP нужно исправлять
+обновлением Composer отдельно: они не означают отсутствие CLI-параметра.
+
 ## Сборка остановилась на проверке JSON
 
 В сообщении об ошибке найдите имя файла, JSON Pointer и код

@@ -12,6 +12,8 @@ use SplFileInfo;
 
 final class DocumentationContractTest extends TestCase
 {
+    private const PORTABLE_INSTALL_CANDIDATE = '2640503ba14913aa83bc3b4343c86966a807e29f';
+
     private const RETIRED_COMPONENT_SLUGS = [
         'alert',
         'button',
@@ -116,6 +118,44 @@ final class DocumentationContractTest extends TestCase
                 'Shell examples must preview the site through HTTP.',
             );
         }
+    }
+
+    #[Test]
+    public function portable_installation_surfaces_pin_the_accepted_github_candidate_until_release(): void
+    {
+        $surfaces = [
+            $this->repositoryRoot() . '/README.md',
+            $this->contentRoot() . '/start.md',
+            $this->contentRoot() . '/reference/cli.md',
+        ];
+
+        foreach ($surfaces as $path) {
+            $contents = (string) file_get_contents($path);
+
+            self::assertStringContainsString(
+                'dev-codex/docara-consolidation#' . self::PORTABLE_INSTALL_CANDIDATE,
+                $contents,
+                $this->relativeToRepository($path) . ' must install the exact accepted portable candidate.',
+            );
+            self::assertStringContainsString(
+                '"no-api":true',
+                $contents,
+                $this->relativeToRepository($path) . ' must not require GitHub API authentication.',
+            );
+            self::assertDoesNotMatchRegularExpression(
+                '/composer require simai\/docara\h*\Rphp vendor\/bin\/docara init --portable/u',
+                $contents,
+                $this->relativeToRepository($path) . ' pairs the legacy stable package with portable init.',
+            );
+        }
+
+        $troubleshooting = (string) file_get_contents($this->contentRoot() . '/troubleshooting.md');
+        self::assertStringContainsString('Параметр `--portable` не существует', $troubleshooting);
+        self::assertStringContainsString(self::PORTABLE_INSTALL_CANDIDATE, $troubleshooting);
+        self::assertMatchesRegularExpression(
+            '/не заменяйте.{0,120}обычным `docara init`/uis',
+            preg_replace('/\s+/u', ' ', $troubleshooting) ?? $troubleshooting,
+        );
     }
 
     #[Test]

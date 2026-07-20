@@ -1,10 +1,10 @@
 # Workflow: declarative documentation shell regions
 
 Date: 2026-07-20
-Status: in_progress
+Status: completed
 Workflow ID: `2026-07-20-declarative-shell-regions`
 Process model: `general_delivery`
-Current state: `ready_to_code`
+Current state: `evidence_recorded`
 Target state: `evidence_recorded`
 
 ## Goal
@@ -23,7 +23,7 @@ outline Smart composition while preserving the accepted published renderer.
 
 ## Current Batch
 
-Batch 1: typed shell composition context and populated region plans.
+All batches completed.
 
 ## Baseline
 
@@ -32,5 +32,7 @@ Starting revision `891bd4c`; accepted legacy renderer SHA-256:
 
 ## Result
 
-The first article-body slice is accepted. Header, sidebar and outline are now
-the active missing capability. The new pipeline remains shadow-only.
+Candidate `07a1ab51e6a5e22724b5904208353bd4a565e408` is accepted for the bounded
+shadow shell contract. Header, sidebar and outline now have typed Smart
+composition and Larena projection. The accepted legacy renderer remains the
+only publisher.

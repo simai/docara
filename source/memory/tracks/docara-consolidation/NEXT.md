@@ -9,20 +9,20 @@ Track `docara-consolidation` is attached to workflow:
 
 ## Next Meaningful Goal
 
-Extend the accepted shadow declarative pipeline from the article body to the
-documentation shell data: header, sidebar and outline must be populated by
-typed Page -> Section -> Block -> Smart plans that can be projected to Larena
-without changing the published legacy renderer.
+Move one more bounded documentation-shell behavior into product-owned typed
+composition. The recommended slice is breadcrumbs plus previous/next reading
+context.
 
 ## Stages
 
-1. Restore current state from the workflow and project memory.
-2. Execute the next safe batch from the workflow.
-3. Update track memory after the batch.
+1. Confirm the next bounded goal and its exact nonclaims.
+2. Create a new workflow and launch record.
+3. Keep `PortableHtmlRenderer` as publisher until full-shell acceptance.
 
 ## Next Safe Batch
 
-Open the workflow and run the next safe batch.
+Perform read-only mapping of breadcrumbs and previous/next data into the shared
+Page -> Region -> Section -> Block -> Smart vocabulary.
 
 ## Checks
 

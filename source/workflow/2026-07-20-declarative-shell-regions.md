@@ -1,10 +1,10 @@
 # Workflow: declarative documentation shell regions
 
 Date: 2026-07-20
-Status: in_progress
+Status: completed
 Workflow ID: `2026-07-20-declarative-shell-regions`
 Process model: `general_delivery`
-Current state: `implementation_verified`
+Current state: `evidence_recorded`
 Target state: `evidence_recorded`
 Parent track: `docara-consolidation`
 
@@ -102,7 +102,7 @@ Forbidden:
 | 3 | Move shadow compilation after navigation/reading-context resolution | builder integration tests | completed |
 | 4 | Structural semantic parity and fail-closed depth/state checks | parity/negative tests | completed |
 | 5 | Full regression, deterministic build and evidence | PHPUnit/build/verifier | completed |
-| 6 | Separated reverse-outcome acceptance and closure | requirement matrix | in_progress |
+| 6 | Separated reverse-outcome acceptance and closure | requirement matrix | completed |
 
 ## Design Decisions
 
@@ -172,8 +172,12 @@ Required:
   each contains 66 HTML pages, 6,036 checked references and zero broken links.
 - Legacy renderer remains byte-identical at
   `a28e914128a55143ce13e21c8bebc2216b5144919c6dbb2e5dfee366229125d0`.
+- Candidate `07a1ab51e6a5e22724b5904208353bd4a565e408` passed separated
+  exact-candidate acceptance: 43 tests, 709 assertions, deterministic build
+  and static verification.
 
 ## Next
 
-Create the implementation candidate commit, then execute the separated
-reverse-outcome acceptance against its exact archived tree.
+Select the next bounded shell migration goal. The safest candidate is
+breadcrumbs and previous/next reading context as product-owned composition;
+the publication switch remains a later separate goal.

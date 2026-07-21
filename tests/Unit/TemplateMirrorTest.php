@@ -82,7 +82,7 @@ final class TemplateMirrorTest extends TestCase
 
         self::assertNotEmpty($written);
         self::assertFileExists($destination . '/docara.json');
-        self::assertFileExists($destination . '/content/index.page.json');
+        self::assertFileExists($destination . '/content/ru/index.page.json');
         self::assertFileExists($destination . '/' . TemplateMirror::MANIFEST);
         self::assertStringContainsString(
             "if: github.repository == 'simai/docara-template'",
@@ -96,8 +96,8 @@ final class TemplateMirrorTest extends TestCase
         self::assertFileDoesNotExist($destination . '/vite.config.js');
         self::assertFileDoesNotExist($destination . '/webpack.mix.js');
         self::assertSame(
-            file_get_contents($repository . '/stubs/portable/content/index.md'),
-            file_get_contents($destination . '/content/index.md'),
+            file_get_contents($repository . '/stubs/portable/content/ru/index.md'),
+            file_get_contents($destination . '/content/ru/index.md'),
         );
         self::assertSame(['missing' => [], 'changed' => [], 'unexpected' => []], $mirror->diff($destination));
 
@@ -111,11 +111,11 @@ final class TemplateMirrorTest extends TestCase
         self::assertSame($this->sourceRevision, $manifest['generated_from']['revision']);
         self::assertSame('v9.8.7-test.1', $manifest['generated_from']['package_version']);
         self::assertSame(
-            hash_file('sha256', $destination . '/content/index.md'),
-            $manifest['files']['content/index.md']['sha256'],
+            hash_file('sha256', $destination . '/content/ru/index.md'),
+            $manifest['files']['content/ru/index.md']['sha256'],
         );
-        self::assertSame('stubs/portable/content/index.md', $manifest['files']['content/index.md']['source']);
-        self::assertSame('100644', $manifest['files']['content/index.md']['mode']);
+        self::assertSame('stubs/portable/content/ru/index.md', $manifest['files']['content/ru/index.md']['source']);
+        self::assertSame('100644', $manifest['files']['content/ru/index.md']['mode']);
         self::assertSame(
             'resources/template-mirror/.github/workflows/sync.yml',
             $manifest['files']['.github/workflows/sync.yml']['source'],
@@ -199,13 +199,13 @@ final class TemplateMirrorTest extends TestCase
         $mirror = new TemplateMirror($this->sourceRepository, $this->sourceRevision);
         $mirror->export($destination);
 
-        unlink($destination . '/content/landing.md');
-        file_put_contents($destination . '/content/index.md', "# Changed\n");
+        unlink($destination . '/content/ru/landing.md');
+        file_put_contents($destination . '/content/ru/index.md', "# Changed\n");
         file_put_contents($destination . '/manual.txt', "not generated\n");
 
         self::assertSame([
-            'missing' => ['content/landing.md'],
-            'changed' => ['content/index.md'],
+            'missing' => ['content/ru/landing.md'],
+            'changed' => ['content/ru/index.md'],
             'unexpected' => ['manual.txt'],
         ], $mirror->diff($destination));
     }
@@ -217,9 +217,9 @@ final class TemplateMirrorTest extends TestCase
         $mirror = new TemplateMirror($this->sourceRepository, $this->sourceRevision);
         $mirror->export($destination);
 
-        chmod($destination . '/content/index.md', 0755);
-        self::assertSame(['missing' => [], 'changed' => ['content/index.md'], 'unexpected' => []], $mirror->diff($destination));
-        chmod($destination . '/content/index.md', 0644);
+        chmod($destination . '/content/ru/index.md', 0755);
+        self::assertSame(['missing' => [], 'changed' => ['content/ru/index.md'], 'unexpected' => []], $mirror->diff($destination));
+        chmod($destination . '/content/ru/index.md', 0644);
 
         if (! function_exists('posix_mkfifo')) {
             self::markTestSkipped('posix_mkfifo is required for the special-entry regression.');
@@ -231,10 +231,10 @@ final class TemplateMirrorTest extends TestCase
     #[Test]
     public function canonical_source_rejects_executable_git_entries_instead_of_losing_their_mode(): void
     {
-        $path = $this->sourceRepository . '/stubs/portable/content/index.md';
+        $path = $this->sourceRepository . '/stubs/portable/content/ru/index.md';
         self::assertTrue(chmod($path, 0755));
         foreach ([
-            ['git', '-C', $this->sourceRepository, 'add', 'stubs/portable/content/index.md'],
+            ['git', '-C', $this->sourceRepository, 'add', 'stubs/portable/content/ru/index.md'],
             [
                 'git', '-C', $this->sourceRepository,
                 '-c', 'user.name=Docara Test',
@@ -405,7 +405,7 @@ final class TemplateMirrorTest extends TestCase
     #[Test]
     public function mirror_rejects_a_dirty_source_checkout(): void
     {
-        file_put_contents($this->sourceRepository . '/stubs/portable/content/index.md', "# Dirty\n");
+        file_put_contents($this->sourceRepository . '/stubs/portable/content/ru/index.md', "# Dirty\n");
 
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('requires a clean Docara source checkout');

@@ -5,12 +5,12 @@
   "description": "Сайт задаёт бренд и тему, раздел заменяет sidebar и отключает aside, а страница сбрасывает aside и включает footer.",
   "category": "inheritance",
   "order": 32,
-  "result_page": "content/demonstrator-results/composition-inheritance/page.md",
+  "result_page": "content/ru/demonstrator-results/composition-inheritance/page.md",
   "preview": "tall",
   "sources": [
     {"label": "Настройки сайта", "path": "docara.json", "language": "json"},
-    {"label": "Настройки раздела", "path": "content/demonstrator-results/composition-inheritance/section.json", "language": "json"},
-    {"label": "Markdown страницы", "path": "content/demonstrator-results/composition-inheritance/page.md", "language": "markdown"},
-    {"label": "Переопределение страницы", "path": "content/demonstrator-results/composition-inheritance/page.page.json", "language": "json"}
+    {"label": "Настройки раздела", "path": "content/ru/demonstrator-results/composition-inheritance/section.json", "language": "json"},
+    {"label": "Markdown страницы", "path": "content/ru/demonstrator-results/composition-inheritance/page.md", "language": "markdown"},
+    {"label": "Переопределение страницы", "path": "content/ru/demonstrator-results/composition-inheritance/page.page.json", "language": "json"}
   ]
 }

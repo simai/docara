@@ -17,9 +17,9 @@ production-readiness claim.
 | Что | URL на локальном сайте | Файл результата |
 | --- | --- | --- |
 | Основной сайт | `https://docara.test/` | `docs/site/build_production/index.html` |
-| Каталог preview | `https://docara.test/_docara/declarative-preview/` | `docs/site/build_production/_docara/declarative-preview/index.html` |
-| Machine-readable receipt | `https://docara.test/_docara/declarative-preview/index.json` | `docs/site/build_production/_docara/declarative-preview/index.json` |
-| Preview главной | `https://docara.test/_docara/declarative-preview/pages/` | `docs/site/build_production/_docara/declarative-preview/pages/index.html` |
+| Каталог preview | `https://docara.test/ru/_docara/declarative-preview/` | `docs/site/build_production/ru/_docara/declarative-preview/index.html` |
+| Machine-readable receipt | `https://docara.test/ru/_docara/declarative-preview/index.json` | `docs/site/build_production/ru/_docara/declarative-preview/index.json` |
+| Preview главной | `https://docara.test/ru/_docara/declarative-preview/pages/` | `docs/site/build_production/ru/_docara/declarative-preview/pages/index.html` |
 | Основная диагностика | `https://docara.test/.docara/resolved-page-plans.json` | `docs/site/build_production/.docara/resolved-page-plans.json` |
 
 Каталог показывает каждую авторскую страницу и связывает диагностический
@@ -51,10 +51,10 @@ Markdown + docara.json + section.json + *.page.json + Framework lock
 ### 1. Входные данные
 
 - `docs/site/docara.json` задаёт сайт и общий build contract.
-- `docs/site/content/section.json` и вложенные `section.json` задают
+- `docs/site/content/ru/section.json` и вложенные `section.json` задают
   наследуемые настройки разделов.
-- `docs/site/content/*.page.json` задают параметры отдельных страниц.
-- `docs/site/content/**/*.md` содержит контент.
+- `docs/site/content/ru/*.page.json` задают параметры отдельных страниц.
+- `docs/site/content/ru/**/*.md` содержит контент.
 - `docs/site/simai-framework.lock.json` фиксирует exact revisions и ассеты
   Simai Framework.
 

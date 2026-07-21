@@ -5,10 +5,10 @@
   "description": "Уведомление с типизированными props из Markdown и шаблоном зафиксированного Simai Framework runtime.",
   "category": "smart",
   "order": 60,
-  "result_page": "content/demonstrator-results/smart-alert.md",
+  "result_page": "content/ru/demonstrator-results/smart-alert.md",
   "preview": "compact",
   "sources": [
-    {"label": "Markdown и вызов Smart-компонента", "path": "content/demonstrator-results/smart-alert.md", "language": "markdown"},
-    {"label": "Настройки страницы", "path": "content/demonstrator-results/smart-alert.page.json", "language": "json"}
+    {"label": "Markdown и вызов Smart-компонента", "path": "content/ru/demonstrator-results/smart-alert.md", "language": "markdown"},
+    {"label": "Настройки страницы", "path": "content/ru/demonstrator-results/smart-alert.page.json", "language": "json"}
   ]
 }

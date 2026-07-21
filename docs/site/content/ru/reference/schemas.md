@@ -52,7 +52,7 @@ Invalid-пример документирует ожидаемую ошибку;
 | `preset`, `title`, `locale` | ✓ | ✓ | ✓ |
 | `branding`, `layout`, `settings` | ✓ | ✓ | ✓ |
 | `navigation`, `search`, `reading` | ✓ | ✓ | ✓ |
-| `framework_lock`, `content_root`, `base_url`, `default_locale`, `locales` | ✓ | — | — |
+| `framework_lock`, `content_root`, `base_url`, `default_locale`, `locales`, `locale_routing` | ✓ | — | — |
 | `documentation_version`, `redirects_file` | ✓ | — | — |
 | `description`, `slug` | — | — | ✓ |
 

@@ -1,11 +1,11 @@
 track_id: "docara-consolidation"
-status: "ready_for_next_goal"
-owner_skill: "docara"
-current_goal: "Docara Smart component unification accepted in candidate 46fefd88d4031a1a5bcba551fef9bdc6c04b2edf"
-current_stage: "`evidence_recorded`"
-current_workflow: "source/workflow/2026-07-21-docara-smart-component-unification.md"
-last_completed_batch: "Exact-candidate tester gate, local browser acceptance and reverse-outcome audit"
-next_step: "Choose a separate next product goal; public push, release and external consumer adoption remain outside the completed workflow."
+status: "active"
+owner_skill: "teamlead"
+current_goal: "Make symmetric locale routing the recommended Docara product model: every"
+current_stage: "`review_ready`"
+current_workflow: "source/workflow/2026-07-21-docara-symmetric-locale-routing.md"
+last_completed_batch: ""
+next_step: "If a public release is requested later, prepare a separate release workflow covering hosting-level 301/308 redirects, sitemap policy, public monitoring and consumer migration."
 blockers: []
 related_tracks: []
 updated_at: "2026-07-21"

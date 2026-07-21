@@ -491,6 +491,37 @@ final class PortableComponentCatalogProjectorTest extends TestCase
     private function copyPortableFixture(string $destination): void
     {
         $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $destination);
+        rename($destination . '/content/ru', $destination . '/content-legacy');
+        rmdir($destination . '/content');
+        rename($destination . '/content-legacy', $destination . '/content');
+        $site = $this->json($destination . '/docara.json');
+        $site['content_root'] = 'content';
+        unset($site['locales']);
+        $site['locale_routing'] = [
+            'strategy' => 'default_unprefixed',
+            'root' => 'default_locale',
+            'detect_browser_language' => false,
+            'legacy_unprefixed_redirects' => false,
+        ];
+        file_put_contents(
+            $destination . '/docara.json',
+            json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+        $redirects = $this->json($destination . '/redirects.json');
+        $redirects['redirects'] = array_values(array_map(
+            static fn (array $redirect): array => [
+                'from' => $redirect['from'],
+                'to' => preg_replace('#^ru/#', '', (string) $redirect['to']),
+            ],
+            array_filter(
+                $redirects['redirects'],
+                static fn (array $redirect): bool => ! str_starts_with((string) $redirect['from'], 'ru/'),
+            ),
+        ));
+        file_put_contents(
+            $destination . '/redirects.json',
+            json_encode($redirects, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
     }
 
     /** @return array<string, mixed> */

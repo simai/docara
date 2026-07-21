@@ -70,6 +70,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $receipt = $this->json($build . '/.docara/component-catalog-pages.json');
         $exampleReceipt = $this->json($build . '/.docara/declarative-example-pages.json');
         $redirectReceipt = $this->json($build . '/.docara/redirects.json');
+        $localeRouteReceipt = $this->json($build . '/.docara/locale-routes.json');
         $search = $this->json($build . '/_docara/search-index.json');
         $supported = array_values(array_filter(
             $catalog['entries'],
@@ -81,17 +82,24 @@ final class PortableDocumentationSiteTest extends PHPUnit
         ));
 
         self::assertCount(93, $pages);
-        self::assertCount(169, $htmlPages);
+        self::assertCount(271, $htmlPages);
         self::assertCount(79, $search['documents']);
         self::assertCount(17, $catalog['entries']);
         self::assertCount(12, $supported);
         self::assertCount(5, $unavailable);
         self::assertCount(12, $receipt['pages']);
         self::assertCount(13, $exampleReceipt['pages']);
-        self::assertCount(9, $redirectReceipt['redirects']);
+        self::assertCount(18, $redirectReceipt['redirects']);
+        self::assertCount(93, $localeRouteReceipt['redirects']);
+        $rootLocaleRoutes = array_values(array_filter(
+            $localeRouteReceipt['redirects'],
+            static fn (array $redirect): bool => $redirect['kind'] === 'root',
+        ));
+        self::assertCount(1, $rootLocaleRoutes);
+        self::assertSame('/ru/', $rootLocaleRoutes[0]['target_url']);
         $extensionsSearchDocument = array_values(array_filter(
             $search['documents'],
-            static fn (array $document): bool => $document['url'] === '/development/extensions/',
+            static fn (array $document): bool => $document['url'] === '/ru/development/extensions/',
         ));
         self::assertCount(1, $extensionsSearchDocument);
         self::assertStringContainsString(
@@ -168,7 +176,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             JSON_THROW_ON_ERROR,
         );
         self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
-        self::assertSame(169, $report['html_pages'] ?? null);
+        self::assertSame(271, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
     }

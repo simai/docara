@@ -82,17 +82,18 @@ redirects.json
 simai-framework.lock.json
 assets/
 content/
-  section.json
-  index.md
-  index.page.json
-  landing.md
-  landing.page.json
-  guides/
+  ru/
+    section.json
+    index.md
+    index.page.json
+    landing.md
+    landing.page.json
+    guides/
 ```
 
 ## Измените страницу
 
-1. Откройте `content/index.md`.
+1. Откройте `content/ru/index.md`.
 2. Измените заголовок или текст.
 3. Повторите `build production`.
 4. Повторите `verify-static`.
@@ -105,8 +106,10 @@ content/
 Starter содержит несколько таких файлов как рабочие примеры, а не как
 обязательную пару для каждого Markdown-файла.
 
-Starter задаёт `default_locale`, одну `documentation_version` и декларативный
-`redirects_file`. Для нескольких языков добавьте явный реестр `locales`. Для
+Starter задаёт `default_locale`, явный реестр `locales`, симметричный
+`locale_routing`, одну `documentation_version` и декларативный
+`redirects_file`. Для следующего языка добавьте запись в реестр и соседнее
+дерево `content/<locale>`. Для
 другой версии создайте отдельный site variant и output, а не смешивайте
 страницы в одной сборке.
 

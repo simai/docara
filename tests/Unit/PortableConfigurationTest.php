@@ -150,25 +150,25 @@ final class PortableConfigurationTest extends TestCase
     {
         $site = dirname(__DIR__, 2) . '/docs/site';
         $plan = (new PortableConfigurationLoader($site))->resolve(
-            'content/demonstrator-results/composition-inheritance/page.md',
+            'content/ru/demonstrator-results/composition-inheritance/page.md',
         );
 
         self::assertSame('Docara', $plan->configuration['branding']['title']);
         self::assertSame('system', $plan->configuration['settings']['theme']);
         self::assertSame(
-            'content/demonstrator-results/composition-inheritance/section.json',
+            'content/ru/demonstrator-results/composition-inheritance/section.json',
             $plan->provenance['/layout/regions/sidebar/sections'],
         );
         self::assertSame(
-            'content/demonstrator-results/composition-inheritance/page.page.json',
+            'content/ru/demonstrator-results/composition-inheritance/page.page.json',
             $plan->provenance['/layout/regions/outline'],
         );
         self::assertSame(
-            'content/demonstrator-results/composition-inheritance/page.page.json',
+            'content/ru/demonstrator-results/composition-inheritance/page.page.json',
             $plan->provenance['/layout/regions/outline/sections'],
         );
         self::assertSame(
-            'content/demonstrator-results/composition-inheritance/page.page.json',
+            'content/ru/demonstrator-results/composition-inheritance/page.page.json',
             $plan->provenance['/layout/regions/footer/sections'],
         );
         self::assertTrue($plan->configuration['layout']['regions']['outline']['enabled']);
@@ -266,7 +266,7 @@ final class PortableConfigurationTest extends TestCase
     {
         $stub = dirname(__DIR__, 2) . '/stubs/portable';
 
-        $plan = (new PortableConfigurationLoader($stub))->resolve('content/index.md');
+        $plan = (new PortableConfigurationLoader($stub))->resolve('content/ru/index.md');
 
         self::assertSame(
             '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663',

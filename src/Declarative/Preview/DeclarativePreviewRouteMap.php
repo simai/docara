@@ -47,8 +47,10 @@ final readonly class DeclarativePreviewRouteMap
     }
 
     /** @param list<array<string, mixed>> $pages */
-    public static function fromPages(array $pages): self
+    public static function fromPages(array $pages, string $outputPrefix = ''): self
     {
+        $outputPrefix = trim($outputPrefix, '/');
+        $outputRoot = ($outputPrefix === '' ? '' : $outputPrefix . '/') . self::OUTPUT_ROOT;
         $homeUrl = null;
         $urls = [];
         $outputs = [];
@@ -68,12 +70,15 @@ final readonly class DeclarativePreviewRouteMap
                     'A declarative preview source route is invalid.',
                 );
             }
-            $relative = $output === 'index.html'
+            $localizedOutput = $outputPrefix !== '' && str_starts_with($output, $outputPrefix . '/')
+                ? substr($output, strlen($outputPrefix) + 1)
+                : $output;
+            $relative = $localizedOutput === 'index.html'
                 ? ''
-                : substr($output, 0, -strlen('index.html'));
+                : substr($localizedOutput, 0, -strlen('index.html'));
             $urls[$legacyUrl] = rtrim((string) $homeUrl, '/')
                 . '/' . self::OUTPUT_ROOT . '/pages/' . $relative;
-            $outputs[$legacyUrl] = self::OUTPUT_ROOT . '/pages/' . $output;
+            $outputs[$legacyUrl] = $outputRoot . '/pages/' . $localizedOutput;
         }
         if (! is_string($homeUrl) || ! self::safeUrl($homeUrl)) {
             throw new PortableConfigurationException(
@@ -90,9 +95,9 @@ final readonly class DeclarativePreviewRouteMap
 
         return new self(
             $base,
-            self::OUTPUT_ROOT . '/index.html',
+            $outputRoot . '/index.html',
             $base . 'index.json',
-            self::OUTPUT_ROOT . '/index.json',
+            $outputRoot . '/index.json',
             $urls,
             $orderedOutputs,
         );

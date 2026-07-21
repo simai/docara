@@ -652,16 +652,25 @@ final class PortableSiteBuilderTest extends TestCase
     #[Test]
     public function canonical_starter_build_with_default_locale_passes_static_verification(): void
     {
-        $this->copyPortableFixture($this->tmp);
+        $this->copyPortableFixture($this->tmp, legacyCompatibility: false);
         file_put_contents(
-            $this->tmpPath('content/index.md'),
-            file_get_contents($this->tmpPath('content/index.md')) . "\n## Docara main\n",
+            $this->tmpPath('content/ru/index.md'),
+            file_get_contents($this->tmpPath('content/ru/index.md')) . "\n## Docara main\n",
         );
         $this->builder()->build($this->tmp, $this->tmpPath('build_production'));
 
+        self::assertFileExists($this->tmpPath('build_production/index.html'));
+        self::assertStringContainsString(
+            '<link rel="canonical" href="/ru/">',
+            (string) file_get_contents($this->tmpPath('build_production/index.html')),
+        );
         self::assertStringContainsString(
             'id="docara-main-1"',
-            (string) file_get_contents($this->tmpPath('build_production/index.html')),
+            (string) file_get_contents($this->tmpPath('build_production/ru/index.html')),
+        );
+        self::assertStringContainsString(
+            '<link rel="alternate" hreflang="x-default" href="/">',
+            (string) file_get_contents($this->tmpPath('build_production/ru/index.html')),
         );
 
         $process = new Process([
@@ -1812,9 +1821,44 @@ MD;
         ];
     }
 
-    private function copyPortableFixture(string $target): void
+    private function copyPortableFixture(string $target, bool $legacyCompatibility = true): void
     {
         $this->filesystem->copyDirectory(dirname(__DIR__) . '/stubs/portable', $target);
+        if (! $legacyCompatibility) {
+            return;
+        }
+
+        rename($target . '/content/ru', $target . '/content-legacy');
+        rmdir($target . '/content');
+        rename($target . '/content-legacy', $target . '/content');
+        $site = $this->jsonFile($target . '/docara.json');
+        $site['content_root'] = 'content';
+        unset($site['locales']);
+        $site['locale_routing'] = [
+            'strategy' => 'default_unprefixed',
+            'root' => 'default_locale',
+            'detect_browser_language' => false,
+            'legacy_unprefixed_redirects' => false,
+        ];
+        file_put_contents(
+            $target . '/docara.json',
+            json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+        $redirects = $this->jsonFile($target . '/redirects.json');
+        $redirects['redirects'] = array_values(array_map(
+            static fn (array $redirect): array => [
+                'from' => $redirect['from'],
+                'to' => preg_replace('#^ru/#', '', (string) $redirect['to']),
+            ],
+            array_filter(
+                $redirects['redirects'],
+                static fn (array $redirect): bool => ! str_starts_with((string) $redirect['from'], 'ru/'),
+            ),
+        ));
+        file_put_contents(
+            $target . '/redirects.json',
+            json_encode($redirects, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n",
+        );
     }
 
     private function installDeclarativeExampleFixture(string $target): void

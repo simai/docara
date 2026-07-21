@@ -41,6 +41,7 @@ final readonly class PortablePageViewModel
         public array $themeOptions,
         public string $configuredTheme,
         public array $copy,
+        public string $canonicalUrl,
         public array $alternates,
         public array $languageOptions,
         public string $runtimeCopyJson,

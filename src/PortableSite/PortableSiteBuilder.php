@@ -21,7 +21,10 @@ use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\I18n\LanguagePackRepository;
+use Simai\Docara\I18n\LocaleInternalLinkProjector;
 use Simai\Docara\I18n\LocaleRegistry;
+use Simai\Docara\I18n\LocaleRoutingPolicy;
+use Simai\Docara\I18n\LocaleUrlProjector;
 use Simai\Docara\I18n\Translator;
 use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\CanonicalJson;
@@ -66,6 +69,12 @@ final readonly class PortableSiteBuilder
         $site = $this->siteConfiguration($root);
         $explicitLocaleRegistry = is_array($site['locales'] ?? null) && $site['locales'] !== [];
         $localeRegistry = LocaleRegistry::fromSite($site);
+        $localeRouting = LocaleRoutingPolicy::fromSite($site, $localeRegistry);
+        $localeUrls = new LocaleUrlProjector(
+            (string) ($site['base_url'] ?? '/'),
+            $localeRegistry,
+            $localeRouting,
+        );
         $translator = new Translator($localeRegistry, new LanguagePackRepository($root));
         $uiCopy = new UiCopy($translator);
         $buildLocale = $localeRegistry->default()->tag->value();
@@ -137,8 +146,8 @@ final readonly class PortableSiteBuilder
             $route = $this->route(
                 $plan,
                 $localeDefinition->contentRoot,
-                (string) ($site['base_url'] ?? '/'),
-                $localeDefinition->publicPrefix,
+                $localeUrls,
+                $pageLocale,
             );
             if (isset($outputs[$route['output']])) {
                 throw new PortableConfigurationException(
@@ -180,10 +189,7 @@ final readonly class PortableSiteBuilder
                 'outline' => $outline['items'],
                 'url' => $route['url'],
                 'output' => $route['output'],
-                'home_url' => $this->localeHomeUrl(
-                    (string) ($site['base_url'] ?? '/'),
-                    $localeDefinition->publicPrefix,
-                ),
+                'home_url' => $localeUrls->home($pageLocale),
                 'content_html' => $contentHtml,
                 'components' => $components,
                 'component_calls' => $components->normalizedCalls,
@@ -231,14 +237,8 @@ final readonly class PortableSiteBuilder
                 runtime: $runtime,
                 basePlan: $localeCatalogBasePlan,
                 contentRoot: $definition->contentRoot,
-                baseUrl: $this->localeHomeUrl(
-                    (string) ($site['base_url'] ?? '/'),
-                    $definition->publicPrefix,
-                ),
-                homeUrl: $this->localeHomeUrl(
-                    (string) ($site['base_url'] ?? '/'),
-                    $definition->publicPrefix,
-                ),
+                baseUrl: $localeUrls->home($locale),
+                homeUrl: $localeUrls->home($locale),
                 outputPrefix: $definition->publicPrefix,
                 reservedDocumentIds: $this->html->reservedDocumentIds(),
             );
@@ -277,8 +277,9 @@ final readonly class PortableSiteBuilder
                 runtime: $runtime,
                 basePlan: $exampleBasePlan,
                 contentRoot: $contentRoot,
-                baseUrl: (string) ($site['base_url'] ?? '/'),
-                homeUrl: $this->homeUrl((string) ($site['base_url'] ?? '/')),
+                baseUrl: $localeUrls->home($buildLocale),
+                homeUrl: $localeUrls->home($buildLocale),
+                outputPrefix: $localeRegistry->get($buildLocale)->publicPrefix,
                 reservedDocumentIds: $this->html->reservedDocumentIds(),
             );
             foreach ($declarativeExampleProjection['pages'] as $examplePage) {
@@ -315,6 +316,7 @@ final readonly class PortableSiteBuilder
             $pageLocale = (string) $page['locale'];
             $page['direction'] = $localeRegistry->get($pageLocale)->direction;
             $page['ui_copy'] = $uiCopy->forLocale($pageLocale);
+            $page['canonical_url'] = (string) $page['url'];
             $available = $translations[(string) ($page['translation_key'] ?? $page['page_path'])] ?? [];
             $page['alternates'] = [];
             $page['language_options'] = [];
@@ -333,12 +335,38 @@ final readonly class PortableSiteBuilder
                     'current' => $candidateLocale === $pageLocale,
                 ];
             }
+            $page['alternates'][] = [
+                'locale' => 'x-default',
+                'url' => $localeUrls->rootUrl(),
+            ];
         }
         unset($page);
-        $previewRoutes = DeclarativePreviewRouteMap::fromPages(array_values(array_filter(
-            $pages,
-            static fn (array $page): bool => ($page['locale'] ?? null) === $buildLocale,
-        )));
+        $localeLinkRoutes = [];
+        foreach ($pages as $page) {
+            $pageLocale = (string) $page['locale'];
+            $canonicalUrl = (string) $page['url'];
+            $legacyUrl = $localeUrls->unprefixed($pageLocale, $canonicalUrl);
+            if ($legacyUrl === $canonicalUrl) {
+                continue;
+            }
+            $localeLinkRoutes[$pageLocale][$legacyUrl] = $canonicalUrl;
+            if ($legacyUrl !== '/') {
+                $localeLinkRoutes[$pageLocale][rtrim($legacyUrl, '/')] = rtrim($canonicalUrl, '/');
+            }
+        }
+        $localeLinkProjectors = [];
+        foreach ($localeRegistry->all() as $locale => $_definition) {
+            $localeLinkProjectors[$locale] = new LocaleInternalLinkProjector(
+                $localeLinkRoutes[$locale] ?? [],
+            );
+        }
+        $previewRoutes = DeclarativePreviewRouteMap::fromPages(
+            array_values(array_filter(
+                $pages,
+                static fn (array $page): bool => ($page['locale'] ?? null) === $buildLocale,
+            )),
+            $localeRegistry->get($buildLocale)->publicPrefix,
+        );
 
         $navigationBuilder = new PortableNavigationBuilder;
         $topologies = [];
@@ -369,6 +397,14 @@ final readonly class PortableSiteBuilder
             $uiCopy->forLocale($buildLocale),
             $localeRegistry->default()->direction,
         );
+        $localeRoutePublisher = new PortableLocaleRoutePublisher($this->files);
+        $localeRoutePlan = $localeRoutePublisher->plan(
+            $pages,
+            $localeRegistry,
+            $localeUrls,
+            $documentationVersion,
+            $uiCopy->forLocale($buildLocale),
+        );
         $siteTitle = (string) ($site['title'] ?? 'Docara');
         $brandPublisher = new PortableBrandAssetPlanner($this->files);
         $brandPlan = $brandPublisher->plan(
@@ -389,7 +425,7 @@ final readonly class PortableSiteBuilder
             $searchPlan = (new PortableSearchIndexBuilder)->plan(
                 $pages,
                 $topology,
-                $this->homeUrl((string) ($site['base_url'] ?? '/')),
+                $localeUrls->rootUrl(),
             );
             foreach ($pages as &$page) {
                 if ($page['search_enabled'] === true) {
@@ -469,6 +505,7 @@ final readonly class PortableSiteBuilder
 
             foreach ($pages as $pageIndex => $page) {
                 $declarative = null;
+                $pageLocale = (string) $page['locale'];
                 $page['branding'] = $brandPlan['pages'][$pageIndex];
                 $pageTopology = $topologies[(string) $page['locale']] ?? [];
                 $pageNavigation = $navigations[(string) $page['locale']] ?? [];
@@ -626,7 +663,9 @@ final readonly class PortableSiteBuilder
                             (string) $page['url'],
                             $previewRoutes->indexUrl,
                             $previewProjector->project(
-                                $declarative->artifact->html,
+                                $localeLinkProjectors[$pageLocale]->project(
+                                    $declarative->artifact->html,
+                                ),
                                 $previewRoutes,
                             ),
                             $page['components']->assetPlan,
@@ -672,6 +711,7 @@ final readonly class PortableSiteBuilder
                     $page['components']->assetPlan,
                     $declarative,
                 );
+                $rendered = $localeLinkProjectors[$pageLocale]->project($rendered);
                 $this->files->put($outputPath, $rendered);
 
                 /** @var ResolvedPagePlan $plan */
@@ -736,6 +776,7 @@ final readonly class PortableSiteBuilder
             );
 
             $redirectPublisher->publish($redirectPlan, $destination);
+            $localeRoutePublisher->publish($localeRoutePlan, $destination);
             $this->copyContentAssets($contentAssets, $destination);
             $brandPublisher->publish($brandPlan['assets'], $destination);
             foreach ($localeDestinations as $localeDestination) {
@@ -837,10 +878,9 @@ final readonly class PortableSiteBuilder
     private function route(
         ResolvedPagePlan $plan,
         string $contentRoot,
-        string $baseUrl,
-        string $publicPrefix = '',
-    ): array
-    {
+        LocaleUrlProjector $urls,
+        string $locale,
+    ): array {
         $slug = $plan->configuration['slug'] ?? null;
         if (! is_string($slug) || $slug === '') {
             $slug = substr($plan->page, strlen(rtrim($contentRoot, '/') . '/'));
@@ -869,16 +909,8 @@ final readonly class PortableSiteBuilder
             throw new PortableConfigurationException('PAGE_SLUG_INVALID', "Page [{$plan->page}] has an unsafe slug.");
         }
         $encoded = implode('/', array_map('rawurlencode', $slug === '' ? [] : explode('/', $slug)));
-        $base = '/' . trim($baseUrl, '/');
-        $base = $base === '/' ? '' : $base;
-        $prefix = trim($publicPrefix, '/');
-        $publicSlug = implode('/', array_filter([$prefix, $encoded], static fn (string $part): bool => $part !== ''));
-        $url = $base . '/' . ($publicSlug === '' ? '' : $publicSlug . '/');
 
-        return [
-            'url' => $url,
-            'output' => $publicSlug === '' ? 'index.html' : $publicSlug . '/index.html',
-        ];
+        return $urls->page($locale, $encoded);
     }
 
     private function translationKey(string $page, string $contentRoot): string
@@ -1052,8 +1084,7 @@ final readonly class PortableSiteBuilder
         string $contentPath,
         array $generatedOutputs,
         string $publicPrefix = '',
-    ): array
-    {
+    ): array {
         $reservedOutputs = array_map('strtolower', $generatedOutputs);
         $assets = [];
         $iterator = new \RecursiveIteratorIterator(

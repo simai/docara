@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Simai\Docara\PortableSite;
 
 use Simai\Docara\Declarative\DeclarativePageResult;
-use Simai\Docara\Declarative\Rendering\TrustedTemplateRegistry;
 use Simai\Docara\Declarative\Rendering\PublisherChromeRenderer;
-use Simai\Docara\Declarative\Rendering\View\PublisherChromeViewModel;
+use Simai\Docara\Declarative\Rendering\TrustedTemplateRegistry;
 use Simai\Docara\Declarative\Rendering\View\PortablePageViewModel;
+use Simai\Docara\Declarative\Rendering\View\PublisherChromeViewModel;
 use Simai\Docara\Framework\FrameworkAssetPlan;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Smart\SmartRegistry;
@@ -139,6 +139,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $themeOptions,
             $this->escape($configuredTheme),
             $escapedCopy,
+            $this->escape((string) ($page['canonical_url'] ?? $page['url'])),
             $this->alternates(is_array($page['alternates'] ?? null) ? $page['alternates'] : []),
             $languageOptions,
             json_encode($copy, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP),

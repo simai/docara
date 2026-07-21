@@ -513,7 +513,7 @@ final class DocumentationContractTest extends TestCase
 
     private function contentRoot(): string
     {
-        return $this->repositoryRoot() . '/docs/site/content';
+        return $this->repositoryRoot() . '/docs/site/content/ru';
     }
 
     private function repositoryRoot(): string

@@ -71,7 +71,7 @@ final class StaticBuildVerifierTest extends TestCase
     public function declarative_example_receipt_and_rendered_exact_sources_are_verified_fail_closed(): void
     {
         $site = $this->tmpPath('declarative-example-site');
-        $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $site);
+        $this->copyPortableFixtureLegacy($site);
         $this->installDeclarativeExampleFixture($site);
         $build = $site . '/build_local';
         (new PortableSiteBuilder(
@@ -485,7 +485,7 @@ final class StaticBuildVerifierTest extends TestCase
     {
         $source = $this->tmpPath('component-catalogue-source');
         $build = $source . '/build_catalogue';
-        $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $source);
+        $this->copyPortableFixtureLegacy($source);
         (new PortableSiteBuilder(
             new Filesystem,
             new PortableMarkdownRenderer,
@@ -658,7 +658,7 @@ final class StaticBuildVerifierTest extends TestCase
     {
         $source = $this->tmpPath('component-catalogue-english-source');
         $build = $source . '/build_catalogue';
-        $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $source);
+        $this->copyPortableFixtureLegacy($source);
         $configuration = $this->readJson($source . '/docara.json');
         $configuration['default_locale'] = 'en';
         $configuration['search'] = ['enabled' => false, 'indexed' => false];
@@ -1163,7 +1163,7 @@ final class StaticBuildVerifierTest extends TestCase
     {
         $source = $this->tmpPath($name . '-source');
         $build = $source . '/build_catalogue';
-        $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $source);
+        $this->copyPortableFixtureLegacy($source);
         $configuration = $this->readJson($source . '/docara.json');
         $configuration['search'] = ['enabled' => false, 'indexed' => false];
         $this->writeJson($source . '/docara.json', $configuration);
@@ -1576,5 +1576,35 @@ final class StaticBuildVerifierTest extends TestCase
                 . '"></head><body>' . $html . '</body></html>',
             );
         }
+    }
+
+    private function copyPortableFixtureLegacy(string $target): void
+    {
+        $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $target);
+        rename($target . '/content/ru', $target . '/content-legacy');
+        rmdir($target . '/content');
+        rename($target . '/content-legacy', $target . '/content');
+        $site = $this->readJson($target . '/docara.json');
+        $site['content_root'] = 'content';
+        unset($site['locales']);
+        $site['locale_routing'] = [
+            'strategy' => 'default_unprefixed',
+            'root' => 'default_locale',
+            'detect_browser_language' => false,
+            'legacy_unprefixed_redirects' => false,
+        ];
+        $this->writeJson($target . '/docara.json', $site);
+        $redirects = $this->readJson($target . '/redirects.json');
+        $redirects['redirects'] = array_values(array_map(
+            static fn (array $redirect): array => [
+                'from' => $redirect['from'],
+                'to' => preg_replace('#^ru/#', '', (string) $redirect['to']),
+            ],
+            array_filter(
+                $redirects['redirects'],
+                static fn (array $redirect): bool => ! str_starts_with((string) $redirect['from'], 'ru/'),
+            ),
+        ));
+        $this->writeJson($target . '/redirects.json', $redirects);
     }
 }

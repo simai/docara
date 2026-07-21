@@ -5,10 +5,10 @@
   "description": "Показывает, как header, sidebar и outline получают зарегистрированные секции, а main — Markdown-контент.",
   "category": "regions",
   "order": 10,
-  "result_page": "content/demonstrator-results/regions-composed.md",
+  "result_page": "content/ru/demonstrator-results/regions-composed.md",
   "preview": "tall",
   "sources": [
-    {"label": "Markdown страницы", "path": "content/demonstrator-results/regions-composed.md", "language": "markdown"},
-    {"label": "Настройки страницы", "path": "content/demonstrator-results/regions-composed.page.json", "language": "json"}
+    {"label": "Markdown страницы", "path": "content/ru/demonstrator-results/regions-composed.md", "language": "markdown"},
+    {"label": "Настройки страницы", "path": "content/ru/demonstrator-results/regions-composed.page.json", "language": "json"}
   ]
 }

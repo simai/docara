@@ -23,7 +23,7 @@
         "docs": true,
         "demo": true
     },
-    "docs_ref": "docs/site/content/components/syntax.md",
+    "docs_ref": "docs/site/content/ru/components/syntax.md",
     "provenance": {
         "source_kind": "typed_definition",
         "definition_ref": "resources/component-catalog/typed/docara.columns.json"

@@ -10,6 +10,7 @@
 <?php if ($view->favicon !== null) { ?>
     <link rel="icon" href="<?= $view->favicon ?>"<?php if ($view->faviconType !== null) { ?> type="<?= $view->faviconType ?>"<?php } ?>>
 <?php } ?>
+    <link rel="canonical" href="<?= $view->canonicalUrl ?>">
 <?php foreach ($view->alternates as $alternate) { ?>
     <link rel="alternate" hreflang="<?= $alternate['locale'] ?>" href="<?= $alternate['url'] ?>">
 <?php } ?>

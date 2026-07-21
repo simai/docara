@@ -9,8 +9,11 @@ use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Simai\Docara\I18n\LanguagePackRepository;
+use Simai\Docara\I18n\LocaleInternalLinkProjector;
 use Simai\Docara\I18n\LocaleRegistry;
+use Simai\Docara\I18n\LocaleRoutingPolicy;
 use Simai\Docara\I18n\LocaleTag;
+use Simai\Docara\I18n\LocaleUrlProjector;
 use Simai\Docara\I18n\Translator;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\SchemaRepository;
@@ -105,6 +108,79 @@ final class LocaleRuntimeTest extends TestCase
         $site = $this->site();
         $site['locales']['ar']['public_prefix'] = 'en';
         $this->assertConfigurationError('LOCALE_PUBLIC_PREFIX_DUPLICATE', fn () => LocaleRegistry::fromSite($site));
+    }
+
+    public function test_symmetric_routing_requires_explicit_prefixes_and_projects_one_canonical_route_shape(): void
+    {
+        $site = $this->site();
+        $site['locales']['ru']['public_prefix'] = 'ru';
+        $site['locale_routing'] = [
+            'strategy' => 'prefixed',
+            'root' => 'redirect',
+            'detect_browser_language' => false,
+            'legacy_unprefixed_redirects' => true,
+        ];
+        $registry = LocaleRegistry::fromSite($site);
+        $policy = LocaleRoutingPolicy::fromSite($site, $registry);
+        $projector = new LocaleUrlProjector('/docs/', $registry, $policy);
+
+        self::assertTrue($policy->isSymmetric());
+        self::assertSame('/docs/', $projector->rootUrl());
+        self::assertSame('/docs/ru/', $projector->defaultLocaleUrl());
+        self::assertSame(
+            ['url' => '/docs/ru/guide/install/', 'output' => 'ru/guide/install/index.html'],
+            $projector->page('ru', 'guide/install'),
+        );
+        self::assertSame('/docs/guide/install/', $projector->unprefixed('ru', '/docs/ru/guide/install/'));
+        self::assertSame('ar/components/catalog/index.html', $projector->output('ar', 'components/catalog/index.html'));
+    }
+
+    public function test_internal_link_projector_localizes_only_known_document_links(): void
+    {
+        $projector = new LocaleInternalLinkProjector([
+            '/' => '/ru/',
+            '/guide/' => '/ru/guide/',
+            '/guide' => '/ru/guide',
+        ]);
+        $html = <<<'HTML'
+<a href="/">Home</a>
+<a class="current" href="/guide/">Guide</a>
+<a href="/guide#install">Install</a>
+<a href="https://example.com/guide/">External</a>
+<a href="#local">Local anchor</a>
+<link rel="canonical" href="/guide/">
+HTML;
+
+        $localized = $projector->project($html);
+
+        self::assertStringContainsString('<a href="/ru/">Home</a>', $localized);
+        self::assertStringContainsString('<a class="current" href="/ru/guide/">Guide</a>', $localized);
+        self::assertStringContainsString('<a href="/ru/guide#install">Install</a>', $localized);
+        self::assertStringContainsString('<a href="https://example.com/guide/">External</a>', $localized);
+        self::assertStringContainsString('<a href="#local">Local anchor</a>', $localized);
+        self::assertStringContainsString('<link rel="canonical" href="/guide/">', $localized);
+    }
+
+    public function test_locale_routing_fails_closed_for_incoherent_root_and_prefix_policies(): void
+    {
+        $site = $this->site();
+        $site['locale_routing'] = [
+            'strategy' => 'prefixed',
+            'root' => 'redirect',
+            'detect_browser_language' => false,
+        ];
+        $registry = LocaleRegistry::fromSite($site);
+        $this->assertConfigurationError('LOCALE_PREFIX_REQUIRED', fn () => LocaleRoutingPolicy::fromSite($site, $registry));
+
+        $site = $this->site();
+        $site['locales']['ru']['public_prefix'] = 'ru';
+        $site['locale_routing'] = [
+            'strategy' => 'default_unprefixed',
+            'root' => 'default_locale',
+            'detect_browser_language' => false,
+        ];
+        $registry = LocaleRegistry::fromSite($site);
+        $this->assertConfigurationError('DEFAULT_LOCALE_MUST_BE_UNPREFIXED', fn () => LocaleRoutingPolicy::fromSite($site, $registry));
     }
 
     public function test_language_packs_and_translator_resolve_exact_and_configured_fallback_copy(): void

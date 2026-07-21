@@ -21,7 +21,7 @@
         "docs": true,
         "demo": true
     },
-    "docs_ref": "docs/site/content/authoring/markdown.md",
+    "docs_ref": "docs/site/content/ru/authoring/markdown.md",
     "provenance": {
         "source_kind": "portable_markdown_profile",
         "profile_id": "docara.portable_markdown_profile.v1"

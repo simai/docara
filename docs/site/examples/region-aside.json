@@ -5,10 +5,10 @@
   "description": "Правая область объединяет автоматически построенное оглавление и информационный Smart-компонент.",
   "category": "regions",
   "order": 16,
-  "result_page": "content/demonstrator-results/region-aside.md",
+  "result_page": "content/ru/demonstrator-results/region-aside.md",
   "preview": "tall",
   "sources": [
-    {"label": "Markdown страницы", "path": "content/demonstrator-results/region-aside.md", "language": "markdown"},
-    {"label": "Композиция aside", "path": "content/demonstrator-results/region-aside.page.json", "language": "json"}
+    {"label": "Markdown страницы", "path": "content/ru/demonstrator-results/region-aside.md", "language": "markdown"},
+    {"label": "Композиция aside", "path": "content/ru/demonstrator-results/region-aside.page.json", "language": "json"}
   ]
 }

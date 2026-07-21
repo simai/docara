@@ -2,18 +2,24 @@
   "schema": "docara.site.v1",
   "title": "Docara",
   "preset": "docs",
-  "content_root": "content",
+  "content_root": "content/ru",
   "framework_lock": "simai-framework.lock.json",
   "default_locale": "ru",
   "locales": {
     "ru": {
       "label": "Русский",
       "direction": "ltr",
-      "content_root": "content",
+      "content_root": "content/ru",
       "language_pack": "@docara/ru",
-      "public_prefix": "",
+      "public_prefix": "ru",
       "fallbacks": []
     }
+  },
+  "locale_routing": {
+    "strategy": "prefixed",
+    "root": "redirect",
+    "detect_browser_language": false,
+    "legacy_unprefixed_redirects": true
   },
   "documentation_version": "current",
   "redirects_file": "redirects.json",

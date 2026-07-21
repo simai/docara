@@ -5,10 +5,10 @@
   "description": "Документационная оболочка для последовательного чтения с навигацией и контекстом страницы.",
   "category": "presets",
   "order": 40,
-  "result_page": "content/demonstrator-results/preset-docs.md",
+  "result_page": "content/ru/demonstrator-results/preset-docs.md",
   "preview": "tall",
   "sources": [
-    {"label": "Markdown страницы", "path": "content/demonstrator-results/preset-docs.md", "language": "markdown"},
-    {"label": "Настройки страницы", "path": "content/demonstrator-results/preset-docs.page.json", "language": "json"}
+    {"label": "Markdown страницы", "path": "content/ru/demonstrator-results/preset-docs.md", "language": "markdown"},
+    {"label": "Настройки страницы", "path": "content/ru/demonstrator-results/preset-docs.page.json", "language": "json"}
   ]
 }

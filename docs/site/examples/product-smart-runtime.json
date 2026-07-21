@@ -5,10 +5,10 @@
   "description": "Бренд, четырёхуровневая навигация и содержание страницы собраны из canonical Smart-компонентов с собственными assets.",
   "category": "smart",
   "order": 58,
-  "result_page": "content/demonstrator-results/product-smart-runtime.md",
+  "result_page": "content/ru/demonstrator-results/product-smart-runtime.md",
   "preview": "tall",
   "sources": [
-    {"label": "Markdown результата", "path": "content/demonstrator-results/product-smart-runtime.md", "language": "markdown"},
-    {"label": "Композиция страницы", "path": "content/demonstrator-results/product-smart-runtime.page.json", "language": "json"}
+    {"label": "Markdown результата", "path": "content/ru/demonstrator-results/product-smart-runtime.md", "language": "markdown"},
+    {"label": "Композиция страницы", "path": "content/ru/demonstrator-results/product-smart-runtime.page.json", "language": "json"}
   ]
 }

@@ -1,7 +1,8 @@
 # Мультиязычный сайт
 
 Одна команда Docara собирает все объявленные локали. В этом примере русский
-публикуется в корне, английский — под `/en/`, арабский — под `/ar/`.
+публикуется под `/ru/`, английский — под `/en/`, арабский — под `/ar/`, а `/`
+стабильно перенаправляет на основную локаль.
 
 ## 1. Создайте одинаковую структуру контента
 
@@ -43,6 +44,7 @@ content/
   "title": "Acme Docs",
   "preset": "docs",
   "framework_lock": "simai-framework.lock.json",
+  "content_root": "content/ru",
   "default_locale": "ru",
   "documentation_version": "current",
   "base_url": "/",
@@ -52,7 +54,7 @@ content/
       "direction": "ltr",
       "content_root": "content/ru",
       "language_pack": "@docara/ru",
-      "public_prefix": "",
+      "public_prefix": "ru",
       "fallbacks": []
     },
     "en": {
@@ -71,6 +73,12 @@ content/
       "public_prefix": "ar",
       "fallbacks": ["en"]
     }
+  },
+  "locale_routing": {
+    "strategy": "prefixed",
+    "root": "redirect",
+    "detect_browser_language": false,
+    "legacy_unprefixed_redirects": true
   },
   "branding": {
     "title": "Acme",
@@ -95,7 +103,7 @@ php vendor/bin/docara verify-static build_production
 php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 ```
 
-Проверьте `/`, `/en/` и `/ar/`. На связанных страницах должны работать
+Проверьте redirect `/`, затем `/ru/`, `/en/` и `/ar/`. На связанных страницах должны работать
 переключатель языка и `hreflang`; у арабской страницы корневой HTML должен
 иметь `lang="ar"` и `dir="rtl"`. Поиск хранит locale каждой записи и не
 смешивает одинаковые маршруты разных языков.

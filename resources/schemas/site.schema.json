@@ -43,6 +43,9 @@
                 "$ref": "#/$defs/locale"
             }
         },
+        "locale_routing": {
+            "$ref": "#/$defs/localeRouting"
+        },
         "documentation_version": {
             "type": "string",
             "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,62}[A-Za-z0-9])?$"
@@ -80,6 +83,27 @@
     },
     "additionalProperties": false,
     "$defs": {
+        "localeRouting": {
+            "type": "object",
+            "required": ["strategy", "root", "detect_browser_language"],
+            "properties": {
+                "strategy": {
+                    "type": "string",
+                    "enum": ["default_unprefixed", "prefixed"]
+                },
+                "root": {
+                    "type": "string",
+                    "enum": ["default_locale", "redirect"]
+                },
+                "detect_browser_language": {
+                    "type": "boolean"
+                },
+                "legacy_unprefixed_redirects": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false
+        },
         "locale": {
             "type": "object",
             "required": ["label", "direction", "content_root", "language_pack"],

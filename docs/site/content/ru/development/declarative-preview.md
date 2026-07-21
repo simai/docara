@@ -7,9 +7,9 @@ publisher. Этот раздел показывает дополнительны
 ## Что открыть
 
 - [Главная страница внутри preview](/)
-- [Каталог declarative preview](/_docara/declarative-preview/)
-- [Machine-readable receipt](/_docara/declarative-preview/index.json)
-- [Preview главной страницы](/_docara/declarative-preview/pages/)
+- [Каталог declarative preview](/ru/_docara/declarative-preview/)
+- [Machine-readable receipt](/ru/_docara/declarative-preview/index.json)
+- [Preview главной страницы](/ru/_docara/declarative-preview/pages/)
 - [Resolved page plans](/.docara/resolved-page-plans.json)
 
 В каталоге каждая авторская страница помечена как собранная или пропущенная.
@@ -38,7 +38,7 @@ publisher. Этот раздел показывает дополнительны
 
 | Часть | Путь в репозитории |
 | --- | --- |
-| Контент документации | `docs/site/content` |
+| Контент документации | `docs/site/content/ru` |
 | Настройки сайта | `docs/site/docara.json` |
 | Layout | `resources/layouts/docara.docs.json` |
 | Sections | `resources/sections` |
@@ -57,7 +57,7 @@ publisher. Этот раздел показывает дополнительны
 
 ## Как читать receipt
 
-`/_docara/declarative-preview/index.json` содержит:
+`/ru/_docara/declarative-preview/index.json` содержит:
 
 - `build` — locale и documentation version;
 - `index` — URL, output и SHA-256 каталога;

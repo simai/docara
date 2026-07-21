@@ -1,30 +1,34 @@
-# Workflow: Docara Smart component unification
+# Workflow: Symmetric locale routing for Docara
 
 Date: 2026-07-21
-Status: completed
-Workflow ID: `2026-07-21-docara-smart-component-unification`
-Process model: `general_delivery`
-Current state: `evidence_recorded`
-Target state: `evidence_recorded`
+Status: accepted locally
+Workflow ID: `2026-07-21-docara-symmetric-locale-routing`
+Process model: `full_qa`
+Current state: `review_ready`
+Target state: `review_ready`
 
-## Goal
+## Current Goal
 
-Unify Docara Smart components with the canonical Larena and Simai Framework
-model while preserving the standalone, Laravel-free runtime.
+Move Docara to the symmetric locale model: isolated `content/<locale>` trees,
+explicit `/<locale>/` public prefixes and a deterministic root route to the
+configured default locale, while preserving the old unprefixed mode and every
+current Docara documentation URL through exact redirects.
 
 ## Source Of Truth
 
 - workflow:
-  `source/workflow/2026-07-21-docara-smart-component-unification.md`.
+  `source/workflow/2026-07-21-docara-symmetric-locale-routing.md`;
+- launch record:
+  `source/workflow/2026-07-21-docara-symmetric-locale-routing.launch.yaml`.
 
 ## Result
 
-Candidate `46fefd88d4031a1a5bcba551fef9bdc6c04b2edf` accepted and published only
-to local `docara.test`. Full/deterministic tests, browser matrix,
-exact-candidate tester gate and reverse-outcome audit passed.
+Symmetric locale routing is implemented and accepted locally. Docara and the
+portable starter use `content/ru` and `/ru/`; legacy URLs remain available,
+the deterministic/static/full suite is green, and `docara.test` contains the
+rollback-safe accepted artifact.
 
 ## Completion Guard
 
-Do not close after a contract or implementation batch. Completion requires the
-exact-candidate tests, deterministic build, local publication, browser matrix,
-independent tester verdict and reverse-outcome audit defined by the workflow.
+The completion guard is satisfied. Public push, merge, package release,
+hosting-level redirects and production readiness remain explicitly excluded.

@@ -28,7 +28,7 @@ assets/
   "schema": "docara.site.v1",
   "title": "Acme Docs",
   "preset": "docs",
-  "content_root": "content",
+  "content_root": "content/ru",
   "framework_lock": "simai-framework.lock.json",
   "default_locale": "ru",
   "base_url": "/",

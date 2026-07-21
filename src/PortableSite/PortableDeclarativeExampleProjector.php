@@ -45,6 +45,7 @@ final readonly class PortableDeclarativeExampleProjector
         string $contentRoot,
         string $baseUrl,
         string $homeUrl,
+        string $outputPrefix = '',
         array $reservedDocumentIds = [],
     ): array {
         $descriptors = $this->descriptors($root);
@@ -94,7 +95,7 @@ final readonly class PortableDeclarativeExampleProjector
 
             $sources = $this->sources($root, $record['path'], $descriptor);
             $route = $indexRoute . rawurlencode($id) . '/';
-            $output = 'examples/' . $id . '/index.html';
+            $output = $this->output($outputPrefix, 'examples/' . $id . '/index.html');
             $category = $copy['categories'][(string) $descriptor['category']];
             $items[] = new DeclarativeExampleIndexItemViewModel(
                 $this->escape((string) $descriptor['title']),
@@ -212,7 +213,7 @@ final readonly class PortableDeclarativeExampleProjector
             title: $copy['title'],
             description: $copy['description'],
             url: $indexRoute,
-            output: 'examples/index.html',
+            output: $this->output($outputPrefix, 'examples/index.html'),
             contentHtml: $indexOutline['html'],
             components: $runtime->extract('', '@docara/declarative-examples/index.md'),
             homeUrl: $homeUrl,
@@ -228,7 +229,10 @@ final readonly class PortableDeclarativeExampleProjector
         $index['declarative_example_next'] = null;
 
         $receiptCore = [
-            'index' => ['route' => $indexRoute, 'output' => 'examples/index.html'],
+            'index' => [
+                'route' => $indexRoute,
+                'output' => $this->output($outputPrefix, 'examples/index.html'),
+            ],
             'pages' => $receiptPages,
         ];
 
@@ -540,5 +544,15 @@ final readonly class PortableDeclarativeExampleProjector
     private function escape(string $value): string
     {
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
+    private function output(string $prefix, string $relative): string
+    {
+        $segments = array_filter(
+            [trim($prefix, '/'), ltrim($relative, '/')],
+            static fn (string $segment): bool => $segment !== '',
+        );
+
+        return implode('/', $segments);
     }
 }

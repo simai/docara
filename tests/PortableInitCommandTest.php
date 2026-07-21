@@ -20,13 +20,13 @@ class PortableInitCommandTest extends TestCase
         $this->assertFileExists($this->tmpPath('docara.json'));
         $this->assertFileExists($this->tmpPath('redirects.json'));
         $this->assertFileExists($this->tmpPath('simai-framework.lock.json'));
-        $this->assertFileExists($this->tmpPath('content/guides/getting-started.md'));
-        $this->assertFileExists($this->tmpPath('content/guides/getting-started.page.json'));
-        $this->assertFileExists($this->tmpPath('content/guides/platform/configuration/layout.md'));
+        $this->assertFileExists($this->tmpPath('content/ru/guides/getting-started.md'));
+        $this->assertFileExists($this->tmpPath('content/ru/guides/getting-started.page.json'));
+        $this->assertFileExists($this->tmpPath('content/ru/guides/platform/configuration/layout.md'));
         $this->assertFileExists($this->tmpPath('assets/docara-mark.svg'));
-        $this->assertFileExists($this->tmpPath('content/index.page.json'));
-        $this->assertFileExists($this->tmpPath('content/landing.md'));
-        $this->assertFileExists($this->tmpPath('content/landing.page.json'));
+        $this->assertFileExists($this->tmpPath('content/ru/index.page.json'));
+        $this->assertFileExists($this->tmpPath('content/ru/landing.md'));
+        $this->assertFileExists($this->tmpPath('content/ru/landing.page.json'));
 
         $this->assertFileDoesNotExist($this->tmpPath('.env'));
         $this->assertFileDoesNotExist($this->tmpPath('config.php'));
@@ -44,11 +44,11 @@ class PortableInitCommandTest extends TestCase
         $this->assertSame(Command::SUCCESS, $status);
 
         $site = $this->json('docara.json');
-        $rootSection = $this->json('content/section.json');
-        $nestedSection = $this->json('content/guides/section.json');
-        $indexPage = $this->json('content/index.page.json');
-        $docsPage = $this->json('content/guides/getting-started.page.json');
-        $landingPage = $this->json('content/landing.page.json');
+        $rootSection = $this->json('content/ru/section.json');
+        $nestedSection = $this->json('content/ru/guides/section.json');
+        $indexPage = $this->json('content/ru/index.page.json');
+        $docsPage = $this->json('content/ru/guides/getting-started.page.json');
+        $landingPage = $this->json('content/ru/landing.page.json');
         $lock = $this->json('simai-framework.lock.json');
 
         $this->assertSame('docara.site.v1', $site['schema']);
@@ -72,7 +72,7 @@ class PortableInitCommandTest extends TestCase
         $this->assertFalse($landingPage['search']['enabled']);
         $this->assertFalse($landingPage['search']['indexed']);
 
-        $landing = file_get_contents($this->tmpPath('content/landing.md'));
+        $landing = file_get_contents($this->tmpPath('content/ru/landing.md'));
         $this->assertIsString($landing);
         $this->assertStringContainsString(':::cta', $landing);
         $this->assertStringContainsString('[Начать работу](/guides/getting-started/)', $landing);
@@ -116,7 +116,7 @@ class PortableInitCommandTest extends TestCase
         [$status] = $this->executeInit(['--portable' => true]);
         $this->assertSame(Command::SUCCESS, $status);
 
-        $markdown = file_get_contents($this->tmpPath('content/guides/getting-started.md'));
+        $markdown = file_get_contents($this->tmpPath('content/ru/guides/getting-started.md'));
         $this->assertIsString($markdown);
         $this->assertMatchesRegularExpression('/:::ui\.alert\R\{.+\}\R:::/', $markdown);
         $this->assertMatchesRegularExpression('/:::ui\.button\R\{.+\}\R:::/', $markdown);
@@ -146,7 +146,7 @@ class PortableInitCommandTest extends TestCase
             }
 
             $relative = ltrim(str_replace('\\', '/', substr($file->getPathname(), strlen($this->tmp))), '/');
-            if ($relative === 'content/landing.page.json') {
+            if ($relative === 'content/ru/landing.page.json') {
                 continue;
             }
 
@@ -154,7 +154,7 @@ class PortableInitCommandTest extends TestCase
             file_put_contents($file->getPathname(), $contents);
             $preserved[$relative] = $contents;
         }
-        unlink($this->tmpPath('content/landing.page.json'));
+        unlink($this->tmpPath('content/ru/landing.page.json'));
 
         [$updateStatus, $console] = $this->executeInit(['--portable' => true, '--update' => true]);
 
@@ -162,8 +162,8 @@ class PortableInitCommandTest extends TestCase
         foreach ($preserved as $relative => $contents) {
             $this->assertSame($contents, file_get_contents($this->tmpPath($relative)), "Portable update overwrote {$relative}");
         }
-        $this->assertFileExists($this->tmpPath('content/landing.page.json'));
-        $this->assertSame('docara.page.v1', $this->json('content/landing.page.json')['schema']);
+        $this->assertFileExists($this->tmpPath('content/ru/landing.page.json'));
+        $this->assertSame('docara.page.v1', $this->json('content/ru/landing.page.json')['schema']);
     }
 
     #[Test]

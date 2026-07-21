@@ -1,6 +1,6 @@
 tracks:
   docara-consolidation:
-    status: "ready_for_next_goal"
-    owner_skill: "docara"
-    current_workflow: "source/workflow/2026-07-21-docara-smart-component-unification.md"
+    status: "active"
+    owner_skill: "teamlead"
+    current_workflow: "source/workflow/2026-07-21-docara-symmetric-locale-routing.md"
     last_updated: "2026-07-21"

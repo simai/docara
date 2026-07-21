@@ -2,14 +2,23 @@
   "schema": "docara.redirects.v1",
   "version": 1,
   "redirects": [
-    {"from": "components/alert", "to": "components/catalog/ui.alert"},
-    {"from": "components/button", "to": "components/catalog/ui.button"},
-    {"from": "components/card", "to": "components/catalog/docara.card"},
-    {"from": "components/code", "to": "components/catalog/native.code"},
-    {"from": "components/cta", "to": "components/catalog/docara.cta"},
-    {"from": "components/features", "to": "components/catalog/docara.features"},
-    {"from": "components/steps", "to": "components/catalog/docara.steps"},
-    {"from": "components/table", "to": "components/catalog/native.table"},
-    {"from": "components/tabs", "to": "components/catalog"}
+    {"from": "components/alert", "to": "ru/components/catalog/ui.alert"},
+    {"from": "components/button", "to": "ru/components/catalog/ui.button"},
+    {"from": "components/card", "to": "ru/components/catalog/docara.card"},
+    {"from": "components/code", "to": "ru/components/catalog/native.code"},
+    {"from": "components/cta", "to": "ru/components/catalog/docara.cta"},
+    {"from": "components/features", "to": "ru/components/catalog/docara.features"},
+    {"from": "components/steps", "to": "ru/components/catalog/docara.steps"},
+    {"from": "components/table", "to": "ru/components/catalog/native.table"},
+    {"from": "components/tabs", "to": "ru/components/catalog"},
+    {"from": "ru/components/alert", "to": "ru/components/catalog/ui.alert"},
+    {"from": "ru/components/button", "to": "ru/components/catalog/ui.button"},
+    {"from": "ru/components/card", "to": "ru/components/catalog/docara.card"},
+    {"from": "ru/components/code", "to": "ru/components/catalog/native.code"},
+    {"from": "ru/components/cta", "to": "ru/components/catalog/docara.cta"},
+    {"from": "ru/components/features", "to": "ru/components/catalog/docara.features"},
+    {"from": "ru/components/steps", "to": "ru/components/catalog/docara.steps"},
+    {"from": "ru/components/table", "to": "ru/components/catalog/native.table"},
+    {"from": "ru/components/tabs", "to": "ru/components/catalog"}
   ]
 }

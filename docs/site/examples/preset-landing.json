@@ -5,10 +5,10 @@
   "description": "Сфокусированная страница без документационной навигации, собранная тем же генератором.",
   "category": "presets",
   "order": 50,
-  "result_page": "content/demonstrator-results/preset-landing.md",
+  "result_page": "content/ru/demonstrator-results/preset-landing.md",
   "preview": "tall",
   "sources": [
-    {"label": "Markdown страницы", "path": "content/demonstrator-results/preset-landing.md", "language": "markdown"},
-    {"label": "Настройки страницы", "path": "content/demonstrator-results/preset-landing.page.json", "language": "json"}
+    {"label": "Markdown страницы", "path": "content/ru/demonstrator-results/preset-landing.md", "language": "markdown"},
+    {"label": "Настройки страницы", "path": "content/ru/demonstrator-results/preset-landing.page.json", "language": "json"}
   ]
 }

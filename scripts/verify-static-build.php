@@ -9,7 +9,9 @@ use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\I18n\LanguagePackRepository;
 use Simai\Docara\I18n\LocaleRegistry;
+use Simai\Docara\I18n\LocaleRoutingPolicy;
 use Simai\Docara\I18n\LocaleTag;
+use Simai\Docara\I18n\LocaleUrlProjector;
 use Simai\Docara\I18n\Translator;
 use Simai\Docara\Portable\JsonSchemaValidator;
 use Simai\Docara\Portable\ResolvedPagePlan;
@@ -261,6 +263,87 @@ function docaraRedirectOutputs(
     return $outputs;
 }
 
+/**
+ * @param  list<string>  $reservedOutputs
+ * @param  list<array<string, mixed>>  $pageRecords
+ * @return list<string>
+ */
+function docaraLocaleRouteOutputs(
+    string $root,
+    array $reservedOutputs,
+    array $pageRecords,
+): array {
+    $receiptPath = $root . '/.docara/locale-routes.json';
+    if (! file_exists($receiptPath) && ! is_link($receiptPath)) {
+        foreach ($pageRecords as $page) {
+            $routing = $page['resolved_page_plan']['configuration']['locale_routing'] ?? null;
+            if (is_array($routing) && ($routing['strategy'] ?? null) === 'prefixed') {
+                throw new RuntimeException('Symmetric locale routing requires a locale route receipt.');
+            }
+        }
+
+        return [];
+    }
+    if (! docaraSafeRegularFile($receiptPath)) {
+        throw new RuntimeException('Locale route receipt is missing or unsafe.');
+    }
+    docaraBootstrapTrustedSource();
+    $receipt = json_decode((string) file_get_contents($receiptPath), true, 512, JSON_THROW_ON_ERROR);
+    (new SchemaRepository)->assertValid($receipt, 'locale-route-receipt.schema.json');
+    $records = $receipt['redirects'] ?? null;
+    if (! is_array($records)
+        || ! array_is_list($records)
+        || ! hash_equals(
+            hash('sha256', docaraCanonicalJson($records)),
+            (string) ($receipt['content_sha256'] ?? ''),
+        )
+    ) {
+        throw new RuntimeException('Locale route receipt content is invalid.');
+    }
+    $targets = [];
+    foreach ($pageRecords as $page) {
+        if (is_string($page['url'] ?? null)) {
+            $targets[$page['url']] = true;
+        }
+    }
+    $reserved = array_fill_keys($reservedOutputs, true);
+    $outputs = [];
+    foreach ($records as $index => $record) {
+        if (! is_array($record)
+            || ! docaraExactKeys($record, ['kind', 'from', 'to', 'url', 'target_url', 'output'])
+            || ! in_array($record['kind'] ?? null, ['root', 'legacy_unprefixed'], true)
+            || ! is_string($record['from'] ?? null)
+            || ! is_string($record['to'] ?? null)
+            || ! is_string($record['url'] ?? null)
+            || ! is_string($record['target_url'] ?? null)
+            || ! is_string($record['output'] ?? null)
+            || ! docaraCatalogSafePath($record['output'])
+            || ! isset($targets[$record['target_url']])
+        ) {
+            throw new RuntimeException("Locale route receipt record [$index] is invalid.");
+        }
+        $output = $record['output'];
+        if (isset($reserved[$output]) || isset($outputs[$output])) {
+            throw new RuntimeException("Locale route output [$output] collides with another generated page.");
+        }
+        if (! docaraSafeRegularFile($root . '/' . $output)) {
+            throw new RuntimeException("Locale route output [$output] is missing or unsafe.");
+        }
+        $html = (string) file_get_contents($root . '/' . $output);
+        if (! str_contains($html, '<link rel="canonical" href="' . $record['target_url'] . '">')
+            || ! str_contains($html, 'url=' . $record['target_url'])
+        ) {
+            throw new RuntimeException("Locale route output [$output] does not match its exact target.");
+        }
+        $outputs[$output] = true;
+    }
+
+    $result = array_keys($outputs);
+    sort($result, SORT_STRING);
+
+    return $result;
+}
+
 function docaraSearchUrlIsSafe(string $url, string $deploymentBase): bool
 {
     return preg_match('#\A/(?:(?!\.{1,2}/)[A-Za-z0-9._~-]+/)*\z#D', $url) === 1
@@ -307,11 +390,20 @@ function docaraDeclarativePreviewOutputs(
     string $locale,
     string $documentationVersion,
 ): array {
-    $previewBase = rtrim($deploymentBase, '/') . '/_docara/declarative-preview/';
-    $receiptPath = $root . '/_docara/declarative-preview/index.json';
-    if (! file_exists($receiptPath) && ! is_link($receiptPath)) {
+    $candidates = glob($root . '/*/_docara/declarative-preview/index.json') ?: [];
+    if (file_exists($root . '/_docara/declarative-preview/index.json')
+        || is_link($root . '/_docara/declarative-preview/index.json')
+    ) {
+        $candidates[] = $root . '/_docara/declarative-preview/index.json';
+    }
+    sort($candidates, SORT_STRING);
+    if ($candidates === []) {
         return [];
     }
+    if (count($candidates) !== 1) {
+        throw new RuntimeException('Declarative preview must publish one exact locale receipt per build.');
+    }
+    $receiptPath = $candidates[0];
     if (! docaraSafeRegularFile($receiptPath)) {
         throw new RuntimeException('Declarative preview receipt is missing or unsafe.');
     }
@@ -341,10 +433,20 @@ function docaraDeclarativePreviewOutputs(
     }
 
     $index = $receipt['index'] ?? null;
+    $previewBase = is_array($index) && is_string($index['url'] ?? null)
+        ? $index['url']
+        : '';
+    $previewOutputRoot = str_replace(
+        '\\',
+        '/',
+        substr(dirname($receiptPath), strlen($root) + 1),
+    );
     if (! is_array($index)
         || ! docaraExactKeys($index, ['url', 'output', 'html_sha256'])
         || ($index['url'] ?? null) !== $previewBase
-        || ($index['output'] ?? null) !== '_docara/declarative-preview/index.html'
+        || ($index['output'] ?? null) !== $previewOutputRoot . '/index.html'
+        || ! str_starts_with($previewBase, rtrim($deploymentBase, '/') . '/')
+        || ! str_ends_with($previewBase, '/_docara/declarative-preview/')
         || ! is_string($index['html_sha256'] ?? null)
         || preg_match('/\A[a-f0-9]{64}\z/D', $index['html_sha256']) !== 1
     ) {
@@ -357,7 +459,7 @@ function docaraDeclarativePreviewOutputs(
         || ($routes['index_url'] ?? null) !== $index['url']
         || ($routes['index_output'] ?? null) !== $index['output']
         || ($routes['receipt_url'] ?? null) !== $previewBase . 'index.json'
-        || ($routes['receipt_output'] ?? null) !== '_docara/declarative-preview/index.json'
+        || ($routes['receipt_output'] ?? null) !== $previewOutputRoot . '/index.json'
         || ! is_array($routes['pages'] ?? null)
         || ! array_is_list($routes['pages'])
     ) {
@@ -373,7 +475,7 @@ function docaraDeclarativePreviewOutputs(
             || ! str_starts_with($route['preview_url'], $previewBase . 'pages/')
             || ! is_string($route['preview_output'] ?? null)
             || ! docaraCatalogSafePath($route['preview_output'])
-            || ! str_starts_with($route['preview_output'], '_docara/declarative-preview/pages/')
+            || ! str_starts_with($route['preview_output'], $previewOutputRoot . '/pages/')
             || isset($routeOutputs[$route['preview_output']])
         ) {
             throw new RuntimeException("Declarative preview route [$routeIndex] is invalid.");
@@ -528,11 +630,16 @@ function docaraDeclarativeExampleOutputs(
             $outputByRoute[$page['url']] = $page['output'];
         }
     }
-    $expectedIndexRoute = rtrim($deploymentBase, '/') . '/examples/';
-    if ($receipt['index']['route'] !== $expectedIndexRoute
-        || $receipt['index']['output'] !== 'examples/index.html'
-        || ($manifestByOutput['examples/index.html'] ?? null) !== $expectedIndexRoute
-        || ! docaraSafeRegularFile($root . '/examples/index.html')
+    $expectedIndexRoute = $receipt['index']['route'];
+    $expectedIndexOutput = $receipt['index']['output'];
+    if (! is_string($expectedIndexRoute)
+        || ! str_starts_with($expectedIndexRoute, rtrim($deploymentBase, '/') . '/')
+        || ! is_string($expectedIndexOutput)
+        || ! docaraCatalogSafePath($expectedIndexOutput)
+        || ! ($expectedIndexOutput === 'examples/index.html'
+            || str_ends_with($expectedIndexOutput, '/examples/index.html'))
+        || ($manifestByOutput[$expectedIndexOutput] ?? null) !== $expectedIndexRoute
+        || ! docaraSafeRegularFile($root . '/' . $expectedIndexOutput)
     ) {
         throw new RuntimeException('Declarative example index does not match the primary page manifest.');
     }
@@ -1327,7 +1434,10 @@ function docaraCatalogPagesReceipt(string $path): array
     ) {
         throw new RuntimeException('Generated component catalogue page receipt root contract is invalid.');
     }
-    if (($receipt['index']['output'] ?? null) !== 'components/catalog/index.html'
+    if (! is_string($receipt['index']['output'] ?? null)
+        || ! docaraCatalogSafePath($receipt['index']['output'])
+        || ! ($receipt['index']['output'] === 'components/catalog/index.html'
+            || str_ends_with($receipt['index']['output'], '/components/catalog/index.html'))
         || ! is_string($receipt['index']['route'] ?? null)
         || ! is_string($receipt['index']['contract_fragment_sha256'] ?? null)
         || preg_match('/\A[a-f0-9]{64}\z/D', $receipt['index']['contract_fragment_sha256']) !== 1
@@ -1990,6 +2100,21 @@ if ($manifestError === null) {
     }
 }
 
+$localeRouteError = null;
+if ($manifestError === null) {
+    try {
+        $localeRouteOutputs = docaraLocaleRouteOutputs(
+            $root,
+            $manifestOutputs,
+            $manifestPageRecords,
+        );
+        $manifestOutputs = [...$manifestOutputs, ...$localeRouteOutputs];
+        sort($manifestOutputs, SORT_STRING);
+    } catch (Throwable $exception) {
+        $localeRouteError = $exception->getMessage();
+    }
+}
+
 $declarativePreviewError = null;
 $declarativePreviewOutputs = [];
 if ($manifestError === null) {
@@ -2098,6 +2223,9 @@ if ($manifestError !== null) {
     if ($redirectError !== null) {
         $broken[] = ['page' => '@build', 'reference' => '@redirect-contract', 'target' => $redirectError];
     }
+    if ($localeRouteError !== null) {
+        $broken[] = ['page' => '@build', 'reference' => '@locale-route-contract', 'target' => $localeRouteError];
+    }
     if ($declarativePreviewError !== null) {
         $broken[] = [
             'page' => '@build',
@@ -2123,10 +2251,14 @@ if ($manifestError !== null) {
     ]));
     sort($expectedHtmlOutputs, SORT_STRING);
     if ($actualHtmlOutputs !== $expectedHtmlOutputs) {
+        $missing = array_values(array_diff($expectedHtmlOutputs, $actualHtmlOutputs));
+        $unexpected = array_values(array_diff($actualHtmlOutputs, $expectedHtmlOutputs));
         $broken[] = [
             'page' => '@build',
             'reference' => '@resolved-page-plans',
-            'target' => 'Resolved page-plan and declarative-preview outputs do not exactly match generated HTML files.',
+            'target' => 'Resolved page-plan, redirect and declarative-preview outputs do not exactly match generated HTML files. '
+                . 'Missing: ' . json_encode($missing, JSON_UNESCAPED_SLASHES)
+                . '; unexpected: ' . json_encode($unexpected, JSON_UNESCAPED_SLASHES),
         ];
     }
 
@@ -2738,14 +2870,14 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
         $runtime = FrameworkComponentRuntime::fromLock($expectedFrameworkLock, $runtimeAssetBase);
         $htmlRenderer = new PortableHtmlRenderer;
         $catalogManifestConfiguration = null;
+        $catalogIndexOutput = null;
         foreach ($manifestPageRecords as $manifestPageRecord) {
-            if (($manifestPageRecord['output'] ?? null) !== 'components/catalog/index.html') {
+            $candidateOutput = $manifestPageRecord['output'] ?? null;
+            if (! is_string($candidateOutput)
+                || ! ($candidateOutput === 'components/catalog/index.html'
+                    || str_ends_with($candidateOutput, '/components/catalog/index.html'))
+            ) {
                 continue;
-            }
-            if ($catalogManifestConfiguration !== null) {
-                throw new RuntimeException(
-                    'Resolved-page manifest contains more than one component catalogue index.',
-                );
             }
             $configuration = $manifestPageRecord['resolved_page_plan']['configuration'] ?? null;
             if (! is_array($configuration) || array_is_list($configuration)) {
@@ -2753,7 +2885,19 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
                     'Resolved component catalogue index configuration is invalid.',
                 );
             }
+            $candidateLocale = $configuration['locale']
+                ?? $configuration['default_locale']
+                ?? null;
+            if ($candidateLocale !== $expectedBuildLocale) {
+                continue;
+            }
+            if ($catalogManifestConfiguration !== null) {
+                throw new RuntimeException(
+                    'Resolved-page manifest contains more than one component catalogue index for the build locale.',
+                );
+            }
             $catalogManifestConfiguration = $configuration;
+            $catalogIndexOutput = $candidateOutput;
         }
         if (! is_array($catalogManifestConfiguration)) {
             throw new RuntimeException(
@@ -2788,6 +2932,9 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
             provenance: [],
         );
         $localeRegistry = LocaleRegistry::fromSite($expectedBaseConfiguration);
+        $localePolicy = LocaleRoutingPolicy::fromSite($expectedBaseConfiguration, $localeRegistry);
+        $localeUrls = new LocaleUrlProjector($deploymentBase, $localeRegistry, $localePolicy);
+        $catalogDefinition = $localeRegistry->get($catalogLocale);
         $translator = new Translator(
             $localeRegistry,
             new LanguagePackRepository($packageRoot),
@@ -2801,8 +2948,9 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
             runtime: $runtime,
             basePlan: $basePlan,
             contentRoot: 'content',
-            baseUrl: $deploymentBase,
-            homeUrl: $deploymentBase,
+            baseUrl: $localeUrls->home($catalogLocale),
+            homeUrl: $localeUrls->home($catalogLocale),
+            outputPrefix: $catalogDefinition->publicPrefix,
             reservedDocumentIds: $htmlRenderer->reservedDocumentIds(),
         );
         $expectedReceipt = $expectedProjection['receipt'] ?? null;
@@ -2840,7 +2988,8 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
         }
         ksort($expectedPagesByOutput, SORT_STRING);
         $expectedOutputs = array_keys($expectedPagesByOutput);
-        $actualCatalogOutputs = docaraSafeFileInventory($root, 'components/catalog');
+        $catalogDirectory = dirname((string) $catalogIndexOutput);
+        $actualCatalogOutputs = docaraSafeFileInventory($root, $catalogDirectory);
         if ($actualCatalogOutputs !== $expectedOutputs) {
             throw new RuntimeException(
                 'Generated component catalogue HTML outputs do not exactly match the trusted page set.',
@@ -2864,11 +3013,11 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
             }
         }
 
-        $expectedIndex = $expectedPagesByOutput['components/catalog/index.html'] ?? null;
+        $expectedIndex = $expectedPagesByOutput[(string) $catalogIndexOutput] ?? null;
         if (! is_array($expectedIndex)) {
             throw new RuntimeException('Trusted component catalogue index projection is missing.');
         }
-        $actualIndexHtml = file_get_contents($root . '/components/catalog/index.html');
+        $actualIndexHtml = file_get_contents($root . '/' . $catalogIndexOutput);
         if (! is_string($actualIndexHtml)) {
             throw new RuntimeException('Generated component catalogue index could not be read.');
         }

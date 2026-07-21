@@ -5,11 +5,11 @@
   "description": "Раздел задаёт общие правила чтения, а страница переопределяет только ширину макета.",
   "category": "inheritance",
   "order": 30,
-  "result_page": "content/demonstrator-results/inheritance/page.md",
+  "result_page": "content/ru/demonstrator-results/inheritance/page.md",
   "preview": "normal",
   "sources": [
-    {"label": "Markdown страницы", "path": "content/demonstrator-results/inheritance/page.md", "language": "markdown"},
-    {"label": "Настройки раздела", "path": "content/demonstrator-results/inheritance/section.json", "language": "json"},
-    {"label": "Настройки страницы", "path": "content/demonstrator-results/inheritance/page.page.json", "language": "json"}
+    {"label": "Markdown страницы", "path": "content/ru/demonstrator-results/inheritance/page.md", "language": "markdown"},
+    {"label": "Настройки раздела", "path": "content/ru/demonstrator-results/inheritance/section.json", "language": "json"},
+    {"label": "Настройки страницы", "path": "content/ru/demonstrator-results/inheritance/page.page.json", "language": "json"}
   ]
 }

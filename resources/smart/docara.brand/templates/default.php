@@ -10,7 +10,7 @@
     <span class="docara-brand-copy flex flex-col">
         <span class="weight-7"><?= $view->title ?></span>
 <?php if ($view->label !== null) { ?>
-        <span class="docara-brand-label color-on-surface-variant"><?= $view->label ?></span>
+        <span class="docara-brand-label label-small weight-5 color-on-surface-variant"><?= $view->label ?></span>
 <?php } ?>
     </span>
 </a>

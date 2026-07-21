@@ -113,9 +113,10 @@ MD;
         $html = (new PortableMarkdownRenderer)->render($markdown);
 
         self::assertStringContainsString(
-            '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 bg-primary color-on-primary p-1/2 line-none radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start" href="/start/" title="Быстрый старт"><span class="sf-button-text-container">Начать работу</span></a>',
+            '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start" href="/start/" title="Быстрый старт"><span class="sf-button-text-container">Начать работу</span></a>',
             $html,
         );
+        self::assertStringNotContainsString('bg-primary color-on-primary p-1/2 line-none', $html);
         self::assertStringContainsString(
             '<ul data-docara-block="features" class="grid grid-col-1 lg:grid-col-3 gap-2 list-none m-0 p-0">',
             $html,

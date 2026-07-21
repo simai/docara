@@ -209,7 +209,7 @@ final class PortableSiteBuilderTest extends TestCase
             'data-docara-block="features" class="grid grid-col-1 lg:grid-col-3',
             $landing,
         );
-        self::assertStringContainsString(
+        self::assertStringNotContainsString(
             'bg-primary color-on-primary p-1/2 line-none',
             $landing,
         );
@@ -288,8 +288,8 @@ final class PortableSiteBuilderTest extends TestCase
         }
         self::assertStringContainsString("new CustomEvent('docara-navigation-toggle'", $smartSurface);
         self::assertStringContainsString("new CustomEvent('docara-toc-navigate'", $smartSurface);
-        self::assertStringContainsString(
-            '.docara-outline-rail .docara-outline-link{min-block-size:36px}',
+        self::assertStringNotContainsString(
+            '.docara-outline-rail .docara-outline-link{min-block-size:',
             $smartSurface,
         );
         self::assertStringContainsString(
@@ -340,18 +340,27 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringNotContainsString('navigator.clipboard.writeText(text)', $surface);
             self::assertStringNotContainsString("document.execCommand('copy')", $surface);
             self::assertStringContainsString('background:transparent;border:0;border-radius:0;box-shadow:none', $surface);
-            self::assertStringContainsString('.docara-code-block>.sf--highlight-head button{min-inline-size:44px;min-block-size:44px}', $surface);
-            self::assertStringContainsString('.docara-mobile-navigation-trigger{min-inline-size:44px;min-block-size:44px}', $surface);
-            self::assertStringContainsString('.docara-outline-trigger{min-block-size:44px}', $surface);
+            self::assertStringNotContainsString('.docara-code-block>.sf--highlight-head button{min-inline-size:', $surface);
+            self::assertStringNotContainsString('.docara-mobile-navigation-trigger{min-inline-size:', $surface);
+            self::assertStringNotContainsString('.docara-outline-trigger{min-block-size:', $surface);
+            self::assertStringNotContainsString('.sf-breadcrumbs-item--link{min-inline-size:', $surface);
+            self::assertStringNotContainsString('.docara-prose{line-height:', $surface);
+            self::assertStringNotContainsString('.docara-prose h1{font-size:', $surface);
+            self::assertStringNotContainsString('.docara-prose h2{font-size:', $surface);
+            self::assertStringNotContainsString('.docara-prose h3{font-size:', $surface);
+            self::assertStringContainsString(
+                'min-block-size:calc(var(--sf-text-height-1) + 2 * var(--sf-ui-1--space-y-tightness-default))',
+                $surface,
+            );
             self::assertStringContainsString("dialog.addEventListener('cancel'", $surface);
             self::assertStringContainsString('if(event.target===dialog){closeSheet()}', $surface);
             self::assertStringContainsString('function trapDialogTab(dialog,event)', $surface);
             self::assertStringContainsString("settingsDialog.addEventListener('keydown',function(event){trapDialogTab(settingsDialog,event)})", $surface);
-            self::assertStringContainsString('[data-docara-reader-settings-trigger]:focus-visible', $surface);
+            self::assertStringNotContainsString('[data-docara-reader-settings-trigger]:focus-visible', $surface);
             self::assertStringContainsString('data-docara-reader-settings-close', $html);
-            self::assertStringContainsString('[data-docara-reader-settings-close]:focus-visible', $surface);
+            self::assertStringNotContainsString('[data-docara-reader-settings-close]:focus-visible', $surface);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
-            self::assertStringContainsString('sf-button>button:focus-visible', $surface);
+            self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
             self::assertStringContainsString('@7e836d8a9414d5da553fb1ab0404721e5b48769a/', $html);
             self::assertStringNotContainsString('simai/ui-smart@', $html);
             self::assertStringContainsString('window.sfSmartPath="/_docara/framework"', $html);
@@ -407,6 +416,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('margin-block:calc(var(--sf-space-1\/3) * -1)', $smartSurface);
         self::assertStringContainsString('margin-inline:calc(var(--sf-b0) * -1)', $smartSurface);
         self::assertStringNotContainsString('min-inline-size:44px', $smartSurface);
+        self::assertStringNotContainsString('min-block-size:44px', $smartSurface);
         self::assertStringNotContainsString('margin-inline:-10px', $smartSurface);
         self::assertStringContainsString('--sf-menu-element--background-color:var(--sf-surface-container-active)', $smartSurface);
         self::assertStringNotContainsString('--sf-menu-element--background-color:var(--sf-primary-container)', $smartSurface);

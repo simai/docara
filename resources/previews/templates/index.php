@@ -34,7 +34,7 @@
 <?php } ?>
                     </div>
 <?php if ($item->previewUrl !== null) { ?>
-                    <a class="sf-button sf-button--default sf-button--primary sf-button--size-1 bg-primary color-on-primary p-1/2 line-none radius-default inline-flex items-center content-main-center decoration-none" href="<?= $item->previewUrl ?>"><span class="sf-button-text-container"><?= $view->copy['open_preview'] ?></span></a>
+                    <a class="sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-center content-main-center decoration-none" href="<?= $item->previewUrl ?>"><span class="sf-button-text-container"><?= $view->copy['open_preview'] ?></span></a>
 <?php } else { ?>
                     <span class="surface-container border border-outline-variant radius-1 p-1"><?= $view->copy['legacy_only'] ?></span>
 <?php } ?>

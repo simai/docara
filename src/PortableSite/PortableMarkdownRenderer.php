@@ -356,7 +356,7 @@ final class PortableMarkdownRenderer
             );
         }
 
-        return '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 bg-primary color-on-primary p-1/2 line-none radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start"'
+        return '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start"'
             . $match['attributes'] . '><span class="sf-button-text-container">'
             . $match['label'] . '</span></a>';
     }

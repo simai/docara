@@ -1,31 +1,36 @@
-# Active workflow: Docara compact header controls
+# Active workflow: Framework-native Docara UI
 
 Date: 2026-07-22
-Status: implemented and locally verified
-Workflow ID: `2026-07-22-docara-compact-header-controls`
+Status: review ready
+Workflow ID: `2026-07-22-docara-framework-native-ui`
 Process model: raw-owner `docara + ux + sf5 + tester + ops`
 Current state: `review_ready`
-Target state: `review_ready`
+Target state: `accepted`
 
 ## Current Goal
 
-Use Simai Framework size `1` for the Docara search and reader-settings controls
-so the header has the useful density of the legacy reference without losing
-accessibility or behavior.
+Remove Docara presentation overrides that prevent native tags, Framework
+utilities, components and Smart components from owning the interface.
 
-## Result So Far
+## Result
 
-The canonical declarative publisher uses `sf-button--size-1` for search and
-`sf-icon-button--size-1` for reader settings. The search dialog already used
-`sf-input--size-1`. Desktop controls are now 44 x 44 px high, and mobile keeps
-both controls at 44 x 44 px with the label hidden and no overflow.
+Private control floors, prose typography, Smart-component height overrides and
+duplicated button presentation were removed from the canonical publisher.
+Static guards, 621 PHPUnit tests, an exact production build, 20,512 static
+references and desktop/mobile browser interaction checks passed. The verified
+build is published locally with rollback evidence.
+
+The pinned Framework itself still produces a 14 px mobile root and adds outline
+button borders outside the nominal height formula. These are upstream producer
+gaps, not a reason to add compensating Docara classes. Docara remains pinned to
+the immutable revision until a separately tested Framework release exists.
 
 ## Completion Guard
 
-Full PHPUnit passed at 619 tests / 5,498 assertions. The exact build passed
-static verification for 271 HTML pages and 20,512 local references and is
-served at local `docara.test` with rollback backup. Evidence:
-`source/workflow/evidence/2026-07-22-docara-compact-header-controls/`.
+Acceptance evidence is stored under
+`source/workflow/evidence/2026-07-22-docara-framework-native-ui/`. The reviewer
+must distinguish the completed Docara simplification from the separately
+required Framework producer correction.
 
 Public push, merge, tag, package release and production readiness remain
 excluded.

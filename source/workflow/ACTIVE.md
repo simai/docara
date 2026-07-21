@@ -1,35 +1,36 @@
-# Workflow: Symmetric locale routing for Docara
+# Workflow: Figma alignment for Docara navigation
 
 Date: 2026-07-21
-Status: accepted locally
-Workflow ID: `2026-07-21-docara-symmetric-locale-routing`
-Process model: `full_qa`
+Status: implemented and locally verified
+Workflow ID: `2026-07-21-docara-navigation-figma-alignment`
+Process model: `general_delivery`
 Current state: `review_ready`
 Target state: `review_ready`
 
 ## Current Goal
 
-Move Docara to the symmetric locale model: isolated `content/<locale>` trees,
-explicit `/<locale>/` public prefixes and a deterministic root route to the
-configured default locale, while preserving the old unprefixed mode and every
-current Docara documentation URL through exact redirects.
+Align the official `docara.navigation` Smart component with the supplied Simai
+Framework Simple Menu Figma nodes while preserving the declarative four-level
+tree, active trail, keyboard behavior, responsive shell and portable build.
 
 ## Source Of Truth
 
 - workflow:
-  `source/workflow/2026-07-21-docara-symmetric-locale-routing.md`;
-- launch record:
-  `source/workflow/2026-07-21-docara-symmetric-locale-routing.launch.yaml`.
+  `source/workflow/2026-07-21-docara-navigation-figma-alignment.md`;
+- Figma nodes: `17583:25972` and `17607:34059` in
+  `ee9qUZp4VhVpDxeMqxWtcv`.
 
 ## Result
 
-Symmetric locale routing is implemented and accepted locally. Docara and the
-portable starter use `content/ru` and `/ru/`; legacy URLs remain available,
-the deterministic/static/full suite is green, and `docara.test` contains the
-rollback-safe accepted artifact. Implementation candidate:
-`e8aaac5665b99415034928ad6bc8c63f7ff6b831`.
+The official `tree` view now matches the supplied Framework Simple Menu:
+left-side disclosures, responsive Framework level tokens, neutral active
+surface, medium active typography and compact 1 px menu rhythm. Pointer,
+keyboard, four-level, light/dark and mobile browser checks pass. The exact
+verified build is served at local `docara.test` with rollback backup.
 
 ## Completion Guard
 
-The completion guard is satisfied. Public push, merge, package release,
-hosting-level redirects and production readiness remain explicitly excluded.
+The local implementation guard is satisfied. Evidence:
+`source/workflow/evidence/2026-07-21-docara-navigation-figma-alignment/acceptance.md`.
+Public push, merge, package release and production readiness remain explicitly
+excluded; independent tester acceptance is deferred to release promotion.

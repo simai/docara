@@ -359,7 +359,12 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('block-size:100dvh', $shellCss);
         self::assertStringNotContainsString('<details id="docara-mobile-navigation"', $guide);
         self::assertStringContainsString('data-docara-navigation-depth="4"', $fourthLevel);
-        self::assertStringContainsString('<sf-icon icon="expand_less" aria-hidden="true"></sf-icon>', $fourthLevel);
+        self::assertStringContainsString('<sf-icon icon="keyboard_arrow_down" aria-hidden="true"></sf-icon>', $fourthLevel);
+        self::assertStringContainsString('trailing-icon="keyboard_arrow_down"', $fourthLevel);
+        self::assertStringContainsString("event.key==='Enter'||event.key===' '", $smartSurface);
+        self::assertStringContainsString('--sf-menu-element--padding-inline-start:var(--sf-space-7)', $smartSurface);
+        self::assertStringContainsString('--sf-menu-element--background-color:var(--sf-surface-container-active)', $smartSurface);
+        self::assertStringNotContainsString('--sf-menu-element--background-color:var(--sf-primary-container)', $smartSurface);
         self::assertStringContainsString('href="/guides/platform/configuration/layout/" aria-current="page"', $fourthLevel);
         self::assertGreaterThanOrEqual(3, substr_count($fourthLevel, ' expanded aria-expanded="true"'));
         self::assertStringContainsString('data-docara-breadcrumbs data-max-items="5"', $fourthLevel);
@@ -448,6 +453,15 @@ final class PortableSiteBuilderTest extends TestCase
                 '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
                 . '//*[@data-docara-disclosure][@data-docara-contains-current="true"]',
             )?->length,
+        );
+        self::assertGreaterThanOrEqual(
+            1,
+            $navigationXpath->query(
+                '//nav[@data-docara-smart="docara.navigation"]'
+                . '//div[contains(concat(" ", normalize-space(@class), " "), " sf-menu-element ")]'
+                . '/button[@data-docara-disclosure][following-sibling::*[1][self::a or self::span]]',
+            )?->length ?? 0,
+            'Framework disclosure must precede the menu text as in the Simple Menu design.',
         );
 
         $brandAssets = glob($this->tmpPath('build_local/_docara/brand/*')) ?: [];

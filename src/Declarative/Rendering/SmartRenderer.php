@@ -80,9 +80,7 @@ final readonly class SmartRenderer
             ? 'page'
             : ($item->currentSection ? 'section' : ($item->activeAncestor ? 'ancestor' : null));
         $weightClass = match ($activeRole) {
-            'page' => ' weight-7',
-            'section' => ' weight-6',
-            'ancestor' => ' weight-5',
+            'page', 'section' => ' weight-5',
             default => '',
         };
 

@@ -82,6 +82,47 @@ asset, несовместимые props или неполную readiness-зап
 fragments. Он не содержит разметку product-компонентов и не выбирает их по
 именам.
 
+## Как изменить вид левого меню
+
+Левое меню не зашито в макет страницы. Его данные и внешний вид разделены:
+
+```text
+section/region JSON
+  -> props с деревом навигации
+  -> view docara.navigation
+  -> template + component-owned CSS/JavaScript
+```
+
+Для изменения только внешнего вида не нужно править Markdown, builder или
+publisher shell:
+
+| Задача | Источник |
+| --- | --- |
+| Контракт props, views, presets и assets | `resources/smart/docara.navigation/manifest.json` |
+| Выбор зарегистрированного template | `resources/smart/docara.navigation/views/*.json` |
+| Разметка всего меню | `resources/smart/docara.navigation/templates/*.blade.php` |
+| Разметка одного рекурсивного пункта | `resources/smart/docara.navigation/templates/item.php` |
+| Состояния, токены и адаптация Framework Menu | `resources/smart/assets/navigation.css` |
+| Раскрытие ветвей и component event | `resources/smart/assets/navigation.js` |
+| Выбор view встроенной секцией | `resources/sections/docara.navigation.json` |
+
+Встроенный `tree` использует настоящие примитивы Simai Framework:
+`sf-menu`, `sf-menu-item`, `sf-menu-element`, `sf-icon-button` и `sf-icon`.
+Размеры, отступы, цвета hover/active, радиусы и темы задаются токенами
+Framework. Поэтому светлая, тёмная и системная темы не требуют отдельных
+шаблонов.
+
+Если нужен существенно другой вариант, добавьте новый зарегистрированный view
+в `resources/smart/docara.navigation/views/`, соответствующий template и
+preset в manifest, а затем выберите его в section JSON. Не создавайте
+page-specific CSS и не
+редактируйте `build_local` или `build_production`: это generated output.
+
+Текущий `tree` сопоставлен с Simple Menu из SF UI Kit: Figma node
+`17583:25972` задаёт Menu Item и его состояния, а `17607:34059` показывает
+собранное многоуровневое меню. Фиксированная ширина демонстрации Figma не
+копируется — компонент занимает доступную ширину responsive-области `sidebar`.
+
 ## Как добавить новый product Smart
 
 1. Создайте manifest, views, templates и component-owned assets.

@@ -28,4 +28,3 @@ Native headless Chrome enforces a 500 px minimum layout viewport when a 390 px
 screenshot is requested. The initially cropped screenshot was therefore not
 treated as product evidence; executed layout metrics and the real 390 px
 browser session are the acceptance sources.
-

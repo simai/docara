@@ -23,4 +23,3 @@ Explicit boundaries:
   locale name.
 
 PHP syntax checks and `git diff --check` pass.
-

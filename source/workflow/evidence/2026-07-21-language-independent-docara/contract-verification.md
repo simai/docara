@@ -18,4 +18,3 @@ Verdict: PASS
 
 Focused contract and catalogue matrix: 68 tests, 815 assertions, PASS.
 Full regression: 602 tests, 5022 assertions, PASS in 4 minutes 37 seconds.
-

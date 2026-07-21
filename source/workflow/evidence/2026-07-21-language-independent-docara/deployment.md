@@ -19,4 +19,3 @@ Target: local ServBay site `https://docara.test/` only.
 
 No `.env`, source checkout, vendor dependency, public host, release, branch or
 tag was changed by publication.
-

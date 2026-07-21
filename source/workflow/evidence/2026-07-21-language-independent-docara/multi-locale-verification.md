@@ -29,4 +29,3 @@ Evidence:
 The current Russian documentation build was also repeated byte-for-byte. Its
 manifest digest is
 `d228276224986c5e2bd04b64aa336945efcbd25fbc281d23c489418d56e26237`.
-

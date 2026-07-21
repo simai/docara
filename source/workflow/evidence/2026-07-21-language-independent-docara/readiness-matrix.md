@@ -21,4 +21,3 @@ Date: 2026-07-21
 
 This is implementation and local acceptance readiness. It is not a public
 release, production deployment or production-readiness claim.
-

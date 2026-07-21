@@ -1,30 +1,31 @@
-# Active workflow: Docara Framework surface cleanup
+# Active workflow: Docara right outline refinement
 
 Date: 2026-07-22
 Status: implemented and locally verified
-Workflow ID: `2026-07-22-docara-framework-surface-cleanup`
-Process model: raw-owner `docara + sf5 + ux + dev + tester`
+Workflow ID: `2026-07-22-docara-outline-legacy-refinement`
+Process model: raw-owner `docara + sf5 + ux + designer + tester + ops`
 Current state: `review_ready`
 Target state: `review_ready`
 
 ## Current Goal
 
-Make deep Docara breadcrumbs usable through the pinned Simai Framework
-contract, then remove only proven custom-class duplicates from the canonical
-publisher without weakening product behavior, portability or accessibility.
+Make the canonical `docara.toc` desktop outline as compact and orienting as
+the useful legacy surface while preserving the declarative publisher, Simai
+Framework contract, mobile behavior, RTL and accessibility.
 
 ## Result So Far
 
-The five-level path now renders as root, localized ellipsis and current page,
-expands on demand, preserves all server-rendered links without JavaScript and
-does not create page-level overflow. A bounded publisher audit removed dead
-classes and moved atomic layout properties to Framework utilities. The exact
-verified build is served at local `docara.test` with rollback backup.
+Desktop links now render at 14px in 36px rows using Framework spacing and
+typography utilities. The component owns scroll-aware
+`aria-current="location"` state and a 2px token-based rail marker. The mobile
+outline retains a 44px minimum target and no page-level overflow.
 
 ## Completion Guard
 
-Final full PHPUnit passed at 618 tests and 5,459 assertions. Evidence:
-`source/workflow/evidence/2026-07-22-docara-framework-surface-cleanup/`.
+Full PHPUnit passed at 618 tests / 5,465 assertions. The exact build passed
+static verification for 271 HTML pages and 20,569 local references, and is
+served at local `docara.test` with rollback backup. Evidence:
+`source/workflow/evidence/2026-07-22-docara-outline-legacy-refinement/`.
 
 Public push, merge, tag, package release and production readiness remain
 excluded.

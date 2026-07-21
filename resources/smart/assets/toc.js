@@ -1,5 +1,12 @@
 (function(){
-  function bind(root){(root||document).querySelectorAll('[data-docara-smart="docara.toc"] a[href^="#"]:not([data-docara-toc-bound])').forEach(function(link){link.dataset.docaraTocBound='1';link.addEventListener('click',function(){var component=link.closest('[data-docara-smart="docara.toc"]');if(component){component.dispatchEvent(new CustomEvent('docara-toc-navigate',{bubbles:true,detail:{href:link.getAttribute('href')}}))}})})}
-  function start(){bind(document);new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(function(node){if(node.nodeType===1)bind(node)})})}).observe(document.body,{subtree:true,childList:true})}
+  var frame=0;
+  function targetId(link){var hash=link.hash||link.getAttribute('href')||'';if(hash.charAt(0)!=='#')return'';try{return decodeURIComponent(hash.slice(1))}catch(error){return hash.slice(1)}}
+  function links(){return Array.prototype.slice.call(document.querySelectorAll('[data-docara-smart="docara.toc"] a[href^="#"]'))}
+  function headings(){var found=Object.create(null);return links().map(function(link){var id=targetId(link),heading=id?document.getElementById(id):null;if(!heading||found[id])return null;found[id]=true;return{id:id,heading:heading}}).filter(Boolean)}
+  function select(id){links().forEach(function(link){var active=targetId(link)===id;link.toggleAttribute('aria-current',active);if(active)link.setAttribute('aria-current','location');var item=link.closest('.docara-outline-item');if(item)item.toggleAttribute('data-docara-active',active)})}
+  function update(){frame=0;var items=headings();if(!items.length)return;var offset=96,active=items[0];items.forEach(function(item){if(item.heading.getBoundingClientRect().top<=offset)active=item});if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-2)active=items[items.length-1];select(active.id)}
+  function schedule(){if(!frame)frame=window.requestAnimationFrame(update)}
+  function bind(root){(root||document).querySelectorAll('[data-docara-smart="docara.toc"] a[href^="#"]:not([data-docara-toc-bound])').forEach(function(link){link.dataset.docaraTocBound='1';link.addEventListener('click',function(){var component=link.closest('[data-docara-smart="docara.toc"]');if(component){component.dispatchEvent(new CustomEvent('docara-toc-navigate',{bubbles:true,detail:{href:link.getAttribute('href')}}))}schedule()})})}
+  function start(){bind(document);schedule();window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule);window.addEventListener('hashchange',schedule);new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(function(node){if(node.nodeType===1)bind(node)})});schedule()}).observe(document.body,{subtree:true,childList:true})}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();

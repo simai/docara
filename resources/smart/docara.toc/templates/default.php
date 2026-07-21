@@ -1,9 +1,9 @@
 <nav aria-label="<?= $view->label ?>" data-docara-smart="docara.toc" data-docara-view="default" data-docara-outline class="flex flex-col gap-1">
     <p class="m-0 weight-7"><?= $view->label ?></p>
-    <ul class="docara-outline-list flex flex-col gap-1 m-0 p-0">
+    <ul class="docara-outline-list flex flex-col gap-0 m-0 p-0">
 <?php foreach ($view->items as $item) { ?>
         <li class="docara-outline-item" data-docara-outline-level="<?= $item->level ?>">
-            <a class="docara-outline-link flex items-cross-center radius-1 p-1 color-on-surface-variant decoration-none" href="#<?= $item->id ?>"><?= $item->text ?></a>
+            <a class="docara-outline-link flex items-cross-center radius-1 p-1/3 text-small color-on-surface-variant decoration-none" href="#<?= $item->id ?>"><?= $item->text ?></a>
         </li>
 <?php } ?>
     </ul>

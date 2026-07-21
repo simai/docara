@@ -257,6 +257,14 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('aria-current="page"', $guide);
         self::assertStringContainsString('data-docara-outline', $guide);
         self::assertStringContainsString('data-docara-outline-mobile', $guide);
+        self::assertStringContainsString(
+            'class="docara-outline-list flex flex-col gap-0 m-0 p-0"',
+            $guide,
+        );
+        self::assertStringContainsString(
+            'p-1/3 text-small color-on-surface-variant',
+            $guide,
+        );
         self::assertStringContainsString('href="#параметры"', $guide);
         self::assertStringContainsString('<h2 id="параметры">Параметры</h2>', $guide);
         self::assertStringContainsString('<h3 id="наследование">Наследование</h3>', $guide);
@@ -278,6 +286,16 @@ final class PortableSiteBuilderTest extends TestCase
         }
         self::assertStringContainsString("new CustomEvent('docara-navigation-toggle'", $smartSurface);
         self::assertStringContainsString("new CustomEvent('docara-toc-navigate'", $smartSurface);
+        self::assertStringContainsString(
+            '.docara-outline-rail .docara-outline-link{min-block-size:36px}',
+            $smartSurface,
+        );
+        self::assertStringContainsString(
+            '.docara-outline-rail .docara-outline-item[data-docara-active]::before',
+            $smartSurface,
+        );
+        self::assertStringContainsString("link.setAttribute('aria-current','location')", $smartSurface);
+        self::assertStringContainsString("window.addEventListener('scroll',schedule,{passive:true})", $smartSurface);
 
         foreach ([$index, $guide, $fourthLevel, $landing] as $html) {
             $surface = $html . $shellCss . $shellRuntime . $smartSurface;

@@ -39,6 +39,7 @@ Mapping:
 | NAV-04 | renderer weight mapping | active item typography | changed from bold hierarchy to Figma medium active only |
 | NAV-05 | Smart component documentation | discoverable customization contract | added to existing guide |
 | NAV-06 | regression assertions | protect ordering, tokens and keyboard guard | added to existing portable test |
+| NAV-07 | sidebar/menu spacing | match the Figma rhythm through Framework tokens | raw pixel values replaced by `p-1`, `d2`, `d1`, `d0`, `c6`, `space-1/3` and `b0` |
 
 Simplest complete alternative: reuse the current Framework Menu structure and
 the existing `tree` view. No new Smart ID, preset, template family, JavaScript
@@ -58,9 +59,9 @@ remaining element maps to navigation, disclosure or accessibility.
 - PHP syntax: PASS.
 - Focused Pint on changed PHP/template files: PASS.
 - Focused navigation/declarative suite: 41 tests, 708 assertions, PASS.
-- Portable builder after regression additions: 35 tests, 663 assertions,
+- Portable builder after spacing regression additions: 35 tests, 670 assertions,
   PASS.
-- Full PHPUnit: 618 tests, 5,440 assertions, PASS.
+- Full PHPUnit after spacing refinement: 618 tests, 5,447 assertions, PASS.
 - Deterministic production build: 271 HTML pages, 20,569 local references,
   zero broken references.
 - Full-tree `git diff --check`: PASS.
@@ -84,6 +85,23 @@ Browser evidence on the exact local served build:
   handler path;
 - system theme was restored after light-theme verification.
 
+Follow-up spacing evidence on
+`https://docara.test/ru/authoring/configuration/`:
+
+- desktop sidebar padding: 16 px on every side (`p-1` / `space-1`);
+- desktop menu rows: 48 px (`d2`), including expandable rows;
+- desktop disclosure target: 44 x 44 px (`d1`);
+- no horizontal overflow;
+- 390 x 844 mobile menu: tokens resolve through the Framework 14 px root
+  scale to 42 px rows and 38.5 px disclosure targets; no raw mobile sizes and
+  no horizontal overflow;
+- mobile section disclosure changes `aria-expanded` and its accessible label:
+  PASS;
+- browser console contains one pre-existing Framework CDN error from
+  `core/js/556.js` (`Cannot set properties of null (setting 'data')`); the
+  navigation interaction remains functional and this spacing batch does not
+  change that asset.
+
 UX verdict: PASS for scanability, active-page recognition, responsive
 navigation and keyboard disclosure. Designer parity verdict: PASS with one
 intentional adaptation — Figma's demonstration width is not hard-coded.
@@ -97,6 +115,8 @@ directory, statically verified, content-compared and atomically swapped.
   `eae8d26289e7be5c1dc49bfdf037c4f2b1e5b52ef2f99e7a7692e05f5c9e53f5`;
 - rollback backup:
   `/Users/rim/Sites/docara.test/.docara-backups/figma-navigation-20260721-205659/build_production`;
+- spacing-refinement rollback backup:
+  `/Users/rim/Sites/docara.test/.docara-backups/navigation-spacing-20260721-230417/build_production`;
 - served HTTP 200: four-level example, Smart guide, navigation CSS and
   navigation JavaScript;
 - source/staging/served digest equality: PASS.

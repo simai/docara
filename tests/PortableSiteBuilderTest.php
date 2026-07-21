@@ -363,6 +363,12 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('trailing-icon="keyboard_arrow_down"', $fourthLevel);
         self::assertStringContainsString("event.key==='Enter'||event.key===' '", $smartSurface);
         self::assertStringContainsString('--sf-menu-element--padding-inline-start:var(--sf-space-7)', $smartSurface);
+        self::assertStringContainsString('min-block-size:var(--sf-d2)', $smartSurface);
+        self::assertStringContainsString('min-inline-size:var(--sf-d1)', $smartSurface);
+        self::assertStringContainsString('margin-block:calc(var(--sf-space-1\/3) * -1)', $smartSurface);
+        self::assertStringContainsString('margin-inline:calc(var(--sf-b0) * -1)', $smartSurface);
+        self::assertStringNotContainsString('min-inline-size:44px', $smartSurface);
+        self::assertStringNotContainsString('margin-inline:-10px', $smartSurface);
         self::assertStringContainsString('--sf-menu-element--background-color:var(--sf-surface-container-active)', $smartSurface);
         self::assertStringNotContainsString('--sf-menu-element--background-color:var(--sf-primary-container)', $smartSurface);
         self::assertStringContainsString('href="/guides/platform/configuration/layout/" aria-current="page"', $fourthLevel);
@@ -462,6 +468,14 @@ final class PortableSiteBuilderTest extends TestCase
                 . '/button[@data-docara-disclosure][following-sibling::*[1][self::a or self::span]]',
             )?->length ?? 0,
             'Framework disclosure must precede the menu text as in the Simple Menu design.',
+        );
+        self::assertSame(
+            1,
+            $navigationXpath->query(
+                '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")'
+                . ' and contains(concat(" ", normalize-space(@class), " "), " p-1 ")]',
+            )?->length,
+            'Desktop navigation rail must use the same 16px space-1 utility as the menu design.',
         );
 
         $brandAssets = glob($this->tmpPath('build_local/_docara/brand/*')) ?: [];

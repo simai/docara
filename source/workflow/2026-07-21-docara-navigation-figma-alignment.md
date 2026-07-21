@@ -82,7 +82,9 @@ introducing a second menu primitive.
 - implementation, design mapping, QA, browser and rollback evidence:
   `source/workflow/evidence/2026-07-21-docara-navigation-figma-alignment/acceptance.md`;
 - action-gate report:
-  `source/output/action-gates/action-gate-report-20260721175601.json`.
+  `source/output/action-gates/action-gate-report-20260721175601.json`;
+- spacing-refinement publication gate:
+  `source/output/action-gates/action-gate-report-20260721200401.json`.
 
 ## Track Linkage
 
@@ -121,6 +123,20 @@ existing responsive sidebar rather than copied as a hard-coded width.
 Protective complexity retained: active-page semantics, active ancestor data,
 visible focus, 44 px disclosure hit area, keyboard operation, four-level depth
 limit and mobile navigation.
+
+## Spacing refinement
+
+The follow-up Figma comparison removed the remaining raw spacing values from
+the navigation surface. The desktop sidebar now uses Framework utility `p-1`
+(`space-1`, 16 px) instead of `p-2` (20 px). Menu rows use `d2`, disclosure
+controls use `d1`, compact rows use `d0`, compact wraps use `c6`, and negative
+alignment compensation is composed from `space-1/3` and `b0`.
+
+The assembled Figma frame's 60 px outer margin is treated as demonstration
+canvas padding rather than a production menu requirement. At 390 px the same
+`rem` tokens follow the Framework responsive root scale: rows resolve to 42 px
+and disclosure targets to 38.5 px without horizontal overflow. No independent
+mobile pixel values were introduced.
 
 ## Result
 

@@ -28,6 +28,12 @@ surface, medium active typography and compact 1 px menu rhythm. Pointer,
 keyboard, four-level, light/dark and mobile browser checks pass. The exact
 verified build is served at local `docara.test` with rollback backup.
 
+Follow-up spacing refinement is included: desktop sidebar padding is the
+Framework `p-1` utility, row and disclosure geometry use `d2` / `d1`, compact
+geometry uses `d0` / `c6`, and alignment compensation uses Framework spacing
+and border tokens. Full regression remains green at 618 tests and 5,447
+assertions.
+
 ## Completion Guard
 
 The local implementation guard is satisfied. Evidence:

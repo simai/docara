@@ -36,7 +36,7 @@
 <?php } else { ?>
     <div class="docara-docs-layout gap-0" data-sidebar="<?= $view->regions['sidebar'] === '' ? 'false' : 'true' ?>" data-outline="<?= $view->regions['outline'] === '' ? 'false' : 'true' ?>">
 <?php if ($view->regions['sidebar'] !== '') { ?>
-        <aside class="docara-sidebar p-2" data-docara-region="sidebar"><?= $view->regions['sidebar'] ?></aside>
+        <aside class="docara-sidebar p-1" data-docara-region="sidebar"><?= $view->regions['sidebar'] ?></aside>
 <?php } ?>
         <div class="docara-reading-column flex flex-col gap-2 p-3">
             <?= $view->chrome['breadcrumbs'] ?>

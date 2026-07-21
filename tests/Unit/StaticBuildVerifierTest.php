@@ -10,6 +10,9 @@ use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkConsumerPolicy;
 use Simai\Docara\Framework\FrameworkLock;
+use Simai\Docara\I18n\LanguagePackRepository;
+use Simai\Docara\I18n\LocaleRegistry;
+use Simai\Docara\I18n\Translator;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\ResolvedPagePlan;
 use Simai\Docara\PortableSite\PortableComponentCatalogProjector;
@@ -1302,7 +1305,20 @@ final class StaticBuildVerifierTest extends TestCase
             $lock,
             rtrim($deploymentBase, '/') . '/_docara/framework',
         );
-        $projector = new PortableComponentCatalogProjector(new PortableMarkdownRenderer);
+        $translationConfiguration = $firstConfiguration;
+        $translationConfiguration['default_locale'] = $locale;
+        if (is_array($translationConfiguration['locales'] ?? null)
+            && ! isset($translationConfiguration['locales'][$locale])
+        ) {
+            unset($translationConfiguration['locales']);
+        }
+        $projector = new PortableComponentCatalogProjector(
+            new PortableMarkdownRenderer,
+            translator: new Translator(
+                LocaleRegistry::fromSite($translationConfiguration),
+                new LanguagePackRepository(dirname(__DIR__, 2)),
+            ),
+        );
         $renderer = new PortableHtmlRenderer;
         $projection = $projector->project(
             catalog: $catalog,
@@ -1351,15 +1367,19 @@ final class StaticBuildVerifierTest extends TestCase
             $page['next'] = $page['component_catalog_next'];
             $output = $build . '/' . $page['output'];
             $this->filesystem->ensureDirectoryExists(dirname($output));
-            file_put_contents(
-                $output,
-                $renderer->render(
-                    $page,
-                    $catalogNavigation,
-                    'Docara',
-                    $page['components']->assetPlan,
-                ),
+            $html = $renderer->render(
+                $page,
+                $catalogNavigation,
+                'Docara',
+                $page['components']->assetPlan,
             );
+            $html = str_replace(
+                '<script data-docara-shell-controller',
+                '<script id="docara-runtime-copy" type="application/json">{}</script>'
+                . '<script data-docara-shell-controller',
+                $html,
+            );
+            file_put_contents($output, $html);
             $manifest['pages'][] = [
                 'canonical_hash' => $page['plan']->canonicalHash(),
                 'output' => $page['output'],

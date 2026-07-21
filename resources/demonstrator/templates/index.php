@@ -9,7 +9,7 @@
             <span class="color-primary weight-7"><?= $item->category ?></span>
             <h2 class="m-0"><?= $item->title ?></h2>
             <p class="color-on-surface-variant m-0"><?= $item->description ?></p>
-            <a class="sf-button sf-button--outline sf-button--primary sf-button--size-1 radius-default decoration-none inline-flex items-center content-main-center" href="<?= $item->url ?>"><span class="sf-button-text-container">Открыть пример</span></a>
+            <a class="sf-button sf-button--outline sf-button--primary sf-button--size-1 radius-default decoration-none inline-flex items-center content-main-center" href="<?= $item->url ?>"><span class="sf-button-text-container"><?= $view->openLabel ?></span></a>
         </article>
 <?php } ?>
     </div>

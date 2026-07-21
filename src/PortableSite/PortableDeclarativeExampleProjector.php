@@ -11,6 +11,7 @@ use Simai\Docara\Declarative\Rendering\View\DeclarativeExampleIndexViewModel;
 use Simai\Docara\Declarative\Rendering\View\DeclarativeExampleSourceViewModel;
 use Simai\Docara\Framework\ComponentDirectiveDocument;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
+use Simai\Docara\I18n\Translator;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\ResolvedPagePlan;
@@ -23,6 +24,7 @@ final readonly class PortableDeclarativeExampleProjector
     public function __construct(
         private TrustedTemplateRegistry $templates = new TrustedTemplateRegistry,
         private SchemaRepository $schemas = new SchemaRepository,
+        private ?Translator $translator = null,
     ) {}
 
     public function exists(string $root): bool
@@ -117,6 +119,13 @@ final readonly class PortableDeclarativeExampleProjector
                     $this->escape((string) $resultPage['url']),
                     $this->escape((string) $descriptor['preview']),
                     $sourceViews,
+                    $this->escape($this->message($locale, 'examples.result')),
+                    $this->escape($this->message($locale, 'examples.open_separately')),
+                    $this->escape($this->message($locale, 'examples.result_frame', [
+                        'title' => (string) $descriptor['title'],
+                    ])),
+                    $this->escape($this->message($locale, 'examples.sources')),
+                    $this->escape($this->message($locale, 'examples.sources_description')),
                 ),
             ]);
             $outline = (new PortableDocumentOutlineBuilder)->build(
@@ -189,6 +198,7 @@ final readonly class PortableDeclarativeExampleProjector
                 $this->escape($copy['title']),
                 $this->escape($copy['intro']),
                 $items,
+                $this->escape($this->message($locale, 'examples.open')),
             ),
         ]);
         $indexOutline = (new PortableDocumentOutlineBuilder)->build(
@@ -501,31 +511,30 @@ final readonly class PortableDeclarativeExampleProjector
     /** @return array<string, mixed> */
     private function copy(string $locale): array
     {
-        if (str_starts_with(strtolower($locale), 'ru')) {
-            return [
-                'title' => 'Примеры макетов',
-                'description' => 'Живые результаты и точные исходные Markdown/JSON для декларативных возможностей Docara.',
-                'intro' => 'Выберите задачу, проверьте настоящий результат и скопируйте минимальные исходные файлы.',
-                'categories' => [
-                    'regions' => 'Области',
-                    'inheritance' => 'Наследование',
-                    'presets' => 'Макеты',
-                    'smart' => 'Smart-компоненты',
-                ],
-            ];
-        }
-
         return [
-            'title' => 'Layout examples',
-            'description' => 'Live results and exact Markdown/JSON sources for Docara declarative capabilities.',
-            'intro' => 'Choose a task, inspect the real result, and copy the minimal source files.',
+            'title' => $this->message($locale, 'examples.title'),
+            'description' => $this->message($locale, 'examples.description'),
+            'intro' => $this->message($locale, 'examples.intro'),
             'categories' => [
-                'regions' => 'Regions',
-                'inheritance' => 'Inheritance',
-                'presets' => 'Layouts',
-                'smart' => 'Smart components',
+                'regions' => $this->message($locale, 'examples.category_regions'),
+                'inheritance' => $this->message($locale, 'examples.category_inheritance'),
+                'presets' => $this->message($locale, 'examples.category_presets'),
+                'smart' => $this->message($locale, 'examples.category_smart'),
             ],
         ];
+    }
+
+    /** @param array<string, scalar> $parameters */
+    private function message(string $locale, string $id, array $parameters = []): string
+    {
+        if (! $this->translator instanceof Translator) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_EXAMPLE_TRANSLATOR_REQUIRED',
+                'Declarative examples require a resolved language-pack translator.',
+            );
+        }
+
+        return $this->translator->message($locale, $id, $parameters);
     }
 
     private function escape(string $value): string

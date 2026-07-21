@@ -1,0 +1,466 @@
+{
+    "schema": "docara.language_pack.v1",
+    "locale": "ru",
+    "messages": {
+        "common.continue": "Продолжить",
+        "common.greeting": "Здравствуйте, {name}!",
+        "shell.skip_to_content": "К содержанию",
+        "navigation.open": "Открыть разделы документации",
+        "navigation.title": "Разделы",
+        "navigation.close": "Закрыть разделы документации",
+        "navigation.breadcrumbs": "Хлебные крошки",
+        "navigation.outline": "На этой странице",
+        "navigation.outline_close": "Закрыть содержание страницы",
+        "navigation.previous_next": "Переходы между страницами",
+        "navigation.previous": "Предыдущая",
+        "navigation.next": "Следующая",
+        "navigation.expand": "Развернуть: ",
+        "navigation.collapse": "Свернуть: ",
+        "navigation.contains_current": ", содержит текущую страницу",
+        "language.label": "Язык",
+        "search.open": "Открыть поиск по документации",
+        "search.label": "Поиск",
+        "search.title": "Поиск по документации",
+        "search.close": "Закрыть поиск",
+        "search.query": "Запрос",
+        "search.placeholder": "Например, наследование",
+        "search.idle": "Введите минимум 2 символа",
+        "search.loading": "Загрузка поиска…",
+        "search.found": "Найдено: {count}",
+        "search.empty": "Ничего не найдено",
+        "search.error": "Поиск временно недоступен. Обновите страницу и попробуйте снова.",
+        "reader.open": "Открыть настройки чтения",
+        "reader.title": "Настройки чтения",
+        "reader.close": "Закрыть настройки чтения",
+        "reader.appearance": "Оформление",
+        "reader.help": "Выберите тему для этого браузера.",
+        "reader.reset": "Вернуть настройку сайта",
+        "reader.theme_system": "Как в системе",
+        "reader.theme_system_description": "Автоматически следует настройке устройства.",
+        "reader.theme_light": "Светлая",
+        "reader.theme_light_description": "Светлое оформление на всех страницах.",
+        "reader.theme_dark": "Тёмная",
+        "reader.theme_dark_description": "Тёмное оформление на всех страницах.",
+        "reader.saved": "Тема сохранена: {theme}.",
+        "reader.applied_not_saved": "Тема применена. Браузер не разрешил сохранить выбор.",
+        "reader.restored": "Восстановлена настройка темы сайта.",
+        "redirect.title": "Страница перемещена",
+        "redirect.message": "Адрес страницы изменился.",
+        "redirect.link": "Перейти к актуальной странице",
+        "catalog.catalog_title": "Каталог компонентов",
+        "catalog.catalog_description": "Живые примеры всех компонентов, которые поддерживает эта сборка Docara.",
+        "catalog.catalog_intro": "Проверенные примеры, точный синтаксис и границы компонентов этой сборки Docara.",
+        "catalog.filter_title": "Найти компонент",
+        "catalog.filter_query_label": "Поиск",
+        "catalog.filter_query_placeholder": "Название, ID или назначение",
+        "catalog.filter_family_label": "Тип",
+        "catalog.filter_family_all": "Все типы",
+        "catalog.filter_requirements": "Запланированные возможности",
+        "catalog.filter_availability_label": "Доступность",
+        "catalog.filter_availability_all": "Все состояния",
+        "catalog.filter_supported": "Поддерживается",
+        "catalog.filter_unavailable": "Недоступно сейчас",
+        "catalog.filter_reset": "Сбросить фильтры",
+        "catalog.filter_status": "Показано",
+        "catalog.filter_empty": "По заданным условиям ничего не найдено.",
+        "catalog.family_native_plural": "Markdown",
+        "catalog.family_typed_plural": "Компоненты Docara",
+        "catalog.family_smart_plural": "Smart-компоненты Simai Framework",
+        "catalog.family_native_single": "Markdown",
+        "catalog.family_typed_single": "Компонент Docara",
+        "catalog.family_smart_single": "Smart-компонент Simai Framework",
+        "catalog.unavailable_title": "Недоступно сейчас",
+        "catalog.unavailable_fallback": "Недоступно в этой сборке.",
+        "catalog.fallback": "Безопасная замена",
+        "catalog.admission_condition": "Условие допуска",
+        "catalog.limitations": "Ограничения",
+        "catalog.owner": "Владелец развития",
+        "catalog.example": "Пример",
+        "catalog.call": "Вызов",
+        "catalog.parameters": "Параметры",
+        "catalog.parameter_relationships": "Связи параметров",
+        "catalog.allowed_combinations": "Допустимые сочетания",
+        "catalog.when": "если",
+        "catalog.then": "то",
+        "catalog.states": "Состояния",
+        "catalog.name": "Имя",
+        "catalog.type": "Тип",
+        "catalog.required": "Обязателен",
+        "catalog.default": "По умолчанию",
+        "catalog.values": "Значения",
+        "catalog.rules": "Правила",
+        "catalog.purpose": "Назначение",
+        "catalog.yes": "Да",
+        "catalog.no": "Нет",
+        "catalog.no_limitations": "Дополнительных ограничений не заявлено.",
+        "catalog.limitations_and_source": "Ограничения и источник",
+        "examples.title": "Примеры макетов",
+        "examples.description": "Живые результаты и точные исходные Markdown/JSON для декларативных возможностей Docara.",
+        "examples.intro": "Выберите задачу, проверьте настоящий результат и скопируйте минимальные исходные файлы.",
+        "examples.category_regions": "Области",
+        "examples.category_inheritance": "Наследование",
+        "examples.category_presets": "Макеты",
+        "examples.category_smart": "Smart-компоненты",
+        "examples.open": "Открыть пример",
+        "examples.result": "Результат",
+        "examples.open_separately": "Открыть отдельно",
+        "examples.result_frame": "Результат: {title}",
+        "examples.sources": "Исходные файлы",
+        "examples.sources_description": "Именно эти файлы прошли основной конфигурационный и декларативный pipeline.",
+        "preview.eyebrow": "ПРЕДПРОСМОТР",
+        "preview.title": "Декларативный предпросмотр",
+        "preview.description": "Здесь можно проверить декларативный результат рядом с опубликованной страницей.",
+        "preview.rendered": "Собрано",
+        "preview.skipped": "Пропущено",
+        "preview.receipt": "Открыть JSON receipt",
+        "preview.pages": "Страницы",
+        "preview.unsupported": "Не поддержано",
+        "preview.open_preview": "Открыть предпросмотр",
+        "preview.legacy_only": "Только опубликованная страница",
+        "preview.all_pages": "Все страницы",
+        "preview.open_legacy": "Открыть опубликованную страницу"
+    },
+    "components": {
+        "content.icon": {
+            "title": "Иконка в содержимом",
+            "description": "Канонический доступный способ добавления смысловых иконок в документацию.",
+            "limitations": [
+                "Наличие файлов среды выполнения само по себе не создаёт безопасный авторский API."
+            ],
+            "states": [],
+            "parameters": [],
+            "gap": {
+                "reason": "В закреплённой среде есть элемент иконки, но нет канонического авторского манифеста.",
+                "fallback": "Используйте содержательный текст или символ Unicode, смысл которого понятен без оформления.",
+                "admission_condition": "Опубликовать и закрепить канонический контракт авторинга и доступности иконок, затем добавить схему, рендеринг, тесты и документацию Docara."
+            }
+        },
+        "docara.card": {
+            "title": "Карточка",
+            "description": "Объединяет связанное содержимое Markdown на нейтральной визуально ограниченной поверхности.",
+            "limitations": [
+                "Вложенные типизированные директивы Docara не поддерживаются."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.card.ru.md"
+        },
+        "docara.columns": {
+            "title": "Колонки",
+            "description": "Размещает от двух до четырёх областей Markdown в адаптивной сетке Simai Framework, сохраняя порядок исходного текста.",
+            "limitations": [
+                "Содержимое должно включать от двух до четырёх непустых областей Markdown.",
+                "Области разделяются точной строкой верхнего уровня --- с пустыми строками вокруг.",
+                "Вложенные типизированные директивы Docara и Smart-компоненты не поддерживаются.",
+                "Порядок колонок всегда совпадает с порядком исходного текста."
+            ],
+            "states": {
+                "stacked": "В одну колонку",
+                "responsive_columns": "Адаптивные колонки"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.columns.ru.md"
+        },
+        "docara.cta": {
+            "title": "Призыв к действию",
+            "description": "Превращает одну безопасную ссылку Markdown в заметное навигационное действие.",
+            "limitations": [
+                "Содержимое должно включать ровно одну безопасную ссылку Markdown.",
+                "Результат остаётся обычной ссылкой и не заявляет выполнение действия Smart-компонентом."
+            ],
+            "states": {
+                "default": "Обычное состояние",
+                "focus": "Фокус"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.cta.ru.md"
+        },
+        "docara.features": {
+            "title": "Список возможностей",
+            "description": "Показывает короткий список возможностей продукта в виде адаптивной сетки, сохраняя исходный порядок.",
+            "limitations": [
+                "Содержимое должно включать один плоский маркированный список из двух–шести пунктов.",
+                "Вложенные списки, блоки и директивы Docara не поддерживаются."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.features.ru.md"
+        },
+        "docara.steps": {
+            "title": "Шаги",
+            "description": "Показывает короткую упорядоченную последовательность действий.",
+            "limitations": [
+                "Содержимое должно включать ровно один нумерованный список Markdown.",
+                "Вложенные директивы Docara не поддерживаются."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.steps.ru.md"
+        },
+        "native.code": {
+            "title": "Код",
+            "description": "Выводит фрагменты и блоки кода из Markdown. Закреплённый Simai Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.",
+            "limitations": [
+                "Без загрузки закреплённого runtime остаётся читаемый статический pre/code; тонкие настройки подсветки и строк не предоставляются."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/native.code.ru.md"
+        },
+        "native.code.enhanced": {
+            "title": "Настраиваемый блок кода",
+            "description": "Расширенный блок с управлением номерами строк, выделенными строками, diff-состояниями и другими параметрами автора.",
+            "limitations": [
+                "Текущий Framework-компонент намеренно работает без тонких параметров автора."
+            ],
+            "states": [],
+            "parameters": [],
+            "gap": {
+                "reason": "Нет принятого контракта для опциональных номеров, выделенных строк, diff-состояний и других editor-grade параметров.",
+                "fallback": "Используйте native.code: язык, копирование, подсветка, номера строк и локальная прокрутка уже предоставляются закреплённым Simai Framework.",
+                "admission_condition": "Добавить параметры в компонент Simai Framework, закрепить доступность и fallback, затем принять их в Docara с тестами, документацией и браузерной проверкой."
+            }
+        },
+        "native.headings_and_text": {
+            "title": "Заголовки и текст",
+            "description": "Структурирует текст с помощью заголовков, абзацев, курсива, жирного начертания и зачёркивания.",
+            "limitations": [
+                "Произвольный HTML нельзя использовать как сокращённый способ разметки."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/native.headings_and_text.ru.md"
+        },
+        "native.links_and_images": {
+            "title": "Ссылки и изображения",
+            "description": "Добавляет безопасные ссылки и изображения с заданным автором доступным описанием.",
+            "limitations": [
+                "Небезопасные протоколы ссылок отклоняются.",
+                "Автор отвечает за содержательный альтернативный текст изображений."
+            ],
+            "states": {
+                "link_focus": "Фокус ссылки"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/native.links_and_images.ru.md"
+        },
+        "native.lists_and_quotes": {
+            "title": "Списки и цитаты",
+            "description": "Оформляет нумерованные и маркированные перечисления, а также семантические цитаты.",
+            "limitations": [],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/native.lists_and_quotes.ru.md"
+        },
+        "native.table": {
+            "title": "Таблица Markdown",
+            "description": "Показывает небольшие сравнительные или справочные данные в семантической таблице с безопасной прокруткой.",
+            "limitations": [
+                "Это обычная таблица Markdown, а не структурированный контракт представления данных."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/native.table.ru.md"
+        },
+        "ui.alert": {
+            "title": "Уведомление",
+            "description": "Сообщает о результате, предупреждении или ошибке без выполнения прикладных действий.",
+            "limitations": [
+                "Параметр closable=true пока не входит в ограниченный контракт среды выполнения.",
+                "Параметр type=success не поддерживается: закреплённая таблица стилей Framework выводит его статусную иконку прозрачной.",
+                "Свойство id создаётся Docara детерминированно.",
+                "Мост серверных событий Larena намеренно исключён: переносимая Docara выводит компонент без серверных обработчиков."
+            ],
+            "states": {
+                "default": "Обычное состояние",
+                "info": "Информация",
+                "warning": "Предупреждение",
+                "danger": "Опасность"
+            },
+            "parameters": {
+                "aria-label": {
+                    "label": "Доступное имя",
+                    "description": "Кратко называет уведомление для вспомогательных технологий."
+                },
+                "closable": {
+                    "label": "Можно закрыть",
+                    "description": "Управляет возможностью закрыть уведомление; значение true пока отклоняется."
+                },
+                "icon": {
+                    "label": "Иконка",
+                    "description": "Переопределяет имя декоративной иконки уведомления."
+                },
+                "supporting-text": {
+                    "label": "Поясняющий текст",
+                    "description": "Дополняет заголовок подробностями о результате или состоянии."
+                },
+                "title": {
+                    "label": "Заголовок",
+                    "description": "Кратко сообщает основное состояние."
+                },
+                "type": {
+                    "label": "Тон",
+                    "description": "Выбирает смысловой тон и оформление уведомления.",
+                    "values": {
+                        "clear": "Нейтральный",
+                        "info": "Информация",
+                        "danger": "Опасность",
+                        "warning": "Предупреждение"
+                    }
+                },
+                "variant": {
+                    "label": "Вариант",
+                    "description": "Выбирает способ оформления поверхности и границы.",
+                    "values": {
+                        "default": "Обычный",
+                        "flat": "Плоский",
+                        "outlined": "Контурный"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/ui.alert.ru.md"
+        },
+        "ui.badge": {
+            "title": "Метка статуса",
+            "description": "Компактная метка состояния на основе точного внешнего манифеста Smart-компонента.",
+            "limitations": [
+                "Внешний манифест существует, но ещё не принят Docara."
+            ],
+            "states": [],
+            "parameters": [],
+            "gap": {
+                "reason": "В Docara нет встроенного манифеста метки, неизменяемой записи блокировки, опубликованных ассетов и тестов авторинга.",
+                "fallback": "Используйте обычный выделенный текст, который прямо называет состояние.",
+                "admission_condition": "Встроить точный внешний манифест, закрепить ревизию поставщика и ассеты, запретить управляемые автором ID и пройти проверку схемы, рендеринга, документации и браузера."
+            }
+        },
+        "ui.button": {
+            "title": "Кнопка",
+            "description": "Выводит визуальный элемент действия; переносимая Docara не привязывает данные, не выполняет переход и не запускает действие.",
+            "limitations": [
+                "Docara выводит элемент управления, но не привязывает прикладные данные и не выполняет действие.",
+                "Для перехода следует использовать обычную ссылку или docara.cta.",
+                "Мост серверных событий Larena намеренно исключён: переносимая Docara выводит компонент без серверных обработчиков."
+            ],
+            "states": {
+                "default": "Обычное состояние",
+                "hover": "Наведение",
+                "focus": "Фокус",
+                "active": "Нажатие",
+                "loading": "Загрузка",
+                "disabled": "Отключено"
+            },
+            "parameters": {
+                "aria-label": {
+                    "label": "Доступное имя",
+                    "description": "Называет кнопку для вспомогательных технологий."
+                },
+                "disabled": {
+                    "label": "Отключена",
+                    "description": "Показывает недоступное для взаимодействия состояние."
+                },
+                "loading": {
+                    "label": "Загрузка",
+                    "description": "Показывает ожидание завершения действия; требует disabled=true."
+                },
+                "native-type": {
+                    "label": "Нативный тип",
+                    "description": "Задаёт стандартное поведение HTML-кнопки.",
+                    "values": {
+                        "button": "Кнопка",
+                        "submit": "Отправка формы",
+                        "reset": "Сброс формы"
+                    }
+                },
+                "preset": {
+                    "label": "Пресет",
+                    "description": "Применяет точный набор параметров манифеста до явно заданных значений.",
+                    "values": {
+                        "link": "Ссылка основная",
+                        "link_on_surface": "Ссылка на поверхности",
+                        "on_surface": "Обычная на поверхности",
+                        "outline": "Контурная основная",
+                        "outline_on_surface": "Контурная на поверхности",
+                        "primary": "Основная",
+                        "secondary": "Вторичная тональная",
+                        "tonal_on_surface": "Тональная на поверхности"
+                    }
+                },
+                "radius": {
+                    "label": "Скругление",
+                    "description": "Задаёт форму углов кнопки.",
+                    "values": {
+                        "": "По умолчанию Simai Framework",
+                        "default": "Стандартное",
+                        "square": "Без скругления",
+                        "rounded": "Полностью скруглённая"
+                    }
+                },
+                "scheme": {
+                    "label": "Цветовая схема",
+                    "description": "Выбирает семантическую цветовую схему.",
+                    "values": {
+                        "primary": "Основная",
+                        "secondary": "Вторичная",
+                        "on-surface": "На поверхности"
+                    }
+                },
+                "size": {
+                    "label": "Размер",
+                    "description": "Задаёт размер кнопки по шкале Simai Framework.",
+                    "values": {
+                        "1/3": "Очень маленькая · 1/3",
+                        "1/2": "Маленькая · 1/2",
+                        "1": "Обычная · 1",
+                        "2": "Большая · 2",
+                        "3": "Очень большая · 3"
+                    }
+                },
+                "text": {
+                    "label": "Текст",
+                    "description": "Задаёт видимую подпись кнопки."
+                },
+                "type": {
+                    "label": "Тип",
+                    "description": "Выбирает визуальный тип кнопки.",
+                    "values": {
+                        "default": "Заливка",
+                        "tonal": "Тональная",
+                        "outline": "Контурная",
+                        "link": "Ссылка"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/ui.button.ru.md"
+        },
+        "ui.dataview": {
+            "title": "Представление данных",
+            "description": "Структурированный контракт данных и настроек для интерактивного представления информации.",
+            "limitations": [
+                "Эта задача отличается от вывода небольшой таблицы Markdown."
+            ],
+            "states": [],
+            "parameters": [],
+            "gap": {
+                "reason": "Для Docara не принят ограниченный переносимый контракт источника данных, настроек, взаимодействия и рендеринга.",
+                "fallback": "Для небольших справочных данных используйте поддерживаемый native.table.",
+                "admission_condition": "Определить отдельный переносимый контракт данных и настроек с детерминированным рендерингом, доступностью, тестами и документацией."
+            }
+        },
+        "ui.tabs": {
+            "title": "Вкладки",
+            "description": "Доступный набор вкладок с полной поддержкой клавиатуры, фокуса и связей ARIA.",
+            "limitations": [
+                "Закреплённые исходники Core и Smart не содержат полного принятого контракта доступности.",
+                "В Docara нет принятого манифеста вкладок или записи в блокировке среды выполнения."
+            ],
+            "states": [],
+            "parameters": [],
+            "gap": {
+                "reason": "Не завершены перемещение фокуса с клавиатуры, обработка Home и End, стабильная связь вкладок с панелями через ARIA и принятый манифест.",
+                "fallback": "Используйте заголовки и последовательные разделы в порядке исходного текста.",
+                "admission_condition": "Опубликовать канонический доступный контракт и манифест вкладок, закрепить новую неизменяемую пару Framework и ревизию поставщика, затем пройти проверку схемы, ассетов, рендеринга и браузера Docara."
+            }
+        }
+    }
+}

@@ -63,9 +63,23 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 "Page [{$page['url']}] has an unsafe publisher asset base.",
             );
         }
+        $copy = is_array($page['ui_copy'] ?? null) ? $page['ui_copy'] : [];
+        if ($copy === []) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_PRIMARY_COPY_REQUIRED',
+                "Page [{$page['url']}] has no resolved language-pack copy.",
+            );
+        }
+        $escapedCopy = [];
+        foreach ($copy as $id => $message) {
+            if (is_string($id) && is_string($message)) {
+                $escapedCopy[$id] = $this->escape($message);
+            }
+        }
 
         $view = new PortablePageViewModel(
             $this->escape((string) $page['locale']),
+            in_array($page['direction'] ?? null, ['ltr', 'rtl'], true) ? (string) $page['direction'] : 'ltr',
             $this->escape((string) ($page['documentation_version'] ?? 'current')),
             $this->escape((string) $page['title'] . ' — ' . $brandTitle),
             trim((string) ($page['description'] ?? '')) === ''
@@ -90,8 +104,12 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $this->breadcrumbs(is_array($page['breadcrumbs'] ?? null) ? $page['breadcrumbs'] : []),
             $this->readingLink(is_array($page['previous'] ?? null) ? $page['previous'] : null),
             $this->readingLink(is_array($page['next'] ?? null) ? $page['next'] : null),
-            $this->themeOptions($configuredTheme),
+            $this->themeOptions($configuredTheme, $escapedCopy),
             $this->escape($configuredTheme),
+            $escapedCopy,
+            $this->alternates(is_array($page['alternates'] ?? null) ? $page['alternates'] : []),
+            $this->languageOptions(is_array($page['language_options'] ?? null) ? $page['language_options'] : []),
+            json_encode($copy, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP),
         );
 
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
@@ -131,28 +149,65 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
     }
 
     /** @return list<array{value:string,title:string,description:string,checked:bool}> */
-    private function themeOptions(string $configured): array
+    private function themeOptions(string $configured, array $copy): array
     {
         return [
             [
                 'value' => 'system',
-                'title' => 'Как в системе',
-                'description' => 'Автоматически следует настройке устройства.',
+                'title' => $copy['reader.theme_system'],
+                'description' => $copy['reader.theme_system_description'],
                 'checked' => $configured === 'system',
             ],
             [
                 'value' => 'light',
-                'title' => 'Светлая',
-                'description' => 'Светлое оформление на всех страницах.',
+                'title' => $copy['reader.theme_light'],
+                'description' => $copy['reader.theme_light_description'],
                 'checked' => $configured === 'light',
             ],
             [
                 'value' => 'dark',
-                'title' => 'Тёмная',
-                'description' => 'Тёмное оформление на всех страницах.',
+                'title' => $copy['reader.theme_dark'],
+                'description' => $copy['reader.theme_dark_description'],
                 'checked' => $configured === 'dark',
             ],
         ];
+    }
+
+    /** @param list<array<string, mixed>> $alternates @return list<array{locale:string,url:string}> */
+    private function alternates(array $alternates): array
+    {
+        $resolved = [];
+        foreach ($alternates as $alternate) {
+            if (is_string($alternate['locale'] ?? null) && is_string($alternate['url'] ?? null)) {
+                $resolved[] = [
+                    'locale' => $this->escape($alternate['locale']),
+                    'url' => $this->escape($alternate['url']),
+                ];
+            }
+        }
+
+        return $resolved;
+    }
+
+    /** @param list<array<string, mixed>> $options @return list<array{locale:string,label:string,url:string,current:bool}> */
+    private function languageOptions(array $options): array
+    {
+        $resolved = [];
+        foreach ($options as $option) {
+            if (is_string($option['locale'] ?? null)
+                && is_string($option['label'] ?? null)
+                && is_string($option['url'] ?? null)
+            ) {
+                $resolved[] = [
+                    'locale' => $this->escape($option['locale']),
+                    'label' => $this->escape($option['label']),
+                    'url' => $this->escape($option['url']),
+                    'current' => ($option['current'] ?? false) === true,
+                ];
+            }
+        }
+
+        return $resolved;
     }
 
     private function themeBootstrap(string $configured): string

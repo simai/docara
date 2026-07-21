@@ -707,7 +707,7 @@ final class PortableConfigurationTest extends TestCase
                 (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
                 self::fail("Noncanonical Framework component id [$component] unexpectedly passed.");
             } catch (PortableConfigurationException $exception) {
-                self::assertSame('FRAMEWORK_MANIFEST_LOCK_INVALID', $exception->errorCode);
+                self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
             }
         }
     }

@@ -1,30 +1,29 @@
-# Workflow: region composition recipes
+# Workflow: language-independent Docara
 
 Date: 2026-07-21
-Status: completed
-Workflow ID: `2026-07-21-region-composition-recipes`
-Process model: `general_delivery`
-Current state: `evidence_recorded`
-Target state: `evidence_recorded`
+Status: complete
+Workflow ID: `2026-07-21-language-independent-docara`
+Process model: `full_qa`
+Current state: `accepted`
+Target state: `review_ready`
 
 ## Goal
 
-Extend Docara's declarative model with practical, source-backed recipes for a
-branded header, sidebar, aside and footer, safe element and Smart blocks, and
-site/section/page inheritance. All examples use the primary generator and
-Simai Framework and pass responsive light/dark acceptance.
+Make the new declarative Docara language-independent: external language packs,
+arbitrary BCP 47 locale registry and fallbacks, separate content trees, one
+multi-locale build, language switching and LTR/RTL support.
 
 ## Source Of Truth
 
 - workflow:
-  `source/workflow/2026-07-21-region-composition-recipes.md`;
+  `source/workflow/2026-07-21-language-independent-docara.md`;
 - evidence:
-  `source/workflow/evidence/2026-07-21-region-composition-recipes/`.
+  `source/workflow/evidence/2026-07-21-language-independent-docara/`.
 
 ## Result
 
-The safe region composition contract and five source-backed recipes are
-accepted. Full regression, deterministic static builds, local publication,
-responsive light/dark browser acceptance and the human-centered simplicity
-gate pass. The result is available at `https://docara.test/examples/`; no push,
-release or production claim occurred.
+Language-neutral manifests, BCP 47 registry/fallbacks, language packs,
+five-locale publication, localized catalogue, switcher, alternates and RTL are
+implemented and accepted. Full regression, deterministic build, local
+publication, rollback and responsive browser checks pass. No push, release or
+production claim was made.

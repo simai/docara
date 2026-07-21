@@ -7,13 +7,9 @@
         "id",
         "family",
         "category",
-        "title",
-        "description",
-        "presentation",
         "lifecycle",
         "authoring",
         "states",
-        "limitations",
         "verification",
         "docs_ref",
         "provenance"
@@ -28,15 +24,6 @@
         "category": {
             "$ref": "#/$defs/non_empty_string"
         },
-        "title": {
-            "$ref": "#/$defs/non_empty_string"
-        },
-        "description": {
-            "$ref": "#/$defs/non_empty_string"
-        },
-        "presentation": {
-            "$ref": "#/$defs/presentation"
-        },
         "lifecycle": {
             "$ref": "#/$defs/lifecycle"
         },
@@ -46,16 +33,10 @@
         "states": {
             "$ref": "#/$defs/string_list"
         },
-        "limitations": {
-            "$ref": "#/$defs/string_list"
-        },
         "verification": {
             "$ref": "#/$defs/verification"
         },
         "docs_ref": {
-            "$ref": "#/$defs/safe_path"
-        },
-        "example_ref": {
             "$ref": "#/$defs/safe_path"
         },
         "provenance": {
@@ -95,88 +76,6 @@
         "non_empty_string": {
             "type": "string",
             "minLength": 1
-        },
-        "presentation": {
-            "type": "object",
-            "required": ["ru"],
-            "properties": {
-                "ru": {
-                    "$ref": "#/$defs/localized_presentation"
-                }
-            },
-            "additionalProperties": false
-        },
-        "localized_presentation": {
-            "type": "object",
-            "required": ["title", "description", "limitations", "states", "parameters"],
-            "properties": {
-                "title": {
-                    "$ref": "#/$defs/non_empty_string"
-                },
-                "description": {
-                    "$ref": "#/$defs/non_empty_string"
-                },
-                "limitations": {
-                    "$ref": "#/$defs/string_list"
-                },
-                "states": {
-                    "$ref": "#/$defs/localized_labels"
-                },
-                "parameters": {
-                    "type": "object",
-                    "propertyNames": {
-                        "pattern": "^[a-z][a-z0-9_-]*$"
-                    },
-                    "additionalProperties": {
-                        "$ref": "#/$defs/localized_parameter"
-                    }
-                },
-                "example_ref": {
-                    "$ref": "#/$defs/safe_path"
-                },
-                "gap": {
-                    "$ref": "#/$defs/localized_gap"
-                }
-            },
-            "additionalProperties": false
-        },
-        "localized_labels": {
-            "type": "object",
-            "additionalProperties": {
-                "$ref": "#/$defs/non_empty_string"
-            }
-        },
-        "localized_parameter": {
-            "type": "object",
-            "required": ["label", "description"],
-            "properties": {
-                "label": {
-                    "$ref": "#/$defs/non_empty_string"
-                },
-                "description": {
-                    "$ref": "#/$defs/non_empty_string"
-                },
-                "values": {
-                    "$ref": "#/$defs/localized_labels"
-                }
-            },
-            "additionalProperties": false
-        },
-        "localized_gap": {
-            "type": "object",
-            "required": ["reason", "fallback", "admission_condition"],
-            "properties": {
-                "reason": {
-                    "$ref": "#/$defs/non_empty_string"
-                },
-                "fallback": {
-                    "$ref": "#/$defs/non_empty_string"
-                },
-                "admission_condition": {
-                    "$ref": "#/$defs/non_empty_string"
-                }
-            },
-            "additionalProperties": false
         },
         "safe_path": {
             "type": "string",
@@ -231,7 +130,7 @@
         },
         "parameter": {
             "type": "object",
-            "required": ["name", "type", "required", "description"],
+            "required": ["name", "type", "required"],
             "properties": {
                 "name": {
                     "type": "string",
@@ -243,9 +142,6 @@
                 },
                 "required": {
                     "type": "boolean"
-                },
-                "description": {
-                    "$ref": "#/$defs/non_empty_string"
                 },
                 "values": {
                     "type": "array",
@@ -455,18 +351,9 @@
         },
         "gap": {
             "type": "object",
-            "required": ["owner", "reason", "fallback", "admission_condition"],
+            "required": ["owner"],
             "properties": {
                 "owner": {
-                    "$ref": "#/$defs/non_empty_string"
-                },
-                "reason": {
-                    "$ref": "#/$defs/non_empty_string"
-                },
-                "fallback": {
-                    "$ref": "#/$defs/non_empty_string"
-                },
-                "admission_condition": {
                     "$ref": "#/$defs/non_empty_string"
                 }
             },

@@ -2,20 +2,6 @@
     "id": "native.code",
     "family": "native_markdown",
     "category": "technical_content",
-    "title": "Code",
-    "description": "Renders inline and fenced Markdown code; the pinned Simai Framework progressively adds one language-and-copy header, syntax highlighting and line numbers.",
-    "presentation": {
-        "ru": {
-            "title": "Код",
-            "description": "Выводит фрагменты и блоки кода из Markdown. Закреплённый Simai Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.",
-            "limitations": [
-                "Без загрузки закреплённого runtime остаётся читаемый статический pre/code; тонкие настройки подсветки и строк не предоставляются."
-            ],
-            "states": {},
-            "parameters": {},
-            "example_ref": "resources/component-catalog/examples/native.code.ru.md"
-        }
-    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "markdown",
@@ -26,9 +12,6 @@
         "parameters": []
     },
     "states": [],
-    "limitations": [
-        "Without the pinned runtime the readable static pre/code fallback remains; fine-grained highlighting and line controls are not exposed."
-    ],
     "verification": {
         "renderer": true,
         "tests": true,
@@ -36,7 +19,6 @@
         "demo": true
     },
     "docs_ref": "docs/site/content/authoring/markdown.md",
-    "example_ref": "resources/component-catalog/examples/native.code.md",
     "provenance": {
         "source_kind": "portable_markdown_profile",
         "profile_id": "docara.portable_markdown_profile.v1"

@@ -13,12 +13,12 @@
     <div class="surface-container border-bottom-1 border-outline-variant p-2">
         <div class="flex flex-wrap items-center content-main-between gap-2">
             <div class="flex flex-col gap-1">
-                <strong>Декларативный preview</strong>
+                <strong><?= $view->copy['title'] ?></strong>
                 <span class="color-on-surface-variant"><?= $view->pageTitle ?></span>
             </div>
             <nav class="flex flex-wrap items-center gap-1" aria-label="Preview controls">
-                <a class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 radius-default decoration-none" href="<?= $view->catalogUrl ?>">Все страницы</a>
-                <a class="sf-button sf-button--link sf-button--on-surface sf-button--size-1 radius-default decoration-none" href="<?= $view->legacyUrl ?>">Открыть legacy</a>
+                <a class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 radius-default decoration-none" href="<?= $view->catalogUrl ?>"><?= $view->copy['all_pages'] ?></a>
+                <a class="sf-button sf-button--link sf-button--on-surface sf-button--size-1 radius-default decoration-none" href="<?= $view->legacyUrl ?>"><?= $view->copy['open_legacy'] ?></a>
             </nav>
         </div>
     </div>

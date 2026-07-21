@@ -4,24 +4,6 @@
     "renderer": "docara.cta.v1",
     "family": "docara_typed",
     "category": "navigation",
-    "title": "CTA link",
-    "description": "Turns one safe Markdown link into a prominent native navigation action.",
-    "presentation": {
-        "ru": {
-            "title": "Призыв к действию",
-            "description": "Превращает одну безопасную ссылку Markdown в заметное навигационное действие.",
-            "limitations": [
-                "Содержимое должно включать ровно одну безопасную ссылку Markdown.",
-                "Результат остаётся обычной ссылкой и не заявляет выполнение действия Smart-компонентом."
-            ],
-            "states": {
-                "default": "Обычное состояние",
-                "focus": "Фокус"
-            },
-            "parameters": {},
-            "example_ref": "resources/component-catalog/examples/docara.cta.ru.md"
-        }
-    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "directive",
@@ -35,10 +17,6 @@
         "default",
         "focus"
     ],
-    "limitations": [
-        "The body must contain exactly one safe Markdown link.",
-        "The result is a native link and does not claim an executable Smart action."
-    ],
     "verification": {
         "renderer": true,
         "tests": true,
@@ -46,7 +24,6 @@
         "demo": true
     },
     "docs_ref": "docs/site/content/components/syntax.md",
-    "example_ref": "resources/component-catalog/examples/docara.cta.md",
     "provenance": {
         "source_kind": "typed_definition",
         "definition_ref": "resources/component-catalog/typed/docara.cta.json"

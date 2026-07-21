@@ -22,6 +22,97 @@ use Symfony\Component\Process\Process;
 final class PortableSiteBuilderTest extends TestCase
 {
     #[Test]
+    public function it_builds_arbitrary_bcp47_locale_trees_with_rtl_switching_and_alternate_links(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        rename($this->tmpPath('content'), $this->tmpPath('content-source'));
+        foreach (['ru', 'en', 'ar', 'zh-Hans', 'fr-CA'] as $locale) {
+            $this->filesystem->copyDirectory(
+                $this->tmpPath('content-source'),
+                $this->tmpPath('content/' . $locale),
+            );
+        }
+        $this->filesystem->deleteDirectory($this->tmpPath('content-source'));
+
+        $headings = [
+            'ru' => '# Документация',
+            'en' => '# Documentation',
+            'ar' => '# التوثيق',
+            'zh-Hans' => '# 文档',
+            'fr-CA' => '# Documentation',
+        ];
+        foreach ($headings as $locale => $heading) {
+            file_put_contents($this->tmpPath("content/$locale/index.md"), $heading . "\n\nLocale: $locale\n");
+        }
+
+        $site = $this->jsonFile($this->tmpPath('docara.json'));
+        $site['content_root'] = 'content/ru';
+        $site['locales'] = [
+            'ru' => $this->localeDefinition('Русский', 'ltr', 'content/ru', '@docara/ru', '', []),
+            'en' => $this->localeDefinition('English', 'ltr', 'content/en', '@docara/en', 'en', []),
+            'ar' => $this->localeDefinition('العربية', 'rtl', 'content/ar', '@docara/ar', 'ar', ['en']),
+            'zh-Hans' => $this->localeDefinition('简体中文', 'ltr', 'content/zh-Hans', '@docara/zh-Hans', 'zh-hans', ['en']),
+            'fr-CA' => $this->localeDefinition('Français (Canada)', 'ltr', 'content/fr-CA', '@docara/fr-CA', 'fr-ca', ['en']),
+        ];
+        file_put_contents(
+            $this->tmpPath('docara.json'),
+            json_encode($site, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+
+        $result = $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+
+        self::assertGreaterThan(40, $result->count());
+        foreach (['index.html', 'en/index.html', 'ar/index.html', 'zh-hans/index.html', 'fr-ca/index.html'] as $output) {
+            self::assertFileExists($this->tmpPath('build_local/' . $output));
+        }
+        $russian = (string) file_get_contents($this->tmpPath('build_local/index.html'));
+        $arabic = (string) file_get_contents($this->tmpPath('build_local/ar/index.html'));
+        $chinese = (string) file_get_contents($this->tmpPath('build_local/zh-hans/index.html'));
+        self::assertStringContainsString('<html lang="ru" dir="ltr"', $russian);
+        self::assertStringContainsString('<html lang="ar" dir="rtl"', $arabic);
+        self::assertStringContainsString('aria-label="اللغة"', $arabic);
+        self::assertStringContainsString('>إعدادات القراءة</h2>', $arabic);
+        self::assertStringContainsString('<html lang="zh-Hans" dir="ltr"', $chinese);
+        self::assertStringContainsString('>阅读设置</h2>', $chinese);
+        foreach ([
+            'hreflang="ru" href="/"',
+            'hreflang="en" href="/en/"',
+            'hreflang="ar" href="/ar/"',
+            'hreflang="zh-Hans" href="/zh-hans/"',
+            'hreflang="fr-CA" href="/fr-ca/"',
+        ] as $alternate) {
+            self::assertStringContainsString($alternate, $arabic);
+        }
+        self::assertStringContainsString('<option value="/ar/" lang="ar" selected>', $arabic);
+
+        $search = $this->jsonFile($this->tmpPath('build_local/_docara/search-index.json'));
+        self::assertSame(
+            ['ar', 'en', 'fr-CA', 'ru', 'zh-Hans'],
+            array_values(array_unique(array_column($search['documents'], 'locale'))),
+        );
+
+        $firstBuildHashes = $this->treeHashes($this->tmpPath('build_local'));
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        self::assertSame(
+            $firstBuildHashes,
+            $this->treeHashes($this->tmpPath('build_local')),
+            'A repeated five-locale build must be byte-for-byte deterministic.',
+        );
+
+        $verification = new Process([
+            PHP_BINARY,
+            'scripts/verify-static-build.php',
+            $this->tmpPath('build_local'),
+        ], dirname(__DIR__));
+        $verification->run();
+        self::assertSame(
+            0,
+            $verification->getExitCode(),
+            $verification->getErrorOutput() . $verification->getOutput(),
+        );
+    }
+
+    #[Test]
     public function it_builds_docs_landing_inheritance_components_and_explainable_plans(): void
     {
         $this->copyPortableFixture($this->tmp);
@@ -254,7 +345,8 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString("volatile=''", $index);
         self::assertStringContainsString('persisted:persisted', $index);
         self::assertStringContainsString('syncExternal', $index);
-        self::assertStringContainsString('Браузер не разрешил сохранить выбор', $shellRuntime);
+        self::assertStringContainsString("message('reader.applied_not_saved')", $shellRuntime);
+        self::assertStringNotContainsString('Браузер не разрешил сохранить выбор', $shellRuntime);
         self::assertStringContainsString('sf-theme=', $index);
         self::assertStringNotContainsString('<sf-modal', $index);
         self::assertStringNotContainsString('<sf-dropdown', $index);
@@ -416,7 +508,7 @@ final class PortableSiteBuilderTest extends TestCase
         $previewHome = (string) file_get_contents(
             $this->tmpPath('build_local/_docara/declarative-preview/pages/index.html'),
         );
-        self::assertStringContainsString('Декларативный preview', $previewHome);
+        self::assertStringContainsString('Декларативный предпросмотр', $previewHome);
         self::assertStringContainsString(
             'href="/_docara/declarative-preview/pages/guides/" data-docara-original-href="/guides/"',
             $previewHome,
@@ -1676,6 +1768,25 @@ MD;
             new PortableMarkdownRenderer,
             new PortableHtmlRenderer,
         );
+    }
+
+    /** @return array<string, mixed> */
+    private function localeDefinition(
+        string $label,
+        string $direction,
+        string $contentRoot,
+        string $languagePack,
+        string $publicPrefix,
+        array $fallbacks,
+    ): array {
+        return [
+            'label' => $label,
+            'direction' => $direction,
+            'content_root' => $contentRoot,
+            'language_pack' => $languagePack,
+            'public_prefix' => $publicPrefix,
+            'fallbacks' => $fallbacks,
+        ];
     }
 
     private function copyPortableFixture(string $target): void

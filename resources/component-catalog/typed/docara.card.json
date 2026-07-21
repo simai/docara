@@ -4,20 +4,6 @@
     "renderer": "docara.card.v1",
     "family": "docara_typed",
     "category": "content_structure",
-    "title": "Card",
-    "description": "Groups related Markdown content on a neutral bounded surface.",
-    "presentation": {
-        "ru": {
-            "title": "Карточка",
-            "description": "Объединяет связанное содержимое Markdown на нейтральной визуально ограниченной поверхности.",
-            "limitations": [
-                "Вложенные типизированные директивы Docara не поддерживаются."
-            ],
-            "states": {},
-            "parameters": {},
-            "example_ref": "resources/component-catalog/examples/docara.card.ru.md"
-        }
-    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "directive",
@@ -29,9 +15,6 @@
         "parameters": []
     },
     "states": [],
-    "limitations": [
-        "Nested Docara typed directives are not accepted."
-    ],
     "verification": {
         "renderer": true,
         "tests": true,
@@ -39,7 +22,6 @@
         "demo": true
     },
     "docs_ref": "docs/site/content/components/syntax.md",
-    "example_ref": "resources/component-catalog/examples/docara.card.md",
     "provenance": {
         "source_kind": "typed_definition",
         "definition_ref": "resources/component-catalog/typed/docara.card.json"

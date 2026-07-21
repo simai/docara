@@ -12,11 +12,9 @@ final readonly class FrameworkConsumerPolicy
      *
      * @var array<string, array{
      *     managed: array<string, string>,
-     *     blocked: list<array{prop: string, value: mixed, code: string, reason: string}>,
+     *     blocked: list<array{prop: string, value: mixed, code: string}>,
      *     omitted_assets: array<string, string>,
-     *     excluded_states: array<string, array{prop: string, value: mixed}>,
-     *     description: string,
-     *     limitations: list<string>
+     *     excluded_states: array<string, array{prop: string, value: mixed}>
      * }>
      */
     private const POLICIES = [
@@ -28,39 +26,26 @@ final readonly class FrameworkConsumerPolicy
                 'prop' => 'closable',
                 'value' => true,
                 'code' => 'FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME',
-                'reason' => 'ui.alert:closable requires sf-icon-button, which is absent from the pinned runtime pair',
             ], [
                 'prop' => 'type',
                 'value' => 'success',
                 'code' => 'FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME',
-                'reason' => 'ui.alert:type=success has a transparent status icon in the pinned Framework stylesheet',
             ]],
             'omitted_assets' => [
-                'simai.framework.bridge.js' => 'The Larena backend event bridge is excluded because portable Docara admits no backend handler, data-binding or effect contract.',
+                'simai.framework.bridge.js' => 'portable_backend_bridge_not_admitted',
             ],
             'excluded_states' => [
                 'closable' => ['prop' => 'closable', 'value' => true],
                 'success' => ['prop' => 'type', 'value' => 'success'],
-            ],
-            'description' => 'Reports a result, warning, or error as presentation-only content in portable Docara.',
-            'limitations' => [
-                'The id property is generated deterministically by Docara.',
-                'closable=true is not admitted by the current bounded runtime.',
-                'type=success is not admitted because the pinned Framework stylesheet renders its status icon transparent.',
-                'The Larena backend event bridge is intentionally omitted; portable Docara renders this component without backend handlers.',
             ],
         ],
         'ui.button' => [
             'managed' => [],
             'blocked' => [],
             'omitted_assets' => [
-                'simai.framework.bridge.js' => 'The Larena backend event bridge is excluded because portable Docara admits no backend handler, data-binding or effect contract.',
+                'simai.framework.bridge.js' => 'portable_backend_bridge_not_admitted',
             ],
             'excluded_states' => [],
-            'description' => 'Renders a bounded visual action control; portable Docara does not bind data, navigate, or execute an effect.',
-            'limitations' => [
-                'The Larena backend event bridge is intentionally omitted; portable Docara renders this component without backend handlers.',
-            ],
         ],
     ];
 
@@ -150,17 +135,14 @@ final readonly class FrameworkConsumerPolicy
             if (array_key_exists($blocked['prop'], $props)
                 && $props[$blocked['prop']] === $blocked['value']
             ) {
-                throw new FrameworkComponentException($blocked['code'], $blocked['reason']);
+                throw new FrameworkComponentException(
+                    $blocked['code'],
+                    $component . ':' . $blocked['prop'],
+                );
             }
         }
 
         return $props;
-    }
-
-    /** @return list<string> */
-    public function limitations(string $component): array
-    {
-        return $this->policy($component)['limitations'];
     }
 
     /** @return list<mixed> */
@@ -183,11 +165,6 @@ final readonly class FrameworkConsumerPolicy
         sort($properties, SORT_STRING);
 
         return $properties;
-    }
-
-    public function catalogDescription(string $component): string
-    {
-        return $this->policy($component)['description'];
     }
 
     /** @param list<string> $manifestStates @return list<string> */
@@ -275,11 +252,9 @@ final readonly class FrameworkConsumerPolicy
     /**
      * @return array{
      *     managed: array<string, string>,
-     *     blocked: list<array{prop: string, value: mixed, code: string, reason: string}>,
+     *     blocked: list<array{prop: string, value: mixed, code: string}>,
      *     omitted_assets: array<string, string>,
-     *     excluded_states: array<string, array{prop: string, value: mixed}>,
-     *     description: string,
-     *     limitations: list<string>
+     *     excluded_states: array<string, array{prop: string, value: mixed}>
      * }
      */
     private function policy(string $component): array

@@ -11,5 +11,6 @@ final readonly class DeclarativeExampleIndexViewModel
         public string $title,
         public string $intro,
         public array $items,
+        public string $openLabel,
     ) {}
 }

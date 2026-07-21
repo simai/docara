@@ -23,7 +23,7 @@
         },
         "locale": {
             "type": "string",
-            "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+            "format": "docara-bcp47"
         },
         "branding": {
             "$ref": "presentation.schema.json#/$defs/branding"

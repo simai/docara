@@ -12,9 +12,13 @@ final readonly class PortablePageViewModel
      * @param  array{title:string,url:string}|null  $previous
      * @param  array{title:string,url:string}|null  $next
      * @param  list<array{value:string,title:string,description:string,checked:bool}>  $themeOptions
+     * @param  array<string, string>  $copy
+     * @param  list<array{locale:string,url:string}>  $alternates
+     * @param  list<array{locale:string,label:string,url:string,current:bool}>  $languageOptions
      */
     public function __construct(
         public string $locale,
+        public string $direction,
         public string $documentationVersion,
         public string $documentTitle,
         public ?string $description,
@@ -35,5 +39,9 @@ final readonly class PortablePageViewModel
         public ?array $next,
         public array $themeOptions,
         public string $configuredTheme,
+        public array $copy,
+        public array $alternates,
+        public array $languageOptions,
+        public string $runtimeCopyJson,
     ) {}
 }

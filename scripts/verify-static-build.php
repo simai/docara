@@ -7,6 +7,10 @@ use League\CommonMark\Environment\Environment;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
+use Simai\Docara\I18n\LanguagePackRepository;
+use Simai\Docara\I18n\LocaleRegistry;
+use Simai\Docara\I18n\LocaleTag;
+use Simai\Docara\I18n\Translator;
 use Simai\Docara\Portable\JsonSchemaValidator;
 use Simai\Docara\Portable\ResolvedPagePlan;
 use Simai\Docara\Portable\SchemaRepository;
@@ -231,6 +235,8 @@ function docaraRedirectOutputs(
             $record,
             $locale,
             $documentationVersion,
+            is_array($receipt['copy'] ?? null) ? $receipt['copy'] : [],
+            is_string($receipt['direction'] ?? null) ? $receipt['direction'] : 'ltr',
         );
         if (! is_string($actualBytes) || ! hash_equals($expectedBytes, $actualBytes)) {
             throw new RuntimeException("Redirect output [$output] does not match its deterministic receipt.");
@@ -659,129 +665,6 @@ function docaraCatalogScalar(mixed $value): bool
     return is_string($value) || is_bool($value) || is_int($value) || is_float($value);
 }
 
-function docaraCatalogLocalizedLabels(mixed $value): bool
-{
-    if (! is_array($value) || ($value !== [] && array_is_list($value))) {
-        return false;
-    }
-    foreach ($value as $key => $label) {
-        if ((! is_string($key) && ! is_int($key))
-            || ! is_string($label)
-            || trim($label) === ''
-        ) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-/** @param array<string, mixed> $entry @param array<string, mixed> $authoring */
-function docaraCatalogPresentation(array $entry, array $authoring): bool
-{
-    $presentation = $entry['presentation'] ?? null;
-    if (! is_array($presentation)
-        || array_is_list($presentation)
-        || ! docaraExactKeys($presentation, ['ru'])
-        || ! is_array($presentation['ru'])
-        || array_is_list($presentation['ru'])
-    ) {
-        return false;
-    }
-    $localized = $presentation['ru'];
-    $supported = ($entry['lifecycle'] ?? null) === 'supported';
-    $required = ['title', 'description', 'limitations', 'states', 'parameters'];
-    if ($supported) {
-        $required[] = 'example_ref';
-    } else {
-        $required[] = 'gap';
-    }
-    if (! docaraExactKeys($localized, $required)
-        || ! is_string($localized['title'])
-        || trim($localized['title']) === ''
-        || ! is_string($localized['description'])
-        || trim($localized['description']) === ''
-        || ! docaraCatalogStringList($localized['limitations'])
-        || count($localized['limitations']) !== count($entry['limitations'])
-        || ! docaraCatalogLocalizedLabels($localized['states'])
-        || ! is_array($localized['parameters'])
-        || ($localized['parameters'] !== [] && array_is_list($localized['parameters']))
-    ) {
-        return false;
-    }
-    if ($supported
-        && (! is_string($localized['example_ref'])
-            || ! docaraCatalogSafePath($localized['example_ref']))
-    ) {
-        return false;
-    }
-    $stateKeys = array_keys($localized['states']);
-    $states = array_map('strval', $entry['states']);
-    sort($stateKeys, SORT_STRING);
-    sort($states, SORT_STRING);
-    if ($stateKeys !== $states) {
-        return false;
-    }
-
-    $parameterKeys = array_keys($localized['parameters']);
-    $expectedParameterKeys = array_map(
-        static fn (array $parameter): string => (string) $parameter['name'],
-        $authoring['parameters'],
-    );
-    sort($parameterKeys, SORT_STRING);
-    sort($expectedParameterKeys, SORT_STRING);
-    if ($parameterKeys !== $expectedParameterKeys) {
-        return false;
-    }
-    foreach ($authoring['parameters'] as $parameter) {
-        $name = (string) $parameter['name'];
-        $localizedParameter = $localized['parameters'][$name] ?? null;
-        $hasValues = isset($parameter['values']);
-        $expectedKeys = $hasValues ? ['label', 'description', 'values'] : ['label', 'description'];
-        if (! is_array($localizedParameter)
-            || array_is_list($localizedParameter)
-            || ! docaraExactKeys($localizedParameter, $expectedKeys)
-            || ! is_string($localizedParameter['label'])
-            || trim($localizedParameter['label']) === ''
-            || ! is_string($localizedParameter['description'])
-            || trim($localizedParameter['description']) === ''
-        ) {
-            return false;
-        }
-        if (! $hasValues) {
-            continue;
-        }
-        if (! docaraCatalogLocalizedLabels($localizedParameter['values'])) {
-            return false;
-        }
-        $valueKeys = array_map('strval', array_keys($localizedParameter['values']));
-        $expectedValueKeys = array_map('strval', $parameter['values']);
-        sort($valueKeys, SORT_STRING);
-        sort($expectedValueKeys, SORT_STRING);
-        if ($valueKeys !== $expectedValueKeys) {
-            return false;
-        }
-    }
-
-    if ($supported) {
-        return true;
-    }
-    $gap = $localized['gap'];
-    if (! is_array($gap)
-        || array_is_list($gap)
-        || ! docaraExactKeys($gap, ['reason', 'fallback', 'admission_condition'])
-    ) {
-        return false;
-    }
-    foreach ($gap as $value) {
-        if (! is_string($value) || trim($value) === '') {
-            return false;
-        }
-    }
-
-    return true;
-}
-
 function docaraCatalogCondition(mixed $value): bool
 {
     if (! is_array($value) || array_is_list($value) || $value === []) {
@@ -944,18 +827,14 @@ function docaraCatalogEntryContractError(
         'id',
         'family',
         'category',
-        'title',
-        'description',
-        'presentation',
         'lifecycle',
         'authoring',
         'states',
-        'limitations',
         'verification',
         'docs_ref',
         'provenance',
     ];
-    $allowed = [...$required, 'example_ref', 'consumer_policy', 'gap'];
+    $allowed = [...$required, 'consumer_policy', 'gap'];
     if (array_diff($required, array_keys($entry)) !== []
         || array_diff(array_keys($entry), $allowed) !== []
         || ! is_string($entry['id'])
@@ -967,17 +846,12 @@ function docaraCatalogEntryContractError(
         )
         || ! is_string($entry['category'])
         || trim($entry['category']) === ''
-        || ! is_string($entry['title'])
-        || trim($entry['title']) === ''
-        || ! is_string($entry['description'])
-        || trim($entry['description']) === ''
         || ! in_array(
             $entry['lifecycle'],
             ['supported', 'admission_pending', 'framework_gap', 'deferred'],
             true,
         )
         || ! docaraCatalogStringList($entry['states'])
-        || ! docaraCatalogStringList($entry['limitations'])
         || ! is_string($entry['docs_ref'])
         || ! docaraCatalogSafePath($entry['docs_ref'])
     ) {
@@ -1012,17 +886,15 @@ function docaraCatalogEntryContractError(
             return 'The effective component catalogue parameter is invalid.';
         }
         $parameterKeys = array_keys($parameter);
-        if (array_diff(['name', 'type', 'required', 'description'], $parameterKeys) !== []
+        if (array_diff(['name', 'type', 'required'], $parameterKeys) !== []
             || array_diff(
                 $parameterKeys,
-                ['name', 'type', 'required', 'description', 'values', 'default', 'validation', 'mirrors'],
+                ['name', 'type', 'required', 'values', 'default', 'validation', 'mirrors'],
             ) !== []
             || ! is_string($parameter['name'])
             || preg_match('/\A[a-z][a-z0-9_-]*\z/D', $parameter['name']) !== 1
             || ! in_array($parameter['type'], ['string', 'boolean', 'integer', 'number', 'enum', 'markdown'], true)
             || ! is_bool($parameter['required'])
-            || ! is_string($parameter['description'])
-            || trim($parameter['description']) === ''
             || (isset($parameter['values']) && ! docaraCatalogValues($parameter['values']))
             || (array_key_exists('default', $parameter) && ! docaraCatalogScalar($parameter['default']))
             || (isset($parameter['validation'])
@@ -1043,10 +915,6 @@ function docaraCatalogEntryContractError(
     if (isset($authoring['constraints']) && ! docaraCatalogConstraints($authoring['constraints'])) {
         return 'The effective component catalogue author constraints are invalid.';
     }
-    if (! docaraCatalogPresentation($entry, $authoring)) {
-        return 'The effective component catalogue presentation contract is invalid.';
-    }
-
     $verification = $entry['verification'];
     if (! is_array($verification)
         || array_is_list($verification)
@@ -1072,7 +940,6 @@ function docaraCatalogEntryContractError(
             || ! docaraExactKeys($provenance, ['source_kind', 'profile_id'])
             || $provenance['source_kind'] !== 'portable_markdown_profile'
             || $provenance['profile_id'] !== 'docara.portable_markdown_profile.v1'
-            || ! isset($entry['example_ref'])
             || isset($entry['consumer_policy'])
             || isset($entry['gap'])
         ) {
@@ -1089,7 +956,6 @@ function docaraCatalogEntryContractError(
             || $provenance['source_kind'] !== 'typed_definition'
             || ! is_string($provenance['definition_ref'])
             || ! docaraCatalogSafePath($provenance['definition_ref'])
-            || ! isset($entry['example_ref'])
             || isset($entry['consumer_policy'])
             || isset($entry['gap'])
         ) {
@@ -1123,7 +989,6 @@ function docaraCatalogEntryContractError(
             || preg_match('/\A[a-f0-9]{64}\z/D', $provenance['manifest_sha256']) !== 1
             || ! is_string($provenance['manifest_ref'])
             || ! docaraCatalogSafePath($provenance['manifest_ref'])
-            || ! isset($entry['example_ref'])
             || ! is_array($entry['consumer_policy'] ?? null)
             || isset($entry['gap'])
         ) {
@@ -1156,7 +1021,6 @@ function docaraCatalogEntryContractError(
             || $provenance['source_kind'] !== 'product_requirement'
             || ! is_string($provenance['framework_owner'])
             || trim($provenance['framework_owner']) === ''
-            || isset($entry['example_ref'])
             || isset($entry['consumer_policy'])
             || ! is_array($entry['gap'] ?? null)
         ) {
@@ -1164,16 +1028,10 @@ function docaraCatalogEntryContractError(
         }
     }
 
-    if (isset($entry['example_ref'])
-        && (! is_string($entry['example_ref']) || ! docaraCatalogSafePath($entry['example_ref']))
-    ) {
-        return 'The effective component catalogue example reference is unsafe.';
-    }
     if ($lifecycle === 'supported') {
         if ($verification['renderer'] !== true
             || $verification['tests'] !== true
             || $verification['docs'] !== true
-            || ! isset($entry['example_ref'])
         ) {
             return 'A supported component catalogue entry has incomplete evidence.';
         }
@@ -1181,7 +1039,7 @@ function docaraCatalogEntryContractError(
         $gap = $entry['gap'] ?? null;
         if (! is_array($gap)
             || array_is_list($gap)
-            || ! docaraExactKeys($gap, ['owner', 'reason', 'fallback', 'admission_condition'])
+            || ! docaraExactKeys($gap, ['owner'])
         ) {
             return 'An unavailable component catalogue entry lacks a complete gap contract.';
         }
@@ -1637,6 +1495,7 @@ function docaraAssertCatalogShellContract(
         || $count('//header[contains(concat(" ", normalize-space(@class), " "), " docara-header ")]') !== 1
         || $count('//*[@id="docara-reader-settings-dialog"]') !== 1
         || $count('//script[@data-docara-shell-controller]') !== 1
+        || $count('//script[@id="docara-runtime-copy" and @type="application/json"]') !== 1
     ) {
         throw new RuntimeException(
             'Generated component catalogue shell is missing a required unique landmark.',
@@ -1647,7 +1506,7 @@ function docaraAssertCatalogShellContract(
     if (($expectedPage['search_enabled'] ?? false) === true) {
         $expectedBody[] = 'search';
     }
-    $expectedBody = [...$expectedBody, 'reader', 'controller'];
+    $expectedBody = [...$expectedBody, 'reader', 'copy', 'controller'];
     $actualBody = [];
     $bodyChildren = $xpath->query('/html/body/*');
     if ($bodyChildren === false) {
@@ -1663,6 +1522,7 @@ function docaraAssertCatalogShellContract(
             $child->tagName === 'dialog' && $child->getAttribute('id') === 'docara-search-dialog' => 'search',
             $child->tagName === 'dialog' && $child->getAttribute('id') === 'docara-reader-settings-dialog' => 'reader',
             $child->tagName === 'div' && $hasClass($child, 'docara-docs-layout') => 'layout',
+            $child->tagName === 'script' && $child->getAttribute('id') === 'docara-runtime-copy' => 'copy',
             $child->tagName === 'script' && $child->hasAttribute('data-docara-shell-controller') => 'controller',
             default => 'unexpected:' . $child->tagName,
         };
@@ -1671,7 +1531,7 @@ function docaraAssertCatalogShellContract(
     if (($expectedPage['search_enabled'] ?? false) === true) {
         $legacyBody[] = 'search';
     }
-    $legacyBody = [...$legacyBody, 'reader', 'layout', 'controller'];
+    $legacyBody = [...$legacyBody, 'reader', 'layout', 'copy', 'controller'];
     if ($actualBody !== $expectedBody && $actualBody !== $legacyBody) {
         throw new RuntimeException(
             'Generated component catalogue shell body structure does not match the strict contract.',
@@ -1784,6 +1644,7 @@ if ($rootInput === '' || count($argv) !== 2) {
 
     exit(2);
 }
+docaraBootstrapTrustedSource();
 
 $lexicalInput = str_replace('\\', '/', rtrim($rootInput, '/\\'));
 foreach (explode('/', $lexicalInput) as $segment) {
@@ -1932,14 +1793,17 @@ if (is_link($manifestDirectory)
                 if (! is_string($pageLocale)
                     || ! is_string($buildLocale)
                     || ! is_string($documentationVersion)
-                    || preg_match('/\A[a-z]{2}(?:-[A-Z]{2})?\z/D', $pageLocale) !== 1
-                    || preg_match('/\A[a-z]{2}(?:-[A-Z]{2})?\z/D', $buildLocale) !== 1
+                    || ! LocaleTag::isWellFormed($pageLocale)
+                    || ! LocaleTag::isWellFormed($buildLocale)
                     || preg_match('/\A[A-Za-z0-9](?:[A-Za-z0-9._-]{0,62}[A-Za-z0-9])?\z/D', $documentationVersion) !== 1
                 ) {
                     throw new RuntimeException("Resolved page-plan record [$index] has invalid locale or documentation version metadata.");
                 }
-                if ($pageLocale !== $buildLocale) {
-                    throw new RuntimeException("Resolved page-plan record [$index] does not match the one-locale build contract.");
+                $configuredLocales = $configuration['locales'] ?? null;
+                if (is_array($configuredLocales)
+                    && (! isset($configuredLocales[$pageLocale]) || ! isset($configuredLocales[$buildLocale]))
+                ) {
+                    throw new RuntimeException("Resolved page-plan record [$index] references a locale outside its registry.");
                 }
                 $redirectSource = $configuration['redirects_file'] ?? null;
                 if ($redirectSource !== null
@@ -2090,7 +1954,7 @@ if (is_link($manifestDirectory)
                     if (! is_string($url)
                         || ! docaraSearchUrlIsSafe($url, $deploymentBase)
                         || ! is_string($locale)
-                        || preg_match('/\A[a-z]{2}(?:-[A-Z]{2})?\z/D', $locale) !== 1
+                        || ! LocaleTag::isWellFormed($locale)
                     ) {
                         throw new RuntimeException("Resolved page-plan record [$index] has unsafe search identity fields.");
                     }
@@ -2580,7 +2444,7 @@ if ($manifestError === null) {
                     || ! is_string($document['url'] ?? null)
                     || ! docaraSearchUrlIsSafe($document['url'], $deploymentBase)
                     || ! is_string($document['locale'] ?? null)
-                    || preg_match('/\A[a-z]{2}(?:-[A-Z]{2})?\z/D', $document['locale']) !== 1
+                    || ! LocaleTag::isWellFormed($document['locale'])
                     || ! is_string($document['title'] ?? null)
                     || $document['title'] === ''
                     || ! is_string($document['description'] ?? null)
@@ -2747,24 +2611,6 @@ if ($manifestError === null) {
                 }
                 $previousId = $entry['id'];
 
-                foreach (['example_ref'] as $pathKey) {
-                    if (isset($entry[$pathKey])
-                        && (! is_string($entry[$pathKey]) || ! docaraCatalogSafePath($entry[$pathKey]))
-                    ) {
-                        throw new RuntimeException("Effective component catalogue entry [$index] has an unsafe reference.");
-                    }
-                }
-                foreach ($entry['presentation'] as $localizedPresentation) {
-                    if (is_array($localizedPresentation)
-                        && isset($localizedPresentation['example_ref'])
-                        && (! is_string($localizedPresentation['example_ref'])
-                            || ! docaraCatalogSafePath($localizedPresentation['example_ref']))
-                    ) {
-                        throw new RuntimeException(
-                            "Effective component catalogue entry [$index] has an unsafe localized example.",
-                        );
-                    }
-                }
                 $provenance = $entry['provenance'] ?? null;
                 if (! is_array($provenance) || array_is_list($provenance)) {
                     throw new RuntimeException("Effective component catalogue entry [$index] has invalid provenance.");
@@ -2785,13 +2631,6 @@ if ($manifestError === null) {
                             );
                         }
                     }
-                    if (! is_string($entry['example_ref'] ?? null)
-                        || ! docaraCatalogSafePath($entry['example_ref'])
-                    ) {
-                        throw new RuntimeException(
-                            "Supported component catalogue entry [$index] is missing a safe example.",
-                        );
-                    }
                     if ($entry['family'] === 'framework_smart') {
                         $supportedSmart[] = $entry['id'];
                     }
@@ -2802,7 +2641,7 @@ if ($manifestError === null) {
                         );
                     }
                     $gap = $entry['gap'] ?? null;
-                    foreach (['owner', 'reason', 'fallback', 'admission_condition'] as $gapKey) {
+                    foreach (['owner'] as $gapKey) {
                         if (! is_array($gap)
                             || ! is_string($gap[$gapKey] ?? null)
                             || trim($gap[$gapKey]) === ''
@@ -2897,7 +2736,6 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
 
         $runtimeAssetBase = rtrim($deploymentBase, '/') . '/_docara/framework';
         $runtime = FrameworkComponentRuntime::fromLock($expectedFrameworkLock, $runtimeAssetBase);
-        $projector = new PortableComponentCatalogProjector(new PortableMarkdownRenderer);
         $htmlRenderer = new PortableHtmlRenderer;
         $catalogManifestConfiguration = null;
         foreach ($manifestPageRecords as $manifestPageRecord) {
@@ -2926,7 +2764,7 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
             ?? $catalogManifestConfiguration['default_locale']
             ?? null;
         if (! is_string($catalogLocale)
-            || preg_match('/\A[a-z]{2}(?:-[A-Z]{2})?\z/D', $catalogLocale) !== 1
+            || ! LocaleTag::isWellFormed($catalogLocale)
         ) {
             throw new RuntimeException(
                 'Resolved component catalogue locale is invalid.',
@@ -2948,6 +2786,15 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
             frameworkLock: $expectedFrameworkLock,
             trace: [],
             provenance: [],
+        );
+        $localeRegistry = LocaleRegistry::fromSite($expectedBaseConfiguration);
+        $translator = new Translator(
+            $localeRegistry,
+            new LanguagePackRepository($packageRoot),
+        );
+        $projector = new PortableComponentCatalogProjector(
+            new PortableMarkdownRenderer,
+            translator: $translator,
         );
         $expectedProjection = $projector->project(
             catalog: $freshTrustedCatalog,

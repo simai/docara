@@ -14,5 +14,10 @@ final readonly class DeclarativeExampleDetailViewModel
         public string $resultUrl,
         public string $previewSize,
         public array $sources,
+        public string $resultLabel,
+        public string $openSeparatelyLabel,
+        public string $resultFrameLabel,
+        public string $sourcesLabel,
+        public string $sourcesDescription,
     ) {}
 }

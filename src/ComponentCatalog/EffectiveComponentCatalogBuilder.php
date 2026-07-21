@@ -194,10 +194,6 @@ final readonly class EffectiveComponentCatalogBuilder
             }
             $entry['authoring']['parameters'] = $this->manifestParameters($key, $manifest);
             $entry['authoring']['constraints'] = $this->manifestConstraints($key, $manifest);
-            $entry['limitations'] = array_values(array_unique(array_merge(
-                $entry['limitations'],
-                $this->consumerPolicy->limitations($key),
-            )));
             $entry['consumer_policy'] = $this->consumerPolicy->catalogMetadata($key);
             $lockRecord = $this->frameworkLock->manifest($key);
             $entry['provenance'] = array_merge($entry['provenance'], [
@@ -207,7 +203,6 @@ final readonly class EffectiveComponentCatalogBuilder
                 'manifest_sha256' => (string) $lockRecord['sha256'],
                 'runtime_pair' => $this->frameworkLock->pairId(),
             ]);
-            $this->assertSmartPresentationNarrowing($key, $entry, $manifest);
             $entries[] = $entry;
         }
 
@@ -223,9 +218,6 @@ final readonly class EffectiveComponentCatalogBuilder
         if (! is_array($atlas)
             || ($atlas['readiness']['safe_to_suggest'] ?? null) !== true
             || ($atlas['readiness']['safe_to_render'] ?? null) !== true
-            || ! is_string($atlas['title'] ?? null)
-            || $entry['title'] !== $atlas['title']
-            || $entry['description'] !== $this->consumerPolicy->catalogDescription($component)
             || ! is_string($atlas['category'] ?? null)
             || $entry['category'] !== $atlas['category']
             || ! is_array($manifestStates)
@@ -304,7 +296,6 @@ final readonly class EffectiveComponentCatalogBuilder
                 // applies a preset and explicit author input. "required"
                 // therefore describes author input, not the final host props.
                 'required' => false,
-                'description' => "Optional author override for exact manifest property [$name].",
             ];
             if (array_key_exists('enum', $schema)) {
                 if (! is_array($schema['enum'])
@@ -370,7 +361,6 @@ final readonly class EffectiveComponentCatalogBuilder
                 'name' => 'preset',
                 'type' => 'enum',
                 'required' => false,
-                'description' => 'Exact manifest preset merged before explicit props.',
                 'values' => $presets,
             ];
         }
@@ -380,55 +370,6 @@ final readonly class EffectiveComponentCatalogBuilder
         );
 
         return $parameters;
-    }
-
-    /** @param array<string, mixed> $entry @param array<string, mixed> $manifest */
-    private function assertSmartPresentationNarrowing(
-        string $component,
-        array $entry,
-        array $manifest,
-    ): void {
-        $presentation = $entry['presentation']['ru'] ?? null;
-        $i18n = $manifest['atlas']['i18n']['ru'] ?? null;
-        if (! is_array($presentation)
-            || ! is_array($i18n)
-            || ! is_string($i18n['title'] ?? null)
-            || ($presentation['title'] ?? null) !== $i18n['title']
-        ) {
-            throw new PortableConfigurationException(
-                'COMPONENT_CATALOG_SMART_PRESENTATION_MISMATCH',
-                "Smart catalogue presentation for [$component] does not match its exact manifest.",
-            );
-        }
-        $controls = is_array($i18n['controls'] ?? null) ? $i18n['controls'] : [];
-        $options = is_array($i18n['options'] ?? null) ? $i18n['options'] : [];
-        $parameters = is_array($presentation['parameters'] ?? null)
-            ? $presentation['parameters']
-            : [];
-        foreach ($parameters as $name => $parameter) {
-            if (! is_string($name) || ! is_array($parameter)) {
-                continue;
-            }
-            if (isset($controls[$name]) && ($parameter['label'] ?? null) !== $controls[$name]) {
-                throw new PortableConfigurationException(
-                    'COMPONENT_CATALOG_SMART_PRESENTATION_MISMATCH',
-                    "Smart catalogue parameter label [$component:$name] conflicts with its exact manifest.",
-                );
-            }
-            if (! is_array($parameter['values'] ?? null) || ! is_array($options[$name] ?? null)) {
-                continue;
-            }
-            foreach ($parameter['values'] as $value => $label) {
-                if (array_key_exists($value, $options[$name])
-                    && $label !== $options[$name][$value]
-                ) {
-                    throw new PortableConfigurationException(
-                        'COMPONENT_CATALOG_SMART_PRESENTATION_MISMATCH',
-                        "Smart catalogue value label [$component:$name:$value] conflicts with its exact manifest.",
-                    );
-                }
-            }
-        }
     }
 
     /**
@@ -697,25 +638,8 @@ final readonly class EffectiveComponentCatalogBuilder
     private function assertReferencesExist(array $catalog): void
     {
         foreach ($catalog['entries'] as $entry) {
-            foreach (['docs_ref', 'example_ref'] as $key) {
+            foreach (['docs_ref'] as $key) {
                 $path = $entry[$key] ?? null;
-                if (! is_string($path)) {
-                    continue;
-                }
-                $absolute = $this->packageRoot . '/' . $path;
-                if (is_link($absolute) || ! is_file($absolute)) {
-                    throw new PortableConfigurationException(
-                        'COMPONENT_CATALOG_REFERENCE_MISSING',
-                        "Catalogue reference [$path] is missing or unsafe.",
-                    );
-                }
-            }
-            $presentation = $entry['presentation'] ?? null;
-            if (! is_array($presentation)) {
-                continue;
-            }
-            foreach ($presentation as $localized) {
-                $path = is_array($localized) ? ($localized['example_ref'] ?? null) : null;
                 if (! is_string($path)) {
                     continue;
                 }

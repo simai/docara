@@ -1,4 +1,11 @@
 (function(){
+  var copyNode=document.getElementById('docara-runtime-copy'),messages={};
+  try{messages=JSON.parse(copyNode?copyNode.textContent:'{}')}catch(error){messages={}}
+  function message(id,parameters){
+    var value=typeof messages[id]==='string'?messages[id]:id;
+    Object.keys(parameters||{}).forEach(function(name){value=value.split('{'+name+'}').join(String(parameters[name]))});
+    return value;
+  }
   function protectNativeLink(link){
     if(link.dataset.docaraLinkBound)return;
     link.dataset.docaraLinkBound='1';
@@ -12,7 +19,7 @@
     if(button.getAttribute('aria-expanded')!==String(open)){button.setAttribute('aria-expanded',String(open))}
     var title=(item.querySelector(':scope > .sf-menu-element .sf-menu-element-text')||{}).textContent||'';
     var containsCurrent=button.dataset.docaraContainsCurrent==='true';
-    button.setAttribute('aria-label',(open?'Свернуть: ':'Развернуть: ')+title.trim()+(containsCurrent?', содержит текущую страницу':''));
+    button.setAttribute('aria-label',message(open?'navigation.collapse':'navigation.expand')+title.trim()+(containsCurrent?message('navigation.contains_current'):''));
   }
   function bindShell(){
     document.querySelectorAll('[data-docara-menu-link]').forEach(protectNativeLink);
@@ -114,6 +121,12 @@
     },{passive:true});
   }
   document.querySelectorAll('dialog[data-docara-sheet]').forEach(bindSheet);
+  document.querySelectorAll('[data-docara-language-switcher]').forEach(function(select){
+    select.addEventListener('change',function(){
+      var url=select.value;
+      if(typeof url==='string'&&/^\/(?:(?!\.{1,2}\/)[A-Za-z0-9._~%-]+\/)*$/u.test(url)){window.location.assign(url)}
+    });
+  });
   var componentFilter=document.querySelector('[data-docara-component-filter]');
   if(componentFilter){
     var componentQuery=componentFilter.querySelector('[data-docara-component-filter-query]');
@@ -197,11 +210,11 @@
         if(!result.applied)return;
         syncReaderSettings();
         var label=option.closest('label').querySelector('.sf-radio-button-text').textContent;
-        announceSettings(result.persisted?'Тема сохранена: '+label+'.':'Тема применена. Браузер не разрешил сохранить выбор.');
+        announceSettings(result.persisted?message('reader.saved',{theme:label}):message('reader.applied_not_saved'));
       });
     });
     if(settingsReset){
-      settingsReset.addEventListener('click',function(){readerTheme.reset();syncReaderSettings();announceSettings('Восстановлена настройка темы сайта.')});
+      settingsReset.addEventListener('click',function(){readerTheme.reset();syncReaderSettings();announceSettings(message('reader.restored'))});
     }
     var systemTheme=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)');
     if(systemTheme){systemTheme.addEventListener('change',function(){if(document.documentElement.dataset.docaraThemePreference==='system'){readerTheme.apply('system',document.documentElement.dataset.docaraThemeSource||'site')}})}

@@ -6,16 +6,16 @@
     </header>
     <section class="flex flex-col gap-2" aria-labelledby="example-result-title">
         <div class="flex flex-wrap items-center content-main-between gap-1">
-            <h2 id="example-result-title" class="m-0">Результат</h2>
-            <a class="sf-button sf-button--outline sf-button--primary sf-button--size-1 radius-default decoration-none inline-flex items-center content-main-center" href="<?= $view->resultUrl ?>" target="_blank" rel="noopener"><span class="sf-button-text-container">Открыть отдельно</span></a>
+            <h2 id="example-result-title" class="m-0"><?= $view->resultLabel ?></h2>
+            <a class="sf-button sf-button--outline sf-button--primary sf-button--size-1 radius-default decoration-none inline-flex items-center content-main-center" href="<?= $view->resultUrl ?>" target="_blank" rel="noopener"><span class="sf-button-text-container"><?= $view->openSeparatelyLabel ?></span></a>
         </div>
         <div class="docara-example-preview surface-0 border border-outline-variant radius-2 overflow-hidden" data-preview-size="<?= $view->previewSize ?>">
-            <iframe src="<?= $view->resultUrl ?>" title="Результат: <?= $view->title ?>" loading="lazy"></iframe>
+            <iframe src="<?= $view->resultUrl ?>" title="<?= $view->resultFrameLabel ?>" loading="lazy"></iframe>
         </div>
     </section>
     <section class="flex flex-col gap-2" aria-labelledby="example-source-title">
-        <h2 id="example-source-title" class="m-0">Исходные файлы</h2>
-        <p class="color-on-surface-variant m-0">Именно эти файлы прошли основной конфигурационный и декларативный pipeline.</p>
+        <h2 id="example-source-title" class="m-0"><?= $view->sourcesLabel ?></h2>
+        <p class="color-on-surface-variant m-0"><?= $view->sourcesDescription ?></p>
 <?php foreach ($view->sources as $source) { ?>
         <article class="surface-0 border border-outline-variant radius-2 overflow-hidden">
             <header class="flex flex-wrap items-center content-main-between gap-1 p-2 border-bottom-1 border-outline-variant">

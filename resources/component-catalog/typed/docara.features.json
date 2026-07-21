@@ -4,21 +4,6 @@
     "renderer": "docara.features.v1",
     "family": "docara_typed",
     "category": "content_structure",
-    "title": "Feature list",
-    "description": "Presents a short source-ordered list of product capabilities as a responsive grid.",
-    "presentation": {
-        "ru": {
-            "title": "Список возможностей",
-            "description": "Показывает короткий список возможностей продукта в виде адаптивной сетки, сохраняя исходный порядок.",
-            "limitations": [
-                "Содержимое должно включать один плоский маркированный список из двух–шести пунктов.",
-                "Вложенные списки, блоки и директивы Docara не поддерживаются."
-            ],
-            "states": {},
-            "parameters": {},
-            "example_ref": "resources/component-catalog/examples/docara.features.ru.md"
-        }
-    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "directive",
@@ -29,10 +14,6 @@
         "parameters": []
     },
     "states": [],
-    "limitations": [
-        "The body must contain one flat unordered list with two to six items.",
-        "Nested lists, blocks and Docara directives are not accepted."
-    ],
     "verification": {
         "renderer": true,
         "tests": true,
@@ -40,7 +21,6 @@
         "demo": true
     },
     "docs_ref": "docs/site/content/components/syntax.md",
-    "example_ref": "resources/component-catalog/examples/docara.features.md",
     "provenance": {
         "source_kind": "typed_definition",
         "definition_ref": "resources/component-catalog/typed/docara.features.json"

@@ -102,8 +102,8 @@ content/
 Настройки всего сайта находятся в `docara.json`, раздела — в `section.json`,
 страницы — в соседнем `<page>.page.json`.
 
-Starter задаёт один `default_locale`, одну `documentation_version` и
-декларативный `redirects_file`. Для другого языка или версии создайте отдельный
+Starter задаёт `default_locale`, реестр `locales`, одну `documentation_version` и
+декларативный `redirects_file`. Для другой версии создайте отдельный
 site variant и output, а не смешивайте страницы в одной сборке.
 
 ## Что читать дальше

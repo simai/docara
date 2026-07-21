@@ -17,8 +17,8 @@ Portable builder работает fail closed. Он не пытается уга
 - Redirects принимают только внутренние source/target без query и fragment;
   collision, self redirect, chain, cycle и отсутствующий target отклоняются
   до очистки существующей сборки.
-- Все страницы одной сборки обязаны иметь `locale`, совпадающий с
-  `default_locale`.
+- Каждая страница обязана находиться в `content_root` ровно одной объявленной
+  локали; BCP 47 tag страницы должен присутствовать в реестре `locales`.
 - Scalar props экранируются host renderer.
 - Поисковый индекс проходит schema до очистки output; browser runtime принимает
   только same-origin URL внутри настроенного `base_url` и создаёт результаты

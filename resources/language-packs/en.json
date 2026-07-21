@@ -1,0 +1,466 @@
+{
+    "schema": "docara.language_pack.v1",
+    "locale": "en",
+    "messages": {
+        "common.continue": "Continue",
+        "common.greeting": "Hello, {name}!",
+        "shell.skip_to_content": "Skip to content",
+        "navigation.open": "Open documentation sections",
+        "navigation.title": "Sections",
+        "navigation.close": "Close documentation sections",
+        "navigation.breadcrumbs": "Breadcrumbs",
+        "navigation.outline": "On this page",
+        "navigation.outline_close": "Close page outline",
+        "navigation.previous_next": "Page navigation",
+        "navigation.previous": "Previous",
+        "navigation.next": "Next",
+        "navigation.expand": "Expand: ",
+        "navigation.collapse": "Collapse: ",
+        "navigation.contains_current": ", contains the current page",
+        "language.label": "Language",
+        "search.open": "Open documentation search",
+        "search.label": "Search",
+        "search.title": "Search documentation",
+        "search.close": "Close search",
+        "search.query": "Query",
+        "search.placeholder": "For example, inheritance",
+        "search.idle": "Enter at least 2 characters",
+        "search.loading": "Loading search…",
+        "search.found": "Found: {count}",
+        "search.empty": "No results found",
+        "search.error": "Search is temporarily unavailable. Reload the page and try again.",
+        "reader.open": "Open reading settings",
+        "reader.title": "Reading settings",
+        "reader.close": "Close reading settings",
+        "reader.appearance": "Appearance",
+        "reader.help": "Choose a theme for this browser.",
+        "reader.reset": "Restore site setting",
+        "reader.theme_system": "Use system setting",
+        "reader.theme_system_description": "Automatically follows the device setting.",
+        "reader.theme_light": "Light",
+        "reader.theme_light_description": "Use the light appearance on every page.",
+        "reader.theme_dark": "Dark",
+        "reader.theme_dark_description": "Use the dark appearance on every page.",
+        "reader.saved": "Theme saved: {theme}.",
+        "reader.applied_not_saved": "Theme applied. The browser did not allow the choice to be saved.",
+        "reader.restored": "The site theme setting has been restored.",
+        "redirect.title": "Page moved",
+        "redirect.message": "The page address has changed.",
+        "redirect.link": "Open the current page",
+        "catalog.catalog_title": "Component catalog",
+        "catalog.catalog_description": "Live examples of every component supported by this Docara build.",
+        "catalog.catalog_intro": "Verified examples, exact syntax and component boundaries for this Docara build.",
+        "catalog.filter_title": "Find a component",
+        "catalog.filter_query_label": "Search",
+        "catalog.filter_query_placeholder": "Name, ID or purpose",
+        "catalog.filter_family_label": "Type",
+        "catalog.filter_family_all": "All types",
+        "catalog.filter_requirements": "Planned capabilities",
+        "catalog.filter_availability_label": "Availability",
+        "catalog.filter_availability_all": "All availability states",
+        "catalog.filter_supported": "Supported",
+        "catalog.filter_unavailable": "Unavailable in this build",
+        "catalog.filter_reset": "Reset filters",
+        "catalog.filter_status": "Shown",
+        "catalog.filter_empty": "No components match these filters.",
+        "catalog.family_native_plural": "Markdown",
+        "catalog.family_typed_plural": "Docara components",
+        "catalog.family_smart_plural": "Simai Framework Smart components",
+        "catalog.family_native_single": "Markdown",
+        "catalog.family_typed_single": "Docara component",
+        "catalog.family_smart_single": "Simai Framework Smart component",
+        "catalog.unavailable_title": "Unavailable in this build",
+        "catalog.unavailable_fallback": "Unavailable in this build.",
+        "catalog.fallback": "Safe fallback",
+        "catalog.admission_condition": "Admission condition",
+        "catalog.limitations": "Limitations",
+        "catalog.owner": "Evolution owner",
+        "catalog.example": "Example",
+        "catalog.call": "Call",
+        "catalog.parameters": "Parameters",
+        "catalog.parameter_relationships": "Parameter relationships",
+        "catalog.allowed_combinations": "Allowed combinations",
+        "catalog.when": "when",
+        "catalog.then": "then",
+        "catalog.states": "States",
+        "catalog.name": "Name",
+        "catalog.type": "Type",
+        "catalog.required": "Required",
+        "catalog.default": "Default",
+        "catalog.values": "Values",
+        "catalog.rules": "Rules",
+        "catalog.purpose": "Purpose",
+        "catalog.yes": "Yes",
+        "catalog.no": "No",
+        "catalog.no_limitations": "No additional limitations are declared.",
+        "catalog.limitations_and_source": "Limitations and source",
+        "examples.title": "Layout examples",
+        "examples.description": "Live results and exact Markdown/JSON sources for Docara declarative capabilities.",
+        "examples.intro": "Choose a task, inspect the real result, and copy the minimal source files.",
+        "examples.category_regions": "Regions",
+        "examples.category_inheritance": "Inheritance",
+        "examples.category_presets": "Layouts",
+        "examples.category_smart": "Smart components",
+        "examples.open": "Open example",
+        "examples.result": "Result",
+        "examples.open_separately": "Open separately",
+        "examples.result_frame": "Result: {title}",
+        "examples.sources": "Source files",
+        "examples.sources_description": "These exact files passed through the main configuration and declarative pipeline.",
+        "preview.eyebrow": "PREVIEW",
+        "preview.title": "Declarative preview",
+        "preview.description": "Inspect the declarative result alongside the published page.",
+        "preview.rendered": "Rendered",
+        "preview.skipped": "Skipped",
+        "preview.receipt": "Open JSON receipt",
+        "preview.pages": "Pages",
+        "preview.unsupported": "Unsupported",
+        "preview.open_preview": "Open preview",
+        "preview.legacy_only": "Published page only",
+        "preview.all_pages": "All pages",
+        "preview.open_legacy": "Open published page"
+    },
+    "components": {
+        "content.icon": {
+            "title": "Icon content",
+            "description": "A canonical accessible icon authoring contract for documentation content.",
+            "limitations": [
+                "Runtime bytes do not establish a safe authoring API."
+            ],
+            "states": [],
+            "parameters": [],
+            "gap": {
+                "reason": "The pinned runtime contains an icon element but no canonical authoring manifest.",
+                "fallback": "Use meaningful text or a Unicode symbol that remains understandable without decoration.",
+                "admission_condition": "Publish and pin a canonical icon authoring and accessibility contract, then add Docara schema, rendering, tests and documentation."
+            }
+        },
+        "docara.card": {
+            "title": "Card",
+            "description": "Groups related Markdown content on a neutral bounded surface.",
+            "limitations": [
+                "Nested Docara typed directives are not accepted."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.card.md"
+        },
+        "docara.columns": {
+            "title": "Columns",
+            "description": "Arranges two to four source-ordered Markdown regions in a responsive Simai Framework grid.",
+            "limitations": [
+                "The body must contain between two and four non-empty Markdown regions.",
+                "Regions must use an exact top-level --- separator surrounded by blank lines.",
+                "Nested Docara typed directives and Smart components are not accepted.",
+                "Column order always follows source order."
+            ],
+            "states": {
+                "stacked": "Stacked",
+                "responsive_columns": "Responsive columns"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.columns.md"
+        },
+        "docara.cta": {
+            "title": "CTA link",
+            "description": "Turns one safe Markdown link into a prominent native navigation action.",
+            "limitations": [
+                "The body must contain exactly one safe Markdown link.",
+                "The result is a native link and does not claim an executable Smart action."
+            ],
+            "states": {
+                "default": "Default",
+                "focus": "Focus"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.cta.md"
+        },
+        "docara.features": {
+            "title": "Feature list",
+            "description": "Presents a short source-ordered list of product capabilities as a responsive grid.",
+            "limitations": [
+                "The body must contain one flat unordered list with two to six items.",
+                "Nested lists, blocks and Docara directives are not accepted."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.features.md"
+        },
+        "docara.steps": {
+            "title": "Steps",
+            "description": "Shows a short ordered sequence of actions.",
+            "limitations": [
+                "The body must contain exactly one ordered Markdown list.",
+                "Nested Docara directives are not accepted."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.steps.md"
+        },
+        "native.code": {
+            "title": "Code",
+            "description": "Renders inline and fenced Markdown code; the pinned Simai Framework progressively adds one language-and-copy header, syntax highlighting and line numbers.",
+            "limitations": [
+                "Without the pinned runtime the readable static pre/code fallback remains; fine-grained highlighting and line controls are not exposed."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/native.code.md"
+        },
+        "native.code.enhanced": {
+            "title": "Configurable code",
+            "description": "Editor-grade code blocks with optional line numbers, highlighted lines, diff states and other author controls.",
+            "limitations": [
+                "Fine-grained author controls are not part of the admitted Framework contract."
+            ],
+            "states": [],
+            "parameters": [],
+            "gap": {
+                "reason": "No admitted contract exposes optional line numbers, highlighted lines, diff states or other editor-grade controls.",
+                "fallback": "Use native.code; the pinned Simai Framework already provides language, copy, syntax highlighting, line numbers and local overflow.",
+                "admission_condition": "Add the controls to Simai Framework with accessibility and fallback contracts, then admit them through deterministic projection, tests, documentation and browser acceptance."
+            }
+        },
+        "native.headings_and_text": {
+            "title": "Headings and text",
+            "description": "Structures prose with headings, paragraphs, emphasis, strong text and strikethrough.",
+            "limitations": [
+                "Raw HTML is not accepted as an authoring shortcut."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/native.headings_and_text.md"
+        },
+        "native.links_and_images": {
+            "title": "Links and images",
+            "description": "Adds safe destinations and images with author-provided accessible text.",
+            "limitations": [
+                "Unsafe link protocols are rejected.",
+                "Authors remain responsible for useful image alternative text."
+            ],
+            "states": {
+                "link_focus": "Link focus"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/native.links_and_images.md"
+        },
+        "native.lists_and_quotes": {
+            "title": "Lists and quotes",
+            "description": "Expresses ordered or unordered collections and semantic quotations.",
+            "limitations": [],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/native.lists_and_quotes.md"
+        },
+        "native.table": {
+            "title": "Markdown table",
+            "description": "Presents small comparison or reference data in a scroll-safe semantic table.",
+            "limitations": [
+                "This is a native Markdown table, not a structured DataView contract."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/native.table.md"
+        },
+        "ui.alert": {
+            "title": "Alert",
+            "description": "Reports a result, warning, or error as presentation-only content in portable Docara.",
+            "limitations": [
+                "closable=true is not admitted by the current bounded runtime.",
+                "type=success is not admitted because the pinned Framework stylesheet renders its status icon transparent.",
+                "The id property is generated deterministically by Docara.",
+                "The Larena backend event bridge is intentionally omitted; portable Docara renders this component without backend handlers."
+            ],
+            "states": {
+                "default": "Default",
+                "info": "Info",
+                "warning": "Warning",
+                "danger": "Danger"
+            },
+            "parameters": {
+                "aria-label": {
+                    "label": "Aria label",
+                    "description": "Optional author override for exact manifest property [aria-label]."
+                },
+                "closable": {
+                    "label": "Closable",
+                    "description": "Optional author override for exact manifest property [closable]."
+                },
+                "icon": {
+                    "label": "Icon",
+                    "description": "Optional author override for exact manifest property [icon]."
+                },
+                "supporting-text": {
+                    "label": "Supporting text",
+                    "description": "Optional author override for exact manifest property [supporting-text]."
+                },
+                "title": {
+                    "label": "Title",
+                    "description": "Optional author override for exact manifest property [title]."
+                },
+                "type": {
+                    "label": "Tone",
+                    "description": "Optional author override for exact manifest property [type].",
+                    "values": {
+                        "clear": "Clear",
+                        "info": "Information",
+                        "danger": "Danger",
+                        "warning": "Warning"
+                    }
+                },
+                "variant": {
+                    "label": "Variant",
+                    "description": "Optional author override for exact manifest property [variant].",
+                    "values": {
+                        "default": "Default",
+                        "flat": "Flat",
+                        "outlined": "Outlined"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/ui.alert.md"
+        },
+        "ui.badge": {
+            "title": "Badge",
+            "description": "A compact status label based on an exact upstream Smart manifest.",
+            "limitations": [
+                "The upstream manifest exists, but Docara has not admitted it."
+            ],
+            "states": [],
+            "parameters": [],
+            "gap": {
+                "reason": "Docara has no bundled badge manifest, immutable lock record, projected assets or authoring tests.",
+                "fallback": "Use plain emphasized text that states the status directly.",
+                "admission_condition": "Bundle the exact upstream manifest, pin its provider revision and assets, forbid author-managed IDs, and pass schema, rendering, documentation and browser acceptance."
+            }
+        },
+        "ui.button": {
+            "title": "Button",
+            "description": "Renders a bounded visual action control; portable Docara does not bind data, navigate, or execute an effect.",
+            "limitations": [
+                "Docara renders the control but does not bind application data or execute an effect.",
+                "Navigation remains the job of a native link or docara.cta.",
+                "The Larena backend event bridge is intentionally omitted; portable Docara renders this component without backend handlers."
+            ],
+            "states": {
+                "default": "Default",
+                "hover": "Hover",
+                "focus": "Focus",
+                "active": "Active",
+                "loading": "Loading",
+                "disabled": "Disabled"
+            },
+            "parameters": {
+                "aria-label": {
+                    "label": "Aria label",
+                    "description": "Optional author override for exact manifest property [aria-label]."
+                },
+                "disabled": {
+                    "label": "Disabled",
+                    "description": "Optional author override for exact manifest property [disabled]."
+                },
+                "loading": {
+                    "label": "Loading",
+                    "description": "Optional author override for exact manifest property [loading]."
+                },
+                "native-type": {
+                    "label": "Native type",
+                    "description": "Optional author override for exact manifest property [native-type].",
+                    "values": {
+                        "button": "Button",
+                        "submit": "Submit",
+                        "reset": "Reset"
+                    }
+                },
+                "preset": {
+                    "label": "Preset",
+                    "description": "Exact manifest preset merged before explicit props.",
+                    "values": {
+                        "link": "Link",
+                        "link_on_surface": "Link on surface",
+                        "on_surface": "On surface",
+                        "outline": "Outline",
+                        "outline_on_surface": "Outline on surface",
+                        "primary": "Primary",
+                        "secondary": "Secondary",
+                        "tonal_on_surface": "Tonal on surface"
+                    }
+                },
+                "radius": {
+                    "label": "Corner radius",
+                    "description": "Optional author override for exact manifest property [radius].",
+                    "values": {
+                        "": "Simai Framework default",
+                        "default": "Default",
+                        "square": "Square",
+                        "rounded": "Rounded"
+                    }
+                },
+                "scheme": {
+                    "label": "Scheme",
+                    "description": "Optional author override for exact manifest property [scheme].",
+                    "values": {
+                        "primary": "Primary",
+                        "secondary": "Secondary",
+                        "on-surface": "On surface"
+                    }
+                },
+                "size": {
+                    "label": "Size",
+                    "description": "Optional author override for exact manifest property [size].",
+                    "values": {
+                        "1/3": "Extra small · 1/3",
+                        "1/2": "Small · 1/2",
+                        "1": "Default · 1",
+                        "2": "Large · 2",
+                        "3": "Extra large · 3"
+                    }
+                },
+                "text": {
+                    "label": "Text",
+                    "description": "Optional author override for exact manifest property [text]."
+                },
+                "type": {
+                    "label": "Type",
+                    "description": "Optional author override for exact manifest property [type].",
+                    "values": {
+                        "default": "Default",
+                        "tonal": "Tonal",
+                        "outline": "Outline",
+                        "link": "Link"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/ui.button.md"
+        },
+        "ui.dataview": {
+            "title": "Data view",
+            "description": "A structured data and settings contract for interactive data presentation.",
+            "limitations": [
+                "This is a different author job from a small Markdown table."
+            ],
+            "states": [],
+            "parameters": [],
+            "gap": {
+                "reason": "No bounded portable data source, settings, interaction and rendering contract is accepted for Docara.",
+                "fallback": "Use the supported native.table entry for small reference data.",
+                "admission_condition": "Define a separate portable data and settings contract with deterministic rendering, accessibility, tests and documentation."
+            }
+        },
+        "ui.tabs": {
+            "title": "Tabs",
+            "description": "An accessible tab set with complete keyboard, focus and ARIA relationships.",
+            "limitations": [
+                "The pinned Core and Smart sources do not provide the complete accepted accessibility contract.",
+                "Docara has no admitted tabs manifest or runtime lock record."
+            ],
+            "states": [],
+            "parameters": [],
+            "gap": {
+                "reason": "Keyboard focus movement, Home and End behaviour, stable tab-panel ARIA linkage and an admitted manifest are incomplete.",
+                "fallback": "Use headings and source-ordered sequential sections.",
+                "admission_condition": "Publish a canonical accessible tabs contract and manifest, pin a new immutable Framework pair and provider revision, then pass Docara schema, asset, rendering and browser acceptance."
+            }
+        }
+    }
+}

@@ -9,6 +9,9 @@ use Simai\Docara\Declarative\Preview\DeclarativePreviewLinkProjector;
 use Simai\Docara\Declarative\Preview\DeclarativePreviewRenderer;
 use Simai\Docara\Declarative\Preview\DeclarativePreviewRouteMap;
 use Simai\Docara\Framework\FrameworkAssetPlan;
+use Simai\Docara\I18n\LanguagePackRepository;
+use Simai\Docara\I18n\LocaleRegistry;
+use Simai\Docara\I18n\Translator;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final class DeclarativePreviewTest extends TestCase
@@ -39,7 +42,7 @@ final class DeclarativePreviewTest extends TestCase
         self::assertStringContainsString('href="/unsupported/"', $projected);
         self::assertStringContainsString('href="#section"', $projected);
 
-        $renderer = new DeclarativePreviewRenderer;
+        $renderer = new DeclarativePreviewRenderer(translator: $this->translator());
         $assets = new FrameworkAssetPlan('pair', [[
             'key' => 'framework.css',
             'kind' => 'css',
@@ -56,8 +59,8 @@ final class DeclarativePreviewTest extends TestCase
         );
         self::assertStringContainsString('<!doctype html>', $page);
         self::assertStringContainsString('data-docara-documentation-version="current"', $page);
-        self::assertStringContainsString('Декларативный preview', $page);
-        self::assertStringContainsString('href="/guide/">Открыть legacy</a>', $page);
+        self::assertStringContainsString('Декларативный предпросмотр', $page);
+        self::assertStringContainsString('href="/guide/">Открыть опубликованную страницу</a>', $page);
         self::assertStringContainsString('href="https://example.test/framework.css"', $page);
 
         $index = $renderer->index(
@@ -121,5 +124,16 @@ final class DeclarativePreviewTest extends TestCase
                 'declarative_supported' => false,
             ],
         ];
+    }
+
+    private function translator(): Translator
+    {
+        return new Translator(
+            LocaleRegistry::fromSite([
+                'default_locale' => 'ru',
+                'content_root' => 'content',
+            ]),
+            new LanguagePackRepository(dirname(__DIR__, 2)),
+        );
     }
 }

@@ -2,7 +2,6 @@
   "schema": "docara.section.v1",
   "title": "Документация Docara",
   "preset": "docs",
-  "locale": "ru",
   "layout": {
     "max_width": "wide"
   }

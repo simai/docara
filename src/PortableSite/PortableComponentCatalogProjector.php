@@ -9,6 +9,7 @@ use DOMElement;
 use DOMNode;
 use Simai\Docara\Framework\ComponentDirectiveDocument;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
+use Simai\Docara\I18n\Translator;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\ResolvedPagePlan;
@@ -18,6 +19,7 @@ final readonly class PortableComponentCatalogProjector
     public function __construct(
         private PortableMarkdownRenderer $markdown,
         private string $packageRoot = __DIR__ . '/../..',
+        private ?Translator $translator = null,
     ) {}
 
     /**
@@ -34,6 +36,7 @@ final readonly class PortableComponentCatalogProjector
         string $contentRoot,
         string $baseUrl,
         string $homeUrl,
+        string $outputPrefix = '',
         array $reservedDocumentIds = [],
     ): array {
         $entries = is_array($catalog['entries'] ?? null) ? array_values($catalog['entries']) : [];
@@ -105,7 +108,7 @@ final readonly class PortableComponentCatalogProjector
             title: $copy['catalog_title'],
             description: $copy['catalog_description'],
             url: $catalogRoute,
-            output: 'components/catalog/index.html',
+            output: $this->output($outputPrefix, 'components/catalog/index.html'),
             contentHtml: $indexFragment,
             components: $indexComponents,
             homeUrl: $homeUrl,
@@ -138,7 +141,7 @@ final readonly class PortableComponentCatalogProjector
             $exampleHash = hash('sha256', $source);
             $renderedHash = hash('sha256', $renderedFragment);
             $route = $catalogRoute . rawurlencode($id) . '/';
-            $output = 'components/catalog/' . $id . '/index.html';
+            $output = $this->output($outputPrefix, 'components/catalog/' . $id . '/index.html');
             $detailOutline = (new PortableDocumentOutlineBuilder)->build(
                 $this->detailFragment(
                     $presentedEntry,
@@ -208,7 +211,7 @@ final readonly class PortableComponentCatalogProjector
             'catalog_content_sha256' => (string) ($catalog['content_sha256'] ?? ''),
             'index' => [
                 'route' => $catalogRoute,
-                'output' => 'components/catalog/index.html',
+                'output' => $this->output($outputPrefix, 'components/catalog/index.html'),
                 'contract_fragment_sha256' => $this->normalizedFragmentHash($indexFragment),
             ],
             'pages' => $receiptPages,
@@ -228,22 +231,33 @@ final readonly class PortableComponentCatalogProjector
         ];
     }
 
+    private function output(string $prefix, string $relative): string
+    {
+        return implode('/', array_filter([
+            trim($prefix, '/'),
+            ltrim($relative, '/'),
+        ], static fn (string $part): bool => $part !== ''));
+    }
+
     /** @param array<string, mixed> $entry
      * @return array<string, mixed>
      */
     private function presentEntry(array $entry, string $locale): array
     {
-        $language = $this->language($locale);
-        if ($language !== 'ru') {
-            return $entry;
+        if (! $this->translator instanceof Translator) {
+            throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_TRANSLATOR_REQUIRED',
+                'Component catalogue projection requires a resolved language-pack translator.',
+            );
         }
-        $presentation = $entry['presentation']['ru'] ?? null;
+        $presentation = $this->translator->component($locale, $this->id($entry));
         if (! is_array($presentation)) {
             throw new PortableConfigurationException(
                 'COMPONENT_CATALOG_PRESENTATION_MISSING',
                 $this->id($entry),
             );
         }
+        $this->assertPresentationContract($entry, $presentation);
         foreach (['title', 'description', 'limitations'] as $key) {
             $entry[$key] = $presentation[$key];
         }
@@ -257,6 +271,115 @@ final readonly class PortableComponentCatalogProjector
         $entry['_localized_parameters'] = $presentation['parameters'];
 
         return $entry;
+    }
+
+    /** @param array<string, mixed> $entry @param array<string, mixed> $presentation */
+    private function assertPresentationContract(array $entry, array $presentation): void
+    {
+        $id = $this->id($entry);
+        foreach (['title', 'description'] as $key) {
+            if (! is_string($presentation[$key] ?? null) || trim($presentation[$key]) === '') {
+                throw new PortableConfigurationException(
+                    'COMPONENT_PRESENTATION_TEXT_REQUIRED',
+                    "Component [$id] has no localized [$key].",
+                );
+            }
+        }
+        if (! is_array($presentation['limitations'] ?? null)
+            || ! is_array($presentation['states'] ?? null)
+            || ! is_array($presentation['parameters'] ?? null)
+        ) {
+            throw new PortableConfigurationException(
+                'COMPONENT_PRESENTATION_SHAPE_INVALID',
+                "Component [$id] has an incomplete localized presentation.",
+            );
+        }
+        foreach ($presentation['limitations'] as $limitation) {
+            if (! is_string($limitation) || trim($limitation) === '') {
+                throw new PortableConfigurationException(
+                    'COMPONENT_PRESENTATION_LIMITATIONS_INVALID',
+                    "Component [$id] has an invalid localized limitation.",
+                );
+            }
+        }
+
+        $expectedStates = array_map('strval', is_array($entry['states'] ?? null) ? $entry['states'] : []);
+        $actualStates = array_map('strval', array_keys($presentation['states']));
+        sort($expectedStates, SORT_STRING);
+        sort($actualStates, SORT_STRING);
+        if ($expectedStates !== $actualStates) {
+            throw new PortableConfigurationException(
+                'COMPONENT_PRESENTATION_STATES_MISMATCH',
+                "Component [$id] localized states do not match its technical contract.",
+            );
+        }
+
+        $expectedParameters = [];
+        foreach (($entry['authoring']['parameters'] ?? []) as $parameter) {
+            if (! is_array($parameter) || ! is_string($parameter['name'] ?? null)) {
+                throw new PortableConfigurationException(
+                    'COMPONENT_PRESENTATION_PARAMETERS_MISMATCH',
+                    "Component [$id] has an invalid technical parameter.",
+                );
+            }
+            $expectedParameters[$parameter['name']] = $parameter;
+        }
+        $expectedNames = array_keys($expectedParameters);
+        $actualNames = array_map('strval', array_keys($presentation['parameters']));
+        sort($expectedNames, SORT_STRING);
+        sort($actualNames, SORT_STRING);
+        if ($expectedNames !== $actualNames) {
+            throw new PortableConfigurationException(
+                'COMPONENT_PRESENTATION_PARAMETERS_MISMATCH',
+                "Component [$id] localized parameters do not match its technical contract.",
+            );
+        }
+        foreach ($expectedParameters as $name => $parameter) {
+            $localized = $presentation['parameters'][$name] ?? null;
+            if (! is_array($localized)
+                || ! is_string($localized['label'] ?? null)
+                || trim($localized['label']) === ''
+                || ! is_string($localized['description'] ?? null)
+                || trim($localized['description']) === ''
+            ) {
+                throw new PortableConfigurationException(
+                    'COMPONENT_PRESENTATION_PARAMETER_TEXT_REQUIRED',
+                    "Component [$id] parameter [$name] has no complete localized presentation.",
+                );
+            }
+            $expectedValues = array_map('strval', is_array($parameter['values'] ?? null) ? $parameter['values'] : []);
+            $actualValues = array_map('strval', array_keys(is_array($localized['values'] ?? null) ? $localized['values'] : []));
+            sort($expectedValues, SORT_STRING);
+            sort($actualValues, SORT_STRING);
+            if ($expectedValues !== $actualValues) {
+                throw new PortableConfigurationException(
+                    'COMPONENT_PRESENTATION_PARAMETER_VALUES_MISMATCH',
+                    "Component [$id] parameter [$name] localized values do not match its technical contract.",
+                );
+            }
+        }
+
+        $supported = ($entry['lifecycle'] ?? null) === 'supported';
+        if ($supported) {
+            if (! is_string($presentation['example_ref'] ?? null)
+                || isset($presentation['gap'])
+            ) {
+                throw new PortableConfigurationException(
+                    'COMPONENT_PRESENTATION_SUPPORTED_CONTRACT_INVALID',
+                    "Supported component [$id] requires a localized example and cannot declare a gap.",
+                );
+            }
+        } elseif (! is_array($presentation['gap'] ?? null)
+            || ! is_string($presentation['gap']['reason'] ?? null)
+            || ! is_string($presentation['gap']['fallback'] ?? null)
+            || ! is_string($presentation['gap']['admission_condition'] ?? null)
+            || isset($presentation['example_ref'])
+        ) {
+            throw new PortableConfigurationException(
+                'COMPONENT_PRESENTATION_GAP_CONTRACT_INVALID',
+                "Unavailable component [$id] requires a complete localized gap and cannot declare an example.",
+            );
+        }
     }
 
     /**
@@ -820,115 +943,29 @@ final readonly class PortableComponentCatalogProjector
         };
     }
 
-    private function language(string $locale): string
-    {
-        return strtolower((string) preg_split('/[-_]/', $locale, 2)[0]);
-    }
-
     /** @return array<string, string> */
     private function copy(string $locale): array
     {
-        if ($this->language($locale) === 'ru') {
-            return [
-                'catalog_title' => 'Каталог компонентов',
-                'catalog_description' => 'Живые примеры всех компонентов, которые поддерживает эта сборка Docara.',
-                'catalog_intro' => 'Проверенные примеры, точный синтаксис и границы компонентов этой сборки Docara.',
-                'filter_title' => 'Найти компонент',
-                'filter_query_label' => 'Поиск',
-                'filter_query_placeholder' => 'Название, ID или назначение',
-                'filter_family_label' => 'Тип',
-                'filter_family_all' => 'Все типы',
-                'filter_requirements' => 'Запланированные возможности',
-                'filter_availability_label' => 'Доступность',
-                'filter_availability_all' => 'Все состояния',
-                'filter_supported' => 'Поддерживается',
-                'filter_unavailable' => 'Недоступно сейчас',
-                'filter_reset' => 'Сбросить фильтры',
-                'filter_status' => 'Показано',
-                'filter_empty' => 'По заданным условиям ничего не найдено.',
-                'family_native_plural' => 'Markdown',
-                'family_typed_plural' => 'Компоненты Docara',
-                'family_smart_plural' => 'Smart-компоненты Simai Framework',
-                'family_native_single' => 'Markdown',
-                'family_typed_single' => 'Компонент Docara',
-                'family_smart_single' => 'Smart-компонент Simai Framework',
-                'unavailable_title' => 'Недоступно сейчас',
-                'unavailable_fallback' => 'Недоступно в этой сборке.',
-                'fallback' => 'Безопасная замена',
-                'admission_condition' => 'Условие допуска',
-                'limitations' => 'Ограничения',
-                'owner' => 'Владелец развития',
-                'example' => 'Пример',
-                'call' => 'Вызов',
-                'parameters' => 'Параметры',
-                'parameter_relationships' => 'Связи параметров',
-                'allowed_combinations' => 'Допустимые сочетания',
-                'when' => 'если',
-                'then' => 'то',
-                'states' => 'Состояния',
-                'name' => 'Имя',
-                'type' => 'Тип',
-                'required' => 'Обязателен',
-                'default' => 'По умолчанию',
-                'values' => 'Значения',
-                'rules' => 'Правила',
-                'purpose' => 'Назначение',
-                'yes' => 'Да',
-                'no' => 'Нет',
-                'no_limitations' => 'Дополнительных ограничений не заявлено.',
-                'limitations_and_source' => 'Ограничения и источник',
-            ];
+        $keys = [
+            'catalog_title', 'catalog_description', 'catalog_intro', 'filter_title',
+            'filter_query_label', 'filter_query_placeholder', 'filter_family_label',
+            'filter_family_all', 'filter_requirements', 'filter_availability_label',
+            'filter_availability_all', 'filter_supported', 'filter_unavailable',
+            'filter_reset', 'filter_status', 'filter_empty', 'family_native_plural',
+            'family_typed_plural', 'family_smart_plural', 'family_native_single',
+            'family_typed_single', 'family_smart_single', 'unavailable_title',
+            'unavailable_fallback', 'fallback', 'admission_condition', 'limitations',
+            'owner', 'example', 'call', 'parameters', 'parameter_relationships',
+            'allowed_combinations', 'when', 'then', 'states', 'name', 'type',
+            'required', 'default', 'values', 'rules', 'purpose', 'yes', 'no',
+            'no_limitations', 'limitations_and_source',
+        ];
+        $copy = [];
+        foreach ($keys as $key) {
+            $copy[$key] = $this->translator->message($locale, 'catalog.' . $key);
         }
 
-        return [
-            'catalog_title' => 'Component catalog',
-            'catalog_description' => 'Live examples of every component supported by this Docara build.',
-            'catalog_intro' => 'Verified examples, exact syntax and component boundaries for this Docara build.',
-            'filter_title' => 'Find a component',
-            'filter_query_label' => 'Search',
-            'filter_query_placeholder' => 'Name, ID or purpose',
-            'filter_family_label' => 'Type',
-            'filter_family_all' => 'All types',
-            'filter_requirements' => 'Planned capabilities',
-            'filter_availability_label' => 'Availability',
-            'filter_availability_all' => 'All availability states',
-            'filter_supported' => 'Supported',
-            'filter_unavailable' => 'Unavailable in this build',
-            'filter_reset' => 'Reset filters',
-            'filter_status' => 'Shown',
-            'filter_empty' => 'No components match these filters.',
-            'family_native_plural' => 'Markdown',
-            'family_typed_plural' => 'Docara components',
-            'family_smart_plural' => 'Simai Framework Smart components',
-            'family_native_single' => 'Markdown',
-            'family_typed_single' => 'Docara component',
-            'family_smart_single' => 'Simai Framework Smart component',
-            'unavailable_title' => 'Unavailable in this build',
-            'unavailable_fallback' => 'Unavailable in this build.',
-            'fallback' => 'Safe fallback',
-            'admission_condition' => 'Admission condition',
-            'limitations' => 'Limitations',
-            'owner' => 'Evolution owner',
-            'example' => 'Example',
-            'call' => 'Call',
-            'parameters' => 'Parameters',
-            'parameter_relationships' => 'Parameter relationships',
-            'allowed_combinations' => 'Allowed combinations',
-            'when' => 'when',
-            'then' => 'then',
-            'states' => 'States',
-            'name' => 'Name',
-            'type' => 'Type',
-            'required' => 'Required',
-            'default' => 'Default',
-            'values' => 'Values',
-            'rules' => 'Rules',
-            'purpose' => 'Purpose',
-            'yes' => 'Yes',
-            'no' => 'No',
-            'no_limitations' => 'No additional limitations are declared.',
-            'limitations_and_source' => 'Limitations and source',
-        ];
+        return $copy;
     }
 
     /** @param array<string, mixed> $parameter */

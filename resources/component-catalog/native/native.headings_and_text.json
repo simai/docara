@@ -2,20 +2,6 @@
     "id": "native.headings_and_text",
     "family": "native_markdown",
     "category": "prose",
-    "title": "Headings and text",
-    "description": "Structures prose with headings, paragraphs, emphasis, strong text and strikethrough.",
-    "presentation": {
-        "ru": {
-            "title": "Заголовки и текст",
-            "description": "Структурирует текст с помощью заголовков, абзацев, курсива, жирного начертания и зачёркивания.",
-            "limitations": [
-                "Произвольный HTML нельзя использовать как сокращённый способ разметки."
-            ],
-            "states": {},
-            "parameters": {},
-            "example_ref": "resources/component-catalog/examples/native.headings_and_text.ru.md"
-        }
-    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "markdown",
@@ -26,9 +12,6 @@
         "parameters": []
     },
     "states": [],
-    "limitations": [
-        "Raw HTML is not accepted as an authoring shortcut."
-    ],
     "verification": {
         "renderer": true,
         "tests": true,
@@ -36,7 +19,6 @@
         "demo": true
     },
     "docs_ref": "docs/site/content/authoring/markdown.md",
-    "example_ref": "resources/component-catalog/examples/native.headings_and_text.md",
     "provenance": {
         "source_kind": "portable_markdown_profile",
         "profile_id": "docara.portable_markdown_profile.v1"

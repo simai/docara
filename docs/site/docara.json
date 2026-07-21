@@ -5,6 +5,16 @@
   "content_root": "content",
   "framework_lock": "simai-framework.lock.json",
   "default_locale": "ru",
+  "locales": {
+    "ru": {
+      "label": "Русский",
+      "direction": "ltr",
+      "content_root": "content",
+      "language_pack": "@docara/ru",
+      "public_prefix": "",
+      "fallbacks": []
+    }
+  },
   "documentation_version": "current",
   "redirects_file": "redirects.json",
   "base_url": "/",

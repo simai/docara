@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.simai.io/docara/language-pack/v1",
+  "title": "Docara language pack",
+  "type": "object",
+  "required": ["schema", "locale", "messages"],
+  "properties": {
+    "schema": {"type": "string", "const": "docara.language_pack.v1"},
+    "locale": {"type": "string", "format": "docara-bcp47"},
+    "messages": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z][a-z0-9]*(?:\\.[a-z][a-z0-9_-]*)+$"},
+      "additionalProperties": {"type": "string", "minLength": 1}
+    },
+    "components": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z][a-z0-9_]*(?:\\.[a-z][a-z0-9_]*)+$"},
+      "additionalProperties": {"$ref": "#/$defs/component_presentation"}
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "non_empty_string": {"type": "string", "minLength": 1},
+    "string_list": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/non_empty_string"}
+    },
+    "localized_labels": {
+      "type": "object",
+      "additionalProperties": {"$ref": "#/$defs/non_empty_string"}
+    },
+    "localized_parameter": {
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "label": {"$ref": "#/$defs/non_empty_string"},
+        "description": {"$ref": "#/$defs/non_empty_string"},
+        "values": {"$ref": "#/$defs/localized_labels"}
+      },
+      "additionalProperties": false
+    },
+    "localized_gap": {
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "reason": {"$ref": "#/$defs/non_empty_string"},
+        "fallback": {"$ref": "#/$defs/non_empty_string"},
+        "admission_condition": {"$ref": "#/$defs/non_empty_string"}
+      },
+      "additionalProperties": false
+    },
+    "component_presentation": {
+      "type": "object",
+      "minProperties": 1,
+      "properties": {
+        "title": {"$ref": "#/$defs/non_empty_string"},
+        "description": {"$ref": "#/$defs/non_empty_string"},
+        "limitations": {"$ref": "#/$defs/string_list"},
+        "states": {"$ref": "#/$defs/localized_labels"},
+        "parameters": {
+          "type": "object",
+          "propertyNames": {"pattern": "^[a-z][a-z0-9_-]*$"},
+          "additionalProperties": {"$ref": "#/$defs/localized_parameter"}
+        },
+        "example_ref": {"type": "string", "format": "docara-relative-path"},
+        "gap": {"$ref": "#/$defs/localized_gap"}
+      },
+      "additionalProperties": false
+    }
+  }
+}

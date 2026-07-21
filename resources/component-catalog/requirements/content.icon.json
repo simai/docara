@@ -2,24 +2,6 @@
     "id": "content.icon",
     "family": "requirement",
     "category": "content",
-    "title": "Icon content",
-    "description": "A canonical accessible icon authoring contract for documentation content.",
-    "presentation": {
-        "ru": {
-            "title": "Иконка в содержимом",
-            "description": "Канонический доступный способ добавления смысловых иконок в документацию.",
-            "limitations": [
-                "Наличие файлов среды выполнения само по себе не создаёт безопасный авторский API."
-            ],
-            "states": {},
-            "parameters": {},
-            "gap": {
-                "reason": "В закреплённой среде есть элемент иконки, но нет канонического авторского манифеста.",
-                "fallback": "Используйте содержательный текст или символ Unicode, смысл которого понятен без оформления.",
-                "admission_condition": "Опубликовать и закрепить канонический контракт авторинга и доступности иконок, затем добавить схему, рендеринг, тесты и документацию Docara."
-            }
-        }
-    },
     "lifecycle": "framework_gap",
     "authoring": {
         "syntax": "unavailable",
@@ -30,9 +12,6 @@
         "parameters": []
     },
     "states": [],
-    "limitations": [
-        "Runtime bytes do not establish a safe authoring API."
-    ],
     "verification": {
         "renderer": false,
         "tests": false,
@@ -45,9 +24,6 @@
         "framework_owner": "larena/ui"
     },
     "gap": {
-        "owner": "larena/ui",
-        "reason": "The pinned runtime contains an icon element but no canonical authoring manifest.",
-        "fallback": "Use meaningful text or a Unicode symbol that remains understandable without decoration.",
-        "admission_condition": "Publish and pin a canonical icon authoring and accessibility contract, then add Docara schema, rendering, tests and documentation."
+        "owner": "larena/ui"
     }
 }

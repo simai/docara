@@ -31,7 +31,17 @@
         },
         "default_locale": {
             "type": "string",
-            "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+            "format": "docara-bcp47"
+        },
+        "locales": {
+            "type": "object",
+            "minProperties": 1,
+            "propertyNames": {
+                "format": "docara-bcp47"
+            },
+            "additionalProperties": {
+                "$ref": "#/$defs/locale"
+            }
         },
         "documentation_version": {
             "type": "string",
@@ -47,7 +57,7 @@
         },
         "locale": {
             "type": "string",
-            "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+            "format": "docara-bcp47"
         },
         "branding": {
             "$ref": "presentation.schema.json#/$defs/branding"
@@ -68,5 +78,27 @@
             "$ref": "presentation.schema.json#/$defs/reading"
         }
     },
-    "additionalProperties": false
+    "additionalProperties": false,
+    "$defs": {
+        "locale": {
+            "type": "object",
+            "required": ["label", "direction", "content_root", "language_pack"],
+            "properties": {
+                "label": {"type": "string", "minLength": 1},
+                "direction": {"type": "string", "enum": ["ltr", "rtl"]},
+                "content_root": {"type": "string", "format": "docara-relative-path"},
+                "language_pack": {"type": "string", "minLength": 1},
+                "public_prefix": {
+                    "type": "string",
+                    "pattern": "^(?:|[A-Za-z0-9](?:[A-Za-z0-9._~-]*[A-Za-z0-9])?)$"
+                },
+                "fallbacks": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {"type": "string", "format": "docara-bcp47"}
+                }
+            },
+            "additionalProperties": false
+        }
+    }
 }

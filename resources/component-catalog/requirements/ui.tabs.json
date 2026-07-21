@@ -2,25 +2,6 @@
     "id": "ui.tabs",
     "family": "requirement",
     "category": "navigation",
-    "title": "Tabs",
-    "description": "An accessible tab set with complete keyboard, focus and ARIA relationships.",
-    "presentation": {
-        "ru": {
-            "title": "Вкладки",
-            "description": "Доступный набор вкладок с полной поддержкой клавиатуры, фокуса и связей ARIA.",
-            "limitations": [
-                "Закреплённые исходники Core и Smart не содержат полного принятого контракта доступности.",
-                "В Docara нет принятого манифеста вкладок или записи в блокировке среды выполнения."
-            ],
-            "states": {},
-            "parameters": {},
-            "gap": {
-                "reason": "Не завершены перемещение фокуса с клавиатуры, обработка Home и End, стабильная связь вкладок с панелями через ARIA и принятый манифест.",
-                "fallback": "Используйте заголовки и последовательные разделы в порядке исходного текста.",
-                "admission_condition": "Опубликовать канонический доступный контракт и манифест вкладок, закрепить новую неизменяемую пару Framework и ревизию поставщика, затем пройти проверку схемы, ассетов, рендеринга и браузера Docara."
-            }
-        }
-    },
     "lifecycle": "framework_gap",
     "authoring": {
         "syntax": "unavailable",
@@ -31,10 +12,6 @@
         "parameters": []
     },
     "states": [],
-    "limitations": [
-        "The pinned Core and Smart sources do not provide the complete accepted accessibility contract.",
-        "Docara has no admitted tabs manifest or runtime lock record."
-    ],
     "verification": {
         "renderer": false,
         "tests": false,
@@ -47,9 +24,6 @@
         "framework_owner": "simai/ui and larena/ui"
     },
     "gap": {
-        "owner": "simai/ui and larena/ui",
-        "reason": "Keyboard focus movement, Home and End behaviour, stable tab-panel ARIA linkage and an admitted manifest are incomplete.",
-        "fallback": "Use headings and source-ordered sequential sections.",
-        "admission_condition": "Publish a canonical accessible tabs contract and manifest, pin a new immutable Framework pair and provider revision, then pass Docara schema, asset, rendering and browser acceptance."
+        "owner": "simai/ui and larena/ui"
     }
 }

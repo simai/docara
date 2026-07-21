@@ -2,109 +2,6 @@
     "id": "ui.button",
     "family": "framework_smart",
     "category": "actions",
-    "title": "Button",
-    "description": "Renders a bounded visual action control; portable Docara does not bind data, navigate, or execute an effect.",
-    "presentation": {
-        "ru": {
-            "title": "Кнопка",
-            "description": "Выводит визуальный элемент действия; переносимая Docara не привязывает данные, не выполняет переход и не запускает действие.",
-            "limitations": [
-                "Docara выводит элемент управления, но не привязывает прикладные данные и не выполняет действие.",
-                "Для перехода следует использовать обычную ссылку или docara.cta.",
-                "Мост серверных событий Larena намеренно исключён: переносимая Docara выводит компонент без серверных обработчиков."
-            ],
-            "states": {
-                "default": "Обычное состояние",
-                "hover": "Наведение",
-                "focus": "Фокус",
-                "active": "Нажатие",
-                "loading": "Загрузка",
-                "disabled": "Отключено"
-            },
-            "parameters": {
-                "aria-label": {
-                    "label": "Доступное имя",
-                    "description": "Называет кнопку для вспомогательных технологий."
-                },
-                "disabled": {
-                    "label": "Отключена",
-                    "description": "Показывает недоступное для взаимодействия состояние."
-                },
-                "loading": {
-                    "label": "Загрузка",
-                    "description": "Показывает ожидание завершения действия; требует disabled=true."
-                },
-                "native-type": {
-                    "label": "Нативный тип",
-                    "description": "Задаёт стандартное поведение HTML-кнопки.",
-                    "values": {
-                        "button": "Кнопка",
-                        "submit": "Отправка формы",
-                        "reset": "Сброс формы"
-                    }
-                },
-                "preset": {
-                    "label": "Пресет",
-                    "description": "Применяет точный набор параметров манифеста до явно заданных значений.",
-                    "values": {
-                        "link": "Ссылка основная",
-                        "link_on_surface": "Ссылка на поверхности",
-                        "on_surface": "Обычная на поверхности",
-                        "outline": "Контурная основная",
-                        "outline_on_surface": "Контурная на поверхности",
-                        "primary": "Основная",
-                        "secondary": "Вторичная тональная",
-                        "tonal_on_surface": "Тональная на поверхности"
-                    }
-                },
-                "radius": {
-                    "label": "Скругление",
-                    "description": "Задаёт форму углов кнопки.",
-                    "values": {
-                        "": "По умолчанию Simai Framework",
-                        "default": "Стандартное",
-                        "square": "Без скругления",
-                        "rounded": "Полностью скруглённая"
-                    }
-                },
-                "scheme": {
-                    "label": "Цветовая схема",
-                    "description": "Выбирает семантическую цветовую схему.",
-                    "values": {
-                        "primary": "Основная",
-                        "secondary": "Вторичная",
-                        "on-surface": "На поверхности"
-                    }
-                },
-                "size": {
-                    "label": "Размер",
-                    "description": "Задаёт размер кнопки по шкале Simai Framework.",
-                    "values": {
-                        "1/3": "Очень маленькая · 1/3",
-                        "1/2": "Маленькая · 1/2",
-                        "1": "Обычная · 1",
-                        "2": "Большая · 2",
-                        "3": "Очень большая · 3"
-                    }
-                },
-                "text": {
-                    "label": "Текст",
-                    "description": "Задаёт видимую подпись кнопки."
-                },
-                "type": {
-                    "label": "Тип",
-                    "description": "Выбирает визуальный тип кнопки.",
-                    "values": {
-                        "default": "Заливка",
-                        "tonal": "Тональная",
-                        "outline": "Контурная",
-                        "link": "Ссылка"
-                    }
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/ui.button.ru.md"
-        }
-    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "directive_json",
@@ -122,10 +19,6 @@
         "loading",
         "disabled"
     ],
-    "limitations": [
-        "Docara renders the control but does not bind application data or execute an effect.",
-        "Navigation remains the job of a native link or docara.cta."
-    ],
     "verification": {
         "renderer": true,
         "tests": true,
@@ -133,7 +26,6 @@
         "demo": true
     },
     "docs_ref": "docs/site/content/components/syntax.md",
-    "example_ref": "resources/component-catalog/examples/ui.button.md",
     "provenance": {
         "source_kind": "smart_consumer_metadata",
         "manifest_ref": "resources/framework/manifests/ui-button.json"

@@ -2,6 +2,8 @@
 
 namespace Simai\Docara\Portable;
 
+use Simai\Docara\I18n\LocaleTag;
+
 final class JsonSchemaValidator
 {
     public function __construct(
@@ -108,6 +110,12 @@ final class JsonSchemaValidator
 
         $properties = is_array($schema['properties'] ?? null) ? $schema['properties'] : [];
 
+        if (is_array($schema['propertyNames'] ?? null)) {
+            foreach (array_keys($data) as $key) {
+                $this->validate((string) $key, $schema['propertyNames'], $this->child($pointer, (string) $key), $schemaName);
+            }
+        }
+
         foreach ($data as $key => $value) {
             $key = (string) $key;
 
@@ -197,6 +205,7 @@ final class JsonSchemaValidator
             'docara-relative-path' => $this->isRelativePath($value),
             'docara-relative-directory' => $this->isRelativeDirectory($value),
             'docara-immutable-revision' => preg_match('/^[a-f0-9]{40}$/', $value) === 1,
+            'docara-bcp47' => LocaleTag::isWellFormed($value),
             default => throw new PortableConfigurationException('SCHEMA_INVALID', "Unsupported JSON Schema format [$format]."),
         };
 

@@ -14,6 +14,9 @@ use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkConsumerPolicy;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
+use Simai\Docara\I18n\LanguagePackRepository;
+use Simai\Docara\I18n\LocaleRegistry;
+use Simai\Docara\I18n\Translator;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownProfile;
@@ -105,19 +108,19 @@ final class EffectiveComponentCatalogTest extends TestCase
         ] as $id) {
             self::assertSame('supported', $lifecycles[$id] ?? null, $id);
         }
+        $translator = $this->translator();
         foreach ($first['entries'] as $entry) {
-            self::assertIsArray($entry['presentation']['ru'] ?? null, (string) $entry['id']);
-            self::assertNotSame('', trim((string) $entry['presentation']['ru']['title']), (string) $entry['id']);
-            self::assertNotSame('', trim((string) $entry['presentation']['ru']['description']), (string) $entry['id']);
-            self::assertCount(
-                count($entry['limitations']),
-                $entry['presentation']['ru']['limitations'],
-                (string) $entry['id'],
-            );
+            foreach (['title', 'description', 'presentation', 'limitations', 'example_ref'] as $localizedKey) {
+                self::assertArrayNotHasKey($localizedKey, $entry, (string) $entry['id']);
+            }
+            $russian = $translator->component('ru', (string) $entry['id']);
+            self::assertNotSame('', trim((string) $russian['title']), (string) $entry['id']);
+            self::assertNotSame('', trim((string) $russian['description']), (string) $entry['id']);
             if ($entry['lifecycle'] === 'supported') {
-                self::assertArrayNotHasKey('gap', $entry['presentation']['ru'], (string) $entry['id']);
+                self::assertArrayNotHasKey('gap', $russian, (string) $entry['id']);
+                self::assertIsString($russian['example_ref'] ?? null, (string) $entry['id']);
             } else {
-                self::assertIsArray($entry['presentation']['ru']['gap'] ?? null, (string) $entry['id']);
+                self::assertIsArray($russian['gap'] ?? null, (string) $entry['id']);
             }
         }
         self::assertSame('admission_pending', $lifecycles['ui.badge'] ?? null);
@@ -130,10 +133,12 @@ final class EffectiveComponentCatalogTest extends TestCase
         self::assertSame('framework_smart', $alert['family']);
         self::assertSame(':::ui.alert', $alert['authoring']['call']);
         self::assertSame(['default', 'info', 'warning', 'danger'], $alert['states']);
-        self::assertContains('closable=true is not admitted by the current bounded runtime.', $alert['limitations']);
+        $alertEnglish = $translator->component('en', 'ui.alert');
+        $alertRussian = $translator->component('ru', 'ui.alert');
+        self::assertContains('closable=true is not admitted by the current bounded runtime.', $alertEnglish['limitations']);
         self::assertContains(
             'type=success is not admitted because the pinned Framework stylesheet renders its status icon transparent.',
-            $alert['limitations'],
+            $alertEnglish['limitations'],
         );
         self::assertSame(['closable', 'success'], $alert['consumer_policy']['excluded_states']);
         $alertParameters = array_column($alert['authoring']['parameters'], null, 'name');
@@ -143,9 +148,9 @@ final class EffectiveComponentCatalogTest extends TestCase
         );
         self::assertSame(
             array_keys($alertParameters),
-            array_keys($alert['presentation']['ru']['parameters']),
+            array_keys($alertRussian['parameters']),
         );
-        self::assertSame('Уведомление', $alert['presentation']['ru']['title']);
+        self::assertSame('Уведомление', $alertRussian['title']);
         self::assertSame(
             'resources/framework/manifests/ui-alert.json',
             $alert['provenance']['manifest_ref'],
@@ -251,7 +256,7 @@ final class EffectiveComponentCatalogTest extends TestCase
                 '~(?:^|[/@])(?:main|master|latest)(?:$|[/])~i',
                 CanonicalJson::encode($entry),
             );
-            foreach (['docs_ref', 'example_ref'] as $pathKey) {
+            foreach (['docs_ref'] as $pathKey) {
                 if (! isset($entry[$pathKey])) {
                     continue;
                 }
@@ -266,13 +271,16 @@ final class EffectiveComponentCatalogTest extends TestCase
                 self::assertTrue($entry['verification']['tests']);
                 self::assertTrue($entry['verification']['docs']);
                 self::assertTrue($entry['verification']['demo']);
-                self::assertArrayHasKey('example_ref', $entry);
+                self::assertIsString(
+                    $this->translator()->component('en', (string) $entry['id'])['example_ref'] ?? null,
+                );
             } else {
                 self::assertFalse($entry['verification']['demo']);
                 self::assertNotSame('', $entry['gap']['owner'] ?? '');
-                self::assertNotSame('', $entry['gap']['reason'] ?? '');
-                self::assertNotSame('', $entry['gap']['fallback'] ?? '');
-                self::assertNotSame('', $entry['gap']['admission_condition'] ?? '');
+                $localizedGap = $this->translator()->component('en', (string) $entry['id'])['gap'] ?? [];
+                self::assertNotSame('', $localizedGap['reason'] ?? '');
+                self::assertNotSame('', $localizedGap['fallback'] ?? '');
+                self::assertNotSame('', $localizedGap['admission_condition'] ?? '');
             }
         }
     }
@@ -338,23 +346,19 @@ final class EffectiveComponentCatalogTest extends TestCase
 
         $missingGap = $catalog;
         $gapIndex = array_search('content.icon', array_column($missingGap['entries'], 'id'), true);
-        unset($missingGap['entries'][$gapIndex]['gap']['fallback']);
-        $cases[] = [$missingGap, 'COMPONENT_CATALOG_GAP_EXPLANATION_REQUIRED'];
+        unset($missingGap['entries'][$gapIndex]['gap']['owner']);
+        $cases[] = [$missingGap, 'COMPONENT_CATALOG_GAP_OWNER_REQUIRED'];
 
         $unsupportedDemo = $catalog;
         $unsupportedDemo['entries'][$gapIndex]['verification']['demo'] = true;
         $cases[] = [$unsupportedDemo, 'COMPONENT_CATALOG_UNSUPPORTED_DEMO_FORBIDDEN'];
-
-        $missingLocalizedExample = $catalog;
-        unset($missingLocalizedExample['entries'][$supportedIndex]['presentation']['ru']['example_ref']);
-        $cases[] = [$missingLocalizedExample, 'COMPONENT_CATALOG_PRESENTATION_INVALID'];
 
         $unsafePath = $catalog;
         $unsafePath['entries'][0]['docs_ref'] = '/Users/example/private.md';
         $cases[] = [$unsafePath, 'COMPONENT_CATALOG_PATH_INVALID'];
 
         $unsafeText = $catalog;
-        $unsafeText['entries'][0]['description'] = 'Private source: /Users/example/private.md';
+        $unsafeText['entries'][0]['provenance']['framework_owner'] = '/Users/example/private.md';
         $cases[] = [$unsafeText, 'COMPONENT_CATALOG_PROVENANCE_UNSAFE'];
 
         $overclaim = $catalog;
@@ -540,27 +544,34 @@ final class EffectiveComponentCatalogTest extends TestCase
         );
         sort($expectedIds, SORT_STRING);
         self::assertSame($expectedIds, array_column($supported, 'id'));
+        $translator = $this->translator();
+        $englishExamples = array_map(
+            static fn (array $entry): string => (string) $translator
+                ->component('en', (string) $entry['id'])['example_ref'],
+            $supported,
+        );
         self::assertCount(
             count($supported),
-            array_unique(array_column($supported, 'example_ref')),
+            array_unique($englishExamples),
             'Every supported catalogue entry must own a distinct executable fixture.',
         );
 
         foreach ($supported as $entry) {
+            $englishReference = $translator->component('en', (string) $entry['id'])['example_ref'];
             self::assertSame(
                 'resources/component-catalog/examples/' . $entry['id'] . '.md',
-                $entry['example_ref'],
+                $englishReference,
                 $entry['id'],
             );
-            $markdown = file_get_contents($root . '/' . $entry['example_ref']);
+            $markdown = file_get_contents($root . '/' . $englishReference);
             self::assertIsString($markdown, $entry['id']);
-            $document = $runtime->extract($markdown, $entry['example_ref']);
+            $document = $runtime->extract($markdown, $englishReference);
             $html = $document->hydrate($renderer->render($document->markdownWithPlaceholders));
             self::assertNotSame('', trim($html), $entry['id']);
-            $localizedReference = $entry['presentation']['ru']['example_ref'] ?? null;
+            $localizedReference = $translator->component('ru', (string) $entry['id'])['example_ref'] ?? null;
             self::assertIsString($localizedReference, $entry['id']);
             self::assertStringEndsWith('.ru.md', $localizedReference, $entry['id']);
-            self::assertNotSame($entry['example_ref'], $localizedReference, $entry['id']);
+            self::assertNotSame($englishReference, $localizedReference, $entry['id']);
             $localizedMarkdown = file_get_contents($root . '/' . $localizedReference);
             self::assertIsString($localizedMarkdown, $entry['id']);
             $localizedDocument = $runtime->extract($localizedMarkdown, $localizedReference);
@@ -676,13 +687,13 @@ final class EffectiveComponentCatalogTest extends TestCase
             }
             copy($root . '/resources/component-catalog/smart/ui.alert.json', $alertPath);
             $alert = json_decode((string) file_get_contents($alertPath), true, flags: JSON_THROW_ON_ERROR);
-            $alert['presentation']['ru']['title'] = 'Другой заголовок';
+            $alert['title'] = 'Localized text is forbidden in technical metadata';
             file_put_contents($alertPath, json_encode($alert, JSON_THROW_ON_ERROR));
             try {
                 $makeBuilder()->build();
-                self::fail('Smart presentation conflicting with exact manifest i18n unexpectedly passed.');
+                self::fail('Localized presentation unexpectedly passed inside Smart technical metadata.');
             } catch (PortableConfigurationException $exception) {
-                self::assertSame('COMPONENT_CATALOG_SMART_PRESENTATION_MISMATCH', $exception->errorCode);
+                self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
             }
             copy($root . '/resources/component-catalog/smart/ui.alert.json', $alertPath);
             copy($alertPath, $smartDirectory . '/duplicate-alert.json');
@@ -773,6 +784,34 @@ final class EffectiveComponentCatalogTest extends TestCase
         return EffectiveComponentCatalogBuilder::bundled(FrameworkLock::fromJsonFile(
             dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json',
         ));
+    }
+
+    private function translator(): Translator
+    {
+        $root = dirname(__DIR__, 2);
+        $registry = LocaleRegistry::fromSite([
+            'default_locale' => 'en',
+            'locales' => [
+                'en' => [
+                    'label' => 'English',
+                    'direction' => 'ltr',
+                    'content_root' => 'content/en',
+                    'language_pack' => '@docara/en',
+                    'public_prefix' => 'en',
+                    'fallbacks' => [],
+                ],
+                'ru' => [
+                    'label' => 'Русский',
+                    'direction' => 'ltr',
+                    'content_root' => 'content/ru',
+                    'language_pack' => '@docara/ru',
+                    'public_prefix' => 'ru',
+                    'fallbacks' => ['en'],
+                ],
+            ],
+        ]);
+
+        return new Translator($registry, new LanguagePackRepository($root));
     }
 
     /** @param array<string, mixed> $catalog */

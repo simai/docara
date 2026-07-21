@@ -2,68 +2,6 @@
     "id": "ui.alert",
     "family": "framework_smart",
     "category": "feedback",
-    "title": "Alert",
-    "description": "Reports a result, warning, or error as presentation-only content in portable Docara.",
-    "presentation": {
-        "ru": {
-            "title": "Уведомление",
-            "description": "Сообщает о результате, предупреждении или ошибке без выполнения прикладных действий.",
-            "limitations": [
-                "Параметр closable=true пока не входит в ограниченный контракт среды выполнения.",
-                "Параметр type=success не поддерживается: закреплённая таблица стилей Framework выводит его статусную иконку прозрачной.",
-                "Свойство id создаётся Docara детерминированно.",
-                "Мост серверных событий Larena намеренно исключён: переносимая Docara выводит компонент без серверных обработчиков."
-            ],
-            "states": {
-                "default": "Обычное состояние",
-                "info": "Информация",
-                "warning": "Предупреждение",
-                "danger": "Опасность"
-            },
-            "parameters": {
-                "aria-label": {
-                    "label": "Доступное имя",
-                    "description": "Кратко называет уведомление для вспомогательных технологий."
-                },
-                "closable": {
-                    "label": "Можно закрыть",
-                    "description": "Управляет возможностью закрыть уведомление; значение true пока отклоняется."
-                },
-                "icon": {
-                    "label": "Иконка",
-                    "description": "Переопределяет имя декоративной иконки уведомления."
-                },
-                "supporting-text": {
-                    "label": "Поясняющий текст",
-                    "description": "Дополняет заголовок подробностями о результате или состоянии."
-                },
-                "title": {
-                    "label": "Заголовок",
-                    "description": "Кратко сообщает основное состояние."
-                },
-                "type": {
-                    "label": "Тон",
-                    "description": "Выбирает смысловой тон и оформление уведомления.",
-                    "values": {
-                        "clear": "Нейтральный",
-                        "info": "Информация",
-                        "danger": "Опасность",
-                        "warning": "Предупреждение"
-                    }
-                },
-                "variant": {
-                    "label": "Вариант",
-                    "description": "Выбирает способ оформления поверхности и границы.",
-                    "values": {
-                        "default": "Обычный",
-                        "flat": "Плоский",
-                        "outlined": "Контурный"
-                    }
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/ui.alert.ru.md"
-        }
-    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "directive_json",
@@ -79,10 +17,6 @@
         "warning",
         "danger"
     ],
-    "limitations": [
-        "closable=true is not admitted by the current bounded runtime.",
-        "type=success is not admitted because the pinned Framework stylesheet renders its status icon transparent."
-    ],
     "verification": {
         "renderer": true,
         "tests": true,
@@ -90,7 +24,6 @@
         "demo": true
     },
     "docs_ref": "docs/site/content/components/syntax.md",
-    "example_ref": "resources/component-catalog/examples/ui.alert.md",
     "provenance": {
         "source_kind": "smart_consumer_metadata",
         "manifest_ref": "resources/framework/manifests/ui-alert.json"

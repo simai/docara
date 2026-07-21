@@ -10,19 +10,23 @@
     var results = dialog.querySelector('[data-docara-search-results]');
     var closeButton = dialog.querySelector('[data-docara-search-close]');
     var shortcut = trigger.querySelector('[data-docara-search-shortcut]');
-    var locale = document.documentElement.lang || 'en';
-    var copy = locale.toLowerCase().startsWith('ru') ? {
-        idle: 'Введите минимум 2 символа',
-        loading: 'Загрузка поиска…',
-        found: function (count) { return 'Найдено: ' + count; },
-        empty: 'Ничего не найдено',
-        error: 'Поиск временно недоступен. Обновите страницу и попробуйте снова.'
-    } : {
-        idle: 'Enter at least 2 characters',
-        loading: 'Loading search…',
-        found: function (count) { return 'Found: ' + count; },
-        empty: 'No results found',
-        error: 'Search is temporarily unavailable. Reload the page and try again.'
+    var locale = document.documentElement.lang || 'und';
+    var copyNode = document.getElementById('docara-runtime-copy');
+    var messages = {};
+    try { messages = JSON.parse(copyNode ? copyNode.textContent : '{}'); } catch (error) { messages = {}; }
+    function message(id, parameters) {
+        var value = typeof messages[id] === 'string' ? messages[id] : id;
+        Object.keys(parameters || {}).forEach(function (name) {
+            value = value.split('{' + name + '}').join(String(parameters[name]));
+        });
+        return value;
+    }
+    var copy = {
+        idle: message('search.idle'),
+        loading: message('search.loading'),
+        found: function (count) { return message('search.found', {count: count}); },
+        empty: message('search.empty'),
+        error: message('search.error')
     };
     var indexPromise = null;
     var preparedDocuments = [];
@@ -38,7 +42,6 @@
         return String(value || '')
             .normalize('NFKC')
             .toLocaleLowerCase(locale)
-            .replace(/ё/g, 'е')
             .normalize('NFD')
             .replace(/\p{M}/gu, '')
             .replace(/\s+/g, ' ')

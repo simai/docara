@@ -11,6 +11,8 @@
         "base_url",
         "locale",
         "documentation_version",
+        "direction",
+        "copy",
         "content_sha256",
         "redirects"
     ],
@@ -37,7 +39,21 @@
         },
         "locale": {
             "type": "string",
-            "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$"
+            "format": "docara-bcp47"
+        },
+        "direction": {
+            "type": "string",
+            "enum": ["ltr", "rtl"]
+        },
+        "copy": {
+            "type": "object",
+            "required": ["redirect.title", "redirect.message", "redirect.link"],
+            "properties": {
+                "redirect.title": {"type": "string", "minLength": 1},
+                "redirect.message": {"type": "string", "minLength": 1},
+                "redirect.link": {"type": "string", "minLength": 1}
+            },
+            "additionalProperties": false
         },
         "documentation_version": {
             "type": "string",

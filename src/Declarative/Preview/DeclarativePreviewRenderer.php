@@ -9,11 +9,13 @@ use Simai\Docara\Declarative\Preview\View\PreviewIndexViewModel;
 use Simai\Docara\Declarative\Preview\View\PreviewPageViewModel;
 use Simai\Docara\Declarative\Rendering\TrustedTemplateRegistry;
 use Simai\Docara\Framework\FrameworkAssetPlan;
+use Simai\Docara\I18n\Translator;
 
 final readonly class DeclarativePreviewRenderer
 {
     public function __construct(
         private TrustedTemplateRegistry $templates = new TrustedTemplateRegistry,
+        private ?Translator $translator = null,
     ) {}
 
     public function page(
@@ -34,6 +36,7 @@ final readonly class DeclarativePreviewRenderer
             $this->escape($catalogUrl),
             $assets->headHtml(),
             $contentHtml,
+            $this->copy($locale),
         );
 
         return $this->templates->render('preview.docara.page', ['view' => $view]);
@@ -89,6 +92,7 @@ final readonly class DeclarativePreviewRenderer
             $rendered,
             count($items) - $rendered,
             $items,
+            $this->copy($locale),
         );
 
         return $this->templates->render('preview.docara.index', ['view' => $view]);
@@ -97,5 +101,23 @@ final readonly class DeclarativePreviewRenderer
     private function escape(string $value): string
     {
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
+    /** @return array<string, string> */
+    private function copy(string $locale): array
+    {
+        if (! $this->translator instanceof Translator) {
+            throw new \LogicException('Declarative preview requires a resolved language-pack translator.');
+        }
+        $copy = [];
+        foreach ([
+            'eyebrow', 'title', 'description', 'rendered', 'skipped', 'receipt',
+            'pages', 'unsupported', 'open_preview', 'legacy_only', 'all_pages',
+            'open_legacy',
+        ] as $key) {
+            $copy[$key] = $this->escape($this->translator->message($locale, 'preview.' . $key));
+        }
+
+        return $copy;
     }
 }

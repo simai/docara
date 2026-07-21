@@ -6,6 +6,8 @@ use JsonException;
 use Simai\Docara\Declarative\Composition\RegionCompositionResolver;
 use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkLock;
+use Simai\Docara\I18n\LocaleRegistry;
+use Simai\Docara\I18n\LocaleTag;
 
 final class PortableConfigurationLoader
 {
@@ -120,13 +122,19 @@ final class PortableConfigurationLoader
 
         [$site, $siteTrace] = $this->loadJson('docara.json', 'site.schema.json', 'site', true);
         $trace[] = $siteTrace;
-        $contentRoot = (string) ($site['content_root'] ?? 'content');
-        if (! str_starts_with($page, $contentRoot . '/')) {
-            throw new PortableConfigurationException(
-                'PAGE_OUTSIDE_CONTENT_ROOT',
-                "Portable page [$page] is outside configured content root [$contentRoot].",
-            );
+        $explicitLocaleRegistry = is_array($site['locales'] ?? null) && $site['locales'] !== [];
+        $localeRegistry = LocaleRegistry::fromSite($site);
+        if (! $explicitLocaleRegistry) {
+            $legacyContentRoot = (string) ($site['content_root'] ?? 'content');
+            if (! str_starts_with($page, $legacyContentRoot . '/')) {
+                throw new PortableConfigurationException(
+                    'PAGE_OUTSIDE_CONTENT_ROOT',
+                    "Portable page [$page] is outside configured content root [$legacyContentRoot].",
+                );
+            }
         }
+        $locale = $localeRegistry->forPage($page);
+        $contentRoot = $locale->contentRoot;
 
         $frameworkLockPath = (string) ($site['framework_lock'] ?? '');
         [$frameworkLock, $frameworkTrace] = $this->loadJson(
@@ -201,6 +209,27 @@ final class PortableConfigurationLoader
             $configuration,
             $provenance,
         );
+
+        if ($explicitLocaleRegistry) {
+            $declaredLocale = $configuration['locale'] ?? null;
+            if (is_string($declaredLocale)
+                && LocaleTag::from($declaredLocale)->value() !== $locale->tag->value()
+            ) {
+                throw new PortableConfigurationException(
+                    'PAGE_LOCALE_CONTENT_ROOT_MISMATCH',
+                    "Portable page [$page] declares locale [$declaredLocale] inside [{$locale->tag->value()}] content.",
+                );
+            }
+            $configuration['locale'] = $locale->tag->value();
+            $configuration['direction'] = $locale->direction;
+            $configuration['content_root'] = $locale->contentRoot;
+            $configuration['language_pack'] = $locale->languagePack;
+            $configuration['public_prefix'] = $locale->publicPrefix;
+            foreach (['locale', 'direction', 'content_root', 'language_pack', 'public_prefix'] as $field) {
+                $provenance['/' . $field] = '@locale-registry/' . $locale->tag->value();
+            }
+        }
+        ksort($provenance, SORT_STRING);
 
         return [$configuration, $frameworkLock, $trace, $provenance];
     }

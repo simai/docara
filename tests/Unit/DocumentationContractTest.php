@@ -39,6 +39,7 @@ final class DocumentationContractTest extends TestCase
                 'authoring/configuration.md',
                 'authoring/inheritance.md',
                 'authoring/layout-and-navigation.md',
+                'authoring/localization.md',
                 'build/publish.md',
             ],
             'migrating_owner' => [
@@ -67,7 +68,7 @@ final class DocumentationContractTest extends TestCase
         }
 
         $documents = $this->markdownDocuments();
-        self::assertCount(58, $documents, 'The authored documentation inventory must stay exact.');
+        self::assertCount(59, $documents, 'The authored documentation inventory must stay exact.');
 
         foreach ($documents as $path) {
             $markdown = (string) file_get_contents($path);

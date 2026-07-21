@@ -4,26 +4,6 @@
     "renderer": "docara.columns.v1",
     "family": "docara_typed",
     "category": "layout",
-    "title": "Columns",
-    "description": "Arranges two to four source-ordered Markdown regions in a responsive Simai Framework grid.",
-    "presentation": {
-        "ru": {
-            "title": "Колонки",
-            "description": "Размещает от двух до четырёх областей Markdown в адаптивной сетке Simai Framework, сохраняя порядок исходного текста.",
-            "limitations": [
-                "Содержимое должно включать от двух до четырёх непустых областей Markdown.",
-                "Области разделяются точной строкой верхнего уровня --- с пустыми строками вокруг.",
-                "Вложенные типизированные директивы Docara и Smart-компоненты не поддерживаются.",
-                "Порядок колонок всегда совпадает с порядком исходного текста."
-            ],
-            "states": {
-                "stacked": "В одну колонку",
-                "responsive_columns": "Адаптивные колонки"
-            },
-            "parameters": {},
-            "example_ref": "resources/component-catalog/examples/docara.columns.ru.md"
-        }
-    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "directive",
@@ -37,12 +17,6 @@
         "stacked",
         "responsive_columns"
     ],
-    "limitations": [
-        "The body must contain between two and four non-empty Markdown regions.",
-        "Regions must use an exact top-level --- separator surrounded by blank lines.",
-        "Nested Docara typed directives and Smart components are not accepted.",
-        "Column order always follows source order."
-    ],
     "verification": {
         "renderer": true,
         "tests": true,
@@ -50,7 +24,6 @@
         "demo": true
     },
     "docs_ref": "docs/site/content/components/syntax.md",
-    "example_ref": "resources/component-catalog/examples/docara.columns.md",
     "provenance": {
         "source_kind": "typed_definition",
         "definition_ref": "resources/component-catalog/typed/docara.columns.json"

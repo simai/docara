@@ -2,24 +2,6 @@
     "id": "ui.dataview",
     "family": "requirement",
     "category": "structured_data",
-    "title": "Data view",
-    "description": "A structured data and settings contract for interactive data presentation.",
-    "presentation": {
-        "ru": {
-            "title": "Представление данных",
-            "description": "Структурированный контракт данных и настроек для интерактивного представления информации.",
-            "limitations": [
-                "Эта задача отличается от вывода небольшой таблицы Markdown."
-            ],
-            "states": {},
-            "parameters": {},
-            "gap": {
-                "reason": "Для Docara не принят ограниченный переносимый контракт источника данных, настроек, взаимодействия и рендеринга.",
-                "fallback": "Для небольших справочных данных используйте поддерживаемый native.table.",
-                "admission_condition": "Определить отдельный переносимый контракт данных и настроек с детерминированным рендерингом, доступностью, тестами и документацией."
-            }
-        }
-    },
     "lifecycle": "deferred",
     "authoring": {
         "syntax": "unavailable",
@@ -30,9 +12,6 @@
         "parameters": []
     },
     "states": [],
-    "limitations": [
-        "This is a different author job from a small Markdown table."
-    ],
     "verification": {
         "renderer": false,
         "tests": false,
@@ -45,9 +24,6 @@
         "framework_owner": "larena/ui"
     },
     "gap": {
-        "owner": "simai/docara and larena/ui",
-        "reason": "No bounded portable data source, settings, interaction and rendering contract is accepted for Docara.",
-        "fallback": "Use the supported native.table entry for small reference data.",
-        "admission_condition": "Define a separate portable data and settings contract with deterministic rendering, accessibility, tests and documentation."
+        "owner": "simai/docara and larena/ui"
     }
 }

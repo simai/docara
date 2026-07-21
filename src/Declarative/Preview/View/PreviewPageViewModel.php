@@ -15,5 +15,7 @@ final readonly class PreviewPageViewModel
         public string $catalogUrl,
         public string $headHtml,
         public string $contentHtml,
+        /** @var array<string, string> */
+        public array $copy,
     ) {}
 }

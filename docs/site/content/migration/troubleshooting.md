@@ -27,10 +27,10 @@ legacy tags. Выберите поддерживаемый native Markdown, type
 
 ## Страница имеет другой язык
 
-Один portable build не смешивает locales. Значение `locale` в section/page
-может только повторять `default_locale`; другое значение отклоняется. Соберите
-другой язык отдельным site variant с собственными output и `base_url`. Docara
-не выполняет скрытый fallback и не перенаправляет English URL на Russian URL.
+Проверьте, что страница лежит внутри `content_root` одной из локалей. Docara
+выводит locale из дерева контента; ручное значение в section/page обязано с ним
+совпадать. Все fallback должны быть явно объявлены в `locales`, существовать в
+том же реестре и не образовывать цикл.
 
 ## `init --portable` отказывается работать в каталоге
 

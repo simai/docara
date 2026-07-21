@@ -2,20 +2,6 @@
     "id": "native.table",
     "family": "native_markdown",
     "category": "technical_content",
-    "title": "Markdown table",
-    "description": "Presents small comparison or reference data in a scroll-safe semantic table.",
-    "presentation": {
-        "ru": {
-            "title": "Таблица Markdown",
-            "description": "Показывает небольшие сравнительные или справочные данные в семантической таблице с безопасной прокруткой.",
-            "limitations": [
-                "Это обычная таблица Markdown, а не структурированный контракт представления данных."
-            ],
-            "states": {},
-            "parameters": {},
-            "example_ref": "resources/component-catalog/examples/native.table.ru.md"
-        }
-    },
     "lifecycle": "supported",
     "authoring": {
         "syntax": "markdown",
@@ -26,9 +12,6 @@
         "parameters": []
     },
     "states": [],
-    "limitations": [
-        "This is a native Markdown table, not a structured DataView contract."
-    ],
     "verification": {
         "renderer": true,
         "tests": true,
@@ -36,7 +19,6 @@
         "demo": true
     },
     "docs_ref": "docs/site/content/authoring/markdown.md",
-    "example_ref": "resources/component-catalog/examples/native.table.md",
     "provenance": {
         "source_kind": "portable_markdown_profile",
         "profile_id": "docara.portable_markdown_profile.v1"

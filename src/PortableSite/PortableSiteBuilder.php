@@ -20,6 +20,10 @@ use Simai\Docara\Framework\FrameworkAssetPlan;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
+use Simai\Docara\I18n\LanguagePackRepository;
+use Simai\Docara\I18n\LocaleRegistry;
+use Simai\Docara\I18n\Translator;
+use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\PortableConfigurationLoader;
@@ -59,18 +63,42 @@ final readonly class PortableSiteBuilder
         $loader = new PortableConfigurationLoader($root);
         $root = $this->realDirectory($root, 'PORTABLE_ROOT_INVALID');
         $site = $this->siteConfiguration($root);
-        $buildLocale = (string) ($site['default_locale'] ?? $site['locale'] ?? 'en');
+        $explicitLocaleRegistry = is_array($site['locales'] ?? null) && $site['locales'] !== [];
+        $localeRegistry = LocaleRegistry::fromSite($site);
+        $translator = new Translator($localeRegistry, new LanguagePackRepository($root));
+        $uiCopy = new UiCopy($translator);
+        $buildLocale = $localeRegistry->default()->tag->value();
         $documentationVersion = (string) ($site['documentation_version'] ?? 'current');
-        $contentRoot = (string) ($site['content_root'] ?? 'content');
+        $defaultLocale = $localeRegistry->default();
+        $contentRoot = $defaultLocale->contentRoot;
         $contentPath = $this->confinedDirectory($root, $contentRoot);
-        $this->assertDestinationInputBoundary($root, $destination, $contentPath, $site);
+        $contentContexts = [];
+        $pagePaths = [];
+        foreach ($localeRegistry->all() as $locale => $definition) {
+            $localeContentPath = $this->confinedDirectory($root, $definition->contentRoot);
+            $localePagePaths = $this->markdownFiles($root, $localeContentPath);
+            if ($localePagePaths === []) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_LOCALE_CONTENT_EMPTY',
+                    "Portable content for locale [$locale] does not contain Markdown pages.",
+                );
+            }
+            $contentContexts[$locale] = [
+                'root' => $definition->contentRoot,
+                'path' => $localeContentPath,
+                'prefix' => $definition->publicPrefix,
+            ];
+            array_push($pagePaths, ...$localePagePaths);
+        }
+        sort($pagePaths, SORT_STRING);
+        $this->assertDestinationInputBoundary(
+            $root,
+            $destination,
+            array_values(array_column($contentContexts, 'path')),
+            $site,
+        );
         $finalDestination = $destination;
         $destination = $this->candidateDestination($root, $finalDestination);
-        $pagePaths = $this->markdownFiles($root, $contentPath);
-        if ($pagePaths === []) {
-            throw new PortableConfigurationException('PORTABLE_CONTENT_EMPTY', 'Portable content does not contain Markdown pages.');
-        }
-
         $pages = [];
         $outputs = [];
         $frameworkLockCanonical = null;
@@ -78,6 +106,14 @@ final readonly class PortableSiteBuilder
         $declarativePipeline = null;
         foreach ($pagePaths as $pagePath) {
             $plan = $loader->resolve($pagePath);
+            $pageLocale = (string) ($plan->configuration['locale'] ?? $buildLocale);
+            if (! $explicitLocaleRegistry && $pageLocale !== $buildLocale) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_BUILD_LOCALE_MISMATCH',
+                    "Page [$pagePath] locale [$pageLocale] does not match build locale [$buildLocale].",
+                );
+            }
+            $localeDefinition = $localeRegistry->get($pageLocale);
             $currentFrameworkLock = CanonicalJson::encode($plan->frameworkLock);
             if ($frameworkLockCanonical !== null && $frameworkLockCanonical !== $currentFrameworkLock) {
                 throw new PortableConfigurationException(
@@ -97,7 +133,12 @@ final readonly class PortableSiteBuilder
                 $this->html->reservedDocumentIds(),
             );
             $contentHtml = $components->hydrate($outline['html']);
-            $route = $this->route($plan, $contentRoot, (string) ($site['base_url'] ?? '/'));
+            $route = $this->route(
+                $plan,
+                $localeDefinition->contentRoot,
+                (string) ($site['base_url'] ?? '/'),
+                $localeDefinition->publicPrefix,
+            );
             if (isset($outputs[$route['output']])) {
                 throw new PortableConfigurationException(
                     'PORTABLE_OUTPUT_COLLISION',
@@ -121,7 +162,9 @@ final readonly class PortableSiteBuilder
                 'page_path' => $pagePath,
                 'title' => $title,
                 'description' => (string) ($plan->configuration['description'] ?? ''),
-                'locale' => (string) ($plan->configuration['locale'] ?? $buildLocale),
+                'locale' => $pageLocale,
+                'direction' => $localeDefinition->direction,
+                'translation_key' => $this->translationKey($plan->page, $localeDefinition->contentRoot),
                 'documentation_version' => $documentationVersion,
                 'preset' => (string) ($plan->configuration['preset'] ?? 'docs'),
                 'theme' => (string) data_get($plan->configuration, 'settings.theme', 'system'),
@@ -136,7 +179,10 @@ final readonly class PortableSiteBuilder
                 'outline' => $outline['items'],
                 'url' => $route['url'],
                 'output' => $route['output'],
-                'home_url' => $this->homeUrl((string) ($site['base_url'] ?? '/')),
+                'home_url' => $this->localeHomeUrl(
+                    (string) ($site['base_url'] ?? '/'),
+                    $localeDefinition->publicPrefix,
+                ),
                 'content_html' => $contentHtml,
                 'components' => $components,
                 'component_calls' => $components->normalizedCalls,
@@ -164,29 +210,55 @@ final readonly class PortableSiteBuilder
         $effectiveComponentCatalog = EffectiveComponentCatalogBuilder::bundled(
             FrameworkLock::fromArray($catalogBasePlan->frameworkLock),
         )->build();
-        $componentCatalogProjector = new PortableComponentCatalogProjector($this->markdown);
-        $componentCatalogProjection = $componentCatalogProjector->project(
-            catalog: $effectiveComponentCatalog,
-            runtime: $runtime,
-            basePlan: $catalogBasePlan,
-            contentRoot: $contentRoot,
-            baseUrl: (string) ($site['base_url'] ?? '/'),
-            homeUrl: $this->homeUrl((string) ($site['base_url'] ?? '/')),
-            reservedDocumentIds: $this->html->reservedDocumentIds(),
+        $componentCatalogProjector = new PortableComponentCatalogProjector(
+            $this->markdown,
+            translator: $translator,
         );
-        foreach ($componentCatalogProjection['pages'] as $catalogPage) {
-            if (isset($outputs[$catalogPage['output']])) {
+        $componentCatalogProjections = [];
+        foreach ($localeRegistry->all() as $locale => $definition) {
+            $localeCatalogBasePlan = $locale === $buildLocale
+                ? $catalogBasePlan
+                : $loader->resolveGeneratedBase($definition->contentRoot . '/components/catalog/index.md');
+            if (CanonicalJson::encode($localeCatalogBasePlan->frameworkLock) !== $frameworkLockCanonical) {
                 throw new PortableConfigurationException(
-                    'COMPONENT_CATALOG_ROUTE_COLLISION',
-                    "Authored page [{$outputs[$catalogPage['output']]}] shadows generated component catalogue route [{$catalogPage['output']}].",
+                    'FRAMEWORK_LOCK_CHANGED_DURING_BUILD',
+                    'The Framework lock changed while a localized component catalogue was being resolved.',
                 );
             }
-            $outputs[$catalogPage['output']] = '@docara/component-catalog';
-            $catalogPage['documentation_version'] = $documentationVersion;
-            $pages[] = $catalogPage;
+            $componentCatalogProjection = $componentCatalogProjector->project(
+                catalog: $effectiveComponentCatalog,
+                runtime: $runtime,
+                basePlan: $localeCatalogBasePlan,
+                contentRoot: $definition->contentRoot,
+                baseUrl: $this->localeHomeUrl(
+                    (string) ($site['base_url'] ?? '/'),
+                    $definition->publicPrefix,
+                ),
+                homeUrl: $this->localeHomeUrl(
+                    (string) ($site['base_url'] ?? '/'),
+                    $definition->publicPrefix,
+                ),
+                outputPrefix: $definition->publicPrefix,
+                reservedDocumentIds: $this->html->reservedDocumentIds(),
+            );
+            $componentCatalogProjections[$locale] = $componentCatalogProjection;
+            foreach ($componentCatalogProjection['pages'] as $catalogPage) {
+                if (isset($outputs[$catalogPage['output']])) {
+                    throw new PortableConfigurationException(
+                        'COMPONENT_CATALOG_ROUTE_COLLISION',
+                        "Authored page [{$outputs[$catalogPage['output']]}] shadows generated component catalogue route [{$catalogPage['output']}].",
+                    );
+                }
+                $outputs[$catalogPage['output']] = '@docara/component-catalog/' . $locale;
+                $catalogPage['documentation_version'] = $documentationVersion;
+                $catalogPage['translation_key'] = ($catalogPage['component_catalog_kind'] ?? null) === 'detail'
+                    ? '@catalog/' . (string) $catalogPage['component_catalog_id']
+                    : '@catalog/index';
+                $pages[] = $catalogPage;
+            }
         }
 
-        $declarativeExampleProjector = new PortableDeclarativeExampleProjector;
+        $declarativeExampleProjector = new PortableDeclarativeExampleProjector(translator: $translator);
         $declarativeExampleProjection = null;
         if ($declarativeExampleProjector->exists($root)) {
             $exampleBasePlan = $loader->resolveGeneratedBase(
@@ -221,20 +293,70 @@ final readonly class PortableSiteBuilder
             }
         }
 
-        foreach ($pages as $page) {
-            if (($page['locale'] ?? null) !== $buildLocale) {
-                throw new PortableConfigurationException(
-                    'PORTABLE_BUILD_LOCALE_MISMATCH',
-                    "Page [{$page['page_path']}] locale [{$page['locale']}] does not match build locale [$buildLocale].",
-                );
+        if (! $explicitLocaleRegistry) {
+            foreach ($pages as $page) {
+                if (($page['locale'] ?? null) !== $buildLocale) {
+                    throw new PortableConfigurationException(
+                        'PORTABLE_BUILD_LOCALE_MISMATCH',
+                        "Page [{$page['page_path']}] locale [{$page['locale']}] does not match build locale [$buildLocale].",
+                    );
+                }
             }
         }
-        $previewRoutes = DeclarativePreviewRouteMap::fromPages($pages);
+        $translations = [];
+        foreach ($pages as $page) {
+            $translations[(string) ($page['translation_key'] ?? $page['page_path'])][(string) $page['locale']] = [
+                'url' => (string) $page['url'],
+                'label' => $localeRegistry->get((string) $page['locale'])->label,
+            ];
+        }
+        foreach ($pages as &$page) {
+            $pageLocale = (string) $page['locale'];
+            $page['direction'] = $localeRegistry->get($pageLocale)->direction;
+            $page['ui_copy'] = $uiCopy->forLocale($pageLocale);
+            $available = $translations[(string) ($page['translation_key'] ?? $page['page_path'])] ?? [];
+            $page['alternates'] = [];
+            $page['language_options'] = [];
+            foreach ($localeRegistry->all() as $candidateLocale => $definition) {
+                if (! isset($available[$candidateLocale])) {
+                    continue;
+                }
+                $page['alternates'][] = [
+                    'locale' => $candidateLocale,
+                    'url' => $available[$candidateLocale]['url'],
+                ];
+                $page['language_options'][] = [
+                    'locale' => $candidateLocale,
+                    'label' => $definition->label,
+                    'url' => $available[$candidateLocale]['url'],
+                    'current' => $candidateLocale === $pageLocale,
+                ];
+            }
+        }
+        unset($page);
+        $previewRoutes = DeclarativePreviewRouteMap::fromPages(array_values(array_filter(
+            $pages,
+            static fn (array $page): bool => ($page['locale'] ?? null) === $buildLocale,
+        )));
 
         $navigationBuilder = new PortableNavigationBuilder;
-        $topology = $navigationBuilder->build($pages, $contentRoot, $contentPath);
-        $navigation = $navigationBuilder->visible($topology);
-        $contentAssets = $this->contentAssets($contentPath, array_keys($outputs));
+        $topologies = [];
+        $navigations = [];
+        $topology = [];
+        $contentAssets = [];
+        foreach ($contentContexts as $locale => $context) {
+            $localePages = array_values(array_filter(
+                $pages,
+                static fn (array $page): bool => ($page['locale'] ?? null) === $locale,
+            ));
+            $topologies[$locale] = $navigationBuilder->build($localePages, $context['root'], $context['path']);
+            $navigations[$locale] = $navigationBuilder->visible($topologies[$locale]);
+            array_push($topology, ...$topologies[$locale]);
+            array_push(
+                $contentAssets,
+                ...$this->contentAssets($context['path'], array_keys($outputs), $context['prefix']),
+            );
+        }
         $redirectPublisher = new PortableRedirectPublisher($this->files);
         $redirectPlan = $redirectPublisher->plan(
             $root,
@@ -243,6 +365,8 @@ final readonly class PortableSiteBuilder
             $contentAssets,
             $buildLocale,
             $documentationVersion,
+            $uiCopy->forLocale($buildLocale),
+            $localeRegistry->default()->direction,
         );
         $siteTitle = (string) ($site['title'] ?? 'Docara');
         $brandPublisher = new PortableBrandAssetPlanner($this->files);
@@ -281,19 +405,32 @@ final readonly class PortableSiteBuilder
             $result = collect();
             $diagnostics = [];
             $previewRecords = [];
-            $previewRenderer = new DeclarativePreviewRenderer;
+            $previewRenderer = new DeclarativePreviewRenderer(translator: $translator);
             $previewProjector = new DeclarativePreviewLinkProjector;
             $previewAssetPlan = null;
 
             $docaraOutputDirectory = rtrim($destination, '/\\') . '/_docara';
             $this->files->ensureDirectoryExists($docaraOutputDirectory);
             $this->files->put($docaraOutputDirectory . '/component-catalog.json', $componentCatalogJson);
+            $localeDestinations = [$destination];
+            foreach ($localeRegistry->all() as $definition) {
+                if ($definition->publicPrefix !== '') {
+                    $localeDestinations[] = rtrim($destination, '/\\') . '/' . $definition->publicPrefix;
+                }
+            }
+            $localeDestinations = array_values(array_unique($localeDestinations));
             $catalogReceiptPath = rtrim($destination, '/\\') . '/.docara/component-catalog-pages.json';
             $this->files->ensureDirectoryExists(dirname($catalogReceiptPath));
             $this->files->put(
                 $catalogReceiptPath,
-                $this->prettyCanonicalJson($componentCatalogProjection['receipt']),
+                $this->prettyCanonicalJson($componentCatalogProjections[$buildLocale]['receipt']),
             );
+            foreach ($componentCatalogProjections as $locale => $projection) {
+                $localizedReceiptPath = rtrim($destination, '/\\')
+                    . '/.docara/component-catalog-pages/' . rawurlencode($locale) . '.json';
+                $this->files->ensureDirectoryExists(dirname($localizedReceiptPath));
+                $this->files->put($localizedReceiptPath, $this->prettyCanonicalJson($projection['receipt']));
+            }
             if (is_array($declarativeExampleProjection)) {
                 $exampleReceipt = $this->prettyCanonicalJson($declarativeExampleProjection['receipt']);
                 $this->files->put(
@@ -305,28 +442,36 @@ final readonly class PortableSiteBuilder
                     $exampleReceipt,
                 );
             }
-            foreach ($componentCatalogProjector->assets() as $relative => $bytes) {
-                $assetPath = rtrim($destination, '/\\') . '/' . $relative;
-                $this->files->ensureDirectoryExists(dirname($assetPath));
-                if ($this->files->put($assetPath, $bytes) === false
-                    || ! hash_equals(hash('sha256', $bytes), (string) hash_file('sha256', $assetPath))
-                ) {
-                    throw new PortableConfigurationException(
-                        'COMPONENT_CATALOG_ASSET_PUBLICATION_FAILED',
-                        $relative,
-                    );
+            foreach ($localeDestinations as $localeDestination) {
+                foreach ($componentCatalogProjector->assets() as $relative => $bytes) {
+                    $assetPath = rtrim($localeDestination, '/\\') . '/' . $relative;
+                    $this->files->ensureDirectoryExists(dirname($assetPath));
+                    if ($this->files->put($assetPath, $bytes) === false
+                        || ! hash_equals(hash('sha256', $bytes), (string) hash_file('sha256', $assetPath))
+                    ) {
+                        throw new PortableConfigurationException(
+                            'COMPONENT_CATALOG_ASSET_PUBLICATION_FAILED',
+                            $relative,
+                        );
+                    }
                 }
             }
 
             if ($searchPlan instanceof PortableSearchPlan) {
-                $this->files->put($docaraOutputDirectory . '/search-index.json', $searchPlan->indexJson);
-                $this->files->put($docaraOutputDirectory . '/search.js', $searchPlan->runtime);
+                foreach ($localeDestinations as $localeDestination) {
+                    $localizedDocaraDirectory = rtrim($localeDestination, '/\\') . '/_docara';
+                    $this->files->ensureDirectoryExists($localizedDocaraDirectory);
+                    $this->files->put($localizedDocaraDirectory . '/search-index.json', $searchPlan->indexJson);
+                    $this->files->put($localizedDocaraDirectory . '/search.js', $searchPlan->runtime);
+                }
             }
 
             foreach ($pages as $pageIndex => $page) {
                 $declarative = null;
                 $page['branding'] = $brandPlan['pages'][$pageIndex];
-                $readingContext = $navigationBuilder->readingContextForUrl($topology, (string) $page['url']);
+                $pageTopology = $topologies[(string) $page['locale']] ?? [];
+                $pageNavigation = $navigations[(string) $page['locale']] ?? [];
+                $readingContext = $navigationBuilder->readingContextForUrl($pageTopology, (string) $page['url']);
                 $page['breadcrumbs'] = $page['reading_breadcrumbs'] === true
                     ? $readingContext['breadcrumbs']
                     : [];
@@ -362,7 +507,7 @@ final readonly class PortableSiteBuilder
                     $page['outline'] = [];
                 }
                 $activeNavigation = $navigationBuilder->activate(
-                    $navigation,
+                    $pageNavigation,
                     ($page['component_catalog_kind'] ?? null) === 'detail'
                         ? (string) $page['component_catalog_index_url']
                         : (($page['declarative_example_kind'] ?? null) === 'detail'
@@ -463,7 +608,7 @@ final readonly class PortableSiteBuilder
                                 : 'fail',
                         ],
                     ];
-                    if (! $generatedProjection) {
+                    if (! $generatedProjection && ($page['locale'] ?? null) === $buildLocale) {
                         $previewUrl = $previewRoutes->previewUrl((string) $page['url']);
                         $previewOutput = $previewRoutes->previewOutput((string) $page['url']);
                         if ($previewUrl === null || $previewOutput === null) {
@@ -502,7 +647,9 @@ final readonly class PortableSiteBuilder
                         'supported_components' => ['ui.alert', 'ui.button'],
                     ];
                 }
-                if (array_key_exists('declarative_supported', $page)) {
+                if (array_key_exists('declarative_supported', $page)
+                    && ($page['locale'] ?? null) === $buildLocale
+                ) {
                     $previewAssetPlan ??= $page['components']->assetPlan;
                     $previewRecords[] = [
                         'title' => (string) $page['title'],
@@ -589,8 +736,10 @@ final readonly class PortableSiteBuilder
             $redirectPublisher->publish($redirectPlan, $destination);
             $this->copyContentAssets($contentAssets, $destination);
             $brandPublisher->publish($brandPlan['assets'], $destination);
-            $this->publishFrameworkAssets($catalogBasePlan->frameworkLock, $destination);
-            $this->publishPagePublisherAssets($destination);
+            foreach ($localeDestinations as $localeDestination) {
+                $this->publishFrameworkAssets($catalogBasePlan->frameworkLock, $localeDestination);
+                $this->publishPagePublisherAssets($localeDestination);
+            }
             $diagnosticPath = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
             $this->files->ensureDirectoryExists(dirname($diagnosticPath));
             $this->files->put($diagnosticPath, $this->prettyCanonicalJson([
@@ -683,7 +832,12 @@ final readonly class PortableSiteBuilder
     }
 
     /** @return array{url:string,output:string} */
-    private function route(ResolvedPagePlan $plan, string $contentRoot, string $baseUrl): array
+    private function route(
+        ResolvedPagePlan $plan,
+        string $contentRoot,
+        string $baseUrl,
+        string $publicPrefix = '',
+    ): array
     {
         $slug = $plan->configuration['slug'] ?? null;
         if (! is_string($slug) || $slug === '') {
@@ -715,12 +869,19 @@ final readonly class PortableSiteBuilder
         $encoded = implode('/', array_map('rawurlencode', $slug === '' ? [] : explode('/', $slug)));
         $base = '/' . trim($baseUrl, '/');
         $base = $base === '/' ? '' : $base;
-        $url = $base . '/' . ($encoded === '' ? '' : $encoded . '/');
+        $prefix = trim($publicPrefix, '/');
+        $publicSlug = implode('/', array_filter([$prefix, $encoded], static fn (string $part): bool => $part !== ''));
+        $url = $base . '/' . ($publicSlug === '' ? '' : $publicSlug . '/');
 
         return [
             'url' => $url,
-            'output' => $slug === '' ? 'index.html' : $slug . '/index.html',
+            'output' => $publicSlug === '' ? 'index.html' : $publicSlug . '/index.html',
         ];
+    }
+
+    private function translationKey(string $page, string $contentRoot): string
+    {
+        return substr($page, strlen(rtrim($contentRoot, '/') . '/'));
     }
 
     private function pageTitle(ResolvedPagePlan $plan): string
@@ -741,6 +902,16 @@ final readonly class PortableSiteBuilder
         $base = trim($baseUrl, '/');
 
         return $base === '' ? '/' : '/' . $base . '/';
+    }
+
+    private function localeHomeUrl(string $baseUrl, string $publicPrefix): string
+    {
+        $path = implode('/', array_filter([
+            trim($baseUrl, '/'),
+            trim($publicPrefix, '/'),
+        ], static fn (string $part): bool => $part !== ''));
+
+        return $path === '' ? '/' : '/' . $path . '/';
     }
 
     private function prepareDestination(string $root, string $destination): void
@@ -842,14 +1013,14 @@ final readonly class PortableSiteBuilder
     private function assertDestinationInputBoundary(
         string $root,
         string $destination,
-        string $contentPath,
+        array $contentPaths,
         array $site,
     ): void {
         $this->assertDestinationShape($root, $destination);
         $normalizedDestination = rtrim(str_replace('\\', '/', $destination), '/');
         $frameworkLock = (string) ($site['framework_lock'] ?? '');
         $inputs = [
-            $contentPath,
+            ...$contentPaths,
             $root . '/' . $frameworkLock,
             $root . '/docara.json',
         ];
@@ -875,7 +1046,11 @@ final readonly class PortableSiteBuilder
      * @param  list<string>  $generatedOutputs
      * @return list<array{source: string, relative: string}>
      */
-    private function contentAssets(string $contentPath, array $generatedOutputs): array
+    private function contentAssets(
+        string $contentPath,
+        array $generatedOutputs,
+        string $publicPrefix = '',
+    ): array
     {
         $reservedOutputs = array_map('strtolower', $generatedOutputs);
         $assets = [];
@@ -906,7 +1081,11 @@ final readonly class PortableSiteBuilder
                 continue;
             }
             $relative = ltrim(str_replace('\\', '/', substr($file->getPathname(), strlen($contentPath))), '/');
-            $normalizedRelative = strtolower($relative);
+            $publishedRelative = implode('/', array_filter([
+                trim($publicPrefix, '/'),
+                $relative,
+            ], static fn (string $part): bool => $part !== ''));
+            $normalizedRelative = strtolower($publishedRelative);
             $topLevel = explode('/', $normalizedRelative, 2)[0];
             $collidesWithGeneratedOutput = false;
             foreach ($reservedOutputs as $output) {
@@ -927,7 +1106,7 @@ final readonly class PortableSiteBuilder
             }
             $assets[] = [
                 'source' => $file->getPathname(),
-                'relative' => $relative,
+                'relative' => $publishedRelative,
             ];
         }
 

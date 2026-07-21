@@ -16,5 +16,7 @@ final readonly class PreviewIndexViewModel
         public int $renderedCount,
         public int $skippedCount,
         public array $items,
+        /** @var array<string, string> */
+        public array $copy,
     ) {}
 }

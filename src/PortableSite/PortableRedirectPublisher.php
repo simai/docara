@@ -30,6 +30,8 @@ final readonly class PortableRedirectPublisher
         array $contentAssets,
         string $locale,
         string $documentationVersion,
+        array $copy,
+        string $direction,
     ): array {
         $source = $site['redirects_file'] ?? null;
         if ($source === null) {
@@ -181,6 +183,12 @@ final readonly class PortableRedirectPublisher
             'base_url' => $baseUrl,
             'locale' => $locale,
             'documentation_version' => $documentationVersion,
+            'direction' => $direction,
+            'copy' => [
+                'redirect.title' => (string) ($copy['redirect.title'] ?? ''),
+                'redirect.message' => (string) ($copy['redirect.message'] ?? ''),
+                'redirect.link' => (string) ($copy['redirect.link'] ?? ''),
+            ],
             'content_sha256' => hash('sha256', CanonicalJson::encode($records)),
             'redirects' => $records,
         ];
@@ -191,7 +199,7 @@ final readonly class PortableRedirectPublisher
             'pages' => array_map(
                 static fn (array $record): array => [
                     'output' => $record['output'],
-                    'bytes' => self::renderPage($record, $locale, $documentationVersion),
+                    'bytes' => self::renderPage($record, $locale, $documentationVersion, $copy, $direction),
                 ],
                 $records,
             ),
@@ -201,22 +209,24 @@ final readonly class PortableRedirectPublisher
     /**
      * @param  array{from: string, to: string, url: string, target_url: string, output: string}  $record
      */
-    public static function renderPage(array $record, string $locale, string $documentationVersion): string
+    public static function renderPage(
+        array $record,
+        string $locale,
+        string $documentationVersion,
+        array $copy,
+        string $direction,
+    ): string
     {
         $target = self::escape($record['target_url']);
         $lang = self::escape($locale);
         $version = self::escape($documentationVersion);
-        $russian = str_starts_with(strtolower($locale), 'ru');
-        $title = $russian ? 'Страница перемещена' : 'Page moved';
-        $message = $russian
-            ? 'Адрес страницы изменился.'
-            : 'The page address has changed.';
-        $link = $russian
-            ? 'Перейти к актуальной странице'
-            : 'Open the current page';
+        $title = (string) ($copy['redirect.title'] ?? 'redirect.title');
+        $message = (string) ($copy['redirect.message'] ?? 'redirect.message');
+        $link = (string) ($copy['redirect.link'] ?? 'redirect.link');
+        $direction = in_array($direction, ['ltr', 'rtl'], true) ? $direction : 'ltr';
 
         return '<!doctype html>' . "\n"
-            . '<html lang="' . $lang . '" data-docara-documentation-version="' . $version . '">' . "\n"
+            . '<html lang="' . $lang . '" dir="' . $direction . '" data-docara-documentation-version="' . $version . '">' . "\n"
             . '<head>' . "\n"
             . '<meta charset="utf-8">' . "\n"
             . '<meta name="viewport" content="width=device-width, initial-scale=1">' . "\n"

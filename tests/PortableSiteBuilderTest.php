@@ -308,6 +308,14 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('href="#docara-main">К содержанию</a>', $html);
             self::assertStringContainsString('id="docara-main" tabindex="-1"', $html);
             self::assertStringContainsString('data-docara-reader-settings-trigger', $html);
+            self::assertMatchesRegularExpression(
+                '~class="[^"]*sf-icon-button--size-1[^"]*" data-docara-reader-settings-trigger~',
+                $html,
+            );
+            self::assertDoesNotMatchRegularExpression(
+                '~class="[^"]*sf-icon-button--size-2[^"]*" data-docara-reader-settings-trigger~',
+                $html,
+            );
             self::assertStringContainsString('aria-haspopup="dialog"', $html);
             self::assertStringContainsString('data-docara-reader-settings-dialog', $html);
             self::assertStringContainsString('data-docara-theme-option', $html);
@@ -357,7 +365,16 @@ final class PortableSiteBuilderTest extends TestCase
         }
         foreach ([$index, $guide, $fourthLevel] as $html) {
             self::assertStringContainsString('data-docara-search-trigger', $html);
+            self::assertMatchesRegularExpression(
+                '~data-docara-search-trigger[^>]*class="[^"]*sf-button--size-1[^"]*"~',
+                $html,
+            );
+            self::assertDoesNotMatchRegularExpression(
+                '~data-docara-search-trigger[^>]*class="[^"]*sf-button--size-2[^"]*"~',
+                $html,
+            );
             self::assertStringContainsString('data-docara-search-dialog', $html);
+            self::assertStringContainsString('class="sf-input sf-input--size-1 sf-input--bordered', $html);
             self::assertStringContainsString('data-docara-search-input', $html);
             self::assertStringContainsString('data-docara-search-status', $html);
             self::assertStringContainsString('data-docara-search-results', $html);

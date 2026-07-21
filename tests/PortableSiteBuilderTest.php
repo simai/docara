@@ -1133,6 +1133,18 @@ MD;
             $html,
         );
         self::assertStringContainsString(
+            'window.location.replace("/project~/docs/components/catalog/ui.button/")',
+            $html,
+        );
+        self::assertStringContainsString(
+            'html[data-docara-redirect-fallback] body{visibility:visible}',
+            $html,
+        );
+        self::assertStringContainsString(
+            '<noscript><style>body{visibility:visible}</style></noscript>',
+            $html,
+        );
+        self::assertStringContainsString(
             '<a href="/project~/docs/components/catalog/ui.button/">',
             $html,
         );

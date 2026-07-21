@@ -224,6 +224,10 @@ final readonly class PortableRedirectPublisher
         $message = (string) ($copy['redirect.message'] ?? 'redirect.message');
         $link = (string) ($copy['redirect.link'] ?? 'redirect.link');
         $direction = in_array($direction, ['ltr', 'rtl'], true) ? $direction : 'ltr';
+        $javascriptTarget = json_encode(
+            $record['target_url'],
+            JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT,
+        );
 
         return '<!doctype html>' . "\n"
             . '<html lang="' . $lang . '" dir="' . $direction . '" data-docara-documentation-version="' . $version . '">' . "\n"
@@ -233,6 +237,14 @@ final readonly class PortableRedirectPublisher
             . '<meta name="robots" content="noindex,follow">' . "\n"
             . '<meta name="docara:documentation-version" content="' . $version . '">' . "\n"
             . '<link rel="canonical" href="' . $target . '">' . "\n"
+            . '<style>html{color-scheme:light dark;background:Canvas}body{margin:0;visibility:hidden}'
+            . 'html[data-docara-redirect-fallback] body{visibility:visible}'
+            . 'main{box-sizing:border-box;max-width:42rem;margin:10vh auto;padding:2rem;font:1rem/1.5 system-ui,sans-serif}'
+            . '</style>' . "\n"
+            . '<script>(function(){window.setTimeout(function(){document.documentElement.setAttribute('
+            . '"data-docara-redirect-fallback","")},700);window.location.replace('
+            . $javascriptTarget . ')}())</script>' . "\n"
+            . '<noscript><style>body{visibility:visible}</style></noscript>' . "\n"
             . '<meta http-equiv="refresh" content="0; url=' . $target . '">' . "\n"
             . '<title>' . self::escape($title) . '</title>' . "\n"
             . '</head>' . "\n"

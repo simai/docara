@@ -1,6 +1,6 @@
 # Manifest and registry verification
 
-Status: focused verification PASS; full-suite gate pending.
+Status: PASS. Focused verification and the 615-test full-suite gate passed.
 
 ## Implemented contract
 
@@ -32,4 +32,5 @@ five-locale/RTL deterministic test:
 ```
 
 JSON parsing, PHP lint for `src/Smart` and rendering classes, and
-`git diff --check` passed before the full-suite gate.
+`git diff --check` passed. The complete suite subsequently passed with 615
+tests and 5,387 assertions.

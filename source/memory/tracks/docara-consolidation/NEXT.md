@@ -2,18 +2,33 @@
 
 ## Where We Stopped
 
-The declarative region composition goal is complete. Docara now has accepted
-source-backed recipes for header, sidebar, aside, footer and configuration
-inheritance, published locally at `https://docara.test/examples/`.
+Track `docara-consolidation` is attached to workflow:
 
-## Evidence
+- `source/workflow/2026-07-21-docara-smart-component-unification.md`
+- workflow title: Workflow: Docara Smart component unification
 
-- workflow: `source/workflow/2026-07-21-region-composition-recipes.md`;
-- acceptance: `source/workflow/evidence/2026-07-21-region-composition-recipes/acceptance.md`;
-- full suite: 595 tests, 4,947 assertions;
-- deterministic build and browser acceptance: PASS.
+The Smart-component unification goal is complete. Candidate
+`46fefd88d4031a1a5bcba551fef9bdc6c04b2edf` passed tests, deterministic build,
+local publication, browser acceptance and reverse-outcome audit.
 
 ## Next Meaningful Goal
 
-No unfinished batch remains. Select a new Docara product goal from current
-usage feedback; do not reopen this accepted goal unless a regression is found.
+Choose a separate product goal. Reasonable candidates are public release
+preparation, migration of another Docara consumer, or the next author-facing
+component/catalog capability. None is implicitly authorized by this closure.
+
+## Stages
+
+1. Review the accepted local demonstrator.
+2. Define the next bounded product outcome.
+3. Start a new workflow rather than reopening the accepted candidate.
+
+## Next Safe Batch
+
+No remaining batch in the completed workflow.
+
+## Checks
+
+- Read `source/workflow/2026-07-21-docara-smart-component-unification.md`.
+- Check route/gates before writes.
+- Update this track memory after progress.

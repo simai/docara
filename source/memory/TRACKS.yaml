@@ -1,6 +1,6 @@
 tracks:
   docara-consolidation:
-    status: "completed"
+    status: "ready_for_next_goal"
     owner_skill: "docara"
-    current_workflow: "source/workflow/2026-07-21-region-composition-recipes.md"
+    current_workflow: "source/workflow/2026-07-21-docara-smart-component-unification.md"
     last_updated: "2026-07-21"

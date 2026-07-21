@@ -1,11 +1,11 @@
 # Workflow: Docara Smart component unification
 
 Date: 2026-07-21
-Status: in-progress
+Status: completed
 Workflow ID: `2026-07-21-docara-smart-component-unification`
 Process model: `general_delivery`
-Current state: `implementation_verified_pending_full_acceptance`
-Target state: `accepted`
+Current state: `evidence_recorded`
+Target state: `evidence_recorded`
 
 ## Goal
 
@@ -17,9 +17,11 @@ model while preserving the standalone, Laravel-free runtime.
 - workflow:
   `source/workflow/2026-07-21-docara-smart-component-unification.md`.
 
-## Current Batch
+## Result
 
-Full/deterministic verification, local publication and browser acceptance.
+Candidate `46fefd88d4031a1a5bcba551fef9bdc6c04b2edf` accepted and published only
+to local `docara.test`. Full/deterministic tests, browser matrix,
+exact-candidate tester gate and reverse-outcome audit passed.
 
 ## Completion Guard
 

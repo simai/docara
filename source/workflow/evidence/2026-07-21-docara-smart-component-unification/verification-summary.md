@@ -1,7 +1,7 @@
 # Verification summary
 
-Status: implementation and build gates PASS; browser and exact-candidate
-acceptance pending.
+Status: PASS. Browser and exact-candidate results are recorded in the companion
+acceptance evidence files.
 
 ## Full suite
 

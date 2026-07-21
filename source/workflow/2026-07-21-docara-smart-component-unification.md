@@ -1,19 +1,22 @@
 # Workflow: Docara Smart component unification
 
 Date: 2026-07-21
-Status: in-progress
+Status: completed
 Workflow ID: `2026-07-21-docara-smart-component-unification`
 Process model: `general_delivery`
-Current state: `implementation_verified_pending_full_acceptance`
-Target state: `accepted`
+Current state: `evidence_recorded`
+Target state: `evidence_recorded`
 Project mode: `productization`
 Track ID: `docara-consolidation`
 Owner: `docara`
 Companions: `larena`, `sf5`, `dev`, `ux`, `tester`, `ops`
 Baseline HEAD: `d5e5721`
 Publication target: `https://docara.test/`
+Memory decision: `skip`
+Memory reason: project-local workflow and evidence are authoritative; mutable
+repository and runtime facts were reverified from the exact candidate.
 
-## Goal
+## Current Goal
 
 Unify Docara Smart components with the canonical Larena and Simai Framework
 model without making Laravel a runtime dependency of standalone Docara.
@@ -23,6 +26,15 @@ an extensible contribution registry; migrate product component names to
 move component markup, assets, behavior and hydration out of the generic
 publisher shell; expose complete manifests, views, presets, Atlas and readiness;
 document and demonstrate the result; publish and verify the exact local build.
+
+## Final Outcome
+
+Standalone Docara and the Larena/Simai Framework model share one portable Smart
+contract. Product components own their validated manifests, views, presets,
+templates, assets, events and hydration; the generic publisher only composes
+typed regions and sections. The exact candidate is documented, demonstrated,
+tested and served on local `docara.test` without adding Laravel as a dependency
+of the shared Smart kernel or the generated static runtime.
 
 ## Done When
 
@@ -89,16 +101,23 @@ it must not import Laravel classes or require a Laravel container in Docara.
 
 Compatibility aliases must not become accepted names for new authored examples.
 
-## Milestones
+## Stages
 
 - [done] Contract kernel: validator, registry, contributions and alias policy.
 - [done] Product migration: canonical names, complete manifests, views and presets.
 - [done] Ownership migration: component templates, assets, events and hydration.
 - [done] Generic publisher: remove product markup and behavior from shell.
 - [done] Product surfaces: documentation, Atlas/demonstrator and compatibility guide.
-- [in-progress] Acceptance: tests, deterministic build, local publication and browser matrix.
+- [done] Acceptance: tests, deterministic build, local publication and browser matrix.
 
-## Batch Ledger
+## Batches
+
+1. Recover current architecture, gates and compatibility boundary.
+2. Add the common manifest validator, registry and contribution API.
+3. Migrate canonical names, manifests, views, presets and owned assets.
+4. Make the publisher shell generic and update product documentation.
+5. Run full/deterministic verification, local publication and browser acceptance.
+6. Record the exact-candidate tester gate, reverse audit and closure.
 
 | # | Batch | Status | Evidence |
 | ---: | --- | --- | --- |
@@ -108,9 +127,18 @@ Compatibility aliases must not become accepted names for new authored examples.
 | 3 | Add views/presets/Atlas/readiness and component-owned assets | done | `manifest-registry-verification.md` |
 | 4 | Remove component-specific publisher shell markup and behavior | done | `publisher-shell-audit.md` |
 | 5 | Update documentation and live demonstrator | done | `documentation-and-demonstrator.md` |
-| 6 | Full/deterministic/standalone verification | in-progress | `verification-summary.md` |
-| 7 | Local publication and browser acceptance | planned | deployment and browser evidence |
-| 8 | Independent tester, reverse audit, memory and closure | planned | exact-candidate verdict |
+| 6 | Full/deterministic/standalone verification | done | `verification-summary.md` |
+| 7 | Local publication and browser acceptance | done | `deployment.md`, `browser-acceptance.md` |
+| 8 | Exact-candidate tester gate, reverse audit and closure | done | `independent-acceptance.md`, `reverse-outcome-audit.md` |
+
+## Track Linkage
+
+- parent track: `docara-consolidation`
+- this workflow: `2026-07-21-docara-smart-component-unification`
+
+This bounded workflow advances the Docara consolidation track by accepting the
+portable Smart-component ownership model. Public integration, package release
+and adoption by external consumers remain separate track work.
 
 ## Owner Map
 
@@ -164,15 +192,18 @@ Evidence root:
 
 ## Current Remaining
 
-Full verification, local publication, browser acceptance and exact-candidate
-acceptance remain.
+None inside this bounded Goal. Public push, release and wider ecosystem
+adoption remain separate explicitly authorized work.
 
-## Next Safe Batch
+## Result
 
-Run the full suite and two deterministic production builds, then publish the
-verified candidate to local `docara.test` with backup and browser acceptance.
+Candidate `46fefd88d4031a1a5bcba551fef9bdc6c04b2edf` passed the full suite,
+deterministic build comparison, local rollback-safe publication, desktop/mobile
+browser matrix, multilingual LTR/RTL fixture, exact-candidate tester gate and
+reverse-outcome audit.
 
 ## Kaizen
 
-Pending. Reusable contract changes remain project-local until acceptance; owner
-skill updates require a separate approved Skill Sync Gate.
+The typed region/section/Smart boundary and contribution-owned
+manifest/template/asset/event/hydration model are accepted project-local
+patterns. Owner-skill updates still require a separate approved Skill Sync Gate.

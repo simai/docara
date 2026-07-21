@@ -40,8 +40,9 @@ runtime-поведение.
 3. Добавьте только сужающие consumer metadata.
 4. Проверьте props, constraints, dependency closure, темы, клавиатуру,
    адаптивность и accessibility.
-5. Добавьте локализованный exact fixture; generated catalog отобразит параметры
-   и ограничения из эффективной записи.
+5. Добавьте presentation в language packs и отдельный exact fixture; generated
+   catalog объединит переводимый текст с параметрами и ограничениями
+   эффективной записи.
 
 Consumer metadata не может расширить manifest или самостоятельно повысить
 readiness. Подробный admission contract находится в

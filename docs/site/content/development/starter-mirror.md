@@ -17,8 +17,8 @@ Exporter требует точный commit SHA с единственным SemV
 ```bash
 TEMP_ROOT="$(php -r 'echo realpath(sys_get_temp_dir());')"
 MIRROR_DIR="$(mktemp -d "${TEMP_ROOT}/docara-template.XXXXXX")"
-php scripts/export-template.php "$MIRROR_DIR" <exact-docara-revision>
-php scripts/verify-template.php "$MIRROR_DIR" <exact-docara-revision>
+php scripts/export-template.php "$MIRROR_DIR" 0f10afde92b93dd39703823ab22a2920b450a15b
+php scripts/verify-template.php "$MIRROR_DIR" 0f10afde92b93dd39703823ab22a2920b450a15b
 ```
 
 `realpath(sys_get_temp_dir())` здесь намерен: на macOS короткий `/tmp` является

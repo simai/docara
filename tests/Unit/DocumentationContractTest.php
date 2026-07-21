@@ -8,11 +8,19 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Simai\Docara\File\Filesystem;
+use Simai\Docara\I18n\LanguagePackRepository;
+use Simai\Docara\I18n\LocaleRegistry;
+use Simai\Docara\I18n\Translator;
+use Simai\Docara\Portable\SchemaRepository;
+use Simai\Docara\PortableSite\PortableHtmlRenderer;
+use Simai\Docara\PortableSite\PortableMarkdownRenderer;
+use Simai\Docara\PortableSite\PortableSiteBuilder;
 use SplFileInfo;
 
 final class DocumentationContractTest extends TestCase
 {
-    private const PORTABLE_INSTALL_CANDIDATE = '2640503ba14913aa83bc3b4343c86966a807e29f';
+    private const PORTABLE_INSTALL_CANDIDATE = '0f10afde92b93dd39703823ab22a2920b450a15b';
 
     private const RETIRED_COMPONENT_SLUGS = [
         'alert',
@@ -40,6 +48,10 @@ final class DocumentationContractTest extends TestCase
                 'authoring/inheritance.md',
                 'authoring/layout-and-navigation.md',
                 'authoring/localization.md',
+                'authoring/branding.md',
+                'authoring/multilingual-site.md',
+                'authoring/language-packs.md',
+                'build/update.md',
                 'build/publish.md',
             ],
             'migrating_owner' => [
@@ -51,6 +63,7 @@ final class DocumentationContractTest extends TestCase
             'maintainer' => [
                 'development/getting-started.md',
                 'development/architecture.md',
+                'development/composition-extensions.md',
                 'development/testing.md',
             ],
             'extension_developer_or_ai' => [
@@ -68,7 +81,7 @@ final class DocumentationContractTest extends TestCase
         }
 
         $documents = $this->markdownDocuments();
-        self::assertCount(59, $documents, 'The authored documentation inventory must stay exact.');
+        self::assertCount(64, $documents, 'The authored documentation inventory must stay exact.');
 
         foreach ($documents as $path) {
             $markdown = (string) file_get_contents($path);
@@ -157,6 +170,186 @@ final class DocumentationContractTest extends TestCase
             '/не заменяйте.{0,120}обычным `docara init`/uis',
             preg_replace('/\s+/u', ' ', $troubleshooting) ?? $troubleshooting,
         );
+
+        foreach ([$this->repositoryRoot() . '/README.md', ...$this->markdownDocuments()] as $path) {
+            self::assertStringNotContainsString(
+                '2640503ba14913aa83bc3b4343c86966a807e29f',
+                (string) file_get_contents($path),
+                $this->relativeToRepository($path) . ' contains the retired portable candidate.',
+            );
+        }
+    }
+
+    #[Test]
+    public function user_ready_examples_are_schema_and_runtime_valid(): void
+    {
+        $branding = $this->firstJsonExample('authoring/branding.md');
+        (new SchemaRepository)->assertValid($branding, 'site.schema.json');
+
+        $localization = $this->firstJsonExample('authoring/localization.md');
+        $localizationRegistry = LocaleRegistry::fromSite($localization);
+        self::assertSame(['ar', 'en'], array_map(
+            static fn ($locale): string => $locale->tag->value(),
+            $localizationRegistry->fallbackChain('ar'),
+        ));
+        self::assertSame(['fr-CA', 'en'], array_map(
+            static fn ($locale): string => $locale->tag->value(),
+            $localizationRegistry->fallbackChain('fr-CA'),
+        ));
+
+        $multilingual = $this->firstJsonExample('authoring/multilingual-site.md');
+        (new SchemaRepository)->assertValid($multilingual, 'site.schema.json');
+        $multilingualRegistry = LocaleRegistry::fromSite($multilingual);
+        self::assertCount(3, $multilingualRegistry->all());
+        self::assertSame('rtl', $multilingualRegistry->get('ar')->direction);
+
+        $languagePack = $this->firstJsonExample('authoring/language-packs.md');
+        (new SchemaRepository)->assertValid($languagePack, 'language-pack.schema.json');
+        self::assertSame('fr-CA', $languagePack['locale']);
+
+        $temporary = sys_get_temp_dir() . '/docara-documented-language-pack-' . bin2hex(random_bytes(8));
+        self::assertTrue(mkdir($temporary . '/languages', 0700, true));
+        try {
+            file_put_contents(
+                $temporary . '/languages/fr-CA.json',
+                json_encode($languagePack, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
+            );
+            $registry = LocaleRegistry::fromSite([
+                'default_locale' => 'en',
+                'locales' => [
+                    'en' => [
+                        'label' => 'English',
+                        'direction' => 'ltr',
+                        'content_root' => 'content/en',
+                        'language_pack' => '@docara/en',
+                        'public_prefix' => 'en',
+                        'fallbacks' => [],
+                    ],
+                    'fr-CA' => [
+                        'label' => 'Français (Canada)',
+                        'direction' => 'ltr',
+                        'content_root' => 'content/fr-CA',
+                        'language_pack' => 'languages/fr-CA.json',
+                        'public_prefix' => 'fr-ca',
+                        'fallbacks' => ['en'],
+                    ],
+                ],
+            ]);
+            $translator = new Translator($registry, new LanguagePackRepository($temporary));
+            self::assertSame('Continuer', $translator->message('fr-CA', 'common.continue'));
+            self::assertSame(
+                'Open documentation sections',
+                $translator->message('fr-CA', 'navigation.open'),
+                'The documented partial language pack must resolve missing messages through explicit fallback.',
+            );
+        } finally {
+            (new Filesystem)->deleteDirectory($temporary);
+        }
+    }
+
+    #[Test]
+    public function documented_multilingual_site_builds_all_locale_roots(): void
+    {
+        $temporary = sys_get_temp_dir() . '/docara-documented-multilingual-' . bin2hex(random_bytes(8));
+        $filesystem = new Filesystem;
+        try {
+            $filesystem->copyDirectory($this->repositoryRoot() . '/stubs/portable', $temporary);
+            $resolvedTemporary = realpath($temporary);
+            self::assertIsString($resolvedTemporary);
+            $temporary = $resolvedTemporary;
+            $filesystem->deleteDirectory($temporary . '/content');
+            file_put_contents(
+                $temporary . '/docara.json',
+                json_encode(
+                    $this->firstJsonExample('authoring/multilingual-site.md'),
+                    JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR,
+                ) . "\n",
+            );
+            foreach (['ru' => 'Документация', 'en' => 'Documentation', 'ar' => 'التوثيق'] as $locale => $title) {
+                self::assertTrue(mkdir($temporary . '/content/' . $locale . '/guide', 0700, true));
+                file_put_contents($temporary . '/content/' . $locale . '/index.md', "# $title\n");
+                file_put_contents($temporary . '/content/' . $locale . '/guide/install.md', "# Install $locale\n");
+            }
+
+            (new PortableSiteBuilder(
+                $filesystem,
+                new PortableMarkdownRenderer,
+                new PortableHtmlRenderer,
+            ))->build($temporary, $temporary . '/build_test');
+
+            self::assertFileExists($temporary . '/build_test/index.html');
+            self::assertFileExists($temporary . '/build_test/en/index.html');
+            self::assertFileExists($temporary . '/build_test/ar/index.html');
+            $arabic = (string) file_get_contents($temporary . '/build_test/ar/index.html');
+            self::assertStringContainsString('lang="ar"', $arabic);
+            self::assertStringContainsString('dir="rtl"', $arabic);
+        } finally {
+            $filesystem->deleteDirectory($temporary);
+        }
+    }
+
+    #[Test]
+    public function optional_sidecars_update_path_and_composition_registration_are_explicit(): void
+    {
+        $projectFiles = (string) file_get_contents($this->contentRoot() . '/authoring/project-files.md');
+        self::assertMatchesRegularExpression('/page\.json.{0,120}необязател/uis', $projectFiles);
+        self::assertStringContainsString('соберётся без `install.page.json`', $projectFiles);
+
+        $update = (string) file_get_contents($this->contentRoot() . '/build/update.md');
+        self::assertStringContainsString('init --portable --update', $update);
+        self::assertStringContainsString('composer.lock', $update);
+        self::assertStringContainsString('Rollback', $update);
+        self::assertStringContainsString(self::PORTABLE_INSTALL_CANDIDATE, $update);
+
+        $composition = (string) file_get_contents(
+            $this->contentRoot() . '/development/composition-extensions.md',
+        );
+        foreach (['Layout', 'Section', 'Block', 'View Tree', 'Smart', 'DefinitionRepository', 'TrustedTemplateRegistry'] as $term) {
+            self::assertStringContainsString($term, $composition);
+        }
+        self::assertStringContainsString('Файлы не обнаруживаются по glob', $composition);
+    }
+
+    #[Test]
+    public function every_authored_json_fence_is_valid_json(): void
+    {
+        foreach ($this->markdownDocuments() as $path) {
+            $contents = (string) file_get_contents($path);
+            preg_match_all('/```json\h*\R(.*?)\R```/su', $contents, $matches);
+            foreach ($matches[1] as $index => $example) {
+                try {
+                    $decoded = json_decode($example, true, 512, JSON_THROW_ON_ERROR);
+                    self::assertIsArray($decoded);
+                } catch (\JsonException $exception) {
+                    self::fail(sprintf(
+                        '%s JSON example %d is invalid: %s',
+                        $this->relativeToRepository($path),
+                        $index + 1,
+                        $exception->getMessage(),
+                    ));
+                }
+            }
+        }
+    }
+
+    #[Test]
+    public function executable_shell_fences_do_not_contain_reference_placeholders(): void
+    {
+        foreach ($this->markdownDocuments() as $path) {
+            $contents = (string) file_get_contents($path);
+            preg_match_all('/```(?:bash|shell|sh|zsh|console)\h*\R(.*?)\R```/su', $contents, $matches);
+            foreach ($matches[1] as $index => $example) {
+                self::assertDoesNotMatchRegularExpression(
+                    '/\[(?:environment|--no-build)\]|<exact-[^>]+>|\/absolute\/path\//u',
+                    $example,
+                    sprintf(
+                        '%s shell example %d contains a non-executable placeholder; use a text fence for syntax notation.',
+                        $this->relativeToRepository($path),
+                        $index + 1,
+                    ),
+                );
+            }
+        }
     }
 
     #[Test]
@@ -292,6 +485,18 @@ final class DocumentationContractTest extends TestCase
 
         return str_starts_with($relativeSource, 'components/')
             && preg_match("~^(?:\\./|\\.\\./)*(?:$slugs)(?:\\.md|/)?$~", $target) === 1;
+    }
+
+    /** @return array<string, mixed> */
+    private function firstJsonExample(string $relative): array
+    {
+        $contents = (string) file_get_contents($this->contentRoot() . '/' . $relative);
+        self::assertMatchesRegularExpression('/```json\h*\R.*?\R```/su', $contents, $relative);
+        preg_match('/```json\h*\R(.*?)\R```/su', $contents, $match);
+        $decoded = json_decode($match[1], true, 512, JSON_THROW_ON_ERROR);
+        self::assertIsArray($decoded, $relative);
+
+        return $decoded;
     }
 
     private function relativeToRepository(string $path): string

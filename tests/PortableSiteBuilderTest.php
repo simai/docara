@@ -210,11 +210,11 @@ final class PortableSiteBuilderTest extends TestCase
             $landing,
         );
         self::assertStringContainsString(
-            '<code class="language-shell">composer require simai/docara' . "\n"
-                . 'php vendor/bin/docara init --portable' . "\n"
+            '<code class="language-shell">php vendor/bin/docara init --portable' . "\n"
                 . 'php vendor/bin/docara build local',
             $landing,
         );
+        self::assertStringNotContainsString('composer require simai/docara', $landing);
         self::assertStringNotContainsString(
             "\n            php vendor/bin/docara",
             $landing,

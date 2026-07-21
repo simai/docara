@@ -10,10 +10,10 @@
 | Кто | Начало | Результат |
 | --- | --- | --- |
 | Новый автор | `content/start.md` | Собранный, проверенный и открытый по HTTP сайт |
-| Автор документации | `content/authoring.md` | Настроенные Markdown-страницы и наследуемый макет |
-| Владелец сайта | `content/build.md` | Проверенная staged-публикация с rollback |
+| Автор документации | `content/authoring.md` | Markdown-only страницы, бренд, макет и локали |
+| Владелец сайта | `content/build.md` | Безопасное обновление и staged-публикация с rollback |
 | Мигрирующий проект | `content/migration.md` | Явный переход без скрытого преобразования |
-| Разработчик Docara | `content/development.md` | Локальная проверка и безопасное расширение |
+| Разработчик Docara | `content/development.md` | Зарегистрированные Layout, Section, Block, View Tree и Smart |
 
 Архитектура нового разделённого конвейера описана в
 [`declarative-rendering-pipeline.md`](declarative-rendering-pipeline.md).
@@ -28,6 +28,12 @@
 - `resources/schemas` и реализация CLI владеют исполняемым контрактом.
 - `resources/component-catalog` и точные example fixtures владеют сведениями о
   компонентах.
+- `resources/language-packs` и проектные `languages/*.json` владеют
+  переводимыми системными подписями и presentation компонентов; canonical
+  технический контракт остаётся в component catalog.
+- `resources/layouts`, `sections`, `blocks`, `views` и `smart` владеют
+  зарегистрированной декларативной композицией; авторский JSON только вызывает
+  разрешённые ID.
 - `/components/catalog/` генерируется при сборке и является единственным
   детальным справочником компонентов.
 - `docs/site/examples/*.json` связывает реальные скрытые Markdown-страницы с
@@ -49,6 +55,10 @@
 - изменился процесс build, verify, preview или publish;
 - изменился способ допуска native, typed или Smart-компонента;
 - изменился migration или security boundary.
+- изменился accepted portable candidate или update/rollback contract;
+- изменились locale registry, fallback либо language-pack schema;
+- добавлена регистрационная поверхность Layout, Section, Block, View Tree или
+  Smart-компонента.
 
 ## Сборка и проверка
 

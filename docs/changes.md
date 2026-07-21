@@ -2,6 +2,18 @@
 
 ## Unreleased
 
+- Пользовательская документация приведена к accepted portable candidate
+  `0f10afde92b93dd39703823ab22a2920b450a15b`; legacy `1.x` больше не
+  сочетается с `init --portable` ни в одном quick-start маршруте.
+- Зафиксировано, что одна сборка публикует все объявленные локали, а page
+  sidecar необязателен для обычной Markdown-страницы.
+- Добавлены практические руководства по брендированию, мультиязычному сайту,
+  project language pack и безопасному обновлению с rollback.
+- Добавлен maintainer-путь регистрации Layout, Section, Block, View Tree и
+  Smart-компонента без авторской executable surface.
+- Исправлен исполняемый пример fallback-графа и разделено владение canonical
+  component contract, language-pack presentation и exact fixtures.
+
 - Основной portable publisher переведён на декларативную цепочку
   `Layout -> Region -> Section -> Block -> Smart`.
 - Авторские страницы, лендинги и сгенерированный каталог компонентов

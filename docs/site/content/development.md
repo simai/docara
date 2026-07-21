@@ -13,6 +13,7 @@
 - [Начало работы с repository](/development/getting-started/)
 - [Архитектура](/development/architecture/)
 - [Декларативный preview](/development/declarative-preview/)
+- [Расширение Layout, Section, Block, View Tree и Smart](/development/composition-extensions/)
 - [Развитие возможностей](/development/extensions/)
 - [Vite и ассеты](/development/vite-assets/)
 - [Framework-компоненты](/development/framework-components/)

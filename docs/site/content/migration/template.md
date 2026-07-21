@@ -8,7 +8,9 @@ canonical starter принадлежит пакету `simai/docara`.
 
 ## Создайте новый проект
 
-1. создайте пустой каталог и выполните `composer require simai/docara`;
+1. создайте пустой каталог и установите immutable portable candidate по
+   [командам быстрого старта](/start/); обычный `composer require simai/docara`
+   до публичного portable release устанавливает legacy-линию `1.x`;
 2. запустите `php vendor/bin/docara init --portable`;
 3. перенесите полезный Markdown в `content`;
 4. выразите title, description, order и hidden через JSON;

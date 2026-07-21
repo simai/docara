@@ -17,7 +17,7 @@ composer init --name=example/docara-site --no-interaction
 composer config minimum-stability dev
 composer config prefer-stable true
 composer config repositories.docara '{"type":"vcs","url":"https://github.com/simai/docara.git","no-api":true}' --json
-composer require 'simai/docara:dev-codex/docara-consolidation#2640503ba14913aa83bc3b4343c86966a807e29f' --prefer-source
+composer require 'simai/docara:dev-codex/docara-consolidation#0f10afde92b93dd39703823ab22a2920b450a15b' --prefer-source
 php vendor/bin/docara init --portable
 ```
 
@@ -99,19 +99,26 @@ content/
 5. Перезапустите HTTP preview или запустите `serve production` без
    `--no-build`, чтобы сначала пересобрать сайт.
 
-Настройки всего сайта находятся в `docara.json`, раздела — в `section.json`,
-страницы — в соседнем `<page>.page.json`.
+Обычной Markdown-странице JSON-файл не нужен. Настройки всего сайта находятся
+в `docara.json`; `section.json` добавляют только для наследуемых настроек
+каталога, а соседний `<page>.page.json` — только для настройки одной страницы.
+Starter содержит несколько таких файлов как рабочие примеры, а не как
+обязательную пару для каждого Markdown-файла.
 
-Starter задаёт `default_locale`, реестр `locales`, одну `documentation_version` и
-декларативный `redirects_file`. Для другой версии создайте отдельный
-site variant и output, а не смешивайте страницы в одной сборке.
+Starter задаёт `default_locale`, одну `documentation_version` и декларативный
+`redirects_file`. Для нескольких языков добавьте явный реестр `locales`. Для
+другой версии создайте отдельный site variant и output, а не смешивайте
+страницы в одной сборке.
 
 ## Что читать дальше
 
 - [Файлы проекта](/authoring/project-files/)
 - [Конфигурация](/authoring/configuration/)
+- [Брендирование](/authoring/branding/)
+- [Мультиязычный сайт](/authoring/multilingual-site/)
 - [Наследование и `$reset`](/authoring/inheritance/)
 - [Документация и лендинг](/authoring/layout-and-navigation/)
 - [Generated catalog компонентов](/components/catalog/)
 - [Проверка сборки](/build/verify/)
 - [Публикация с rollback](/build/publish/)
+- [Обновление Docara](/build/update/)

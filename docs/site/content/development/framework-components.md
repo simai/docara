@@ -25,8 +25,9 @@
 6. добавить positive и negative props, constraint, dependency и lock tests;
 7. проверить в браузере поведение, клавиатуру, темы, адаптивность и
    доступность;
-8. добавить локализованный exact fixture; generated catalog создаст страницу
-   компонента автоматически.
+8. добавить presentation в language packs и отдельный exact fixture; generated
+   catalog создаст страницу компонента автоматически без ручного
+   Markdown-дубля.
 
 Каждый critical asset из manifest должен либо присутствовать в вычисленном
 asset plan, либо быть назван в сужающей consumer-policy с конкретной причиной.

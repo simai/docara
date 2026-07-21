@@ -30,6 +30,7 @@ Preview блокирует терминал до `Ctrl+C`. Не использу
 - [Статический результат](/build/static-output/)
 - [Воспроизводимость](/build/determinism/)
 - [Проверка output](/build/verify/)
+- [Обновление Docara без потери сайта](/build/update/)
 - [Staged-публикация и rollback](/build/publish/)
 
 Vite нужен только maintainer-разработчику исходных ассетов темы. Он не входит в

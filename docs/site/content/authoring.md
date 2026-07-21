@@ -6,7 +6,7 @@
 - `docara.json` задаёт сайт;
 - `redirects.json` сохраняет обязательные старые внутренние URL;
 - `section.json` задаёт наследуемые значения ветки;
-- `<page>.page.json` уточняет одну страницу;
+- необязательный `<page>.page.json` уточняет только одну страницу;
 - generator создаёт HTML, indexes и диагностические artifacts.
 
 :::card
@@ -23,12 +23,16 @@
 1. [Разберитесь с файлами проекта](/authoring/project-files/).
 2. [Напишите страницу в Markdown](/authoring/markdown/).
 3. [Настройте сайт, раздел или страницу](/authoring/configuration/).
-4. [Проверьте наследование и `$reset`](/authoring/inheritance/).
-5. [Выберите `docs` или `landing`](/authoring/layout-and-navigation/).
-6. При изменении URL [объявите redirect](/authoring/redirects/).
-7. [Сравните живые макеты и их точные исходники](/examples/).
-8. При необходимости [найдите компонент](/components/catalog/).
-9. [Соберите и проверьте результат](/build/verify/).
+4. [Добавьте название, логотип и favicon](/authoring/branding/).
+5. [Проверьте наследование и `$reset`](/authoring/inheritance/).
+6. [Выберите `docs` или `landing`](/authoring/layout-and-navigation/).
+7. Для нескольких языков соберите
+   [мультиязычный сайт](/authoring/multilingual-site/) и при необходимости
+   [свой language pack](/authoring/language-packs/).
+8. При изменении URL [объявите redirect](/authoring/redirects/).
+9. [Сравните живые макеты и их точные исходники](/examples/).
+10. При необходимости [найдите компонент](/components/catalog/).
+11. [Соберите и проверьте результат](/build/verify/).
 
 ## Не редактируйте output
 

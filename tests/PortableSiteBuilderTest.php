@@ -220,6 +220,14 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:transparent;', $shellCss);
         self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre}', $shellCss);
         self::assertStringContainsString(
+            '.docara-outline-rail{align-self:stretch;border-inline-start:',
+            $shellCss,
+        );
+        self::assertStringContainsString(
+            '.docara-outline-rail>[data-docara-section]{position:sticky;',
+            $shellCss,
+        );
+        self::assertStringContainsString(
             'href="/_docara/declarative-shell.css" data-docara-declarative-shell-style',
             $landing,
         );

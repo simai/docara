@@ -135,6 +135,16 @@ final class PortableDocumentationSiteTest extends PHPUnit
             $shellCss,
             'Mobile heading anchors must reserve space for the compact mobile header.',
         );
+        self::assertStringContainsString(
+            '.docara-outline-rail{align-self:stretch;border-inline-start:',
+            $shellCss,
+            'The desktop outline divider must span the full layout row.',
+        );
+        self::assertStringContainsString(
+            '.docara-outline-rail>[data-docara-section]{position:sticky;',
+            $shellCss,
+            'Only the outline content, not its full-height divider rail, should be sticky.',
+        );
         foreach ($unavailable as $entry) {
             self::assertStringContainsString(
                 'data-docara-component-gap="' . $entry['id'] . '"',

@@ -1,31 +1,31 @@
-# Active workflow: Docara right outline refinement
+# Active workflow: Docara adaptive mobile contents
 
 Date: 2026-07-22
 Status: implemented and locally verified
-Workflow ID: `2026-07-22-docara-outline-legacy-refinement`
-Process model: raw-owner `docara + sf5 + ux + designer + tester + ops`
+Workflow ID: `2026-07-22-docara-adaptive-mobile-toc`
+Process model: raw-owner `docara + sf5 + ux + tester + ops`
 Current state: `review_ready`
 Target state: `review_ready`
 
 ## Current Goal
 
-Make the canonical `docara.toc` desktop outline as compact and orienting as
-the useful legacy surface while preserving the declarative publisher, Simai
-Framework contract, mobile behavior, RTL and accessibility.
+Use the clear localized label “Содержание” and show the mobile contents control
+only where it materially helps navigation, without weakening the declarative
+publisher or Smart-component contract.
 
 ## Result So Far
 
-Desktop links now render at 14px in 36px rows using Framework spacing and
-typography utilities. The component owns scroll-aware
-`aria-current="location"` state and a 2px token-based rail marker. The mobile
-outline retains a 44px minimum target and no page-level overflow.
+Desktop keeps its outline. Mobile `auto` hides the trigger on short flat pages
+and shows it for four or more entries or nested H3-H6 headings; authors may
+override this with `always` or `never`. The mobile sheet has one visible
+“Содержание” heading rather than a duplicate.
 
 ## Completion Guard
 
-Full PHPUnit passed at 618 tests / 5,465 assertions. The exact build passed
-static verification for 271 HTML pages and 20,569 local references, and is
+Full PHPUnit passed at 619 tests / 5,481 assertions. The exact build passed
+static verification for 271 HTML pages and 20,512 local references, and is
 served at local `docara.test` with rollback backup. Evidence:
-`source/workflow/evidence/2026-07-22-docara-outline-legacy-refinement/`.
+`source/workflow/evidence/2026-07-22-docara-adaptive-mobile-toc/`.
 
 Public push, merge, tag, package release and production readiness remain
 excluded.

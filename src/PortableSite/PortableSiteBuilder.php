@@ -185,6 +185,7 @@ final readonly class PortableSiteBuilder
                 'search_indexed' => (bool) data_get($plan->configuration, 'search.indexed', true),
                 'reading_breadcrumbs' => (bool) data_get($plan->configuration, 'reading.breadcrumbs', true),
                 'reading_toc' => (bool) data_get($plan->configuration, 'reading.toc', true),
+                'reading_mobile_toc' => (string) data_get($plan->configuration, 'reading.mobile_toc', 'auto'),
                 'reading_previous_next' => (bool) data_get($plan->configuration, 'reading.previous_next', true),
                 'outline' => $outline['items'],
                 'url' => $route['url'],

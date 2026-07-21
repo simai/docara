@@ -156,6 +156,7 @@ final class PortableConfigurationLoader
             'reading' => [
                 'breadcrumbs' => true,
                 'toc' => true,
+                'mobile_toc' => 'auto',
                 'toc_depth' => 3,
                 'previous_next' => true,
             ],

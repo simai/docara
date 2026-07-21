@@ -63,7 +63,7 @@ final readonly class PageCompositionContext
                 'collapse' => self::copy($copy, 'navigation.collapse', 'Collapse: '),
                 'contains_current' => self::copy($copy, 'navigation.contains_current', ', contains the current page'),
             ],
-            self::copy($copy, 'navigation.outline', 'On this page'),
+            self::copy($copy, 'navigation.outline', 'Contents'),
         );
     }
 

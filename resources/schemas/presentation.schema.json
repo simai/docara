@@ -233,6 +233,10 @@
                 "toc": {
                     "type": "boolean"
                 },
+                "mobile_toc": {
+                    "type": "string",
+                    "enum": ["auto", "always", "never"]
+                },
                 "toc_depth": {
                     "type": "integer",
                     "minimum": 2,

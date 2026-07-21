@@ -63,6 +63,7 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame([
             'breadcrumbs' => true,
             'toc' => true,
+            'mobile_toc' => 'auto',
             'toc_depth' => 3,
             'previous_next' => true,
         ], $plan->configuration['reading']);
@@ -70,6 +71,7 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame('@defaults', $plan->provenance['/search/indexed']);
         self::assertSame('@defaults', $plan->provenance['/reading/breadcrumbs']);
         self::assertSame('@defaults', $plan->provenance['/reading/toc']);
+        self::assertSame('@defaults', $plan->provenance['/reading/mobile_toc']);
         self::assertSame('@defaults', $plan->provenance['/reading/toc_depth']);
         self::assertSame('@defaults', $plan->provenance['/reading/previous_next']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/layout/max_width']);
@@ -439,6 +441,8 @@ final class PortableConfigurationTest extends TestCase
             [['schema' => 'docara.page.v1', 'search' => ['unknown' => true]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'reading' => ['breadcrumbs' => 'true']], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'reading' => ['toc' => 1]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['mobile_toc' => true]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['mobile_toc' => 'sometimes']], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'reading' => ['previous_next' => null]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'reading' => ['toc_depth' => 1]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'reading' => ['toc_depth' => 7]], 'page.schema.json'],

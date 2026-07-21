@@ -26,6 +26,11 @@ final readonly class PublisherChromeRenderer
             'search-dialog',
             'reader-settings',
         ] as $part) {
+            if ($part === 'mobile-toc' && ! $view->mobileTocEnabled) {
+                $result['mobile_toc'] = '';
+
+                continue;
+            }
             $result[str_replace('-', '_', $part)] = $this->templates->render(
                 'publisher.docara.' . $part,
                 ['view' => $view],

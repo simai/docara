@@ -501,6 +501,7 @@ final readonly class PortableDeclarativeExampleProjector
             'search_indexed' => true,
             'reading_breadcrumbs' => (bool) data_get($configuration, 'reading.breadcrumbs', true),
             'reading_toc' => (bool) data_get($configuration, 'reading.toc', true),
+            'reading_mobile_toc' => (string) data_get($configuration, 'reading.mobile_toc', 'auto'),
             'reading_previous_next' => (bool) data_get($configuration, 'reading.previous_next', true),
             'outline' => $outline,
             'url' => $url,

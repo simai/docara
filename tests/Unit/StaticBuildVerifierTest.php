@@ -946,6 +946,11 @@ final class StaticBuildVerifierTest extends TestCase
                 $html,
                 1,
             ),
+            'mobile-toc-state-mismatch' => static fn (string $html): string => str_replace(
+                'data-mobile-toc="auto-hidden"',
+                'data-mobile-toc="shown"',
+                $html,
+            ),
         ] as $case => $mutate) {
             $build = $this->createGeneratedCatalogBuild('catalog-shell-' . $case);
             $path = $build . '/components/catalog/native.code/index.html';

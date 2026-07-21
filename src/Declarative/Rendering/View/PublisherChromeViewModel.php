@@ -21,6 +21,7 @@ final readonly class PublisherChromeViewModel
         public ?string $searchRuntimeUrl,
         public ?string $searchIndexUrl,
         public array $regions,
+        public bool $mobileTocEnabled,
         public array $breadcrumbs,
         public ?array $previous,
         public ?array $next,

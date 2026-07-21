@@ -29,6 +29,7 @@ final readonly class PortablePageViewModel
         public string $themeBootstrap,
         public string $preset,
         public string $maxWidth,
+        public string $mobileTocState,
         public bool $searchEnabled,
         public ?string $searchRuntimeUrl,
         public ?string $searchIndexUrl,

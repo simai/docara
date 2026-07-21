@@ -54,7 +54,7 @@
       "safe_to_execute_effect": true
     },
     "accessibility": ["landmark_label", "heading_links", "visible_focus"],
-    "example_props": {"items": [], "label": "On this page"},
+    "example_props": {"items": [], "label": "Contents"},
     "controls": [{"key": "label", "source": "prop", "widget": "text"}]
   },
   "provenance": {

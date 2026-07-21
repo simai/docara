@@ -56,7 +56,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $regions['outline'] = '';
         }
         $regions['sidebar_mobile'] = $this->mobileClone($regions['sidebar']);
-        $regions['outline_mobile'] = $this->mobileClone($regions['outline']);
+        $regions['outline_mobile'] = $this->mobileOutlineClone($regions['outline']);
         $branding = is_array($page['branding'] ?? null) ? $page['branding'] : [];
         $brandTitle = (string) ($branding['title'] ?? $siteTitle);
         $configuredTheme = in_array($page['theme'] ?? null, ['system', 'light', 'dark'], true)
@@ -91,12 +91,14 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         $themeOptions = $this->themeOptions($configuredTheme, $escapedCopy);
         $languageOptions = $this->languageOptions(is_array($page['language_options'] ?? null) ? $page['language_options'] : []);
         $preset = (string) $page['preset'] === 'landing' ? 'landing' : 'docs';
+        $mobileTocState = $regions['outline'] === '' ? 'unavailable' : $this->mobileTocState($page);
         $chrome = $this->chrome->render(new PublisherChromeViewModel(
             $preset,
             $searchEnabled,
             $searchEnabled ? $this->escape((string) $page['search_runtime_url']) : null,
             $searchEnabled ? $this->escape((string) $page['search_index_url']) : null,
             $regions,
+            $mobileTocState === 'shown',
             $breadcrumbs,
             $previous,
             $next,
@@ -127,6 +129,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $this->themeBootstrap($configuredTheme),
             $preset,
             $this->escape((string) $page['max_width']),
+            $mobileTocState,
             $searchEnabled,
             $searchEnabled ? $this->escape((string) $page['search_runtime_url']) : null,
             $searchEnabled ? $this->escape((string) $page['search_index_url']) : null,
@@ -147,6 +150,31 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         );
 
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
+    }
+
+    /** @param array<string, mixed> $page */
+    private function mobileTocState(array $page): string
+    {
+        $outline = is_array($page['outline'] ?? null) ? $page['outline'] : [];
+        if ($outline === []) {
+            return 'unavailable';
+        }
+        $mode = in_array($page['reading_mobile_toc'] ?? null, ['auto', 'always', 'never'], true)
+            ? (string) $page['reading_mobile_toc']
+            : 'auto';
+        if ($mode !== 'auto') {
+            return $mode === 'always' ? 'shown' : 'disabled';
+        }
+        if (count($outline) >= 4) {
+            return 'shown';
+        }
+        foreach ($outline as $item) {
+            if (is_array($item) && (int) ($item['level'] ?? 0) >= 3) {
+                return 'shown';
+            }
+        }
+
+        return 'auto-hidden';
     }
 
     /** @param list<array<string, mixed>> $items
@@ -266,6 +294,30 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
     private function mobileClone(string $html): string
     {
         return preg_replace('/\\s+id="[^"]+"/', '', $html) ?? $html;
+    }
+
+    private function mobileOutlineClone(string $html): string
+    {
+        if ($html === '') {
+            return '';
+        }
+        $clone = $this->mobileClone($html);
+        $count = 0;
+        $clone = preg_replace(
+            '/(<nav\\b[^>]*data-docara-smart="docara\\.toc"[^>]*>\\s*<p\\b)/',
+            '$1 hidden',
+            $clone,
+            1,
+            $count,
+        ) ?? $clone;
+        if ($count !== 1) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_MOBILE_TOC_HEADING_CONTRACT_INVALID',
+                'The mobile contents clone must contain exactly one hideable duplicate heading.',
+            );
+        }
+
+        return $clone;
     }
 
     /** @param list<string> $assetKeys */

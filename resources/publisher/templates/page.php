@@ -34,7 +34,7 @@
         <article class="docara-content docara-prose flex min-w-0 flex-col gap-2" data-width="<?= $view->maxWidth ?>"><?= $view->regions['main'] ?></article>
     </main>
 <?php } else { ?>
-    <div class="docara-docs-layout gap-0" data-sidebar="<?= $view->regions['sidebar'] === '' ? 'false' : 'true' ?>" data-outline="<?= $view->regions['outline'] === '' ? 'false' : 'true' ?>">
+    <div class="docara-docs-layout gap-0" data-sidebar="<?= $view->regions['sidebar'] === '' ? 'false' : 'true' ?>" data-outline="<?= $view->regions['outline'] === '' ? 'false' : 'true' ?>" data-mobile-toc="<?= $view->mobileTocState ?>">
 <?php if ($view->regions['sidebar'] !== '') { ?>
         <aside class="docara-sidebar p-1" data-docara-region="sidebar"><?= $view->regions['sidebar'] ?></aside>
 <?php } ?>

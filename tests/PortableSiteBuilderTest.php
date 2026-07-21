@@ -77,11 +77,11 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('data-docara-smart="docara.navigation"', $arabic);
         self::assertStringContainsString('aria-label="الأقسام"', $arabic);
         self::assertStringContainsString('data-docara-smart="docara.toc"', $arabicGuide);
-        self::assertStringContainsString('aria-label="في هذه الصفحة"', $arabicGuide);
+        self::assertStringContainsString('aria-label="المحتويات"', $arabicGuide);
         self::assertStringContainsString('<html lang="zh-Hans" dir="ltr"', $chinese);
         self::assertStringContainsString('>阅读设置</h2>', $chinese);
         self::assertStringContainsString('aria-label="章节"', $chinese);
-        self::assertStringContainsString('aria-label="本页内容"', $chineseGuide);
+        self::assertStringContainsString('aria-label="目录"', $chineseGuide);
         foreach ([
             'hreflang="ru" href="/"',
             'hreflang="en" href="/en/"',
@@ -257,6 +257,8 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('aria-current="page"', $guide);
         self::assertStringContainsString('data-docara-outline', $guide);
         self::assertStringContainsString('data-docara-outline-mobile', $guide);
+        self::assertStringContainsString('aria-label="Содержание"', $guide);
+        self::assertStringNotContainsString('На этой странице', $guide);
         self::assertStringContainsString(
             'class="docara-outline-list flex flex-col gap-0 m-0 p-0"',
             $guide,
@@ -814,6 +816,50 @@ final class PortableSiteBuilderTest extends TestCase
     }
 
     #[Test]
+    public function mobile_outline_is_adaptive_and_can_be_forced_or_disabled(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $pagePath = $this->tmpPath('content/guides/getting-started.page.json');
+        $markdownPath = $this->tmpPath('content/guides/getting-started.md');
+        file_put_contents(
+            $markdownPath,
+            "# Быстрый старт\n\n## Первый\n\nТекст.\n\n## Второй\n\nТекст.\n\n## Третий\n\nТекст.\n",
+        );
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_auto'));
+        $auto = (string) file_get_contents($this->tmpPath('build_auto/guides/getting-started/index.html'));
+        self::assertStringContainsString('data-docara-region="outline"', $auto);
+        self::assertStringNotContainsString('data-docara-outline-mobile', $auto);
+
+        $page = $this->jsonFile($pagePath);
+        $page['reading'] = ['mobile_toc' => 'always'];
+        file_put_contents(
+            $pagePath,
+            json_encode($page, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+        $this->builder()->build($this->tmp, $this->tmpPath('build_always'));
+        $always = (string) file_get_contents($this->tmpPath('build_always/guides/getting-started/index.html'));
+        self::assertStringContainsString('data-docara-outline-mobile', $always);
+        self::assertStringContainsString('>Содержание</span>', $always);
+        self::assertStringContainsString('<p hidden class="m-0 weight-7">Содержание</p>', $always);
+        self::assertStringContainsString('<p class="m-0 weight-7">Содержание</p>', $always);
+
+        $page['reading'] = ['mobile_toc' => 'never'];
+        file_put_contents(
+            $pagePath,
+            json_encode($page, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+        file_put_contents(
+            $markdownPath,
+            "# Быстрый старт\n\n## Первый\n\n### Вложенный\n\n## Второй\n\n## Третий\n\n## Четвёртый\n",
+        );
+        $this->builder()->build($this->tmp, $this->tmpPath('build_never'));
+        $never = (string) file_get_contents($this->tmpPath('build_never/guides/getting-started/index.html'));
+        self::assertStringContainsString('data-docara-region="outline"', $never);
+        self::assertStringNotContainsString('data-docara-outline-mobile', $never);
+    }
+
+    #[Test]
     public function disabled_optional_regions_emit_no_empty_shell_or_mobile_navigation(): void
     {
         $this->copyPortableFixture($this->tmp);
@@ -834,7 +880,7 @@ final class PortableSiteBuilderTest extends TestCase
         $html = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
 
         self::assertStringContainsString(
-            '<div class="docara-docs-layout gap-0" data-sidebar="false" data-outline="false">',
+            '<div class="docara-docs-layout gap-0" data-sidebar="false" data-outline="false" data-mobile-toc="unavailable">',
             $html,
         );
         self::assertStringNotContainsString('data-docara-region="sidebar"', $html);

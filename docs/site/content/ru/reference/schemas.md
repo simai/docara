@@ -72,6 +72,7 @@ Invalid-пример документирует ожидаемую ошибку;
 - `navigation.order`: integer `0..2147483647`;
 - `search.enabled`, `search.indexed`: boolean;
 - `reading.breadcrumbs`, `reading.toc`, `reading.previous_next`: boolean;
+- `reading.mobile_toc`: `auto`, `always`, `never`;
 - `reading.toc_depth`: integer `2..6`.
 
 Branch должен содержать хотя бы одно поле. `{}` и `[]` отклоняются. Явная
@@ -102,6 +103,7 @@ Resolver устанавливает:
   "reading": {
     "breadcrumbs": true,
     "toc": true,
+    "mobile_toc": "auto",
     "toc_depth": 3,
     "previous_next": true
   }

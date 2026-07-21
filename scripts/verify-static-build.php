@@ -1667,9 +1667,25 @@ function docaraAssertCatalogShellContract(
             'Generated component catalogue shell lost its active desktop or mobile navigation context.',
         );
     }
-    if ($count('//*[@data-docara-outline]') !== 2) {
+    $layout = $xpath->query('//div[contains(concat(" ", normalize-space(@class), " "), " docara-docs-layout ")]')->item(0);
+    if (! $layout instanceof DOMElement) {
         throw new RuntimeException(
-            'Generated component catalogue shell requires matching desktop and mobile outlines.',
+            'Generated component catalogue shell has no inspectable documentation layout.',
+        );
+    }
+    $mobileTocState = $layout->getAttribute('data-mobile-toc');
+    $expectedOutlineCount = match ($mobileTocState) {
+        '' => 2,
+        'shown' => 2,
+        'auto-hidden', 'disabled' => 1,
+        'unavailable' => 0,
+        default => -1,
+    };
+    if ($expectedOutlineCount < 0
+        || $count('//*[@data-docara-outline]') !== $expectedOutlineCount
+    ) {
+        throw new RuntimeException(
+            'Generated component catalogue shell mobile contents state does not match its outlines.',
         );
     }
 

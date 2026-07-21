@@ -1,0 +1,64 @@
+{
+  "schema": "larena.ui.smart_manifest.v1",
+  "key": "docara.toc",
+  "version": "1.0.0",
+  "owner_package": "simai/docara",
+  "kind": "composite",
+  "props": {
+    "type": "object",
+    "properties": {
+      "items": {
+        "type": "array",
+        "maxItems": 250,
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string", "minLength": 1, "maxLength": 500},
+            "level": {"type": "integer", "minimum": 2, "maximum": 6},
+            "text": {"type": "string", "minLength": 1, "maxLength": 1000}
+          },
+          "required": ["id", "level", "text"],
+          "additionalProperties": false
+        }
+      },
+      "label": {"type": "string", "minLength": 1, "maxLength": 200}
+    },
+    "required": ["items", "label"],
+    "additionalProperties": false
+  },
+  "slots": {},
+  "events": {
+    "docara-toc-navigate": {"kind": "custom", "backend_handler_binding": false}
+  },
+  "views": {"default": {}, "compact": {}},
+  "presets": {"default": {"view": "default"}, "compact": {"view": "compact"}},
+  "constraints": {},
+  "render": {"strategy": "host", "renderer": "docara.smart.template"},
+  "frontend": {"runtime": null, "tag": null},
+  "assets": [
+    {"key": "simai.framework.core.css", "kind": "css", "critical": true},
+    {"key": "docara.smart.toc.css", "kind": "css", "critical": true},
+    {"key": "docara.smart.toc.js", "kind": "javascript", "critical": false}
+  ],
+  "atlas": {
+    "visible": true,
+    "title": "Table of contents",
+    "description": "Displays links to the current page headings.",
+    "category": "navigation",
+    "status": "developer_testable",
+    "states": ["default", "empty", "active"],
+    "readiness": {
+      "safe_to_suggest": true,
+      "safe_to_render": true,
+      "safe_to_bind_data": true,
+      "safe_to_execute_effect": true
+    },
+    "accessibility": ["landmark_label", "heading_links", "visible_focus"],
+    "example_props": {"items": [], "label": "On this page"},
+    "controls": [{"key": "label", "source": "prop", "widget": "text"}]
+  },
+  "provenance": {
+    "source": "simai/docara",
+    "reference_status": "product_owned"
+  }
+}

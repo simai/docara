@@ -29,6 +29,7 @@ use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\PortableConfigurationLoader;
 use Simai\Docara\Portable\ResolvedPagePlan;
 use Simai\Docara\Portable\SchemaRepository;
+use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class PortableSiteBuilder
 {
@@ -525,6 +526,7 @@ final readonly class PortableSiteBuilder
                         (string) $page['home_url'],
                         $activeNavigation,
                         $page['outline'],
+                        is_array($page['ui_copy'] ?? null) ? $page['ui_copy'] : [],
                     );
                     $declarativePipeline ??= DeclarativePipeline::bundled(
                         $declarativePlan->frameworkLock,
@@ -1191,6 +1193,32 @@ final readonly class PortableSiteBuilder
                 throw new PortableConfigurationException(
                     'DECLARATIVE_PUBLISHER_ASSET_PUBLICATION_FAILED',
                     $name,
+                );
+            }
+        }
+        foreach (SmartRegistry::bundled()->assets() as $key => $asset) {
+            $source = dirname(__DIR__, 2) . '/resources/' . $asset['path'];
+            if (! is_file($source) || is_link($source)) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_SMART_ASSET_MISSING',
+                    "Registered Smart asset [$key] is missing or unsafe.",
+                );
+            }
+            $bytes = file_get_contents($source);
+            if (! is_string($bytes) || $bytes === '') {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_SMART_ASSET_INVALID',
+                    "Registered Smart asset [$key] is invalid.",
+                );
+            }
+            $target = rtrim($destination, '/\\') . '/_docara/' . $asset['public'];
+            $this->files->ensureDirectoryExists(dirname($target));
+            if ($this->files->put($target, $bytes) === false
+                || ! hash_equals(hash('sha256', $bytes), (string) hash_file('sha256', $target))
+            ) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_SMART_ASSET_PUBLICATION_FAILED',
+                    $key,
                 );
             }
         }

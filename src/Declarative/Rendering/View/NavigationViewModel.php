@@ -10,5 +10,9 @@ final readonly class NavigationViewModel
     public function __construct(
         public array $items,
         public int $maximumDepth,
+        public string $label,
+        public string $expandLabel,
+        public string $collapseLabel,
+        public string $containsCurrentLabel,
     ) {}
 }

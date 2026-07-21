@@ -58,7 +58,7 @@ final class ViewModelFactory
         );
     }
 
-    public function header(ResolvedSmartPlan $plan): HeaderViewModel
+    public function brand(ResolvedSmartPlan $plan): HeaderViewModel
     {
         $branding = $plan->props['branding'];
 
@@ -76,10 +76,14 @@ final class ViewModelFactory
         return new NavigationViewModel(
             $this->navigationItems($plan->props['items']),
             (int) $plan->props['maximum_depth'],
+            $this->escape((string) $plan->props['label']),
+            $this->escape((string) $plan->props['expand_label']),
+            $this->escape((string) $plan->props['collapse_label']),
+            $this->escape((string) $plan->props['contains_current_label']),
         );
     }
 
-    public function outline(ResolvedSmartPlan $plan): OutlineViewModel
+    public function toc(ResolvedSmartPlan $plan): OutlineViewModel
     {
         $items = [];
         foreach ($plan->props['items'] as $item) {
@@ -98,7 +102,7 @@ final class ViewModelFactory
             );
         }
 
-        return new OutlineViewModel($items);
+        return new OutlineViewModel($items, $this->escape((string) $plan->props['label']));
     }
 
     /**

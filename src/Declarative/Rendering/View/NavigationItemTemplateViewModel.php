@@ -12,5 +12,8 @@ final readonly class NavigationItemTemplateViewModel
         public ?string $activeRole,
         public string $weightClass,
         public int $frameworkLevel,
+        public string $expandLabel,
+        public string $collapseLabel,
+        public string $containsCurrentLabel,
     ) {}
 }

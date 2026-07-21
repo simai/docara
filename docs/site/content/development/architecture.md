@@ -30,9 +30,11 @@ Portable режим определяется наличием `docara.json` со
 соседние страницы используют каноническую модель, поэтому UI-поверхности не
 расходятся по пути или порядку.
 
-Outline builder работает с безопасным HTML Markdown до подстановки
-Smart-компонентов. Он назначает H1–H6 уникальные Unicode `id`, а renderer
-выводит H2–H6 только до `reading.toc_depth`.
+TOC builder работает с безопасным HTML Markdown до подстановки
+Smart-компонентов. Он назначает H1–H6 уникальные Unicode `id`, а компонент
+`docara.toc` выводит H2–H6 только до `reading.toc_depth`. В конфигурации правая
+область по-прежнему называется `outline`: это стабильный layout key, а не имя
+компонента.
 
 ## Источники и производные поверхности
 
@@ -52,9 +54,11 @@ lifecycle. Переводимые названия, описания и подп
 Файлы являются источником истины; база данных, runtime CRUD, роли и workflow не
 входят в standalone Docara.
 
-Полный документ находится в `resources/publisher/templates/page.php`;
-продуктовые Smart-шаблоны — в `resources/smart`; CSS/JS оболочки —
-в `resources/portable`. Builder не содержит HTML, CSS или client runtime.
+`resources/publisher/templates/page.php` является только host-шаблоном
+документа. Элементы publisher chrome находятся в зарегистрированных шаблонах
+`resources/publisher/components`; product Smart-шаблоны, manifest и их CSS/JS
+— в `resources/smart`. В `resources/portable` остаётся общая геометрия shell и
+поведение уровня документа. Builder не содержит HTML, CSS или client runtime.
 
 Пользовательская сборка остаётся PHP-only. Browser JavaScript в готовом
 статическом сайте не означает, что автору нужен Node.js; Vite используется

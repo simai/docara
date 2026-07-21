@@ -6,15 +6,24 @@ namespace Simai\Docara\PortableSite;
 
 use Simai\Docara\Declarative\DeclarativePageResult;
 use Simai\Docara\Declarative\Rendering\TrustedTemplateRegistry;
+use Simai\Docara\Declarative\Rendering\PublisherChromeRenderer;
+use Simai\Docara\Declarative\Rendering\View\PublisherChromeViewModel;
 use Simai\Docara\Declarative\Rendering\View\PortablePageViewModel;
 use Simai\Docara\Framework\FrameworkAssetPlan;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class DeclarativePortablePagePublisher implements PortablePagePublisher
 {
+    private SmartRegistry $smarts;
+
     public function __construct(
         private TrustedTemplateRegistry $templates = new TrustedTemplateRegistry,
-    ) {}
+        ?SmartRegistry $smarts = null,
+        private PublisherChromeRenderer $chrome = new PublisherChromeRenderer,
+    ) {
+        $this->smarts = $smarts ?? SmartRegistry::bundled();
+    }
 
     public function id(): string
     {
@@ -76,6 +85,26 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 $escapedCopy[$id] = $this->escape($message);
             }
         }
+        $breadcrumbs = $this->breadcrumbs(is_array($page['breadcrumbs'] ?? null) ? $page['breadcrumbs'] : []);
+        $previous = $this->readingLink(is_array($page['previous'] ?? null) ? $page['previous'] : null);
+        $next = $this->readingLink(is_array($page['next'] ?? null) ? $page['next'] : null);
+        $themeOptions = $this->themeOptions($configuredTheme, $escapedCopy);
+        $languageOptions = $this->languageOptions(is_array($page['language_options'] ?? null) ? $page['language_options'] : []);
+        $preset = (string) $page['preset'] === 'landing' ? 'landing' : 'docs';
+        $chrome = $this->chrome->render(new PublisherChromeViewModel(
+            $preset,
+            $searchEnabled,
+            $searchEnabled ? $this->escape((string) $page['search_runtime_url']) : null,
+            $searchEnabled ? $this->escape((string) $page['search_index_url']) : null,
+            $regions,
+            $breadcrumbs,
+            $previous,
+            $next,
+            $themeOptions,
+            $this->escape($configuredTheme),
+            $escapedCopy,
+            $languageOptions,
+        ));
 
         $view = new PortablePageViewModel(
             $this->escape((string) $page['locale']),
@@ -91,9 +120,12 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             is_string($branding['favicon_type'] ?? null)
                 ? $this->escape($branding['favicon_type'])
                 : null,
-            $assets->headHtml(),
+            $assets->headHtml() . $this->smartAssetHead(
+                $declarative->artifact->assets,
+                $assetBase,
+            ),
             $this->themeBootstrap($configuredTheme),
-            (string) $page['preset'] === 'landing' ? 'landing' : 'docs',
+            $preset,
             $this->escape((string) $page['max_width']),
             $searchEnabled,
             $searchEnabled ? $this->escape((string) $page['search_runtime_url']) : null,
@@ -101,15 +133,16 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $this->escape($assetBase . '/declarative-shell.css'),
             $this->escape($assetBase . '/declarative-shell.js'),
             $regions,
-            $this->breadcrumbs(is_array($page['breadcrumbs'] ?? null) ? $page['breadcrumbs'] : []),
-            $this->readingLink(is_array($page['previous'] ?? null) ? $page['previous'] : null),
-            $this->readingLink(is_array($page['next'] ?? null) ? $page['next'] : null),
-            $this->themeOptions($configuredTheme, $escapedCopy),
+            $breadcrumbs,
+            $previous,
+            $next,
+            $themeOptions,
             $this->escape($configuredTheme),
             $escapedCopy,
             $this->alternates(is_array($page['alternates'] ?? null) ? $page['alternates'] : []),
-            $this->languageOptions(is_array($page['language_options'] ?? null) ? $page['language_options'] : []),
+            $languageOptions,
             json_encode($copy, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP),
+            $chrome,
         );
 
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
@@ -232,6 +265,32 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
     private function mobileClone(string $html): string
     {
         return preg_replace('/\\s+id="[^"]+"/', '', $html) ?? $html;
+    }
+
+    /** @param list<string> $assetKeys */
+    private function smartAssetHead(array $assetKeys, string $assetBase): string
+    {
+        $tags = [];
+        foreach (array_values(array_unique($assetKeys)) as $key) {
+            if (! str_starts_with($key, 'docara.smart.')) {
+                continue;
+            }
+            try {
+                $asset = $this->smarts->asset($key);
+            } catch (\InvalidArgumentException $exception) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_SMART_ASSET_NOT_REGISTERED',
+                    $key,
+                    $exception,
+                );
+            }
+            $url = $this->escape($assetBase . '/' . $asset['public']);
+            $tags[] = $asset['kind'] === 'css'
+                ? '<link rel="stylesheet" href="' . $url . '" data-docara-smart-asset="' . $this->escape($key) . '">'
+                : '<script defer src="' . $url . '" data-docara-smart-asset="' . $this->escape($key) . '"></script>';
+        }
+
+        return $tags === [] ? '' : "\n" . implode("\n", $tags);
     }
 
     private function escape(string $value): string

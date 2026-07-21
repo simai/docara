@@ -7,28 +7,67 @@
   "props": {
     "type": "object",
     "properties": {
-      "items": {"type": "array"},
-      "maximum_depth": {"type": "integer", "minimum": 1, "maximum": 4}
+      "items": {
+        "type": "array",
+        "maxItems": 500,
+        "items": {
+          "type": "object",
+          "properties": {
+            "key": {"type": "string", "minLength": 1, "maxLength": 500},
+            "title": {"type": "string", "minLength": 1, "maxLength": 500},
+            "url": {"type": ["string", "null"], "minLength": 1, "maxLength": 2000},
+            "active": {"type": "boolean"},
+            "active_ancestor": {"type": "boolean"},
+            "current_section": {"type": "boolean"},
+            "open": {"type": "boolean"},
+            "children": {"type": "array", "maxItems": 500}
+          },
+          "required": ["key", "title", "url", "active", "active_ancestor", "current_section", "open", "children"],
+          "additionalProperties": false
+        }
+      },
+      "maximum_depth": {"type": "integer", "minimum": 1, "maximum": 4},
+      "label": {"type": "string", "minLength": 1, "maxLength": 200},
+      "expand_label": {"type": "string", "minLength": 1, "maxLength": 200},
+      "collapse_label": {"type": "string", "minLength": 1, "maxLength": 200},
+      "contains_current_label": {"type": "string", "minLength": 1, "maxLength": 200}
     },
-    "required": ["items", "maximum_depth"],
+    "required": ["items", "maximum_depth", "label", "expand_label", "collapse_label", "contains_current_label"],
     "additionalProperties": false
   },
   "slots": {},
-  "events": {},
-  "views": {"default": {}},
-  "presets": {},
+  "events": {
+    "docara-navigation-toggle": {"kind": "custom", "backend_handler_binding": false}
+  },
+  "views": {"default": {}, "compact": {}, "tree": {}},
+  "presets": {"default": {"view": "default"}, "compact": {"view": "compact"}, "tree": {"view": "tree"}},
   "constraints": {},
   "render": {"strategy": "host", "renderer": "docara.smart.template"},
   "frontend": {"runtime": null, "tag": null},
   "assets": [
-    {"key": "simai.framework.core.css", "kind": "css", "critical": true}
+    {"key": "simai.framework.core.css", "kind": "css", "critical": true},
+    {"key": "docara.smart.navigation.css", "kind": "css", "critical": true},
+    {"key": "docara.smart.navigation.js", "kind": "javascript", "critical": false}
   ],
   "atlas": {
     "visible": true,
     "title": "Documentation navigation",
     "description": "Displays a four-level documentation tree and its active path.",
     "category": "navigation",
-    "status": "shadow_testable"
+    "status": "developer_testable",
+    "states": ["default", "active", "ancestor", "expanded", "collapsed"],
+    "readiness": {
+      "safe_to_suggest": true,
+      "safe_to_render": true,
+      "safe_to_bind_data": true,
+      "safe_to_execute_effect": true
+    },
+    "accessibility": ["four_level_tree", "active_page", "active_ancestor", "keyboard_disclosure"],
+    "example_props": {"items": [], "maximum_depth": 4, "label": "Sections", "expand_label": "Expand: ", "collapse_label": "Collapse: ", "contains_current_label": ", contains the current page"},
+    "controls": [
+      {"key": "maximum_depth", "source": "prop", "widget": "number"},
+      {"key": "label", "source": "prop", "widget": "text"}
+    ]
   },
   "provenance": {
     "source": "simai/docara",

@@ -1,6 +1,0 @@
-{
-  "schema": "docara.smart_view.v1",
-  "smart": "docara.outline",
-  "view": "default",
-  "template": "smart.docara.outline.default"
-}

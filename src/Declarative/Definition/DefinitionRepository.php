@@ -6,6 +6,9 @@ namespace Simai\Docara\Declarative\Definition;
 
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\SchemaRepository;
+use Simai\Docara\Smart\SmartManifestValidationException;
+use Simai\Docara\Smart\SmartManifestValidator;
+use Simai\Docara\Smart\SmartRegistry;
 
 final class DefinitionRepository
 {
@@ -51,38 +54,6 @@ final class DefinitionRepository
             'path' => 'blocks/shell.element.json',
             'schema' => 'declarative-block.schema.json',
         ],
-        'smart-view:ui.alert:default' => [
-            'path' => 'smart/ui.alert/views/default.json',
-            'schema' => 'declarative-smart-view.schema.json',
-        ],
-        'smart-view:ui.button:default' => [
-            'path' => 'smart/ui.button/views/default.json',
-            'schema' => 'declarative-smart-view.schema.json',
-        ],
-        'smart-manifest:docara.header' => [
-            'path' => 'smart/docara.header/manifest.json',
-            'schema' => 'declarative-smart-manifest.schema.json',
-        ],
-        'smart-view:docara.header:default' => [
-            'path' => 'smart/docara.header/views/default.json',
-            'schema' => 'declarative-smart-view.schema.json',
-        ],
-        'smart-manifest:docara.navigation' => [
-            'path' => 'smart/docara.navigation/manifest.json',
-            'schema' => 'declarative-smart-manifest.schema.json',
-        ],
-        'smart-view:docara.navigation:default' => [
-            'path' => 'smart/docara.navigation/views/default.json',
-            'schema' => 'declarative-smart-view.schema.json',
-        ],
-        'smart-manifest:docara.outline' => [
-            'path' => 'smart/docara.outline/manifest.json',
-            'schema' => 'declarative-smart-manifest.schema.json',
-        ],
-        'smart-view:docara.outline:default' => [
-            'path' => 'smart/docara.outline/views/default.json',
-            'schema' => 'declarative-smart-view.schema.json',
-        ],
         'view:layout.docara.docs' => [
             'path' => 'views/layout.docara.docs.json',
             'schema' => 'declarative-view-tree.schema.json',
@@ -100,10 +71,16 @@ final class DefinitionRepository
     /** @var array<string, array<string, mixed>> */
     private array $loaded = [];
 
+    private readonly SmartRegistry $smarts;
+
     public function __construct(
         private readonly string $resourceRoot = __DIR__ . '/../../../resources',
         private readonly SchemaRepository $schemas = new SchemaRepository,
-    ) {}
+        ?SmartRegistry $smarts = null,
+        private readonly SmartManifestValidator $manifestValidator = new SmartManifestValidator,
+    ) {
+        $this->smarts = $smarts ?? SmartRegistry::bundled();
+    }
 
     /** @return array<string, mixed> */
     public function layout(string $key): array
@@ -126,13 +103,40 @@ final class DefinitionRepository
     /** @return array<string, mixed> */
     public function smartView(string $smart, string $view): array
     {
-        return $this->definition('smart-view:' . $smart . ':' . $view);
+        $definition = $this->smarts->definition($smart);
+        $record = $definition->views[$view] ?? null;
+        if (! is_array($record)) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_DEFINITION_NOT_ALLOWED',
+                "Definition [smart-view:$smart:$view] is not registered.",
+            );
+        }
+
+        return $this->load(
+            'smart-view:' . $this->smarts->canonicalKey($smart) . ':' . $view,
+            ['path' => $record['path'], 'schema' => $record['schema']],
+        );
     }
 
     /** @return array<string, mixed> */
     public function smartManifest(string $smart): array
     {
-        return $this->definition('smart-manifest:' . $smart);
+        $definition = $this->smarts->definition($smart);
+        $manifest = $this->load(
+            'smart-manifest:' . $definition->key,
+            $definition->manifest,
+        );
+        try {
+            $this->manifestValidator->assertValid($definition->key, $manifest);
+        } catch (SmartManifestValidationException $exception) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_SMART_MANIFEST_INVALID',
+                $exception->getMessage(),
+                $exception,
+            );
+        }
+
+        return $manifest + ['_resolution' => $this->smarts->resolution($smart)];
     }
 
     /** @return array<string, mixed> */
@@ -153,6 +157,18 @@ final class DefinitionRepository
                 'DECLARATIVE_DEFINITION_NOT_ALLOWED',
                 "Definition [$id] is not registered.",
             );
+        }
+        return $this->load($id, $record);
+    }
+
+    /**
+     * @param array{path:string,schema:?string} $record
+     * @return array<string, mixed>
+     */
+    private function load(string $id, array $record): array
+    {
+        if (isset($this->loaded[$id])) {
+            return $this->loaded[$id];
         }
         $path = rtrim($this->resourceRoot, DIRECTORY_SEPARATOR)
             . DIRECTORY_SEPARATOR . $record['path'];
@@ -177,7 +193,9 @@ final class DefinitionRepository
                 "Definition [$id] must be an object.",
             );
         }
-        $this->schemas->assertValid($decoded, $record['schema']);
+        if (is_string($record['schema'])) {
+            $this->schemas->assertValid($decoded, $record['schema']);
+        }
 
         return $this->loaded[$id] = $decoded + [
             '_source' => $record['path'],

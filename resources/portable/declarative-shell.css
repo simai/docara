@@ -7,24 +7,8 @@ body{min-height:100vh;background:var(--sf-surface-0);color:var(--sf-on-surface)}
 .docara-header{min-height:3.5rem}
 .docara-header-row{max-width:104rem;margin-inline:auto}
 .docara-header-actions{flex:0 0 auto}
-.docara-brand{min-width:0;min-block-size:44px;text-decoration:none}
-.docara-brand-mark{display:grid;place-items:center;inline-size:2rem;block-size:2rem;flex:0 0 auto}
-.docara-brand-logo{display:block;max-inline-size:100%;max-block-size:100%;object-fit:contain}
-.docara-brand-logo--dark{display:none}
-.theme-dark .docara-brand-logo--light:has(+.docara-brand-logo--dark){display:none}
-.theme-dark .docara-brand-logo--dark{display:block}
-.docara-brand-copy{min-width:0;line-height:1.15}
-.docara-brand-label{font-size:.75rem;font-weight:500}
-[data-docara-reader-settings-trigger],[data-docara-disclosure],[data-docara-sheet-close],.docara-mobile-navigation-trigger{min-inline-size:44px;min-block-size:44px}
+[data-docara-reader-settings-trigger],[data-docara-sheet-close],.docara-mobile-navigation-trigger{min-inline-size:44px;min-block-size:44px}
 .docara-mobile-navigation-trigger,.docara-outline-mobile{display:none}
-.docara-navigation .sf-menu-element{--sf-menu-element--background-color:transparent;--sf-menu-element--border-color:transparent}
-.docara-navigation-link{min-width:0;min-block-size:44px;color:var(--sf-on-surface);text-decoration:none}
-.docara-navigation-label{min-width:0;color:var(--sf-on-surface)}
-.docara-navigation-link .sf-menu-element-text,.docara-navigation-label .sf-menu-element-text{overflow-wrap:anywhere}
-.docara-navigation [data-docara-active-role="ancestor"]>.sf-menu-element{--sf-menu-element--background-color:transparent;--sf-menu-element--border-color:transparent}
-.docara-navigation [data-docara-active-role="section"]>.sf-menu-element{--sf-menu-element--background-color:transparent;--sf-menu-element--border-color:var(--sf-outline-variant);border-inline-start-width:2px}
-.docara-navigation [data-docara-active-role="page"]>.sf-menu-element{--sf-menu-element--background-color:var(--sf-primary-container);--sf-menu-element--border-color:var(--sf-primary);border-inline-start-width:3px}
-.docara-navigation [data-docara-active-role="page"]>.sf-menu-element>.docara-navigation-link,.docara-navigation [data-docara-active-role="page"]>.sf-menu-element>.docara-navigation-label{color:var(--sf-on-primary-container)}
 .docara-docs-layout{display:grid;grid-template-columns:minmax(14rem,18rem) minmax(0,1fr);max-width:104rem;margin-inline:auto}
 .docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(14rem,18rem) minmax(0,1fr) minmax(12rem,15rem)}
 .docara-docs-layout[data-sidebar="false"]{grid-template-columns:minmax(0,1fr)}
@@ -40,11 +24,8 @@ body{min-height:100vh;background:var(--sf-surface-0);color:var(--sf-on-surface)}
 .docara-content[data-width="full"]{max-width:none}
 .sf-breadcrumbs{min-width:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-inline:contain}
 .sf-breadcrumbs-item--link{min-inline-size:44px;min-block-size:44px}
-.docara-outline-list{list-style:none}
 .docara-outline-trigger{min-block-size:44px}
-.docara-outline-item[data-docara-outline-level="3"]{padding-inline-start:var(--sf-space-1)}
-.docara-outline-item[data-docara-outline-level="4"],.docara-outline-item[data-docara-outline-level="5"],.docara-outline-item[data-docara-outline-level="6"]{padding-inline-start:var(--sf-space-2)}
-.docara-outline-link,.docara-document-link{min-block-size:44px;overflow-wrap:anywhere}
+.docara-document-link{min-block-size:44px;overflow-wrap:anywhere}
 .docara-previous-next{margin-block-start:var(--sf-space-4)}
 .docara-document-link--next{text-align:end}
 .docara-prose{line-height:1.65}
@@ -89,7 +70,7 @@ sf-alert,sf-button{display:block}
 .docara-example-preview[data-preview-size="compact"] iframe{block-size:22rem}
 .docara-example-preview[data-preview-size="tall"] iframe{block-size:44rem}
 .docara-example-source{max-width:100%;background:var(--sf-surface-container-low);color:var(--sf-on-surface);font:inherit;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;white-space:pre;overscroll-behavior-inline:contain}
-.docara-skip-link:focus-visible,.docara-brand:focus-visible,.docara-navigation-link:focus-visible,.docara-mobile-navigation-trigger:focus-visible,.docara-outline-trigger:focus-visible,.docara-outline-link:focus-visible,.docara-document-link:focus-visible,[data-docara-component-details-summary]:focus-visible,.sf-breadcrumbs-item--link:focus-visible,[data-docara-reader-settings-trigger]:focus-visible,[data-docara-reader-settings-close]:focus-visible,[data-docara-reader-settings-reset]:focus-visible,[data-docara-sheet-close]:focus-visible,[data-docara-disclosure]:focus-visible,.docara-code-block>.sf--highlight-head button:focus-visible,[data-docara-component-filter-query]:focus-visible,.docara-component-filter-control:focus-visible,[data-docara-component-filter-reset]:focus-visible,.docara-cta-link:focus-visible,sf-button>button:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}
+.docara-skip-link:focus-visible,.docara-mobile-navigation-trigger:focus-visible,.docara-outline-trigger:focus-visible,.docara-document-link:focus-visible,[data-docara-component-details-summary]:focus-visible,.sf-breadcrumbs-item--link:focus-visible,[data-docara-reader-settings-trigger]:focus-visible,[data-docara-reader-settings-close]:focus-visible,[data-docara-reader-settings-reset]:focus-visible,[data-docara-sheet-close]:focus-visible,.docara-code-block>.sf--highlight-head button:focus-visible,[data-docara-component-filter-query]:focus-visible,.docara-component-filter-control:focus-visible,[data-docara-component-filter-reset]:focus-visible,.docara-cta-link:focus-visible,sf-button>button:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}
 @media(max-width:1152px){
   .docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(14rem,18rem) minmax(0,1fr)}
   .docara-docs-layout[data-sidebar="false"],.docara-docs-layout[data-sidebar="false"][data-outline="true"]{grid-template-columns:minmax(0,1fr)}
@@ -107,7 +88,6 @@ sf-alert,sf-button{display:block}
   .docara-landing{padding:var(--sf-space-2)}
 }
 @media(max-width:600px){
-  .docara-brand-label{display:none}
   .docara-previous-next{flex-direction:column}
   .docara-document-link--next{text-align:start}
   .docara-reader-settings-dialog{inline-size:calc(100% - 1rem);max-block-size:calc(100dvh - 1rem)}

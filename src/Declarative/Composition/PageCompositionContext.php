@@ -12,11 +12,14 @@ final readonly class PageCompositionContext
      * @param  array{title:string,label:string|null,logo:string|null,logo_dark:string|null,home_url:string}  $branding
      * @param  list<array<string, mixed>>  $navigation
      * @param  list<array{id:string,level:int,text:string}>  $outline
+     * @param  array{label:string,expand:string,collapse:string,contains_current:string}  $navigationCopy
      */
     public function __construct(
         public array $branding,
         public array $navigation,
         public array $outline,
+        public array $navigationCopy,
+        public string $tocLabel,
     ) {
         $this->assertBranding();
         $this->assertNavigation($navigation);
@@ -33,6 +36,7 @@ final readonly class PageCompositionContext
         string $homeUrl,
         array $navigation,
         array $outline,
+        array $copy = [],
     ): self {
         $normalizedOutline = [];
         foreach ($outline as $item) {
@@ -53,6 +57,13 @@ final readonly class PageCompositionContext
             ],
             self::normalizeNavigation($navigation),
             $normalizedOutline,
+            [
+                'label' => self::copy($copy, 'navigation.title', 'Sections'),
+                'expand' => self::copy($copy, 'navigation.expand', 'Expand: '),
+                'collapse' => self::copy($copy, 'navigation.collapse', 'Collapse: '),
+                'contains_current' => self::copy($copy, 'navigation.contains_current', ', contains the current page'),
+            ],
+            self::copy($copy, 'navigation.outline', 'On this page'),
         );
     }
 
@@ -63,7 +74,17 @@ final readonly class PageCompositionContext
             'branding' => $this->branding,
             'navigation' => $this->navigation,
             'outline' => $this->outline,
+            'navigation_copy' => $this->navigationCopy,
+            'toc_label' => $this->tocLabel,
         ];
+    }
+
+    /** @param array<string, mixed> $copy */
+    private static function copy(array $copy, string $key, string $fallback): string
+    {
+        return is_string($copy[$key] ?? null) && trim($copy[$key]) !== ''
+            ? $copy[$key]
+            : $fallback;
     }
 
     private function assertBranding(): void

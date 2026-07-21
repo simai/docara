@@ -12,6 +12,8 @@ use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Document\DocumentParser;
 use Simai\Docara\Declarative\Rendering\DeclarativePageRenderer;
 use Simai\Docara\Declarative\Semantic\ShellStructuralParityChecker;
+use Simai\Docara\Declarative\Smart\CompositeSmartPlanResolver;
+use Simai\Docara\Declarative\Rendering\SmartRenderer;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
@@ -33,7 +35,7 @@ final class DeclarativeShellCompositionTest extends TestCase
             array_map('count', $plan->regions),
         );
         self::assertSame(
-            ['docara.header', 'docara.navigation', 'docara.outline'],
+            ['docara.brand', 'docara.navigation', 'docara.toc'],
             array_column($plan->semanticProjection()['smart'], 'smart'),
         );
         $navigation = $plan->regions['sidebar'][0]->blocks[0]->smart;
@@ -52,13 +54,16 @@ final class DeclarativeShellCompositionTest extends TestCase
         self::assertSame('docara.navigation', $larena->payload['regions']['sidebar'][0]['blocks'][0]['smart']['key']);
         self::assertSame($plan->semanticProjection(), $larena->semantics);
 
-        $html = (new DeclarativePageRenderer(new PortableMarkdownRenderer))->render($plan)->html;
-        self::assertStringContainsString('data-docara-smart="docara.header"', $html);
+        $rendered = (new DeclarativePageRenderer(new PortableMarkdownRenderer))->render($plan);
+        $html = $rendered->html;
+        self::assertStringContainsString('data-docara-smart="docara.brand"', $html);
         self::assertStringContainsString('data-docara-smart="docara.navigation"', $html);
         self::assertStringContainsString('data-docara-navigation-depth="4"', $html);
         self::assertStringContainsString('aria-current="page"', $html);
-        self::assertStringContainsString('data-docara-smart="docara.outline"', $html);
+        self::assertStringContainsString('data-docara-smart="docara.toc"', $html);
         self::assertStringContainsString('href="#install"', $html);
+        self::assertSame('docara.navigation', $rendered->hydration['components'][1]['asset_owner']);
+        self::assertSame('docara.navigation', $rendered->hydration['components'][1]['hydration_owner']);
     }
 
     public function test_shell_structural_parity_fails_when_builder_data_and_plan_differ(): void
@@ -104,7 +109,7 @@ final class DeclarativeShellCompositionTest extends TestCase
     public function test_product_manifests_use_the_larena_schema_without_claiming_framework_runtime(): void
     {
         $repository = new DefinitionRepository;
-        foreach (['docara.header', 'docara.navigation', 'docara.outline'] as $key) {
+        foreach (['docara.brand', 'docara.navigation', 'docara.toc'] as $key) {
             $manifest = $repository->smartManifest($key);
             self::assertSame('larena.ui.smart_manifest.v1', $manifest['schema']);
             self::assertSame('composite', $manifest['kind']);
@@ -113,6 +118,44 @@ final class DeclarativeShellCompositionTest extends TestCase
             self::assertNull($manifest['frontend']['runtime']);
             self::assertNull($manifest['frontend']['tag']);
         }
+    }
+
+    public function test_legacy_product_smart_names_resolve_to_one_canonical_implementation(): void
+    {
+        $repository = new DefinitionRepository;
+
+        $brand = $repository->smartManifest('docara.header');
+        self::assertSame('docara.brand', $brand['key']);
+        self::assertSame([
+            'requested' => 'docara.header',
+            'canonical' => 'docara.brand',
+            'deprecated' => true,
+            'reason' => 'Renamed because header is a layout region; use docara.brand.',
+        ], $brand['_resolution']);
+
+        $toc = $repository->smartManifest('docara.outline');
+        self::assertSame('docara.toc', $toc['key']);
+        self::assertTrue($toc['_resolution']['deprecated']);
+    }
+
+    public function test_product_views_render_from_the_canonical_registry(): void
+    {
+        $plan = (new CompositeSmartPlanResolver)->resolve(
+            'docara.header',
+            'legacy-brand',
+            ['branding' => $this->context()->branding],
+            'compact',
+        );
+
+        self::assertSame('docara.brand', $plan->smart);
+        self::assertSame('compact', $plan->view);
+        self::assertSame('smart.docara.brand.compact', $plan->template);
+        self::assertTrue($plan->provenance['deprecated_alias']);
+        self::assertContains('docara.smart.brand.css', $plan->assets);
+        $html = (new SmartRenderer)->render($plan)->html;
+        self::assertStringContainsString('data-docara-smart="docara.brand"', $html);
+        self::assertStringContainsString('data-docara-view="compact"', $html);
+        self::assertStringNotContainsString('docara.header', $html);
     }
 
     private function context(): PageCompositionContext

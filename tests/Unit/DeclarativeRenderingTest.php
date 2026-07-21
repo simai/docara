@@ -77,7 +77,7 @@ MD, 'content/install.md'),
             ...glob($root . '/smart/*/templates/*.blade.php') ?: [],
             ...glob($root . '/previews/templates/*.php') ?: [],
         ]));
-        self::assertCount(8, $templates);
+        self::assertCount(12, $templates);
         foreach ($templates as $template) {
             $source = (string) file_get_contents($template);
             self::assertStringNotContainsString('<style', $source);
@@ -89,6 +89,39 @@ MD, 'content/install.md'),
             self::assertStringNotContainsString('file_get_contents', $source);
             self::assertStringNotContainsString('htmlspecialchars', $source);
             self::assertStringNotContainsString('@php', $source);
+        }
+    }
+
+    public function test_publisher_shell_only_hosts_registered_chrome_fragments(): void
+    {
+        $source = (string) file_get_contents(
+            dirname(__DIR__, 2) . '/resources/publisher/templates/page.php',
+        );
+
+        foreach ([
+            'head',
+            'header_actions',
+            'mobile_navigation',
+            'breadcrumbs',
+            'mobile_toc',
+            'pager',
+            'search_dialog',
+            'reader_settings',
+        ] as $part) {
+            self::assertStringContainsString("\$view->chrome['$part']", $source);
+        }
+
+        foreach ([
+            '<button',
+            '<dialog',
+            'data-docara-search-trigger',
+            'foreach ($view->themeOptions',
+            'count($view->breadcrumbs)',
+            'docara.brand',
+            'docara.navigation',
+            'docara.toc',
+        ] as $productMarkupOrBranch) {
+            self::assertStringNotContainsString($productMarkupOrBranch, $source);
         }
     }
 

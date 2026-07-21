@@ -27,6 +27,7 @@ final readonly class DeclarativePageRenderer
         $regions = [];
         $assets = $plan->assets;
         $sectionEvidence = [];
+        $componentHydration = [];
         foreach ($plan->regions as $region => $sections) {
             if ($region === 'main' && $trustedGeneratedMainHtml !== null) {
                 $regions[$region] = $trustedGeneratedMainHtml;
@@ -43,6 +44,7 @@ final readonly class DeclarativePageRenderer
                 $renderedSections[] = $artifact->html;
                 array_push($assets, ...$artifact->assets);
                 $sectionEvidence[] = $artifact->provenance;
+                array_push($componentHydration, ...($artifact->hydration['components'] ?? []));
             }
             $regions[$region] = implode('', $renderedSections);
         }
@@ -75,6 +77,7 @@ final readonly class DeclarativePageRenderer
                 'runtime' => 'docara.declarative.v1',
                 'outline' => $outline['items'],
                 'regions' => $regions,
+                'components' => $componentHydration,
                 'main_source' => $trustedGeneratedMainHtml === null
                     ? 'resolved_blocks'
                     : 'trusted_generated_projection',
@@ -92,11 +95,15 @@ final readonly class DeclarativePageRenderer
         $slots = array_fill_keys($section->slots, '');
         $assets = [];
         $blocks = [];
+        $componentHydration = [];
         foreach ($section->blocks as $block) {
             $artifact = $this->block($block);
             $slots[$block->slot] .= $artifact->html;
             array_push($assets, ...$artifact->assets);
             $blocks[] = $artifact->provenance;
+            if (isset($artifact->hydration['hydration_owner'])) {
+                $componentHydration[] = $artifact->hydration;
+            }
         }
 
         return new RenderArtifact(
@@ -111,7 +118,7 @@ final readonly class DeclarativePageRenderer
                 ],
             ),
             array_values(array_unique($assets)),
-            [],
+            ['components' => $componentHydration],
             $section->provenance + ['blocks' => $blocks],
         );
     }

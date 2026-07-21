@@ -64,6 +64,7 @@ final class DocumentationContractTest extends TestCase
                 'development/getting-started.md',
                 'development/architecture.md',
                 'development/composition-extensions.md',
+                'development/smart-components.md',
                 'development/testing.md',
             ],
             'extension_developer_or_ai' => [
@@ -81,7 +82,7 @@ final class DocumentationContractTest extends TestCase
         }
 
         $documents = $this->markdownDocuments();
-        self::assertCount(64, $documents, 'The authored documentation inventory must stay exact.');
+        self::assertCount(66, $documents, 'The authored documentation inventory must stay exact.');
 
         foreach ($documents as $path) {
             $markdown = (string) file_get_contents($path);
@@ -304,10 +305,16 @@ final class DocumentationContractTest extends TestCase
         $composition = (string) file_get_contents(
             $this->contentRoot() . '/development/composition-extensions.md',
         );
-        foreach (['Layout', 'Section', 'Block', 'View Tree', 'Smart', 'DefinitionRepository', 'TrustedTemplateRegistry'] as $term) {
+        foreach (['Layout', 'Section', 'Block', 'View Tree', 'Smart', 'SmartContribution', 'SmartRegistry'] as $term) {
             self::assertStringContainsString($term, $composition);
         }
         self::assertStringContainsString('Файлы не обнаруживаются по glob', $composition);
+
+        $smart = (string) file_get_contents($this->contentRoot() . '/development/smart-components.md');
+        foreach (['docara.brand', 'docara.navigation', 'docara.toc', 'SmartManifestValidator', 'DocaraSmartContribution'] as $term) {
+            self::assertStringContainsString($term, $smart);
+        }
+        self::assertStringContainsString('не получает runtime-зависимость от Laravel', $smart);
     }
 
     #[Test]

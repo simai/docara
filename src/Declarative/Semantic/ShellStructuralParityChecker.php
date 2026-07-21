@@ -18,9 +18,9 @@ final class ShellStructuralParityChecker
         $expected = [];
         $actual = [];
         foreach ([
-            'header' => ['key' => 'branding', 'smart' => 'docara.header', 'prop' => 'branding'],
+            'header' => ['key' => 'branding', 'smart' => 'docara.brand', 'prop' => 'branding'],
             'sidebar' => ['key' => 'navigation', 'smart' => 'docara.navigation', 'prop' => 'items'],
-            'outline' => ['key' => 'outline', 'smart' => 'docara.outline', 'prop' => 'items'],
+            'outline' => ['key' => 'outline', 'smart' => 'docara.toc', 'prop' => 'items'],
         ] as $region => $binding) {
             if (! $plan->layout->regions[$region]->enabled) {
                 continue;

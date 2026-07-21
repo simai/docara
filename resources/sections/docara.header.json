@@ -11,7 +11,7 @@
       "id": "branding",
       "block": "shell.smart",
       "slot": "content",
-      "smart": "docara.header",
+      "smart": "docara.brand",
       "bind": "branding"
     }
   ]

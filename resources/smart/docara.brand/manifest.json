@@ -1,0 +1,60 @@
+{
+  "schema": "larena.ui.smart_manifest.v1",
+  "key": "docara.brand",
+  "version": "1.0.0",
+  "owner_package": "simai/docara",
+  "kind": "composite",
+  "props": {
+    "type": "object",
+    "properties": {
+      "branding": {
+        "type": "object",
+        "properties": {
+          "title": {"type": "string", "minLength": 1, "maxLength": 120},
+          "label": {"type": ["string", "null"], "minLength": 1, "maxLength": 120},
+          "home_url": {"type": "string", "minLength": 1, "maxLength": 500, "pattern": "^/(?!/)"},
+          "logo": {"type": ["string", "null"], "minLength": 1, "maxLength": 500},
+          "logo_dark": {"type": ["string", "null"], "minLength": 1, "maxLength": 500}
+        },
+        "required": ["title", "label", "home_url", "logo", "logo_dark"],
+        "additionalProperties": false
+      }
+    },
+    "required": ["branding"],
+    "additionalProperties": false
+  },
+  "slots": {},
+  "events": {},
+  "views": {"default": {}, "compact": {}},
+  "presets": {"default": {"view": "default"}, "compact": {"view": "compact"}},
+  "constraints": {},
+  "render": {"strategy": "host", "renderer": "docara.smart.template"},
+  "frontend": {"runtime": null, "tag": null},
+  "assets": [
+    {"key": "simai.framework.core.css", "kind": "css", "critical": true},
+    {"key": "docara.smart.brand.css", "kind": "css", "critical": true}
+  ],
+  "atlas": {
+    "visible": true,
+    "title": "Documentation brand",
+    "description": "Displays product identity and the documentation home link inside a configured region.",
+    "category": "branding",
+    "status": "developer_testable",
+    "states": ["default", "compact", "logo", "text_only"],
+    "readiness": {
+      "safe_to_suggest": true,
+      "safe_to_render": true,
+      "safe_to_bind_data": true,
+      "safe_to_execute_effect": false
+    },
+    "accessibility": ["accessible_home_link", "theme_aware_logo", "text_fallback"],
+    "example_props": {
+      "branding": {"title": "Docara", "label": "Documentation", "home_url": "/", "logo": null, "logo_dark": null}
+    },
+    "controls": []
+  },
+  "provenance": {
+    "source": "simai/docara",
+    "reference_status": "product_owned"
+  }
+}

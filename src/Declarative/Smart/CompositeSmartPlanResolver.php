@@ -7,20 +7,45 @@ namespace Simai\Docara\Declarative\Smart;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\Smart\SmartRegistry;
+use Simai\Docara\Smart\SmartPropsValidationException;
+use Simai\Docara\Smart\SmartPropsValidator;
 
 final readonly class CompositeSmartPlanResolver
 {
+    private SmartRegistry $smarts;
+
     public function __construct(
         private DefinitionRepository $definitions = new DefinitionRepository,
-    ) {}
+        ?SmartRegistry $smarts = null,
+        private SmartPropsValidator $propsValidator = new SmartPropsValidator,
+    ) {
+        $this->smarts = $smarts ?? SmartRegistry::bundled();
+    }
 
     /** @param array<string, mixed> $props */
-    public function resolve(string $smart, string $nodeId, array $props): ResolvedSmartPlan
+    public function resolve(
+        string $smart,
+        string $nodeId,
+        array $props,
+        string $requestedView = 'default',
+    ): ResolvedSmartPlan
     {
+        $resolution = $this->smarts->resolution($smart);
+        $canonical = $resolution['canonical'];
         $manifest = $this->definitions->smartManifest($smart);
-        $view = $this->definitions->smartView($smart, 'default');
-        $this->assertCanonicalManifest($smart, $manifest);
-        $this->assertProps($smart, $props);
+        $view = $this->definitions->smartView($smart, $requestedView);
+        $this->assertProductManifest($canonical, $manifest);
+        try {
+            $this->propsValidator->assertValid($canonical, $manifest, $props);
+        } catch (SmartPropsValidationException $exception) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_COMPOSITE_PROPS_INVALID',
+                $exception->getMessage(),
+                $exception,
+            );
+        }
+        $this->assertSemanticProps($canonical, $props);
 
         $assets = [];
         foreach ($manifest['assets'] as $asset) {
@@ -33,8 +58,8 @@ final readonly class CompositeSmartPlanResolver
 
         return new ResolvedSmartPlan(
             $nodeId,
-            $smart,
-            'default',
+            $canonical,
+            $requestedView,
             (string) $view['template'],
             $props,
             $assets,
@@ -45,6 +70,10 @@ final readonly class CompositeSmartPlanResolver
                 'manifest_version' => (string) $manifest['version'],
                 'provider' => (string) $manifest['owner_package'],
                 'renderer' => (string) $manifest['render']['renderer'],
+                'requested_smart' => $smart,
+                'canonical_smart' => $canonical,
+                'deprecated_alias' => $resolution['deprecated'],
+                'alias_reason' => $resolution['reason'],
                 'view' => (string) $view['_source'],
                 'view_sha256' => (string) $view['_sha256'],
             ],
@@ -52,19 +81,13 @@ final readonly class CompositeSmartPlanResolver
     }
 
     /** @param array<string, mixed> $manifest */
-    private function assertCanonicalManifest(string $smart, array $manifest): void
+    private function assertProductManifest(string $smart, array $manifest): void
     {
-        if (($manifest['schema'] ?? null) !== 'larena.ui.smart_manifest.v1'
-            || ($manifest['key'] ?? null) !== $smart
-            || preg_match('/^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+$/D', $smart) !== 1
-            || preg_match('/^\d+\.\d+\.\d+$/D', (string) ($manifest['version'] ?? '')) !== 1
+        if (($manifest['key'] ?? null) !== $smart
             || ($manifest['owner_package'] ?? null) !== 'simai/docara'
             || ($manifest['kind'] ?? null) !== 'composite'
             || ($manifest['render']['strategy'] ?? null) !== 'host'
             || ($manifest['render']['renderer'] ?? null) !== 'docara.smart.template'
-            || ! is_array($manifest['props'] ?? null)
-            || ! is_array($manifest['assets'] ?? null)
-            || ! array_is_list($manifest['assets'])
         ) {
             throw new PortableConfigurationException(
                 'DECLARATIVE_COMPOSITE_MANIFEST_INVALID',
@@ -74,15 +97,15 @@ final readonly class CompositeSmartPlanResolver
     }
 
     /** @param array<string, mixed> $props */
-    private function assertProps(string $smart, array $props): void
+    private function assertSemanticProps(string $smart, array $props): void
     {
         $valid = match ($smart) {
-            'docara.header' => isset($props['branding']) && is_array($props['branding']),
+            'docara.brand' => isset($props['branding']) && is_array($props['branding']),
             'docara.navigation' => isset($props['items'])
                 && is_array($props['items'])
                 && array_is_list($props['items'])
                 && ($props['maximum_depth'] ?? null) === 4,
-            'docara.outline' => isset($props['items'])
+            'docara.toc' => isset($props['items'])
                 && is_array($props['items'])
                 && array_is_list($props['items']),
             default => false,

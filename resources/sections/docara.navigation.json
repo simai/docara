@@ -12,6 +12,7 @@
       "block": "shell.smart",
       "slot": "content",
       "smart": "docara.navigation",
+      "view": "tree",
       "bind": "navigation",
       "props": {"maximum_depth": 4}
     }

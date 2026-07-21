@@ -1,24 +1,28 @@
-# Workflow: user-ready documentation for declarative Docara
+# Workflow: Docara Smart component unification
 
 Date: 2026-07-21
-Status: accepted
-Workflow ID: `2026-07-21-docara-user-ready-documentation`
-Process model: `goal_mode_documentation`
-Current state: `accepted_closed`
+Status: in-progress
+Workflow ID: `2026-07-21-docara-smart-component-unification`
+Process model: `general_delivery`
+Current state: `implementation_verified_pending_full_acceptance`
 Target state: `accepted`
 
 ## Goal
 
-Make the new declarative Docara documentation complete and executable for new
-authors, site owners, migrating users and extension developers.
+Unify Docara Smart components with the canonical Larena and Simai Framework
+model while preserving the standalone, Laravel-free runtime.
 
 ## Source Of Truth
 
 - workflow:
-  `source/workflow/2026-07-21-docara-user-ready-documentation.md`.
+  `source/workflow/2026-07-21-docara-smart-component-unification.md`.
 
-## Result
+## Current Batch
 
-All reader routes, examples, exact final tests, deterministic build, local
-publication, browser acceptance, reverse-outcome audit and implementation
-commit `dd76a0a…` passed. No release or production claim is permitted.
+Full/deterministic verification, local publication and browser acceptance.
+
+## Completion Guard
+
+Do not close after a contract or implementation batch. Completion requires the
+exact-candidate tests, deterministic build, local publication, browser matrix,
+independent tester verdict and reverse-outcome audit defined by the workflow.

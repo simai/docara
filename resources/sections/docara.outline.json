@@ -11,7 +11,7 @@
       "id": "outline",
       "block": "shell.smart",
       "slot": "content",
-      "smart": "docara.outline",
+      "smart": "docara.toc",
       "bind": "outline"
     }
   ]

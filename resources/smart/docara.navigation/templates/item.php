@@ -7,7 +7,7 @@
         <span class="sf-menu-element-wrap docara-navigation-label flex flex-1 items-cross-center<?= $view->weightClass ?>"><span class="sf-menu-element-text"><?= $item->title ?></span></span>
 <?php } ?>
 <?php if ($item->hasChildren) { ?>
-        <button type="button" data-docara-disclosure<?= $item->activeAncestor ? ' data-docara-contains-current="true"' : '' ?> aria-expanded="<?= $item->open ? 'true' : 'false' ?>" aria-label="<?= $item->open ? 'Свернуть' : 'Развернуть' ?>: <?= $item->title ?><?= $item->activeAncestor ? ', содержит текущую страницу' : '' ?>" class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link radius-default sf-icon-button--size-1/3"><sf-icon icon="<?= $item->open ? 'expand_less' : 'expand_more' ?>" aria-hidden="true"></sf-icon></button>
+        <button type="button" data-docara-disclosure<?= $item->activeAncestor ? ' data-docara-contains-current="true"' : '' ?> aria-expanded="<?= $item->open ? 'true' : 'false' ?>" aria-label="<?= $item->open ? $view->collapseLabel : $view->expandLabel ?><?= $item->title ?><?= $item->activeAncestor ? $view->containsCurrentLabel : '' ?>" class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link radius-default sf-icon-button--size-1/3"><sf-icon icon="<?= $item->open ? 'expand_less' : 'expand_more' ?>" aria-hidden="true"></sf-icon></button>
 <?php } ?>
     </div>
 <?php if ($item->hasChildren) { ?>

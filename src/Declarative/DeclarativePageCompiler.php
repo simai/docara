@@ -277,6 +277,9 @@ final readonly class DeclarativePageCompiler
                     $smart,
                     $nodeId,
                     $this->boundProps($blockConfiguration, $composition),
+                    is_string($blockConfiguration['view'] ?? null)
+                        ? $blockConfiguration['view']
+                        : 'default',
                 );
             $blocks[] = $this->block(
                 (string) $configuration['id'] . '.' . $blockConfiguration['id'],
@@ -347,8 +350,12 @@ final readonly class DeclarativePageCompiler
             'navigation' => [
                 'items' => $composition->navigation,
                 'maximum_depth' => (int) ($block['props']['maximum_depth'] ?? 4),
+                'label' => $composition->navigationCopy['label'],
+                'expand_label' => $composition->navigationCopy['expand'],
+                'collapse_label' => $composition->navigationCopy['collapse'],
+                'contains_current_label' => $composition->navigationCopy['contains_current'],
             ],
-            'outline' => ['items' => $composition->outline],
+            'outline' => ['items' => $composition->outline, 'label' => $composition->tocLabel],
             default => throw new PortableConfigurationException(
                 'DECLARATIVE_REGION_BINDING_FORBIDDEN',
                 "Unknown declarative region binding [{$block['bind']}].",

@@ -1,0 +1,6 @@
+.docara-outline-list{list-style:none}
+.docara-outline-item[data-docara-outline-level="3"]{padding-inline-start:var(--sf-space-1)}
+.docara-outline-item[data-docara-outline-level="4"],.docara-outline-item[data-docara-outline-level="5"],.docara-outline-item[data-docara-outline-level="6"]{padding-inline-start:var(--sf-space-2)}
+.docara-outline-link{min-block-size:44px;overflow-wrap:anywhere}
+.docara-toc--compact .docara-outline-link{min-block-size:36px;font-size:.875rem}
+.docara-outline-link:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}

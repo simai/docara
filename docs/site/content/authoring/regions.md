@@ -7,11 +7,12 @@
 | `header` | Бренд и ссылка на главную | — |
 | `sidebar` | Многоуровневое меню | — |
 | `main` | Markdown текущей страницы | ✓ |
-| `outline` | Ссылки на заголовки H2–H6 | — |
+| `outline` | Содержание страницы: ссылки на заголовки H2–H6 | — |
 | `footer` | Пусто | — |
 
-`sidebar` и `outline` выводятся семантическими элементами `aside`. Отдельной
-области с именем `aside` нет.
+`sidebar` и `outline` выводятся семантическими элементами `aside`. `outline` —
+устойчивое техническое имя правой области; в интерфейсе она называется
+«Содержание страницы». Отдельной области с именем `aside` нет.
 
 ## Простое включение и отключение
 
@@ -80,11 +81,17 @@ Page -> Region -> Section -> Block -> Smart
 `resources/sections/docara.navigation.json`, а не копируются на каждую
 страницу:
 
-| Smart-компонент | Область | Bind |
-| --- | --- | --- |
-| `docara.header` | `header` | `branding` |
-| `docara.navigation` | `sidebar` | `navigation` |
-| `docara.outline` | `outline` | `outline` |
+| Область | Секция | Smart-компонент | Данные |
+| --- | --- | --- | --- |
+| `header` | `docara.header` | `docara.brand` | `branding` |
+| `sidebar` | `docara.navigation` | `docara.navigation` | `navigation` |
+| `outline` | `docara.outline` | `docara.toc` | `outline` |
+
+Секция — это зарегистрированный рецепт наполнения области. Smart-компонент —
+самостоятельный интерфейсный элемент с manifest, props, views, шаблонами,
+assets и readiness. Поэтому `docara.header` сохранён как имя секции, но
+компонент бренда называется `docara.brand`; `docara.outline` сохранён как имя
+секции, а компонент содержания страницы называется `docara.toc`.
 
 Другую комбинацию стандартной секции сборка отклонит.
 
@@ -189,3 +196,6 @@ build_<environment>/.docara/resolved-page-plans.json
 :::ui.alert
 {"type":"info","title":"Области уже являются данными","supporting-text":"Компилятор получает разрешённый layout contract и больше не выбирает header, sidebar и outline жёстко по коду."}
 :::
+
+Далее: [архитектура Smart-компонентов](/development/smart-components/) и
+[живой пример product Smart-компонентов](/examples/product-smart-runtime/).

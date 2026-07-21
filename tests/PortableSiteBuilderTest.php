@@ -67,13 +67,21 @@ final class PortableSiteBuilderTest extends TestCase
         }
         $russian = (string) file_get_contents($this->tmpPath('build_local/index.html'));
         $arabic = (string) file_get_contents($this->tmpPath('build_local/ar/index.html'));
+        $arabicGuide = (string) file_get_contents($this->tmpPath('build_local/ar/guides/getting-started/index.html'));
         $chinese = (string) file_get_contents($this->tmpPath('build_local/zh-hans/index.html'));
+        $chineseGuide = (string) file_get_contents($this->tmpPath('build_local/zh-hans/guides/getting-started/index.html'));
         self::assertStringContainsString('<html lang="ru" dir="ltr"', $russian);
         self::assertStringContainsString('<html lang="ar" dir="rtl"', $arabic);
         self::assertStringContainsString('aria-label="اللغة"', $arabic);
         self::assertStringContainsString('>إعدادات القراءة</h2>', $arabic);
+        self::assertStringContainsString('data-docara-smart="docara.navigation"', $arabic);
+        self::assertStringContainsString('aria-label="الأقسام"', $arabic);
+        self::assertStringContainsString('data-docara-smart="docara.toc"', $arabicGuide);
+        self::assertStringContainsString('aria-label="في هذه الصفحة"', $arabicGuide);
         self::assertStringContainsString('<html lang="zh-Hans" dir="ltr"', $chinese);
         self::assertStringContainsString('>阅读设置</h2>', $chinese);
+        self::assertStringContainsString('aria-label="章节"', $chinese);
+        self::assertStringContainsString('aria-label="本页内容"', $chineseGuide);
         foreach ([
             'hreflang="ru" href="/"',
             'hreflang="en" href="/en/"',
@@ -168,6 +176,16 @@ final class PortableSiteBuilderTest extends TestCase
         $shellRuntime = (string) file_get_contents(
             $this->tmpPath('build_local/_docara/declarative-shell.js'),
         );
+        $smartSurface = implode('', array_map(
+            static fn (string $path): string => (string) file_get_contents($path),
+            [
+                $this->tmpPath('build_local/_docara/smart/brand.css'),
+                $this->tmpPath('build_local/_docara/smart/navigation.css'),
+                $this->tmpPath('build_local/_docara/smart/navigation.js'),
+                $this->tmpPath('build_local/_docara/smart/toc.css'),
+                $this->tmpPath('build_local/_docara/smart/toc.js'),
+            ],
+        ));
 
         self::assertStringContainsString('docara-docs-layout gap-0', $index);
         self::assertStringNotContainsString('docara-sidebar bg-surface-0 border radius-2', $index);
@@ -245,9 +263,14 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringNotContainsString('<sf-button', $landing);
         self::assertStringNotContainsString('<script id="unsafe">', $index);
         self::assertStringNotContainsString('alert(1)', $index);
+        foreach (['docara.smart.brand.css', 'docara.smart.navigation.css', 'docara.smart.navigation.js', 'docara.smart.toc.css', 'docara.smart.toc.js'] as $asset) {
+            self::assertStringContainsString('data-docara-smart-asset="' . $asset . '"', $guide);
+        }
+        self::assertStringContainsString("new CustomEvent('docara-navigation-toggle'", $smartSurface);
+        self::assertStringContainsString("new CustomEvent('docara-toc-navigate'", $smartSurface);
 
         foreach ([$index, $guide, $fourthLevel, $landing] as $html) {
-            $surface = $html . $shellCss . $shellRuntime;
+            $surface = $html . $shellCss . $shellRuntime . $smartSurface;
             self::assertStringContainsString('theme-light', $html);
             self::assertStringContainsString('theme-dark', $html);
             self::assertStringContainsString('data-docara-documentation-version="current"', $html);
@@ -273,7 +296,7 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('<sf-icon icon="tune" aria-hidden="true"></sf-icon>', $html);
             self::assertStringContainsString('data-docara-shell-controller', $html);
             self::assertStringContainsString('railRect.width<=0||railRect.height<=0', $surface);
-            self::assertStringContainsString("addEventListener('resize',scheduleActiveReveal", $surface);
+            self::assertStringContainsString("addEventListener('resize',reveal", $surface);
             self::assertStringContainsString("customElements.whenDefined('sf-icon')", $surface);
             self::assertStringNotContainsString('data-docara-code-copy', $html);
             self::assertStringNotContainsString('navigator.clipboard.writeText(text)', $surface);

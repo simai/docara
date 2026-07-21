@@ -36,6 +36,7 @@
           "block": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
           "slot": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
           "smart": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+          "view": {"type": "string", "enum": ["default", "compact", "tree"]},
           "bind": {"type": "string", "enum": ["branding", "navigation", "outline"]},
           "props": {
             "type": "object",

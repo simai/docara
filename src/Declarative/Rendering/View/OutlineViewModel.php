@@ -7,5 +7,5 @@ namespace Simai\Docara\Declarative\Rendering\View;
 final readonly class OutlineViewModel
 {
     /** @param list<OutlineItemViewModel> $items */
-    public function __construct(public array $items) {}
+    public function __construct(public array $items, public string $label) {}
 }

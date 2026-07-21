@@ -26,7 +26,9 @@ Layout
 | Framework Smart | owner manifest + exact Framework lock | consumer policy + registered view/template |
 
 Файлы не обнаруживаются по glob. Каждый executable ID регистрируется явно и
-проверяется fail-closed.
+проверяется fail-closed. Layout, Section, Block и View Tree принадлежат
+`DefinitionRepository`; Smart-компоненты подключаются через расширяемый
+`SmartContribution` и единый `SmartRegistry`.
 
 ## Добавление Layout
 
@@ -89,16 +91,24 @@ View Tree описывает только структуру: безопасны
 2. `resources/smart/<id>/views/default.json` — template ID;
 3. immutable ViewModel в `src/Declarative/Rendering/View` и factory method;
 4. trusted PHP или Blade template в `resources/smart/<id>/templates`;
-5. template registration в `TrustedTemplateRegistry`;
-6. manifest/view registration в `DefinitionRepository`;
-7. resolver/factory branch в `SmartRenderer` и `ViewModelFactory`;
-8. если вызов разрешён в authored shell — enum schema, allowlist и prop checks
+5. CSS/JS в `resources/smart/assets`, объявленные в manifest и contribution;
+6. реализация `SmartContribution`, возвращающая definition, views, templates,
+   assets и, при переименовании, deprecated aliases;
+7. подключение contribution в `SmartRegistryBuilder`;
+8. resolver/factory branch в `SmartRenderer` и `ViewModelFactory`;
+9. если вызов разрешён в authored shell — enum schema, allowlist и prop checks
    в `RegionCompositionResolver`;
-9. language-pack presentation, exact fixture, positive/negative tests,
+10. language-pack presentation, exact fixture, positive/negative tests,
    generated catalog и browser acceptance.
 
 Template получает только object ViewModel. Не передавайте в него сырой
 авторский массив и не читайте JSON из template.
+
+Один `SmartManifestValidator` проверяет общую форму `ui.*` и `docara.*`:
+props, events, views, presets, assets, Atlas и readiness. Для Framework Smart
+после этого действует дополнительный exact-lock admission. Product Smart не
+нужно дублировать в `DefinitionRepository` или `TrustedTemplateRegistry`:
+реестр строит обе проекции из contribution.
 
 ## Добавление Smart-компонента Simai Framework
 

@@ -15,6 +15,7 @@ final readonly class PortablePageViewModel
      * @param  array<string, string>  $copy
      * @param  list<array{locale:string,url:string}>  $alternates
      * @param  list<array{locale:string,label:string,url:string,current:bool}>  $languageOptions
+     * @param  array<string, string>  $chrome
      */
     public function __construct(
         public string $locale,
@@ -43,5 +44,6 @@ final readonly class PortablePageViewModel
         public array $alternates,
         public array $languageOptions,
         public string $runtimeCopyJson,
+        public array $chrome,
     ) {}
 }

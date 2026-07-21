@@ -6,57 +6,6 @@
     Object.keys(parameters||{}).forEach(function(name){value=value.split('{'+name+'}').join(String(parameters[name]))});
     return value;
   }
-  function protectNativeLink(link){
-    if(link.dataset.docaraLinkBound)return;
-    link.dataset.docaraLinkBound='1';
-    link.addEventListener('click',function(event){event.stopPropagation()});
-    link.addEventListener('keydown',function(event){if(event.key==='Enter'){event.stopPropagation()}});
-  }
-  function syncDisclosure(item){
-    var button=item.querySelector(':scope > .sf-menu-element > [data-docara-disclosure]');
-    if(!button)return;
-    var open=item.classList.contains('open')||item.hasAttribute('expanded')||item.getAttribute('aria-expanded')==='true';
-    if(button.getAttribute('aria-expanded')!==String(open)){button.setAttribute('aria-expanded',String(open))}
-    var title=(item.querySelector(':scope > .sf-menu-element .sf-menu-element-text')||{}).textContent||'';
-    var containsCurrent=button.dataset.docaraContainsCurrent==='true';
-    button.setAttribute('aria-label',message(open?'navigation.collapse':'navigation.expand')+title.trim()+(containsCurrent?message('navigation.contains_current'):''));
-  }
-  function bindShell(){
-    document.querySelectorAll('[data-docara-menu-link]').forEach(protectNativeLink);
-    document.querySelectorAll('.sf-menu-item').forEach(syncDisclosure);
-  }
-  function revealActiveNavigation(){
-    var rail=document.querySelector('.docara-sidebar');
-    var active=rail&&rail.querySelector('[aria-current="page"]');
-    if(!rail||!active||rail.dataset.docaraActiveRevealed)return;
-    var railRect=rail.getBoundingClientRect();
-    var activeRect=active.getBoundingClientRect();
-    if(railRect.width<=0||railRect.height<=0||activeRect.width<=0||activeRect.height<=0)return;
-    rail.dataset.docaraActiveRevealed='1';
-    var inset=8;
-    if(activeRect.bottom>railRect.bottom-inset){rail.scrollTop+=activeRect.bottom-(railRect.bottom-inset)}
-    else if(activeRect.top<railRect.top+inset){rail.scrollTop+=activeRect.top-(railRect.top+inset)}
-    window.removeEventListener('resize',scheduleActiveReveal);
-  }
-  var activeRevealFrame=0;
-  function scheduleActiveReveal(){
-    if(activeRevealFrame)return;
-    activeRevealFrame=requestAnimationFrame(function(){activeRevealFrame=0;revealActiveNavigation()});
-  }
-  bindShell();
-  function revealWhenReady(){
-    var fonts=document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve();
-    var icon=window.customElements&&window.customElements.whenDefined
-      ?Promise.race([window.customElements.whenDefined('sf-icon'),new Promise(function(resolve){setTimeout(resolve,800)})])
-      :Promise.resolve();
-    Promise.all([fonts,icon]).then(function(){
-      requestAnimationFrame(function(){requestAnimationFrame(revealActiveNavigation)});
-    });
-  }
-  window.addEventListener('resize',scheduleActiveReveal,{passive:true});
-  if(document.readyState==='complete'){revealWhenReady()}
-  else{window.addEventListener('load',revealWhenReady,{once:true})}
-  new MutationObserver(bindShell).observe(document.body,{subtree:true,childList:true,attributes:true,attributeFilter:['class','expanded','aria-expanded']});
   function closeTransientExcept(id){
     document.querySelectorAll('dialog[data-docara-transient-dialog][open]').forEach(function(dialog){
       if(dialog.id===id)return;
@@ -103,7 +52,7 @@
       }
       trigger.setAttribute('aria-expanded','true');
       requestAnimationFrame(function(){
-        var target=dialog.querySelector('[aria-current="page"]')||dialog.querySelector('.docara-outline-link')||closeButton;
+        var target=dialog.querySelector('[aria-current="page"]')||dialog.querySelector('a[href]')||closeButton;
         target.focus();
       });
     }

@@ -35,7 +35,7 @@ final class DeclarativeViewCompositionTest extends TestCase
         self::assertSame(['content'], $resolved['regions']['header'][0]['slots']);
         self::assertSame('content', $resolved['regions']['header'][0]['blocks'][0]['slot']);
         self::assertSame('site-header.branding', $resolved['regions']['header'][0]['blocks'][0]['id']);
-        self::assertSame('docara.header', $resolved['regions']['header'][0]['blocks'][0]['smart']['smart']);
+        self::assertSame('docara.brand', $resolved['regions']['header'][0]['blocks'][0]['smart']['smart']);
         self::assertSame('SAFE_VIEW_TREE_VALIDATED', $resolved['diagnostics'][1]['code']);
         self::assertSame(
             'sf-v5.3.2-7e836d8a-dd786bba',

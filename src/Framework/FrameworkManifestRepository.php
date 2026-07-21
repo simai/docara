@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Simai\Docara\Framework;
 
 use Simai\Docara\Portable\CanonicalJson;
+use Simai\Docara\Smart\SmartManifestValidationException;
+use Simai\Docara\Smart\SmartManifestValidator;
 
 final readonly class FrameworkManifestRepository
 {
@@ -13,6 +15,7 @@ final readonly class FrameworkManifestRepository
     public function __construct(
         private FrameworkLock $lock,
         private string $resourceRoot,
+        private SmartManifestValidator $commonValidator = new SmartManifestValidator,
     ) {
         $this->assertBundledRuntime();
     }
@@ -86,6 +89,11 @@ final readonly class FrameworkManifestRepository
             || ($manifest['provenance']['reference_status'] ?? null) !== 'source_backed'
         ) {
             throw new FrameworkComponentException('FRAMEWORK_MANIFEST_INVALID', $key);
+        }
+        try {
+            $this->commonValidator->assertValid($key, $manifest);
+        } catch (SmartManifestValidationException $exception) {
+            throw new FrameworkComponentException('FRAMEWORK_MANIFEST_INVALID', $exception->getMessage());
         }
         if (($manifest['provenance']['upstream_revision'] ?? null)
             !== ($this->lock->runtime()['ui_smart']['commit'] ?? null)

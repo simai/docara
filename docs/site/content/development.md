@@ -14,6 +14,7 @@
 - [Архитектура](/development/architecture/)
 - [Декларативный preview](/development/declarative-preview/)
 - [Расширение Layout, Section, Block, View Tree и Smart](/development/composition-extensions/)
+- [Архитектура Smart-компонентов Docara](/development/smart-components/)
 - [Развитие возможностей](/development/extensions/)
 - [Vite и ассеты](/development/vite-assets/)
 - [Framework-компоненты](/development/framework-components/)

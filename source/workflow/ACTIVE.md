@@ -1,7 +1,7 @@
 # Workflow: user-ready documentation for declarative Docara
 
 Date: 2026-07-21
-Status: in-progress
+Status: accepted
 Workflow ID: `2026-07-21-docara-user-ready-documentation`
 Process model: `goal_mode_documentation`
 Current state: `accepted_closed`

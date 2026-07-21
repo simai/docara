@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Framework;
 
 use Simai\Docara\Portable\CanonicalJson;
+use Simai\Docara\Portable\FilesystemPath;
 
 final readonly class FrameworkManifestRepository
 {
@@ -241,7 +242,7 @@ final readonly class FrameworkManifestRepository
             || ($stat['nlink'] ?? 1) !== 1
             || $root === false
             || $real === false
-            || ($real !== $root && ! str_starts_with($real, $root . DIRECTORY_SEPARATOR))
+            || ! FilesystemPath::isWithin($real, $root)
         ) {
             throw new FrameworkComponentException($unsafeCode, $detail);
         }

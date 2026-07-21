@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\PortableSite;
 
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\Portable\FilesystemPath;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final readonly class PortableBrandAssetPlanner
@@ -108,7 +109,7 @@ final readonly class PortableBrandAssetPlanner
             }
         }
         $real = realpath($candidate);
-        if ($real === false || ! is_file($real) || ! str_starts_with($real, $root . DIRECTORY_SEPARATOR)) {
+        if ($real === false || ! is_file($real) || ! FilesystemPath::isWithin($real, $root, false)) {
             throw new PortableConfigurationException('BRAND_ASSET_NOT_FOUND', "Brand asset [$relative] was not found.");
         }
 

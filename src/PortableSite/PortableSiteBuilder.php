@@ -25,6 +25,7 @@ use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\Translator;
 use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\CanonicalJson;
+use Simai\Docara\Portable\FilesystemPath;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\PortableConfigurationLoader;
 use Simai\Docara\Portable\ResolvedPagePlan;
@@ -784,7 +785,7 @@ final readonly class PortableSiteBuilder
             throw new PortableConfigurationException($code, "Directory [$path] is missing or unsafe.");
         }
 
-        return rtrim($real, DIRECTORY_SEPARATOR);
+        return FilesystemPath::normalize($real);
     }
 
     private function confinedDirectory(string $root, string $relative): string
@@ -803,7 +804,7 @@ final readonly class PortableSiteBuilder
             }
         }
         $real = $this->realDirectory($candidate, 'CONTENT_ROOT_NOT_FOUND');
-        if (! str_starts_with($real . '/', $root . '/')) {
+        if (! FilesystemPath::isWithin($real, $root)) {
             throw new PortableConfigurationException('PATH_ESCAPE_FORBIDDEN', 'content_root escapes the portable site root.');
         }
 
@@ -837,8 +838,7 @@ final readonly class PortableSiteBuilder
         string $contentRoot,
         string $baseUrl,
         string $publicPrefix = '',
-    ): array
-    {
+    ): array {
         $slug = $plan->configuration['slug'] ?? null;
         if (! is_string($slug) || $slug === '') {
             $slug = substr($plan->page, strlen(rtrim($contentRoot, '/') . '/'));
@@ -991,8 +991,8 @@ final readonly class PortableSiteBuilder
 
     private function assertDestinationShape(string $root, string $destination): void
     {
-        $normalizedRoot = rtrim(str_replace('\\', '/', $root), '/');
-        $normalizedDestination = rtrim(str_replace('\\', '/', $destination), '/');
+        $normalizedRoot = FilesystemPath::normalize($root);
+        $normalizedDestination = FilesystemPath::normalize($destination);
         $isDirectBuildDirectory = dirname($normalizedDestination) === $normalizedRoot
             && preg_match('/^build(?:_[A-Za-z0-9._-]+)?$/', basename($normalizedDestination)) === 1;
         if ($normalizedDestination === '' || ! $isDirectBuildDirectory) {
@@ -1029,10 +1029,10 @@ final readonly class PortableSiteBuilder
         }
 
         foreach ($inputs as $input) {
-            $normalizedInput = rtrim(str_replace('\\', '/', $input), '/');
+            $normalizedInput = FilesystemPath::normalize($input);
             if ($normalizedDestination === $normalizedInput
-                || str_starts_with($normalizedInput, $normalizedDestination . '/')
-                || str_starts_with($normalizedDestination, $normalizedInput . '/')
+                || str_starts_with($normalizedInput, $normalizedDestination . DIRECTORY_SEPARATOR)
+                || str_starts_with($normalizedDestination, $normalizedInput . DIRECTORY_SEPARATOR)
             ) {
                 throw new PortableConfigurationException(
                     'DESTINATION_INPUT_OVERLAP_FORBIDDEN',
@@ -1050,8 +1050,7 @@ final readonly class PortableSiteBuilder
         string $contentPath,
         array $generatedOutputs,
         string $publicPrefix = '',
-    ): array
-    {
+    ): array {
         $reservedOutputs = array_map('strtolower', $generatedOutputs);
         $assets = [];
         $iterator = new \RecursiveIteratorIterator(

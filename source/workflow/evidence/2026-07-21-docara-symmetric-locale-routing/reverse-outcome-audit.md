@@ -2,6 +2,7 @@
 
 Date: 2026-07-21
 Verdict: PASS
+Implementation candidate: `e8aaac5665b99415034928ad6bc8c63f7ff6b831`
 
 | Required outcome | Evidence | Result |
 | --- | --- | --- |

@@ -26,7 +26,8 @@ current Docara documentation URL through exact redirects.
 Symmetric locale routing is implemented and accepted locally. Docara and the
 portable starter use `content/ru` and `/ru/`; legacy URLs remain available,
 the deterministic/static/full suite is green, and `docara.test` contains the
-rollback-safe accepted artifact.
+rollback-safe accepted artifact. Implementation candidate:
+`e8aaac5665b99415034928ad6bc8c63f7ff6b831`.
 
 ## Completion Guard
 

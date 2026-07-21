@@ -22,6 +22,7 @@ Memory reason: this proposed workflow and current repository facts are the
 authoritative planning source; no personal-memory update is needed.
 Baseline HEAD: `5727b10fb1648a675c1857caf74632e3986334b5`
 Live Goal: completed against the local exact build on 2026-07-21.
+Implementation candidate: `e8aaac5665b99415034928ad6bc8c63f7ff6b831`.
 
 ## Completion Summary
 

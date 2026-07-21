@@ -1,42 +1,30 @@
-# Workflow: Figma alignment for Docara navigation
+# Active workflow: Docara Framework surface cleanup
 
-Date: 2026-07-21
+Date: 2026-07-22
 Status: implemented and locally verified
-Workflow ID: `2026-07-21-docara-navigation-figma-alignment`
-Process model: `general_delivery`
+Workflow ID: `2026-07-22-docara-framework-surface-cleanup`
+Process model: raw-owner `docara + sf5 + ux + dev + tester`
 Current state: `review_ready`
 Target state: `review_ready`
 
 ## Current Goal
 
-Align the official `docara.navigation` Smart component with the supplied Simai
-Framework Simple Menu Figma nodes while preserving the declarative four-level
-tree, active trail, keyboard behavior, responsive shell and portable build.
+Make deep Docara breadcrumbs usable through the pinned Simai Framework
+contract, then remove only proven custom-class duplicates from the canonical
+publisher without weakening product behavior, portability or accessibility.
 
-## Source Of Truth
+## Result So Far
 
-- workflow:
-  `source/workflow/2026-07-21-docara-navigation-figma-alignment.md`;
-- Figma nodes: `17583:25972` and `17607:34059` in
-  `ee9qUZp4VhVpDxeMqxWtcv`.
-
-## Result
-
-The official `tree` view now matches the supplied Framework Simple Menu:
-left-side disclosures, responsive Framework level tokens, neutral active
-surface, medium active typography and compact 1 px menu rhythm. Pointer,
-keyboard, four-level, light/dark and mobile browser checks pass. The exact
+The five-level path now renders as root, localized ellipsis and current page,
+expands on demand, preserves all server-rendered links without JavaScript and
+does not create page-level overflow. A bounded publisher audit removed dead
+classes and moved atomic layout properties to Framework utilities. The exact
 verified build is served at local `docara.test` with rollback backup.
-
-Follow-up spacing refinement is included: desktop sidebar padding is the
-Framework `p-1` utility, row and disclosure geometry use `d2` / `d1`, compact
-geometry uses `d0` / `c6`, and alignment compensation uses Framework spacing
-and border tokens. Full regression remains green at 618 tests and 5,447
-assertions.
 
 ## Completion Guard
 
-The local implementation guard is satisfied. Evidence:
-`source/workflow/evidence/2026-07-21-docara-navigation-figma-alignment/acceptance.md`.
-Public push, merge, package release and production readiness remain explicitly
-excluded; independent tester acceptance is deferred to release promotion.
+Final full PHPUnit passed at 618 tests and 5,459 assertions. Evidence:
+`source/workflow/evidence/2026-07-22-docara-framework-surface-cleanup/`.
+
+Public push, merge, tag, package release and production readiness remain
+excluded.

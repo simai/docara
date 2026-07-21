@@ -454,7 +454,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'native.code' => [
                 'markdown' => ['```php', "\$site = 'Docara';"],
                 'html' => [
-                    '<div data-docara-code-block class="source docara-code-block bg-surface-container border border-outline-variant radius-2 m-0">',
+                    '<div data-docara-code-block class="source docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-0">',
                     '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code class="language-php">',
                     "\$site = 'Docara';",
                 ],
@@ -520,8 +520,8 @@ final class EffectiveComponentCatalogTest extends TestCase
                 '<span class="sf-button-text-container">Back to the catalog</span>',
             ],
             'docara.features' => [
-                '<ul data-docara-block="features" class="docara-feature-grid',
-                '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1">',
+                '<ul data-docara-block="features" class="grid grid-col-1 lg:grid-col-3',
+                '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">',
             ],
             'docara.steps' => [
                 '<section class="bg-surface-0 border border-outline-variant radius-2 p-3">',

@@ -5,7 +5,7 @@
     </header>
     <div class="docara-example-grid grid gap-2">
 <?php foreach ($view->items as $item) { ?>
-        <article class="surface-0 border border-outline-variant radius-2 p-2 flex flex-col gap-1">
+        <article class="surface-0 border border-outline-variant radius-2 p-2 flex min-w-0 flex-col gap-1">
             <span class="color-primary weight-7"><?= $item->category ?></span>
             <h2 class="m-0"><?= $item->title ?></h2>
             <p class="color-on-surface-variant m-0"><?= $item->description ?></p>

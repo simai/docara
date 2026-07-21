@@ -70,6 +70,17 @@
     },{passive:true});
   }
   document.querySelectorAll('dialog[data-docara-sheet]').forEach(bindSheet);
+  document.querySelectorAll('[data-docara-breadcrumbs]').forEach(function(breadcrumbs){
+    var ellipsisLabel=breadcrumbs.dataset.docaraBreadcrumbsEllipsisLabel;
+    if(!ellipsisLabel)return;
+    function localizeBreadcrumbEllipsis(){
+      breadcrumbs.querySelectorAll('[data-sf-breadcrumbs-generated="ellipsis"][aria-label]').forEach(function(button){
+        button.setAttribute('aria-label',ellipsisLabel);
+      });
+    }
+    localizeBreadcrumbEllipsis();
+    new MutationObserver(localizeBreadcrumbEllipsis).observe(breadcrumbs,{childList:true});
+  });
   document.querySelectorAll('[data-docara-language-switcher]').forEach(function(select){
     select.addEventListener('change',function(){
       var url=select.value;

@@ -9,6 +9,7 @@
     "navigation.title": "Sections",
     "navigation.close": "Fermer les sections de la documentation",
     "navigation.breadcrumbs": "Fil d’Ariane",
+    "navigation.breadcrumbs_expand": "Afficher les niveaux masqués du fil d’Ariane",
     "navigation.outline": "Sur cette page",
     "navigation.outline_close": "Fermer le plan de la page",
     "navigation.previous_next": "Navigation entre les pages",

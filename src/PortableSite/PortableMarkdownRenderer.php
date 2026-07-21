@@ -441,14 +441,14 @@ final class PortableMarkdownRenderer
         $content = trim((string) $rendered);
         $content = preg_replace(
             '/^<ul>/',
-            '<ul data-docara-block="features" class="docara-feature-grid grid grid-col-1 lg:grid-col-3 gap-2 list-none m-0 p-0">',
+            '<ul data-docara-block="features" class="grid grid-col-1 lg:grid-col-3 gap-2 list-none m-0 p-0">',
             $content,
             1,
         ) ?? $content;
 
         return preg_replace(
             '/<li>/',
-            '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1">',
+            '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">',
             $content,
         ) ?? $content;
     }
@@ -500,7 +500,7 @@ final class PortableMarkdownRenderer
             function (array $matches): string {
                 $attributes = (string) ($matches['attributes'] ?? '');
 
-                return '<div data-docara-code-block class="source docara-code-block bg-surface-container border border-outline-variant radius-2 m-0">'
+                return '<div data-docara-code-block class="source docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-0">'
                     . '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code'
                     . $attributes . '>' . (string) ($matches['content'] ?? '') . '</code></pre>'
                     . '</div>';

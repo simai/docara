@@ -22,7 +22,7 @@
                 <h3 class="m-0"><?= $source->label ?></h3>
                 <code><?= $source->path ?></code>
             </header>
-            <pre class="docara-example-source m-0 p-2 overflow-auto" data-language="<?= $source->language ?>"><code><?= $source->code ?></code></pre>
+            <pre class="docara-example-source max-w-full m-0 p-2 overflow-auto" data-language="<?= $source->language ?>"><code><?= $source->code ?></code></pre>
         </article>
 <?php } ?>
     </section>

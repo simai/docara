@@ -1,4 +1,4 @@
-<div class="docara-header-actions flex items-center gap-1">
+<div class="flex flex-none items-center gap-1">
 <?php if ($view->preset === 'docs' && $view->regions['sidebar'] !== '') { ?>
     <button type="button" data-docara-sheet-trigger aria-haspopup="dialog" aria-controls="docara-mobile-navigation" aria-expanded="false" class="docara-mobile-navigation-trigger sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-2 radius-default" aria-label="<?= $view->copy['navigation.open'] ?>"><sf-icon icon="menu" aria-hidden="true"></sf-icon></button>
 <?php } ?>

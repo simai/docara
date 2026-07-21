@@ -31,17 +31,17 @@
     </header>
 <?php if ($view->preset === 'landing') { ?>
     <main id="docara-main" tabindex="-1" class="docara-landing p-4" data-docara-region="main">
-        <article class="docara-content docara-prose flex flex-col gap-2" data-width="<?= $view->maxWidth ?>"><?= $view->regions['main'] ?></article>
+        <article class="docara-content docara-prose flex min-w-0 flex-col gap-2" data-width="<?= $view->maxWidth ?>"><?= $view->regions['main'] ?></article>
     </main>
 <?php } else { ?>
     <div class="docara-docs-layout gap-0" data-sidebar="<?= $view->regions['sidebar'] === '' ? 'false' : 'true' ?>" data-outline="<?= $view->regions['outline'] === '' ? 'false' : 'true' ?>">
 <?php if ($view->regions['sidebar'] !== '') { ?>
         <aside class="docara-sidebar p-1" data-docara-region="sidebar"><?= $view->regions['sidebar'] ?></aside>
 <?php } ?>
-        <div class="docara-reading-column flex flex-col gap-2 p-3">
+        <div class="docara-reading-column flex min-w-0 flex-col gap-2 p-3">
             <?= $view->chrome['breadcrumbs'] ?>
             <?= $view->chrome['mobile_toc'] ?>
-            <main id="docara-main" tabindex="-1" class="docara-content" data-width="<?= $view->maxWidth ?>" data-docara-region="main">
+            <main id="docara-main" tabindex="-1" class="docara-content min-w-0" data-width="<?= $view->maxWidth ?>" data-docara-region="main">
                 <article class="docara-prose"><?= $view->regions['main'] ?></article>
                 <?= $view->chrome['pager'] ?>
             </main>

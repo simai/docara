@@ -9,6 +9,7 @@
         "navigation.title": "Разделы",
         "navigation.close": "Закрыть разделы документации",
         "navigation.breadcrumbs": "Хлебные крошки",
+        "navigation.breadcrumbs_expand": "Показать скрытые уровни навигационной цепочки",
         "navigation.outline": "На этой странице",
         "navigation.outline_close": "Закрыть содержание страницы",
         "navigation.previous_next": "Переходы между страницами",

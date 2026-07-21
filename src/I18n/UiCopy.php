@@ -12,6 +12,7 @@ final readonly class UiCopy
         'navigation.title',
         'navigation.close',
         'navigation.breadcrumbs',
+        'navigation.breadcrumbs_expand',
         'navigation.outline',
         'navigation.outline_close',
         'navigation.previous_next',

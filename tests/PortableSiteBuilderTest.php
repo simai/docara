@@ -193,7 +193,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringNotContainsString('docara-outline-rail bg-surface-0 border radius-2', $guide);
         self::assertStringContainsString('class="docara-landing p-4"', $landing);
         self::assertStringContainsString(
-            'class="docara-content docara-prose flex flex-col gap-2"',
+            'class="docara-content docara-prose flex min-w-0 flex-col gap-2"',
             $landing,
         );
         self::assertStringNotContainsString(
@@ -206,7 +206,7 @@ final class PortableSiteBuilderTest extends TestCase
         );
         self::assertStringContainsString('href="/guides/getting-started/"', $landing);
         self::assertStringContainsString(
-            'data-docara-block="features" class="docara-feature-grid grid grid-col-1 lg:grid-col-3',
+            'data-docara-block="features" class="grid grid-col-1 lg:grid-col-3',
             $landing,
         );
         self::assertStringContainsString(
@@ -214,9 +214,10 @@ final class PortableSiteBuilderTest extends TestCase
             $landing,
         );
         self::assertStringContainsString(
-            '.docara-feature-grid>li{min-width:0;max-width:none}',
-            $shellCss,
+            '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">',
+            $landing,
         );
+        self::assertStringNotContainsString('docara-feature-grid', $landing);
         self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:transparent;', $shellCss);
         self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre}', $shellCss);
         self::assertStringContainsString(
@@ -248,8 +249,9 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('aria-current="page"', $index);
         self::assertStringContainsString('aria-current="page"', $guide);
         self::assertStringContainsString('data-docara-breadcrumbs', $guide);
-        self::assertMatchesRegularExpression('~data-docara-breadcrumbs data-max-items="[3-9][0-9]*"~', $guide);
-        self::assertStringContainsString('class="sf-breadcrumbs flex"', $guide);
+        self::assertStringContainsString('data-docara-breadcrumbs data-max-items="3"', $guide);
+        self::assertStringContainsString('data-docara-breadcrumbs-ellipsis-label="Показать скрытые уровни навигационной цепочки"', $guide);
+        self::assertStringContainsString('class="sf-breadcrumbs flex flex-nowrap items-cross-center min-w-0 overflow-x-auto overflow-y-hidden"', $guide);
         self::assertStringContainsString('sf-breadcrumbs-item--link', $guide);
         self::assertStringContainsString('sf-breadcrumbs-item--default', $guide);
         self::assertStringContainsString('aria-current="page"', $guide);
@@ -373,8 +375,18 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringNotContainsString('--sf-menu-element--background-color:var(--sf-primary-container)', $smartSurface);
         self::assertStringContainsString('href="/guides/platform/configuration/layout/" aria-current="page"', $fourthLevel);
         self::assertGreaterThanOrEqual(3, substr_count($fourthLevel, ' expanded aria-expanded="true"'));
-        self::assertStringContainsString('data-docara-breadcrumbs data-max-items="5"', $fourthLevel);
+        self::assertStringContainsString('data-docara-breadcrumbs data-max-items="3"', $fourthLevel);
         self::assertStringNotContainsString('data-sf-breadcrumbs-generated="ellipsis"', $fourthLevel);
+        self::assertSame(4, substr_count($fourthLevel, 'data-sf-breadcrumb-separator="true"'));
+        self::assertStringContainsString('new MutationObserver(localizeBreadcrumbEllipsis)', $shellRuntime);
+        self::assertStringContainsString('[data-sf-breadcrumbs-generated="ellipsis"][aria-label]', $shellRuntime);
+        self::assertStringNotContainsString('docara-header-actions', $fourthLevel);
+        self::assertStringNotContainsString('docara-mobile-navigation bg-surface-0', $fourthLevel);
+        self::assertStringNotContainsString('class="docara-search-input ', $fourthLevel);
+        self::assertStringNotContainsString('.docara-header-actions{', $shellCss);
+        self::assertStringNotContainsString('.docara-reading-column,.docara-content{min-width:0}', $shellCss);
+        self::assertStringNotContainsString('.sf-breadcrumbs{min-width:0;', $shellCss);
+        self::assertStringContainsString('.sf-breadcrumbs-item[hidden]{display:none}', $shellCss);
 
         self::assertSame(3, substr_count($index, '<input data-docara-theme-option'));
         self::assertStringContainsString('docara.reader.theme.v1', $index);

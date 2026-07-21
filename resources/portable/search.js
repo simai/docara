@@ -227,8 +227,8 @@
         var title = window.document.createElement('span');
         var context = window.document.createElement('span');
         var summary = window.document.createElement('span');
-        listItem.className = 'docara-search-result-item';
-        link.className = 'docara-search-result bg-surface-container border border-outline-variant radius-2 p-2 flex flex-col gap-1 decoration-none color-on-surface';
+        listItem.className = 'min-w-0';
+        link.className = 'docara-search-result min-w-0 bg-surface-container border border-outline-variant radius-2 p-2 flex flex-col gap-1 decoration-none color-on-surface';
         link.href = record.url;
         link.dataset.docaraSearchResult = 'true';
         title.className = 'weight-7';

@@ -156,6 +156,10 @@ Reset затрагивает только `reading`; branding, layout, search и
 
 [Полный контракт областей](/authoring/regions/).
 
+[Живой пример композиции сайта, раздела и страницы](/examples/composition-inheritance/)
+показывает наследованный бренд, заменённый sidebar, отключённый разделом aside,
+его page-level reset и footer, включённый только для одной страницы.
+
 ## Проверка provenance
 
 Соберите сайт:

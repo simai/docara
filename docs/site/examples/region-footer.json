@@ -1,0 +1,14 @@
+{
+  "schema": "docara.declarative_example.v1",
+  "id": "region-footer",
+  "title": "Footer из безопасных блоков",
+  "description": "Нижняя область включается явно и получает текст и локальную ссылку без произвольного HTML.",
+  "category": "regions",
+  "order": 18,
+  "result_page": "content/demonstrator-results/region-footer.md",
+  "preview": "normal",
+  "sources": [
+    {"label": "Markdown страницы", "path": "content/demonstrator-results/region-footer.md", "language": "markdown"},
+    {"label": "Композиция footer", "path": "content/demonstrator-results/region-footer.page.json", "language": "json"}
+  ]
+}

@@ -1,0 +1,164 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.review",
+  "quality_control_id": "human_centered_simplicity",
+  "applicable": true,
+  "task": "Extend Docara's declarative model for practical interface composition. Create source-backed recipes for a branded header, sidebar, aside and footer; show regions populated by safe element blocks and Smart components; and demonstrate inheritance and overrides at site, section and page levels. Every result uses the primary generator, Simai Framework, exact Markdown/JSON sources, responsive behavior and light/dark themes, with static and browser acceptance.",
+  "primary_user_outcome": {
+    "id": "UO-DOCARA-COMPOSITION-1",
+    "actor": "автор Docara",
+    "job": "собрать брендированную оболочку из понятных декларативных блоков и увидеть точный рабочий пример",
+    "success_condition": "пять живых рецептов воспроизводятся из показанных Markdown/JSON без PHP и авторских шаблонов"
+  },
+  "changed_surface_inventory": {
+    "mode": "artifact_comparison",
+    "baseline_ref": "5823e5b974ceb4e26e8e7973903e1cfc87f37ce0",
+    "target_ref": "region-composition:accepted-working-tree",
+    "diff_sha256": "cb44fbf1255710a369aa3009d9f8b7a4020aefe3c132bcaa578fc333d0ce4ef5",
+    "evidence_paths": [
+      "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/requirements-matrix.md"
+    ],
+    "files": [
+      {
+        "path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/requirements-matrix.md",
+        "surface_ids": ["shell_contract", "recipes", "inheritance", "protective_validation"]
+      }
+    ]
+  },
+  "necessity_map": [
+    {
+      "id": "shell_contract",
+      "surface_type": "code_layer",
+      "description": "Одна зарегистрированная shell-секция с безопасными element и Smart block calls",
+      "disposition": "retain",
+      "disclosure": "progressive",
+      "justification": {"type": "user_outcome", "ref": "UO-DOCARA-COMPOSITION-1"}
+    },
+    {
+      "id": "recipes",
+      "surface_type": "screen",
+      "description": "Пять detail-рецептов в существующем каталоге вместо нового демонстратора",
+      "disposition": "retain",
+      "disclosure": "visible",
+      "justification": {"type": "user_outcome", "ref": "UO-DOCARA-COMPOSITION-1"}
+    },
+    {
+      "id": "inheritance",
+      "surface_type": "configuration",
+      "description": "Один пример site to section to page с replace, reset и provenance",
+      "disposition": "retain",
+      "disclosure": "progressive",
+      "justification": {"type": "user_outcome", "ref": "UO-DOCARA-COMPOSITION-1"}
+    },
+    {
+      "id": "protective_validation",
+      "surface_type": "protective_control",
+      "description": "Schema и runtime validation для тегов, props, utilities, IDs, links и executable surfaces",
+      "disposition": "retain",
+      "disclosure": "internal",
+      "justification": {"type": "security", "ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md"}
+    }
+  ],
+  "removal_review": {
+    "challenged_ids": ["shell_contract", "recipes", "inheritance", "protective_validation"],
+    "removed_ids": [],
+    "merged_ids": [],
+    "summary": "Новый каталог, база данных, редактор, renderer и template API отвергнуты; расширены существующий генератор, schema и один demonstrator."
+  },
+  "simplest_complete_alternative": "Одна зарегистрированная docara.shell section, два block kind и пять source-backed записей существующего демонстратора.",
+  "progressive_disclosure": {
+    "required": true,
+    "strategy": "Каталог показывает задачу и назначение; detail сначала живой результат, затем точные Markdown/JSON; provenance остаётся в machine receipt.",
+    "discoverability_evidence": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/browser-acceptance.md",
+    "not_required_reason": ""
+  },
+  "complexity_delta": [
+    {
+      "measure": "new_public_catalogues",
+      "before": 1,
+      "after": 1,
+      "unit": "catalogues",
+      "interpretation": "Новая возможность встроена в существующий демонстратор.",
+      "justification_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/browser-acceptance.md"
+    },
+    {
+      "measure": "author_executable_surfaces",
+      "before": 0,
+      "after": 0,
+      "unit": "surfaces",
+      "interpretation": "Композиция расширена без PHP, Blade, raw HTML и template paths.",
+      "justification_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md"
+    }
+  ],
+  "automation_review": {
+    "present": false,
+    "simplified_before_automation": false,
+    "stable_process_proven": false,
+    "evidence_ref": ""
+  },
+  "scenario_evidence": [
+    {
+      "scenario": "SC-COMPOSITION-1",
+      "actor": "автор Docara",
+      "steps": ["Открыть каталог", "Выбрать footer", "Сравнить live result и page JSON"],
+      "expected": "Footer включается и содержит безопасные элементы без авторского HTML.",
+      "actual": "Footer видим, текст и локальная ссылка сформированы shell.element, verifier и browser PASS.",
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/browser-acceptance.md",
+      "result": "PASS"
+    },
+    {
+      "scenario": "SC-COMPOSITION-2",
+      "actor": "автор Docara",
+      "steps": ["Открыть inheritance recipe", "Сравнить три JSON слоя", "Проверить desktop mobile light dark"],
+      "expected": "Site, section и page contributions различимы и дают один адаптивный результат.",
+      "actual": "Provenance указывает три источника; sidebar, reset aside и page footer видимы без overflow.",
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/requirements-matrix.md",
+      "result": "PASS"
+    }
+  ],
+  "protected_complexity_review": [
+    {"category": "accessibility", "status": "PRESERVED", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/browser-acceptance.md"},
+    {"category": "security", "status": "PRESERVED", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md"},
+    {"category": "data_integrity", "status": "PRESERVED", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md"},
+    {"category": "permissions", "status": "NOT_APPLICABLE", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md"},
+    {"category": "error_handling", "status": "PRESERVED", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md"},
+    {"category": "observability", "status": "PRESERVED", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/requirements-matrix.md"},
+    {"category": "migrations", "status": "NOT_APPLICABLE", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/requirements-matrix.md"},
+    {"category": "rollback", "status": "PRESERVED", "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/deployment.md"}
+  ],
+  "tester_evidence_review": {
+    "status": "VERIFIED",
+    "verdict_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/human-centered-simplicity-tester-verdict.json",
+    "verdict_sha256": "a8544441e1cc55f65a6ee282419e341a53b20fb71f05e51645748a92e1773c1b",
+    "reviewed_surface_ids": ["shell_contract", "recipes", "inheritance", "protective_validation"],
+    "surface_classifications": [
+      {"surface_id": "shell_contract", "classification": "ordinary", "protected_categories": [], "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md"},
+      {"surface_id": "recipes", "classification": "ordinary", "protected_categories": [], "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/browser-acceptance.md"},
+      {"surface_id": "inheritance", "classification": "ordinary", "protected_categories": [], "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/requirements-matrix.md"},
+      {"surface_id": "protective_validation", "classification": "protective", "protected_categories": ["security", "data_integrity", "error_handling"], "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md"}
+    ],
+    "evidence_paths": [
+      "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md",
+      "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/browser-acceptance.md",
+      "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/deployment.md",
+      "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/requirements-matrix.md"
+    ],
+    "evidence_fingerprints": [
+      {"path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md", "sha256": "c0d604bd7f9143699701ffa1095e4fa2d91c2a949366a877ed43ad2b73db1c79"},
+      {"path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/browser-acceptance.md", "sha256": "ae155bd40c9680b383fd6cda095511fd62eafd56098cef2f4147cc609c626358"},
+      {"path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/deployment.md", "sha256": "f52f388727e82451b89015504933fdf02ce0091e22a4770c7eb287f59c1967d9"},
+      {"path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/requirements-matrix.md", "sha256": "cae30217249157cd6b3ca83ca97984b8f3147faf31258ac8a4dd2f22a1a048cd"}
+    ],
+    "contradictions": [],
+    "verdict": "PASS"
+  },
+  "residual_complexity": [
+    {
+      "description": "Fail-closed schema, runtime validation, receipts and provenance remain internal protected complexity.",
+      "category": "data_integrity",
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md"
+    }
+  ],
+  "blocking_findings": [],
+  "verdict": "PASS"
+}

@@ -16,6 +16,7 @@ final readonly class DeclarativePageRenderer
         private PortableMarkdownRenderer $markdown,
         private SmartRenderer $smart = new SmartRenderer,
         private ViewTreeRenderer $viewTrees = new ViewTreeRenderer,
+        private SafeElementRenderer $elements = new SafeElementRenderer,
         private array $reservedDocumentIds = [],
     ) {}
 
@@ -127,6 +128,17 @@ final readonly class DeclarativePageRenderer
         }
         if ($block->renderer === 'block.smart' && $block->smart !== null) {
             return $this->smart->render($block->smart);
+        }
+        if ($block->renderer === 'block.element' && is_array($block->data['element'] ?? null)) {
+            return new RenderArtifact(
+                $this->elements->render($block->data['element']),
+                [],
+                ['runtime' => 'docara.safe_element.v1'],
+                $block->provenance + [
+                    'block' => $block->block,
+                    'source' => $block->data['source'] ?? '@layout-configuration',
+                ],
+            );
         }
 
         throw new \InvalidArgumentException('DECLARATIVE_BLOCK_RENDERER_UNSUPPORTED');

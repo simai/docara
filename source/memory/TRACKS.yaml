@@ -2,5 +2,5 @@ tracks:
   docara-consolidation:
     status: "completed"
     owner_skill: "docara"
-    current_workflow: "source/workflow/2026-07-21-declarative-layout-demonstrator.md"
+    current_workflow: "source/workflow/2026-07-21-region-composition-recipes.md"
     last_updated: "2026-07-21"

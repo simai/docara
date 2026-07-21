@@ -3,5 +3,5 @@
   "key": "shell.smart",
   "kind": "smart",
   "renderer": "block.smart",
-  "allowed_smart": ["docara.header", "docara.navigation", "docara.outline"]
+  "allowed_smart": ["docara.header", "docara.navigation", "docara.outline", "ui.alert", "ui.button"]
 }

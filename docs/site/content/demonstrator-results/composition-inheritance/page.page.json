@@ -1,0 +1,37 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Композиция: сайт → раздел → страница",
+  "description": "Три уровня наследования областей с явным reset страницы.",
+  "layout": {
+    "regions": {
+      "outline": {
+        "$reset": true,
+        "enabled": true,
+        "sections": [
+          {"id": "page-outline", "section": "docara.outline"},
+          {
+            "id": "page-context",
+            "section": "docara.shell",
+            "utilities": ["flex", "flex-col", "gap-1"],
+            "blocks": [
+              {"id": "label", "block": "shell.element", "slot": "content", "element": {"tag": "p", "text": "Aside переопределён в page.page.json.", "utilities": ["m-0"]}}
+            ]
+          }
+        ]
+      },
+      "footer": {
+        "enabled": true,
+        "sections": [
+          {
+            "id": "page-footer",
+            "section": "docara.shell",
+            "utilities": ["flex", "flex-col", "gap-1", "p-2", "surface-0"],
+            "blocks": [
+              {"id": "label", "block": "shell.element", "slot": "content", "element": {"tag": "p", "text": "Footer включён только для этой страницы.", "utilities": ["m-0"]}}
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

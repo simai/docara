@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.tester_verdict",
+  "quality_control_id": "human_centered_simplicity",
+  "reviewer": {
+    "role": "tester",
+    "source": "tester_skill",
+    "identity": "docara-region-composition-acceptance"
+  },
+  "scope_binding": {
+    "task_sha256": "cc42a594ba34187f094713d47169a008ec27f7fc9093b067b8e9aabe005e1b16",
+    "review_payload_sha256": "d3e292ef0f092f7421135d6c30b88934160e6e374da82eb5b8b69f8078628d25",
+    "workflow_ref": "",
+    "workflow_sha256": "",
+    "repository_refs": ["repo://docara-consolidation"],
+    "repository_baselines": []
+  },
+  "status": "VERIFIED",
+  "reviewed_surface_ids": ["shell_contract", "recipes", "inheritance", "protective_validation"],
+  "surface_classifications": [
+    {
+      "surface_id": "shell_contract",
+      "classification": "ordinary",
+      "protected_categories": [],
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md"
+    },
+    {
+      "surface_id": "recipes",
+      "classification": "ordinary",
+      "protected_categories": [],
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/browser-acceptance.md"
+    },
+    {
+      "surface_id": "inheritance",
+      "classification": "ordinary",
+      "protected_categories": [],
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/requirements-matrix.md"
+    },
+    {
+      "surface_id": "protective_validation",
+      "classification": "protective",
+      "protected_categories": ["security", "data_integrity", "error_handling"],
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md"
+    }
+  ],
+  "evidence_paths": [
+    "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md",
+    "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/browser-acceptance.md",
+    "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/deployment.md",
+    "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/requirements-matrix.md"
+  ],
+  "evidence_fingerprints": [
+    {"path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md", "sha256": "c0d604bd7f9143699701ffa1095e4fa2d91c2a949366a877ed43ad2b73db1c79"},
+    {"path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/browser-acceptance.md", "sha256": "ae155bd40c9680b383fd6cda095511fd62eafd56098cef2f4147cc609c626358"},
+    {"path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/deployment.md", "sha256": "f52f388727e82451b89015504933fdf02ce0091e22a4770c7eb287f59c1967d9"},
+    {"path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/requirements-matrix.md", "sha256": "cae30217249157cd6b3ca83ca97984b8f3147faf31258ac8a4dd2f22a1a048cd"}
+  ],
+  "commands": [
+    {
+      "command": "/Applications/ServBay/bin/php vendor/bin/phpunit --colors=never",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md",
+      "output_sha256": "c0d604bd7f9143699701ffa1095e4fa2d91c2a949366a877ed43ad2b73db1c79"
+    },
+    {
+      "command": "two clean builds and verify-static",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/verification-summary.md",
+      "output_sha256": "c0d604bd7f9143699701ffa1095e4fa2d91c2a949366a877ed43ad2b73db1c79"
+    },
+    {
+      "command": "desktop mobile light dark browser acceptance on https://docara.test/",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-region-composition-recipes/browser-acceptance.md",
+      "output_sha256": "ae155bd40c9680b383fd6cda095511fd62eafd56098cef2f4147cc609c626358"
+    }
+  ],
+  "contradictions": [],
+  "verdict": "PASS"
+}

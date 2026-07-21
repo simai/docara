@@ -1,29 +1,30 @@
-# Workflow: declarative layout demonstrator
+# Workflow: region composition recipes
 
 Date: 2026-07-21
-Status: accepted
-Workflow ID: `2026-07-21-declarative-layout-demonstrator`
+Status: completed
+Workflow ID: `2026-07-21-region-composition-recipes`
 Process model: `general_delivery`
-Current state: `review_ready`
-Target state: `review_ready`
+Current state: `evidence_recorded`
+Target state: `evidence_recorded`
 
 ## Goal
 
-Create a universal Docara demonstrator for declarative layouts, regions,
-inheritance, presets and Smart components. Every example must use the primary
-generator and expose its exact Markdown/JSON sources and live result without
-breaking the main documentation navigation.
+Extend Docara's declarative model with practical, source-backed recipes for a
+branded header, sidebar, aside and footer, safe element and Smart blocks, and
+site/section/page inheritance. All examples use the primary generator and
+Simai Framework and pass responsive light/dark acceptance.
 
 ## Source Of Truth
 
 - workflow:
-  `source/workflow/2026-07-21-declarative-layout-demonstrator.md`;
+  `source/workflow/2026-07-21-region-composition-recipes.md`;
 - evidence:
-  `source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/`.
+  `source/workflow/evidence/2026-07-21-region-composition-recipes/`.
 
 ## Result
 
-All seven batches are complete. The accepted local demonstrator is available
-at `https://docara.test/examples/`; full regression, deterministic builds,
-static verification, desktop/mobile browser acceptance and rollback evidence
-are recorded under the evidence root. No push, release or production claim.
+The safe region composition contract and five source-backed recipes are
+accepted. Full regression, deterministic static builds, local publication,
+responsive light/dark browser acceptance and the human-centered simplicity
+gate pass. The result is available at `https://docara.test/examples/`; no push,
+release or production claim occurred.

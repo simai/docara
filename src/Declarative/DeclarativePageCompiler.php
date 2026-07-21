@@ -10,6 +10,7 @@ use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Document\DocumentAst;
 use Simai\Docara\Declarative\Document\MarkdownNode;
 use Simai\Docara\Declarative\Document\SmartCallNode;
+use Simai\Docara\Declarative\Document\SourceSpan;
 use Simai\Docara\Declarative\Layout\LayoutDescriptor;
 use Simai\Docara\Declarative\Layout\LayoutRegion;
 use Simai\Docara\Declarative\Plan\ResolvedBlockPlan;
@@ -233,23 +234,58 @@ final readonly class DeclarativePageCompiler
             );
         }
         $blocks = [];
-        foreach ($definition['blocks'] as $blockConfiguration) {
+        $blockConfigurations = array_key_exists('blocks', $configuration)
+            ? $configuration['blocks']
+            : $definition['blocks'];
+        $configurationSource = $this->configurationSource($layout, $region);
+        foreach ($blockConfigurations as $ordinal => $blockConfiguration) {
+            if (($blockConfiguration['block'] ?? null) === 'shell.element') {
+                $blocks[] = $this->block(
+                    (string) $configuration['id'] . '.' . $blockConfiguration['id'],
+                    'shell.element',
+                    (string) $blockConfiguration['slot'],
+                    [
+                        'element' => $blockConfiguration['element'],
+                        'source' => $configurationSource,
+                    ],
+                    null,
+                    $definition,
+                );
+
+                continue;
+            }
             $smart = (string) $blockConfiguration['smart'];
             $nodeId = 'smart-' . substr(
                 hash('sha256', $pageKey . "\0" . $region . "\0" . $configuration['id'] . "\0" . $blockConfiguration['id'] . "\0" . $smart),
                 0,
                 20,
             );
+            $resolvedSmart = str_starts_with($smart, 'ui.')
+                ? $this->smart->resolve(new SmartCallNode(
+                    $nodeId,
+                    $smart,
+                    is_string($blockConfiguration['view'] ?? null)
+                        ? $blockConfiguration['view']
+                        : 'default',
+                    is_array($blockConfiguration['props'] ?? null)
+                        ? $blockConfiguration['props']
+                        : [],
+                    $ordinal + 1,
+                    new SourceSpan($configurationSource, 1, 1),
+                ))
+                : $this->composites->resolve(
+                    $smart,
+                    $nodeId,
+                    $this->boundProps($blockConfiguration, $composition),
+                );
             $blocks[] = $this->block(
                 (string) $configuration['id'] . '.' . $blockConfiguration['id'],
                 (string) $blockConfiguration['block'],
                 (string) $blockConfiguration['slot'],
-                ['binding' => (string) $blockConfiguration['bind']],
-                $this->composites->resolve(
-                    $smart,
-                    $nodeId,
-                    $this->boundProps($blockConfiguration, $composition),
-                ),
+                str_starts_with($smart, 'ui.')
+                    ? ['source' => $configurationSource]
+                    : ['binding' => (string) $blockConfiguration['bind']],
+                $resolvedSmart,
                 $definition,
             );
         }
@@ -260,7 +296,12 @@ final readonly class DeclarativePageCompiler
             (string) $definition['type'],
             $region,
             (string) $definition['view'],
-            $this->viewTree((string) $definition['view']),
+            $this->sectionViewTree(
+                (string) $definition['view'],
+                is_array($configuration['utilities'] ?? null)
+                    ? $configuration['utilities']
+                    : [],
+            ),
             $definition['slots'],
             $blocks,
             [
@@ -268,6 +309,31 @@ final readonly class DeclarativePageCompiler
                 'sha256' => (string) $definition['_sha256'],
             ],
         );
+    }
+
+    private function configurationSource(LayoutDescriptor $layout, string $region): string
+    {
+        $configuration = $layout->provenance['configuration'] ?? [];
+        $source = is_array($configuration)
+            ? ($configuration['/layout/regions/' . $region . '/sections'] ?? null)
+            : null;
+
+        return is_string($source) && $source !== '' ? $source : '@layout-configuration';
+    }
+
+    /** @param list<string> $utilities @return array<string, mixed> */
+    private function sectionViewTree(string $view, array $utilities): array
+    {
+        $resolved = $this->viewTree($view);
+        if ($utilities === []) {
+            return $resolved;
+        }
+        $existing = is_array($resolved['tree']['utilities'] ?? null)
+            ? $resolved['tree']['utilities']
+            : [];
+        $resolved['tree']['utilities'] = array_values(array_unique([...$existing, ...$utilities]));
+
+        return $resolved;
     }
 
     /**

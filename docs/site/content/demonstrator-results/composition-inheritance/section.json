@@ -1,0 +1,24 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Наследуемая композиция",
+  "navigation": {"hidden": true},
+  "search": {"indexed": false},
+  "layout": {
+    "regions": {
+      "sidebar": {
+        "sections": [
+          {"id": "docs-navigation", "section": "docara.navigation"},
+          {
+            "id": "section-context",
+            "section": "docara.shell",
+            "utilities": ["flex", "flex-col", "gap-1", "p-2", "surface-0"],
+            "blocks": [
+              {"id": "label", "block": "shell.element", "slot": "content", "element": {"tag": "p", "text": "Этот блок унаследован от section.json.", "utilities": ["m-0"]}}
+            ]
+          }
+        ]
+      },
+      "outline": {"enabled": false}
+    }
+  }
+}

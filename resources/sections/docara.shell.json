@@ -1,0 +1,10 @@
+{
+  "schema": "docara.section.v1",
+  "key": "docara.shell",
+  "type": "shell",
+  "view": "section.docara.shell",
+  "allowed_regions": ["header", "sidebar", "outline", "footer"],
+  "slots": ["content"],
+  "allowed_blocks": ["shell.element", "shell.smart"],
+  "blocks": []
+}

@@ -2,22 +2,18 @@
 
 ## Where We Stopped
 
-The declarative layout demonstrator is accepted and published locally at
-`https://docara.test/examples/`. Its workflow and evidence are stored in:
+The declarative region composition goal is complete. Docara now has accepted
+source-backed recipes for header, sidebar, aside, footer and configuration
+inheritance, published locally at `https://docara.test/examples/`.
 
-- `source/workflow/2026-07-21-declarative-layout-demonstrator.md`;
-- `source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/`.
+## Evidence
 
-## Result
-
-Seven examples cover region composition and disablement, inherited settings,
-the `docs` and `landing` presets, and two Smart components. The same primary
-generator produces the live result and the exact source catalogue.
+- workflow: `source/workflow/2026-07-21-region-composition-recipes.md`;
+- acceptance: `source/workflow/evidence/2026-07-21-region-composition-recipes/acceptance.md`;
+- full suite: 595 tests, 4,947 assertions;
+- deterministic build and browser acceptance: PASS.
 
 ## Next Meaningful Goal
 
-Review the catalogue as a product surface, then choose one bounded extension:
-broader region content/branding recipes, a larger Smart-component example
-corpus, or preparation of the branch for independent developer review.
-
-No push, release or production-readiness claim is part of the completed goal.
+No unfinished batch remains. Select a new Docara product goal from current
+usage feedback; do not reopen this accepted goal unless a regression is found.

@@ -146,6 +146,37 @@ final class PortableConfigurationTest extends TestCase
         self::assertNotContains('content/components/catalog/index.page.json', array_column($plan->trace, 'source'));
     }
 
+    public function test_repository_recipe_resolves_site_section_and_page_region_composition_with_provenance(): void
+    {
+        $site = dirname(__DIR__, 2) . '/docs/site';
+        $plan = (new PortableConfigurationLoader($site))->resolve(
+            'content/demonstrator-results/composition-inheritance/page.md',
+        );
+
+        self::assertSame('Docara', $plan->configuration['branding']['title']);
+        self::assertSame('system', $plan->configuration['settings']['theme']);
+        self::assertSame(
+            'content/demonstrator-results/composition-inheritance/section.json',
+            $plan->provenance['/layout/regions/sidebar/sections'],
+        );
+        self::assertSame(
+            'content/demonstrator-results/composition-inheritance/page.page.json',
+            $plan->provenance['/layout/regions/outline'],
+        );
+        self::assertSame(
+            'content/demonstrator-results/composition-inheritance/page.page.json',
+            $plan->provenance['/layout/regions/outline/sections'],
+        );
+        self::assertSame(
+            'content/demonstrator-results/composition-inheritance/page.page.json',
+            $plan->provenance['/layout/regions/footer/sections'],
+        );
+        self::assertTrue($plan->configuration['layout']['regions']['outline']['enabled']);
+        self::assertTrue($plan->configuration['layout']['regions']['footer']['enabled']);
+        self::assertCount(2, $plan->configuration['layout']['regions']['sidebar']['sections']);
+        self::assertCount(2, $plan->configuration['layout']['regions']['outline']['sections']);
+    }
+
     public function test_arrays_replace_objects_merge_and_reset_clears_a_branch_and_its_provenance(): void
     {
         $merger = new ConfigurationMerger;

@@ -29,15 +29,18 @@ final class SemanticParityChecker
             $legacySmartCalls,
         );
         $smart = [];
-        foreach ($declarative->plan->semanticProjection()['smart'] as $call) {
-            if (! str_starts_with((string) $call['smart'], 'ui.')) {
-                continue;
+        foreach ($declarative->plan->regions['main'] as $section) {
+            foreach ($section->blocks as $block) {
+                $call = $block->smart;
+                if ($call === null || ! str_starts_with($call->smart, 'ui.')) {
+                    continue;
+                }
+                $smart[] = [
+                    'id' => $call->smart,
+                    'view' => $call->view,
+                    'props' => $call->props,
+                ];
             }
-            $smart[] = [
-                'id' => $call['smart'],
-                'view' => $call['view'],
-                'props' => $call['props'],
-            ];
         }
         $current = SemanticPageProjection::fromHtml(
             $declarative->plan->title,

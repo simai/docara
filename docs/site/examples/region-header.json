@@ -1,0 +1,14 @@
+{
+  "schema": "docara.declarative_example.v1",
+  "id": "region-header",
+  "title": "Брендированный header",
+  "description": "Фирменный Smart-компонент бренда и отдельное действие собираются как две секции одной области.",
+  "category": "regions",
+  "order": 12,
+  "result_page": "content/demonstrator-results/region-header.md",
+  "preview": "compact",
+  "sources": [
+    {"label": "Markdown страницы", "path": "content/demonstrator-results/region-header.md", "language": "markdown"},
+    {"label": "Композиция header", "path": "content/demonstrator-results/region-header.page.json", "language": "json"}
+  ]
+}

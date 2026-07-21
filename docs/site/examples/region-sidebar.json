@@ -1,0 +1,14 @@
+{
+  "schema": "docara.declarative_example.v1",
+  "id": "region-sidebar",
+  "title": "Sidebar с дополнительным блоком",
+  "description": "Меню остаётся Smart-компонентом, а рядом появляется короткая безопасная подсказка.",
+  "category": "regions",
+  "order": 14,
+  "result_page": "content/demonstrator-results/region-sidebar.md",
+  "preview": "tall",
+  "sources": [
+    {"label": "Markdown страницы", "path": "content/demonstrator-results/region-sidebar.md", "language": "markdown"},
+    {"label": "Композиция sidebar", "path": "content/demonstrator-results/region-sidebar.page.json", "language": "json"}
+  ]
+}

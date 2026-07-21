@@ -1,0 +1,33 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Footer из безопасных блоков",
+  "description": "Footer из структурированных элементов и утилит Simai Framework.",
+  "layout": {
+    "regions": {
+      "footer": {
+        "enabled": true,
+        "sections": [
+          {
+            "id": "site-footer",
+            "section": "docara.shell",
+            "utilities": ["flex", "flex-col", "gap-1", "p-2", "surface-0"],
+            "blocks": [
+              {
+                "id": "copyright",
+                "block": "shell.element",
+                "slot": "content",
+                "element": {"tag": "p", "text": "Docara — документация как код.", "utilities": ["m-0"]}
+              },
+              {
+                "id": "home",
+                "block": "shell.element",
+                "slot": "content",
+                "element": {"tag": "a", "text": "Вернуться на главную", "href": "/", "aria_label": "Вернуться на главную страницу"}
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

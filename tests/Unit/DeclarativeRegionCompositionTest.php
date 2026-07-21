@@ -90,6 +90,121 @@ final class DeclarativeRegionCompositionTest extends TestCase
         );
     }
 
+    public function test_shell_regions_render_safe_elements_and_framework_smart_components(): void
+    {
+        $layout = RegionCompositionResolver::defaults();
+        $layout['regions']['header']['sections'][] = [
+            'id' => 'header-action',
+            'section' => 'docara.shell',
+            'blocks' => [[
+                'id' => 'action',
+                'block' => 'shell.smart',
+                'slot' => 'content',
+                'smart' => 'ui.button',
+                'view' => 'default',
+                'props' => ['text' => 'Начать', 'preset' => 'primary', 'aria-label' => 'Начать'],
+            ]],
+        ];
+        $layout['regions']['footer'] = [
+            'enabled' => true,
+            'sections' => [[
+                'id' => 'site-footer',
+                'section' => 'docara.shell',
+                'blocks' => [[
+                    'id' => 'copyright',
+                    'block' => 'shell.element',
+                    'slot' => 'content',
+                    'element' => [
+                        'tag' => 'p',
+                        'text' => 'Docara — документация как код',
+                        'utilities' => ['m-0', 'p-2', 'surface-0'],
+                    ],
+                ], [
+                    'id' => 'home',
+                    'block' => 'shell.element',
+                    'slot' => 'content',
+                    'element' => [
+                        'tag' => 'a',
+                        'text' => 'На главную',
+                        'href' => '/',
+                        'aria_label' => 'На главную страницу',
+                    ],
+                ]],
+            ]],
+        ];
+
+        $plan = DeclarativePageCompiler::bundled($this->frameworkLock())->compile(
+            (new DocumentParser)->parse('# Shell', 'content/shell.md'),
+            'shell',
+            'Shell',
+            3,
+            $this->context(),
+            $layout,
+            [
+                '/layout/regions/header/sections' => 'docara.json',
+                '/layout/regions/footer/sections' => 'content/shell.page.json',
+            ],
+        );
+        $html = (new DeclarativePageRenderer(new PortableMarkdownRenderer))->render($plan)->html;
+
+        self::assertCount(2, $plan->regions['header']);
+        self::assertSame('ui.button', $plan->regions['header'][1]->blocks[0]->smart?->smart);
+        self::assertSame('content/shell.page.json', $plan->regions['footer'][0]->blocks[0]->data['source']);
+        self::assertStringContainsString('<sf-button', $html);
+        self::assertStringContainsString('Docara — документация как код', $html);
+        self::assertStringContainsString('<a href="/" aria-label="На главную страницу">На главную</a>', $html);
+        self::assertStringContainsString('data-docara-region="footer"', $html);
+    }
+
+    public function test_shell_regions_reject_unregistered_smart_and_executable_element_surface(): void
+    {
+        foreach ([
+            [[
+                'id' => 'bad-smart',
+                'block' => 'shell.smart',
+                'slot' => 'content',
+                'smart' => 'ui.unknown',
+                'props' => [],
+            ], 'DECLARATIVE_REGION_SMART_INVALID'],
+            [[
+                'id' => 'bad-element',
+                'block' => 'shell.element',
+                'slot' => 'content',
+                'element' => ['tag' => 'script', 'text' => 'alert(1)'],
+            ], 'DECLARATIVE_REGION_ELEMENT_INVALID'],
+            [[
+                'id' => 'bad-handler',
+                'block' => 'shell.element',
+                'slot' => 'content',
+                'element' => ['tag' => 'p', 'text' => 'Unsafe', 'onclick' => 'alert(1)'],
+            ], 'DECLARATIVE_REGION_ELEMENT_INVALID'],
+        ] as [$block, $code]) {
+            $layout = RegionCompositionResolver::defaults();
+            $layout['regions']['footer'] = [
+                'enabled' => true,
+                'sections' => [[
+                    'id' => 'unsafe-footer',
+                    'section' => 'docara.shell',
+                    'blocks' => [$block],
+                ]],
+            ];
+            try {
+                $plan = DeclarativePageCompiler::bundled($this->frameworkLock())->compile(
+                    (new DocumentParser)->parse('# Unsafe', 'content/unsafe.md'),
+                    'unsafe',
+                    'Unsafe',
+                    3,
+                    $this->context(),
+                    $layout,
+                );
+                (new DeclarativePageRenderer(new PortableMarkdownRenderer))->render($plan);
+                self::fail("Unsafe block unexpectedly passed [$code].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($code, $exception->errorCode);
+            }
+        }
+    }
+
     private function context(): PageCompositionContext
     {
         return PageCompositionContext::fromBuilder(

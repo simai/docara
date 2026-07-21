@@ -3,11 +3,11 @@
   "key": "docara.docs",
   "view": "layout.docara.docs",
   "regions": {
-    "header": {"required": false, "section_types": ["navigation"]},
-    "sidebar": {"required": false, "section_types": ["navigation"]},
+    "header": {"required": false, "section_types": ["navigation", "shell"]},
+    "sidebar": {"required": false, "section_types": ["navigation", "shell"]},
     "main": {"required": true, "section_types": ["content"]},
-    "outline": {"required": false, "section_types": ["navigation"]},
-    "footer": {"required": false, "section_types": ["content", "navigation"]}
+    "outline": {"required": false, "section_types": ["navigation", "shell"]},
+    "footer": {"required": false, "section_types": ["shell"]}
   },
   "assets": ["simai.framework", "docara.reader"]
 }

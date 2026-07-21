@@ -22,7 +22,7 @@
         "required": ["label", "path", "language"],
         "properties": {
           "label": {"type": "string", "minLength": 1},
-          "path": {"type": "string", "pattern": "^(?:content|examples)/[a-z0-9._/-]+\\.(?:md|json)$"},
+          "path": {"type": "string", "pattern": "^(?:docara\\.json|(?:content|examples)/[a-z0-9._/-]+\\.(?:md|json))$"},
           "language": {"type": "string", "enum": ["markdown", "json"]}
         },
         "additionalProperties": false

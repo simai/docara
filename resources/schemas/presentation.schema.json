@@ -109,10 +109,68 @@
                 },
                 "section": {
                     "type": "string",
-                    "enum": ["docara.header", "docara.navigation", "docara.outline"]
+                    "enum": ["docara.header", "docara.navigation", "docara.outline", "docara.shell"]
+                },
+                "blocks": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 12,
+                    "items": {
+                        "$ref": "#/$defs/region_block"
+                    }
+                },
+                "utilities": {
+                    "type": "array",
+                    "maxItems": 16,
+                    "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_:/.-]*$"},
+                    "uniqueItems": true
                 }
             },
             "additionalProperties": false
+        },
+        "region_block": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "required": ["id", "block", "slot", "element"],
+                    "properties": {
+                        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+                        "block": {"const": "shell.element"},
+                        "slot": {"const": "content"},
+                        "element": {
+                            "type": "object",
+                            "required": ["tag", "text"],
+                            "properties": {
+                                "tag": {"type": "string", "enum": ["div", "p", "span", "a"]},
+                                "text": {"type": "string", "minLength": 1, "maxLength": 500},
+                                "href": {"type": "string", "pattern": "^(?:/|#)[^\\u0000-\\u0020\\\"'<>\\\\]+$"},
+                                "aria_label": {"type": "string", "minLength": 1, "maxLength": 160},
+                                "utilities": {
+                                    "type": "array",
+                                    "maxItems": 16,
+                                    "items": {"type": "string", "pattern": "^[a-z0-9][a-z0-9_:/.-]*$"},
+                                    "uniqueItems": true
+                                }
+                            },
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                {
+                    "type": "object",
+                    "required": ["id", "block", "slot", "smart", "props"],
+                    "properties": {
+                        "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+                        "block": {"const": "shell.smart"},
+                        "slot": {"const": "content"},
+                        "smart": {"type": "string", "enum": ["ui.alert", "ui.button"]},
+                        "view": {"type": "string", "const": "default"},
+                        "props": {"type": "object", "maxProperties": 32}
+                    },
+                    "additionalProperties": false
+                }
+            ]
         },
         "settings": {
             "type": "object",

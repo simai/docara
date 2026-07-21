@@ -1,0 +1,30 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Брендированный header",
+  "description": "Header из брендового Smart-компонента и отдельного действия.",
+  "layout": {
+    "regions": {
+      "header": {
+        "enabled": true,
+        "sections": [
+          {"id": "site-brand", "section": "docara.header"},
+          {
+            "id": "header-action",
+            "section": "docara.shell",
+            "utilities": ["flex", "gap-1"],
+            "blocks": [
+              {
+                "id": "start",
+                "block": "shell.smart",
+                "slot": "content",
+                "smart": "ui.button",
+                "view": "default",
+                "props": {"text": "Начать", "preset": "primary", "aria-label": "Начать работу с Docara"}
+              }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

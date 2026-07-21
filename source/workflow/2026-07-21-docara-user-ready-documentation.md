@@ -89,7 +89,8 @@ authoritative for the declarative product.
 - [completed] Navigation, docs map, changelog and automated contract coverage.
 - [completed] Build/static/determinism/browser/publication acceptance.
 - [completed] Reverse-outcome audit and exact final full suite.
-- [in-progress] Closure commit.
+- [completed] Implementation commit:
+  `dd76a0aca4ecb10b173d7262ff2a39558c1042bb`.
 
 ## Current acceptance evidence
 

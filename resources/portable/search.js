@@ -241,15 +241,64 @@
         return total;
     }
 
-    function snippet(record) {
-        var description = String(record.description || '').replace(/\s+/g, ' ').trim();
-        var text = String(description || record.text || '').replace(/\s+/g, ' ').trim();
-        if (!description && record.title) {
-            var escapedTitle = String(record.title).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    function compactText(value) {
+        return String(value || '').replace(/\s+/g, ' ').trim();
+    }
+
+    function matchPositions(value, terms) {
+        var lowered = normalize(value);
+        return (terms || []).map(function (term) {
+            return lowered.indexOf(normalize(term));
+        }).filter(function (position) {
+            return position >= 0;
+        });
+    }
+
+    function contextualSnippet(record, terms) {
+        var candidates = [
+            compactText(record.description),
+            compactText(record.headings.map(function (heading) { return heading.text || ''; }).join(' ')),
+            compactText(record.text)
+        ].filter(Boolean).map(function (text, priority) {
+            var positions = matchPositions(text, terms);
+            return {
+                text: text,
+                positions: positions,
+                matchedTerms: positions.length,
+                firstMatch: positions.length ? Math.min.apply(null, positions) : -1,
+                priority: priority
+            };
+        });
+        var matched = candidates.filter(function (candidate) {
+            return candidate.matchedTerms > 0;
+        }).sort(function (left, right) {
+            return right.matchedTerms - left.matchedTerms
+                || left.priority - right.priority
+                || left.firstMatch - right.firstMatch;
+        })[0];
+        var candidate = matched || candidates[0];
+        if (!candidate) return '';
+
+        var text = candidate.text;
+        if (!matched && !record.description && record.title) {
+            var escapedTitle = escapeExpression(record.title);
             text = text.replace(new RegExp('^(?:\\s*' + escapedTitle + '[\\s:—–-]*)+', 'iu'), '').trim();
         }
         if (text.length <= 180) return text;
-        return text.slice(0, 177).trimEnd() + '…';
+        if (!matched) return text.slice(0, 177).trimEnd() + '…';
+
+        var start = Math.max(0, matched.firstMatch - 62);
+        var end = Math.min(text.length, start + 180);
+        if (end === text.length) start = Math.max(0, end - 180);
+        if (start > 0) {
+            var nextBoundary = text.indexOf(' ', start);
+            if (nextBoundary >= 0 && nextBoundary < matched.firstMatch) start = nextBoundary + 1;
+        }
+        if (end < text.length) {
+            var previousBoundary = text.lastIndexOf(' ', end);
+            if (previousBoundary > matched.firstMatch) end = previousBoundary;
+        }
+        return (start > 0 ? '…' : '') + text.slice(start, end).trim() + (end < text.length ? '…' : '');
     }
 
     function createResult(item, terms) {
@@ -277,9 +326,10 @@
             content.append(context);
         }
         content.append(title);
-        var excerpt = snippet(record);
+        var excerpt = contextualSnippet(record, terms);
         if (excerpt) {
             summary.className = 'docara-search-result-summary color-on-surface-variant';
+            summary.dataset.docaraSearchResultSummary = 'true';
             appendHighlighted(summary, excerpt, terms);
             content.append(summary);
         }

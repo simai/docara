@@ -57,3 +57,12 @@ Evidence is written to
   rollback copy;
 - public push, merge, tag, package release and production readiness remain
   outside this batch.
+
+## Contextual excerpt correction
+
+The 2026-07-22 follow-up fixes a semantic gap in result cards: ranking could
+match page body text while the excerpt still showed the beginning of the page.
+Each result now selects the best matching description, heading or body source
+and centres its excerpt around the actual query occurrence. Live acceptance
+for `устано` returned 15 results; every card contained a visible highlighted
+match, including all 15 excerpts.

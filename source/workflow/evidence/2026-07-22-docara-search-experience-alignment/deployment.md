@@ -31,3 +31,14 @@ aside, restore the retained `build_production.previous` as
 
 No `.env`, ServBay configuration, public remote, branch, tag or release was
 changed.
+
+## Contextual excerpt follow-up
+
+The corrected search build was atomically published on 2026-07-22 at
+`16:57:17` local time. The immediately previous served tree is retained at:
+
+`/Users/rim/Sites/docara.test/.docara-backups/search-context-20260722-165717/build_production.previous`
+
+Post-publication static verification again returned 271 pages, 20,512 local
+references and 0 broken references. The served browser query `устано` passed
+the exact visible-match acceptance described in `acceptance.md`.

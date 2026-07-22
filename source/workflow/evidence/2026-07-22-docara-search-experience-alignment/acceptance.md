@@ -61,3 +61,26 @@ Framework surfaces. Escape closes the modal and restores orientation.
 
 This PASS does not claim a public release, package release, production
 readiness or completion of unrelated Docara work.
+
+## Follow-up: contextual matched excerpts
+
+The original card renderer highlighted terms only when they happened to be in
+the fixed leading description excerpt. Ranking could therefore find a page by
+body text without showing why the page matched.
+
+The corrected renderer:
+
+- inspects description, headings and body text;
+- chooses the source containing the most query terms;
+- centres a bounded 180-character excerpt around the first real occurrence;
+- keeps semantic `mark` highlighting and safe text-node rendering;
+- falls back to a leading excerpt only when no visible source occurrence is
+  available.
+
+Fresh evidence:
+
+- focused regression: 93 tests, 975 assertions, PASS;
+- production build: 271 pages, 20,512 references, 0 broken;
+- live query `устано`: 15 results, 15 cards with a highlighted match, 15
+  excerpts with a highlighted match;
+- no horizontal overflow and zero browser warnings/errors.

@@ -736,6 +736,8 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('detail: { id: dialog.id }', $searchRuntime);
         self::assertStringContainsString("document.createElement('mark')", $searchRuntime);
         self::assertStringContainsString("mark.className = 'docara-search-mark'", $searchRuntime);
+        self::assertStringContainsString('function contextualSnippet(record, terms)', $searchRuntime);
+        self::assertStringContainsString("summary.dataset.docaraSearchResultSummary = 'true'", $searchRuntime);
         self::assertStringContainsString("customElements.whenDefined('sf-modal')", $searchRuntime);
         self::assertTrue(
             strpos($searchRuntime, "new CustomEvent('docara:open-transient'") < strpos($searchRuntime, 'dialog.open()'),

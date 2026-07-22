@@ -229,6 +229,14 @@ final class PortableSiteBuilderTest extends TestCase
             $shellCss,
         );
         self::assertStringContainsString(
+            '.docara-sidebar{align-self:stretch;border-inline-end:',
+            $shellCss,
+        );
+        self::assertStringContainsString(
+            '.docara-sidebar>[data-docara-section]{position:sticky;',
+            $shellCss,
+        );
+        self::assertStringContainsString(
             'href="/_docara/declarative-shell.css" data-docara-declarative-shell-style',
             $landing,
         );
@@ -273,6 +281,14 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('data-docara-previous-next', $guide);
         self::assertStringContainsString('rel="prev" href="/guides/"', $guide);
         self::assertStringContainsString('rel="next" href="/guides/platform/"', $guide);
+        self::assertStringContainsString(
+            'docara-document-link--next flex flex-1 items-cross-center content-main-between gap-1 bg-surface-container border border-outline-variant radius-2 p-y-2 p-inline-start-2 p-inline-end-1',
+            $guide,
+        );
+        self::assertStringContainsString(
+            '.docara-document-link--next{order:-1;text-align:start}',
+            $shellCss,
+        );
         self::assertStringNotContainsString('data-docara-breadcrumbs', $landing);
         self::assertStringNotContainsString('<nav data-docara-outline', $landing);
         self::assertStringNotContainsString('data-docara-outline-mobile', $landing);

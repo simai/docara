@@ -1,0 +1,74 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.review",
+  "quality_control_id": "human_centered_simplicity",
+  "applicable": true,
+  "task": "Сделать исправление интерфейса Docara: высота разделителя sidebar, правый отступ next и мобильный порядок previous/next.",
+  "primary_user_outcome": {"id": "UO-DOCARA-READING-NAV", "actor": "читатель документации", "job": "понятно продолжать чтение на desktop и mobile", "success_condition": "разделители целостны, стрелка выровнена, следующая страница первая на mobile"},
+  "changed_surface_inventory": {
+    "mode": "artifact_comparison",
+    "baseline_ref": "7bca7d0d8535bd8c03d36fa07146d4dcf016fc93",
+    "target_ref": "worktree:2026-07-22",
+    "diff_sha256": "1ec85283bcf927cb1ad02327f7b07c935f7afd53c8b33399d54bee0ddb2cc45c",
+    "evidence_paths": ["resources/portable/declarative-shell.css", "resources/publisher/components/pager.php", "tests/PortableDocumentationSiteTest.php", "tests/PortableSiteBuilderTest.php"],
+    "files": [
+      {"path": "resources/portable/declarative-shell.css", "surface_ids": ["shell_layout_surface"]},
+      {"path": "resources/publisher/components/pager.php", "surface_ids": ["pager_spacing_surface"]},
+      {"path": "tests/PortableDocumentationSiteTest.php", "surface_ids": ["documentation_regression"]},
+      {"path": "tests/PortableSiteBuilderTest.php", "surface_ids": ["builder_regression"]}
+    ]
+  },
+  "necessity_map": [
+    {"id": "shell_layout_surface", "surface_type": "ui_element", "description": "Полноразмерный разделитель и мобильный порядок переходов", "disposition": "retain", "disclosure": "visible", "justification": {"type": "user_outcome", "ref": "UO-DOCARA-READING-NAV"}},
+    {"id": "pager_spacing_surface", "surface_type": "ui_element", "description": "Оптический логический отступ стрелки следующей страницы", "disposition": "retain", "disclosure": "visible", "justification": {"type": "user_outcome", "ref": "UO-DOCARA-READING-NAV"}},
+    {"id": "documentation_regression", "surface_type": "protective_control", "description": "Защита доступной семантики документационного интерфейса", "disposition": "retain", "disclosure": "internal", "justification": {"type": "accessibility", "ref": "tests/PortableDocumentationSiteTest.php"}},
+    {"id": "builder_regression", "surface_type": "protective_control", "description": "Защита сборки и rollback публикации", "disposition": "retain", "disclosure": "internal", "justification": {"type": "rollback", "ref": "tests/PortableSiteBuilderTest.php"}}
+  ],
+  "removal_review": {"challenged_ids": ["shell_layout_surface", "pager_spacing_surface", "documentation_regression", "builder_regression"], "removed_ids": [], "merged_ids": [], "summary": "Новых элементов нет; три существующих поверхности исправлены минимально, защитные проверки сохранены."},
+  "simplest_complete_alternative": "Полноразмерный rail со sticky-inner, штатные Framework padding utilities и один responsive order без JavaScript.",
+  "progressive_disclosure": {"required": false, "strategy": "Все переходы остаются видимыми.", "discoverability_evidence": "source/workflow/evidence/2026-07-22-docara-reading-navigation-layout/acceptance.md", "not_required_reason": "Ничего не скрывается."},
+  "complexity_delta": [
+    {"measure": "new_visible_elements", "before": 0, "after": 0, "unit": "elements", "interpretation": "Состав интерфейса не увеличен.", "justification_ref": "resources/publisher/components/pager.php"},
+    {"measure": "new_javascript_behaviors", "before": 0, "after": 0, "unit": "behaviors", "interpretation": "Responsive-порядок решён CSS.", "justification_ref": "resources/portable/declarative-shell.css"}
+  ],
+  "automation_review": {"present": false, "simplified_before_automation": false, "stable_process_proven": false, "evidence_ref": ""},
+  "scenario_evidence": [
+    {"scenario": "SC-DOCARA-READING-NAV-DESKTOP", "actor": "читатель desktop", "steps": ["Открыть страницу", "Прокрутить вниз", "Проверить разделитель и переходы"], "expected": "Разделитель непрерывен, стрелка выровнена.", "actual": "Rail и layout имеют одинаковую высоту 2075 px; next padding 16 px; overflow 0.", "evidence_ref": "source/workflow/evidence/2026-07-22-docara-reading-navigation-layout/acceptance.md", "result": "PASS"},
+    {"scenario": "SC-DOCARA-READING-NAV-MOBILE", "actor": "читатель mobile", "steps": ["Открыть страницу при 390 x 844", "Прокрутить к переходам"], "expected": "Следующая страница сверху, предыдущая снизу.", "actual": "Next top 1798.5 px, previous top 1876.5 px; overflow 0.", "evidence_ref": "source/workflow/evidence/2026-07-22-docara-reading-navigation-layout/acceptance.md", "result": "PASS"}
+  ],
+  "protected_complexity_review": [
+    {"category": "accessibility", "status": "PRESERVED", "evidence_ref": "tests/PortableDocumentationSiteTest.php"},
+    {"category": "security", "status": "NOT_APPLICABLE", "evidence_ref": "resources/publisher/components/pager.php"},
+    {"category": "data_integrity", "status": "PRESERVED", "evidence_ref": "tests/PortableSiteBuilderTest.php"},
+    {"category": "permissions", "status": "NOT_APPLICABLE", "evidence_ref": "resources/publisher/components/pager.php"},
+    {"category": "error_handling", "status": "PRESERVED", "evidence_ref": "tests/PortableSiteBuilderTest.php"},
+    {"category": "observability", "status": "PRESERVED", "evidence_ref": "source/workflow/evidence/2026-07-22-docara-reading-navigation-layout/acceptance.md"},
+    {"category": "migrations", "status": "PRESERVED", "evidence_ref": "tests/PortableSiteBuilderTest.php"},
+    {"category": "rollback", "status": "PRESERVED", "evidence_ref": "tests/PortableSiteBuilderTest.php"}
+  ],
+  "tester_evidence_review": {
+    "status": "VERIFIED",
+    "verdict_ref": "source/workflow/evidence/2026-07-22-docara-reading-navigation-layout/human-centered-simplicity-tester-verdict.json",
+    "verdict_sha256": "a3b5c1cbf63f3a1875865a51c83b412136cf6d97155687f750b2e4f3b8528792",
+    "reviewed_surface_ids": ["shell_layout_surface", "pager_spacing_surface", "documentation_regression", "builder_regression"],
+    "surface_classifications": [
+      {"surface_id": "shell_layout_surface", "classification": "ordinary", "protected_categories": [], "evidence_ref": "resources/portable/declarative-shell.css"},
+      {"surface_id": "pager_spacing_surface", "classification": "ordinary", "protected_categories": [], "evidence_ref": "resources/publisher/components/pager.php"},
+      {"surface_id": "documentation_regression", "classification": "protective", "protected_categories": ["accessibility"], "evidence_ref": "tests/PortableDocumentationSiteTest.php"},
+      {"surface_id": "builder_regression", "classification": "protective", "protected_categories": ["rollback"], "evidence_ref": "tests/PortableSiteBuilderTest.php"}
+    ],
+    "evidence_paths": ["resources/portable/declarative-shell.css", "resources/publisher/components/pager.php", "tests/PortableDocumentationSiteTest.php", "tests/PortableSiteBuilderTest.php", "source/workflow/evidence/2026-07-22-docara-reading-navigation-layout/acceptance.md"],
+    "evidence_fingerprints": [
+      {"path": "resources/portable/declarative-shell.css", "sha256": "5829110d12a4612d8135fa843752861427aad908f812d2d77573d3ea1e91c6a5"},
+      {"path": "resources/publisher/components/pager.php", "sha256": "255e717b0d8add9dd281b28b3110c9ef02452d8c49e670959a42605d4394c343"},
+      {"path": "tests/PortableDocumentationSiteTest.php", "sha256": "77a5dcd0f8c23c741259bf454c9c538ffbb4eca6e75d7b3fa1de4dec5a03d88a"},
+      {"path": "tests/PortableSiteBuilderTest.php", "sha256": "f0e6aef208411c16ef8644cec98eef3a5293f50517f553c9ba20a45fb7e4f2c3"},
+      {"path": "source/workflow/evidence/2026-07-22-docara-reading-navigation-layout/acceptance.md", "sha256": "094da50bcb36f280a661eb18ac14266b3178f22abc18ba8085f29a22bbff06f8"}
+    ],
+    "contradictions": [],
+    "verdict": "PASS_WITH_NOTES"
+  },
+  "residual_complexity": [{"description": "Mobile visual order differs from DOM order while rel semantics remain stable.", "category": "accessibility", "evidence_ref": "source/workflow/evidence/2026-07-22-docara-reading-navigation-layout/acceptance.md"}],
+  "blocking_findings": [],
+  "verdict": "PASS_WITH_NOTES"
+}

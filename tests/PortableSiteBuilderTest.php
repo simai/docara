@@ -12,8 +12,6 @@ use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
-use Simai\Docara\PortableSite\LegacyPortablePagePublisher;
-use Simai\Docara\PortableSite\PortableHtmlRenderer;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortablePagePublisher;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
@@ -159,12 +157,6 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertFileExists($this->tmpPath('build_local/components/catalog/docara.columns/index.html'));
         self::assertFileExists($this->tmpPath('build_local/_docara/search-index.json'));
         self::assertFileExists($this->tmpPath('build_local/_docara/search.js'));
-        self::assertFileExists($this->tmpPath('build_local/_docara/declarative-preview/index.html'));
-        self::assertFileExists($this->tmpPath('build_local/_docara/declarative-preview/index.json'));
-        self::assertFileExists($this->tmpPath('build_local/_docara/declarative-preview/pages/index.html'));
-        self::assertFileExists(
-            $this->tmpPath('build_local/_docara/declarative-preview/pages/guides/index.html'),
-        );
 
         $index = (string) file_get_contents($this->tmpPath('build_local/index.html'));
         $guide = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
@@ -630,34 +622,8 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertCount(20, $diagnostics['pages']);
         $indexPlan = collect($diagnostics['pages'])->firstWhere('output', 'index.html');
         self::assertIsArray($indexPlan);
-        self::assertSame('rendered', $indexPlan['declarative_pipeline']['status']);
-        self::assertSame('pass', $indexPlan['declarative_pipeline']['semantic_parity']['status']);
-        self::assertSame('pass', $indexPlan['declarative_pipeline']['shell_structural_parity']['status']);
-        self::assertSame(
-            'larena.layout.resolved_render_plan.v1',
-            $indexPlan['declarative_pipeline']['larena_contract']['schema'],
-        );
-        self::assertSame('pass', $indexPlan['declarative_pipeline']['larena_contract']['semantic_parity']);
-        self::assertSame(
-            ['footer', 'header', 'main', 'outline', 'sidebar'],
-            array_keys($indexPlan['declarative_pipeline']['plan']['regions']),
-        );
-        self::assertCount(1, $indexPlan['declarative_pipeline']['plan']['regions']['header']);
-        self::assertCount(1, $indexPlan['declarative_pipeline']['plan']['regions']['sidebar']);
-        self::assertCount(1, $indexPlan['declarative_pipeline']['plan']['regions']['outline']);
-        self::assertSame(
-            'docara.navigation',
-            $indexPlan['declarative_pipeline']['plan']['regions']['sidebar'][0]['blocks'][0]['smart']['smart'],
-        );
-        self::assertSame('rendered', $indexPlan['declarative_pipeline']['preview']['status']);
-        self::assertSame(
-            '/_docara/declarative-preview/pages/',
-            $indexPlan['declarative_pipeline']['preview']['url'],
-        );
-        self::assertSame(
-            'ui.alert',
-            $indexPlan['declarative_pipeline']['semantic_parity']['declarative']['smart'][0]['smart'],
-        );
+        self::assertSame('published', $indexPlan['declarative_pipeline']['status']);
+        self::assertMatchesRegularExpression('/\A[a-f0-9]{64}\z/', $indexPlan['declarative_pipeline']['plan_hash']);
         $guidePlan = collect($diagnostics['pages'])->firstWhere('output', 'guides/getting-started/index.html');
         self::assertIsArray($guidePlan);
         self::assertSame(1, $guidePlan['resolved_page_plan']['contract_version']);
@@ -671,33 +637,7 @@ final class PortableSiteBuilderTest extends TestCase
             ['docara.component_call.v1', 'docara.component_call.v1'],
             array_column($guidePlan['component_runtime']['normalized_calls'], 'schema'),
         );
-        self::assertSame('rendered', $guidePlan['declarative_pipeline']['status']);
-        self::assertSame([], $guidePlan['declarative_unsupported_components'] ?? []);
-        self::assertSame(
-            ['ui.alert', 'ui.button'],
-            array_column($guidePlan['declarative_pipeline']['semantic_parity']['declarative']['smart'], 'smart'),
-        );
-        $previewReceipt = $this->jsonFile(
-            $this->tmpPath('build_local/_docara/declarative-preview/index.json'),
-        );
-        self::assertSame('docara.declarative_preview_receipt.v1', $previewReceipt['schema']);
-        self::assertCount(7, $previewReceipt['pages']);
-        self::assertCount(7, array_filter(
-            $previewReceipt['pages'],
-            static fn (array $page): bool => $page['status'] === 'rendered',
-        ));
-        self::assertSame(
-            ['full_visual_parity' => false, 'primary_publisher_switched' => true, 'production_ready' => false],
-            $previewReceipt['nonclaims'],
-        );
-        $previewHome = (string) file_get_contents(
-            $this->tmpPath('build_local/_docara/declarative-preview/pages/index.html'),
-        );
-        self::assertStringContainsString('Декларативный предпросмотр', $previewHome);
-        self::assertStringContainsString(
-            'href="/_docara/declarative-preview/pages/guides/" data-docara-original-href="/guides/"',
-            $previewHome,
-        );
+        self::assertSame('published', $guidePlan['declarative_pipeline']['status']);
         self::assertTrue($guidePlan['resolved_page_plan']['configuration']['search']['enabled']);
         self::assertTrue($guidePlan['resolved_page_plan']['configuration']['search']['indexed']);
         self::assertSame(
@@ -851,39 +791,6 @@ final class PortableSiteBuilderTest extends TestCase
 
         self::assertSame(0, $process->getExitCode(), $process->getErrorOutput() . $process->getOutput());
         self::assertStringContainsString('"broken": []', $process->getOutput());
-    }
-
-    #[Test]
-    public function static_verification_rejects_a_tampered_declarative_preview_receipt(): void
-    {
-        $this->copyPortableFixture($this->tmp);
-        $this->builder()->build($this->tmp, $this->tmpPath('build_production'));
-        $receiptPath = $this->tmpPath(
-            'build_production/_docara/declarative-preview/index.json',
-        );
-        $receipt = $this->jsonFile($receiptPath);
-        $receipt['index']['html_sha256'] = str_repeat('0', 64);
-        file_put_contents(
-            $receiptPath,
-            CanonicalJson::encodePretty($receipt),
-        );
-
-        $process = new Process([
-            PHP_BINARY,
-            'scripts/verify-static-build.php',
-            $this->tmpPath('build_production'),
-        ], dirname(__DIR__));
-        $process->run();
-
-        self::assertSame(1, $process->getExitCode());
-        self::assertStringContainsString(
-            '"reference": "@declarative-preview"',
-            $process->getOutput(),
-        );
-        self::assertStringContainsString(
-            'is missing, unsafe or has a wrong hash',
-            $process->getOutput(),
-        );
     }
 
     #[Test]
@@ -1186,7 +1093,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertFileDoesNotExist($site . '/config.php');
         self::assertDirectoryDoesNotExist($site . '/source');
 
-        $build = new Process([PHP_BINARY, $binary, 'build', 'local', '--pretty=true', '--no-interaction'], $site, $environment);
+        $build = new Process([PHP_BINARY, $binary, 'build', 'local', '--no-interaction'], $site, $environment);
         $build->run();
         self::assertSame(0, $build->getExitCode(), $build->getErrorOutput() . $build->getOutput());
         self::assertFileExists($site . '/build_local/index.html');
@@ -1943,7 +1850,6 @@ MD;
         $builder = new PortableSiteBuilder(
             new Filesystem,
             new PortableMarkdownRenderer,
-            new PortableHtmlRenderer,
             $publisher,
         );
 
@@ -1958,72 +1864,11 @@ MD;
         self::assertDirectoryDoesNotExist($this->tmpPath('build_local.docara-candidate'));
     }
 
-    #[Test]
-    public function immutable_legacy_renderer_remains_an_explicit_url_compatible_rollback(): void
-    {
-        $this->copyPortableFixture($this->tmp);
-        self::assertSame(
-            'a28e914128a55143ce13e21c8bebc2216b5144919c6dbb2e5dfee366229125d0',
-            hash_file('sha256', dirname(__DIR__) . '/src/PortableSite/PortableHtmlRenderer.php'),
-        );
-
-        $declarative = $this->builder()->build(
-            $this->tmp,
-            $this->tmpPath('build_declarative'),
-        );
-        $legacy = new PortableSiteBuilder(
-            new Filesystem,
-            new PortableMarkdownRenderer,
-            new PortableHtmlRenderer,
-            new LegacyPortablePagePublisher(new PortableHtmlRenderer),
-        );
-        $rollback = $legacy->build($this->tmp, $this->tmpPath('build_legacy'));
-
-        self::assertSame($declarative->keys()->all(), $rollback->keys()->all());
-        $declarativeHtml = array_values(array_filter(
-            array_keys($this->treeHashes($this->tmpPath('build_declarative'))),
-            static fn (string $path): bool => str_ends_with($path, '.html'),
-        ));
-        $legacyHtml = array_values(array_filter(
-            array_keys($this->treeHashes($this->tmpPath('build_legacy'))),
-            static fn (string $path): bool => str_ends_with($path, '.html'),
-        ));
-        self::assertSame($declarativeHtml, $legacyHtml);
-        $declarativeDiagnostics = $this->jsonFile(
-            $this->tmpPath('build_declarative/.docara/resolved-page-plans.json'),
-        );
-        $legacyDiagnostics = $this->jsonFile(
-            $this->tmpPath('build_legacy/.docara/resolved-page-plans.json'),
-        );
-        self::assertSame(
-            ['docara.declarative_page_publisher.v1'],
-            array_values(array_unique(array_map(
-                static fn (array $page): string => (string) $page['publisher']['id'],
-                $declarativeDiagnostics['pages'],
-            ))),
-        );
-        self::assertSame(
-            ['docara.legacy_html_renderer.v1'],
-            array_values(array_unique(array_map(
-                static fn (array $page): string => (string) $page['publisher']['id'],
-                $legacyDiagnostics['pages'],
-            ))),
-        );
-        self::assertSame(
-            [true],
-            array_values(array_unique(array_map(
-                static fn (array $page): bool => (bool) $page['publisher']['rollback'],
-                $legacyDiagnostics['pages'],
-            ))),
-        );
-    }
-
     private function builder(): PortableSiteBuilder
     {
         return new PortableSiteBuilder(
             new Filesystem,
             new PortableMarkdownRenderer,
-            new PortableHtmlRenderer,
         );
     }
 

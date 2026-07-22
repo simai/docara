@@ -1,9 +1,9 @@
 {
     "name": "simai/docara",
-    "description": "Static Markdown and validated JSON sites with Simai Framework, with legacy Blade/Jigsaw compatibility",
+    "description": "Portable static documentation and landing sites from Markdown and validated JSON with Simai Framework",
     "keywords": [
-        "blade",
-        "laravel",
+        "documentation",
+        "markdown",
         "static",
         "simai",
         "simai-framework",
@@ -31,28 +31,12 @@
     ],
     "require": {
         "php": "^8.2",
-        "illuminate/collections": "^11.0 || ^12.0",
-        "illuminate/console": "^11.0 || ^12.0",
-        "illuminate/container": "^11.0 || ^12.0",
         "illuminate/filesystem": "^11.0 || ^12.0",
         "illuminate/support": "^11.0 || ^12.0",
         "illuminate/view": "^11.0 || ^12.0",
         "league/commonmark": "^2.4",
-        "michelf/php-markdown": "^2.0",
-        "mnapoli/front-yaml": "^2.0",
-        "nunomaduro/collision": "^8.1",
-        "ramsey/uuid": "^4.9",
-        "spatie/laravel-ignition": "^2.4",
         "symfony/console": "^6.0 || ^7.0",
-        "symfony/error-handler": "^6.0 || ^7.0",
-        "symfony/finder": "^6.0 || ^7.0",
-        "symfony/intl": "^7.3",
-        "elaborate-code/jigsaw-localization": "^1.1",
-        "symfony/process": "^6.0 || ^7.0",
-        "samdark/sitemap": "^2.4.1",
-        "symfony/var-dumper": "^6.0 || ^7.0",
-        "symfony/yaml": "^6.0 || ^7.0",
-        "vlucas/phpdotenv": "^5.6"
+        "symfony/process": "^6.0 || ^7.0"
     },
     "require-dev": {
         "laravel/pint": "^1.27.1",
@@ -62,10 +46,7 @@
     "autoload": {
         "psr-4": {
             "Simai\\Docara\\": "src/"
-        },
-        "files": [
-            "src/Support/helpers.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {

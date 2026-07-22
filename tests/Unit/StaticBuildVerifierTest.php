@@ -6,6 +6,8 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
+use Simai\Docara\Declarative\Composition\PageCompositionContext;
+use Simai\Docara\Declarative\DeclarativePipeline;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkConsumerPolicy;
@@ -13,12 +15,15 @@ use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\I18n\LanguagePackRepository;
 use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\Translator;
+use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\ResolvedPagePlan;
+use Simai\Docara\PortableSite\DeclarativePortablePagePublisher;
 use Simai\Docara\PortableSite\PortableComponentCatalogProjector;
-use Simai\Docara\PortableSite\PortableHtmlRenderer;
+use Simai\Docara\PortableSite\PortableDocumentIds;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
+use Simai\Docara\Smart\SmartRegistry;
 use Symfony\Component\Process\Process;
 use Tests\TestCase;
 
@@ -77,7 +82,6 @@ final class StaticBuildVerifierTest extends TestCase
         (new PortableSiteBuilder(
             new Filesystem,
             new PortableMarkdownRenderer,
-            new PortableHtmlRenderer,
         ))->build($site, $build);
 
         $valid = $this->verify($build, normalizeBuildIdentity: false);
@@ -489,7 +493,6 @@ final class StaticBuildVerifierTest extends TestCase
         (new PortableSiteBuilder(
             new Filesystem,
             new PortableMarkdownRenderer,
-            new PortableHtmlRenderer,
         ))->build($source, $build);
 
         $catalogPath = $build . '/_docara/component-catalog.json';
@@ -666,7 +669,6 @@ final class StaticBuildVerifierTest extends TestCase
         (new PortableSiteBuilder(
             new Filesystem,
             new PortableMarkdownRenderer,
-            new PortableHtmlRenderer,
         ))->build($source, $build);
 
         $valid = $this->verify($build);
@@ -1175,7 +1177,6 @@ final class StaticBuildVerifierTest extends TestCase
         (new PortableSiteBuilder(
             new Filesystem,
             new PortableMarkdownRenderer,
-            new PortableHtmlRenderer,
         ))->build($source, $build);
 
         return $build;
@@ -1274,6 +1275,8 @@ final class StaticBuildVerifierTest extends TestCase
                 || str_starts_with($output, 'components/catalog/')
                 || ! is_string($currentBase)
                 || $currentBase === ''
+                || str_starts_with($currentBase, '//')
+                || preg_match('#\A/(?:[A-Za-z0-9._~!$&\'()*+,;=:@%-]+(?:/[A-Za-z0-9._~!$&\'()*+,;=:@%-]+)*)?/?\z#', $currentBase) !== 1
             ) {
                 return false;
             }
@@ -1317,14 +1320,14 @@ final class StaticBuildVerifierTest extends TestCase
         ) {
             unset($translationConfiguration['locales']);
         }
+        $translator = new Translator(
+            LocaleRegistry::fromSite($translationConfiguration),
+            new LanguagePackRepository(dirname(__DIR__, 2)),
+        );
         $projector = new PortableComponentCatalogProjector(
             new PortableMarkdownRenderer,
-            translator: new Translator(
-                LocaleRegistry::fromSite($translationConfiguration),
-                new LanguagePackRepository(dirname(__DIR__, 2)),
-            ),
+            translator: $translator,
         );
-        $renderer = new PortableHtmlRenderer;
         $projection = $projector->project(
             catalog: $catalog,
             runtime: $runtime,
@@ -1354,16 +1357,18 @@ final class StaticBuildVerifierTest extends TestCase
             contentRoot: 'content',
             baseUrl: $deploymentBase,
             homeUrl: $deploymentBase,
-            reservedDocumentIds: $renderer->reservedDocumentIds(),
+            reservedDocumentIds: PortableDocumentIds::reserved(),
         );
 
         $catalogNavigation = [[
+            'key' => 'component-catalog',
             'title' => $locale === 'ru' ? 'Каталог компонентов' : 'Component catalog',
             'url' => $projection['receipt']['index']['route'],
             'children' => [],
             'active' => true,
             'current_section' => false,
             'active_ancestor' => false,
+            'open' => false,
         ]];
         foreach ($projection['pages'] as $page) {
             $page['branding'] = ['title' => 'Docara'];
@@ -1372,17 +1377,42 @@ final class StaticBuildVerifierTest extends TestCase
             $page['next'] = $page['component_catalog_next'];
             $output = $build . '/' . $page['output'];
             $this->filesystem->ensureDirectoryExists(dirname($output));
-            $html = $renderer->render(
+            $uiCopy = (new UiCopy($translator))->forLocale($locale);
+            $page['direction'] = 'ltr';
+            $page['documentation_version'] = 'current';
+            $page['ui_copy'] = $uiCopy;
+            $page['canonical_url'] = $page['url'];
+            $page['alternates'] = [];
+            $page['language_options'] = [];
+            $composition = PageCompositionContext::fromBuilder(
+                $page['branding'],
+                $page['home_url'],
+                $catalogNavigation,
+                $page['outline'],
+                $uiCopy,
+            );
+            $pipeline = DeclarativePipeline::bundled(
+                $page['plan']->frameworkLock,
+                new PortableMarkdownRenderer,
+                PortableDocumentIds::reserved(),
+            );
+            $declarative = $pipeline->buildGenerated(
+                $page['plan']->markdown,
+                $page['plan']->page,
+                $page['output'],
+                $page['title'],
+                3,
+                $page['content_html'],
+                $composition,
+                $page['plan']->configuration['layout'] ?? [],
+                $page['plan']->provenance,
+            );
+            $html = (new DeclarativePortablePagePublisher)->render(
                 $page,
                 $catalogNavigation,
                 'Docara',
                 $page['components']->assetPlan,
-            );
-            $html = str_replace(
-                '<script data-docara-shell-controller',
-                '<script id="docara-runtime-copy" type="application/json">{}</script>'
-                . '<script data-docara-shell-controller',
-                $html,
+                $declarative,
             );
             file_put_contents($output, $html);
             $manifest['pages'][] = [
@@ -1486,6 +1516,16 @@ final class StaticBuildVerifierTest extends TestCase
             $target = $build . '/_docara/framework/' . $relativePath;
             $this->filesystem->ensureDirectoryExists(dirname($target));
             file_put_contents($target, (string) file_get_contents($source));
+        }
+        foreach (['declarative-shell.css', 'declarative-shell.js'] as $name) {
+            $target = $build . '/_docara/' . $name;
+            $this->filesystem->ensureDirectoryExists(dirname($target));
+            file_put_contents($target, (string) file_get_contents($root . '/resources/portable/' . $name));
+        }
+        foreach (SmartRegistry::bundled()->assets() as $asset) {
+            $target = $build . '/_docara/' . $asset['public'];
+            $this->filesystem->ensureDirectoryExists(dirname($target));
+            file_put_contents($target, (string) file_get_contents($root . '/resources/' . $asset['path']));
         }
     }
 

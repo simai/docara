@@ -17,7 +17,7 @@ use Simai\Docara\Portable\JsonSchemaValidator;
 use Simai\Docara\Portable\ResolvedPagePlan;
 use Simai\Docara\Portable\SchemaRepository;
 use Simai\Docara\PortableSite\PortableComponentCatalogProjector;
-use Simai\Docara\PortableSite\PortableHtmlRenderer;
+use Simai\Docara\PortableSite\PortableDocumentIds;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableRedirectPublisher;
 
@@ -379,200 +379,6 @@ function docaraCatalogSafePath(string $path): bool
     return true;
 }
 
-/**
- * Validate the additive declarative-preview publication and return its HTML outputs.
- *
- * @return list<string>
- */
-function docaraDeclarativePreviewOutputs(
-    string $root,
-    string $deploymentBase,
-    string $locale,
-    string $documentationVersion,
-): array {
-    $candidates = glob($root . '/*/_docara/declarative-preview/index.json') ?: [];
-    if (file_exists($root . '/_docara/declarative-preview/index.json')
-        || is_link($root . '/_docara/declarative-preview/index.json')
-    ) {
-        $candidates[] = $root . '/_docara/declarative-preview/index.json';
-    }
-    sort($candidates, SORT_STRING);
-    if ($candidates === []) {
-        return [];
-    }
-    if (count($candidates) !== 1) {
-        throw new RuntimeException('Declarative preview must publish one exact locale receipt per build.');
-    }
-    $receiptPath = $candidates[0];
-    if (! docaraSafeRegularFile($receiptPath)) {
-        throw new RuntimeException('Declarative preview receipt is missing or unsafe.');
-    }
-    $receipt = json_decode((string) file_get_contents($receiptPath), true, 512, JSON_THROW_ON_ERROR);
-    if (! is_array($receipt)
-        || ! docaraExactKeys($receipt, ['schema', 'build', 'index', 'routes', 'pages', 'nonclaims'])
-        || ($receipt['schema'] ?? null) !== 'docara.declarative_preview_receipt.v1'
-    ) {
-        throw new RuntimeException('Declarative preview receipt has an unsupported contract.');
-    }
-    $build = $receipt['build'] ?? null;
-    if (! is_array($build)
-        || ! docaraExactKeys($build, ['locale', 'documentation_version'])
-        || ($build['locale'] ?? null) !== $locale
-        || ($build['documentation_version'] ?? null) !== $documentationVersion
-    ) {
-        throw new RuntimeException('Declarative preview build identity does not match the primary build.');
-    }
-    $nonclaims = $receipt['nonclaims'] ?? null;
-    if (! is_array($nonclaims)
-        || ! docaraExactKeys($nonclaims, ['primary_publisher_switched', 'full_visual_parity', 'production_ready'])
-        || ! is_bool($nonclaims['primary_publisher_switched'] ?? null)
-        || ($nonclaims['full_visual_parity'] ?? null) !== false
-        || ($nonclaims['production_ready'] ?? null) !== false
-    ) {
-        throw new RuntimeException('Declarative preview publisher status or readiness nonclaims are invalid.');
-    }
-
-    $index = $receipt['index'] ?? null;
-    $previewBase = is_array($index) && is_string($index['url'] ?? null)
-        ? $index['url']
-        : '';
-    $previewOutputRoot = str_replace(
-        '\\',
-        '/',
-        substr(dirname($receiptPath), strlen($root) + 1),
-    );
-    if (! is_array($index)
-        || ! docaraExactKeys($index, ['url', 'output', 'html_sha256'])
-        || ($index['url'] ?? null) !== $previewBase
-        || ($index['output'] ?? null) !== $previewOutputRoot . '/index.html'
-        || ! str_starts_with($previewBase, rtrim($deploymentBase, '/') . '/')
-        || ! str_ends_with($previewBase, '/_docara/declarative-preview/')
-        || ! is_string($index['html_sha256'] ?? null)
-        || preg_match('/\A[a-f0-9]{64}\z/D', $index['html_sha256']) !== 1
-    ) {
-        throw new RuntimeException('Declarative preview index contract is invalid.');
-    }
-
-    $routes = $receipt['routes'] ?? null;
-    if (! is_array($routes)
-        || ! docaraExactKeys($routes, ['index_url', 'index_output', 'receipt_url', 'receipt_output', 'pages'])
-        || ($routes['index_url'] ?? null) !== $index['url']
-        || ($routes['index_output'] ?? null) !== $index['output']
-        || ($routes['receipt_url'] ?? null) !== $previewBase . 'index.json'
-        || ($routes['receipt_output'] ?? null) !== $previewOutputRoot . '/index.json'
-        || ! is_array($routes['pages'] ?? null)
-        || ! array_is_list($routes['pages'])
-    ) {
-        throw new RuntimeException('Declarative preview route contract is invalid.');
-    }
-
-    $routeOutputs = [];
-    foreach ($routes['pages'] as $routeIndex => $route) {
-        if (! is_array($route)
-            || ! docaraExactKeys($route, ['legacy_url', 'preview_url', 'preview_output'])
-            || ! is_string($route['legacy_url'] ?? null)
-            || ! is_string($route['preview_url'] ?? null)
-            || ! str_starts_with($route['preview_url'], $previewBase . 'pages/')
-            || ! is_string($route['preview_output'] ?? null)
-            || ! docaraCatalogSafePath($route['preview_output'])
-            || ! str_starts_with($route['preview_output'], $previewOutputRoot . '/pages/')
-            || isset($routeOutputs[$route['preview_output']])
-        ) {
-            throw new RuntimeException("Declarative preview route [$routeIndex] is invalid.");
-        }
-        $routeOutputs[$route['preview_output']] = $route;
-    }
-
-    $outputs = [];
-    $assertOutput = static function (string $output, string $expectedHash) use (
-        $root,
-        $locale,
-        $documentationVersion,
-        &$outputs,
-    ): void {
-        if (! docaraCatalogSafePath($output)) {
-            throw new RuntimeException("Declarative preview output [$output] has an unsafe path.");
-        }
-        $path = $root . '/' . $output;
-        if (! docaraSafeRegularFile($path)
-            || ! hash_equals($expectedHash, (string) hash_file('sha256', $path))
-        ) {
-            throw new RuntimeException("Declarative preview output [$output] is missing, unsafe or has a wrong hash.");
-        }
-        $html = file_get_contents($path);
-        if (! is_string($html)) {
-            throw new RuntimeException("Declarative preview output [$output] could not be read.");
-        }
-        docaraAssertHtmlBuildIdentity($html, $locale, $documentationVersion);
-        $outputs[] = $output;
-    };
-    $assertOutput($index['output'], $index['html_sha256']);
-
-    $pages = $receipt['pages'] ?? null;
-    if (! is_array($pages) || ! array_is_list($pages) || $pages === []) {
-        throw new RuntimeException('Declarative preview receipt requires a non-empty page list.');
-    }
-    $renderedOutputs = [];
-    foreach ($pages as $pageIndex => $page) {
-        if (! is_array($page)
-            || ! docaraExactKeys($page, [
-                'title',
-                'legacy_url',
-                'preview_url',
-                'preview_output',
-                'status',
-                'unsupported_components',
-                'html_sha256',
-            ])
-            || ! is_string($page['title'] ?? null)
-            || trim($page['title']) === ''
-            || ! is_string($page['legacy_url'] ?? null)
-            || ! is_array($page['unsupported_components'] ?? null)
-            || ! array_is_list($page['unsupported_components'])
-        ) {
-            throw new RuntimeException("Declarative preview page record [$pageIndex] is invalid.");
-        }
-        if (($page['status'] ?? null) === 'rendered') {
-            $output = $page['preview_output'] ?? null;
-            if (! is_string($page['preview_url'] ?? null)
-                || ! is_string($output)
-                || ! isset($routeOutputs[$output])
-                || $routeOutputs[$output]['legacy_url'] !== $page['legacy_url']
-                || $routeOutputs[$output]['preview_url'] !== $page['preview_url']
-                || ! is_string($page['html_sha256'] ?? null)
-                || preg_match('/\A[a-f0-9]{64}\z/D', $page['html_sha256']) !== 1
-                || isset($renderedOutputs[$output])
-            ) {
-                throw new RuntimeException("Rendered declarative preview page [$pageIndex] is inconsistent.");
-            }
-            $assertOutput($output, $page['html_sha256']);
-            $renderedOutputs[$output] = true;
-
-            continue;
-        }
-        if (($page['status'] ?? null) !== 'skipped'
-            || $page['preview_url'] !== null
-            || $page['preview_output'] !== null
-            || $page['html_sha256'] !== null
-            || $page['unsupported_components'] === []
-        ) {
-            throw new RuntimeException("Skipped declarative preview page [$pageIndex] has an invalid reason contract.");
-        }
-    }
-    $routeOutputKeys = array_keys($routeOutputs);
-    $renderedOutputKeys = array_keys($renderedOutputs);
-    sort($routeOutputKeys, SORT_STRING);
-    sort($renderedOutputKeys, SORT_STRING);
-    if ($routeOutputKeys !== $renderedOutputKeys) {
-        throw new RuntimeException('Declarative preview routes do not exactly match rendered page outputs.');
-    }
-
-    sort($outputs, SORT_STRING);
-
-    return $outputs;
-}
-
-/** @param list<array<string, mixed>> $pageRecords */
 function docaraDeclarativeExampleOutputs(
     string $root,
     string $deploymentBase,
@@ -2132,21 +1938,6 @@ if ($manifestError === null) {
     }
 }
 
-$declarativePreviewError = null;
-$declarativePreviewOutputs = [];
-if ($manifestError === null) {
-    try {
-        $declarativePreviewOutputs = docaraDeclarativePreviewOutputs(
-            $root,
-            $deploymentBase,
-            (string) $expectedBuildLocale,
-            (string) $expectedDocumentationVersion,
-        );
-    } catch (Throwable $exception) {
-        $declarativePreviewError = $exception->getMessage();
-    }
-}
-
 $declarativeExamplesError = null;
 if ($manifestError === null) {
     try {
@@ -2243,13 +2034,6 @@ if ($manifestError !== null) {
     if ($localeRouteError !== null) {
         $broken[] = ['page' => '@build', 'reference' => '@locale-route-contract', 'target' => $localeRouteError];
     }
-    if ($declarativePreviewError !== null) {
-        $broken[] = [
-            'page' => '@build',
-            'reference' => '@declarative-preview',
-            'target' => $declarativePreviewError,
-        ];
-    }
     if ($declarativeExamplesError !== null) {
         $broken[] = [
             'page' => '@build',
@@ -2264,7 +2048,6 @@ if ($manifestError !== null) {
     sort($actualHtmlOutputs, SORT_STRING);
     $expectedHtmlOutputs = array_values(array_unique([
         ...$manifestOutputs,
-        ...$declarativePreviewOutputs,
     ]));
     sort($expectedHtmlOutputs, SORT_STRING);
     if ($actualHtmlOutputs !== $expectedHtmlOutputs) {
@@ -2273,7 +2056,7 @@ if ($manifestError !== null) {
         $broken[] = [
             'page' => '@build',
             'reference' => '@resolved-page-plans',
-            'target' => 'Resolved page-plan, redirect and declarative-preview outputs do not exactly match generated HTML files. '
+            'target' => 'Resolved page-plan and redirect outputs do not exactly match generated HTML files. '
                 . 'Missing: ' . json_encode($missing, JSON_UNESCAPED_SLASHES)
                 . '; unexpected: ' . json_encode($unexpected, JSON_UNESCAPED_SLASHES),
         ];
@@ -2885,7 +2668,7 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
 
         $runtimeAssetBase = rtrim($deploymentBase, '/') . '/_docara/framework';
         $runtime = FrameworkComponentRuntime::fromLock($expectedFrameworkLock, $runtimeAssetBase);
-        $htmlRenderer = new PortableHtmlRenderer;
+
         $catalogManifestConfiguration = null;
         $catalogIndexOutput = null;
         foreach ($manifestPageRecords as $manifestPageRecord) {
@@ -2968,7 +2751,7 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
             baseUrl: $localeUrls->home($catalogLocale),
             homeUrl: $localeUrls->home($catalogLocale),
             outputPrefix: $catalogDefinition->publicPrefix,
-            reservedDocumentIds: $htmlRenderer->reservedDocumentIds(),
+            reservedDocumentIds: PortableDocumentIds::reserved(),
         );
         $expectedReceipt = $expectedProjection['receipt'] ?? null;
         if (! is_array($expectedReceipt)) {
@@ -3050,21 +2833,8 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
             (string) $expectedIndex['content_html'],
             '//*[@data-docara-component-catalog-index]',
         );
-        $legacyIndexHtml = $htmlRenderer->render(
-            $expectedIndex,
-            [],
-            'Docara',
-            $expectedIndex['components']->assetPlan,
-        );
-        $legacyIndexFragment = docaraCatalogContractFragment(
-            $legacyIndexHtml,
-            '//*[@data-docara-component-catalog-index]',
-        );
         $actualIndexHash = $projector->normalizedFragmentHash($actualIndexFragment);
-        if (! in_array($actualIndexHash, [
-            $projector->normalizedFragmentHash($expectedIndexFragment),
-            $projector->normalizedFragmentHash($legacyIndexFragment),
-        ], true)) {
+        if (! hash_equals($projector->normalizedFragmentHash($expectedIndexFragment), $actualIndexHash)) {
             throw new RuntimeException(
                 'Generated component catalogue index fragment does not match the trusted projection.',
             );
@@ -3106,18 +2876,8 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
                 (string) $expectedPage['content_html'],
                 $detailSelector,
             );
-            $legacyHtml = $htmlRenderer->render(
-                $expectedPage,
-                [],
-                'Docara',
-                $expectedPage['components']->assetPlan,
-            );
-            $legacyDetail = docaraCatalogContractFragment($legacyHtml, $detailSelector);
             $actualDetailHash = $projector->normalizedFragmentHash($actualDetail);
-            if (! in_array($actualDetailHash, [
-                $projector->normalizedFragmentHash($expectedDetail),
-                $projector->normalizedFragmentHash($legacyDetail),
-            ], true)) {
+            if (! hash_equals($projector->normalizedFragmentHash($expectedDetail), $actualDetailHash)) {
                 throw new RuntimeException(
                     "Generated component catalogue detail [$id] does not match the trusted contract fragment.",
                 );
@@ -3151,12 +2911,8 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
                 (string) $expectedPage['content_html'],
                 $demoSelector,
             );
-            $legacyDemo = docaraCatalogContractFragment($legacyHtml, $demoSelector);
             $actualDemoHash = $projector->normalizedFragmentHash($actualDemo);
-            if (! in_array($actualDemoHash, [
-                $projector->normalizedFragmentHash($expectedDemo),
-                $projector->normalizedFragmentHash($legacyDemo),
-            ], true)) {
+            if (! hash_equals($projector->normalizedFragmentHash($expectedDemo), $actualDemoHash)) {
                 throw new RuntimeException(
                     "Generated component catalogue demo [$id] does not match the trusted rendering.",
                 );

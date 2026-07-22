@@ -4,7 +4,7 @@ Date: 2026-07-22
 Status: in progress
 Workflow ID: `2026-07-22-docara-2-portable-only-release-candidate`
 Process model: `release`
-Current state: `repository_prepared`
+Current state: `implementation_verified`
 Target state: `review_ready`
 Parent track: `docara-consolidation`
 Owner: `docara`
@@ -85,9 +85,9 @@ routing, deterministic builds, update safety and static verification.
 | --- | --- | --- | --- |
 | B0 | Integrate Windows fix and restore a green combined baseline | exact SHA; full checks green | completed |
 | B1 | Make portable CLI/builder/starter the only product path | clean init/build/update/verify smoke | completed |
-| B2 | Remove Jigsaw/Mix source, tests, stubs and dependencies | no legacy runtime references; full tests green | in progress |
-| B3 | Remove transitional renderer/publisher/mirror and output bloat | parity, deterministic build, compact output | planned |
-| B4 | Simplify CI, repository surface, docs and Docara skill | source/dist docs and contract agree | planned |
+| B2 | Remove Jigsaw/Mix source, tests, stubs and dependencies | no legacy runtime references; full tests green | completed |
+| B3 | Remove transitional renderer/publisher/mirror and output bloat | parity, deterministic build, compact output | completed |
+| B4 | Simplify CI, repository surface, docs and Docara skill | source/dist docs and contract agree | in progress |
 | B5 | Exact-archive independent acceptance and handoff | tester verdict and readiness matrix | planned |
 
 ## Scope
@@ -147,8 +147,8 @@ and the final tester verdict.
 
 ## Current Next Step
 
-Delete the now-unreachable Jigsaw/Mix runtime, tests and starter after the
-portable-only CLI boundary has passed its focused init and preview checks.
+Align the public documentation, CI and canonical Docara skill with the single
+portable product model, then test source and dist archives in isolation.
 
 ## Gate Evidence
 

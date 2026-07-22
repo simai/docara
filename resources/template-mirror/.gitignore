@@ -1,8 +1,0 @@
-/vendor/
-/build
-/build_*/
-/.cache/
-/.DS_Store
-/.env
-/.env.local
-/.env.*.local

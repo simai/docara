@@ -38,15 +38,4 @@ final class DeclarativeArchitectureBoundaryTest extends TestCase
             );
         }
     }
-
-    public function test_accepted_legacy_renderer_is_preserved_byte_for_byte(): void
-    {
-        self::assertSame(
-            'a28e914128a55143ce13e21c8bebc2216b5144919c6dbb2e5dfee366229125d0',
-            hash_file(
-                'sha256',
-                dirname(__DIR__, 2) . '/src/PortableSite/PortableHtmlRenderer.php',
-            ),
-        );
-    }
 }

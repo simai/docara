@@ -6,7 +6,6 @@ namespace Simai\Docara\Console;
 
 use Composer\InstalledVersions;
 use Simai\Docara\File\Filesystem;
-use Simai\Docara\PortableSite\PortableHtmlRenderer;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableProjectInitializer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
@@ -18,8 +17,7 @@ final class ApplicationFactory
     {
         $base ??= getcwd() ?: '.';
         $files = new Filesystem;
-        $html = new PortableHtmlRenderer;
-        $builder = new PortableSiteBuilder($files, new PortableMarkdownRenderer, $html);
+        $builder = new PortableSiteBuilder($files, new PortableMarkdownRenderer);
         $version = InstalledVersions::isInstalled('simai/docara')
             ? (InstalledVersions::getPrettyVersion('simai/docara') ?? 'dev')
             : 'dev';

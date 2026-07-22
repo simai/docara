@@ -13,7 +13,6 @@ use Simai\Docara\I18n\LanguagePackRepository;
 use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\Translator;
 use Simai\Docara\Portable\SchemaRepository;
-use Simai\Docara\PortableSite\PortableHtmlRenderer;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use SplFileInfo;
@@ -80,7 +79,7 @@ final class DocumentationContractTest extends TestCase
         }
 
         $documents = $this->markdownDocuments();
-        self::assertCount(66, $documents, 'The authored documentation inventory must stay exact.');
+        self::assertCount(65, $documents, 'The authored documentation inventory must stay exact.');
 
         foreach ($documents as $path) {
             $markdown = (string) file_get_contents($path);
@@ -270,7 +269,6 @@ final class DocumentationContractTest extends TestCase
             (new PortableSiteBuilder(
                 $filesystem,
                 new PortableMarkdownRenderer,
-                new PortableHtmlRenderer,
             ))->build($temporary, $temporary . '/build_test');
 
             self::assertFileExists($temporary . '/build_test/index.html');

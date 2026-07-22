@@ -11,7 +11,6 @@ use Simai\Docara\File\Filesystem;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableComponentCatalogProjector;
-use Simai\Docara\PortableSite\PortableHtmlRenderer;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Tests\TestCase;
@@ -503,7 +502,6 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         return new PortableSiteBuilder(
             new Filesystem,
             new PortableMarkdownRenderer,
-            new PortableHtmlRenderer,
         );
     }
 

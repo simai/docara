@@ -19,19 +19,19 @@ php vendor/bin/docara verify-static build_production
 `content`, `languages`, `assets` и текущий опубликованный static-каталог вне
 рабочего каталога. Не продолжайте, если не можете назвать путь восстановления.
 
-## 2. Обновите package на точную revision
+## 2. Обновите source candidate
 
-До публичного portable release используйте тот же принятый immutable
-candidate, что и в быстром старте:
+До публичного portable release используйте тот же локальный checkout, что и в
+быстром старте:
 
 ```bash
-composer require 'simai/docara:dev-codex/docara-consolidation#0f10afde92b93dd39703823ab22a2920b450a15b' --prefer-source --with-all-dependencies
-composer show simai/docara
+cd /path/to/docara
+git rev-parse HEAD
+composer install
 ```
 
-Проверьте diff `composer.json` и `composer.lock`. Release-инструкция в будущем
-заменит VCS candidate точной опубликованной версией; moving branch без commit
-использовать нельзя.
+Запишите SHA и не меняйте checkout между init, build и verify. Release-инструкция
+в будущем заменит local source candidate точной опубликованной версией.
 
 ## 3. Добавьте только отсутствующие starter-файлы
 

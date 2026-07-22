@@ -6,24 +6,21 @@ HTTP. Portable init не создаёт `.env`, не копирует `source/_c
 
 ## 1. Создайте проект
 
-Portable Docara пока доступна как принятый GitHub candidate. Стабильная
+Portable Docara пока доступна как исходный candidate. Стабильная
 Composer-линия `simai/docara` версии `1.x` относится к legacy Blade/Jigsaw и
 не содержит `--portable`.
 
 ```bash
-mkdir my-docara
-cd my-docara
-composer init --name=example/docara-site --no-interaction
-composer config minimum-stability dev
-composer config prefer-stable true
-composer config repositories.docara '{"type":"vcs","url":"https://github.com/simai/docara.git","no-api":true}' --json
-composer require 'simai/docara:dev-codex/docara-consolidation#0f10afde92b93dd39703823ab22a2920b450a15b' --prefer-source
-php vendor/bin/docara init --portable
+cd /path/to/docara
+git rev-parse HEAD
+composer install
+php docara init --portable /path/to/my-docara
 ```
 
-Exact commit нужен только до отдельного публичного release. Он позволяет
-проверять один принятый candidate и не превращает feature branch в стабильную
-версию пакета.
+Первая команда фиксирует точный commit локального candidate. Не используйте
+старый SHA из документации и не считайте feature branch стабильной версией.
+После init выполняйте остальные команды из каталога созданного сайта, указывая
+путь к `docara` из того же checkout.
 
 Init создаёт starter и не преобразует legacy-проект. Для добавления только
 отсутствующих starter-файлов позднее используйте:

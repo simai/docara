@@ -48,10 +48,10 @@ final class DocaraSmartContribution implements SmartContribution
     }
 
     /**
-     * @param array<string, array{file:string,renderer:string}> $views
-     * @param array<string, array{path:string,renderer:string}> $extraTemplates
-     * @param array<string, string> $aliases
-     * @param array<string, array{path:string,kind:string,public:string,version:string}> $assets
+     * @param  array<string, array{file:string,renderer:string}>  $views
+     * @param  array<string, array{path:string,renderer:string}>  $extraTemplates
+     * @param  array<string, string>  $aliases
+     * @param  array<string, array{path:string,kind:string,public:string,version:string}>  $assets
      */
     private function add(
         SmartRegistryBuilder $registry,

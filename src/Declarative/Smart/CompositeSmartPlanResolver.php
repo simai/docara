@@ -7,9 +7,9 @@ namespace Simai\Docara\Declarative\Smart;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
 use Simai\Docara\Portable\PortableConfigurationException;
-use Simai\Docara\Smart\SmartRegistry;
 use Simai\Docara\Smart\SmartPropsValidationException;
 use Simai\Docara\Smart\SmartPropsValidator;
+use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class CompositeSmartPlanResolver
 {
@@ -29,8 +29,7 @@ final readonly class CompositeSmartPlanResolver
         string $nodeId,
         array $props,
         string $requestedView = 'default',
-    ): ResolvedSmartPlan
-    {
+    ): ResolvedSmartPlan {
         $resolution = $this->smarts->resolution($smart);
         $canonical = $resolution['canonical'];
         $manifest = $this->definitions->smartManifest($smart);

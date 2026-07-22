@@ -11,9 +11,9 @@ use Simai\Docara\Declarative\DeclarativePageCompiler;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Document\DocumentParser;
 use Simai\Docara\Declarative\Rendering\DeclarativePageRenderer;
+use Simai\Docara\Declarative\Rendering\SmartRenderer;
 use Simai\Docara\Declarative\Semantic\ShellStructuralParityChecker;
 use Simai\Docara\Declarative\Smart\CompositeSmartPlanResolver;
-use Simai\Docara\Declarative\Rendering\SmartRenderer;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 

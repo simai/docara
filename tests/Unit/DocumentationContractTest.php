@@ -20,8 +20,6 @@ use SplFileInfo;
 
 final class DocumentationContractTest extends TestCase
 {
-    private const PORTABLE_INSTALL_CANDIDATE = '0f10afde92b93dd39703823ab22a2920b450a15b';
-
     private const RETIRED_COMPONENT_SLUGS = [
         'alert',
         'button',
@@ -136,7 +134,7 @@ final class DocumentationContractTest extends TestCase
     }
 
     #[Test]
-    public function portable_installation_surfaces_pin_the_accepted_github_candidate_until_release(): void
+    public function portable_installation_surfaces_use_the_same_local_source_candidate_until_release(): void
     {
         $surfaces = [
             $this->repositoryRoot() . '/README.md',
@@ -147,15 +145,12 @@ final class DocumentationContractTest extends TestCase
         foreach ($surfaces as $path) {
             $contents = (string) file_get_contents($path);
 
-            self::assertStringContainsString(
-                'dev-codex/docara-consolidation#' . self::PORTABLE_INSTALL_CANDIDATE,
+            self::assertStringContainsString('git rev-parse HEAD', $contents);
+            self::assertStringContainsString('composer install', $contents);
+            self::assertDoesNotMatchRegularExpression(
+                '/dev-codex\/docara-consolidation#[0-9a-f]{40}/',
                 $contents,
-                $this->relativeToRepository($path) . ' must install the exact accepted portable candidate.',
-            );
-            self::assertStringContainsString(
-                '"no-api":true',
-                $contents,
-                $this->relativeToRepository($path) . ' must not require GitHub API authentication.',
+                $this->relativeToRepository($path) . ' must not embed an obsolete candidate SHA.',
             );
             self::assertDoesNotMatchRegularExpression(
                 '/composer require simai\/docara\h*\Rphp vendor\/bin\/docara init --portable/u',
@@ -166,7 +161,7 @@ final class DocumentationContractTest extends TestCase
 
         $troubleshooting = (string) file_get_contents($this->contentRoot() . '/troubleshooting.md');
         self::assertStringContainsString('Параметр `--portable` не существует', $troubleshooting);
-        self::assertStringContainsString(self::PORTABLE_INSTALL_CANDIDATE, $troubleshooting);
+        self::assertStringContainsString('git rev-parse HEAD', $troubleshooting);
         self::assertMatchesRegularExpression(
             '/не заменяйте.{0,120}обычным `docara init`/uis',
             preg_replace('/\s+/u', ' ', $troubleshooting) ?? $troubleshooting,
@@ -300,7 +295,7 @@ final class DocumentationContractTest extends TestCase
         self::assertStringContainsString('init --portable --update', $update);
         self::assertStringContainsString('composer.lock', $update);
         self::assertStringContainsString('Rollback', $update);
-        self::assertStringContainsString(self::PORTABLE_INSTALL_CANDIDATE, $update);
+        self::assertStringContainsString('git rev-parse HEAD', $update);
 
         $composition = (string) file_get_contents(
             $this->contentRoot() . '/development/composition-extensions.md',

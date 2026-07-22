@@ -16,24 +16,24 @@ JSON-файлы задают настройки, а Simai Framework отвеча
 
 Portable Docara пока не выпущена как стабильный Composer package. Обычная
 команда `composer require simai/docara` устанавливает legacy-линию `1.x`, в
-которой параметра `--portable` нет. До отдельного публичного release
-используйте принятый immutable GitHub candidate:
+которой параметра `--portable` нет. До отдельного публичного release проверяйте
+текущий исходный candidate из локального checkout и сначала фиксируйте его
+точный SHA:
 
 ```bash
-composer init --name=example/docara-site --no-interaction
-composer config minimum-stability dev
-composer config prefer-stable true
-composer config repositories.docara '{"type":"vcs","url":"https://github.com/simai/docara.git","no-api":true}' --json
-composer require 'simai/docara:dev-codex/docara-consolidation#0f10afde92b93dd39703823ab22a2920b450a15b' --prefer-source
-php vendor/bin/docara init --portable
-php vendor/bin/docara build production
-php vendor/bin/docara verify-static build_production
-php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
+git rev-parse HEAD
+composer install
+php docara init --portable /path/to/disposable-site
+cd /path/to/disposable-site
+php /path/to/docara/docara build production
+php /path/to/docara/docara verify-static build_production
+php /path/to/docara/docara serve production --host=127.0.0.1 --port=8000 --no-build
 ```
 
-Эти команды предназначены для проверки GitHub candidate, а не объявляют
+Не подставляйте в инструкцию старый SHA из документации: проверяемая ревизия —
+это результат первой команды из того же checkout. Эти команды не объявляют
 стабильный или production-ready release. После выпуска Docara отдельная
-release-инструкция заменит временную VCS-установку точной версией пакета.
+release-инструкция заменит локальную проверку точной версией пакета.
 
 После строки `Server started on http://127.0.0.1:8000` откройте этот адрес в
 браузере. Вы должны увидеть стартовую страницу Docara. Сервер работает в

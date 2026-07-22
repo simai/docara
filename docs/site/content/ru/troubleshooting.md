@@ -17,17 +17,16 @@ php vendor/bin/docara init --help
 `--portable`. Не заменяйте portable-команду обычным `docara init`: он создаст
 проект другого формата.
 
-Пока отдельный portable release не опубликован, установите exact GitHub
-candidate по командам из [быстрого старта](/start/). После установки в
-`composer.lock` должны быть одновременно записаны:
+Пока отдельный portable release не опубликован, используйте один локальный
+source candidate по командам из [быстрого старта](/start/). Зафиксируйте его
+перед проверкой:
 
-```text
-version: dev-codex/docara-consolidation
-source.reference: 0f10afde92b93dd39703823ab22a2920b450a15b
+```bash
+cd /path/to/docara
+git rev-parse HEAD
+composer install
 ```
 
-Если Composer пытается использовать GitHub API и запрашивает credentials,
-проверьте, что repository объявлен с `"no-api": true`, как в быстром старте.
 Предупреждения deprecation от старого Composer под новым PHP нужно исправлять
 обновлением Composer отдельно: они не означают отсутствие CLI-параметра.
 

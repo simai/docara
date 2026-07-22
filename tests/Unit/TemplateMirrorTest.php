@@ -32,6 +32,7 @@ final class TemplateMirrorTest extends TestCase
         ));
         foreach ([
             'src/Portable/CanonicalJson.php',
+            'src/Portable/FilesystemPath.php',
             'src/Template/TemplateMirror.php',
             'scripts/export-template.php',
             'scripts/verify-composer-release.php',

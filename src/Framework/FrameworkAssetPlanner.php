@@ -24,8 +24,8 @@ final readonly class FrameworkAssetPlanner
     }
 
     /**
-     * @param list<string> $componentKeys
-     * @param list<string> $additionalRuntimeTags
+     * @param  list<string>  $componentKeys
+     * @param  list<string>  $additionalRuntimeTags
      */
     public function plan(array $componentKeys, array $additionalRuntimeTags = []): FrameworkAssetPlan
     {
@@ -140,14 +140,13 @@ final readonly class FrameworkAssetPlanner
     }
 
     /**
-     * @param list<string> $componentKeys
-     * @param list<string> $additionalRuntimeTags
+     * @param  list<string>  $componentKeys
+     * @param  list<string>  $additionalRuntimeTags
      */
     public function assertExactProjection(
         array $componentKeys,
         array $additionalRuntimeTags = [],
-    ): FrameworkAssetPlan
-    {
+    ): FrameworkAssetPlan {
         $plan = $this->plan($componentKeys, $additionalRuntimeTags);
         $expected = array_keys($this->repository->assetProjection()['files']);
         sort($expected, SORT_STRING);

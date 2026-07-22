@@ -297,12 +297,31 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES,
         );
 
+        $nativeCalls = array_column(
+            $byUrl['/components/catalog/native.code/']['component_runtime']['normalized_calls'],
+            'id',
+        );
+        $alertCalls = array_column(
+            $byUrl['/components/catalog/ui.alert/']['component_runtime']['normalized_calls'],
+            'id',
+        );
+        $buttonCalls = array_column(
+            $byUrl['/components/catalog/ui.button/']['component_runtime']['normalized_calls'],
+            'id',
+        );
+
         self::assertStringNotContainsString('smart/alert/js/alert.js', $native);
-        self::assertStringNotContainsString('smart/buttons/js/buttons.js', $native);
+        self::assertStringContainsString('smart/buttons/js/buttons.js', $native);
         self::assertStringContainsString('smart/alert/js/alert.js', $alert);
-        self::assertStringNotContainsString('smart/buttons/js/buttons.js', $alert);
+        self::assertStringContainsString('smart/buttons/js/buttons.js', $alert);
         self::assertStringContainsString('smart/buttons/js/buttons.js', $button);
         self::assertStringNotContainsString('smart/alert/js/alert.js', $button);
+        self::assertNotContains('ui.alert', $nativeCalls);
+        self::assertNotContains('ui.button', $nativeCalls);
+        self::assertContains('ui.alert', $alertCalls);
+        self::assertNotContains('ui.button', $alertCalls);
+        self::assertContains('ui.button', $buttonCalls);
+        self::assertNotContains('ui.alert', $buttonCalls);
     }
 
     #[Test]

@@ -158,11 +158,12 @@ final class DefinitionRepository
                 "Definition [$id] is not registered.",
             );
         }
+
         return $this->load($id, $record);
     }
 
     /**
-     * @param array{path:string,schema:?string} $record
+     * @param  array{path:string,schema:?string}  $record
      * @return array<string, mixed>
      */
     private function load(string $id, array $record): array

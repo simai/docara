@@ -10,6 +10,7 @@ if (is_file($root . '/vendor/autoload.php')) {
     require $root . '/vendor/autoload.php';
 } else {
     require $root . '/src/Portable/CanonicalJson.php';
+    require $root . '/src/Portable/FilesystemPath.php';
     require $root . '/src/Template/TemplateMirror.php';
 }
 

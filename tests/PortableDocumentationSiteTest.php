@@ -136,24 +136,24 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'Mobile heading anchors must reserve space for the compact mobile header.',
         );
         self::assertStringContainsString(
-            '.docara-outline-rail{align-self:stretch;padding-inline-start:var(--sf-b2);border-inline-start:',
+            '.docara-outline-rail{align-self:stretch;padding-inline-start:var(--sf-a2);border-inline-start:',
             $shellCss,
             'The desktop outline divider must span the full layout row.',
         );
         self::assertStringContainsString(
             '.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-2);overflow:auto}',
             $shellCss,
-            'The outline scrollbar must stay one Framework b2 token from its divider.',
+            'The outline scrollbar must stay one Framework a2 token from its divider.',
         );
         self::assertStringContainsString(
-            '.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-b2);border-inline-end:',
+            '.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-a2);border-inline-end:',
             $shellCss,
             'The desktop navigation divider must span the full layout row.',
         );
         self::assertStringContainsString(
             '.docara-sidebar>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-1);overflow:auto}',
             $shellCss,
-            'The navigation scrollbar must stay one Framework b2 token from its divider.',
+            'The navigation scrollbar must stay one Framework a2 token from its divider.',
         );
         self::assertStringContainsString(
             'html[dir="ltr"] .docara-outline-rail>[data-docara-section]{direction:rtl}',

@@ -221,7 +221,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:transparent;', $shellCss);
         self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre}', $shellCss);
         self::assertStringContainsString(
-            '.docara-outline-rail{align-self:stretch;padding-inline-start:var(--sf-b2);border-inline-start:',
+            '.docara-outline-rail{align-self:stretch;padding-inline-start:var(--sf-a2);border-inline-start:',
             $shellCss,
         );
         self::assertStringContainsString(
@@ -229,7 +229,7 @@ final class PortableSiteBuilderTest extends TestCase
             $shellCss,
         );
         self::assertStringContainsString(
-            '.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-b2);border-inline-end:',
+            '.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-a2);border-inline-end:',
             $shellCss,
         );
         self::assertStringContainsString(
@@ -323,6 +323,16 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString(
             '.docara-outline-rail .docara-outline-item[data-docara-active]::before',
             $smartSurface,
+        );
+        self::assertStringContainsString(
+            'inset-inline-start:var(--docara-outline-marker-inline-start,calc(var(--sf-0) - var(--sf-space-2) - var(--sf-a2) - var(--sf-px)))',
+            $smartSurface,
+            'The active outline marker must overlay the rail divider with a no-JavaScript fallback.',
+        );
+        self::assertStringContainsString(
+            "item.style.setProperty('--docara-outline-marker-inline-start',offset+'px')",
+            $smartSurface,
+            'The active outline marker must compensate for the native scrollbar width.',
         );
         self::assertStringContainsString("link.setAttribute('aria-current','location')", $smartSurface);
         self::assertStringContainsString("window.addEventListener('scroll',schedule,{passive:true})", $smartSurface);

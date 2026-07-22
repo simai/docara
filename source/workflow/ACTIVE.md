@@ -66,3 +66,8 @@ Each result now selects the best matching description, heading or body source
 and centres its excerpt around the actual query occurrence. Live acceptance
 for `устано` returned 15 results; every card contained a visible highlighted
 match, including all 15 excerpts.
+
+The search idle hint and keyboard-help footer were also corrected from the
+Framework `label-small` (`1/4`, 10/12 px) to the project minimum
+`label-medium` (`1/3`, 12/16 px). The input and 15-result `устано` flow remain
+functional after the typography change.

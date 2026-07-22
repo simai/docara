@@ -437,6 +437,9 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringNotContainsString('simai.framework.sf_modal.js', $html);
             self::assertStringContainsString('data-docara-search-status', $html);
             self::assertStringContainsString('data-docara-search-results', $html);
+            self::assertStringContainsString('docara-search-status label-medium', $html);
+            self::assertStringContainsString('docara-search-help border-top-1 border-outline-variant p-1 flex content-main-center items-cross-center gap-2 color-on-surface-variant label-medium', $html);
+            self::assertStringNotContainsString('docara-search-status label-small', $html);
             self::assertStringContainsString('root-class="docara-search-trigger"', $html);
             self::assertStringContainsString('slot="icon-right"', $html);
             self::assertStringNotContainsString('items-center gap-1 radius-default"><sf-icon icon="search"', $html);

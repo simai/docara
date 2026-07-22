@@ -84,3 +84,17 @@ Fresh evidence:
 - live query `устано`: 15 results, 15 cards with a highlighted match, 15
   excerpts with a highlighted match;
 - no horizontal overflow and zero browser warnings/errors.
+
+## Follow-up: minimum typography scale
+
+The idle hint and keyboard-help footer used `label-small`, which resolves to
+the Framework `1/4` token and computed as 10 px / 12 px. This was below the
+project minimum of `1/3`.
+
+Both surfaces now use `label-medium`. Fresh browser evidence:
+
+- idle status: 12 px font, 16 px line height;
+- keyboard footer: 12 px font, 16 px line height;
+- query `устано`: 15 results, all 15 cards contain a highlighted match;
+- no horizontal overflow and zero browser warnings/errors;
+- focused regression: 93 tests, 984 assertions, PASS.

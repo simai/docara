@@ -1,9 +1,9 @@
 project_id: "docara-consolidation"
-updated_at: "2026-07-21"
-status: "ready_for_next_goal"
+updated_at: "2026-07-22"
+status: "goal_in_progress"
 primary_goal: "Build Docara from separated content, composition, typed data, Smart components and Simai Framework presentation primitives using the same declarative philosophy as Larena."
 active_tracks:
   - docara-consolidation
-current_focus: "docara-consolidation"
+current_focus: "docara-2-portable-only-release-candidate"
 important_blockers: []
-next_global_step: "Choose the next product goal after reviewing the accepted declarative demonstrator at /examples/."
+next_global_step: "Complete B0 combined baseline, then remove legacy Docara in rollback-safe bounded batches."

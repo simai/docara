@@ -1,11 +1,11 @@
 track_id: "docara-consolidation"
 status: "active"
 owner_skill: "teamlead"
-current_goal: "Make symmetric locale routing the recommended Docara product model: every"
-current_stage: "`review_ready`"
-current_workflow: "source/workflow/2026-07-21-docara-symmetric-locale-routing.md"
+current_goal: "Produce a clean portable-only Docara 2 release candidate with one CLI, builder, starter and documented product model."
+current_stage: "planned"
+current_workflow: "source/workflow/2026-07-22-docara-2-portable-only-release-candidate.md"
 last_completed_batch: ""
-next_step: "If a public release is requested later, prepare a separate release workflow covering hosting-level 301/308 redirects, sitemap policy, public monitoring and consumer migration."
+next_step: "Complete B0 by integrating the remote Windows fix and restoring an exact green baseline."
 blockers: []
 related_tracks: []
-updated_at: "2026-07-21"
+updated_at: "2026-07-22"

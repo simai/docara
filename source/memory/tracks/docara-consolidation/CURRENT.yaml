@@ -1,11 +1,11 @@
 track_id: "docara-consolidation"
-status: "active"
+status: "accepted_candidate"
 owner_skill: "teamlead"
 current_goal: "Produce a clean portable-only Docara 2 release candidate with one CLI, builder, starter and documented product model."
-current_stage: "repository_prepared"
+current_stage: "review_ready"
 current_workflow: "source/workflow/2026-07-22-docara-2-portable-only-release-candidate.md"
-last_completed_batch: "B0 combined green baseline at 2e8f463294b9d18d221e10adb70e9db709c653b1"
-next_step: "Complete B1 by making the portable CLI, builder and starter the only product path."
+last_completed_batch: "B5 exact candidate acceptance at c537e17f61f890fdbf5635c83ee642109bf730a4"
+next_step: "Open a separate release workflow only when publication is explicitly requested."
 blockers: []
 related_tracks: []
 updated_at: "2026-07-22"

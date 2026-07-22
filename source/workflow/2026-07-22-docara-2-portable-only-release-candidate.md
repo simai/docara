@@ -1,12 +1,13 @@
 # Workflow: Docara 2 portable-only release candidate
 
 Date: 2026-07-22
-Status: in progress
+Status: completed
 Workflow ID: `2026-07-22-docara-2-portable-only-release-candidate`
 Process model: `release`
-Current state: `implementation_verified`
+Current state: `review_ready`
 Target state: `review_ready`
 Parent track: `docara-consolidation`
+Track ID: `docara-consolidation`
 Owner: `docara`
 Coordinator: `teamlead`
 Implementation owner: `dev`
@@ -81,6 +82,14 @@ routing, deterministic builds, update safety and static verification.
 
 ## Batches
 
+- B0: integrate the Windows fix and restore the combined green baseline.
+- B1: make the portable CLI, builder and starter the only product path.
+- B2: remove the Jigsaw/Mix source, tests, stubs and dependencies.
+- B3: remove transition renderers, publishers, mirrors and output bloat.
+- B4: align CI, repository surface, documentation and the Docara skill.
+- B5: accept the exact checkout, source archive, Composer archive and browser
+  result.
+
 | Batch | Outcome | Exit gate | Status |
 | --- | --- | --- | --- |
 | B0 | Integrate Windows fix and restore a green combined baseline | exact SHA; full checks green | completed |
@@ -88,7 +97,7 @@ routing, deterministic builds, update safety and static verification.
 | B2 | Remove Jigsaw/Mix source, tests, stubs and dependencies | no legacy runtime references; full tests green | completed |
 | B3 | Remove transitional renderer/publisher/mirror and output bloat | parity, deterministic build, compact output | completed |
 | B4 | Simplify CI, repository surface, docs and Docara skill | source/dist docs and contract agree | completed |
-| B5 | Exact-archive independent acceptance and handoff | tester verdict and readiness matrix | in progress |
+| B5 | Exact-archive independent acceptance and handoff | tester verdict and readiness matrix | completed |
 
 ## Scope
 
@@ -136,6 +145,14 @@ and the final tester verdict.
 - A public release remains a separate future goal after this candidate is
   accepted.
 
+## Personal Memory Context
+
+Personal memory decision: `skip`
+Personal memory reason: the exact repository history, current package sources,
+canonical Docara skill, clean exported archives and fresh executable evidence
+are authoritative for this release candidate; no personal-memory fact is
+required to accept it.
+
 ## Stop Conditions
 
 - any protected invariant loses executable coverage;
@@ -145,10 +162,31 @@ and the final tester verdict.
   build without repository-only files;
 - a release, push or deployment would be required to continue.
 
+## Result
+
+- Accepted exact candidate:
+  `c537e17f61f890fdbf5635c83ee642109bf730a4`.
+- One portable JSON/Markdown runtime, CLI, builder and starter remain.
+- Legacy Jigsaw/Mix runtime, old starter, transition publishers/previews and
+  template-mirror machinery are absent from the candidate.
+- Exact checkout, Git archive and Composer archive acceptance passed.
+- Exact documentation build and representative desktop/mobile browser
+  acceptance passed.
+- Canonical Docara skill matches the current product model.
+- Public push, merge, tag, package publication and production deployment were
+  not performed and remain a separate release workflow.
+
+## Final Outcome
+
+A clean, portable-only Docara 2 candidate is accepted locally and linked to
+track `docara-consolidation`; publication remains explicitly outside this
+workflow.
+
 ## Current Next Step
 
-Commit the aligned candidate, then test source and Composer-dist archives in
-isolation and record the release-readiness verdict.
+If publication is requested, start a separate release workflow from the exact
+accepted candidate. Re-run package resolution and release-channel checks, then
+push/merge/tag only under the release gate.
 
 ## Gate Evidence
 

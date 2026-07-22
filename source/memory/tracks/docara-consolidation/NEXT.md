@@ -2,34 +2,33 @@
 
 ## Where We Stopped
 
-Track `docara-consolidation` is attached to workflow:
+Track `docara-consolidation` reached an accepted local release candidate:
 
-- `source/workflow/2026-07-21-docara-symmetric-locale-routing.md`
-- workflow title: Workflow: Symmetric locale routing for Docara
+- workflow: `source/workflow/2026-07-22-docara-2-portable-only-release-candidate.md`;
+- candidate: `c537e17f61f890fdbf5635c83ee642109bf730a4`;
+- verdict: `source/workflow/evidence/2026-07-22-docara-2-portable-only-release-candidate/b5/acceptance.md`.
 
 ## Next Meaningful Goal
 
-Make symmetric locale routing the recommended Docara product model: every
-locale owns an isolated `content/<locale>` tree and an explicit `/<locale>/`
-URL prefix, while `/` deterministically routes to the configured default
-locale. Migrate the current Russian Docara documentation to `content/ru` and
-`/ru/` without losing old URLs, static portability, deterministic builds,
-search, navigation, Smart components, RTL support or update safety.
+When explicitly authorized, release the accepted Docara 2 candidate through a
+separate gated workflow: verify the remote branch and package resolution,
+publish the exact accepted history, create the release tag and run downstream
+consumer smoke without changing the product model.
 
 ## Stages
 
-1. Restore current state from the workflow and project memory.
-2. Execute the next safe batch from the workflow.
-3. Update track memory after the batch.
+1. Confirm that publication is requested.
+2. Run release and access gates against the exact accepted candidate.
+3. Push/merge/tag without rebuilding from a different revision.
+4. Verify the published package and record rollback evidence.
 
 ## Next Safe Batch
 
-If a public release is requested later, prepare a separate release workflow
-covering hosting-level 301/308 redirects, sitemap policy, public monitoring and
-consumer migration.
+Do nothing destructive or public by default. The current local candidate is
+already ready for review and does not require further cleanup.
 
 ## Checks
 
-- Read `source/workflow/2026-07-21-docara-symmetric-locale-routing.md`.
-- Check route/gates before writes.
-- Update this track memory after progress.
+- Read `source/workflow/2026-07-22-docara-2-portable-only-release-candidate.md`.
+- Preserve accepted candidate `c537e17f61f890fdbf5635c83ee642109bf730a4`.
+- Check release/access gates before public writes.

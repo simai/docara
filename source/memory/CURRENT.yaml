@@ -1,9 +1,9 @@
 project_id: "docara-consolidation"
 updated_at: "2026-07-22"
-status: "goal_in_progress"
+status: "release_candidate_ready"
 primary_goal: "Build Docara from separated content, composition, typed data, Smart components and Simai Framework presentation primitives using the same declarative philosophy as Larena."
 active_tracks:
   - docara-consolidation
-current_focus: "docara-2-portable-only-release-candidate"
+current_focus: "accepted Docara 2 portable-only candidate c537e17f61f890fdbf5635c83ee642109bf730a4"
 important_blockers: []
-next_global_step: "Complete B0 combined baseline, then remove legacy Docara in rollback-safe bounded batches."
+next_global_step: "Start a separate gated release workflow only if public push, merge, tag or package publication is requested."

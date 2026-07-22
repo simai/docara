@@ -47,19 +47,7 @@
     "reader.restored": "已恢复网站主题设置。",
     "redirect.title": "页面已移动",
     "redirect.message": "页面地址已更改。",
-    "redirect.link": "打开当前页面",
-    "preview.eyebrow": "预览",
-    "preview.title": "声明式预览",
-    "preview.description": "将声明式结果与已发布页面一起检查。",
-    "preview.rendered": "已生成",
-    "preview.skipped": "已跳过",
-    "preview.receipt": "打开 JSON 回执",
-    "preview.pages": "页面",
-    "preview.unsupported": "不支持",
-    "preview.open_preview": "打开预览",
-    "preview.legacy_only": "仅已发布页面",
-    "preview.all_pages": "所有页面",
-    "preview.open_legacy": "打开已发布页面"
+    "redirect.link": "打开当前页面"
   },
   "components": {}
 }

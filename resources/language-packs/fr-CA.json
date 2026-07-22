@@ -47,19 +47,7 @@
     "reader.restored": "Le réglage du thème du site a été rétabli.",
     "redirect.title": "Page déplacée",
     "redirect.message": "L’adresse de la page a changé.",
-    "redirect.link": "Ouvrir la page actuelle",
-    "preview.eyebrow": "APERÇU",
-    "preview.title": "Aperçu déclaratif",
-    "preview.description": "Inspectez le résultat déclaratif à côté de la page publiée.",
-    "preview.rendered": "Générées",
-    "preview.skipped": "Ignorées",
-    "preview.receipt": "Ouvrir le reçu JSON",
-    "preview.pages": "Pages",
-    "preview.unsupported": "Non pris en charge",
-    "preview.open_preview": "Ouvrir l’aperçu",
-    "preview.legacy_only": "Page publiée seulement",
-    "preview.all_pages": "Toutes les pages",
-    "preview.open_legacy": "Ouvrir la page publiée"
+    "redirect.link": "Ouvrir la page actuelle"
   },
   "components": {}
 }

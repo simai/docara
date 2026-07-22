@@ -47,19 +47,7 @@
     "reader.restored": "تمت استعادة إعداد سمة الموقع.",
     "redirect.title": "تم نقل الصفحة",
     "redirect.message": "تم تغيير عنوان الصفحة.",
-    "redirect.link": "فتح الصفحة الحالية",
-    "preview.eyebrow": "معاينة",
-    "preview.title": "المعاينة التعريفية",
-    "preview.description": "افحص النتيجة التعريفية بجانب الصفحة المنشورة.",
-    "preview.rendered": "تم الإنشاء",
-    "preview.skipped": "تم التخطي",
-    "preview.receipt": "فتح إيصال JSON",
-    "preview.pages": "الصفحات",
-    "preview.unsupported": "غير مدعوم",
-    "preview.open_preview": "فتح المعاينة",
-    "preview.legacy_only": "الصفحة المنشورة فقط",
-    "preview.all_pages": "كل الصفحات",
-    "preview.open_legacy": "فتح الصفحة المنشورة"
+    "redirect.link": "فتح الصفحة الحالية"
   },
   "components": {}
 }

@@ -110,19 +110,7 @@
         "examples.open_separately": "Открыть отдельно",
         "examples.result_frame": "Результат: {title}",
         "examples.sources": "Исходные файлы",
-        "examples.sources_description": "Именно эти файлы прошли основной конфигурационный и декларативный pipeline.",
-        "preview.eyebrow": "ПРЕДПРОСМОТР",
-        "preview.title": "Декларативный предпросмотр",
-        "preview.description": "Здесь можно проверить декларативный результат рядом с опубликованной страницей.",
-        "preview.rendered": "Собрано",
-        "preview.skipped": "Пропущено",
-        "preview.receipt": "Открыть JSON receipt",
-        "preview.pages": "Страницы",
-        "preview.unsupported": "Не поддержано",
-        "preview.open_preview": "Открыть предпросмотр",
-        "preview.legacy_only": "Только опубликованная страница",
-        "preview.all_pages": "Все страницы",
-        "preview.open_legacy": "Открыть опубликованную страницу"
+        "examples.sources_description": "Именно эти файлы прошли основной конфигурационный и декларативный pipeline."
     },
     "components": {
         "content.icon": {

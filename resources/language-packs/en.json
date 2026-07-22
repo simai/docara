@@ -110,19 +110,7 @@
         "examples.open_separately": "Open separately",
         "examples.result_frame": "Result: {title}",
         "examples.sources": "Source files",
-        "examples.sources_description": "These exact files passed through the main configuration and declarative pipeline.",
-        "preview.eyebrow": "PREVIEW",
-        "preview.title": "Declarative preview",
-        "preview.description": "Inspect the declarative result alongside the published page.",
-        "preview.rendered": "Rendered",
-        "preview.skipped": "Skipped",
-        "preview.receipt": "Open JSON receipt",
-        "preview.pages": "Pages",
-        "preview.unsupported": "Unsupported",
-        "preview.open_preview": "Open preview",
-        "preview.legacy_only": "Published page only",
-        "preview.all_pages": "All pages",
-        "preview.open_legacy": "Open published page"
+        "examples.sources_description": "These exact files passed through the main configuration and declarative pipeline."
     },
     "components": {
         "content.icon": {

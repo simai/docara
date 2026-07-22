@@ -5,10 +5,10 @@
     var dialog = document.querySelector('[data-docara-search-dialog]');
     if (!trigger || !dialog) return;
 
-    var input = dialog.querySelector('[data-docara-search-input]');
-    var status = dialog.querySelector('[data-docara-search-status]');
-    var results = dialog.querySelector('[data-docara-search-results]');
-    var closeButton = dialog.querySelector('[data-docara-search-close]');
+    var input = null;
+    var status = null;
+    var results = null;
+    var closeButton = null;
     var shortcut = trigger.querySelector('[data-docara-search-shortcut]');
     var locale = document.documentElement.lang || 'und';
     var copyNode = document.getElementById('docara-runtime-copy');
@@ -33,6 +33,7 @@
     var visibleResults = [];
     var deploymentBase = null;
     var expectedContentHash = null;
+    var initialized = false;
 
     if (shortcut && !/Mac|iPhone|iPad/.test(navigator.platform || '')) {
         shortcut.textContent = 'Ctrl K';
@@ -52,9 +53,40 @@
         return normalize(value).match(/[\p{L}\p{N}_-]+/gu) || [];
     }
 
-    function setStatus(message, state) {
-        status.textContent = message;
+    function highlightTokens(value) {
+        return String(value || '').normalize('NFKC').match(/[\p{L}\p{N}_-]+/gu) || [];
+    }
+
+    function escapeExpression(value) {
+        return String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function appendHighlighted(target, value, terms) {
+        var text = String(value || '');
+        var uniqueTerms = Array.from(new Set((terms || []).filter(Boolean)))
+            .sort(function (left, right) { return right.length - left.length; });
+        if (!uniqueTerms.length) {
+            target.textContent = text;
+            return;
+        }
+        var expression = new RegExp(uniqueTerms.map(escapeExpression).join('|'), 'giu');
+        var cursor = 0;
+        Array.from(text.matchAll(expression)).forEach(function (match) {
+            var offset = match.index || 0;
+            if (offset > cursor) target.append(document.createTextNode(text.slice(cursor, offset)));
+            var mark = document.createElement('mark');
+            mark.className = 'docara-search-mark';
+            mark.textContent = match[0];
+            target.append(mark);
+            cursor = offset + match[0].length;
+        });
+        if (cursor < text.length) target.append(document.createTextNode(text.slice(cursor)));
+    }
+
+    function setStatus(value, state) {
+        status.textContent = value;
         status.dataset.state = state;
+        results.dataset.state = state;
     }
 
     function clearResults() {
@@ -90,8 +122,8 @@
         }
     }
 
-    function validateDocument(document) {
-        var headingsValid = Array.isArray(document.headings) && document.headings.every(function (heading) {
+    function validateDocument(record) {
+        var headingsValid = Array.isArray(record.headings) && record.headings.every(function (heading) {
             return isPlainRecord(heading)
                 && hasExactKeys(heading, ['level', 'text'])
                 && Number.isInteger(heading.level)
@@ -100,20 +132,20 @@
                 && typeof heading.text === 'string'
                 && heading.text.length > 0;
         });
-        var trailValid = Array.isArray(document.trail) && document.trail.every(function (part) {
+        var trailValid = Array.isArray(record.trail) && record.trail.every(function (part) {
             return typeof part === 'string' && part.length > 0;
         });
-        return isPlainRecord(document)
-            && hasExactKeys(document, ['id', 'url', 'locale', 'title', 'description', 'trail', 'headings', 'text'])
-            && /^[a-f0-9]{64}$/.test(document.id || '')
-            && isSafeLocalPageUrl(document.url)
-            && /^[a-z]{2}(?:-[A-Z]{2})?$/.test(document.locale || '')
-            && typeof document.title === 'string'
-            && document.title.length > 0
-            && typeof document.description === 'string'
+        return isPlainRecord(record)
+            && hasExactKeys(record, ['id', 'url', 'locale', 'title', 'description', 'trail', 'headings', 'text'])
+            && /^[a-f0-9]{64}$/.test(record.id || '')
+            && isSafeLocalPageUrl(record.url)
+            && /^[a-z]{2}(?:-[A-Z]{2})?$/.test(record.locale || '')
+            && typeof record.title === 'string'
+            && record.title.length > 0
+            && typeof record.description === 'string'
             && trailValid
             && headingsValid
-            && typeof document.text === 'string';
+            && typeof record.text === 'string';
     }
 
     function validateIndex(payload) {
@@ -131,29 +163,29 @@
         }
         var ids = new Set();
         var localeUrls = new Set();
-        payload.documents.forEach(function (document) {
-            var localeUrl = document.locale + '\0' + document.url;
-            if (ids.has(document.id) || localeUrls.has(localeUrl)) throw new Error('SEARCH_INDEX_INVALID');
-            ids.add(document.id);
+        payload.documents.forEach(function (record) {
+            var localeUrl = record.locale + '\0' + record.url;
+            if (ids.has(record.id) || localeUrls.has(localeUrl)) throw new Error('SEARCH_INDEX_INVALID');
+            ids.add(record.id);
             localeUrls.add(localeUrl);
         });
-        var localized = payload.documents.filter(function (document) {
-            return document.locale === locale;
+        var localized = payload.documents.filter(function (record) {
+            return record.locale === locale;
         });
         if (!localized.length) throw new Error('SEARCH_INDEX_LOCALE_EMPTY');
         return localized;
     }
 
-    function prepare(document) {
-        var headings = document.headings.map(function (heading) { return heading.text || ''; }).join(' ');
+    function prepare(record) {
+        var headings = record.headings.map(function (heading) { return heading.text || ''; }).join(' ');
         var fields = {
-            title: normalize(document.title),
+            title: normalize(record.title),
             headings: normalize(headings),
-            description: normalize(document.description || ''),
-            body: normalize(document.text)
+            description: normalize(record.description || ''),
+            body: normalize(record.text)
         };
         fields.all = [fields.title, fields.headings, fields.description, fields.body].join(' ');
-        return { document: document, fields: fields };
+        return { document: record, fields: fields };
     }
 
     function loadIndex() {
@@ -209,42 +241,49 @@
         return total;
     }
 
-    function snippet(document) {
-        var description = String(document.description || '').replace(/\s+/g, ' ').trim();
-        var text = String(description || document.text || '').replace(/\s+/g, ' ').trim();
-        if (!description && document.title) {
-            var escapedTitle = String(document.title).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    function snippet(record) {
+        var description = String(record.description || '').replace(/\s+/g, ' ').trim();
+        var text = String(description || record.text || '').replace(/\s+/g, ' ').trim();
+        if (!description && record.title) {
+            var escapedTitle = String(record.title).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
             text = text.replace(new RegExp('^(?:\\s*' + escapedTitle + '[\\s:—–-]*)+', 'iu'), '').trim();
         }
         if (text.length <= 180) return text;
         return text.slice(0, 177).trimEnd() + '…';
     }
 
-    function createResult(item) {
+    function createResult(item, terms) {
         var record = item.document;
-        var listItem = window.document.createElement('li');
-        var link = window.document.createElement('a');
-        var title = window.document.createElement('span');
-        var context = window.document.createElement('span');
-        var summary = window.document.createElement('span');
-        listItem.className = 'min-w-0';
-        link.className = 'docara-search-result min-w-0 bg-surface-container border border-outline-variant radius-2 p-2 flex flex-col gap-1 decoration-none color-on-surface';
+        var listItem = document.createElement('li');
+        var link = document.createElement('a');
+        var icon = document.createElement('sf-icon');
+        var content = document.createElement('span');
+        var title = document.createElement('span');
+        var context = document.createElement('span');
+        var summary = document.createElement('span');
+        listItem.className = 'docara-search-result-item min-w-0';
+        link.className = 'docara-search-result min-w-0 p-2 flex items-cross-start gap-1 decoration-none color-on-surface transition';
         link.href = record.url;
         link.dataset.docaraSearchResult = 'true';
-        title.className = 'weight-7';
-        title.textContent = record.title;
-        link.append(title);
+        icon.setAttribute('icon', 'description');
+        icon.setAttribute('aria-hidden', 'true');
+        icon.className = 'docara-search-result-icon color-on-surface-variant flex-none';
+        content.className = 'flex flex-col gap-1/4 min-w-0';
+        title.className = 'docara-search-result-title weight-7';
+        appendHighlighted(title, record.title, terms);
         if (record.trail.length) {
-            context.className = 'docara-search-result-context color-on-surface-variant';
-            context.textContent = record.trail.join(' / ');
-            link.append(context);
+            context.className = 'docara-search-result-context color-link';
+            appendHighlighted(context, record.trail.join(' › '), terms);
+            content.append(context);
         }
+        content.append(title);
         var excerpt = snippet(record);
         if (excerpt) {
             summary.className = 'docara-search-result-summary color-on-surface-variant';
-            summary.textContent = excerpt;
-            link.append(summary);
+            appendHighlighted(summary, excerpt, terms);
+            content.append(summary);
         }
+        link.append(icon, content);
         link.setAttribute('aria-label', [record.title, record.trail.join(' / '), excerpt]
             .filter(Boolean).join('. '));
         listItem.append(link);
@@ -253,6 +292,7 @@
 
     function render() {
         var phrase = normalize(input.value);
+        var terms = highlightTokens(input.value);
         clearResults();
         if (Array.from(phrase).length < 2) {
             setStatus(copy.idle, 'idle');
@@ -275,7 +315,7 @@
             return;
         }
         ranked.forEach(function (item) {
-            var rendered = createResult(item.prepared);
+            var rendered = createResult(item.prepared, terms);
             results.append(rendered.listItem);
             visibleResults.push(rendered.link);
         });
@@ -286,78 +326,72 @@
         document.dispatchEvent(new CustomEvent('docara:open-transient', {
             detail: { id: dialog.id }
         }));
-        if (!dialog.open) {
-            if (typeof dialog.showModal === 'function') dialog.showModal();
-            else dialog.setAttribute('open', '');
-        }
+        dialog.open();
         trigger.setAttribute('aria-expanded', 'true');
         window.requestAnimationFrame(function () { input.focus(); });
         loadIndex().then(render).catch(function () {});
     }
 
     function closeSearch() {
-        if (typeof dialog.close === 'function' && dialog.open) dialog.close();
-        else {
-            dialog.removeAttribute('open');
-            trigger.setAttribute('aria-expanded', 'false');
-            trigger.focus();
+        dialog.close();
+    }
+
+    function bind(root) {
+        if (!root) return;
+        input = root.querySelector('[data-docara-search-input]');
+        status = root.querySelector('[data-docara-search-status]');
+        results = root.querySelector('[data-docara-search-results]');
+        closeButton = root.querySelector('[data-docara-search-close]');
+        if (!input || !status || !results || !closeButton) {
+            window.requestAnimationFrame(function () { bind(root); });
+            return;
+        }
+        if (input.dataset.docaraSearchBound === 'true') return;
+        input.dataset.docaraSearchBound = 'true';
+        root.setAttribute('aria-labelledby', 'docara-search-title');
+        closeButton.addEventListener('click', closeSearch);
+        input.addEventListener('input', function () {
+            if (preparedDocuments.length) render();
+            else loadIndex().then(render).catch(function () {});
+        });
+        input.addEventListener('keydown', function (event) {
+            if (event.key === 'ArrowDown' && visibleResults[0]) {
+                event.preventDefault();
+                visibleResults[0].focus();
+            }
+            if (event.key === 'Enter' && visibleResults[0]) {
+                event.preventDefault();
+                visibleResults[0].click();
+            }
+        });
+        results.addEventListener('keydown', function (event) {
+            var index = visibleResults.indexOf(event.target);
+            if (index < 0 || !['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+            event.preventDefault();
+            if (event.key === 'ArrowUp' && index === 0) input.focus();
+            else visibleResults[Math.max(0, Math.min(visibleResults.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1)))].focus();
+        });
+        if (dialog.openState) window.requestAnimationFrame(function () { input.focus(); });
+        if (!initialized) {
+            initialized = true;
+            trigger.addEventListener('click', openSearch);
+            dialog.onAfterClose(function () {
+                trigger.setAttribute('aria-expanded', 'false');
+            });
+            document.addEventListener('keydown', function (event) {
+                if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+                    event.preventDefault();
+                    openSearch();
+                }
+            });
         }
     }
 
-    trigger.addEventListener('click', openSearch);
-    closeButton.addEventListener('click', closeSearch);
-    input.addEventListener('input', function () {
-        if (preparedDocuments.length) render();
-        else loadIndex().then(render).catch(function () {});
-    });
-    input.addEventListener('keydown', function (event) {
-        if (event.key === 'ArrowDown' && visibleResults[0]) {
-            event.preventDefault();
-            visibleResults[0].focus();
+    customElements.whenDefined('sf-modal').then(function () {
+        function bindModal(event) {
+            bind(event.detail && event.detail.root ? event.detail.root : dialog.getModalRoot());
         }
-        if (event.key === 'Enter' && visibleResults[0]) {
-            event.preventDefault();
-            visibleResults[0].click();
-        }
-    });
-    results.addEventListener('keydown', function (event) {
-        var index = visibleResults.indexOf(event.target);
-        if (index < 0 || !['ArrowDown', 'ArrowUp'].includes(event.key)) return;
-        event.preventDefault();
-        if (event.key === 'ArrowUp' && index === 0) input.focus();
-        else visibleResults[Math.max(0, Math.min(visibleResults.length - 1, index + (event.key === 'ArrowDown' ? 1 : -1)))].focus();
-    });
-    dialog.addEventListener('click', function (event) {
-        if (event.target === dialog) closeSearch();
-    });
-    dialog.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            event.preventDefault();
-            event.stopPropagation();
-            closeSearch();
-            return;
-        }
-        if (event.key !== 'Tab') return;
-        var order = [input].concat(visibleResults, [closeButton]);
-        var current = order.indexOf(document.activeElement);
-        var next = current < 0
-            ? 0
-            : (current + (event.shiftKey ? -1 : 1) + order.length) % order.length;
-        event.preventDefault();
-        order[next].focus();
-    }, true);
-    dialog.addEventListener('cancel', function (event) {
-        event.preventDefault();
-        closeSearch();
-    });
-    dialog.addEventListener('close', function () {
-        trigger.setAttribute('aria-expanded', 'false');
-        trigger.focus();
-    });
-    document.addEventListener('keydown', function (event) {
-        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
-            event.preventDefault();
-            openSearch();
-        }
+        dialog.onModalReady(bindModal);
+        dialog.onModalUpdate(bindModal);
     });
 }());

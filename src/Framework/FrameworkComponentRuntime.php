@@ -113,6 +113,15 @@ final readonly class FrameworkComponentRuntime
     }
 
     /**
+     * @param list<string> $componentKeys
+     * @param list<string> $additionalRuntimeTags
+     */
+    public function planAssets(array $componentKeys, array $additionalRuntimeTags = []): FrameworkAssetPlan
+    {
+        return $this->assetPlanner->plan($componentKeys, $additionalRuntimeTags);
+    }
+
+    /**
      * @param  array<string, mixed>  $manifest
      * @param  array<string, mixed>  $authorProps
      * @return array<string, mixed>

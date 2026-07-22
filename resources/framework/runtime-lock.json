@@ -91,7 +91,7 @@
       "source": "smart/modal",
       "javascript": "smart/smart/modal/js/modal.js",
       "css": null,
-      "attributes": ["template", "modal-id", "title", "text", "open", "overlay", "display", "width", "height", "blur", "blur-type", "surface-padding", "src", "slot", "aria-label", "id", "class"]
+      "attributes": ["template", "modal-id", "title", "text", "open", "autoload", "unclose", "hide", "hide-modifier", "minimized", "overlay", "show-header", "show-close", "show-footer", "close-on-esc", "close-on-overlay", "preserve-scroll-gap", "position", "mode", "display", "src", "preload", "fullscreen", "width", "height", "blur", "blur-type", "overlay-class", "close-class", "surface-class", "surface-padding", "panel-class", "header-class", "body-class", "content-class", "footer-class", "slot", "aria-label", "id", "class"]
     },
     "sf-textarea": {
       "source": "smart/textarea",

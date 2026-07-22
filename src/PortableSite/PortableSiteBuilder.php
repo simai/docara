@@ -414,6 +414,20 @@ final readonly class PortableSiteBuilder
             (string) ($site['base_url'] ?? '/'),
             $siteTitle,
         );
+        foreach ($pages as &$page) {
+            $componentKeys = array_values(array_unique(array_map(
+                static fn (array $call): string => (string) ($call['id'] ?? ''),
+                $page['components']->normalizedCalls,
+            )));
+            $shellRuntimeTags = ['sf-icon'];
+            if ($page['search_enabled'] === true) {
+                array_push($shellRuntimeTags, 'sf-button', 'sf-modal');
+            }
+            $page['components'] = $page['components']->withAssetPlan(
+                $runtime->planAssets($componentKeys, $shellRuntimeTags),
+            );
+        }
+        unset($page);
         $searchEnabled = false;
         foreach ($pages as $page) {
             if ($page['search_enabled'] === true) {

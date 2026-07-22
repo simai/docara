@@ -424,8 +424,17 @@ final class PortableSiteBuilderTest extends TestCase
                 $html,
             );
             self::assertStringContainsString('data-docara-search-dialog', $html);
+            self::assertStringContainsString('<sf-modal', $html);
+            self::assertStringContainsString('overlay="true"', $html);
+            self::assertStringContainsString('overlay-class="backdrop-blur-small"', $html);
+            self::assertStringNotContainsString('blur="small"', $html);
+            self::assertStringContainsString('show-header="false"', $html);
+            self::assertStringContainsString('show-close="false"', $html);
             self::assertStringContainsString('class="sf-input sf-input--size-1 sf-input--bordered', $html);
             self::assertStringContainsString('data-docara-search-input', $html);
+            self::assertStringContainsString('<button type="button" data-docara-search-close class="sf-icon-button', $html);
+            self::assertStringNotContainsString('data-docara-framework-smart-loader', $html);
+            self::assertStringNotContainsString('simai.framework.sf_modal.js', $html);
             self::assertStringContainsString('data-docara-search-status', $html);
             self::assertStringContainsString('data-docara-search-results', $html);
             self::assertStringContainsString('root-class="docara-search-trigger"', $html);
@@ -439,7 +448,7 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringNotContainsString('typesense', strtolower($html));
         }
         self::assertStringNotContainsString('data-docara-search-trigger', $landing);
-        self::assertStringNotContainsString('<dialog id="docara-search-dialog"', $landing);
+        self::assertStringNotContainsString('<sf-modal', $landing);
         self::assertStringNotContainsString('data-docara-search-runtime', $landing);
         self::assertStringContainsString('id="docara-mobile-navigation"', $guide);
         self::assertStringContainsString('id="docara-mobile-navigation-title"', $guide);
@@ -495,7 +504,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString("message('reader.applied_not_saved')", $shellRuntime);
         self::assertStringNotContainsString('Браузер не разрешил сохранить выбор', $shellRuntime);
         self::assertStringContainsString('sf-theme=', $index);
-        self::assertStringNotContainsString('<sf-modal', $index);
+        self::assertSame(1, substr_count($index, '<sf-modal'));
         self::assertStringNotContainsString('<sf-dropdown', $index);
 
         $guideDocument = new \DOMDocument;
@@ -725,10 +734,15 @@ final class PortableSiteBuilderTest extends TestCase
             $searchRuntime,
         );
         self::assertStringContainsString('detail: { id: dialog.id }', $searchRuntime);
+        self::assertStringContainsString("document.createElement('mark')", $searchRuntime);
+        self::assertStringContainsString("mark.className = 'docara-search-mark'", $searchRuntime);
+        self::assertStringContainsString("customElements.whenDefined('sf-modal')", $searchRuntime);
         self::assertTrue(
-            strpos($searchRuntime, "new CustomEvent('docara:open-transient'") < strpos($searchRuntime, 'dialog.showModal()'),
+            strpos($searchRuntime, "new CustomEvent('docara:open-transient'") < strpos($searchRuntime, 'dialog.open()'),
             'Search must request shared transient-dialog exclusivity before it becomes modal.',
         );
+        self::assertStringContainsString('.docara-search-mark{background:var(--sf-mark)', $shellCss);
+        self::assertStringNotContainsString('.docara-search-dialog::backdrop', $shellCss);
         self::assertStringNotContainsString("var searchTrigger=document.querySelector('[data-docara-search-trigger]');", $index);
         self::assertStringNotContainsString(
             "searchTrigger.addEventListener('click',function(){if(settingsDialog.open){settingsDialog.close()}})",
@@ -1507,7 +1521,7 @@ MD;
         self::assertFileDoesNotExist($this->tmpPath('build_local/_docara/search.js'));
         $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
         self::assertStringNotContainsString('<button type="button" data-docara-search-trigger', $html);
-        self::assertStringNotContainsString('<dialog id="docara-search-dialog"', $html);
+        self::assertStringNotContainsString('<sf-modal', $html);
         self::assertStringNotContainsString('data-docara-search-runtime', $html);
     }
 

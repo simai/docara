@@ -35,6 +35,17 @@ final readonly class ComponentDirectiveDocument
         return $renderedMarkdownHtml;
     }
 
+    public function withAssetPlan(FrameworkAssetPlan $assetPlan): self
+    {
+        return new self(
+            $this->markdownWithPlaceholders,
+            $this->renderedHtml,
+            $this->normalizedCalls,
+            $assetPlan,
+            $this->diagnostics,
+        );
+    }
+
     /** @return array<string, mixed> */
     public function toArray(): array
     {

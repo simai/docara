@@ -1,27 +1,59 @@
-# Active workflow: Docara Smart search trigger
+# Active workflow: Docara search experience alignment
 
 Date: 2026-07-22
-Status: review ready
-Workflow ID: `2026-07-22-docara-smart-search-trigger`
-Process model: `general_delivery`
+Status: completed
+Workflow ID: `2026-07-22-docara-search-experience-alignment`
+Process model: `full_qa`
 Current state: `review_ready`
 Target state: `review_ready`
 
 ## Current goal
 
-Replace the manually assembled header search control with the admitted
-Framework `sf-button` Smart component without regressing search behavior,
-keyboard access or responsive rendering.
+Bring Docara documentation search closer to the proven Retype interaction
+without copying its implementation: use the Simai Framework modal overlay and
+UI primitives, simplify the query control, highlight matches, preserve secure
+same-origin index validation and provide keyboard, theme and responsive QA.
+
+## Done when
+
+- the modal backdrop is always a dark neutral scrim in light and dark themes;
+- the query row is compact and built from Framework components/utilities;
+- titles and excerpts visibly highlight matched query terms with semantic
+  `mark` elements;
+- results form one scan-friendly list rather than separate floating cards;
+- keyboard open, navigation, activation, escape and focus restoration work;
+- focused tests, exact build, static verification and desktop/mobile browser
+  acceptance pass;
+- rollback-safe local publication is visible at `https://docara.test/`.
+
+## Current boundary
+
+This batch may change Docara source, tests, workflow evidence and the local
+`docara.test` build. Public push, merge, tag, package release and production
+readiness are excluded.
+
+## Framework mapping
+
+- Smart component: `sf-modal` owns overlay, focus trap and modal lifecycle.
+- Framework component: native `sf-icon-button` classes and the `sf-icon`
+  Smart element own the close command.
+- Framework component: size-1 bordered input anatomy owns the query field.
+- Utilities: layout, spacing, surface, border, radius, typography and color.
+- Product runtime: search index validation, scoring, highlighting and result
+  navigation remain in `resources/portable/search.js`.
+
+## Evidence
+
+Evidence is written to
+`source/workflow/evidence/2026-07-22-docara-search-experience-alignment/`.
 
 ## Result
 
-The header now invokes the admitted `sf-button` Smart component with size `1`,
-outline/on-surface semantics, the Framework search icon and the keyboard hint
-through the right slot. Focused/full tests, exact build, static verification,
-rollback-safe local publication and desktop/mobile browser acceptance pass.
-
-## Completion guard
-
-Acceptance evidence is stored under
-`source/workflow/evidence/2026-07-22-docara-smart-search-trigger/`. Public push,
-merge, tag, package release and production readiness remain excluded.
+- 123 focused tests and 1,343 assertions pass;
+- production build contains 271 pages and 20,512 valid local references;
+- browser acceptance confirms 20 results, 22 semantic highlights, keyboard
+  focus movement, a theme-independent black scrim and zero console warnings;
+- the local build is published at `https://docara.test/ru/` with a retained
+  rollback copy;
+- public push, merge, tag, package release and production readiness remain
+  outside this batch.

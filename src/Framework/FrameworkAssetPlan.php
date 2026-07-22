@@ -39,6 +39,15 @@ final readonly class FrameworkAssetPlan
             if ($kind === 'javascript') {
                 $html[] = '<script defer src="' . $this->escape((string) $asset['url'])
                     . '" data-docara-framework-asset="' . $this->escape((string) $asset['key']) . '"></script>';
+
+                continue;
+            }
+            if ($kind === 'smart_javascript') {
+                // The canonical Framework loader discovers sf-* elements and
+                // resolves their pinned local assets through sfSmartPath.
+                // Emitting these scripts here as well races that loader and
+                // attempts to define the same custom element twice.
+                continue;
             }
         }
 

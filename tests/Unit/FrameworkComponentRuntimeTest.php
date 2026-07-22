@@ -31,13 +31,14 @@ final class FrameworkComponentRuntimeTest extends TestCase
             hash_file('sha256', $this->root() . '/resources/framework/manifests/ui-alert.json'),
         );
         self::assertSame(
-            'd415eece461ee91000d7c82c4d17c08f7af1005d9c0bfd94ef6b7affdf5866ad',
+            '5c0dea7a27bcf7c12ffedbf6307aa2d578768d3c8d97e9724f5f7b400dec2326',
             hash_file('sha256', $this->root() . '/resources/framework/runtime-lock.json'),
         );
         foreach ([
             'smart/alert/js/alert.js' => 'e994066dd2a7f9c4d15c573ea66bb47ccb0f12c24f4cf2e7dedee29eaddf9f1c',
             'smart/buttons/js/buttons.js' => 'fe977fc7c608b7bacb79b7641a302c30a6195659ac2351594ae5aef0656d0a27',
             'smart/icons/js/icons.js' => 'c810be681b51f98002e01fb8852e992e454fa607af005033f9cc10309016fa09',
+            'smart/modal/js/modal.js' => 'd1d3ca45843a173d360fffd65b420b2a864b81a58fab17dd645589f41c74c444',
         ] as $relativePath => $sha256) {
             self::assertSame(
                 $sha256,

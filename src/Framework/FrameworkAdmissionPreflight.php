@@ -20,7 +20,10 @@ final readonly class FrameworkAdmissionPreflight
         // Validate the complete projected surface, then prove each component's
         // own dependency closure independently. A sibling component must never
         // satisfy another manifest's critical asset requirement.
-        $this->assetPlanner->assertExactProjection($keys);
+        $this->assetPlanner->assertExactProjection(
+            $keys,
+            FrameworkAssetPlanner::DOCARA_SHELL_RUNTIME_TAGS,
+        );
 
         foreach ($keys as $key) {
             $manifest = $this->manifests->get($key);

@@ -93,7 +93,7 @@
         "source": "smart/modal",
         "javascript": "smart/smart/modal/js/modal.js",
         "css": null,
-        "attributes": ["template", "modal-id", "title", "text", "open", "overlay", "display", "width", "height", "blur", "blur-type", "surface-padding", "src", "slot", "aria-label", "id", "class"]
+        "attributes": ["template", "modal-id", "title", "text", "open", "autoload", "unclose", "hide", "hide-modifier", "minimized", "overlay", "show-header", "show-close", "show-footer", "close-on-esc", "close-on-overlay", "preserve-scroll-gap", "position", "mode", "display", "src", "preload", "fullscreen", "width", "height", "blur", "blur-type", "overlay-class", "close-class", "surface-class", "surface-padding", "panel-class", "header-class", "body-class", "content-class", "footer-class", "slot", "aria-label", "id", "class"]
       },
       "sf-textarea": {
         "source": "smart/textarea",
@@ -143,6 +143,9 @@
       },
       "smart/icons/js/icons.js": {
         "sha256": "c810be681b51f98002e01fb8852e992e454fa607af005033f9cc10309016fa09"
+      },
+      "smart/modal/js/modal.js": {
+        "sha256": "d1d3ca45843a173d360fffd65b420b2a864b81a58fab17dd645589f41c74c444"
       }
     }
   },

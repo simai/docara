@@ -8,6 +8,8 @@ use Simai\Docara\Portable\CanonicalJson;
 
 final readonly class FrameworkAssetPlanner
 {
+    public const DOCARA_SHELL_RUNTIME_TAGS = ['sf-button', 'sf-icon', 'sf-modal'];
+
     public function __construct(
         private FrameworkManifestRepository $repository,
         private string $assetBase,
@@ -21,8 +23,11 @@ final readonly class FrameworkAssetPlanner
         }
     }
 
-    /** @param list<string> $componentKeys */
-    public function plan(array $componentKeys): FrameworkAssetPlan
+    /**
+     * @param list<string> $componentKeys
+     * @param list<string> $additionalRuntimeTags
+     */
+    public function plan(array $componentKeys, array $additionalRuntimeTags = []): FrameworkAssetPlan
     {
         $runtime = $this->repository->runtime();
         $uiCommit = (string) $runtime['ui']['commit'];
@@ -92,7 +97,7 @@ final readonly class FrameworkAssetPlanner
             'url' => $this->uiUrl($uiCommit, (string) $boot['javascript']),
         ]];
 
-        $tags = [];
+        $tags = $additionalRuntimeTags;
         foreach (array_values(array_unique($componentKeys)) as $key) {
             $manifest = $this->repository->get($key);
             $tag = $manifest['frontend']['tag'];
@@ -122,6 +127,7 @@ final readonly class FrameworkAssetPlanner
             $assets[] = [
                 'key' => 'simai.framework.' . str_replace('-', '_', $tag) . '.js',
                 'kind' => 'smart_javascript',
+                'tag' => $tag,
                 'url' => $projectedAsset['url'],
                 'source_revision' => $smartCommit,
                 'sha256' => $projectedAsset['sha256'],
@@ -133,10 +139,16 @@ final readonly class FrameworkAssetPlanner
         return new FrameworkAssetPlan($this->repository->pairId(), $assets);
     }
 
-    /** @param list<string> $componentKeys */
-    public function assertExactProjection(array $componentKeys): FrameworkAssetPlan
+    /**
+     * @param list<string> $componentKeys
+     * @param list<string> $additionalRuntimeTags
+     */
+    public function assertExactProjection(
+        array $componentKeys,
+        array $additionalRuntimeTags = [],
+    ): FrameworkAssetPlan
     {
-        $plan = $this->plan($componentKeys);
+        $plan = $this->plan($componentKeys, $additionalRuntimeTags);
         $expected = array_keys($this->repository->assetProjection()['files']);
         sort($expected, SORT_STRING);
 

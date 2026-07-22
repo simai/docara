@@ -7,8 +7,11 @@
     return value;
   }
   function closeTransientExcept(id){
-    document.querySelectorAll('dialog[data-docara-transient-dialog][open]').forEach(function(dialog){
+    document.querySelectorAll('[data-docara-transient-dialog]').forEach(function(dialog){
       if(dialog.id===id)return;
+      var isNativeDialog=dialog.tagName&&dialog.tagName.toLowerCase()==='dialog';
+      var isOpen=isNativeDialog?dialog.hasAttribute('open'):Boolean(dialog.openState||dialog.hasAttribute('open'));
+      if(!isOpen)return;
       if(typeof dialog.close==='function'){dialog.close()}
       else{
         dialog.removeAttribute('open');

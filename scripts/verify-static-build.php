@@ -1629,7 +1629,8 @@ function docaraAssertCatalogShellContract(
         $actualBody[] = match (true) {
             $child->tagName === 'a' && $hasClass($child, 'docara-skip-link') => 'skip',
             $child->tagName === 'header' && $hasClass($child, 'docara-header') => 'header',
-            $child->tagName === 'dialog' && $child->getAttribute('id') === 'docara-search-dialog' => 'search',
+            in_array($child->tagName, ['dialog', 'sf-modal'], true)
+                && $child->getAttribute('id') === 'docara-search-dialog' => 'search',
             $child->tagName === 'dialog' && $child->getAttribute('id') === 'docara-reader-settings-dialog' => 'reader',
             $child->tagName === 'div' && $hasClass($child, 'docara-docs-layout') => 'layout',
             $child->tagName === 'script' && $child->getAttribute('id') === 'docara-runtime-copy' => 'copy',

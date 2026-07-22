@@ -326,6 +326,16 @@ final class PortableSiteBuilderTest extends TestCase
             $smartSurface,
             'The active outline marker must overlay the physical left divider.',
         );
+        self::assertStringContainsString(
+            'background:var(--sf-outline)',
+            $smartSurface,
+            'The active outline marker must use the neutral Framework outline token.',
+        );
+        self::assertStringNotContainsString(
+            'data-docara-active]::before{content:"";position:absolute;z-index:1;inset-block:0;left:calc(var(--sf-0) - var(--sf-space-2) - var(--sf-a2));width:var(--sf-a2);border-radius:var(--sf-radius-rounded);background:var(--sf-primary)',
+            $smartSurface,
+            'The active outline marker must not compete with controls by using the primary action color.',
+        );
         self::assertStringNotContainsString('--docara-outline-marker-inline-start', $smartSurface);
         self::assertStringContainsString("link.setAttribute('aria-current','location')", $smartSurface);
         self::assertStringContainsString("window.addEventListener('scroll',schedule,{passive:true})", $smartSurface);

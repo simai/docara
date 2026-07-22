@@ -4,5 +4,5 @@
 .docara-outline-item[data-docara-outline-level="4"],.docara-outline-item[data-docara-outline-level="5"],.docara-outline-item[data-docara-outline-level="6"]{padding-inline-start:var(--sf-space-2)}
 .docara-outline-link{overflow-wrap:anywhere}
 .docara-outline-link[aria-current="location"]{color:var(--sf-on-surface);font-weight:var(--sf-text--font-weight-7)}
-.docara-outline-rail .docara-outline-item[data-docara-active]::before{content:"";position:absolute;z-index:1;inset-block:0;left:calc(var(--sf-0) - var(--sf-space-2) - var(--sf-a2));width:var(--sf-a2);border-radius:var(--sf-radius-rounded);background:var(--sf-primary)}
+.docara-outline-rail .docara-outline-item[data-docara-active]::before{content:"";position:absolute;z-index:1;inset-block:0;left:calc(var(--sf-0) - var(--sf-space-2) - var(--sf-a2));width:var(--sf-a2);border-radius:var(--sf-radius-rounded);background:var(--sf-outline)}
 .docara-outline-link:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}

@@ -221,11 +221,11 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:transparent;', $shellCss);
         self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre}', $shellCss);
         self::assertStringContainsString(
-            '.docara-outline-rail{align-self:stretch;padding-inline-start:var(--sf-a2);border-inline-start:',
+            '.docara-outline-rail{position:relative;align-self:stretch;box-shadow:inset var(--sf-px) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}',
             $shellCss,
         );
         self::assertStringContainsString(
-            '.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-2);overflow:auto;direction:ltr}',
+            '.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:4.5rem;max-block-size:calc(100vh - 4.5rem);padding:var(--sf-space-2);padding-inline-start:calc(var(--sf-space-2) + var(--sf-a2));overflow:auto;direction:ltr}',
             $shellCss,
         );
         self::assertStringContainsString(
@@ -322,7 +322,7 @@ final class PortableSiteBuilderTest extends TestCase
             $smartSurface,
         );
         self::assertStringContainsString(
-            'left:calc(var(--sf-0) - var(--sf-space-2) - var(--sf-a2) - var(--sf-px));width:var(--sf-a2)',
+            'left:calc(var(--sf-0) - var(--sf-space-2) - var(--sf-a2));width:var(--sf-a2)',
             $smartSurface,
             'The active outline marker must overlay the physical left divider.',
         );

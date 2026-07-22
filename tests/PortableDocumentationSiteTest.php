@@ -136,14 +136,14 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'Mobile heading anchors must reserve space for the compact mobile header.',
         );
         self::assertStringContainsString(
-            '.docara-outline-rail{align-self:stretch;padding-inline-start:var(--sf-a2);border-inline-start:',
+            '.docara-outline-rail{position:relative;align-self:stretch;box-shadow:inset var(--sf-px) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}',
             $shellCss,
-            'The desktop outline divider must span the full layout row.',
+            'The desktop outline divider must span the row without clipping its active marker.',
         );
         self::assertStringContainsString(
-            '.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-2);overflow:auto;direction:ltr}',
+            '.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:4.5rem;max-block-size:calc(100vh - 4.5rem);padding:var(--sf-space-2);padding-inline-start:calc(var(--sf-space-2) + var(--sf-a2));overflow:auto;direction:ltr}',
             $shellCss,
-            'The outline scrollbar must render on the physical right edge.',
+            'The short outline must remain aligned below the header while its scrollbar stays on the physical right.',
         );
         self::assertStringContainsString(
             '.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-px);border-inline-end:',

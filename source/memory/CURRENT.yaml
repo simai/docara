@@ -1,13 +1,9 @@
 project_id: "docara-consolidation"
 updated_at: "2026-07-22"
-status: "audit_corrections_in_progress"
+status: "audit_corrections_completed"
 primary_goal: "Build Docara from separated content, composition, typed data, Smart components and Simai Framework presentation primitives using the same declarative philosophy as Larena."
 active_tracks:
   - docara-consolidation
 current_focus: "docara-consolidation"
-important_blockers:
-  - "CLI/docs init path mismatch"
-  - "Composer archive state dependence"
-  - "installed Docara skill is legacy"
-  - "docara.test is not the exact candidate"
-next_global_step: "Execute source/workflow/2026-07-22-docara-2-audit-corrections.md through integrated acceptance."
+important_blockers: []
+next_global_step: "Open a separate gated workflow for product branch publication, package release and default-branch integration when desired."

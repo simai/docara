@@ -1,0 +1,144 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.review",
+  "quality_control_id": "human_centered_simplicity",
+  "applicable": true,
+  "task": "Исправить код CLI Docara 2, упростить продукт и довести четыре блокера до результата.",
+  "workflow_binding": {
+    "workflow_ref": "repo://docara-consolidation/source/workflow/2026-07-22-docara-2-audit-corrections.md",
+    "workflow_sha256": "b71d0a7b58bb3806d2af486ce265552f85e92ec25296ed683f8890db842437eb",
+    "goal_task_sha256": "900956b5e7f3ee81fa43f313fe4e5c7ca2f1e352d969fce46d9654786dfdc136",
+    "repository_refs": ["repo://docara-consolidation"],
+    "repository_baselines": [
+      {"repo_ref": "repo://docara-consolidation", "commit_sha": "62532404dbc667340cea7bee16cda9fc59ddcd0c"}
+    ]
+  },
+  "primary_user_outcome": {
+    "id": "UO-DOCARA-AUDIT-CORRECTIONS",
+    "actor": "разработчик Docara",
+    "job": "установить и проверить один понятный Docara 2 без расхождения CLI, пакета, skill и локального сайта",
+    "success_condition": "четыре блокера закрыты исполняемыми контрактами и exact-candidate evidence"
+  },
+  "changed_surface_inventory": {
+    "mode": "git_range",
+    "baseline_ref": "62532404dbc667340cea7bee16cda9fc59ddcd0c",
+    "target_ref": "0d2a528c4bd5cff5b4986ff60e0abd668d328f47",
+    "diff_sha256": "ceaa86967c3be87323e6da6c6f7515092df6f9b80377a9386220cb711df93fdf",
+    "evidence_paths": [
+      "src/Console/InitCommand.php",
+      "composer.json",
+      "tests/PortableInitCommandTest.php",
+      "tests/Unit/ComposerPackageSurfaceTest.php",
+      "docs/site/content/ru/reference/cli.md",
+      "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"
+    ],
+    "files": [
+      {"path": ".gitattributes", "surface_ids": ["archive_export_attribute"]},
+      {"path": "README.md", "surface_ids": ["readme_init_contract"]},
+      {"path": "composer.json", "surface_ids": ["package_archive_contract"]},
+      {"path": "docs/site/content/ru/reference/cli.md", "surface_ids": ["cli_reference_contract"]},
+      {"path": "docs/site/content/ru/start.md", "surface_ids": ["start_guide_contract"]},
+      {"path": "source/memory/CURRENT.yaml", "surface_ids": ["current_memory_record"]},
+      {"path": "source/memory/TRACKS.yaml", "surface_ids": ["track_memory_record"]},
+      {"path": "source/workflow/2026-07-22-docara-2-audit-corrections.launch.yaml", "surface_ids": ["launch_record"]},
+      {"path": "source/workflow/2026-07-22-docara-2-audit-corrections.md", "surface_ids": ["workflow_record"]},
+      {"path": "source/workflow/ACTIVE.md", "surface_ids": ["active_workflow_record"]},
+      {"path": "src/Console/InitCommand.php", "surface_ids": ["target_path_contract"]},
+      {"path": "tests/PortableInitCommandTest.php", "surface_ids": ["target_path_regression"]},
+      {"path": "tests/Unit/ComposerPackageSurfaceTest.php", "surface_ids": ["archive_regression"]}
+    ]
+  },
+  "necessity_map": [
+    {"id": "archive_export_attribute", "surface_type": "protective_control", "description": "Package export excludes local dependency state", "disposition": "retain", "disclosure": "internal", "justification": {"type": "data_integrity", "ref": "tests/Unit/ComposerPackageSurfaceTest.php"}},
+    {"id": "readme_init_contract", "surface_type": "code_layer", "description": "README exposes the executable init contract", "disposition": "retain", "disclosure": "visible", "justification": {"type": "user_outcome", "ref": "UO-DOCARA-AUDIT-CORRECTIONS"}},
+    {"id": "package_archive_contract", "surface_type": "protective_control", "description": "Composer package export remains independent of local state", "disposition": "retain", "disclosure": "internal", "justification": {"type": "data_integrity", "ref": "tests/Unit/ComposerPackageSurfaceTest.php"}},
+    {"id": "cli_reference_contract", "surface_type": "code_layer", "description": "CLI reference matches actual target path semantics", "disposition": "retain", "disclosure": "visible", "justification": {"type": "user_outcome", "ref": "UO-DOCARA-AUDIT-CORRECTIONS"}},
+    {"id": "start_guide_contract", "surface_type": "code_layer", "description": "Quick start uses the same init path model", "disposition": "retain", "disclosure": "visible", "justification": {"type": "user_outcome", "ref": "UO-DOCARA-AUDIT-CORRECTIONS"}},
+    {"id": "current_memory_record", "surface_type": "code_layer", "description": "Project memory points to the active correction goal", "disposition": "retain", "disclosure": "internal", "justification": {"type": "user_outcome", "ref": "UO-DOCARA-AUDIT-CORRECTIONS"}},
+    {"id": "track_memory_record", "surface_type": "code_layer", "description": "Track state preserves continuation without chat reconstruction", "disposition": "retain", "disclosure": "internal", "justification": {"type": "user_outcome", "ref": "UO-DOCARA-AUDIT-CORRECTIONS"}},
+    {"id": "launch_record", "surface_type": "protective_control", "description": "Launch record makes execution scope observable", "disposition": "retain", "disclosure": "internal", "justification": {"type": "observability", "ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"}},
+    {"id": "workflow_record", "surface_type": "protective_control", "description": "Workflow records evidence and terminal boundaries", "disposition": "retain", "disclosure": "internal", "justification": {"type": "observability", "ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"}},
+    {"id": "active_workflow_record", "surface_type": "protective_control", "description": "Active pointer exposes the accepted result", "disposition": "retain", "disclosure": "internal", "justification": {"type": "observability", "ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"}},
+    {"id": "target_path_contract", "surface_type": "protective_control", "description": "CLI validates and resolves explicit target paths", "disposition": "retain", "disclosure": "visible", "justification": {"type": "error_handling", "ref": "tests/PortableInitCommandTest.php"}},
+    {"id": "target_path_regression", "surface_type": "protective_control", "description": "Tests protect path creation, update preservation and refusal", "disposition": "retain", "disclosure": "internal", "justification": {"type": "error_handling", "ref": "tests/PortableInitCommandTest.php"}},
+    {"id": "archive_regression", "surface_type": "protective_control", "description": "Tests protect the archive exclusion contract", "disposition": "retain", "disclosure": "internal", "justification": {"type": "data_integrity", "ref": "tests/Unit/ComposerPackageSurfaceTest.php"}}
+  ],
+  "removal_review": {
+    "challenged_ids": ["archive_export_attribute", "readme_init_contract", "package_archive_contract", "cli_reference_contract", "start_guide_contract", "current_memory_record", "track_memory_record", "launch_record", "workflow_record", "active_workflow_record", "target_path_contract", "target_path_regression", "archive_regression"],
+    "removed_ids": [],
+    "merged_ids": [],
+    "summary": "Активный контур упрощён до одного CLI-контракта, одного переносимого пакета, одного Docara 2 skill и одного статического сайта; legacy сохранён только как rollback backup."
+  },
+  "simplest_complete_alternative": "Добавить один optional path argument, исключить composer.lock из package export, установить canonical skill штатным maintenance и заменить активный сайт exact static build через atomic rename.",
+  "progressive_disclosure": {
+    "required": false,
+    "strategy": "Пользователь видит только init [path] и готовый сайт; package, skill sync и rollback evidence остаются внутренними.",
+    "discoverability_evidence": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md",
+    "not_required_reason": "The public workflow stays direct; internal evidence does not hide user actions."
+  },
+  "complexity_delta": [
+    {"measure": "documented_init_variants", "before": 1, "after": 1, "unit": "contracts", "interpretation": "Документация и CLI теперь описывают один контракт.", "justification_ref": "docs/site/content/ru/reference/cli.md"},
+    {"measure": "active_local_project_roots", "before": 1, "after": 0, "unit": "legacy runtimes", "interpretation": "Активный docara.test содержит только статический результат; legacy вынесен в rollback backup.", "justification_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"},
+    {"measure": "new_frontend_behaviors", "before": 0, "after": 0, "unit": "behaviors", "interpretation": "Новые UI-механики не добавлены.", "justification_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"}
+  ],
+  "automation_review": {"present": false, "simplified_before_automation": false, "stable_process_proven": false, "evidence_ref": ""},
+  "scenario_evidence": [
+    {"scenario": "SC-DOCARA-INIT-PATH", "actor": "разработчик", "steps": ["Создать relative и absolute target", "Повторить --update"], "expected": "20 файлов создаются и затем сохраняются", "actual": "copied=20, затем preserved=20 для обоих targets", "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md", "result": "PASS"},
+    {"scenario": "SC-DOCARA-ARCHIVE", "actor": "релизный процесс", "steps": ["Архивировать clean tree", "Установить зависимости", "Архивировать снова"], "expected": "Одинаковые contents без composer.lock", "actual": "413 одинаковых entries, ноль lock entries", "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md", "result": "PASS"},
+    {"scenario": "SC-DOCARA-LOCAL-SITE", "actor": "читатель документации", "steps": ["Открыть desktop и mobile", "Проверить меню и поиск", "Выполнить rollback rehearsal"], "expected": "Exact build работает и восстанавливается", "actual": "DOM, search, hashes, console and rollback passed", "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md", "result": "PASS"}
+  ],
+  "protected_complexity_review": [
+    {"category": "accessibility", "status": "PRESERVED", "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"},
+    {"category": "security", "status": "PRESERVED", "evidence_ref": "src/Console/InitCommand.php"},
+    {"category": "data_integrity", "status": "PRESERVED", "evidence_ref": "tests/Unit/ComposerPackageSurfaceTest.php"},
+    {"category": "permissions", "status": "NOT_APPLICABLE", "evidence_ref": "src/Console/InitCommand.php"},
+    {"category": "error_handling", "status": "PRESERVED", "evidence_ref": "tests/PortableInitCommandTest.php"},
+    {"category": "observability", "status": "PRESERVED", "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"},
+    {"category": "migrations", "status": "PRESERVED", "evidence_ref": "tests/PortableInitCommandTest.php"},
+    {"category": "rollback", "status": "PRESERVED", "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"}
+  ],
+  "tester_evidence_review": {
+    "status": "VERIFIED",
+    "verdict_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/human-centered-simplicity-tester-verdict.json",
+    "verdict_sha256": "af787c495af83913a913c76d4021183e1f558be56b88703fab225b41b2df92f0",
+    "reviewed_surface_ids": ["archive_export_attribute", "readme_init_contract", "package_archive_contract", "cli_reference_contract", "start_guide_contract", "current_memory_record", "track_memory_record", "launch_record", "workflow_record", "active_workflow_record", "target_path_contract", "target_path_regression", "archive_regression"],
+    "surface_classifications": [
+      {"surface_id": "archive_export_attribute", "classification": "protective", "protected_categories": ["data_integrity"], "evidence_ref": "tests/Unit/ComposerPackageSurfaceTest.php"},
+      {"surface_id": "readme_init_contract", "classification": "ordinary", "protected_categories": [], "evidence_ref": "docs/site/content/ru/reference/cli.md"},
+      {"surface_id": "package_archive_contract", "classification": "protective", "protected_categories": ["data_integrity"], "evidence_ref": "tests/Unit/ComposerPackageSurfaceTest.php"},
+      {"surface_id": "cli_reference_contract", "classification": "ordinary", "protected_categories": [], "evidence_ref": "docs/site/content/ru/reference/cli.md"},
+      {"surface_id": "start_guide_contract", "classification": "ordinary", "protected_categories": [], "evidence_ref": "docs/site/content/ru/reference/cli.md"},
+      {"surface_id": "current_memory_record", "classification": "ordinary", "protected_categories": [], "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"},
+      {"surface_id": "track_memory_record", "classification": "ordinary", "protected_categories": [], "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"},
+      {"surface_id": "launch_record", "classification": "protective", "protected_categories": ["observability"], "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"},
+      {"surface_id": "workflow_record", "classification": "protective", "protected_categories": ["observability"], "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"},
+      {"surface_id": "active_workflow_record", "classification": "protective", "protected_categories": ["observability"], "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"},
+      {"surface_id": "target_path_contract", "classification": "protective", "protected_categories": ["error_handling"], "evidence_ref": "tests/PortableInitCommandTest.php"},
+      {"surface_id": "target_path_regression", "classification": "protective", "protected_categories": ["error_handling"], "evidence_ref": "tests/PortableInitCommandTest.php"},
+      {"surface_id": "archive_regression", "classification": "protective", "protected_categories": ["data_integrity"], "evidence_ref": "tests/Unit/ComposerPackageSurfaceTest.php"}
+    ],
+    "evidence_paths": [
+      "src/Console/InitCommand.php",
+      "composer.json",
+      "tests/PortableInitCommandTest.php",
+      "tests/Unit/ComposerPackageSurfaceTest.php",
+      "docs/site/content/ru/reference/cli.md",
+      "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"
+    ],
+    "evidence_fingerprints": [
+      {"path": "src/Console/InitCommand.php", "sha256": "25839872ae6cac9f24c15b188fa20f88776a98cd011018de683f4d536a7d8406"},
+      {"path": "composer.json", "sha256": "a4dfa71e94e7c879cdfa316dbec6ed1d1a7c65ad9c2a27455686e150785c6239"},
+      {"path": "tests/PortableInitCommandTest.php", "sha256": "f9ee0d30eca8a50f9932fdac523ad32a30c28425a93bff9ce059bd6c8a8cbffc"},
+      {"path": "tests/Unit/ComposerPackageSurfaceTest.php", "sha256": "3934208fb50994160be6eed46c1fd911d8b5ab22146879daa104cc0557993fb2"},
+      {"path": "docs/site/content/ru/reference/cli.md", "sha256": "a8ccfdc03c74f9ae514dc3ddc0164a078f3b54be08d5260e128f4818c467ce78"},
+      {"path": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md", "sha256": "ce4c443005c787539a22f32fbddfd006814856cbfef35b76b7f25cf7c9faa27f"}
+    ],
+    "contradictions": [],
+    "verdict": "PASS"
+  },
+  "residual_complexity": [
+    {"description": "Public package release and branch integration remain intentionally separate from local candidate acceptance.", "category": "rollback", "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"}
+  ],
+  "blocking_findings": [],
+  "verdict": "PASS"
+}

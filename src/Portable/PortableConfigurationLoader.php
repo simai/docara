@@ -35,12 +35,12 @@ final class PortableConfigurationLoader
             throw new PortableConfigurationException('ROOT_NOT_FOUND', "Portable site root [$root] does not exist.");
         }
 
-        $this->root = rtrim($resolved, DIRECTORY_SEPARATOR);
+        $this->root = FilesystemPath::normalize($resolved);
     }
 
     private function pathTraversesSymlink(string $path): bool
     {
-        $absolute = str_starts_with($path, DIRECTORY_SEPARATOR)
+        $absolute = FilesystemPath::isAbsolute($path)
             ? $path
             : (string) getcwd() . DIRECTORY_SEPARATOR . $path;
         $segments = array_values(array_filter(
@@ -385,7 +385,7 @@ final class PortableConfigurationLoader
             throw new PortableConfigurationException('FILE_INVALID', "Portable input [$relative] is not a regular file.");
         }
 
-        if (! str_starts_with($resolved, $this->root . DIRECTORY_SEPARATOR)) {
+        if (! FilesystemPath::isWithin($resolved, $this->root, false)) {
             throw new PortableConfigurationException('PATH_ESCAPE_FORBIDDEN', "Portable input [$relative] escapes the site root.");
         }
 
@@ -398,7 +398,7 @@ final class PortableConfigurationLoader
             throw new PortableConfigurationException('RELATIVE_PATH_INVALID', "Portable path [$path] is invalid.");
         }
 
-        if (str_starts_with($path, '/') || preg_match('/^[A-Za-z]:/', $path) === 1) {
+        if (FilesystemPath::isAbsolute($path)) {
             throw new PortableConfigurationException('ABSOLUTE_PATH_FORBIDDEN', "Portable path [$path] must be relative.");
         }
 

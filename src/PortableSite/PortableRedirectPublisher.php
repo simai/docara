@@ -7,6 +7,7 @@ namespace Simai\Docara\PortableSite;
 use JsonException;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Portable\CanonicalJson;
+use Simai\Docara\Portable\FilesystemPath;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\SchemaRepository;
 
@@ -215,8 +216,7 @@ final readonly class PortableRedirectPublisher
         string $documentationVersion,
         array $copy,
         string $direction,
-    ): string
-    {
+    ): string {
         $target = self::escape($record['target_url']);
         $lang = self::escape($locale);
         $version = self::escape($documentationVersion);
@@ -313,7 +313,7 @@ final readonly class PortableRedirectPublisher
         $stat = @lstat($candidate);
         if ($real === false
             || ! is_file($real)
-            || ! str_starts_with($real, $root . DIRECTORY_SEPARATOR)
+            || ! FilesystemPath::isWithin($real, $root, false)
             || ! is_array($stat)
             || (($stat['mode'] ?? 0) & 0170000) !== 0100000
             || ($stat['nlink'] ?? 0) !== 1

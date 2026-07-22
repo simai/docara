@@ -8,6 +8,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use RuntimeException;
 use Simai\Docara\Portable\CanonicalJson;
+use Simai\Docara\Portable\FilesystemPath;
 
 final readonly class TemplateMirror
 {
@@ -33,7 +34,7 @@ final readonly class TemplateMirror
         if ($resolved === false || ! is_dir($resolved)) {
             throw new RuntimeException('The Docara repository root is missing or unsafe.');
         }
-        $this->repositoryRoot = $resolved;
+        $this->repositoryRoot = FilesystemPath::normalize($resolved);
         $this->assertExactSourceRevision($resolved);
         $this->packageVersion = $this->releaseVersionForRevision();
         $this->starterTree = $this->gitOutput([
@@ -435,10 +436,8 @@ final readonly class TemplateMirror
                 ? dirname($resolved)
                 : $resolved . DIRECTORY_SEPARATOR . $segment;
         }
-        $resolved = rtrim($resolved, DIRECTORY_SEPARATOR);
-        if ($resolved === $this->repositoryRoot
-            || str_starts_with($resolved, $this->repositoryRoot . DIRECTORY_SEPARATOR)
-        ) {
+        $resolved = FilesystemPath::normalize($resolved);
+        if (FilesystemPath::isWithin($resolved, $this->repositoryRoot)) {
             throw new RuntimeException('The template mirror destination must be outside the Docara source checkout.');
         }
     }

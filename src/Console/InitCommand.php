@@ -8,6 +8,7 @@ use FilesystemIterator;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\Portable\FilesystemPath;
 use Simai\Docara\Scaffold\BasicScaffoldBuilder;
 use Simai\Docara\Scaffold\InstallerCommandException;
 use Simai\Docara\Scaffold\PresetScaffoldBuilder;
@@ -1141,7 +1142,7 @@ ENV;
             if ($item->isLink()) {
                 $target = realpath($itemPath);
                 if ($target === false
-                    || ($target !== $resolvedRoot && ! str_starts_with($target, $resolvedRoot . DIRECTORY_SEPARATOR))
+                    || ! FilesystemPath::isWithin($target, $resolvedRoot)
                 ) {
                     return true;
                 }

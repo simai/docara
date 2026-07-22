@@ -98,3 +98,18 @@ Both surfaces now use `label-medium`. Fresh browser evidence:
 - query `устано`: 15 results, all 15 cards contain a highlighted match;
 - no horizontal overflow and zero browser warnings/errors;
 - focused regression: 93 tests, 984 assertions, PASS.
+
+## Follow-up: keyboard hint spacing
+
+The three keyboard hints now use the existing Simai Framework utilities
+`inline-flex items-cross-center p-x-1/2 p-y-1/4`. The former private
+`padding-inline` declaration was removed.
+
+Fresh evidence:
+
+- computed key font and line height: 12 px / 16 px;
+- computed padding: 4 px top and bottom, 12 px left and right;
+- computed total key height: 24 px for `↑↓`, `Enter` and `Esc`;
+- live query `устано`: 15 results and 19 visible highlighted occurrences;
+- focused regression: 93 tests, 987 assertions, PASS;
+- production build: 271 pages, 20,512 references, 0 broken.

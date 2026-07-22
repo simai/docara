@@ -51,3 +51,16 @@ The verified `1/3` typography build was atomically published on 2026-07-22 at
 `/Users/rim/Sites/docara.test/.docara-backups/search-type-20260722-171336/build_production.previous`
 
 Static verification remained 271 pages, 20,512 references and 0 broken.
+
+## Keyboard hint spacing follow-up
+
+The verified spacing build was atomically published on 2026-07-22 at
+`17:21:38` local time. The previous served tree is retained at:
+
+`/Users/rim/Sites/docara.test/.docara-backups/search-kbd-20260722-172138/build_production.previous`
+
+The action gate evidence is:
+
+`source/output/action-gates/action-gate-report-20260722142129.json`
+
+Static verification remained 271 pages, 20,512 references and 0 broken.

@@ -439,6 +439,7 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('data-docara-search-results', $html);
             self::assertStringContainsString('docara-search-status label-medium', $html);
             self::assertStringContainsString('docara-search-help border-top-1 border-outline-variant p-1 flex content-main-center items-cross-center gap-2 color-on-surface-variant label-medium', $html);
+            self::assertSame(3, substr_count($html, 'class="inline-flex items-cross-center p-x-1/2 p-y-1/4"'));
             self::assertStringNotContainsString('docara-search-status label-small', $html);
             self::assertStringContainsString('root-class="docara-search-trigger"', $html);
             self::assertStringContainsString('slot="icon-right"', $html);

@@ -71,3 +71,8 @@ The search idle hint and keyboard-help footer were also corrected from the
 Framework `label-small` (`1/4`, 10/12 px) to the project minimum
 `label-medium` (`1/3`, 12/16 px). The input and 15-result `устано` flow remain
 functional after the typography change.
+
+The keyboard hints now use only Framework spacing utilities:
+`p-x-1/2 p-y-1/4`. Live computed geometry is 12/16 px typography, 4 px
+vertical padding and 24 px total key height. This removes the cramped label
+without enlarging the surrounding compact footer.

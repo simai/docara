@@ -43,6 +43,24 @@
     "bin": [
         "docara"
     ],
+    "archive": {
+        "exclude": [
+            ".DS_Store",
+            ".cache",
+            "/.env",
+            "/.git",
+            "/.github",
+            ".hcs-audit",
+            "/.idea",
+            ".phpunit.cache",
+            ".playwright-cli",
+            "build_*",
+            "/output",
+            "/source",
+            "/tests",
+            "/vendor"
+        ]
+    },
     "config": {
         "sort-packages": true,
         "optimize-autoloader": true

@@ -3,6 +3,15 @@
 /.idea export-ignore
 /.gitmodules export-ignore
 /.gitignore export-ignore
+.DS_Store export-ignore
+build_* export-ignore
+/output export-ignore
+/vendor export-ignore
+.cache export-ignore
+/.env export-ignore
+.hcs-audit export-ignore
+.phpunit.cache export-ignore
+.playwright-cli export-ignore
 /source/workflow export-ignore
 /source/output export-ignore
 /source/handoff export-ignore

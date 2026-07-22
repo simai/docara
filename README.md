@@ -57,6 +57,10 @@ php vendor/bin/docara verify-static [build-directory]
 project-owned content and settings. Generated `build_*` and `.docara` files
 must not be edited manually.
 
+The optional `path` may be absolute or relative to the current directory. If it
+is omitted, `init` uses the current directory. The same target path can be
+passed together with `--update`.
+
 ## Documentation
 
 - [Quick start](docs/site/content/ru/start.md)

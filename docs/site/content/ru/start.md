@@ -27,6 +27,9 @@ php vendor/bin/docara init --update
 ```
 
 `--update` сохраняет существующие Markdown и JSON.
+Путь может быть абсолютным или относительным к текущему каталогу. Если путь не
+указан, `init` работает с текущим каталогом. Обновить тот же проект извне можно
+командой `php /path/to/docara/docara init --update /path/to/my-docara`.
 
 ## 2. Соберите production-каталог
 

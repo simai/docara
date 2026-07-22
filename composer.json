@@ -50,6 +50,7 @@
             "/.env",
             "/.git",
             "/.github",
+            "/composer.lock",
             ".hcs-audit",
             "/.idea",
             ".phpunit.cache",

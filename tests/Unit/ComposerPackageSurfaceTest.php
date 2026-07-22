@@ -26,6 +26,7 @@ final class ComposerPackageSurfaceTest extends TestCase
             '/.env',
             '/.git',
             '/.github',
+            '/composer.lock',
             '.hcs-audit',
             '.phpunit.cache',
             '.playwright-cli',
@@ -46,6 +47,7 @@ final class ComposerPackageSurfaceTest extends TestCase
 
         foreach ([
             '/.github export-ignore',
+            '/composer.lock export-ignore',
             'build_* export-ignore',
             '/output export-ignore',
             '/source/workflow export-ignore',

@@ -3,6 +3,7 @@
 /.idea export-ignore
 /.gitmodules export-ignore
 /.gitignore export-ignore
+/composer.lock export-ignore
 .DS_Store export-ignore
 build_* export-ignore
 /output export-ignore

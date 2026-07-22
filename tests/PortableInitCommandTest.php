@@ -40,6 +40,52 @@ class PortableInitCommandTest extends TestCase
     }
 
     #[Test]
+    public function portable_init_accepts_a_relative_target_directory(): void
+    {
+        [$status, $console] = $this->executeInit(['path' => 'sites/my-docara']);
+
+        $this->assertSame(Command::SUCCESS, $status, $console->getDisplay());
+        $this->assertFileExists($this->tmpPath('sites/my-docara/docara.json'));
+        $this->assertFileExists($this->tmpPath('sites/my-docara/content/ru/index.md'));
+        $this->assertFileDoesNotExist($this->tmpPath('docara.json'));
+        $this->assertStringContainsString('sites/my-docara', $console->getDisplay());
+    }
+
+    #[Test]
+    public function portable_init_accepts_an_absolute_target_directory_and_updates_it_safely(): void
+    {
+        $target = $this->tmpPath('absolute-target');
+
+        [$status, $console] = $this->executeInit(['path' => $target]);
+        $this->assertSame(Command::SUCCESS, $status, $console->getDisplay());
+
+        $site = $target . '/docara.json';
+        $contents = "user-owned\n";
+        file_put_contents($site, $contents);
+
+        [$updateStatus, $updateConsole] = $this->executeInit([
+            'path' => $target,
+            '--update' => true,
+        ]);
+
+        $this->assertSame(Command::SUCCESS, $updateStatus, $updateConsole->getDisplay());
+        $this->assertSame($contents, file_get_contents($site));
+    }
+
+    #[Test]
+    public function portable_init_rejects_a_target_path_that_is_a_file(): void
+    {
+        $target = $this->tmpPath('not-a-directory');
+        file_put_contents($target, 'occupied');
+
+        [$status, $console] = $this->executeInit(['path' => $target]);
+
+        $this->assertSame(Command::FAILURE, $status);
+        $this->assertStringContainsString('Target path is not a directory', $console->getDisplay());
+        $this->assertSame('occupied', file_get_contents($target));
+    }
+
+    #[Test]
     public function portable_fixture_uses_versioned_schema_ids_and_the_exact_framework_pair(): void
     {
         [$status] = $this->executeInit([]);

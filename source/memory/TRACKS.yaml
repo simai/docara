@@ -1,6 +1,6 @@
 tracks:
   docara-consolidation:
-    status: "accepted_candidate"
+    status: "audit_corrections_in_progress"
     owner_skill: "teamlead"
-    current_workflow: "source/workflow/2026-07-22-docara-2-portable-only-release-candidate.md"
+    current_workflow: "source/workflow/2026-07-22-docara-2-audit-corrections.md"
     last_updated: "2026-07-22"

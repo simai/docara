@@ -84,8 +84,8 @@ routing, deterministic builds, update safety and static verification.
 | Batch | Outcome | Exit gate | Status |
 | --- | --- | --- | --- |
 | B0 | Integrate Windows fix and restore a green combined baseline | exact SHA; full checks green | completed |
-| B1 | Make portable CLI/builder/starter the only product path | clean init/build/update/verify smoke | in progress |
-| B2 | Remove Jigsaw/Mix source, tests, stubs and dependencies | no legacy runtime references; full tests green | planned |
+| B1 | Make portable CLI/builder/starter the only product path | clean init/build/update/verify smoke | completed |
+| B2 | Remove Jigsaw/Mix source, tests, stubs and dependencies | no legacy runtime references; full tests green | in progress |
 | B3 | Remove transitional renderer/publisher/mirror and output bloat | parity, deterministic build, compact output | planned |
 | B4 | Simplify CI, repository surface, docs and Docara skill | source/dist docs and contract agree | planned |
 | B5 | Exact-archive independent acceptance and handoff | tester verdict and readiness matrix | planned |
@@ -147,9 +147,8 @@ and the final tester verdict.
 
 ## Current Next Step
 
-Replace the old container/bootstrap and mode-switching CLI with the portable
-application path, make `init` portable by default, and preserve the accepted
-build/update/verify behavior before deleting unreachable legacy source.
+Delete the now-unreachable Jigsaw/Mix runtime, tests and starter after the
+portable-only CLI boundary has passed its focused init and preview checks.
 
 ## Gate Evidence
 

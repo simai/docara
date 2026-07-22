@@ -4,7 +4,6 @@ namespace Tests;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
-use Simai\Docara\Console\BuildCommand;
 use Simai\Docara\Console\ServeCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
@@ -19,12 +18,9 @@ class ServeCommandTest extends TestCase
     #[Test]
     public function serve_without_build_uses_current_php_binary_and_package_router(): void
     {
-        $this->app->buildPath = [
-            ...$this->app->buildPath,
-            'destination' => $this->tmpPath('build_{env}'),
-        ];
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('build_local'));
 
-        $command = new CapturingServeCommand($this->app);
+        $command = (new CapturingServeCommand)->setBase($this->tmp);
         $command->setApplication(new Application);
 
         $console = new CommandTester($command);
@@ -53,7 +49,7 @@ class ServeCommandTest extends TestCase
     #[Test]
     public function serve_rejects_shell_control_characters_in_host(): void
     {
-        $command = new CapturingServeCommand($this->app);
+        $command = (new CapturingServeCommand)->setBase($this->tmp);
         $command->setApplication(new Application);
 
         $this->expectException(InvalidArgumentException::class);
@@ -68,7 +64,7 @@ class ServeCommandTest extends TestCase
     #[Test]
     public function serve_rejects_shell_control_characters_in_port(): void
     {
-        $command = new CapturingServeCommand($this->app);
+        $command = (new CapturingServeCommand)->setBase($this->tmp);
         $command->setApplication(new Application);
 
         $this->expectException(InvalidArgumentException::class);
@@ -85,7 +81,7 @@ class ServeCommandTest extends TestCase
     {
         $application = new Application;
         $application->addCommand(new FailingBuildCommand);
-        $command = new CapturingServeCommand($this->app);
+        $command = (new CapturingServeCommand)->setBase($this->tmp);
         $command->setApplication($application);
 
         $exitCode = (new CommandTester($command))->execute([
@@ -99,21 +95,16 @@ class ServeCommandTest extends TestCase
     }
 
     #[Test]
-    public function serve_does_not_expose_a_stale_custom_build_after_overwrite_is_declined(): void
+    public function serve_does_not_expose_a_missing_existing_build(): void
     {
-        $destination = $this->tmpPath('public-output');
-        $this->filesystem->ensureDirectoryExists($destination);
-        $this->app->config->put('build.destination', $destination);
-
-        $application = new Application;
-        $application->addCommand(new BuildCommand($this->app));
-        $command = new CapturingServeCommand($this->app);
-        $command->setApplication($application);
+        $command = (new CapturingServeCommand)->setBase($this->tmp);
+        $command->setApplication(new Application);
 
         $exitCode = (new CommandTester($command))->execute([
             'environment' => 'local',
             '--host' => '127.0.0.1',
             '--port' => '8123',
+            '--no-build' => true,
         ]);
 
         $this->assertSame(Command::FAILURE, $exitCode);
@@ -286,7 +277,7 @@ class FailingBuildCommand extends Command
 
     protected function configure(): void
     {
-        $this->setName('build')->addArgument('env', InputArgument::OPTIONAL);
+        $this->setName('build')->addArgument('environment', InputArgument::OPTIONAL);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

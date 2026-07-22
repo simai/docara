@@ -5,6 +5,8 @@ namespace Tests;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use Simai\Docara\Console\InitCommand;
+use Simai\Docara\File\Filesystem;
+use Simai\Docara\PortableSite\PortableProjectInitializer;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -14,7 +16,7 @@ class PortableInitCommandTest extends TestCase
     #[Test]
     public function portable_init_creates_only_the_json_and_markdown_site_surface(): void
     {
-        [$status, $console] = $this->executeInit(['--portable' => true]);
+        [$status, $console] = $this->executeInit([]);
 
         $this->assertSame(Command::SUCCESS, $status, $console->getDisplay());
         $this->assertFileExists($this->tmpPath('docara.json'));
@@ -34,13 +36,13 @@ class PortableInitCommandTest extends TestCase
         $this->assertFileDoesNotExist($this->tmpPath('package.json'));
         $this->assertFileDoesNotExist($this->tmpPath('vite.config.js'));
 
-        $this->assertStringContainsString('portable Docara site was initialized', $console->getDisplay());
+        $this->assertStringContainsString('Docara project was initialized', $console->getDisplay());
     }
 
     #[Test]
     public function portable_fixture_uses_versioned_schema_ids_and_the_exact_framework_pair(): void
     {
-        [$status] = $this->executeInit(['--portable' => true]);
+        [$status] = $this->executeInit([]);
         $this->assertSame(Command::SUCCESS, $status);
 
         $site = $this->json('docara.json');
@@ -114,7 +116,7 @@ class PortableInitCommandTest extends TestCase
     #[Test]
     public function portable_fixture_contains_json_component_directives_without_inventing_button_href(): void
     {
-        [$status] = $this->executeInit(['--portable' => true]);
+        [$status] = $this->executeInit([]);
         $this->assertSame(Command::SUCCESS, $status);
 
         $markdown = file_get_contents($this->tmpPath('content/ru/guides/getting-started.md'));
@@ -134,7 +136,7 @@ class PortableInitCommandTest extends TestCase
     #[Test]
     public function portable_update_preserves_all_existing_json_and_markdown_and_restores_only_missing_files(): void
     {
-        [$status] = $this->executeInit(['--portable' => true]);
+        [$status] = $this->executeInit([]);
         $this->assertSame(Command::SUCCESS, $status);
 
         $preserved = [];
@@ -157,7 +159,7 @@ class PortableInitCommandTest extends TestCase
         }
         unlink($this->tmpPath('content/ru/landing.page.json'));
 
-        [$updateStatus, $console] = $this->executeInit(['--portable' => true, '--update' => true]);
+        [$updateStatus, $console] = $this->executeInit(['--update' => true]);
 
         $this->assertSame(Command::SUCCESS, $updateStatus, $console->getDisplay());
         foreach ($preserved as $relative => $contents) {
@@ -179,7 +181,7 @@ class PortableInitCommandTest extends TestCase
             ],
         ]);
 
-        [$status, $console] = $this->executeInit(['--portable' => true, '--update' => true]);
+        [$status, $console] = $this->executeInit(['--update' => true]);
 
         $this->assertSame(Command::FAILURE, $status);
         $this->assertStringContainsString('Refusing to migrate an existing legacy site implicitly', $console->getDisplay());
@@ -206,7 +208,7 @@ class PortableInitCommandTest extends TestCase
             file_put_contents($this->tmpPath($marker), "{}\n");
         }
 
-        [$status, $console] = $this->executeInit(['--portable' => true, '--update' => true]);
+        [$status, $console] = $this->executeInit(['--update' => true]);
 
         $this->assertSame(Command::FAILURE, $status, $console->getDisplay());
         $this->assertStringContainsString('Refusing to migrate an existing legacy site implicitly', $console->getDisplay());
@@ -230,45 +232,14 @@ class PortableInitCommandTest extends TestCase
         ];
     }
 
-    #[Test]
-    public function ordinary_update_does_not_enable_the_portable_mode(): void
-    {
-        $this->createSource([
-            '.env' => "DOCS_DIR=docs\nAZURE_KEY=\nAZURE_REGION=\nAZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com\n",
-            'source' => [
-                'docs' => [
-                    'index.md' => '# Legacy',
-                ],
-            ],
-        ]);
-
-        $previousSkip = getenv('DOCARA_SKIP_FRONTEND_INSTALL');
-        $previousDocs = getenv('DOCS_DIR');
-        putenv('DOCARA_SKIP_FRONTEND_INSTALL=true');
-        putenv('DOCS_DIR=docs');
-        $_ENV['DOCARA_SKIP_FRONTEND_INSTALL'] = 'true';
-        $_ENV['DOCS_DIR'] = 'docs';
-
-        try {
-            [$status, $console] = $this->executeInit(['--update' => true]);
-        } finally {
-            $this->restoreEnv('DOCARA_SKIP_FRONTEND_INSTALL', $previousSkip);
-            $this->restoreEnv('DOCS_DIR', $previousDocs);
-        }
-
-        $this->assertSame(Command::SUCCESS, $status, $console->getDisplay());
-        $this->assertFileDoesNotExist($this->tmpPath('docara.json'));
-        $this->assertFileDoesNotExist($this->tmpPath('simai-framework.lock.json'));
-        $this->assertSame('# Legacy', file_get_contents($this->tmpPath('source/docs/index.md')));
-    }
-
     /**
      * @param  array<string, mixed>  $arguments
      * @return array{int, CommandTester}
      */
     private function executeInit(array $arguments): array
     {
-        $command = $this->app->make(InitCommand::class);
+        $files = new Filesystem;
+        $command = new InitCommand($files, new PortableProjectInitializer($files));
         $command->setApplication(new Application);
         $command->setBase($this->tmp);
         $console = new CommandTester($command);
@@ -287,18 +258,5 @@ class PortableInitCommandTest extends TestCase
             true,
             flags: JSON_THROW_ON_ERROR,
         );
-    }
-
-    private function restoreEnv(string $name, string|false $value): void
-    {
-        if ($value === false) {
-            putenv($name);
-            unset($_ENV[$name]);
-
-            return;
-        }
-
-        putenv("{$name}={$value}");
-        $_ENV[$name] = $value;
     }
 }

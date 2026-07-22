@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Simai\Docara\Console;
 
-use Illuminate\Contracts\Container\Container;
-use Illuminate\Support\Arr;
 use InvalidArgumentException;
 use RuntimeException;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -12,67 +12,60 @@ use Symfony\Component\Console\Input\InputOption;
 
 class ServeCommand extends Command
 {
-    private $app;
+    private string $base;
 
-    public function __construct(Container $app)
+    public function __construct()
     {
-        $this->app = $app;
+        $this->setBase();
         parent::__construct();
     }
 
-    protected function configure()
+    public function setBase(?string $cwd = null): self
     {
-        $this->setName('serve')
-            ->setDescription('Serve local site with php built-in server.')
-            ->addArgument(
-                'environment',
-                InputArgument::OPTIONAL,
-                'What environment should we serve?',
-                'local',
-            )
-            ->addOption(
-                'host',
-                null,
-                InputOption::VALUE_OPTIONAL,
-                'What hostname or ip address should we use?',
-                'localhost',
-            )
-            ->addOption(
-                'port',
-                'p',
-                InputOption::VALUE_REQUIRED,
-                'What port should we use?',
-                8000,
-            )
-            ->addOption(
-                'no-build',
-                null,
-                InputOption::VALUE_NONE,
-                'Skip build before serving?',
-            );
+        $this->base = $cwd ?: (getcwd() ?: '.');
+
+        return $this;
     }
 
-    protected function fire()
+    protected function configure(): void
     {
-        $env = $this->app['env'] = $this->input->getArgument('environment');
-        $host = $this->input->getOption('host');
-        $port = $this->input->getOption('port');
+        $this->setName('serve')
+            ->setDescription('Build and serve the local static site.')
+            ->addArgument('environment', InputArgument::OPTIONAL, 'Build output suffix.', 'local')
+            ->addOption('host', null, InputOption::VALUE_OPTIONAL, 'Preview host.', 'localhost')
+            ->addOption('port', 'p', InputOption::VALUE_REQUIRED, 'Preview port.', 8000)
+            ->addOption('no-build', null, InputOption::VALUE_NONE, 'Serve an existing build without rebuilding.');
+    }
+
+    protected function fire(): int
+    {
+        $environment = (string) $this->input->getArgument('environment');
+        if (preg_match('/\A[A-Za-z0-9][A-Za-z0-9_-]*\z/D', $environment) !== 1) {
+            throw new InvalidArgumentException('The build environment contains unsupported characters.');
+        }
 
         if (! $this->input->getOption('no-build')) {
-            $buildCmd = $this->getApplication()->find('build');
-            $buildArgs = new ArrayInput([
-                'env' => $env,
+            $build = $this->getApplication()?->find('build');
+            if ($build === null) {
+                throw new RuntimeException('The build command is unavailable.');
+            }
+            $status = $build->run(new ArrayInput([
+                'environment' => $environment,
                 '--quiet' => $this->input->getOption('quiet'),
                 '--verbose' => $this->input->getOption('verbose'),
-            ]);
-            $buildStatus = $buildCmd->run($buildArgs, $this->output);
-            if ($buildStatus !== static::SUCCESS) {
-                return $buildStatus;
+            ]), $this->output);
+            if ($status !== self::SUCCESS) {
+                return $status;
             }
         }
 
-        $address = $this->serverAddress($host, $port);
-        $buildPath = $this->getBuildPath($env);
+        $address = $this->serverAddress($this->input->getOption('host'), $this->input->getOption('port'));
+        $buildPath = $this->base . '/build_' . $environment;
+        if (! is_dir($buildPath)) {
+            $this->console->error("Build directory does not exist: {$buildPath}");
+
+            return self::FAILURE;
+        }
 
         $this->console->info("Server started on http://{$address}");
 
@@ -81,7 +74,7 @@ class ServeCommand extends Command
 
     protected function runPreviewServer(string $address, string $buildPath): int
     {
-        $status = static::FAILURE;
+        $status = self::FAILURE;
         passthru($this->buildPreviewServerCommand($address, $buildPath), $status);
 
         return $status;
@@ -89,36 +82,24 @@ class ServeCommand extends Command
 
     protected function buildPreviewServerCommand(string $address, string $buildPath): string
     {
-        $arguments = [
+        return implode(' ', array_map('escapeshellarg', [
             PHP_BINARY,
             '-S',
             $address,
             '-t',
             $buildPath,
             $this->previewRouterPath(),
-        ];
-
-        return implode(' ', array_map('escapeshellarg', $arguments));
+        ]));
     }
 
     private function serverAddress(mixed $host, mixed $port): string
     {
-        if (
-            ! is_string($host)
-            || preg_match(
-                '/\A(?:localhost|[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?|\[[0-9A-Fa-f:.]+\])\z/D',
-                $host,
-            ) !== 1
-        ) {
+        if (! is_string($host) || preg_match('/\A(?:localhost|[A-Za-z0-9](?:[A-Za-z0-9.-]*[A-Za-z0-9])?|\[[0-9A-Fa-f:.]+\])\z/D', $host) !== 1) {
             throw new InvalidArgumentException('The preview host contains unsupported characters.');
         }
 
         $port = is_int($port) ? (string) $port : $port;
-        if (
-            ! is_string($port)
-            || preg_match('/\A[1-9][0-9]{0,4}\z/D', $port) !== 1
-            || (int) $port > 65535
-        ) {
+        if (! is_string($port) || preg_match('/\A[1-9][0-9]{0,4}\z/D', $port) !== 1 || (int) $port > 65535) {
             throw new InvalidArgumentException('The preview port must be an integer between 1 and 65535.');
         }
 
@@ -133,26 +114,5 @@ class ServeCommand extends Command
         }
 
         return $path;
-    }
-
-    private function getBuildPath($env)
-    {
-        $environmentConfigPath = $this->getAbsolutePath("config.{$env}.php");
-        $environmentConfig = file_exists($environmentConfigPath) ? include $environmentConfigPath : [];
-
-        $customBuildPath = Arr::get(
-            $environmentConfig,
-            'build.destination',
-            Arr::get($this->app->config, 'build.destination'),
-        );
-
-        $buildPath = $customBuildPath ? $this->getAbsolutePath($customBuildPath) : $this->app->buildPath['destination'];
-
-        return str_replace('{env}', $env, $buildPath);
-    }
-
-    private function getAbsolutePath($path)
-    {
-        return $this->app->cwd . '/' . trimPath($path);
     }
 }

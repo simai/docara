@@ -1179,7 +1179,7 @@ final class PortableSiteBuilderTest extends TestCase
         $binary = dirname(__DIR__) . '/docara';
         $environment = ['TZ' => 'UTC', 'PATH' => dirname(PHP_BINARY) . ':/usr/bin:/bin:/usr/sbin:/sbin'];
 
-        $init = new Process([PHP_BINARY, $binary, 'init', '--portable', '--no-interaction'], $site, $environment);
+        $init = new Process([PHP_BINARY, $binary, 'init', '--no-interaction'], $site, $environment);
         $init->run();
         self::assertSame(0, $init->getExitCode(), $init->getErrorOutput() . $init->getOutput());
         self::assertFileExists($site . '/docara.json');

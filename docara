@@ -1,62 +1,18 @@
 #!/usr/bin/env php
 <?php
 
-use Simai\Docara\Bootstrap\HandleExceptions;
-use Simai\Docara\Console\BuildCommand;
-use Simai\Docara\Console\InitCommand;
-use Simai\Docara\Console\ServeCommand;
-use Simai\Docara\Console\TranslateCommand;
-use Simai\Docara\Console\VerifyStaticCommand;
-use Simai\Docara\Container;
-use Simai\Docara\Docara;
-use Simai\Docara\Exceptions\Handler;
+declare(strict_types=1);
 
-define('DOCARA_START', microtime(true));
+use Simai\Docara\Console\ApplicationFactory;
 
-if (file_exists(getcwd() . '/vendor/autoload.php')) {
-    require_once getcwd() . '/vendor/autoload.php';
+$projectAutoload = (getcwd() ?: '.') . '/vendor/autoload.php';
+if (is_file($projectAutoload)) {
+    require_once $projectAutoload;
 }
 
-// The repository-local autoloader is registered last so an exact Docara
-// checkout remains authoritative when it is used to migrate a project that
-// still has an older simai/docara version in its own vendor directory.
-if (file_exists(__DIR__ . '/vendor/autoload.php')) {
-    require_once __DIR__ . '/vendor/autoload.php';
+$packageAutoload = __DIR__ . '/vendor/autoload.php';
+if (is_file($packageAutoload)) {
+    require_once $packageAutoload;
 }
 
-$app = new Container;
-$argv = $_SERVER['argv'] ?? [];
-$isConfigurationIndependentCommand = in_array('init', $argv, true)
-    || in_array('verify-static', $argv, true);
-if ($isConfigurationIndependentCommand) {
-    $app->skipConfigLoading();
-}
-
-$app->singleton(
-    Illuminate\Contracts\Debug\ExceptionHandler::class,
-    Handler::class,
-);
-
-$app->bootstrapWith([
-    HandleExceptions::class,
-]);
-
-$application = new Symfony\Component\Console\Application('Docara', '1.0');
-$addCommand = static function ($command) use ($application): void {
-    if (method_exists($application, 'addCommand')) {
-        $application->addCommand($command);
-
-        return;
-    }
-    $application->add($command);
-};
-$addCommand($app[InitCommand::class]);
-$addCommand(new BuildCommand($app));
-$addCommand(new TranslateCommand);
-$addCommand(new ServeCommand($app));
-$addCommand(new VerifyStaticCommand($app));
-$application->setCatchExceptions(false);
-
-Docara::addUserCommands($application, $app);
-
-$application->run();
+exit(ApplicationFactory::create()->run());

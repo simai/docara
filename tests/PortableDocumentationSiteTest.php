@@ -56,7 +56,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertIsString($site);
         $build = $site . '/build_test';
 
-        self::assertCount(65, $this->filesWithExtension($source . '/content', 'md'));
+        self::assertCount(59, $this->filesWithExtension($source . '/content', 'md'));
 
         $pages = (new PortableSiteBuilder(
             $filesystem,
@@ -79,16 +79,16 @@ final class PortableDocumentationSiteTest extends PHPUnit
             static fn (array $entry): bool => $entry['lifecycle'] !== 'supported',
         ));
 
-        self::assertCount(92, $pages);
-        self::assertCount(202, $htmlPages);
-        self::assertCount(78, $search['documents']);
+        self::assertCount(86, $pages);
+        self::assertCount(190, $htmlPages);
+        self::assertCount(72, $search['documents']);
         self::assertCount(17, $catalog['entries']);
         self::assertCount(12, $supported);
         self::assertCount(5, $unavailable);
         self::assertCount(12, $receipt['pages']);
         self::assertCount(13, $exampleReceipt['pages']);
         self::assertCount(18, $redirectReceipt['redirects']);
-        self::assertCount(92, $localeRouteReceipt['redirects']);
+        self::assertCount(86, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(
             $localeRouteReceipt['redirects'],
             static fn (array $redirect): bool => $redirect['kind'] === 'root',
@@ -194,7 +194,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             JSON_THROW_ON_ERROR,
         );
         self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
-        self::assertSame(202, $report['html_pages'] ?? null);
+        self::assertSame(190, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
     }

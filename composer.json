@@ -13,20 +13,7 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Adam Wathan",
-            "email": "adam.wathan@gmail.com"
-        },
-        {
-            "name": "Keith Damiani",
-            "email": "keith@tighten.com"
-        },
-        {
-            "name": "Jacob Baker-Kretzmar",
-            "email": "jacob@tighten.com"
-        },
-        {
-            "name": "Alexander Kuzin",
-            "email": "iburundugi@gmail.com"
+            "name": "SIMAI"
         }
     ],
     "require": {

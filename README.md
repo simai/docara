@@ -1,120 +1,87 @@
 # Docara
 
-Docara собирает статическую документацию, справочники и небольшие
-содержательные сайты. В переносимом режиме Markdown хранит содержание, строгие
-JSON-файлы задают настройки, а Simai Framework отвечает за интерфейс.
+Docara builds static documentation, reference sites and small landing pages
+from Markdown and validated JSON. Simai Framework supplies the interface;
+authors do not need Node.js or a frontend toolchain.
 
-В репозитории остаются два изолированных режима:
+## Quick start
 
-- переносимый JSON + Markdown для новых сайтов;
-- legacy Blade/Jigsaw для существующих проектов.
-
-Обычному автору переносимого сайта нужны только PHP и Composer. Node.js и Vite
-используют только разработчики исходных ассетов темы.
-
-## Первая переносимая сборка
-
-Portable Docara пока не выпущена как стабильный Composer package. Обычная
-команда `composer require simai/docara` устанавливает legacy-линию `1.x`, в
-которой параметра `--portable` нет. До отдельного публичного release проверяйте
-текущий исходный candidate из локального checkout и сначала фиксируйте его
-точный SHA:
+Until Docara 2 is published, run these commands from an exact source checkout:
 
 ```bash
 git rev-parse HEAD
 composer install
-php docara init --portable /path/to/disposable-site
-cd /path/to/disposable-site
+php docara init /path/to/my-docara
+cd /path/to/my-docara
 php /path/to/docara/docara build production
 php /path/to/docara/docara verify-static build_production
 php /path/to/docara/docara serve production --host=127.0.0.1 --port=8000 --no-build
 ```
 
-Не подставляйте в инструкцию старый SHA из документации: проверяемая ревизия —
-это результат первой команды из того же checkout. Эти команды не объявляют
-стабильный или production-ready release. После выпуска Docara отдельная
-release-инструкция заменит локальную проверку точной версией пакета.
+Open `http://127.0.0.1:8000`. Do not use `file://`: routes, search and assets
+must be checked through HTTP.
 
-После строки `Server started on http://127.0.0.1:8000` откройте этот адрес в
-браузере. Вы должны увидеть стартовую страницу Docara. Сервер работает в
-текущем терминале; остановите его сочетанием `Ctrl+C`.
-
-Не открывайте HTML через `file://`: так нельзя корректно проверить маршруты,
-поиск и ассеты с настроенным `base_url`.
-
-Starter создаёт:
+The starter contains one product model:
 
 ```text
-docara.json
-redirects.json
-simai-framework.lock.json
-assets/
-content/
+docara.json                 site, locales, preset and Framework lock reference
+redirects.json              explicit redirects
+simai-framework.lock.json   immutable Framework revisions
+assets/                     project-owned public assets
+content/<locale>/           Markdown and inherited JSON settings
 ```
 
-Одна сборка публикует все локали, объявленные в `docara.json`: у каждой своё
-дерево Markdown, URL-префикс, направление письма и явная цепочка fallback.
-Версию документации собирайте как отдельный site variant и output под
-собственным `base_url`; разные версии не смешиваются скрыто.
-
-Порядок разрешения настроек детерминирован:
+Settings resolve deterministically:
 
 ```text
-встроенные значения
+built-in defaults
 → docara.json
-→ section.json от корня к странице
+→ section.json from the locale root to the page
 → <page>.page.json
-→ Markdown как содержание
+→ Markdown content
 ```
 
-Подробный путь:
+One build publishes every locale declared in `docara.json`. A documentation
+version is a separate site variant and output with its own `base_url`.
 
-- [быстрый старт](docs/site/content/ru/start.md);
-- [конфигурация и наследование](docs/site/content/ru/authoring/configuration.md);
-- [сборка и проверка](docs/site/content/ru/build.md);
-- [публикация](docs/site/content/ru/build/publish.md);
-- [контракт переносимого формата](docs/portable-format.md).
-
-## Источник сведений о компонентах
-
-Каждая сборка создаёт `_docara/component-catalog.json` и страницы
-`/components/catalog/`. Каталог выводится из точного Framework lock,
-проверенных описаний и исполняемых примеров. Он является источником фактической
-доступности компонентов для конкретной сборки; README не дублирует их параметры
-и ограничения.
-
-Сгенерированные `build_*` и `.docara` нельзя редактировать вручную. Меняйте
-Markdown или JSON и повторяйте сборку.
-
-## Legacy Blade/Jigsaw
-
-Обычный `docara init`, `.settings.php`, `config.php`, `source/_core` и
-frontend-команды старого проекта относятся только к legacy-режиму. Команда
-`init --portable` не преобразует legacy-проект автоматически.
-
-Начать явную миграцию:
-
-- [переход со старого Docara](docs/site/content/ru/migration/legacy.md);
-- [переход с docara-template](docs/site/content/ru/migration/template.md);
-- [переход с Laravel Mix на Vite](docs/site/content/ru/migration/mix-to-vite.md).
-
-## Проверки репозитория
+## Commands
 
 ```bash
-php vendor/bin/phpunit
+php vendor/bin/docara init [--update] [path]
+php vendor/bin/docara build [environment]
+php vendor/bin/docara serve [environment] [--no-build]
+php vendor/bin/docara verify-static [build-directory]
+```
+
+`init --update` updates engine-owned starter files and preserves documented
+project-owned content and settings. Generated `build_*` and `.docara` files
+must not be edited manually.
+
+## Documentation
+
+- [Quick start](docs/site/content/ru/start.md)
+- [Project files and configuration](docs/site/content/ru/authoring/project-files.md)
+- [Layouts, regions and navigation](docs/site/content/ru/authoring/layout-and-navigation.md)
+- [Components](docs/site/content/ru/components.md)
+- [Build and verification](docs/site/content/ru/build.md)
+- [Portable format contract](docs/portable-format.md)
+
+Every build contains a generated component catalogue at
+`/components/catalog/`. It is derived from the exact Framework lock and is the
+source of truth for components available in that build.
+
+## Repository checks
+
+```bash
 php vendor/bin/pint --test
+php vendor/bin/phpunit
 cd docs/site
 php ../../docara build production
 php ../../docara verify-static build_production
 ```
 
-## Границы
-
-Документация описывает проверяемый переносимый контур. Она не заявляет
-готовность к production, готовность всех компонентов Simai Framework,
-полностью автономную offline-сборку или готовность публичного релиза. Release,
-публикация пакета и распространение upstream-ассетов требуют отдельных
-проверок и решений владельцев.
+This branch is a Docara 2 candidate. It does not itself claim a public release
+or production readiness.
 
 ## License
 

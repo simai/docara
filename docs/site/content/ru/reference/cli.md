@@ -1,18 +1,17 @@
 # CLI
 
-Все portable-команды запускаются из корня сайта, где находятся `docara.json`
-и `simai-framework.lock.json`.
+Команды запускаются из каталога сайта с `docara.json` и
+`simai-framework.lock.json`.
 
 ## `init`
 
 ```bash
-php vendor/bin/docara init --portable
-php vendor/bin/docara init --portable --update
+php vendor/bin/docara init [path]
+php vendor/bin/docara init --update [path]
 ```
 
-Первая команда создаёт starter в пустом каталоге. `--update` добавляет только
-отсутствующие starter-файлы и сохраняет существующие Markdown/JSON. Legacy
-markers останавливают implicit migration.
+Первая команда создаёт проект в пустом каталоге. `--update` обновляет
+engine-owned файлы starter и сохраняет документированные project-owned файлы.
 
 ## `build`
 
@@ -20,34 +19,18 @@ markers останавливают implicit migration.
 php vendor/bin/docara build [environment]
 ```
 
-Environment по умолчанию — `local`; output называется
-`build_<environment>`. Для публикационного результата используйте:
-
-```bash
-php vendor/bin/docara build production
-```
-
-Portable builder создаёт pretty routes детерминированно. Общие CLI options не
-расширяют portable content contract.
+Environment по умолчанию — `local`, каталог результата —
+`build_<environment>`. Для публикационного результата используйте
+`build production`.
 
 ## `verify-static`
 
-Явный output:
-
-```bash
-php vendor/bin/docara verify-static build_production
+```text
+php vendor/bin/docara verify-static [build-directory]
 ```
 
-Default output:
-
-```bash
-php vendor/bin/docara verify-static
-```
-
-Без аргумента проверяется `build_production`. Verifier читает готовый
-статический каталог и не выполняет project PHP configuration.
-
-[Полный состав проверки](/build/verify/).
+Без аргумента проверяется `build_production`. Проверка не выполняет проектный
+PHP-код: она читает статический каталог, receipts и manifest.
 
 ## `serve`
 
@@ -55,33 +38,17 @@ php vendor/bin/docara verify-static
 php vendor/bin/docara serve [environment] --host=127.0.0.1 --port=8000 [--no-build]
 ```
 
-Без `--no-build` команда сначала собирает environment. С `--no-build` она
-показывает существующий `build_<environment>` — используйте этот режим после
-успешного `verify-static`, чтобы видеть те же bytes.
+Без `--no-build` сайт сначала собирается. После проверки используйте
+`--no-build`, чтобы открыть по HTTP те же байты. Сервер работает до `Ctrl+C`.
 
-После строки `Server started on http://127.0.0.1:8000` откройте адрес по HTTP.
-Команда блокирует терминал до `Ctrl+C`. `file://` не является проверкой
-portable routes.
-
-## Полный первый путь
-
-До публичного release portable-команды проверяются из одного local source
-candidate.
-Обычный стабильный пакет `1.x` не поддерживает `--portable`.
+## Первый проверяемый запуск
 
 ```bash
-cd /path/to/docara
 git rev-parse HEAD
 composer install
-php docara init --portable /path/to/disposable-site
-cd /path/to/disposable-site
+php docara init /path/to/site
+cd /path/to/site
 php /path/to/docara/docara build production
 php /path/to/docara/docara verify-static build_production
 php /path/to/docara/docara serve production --host=127.0.0.1 --port=8000 --no-build
 ```
-
-## Legacy-команды
-
-Обычный `init`, `translate`, `source/_core` и frontend-команды старого шаблона
-относятся к legacy-контуру. Не добавляйте их в portable quick start и не
-считайте обычный `init` миграцией.

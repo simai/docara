@@ -87,8 +87,8 @@ routing, deterministic builds, update safety and static verification.
 | B1 | Make portable CLI/builder/starter the only product path | clean init/build/update/verify smoke | completed |
 | B2 | Remove Jigsaw/Mix source, tests, stubs and dependencies | no legacy runtime references; full tests green | completed |
 | B3 | Remove transitional renderer/publisher/mirror and output bloat | parity, deterministic build, compact output | completed |
-| B4 | Simplify CI, repository surface, docs and Docara skill | source/dist docs and contract agree | in progress |
-| B5 | Exact-archive independent acceptance and handoff | tester verdict and readiness matrix | planned |
+| B4 | Simplify CI, repository surface, docs and Docara skill | source/dist docs and contract agree | completed |
+| B5 | Exact-archive independent acceptance and handoff | tester verdict and readiness matrix | in progress |
 
 ## Scope
 
@@ -147,8 +147,8 @@ and the final tester verdict.
 
 ## Current Next Step
 
-Align the public documentation, CI and canonical Docara skill with the single
-portable product model, then test source and dist archives in isolation.
+Commit the aligned candidate, then test source and Composer-dist archives in
+isolation and record the release-readiness verdict.
 
 ## Gate Evidence
 

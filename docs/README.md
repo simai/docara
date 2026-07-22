@@ -15,10 +15,8 @@
 | Мигрирующий проект | `content/ru/migration.md` | Явный переход без скрытого преобразования |
 | Разработчик Docara | `content/development.md` | Зарегистрированные Layout, Section, Block, View Tree и Smart |
 
-Архитектура нового разделённого конвейера описана в
+Архитектура единого декларативного конвейера описана в
 [`declarative-rendering-pipeline.md`](declarative-rendering-pipeline.md).
-Пути всех входов, стадий, preview-результатов и способов проверки собраны в
-[`declarative-preview.md`](declarative-preview.md).
 Текущий список ещё не выпущенных изменений находится в
 [`changes.md`](changes.md).
 
@@ -52,7 +50,7 @@
 - изменился CLI, schema, default или правило наследования;
 - изменился starter;
 - добавлен или удалён пользовательский маршрут;
-- изменился процесс build, verify, preview или publish;
+- изменился процесс build, verify или publish;
 - изменился способ допуска native, typed или Smart-компонента;
 - изменился migration или security boundary.
 - изменился accepted portable candidate или update/rollback contract;

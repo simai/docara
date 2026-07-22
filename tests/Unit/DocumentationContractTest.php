@@ -52,9 +52,7 @@ final class DocumentationContractTest extends TestCase
                 'build/publish.md',
             ],
             'migrating_owner' => [
-                'migration/legacy.md',
-                'migration/template.md',
-                'migration/mix-to-vite.md',
+                'migration.md',
                 'troubleshooting.md',
             ],
             'maintainer' => [
@@ -79,7 +77,7 @@ final class DocumentationContractTest extends TestCase
         }
 
         $documents = $this->markdownDocuments();
-        self::assertCount(65, $documents, 'The authored documentation inventory must stay exact.');
+        self::assertCount(59, $documents, 'The authored documentation inventory must stay exact.');
 
         foreach ($documents as $path) {
             $markdown = (string) file_get_contents($path);
@@ -157,14 +155,6 @@ final class DocumentationContractTest extends TestCase
                 $this->relativeToRepository($path) . ' pairs the legacy stable package with portable init.',
             );
         }
-
-        $troubleshooting = (string) file_get_contents($this->contentRoot() . '/troubleshooting.md');
-        self::assertStringContainsString('Параметр `--portable` не существует', $troubleshooting);
-        self::assertStringContainsString('git rev-parse HEAD', $troubleshooting);
-        self::assertMatchesRegularExpression(
-            '/не заменяйте.{0,120}обычным `docara init`/uis',
-            preg_replace('/\s+/u', ' ', $troubleshooting) ?? $troubleshooting,
-        );
 
         foreach ([$this->repositoryRoot() . '/README.md', ...$this->markdownDocuments()] as $path) {
             self::assertStringNotContainsString(
@@ -290,7 +280,7 @@ final class DocumentationContractTest extends TestCase
         self::assertStringContainsString('соберётся без `install.page.json`', $projectFiles);
 
         $update = (string) file_get_contents($this->contentRoot() . '/build/update.md');
-        self::assertStringContainsString('init --portable --update', $update);
+        self::assertStringContainsString('init --update', $update);
         self::assertStringContainsString('composer.lock', $update);
         self::assertStringContainsString('Rollback', $update);
         self::assertStringContainsString('git rev-parse HEAD', $update);

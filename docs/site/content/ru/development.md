@@ -3,11 +3,6 @@
 Этот раздел предназначен для maintainers движка. Пользователю переносимого
 сайта не нужно устанавливать Node.js или изменять тему.
 
-:::ui.alert
-{"type":"warning","variant":"outlined","title":"Разделяйте два контура","supporting-text":"Vite развивает ассеты темы, а переносимая пользовательская сборка остаётся PHP-only.","closable":false,"aria-label":"Разделяйте контур разработки и пользовательскую сборку"}
-
-:::
-
 ## Руководства
 
 - [Начало работы с repository](/development/getting-started/)
@@ -15,9 +10,7 @@
 - [Расширение Layout, Section, Block, View Tree и Smart](/development/composition-extensions/)
 - [Архитектура Smart-компонентов Docara](/development/smart-components/)
 - [Развитие возможностей](/development/extensions/)
-- [Vite и ассеты](/development/vite-assets/)
 - [Framework-компоненты](/development/framework-components/)
-- [Starter и template-зеркало](/development/starter-mirror/)
 - [Тестирование](/development/testing/)
 
 Начинайте с самого простого уровня расширения: native Markdown, затем

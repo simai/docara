@@ -1,20 +1,17 @@
 # Быстрый старт
 
 Этот путь начинается в пустом каталоге и заканчивается страницей, открытой по
-HTTP. Portable init не создаёт `.env`, не копирует `source/_core` и не
-устанавливает Node-зависимости.
+HTTP. Для пользовательской сборки достаточно PHP и Composer.
 
 ## 1. Создайте проект
 
-Portable Docara пока доступна как исходный candidate. Стабильная
-Composer-линия `simai/docara` версии `1.x` относится к legacy Blade/Jigsaw и
-не содержит `--portable`.
+До публичного выпуска Docara 2 используйте точный исходный candidate.
 
 ```bash
 cd /path/to/docara
 git rev-parse HEAD
 composer install
-php docara init --portable /path/to/my-docara
+php docara init /path/to/my-docara
 ```
 
 Первая команда фиксирует точный commit локального candidate. Не используйте
@@ -22,11 +19,11 @@ php docara init --portable /path/to/my-docara
 После init выполняйте остальные команды из каталога созданного сайта, указывая
 путь к `docara` из того же checkout.
 
-Init создаёт starter и не преобразует legacy-проект. Для добавления только
-отсутствующих starter-файлов позднее используйте:
+Init создаёт starter в пустом каталоге. Для безопасного обновления
+engine-owned starter-файлов позднее используйте:
 
 ```bash
-php vendor/bin/docara init --portable --update
+php vendor/bin/docara init --update
 ```
 
 `--update` сохраняет существующие Markdown и JSON.

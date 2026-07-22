@@ -4,9 +4,7 @@
 наследования, Markdown renderer, Framework adapter, starter и статической
 сборкой.
 
-Portable режим определяется наличием `docara.json` со schema
-`docara.site.v1`. Он изолирован от legacy RuleLoader и `.settings.php` pipeline,
-поэтому существующий Blade/Jigsaw-проект продолжает использовать старый путь.
+Проект определяется наличием `docara.json` со schema `docara.site.v1`.
 
 Поток portable-сборки:
 
@@ -61,5 +59,4 @@ lifecycle. Переводимые названия, описания и подп
 поведение уровня документа. Builder не содержит HTML, CSS или client runtime.
 
 Пользовательская сборка остаётся PHP-only. Browser JavaScript в готовом
-статическом сайте не означает, что автору нужен Node.js; Vite используется
-только maintainer-контуром исходных ассетов темы.
+статическом сайте не означает, что автору нужен Node.js.

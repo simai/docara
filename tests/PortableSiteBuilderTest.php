@@ -238,7 +238,7 @@ final class PortableSiteBuilderTest extends TestCase
             $landing,
         );
         self::assertStringContainsString(
-            '<code class="language-shell">php vendor/bin/docara init --portable' . "\n"
+            '<code class="language-shell">php vendor/bin/docara init' . "\n"
                 . 'php vendor/bin/docara build local',
             $landing,
         );

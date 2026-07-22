@@ -1,7 +1,7 @@
 # Обновление Docara без потери сайта
 
 Обновление состоит из трёх независимых действий: Composer меняет package,
-portable init возвращает только отсутствующие starter-файлы, новая сборка
+`docara init --update` обновляет engine-owned starter-файлы, новая сборка
 создаёт проверяемый static output. Пользовательские Markdown и JSON не должны
 перезаписываться автоматически.
 
@@ -21,7 +21,7 @@ php vendor/bin/docara verify-static build_production
 
 ## 2. Обновите source candidate
 
-До публичного portable release используйте тот же локальный checkout, что и в
+До публичного выпуска Docara 2 используйте тот же локальный checkout, что и в
 быстром старте:
 
 ```bash
@@ -36,7 +36,7 @@ composer install
 ## 3. Добавьте только отсутствующие starter-файлы
 
 ```bash
-php vendor/bin/docara init --portable --update
+php vendor/bin/docara init --update
 ```
 
 Команда сохраняет каждый существующий файл. Она не обновляет старый

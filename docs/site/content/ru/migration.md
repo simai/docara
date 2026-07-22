@@ -1,58 +1,24 @@
-# Миграция
+# Миграция существующего сайта
 
-`docara init --portable` создаёт новый переносимый проект и намеренно не
-переписывает существующий legacy-проект. Миграция — отдельная проверяемая
-операция: сохраните исходники, перенесите поддерживаемые данные, соберите оба
-варианта и сравните публичный результат.
+Docara 2 не изменяет проекты прежних поколений автоматически. Создайте новый
+каталог, перенесите поддерживаемый контент и переключайте публикацию только
+после сравнения результатов.
+
+## Безопасный порядок
+
+1. Зафиксируйте исходную ревизию, рабочую сборку и список публичных URL.
+2. Создайте новый проект командой `docara init` в пустом каталоге.
+3. Перенесите Markdown и проектные ассеты; настройки выразите через
+   `docara.json`, `section.json` и `<page>.page.json`.
+4. Запишите старые публичные URL в `redirects.json`.
+5. Выполните `build production` и `verify-static build_production`.
+6. Сравните содержание, маршруты, поиск, темы и адаптивность по HTTP.
+7. Подготовьте резервную копию опубликованного каталога и проверенный rollback.
+
+Старый код, шаблоны и frontend-сборку переносить не нужно: интерфейс нового
+сайта формируется зарегистрированными компонентами и Simai Framework.
 
 :::ui.alert
-{"type":"info","variant":"default","title":"Без скрытой конвертации","supporting-text":"Существующие config.php, .settings.php и source/_core остаются нетронутыми, пока владелец явно не запускает миграцию.","closable":false,"aria-label":"Переносимый режим не меняет legacy проект автоматически"}
+{"type":"info","variant":"default","title":"Миграция всегда явная","supporting-text":"Команда init создаёт новый проект и не является конвертером существующего каталога.","closable":false,"aria-label":"Миграция выполняется в новом каталоге"}
 
 :::
-
-## Маршруты перехода
-
-- [С legacy-сайта](/migration/legacy/)
-- [С docara-template](/migration/template/)
-- [С Mix на Vite](/migration/mix-to-vite/)
-- [Диагностика частых проблем](/migration/troubleshooting/)
-
-## Общий безопасный порядок
-
-1. Зафиксируйте исходную revision, рабочую сборку и список публичных URL.
-2. Создайте отдельный portable-каталог; не запускайте update поверх legacy.
-3. Перенесите Markdown, ассеты и только поддерживаемые настройки.
-4. Соберите старый и новый сайты, затем сравните содержание, ссылки и
-   адаптивное поведение.
-5. Подготовьте резервную копию опубликованного каталога и проверенный rollback.
-6. Переключайте document root только после `verify-static` и browser-приёмки.
-
-Portable output собирается PHP-командой и не требует Node.js. Vite нужен только
-разработчику, который меняет исходные ассеты темы.
-
-## Выведенные ручные маршруты компонентов
-
-Компоненты теперь документируются одним сгенерированным каталогом. Старые URL
-сохраняются декларативно в `redirects.json`, а не дублирующими Markdown-
-страницами:
-
-| Старый маршрут | Текущий источник |
-| --- | --- |
-| `/components/alert/` | [`ui.alert`](/components/catalog/ui.alert/) |
-| `/components/button/` | [`ui.button`](/components/catalog/ui.button/) |
-| `/components/card/` | [`docara.card`](/components/catalog/docara.card/) |
-| `/components/code/` | [`native.code`](/components/catalog/native.code/) |
-| `/components/cta/` | [`docara.cta`](/components/catalog/docara.cta/) |
-| `/components/features/` | [`docara.features`](/components/catalog/docara.features/) |
-| `/components/steps/` | [`docara.steps`](/components/catalog/docara.steps/) |
-| `/components/table/` | [`native.table`](/components/catalog/native.table/) |
-| `/components/tabs/` | [запись `ui.tabs` в каталоге](/components/catalog/) |
-
-Starter уже содержит эти девять redirects. Builder проверяет targets и
-collisions, создаёт статические fallback-страницы, а `verify-static` сверяет их
-с `.docara/redirects.json`. Не возвращайте дублирующие страницы в Markdown и
-не добавляйте второй hosting-only список без отдельной причины.
-
-Пакет `docara-mix` не нужен новым проектам. Архивировать его можно только после
-миграции всех активных потребителей, clean build/watch проверки и
-подтверждённого zero-reference scan.

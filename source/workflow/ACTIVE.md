@@ -1,28 +1,27 @@
-# Active workflow: Docara neutral outline marker
+# Active workflow: Docara Smart search trigger
 
 Date: 2026-07-22
 Status: review ready
-Workflow ID: `2026-07-22-docara-neutral-outline-marker`
-Process model: `full_qa`
+Workflow ID: `2026-07-22-docara-smart-search-trigger`
+Process model: `general_delivery`
 Current state: `review_ready`
-Target state: `accepted`
+Target state: `review_ready`
 
 ## Current goal
 
-Keep the active contents marker visible while replacing the primary action
-color with a quieter neutral Framework state token.
+Replace the manually assembled header search control with the admitted
+Framework `sf-button` Smart component without regressing search behavior,
+keyboard access or responsive rendering.
 
 ## Result
 
-The divider stays on `--sf-outline-variant`; the active marker now uses neutral
-`--sf-outline`. Browser evidence confirms the marker in both themes, unchanged
-`2 x 36 px` geometry, `0 px` divider displacement, bold active text and no
-horizontal overflow. Focused and full tests, exact build, static verification
-and local publication pass with rollback.
+The header now invokes the admitted `sf-button` Smart component with size `1`,
+outline/on-surface semantics, the Framework search icon and the keyboard hint
+through the right slot. Focused/full tests, exact build, static verification,
+rollback-safe local publication and desktop/mobile browser acceptance pass.
 
 ## Completion guard
 
 Acceptance evidence is stored under
-`source/workflow/evidence/2026-07-22-docara-neutral-outline-marker/`.
-Public push, merge, tag, package release and production readiness remain
-excluded.
+`source/workflow/evidence/2026-07-22-docara-smart-search-trigger/`. Public push,
+merge, tag, package release and production readiness remain excluded.

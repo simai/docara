@@ -87,4 +87,4 @@ sf-alert,sf-button{display:block}
 .docara-search-result:hover,.docara-search-result:focus-visible{background:var(--sf-primary-container);color:var(--sf-on-primary-container);outline:3px solid var(--sf-primary);outline-offset:1px}
 .docara-search-result-context,.docara-search-result-summary{font-size:var(--sf-text-small--size);line-height:var(--sf-text-small--height)}
 .docara-search-status[data-state="error"]{color:var(--sf-error)}
-@media(max-width:800px){.docara-search-trigger-label,.docara-search-shortcut{display:none}.docara-search-dialog{inline-size:calc(100% - 1rem);max-block-size:calc(100vh - 1rem)}}
+@media(max-width:800px){.docara-search-trigger>.sf-button-text-container,.docara-search-shortcut{display:none}.docara-search-dialog{inline-size:calc(100% - 1rem);max-block-size:calc(100vh - 1rem)}}

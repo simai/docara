@@ -60,6 +60,25 @@ final class FrameworkNativeSurfaceTest extends TestCase
     }
 
     #[Test]
+    public function search_trigger_uses_the_framework_smart_button_contract(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $template = file_get_contents(
+            $root . '/resources/publisher/components/header-actions.php',
+        );
+
+        self::assertIsString($template);
+        self::assertStringContainsString('<sf-button', $template);
+        self::assertStringContainsString('size="1"', $template);
+        self::assertStringContainsString('type="outline"', $template);
+        self::assertStringContainsString('scheme="on-surface"', $template);
+        self::assertStringContainsString('icon-left="search"', $template);
+        self::assertStringContainsString('slot="icon-right"', $template);
+        self::assertStringNotContainsString('<button type="button" data-docara-search-trigger', $template);
+        self::assertStringNotContainsString('items-center gap-1 radius-default', $template);
+    }
+
+    #[Test]
     public function navigation_disclosure_uses_framework_icon_button_geometry(): void
     {
         $root = dirname(__DIR__, 2);

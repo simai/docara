@@ -3,7 +3,19 @@
     <button type="button" data-docara-sheet-trigger aria-haspopup="dialog" aria-controls="docara-mobile-navigation" aria-expanded="false" class="docara-mobile-navigation-trigger sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-2 radius-default" aria-label="<?= $view->copy['navigation.open'] ?>"><sf-icon icon="menu" aria-hidden="true"></sf-icon></button>
 <?php } ?>
 <?php if ($view->searchEnabled) { ?>
-    <button type="button" data-docara-search-trigger aria-haspopup="dialog" aria-controls="docara-search-dialog" aria-expanded="false" aria-label="<?= $view->copy['search.open'] ?>" class="docara-search-trigger sf-button sf-button--on-surface sf-button--outline sf-button--size-1 flex items-center gap-1 radius-default"><sf-icon icon="search" aria-hidden="true"></sf-icon><span class="docara-search-trigger-label sf-button-text-container"><?= $view->copy['search.label'] ?></span><kbd class="docara-search-shortcut label-small color-on-surface-variant border border-outline-variant radius-1 p-x-1/2" data-docara-search-shortcut>⌘K</kbd></button>
+    <sf-button
+        data-docara-search-trigger
+        aria-haspopup="dialog"
+        aria-controls="docara-search-dialog"
+        aria-expanded="false"
+        aria-label="<?= $view->copy['search.open'] ?>"
+        root-class="docara-search-trigger"
+        size="1"
+        type="outline"
+        scheme="on-surface"
+        text="<?= $view->copy['search.label'] ?>"
+        icon-left="search"
+    ><kbd slot="icon-right" class="docara-search-shortcut label-small color-on-surface-variant border border-outline-variant radius-1 p-x-1/2" data-docara-search-shortcut>⌘K</kbd></sf-button>
 <?php } ?>
 <?php if (count($view->languageOptions) > 1) { ?>
     <label class="sf-select sf-select--size-1"><span class="sr-only"><?= $view->copy['language.label'] ?></span><select data-docara-language-switcher aria-label="<?= $view->copy['language.label'] ?>">

@@ -414,13 +414,13 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('<link rel="icon" href="/_docara/brand/', $html);
         }
         foreach ([$index, $guide, $fourthLevel] as $html) {
-            self::assertStringContainsString('data-docara-search-trigger', $html);
+            self::assertStringContainsString('<sf-button', $html);
             self::assertMatchesRegularExpression(
-                '~data-docara-search-trigger[^>]*class="[^"]*sf-button--size-1[^"]*"~',
+                '~<sf-button\s+[^>]*data-docara-search-trigger[^>]*size="1"[^>]*type="outline"[^>]*scheme="on-surface"[^>]*icon-left="search"[^>]*>~s',
                 $html,
             );
             self::assertDoesNotMatchRegularExpression(
-                '~data-docara-search-trigger[^>]*class="[^"]*sf-button--size-2[^"]*"~',
+                '~<button[^>]*data-docara-search-trigger~',
                 $html,
             );
             self::assertStringContainsString('data-docara-search-dialog', $html);
@@ -428,7 +428,9 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('data-docara-search-input', $html);
             self::assertStringContainsString('data-docara-search-status', $html);
             self::assertStringContainsString('data-docara-search-results', $html);
-            self::assertStringContainsString('docara-search-trigger-label sf-button-text-container', $html);
+            self::assertStringContainsString('root-class="docara-search-trigger"', $html);
+            self::assertStringContainsString('slot="icon-right"', $html);
+            self::assertStringNotContainsString('items-center gap-1 radius-default"><sf-icon icon="search"', $html);
             self::assertStringNotContainsString('class="sf-list docara-search-results', $html);
             self::assertStringContainsString('data-docara-search-runtime', $html);
             self::assertStringContainsString('/_docara/search-index.json?docara_v=', $html);

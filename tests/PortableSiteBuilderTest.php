@@ -225,21 +225,18 @@ final class PortableSiteBuilderTest extends TestCase
             $shellCss,
         );
         self::assertStringContainsString(
-            '.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-2);overflow:auto}',
+            '.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-2);overflow:auto;direction:ltr}',
             $shellCss,
         );
         self::assertStringContainsString(
-            '.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-a2);border-inline-end:',
+            '.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-px);border-inline-end:',
             $shellCss,
         );
         self::assertStringContainsString(
             '.docara-sidebar>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-1);overflow:auto}',
             $shellCss,
         );
-        self::assertStringContainsString(
-            'html[dir="ltr"] .docara-outline-rail>[data-docara-section]{direction:rtl}',
-            $shellCss,
-        );
+        self::assertStringNotContainsString('html[dir="ltr"] .docara-outline-rail>[data-docara-section]{direction:rtl}', $shellCss);
         self::assertStringContainsString(
             'href="/_docara/declarative-shell.css" data-docara-declarative-shell-style',
             $landing,
@@ -325,15 +322,11 @@ final class PortableSiteBuilderTest extends TestCase
             $smartSurface,
         );
         self::assertStringContainsString(
-            'inset-inline-start:var(--docara-outline-marker-inline-start,calc(var(--sf-0) - var(--sf-space-2) - var(--sf-a2) - var(--sf-px)))',
+            'left:calc(var(--sf-0) - var(--sf-space-2) - var(--sf-a2) - var(--sf-px));width:var(--sf-a2)',
             $smartSurface,
-            'The active outline marker must overlay the rail divider with a no-JavaScript fallback.',
+            'The active outline marker must overlay the physical left divider.',
         );
-        self::assertStringContainsString(
-            "item.style.setProperty('--docara-outline-marker-inline-start',offset+'px')",
-            $smartSurface,
-            'The active outline marker must compensate for the native scrollbar width.',
-        );
+        self::assertStringNotContainsString('--docara-outline-marker-inline-start', $smartSurface);
         self::assertStringContainsString("link.setAttribute('aria-current','location')", $smartSurface);
         self::assertStringContainsString("window.addEventListener('scroll',schedule,{passive:true})", $smartSurface);
 

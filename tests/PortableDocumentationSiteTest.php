@@ -141,24 +141,19 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The desktop outline divider must span the full layout row.',
         );
         self::assertStringContainsString(
-            '.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-2);overflow:auto}',
+            '.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-2);overflow:auto;direction:ltr}',
             $shellCss,
-            'The outline scrollbar must stay one Framework a2 token from its divider.',
+            'The outline scrollbar must render on the physical right edge.',
         );
         self::assertStringContainsString(
-            '.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-a2);border-inline-end:',
+            '.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-px);border-inline-end:',
             $shellCss,
             'The desktop navigation divider must span the full layout row.',
         );
         self::assertStringContainsString(
             '.docara-sidebar>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-1);overflow:auto}',
             $shellCss,
-            'The navigation scrollbar must stay one Framework a2 token from its divider.',
-        );
-        self::assertStringContainsString(
-            'html[dir="ltr"] .docara-outline-rail>[data-docara-section]{direction:rtl}',
-            $shellCss,
-            'The LTR outline scrollbar must render beside the logical start divider.',
+            'The navigation scrollbar must stay one Framework pixel token from its divider.',
         );
         foreach ($unavailable as $entry) {
             self::assertStringContainsString(

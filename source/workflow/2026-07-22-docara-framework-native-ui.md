@@ -111,3 +111,18 @@ The previous claim that a universal 44 px floor was "correct" is superseded.
 Accessibility remains mandatory, but it must be expressed through the agreed
 Framework scale and component semantics rather than silently changing a named
 size modifier.
+
+## Navigation disclosure correction
+
+Browser review of the expanded `Миграция` item found one remaining conflict:
+the `docara.navigation` template correctly selected
+`sf-icon-button--size-1/3`, while product CSS replaced that geometry with
+`var(--sf-d1)` and negative margins. The custom geometry was removed. The
+Framework icon button now owns its 24 px desktop size, and the Framework Menu
+gap owns the 8 px separation from the label.
+
+Smart CSS and JavaScript URLs now include a SHA-256 `docara_v` query. This is
+part of the correction because a normal reload otherwise retained the old
+unversioned Smart CSS and visually preserved the defect after publication.
+The version is derived from the exact source bytes, so it changes only when
+the Smart asset changes.

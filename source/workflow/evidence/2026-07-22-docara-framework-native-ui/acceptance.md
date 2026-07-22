@@ -98,3 +98,38 @@ that matrix.
   `source/output/action-gates/action-gate-report-20260721234842.json`.
 
 No public push, merge, release, tag or production-readiness claim was made.
+
+## Navigation disclosure correction
+
+Source checks:
+
+- the template retains `sf-icon-button--size-1/3`;
+- product CSS no longer assigns disclosure min-size, fixed flex basis or
+  negative margins;
+- generated Smart CSS and JavaScript URLs carry a content-derived 64-character
+  SHA-256 `docara_v` query;
+- focused acceptance: 4 tests, 520 assertions, PASS;
+- full regression suite: 622 tests, 5,552 assertions, PASS;
+- static verifier: 271 HTML pages, 20,512 local references, 0 broken.
+
+Browser acceptance at `https://docara.test/ru/migration/`:
+
+| State | Result |
+| --- | --- |
+| desktop expanded disclosure | 24 x 24 px; 8 px gap; no overlap |
+| desktop collapsed | submenu hidden; `aria-expanded=false`; active link retained |
+| desktop expanded again | submenu visible; `aria-expanded=true`; active link retained |
+| mobile 390 x 844 | 21 x 22.5 px at the pinned Framework mobile root; 7 px gap; no overlap |
+| responsive page | no horizontal overflow at desktop or mobile |
+| published stylesheet | content-versioned `navigation.css?docara_v=9ee27b...` |
+
+The observed mobile dimensions inherit the already recorded upstream 14 px
+root defect. Docara does not add a compensating private size.
+
+Local publication:
+
+- deployed output: `/Users/rim/Sites/docara.test/build_production`;
+- rollback copy:
+  `/Users/rim/Sites/docara.test/.docara-backups/menu-disclosure-20260722-055828/build_production.previous`;
+- action-gate report:
+  `source/output/action-gates/action-gate-report-20260722055828.json`.

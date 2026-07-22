@@ -337,7 +337,9 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                     $exception,
                 );
             }
-            $url = $this->escape($assetBase . '/' . $asset['public']);
+            $url = $this->escape(
+                $assetBase . '/' . $asset['public'] . '?docara_v=' . $asset['version'],
+            );
             $tags[] = $asset['kind'] === 'css'
                 ? '<link rel="stylesheet" href="' . $url . '" data-docara-smart-asset="' . $this->escape($key) . '">'
                 : '<script defer src="' . $url . '" data-docara-smart-asset="' . $this->escape($key) . '"></script>';

@@ -286,6 +286,14 @@ final class PortableSiteBuilderTest extends TestCase
         foreach (['docara.smart.brand.css', 'docara.smart.navigation.css', 'docara.smart.navigation.js', 'docara.smart.toc.css', 'docara.smart.toc.js'] as $asset) {
             self::assertStringContainsString('data-docara-smart-asset="' . $asset . '"', $guide);
         }
+        self::assertMatchesRegularExpression(
+            '#href="/_docara/smart/navigation\.css\?docara_v=[a-f0-9]{64}"#',
+            $guide,
+        );
+        self::assertMatchesRegularExpression(
+            '#src="/_docara/smart/navigation\.js\?docara_v=[a-f0-9]{64}"#',
+            $guide,
+        );
         self::assertStringContainsString("new CustomEvent('docara-navigation-toggle'", $smartSurface);
         self::assertStringContainsString("new CustomEvent('docara-toc-navigate'", $smartSurface);
         self::assertStringNotContainsString(
@@ -412,9 +420,12 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString("event.key==='Enter'||event.key===' '", $smartSurface);
         self::assertStringContainsString('--sf-menu-element--padding-inline-start:var(--sf-space-7)', $smartSurface);
         self::assertStringContainsString('min-block-size:var(--sf-d2)', $smartSurface);
-        self::assertStringContainsString('min-inline-size:var(--sf-d1)', $smartSurface);
-        self::assertStringContainsString('margin-block:calc(var(--sf-space-1\/3) * -1)', $smartSurface);
-        self::assertStringContainsString('margin-inline:calc(var(--sf-b0) * -1)', $smartSurface);
+        self::assertStringContainsString(
+            '[data-docara-disclosure]{order:-1;flex:0 0 auto;',
+            $smartSurface,
+        );
+        self::assertStringNotContainsString('min-inline-size:var(--sf-d1)', $smartSurface);
+        self::assertStringNotContainsString('margin-inline:calc(var(--sf-b0) * -1)', $smartSurface);
         self::assertStringNotContainsString('min-inline-size:44px', $smartSurface);
         self::assertStringNotContainsString('min-block-size:44px', $smartSurface);
         self::assertStringNotContainsString('margin-inline:-10px', $smartSurface);

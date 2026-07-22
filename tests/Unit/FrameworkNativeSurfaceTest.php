@@ -58,4 +58,27 @@ final class FrameworkNativeSurfaceTest extends TestCase
             );
         }
     }
+
+    #[Test]
+    public function navigation_disclosure_uses_framework_icon_button_geometry(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $css = file_get_contents($root . '/resources/smart/assets/navigation.css');
+        $template = file_get_contents(
+            $root . '/resources/smart/docara.navigation/templates/item.php',
+        );
+
+        self::assertIsString($css);
+        self::assertIsString($template);
+        self::assertStringContainsString('sf-icon-button--size-1/3', $template);
+
+        self::assertMatchesRegularExpression(
+            '~\[data-docara-disclosure\]\{[^}]*flex:0 0 auto;[^}]*\}~',
+            $css,
+        );
+        self::assertDoesNotMatchRegularExpression(
+            '~\[data-docara-disclosure\]\{[^}]*(?:min-(?:inline|block)-size|margin-(?:inline|block)|flex:0 0 var\()~',
+            $css,
+        );
+    }
 }

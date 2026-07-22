@@ -11,7 +11,7 @@ final readonly class SmartComponentDefinition
      * @param array<string, array{path:string,schema:string,template:string}> $views
      * @param array<string, array{path:string,renderer:string}> $templates
      * @param array<string, string> $aliases
-     * @param array<string, array{path:string,kind:string,public:string}> $assets
+     * @param array<string, array{path:string,kind:string,public:string,version:string}> $assets
      */
     public function __construct(
         public string $key,

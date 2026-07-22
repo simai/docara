@@ -51,7 +51,7 @@ final class DocaraSmartContribution implements SmartContribution
      * @param array<string, array{file:string,renderer:string}> $views
      * @param array<string, array{path:string,renderer:string}> $extraTemplates
      * @param array<string, string> $aliases
-     * @param array<string, array{path:string,kind:string,public:string}> $assets
+     * @param array<string, array{path:string,kind:string,public:string,version:string}> $assets
      */
     private function add(
         SmartRegistryBuilder $registry,
@@ -89,13 +89,21 @@ final class DocaraSmartContribution implements SmartContribution
         ));
     }
 
-    /** @return array{path:string,kind:string,public:string} */
+    /** @return array{path:string,kind:string,public:string,version:string} */
     private function asset(string $file, string $kind): array
     {
+        $path = 'smart/assets/' . $file;
+        $source = dirname(__DIR__, 2) . '/resources/' . $path;
+        $version = is_file($source) ? hash_file('sha256', $source) : false;
+        if (! is_string($version)) {
+            throw new \LogicException('DOCARA_SMART_ASSET_VERSION_UNAVAILABLE:' . $file);
+        }
+
         return [
-            'path' => 'smart/assets/' . $file,
+            'path' => $path,
             'kind' => $kind,
             'public' => 'smart/' . $file,
+            'version' => $version,
         ];
     }
 }

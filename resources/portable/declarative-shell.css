@@ -11,10 +11,14 @@ body{min-height:100vh;background:var(--sf-surface-0);color:var(--sf-on-surface)}
 .docara-docs-layout[data-outline="true"]{grid-template-columns:minmax(14rem,18rem) minmax(0,1fr) minmax(12rem,15rem)}
 .docara-docs-layout[data-sidebar="false"]{grid-template-columns:minmax(0,1fr)}
 .docara-docs-layout[data-sidebar="false"][data-outline="true"]{grid-template-columns:minmax(0,1fr) minmax(12rem,15rem)}
-.docara-sidebar{align-self:stretch;border-inline-end:1px solid var(--sf-outline-variant)}
-.docara-sidebar>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);overflow:auto}
-.docara-outline-rail{align-self:stretch;border-inline-start:1px solid var(--sf-outline-variant)}
-.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);overflow:auto}
+.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-b2);border-inline-end:1px solid var(--sf-outline-variant)}
+.docara-sidebar>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-1);overflow:auto}
+.docara-outline-rail{align-self:stretch;padding-inline-start:var(--sf-b2);border-inline-start:1px solid var(--sf-outline-variant)}
+.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-2);overflow:auto}
+html[dir="ltr"] .docara-outline-rail>[data-docara-section]{direction:rtl}
+html[dir="ltr"] .docara-outline-rail>[data-docara-section]>*{direction:ltr}
+html[dir="rtl"] .docara-outline-rail>[data-docara-section]{direction:ltr}
+html[dir="rtl"] .docara-outline-rail>[data-docara-section]>*{direction:rtl}
 .docara-content{color:var(--sf-on-surface);scroll-margin-block-start:4.5rem}
 .docara-content[data-width="compact"]{max-width:45rem}
 .docara-content[data-width="normal"]{max-width:60rem}

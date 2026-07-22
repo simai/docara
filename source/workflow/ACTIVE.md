@@ -1,36 +1,32 @@
-# Active workflow: Framework-native Docara UI
+# Active workflow: Docara scrollbar divider alignment
 
 Date: 2026-07-22
 Status: review ready
-Workflow ID: `2026-07-22-docara-framework-native-ui`
-Process model: raw-owner `docara + ux + sf5 + tester + ops`
+Workflow ID: `2026-07-22-docara-scrollbar-divider-alignment`
+Process model: `full_qa`
 Current state: `review_ready`
 Target state: `accepted`
 
-## Current Goal
+## Current goal
 
-Remove Docara presentation overrides that prevent native tags, Framework
-utilities, components and Smart components from owning the interface.
+Keep the independent left-navigation and right-contents scrollbars one
+Framework `b2` token from their respective inner column dividers without
+disturbing content spacing, directionality or mobile layout.
 
 ## Result
 
-Private control floors, prose typography, Smart-component height overrides and
-duplicated button presentation were removed from the canonical publisher.
-Static guards, 621 PHPUnit tests, an exact production build, 20,512 static
-references and desktop/mobile browser interaction checks passed. The verified
-build is published locally with rollback evidence.
+Generic outer padding was removed from both rails. Divider spacing now uses
+`var(--sf-b2)`, while existing content padding lives inside the scroll
+containers. The right rail keeps its native scrollbar at the logical divider
+and restores the document direction for content.
 
-The pinned Framework itself still produces a 14 px mobile root and adds outline
-button borders outside the nominal height formula. These are upstream producer
-gaps, not a reason to add compensating Docara classes. Docara remains pinned to
-the immutable revision until a separately tested Framework release exists.
+Focused and full tests, exact build, static verification, visible overflow
+checks on both rails, desktop geometry, mobile layout and console checks pass.
+The build is published to `https://docara.test/` with a rollback copy.
 
-## Completion Guard
+## Completion guard
 
 Acceptance evidence is stored under
-`source/workflow/evidence/2026-07-22-docara-framework-native-ui/`. The reviewer
-must distinguish the completed Docara simplification from the separately
-required Framework producer correction.
-
+`source/workflow/evidence/2026-07-22-docara-scrollbar-divider-alignment/`.
 Public push, merge, tag, package release and production readiness remain
 excluded.

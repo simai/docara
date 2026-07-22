@@ -221,19 +221,23 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:transparent;', $shellCss);
         self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre}', $shellCss);
         self::assertStringContainsString(
-            '.docara-outline-rail{align-self:stretch;border-inline-start:',
+            '.docara-outline-rail{align-self:stretch;padding-inline-start:var(--sf-b2);border-inline-start:',
             $shellCss,
         );
         self::assertStringContainsString(
-            '.docara-outline-rail>[data-docara-section]{position:sticky;',
+            '.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-2);overflow:auto}',
             $shellCss,
         );
         self::assertStringContainsString(
-            '.docara-sidebar{align-self:stretch;border-inline-end:',
+            '.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-b2);border-inline-end:',
             $shellCss,
         );
         self::assertStringContainsString(
-            '.docara-sidebar>[data-docara-section]{position:sticky;',
+            '.docara-sidebar>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-1);overflow:auto}',
+            $shellCss,
+        );
+        self::assertStringContainsString(
+            'html[dir="ltr"] .docara-outline-rail>[data-docara-section]{direction:rtl}',
             $shellCss,
         );
         self::assertStringContainsString(
@@ -499,6 +503,14 @@ final class PortableSiteBuilderTest extends TestCase
         }
         self::assertNotSame([], $desktopOutline);
         self::assertSame($desktopOutline, $mobileOutline);
+        self::assertSame(
+            0,
+            $guideXpath->query(
+                '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-outline-rail ")'
+                . ' and contains(concat(" ", normalize-space(@class), " "), " p-2 ")]',
+            )?->length,
+            'Rail padding must not move the outline scrollbar away from its divider.',
+        );
 
         $navigationDocument = new \DOMDocument;
         $previous = libxml_use_internal_errors(true);
@@ -556,12 +568,12 @@ final class PortableSiteBuilderTest extends TestCase
             'Framework disclosure must precede the menu text as in the Simple Menu design.',
         );
         self::assertSame(
-            1,
+            0,
             $navigationXpath->query(
                 '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")'
                 . ' and contains(concat(" ", normalize-space(@class), " "), " p-1 ")]',
             )?->length,
-            'Desktop navigation rail must use the same 16px space-1 utility as the menu design.',
+            'Rail padding must not move the navigation scrollbar away from its divider.',
         );
 
         $brandAssets = glob($this->tmpPath('build_local/_docara/brand/*')) ?: [];

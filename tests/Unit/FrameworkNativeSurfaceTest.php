@@ -81,4 +81,29 @@ final class FrameworkNativeSurfaceTest extends TestCase
             $css,
         );
     }
+
+    #[Test]
+    public function navigation_projects_coherent_hover_and_input_specific_focus_states(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $css = file_get_contents($root . '/resources/smart/assets/navigation.css');
+
+        self::assertIsString($css);
+        self::assertStringContainsString(
+            '.sf-menu-element:not(.disabled):hover{--sf-menu-element--background-color:var(--sf-surface-container-hover)',
+            $css,
+        );
+        self::assertStringContainsString(
+            ':hover [data-docara-disclosure] .sf-icon{--sf-icon--color:var(--sf-on-surface)}',
+            $css,
+        );
+        self::assertStringContainsString(
+            '[data-docara-disclosure]:focus{box-shadow:none}',
+            $css,
+        );
+        self::assertStringContainsString(
+            '[data-docara-disclosure]:focus-visible{outline:3px solid',
+            $css,
+        );
+    }
 }

@@ -1,6 +1,6 @@
 tracks:
   docara-consolidation:
-    status: "audit_corrections_completed"
+    status: "audit_complete_branch_published"
     owner_skill: "teamlead"
     current_workflow: "source/workflow/2026-07-22-docara-2-audit-corrections.md"
-    last_updated: "2026-07-22"
+    last_updated: "2026-07-23"

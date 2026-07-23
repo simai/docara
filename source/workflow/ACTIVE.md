@@ -33,3 +33,13 @@ PASS for exact candidate
 `0d2a528c4bd5cff5b4986ff60e0abd668d328f47`. All four blocking findings are
 closed. The local site is deployed with a tested rollback; public release work
 is a separate workflow.
+
+## Review Publication
+
+- Review branch: `codex/docara-consolidation`.
+- Accepted audit baseline: `d239d9c97f32193385ac16212183e095338ac3f9`.
+- Product candidate remains `0d2a528c4bd5cff5b4986ff60e0abd668d328f47`;
+  later commits contain workflow, QA and audit closure material.
+- The Federation delivery regression for the Docara skill was corrected and
+  locally verified through the transactional 7.4.3 candidate. This does not
+  publish a Docara package or merge the product branch.

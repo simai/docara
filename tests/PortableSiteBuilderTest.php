@@ -734,7 +734,7 @@ final class PortableSiteBuilderTest extends TestCase
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('sf-v5.3.2-4af910d3-c60e8f90', $componentCatalog['framework_pair']);
+        self::assertSame('sf-v5.3.2-4af910d3-43fb6f8d', $componentCatalog['framework_pair']);
         self::assertCount(21, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -1236,7 +1236,7 @@ MD;
             $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-4af910d3-c60e8f90-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-4af910d3-43fb6f8d-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework/smart/alert/js/alert.js'));

@@ -23,22 +23,22 @@ final class FrameworkComponentRuntimeTest extends TestCase
     public function test_bundled_projections_are_exact_and_provider_locked(): void
     {
         self::assertSame(
-            '97a3d231c44f69559a21e7de744fdbc97c1b75605ffb6597edeba2bd9f09562e',
+            'a31194149d2489f7cb22f9da7be059db8d2771908cf05106e59b0820bbb35a31',
             hash_file('sha256', $this->root() . '/resources/framework/manifests/ui-button.json'),
         );
         self::assertSame(
-            '25f1c469320b51043e1b06335cd27439b45503b1700fdfe55cc831efeb7c9fc8',
+            'e8c2035482795da0870e9854e7a77b2e2d2f8c4ae054de5ddccf3d64349b501a',
             hash_file('sha256', $this->root() . '/resources/framework/manifests/ui-alert.json'),
         );
         self::assertSame(
-            'd1d07d78fa44ceb14c865b95e1045e30b094ce9318c57f43d8afc3ceb038e36b',
+            '16fc6c8070adc9f1f8b4d86ed38e9b9c374bfa49173e4a306ecad0574ed3bf64',
             hash_file('sha256', $this->root() . '/resources/framework/runtime-lock.json'),
         );
         foreach ([
             'smart/alert/js/alert.js' => 'e994066dd2a7f9c4d15c573ea66bb47ccb0f12c24f4cf2e7dedee29eaddf9f1c',
             'smart/buttons/js/buttons.js' => 'fe977fc7c608b7bacb79b7641a302c30a6195659ac2351594ae5aef0656d0a27',
             'smart/icons/js/icons.js' => 'c810be681b51f98002e01fb8852e992e454fa607af005033f9cc10309016fa09',
-            'smart/modal/js/modal.js' => 'b0b16529dfb3ecb8430f7cd660cefaefe366afae56cd5cbed3a282ee3562f3e1',
+            'smart/modal/js/modal.js' => '2af3a8ca231f20c644efc32e76bac4c77c5830d12ccb580631d8a478d772ed62',
         ] as $relativePath => $sha256) {
             self::assertSame(
                 $sha256,
@@ -93,7 +93,7 @@ MARKDOWN;
         self::assertSame('primary', $button['props']['scheme']);
         self::assertSame('Open <guide>', $button['props']['aria-label']);
         self::assertSame(
-            '<sf-button data-larena-smart-runtime="sf-v5.3.2-4af910d3-c60e8f90" text="Open &lt;guide&gt;" size="1" type="outline" scheme="primary" native-type="button" aria-label="Open &lt;guide&gt;"></sf-button>',
+            '<sf-button data-larena-smart-runtime="sf-v5.3.2-4af910d3-43fb6f8d" text="Open &lt;guide&gt;" size="1" type="outline" scheme="primary" native-type="button" aria-label="Open &lt;guide&gt;"></sf-button>',
             $button['html'],
         );
 
@@ -102,7 +102,7 @@ MARKDOWN;
         self::assertSame('ui.alert', $alert['id']);
         self::assertSame('Heads <up>', $alert['props']['aria-label']);
         self::assertMatchesRegularExpression('/^docara-alert-[a-f0-9]{16}$/', $alert['props']['id']);
-        self::assertStringStartsWith('<sf-alert id="' . $alert['props']['id'] . '" data-larena-smart-runtime="sf-v5.3.2-4af910d3-c60e8f90"', $alert['html']);
+        self::assertStringStartsWith('<sf-alert id="' . $alert['props']['id'] . '" data-larena-smart-runtime="sf-v5.3.2-4af910d3-43fb6f8d"', $alert['html']);
         self::assertStringContainsString('title="Heads &lt;up&gt;"', $alert['html']);
         self::assertStringContainsString('supporting-text="Use &quot;x&quot;"', $alert['html']);
         self::assertStringNotContainsString(' closable ', $alert['html']);
@@ -340,7 +340,7 @@ MD, 'guide.md');
         self::assertStringContainsString('simai/ui@4af910d3318977a2a30f3bbbba269fedaf3878d8/', $serialized);
         self::assertStringNotContainsString('simai/ui-smart@', $serialized);
         self::assertStringContainsString('/_docara/framework/smart/alert/js/alert.js', $serialized);
-        self::assertStringContainsString('"source_revision":"c60e8f902af3bc5d01e659349937b2c8e7bb9b48"', $serialized);
+        self::assertStringContainsString('"source_revision":"43fb6f8d3a2cb8bc587fb038147859bbceba57ef"', $serialized);
         self::assertStringNotContainsString('@main', strtolower($serialized));
         self::assertStringNotContainsString('@latest', strtolower($serialized));
         self::assertStringContainsString('/distr/core/css/utility.full.css', $serialized);
@@ -353,7 +353,7 @@ MD, 'guide.md');
         self::assertStringNotContainsString('sessionStorage', $serialized);
         self::assertStringContainsString('"kind":"smart_javascript"', $serialized);
         self::assertMatchesRegularExpression(
-            '#/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-4af910d3-c60e8f90-[a-f0-9]{16}#',
+            '#/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-4af910d3-43fb6f8d-[a-f0-9]{16}#',
             $serialized,
         );
         self::assertStringNotContainsString('smart_components.loader', $serialized);

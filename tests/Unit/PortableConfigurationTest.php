@@ -1074,13 +1074,13 @@ final class PortableConfigurationTest extends TestCase
                 ],
                 'files' => [
                     'smart/alert/js/alert.js' => [
-                        'sha256' => 'e994066dd2a7f9c4d15c573ea66bb47ccb0f12c24f4cf2e7dedee29eaddf9f1c',
+                        'sha256' => '32fd607bb1b6cd58911a43cdd143cfab9a0ff9822d423fb97304a2b9cc71c2af',
                     ],
                     'smart/buttons/js/buttons.js' => [
-                        'sha256' => 'fe977fc7c608b7bacb79b7641a302c30a6195659ac2351594ae5aef0656d0a27',
+                        'sha256' => '4f442e6f61c7278611e98cce5565b5adefa8770849b9b7fc36748cf6219093bd',
                     ],
                     'smart/icons/js/icons.js' => [
-                        'sha256' => 'c810be681b51f98002e01fb8852e992e454fa607af005033f9cc10309016fa09',
+                        'sha256' => '7618c219901fd6f3fa38f7c8a9c47a5609265197239748b5d64dca15c0419ceb',
                     ],
                 ],
             ],

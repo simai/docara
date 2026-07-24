@@ -19,4 +19,4 @@ build_* export-ignore
 /source/memory export-ignore
 resources/framework/runtime-lock.json -text
 resources/framework/manifests/*.json -text
-resources/framework/assets/** -text whitespace=-blank-at-eol,-blank-at-eof
+resources/framework/assets/** -text

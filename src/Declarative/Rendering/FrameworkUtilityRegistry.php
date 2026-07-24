@@ -79,7 +79,7 @@ final class FrameworkUtilityRegistry
         }
         if (! is_array($document)
             || ($document['schema'] ?? null) !== 'docara.framework_view_utilities.v1'
-            || ($document['compatibility_id'] ?? null) !== 'sf-v5.3.2-7e836d8a-dd786bba'
+            || ($document['compatibility_id'] ?? null) !== 'sf-v5.3.2-4100d3f7-dd786bba'
             || ($document['registry_sha256'] ?? null) !== '2c5963276d31af09770fe41cad04826c04b634f7b2d798d9b0e32864517346b7'
         ) {
             throw new PortableConfigurationException(

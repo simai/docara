@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="ar" dir="rtl" class="theme-light" data-docara-documentation-version="current">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="docara:documentation-version" content="current">
+    <meta name="description" content="Выводит фрагменты и блоки кода из Markdown. Закреплённый SIMAI Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.">
+    <link rel="icon" href="/_docara/brand/9bcd7305a24235227b13096694eca338fddc72731a948bdf7a8a6d6a0958afda.ico" type="image/x-icon">
+    <link rel="canonical" href="/ar/components/catalog/native.code/">
+    <link rel="alternate" hreflang="ru" href="/ru/components/catalog/native.code/">
+    <link rel="alternate" hreflang="ar" href="/ar/components/catalog/native.code/">
+    <link rel="alternate" hreflang="x-default" href="/">
+    <title>Код — Docara</title>
+<script data-docara-framework-boot="sf-v5.3.2-4100d3f7-dd786bba" data-docara-framework-asset="docara.framework.storage.compatibility">(function(){function nativeStorage(){var storage,probe='__docara_sf_probe_'+Math.random().toString(36).slice(2);try{storage=window.localStorage;if(!storage)return null;storage.setItem(probe,'1');return storage.getItem(probe)==='1'?storage:null}catch(error){return null}finally{if(storage){try{storage.removeItem(probe)}catch(error){}}}}if(nativeStorage())return;var values=Object.create(null),keys=[];var storage={key:function(index){index=Number(index);return Number.isInteger(index)&&index>=0&&index<keys.length?keys[index]:null},getItem:function(key){key=String(key);return Object.prototype.hasOwnProperty.call(values,key)?values[key]:null},setItem:function(key,value){key=String(key);if(!Object.prototype.hasOwnProperty.call(values,key)){keys.push(key)}values[key]=String(value)},removeItem:function(key){key=String(key);if(!Object.prototype.hasOwnProperty.call(values,key))return;delete values[key];keys.splice(keys.indexOf(key),1)},clear:function(){values=Object.create(null);keys=[]}};Object.defineProperty(storage,'length',{enumerable:true,get:function(){return keys.length}});try{Object.defineProperty(window,'localStorage',{configurable:true,enumerable:true,value:storage})}catch(error){try{window.localStorage=storage}catch(ignored){}}try{if(window.localStorage===storage){document.documentElement.dataset.docaraFrameworkStorage='memory'}}catch(error){}})();</script>
+<script data-docara-framework-boot="sf-v5.3.2-4100d3f7-dd786bba" data-docara-framework-asset="simai.framework.boot">window.SF_BOOT_CONFIG=Object.assign({},window.SF_BOOT_CONFIG||{},{"cacheVersion":"sf-v5.3.2-4100d3f7-dd786bba-5051c227604e3a82","pluginListVersion":"sf-v5.3.2-4100d3f7-dd786bba","theme":false,"icons":{"enabled":false,"accumulate":false},"smart":{"base":true}});window.sfPath="https://cdn.jsdelivr.net/gh/simai/ui@4100d3f7cd783c9dd378db30ee58dc9eb3672ab8/distr/";window.sfSmartPath="/_docara/framework";</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/simai/ui@4100d3f7cd783c9dd378db30ee58dc9eb3672ab8/distr/core/css/core.css" data-docara-framework-asset="simai.framework.core.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/simai/ui@4100d3f7cd783c9dd378db30ee58dc9eb3672ab8/distr/core/css/utility.full.css" data-docara-framework-asset="simai.framework.utility.full.css">
+<style data-docara-framework-asset="simai.framework.icon_font.css">@font-face{font-family:"Docara Material Symbols";src:url("https://cdn.jsdelivr.net/gh/simai/ui@4100d3f7cd783c9dd378db30ee58dc9eb3672ab8/distr/fonts/MaterialSymbols-Outlined.woff2") format("woff2");font-style:normal;font-weight:100 700;font-display:block}html body sf-icon > i.sf-icon{font-family:"Docara Material Symbols"!important;font-feature-settings:"liga"!important;font-variation-settings:"FILL" var(--sf-icon--fill,0),"wght" var(--sf-icon--weight,400),"GRAD" var(--sf-icon--grade,0),"opsz" var(--sf-icon--optical-size,24)}</style>
+<script data-docara-framework-boot="sf-v5.3.2-4100d3f7-dd786bba" data-docara-framework-asset="simai.framework.icon_font.ready">(function(){var selector="sf-icon > i.sf-icon:not(.sf-icon-loaded)";function mark(root){if(root.nodeType===1&&root.matches(selector)){root.classList.add("sf-icon-loaded")}if(root.querySelectorAll){root.querySelectorAll(selector).forEach(function(icon){icon.classList.add("sf-icon-loaded")})}}function watch(){mark(document);if(!document.body)return;new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(mark)})}).observe(document.body,{childList:true,subtree:true})}function start(){var ready=document.fonts&&document.fonts.load?document.fonts.load("400 24px \"Docara Material Symbols\""):Promise.resolve([true]);ready.then(function(faces){if(faces&&faces.length){document.documentElement.dataset.docaraFullFontReady="true";watch()}}).catch(function(){})}if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",start,{once:true})}else{start()}})();</script>
+<script defer src="https://cdn.jsdelivr.net/gh/simai/ui@4100d3f7cd783c9dd378db30ee58dc9eb3672ab8/distr/core/js/smart-base.js" data-docara-framework-asset="simai.framework.smart_base.js"></script>
+<script defer src="https://cdn.jsdelivr.net/gh/simai/ui@4100d3f7cd783c9dd378db30ee58dc9eb3672ab8/distr/core/js/core.js" data-docara-framework-asset="simai.framework.core.js"></script>
+<link rel="stylesheet" href="/ar/_docara/smart/brand.css?docara_v=51eb6e7b9a83bbdbb75b15b80306eb8876fb505b8c13e8a0ece74aa0d453b1d4" data-docara-smart-asset="docara.smart.brand.css">
+<link rel="stylesheet" href="/ar/_docara/smart/navigation.css?docara_v=eeda4db83edf9cddc1d3134e7eff82a9cbfe34ea362537423dfa8374aa824570" data-docara-smart-asset="docara.smart.navigation.css">
+<script defer src="/ar/_docara/smart/navigation.js?docara_v=0b38bf7391535ef49fd2f78e2471e379b9a6b7af117156ccded50fd4608dd647" data-docara-smart-asset="docara.smart.navigation.js"></script>
+<link rel="stylesheet" href="/ar/_docara/smart/toc.css?docara_v=40c1c9318b8ed26ab5b2a7da0943e9c908f6079139d6a52e85567b78708819b7" data-docara-smart-asset="docara.smart.toc.css">
+<script defer src="/ar/_docara/smart/toc.js?docara_v=9a37d8abe839647f5d1e366401e75afdef73b25fe210c567699279aa33f8b83d" data-docara-smart-asset="docara.smart.toc.js"></script>    <link rel="stylesheet" href="/ar/_docara/declarative-shell.css?docara_v=b3db4b7ecd49f8d6f962090cb32681033482c051cfa792f4c7b3c44cb8103c1a" data-docara-declarative-shell-style>
+<script data-docara-theme-bootstrap>(function(){var configured="system",key='docara.reader.theme.v1',valid=/^(system|light|dark)$/,volatile='';function frameworkMemory(){return document.documentElement.dataset.docaraFrameworkStorage==='memory'}function stored(){if(frameworkMemory())return'';try{var value=window.localStorage.getItem(key)||'';return valid.test(value)?value:''}catch(error){return''}}function legacy(){var value=(document.cookie.split('; ').find(function(item){return item.indexOf('sf-theme=')===0})||'').split('=')[1]||'';return /^(light|dark)$/.test(value)?value:''}function clearLegacy(){document.cookie='sf-theme=; Path=/; Max-Age=0; SameSite=Lax'}function projectLegacy(mode){if(/^(light|dark)$/.test(mode)){document.cookie='sf-theme='+mode+'; Path=/; Max-Age=31536000; SameSite=Lax';return legacy()===mode}clearLegacy();return legacy()===''}function apply(mode,source){if(!valid.test(mode)){mode='system'}var dark=mode==='dark'||(mode==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);var root=document.documentElement;root.classList.remove('theme-light','theme-dark');root.classList.add(dark?'theme-dark':'theme-light');root.dataset.docaraThemePreference=mode;root.dataset.docaraThemeSource=source;return mode}function preference(){var reader=volatile||stored(),old=reader?'':legacy();return{mode:reader||old||configured,source:reader?'reader':(old?'legacy':'site')}}function set(mode){if(!valid.test(mode)){return{applied:false,persisted:false}}var persisted=false;if(!frameworkMemory()){try{window.localStorage.setItem(key,mode);persisted=window.localStorage.getItem(key)===mode}catch(error){}}var cookiePersisted=projectLegacy(mode);if(/^(light|dark)$/.test(mode)){persisted=persisted||cookiePersisted}volatile=persisted?'':mode;apply(mode,'reader');return{applied:true,persisted:persisted}}function reset(){volatile='';if(!frameworkMemory()){try{window.localStorage.removeItem(key)}catch(error){}}clearLegacy();apply(configured,'site')}var initial=preference();apply(initial.mode,initial.source);window.DocaraReaderTheme={configured:configured,key:key,apply:apply,preference:preference,set:set,reset:reset,syncExternal:function(){volatile='';return preference()},hasOverride:function(){return volatile!==''||stored()!==''||legacy()!==''}};window.SF_BOOT_CONFIG=window.SF_BOOT_CONFIG||{};window.SF_BOOT_CONFIG.preloader={enabled:false};})();</script><script defer src="/_docara/search.js?docara_v=496506d5329b8a387972be85ac27ae390cced904acf596f4de905fb7bd096a90" data-docara-search-runtime></script>
+</head>
+<body class="bg-surface max-container-7">
+    <a class="docara-skip-link bg-surface-0 border radius-1 p-1" href="#docara-main">الانتقال إلى المحتوى</a>
+    <header class="docara-header sticky top-0 z-2 bg-surface-0 border-bottom-1 border-outline-variant" data-docara-region="header">
+        <div class="docara-header-row container m-inline-auto flex items-center content-main-between gap-2 p-1">
+            <section id="site-header" data-docara-section="docara.header" data-docara-region-owner="header" class="flex gap-2 w-full"><a class="docara-brand docara-brand--compact docara-brand--size-medium flex items-center gap-1 color-on-surface decoration-none" href="/ar/" data-docara-smart="docara.brand" data-docara-view="compact">
+    <span class="docara-brand-mark"><img src="/_docara/brand/10781f8fb31318e8807a215ec002ec1f8033227bf8678300e3dc63a7e3c1aebc.svg" class="docara-brand-logo" alt=""></span>
+    <span class="docara-brand-title weight-7">Docara</span>
+</a>
+<nav class="docara-navigation docara-header-navigation" aria-label="الرئيسية" data-docara-smart="docara.navigation" data-docara-view="header" data-docara-maximum-depth="4">
+    <ul class="sf-menu docara-header-navigation-list flex items-cross-center gap-1"><li class="sf-menu-item docara-header-navigation-item">
+    <a class="sf-menu-element docara-header-navigation-link flex items-cross-center radius-1" data-docara-menu-link href="/ar/"><span class="sf-menu-element-text">الرئيسية</span></a>
+</li>
+<li class="sf-menu-item docara-header-navigation-item">
+    <a class="sf-menu-element docara-header-navigation-link flex items-cross-center radius-1" data-docara-menu-link href="/ar/start/"><span class="sf-menu-element-text">البدء السريع</span></a>
+</li>
+<li class="sf-menu-item docara-header-navigation-item">
+    <a class="sf-menu-element docara-header-navigation-link flex items-cross-center radius-1" data-docara-menu-link href="https://github.com/simai/docara"><span class="sf-menu-element-text">GitHub</span></a>
+</li>
+</ul>
+</nav>
+</section>            <div class="flex flex-none items-center gap-1">
+    <button type="button" data-docara-sheet-trigger aria-haspopup="dialog" aria-controls="docara-mobile-navigation" aria-expanded="false" class="docara-mobile-navigation-trigger docara-mobile-navigation-trigger--primary sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-2 radius-default" aria-label="فتح التنقل"><sf-icon icon="menu" aria-hidden="true"></sf-icon></button>
+    <sf-button
+        data-docara-search-trigger
+        aria-haspopup="dialog"
+        aria-controls="docara-search-dialog"
+        aria-expanded="false"
+        aria-label="فتح البحث في التوثيق"
+        root-class="docara-search-trigger"
+        size="1"
+        type="outline"
+        scheme="on-surface"
+        text="بحث"
+        icon-left="search"
+    ><kbd slot="icon-right" class="docara-search-shortcut label-small color-on-surface-variant border border-outline-variant radius-1 p-x-1/2" data-docara-search-shortcut>⌘K</kbd></sf-button>
+    <label class="sf-select sf-select--size-1"><span class="sr-only">اللغة</span><select data-docara-language-switcher aria-label="اللغة">
+        <option value="/ru/components/catalog/native.code/" lang="ru">Русский</option>
+        <option value="/ar/components/catalog/native.code/" lang="ar" selected>العربية</option>
+    </select></label>
+    <button class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 radius-default" data-docara-reader-settings-trigger type="button" aria-haspopup="dialog" aria-controls="docara-reader-settings-dialog" aria-expanded="false" aria-label="فتح إعدادات القراءة"><sf-icon icon="tune" aria-hidden="true"></sf-icon></button>
+</div>
+        </div>
+        <dialog id="docara-mobile-navigation" data-docara-sheet data-docara-transient-dialog class="docara-mobile-sheet bg-surface-0 p-0 color-on-surface" aria-labelledby="docara-mobile-navigation-title">
+    <div class="docara-mobile-sheet-header flex items-center content-main-between gap-2 p-2 border-bottom-1 border-outline-variant"><h2 id="docara-mobile-navigation-title" class="m-0 weight-7">التنقل</h2><button type="button" data-docara-sheet-close class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-2 radius-default" aria-label="إغلاق التنقل"><sf-icon icon="close" aria-hidden="true"></sf-icon></button></div>
+    <div class="docara-mobile-sheet-content p-2 flex flex-col gap-3">
+        <section data-docara-primary-navigation class="flex flex-col gap-1"><h3 class="m-0 weight-7">الرئيسية</h3><nav class="docara-navigation docara-navigation--compact" aria-label="الرئيسية" data-docara-smart="docara.navigation" data-docara-view="compact" data-docara-maximum-depth="4" data-docara-expand-label="توسيع: " data-docara-collapse-label="طي: " data-docara-contains-current-label="، يحتوي على الصفحة الحالية">
+    <ul class="sf-menu flex flex-col"><li class="sf-menu-item flex flex-col" data-docara-navigation-key="home" data-docara-navigation-depth="1">
+    <div role="presentation" tabindex="-1" class="sf-menu-element sf-menu-element--level-1 flex items-cross-center transition">
+        <a class="sf-menu-element-wrap docara-navigation-link flex flex-1 items-cross-center radius-1" data-docara-menu-link href="/ar/"><span class="sf-menu-element-text">الرئيسية</span></a>
+    </div>
+</li>
+<li class="sf-menu-item flex flex-col" data-docara-navigation-key="start" data-docara-navigation-depth="1">
+    <div role="presentation" tabindex="-1" class="sf-menu-element sf-menu-element--level-1 flex items-cross-center transition">
+        <a class="sf-menu-element-wrap docara-navigation-link flex flex-1 items-cross-center radius-1" data-docara-menu-link href="/ar/start/"><span class="sf-menu-element-text">البدء السريع</span></a>
+    </div>
+</li>
+<li class="sf-menu-item flex flex-col" data-docara-navigation-key="github" data-docara-navigation-depth="1">
+    <div role="presentation" tabindex="-1" class="sf-menu-element sf-menu-element--level-1 flex items-cross-center transition">
+        <a class="sf-menu-element-wrap docara-navigation-link flex flex-1 items-cross-center radius-1" data-docara-menu-link href="https://github.com/simai/docara"><span class="sf-menu-element-text">GitHub</span></a>
+    </div>
+</li>
+</ul>
+</nav>
+</section>
+        <section class="flex flex-col gap-1"><h3 class="m-0 weight-7">التوثيق</h3><section data-docara-section="docara.navigation" data-docara-region-owner="sidebar"><nav class="docara-navigation docara-navigation--tree" aria-label="الأقسام" data-docara-smart="docara.navigation" data-docara-view="tree" data-docara-maximum-depth="4" data-docara-expand-label="توسيع: " data-docara-collapse-label="طي: " data-docara-contains-current-label="، يحتوي على الصفحة الحالية">
+    <ul class="sf-menu flex flex-col"><li class="sf-menu-item flex flex-col" data-docara-navigation-key="@home" data-docara-navigation-depth="1">
+    <div role="presentation" tabindex="-1" class="sf-menu-element sf-menu-element--level-1 flex items-cross-center transition">
+        <a class="sf-menu-element-wrap docara-navigation-link flex flex-1 items-cross-center radius-1" data-docara-menu-link href="/ar/"><span class="sf-menu-element-text">وثائق Docara</span></a>
+    </div>
+</li>
+<li class="sf-menu-item flex flex-col open" data-docara-navigation-key="components" data-docara-navigation-depth="1" trailing-icon="keyboard_arrow_down" expanded aria-expanded="true" data-docara-active-role="section">
+    <div role="presentation" tabindex="-1" class="sf-menu-element sf-menu-element--level-1 flex items-cross-center transition open">
+        <button type="button" data-docara-disclosure data-docara-contains-current="true" aria-expanded="true" aria-label="طي: Components، يحتوي على الصفحة الحالية" class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link radius-default sf-icon-button--size-1/3"><sf-icon icon="keyboard_arrow_down" aria-hidden="true"></sf-icon></button>
+        <span class="sf-menu-element-wrap docara-navigation-label flex flex-1 items-cross-center weight-5"><span class="sf-menu-element-text">Components</span></span>
+    </div>
+    <ul class="sf-menu flex flex-col"><li class="sf-menu-item flex flex-col open" data-docara-navigation-key="components/catalog" data-docara-navigation-depth="2" expanded aria-expanded="true" data-docara-active-role="page">
+    <div role="presentation" tabindex="-1" class="sf-menu-element sf-menu-element--level-2 flex items-cross-center transition open">
+        <a class="sf-menu-element-wrap docara-navigation-link flex flex-1 items-cross-center radius-1 weight-5" data-docara-menu-link href="/ar/components/catalog/" aria-current="page"><span class="sf-menu-element-text">Каталог компонентов</span></a>
+    </div>
+</li>
+</ul>
+</li>
+<li class="sf-menu-item flex flex-col" data-docara-navigation-key="start.md" data-docara-navigation-depth="1">
+    <div role="presentation" tabindex="-1" class="sf-menu-element sf-menu-element--level-1 flex items-cross-center transition">
+        <a class="sf-menu-element-wrap docara-navigation-link flex flex-1 items-cross-center radius-1" data-docara-menu-link href="/ar/start/"><span class="sf-menu-element-text">البدء السريع</span></a>
+    </div>
+</li>
+</ul>
+</nav>
+</section></section>
+    </div>
+</dialog>
+    </header>
+    <div class="docara-docs-layout container m-inline-auto gap-0" data-sidebar="true" data-outline="true" data-mobile-toc="auto-hidden">
+        <aside class="docara-sidebar" data-docara-region="sidebar"><section id="docs-navigation" data-docara-section="docara.navigation" data-docara-region-owner="sidebar"><nav class="docara-navigation docara-navigation--tree" aria-label="الأقسام" data-docara-smart="docara.navigation" data-docara-view="tree" data-docara-maximum-depth="4" data-docara-expand-label="توسيع: " data-docara-collapse-label="طي: " data-docara-contains-current-label="، يحتوي على الصفحة الحالية">
+    <ul class="sf-menu flex flex-col"><li class="sf-menu-item flex flex-col" data-docara-navigation-key="@home" data-docara-navigation-depth="1">
+    <div role="presentation" tabindex="-1" class="sf-menu-element sf-menu-element--level-1 flex items-cross-center transition">
+        <a class="sf-menu-element-wrap docara-navigation-link flex flex-1 items-cross-center radius-1" data-docara-menu-link href="/ar/"><span class="sf-menu-element-text">وثائق Docara</span></a>
+    </div>
+</li>
+<li class="sf-menu-item flex flex-col open" data-docara-navigation-key="components" data-docara-navigation-depth="1" trailing-icon="keyboard_arrow_down" expanded aria-expanded="true" data-docara-active-role="section">
+    <div role="presentation" tabindex="-1" class="sf-menu-element sf-menu-element--level-1 flex items-cross-center transition open">
+        <button type="button" data-docara-disclosure data-docara-contains-current="true" aria-expanded="true" aria-label="طي: Components، يحتوي على الصفحة الحالية" class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link radius-default sf-icon-button--size-1/3"><sf-icon icon="keyboard_arrow_down" aria-hidden="true"></sf-icon></button>
+        <span class="sf-menu-element-wrap docara-navigation-label flex flex-1 items-cross-center weight-5"><span class="sf-menu-element-text">Components</span></span>
+    </div>
+    <ul class="sf-menu flex flex-col"><li class="sf-menu-item flex flex-col open" data-docara-navigation-key="components/catalog" data-docara-navigation-depth="2" expanded aria-expanded="true" data-docara-active-role="page">
+    <div role="presentation" tabindex="-1" class="sf-menu-element sf-menu-element--level-2 flex items-cross-center transition open">
+        <a class="sf-menu-element-wrap docara-navigation-link flex flex-1 items-cross-center radius-1 weight-5" data-docara-menu-link href="/ar/components/catalog/" aria-current="page"><span class="sf-menu-element-text">Каталог компонентов</span></a>
+    </div>
+</li>
+</ul>
+</li>
+<li class="sf-menu-item flex flex-col" data-docara-navigation-key="start.md" data-docara-navigation-depth="1">
+    <div role="presentation" tabindex="-1" class="sf-menu-element sf-menu-element--level-1 flex items-cross-center transition">
+        <a class="sf-menu-element-wrap docara-navigation-link flex flex-1 items-cross-center radius-1" data-docara-menu-link href="/ar/start/"><span class="sf-menu-element-text">البدء السريع</span></a>
+    </div>
+</li>
+</ul>
+</nav>
+</section></aside>
+        <div class="docara-reading-column flex min-w-0 flex-col gap-2 p-3">
+            <nav data-docara-breadcrumbs data-max-items="3" data-docara-breadcrumbs-ellipsis-label="إظهار مستويات مسار التنقل المخفية" class="sf-breadcrumbs flex flex-nowrap items-cross-center min-w-0 overflow-x-auto overflow-y-hidden" aria-label="مسار التنقل">
+<a class="sf-breadcrumbs-item sf-breadcrumbs-item--link flex flex-none items-cross-center decoration-none" href="/ar/"><span class="sf-breadcrumbs-item-container flex items-cross-center">Docara</span></a><span class="sf-breadcrumbs-item sf-breadcrumbs-item--default flex-none" data-sf-breadcrumb-separator="true" aria-hidden="true"><span class="sf-breadcrumbs-item-container flex items-cross-center"><sf-icon icon="chevron_right" aria-hidden="true"></sf-icon></span></span><a class="sf-breadcrumbs-item sf-breadcrumbs-item--link flex flex-none items-cross-center decoration-none" href="/ar/components/catalog/"><span class="sf-breadcrumbs-item-container flex items-cross-center">Каталог компонентов</span></a><span class="sf-breadcrumbs-item sf-breadcrumbs-item--default flex-none" data-sf-breadcrumb-separator="true" aria-hidden="true"><span class="sf-breadcrumbs-item-container flex items-cross-center"><sf-icon icon="chevron_right" aria-hidden="true"></sf-icon></span></span><span class="sf-breadcrumbs-item sf-breadcrumbs-item--default flex-none" aria-current="page"><span class="sf-breadcrumbs-item-container flex items-cross-center">Код</span></span></nav>
+                        <main id="docara-main" tabindex="-1" class="docara-content min-w-0" data-docara-region="main">
+                <article class="docara-prose"><div data-docara-component-detail="native.code" data-docara-example-source-sha256="12bbfe6ff182c873d12b98417ef28bd65f31451471fe8b7ccc36dc5861cbf5f9" data-docara-example-render-sha256="b04ba62d79b0d005c36157a59d53a6c31146c38f3d88a2000d113d2f50af31d7" class="flex flex-col gap-3"><h1 id="код">Код</h1><p class="color-on-surface-variant"><code>native.code</code> · Markdown</p><p>Выводит фрагменты и блоки кода из Markdown. Закреплённый SIMAI Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.</p><h2 id="пример">Пример</h2><div data-docara-component-demo="native.code" data-docara-outline-exclude class="bg-surface border border-outline-variant radius-2 p-3"><div data-docara-code-block class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-0"><pre class="docara-code-scroll overflow-auto m-0 p-2"><code class="language-php">$site = 'Docara';
+echo $site;
+</code></pre></div>
+</div><h2 id="вызов">Вызов</h2><pre data-docara-component-source="native.code" class="bg-surface border border-outline-variant radius-2 p-2 overflow-auto"><code class="language-markdown overflow-auto">```php
+$site = 'Docara';
+echo $site;
+```
+</code></pre><details class="bg-surface border border-outline-variant radius-2 p-2"><summary data-docara-component-details-summary class="weight-7 cursor-pointer">Ограничения и источник</summary><div class="flex flex-col gap-2 p-top-2"><ul><li>Без загрузки закреплённого runtime остаётся читаемый статический pre/code; тонкие настройки подсветки и строк не предоставляются.</li></ul><ul><li><code>source_kind</code>: portable_markdown_profile</li><li><code>profile_id</code>: docara.portable_markdown_profile.v1</li><li><code>docs_ref</code>: docs/site/content/ru/authoring/markdown.md</li><li><code>example_ref</code>: resources/component-catalog/examples/native.code.ru.md</li></ul></div></details></div></article>
+                <nav data-docara-previous-next class="docara-previous-next flex gap-2" aria-label="التنقل بين الصفحات">
+<a class="docara-document-link docara-document-link--previous flex flex-1 items-cross-center gap-1 bg-surface-container border border-outline-variant radius-2 p-2 color-on-surface decoration-none" rel="prev" href="/ar/components/catalog/docara.steps/"><sf-icon icon="arrow_back" aria-hidden="true"></sf-icon><span class="flex flex-col"><span class="color-on-surface-variant">السابقة</span><span class="weight-6">Шаги</span></span></a><a class="docara-document-link docara-document-link--next flex flex-1 items-cross-center content-main-between gap-1 bg-surface-container border border-outline-variant radius-2 p-y-2 p-inline-start-2 p-inline-end-1 color-on-surface decoration-none" rel="next" href="/ar/components/catalog/native.headings_and_text/"><span class="flex flex-col"><span class="color-on-surface-variant">التالية</span><span class="weight-6">Заголовки и текст</span></span><sf-icon icon="arrow_forward" aria-hidden="true"></sf-icon></a></nav>
+            </main>
+        </div>
+        <aside class="docara-outline-rail" data-docara-region="outline"><section id="page-outline" data-docara-section="docara.outline" data-docara-region-owner="outline"><nav aria-label="المحتويات" data-docara-smart="docara.toc" data-docara-view="default" data-docara-outline class="flex flex-col gap-1">
+    <p class="m-0 weight-7">المحتويات</p>
+    <ul class="docara-outline-list flex flex-col gap-0 m-0 p-0">
+        <li class="docara-outline-item" data-docara-outline-level="2">
+            <a class="docara-outline-link flex items-cross-center radius-1 p-1/3 text-small color-on-surface-variant decoration-none" href="#пример">Пример</a>
+        </li>
+        <li class="docara-outline-item" data-docara-outline-level="2">
+            <a class="docara-outline-link flex items-cross-center radius-1 p-1/3 text-small color-on-surface-variant decoration-none" href="#вызов">Вызов</a>
+        </li>
+    </ul>
+</nav>
+</section></aside>
+    </div>
+    <sf-modal
+    id="docara-search-dialog"
+    modal-id="docara-search-dialog"
+    data-docara-search-dialog
+    data-docara-transient-dialog
+    data-docara-search-index="/_docara/search-index.json?docara_v=8c0315be7b14ff85d968574134378af5fb5d98ac572e9e2d0f25d3b5856bde40"
+    overlay="true"
+    overlay-class="backdrop-blur-small"
+    show-header="false"
+    show-close="false"
+    show-footer="false"
+    close-on-esc="true"
+    close-on-overlay="true"
+    width="min(calc(100vw - 2rem), 46rem)"
+    surface-padding="0"
+    surface-class="docara-search-modal-surface"
+    body-class="docara-search-modal-body"
+    content-class="docara-search-modal-content"
+><div slot="content" class="flex flex-col gap-1 min-w-0"><div class="docara-search-query bg-surface-0 border border-outline-variant radius-2 p-1 flex items-cross-center gap-1"><label class="sf-input sf-input--size-1 sf-input--bordered flex flex-col flex-1 min-w-0"><span class="sf-input-field items-cross-center transition flex"><span class="sf-input-left flex"><sf-icon icon="search" aria-hidden="true"></sf-icon></span><input data-docara-search-input class="sf-input-text-container flex-1 min-w-0" type="text" role="searchbox" inputmode="search" enterkeyhint="search" autocomplete="off" spellcheck="false" placeholder="على سبيل المثال، الوراثة" aria-label="الاستعلام" aria-controls="docara-search-results" aria-describedby="docara-search-status"></span></label><button type="button" data-docara-search-close class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 radius-default" aria-label="إغلاق البحث"><sf-icon icon="close" aria-hidden="true"></sf-icon></button></div><section class="docara-search-results-surface bg-surface-0 border border-outline-variant radius-2 overflow-hidden color-on-surface" aria-labelledby="docara-search-title"><h2 id="docara-search-title" class="sr-only">البحث في التوثيق</h2><p id="docara-search-status" data-docara-search-status data-state="idle" class="docara-search-status label-medium color-on-surface-variant m-0 p-x-2 p-y-1" aria-live="polite">أدخل حرفين على الأقل</p><ul id="docara-search-results" data-docara-search-results class="docara-search-results flex flex-col m-0 p-0"></ul><footer class="docara-search-help border-top-1 border-outline-variant p-1 flex content-main-center items-cross-center gap-2 color-on-surface-variant label-medium" aria-hidden="true"><span><kbd class="inline-flex items-cross-center p-x-1/2 p-y-1/4">↑↓</kbd> переход</span><span><kbd class="inline-flex items-cross-center p-x-1/2 p-y-1/4">Enter</kbd> открыть</span><span><kbd class="inline-flex items-cross-center p-x-1/2 p-y-1/4">Esc</kbd> закрыть</span></footer></section></div></sf-modal>
+    <dialog id="docara-reader-settings-dialog" data-docara-reader-settings-dialog data-docara-transient-dialog data-configured-theme="system" class="docara-reader-settings-dialog bg-surface-0 border border-outline-variant radius-3 p-0 color-on-surface" aria-labelledby="docara-reader-settings-title"><form method="dialog" class="flex flex-col gap-2 p-3"><div class="flex items-center content-main-between gap-2"><h2 id="docara-reader-settings-title" class="m-0 weight-7">إعدادات القراءة</h2><button value="close" data-docara-reader-settings-close class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-2 radius-default" aria-label="إغلاق إعدادات القراءة"><sf-icon icon="close" aria-hidden="true"></sf-icon></button></div><fieldset class="docara-reader-settings-group flex flex-col gap-1 m-0 p-0 border-none" aria-describedby="docara-reader-settings-help"><legend class="weight-6 p-0">المظهر</legend><p id="docara-reader-settings-help" class="color-on-surface-variant m-0">اختر سمة لهذا المتصفح.</p>
+<label class="sf-radio-button sf-radio-button--size-1 flex items-cross-start gap-1 p-1 radius-1 cursor-pointer transition"><span class="sf-radio-button-box transition flex items-cross-center content-main-center"><input data-docara-theme-option name="docara-reader-theme" type="radio" value="system" checked><span class="sf-radio-button-mark"></span></span><span class="sf-radio-button-container flex flex-col"><span class="sf-radio-button-top flex"><span class="sf-radio-button-text">استخدام إعداد النظام</span></span><span class="sf-radio-button-description">يتبع إعداد الجهاز تلقائيًا.</span></span></label><label class="sf-radio-button sf-radio-button--size-1 flex items-cross-start gap-1 p-1 radius-1 cursor-pointer transition"><span class="sf-radio-button-box transition flex items-cross-center content-main-center"><input data-docara-theme-option name="docara-reader-theme" type="radio" value="light"><span class="sf-radio-button-mark"></span></span><span class="sf-radio-button-container flex flex-col"><span class="sf-radio-button-top flex"><span class="sf-radio-button-text">فاتح</span></span><span class="sf-radio-button-description">استخدام المظهر الفاتح في جميع الصفحات.</span></span></label><label class="sf-radio-button sf-radio-button--size-1 flex items-cross-start gap-1 p-1 radius-1 cursor-pointer transition"><span class="sf-radio-button-box transition flex items-cross-center content-main-center"><input data-docara-theme-option name="docara-reader-theme" type="radio" value="dark"><span class="sf-radio-button-mark"></span></span><span class="sf-radio-button-container flex flex-col"><span class="sf-radio-button-top flex"><span class="sf-radio-button-text">داكن</span></span><span class="sf-radio-button-description">استخدام المظهر الداكن في جميع الصفحات.</span></span></label></fieldset><div class="flex content-main-start"><button type="button" hidden data-docara-reader-settings-reset class="sf-button sf-button--link sf-button--on-surface sf-button--size-1 radius-default"><span class="sf-button-text-container">استعادة إعداد الموقع</span></button></div><p id="docara-reader-settings-status" data-docara-reader-settings-status class="sr-only" aria-live="polite"></p></form></dialog>
+    <script type="application/json" id="docara-runtime-copy">{"shell.skip_to_content":"الانتقال إلى المحتوى","navigation.open":"فتح التنقل","navigation.mobile_title":"التنقل","navigation.primary":"الرئيسية","navigation.sections":"التوثيق","navigation.title":"الأقسام","navigation.close":"إغلاق التنقل","navigation.breadcrumbs":"مسار التنقل","navigation.breadcrumbs_expand":"إظهار مستويات مسار التنقل المخفية","navigation.outline":"المحتويات","navigation.outline_close":"إغلاق مخطط الصفحة","navigation.previous_next":"التنقل بين الصفحات","navigation.previous":"السابقة","navigation.next":"التالية","navigation.expand":"توسيع: ","navigation.collapse":"طي: ","navigation.contains_current":"، يحتوي على الصفحة الحالية","language.label":"اللغة","search.open":"فتح البحث في التوثيق","search.label":"بحث","search.title":"البحث في التوثيق","search.close":"إغلاق البحث","search.query":"الاستعلام","search.placeholder":"على سبيل المثال، الوراثة","search.idle":"أدخل حرفين على الأقل","search.loading":"جارٍ تحميل البحث…","search.found":"النتائج: {count}","search.empty":"لم يتم العثور على نتائج","search.error":"البحث غير متاح مؤقتًا. أعد تحميل الصفحة وحاول مرة أخرى.","search.navigate":"переход","search.open_result":"открыть","search.dismiss":"закрыть","reader.open":"فتح إعدادات القراءة","reader.title":"إعدادات القراءة","reader.close":"إغلاق إعدادات القراءة","reader.appearance":"المظهر","reader.help":"اختر سمة لهذا المتصفح.","reader.reset":"استعادة إعداد الموقع","reader.theme_system":"استخدام إعداد النظام","reader.theme_system_description":"يتبع إعداد الجهاز تلقائيًا.","reader.theme_light":"فاتح","reader.theme_light_description":"استخدام المظهر الفاتح في جميع الصفحات.","reader.theme_dark":"داكن","reader.theme_dark_description":"استخدام المظهر الداكن في جميع الصفحات.","reader.saved":"تم حفظ السمة: {theme}.","reader.applied_not_saved":"تم تطبيق السمة. لم يسمح المتصفح بحفظ الاختيار.","reader.restored":"تمت استعادة إعداد سمة الموقع.","redirect.title":"تم نقل الصفحة","redirect.message":"تم تغيير عنوان الصفحة.","redirect.link":"فتح الصفحة الحالية"}</script>
+    <script src="/ar/_docara/declarative-shell.js?docara_v=8679ee834cb5914a39d0b538b5c8bdf458b4607647a7aaad8b5acacd6399a268" data-docara-shell-controller></script>
+</body>
+</html>

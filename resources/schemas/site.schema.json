@@ -71,8 +71,14 @@
         "settings": {
             "$ref": "presentation.schema.json#/$defs/settings"
         },
+        "reader_preferences": {
+            "$ref": "#/$defs/readerPreferences"
+        },
         "navigation": {
             "$ref": "presentation.schema.json#/$defs/navigation"
+        },
+        "header_navigation": {
+            "$ref": "presentation.schema.json#/$defs/header_navigation"
         },
         "search": {
             "$ref": "presentation.schema.json#/$defs/search"
@@ -83,6 +89,48 @@
     },
     "additionalProperties": false,
     "$defs": {
+        "readerPreferences": {
+            "type": "object",
+            "required": ["enabled", "view", "groups"],
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "view": {
+                    "type": "string",
+                    "const": "side-panel"
+                },
+                "groups": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "maxItems": 20,
+                    "items": {
+                        "type": "object",
+                        "required": ["id", "fields"],
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+                                "maxLength": 80
+                            },
+                            "fields": {
+                                "type": "array",
+                                "minItems": 1,
+                                "maxItems": 50,
+                                "uniqueItems": true,
+                                "items": {
+                                    "type": "string",
+                                    "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+                                    "maxLength": 120
+                                }
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
         "localeRouting": {
             "type": "object",
             "required": ["strategy", "root", "detect_browser_language"],

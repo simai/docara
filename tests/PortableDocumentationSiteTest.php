@@ -79,16 +79,16 @@ final class PortableDocumentationSiteTest extends PHPUnit
             static fn (array $entry): bool => $entry['lifecycle'] !== 'supported',
         ));
 
-        self::assertCount(86, $pages);
-        self::assertCount(190, $htmlPages);
-        self::assertCount(72, $search['documents']);
-        self::assertCount(17, $catalog['entries']);
-        self::assertCount(12, $supported);
+        self::assertCount(90, $pages);
+        self::assertCount(198, $htmlPages);
+        self::assertCount(76, $search['documents']);
+        self::assertCount(21, $catalog['entries']);
+        self::assertCount(16, $supported);
         self::assertCount(5, $unavailable);
-        self::assertCount(12, $receipt['pages']);
+        self::assertCount(16, $receipt['pages']);
         self::assertCount(13, $exampleReceipt['pages']);
         self::assertCount(18, $redirectReceipt['redirects']);
-        self::assertCount(86, $localeRouteReceipt['redirects']);
+        self::assertCount(90, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(
             $localeRouteReceipt['redirects'],
             static fn (array $redirect): bool => $redirect['kind'] === 'root',
@@ -111,9 +111,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The development page must be discoverable by the exact reader query [расширение].',
         );
         self::assertSame(
-            13,
+            17,
             1 + count($receipt['pages']),
-            'The generated catalogue surface must be one index plus twelve supported details.',
+            'The generated catalogue surface must be one index plus sixteen supported details.',
         );
         self::assertSame(
             array_column($supported, 'id'),
@@ -123,6 +123,22 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $catalogIndex = (string) file_get_contents($build . '/' . $receipt['index']['output']);
         $shellCss = (string) file_get_contents($build . '/_docara/declarative-shell.css');
+        self::assertSame(1, substr_count($catalogIndex, 'class="docara-navigation docara-header-navigation"'));
+        self::assertStringContainsString('docara-header-navigation-link h-d0', $catalogIndex);
+        self::assertSame(1, substr_count($catalogIndex, 'data-docara-primary-navigation'));
+        self::assertSame(1, substr_count($catalogIndex, 'id="docara-mobile-navigation"'));
+        self::assertSame(
+            1,
+            substr_count(
+                $catalogIndex,
+                'data-docara-sheet-trigger aria-haspopup="dialog" aria-controls="docara-mobile-navigation"',
+            ),
+        );
+        self::assertStringContainsString(
+            '.docara-mobile-sheet{position:fixed;inset-block:0;inset-inline-start:0;inset-inline-end:auto;',
+            $shellCss,
+            'The mobile navigation sheet must follow the logical inline direction in LTR and RTL.',
+        );
         self::assertStringContainsString(
             'scroll-margin-block-start:4.5rem',
             $shellCss,
@@ -194,7 +210,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             JSON_THROW_ON_ERROR,
         );
         self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
-        self::assertSame(190, $report['html_pages'] ?? null);
+        self::assertSame(198, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
     }

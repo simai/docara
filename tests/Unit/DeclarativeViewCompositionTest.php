@@ -38,7 +38,7 @@ final class DeclarativeViewCompositionTest extends TestCase
         self::assertSame('docara.brand', $resolved['regions']['header'][0]['blocks'][0]['smart']['smart']);
         self::assertSame('SAFE_VIEW_TREE_VALIDATED', $resolved['diagnostics'][1]['code']);
         self::assertSame(
-            'sf-v5.3.2-7e836d8a-dd786bba',
+            'sf-v5.3.2-4100d3f7-dd786bba',
             $resolved['provenance']['view_runtime']['compatibility_id'],
         );
         self::assertSame($plan->canonicalHash(), DeclarativePageCompiler::bundled($this->frameworkLock())->compile(
@@ -90,6 +90,138 @@ final class DeclarativeViewCompositionTest extends TestCase
         }
     }
 
+    public function test_branding_mode_selects_only_registered_smart_views(): void
+    {
+        foreach ([
+            'full' => 'default',
+            'compact' => 'compact',
+            'logo' => 'logo',
+            'text' => 'text',
+        ] as $mode => $expectedView) {
+            $context = PageCompositionContext::fromBuilder(
+                [
+                    'title' => 'Docara',
+                    'mode' => $mode,
+                    'size' => 'medium',
+                    'logo' => $mode === 'text' ? null : '/brand.svg',
+                ],
+                '/',
+                [],
+                [],
+            );
+            $plan = DeclarativePageCompiler::bundled($this->frameworkLock())->compile(
+                (new DocumentParser)->parse("# Brand\n", 'content/brand.md'),
+                'brand',
+                'Brand',
+                3,
+                $context,
+            );
+
+            self::assertSame(
+                $expectedView,
+                $plan->toArray()['regions']['header'][0]['blocks'][0]['smart']['view'],
+                "Unexpected Smart view for branding mode [$mode].",
+            );
+        }
+    }
+
+    public function test_header_navigation_is_projected_into_the_registered_header_view(): void
+    {
+        $context = PageCompositionContext::fromBuilder(
+            ['title' => 'Docara'],
+            '/ru/',
+            [],
+            [],
+            ['navigation.primary' => 'Главное'],
+            [
+                'enabled' => true,
+                'items' => [
+                    ['id' => 'home', 'label' => 'Главная', 'href' => '/ru/'],
+                    ['id' => 'start', 'label' => 'Быстрый старт', 'href' => '/ru/start/'],
+                    ['id' => 'github', 'label' => 'GitHub', 'href' => 'https://github.com/simai/docara'],
+                ],
+            ],
+            '/ru/',
+        );
+
+        $resolved = DeclarativePageCompiler::bundled($this->frameworkLock())->compile(
+            (new DocumentParser)->parse("# Главная\n", 'content/ru/index.md'),
+            'ru',
+            'Главная',
+            3,
+            $context,
+        )->toArray();
+
+        $headerBlocks = $resolved['regions']['header'][0]['blocks'];
+        self::assertCount(2, $headerBlocks);
+        self::assertSame('docara.navigation', $headerBlocks[1]['smart']['smart']);
+        self::assertSame('header', $headerBlocks[1]['smart']['view']);
+        self::assertSame('Главное', $headerBlocks[1]['smart']['props']['label']);
+        self::assertCount(3, $headerBlocks[1]['smart']['props']['items']);
+        self::assertTrue($headerBlocks[1]['smart']['props']['items'][0]['active']);
+        self::assertFalse($headerBlocks[1]['smart']['props']['items'][1]['active']);
+    }
+
+    public function test_disabled_header_navigation_projects_no_empty_navigation(): void
+    {
+        $context = PageCompositionContext::fromBuilder(
+            ['title' => 'Docara'],
+            '/',
+            [],
+            [],
+            [],
+            ['enabled' => false],
+            '/',
+        );
+
+        $resolved = DeclarativePageCompiler::bundled($this->frameworkLock())->compile(
+            (new DocumentParser)->parse("# Home\n", 'content/index.md'),
+            'home',
+            'Home',
+            3,
+            $context,
+        )->toArray();
+
+        self::assertCount(2, $resolved['regions']['header'][0]['blocks']);
+        self::assertSame('docara.brand', $resolved['regions']['header'][0]['blocks'][0]['smart']['smart']);
+        self::assertSame([], $resolved['regions']['header'][0]['blocks'][1]['smart']['props']['items']);
+    }
+
+    public function test_header_navigation_rejects_duplicate_ids(): void
+    {
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('DECLARATIVE_HEADER_NAVIGATION_INVALID');
+
+        PageCompositionContext::fromBuilder(
+            ['title' => 'Docara'],
+            '/',
+            [],
+            [],
+            [],
+            [
+                'enabled' => true,
+                'items' => [
+                    ['id' => 'home', 'label' => 'Home', 'href' => '/'],
+                    ['id' => 'home', 'label' => 'Start', 'href' => '/start/'],
+                ],
+            ],
+            '/',
+        );
+    }
+
+    public function test_logo_only_brand_requires_an_image(): void
+    {
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('DECLARATIVE_SHELL_BRANDING_INVALID');
+
+        PageCompositionContext::fromBuilder(
+            ['title' => 'Docara', 'mode' => 'logo'],
+            '/',
+            [],
+            [],
+        );
+    }
+
     public function test_registered_definition_schemas_reject_executable_and_template_surfaces(): void
     {
         $schemas = new SchemaRepository;
@@ -135,7 +267,7 @@ final class DeclarativeViewCompositionTest extends TestCase
     {
         $provenance = (new FrameworkUtilityRegistry)->provenance();
 
-        self::assertSame('sf-v5.3.2-7e836d8a-dd786bba', $provenance['compatibility_id']);
+        self::assertSame('sf-v5.3.2-4100d3f7-dd786bba', $provenance['compatibility_id']);
         self::assertSame(
             '2c5963276d31af09770fe41cad04826c04b634f7b2d798d9b0e32864517346b7',
             $provenance['registry_sha256'],

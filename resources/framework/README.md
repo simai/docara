@@ -16,7 +16,7 @@ Framework runtime lock and three locally published Smart assets from
 Project sites repeat those hashes, the source revision and the manifest
 provider revision in `docara.framework_lock.v1`. A build verifies the bytes,
 copies them to the reserved `_docara/framework` namespace and appends one
-projection-aware cache version to each URL. Simai Framework Core remains an exact-commit jsDelivr
+projection-aware cache version to each URL. SIMAI Framework Core remains an exact-commit jsDelivr
 dependency; there is no moving `main`/`latest` or `ui-smart` CDN fallback.
 The local consumer adapter waits for the exact full Material Symbols font from
 that Core revision before exposing Framework icon glyphs; it does not call the

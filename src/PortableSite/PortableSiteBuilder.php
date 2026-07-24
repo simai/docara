@@ -26,6 +26,7 @@ use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\PortableConfigurationLoader;
 use Simai\Docara\Portable\ResolvedPagePlan;
 use Simai\Docara\Portable\SchemaRepository;
+use Simai\Docara\Preferences\ReaderPreferenceCompiler;
 use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class PortableSiteBuilder
@@ -149,7 +150,11 @@ final readonly class PortableSiteBuilder
                 'documentation_version' => $documentationVersion,
                 'preset' => (string) ($plan->configuration['preset'] ?? 'docs'),
                 'theme' => (string) data_get($plan->configuration, 'settings.theme', 'system'),
-                'max_width' => (string) data_get($plan->configuration, 'layout.max_width', 'normal'),
+                'reader_preferences' => is_array($plan->configuration['reader_preferences'] ?? null)
+                    ? $plan->configuration['reader_preferences']
+                    : ReaderPreferenceCompiler::defaultConfiguration(),
+                'reader_preferences_storage_key' => ReaderPreferenceCompiler::storageKey($plan->configuration),
+                'container_max' => (int) data_get($plan->configuration, 'layout.container.max', 7),
                 'navigation_hidden' => (bool) data_get($plan->configuration, 'navigation.hidden', false),
                 'navigation_order' => data_get($plan->configuration, 'navigation.order'),
                 'search_enabled' => (bool) data_get($plan->configuration, 'search.enabled', false),
@@ -531,7 +536,12 @@ final readonly class PortableSiteBuilder
                     $activeNavigation,
                     $page['outline'],
                     is_array($page['ui_copy'] ?? null) ? $page['ui_copy'] : [],
+                    is_array($declarativePlan->configuration['header_navigation'] ?? null)
+                        ? $declarativePlan->configuration['header_navigation']
+                        : [],
+                    (string) $page['url'],
                 );
+                $page['header_navigation'] = $composition->headerNavigation;
                 $declarativePipeline ??= DeclarativePipeline::bundled(
                     $declarativePlan->frameworkLock,
                     $this->markdown,

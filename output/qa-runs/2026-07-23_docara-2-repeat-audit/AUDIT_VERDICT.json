@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "audit_id": "2026-07-23-docara-2-repeat-audit",
+  "target_head": "d239d9c97f32193385ac16212183e095338ac3f9",
+  "product_candidate": "0d2a528c4bd5cff5b4986ff60e0abd668d328f47",
+  "verdict": "CORRECTION_REQUIRED",
+  "product_runtime": "PASS",
+  "local_site": "PASS",
+  "active_skill": "FAIL",
+  "workflow_continuation": "FAIL",
+  "remote_source_sync": "NOT_READY",
+  "public_release": "NOT_READY",
+  "blocking_findings": ["F-001", "R-001"],
+  "nonblocking_findings": ["F-002", "F-003", "F-004"],
+  "writes_performed": false
+}
+

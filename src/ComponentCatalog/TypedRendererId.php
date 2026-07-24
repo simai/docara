@@ -11,6 +11,10 @@ enum TypedRendererId: string
     case Steps = 'docara.steps.v1';
     case Cta = 'docara.cta.v1';
     case Features = 'docara.features.v1';
+    case Hero = 'docara.hero.v1';
+    case Logos = 'docara.logos.v1';
+    case Promo = 'docara.promo.v1';
+    case Showcase = 'docara.showcase.v1';
 
     public function componentId(): string
     {

@@ -11,7 +11,12 @@ final class DocaraSmartContribution implements SmartContribution
         $this->add(
             $registry,
             'docara.brand',
-            ['default' => ['file' => 'default.php', 'renderer' => 'php'], 'compact' => ['file' => 'compact.php', 'renderer' => 'php']],
+            [
+                'default' => ['file' => 'default.php', 'renderer' => 'php'],
+                'compact' => ['file' => 'compact.php', 'renderer' => 'php'],
+                'logo' => ['file' => 'logo.php', 'renderer' => 'php'],
+                'text' => ['file' => 'text.php', 'renderer' => 'php'],
+            ],
             [],
             ['docara.header' => 'Renamed because header is a layout region; use docara.brand.'],
             ['docara.smart.brand.css' => $this->asset('brand.css', 'css')],
@@ -23,9 +28,13 @@ final class DocaraSmartContribution implements SmartContribution
                 'default' => ['file' => 'default.blade.php', 'renderer' => 'blade'],
                 'compact' => ['file' => 'compact.blade.php', 'renderer' => 'blade'],
                 'tree' => ['file' => 'tree.blade.php', 'renderer' => 'blade'],
+                'header' => ['file' => 'header.php', 'renderer' => 'php'],
             ],
             ['smart.docara.navigation.item' => [
                 'path' => 'smart/docara.navigation/templates/item.php',
+                'renderer' => 'php',
+            ], 'smart.docara.navigation.header-item' => [
+                'path' => 'smart/docara.navigation/templates/header-item.php',
                 'renderer' => 'php',
             ]],
             [],
@@ -43,6 +52,20 @@ final class DocaraSmartContribution implements SmartContribution
             [
                 'docara.smart.toc.css' => $this->asset('toc.css', 'css'),
                 'docara.smart.toc.js' => $this->asset('toc.js', 'javascript'),
+            ],
+        );
+        $this->add(
+            $registry,
+            'docara.preferences',
+            [
+                'default' => ['file' => 'side-panel.php', 'renderer' => 'php'],
+                'side-panel' => ['file' => 'side-panel.php', 'renderer' => 'php'],
+            ],
+            [],
+            [],
+            [
+                'docara.smart.preferences.css' => $this->asset('preferences.css', 'css'),
+                'docara.smart.preferences.js' => $this->asset('preferences.js', 'javascript'),
             ],
         );
     }

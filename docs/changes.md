@@ -1,7 +1,7 @@
 # Docara 2 candidate
 
 Docara now has one supported product path: validated JSON settings, Markdown
-content and deterministic static publication through Simai Framework.
+content and deterministic static publication through SIMAI Framework.
 
 The candidate provides:
 

@@ -1,0 +1,40 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.tester_verdict",
+  "quality_control_id": "human_centered_simplicity",
+  "reviewer": {"role": "tester", "source": "tester_skill", "identity": "docara_landing_components_acceptance"},
+  "scope_binding": {
+    "task_sha256": "73216eb82aff4738cd810a7137e8ee6c7a65ddffb94b0faff143e4ae4d6a5cf6",
+    "review_payload_sha256": "4b565f9b9f3d35faa70ca07034b638a84adf534fc5d2e18b4767c4ceffd24afd",
+    "workflow_ref": "",
+    "workflow_sha256": "",
+    "repository_refs": ["repo://docara-consolidation"],
+    "repository_baselines": []
+  },
+  "status": "VERIFIED",
+  "reviewed_surface_ids": ["landing_renderers", "hero_contract", "logos_contract", "landing_example", "code_visibility", "contract_tests"],
+  "surface_classifications": [
+    {"surface_id": "landing_renderers", "classification": "ordinary", "protected_categories": [], "evidence_ref": "src/PortableSite/PortableMarkdownRenderer.php"},
+    {"surface_id": "hero_contract", "classification": "ordinary", "protected_categories": [], "evidence_ref": "resources/component-catalog/typed/docara.hero.json"},
+    {"surface_id": "logos_contract", "classification": "ordinary", "protected_categories": [], "evidence_ref": "resources/component-catalog/typed/docara.logos.json"},
+    {"surface_id": "landing_example", "classification": "ordinary", "protected_categories": [], "evidence_ref": "docs/site/content/ru/landing.md"},
+    {"surface_id": "code_visibility", "classification": "protective", "protected_categories": ["accessibility"], "evidence_ref": "src/PortableSite/PortableMarkdownRenderer.php"},
+    {"surface_id": "contract_tests", "classification": "protective", "protected_categories": ["security", "rollback"], "evidence_ref": "tests/Unit/PortableMarkdownRendererTest.php"}
+  ],
+  "evidence_paths": ["src/PortableSite/PortableMarkdownRenderer.php", "resources/component-catalog/typed/docara.hero.json", "resources/component-catalog/typed/docara.logos.json", "docs/site/content/ru/landing.md", "tests/Unit/PortableMarkdownRendererTest.php", "source/workflow/evidence/2026-07-23-docara-landing-components/acceptance.md"],
+  "evidence_fingerprints": [
+    {"path": "src/PortableSite/PortableMarkdownRenderer.php", "sha256": "1e59ace6ac0644397169c0845e9b7253e3d0af5ad918aabbc54d0bfac1093f9d"},
+    {"path": "resources/component-catalog/typed/docara.hero.json", "sha256": "803a5966045339ce42c545bef1bc4d9870550d2d6d0654f53eb59a4c548a3775"},
+    {"path": "resources/component-catalog/typed/docara.logos.json", "sha256": "75c1af02c301b193e83778a034aea0cbe3076aa7f65411ebe0e74729dfeb2a97"},
+    {"path": "docs/site/content/ru/landing.md", "sha256": "37c4551e8fb349b3da569f32d694f982db6a7574bef203a0f979b273e9e15032"},
+    {"path": "tests/Unit/PortableMarkdownRendererTest.php", "sha256": "0efd13b89f127e59dbcce159bbc96d3a7d698afc2bda67ee141c85437c40a99f"},
+    {"path": "source/workflow/evidence/2026-07-23-docara-landing-components/acceptance.md", "sha256": "916cfce794335770044c87a11c99a8df7e414542b8b821918914b30cbdf93c73"}
+  ],
+  "commands": [
+    {"command": "/Applications/ServBay/bin/php vendor/bin/phpunit", "exit_code": 0, "result": "PASS", "output_ref": "source/workflow/evidence/2026-07-23-docara-landing-components/acceptance.md", "output_sha256": "916cfce794335770044c87a11c99a8df7e414542b8b821918914b30cbdf93c73"},
+    {"command": "/Applications/ServBay/bin/php docara verify-static docs/site/build_production", "exit_code": 0, "result": "PASS", "output_ref": "source/workflow/evidence/2026-07-23-docara-landing-components/acceptance.md", "output_sha256": "916cfce794335770044c87a11c99a8df7e414542b8b821918914b30cbdf93c73"},
+    {"command": "browser QA desktop/mobile light/dark", "exit_code": 0, "result": "PASS", "output_ref": "source/workflow/evidence/2026-07-23-docara-landing-components/acceptance.md", "output_sha256": "916cfce794335770044c87a11c99a8df7e414542b8b821918914b30cbdf93c73"}
+  ],
+  "contradictions": [],
+  "verdict": "PASS"
+}

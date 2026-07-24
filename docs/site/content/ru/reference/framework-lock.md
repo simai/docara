@@ -35,7 +35,7 @@ tests и consumer policy.
 Если зафиксированный Core использует browser storage, интеграционный слой может
 предоставить ограниченный in-memory fallback только для текущей страницы. Такой
 fallback не является persistent storage и не создаёт отдельную реализацию
-Simai Framework.
+SIMAI Framework.
 
 ## Граница
 

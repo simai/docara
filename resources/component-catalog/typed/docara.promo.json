@@ -1,0 +1,32 @@
+{
+    "id": "docara.promo",
+    "name": "promo",
+    "renderer": "docara.promo.v1",
+    "family": "docara_typed",
+    "category": "landing",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive",
+        "call": ":::promo",
+        "jobs": [
+            "close_landing_story",
+            "present_final_action"
+        ],
+        "parameters": []
+    },
+    "states": [
+        "text",
+        "text_with_media"
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": true
+    },
+    "docs_ref": "docs/site/content/ru/components/syntax.md",
+    "provenance": {
+        "source_kind": "typed_definition",
+        "definition_ref": "resources/component-catalog/typed/docara.promo.json"
+    }
+}

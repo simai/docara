@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.review",
+  "quality_control_id": "human_centered_simplicity",
+  "applicable": true,
+  "task": "Расширить компоненты Docara для построения лендингов по итогам аудита Diplodoc и проверить локальный результат.",
+  "primary_user_outcome": {
+    "id": "UO-DOCARA-LANDING",
+    "actor": "автор документации",
+    "job": "собрать адаптивный продуктовый лендинг из Markdown без отдельного frontend runtime",
+    "success_condition": "первый экран, преимущества, доверие, процесс, сценарии и действие собираются из документированных блоков"
+  },
+  "changed_surface_inventory": {
+    "mode": "artifact_comparison",
+    "baseline_ref": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+    "target_ref": "worktree:2026-07-23",
+    "diff_sha256": "211d75c0aa17f6a675017bf8447af4a54d5958a60065c1f3d4edcaba13968c2a",
+    "evidence_paths": [
+      "src/PortableSite/PortableMarkdownRenderer.php",
+      "resources/component-catalog/typed/docara.hero.json",
+      "resources/component-catalog/typed/docara.logos.json",
+      "docs/site/content/ru/landing.md",
+      "tests/Unit/PortableMarkdownRendererTest.php"
+    ],
+    "files": [
+      {"path": "src/PortableSite/PortableMarkdownRenderer.php", "surface_ids": ["landing_renderers", "code_visibility"]},
+      {"path": "resources/component-catalog/typed/docara.hero.json", "surface_ids": ["hero_contract"]},
+      {"path": "resources/component-catalog/typed/docara.logos.json", "surface_ids": ["logos_contract"]},
+      {"path": "docs/site/content/ru/landing.md", "surface_ids": ["landing_example"]},
+      {"path": "tests/Unit/PortableMarkdownRendererTest.php", "surface_ids": ["contract_tests"]}
+    ]
+  },
+  "necessity_map": [
+    {"id": "landing_renderers", "surface_type": "ui_element", "description": "Hero и logos закрывают два отсутствовавших пользовательских сценария", "disposition": "retain", "disclosure": "visible", "justification": {"type": "user_outcome", "ref": "UO-DOCARA-LANDING"}},
+    {"id": "hero_contract", "surface_type": "configuration", "description": "Машинно-читаемый контракт первого экрана", "disposition": "retain", "disclosure": "progressive", "justification": {"type": "user_outcome", "ref": "UO-DOCARA-LANDING"}},
+    {"id": "logos_contract", "surface_type": "configuration", "description": "Машинно-читаемый контракт ряда участников", "disposition": "retain", "disclosure": "progressive", "justification": {"type": "user_outcome", "ref": "UO-DOCARA-LANDING"}},
+    {"id": "landing_example", "surface_type": "ui_element", "description": "Цельная демонстрация композиции вместо набора несвязанных примеров", "disposition": "retain", "disclosure": "visible", "justification": {"type": "user_outcome", "ref": "UO-DOCARA-LANDING"}},
+    {"id": "code_visibility", "surface_type": "protective_control", "description": "Статический code block остаётся видимым без hydration", "disposition": "retain", "disclosure": "internal", "justification": {"type": "accessibility", "ref": "src/PortableSite/PortableMarkdownRenderer.php"}},
+    {"id": "contract_tests", "surface_type": "protective_control", "description": "Fail-closed структура, URL safety и responsive regression", "disposition": "retain", "disclosure": "internal", "justification": {"type": "security", "ref": "tests/Unit/PortableMarkdownRendererTest.php"}}
+  ],
+  "removal_review": {
+    "challenged_ids": ["landing_renderers", "hero_contract", "logos_contract", "landing_example", "code_visibility", "contract_tests"],
+    "removed_ids": [],
+    "merged_ids": [],
+    "summary": "Пять существующих блоков переиспользованы; вместо переноса Page Constructor добавлены только два недостающих примитива."
+  },
+  "simplest_complete_alternative": "Пять существующих блоков плюс docara.hero и docara.logos; без React, Node.js, Gravity UI, произвольного HTML и второго реестра.",
+  "progressive_disclosure": {
+    "required": true,
+    "strategy": "На лендинге виден результат, а синтаксис и ограничения раскрываются в generated catalog.",
+    "discoverability_evidence": "docs/site/content/ru/landing.md",
+    "not_required_reason": ""
+  },
+  "complexity_delta": [
+    {"measure": "typed_landing_components", "before": 5, "after": 7, "unit": "components", "interpretation": "Добавлены только два отсутствовавших сценария.", "justification_ref": "docs/site/content/ru/landing.md"},
+    {"measure": "new_frontend_runtimes", "before": 0, "after": 0, "unit": "runtimes", "interpretation": "Новых runtime-зависимостей нет.", "justification_ref": "src/PortableSite/PortableMarkdownRenderer.php"},
+    {"measure": "custom_author_css", "before": 0, "after": 0, "unit": "classes", "interpretation": "Автор использует семантические директивы, Framework-классы формирует renderer.", "justification_ref": "src/PortableSite/PortableMarkdownRenderer.php"}
+  ],
+  "automation_review": {"present": false, "simplified_before_automation": true, "stable_process_proven": true, "evidence_ref": ""},
+  "scenario_evidence": [
+    {"scenario": "SC-DOCARA-LANDING-DESKTOP", "actor": "desktop reader", "steps": ["Открыть /ru/landing/", "Проверить блоки", "Проверить светлую и тёмную тему"], "expected": "Полный лендинг без горизонтального overflow", "actual": "Все блоки видимы, один H1, overflow отсутствует, обе темы работают", "evidence_ref": "source/workflow/evidence/2026-07-23-docara-landing-components/acceptance.md", "result": "PASS"},
+    {"scenario": "SC-DOCARA-LANDING-MOBILE", "actor": "mobile reader", "steps": ["Открыть страницу при 390 x 844", "Проверить сетки", "Проверить code block"], "expected": "Адаптивная композиция и видимые команды", "actual": "Hero/features в одну колонку, logos в две, code opacity 1, overflow отсутствует", "evidence_ref": "source/workflow/evidence/2026-07-23-docara-landing-components/acceptance.md", "result": "PASS"}
+  ],
+  "protected_complexity_review": [
+    {"category": "accessibility", "status": "PRESERVED", "evidence_ref": "src/PortableSite/PortableMarkdownRenderer.php"},
+    {"category": "security", "status": "PRESERVED", "evidence_ref": "tests/Unit/PortableMarkdownRendererTest.php"},
+    {"category": "data_integrity", "status": "PRESERVED", "evidence_ref": "tests/Unit/PortableMarkdownRendererTest.php"},
+    {"category": "permissions", "status": "NOT_APPLICABLE", "evidence_ref": "tests/Unit/PortableMarkdownRendererTest.php"},
+    {"category": "error_handling", "status": "PRESERVED", "evidence_ref": "src/PortableSite/PortableMarkdownRenderer.php"},
+    {"category": "observability", "status": "PRESERVED", "evidence_ref": "source/workflow/evidence/2026-07-23-docara-landing-components/acceptance.md"},
+    {"category": "migrations", "status": "NOT_APPLICABLE", "evidence_ref": "tests/Unit/PortableMarkdownRendererTest.php"},
+    {"category": "rollback", "status": "PRESERVED", "evidence_ref": "tests/Unit/PortableMarkdownRendererTest.php"}
+  ],
+  "tester_evidence_review": {
+    "status": "VERIFIED",
+    "verdict_ref": "source/workflow/evidence/2026-07-23-docara-landing-components/human-centered-simplicity-tester-verdict.json",
+    "verdict_sha256": "c2088b6734a8a631ff82da72670c53105161bffb053a105d7c0537719c1bb73a",
+    "reviewed_surface_ids": ["landing_renderers", "hero_contract", "logos_contract", "landing_example", "code_visibility", "contract_tests"],
+    "surface_classifications": [
+      {"surface_id": "landing_renderers", "classification": "ordinary", "protected_categories": [], "evidence_ref": "src/PortableSite/PortableMarkdownRenderer.php"},
+      {"surface_id": "hero_contract", "classification": "ordinary", "protected_categories": [], "evidence_ref": "resources/component-catalog/typed/docara.hero.json"},
+      {"surface_id": "logos_contract", "classification": "ordinary", "protected_categories": [], "evidence_ref": "resources/component-catalog/typed/docara.logos.json"},
+      {"surface_id": "landing_example", "classification": "ordinary", "protected_categories": [], "evidence_ref": "docs/site/content/ru/landing.md"},
+      {"surface_id": "code_visibility", "classification": "protective", "protected_categories": ["accessibility"], "evidence_ref": "src/PortableSite/PortableMarkdownRenderer.php"},
+      {"surface_id": "contract_tests", "classification": "protective", "protected_categories": ["security", "rollback"], "evidence_ref": "tests/Unit/PortableMarkdownRendererTest.php"}
+    ],
+    "evidence_paths": ["src/PortableSite/PortableMarkdownRenderer.php", "resources/component-catalog/typed/docara.hero.json", "resources/component-catalog/typed/docara.logos.json", "docs/site/content/ru/landing.md", "tests/Unit/PortableMarkdownRendererTest.php", "source/workflow/evidence/2026-07-23-docara-landing-components/acceptance.md"],
+    "evidence_fingerprints": [
+      {"path": "src/PortableSite/PortableMarkdownRenderer.php", "sha256": "1e59ace6ac0644397169c0845e9b7253e3d0af5ad918aabbc54d0bfac1093f9d"},
+      {"path": "resources/component-catalog/typed/docara.hero.json", "sha256": "803a5966045339ce42c545bef1bc4d9870550d2d6d0654f53eb59a4c548a3775"},
+      {"path": "resources/component-catalog/typed/docara.logos.json", "sha256": "75c1af02c301b193e83778a034aea0cbe3076aa7f65411ebe0e74729dfeb2a97"},
+      {"path": "docs/site/content/ru/landing.md", "sha256": "37c4551e8fb349b3da569f32d694f982db6a7574bef203a0f979b273e9e15032"},
+      {"path": "tests/Unit/PortableMarkdownRendererTest.php", "sha256": "0efd13b89f127e59dbcce159bbc96d3a7d698afc2bda67ee141c85437c40a99f"},
+      {"path": "source/workflow/evidence/2026-07-23-docara-landing-components/acceptance.md", "sha256": "916cfce794335770044c87a11c99a8df7e414542b8b821918914b30cbdf93c73"}
+    ],
+    "contradictions": [],
+    "verdict": "PASS"
+  },
+  "residual_complexity": [
+    {"description": "Media-rich hero illustrations remain author-supplied content rather than a bundled visual asset.", "category": "maintainability", "evidence_ref": "resources/component-catalog/typed/docara.hero.json"}
+  ],
+  "blocking_findings": [],
+  "verdict": "PASS"
+}

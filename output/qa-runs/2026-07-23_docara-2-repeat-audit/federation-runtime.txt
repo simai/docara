@@ -1,0 +1,4 @@
+runtime_current=/Users/rim/.codex/simai-workspace/federation-maintenance/releases/7.4.2-d6f1c01f669ff286
+/Users/rim/.codex/simai-workspace/federation-maintenance/releases/7.4.2-6eaca3e976e00bc8/release-lock.json
+/Users/rim/.codex/skills/docara -> /Users/rim/.codex/simai-workspace/federation-maintenance/releases/7.4.2-d6f1c01f669ff286/workspace/ai-codex-skill-docara/skills/docara
+/Users/rim/.codex/simai-workspace/federation-maintenance/runtime-current -> /Users/rim/.codex/simai-workspace/federation-maintenance/releases/7.4.2-d6f1c01f669ff286

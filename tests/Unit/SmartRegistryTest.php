@@ -19,7 +19,7 @@ final class SmartRegistryTest extends TestCase
         $registry = SmartRegistry::bundled();
 
         self::assertSame(
-            ['docara.brand', 'docara.navigation', 'docara.toc', 'ui.alert', 'ui.button'],
+            ['docara.brand', 'docara.navigation', 'docara.preferences', 'docara.toc', 'ui.alert', 'ui.button'],
             $registry->keys(),
         );
         self::assertSame('docara.brand', $registry->canonicalKey('docara.header'));
@@ -33,7 +33,7 @@ final class SmartRegistryTest extends TestCase
         $repository = new DefinitionRepository;
         $validator = new SmartManifestValidator;
 
-        foreach (['ui.alert', 'ui.button', 'docara.brand', 'docara.navigation', 'docara.toc'] as $key) {
+        foreach (['ui.alert', 'ui.button', 'docara.brand', 'docara.navigation', 'docara.preferences', 'docara.toc'] as $key) {
             $manifest = $repository->smartManifest($key);
             $validator->assertValid($key, $manifest);
             self::assertSame('larena.ui.smart_manifest.v1', $manifest['schema']);

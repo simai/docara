@@ -255,6 +255,12 @@ final readonly class DeclarativePageCompiler
                 continue;
             }
             $smart = (string) $blockConfiguration['smart'];
+            $boundProps = str_starts_with($smart, 'ui.')
+                ? []
+                : $this->boundProps($blockConfiguration, $composition);
+            $requestedView = is_string($blockConfiguration['view'] ?? null)
+                ? $blockConfiguration['view']
+                : $this->defaultCompositeView($smart, $boundProps);
             $nodeId = 'smart-' . substr(
                 hash('sha256', $pageKey . "\0" . $region . "\0" . $configuration['id'] . "\0" . $blockConfiguration['id'] . "\0" . $smart),
                 0,
@@ -264,9 +270,7 @@ final readonly class DeclarativePageCompiler
                 ? $this->smart->resolve(new SmartCallNode(
                     $nodeId,
                     $smart,
-                    is_string($blockConfiguration['view'] ?? null)
-                        ? $blockConfiguration['view']
-                        : 'default',
+                    $requestedView,
                     is_array($blockConfiguration['props'] ?? null)
                         ? $blockConfiguration['props']
                         : [],
@@ -276,10 +280,8 @@ final readonly class DeclarativePageCompiler
                 : $this->composites->resolve(
                     $smart,
                     $nodeId,
-                    $this->boundProps($blockConfiguration, $composition),
-                    is_string($blockConfiguration['view'] ?? null)
-                        ? $blockConfiguration['view']
-                        : 'default',
+                    $boundProps,
+                    $requestedView,
                 );
             $blocks[] = $this->block(
                 (string) $configuration['id'] . '.' . $blockConfiguration['id'],
@@ -355,11 +357,36 @@ final readonly class DeclarativePageCompiler
                 'collapse_label' => $composition->navigationCopy['collapse'],
                 'contains_current_label' => $composition->navigationCopy['contains_current'],
             ],
+            'header_navigation' => [
+                'items' => $composition->headerNavigation,
+                'maximum_depth' => 4,
+                'label' => $composition->headerNavigationLabel,
+                'expand_label' => $composition->navigationCopy['expand'],
+                'collapse_label' => $composition->navigationCopy['collapse'],
+                'contains_current_label' => $composition->navigationCopy['contains_current'],
+            ],
             'outline' => ['items' => $composition->outline, 'label' => $composition->tocLabel],
             default => throw new PortableConfigurationException(
                 'DECLARATIVE_REGION_BINDING_FORBIDDEN',
                 "Unknown declarative region binding [{$block['bind']}].",
             ),
+        };
+    }
+
+    /** @param array<string, mixed> $props */
+    private function defaultCompositeView(string $smart, array $props): string
+    {
+        if ($smart !== 'docara.brand') {
+            return 'default';
+        }
+
+        $branding = is_array($props['branding'] ?? null) ? $props['branding'] : [];
+
+        return match ($branding['mode'] ?? 'full') {
+            'compact' => 'compact',
+            'logo' => 'logo',
+            'text' => 'text',
+            default => 'default',
         };
     }
 

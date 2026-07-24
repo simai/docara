@@ -52,7 +52,7 @@ source, locale, версию документации, `base_url`, source/target
 
 Любой из этих маркеров делает проверку артефакта неуспешной.
 
-Текущий lock загружает Simai Framework Core по exact commit из сети. Поэтому
+Текущий lock загружает SIMAI Framework Core по exact commit из сети. Поэтому
 наличие всех локальных Smart-файлов не означает полностью offline-сайт.
 
 Публичную production или release готовность следует заявлять только после

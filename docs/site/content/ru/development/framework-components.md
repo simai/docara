@@ -1,4 +1,4 @@
-# Добавление Smart-компонента Simai Framework
+# Добавление Smart-компонента SIMAI Framework
 
 Новый `:::ui.*` вызов нельзя добавить только изменением parser, schema или
 метаданных каталога. Единственный admission authority — точный
@@ -15,7 +15,7 @@
    typed-компонентом Docara;
 2. добавить source-backed `larena.ui.smart_manifest.v1` с props, host renderer
    и immutable upstream revision;
-3. добавить manifest в точный Simai Framework lock с provider revision и
+3. добавить manifest в точный SIMAI Framework lock с provider revision и
    SHA-256;
 4. описать полный immutable asset dependency plan, включая транзитивные
    зависимости;
@@ -85,5 +85,5 @@ authoritative source: native profile, typed definition либо Smart metadata �
 точным lock admission. Для исполняемой записи обязательны renderer, тесты,
 документация и example fixture. Каталог
 `_docara/component-catalog.json` в output сборки не является каноническим
-реестром Simai Framework и не подтверждает production или public-release
+реестром SIMAI Framework и не подтверждает production или public-release
 readiness.

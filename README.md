@@ -1,7 +1,7 @@
 # Docara
 
 Docara builds static documentation, reference sites and small landing pages
-from Markdown and validated JSON. Simai Framework supplies the interface;
+from Markdown and validated JSON. SIMAI Framework supplies the interface;
 authors do not need Node.js or a frontend toolchain.
 
 ## Quick start

@@ -1,0 +1,144 @@
+{
+    "base_url": "/",
+    "content_sha256": "36720eec6d0441d8a9ce665040740d736c34bb9bcfdec8811a15ae4d1fa7cb47",
+    "copy": {
+        "redirect.link": "Перейти к актуальной странице",
+        "redirect.message": "Адрес страницы изменился.",
+        "redirect.title": "Страница перемещена"
+    },
+    "direction": "ltr",
+    "documentation_version": "current",
+    "locale": "ru",
+    "redirects": [
+        {
+            "from": "components/alert",
+            "output": "components/alert/index.html",
+            "target_url": "/ru/components/catalog/ui.alert/",
+            "to": "ru/components/catalog/ui.alert",
+            "url": "/components/alert/"
+        },
+        {
+            "from": "components/button",
+            "output": "components/button/index.html",
+            "target_url": "/ru/components/catalog/ui.button/",
+            "to": "ru/components/catalog/ui.button",
+            "url": "/components/button/"
+        },
+        {
+            "from": "components/card",
+            "output": "components/card/index.html",
+            "target_url": "/ru/components/catalog/docara.card/",
+            "to": "ru/components/catalog/docara.card",
+            "url": "/components/card/"
+        },
+        {
+            "from": "components/code",
+            "output": "components/code/index.html",
+            "target_url": "/ru/components/catalog/native.code/",
+            "to": "ru/components/catalog/native.code",
+            "url": "/components/code/"
+        },
+        {
+            "from": "components/cta",
+            "output": "components/cta/index.html",
+            "target_url": "/ru/components/catalog/docara.cta/",
+            "to": "ru/components/catalog/docara.cta",
+            "url": "/components/cta/"
+        },
+        {
+            "from": "components/features",
+            "output": "components/features/index.html",
+            "target_url": "/ru/components/catalog/docara.features/",
+            "to": "ru/components/catalog/docara.features",
+            "url": "/components/features/"
+        },
+        {
+            "from": "components/steps",
+            "output": "components/steps/index.html",
+            "target_url": "/ru/components/catalog/docara.steps/",
+            "to": "ru/components/catalog/docara.steps",
+            "url": "/components/steps/"
+        },
+        {
+            "from": "components/table",
+            "output": "components/table/index.html",
+            "target_url": "/ru/components/catalog/native.table/",
+            "to": "ru/components/catalog/native.table",
+            "url": "/components/table/"
+        },
+        {
+            "from": "components/tabs",
+            "output": "components/tabs/index.html",
+            "target_url": "/ru/components/catalog/",
+            "to": "ru/components/catalog",
+            "url": "/components/tabs/"
+        },
+        {
+            "from": "ru/components/alert",
+            "output": "ru/components/alert/index.html",
+            "target_url": "/ru/components/catalog/ui.alert/",
+            "to": "ru/components/catalog/ui.alert",
+            "url": "/ru/components/alert/"
+        },
+        {
+            "from": "ru/components/button",
+            "output": "ru/components/button/index.html",
+            "target_url": "/ru/components/catalog/ui.button/",
+            "to": "ru/components/catalog/ui.button",
+            "url": "/ru/components/button/"
+        },
+        {
+            "from": "ru/components/card",
+            "output": "ru/components/card/index.html",
+            "target_url": "/ru/components/catalog/docara.card/",
+            "to": "ru/components/catalog/docara.card",
+            "url": "/ru/components/card/"
+        },
+        {
+            "from": "ru/components/code",
+            "output": "ru/components/code/index.html",
+            "target_url": "/ru/components/catalog/native.code/",
+            "to": "ru/components/catalog/native.code",
+            "url": "/ru/components/code/"
+        },
+        {
+            "from": "ru/components/cta",
+            "output": "ru/components/cta/index.html",
+            "target_url": "/ru/components/catalog/docara.cta/",
+            "to": "ru/components/catalog/docara.cta",
+            "url": "/ru/components/cta/"
+        },
+        {
+            "from": "ru/components/features",
+            "output": "ru/components/features/index.html",
+            "target_url": "/ru/components/catalog/docara.features/",
+            "to": "ru/components/catalog/docara.features",
+            "url": "/ru/components/features/"
+        },
+        {
+            "from": "ru/components/steps",
+            "output": "ru/components/steps/index.html",
+            "target_url": "/ru/components/catalog/docara.steps/",
+            "to": "ru/components/catalog/docara.steps",
+            "url": "/ru/components/steps/"
+        },
+        {
+            "from": "ru/components/table",
+            "output": "ru/components/table/index.html",
+            "target_url": "/ru/components/catalog/native.table/",
+            "to": "ru/components/catalog/native.table",
+            "url": "/ru/components/table/"
+        },
+        {
+            "from": "ru/components/tabs",
+            "output": "ru/components/tabs/index.html",
+            "target_url": "/ru/components/catalog/",
+            "to": "ru/components/catalog",
+            "url": "/ru/components/tabs/"
+        }
+    ],
+    "schema": "docara.redirect_receipt.v1",
+    "source": "redirects.json",
+    "source_sha256": "e16c8643677d78290d2b676106b345265a879febc2dc9a3a492259b6b1a26245",
+    "version": 1
+}

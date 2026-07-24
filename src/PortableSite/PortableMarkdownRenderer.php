@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Simai\Docara\PortableSite;
 
+use League\CommonMark\Extension\CommonMark\Node\Block\Heading;
 use League\CommonMark\Extension\CommonMark\Node\Block\ListBlock;
 use League\CommonMark\Extension\CommonMark\Node\Block\ListItem;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Code;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Emphasis;
+use League\CommonMark\Extension\CommonMark\Node\Inline\Image;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Link;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
 use League\CommonMark\Extension\Strikethrough\Strikethrough;
@@ -15,6 +17,7 @@ use League\CommonMark\MarkdownConverter;
 use League\CommonMark\Node\Block\Paragraph;
 use League\CommonMark\Node\Inline\Newline;
 use League\CommonMark\Node\Inline\Text;
+use League\CommonMark\Node\Node;
 use League\CommonMark\Output\RenderedContentInterface;
 use League\CommonMark\Util\RegexHelper;
 use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
@@ -83,6 +86,10 @@ final class PortableMarkdownRenderer
                 TypedRendererId::Steps => $this->renderSteps($this->converter->convert($blockMarkdown)),
                 TypedRendererId::Cta => $this->renderCta($this->converter->convert($blockMarkdown)),
                 TypedRendererId::Features => $this->renderFeatures($this->converter->convert($blockMarkdown)),
+                TypedRendererId::Hero => $this->renderHero($this->converter->convert($blockMarkdown)),
+                TypedRendererId::Logos => $this->renderLogos($this->converter->convert($blockMarkdown)),
+                TypedRendererId::Promo => $this->renderPromo($this->converter->convert($blockMarkdown)),
+                TypedRendererId::Showcase => $this->renderShowcase($this->converter->convert($blockMarkdown)),
             };
             $wrapper = '<p>' . $block['placeholder'] . '</p>';
             if (substr_count($html, $wrapper) !== 1) {
@@ -100,7 +107,7 @@ final class PortableMarkdownRenderer
     /**
      * Extracts Docara content blocks before CommonMark runs. Smart components
      * remain the responsibility of FrameworkComponentRuntime; these blocks
-     * are deliberately semantic Markdown plus Simai Framework utilities.
+     * are deliberately semantic Markdown plus SIMAI Framework utilities.
      *
      * @return array{
      *     0: string,
@@ -418,6 +425,7 @@ final class PortableMarkdownRenderer
                     && ! $node instanceof Emphasis
                     && ! $node instanceof Strong
                     && ! $node instanceof Link
+                    && ! $node instanceof Image
                     && ! $node instanceof Newline
                     && ! $node instanceof Strikethrough
                 ) {
@@ -430,6 +438,29 @@ final class PortableMarkdownRenderer
                     $text .= $node->getLiteral();
                 }
             }
+            $imageCount = 0;
+            $firstInline = $paragraph->firstChild();
+            $itemWalker = $paragraph->walker();
+            while (($event = $itemWalker->next()) !== null) {
+                if (! $event->isEntering() || ! $event->getNode() instanceof Image) {
+                    continue;
+                }
+                $image = $event->getNode();
+                $this->assertSafeUrl($image->getUrl(), 'MARKDOWN_FEATURES_IMAGE_UNSAFE');
+                $imageCount++;
+            }
+            if ($imageCount > 1 || ($imageCount === 1 && ! $firstInline instanceof Image)) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID',
+                    'A features item may start with at most one image.',
+                );
+            }
+            if ($imageCount === 1 && $firstInline instanceof Image && $firstInline->next() === null) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_FEATURES_ITEM_CONTENT_INVALID',
+                    'A features image must be followed by visible item text.',
+                );
+            }
             if (! $this->containsVisibleText($text)) {
                 throw new PortableConfigurationException(
                     'MARKDOWN_FEATURES_ITEM_TEXT_REQUIRED',
@@ -438,12 +469,21 @@ final class PortableMarkdownRenderer
             }
         }
 
+        $itemCount = count($items);
+        $gridClasses = $itemCount === 4
+            ? 'grid grid-col-1 md:grid-col-2 lg:grid-col-4 gap-2'
+            : 'grid grid-col-1 lg:grid-col-3 gap-2';
         $content = trim((string) $rendered);
         $content = preg_replace(
             '/^<ul>/',
-            '<ul data-docara-block="features" class="grid grid-col-1 lg:grid-col-3 gap-2 list-none m-0 p-0">',
+            '<ul data-docara-block="features" class="' . $gridClasses . ' list-none m-0 p-0">',
             $content,
             1,
+        ) ?? $content;
+        $content = preg_replace(
+            '/<img(?<attributes>[^>]*)\s*\/?>/u',
+            '<img data-docara-media="feature-icon" loading="lazy" decoding="async"$1>',
+            $content,
         ) ?? $content;
 
         return preg_replace(
@@ -451,6 +491,385 @@ final class PortableMarkdownRenderer
             '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">',
             $content,
         ) ?? $content;
+    }
+
+    private function renderHero(RenderedContentInterface $rendered): string
+    {
+        $nodes = iterator_to_array($rendered->getDocument()->children());
+        $heading = $nodes[0] ?? null;
+        if (! $heading instanceof Heading || $heading->getLevel() !== 1) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_HERO_H1_REQUIRED',
+                'A hero block must start with one level-one Markdown heading.',
+            );
+        }
+
+        $headingText = $this->inlineVisibleText($heading);
+        if (! $this->containsVisibleText($headingText)) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_HERO_H1_REQUIRED',
+                'A hero block heading must contain visible text.',
+            );
+        }
+
+        $descriptionCount = 0;
+        $actionCount = 0;
+        $imageCount = 0;
+        $phase = 'description';
+        foreach (array_slice($nodes, 1) as $index => $node) {
+            if (! $node instanceof Paragraph) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_HERO_STRUCTURE_INVALID',
+                    'A hero block may contain only a heading and bounded Markdown paragraphs.',
+                );
+            }
+
+            $first = $node->firstChild();
+            if ($first instanceof Image && $first->next() === null) {
+                if ($imageCount > 0 || $index !== count($nodes) - 2) {
+                    throw new PortableConfigurationException(
+                        'MARKDOWN_HERO_STRUCTURE_INVALID',
+                        'A hero block may end with at most one image.',
+                    );
+                }
+                $this->assertSafeUrl($first->getUrl(), 'MARKDOWN_HERO_IMAGE_UNSAFE');
+                $imageCount++;
+                $phase = 'image';
+
+                continue;
+            }
+
+            if ($first instanceof Link && $first->next() === null) {
+                if ($phase === 'image' || $actionCount > 1) {
+                    throw new PortableConfigurationException(
+                        'MARKDOWN_HERO_STRUCTURE_INVALID',
+                        'A hero action must appear after the description and before the optional image.',
+                    );
+                }
+                $this->assertSafeUrl($first->getUrl(), 'MARKDOWN_HERO_LINK_UNSAFE');
+                if (! $this->containsVisibleText($this->inlineVisibleText($first))) {
+                    throw new PortableConfigurationException(
+                        'MARKDOWN_HERO_LINK_REQUIRED',
+                        'A hero action must have an accessible text label.',
+                    );
+                }
+                $actionCount++;
+                $phase = 'action';
+
+                continue;
+            }
+
+            if ($phase !== 'description' || ! $this->paragraphHasBoundedInlineContent($node)) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_HERO_STRUCTURE_INVALID',
+                    'Hero description paragraphs must precede the action and use bounded inline Markdown.',
+                );
+            }
+            $descriptionCount++;
+        }
+
+        if ($descriptionCount < 1 || $descriptionCount > 2) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_HERO_DESCRIPTION_REQUIRED',
+                'A hero block must contain one or two description paragraphs.',
+            );
+        }
+
+        $content = trim((string) $rendered);
+        $content = preg_replace_callback(
+            '/^<h1(?<attributes>[^>]*)>/u',
+            static fn (array $match): string => '<h1' . (string) $match['attributes'] . ' class="m-0">',
+            $content,
+            1,
+        ) ?? $content;
+
+        $image = '';
+        if ($imageCount === 1) {
+            $content = preg_replace_callback(
+                '/<p><img(?<attributes>[^>]*)\s*\/?><\/p>/u',
+                static function (array $match) use (&$image): string {
+                    $attributes = rtrim((string) $match['attributes']);
+                    $decorative = preg_match('/\balt=""/u', $attributes) === 1
+                        ? ' aria-hidden="true"'
+                        : '';
+                    $image = '<div class="min-w-0 flex items-center content-main-center">'
+                        . '<img data-docara-media="hero" loading="eager" fetchpriority="high" decoding="async"'
+                        . $decorative . $attributes . '>'
+                        . '</div>';
+
+                    return '';
+                },
+                $content,
+                1,
+            ) ?? $content;
+        }
+
+        if ($actionCount > 0) {
+            $actionIndex = 0;
+            $content = preg_replace_callback(
+                '/<p><a(?<attributes>[^>]*)>(?<label>.*?)<\/a><\/p>/su',
+                static function (array $match) use (&$actionIndex): string {
+                    $type = $actionIndex === 0 ? 'primary' : 'on-surface sf-button--outline';
+                    $actionIndex++;
+
+                    return '<a data-docara-hero-action class="sf-button sf-button--default sf-button--'
+                        . $type
+                        . ' sf-button--size-1 box-border h-c8 lg:h-d0 radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start"'
+                        . (string) $match['attributes'] . '><span class="sf-button-text-container">'
+                        . (string) $match['label'] . '</span></a>';
+                },
+                $content,
+                2,
+            ) ?? $content;
+            $content = preg_replace(
+                '/(?<actions>(?:<a data-docara-hero-action\b.*?<\/a>\s*){1,2})/su',
+                '<div data-docara-hero-actions class="flex flex-wrap items-center gap-1">$1</div>',
+                $content,
+                1,
+            ) ?? $content;
+        }
+
+        $columns = $image === '' ? 'grid-col-1' : 'grid-col-1 lg:grid-col-2';
+
+        return '<section data-docara-block="hero" data-docara-width="full" class="bg-surface-container overflow-hidden">'
+            . '<div data-docara-container class="container m-inline-auto grid ' . $columns . ' gap-4 items-center p-4">'
+            . '<div class="min-w-0 flex flex-col gap-2">' . $content . '</div>'
+            . $image . '</div></section>';
+    }
+
+    private function renderLogos(RenderedContentInterface $rendered): string
+    {
+        $root = $rendered->getDocument()->firstChild();
+        if (! $root instanceof ListBlock
+            || $root->getListData()->type !== ListBlock::TYPE_BULLET
+            || $root->next() !== null
+        ) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_LOGOS_UNORDERED_LIST_REQUIRED',
+                'A logos block must contain one flat unordered Markdown list.',
+            );
+        }
+
+        $items = iterator_to_array($root->children());
+        if (count($items) < 2 || count($items) > 12) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_LOGOS_ITEM_COUNT_INVALID',
+                'A logos block must contain between two and twelve items.',
+            );
+        }
+        foreach ($items as $item) {
+            if (! $item instanceof ListItem) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_LOGOS_ITEM_CONTENT_INVALID',
+                    'Every logos item must contain one Markdown paragraph.',
+                );
+            }
+            $paragraph = $item->firstChild();
+            if (! $paragraph instanceof Paragraph
+                || $paragraph->next() !== null
+                || ! $this->paragraphHasBoundedInlineContent($paragraph, allowImage: true)
+            ) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_LOGOS_ITEM_CONTENT_INVALID',
+                    'Every logos item must contain one bounded text, link or image paragraph.',
+                );
+            }
+        }
+
+        $content = trim((string) $rendered);
+        $content = preg_replace(
+            '/^<ul>/u',
+            '<ul data-docara-block="logos" class="grid grid-col-2 md:grid-col-3 lg:grid-col-6 gap-2 list-none m-0 p-0">',
+            $content,
+            1,
+        ) ?? $content;
+        $content = preg_replace(
+            '/<img(?<attributes>[^>]*)\s*\/?>/u',
+            '<img data-docara-media="logo" loading="lazy" decoding="async"$1>',
+            $content,
+        ) ?? $content;
+
+        return preg_replace(
+            '/<li>/u',
+            '<li class="min-w-0 flex items-center content-main-center color-on-surface-variant">',
+            $content,
+        ) ?? $content;
+    }
+
+    private function renderShowcase(RenderedContentInterface $rendered): string
+    {
+        return $this->renderMediaSection(
+            rendered: $rendered,
+            block: 'showcase',
+            headingLevel: 2,
+            imageRequired: true,
+            actionRequired: false,
+            surfaceClass: 'bg-surface-0',
+        );
+    }
+
+    private function renderPromo(RenderedContentInterface $rendered): string
+    {
+        return $this->renderMediaSection(
+            rendered: $rendered,
+            block: 'promo',
+            headingLevel: 2,
+            imageRequired: false,
+            actionRequired: true,
+            surfaceClass: 'bg-surface-container',
+        );
+    }
+
+    private function renderMediaSection(
+        RenderedContentInterface $rendered,
+        string $block,
+        int $headingLevel,
+        bool $imageRequired,
+        bool $actionRequired,
+        string $surfaceClass,
+    ): string {
+        $nodes = iterator_to_array($rendered->getDocument()->children());
+        $heading = $nodes[0] ?? null;
+        if (! $heading instanceof Heading || $heading->getLevel() !== $headingLevel) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_' . strtoupper($block) . '_HEADING_REQUIRED',
+                "A $block block must start with one level-$headingLevel Markdown heading.",
+            );
+        }
+
+        $descriptionCount = 0;
+        $actionCount = 0;
+        $imageCount = 0;
+        $phase = 'description';
+        foreach (array_slice($nodes, 1) as $index => $node) {
+            if (! $node instanceof Paragraph) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_' . strtoupper($block) . '_STRUCTURE_INVALID',
+                    "A $block block may contain only bounded Markdown paragraphs.",
+                );
+            }
+            $first = $node->firstChild();
+            if ($first instanceof Image && $first->next() === null) {
+                if ($imageCount > 0 || $index !== count($nodes) - 2) {
+                    throw new PortableConfigurationException(
+                        'MARKDOWN_' . strtoupper($block) . '_STRUCTURE_INVALID',
+                        "A $block block may end with at most one image.",
+                    );
+                }
+                $this->assertSafeUrl(
+                    $first->getUrl(),
+                    'MARKDOWN_' . strtoupper($block) . '_IMAGE_UNSAFE',
+                );
+                if ($block === 'showcase'
+                    && ! $this->containsVisibleText($this->inlineVisibleText($first))
+                ) {
+                    throw new PortableConfigurationException(
+                        'MARKDOWN_SHOWCASE_IMAGE_ALT_REQUIRED',
+                        'A showcase image must have meaningful alternative text.',
+                    );
+                }
+                $imageCount++;
+                $phase = 'image';
+
+                continue;
+            }
+            if ($first instanceof Link && $first->next() === null) {
+                if ($phase === 'image' || $actionCount > 0) {
+                    throw new PortableConfigurationException(
+                        'MARKDOWN_' . strtoupper($block) . '_STRUCTURE_INVALID',
+                        "A $block action must follow the description and precede the optional image.",
+                    );
+                }
+                $this->assertSafeUrl(
+                    $first->getUrl(),
+                    'MARKDOWN_' . strtoupper($block) . '_LINK_UNSAFE',
+                );
+                if (! $this->containsVisibleText($this->inlineVisibleText($first))) {
+                    throw new PortableConfigurationException(
+                        'MARKDOWN_' . strtoupper($block) . '_LINK_REQUIRED',
+                        "A $block action must have an accessible text label.",
+                    );
+                }
+                $actionCount++;
+                $phase = 'action';
+
+                continue;
+            }
+            if ($phase !== 'description' || ! $this->paragraphHasBoundedInlineContent($node)) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_' . strtoupper($block) . '_STRUCTURE_INVALID',
+                    ucfirst($block) . ' description paragraphs must precede the action and media.',
+                );
+            }
+            $descriptionCount++;
+        }
+
+        if ($descriptionCount < 1 || $descriptionCount > 2) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_' . strtoupper($block) . '_DESCRIPTION_REQUIRED',
+                "A $block block must contain one or two description paragraphs.",
+            );
+        }
+        if ($imageRequired && $imageCount !== 1) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_' . strtoupper($block) . '_IMAGE_REQUIRED',
+                "A $block block must contain one image.",
+            );
+        }
+        if ($actionRequired && $actionCount !== 1) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_' . strtoupper($block) . '_LINK_REQUIRED',
+                "A $block block must contain one action link.",
+            );
+        }
+
+        $content = trim((string) $rendered);
+        $content = preg_replace_callback(
+            '/^<h' . $headingLevel . '(?<attributes>[^>]*)>/u',
+            static fn (array $match): string => '<h' . $headingLevel
+                . (string) $match['attributes'] . ' class="m-0">',
+            $content,
+            1,
+        ) ?? $content;
+
+        $image = '';
+        if ($imageCount === 1) {
+            $content = preg_replace_callback(
+                '/<p><img(?<attributes>[^>]*)\s*\/?><\/p>/u',
+                static function (array $match) use (&$image, $block): string {
+                    $attributes = rtrim((string) $match['attributes']);
+                    $decorative = preg_match('/\balt=""/u', $attributes) === 1
+                        ? ' aria-hidden="true"'
+                        : '';
+                    $image = '<div class="min-w-0 flex items-center content-main-center">'
+                        . '<img data-docara-media="' . $block . '" loading="lazy" decoding="async"'
+                        . $decorative . $attributes . '>'
+                        . '</div>';
+
+                    return '';
+                },
+                $content,
+                1,
+            ) ?? $content;
+        }
+        if ($actionCount === 1) {
+            $content = preg_replace_callback(
+                '/<p><a(?<attributes>[^>]*)>(?<label>.*?)<\/a><\/p>/su',
+                static fn (array $match): string => '<a data-docara-' . $block
+                    . '-action class="sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start"'
+                    . (string) $match['attributes'] . '><span class="sf-button-text-container">'
+                    . (string) $match['label'] . '</span></a>',
+                $content,
+                1,
+            ) ?? $content;
+        }
+
+        $columns = $image === '' ? 'grid-col-1' : 'grid-col-1 lg:grid-col-2';
+
+        return '<section data-docara-block="' . $block . '" data-docara-width="full" class="'
+            . $surfaceClass . ' overflow-hidden"><div data-docara-container class="container m-inline-auto grid '
+            . $columns . ' gap-4 items-center p-4"><div class="min-w-0 flex flex-col gap-2">'
+            . $content . '</div>' . $image . '</div></section>';
     }
 
     private function renderColumns(string $markdown, string $referenceDefinitions): string
@@ -474,6 +893,11 @@ final class PortableMarkdownRenderer
                     'Every columns region must render visible Markdown content.',
                 );
             }
+            $html = preg_replace(
+                '/<img(?<attributes>[^>]*)\s*\/?>/u',
+                '<img data-docara-media="card" loading="lazy" decoding="async"$1>',
+                $html,
+            ) ?? $html;
             $content[] = '<div class="min-w-0">' . $html . '</div>';
         }
 
@@ -484,6 +908,68 @@ final class PortableMarkdownRenderer
     private function containsVisibleText(string $text): bool
     {
         return preg_match('/[\p{L}\p{N}\p{P}\p{S}]/u', $text) === 1;
+    }
+
+    private function assertSafeUrl(string $url, string $errorCode): void
+    {
+        if (preg_match(RegexHelper::REGEX_UNSAFE_PROTOCOL, $url) === 1) {
+            throw new PortableConfigurationException(
+                $errorCode,
+                'A Docara landing block cannot use an unsafe URL protocol.',
+            );
+        }
+    }
+
+    private function inlineVisibleText(Node $root): string
+    {
+        $text = '';
+        $walker = $root->walker();
+        while (($event = $walker->next()) !== null) {
+            if (! $event->isEntering()) {
+                continue;
+            }
+            $node = $event->getNode();
+            if ($node instanceof Text || $node instanceof Code) {
+                $text .= $node->getLiteral();
+            }
+        }
+
+        return $text;
+    }
+
+    private function paragraphHasBoundedInlineContent(Paragraph $paragraph, bool $allowImage = false): bool
+    {
+        $visible = '';
+        $walker = $paragraph->walker();
+        while (($event = $walker->next()) !== null) {
+            if (! $event->isEntering()) {
+                continue;
+            }
+            $node = $event->getNode();
+            if (! $node instanceof Paragraph
+                && ! $node instanceof Text
+                && ! $node instanceof Code
+                && ! $node instanceof Emphasis
+                && ! $node instanceof Strong
+                && ! $node instanceof Link
+                && ! $node instanceof Newline
+                && ! $node instanceof Strikethrough
+                && (! $allowImage || ! $node instanceof Image)
+            ) {
+                return false;
+            }
+            if ($node instanceof Link || $node instanceof Image) {
+                $this->assertSafeUrl(
+                    $node->getUrl(),
+                    $node instanceof Image ? 'MARKDOWN_IMAGE_URL_UNSAFE' : 'MARKDOWN_LINK_URL_UNSAFE',
+                );
+            }
+            if ($node instanceof Text || $node instanceof Code) {
+                $visible .= $node->getLiteral();
+            }
+        }
+
+        return $this->containsVisibleText($visible);
     }
 
     private function decorateNativeMarkdown(string $html): string
@@ -500,7 +986,7 @@ final class PortableMarkdownRenderer
             function (array $matches): string {
                 $attributes = (string) ($matches['attributes'] ?? '');
 
-                return '<div data-docara-code-block class="source docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-0">'
+                return '<div data-docara-code-block class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-0">'
                     . '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code'
                     . $attributes . '>' . (string) ($matches['content'] ?? '') . '</code></pre>'
                     . '</div>';

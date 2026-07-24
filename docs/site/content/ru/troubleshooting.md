@@ -103,7 +103,7 @@ php vendor/bin/docara verify-static build_production
 
 Не добавляйте собственные классы `theme-light` или `theme-dark` в Markdown.
 Выберите тему в настройках чтения, сбросьте пользовательский выбор и проверьте
-режим `system`. Интерфейс должен использовать токены Simai Framework, а не
+режим `system`. Интерфейс должен использовать токены SIMAI Framework, а не
 жёстко заданные цвета.
 
 ## Порт preview занят

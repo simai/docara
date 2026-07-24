@@ -1,0 +1,126 @@
+{
+  "schema": "larena.ui.smart_manifest.v1",
+  "key": "docara.preferences",
+  "version": "1.0.0",
+  "owner_package": "simai/docara",
+  "kind": "composite",
+  "props": {
+    "type": "object",
+    "properties": {
+      "position": {"type": "string", "enum": ["left", "right"]},
+      "title": {"type": "string", "minLength": 1, "maxLength": 200},
+      "close_label": {"type": "string", "minLength": 1, "maxLength": 200},
+      "reset_label": {"type": "string", "minLength": 1, "maxLength": 200},
+      "groups": {
+        "type": "array",
+        "maxItems": 20,
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": {"type": "string", "minLength": 1, "maxLength": 80},
+            "title": {"type": "string", "minLength": 1, "maxLength": 200},
+            "description": {"type": "string", "maxLength": 500},
+            "fields": {
+              "type": "array",
+              "maxItems": 50,
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {"type": "string", "minLength": 1, "maxLength": 120},
+                  "control": {"type": "string", "const": "choice"},
+                  "configured": {"type": "string", "minLength": 1, "maxLength": 100},
+                  "values": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 20,
+                    "items": {"type": "string", "minLength": 1, "maxLength": 100}
+                  },
+                  "effect": {"type": "string", "minLength": 1, "maxLength": 120},
+                  "apply_phase": {"type": "string", "enum": ["prepaint", "runtime"]},
+                  "storage_scope": {"type": "string", "const": "site"},
+                  "options": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 20,
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "value": {"type": "string", "minLength": 1, "maxLength": 100},
+                        "title": {"type": "string", "minLength": 1, "maxLength": 200},
+                        "description": {"type": "string", "maxLength": 500}
+                      },
+                      "required": ["value", "title", "description"],
+                      "additionalProperties": false
+                    }
+                  }
+                },
+                "required": ["id", "control", "configured", "values", "effect", "apply_phase", "storage_scope", "options"],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": ["id", "title", "description", "fields"],
+          "additionalProperties": false
+        }
+      },
+      "manifest": {
+        "type": "object",
+        "properties": {
+          "enabled": {"type": "boolean"},
+          "view": {"type": "string", "const": "side-panel"},
+          "storage_key": {"type": "string", "minLength": 1, "maxLength": 200},
+          "schema": {"type": "integer", "const": 1},
+          "groups": {"type": "array"},
+          "values": {"type": "object"}
+        },
+        "required": ["enabled", "view", "storage_key", "schema", "groups", "values"],
+        "additionalProperties": false
+      }
+    },
+    "required": ["position", "title", "close_label", "reset_label", "groups", "manifest"],
+    "additionalProperties": false
+  },
+  "slots": {},
+  "events": {
+    "docara-preference-change": {"kind": "custom", "backend_handler_binding": false},
+    "docara-preferences-reset": {"kind": "custom", "backend_handler_binding": false}
+  },
+  "views": {"default": {}, "side-panel": {}},
+  "presets": {"default": {"view": "side-panel"}, "side-panel": {"view": "side-panel"}},
+  "constraints": {},
+  "render": {"strategy": "host", "renderer": "docara.smart.template"},
+  "frontend": {"runtime": null, "tag": null},
+  "assets": [
+    {"key": "simai.framework.core.css", "kind": "css", "critical": true},
+    {"key": "docara.smart.preferences.css", "kind": "css", "critical": true},
+    {"key": "docara.smart.preferences.js", "kind": "javascript", "critical": false}
+  ],
+  "atlas": {
+    "visible": true,
+    "title": "Reader preferences",
+    "description": "Builds a validated reader-preference panel from registered fields and delegates modal behavior to SIMAI Framework.",
+    "category": "settings",
+    "status": "developer_testable",
+    "states": ["closed", "open", "overridden", "storage-unavailable", "rtl"],
+    "readiness": {
+      "safe_to_suggest": true,
+      "safe_to_render": true,
+      "safe_to_bind_data": true,
+      "safe_to_execute_effect": true
+    },
+    "accessibility": ["framework_modal_focus_management", "escape_close", "focus_return", "live_status", "rtl_side_mapping"],
+    "example_props": {
+      "position": "right",
+      "title": "Reading settings",
+      "close_label": "Close",
+      "reset_label": "Restore site setting",
+      "groups": [],
+      "manifest": {"enabled": true, "view": "side-panel", "storage_key": "docara.preferences.example.v1", "schema": 1, "groups": [], "values": {"appearance.theme": "system"}}
+    },
+    "controls": []
+  },
+  "provenance": {
+    "source": "simai/docara",
+    "reference_status": "product_owned"
+  }
+}

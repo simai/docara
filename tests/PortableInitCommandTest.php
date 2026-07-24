@@ -26,6 +26,7 @@ class PortableInitCommandTest extends TestCase
         $this->assertFileExists($this->tmpPath('content/ru/guides/getting-started.page.json'));
         $this->assertFileExists($this->tmpPath('content/ru/guides/platform/configuration/layout.md'));
         $this->assertFileExists($this->tmpPath('assets/docara-mark.svg'));
+        $this->assertFileExists($this->tmpPath('assets/favicon.ico'));
         $this->assertFileExists($this->tmpPath('content/ru/index.page.json'));
         $this->assertFileExists($this->tmpPath('content/ru/landing.md'));
         $this->assertFileExists($this->tmpPath('content/ru/landing.page.json'));
@@ -103,9 +104,11 @@ class PortableInitCommandTest extends TestCase
         $this->assertSame('current', $site['documentation_version']);
         $this->assertSame('redirects.json', $site['redirects_file']);
         $this->assertSame('Docara', $site['branding']['title']);
+        $this->assertSame('compact', $site['branding']['mode']);
+        $this->assertSame('large', $site['branding']['size']);
         $this->assertSame('assets/docara-mark.svg', $site['branding']['logo']);
-        $this->assertSame('assets/docara-mark.svg', $site['branding']['logo_dark']);
-        $this->assertSame('assets/docara-mark.svg', $site['branding']['favicon']);
+        $this->assertArrayNotHasKey('logo_dark', $site['branding']);
+        $this->assertSame('assets/favicon.ico', $site['branding']['favicon']);
         $this->assertSame('docara.section.v1', $rootSection['schema']);
         $this->assertSame('docara.section.v1', $nestedSection['schema']);
         $this->assertSame('docara.page.v1', $indexPage['schema']);
@@ -129,8 +132,8 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);
-        $this->assertSame('sf-v5.3.2-7e836d8a-dd786bba', $lock['runtime']['pair_id']);
-        $this->assertSame('7e836d8a9414d5da553fb1ab0404721e5b48769a', $lock['runtime']['ui']['commit']);
+        $this->assertSame('sf-v5.3.2-4100d3f7-dd786bba', $lock['runtime']['pair_id']);
+        $this->assertSame('4100d3f7cd783c9dd378db30ee58dc9eb3672ab8', $lock['runtime']['ui']['commit']);
         $this->assertSame('dd786bbae98391fb21df9b4e1e6cd402ead0614c', $lock['runtime']['ui_smart']['commit']);
         $this->assertSame('b7e8a2e810c0d49e31cb749a7ab34c373dd48bc6', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);

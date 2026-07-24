@@ -29,12 +29,26 @@ final class EffectiveComponentCatalogTest extends TestCase
     {
         $repository = TypedComponentDefinitionRepository::bundled();
 
-        self::assertSame(['card', 'columns', 'cta', 'features', 'steps'], $repository->names());
+        self::assertSame([
+            'card',
+            'columns',
+            'cta',
+            'features',
+            'hero',
+            'logos',
+            'promo',
+            'showcase',
+            'steps',
+        ], $repository->names());
         self::assertSame([
             'docara.card',
             'docara.columns',
             'docara.cta',
             'docara.features',
+            'docara.hero',
+            'docara.logos',
+            'docara.promo',
+            'docara.showcase',
             'docara.steps',
         ], array_column($repository->all(), 'id'));
         self::assertSame('docara.card.v1', $repository->byName('card')['renderer']);
@@ -72,7 +86,7 @@ final class EffectiveComponentCatalogTest extends TestCase
         self::assertSame(CanonicalJson::encodePretty($first), CanonicalJson::encodePretty($second));
         self::assertSame('docara.effective_component_catalog.v1', $first['schema']);
         self::assertSame(1, $first['version']);
-        self::assertSame('sf-v5.3.2-7e836d8a-dd786bba', $first['framework_pair']);
+        self::assertSame('sf-v5.3.2-4100d3f7-dd786bba', $first['framework_pair']);
         self::assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $first['provider_revision']);
         self::assertSame([
             'catalog_is_canonical_framework_registry' => false,
@@ -102,6 +116,10 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.columns',
             'docara.cta',
             'docara.features',
+            'docara.hero',
+            'docara.logos',
+            'docara.promo',
+            'docara.showcase',
             'docara.steps',
             'ui.alert',
             'ui.button',
@@ -296,6 +314,10 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.columns' => 'docs/site/content/ru/components/syntax.md',
             'docara.cta' => 'docs/site/content/ru/components/syntax.md',
             'docara.features' => 'docs/site/content/ru/components/syntax.md',
+            'docara.hero' => 'docs/site/content/ru/components/syntax.md',
+            'docara.logos' => 'docs/site/content/ru/components/syntax.md',
+            'docara.promo' => 'docs/site/content/ru/components/syntax.md',
+            'docara.showcase' => 'docs/site/content/ru/components/syntax.md',
             'docara.steps' => 'docs/site/content/ru/components/syntax.md',
             'native.code' => 'docs/site/content/ru/authoring/markdown.md',
             'native.code.enhanced' => 'docs/site/content/ru/components.md',
@@ -454,7 +476,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'native.code' => [
                 'markdown' => ['```php', "\$site = 'Docara';"],
                 'html' => [
-                    '<div data-docara-code-block class="source docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-0">',
+                    '<div data-docara-code-block class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-0">',
                     '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code class="language-php">',
                     "\$site = 'Docara';",
                 ],
@@ -523,6 +545,22 @@ final class EffectiveComponentCatalogTest extends TestCase
                 '<ul data-docara-block="features" class="grid grid-col-1 lg:grid-col-3',
                 '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">',
             ],
+            'docara.hero' => [
+                '<section data-docara-block="hero" data-docara-width="full"',
+                '<a data-docara-hero-action class="sf-button',
+            ],
+            'docara.logos' => [
+                '<ul data-docara-block="logos" class="grid grid-col-2 md:grid-col-3 lg:grid-col-6',
+                '<li class="min-w-0 flex items-center content-main-center color-on-surface-variant">',
+            ],
+            'docara.promo' => [
+                '<section data-docara-block="promo" data-docara-width="full"',
+                '<a data-docara-promo-action class="sf-button',
+            ],
+            'docara.showcase' => [
+                '<section data-docara-block="showcase" data-docara-width="full"',
+                '<img data-docara-media="showcase"',
+            ],
             'docara.steps' => [
                 '<section class="bg-surface-0 border border-outline-variant radius-2 p-3">',
                 '<ol class="flex flex-col gap-2 p-inline-start-3">',
@@ -536,7 +574,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             $catalog['entries'],
             static fn (array $entry): bool => ($entry['lifecycle'] ?? null) === 'supported',
         ));
-        self::assertCount(12, $supported);
+        self::assertCount(16, $supported);
         $expectedIds = array_merge(
             array_keys($nativeIdentity),
             array_keys($typedIdentity),

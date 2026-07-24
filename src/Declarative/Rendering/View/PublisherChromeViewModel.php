@@ -11,7 +11,6 @@ final readonly class PublisherChromeViewModel
      * @param  list<array{title:string,url:?string,current:bool}>  $breadcrumbs
      * @param  array{title:string,url:string}|null  $previous
      * @param  array{title:string,url:string}|null  $next
-     * @param  list<array{value:string,title:string,description:string,checked:bool}>  $themeOptions
      * @param  array<string, string>  $copy
      * @param  list<array{locale:string,label:string,url:string,current:bool}>  $languageOptions
      */
@@ -25,9 +24,12 @@ final readonly class PublisherChromeViewModel
         public array $breadcrumbs,
         public ?array $previous,
         public ?array $next,
-        public array $themeOptions,
-        public string $configuredTheme,
         public array $copy,
         public array $languageOptions,
+        public bool $mobileNavigationEnabled,
+        public bool $primaryNavigationEnabled,
+        public bool $documentationNavigationEnabled,
+        public bool $readerPreferencesEnabled,
+        public string $readerPreferencesHtml,
     ) {}
 }

@@ -1,0 +1,15 @@
+.docara-preferences-panel{max-inline-size:100%;block-size:100dvh}
+.docara-preferences-surface{
+  --sf-modal-surface-shadow:
+    var(--sf-0) var(--sf-a8) var(--sf-b4) var(--sf-a4) var(--sf-black--alfa-8),
+    var(--sf-0) var(--sf-a4) var(--sf-b0) var(--sf-0) var(--sf-black--alfa-12),
+    var(--sf-0) var(--sf-a8) var(--sf-a8) calc(-1 * var(--sf-a4)) var(--sf-black--alfa-24);
+  block-size:100dvh;
+  max-block-size:100dvh;
+}
+.docara-preferences-body,.docara-preferences-content{min-block-size:0}
+.docara-preferences-field{min-inline-size:0}
+.docara-preferences-field>.sf-radio-button:hover{background:var(--sf-surface-transparent-hover)}
+@media(max-width:40rem){
+  .docara-preferences-panel{inline-size:100vw}
+}

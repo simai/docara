@@ -1,17 +1,17 @@
 {
   "schema": "larena.ui.frontend_runtime_lock.v3",
   "runtime": "simai-framework",
-  "pair_id": "sf-v5.3.2-7e836d8a-dd786bba",
-  "bundle_id": "sf-v5.3.2-7e836d8a-dd786bba-registry-2c596327-verified-release-artifact-v1",
-  "publication_profile": "verified-release-artifact-v1",
+  "pair_id": "sf-v5.3.2-4100d3f7-dd786bba",
+  "bundle_id": "sf-v5.3.2-4100d3f7-dd786bba-registry-2c596327-verified-commit-candidate-v1",
+  "publication_profile": "verified-commit-candidate-v1",
   "tag": "v5.3.2",
   "ui": {
     "tag": "v5.3.2",
-    "commit": "7e836d8a9414d5da553fb1ab0404721e5b48769a",
+    "commit": "4100d3f7cd783c9dd378db30ee58dc9eb3672ab8",
     "tree": "distr",
     "mount": "ui",
-    "sha256": "481eabfafc259ab71cd11aff19f9358cdbd2b6709f85e7e8c39620ce9cace8d7",
-    "files": 2596
+    "sha256": "040485a1dc7cba671e05240e3a9a8b93b5982cb5b264b5a044e213ac26dc93a9",
+    "files": 5873
   },
   "ui_smart": {
     "tag": "v5.3.1",
@@ -23,7 +23,7 @@
   },
   "framework_registry": {
     "schema_id": "simai.framework.contract-registry",
-    "compatibility_id": "sf-v5.3.2-7e836d8a-dd786bba",
+    "compatibility_id": "sf-v5.3.2-4100d3f7-dd786bba",
     "profile": "plain-assets-v1",
     "relative_path": "contract/contracts/generated/framework-contract-registry.json",
     "file_sha256": "2c5963276d31af09770fe41cad04826c04b634f7b2d798d9b0e32864517346b7",

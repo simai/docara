@@ -77,7 +77,7 @@ MD, 'content/install.md'),
             ...glob($root . '/smart/*/templates/*.blade.php') ?: [],
             ...glob($root . '/previews/templates/*.php') ?: [],
         ]));
-        self::assertCount(12, $templates);
+        self::assertCount(17, $templates);
         foreach ($templates as $template) {
             $source = (string) file_get_contents($template);
             self::assertStringNotContainsString('<style', $source);
@@ -115,7 +115,6 @@ MD, 'content/install.md'),
             '<button',
             '<dialog',
             'data-docara-search-trigger',
-            'foreach ($view->themeOptions',
             'count($view->breadcrumbs)',
             'docara.brand',
             'docara.navigation',

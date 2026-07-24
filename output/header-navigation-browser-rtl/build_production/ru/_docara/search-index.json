@@ -1,0 +1,1217 @@
+{
+    "algorithm": "docara-prefix-v1",
+    "content_sha256": "8c0315be7b14ff85d968574134378af5fb5d98ac572e9e2d0f25d3b5856bde40",
+    "documents": [
+        {
+            "description": "",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "وثائق Docara"
+                },
+                {
+                    "level": 2,
+                    "text": "البداية"
+                }
+            ],
+            "id": "fe589fab09eb230628766d70b9abbe98da45dced6bb3f7a17476bb17dc392efa",
+            "locale": "ar",
+            "text": "وثائق Docara مثال للتحقق من قائمة علوية مستقلة واتجاه الكتابة من اليمين إلى اليسار. البداية تُجمع هذه الصفحة من Markdown وJSON.",
+            "title": "وثائق Docara",
+            "trail": [],
+            "url": "/ar/"
+        },
+        {
+            "description": "Живые примеры всех компонентов, которые поддерживает эта сборка Docara.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Каталог компонентов"
+                },
+                {
+                    "level": 2,
+                    "text": "Markdown"
+                },
+                {
+                    "level": 2,
+                    "text": "Компоненты Docara"
+                },
+                {
+                    "level": 2,
+                    "text": "Smart-компоненты SIMAI Framework"
+                },
+                {
+                    "level": 2,
+                    "text": "Недоступно сейчас"
+                }
+            ],
+            "id": "c60153575ef13ed22819698612e08194b28aa8c19e86a7bfacea59d2996a266a",
+            "locale": "ar",
+            "text": "Каталог компонентовПроверенные примеры, точный синтаксис и границы компонентов этой сборки Docara.Найти компонентПоискТипВсе типыMarkdownКомпоненты DocaraSmart-компоненты SIMAI FrameworkЗапланированные возможностиДоступностьВсе состоянияПоддерживаетсяНедоступно сейчасПоказано: 21 / 21MarkdownКодnative.codeВыводит фрагменты и блоки кода из Markdown. Закреплённый SIMAI Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.Заголовки и текстnative.headings_and_textСтруктурирует текст с помощью заголовков, абзацев, курсива, жирного начертания и зачёркивания.Ссылки и изображенияnative.links_and_imagesДобавляет безопасные ссылки и изображения с заданным автором доступным описанием.Списки и цитатыnative.lists_and_quotesОформляет нумерованные и маркированные перечисления, а также семантические цитаты.Таблица Markdownnative.tableПоказывает небольшие сравнительные или справочные данные в семантической таблице с безопасной прокруткой.Компоненты DocaraКарточкаdocara.cardОбъединяет связанное содержимое Markdown на нейтральной визуально ограниченной поверхности.Колонкиdocara.columnsРазмещает от двух до четырёх областей Markdown в адаптивной сетке SIMAI Framework, сохраняя порядок исходного текста.Призыв к действиюdocara.ctaПревращает одну безопасную ссылку Markdown в заметное навигационное действие.Список возможностейdocara.featuresПоказывает короткий список возможностей продукта в виде адаптивной сетки, сохраняя исходный порядок.Первый экранdocara.heroОбъясняет продукт, его ценность и следующий шаг на первом экране лендинга.Логотипы и участникиdocara.logosПоказывает компактный адаптивный ряд клиентов, партнёров или продуктов экосистемы.Промоблокdocara.promoЗавершает лендинг коротким объяснением следующего шага, заметным действием и необязательной иллюстрацией.Демонстрация продуктаdocara.showcaseПоказывает крупное доказательное изображение продукта рядом с объяснением и необязательной ссылкой.Шагиdocara.stepsПоказывает короткую упорядоченную последовательность действий.Smart-компоненты SIMAI FrameworkУведомлениеui.alertСообщает о результате, предупреждении или ошибке без выполнения прикладных действий.Кнопкаui.buttonВыводит визуальный элемент действия; переносимая Docara не привязывает данные, не выполняет переход и не запускает действие.Недоступно сейчасИконка в содержимомcontent.iconВ закреплённой среде есть элемент иконки, но нет канонического авторского манифеста.Владелец развитияlarena/uiБезопасная заменаИспользуйте содержательный текст или символ Unicode, смысл которого понятен без оформления.Условие допускаОпубликовать и закрепить канонический контракт авторинга и доступности иконок, затем добавить схему, рендеринг, тесты и документацию Docara.ОграниченияНаличие файлов среды выполнения само по себе не создаёт безопасный авторский API.Настраиваемый блок кодаnative.code.enhancedНет принятого контракта для опциональных номеров, выделенных строк, diff-состояний и других editor-grade параметров.Владелец развитияsimai/docaraБезопасная заменаИспользуйте native.code: язык, копирование, подсветка, номера строк и локальная прокрутка уже предоставляются закреплённым SIMAI Framework.Условие допускаДобавить параметры в компонент SIMAI Framework, закрепить доступность и fallback, затем принять их в Docara с тестами, документацией и браузерной проверкой.ОграниченияТекущий Framework-компонент намеренно работает без тонких параметров автора.Метка статусаui.badgeВ Docara нет встроенного манифеста метки, неизменяемой записи блокировки, опубликованных ассетов и тестов авторинга.Владелец развитияsimai/docaraБезопасная заменаИспользуйте обычный выделенный текст, который прямо называет состояние.Условие допускаВстроить точный внешний манифест, закрепить ревизию поставщика и ассеты, запретить управляемые автором ID и пройти проверку схемы, рендеринга, документации и браузера.ОграниченияВнешний манифест существует, но ещё не принят Docara.Представление данныхui.dataviewДля Docara не принят ограниченный переносимый контракт источника данных, настроек, взаимодействия и рендеринга.Владелец развитияsimai/docara and larena/uiБезопасная заменаДля небольших справочных данных используйте поддерживаемый native.table.Условие допускаОпределить отдельный переносимый контракт данных и настроек с детерминированным рендерингом, доступностью, тестами и документацией.ОграниченияЭта задача отличается от вывода небольшой таблицы Markdown.Вкладкиui.tabsНе завершены перемещение фокуса с клавиатуры, обработка Home и End, стабильная связь вкладок с панелями через ARIA и принятый манифест.Владелец развитияsimai/ui and larena/uiБезопасная заменаИспользуйте заголовки и последовательные разделы в порядке исходного текста.Условие допускаОпубликовать канонический доступный контракт и манифест вкладок, закрепить новую неизменяемую пару Framework и ревизию поставщика, затем пройти проверку схемы, ассетов, рендеринга и браузера Docara.ОграниченияЗакреплённые исходники Core и Smart не содержат полного принятого контракта доступности.В Docara нет принятого манифеста вкладок или записи в блокировке среды выполнения.",
+            "title": "Каталог компонентов",
+            "trail": [
+                "Components"
+            ],
+            "url": "/ar/components/catalog/"
+        },
+        {
+            "description": "Объединяет связанное содержимое Markdown на нейтральной визуально ограниченной поверхности.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Карточка"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 3,
+                    "text": "Переносимый проект"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "a9a2d3ff9d2444870273be99cd53daea6667b4da999648f521916a497a39f3f9",
+            "locale": "ar",
+            "text": "Карточкаdocara.card · Компонент DocaraОбъединяет связанное содержимое Markdown на нейтральной визуально ограниченной поверхности.ПримерПереносимый проект Markdown и JSON можно хранить рядом с кодом и проверять через Git. Вызов:::card ### Переносимый проект Markdown и JSON можно хранить рядом с кодом и проверять через Git. ::: Ограничения и источникВложенные типизированные директивы Docara не поддерживаются.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.card.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.card.ru.md",
+            "title": "Карточка",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/docara.card/"
+        },
+        {
+            "description": "Размещает от двух до четырёх областей Markdown в адаптивной сетке SIMAI Framework, сохраняя порядок исходного текста.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Колонки"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 3,
+                    "text": "Markdown"
+                },
+                {
+                    "level": 3,
+                    "text": "JSON"
+                },
+                {
+                    "level": 3,
+                    "text": "PHP"
+                },
+                {
+                    "level": 3,
+                    "text": "SIMAI Framework"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "40f33b2fe747a7d59a0b9bbdb6d86e7d57ad1137b9250a39a6d3935e554dc81a",
+            "locale": "ar",
+            "text": "Колонкиdocara.columns · Компонент DocaraРазмещает от двух до четырёх областей Markdown в адаптивной сетке SIMAI Framework, сохраняя порядок исходного текста.ПримерMarkdown Содержание остаётся читаемым исходным текстом.JSON Настройки наследуются и проверяются схемами.PHP Переносимая сборка не требует Node.js.SIMAI Framework Макет использует проверенные адаптивные утилиты. Вызов:::columns ### Markdown Содержание остаётся читаемым исходным текстом. --- ### JSON Настройки наследуются и проверяются схемами. --- ### PHP Переносимая сборка не требует Node.js. --- ### SIMAI Framework Макет использует проверенные адаптивные утилиты. ::: СостоянияВ одну колонкуstackedАдаптивные колонкиresponsive_columnsОграничения и источникСодержимое должно включать от двух до четырёх непустых областей Markdown.Области разделяются точной строкой верхнего уровня --- с пустыми строками вокруг.Вложенные типизированные директивы Docara и Smart-компоненты не поддерживаются.Порядок колонок всегда совпадает с порядком исходного текста.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.columns.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.columns.ru.md",
+            "title": "Колонки",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/docara.columns/"
+        },
+        {
+            "description": "Превращает одну безопасную ссылку Markdown в заметное навигационное действие.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Призыв к действию"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "b618fa40f620435336d62cd1563517a056ea1aea3208782e470877b09fff0480",
+            "locale": "ar",
+            "text": "Призыв к действиюdocara.cta · Компонент DocaraПревращает одну безопасную ссылку Markdown в заметное навигационное действие.ПримерВернуться к каталогу Вызов:::cta [Вернуться к каталогу](../) ::: СостоянияОбычное состояниеdefaultФокусfocusОграничения и источникСодержимое должно включать ровно одну безопасную ссылку Markdown.Результат остаётся обычной ссылкой и не заявляет выполнение действия Smart-компонентом.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.cta.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.cta.ru.md",
+            "title": "Призыв к действию",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/docara.cta/"
+        },
+        {
+            "description": "Показывает короткий список возможностей продукта в виде адаптивной сетки, сохраняя исходный порядок.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Список возможностей"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "5b2e7a49fec874d7920d00f14f5e9467ca00c246a81f019da487895ae2116b8c",
+            "locale": "ar",
+            "text": "Список возможностейdocara.features · Компонент DocaraПоказывает короткий список возможностей продукта в виде адаптивной сетки, сохраняя исходный порядок.Пример Markdown. Содержание остаётся читаемым исходным текстом. JSON. Настройки наследуются и проверяются схемами. PHP. Переносимая сборка не требует Node.js. Вызов:::features - ![](../../../_docara/component-catalog/feature-markdown.png) **Markdown.** Содержание остаётся читаемым исходным текстом. - ![](../../../_docara/component-catalog/feature-json.png) **JSON.** Настройки наследуются и проверяются схемами. - ![](../../../_docara/component-catalog/feature-build.png) **PHP.** Переносимая сборка не требует Node.js. ::: Ограничения и источникСодержимое должно включать один плоский маркированный список из двух–шести пунктов.Вложенные списки, блоки и директивы Docara не поддерживаются.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.features.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.features.ru.md",
+            "title": "Список возможностей",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/docara.features/"
+        },
+        {
+            "description": "Объясняет продукт, его ценность и следующий шаг на первом экране лендинга.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Первый экран"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 1,
+                    "text": "Документация, которую удобно создавать и читать"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "d08f1b29017a2e8c4033dbe59253c1469bddb4484ae478e624c450848dcd865d",
+            "locale": "ar",
+            "text": "Первый экранdocara.hero · Компонент DocaraОбъясняет продукт, его ценность и следующий шаг на первом экране лендинга.ПримерДокументация, которую удобно создавать и читать Docara превращает Markdown и проверенные JSON-настройки в быстрый статический сайт на SIMAI Framework. Вернуться к каталогу Вызов:::hero # Документация, которую удобно создавать и читать Docara превращает Markdown и проверенные JSON-настройки в быстрый статический сайт на SIMAI Framework. [Вернуться к каталогу](../) ![](../../../_docara/component-catalog/docara-flow.png) ::: СостоянияТекстtextТекст с действиемtext_with_actionТекст с изображениемtext_with_mediaОграничения и источникСодержимое начинается с одного H1 и включает один–два описательных абзаца.После описания можно добавить одну безопасную ссылку-действие и одно изображение с осмысленным alt-текстом.Вложенные типизированные директивы Docara и Smart-компоненты не поддерживаются.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.hero.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.hero.ru.md",
+            "title": "Первый экран",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/docara.hero/"
+        },
+        {
+            "description": "Показывает компактный адаптивный ряд клиентов, партнёров или продуктов экосистемы.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Логотипы и участники"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "ecbb03d7d74b4b66da52755130e1a8ba5facfba17aa8001e1c177cf1005f1fad",
+            "locale": "ar",
+            "text": "Логотипы и участникиdocara.logos · Компонент DocaraПоказывает компактный адаптивный ряд клиентов, партнёров или продуктов экосистемы.Пример Вызов:::logos - [![SIMAI](../../../_docara/component-catalog/simai.svg)](https://simai.io/) - ![Docara](../../../_docara/component-catalog/docara-mark.svg) ::: СостоянияТекстtextСсылкиlinkedИзображенияimageОграничения и источникСодержимое должно включать один плоский маркированный список из двух–двенадцати пунктов.Пункт может содержать текст, безопасную ссылку или изображение с осмысленным alt-текстом.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.logos.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.logos.ru.md",
+            "title": "Логотипы и участники",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/docara.logos/"
+        },
+        {
+            "description": "Завершает лендинг коротким объяснением следующего шага, заметным действием и необязательной иллюстрацией.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Промоблок"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Соберите первый сайт"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "8df32b5e36098353fcbdc9d437efc10de9843150a358f86e296cb7450244c17f",
+            "locale": "ar",
+            "text": "Промоблокdocara.promo · Компонент DocaraЗавершает лендинг коротким объяснением следующего шага, заметным действием и необязательной иллюстрацией.ПримерСоберите первый сайт Создайте переносимый проект и получите проверяемый статический результат. Вернуться к каталогу Вызов:::promo ## Соберите первый сайт Создайте переносимый проект и получите проверяемый статический результат. [Вернуться к каталогу](../) ![](../../../_docara/component-catalog/docara-flow.png) ::: СостоянияТекстtextТекст с изображениемtext_with_mediaОграничения и источникСодержимое начинается с H2, включает один–два абзаца и ровно одну безопасную ссылку-действие.После действия можно добавить одно безопасное декоративное или информативное изображение.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.promo.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.promo.ru.md",
+            "title": "Промоблок",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/docara.promo/"
+        },
+        {
+            "description": "Показывает крупное доказательное изображение продукта рядом с объяснением и необязательной ссылкой.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Демонстрация продукта"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Результат виден до публикации"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "c800d9e4160fb08c616676c892f7154fb5471766c01f408edd4d6f4ac9ac8bb7",
+            "locale": "ar",
+            "text": "Демонстрация продуктаdocara.showcase · Компонент DocaraПоказывает крупное доказательное изображение продукта рядом с объяснением и необязательной ссылкой.ПримерРезультат виден до публикации Docara собирает интерфейс документации из Markdown, JSON и зарегистрированных компонентов. Вернуться к каталогу Вызов:::showcase ## Результат виден до публикации Docara собирает интерфейс документации из Markdown, JSON и зарегистрированных компонентов. [Вернуться к каталогу](../) ![Собранная страница Docara](../../../_docara/component-catalog/docara-screen.png) ::: СостоянияИзображениеmediaИзображение с действиемmedia_with_actionОграничения и источникСодержимое начинается с H2, включает один–два абзаца и заканчивается изображением с осмысленным alt-текстом.Перед изображением можно добавить одну безопасную ссылку-действие.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.showcase.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.showcase.ru.md",
+            "title": "Демонстрация продукта",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/docara.showcase/"
+        },
+        {
+            "description": "Показывает короткую упорядоченную последовательность действий.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Шаги"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "d46a47467fc1d21869b92ca2ea878948413428ded4ae74ec4139438ec5851bdd",
+            "locale": "ar",
+            "text": "Шагиdocara.steps · Компонент DocaraПоказывает короткую упорядоченную последовательность действий.Пример Подготовьте Markdown. Проверьте JSON. Соберите статический сайт. Вызов:::steps 1. Подготовьте Markdown. 2. Проверьте JSON. 3. Соберите статический сайт. ::: Ограничения и источникСодержимое должно включать ровно один нумерованный список Markdown.Вложенные директивы Docara не поддерживаются.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.steps.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.steps.ru.md",
+            "title": "Шаги",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/docara.steps/"
+        },
+        {
+            "description": "Выводит фрагменты и блоки кода из Markdown. Закреплённый SIMAI Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Код"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "42eed2023b4b4252a1daf21812251f6828ab1c9b2f310f9b19a686e8fca1b1a8",
+            "locale": "ar",
+            "text": "Кодnative.code · MarkdownВыводит фрагменты и блоки кода из Markdown. Закреплённый SIMAI Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.Пример$site = 'Docara'; echo $site; Вызов```php $site = 'Docara'; echo $site; ``` Ограничения и источникБез загрузки закреплённого runtime остаётся читаемый статический pre/code; тонкие настройки подсветки и строк не предоставляются.source_kind: portable_markdown_profileprofile_id: docara.portable_markdown_profile.v1docs_ref: docs/site/content/ru/authoring/markdown.mdexample_ref: resources/component-catalog/examples/native.code.ru.md",
+            "title": "Код",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/native.code/"
+        },
+        {
+            "description": "Структурирует текст с помощью заголовков, абзацев, курсива, жирного начертания и зачёркивания.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Заголовки и текст"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Понятный заголовок"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "42b526cef1d9b26840495ecf02760b1459ab3de6705191440854d9a7aeac525c",
+            "locale": "ar",
+            "text": "Заголовки и текстnative.headings_and_text · MarkdownСтруктурирует текст с помощью заголовков, абзацев, курсива, жирного начертания и зачёркивания.ПримерПонятный заголовок Абзац может содержать важный текст, акцент и устаревшую формулировку. Вызов## Понятный заголовок Абзац может содержать **важный текст**, *акцент* и ~~устаревшую формулировку~~. Ограничения и источникПроизвольный HTML нельзя использовать как сокращённый способ разметки.source_kind: portable_markdown_profileprofile_id: docara.portable_markdown_profile.v1docs_ref: docs/site/content/ru/authoring/markdown.mdexample_ref: resources/component-catalog/examples/native.headings_and_text.ru.md",
+            "title": "Заголовки и текст",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/native.headings_and_text/"
+        },
+        {
+            "description": "Добавляет безопасные ссылки и изображения с заданным автором доступным описанием.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Ссылки и изображения"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "3d9c24b740b958fab3cdb8f4e84ace903710d2756ae06d1d69e8c5a53f671818",
+            "locale": "ar",
+            "text": "Ссылки и изображенияnative.links_and_images · MarkdownДобавляет безопасные ссылки и изображения с заданным автором доступным описанием.ПримерВернуться к каталогу Вызов[Вернуться к каталогу](../) ![Знак Docara](../../../_docara/component-catalog/docara-mark.svg) СостоянияФокус ссылкиlink_focusОграничения и источникНебезопасные протоколы ссылок отклоняются.Автор отвечает за содержательный альтернативный текст изображений.source_kind: portable_markdown_profileprofile_id: docara.portable_markdown_profile.v1docs_ref: docs/site/content/ru/authoring/markdown.mdexample_ref: resources/component-catalog/examples/native.links_and_images.ru.md",
+            "title": "Ссылки и изображения",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/native.links_and_images/"
+        },
+        {
+            "description": "Оформляет нумерованные и маркированные перечисления, а также семантические цитаты.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Списки и цитаты"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "80a2803be6f8d377c73db46f29af90bcab82e2ab3125d62d8653f37c7b0640a4",
+            "locale": "ar",
+            "text": "Списки и цитатыnative.lists_and_quotes · MarkdownОформляет нумерованные и маркированные перечисления, а также семантические цитаты.Пример Первый пункт Второй пункт Хорошая документация помогает выполнить задачу. Вызов- Первый пункт - Второй пункт > Хорошая документация помогает выполнить задачу. Ограничения и источникДополнительных ограничений не заявлено.source_kind: portable_markdown_profileprofile_id: docara.portable_markdown_profile.v1docs_ref: docs/site/content/ru/authoring/markdown.mdexample_ref: resources/component-catalog/examples/native.lists_and_quotes.ru.md",
+            "title": "Списки и цитаты",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/native.lists_and_quotes/"
+        },
+        {
+            "description": "Показывает небольшие сравнительные или справочные данные в семантической таблице с безопасной прокруткой.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Таблица Markdown"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "fe9e0af866958921ea37b9e733e07fcc462a745293480847a537a8242d4eaffe",
+            "locale": "ar",
+            "text": "Таблица Markdownnative.table · MarkdownПоказывает небольшие сравнительные или справочные данные в семантической таблице с безопасной прокруткой.Пример Файл Роль docara.json Настройки сайта section.json Настройки раздела Вызов| Файл | Роль | | --- | --- | | `docara.json` | Настройки сайта | | `section.json` | Настройки раздела | Ограничения и источникЭто обычная таблица Markdown, а не структурированный контракт представления данных.source_kind: portable_markdown_profileprofile_id: docara.portable_markdown_profile.v1docs_ref: docs/site/content/ru/authoring/markdown.mdexample_ref: resources/component-catalog/examples/native.table.ru.md",
+            "title": "Таблица Markdown",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/native.table/"
+        },
+        {
+            "description": "Сообщает о результате, предупреждении или ошибке без выполнения прикладных действий.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Уведомление"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Параметры"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "2e545255b6d88170faa9b894740caf934c538c79b2ab23923ecf27934ae4c7ea",
+            "locale": "ar",
+            "text": "Уведомлениеui.alert · Smart-компонент SIMAI FrameworkСообщает о результате, предупреждении или ошибке без выполнения прикладных действий.Пример Вызов:::ui.alert {\"type\":\"info\",\"variant\":\"default\",\"title\":\"Проверенный Smart-компонент\",\"supporting-text\":\"Пример использует точный закреплённый контракт SIMAI Framework.\",\"closable\":false,\"aria-label\":\"Проверенный Smart-компонент\"} ::: ПараметрыИмяТипОбязателенПо умолчаниюЗначенияПравилаНазначениеДоступное имяaria-labelstringНет\"Information\"min_length: 1max_length: 160pattern: \"\\\\S\"Кратко называет уведомление для вспомогательных технологий.Можно закрытьclosablebooleanНетfalse—Управляет возможностью закрыть уведомление; значение true пока отклоняется.ИконкаiconstringНет—min_length: 1max_length: 80pattern: \"\\\\S\"Переопределяет имя декоративной иконки уведомления.Поясняющий текстsupporting-textstringНет\"The page is ready for review.\"min_length: 1max_length: 500pattern: \"\\\\S\"Дополняет заголовок подробностями о результате или состоянии.ЗаголовокtitlestringНет\"Information\"min_length: 1max_length: 160pattern: \"\\\\S\"mirrors: aria-labelКратко сообщает основное состояние.ТонtypeenumНет\"info\"Нейтральный — clear, Информация — info, Опасность — danger, Предупреждение — warning—Выбирает смысловой тон и оформление уведомления.ВариантvariantenumНет\"default\"Обычный — default, Плоский — flat, Контурный — outlined—Выбирает способ оформления поверхности и границы.СостоянияОбычное состояниеdefaultИнформацияinfoПредупреждениеwarningОпасностьdangerОграничения и источникПараметр closable=true пока не входит в ограниченный контракт среды выполнения.Параметр type=success не поддерживается: закреплённая таблица стилей Framework выводит его статусную иконку прозрачной.Свойство id создаётся Docara детерминированно.Мост серверных событий Larena намеренно исключён: переносимая Docara выводит компонент без серверных обработчиков.source_kind: smart_consumer_metadatamanifest_ref: resources/framework/manifests/ui-alert.jsonprovider: larena/uiprovider_revision: 4b055d09926fec4c32f2ae43b2e7e0a6f64d7663upstream_revision: dd786bbae98391fb21df9b4e1e6cd402ead0614cmanifest_sha256: 699b79d012d8e8af9a55f013ff19bafbc421cd16ee37990cb5ff070a0b1f490fruntime_pair: sf-v5.3.2-4100d3f7-dd786bbadocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/ui.alert.ru.md Проверенный Smart-компонент Пример использует точный закреплённый контракт SIMAI Framework.",
+            "title": "Уведомление",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/ui.alert/"
+        },
+        {
+            "description": "Выводит визуальный элемент действия; переносимая Docara не привязывает данные, не выполняет переход и не запускает действие.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Кнопка"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Параметры"
+                },
+                {
+                    "level": 2,
+                    "text": "Связи параметров"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "153b5ad6d93fce9f08fc0f86e70d558f1b224008745da65f797e3e178002bc52",
+            "locale": "ar",
+            "text": "Кнопкаui.button · Smart-компонент SIMAI FrameworkВыводит визуальный элемент действия; переносимая Docara не привязывает данные, не выполняет переход и не запускает действие.Пример Вызов:::ui.button {\"text\":\"Демонстрационная кнопка\",\"size\":\"1\",\"type\":\"default\",\"scheme\":\"primary\",\"loading\":false,\"disabled\":true,\"native-type\":\"button\",\"aria-label\":\"Демонстрационная кнопка без действия\"} ::: ПараметрыИмяТипОбязателенПо умолчаниюЗначенияПравилаНазначениеДоступное имяaria-labelstringНет\"Save\"min_length: 1max_length: 120pattern: \"\\\\S\"Называет кнопку для вспомогательных технологий.ОтключенаdisabledbooleanНетfalse—Показывает недоступное для взаимодействия состояние.ЗагрузкаloadingbooleanНетfalse—Показывает ожидание завершения действия; требует disabled=true.Нативный типnative-typeenumНет\"button\"Кнопка — button, Отправка формы — submit, Сброс формы — reset—Задаёт стандартное поведение HTML-кнопки.ПресетpresetenumНет—Ссылка основная — link, Ссылка на поверхности — link_on_surface, Обычная на поверхности — on_surface, Контурная основная — outline, Контурная на поверхности — outline_on_surface, Основная — primary, Вторичная тональная — secondary, Тональная на поверхности — tonal_on_surface—Применяет точный набор параметров манифеста до явно заданных значений.СкруглениеradiusenumНет—По умолчанию SIMAI Framework — , Стандартное — default, Без скругления — square, Полностью скруглённая — rounded—Задаёт форму углов кнопки.Цветовая схемаschemeenumНет\"primary\"Основная — primary, Вторичная — secondary, На поверхности — on-surface—Выбирает семантическую цветовую схему.РазмерsizeenumНет\"1\"Очень маленькая · 1/3 — 1/3, Маленькая · 1/2 — 1/2, Обычная · 1 — 1, Большая · 2 — 2, Очень большая · 3 — 3—Задаёт размер кнопки по шкале SIMAI Framework.ТекстtextstringНет\"Save\"min_length: 1max_length: 120pattern: \"\\\\S\"mirrors: aria-labelЗадаёт видимую подпись кнопки.ТипtypeenumНет\"default\"Заливка — default, Тональная — tonal, Контурная — outline, Ссылка — link—Выбирает визуальный тип кнопки.Связи параметровДопустимые сочетания allowed_combinations{\"keys\":[\"type\",\"scheme\"],\"values\":[[\"default\",\"primary\"],[\"default\",\"on-surface\"],[\"tonal\",\"secondary\"],[\"tonal\",\"on-surface\"],[\"outline\",\"primary\"],[\"outline\",\"on-surface\"],[\"link\",\"primary\"],[\"link\",\"on-surface\"]]}requiresесли {\"loading\":true} → то {\"disabled\":true}СостоянияОбычное состояниеdefaultНаведениеhoverФокусfocusНажатиеactiveЗагрузкаloadingОтключеноdisabledОграничения и источникDocara выводит элемент управления, но не привязывает прикладные данные и не выполняет действие.Для перехода следует использовать обычную ссылку или docara.cta.Мост серверных событий Larena намеренно исключён: переносимая Docara выводит компонент без серверных обработчиков.source_kind: smart_consumer_metadatamanifest_ref: resources/framework/manifests/ui-button.jsonprovider: larena/uiprovider_revision: 4b055d09926fec4c32f2ae43b2e7e0a6f64d7663upstream_revision: dd786bbae98391fb21df9b4e1e6cd402ead0614cmanifest_sha256: 84f61a452422814ef4ca11e5c5787ba48cdb36e923466c6309a8d389b84576fbruntime_pair: sf-v5.3.2-4100d3f7-dd786bbadocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/ui.button.ru.md Демонстрационная кнопка",
+            "title": "Кнопка",
+            "trail": [
+                "Components",
+                "Каталог компонентов"
+            ],
+            "url": "/ar/components/catalog/ui.button/"
+        },
+        {
+            "description": "",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "البدء السريع"
+                }
+            ],
+            "id": "90d6a639798c06b71082827136840fa7f7dd2269f3ab8b251690216ad3f7e28c",
+            "locale": "ar",
+            "text": "البدء السريع صفحة ثانية للتحقق من العنصر النشط.",
+            "title": "البدء السريع",
+            "trail": [],
+            "url": "/ar/start/"
+        },
+        {
+            "description": "",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Docara"
+                }
+            ],
+            "id": "2ab1dce97efde82b5e9e47962994304a08fa48d8891ac1ee30ea6a41f829a933",
+            "locale": "ru",
+            "text": "Docara Docara хранит контент в Markdown, а настройки сайта и разделов — в небольших JSON-файлах. Откройте вложенный раздел, чтобы увидеть наследование настроек документации, или страницу «Лендинг», чтобы увидеть другой preset в том же сайте. Переносимый формат Этот пример использует зафиксированную версию SIMAI Framework.",
+            "title": "Docara",
+            "trail": [],
+            "url": "/ru/"
+        },
+        {
+            "description": "Живые примеры всех компонентов, которые поддерживает эта сборка Docara.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Каталог компонентов"
+                },
+                {
+                    "level": 2,
+                    "text": "Markdown"
+                },
+                {
+                    "level": 2,
+                    "text": "Компоненты Docara"
+                },
+                {
+                    "level": 2,
+                    "text": "Smart-компоненты SIMAI Framework"
+                },
+                {
+                    "level": 2,
+                    "text": "Недоступно сейчас"
+                }
+            ],
+            "id": "3f04b18fb4bba1c0ecb8c2eee261fc669a278b2c2ce747a195c412d49ac78f87",
+            "locale": "ru",
+            "text": "Каталог компонентовПроверенные примеры, точный синтаксис и границы компонентов этой сборки Docara.Найти компонентПоискТипВсе типыMarkdownКомпоненты DocaraSmart-компоненты SIMAI FrameworkЗапланированные возможностиДоступностьВсе состоянияПоддерживаетсяНедоступно сейчасПоказано: 21 / 21MarkdownКодnative.codeВыводит фрагменты и блоки кода из Markdown. Закреплённый SIMAI Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.Заголовки и текстnative.headings_and_textСтруктурирует текст с помощью заголовков, абзацев, курсива, жирного начертания и зачёркивания.Ссылки и изображенияnative.links_and_imagesДобавляет безопасные ссылки и изображения с заданным автором доступным описанием.Списки и цитатыnative.lists_and_quotesОформляет нумерованные и маркированные перечисления, а также семантические цитаты.Таблица Markdownnative.tableПоказывает небольшие сравнительные или справочные данные в семантической таблице с безопасной прокруткой.Компоненты DocaraКарточкаdocara.cardОбъединяет связанное содержимое Markdown на нейтральной визуально ограниченной поверхности.Колонкиdocara.columnsРазмещает от двух до четырёх областей Markdown в адаптивной сетке SIMAI Framework, сохраняя порядок исходного текста.Призыв к действиюdocara.ctaПревращает одну безопасную ссылку Markdown в заметное навигационное действие.Список возможностейdocara.featuresПоказывает короткий список возможностей продукта в виде адаптивной сетки, сохраняя исходный порядок.Первый экранdocara.heroОбъясняет продукт, его ценность и следующий шаг на первом экране лендинга.Логотипы и участникиdocara.logosПоказывает компактный адаптивный ряд клиентов, партнёров или продуктов экосистемы.Промоблокdocara.promoЗавершает лендинг коротким объяснением следующего шага, заметным действием и необязательной иллюстрацией.Демонстрация продуктаdocara.showcaseПоказывает крупное доказательное изображение продукта рядом с объяснением и необязательной ссылкой.Шагиdocara.stepsПоказывает короткую упорядоченную последовательность действий.Smart-компоненты SIMAI FrameworkУведомлениеui.alertСообщает о результате, предупреждении или ошибке без выполнения прикладных действий.Кнопкаui.buttonВыводит визуальный элемент действия; переносимая Docara не привязывает данные, не выполняет переход и не запускает действие.Недоступно сейчасИконка в содержимомcontent.iconВ закреплённой среде есть элемент иконки, но нет канонического авторского манифеста.Владелец развитияlarena/uiБезопасная заменаИспользуйте содержательный текст или символ Unicode, смысл которого понятен без оформления.Условие допускаОпубликовать и закрепить канонический контракт авторинга и доступности иконок, затем добавить схему, рендеринг, тесты и документацию Docara.ОграниченияНаличие файлов среды выполнения само по себе не создаёт безопасный авторский API.Настраиваемый блок кодаnative.code.enhancedНет принятого контракта для опциональных номеров, выделенных строк, diff-состояний и других editor-grade параметров.Владелец развитияsimai/docaraБезопасная заменаИспользуйте native.code: язык, копирование, подсветка, номера строк и локальная прокрутка уже предоставляются закреплённым SIMAI Framework.Условие допускаДобавить параметры в компонент SIMAI Framework, закрепить доступность и fallback, затем принять их в Docara с тестами, документацией и браузерной проверкой.ОграниченияТекущий Framework-компонент намеренно работает без тонких параметров автора.Метка статусаui.badgeВ Docara нет встроенного манифеста метки, неизменяемой записи блокировки, опубликованных ассетов и тестов авторинга.Владелец развитияsimai/docaraБезопасная заменаИспользуйте обычный выделенный текст, который прямо называет состояние.Условие допускаВстроить точный внешний манифест, закрепить ревизию поставщика и ассеты, запретить управляемые автором ID и пройти проверку схемы, рендеринга, документации и браузера.ОграниченияВнешний манифест существует, но ещё не принят Docara.Представление данныхui.dataviewДля Docara не принят ограниченный переносимый контракт источника данных, настроек, взаимодействия и рендеринга.Владелец развитияsimai/docara and larena/uiБезопасная заменаДля небольших справочных данных используйте поддерживаемый native.table.Условие допускаОпределить отдельный переносимый контракт данных и настроек с детерминированным рендерингом, доступностью, тестами и документацией.ОграниченияЭта задача отличается от вывода небольшой таблицы Markdown.Вкладкиui.tabsНе завершены перемещение фокуса с клавиатуры, обработка Home и End, стабильная связь вкладок с панелями через ARIA и принятый манифест.Владелец развитияsimai/ui and larena/uiБезопасная заменаИспользуйте заголовки и последовательные разделы в порядке исходного текста.Условие допускаОпубликовать канонический доступный контракт и манифест вкладок, закрепить новую неизменяемую пару Framework и ревизию поставщика, затем пройти проверку схемы, ассетов, рендеринга и браузера Docara.ОграниченияЗакреплённые исходники Core и Smart не содержат полного принятого контракта доступности.В Docara нет принятого манифеста вкладок или записи в блокировке среды выполнения.",
+            "title": "Каталог компонентов",
+            "trail": [
+                "Компоненты"
+            ],
+            "url": "/ru/components/catalog/"
+        },
+        {
+            "description": "Объединяет связанное содержимое Markdown на нейтральной визуально ограниченной поверхности.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Карточка"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 3,
+                    "text": "Переносимый проект"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "eb7b4dd82c7500a3bd7f69d986365586997e9642a03ce1eb508d8934b2102128",
+            "locale": "ru",
+            "text": "Карточкаdocara.card · Компонент DocaraОбъединяет связанное содержимое Markdown на нейтральной визуально ограниченной поверхности.ПримерПереносимый проект Markdown и JSON можно хранить рядом с кодом и проверять через Git. Вызов:::card ### Переносимый проект Markdown и JSON можно хранить рядом с кодом и проверять через Git. ::: Ограничения и источникВложенные типизированные директивы Docara не поддерживаются.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.card.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.card.ru.md",
+            "title": "Карточка",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/docara.card/"
+        },
+        {
+            "description": "Размещает от двух до четырёх областей Markdown в адаптивной сетке SIMAI Framework, сохраняя порядок исходного текста.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Колонки"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 3,
+                    "text": "Markdown"
+                },
+                {
+                    "level": 3,
+                    "text": "JSON"
+                },
+                {
+                    "level": 3,
+                    "text": "PHP"
+                },
+                {
+                    "level": 3,
+                    "text": "SIMAI Framework"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "a6cb058527c10fcce5b311166467d30c8b649fcf654ed6ecef4e97c3568e2a03",
+            "locale": "ru",
+            "text": "Колонкиdocara.columns · Компонент DocaraРазмещает от двух до четырёх областей Markdown в адаптивной сетке SIMAI Framework, сохраняя порядок исходного текста.ПримерMarkdown Содержание остаётся читаемым исходным текстом.JSON Настройки наследуются и проверяются схемами.PHP Переносимая сборка не требует Node.js.SIMAI Framework Макет использует проверенные адаптивные утилиты. Вызов:::columns ### Markdown Содержание остаётся читаемым исходным текстом. --- ### JSON Настройки наследуются и проверяются схемами. --- ### PHP Переносимая сборка не требует Node.js. --- ### SIMAI Framework Макет использует проверенные адаптивные утилиты. ::: СостоянияВ одну колонкуstackedАдаптивные колонкиresponsive_columnsОграничения и источникСодержимое должно включать от двух до четырёх непустых областей Markdown.Области разделяются точной строкой верхнего уровня --- с пустыми строками вокруг.Вложенные типизированные директивы Docara и Smart-компоненты не поддерживаются.Порядок колонок всегда совпадает с порядком исходного текста.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.columns.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.columns.ru.md",
+            "title": "Колонки",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/docara.columns/"
+        },
+        {
+            "description": "Превращает одну безопасную ссылку Markdown в заметное навигационное действие.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Призыв к действию"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "ffde58829098e0bfed7a0ddd0f73bf43b7941185d54ba4dde08e761333f128c1",
+            "locale": "ru",
+            "text": "Призыв к действиюdocara.cta · Компонент DocaraПревращает одну безопасную ссылку Markdown в заметное навигационное действие.ПримерВернуться к каталогу Вызов:::cta [Вернуться к каталогу](../) ::: СостоянияОбычное состояниеdefaultФокусfocusОграничения и источникСодержимое должно включать ровно одну безопасную ссылку Markdown.Результат остаётся обычной ссылкой и не заявляет выполнение действия Smart-компонентом.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.cta.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.cta.ru.md",
+            "title": "Призыв к действию",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/docara.cta/"
+        },
+        {
+            "description": "Показывает короткий список возможностей продукта в виде адаптивной сетки, сохраняя исходный порядок.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Список возможностей"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "f877dc93c51623186bbfbc197ea5505b71009cb8dd823d1afe70979705711502",
+            "locale": "ru",
+            "text": "Список возможностейdocara.features · Компонент DocaraПоказывает короткий список возможностей продукта в виде адаптивной сетки, сохраняя исходный порядок.Пример Markdown. Содержание остаётся читаемым исходным текстом. JSON. Настройки наследуются и проверяются схемами. PHP. Переносимая сборка не требует Node.js. Вызов:::features - ![](../../../_docara/component-catalog/feature-markdown.png) **Markdown.** Содержание остаётся читаемым исходным текстом. - ![](../../../_docara/component-catalog/feature-json.png) **JSON.** Настройки наследуются и проверяются схемами. - ![](../../../_docara/component-catalog/feature-build.png) **PHP.** Переносимая сборка не требует Node.js. ::: Ограничения и источникСодержимое должно включать один плоский маркированный список из двух–шести пунктов.Вложенные списки, блоки и директивы Docara не поддерживаются.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.features.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.features.ru.md",
+            "title": "Список возможностей",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/docara.features/"
+        },
+        {
+            "description": "Объясняет продукт, его ценность и следующий шаг на первом экране лендинга.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Первый экран"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 1,
+                    "text": "Документация, которую удобно создавать и читать"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "833ecec17ffb60a732a0c5e3fb67243c15ed1aa2d152d6ed559f7a3cf71faf79",
+            "locale": "ru",
+            "text": "Первый экранdocara.hero · Компонент DocaraОбъясняет продукт, его ценность и следующий шаг на первом экране лендинга.ПримерДокументация, которую удобно создавать и читать Docara превращает Markdown и проверенные JSON-настройки в быстрый статический сайт на SIMAI Framework. Вернуться к каталогу Вызов:::hero # Документация, которую удобно создавать и читать Docara превращает Markdown и проверенные JSON-настройки в быстрый статический сайт на SIMAI Framework. [Вернуться к каталогу](../) ![](../../../_docara/component-catalog/docara-flow.png) ::: СостоянияТекстtextТекст с действиемtext_with_actionТекст с изображениемtext_with_mediaОграничения и источникСодержимое начинается с одного H1 и включает один–два описательных абзаца.После описания можно добавить одну безопасную ссылку-действие и одно изображение с осмысленным alt-текстом.Вложенные типизированные директивы Docara и Smart-компоненты не поддерживаются.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.hero.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.hero.ru.md",
+            "title": "Первый экран",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/docara.hero/"
+        },
+        {
+            "description": "Показывает компактный адаптивный ряд клиентов, партнёров или продуктов экосистемы.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Логотипы и участники"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "bb2ed8dbef848945a311c62ee8b313d64c414b04bb44e29e4daec907ce869f91",
+            "locale": "ru",
+            "text": "Логотипы и участникиdocara.logos · Компонент DocaraПоказывает компактный адаптивный ряд клиентов, партнёров или продуктов экосистемы.Пример Вызов:::logos - [![SIMAI](../../../_docara/component-catalog/simai.svg)](https://simai.io/) - ![Docara](../../../_docara/component-catalog/docara-mark.svg) ::: СостоянияТекстtextСсылкиlinkedИзображенияimageОграничения и источникСодержимое должно включать один плоский маркированный список из двух–двенадцати пунктов.Пункт может содержать текст, безопасную ссылку или изображение с осмысленным alt-текстом.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.logos.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.logos.ru.md",
+            "title": "Логотипы и участники",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/docara.logos/"
+        },
+        {
+            "description": "Завершает лендинг коротким объяснением следующего шага, заметным действием и необязательной иллюстрацией.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Промоблок"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Соберите первый сайт"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "deff71cc5a05c7168e76ef5d01ba27429047e1edd9a086a844e9606ee19a9bb1",
+            "locale": "ru",
+            "text": "Промоблокdocara.promo · Компонент DocaraЗавершает лендинг коротким объяснением следующего шага, заметным действием и необязательной иллюстрацией.ПримерСоберите первый сайт Создайте переносимый проект и получите проверяемый статический результат. Вернуться к каталогу Вызов:::promo ## Соберите первый сайт Создайте переносимый проект и получите проверяемый статический результат. [Вернуться к каталогу](../) ![](../../../_docara/component-catalog/docara-flow.png) ::: СостоянияТекстtextТекст с изображениемtext_with_mediaОграничения и источникСодержимое начинается с H2, включает один–два абзаца и ровно одну безопасную ссылку-действие.После действия можно добавить одно безопасное декоративное или информативное изображение.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.promo.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.promo.ru.md",
+            "title": "Промоблок",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/docara.promo/"
+        },
+        {
+            "description": "Показывает крупное доказательное изображение продукта рядом с объяснением и необязательной ссылкой.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Демонстрация продукта"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Результат виден до публикации"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "a245386b9122a310b733c4c1be4aea6f5709e52c0dc1f15022cf55be32f7a8a8",
+            "locale": "ru",
+            "text": "Демонстрация продуктаdocara.showcase · Компонент DocaraПоказывает крупное доказательное изображение продукта рядом с объяснением и необязательной ссылкой.ПримерРезультат виден до публикации Docara собирает интерфейс документации из Markdown, JSON и зарегистрированных компонентов. Вернуться к каталогу Вызов:::showcase ## Результат виден до публикации Docara собирает интерфейс документации из Markdown, JSON и зарегистрированных компонентов. [Вернуться к каталогу](../) ![Собранная страница Docara](../../../_docara/component-catalog/docara-screen.png) ::: СостоянияИзображениеmediaИзображение с действиемmedia_with_actionОграничения и источникСодержимое начинается с H2, включает один–два абзаца и заканчивается изображением с осмысленным alt-текстом.Перед изображением можно добавить одну безопасную ссылку-действие.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.showcase.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.showcase.ru.md",
+            "title": "Демонстрация продукта",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/docara.showcase/"
+        },
+        {
+            "description": "Показывает короткую упорядоченную последовательность действий.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Шаги"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "bcb5ed68aae0c3fbfdfe2e119d2e00e528d1c68c3a05e64d60c5e0a256df81ce",
+            "locale": "ru",
+            "text": "Шагиdocara.steps · Компонент DocaraПоказывает короткую упорядоченную последовательность действий.Пример Подготовьте Markdown. Проверьте JSON. Соберите статический сайт. Вызов:::steps 1. Подготовьте Markdown. 2. Проверьте JSON. 3. Соберите статический сайт. ::: Ограничения и источникСодержимое должно включать ровно один нумерованный список Markdown.Вложенные директивы Docara не поддерживаются.source_kind: typed_definitiondefinition_ref: resources/component-catalog/typed/docara.steps.jsondocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/docara.steps.ru.md",
+            "title": "Шаги",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/docara.steps/"
+        },
+        {
+            "description": "Выводит фрагменты и блоки кода из Markdown. Закреплённый SIMAI Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Код"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "991f3b4ceb04b947a00079213abb07b60312f338baf22c642a2958cc9a17f9ee",
+            "locale": "ru",
+            "text": "Кодnative.code · MarkdownВыводит фрагменты и блоки кода из Markdown. Закреплённый SIMAI Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.Пример$site = 'Docara'; echo $site; Вызов```php $site = 'Docara'; echo $site; ``` Ограничения и источникБез загрузки закреплённого runtime остаётся читаемый статический pre/code; тонкие настройки подсветки и строк не предоставляются.source_kind: portable_markdown_profileprofile_id: docara.portable_markdown_profile.v1docs_ref: docs/site/content/ru/authoring/markdown.mdexample_ref: resources/component-catalog/examples/native.code.ru.md",
+            "title": "Код",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/native.code/"
+        },
+        {
+            "description": "Структурирует текст с помощью заголовков, абзацев, курсива, жирного начертания и зачёркивания.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Заголовки и текст"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Понятный заголовок"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "c0feca882e074a1f97138ccfd1a758c4149a3c1e5f09d0682e025f576b8756ab",
+            "locale": "ru",
+            "text": "Заголовки и текстnative.headings_and_text · MarkdownСтруктурирует текст с помощью заголовков, абзацев, курсива, жирного начертания и зачёркивания.ПримерПонятный заголовок Абзац может содержать важный текст, акцент и устаревшую формулировку. Вызов## Понятный заголовок Абзац может содержать **важный текст**, *акцент* и ~~устаревшую формулировку~~. Ограничения и источникПроизвольный HTML нельзя использовать как сокращённый способ разметки.source_kind: portable_markdown_profileprofile_id: docara.portable_markdown_profile.v1docs_ref: docs/site/content/ru/authoring/markdown.mdexample_ref: resources/component-catalog/examples/native.headings_and_text.ru.md",
+            "title": "Заголовки и текст",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/native.headings_and_text/"
+        },
+        {
+            "description": "Добавляет безопасные ссылки и изображения с заданным автором доступным описанием.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Ссылки и изображения"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "321846833b84a2f44f1f15a9c83a06d10fd638dd5fefc8573013da5d94b1557f",
+            "locale": "ru",
+            "text": "Ссылки и изображенияnative.links_and_images · MarkdownДобавляет безопасные ссылки и изображения с заданным автором доступным описанием.ПримерВернуться к каталогу Вызов[Вернуться к каталогу](../) ![Знак Docara](../../../_docara/component-catalog/docara-mark.svg) СостоянияФокус ссылкиlink_focusОграничения и источникНебезопасные протоколы ссылок отклоняются.Автор отвечает за содержательный альтернативный текст изображений.source_kind: portable_markdown_profileprofile_id: docara.portable_markdown_profile.v1docs_ref: docs/site/content/ru/authoring/markdown.mdexample_ref: resources/component-catalog/examples/native.links_and_images.ru.md",
+            "title": "Ссылки и изображения",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/native.links_and_images/"
+        },
+        {
+            "description": "Оформляет нумерованные и маркированные перечисления, а также семантические цитаты.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Списки и цитаты"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "b5bdc1311e2035a55d164897c6b72749efc602516f1a21400a42fd9c8187df8b",
+            "locale": "ru",
+            "text": "Списки и цитатыnative.lists_and_quotes · MarkdownОформляет нумерованные и маркированные перечисления, а также семантические цитаты.Пример Первый пункт Второй пункт Хорошая документация помогает выполнить задачу. Вызов- Первый пункт - Второй пункт > Хорошая документация помогает выполнить задачу. Ограничения и источникДополнительных ограничений не заявлено.source_kind: portable_markdown_profileprofile_id: docara.portable_markdown_profile.v1docs_ref: docs/site/content/ru/authoring/markdown.mdexample_ref: resources/component-catalog/examples/native.lists_and_quotes.ru.md",
+            "title": "Списки и цитаты",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/native.lists_and_quotes/"
+        },
+        {
+            "description": "Показывает небольшие сравнительные или справочные данные в семантической таблице с безопасной прокруткой.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Таблица Markdown"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                }
+            ],
+            "id": "dc437dcbbd11c494a5800ce59025641297d04b8afb7526e8323783abf7d10e5b",
+            "locale": "ru",
+            "text": "Таблица Markdownnative.table · MarkdownПоказывает небольшие сравнительные или справочные данные в семантической таблице с безопасной прокруткой.Пример Файл Роль docara.json Настройки сайта section.json Настройки раздела Вызов| Файл | Роль | | --- | --- | | `docara.json` | Настройки сайта | | `section.json` | Настройки раздела | Ограничения и источникЭто обычная таблица Markdown, а не структурированный контракт представления данных.source_kind: portable_markdown_profileprofile_id: docara.portable_markdown_profile.v1docs_ref: docs/site/content/ru/authoring/markdown.mdexample_ref: resources/component-catalog/examples/native.table.ru.md",
+            "title": "Таблица Markdown",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/native.table/"
+        },
+        {
+            "description": "Сообщает о результате, предупреждении или ошибке без выполнения прикладных действий.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Уведомление"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Параметры"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "f76e6efe5dd82b64568dbc5c8212802c8d24946f40edfeca9b0bd6a256a080f1",
+            "locale": "ru",
+            "text": "Уведомлениеui.alert · Smart-компонент SIMAI FrameworkСообщает о результате, предупреждении или ошибке без выполнения прикладных действий.Пример Вызов:::ui.alert {\"type\":\"info\",\"variant\":\"default\",\"title\":\"Проверенный Smart-компонент\",\"supporting-text\":\"Пример использует точный закреплённый контракт SIMAI Framework.\",\"closable\":false,\"aria-label\":\"Проверенный Smart-компонент\"} ::: ПараметрыИмяТипОбязателенПо умолчаниюЗначенияПравилаНазначениеДоступное имяaria-labelstringНет\"Information\"min_length: 1max_length: 160pattern: \"\\\\S\"Кратко называет уведомление для вспомогательных технологий.Можно закрытьclosablebooleanНетfalse—Управляет возможностью закрыть уведомление; значение true пока отклоняется.ИконкаiconstringНет—min_length: 1max_length: 80pattern: \"\\\\S\"Переопределяет имя декоративной иконки уведомления.Поясняющий текстsupporting-textstringНет\"The page is ready for review.\"min_length: 1max_length: 500pattern: \"\\\\S\"Дополняет заголовок подробностями о результате или состоянии.ЗаголовокtitlestringНет\"Information\"min_length: 1max_length: 160pattern: \"\\\\S\"mirrors: aria-labelКратко сообщает основное состояние.ТонtypeenumНет\"info\"Нейтральный — clear, Информация — info, Опасность — danger, Предупреждение — warning—Выбирает смысловой тон и оформление уведомления.ВариантvariantenumНет\"default\"Обычный — default, Плоский — flat, Контурный — outlined—Выбирает способ оформления поверхности и границы.СостоянияОбычное состояниеdefaultИнформацияinfoПредупреждениеwarningОпасностьdangerОграничения и источникПараметр closable=true пока не входит в ограниченный контракт среды выполнения.Параметр type=success не поддерживается: закреплённая таблица стилей Framework выводит его статусную иконку прозрачной.Свойство id создаётся Docara детерминированно.Мост серверных событий Larena намеренно исключён: переносимая Docara выводит компонент без серверных обработчиков.source_kind: smart_consumer_metadatamanifest_ref: resources/framework/manifests/ui-alert.jsonprovider: larena/uiprovider_revision: 4b055d09926fec4c32f2ae43b2e7e0a6f64d7663upstream_revision: dd786bbae98391fb21df9b4e1e6cd402ead0614cmanifest_sha256: 699b79d012d8e8af9a55f013ff19bafbc421cd16ee37990cb5ff070a0b1f490fruntime_pair: sf-v5.3.2-4100d3f7-dd786bbadocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/ui.alert.ru.md Проверенный Smart-компонент Пример использует точный закреплённый контракт SIMAI Framework.",
+            "title": "Уведомление",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/ui.alert/"
+        },
+        {
+            "description": "Выводит визуальный элемент действия; переносимая Docara не привязывает данные, не выполняет переход и не запускает действие.",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Кнопка"
+                },
+                {
+                    "level": 2,
+                    "text": "Пример"
+                },
+                {
+                    "level": 2,
+                    "text": "Вызов"
+                },
+                {
+                    "level": 2,
+                    "text": "Параметры"
+                },
+                {
+                    "level": 2,
+                    "text": "Связи параметров"
+                },
+                {
+                    "level": 2,
+                    "text": "Состояния"
+                }
+            ],
+            "id": "b51c1d61a564ca4c06aebc198a3421514a2bae608871429516de85730b7a544b",
+            "locale": "ru",
+            "text": "Кнопкаui.button · Smart-компонент SIMAI FrameworkВыводит визуальный элемент действия; переносимая Docara не привязывает данные, не выполняет переход и не запускает действие.Пример Вызов:::ui.button {\"text\":\"Демонстрационная кнопка\",\"size\":\"1\",\"type\":\"default\",\"scheme\":\"primary\",\"loading\":false,\"disabled\":true,\"native-type\":\"button\",\"aria-label\":\"Демонстрационная кнопка без действия\"} ::: ПараметрыИмяТипОбязателенПо умолчаниюЗначенияПравилаНазначениеДоступное имяaria-labelstringНет\"Save\"min_length: 1max_length: 120pattern: \"\\\\S\"Называет кнопку для вспомогательных технологий.ОтключенаdisabledbooleanНетfalse—Показывает недоступное для взаимодействия состояние.ЗагрузкаloadingbooleanНетfalse—Показывает ожидание завершения действия; требует disabled=true.Нативный типnative-typeenumНет\"button\"Кнопка — button, Отправка формы — submit, Сброс формы — reset—Задаёт стандартное поведение HTML-кнопки.ПресетpresetenumНет—Ссылка основная — link, Ссылка на поверхности — link_on_surface, Обычная на поверхности — on_surface, Контурная основная — outline, Контурная на поверхности — outline_on_surface, Основная — primary, Вторичная тональная — secondary, Тональная на поверхности — tonal_on_surface—Применяет точный набор параметров манифеста до явно заданных значений.СкруглениеradiusenumНет—По умолчанию SIMAI Framework — , Стандартное — default, Без скругления — square, Полностью скруглённая — rounded—Задаёт форму углов кнопки.Цветовая схемаschemeenumНет\"primary\"Основная — primary, Вторичная — secondary, На поверхности — on-surface—Выбирает семантическую цветовую схему.РазмерsizeenumНет\"1\"Очень маленькая · 1/3 — 1/3, Маленькая · 1/2 — 1/2, Обычная · 1 — 1, Большая · 2 — 2, Очень большая · 3 — 3—Задаёт размер кнопки по шкале SIMAI Framework.ТекстtextstringНет\"Save\"min_length: 1max_length: 120pattern: \"\\\\S\"mirrors: aria-labelЗадаёт видимую подпись кнопки.ТипtypeenumНет\"default\"Заливка — default, Тональная — tonal, Контурная — outline, Ссылка — link—Выбирает визуальный тип кнопки.Связи параметровДопустимые сочетания allowed_combinations{\"keys\":[\"type\",\"scheme\"],\"values\":[[\"default\",\"primary\"],[\"default\",\"on-surface\"],[\"tonal\",\"secondary\"],[\"tonal\",\"on-surface\"],[\"outline\",\"primary\"],[\"outline\",\"on-surface\"],[\"link\",\"primary\"],[\"link\",\"on-surface\"]]}requiresесли {\"loading\":true} → то {\"disabled\":true}СостоянияОбычное состояниеdefaultНаведениеhoverФокусfocusНажатиеactiveЗагрузкаloadingОтключеноdisabledОграничения и источникDocara выводит элемент управления, но не привязывает прикладные данные и не выполняет действие.Для перехода следует использовать обычную ссылку или docara.cta.Мост серверных событий Larena намеренно исключён: переносимая Docara выводит компонент без серверных обработчиков.source_kind: smart_consumer_metadatamanifest_ref: resources/framework/manifests/ui-button.jsonprovider: larena/uiprovider_revision: 4b055d09926fec4c32f2ae43b2e7e0a6f64d7663upstream_revision: dd786bbae98391fb21df9b4e1e6cd402ead0614cmanifest_sha256: 84f61a452422814ef4ca11e5c5787ba48cdb36e923466c6309a8d389b84576fbruntime_pair: sf-v5.3.2-4100d3f7-dd786bbadocs_ref: docs/site/content/ru/components/syntax.mdexample_ref: resources/component-catalog/examples/ui.button.ru.md Демонстрационная кнопка",
+            "title": "Кнопка",
+            "trail": [
+                "Компоненты",
+                "Каталог компонентов"
+            ],
+            "url": "/ru/components/catalog/ui.button/"
+        },
+        {
+            "description": "",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Руководства"
+                }
+            ],
+            "id": "20af8cff422a8e1f9e87cd02790d64e16faec3e70267a2d67e2e98103db321cc",
+            "locale": "ru",
+            "text": "Руководства Материалы по установке, настройке и построению сайта Docara.",
+            "title": "Руководства",
+            "trail": [],
+            "url": "/ru/guides/"
+        },
+        {
+            "description": "",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Быстрый старт"
+                },
+                {
+                    "level": 2,
+                    "text": "Что проверить"
+                },
+                {
+                    "level": 3,
+                    "text": "Следующий шаг"
+                }
+            ],
+            "id": "18a4884c150ec3307f9cd5a46475bf882e27ef218e80cc39e43fd01d195e06c4",
+            "locale": "ru",
+            "text": "Быстрый старт Эта страница находится во вложенном разделе и наследует настройки сайта и обоих уровней разделов. Что проверить Откройте дерево разделов, локальный поиск и следующий шаг. Следующий шаг Измените Markdown или JSON и повторите сборку. Оглавление, хлебные крошки и переходы между страницами обновятся автоматически. Наследование работает Параметры страницы дополняют настройки родительских разделов. Продолжить",
+            "title": "Быстрый старт",
+            "trail": [
+                "Руководства"
+            ],
+            "url": "/ru/guides/getting-started/"
+        },
+        {
+            "description": "",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Платформа"
+                }
+            ],
+            "id": "eba5f5c0416e7d503720bf8d55949a0c1aa1ec08be2997f39c5325a34d52a278",
+            "locale": "ru",
+            "text": "Платформа Базовые возможности переносимого движка Docara.",
+            "title": "Платформа",
+            "trail": [
+                "Руководства"
+            ],
+            "url": "/ru/guides/platform/"
+        },
+        {
+            "description": "",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Конфигурация"
+                }
+            ],
+            "id": "329014a711b5600062a1207f24f81c718f322461f7c28eeea79613c263eaf8f0",
+            "locale": "ru",
+            "text": "Конфигурация Настройки сайта, разделов и страниц.",
+            "title": "Конфигурация",
+            "trail": [
+                "Руководства",
+                "Платформа"
+            ],
+            "url": "/ru/guides/platform/configuration/"
+        },
+        {
+            "description": "",
+            "headings": [
+                {
+                    "level": 1,
+                    "text": "Макет"
+                }
+            ],
+            "id": "da39ad1c38981bff60c95b314897b568e396415885f3daac2ab80b88d00174f4",
+            "locale": "ru",
+            "text": "Макет Четвёртый уровень навигации показывает, что структура строится из обычных папок и Markdown-страниц.",
+            "title": "Макет",
+            "trail": [
+                "Руководства",
+                "Платформа",
+                "Конфигурация"
+            ],
+            "url": "/ru/guides/platform/configuration/layout/"
+        }
+    ],
+    "schema": "docara.search_index.v1",
+    "version": 1
+}

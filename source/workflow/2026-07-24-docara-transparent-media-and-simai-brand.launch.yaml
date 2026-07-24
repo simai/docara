@@ -1,0 +1,60 @@
+schema_version: "1.0.0"
+workflow_id: "2026-07-24-docara-transparent-media-and-simai-brand"
+track_id: "docara-consolidation"
+status: "completed"
+process_model_id: "docara_documentation_site_publication"
+current_state: "readiness_verdict_recorded"
+target_state: "readiness_verdict_recorded"
+owner_skill: "docara"
+companion_skills:
+  - "docs"
+  - "imagegen"
+  - "playwright"
+approved_by_user: true
+approval_note: "The user explicitly asked to implement transparent landing media and canonical SIMAI spelling."
+memory_decision: "skip"
+memory_reason: "Repository workflow and evidence are the durable source of truth; no personal-memory update was requested."
+current_goal: "Use true transparent landing illustrations on light and dark Framework surfaces and enforce SIMAI Framework spelling."
+final_outcome: "Transparent landing media render without baked theme plates, canonical SIMAI spelling is enforced, and the exact verified build is served locally with rollback."
+done_when:
+  - "Hero and three feature illustrations have a real alpha channel"
+  - "maintained product surfaces use SIMAI Framework"
+  - "spelling regression test, full suite, build and static verification pass"
+  - "light and dark desktop plus mobile browser acceptance pass"
+  - "the exact verified tree is served locally with rollback"
+stages:
+  - "transparent-media preparation"
+  - "product-surface spelling normalization"
+  - "automated build and static acceptance"
+  - "reversible local publication and browser acceptance"
+batches:
+  - "prepare and validate transparent PNG assets"
+  - "normalize maintained text surfaces and add regression coverage"
+  - "build and verify the static site"
+  - "publish the exact tree and complete visual acceptance"
+evidence_plan:
+  - "acceptance.md"
+  - "technology-evidence.md"
+  - "desktop light and dark screenshots"
+  - "mobile light screenshot"
+track_linkage:
+  parent: "docara-consolidation"
+  previous_goal: "full-bleed landing correction"
+repository: "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation"
+branch: "codex/docara-consolidation"
+evidence_path: "source/workflow/evidence/2026-07-24-docara-transparent-media-and-simai-brand"
+forbidden_actions:
+  - "commit_or_push"
+  - "public_or_production_release"
+action_gate:
+  status: "passed"
+  evidence: "source/output/action-gates/action-gate-report-20260723223123.json"
+result:
+  verdict: "pass"
+  evidence: "source/workflow/evidence/2026-07-24-docara-transparent-media-and-simai-brand/acceptance.md"
+  local_url: "https://docara.test/ru/landing/"
+  document_root: "/Users/rim/Sites/docara.test/build_production"
+  rollback: "/Users/rim/Sites/docara.test/.docara-backups/transparent-media-20260724-013133"
+nonclaims:
+  - "no commit, push, merge, tag or package release"
+  - "no public or production publication"

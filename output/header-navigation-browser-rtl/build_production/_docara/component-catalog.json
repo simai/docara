@@ -1,0 +1,899 @@
+{
+    "content_sha256": "95182bfc0dde59ef44091f069181aa95b28a742054dd69bb5f38a803e5bc5dd8",
+    "entries": [
+        {
+            "authoring": {
+                "call": null,
+                "jobs": [
+                    "add_semantic_icon"
+                ],
+                "parameters": [],
+                "syntax": "unavailable"
+            },
+            "category": "content",
+            "docs_ref": "docs/site/content/ru/components.md",
+            "family": "requirement",
+            "gap": {
+                "owner": "larena/ui"
+            },
+            "id": "content.icon",
+            "lifecycle": "framework_gap",
+            "provenance": {
+                "framework_owner": "larena/ui",
+                "source_kind": "product_requirement"
+            },
+            "states": [],
+            "verification": {
+                "demo": false,
+                "docs": false,
+                "renderer": false,
+                "tests": false
+            }
+        },
+        {
+            "authoring": {
+                "call": ":::card",
+                "jobs": [
+                    "group_content",
+                    "neutral_panel"
+                ],
+                "parameters": [],
+                "syntax": "directive"
+            },
+            "category": "content_structure",
+            "docs_ref": "docs/site/content/ru/components/syntax.md",
+            "family": "docara_typed",
+            "id": "docara.card",
+            "lifecycle": "supported",
+            "provenance": {
+                "definition_ref": "resources/component-catalog/typed/docara.card.json",
+                "source_kind": "typed_definition"
+            },
+            "states": [],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": ":::columns",
+                "jobs": [
+                    "arrange_related_regions"
+                ],
+                "parameters": [],
+                "syntax": "directive"
+            },
+            "category": "layout",
+            "docs_ref": "docs/site/content/ru/components/syntax.md",
+            "family": "docara_typed",
+            "id": "docara.columns",
+            "lifecycle": "supported",
+            "provenance": {
+                "definition_ref": "resources/component-catalog/typed/docara.columns.json",
+                "source_kind": "typed_definition"
+            },
+            "states": [
+                "stacked",
+                "responsive_columns"
+            ],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": ":::cta",
+                "jobs": [
+                    "primary_navigation_action"
+                ],
+                "parameters": [],
+                "syntax": "directive"
+            },
+            "category": "navigation",
+            "docs_ref": "docs/site/content/ru/components/syntax.md",
+            "family": "docara_typed",
+            "id": "docara.cta",
+            "lifecycle": "supported",
+            "provenance": {
+                "definition_ref": "resources/component-catalog/typed/docara.cta.json",
+                "source_kind": "typed_definition"
+            },
+            "states": [
+                "default",
+                "focus"
+            ],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": ":::features",
+                "jobs": [
+                    "summarize_features"
+                ],
+                "parameters": [],
+                "syntax": "directive"
+            },
+            "category": "content_structure",
+            "docs_ref": "docs/site/content/ru/components/syntax.md",
+            "family": "docara_typed",
+            "id": "docara.features",
+            "lifecycle": "supported",
+            "provenance": {
+                "definition_ref": "resources/component-catalog/typed/docara.features.json",
+                "source_kind": "typed_definition"
+            },
+            "states": [],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": ":::hero",
+                "jobs": [
+                    "explain_product_value",
+                    "primary_landing_action"
+                ],
+                "parameters": [],
+                "syntax": "directive"
+            },
+            "category": "landing",
+            "docs_ref": "docs/site/content/ru/components/syntax.md",
+            "family": "docara_typed",
+            "id": "docara.hero",
+            "lifecycle": "supported",
+            "provenance": {
+                "definition_ref": "resources/component-catalog/typed/docara.hero.json",
+                "source_kind": "typed_definition"
+            },
+            "states": [
+                "text",
+                "text_with_action",
+                "text_with_media"
+            ],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": ":::logos",
+                "jobs": [
+                    "show_trust_signals",
+                    "show_ecosystem_members"
+                ],
+                "parameters": [],
+                "syntax": "directive"
+            },
+            "category": "landing",
+            "docs_ref": "docs/site/content/ru/components/syntax.md",
+            "family": "docara_typed",
+            "id": "docara.logos",
+            "lifecycle": "supported",
+            "provenance": {
+                "definition_ref": "resources/component-catalog/typed/docara.logos.json",
+                "source_kind": "typed_definition"
+            },
+            "states": [
+                "text",
+                "linked",
+                "image"
+            ],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": ":::promo",
+                "jobs": [
+                    "close_landing_story",
+                    "present_final_action"
+                ],
+                "parameters": [],
+                "syntax": "directive"
+            },
+            "category": "landing",
+            "docs_ref": "docs/site/content/ru/components/syntax.md",
+            "family": "docara_typed",
+            "id": "docara.promo",
+            "lifecycle": "supported",
+            "provenance": {
+                "definition_ref": "resources/component-catalog/typed/docara.promo.json",
+                "source_kind": "typed_definition"
+            },
+            "states": [
+                "text",
+                "text_with_media"
+            ],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": ":::showcase",
+                "jobs": [
+                    "show_product_proof",
+                    "explain_visual_result"
+                ],
+                "parameters": [],
+                "syntax": "directive"
+            },
+            "category": "landing",
+            "docs_ref": "docs/site/content/ru/components/syntax.md",
+            "family": "docara_typed",
+            "id": "docara.showcase",
+            "lifecycle": "supported",
+            "provenance": {
+                "definition_ref": "resources/component-catalog/typed/docara.showcase.json",
+                "source_kind": "typed_definition"
+            },
+            "states": [
+                "media",
+                "media_with_action"
+            ],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": ":::steps",
+                "jobs": [
+                    "explain_sequence"
+                ],
+                "parameters": [],
+                "syntax": "directive"
+            },
+            "category": "content_structure",
+            "docs_ref": "docs/site/content/ru/components/syntax.md",
+            "family": "docara_typed",
+            "id": "docara.steps",
+            "lifecycle": "supported",
+            "provenance": {
+                "definition_ref": "resources/component-catalog/typed/docara.steps.json",
+                "source_kind": "typed_definition"
+            },
+            "states": [],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": "```language",
+                "jobs": [
+                    "show_code"
+                ],
+                "parameters": [],
+                "syntax": "markdown"
+            },
+            "category": "technical_content",
+            "docs_ref": "docs/site/content/ru/authoring/markdown.md",
+            "family": "native_markdown",
+            "id": "native.code",
+            "lifecycle": "supported",
+            "provenance": {
+                "profile_id": "docara.portable_markdown_profile.v1",
+                "source_kind": "portable_markdown_profile"
+            },
+            "states": [],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": null,
+                "jobs": [
+                    "enhance_code"
+                ],
+                "parameters": [],
+                "syntax": "unavailable"
+            },
+            "category": "technical_content",
+            "docs_ref": "docs/site/content/ru/components.md",
+            "family": "requirement",
+            "gap": {
+                "owner": "simai/docara"
+            },
+            "id": "native.code.enhanced",
+            "lifecycle": "framework_gap",
+            "provenance": {
+                "framework_owner": "simai/docara",
+                "source_kind": "product_requirement"
+            },
+            "states": [],
+            "verification": {
+                "demo": false,
+                "docs": false,
+                "renderer": false,
+                "tests": false
+            }
+        },
+        {
+            "authoring": {
+                "call": "# Heading",
+                "jobs": [
+                    "structure_prose"
+                ],
+                "parameters": [],
+                "syntax": "markdown"
+            },
+            "category": "prose",
+            "docs_ref": "docs/site/content/ru/authoring/markdown.md",
+            "family": "native_markdown",
+            "id": "native.headings_and_text",
+            "lifecycle": "supported",
+            "provenance": {
+                "profile_id": "docara.portable_markdown_profile.v1",
+                "source_kind": "portable_markdown_profile"
+            },
+            "states": [],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": "[label](url) and ![alt](url)",
+                "jobs": [
+                    "link_content",
+                    "illustrate_content"
+                ],
+                "parameters": [],
+                "syntax": "markdown"
+            },
+            "category": "prose",
+            "docs_ref": "docs/site/content/ru/authoring/markdown.md",
+            "family": "native_markdown",
+            "id": "native.links_and_images",
+            "lifecycle": "supported",
+            "provenance": {
+                "profile_id": "docara.portable_markdown_profile.v1",
+                "source_kind": "portable_markdown_profile"
+            },
+            "states": [
+                "link_focus"
+            ],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": "- item and > quote",
+                "jobs": [
+                    "list_items",
+                    "quote_content"
+                ],
+                "parameters": [],
+                "syntax": "markdown"
+            },
+            "category": "prose",
+            "docs_ref": "docs/site/content/ru/authoring/markdown.md",
+            "family": "native_markdown",
+            "id": "native.lists_and_quotes",
+            "lifecycle": "supported",
+            "provenance": {
+                "profile_id": "docara.portable_markdown_profile.v1",
+                "source_kind": "portable_markdown_profile"
+            },
+            "states": [],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": "| Column |",
+                "jobs": [
+                    "compare_small_datasets"
+                ],
+                "parameters": [],
+                "syntax": "markdown"
+            },
+            "category": "technical_content",
+            "docs_ref": "docs/site/content/ru/authoring/markdown.md",
+            "family": "native_markdown",
+            "id": "native.table",
+            "lifecycle": "supported",
+            "provenance": {
+                "profile_id": "docara.portable_markdown_profile.v1",
+                "source_kind": "portable_markdown_profile"
+            },
+            "states": [],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": ":::ui.alert",
+                "constraints": {
+                    "allowed_combinations": [],
+                    "requires": []
+                },
+                "jobs": [
+                    "report_status"
+                ],
+                "parameters": [
+                    {
+                        "default": "Information",
+                        "name": "aria-label",
+                        "required": false,
+                        "type": "string",
+                        "validation": {
+                            "max_length": 160,
+                            "min_length": 1,
+                            "pattern": "\\S"
+                        }
+                    },
+                    {
+                        "default": false,
+                        "name": "closable",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "name": "icon",
+                        "required": false,
+                        "type": "string",
+                        "validation": {
+                            "max_length": 80,
+                            "min_length": 1,
+                            "pattern": "\\S"
+                        }
+                    },
+                    {
+                        "default": "The page is ready for review.",
+                        "name": "supporting-text",
+                        "required": false,
+                        "type": "string",
+                        "validation": {
+                            "max_length": 500,
+                            "min_length": 1,
+                            "pattern": "\\S"
+                        }
+                    },
+                    {
+                        "default": "Information",
+                        "mirrors": [
+                            "aria-label"
+                        ],
+                        "name": "title",
+                        "required": false,
+                        "type": "string",
+                        "validation": {
+                            "max_length": 160,
+                            "min_length": 1,
+                            "pattern": "\\S"
+                        }
+                    },
+                    {
+                        "default": "info",
+                        "name": "type",
+                        "required": false,
+                        "type": "enum",
+                        "values": [
+                            "clear",
+                            "info",
+                            "danger",
+                            "warning"
+                        ]
+                    },
+                    {
+                        "default": "default",
+                        "name": "variant",
+                        "required": false,
+                        "type": "enum",
+                        "values": [
+                            "default",
+                            "flat",
+                            "outlined"
+                        ]
+                    }
+                ],
+                "syntax": "directive_json"
+            },
+            "category": "feedback",
+            "consumer_policy": {
+                "can_admit": false,
+                "excluded_states": [
+                    "closable",
+                    "success"
+                ],
+                "forbidden_inputs": [
+                    "closable=true",
+                    "id",
+                    "type=success"
+                ],
+                "managed_properties": [
+                    "id"
+                ],
+                "omitted_assets": [
+                    "simai.framework.bridge.js"
+                ]
+            },
+            "docs_ref": "docs/site/content/ru/components/syntax.md",
+            "family": "framework_smart",
+            "id": "ui.alert",
+            "lifecycle": "supported",
+            "provenance": {
+                "manifest_ref": "resources/framework/manifests/ui-alert.json",
+                "manifest_sha256": "699b79d012d8e8af9a55f013ff19bafbc421cd16ee37990cb5ff070a0b1f490f",
+                "provider": "larena/ui",
+                "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+                "runtime_pair": "sf-v5.3.2-4100d3f7-dd786bba",
+                "source_kind": "smart_consumer_metadata",
+                "upstream_revision": "dd786bbae98391fb21df9b4e1e6cd402ead0614c"
+            },
+            "states": [
+                "default",
+                "info",
+                "warning",
+                "danger"
+            ],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": ":::ui.badge",
+                "jobs": [
+                    "label_status"
+                ],
+                "parameters": [],
+                "syntax": "proposed_directive"
+            },
+            "category": "status",
+            "docs_ref": "docs/site/content/ru/components.md",
+            "family": "requirement",
+            "gap": {
+                "owner": "simai/docara"
+            },
+            "id": "ui.badge",
+            "lifecycle": "admission_pending",
+            "provenance": {
+                "framework_owner": "larena/ui",
+                "source_kind": "product_requirement"
+            },
+            "states": [],
+            "verification": {
+                "demo": false,
+                "docs": false,
+                "renderer": false,
+                "tests": false
+            }
+        },
+        {
+            "authoring": {
+                "call": ":::ui.button",
+                "constraints": {
+                    "allowed_combinations": [
+                        {
+                            "keys": [
+                                "type",
+                                "scheme"
+                            ],
+                            "values": [
+                                [
+                                    "default",
+                                    "primary"
+                                ],
+                                [
+                                    "default",
+                                    "on-surface"
+                                ],
+                                [
+                                    "tonal",
+                                    "secondary"
+                                ],
+                                [
+                                    "tonal",
+                                    "on-surface"
+                                ],
+                                [
+                                    "outline",
+                                    "primary"
+                                ],
+                                [
+                                    "outline",
+                                    "on-surface"
+                                ],
+                                [
+                                    "link",
+                                    "primary"
+                                ],
+                                [
+                                    "link",
+                                    "on-surface"
+                                ]
+                            ]
+                        }
+                    ],
+                    "requires": [
+                        {
+                            "then": {
+                                "disabled": true
+                            },
+                            "when": {
+                                "loading": true
+                            }
+                        }
+                    ]
+                },
+                "jobs": [
+                    "show_action_control"
+                ],
+                "parameters": [
+                    {
+                        "default": "Save",
+                        "name": "aria-label",
+                        "required": false,
+                        "type": "string",
+                        "validation": {
+                            "max_length": 120,
+                            "min_length": 1,
+                            "pattern": "\\S"
+                        }
+                    },
+                    {
+                        "default": false,
+                        "name": "disabled",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "default": false,
+                        "name": "loading",
+                        "required": false,
+                        "type": "boolean"
+                    },
+                    {
+                        "default": "button",
+                        "name": "native-type",
+                        "required": false,
+                        "type": "enum",
+                        "values": [
+                            "button",
+                            "submit",
+                            "reset"
+                        ]
+                    },
+                    {
+                        "name": "preset",
+                        "required": false,
+                        "type": "enum",
+                        "values": [
+                            "link",
+                            "link_on_surface",
+                            "on_surface",
+                            "outline",
+                            "outline_on_surface",
+                            "primary",
+                            "secondary",
+                            "tonal_on_surface"
+                        ]
+                    },
+                    {
+                        "name": "radius",
+                        "required": false,
+                        "type": "enum",
+                        "values": [
+                            "",
+                            "default",
+                            "square",
+                            "rounded"
+                        ]
+                    },
+                    {
+                        "default": "primary",
+                        "name": "scheme",
+                        "required": false,
+                        "type": "enum",
+                        "values": [
+                            "primary",
+                            "secondary",
+                            "on-surface"
+                        ]
+                    },
+                    {
+                        "default": "1",
+                        "name": "size",
+                        "required": false,
+                        "type": "enum",
+                        "values": [
+                            "1/3",
+                            "1/2",
+                            "1",
+                            "2",
+                            "3"
+                        ]
+                    },
+                    {
+                        "default": "Save",
+                        "mirrors": [
+                            "aria-label"
+                        ],
+                        "name": "text",
+                        "required": false,
+                        "type": "string",
+                        "validation": {
+                            "max_length": 120,
+                            "min_length": 1,
+                            "pattern": "\\S"
+                        }
+                    },
+                    {
+                        "default": "default",
+                        "name": "type",
+                        "required": false,
+                        "type": "enum",
+                        "values": [
+                            "default",
+                            "tonal",
+                            "outline",
+                            "link"
+                        ]
+                    }
+                ],
+                "syntax": "directive_json"
+            },
+            "category": "actions",
+            "consumer_policy": {
+                "can_admit": false,
+                "excluded_states": [],
+                "forbidden_inputs": [],
+                "managed_properties": [],
+                "omitted_assets": [
+                    "simai.framework.bridge.js"
+                ]
+            },
+            "docs_ref": "docs/site/content/ru/components/syntax.md",
+            "family": "framework_smart",
+            "id": "ui.button",
+            "lifecycle": "supported",
+            "provenance": {
+                "manifest_ref": "resources/framework/manifests/ui-button.json",
+                "manifest_sha256": "84f61a452422814ef4ca11e5c5787ba48cdb36e923466c6309a8d389b84576fb",
+                "provider": "larena/ui",
+                "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+                "runtime_pair": "sf-v5.3.2-4100d3f7-dd786bba",
+                "source_kind": "smart_consumer_metadata",
+                "upstream_revision": "dd786bbae98391fb21df9b4e1e6cd402ead0614c"
+            },
+            "states": [
+                "default",
+                "hover",
+                "focus",
+                "active",
+                "loading",
+                "disabled"
+            ],
+            "verification": {
+                "demo": true,
+                "docs": true,
+                "renderer": true,
+                "tests": true
+            }
+        },
+        {
+            "authoring": {
+                "call": null,
+                "jobs": [
+                    "present_structured_data"
+                ],
+                "parameters": [],
+                "syntax": "unavailable"
+            },
+            "category": "structured_data",
+            "docs_ref": "docs/site/content/ru/components.md",
+            "family": "requirement",
+            "gap": {
+                "owner": "simai/docara and larena/ui"
+            },
+            "id": "ui.dataview",
+            "lifecycle": "deferred",
+            "provenance": {
+                "framework_owner": "larena/ui",
+                "source_kind": "product_requirement"
+            },
+            "states": [],
+            "verification": {
+                "demo": false,
+                "docs": false,
+                "renderer": false,
+                "tests": false
+            }
+        },
+        {
+            "authoring": {
+                "call": null,
+                "jobs": [
+                    "switch_content_panels"
+                ],
+                "parameters": [],
+                "syntax": "unavailable"
+            },
+            "category": "navigation",
+            "docs_ref": "docs/site/content/ru/components.md",
+            "family": "requirement",
+            "gap": {
+                "owner": "simai/ui and larena/ui"
+            },
+            "id": "ui.tabs",
+            "lifecycle": "framework_gap",
+            "provenance": {
+                "framework_owner": "simai/ui and larena/ui",
+                "source_kind": "product_requirement"
+            },
+            "states": [],
+            "verification": {
+                "demo": false,
+                "docs": false,
+                "renderer": false,
+                "tests": false
+            }
+        }
+    ],
+    "framework_pair": "sf-v5.3.2-4100d3f7-dd786bba",
+    "nonclaims": {
+        "all_framework_components_supported": false,
+        "catalog_is_canonical_framework_registry": false,
+        "production_ready": false,
+        "public_release_ready": false
+    },
+    "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+    "schema": "docara.effective_component_catalog.v1",
+    "version": 1
+}

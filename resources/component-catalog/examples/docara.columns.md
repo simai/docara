@@ -17,7 +17,7 @@ The portable build does not require Node.js.
 
 ---
 
-### Simai Framework
+### SIMAI Framework
 
 The layout uses verified responsive utilities.
 :::

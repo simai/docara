@@ -1,0 +1,2 @@
+/Users/rim/Sites/docara.test/build_production
+/Users/rim/Sites/docara.test/build_production.manifest.sha256

@@ -16,6 +16,7 @@ use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\ResolvedPagePlan;
 use Simai\Docara\Portable\SchemaRepository;
+use Simai\Docara\Preferences\ReaderPreferenceCompiler;
 
 final readonly class PortableDeclarativeExampleProjector
 {
@@ -494,7 +495,11 @@ final readonly class PortableDeclarativeExampleProjector
             'locale' => (string) ($configuration['locale'] ?? $configuration['default_locale'] ?? 'en'),
             'preset' => 'docs',
             'theme' => (string) data_get($configuration, 'settings.theme', 'system'),
-            'max_width' => (string) data_get($configuration, 'layout.max_width', 'normal'),
+            'reader_preferences' => is_array($configuration['reader_preferences'] ?? null)
+                ? $configuration['reader_preferences']
+                : ReaderPreferenceCompiler::defaultConfiguration(),
+            'reader_preferences_storage_key' => ReaderPreferenceCompiler::storageKey($configuration),
+            'container_max' => (int) data_get($configuration, 'layout.container.max', 7),
             'navigation_hidden' => $navigationHidden,
             'navigation_order' => $navigationOrder,
             'search_enabled' => (bool) data_get($configuration, 'search.enabled', false),

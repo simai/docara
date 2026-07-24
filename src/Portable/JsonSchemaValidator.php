@@ -27,6 +27,32 @@ final class JsonSchemaValidator
             return;
         }
 
+        if (is_array($schema['allOf'] ?? null)) {
+            foreach ($schema['allOf'] as $branch) {
+                if (! is_array($branch)) {
+                    throw new PortableConfigurationException(
+                        'SCHEMA_INVALID',
+                        "Schema [allOf] branch at [$pointer] must be an object.",
+                    );
+                }
+                $this->validate($data, $branch, $pointer, $schemaName);
+            }
+        }
+
+        if (is_array($schema['if'] ?? null)) {
+            $conditionMatches = $this->matchesSchema($data, $schema['if'], $pointer, $schemaName);
+            $branch = $conditionMatches ? ($schema['then'] ?? null) : ($schema['else'] ?? null);
+            if ($branch !== null) {
+                if (! is_array($branch)) {
+                    throw new PortableConfigurationException(
+                        'SCHEMA_INVALID',
+                        "Conditional schema branch at [$pointer] must be an object.",
+                    );
+                }
+                $this->validate($data, $branch, $pointer, $schemaName);
+            }
+        }
+
         if (array_key_exists('const', $schema) && $data !== $schema['const']) {
             $this->fail($pointer, 'must equal the supported constant value');
         }
@@ -137,6 +163,22 @@ final class JsonSchemaValidator
                     $schemaName,
                 );
             }
+        }
+    }
+
+    /** @param array<string, mixed> $schema */
+    private function matchesSchema(mixed $data, array $schema, string $pointer, string $schemaName): bool
+    {
+        try {
+            $this->validate($data, $schema, $pointer, $schemaName);
+
+            return true;
+        } catch (PortableConfigurationException $exception) {
+            if ($exception->errorCode !== 'SCHEMA_VALIDATION_FAILED') {
+                throw $exception;
+            }
+
+            return false;
         }
     }
 

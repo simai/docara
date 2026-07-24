@@ -143,45 +143,4 @@
     });
     syncComponentFilter();
   }
-  var readerTheme=window.DocaraReaderTheme;
-  var settingsTrigger=document.querySelector('[data-docara-reader-settings-trigger]');
-  var settingsDialog=document.querySelector('[data-docara-reader-settings-dialog]');
-  var settingsReset=document.querySelector('[data-docara-reader-settings-reset]');
-  var settingsStatus=document.querySelector('[data-docara-reader-settings-status]');
-  var themeOptions=Array.from(document.querySelectorAll('[data-docara-theme-option]'));
-  function announceSettings(message){if(settingsStatus){settingsStatus.textContent='';requestAnimationFrame(function(){settingsStatus.textContent=message})}}
-  function syncReaderSettings(){
-    if(!readerTheme)return;
-    var preference=readerTheme.preference();
-    themeOptions.forEach(function(option){option.checked=option.value===preference.mode});
-    if(settingsReset){settingsReset.hidden=!readerTheme.hasOverride()}
-  }
-  if(settingsTrigger&&settingsDialog&&readerTheme){
-    settingsTrigger.addEventListener('click',function(){
-      requestTransient(settingsDialog);
-      if(!settingsDialog.open){settingsDialog.showModal()}
-      settingsTrigger.setAttribute('aria-expanded','true');
-      syncReaderSettings();
-      requestAnimationFrame(function(){var selected=themeOptions.find(function(option){return option.checked});if(selected){selected.focus()}});
-    });
-    settingsDialog.addEventListener('close',function(){settingsTrigger.setAttribute('aria-expanded','false');settingsTrigger.focus()});
-    settingsDialog.addEventListener('keydown',function(event){trapDialogTab(settingsDialog,event)});
-    themeOptions.forEach(function(option){
-      option.addEventListener('change',function(){
-        if(!option.checked)return;
-        var result=readerTheme.set(option.value);
-        if(!result.applied)return;
-        syncReaderSettings();
-        var label=option.closest('label').querySelector('.sf-radio-button-text').textContent;
-        announceSettings(result.persisted?message('reader.saved',{theme:label}):message('reader.applied_not_saved'));
-      });
-    });
-    if(settingsReset){
-      settingsReset.addEventListener('click',function(){readerTheme.reset();syncReaderSettings();announceSettings(message('reader.restored'))});
-    }
-    var systemTheme=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)');
-    if(systemTheme){systemTheme.addEventListener('change',function(){if(document.documentElement.dataset.docaraThemePreference==='system'){readerTheme.apply('system',document.documentElement.dataset.docaraThemeSource||'site')}})}
-    window.addEventListener('storage',function(event){if(event.key===readerTheme.key){var preference=readerTheme.syncExternal();readerTheme.apply(preference.mode,preference.source);syncReaderSettings()}});
-    syncReaderSettings();
-  }
 })();

@@ -1,7 +1,7 @@
 {
   "schema": "larena.ui.smart_manifest.v1",
   "key": "docara.brand",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner_package": "simai/docara",
   "kind": "composite",
   "props": {
@@ -12,11 +12,13 @@
         "properties": {
           "title": {"type": "string", "minLength": 1, "maxLength": 120},
           "label": {"type": ["string", "null"], "minLength": 1, "maxLength": 120},
+          "mode": {"type": "string", "enum": ["full", "compact", "logo", "text"]},
+          "size": {"type": "string", "enum": ["small", "medium", "large"]},
           "home_url": {"type": "string", "minLength": 1, "maxLength": 500, "pattern": "^/(?!/)"},
           "logo": {"type": ["string", "null"], "minLength": 1, "maxLength": 500},
           "logo_dark": {"type": ["string", "null"], "minLength": 1, "maxLength": 500}
         },
-        "required": ["title", "label", "home_url", "logo", "logo_dark"],
+        "required": ["title", "label", "mode", "size", "home_url", "logo", "logo_dark"],
         "additionalProperties": false
       }
     },
@@ -25,8 +27,8 @@
   },
   "slots": {},
   "events": {},
-  "views": {"default": {}, "compact": {}},
-  "presets": {"default": {"view": "default"}, "compact": {"view": "compact"}},
+  "views": {"default": {}, "compact": {}, "logo": {}, "text": {}},
+  "presets": {"default": {"view": "default"}, "compact": {"view": "compact"}, "logo": {"view": "logo"}, "text": {"view": "text"}},
   "constraints": {},
   "render": {"strategy": "host", "renderer": "docara.smart.template"},
   "frontend": {"runtime": null, "tag": null},
@@ -40,7 +42,7 @@
     "description": "Displays product identity and the documentation home link inside a configured region.",
     "category": "branding",
     "status": "developer_testable",
-    "states": ["default", "compact", "logo", "text_only"],
+    "states": ["default", "compact", "logo", "text"],
     "readiness": {
       "safe_to_suggest": true,
       "safe_to_render": true,
@@ -49,7 +51,7 @@
     },
     "accessibility": ["accessible_home_link", "theme_aware_logo", "text_fallback"],
     "example_props": {
-      "branding": {"title": "Docara", "label": "Documentation", "home_url": "/", "logo": null, "logo_dark": null}
+      "branding": {"title": "Docara", "label": "Documentation", "mode": "full", "size": "medium", "home_url": "/", "logo": null, "logo_dark": null}
     },
     "controls": []
   },

@@ -11,7 +11,6 @@ final readonly class PortablePageViewModel
      * @param  list<array{title:string,url:?string,current:bool}>  $breadcrumbs
      * @param  array{title:string,url:string}|null  $previous
      * @param  array{title:string,url:string}|null  $next
-     * @param  list<array{value:string,title:string,description:string,checked:bool}>  $themeOptions
      * @param  array<string, string>  $copy
      * @param  list<array{locale:string,url:string}>  $alternates
      * @param  list<array{locale:string,label:string,url:string,current:bool}>  $languageOptions
@@ -28,7 +27,7 @@ final readonly class PortablePageViewModel
         public string $headHtml,
         public string $themeBootstrap,
         public string $preset,
-        public string $maxWidth,
+        public string $containerClass,
         public string $mobileTocState,
         public bool $searchEnabled,
         public ?string $searchRuntimeUrl,
@@ -39,8 +38,6 @@ final readonly class PortablePageViewModel
         public array $breadcrumbs,
         public ?array $previous,
         public ?array $next,
-        public array $themeOptions,
-        public string $configuredTheme,
         public array $copy,
         public string $canonicalUrl,
         public array $alternates,

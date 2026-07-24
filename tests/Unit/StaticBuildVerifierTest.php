@@ -29,7 +29,7 @@ use Tests\TestCase;
 
 final class StaticBuildVerifierTest extends TestCase
 {
-    private const FRAMEWORK_PAIR = 'sf-v5.3.2-7e836d8a-dd786bba';
+    private const FRAMEWORK_PAIR = 'sf-v5.3.2-4100d3f7-dd786bba';
 
     private const FRAMEWORK_PROVIDER_REVISION = '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663';
 
@@ -53,7 +53,7 @@ final class StaticBuildVerifierTest extends TestCase
         $this->writeResolvedPlans($build, '/');
         $complete = $this->verify($build);
         self::assertSame(0, $complete->getExitCode(), $complete->getErrorOutput());
-        self::assertStringContainsString('"html_pages": 14', $complete->getOutput());
+        self::assertStringContainsString('"html_pages": 18', $complete->getOutput());
         self::assertStringContainsString('"local_references_checked":', $complete->getOutput());
 
         $sentinel = $this->tmpPath('project-config-loaded');
@@ -63,7 +63,7 @@ final class StaticBuildVerifierTest extends TestCase
         );
         $cli = $this->verifyViaCli($build);
         self::assertSame(0, $cli->getExitCode(), $cli->getErrorOutput() . $cli->getOutput());
-        self::assertStringContainsString('"html_pages": 14', $cli->getOutput());
+        self::assertStringContainsString('"html_pages": 18', $cli->getOutput());
         self::assertFileDoesNotExist($sentinel, 'verify-static must not execute project PHP configuration.');
 
         unlink($build . '/asset.css');
@@ -546,7 +546,7 @@ final class StaticBuildVerifierTest extends TestCase
             $catalog['entries'],
             static fn (array $entry): bool => $entry['lifecycle'] !== 'supported',
         ));
-        self::assertCount(12, $supportedEntries);
+        self::assertCount(16, $supportedEntries);
         self::assertCount(5, $unavailableEntries);
         self::assertSame(
             [],
@@ -1339,7 +1339,7 @@ final class StaticBuildVerifierTest extends TestCase
                     'default_locale' => $locale,
                     'locale' => $locale,
                     'preset' => 'docs',
-                    'layout' => ['max_width' => 'normal'],
+                    'layout' => ['container' => ['max' => 6]],
                     'navigation' => ['hidden' => false, 'order' => 900],
                     'search' => ['enabled' => false, 'indexed' => false],
                     'reading' => [

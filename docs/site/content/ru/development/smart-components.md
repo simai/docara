@@ -1,6 +1,6 @@
 # Smart-компоненты Docara
 
-Docara использует тот же основной принцип, что Larena и Simai Framework:
+Docara использует тот же основной принцип, что Larena и SIMAI Framework:
 интерфейс собирается из компонентов с известным контрактом, а не из HTML,
 спрятанного в compiler или builder. Standalone-сборка при этом остаётся
 PHP-only и не получает runtime-зависимость от Laravel.
@@ -50,7 +50,7 @@ RTL без отдельных шаблонов.
 
 ## Представления и presets
 
-- `docara.brand`: `default`, `compact`;
+- `docara.brand`: `default`, `compact`, `logo`, `text`;
 - `docara.navigation`: `default`, `compact`, `tree`;
 - `docara.toc`: `default`, `compact`.
 
@@ -78,6 +78,9 @@ asset, несовместимые props или неполную readiness-зап
 перехода по содержанию, определяет активный заголовок при прокрутке, помечает
 его через `aria-current="location"` и выводит маркер на линии правой области.
 `docara.brand` владеет вариантами бренда и адаптивным отображением подписи.
+Пользовательские `branding.mode` и `branding.size` преобразуются в
+зарегистрированный view и размер по шкале SIMAI Framework до рендеринга;
+произвольный template или список классов в конфигурацию не передаётся.
 
 Общий publisher shell только размещает готовые артефакты и registered chrome
 fragments. Он не содержит разметку product-компонентов и не выбирает их по
@@ -107,7 +110,7 @@ publisher shell:
 | Раскрытие ветвей и component event | `resources/smart/assets/navigation.js` |
 | Выбор view встроенной секцией | `resources/sections/docara.navigation.json` |
 
-Встроенный `tree` использует настоящие примитивы Simai Framework:
+Встроенный `tree` использует настоящие примитивы SIMAI Framework:
 `sf-menu`, `sf-menu-item`, `sf-menu-element`, `sf-icon-button` и `sf-icon`.
 Размеры, отступы, цвета hover/active, радиусы и темы задаются токенами
 Framework. Поэтому светлая, тёмная и системная темы не требуют отдельных

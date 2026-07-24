@@ -1,7 +1,7 @@
 {
   "schema": "docara.page.v1",
   "title": "Footer из безопасных блоков",
-  "description": "Footer из структурированных элементов и утилит Simai Framework.",
+  "description": "Footer из структурированных элементов и утилит SIMAI Framework.",
   "layout": {
     "regions": {
       "footer": {

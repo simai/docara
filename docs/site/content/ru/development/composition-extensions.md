@@ -110,7 +110,7 @@ props, events, views, presets, assets, Atlas и readiness. Для Framework Smar
 нужно дублировать в `DefinitionRepository` или `TrustedTemplateRegistry`:
 реестр строит обе проекции из contribution.
 
-## Добавление Smart-компонента Simai Framework
+## Добавление Smart-компонента SIMAI Framework
 
 Сначала пройдите owner admission: manifest и assets должны существовать в
 зафиксированной паре Core/Smart, а provider revision и SHA-256 — в exact lock.

@@ -28,7 +28,7 @@ php vendor/bin/docara verify-static
 - search index и pinned search runtime;
 - redirect receipt, статические redirect pages и их targets;
 - effective component catalog и generated catalog pages;
-- точная asset projection Simai Framework;
+- точная asset projection SIMAI Framework;
 - отсутствие лишней или пропавшей поверхности, охваченной manifest.
 
 Успешный exit code означает, что проверенный каталог самосогласован. Он не

@@ -5,9 +5,12 @@
         "common.continue": "Продолжить",
         "common.greeting": "Здравствуйте, {name}!",
         "shell.skip_to_content": "К содержанию",
-        "navigation.open": "Открыть разделы документации",
+        "navigation.open": "Открыть навигацию",
+        "navigation.mobile_title": "Навигация",
+        "navigation.primary": "Главное",
+        "navigation.sections": "Документация",
         "navigation.title": "Разделы",
-        "navigation.close": "Закрыть разделы документации",
+        "navigation.close": "Закрыть навигацию",
         "navigation.breadcrumbs": "Хлебные крошки",
         "navigation.breadcrumbs_expand": "Показать скрытые уровни навигационной цепочки",
         "navigation.outline": "Содержание",
@@ -69,10 +72,10 @@
         "catalog.filter_empty": "По заданным условиям ничего не найдено.",
         "catalog.family_native_plural": "Markdown",
         "catalog.family_typed_plural": "Компоненты Docara",
-        "catalog.family_smart_plural": "Smart-компоненты Simai Framework",
+        "catalog.family_smart_plural": "Smart-компоненты SIMAI Framework",
         "catalog.family_native_single": "Markdown",
         "catalog.family_typed_single": "Компонент Docara",
-        "catalog.family_smart_single": "Smart-компонент Simai Framework",
+        "catalog.family_smart_single": "Smart-компонент SIMAI Framework",
         "catalog.unavailable_title": "Недоступно сейчас",
         "catalog.unavailable_fallback": "Недоступно в этой сборке.",
         "catalog.fallback": "Безопасная замена",
@@ -139,7 +142,7 @@
         },
         "docara.columns": {
             "title": "Колонки",
-            "description": "Размещает от двух до четырёх областей Markdown в адаптивной сетке Simai Framework, сохраняя порядок исходного текста.",
+            "description": "Размещает от двух до четырёх областей Markdown в адаптивной сетке SIMAI Framework, сохраняя порядок исходного текста.",
             "limitations": [
                 "Содержимое должно включать от двух до четырёх непустых областей Markdown.",
                 "Области разделяются точной строкой верхнего уровня --- с пустыми строками вокруг.",
@@ -178,6 +181,65 @@
             "parameters": [],
             "example_ref": "resources/component-catalog/examples/docara.features.ru.md"
         },
+        "docara.hero": {
+            "title": "Первый экран",
+            "description": "Объясняет продукт, его ценность и следующий шаг на первом экране лендинга.",
+            "limitations": [
+                "Содержимое начинается с одного H1 и включает один–два описательных абзаца.",
+                "После описания можно добавить одну безопасную ссылку-действие и одно изображение с осмысленным alt-текстом.",
+                "Вложенные типизированные директивы Docara и Smart-компоненты не поддерживаются."
+            ],
+            "states": {
+                "text": "Текст",
+                "text_with_action": "Текст с действием",
+                "text_with_media": "Текст с изображением"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.hero.ru.md"
+        },
+        "docara.logos": {
+            "title": "Логотипы и участники",
+            "description": "Показывает компактный адаптивный ряд клиентов, партнёров или продуктов экосистемы.",
+            "limitations": [
+                "Содержимое должно включать один плоский маркированный список из двух–двенадцати пунктов.",
+                "Пункт может содержать текст, безопасную ссылку или изображение с осмысленным alt-текстом."
+            ],
+            "states": {
+                "text": "Текст",
+                "linked": "Ссылки",
+                "image": "Изображения"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.logos.ru.md"
+        },
+        "docara.promo": {
+            "title": "Промоблок",
+            "description": "Завершает лендинг коротким объяснением следующего шага, заметным действием и необязательной иллюстрацией.",
+            "limitations": [
+                "Содержимое начинается с H2, включает один–два абзаца и ровно одну безопасную ссылку-действие.",
+                "После действия можно добавить одно безопасное декоративное или информативное изображение."
+            ],
+            "states": {
+                "text": "Текст",
+                "text_with_media": "Текст с изображением"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.promo.ru.md"
+        },
+        "docara.showcase": {
+            "title": "Демонстрация продукта",
+            "description": "Показывает крупное доказательное изображение продукта рядом с объяснением и необязательной ссылкой.",
+            "limitations": [
+                "Содержимое начинается с H2, включает один–два абзаца и заканчивается изображением с осмысленным alt-текстом.",
+                "Перед изображением можно добавить одну безопасную ссылку-действие."
+            ],
+            "states": {
+                "media": "Изображение",
+                "media_with_action": "Изображение с действием"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.showcase.ru.md"
+        },
         "docara.steps": {
             "title": "Шаги",
             "description": "Показывает короткую упорядоченную последовательность действий.",
@@ -191,7 +253,7 @@
         },
         "native.code": {
             "title": "Код",
-            "description": "Выводит фрагменты и блоки кода из Markdown. Закреплённый Simai Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.",
+            "description": "Выводит фрагменты и блоки кода из Markdown. Закреплённый SIMAI Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.",
             "limitations": [
                 "Без загрузки закреплённого runtime остаётся читаемый статический pre/code; тонкие настройки подсветки и строк не предоставляются."
             ],
@@ -209,8 +271,8 @@
             "parameters": [],
             "gap": {
                 "reason": "Нет принятого контракта для опциональных номеров, выделенных строк, diff-состояний и других editor-grade параметров.",
-                "fallback": "Используйте native.code: язык, копирование, подсветка, номера строк и локальная прокрутка уже предоставляются закреплённым Simai Framework.",
-                "admission_condition": "Добавить параметры в компонент Simai Framework, закрепить доступность и fallback, затем принять их в Docara с тестами, документацией и браузерной проверкой."
+                "fallback": "Используйте native.code: язык, копирование, подсветка, номера строк и локальная прокрутка уже предоставляются закреплённым SIMAI Framework.",
+                "admission_condition": "Добавить параметры в компонент SIMAI Framework, закрепить доступность и fallback, затем принять их в Docara с тестами, документацией и браузерной проверкой."
             }
         },
         "native.headings_and_text": {
@@ -382,7 +444,7 @@
                     "label": "Скругление",
                     "description": "Задаёт форму углов кнопки.",
                     "values": {
-                        "": "По умолчанию Simai Framework",
+                        "": "По умолчанию SIMAI Framework",
                         "default": "Стандартное",
                         "square": "Без скругления",
                         "rounded": "Полностью скруглённая"
@@ -399,7 +461,7 @@
                 },
                 "size": {
                     "label": "Размер",
-                    "description": "Задаёт размер кнопки по шкале Simai Framework.",
+                    "description": "Задаёт размер кнопки по шкале SIMAI Framework.",
                     "values": {
                         "1/3": "Очень маленькая · 1/3",
                         "1/2": "Маленькая · 1/2",

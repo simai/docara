@@ -1,0 +1,6 @@
+local=d239d9c97f32193385ac16212183e095338ac3f9
+tracking=a913dce60b7246d24f9afaf6e9f259a5b7c097e0
+remote=a913dce60b7246d24f9afaf6e9f259a5b7c097e0
+ahead_tracking=41
+behind_tracking=0
+remote_contains_product_candidate=no

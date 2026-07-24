@@ -1,0 +1,21 @@
+canonical legacy refs:
+active legacy refs:
+14:Docara is a PHP 8.2 static documentation generator based on Jigsaw. Its project model is:
+16:- Source: `source/<DOCS_DIR>/<locale>`, usually `source/docs/en`.
+17:- Config: `.env`, `config.php`, `translate.config.php`, `package.json`.
+43:   yarn prod || npm run prod
+52:- Prefer `DOCS_DIR=docs`; do not confuse root `/docs` publication output with Docara source `source/docs`.
+53:- Do not overwrite existing `source/docs` content during `docara init`; use `--update` and inspect diffs.
+55:- If frontend dependencies are pinned after testing, mirror the pin in `source/_core/package.json` as well as root `package.json` before using `npm ci` in CI. `docara init --update` can refresh root frontend files from `source/_core`, and a package/lock mismatch will stop GitHub Pages before the build.
+94:php <skill>/scripts/docara-translate-state.php --docs-dir=source/docs --source=en --targets=ru --print-todo-with-size --target=ru
+95:php <skill>/scripts/docara-translate-state.php --docs-dir=source/docs --source=en --targets=ru --sync-targets=ru
+96:php <skill>/scripts/docara-translate-state.php --docs-dir=source/docs --source=en --print-locales
+99:The state file is local operational metadata. Keep it in the default `.docara-state/translate-state.php` or pass `--state-file`; do not commit `.docara-state/` or legacy `source/docs/.translate.php`. If TODO is non-zero, say the target locale is partial/stale rather than equivalent to the source. Read JSON TODO `reasons` before editing, and never use `--sync-targets` to silence files that were not actually reviewed or translated.
+107:- `scripts/import-markdown-docs.php` imports existing Markdown documentation into `source/docs/<locale>` with Docara front matter and `.settings.php` menus.
+123:- Existing product/tool repository with current root docs: prefer a contained `docara/` subproject. Keep Docara source in `docara/source/docs`, build output in `docara/build_production`, and publish that output.
+canonical docara2 refs:
+3:description: Build, configure, verify, publish, migrate, and maintain static documentation and landing sites with SIMAI Docara 2 using Markdown, validated JSON, Simai Framework, and the PHP-only CLI. Coordinate substantial content work with $docs, public search contracts with $seo, acceptance with $tester, and live deployment with $ops.
+5:  short-description: "Docara 2 documentation sites"
+10:Use this skill for Docara 2 project mechanics. Docara has one project model:
+44:2. Initialize only an empty target with `php vendor/bin/docara init [path]`.
+active docara2 refs:

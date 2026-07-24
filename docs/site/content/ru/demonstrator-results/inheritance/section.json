@@ -2,7 +2,7 @@
   "schema": "docara.section.v1",
   "title": "Наследуемый раздел",
   "layout": {
-    "max_width": "compact"
+    "container": {"max": 4}
   },
   "reading": {
     "toc": false,

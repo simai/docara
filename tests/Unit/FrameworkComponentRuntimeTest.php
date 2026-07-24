@@ -31,7 +31,7 @@ final class FrameworkComponentRuntimeTest extends TestCase
             hash_file('sha256', $this->root() . '/resources/framework/manifests/ui-alert.json'),
         );
         self::assertSame(
-            '5c0dea7a27bcf7c12ffedbf6307aa2d578768d3c8d97e9724f5f7b400dec2326',
+            'de386c86c51600482617e8b01ed182b56da41765bfccc7558e3c3f52021c916f',
             hash_file('sha256', $this->root() . '/resources/framework/runtime-lock.json'),
         );
         foreach ([
@@ -53,7 +53,10 @@ final class FrameworkComponentRuntimeTest extends TestCase
         $document = $this->runtime()->extract(":::ui.button\n{}\n:::\n", 'index.md');
         self::assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $document->normalizedCalls[0]['provider_revision']);
         self::assertSame('bounded_consumer_verified', $document->diagnostics['mode']);
-        self::assertSame(['production_ready', 'all_framework_components_ready'], $document->diagnostics['nonclaims']);
+        self::assertSame(
+            ['production_ready', 'all_framework_components_ready', 'framework_candidate_not_release_tagged'],
+            $document->diagnostics['nonclaims'],
+        );
     }
 
     public function test_it_extracts_renders_and_hydrates_components_outside_code_fences(): void
@@ -90,7 +93,7 @@ MARKDOWN;
         self::assertSame('primary', $button['props']['scheme']);
         self::assertSame('Open <guide>', $button['props']['aria-label']);
         self::assertSame(
-            '<sf-button data-larena-smart-runtime="sf-v5.3.2-7e836d8a-dd786bba" text="Open &lt;guide&gt;" size="1" type="outline" scheme="primary" native-type="button" aria-label="Open &lt;guide&gt;"></sf-button>',
+            '<sf-button data-larena-smart-runtime="sf-v5.3.2-4100d3f7-dd786bba" text="Open &lt;guide&gt;" size="1" type="outline" scheme="primary" native-type="button" aria-label="Open &lt;guide&gt;"></sf-button>',
             $button['html'],
         );
 
@@ -99,7 +102,7 @@ MARKDOWN;
         self::assertSame('ui.alert', $alert['id']);
         self::assertSame('Heads <up>', $alert['props']['aria-label']);
         self::assertMatchesRegularExpression('/^docara-alert-[a-f0-9]{16}$/', $alert['props']['id']);
-        self::assertStringStartsWith('<sf-alert id="' . $alert['props']['id'] . '" data-larena-smart-runtime="sf-v5.3.2-7e836d8a-dd786bba"', $alert['html']);
+        self::assertStringStartsWith('<sf-alert id="' . $alert['props']['id'] . '" data-larena-smart-runtime="sf-v5.3.2-4100d3f7-dd786bba"', $alert['html']);
         self::assertStringContainsString('title="Heads &lt;up&gt;"', $alert['html']);
         self::assertStringContainsString('supporting-text="Use &quot;x&quot;"', $alert['html']);
         self::assertStringNotContainsString(' closable ', $alert['html']);
@@ -334,7 +337,7 @@ MD, 'guide.md');
         ], array_column($document->assetPlan->assets, 'key'));
 
         $serialized = json_encode($document->assetPlan->toArray(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
-        self::assertStringContainsString('simai/ui@7e836d8a9414d5da553fb1ab0404721e5b48769a/', $serialized);
+        self::assertStringContainsString('simai/ui@4100d3f7cd783c9dd378db30ee58dc9eb3672ab8/', $serialized);
         self::assertStringNotContainsString('simai/ui-smart@', $serialized);
         self::assertStringContainsString('/_docara/framework/smart/alert/js/alert.js', $serialized);
         self::assertStringContainsString('"source_revision":"dd786bbae98391fb21df9b4e1e6cd402ead0614c"', $serialized);
@@ -350,7 +353,7 @@ MD, 'guide.md');
         self::assertStringNotContainsString('sessionStorage', $serialized);
         self::assertStringContainsString('"kind":"smart_javascript"', $serialized);
         self::assertMatchesRegularExpression(
-            '#/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-7e836d8a-dd786bba-[a-f0-9]{16}#',
+            '#/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-4100d3f7-dd786bba-[a-f0-9]{16}#',
             $serialized,
         );
         self::assertStringNotContainsString('smart_components.loader', $serialized);

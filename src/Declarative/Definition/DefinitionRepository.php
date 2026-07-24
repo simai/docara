@@ -62,6 +62,10 @@ final class DefinitionRepository
             'path' => 'views/section.docara.article.json',
             'schema' => 'declarative-view-tree.schema.json',
         ],
+        'view:section.docara.header' => [
+            'path' => 'views/section.docara.header.json',
+            'schema' => 'declarative-view-tree.schema.json',
+        ],
         'view:section.docara.shell' => [
             'path' => 'views/section.docara.shell.json',
             'schema' => 'declarative-view-tree.schema.json',

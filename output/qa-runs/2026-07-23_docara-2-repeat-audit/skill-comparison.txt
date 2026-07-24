@@ -1,0 +1,6 @@
+canonical_head=0aa77d09eec9f045683a9dcc91a17f126c820504
+canonical_branch=main
+canonical_status_count=3
+canonical_skill_sha=69b843029fbf5ea590948679c4fb508541d1877d85a63250f75b019b3f32c74b
+active_skill_sha=e53b74c1fedb588365383f31b547879789ead665719fc862a26eb20813aa7fa4
+active_target=/Users/rim/.codex/simai-workspace/federation-maintenance/releases/7.4.2-6eaca3e976e00bc8/workspace/ai-codex-skill-docara/skills/docara/SKILL.md

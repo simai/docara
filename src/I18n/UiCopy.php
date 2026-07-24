@@ -9,6 +9,9 @@ final readonly class UiCopy
     private const IDS = [
         'shell.skip_to_content',
         'navigation.open',
+        'navigation.mobile_title',
+        'navigation.primary',
+        'navigation.sections',
         'navigation.title',
         'navigation.close',
         'navigation.breadcrumbs',

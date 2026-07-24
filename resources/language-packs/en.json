@@ -5,9 +5,12 @@
         "common.continue": "Continue",
         "common.greeting": "Hello, {name}!",
         "shell.skip_to_content": "Skip to content",
-        "navigation.open": "Open documentation sections",
+        "navigation.open": "Open navigation",
+        "navigation.mobile_title": "Navigation",
+        "navigation.primary": "Primary",
+        "navigation.sections": "Documentation",
         "navigation.title": "Sections",
-        "navigation.close": "Close documentation sections",
+        "navigation.close": "Close navigation",
         "navigation.breadcrumbs": "Breadcrumbs",
         "navigation.breadcrumbs_expand": "Show hidden breadcrumb levels",
         "navigation.outline": "Contents",
@@ -69,10 +72,10 @@
         "catalog.filter_empty": "No components match these filters.",
         "catalog.family_native_plural": "Markdown",
         "catalog.family_typed_plural": "Docara components",
-        "catalog.family_smart_plural": "Simai Framework Smart components",
+        "catalog.family_smart_plural": "SIMAI Framework Smart components",
         "catalog.family_native_single": "Markdown",
         "catalog.family_typed_single": "Docara component",
-        "catalog.family_smart_single": "Simai Framework Smart component",
+        "catalog.family_smart_single": "SIMAI Framework Smart component",
         "catalog.unavailable_title": "Unavailable in this build",
         "catalog.unavailable_fallback": "Unavailable in this build.",
         "catalog.fallback": "Safe fallback",
@@ -139,7 +142,7 @@
         },
         "docara.columns": {
             "title": "Columns",
-            "description": "Arranges two to four source-ordered Markdown regions in a responsive Simai Framework grid.",
+            "description": "Arranges two to four source-ordered Markdown regions in a responsive SIMAI Framework grid.",
             "limitations": [
                 "The body must contain between two and four non-empty Markdown regions.",
                 "Regions must use an exact top-level --- separator surrounded by blank lines.",
@@ -178,6 +181,65 @@
             "parameters": [],
             "example_ref": "resources/component-catalog/examples/docara.features.md"
         },
+        "docara.hero": {
+            "title": "Hero",
+            "description": "Explains the product, its value and the next step in the first landing viewport.",
+            "limitations": [
+                "The body starts with one H1 and contains one or two description paragraphs.",
+                "One safe action link and one image with meaningful alternative text may follow the description.",
+                "Nested Docara typed directives and Smart components are not accepted."
+            ],
+            "states": {
+                "text": "Text",
+                "text_with_action": "Text with action",
+                "text_with_media": "Text with media"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.hero.md"
+        },
+        "docara.logos": {
+            "title": "Logos and members",
+            "description": "Shows a compact responsive row of customers, partners or ecosystem products.",
+            "limitations": [
+                "The body must contain one flat unordered list with two to twelve items.",
+                "An item may contain text, a safe link or an image with meaningful alternative text."
+            ],
+            "states": {
+                "text": "Text",
+                "linked": "Links",
+                "image": "Images"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.logos.md"
+        },
+        "docara.promo": {
+            "title": "Promo",
+            "description": "Closes a landing story with a concise next step, one prominent action and optional media.",
+            "limitations": [
+                "The body starts with H2, contains one or two paragraphs and exactly one safe action link.",
+                "One safe decorative or informative image may follow the action."
+            ],
+            "states": {
+                "text": "Text",
+                "text_with_media": "Text with media"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.promo.md"
+        },
+        "docara.showcase": {
+            "title": "Product showcase",
+            "description": "Presents one large product proof image beside an explanation and optional action.",
+            "limitations": [
+                "The body starts with H2, contains one or two paragraphs and ends with an image with meaningful alternative text.",
+                "One safe action link may precede the image."
+            ],
+            "states": {
+                "media": "Media",
+                "media_with_action": "Media with action"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.showcase.md"
+        },
         "docara.steps": {
             "title": "Steps",
             "description": "Shows a short ordered sequence of actions.",
@@ -191,7 +253,7 @@
         },
         "native.code": {
             "title": "Code",
-            "description": "Renders inline and fenced Markdown code; the pinned Simai Framework progressively adds one language-and-copy header, syntax highlighting and line numbers.",
+            "description": "Renders inline and fenced Markdown code; the pinned SIMAI Framework progressively adds one language-and-copy header, syntax highlighting and line numbers.",
             "limitations": [
                 "Without the pinned runtime the readable static pre/code fallback remains; fine-grained highlighting and line controls are not exposed."
             ],
@@ -209,8 +271,8 @@
             "parameters": [],
             "gap": {
                 "reason": "No admitted contract exposes optional line numbers, highlighted lines, diff states or other editor-grade controls.",
-                "fallback": "Use native.code; the pinned Simai Framework already provides language, copy, syntax highlighting, line numbers and local overflow.",
-                "admission_condition": "Add the controls to Simai Framework with accessibility and fallback contracts, then admit them through deterministic projection, tests, documentation and browser acceptance."
+                "fallback": "Use native.code; the pinned SIMAI Framework already provides language, copy, syntax highlighting, line numbers and local overflow.",
+                "admission_condition": "Add the controls to SIMAI Framework with accessibility and fallback contracts, then admit them through deterministic projection, tests, documentation and browser acceptance."
             }
         },
         "native.headings_and_text": {
@@ -382,7 +444,7 @@
                     "label": "Corner radius",
                     "description": "Optional author override for exact manifest property [radius].",
                     "values": {
-                        "": "Simai Framework default",
+                        "": "SIMAI Framework default",
                         "default": "Default",
                         "square": "Square",
                         "rounded": "Rounded"

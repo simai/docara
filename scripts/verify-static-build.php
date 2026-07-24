@@ -1403,13 +1403,14 @@ function docaraAssertCatalogShellContract(
         );
     };
 
+    $readerPreferencesEnabled = (bool) data_get($expectedPage, 'reader_preferences.enabled', true);
     if ($count('/html') !== 1
         || $count('/html/head') !== 1
         || $count('/html/body') !== 1
         || $count('//*[@id="docara-main"]') !== 1
         || $count('//*[@id="docara-main"]/article[contains(concat(" ", normalize-space(@class), " "), " docara-prose ")]') !== 1
         || $count('//header[contains(concat(" ", normalize-space(@class), " "), " docara-header ")]') !== 1
-        || $count('//*[@id="docara-reader-settings-dialog"]') !== 1
+        || $count('//*[@id="docara-reader-settings-dialog"]') !== ($readerPreferencesEnabled ? 1 : 0)
         || $count('//script[@data-docara-shell-controller]') !== 1
         || $count('//script[@id="docara-runtime-copy" and @type="application/json"]') !== 1
     ) {
@@ -1422,7 +1423,10 @@ function docaraAssertCatalogShellContract(
     if (($expectedPage['search_enabled'] ?? false) === true) {
         $expectedBody[] = 'search';
     }
-    $expectedBody = [...$expectedBody, 'reader', 'copy', 'controller'];
+    if ($readerPreferencesEnabled) {
+        $expectedBody[] = 'reader';
+    }
+    $expectedBody = [...$expectedBody, 'copy', 'controller'];
     $actualBody = [];
     $bodyChildren = $xpath->query('/html/body/*');
     if ($bodyChildren === false) {
@@ -1437,7 +1441,8 @@ function docaraAssertCatalogShellContract(
             $child->tagName === 'header' && $hasClass($child, 'docara-header') => 'header',
             in_array($child->tagName, ['dialog', 'sf-modal'], true)
                 && $child->getAttribute('id') === 'docara-search-dialog' => 'search',
-            $child->tagName === 'dialog' && $child->getAttribute('id') === 'docara-reader-settings-dialog' => 'reader',
+            in_array($child->tagName, ['dialog', 'sf-modal'], true)
+                && $child->getAttribute('id') === 'docara-reader-settings-dialog' => 'reader',
             $child->tagName === 'div' && $hasClass($child, 'docara-docs-layout') => 'layout',
             $child->tagName === 'script' && $child->getAttribute('id') === 'docara-runtime-copy' => 'copy',
             $child->tagName === 'script' && $child->hasAttribute('data-docara-shell-controller') => 'controller',
@@ -1448,7 +1453,10 @@ function docaraAssertCatalogShellContract(
     if (($expectedPage['search_enabled'] ?? false) === true) {
         $legacyBody[] = 'search';
     }
-    $legacyBody = [...$legacyBody, 'reader', 'layout', 'copy', 'controller'];
+    if ($readerPreferencesEnabled) {
+        $legacyBody[] = 'reader';
+    }
+    $legacyBody = [...$legacyBody, 'layout', 'copy', 'controller'];
     if ($actualBody !== $expectedBody && $actualBody !== $legacyBody) {
         throw new RuntimeException(
             'Generated component catalogue shell body structure does not match the strict contract.',
@@ -1464,10 +1472,14 @@ function docaraAssertCatalogShellContract(
             'Generated component catalogue shell contains missing or injected article content.',
         );
     }
-    if ($count('//nav[contains(concat(" ", normalize-space(@class), " "), " docara-navigation ")]') !== 2
+    $documentationNavigation = '//nav['
+        . 'contains(concat(" ", normalize-space(@class), " "), " docara-navigation ")'
+        . ' and not(contains(concat(" ", normalize-space(@class), " "), " docara-header-navigation "))'
+        . ' and not(ancestor::*[@data-docara-primary-navigation])'
+        . ']';
+    if ($count($documentationNavigation) !== 2
         || $count(
-            '//nav[contains(concat(" ", normalize-space(@class), " "), " docara-navigation ")]'
-            . '//a[@href="' . $catalogRoute . '" and @aria-current="page"]',
+            $documentationNavigation . '//a[@href="' . $catalogRoute . '" and @aria-current="page"]',
         ) !== 2
     ) {
         throw new RuntimeException(

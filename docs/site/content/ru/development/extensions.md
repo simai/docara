@@ -27,11 +27,11 @@ Typed-компонент подходит для повторяемого сем
    Markdown-дубля.
 
 Typed renderer может использовать только проверенные утилиты и компоненты
-Simai Framework; он не создаёт независимую дизайн-систему.
+SIMAI Framework; он не создаёт независимую дизайн-систему.
 
 ## 3. Допустите Smart-компонент
 
-Smart admission нужен, когда требуется точный компонент Simai Framework и его
+Smart admission нужен, когда требуется точный компонент SIMAI Framework и его
 runtime-поведение.
 
 1. Получите owner-backed manifest с props, состояниями и immutable revision.

@@ -26,16 +26,27 @@
   "base_url": "/",
   "branding": {
     "title": "Docara",
-    "label": "Документация",
+    "mode": "compact",
+    "size": "large",
     "logo": "assets/docara-mark.svg",
-    "logo_dark": "assets/docara-mark.svg",
-    "favicon": "assets/docara-mark.svg"
+    "favicon": "assets/favicon.ico"
   },
   "layout": {
-    "max_width": "wide"
+    "key": "docara.docs",
+    "container": {"max": 7}
   },
   "settings": {
     "theme": "system"
+  },
+  "reader_preferences": {
+    "enabled": true,
+    "view": "side-panel",
+    "groups": [
+      {
+        "id": "appearance",
+        "fields": ["appearance.theme"]
+      }
+    ]
   },
   "search": {
     "enabled": true,

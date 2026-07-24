@@ -1,0 +1,5 @@
+runtime=/Users/rim/.codex/simai-workspace/federation-maintenance/releases/7.4.2-d6f1c01f669ff286
+installed_state_docara_revision=c160b392e5947672fa3584b72dd33bf2f9237cf3
+canonical_sha=69b843029fbf5ea590948679c4fb508541d1877d85a63250f75b019b3f32c74b
+active_sha=e53b74c1fedb588365383f31b547879789ead665719fc862a26eb20813aa7fa4
+active_realpath=/Users/rim/.codex/simai-workspace/federation-maintenance/releases/7.4.2-d6f1c01f669ff286/workspace/ai-codex-skill-docara/skills/docara/SKILL.md

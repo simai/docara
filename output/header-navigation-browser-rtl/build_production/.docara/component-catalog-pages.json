@@ -1,0 +1,189 @@
+{
+    "catalog_content_sha256": "95182bfc0dde59ef44091f069181aa95b28a742054dd69bb5f38a803e5bc5dd8",
+    "content_sha256": "c6a965fbc9ff3d5a3d3c11f7b532c3388d64f8972a86796072cd32606450755d",
+    "index": {
+        "contract_fragment_sha256": "c02fec8101b79935e968f21f98c2b607686478ce3e6c9b16b4a3b01eb2ff02b3",
+        "output": "ru/components/catalog/index.html",
+        "route": "/ru/components/catalog/"
+    },
+    "pages": [
+        {
+            "catalog_entry_sha256": "0b735a5adaff6c9380a1ba148d2f8450a2130859d53e00d08ff13cf472b496eb",
+            "contract_fragment_sha256": "4fb553f74343434218ca44335326124eb205debe0335d38666bb04017d5b5394",
+            "example_ref": "resources/component-catalog/examples/docara.card.ru.md",
+            "example_sha256": "a48830dcb19ecf6d19576997c2f0c6d0bef899fa676113b49d2e4227d9bde924",
+            "family": "docara_typed",
+            "id": "docara.card",
+            "output": "ru/components/catalog/docara.card/index.html",
+            "rendered_fragment_sha256": "aa7518d7efd21b87d3a3eb338d902d437296b64cebff623644c1256d9d4dc011",
+            "route": "/ru/components/catalog/docara.card/"
+        },
+        {
+            "catalog_entry_sha256": "5fdf5fbd6070a3f4681200c1191f29ff4b502082690b3ce03620351709c37738",
+            "contract_fragment_sha256": "db2cefc181b33eb69df69382b4b3af73eaea0b3cf2dec6b75cf77dc123b18c62",
+            "example_ref": "resources/component-catalog/examples/docara.columns.ru.md",
+            "example_sha256": "a66475ca340044dcc1401ddbace789771c7d6d73a22503b99913fa80102340d4",
+            "family": "docara_typed",
+            "id": "docara.columns",
+            "output": "ru/components/catalog/docara.columns/index.html",
+            "rendered_fragment_sha256": "c46eecb270513031e94b717ae32c2c0d635dae308e96223ee339877f1b306d7a",
+            "route": "/ru/components/catalog/docara.columns/"
+        },
+        {
+            "catalog_entry_sha256": "74214e9310c6fa8686469655520518c45226d51d7f901febbccff6d548342b4b",
+            "contract_fragment_sha256": "8900fb9a2951e965d6a269915094492d2293f653be9dd825f0a062837dff3209",
+            "example_ref": "resources/component-catalog/examples/docara.cta.ru.md",
+            "example_sha256": "19c68c45f44df8dfac43cbb6ef23b127816e5c0ab3045018641ff56d76da8d62",
+            "family": "docara_typed",
+            "id": "docara.cta",
+            "output": "ru/components/catalog/docara.cta/index.html",
+            "rendered_fragment_sha256": "3b3ab6183e46f5a45e85d50825b62e63f1a27dfe86b77512f9214abea5542794",
+            "route": "/ru/components/catalog/docara.cta/"
+        },
+        {
+            "catalog_entry_sha256": "7b721956946fbfa5055262d3a8d9f05519cc532cfd15e01d67189d265c5ec7fb",
+            "contract_fragment_sha256": "f1e9f3e38ba4a65a4abb314d4ab903c819f160255265c7678545c40f6f09d6c1",
+            "example_ref": "resources/component-catalog/examples/docara.features.ru.md",
+            "example_sha256": "31c5535441db6dac30c8063e06dd65d2127b486bbff1c69789a5a695cde91fdb",
+            "family": "docara_typed",
+            "id": "docara.features",
+            "output": "ru/components/catalog/docara.features/index.html",
+            "rendered_fragment_sha256": "0589e29addf8dd5fe70d929470ced100f5c7e2b9f8971de99375b81f9e4ae473",
+            "route": "/ru/components/catalog/docara.features/"
+        },
+        {
+            "catalog_entry_sha256": "833c5110e155bdff516708adb8a357f4f173339db5bbbf06f010462b4fb9d87a",
+            "contract_fragment_sha256": "447f71abcb0ec316c895999727410fe9807c36fd883959d7c4a80cee7888e884",
+            "example_ref": "resources/component-catalog/examples/docara.hero.ru.md",
+            "example_sha256": "dd9aebf5b9cb5419aea53ba829ab91e72a2bbf2c3f9120207422690e9732f04b",
+            "family": "docara_typed",
+            "id": "docara.hero",
+            "output": "ru/components/catalog/docara.hero/index.html",
+            "rendered_fragment_sha256": "952ca613017532ce8b608ecf0744fbe240856bf4377f37417a94df31c20a4b75",
+            "route": "/ru/components/catalog/docara.hero/"
+        },
+        {
+            "catalog_entry_sha256": "5725c76a144302c041002232b16f766a513f0efbe9bf6de6f7b4fe647d617697",
+            "contract_fragment_sha256": "8974345dc6fed64a8c2498876a275144f5aaadb0b0041d9882179c119903728a",
+            "example_ref": "resources/component-catalog/examples/docara.logos.ru.md",
+            "example_sha256": "859184b7d935a532a475b2787058ff264790e0a3bb089b23c0d4fe0c41419513",
+            "family": "docara_typed",
+            "id": "docara.logos",
+            "output": "ru/components/catalog/docara.logos/index.html",
+            "rendered_fragment_sha256": "5b386d5a4a28a6db0afee146f07882c51743be1ef7499460ef2c48c9b9321cc9",
+            "route": "/ru/components/catalog/docara.logos/"
+        },
+        {
+            "catalog_entry_sha256": "817c6b71ccf9caa0b9b880402b61350aebabf3f29a27db388183d68a58c9ac34",
+            "contract_fragment_sha256": "7380aba68990fb6e3a4d3b2f32af1870d0fd00b0ab5b1033c087c00b6623335d",
+            "example_ref": "resources/component-catalog/examples/docara.promo.ru.md",
+            "example_sha256": "3f082846735ecbb56d2cbd1b22ceb9446e1d31bde5cfe5ba8d4936f3fe1c0522",
+            "family": "docara_typed",
+            "id": "docara.promo",
+            "output": "ru/components/catalog/docara.promo/index.html",
+            "rendered_fragment_sha256": "d0245b6dddc5b26d4ca2a3db14a6f1bc55a02109f87ed252987153d0486d95f9",
+            "route": "/ru/components/catalog/docara.promo/"
+        },
+        {
+            "catalog_entry_sha256": "6f99cc9183032da1cead3c32be3cf2768969932fa59798eec55242a100006ddb",
+            "contract_fragment_sha256": "a9e3a4e5d0ae96010e965f771398cc6ffe271a24819218e235742f5040d3457a",
+            "example_ref": "resources/component-catalog/examples/docara.showcase.ru.md",
+            "example_sha256": "a4d77e0621365891a712c837b4b385b8612a0e5b099e8d5048fc5cd39d0226e1",
+            "family": "docara_typed",
+            "id": "docara.showcase",
+            "output": "ru/components/catalog/docara.showcase/index.html",
+            "rendered_fragment_sha256": "eeb64d2768ba64b7a2c0e57786e6d85105b8501fd8455521b017c0dece04b383",
+            "route": "/ru/components/catalog/docara.showcase/"
+        },
+        {
+            "catalog_entry_sha256": "6b357452bba7809f5fe2cad8668cf709e2392bba4ea0af5ee58cc65051a37d6c",
+            "contract_fragment_sha256": "f883a82149d79563980b6ee1b89fffaf9f3f71d644e31b3dfe7d9775086499ff",
+            "example_ref": "resources/component-catalog/examples/docara.steps.ru.md",
+            "example_sha256": "319ebe77b6186a740491a4b392171b3bbee3fe34b6a9629b88a0b5071ad27cfa",
+            "family": "docara_typed",
+            "id": "docara.steps",
+            "output": "ru/components/catalog/docara.steps/index.html",
+            "rendered_fragment_sha256": "a040bda62780fb296b554cac4e4228d22b504af28987dd79efb8c44fe557468a",
+            "route": "/ru/components/catalog/docara.steps/"
+        },
+        {
+            "catalog_entry_sha256": "5961b767e6960dc06369350e14b01539969b57eaf0afbbe3c0b8f73b2c9ef9d8",
+            "contract_fragment_sha256": "eb732176cc5d8962df19f670aff045a94d5bb98e1ab28cd94c889b061352177f",
+            "example_ref": "resources/component-catalog/examples/native.code.ru.md",
+            "example_sha256": "12bbfe6ff182c873d12b98417ef28bd65f31451471fe8b7ccc36dc5861cbf5f9",
+            "family": "native_markdown",
+            "id": "native.code",
+            "output": "ru/components/catalog/native.code/index.html",
+            "rendered_fragment_sha256": "b04ba62d79b0d005c36157a59d53a6c31146c38f3d88a2000d113d2f50af31d7",
+            "route": "/ru/components/catalog/native.code/"
+        },
+        {
+            "catalog_entry_sha256": "0630523a7b737842854a51c3c6d459cb68f5915158ee53ccfa1c8ff2bf6fca06",
+            "contract_fragment_sha256": "3e650529187accb540bd5f02124f5e5c18015376aeea568b5166f605c37edf5a",
+            "example_ref": "resources/component-catalog/examples/native.headings_and_text.ru.md",
+            "example_sha256": "5aca389d7054ac1166250c2e013c5cfe30232b0110870bdeec5b873d22947cad",
+            "family": "native_markdown",
+            "id": "native.headings_and_text",
+            "output": "ru/components/catalog/native.headings_and_text/index.html",
+            "rendered_fragment_sha256": "63618f8caa7a99749c269c832ce082ba3e2d2ea747f32add8160e91e2b8d127e",
+            "route": "/ru/components/catalog/native.headings_and_text/"
+        },
+        {
+            "catalog_entry_sha256": "0607178ccec38aabb99fa43c400894fd54767ad56dda38cd2d204b5b17ff5ebd",
+            "contract_fragment_sha256": "90a4b918f8836eb1b7948e5455e9ad2dff62eb5d06a4586d46f78820905b0026",
+            "example_ref": "resources/component-catalog/examples/native.links_and_images.ru.md",
+            "example_sha256": "e532ca61cc2eb58efc5d90882cbb3d6a0d5686154f02cc9696010970e13c7d17",
+            "family": "native_markdown",
+            "id": "native.links_and_images",
+            "output": "ru/components/catalog/native.links_and_images/index.html",
+            "rendered_fragment_sha256": "205e70265ff6db1bd658efe959a370595f4c89f20d7427eb185954eb6dd3b0cb",
+            "route": "/ru/components/catalog/native.links_and_images/"
+        },
+        {
+            "catalog_entry_sha256": "362121630cbbd12931539aacb701cb9eb53d3903d02321e5e85a1d76075e0cdb",
+            "contract_fragment_sha256": "c36cd712bc4eca416b04ef03ad7e1d54b7d238241aa9d52a7e9a50edaf26e3c2",
+            "example_ref": "resources/component-catalog/examples/native.lists_and_quotes.ru.md",
+            "example_sha256": "1432be367c75d472aa0d77500b7870867aae559c0ba1e079c80076b1488feeaa",
+            "family": "native_markdown",
+            "id": "native.lists_and_quotes",
+            "output": "ru/components/catalog/native.lists_and_quotes/index.html",
+            "rendered_fragment_sha256": "e03a3b7aefc509e2c5213f95ab84bd858a6813549f424f09c3785a2b355ea161",
+            "route": "/ru/components/catalog/native.lists_and_quotes/"
+        },
+        {
+            "catalog_entry_sha256": "a599cef0c251dcc9f8244b1bef89b6068c871feb38ab4f9e96699950a3a666f2",
+            "contract_fragment_sha256": "31bf776d8799f9738ce003f767edde036bdc126d3fa904f99696b235a9f2c4a6",
+            "example_ref": "resources/component-catalog/examples/native.table.ru.md",
+            "example_sha256": "9e25426538285fcd8392cf849374eb7c835a5a775ac61db9ea70800e45bc8a36",
+            "family": "native_markdown",
+            "id": "native.table",
+            "output": "ru/components/catalog/native.table/index.html",
+            "rendered_fragment_sha256": "42509305772738c0fa1e9bc3b6fad8dc44ac1e35012233f0d3d0db4b643f55cd",
+            "route": "/ru/components/catalog/native.table/"
+        },
+        {
+            "catalog_entry_sha256": "1e59fd73ad99587c838a1431a07d3cb25510f1c979deb0447a50aed0fca1fd04",
+            "contract_fragment_sha256": "f74c8195393d18c06f0bcf145ee5aae692d4e77dfc1ca28970504c2e3c139516",
+            "example_ref": "resources/component-catalog/examples/ui.alert.ru.md",
+            "example_sha256": "e3f0a7ae981f4dc1ddcbc2985467f1cdd809f6f381a6a518e158fad903b256cc",
+            "family": "framework_smart",
+            "id": "ui.alert",
+            "output": "ru/components/catalog/ui.alert/index.html",
+            "rendered_fragment_sha256": "4d69eabea6c1f4451a8987ab40ba55377b12214bb7d9d380a97bc5fd57f9ce75",
+            "route": "/ru/components/catalog/ui.alert/"
+        },
+        {
+            "catalog_entry_sha256": "172bff6f4f293cd9eced6b472d61f34c18fe02c2efb491265e50b2eb707ec575",
+            "contract_fragment_sha256": "b42105d1a4b15262001036f017d06f726062c16586fadc99288917c8f961c1a4",
+            "example_ref": "resources/component-catalog/examples/ui.button.ru.md",
+            "example_sha256": "993357b29ae8101c02340e35fddac1bee09425c2f94e0be80efd16e8003b0138",
+            "family": "framework_smart",
+            "id": "ui.button",
+            "output": "ru/components/catalog/ui.button/index.html",
+            "rendered_fragment_sha256": "bd97cf4249bd00a1a23da8d6d7318c58753ded5d8d292774c86d7e916ba444c0",
+            "route": "/ru/components/catalog/ui.button/"
+        }
+    ],
+    "schema": "docara.component_catalog_pages.v1",
+    "version": 1
+}

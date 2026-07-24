@@ -1,9 +1,9 @@
 project_id: "docara-consolidation"
-updated_at: "2026-07-23"
-status: "audit_complete_branch_published"
-primary_goal: "Build Docara from separated content, composition, typed data, Smart components and Simai Framework presentation primitives using the same declarative philosophy as Larena."
+updated_at: "2026-07-24"
+status: "framework_container_local_integration_accepted"
+primary_goal: "Build Docara from separated content, composition, typed data, Smart components and SIMAI Framework presentation primitives using the same declarative philosophy as Larena."
 active_tracks:
   - docara-consolidation
 current_focus: "docara-consolidation"
 important_blockers: []
-next_global_step: "Developer review of codex/docara-consolidation, whose accepted audit baseline is d239d9c97f32193385ac16212183e095338ac3f9; open a separate gated workflow for package release and default-branch integration only when explicitly requested."
+next_global_step: "Keep Docara pinned to ui@4100d3f7 plus ui-smart@dd786bba. Public releases, tags and default-branch integration require a separate gated workflow."

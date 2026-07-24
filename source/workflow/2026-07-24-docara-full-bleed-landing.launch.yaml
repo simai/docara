@@ -1,0 +1,32 @@
+schema_version: "1.0.0"
+workflow_id: "2026-07-24-docara-full-bleed-landing"
+track_id: "docara-consolidation"
+status: "completed"
+process_model_id: "docara_documentation_site_publication"
+current_state: "readiness_verdict_recorded"
+target_state: "readiness_verdict_recorded"
+owner_skill: "docara"
+companion_skills:
+  - "sf5"
+  - "ux"
+  - "tester"
+approved_by_user: true
+approval_note: "The user explicitly asked to remove the visible landing gutters."
+current_goal: "Make registered full-width landing blocks reach the viewport edges while ordinary content remains bounded."
+repository: "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation"
+branch: "codex/docara-consolidation"
+evidence_path: "source/workflow/evidence/2026-07-24-docara-full-bleed-landing"
+forbidden_actions:
+  - "commit_or_push"
+  - "public_or_production_release"
+action_gate:
+  status: "passed"
+  evidence: "source/output/action-gates/action-gate-report-20260723212815.json"
+result:
+  verdict: "pass"
+  evidence: "source/workflow/evidence/2026-07-24-docara-full-bleed-landing/acceptance.md"
+  local_url: "https://docara.test/ru/landing/"
+  rollback: "/Users/rim/Sites/docara.test/.docara-backups/full-bleed-20260724-002827"
+nonclaims:
+  - "no commit, push, merge, tag or package release"
+  - "no public or production publication"

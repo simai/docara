@@ -13,6 +13,7 @@ use Simai\Docara\I18n\Translator;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\ResolvedPagePlan;
+use Simai\Docara\Preferences\ReaderPreferenceCompiler;
 
 final readonly class PortableComponentCatalogProjector
 {
@@ -451,42 +452,55 @@ final readonly class PortableComponentCatalogProjector
     /** @return array<string, string> */
     public function assets(): array
     {
-        $relative = 'resources/component-catalog/assets/docara-mark.svg';
-        $candidate = rtrim($this->packageRoot, '/\\');
-        foreach (explode('/', $relative) as $segment) {
-            $candidate .= DIRECTORY_SEPARATOR . $segment;
-            if (is_link($candidate)) {
+        $assets = [];
+        foreach ([
+            'docara-flow.png',
+            'docara-mark.svg',
+            'docara-screen.png',
+            'feature-build.png',
+            'feature-json.png',
+            'feature-markdown.png',
+            'simai.svg',
+        ] as $name) {
+            $relative = 'resources/component-catalog/assets/' . $name;
+            $candidate = rtrim($this->packageRoot, '/\\');
+            foreach (explode('/', $relative) as $segment) {
+                $candidate .= DIRECTORY_SEPARATOR . $segment;
+                if (! is_link($candidate)) {
+                    continue;
+                }
                 throw new PortableConfigurationException(
                     'COMPONENT_CATALOG_ASSET_INVALID',
                     $relative,
                 );
             }
-        }
-        $root = realpath($this->packageRoot);
-        $real = realpath($candidate);
-        $stat = @lstat($candidate);
-        if (! is_string($root)
-            || ! is_string($real)
-            || ! is_file($real)
-            || ! str_starts_with($real, rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)
-            || ! is_array($stat)
-            || (($stat['mode'] ?? 0) & 0170000) !== 0100000
-            || ($stat['nlink'] ?? 0) !== 1
-        ) {
-            throw new PortableConfigurationException(
-                'COMPONENT_CATALOG_ASSET_INVALID',
-                $relative,
-            );
-        }
-        $bytes = file_get_contents($real);
-        if (! is_string($bytes) || $bytes === '') {
-            throw new PortableConfigurationException(
-                'COMPONENT_CATALOG_ASSET_INVALID',
-                $relative,
-            );
+            $root = realpath($this->packageRoot);
+            $real = realpath($candidate);
+            $stat = @lstat($candidate);
+            if (! is_string($root)
+                || ! is_string($real)
+                || ! is_file($real)
+                || ! str_starts_with($real, rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)
+                || ! is_array($stat)
+                || (($stat['mode'] ?? 0) & 0170000) !== 0100000
+                || ($stat['nlink'] ?? 0) !== 1
+            ) {
+                throw new PortableConfigurationException(
+                    'COMPONENT_CATALOG_ASSET_INVALID',
+                    $relative,
+                );
+            }
+            $bytes = file_get_contents($real);
+            if (! is_string($bytes) || $bytes === '') {
+                throw new PortableConfigurationException(
+                    'COMPONENT_CATALOG_ASSET_INVALID',
+                    $relative,
+                );
+            }
+            $assets['_docara/component-catalog/' . $name] = $bytes;
         }
 
-        return ['_docara/component-catalog/docara-mark.svg' => $bytes];
+        return $assets;
     }
 
     /**
@@ -556,7 +570,11 @@ final readonly class PortableComponentCatalogProjector
             'locale' => (string) ($configuration['locale'] ?? $configuration['default_locale'] ?? 'en'),
             'preset' => 'docs',
             'theme' => (string) data_get($configuration, 'settings.theme', 'system'),
-            'max_width' => (string) data_get($configuration, 'layout.max_width', 'normal'),
+            'reader_preferences' => is_array($configuration['reader_preferences'] ?? null)
+                ? $configuration['reader_preferences']
+                : ReaderPreferenceCompiler::defaultConfiguration(),
+            'reader_preferences_storage_key' => ReaderPreferenceCompiler::storageKey($configuration),
+            'container_max' => (int) data_get($configuration, 'layout.container.max', 7),
             'navigation_hidden' => (bool) data_get($configuration, 'navigation.hidden', false),
             'navigation_order' => data_get($configuration, 'navigation.order'),
             'search_enabled' => (bool) data_get($configuration, 'search.enabled', false),

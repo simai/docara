@@ -63,7 +63,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         self::assertStringContainsString('data-docara-component-filter-reset', $index);
         self::assertStringContainsString('data-docara-component-filter-empty', $index);
         self::assertStringContainsString('data-docara-component-filter-controller', $index);
-        self::assertSame(17, substr_count($index, 'data-docara-component-item='));
+        self::assertSame(21, substr_count($index, 'data-docara-component-item='));
         self::assertStringContainsString(
             'data-docara-component-family="framework_smart"',
             $index,
@@ -80,7 +80,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             'data-docara-component-search="ui.tabs Вкладки Доступный набор вкладок',
             $index,
         );
-        self::assertStringContainsString('Smart-компоненты Simai Framework', $index);
+        self::assertStringContainsString('Smart-компоненты SIMAI Framework', $index);
         self::assertStringContainsString('Недоступно сейчас', $index);
         self::assertStringContainsString('>Колонки<', $index);
         self::assertStringContainsString('>Уведомление<', $index);
@@ -167,7 +167,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         self::assertStringContainsString('>All availability states<', $index);
         self::assertStringContainsString('>Reset filters<', $index);
         self::assertStringContainsString('>Docara components<', $index);
-        self::assertStringContainsString('>Simai Framework Smart components<', $index);
+        self::assertStringContainsString('>SIMAI Framework Smart components<', $index);
         self::assertStringContainsString('>Unavailable in this build<', $index);
         self::assertStringNotContainsString('Каталог компонентов', $index);
         self::assertStringNotContainsString('Недоступно сейчас', $index);
@@ -184,7 +184,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         );
         self::assertStringContainsString('Verified Smart component', $alert);
         self::assertStringContainsString(
-            'This example uses the exact pinned Simai Framework contract.',
+            'This example uses the exact pinned SIMAI Framework contract.',
             $alert,
         );
         self::assertStringNotContainsString('Проверенный Smart-компонент', $alert);
@@ -347,7 +347,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             ),
         ));
 
-        self::assertCount(13, $catalogPages);
+        self::assertCount(17, $catalogPages);
         foreach ($catalogPages as $page) {
             $plan = $page['resolved_page_plan'];
             $sources = array_column($plan['trace'], 'source');
@@ -373,7 +373,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             $this->tmpPath('content/components/catalog/section.json'),
             json_encode([
                 'schema' => 'docara.section.v1',
-                'layout' => ['max_width' => 'full'],
+                'layout' => ['container' => ['max' => 8]],
                 'navigation' => ['hidden' => true, 'order' => 321],
                 'search' => ['enabled' => false, 'indexed' => false],
                 'reading' => [
@@ -396,10 +396,10 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             ),
         ));
 
-        self::assertCount(13, $catalogPages);
+        self::assertCount(17, $catalogPages);
         foreach ($catalogPages as $page) {
             $configuration = $page['resolved_page_plan']['configuration'];
-            self::assertSame('full', $configuration['layout']['max_width']);
+            self::assertSame(8, $configuration['layout']['container']['max']);
             self::assertFalse($configuration['search']['enabled']);
             self::assertFalse($configuration['search']['indexed']);
             self::assertFalse($configuration['reading']['breadcrumbs']);
@@ -410,7 +410,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             self::assertSame(321, $configuration['navigation']['order']);
 
             $html = (string) file_get_contents($build . '/' . $page['output']);
-            self::assertStringContainsString('data-width="full"', $html);
+            self::assertStringContainsString('class="bg-surface max-container-8"', $html);
             self::assertStringNotContainsString('data-docara-breadcrumbs', $html);
             self::assertStringNotContainsString('data-docara-previous-next', $html);
             self::assertStringNotContainsString('data-docara-search-trigger', $html);

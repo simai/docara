@@ -1,0 +1,17 @@
+audit_id: 2026-07-22-docara-2-repeat-release-audit
+status: completed_correction_required
+approval_source: explicit_user_request
+mode: independent_read_only_acceptance
+target_branch: codex/docara-consolidation
+target_head: 62532404dbc667340cea7bee16cda9fc59ddcd0c
+product_candidate: c537e17f61f890fdbf5635c83ee642109bf730a4
+current_phase: final_report
+verdict: CORRECTION_REQUIRED
+product_writes: false
+release_actions: false
+tested_at: 2026-07-22
+blocking_findings:
+  - F-001
+  - F-002
+  - F-003
+  - F-004

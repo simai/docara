@@ -185,16 +185,8 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertStringContainsString("document.addEventListener('docara:preferences-ready',boot)", $smartSurface);
         self::assertStringContainsString("component.dataset.docaraPreferencesRuntime='ready'", $smartSurface);
         self::assertStringContainsString("document.addEventListener('change',selectOption,true)", $smartSurface);
-        self::assertStringContainsString(
+        self::assertStringNotContainsString(
             '--sf-modal-surface-shadow:',
-            $smartSurface,
-        );
-        self::assertStringContainsString(
-            'var(--sf-0) var(--sf-a8) var(--sf-b4) var(--sf-a4) var(--sf-black--alfa-8)',
-            $smartSurface,
-        );
-        self::assertStringContainsString(
-            'var(--sf-0) var(--sf-a8) var(--sf-a8) calc(-1 * var(--sf-a4)) var(--sf-black--alfa-24)',
             $smartSurface,
         );
         self::assertStringContainsString(
@@ -388,6 +380,7 @@ final class PortableSiteBuilderTest extends TestCase
             );
             self::assertStringContainsString('aria-haspopup="dialog"', $html);
             self::assertStringContainsString('data-docara-reader-settings-dialog', $html);
+            self::assertStringContainsString('overlay-preset="default"', $html);
             self::assertStringContainsString('data-docara-preference-option', $html);
             self::assertStringContainsString('data-docara-smart="docara.preferences"', $html);
             self::assertStringContainsString('position="right"', $html);
@@ -435,7 +428,7 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringNotContainsString('[data-docara-reader-settings-close]:focus-visible', $surface);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
-            self::assertStringContainsString('@4100d3f7cd783c9dd378db30ee58dc9eb3672ab8/', $html);
+            self::assertStringContainsString('@4af910d3318977a2a30f3bbbba269fedaf3878d8/', $html);
             self::assertStringNotContainsString('simai/ui-smart@', $html);
             self::assertStringContainsString('window.sfSmartPath="/_docara/framework"', $html);
             self::assertStringContainsString('/distr/fonts/MaterialSymbols-Outlined.woff2', $html);
@@ -460,7 +453,8 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('data-docara-search-dialog', $html);
             self::assertStringContainsString('<sf-modal', $html);
             self::assertStringContainsString('overlay="true"', $html);
-            self::assertStringContainsString('overlay-class="backdrop-blur-small"', $html);
+            self::assertStringContainsString('overlay-preset="focus"', $html);
+            self::assertStringNotContainsString('overlay-class="backdrop-blur-small"', $html);
             self::assertStringNotContainsString('blur="small"', $html);
             self::assertStringContainsString('show-header="false"', $html);
             self::assertStringContainsString('show-close="false"', $html);
@@ -471,6 +465,8 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringNotContainsString('simai.framework.sf_modal.js', $html);
             self::assertStringContainsString('data-docara-search-status', $html);
             self::assertStringContainsString('data-docara-search-results', $html);
+            self::assertStringContainsString('docara-search-query bg-surface-0 border border-outline-variant radius-2 p-1 flex items-cross-center gap-1 shadow-2', $html);
+            self::assertStringContainsString('docara-search-results-surface bg-surface-0 border border-outline-variant radius-2 overflow-hidden color-on-surface shadow-3', $html);
             self::assertStringContainsString('docara-search-status label-medium', $html);
             self::assertStringContainsString('docara-search-help border-top-1 border-outline-variant p-1 flex content-main-center items-cross-center gap-2 color-on-surface-variant label-medium', $html);
             self::assertSame(3, substr_count($html, 'class="inline-flex items-cross-center p-x-1/2 p-y-1/4"'));
@@ -738,7 +734,7 @@ final class PortableSiteBuilderTest extends TestCase
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('sf-v5.3.2-4100d3f7-dd786bba', $componentCatalog['framework_pair']);
+        self::assertSame('sf-v5.3.2-4af910d3-c60e8f90', $componentCatalog['framework_pair']);
         self::assertCount(21, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -1240,7 +1236,7 @@ MD;
             $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-4100d3f7-dd786bba-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-4af910d3-c60e8f90-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework/smart/alert/js/alert.js'));

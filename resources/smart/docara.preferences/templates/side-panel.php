@@ -5,6 +5,7 @@
     data-docara-transient-dialog
     position="<?= $view->position ?>"
     overlay="true"
+    overlay-preset="default"
     show-header="false"
     show-close="false"
     show-footer="false"

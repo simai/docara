@@ -1,29 +1,29 @@
 {
   "schema": "larena.ui.frontend_runtime_lock.v3",
   "runtime": "simai-framework",
-  "pair_id": "sf-v5.3.2-4100d3f7-dd786bba",
-  "bundle_id": "sf-v5.3.2-4100d3f7-dd786bba-registry-2c596327-verified-commit-candidate-v1",
+  "pair_id": "sf-v5.3.2-4af910d3-c60e8f90",
+  "bundle_id": "sf-v5.3.2-4af910d3-c60e8f90-registry-2c596327-verified-commit-candidate-v1",
   "publication_profile": "verified-commit-candidate-v1",
   "tag": "v5.3.2",
   "ui": {
     "tag": "v5.3.2",
-    "commit": "4100d3f7cd783c9dd378db30ee58dc9eb3672ab8",
+    "commit": "4af910d3318977a2a30f3bbbba269fedaf3878d8",
     "tree": "distr",
     "mount": "ui",
-    "sha256": "040485a1dc7cba671e05240e3a9a8b93b5982cb5b264b5a044e213ac26dc93a9",
+    "sha256": "634579a483323a1c5481129450e46c12c51b0ecba970675427c9abb57a33073f",
     "files": 5873
   },
   "ui_smart": {
     "tag": "v5.3.1",
-    "commit": "dd786bbae98391fb21df9b4e1e6cd402ead0614c",
+    "commit": "c60e8f902af3bc5d01e659349937b2c8e7bb9b48",
     "tree": "smart",
     "mount": "smart",
-    "sha256": "1c2eacbc58f3deb1d351b11dfb5da6755502386bb1224554754477bc700c9262",
-    "files": 112
+    "sha256": "6ee2001e2f242608fa220cc2544d6373eb3e0b84eff1345482f1867fe6cfdd6e",
+    "files": 117
   },
   "framework_registry": {
     "schema_id": "simai.framework.contract-registry",
-    "compatibility_id": "sf-v5.3.2-4100d3f7-dd786bba",
+    "compatibility_id": "sf-v5.3.2-4af910d3-c60e8f90",
     "profile": "plain-assets-v1",
     "relative_path": "contract/contracts/generated/framework-contract-registry.json",
     "file_sha256": "2c5963276d31af09770fe41cad04826c04b634f7b2d798d9b0e32864517346b7",
@@ -91,7 +91,7 @@
       "source": "smart/modal",
       "javascript": "smart/smart/modal/js/modal.js",
       "css": null,
-      "attributes": ["template", "modal-id", "title", "text", "open", "autoload", "unclose", "hide", "hide-modifier", "minimized", "overlay", "show-header", "show-close", "show-footer", "close-on-esc", "close-on-overlay", "preserve-scroll-gap", "position", "mode", "display", "src", "preload", "fullscreen", "width", "height", "blur", "blur-type", "overlay-class", "close-class", "surface-class", "surface-padding", "panel-class", "header-class", "body-class", "content-class", "footer-class", "slot", "aria-label", "id", "class"]
+      "attributes": ["template", "modal-id", "title", "text", "open", "autoload", "unclose", "hide", "hide-modifier", "minimized", "overlay", "show-header", "show-close", "show-footer", "close-on-esc", "close-on-overlay", "preserve-scroll-gap", "position", "mode", "display", "src", "preload", "fullscreen", "width", "height", "blur", "blur-type", "overlay-preset", "overlay-class", "close-class", "surface-class", "surface-padding", "panel-class", "header-class", "body-class", "content-class", "footer-class", "slot", "aria-label", "id", "class"]
     },
     "sf-textarea": {
       "source": "smart/textarea",

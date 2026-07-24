@@ -132,13 +132,13 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);
-        $this->assertSame('sf-v5.3.2-4100d3f7-dd786bba', $lock['runtime']['pair_id']);
-        $this->assertSame('4100d3f7cd783c9dd378db30ee58dc9eb3672ab8', $lock['runtime']['ui']['commit']);
-        $this->assertSame('dd786bbae98391fb21df9b4e1e6cd402ead0614c', $lock['runtime']['ui_smart']['commit']);
+        $this->assertSame('sf-v5.3.2-4af910d3-c60e8f90', $lock['runtime']['pair_id']);
+        $this->assertSame('4af910d3318977a2a30f3bbbba269fedaf3878d8', $lock['runtime']['ui']['commit']);
+        $this->assertSame('c60e8f902af3bc5d01e659349937b2c8e7bb9b48', $lock['runtime']['ui_smart']['commit']);
         $this->assertSame('b7e8a2e810c0d49e31cb749a7ab34c373dd48bc6', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);
-        $this->assertSame('84f61a452422814ef4ca11e5c5787ba48cdb36e923466c6309a8d389b84576fb', $lock['manifests']['ui.button']['sha256']);
-        $this->assertSame('699b79d012d8e8af9a55f013ff19bafbc421cd16ee37990cb5ff070a0b1f490f', $lock['manifests']['ui.alert']['sha256']);
+        $this->assertSame('97a3d231c44f69559a21e7de744fdbc97c1b75605ffb6597edeba2bd9f09562e', $lock['manifests']['ui.button']['sha256']);
+        $this->assertSame('25f1c469320b51043e1b06335cd27439b45503b1700fdfe55cc831efeb7c9fc8', $lock['manifests']['ui.alert']['sha256']);
         $this->assertSame('docara.framework_asset_projection.v1', $lock['asset_projection']['schema']);
         $this->assertSame('_docara/framework', $lock['asset_projection']['mount']);
         $this->assertSame('simai/ui-smart', $lock['asset_projection']['source']['provider']);
@@ -150,7 +150,7 @@ class PortableInitCommandTest extends TestCase
             'smart/alert/js/alert.js' => 'e994066dd2a7f9c4d15c573ea66bb47ccb0f12c24f4cf2e7dedee29eaddf9f1c',
             'smart/buttons/js/buttons.js' => 'fe977fc7c608b7bacb79b7641a302c30a6195659ac2351594ae5aef0656d0a27',
             'smart/icons/js/icons.js' => 'c810be681b51f98002e01fb8852e992e454fa607af005033f9cc10309016fa09',
-            'smart/modal/js/modal.js' => 'd1d3ca45843a173d360fffd65b420b2a864b81a58fab17dd645589f41c74c444',
+            'smart/modal/js/modal.js' => 'b0b16529dfb3ecb8430f7cd660cefaefe366afae56cd5cbed3a282ee3562f3e1',
         ], array_map(
             static fn (array $record): string => $record['sha256'],
             $lock['asset_projection']['files'],

@@ -1,1 +1,1 @@
-<?= $view->readerPreferencesHtml ?>
+<?= $view->readerPreferencesHtml;

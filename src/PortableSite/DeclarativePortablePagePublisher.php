@@ -145,6 +145,13 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 "Page [{$page['url']}] must resolve layout.container.max to an integer from 1 through 8.",
             );
         }
+        $contentGap = $page['content_gap'] ?? null;
+        if (! is_int($contentGap) || $contentGap < 0 || $contentGap > 8) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_CONTENT_GAP_INVALID',
+                "Page [{$page['url']}] must resolve layout.content.gap to an integer from 0 through 8.",
+            );
+        }
         $mobileTocState = $regions['outline'] === '' ? 'unavailable' : $this->mobileTocState($page);
         $primaryNavigationEnabled = $regions['header_navigation_mobile'] !== '';
         $documentationNavigationEnabled = $preset === 'docs' && $regions['sidebar_mobile'] !== '';
@@ -193,6 +200,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $this->preferencesBootstrap($readerPreferences),
             $preset,
             'max-container-' . $containerMax,
+            'gap-' . $contentGap,
             $mobileTocState,
             $searchEnabled,
             $searchEnabled ? $this->escape((string) $page['search_runtime_url']) : null,

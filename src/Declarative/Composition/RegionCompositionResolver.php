@@ -16,6 +16,7 @@ final readonly class RegionCompositionResolver
         return [
             'key' => 'docara.docs',
             'container' => ['max' => 7],
+            'content' => ['gap' => 2],
             'regions' => [
                 'header' => [
                     'enabled' => true,

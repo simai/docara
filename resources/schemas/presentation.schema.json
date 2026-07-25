@@ -64,6 +64,18 @@
                     },
                     "additionalProperties": false
                 },
+                "content": {
+                    "type": "object",
+                    "required": ["gap"],
+                    "properties": {
+                        "gap": {
+                            "type": "integer",
+                            "minimum": 0,
+                            "maximum": 8
+                        }
+                    },
+                    "additionalProperties": false
+                },
                 "regions": {
                     "$ref": "#/$defs/regions"
                 }

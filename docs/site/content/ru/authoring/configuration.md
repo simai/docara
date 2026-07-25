@@ -20,6 +20,7 @@ Resolver начинает с небольшого встроенного наб�
 | `content_root` | `"content"` |
 | `layout.key` | `"docara.docs"` |
 | `layout.container.max` | `7` |
+| `layout.content.gap` | `2` |
 | `layout.regions.header.enabled` | `true` |
 | `layout.regions.sidebar.enabled` | `true` |
 | `layout.regions.main.enabled` | `true` |
@@ -78,7 +79,8 @@ Resolver начинает с небольшого встроенного наб�
   },
   "layout": {
     "key": "docara.docs",
-    "container": { "max": 7 }
+    "container": { "max": 7 },
+    "content": { "gap": 2 }
   },
   "settings": { "theme": "system" },
   "reader_preferences": {
@@ -113,7 +115,7 @@ Resolver начинает с небольшого встроенного наб�
 | --- | :---: | :---: | :---: |
 | `preset`, `title`, `locale` | ✓ | ✓ | ✓ |
 | `branding`, `layout`, `settings` | ✓ | ✓ | ✓ |
-| `navigation`, `search`, `reading` | ✓ | ✓ | ✓ |
+| `header_navigation`, `navigation`, `search`, `reading` | ✓ | ✓ | ✓ |
 | `reader_preferences` | ✓ | — | — |
 | `framework_lock`, `content_root`, `base_url`, `default_locale` | ✓ | — | — |
 | `documentation_version`, `redirects_file` | ✓ | — | — |
@@ -160,10 +162,15 @@ URL, query, fragment, self redirect, chain, cycle, collision со страниц
 - `layout.key`: зарегистрированный макет `docara.docs`;
 - `layout.container.max`: целое число `1..8`, соответствующее
   `max-container-1..8` SIMAI Framework;
+- `layout.content.gap`: целое число `0..8`, соответствующее утилите
+  `gap-0..8` SIMAI Framework; задаёт вертикальное расстояние между крупными
+  частями основного содержимого;
 - `layout.regions`: включение и состав областей макета;
 - `settings.theme`: `system`, `light`, `dark`;
 - `reader_preferences`: включение и состав зарегистрированных настроек
   читателя; ветка разрешена только в `docara.json`;
+- `header_navigation`: локализованные ключевые ссылки шапки; список целиком
+  наследуется или заменяется на уровне сайта, раздела и страницы;
 - `navigation.hidden`: убрать страницу из меню;
 - `navigation.order`: неотрицательный порядок среди siblings;
 - `search.enabled`: показать локальный search UI;
@@ -212,7 +219,8 @@ JPG, WebP и ICO до 2 МиБ. Symlink, reserved/build path и тёмный log
 
 Для `layout` структурные `key` и `regions` после reset восстанавливаются из
 зарегистрированного layout contract. `layout.container` после reset принимает
-встроенное значение `{"max": 7}`, если рядом не задано новое.
+встроенное значение `{"max": 7}`, а `layout.content` — `{"gap": 2}`, если
+рядом не заданы новые значения.
 
 Подробные примеры: [наследование настроек](/authoring/inheritance/).
 

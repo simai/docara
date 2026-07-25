@@ -155,6 +155,7 @@ final readonly class PortableSiteBuilder
                     : ReaderPreferenceCompiler::defaultConfiguration(),
                 'reader_preferences_storage_key' => ReaderPreferenceCompiler::storageKey($plan->configuration),
                 'container_max' => (int) data_get($plan->configuration, 'layout.container.max', 7),
+                'content_gap' => (int) data_get($plan->configuration, 'layout.content.gap', 2),
                 'navigation_hidden' => (bool) data_get($plan->configuration, 'navigation.hidden', false),
                 'navigation_order' => data_get($plan->configuration, 'navigation.order'),
                 'search_enabled' => (bool) data_get($plan->configuration, 'search.enabled', false),

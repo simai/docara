@@ -1114,6 +1114,22 @@ final class PortableSiteBuilderTest extends TestCase
             '/guides/platform/configuration/',
             '/guides/platform/configuration/layout/',
             '/components/catalog/',
+            '/components/catalog/docara.card/',
+            '/components/catalog/docara.columns/',
+            '/components/catalog/docara.cta/',
+            '/components/catalog/docara.features/',
+            '/components/catalog/docara.hero/',
+            '/components/catalog/docara.logos/',
+            '/components/catalog/docara.promo/',
+            '/components/catalog/docara.showcase/',
+            '/components/catalog/docara.steps/',
+            '/components/catalog/native.code/',
+            '/components/catalog/native.headings_and_text/',
+            '/components/catalog/native.links_and_images/',
+            '/components/catalog/native.lists_and_quotes/',
+            '/components/catalog/native.table/',
+            '/components/catalog/ui.alert/',
+            '/components/catalog/ui.button/',
         ], $this->desktopNavigationLinks($html));
 
         $diagnostics = $this->jsonFile($this->tmpPath('build_local/.docara/resolved-page-plans.json'));

@@ -31,14 +31,14 @@
     </header>
 <?php if ($view->preset === 'landing') { ?>
     <main id="docara-main" tabindex="-1" class="docara-landing" data-docara-region="main">
-        <article class="docara-content docara-prose container m-inline-auto flex min-w-0 flex-col gap-2"><?= $view->regions['main'] ?></article>
+        <article class="docara-content docara-prose container m-inline-auto flex min-w-0 flex-col <?= $view->contentGapClass ?>"><?= $view->regions['main'] ?></article>
     </main>
 <?php } else { ?>
     <div class="docara-docs-layout container m-inline-auto gap-0" data-sidebar="<?= $view->regions['sidebar'] === '' ? 'false' : 'true' ?>" data-outline="<?= $view->regions['outline'] === '' ? 'false' : 'true' ?>" data-mobile-toc="<?= $view->mobileTocState ?>">
 <?php if ($view->regions['sidebar'] !== '') { ?>
         <aside class="docara-sidebar scroll-thumb-0" data-docara-region="sidebar"><?= $view->regions['sidebar'] ?></aside>
 <?php } ?>
-        <div class="docara-reading-column flex min-w-0 flex-col gap-2 p-3">
+        <div class="docara-reading-column flex min-w-0 flex-col <?= $view->contentGapClass ?> p-3">
             <?= $view->chrome['breadcrumbs'] ?>
             <?= $view->chrome['mobile_toc'] ?>
             <main id="docara-main" tabindex="-1" class="docara-content min-w-0" data-docara-region="main">

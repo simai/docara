@@ -1,92 +1,38 @@
-# Active workflow: Docara header navigation
+# Active workflow: documentation completeness and component catalog
 
-Date: 2026-07-24
+Date: 2026-07-25
 Status: completed
-Workflow ID: `2026-07-24-docara-header-navigation`
-Track: docara-consolidation
-Process model: `docara_documentation_site_publication`
-Current state: `readiness_verdict_recorded`
-Target state: `readiness_verdict_recorded`
-Launch record:
-`source/workflow/2026-07-24-docara-header-navigation.launch.yaml`
+Workflow ID: `2026-07-25-docara-documentation-completeness-and-catalog`
 
-## Current Goal
+## Current goal
 
-Add a configurable, multilingual and responsive primary navigation to the
-Docara header using the existing `docara.navigation` Smart component and the
-existing single mobile navigation sheet.
+Expose content spacing as a documented Docara setting, simplify the generated
+component catalog, include supported component pages in navigation and audit
+the public documentation against the current product.
 
-## Final Outcome
+## Workflow
 
-Docara renders multilingual primary links through one navigation Smart
-component on desktop and in the shared mobile sheet. The published local
-surface has no persistent item frames, while active, hover and keyboard-focus
-states remain clear. Brand, primary navigation, search and header controls use
-one Framework size-1 rhythm at `var(--sf-d0)`.
+`source/workflow/2026-07-25-docara-documentation-completeness-and-catalog.md`
 
-## Done When
+## Result
 
-- locale-specific header items pass strict configuration validation;
-- desktop and mobile projections use the same typed navigation source;
-- no persistent borders remain around navigation items;
-- active, hover and `focus-visible` states remain distinct;
-- tests, production build, static verification and browser acceptance pass;
-- the exact verified build is served locally with a rollback copy.
-
-## Stages
-
-1. Define and validate multilingual header navigation.
-2. Project it through the existing Smart component and mobile sheet.
-3. Correct Framework border-output compatibility without losing UI states.
-4. Verify and publish the local build reversibly.
-
-## Batches
-
-1. Header navigation contract and renderer.
-2. Responsive desktop/mobile integration.
-3. Border and keyboard-focus visual refinement.
-4. Automated, static and browser acceptance.
-
-## Track Linkage
-
-- parent track: `docara-consolidation`;
-- current workflow: `2026-07-24-docara-header-navigation`;
-- this workflow closes only header navigation and its local test publication.
-
-## Current result
-
-- Strict multilingual `header_navigation` configuration is implemented.
-- The existing `docara.navigation` Smart component renders desktop and mobile
-  projections.
-- One adaptive mobile dialog combines primary links and documentation tree.
-- Production build, static verification, automated tests and browser
-  acceptance passed.
-- The verified build is published to `https://docara.test/ru/`.
-- The header brand, active menu item, outline search button and settings
-  control all compute to exactly `40px` from `var(--sf-d0)` and share the same
-  vertical center.
+- `layout.content.gap` is validated, inherited and rendered with Framework
+  `gap-*` utilities.
+- Docara's own documentation resolves to `gap-0`.
+- The component catalog has no separate filter and renders one card per row.
+- All supported generated component pages are visible below the catalog in the
+  documentation tree.
+- Public configuration, layout, component, schema and architecture docs were
+  reconciled with the current implementation.
+- Tests, build, static verification and desktop/mobile browser acceptance pass.
+- The verified result is served at `https://docara.test/`.
 
 ## Evidence
 
-- workflow:
-  `source/workflow/2026-07-24-docara-header-navigation-plan.md`;
+- audit:
+  `source/workflow/evidence/2026-07-25-docara-documentation-completeness-and-catalog/documentation-audit.md`;
 - acceptance:
-  `source/workflow/evidence/2026-07-24-docara-header-navigation/acceptance.md`;
-- local target: `https://docara.test/ru/`.
-
-## Boundary
-
-No commit, merge, tag, package publication, public deployment or
-production-readiness claim.
-
-## Personal Memory
-
-Personal memory decision: skip
-
-Personal memory reason: repository workflow and evidence already preserve the
-decision; the user did not request a personal-memory update.
-
-## Kaizen
+  `source/workflow/evidence/2026-07-25-docara-documentation-completeness-and-catalog/acceptance.md`.
 
 `stable_reusable_lessons_or_skip_reason`: generated Framework component CSS
 may repeat physical border widths after logical and custom-property

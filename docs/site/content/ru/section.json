@@ -3,7 +3,8 @@
   "title": "Документация Docara",
   "preset": "docs",
   "layout": {
-    "container": {"max": 7}
+    "container": {"max": 7},
+    "content": {"gap": 0}
   },
   "header_navigation": {
     "enabled": true,

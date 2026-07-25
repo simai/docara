@@ -500,6 +500,7 @@ final readonly class PortableDeclarativeExampleProjector
                 : ReaderPreferenceCompiler::defaultConfiguration(),
             'reader_preferences_storage_key' => ReaderPreferenceCompiler::storageKey($configuration),
             'container_max' => (int) data_get($configuration, 'layout.container.max', 7),
+            'content_gap' => (int) data_get($configuration, 'layout.content.gap', 2),
             'navigation_hidden' => $navigationHidden,
             'navigation_order' => $navigationOrder,
             'search_enabled' => (bool) data_get($configuration, 'search.enabled', false),

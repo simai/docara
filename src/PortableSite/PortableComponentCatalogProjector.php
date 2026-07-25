@@ -166,7 +166,7 @@ final readonly class PortableComponentCatalogProjector
                 contentHtml: $detailFragment,
                 components: $components,
                 homeUrl: $homeUrl,
-                navigationHidden: true,
+                navigationHidden: false,
                 sourceMarkdown: $source,
                 outline: $detailOutline['items'],
             );
@@ -575,6 +575,7 @@ final readonly class PortableComponentCatalogProjector
                 : ReaderPreferenceCompiler::defaultConfiguration(),
             'reader_preferences_storage_key' => ReaderPreferenceCompiler::storageKey($configuration),
             'container_max' => (int) data_get($configuration, 'layout.container.max', 7),
+            'content_gap' => (int) data_get($configuration, 'layout.content.gap', 2),
             'navigation_hidden' => (bool) data_get($configuration, 'navigation.hidden', false),
             'navigation_order' => data_get($configuration, 'navigation.order'),
             'search_enabled' => (bool) data_get($configuration, 'search.enabled', false),
@@ -618,9 +619,9 @@ final readonly class PortableComponentCatalogProjector
                     continue;
                 }
                 $id = $this->id($entry);
-                $items[] = '<li ' . $this->filterItemAttributes($entry) . '>'
+                $items[] = '<li data-docara-component-item="' . $this->escape($id) . '">'
                     . '<a class="docara-document-link flex flex-col gap-1 color-on-surface decoration-none'
-                    . ' bg-surface-0 border border-outline-variant radius-2 p-2 h-full w-full" href="'
+                    . ' bg-surface-0 border border-outline-variant radius-2 p-2 w-full" href="'
                     . $this->escape($catalogRoute . rawurlencode($id) . '/')
                     . '"><span class="weight-7">' . $this->escape((string) $entry['title']) . '</span>'
                     . '<code>' . $this->escape($id) . '</code>'
@@ -630,7 +631,7 @@ final readonly class PortableComponentCatalogProjector
             if ($items !== []) {
                 $sections[] = '<section data-docara-component-section class="flex flex-col gap-2"><h2>'
                     . $this->escape($label) . '</h2>'
-                    . '<ul class="grid grid-col-1 md:grid-col-2 gap-2 list-none m-0 p-0">'
+                    . '<ul class="flex flex-col gap-2 list-none m-0 p-0">'
                     . implode('', $items) . '</ul></section>';
             }
         }
@@ -656,7 +657,7 @@ final readonly class PortableComponentCatalogProjector
                         . $this->escape((string) $limitation) . '</li>',
                     $limitations,
                 )) . '</ul>';
-            $unavailable[] = '<li ' . $this->filterItemAttributes($entry)
+            $unavailable[] = '<li data-docara-component-item="' . $this->escape($id) . '"'
                 . '><details data-docara-component-gap="' . $this->escape($id)
                 . '" class="bg-surface-0 border border-outline-variant radius-2 p-2">'
                 . '<summary data-docara-component-details-summary class="cursor-pointer">'
@@ -690,89 +691,8 @@ final readonly class PortableComponentCatalogProjector
         return '<div data-docara-component-catalog-index class="flex flex-col gap-3">'
             . '<h1>' . $this->escape($copy['catalog_title']) . '</h1>'
             . '<p>' . $this->escape($copy['catalog_intro']) . '</p>'
-            . $this->filterFragment(count($entries), $copy)
             . implode('', $sections)
-            . '<p data-docara-component-filter-empty hidden class="bg-surface border'
-            . ' border-outline-variant radius-2 p-2 m-0">'
-            . $this->escape($copy['filter_empty']) . '</p>'
             . '</div>';
-    }
-
-    /**
-     * @param  array<string, mixed>  $entry
-     */
-    private function filterItemAttributes(array $entry): string
-    {
-        $lifecycle = (string) ($entry['lifecycle'] ?? '');
-        $availability = $lifecycle === 'supported' ? 'supported' : 'unavailable';
-        $gap = is_array($entry['gap'] ?? null) ? $entry['gap'] : [];
-        $limitations = is_array($entry['limitations'] ?? null) ? $entry['limitations'] : [];
-        $search = implode(' ', array_filter([
-            $this->id($entry),
-            (string) ($entry['title'] ?? ''),
-            (string) ($entry['description'] ?? ''),
-            (string) ($entry['family'] ?? ''),
-            $lifecycle,
-            (string) ($gap['reason'] ?? ''),
-            ...array_map('strval', $limitations),
-        ], static fn (string $value): bool => $value !== ''));
-
-        return 'data-docara-component-item="' . $this->escape($this->id($entry))
-            . '" data-docara-component-family="'
-            . $this->escape((string) ($entry['family'] ?? ''))
-            . '" data-docara-component-availability="' . $availability
-            . '" data-docara-component-search="' . $this->escape($search) . '"';
-    }
-
-    /**
-     * @param  array<string, string>  $copy
-     */
-    private function filterFragment(int $total, array $copy): string
-    {
-        return '<form data-docara-component-filter'
-            . ' data-docara-component-filter-controller="docara.component_filter.v1"'
-            . ' data-docara-component-total="' . $total . '"'
-            . ' data-docara-component-status-label="' . $this->escape($copy['filter_status'])
-            . '" class="bg-surface border border-outline-variant radius-2 p-2 flex flex-col gap-2">'
-            . '<fieldset class="m-0 p-0 border-none flex flex-col gap-2">'
-            . '<legend class="weight-7 p-0">' . $this->escape($copy['filter_title']) . '</legend>'
-            . '<div class="grid grid-col-1 md:grid-col-3 gap-2">'
-            . '<label class="sf-input sf-input--size-1 sf-input--bordered flex flex-col">'
-            . '<span class="sf-input-label flex"><span class="sf-input-text">'
-            . $this->escape($copy['filter_query_label']) . '</span></span>'
-            . '<span class="sf-input-field items-cross-center transition flex">'
-            . '<span class="sf-input-left flex"><sf-icon icon="search" aria-hidden="true"></sf-icon></span>'
-            . '<input data-docara-component-filter-query class="sf-input-text-container flex-1"'
-            . ' type="search" autocomplete="off" spellcheck="false" placeholder="'
-            . $this->escape($copy['filter_query_placeholder']) . '"></span></label>'
-            . '<label class="flex flex-col gap-1"><span class="weight-6">'
-            . $this->escape($copy['filter_family_label']) . '</span>'
-            . '<select data-docara-component-filter-family'
-            . ' class="docara-component-filter-control bg-surface-0 color-on-surface border'
-            . ' border-outline-variant radius-1 p-1">'
-            . '<option value="">' . $this->escape($copy['filter_family_all']) . '</option>'
-            . '<option value="native_markdown">' . $this->escape($copy['family_native_plural']) . '</option>'
-            . '<option value="docara_typed">' . $this->escape($copy['family_typed_plural']) . '</option>'
-            . '<option value="framework_smart">' . $this->escape($copy['family_smart_plural']) . '</option>'
-            . '<option value="requirement">' . $this->escape($copy['filter_requirements']) . '</option>'
-            . '</select></label>'
-            . '<label class="flex flex-col gap-1"><span class="weight-6">'
-            . $this->escape($copy['filter_availability_label']) . '</span>'
-            . '<select data-docara-component-filter-availability'
-            . ' class="docara-component-filter-control bg-surface-0 color-on-surface border'
-            . ' border-outline-variant radius-1 p-1">'
-            . '<option value="">' . $this->escape($copy['filter_availability_all']) . '</option>'
-            . '<option value="supported">' . $this->escape($copy['filter_supported']) . '</option>'
-            . '<option value="unavailable">' . $this->escape($copy['filter_unavailable']) . '</option>'
-            . '</select></label></div></fieldset>'
-            . '<div class="flex flex-wrap items-center content-main-between gap-1">'
-            . '<p data-docara-component-filter-status class="color-on-surface-variant m-0"'
-            . ' aria-live="polite">' . $this->escape($copy['filter_status']) . ': '
-            . $total . ' / ' . $total . '</p>'
-            . '<button data-docara-component-filter-reset hidden type="button"'
-            . ' class="sf-button sf-button--link sf-button--on-surface sf-button--size-1 radius-default">'
-            . '<span class="sf-button-text-container">' . $this->escape($copy['filter_reset'])
-            . '</span></button></div></form>';
     }
 
     /**
@@ -966,11 +886,7 @@ final readonly class PortableComponentCatalogProjector
     private function copy(string $locale): array
     {
         $keys = [
-            'catalog_title', 'catalog_description', 'catalog_intro', 'filter_title',
-            'filter_query_label', 'filter_query_placeholder', 'filter_family_label',
-            'filter_family_all', 'filter_requirements', 'filter_availability_label',
-            'filter_availability_all', 'filter_supported', 'filter_unavailable',
-            'filter_reset', 'filter_status', 'filter_empty', 'family_native_plural',
+            'catalog_title', 'catalog_description', 'catalog_intro', 'family_native_plural',
             'family_typed_plural', 'family_smart_plural', 'family_native_single',
             'family_typed_single', 'family_smart_single', 'unavailable_title',
             'unavailable_fallback', 'fallback', 'admission_condition', 'limitations',

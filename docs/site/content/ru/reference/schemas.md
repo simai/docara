@@ -51,7 +51,7 @@ Invalid-пример документирует ожидаемую ошибку;
 | --- | :---: | :---: | :---: |
 | `preset`, `title`, `locale` | ✓ | ✓ | ✓ |
 | `branding`, `layout`, `settings` | ✓ | ✓ | ✓ |
-| `navigation`, `search`, `reading` | ✓ | ✓ | ✓ |
+| `header_navigation`, `navigation`, `search`, `reading` | ✓ | ✓ | ✓ |
 | `reader_preferences` | ✓ | — | — |
 | `framework_lock`, `content_root`, `base_url`, `default_locale`, `locales`, `locale_routing` | ✓ | — | — |
 | `documentation_version`, `redirects_file` | ✓ | — | — |
@@ -67,6 +67,8 @@ Invalid-пример документирует ожидаемую ошибку;
 - `layout.key`: registered value `docara.docs`;
 - `layout.container.max`: integer `1..8`, mapped to SIMAI Framework
   `max-container-1..8`;
+- `layout.content.gap`: integer `0..8`, mapped to SIMAI Framework
+  `gap-0..8`;
 - `layout.regions.<name>.enabled`: boolean;
 - `layout.regions.<name>.sections`: ordered registered
   Section -> Block -> Smart calls;

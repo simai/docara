@@ -160,7 +160,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The short outline must remain aligned below the header while its scrollbar stays on the physical right.',
         );
         self::assertStringContainsString(
-            '.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-px);border-inline-end:',
+            '.docara-sidebar{align-self:stretch;border-inline-end:',
             $shellCss,
             'The desktop navigation divider must span the full layout row.',
         );
@@ -168,6 +168,16 @@ final class PortableDocumentationSiteTest extends PHPUnit
             '.docara-sidebar>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-1);overflow:auto}',
             $shellCss,
             'The navigation scrollbar must stay one Framework pixel token from its divider.',
+        );
+        self::assertStringContainsString(
+            '<aside class="docara-sidebar scroll-thumb-0"',
+            $catalogIndex,
+            'The navigation rail must use the Framework zero-inset scrollbar utility.',
+        );
+        self::assertStringContainsString(
+            '<aside class="docara-outline-rail scroll-thumb-0"',
+            $catalogIndex,
+            'The contents rail must use the Framework zero-inset scrollbar utility.',
         );
         foreach ($unavailable as $entry) {
             self::assertStringContainsString(

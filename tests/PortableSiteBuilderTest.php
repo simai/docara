@@ -250,7 +250,7 @@ final class PortableSiteBuilderTest extends TestCase
             $shellCss,
         );
         self::assertStringContainsString(
-            '.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-px);border-inline-end:',
+            '.docara-sidebar{align-self:stretch;border-inline-end:',
             $shellCss,
         );
         self::assertStringContainsString(
@@ -428,7 +428,7 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringNotContainsString('[data-docara-reader-settings-close]:focus-visible', $surface);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
-            self::assertStringContainsString('@783f52460de071814c758945426a7f31efd89e52/', $html);
+            self::assertStringContainsString('@9d1cc46dccc3c18da5bfc3d46acf77faf884c242/', $html);
             self::assertStringNotContainsString('simai/ui-smart@', $html);
             self::assertStringContainsString('window.sfSmartPath="/_docara/framework"', $html);
             self::assertStringContainsString('/distr/fonts/MaterialSymbols-Outlined.woff2', $html);
@@ -602,6 +602,14 @@ final class PortableSiteBuilderTest extends TestCase
             )?->length,
             'Rail padding must not move the outline scrollbar away from its divider.',
         );
+        self::assertSame(
+            1,
+            $guideXpath->query(
+                '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-outline-rail ")'
+                . ' and contains(concat(" ", normalize-space(@class), " "), " scroll-thumb-0 ")]',
+            )?->length,
+            'The outline rail must use the Framework zero-inset scrollbar utility.',
+        );
 
         $navigationDocument = new \DOMDocument;
         $previous = libxml_use_internal_errors(true);
@@ -665,6 +673,14 @@ final class PortableSiteBuilderTest extends TestCase
                 . ' and contains(concat(" ", normalize-space(@class), " "), " p-1 ")]',
             )?->length,
             'Rail padding must not move the navigation scrollbar away from its divider.',
+        );
+        self::assertSame(
+            1,
+            $navigationXpath->query(
+                '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")'
+                . ' and contains(concat(" ", normalize-space(@class), " "), " scroll-thumb-0 ")]',
+            )?->length,
+            'The navigation rail must use the Framework zero-inset scrollbar utility.',
         );
 
         $brandAssets = glob($this->tmpPath('build_local/_docara/brand/*')) ?: [];
@@ -734,7 +750,7 @@ final class PortableSiteBuilderTest extends TestCase
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('sf-v5.3.2-783f5246-84c363da', $componentCatalog['framework_pair']);
+        self::assertSame('sf-v5.3.2-9d1cc46d-84c363da', $componentCatalog['framework_pair']);
         self::assertCount(21, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -1236,7 +1252,7 @@ MD;
             $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-783f5246-84c363da-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-9d1cc46d-84c363da-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework/smart/alert/js/alert.js'));

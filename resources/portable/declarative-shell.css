@@ -43,12 +43,6 @@ sf-alert,sf-button{display:block}
 .docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100cqw;margin-inline:calc(50% - 50cqw)}
 .docara-landing [data-docara-container]{box-sizing:border-box;width:100%}
 .docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>h1:first-child,.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>p:first-of-type{max-width:65ch}
-[data-docara-media]{display:block;inline-size:100%;block-size:auto}
-[data-docara-media="hero"],[data-docara-media="promo"]{aspect-ratio:16/9;object-fit:contain}
-[data-docara-media="showcase"]{aspect-ratio:16/9;object-fit:contain}
-[data-docara-media="feature-icon"]{inline-size:var(--sf-e0);block-size:var(--sf-e0);object-fit:contain}
-[data-docara-media="card"]{aspect-ratio:4/3;object-fit:cover;border-radius:var(--sf-radius-2)}
-[data-docara-media="logo"]{max-inline-size:10rem;max-block-size:3rem;object-fit:contain}
 .docara-example-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,18rem),1fr))}
 .docara-example-grid .sf-button{margin-block-start:auto;align-self:flex-start}
 .docara-example-preview iframe{display:block;inline-size:100%;block-size:32rem;border:0;background:var(--sf-surface-0)}

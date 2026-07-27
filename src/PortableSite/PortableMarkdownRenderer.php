@@ -482,7 +482,9 @@ final class PortableMarkdownRenderer
         ) ?? $content;
         $content = preg_replace(
             '/<img(?<attributes>[^>]*)\s*\/?>/u',
-            '<img data-docara-media="feature-icon" loading="lazy" decoding="async"$1>',
+            '<img data-docara-media="feature-icon" class="'
+                . $this->mediaUtilityClasses('feature-icon')
+                . '" loading="lazy" decoding="async"$1>',
             $content,
         ) ?? $content;
 
@@ -587,13 +589,15 @@ final class PortableMarkdownRenderer
         if ($imageCount === 1) {
             $content = preg_replace_callback(
                 '/<p><img(?<attributes>[^>]*)\s*\/?><\/p>/u',
-                static function (array $match) use (&$image): string {
+                function (array $match) use (&$image): string {
                     $attributes = rtrim((string) $match['attributes']);
                     $decorative = preg_match('/\balt=""/u', $attributes) === 1
                         ? ' aria-hidden="true"'
                         : '';
                     $image = '<div class="min-w-0 flex items-center content-main-center">'
-                        . '<img data-docara-media="hero" loading="eager" fetchpriority="high" decoding="async"'
+                        . '<img data-docara-media="hero" class="'
+                        . $this->mediaUtilityClasses('hero')
+                        . '" loading="eager" fetchpriority="high" decoding="async"'
                         . $decorative . $attributes . '>'
                         . '</div>';
 
@@ -685,7 +689,9 @@ final class PortableMarkdownRenderer
         ) ?? $content;
         $content = preg_replace(
             '/<img(?<attributes>[^>]*)\s*\/?>/u',
-            '<img data-docara-media="logo" loading="lazy" decoding="async"$1>',
+            '<img data-docara-media="logo" class="'
+                . $this->mediaUtilityClasses('logo')
+                . '" loading="lazy" decoding="async"$1>',
             $content,
         ) ?? $content;
 
@@ -836,13 +842,15 @@ final class PortableMarkdownRenderer
         if ($imageCount === 1) {
             $content = preg_replace_callback(
                 '/<p><img(?<attributes>[^>]*)\s*\/?><\/p>/u',
-                static function (array $match) use (&$image, $block): string {
+                function (array $match) use (&$image, $block): string {
                     $attributes = rtrim((string) $match['attributes']);
                     $decorative = preg_match('/\balt=""/u', $attributes) === 1
                         ? ' aria-hidden="true"'
                         : '';
                     $image = '<div class="min-w-0 flex items-center content-main-center">'
-                        . '<img data-docara-media="' . $block . '" loading="lazy" decoding="async"'
+                        . '<img data-docara-media="' . $block . '" class="'
+                        . $this->mediaUtilityClasses($block)
+                        . '" loading="lazy" decoding="async"'
                         . $decorative . $attributes . '>'
                         . '</div>';
 
@@ -895,7 +903,9 @@ final class PortableMarkdownRenderer
             }
             $html = preg_replace(
                 '/<img(?<attributes>[^>]*)\s*\/?>/u',
-                '<img data-docara-media="card" loading="lazy" decoding="async"$1>',
+                '<img data-docara-media="card" class="'
+                    . $this->mediaUtilityClasses('card')
+                    . '" loading="lazy" decoding="async"$1>',
                 $html,
             ) ?? $html;
             $content[] = '<div class="min-w-0">' . $html . '</div>';
@@ -903,6 +913,17 @@ final class PortableMarkdownRenderer
 
         return '<section data-docara-block="columns" data-docara-columns="' . $count
             . '" class="' . $classes . '">' . implode('', $content) . '</section>';
+    }
+
+    private function mediaUtilityClasses(string $kind): string
+    {
+        return match ($kind) {
+            'feature-icon' => 'block w-e0 h-e0 object-contain',
+            'card' => 'block w-full h-auto aspect-4x3 object-cover radius-2',
+            'logo' => 'block w-full h-auto max-w-f0 max-h-d2 object-contain',
+            'hero', 'promo', 'showcase' => 'block w-full h-auto aspect-16x9 object-contain',
+            default => 'block w-full h-auto',
+        };
     }
 
     private function containsVisibleText(string $text): bool

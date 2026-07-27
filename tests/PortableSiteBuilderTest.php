@@ -216,10 +216,7 @@ final class PortableSiteBuilderTest extends TestCase
             'data-docara-block="features" class="grid grid-col-1 lg:grid-col-3',
             $landing,
         );
-        self::assertStringContainsString(
-            '[data-docara-media="feature-icon"]{inline-size:var(--sf-e0);block-size:var(--sf-e0);object-fit:contain}',
-            $shellCss,
-        );
+        self::assertStringNotContainsString('[data-docara-media]', $shellCss);
         self::assertStringNotContainsString(
             'bg-primary color-on-primary p-1/2 line-none',
             $landing,

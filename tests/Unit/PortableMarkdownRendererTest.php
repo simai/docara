@@ -126,7 +126,7 @@ MD;
             '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">',
         ));
         self::assertStringContainsString(
-            '<img data-docara-media="feature-icon" loading="lazy" decoding="async" src="/assets/markdown.png" alt="" />',
+            '<img data-docara-media="feature-icon" class="block w-e0 h-e0 object-contain" loading="lazy" decoding="async" src="/assets/markdown.png" alt="" />',
             $html,
         );
         self::assertStringNotContainsString('<sf-button', $html);
@@ -160,7 +160,7 @@ MD);
         self::assertStringContainsString('<a data-docara-hero-action class="sf-button', $html);
         self::assertStringContainsString('href="/start/"', $html);
         self::assertStringContainsString(
-            '<img data-docara-media="hero" loading="eager" fetchpriority="high" decoding="async" src="/assets/hero.png" alt="Схема сборки Docara" />',
+            '<img data-docara-media="hero" class="block w-full h-auto aspect-16x9 object-contain" loading="eager" fetchpriority="high" decoding="async" src="/assets/hero.png" alt="Схема сборки Docara" />',
             $html,
         );
     }
@@ -250,7 +250,7 @@ MD);
         ));
         self::assertStringContainsString('<a href="https://simai.io/">SIMAI</a>', $html);
         self::assertStringContainsString(
-            '<img data-docara-media="logo" loading="lazy" decoding="async" src="/assets/docara.svg" alt="Docara" />',
+            '<img data-docara-media="logo" class="block w-full h-auto max-w-f0 max-h-d2 object-contain" loading="lazy" decoding="async" src="/assets/docara.svg" alt="Docara" />',
             $html,
         );
     }
@@ -275,7 +275,7 @@ MD);
             $html,
         );
         self::assertStringContainsString(
-            '<img data-docara-media="showcase" loading="lazy" decoding="async" src="/assets/screen.png" alt="Интерфейс Docara" />',
+            '<img data-docara-media="showcase" class="block w-full h-auto aspect-16x9 object-contain" loading="lazy" decoding="async" src="/assets/screen.png" alt="Интерфейс Docara" />',
             $html,
         );
         self::assertStringContainsString('data-docara-showcase-action', $html);
@@ -301,7 +301,7 @@ MD);
             $html,
         );
         self::assertStringContainsString(
-            '<img data-docara-media="promo" loading="lazy" decoding="async" aria-hidden="true" src="/assets/promo.png" alt="" />',
+            '<img data-docara-media="promo" class="block w-full h-auto aspect-16x9 object-contain" loading="lazy" decoding="async" aria-hidden="true" src="/assets/promo.png" alt="" />',
             $html,
         );
         self::assertStringContainsString('data-docara-promo-action', $html);

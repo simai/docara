@@ -9,11 +9,26 @@ use Simai\Docara\Declarative\DeclarativePageCompiler;
 use Simai\Docara\Declarative\Document\DocumentParser;
 use Simai\Docara\Declarative\Rendering\DeclarativePageRenderer;
 use Simai\Docara\Declarative\Rendering\TrustedTemplateRegistry;
+use Simai\Docara\Declarative\Rendering\View\HeaderViewModel;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
 final class DeclarativeRenderingTest extends TestCase
 {
+    public function test_brand_view_model_maps_supported_sizes_to_framework_utilities(): void
+    {
+        foreach ([
+            'small' => ['w-c2 h-c2', 'text-1/2'],
+            'default' => ['w-c6 h-c6', ''],
+            'large' => ['w-d0 h-d0', 'text-2'],
+        ] as $size => [$markClasses, $titleClass]) {
+            $view = new HeaderViewModel('Docara', null, $size, '/', null, null);
+
+            self::assertSame($markClasses, $view->markSizeClasses());
+            self::assertSame($titleClass, $view->titleSizeClass());
+        }
+    }
+
     public function test_it_renders_the_resolved_plan_through_trusted_presentation_templates(): void
     {
         $plan = DeclarativePageCompiler::bundled($this->frameworkLock())->compile(

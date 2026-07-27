@@ -430,9 +430,16 @@ final class PortableSiteBuilderTest extends TestCase
             self::assertStringContainsString('window.sfSmartPath="/_docara/framework"', $html);
             self::assertStringContainsString('/distr/fonts/MaterialSymbols-Outlined.woff2', $html);
             self::assertDoesNotMatchRegularExpression('~@(?:main|master|latest)(?:/|$)~i', $html);
-            self::assertStringContainsString('class="docara-brand-logo"', $html);
+            self::assertStringContainsString('class="docara-brand-logo ', $html);
             self::assertStringContainsString('data-docara-view="compact"', $html);
             self::assertStringContainsString('docara-brand--size-large', $html);
+            self::assertStringContainsString('flex min-w-0 max-w-full items-center', $html);
+            self::assertStringContainsString('docara-brand-mark grid items-center flex-none w-d0 h-d0', $html);
+            self::assertStringContainsString('block max-w-full max-h-full object-contain', $html);
+            self::assertStringContainsString('docara-brand-title weight-7 text-2', $html);
+            self::assertStringNotContainsString('.docara-brand-mark{', $surface);
+            self::assertStringNotContainsString('.docara-brand-logo{', $surface);
+            self::assertStringNotContainsString('.docara-brand-copy{', $surface);
             self::assertStringContainsString('" alt="">', $html);
             self::assertStringNotContainsString('alt="Docara"', $html);
             self::assertStringContainsString('<link rel="icon" href="/_docara/brand/', $html);

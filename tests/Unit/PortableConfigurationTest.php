@@ -996,7 +996,7 @@ final class PortableConfigurationTest extends TestCase
                 'schema' => 'larena.ui.frontend_runtime_lock.v3',
                 'runtime' => 'simai-framework',
                 'pair_id' => 'sf-v5.3.2-7e836d8a-dd786bba',
-                'bundle_id' => 'sf-v5.3.2-7e836d8a-dd786bba-registry-2c596327-verified-release-artifact-v1',
+                'bundle_id' => 'sf-v5.3.2-7e836d8a-dd786bba-registry-dca5c925-verified-release-artifact-v1',
                 'publication_profile' => 'verified-release-artifact-v1',
                 'tag' => 'v5.3.2',
                 'ui' => [
@@ -1020,13 +1020,13 @@ final class PortableConfigurationTest extends TestCase
                     'compatibility_id' => 'sf-v5.3.2-7e836d8a-dd786bba',
                     'profile' => 'plain-assets-v1',
                     'relative_path' => 'contract/contracts/generated/framework-contract-registry.json',
-                    'file_sha256' => '2c5963276d31af09770fe41cad04826c04b634f7b2d798d9b0e32864517346b7',
+                    'file_sha256' => 'dca5c925eec12b32727aca090164cab853612f25b4c5b5f56edfba61c915f101',
                     'source' => [
-                        'commit' => 'b7e8a2e810c0d49e31cb749a7ab34c373dd48bc6',
+                        'commit' => '3cbedb6ac0166ecbd68541811f66c6b1d1576dca',
                         'tree' => 'contracts/generated',
-                        'tree_oid' => 'ed200af53182334542b48fb7402e219068091bd4',
+                        'tree_oid' => 'b04a3015e793e2e4167b0ca880914391aa844c36',
                         'mount' => 'contract',
-                        'sha256' => '0f915061c3664571f8ce522793ed7192889b8eb19e4c62490440926449a13f9b',
+                        'sha256' => '5906ab3f25cb56ee578dd9c1bed4b24f8cd1d2565fc2eb43cbcb9071b3aff187',
                         'files' => 1,
                     ],
                 ],
@@ -1074,13 +1074,13 @@ final class PortableConfigurationTest extends TestCase
                 ],
                 'files' => [
                     'smart/alert/js/alert.js' => [
-                        'sha256' => '32fd607bb1b6cd58911a43cdd143cfab9a0ff9822d423fb97304a2b9cc71c2af',
+                        'sha256' => '6720a3dd126f35c46fc09ecb6aeb0f2d9ebfcce82388ba8cc031c24cead426a7',
                     ],
                     'smart/buttons/js/buttons.js' => [
-                        'sha256' => '4f442e6f61c7278611e98cce5565b5adefa8770849b9b7fc36748cf6219093bd',
+                        'sha256' => 'f9d400cd9d88c23243f75b313e9d0040ebee4e12e763d12a5ba86e556cf5c48b',
                     ],
                     'smart/icons/js/icons.js' => [
-                        'sha256' => '7618c219901fd6f3fa38f7c8a9c47a5609265197239748b5d64dca15c0419ceb',
+                        'sha256' => '6fe9a1ac7436ba6017addd7c9d389633e1fe4be4ae86cc0cd7fb45c0b31902d1',
                     ],
                 ],
             ],

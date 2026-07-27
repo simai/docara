@@ -23,22 +23,22 @@ final class FrameworkComponentRuntimeTest extends TestCase
     public function test_bundled_projections_are_exact_and_provider_locked(): void
     {
         self::assertSame(
-            '763e330e82fc73724ce617d074c6c4066a956e49141154fdb01e91aab98cf12f',
+            'e9c819e7c208359d472180ed2e8d393208ffcf2bf69fae64e00baef882ae2441',
             hash_file('sha256', $this->root() . '/resources/framework/manifests/ui-button.json'),
         );
         self::assertSame(
-            'f2d1c56e6c49b5fefe05dca4974c8eccfa417d027c0b5fadd6637355b305017f',
+            '03717cc437bff25ee1bdad5dd89fa4bc4b70ba56f12e62301f4b3ef37be76d68',
             hash_file('sha256', $this->root() . '/resources/framework/manifests/ui-alert.json'),
         );
         self::assertSame(
-            '2d317ad646db5d9d58a1b7933e9f4017d323fa1d58cce4a4efcf8ff23f97d45d',
+            '28818ca81b309bd27f555534b48aee0d623392fbdaad330d3156b91eba0dc522',
             hash_file('sha256', $this->root() . '/resources/framework/runtime-lock.json'),
         );
         foreach ([
-            'smart/alert/js/alert.js' => '32fd607bb1b6cd58911a43cdd143cfab9a0ff9822d423fb97304a2b9cc71c2af',
-            'smart/buttons/js/buttons.js' => '4f442e6f61c7278611e98cce5565b5adefa8770849b9b7fc36748cf6219093bd',
-            'smart/icons/js/icons.js' => '7618c219901fd6f3fa38f7c8a9c47a5609265197239748b5d64dca15c0419ceb',
-            'smart/modal/js/modal.js' => '695c52a086f12f922937a3754d10f561a0b74d622fb7f444ffa88be4b22b1905',
+            'smart/alert/js/alert.js' => '6720a3dd126f35c46fc09ecb6aeb0f2d9ebfcce82388ba8cc031c24cead426a7',
+            'smart/buttons/js/buttons.js' => 'f9d400cd9d88c23243f75b313e9d0040ebee4e12e763d12a5ba86e556cf5c48b',
+            'smart/icons/js/icons.js' => '6fe9a1ac7436ba6017addd7c9d389633e1fe4be4ae86cc0cd7fb45c0b31902d1',
+            'smart/modal/js/modal.js' => '7ddde60f8a85cc9496685e6d70299d84e67b4cfecde845714ba7e2825b61a045',
         ] as $relativePath => $sha256) {
             self::assertSame(
                 $sha256,
@@ -93,7 +93,7 @@ MARKDOWN;
         self::assertSame('primary', $button['props']['scheme']);
         self::assertSame('Open <guide>', $button['props']['aria-label']);
         self::assertSame(
-            '<sf-button data-larena-smart-runtime="sf-v5.3.2-9d1cc46d-84c363da" text="Open &lt;guide&gt;" size="1" type="outline" scheme="primary" native-type="button" aria-label="Open &lt;guide&gt;"></sf-button>',
+            '<sf-button data-larena-smart-runtime="ui-148dbf36d42a-smart-daf5f285d006" text="Open &lt;guide&gt;" size="1" type="outline" scheme="primary" native-type="button" aria-label="Open &lt;guide&gt;"></sf-button>',
             $button['html'],
         );
 
@@ -102,7 +102,7 @@ MARKDOWN;
         self::assertSame('ui.alert', $alert['id']);
         self::assertSame('Heads <up>', $alert['props']['aria-label']);
         self::assertMatchesRegularExpression('/^docara-alert-[a-f0-9]{16}$/', $alert['props']['id']);
-        self::assertStringStartsWith('<sf-alert id="' . $alert['props']['id'] . '" data-larena-smart-runtime="sf-v5.3.2-9d1cc46d-84c363da"', $alert['html']);
+        self::assertStringStartsWith('<sf-alert id="' . $alert['props']['id'] . '" data-larena-smart-runtime="ui-148dbf36d42a-smart-daf5f285d006"', $alert['html']);
         self::assertStringContainsString('title="Heads &lt;up&gt;"', $alert['html']);
         self::assertStringContainsString('supporting-text="Use &quot;x&quot;"', $alert['html']);
         self::assertStringNotContainsString(' closable ', $alert['html']);
@@ -337,10 +337,10 @@ MD, 'guide.md');
         ], array_column($document->assetPlan->assets, 'key'));
 
         $serialized = json_encode($document->assetPlan->toArray(), JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
-        self::assertStringContainsString('simai/ui@9d1cc46dccc3c18da5bfc3d46acf77faf884c242/', $serialized);
+        self::assertStringContainsString('simai/ui@148dbf36d42a535b0fd710980532f9bcec966b1d/', $serialized);
         self::assertStringNotContainsString('simai/ui-smart@', $serialized);
         self::assertStringContainsString('/_docara/framework/smart/alert/js/alert.js', $serialized);
-        self::assertStringContainsString('"source_revision":"84c363daf59dcd62665dae115cc63b0dd7529cb1"', $serialized);
+        self::assertStringContainsString('"source_revision":"daf5f285d00640de8115f0939045828ba473ae1e"', $serialized);
         self::assertStringNotContainsString('@main', strtolower($serialized));
         self::assertStringNotContainsString('@latest', strtolower($serialized));
         self::assertStringContainsString('/distr/core/css/utility.full.css', $serialized);
@@ -353,7 +353,7 @@ MD, 'guide.md');
         self::assertStringNotContainsString('sessionStorage', $serialized);
         self::assertStringContainsString('"kind":"smart_javascript"', $serialized);
         self::assertMatchesRegularExpression(
-            '#/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-9d1cc46d-84c363da-[a-f0-9]{16}#',
+            '#/_docara/framework/smart/alert/js/alert\.js\?sf_v=ui-148dbf36d42a-smart-daf5f285d006-[a-f0-9]{16}#',
             $serialized,
         );
         self::assertStringNotContainsString('smart_components.loader', $serialized);
@@ -567,6 +567,20 @@ MD, 'guide.md');
         $this->expectFailure(
             fn () => FrameworkComponentRuntime::fromLock($movingReference),
             'FRAMEWORK_MOVING_REFERENCE_FORBIDDEN',
+        );
+
+        $malformedReference = $this->lock();
+        $malformedReference['runtime']['tag'] = 'candidate';
+        $this->expectFailure(
+            fn () => FrameworkComponentRuntime::fromLock($malformedReference),
+            'FRAMEWORK_RUNTIME_RELEASE_REFERENCE_INVALID',
+        );
+
+        $releaseWithoutTags = $this->lock();
+        $releaseWithoutTags['runtime']['publication_profile'] = 'verified-release-artifact-v1';
+        $this->expectFailure(
+            fn () => FrameworkComponentRuntime::fromLock($releaseWithoutTags),
+            'FRAMEWORK_RUNTIME_RELEASE_REFERENCE_INVALID',
         );
 
         $projectionRevisionMismatch = $this->lock();

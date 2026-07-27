@@ -431,27 +431,19 @@ final class PortableConfigurationLoader
         }
 
         $runtime = $lock['runtime'];
-        $ui = $runtime['ui'];
-        $smart = $runtime['ui_smart'];
         $registry = $runtime['framework_registry'];
-        $pair = sprintf(
-            'sf-%s-%s-%s',
-            $runtime['tag'],
-            substr($ui['commit'], 0, 8),
-            substr($smart['commit'], 0, 8),
-        );
+        $pair = $runtime['pair_id'];
         $bundle = $pair
             . '-registry-' . substr($registry['file_sha256'], 0, 8)
             . '-' . $runtime['publication_profile'];
 
-        if ($runtime['pair_id'] !== $pair
-            || $runtime['bundle_id'] !== $bundle
-            || $runtime['ui']['tag'] !== $runtime['tag']
+        if ($runtime['bundle_id'] !== $bundle
             || $registry['compatibility_id'] !== $pair
+            || ($runtime['tag'] !== null && $runtime['ui']['tag'] !== $runtime['tag'])
         ) {
             throw new PortableConfigurationException(
                 'FRAMEWORK_LOCK_IDENTITY_INVALID',
-                'The embedded Larena runtime lock has inconsistent pair, bundle, tag, or registry identity.',
+                'The embedded Framework runtime lock has inconsistent pair, bundle, tag, or registry identity.',
             );
         }
     }

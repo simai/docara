@@ -3,38 +3,38 @@
   "runtime": {
     "schema": "larena.ui.frontend_runtime_lock.v3",
     "runtime": "simai-framework",
-    "pair_id": "sf-v5.3.2-9d1cc46d-84c363da",
-    "bundle_id": "sf-v5.3.2-9d1cc46d-84c363da-registry-2c596327-verified-commit-candidate-v1",
+    "pair_id": "ui-148dbf36d42a-smart-daf5f285d006",
+    "bundle_id": "ui-148dbf36d42a-smart-daf5f285d006-registry-dca5c925-verified-commit-candidate-v1",
     "publication_profile": "verified-commit-candidate-v1",
-    "tag": "v5.3.2",
+    "tag": null,
     "ui": {
-      "tag": "v5.3.2",
-      "commit": "9d1cc46dccc3c18da5bfc3d46acf77faf884c242",
+      "tag": null,
+      "commit": "148dbf36d42a535b0fd710980532f9bcec966b1d",
       "tree": "distr",
       "mount": "ui",
-      "sha256": "c310583c239f3273c7af645396bdd5282d53fe84786dd63dbbacc6a1603c3118",
-      "files": 5885
+      "sha256": "2585a32e1b868cca5e40d1b30f6f90684fc4841165c22f141c8317b6b7e68559",
+      "files": 6231
     },
     "ui_smart": {
-      "tag": "v5.3.1",
-      "commit": "84c363daf59dcd62665dae115cc63b0dd7529cb1",
+      "tag": null,
+      "commit": "daf5f285d00640de8115f0939045828ba473ae1e",
       "tree": "smart",
       "mount": "smart",
-      "sha256": "e0a6780678d1ce062fafca40621e427c574236426791ac0183a761976b292949",
-      "files": 381
+      "sha256": "84c4f4840ed92c66df2c9145c98bdf9612d2cbc47cbdb6067ab40fa17a498942",
+      "files": 362
     },
     "framework_registry": {
       "schema_id": "simai.framework.contract-registry",
-      "compatibility_id": "sf-v5.3.2-9d1cc46d-84c363da",
+      "compatibility_id": "ui-148dbf36d42a-smart-daf5f285d006",
       "profile": "plain-assets-v1",
       "relative_path": "contract/contracts/generated/framework-contract-registry.json",
-      "file_sha256": "2c5963276d31af09770fe41cad04826c04b634f7b2d798d9b0e32864517346b7",
+      "file_sha256": "dca5c925eec12b32727aca090164cab853612f25b4c5b5f56edfba61c915f101",
       "source": {
-        "commit": "b7e8a2e810c0d49e31cb749a7ab34c373dd48bc6",
+        "commit": "3cbedb6ac0166ecbd68541811f66c6b1d1576dca",
         "tree": "contracts/generated",
-        "tree_oid": "ed200af53182334542b48fb7402e219068091bd4",
+        "tree_oid": "b04a3015e793e2e4167b0ca880914391aa844c36",
         "mount": "contract",
-        "sha256": "0f915061c3664571f8ce522793ed7192889b8eb19e4c62490440926449a13f9b",
+        "sha256": "5906ab3f25cb56ee578dd9c1bed4b24f8cd1d2565fc2eb43cbcb9071b3aff187",
         "files": 1
       }
     },
@@ -119,12 +119,12 @@
     "ui.button": {
       "provider": "larena/ui",
       "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
-      "sha256": "763e330e82fc73724ce617d074c6c4066a956e49141154fdb01e91aab98cf12f"
+      "sha256": "e9c819e7c208359d472180ed2e8d393208ffcf2bf69fae64e00baef882ae2441"
     },
     "ui.alert": {
       "provider": "larena/ui",
       "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
-      "sha256": "f2d1c56e6c49b5fefe05dca4974c8eccfa417d027c0b5fadd6637355b305017f"
+      "sha256": "03717cc437bff25ee1bdad5dd89fa4bc4b70ba56f12e62301f4b3ef37be76d68"
     }
   },
   "asset_projection": {
@@ -132,20 +132,20 @@
     "mount": "_docara/framework",
     "source": {
       "provider": "simai/ui-smart",
-      "revision": "84c363daf59dcd62665dae115cc63b0dd7529cb1"
+      "revision": "daf5f285d00640de8115f0939045828ba473ae1e"
     },
     "files": {
       "smart/alert/js/alert.js": {
-        "sha256": "32fd607bb1b6cd58911a43cdd143cfab9a0ff9822d423fb97304a2b9cc71c2af"
+        "sha256": "6720a3dd126f35c46fc09ecb6aeb0f2d9ebfcce82388ba8cc031c24cead426a7"
       },
       "smart/buttons/js/buttons.js": {
-        "sha256": "4f442e6f61c7278611e98cce5565b5adefa8770849b9b7fc36748cf6219093bd"
+        "sha256": "f9d400cd9d88c23243f75b313e9d0040ebee4e12e763d12a5ba86e556cf5c48b"
       },
       "smart/icons/js/icons.js": {
-        "sha256": "7618c219901fd6f3fa38f7c8a9c47a5609265197239748b5d64dca15c0419ceb"
+        "sha256": "6fe9a1ac7436ba6017addd7c9d389633e1fe4be4ae86cc0cd7fb45c0b31902d1"
       },
       "smart/modal/js/modal.js": {
-        "sha256": "695c52a086f12f922937a3754d10f561a0b74d622fb7f444ffa88be4b22b1905"
+        "sha256": "7ddde60f8a85cc9496685e6d70299d84e67b4cfecde845714ba7e2825b61a045"
       }
     }
   },

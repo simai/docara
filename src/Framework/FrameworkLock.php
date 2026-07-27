@@ -171,12 +171,20 @@ final readonly class FrameworkLock
             '/runtime/ui/tag' => $runtime['ui']['tag'] ?? null,
             '/runtime/ui_smart/tag' => $runtime['ui_smart']['tag'] ?? null,
         ] as $path => $reference) {
-            $this->assertPinnedReleaseReference($reference, $path);
+            $this->assertPinnedReleaseReference(
+                $reference,
+                $path,
+                (string) ($runtime['publication_profile'] ?? ''),
+            );
         }
     }
 
-    private function assertPinnedReleaseReference(mixed $value, string $path): void
+    private function assertPinnedReleaseReference(mixed $value, string $path, string $publicationProfile): void
     {
+        if ($value === null && $publicationProfile === 'verified-commit-candidate-v1') {
+            return;
+        }
+
         $normalized = is_string($value) ? strtolower(trim($value)) : '';
         if (in_array($normalized, ['main', 'master', 'latest', 'dev-main', 'refs/heads/main'], true)
             || preg_match('~(?:^|[/@])(?:main|master|latest)(?:$|[/])~', $normalized) === 1

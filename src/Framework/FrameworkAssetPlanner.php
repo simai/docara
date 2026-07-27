@@ -134,7 +134,7 @@ final readonly class FrameworkAssetPlanner
             ];
         }
 
-        $this->assertImmutable($assets);
+        $this->assertImmutable($assets, $cacheVersion);
 
         return new FrameworkAssetPlan($this->repository->pairId(), $assets);
     }
@@ -306,7 +306,7 @@ final readonly class FrameworkAssetPlanner
     }
 
     /** @param list<array<string, mixed>> $assets */
-    private function assertImmutable(array $assets): void
+    private function assertImmutable(array $assets, string $cacheVersion): void
     {
         foreach ($assets as $asset) {
             $haystack = strtolower((string) ($asset['url'] ?? '') . ' ' . (string) ($asset['content'] ?? ''));
@@ -332,11 +332,12 @@ final readonly class FrameworkAssetPlanner
 
             $url = (string) $asset['url'];
             if (str_starts_with($url, '/')) {
+                parse_str((string) parse_url($url, PHP_URL_QUERY), $query);
                 if (! is_string($asset['source_revision'] ?? null)
                     || preg_match('/^[a-f0-9]{40}$/', $asset['source_revision']) !== 1
                     || ! is_string($asset['sha256'] ?? null)
                     || preg_match('/^[a-f0-9]{64}$/', $asset['sha256']) !== 1
-                    || preg_match('/\?sf_v=sf-v[0-9.]+-[a-f0-9]{8}-[a-f0-9]{8}-[a-f0-9]{16}$/', $url) !== 1
+                    || ($query['sf_v'] ?? null) !== $cacheVersion
                 ) {
                     throw new FrameworkComponentException('FRAMEWORK_ASSET_SOURCE_REVISION_REQUIRED', (string) $asset['key']);
                 }

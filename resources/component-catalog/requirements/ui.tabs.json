@@ -1,0 +1,29 @@
+{
+    "id": "ui.tabs",
+    "family": "requirement",
+    "category": "navigation",
+    "lifecycle": "framework_gap",
+    "authoring": {
+        "syntax": "unavailable",
+        "call": null,
+        "jobs": [
+            "switch_content_panels"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "verification": {
+        "renderer": false,
+        "tests": false,
+        "docs": false,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/ru/components.md",
+    "provenance": {
+        "source_kind": "product_requirement",
+        "framework_owner": "simai/ui and larena/ui"
+    },
+    "gap": {
+        "owner": "simai/ui and larena/ui"
+    }
+}

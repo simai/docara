@@ -1,0 +1,13 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Как собрана главная страница",
+  "description": "Техническая карта компонентов, из которых собрана продуктовая главная Docara.",
+  "navigation": {
+    "hidden": true,
+    "order": 100
+  },
+  "search": {
+    "enabled": false,
+    "indexed": false
+  }
+}

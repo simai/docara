@@ -1,0 +1,82 @@
+{
+  "schema": "docara.pre_release_simplicity_audit.v1",
+  "candidate": "9b1290bf547a8c87651704a9554be0acc881aebf",
+  "audit_status": "complete",
+  "release_verdict": "correction_required",
+  "repository": {
+    "tracked_files": 1397,
+    "git_archive_bytes": 4464640,
+    "local_ahead_remote": 29,
+    "local_behind_remote": 1,
+    "remote_only_windows_fix": "a913dce60b7246d24f9afaf6e9f259a5b7c097e0"
+  },
+  "legacy_retention": {
+    "src_original": 104,
+    "src_original_retained": 104,
+    "src_current": 238,
+    "tests_original": 377,
+    "tests_original_retained": 377,
+    "tests_current": 409,
+    "stubs_original": 145,
+    "stubs_original_retained": 143,
+    "stubs_current": 163,
+    "legacy_starter_bytes": 1863658,
+    "portable_starter_bytes": 15141
+  },
+  "fresh_portable_scenario": {
+    "path": "/tmp/docara-audit.ZTFlnf",
+    "init": "pass",
+    "build": "pass",
+    "verify_static": "pass",
+    "authored_markdown": 7,
+    "generated_html": 66,
+    "output_megabytes_approx": 4.0,
+    "resolved_page_plans_megabytes_approx": 2.4
+  },
+  "documentation_scenario": {
+    "build": "pass",
+    "build_seconds": 2.42,
+    "verify_static": "pass",
+    "html_pages": 271,
+    "local_references_checked": 20512,
+    "deterministic_rebuild": "pass",
+    "aggregate_sha256": "9c6b6ec41ebdcf375577435db24ef5e6ffb0edc5120fb7c4b1098a591167c4bb",
+    "authored_markdown": 66,
+    "output_megabytes_approx": 40,
+    "resolved_page_plans_megabytes_approx": 26
+  },
+  "quality_gates": {
+    "php_syntax": {
+      "status": "pass",
+      "files": 266
+    },
+    "composer_validate_strict": "pass",
+    "git_diff_check": "pass",
+    "phpunit": {
+      "status": "fail",
+      "tests": 624,
+      "assertions": 5627,
+      "failures": 1,
+      "failed_test": "Tests\\Unit\\PortableComponentCatalogProjectorTest::smart_demo_assets_are_scoped_to_smart_details"
+    },
+    "pint": {
+      "status": "fail",
+      "files": 10
+    }
+  },
+  "findings": [
+    "DCR-001",
+    "DCR-002",
+    "DCR-003",
+    "DCR-004",
+    "DCR-005",
+    "DCR-006",
+    "DCR-007",
+    "DCR-008",
+    "DCR-009",
+    "DCR-010",
+    "DCR-011",
+    "DCR-012",
+    "DCR-013"
+  ]
+}

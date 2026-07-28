@@ -1,0 +1,6 @@
+backup_exists=yes
+journal_exists=yes
+backup_size=2.7G
+journal_files=2
+/Users/rim/Sites/.codex-backups/docara.test/2026-07-22-2054-docara2/change-log.md
+/Users/rim/Sites/.codex-backups/docara.test/2026-07-22-2054-docara2/rollback.md

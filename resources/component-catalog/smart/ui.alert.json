@@ -1,0 +1,31 @@
+{
+    "id": "ui.alert",
+    "family": "framework_smart",
+    "category": "feedback",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive_json",
+        "call": ":::ui.alert",
+        "jobs": [
+            "report_status"
+        ],
+        "parameters": []
+    },
+    "states": [
+        "default",
+        "info",
+        "warning",
+        "danger"
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": true
+    },
+    "docs_ref": "docs/site/content/ru/components/syntax.md",
+    "provenance": {
+        "source_kind": "smart_consumer_metadata",
+        "manifest_ref": "resources/framework/manifests/ui-alert.json"
+    }
+}

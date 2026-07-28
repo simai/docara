@@ -1,0 +1,6 @@
+{
+  "schema": "docara.smart_view.v1",
+  "smart": "ui.button",
+  "view": "default",
+  "template": "smart.ui.button.default"
+}

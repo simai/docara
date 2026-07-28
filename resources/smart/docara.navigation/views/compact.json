@@ -1,0 +1,6 @@
+{
+  "schema": "docara.smart_view.v1",
+  "smart": "docara.navigation",
+  "view": "compact",
+  "template": "smart.docara.navigation.compact"
+}

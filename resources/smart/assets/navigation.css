@@ -1,0 +1,4 @@
+.docara-navigation--compact .sf-menu-element{min-block-size:var(--sf-d0)}
+.docara-navigation--compact .sf-menu-element-wrap{min-block-size:var(--sf-c6)}
+.docara-header-navigation-link:focus-visible,[data-docara-disclosure]:focus-visible{outline:var(--sf-focus-outline-width,var(--sf-a4)) solid var(--sf-focus,var(--sf-primary));outline-offset:var(--sf-a2)}
+.docara-navigation [data-docara-disclosure]:focus{box-shadow:none}

@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.tester_verdict",
+  "quality_control_id": "human_centered_simplicity",
+  "reviewer": {"role": "tester", "source": "tester_skill", "identity": "docara_2_audit_corrections_exact_acceptance"},
+  "scope_binding": {
+    "task_sha256": "900956b5e7f3ee81fa43f313fe4e5c7ca2f1e352d969fce46d9654786dfdc136",
+    "review_payload_sha256": "98c045656f03c015b99d4d000287f8bc25ecca8da60f3349f8428229800c7746",
+    "workflow_ref": "repo://docara-consolidation/source/workflow/2026-07-22-docara-2-audit-corrections.md",
+    "workflow_sha256": "b71d0a7b58bb3806d2af486ce265552f85e92ec25296ed683f8890db842437eb",
+    "repository_refs": ["repo://docara-consolidation"],
+    "repository_baselines": [
+      {"repo_ref": "repo://docara-consolidation", "commit_sha": "62532404dbc667340cea7bee16cda9fc59ddcd0c"}
+    ]
+  },
+  "status": "VERIFIED",
+  "reviewed_surface_ids": ["archive_export_attribute", "readme_init_contract", "package_archive_contract", "cli_reference_contract", "start_guide_contract", "current_memory_record", "track_memory_record", "launch_record", "workflow_record", "active_workflow_record", "target_path_contract", "target_path_regression", "archive_regression"],
+  "surface_classifications": [
+    {"surface_id": "archive_export_attribute", "classification": "protective", "protected_categories": ["data_integrity"], "evidence_ref": "tests/Unit/ComposerPackageSurfaceTest.php"},
+    {"surface_id": "readme_init_contract", "classification": "ordinary", "protected_categories": [], "evidence_ref": "docs/site/content/ru/reference/cli.md"},
+    {"surface_id": "package_archive_contract", "classification": "protective", "protected_categories": ["data_integrity"], "evidence_ref": "tests/Unit/ComposerPackageSurfaceTest.php"},
+    {"surface_id": "cli_reference_contract", "classification": "ordinary", "protected_categories": [], "evidence_ref": "docs/site/content/ru/reference/cli.md"},
+    {"surface_id": "start_guide_contract", "classification": "ordinary", "protected_categories": [], "evidence_ref": "docs/site/content/ru/reference/cli.md"},
+    {"surface_id": "current_memory_record", "classification": "ordinary", "protected_categories": [], "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"},
+    {"surface_id": "track_memory_record", "classification": "ordinary", "protected_categories": [], "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"},
+    {"surface_id": "launch_record", "classification": "protective", "protected_categories": ["observability"], "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"},
+    {"surface_id": "workflow_record", "classification": "protective", "protected_categories": ["observability"], "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"},
+    {"surface_id": "active_workflow_record", "classification": "protective", "protected_categories": ["observability"], "evidence_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"},
+    {"surface_id": "target_path_contract", "classification": "protective", "protected_categories": ["error_handling"], "evidence_ref": "tests/PortableInitCommandTest.php"},
+    {"surface_id": "target_path_regression", "classification": "protective", "protected_categories": ["error_handling"], "evidence_ref": "tests/PortableInitCommandTest.php"},
+    {"surface_id": "archive_regression", "classification": "protective", "protected_categories": ["data_integrity"], "evidence_ref": "tests/Unit/ComposerPackageSurfaceTest.php"}
+  ],
+  "evidence_paths": [
+    "src/Console/InitCommand.php",
+    "composer.json",
+    "tests/PortableInitCommandTest.php",
+    "tests/Unit/ComposerPackageSurfaceTest.php",
+    "docs/site/content/ru/reference/cli.md",
+    "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md"
+  ],
+  "evidence_fingerprints": [
+    {"path": "src/Console/InitCommand.php", "sha256": "25839872ae6cac9f24c15b188fa20f88776a98cd011018de683f4d536a7d8406"},
+    {"path": "composer.json", "sha256": "a4dfa71e94e7c879cdfa316dbec6ed1d1a7c65ad9c2a27455686e150785c6239"},
+    {"path": "tests/PortableInitCommandTest.php", "sha256": "f9ee0d30eca8a50f9932fdac523ad32a30c28425a93bff9ce059bd6c8a8cbffc"},
+    {"path": "tests/Unit/ComposerPackageSurfaceTest.php", "sha256": "3934208fb50994160be6eed46c1fd911d8b5ab22146879daa104cc0557993fb2"},
+    {"path": "docs/site/content/ru/reference/cli.md", "sha256": "a8ccfdc03c74f9ae514dc3ddc0164a078f3b54be08d5260e128f4818c467ce78"},
+    {"path": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md", "sha256": "ce4c443005c787539a22f32fbddfd006814856cbfef35b76b7f25cf7c9faa27f"}
+  ],
+  "commands": [
+    {"command": "PHP 8.2 vendor/bin/phpunit --configuration phpunit.xml", "exit_code": 0, "result": "PASS", "output_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md", "output_sha256": "ce4c443005c787539a22f32fbddfd006814856cbfef35b76b7f25cf7c9faa27f"},
+    {"command": "PHP 8.4 vendor/bin/phpunit --configuration phpunit.xml", "exit_code": 0, "result": "PASS", "output_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md", "output_sha256": "ce4c443005c787539a22f32fbddfd006814856cbfef35b76b7f25cf7c9faa27f"},
+    {"command": "php docara verify-static docs/site/build_production", "exit_code": 0, "result": "PASS", "output_ref": "source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md", "output_sha256": "ce4c443005c787539a22f32fbddfd006814856cbfef35b76b7f25cf7c9faa27f"}
+  ],
+  "contradictions": [],
+  "verdict": "PASS"
+}

@@ -1,0 +1,37 @@
+FILE:/Users/rim/Sites/.codex-backups/docara.test/2026-07-22-2054-docara2/change-log.md
+# Docara test-site change
+
+- Time (UTC): 2026-07-22T20:53:15Z
+- Target: `/Users/rim/Sites/docara.test`
+- Previous state: legacy Docara project, 2.7 GB, 271 generated HTML files
+- Candidate: `0d2a528c4bd5cff5b4986ff60e0abd668d328f47`
+- Candidate source: exact `git archive` plus clean Composer install
+- Candidate output: 190 HTML files, 227 total files
+- Candidate manifest digest:
+  `d4df1df05bccf844f5a334b65bd4f8a12dab0978abd073906d791399d0c8c9c5`
+- Candidate Composer lock digest:
+  `e72f6bb3bfee31612ca688260376a83b07995bbd39d371dea28e75db04a25724`
+- Backup path:
+  `/Users/rim/Sites/docara.test.backup-20260722-2054-legacy`
+- Staged path:
+  `/Users/rim/Sites/docara.test.next-0d2a528c4bd5cff5b4986ff60e0abd668d328f47`
+
+The full previous directory is preserved by an atomic rename on the same
+volume. No legacy file is deleted.
+FILE:/Users/rim/Sites/.codex-backups/docara.test/2026-07-22-2054-docara2/rollback.md
+# Rollback
+
+Restore the exact previous site by renaming the active corrected directory out
+of the way and atomically renaming this backup back to the ServBay path:
+
+```sh
+mv /Users/rim/Sites/docara.test /Users/rim/Sites/docara.test.corrected-hold
+mv /Users/rim/Sites/docara.test.backup-20260722-2054-legacy /Users/rim/Sites/docara.test
+```
+
+Verification: `https://docara.test/` must return HTTP 200 and the legacy root
+HTML SHA-256 must equal
+`38365edd483ebe5c6121d5f4b17cc275fb31f2ab4e55817990ced80845804c5c`.
+
+To re-apply the corrected candidate after a rollback rehearsal, reverse the two
+renames while preserving the legacy directory at its original backup path.

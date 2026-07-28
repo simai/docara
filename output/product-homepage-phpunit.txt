@@ -1,0 +1,29 @@
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.20
+Configuration: /Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/phpunit.xml
+
+F..............................................................  63 / 320 ( 19%)
+.....................F......................................... 126 / 320 ( 39%)
+............................................................... 189 / 320 ( 59%)
+............................................................... 252 / 320 ( 78%)
+............................................................... 315 / 320 ( 98%)
+.....                                                           320 / 320 (100%)
+
+Time: 00:46.664, Memory: 50.00 MB
+
+There were 2 failures:
+
+1) Tests\PortableDocumentationSiteTest::real_documentation_build_matches_the_exact_product_matrix_and_static_verifier
+Failed asserting that actual size 58 matches expected size 59.
+
+/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/tests/PortableDocumentationSiteTest.php:59
+
+2) Tests\Unit\DocumentationContractTest::authored_documentation_covers_five_audience_paths_and_every_page_has_one_h1
+The authored documentation inventory must stay exact.
+Failed asserting that actual size 58 matches expected size 59.
+
+/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/tests/Unit/DocumentationContractTest.php:123
+
+FAILURES!
+Tests: 320, Assertions: 4832, Failures: 2.

@@ -1,0 +1,10 @@
+source/memory/CURRENT.yaml
+source/memory/TRACKS.yaml
+source/workflow/2026-07-22-docara-2-audit-corrections.launch.yaml
+source/workflow/2026-07-22-docara-2-audit-corrections.md
+source/workflow/ACTIVE.md
+source/workflow/evidence/2026-07-22-docara-2-audit-corrections/FINAL-AUDIT.md
+source/workflow/evidence/2026-07-22-docara-2-audit-corrections/human-centered-simplicity-review.json
+source/workflow/evidence/2026-07-22-docara-2-audit-corrections/human-centered-simplicity-tester-verdict.json
+source/workflow/evidence/2026-07-22-docara-2-audit-corrections/outcome-integrity-review.md
+source/workflow/evidence/2026-07-22-docara-2-audit-corrections/technology-evidence.md

@@ -1,0 +1,7 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Конфигурация",
+  "navigation": {
+    "order": 20
+  }
+}

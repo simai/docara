@@ -1,0 +1,31 @@
+{
+    "id": "docara.cta",
+    "name": "cta",
+    "renderer": "docara.cta.v1",
+    "family": "docara_typed",
+    "category": "navigation",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive",
+        "call": ":::cta",
+        "jobs": [
+            "primary_navigation_action"
+        ],
+        "parameters": []
+    },
+    "states": [
+        "default",
+        "focus"
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": true
+    },
+    "docs_ref": "docs/site/content/ru/components/syntax.md",
+    "provenance": {
+        "source_kind": "typed_definition",
+        "definition_ref": "resources/component-catalog/typed/docara.cta.json"
+    }
+}

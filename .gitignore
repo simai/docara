@@ -2,6 +2,7 @@
 node_modules
 /vendor/
 /source/assets/build/
+/source/output/
 /composer.json
 /bootstrap.php
 .cache
@@ -10,16 +11,29 @@ node_modules
 tailwind.config.js
 /webpack.mix.js
 .env
+.env.local
 temp
 trash
 /translate.config.php
+/source/docs/.translate.php
+/output/codex-local-check.txt
+/codex-local-check.bak
+/codex-local-check.bak_1
+/codex-local-check.bak-1
+/codex-local-check.codex-bak-1
 npm-debug.log
 /package-lock.json
 /source/404.blade.php
 /source/favicon.ico
 /.phpunit.cache/
 /composer.lock
+/.playwright-cli/
 /figma_variables/
 /retype-badge.html
 /tools/figma-write-bridge/
 /vscode-folder-tree/
+/source/workflow/evidence/2026-07-18-declarative-docara-portable-format/independent-acceptance/
+/source/workflow/evidence/2026-07-18-declarative-docara-portable-format/hcs/
+
+# SIMAI project memory runtime logs
+source/logs/

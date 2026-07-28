@@ -1,0 +1,59 @@
+# Статический результат
+
+Собранный каталог содержит HTML страниц, копии контентных ассетов, служебные
+Framework-ассеты и диагностический файл:
+
+```text
+build_production/
+  index.html
+  section/page/index.html
+  _docara/search-index.json
+  _docara/search.js
+  _docara/framework/
+  .docara/resolved-page-plans.json
+  .docara/redirects.json
+  old/route/index.html
+```
+
+HTML можно обслуживать обычным статическим веб-сервером. Значение `base_url`
+должно совпадать с префиксом размещения: `/` для корня домена или безопасный
+путь вроде `/project/docs/` для вложенного размещения.
+
+Файлы поиска появляются только когда `search.enabled: true` хотя бы для одной
+страницы. Индекс строится до очистки destination, проходит JSON Schema и
+содержит только URL опубликованных страниц, locale, заголовки, описания,
+навигационный путь и видимый текст. Браузер загружает его лениво. Индекс и
+runtime имеют независимые SHA-256 query revisions.
+
+Проверка артефакта читает `base_url` из
+`.docara/resolved-page-plans.json`: совпадающий deployment-префикс удаляется
+перед поиском файла внутри build-каталога, а похожий или посторонний абсолютный
+путь отклоняется.
+
+Verifier требует exact schema manifest, непустой список страниц и точное
+совпадение его `output` и redirect receipt со всеми HTML-файлами результата.
+Отсутствующий, дублированный, лишний, symlink- или hardlink-output отклоняется.
+Элемент HTML `<base>` запрещён, чтобы относительные quoted `href`/`src` всегда
+разрешались одинаково verifier-ом и браузером.
+
+Если `redirects_file` не пуст, `.docara/redirects.json` фиксирует SHA-256
+source, locale, версию документации, `base_url`, source/target URL и output
+каждого redirect. Redirect HTML содержит canonical, `noindex`, meta refresh и
+обычную видимую ссылку на один и тот же внутренний target.
+
+Локальные ссылки с `#fragment` проверяются против фактических HTML `id` — как в
+сыром Unicode, так и в percent-encoded форме. Основные диагностические маркеры:
+
+| Маркер | Причина |
+| --- | --- |
+| `@duplicate-html-id` | На странице один `id` встречается больше одного раза |
+| `@missing-fragment` | Локальная ссылка указывает на отсутствующий якорь |
+| `@unsafe-fragment-encoding` | Fragment содержит неправильную percent-кодировку или невалидный UTF-8 |
+
+Любой из этих маркеров делает проверку артефакта неуспешной.
+
+Текущий lock загружает SIMAI Framework Core по exact commit из сети. Поэтому
+наличие всех локальных Smart-файлов не означает полностью offline-сайт.
+
+Публичную production или release готовность следует заявлять только после
+отдельной приёмки конкретного артефакта и условий распространения.

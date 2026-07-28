@@ -1,0 +1,11 @@
+██████╗  ██████╗  ██████╗ █████╗ ██████╗  █████╗
+██╔══██╗██╔═══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗
+██║  ██║██║   ██║██║     ███████║██████╔╝███████║
+██║  ██║██║   ██║██║     ██╔══██║██╔══██╗██╔══██║
+██████╔╝╚██████╔╝╚██████╗██║  ██║██║  ██║██║  ██║
+╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
+                                                 
+
+Project directory: /private/tmp/docara-repeat-init.rzNhu0/relative-site
+Starter files: copied=20, preserved=0
+Your Docara project was initialized successfully.

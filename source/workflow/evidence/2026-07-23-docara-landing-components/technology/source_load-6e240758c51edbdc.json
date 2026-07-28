@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.federation.source_load_result",
+  "verification_run_id": "docara-landing-components-20260723",
+  "created_at": "2026-07-23T15:05:41.451131+00:00",
+  "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+  "technology_signature": "493e214b46bf8c137c9a499698826b0783c4ba7585d13b3d731376eca3a84bd0",
+  "subject_id": "6e240758c51edbdc",
+  "status": "success",
+  "detail": "Loaded ai-codex-skill-graph:graph/generated/mirai-graph/federation-control-plane/federation-registry-20260530/federation-skill-registry.json at exact recorded revision and hash."
+}

@@ -1,0 +1,29 @@
+{
+    "id": "ui.dataview",
+    "family": "requirement",
+    "category": "structured_data",
+    "lifecycle": "deferred",
+    "authoring": {
+        "syntax": "unavailable",
+        "call": null,
+        "jobs": [
+            "present_structured_data"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "verification": {
+        "renderer": false,
+        "tests": false,
+        "docs": false,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/ru/components.md",
+    "provenance": {
+        "source_kind": "product_requirement",
+        "framework_owner": "larena/ui"
+    },
+    "gap": {
+        "owner": "simai/docara and larena/ui"
+    }
+}

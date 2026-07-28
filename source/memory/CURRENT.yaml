@@ -1,0 +1,9 @@
+project_id: "docara-consolidation"
+updated_at: "2026-07-24"
+status: "framework_container_local_integration_accepted"
+primary_goal: "Build Docara from separated content, composition, typed data, Smart components and SIMAI Framework presentation primitives using the same declarative philosophy as Larena."
+active_tracks:
+  - docara-consolidation
+current_focus: "docara-consolidation"
+important_blockers: []
+next_global_step: "Keep Docara pinned to ui@4100d3f7 plus ui-smart@dd786bba. Public releases, tags and default-branch integration require a separate gated workflow."

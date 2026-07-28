@@ -1,0 +1,15 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Документация",
+  "preset": "docs",
+  "layout": {
+    "container": {"max": 7}
+  },
+  "header_navigation": {
+    "enabled": true,
+    "items": [
+      {"id": "home", "label": "Главная", "href": "/ru/"},
+      {"id": "github", "label": "GitHub", "href": "https://github.com/simai/docara"}
+    ]
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Области макета",
+  "description": "Как включать, отключать и декларативно наполнять header, sidebar, main, outline и footer.",
+  "navigation": {
+    "order": 25
+  }
+}

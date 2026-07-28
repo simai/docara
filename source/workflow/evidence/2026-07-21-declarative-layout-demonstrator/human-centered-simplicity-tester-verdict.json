@@ -1,0 +1,96 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.tester_verdict",
+  "quality_control_id": "human_centered_simplicity",
+  "reviewer": {
+    "role": "tester",
+    "source": "tester_skill",
+    "identity": "docara-browser-and-regression-acceptance"
+  },
+  "scope_binding": {
+    "task_sha256": "f908e654fa32f701f3010cddd7864fa0b19b1b799367a05caf3f8de079d57ac1",
+    "review_payload_sha256": "788110aced6f8ad2eacf8ce83b2c87f85a0879d81171a855b47261935a35b28f",
+    "workflow_ref": "",
+    "workflow_sha256": "",
+    "repository_refs": [
+      "repo://docara-consolidation"
+    ],
+    "repository_baselines": []
+  },
+  "status": "VERIFIED",
+  "reviewed_surface_ids": [
+    "catalog",
+    "detail",
+    "receipt",
+    "safety"
+  ],
+  "surface_classifications": [
+    {
+      "surface_id": "catalog",
+      "classification": "ordinary",
+      "protected_categories": [],
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md"
+    },
+    {
+      "surface_id": "detail",
+      "classification": "ordinary",
+      "protected_categories": [],
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md"
+    },
+    {
+      "surface_id": "receipt",
+      "classification": "protective",
+      "protected_categories": [
+        "data_integrity",
+        "observability"
+      ],
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"
+    },
+    {
+      "surface_id": "safety",
+      "classification": "protective",
+      "protected_categories": [
+        "security",
+        "error_handling"
+      ],
+      "evidence_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"
+    }
+  ],
+  "evidence_paths": [
+    "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md",
+    "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/deployment.md",
+    "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md"
+  ],
+  "evidence_fingerprints": [
+    {
+      "path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md",
+      "sha256": "3d76f6d1cb28097af057bcffab033d09a438ffe615d0bafc9d428b523310881a"
+    },
+    {
+      "path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/deployment.md",
+      "sha256": "5e5704f96f37c6f572ca67a165c4757afabac64580a04998ed5c5f0cb126058f"
+    },
+    {
+      "path": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md",
+      "sha256": "60d8982223f8aa2615de59215f27aa3bc4e04ea436b62ed0096174a07b7e0071"
+    }
+  ],
+  "commands": [
+    {
+      "command": "/Applications/ServBay/bin/php vendor/bin/phpunit --do-not-cache-result",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/verification-summary.md",
+      "output_sha256": "60d8982223f8aa2615de59215f27aa3bc4e04ea436b62ed0096174a07b7e0071"
+    },
+    {
+      "command": "desktop and mobile browser acceptance on https://docara.test/examples/",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "repo://docara-consolidation/source/workflow/evidence/2026-07-21-declarative-layout-demonstrator/browser-acceptance.md",
+      "output_sha256": "3d76f6d1cb28097af057bcffab033d09a438ffe615d0bafc9d428b523310881a"
+    }
+  ],
+  "contradictions": [],
+  "verdict": "PASS"
+}

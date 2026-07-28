@@ -1,0 +1,149 @@
+{
+  "schema": "docara.replacement_root_browser_checks.v1",
+  "candidate": "2640503ba14913aa83bc3b4343c86966a807e29f",
+  "tree": "4a0b5a68f613853ba9503f76d48068a1a6ca6724",
+  "exact_archive_sha256": "fbda45bb8042140e817aafdcb881482765f39740b58b4e697db95e307049080b",
+  "canonical_build_digest": "a16d61252837c8d23102e2285a948d7a81c513150080f09b2e9095c31ba475f4",
+  "browser": {
+    "name": "Google Chrome",
+    "version": "150.0.7871.128",
+    "automation": "Playwright with native Chrome executable",
+    "clipboard_permissions_granted": true
+  },
+  "candidate_checks": {
+    "route_viewport_matrix": {
+      "routes": [
+        "/",
+        "/start/",
+        "/authoring/layout-and-navigation/hierarchy/four-level/",
+        "/authoring/redirects/",
+        "/components/catalog/",
+        "/components/catalog/native.code/",
+        "/landing/",
+        "/development/extensions/",
+        "/build/verify/"
+      ],
+      "viewports": [
+        1440,
+        768,
+        390
+      ],
+      "combinations": 27,
+      "http_200": 27,
+      "horizontal_overflow": 0,
+      "console_or_page_errors": 0,
+      "html_lang": "ru",
+      "documentation_version": "current",
+      "verdict": "PASS"
+    },
+    "search": {
+      "query": "перенаправления",
+      "results": 2,
+      "first_target": "/authoring/redirects/",
+      "arrow_down_enter_navigation": true,
+      "escape_restores_trigger": true,
+      "verdict": "PASS"
+    },
+    "reader_settings": {
+      "tab_samples": 8,
+      "all_tab_samples_inside_modal": true,
+      "shift_tab_inside_modal": true,
+      "escape_closes": true,
+      "escape_restores_trigger": true,
+      "light_dark_system_apply": true,
+      "dark_persists_after_reload": true,
+      "verdict": "PASS"
+    },
+    "mobile_navigation": {
+      "viewport": "390x844",
+      "main_before": {
+        "x": 14,
+        "y": 138,
+        "width": 362,
+        "height": 468.734375
+      },
+      "main_while_open": {
+        "x": 14,
+        "y": 138,
+        "width": 362,
+        "height": 468.734375
+      },
+      "native_modal": true,
+      "four_level_active_path_visible": true,
+      "focus_samples": 15,
+      "focus_contained": true,
+      "escape_restores_trigger": true,
+      "verdict": "PASS"
+    },
+    "mobile_outline": {
+      "viewport": "390x844",
+      "article_reflow": false,
+      "native_modal": true,
+      "links": 4,
+      "focus_samples": 10,
+      "focus_contained": true,
+      "escape_restores_trigger": true,
+      "verdict": "PASS"
+    },
+    "mobile_controls": {
+      "visible_controls_checked": 7,
+      "minimum_height_px": 44,
+      "below_44_px": 0,
+      "verdict": "PASS"
+    },
+    "code": {
+      "route": "/components/catalog/native.code/",
+      "blocks": 1,
+      "headers": 1,
+      "copy_buttons": 1,
+      "pre_elements": 1,
+      "nested_visual_surface": false,
+      "local_horizontal_scroll": true,
+      "expected_clipboard": "$site = 'Docara';\necho $site;\n",
+      "actual_clipboard": "$site = 'Docara';\necho $site;\n",
+      "clipboard_exact": true,
+      "verdict": "PASS"
+    },
+    "redirect": {
+      "source": "/components/code/",
+      "target": "/components/catalog/native.code/",
+      "http_status": 200,
+      "canonical": true,
+      "noindex": true,
+      "meta_refresh": true,
+      "visible_link": true,
+      "browser_reaches_target": true,
+      "unique_missing_route_status": 404,
+      "verdict": "PASS"
+    },
+    "component_catalog": {
+      "total": 17,
+      "query": "код",
+      "query_results": 2,
+      "empty_query_results": 0,
+      "empty_state_visible": true,
+      "reset_results": 17,
+      "verdict": "PASS"
+    }
+  },
+  "legacy_observations": {
+    "url": "https://docara-legacy.test/en/",
+    "http_status": 200,
+    "strong_points": [
+      "compact desktop density",
+      "permanently visible desktop search",
+      "wide article column",
+      "prominent right outline",
+      "reader width, text-size and fullscreen controls"
+    ],
+    "defects_observed": [
+      "zero aria-current page markers on the inspected page",
+      "visible controls and copy actions below 44px",
+      "icon controls without accessible labels",
+      "Escape leaves focus in the search input",
+      "favicon request returns 404",
+      "mobile navigation visually overlays and clips the article instead of presenting a self-contained sheet"
+    ]
+  },
+  "verdict": "PASS"
+}

@@ -1,0 +1,176 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://schemas.simai.io/docara/site/v1",
+    "title": "Docara portable site",
+    "type": "object",
+    "required": ["schema", "preset", "framework_lock"],
+    "properties": {
+        "schema": {
+            "type": "string",
+            "const": "docara.site.v1"
+        },
+        "version": {
+            "type": "integer",
+            "const": 1
+        },
+        "preset": {
+            "type": "string",
+            "enum": ["docs", "landing"]
+        },
+        "framework_lock": {
+            "type": "string",
+            "format": "docara-relative-path"
+        },
+        "content_root": {
+            "type": "string",
+            "format": "docara-relative-path"
+        },
+        "base_url": {
+            "type": "string",
+            "pattern": "^(?:/|/(?!\\.{1,2}(?:/|$))[A-Za-z0-9._~-]+(?:/(?!\\.{1,2}(?:/|$))[A-Za-z0-9._~-]+)*/?)$"
+        },
+        "default_locale": {
+            "type": "string",
+            "format": "docara-bcp47"
+        },
+        "locales": {
+            "type": "object",
+            "minProperties": 1,
+            "propertyNames": {
+                "format": "docara-bcp47"
+            },
+            "additionalProperties": {
+                "$ref": "#/$defs/locale"
+            }
+        },
+        "locale_routing": {
+            "$ref": "#/$defs/localeRouting"
+        },
+        "documentation_version": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9._-]{0,62}[A-Za-z0-9])?$"
+        },
+        "redirects_file": {
+            "type": "string",
+            "format": "docara-relative-path"
+        },
+        "title": {
+            "type": "string",
+            "minLength": 1
+        },
+        "locale": {
+            "type": "string",
+            "format": "docara-bcp47"
+        },
+        "branding": {
+            "$ref": "presentation.schema.json#/$defs/branding"
+        },
+        "layout": {
+            "$ref": "presentation.schema.json#/$defs/layout"
+        },
+        "settings": {
+            "$ref": "presentation.schema.json#/$defs/settings"
+        },
+        "reader_preferences": {
+            "$ref": "#/$defs/readerPreferences"
+        },
+        "navigation": {
+            "$ref": "presentation.schema.json#/$defs/navigation"
+        },
+        "header_navigation": {
+            "$ref": "presentation.schema.json#/$defs/header_navigation"
+        },
+        "search": {
+            "$ref": "presentation.schema.json#/$defs/search"
+        },
+        "reading": {
+            "$ref": "presentation.schema.json#/$defs/reading"
+        }
+    },
+    "additionalProperties": false,
+    "$defs": {
+        "readerPreferences": {
+            "type": "object",
+            "required": ["enabled", "view", "groups"],
+            "properties": {
+                "enabled": {
+                    "type": "boolean"
+                },
+                "view": {
+                    "type": "string",
+                    "const": "side-panel"
+                },
+                "groups": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "maxItems": 20,
+                    "items": {
+                        "type": "object",
+                        "required": ["id", "fields"],
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+                                "maxLength": 80
+                            },
+                            "fields": {
+                                "type": "array",
+                                "minItems": 1,
+                                "maxItems": 50,
+                                "uniqueItems": true,
+                                "items": {
+                                    "type": "string",
+                                    "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$",
+                                    "maxLength": 120
+                                }
+                            }
+                        },
+                        "additionalProperties": false
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "localeRouting": {
+            "type": "object",
+            "required": ["strategy", "root", "detect_browser_language"],
+            "properties": {
+                "strategy": {
+                    "type": "string",
+                    "enum": ["default_unprefixed", "prefixed"]
+                },
+                "root": {
+                    "type": "string",
+                    "enum": ["default_locale", "redirect"]
+                },
+                "detect_browser_language": {
+                    "type": "boolean"
+                },
+                "legacy_unprefixed_redirects": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false
+        },
+        "locale": {
+            "type": "object",
+            "required": ["label", "direction", "content_root", "language_pack"],
+            "properties": {
+                "label": {"type": "string", "minLength": 1},
+                "direction": {"type": "string", "enum": ["ltr", "rtl"]},
+                "content_root": {"type": "string", "format": "docara-relative-path"},
+                "language_pack": {"type": "string", "minLength": 1},
+                "public_prefix": {
+                    "type": "string",
+                    "pattern": "^(?:|[A-Za-z0-9](?:[A-Za-z0-9._~-]*[A-Za-z0-9])?)$"
+                },
+                "fallbacks": {
+                    "type": "array",
+                    "uniqueItems": true,
+                    "items": {"type": "string", "format": "docara-bcp47"}
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}

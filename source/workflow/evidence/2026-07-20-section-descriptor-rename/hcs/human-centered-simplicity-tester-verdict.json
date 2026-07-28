@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.tester_verdict",
+  "quality_control_id": "human_centered_simplicity",
+  "reviewer": {
+    "role": "tester",
+    "source": "independent_tester",
+    "identity": "docara_section_descriptor_acceptance"
+  },
+  "scope_binding": {
+    "task_sha256": "89e8e6d1b0ec254e84981cb20e72f083e491adfc5d890e913bc37e758dd5de09",
+    "review_payload_sha256": "6e8fefdbd515ffe73e9f132c9a3ff5129b433f0b9b786d986b1b767ae0a7706e",
+    "workflow_ref": "",
+    "workflow_sha256": "",
+    "repository_refs": [
+      "repo://docara-consolidation"
+    ],
+    "repository_baselines": []
+  },
+  "status": "VERIFIED",
+  "reviewed_surface_ids": [
+    "canonical_filename_docs",
+    "legacy_name_error",
+    "output_data_guard",
+    "verified_local_publication"
+  ],
+  "surface_classifications": [
+    {
+      "surface_id": "canonical_filename_docs",
+      "classification": "ordinary",
+      "protected_categories": [],
+      "evidence_ref": "docs/site/content/authoring/project-files.md"
+    },
+    {
+      "surface_id": "legacy_name_error",
+      "classification": "protective",
+        "protected_categories": ["error_handling"],
+        "evidence_ref": "src/Portable/PortableConfigurationLoader.php"
+    },
+    {
+      "surface_id": "output_data_guard",
+      "classification": "protective",
+        "protected_categories": ["data_integrity"],
+        "evidence_ref": "tests/PortableSiteBuilderTest.php"
+    },
+    {
+      "surface_id": "verified_local_publication",
+      "classification": "protective",
+      "protected_categories": ["observability", "rollback"],
+      "evidence_ref": "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md"
+    }
+  ],
+  "evidence_paths": [
+    "docs/site/content/authoring/project-files.md",
+    "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md",
+    "src/Portable/PortableConfigurationLoader.php",
+    "tests/PortableSiteBuilderTest.php"
+  ],
+  "evidence_fingerprints": [
+    {
+      "path": "docs/site/content/authoring/project-files.md",
+      "sha256": "82e93b3bc2af7ba8497163bd17da9c262be29bc73b2dc49ff17302026d5ceb13"
+    },
+    {
+      "path": "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md",
+      "sha256": "5cf8084c9a8d94874219a71b78106c271ce31036d2c04fa3f64695ad48e39cbd"
+    },
+    {
+      "path": "src/Portable/PortableConfigurationLoader.php",
+      "sha256": "4f06b1534839ab1212b4856effdb4ef9abf615c7d725b8186310cb0a28e4c608"
+    },
+    {
+      "path": "tests/PortableSiteBuilderTest.php",
+      "sha256": "c3ec505d74f620ae05d1382e8679c9869c6abeccdcf68f1f6054945232229d7f"
+    }
+  ],
+  "commands": [
+    {
+      "command": "php vendor/bin/phpunit --filter legacy_section_descriptor tests/PortableSiteBuilderTest.php tests/Unit/PortableConfigurationTest.php",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "tests/PortableSiteBuilderTest.php",
+      "output_sha256": "c3ec505d74f620ae05d1382e8679c9869c6abeccdcf68f1f6054945232229d7f"
+    },
+    {
+      "command": "php docara verify-static docs/site/build_production",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "source/workflow/evidence/2026-07-20-section-descriptor-rename/verification.md",
+      "output_sha256": "5cf8084c9a8d94874219a71b78106c271ce31036d2c04fa3f64695ad48e39cbd"
+    }
+  ],
+  "contradictions": [],
+  "verdict": "PASS"
+}

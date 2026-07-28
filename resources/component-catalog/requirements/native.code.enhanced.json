@@ -1,0 +1,29 @@
+{
+    "id": "native.code.enhanced",
+    "family": "requirement",
+    "category": "technical_content",
+    "lifecycle": "framework_gap",
+    "authoring": {
+        "syntax": "unavailable",
+        "call": null,
+        "jobs": [
+            "enhance_code"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "verification": {
+        "renderer": false,
+        "tests": false,
+        "docs": false,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/ru/components.md",
+    "provenance": {
+        "source_kind": "product_requirement",
+        "framework_owner": "simai/docara"
+    },
+    "gap": {
+        "owner": "simai/docara"
+    }
+}

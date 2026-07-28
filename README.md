@@ -1,76 +1,91 @@
-# Docara (based on Jigsaw)
+# Docara
 
-- moduleCache (bool, default: false): включает кеш модульных css/js. При true core.css встраивается в hash.css, core.css из шаблона не грузится отдельно; управляется через DOCARA_MODULE_CACHE или config.php.
+Docara builds static documentation, reference sites and small landing pages
+from Markdown and validated JSON. SIMAI Framework supplies the interface;
+authors do not need Node.js or a frontend toolchain.
 
-Quick start to install Docara via Composer and initialize a project.
+## Quick start
 
-## Install the framework
+Until Docara 2 is published, run these commands from an exact source checkout:
 
 ```bash
-composer require simai/docara
+git rev-parse HEAD
+composer install
+php docara init /path/to/my-docara
+cd /path/to/my-docara
+php /path/to/docara/docara build production
+php /path/to/docara/docara verify-static build_production
+php /path/to/docara/docara serve production --host=127.0.0.1 --port=8000 --no-build
 ```
 
-## Configure `.env`
+Open `http://127.0.0.1:8000`. Do not use `file://`: routes, search and assets
+must be checked through HTTP.
 
-Create `.env` in your project root (example):
+The starter contains one product model:
 
 ```text
-AZURE_KEY=<AZURE_KEY>
-AZURE_REGION=<AZURE_REGION>
-AZURE_ENDPOINT=https://api.cognitive.microsofttranslator.com
-DOCS_DIR=docs
+docara.json                 site, locales, preset and Framework lock reference
+redirects.json              explicit redirects
+simai-framework.lock.json   immutable Framework revisions
+assets/                     project-owned public assets
+content/<locale>/           Markdown and inherited JSON settings
 ```
 
-## Initialize a new project
+Settings resolve deterministically:
 
-From an empty project directory:
+```text
+built-in defaults
+→ docara.json
+→ section.json from the locale root to the page
+→ <page>.page.json
+→ Markdown content
+```
+
+One build publishes every locale declared in `docara.json`. A documentation
+version is a separate site variant and output with its own `base_url`.
+
+## Commands
 
 ```bash
-php vendor/bin/docara init
+php vendor/bin/docara init [--update] [path]
+php vendor/bin/docara build [environment]
+php vendor/bin/docara serve [environment] [--no-build]
+php vendor/bin/docara verify-static [build-directory]
 ```
 
-This will:
+`init --update` updates engine-owned starter files and preserves documented
+project-owned content and settings. Generated `build_*` and `.docara` files
+must not be edited manually.
 
--   copy the base template (stubs),
--   copy bundled `source/_core`,
--   copy template configs from `_core`,
--   run frontend dependency install (`npm/yarn install` in the project root).
--   If you changed files in `source/_core`, init/update will detect your edits (whitespace-insensitive) and leave those files untouched.
+The optional `path` may be absolute or relative to the current directory. If it
+is omitted, `init` uses the current directory. The same target path can be
+passed together with `--update`.
 
-## Run
+## Documentation
 
--   Development/watch (if defined in your template): `yarn run watch` or `npm run watch`
--   Build: `yarn run prod` / `npm run prod` (or your template’s build script)
--   Translate test: `php vendor/bin/docara translate --test`
--   Update existing project in-place (no delete/archive, keeps `source/_core`): `php vendor/bin/docara init --update`
--   If you already have your own docs in `source/docs`, they won’t be overwritten; otherwise stubs/docs are copied.
--   If you already have `config.php` in the project root, it will be preserved during init/update.
+- [Quick start](docs/site/content/ru/start.md)
+- [Project files and configuration](docs/site/content/ru/authoring/project-files.md)
+- [Layouts, regions and navigation](docs/site/content/ru/authoring/layout-and-navigation.md)
+- [Components](docs/site/content/ru/components.md)
+- [Build and verification](docs/site/content/ru/build.md)
+- [Portable format contract](docs/portable-format.md)
 
-## CLI commands
+Every build contains a generated component catalogue at
+`/components/catalog/`. It is derived from the exact Framework lock and is the
+source of truth for components available in that build.
 
--   `php vendor/bin/docara init [--update] [--force-core-configs] [--force-core-files] [preset]`  
-    Initializes or updates the project. `--force-core-configs` overwrites template configs from `_core` even if you changed them (by default changed files are skipped). `--force-core-files` overwrites the **entire** `_core` tree from stubs (ignoring your edits), but files that are already tracked in your git repo are never overwritten, even with this flag.
--   `php vendor/bin/docara build [env]` — build the site for the given environment.
--   `php vendor/bin/docara translate [--test]` — translate docs (requires AZURE_*), `--test` for a dry run.
+## Repository checks
 
-## Structure
+```bash
+php vendor/bin/pint --test
+php vendor/bin/phpunit
+cd docs/site
+php ../../docara build production
+php ../../docara verify-static build_production
+```
 
--   `source/` — your site source.
--   `source/_core/` — Docara/Jigsaw core (bundled and copied on init).
--   `stubs/` — template stubs used during `docara init`.
--   `build_*` — build outputs.
-
-## Lint
-
--   PHP: `vendor/bin/pint --test`
--   Markdown: `npx markdownlint-cli2 "**/*.md" "!vendor" "!node_modules" "!build_*" "!dist" "!public"`
-
-## Customize the logo
-
--   Replace the SVG at `source/_core/_assets/img/logo.svg` (and, if you use the wide mark, `source/_core/_assets/img/icon_and_text_logo.svg`) with your own asset.
--   If you prefer a different markup (e.g., PNG, text), edit `source/_core/_components/header/logo.blade.php`; it is now a regular file in your repo, not a submodule.
--   Rebuild assets (`yarn prod` / `npm run prod` or your preset’s build) so the new logo is emitted to `assets/build`.
--   Commit/push as usual—`source/_core` is just files, so the logo change lives in your repository.
+This branch is a Docara 2 candidate. It does not itself claim a public release
+or production readiness.
 
 ## License
 

@@ -1,0 +1,29 @@
+{
+    "id": "ui.badge",
+    "family": "requirement",
+    "category": "status",
+    "lifecycle": "admission_pending",
+    "authoring": {
+        "syntax": "proposed_directive",
+        "call": ":::ui.badge",
+        "jobs": [
+            "label_status"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "verification": {
+        "renderer": false,
+        "tests": false,
+        "docs": false,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/ru/components.md",
+    "provenance": {
+        "source_kind": "product_requirement",
+        "framework_owner": "larena/ui"
+    },
+    "gap": {
+        "owner": "simai/docara"
+    }
+}

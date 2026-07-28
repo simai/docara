@@ -1,0 +1,6 @@
+tracks:
+  docara-consolidation:
+    status: "active"
+    owner_skill: "teamlead"
+    current_workflow: "source/workflow/2026-07-24-docara-product-homepage-visual-refinement.md"
+    last_updated: "2026-07-24"

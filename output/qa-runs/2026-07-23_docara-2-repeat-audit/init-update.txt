@@ -1,0 +1,11 @@
+██████╗  ██████╗  ██████╗ █████╗ ██████╗  █████╗
+██╔══██╗██╔═══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗
+██║  ██║██║   ██║██║     ███████║██████╔╝███████║
+██║  ██║██║   ██║██║     ██╔══██║██╔══██╗██╔══██║
+██████╔╝╚██████╔╝╚██████╗██║  ██║██║  ██║██║  ██║
+╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
+                                                 
+
+Project directory: /private/tmp/docara-repeat-init.rzNhu0/relative-site
+Starter files: copied=0, preserved=20
+Your Docara project was updated without overwriting existing files.

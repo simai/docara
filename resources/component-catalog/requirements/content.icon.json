@@ -1,0 +1,29 @@
+{
+    "id": "content.icon",
+    "family": "requirement",
+    "category": "content",
+    "lifecycle": "framework_gap",
+    "authoring": {
+        "syntax": "unavailable",
+        "call": null,
+        "jobs": [
+            "add_semantic_icon"
+        ],
+        "parameters": []
+    },
+    "states": [],
+    "verification": {
+        "renderer": false,
+        "tests": false,
+        "docs": false,
+        "demo": false
+    },
+    "docs_ref": "docs/site/content/ru/components.md",
+    "provenance": {
+        "source_kind": "product_requirement",
+        "framework_owner": "larena/ui"
+    },
+    "gap": {
+        "owner": "larena/ui"
+    }
+}

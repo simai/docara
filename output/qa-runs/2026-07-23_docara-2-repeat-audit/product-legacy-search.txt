@@ -1,0 +1,6 @@
+product_path_legacy_runtime_refs
+docs/changes.md:16:The former Jigsaw/Mix runtime and the transition-only renderer, preview and
+tests/PortableInitCommandTest.php:235:        $this->assertSame('# Legacy', file_get_contents($this->tmpPath('source/docs/index.md')));
+tests/PortableInitCommandTest.php:261:        $this->assertSame('# Legacy', file_get_contents($this->tmpPath('source/docs/index.md')));
+resources/portable/declarative-shell.css:34:.docara-mobile-sheet::backdrop{background:color-mix(in srgb,var(--sf-on-surface) 38%,transparent);backdrop-filter:blur(2px)}
+resources/portable/declarative-shell.css:40:.docara-reader-settings-dialog::backdrop{background:color-mix(in srgb,var(--sf-on-surface) 34%,transparent);backdrop-filter:blur(2px)}

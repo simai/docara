@@ -1,0 +1,109 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.tester_verdict",
+  "quality_control_id": "human_centered_simplicity",
+  "reviewer": {
+    "role": "tester",
+    "source": "independent_tester",
+    "identity": "docara_product_ui_browser_ux_audit"
+  },
+  "scope_binding": {
+    "task_sha256": "b988b95c35cf8a3f759727ccd3fc615ce382bc9215a5332ab33ed09408154912",
+    "review_payload_sha256": "0cf0a3b8cdae9006e0d7f3b6340100c5454d2be5fe3ce4303e5386e746beb553",
+    "workflow_ref": "",
+    "workflow_sha256": "",
+    "repository_refs": [
+      "repo://docara-consolidation"
+    ],
+    "repository_baselines": []
+  },
+  "status": "VERIFIED",
+  "reviewed_surface_ids": [
+    "docs_navigation_tree",
+    "brand_configuration",
+    "responsive_navigation_shell",
+    "framework_theme_icons"
+  ],
+  "surface_classifications": [
+    {
+      "surface_id": "docs_navigation_tree",
+      "classification": "ordinary",
+      "protected_categories": [],
+      "evidence_ref": "src/PortableSite/PortableNavigationBuilder.php"
+    },
+    {
+      "surface_id": "brand_configuration",
+      "classification": "ordinary",
+      "protected_categories": [],
+      "evidence_ref": "src/PortableSite/PortableBrandAssetPlanner.php"
+    },
+    {
+      "surface_id": "responsive_navigation_shell",
+      "classification": "ordinary",
+      "protected_categories": [],
+      "evidence_ref": "src/PortableSite/PortableHtmlRenderer.php"
+    },
+    {
+      "surface_id": "framework_theme_icons",
+      "classification": "ordinary",
+      "protected_categories": [],
+      "evidence_ref": "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md"
+    }
+  ],
+  "evidence_paths": [
+    "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md",
+    "src/PortableSite/PortableBrandAssetPlanner.php",
+    "src/PortableSite/PortableHtmlRenderer.php",
+    "src/PortableSite/PortableNavigationBuilder.php"
+  ],
+  "evidence_fingerprints": [
+    {
+      "path": "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md",
+      "sha256": "8b3b6a6963e0be4321d388ff92e2cdb787a42baacd04d6841646e97126aef9cf"
+    },
+    {
+      "path": "src/PortableSite/PortableBrandAssetPlanner.php",
+      "sha256": "68de011315853a86571ee2326dd883d84cb1621e2cbc6c45c9e18efec9c5efd5"
+    },
+    {
+      "path": "src/PortableSite/PortableHtmlRenderer.php",
+      "sha256": "1a58da7f41a06347d3f082f24104d1289f65a5dfdd20975389fb0de668f9317c"
+    },
+    {
+      "path": "src/PortableSite/PortableNavigationBuilder.php",
+      "sha256": "f40a692d7502cdf35f6bfa2e2bbcb3df90e11f6932f922b9fbeb923ecc559ffb"
+    }
+  ],
+  "commands": [
+    {
+      "command": "git show 83d677c7eb5f22d9ca2f4ac16990fe16eddbe985:src/PortableSite/PortableNavigationBuilder.php",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "src/PortableSite/PortableNavigationBuilder.php",
+      "output_sha256": "f40a692d7502cdf35f6bfa2e2bbcb3df90e11f6932f922b9fbeb923ecc559ffb"
+    },
+    {
+      "command": "git show 83d677c7eb5f22d9ca2f4ac16990fe16eddbe985:src/PortableSite/PortableBrandAssetPlanner.php",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "src/PortableSite/PortableBrandAssetPlanner.php",
+      "output_sha256": "68de011315853a86571ee2326dd883d84cb1621e2cbc6c45c9e18efec9c5efd5"
+    },
+    {
+      "command": "git show 83d677c7eb5f22d9ca2f4ac16990fe16eddbe985:src/PortableSite/PortableHtmlRenderer.php",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "src/PortableSite/PortableHtmlRenderer.php",
+      "output_sha256": "1a58da7f41a06347d3f082f24104d1289f65a5dfdd20975389fb0de668f9317c"
+    },
+    {
+      "command": "Exact live browser scenario at 390 x 844 and 1296 x 657",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md",
+      "output_sha256": "8b3b6a6963e0be4321d388ff92e2cdb787a42baacd04d6841646e97126aef9cf"
+    }
+  ],
+  "contradictions": [],
+  "verdict": "PASS"
+}

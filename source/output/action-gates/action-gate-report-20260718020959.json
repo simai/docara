@@ -1,0 +1,79 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.federation.gate_exec",
+  "created_at": "2026-07-18T02:09:59.649953+00:00",
+  "task": "Зафиксировать локальную reversible Docara exact-candidate acceptance boundary",
+  "repo": "/Users/rim/Documents/GitHub/docara-worktree-declarative",
+  "command_provided": false,
+  "command_context": {},
+  "diff_provided": false,
+  "phase": "preflight",
+  "fix_safe": false,
+  "profile": "admin",
+  "safety": {
+    "level": "expert",
+    "source": "install.env",
+    "policy": {
+      "description": "Minimum advisory noise for experts; hard safety blockers still apply.",
+      "proposal_only": false,
+      "auto_approve_low_risk": true,
+      "auto_approve_medium_risk": true,
+      "high_risk_requires_explicit_approval": true,
+      "live_requires_ops_gate": true
+    },
+    "hard_blocker_categories": [
+      "destructive_action",
+      "production_or_live_write",
+      "database_mutation",
+      "git_history_rewrite",
+      "secret_exposure_or_secret_commit",
+      "encoding_corruption_risk"
+    ]
+  },
+  "route": {
+    "primary_skill": "docara",
+    "companion_skills": [
+      "docs"
+    ],
+    "required_gates": [
+      "publication_check"
+    ],
+    "action_gates": [],
+    "route_action_gates": [],
+    "command_safety_required_gates": [],
+    "command_safety_status": "not_applicable",
+    "confidence": "high",
+    "blockers": []
+  },
+  "action_gate_count": 0,
+  "gate_results": [],
+  "destructive_safety_status": "not_applicable",
+  "risk_level": "low",
+  "preapproved_reversible_work": false,
+  "safety_ux": {
+    "level": "expert",
+    "source": "install.env",
+    "risk_level": "low",
+    "decision": "reduced_advisory_noise_available_for_reversible_local_work",
+    "human_summary": "Safety level `expert` from `install.env`: reversible local work may get less noise only when policy allows it; hard blockers remain enabled.",
+    "hard_blockers_remain_enabled": true,
+    "hard_blocker_categories": [
+      "destructive_action",
+      "production_or_live_write",
+      "database_mutation",
+      "git_history_rewrite",
+      "secret_exposure_or_secret_commit",
+      "encoding_corruption_risk"
+    ],
+    "commands": [
+      "bash scripts/simai-safety.sh status",
+      "bash scripts/simai-safety.sh explain"
+    ]
+  },
+  "required_companions": [],
+  "safe_alternative": null,
+  "actions": [],
+  "warnings": [],
+  "blockers": [],
+  "status": "success"
+}

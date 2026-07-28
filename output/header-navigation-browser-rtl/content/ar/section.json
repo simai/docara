@@ -1,0 +1,16 @@
+{
+  "schema": "docara.section.v1",
+  "title": "وثائق Docara",
+  "preset": "docs",
+  "layout": {
+    "container": {"max": 7}
+  },
+  "header_navigation": {
+    "enabled": true,
+    "items": [
+      {"id": "home", "label": "الرئيسية", "href": "/ar/"},
+      {"id": "start", "label": "البدء السريع", "href": "/ar/start/"},
+      {"id": "github", "label": "GitHub", "href": "https://github.com/simai/docara"}
+    ]
+  }
+}

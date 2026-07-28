@@ -1,0 +1,205 @@
+{
+    "content_sha256": "35c210343df13a9fce26ebaca98d358988955ecaad99a034d27c6218b9e0dfea",
+    "redirects": [
+        {
+            "from": "components/catalog/docara.card",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/docara.card/index.html",
+            "target_url": "/ru/components/catalog/docara.card/",
+            "to": "ru/components/catalog/docara.card",
+            "url": "/components/catalog/docara.card/"
+        },
+        {
+            "from": "components/catalog/docara.columns",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/docara.columns/index.html",
+            "target_url": "/ru/components/catalog/docara.columns/",
+            "to": "ru/components/catalog/docara.columns",
+            "url": "/components/catalog/docara.columns/"
+        },
+        {
+            "from": "components/catalog/docara.cta",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/docara.cta/index.html",
+            "target_url": "/ru/components/catalog/docara.cta/",
+            "to": "ru/components/catalog/docara.cta",
+            "url": "/components/catalog/docara.cta/"
+        },
+        {
+            "from": "components/catalog/docara.features",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/docara.features/index.html",
+            "target_url": "/ru/components/catalog/docara.features/",
+            "to": "ru/components/catalog/docara.features",
+            "url": "/components/catalog/docara.features/"
+        },
+        {
+            "from": "components/catalog/docara.hero",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/docara.hero/index.html",
+            "target_url": "/ru/components/catalog/docara.hero/",
+            "to": "ru/components/catalog/docara.hero",
+            "url": "/components/catalog/docara.hero/"
+        },
+        {
+            "from": "components/catalog/docara.logos",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/docara.logos/index.html",
+            "target_url": "/ru/components/catalog/docara.logos/",
+            "to": "ru/components/catalog/docara.logos",
+            "url": "/components/catalog/docara.logos/"
+        },
+        {
+            "from": "components/catalog/docara.promo",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/docara.promo/index.html",
+            "target_url": "/ru/components/catalog/docara.promo/",
+            "to": "ru/components/catalog/docara.promo",
+            "url": "/components/catalog/docara.promo/"
+        },
+        {
+            "from": "components/catalog/docara.showcase",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/docara.showcase/index.html",
+            "target_url": "/ru/components/catalog/docara.showcase/",
+            "to": "ru/components/catalog/docara.showcase",
+            "url": "/components/catalog/docara.showcase/"
+        },
+        {
+            "from": "components/catalog/docara.steps",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/docara.steps/index.html",
+            "target_url": "/ru/components/catalog/docara.steps/",
+            "to": "ru/components/catalog/docara.steps",
+            "url": "/components/catalog/docara.steps/"
+        },
+        {
+            "from": "components/catalog",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/index.html",
+            "target_url": "/ru/components/catalog/",
+            "to": "ru/components/catalog",
+            "url": "/components/catalog/"
+        },
+        {
+            "from": "components/catalog/native.code",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/native.code/index.html",
+            "target_url": "/ru/components/catalog/native.code/",
+            "to": "ru/components/catalog/native.code",
+            "url": "/components/catalog/native.code/"
+        },
+        {
+            "from": "components/catalog/native.headings_and_text",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/native.headings_and_text/index.html",
+            "target_url": "/ru/components/catalog/native.headings_and_text/",
+            "to": "ru/components/catalog/native.headings_and_text",
+            "url": "/components/catalog/native.headings_and_text/"
+        },
+        {
+            "from": "components/catalog/native.links_and_images",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/native.links_and_images/index.html",
+            "target_url": "/ru/components/catalog/native.links_and_images/",
+            "to": "ru/components/catalog/native.links_and_images",
+            "url": "/components/catalog/native.links_and_images/"
+        },
+        {
+            "from": "components/catalog/native.lists_and_quotes",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/native.lists_and_quotes/index.html",
+            "target_url": "/ru/components/catalog/native.lists_and_quotes/",
+            "to": "ru/components/catalog/native.lists_and_quotes",
+            "url": "/components/catalog/native.lists_and_quotes/"
+        },
+        {
+            "from": "components/catalog/native.table",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/native.table/index.html",
+            "target_url": "/ru/components/catalog/native.table/",
+            "to": "ru/components/catalog/native.table",
+            "url": "/components/catalog/native.table/"
+        },
+        {
+            "from": "components/catalog/ui.alert",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/ui.alert/index.html",
+            "target_url": "/ru/components/catalog/ui.alert/",
+            "to": "ru/components/catalog/ui.alert",
+            "url": "/components/catalog/ui.alert/"
+        },
+        {
+            "from": "components/catalog/ui.button",
+            "kind": "legacy_unprefixed",
+            "output": "components/catalog/ui.button/index.html",
+            "target_url": "/ru/components/catalog/ui.button/",
+            "to": "ru/components/catalog/ui.button",
+            "url": "/components/catalog/ui.button/"
+        },
+        {
+            "from": "guides/getting-started",
+            "kind": "legacy_unprefixed",
+            "output": "guides/getting-started/index.html",
+            "target_url": "/ru/guides/getting-started/",
+            "to": "ru/guides/getting-started",
+            "url": "/guides/getting-started/"
+        },
+        {
+            "from": "guides",
+            "kind": "legacy_unprefixed",
+            "output": "guides/index.html",
+            "target_url": "/ru/guides/",
+            "to": "ru/guides",
+            "url": "/guides/"
+        },
+        {
+            "from": "guides/platform/configuration",
+            "kind": "legacy_unprefixed",
+            "output": "guides/platform/configuration/index.html",
+            "target_url": "/ru/guides/platform/configuration/",
+            "to": "ru/guides/platform/configuration",
+            "url": "/guides/platform/configuration/"
+        },
+        {
+            "from": "guides/platform/configuration/layout",
+            "kind": "legacy_unprefixed",
+            "output": "guides/platform/configuration/layout/index.html",
+            "target_url": "/ru/guides/platform/configuration/layout/",
+            "to": "ru/guides/platform/configuration/layout",
+            "url": "/guides/platform/configuration/layout/"
+        },
+        {
+            "from": "guides/platform",
+            "kind": "legacy_unprefixed",
+            "output": "guides/platform/index.html",
+            "target_url": "/ru/guides/platform/",
+            "to": "ru/guides/platform",
+            "url": "/guides/platform/"
+        },
+        {
+            "from": "",
+            "kind": "root",
+            "output": "index.html",
+            "target_url": "/ru/",
+            "to": "ru",
+            "url": "/"
+        },
+        {
+            "from": "landing",
+            "kind": "legacy_unprefixed",
+            "output": "landing/index.html",
+            "target_url": "/ru/landing/",
+            "to": "ru/landing",
+            "url": "/landing/"
+        }
+    ],
+    "routing": {
+        "detect_browser_language": false,
+        "legacy_unprefixed_redirects": true,
+        "root": "redirect",
+        "strategy": "prefixed"
+    },
+    "schema": "docara.locale_route_receipt.v1",
+    "version": 1
+}

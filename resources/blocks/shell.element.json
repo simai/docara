@@ -1,0 +1,7 @@
+{
+  "schema": "docara.block.v1",
+  "key": "shell.element",
+  "kind": "element",
+  "renderer": "block.element",
+  "allowed_smart": []
+}

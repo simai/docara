@@ -1,0 +1,42 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.tester_verdict",
+  "quality_control_id": "human_centered_simplicity",
+  "reviewer": {"role": "tester", "source": "tester_skill", "identity": "docara_reading_navigation_layout_acceptance"},
+  "scope_binding": {
+    "task_sha256": "7ef49ebe5d806fb1a33265fe45c0493eb60dc084d1da66a3dbece0adeceac7ff",
+    "review_payload_sha256": "2d9ccd3e27d1702fdbd4f1839d32f6d43b701a5308bb83a861d43d91920ddff8",
+    "workflow_ref": "",
+    "workflow_sha256": "",
+    "repository_refs": ["repo://docara-consolidation"],
+    "repository_baselines": []
+  },
+  "status": "VERIFIED",
+  "reviewed_surface_ids": ["shell_layout_surface", "pager_spacing_surface", "documentation_regression", "builder_regression"],
+  "surface_classifications": [
+    {"surface_id": "shell_layout_surface", "classification": "ordinary", "protected_categories": [], "evidence_ref": "resources/portable/declarative-shell.css"},
+    {"surface_id": "pager_spacing_surface", "classification": "ordinary", "protected_categories": [], "evidence_ref": "resources/publisher/components/pager.php"},
+    {"surface_id": "documentation_regression", "classification": "protective", "protected_categories": ["accessibility"], "evidence_ref": "tests/PortableDocumentationSiteTest.php"},
+    {"surface_id": "builder_regression", "classification": "protective", "protected_categories": ["rollback"], "evidence_ref": "tests/PortableSiteBuilderTest.php"}
+  ],
+  "evidence_paths": [
+    "resources/portable/declarative-shell.css",
+    "resources/publisher/components/pager.php",
+    "tests/PortableDocumentationSiteTest.php",
+    "tests/PortableSiteBuilderTest.php",
+    "source/workflow/evidence/2026-07-22-docara-reading-navigation-layout/acceptance.md"
+  ],
+  "evidence_fingerprints": [
+    {"path": "resources/portable/declarative-shell.css", "sha256": "5829110d12a4612d8135fa843752861427aad908f812d2d77573d3ea1e91c6a5"},
+    {"path": "resources/publisher/components/pager.php", "sha256": "255e717b0d8add9dd281b28b3110c9ef02452d8c49e670959a42605d4394c343"},
+    {"path": "tests/PortableDocumentationSiteTest.php", "sha256": "77a5dcd0f8c23c741259bf454c9c538ffbb4eca6e75d7b3fa1de4dec5a03d88a"},
+    {"path": "tests/PortableSiteBuilderTest.php", "sha256": "f0e6aef208411c16ef8644cec98eef3a5293f50517f553c9ba20a45fb7e4f2c3"},
+    {"path": "source/workflow/evidence/2026-07-22-docara-reading-navigation-layout/acceptance.md", "sha256": "094da50bcb36f280a661eb18ac14266b3178f22abc18ba8085f29a22bbff06f8"}
+  ],
+  "commands": [
+    {"command": "php vendor/bin/phpunit --filter focused_docara_layout_tests", "exit_code": 0, "result": "PASS", "output_ref": "source/workflow/evidence/2026-07-22-docara-reading-navigation-layout/acceptance.md", "output_sha256": "094da50bcb36f280a661eb18ac14266b3178f22abc18ba8085f29a22bbff06f8"},
+    {"command": "php docara verify-static docs/site/build_production", "exit_code": 0, "result": "PASS", "output_ref": "source/workflow/evidence/2026-07-22-docara-reading-navigation-layout/acceptance.md", "output_sha256": "094da50bcb36f280a661eb18ac14266b3178f22abc18ba8085f29a22bbff06f8"}
+  ],
+  "contradictions": [],
+  "verdict": "PASS_WITH_NOTES"
+}

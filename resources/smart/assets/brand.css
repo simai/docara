@@ -1,0 +1,7 @@
+.docara-brand-logo--dark{display:none}
+.theme-dark .docara-brand-logo--light:has(+.docara-brand-logo--dark){display:none}
+.theme-dark .docara-brand-logo--dark{display:block}
+.docara-brand-title,.docara-brand-label{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.docara-brand--compact .docara-brand-label{display:none}
+.docara-brand:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}
+@media(max-width:700px){.docara-brand-label{display:none}}

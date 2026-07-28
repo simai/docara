@@ -1,0 +1,133 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.federation.process_check",
+  "workflow": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/workflow/2026-07-24-docara-transparent-media-and-simai-brand.md",
+  "launch_record": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/workflow/2026-07-24-docara-transparent-media-and-simai-brand.launch.yaml",
+  "state_artifacts": {
+    "status": "not_found",
+    "refs": {}
+  },
+  "process_model_id": "docara_documentation_site_publication",
+  "state_machine_id": "docara_documentation_site_publication_state_machine",
+  "current_state": "readiness_verdict_recorded",
+  "target_state": "readiness_verdict_recorded",
+  "next_allowed_states": [
+    "graph_sync_proposed"
+  ],
+  "transition_evidence_required": [
+    "stable_reusable_lessons_or_skip_reason"
+  ],
+  "missing_transition_evidence": [],
+  "launch_record_required": true,
+  "goal_contract_audit": {
+    "status": "success",
+    "workflow": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/workflow/2026-07-24-docara-transparent-media-and-simai-brand.md",
+    "required_fields": [
+      "current_goal",
+      "done_when",
+      "stages",
+      "batches",
+      "evidence_plan",
+      "track_linkage"
+    ],
+    "missing_fields": [],
+    "current_goal": "Make the landing illustrations work on both light and dark Framework surfaces\nwithout baked backgrounds, and normalize the public brand spelling to `SIMAI`.",
+    "final_outcome": "Transparent landing media render without baked theme plates, canonical SIMAI\nspelling is enforced, and the exact verified build is served locally with\nrollback.",
+    "track_id": ""
+  },
+  "bottom_up_progress_audit": {
+    "status": "not_required",
+    "batch_status": null,
+    "required_fields": [
+      "batch_completed",
+      "stage_progress",
+      "goal_progress",
+      "track_progress",
+      "remaining_work",
+      "next_safe_batch_or_stop_reason"
+    ],
+    "missing_fields": []
+  },
+  "personal_memory_audit": {
+    "status": "success",
+    "significant": true,
+    "decision": "skip",
+    "reason": "repository workflow and evidence are the durable source",
+    "context_pack": "",
+    "context_pack_exists": false,
+    "context_pack_has_verification_policy": false,
+    "warnings": [],
+    "blockers": []
+  },
+  "artifact_consistency_audit": {
+    "status": "success",
+    "workflow_id": "2026-07-24-docara-transparent-media-and-simai-brand",
+    "warnings": [],
+    "blockers": []
+  },
+  "quality_control_audit": {
+    "schema_version": "1.0.0",
+    "operation_id": "simai.quality_control.check",
+    "workflow": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/workflow/2026-07-24-docara-transparent-media-and-simai-brand.md",
+    "required": false,
+    "verdict": "NOT_REQUIRED",
+    "warnings": [],
+    "blockers": [],
+    "status": "not_required"
+  },
+  "human_centered_simplicity_audit": {
+    "schema_version": "1.0.0",
+    "operation_id": "simai.human_centered_simplicity.workflow_audit",
+    "quality_control_id": "human_centered_simplicity",
+    "required": false,
+    "selected": false,
+    "terminal": false,
+    "workflow_binding_required": true,
+    "workflow": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/workflow/2026-07-24-docara-transparent-media-and-simai-brand.md",
+    "repo_root": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation",
+    "quality_controls_raw": "",
+    "quality_control_ids": [],
+    "marker_present": false,
+    "review_ref": "",
+    "review_path": null,
+    "review_exists": false,
+    "review_ref_error": "",
+    "repository_refs_raw": "",
+    "repository_refs": [],
+    "repository_baselines_raw": "",
+    "repository_baselines": {},
+    "repository_baseline_errors": [],
+    "verdict": "NOT_REQUIRED",
+    "checker_result": null,
+    "warnings": [],
+    "blockers": [],
+    "status": "not_required"
+  },
+  "workflow_goal_route": {
+    "task": "Make the landing illustrations work on both light and dark Framework surfaces\nwithout baked backgrounds, and normalize the public brand spelling to `SIMAI`.",
+    "primary_skill": "teamlead",
+    "quality_control_ids": []
+  },
+  "quality_feedback": {
+    "contract_version": "workspace_quality_feedback_draft_v1",
+    "primary_class": "result_only",
+    "findings": []
+  },
+  "dynamic_episode": {
+    "contract_version": "dynamic_episode_layer_v1",
+    "status": "not_required",
+    "signals": [],
+    "record_command": "bash scripts/simai-dynamic-episode.sh record --task \"<task>\" --workflow \"/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/workflow/2026-07-24-docara-transparent-media-and-simai-brand.md\" --repo \"/Users/rim/.codex/simai-workspace/federation-maintenance/releases/7.4.5-2bfda18a27ffd007/workspace/ai-codex\" --json",
+    "episode_dir": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/episodes",
+    "existing_episode_count": 0,
+    "boundaries": {
+      "canonical_graph_write": false,
+      "authorization": false,
+      "gate_bypass": false,
+      "owner_review_replacement": false
+    }
+  },
+  "warnings": [],
+  "blockers": [],
+  "status": "success"
+}

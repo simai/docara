@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.simai.io/docara/declarative-smart-manifest/v1",
+  "type": "object",
+  "required": ["schema", "key", "version", "owner_package", "kind", "props", "slots", "events", "views", "presets", "constraints", "render", "frontend", "assets", "atlas", "provenance"],
+  "properties": {
+    "schema": {"type": "string", "const": "larena.ui.smart_manifest.v1"},
+    "key": {"type": "string", "pattern": "^docara(?:\\.[a-z][a-z0-9_]*)+$"},
+    "version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "owner_package": {"type": "string", "const": "simai/docara"},
+    "kind": {"type": "string", "const": "composite"},
+    "props": {"type": "object"},
+    "slots": {"type": "object"},
+    "events": {"type": "object"},
+    "views": {"type": "object", "required": ["default"]},
+    "presets": {"type": "object"},
+    "constraints": {"type": "object"},
+    "render": {
+      "type": "object",
+      "required": ["strategy", "renderer"],
+      "properties": {
+        "strategy": {"type": "string", "const": "host"},
+        "renderer": {"type": "string", "const": "docara.smart.template"}
+      },
+      "additionalProperties": false
+    },
+    "frontend": {
+      "type": "object",
+      "properties": {
+        "runtime": {"type": "null"},
+        "tag": {"type": "null"}
+      },
+      "additionalProperties": false
+    },
+    "assets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["key", "kind", "critical"],
+        "properties": {
+          "key": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+          "kind": {"type": "string", "enum": ["css", "javascript"]},
+          "critical": {"type": "boolean"}
+        },
+        "additionalProperties": false
+      }
+    },
+    "atlas": {"type": "object"},
+    "provenance": {"type": "object"}
+  },
+  "additionalProperties": false
+}

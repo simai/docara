@@ -1,0 +1,463 @@
+<?php
+
+namespace Simai\Docara\Portable;
+
+use JsonException;
+use Simai\Docara\Declarative\Composition\RegionCompositionResolver;
+use Simai\Docara\Framework\FrameworkComponentException;
+use Simai\Docara\Framework\FrameworkLock;
+use Simai\Docara\I18n\LocaleRegistry;
+use Simai\Docara\I18n\LocaleTag;
+
+final class PortableConfigurationLoader
+{
+    private readonly string $root;
+
+    public function __construct(
+        string $root,
+        private readonly SchemaRepository $schemas = new SchemaRepository,
+        private readonly ConfigurationMerger $merger = new ConfigurationMerger,
+    ) {
+        $segments = preg_split('~[\\\\/]~', $root) ?: [];
+        if ($root === '' || str_contains($root, "\0") || in_array('..', $segments, true)) {
+            throw new PortableConfigurationException(
+                'ROOT_PATH_INVALID',
+                'The portable site root must not be empty or contain parent traversal.',
+            );
+        }
+        if ($this->pathTraversesSymlink($root)) {
+            throw new PortableConfigurationException('ROOT_SYMLINK_FORBIDDEN', 'The portable site root cannot be a symlink.');
+        }
+
+        $resolved = realpath($root);
+
+        if ($resolved === false || ! is_dir($resolved)) {
+            throw new PortableConfigurationException('ROOT_NOT_FOUND', "Portable site root [$root] does not exist.");
+        }
+
+        $this->root = FilesystemPath::normalize($resolved);
+    }
+
+    private function pathTraversesSymlink(string $path): bool
+    {
+        $absolute = FilesystemPath::isAbsolute($path)
+            ? $path
+            : (string) getcwd() . DIRECTORY_SEPARATOR . $path;
+        $segments = array_values(array_filter(
+            explode(DIRECTORY_SEPARATOR, trim($absolute, DIRECTORY_SEPARATOR)),
+            static fn (string $segment): bool => $segment !== '' && $segment !== '.',
+        ));
+        $lexicalRoot = DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $segments);
+
+        return is_link($lexicalRoot);
+    }
+
+    public function resolve(string $page): ResolvedPagePlan
+    {
+        $page = $this->normalizePage($page);
+        $pagePath = $this->confinedFile($page, true);
+        [$configuration, $frameworkLock, $trace, $provenance] =
+            $this->resolveInheritedConfiguration($page, true);
+
+        $markdown = @file_get_contents($pagePath);
+        if (! is_string($markdown)) {
+            throw new PortableConfigurationException(
+                'PORTABLE_FILE_READ_FAILED',
+                "Portable page [$page] could not be read.",
+            );
+        }
+        $trace[] = $this->trace('content', $page, $markdown, null);
+
+        return new ResolvedPagePlan(
+            $page,
+            $markdown,
+            $configuration,
+            $frameworkLock,
+            $trace,
+            $provenance,
+        );
+    }
+
+    /**
+     * Resolve site and section inheritance for a generated page without
+     * pretending that an authored Markdown file or page sidecar exists.
+     */
+    public function resolveGeneratedBase(string $page): ResolvedPagePlan
+    {
+        $page = $this->normalizePage($page);
+        [$configuration, $frameworkLock, $trace, $provenance] =
+            $this->resolveInheritedConfiguration($page, false);
+
+        return new ResolvedPagePlan(
+            $page,
+            '',
+            $configuration,
+            $frameworkLock,
+            $trace,
+            $provenance,
+        );
+    }
+
+    private function normalizePage(string $page): string
+    {
+        $page = $this->normalizeRelativePath($page);
+        if (! in_array(strtolower((string) pathinfo($page, PATHINFO_EXTENSION)), ['md', 'markdown'], true)) {
+            throw new PortableConfigurationException('PAGE_EXTENSION_INVALID', 'Portable pages must use .md or .markdown.');
+        }
+
+        return $page;
+    }
+
+    /**
+     * @return array{
+     *     0: array<string, mixed>,
+     *     1: array<string, mixed>,
+     *     2: list<array<string, mixed>>,
+     *     3: array<string, string>
+     * }
+     */
+    private function resolveInheritedConfiguration(string $page, bool $includePageSidecar): array
+    {
+        $trace = [];
+
+        [$site, $siteTrace] = $this->loadJson('docara.json', 'site.schema.json', 'site', true);
+        $trace[] = $siteTrace;
+        $explicitLocaleRegistry = is_array($site['locales'] ?? null) && $site['locales'] !== [];
+        $localeRegistry = LocaleRegistry::fromSite($site);
+        if (! $explicitLocaleRegistry) {
+            $legacyContentRoot = (string) ($site['content_root'] ?? 'content');
+            if (! str_starts_with($page, $legacyContentRoot . '/')) {
+                throw new PortableConfigurationException(
+                    'PAGE_OUTSIDE_CONTENT_ROOT',
+                    "Portable page [$page] is outside configured content root [$legacyContentRoot].",
+                );
+            }
+        }
+        $locale = $localeRegistry->forPage($page);
+        $contentRoot = $locale->contentRoot;
+
+        $frameworkLockPath = (string) ($site['framework_lock'] ?? '');
+        [$frameworkLock, $frameworkTrace] = $this->loadJson(
+            $frameworkLockPath,
+            'framework-lock.schema.json',
+            'framework-lock',
+            true,
+        );
+        $trace[] = $frameworkTrace;
+        $this->assertFrameworkLockSemantics($frameworkLock);
+
+        $result = $this->merger->merge([], [
+            'content_root' => 'content',
+            'layout' => RegionCompositionResolver::defaults(),
+            'search' => [
+                'enabled' => false,
+                'indexed' => true,
+            ],
+            'reading' => [
+                'breadcrumbs' => true,
+                'toc' => true,
+                'mobile_toc' => 'auto',
+                'toc_depth' => 3,
+                'previous_next' => true,
+            ],
+        ], '@defaults');
+        $configuration = $result->configuration;
+        $provenance = $result->provenance;
+
+        $result = $this->merger->merge(
+            $configuration,
+            $this->configurationPayload($site),
+            'docara.json',
+            $provenance,
+        );
+        $configuration = $result->configuration;
+        $provenance = $result->provenance;
+
+        foreach ($this->sectionFilesFor($page) as $sectionFile) {
+            [$section, $sectionTrace] = $this->loadJson($sectionFile, 'section.schema.json', 'section', false);
+            if ($section === null) {
+                continue;
+            }
+
+            $trace[] = $sectionTrace;
+            $result = $this->merger->merge(
+                $configuration,
+                $this->configurationPayload($section),
+                $sectionFile,
+                $provenance,
+            );
+            $configuration = $result->configuration;
+            $provenance = $result->provenance;
+        }
+
+        if ($includePageSidecar) {
+            $sidecar = $this->pageSidecar($page);
+            [$pageConfiguration, $pageTrace] = $this->loadJson($sidecar, 'page.schema.json', 'page', false);
+            if ($pageConfiguration !== null) {
+                $trace[] = $pageTrace;
+                $result = $this->merger->merge(
+                    $configuration,
+                    $this->configurationPayload($pageConfiguration),
+                    $sidecar,
+                    $provenance,
+                );
+                $configuration = $result->configuration;
+                $provenance = $result->provenance;
+            }
+        }
+
+        [$configuration, $provenance] = $this->normalizeStructuralLayout(
+            $configuration,
+            $provenance,
+        );
+
+        if ($explicitLocaleRegistry) {
+            $declaredLocale = $configuration['locale'] ?? null;
+            if (is_string($declaredLocale)
+                && LocaleTag::from($declaredLocale)->value() !== $locale->tag->value()
+            ) {
+                throw new PortableConfigurationException(
+                    'PAGE_LOCALE_CONTENT_ROOT_MISMATCH',
+                    "Portable page [$page] declares locale [$declaredLocale] inside [{$locale->tag->value()}] content.",
+                );
+            }
+            $configuration['locale'] = $locale->tag->value();
+            $configuration['direction'] = $locale->direction;
+            $configuration['content_root'] = $locale->contentRoot;
+            $configuration['language_pack'] = $locale->languagePack;
+            $configuration['public_prefix'] = $locale->publicPrefix;
+            foreach (['locale', 'direction', 'content_root', 'language_pack', 'public_prefix'] as $field) {
+                $provenance['/' . $field] = '@locale-registry/' . $locale->tag->value();
+            }
+        }
+        ksort($provenance, SORT_STRING);
+
+        return [$configuration, $frameworkLock, $trace, $provenance];
+    }
+
+    /**
+     * Structural layout defaults are invariants, not optional presentation
+     * decoration. A branch reset removes inherited author values and then
+     * restores these registered defaults so the resolved plan stays complete.
+     *
+     * @param  array<string, mixed>  $configuration
+     * @param  array<string, string>  $provenance
+     * @return array{0:array<string,mixed>,1:array<string,string>}
+     */
+    private function normalizeStructuralLayout(array $configuration, array $provenance): array
+    {
+        $layout = is_array($configuration['layout'] ?? null)
+            ? $configuration['layout']
+            : [];
+        $resolved = (new RegionCompositionResolver)->resolve($layout, $provenance);
+        $layout['key'] = $resolved['key'];
+        $layout['container'] ??= RegionCompositionResolver::defaults()['container'];
+        $layout['content'] ??= RegionCompositionResolver::defaults()['content'];
+        $layout['regions'] = $resolved['regions'];
+        $configuration['layout'] = $layout;
+
+        $provenance['/layout/key'] ??= '@defaults';
+        $provenance['/layout/container/max'] ??= '@defaults';
+        $provenance['/layout/content/gap'] ??= '@defaults';
+        foreach ($resolved['regions'] as $region => $regionConfiguration) {
+            $pointer = '/layout/regions/' . $region;
+            $provenance[$pointer . '/enabled'] ??= '@defaults';
+            $provenance[$pointer . '/sections'] ??= '@defaults';
+        }
+        ksort($provenance, SORT_STRING);
+
+        return [$configuration, $provenance];
+    }
+
+    /**
+     * @return array{0: array<string, mixed>|null, 1: array<string, mixed>|null}
+     */
+    private function loadJson(string $relative, string $schema, string $role, bool $required): array
+    {
+        $relative = $this->normalizeRelativePath($relative);
+        $path = $this->confinedFile($relative, $required);
+
+        if ($path === null) {
+            return [null, null];
+        }
+
+        $contents = @file_get_contents($path);
+        if (! is_string($contents)) {
+            throw new PortableConfigurationException(
+                'PORTABLE_FILE_READ_FAILED',
+                "Portable input [$relative] could not be read.",
+            );
+        }
+
+        try {
+            $decoded = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            throw new PortableConfigurationException(
+                'JSON_INVALID',
+                "File [$relative] is not valid JSON: {$exception->getMessage()}",
+                $exception,
+            );
+        }
+
+        $this->schemas->assertValid($decoded, $schema);
+
+        if (! is_array($decoded)) {
+            throw new PortableConfigurationException('JSON_OBJECT_REQUIRED', "File [$relative] must contain a JSON object.");
+        }
+
+        return [$decoded, $this->trace($role, $relative, $contents, (string) $decoded['schema'])];
+    }
+
+    /**
+     * @param  array<string, mixed>  $configuration
+     * @return array<string, mixed>
+     */
+    private function configurationPayload(array $configuration): array
+    {
+        unset($configuration['schema'], $configuration['version']);
+
+        return $configuration;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function sectionFilesFor(string $page): array
+    {
+        $directories = [''];
+        $directory = (string) pathinfo($page, PATHINFO_DIRNAME);
+
+        if ($directory !== '.' && $directory !== '') {
+            $current = '';
+
+            foreach (explode('/', $directory) as $segment) {
+                $current = $current === '' ? $segment : "$current/$segment";
+                $directories[] = $current;
+            }
+        }
+
+        $files = [];
+        foreach ($directories as $sectionDirectory) {
+            $canonical = $sectionDirectory === '' ? 'section.json' : "$sectionDirectory/section.json";
+            $legacy = $sectionDirectory === '' ? '_section.json' : "$sectionDirectory/_section.json";
+            if ($this->confinedFile($legacy, false) !== null) {
+                throw new PortableConfigurationException(
+                    'SECTION_DESCRIPTOR_LEGACY_NAME',
+                    "Rename portable section descriptor [$legacy] to [$canonical].",
+                );
+            }
+            $files[] = $canonical;
+        }
+
+        return $files;
+    }
+
+    private function pageSidecar(string $page): string
+    {
+        $directory = (string) pathinfo($page, PATHINFO_DIRNAME);
+        $filename = (string) pathinfo($page, PATHINFO_FILENAME) . '.page.json';
+
+        return $directory === '.' || $directory === '' ? $filename : "$directory/$filename";
+    }
+
+    private function confinedFile(string $relative, bool $required): ?string
+    {
+        $candidate = $this->root;
+
+        foreach (explode('/', $relative) as $segment) {
+            $candidate .= DIRECTORY_SEPARATOR . $segment;
+
+            if (is_link($candidate)) {
+                throw new PortableConfigurationException(
+                    'SYMLINK_FORBIDDEN',
+                    "Portable input [$relative] traverses a symbolic link.",
+                );
+            }
+        }
+
+        if (! file_exists($candidate)) {
+            if ($required) {
+                throw new PortableConfigurationException('FILE_NOT_FOUND', "Required portable input [$relative] was not found.");
+            }
+
+            return null;
+        }
+
+        $resolved = realpath($candidate);
+
+        if ($resolved === false || ! is_file($resolved)) {
+            throw new PortableConfigurationException('FILE_INVALID', "Portable input [$relative] is not a regular file.");
+        }
+
+        if (! FilesystemPath::isWithin($resolved, $this->root, false)) {
+            throw new PortableConfigurationException('PATH_ESCAPE_FORBIDDEN', "Portable input [$relative] escapes the site root.");
+        }
+
+        return $resolved;
+    }
+
+    private function normalizeRelativePath(string $path): string
+    {
+        if ($path === '' || str_contains($path, "\0") || str_contains($path, '\\')) {
+            throw new PortableConfigurationException('RELATIVE_PATH_INVALID', "Portable path [$path] is invalid.");
+        }
+
+        if (FilesystemPath::isAbsolute($path)) {
+            throw new PortableConfigurationException('ABSOLUTE_PATH_FORBIDDEN', "Portable path [$path] must be relative.");
+        }
+
+        foreach (explode('/', $path) as $segment) {
+            if ($segment === '' || $segment === '.' || $segment === '..') {
+                throw new PortableConfigurationException('PATH_ESCAPE_FORBIDDEN', "Portable path [$path] contains a forbidden segment.");
+            }
+        }
+
+        return $path;
+    }
+
+    /**
+     * @param  array<string, mixed>  $lock
+     */
+    private function assertFrameworkLockSemantics(array $lock): void
+    {
+        try {
+            FrameworkLock::fromArray($lock);
+        } catch (FrameworkComponentException $exception) {
+            throw new PortableConfigurationException(
+                $exception->errorCode,
+                'The Framework lock failed its centralized semantic contract.',
+                $exception,
+            );
+        }
+
+        $runtime = $lock['runtime'];
+        $registry = $runtime['framework_registry'];
+        $pair = $runtime['pair_id'];
+        $bundle = $pair
+            . '-registry-' . substr($registry['file_sha256'], 0, 8)
+            . '-' . $runtime['publication_profile'];
+
+        if ($runtime['bundle_id'] !== $bundle
+            || $registry['compatibility_id'] !== $pair
+            || ($runtime['tag'] !== null && $runtime['ui']['tag'] !== $runtime['tag'])
+        ) {
+            throw new PortableConfigurationException(
+                'FRAMEWORK_LOCK_IDENTITY_INVALID',
+                'The embedded Framework runtime lock has inconsistent pair, bundle, tag, or registry identity.',
+            );
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function trace(string $role, string $source, string $contents, ?string $schema): array
+    {
+        return array_filter([
+            'role' => $role,
+            'source' => $source,
+            'schema' => $schema,
+            'sha256' => hash('sha256', $contents),
+        ], static fn (mixed $value): bool => $value !== null);
+    }
+}

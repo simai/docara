@@ -1,0 +1,227 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.review",
+  "quality_control_id": "human_centered_simplicity",
+  "applicable": true,
+  "task": "Упростить интерфейс быстрого старта в приложении Docara.",
+  "primary_user_outcome": {
+    "id": "UO-DOCARA-START",
+    "actor": "автор документации",
+    "job": "создать и собрать первый portable-сайт без ложных действий",
+    "success_condition": "quick-start содержит только рабочие шаги, а образец кнопки не обещает действие"
+  },
+  "changed_surface_inventory": {
+    "mode": "artifact_comparison",
+    "baseline_ref": "725f22b9996b84640a115be63b86be57802477c5",
+    "target_ref": "4a312c1b14cf1e0ed0ad77d32e39b006b2ff9049",
+    "diff_sha256": "413a1d944b2bbdb72dfa8b38a6c911ce63260c3ee480f035ccbbb325670f0fc7",
+    "evidence_paths": [
+      "docs/site/content/components/button.md",
+      "docs/site/content/start.md"
+    ],
+    "files": [
+      {
+        "path": "docs/site/content/start.md",
+        "surface_ids": [
+          "portable_quick_start",
+          "quick_start_false_affordance"
+        ]
+      },
+      {
+        "path": "docs/site/content/components/button.md",
+        "surface_ids": [
+          "button_demo"
+        ]
+      }
+    ]
+  },
+  "necessity_map": [
+    {
+      "id": "portable_quick_start",
+      "surface_type": "screen",
+      "description": "Рабочий PHP-only quick-start",
+      "disposition": "retain",
+      "disclosure": "visible",
+      "justification": {
+        "type": "user_outcome",
+        "ref": "UO-DOCARA-START"
+      }
+    },
+    {
+      "id": "quick_start_false_affordance",
+      "surface_type": "action",
+      "description": "Неработающая кнопка удалена из primary quick-start",
+      "disposition": "remove",
+      "disclosure": "removed",
+      "justification": {
+        "type": "not_needed",
+        "ref": "docs/site/content/start.md"
+      }
+    },
+    {
+      "id": "button_demo",
+      "surface_type": "ui_element",
+      "description": "Образец кнопки явно подписан как демонстрационный и отключён",
+      "disposition": "retain",
+      "disclosure": "progressive",
+      "justification": {
+        "type": "user_outcome",
+        "ref": "UO-DOCARA-START"
+      }
+    }
+  ],
+  "removal_review": {
+    "challenged_ids": [
+      "portable_quick_start",
+      "quick_start_false_affordance",
+      "button_demo"
+    ],
+    "removed_ids": [
+      "quick_start_false_affordance"
+    ],
+    "merged_ids": [],
+    "summary": "Ложное действие удалено; рабочий маршрут и честный disabled demo сохранены."
+  },
+  "simplest_complete_alternative": "Оставить composer/init/build и редактирование Markdown в quick-start; показывать кнопку только как явно disabled demo в каталоге компонентов.",
+  "progressive_disclosure": {
+    "required": true,
+    "strategy": "Primary quick-start содержит только рабочие шаги; визуальный образец раскрывается на отдельной странице Button.",
+    "discoverability_evidence": "docs/site/content/components/button.md",
+    "not_required_reason": ""
+  },
+  "complexity_delta": [
+    {
+      "measure": "false_action_affordances_in_quick_start",
+      "before": 1,
+      "after": 0,
+      "unit": "actions",
+      "interpretation": "Неработающая команда удалена; demo перенесён в честный disabled state.",
+      "justification_ref": "docs/site/content/components/button.md"
+    }
+  ],
+  "automation_review": {
+    "present": false,
+    "simplified_before_automation": false,
+    "stable_process_proven": false,
+    "evidence_ref": ""
+  },
+  "scenario_evidence": [
+    {
+      "scenario": "SC-DOCARA-START",
+      "actor": "автор документации",
+      "steps": [
+        "Открыть quick-start",
+        "Выполнить composer/init/build",
+        "Изменить content/index.md"
+      ],
+      "expected": "Нет неработающих командных элементов.",
+      "actual": "В source и rendered start page отсутствуют «Проверить структуру» и контентный sf-button.",
+      "evidence_ref": "docs/site/content/start.md",
+      "result": "PASS"
+    },
+    {
+      "scenario": "SC-DOCARA-BUTTON-DEMO",
+      "actor": "автор документации",
+      "steps": [
+        "Открыть Button",
+        "Прочитать описание",
+        "Проверить образец"
+      ],
+      "expected": "Demo не обещает действие.",
+      "actual": "Описание называет образец отключённым, props имеют disabled:true, rendered sf-button имеет disabled.",
+      "evidence_ref": "docs/site/content/components/button.md",
+      "result": "PASS"
+    }
+  ],
+  "protected_complexity_review": [
+    {
+      "category": "accessibility",
+      "status": "PRESERVED",
+      "evidence_ref": "docs/site/content/components/button.md"
+    },
+    {
+      "category": "security",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "category": "data_integrity",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "category": "permissions",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "category": "error_handling",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "category": "observability",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "category": "migrations",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "category": "rollback",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "docs/site/content/start.md"
+    }
+  ],
+  "tester_evidence_review": {
+    "status": "VERIFIED",
+    "verdict_ref": "source/workflow/evidence/2026-07-18-docara-consolidation-and-local-docs/hcs/human-centered-simplicity-tester-verdict.json",
+    "verdict_sha256": "bd7186f73a161325c6edee2a99950e9dfd65707043d31ee8baf08ca8872c6dee",
+    "reviewed_surface_ids": [
+      "portable_quick_start",
+      "quick_start_false_affordance",
+      "button_demo"
+    ],
+    "surface_classifications": [
+      {
+        "surface_id": "portable_quick_start",
+        "classification": "ordinary",
+        "protected_categories": [],
+        "evidence_ref": "docs/site/content/start.md"
+      },
+      {
+        "surface_id": "quick_start_false_affordance",
+        "classification": "ordinary",
+        "protected_categories": [],
+        "evidence_ref": "docs/site/content/start.md"
+      },
+      {
+        "surface_id": "button_demo",
+        "classification": "ordinary",
+        "protected_categories": [],
+        "evidence_ref": "docs/site/content/components/button.md"
+      }
+    ],
+    "evidence_paths": [
+      "docs/site/content/components/button.md",
+      "docs/site/content/start.md"
+    ],
+    "evidence_fingerprints": [
+      {
+        "path": "docs/site/content/components/button.md",
+        "sha256": "6524496022e435c67c1f2d3b0e888430ac83d0095d615728153ef904e529f8b0"
+      },
+      {
+        "path": "docs/site/content/start.md",
+        "sha256": "99b5583d9db7473d95d2a00dc176171865ffa537bdf00daa4f33da30639dc50f"
+      }
+    ],
+    "contradictions": [],
+    "verdict": "PASS"
+  },
+  "residual_complexity": [],
+  "blocking_findings": [],
+  "verdict": "PASS"
+}

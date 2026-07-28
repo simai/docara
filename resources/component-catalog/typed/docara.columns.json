@@ -1,0 +1,31 @@
+{
+    "id": "docara.columns",
+    "name": "columns",
+    "renderer": "docara.columns.v1",
+    "family": "docara_typed",
+    "category": "layout",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive",
+        "call": ":::columns",
+        "jobs": [
+            "arrange_related_regions"
+        ],
+        "parameters": []
+    },
+    "states": [
+        "stacked",
+        "responsive_columns"
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": true
+    },
+    "docs_ref": "docs/site/content/ru/components/syntax.md",
+    "provenance": {
+        "source_kind": "typed_definition",
+        "definition_ref": "resources/component-catalog/typed/docara.columns.json"
+    }
+}

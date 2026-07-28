@@ -1,0 +1,27 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Явная композиция областей",
+  "description": "Header, sidebar и outline заданы декларативно.",
+  "layout": {
+    "regions": {
+      "header": {
+        "enabled": true,
+        "sections": [
+          {"id": "branding", "section": "docara.header"}
+        ]
+      },
+      "sidebar": {
+        "enabled": true,
+        "sections": [
+          {"id": "navigation", "section": "docara.navigation"}
+        ]
+      },
+      "outline": {
+        "enabled": true,
+        "sections": [
+          {"id": "outline", "section": "docara.outline"}
+        ]
+      }
+    }
+  }
+}

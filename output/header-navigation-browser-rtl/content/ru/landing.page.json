@@ -1,0 +1,16 @@
+{
+  "schema": "docara.page.v1",
+  "title": "Лендинг",
+  "preset": "landing",
+  "layout": {
+    "container": {"max": 7}
+  },
+  "navigation": {
+    "hidden": true,
+    "order": 30
+  },
+  "search": {
+    "enabled": false,
+    "indexed": false
+  }
+}

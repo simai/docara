@@ -1,0 +1,14 @@
+{
+  "status": "pass",
+  "outcome": "The outline buttons have four visible one-pixel borders and the Hero image is a clean true-alpha asset on light and dark themes.",
+  "integration": "The verified production build and the served docara.test build contain the same corrected CSS and the same Hero asset SHA-256.",
+  "evidence_freshness": "Tests, build, static verification, publication hashes and Chrome screenshots were produced in the current correction run.",
+  "simplicity": "The correction adds one general Framework-class compatibility rule and replaces one image; no product-specific button primitive or theme-specific duplicate asset was introduced.",
+  "blockers": [],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-07-24-docara-product-homepage-visual-refinement/acceptance.md",
+    "output/playwright/docara-homepage-outline-image-light-final.png",
+    "output/playwright/docara-homepage-outline-image-dark-final.png",
+    "output/playwright/docara-homepage-outline-image-mobile-final.png"
+  ]
+}

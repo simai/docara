@@ -1,0 +1,29 @@
+{
+  "schema": "docara.section.v1",
+  "key": "docara.header",
+  "type": "navigation",
+  "view": "section.docara.header",
+  "allowed_regions": ["header"],
+  "slots": ["content"],
+  "allowed_blocks": ["shell.smart"],
+  "blocks": [
+    {
+      "id": "branding",
+      "block": "shell.smart",
+      "slot": "content",
+      "smart": "docara.brand",
+      "bind": "branding"
+    },
+    {
+      "id": "primary-navigation",
+      "block": "shell.smart",
+      "slot": "content",
+      "smart": "docara.navigation",
+      "view": "header",
+      "bind": "header_navigation",
+      "props": {
+        "maximum_depth": 4
+      }
+    }
+  ]
+}

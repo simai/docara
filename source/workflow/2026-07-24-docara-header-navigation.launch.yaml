@@ -1,0 +1,47 @@
+schema_version: "1.0.0"
+workflow_id: "2026-07-24-docara-header-navigation"
+track_id: "docara-consolidation"
+status: "completed"
+process_model_id: "docara_documentation_site_publication"
+current_state: "readiness_verdict_recorded"
+target_state: "readiness_verdict_recorded"
+owner_skill: "docara"
+companion_skills:
+  - "sf5"
+  - "ux"
+approved_by_user: true
+approval_note: "The user asked to align every Docara header element to Framework size 1."
+memory_decision: "skip"
+memory_reason: "Repository workflow and evidence are the durable source of truth; no personal-memory update was requested."
+current_goal: "Deliver multilingual responsive Docara header navigation with one Framework size-1 rhythm and a quiet, readable search shortcut."
+final_outcome: "The existing navigation Smart component renders clean desktop and mobile header links, while brand, navigation, search and controls align at var(--sf-d0); the search outline and shortcut use Framework variant, typography, color and spacing tokens."
+done_when:
+  - "configuration and projection tests pass"
+  - "computed borders are zero in light and dark themes"
+  - "active, hover and focus-visible states remain visible"
+  - "all visible desktop header elements compute to var(--sf-d0)"
+  - "production build and static verification pass"
+  - "the verified build is served locally with rollback"
+stages:
+  - "header navigation contract"
+  - "responsive projection"
+  - "visual state correction"
+  - "verification and reversible local publication"
+evidence_path: "source/workflow/evidence/2026-07-24-docara-header-navigation"
+repository: "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation"
+branch: "codex/docara-consolidation"
+forbidden_actions:
+  - "commit_or_push"
+  - "public_or_production_release"
+action_gate:
+  status: "passed"
+  evidence: "source/output/action-gates/action-gate-report-20260724151557.json"
+nonclaims:
+  - "the pinned Framework distribution itself is not fixed or released"
+  - "no production, release or ecosystem readiness claim"
+result:
+  verdict: "pass"
+  evidence: "source/workflow/evidence/2026-07-24-docara-header-navigation/acceptance.md"
+  local_url: "https://docara.test/ru/components/"
+  document_root: "/Users/rim/Sites/docara.test/build_production"
+  rollback: "/Users/rim/Sites/docara.test/.docara-backups/search-button-refinement-20260724-193745"

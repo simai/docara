@@ -1,0 +1,1149 @@
+<?php
+
+namespace Tests\Unit;
+
+use FilesystemIterator;
+use PHPUnit\Framework\TestCase;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use Simai\Docara\Portable\CanonicalJson;
+use Simai\Docara\Portable\ConfigurationMerger;
+use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\Portable\PortableConfigurationLoader;
+use Simai\Docara\Portable\SchemaRepository;
+
+final class PortableConfigurationTest extends TestCase
+{
+    private string $root;
+
+    /** @var list<string> */
+    private array $cleanup = [];
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->root = sys_get_temp_dir() . '/docara-portable-' . bin2hex(random_bytes(8));
+        mkdir($this->root, 0777, true);
+        $this->cleanup[] = $this->root;
+        $this->createValidSite();
+    }
+
+    protected function tearDown(): void
+    {
+        foreach (array_reverse($this->cleanup) as $path) {
+            $this->deletePath($path);
+        }
+
+        parent::tearDown();
+    }
+
+    public function test_it_resolves_an_explainable_portable_page_plan(): void
+    {
+        $loader = new PortableConfigurationLoader($this->root);
+
+        $plan = $loader->resolve('content/docs/deep/install.md');
+
+        self::assertSame('content/docs/deep/install.md', $plan->page);
+        self::assertSame("# Install\n\nPortable content.\n", $plan->markdown);
+        self::assertSame('landing', $plan->configuration['preset']);
+        self::assertSame('Portable docs', $plan->configuration['title']);
+        self::assertSame('content', $plan->configuration['content_root']);
+        self::assertSame('framework.lock.json', $plan->configuration['framework_lock']);
+        self::assertSame('docs/install', $plan->configuration['slug']);
+        self::assertSame(8, $plan->configuration['layout']['container']['max']);
+        self::assertSame('dark', $plan->configuration['settings']['theme']);
+        self::assertSame('Portable brand', $plan->configuration['branding']['title']);
+        self::assertSame('Deep documentation', $plan->configuration['branding']['label']);
+        self::assertSame('assets/logo.svg', $plan->configuration['branding']['logo']);
+        self::assertTrue($plan->configuration['navigation']['hidden']);
+        self::assertSame(5, $plan->configuration['navigation']['order']);
+        self::assertFalse($plan->configuration['search']['enabled']);
+        self::assertTrue($plan->configuration['search']['indexed']);
+        self::assertSame([
+            'breadcrumbs' => true,
+            'toc' => true,
+            'mobile_toc' => 'auto',
+            'toc_depth' => 3,
+            'previous_next' => true,
+        ], $plan->configuration['reading']);
+        self::assertSame('@defaults', $plan->provenance['/search/enabled']);
+        self::assertSame('@defaults', $plan->provenance['/search/indexed']);
+        self::assertSame('@defaults', $plan->provenance['/reading/breadcrumbs']);
+        self::assertSame('@defaults', $plan->provenance['/reading/toc']);
+        self::assertSame('@defaults', $plan->provenance['/reading/mobile_toc']);
+        self::assertSame('@defaults', $plan->provenance['/reading/toc_depth']);
+        self::assertSame('@defaults', $plan->provenance['/reading/previous_next']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/layout/container/max']);
+        self::assertSame('content/docs/deep/section.json', $plan->provenance['/settings/theme']);
+        self::assertSame('docara.json', $plan->provenance['/branding/logo']);
+        self::assertSame('content/docs/deep/section.json', $plan->provenance['/branding/label']);
+        self::assertSame('content/docs/section.json', $plan->provenance['/navigation/hidden']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/navigation/order']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/preset']);
+        self::assertSame(
+            ['site', 'framework-lock', 'section', 'section', 'section', 'section', 'page', 'content'],
+            array_column($plan->trace, 'role'),
+        );
+        self::assertSame(
+            [
+                'docara.json',
+                'framework.lock.json',
+                'section.json',
+                'content/section.json',
+                'content/docs/section.json',
+                'content/docs/deep/section.json',
+                'content/docs/deep/install.page.json',
+                'content/docs/deep/install.md',
+            ],
+            array_column($plan->trace, 'source'),
+        );
+        self::assertSame('docara.site.v1', $plan->trace[0]['schema']);
+        self::assertSame('docara.framework_lock.v1', $plan->trace[1]['schema']);
+        self::assertSame('larena.ui.frontend_runtime_lock.v3', $plan->frameworkLock['runtime']['schema']);
+        self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $plan->canonicalHash());
+        $serialized = $plan->toArray();
+        self::assertSame(1, $serialized['contract_version']);
+        self::assertArrayHasKey('framework_lock', $serialized);
+        self::assertArrayNotHasKey('contractVersion', $serialized);
+        self::assertArrayNotHasKey('frameworkLock', $serialized);
+        self::assertStringNotContainsString($this->root, CanonicalJson::encode($serialized));
+    }
+
+    public function test_generated_base_inherits_real_sections_without_an_authored_page_or_sidecar(): void
+    {
+        $this->writeJson('content/components/section.json', [
+            'schema' => 'docara.section.v1',
+            'locale' => 'ru',
+            'layout' => ['container' => ['max' => 8]],
+            'settings' => ['theme' => 'light'],
+        ]);
+        $this->writeJson('content/components/catalog/index.page.json', [
+            'schema' => 'docara.page.v1',
+            'preset' => 'landing',
+            'locale' => 'en',
+            'settings' => ['theme' => 'dark'],
+        ]);
+
+        $plan = (new PortableConfigurationLoader($this->root))
+            ->resolveGeneratedBase('content/components/catalog/index.md');
+
+        self::assertSame('content/components/catalog/index.md', $plan->page);
+        self::assertSame('', $plan->markdown);
+        self::assertSame('ru', $plan->configuration['locale']);
+        self::assertSame(8, $plan->configuration['layout']['container']['max']);
+        self::assertSame('light', $plan->configuration['settings']['theme']);
+        self::assertSame('content/components/section.json', $plan->provenance['/locale']);
+        self::assertSame('content/components/section.json', $plan->provenance['/settings/theme']);
+        self::assertSame(
+            [
+                'docara.json',
+                'framework.lock.json',
+                'section.json',
+                'content/section.json',
+                'content/components/section.json',
+            ],
+            array_column($plan->trace, 'source'),
+        );
+        self::assertNotContains('content/components/catalog/index.page.json', array_column($plan->trace, 'source'));
+    }
+
+    public function test_repository_recipe_resolves_site_section_and_page_region_composition_with_provenance(): void
+    {
+        $site = dirname(__DIR__, 2) . '/docs/site';
+        $plan = (new PortableConfigurationLoader($site))->resolve(
+            'content/ru/demonstrator-results/composition-inheritance/page.md',
+        );
+
+        self::assertSame('Docara', $plan->configuration['branding']['title']);
+        self::assertSame('system', $plan->configuration['settings']['theme']);
+        self::assertSame(
+            'content/ru/demonstrator-results/composition-inheritance/section.json',
+            $plan->provenance['/layout/regions/sidebar/sections'],
+        );
+        self::assertSame(
+            'content/ru/demonstrator-results/composition-inheritance/page.page.json',
+            $plan->provenance['/layout/regions/outline'],
+        );
+        self::assertSame(
+            'content/ru/demonstrator-results/composition-inheritance/page.page.json',
+            $plan->provenance['/layout/regions/outline/sections'],
+        );
+        self::assertSame(
+            'content/ru/demonstrator-results/composition-inheritance/page.page.json',
+            $plan->provenance['/layout/regions/footer/sections'],
+        );
+        self::assertTrue($plan->configuration['layout']['regions']['outline']['enabled']);
+        self::assertTrue($plan->configuration['layout']['regions']['footer']['enabled']);
+        self::assertCount(2, $plan->configuration['layout']['regions']['sidebar']['sections']);
+        self::assertCount(2, $plan->configuration['layout']['regions']['outline']['sections']);
+    }
+
+    public function test_arrays_replace_objects_merge_and_reset_clears_a_branch_and_its_provenance(): void
+    {
+        $merger = new ConfigurationMerger;
+        $base = $merger->merge([], [
+            'layout' => [
+                'sidebar' => ['position' => 'left', 'width' => '18rem'],
+                'slots' => ['header', 'content', 'footer'],
+            ],
+            'settings' => ['theme' => 'system'],
+            'accent' => 'blue',
+        ], 'docara.json');
+
+        $resolved = $merger->merge($base->configuration, [
+            'layout' => [
+                'sidebar' => ['$reset' => true, 'position' => 'right'],
+                'slots' => ['hero', 'content'],
+            ],
+            'settings' => [],
+            'accent' => ['$reset' => true, '$value' => null],
+        ], 'section/section.json', $base->provenance);
+
+        self::assertSame(['position' => 'right'], $resolved->configuration['layout']['sidebar']);
+        self::assertSame(['hero', 'content'], $resolved->configuration['layout']['slots']);
+        self::assertSame(['theme' => 'system'], $resolved->configuration['settings']);
+        self::assertNull($resolved->configuration['accent']);
+        self::assertArrayNotHasKey('/layout/sidebar/width', $resolved->provenance);
+        self::assertSame('section/section.json', $resolved->provenance['/layout/sidebar']);
+        self::assertSame('section/section.json', $resolved->provenance['/layout/sidebar/position']);
+        self::assertSame('section/section.json', $resolved->provenance['/layout/slots']);
+        self::assertSame('section/section.json', $resolved->provenance['/accent']);
+    }
+
+    public function test_reset_only_preserves_an_empty_json_object_in_the_resolved_page_plan(): void
+    {
+        $section = json_decode(
+            (string) file_get_contents($this->path('content/docs/section.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $section['navigation'] = ['$reset' => true];
+        $this->writeJson('content/docs/section.json', $section);
+        $page = json_decode(
+            (string) file_get_contents($this->path('content/docs/deep/install.page.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        unset($page['navigation']);
+        $this->writeJson('content/docs/deep/install.page.json', $page);
+
+        $plan = (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+
+        self::assertInstanceOf(\stdClass::class, $plan->configuration['navigation']);
+        $canonical = CanonicalJson::encode($plan->toArray());
+        self::assertStringContainsString('"navigation":{}', $canonical);
+        self::assertStringNotContainsString('"navigation":[]', $canonical);
+        self::assertSame('content/docs/section.json', $plan->provenance['/navigation']);
+    }
+
+    public function test_the_canonical_hash_is_stable_for_the_same_semantic_plan(): void
+    {
+        $loader = new PortableConfigurationLoader($this->root);
+        $first = $loader->resolve('content/docs/deep/install.md');
+        $site = json_decode((string) file_get_contents($this->path('docara.json')), true, 512, JSON_THROW_ON_ERROR);
+        $this->writeJson('docara.json', array_reverse($site, true));
+        $second = $loader->resolve('content/docs/deep/install.md');
+
+        self::assertNotSame($first->trace[0]['sha256'], $second->trace[0]['sha256']);
+        self::assertSame($first->canonicalHash(), $second->canonicalHash());
+        self::assertEquals($first->configuration, $second->configuration);
+    }
+
+    public function test_content_root_defaults_to_content_and_is_explained_in_provenance(): void
+    {
+        $site = json_decode((string) file_get_contents($this->path('docara.json')), true, 512, JSON_THROW_ON_ERROR);
+        unset($site['content_root']);
+        $this->writeJson('docara.json', $site);
+
+        $plan = (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+
+        self::assertSame('content', $plan->configuration['content_root']);
+        self::assertSame('@defaults', $plan->provenance['/content_root']);
+    }
+
+    public function test_the_shipped_portable_lock_is_accepted_with_its_independent_manifest_provider_revision(): void
+    {
+        $stub = dirname(__DIR__, 2) . '/stubs/portable';
+
+        $plan = (new PortableConfigurationLoader($stub))->resolve('content/ru/index.md');
+
+        self::assertSame(
+            '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663',
+            $plan->frameworkLock['manifests']['ui.button']['provider_revision'],
+        );
+        self::assertSame('larena/ui', $plan->frameworkLock['manifests']['ui.button']['provider']);
+    }
+
+    public function test_unknown_schema_versions_are_rejected(): void
+    {
+        $site = json_decode((string) file_get_contents($this->path('docara.json')), true, 512, JSON_THROW_ON_ERROR);
+        $site['schema'] = 'docara.site.v2';
+        $this->writeJson('docara.json', $site);
+
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('[SCHEMA_VALIDATION_FAILED]');
+
+        (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+    }
+
+    public function test_malformed_json_is_rejected(): void
+    {
+        file_put_contents($this->path('content/docs/section.json'), '{"schema":"docara.section.v1",');
+
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('[JSON_INVALID]');
+
+        (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+    }
+
+    public function test_legacy_section_descriptor_name_is_rejected_with_rename_instruction(): void
+    {
+        rename(
+            $this->path('content/docs/section.json'),
+            $this->path('content/docs/_section.json'),
+        );
+
+        try {
+            (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+            self::fail('Legacy section descriptor name unexpectedly passed.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('SECTION_DESCRIPTOR_LEGACY_NAME', $exception->errorCode);
+            self::assertStringContainsString(
+                'Rename portable section descriptor [content/docs/_section.json] to [content/docs/section.json].',
+                $exception->getMessage(),
+            );
+        }
+    }
+
+    public function test_legacy_section_descriptor_is_rejected_when_canonical_descriptor_also_exists(): void
+    {
+        copy(
+            $this->path('content/docs/section.json'),
+            $this->path('content/docs/_section.json'),
+        );
+
+        try {
+            (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+            self::fail('Ambiguous section descriptors unexpectedly passed.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('SECTION_DESCRIPTOR_LEGACY_NAME', $exception->errorCode);
+        }
+    }
+
+    public function test_invalid_component_calls_are_rejected_by_the_shared_schema(): void
+    {
+        (new SchemaRepository)->assertValid([
+            'schema' => 'docara.component_call.v1',
+            'id' => 'ui.unadmitted_example',
+            'props' => [],
+        ], 'component-call.schema.json');
+        (new SchemaRepository)->assertValid([
+            'schema' => 'docara.component_call.v1',
+            'id' => 'ui.data.table_row',
+            'props' => [],
+        ], 'component-call.schema.json');
+
+        foreach ([
+            ['schema' => 'docara.component_call.v2', 'id' => 'ui.alert', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'alert', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.Badge', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.foo-bar', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.foo.', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.foo..bar', 'props' => []],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.alert'],
+            ['schema' => 'docara.component_call.v1', 'id' => 'ui.alert', 'props' => [], 'unknown' => true],
+        ] as $call) {
+            try {
+                (new SchemaRepository)->assertValid($call, 'component-call.schema.json');
+                self::fail('Invalid component call unexpectedly passed schema validation.');
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
+            }
+        }
+    }
+
+    public function test_descriptor_schemas_expose_only_working_presentation_settings(): void
+    {
+        foreach ([
+            ['site.schema.json', [
+                'schema' => 'docara.site.v1',
+                'preset' => 'docs',
+                'framework_lock' => 'framework.lock.json',
+                'layout' => [
+                    'key' => 'docara.docs',
+                    'container' => ['max' => 7],
+                    'regions' => [
+                        'outline' => ['enabled' => false],
+                        'footer' => ['enabled' => true, 'sections' => []],
+                    ],
+                ],
+                'settings' => ['theme' => 'system'],
+                'navigation' => ['hidden' => false, 'order' => 2147483647],
+                'search' => ['enabled' => true, 'indexed' => true],
+                'reading' => [
+                    'breadcrumbs' => true,
+                    'toc' => true,
+                    'toc_depth' => 6,
+                    'previous_next' => true,
+                ],
+                'branding' => [
+                    'title' => 'Product',
+                    'label' => 'Docs',
+                    'mode' => 'full',
+                    'size' => 'large',
+                    'logo' => 'assets/logo.svg',
+                    'logo_dark' => 'assets/logo-dark.svg',
+                    'favicon' => 'assets/favicon.ico',
+                ],
+            ]],
+            ['section.schema.json', [
+                'schema' => 'docara.section.v1',
+                'layout' => ['$reset' => true, 'container' => ['max' => 4]],
+                'settings' => ['theme' => 'dark'],
+                'navigation' => ['hidden' => true, 'order' => 20],
+                'header_navigation' => [
+                    'enabled' => true,
+                    'items' => [
+                        ['id' => 'home', 'label' => 'Главная', 'href' => '/ru/'],
+                        ['id' => 'github', 'label' => 'GitHub', 'href' => 'https://github.com/simai/docara'],
+                    ],
+                ],
+                'search' => ['$reset' => true, 'indexed' => false],
+                'reading' => ['$reset' => true, 'toc_depth' => 2],
+                'branding' => ['$reset' => true, 'title' => 'Section product'],
+            ]],
+            ['page.schema.json', [
+                'schema' => 'docara.page.v1',
+                'layout' => ['container' => ['max' => 8]],
+                'settings' => ['$reset' => true, 'theme' => 'light'],
+                'navigation' => ['$reset' => true, 'order' => 5],
+                'search' => ['enabled' => false],
+                'reading' => ['breadcrumbs' => false, 'toc' => false, 'previous_next' => false],
+                'branding' => ['label' => 'Reference'],
+            ]],
+        ] as [$schema, $descriptor]) {
+            (new SchemaRepository)->assertValid($descriptor, $schema);
+            $this->addToAssertionCount(1);
+        }
+
+        $site = [
+            'schema' => 'docara.site.v1',
+            'preset' => 'docs',
+            'framework_lock' => 'framework.lock.json',
+        ];
+        foreach ([
+            [$site + ['theme' => 'dark'], 'site.schema.json'],
+            [$site + ['layout' => ['sidebar' => ['position' => 'left']]], 'site.schema.json'],
+            [$site + ['layout' => ['container' => ['max' => 9]]], 'site.schema.json'],
+            [$site + ['layout' => ['container' => ['max' => '7']]], 'site.schema.json'],
+            [['schema' => 'docara.section.v1', 'settings' => ['theme' => 'sepia']], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'settings' => ['table_of_contents' => true]], 'section.schema.json'],
+            [['schema' => 'docara.page.v1', 'navigation' => ['enabled' => true]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'navigation' => ['hidden' => 'false']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'navigation' => ['order' => -1]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'navigation' => ['order' => 2147483648]], 'page.schema.json'],
+            [['schema' => 'docara.section.v1', 'navigation' => ['order' => '10']], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'header_navigation' => ['enabled' => true]], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'header_navigation' => ['enabled' => 'true']], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'header_navigation' => ['unknown' => true]], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'header_navigation' => ['items' => []]], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'header_navigation' => ['items' => [[
+                'id' => 'home',
+                'label' => 'Home',
+                'href' => 'javascript:alert(1)',
+            ]]]], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'header_navigation' => ['items' => [[
+                'id' => 'Home',
+                'label' => 'Home',
+                'href' => '/',
+            ]]]], 'section.schema.json'],
+            [['schema' => 'docara.page.v1', 'search' => ['enabled' => 'true']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'search' => ['indexed' => 1]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'search' => ['unknown' => true]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['breadcrumbs' => 'true']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['toc' => 1]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['mobile_toc' => true]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['mobile_toc' => 'sometimes']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['previous_next' => null]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['toc_depth' => 1]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['toc_depth' => 7]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['toc_depth' => '3']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => ['unknown' => true]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['unknown' => true]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['title' => '']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['label' => '']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['mode' => 'banner']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['size' => 'huge']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['logo' => '/absolute/logo.svg']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['logo' => '../logo.svg']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['logo' => 'assets\\logo.svg']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'layout' => ['regions' => ['aside' => ['enabled' => true]]]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'layout' => ['regions' => ['sidebar' => ['enabled' => 'false']]]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'layout' => ['regions' => ['header' => ['sections' => [[
+                'section' => 'docara.shell',
+                'blocks' => [[
+                    'block' => 'shell.smart',
+                    'smart' => 'docara.header',
+                    'bind' => 'callback',
+                ]],
+            ]]]]]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => []], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'layout' => []], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'settings' => []], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'navigation' => []], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'search' => []], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'reading' => []], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'components' => []], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'variables' => []], 'page.schema.json'],
+        ] as [$descriptor, $schema]) {
+            try {
+                (new SchemaRepository)->assertValid($descriptor, $schema);
+                self::fail("No-op or invalid presentation settings unexpectedly passed [$schema].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
+            }
+        }
+    }
+
+    public function test_region_configuration_inherits_from_site_through_section_and_page_with_provenance(): void
+    {
+        $site = json_decode((string) file_get_contents($this->path('docara.json')), true, 512, JSON_THROW_ON_ERROR);
+        $site['layout']['regions'] = [
+            'footer' => ['enabled' => true, 'sections' => []],
+        ];
+        $this->writeJson('docara.json', $site);
+
+        $section = json_decode(
+            (string) file_get_contents($this->path('content/docs/section.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $section['layout']['regions'] = [
+            'sidebar' => ['enabled' => false],
+        ];
+        $this->writeJson('content/docs/section.json', $section);
+
+        $page = json_decode(
+            (string) file_get_contents($this->path('content/docs/deep/install.page.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $page['layout']['regions'] = [
+            'outline' => ['enabled' => false],
+        ];
+        $this->writeJson('content/docs/deep/install.page.json', $page);
+
+        $plan = (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+
+        self::assertSame('docara.docs', $plan->configuration['layout']['key']);
+        self::assertTrue($plan->configuration['layout']['regions']['header']['enabled']);
+        self::assertFalse($plan->configuration['layout']['regions']['sidebar']['enabled']);
+        self::assertTrue($plan->configuration['layout']['regions']['main']['enabled']);
+        self::assertFalse($plan->configuration['layout']['regions']['outline']['enabled']);
+        self::assertTrue($plan->configuration['layout']['regions']['footer']['enabled']);
+        self::assertSame(
+            'content/docs/section.json',
+            $plan->provenance['/layout/regions/sidebar/enabled'],
+        );
+        self::assertSame(
+            'content/docs/deep/install.page.json',
+            $plan->provenance['/layout/regions/outline/enabled'],
+        );
+        self::assertSame('docara.json', $plan->provenance['/layout/regions/footer/enabled']);
+        self::assertSame('@defaults', $plan->provenance['/layout/regions/header/enabled']);
+    }
+
+    public function test_layout_reset_restores_registered_structural_defaults(): void
+    {
+        $this->writeJson('content/docs/deep/install.page.json', [
+            'schema' => 'docara.page.v1',
+            'layout' => [
+                '$reset' => true,
+                'container' => ['max' => 4],
+            ],
+        ]);
+
+        $plan = (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+
+        self::assertSame(4, $plan->configuration['layout']['container']['max']);
+        self::assertSame('docara.docs', $plan->configuration['layout']['key']);
+        self::assertTrue($plan->configuration['layout']['regions']['header']['enabled']);
+        self::assertTrue($plan->configuration['layout']['regions']['main']['enabled']);
+        self::assertFalse($plan->configuration['layout']['regions']['footer']['enabled']);
+        self::assertSame(
+            'content/docs/deep/install.page.json',
+            $plan->provenance['/layout'],
+        );
+        self::assertSame('@defaults', $plan->provenance['/layout/key']);
+        self::assertSame('@defaults', $plan->provenance['/layout/regions/header/sections']);
+    }
+
+    public function test_branding_reset_clears_inherited_assets_and_records_new_provenance(): void
+    {
+        $this->writeJson('content/docs/deep/install.page.json', [
+            'schema' => 'docara.page.v1',
+            'branding' => ['$reset' => true, 'title' => 'Page brand'],
+        ]);
+
+        $plan = (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+
+        self::assertSame(['title' => 'Page brand'], $plan->configuration['branding']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/branding/title']);
+        self::assertArrayNotHasKey('/branding/logo', $plan->provenance);
+        self::assertArrayNotHasKey('/branding/label', $plan->provenance);
+    }
+
+    public function test_search_inherits_through_sections_and_page_reset_records_exact_provenance(): void
+    {
+        $site = json_decode((string) file_get_contents($this->path('docara.json')), true, 512, JSON_THROW_ON_ERROR);
+        $site['search'] = ['enabled' => true, 'indexed' => true];
+        $this->writeJson('docara.json', $site);
+
+        $section = json_decode(
+            (string) file_get_contents($this->path('content/docs/section.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $section['search'] = ['indexed' => false];
+        $this->writeJson('content/docs/section.json', $section);
+
+        $deep = json_decode(
+            (string) file_get_contents($this->path('content/docs/deep/section.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $deep['search'] = ['enabled' => false];
+        $this->writeJson('content/docs/deep/section.json', $deep);
+
+        $page = json_decode(
+            (string) file_get_contents($this->path('content/docs/deep/install.page.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $page['search'] = ['$reset' => true, 'enabled' => true, 'indexed' => true];
+        $this->writeJson('content/docs/deep/install.page.json', $page);
+
+        $plan = (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+
+        self::assertSame(['enabled' => true, 'indexed' => true], $plan->configuration['search']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/search']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/search/enabled']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/search/indexed']);
+    }
+
+    public function test_reading_inherits_through_sections_and_page_reset_records_exact_provenance(): void
+    {
+        $site = json_decode((string) file_get_contents($this->path('docara.json')), true, 512, JSON_THROW_ON_ERROR);
+        $site['reading'] = [
+            'breadcrumbs' => false,
+            'toc' => true,
+            'toc_depth' => 4,
+            'previous_next' => false,
+        ];
+        $this->writeJson('docara.json', $site);
+
+        $section = json_decode(
+            (string) file_get_contents($this->path('content/docs/section.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $section['reading'] = ['toc_depth' => 5];
+        $this->writeJson('content/docs/section.json', $section);
+
+        $page = json_decode(
+            (string) file_get_contents($this->path('content/docs/deep/install.page.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $page['reading'] = [
+            '$reset' => true,
+            'breadcrumbs' => true,
+            'toc' => false,
+            'toc_depth' => 2,
+            'previous_next' => true,
+        ];
+        $this->writeJson('content/docs/deep/install.page.json', $page);
+
+        $plan = (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+
+        self::assertSame([
+            'breadcrumbs' => true,
+            'toc' => false,
+            'toc_depth' => 2,
+            'previous_next' => true,
+        ], $plan->configuration['reading']);
+        foreach (['breadcrumbs', 'toc', 'toc_depth', 'previous_next'] as $field) {
+            self::assertSame(
+                'content/docs/deep/install.page.json',
+                $plan->provenance['/reading/' . $field],
+            );
+        }
+    }
+
+    public function test_moving_framework_references_are_rejected(): void
+    {
+        foreach (['main', 'latest', 'refs/heads/main'] as $index => $movingReference) {
+            $lock = $this->frameworkLock();
+
+            if ($index === 0) {
+                $lock['runtime']['ui']['commit'] = $movingReference;
+            } elseif ($index === 1) {
+                $lock['runtime']['ui_smart']['tag'] = $movingReference;
+            } else {
+                $lock['manifests']['ui.alert']['provider_revision'] = $movingReference;
+            }
+
+            $this->writeJson('framework.lock.json', $lock);
+
+            try {
+                (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+                self::fail("Moving reference [$movingReference] unexpectedly passed validation.");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
+            }
+        }
+    }
+
+    public function test_non_commit_manifest_provider_revisions_are_rejected(): void
+    {
+        $lock = $this->frameworkLock();
+        $lock['manifests']['ui.button']['provider_revision'] = str_repeat('a', 39);
+
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('[SCHEMA_VALIDATION_FAILED]');
+
+        (new SchemaRepository)->assertValid($lock, 'framework-lock.schema.json');
+    }
+
+    public function test_framework_lock_rejects_noncanonical_smart_component_ids(): void
+    {
+        foreach (['ui.foo-bar', 'ui.foo.', 'ui.foo..bar'] as $component) {
+            $lock = $this->frameworkLock();
+            $lock['manifests'][$component] = $lock['manifests']['ui.button'];
+            unset($lock['manifests']['ui.button']);
+            $this->writeJson('framework.lock.json', $lock);
+
+            try {
+                (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+                self::fail("Noncanonical Framework component id [$component] unexpectedly passed.");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
+            }
+        }
+    }
+
+    public function test_base_url_and_page_slug_use_the_same_portable_path_alphabet(): void
+    {
+        foreach (['/', '/project', '/project/', '/project~/docs/', '/A_b-1.2'] as $baseUrl) {
+            (new SchemaRepository)->assertValid([
+                'schema' => 'docara.site.v1',
+                'preset' => 'docs',
+                'framework_lock' => 'framework.lock.json',
+                'base_url' => $baseUrl,
+            ], 'site.schema.json');
+            $this->addToAssertionCount(1);
+        }
+
+        foreach (['//', '/./', '/../', '/project//docs', '/project?x', '/project#x', '/project%20', '/project\\docs'] as $baseUrl) {
+            try {
+                (new SchemaRepository)->assertValid([
+                    'schema' => 'docara.site.v1',
+                    'preset' => 'docs',
+                    'framework_lock' => 'framework.lock.json',
+                    'base_url' => $baseUrl,
+                ], 'site.schema.json');
+                self::fail("Unsafe base_url [$baseUrl] unexpectedly passed.");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
+            }
+        }
+
+        foreach (['Guide', 'guide.', 'guide space', '_docara', '.docara', 'guide%20'] as $slug) {
+            try {
+                (new SchemaRepository)->assertValid([
+                    'schema' => 'docara.page.v1',
+                    'slug' => $slug,
+                ], 'page.schema.json');
+                self::fail("Unsafe slug [$slug] unexpectedly passed.");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
+            }
+        }
+    }
+
+    public function test_redirect_descriptors_are_local_versioned_and_fail_closed(): void
+    {
+        (new SchemaRepository)->assertValid([
+            'schema' => 'docara.site.v1',
+            'preset' => 'docs',
+            'framework_lock' => 'framework.lock.json',
+            'documentation_version' => '2.4.0-rc.1',
+            'redirects_file' => 'config/redirects.json',
+        ], 'site.schema.json');
+        (new SchemaRepository)->assertValid([
+            'schema' => 'docara.redirects.v1',
+            'version' => 1,
+            'redirects' => [
+                ['from' => 'old/path', 'to' => 'guides/getting-started'],
+                ['from' => 'home-old', 'to' => ''],
+            ],
+        ], 'redirects.schema.json');
+        try {
+            (new SchemaRepository)->assertValid([
+                'schema' => 'docara.redirects.v1',
+                'redirects' => [],
+            ], 'redirects.schema.json');
+            self::fail('A redirect descriptor without an explicit schema version unexpectedly passed.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
+        }
+
+        foreach ([
+            ['from' => '../outside', 'to' => 'guides'],
+            ['from' => 'old', 'to' => 'https://example.com'],
+            ['from' => 'old?query=1', 'to' => 'guides'],
+            ['from' => 'old#fragment', 'to' => 'guides'],
+            ['from' => '/absolute', 'to' => 'guides'],
+        ] as $redirect) {
+            try {
+                (new SchemaRepository)->assertValid([
+                    'schema' => 'docara.redirects.v1',
+                    'version' => 1,
+                    'redirects' => [$redirect],
+                ], 'redirects.schema.json');
+                self::fail('Unsafe redirect descriptor unexpectedly passed.');
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
+            }
+        }
+    }
+
+    public function test_framework_asset_projection_semantics_are_centralized_and_fail_closed(): void
+    {
+        $lock = $this->frameworkLock();
+        $lock['asset_projection']['source']['revision'] = str_repeat('a', 40);
+        $this->writeJson('framework.lock.json', $lock);
+
+        try {
+            (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+            self::fail('A mismatched Framework projection unexpectedly passed.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('FRAMEWORK_ASSET_PROJECTION_INVALID', $exception->errorCode);
+        }
+    }
+
+    public function test_lexically_disguised_root_symlink_and_parent_traversal_are_rejected(): void
+    {
+        $link = $this->root . '-link';
+        if (! @symlink($this->root, $link)) {
+            self::markTestSkipped('Symbolic links are not supported by this test environment.');
+        }
+
+        try {
+            foreach ([$link, $link . '/', $link . '/.'] as $root) {
+                try {
+                    new PortableConfigurationLoader($root);
+                    self::fail("Symlink root [$root] unexpectedly passed.");
+                } catch (PortableConfigurationException $exception) {
+                    self::assertSame('ROOT_SYMLINK_FORBIDDEN', $exception->errorCode);
+                }
+            }
+
+            try {
+                new PortableConfigurationLoader($this->root . '/content/..');
+                self::fail('A root containing parent traversal unexpectedly passed.');
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('ROOT_PATH_INVALID', $exception->errorCode);
+            }
+        } finally {
+            @unlink($link);
+        }
+    }
+
+    public function test_unreadable_required_markdown_fails_with_a_controlled_error(): void
+    {
+        $path = $this->path('content/docs/deep/install.md');
+        chmod($path, 0000);
+        clearstatcache(true, $path);
+        if (is_readable($path)) {
+            chmod($path, 0644);
+            self::markTestSkipped('The current user can still read mode-0000 files.');
+        }
+
+        try {
+            (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
+            self::fail('Unreadable Markdown unexpectedly passed.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('PORTABLE_FILE_READ_FAILED', $exception->errorCode);
+        } finally {
+            chmod($path, 0644);
+        }
+    }
+
+    public function test_parent_segments_and_absolute_paths_are_rejected(): void
+    {
+        $loader = new PortableConfigurationLoader($this->root);
+
+        foreach (['../outside.md', '/tmp/outside.md', 'guides/../outside.md'] as $path) {
+            try {
+                $loader->resolve($path);
+                self::fail("Unsafe path [$path] unexpectedly resolved.");
+            } catch (PortableConfigurationException $exception) {
+                self::assertContains($exception->errorCode, ['PATH_ESCAPE_FORBIDDEN', 'ABSOLUTE_PATH_FORBIDDEN']);
+            }
+        }
+    }
+
+    public function test_pages_outside_the_configured_content_root_are_rejected(): void
+    {
+        $this->write('outside.md', "# Outside\n");
+
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('[PAGE_OUTSIDE_CONTENT_ROOT]');
+
+        (new PortableConfigurationLoader($this->root))->resolve('outside.md');
+    }
+
+    public function test_symbolic_links_are_rejected_even_when_the_target_is_inside_the_root(): void
+    {
+        $target = $this->path('content/docs/deep/install.md');
+        $link = $this->path('content/docs/deep/link.md');
+
+        if (! @symlink($target, $link)) {
+            self::markTestSkipped('Symbolic links are not supported by this test environment.');
+        }
+
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('[SYMLINK_FORBIDDEN]');
+
+        (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/link.md');
+    }
+
+    private function createValidSite(): void
+    {
+        $this->writeJson('docara.json', [
+            'schema' => 'docara.site.v1',
+            'preset' => 'docs',
+            'framework_lock' => 'framework.lock.json',
+            'content_root' => 'content',
+            'base_url' => '/',
+            'default_locale' => 'en',
+            'title' => 'Portable docs',
+            'locale' => 'en',
+            'layout' => [
+                'container' => ['max' => 6],
+            ],
+            'settings' => [
+                'theme' => 'system',
+            ],
+            'branding' => [
+                'title' => 'Portable brand',
+                'logo' => 'assets/logo.svg',
+                'logo_dark' => 'assets/logo-dark.svg',
+                'favicon' => 'assets/favicon.svg',
+            ],
+            'navigation' => [
+                'hidden' => false,
+            ],
+        ]);
+        $this->writeJson('framework.lock.json', $this->frameworkLock());
+        $this->writeJson('section.json', [
+            'schema' => 'docara.section.v1',
+        ]);
+        $this->writeJson('content/section.json', [
+            'schema' => 'docara.section.v1',
+            'layout' => ['container' => ['max' => 4]],
+        ]);
+        $this->writeJson('content/docs/section.json', [
+            'schema' => 'docara.section.v1',
+            'layout' => ['container' => ['max' => 7]],
+            'navigation' => ['hidden' => true, 'order' => 20],
+        ]);
+        $this->writeJson('content/docs/deep/section.json', [
+            'schema' => 'docara.section.v1',
+            'settings' => ['theme' => 'dark'],
+            'branding' => ['label' => 'Deep documentation'],
+        ]);
+        $this->write('content/docs/deep/install.md', "# Install\n\nPortable content.\n");
+        $this->writeJson('content/docs/deep/install.page.json', [
+            'schema' => 'docara.page.v1',
+            'preset' => 'landing',
+            'slug' => 'docs/install',
+            'locale' => 'en',
+            'layout' => ['container' => ['max' => 8]],
+            'navigation' => ['order' => 5],
+        ]);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function frameworkLock(): array
+    {
+        return [
+            'schema' => 'docara.framework_lock.v1',
+            'runtime' => [
+                'schema' => 'larena.ui.frontend_runtime_lock.v3',
+                'runtime' => 'simai-framework',
+                'pair_id' => 'sf-v5.3.2-7e836d8a-dd786bba',
+                'bundle_id' => 'sf-v5.3.2-7e836d8a-dd786bba-registry-dca5c925-verified-release-artifact-v1',
+                'publication_profile' => 'verified-release-artifact-v1',
+                'tag' => 'v5.3.2',
+                'ui' => [
+                    'tag' => 'v5.3.2',
+                    'commit' => '7e836d8a9414d5da553fb1ab0404721e5b48769a',
+                    'tree' => 'distr',
+                    'mount' => 'ui',
+                    'sha256' => '481eabfafc259ab71cd11aff19f9358cdbd2b6709f85e7e8c39620ce9cace8d7',
+                    'files' => 2596,
+                ],
+                'ui_smart' => [
+                    'tag' => 'v5.3.1',
+                    'commit' => 'dd786bbae98391fb21df9b4e1e6cd402ead0614c',
+                    'tree' => 'smart',
+                    'mount' => 'smart',
+                    'sha256' => '1c2eacbc58f3deb1d351b11dfb5da6755502386bb1224554754477bc700c9262',
+                    'files' => 112,
+                ],
+                'framework_registry' => [
+                    'schema_id' => 'simai.framework.contract-registry',
+                    'compatibility_id' => 'sf-v5.3.2-7e836d8a-dd786bba',
+                    'profile' => 'plain-assets-v1',
+                    'relative_path' => 'contract/contracts/generated/framework-contract-registry.json',
+                    'file_sha256' => 'dca5c925eec12b32727aca090164cab853612f25b4c5b5f56edfba61c915f101',
+                    'source' => [
+                        'commit' => '3cbedb6ac0166ecbd68541811f66c6b1d1576dca',
+                        'tree' => 'contracts/generated',
+                        'tree_oid' => 'b04a3015e793e2e4167b0ca880914391aa844c36',
+                        'mount' => 'contract',
+                        'sha256' => '5906ab3f25cb56ee578dd9c1bed4b24f8cd1d2565fc2eb43cbcb9071b3aff187',
+                        'files' => 1,
+                    ],
+                ],
+                'boot' => [
+                    'css' => 'ui/distr/core/css/core.css',
+                    'javascript' => 'ui/distr/core/js/core.js',
+                    'smart_base' => 'ui/distr/core/js/smart-base.js',
+                    'ui_base' => 'ui/distr/',
+                    'smart_base_path' => 'smart/',
+                ],
+                'components' => [
+                    'sf-button' => [
+                        'source' => 'smart/buttons',
+                        'javascript' => 'smart/smart/buttons/js/buttons.js',
+                        'css' => null,
+                        'attributes' => ['template', 'text', 'type'],
+                    ],
+                    'sf-alert' => [
+                        'source' => 'smart/alert',
+                        'javascript' => 'smart/smart/alert/js/alert.js',
+                        'css' => null,
+                        'requires' => ['sf-icon'],
+                        'attributes' => ['type', 'variant', 'title'],
+                    ],
+                ],
+            ],
+            'manifests' => [
+                'ui.button' => [
+                    'provider' => 'larena/ui',
+                    'provider_revision' => '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663',
+                    'sha256' => str_repeat('2', 64),
+                ],
+                'ui.alert' => [
+                    'provider' => 'larena/ui',
+                    'provider_revision' => '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663',
+                    'sha256' => str_repeat('3', 64),
+                ],
+            ],
+            'asset_projection' => [
+                'schema' => 'docara.framework_asset_projection.v1',
+                'mount' => '_docara/framework',
+                'source' => [
+                    'provider' => 'simai/ui-smart',
+                    'revision' => 'dd786bbae98391fb21df9b4e1e6cd402ead0614c',
+                ],
+                'files' => [
+                    'smart/alert/js/alert.js' => [
+                        'sha256' => '6720a3dd126f35c46fc09ecb6aeb0f2d9ebfcce82388ba8cc031c24cead426a7',
+                    ],
+                    'smart/buttons/js/buttons.js' => [
+                        'sha256' => 'f9d400cd9d88c23243f75b313e9d0040ebee4e12e763d12a5ba86e556cf5c48b',
+                    ],
+                    'smart/icons/js/icons.js' => [
+                        'sha256' => '6fe9a1ac7436ba6017addd7c9d389633e1fe4be4ae86cc0cd7fb45c0b31902d1',
+                    ],
+                ],
+            ],
+            'nonclaims' => [
+                'production_ready',
+                'all_framework_components_ready',
+            ],
+        ];
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    private function writeJson(string $relative, array $data): void
+    {
+        $this->write(
+            $relative,
+            json_encode($data, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+    }
+
+    private function write(string $relative, string $contents): void
+    {
+        $path = $this->path($relative);
+        $directory = dirname($path);
+
+        if (! is_dir($directory)) {
+            mkdir($directory, 0777, true);
+        }
+
+        file_put_contents($path, $contents);
+    }
+
+    private function path(string $relative): string
+    {
+        return $this->root . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $relative);
+    }
+
+    private function deletePath(string $path): void
+    {
+        if (is_link($path) || is_file($path)) {
+            @unlink($path);
+
+            return;
+        }
+
+        if (! is_dir($path)) {
+            return;
+        }
+
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS),
+            RecursiveIteratorIterator::CHILD_FIRST,
+        );
+
+        foreach ($iterator as $entry) {
+            if ($entry->isLink() || $entry->isFile()) {
+                @unlink($entry->getPathname());
+            } else {
+                @rmdir($entry->getPathname());
+            }
+        }
+
+        @rmdir($path);
+    }
+}

@@ -1,0 +1,746 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.federation.process_resolve",
+  "task": "продолжай работу над Docara",
+  "repo": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation",
+  "route": {
+    "schema_version": "1.0.0",
+    "operation_id": "simai.federation.route",
+    "model": "Mirai Graph Hybrid SOT",
+    "runtime_contract": {
+      "mode": "bundle_required",
+      "strict": true,
+      "bundle_id": "simai.federation.runtime",
+      "bundle_sha256": "6572110f1df2f2a359e2c300d2019ccb2f6bb4f6d507573b8f76da0ff032466c",
+      "input_set_sha256": "dbe000c0b4c037a297f2640d632747117477e97c698128796c554db0f9166329",
+      "runtime_activation_allowed": true,
+      "source_freshness_checked": false
+    },
+    "profile": "admin",
+    "task": "продолжай работу над Docara",
+    "intent_mode": "continue",
+    "requested_work_scale": "goal",
+    "recommended_work_scale": "goal",
+    "design_scale": null,
+    "execution_scale": "goal",
+    "work_scale_reason": "The request spans a user-meaningful outcome with multiple milestones or many batches.",
+    "parent_goal_hint": null,
+    "semantic_process_router": {
+      "status": "success",
+      "source": "deterministic_semantic_router_v2",
+      "chain_id": "single_batch_protocol",
+      "process_model_id": null,
+      "intent_mode": "continue",
+      "requested_work_scale": "goal",
+      "recommended_work_scale": "goal",
+      "execution_scale": "goal",
+      "owner_skill": "docara",
+      "companion_skills": [
+        "docs"
+      ],
+      "first_phase": "execute_single_batch_with_required_gates",
+      "requires_track_contract": false,
+      "requires_goal_contract": false,
+      "requires_workflow": false,
+      "required_artifacts": [
+        "verification_summary"
+      ],
+      "quality_criteria": [
+        "batch implemented",
+        "checks recorded",
+        "no unresolved blocker"
+      ],
+      "project_technology_policy": "check project-local workflow/process contracts before generic federation fallback",
+      "can_execute_now": false,
+      "review_required": false,
+      "review_surface": {
+        "status": "not_required",
+        "title": "",
+        "summary": "",
+        "recommended_chain_id": "single_batch_protocol",
+        "recommended_owner_skill": "docara",
+        "recommended_first_phase": "execute_single_batch_with_required_gates",
+        "safe_default_action": "continue_with_selected_process",
+        "confirmation_prompt": "",
+        "must_show": [],
+        "alternatives": []
+      },
+      "confidence": "high",
+      "reason": "The request looks like a bounded one-batch task.",
+      "employee_surface": "User may write ordinary language; internal process ids are for the federation only.",
+      "quality_control_ids": [],
+      "quality_evidence_required": [],
+      "quality_review_required": false
+    },
+    "user_route_summary": {
+      "status": "available",
+      "understood_task": "продолжай работу над Docara",
+      "owner_skill": "docara",
+      "owner_label": "SIMAI: Docara",
+      "companion_skills": [
+        "docs"
+      ],
+      "companion_labels": [
+        "SIMAI: Документация"
+      ],
+      "confidence": "high",
+      "plain_explanation": "Я понял задачу как работу для SIMAI: Docara; дополнительно подключу SIMAI: Документация только для их частей ответственности.",
+      "first_step": "сначала уточню контекст, критерий готовности и ближайший безопасный шаг",
+      "question_policy": "задавать только блокирующие вопросы; остальное собирать по ходу работы",
+      "internal_complexity_hidden_by_default": true,
+      "review_required": false,
+      "quality_control_ids": [],
+      "quality_evidence_required": [],
+      "quality_review_required": false
+    },
+    "primary_skill": "docara",
+    "companion_skills": [
+      "docs"
+    ],
+    "required_graph_contexts": [
+      "docara",
+      "docs"
+    ],
+    "required_gates": [
+      "publication_check"
+    ],
+    "action_gates": [],
+    "action_gates_source": "bundle",
+    "process_model_id": null,
+    "process_models_source": "bundle",
+    "cycle_id": null,
+    "cycle_ids": [],
+    "process_state_machine_id": null,
+    "current_stage": null,
+    "state": null,
+    "next_stage": null,
+    "next_allowed_states": [],
+    "process_stages": [],
+    "human_stages": [],
+    "projection_stages": [],
+    "initial_state": null,
+    "terminal_states": [],
+    "state_mapping": {},
+    "process_contract_status": "skipped",
+    "process_contract_blockers": [],
+    "valid_process_states": [],
+    "required_transition_evidence": {},
+    "launch_record_required": false,
+    "workflow_required": false,
+    "evidence_requirements": [],
+    "evidence_required": [],
+    "project_management_graph": {
+      "status": "not_required",
+      "structural_owner_skill": "graph",
+      "delivery_owner_skill": "teamlead",
+      "warning": null,
+      "bootstrap_command_hint": "python3 skills/graph/scripts/project_management_graph.py init --target <repo> --write",
+      "standard_ref": "skills/graph/references/project-management-graph-standard.md"
+    },
+    "graph_management": {
+      "status": "not_requested",
+      "command_hint": "scripts/federation-graph-management.sh --repo <repo> <operation>",
+      "status_read_only": true,
+      "mutations_require_apply": true
+    },
+    "agent_team": {
+      "schema_version": "1.0.0",
+      "operation_id": "simai.agent_team.resolve",
+      "status": "success",
+      "execution_mode": "single_agent",
+      "fanout_owner": "none",
+      "direct_workers": 0,
+      "max_delegation_depth": 0,
+      "integration_owner": "root_agent",
+      "model_policy": {
+        "capability_class": "frontier",
+        "preferred_model": "sol",
+        "resolved_model": "sol",
+        "resolved_model_id": "gpt-5.6-sol",
+        "available_models": [
+          "sol",
+          "terra"
+        ],
+        "fallback_order": [
+          "sol",
+          "terra",
+          "luna"
+        ],
+        "reasoning_effort": "high",
+        "runtime_reasoning_effort": "high",
+        "context_fork": "inherited",
+        "technology_escalation": {
+          "applied": true,
+          "reason": "technology_selection_ambiguous_or_conflicted"
+        }
+      },
+      "assignment_contract_required": false,
+      "handoff_contract_required": false,
+      "outcome_integrity_review_required": false,
+      "outcome_integrity_lenses": [
+        "outcome",
+        "integration",
+        "evidence_freshness",
+        "simplicity"
+      ],
+      "overlap_guards": [
+        "disjoint_allowed_paths_or_isolated_worktrees",
+        "one_owner_per_write_surface",
+        "review_starts_after_integration",
+        "worker_done_is_not_integrated",
+        "integrated_is_not_verified",
+        "no_double_fanout_with_platform_ultra"
+      ],
+      "reasons": [
+        "single_agent_default"
+      ],
+      "blockers": []
+    },
+    "agent_team_contract_source": "runtime_bundle",
+    "recovery_protocol": null,
+    "process_validators": [],
+    "false_transition_guards": [],
+    "raw_fallback_required": true,
+    "confidence": "high",
+    "blockers": [
+      "specialized_process_selection_required:docara"
+    ],
+    "ranked_candidates": [
+      {
+        "skill": "docara",
+        "score": 18
+      }
+    ],
+    "graph_only_runtime": false,
+    "graph_discovery": {
+      "schema_version": "1.0.0",
+      "operation_id": "simai.federation.graph_discovery",
+      "mode": "read_only",
+      "network_access": "disabled",
+      "writes_performed": false,
+      "start_cwd": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation",
+      "workspace_root": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation",
+      "raw_source_fallback_required": true,
+      "context_plan": {
+        "kind": "task_scoped_graph_context_plan",
+        "task_present": true,
+        "selected_providers": [],
+        "excluded_providers": [],
+        "authority": "derived_context_only",
+        "writes_performed": false
+      },
+      "workspace_status": "not_configured",
+      "operation_status": "not_configured",
+      "blocking": false,
+      "providers": [],
+      "diagnostics": [],
+      "raw_source_fallback": true
+    },
+    "quality_control_ids": [],
+    "quality_controls": [],
+    "quality_controls_source": "bundle",
+    "quality_owner_context_rule_ids": [],
+    "quality_evidence_required": []
+  },
+  "process_contract": {
+    "process_model_id": null,
+    "cycle_id": null,
+    "cycle_ids": [],
+    "process_state_machine_id": null,
+    "state": null,
+    "next_allowed_states": [],
+    "launch_record_required": false,
+    "workflow_required": false,
+    "evidence_required": [],
+    "recovery_protocol": null,
+    "process_validators": [],
+    "false_transition_guards": [],
+    "quality_control_ids": [],
+    "quality_controls_source": "bundle",
+    "quality_evidence_required": [],
+    "process_contract_status": "skipped",
+    "process_contract_blockers": [],
+    "valid_process_states": [],
+    "workflow_state_source": null,
+    "launch_record_path": null,
+    "track_context_ref": "track_context",
+    "goal_context_ref": "goal_context",
+    "ai_employee_contract_ref": "ai_employee_contract"
+  },
+  "execution_contract": {
+    "schema_version": "1.0.0",
+    "operation_id": "simai.federation.execution_contract",
+    "intent": "продолжай работу над Docara",
+    "repo": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation",
+    "mode": "bounded_execution",
+    "primary_skill": "docara",
+    "companions": [
+      "docs"
+    ],
+    "process_model_id": "",
+    "process_state": null,
+    "workflow_required": false,
+    "workflow_ref": "",
+    "workflow_selection": {
+      "status": "not_found",
+      "source": "none",
+      "confidence": "none",
+      "reason": "no active workflow candidate found",
+      "selected": {},
+      "warnings": []
+    },
+    "current_state": {
+      "process": null,
+      "goal_status": "not_found",
+      "project_memory_guard": "success"
+    },
+    "current_owner": {
+      "type": "skill_owner",
+      "primary_skill": "docara",
+      "companions": [
+        "docs"
+      ]
+    },
+    "allowed_next_action": "execute_single_batch_with_required_gates",
+    "forbidden_actions": [
+      "destructive_or_live_action_without_action_gate",
+      "claim_completion_without_required_evidence",
+      "start_unrelated_workflow_from_stale_chat",
+      "start_or_resume_persistent_thread_loop"
+    ],
+    "expected_output": "result_with_evidence",
+    "evidence_required": [],
+    "quality_control_ids": [],
+    "quality_controls_source": "bundle",
+    "quality_evidence_required": [],
+    "technology_execution_packet": {
+      "schema_version": "1.0.0",
+      "operation_id": "simai.federation.technology_execution_packet",
+      "status": "fail",
+      "technology_signature": "6ac0015cbe413455281c25174e293c0e9cb9eac59cc3ecc6c1c557ca2f3ebddc",
+      "owner_skill": "docara",
+      "process_model_id": "",
+      "process_state_machine_id": null,
+      "owner_contract_sha256": "8ec082cbfd1abb5b9098900e9a4be5752572a8ef2652851ea7699a031976c6c9",
+      "source_refs": [
+        {
+          "id": "6bd7bdf8d514fc46",
+          "authority": "raw_owner_source",
+          "repo": "ai-codex-skill-docara",
+          "repo_revision": "c160b392e5947672fa3584b72dd33bf2f9237cf3",
+          "relative_path": "skills/docara/SKILL.md",
+          "role": "skill_entrypoint",
+          "required": true,
+          "sha256": "e53b74c1fedb588365383f31b547879789ead665719fc862a26eb20813aa7fa4"
+        },
+        {
+          "id": "6e240758c51edbdc",
+          "authority": "canonical_graph_projection",
+          "repo": "ai-codex-skill-graph",
+          "repo_revision": "87c165ed5fa52aca8cdeae41a83a9bb52d9ff5ae",
+          "relative_path": "graph/generated/mirai-graph/federation-control-plane/federation-registry-20260530/federation-skill-registry.json",
+          "role": "process_registry",
+          "required": true,
+          "sha256": "d23b4d2283f59c9f5528aaeb1fdd23f9f17461452a4e8d9fd6a926819225851c"
+        },
+        {
+          "id": "3eaee7cbac6e3557",
+          "authority": "graph_process_evidence",
+          "repo": "ai-codex-skill-graph",
+          "repo_revision": "87c165ed5fa52aca8cdeae41a83a9bb52d9ff5ae",
+          "relative_path": "graph/generated/mirai-graph/skill-technology-process-conversion/docara-primary-methodology-coverage-batch-skill-mesh-balance-20260604/process-contract.json",
+          "role": "selected_process_contract",
+          "required": true,
+          "sha256": "679457ed14b12ff0c28492ded9f0b0c70dea0e4cfb1e5d30fa36176bce99262e"
+        },
+        {
+          "id": "a8ac2b435348a1e0",
+          "authority": "graph_process_evidence",
+          "repo": "ai-codex-skill-graph",
+          "repo_revision": "87c165ed5fa52aca8cdeae41a83a9bb52d9ff5ae",
+          "relative_path": "graph/generated/mirai-graph/skill-technology-process-conversion/docara-documentation-site-publication-20260603/process-contract.json",
+          "role": "selected_process_contract",
+          "required": true,
+          "sha256": "660d2eae8d3c9e46a2af1304e4d4a9ad9eb44448201709cabae1254049302320"
+        }
+      ],
+      "invariants": [
+        "build_success_is_not_publication_success",
+        "generated_contract_is_not_canonical_approval",
+        "github_pages_requires_settings_and_path_prefix_check",
+        "graph_sync_proposed_is_not_canonical_update",
+        "init_update_must_not_overwrite_source_docs",
+        "owner_raw_sources_remain_authoritative_for_methodology",
+        "root_docs_output_is_not_docara_source",
+        "sample_branding_is_not_public_ready",
+        "silent_merge_forbidden",
+        "technology_packet_is_not_conformance_evidence",
+        "translation_sync_is_not_translation_review",
+        "uncontracted_hardcoded_fallback_forbidden",
+        "raw_owner_sources_remain_authoritative",
+        "graph_runtime_does_not_grant_authorization",
+        "completion_requires_current_conformance_evidence"
+      ],
+      "steps": [],
+      "required_checks": [],
+      "conformance_required": false,
+      "deviation_policy": "explicit_reason_and_evidence_required",
+      "evidence_policy": {
+        "schema_version": "2.0.0",
+        "max_age_seconds": 86400,
+        "verification_run_binding_required": true,
+        "target_revision_binding_required": true,
+        "typed_result_artifacts_required": true,
+        "empty_write_diff_allowed": false,
+        "read_only_mode_must_be_explicit": true
+      },
+      "available_owner_process_models": [
+        "docara_documentation_site_publication"
+      ],
+      "blockers": [
+        "specialized_process_selection_required:docara"
+      ],
+      "warnings": []
+    },
+    "technology_conformance_required": false,
+    "agent_team": {
+      "schema_version": "1.0.0",
+      "operation_id": "simai.agent_team.resolve",
+      "status": "success",
+      "execution_mode": "single_agent",
+      "fanout_owner": "none",
+      "direct_workers": 0,
+      "max_delegation_depth": 0,
+      "integration_owner": "root_agent",
+      "model_policy": {
+        "capability_class": "frontier",
+        "preferred_model": "sol",
+        "resolved_model": "sol",
+        "resolved_model_id": "gpt-5.6-sol",
+        "available_models": [
+          "sol",
+          "terra"
+        ],
+        "fallback_order": [
+          "sol",
+          "terra",
+          "luna"
+        ],
+        "reasoning_effort": "high",
+        "runtime_reasoning_effort": "high",
+        "context_fork": "inherited",
+        "technology_escalation": {
+          "applied": true,
+          "reason": "technology_selection_ambiguous_or_conflicted"
+        }
+      },
+      "assignment_contract_required": false,
+      "handoff_contract_required": false,
+      "outcome_integrity_review_required": false,
+      "outcome_integrity_lenses": [
+        "outcome",
+        "integration",
+        "evidence_freshness",
+        "simplicity"
+      ],
+      "overlap_guards": [
+        "disjoint_allowed_paths_or_isolated_worktrees",
+        "one_owner_per_write_surface",
+        "review_starts_after_integration",
+        "worker_done_is_not_integrated",
+        "integrated_is_not_verified",
+        "no_double_fanout_with_platform_ultra"
+      ],
+      "reasons": [
+        "single_agent_default"
+      ],
+      "blockers": []
+    },
+    "agent_team_contract_source": "runtime_bundle",
+    "stop_condition": "completed_or_blocker_or_approval_boundary",
+    "warnings": [],
+    "blockers": [
+      "specialized_process_selection_required:docara"
+    ],
+    "status": "fail"
+  },
+  "technology_execution_packet": {
+    "schema_version": "1.0.0",
+    "operation_id": "simai.federation.technology_execution_packet",
+    "status": "fail",
+    "technology_signature": "6ac0015cbe413455281c25174e293c0e9cb9eac59cc3ecc6c1c557ca2f3ebddc",
+    "owner_skill": "docara",
+    "process_model_id": "",
+    "process_state_machine_id": null,
+    "owner_contract_sha256": "8ec082cbfd1abb5b9098900e9a4be5752572a8ef2652851ea7699a031976c6c9",
+    "source_refs": [
+      {
+        "id": "6bd7bdf8d514fc46",
+        "authority": "raw_owner_source",
+        "repo": "ai-codex-skill-docara",
+        "repo_revision": "c160b392e5947672fa3584b72dd33bf2f9237cf3",
+        "relative_path": "skills/docara/SKILL.md",
+        "role": "skill_entrypoint",
+        "required": true,
+        "sha256": "e53b74c1fedb588365383f31b547879789ead665719fc862a26eb20813aa7fa4"
+      },
+      {
+        "id": "6e240758c51edbdc",
+        "authority": "canonical_graph_projection",
+        "repo": "ai-codex-skill-graph",
+        "repo_revision": "87c165ed5fa52aca8cdeae41a83a9bb52d9ff5ae",
+        "relative_path": "graph/generated/mirai-graph/federation-control-plane/federation-registry-20260530/federation-skill-registry.json",
+        "role": "process_registry",
+        "required": true,
+        "sha256": "d23b4d2283f59c9f5528aaeb1fdd23f9f17461452a4e8d9fd6a926819225851c"
+      },
+      {
+        "id": "3eaee7cbac6e3557",
+        "authority": "graph_process_evidence",
+        "repo": "ai-codex-skill-graph",
+        "repo_revision": "87c165ed5fa52aca8cdeae41a83a9bb52d9ff5ae",
+        "relative_path": "graph/generated/mirai-graph/skill-technology-process-conversion/docara-primary-methodology-coverage-batch-skill-mesh-balance-20260604/process-contract.json",
+        "role": "selected_process_contract",
+        "required": true,
+        "sha256": "679457ed14b12ff0c28492ded9f0b0c70dea0e4cfb1e5d30fa36176bce99262e"
+      },
+      {
+        "id": "a8ac2b435348a1e0",
+        "authority": "graph_process_evidence",
+        "repo": "ai-codex-skill-graph",
+        "repo_revision": "87c165ed5fa52aca8cdeae41a83a9bb52d9ff5ae",
+        "relative_path": "graph/generated/mirai-graph/skill-technology-process-conversion/docara-documentation-site-publication-20260603/process-contract.json",
+        "role": "selected_process_contract",
+        "required": true,
+        "sha256": "660d2eae8d3c9e46a2af1304e4d4a9ad9eb44448201709cabae1254049302320"
+      }
+    ],
+    "invariants": [
+      "build_success_is_not_publication_success",
+      "generated_contract_is_not_canonical_approval",
+      "github_pages_requires_settings_and_path_prefix_check",
+      "graph_sync_proposed_is_not_canonical_update",
+      "init_update_must_not_overwrite_source_docs",
+      "owner_raw_sources_remain_authoritative_for_methodology",
+      "root_docs_output_is_not_docara_source",
+      "sample_branding_is_not_public_ready",
+      "silent_merge_forbidden",
+      "technology_packet_is_not_conformance_evidence",
+      "translation_sync_is_not_translation_review",
+      "uncontracted_hardcoded_fallback_forbidden",
+      "raw_owner_sources_remain_authoritative",
+      "graph_runtime_does_not_grant_authorization",
+      "completion_requires_current_conformance_evidence"
+    ],
+    "steps": [],
+    "required_checks": [],
+    "conformance_required": false,
+    "deviation_policy": "explicit_reason_and_evidence_required",
+    "evidence_policy": {
+      "schema_version": "2.0.0",
+      "max_age_seconds": 86400,
+      "verification_run_binding_required": true,
+      "target_revision_binding_required": true,
+      "typed_result_artifacts_required": true,
+      "empty_write_diff_allowed": false,
+      "read_only_mode_must_be_explicit": true
+    },
+    "available_owner_process_models": [
+      "docara_documentation_site_publication"
+    ],
+    "blockers": [
+      "specialized_process_selection_required:docara"
+    ],
+    "warnings": []
+  },
+  "intake_briefing": {
+    "required": false,
+    "status": "not_applicable"
+  },
+  "project_local_process": {
+    "status": "not_found",
+    "source": "none",
+    "sources_checked": [
+      "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/memory/CURRENT.yaml",
+      "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/memory/TRACKS.yaml"
+    ],
+    "override_allowed": false,
+    "applied": false,
+    "selected_fields": {},
+    "contract_files": [
+      {
+        "source": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/memory/CURRENT.yaml",
+        "fields": {
+          "current_focus": "docara-consolidation"
+        }
+      },
+      {
+        "source": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/memory/TRACKS.yaml",
+        "fields": {
+          "current_workflow": "source/workflow/2026-07-22-docara-2-audit-corrections.md"
+        }
+      }
+    ],
+    "fallback_policy": "generic federation route remains authoritative when no project-local contract is found",
+    "semantic_chain_before_override": "single_batch_protocol",
+    "reason": "no project-local process contract found"
+  },
+  "track_context": {
+    "status": "not_found",
+    "source_type": "track_dashboard",
+    "source": "",
+    "track_id": "",
+    "final_outcome": "",
+    "current_goal": "",
+    "completed_goals": [],
+    "remaining_goal_candidates": [],
+    "next_meaningful_goal": "",
+    "blockers": [
+      "track_workflow_not_found"
+    ],
+    "dashboard": {
+      "status": "success",
+      "track_count": 2,
+      "selection_status": null
+    }
+  },
+  "goal_context": {
+    "status": "not_found",
+    "source": "",
+    "current_goal": "",
+    "done_when": "",
+    "remaining_stages": [],
+    "remaining_batches": [],
+    "next_safe_batch": "",
+    "done_when_satisfied": false,
+    "can_stop_after_this_response": false,
+    "blockers": [
+      "active_workflow_not_found"
+    ]
+  },
+  "personal_memory_context": {
+    "status": "dry-run",
+    "decision": "inject",
+    "reason": "meaningful_or_continuation_task",
+    "score": 1,
+    "signals": [
+      "релиз|release|новост|documentation|документац|workflow|handoff|продолж"
+    ],
+    "context_pack": "source/workflow/memory-context/2026-07-23-docara.md",
+    "match_count": null,
+    "mode": "decide",
+    "workflow": null,
+    "memory_context_policy": "memory-derived; verify live repo/runtime state before writes"
+  },
+  "project_memory_context": {
+    "status": "success",
+    "decision": "skip",
+    "reason": "low_signal_task",
+    "mode": "decide",
+    "workflow": "",
+    "command": "bash scripts/simai-project-memory.sh auto --task <task>"
+  },
+  "project_memory_guard": {
+    "schema_version": "1.0.0",
+    "operation_id": "simai.project_memory.guard",
+    "repo": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation",
+    "task": "продолжай работу над Docara",
+    "phase": "workflow-start",
+    "significant": true,
+    "track": "docara-consolidation",
+    "workflow": "",
+    "memory_dir": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/memory",
+    "project_current": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/memory/CURRENT.yaml",
+    "track_current": "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/source/memory/tracks/docara-consolidation/CURRENT.yaml",
+    "workflow_link": "source/workflow/2026-07-22-docara-2-portable-only-release-candidate.md",
+    "actions": [],
+    "warnings": [],
+    "blockers": [],
+    "status": "success"
+  },
+  "auto_goal_handoff": {
+    "schema_version": "1.0.0",
+    "operation_id": "simai.auto_goal_handoff_context",
+    "status": "success",
+    "mode": "decide",
+    "decision": "auto_goal_handoff_recommended",
+    "requires_goal_contract": true,
+    "auto_execution_confirmed": false,
+    "can_auto_execute": false,
+    "workflow": "",
+    "command": "bash scripts/simai-auto-goal-handoff.sh \"продолжай работу над Docara\" --repo \"/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation\" --json",
+    "policy": "For meaningful goal/track work, a short user confirmation such as `делай` may create or update durable workflow and start the first safe batch without manual copy-paste of the goal text."
+  },
+  "workflow_selection": {
+    "status": "not_found",
+    "selected": {},
+    "source": "none",
+    "confidence": "none",
+    "reason": "no active workflow candidate found",
+    "candidates": [],
+    "warnings": [],
+    "blockers": [
+      "active_workflow_not_found"
+    ]
+  },
+  "active_workflows": [],
+  "active_workflow_state": {},
+  "ai_employee_contract": {
+    "status": "operational_surface_contract",
+    "scope": "process_control_plane",
+    "worker_model_surfaces": [
+      "role",
+      "skills_tools_boundary",
+      "workflow_memory_boundary",
+      "action_model",
+      "result_model",
+      "quality_boundary"
+    ],
+    "active_primary_role": "docara",
+    "active_companion_roles": [
+      "docs"
+    ],
+    "operational_surfaces": [
+      "scripts/federation-process-resolve.py",
+      "scripts/federation-route.py",
+      "source/workflow"
+    ],
+    "character_layer_composition": "behavior_governance_only",
+    "authorization_outside_character_layer": true,
+    "authorization_surfaces": [
+      "gates",
+      "policies",
+      "entitlement",
+      "explicit_approval_systems"
+    ],
+    "runtime_behavior_changed": false,
+    "character_context_runtime_output_included": false,
+    "invariant": "Character Layer is behavior governance, not authorization."
+  },
+  "continuation_detected": false,
+  "track_goal_request_detected": false,
+  "goal_execution_request_detected": false,
+  "track_design_request_detected": false,
+  "track_auto_request_detected": false,
+  "next_track_request_detected": false,
+  "track_runtime_goal_guard": {
+    "active": false,
+    "required": false,
+    "goal_scope": "",
+    "missing_goal_blocker": "live_goal_missing_for_track_auto_execution",
+    "required_action": "",
+    "notes": []
+  },
+  "next_action": "execute_single_batch_with_required_gates",
+  "goal_completion_guard": {
+    "active": false,
+    "done_when_satisfied": false,
+    "can_stop_after_this_response": false,
+    "remaining_stage_count": null,
+    "remaining_batch_count": null,
+    "next_safe_batch": "",
+    "required_final_response_fields": []
+  },
+  "status": "success",
+  "decision_sha256": "0622bb09f6a9ad021b45fbe005eb2d12f97ca3f01181e90603380b77ecbddefd"
+}

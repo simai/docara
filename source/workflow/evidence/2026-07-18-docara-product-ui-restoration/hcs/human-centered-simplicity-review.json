@@ -1,0 +1,290 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.review",
+  "quality_control_id": "human_centered_simplicity",
+  "applicable": true,
+  "task": "Упростить интерфейс первой продуктовой вертикали Docara: четырёхуровневая навигация, наследуемый бренд и доступный responsive shell на закреплённом Simai Framework.",
+  "primary_user_outcome": {
+    "id": "UO-DOCARA-PRODUCT-SHELL",
+    "actor": "автор и читатель документации",
+    "job": "настроить бренд и без потери контекста найти страницу в глубокой документации на desktop или mobile",
+    "success_condition": "четыре уровня доступны прямыми ссылками, активный путь виден, mobile-навигация возвращает фокус, а тема и бренд работают без лишнего runtime"
+  },
+  "changed_surface_inventory": {
+    "mode": "artifact_comparison",
+    "baseline_ref": "4a312c1b14cf1e0ed0ad77d32e39b006b2ff9049",
+    "target_ref": "83d677c7eb5f22d9ca2f4ac16990fe16eddbe985",
+    "diff_sha256": "df40338b3738e3d0b2ed433e268382c82846b2ab8a443896d4c73321f2a8d9d3",
+    "evidence_paths": [
+      "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md",
+      "src/PortableSite/PortableBrandAssetPlanner.php",
+      "src/PortableSite/PortableHtmlRenderer.php",
+      "src/PortableSite/PortableNavigationBuilder.php"
+    ],
+    "files": [
+      {
+        "path": "src/PortableSite/PortableNavigationBuilder.php",
+        "surface_ids": [
+          "docs_navigation_tree"
+        ]
+      },
+      {
+        "path": "src/PortableSite/PortableBrandAssetPlanner.php",
+        "surface_ids": [
+          "brand_configuration"
+        ]
+      },
+      {
+        "path": "src/PortableSite/PortableHtmlRenderer.php",
+        "surface_ids": [
+          "responsive_navigation_shell"
+        ]
+      },
+      {
+        "path": "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md",
+        "surface_ids": [
+          "framework_theme_icons"
+        ]
+      }
+    ]
+  },
+  "necessity_map": [
+    {
+      "id": "docs_navigation_tree",
+      "surface_type": "screen",
+      "description": "Иерархическое дерево с прямыми ссылками, отдельными disclosures и видимым active trail",
+      "disposition": "retain",
+      "disclosure": "visible",
+      "justification": {
+        "type": "user_outcome",
+        "ref": "UO-DOCARA-PRODUCT-SHELL"
+      }
+    },
+    {
+      "id": "brand_configuration",
+      "surface_type": "configuration",
+      "description": "Наследуемые title, label, logo, dark logo и favicon с безопасной публикацией",
+      "disposition": "retain",
+      "disclosure": "progressive",
+      "justification": {
+        "type": "user_outcome",
+        "ref": "UO-DOCARA-PRODUCT-SHELL"
+      }
+    },
+    {
+      "id": "responsive_navigation_shell",
+      "surface_type": "screen",
+      "description": "Левая desktop-панель и один native mobile disclosure с тем же деревом",
+      "disposition": "retain",
+      "disclosure": "visible",
+      "justification": {
+        "type": "user_outcome",
+        "ref": "UO-DOCARA-PRODUCT-SHELL"
+      }
+    },
+    {
+      "id": "framework_theme_icons",
+      "surface_type": "ui_element",
+      "description": "Одна theme-action и disclosure glyphs из закреплённой пары Simai Framework",
+      "disposition": "retain",
+      "disclosure": "visible",
+      "justification": {
+        "type": "user_outcome",
+        "ref": "UO-DOCARA-PRODUCT-SHELL"
+      }
+    }
+  ],
+  "removal_review": {
+    "challenged_ids": [
+      "docs_navigation_tree",
+      "brand_configuration",
+      "responsive_navigation_shell",
+      "framework_theme_icons"
+    ],
+    "removed_ids": [],
+    "merged_ids": [],
+    "summary": "Каждая поверхность поддерживает основной сценарий; дублирующие link/disclosure действия и отдельный mobile-runtime не добавлялись."
+  },
+  "simplest_complete_alternative": "Оставить один рекурсивный semantic tree, Core menu на desktop, native details на mobile, один наследуемый brand contract и одну Framework theme-action.",
+  "progressive_disclosure": {
+    "required": true,
+    "strategy": "На desktop раскрывается только active trail; на mobile всё дерево скрыто за одним нативным пунктом «Разделы»; расширенная настройка бренда остаётся в JSON.",
+    "discoverability_evidence": "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md",
+    "not_required_reason": ""
+  },
+  "complexity_delta": [
+    {
+      "measure": "verified_visible_navigation_depth",
+      "before": 1,
+      "after": 4,
+      "unit": "levels",
+      "interpretation": "Необходимая информационная иерархия восстановлена без отдельного navigation runtime.",
+      "justification_ref": "src/PortableSite/PortableNavigationBuilder.php"
+    },
+    {
+      "measure": "safe_brand_asset_fields",
+      "before": 0,
+      "after": 3,
+      "unit": "fields",
+      "interpretation": "Logo, dark logo и favicon добавлены как одна наследуемая и валидируемая ветка.",
+      "justification_ref": "src/PortableSite/PortableBrandAssetPlanner.php"
+    }
+  ],
+  "automation_review": {
+    "present": false,
+    "simplified_before_automation": false,
+    "stable_process_proven": false,
+    "evidence_ref": "src/PortableSite/PortableHtmlRenderer.php"
+  },
+  "scenario_evidence": [
+    {
+      "scenario": "SC-DOCARA-DEEP-NAVIGATION",
+      "actor": "читатель документации",
+      "steps": [
+        "Открыть страницу четвёртого уровня",
+        "Проверить active trail",
+        "Свернуть и раскрыть раздел",
+        "Открыть прямую ссылку раздела"
+      ],
+      "expected": "Страница и три предка понятны, ссылка и disclosure не конфликтуют.",
+      "actual": "Четыре уровня и три раскрытых предка видимы; collapse/expand и Enter прошли.",
+      "evidence_ref": "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md",
+      "result": "PASS"
+    },
+    {
+      "scenario": "SC-DOCARA-RESPONSIVE-NAVIGATION",
+      "actor": "мобильный читатель",
+      "steps": [
+        "Загрузить страницу при 390 x 844",
+        "Открыть «Разделы»",
+        "Закрыть Escape",
+        "Расширить тот же tab до desktop"
+      ],
+      "expected": "Нет clipping/overflow, focus возвращается, desktop active link появляется без page scroll.",
+      "actual": "Mobile и same-tab desktop переход прошли; manual rail scroll сохраняется.",
+      "evidence_ref": "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md",
+      "result": "PASS"
+    },
+    {
+      "scenario": "SC-DOCARA-BRAND-THEME",
+      "actor": "автор документации",
+      "steps": [
+        "Настроить брендовые assets",
+        "Собрать portable site",
+        "Переключить light/dark"
+      ],
+      "expected": "Бренд наследуется безопасно, accessible name не дублируется, обе темы читаемы.",
+      "actual": "Assets опубликованы content-addressed, logo alt пуст, brand name один, обе темы прошли.",
+      "evidence_ref": "src/PortableSite/PortableBrandAssetPlanner.php",
+      "result": "PASS"
+    }
+  ],
+  "protected_complexity_review": [
+    {
+      "category": "accessibility",
+      "status": "PRESERVED",
+      "evidence_ref": "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md"
+    },
+    {
+      "category": "security",
+      "status": "PRESERVED",
+      "evidence_ref": "src/PortableSite/PortableBrandAssetPlanner.php"
+    },
+    {
+      "category": "data_integrity",
+      "status": "PRESERVED",
+      "evidence_ref": "src/PortableSite/PortableBrandAssetPlanner.php"
+    },
+    {
+      "category": "permissions",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "src/PortableSite/PortableNavigationBuilder.php"
+    },
+    {
+      "category": "error_handling",
+      "status": "PRESERVED",
+      "evidence_ref": "src/PortableSite/PortableBrandAssetPlanner.php"
+    },
+    {
+      "category": "observability",
+      "status": "PRESERVED",
+      "evidence_ref": "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md"
+    },
+    {
+      "category": "migrations",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "src/PortableSite/PortableNavigationBuilder.php"
+    },
+    {
+      "category": "rollback",
+      "status": "NOT_APPLICABLE",
+      "evidence_ref": "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md"
+    }
+  ],
+  "tester_evidence_review": {
+    "status": "VERIFIED",
+    "verdict_ref": "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/hcs/human-centered-simplicity-tester-verdict.json",
+    "verdict_sha256": "24bdd09491cfbed93f39794d0b47ff42206d451aa4bcdf8607aff0bae8379125",
+    "reviewed_surface_ids": [
+      "docs_navigation_tree",
+      "brand_configuration",
+      "responsive_navigation_shell",
+      "framework_theme_icons"
+    ],
+    "surface_classifications": [
+      {
+        "surface_id": "docs_navigation_tree",
+        "classification": "ordinary",
+        "protected_categories": [],
+        "evidence_ref": "src/PortableSite/PortableNavigationBuilder.php"
+      },
+      {
+        "surface_id": "brand_configuration",
+        "classification": "ordinary",
+        "protected_categories": [],
+        "evidence_ref": "src/PortableSite/PortableBrandAssetPlanner.php"
+      },
+      {
+        "surface_id": "responsive_navigation_shell",
+        "classification": "ordinary",
+        "protected_categories": [],
+        "evidence_ref": "src/PortableSite/PortableHtmlRenderer.php"
+      },
+      {
+        "surface_id": "framework_theme_icons",
+        "classification": "ordinary",
+        "protected_categories": [],
+        "evidence_ref": "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md"
+      }
+    ],
+    "evidence_paths": [
+      "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md",
+      "src/PortableSite/PortableBrandAssetPlanner.php",
+      "src/PortableSite/PortableHtmlRenderer.php",
+      "src/PortableSite/PortableNavigationBuilder.php"
+    ],
+    "evidence_fingerprints": [
+      {
+        "path": "source/workflow/evidence/2026-07-18-docara-product-ui-restoration/browser-acceptance.md",
+        "sha256": "8b3b6a6963e0be4321d388ff92e2cdb787a42baacd04d6841646e97126aef9cf"
+      },
+      {
+        "path": "src/PortableSite/PortableBrandAssetPlanner.php",
+        "sha256": "68de011315853a86571ee2326dd883d84cb1621e2cbc6c45c9e18efec9c5efd5"
+      },
+      {
+        "path": "src/PortableSite/PortableHtmlRenderer.php",
+        "sha256": "1a58da7f41a06347d3f082f24104d1289f65a5dfdd20975389fb0de668f9317c"
+      },
+      {
+        "path": "src/PortableSite/PortableNavigationBuilder.php",
+        "sha256": "f40a692d7502cdf35f6bfa2e2bbcb3df90e11f6932f922b9fbeb923ecc559ffb"
+      }
+    ],
+    "contradictions": [],
+    "verdict": "PASS"
+  },
+  "residual_complexity": [],
+  "blocking_findings": [],
+  "verdict": "PASS"
+}

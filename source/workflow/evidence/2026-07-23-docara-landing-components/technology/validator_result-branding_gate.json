@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.federation.validator_result",
+  "verification_run_id": "docara-landing-components-20260723",
+  "created_at": "2026-07-23T15:05:41.451131+00:00",
+  "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+  "technology_signature": "493e214b46bf8c137c9a499698826b0783c4ba7585d13b3d731376eca3a84bd0",
+  "subject_id": "branding_gate",
+  "status": "success",
+  "detail": "Existing branding contract preserved and rendered in light/dark browser acceptance.",
+  "exit_code": 0
+}

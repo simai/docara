@@ -1,0 +1,7 @@
+{
+  "schema": "docara.section.v1",
+  "title": "Содержание и макет",
+  "layout": {
+    "container": {"max": 7}
+  }
+}

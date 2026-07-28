@@ -1,0 +1,248 @@
+schema: docara.product_capability_matrix.v1
+date: "2026-07-19"
+baseline_revision: "31f468be85d015b962fccc2b4c089204aab1410b"
+purpose: >-
+  Goal acceptance projection. This is not a second Framework registry; each
+  record must be proven from native Markdown, an exact Framework contract, a
+  Docara recipe/generated feature and executable evidence.
+projection_state: accepted_local_product_no_release_claim
+status_legend:
+  pass: required final outcome, valid only with the unified exact-candidate verdict
+  bounded: useful baseline exists but the required product contract is incomplete
+  required_missing: required by this Goal and not yet implemented/accepted
+  deferred: explicit non-goal with a reason
+field_semantics:
+  baseline: historical state at baseline_revision
+  target: required state evaluated by the unified exact-candidate acceptance
+capabilities:
+  - id: navigation.hierarchy
+    family: reader_orientation
+    kind: framework_component_recipe
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 1
+    source: simai/ui:distr/component/menu
+  - id: navigation.active_trail
+    family: reader_orientation
+    kind: generated
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 1
+    source: src/PortableSite/PortableNavigationBuilder.php
+  - id: discovery.full_text_search
+    family: discovery
+    kind: generated
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 2
+    source: src/PortableSite/PortableSearchIndexBuilder.php
+  - id: reading.heading_toc
+    family: reading_context
+    kind: generated
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 3
+    source: src/PortableSite/PortableDocumentOutlineBuilder.php
+  - id: reading.breadcrumbs
+    family: reading_context
+    kind: generated_recipe
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 3
+    source: src/PortableSite/PortableNavigationBuilder.php
+  - id: reading.previous_next
+    family: reading_context
+    kind: generated_recipe
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 3
+    source: src/PortableSite/PortableNavigationBuilder.php
+  - id: reading.settings
+    family: reading_context
+    kind: app_behavior
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 4
+    source: src/PortableSite/PortableHtmlRenderer.php
+  - id: layout.landing
+    family: layouts
+    kind: recipe
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 5
+    source: src/PortableSite/PortableHtmlRenderer.php
+  - id: native.headings_and_text
+    family: native_markdown
+    kind: native
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: league/commonmark
+  - id: native.lists_and_quotes
+    family: native_markdown
+    kind: native
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: league/commonmark
+  - id: native.image
+    family: native_markdown
+    kind: native
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: src/PortableSite/PortableSiteBuilder.php
+  - id: native.code
+    family: native_markdown
+    kind: native_recipe
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: src/PortableSite/PortableMarkdownRenderer.php
+  - id: native.table
+    family: native_markdown
+    kind: native_recipe
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: src/PortableSite/PortableMarkdownRenderer.php
+  - id: recipe.card
+    family: composition
+    kind: recipe
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: src/PortableSite/PortableMarkdownRenderer.php
+  - id: recipe.steps
+    family: composition
+    kind: recipe
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: src/PortableSite/PortableMarkdownRenderer.php
+  - id: recipe.tabs
+    family: composition
+    kind: typed_composition
+    priority: optional
+    baseline: deferred
+    target: deferred
+    batch: 7
+    source: resources/component-catalog/requirements/ui.tabs.json
+    reason: >-
+      sequential headings and sections cover the current documentation job;
+      interactive tabs require a separately accepted keyboard, focus, ARIA and
+      immutable Framework admission contract
+  - id: recipe.columns
+    family: composition
+    kind: typed_composition
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 7
+    source: resources/component-catalog/typed/docara.columns.json
+  - id: recipe.panel
+    family: composition
+    kind: typed_composition_recipe
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: resources/component-catalog/typed/docara.card.json
+  - id: recipe.cta_link
+    family: composition
+    kind: recipe
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 5
+    source: resources/component-catalog/typed/docara.cta.json
+  - id: smart.alert
+    family: framework_smart
+    kind: smart
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: resources/framework/manifests/ui-alert.json
+  - id: smart.button
+    family: framework_smart
+    kind: smart
+    priority: required
+    baseline: bounded
+    target: pass
+    batch: 7
+    source: resources/framework/manifests/ui-button.json
+  - id: smart.badge
+    family: framework_smart
+    kind: smart
+    priority: optional
+    baseline: deferred
+    target: deferred
+    batch: 7
+    source: resources/component-catalog/requirements/ui.badge.json
+    reason: >-
+      plain emphasized status text covers the current job; exact manifest,
+      lock, asset, schema and browser admission remains separate owner work
+  - id: smart.icon
+    family: framework_smart
+    kind: smart
+    priority: optional
+    baseline: deferred
+    target: deferred
+    batch: 7
+    source: resources/component-catalog/requirements/content.icon.json
+    reason: >-
+      the product shell may use its pinned icon dependency, but public Markdown
+      authoring needs a separate semantic and accessibility contract
+  - id: catalogue.effective_projection
+    family: authoring_system
+    kind: generated
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 6
+    source: src/ComponentCatalog/EffectiveComponentCatalogBuilder.php
+  - id: documentation.five_audience_paths
+    family: documentation
+    kind: content
+    priority: required
+    baseline: required_missing
+    target: pass
+    batch: 8
+    source: tests/Unit/DocumentationContractTest.php
+  - id: optional.mermaid
+    family: rich_content
+    kind: external_renderer
+    priority: optional
+    baseline: deferred
+    target: deferred
+    reason: requires a separately pinned renderer and security contract
+  - id: optional.math
+    family: rich_content
+    kind: external_renderer
+    priority: optional
+    baseline: deferred
+    target: deferred
+    reason: not needed for the first complete product vertical
+  - id: optional.vendor_embeds
+    family: rich_content
+    kind: embed
+    priority: optional
+    baseline: deferred
+    target: deferred
+    reason: privacy and vendor allowlists require a separate contract

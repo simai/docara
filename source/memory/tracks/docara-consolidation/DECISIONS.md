@@ -1,0 +1,40 @@
+# Track Decisions
+
+## 2026-07-19 — local product boundary
+
+The accepted outcome is the complete local Docara product served at
+`https://docara.test/`. Public release, default-branch migration,
+Framework-owner changes and repository retirement are intentionally separate
+future workflows and are not implied by local acceptance.
+
+The exact accepted build consumes immutable SIMAI Framework revisions and
+keeps Markdown as content plus strict inherited JSON as the shell/configuration
+contract. The generated component catalogue is a projection, not a second
+Framework registry.
+
+## 2026-07-20 — replacement contract
+
+Legacy is a compatibility and migration reference, not the frontend runtime to
+restore. Portable Docara uses explicit capability dispositions, one
+locale/version per build, declarative same-site redirects, a content-first
+shell, modal mobile navigation and one Framework-owned code surface.
+
+Local replacement readiness does not imply public release, default-branch
+migration or repository retirement.
+
+## 2026-07-24 — one Framework-owned container contract
+
+Docara has one page-width setting: `layout.container.max`, an integer from 1
+through 8. The default is 7 and is rendered as `max-container-7` plus nested
+Framework `container m-inline-auto` surfaces. Width values are owned by the
+SIMAI Framework size system; Docara must not duplicate them as pixels, rem
+values or a second text-width scale.
+
+The experimental `layout.max_width` model has no compatibility layer because
+Docara is not released. Full-bleed landing backgrounds remain viewport-wide,
+while their inner content uses the same common container as header,
+documentation grid and footer.
+
+The accepted local pair is `ui@4100d3f7cd783c9dd378db30ee58dc9eb3672ab8`
+plus `ui-smart@dd786bbae98391fb21df9b4e1e6cd402ead0614c`. This is a pinned
+commit candidate, not a public Framework release.

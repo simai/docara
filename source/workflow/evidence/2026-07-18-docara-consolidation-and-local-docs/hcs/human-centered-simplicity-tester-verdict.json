@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.tester_verdict",
+  "quality_control_id": "human_centered_simplicity",
+  "reviewer": {
+    "role": "tester",
+    "source": "independent_tester",
+    "identity": "docara_hcs_audit"
+  },
+  "scope_binding": {
+    "task_sha256": "90b62c023e9b3c8b485038f7894eeabce91dd1c3cc403180f4d75de10d41dc42",
+    "review_payload_sha256": "ed53a4c8bcdfd8b9217318792aad075dd5a3033ecb79454343de4121900ef0e3",
+    "workflow_ref": "",
+    "workflow_sha256": "",
+    "repository_refs": [
+      "repo://docara-consolidation"
+    ],
+    "repository_baselines": []
+  },
+  "status": "VERIFIED",
+  "reviewed_surface_ids": [
+    "portable_quick_start",
+    "quick_start_false_affordance",
+    "button_demo"
+  ],
+  "surface_classifications": [
+    {
+      "surface_id": "portable_quick_start",
+      "classification": "ordinary",
+      "protected_categories": [],
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "surface_id": "quick_start_false_affordance",
+      "classification": "ordinary",
+      "protected_categories": [],
+      "evidence_ref": "docs/site/content/start.md"
+    },
+    {
+      "surface_id": "button_demo",
+      "classification": "ordinary",
+      "protected_categories": [],
+      "evidence_ref": "docs/site/content/components/button.md"
+    }
+  ],
+  "evidence_paths": [
+    "docs/site/content/components/button.md",
+    "docs/site/content/start.md"
+  ],
+  "evidence_fingerprints": [
+    {
+      "path": "docs/site/content/components/button.md",
+      "sha256": "6524496022e435c67c1f2d3b0e888430ac83d0095d615728153ef904e529f8b0"
+    },
+    {
+      "path": "docs/site/content/start.md",
+      "sha256": "99b5583d9db7473d95d2a00dc176171865ffa537bdf00daa4f33da30639dc50f"
+    }
+  ],
+  "commands": [
+    {
+      "command": "git show 4a312c1b14cf1e0ed0ad77d32e39b006b2ff9049:docs/site/content/start.md",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "docs/site/content/start.md",
+      "output_sha256": "99b5583d9db7473d95d2a00dc176171865ffa537bdf00daa4f33da30639dc50f"
+    },
+    {
+      "command": "git show 4a312c1b14cf1e0ed0ad77d32e39b006b2ff9049:docs/site/content/components/button.md",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "docs/site/content/components/button.md",
+      "output_sha256": "6524496022e435c67c1f2d3b0e888430ac83d0095d615728153ef904e529f8b0"
+    }
+  ],
+  "contradictions": [],
+  "verdict": "PASS"
+}

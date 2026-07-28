@@ -1,0 +1,7 @@
+prior_deployment_lock=e72f6bb3bfee31612ca688260376a83b07995bbd39d371dea28e75db04a25724
+current_fresh_lock=e72f6bb3bfee31612ca688260376a83b07995bbd39d371dea28e75db04a25724
+illuminate/support v12.64.0
+laravel/pint v1.29.3
+league/commonmark 2.8.3
+symfony/console v7.4.14
+phpunit/phpunit 11.5.56

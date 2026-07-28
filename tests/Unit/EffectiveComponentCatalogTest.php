@@ -86,7 +86,7 @@ final class EffectiveComponentCatalogTest extends TestCase
         self::assertSame(CanonicalJson::encodePretty($first), CanonicalJson::encodePretty($second));
         self::assertSame('docara.effective_component_catalog.v1', $first['schema']);
         self::assertSame(1, $first['version']);
-        self::assertSame('ui-148dbf36d42a-smart-daf5f285d006', $first['framework_pair']);
+        self::assertSame('ui-e305e1cffe9f-smart-655406493ce9', $first['framework_pair']);
         self::assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $first['provider_revision']);
         self::assertSame([
             'catalog_is_canonical_framework_registry' => false,
@@ -476,8 +476,8 @@ final class EffectiveComponentCatalogTest extends TestCase
             'native.code' => [
                 'markdown' => ['```php', "\$site = 'Docara';"],
                 'html' => [
-                    '<div data-docara-code-block class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-0">',
-                    '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code class="language-php">',
+                    '<div data-docara-code-block class="source init sf-code-surface docara-code-block">',
+                    '<pre class="sf-code-surface__scroll docara-code-scroll"><code class="language-php">',
                     "\$site = 'Docara';",
                 ],
             ],

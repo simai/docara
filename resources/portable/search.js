@@ -75,7 +75,7 @@
             var offset = match.index || 0;
             if (offset > cursor) target.append(document.createTextNode(text.slice(cursor, offset)));
             var mark = document.createElement('mark');
-            mark.className = 'docara-search-mark';
+            mark.className = 'docara-search-mark radius-1/2 p-inline-1/4';
             mark.textContent = match[0];
             target.append(mark);
             cursor = offset + match[0].length;
@@ -86,6 +86,7 @@
     function setStatus(value, state) {
         status.textContent = value;
         status.dataset.state = state;
+        status.classList.toggle('color-error', state === 'error');
         results.dataset.state = state;
     }
 
@@ -311,7 +312,7 @@
         var context = document.createElement('span');
         var summary = document.createElement('span');
         listItem.className = 'docara-search-result-item min-w-0';
-        link.className = 'docara-search-result min-w-0 p-2 flex items-cross-start gap-1 decoration-none color-on-surface transition';
+        link.className = 'docara-search-result min-w-0 p-2 flex items-cross-start gap-1 decoration-none color-on-surface transition hover:bg-surface-container';
         link.href = record.url;
         link.dataset.docaraSearchResult = 'true';
         icon.setAttribute('icon', 'description');
@@ -321,14 +322,14 @@
         title.className = 'docara-search-result-title weight-7';
         appendHighlighted(title, record.title, terms);
         if (record.trail.length) {
-            context.className = 'docara-search-result-context color-link';
+            context.className = 'docara-search-result-context text-1/3 color-link';
             appendHighlighted(context, record.trail.join(' › '), terms);
             content.append(context);
         }
         content.append(title);
         var excerpt = contextualSnippet(record, terms);
         if (excerpt) {
-            summary.className = 'docara-search-result-summary color-on-surface-variant';
+            summary.className = 'docara-search-result-summary text-1/3 color-on-surface-variant';
             summary.dataset.docaraSearchResultSummary = 'true';
             appendHighlighted(summary, excerpt, terms);
             content.append(summary);

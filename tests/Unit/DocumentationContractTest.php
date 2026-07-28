@@ -336,7 +336,7 @@ final class DocumentationContractTest extends TestCase
                 $html = (string) file_get_contents($temporary . '/build_test/' . $locale . '/index.html');
                 self::assertSame(
                     1,
-                    preg_match('/<nav class="docara-navigation docara-header-navigation".*?<\/nav>/s', $html, $match),
+                    preg_match('/<nav class="docara-navigation docara-header-navigation [^"]*".*?<\/nav>/s', $html, $match),
                 );
                 self::assertSame($expectedItems, substr_count($match[0], '<a '));
             }

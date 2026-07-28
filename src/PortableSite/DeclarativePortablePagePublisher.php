@@ -158,6 +158,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         $mobileNavigationEnabled = $primaryNavigationEnabled || $documentationNavigationEnabled;
         $chrome = $this->chrome->render(new PublisherChromeViewModel(
             $preset,
+            in_array($page['direction'] ?? null, ['ltr', 'rtl'], true) ? (string) $page['direction'] : 'ltr',
             $searchEnabled,
             $searchEnabled ? $this->escape((string) $page['search_runtime_url']) : null,
             $searchEnabled ? $this->escape((string) $page['search_index_url']) : null,

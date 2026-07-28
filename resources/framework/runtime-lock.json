@@ -1,38 +1,38 @@
 {
   "schema": "larena.ui.frontend_runtime_lock.v3",
   "runtime": "simai-framework",
-  "pair_id": "ui-148dbf36d42a-smart-daf5f285d006",
-  "bundle_id": "ui-148dbf36d42a-smart-daf5f285d006-registry-dca5c925-verified-commit-candidate-v1",
+  "pair_id": "ui-e305e1cffe9f-smart-655406493ce9",
+  "bundle_id": "ui-e305e1cffe9f-smart-655406493ce9-registry-3a923593-verified-commit-candidate-v1",
   "publication_profile": "verified-commit-candidate-v1",
   "tag": null,
   "ui": {
     "tag": null,
-    "commit": "148dbf36d42a535b0fd710980532f9bcec966b1d",
+    "commit": "e305e1cffe9fa01799f6e9211bd72c5807f4e95a",
     "tree": "distr",
     "mount": "ui",
-    "sha256": "2585a32e1b868cca5e40d1b30f6f90684fc4841165c22f141c8317b6b7e68559",
-    "files": 6231
+    "sha256": "9a27696d69a9ca6d336109bfb3ac858f2fc4b3ad2934db4b116709ed89358596",
+    "files": 6247
   },
   "ui_smart": {
     "tag": null,
-    "commit": "daf5f285d00640de8115f0939045828ba473ae1e",
+    "commit": "655406493ce9d0c3a3574a2ec8d29d276a33cfca",
     "tree": "smart",
     "mount": "smart",
-    "sha256": "84c4f4840ed92c66df2c9145c98bdf9612d2cbc47cbdb6067ab40fa17a498942",
+    "sha256": "93c7dc096395a41c914e55e9957588b82e37dd294b8820f88487d3e7b9d55504",
     "files": 362
   },
   "framework_registry": {
     "schema_id": "simai.framework.contract-registry",
-    "compatibility_id": "ui-148dbf36d42a-smart-daf5f285d006",
+    "compatibility_id": "ui-e305e1cffe9f-smart-655406493ce9",
     "profile": "plain-assets-v1",
     "relative_path": "contract/contracts/generated/framework-contract-registry.json",
-    "file_sha256": "dca5c925eec12b32727aca090164cab853612f25b4c5b5f56edfba61c915f101",
+    "file_sha256": "3a923593c54a78397fe563764397e077749802aa2c553870c299fc0a42fbda31",
     "source": {
-      "commit": "3cbedb6ac0166ecbd68541811f66c6b1d1576dca",
+      "commit": "618e0d204ac518724fbbb07b97f9114fd7d250df",
       "tree": "contracts/generated",
-      "tree_oid": "b04a3015e793e2e4167b0ca880914391aa844c36",
+      "tree_oid": "a85951e8c355d5512896abb7fd0b4ae9241748dd",
       "mount": "contract",
-      "sha256": "5906ab3f25cb56ee578dd9c1bed4b24f8cd1d2565fc2eb43cbcb9071b3aff187",
+      "sha256": "a74a426199b6f144b3c35158b943664452b6c504e2c0c09d8c4b7a24d8116884",
       "files": 1
     }
   },

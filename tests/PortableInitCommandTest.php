@@ -132,13 +132,13 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);
-        $this->assertSame('ui-148dbf36d42a-smart-daf5f285d006', $lock['runtime']['pair_id']);
-        $this->assertSame('148dbf36d42a535b0fd710980532f9bcec966b1d', $lock['runtime']['ui']['commit']);
-        $this->assertSame('daf5f285d00640de8115f0939045828ba473ae1e', $lock['runtime']['ui_smart']['commit']);
-        $this->assertSame('3cbedb6ac0166ecbd68541811f66c6b1d1576dca', $lock['runtime']['framework_registry']['source']['commit']);
+        $this->assertSame('ui-e305e1cffe9f-smart-655406493ce9', $lock['runtime']['pair_id']);
+        $this->assertSame('e305e1cffe9fa01799f6e9211bd72c5807f4e95a', $lock['runtime']['ui']['commit']);
+        $this->assertSame('655406493ce9d0c3a3574a2ec8d29d276a33cfca', $lock['runtime']['ui_smart']['commit']);
+        $this->assertSame('618e0d204ac518724fbbb07b97f9114fd7d250df', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);
-        $this->assertSame('e9c819e7c208359d472180ed2e8d393208ffcf2bf69fae64e00baef882ae2441', $lock['manifests']['ui.button']['sha256']);
-        $this->assertSame('03717cc437bff25ee1bdad5dd89fa4bc4b70ba56f12e62301f4b3ef37be76d68', $lock['manifests']['ui.alert']['sha256']);
+        $this->assertSame('4128c8cfa2ba0c4e9a4bd8f11ce70df6726d004cd51e9aea20fff9179221521d', $lock['manifests']['ui.button']['sha256']);
+        $this->assertSame('64cb4d4d849811fba7dbda0b50b982063a6bc8da7856a8f9109927b4c7495820', $lock['manifests']['ui.alert']['sha256']);
         $this->assertSame('docara.framework_asset_projection.v1', $lock['asset_projection']['schema']);
         $this->assertSame('_docara/framework', $lock['asset_projection']['mount']);
         $this->assertSame('simai/ui-smart', $lock['asset_projection']['source']['provider']);

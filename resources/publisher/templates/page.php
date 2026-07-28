@@ -31,23 +31,23 @@
     </header>
 <?php if ($view->preset === 'landing') { ?>
     <main id="docara-main" tabindex="-1" class="docara-landing" data-docara-region="main">
-        <article class="docara-content docara-prose container m-inline-auto flex min-w-0 flex-col <?= $view->contentGapClass ?>"><?= $view->regions['main'] ?></article>
+        <article class="docara-content docara-prose container m-inline-auto flex min-w-0 w-full flex-col color-on-surface <?= $view->contentGapClass ?>"><?= $view->regions['main'] ?></article>
     </main>
 <?php } else { ?>
     <div class="docara-docs-layout container m-inline-auto gap-0" data-sidebar="<?= $view->regions['sidebar'] === '' ? 'false' : 'true' ?>" data-outline="<?= $view->regions['outline'] === '' ? 'false' : 'true' ?>" data-mobile-toc="<?= $view->mobileTocState ?>">
 <?php if ($view->regions['sidebar'] !== '') { ?>
-        <aside class="docara-sidebar scroll-thumb-0" data-docara-region="sidebar"><?= $view->regions['sidebar'] ?></aside>
+        <aside class="docara-sidebar hidden sm:block self-stretch border-inline-end-1 border-outline-variant scroll-thumb-0" data-docara-region="sidebar"><?= $view->regions['sidebar'] ?></aside>
 <?php } ?>
-        <div class="docara-reading-column flex min-w-0 flex-col <?= $view->contentGapClass ?> p-3">
+        <div class="docara-reading-column flex min-w-0 flex-col <?= $view->contentGapClass ?> p-2 sm:p-3">
             <?= $view->chrome['breadcrumbs'] ?>
             <?= $view->chrome['mobile_toc'] ?>
-            <main id="docara-main" tabindex="-1" class="docara-content min-w-0" data-docara-region="main">
+            <main id="docara-main" tabindex="-1" class="docara-content min-w-0 color-on-surface scroll-mt-4" data-docara-region="main">
                 <article class="docara-prose"><?= $view->regions['main'] ?></article>
                 <?= $view->chrome['pager'] ?>
             </main>
         </div>
 <?php if ($view->regions['outline'] !== '') { ?>
-        <aside class="docara-outline-rail scroll-thumb-0" data-docara-region="outline"><?= $view->regions['outline'] ?></aside>
+        <aside class="docara-outline-rail hidden lg:block relative self-stretch border-inline-start-1 border-outline-variant scroll-thumb-0" data-docara-region="outline"><?= $view->regions['outline'] ?></aside>
 <?php } ?>
     </div>
 <?php } ?>

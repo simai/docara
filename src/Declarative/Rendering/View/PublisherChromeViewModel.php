@@ -16,6 +16,7 @@ final readonly class PublisherChromeViewModel
      */
     public function __construct(
         public string $preset,
+        public string $direction,
         public bool $searchEnabled,
         public ?string $searchRuntimeUrl,
         public ?string $searchIndexUrl,

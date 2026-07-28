@@ -26,53 +26,23 @@
   function requestTransient(dialog){
     document.dispatchEvent(new CustomEvent('docara:open-transient',{detail:{id:dialog.id}}));
   }
-  function trapDialogTab(dialog,event){
-    if(event.key!=='Tab')return;
-    var focusable=Array.from(dialog.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'))
-      .filter(function(element){
-        if(element.hidden||element.getClientRects().length===0)return false;
-        return !(element.matches('input[type="radio"]')&&!element.checked);
-      });
-    if(!focusable.length)return;
-    var first=focusable[0],last=focusable[focusable.length-1];
-    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
-    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
-    else if(!dialog.contains(document.activeElement)){event.preventDefault();(event.shiftKey?last:first).focus()}
-  }
   function bindSheet(dialog){
     var trigger=document.querySelector('[data-docara-sheet-trigger][aria-controls="'+dialog.id+'"]');
-    var closeButton=dialog.querySelector('[data-docara-sheet-close]');
-    if(!trigger||!closeButton)return;
+    if(!trigger)return;
     function closeSheet(){
-      if(typeof dialog.close==='function'&&dialog.open){dialog.close()}
-      else{dialog.removeAttribute('open');trigger.setAttribute('aria-expanded','false');trigger.focus()}
+      if(typeof dialog.close==='function')dialog.close();
     }
-    function openSheet(){
-      requestTransient(dialog);
-      if(!dialog.open){
-        if(typeof dialog.showModal==='function'){dialog.showModal()}
-        else{dialog.setAttribute('open','')}
-      }
-      trigger.setAttribute('aria-expanded','true');
-      requestAnimationFrame(function(){
-        var target=dialog.querySelector('[aria-current="page"]')||dialog.querySelector('a[href]')||closeButton;
-        target.focus();
-      });
-    }
-    trigger.addEventListener('click',openSheet);
-    closeButton.addEventListener('click',closeSheet);
+    dialog.addEventListener('modal:before-open',function(){requestTransient(dialog)});
+    dialog.addEventListener('modal:after-open',function(){trigger.setAttribute('aria-expanded','true')});
+    dialog.addEventListener('modal:after-close',function(){trigger.setAttribute('aria-expanded','false')});
     dialog.querySelectorAll('a[href]').forEach(function(link){link.addEventListener('click',closeSheet)});
-    dialog.addEventListener('click',function(event){if(event.target===dialog){closeSheet()}});
-    dialog.addEventListener('cancel',function(event){event.preventDefault();closeSheet()});
-    dialog.addEventListener('keydown',function(event){trapDialogTab(dialog,event)});
-    dialog.addEventListener('close',function(){trigger.setAttribute('aria-expanded','false');trigger.focus()});
     window.addEventListener('resize',function(){
       var unavailable=(dialog.id==='docara-mobile-navigation'&&window.matchMedia('(min-width: 801px)').matches)
         ||(dialog.id==='docara-outline-dialog'&&window.matchMedia('(min-width: 1153px)').matches);
-      if(unavailable&&dialog.open){closeSheet()}
+      if(unavailable&&dialog.openState){closeSheet()}
     },{passive:true});
   }
-  document.querySelectorAll('dialog[data-docara-sheet]').forEach(bindSheet);
+  document.querySelectorAll('sf-modal[data-docara-sheet]').forEach(bindSheet);
   document.querySelectorAll('[data-docara-breadcrumbs]').forEach(function(breadcrumbs){
     var ellipsisLabel=breadcrumbs.dataset.docaraBreadcrumbsEllipsisLabel;
     if(!ellipsisLabel)return;

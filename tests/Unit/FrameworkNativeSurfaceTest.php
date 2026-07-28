@@ -75,7 +75,7 @@ final class FrameworkNativeSurfaceTest extends TestCase
         self::assertStringContainsString('icon-left="search"', $template);
         self::assertStringContainsString('slot="icon-right"', $template);
         self::assertStringContainsString(
-            'docara-search-shortcut text-1 color-on-surface-variant m-inline-start-1/2',
+            'sf-kbd docara-search-shortcut hidden sm:inline-flex color-on-surface-variant m-inline-start-1/2',
             $template,
         );
         self::assertStringNotContainsString('docara-search-shortcut label-small', $template);
@@ -85,13 +85,13 @@ final class FrameworkNativeSurfaceTest extends TestCase
     }
 
     #[Test]
-    public function framework_outline_buttons_keep_their_logical_side_borders(): void
+    public function framework_outline_buttons_need_no_docara_border_patch(): void
     {
         $root = dirname(__DIR__, 2);
         $css = file_get_contents($root . '/resources/portable/declarative-shell.css');
 
         self::assertIsString($css);
-        self::assertStringContainsString(
+        self::assertStringNotContainsString(
             '.sf-button.sf-button--outline{border-inline-start-width:var(--sf-button--border-inline-start-width,1px);border-inline-end-width:var(--sf-button--border-inline-end-width,1px)}',
             $css,
         );
@@ -116,10 +116,7 @@ final class FrameworkNativeSurfaceTest extends TestCase
         self::assertIsString($template);
         self::assertStringContainsString('sf-icon-button--size-1/3', $template);
 
-        self::assertMatchesRegularExpression(
-            '~\[data-docara-disclosure\]\{[^}]*flex:0 0 auto;[^}]*\}~',
-            $css,
-        );
+        self::assertStringContainsString('order-first flex-none', $template);
         self::assertDoesNotMatchRegularExpression(
             '~\[data-docara-disclosure\]\{[^}]*(?:min-(?:inline|block)-size|margin-(?:inline|block)|flex:0 0 var\()~',
             $css,
@@ -133,14 +130,8 @@ final class FrameworkNativeSurfaceTest extends TestCase
         $css = file_get_contents($root . '/resources/smart/assets/navigation.css');
 
         self::assertIsString($css);
-        self::assertStringContainsString(
-            '.sf-menu-element:not(.disabled):hover{--sf-menu-element--background-color:var(--sf-surface-container-hover)',
-            $css,
-        );
-        self::assertStringContainsString(
-            ':hover [data-docara-disclosure] .sf-icon{--sf-icon--color:var(--sf-on-surface)}',
-            $css,
-        );
+        self::assertStringNotContainsString('.sf-menu-element:not(.disabled):hover', $css);
+        self::assertStringNotContainsString(':hover [data-docara-disclosure] .sf-icon', $css);
         self::assertStringContainsString(
             '[data-docara-disclosure]:focus{box-shadow:none}',
             $css,

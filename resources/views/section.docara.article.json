@@ -5,7 +5,7 @@
     "kind": "element",
     "tag": "section",
     "identity": "section",
-    "utilities": ["flex", "flex-col", "gap-2"],
+    "utilities": ["flex", "flex-col"],
     "children": [
       {"kind": "slot", "slot": "content"}
     ]

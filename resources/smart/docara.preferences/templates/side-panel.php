@@ -6,6 +6,8 @@
     position="<?= $view->position ?>"
     overlay="true"
     overlay-preset="default"
+    blur="true"
+    blur-type="large"
     show-header="false"
     show-close="false"
     show-footer="false"
@@ -14,11 +16,11 @@
     preserve-scroll-gap="true"
     width="min(100vw, var(--sf-g6))"
     height="100dvh"
-    panel-class="docara-preferences-panel h-full"
-    surface-class="docara-preferences-surface h-full bg-surface-0 radius-0"
+    panel-class="docara-preferences-panel w-full max-w-full h-full"
+    surface-class="docara-preferences-surface h-full max-h-full bg-surface-0 radius-0"
     surface-padding="0"
-    body-class="docara-preferences-body h-full"
-    content-class="docara-preferences-content h-full"
+    body-class="docara-preferences-body min-h-0 h-full"
+    content-class="docara-preferences-content min-h-0 h-full"
 ><section slot="content" data-docara-smart="docara.preferences" data-docara-view="side-panel" class="flex h-full min-w-0 flex-col color-on-surface"><header class="sticky top-0 z-1 bg-surface-0 border-bottom-1 border-outline-variant p-2 flex items-center content-main-between gap-2"><h2 id="docara-reader-settings-title" class="title-3 m-0"><?= $view->title ?></h2><button type="button" data-sf-modal-close="docara-reader-settings-dialog" data-docara-reader-settings-close class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 radius-default" aria-label="<?= $view->closeLabel ?>"><sf-icon icon="close" aria-hidden="true"></sf-icon></button></header><div class="docara-preferences-groups flex flex-1 min-h-0 flex-col gap-3 overflow-y-auto p-2">
 <?php foreach ($view->groups as $group) { ?><section class="flex flex-col gap-1" data-docara-preference-group="<?= $group['id'] ?>"><div class="flex flex-col gap-1/4"><h3 class="title-1 m-0"><?= $group['title'] ?></h3><?php if ($group['description'] !== '') { ?><p class="m-0 color-on-surface-variant"><?= $group['description'] ?></p><?php } ?></div>
 <?php foreach ($group['fields'] as $field) { ?><fieldset class="docara-preferences-field flex flex-col gap-1 m-0 p-0 border-none" data-docara-preference-field="<?= $field['id'] ?>">

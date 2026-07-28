@@ -38,7 +38,7 @@ final class DeclarativeViewCompositionTest extends TestCase
         self::assertSame('docara.brand', $resolved['regions']['header'][0]['blocks'][0]['smart']['smart']);
         self::assertSame('SAFE_VIEW_TREE_VALIDATED', $resolved['diagnostics'][1]['code']);
         self::assertSame(
-            'ui-148dbf36d42a-smart-daf5f285d006',
+            'ui-e305e1cffe9f-smart-655406493ce9',
             $resolved['provenance']['view_runtime']['compatibility_id'],
         );
         self::assertSame($plan->canonicalHash(), DeclarativePageCompiler::bundled($this->frameworkLock())->compile(
@@ -267,9 +267,9 @@ final class DeclarativeViewCompositionTest extends TestCase
     {
         $provenance = (new FrameworkUtilityRegistry)->provenance();
 
-        self::assertSame('ui-148dbf36d42a-smart-daf5f285d006', $provenance['compatibility_id']);
+        self::assertSame('ui-e305e1cffe9f-smart-655406493ce9', $provenance['compatibility_id']);
         self::assertSame(
-            'dca5c925eec12b32727aca090164cab853612f25b4c5b5f56edfba61c915f101',
+            '3a923593c54a78397fe563764397e077749802aa2c553870c299fc0a42fbda31',
             $provenance['registry_sha256'],
         );
     }

@@ -1,6 +1,6 @@
 <div class="flex flex-none items-center gap-1">
 <?php if ($view->mobileNavigationEnabled) { ?>
-    <button type="button" data-docara-sheet-trigger aria-haspopup="dialog" aria-controls="docara-mobile-navigation" aria-expanded="false" class="docara-mobile-navigation-trigger<?= $view->primaryNavigationEnabled ? ' docara-mobile-navigation-trigger--primary' : '' ?> sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 radius-default" aria-label="<?= $view->copy['navigation.open'] ?>"><sf-icon icon="menu" aria-hidden="true"></sf-icon></button>
+    <button type="button" data-docara-sheet-trigger data-sf-modal-open="docara-mobile-navigation" aria-haspopup="dialog" aria-controls="docara-mobile-navigation" aria-expanded="false" class="docara-mobile-navigation-trigger<?= $view->primaryNavigationEnabled ? ' docara-mobile-navigation-trigger--primary lg:hidden' : ' sm:hidden' ?> inline-flex sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 radius-default" aria-label="<?= $view->copy['navigation.open'] ?>"><sf-icon icon="menu" aria-hidden="true"></sf-icon></button>
 <?php } ?>
 <?php if ($view->searchEnabled) { ?>
     <sf-button
@@ -15,7 +15,7 @@
         scheme="on-surface"
         text="<?= $view->copy['search.label'] ?>"
         icon-left="search"
-    ><kbd slot="icon-right" class="docara-search-shortcut text-1 color-on-surface-variant m-inline-start-1/2" data-docara-search-shortcut>⌘K</kbd></sf-button>
+    ><kbd slot="icon-right" class="sf-kbd docara-search-shortcut hidden sm:inline-flex color-on-surface-variant m-inline-start-1/2" data-docara-search-shortcut>⌘K</kbd></sf-button>
 <?php } ?>
 <?php if (count($view->languageOptions) > 1) { ?>
     <label class="sf-select sf-select--size-1"><span class="sr-only"><?= $view->copy['language.label'] ?></span><select data-docara-language-switcher aria-label="<?= $view->copy['language.label'] ?>">

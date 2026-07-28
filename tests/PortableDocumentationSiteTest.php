@@ -123,21 +123,22 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $catalogIndex = (string) file_get_contents($build . '/' . $receipt['index']['output']);
         $shellCss = (string) file_get_contents($build . '/_docara/declarative-shell.css');
-        self::assertSame(1, substr_count($catalogIndex, 'class="docara-navigation docara-header-navigation"'));
-        self::assertStringContainsString('docara-header-navigation-link h-d0', $catalogIndex);
+        self::assertSame(1, substr_count($catalogIndex, '<nav class="docara-navigation docara-header-navigation '));
+        self::assertStringContainsString('docara-header-navigation hidden lg:flex min-w-0 flex-1', $catalogIndex);
+        self::assertStringContainsString('docara-header-navigation-link box-border h-d0 w-auto p-inline-1', $catalogIndex);
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-primary-navigation'));
-        self::assertSame(1, substr_count($catalogIndex, 'id="docara-mobile-navigation"'));
+        self::assertSame(1, substr_count($catalogIndex, ' id="docara-mobile-navigation"'));
         self::assertSame(
             1,
             substr_count(
                 $catalogIndex,
-                'data-docara-sheet-trigger aria-haspopup="dialog" aria-controls="docara-mobile-navigation"',
+                'data-docara-sheet-trigger data-sf-modal-open="docara-mobile-navigation" aria-haspopup="dialog" aria-controls="docara-mobile-navigation"',
             ),
         );
         self::assertStringContainsString(
-            '.docara-mobile-sheet{position:fixed;inset-block:0;inset-inline-start:0;inset-inline-end:auto;',
-            $shellCss,
-            'The mobile navigation sheet must follow the logical inline direction in LTR and RTL.',
+            'modal-id="docara-mobile-navigation" data-docara-sheet data-docara-transient-dialog position="left"',
+            $catalogIndex,
+            'The mobile navigation sheet must use the Framework modal at the logical LTR start side.',
         );
         self::assertStringContainsString(
             'scroll-margin-block-start:4.5rem',
@@ -150,9 +151,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'Mobile heading anchors must reserve space for the compact mobile header.',
         );
         self::assertStringContainsString(
-            '.docara-outline-rail{position:relative;align-self:stretch;box-shadow:inset var(--sf-px) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}',
-            $shellCss,
-            'The desktop outline divider must span the row without clipping its active marker.',
+            '<aside class="docara-outline-rail hidden lg:block relative self-stretch border-inline-start-1 border-outline-variant scroll-thumb-0"',
+            $catalogIndex,
+            'The desktop outline divider must be composed from Framework utilities.',
         );
         self::assertStringContainsString(
             '.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:4.5rem;max-block-size:calc(100vh - 4.5rem);padding:var(--sf-space-2);padding-inline-start:calc(var(--sf-space-2) + var(--sf-a2));overflow:auto;direction:ltr}',
@@ -160,9 +161,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The short outline must remain aligned below the header while its scrollbar stays on the physical right.',
         );
         self::assertStringContainsString(
-            '.docara-sidebar{align-self:stretch;border-inline-end:',
-            $shellCss,
-            'The desktop navigation divider must span the full layout row.',
+            '<aside class="docara-sidebar hidden sm:block self-stretch border-inline-end-1 border-outline-variant scroll-thumb-0"',
+            $catalogIndex,
+            'The desktop navigation divider must be composed from Framework utilities.',
         );
         self::assertStringContainsString(
             '.docara-sidebar>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-1);overflow:auto}',
@@ -170,12 +171,12 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The navigation scrollbar must stay one Framework pixel token from its divider.',
         );
         self::assertStringContainsString(
-            '<aside class="docara-sidebar scroll-thumb-0"',
+            'border-outline-variant scroll-thumb-0" data-docara-region="sidebar"',
             $catalogIndex,
             'The navigation rail must use the Framework zero-inset scrollbar utility.',
         );
         self::assertStringContainsString(
-            '<aside class="docara-outline-rail scroll-thumb-0"',
+            'border-outline-variant scroll-thumb-0" data-docara-region="outline"',
             $catalogIndex,
             'The contents rail must use the Framework zero-inset scrollbar utility.',
         );

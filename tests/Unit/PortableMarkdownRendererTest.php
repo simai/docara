@@ -50,20 +50,17 @@ MD;
             $html,
         );
         self::assertStringContainsString(
-            '<div data-docara-code-block class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-0">',
+            '<div data-docara-code-block class="source init sf-code-surface docara-code-block">',
             $html,
         );
         self::assertStringNotContainsString('data-docara-code-language', $html);
         self::assertStringNotContainsString('data-docara-code-copy', $html);
         self::assertStringContainsString(
-            '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code class="language-php">',
+            '<pre class="sf-code-surface__scroll docara-code-scroll"><code class="language-php">',
             $html,
         );
         self::assertSame(1, substr_count($html, 'data-docara-code-block'));
-        self::assertSame(1, substr_count(
-            strstr($html, '<div data-docara-code-block') ?: '',
-            ' border ',
-        ));
+        self::assertSame(1, substr_count($html, 'sf-code-surface docara-code-block'));
         self::assertStringNotContainsString('docara-card', $html);
         self::assertStringNotContainsString('docara-steps', $html);
     }
@@ -83,8 +80,8 @@ MD;
         $html = (new PortableMarkdownRenderer)->render($markdown);
 
         self::assertSame(1, substr_count($html, '<div data-docara-code-block'));
-        self::assertSame(1, substr_count($html, ' border border-outline-variant'));
-        self::assertStringContainsString('class="source init docara-code-block', $html);
+        self::assertSame(1, substr_count($html, 'sf-code-surface docara-code-block'));
+        self::assertStringContainsString('class="source init sf-code-surface docara-code-block', $html);
         self::assertStringNotContainsString('data-docara-code-language', $html);
         self::assertStringNotContainsString('data-docara-code-copy', $html);
         self::assertStringContainsString(

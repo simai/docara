@@ -10,7 +10,7 @@
             <a class="sf-button sf-button--outline sf-button--primary sf-button--size-1 radius-default decoration-none inline-flex items-center content-main-center" href="<?= $view->resultUrl ?>" target="_blank" rel="noopener"><span class="sf-button-text-container"><?= $view->openSeparatelyLabel ?></span></a>
         </div>
         <div class="docara-example-preview surface-0 border border-outline-variant radius-2 overflow-hidden" data-preview-size="<?= $view->previewSize ?>">
-            <iframe src="<?= $view->resultUrl ?>" title="<?= $view->resultFrameLabel ?>" loading="lazy"></iframe>
+            <iframe class="block w-full border-0 bg-surface-0" src="<?= $view->resultUrl ?>" title="<?= $view->resultFrameLabel ?>" loading="lazy"></iframe>
         </div>
     </section>
     <section class="flex flex-col gap-2" aria-labelledby="example-source-title">

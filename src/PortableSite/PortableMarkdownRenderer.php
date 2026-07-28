@@ -1007,8 +1007,8 @@ final class PortableMarkdownRenderer
             function (array $matches): string {
                 $attributes = (string) ($matches['attributes'] ?? '');
 
-                return '<div data-docara-code-block class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-0">'
-                    . '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code'
+                return '<div data-docara-code-block class="source init sf-code-surface docara-code-block">'
+                    . '<pre class="sf-code-surface__scroll docara-code-scroll"><code'
                     . $attributes . '>' . (string) ($matches['content'] ?? '') . '</code></pre>'
                     . '</div>';
             },

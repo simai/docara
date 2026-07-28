@@ -64,8 +64,9 @@ final readonly class FrameworkAssetPlanner
         ], [
             'key' => 'simai.framework.boot',
             'kind' => 'boot',
-            // Core webpack chunks are concatenated onto sfPath, so the
-            // immutable distribution base must keep its trailing slash.
+            // Pin Core's loader to the exact immutable distribution. Component
+            // bundles keep their own automatic chunk base and must not rewrite
+            // it from this global loader path.
             'content' => 'window.SF_BOOT_CONFIG=Object.assign({},window.SF_BOOT_CONFIG||{},'
                 . json_encode($bootConfiguration, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES)
                 . ');window.sfPath=' . json_encode($uiBase . '/', JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES)
@@ -81,7 +82,7 @@ final readonly class FrameworkAssetPlanner
         ], [
             'key' => 'simai.framework.icon_font.css',
             'kind' => 'inline_css',
-            'content' => $this->iconFallbackCss($uiBase . '/fonts/MaterialSymbols-Outlined.woff2'),
+            'content' => $this->iconFallbackCss($uiBase . '/component/icons/fonts/MaterialSymbols-Outlined.woff2'),
             'source_revision' => $uiCommit,
         ], [
             'key' => 'simai.framework.icon_font.ready',

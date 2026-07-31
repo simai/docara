@@ -1,0 +1,673 @@
+{
+  "schema": "docara.framework_conformance_targets.v1",
+  "registry": {
+    "source_commit": "b7e8a2e810c0d49e31cb749a7ab34c373dd48bc6",
+    "sha256": "2c5963276d31af09770fe41cad04826c04b634f7b2d798d9b0e32864517346b7",
+    "compatibility": {
+      "claims": {
+        "all_items_ready": false,
+        "full_compatible": false,
+        "production_ready": false
+      },
+      "exclusions": [
+        {
+          "evidence": [
+            "simai/ui@7e836d8a9414d5da553fb1ab0404721e5b48769a:distr/rule/rule.json#cl-file-upload.css=true",
+            "simai/ui-smart@dd786bbae98391fb21df9b4e1e6cd402ead0614c:smart/file-upload/css/file-upload.css#missing"
+          ],
+          "reason_code": "declared-smart-css-missing",
+          "resource_id": "smart.file-upload",
+          "status": "blocked"
+        },
+        {
+          "capability": "precompressed-sidecars",
+          "evidence": [
+            "simai/ui@7e836d8a9414d5da553fb1ab0404721e5b48769a:distr#120-of-637-pairs-mismatch",
+            "simai/ui-smart@dd786bbae98391fb21df9b4e1e6cd402ead0614c:smart/avatars/template/default/index.html.gz",
+            "simai/ui-smart@dd786bbae98391fb21df9b4e1e6cd402ead0614c:smart/close/js/close.js.gz"
+          ],
+          "reason_code": "gzip-plain-parity-not-guaranteed",
+          "status": "unsupported"
+        }
+      ],
+      "id": "sf-v5.3.2-7e836d8a-dd786bba",
+      "profile": "plain-assets-v1",
+      "runtime_sources": [
+        {
+          "archive_sha256": "481eabfafc259ab71cd11aff19f9358cdbd2b6709f85e7e8c39620ce9cace8d7",
+          "commit": "7e836d8a9414d5da553fb1ab0404721e5b48769a",
+          "owner": "simai/ui",
+          "runtime_path": "distr",
+          "runtime_tree": "a54f83245250ffd25f5bf47c9726ebdbc7436b26",
+          "tag": "v5.3.2",
+          "tag_object": "b73c27677788b348d235a207a843a550343eb3f5",
+          "tree": "64335a6a75f9c83d0850de0df419b5287e362f9e"
+        },
+        {
+          "archive_sha256": "1c2eacbc58f3deb1d351b11dfb5da6755502386bb1224554754477bc700c9262",
+          "commit": "dd786bbae98391fb21df9b4e1e6cd402ead0614c",
+          "owner": "simai/ui-smart",
+          "runtime_path": "smart",
+          "runtime_tree": "8f76fae24dc00376981d2b082942f36145645650",
+          "tag": "v5.3.1",
+          "tag_object": "f96c0fba29115e6b277a9a781fed2003edb8c982",
+          "tree": "90c5281d4b312900905167216f0585cfc13162cb"
+        }
+      ],
+      "status": "bounded"
+    }
+  },
+  "selected": [
+    {
+      "id": "component.alerts",
+      "kind": "component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/component/alerts",
+        "declared": {
+          "css": true,
+          "js": true
+        },
+        "plain_asset_count": 2,
+        "rule_name": "alerts"
+      },
+      "requires": []
+    },
+    {
+      "id": "component.badges",
+      "kind": "component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/component/badges",
+        "declared": {
+          "css": true,
+          "js": true
+        },
+        "plain_asset_count": 3,
+        "rule_name": "badges"
+      },
+      "requires": []
+    },
+    {
+      "id": "component.breadcrumbs",
+      "kind": "component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/component/breadcrumbs",
+        "declared": {
+          "css": true,
+          "js": true
+        },
+        "plain_asset_count": 2,
+        "rule_name": "breadcrumbs"
+      },
+      "requires": []
+    },
+    {
+      "id": "component.buttons",
+      "kind": "component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": true,
+        "status": "ready"
+      },
+      "runtime": {
+        "asset_root": "distr/component/buttons",
+        "declared": {
+          "css": true,
+          "js": true
+        },
+        "plain_asset_count": 3,
+        "rule_name": "buttons"
+      },
+      "requires": []
+    },
+    {
+      "id": "component.highlight",
+      "kind": "component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/component/highlight",
+        "declared": {
+          "css": true,
+          "js": true
+        },
+        "plain_asset_count": 194,
+        "rule_name": "highlight"
+      },
+      "requires": []
+    },
+    {
+      "id": "component.menu",
+      "kind": "component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/component/menu",
+        "declared": {
+          "css": true,
+          "js": true
+        },
+        "plain_asset_count": 3,
+        "rule_name": "menu"
+      },
+      "requires": [
+        "component.icon-buttons",
+        "component.icons"
+      ]
+    },
+    {
+      "id": "component.modal",
+      "kind": "component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/component/modal",
+        "declared": {
+          "css": true,
+          "js": true
+        },
+        "plain_asset_count": 2,
+        "rule_name": "modal"
+      },
+      "requires": [
+        "utility.backdrop-filter-blur"
+      ]
+    },
+    {
+      "id": "component.scrollbar",
+      "kind": "component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/component/scrollbar",
+        "declared": {
+          "css": true,
+          "js": true
+        },
+        "plain_asset_count": 2,
+        "rule_name": "scrollbar"
+      },
+      "requires": []
+    },
+    {
+      "id": "component.tree",
+      "kind": "component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/component/tree",
+        "declared": {
+          "css": true,
+          "js": true
+        },
+        "plain_asset_count": 2,
+        "rule_name": "tree"
+      },
+      "requires": [
+        "component.icon-buttons",
+        "component.icons",
+        "component.tree-item"
+      ]
+    },
+    {
+      "id": "smart.alert",
+      "kind": "smart-component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_paths": [
+          "simai/ui-smart@dd786bbae98391fb21df9b4e1e6cd402ead0614c:smart/alert/js/alert.js"
+        ],
+        "declared": {
+          "css": false,
+          "js": true
+        },
+        "rule_name": "cl-alert",
+        "tags": [
+          "sf-alert"
+        ]
+      },
+      "requires": [
+        "component.alerts",
+        "component.buttons",
+        "component.icon-buttons",
+        "component.icons"
+      ]
+    },
+    {
+      "id": "smart.badges",
+      "kind": "smart-component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_paths": [
+          "simai/ui-smart@dd786bbae98391fb21df9b4e1e6cd402ead0614c:smart/badges/js/badges.js"
+        ],
+        "declared": {
+          "css": false,
+          "js": true
+        },
+        "rule_name": "cl-badges",
+        "tags": [
+          "sf-badge"
+        ]
+      },
+      "requires": [
+        "component.badges"
+      ]
+    },
+    {
+      "id": "smart.breadcrumbs",
+      "kind": "smart-component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_paths": [
+          "simai/ui-smart@dd786bbae98391fb21df9b4e1e6cd402ead0614c:smart/breadcrumbs/js/breadcrumbs.js"
+        ],
+        "declared": {
+          "css": false,
+          "js": true
+        },
+        "rule_name": "cl-breadcrumbs",
+        "tags": [
+          "sf-breadcrumbs"
+        ]
+      },
+      "requires": [
+        "component.breadcrumbs",
+        "component.icons"
+      ]
+    },
+    {
+      "id": "smart.buttons",
+      "kind": "smart-component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": true,
+        "status": "ready"
+      },
+      "runtime": {
+        "asset_paths": [
+          "simai/ui-smart@dd786bbae98391fb21df9b4e1e6cd402ead0614c:smart/buttons/js/buttons.js"
+        ],
+        "declared": {
+          "css": false,
+          "js": true
+        },
+        "rule_name": "cl-buttons",
+        "tags": [
+          "sf-button"
+        ]
+      },
+      "requires": [
+        "component.buttons"
+      ]
+    },
+    {
+      "id": "smart.modal",
+      "kind": "smart-component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_paths": [
+          "simai/ui-smart@dd786bbae98391fb21df9b4e1e6cd402ead0614c:smart/modal/js/modal.js"
+        ],
+        "declared": {
+          "css": false,
+          "js": true
+        },
+        "rule_name": "cl-modal",
+        "tags": [
+          "sf-modal"
+        ]
+      },
+      "requires": [
+        "component.icon-buttons",
+        "component.modal"
+      ]
+    },
+    {
+      "id": "smart.tree",
+      "kind": "smart-component",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_paths": [
+          "simai/ui-smart@dd786bbae98391fb21df9b4e1e6cd402ead0614c:smart/tree/css/tree.css",
+          "simai/ui-smart@dd786bbae98391fb21df9b4e1e6cd402ead0614c:smart/tree/js/tree.js"
+        ],
+        "declared": {
+          "css": true,
+          "js": true
+        },
+        "rule_name": "cl-tree",
+        "tags": [
+          "sf-tree"
+        ]
+      },
+      "requires": [
+        "component.tree"
+      ]
+    },
+    {
+      "id": "utility.aspect-ratio",
+      "kind": "utility",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/utility/aspect-ratio",
+        "plain_asset_count": 10,
+        "rule_count": 5,
+        "rule_names": [
+          "aspect-ratio/default",
+          "aspect-ratio/lg",
+          "aspect-ratio/md",
+          "aspect-ratio/sm",
+          "aspect-ratio/xl"
+        ]
+      },
+      "requires": []
+    },
+    {
+      "id": "utility.container",
+      "kind": "utility",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/utility/container",
+        "plain_asset_count": 10,
+        "rule_count": 5,
+        "rule_names": [
+          "container/default",
+          "container/lg",
+          "container/md",
+          "container/sm",
+          "container/xl"
+        ]
+      },
+      "requires": []
+    },
+    {
+      "id": "utility.gap",
+      "kind": "utility",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": true,
+        "status": "ready"
+      },
+      "runtime": {
+        "asset_root": "distr/utility/gap",
+        "plain_asset_count": 10,
+        "rule_count": 5,
+        "rule_names": [
+          "gap/default",
+          "gap/lg",
+          "gap/md",
+          "gap/sm",
+          "gap/xl"
+        ]
+      },
+      "requires": []
+    },
+    {
+      "id": "utility.margin",
+      "kind": "utility",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/utility/margin",
+        "plain_asset_count": 10,
+        "rule_count": 5,
+        "rule_names": [
+          "margin/default",
+          "margin/lg",
+          "margin/md",
+          "margin/sm",
+          "margin/xl"
+        ]
+      },
+      "requires": []
+    },
+    {
+      "id": "utility.max-container",
+      "kind": "utility",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/utility/max-container",
+        "plain_asset_count": 2,
+        "rule_count": 1,
+        "rule_names": [
+          "max-container/default"
+        ]
+      },
+      "requires": []
+    },
+    {
+      "id": "utility.overflow",
+      "kind": "utility",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": true,
+        "status": "ready"
+      },
+      "runtime": {
+        "asset_root": "distr/utility/overflow",
+        "plain_asset_count": 10,
+        "rule_count": 5,
+        "rule_names": [
+          "overflow/default",
+          "overflow/lg",
+          "overflow/md",
+          "overflow/sm",
+          "overflow/xl"
+        ]
+      },
+      "requires": []
+    },
+    {
+      "id": "utility.padding",
+      "kind": "utility",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/utility/padding",
+        "plain_asset_count": 10,
+        "rule_count": 5,
+        "rule_names": [
+          "padding/default",
+          "padding/lg",
+          "padding/md",
+          "padding/sm",
+          "padding/xl"
+        ]
+      },
+      "requires": []
+    },
+    {
+      "id": "utility.position",
+      "kind": "utility",
+      "lifecycle": "released",
+      "readiness": {
+        "blockers": [],
+        "profiles": [
+          "plain-assets-v1"
+        ],
+        "safe_to_suggest": false,
+        "status": "discoverable"
+      },
+      "runtime": {
+        "asset_root": "distr/utility/position",
+        "plain_asset_count": 10,
+        "rule_count": 5,
+        "rule_names": [
+          "position/default",
+          "position/lg",
+          "position/md",
+          "position/sm",
+          "position/xl"
+        ]
+      },
+      "requires": []
+    }
+  ],
+  "absent_candidates": [
+    "smart.menu",
+    "smart.code",
+    "component.code",
+    "component.kbd",
+    "smart.kbd",
+    "smart.outline",
+    "component.outline",
+    "smart.scrollbar"
+  ],
+  "note": "Absent means no exact registry entry at the immutable source; it does not by itself authorize implementation."
+}

@@ -18,12 +18,24 @@ engine-owned файлы starter и сохраняет документирова
 ## `build`
 
 ```text
-php vendor/bin/docara build [environment]
+php vendor/bin/docara build [environment] [--page=/public/url/]
 ```
 
 Environment по умолчанию — `local`, каталог результата —
 `build_<environment>`. Для публикационного результата используйте
 `build production`.
+
+После первой полной сборки можно быстро обновить одну существующую страницу:
+
+```bash
+php vendor/bin/docara build production --page=/ru/components/badge/
+```
+
+Docara заново проверит общее дерево, навигацию и поиск, но сформирует только
+выбранный HTML-файл. Команда подходит и для Markdown-страниц, и для страниц
+каталога компонентов. После добавления, удаления или переименования страниц,
+изменения меню, `docara.json` либо Framework lock выполняйте обычную полную
+сборку без `--page`.
 
 ## `verify-static`
 

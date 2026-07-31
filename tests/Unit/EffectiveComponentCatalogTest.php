@@ -29,13 +29,59 @@ final class EffectiveComponentCatalogTest extends TestCase
     {
         $repository = TypedComponentDefinitionRepository::bundled();
 
-        self::assertSame(['card', 'columns', 'cta', 'features', 'steps'], $repository->names());
         self::assertSame([
+            'alert',
+            'backlinks',
+            'banner',
+            'card',
+            'code',
+            'columns',
+            'cta',
+            'details',
+            'diagram',
+            'download',
+            'embed',
+            'example',
+            'features',
+            'figure',
+            'grid',
+            'hero',
+            'html',
+            'logos',
+            'math',
+            'media',
+            'promo',
+            'showcase',
+            'steps',
+            'tabs',
+            'tree',
+        ], $repository->names());
+        self::assertSame([
+            'docara.alert',
+            'docara.backlinks',
+            'docara.banner',
             'docara.card',
+            'docara.code',
             'docara.columns',
             'docara.cta',
+            'docara.details',
+            'docara.diagram',
+            'docara.download',
+            'docara.embed',
+            'docara.example',
             'docara.features',
+            'docara.figure',
+            'docara.grid',
+            'docara.hero',
+            'docara.html',
+            'docara.logos',
+            'docara.math',
+            'docara.media',
+            'docara.promo',
+            'docara.showcase',
             'docara.steps',
+            'docara.tabs',
+            'docara.tree',
         ], array_column($repository->all(), 'id'));
         self::assertSame('docara.card.v1', $repository->byName('card')['renderer']);
         self::assertSame('docara.columns.v1', $repository->byName('columns')['renderer']);
@@ -53,6 +99,7 @@ final class EffectiveComponentCatalogTest extends TestCase
 
         self::assertSame([
             'native.code',
+            'native.footnotes_and_sources',
             'native.headings_and_text',
             'native.links_and_images',
             'native.lists_and_quotes',
@@ -72,7 +119,7 @@ final class EffectiveComponentCatalogTest extends TestCase
         self::assertSame(CanonicalJson::encodePretty($first), CanonicalJson::encodePretty($second));
         self::assertSame('docara.effective_component_catalog.v1', $first['schema']);
         self::assertSame(1, $first['version']);
-        self::assertSame('sf-v5.3.2-7e836d8a-dd786bba', $first['framework_pair']);
+        self::assertSame('sf-v5.3.2-cc1bfbc5-aa9f34a4', $first['framework_pair']);
         self::assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $first['provider_revision']);
         self::assertSame([
             'catalog_is_canonical_framework_registry' => false,
@@ -94,15 +141,20 @@ final class EffectiveComponentCatalogTest extends TestCase
         $lifecycles = array_column($first['entries'], 'lifecycle', 'id');
         foreach ([
             'native.code',
+            'native.footnotes_and_sources',
             'native.headings_and_text',
             'native.links_and_images',
             'native.lists_and_quotes',
             'native.table',
             'docara.card',
-            'docara.columns',
-            'docara.cta',
-            'docara.features',
+            'docara.banner',
+            'docara.diagram',
+            'docara.hero',
+            'docara.html',
+            'docara.logos',
+            'docara.math',
             'docara.steps',
+            'docara.tabs',
             'ui.alert',
             'ui.button',
         ] as $id) {
@@ -117,6 +169,16 @@ final class EffectiveComponentCatalogTest extends TestCase
             self::assertNotSame('', trim((string) $russian['title']), (string) $entry['id']);
             self::assertNotSame('', trim((string) $russian['description']), (string) $entry['id']);
             if ($entry['lifecycle'] === 'supported') {
+                self::assertIsArray($entry['metadata'] ?? null, (string) $entry['id']);
+                self::assertNotSame('', trim((string) ($entry['metadata']['owner'] ?? '')), (string) $entry['id']);
+                self::assertNotSame('', trim((string) ($entry['metadata']['package'] ?? '')), (string) $entry['id']);
+                self::assertNotSame('', trim((string) ($entry['metadata']['version'] ?? '')), (string) $entry['id']);
+                self::assertIsString($entry['metadata']['source_ref'] ?? null, (string) $entry['id']);
+                self::assertSame(
+                    array_values($entry['authoring']['jobs'] ?? []),
+                    $entry['metadata']['capabilities'] ?? null,
+                    (string) $entry['id'],
+                );
                 self::assertArrayNotHasKey('gap', $russian, (string) $entry['id']);
                 self::assertIsString($russian['example_ref'] ?? null, (string) $entry['id']);
             } else {
@@ -130,6 +192,13 @@ final class EffectiveComponentCatalogTest extends TestCase
         self::assertSame('deferred', $lifecycles['ui.dataview'] ?? null);
 
         $alert = $first['entries'][array_search('ui.alert', $ids, true)];
+        self::assertSame('larena/ui', $alert['metadata']['owner']);
+        self::assertSame('larena/ui', $alert['metadata']['package']);
+        self::assertSame('1.0.1', $alert['metadata']['version']);
+        self::assertSame(
+            'resources/framework/manifests/ui-alert.json',
+            $alert['metadata']['source_ref'],
+        );
         self::assertSame('framework_smart', $alert['family']);
         self::assertSame(':::ui.alert', $alert['authoring']['call']);
         self::assertSame(['default', 'info', 'warning', 'danger'], $alert['states']);
@@ -156,6 +225,14 @@ final class EffectiveComponentCatalogTest extends TestCase
             $alert['provenance']['manifest_ref'],
         );
         $button = $this->entry($first, 'ui.button');
+        self::assertSame('larena/ui', $button['metadata']['package']);
+        self::assertSame('1.0.0', $button['metadata']['version']);
+        self::assertSame(
+            'resources/framework/manifests/ui-button.json',
+            $button['metadata']['source_ref'],
+        );
+        self::assertSame('simai/docara', $this->entry($first, 'native.code')['metadata']['package']);
+        self::assertSame('simai/docara', $this->entry($first, 'docara.card')['metadata']['package']);
         $presetIndex = array_search(
             'preset',
             array_column($button['authoring']['parameters'], 'name'),
@@ -291,30 +368,50 @@ final class EffectiveComponentCatalogTest extends TestCase
         $catalog = $this->builder()->build();
         $actual = array_column($catalog['entries'], 'docs_ref', 'id');
         $expected = [
-            'content.icon' => 'docs/site/content/ru/components.md',
+            'content.icon' => 'docs/site/content/ru/components/syntax.md',
+            'docara.alert' => 'docs/site/content/ru/components/syntax.md',
+            'docara.backlinks' => 'docs/site/content/ru/components/syntax.md',
+            'docara.badge' => 'docs/site/content/ru/components/syntax.md',
+            'docara.banner' => 'docs/site/content/ru/components/syntax.md',
+            'docara.button' => 'docs/site/content/ru/components/syntax.md',
             'docara.card' => 'docs/site/content/ru/components/syntax.md',
-            'docara.columns' => 'docs/site/content/ru/components/syntax.md',
-            'docara.cta' => 'docs/site/content/ru/components/syntax.md',
-            'docara.features' => 'docs/site/content/ru/components/syntax.md',
+            'docara.code' => 'docs/site/content/ru/components/syntax.md',
+            'docara.details' => 'docs/site/content/ru/components/syntax.md',
+            'docara.diagram' => 'docs/site/content/ru/components/syntax.md',
+            'docara.download' => 'docs/site/content/ru/components/syntax.md',
+            'docara.embed' => 'docs/site/content/ru/components/syntax.md',
+            'docara.example' => 'docs/site/content/ru/components/syntax.md',
+            'docara.figure' => 'docs/site/content/ru/components/syntax.md',
+            'docara.grid' => 'docs/site/content/ru/components/syntax.md',
+            'docara.hero' => 'docs/site/content/ru/components/syntax.md',
+            'docara.html' => 'docs/site/content/ru/components/syntax.md',
+            'docara.icon' => 'docs/site/content/ru/components/syntax.md',
+            'docara.kbd' => 'docs/site/content/ru/components/syntax.md',
+            'docara.logos' => 'docs/site/content/ru/components/syntax.md',
+            'docara.math' => 'docs/site/content/ru/components/syntax.md',
+            'docara.media' => 'docs/site/content/ru/components/syntax.md',
             'docara.steps' => 'docs/site/content/ru/components/syntax.md',
+            'docara.tabs' => 'docs/site/content/ru/components/syntax.md',
+            'docara.tree' => 'docs/site/content/ru/components/syntax.md',
             'native.code' => 'docs/site/content/ru/authoring/markdown.md',
-            'native.code.enhanced' => 'docs/site/content/ru/components.md',
+            'native.code.enhanced' => 'docs/site/content/ru/components/syntax.md',
+            'native.footnotes_and_sources' => 'docs/site/content/ru/authoring/markdown.md',
             'native.headings_and_text' => 'docs/site/content/ru/authoring/markdown.md',
             'native.links_and_images' => 'docs/site/content/ru/authoring/markdown.md',
             'native.lists_and_quotes' => 'docs/site/content/ru/authoring/markdown.md',
             'native.table' => 'docs/site/content/ru/authoring/markdown.md',
             'ui.alert' => 'docs/site/content/ru/components/syntax.md',
-            'ui.badge' => 'docs/site/content/ru/components.md',
+            'ui.badge' => 'docs/site/content/ru/components/syntax.md',
             'ui.button' => 'docs/site/content/ru/components/syntax.md',
-            'ui.dataview' => 'docs/site/content/ru/components.md',
-            'ui.tabs' => 'docs/site/content/ru/components.md',
+            'ui.dataview' => 'docs/site/content/ru/components/syntax.md',
+            'ui.tabs' => 'docs/site/content/ru/components/syntax.md',
         ];
 
         self::assertSame($expected, $actual);
         foreach ($actual as $id => $docsReference) {
             self::assertFileExists(dirname(__DIR__, 2) . '/' . $docsReference, $id);
-            self::assertStringNotContainsString(
-                '/components/catalog/',
+            self::assertStringStartsWith(
+                'docs/site/content/',
                 $docsReference,
                 "$id must reference authored guidance, not generated output.",
             );
@@ -454,9 +551,20 @@ final class EffectiveComponentCatalogTest extends TestCase
             'native.code' => [
                 'markdown' => ['```php', "\$site = 'Docara';"],
                 'html' => [
-                    '<div data-docara-code-block class="source docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-0">',
+                    '<div data-docara-code-block class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">',
                     '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code class="language-php">',
                     "\$site = 'Docara';",
+                ],
+            ],
+            'native.footnotes_and_sources' => [
+                'markdown' => [
+                    'verifiable source reference.[^source]',
+                    '[^source]: Source title, version, and publication address.',
+                ],
+                'html' => [
+                    'class="footnote-ref"',
+                    'class="footnotes"',
+                    'Source title, version, and publication address.',
                 ],
             ],
             'native.headings_and_text' => [
@@ -476,11 +584,13 @@ final class EffectiveComponentCatalogTest extends TestCase
             'native.links_and_images' => [
                 'markdown' => [
                     '[Back to the catalog](../)',
-                    '![Docara mark](../../../_docara/component-catalog/docara-mark.svg)',
+                    '![Docara mark](../../_docara/component-catalog/docara-mark.svg)',
                 ],
                 'html' => [
                     '<a href="../">Back to the catalog</a>',
-                    '<img src="../../../_docara/component-catalog/docara-mark.svg" alt="Docara mark" />',
+                    '<img src="../../_docara/component-catalog/docara-mark.svg" alt="Docara mark" />',
+                    'data-docara-native-image',
+                    'ratio-16-9',
                 ],
             ],
             'native.lists_and_quotes' => [
@@ -492,6 +602,7 @@ final class EffectiveComponentCatalogTest extends TestCase
                     '<li>First item</li>',
                     '<blockquote>',
                     'Good documentation helps people complete a task.',
+                    'data-docara-native-quote',
                 ],
             ],
             'native.table' => [
@@ -500,46 +611,113 @@ final class EffectiveComponentCatalogTest extends TestCase
                     '| `docara.json` | Site settings |',
                 ],
                 'html' => [
-                    '<div class="overflow-auto"><table class="table table-border table-stripe">',
+                    '<div data-docara-table-scroll class="overflow-auto m-bottom-1"><table class="table table-border table-stripe">',
                     '<th>File</th>',
                     '<code>docara.json</code>',
                 ],
             ],
         ];
         $typedIdentity = [
+            'docara.alert' => [
+                '<section data-docara-block="alert"',
+                'class="sf-alert sf-alert--info sf-alert--default flex items-start m-bottom-1"',
+            ],
             'docara.card' => [
-                '<section class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1">',
+                '<section data-docara-block="card" data-docara-card-variant="default" class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1 m-bottom-1">',
                 '<h3>Portable project</h3>',
             ],
-            'docara.columns' => [
-                '<section data-docara-block="columns" data-docara-columns="4" class="grid grid-col-1 md:grid-col-2 lg:grid-col-4 gap-2">',
-                '<div class="min-w-0">',
+            'docara.banner' => [
+                '<aside data-docara-block="banner"',
+                'sf-alert--flat',
             ],
-            'docara.cta' => [
-                '<a data-docara-block="cta" class="docara-cta-link sf-button',
-                '<span class="sf-button-text-container">Back to the catalog</span>',
+            'docara.backlinks' => [
+                '<nav data-docara-block="backlinks"',
+                'data-docara-backlinks-limit=',
             ],
-            'docara.features' => [
-                '<ul data-docara-block="features" class="grid grid-col-1 lg:grid-col-3',
-                '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">',
+            'docara.code' => [
+                '<div data-docara-code-block',
+                'language-php',
+            ],
+            'docara.diagram' => [
+                '<figure data-docara-block="diagram"',
+                'data-docara-diagram-source',
+            ],
+            'docara.details' => [
+                '<details data-docara-block="details"',
+                '<summary class="flex items-center gap-1 cursor-pointer',
+            ],
+            'docara.download' => [
+                '<section data-docara-block="download" data-action="download"',
+                'docara-portable.zip',
+            ],
+            'docara.embed' => [
+                '<div data-docara-block="embed"',
+                '<iframe',
+            ],
+            'docara.example' => [
+                'data-docara-example=',
+                'data-docara-example-tab="markdown"',
+            ],
+            'docara.html' => [
+                '<iframe data-docara-block="html"',
+                'sandbox srcdoc=',
+            ],
+            'docara.figure' => [
+                '<figure data-docara-block="figure"',
+                '<figcaption',
+            ],
+            'docara.grid' => [
+                '<section data-docara-block="grid"',
+                'lg:grid-col-3',
+            ],
+            'docara.hero' => [
+                '<section data-docara-block="hero" data-variant="split" data-docara-width="full"',
+                '<a data-docara-hero-action class="sf-button',
+            ],
+            'docara.logos' => [
+                '<ul data-docara-block="logos" data-tone="normal" class="grid grid-col-2 md:grid-col-3 lg:grid-col-6',
+                '<li class="min-w-0 flex items-center content-main-center">',
+            ],
+            'docara.media' => [
+                '<section data-docara-block="media"',
+                'data-side="right"',
+            ],
+            'docara.math' => [
+                'data-docara-block="math"',
+                'role="math"',
             ],
             'docara.steps' => [
-                '<section class="bg-surface-0 border border-outline-variant radius-2 p-3">',
-                '<ol class="flex flex-col gap-2 p-inline-start-3">',
+                '<section data-docara-block="steps" data-view="timeline" class="bg-surface-0 border border-outline-variant radius-2 p-3 m-bottom-1">',
+                '<ol class="m-0 p-0">',
+            ],
+            'docara.tabs' => [
+                '<section data-docara-block="tabs"',
+                'role="tablist"',
+            ],
+            'docara.tree' => [
+                '<div data-docara-block="tree"',
+                '<ul',
             ],
         ];
         $smartIdentity = [
             'ui.alert' => '<sf-alert',
             'ui.button' => '<sf-button',
         ];
+        $inlineIdentity = [
+            'docara.badge' => '<span class="sf-badge ',
+            'docara.button' => '<a class="sf-button ',
+            'docara.icon' => '<i class="sf-icon ',
+            'docara.kbd' => '<kbd class="inline-flex ',
+        ];
         $supported = array_values(array_filter(
             $catalog['entries'],
             static fn (array $entry): bool => ($entry['lifecycle'] ?? null) === 'supported',
         ));
-        self::assertCount(12, $supported);
+        self::assertCount(32, $supported);
         $expectedIds = array_merge(
             array_keys($nativeIdentity),
             array_keys($typedIdentity),
+            array_keys($inlineIdentity),
             array_keys($smartIdentity),
         );
         sort($expectedIds, SORT_STRING);
@@ -566,7 +744,11 @@ final class EffectiveComponentCatalogTest extends TestCase
             $markdown = file_get_contents($root . '/' . $englishReference);
             self::assertIsString($markdown, $entry['id']);
             $document = $runtime->extract($markdown, $englishReference);
-            $html = $document->hydrate($renderer->render($document->markdownWithPlaceholders));
+            $html = $document->hydrate($renderer->render(
+                $document->markdownWithPlaceholders,
+                $root,
+                $root . '/' . $englishReference,
+            ));
             self::assertNotSame('', trim($html), $entry['id']);
             $localizedReference = $translator->component('ru', (string) $entry['id'])['example_ref'] ?? null;
             self::assertIsString($localizedReference, $entry['id']);
@@ -578,7 +760,11 @@ final class EffectiveComponentCatalogTest extends TestCase
             self::assertNotSame(
                 '',
                 trim($localizedDocument->hydrate(
-                    $renderer->render($localizedDocument->markdownWithPlaceholders),
+                    $renderer->render(
+                        $localizedDocument->markdownWithPlaceholders,
+                        $root,
+                        $root . '/' . $localizedReference,
+                    ),
                 )),
                 $entry['id'],
             );
@@ -598,10 +784,25 @@ final class EffectiveComponentCatalogTest extends TestCase
 
             $call = $entry['authoring']['call'];
             self::assertIsString($call, $entry['id']);
-            self::assertSame(
+            if (($entry['authoring']['syntax'] ?? null) === 'inline') {
+                self::assertSame([], $document->normalizedCalls, $entry['id']);
+                self::assertArrayHasKey($entry['id'], $inlineIdentity);
+                self::assertStringContainsString($call . '[', $markdown, $entry['id']);
+                self::assertStringContainsString($inlineIdentity[$entry['id']], $html, $entry['id']);
+
+                continue;
+            }
+            $directivePattern = str_starts_with($call, ':::')
+                ? ':{3,}' . preg_quote(substr($call, 3), '/')
+                : preg_quote($call, '/');
+            $directiveCount = preg_match_all(
+                '/^' . $directivePattern . '(?:\h+\{[^}]*\})?\h*$/m',
+                $markdown,
+            );
+            self::assertGreaterThanOrEqual(
                 1,
-                preg_match_all('/^' . preg_quote($call, '/') . '\h*$/m', $markdown),
-                "{$entry['id']} fixture must contain its exact directive opener once.",
+                $directiveCount,
+                "{$entry['id']} fixture must contain its exact directive opener.",
             );
 
             if ($entry['family'] === 'docara_typed') {
@@ -616,12 +817,14 @@ final class EffectiveComponentCatalogTest extends TestCase
 
             self::assertSame('framework_smart', $entry['family'], $entry['id']);
             self::assertArrayHasKey($entry['id'], $smartIdentity);
-            self::assertCount(1, $document->normalizedCalls, $entry['id']);
-            self::assertSame($entry['id'], $document->normalizedCalls[0]['id']);
+            self::assertCount($directiveCount, $document->normalizedCalls, $entry['id']);
+            foreach ($document->normalizedCalls as $callRecord) {
+                self::assertSame($entry['id'], $callRecord['id']);
+            }
             self::assertSame(
-                1,
+                $directiveCount,
                 substr_count($html, $smartIdentity[$entry['id']]),
-                "{$entry['id']} fixture must render its exact Smart host once.",
+                "{$entry['id']} fixture must render every declared Smart example.",
             );
             foreach (array_values($smartIdentity) as $host) {
                 if ($host !== $smartIdentity[$entry['id']]) {

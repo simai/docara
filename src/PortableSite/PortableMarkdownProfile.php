@@ -10,6 +10,7 @@ use League\CommonMark\Extension\CommonMark\CommonMarkCoreExtension;
 use League\CommonMark\Extension\SmartPunct\SmartPunctExtension;
 use League\CommonMark\Extension\Strikethrough\StrikethroughExtension;
 use League\CommonMark\Extension\Table\TableExtension;
+use League\CommonMark\Extension\Footnote\FootnoteExtension;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\SchemaRepository;
 
@@ -18,6 +19,7 @@ final readonly class PortableMarkdownProfile
     /** @var array<string, string> */
     private const CAPABILITY_FILES = [
         'native.code' => 'native.code.json',
+        'native.footnotes_and_sources' => 'native.footnotes_and_sources.json',
         'native.headings_and_text' => 'native.headings_and_text.json',
         'native.links_and_images' => 'native.links_and_images.json',
         'native.lists_and_quotes' => 'native.lists_and_quotes.json',
@@ -45,6 +47,7 @@ final readonly class PortableMarkdownProfile
         $environment->addExtension(new SmartPunctExtension);
         $environment->addExtension(new StrikethroughExtension);
         $environment->addExtension(new TableExtension);
+        $environment->addExtension(new FootnoteExtension);
 
         return $environment;
     }

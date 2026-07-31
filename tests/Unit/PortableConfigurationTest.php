@@ -51,7 +51,8 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame('content', $plan->configuration['content_root']);
         self::assertSame('framework.lock.json', $plan->configuration['framework_lock']);
         self::assertSame('docs/install', $plan->configuration['slug']);
-        self::assertSame('full', $plan->configuration['layout']['max_width']);
+        self::assertSame(8, $plan->configuration['layout']['container']['max']);
+        self::assertSame('overlay', $plan->configuration['layout']['scrollbar']['preset']);
         self::assertSame('dark', $plan->configuration['settings']['theme']);
         self::assertSame('Portable brand', $plan->configuration['branding']['title']);
         self::assertSame('Deep documentation', $plan->configuration['branding']['label']);
@@ -74,7 +75,8 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame('@defaults', $plan->provenance['/reading/mobile_toc']);
         self::assertSame('@defaults', $plan->provenance['/reading/toc_depth']);
         self::assertSame('@defaults', $plan->provenance['/reading/previous_next']);
-        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/layout/max_width']);
+        self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/layout/container/max']);
+        self::assertSame('@defaults', $plan->provenance['/layout/scrollbar/preset']);
         self::assertSame('content/docs/deep/section.json', $plan->provenance['/settings/theme']);
         self::assertSame('docara.json', $plan->provenance['/branding/logo']);
         self::assertSame('content/docs/deep/section.json', $plan->provenance['/branding/label']);
@@ -115,10 +117,10 @@ final class PortableConfigurationTest extends TestCase
         $this->writeJson('content/components/section.json', [
             'schema' => 'docara.section.v1',
             'locale' => 'ru',
-            'layout' => ['max_width' => 'full'],
+            'layout' => ['container' => ['max' => 8]],
             'settings' => ['theme' => 'light'],
         ]);
-        $this->writeJson('content/components/catalog/index.page.json', [
+        $this->writeJson('content/components/index.page.json', [
             'schema' => 'docara.page.v1',
             'preset' => 'landing',
             'locale' => 'en',
@@ -126,12 +128,12 @@ final class PortableConfigurationTest extends TestCase
         ]);
 
         $plan = (new PortableConfigurationLoader($this->root))
-            ->resolveGeneratedBase('content/components/catalog/index.md');
+            ->resolveGeneratedBase('content/components/index.md');
 
-        self::assertSame('content/components/catalog/index.md', $plan->page);
+        self::assertSame('content/components/index.md', $plan->page);
         self::assertSame('', $plan->markdown);
         self::assertSame('ru', $plan->configuration['locale']);
-        self::assertSame('full', $plan->configuration['layout']['max_width']);
+        self::assertSame(8, $plan->configuration['layout']['container']['max']);
         self::assertSame('light', $plan->configuration['settings']['theme']);
         self::assertSame('content/components/section.json', $plan->provenance['/locale']);
         self::assertSame('content/components/section.json', $plan->provenance['/settings/theme']);
@@ -145,7 +147,7 @@ final class PortableConfigurationTest extends TestCase
             ],
             array_column($plan->trace, 'source'),
         );
-        self::assertNotContains('content/components/catalog/index.page.json', array_column($plan->trace, 'source'));
+        self::assertNotContains('content/components/index.page.json', array_column($plan->trace, 'source'));
     }
 
     public function test_repository_recipe_resolves_site_section_and_page_region_composition_with_provenance(): void
@@ -374,7 +376,7 @@ final class PortableConfigurationTest extends TestCase
                 'framework_lock' => 'framework.lock.json',
                 'layout' => [
                     'key' => 'docara.docs',
-                    'max_width' => 'wide',
+                    'container' => ['max' => 7],
                     'regions' => [
                         'outline' => ['enabled' => false],
                         'footer' => ['enabled' => true, 'sections' => []],
@@ -392,6 +394,8 @@ final class PortableConfigurationTest extends TestCase
                 'branding' => [
                     'title' => 'Product',
                     'label' => 'Docs',
+                    'mode' => 'full',
+                    'size' => 'large',
                     'logo' => 'assets/logo.svg',
                     'logo_dark' => 'assets/logo-dark.svg',
                     'favicon' => 'assets/favicon.ico',
@@ -399,16 +403,26 @@ final class PortableConfigurationTest extends TestCase
             ]],
             ['section.schema.json', [
                 'schema' => 'docara.section.v1',
-                'layout' => ['$reset' => true, 'max_width' => 'compact'],
+                'layout' => ['$reset' => true, 'container' => ['max' => 4]],
                 'settings' => ['theme' => 'dark'],
                 'navigation' => ['hidden' => true, 'order' => 20],
+                'header_navigation' => [
+                    'enabled' => true,
+                    'items' => [
+                        ['id' => 'home', 'label' => 'Главная', 'href' => '/ru/'],
+                        ['id' => 'github', 'label' => 'GitHub', 'href' => 'https://github.com/simai/docara'],
+                    ],
+                ],
                 'search' => ['$reset' => true, 'indexed' => false],
                 'reading' => ['$reset' => true, 'toc_depth' => 2],
                 'branding' => ['$reset' => true, 'title' => 'Section product'],
             ]],
             ['page.schema.json', [
                 'schema' => 'docara.page.v1',
-                'layout' => ['max_width' => 'full'],
+                'layout' => [
+                    'container' => ['max' => 8],
+                    'scrollbar' => ['preset' => 'persistent'],
+                ],
                 'settings' => ['$reset' => true, 'theme' => 'light'],
                 'navigation' => ['$reset' => true, 'order' => 5],
                 'search' => ['enabled' => false],
@@ -428,7 +442,10 @@ final class PortableConfigurationTest extends TestCase
         foreach ([
             [$site + ['theme' => 'dark'], 'site.schema.json'],
             [$site + ['layout' => ['sidebar' => ['position' => 'left']]], 'site.schema.json'],
-            [$site + ['layout' => ['max_width' => '72rem']], 'site.schema.json'],
+            [$site + ['layout' => ['container' => ['max' => 9]]], 'site.schema.json'],
+            [$site + ['layout' => ['container' => ['max' => '7']]], 'site.schema.json'],
+            [$site + ['layout' => ['scrollbar' => ['preset' => 'auto']]], 'site.schema.json'],
+            [$site + ['layout' => ['scrollbar' => []]], 'site.schema.json'],
             [['schema' => 'docara.section.v1', 'settings' => ['theme' => 'sepia']], 'section.schema.json'],
             [['schema' => 'docara.section.v1', 'settings' => ['table_of_contents' => true]], 'section.schema.json'],
             [['schema' => 'docara.page.v1', 'navigation' => ['enabled' => true]], 'page.schema.json'],
@@ -436,6 +453,20 @@ final class PortableConfigurationTest extends TestCase
             [['schema' => 'docara.page.v1', 'navigation' => ['order' => -1]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'navigation' => ['order' => 2147483648]], 'page.schema.json'],
             [['schema' => 'docara.section.v1', 'navigation' => ['order' => '10']], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'header_navigation' => ['enabled' => true]], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'header_navigation' => ['enabled' => 'true']], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'header_navigation' => ['unknown' => true]], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'header_navigation' => ['items' => []]], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'header_navigation' => ['items' => [[
+                'id' => 'home',
+                'label' => 'Home',
+                'href' => 'javascript:alert(1)',
+            ]]]], 'section.schema.json'],
+            [['schema' => 'docara.section.v1', 'header_navigation' => ['items' => [[
+                'id' => 'Home',
+                'label' => 'Home',
+                'href' => '/',
+            ]]]], 'section.schema.json'],
             [['schema' => 'docara.page.v1', 'search' => ['enabled' => 'true']], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'search' => ['indexed' => 1]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'search' => ['unknown' => true]], 'page.schema.json'],
@@ -451,6 +482,8 @@ final class PortableConfigurationTest extends TestCase
             [['schema' => 'docara.page.v1', 'branding' => ['unknown' => true]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'branding' => ['title' => '']], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'branding' => ['label' => '']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['mode' => 'banner']], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'branding' => ['size' => 'huge']], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'branding' => ['logo' => '/absolute/logo.svg']], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'branding' => ['logo' => '../logo.svg']], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'branding' => ['logo' => 'assets\\logo.svg']], 'page.schema.json'],
@@ -538,13 +571,13 @@ final class PortableConfigurationTest extends TestCase
             'schema' => 'docara.page.v1',
             'layout' => [
                 '$reset' => true,
-                'max_width' => 'compact',
+                'container' => ['max' => 4],
             ],
         ]);
 
         $plan = (new PortableConfigurationLoader($this->root))->resolve('content/docs/deep/install.md');
 
-        self::assertSame('compact', $plan->configuration['layout']['max_width']);
+        self::assertSame(4, $plan->configuration['layout']['container']['max']);
         self::assertSame('docara.docs', $plan->configuration['layout']['key']);
         self::assertTrue($plan->configuration['layout']['regions']['header']['enabled']);
         self::assertTrue($plan->configuration['layout']['regions']['main']['enabled']);
@@ -915,7 +948,7 @@ final class PortableConfigurationTest extends TestCase
             'title' => 'Portable docs',
             'locale' => 'en',
             'layout' => [
-                'max_width' => 'normal',
+                'container' => ['max' => 6],
             ],
             'settings' => [
                 'theme' => 'system',
@@ -936,11 +969,11 @@ final class PortableConfigurationTest extends TestCase
         ]);
         $this->writeJson('content/section.json', [
             'schema' => 'docara.section.v1',
-            'layout' => ['max_width' => 'compact'],
+            'layout' => ['container' => ['max' => 4]],
         ]);
         $this->writeJson('content/docs/section.json', [
             'schema' => 'docara.section.v1',
-            'layout' => ['max_width' => 'wide'],
+            'layout' => ['container' => ['max' => 7]],
             'navigation' => ['hidden' => true, 'order' => 20],
         ]);
         $this->writeJson('content/docs/deep/section.json', [
@@ -954,7 +987,7 @@ final class PortableConfigurationTest extends TestCase
             'preset' => 'landing',
             'slug' => 'docs/install',
             'locale' => 'en',
-            'layout' => ['max_width' => 'full'],
+            'layout' => ['container' => ['max' => 8]],
             'navigation' => ['order' => 5],
         ]);
     }

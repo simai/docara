@@ -29,6 +29,7 @@ final readonly class EffectiveComponentCatalogBuilder
         private FrameworkConsumerPolicy $consumerPolicy,
         private SchemaRepository $schemas = new SchemaRepository,
         private EffectiveComponentCatalogValidator $validator = new EffectiveComponentCatalogValidator,
+        private ?ComponentSourceMetadataRepository $sourceMetadata = null,
     ) {}
 
     public static function bundled(FrameworkLock $frameworkLock): self
@@ -42,21 +43,53 @@ final readonly class EffectiveComponentCatalogBuilder
             $frameworkLock,
             FrameworkManifestRepository::bundled($frameworkLock),
             new FrameworkConsumerPolicy,
+            sourceMetadata: new ComponentSourceMetadataRepository(
+                $root . '/resources/component-catalog/source-metadata.json',
+            ),
         );
     }
 
     /** @return array<string, mixed> */
     public function build(): array
     {
+        $sourceMetadata = $this->sourceMetadata ?? new ComponentSourceMetadataRepository(
+            dirname(__DIR__, 2) . '/resources/component-catalog/source-metadata.json',
+            $this->schemas,
+        );
         $entries = [];
         foreach ($this->nativeProfile->entries() as $entry) {
+            $entry['metadata'] = $this->docaraMetadata(
+                $entry,
+                (string) ($entry['provenance']['profile_id'] ?? 'docara.portable_markdown_profile.v1'),
+                (string) ($entry['docs_ref'] ?? ''),
+                $sourceMetadata,
+            );
             $this->addEntry($entries, $entry);
         }
         foreach ($this->typedDefinitions->all() as $definition) {
+            if (! (new PublicComponentPolicy)->exposes((string) ($definition['id'] ?? ''))) {
+                continue;
+            }
+            $renderer = (string) ($definition['renderer'] ?? '');
             unset($definition['name'], $definition['renderer']);
+            $definition['metadata'] = $this->docaraMetadata(
+                $definition,
+                $renderer,
+                (string) ($definition['provenance']['definition_ref'] ?? ''),
+                $sourceMetadata,
+            );
             $this->addEntry($entries, $definition);
         }
-        foreach ($this->smartEntries() as $entry) {
+        foreach ($this->smartEntries($sourceMetadata) as $entry) {
+            $this->addEntry($entries, $entry);
+        }
+        foreach ($this->loadDirectory('inline') as $entry) {
+            $entry['metadata'] = $this->docaraMetadata(
+                $entry,
+                'docara.inline.v1',
+                (string) ($entry['provenance']['definition_ref'] ?? ''),
+                $sourceMetadata,
+            );
             $this->addEntry($entries, $entry);
         }
         foreach ($this->loadDirectory('requirements') as $entry) {
@@ -72,6 +105,12 @@ final readonly class EffectiveComponentCatalogBuilder
         }
 
         ksort($entries, SORT_STRING);
+        foreach ($entries as &$entry) {
+            if (($entry['lifecycle'] ?? null) === 'supported') {
+                $entry['verification']['variant_coverage'] = $this->variantCoverage($entry);
+            }
+        }
+        unset($entry);
         $providerRevisions = [];
         foreach ($this->manifests->keys() as $key) {
             $providerRevisions[$this->manifests->providerRevision($key)] = true;
@@ -127,7 +166,7 @@ final readonly class EffectiveComponentCatalogBuilder
     }
 
     /** @return list<array<string, mixed>> */
-    private function smartEntries(): array
+    private function smartEntries(ComponentSourceMetadataRepository $sourceMetadata): array
     {
         $metadata = [];
         foreach ($this->loadDirectory('smart') as $entry) {
@@ -203,10 +242,93 @@ final readonly class EffectiveComponentCatalogBuilder
                 'manifest_sha256' => (string) $lockRecord['sha256'],
                 'runtime_pair' => $this->frameworkLock->pairId(),
             ]);
+            $entry['metadata'] = array_merge([
+                'owner' => (string) $manifest['owner_package'],
+                'package' => (string) $manifest['owner_package'],
+                'version' => (string) $manifest['version'],
+                'source_ref' => $this->manifests->manifestReference($key),
+                'capabilities' => array_values(array_map(
+                    'strval',
+                    is_array($entry['authoring']['jobs'] ?? null)
+                        ? $entry['authoring']['jobs']
+                        : [],
+                )),
+            ], $sourceMetadata->forSource($this->manifests->manifestReference($key)));
             $entries[] = $entry;
         }
 
         return $entries;
+    }
+
+    /**
+     * @param  array<string, mixed>  $entry
+     * @return array<string, mixed>
+     */
+    private function docaraMetadata(
+        array $entry,
+        string $version,
+        string $sourceRef,
+        ComponentSourceMetadataRepository $sourceMetadata,
+    ): array
+    {
+        $capabilities = array_values(array_map(
+            'strval',
+            is_array($entry['authoring']['jobs'] ?? null)
+                ? $entry['authoring']['jobs']
+                : [],
+        ));
+
+        return array_merge([
+            'owner' => 'simai/docara',
+            'package' => 'simai/docara',
+            'version' => $version,
+            'source_ref' => $sourceRef,
+            'capabilities' => $capabilities,
+        ], $sourceMetadata->forSource($sourceRef));
+    }
+
+    /**
+     * @param  array<string, mixed>  $entry
+     * @return list<array<string, mixed>>
+     */
+    private function variantCoverage(array $entry): array
+    {
+        $coverage = [[
+            'id' => 'base',
+            'kind' => 'base',
+        ]];
+        foreach (($entry['states'] ?? []) as $state) {
+            $coverage[] = [
+                'id' => 'state.' . (string) $state,
+                'kind' => 'state',
+                'name' => (string) $state,
+            ];
+        }
+        $parameters = is_array($entry['authoring']['parameters'] ?? null)
+            ? $entry['authoring']['parameters']
+            : [];
+        foreach (['preset', 'variant'] as $axis) {
+            foreach ($parameters as $parameter) {
+                if (! is_array($parameter)
+                    || ($parameter['name'] ?? null) !== $axis
+                    || ! is_array($parameter['values'] ?? null)
+                ) {
+                    continue;
+                }
+                foreach ($parameter['values'] as $value) {
+                    $token = (string) $value;
+                    $coverage[] = [
+                        'id' => 'parameter.' . $axis . '.' . ($token === '' ? 'framework-default' : $token),
+                        'kind' => 'parameter',
+                        'name' => $axis,
+                        'value' => $value,
+                    ];
+                }
+                break 2;
+            }
+        }
+
+        return $coverage;
     }
 
     /** @param array<string, mixed> $entry @param array<string, mixed> $manifest */

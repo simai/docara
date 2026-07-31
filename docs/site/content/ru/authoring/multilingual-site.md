@@ -82,7 +82,9 @@ content/
   },
   "branding": {
     "title": "Acme",
-    "label": "Docs"
+    "label": "Docs",
+    "mode": "text",
+    "size": "medium"
   },
   "search": {
     "enabled": true,
@@ -94,6 +96,41 @@ content/
 Все locale из `fallbacks` обязаны присутствовать в этом же реестре. Арабский
 встроенный pack дополняется английским, но Markdown-контент не переводится
 fallback-механизмом. Для RTL явно задаётся `"direction": "rtl"`.
+
+Каждая локаль также может иметь собственное верхнее меню. Например,
+`content/ru/section.json` содержит русские подписи:
+
+```json
+{
+  "schema": "docara.section.v1",
+  "header_navigation": {
+    "enabled": true,
+    "items": [
+      {"id": "start", "label": "Быстрый старт", "href": "/ru/start/"},
+      {"id": "github", "label": "GitHub", "href": "https://github.com/simai/docara"}
+    ]
+  }
+}
+```
+
+А `content/en/section.json` независимо задаёт другой состав:
+
+```json
+{
+  "schema": "docara.section.v1",
+  "header_navigation": {
+    "enabled": true,
+    "items": [
+      {"id": "docs", "label": "Documentation", "href": "/en/"},
+      {"id": "components", "label": "Components", "href": "/en/components/"},
+      {"id": "github", "label": "GitHub", "href": "https://github.com/simai/docara"}
+    ]
+  }
+}
+```
+
+Docara не требует одинакового количества пунктов и не переводит подписи
+автоматически.
 
 ## 3. Соберите и проверьте все языки
 

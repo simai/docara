@@ -18,7 +18,7 @@ Base: `v1.3.65` / `ba7724ae3d9e2b99388098637b81a35a2646e6a4`
 ## Immutable Framework evidence
 
 - Core: `simai/ui@7e836d8a9414d5da553fb1ab0404721e5b48769a`.
-- Smart source: `simai/ui-smart@dd786bbae98391fb21df9b4e1e6cd402ead0614c`.
+- Smart source: `simai/ui-smart@ab896dc7cd33f151377e3992ffb286769beee7f7`.
 - Runtime pair: `sf-v5.3.2-7e836d8a-dd786bba` (immutable upstream lock
   identifier).
 - Alert asset SHA-256:

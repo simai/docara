@@ -24,11 +24,12 @@ final readonly class SmartRenderer
             'docara.brand' => $this->viewModels->brand($plan),
             'docara.navigation' => $this->viewModels->navigation($plan),
             'docara.toc' => $this->viewModels->toc($plan),
+            'docara.preferences' => $this->viewModels->preferences($plan),
             default => throw new \InvalidArgumentException('SMART_RENDERER_UNSUPPORTED'),
         };
 
         $html = $view instanceof NavigationViewModel
-            ? $this->navigation($plan->template, $view)
+            ? $this->navigation($plan->template, $view, $plan->view)
             : $this->templates->render($plan->template, ['view' => $view]);
 
         return new RenderArtifact(
@@ -49,13 +50,13 @@ final readonly class SmartRenderer
         );
     }
 
-    private function navigation(string $template, NavigationViewModel $view): string
+    private function navigation(string $template, NavigationViewModel $view, string $requestedView): string
     {
         $items = '';
         foreach ($view->items as $item) {
-            $items .= $this->navigationItem($item, $view);
+            $items .= $this->navigationItem($item, $view, $requestedView);
         }
-        $rendered = new class($view->maximumDepth, $items, $view->label, $view->expandLabel, $view->collapseLabel, $view->containsCurrentLabel)
+        $rendered = new class($view->maximumDepth, $items, $view->label, $view->expandLabel, $view->collapseLabel, $view->containsCurrentLabel, $view->items !== [])
         {
             public function __construct(
                 public readonly int $maximumDepth,
@@ -64,17 +65,21 @@ final readonly class SmartRenderer
                 public readonly string $expandLabel,
                 public readonly string $collapseLabel,
                 public readonly string $containsCurrentLabel,
+                public readonly bool $hasItems,
             ) {}
         };
 
         return $this->templates->render($template, ['view' => $rendered]);
     }
 
-    private function navigationItem(NavigationItemViewModel $item, NavigationViewModel $navigation): string
-    {
+    private function navigationItem(
+        NavigationItemViewModel $item,
+        NavigationViewModel $navigation,
+        string $view,
+    ): string {
         $children = '';
         foreach ($item->children as $child) {
-            $children .= $this->navigationItem($child, $navigation);
+            $children .= $this->navigationItem($child, $navigation, $view);
         }
         $activeRole = $item->active
             ? 'page'
@@ -84,17 +89,21 @@ final readonly class SmartRenderer
             default => '',
         };
 
-        return $this->templates->render('smart.docara.navigation.item', [
-            'view' => new NavigationItemTemplateViewModel(
-                $item,
-                $children,
-                $activeRole,
-                $weightClass,
-                min(4, $item->depth),
-                $navigation->expandLabel,
-                $navigation->collapseLabel,
-                $navigation->containsCurrentLabel,
-            ),
-        ]);
+        return $this->templates->render(
+            $view === 'header'
+                ? 'smart.docara.navigation.header-item'
+                : 'smart.docara.navigation.item',
+            [
+                'view' => new NavigationItemTemplateViewModel(
+                    $item,
+                    $children,
+                    $activeRole,
+                    $weightClass,
+                    min(4, $item->depth),
+                    $navigation->expandLabel,
+                    $navigation->collapseLabel,
+                    $navigation->containsCurrentLabel,
+                ),
+            ]);
     }
 }

@@ -3,7 +3,7 @@
   "title": "Отключение необязательных областей",
   "description": "Sidebar и outline отключены без пустых оболочек.",
   "layout": {
-    "max_width": "normal",
+    "container": {"max": 7},
     "regions": {
       "sidebar": {"enabled": false},
       "outline": {"enabled": false}

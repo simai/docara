@@ -2,6 +2,6 @@
   "schema": "docara.section.v1",
   "title": "Разработка Docara",
   "layout": {
-    "max_width": "normal"
+    "container": {"max": 7}
   }
 }

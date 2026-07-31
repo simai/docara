@@ -74,8 +74,33 @@ final class FrameworkNativeSurfaceTest extends TestCase
         self::assertStringContainsString('scheme="on-surface"', $template);
         self::assertStringContainsString('icon-left="search"', $template);
         self::assertStringContainsString('slot="icon-right"', $template);
+        self::assertStringContainsString(
+            'docara-search-shortcut text-1 color-on-surface-variant m-inline-start-1/2',
+            $template,
+        );
+        self::assertStringNotContainsString('docara-search-shortcut label-small', $template);
+        self::assertStringNotContainsString('docara-search-shortcut text-1 color-on-surface-variant border', $template);
         self::assertStringNotContainsString('<button type="button" data-docara-search-trigger', $template);
         self::assertStringNotContainsString('items-center gap-1 radius-default', $template);
+    }
+
+    #[Test]
+    public function framework_outline_buttons_keep_their_logical_side_borders(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $css = file_get_contents($root . '/resources/portable/declarative-shell.css');
+
+        self::assertIsString($css);
+        self::assertStringContainsString(
+            '.sf-button.sf-button--outline{border-inline-start-width:var(--sf-button--border-inline-start-width,1px);border-inline-end-width:var(--sf-button--border-inline-end-width,1px)}',
+            $css,
+        );
+        self::assertStringNotContainsString('.docara-cta-link{border-', $css);
+        self::assertStringNotContainsString('.docara-search-trigger{border-', $css);
+        self::assertStringContainsString(
+            '.docara-search-trigger{--sf-button--border-color:var(--sf-outline-variant)}',
+            $css,
+        );
     }
 
     #[Test]
@@ -121,7 +146,7 @@ final class FrameworkNativeSurfaceTest extends TestCase
             $css,
         );
         self::assertStringContainsString(
-            '[data-docara-disclosure]:focus-visible{outline:3px solid',
+            '[data-docara-disclosure]:focus-visible{outline:var(--sf-focus-outline-width,var(--sf-a4)) solid',
             $css,
         );
     }

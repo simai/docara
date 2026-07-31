@@ -10,7 +10,11 @@
             "list_items",
             "quote_content"
         ],
-        "parameters": []
+        "parameters": [
+            {"name": "author", "type": "string", "required": false},
+            {"name": "source", "type": "string", "required": false},
+            {"name": "url", "type": "string", "required": false}
+        ]
     },
     "states": [],
     "verification": {

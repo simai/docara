@@ -16,18 +16,6 @@ use Symfony\Component\Process\Process;
 
 final class PortableDocumentationSiteTest extends PHPUnit
 {
-    private const RETIRED_COMPONENT_SLUGS = [
-        'alert',
-        'button',
-        'card',
-        'code',
-        'cta',
-        'features',
-        'steps',
-        'table',
-        'tabs',
-    ];
-
     private string $temporary;
 
     protected function setUp(): void
@@ -56,7 +44,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertIsString($site);
         $build = $site . '/build_test';
 
-        self::assertCount(59, $this->filesWithExtension($source . '/content', 'md'));
+        self::assertCount(58, $this->filesWithExtension($source . '/content', 'md'));
 
         $pages = (new PortableSiteBuilder(
             $filesystem,
@@ -72,23 +60,24 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $search = $this->json($build . '/_docara/search-index.json');
         $supported = array_values(array_filter(
             $catalog['entries'],
-            static fn (array $entry): bool => $entry['lifecycle'] === 'supported',
+            static fn (array $entry): bool => $entry['lifecycle'] === 'supported'
+                && $entry['family'] !== 'framework_smart',
         ));
         $unavailable = array_values(array_filter(
             $catalog['entries'],
             static fn (array $entry): bool => $entry['lifecycle'] !== 'supported',
         ));
 
-        self::assertCount(86, $pages);
-        self::assertCount(190, $htmlPages);
-        self::assertCount(72, $search['documents']);
-        self::assertCount(17, $catalog['entries']);
-        self::assertCount(12, $supported);
+        self::assertCount(103, $pages);
+        self::assertCount(206, $htmlPages);
+        self::assertCount(89, $search['documents']);
+        self::assertCount(37, $catalog['entries']);
+        self::assertCount(30, $supported);
         self::assertCount(5, $unavailable);
-        self::assertCount(12, $receipt['pages']);
+        self::assertCount(30, $receipt['pages']);
         self::assertCount(13, $exampleReceipt['pages']);
-        self::assertCount(18, $redirectReceipt['redirects']);
-        self::assertCount(86, $localeRouteReceipt['redirects']);
+        self::assertCount(0, $redirectReceipt['redirects']);
+        self::assertCount(103, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(
             $localeRouteReceipt['redirects'],
             static fn (array $redirect): bool => $redirect['kind'] === 'root',
@@ -111,9 +100,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The development page must be discoverable by the exact reader query [расширение].',
         );
         self::assertSame(
-            13,
+            31,
             1 + count($receipt['pages']),
-            'The generated catalogue surface must be one index plus twelve supported details.',
+            'The public catalogue surface must be one index plus one detail for every supported entry.',
         );
         self::assertSame(
             array_column($supported, 'id'),
@@ -123,6 +112,22 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $catalogIndex = (string) file_get_contents($build . '/' . $receipt['index']['output']);
         $shellCss = (string) file_get_contents($build . '/_docara/declarative-shell.css');
+        self::assertSame(1, substr_count($catalogIndex, 'class="docara-navigation docara-header-navigation"'));
+        self::assertStringContainsString('docara-header-navigation-link h-d0', $catalogIndex);
+        self::assertSame(1, substr_count($catalogIndex, 'data-docara-primary-navigation'));
+        self::assertSame(1, substr_count($catalogIndex, 'id="docara-mobile-navigation"'));
+        self::assertSame(
+            1,
+            substr_count(
+                $catalogIndex,
+                'data-docara-sheet-trigger aria-haspopup="dialog" aria-controls="docara-mobile-navigation"',
+            ),
+        );
+        self::assertStringContainsString(
+            '.docara-mobile-sheet{position:fixed;inset-block:0;inset-inline-start:0;inset-inline-end:auto;',
+            $shellCss,
+            'The mobile navigation sheet must follow the logical inline direction in LTR and RTL.',
+        );
         self::assertStringContainsString(
             'scroll-margin-block-start:4.5rem',
             $shellCss,
@@ -139,40 +144,27 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The desktop outline divider must span the row without clipping its active marker.',
         );
         self::assertStringContainsString(
-            '.docara-outline-rail>[data-docara-section]{position:sticky;inset-block-start:4.5rem;max-block-size:calc(100vh - 4.5rem);padding:var(--sf-space-2);padding-inline-start:calc(var(--sf-space-2) + var(--sf-a2));overflow:auto;direction:ltr}',
+            '.docara-outline-scroll{position:sticky;inset-block-start:4.5rem;block-size:calc(100vh - 4.5rem);direction:ltr}',
             $shellCss,
-            'The short outline must remain aligned below the header while its scrollbar stays on the physical right.',
+            'The Framework scrollbar root must remain aligned below the header.',
         );
         self::assertStringContainsString(
-            '.docara-sidebar{align-self:stretch;padding-inline-end:var(--sf-px);border-inline-end:',
+            '.docara-sidebar{align-self:stretch;border-inline-end:',
             $shellCss,
             'The desktop navigation divider must span the full layout row.',
         );
         self::assertStringContainsString(
-            '.docara-sidebar>[data-docara-section]{position:sticky;inset-block-start:3.5rem;max-block-size:calc(100vh - 3.5rem);padding:var(--sf-space-1);overflow:auto}',
+            '.docara-sidebar-scroll{position:sticky;inset-block-start:3.5rem;block-size:calc(100vh - 3.5rem)}',
             $shellCss,
-            'The navigation scrollbar must stay one Framework pixel token from its divider.',
+            'The navigation must use a bounded Framework scrollbar root.',
         );
         foreach ($unavailable as $entry) {
-            self::assertStringContainsString(
-                'data-docara-component-gap="' . $entry['id'] . '"',
+            self::assertStringNotContainsString(
+                'data-docara-component-item="' . $entry['id'] . '"',
                 $catalogIndex,
                 (string) $entry['id'],
             );
-        }
-
-        foreach (self::RETIRED_COMPONENT_SLUGS as $slug) {
-            self::assertContains(
-                "components/$slug",
-                array_column($redirectReceipt['redirects'], 'from'),
-                "Retired manual component route [$slug] has no declarative migration redirect.",
-            );
-            $redirectHtml = (string) file_get_contents($build . "/components/$slug/index.html");
-            self::assertStringContainsString(
-                '<meta name="robots" content="noindex,follow">',
-                $redirectHtml,
-                "Retired manual component route [$slug] is not a safe redirect page.",
-            );
+            self::assertFileDoesNotExist($build . '/ru/components/' . $entry['id'] . '/index.html');
         }
 
         $verification = new Process([
@@ -194,7 +186,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             JSON_THROW_ON_ERROR,
         );
         self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
-        self::assertSame(190, $report['html_pages'] ?? null);
+        self::assertSame(206, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
     }

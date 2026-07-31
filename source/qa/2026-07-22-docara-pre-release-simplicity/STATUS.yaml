@@ -1,0 +1,10 @@
+schema: docara.qa_run_status.v1
+run_id: 2026-07-22-docara-pre-release-simplicity
+status: complete
+candidate: 9b1290bf547a8c87651704a9554be0acc881aebf
+safety_boundary: read_only
+fix_policy: audit_only
+current_wave: final_verdict
+verdict: correction_required
+findings: 13
+report: output/qa-runs/2026-07-22_docara_pre-release-simplicity/qa-report.md

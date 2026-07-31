@@ -7,7 +7,10 @@ namespace Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use Simai\Docara\Declarative\DeclarativePageCompiler;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
+use Simai\Docara\Declarative\Document\DocumentAst;
+use Simai\Docara\Declarative\Document\DocumentNode;
 use Simai\Docara\Declarative\Document\DocumentParser;
+use Simai\Docara\Declarative\Document\SourceSpan;
 use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Portable\PortableConfigurationException;
 
@@ -42,17 +45,24 @@ MD, 'content/install.md');
         self::assertSame('docara.article', $section->section);
         self::assertSame('main', $section->region);
         self::assertSame(
-            ['content.markdown', 'content.smart', 'content.markdown'],
+            ['content.document'],
             array_map(static fn ($block): string => $block->block, $section->blocks),
         );
+        $documentBlock = $section->blocks[0];
+        self::assertSame('block.document', $documentBlock->renderer);
+        self::assertSame('docara.resolved_document.v1', $documentBlock->data['schema']);
+        self::assertSame(
+            ['content.markdown', 'content.smart', 'content.markdown'],
+            array_column($documentBlock->data['nodes'], 'block'),
+        );
 
-        $smart = $section->blocks[1]->smart;
+        $smart = $documentBlock->data['nodes'][1]['smart'];
         self::assertNotNull($smart);
-        self::assertSame('ui.alert', $smart->smart);
-        self::assertSame('default', $smart->view);
-        self::assertSame('smart.ui.alert.default', $smart->template);
-        self::assertSame('Before you begin', $smart->props['aria-label']);
-        self::assertMatchesRegularExpression('/^docara-alert-[a-f0-9]{16}$/', $smart->props['id']);
+        self::assertSame('ui.alert', $smart['smart']);
+        self::assertSame('default', $smart['view']);
+        self::assertSame('smart.ui.alert.default', $smart['template']);
+        self::assertSame('Before you begin', $smart['props']['aria-label']);
+        self::assertMatchesRegularExpression('/^docara-alert-[a-f0-9]{16}$/', $smart['props']['id']);
         self::assertContains('simai.framework.sf_alert.js', $plan->assets);
         self::assertNotContains('simai.framework.bridge.js', $plan->assets);
         self::assertSame('docara.resolved_render_plan.v2', $plan->toArray()['schema']);
@@ -103,6 +113,48 @@ MD, 'content/closable.md');
 
         DeclarativePageCompiler::bundled($this->frameworkLock())
             ->compile($document, 'closable', 'Closable');
+    }
+
+    public function test_document_node_registry_fails_closed_for_an_unknown_node_type(): void
+    {
+        $span = new SourceSpan('content/unknown.md', 1, 1);
+        $node = new class($span) implements DocumentNode
+        {
+            public function __construct(private SourceSpan $sourceSpan) {}
+
+            public function id(): string
+            {
+                return 'unknown-node';
+            }
+
+            public function type(): string
+            {
+                return 'unknown';
+            }
+
+            public function span(): SourceSpan
+            {
+                return $this->sourceSpan;
+            }
+
+            public function toArray(): array
+            {
+                return [
+                    'id' => $this->id(),
+                    'type' => $this->type(),
+                    'source' => $this->sourceSpan->toArray(),
+                ];
+            }
+        };
+
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('DECLARATIVE_DOCUMENT_NODE_UNSUPPORTED');
+
+        DeclarativePageCompiler::bundled($this->frameworkLock())->compile(
+            new DocumentAst('content/unknown.md', [$node], [], []),
+            'unknown',
+            'Unknown',
+        );
     }
 
     /** @return array<string, mixed> */

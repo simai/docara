@@ -1,4 +1,2864 @@
-(()=>{"use strict";const t="undefined"!=typeof window&&(window.SF?.smart||window.SF)||{},e="undefined"!=typeof window?window:{},s=t.SfBaseElement||e.SfBaseElement;if(!s)throw new Error("SF smart runtime is not loaded. Load smart-base before smart components.");const i=t.html||e.html,o=t.nothing||e.nothing,n=t.render||e.render,r=(t.litProps||e.litProps,t.toBoolean,t.toAttributeName,t.toNumber,t.normalizeEnum,t.parseJsonAttribute,s),a=globalThis,l=t=>t,h=a.trustedTypes,d=h?h.createPolicy("lit-html",{createHTML:t=>t}):void 0,c="$lit$",u=`lit$${Math.random().toFixed(9).slice(2)}$`,m="?"+u,f=`<${m}>`,p=document,g=()=>p.createComment(""),_=t=>null===t||"object"!=typeof t&&"function"!=typeof t,v=Array.isArray,y=t=>v(t)||"function"==typeof t?.[Symbol.iterator],A="[ \t\n\f\r]",b=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,$=/-->/g,C=/>/g,S=RegExp(`>|${A}(?:([^\\s"'>=/]+)(${A}*=${A}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),w=/'/g,E=/"/g,x=/^(?:script|style|textarea|title)$/i,H={},T=new WeakMap,k=t=>(e,...s)=>({_$litType$:t,strings:e,values:s}),M=(k(1),k(2),k(3),Symbol.for("lit-noChange")),I=Symbol.for("lit-nothing"),R=new WeakMap,B=p.createTreeWalker(p,129);function O(t,e){if(!v(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==d?d.createHTML(e):e}const L=(t,e)=>{const s=t.length-1,i=[];let o,n=2===e?"<svg>":3===e?"<math>":"",r=b;for(let e=0;e<s;e++){const s=t[e];let a,l,h=-1,d=0;for(;d<s.length&&(r.lastIndex=d,l=r.exec(s),null!==l);)d=r.lastIndex,r===b?"!--"===l[1]?r=$:void 0!==l[1]?r=C:void 0!==l[2]?(x.test(l[2])&&(o=RegExp("</"+l[2],"g")),r=S):void 0!==l[3]&&(r=S):r===S?">"===l[0]?(r=o??b,h=-1):void 0===l[1]?h=-2:(h=r.lastIndex-l[2].length,a=l[1],r=void 0===l[3]?S:'"'===l[3]?E:w):r===E||r===w?r=S:r===$||r===C?r=b:(r=S,o=void 0);const m=r===S&&t[e+1].startsWith("/>")?" ":"";n+=r===b?s+f:h>=0?(i.push(a),s.slice(0,h)+c+s.slice(h)+u+m):s+u+(-2===h?e:m)}return[O(t,n+(t[s]||"<?>")+(2===e?"</svg>":3===e?"</math>":"")),i]};class N{constructor({strings:t,_$litType$:e},s){let i;this.parts=[];let o=0,n=0,r=0;const a=t.length-1,l=this.parts,d=(t,e=1)=>{l.push(t),r+=e},[f,p]=L(t,e);if(this.el=N.createElement(f,s),B.currentNode=this.el.content,2===e||3===e){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes)}for(;null!==(i=B.nextNode())&&l.length<a;){if(1===i.nodeType){if(i.hasAttributes())for(const t of i.getAttributeNames())if(t.endsWith(c)){const e=p[n++],s=i.getAttribute(t).split(u),a=/([.?@:])?(.*)/.exec(e);"..."===e?d({type:10,index:o},s.length-1):":"!==a[1]||"key"!==a[2]&&"ref"!==a[2]?d({type:1,index:o,name:a[2],strings:s,ctor:"."===a[1]?z:"?"===a[1]?j:"@"===a[1]?V:D},s.length-1):"key"===a[2]?(this.keyedValueIndex=r,d({type:8,index:o},s.length-1)):d({type:9,index:o},s.length-1),i.removeAttribute(t)}else t.startsWith(u)&&(d({type:6,index:o}),i.removeAttribute(t));if(x.test(i.tagName)){const t=i.textContent.split(u),e=t.length-1;if(e>0){i.textContent=h?h.emptyScript:"";for(let s=0;s<e;s++)i.append(t[s],g()),B.nextNode(),d({type:2,index:++o});i.append(t[e],g())}}}else if(8===i.nodeType)if(i.data===m)d({type:2,index:o});else{let t=-1;for(;-1!==(t=i.data.indexOf(u,t+1));)d({type:7,index:o}),t+=u.length-1}o++}}static createElement(t,e){const s=p.createElement("template");return s.innerHTML=t,s}}function P(t,e,s=t,i){if(e===M)return e;let o=void 0!==i?s._$Co?.[i]:s._$Cl;const n=_(e)?void 0:e._$litDirective$;return o?.constructor!==n&&(o?._$AO?.(!1),void 0===n?o=void 0:(o=new n(t),o._$AT(t,s,i)),void 0!==i?(s._$Co??=[])[i]=o:s._$Cl=o),void 0!==o&&(e=P(t,o._$AS(t,e.values),o,i)),e}class F{constructor(t,e){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=e}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:e},parts:s}=this._$AD,i=(t?.creationScope??p).importNode(e,!0);B.currentNode=i;let o=B.nextNode(),n=0,r=0,a=s[0];for(;void 0!==a;){if(n===a.index){let e;2===a.type?e=new q(o,o.nextSibling,this,t):1===a.type?e=new a.ctor(o,a.name,a.strings,this,t):9===a.type?e=new W(o,this,t):10===a.type?e=new K(o,this,t):6===a.type&&(e=new G(o,this,t)),this._$AV.push(e),a=s[++r]}n!==a?.index&&(o=B.nextNode(),n++)}return B.currentNode=p,i}p(t){let e=0;for(const s of this._$AV)void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,e),e+=s.strings.length-2):s._$AI(t[e])),e++}v(){for(const t of this._$AV)U(t)}}const U=t=>{if(t instanceof W)t.m();else if(t instanceof K)t._();else if(t instanceof q)U(t._$AH);else if(t instanceof F)t.v();else if(v(t))for(const e of t)U(e)};class q{get _$AU(){return this._$AM?._$AU??this._$C$}constructor(t,e,s,i){this.type=2,this._$AH=I,this._$AN=void 0,this._$AA=t,this._$AB=e,this._$AM=s,this.options=i,this._$C$=i?.isConnected??!0}get parentNode(){let t=this._$AA.parentNode;const e=this._$AM;return void 0!==e&&11===t?.nodeType&&(t=e.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,e=this){t=P(this,t,e),_(t)?t===I||null==t||""===t?(this._$AH!==I&&this._$AR(),this._$AH=I):t!==this._$AH&&t!==M&&this.T(t):void 0!==t._$litType$?this.S(t):void 0!==t.nodeType?this.j(t):y(t)?this.O(t):this.T(t)}M(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}j(t){this._$AH!==t&&(this._$AR(),this._$AH=this.M(t))}T(t){this._$AH!==I&&_(this._$AH)?this._$AA.nextSibling.data=t:this.j(p.createTextNode(t)),this._$AH=t}S(t){const{values:e,_$litType$:s}=t,i="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=N.createElement(O(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===i)this._$AH.p(e);else{const t=new F(i,this),s=t.u(this.options);t.p(e),this.j(s),this._$AH=t}}_$AC(t){let e=R.get(t.strings);return void 0===e&&R.set(t.strings,e=new N(t)),e}A(t){if(void 0===t?._$litType$)return H;const{values:e,_$litType$:s}=t;if("number"!=typeof s)return H;const i=this._$AC(t);return void 0===i.keyedValueIndex?H:e[i.keyedValueIndex]}P(t){const e=this._$AA.parentNode;let s=t._$AA;const i=t._$AB;for(;null!==s;){const t=l(s).nextSibling;if(l(e).insertBefore(s,this._$AB),s===i)break;s=t}}C(t){U(t._$AH),t._$AP?.(!1,!0);let e=t._$AA;const s=t._$AB;for(;null!==e;){const t=l(e).nextSibling;if(l(e).remove(),e===s)break;e=t}}O(t){const e=Array.from(t),s=e.map(t=>this.A(t));if(s.some(t=>t!==H)&&s.every(t=>t!==H)){const t=new Set;let i=!1;for(const e of s){if(t.has(e)){i=!0;break}t.add(e)}if(!i)return void this.L(e,s)}v(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let o,n=0;for(const t of e)n===i.length?i.push(o=new q(this.M(g()),this.M(g()),this,this.options)):o=i[n],o._$AI(t),n++;n<i.length&&(this._$AR(o&&o._$AB.nextSibling,n),i.length=n)}L(t,e){v(this._$AH)||(this._$AH=[],this._$AR());const s=this._$AH,i=new Map;for(const t of s)Object.prototype.hasOwnProperty.call(t,"_$key")&&i.set(t.R,t);const o=[];for(let s=0;s<t.length;s++){const n=e[s];let r=i.get(n);void 0===r?r=new q(this.M(g()),this.M(g()),this,this.options):i.delete(n),r.R=n,r._$AI(t[s]),this.P(r),o.push(r)}for(const t of s)o.includes(t)||this.C(t);s.length=0,s.push(...o)}_$AR(t=this._$AA.nextSibling,e){for(U(void 0!==e&&v(this._$AH)?this._$AH.slice(e):this._$AH),this._$AP?.(!1,!0,e);t!==this._$AB;){const e=l(t).nextSibling;l(t).remove(),t=e}}setConnected(t){void 0===this._$AM&&(this._$C$=t,this._$AP?.(t))}}class D{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,e,s,i,o){this.type=1,this._$AH=I,this._$AN=void 0,this.element=t,this.name=e,this._$AM=i,this.options=o,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=I}_$AI(t,e=this,s,i){const o=this.strings;let n=!1;if(void 0===o)t=P(this,t,e,0),n=!_(t)||t!==this._$AH&&t!==M,n&&(this._$AH=t);else{const i=t;let r,a;for(t=o[0],r=0;r<o.length-1;r++)a=P(this,i[s+r],e,r),a===M&&(a=this._$AH[r]),n||=!_(a)||a!==this._$AH[r],a===I?t=I:t!==I&&(t+=(a??"")+o[r+1]),this._$AH[r]=a}n&&!i&&this.D(t)}D(t){t===I?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"")}}class z extends D{constructor(){super(...arguments),this.type=3}D(t){this.element[this.name]=t===I?void 0:t}}class j extends D{constructor(){super(...arguments),this.type=4}D(t){this.element.toggleAttribute(this.name,!!t&&t!==I)}}class W{constructor(t,e,s){this.type=9,this._$AH=I,this._$AN=void 0,this.element=t,this._$AM=e,this.options=s}get _$AU(){return this._$AM._$AU}_$AI(t){t!==M&&(t=t===I||null==t?void 0:t)!==this._$AH&&(this.I(void 0),this._$AH=t,this.H=t,this.N=this.options?.host,this.I(this.element))}I(t){if(void 0!==this.H)if("function"==typeof this.H){const e=this.N??globalThis;let s=T.get(e);void 0===s&&(s=new WeakMap,T.set(e,s)),void 0!==s.get(this.H)&&this.H.call(this.N,void 0),s.set(this.H,t),void 0!==t&&this.H.call(this.N,t)}else this.H.value=t}m(){this.I(void 0),this._$AH=I,this.H=void 0}}const Z=t=>t.replace(/([a-z0-9])([A-Z])/g,"$1-$2").toLowerCase();class K{constructor(t,e,s){this.type=10,this._$AH=I,this._$AN=void 0,this.U=new Set,this.B=new Set,this.F=new Set,this.W=new Map,this.element=t,this._$AM=e,this.options=s}get _$AU(){return this._$AM._$AU}_$AI(t){if(t===M)return;t!==I&&null!=t||(t={});const e=t,s=new Set,i=new Set,o=new Set,n=new Set;let r=!1;for(const[t,a]of Object.entries(e)){if("key"===t||":key"===t)continue;if("ref"===t||":ref"===t){r=!0,(this.Z??=new W(this.element,this._$AM,this.options))._$AI(a);continue}const e=t[0],h=t.slice(1);if("."===e)i.add(h),this.element[h]=a===I?void 0:a;else if("?"===e){const t=Z(h);o.add(t),l(this.element).toggleAttribute(t,!!a&&a!==I)}else if("@"===e){n.add(h);const t=this.W.get(h),e=a===I||null==a?void 0:a;t!==e&&(void 0!==t&&this.element.removeEventListener(h,t,t),void 0!==e?(this.element.addEventListener(h,e,e),this.W.set(h,e)):this.W.delete(h))}else{const e=Z(t);s.add(e),a===I||null==a||!1===a?l(this.element).removeAttribute(e):l(this.element).setAttribute(e,!0===a?"":a+"")}}for(const t of this.U)s.has(t)||l(this.element).removeAttribute(t);for(const t of this.F)o.has(t)||l(this.element).removeAttribute(t);for(const t of this.B)i.has(t)||(this.element[t]=void 0);for(const[t,e]of this.W)n.has(t)||(this.element.removeEventListener(t,e,e),this.W.delete(t));r||this.Z?.m(),this.U=s,this.B=i,this.F=o,this._$AH=t}_(){for(const[t,e]of this.W)this.element.removeEventListener(t,e,e);this.W.clear(),this.Z?.m(),this._$AH=I}}class V extends D{constructor(t,e,s,i,o){super(t,e,s,i,o),this.type=5}_$AI(t,e=this){if((t=P(this,t,e,0)??I)===M)return;const s=this._$AH,i=t===I&&s!==I||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,o=t!==I&&(s===I||i);i&&this.element.removeEventListener(this.name,this,s),o&&this.element.addEventListener(this.name,this,t),this._$AH=t}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t)}}class G{constructor(t,e,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=e,this.options=s}get _$AU(){return this._$AM._$AU}_$AI(t){P(this,t)}}const J=a.litHtmlPolyfillSupport;J?.(N,q),(a.litHtmlVersions??=[]).push("3.3.3");const Q=2;class X{constructor(t){}get _$AU(){return this._$AM._$AU}_$AT(t,e,s){this._$Ct=t,this._$AM=e,this._$Ci=s}_$AS(t,e){return this.update(t,e)}update(t,e){return this.render(...e)}}class Y extends X{constructor(t){if(super(t),this.yt=I,t.type!==Q)throw Error(this.constructor.directiveName+"() can only be used in child bindings")}render(t){if(t===I||null==t)return this.Mt=void 0,this.yt=t;if(t===M)return t;if("string"!=typeof t)throw Error(this.constructor.directiveName+"() called with a non-string value");if(t===this.yt)return this.Mt;this.yt=t;const e=[t];return e.raw=e,this.Mt={_$litType$:this.constructor.resultType,strings:e,values:[]}}}Y.directiveName="unsafeHTML",Y.resultType=1;const tt=(t=>(...e)=>({_$litDirective$:t,values:e}))(Y);function et(...t){return t.filter(Boolean).join(" ").trim()}const st=["a[href]","button:not([disabled])","input:not([disabled])","select:not([disabled])","textarea:not([disabled])",'[tabindex]:not([tabindex="-1"])'].join(",");let it=0;function ot(t){return["none","small","medium","large"].includes(String(t||"").trim().toLowerCase())}class nt extends r{static registry=new Map;static globalBound=!1;static stack=[];static openCount=0;static lockState=null;static baseZIndex=9e3;static defaultTrueAttributes=new Set(["overlay","show-close","show-footer","close-on-esc","close-on-overlay","preserve-scroll-gap","preload"]);static getTopModal(){return nt.stack[nt.stack.length-1]||null}static isTopModal(t){return nt.getTopModal()===t}static getStackIndex(t){return nt.stack.indexOf(t)}static addToStack(t){if(!t||"inline"===t.display)return;const e=0===nt.stack.length;nt.stack=nt.stack.filter(e=>e!==t),nt.stack.push(t),nt.openCount=nt.stack.length,e&&nt.lockPage(t.preserveScrollGap),nt.updateStackStyles()}static removeFromStack(t){if(!t||"inline"===t.display)return;const e=nt.stack.length;nt.stack=nt.stack.filter(e=>e!==t),nt.openCount=nt.stack.length,e>0&&0===nt.stack.length&&nt.unlockPage(),nt.updateStackStyles()}static bringToFront(t){t&&"inline"!==t.display&&nt.stack.includes(t)&&(nt.stack=nt.stack.filter(e=>e!==t),nt.stack.push(t),nt.updateStackStyles())}static updateStackStyles(){nt.stack.forEach((t,e)=>{t.applyStackPosition(e)})}static get props(){return{templateName:{attribute:"template",default:"default"},modalId:{default:""},title:{default:"Modal"},text:{default:""},open:{type:Boolean,default:!1},autoload:{type:Boolean,default:!1},unclose:{type:Boolean,default:!1},hide:{type:Boolean,default:!1},hideModifier:{default:""},minimized:{type:Boolean,default:!1},overlay:{type:Boolean,default:!0},showHeader:{type:Boolean,default:!0},showClose:{type:Boolean,default:!0},showFooter:{type:Boolean,default:!0},closeOnEsc:{type:Boolean,default:!0},closeOnOverlay:{type:Boolean,default:!0},preserveScrollGap:{type:Boolean,default:!0},position:{default:"center",values:["center","left","right","top","bottom"]},mode:{default:"inline",values:["inline","ajax","iframe"]},display:{default:"modal",values:["modal","inline"]},src:{default:""},rootClass:{default:""},preload:{type:Boolean,default:!0},fullscreen:{type:Boolean,default:!1},width:{default:""},height:{default:""},blur:{default:""},blurType:{default:"medium",values:["none","small","medium","large"]},overlayClass:{default:""},closeClass:{default:""},surfaceClass:{default:""},surfacePadding:{default:""},panelClass:{default:""},headerClass:{default:""},bodyClass:{default:""},contentClass:{default:""},footerClass:{default:""}}}constructor(){super(),this._modalId="",this._syncingOpenAttribute=!1,this._portalRoot=null,this._renderTarget=null,this._hostClearedForPortal=!1,this._slotEventHandlers=new Map,this._slotEventId=0,this._hostSlotObserver=null,this._hostSlotRefreshScheduled=!1,this._headerTemplate=null,this._contentTemplate=null,this._readyDetail=null,this._hasEmittedReady=!1,this._hasAutoloaded=!1,this._isOpen=!1,this._isHidden=!1,this._modalState="closed",this._stackIndex=-1,this._closeTimer=null,this._closeTransitionAbort=null,this._lastActive=null,this._fetchController=null,this._remoteHtml="",this._remoteError="",this._isLoadingRemote=!1,this._remoteLoaded=!1,this.onKeyDown=this.onKeyDown.bind(this),this.handleOverlayClick=this.handleOverlayClick.bind(this),this.handleCloseClick=this.handleCloseClick.bind(this),this.handleHideClick=this.handleHideClick.bind(this)}connectedCallback(){this.upgradeProperty("headerTemplate"),this.upgradeProperty("contentTemplate"),this._modalId||(this._modalId=this.getAttribute("modal-id")||this.id||"sf-modal-"+ ++it),super.connectedCallback(),this.observeHostSlotChanges(),nt.registry.set(this.modalId,this),nt.bindGlobalEvents()}upgradeProperty(t){if(!Object.prototype.hasOwnProperty.call(this,t))return;const e=this[t];delete this[t],this[t]=e}disconnectedCallback(){this.disconnectHostSlotChanges(),this.teardownModal(),nt.registry.delete(this.modalId),super.disconnectedCallback()}observeHostSlotChanges(){this._hostSlotObserver||"undefined"==typeof MutationObserver||(this._hostSlotObserver=new MutationObserver(t=>{t.some(t=>Array.from(t.addedNodes||[]).some(t=>t instanceof HTMLElement&&t.hasAttribute("slot")))&&!this._hostSlotRefreshScheduled&&(this._hostSlotRefreshScheduled=!0,queueMicrotask(()=>{this._hostSlotRefreshScheduled=!1,this.isConnected&&this.refreshHostSlotContent()}))}),this._hostSlotObserver.observe(this,{childList:!0}))}disconnectHostSlotChanges(){this._hostSlotObserver?.disconnect?.(),this._hostSlotObserver=null,this._hostSlotRefreshScheduled=!1}refreshHostSlotContent(){const t=Array.from(this.children||[]).filter(t=>t instanceof HTMLElement&&t.hasAttribute("slot")).map(t=>t.getAttribute("slot")).filter(Boolean);t.length&&(new Set(t).forEach(t=>{this._slotTemplates.delete(t),this._liveSlotNodes.delete(t)}),this._slotTemplatesCaptured=!1,this.captureSlotTemplates(),this.requestComponentUpdate("slot-change"))}get templateName(){return this.getAttribute("template")||"default"}get modalId(){return this.getAttribute("modal-id")||this._modalId||this.id||""}get title(){return this.getAttribute("title")||"Modal"}get text(){return this.getAttribute("text")||""}get contentTemplate(){return this._contentTemplate}get headerTemplate(){return this._headerTemplate}set headerTemplate(t){const e=t===o?null:t||null;Object.is(this._headerTemplate,e)||(this._headerTemplate=e,this.requestComponentUpdate("header-template"))}set contentTemplate(t){const e=t===o?null:t||null;Object.is(this._contentTemplate,e)||(this._contentTemplate=e,this.requestComponentUpdate("content-template"))}get openState(){return this._isOpen}get autoload(){return this.getBooleanAttr("autoload",!1)}get unclose(){return this.getBooleanAttr("unclose",!1)}get hideButton(){return this.getBooleanAttr("hide",!1)}get hideModifier(){return this.getAttribute("hide-modifier")||""}get hiddenState(){return this._isHidden||this.hasAttribute("minimized")}get overlay(){return this.getBooleanAttr("overlay",!0)}get closeOnEsc(){return this.getBooleanAttr("close-on-esc",!0)}get showClose(){return this.getBooleanAttr("show-close",!0)&&!this.unclose}get showHeader(){return this.getBooleanAttr("show-header",!0)}get showFooter(){return this.getBooleanAttr("show-footer",!0)}get closeOnOverlay(){return this.getBooleanAttr("close-on-overlay",!0)}get preserveScrollGap(){return this.getBooleanAttr("preserve-scroll-gap",!0)}get position(){return this.getEnumAttr("position",["center","left","right","top","bottom"],"center")}get mode(){return this.getEnumAttr("mode",["inline","ajax","iframe"],"inline")}get display(){return this.getEnumAttr("display",["modal","inline"],"modal")}get src(){return this.getAttribute("src")||""}get preload(){return this.getBooleanAttr("preload",!0)}get fullscreen(){return this.getBooleanAttr("fullscreen",!1)}get width(){return this.getAttribute("width")||""}get height(){return this.getAttribute("height")||""}get blur(){return this.getBooleanAttr("blur",!1)}get blurType(){const t=this.getAttribute("blur"),e=this.getAttribute("blur-type")||(ot(t)?t:"medium");return this.normalizeEnum(e,["none","small","medium","large"],"medium")}get hasCustomBlurType(){return this.hasAttribute("blur-type")||ot(this.getAttribute("blur"))}get headerClass(){return this.getAttribute("header-class")||""}get overlayClass(){return this.getAttribute("overlay-class")||""}get closeClass(){return this.getAttribute("close-class")||""}get surfaceClass(){return this.getAttribute("surface-class")||""}get surfacePadding(){return this.getAttribute("surface-padding")||""}get panelClass(){return this.getAttribute("panel-class")||""}get bodyClass(){return this.getAttribute("body-class")||""}get contentClass(){return this.getAttribute("content-class")||""}get footerClass(){return this.getAttribute("footer-class")||""}get modalRoot(){return this._renderTarget?.querySelector?.(".sf-modal")||null}get state(){return{modalId:this.modalId,title:this.title,text:this.text,open:this.openState,autoload:this.autoload,unclose:this.unclose,hide:this.hideButton,hideModifier:this.hideModifier,minimized:this.hiddenState,overlay:this.overlay,showHeader:this.showHeader,showClose:this.showClose,showFooter:this.showFooter,closeOnEsc:this.closeOnEsc,closeOnOverlay:this.closeOnOverlay,preserveScrollGap:this.preserveScrollGap,position:this.position,mode:this.mode,display:this.display,src:this.src,preload:this.preload,fullscreen:this.fullscreen,width:this.width,height:this.height,blur:this.blur,blurType:this.blurType,overlayClass:this.overlayClass,closeClass:this.closeClass,surfaceClass:this.surfaceClass,surfacePadding:this.surfacePadding,panelClass:this.panelClass,headerClass:this.headerClass,bodyClass:this.bodyClass,contentClass:this.contentClass,footerClass:this.footerClass}}get renderOpenState(){return this.openState||"closing"===this._modalState}get renderModalState(){return"inline"===this.display?this.openState?"open":"closed":this.renderOpenState&&"closed"===this._modalState?"open":this._modalState}get modalZIndex(){return"inline"===this.display||this._stackIndex<0?"":nt.baseZIndex+2*this._stackIndex}get remoteContent(){return"iframe"===this.mode&&this.src?i`
+/******/ (() => { // webpackBootstrap
+/******/ 	"use strict";
+/******/ 	var __webpack_modules__ = ({
+
+/***/ "7aae0f825ba6"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   normalizeEnum: () => (/* binding */ normalizeEnum),
+/* harmony export */   parseJsonAttribute: () => (/* binding */ parseJsonAttribute),
+/* harmony export */   toAttributeName: () => (/* binding */ toAttributeName),
+/* harmony export */   toBoolean: () => (/* binding */ toBoolean),
+/* harmony export */   toNumber: () => (/* binding */ toNumber)
+/* harmony export */ });
+/* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("fef8077ac919");
+/* harmony import */ var lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("7fcbcc00731e");
+
+
+function toBoolean(value, fallback = false) {
+  if (value === undefined || value === null || value === "") return fallback;
+  if (typeof value === "boolean") return value;
+  return ["1", "true", "yes", "on", "checked", "disabled", "download", "indeterminate", "multiple"].includes(String(value).toLowerCase());
+}
+function toAttributeName(key) {
+  if (key === "className") {
+    return "class";
+  }
+
+  return String(key || "").replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+}
+function toNumber(value, fallback = 0) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number : fallback;
+}
+function normalizeEnum(value, allowed, fallback) {
+  const normalized = String(value || fallback).trim().toLowerCase();
+  return Array.isArray(allowed) && allowed.includes(normalized) ? normalized : fallback;
+}
+function parseJsonAttribute(element, name, fallback = null) {
+  const rawValue = element?.getAttribute?.(name);
+
+  if (!rawValue) {
+    return fallback;
+  }
+
+  try {
+    return JSON.parse(rawValue);
+  } catch (error) {
+    console.warn(`${element?.tagName?.toLowerCase?.() || "sf-element"}: invalid ${name} JSON`, error);
+    return fallback;
+  }
+}
+
+class SfBaseElement extends HTMLElement {
+  static externalTemplateBasePath = "/local/smart/templates";
+  static externalTemplateModules = new Map();
+  static externalTemplateMisses = new Set();
+  static externalTemplateChecks = new Map();
+  static externalTemplateCssLoaded = new Set();
+  static externalTemplateCssMisses = new Set();
+
+  static get props() {
+    return {};
+  }
+
+  static get observedAttributes() {
+    return Array.from(new Set([...this.propsToAttributes(), "root-class", "root-style", "style"]));
+  }
+
+  static propsToAttributes(props = this.props) {
+    return Object.entries(props || {}).map(([key, config]) => this.normalizePropConfig(key, config).attribute).filter(Boolean);
+  }
+
+  static normalizePropConfig(key, config = "") {
+    const isConfigObject = config && typeof config === "object" && !Array.isArray(config) && (Object.prototype.hasOwnProperty.call(config, "type") || Object.prototype.hasOwnProperty.call(config, "default") || Object.prototype.hasOwnProperty.call(config, "attribute") || Object.prototype.hasOwnProperty.call(config, "parser") || Object.prototype.hasOwnProperty.call(config, "parse") || Object.prototype.hasOwnProperty.call(config, "values"));
+    const propConfig = isConfigObject ? { ...config
+    } : {
+      default: config
+    };
+    const defaultValue = propConfig.default;
+    const inferredType = propConfig.type || (Array.isArray(defaultValue) ? Array : defaultValue !== null && typeof defaultValue === "object" ? Object : typeof defaultValue === "boolean" ? Boolean : typeof defaultValue === "number" ? Number : String);
+    return { ...propConfig,
+      key,
+      attribute: propConfig.attribute === false ? "" : propConfig.attribute || toAttributeName(key),
+      default: defaultValue,
+      type: inferredType
+    };
+  }
+
+  static toBoolean(value, fallback = false) {
+    return toBoolean(value, fallback);
+  }
+
+  static toAttributeName(key) {
+    return toAttributeName(key);
+  }
+
+  static toNumber(value, fallback = 0) {
+    return toNumber(value, fallback);
+  }
+
+  static normalizeEnum(value, allowed, fallback) {
+    return normalizeEnum(value, allowed, fallback);
+  }
+
+  static parseJsonAttribute(element, name, fallback = null) {
+    return parseJsonAttribute(element, name, fallback);
+  }
+
+  static get tagName() {
+    return this.resolveTagName();
+  }
+
+  static resolveTagName(className = this.name) {
+    const tagName = String(className || "").trim().replace(/([a-z0-9])([A-Z])/g, "$1-$2").replace(/([A-Z])([A-Z][a-z])/g, "$1-$2").replace(/_/g, "-").toLowerCase();
+
+    if (!tagName) {
+      return "";
+    }
+
+    return tagName.includes("-") ? tagName : `sf-${tagName}`;
+  }
+
+  static define(tagName) {
+    const resolvedTagName = String(tagName || this.resolveTagName()).trim().toLowerCase();
+
+    if (!resolvedTagName || !resolvedTagName.includes("-")) {
+      throw new Error(`${this.name || "SfBaseElement"}.define(): cannot resolve custom element tag. Call define() on a named subclass or pass tagName explicitly.`);
+    }
+
+    const existing = customElements.get(resolvedTagName);
+
+    if (existing) {
+      if (existing !== this) {
+        console.warn(`${this.name || "SfBaseElement"}.define(): ${resolvedTagName} is already defined`, existing);
+      }
+
+      return existing;
+    }
+
+    customElements.define(resolvedTagName, this);
+    return this;
+  }
+
+  constructor() {
+    super();
+    this._updateScheduled = false;
+    this._changedAttributes = new Set();
+    this._updateLoopCount = 0;
+    this._updateLoopResetScheduled = false;
+    this._updateLoopBlocked = false;
+    this._updateLoopWarned = false;
+    this._isMounted = false;
+    this._hasRendered = false;
+    this._renderToken = 0;
+    this._externalTemplateModule = null;
+    this._slotTemplates = new Map();
+    this._liveSlotNodes = new Map();
+    this._slotTemplatesCaptured = false;
+    this._customTemplateProps = new Map();
+    this._refEffects = new Map();
+    this._activeRefEffects = null;
+    this._hostStyle = "";
+    this._syncingHostStyle = false;
+    this.__sfSmartElement = true;
+    this.__sfSourceCaptured = false;
+  }
+
+  connectedCallback() {
+    this.captureHostStyle();
+    this.applyHostDisplayStyle();
+    this.captureSlotTemplates();
+    this.__sfSourceCaptured = true;
+    this._isMounted = true;
+    this.emitComponentEvent("connected");
+    this.requestComponentUpdate("connected");
+  }
+
+  disconnectedCallback() {
+    this._isMounted = false;
+    this.onDisconnected();
+    this.emitComponentEvent("disconnected");
+  }
+
+  toBoolean(value, fallback = false) {
+    return toBoolean(value, fallback);
+  }
+
+  toAttributeName(key) {
+    return toAttributeName(key);
+  }
+
+  toNumber(value, fallback = 0) {
+    return toNumber(value, fallback);
+  }
+
+  normalizeEnum(value, allowed, fallback) {
+    return normalizeEnum(value, allowed, fallback);
+  }
+
+  parseJsonAttribute(name, fallback = null) {
+    return parseJsonAttribute(this, name, fallback);
+  }
+
+  getBooleanAttr(name, fallback = false) {
+    const attr = this.attributeName(name);
+
+    if (!attr || !this.hasAttribute(attr)) {
+      return fallback;
+    }
+
+    const value = this.getAttribute(attr);
+
+    if (value === "") {
+      return true;
+    }
+
+    return toBoolean(value, fallback);
+  }
+
+  getNumberAttr(name, fallback = 0) {
+    const attr = this.attributeName(name);
+
+    if (!attr || !this.hasAttribute(attr)) {
+      return fallback;
+    }
+
+    const value = this.getAttribute(attr);
+
+    if (value === "") {
+      return fallback;
+    }
+
+    return toNumber(value, fallback);
+  }
+
+  getEnumAttr(name, allowed = [], fallback = "") {
+    const attr = this.attributeName(name);
+    const value = attr && this.hasAttribute(attr) ? this.getAttribute(attr) : undefined;
+    return normalizeEnum(value, allowed, fallback);
+  }
+
+  hasDeclaredProps() {
+    return Object.keys(this.constructor.props || {}).length > 0;
+  }
+
+  createRef() {
+    const ref = (0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_1__.createRef)();
+    ref.__sfOwner = this;
+    return ref;
+  }
+
+  registerRefEffect(ref, callback, options = {}) {
+    if (!ref || typeof callback !== "function") {
+      return this;
+    }
+
+    const currentRecord = this._refEffects.get(ref) || {};
+    const record = { ...currentRecord,
+      callback,
+      once: options.once === true
+    };
+
+    this._refEffects.set(ref, record);
+
+    this._activeRefEffects?.add(ref);
+    return this;
+  }
+
+  flushRefEffects() {
+    if (!this._refEffects.size) {
+      return this;
+    }
+
+    const activeRefs = this._activeRefEffects;
+
+    this._refEffects.forEach((record, ref) => {
+      if (activeRefs && !activeRefs.has(ref)) {
+        if (typeof record.cleanup === "function") {
+          record.cleanup();
+        }
+
+        this._refEffects.delete(ref);
+
+        return;
+      }
+
+      const nextValue = ref?.value || null;
+
+      if (Object.is(record.value, nextValue)) {
+        return;
+      }
+
+      if (typeof record.cleanup === "function") {
+        record.cleanup();
+      }
+
+      record.value = nextValue;
+      record.cleanup = null;
+
+      if (!nextValue) {
+        return;
+      }
+
+      const cleanup = record.callback.call(this, nextValue, {
+        component: this,
+        ref,
+        value: nextValue
+      });
+      record.cleanup = typeof cleanup === "function" ? cleanup : null;
+
+      if (record.once) {
+        this._refEffects.delete(ref);
+      }
+    });
+
+    this._activeRefEffects = null;
+    return this;
+  }
+
+  getPropsContext(props = this.constructor.props || {}) {
+    return Object.fromEntries(Object.entries(props).map(([key, config]) => [key, this.getPropValue(key, config)]));
+  }
+
+  getProp(key, fallbackConfig = "") {
+    const props = this.constructor.props || {};
+    return this.getPropValue(key, props[key] ?? fallbackConfig);
+  }
+
+  getPropValue(key, config = "") {
+    const propConfig = this.constructor.normalizePropConfig(key, config);
+    const {
+      attribute,
+      type,
+      default: defaultValue
+    } = propConfig;
+    const parser = propConfig.parser || propConfig.parse;
+    const hasAttribute = attribute ? this.hasAttribute(attribute) : false;
+    const rawValue = hasAttribute ? this.getAttribute(attribute) : undefined;
+
+    if (!hasAttribute && Object.prototype.hasOwnProperty.call(this, key)) {
+      return this.coercePropValue(this[key], propConfig);
+    }
+
+    if (typeof parser === "function") {
+      return parser.call(this, rawValue, defaultValue, this);
+    }
+
+    if (!hasAttribute) {
+      return this.clonePropDefault(defaultValue, type);
+    }
+
+    return this.coercePropValue(rawValue, propConfig);
+  }
+
+  coercePropValue(value, config = {}) {
+    const {
+      type,
+      default: defaultValue,
+      values
+    } = config;
+
+    if (type === Boolean) {
+      if (value === "") {
+        return true;
+      }
+
+      return toBoolean(value, Boolean(defaultValue));
+    }
+
+    if (type === Number) {
+      return toNumber(value, Number(defaultValue || 0));
+    }
+
+    if (type === Array || type === Object) {
+      if (typeof value !== "string") {
+        return value ?? this.clonePropDefault(defaultValue, type);
+      }
+
+      try {
+        return JSON.parse(value);
+      } catch (error) {
+        console.warn(`${this.tagName.toLowerCase()}: invalid ${config.attribute} JSON`, error);
+        return this.clonePropDefault(defaultValue, type);
+      }
+    }
+
+    if (Array.isArray(values)) {
+      return normalizeEnum(value, values, defaultValue || values[0] || "");
+    }
+
+    return value ?? this.clonePropDefault(defaultValue, type);
+  }
+
+  clonePropDefault(defaultValue, type) {
+    if (Array.isArray(defaultValue)) {
+      return [...defaultValue];
+    }
+
+    if (defaultValue && typeof defaultValue === "object" && (type === Object || type === Array)) {
+      return { ...defaultValue
+      };
+    }
+
+    if (typeof defaultValue !== "undefined") {
+      return defaultValue;
+    }
+
+    if (type === Boolean) {
+      return false;
+    }
+
+    if (type === Number) {
+      return 0;
+    }
+
+    if (type === Array) {
+      return [];
+    }
+
+    if (type === Object) {
+      return {};
+    }
+
+    return "";
+  }
+
+  get value() {
+    return this.getAttribute("value") || "";
+  }
+
+  set value(nextValue) {
+    if (nextValue && typeof nextValue === "object" && !Array.isArray(nextValue)) {
+      this.setValueAttributes(nextValue);
+      return;
+    }
+
+    this.setAttributeValue("value", nextValue);
+  }
+
+  getAttributeValue(name = "value", fallback = "") {
+    return this.getAttribute(name) || fallback;
+  }
+
+  setAttributeValue(name = "value", nextValue = "") {
+    const attr = toAttributeName(name);
+
+    if (!attr) {
+      return this;
+    }
+
+    if (nextValue === null || typeof nextValue === "undefined") {
+      this.removeAttribute(attr);
+      return this;
+    }
+
+    this.setAttribute(attr, String(nextValue));
+    return this;
+  }
+
+  setValueAttributes(nextValue = {}, options = {}) {
+    if (!nextValue || typeof nextValue !== "object") {
+      return this;
+    }
+
+    const {
+      stringifyObjects = true,
+      removeEmptyString = true
+    } = options;
+    Object.entries(nextValue).forEach(([key, value]) => {
+      const attr = toAttributeName(key);
+
+      if (!attr) {
+        return;
+      }
+
+      this.setCustomTemplateProp(key, value);
+
+      if (value === false || value === null || typeof value === "undefined" || removeEmptyString && value === "") {
+        this.removeAttribute(attr);
+        return;
+      }
+
+      if (value === true) {
+        this.setAttribute(attr, "");
+        return;
+      }
+
+      if (stringifyObjects && (Array.isArray(value) || typeof value === "object")) {
+        this.setAttribute(attr, JSON.stringify(value));
+        return;
+      }
+
+      this.setAttribute(attr, String(value));
+    });
+    return this;
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (oldValue === newValue) {
+      return;
+    }
+
+    if (name === "style") {
+      if (this._syncingHostStyle) {
+        return;
+      }
+
+      this._hostStyle = this.normalizeHostStyle(newValue);
+      this.applyHostDisplayStyle();
+    }
+
+    this.requestComponentUpdate(name);
+  }
+
+  get updateLoopLimit() {
+    const limit = Number(this.constructor.updateLoopLimit ?? 50);
+    return Number.isFinite(limit) ? limit : 50;
+  }
+
+  resetUpdateLoopGuard() {
+    this._updateLoopCount = 0;
+    this._updateLoopResetScheduled = false;
+    this._updateLoopBlocked = false;
+    this._updateLoopWarned = false;
+  }
+
+  scheduleUpdateLoopGuardReset() {
+    if (this._updateLoopResetScheduled) {
+      return;
+    }
+
+    this._updateLoopResetScheduled = true;
+    setTimeout(() => {
+      this.resetUpdateLoopGuard();
+    }, 0);
+  }
+
+  canScheduleComponentUpdate(reason = "unknown") {
+    if (this._updateLoopBlocked) {
+      return false;
+    }
+
+    const limit = this.updateLoopLimit;
+
+    if (limit <= 0) {
+      return true;
+    }
+
+    this.scheduleUpdateLoopGuardReset();
+    this._updateLoopCount += 1;
+
+    if (this._updateLoopCount <= limit) {
+      return true;
+    }
+
+    this._updateLoopBlocked = true;
+
+    this._changedAttributes.clear();
+
+    if (!this._updateLoopWarned) {
+      this._updateLoopWarned = true;
+      console.warn(`${this.componentTagName || "sf-element"}: update loop limit reached`, {
+        reason,
+        limit,
+        component: this
+      });
+    }
+
+    return false;
+  }
+
+  requestComponentUpdate(reason = "unknown") {
+    if (this._updateLoopBlocked) {
+      return;
+    }
+
+    if (reason) {
+      this._changedAttributes.add(reason);
+    }
+
+    if (this._updateScheduled) {
+      return;
+    }
+
+    if (!this.canScheduleComponentUpdate(reason)) {
+      return;
+    }
+
+    this._updateScheduled = true;
+    Promise.resolve().then(() => {
+      this._updateScheduled = false;
+
+      if (!this._isMounted) {
+        return;
+      }
+
+      const changedAttributes = Array.from(this._changedAttributes);
+
+      this._changedAttributes.clear();
+
+      void this.performComponentUpdate(changedAttributes);
+    });
+  }
+
+  async performComponentUpdate(changedAttributes = []) {
+    const mode = this.resolveUpdateMode(changedAttributes);
+
+    if (mode === "dom" && this.updateDom(changedAttributes) !== false) {
+      this.afterUpdate(changedAttributes, mode);
+      this.emitComponentEvent("updated", {
+        changedAttributes,
+        updateMode: mode
+      });
+      this.emitComponentEvent("props-change", this.createPropChangeDetail(changedAttributes, mode));
+      return;
+    }
+
+    await this.renderComponent(changedAttributes);
+    this.afterUpdate(changedAttributes, "lit");
+    this.emitComponentEvent("updated", {
+      changedAttributes,
+      updateMode: "lit"
+    });
+    this.emitComponentEvent("props-change", this.createPropChangeDetail(changedAttributes, "lit"));
+  }
+
+  async renderComponent(changedAttributes = []) {
+    const renderToken = ++this._renderToken;
+
+    if (!this._isMounted) {
+      return;
+    }
+
+    this._activeRefEffects = new Set();
+    this.beforeRender(changedAttributes);
+    this.emitComponentEvent("before-render", {
+      changedAttributes
+    });
+    this.runExternalHook("beforeRender", {
+      changedAttributes,
+      root: this
+    });
+    const templateResult = await this.resolveTemplateResult(changedAttributes);
+
+    if (!this._isMounted || renderToken !== this._renderToken) {
+      return;
+    }
+
+    this.prepareRenderContainer(changedAttributes);
+    (0,lit__WEBPACK_IMPORTED_MODULE_0__.render)(templateResult, this);
+    this.flushRefEffects();
+    this._hasRendered = true;
+    this.afterRender(changedAttributes);
+    this._childrenDefinedPromise = null;
+    this.runExternalHook("afterRender", {
+      changedAttributes,
+      root: this
+    });
+    this.emitComponentEvent("after-render", {
+      changedAttributes
+    });
+  }
+
+  getChildCustomElements() {
+    return Array.from(this.querySelectorAll("*")).filter(node => {
+      const tagName = node?.tagName?.toLowerCase?.() || "";
+      return tagName.startsWith("sf-");
+    });
+  }
+
+  async whenChildrenDefined() {
+    if (this._childrenDefinedPromise) {
+      return this._childrenDefinedPromise;
+    }
+
+    this._childrenDefinedPromise = Promise.resolve().then(async () => {
+      const children = this.getChildCustomElements();
+      await Promise.all(children.map(async child => {
+        const tagName = child.tagName?.toLowerCase?.();
+
+        if (!tagName || !window.customElements?.whenDefined) {
+          return;
+        }
+
+        await window.customElements.whenDefined(tagName);
+
+        if (child.updateComplete?.then) {
+          await child.updateComplete;
+        }
+
+        if (child._updateScheduled) {
+          await Promise.resolve();
+        }
+      }));
+      return children;
+    });
+    return this._childrenDefinedPromise;
+  }
+
+  get componentTagName() {
+    return this.tagName?.toLowerCase?.() || "";
+  }
+
+  get componentTemplateName() {
+    return this.getAttribute("template") || "default";
+  }
+
+  get externalTemplateComponentName() {
+    return this.componentTagName.startsWith("sf-") ? this.componentTagName.replace(/^sf-/, "") : this.componentTagName;
+  }
+
+  get externalTemplateBasePath() {
+    return window.SF_SMART_TEMPLATE_PATH || window.SFSmartTemplatePath || this.constructor.externalTemplateBasePath;
+  }
+
+  emitComponentEvent(name, detail = {}) {
+    const eventDetail = {
+      component: this,
+      tagName: this.componentTagName,
+      template: this.componentTemplateName,
+      ...detail
+    };
+    this.dispatchEvent(new CustomEvent(`sf-${name}`, {
+      bubbles: true,
+      composed: true,
+      detail: eventDetail
+    }));
+  }
+
+  attributeName(key) {
+    return String(key || "").replace(/[A-Z]/g, letter => `-${letter.toLowerCase()}`);
+  }
+
+  shouldSerializeFalseAttribute(attr) {
+    const attributes = this.constructor.defaultTrueAttributes;
+
+    if (!attributes) {
+      return false;
+    }
+
+    if (attributes instanceof Set) {
+      return attributes.has(attr);
+    }
+
+    if (Array.isArray(attributes)) {
+      return attributes.includes(attr);
+    }
+
+    return false;
+  }
+
+  setAttributes(nextAttributes = {}) {
+    if (!nextAttributes || typeof nextAttributes !== "object") {
+      return this;
+    }
+
+    Object.entries(nextAttributes).forEach(([key, value]) => {
+      const attr = this.attributeName(key);
+
+      if (!attr) {
+        return;
+      }
+
+      this.setCustomTemplateProp(key, value);
+
+      if (value === false && this.shouldSerializeFalseAttribute(attr)) {
+        this.setAttribute(attr, "false");
+        return;
+      }
+
+      if (value === false || value === null || value === undefined || value === "") {
+        this.removeAttribute(attr);
+        return;
+      }
+
+      if (value === true) {
+        this.setAttribute(attr, "");
+        return;
+      }
+
+      this.setAttribute(attr, String(value));
+    });
+    return this;
+  }
+
+  forwardHostAttributes(target, options = {}) {
+    if (!target) {
+      return this;
+    }
+
+    const {
+      exclude = [],
+      transferDataAttributes = true,
+      storageKey = "__sfForwardedDataAttributes",
+      targetStorageKey = "__sfForwardedAttributeKeys"
+    } = options;
+    const excludeSet = exclude instanceof Set ? exclude : new Set(exclude);
+    const dataAttributes = this[storageKey] || new Map();
+    const previous = target[targetStorageKey] || new Set();
+    const dataAttributeNamesToRemove = [];
+    const nextKeys = new Set();
+    previous.forEach(name => {
+      target.removeAttribute(name);
+    });
+    Array.from(this.attributes).forEach(attribute => {
+      const {
+        name,
+        value
+      } = attribute;
+
+      if (excludeSet.has(name)) {
+        return;
+      }
+
+      if (/^on[a-z]/i.test(name)) {
+        return;
+      }
+
+      if (transferDataAttributes && name.startsWith("data-")) {
+        dataAttributes.set(name, value);
+        dataAttributeNamesToRemove.push(name);
+        return;
+      }
+
+      nextKeys.add(name);
+      target.setAttribute(name, value);
+    });
+    dataAttributes.forEach((value, name) => {
+      nextKeys.add(name);
+      target.setAttribute(name, value);
+    });
+    target[targetStorageKey] = nextKeys;
+    this[storageKey] = dataAttributes;
+
+    if (dataAttributeNamesToRemove.length) {
+      this.__sfForwardingHostAttributes = true;
+      dataAttributeNamesToRemove.forEach(name => this.removeAttribute(name));
+      this.__sfForwardingHostAttributes = false;
+    }
+
+    return this;
+  }
+
+  observeForwardedHostAttributes(targetGetter, options = {}) {
+    if (this._forwardHostAttributeObserver) {
+      return this;
+    }
+
+    const resolveTarget = typeof targetGetter === "function" ? targetGetter : () => targetGetter;
+    this._forwardHostAttributeObserver = new MutationObserver(() => {
+      if (this.__sfForwardingHostAttributes) {
+        return;
+      }
+
+      this.forwardHostAttributes(resolveTarget(), options);
+    });
+
+    this._forwardHostAttributeObserver.observe(this, {
+      attributes: true
+    });
+
+    return this;
+  }
+
+  disconnectForwardedHostAttributes() {
+    this._forwardHostAttributeObserver?.disconnect?.();
+    this._forwardHostAttributeObserver = null;
+    return this;
+  }
+
+  removeAttributes(attributeNames = []) {
+    const names = Array.isArray(attributeNames) ? attributeNames : [attributeNames];
+    names.filter(Boolean).forEach(name => this.removeAttribute(this.attributeName(name)));
+    return this;
+  }
+
+  refresh(reason = "manual") {
+    this.requestComponentUpdate(reason);
+    return this;
+  }
+
+  get isRendered() {
+    return this._hasRendered === true;
+  }
+
+  createRenderDetail(detail = {}) {
+    return {
+      component: this,
+      tagName: this.componentTagName,
+      template: this.componentTemplateName,
+      ...detail
+    };
+  }
+
+  runRenderedCallback(callback, detail = {}, event = null) {
+    if (typeof callback !== "function") {
+      return undefined;
+    }
+
+    return callback.call(this, this.createRenderDetail(detail), event);
+  }
+
+  whenRendered(callback = null, options = {}) {
+    const waitNext = options.next === true;
+
+    if (this.isRendered && !waitNext) {
+      const detail = this.createRenderDetail({
+        changedAttributes: [],
+        immediate: true
+      });
+      return Promise.resolve().then(() => {
+        this.runRenderedCallback(callback, detail);
+        return detail;
+      });
+    }
+
+    return new Promise(resolve => {
+      const onAfterRender = event => {
+        const detail = event?.detail || this.createRenderDetail();
+        this.runRenderedCallback(callback, detail, event);
+        resolve(detail);
+      };
+
+      this.addEventListener("sf-after-render", onAfterRender, {
+        once: true
+      });
+    });
+  }
+
+  onAfterRender(callback, options = {}) {
+    const immediate = options.immediate !== false;
+    const once = options.once !== false;
+
+    if (immediate && this.isRendered) {
+      this.runRenderedCallback(callback, {
+        changedAttributes: [],
+        immediate: true
+      });
+
+      if (once) {
+        return () => {};
+      }
+    }
+
+    const onAfterRender = event => {
+      this.runRenderedCallback(callback, event?.detail || {}, event);
+
+      if (once) {
+        this.removeEventListener("sf-after-render", onAfterRender);
+      }
+    };
+
+    this.addEventListener("sf-after-render", onAfterRender);
+    return () => this.removeEventListener("sf-after-render", onAfterRender);
+  }
+
+  getState() {
+    if (typeof this.state !== "undefined") {
+      return this.state;
+    }
+
+    if (this.hasDeclaredProps()) {
+      return this.templateContext();
+    }
+
+    if (typeof this.value !== "undefined") {
+      return this.value;
+    }
+
+    return this.templateContext();
+  }
+
+  normalizeStateCallbackArgs(reasonOrCallback, callback, fallbackReason = "state") {
+    if (typeof reasonOrCallback === "function") {
+      return {
+        reason: fallbackReason,
+        callback: reasonOrCallback
+      };
+    }
+
+    return {
+      reason: reasonOrCallback || fallbackReason,
+      callback
+    };
+  }
+
+  runStateCallback(callback, detail = {}) {
+    if (typeof callback !== "function") {
+      return this;
+    }
+
+    callback.call(this, {
+      component: this,
+      state: this.getState(),
+      ...detail
+    });
+    return this;
+  }
+
+  scheduleStateCallback(callback, detail = {}) {
+    if (typeof callback !== "function") {
+      return this;
+    }
+
+    if (this._isMounted && this._updateScheduled) {
+      this.whenRendered(renderDetail => {
+        this.runStateCallback(callback, { ...detail,
+          renderDetail
+        });
+      }, {
+        next: true
+      });
+      return this;
+    }
+
+    Promise.resolve().then(() => {
+      this.runStateCallback(callback, detail);
+    });
+    return this;
+  }
+
+  setState(nextState = {}, callback = null) {
+    this.setAttributes(nextState);
+    this.scheduleStateCallback(callback, {
+      patch: nextState,
+      reason: "attributes"
+    });
+    return this;
+  }
+
+  patchState(nextState = {}, reasonOrCallback = "state", callback = null) {
+    const {
+      reason,
+      callback: stateCallback
+    } = this.normalizeStateCallbackArgs(reasonOrCallback, callback, "state");
+    const prevState = this.state && typeof this.state === "object" ? this.state : {};
+    const patch = typeof nextState === "function" ? nextState(prevState) : nextState;
+
+    if (!patch || typeof patch !== "object" || Object.is(patch, prevState)) {
+      this.scheduleStateCallback(stateCallback, {
+        patch,
+        reason,
+        changed: false,
+        changedKeys: [],
+        prevState,
+        nextState: prevState
+      });
+      return this;
+    }
+
+    let changed = false;
+    const changedKeys = [];
+    const state = { ...prevState
+    };
+    Object.entries(patch).forEach(([key, value]) => {
+      if (Object.is(state[key], value)) {
+        return;
+      }
+
+      state[key] = value;
+      changed = true;
+      changedKeys.push(key);
+    });
+
+    if (!changed) {
+      this.scheduleStateCallback(stateCallback, {
+        patch,
+        reason,
+        changed: false,
+        changedKeys,
+        prevState,
+        nextState: prevState
+      });
+      return this;
+    }
+
+    this.state = state;
+    this.requestComponentUpdate(reason);
+    this.scheduleStateCallback(stateCallback, {
+      patch,
+      reason,
+      changed: true,
+      changedKeys,
+      prevState,
+      nextState: state
+    });
+    return this;
+  }
+
+  set(nextState = {}, reasonOrCallback = "state", callback = null) {
+    return this.patchState(nextState, reasonOrCallback, callback);
+  }
+
+  getRootClass() {
+    return this.getAttribute("root-class") || "";
+  }
+
+  normalizeHostStyle(style = "") {
+    const element = document.createElement("div");
+    element.setAttribute("style", String(style || ""));
+    element.style.removeProperty("display");
+    return element.getAttribute("style") || "";
+  }
+
+  captureHostStyle() {
+    const normalized = this.normalizeHostStyle(this.getAttribute("style"));
+
+    if (normalized || !this._hostStyle) {
+      this._hostStyle = normalized;
+    }
+
+    return this;
+  }
+
+  applyHostDisplayStyle() {
+    const nextStyle = "display: contents;";
+
+    if (this.getAttribute("style") === nextStyle) {
+      return this;
+    }
+
+    this._syncingHostStyle = true;
+    this.setAttribute("style", nextStyle);
+    this._syncingHostStyle = false;
+    return this;
+  }
+
+  getRootStyle() {
+    return [this._hostStyle, this.getAttribute("root-style")].filter(Boolean).join("; ");
+  }
+
+  setRootClass(nextValue = "") {
+    const value = String(nextValue || "").trim();
+
+    if (!value) {
+      this.removeAttribute("root-class");
+      return this;
+    }
+
+    this.setAttribute("root-class", value);
+    return this;
+  }
+
+  addRootClass(...tokens) {
+    const classes = new Set(this.getRootClass().split(/\s+/).filter(Boolean));
+    tokens.flat().filter(Boolean).forEach(token => {
+      String(token).split(/\s+/).filter(Boolean).forEach(part => classes.add(part));
+    });
+    return this.setRootClass(Array.from(classes).join(" "));
+  }
+
+  setRootStyle(nextValue = "") {
+    const value = String(nextValue || "").trim();
+
+    if (!value) {
+      this.removeAttribute("root-style");
+      return this;
+    }
+
+    this.setAttribute("root-style", value);
+    return this;
+  }
+
+  removeRootClass(...tokens) {
+    const classes = new Set(this.getRootClass().split(/\s+/).filter(Boolean));
+    tokens.flat().filter(Boolean).forEach(token => {
+      String(token).split(/\s+/).filter(Boolean).forEach(part => classes.delete(part));
+    });
+    return this.setRootClass(Array.from(classes).join(" "));
+  }
+
+  toggleRootClass(token, force) {
+    const normalized = String(token || "").trim();
+
+    if (!normalized) {
+      return this;
+    }
+
+    const classes = new Set(this.getRootClass().split(/\s+/).filter(Boolean));
+    const shouldAdd = typeof force === "boolean" ? force : !classes.has(normalized);
+
+    if (shouldAdd) {
+      classes.add(normalized);
+    } else {
+      classes.delete(normalized);
+    }
+
+    this.setRootClass(Array.from(classes).join(" "));
+    return this;
+  }
+
+  setHidden(hidden = true) {
+    const next = toBoolean(hidden, true);
+    this.toggleAttribute("hidden", next);
+    this.toggleRootClass("hidden", next);
+    return this;
+  }
+
+  isHidden() {
+    const rootClasses = new Set(this.getRootClass().split(/\s+/).filter(Boolean));
+    return this.hasAttribute("hidden") || rootClasses.has("hidden");
+  }
+
+  createPropChangeDetail(changedAttributes = [], updateMode = "lit") {
+    return {
+      changedAttributes,
+      updateMode,
+      state: this.getState()
+    };
+  }
+
+  onPropChange(handler, options) {
+    if (typeof handler === "function") {
+      this.addEventListener("sf-props-change", event => {
+        handler(event.detail?.state, event.detail, event);
+      }, options);
+    }
+
+    return this;
+  }
+
+  onUpdate(handler, options) {
+    if (typeof handler === "function") {
+      this.addEventListener("sf-updated", event => {
+        handler(this.getState(), event.detail, event);
+      }, options);
+    }
+
+    return this;
+  }
+
+  createTemplateContext(baseContext = {}) {
+    const propsContext = this.hasDeclaredProps() ? this.getPropsContext() : {};
+    const normalizedContext = {
+      component: this,
+      rootClass: this.getRootClass(),
+      rootStyle: this.getRootStyle(),
+      ...propsContext,
+      ...baseContext
+    };
+    const custom = this.getCustomTemplateProps(normalizedContext);
+    return { ...custom,
+      ...normalizedContext,
+      custom
+    };
+  }
+
+  getCustomTemplateProps(baseContext = {}) {
+    const reservedAttributes = this.getReservedTemplateAttributes();
+    const reservedKeys = this.getReservedTemplateKeys(baseContext);
+    const props = {};
+
+    this._customTemplateProps.forEach((value, key) => {
+      if (!this.isCustomTemplateProp(key, baseContext)) {
+        return;
+      }
+
+      props[key] = value;
+    });
+
+    Object.entries(this.getOwnCustomTemplateProps(baseContext)).forEach(([key, value]) => {
+      if (!key || reservedKeys.has(key) || Object.prototype.hasOwnProperty.call(props, key)) {
+        return;
+      }
+
+      props[key] = value;
+    });
+    Array.from(this.attributes || []).forEach(({
+      name,
+      value
+    }) => {
+      if (reservedAttributes.has(name)) {
+        return;
+      }
+
+      const key = this.attributeToPropertyName(name);
+
+      if (!key || reservedKeys.has(key) || Object.prototype.hasOwnProperty.call(props, key)) {
+        return;
+      }
+
+      props[key] = value;
+    });
+    return props;
+  }
+
+  getOwnCustomTemplateProps(baseContext = {}) {
+    const props = {};
+    const reservedKeys = this.getReservedTemplateKeys(baseContext);
+    Object.keys(this).forEach(key => {
+      if (key.startsWith("_") || reservedKeys.has(key) || typeof this[key] === "function") {
+        return;
+      }
+
+      props[key] = this[key];
+    });
+    return props;
+  }
+
+  getReservedTemplateAttributes() {
+    const reservedAttributes = new Set(["class", "style", "id", "slot", "template"]);
+    const observedAttributes = this.constructor.observedAttributes || [];
+    observedAttributes.forEach(name => {
+      const attr = toAttributeName(name);
+
+      if (attr) {
+        reservedAttributes.add(attr);
+      }
+    });
+    return reservedAttributes;
+  }
+
+  getReservedTemplateKeys(baseContext = {}) {
+    const reservedKeys = new Set(["custom"]);
+    Object.keys(baseContext || {}).forEach(key => {
+      reservedKeys.add(key);
+    });
+    this.getReservedTemplateAttributes().forEach(attr => {
+      const key = this.attributeToPropertyName(attr);
+
+      if (key) {
+        reservedKeys.add(key);
+      }
+    });
+    return reservedKeys;
+  }
+
+  isCustomTemplateProp(key, baseContext = {}) {
+    const prop = this.attributeToPropertyName(toAttributeName(key));
+
+    if (!prop) {
+      return false;
+    }
+
+    const attr = toAttributeName(prop);
+    const reservedAttributes = this.getReservedTemplateAttributes();
+    const reservedKeys = this.getReservedTemplateKeys(baseContext);
+    return !reservedAttributes.has(attr) && !reservedKeys.has(prop);
+  }
+
+  setCustomTemplateProps(nextProps = {}, baseContext = {}) {
+    if (!nextProps || typeof nextProps !== "object") {
+      return this;
+    }
+
+    Object.entries(nextProps).forEach(([key, value]) => {
+      this.setCustomTemplateProp(key, value, baseContext);
+    });
+    return this;
+  }
+
+  setCustomTemplateProp(key, value, baseContext = {}) {
+    const prop = this.attributeToPropertyName(toAttributeName(key));
+
+    if (!this.isCustomTemplateProp(prop, baseContext)) {
+      return this;
+    }
+
+    if (value === false || value === null || typeof value === "undefined") {
+      if (this._customTemplateProps.delete(prop)) {
+        this.requestComponentUpdate(prop);
+      }
+
+      return this;
+    }
+
+    if (this._customTemplateProps.get(prop) === value) {
+      return this;
+    }
+
+    this._customTemplateProps.set(prop, value);
+
+    this.requestComponentUpdate(prop);
+    return this;
+  }
+
+  attributeToPropertyName(name) {
+    return String(name || "").replace(/-([a-z0-9])/g, (_, symbol) => symbol.toUpperCase());
+  }
+
+  resolveUpdateMode() {
+    return "lit";
+  }
+
+  createPropsTemplateContext(extraContext = {}) {
+    return this.createTemplateContext({
+      component: this,
+      ...this.getPropsContext(),
+      ...extraContext
+    });
+  }
+
+  templateContext() {
+    return this.createPropsTemplateContext();
+  }
+
+  captureSlotTemplates() {
+    if (this._slotTemplatesCaptured) {
+      return;
+    }
+
+    this._slotTemplatesCaptured = true;
+    Array.from(this.children).forEach(child => {
+      if (!(child instanceof HTMLElement)) {
+        return;
+      }
+
+      const slotName = child.getAttribute("slot");
+
+      if (!slotName) {
+        return;
+      }
+
+      if (child.tagName?.toLowerCase?.() === "template") {
+        if (!this._slotTemplates.has(slotName)) {
+          this._slotTemplates.set(slotName, []);
+        }
+
+        Array.from(child.content?.childNodes || []).forEach(node => {
+          this._slotTemplates.get(slotName).push(node.cloneNode(true));
+        });
+        child.remove();
+        return;
+      }
+
+      if (!this._liveSlotNodes.has(slotName)) {
+        this._liveSlotNodes.set(slotName, []);
+      }
+
+      const shouldUnwrapSlotHost = child.getAttributeNames().length === 1 && child.hasAttribute("slot");
+      const slotNodes = shouldUnwrapSlotHost ? Array.from(child.childNodes) : [child];
+
+      this._liveSlotNodes.get(slotName).push(...slotNodes);
+
+      child.remove();
+    });
+  }
+
+  captureChildTemplates(name, matcher, options = {}) {
+    if (!name) {
+      return [];
+    }
+
+    const {
+      append = true,
+      remove = true
+    } = options;
+    const matches = typeof matcher === "function" ? matcher : node => node instanceof Element && typeof matcher === "string" && node.matches?.(matcher);
+    const nodes = Array.from(this.childNodes || []).filter(child => matches(child));
+
+    if (!nodes.length) {
+      return [];
+    }
+
+    if (!append || !this._slotTemplates.has(name)) {
+      this._slotTemplates.set(name, []);
+    }
+
+    const templates = nodes.map(node => node.cloneNode(true));
+    templates.forEach(node => {
+      this._slotTemplates.get(name).push(node);
+    });
+
+    if (remove) {
+      nodes.forEach(node => node.remove());
+    }
+
+    return templates.map(node => node.cloneNode(true));
+  }
+
+  hasSlotContent(name) {
+    if ((this._liveSlotNodes.get(name) || []).length > 0) {
+      return true;
+    }
+
+    return (this._slotTemplates.get(name) || []).length > 0;
+  }
+
+  getSlotContent(name) {
+    const liveSlotContent = this._liveSlotNodes.get(name) || [];
+
+    if (liveSlotContent.length) {
+      return liveSlotContent.length === 1 ? liveSlotContent[0] : liveSlotContent;
+    }
+
+    const slotContent = this._slotTemplates.get(name) || [];
+
+    if (!slotContent.length) {
+      return lit__WEBPACK_IMPORTED_MODULE_0__.nothing;
+    }
+
+    if (slotContent.length === 1) {
+      return slotContent[0].cloneNode(true);
+    }
+
+    return slotContent.map(node => node.cloneNode(true));
+  }
+
+  setSlot(name, ...elements) {
+    if (!name) {
+      return this;
+    } // Преобразуем строки в DOM-элементы
+
+
+    const parsed = elements.map(el => {
+      if (typeof el === "string") {
+        const wrapper = document.createElement("div");
+        wrapper.innerHTML = el;
+        return Array.from(wrapper.childNodes);
+      }
+
+      return [el];
+    }).flat().filter(node => node instanceof Node); // Обновляем _slotTemplates (Lit-рендеринг)
+
+    this._slotTemplates.delete(name); // Обновляем _liveSlotNodes (если есть — для совместимости с sf-modal)
+
+
+    this._liveSlotNodes.set(name, parsed); // Запрашиваем перерендер
+
+
+    this.requestComponentUpdate("slot-change");
+    return this;
+  }
+
+  copyRuntimeData(source, target) {
+    if (!(source instanceof Node) || !(target instanceof Node)) {
+      return;
+    }
+
+    if (source.__sfCreateEventHandlers) {
+      Object.defineProperty(target, "__sfCreateEventHandlers", {
+        configurable: true,
+        enumerable: false,
+        value: source.__sfCreateEventHandlers.slice()
+      });
+    }
+
+    const sourceChildren = Array.from(source.childNodes || []);
+    const targetChildren = Array.from(target.childNodes || []);
+    sourceChildren.forEach((sourceChild, index) => {
+      this.copyRuntimeData(sourceChild, targetChildren[index]);
+    });
+  }
+
+  clearSlot(name) {
+    if (!name) {
+      return this;
+    }
+
+    this._slotTemplates.delete(name);
+
+    if (this._liveSlotNodes) {
+      this._liveSlotNodes.delete(name);
+    }
+
+    this.requestComponentUpdate("slot-change");
+    return this;
+  }
+
+  async resolveTemplateResult(changedAttributes = []) {
+    const templateName = this.componentTemplateName;
+
+    if (this.hasBuiltInTemplate(templateName)) {
+      this._externalTemplateModule = null;
+      return this.template();
+    }
+
+    const externalModule = await this.resolveExternalTemplateModule(templateName);
+    this._externalTemplateModule = externalModule || null;
+
+    if (externalModule) {
+      const rawContext = this.templateContext();
+      const context = this.createTemplateContext(this.mapExternalTemplateContext(rawContext, externalModule));
+      const renderFn = typeof externalModule.default === "function" ? externalModule.default : null;
+
+      if (renderFn) {
+        return renderFn({
+          html: lit__WEBPACK_IMPORTED_MODULE_0__.html,
+          nothing: lit__WEBPACK_IMPORTED_MODULE_0__.nothing,
+          context,
+          component: this,
+          changedAttributes
+        });
+      }
+    }
+
+    this._externalTemplateModule = null;
+    return this.template();
+  }
+
+  hasBuiltInTemplate(templateName = this.componentTemplateName) {
+    return !templateName || templateName === "default";
+  }
+
+  mapExternalTemplateContext(context, externalModule) {
+    if (typeof externalModule?.mapContext === "function") {
+      return externalModule.mapContext({
+        context,
+        component: this,
+        html: lit__WEBPACK_IMPORTED_MODULE_0__.html,
+        nothing: lit__WEBPACK_IMPORTED_MODULE_0__.nothing
+      }) || context;
+    }
+
+    return context;
+  }
+
+  async resolveExternalTemplateModule(templateName = this.componentTemplateName) {
+    if (!templateName) {
+      return null;
+    }
+
+    const moduleUrl = this.getExternalTemplateModuleUrl(templateName);
+
+    if (!moduleUrl) {
+      return null;
+    }
+
+    await this.loadExternalTemplateCss(templateName);
+
+    if (this.constructor.externalTemplateModules.has(moduleUrl)) {
+      return this.constructor.externalTemplateModules.get(moduleUrl);
+    }
+
+    if (this.constructor.externalTemplateMisses.has(moduleUrl)) {
+      return null;
+    }
+
+    const exists = await this.checkExternalTemplateModule(moduleUrl);
+
+    if (!exists) {
+      this.constructor.externalTemplateMisses.add(moduleUrl);
+      return null;
+    }
+
+    try {
+      const externalModule = await import(
+      /* webpackIgnore: true */
+      moduleUrl);
+      this.constructor.externalTemplateModules.set(moduleUrl, externalModule);
+      return externalModule;
+    } catch (error) {
+      console.warn(error);
+      this.constructor.externalTemplateMisses.add(moduleUrl);
+      return null;
+    }
+  }
+
+  async checkExternalTemplateModule(moduleUrl) {
+    if (!moduleUrl) {
+      return false;
+    }
+
+    if (this.constructor.externalTemplateChecks.has(moduleUrl)) {
+      return this.constructor.externalTemplateChecks.get(moduleUrl);
+    }
+
+    const checkPromise = fetch(moduleUrl, {
+      method: "GET",
+      cache: "no-store"
+    }).then(response => response.ok).catch(() => false);
+    this.constructor.externalTemplateChecks.set(moduleUrl, checkPromise);
+    const exists = await checkPromise;
+
+    if (!exists) {
+      this.constructor.externalTemplateChecks.delete(moduleUrl);
+    }
+
+    return exists;
+  }
+
+  getExternalTemplateModuleUrl(templateName = this.componentTemplateName) {
+    const basePath = String(this.externalTemplateBasePath || "").replace(/\/$/, "");
+    const componentName = this.externalTemplateComponentName;
+
+    if (!basePath || !componentName || !templateName) {
+      return "";
+    }
+
+    return `${basePath}/${componentName}/${templateName}/index.js`;
+  }
+
+  getExternalTemplateCssUrl(templateName = this.componentTemplateName) {
+    const basePath = String(this.externalTemplateBasePath || "").replace(/\/$/, "");
+    const componentName = this.externalTemplateComponentName;
+
+    if (!basePath || !componentName || !templateName) {
+      return "";
+    }
+
+    return `${basePath}/${componentName}/${templateName}/index.css`;
+  }
+
+  loadExternalTemplateCss(templateName = this.componentTemplateName) {
+    const cssUrl = this.getExternalTemplateCssUrl(templateName);
+
+    if (!cssUrl) {
+      return Promise.resolve(false);
+    }
+
+    if (this.constructor.externalTemplateCssLoaded.has(cssUrl)) {
+      return Promise.resolve(true);
+    }
+
+    if (this.constructor.externalTemplateCssMisses.has(cssUrl)) {
+      return Promise.resolve(false);
+    }
+
+    const existing = document.querySelector(`link[data-sf-smart-css="${cssUrl}"]`);
+
+    if (existing) {
+      this.constructor.externalTemplateCssLoaded.add(cssUrl);
+      return Promise.resolve(true);
+    }
+
+    return new Promise(resolve => {
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = cssUrl;
+      link.dataset.sfSmartCss = cssUrl;
+
+      link.onload = () => {
+        this.constructor.externalTemplateCssLoaded.add(cssUrl);
+        resolve(true);
+      };
+
+      link.onerror = () => {
+        this.constructor.externalTemplateCssMisses.add(cssUrl);
+        resolve(false);
+      };
+
+      document.head.append(link);
+    });
+  }
+
+  runExternalHook(hookName, detail = {}) {
+    if (typeof this._externalTemplateModule?.[hookName] !== "function") {
+      return;
+    }
+
+    try {
+      this._externalTemplateModule[hookName]({
+        component: this,
+        root: this,
+        html: lit__WEBPACK_IMPORTED_MODULE_0__.html,
+        nothing: lit__WEBPACK_IMPORTED_MODULE_0__.nothing,
+        context: this.templateContext(),
+        ...detail
+      });
+    } catch (error) {
+      console.warn(error);
+    }
+  }
+
+  updateDom() {
+    return false;
+  }
+
+  shouldClearLightDomBeforeFirstRender() {
+    return this.constructor.clearLightDomBeforeFirstRender === true;
+  }
+
+  prepareRenderContainer() {
+    if (this._hasRendered || !this.shouldClearLightDomBeforeFirstRender()) {
+      return;
+    }
+
+    this.replaceChildren();
+  }
+
+  template() {
+    return lit__WEBPACK_IMPORTED_MODULE_0__.nothing;
+  }
+
+  beforeRender() {}
+
+  afterRender(callback) {
+    if (typeof callback === "function") {
+      return this.whenRendered(callback);
+    }
+
+    return undefined;
+  }
+
+  afterUpdate() {}
+
+  onDisconnected() {
+    this.runExternalHook("destroy");
+  }
+
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (SfBaseElement); // Global access for Playground, console, and project-level components.
+
+if (typeof window !== "undefined") {
+  window.SfBaseElement = SfBaseElement;
+  window.html = lit__WEBPACK_IMPORTED_MODULE_0__.html;
+  window.nothing = lit__WEBPACK_IMPORTED_MODULE_0__.nothing;
+  window.render = lit__WEBPACK_IMPORTED_MODULE_0__.render;
+
+  if (!window.SF) {
+    window.SF = {};
+  }
+
+  window.SF.SfBaseElement = SfBaseElement;
+  window.SF.html = lit__WEBPACK_IMPORTED_MODULE_0__.html;
+  window.SF.nothing = lit__WEBPACK_IMPORTED_MODULE_0__.nothing;
+  window.SF.render = lit__WEBPACK_IMPORTED_MODULE_0__.render;
+  window.SF.smart = { ...(window.SF.smart || {}),
+    SfBaseElement,
+    html: lit__WEBPACK_IMPORTED_MODULE_0__.html,
+    nothing: lit__WEBPACK_IMPORTED_MODULE_0__.nothing,
+    render: lit__WEBPACK_IMPORTED_MODULE_0__.render,
+    toBoolean,
+    toAttributeName,
+    toNumber,
+    normalizeEnum,
+    parseJsonAttribute
+  };
+}
+
+/***/ },
+
+/***/ "e45eac6c719d"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   renderModalTemplate: () => (/* binding */ renderModalTemplate)
+/* harmony export */ });
+/* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("fef8077ac919");
+
+
+function joinClasses(...parts) {
+  return parts.filter(Boolean).join(' ').trim();
+}
+
+function overlayClasses(context) {
+  const blurClass = context.blur ? `backdrop-blur-${context.blurType}` : context.overlayPreset === 'focus' ? 'backdrop-blur-small' : '';
+  return joinClasses(`sf-modal-overlay--${context.overlayPreset}`, blurClass);
+}
+
+function renderModalTemplate(context) {
+  const isInline = context.display === 'inline';
+  const hasRemoteContent = Boolean(context.src) && (context.mode === 'ajax' || context.mode === 'iframe');
+  const showHeader = context.showHeader !== false;
+  const hasHeaderSlot = context.hasHeaderContent;
+  const hasContentSlot = context.hasContentContent;
+  const hasFooterSlot = context.hasFooterContent && context.showFooter;
+  const hasHeaderActions = context.showClose || context.hide && !isInline;
+  const panelStyle = [context.width ? `--sf-modal-width:${context.width}` : '', context.height ? `--sf-modal-height:${context.height}` : ''].filter(Boolean).join(';');
+  const surfaceStyle = [context.surfacePadding ? `--sf-modal-surface-padding:${context.surfacePadding}` : ''].filter(Boolean).join(';');
+  const modalStyle = [context.modalZIndex ? `z-index:${context.modalZIndex}` : ''].filter(Boolean).join(';');
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+        <div
+                id=${context.modalId}
+                class=${joinClasses('sf-modal', `sf-modal--position-${context.position}`, `sf-modal--positon-${context.position}`, isInline ? 'sf-modal--inline inline-block w-full' : 'fixed top-0 inline-start-0 w-full h-full z-9 p-3 items-cross-center content-main-center', context.open ? 'flex' : 'hidden', context.rootClass)}
+                style=${modalStyle}
+                role=${isInline ? 'region' : 'dialog'}
+                aria-modal=${isInline ? 'false' : 'true'}
+                aria-hidden=${context.open ? 'false' : 'true'}
+                data-sf-modal-id=${context.modalId}
+                data-sf-modal-position=${context.position}
+                data-sf-modal-fullscreen=${String(context.fullscreen)}
+                data-sf-modal-display=${context.display}
+                data-sf-modal-state=${isInline ? 'inline' : context.modalState}
+                data-sf-modal-hidden=${String(context.minimized)}
+                data-sf-modal-overlay-preset=${context.overlayPreset}
+        >
+            <div
+                    class=${joinClasses('absolute top-0 inline-start-0 w-full h-full', overlayClasses(context), context.overlayClass, (!context.overlay || isInline) && 'hidden')}
+                    data-sf-modal-overlay
+                    data-sf-modal-overlay-preset=${context.overlayPreset}
+            ></div>
+
+            <section
+                    class=${joinClasses('relative overflow-visible', context.panelClass)}
+                    style=${panelStyle}
+                    data-sf-modal-panel
+                    ?data-sf-modal-has-width=${Boolean(context.width)}
+                    ?data-sf-modal-has-height=${Boolean(context.height)}
+                    tabindex="-1"
+            >
+                <div
+                        class=${joinClasses('sf-modal-surface flex flex-col', !isInline && 'sf-modal-surface--elevated', context.surfaceClass)}
+                        style=${surfaceStyle}
+                        data-sf-modal-surface
+                >
+                    ${showHeader ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+                                <header
+                                        class=${joinClasses('sf-modal-header flex content-main-between items-cross-center', hasHeaderActions && 'p-right-2', context.headerClass)}
+                                >
+                                    ${hasHeaderSlot ? context.headerContent : (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<h2 class="title-3 m-0">${context.title}</h2>`}
+                                    ${context.hide && !isInline ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+                                                <button
+                                                        type="button"
+                                                        class=${joinClasses('sf-icon-button sf-modal-hide-button sf-modal-hide-button--inline-end sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/3 radius-default m-0 absolute', context.hideModifier)}
+                                                        aria-label="Minimize modal"
+                                                        data-sf-modal-hide=${context.modalId}
+                                                        @click=${context.onHideClick}
+                                                >
+                                                    <span class="sf-modal-hide-icon"></span>
+                                                </button>
+                                            ` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+                                    ${context.showClose ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+                                                <button
+                                                        type="button"
+                                                        class=${joinClasses('sf-icon-button sf-modal-close-button sf-modal-close-button--inline-end sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/3 radius-default m-0 absolute', context.closeClass)}
+                                                        aria-label="Close modal"
+                                                        data-sf-modal-close=${context.modalId}
+                                                        @click=${context.onCloseClick}
+                                                >
+                          <span
+                                  class="sf-close sf-close--size-1/3 flex justify-center items-center"
+                                  aria-label="Close size 1/4"
+                          >
+                            <span class="sf-close-icon"></span>
+                          </span>
+                                                </button>
+                                            ` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+                                </header>
+                            ` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+
+                    <div
+                            class="sf-modal-body flex flex-col gap-1 min-w-0 overflow-visible"
+                            data-sf-modal-body
+                    >
+                        <div
+                                class="sf-modal-body-viewport min-w-0 overflow-visible"
+                                data-sf-modal-body-viewport
+                        >
+                            <div
+                                    class=${joinClasses('sf-modal-body-scroll h-full max-h-80 min-w-0 overflow-y-auto flex flex-col gap-1 p-1/4', context.bodyClass)}
+                                    data-sf-modal-body-scroll
+                            >
+                                ${hasRemoteContent ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+                                            <div
+                                                    class="sf-modal-content-placeholder flex flex-col gap-2 min-h-8 items-cross-center content-main-center"
+                                                    data-sf-modal-content-placeholder
+                                            >
+                                                ${context.remoteContent}
+                                            </div>
+                                        ` : hasContentSlot ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+                                                    <div
+                                                            class=${joinClasses('sf-modal-content flex flex-col gap-2', context.contentClass)}
+                                                    >
+                                                        ${context.contentContent}
+                                                    </div>
+                                                ` : (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<p class="m-0 text-2">${context.text}</p>`}
+                            </div>
+                        </div>
+
+                        ${hasFooterSlot ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+                                    <div
+                                            class=${joinClasses('sf-modal-footer flex flex-wrap gap-2', context.footerClass)}
+                                    >
+                                        ${context.footerContent}
+                                    </div>
+                                ` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+                    </div>
+                </div>
+            </section>
+        </div>
+    `;
+}
+
+/***/ },
+
+/***/ "aa42666a7938"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CSSResult: () => (/* binding */ n),
+/* harmony export */   adoptStyles: () => (/* binding */ S),
+/* harmony export */   css: () => (/* binding */ i),
+/* harmony export */   getCompatibleStyle: () => (/* binding */ c),
+/* harmony export */   supportsAdoptingStyleSheets: () => (/* binding */ e),
+/* harmony export */   unsafeCSS: () => (/* binding */ r)
+/* harmony export */ });
+/**
+ * @license
+ * Copyright 2019 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const t=globalThis,e=t.ShadowRoot&&(void 0===t.ShadyCSS||t.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s=Symbol(),o=new WeakMap;class n{constructor(t,e,o){if(this._$cssResult$=!0,o!==s)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e}get styleSheet(){let t=this.o;const s=this.t;if(e&&void 0===t){const e=void 0!==s&&1===s.length;e&&(t=o.get(s)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&o.set(s,t))}return t}toString(){return this.cssText}}const r=t=>new n("string"==typeof t?t:t+"",void 0,s),i=(t,...e)=>{const o=1===t.length?t[0]:e.reduce((e,s,o)=>e+(t=>{if(!0===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(s)+t[o+1],t[0]);return new n(o,t,s)},S=(s,o)=>{if(e)s.adoptedStyleSheets=o.map(t=>t instanceof CSSStyleSheet?t:t.styleSheet);else for(const e of o){const o=document.createElement("style"),n=t.litNonce;void 0!==n&&o.setAttribute("nonce",n),o.textContent=e.cssText,s.appendChild(o)}},c=e?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return r(e)})(t):t;
+//# sourceMappingURL=css-tag.js.map
+
+
+/***/ },
+
+/***/ "ea86f8429d07"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CSSResult: () => (/* reexport safe */ _css_tag_js__WEBPACK_IMPORTED_MODULE_0__.CSSResult),
+/* harmony export */   ReactiveElement: () => (/* binding */ y),
+/* harmony export */   adoptStyles: () => (/* reexport safe */ _css_tag_js__WEBPACK_IMPORTED_MODULE_0__.adoptStyles),
+/* harmony export */   css: () => (/* reexport safe */ _css_tag_js__WEBPACK_IMPORTED_MODULE_0__.css),
+/* harmony export */   defaultConverter: () => (/* binding */ u),
+/* harmony export */   getCompatibleStyle: () => (/* reexport safe */ _css_tag_js__WEBPACK_IMPORTED_MODULE_0__.getCompatibleStyle),
+/* harmony export */   notEqual: () => (/* binding */ f),
+/* harmony export */   supportsAdoptingStyleSheets: () => (/* reexport safe */ _css_tag_js__WEBPACK_IMPORTED_MODULE_0__.supportsAdoptingStyleSheets),
+/* harmony export */   unsafeCSS: () => (/* reexport safe */ _css_tag_js__WEBPACK_IMPORTED_MODULE_0__.unsafeCSS)
+/* harmony export */ });
+/* harmony import */ var _css_tag_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("aa42666a7938");
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */const{is:i,defineProperty:e,getOwnPropertyDescriptor:h,getOwnPropertyNames:r,getOwnPropertySymbols:o,getPrototypeOf:n}=Object,a=globalThis,c=a.trustedTypes,l=c?c.emptyScript:"",p=a.reactiveElementPolyfillSupport,d=(t,s)=>t,u={toAttribute(t,s){switch(s){case Boolean:t=t?l:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t)}return t},fromAttribute(t,s){let i=t;switch(s){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t)}catch(t){i=null}}return i}},f=(t,s)=>!i(t,s),b={attribute:!0,type:String,converter:u,reflect:!1,useDefault:!1,hasChanged:f};Symbol.metadata??=Symbol("metadata"),a.litPropertyMetadata??=new WeakMap;class y extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t)}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,s=b){if(s.state&&(s.attribute=!1),this._$Ei(),this.prototype.hasOwnProperty(t)&&((s=Object.create(s)).wrapped=!0),this.elementProperties.set(t,s),!s.noAccessor){const i=Symbol(),h=this.getPropertyDescriptor(t,i,s);void 0!==h&&e(this.prototype,t,h)}}static getPropertyDescriptor(t,s,i){const{get:e,set:r}=h(this.prototype,t)??{get(){return this[s]},set(t){this[s]=t}};return{get:e,set(s){const h=e?.call(this);r?.call(this,s),this.requestUpdate(t,h,i)},configurable:!0,enumerable:!0}}static getPropertyOptions(t){return this.elementProperties.get(t)??b}static _$Ei(){if(this.hasOwnProperty(d("elementProperties")))return;const t=n(this);t.finalize(),void 0!==t.l&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties)}static finalize(){if(this.hasOwnProperty(d("finalized")))return;if(this.finalized=!0,this._$Ei(),this.hasOwnProperty(d("properties"))){const t=this.properties,s=[...r(t),...o(t)];for(const i of s)this.createProperty(i,t[i])}const t=this[Symbol.metadata];if(null!==t){const s=litPropertyMetadata.get(t);if(void 0!==s)for(const[t,i]of s)this.elementProperties.set(t,i)}this._$Eh=new Map;for(const[t,s]of this.elementProperties){const i=this._$Eu(t,s);void 0!==i&&this._$Eh.set(i,t)}this.elementStyles=this.finalizeStyles(this.styles)}static finalizeStyles(s){const i=[];if(Array.isArray(s)){const e=new Set(s.flat(1/0).reverse());for(const s of e)i.unshift((0,_css_tag_js__WEBPACK_IMPORTED_MODULE_0__.getCompatibleStyle)(s))}else void 0!==s&&i.push((0,_css_tag_js__WEBPACK_IMPORTED_MODULE_0__.getCompatibleStyle)(s));return i}static _$Eu(t,s){const i=s.attribute;return!1===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=!1,this.hasUpdated=!1,this._$Em=null,this._$Ev()}_$Ev(){this._$ES=new Promise(t=>this.enableUpdating=t),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(t=>t(this))}addController(t){(this._$EO??=new Set).add(t),void 0!==this.renderRoot&&this.isConnected&&t.hostConnected?.()}removeController(t){this._$EO?.delete(t)}_$E_(){const t=new Map,s=this.constructor.elementProperties;for(const i of s.keys())this.hasOwnProperty(i)&&(t.set(i,this[i]),delete this[i]);t.size>0&&(this._$Ep=t)}createRenderRoot(){const t=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return (0,_css_tag_js__WEBPACK_IMPORTED_MODULE_0__.adoptStyles)(t,this.constructor.elementStyles),t}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(!0),this._$EO?.forEach(t=>t.hostConnected?.())}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach(t=>t.hostDisconnected?.())}attributeChangedCallback(t,s,i){this._$AK(t,i)}_$ET(t,s){const i=this.constructor.elementProperties.get(t),e=this.constructor._$Eu(t,i);if(void 0!==e&&!0===i.reflect){const h=(void 0!==i.converter?.toAttribute?i.converter:u).toAttribute(s,i.type);this._$Em=t,null==h?this.removeAttribute(e):this.setAttribute(e,h),this._$Em=null}}_$AK(t,s){const i=this.constructor,e=i._$Eh.get(t);if(void 0!==e&&this._$Em!==e){const t=i.getPropertyOptions(e),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==t.converter?.fromAttribute?t.converter:u;this._$Em=e;const r=h.fromAttribute(s,t.type);this[e]=r??this._$Ej?.get(e)??r,this._$Em=null}}requestUpdate(t,s,i,e=!1,h){if(void 0!==t){const r=this.constructor;if(!1===e&&(h=this[t]),i??=r.getPropertyOptions(t),!((i.hasChanged??f)(h,s)||i.useDefault&&i.reflect&&h===this._$Ej?.get(t)&&!this.hasAttribute(r._$Eu(t,i))))return;this.C(t,s,i)}!1===this.isUpdatePending&&(this._$ES=this._$EP())}C(t,s,{useDefault:i,reflect:e,wrapped:h},r){i&&!(this._$Ej??=new Map).has(t)&&(this._$Ej.set(t,r??s??this[t]),!0!==h||void 0!==r)||(this._$AL.has(t)||(this.hasUpdated||i||(s=void 0),this._$AL.set(t,s)),!0===e&&this._$Em!==t&&(this._$Eq??=new Set).add(t))}async _$EP(){this.isUpdatePending=!0;try{await this._$ES}catch(t){Promise.reject(t)}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[t,s]of this._$Ep)this[t]=s;this._$Ep=void 0}const t=this.constructor.elementProperties;if(t.size>0)for(const[s,i]of t){const{wrapped:t}=i,e=this[s];!0!==t||this._$AL.has(s)||void 0===e||this.C(s,void 0,i,e)}}let t=!1;const s=this._$AL;try{t=this.shouldUpdate(s),t?(this.willUpdate(s),this._$EO?.forEach(t=>t.hostUpdate?.()),this.update(s)):this._$EM()}catch(s){throw t=!1,this._$EM(),s}t&&this._$AE(s)}willUpdate(t){}_$AE(t){this._$EO?.forEach(t=>t.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=!0,this.firstUpdated(t)),this.updated(t)}_$EM(){this._$AL=new Map,this.isUpdatePending=!1}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return!0}update(t){this._$Eq&&=this._$Eq.forEach(t=>this._$ET(t,this[t])),this._$EM()}updated(t){}firstUpdated(t){}}y.elementStyles=[],y.shadowRootOptions={mode:"open"},y[d("elementProperties")]=new Map,y[d("finalized")]=new Map,p?.({ReactiveElement:y}),(a.reactiveElementVersions??=[]).push("2.1.2");
+//# sourceMappingURL=reactive-element.js.map
+
+
+/***/ },
+
+/***/ "7ab7aedf3cfc"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CSSResult: () => (/* reexport safe */ _lit_reactive_element__WEBPACK_IMPORTED_MODULE_0__.CSSResult),
+/* harmony export */   LitElement: () => (/* binding */ i),
+/* harmony export */   ReactiveElement: () => (/* reexport safe */ _lit_reactive_element__WEBPACK_IMPORTED_MODULE_0__.ReactiveElement),
+/* harmony export */   _$LE: () => (/* binding */ n),
+/* harmony export */   _$LH: () => (/* reexport safe */ lit_html__WEBPACK_IMPORTED_MODULE_1__._$LH),
+/* harmony export */   adoptStyles: () => (/* reexport safe */ _lit_reactive_element__WEBPACK_IMPORTED_MODULE_0__.adoptStyles),
+/* harmony export */   css: () => (/* reexport safe */ _lit_reactive_element__WEBPACK_IMPORTED_MODULE_0__.css),
+/* harmony export */   defaultConverter: () => (/* reexport safe */ _lit_reactive_element__WEBPACK_IMPORTED_MODULE_0__.defaultConverter),
+/* harmony export */   getCompatibleStyle: () => (/* reexport safe */ _lit_reactive_element__WEBPACK_IMPORTED_MODULE_0__.getCompatibleStyle),
+/* harmony export */   html: () => (/* reexport safe */ lit_html__WEBPACK_IMPORTED_MODULE_1__.html),
+/* harmony export */   mathml: () => (/* reexport safe */ lit_html__WEBPACK_IMPORTED_MODULE_1__.mathml),
+/* harmony export */   noChange: () => (/* reexport safe */ lit_html__WEBPACK_IMPORTED_MODULE_1__.noChange),
+/* harmony export */   notEqual: () => (/* reexport safe */ _lit_reactive_element__WEBPACK_IMPORTED_MODULE_0__.notEqual),
+/* harmony export */   nothing: () => (/* reexport safe */ lit_html__WEBPACK_IMPORTED_MODULE_1__.nothing),
+/* harmony export */   render: () => (/* reexport safe */ lit_html__WEBPACK_IMPORTED_MODULE_1__.render),
+/* harmony export */   supportsAdoptingStyleSheets: () => (/* reexport safe */ _lit_reactive_element__WEBPACK_IMPORTED_MODULE_0__.supportsAdoptingStyleSheets),
+/* harmony export */   svg: () => (/* reexport safe */ lit_html__WEBPACK_IMPORTED_MODULE_1__.svg),
+/* harmony export */   unsafeCSS: () => (/* reexport safe */ _lit_reactive_element__WEBPACK_IMPORTED_MODULE_0__.unsafeCSS)
+/* harmony export */ });
+/* harmony import */ var _lit_reactive_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("ea86f8429d07");
+/* harmony import */ var lit_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("f550d360fd36");
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */const s=globalThis;class i extends _lit_reactive_element__WEBPACK_IMPORTED_MODULE_0__.ReactiveElement{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0}createRenderRoot(){const t=super.createRenderRoot();return this.renderOptions.renderBefore??=t.firstChild,t}update(t){const r=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=(0,lit_html__WEBPACK_IMPORTED_MODULE_1__.render)(r,this.renderRoot,this.renderOptions)}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(!0)}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(!1)}render(){return lit_html__WEBPACK_IMPORTED_MODULE_1__.noChange}}i._$litElement$=!0,i["finalized"]=!0,s.litElementHydrateSupport?.({LitElement:i});const o=s.litElementPolyfillSupport;o?.({LitElement:i});const n={_$AK:(t,e,r)=>{t._$AK(e,r)},_$AL:t=>t._$AL};(s.litElementVersions??=[]).push("4.2.2");
+//# sourceMappingURL=lit-element.js.map
+
+
+/***/ },
+
+/***/ "f6a1e423f201"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   AsyncDirective: () => (/* binding */ f),
+/* harmony export */   Directive: () => (/* reexport safe */ _directive_js__WEBPACK_IMPORTED_MODULE_1__.Directive),
+/* harmony export */   PartType: () => (/* reexport safe */ _directive_js__WEBPACK_IMPORTED_MODULE_1__.PartType),
+/* harmony export */   directive: () => (/* reexport safe */ _directive_js__WEBPACK_IMPORTED_MODULE_1__.directive)
+/* harmony export */ });
+/* harmony import */ var _directive_helpers_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("a5a956c9f619");
+/* harmony import */ var _directive_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("0e2a9b296d0b");
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */const s=(i,t)=>{const e=i._$AN;if(void 0===e)return!1;for(const i of e)i._$AO?.(t,!1),s(i,t);return!0},o=i=>{let t,e;do{if(void 0===(t=i._$AM))break;e=t._$AN,e.delete(i),i=t}while(0===e?.size)},r=i=>{for(let t;t=i._$AM;i=t){let e=t._$AN;if(void 0===e)t._$AN=e=new Set;else if(e.has(i))break;e.add(i),c(t)}};function h(i){void 0!==this._$AN?(o(this),this._$AM=i,r(this)):this._$AM=i}function n(i,t=!1,e=0){const r=this._$AH,h=this._$AN;if(void 0!==h&&0!==h.size)if(t)if(Array.isArray(r))for(let i=e;i<r.length;i++)s(r[i],!1),o(r[i]);else null!=r&&(s(r,!1),o(r));else s(this,i)}const c=i=>{i.type==_directive_js__WEBPACK_IMPORTED_MODULE_1__.PartType.CHILD&&(i._$AP??=n,i._$AQ??=h)};class f extends _directive_js__WEBPACK_IMPORTED_MODULE_1__.Directive{constructor(){super(...arguments),this._$AN=void 0}_$AT(i,t,e){super._$AT(i,t,e),r(this),this.isConnected=i._$AU}_$AO(i,t=!0){i!==this.isConnected&&(this.isConnected=i,i?this.reconnected?.():this.disconnected?.()),t&&(s(this,i),o(this))}setValue(t){if((0,_directive_helpers_js__WEBPACK_IMPORTED_MODULE_0__.isSingleExpression)(this._$Ct))this._$Ct._$AI(t,this);else{const i=[...this._$Ct._$AH];i[this._$Ci]=t,this._$Ct._$AI(i,this,0)}}disconnected(){}reconnected(){}}
+//# sourceMappingURL=async-directive.js.map
+
+
+/***/ },
+
+/***/ "a5a956c9f619"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   TemplateResultType: () => (/* binding */ e),
+/* harmony export */   clearPart: () => (/* binding */ j),
+/* harmony export */   getCommittedValue: () => (/* binding */ M),
+/* harmony export */   getDirectiveClass: () => (/* binding */ f),
+/* harmony export */   insertPart: () => (/* binding */ v),
+/* harmony export */   isCompiledTemplateResult: () => (/* binding */ d),
+/* harmony export */   isDirectiveResult: () => (/* binding */ c),
+/* harmony export */   isPrimitive: () => (/* binding */ n),
+/* harmony export */   isSingleExpression: () => (/* binding */ r),
+/* harmony export */   isTemplateResult: () => (/* binding */ l),
+/* harmony export */   removePart: () => (/* binding */ h),
+/* harmony export */   setChildPartValue: () => (/* binding */ u),
+/* harmony export */   setCommittedValue: () => (/* binding */ p)
+/* harmony export */ });
+/* harmony import */ var _lit_html_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("f550d360fd36");
+
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */const{I:t}=_lit_html_js__WEBPACK_IMPORTED_MODULE_0__._$LH,i=o=>o,n=o=>null===o||"object"!=typeof o&&"function"!=typeof o,e={HTML:1,SVG:2,MATHML:3},l=(o,t)=>void 0===t?void 0!==o?._$litType$:o?._$litType$===t,d=o=>null!=o?._$litType$?.h,c=o=>void 0!==o?._$litDirective$,f=o=>o?._$litDirective$,r=o=>void 0===o.strings,s=()=>document.createComment(""),v=(o,n,e)=>{const l=o._$AA.parentNode,d=void 0===n?o._$AB:n._$AA;if(void 0===e){const i=l.insertBefore(s(),d),n=l.insertBefore(s(),d);e=new t(i,n,o,o.options)}else{const t=e._$AB.nextSibling,n=e._$AM,c=n!==o;if(c){let t;e._$AQ?.(o),e._$AM=o,void 0!==e._$AP&&(t=o._$AU)!==n._$AU&&e._$AP(t)}if(t!==d||c){let o=e._$AA;for(;o!==t;){const t=i(o).nextSibling;i(l).insertBefore(o,d),o=t}}}return e},u=(o,t,i=o)=>(o._$AI(t,i),o),m={},p=(o,t=m)=>o._$AH=t,M=o=>o._$AH,h=o=>{o._$AR(),o._$AA.remove()},j=o=>{o._$AR()};
+//# sourceMappingURL=directive-helpers.js.map
+
+
+/***/ },
+
+/***/ "0e2a9b296d0b"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   Directive: () => (/* binding */ i),
+/* harmony export */   PartType: () => (/* binding */ t),
+/* harmony export */   directive: () => (/* binding */ e)
+/* harmony export */ });
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const t={ATTRIBUTE:1,CHILD:2,PROPERTY:3,BOOLEAN_ATTRIBUTE:4,EVENT:5,ELEMENT:6},e=t=>(...e)=>({_$litDirective$:t,values:e});class i{constructor(t){}get _$AU(){return this._$AM._$AU}_$AT(t,e,i){this._$Ct=t,this._$AM=e,this._$Ci=i}_$AS(t,e){return this.update(t,e)}update(t,e){return this.render(...e)}}
+//# sourceMappingURL=directive.js.map
+
+
+/***/ },
+
+/***/ "59df0b19b37c"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createRef: () => (/* binding */ e),
+/* harmony export */   ref: () => (/* binding */ n)
+/* harmony export */ });
+/* harmony import */ var _lit_html_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("f550d360fd36");
+/* harmony import */ var _async_directive_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("f6a1e423f201");
+/* harmony import */ var _directive_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("0e2a9b296d0b");
+
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */const e=()=>new h;class h{}const o=new WeakMap,n=(0,_directive_js__WEBPACK_IMPORTED_MODULE_2__.directive)(class extends _async_directive_js__WEBPACK_IMPORTED_MODULE_1__.AsyncDirective{render(i){return _lit_html_js__WEBPACK_IMPORTED_MODULE_0__.nothing}update(i,[s]){const e=s!==this.G;return e&&this.rt(void 0),(e||this.lt!==this.ct)&&(this.G=s,this.ht=i.options?.host,this.rt(this.ct=i.element)),_lit_html_js__WEBPACK_IMPORTED_MODULE_0__.nothing}rt(t){if(void 0!==this.G)if(this.isConnected||(t=void 0),"function"==typeof this.G){const i=this.ht??globalThis;let s=o.get(i);void 0===s&&(s=new WeakMap,o.set(i,s)),void 0!==s.get(this.G)&&this.G.call(this.ht,void 0),s.set(this.G,t),void 0!==t&&this.G.call(this.ht,t)}else this.G.value=t}get lt(){return"function"==typeof this.G?o.get(this.ht??globalThis)?.get(this.G):this.G?.value}disconnected(){this.lt===this.ct&&this.rt(void 0)}reconnected(){this.rt(this.ct)}});
+//# sourceMappingURL=ref.js.map
+
+
+/***/ },
+
+/***/ "0e8f2d7ea176"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   UnsafeHTMLDirective: () => (/* binding */ e),
+/* harmony export */   unsafeHTML: () => (/* binding */ o)
+/* harmony export */ });
+/* harmony import */ var _lit_html_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("f550d360fd36");
+/* harmony import */ var _directive_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("0e2a9b296d0b");
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */class e extends _directive_js__WEBPACK_IMPORTED_MODULE_1__.Directive{constructor(i){if(super(i),this.it=_lit_html_js__WEBPACK_IMPORTED_MODULE_0__.nothing,i.type!==_directive_js__WEBPACK_IMPORTED_MODULE_1__.PartType.CHILD)throw Error(this.constructor.directiveName+"() can only be used in child bindings")}render(r){if(r===_lit_html_js__WEBPACK_IMPORTED_MODULE_0__.nothing||null==r)return this._t=void 0,this.it=r;if(r===_lit_html_js__WEBPACK_IMPORTED_MODULE_0__.noChange)return r;if("string"!=typeof r)throw Error(this.constructor.directiveName+"() called with a non-string value");if(r===this.it)return this._t;this.it=r;const s=[r];return s.raw=s,this._t={_$litType$:this.constructor.resultType,strings:s,values:[]}}}e.directiveName="unsafeHTML",e.resultType=1;const o=(0,_directive_js__WEBPACK_IMPORTED_MODULE_1__.directive)(e);
+//# sourceMappingURL=unsafe-html.js.map
+
+
+/***/ },
+
+/***/ "15e6f5e928bf"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   isServer: () => (/* binding */ o)
+/* harmony export */ });
+/**
+ * @license
+ * Copyright 2022 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const o=!1;
+//# sourceMappingURL=is-server.js.map
+
+
+/***/ },
+
+/***/ "f550d360fd36"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   _$LH: () => (/* binding */ j),
+/* harmony export */   html: () => (/* binding */ b),
+/* harmony export */   mathml: () => (/* binding */ T),
+/* harmony export */   noChange: () => (/* binding */ E),
+/* harmony export */   nothing: () => (/* binding */ A),
+/* harmony export */   render: () => (/* binding */ D),
+/* harmony export */   svg: () => (/* binding */ w)
+/* harmony export */ });
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const t=globalThis,i=t=>t,s=t.trustedTypes,e=s?s.createPolicy("lit-html",{createHTML:t=>t}):void 0,h="$lit$",o=`lit$${Math.random().toFixed(9).slice(2)}$`,n="?"+o,r=`<${n}>`,l=document,c=()=>l.createComment(""),a=t=>null===t||"object"!=typeof t&&"function"!=typeof t,u=Array.isArray,d=t=>u(t)||"function"==typeof t?.[Symbol.iterator],f="[ \t\n\f\r]",v=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,_=/-->/g,m=/>/g,p=RegExp(`>|${f}(?:([^\\s"'>=/]+)(${f}*=${f}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),g=/'/g,$=/"/g,y=/^(?:script|style|textarea|title)$/i,x=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),b=x(1),w=x(2),T=x(3),E=Symbol.for("lit-noChange"),A=Symbol.for("lit-nothing"),C=new WeakMap,P=l.createTreeWalker(l,129);function V(t,i){if(!u(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==e?e.createHTML(i):i}const N=(t,i)=>{const s=t.length-1,e=[];let n,l=2===i?"<svg>":3===i?"<math>":"",c=v;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,f=0;for(;f<s.length&&(c.lastIndex=f,u=c.exec(s),null!==u);)f=c.lastIndex,c===v?"!--"===u[1]?c=_:void 0!==u[1]?c=m:void 0!==u[2]?(y.test(u[2])&&(n=RegExp("</"+u[2],"g")),c=p):void 0!==u[3]&&(c=p):c===p?">"===u[0]?(c=n??v,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?p:'"'===u[3]?$:g):c===$||c===g?c=p:c===_||c===m?c=v:(c=p,n=void 0);const x=c===p&&t[i+1].startsWith("/>")?" ":"";l+=c===v?s+r:d>=0?(e.push(a),s.slice(0,d)+h+s.slice(d)+o+x):s+o+(-2===d?i:x)}return[V(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),e]};class S{constructor({strings:t,_$litType$:i},e){let r;this.parts=[];let l=0,a=0;const u=t.length-1,d=this.parts,[f,v]=N(t,i);if(this.el=S.createElement(f,e),P.currentNode=this.el.content,2===i||3===i){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes)}for(;null!==(r=P.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(h)){const i=v[a++],s=r.getAttribute(t).split(o),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:l,name:e[2],strings:s,ctor:"."===e[1]?I:"?"===e[1]?L:"@"===e[1]?z:H}),r.removeAttribute(t)}else t.startsWith(o)&&(d.push({type:6,index:l}),r.removeAttribute(t));if(y.test(r.tagName)){const t=r.textContent.split(o),i=t.length-1;if(i>0){r.textContent=s?s.emptyScript:"";for(let s=0;s<i;s++)r.append(t[s],c()),P.nextNode(),d.push({type:2,index:++l});r.append(t[i],c())}}}else if(8===r.nodeType)if(r.data===n)d.push({type:2,index:l});else{let t=-1;for(;-1!==(t=r.data.indexOf(o,t+1));)d.push({type:7,index:l}),t+=o.length-1}l++}}static createElement(t,i){const s=l.createElement("template");return s.innerHTML=t,s}}function M(t,i,s=t,e){if(i===E)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=a(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(!1),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=M(t,h._$AS(t,i.values),h,e)),i}class R{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??l).importNode(i,!0);P.currentNode=e;let h=P.nextNode(),o=0,n=0,r=s[0];for(;void 0!==r;){if(o===r.index){let i;2===r.type?i=new k(h,h.nextSibling,this,t):1===r.type?i=new r.ctor(h,r.name,r.strings,this,t):6===r.type&&(i=new Z(h,this,t)),this._$AV.push(i),r=s[++n]}o!==r?.index&&(h=P.nextNode(),o++)}return P.currentNode=l,e}p(t){let i=0;for(const s of this._$AV)void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++}}class k{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=A,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??!0}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=M(this,t,i),a(t)?t===A||null==t||""===t?(this._$AH!==A&&this._$AR(),this._$AH=A):t!==this._$AH&&t!==E&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):d(t)?this.k(t):this._(t)}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t))}_(t){this._$AH!==A&&a(this._$AH)?this._$AA.nextSibling.data=t:this.T(l.createTextNode(t)),this._$AH=t}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=S.createElement(V(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else{const t=new R(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t}}_$AC(t){let i=C.get(t.strings);return void 0===i&&C.set(t.strings,i=new S(t)),i}k(t){u(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new k(this.O(c()),this.O(c()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e)}_$AR(t=this._$AA.nextSibling,s){for(this._$AP?.(!1,!0,s);t!==this._$AB;){const s=i(t).nextSibling;i(t).remove(),t=s}}setConnected(t){void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t))}}class H{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=A,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=A}_$AI(t,i=this,s,e){const h=this.strings;let o=!1;if(void 0===h)t=M(this,t,i,0),o=!a(t)||t!==this._$AH&&t!==E,o&&(this._$AH=t);else{const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=M(this,e[s+n],i,n),r===E&&(r=this._$AH[n]),o||=!a(r)||r!==this._$AH[n],r===A?t=A:t!==A&&(t+=(r??"")+h[n+1]),this._$AH[n]=r}o&&!e&&this.j(t)}j(t){t===A?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"")}}class I extends H{constructor(){super(...arguments),this.type=3}j(t){this.element[this.name]=t===A?void 0:t}}class L extends H{constructor(){super(...arguments),this.type=4}j(t){this.element.toggleAttribute(this.name,!!t&&t!==A)}}class z extends H{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5}_$AI(t,i=this){if((t=M(this,t,i,0)??A)===E)return;const s=this._$AH,e=t===A&&s!==A||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==A&&(s===A||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t)}}class Z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s}get _$AU(){return this._$AM._$AU}_$AI(t){M(this,t)}}const j={M:h,P:o,A:n,C:1,L:N,R,D:d,V:M,I:k,H,N:L,U:z,B:I,F:Z},B=t.litHtmlPolyfillSupport;B?.(S,k),(t.litHtmlVersions??=[]).push("3.3.3");const D=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new k(i.insertBefore(c(),t),t,void 0,s??{})}return h._$AI(t),h};
+//# sourceMappingURL=lit-html.js.map
+
+
+/***/ },
+
+/***/ "7fcbcc00731e"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   createRef: () => (/* reexport safe */ lit_html_directives_ref_js__WEBPACK_IMPORTED_MODULE_0__.createRef),
+/* harmony export */   ref: () => (/* reexport safe */ lit_html_directives_ref_js__WEBPACK_IMPORTED_MODULE_0__.ref)
+/* harmony export */ });
+/* harmony import */ var lit_html_directives_ref_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("59df0b19b37c");
+
+//# sourceMappingURL=ref.js.map
+
+
+/***/ },
+
+/***/ "5db1a272402f"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   UnsafeHTMLDirective: () => (/* reexport safe */ lit_html_directives_unsafe_html_js__WEBPACK_IMPORTED_MODULE_0__.UnsafeHTMLDirective),
+/* harmony export */   unsafeHTML: () => (/* reexport safe */ lit_html_directives_unsafe_html_js__WEBPACK_IMPORTED_MODULE_0__.unsafeHTML)
+/* harmony export */ });
+/* harmony import */ var lit_html_directives_unsafe_html_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("0e8f2d7ea176");
+
+//# sourceMappingURL=unsafe-html.js.map
+
+
+/***/ },
+
+/***/ "fef8077ac919"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CSSResult: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.CSSResult),
+/* harmony export */   LitElement: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.LitElement),
+/* harmony export */   ReactiveElement: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.ReactiveElement),
+/* harmony export */   _$LE: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__._$LE),
+/* harmony export */   _$LH: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__._$LH),
+/* harmony export */   adoptStyles: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.adoptStyles),
+/* harmony export */   css: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.css),
+/* harmony export */   defaultConverter: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.defaultConverter),
+/* harmony export */   getCompatibleStyle: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.getCompatibleStyle),
+/* harmony export */   html: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.html),
+/* harmony export */   isServer: () => (/* reexport safe */ lit_html_is_server_js__WEBPACK_IMPORTED_MODULE_3__.isServer),
+/* harmony export */   mathml: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.mathml),
+/* harmony export */   noChange: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.noChange),
+/* harmony export */   notEqual: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.notEqual),
+/* harmony export */   nothing: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.nothing),
+/* harmony export */   render: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.render),
+/* harmony export */   supportsAdoptingStyleSheets: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.supportsAdoptingStyleSheets),
+/* harmony export */   svg: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.svg),
+/* harmony export */   unsafeCSS: () => (/* reexport safe */ lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__.unsafeCSS)
+/* harmony export */ });
+/* harmony import */ var _lit_reactive_element__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("ea86f8429d07");
+/* harmony import */ var lit_html__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("f550d360fd36");
+/* harmony import */ var lit_element_lit_element_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("7ab7aedf3cfc");
+/* harmony import */ var lit_html_is_server_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("15e6f5e928bf");
+
+//# sourceMappingURL=index.js.map
+
+
+/***/ }
+
+/******/ 	});
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	const __webpack_module_cache__ = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		const cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		const module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		if (!(moduleId in __webpack_modules__)) {
+/******/ 			delete __webpack_module_cache__[moduleId];
+/******/ 			const e = new Error("Cannot find module '" + moduleId + "'");
+/******/ 			e.code = 'MODULE_NOT_FOUND';
+/******/ 			throw e;
+/******/ 		}
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/************************************************************************/
+/******/ 	/* webpack/runtime/define property getters */
+/******/ 	(() => {
+/******/ 		// define getter/value functions for harmony exports
+/******/ 		__webpack_require__.d = (exports, definition) => {
+/******/ 			if(Array.isArray(definition)) {
+/******/ 				var i = 0;
+/******/ 				while(i < definition.length) {
+/******/ 					var key = definition[i++];
+/******/ 					var binding = definition[i++];
+/******/ 					if(!__webpack_require__.o(exports, key)) {
+/******/ 						if(binding === 0) {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, value: definition[i++] });
+/******/ 						} else {
+/******/ 							Object.defineProperty(exports, key, { enumerable: true, get: binding });
+/******/ 						}
+/******/ 					} else if(binding === 0) { i++; }
+/******/ 				}
+/******/ 			} else {
+/******/ 				for(var key in definition) {
+/******/ 					if(__webpack_require__.o(definition, key) && !__webpack_require__.o(exports, key)) {
+/******/ 						Object.defineProperty(exports, key, { enumerable: true, get: definition[key] });
+/******/ 					}
+/******/ 				}
+/******/ 			}
+/******/ 		};
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/hasOwnProperty shorthand */
+/******/ 	(() => {
+/******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	(() => {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = (exports) => {
+/******/ 			if(Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	})();
+/******/
+/************************************************************************/
+let __webpack_exports__ = {};
+// This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
+(() => {
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("fef8077ac919");
+/* harmony import */ var lit_directives_unsafe_html_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("5db1a272402f");
+/* harmony import */ var _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("7aae0f825ba6");
+/* harmony import */ var _js_templates_default__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("e45eac6c719d");
+
+
+
+
+const FOCUSABLE_SELECTOR = ["a[href]", "button:not([disabled])", "input:not([disabled])", "select:not([disabled])", "textarea:not([disabled])", '[tabindex]:not([tabindex="-1"])'].join(",");
+const MODAL_TRANSITION_MS = 240;
+let modalUid = 0;
+
+function isBlurTypeValue(value) {
+  return ["none", "small", "medium", "large"].includes(String(value || "").trim().toLowerCase());
+}
+
+class SfModal extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODULE_2__["default"] {
+  static registry = new Map();
+  static globalBound = false;
+  static stack = [];
+  static openCount = 0;
+  static lockState = null;
+  static baseZIndex = 9000;
+  static defaultTrueAttributes = new Set(["overlay", "show-close", "show-footer", "close-on-esc", "close-on-overlay", "preserve-scroll-gap", "preload"]);
+
+  static getTopModal() {
+    return SfModal.stack[SfModal.stack.length - 1] || null;
+  }
+
+  static isTopModal(modal) {
+    return SfModal.getTopModal() === modal;
+  }
+
+  static getStackIndex(modal) {
+    return SfModal.stack.indexOf(modal);
+  }
+
+  static addToStack(modal) {
+    if (!modal || modal.display === "inline") {
+      return;
+    }
+
+    const wasEmpty = SfModal.stack.length === 0;
+    SfModal.stack = SfModal.stack.filter(item => item !== modal);
+    SfModal.stack.push(modal);
+    SfModal.openCount = SfModal.stack.length;
+
+    if (wasEmpty) {
+      SfModal.lockPage(modal.preserveScrollGap);
+    }
+
+    SfModal.updateStackStyles();
+  }
+
+  static removeFromStack(modal) {
+    if (!modal || modal.display === "inline") {
+      return;
+    }
+
+    const previousLength = SfModal.stack.length;
+    SfModal.stack = SfModal.stack.filter(item => item !== modal);
+    SfModal.openCount = SfModal.stack.length;
+
+    if (previousLength > 0 && SfModal.stack.length === 0) {
+      SfModal.unlockPage();
+    }
+
+    SfModal.updateStackStyles();
+  }
+
+  static bringToFront(modal) {
+    if (!modal || modal.display === "inline" || !SfModal.stack.includes(modal)) {
+      return;
+    }
+
+    SfModal.stack = SfModal.stack.filter(item => item !== modal);
+    SfModal.stack.push(modal);
+    SfModal.updateStackStyles();
+  }
+
+  static updateStackStyles() {
+    SfModal.stack.forEach((modal, index) => {
+      modal.applyStackPosition(index);
+    });
+  }
+
+  static get props() {
+    return {
+      templateName: {
+        attribute: "template",
+        default: "default"
+      },
+      modalId: {
+        default: ""
+      },
+      title: {
+        default: "Modal"
+      },
+      text: {
+        default: ""
+      },
+      open: {
+        type: Boolean,
+        default: false
+      },
+      autoload: {
+        type: Boolean,
+        default: false
+      },
+      unclose: {
+        type: Boolean,
+        default: false
+      },
+      hide: {
+        type: Boolean,
+        default: false
+      },
+      hideModifier: {
+        default: ""
+      },
+      minimized: {
+        type: Boolean,
+        default: false
+      },
+      overlay: {
+        type: Boolean,
+        default: true
+      },
+      showHeader: {
+        type: Boolean,
+        default: true
+      },
+      showClose: {
+        type: Boolean,
+        default: true
+      },
+      showFooter: {
+        type: Boolean,
+        default: true
+      },
+      closeOnEsc: {
+        type: Boolean,
+        default: true
+      },
+      closeOnOverlay: {
+        type: Boolean,
+        default: true
+      },
+      preserveScrollGap: {
+        type: Boolean,
+        default: true
+      },
+      position: {
+        default: "center",
+        values: ["center", "left", "right", "inline-start", "inline-end", "top", "bottom"]
+      },
+      mode: {
+        default: "inline",
+        values: ["inline", "ajax", "iframe"]
+      },
+      display: {
+        default: "modal",
+        values: ["modal", "inline"]
+      },
+      src: {
+        default: ""
+      },
+      rootClass: {
+        default: ""
+      },
+      preload: {
+        type: Boolean,
+        default: true
+      },
+      fullscreen: {
+        type: Boolean,
+        default: false
+      },
+      width: {
+        default: ""
+      },
+      height: {
+        default: ""
+      },
+      blur: {
+        default: ""
+      },
+      blurType: {
+        default: "medium",
+        values: ["none", "small", "medium", "large"]
+      },
+      overlayPreset: {
+        default: "default",
+        values: ["default", "focus"]
+      },
+      overlayClass: {
+        default: ""
+      },
+      closeClass: {
+        default: ""
+      },
+      surfaceClass: {
+        default: ""
+      },
+      surfacePadding: {
+        default: ""
+      },
+      panelClass: {
+        default: ""
+      },
+      headerClass: {
+        default: ""
+      },
+      bodyClass: {
+        default: ""
+      },
+      contentClass: {
+        default: ""
+      },
+      footerClass: {
+        default: ""
+      }
+    };
+  }
+
+  constructor() {
+    super();
+    this._modalId = "";
+    this._syncingOpenAttribute = false;
+    this._portalRoot = null;
+    this._renderTarget = null;
+    this._hostClearedForPortal = false;
+    this._slotEventHandlers = new Map();
+    this._slotEventId = 0;
+    this._readyDetail = null;
+    this._hasEmittedReady = false;
+    this._hasAutoloaded = false;
+    this._isOpen = false;
+    this._isHidden = false;
+    this._modalState = "closed";
+    this._stackIndex = -1;
+    this._closeTimer = null;
+    this._closeTransitionAbort = null;
+    this._lastActive = null;
+    this._fetchController = null;
+    this._remoteHtml = "";
+    this._remoteError = "";
+    this._isLoadingRemote = false;
+    this._remoteLoaded = false;
+    this.onKeyDown = this.onKeyDown.bind(this);
+    this.handleOverlayClick = this.handleOverlayClick.bind(this);
+    this.handleCloseClick = this.handleCloseClick.bind(this);
+    this.handleHideClick = this.handleHideClick.bind(this);
+  }
+
+  connectedCallback() {
+    if (!this._modalId) {
+      this._modalId = this.getAttribute("modal-id") || this.id || `sf-modal-${++modalUid}`;
+    }
+
+    super.connectedCallback();
+    SfModal.registry.set(this.modalId, this);
+    SfModal.bindGlobalEvents();
+  }
+
+  disconnectedCallback() {
+    this.teardownModal();
+    SfModal.registry.delete(this.modalId);
+    super.disconnectedCallback();
+  }
+
+  get templateName() {
+    return this.getAttribute("template") || "default";
+  }
+
+  get modalId() {
+    return this.getAttribute("modal-id") || this._modalId || this.id || "";
+  }
+
+  get title() {
+    return this.getAttribute("title") || "Modal";
+  }
+
+  get text() {
+    return this.getAttribute("text") || "";
+  }
+
+  get openState() {
+    return this._isOpen || this.hasAttribute("open");
+  }
+
+  get autoload() {
+    return this.getBooleanAttr("autoload", false);
+  }
+
+  get unclose() {
+    return this.getBooleanAttr("unclose", false);
+  }
+
+  get hideButton() {
+    return this.getBooleanAttr("hide", false);
+  }
+
+  get hideModifier() {
+    return this.getAttribute("hide-modifier") || "";
+  }
+
+  get hiddenState() {
+    return this._isHidden || this.hasAttribute("minimized");
+  }
+
+  get overlay() {
+    return this.getBooleanAttr("overlay", true);
+  }
+
+  get closeOnEsc() {
+    return this.getBooleanAttr("close-on-esc", true);
+  }
+
+  get showClose() {
+    const showClose = this.getBooleanAttr("show-close", true);
+    return showClose && !this.unclose;
+  }
+
+  get showHeader() {
+    return this.getBooleanAttr("show-header", true);
+  }
+
+  get showFooter() {
+    return this.getBooleanAttr("show-footer", true);
+  }
+
+  get closeOnOverlay() {
+    return this.getBooleanAttr("close-on-overlay", true);
+  }
+
+  get preserveScrollGap() {
+    return this.getBooleanAttr("preserve-scroll-gap", true);
+  }
+
+  get position() {
+    return this.getEnumAttr("position", ["center", "left", "right", "top", "bottom"], "center");
+  }
+
+  get mode() {
+    return this.getEnumAttr("mode", ["inline", "ajax", "iframe"], "inline");
+  }
+
+  get display() {
+    return this.getEnumAttr("display", ["modal", "inline"], "modal");
+  }
+
+  get src() {
+    return this.getAttribute("src") || "";
+  }
+
+  get preload() {
+    return this.getBooleanAttr("preload", true);
+  }
+
+  get fullscreen() {
+    return this.getBooleanAttr("fullscreen", false);
+  }
+
+  get width() {
+    return this.getAttribute("width") || "";
+  }
+
+  get height() {
+    return this.getAttribute("height") || "";
+  }
+
+  get blur() {
+    return this.getBooleanAttr("blur", false);
+  }
+
+  get blurType() {
+    const blurValue = this.getAttribute("blur");
+    const value = this.getAttribute("blur-type") || (isBlurTypeValue(blurValue) ? blurValue : "medium");
+    return this.normalizeEnum(value, ["none", "small", "medium", "large"], "medium");
+  }
+
+  get hasCustomBlurType() {
+    return this.hasAttribute("blur-type") || isBlurTypeValue(this.getAttribute("blur"));
+  }
+
+  get overlayPreset() {
+    return this.normalizeEnum(this.getAttribute("overlay-preset") || "default", ["default", "focus"], "default");
+  }
+
+  get headerClass() {
+    return this.getAttribute("header-class") || "";
+  }
+
+  get overlayClass() {
+    return this.getAttribute("overlay-class") || "";
+  }
+
+  get closeClass() {
+    return this.getAttribute("close-class") || "";
+  }
+
+  get surfaceClass() {
+    return this.getAttribute("surface-class") || "";
+  }
+
+  get surfacePadding() {
+    return this.getAttribute("surface-padding") || "";
+  }
+
+  get panelClass() {
+    return this.getAttribute("panel-class") || "";
+  }
+
+  get bodyClass() {
+    return this.getAttribute("body-class") || "";
+  }
+
+  get contentClass() {
+    return this.getAttribute("content-class") || "";
+  }
+
+  get footerClass() {
+    return this.getAttribute("footer-class") || "";
+  }
+
+  get modalRoot() {
+    return this._renderTarget?.querySelector?.(".sf-modal") || null;
+  }
+
+  get state() {
+    return {
+      modalId: this.modalId,
+      title: this.title,
+      text: this.text,
+      open: this.openState,
+      autoload: this.autoload,
+      unclose: this.unclose,
+      hide: this.hideButton,
+      hideModifier: this.hideModifier,
+      minimized: this.hiddenState,
+      overlay: this.overlay,
+      showHeader: this.showHeader,
+      showClose: this.showClose,
+      showFooter: this.showFooter,
+      closeOnEsc: this.closeOnEsc,
+      closeOnOverlay: this.closeOnOverlay,
+      preserveScrollGap: this.preserveScrollGap,
+      position: this.position,
+      mode: this.mode,
+      display: this.display,
+      src: this.src,
+      preload: this.preload,
+      fullscreen: this.fullscreen,
+      width: this.width,
+      height: this.height,
+      blur: this.blur,
+      blurType: this.blurType,
+      overlayPreset: this.overlayPreset,
+      overlayClass: this.overlayClass,
+      closeClass: this.closeClass,
+      surfaceClass: this.surfaceClass,
+      surfacePadding: this.surfacePadding,
+      panelClass: this.panelClass,
+      headerClass: this.headerClass,
+      bodyClass: this.bodyClass,
+      contentClass: this.contentClass,
+      footerClass: this.footerClass
+    };
+  }
+
+  get renderOpenState() {
+    return this.openState || this._modalState === "closing";
+  }
+
+  get renderModalState() {
+    if (this.display === "inline") {
+      return this.openState ? "open" : "closed";
+    }
+
+    if (this.renderOpenState && this._modalState === "closed") {
+      return "open";
+    }
+
+    return this._modalState;
+  }
+
+  get modalZIndex() {
+    if (this.display === "inline" || this._stackIndex < 0) {
+      return "";
+    }
+
+    return SfModal.baseZIndex + this._stackIndex * 2;
+  }
+
+  get remoteContent() {
+    if (this.mode === "iframe" && this.src) {
+      return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
         <iframe
           class="sf-modal-iframe w-full border-0 radius-2"
           src=${this.src}
@@ -8,7 +2868,11 @@
           @load=${this.handleIframeLoad}
           @error=${this.handleIframeError}
         ></iframe>
-      `:this._remoteError?i`
+      `;
+    }
+
+    if (this._remoteError) {
+      return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
         <div
           class="sf-modal-error flex flex-col gap-2 items-cross-center content-main-center p-4"
           data-sf-modal-state="error"
@@ -18,9 +2882,17 @@
             ${this._remoteError}
           </p>
         </div>
-      `:this._remoteHtml?i`<div class="sf-modal-content flex flex-col gap-2">
-        ${tt(this._remoteHtml)}
-      </div>`:this._isLoadingRemote?i`
+      `;
+    }
+
+    if (this._remoteHtml) {
+      return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<div class="sf-modal-content flex flex-col gap-2">
+        ${(0,lit_directives_unsafe_html_js__WEBPACK_IMPORTED_MODULE_1__.unsafeHTML)(this._remoteHtml)}
+      </div>`;
+    }
+
+    if (this._isLoadingRemote) {
+      return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
         <div
           class="sf-modal-loading flex flex-col gap-2 items-cross-center content-main-center p-4"
           data-sf-modal-state="loading"
@@ -30,112 +2902,977 @@
           ></div>
           <p class="m-0 text-2 color-on-surface-variant">Loading...</p>
         </div>
-      `:o}templateContext(){this._slotEventHandlers.clear(),this._slotEventId=0;const t=this.getPropsContext();return this.createTemplateContext({...t,component:this,modalId:this.modalId,open:this.renderOpenState,modalState:this.renderModalState,modalZIndex:this.modalZIndex,hide:this.hideButton,minimized:this.hiddenState,showClose:this.showClose,blurType:this.blurType,hasCustomBlurType:this.hasCustomBlurType,hasHeaderContent:Boolean(this.headerTemplate)||this.hasSlotContent("header"),hasContentContent:Boolean(this.contentTemplate)||this.hasSlotContent("content"),hasFooterContent:this.hasSlotContent("footer"),headerContent:this.headerTemplate||tt(this.getSlotHtml("header")),contentContent:this.contentTemplate||tt(this.getSlotHtml("content")),footerContent:tt(this.getSlotHtml("footer")),remoteContent:this.remoteContent,onCloseClick:this.handleCloseClick,onHideClick:this.handleHideClick})}getSlotHtml(t){return[...this._liveSlotNodes.get(t)||[],...this._slotTemplates.get(t)||[]].map(t=>{if(t instanceof HTMLElement){const e=t.cloneNode(!0);return this.copyRuntimeData(t,e),this.assignSlotEventIds(e),this.cleanNestedSmartComponentRender(e),e.outerHTML}return t.textContent||""}).join("")}assignSlotEventIds(t){[t,...Array.from(t.querySelectorAll?.("*")||[])].forEach(t=>{if(!t.__sfCreateEventHandlers?.length)return;const e="sf-modal-slot-event-"+ ++this._slotEventId;t.setAttribute("data-sf-runtime-event-id",e),this._slotEventHandlers.set(e,t.__sfCreateEventHandlers.slice())})}cleanNestedSmartComponentRender(t){[t,...Array.from(t.querySelectorAll?.("*")||[])].forEach(t=>{(t.tagName?.toLowerCase?.()||"").startsWith("sf-")&&Array.from(t.childNodes).forEach(t=>{t instanceof HTMLElement&&(t.hasAttribute("slot")||"slot"===t.tagName.toLowerCase()||t.tagName.toLowerCase().startsWith("sf-"))||t.remove()})})}template(){return function(t){const e="inline"===t.display,s=Boolean(t.src)&&("ajax"===t.mode||"iframe"===t.mode),n=!1!==t.showHeader,r=t.hasHeaderContent,a=t.hasContentContent,l=t.hasFooterContent&&t.showFooter,h=t.showClose||t.hide&&!e,d=[t.width?`--sf-modal-width:${t.width}`:"",t.height?`--sf-modal-height:${t.height}`:""].filter(Boolean).join(";"),c=[t.surfacePadding?`--sf-modal-surface-padding:${t.surfacePadding}`:""].filter(Boolean).join(";"),u=[t.modalZIndex?`z-index:${t.modalZIndex}`:""].filter(Boolean).join(";");return i`
-        <div
-                id=${t.modalId}
-                class=${et("sf-modal",`sf-modal--position-${t.position}`,`sf-modal--positon-${t.position}`,e?"sf-modal--inline inline-block w-full":"fixed top-0 inline-start-0 w-full h-full z-9 p-3 items-cross-center content-main-center",t.open?"flex":"hidden",t.rootClass)}
-                style=${u}
-                role=${e?"region":"dialog"}
-                aria-modal=${e?"false":"true"}
-                aria-hidden=${t.open?"false":"true"}
-                data-sf-modal-id=${t.modalId}
-                data-sf-modal-position=${t.position}
-                data-sf-modal-fullscreen=${String(t.fullscreen)}
-                data-sf-modal-display=${t.display}
-                data-sf-modal-state=${e?"inline":t.modalState}
-                data-sf-modal-hidden=${String(t.minimized)}
-        >
-            <div
-                    class=${et("absolute top-0 inline-start-0 w-full h-full",function(t){return t.blur?t.hasCustomBlurType?`backdrop-blur-${t.blurType}`:"bg-surface-overlay":"bg-black opacity-6"}(t),t.overlayClass,(!t.overlay||e)&&"hidden")}
-                    data-sf-modal-overlay
-            ></div>
+      `;
+    }
 
-            <section
-                    class=${et("relative overflow-visible min-h-0",t.panelClass)}
-                    style=${d}
-                    data-sf-modal-panel
-                    ?data-sf-modal-has-width=${Boolean(t.width)}
-                    ?data-sf-modal-has-height=${Boolean(t.height)}
-                    tabindex="-1"
-            >
-                <div
-                        class=${et("sf-modal-surface flex flex-col min-h-0",!e&&"sf-modal-surface--elevated",t.surfaceClass)}
-                        style=${c}
-                        data-sf-modal-surface
-                >
-                    ${n?i`
-                                <header
-                                        class=${et("sf-modal-header flex content-main-between items-cross-center",h&&"p-right-2",t.headerClass)}
-                                >
-                                    ${r?t.headerContent:i`<h2 class="title-3 m-0">${t.title}</h2>`}
-                                    ${t.hide&&!e?i`
-                                                <button
-                                                        type="button"
-                                                        class=${et("sf-icon-button sf-modal-hide-button sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/3 radius-default m-0 absolute",t.hideModifier)}
-                                                        aria-label="Minimize modal"
-                                                        data-sf-modal-hide=${t.modalId}
-                                                        @click=${t.onHideClick}
-                                                >
-                                                    <span class="sf-modal-hide-icon"></span>
-                                                </button>
-                                            `:o}
-                                    ${t.showClose?i`
-                                                <button
-                                                        type="button"
-                                                        class=${et("sf-icon-button sf-modal-close-button sf-icon-button--close sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1/3 radius-default m-0 absolute",t.closeClass)}
-                                                        aria-label="Close modal"
-                                                        data-sf-modal-close=${t.modalId}
-                                                        @click=${t.onCloseClick}
-                                                >
-                          <span
-                                  class="sf-close sf-close--size-1/3 flex justify-center items-center"
-                                  aria-label="Close size 1/4"
-                          >
-                            <span class="sf-close-icon"></span>
-                          </span>
-                                                </button>
-                                            `:o}
-                                </header>
-                            `:o}
+    return lit__WEBPACK_IMPORTED_MODULE_0__.nothing;
+  }
 
-                    <div
-                            class="sf-modal-body flex flex-col gap-1 min-w-0 min-h-0 overflow-visible flex-1"
-                            data-sf-modal-body
-                    >
-                        <div
-                                class="sf-modal-body-viewport min-w-0 min-h-0 overflow-visible flex-1"
-                                data-sf-modal-body-viewport
-                        >
-                            <div
-                                    class=${et("h-full min-w-0 min-h-0 flex flex-col flex-1 gap-1",t.bodyClass)}
-                                    data-sf-modal-body-scroll
-                            >
-                                ${s?i`
-                                            <div
-                                                    class="sf-modal-content-placeholder flex flex-col gap-2 min-h-8 items-cross-center content-main-center"
-                                                    data-sf-modal-content-placeholder
-                                            >
-                                                ${t.remoteContent}
-                                            </div>
-                                        `:a?i`
-                                                    <div
-                                                            class=${et("sf-modal-content flex flex-col min-h-0 gap-2",t.contentClass)}
-                                                    >
-                                                        ${t.contentContent}
-                                                    </div>
-                                                `:i`<p class="m-0 text-2">${t.text}</p>`}
-                            </div>
-                        </div>
+  templateContext() {
+    this._slotEventHandlers.clear();
 
-                        ${l?i`
-                                    <div
-                                            class=${et("sf-modal-footer flex flex-wrap gap-2",t.footerClass)}
-                                    >
-                                        ${t.footerContent}
-                                    </div>
-                                `:o}
-                    </div>
-                </div>
-            </section>
-        </div>
-    `}(this.templateContext())}async renderComponent(t=[]){const e=++this._renderToken;if(!this._isMounted)return;this.beforeRender(t),this.emitComponentEvent("before-render",{changedAttributes:t}),this.runExternalHook("beforeRender",{changedAttributes:t,root:this});const s=await this.resolveTemplateResult(t);if(!this._isMounted||e!==this._renderToken)return;const i=this.resolveRenderTarget();this.markStylePending(i),n(s,i),await this.whenRenderedStylesReady(i),this._isMounted&&e===this._renderToken&&(this.afterRender(t),this.runExternalHook("afterRender",{changedAttributes:t,root:this}),this.emitComponentEvent("after-render",{changedAttributes:t}))}resolveRenderTarget(){return"inline"===this.display?(this.clearPortal(),this._hostClearedForPortal=!1,this._renderTarget=this,this):(this._hostClearedForPortal||(n(o,this),this._hostClearedForPortal=!0),this._portalRoot||(this._portalRoot=this.resolvePortalRoot()),this.dedupePortalRoots(),this._renderTarget=this._portalRoot,this._portalRoot)}resolvePortalRoot(){const t=document.body.querySelector(`[data-sf-modal-portal="${this.modalId}"]`);if(t)return t;const e=document.createElement("div");return e.setAttribute("data-sf-modal-portal",this.modalId),document.body.append(e),e}dedupePortalRoots(){Array.from(document.body.querySelectorAll(`[data-sf-modal-portal="${this.modalId}"]`)).forEach(t=>{t!==this._portalRoot&&(n(o,t),t.remove())}),this._portalRoot.isConnected||(this._portalRoot.setAttribute("data-sf-modal-portal",this.modalId),document.body.append(this._portalRoot))}applyStackPosition(t=nt.getStackIndex(this)){this._stackIndex=t;const e=this.getModalRoot();return e&&"inline"!==this.display?t<0?(e.style.removeProperty("z-index"),e.style.removeProperty("--sf-modal-stack-index"),this):(e.style.setProperty("--sf-modal-stack-index",String(t)),e.style.zIndex=String(this.modalZIndex),this):this}open(t={}){const{animate:e=!0}="boolean"==typeof t?{animate:t}:t,s="closing"===this._modalState;return this._isOpen&&!s?(this.cancelCloseTransition(),nt.bringToFront(this),this):this.emitBeforeOpen()?(this._lastActive=document.activeElement,s&&this.cancelCloseTransition(),this._isOpen=!0,this._modalState=e&&"inline"!==this.display?"opening":"open",this.syncOpenAttribute(!0),"inline"===this.display||s?"inline"!==this.display&&nt.bringToFront(this):nt.addToStack(this),this.requestComponentUpdate("open"),requestAnimationFrame(()=>{this._isOpen&&"closing"!==this._modalState&&(this._modalState="open",this.requestComponentUpdate("open-state"),this.focusFirst(),this.emitAfterOpen(),this.loadRemoteContentIfNeeded())}),this):this}close(){if(!this.openState||"closing"===this._modalState)return this;if(!this.emitBeforeClose())return this;if("inline"===this.display)return this.finishClose(),this;this._modalState="closing",this._isOpen=!1,this.syncOpenAttribute(!1),this.requestComponentUpdate("close");const t=this.getModalRoot()?.querySelector("[data-sf-modal-panel]"),e=()=>this.finishClose();if(t){const s=s=>{s.target===t&&e()};this._closeTransitionAbort=()=>{t.removeEventListener("transitionend",s)},t.addEventListener("transitionend",s,{once:!0})}return this._closeTimer=window.setTimeout(e,240),this}hide(){return!this.openState||"inline"===this.display||this.hiddenState?this:this.emitBeforeHide()?(this._isHidden=!0,this.setAttribute("minimized",""),this.requestComponentUpdate("hide"),this.emitAfterHide(),this):this}show(){return this.openState&&"inline"!==this.display&&this.hiddenState&&this.emitBeforeShow()?(this._isHidden=!1,this.removeAttribute("minimized"),nt.bringToFront(this),this.requestComponentUpdate("show"),requestAnimationFrame(()=>this.focusFirst()),this.emitAfterShow(),this):this}toggle(){return this.openState?this.close():this.open()}finishClose(){return this.cancelCloseTransition(),this._isOpen=!1,this._isHidden=!1,this._modalState="closed",this.removeAttribute("minimized"),this.syncOpenAttribute(!1),"inline"!==this.display&&nt.removeFromStack(this),this._lastActive&&"function"==typeof this._lastActive.focus&&this._lastActive.focus(),this.requestComponentUpdate("after-close"),this.emitAfterClose(),this}cancelCloseTransition(){this._closeTimer&&(clearTimeout(this._closeTimer),this._closeTimer=null),this._closeTransitionAbort&&(this._closeTransitionAbort(),this._closeTransitionAbort=null)}setSrc(t){return this.setAttribute("src",t||""),this.resetRemoteContent(),this.loadRemoteContentIfNeeded(),this}reloadContent(){return this.resetRemoteContent(),this.loadRemoteContentIfNeeded(!0),this}getModalRoot(){return this.modalRoot}afterRender(){this.bindRenderedEvents(),this.bindSlotEventHandlers(),this._readyDetail={component:this,modal:this,modalId:this.modalId,root:this.getModalRoot()},this._hasEmittedReady?this.dispatchEvent(new CustomEvent("modal:update",{bubbles:!1,detail:this._readyDetail})):(this._hasEmittedReady=!0,this.dispatchEvent(new CustomEvent("modal:ready",{bubbles:!1,detail:this._readyDetail}))),this.syncOpenStateFromAttribute(),this.applyStackPosition(),!this.autoload||this.openState||this._hasAutoloaded||(this._hasAutoloaded=!0,requestAnimationFrame(()=>this.open({animate:!1})))}bindRenderedEvents(){const t=this.getModalRoot();t&&(t.removeEventListener("click",this.handleOverlayClick),t.addEventListener("click",this.handleOverlayClick),document.removeEventListener("keydown",this.onKeyDown),document.addEventListener("keydown",this.onKeyDown))}syncOpenStateFromAttribute(){if(this._syncingOpenAttribute)return this;const t=this.hasAttribute("open");return t&&!this._isOpen?this.open():!t&&this._isOpen&&"closing"!==this._modalState?this.close():this}bindSlotEventHandlers(){const t=this.getModalRoot();t&&this._slotEventHandlers.size&&this._slotEventHandlers.forEach((e,s)=>{const i=t.querySelector(`[data-sf-runtime-event-id="${s}"]`);i&&e.forEach(({eventName:t,handler:e})=>{i.addEventListener(t,e)})})}handleOverlayClick(t){t.target===this.getModalRoot()?.querySelector("[data-sf-modal-overlay]")&&this.closeOnOverlay&&!this.unclose&&this.close()}handleCloseClick(t){t.preventDefault(),this.unclose||this.close()}handleHideClick(t){t.preventDefault(),this.hide()}onKeyDown(t){if(this.openState&&"inline"!==this.display&&nt.isTopModal(this)&&!this.hiddenState)return"Escape"===t.key&&this.closeOnEsc&&!this.unclose?(t.preventDefault(),t.stopImmediatePropagation(),void this.close()):void("Tab"===t.key&&this.trapFocus(t))}trapFocus(t){if(!nt.isTopModal(this))return;if(this.hiddenState)return;const e=this.getModalRoot()?.querySelector("[data-sf-modal-panel]"),s=e?Array.from(e.querySelectorAll(st)):[];if(!s.length)return;const i=s[0],o=s[s.length-1],n=document.activeElement;if(t.shiftKey&&n===i)return t.preventDefault(),void o.focus();t.shiftKey||n!==o||(t.preventDefault(),i.focus())}focusFirst(){if("inline"!==this.display&&!nt.isTopModal(this))return;if(this.hiddenState)return;const t=this.getModalRoot()?.querySelector("[data-sf-modal-panel]");t&&t.focus()}resetRemoteContent(){this._remoteHtml="",this._remoteError="",this._remoteLoaded=!1,this._isLoadingRemote=!1,this.abortRemoteContent()}abortRemoteContent(){this._fetchController&&(this._fetchController.abort(),this._fetchController=null)}loadRemoteContentIfNeeded(t=!1){if(this.src&&("ajax"===this.mode||"iframe"===this.mode)&&(this.preload||this.openState||t))return"iframe"===this.mode?(this._remoteLoaded=!0,void this.requestComponentUpdate("remote-content")):void(this._remoteLoaded&&!t||this.loadAjaxContent())}async loadAjaxContent(){this.abortRemoteContent(),this._isLoadingRemote=!0,this._remoteError="",this.requestComponentUpdate("remote-loading"),this.emitContentEvent("modal:before-content-upload"),this._fetchController=new AbortController;try{if(this.src.startsWith("#")){const t=document.querySelector(this.src);if(!t)throw new Error(`Element not found: ${this.src}`);this._remoteHtml=t.innerHTML}else{const t=await fetch(this.src,{signal:this._fetchController.signal});if(!t.ok)throw new Error(`HTTP ${t.status}: ${t.statusText}`);this._remoteHtml=await t.text()}this._remoteLoaded=!0,this.emitContentEvent("modal:after-content-upload")}catch(t){"AbortError"!==t.name&&(this._remoteError=t.message||"Failed to load content")}finally{this._fetchController=null,this._isLoadingRemote=!1,this.requestComponentUpdate("remote-content")}}handleIframeLoad=()=>{this._remoteLoaded=!0,this.emitContentEvent("modal:after-content-upload")};handleIframeError=()=>{this._remoteError="Failed to load iframe content",this.requestComponentUpdate("remote-content")};emitContentEvent(t){this.dispatchEvent(new CustomEvent(t,{bubbles:!1,detail:{component:this,modal:this,modalId:this.modalId,src:this.src}}))}emitModalEvent(t,{cancelable:e=!1,detail:s={}}={}){const i=new CustomEvent(t,{bubbles:!0,composed:!0,cancelable:e,detail:{component:this,modal:this,modalId:this.modalId,root:this.getModalRoot(),...s}});return this.dispatchEvent(i),!i.defaultPrevented}emitBeforeOpen(){return this.emitModalEvent("modal:before-open",{cancelable:!0,detail:{phase:"before-open"}})}emitAfterOpen(){this.emitModalEvent("modal:after-open",{detail:{phase:"after-open"}})}emitBeforeClose(){return this.emitModalEvent("modal:before-close",{cancelable:!0,detail:{phase:"before-close"}})}emitAfterClose(){this.emitModalEvent("modal:after-close",{detail:{phase:"after-close"}})}emitBeforeHide(){return this.emitModalEvent("modal:before-hide",{cancelable:!0,detail:{phase:"before-hide"}})}emitAfterHide(){this.emitModalEvent("modal:after-hide",{detail:{phase:"after-hide"}})}emitBeforeShow(){return this.emitModalEvent("modal:before-show",{cancelable:!0,detail:{phase:"before-show"}})}emitAfterShow(){this.emitModalEvent("modal:after-show",{detail:{phase:"after-show"}})}syncOpenAttribute(t){this._syncingOpenAttribute=!0,t?this.setAttribute("open",""):this.removeAttribute("open"),this._syncingOpenAttribute=!1}attributeChangedCallback(t,e,s){if(!this._syncingOpenAttribute||"open"!==t){if("open"===t&&e!==s)return this._isMounted?void(null===s?this.close():this.open()):void super.attributeChangedCallback(t,e,s);["src","mode","preload"].includes(t)&&e!==s&&this.resetRemoteContent(),"minimized"===t&&e!==s&&(this._isHidden=null!==s),super.attributeChangedCallback(t,e,s)}}teardownModal(){this.abortRemoteContent(),this.cancelCloseTransition(),document.removeEventListener("keydown",this.onKeyDown),"inline"!==this.display&&nt.removeFromStack(this),this._isOpen=!1,this._modalState="closed",this.clearPortal()}clearPortal(){this._portalRoot&&(n(o,this._portalRoot),this._portalRoot.remove(),this._portalRoot=null)}onBeforeOpen(t,e){return"function"==typeof t&&this.addEventListener("modal:before-open",t,e),this}onAfterOpen(t,e){return"function"==typeof t&&this.addEventListener("modal:after-open",t,e),this}onBeforeClose(t,e){return"function"==typeof t&&this.addEventListener("modal:before-close",t,e),this}onAfterClose(t,e){return"function"==typeof t&&this.addEventListener("modal:after-close",t,e),this}onBeforeHide(t,e){return"function"==typeof t&&this.addEventListener("modal:before-hide",t,e),this}onAfterHide(t,e){return"function"==typeof t&&this.addEventListener("modal:after-hide",t,e),this}onBeforeShow(t,e){return"function"==typeof t&&this.addEventListener("modal:before-show",t,e),this}onAfterShow(t,e){return"function"==typeof t&&this.addEventListener("modal:after-show",t,e),this}onModalReady(t,e){return"function"!=typeof t?this:this._readyDetail?(t(new CustomEvent("modal:ready",{detail:this._readyDetail})),this):(this.addEventListener("modal:ready",t,e),this)}onModalUpdate(t,e){return"function"==typeof t&&this.addEventListener("modal:update",t,e),this}static bindGlobalEvents(){nt.globalBound||"undefined"==typeof document||(document.addEventListener("click",t=>{const e=t.target.closest("[data-sf-modal-open]");if(e)return void nt.registry.get(e.getAttribute("data-sf-modal-open"))?.open();const s=t.target.closest("[data-sf-modal-show]");if(s)return void nt.registry.get(s.getAttribute("data-sf-modal-show"))?.show();const i=t.target.closest("[data-sf-modal-hide]");if(i)return void nt.registry.get(i.getAttribute("data-sf-modal-hide"))?.hide();const o=t.target.closest("[data-sf-modal-close]");if(!o)return;const n=o.getAttribute("data-sf-modal-close")||o.closest(".sf-modal")?.getAttribute("data-sf-modal-id");nt.registry.get(n)?.close()}),nt.globalBound=!0)}static lockPage(t=!0){const e=document.documentElement,s=document.body;if(!e||!s)return;const i=Math.max(0,window.innerWidth-e.clientWidth);nt.lockState={bodyPaddingInlineEnd:s.style.paddingInlineEnd},e.classList.add("overflow-hidden"),s.classList.add("overflow-hidden"),t&&i>0&&(s.style.paddingInlineEnd=`${i}px`)}static unlockPage(){const t=document.documentElement,e=document.body;t&&e&&(t.classList.remove("overflow-hidden"),e.classList.remove("overflow-hidden"),nt.lockState&&(e.style.paddingInlineEnd=nt.lockState.bodyPaddingInlineEnd||"",nt.lockState=null))}}nt.define("sf-modal")})();
+    this._slotEventId = 0;
+    const props = this.getPropsContext();
+    return this.createTemplateContext({ ...props,
+      component: this,
+      modalId: this.modalId,
+      open: this.renderOpenState,
+      modalState: this.renderModalState,
+      modalZIndex: this.modalZIndex,
+      hide: this.hideButton,
+      minimized: this.hiddenState,
+      showClose: this.showClose,
+      blurType: this.blurType,
+      hasCustomBlurType: this.hasCustomBlurType,
+      hasHeaderContent: this.hasSlotContent("header"),
+      hasContentContent: this.hasSlotContent("content"),
+      hasFooterContent: this.hasSlotContent("footer"),
+      headerContent: (0,lit_directives_unsafe_html_js__WEBPACK_IMPORTED_MODULE_1__.unsafeHTML)(this.getSlotHtml("header")),
+      contentContent: (0,lit_directives_unsafe_html_js__WEBPACK_IMPORTED_MODULE_1__.unsafeHTML)(this.getSlotHtml("content")),
+      footerContent: (0,lit_directives_unsafe_html_js__WEBPACK_IMPORTED_MODULE_1__.unsafeHTML)(this.getSlotHtml("footer")),
+      remoteContent: this.remoteContent,
+      onCloseClick: this.handleCloseClick,
+      onHideClick: this.handleHideClick
+    });
+  }
+
+  getSlotHtml(name) {
+    const slotContent = [...(this._liveSlotNodes.get(name) || []), ...(this._slotTemplates.get(name) || [])];
+    return slotContent.map(node => {
+      if (node instanceof HTMLElement) {
+        const clone = node.cloneNode(true);
+        this.copyRuntimeData(node, clone);
+        this.assignSlotEventIds(clone);
+        this.cleanNestedSmartComponentRender(clone);
+        return clone.outerHTML;
+      }
+
+      return node.textContent || "";
+    }).join("");
+  }
+
+  assignSlotEventIds(root) {
+    const nodes = [root, ...Array.from(root.querySelectorAll?.("*") || [])];
+    nodes.forEach(node => {
+      if (!node.__sfCreateEventHandlers?.length) {
+        return;
+      }
+
+      const id = `sf-modal-slot-event-${++this._slotEventId}`;
+      node.setAttribute("data-sf-runtime-event-id", id);
+
+      this._slotEventHandlers.set(id, node.__sfCreateEventHandlers.slice());
+    });
+  }
+
+  cleanNestedSmartComponentRender(root) {
+    const nodes = [root, ...Array.from(root.querySelectorAll?.("*") || [])];
+    nodes.forEach(node => {
+      const tagName = node.tagName?.toLowerCase?.() || "";
+
+      if (!tagName.startsWith("sf-")) {
+        return;
+      }
+
+      Array.from(node.childNodes).forEach(child => {
+        if (child instanceof HTMLElement && (child.hasAttribute("slot") || child.tagName.toLowerCase() === "slot" || child.tagName.toLowerCase().startsWith("sf-"))) {
+          return;
+        }
+
+        child.remove();
+      });
+    });
+  }
+
+  template() {
+    return (0,_js_templates_default__WEBPACK_IMPORTED_MODULE_3__.renderModalTemplate)(this.templateContext());
+  }
+
+  async renderComponent(changedAttributes = []) {
+    const renderToken = ++this._renderToken;
+
+    if (!this._isMounted) {
+      return;
+    }
+
+    this.beforeRender(changedAttributes);
+    this.emitComponentEvent("before-render", {
+      changedAttributes
+    });
+    this.runExternalHook("beforeRender", {
+      changedAttributes,
+      root: this
+    });
+    const templateResult = await this.resolveTemplateResult(changedAttributes);
+
+    if (!this._isMounted || renderToken !== this._renderToken) {
+      return;
+    }
+
+    (0,lit__WEBPACK_IMPORTED_MODULE_0__.render)(templateResult, this.resolveRenderTarget());
+    this.afterRender(changedAttributes);
+    this.runExternalHook("afterRender", {
+      changedAttributes,
+      root: this
+    });
+    this.emitComponentEvent("after-render", {
+      changedAttributes
+    });
+  }
+
+  resolveRenderTarget() {
+    if (this.display === "inline") {
+      this.clearPortal();
+      this._hostClearedForPortal = false;
+      this._renderTarget = this;
+      return this;
+    }
+
+    if (!this._hostClearedForPortal) {
+      (0,lit__WEBPACK_IMPORTED_MODULE_0__.render)(lit__WEBPACK_IMPORTED_MODULE_0__.nothing, this);
+      this._hostClearedForPortal = true;
+    }
+
+    if (!this._portalRoot) {
+      this._portalRoot = this.resolvePortalRoot();
+    }
+
+    this.dedupePortalRoots();
+    this._renderTarget = this._portalRoot;
+    return this._portalRoot;
+  }
+
+  resolvePortalRoot() {
+    const existingPortal = document.body.querySelector(`[data-sf-modal-portal="${this.modalId}"]`);
+
+    if (existingPortal) {
+      return existingPortal;
+    }
+
+    const portal = document.createElement("div");
+    portal.setAttribute("data-sf-modal-portal", this.modalId);
+    document.body.append(portal);
+    return portal;
+  }
+
+  dedupePortalRoots() {
+    const portals = Array.from(document.body.querySelectorAll(`[data-sf-modal-portal="${this.modalId}"]`));
+    portals.forEach(portal => {
+      if (portal === this._portalRoot) {
+        return;
+      }
+
+      (0,lit__WEBPACK_IMPORTED_MODULE_0__.render)(lit__WEBPACK_IMPORTED_MODULE_0__.nothing, portal);
+      portal.remove();
+    });
+
+    if (!this._portalRoot.isConnected) {
+      this._portalRoot.setAttribute("data-sf-modal-portal", this.modalId);
+
+      document.body.append(this._portalRoot);
+    }
+  }
+
+  applyStackPosition(index = SfModal.getStackIndex(this)) {
+    this._stackIndex = index;
+    const root = this.getModalRoot();
+
+    if (!root || this.display === "inline") {
+      return this;
+    }
+
+    if (index < 0) {
+      root.style.removeProperty("z-index");
+      root.style.removeProperty("--sf-modal-stack-index");
+      return this;
+    }
+
+    root.style.setProperty("--sf-modal-stack-index", String(index));
+    root.style.zIndex = String(this.modalZIndex);
+    return this;
+  }
+
+  open(options = {}) {
+    const {
+      animate = true
+    } = typeof options === "boolean" ? {
+      animate: options
+    } : options;
+    const wasClosing = this._modalState === "closing";
+
+    if (this._isOpen && !wasClosing) {
+      this.cancelCloseTransition();
+      SfModal.bringToFront(this);
+      return this;
+    }
+
+    if (!this.emitBeforeOpen()) {
+      return this;
+    }
+
+    this._lastActive = document.activeElement;
+
+    if (wasClosing) {
+      this.cancelCloseTransition();
+    }
+
+    this._isOpen = true;
+    this._modalState = animate && this.display !== "inline" ? "opening" : "open";
+    this.syncOpenAttribute(true);
+
+    if (this.display !== "inline" && !wasClosing) {
+      SfModal.addToStack(this);
+    } else if (this.display !== "inline") {
+      SfModal.bringToFront(this);
+    }
+
+    this.requestComponentUpdate("open");
+    requestAnimationFrame(() => {
+      if (!this._isOpen || this._modalState === "closing") {
+        return;
+      }
+
+      this._modalState = "open";
+      this.requestComponentUpdate("open-state");
+      this.focusFirst();
+      this.emitAfterOpen();
+      this.loadRemoteContentIfNeeded();
+    });
+    return this;
+  }
+
+  close() {
+    if (!this.openState || this._modalState === "closing") {
+      return this;
+    }
+
+    if (!this.emitBeforeClose()) {
+      return this;
+    }
+
+    if (this.display === "inline") {
+      this.finishClose();
+      return this;
+    }
+
+    this._modalState = "closing";
+    this._isOpen = false;
+    this.requestComponentUpdate("close");
+    const panel = this.getModalRoot()?.querySelector("[data-sf-modal-panel]");
+
+    const finalize = () => this.finishClose();
+
+    if (panel) {
+      const onTransitionEnd = event => {
+        if (event.target !== panel) {
+          return;
+        }
+
+        finalize();
+      };
+
+      this._closeTransitionAbort = () => {
+        panel.removeEventListener("transitionend", onTransitionEnd);
+      };
+
+      panel.addEventListener("transitionend", onTransitionEnd, {
+        once: true
+      });
+    }
+
+    this._closeTimer = window.setTimeout(finalize, MODAL_TRANSITION_MS);
+    return this;
+  }
+
+  hide() {
+    if (!this.openState || this.display === "inline" || this.hiddenState) {
+      return this;
+    }
+
+    if (!this.emitBeforeHide()) {
+      return this;
+    }
+
+    this._isHidden = true;
+    this.setAttribute("minimized", "");
+    this.requestComponentUpdate("hide");
+    this.emitAfterHide();
+    return this;
+  }
+
+  show() {
+    if (!this.openState || this.display === "inline" || !this.hiddenState) {
+      return this;
+    }
+
+    if (!this.emitBeforeShow()) {
+      return this;
+    }
+
+    this._isHidden = false;
+    this.removeAttribute("minimized");
+    SfModal.bringToFront(this);
+    this.requestComponentUpdate("show");
+    requestAnimationFrame(() => this.focusFirst());
+    this.emitAfterShow();
+    return this;
+  }
+
+  toggle() {
+    return this.openState ? this.close() : this.open();
+  }
+
+  finishClose() {
+    this.cancelCloseTransition();
+    this._isOpen = false;
+    this._isHidden = false;
+    this._modalState = "closed";
+    this.removeAttribute("minimized");
+    this.syncOpenAttribute(false);
+
+    if (this.display !== "inline") {
+      SfModal.removeFromStack(this);
+    }
+
+    if (this._lastActive && typeof this._lastActive.focus === "function") {
+      this._lastActive.focus();
+    }
+
+    this.requestComponentUpdate("after-close");
+    this.emitAfterClose();
+    return this;
+  }
+
+  cancelCloseTransition() {
+    if (this._closeTimer) {
+      clearTimeout(this._closeTimer);
+      this._closeTimer = null;
+    }
+
+    if (this._closeTransitionAbort) {
+      this._closeTransitionAbort();
+
+      this._closeTransitionAbort = null;
+    }
+  }
+
+  setSrc(newSrc) {
+    this.setAttribute("src", newSrc || "");
+    this.resetRemoteContent();
+    this.loadRemoteContentIfNeeded();
+    return this;
+  }
+
+  reloadContent() {
+    this.resetRemoteContent();
+    this.loadRemoteContentIfNeeded(true);
+    return this;
+  }
+
+  getModalRoot() {
+    return this.modalRoot;
+  }
+
+  afterRender() {
+    this.bindRenderedEvents();
+    this.bindSlotEventHandlers();
+    this._readyDetail = {
+      component: this,
+      modal: this,
+      modalId: this.modalId,
+      root: this.getModalRoot()
+    };
+
+    if (!this._hasEmittedReady) {
+      this._hasEmittedReady = true;
+      this.dispatchEvent(new CustomEvent("modal:ready", {
+        bubbles: false,
+        detail: this._readyDetail
+      }));
+    } else {
+      this.dispatchEvent(new CustomEvent("modal:update", {
+        bubbles: false,
+        detail: this._readyDetail
+      }));
+    }
+
+    if (this.hasAttribute("open") && !this._isOpen) {
+      this._isOpen = true;
+      this._modalState = "open";
+
+      if (this.display !== "inline") {
+        SfModal.addToStack(this);
+      }
+
+      this.focusFirst();
+      this.loadRemoteContentIfNeeded();
+    }
+
+    this.applyStackPosition();
+
+    if (this.autoload && !this.openState && !this._hasAutoloaded) {
+      this._hasAutoloaded = true;
+      requestAnimationFrame(() => this.open({
+        animate: false
+      }));
+    }
+  }
+
+  bindRenderedEvents() {
+    const root = this.getModalRoot();
+
+    if (!root) {
+      return;
+    }
+
+    root.removeEventListener("click", this.handleOverlayClick);
+    root.addEventListener("click", this.handleOverlayClick);
+    document.removeEventListener("keydown", this.onKeyDown);
+    document.addEventListener("keydown", this.onKeyDown);
+  }
+
+  bindSlotEventHandlers() {
+    const root = this.getModalRoot();
+
+    if (!root || !this._slotEventHandlers.size) {
+      return;
+    }
+
+    this._slotEventHandlers.forEach((handlers, id) => {
+      const node = root.querySelector(`[data-sf-runtime-event-id="${id}"]`);
+
+      if (!node) {
+        return;
+      }
+
+      handlers.forEach(({
+        eventName,
+        handler
+      }) => {
+        node.addEventListener(eventName, handler);
+      });
+    });
+  }
+
+  handleOverlayClick(event) {
+    const isOverlay = event.target === this.getModalRoot()?.querySelector("[data-sf-modal-overlay]");
+
+    if (isOverlay && this.closeOnOverlay && !this.unclose) {
+      this.close();
+    }
+  }
+
+  handleCloseClick(event) {
+    event.preventDefault();
+
+    if (!this.unclose) {
+      this.close();
+    }
+  }
+
+  handleHideClick(event) {
+    event.preventDefault();
+    this.hide();
+  }
+
+  onKeyDown(event) {
+    if (!this.openState || this.display === "inline") {
+      return;
+    }
+
+    if (!SfModal.isTopModal(this)) {
+      return;
+    }
+
+    if (this.hiddenState) {
+      return;
+    }
+
+    if (event.key === "Escape" && this.closeOnEsc && !this.unclose) {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      this.close();
+      return;
+    }
+
+    if (event.key === "Tab") {
+      this.trapFocus(event);
+    }
+  }
+
+  trapFocus(event) {
+    if (!SfModal.isTopModal(this)) {
+      return;
+    }
+
+    if (this.hiddenState) {
+      return;
+    }
+
+    const panel = this.getModalRoot()?.querySelector("[data-sf-modal-panel]");
+    const nodes = panel ? Array.from(panel.querySelectorAll(FOCUSABLE_SELECTOR)) : [];
+
+    if (!nodes.length) {
+      return;
+    }
+
+    const first = nodes[0];
+    const last = nodes[nodes.length - 1];
+    const active = document.activeElement;
+
+    if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+      return;
+    }
+
+    if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  focusFirst() {
+    if (this.display !== "inline" && !SfModal.isTopModal(this)) {
+      return;
+    }
+
+    if (this.hiddenState) {
+      return;
+    }
+
+    const panel = this.getModalRoot()?.querySelector("[data-sf-modal-panel]");
+
+    if (panel) {
+      panel.focus();
+    }
+  }
+
+  resetRemoteContent() {
+    this._remoteHtml = "";
+    this._remoteError = "";
+    this._remoteLoaded = false;
+    this._isLoadingRemote = false;
+    this.abortRemoteContent();
+  }
+
+  abortRemoteContent() {
+    if (this._fetchController) {
+      this._fetchController.abort();
+
+      this._fetchController = null;
+    }
+  }
+
+  loadRemoteContentIfNeeded(force = false) {
+    if (!this.src || this.mode !== "ajax" && this.mode !== "iframe") {
+      return;
+    }
+
+    if (!this.preload && !this.openState && !force) {
+      return;
+    }
+
+    if (this.mode === "iframe") {
+      this._remoteLoaded = true;
+      this.requestComponentUpdate("remote-content");
+      return;
+    }
+
+    if (this._remoteLoaded && !force) {
+      return;
+    }
+
+    void this.loadAjaxContent();
+  }
+
+  async loadAjaxContent() {
+    this.abortRemoteContent();
+    this._isLoadingRemote = true;
+    this._remoteError = "";
+    this.requestComponentUpdate("remote-loading");
+    this.emitContentEvent("modal:before-content-upload");
+    this._fetchController = new AbortController();
+
+    try {
+      if (this.src.startsWith("#")) {
+        const source = document.querySelector(this.src);
+
+        if (!source) {
+          throw new Error(`Element not found: ${this.src}`);
+        }
+
+        this._remoteHtml = source.innerHTML;
+      } else {
+        const response = await fetch(this.src, {
+          signal: this._fetchController.signal
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+
+        this._remoteHtml = await response.text();
+      }
+
+      this._remoteLoaded = true;
+      this.emitContentEvent("modal:after-content-upload");
+    } catch (error) {
+      if (error.name !== "AbortError") {
+        this._remoteError = error.message || "Failed to load content";
+      }
+    } finally {
+      this._fetchController = null;
+      this._isLoadingRemote = false;
+      this.requestComponentUpdate("remote-content");
+    }
+  }
+
+  handleIframeLoad = () => {
+    this._remoteLoaded = true;
+    this.emitContentEvent("modal:after-content-upload");
+  };
+  handleIframeError = () => {
+    this._remoteError = "Failed to load iframe content";
+    this.requestComponentUpdate("remote-content");
+  };
+
+  emitContentEvent(eventName) {
+    this.dispatchEvent(new CustomEvent(eventName, {
+      bubbles: false,
+      detail: {
+        component: this,
+        modal: this,
+        modalId: this.modalId,
+        src: this.src
+      }
+    }));
+  }
+
+  emitModalEvent(eventName, {
+    cancelable = false,
+    detail = {}
+  } = {}) {
+    const event = new CustomEvent(eventName, {
+      bubbles: false,
+      cancelable,
+      detail: {
+        component: this,
+        modal: this,
+        modalId: this.modalId,
+        root: this.getModalRoot(),
+        ...detail
+      }
+    });
+    this.dispatchEvent(event);
+    return !event.defaultPrevented;
+  }
+
+  emitBeforeOpen() {
+    return this.emitModalEvent("modal:before-open", {
+      cancelable: true,
+      detail: {
+        phase: "before-open"
+      }
+    });
+  }
+
+  emitAfterOpen() {
+    this.emitModalEvent("modal:after-open", {
+      detail: {
+        phase: "after-open"
+      }
+    });
+  }
+
+  emitBeforeClose() {
+    return this.emitModalEvent("modal:before-close", {
+      cancelable: true,
+      detail: {
+        phase: "before-close"
+      }
+    });
+  }
+
+  emitAfterClose() {
+    this.emitModalEvent("modal:after-close", {
+      detail: {
+        phase: "after-close"
+      }
+    });
+  }
+
+  emitBeforeHide() {
+    return this.emitModalEvent("modal:before-hide", {
+      cancelable: true,
+      detail: {
+        phase: "before-hide"
+      }
+    });
+  }
+
+  emitAfterHide() {
+    this.emitModalEvent("modal:after-hide", {
+      detail: {
+        phase: "after-hide"
+      }
+    });
+  }
+
+  emitBeforeShow() {
+    return this.emitModalEvent("modal:before-show", {
+      cancelable: true,
+      detail: {
+        phase: "before-show"
+      }
+    });
+  }
+
+  emitAfterShow() {
+    this.emitModalEvent("modal:after-show", {
+      detail: {
+        phase: "after-show"
+      }
+    });
+  }
+
+  syncOpenAttribute(isOpen) {
+    this._syncingOpenAttribute = true;
+
+    if (isOpen) {
+      this.setAttribute("open", "");
+    } else {
+      this.removeAttribute("open");
+    }
+
+    this._syncingOpenAttribute = false;
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    if (this._syncingOpenAttribute && name === "open") {
+      return;
+    }
+
+    if (name === "open" && oldValue !== newValue) {
+      if (!this._isMounted) {
+        super.attributeChangedCallback(name, oldValue, newValue);
+        return;
+      }
+
+      if (newValue === null) {
+        this.close();
+      } else {
+        this.open();
+      }
+
+      return;
+    }
+
+    if (["src", "mode", "preload"].includes(name) && oldValue !== newValue) {
+      this.resetRemoteContent();
+    }
+
+    if (name === "minimized" && oldValue !== newValue) {
+      this._isHidden = newValue !== null;
+    }
+
+    super.attributeChangedCallback(name, oldValue, newValue);
+  }
+
+  teardownModal() {
+    this.abortRemoteContent();
+    this.cancelCloseTransition();
+    document.removeEventListener("keydown", this.onKeyDown);
+
+    if (this.display !== "inline") {
+      SfModal.removeFromStack(this);
+    }
+
+    this._isOpen = false;
+    this._modalState = "closed";
+    this.clearPortal();
+  }
+
+  clearPortal() {
+    if (!this._portalRoot) {
+      return;
+    }
+
+    (0,lit__WEBPACK_IMPORTED_MODULE_0__.render)(lit__WEBPACK_IMPORTED_MODULE_0__.nothing, this._portalRoot);
+
+    this._portalRoot.remove();
+
+    this._portalRoot = null;
+  }
+
+  onBeforeOpen(handler, options) {
+    if (typeof handler === "function") {
+      this.addEventListener("modal:before-open", handler, options);
+    }
+
+    return this;
+  }
+
+  onAfterOpen(handler, options) {
+    if (typeof handler === "function") {
+      this.addEventListener("modal:after-open", handler, options);
+    }
+
+    return this;
+  }
+
+  onBeforeClose(handler, options) {
+    if (typeof handler === "function") {
+      this.addEventListener("modal:before-close", handler, options);
+    }
+
+    return this;
+  }
+
+  onAfterClose(handler, options) {
+    if (typeof handler === "function") {
+      this.addEventListener("modal:after-close", handler, options);
+    }
+
+    return this;
+  }
+
+  onBeforeHide(handler, options) {
+    if (typeof handler === "function") {
+      this.addEventListener("modal:before-hide", handler, options);
+    }
+
+    return this;
+  }
+
+  onAfterHide(handler, options) {
+    if (typeof handler === "function") {
+      this.addEventListener("modal:after-hide", handler, options);
+    }
+
+    return this;
+  }
+
+  onBeforeShow(handler, options) {
+    if (typeof handler === "function") {
+      this.addEventListener("modal:before-show", handler, options);
+    }
+
+    return this;
+  }
+
+  onAfterShow(handler, options) {
+    if (typeof handler === "function") {
+      this.addEventListener("modal:after-show", handler, options);
+    }
+
+    return this;
+  }
+
+  onModalReady(handler, options) {
+    if (typeof handler !== "function") {
+      return this;
+    }
+
+    if (this._readyDetail) {
+      handler(new CustomEvent("modal:ready", {
+        detail: this._readyDetail
+      }));
+      return this;
+    }
+
+    this.addEventListener("modal:ready", handler, options);
+    return this;
+  }
+
+  onModalUpdate(handler, options) {
+    if (typeof handler === "function") {
+      this.addEventListener("modal:update", handler, options);
+    }
+
+    return this;
+  }
+
+  static bindGlobalEvents() {
+    if (SfModal.globalBound || typeof document === "undefined") {
+      return;
+    }
+
+    document.addEventListener("click", event => {
+      const openEl = event.target.closest("[data-sf-modal-open]");
+
+      if (openEl) {
+        SfModal.registry.get(openEl.getAttribute("data-sf-modal-open"))?.open();
+        return;
+      }
+
+      const showEl = event.target.closest("[data-sf-modal-show]");
+
+      if (showEl) {
+        SfModal.registry.get(showEl.getAttribute("data-sf-modal-show"))?.show();
+        return;
+      }
+
+      const hideEl = event.target.closest("[data-sf-modal-hide]");
+
+      if (hideEl) {
+        SfModal.registry.get(hideEl.getAttribute("data-sf-modal-hide"))?.hide();
+        return;
+      }
+
+      const closeEl = event.target.closest("[data-sf-modal-close]");
+
+      if (!closeEl) {
+        return;
+      }
+
+      const id = closeEl.getAttribute("data-sf-modal-close") || closeEl.closest(".sf-modal")?.getAttribute("data-sf-modal-id");
+      SfModal.registry.get(id)?.close();
+    });
+    SfModal.globalBound = true;
+  }
+
+  static lockPage(preserveScrollGap = true) {
+    const docEl = document.documentElement;
+    const body = document.body;
+
+    if (!docEl || !body) {
+      return;
+    }
+
+    const scrollbarWidth = Math.max(0, window.innerWidth - docEl.clientWidth);
+    SfModal.lockState = {
+      bodyPaddingInlineEnd: body.style.paddingInlineEnd
+    };
+    docEl.classList.add("overflow-hidden");
+    body.classList.add("overflow-hidden");
+
+    if (preserveScrollGap && scrollbarWidth > 0) {
+      body.style.paddingInlineEnd = `${scrollbarWidth}px`;
+    }
+  }
+
+  static unlockPage() {
+    const docEl = document.documentElement;
+    const body = document.body;
+
+    if (!docEl || !body) {
+      return;
+    }
+
+    docEl.classList.remove("overflow-hidden");
+    body.classList.remove("overflow-hidden");
+
+    if (SfModal.lockState) {
+      body.style.paddingInlineEnd = SfModal.lockState.bodyPaddingInlineEnd || "";
+      SfModal.lockState = null;
+    }
+  }
+
+}
+
+SfModal.define("sf-modal");
+})();
+
+/******/ })()
+;

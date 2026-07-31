@@ -1,0 +1,6 @@
+{
+  "schema": "docara.smart_view.v1",
+  "smart": "docara.preferences",
+  "view": "side-panel",
+  "template": "smart.docara.preferences.side-panel"
+}

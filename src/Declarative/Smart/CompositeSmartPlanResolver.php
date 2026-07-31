@@ -107,6 +107,11 @@ final readonly class CompositeSmartPlanResolver
             'docara.toc' => isset($props['items'])
                 && is_array($props['items'])
                 && array_is_list($props['items']),
+            'docara.preferences' => isset($props['groups'], $props['manifest'])
+                && is_array($props['groups'])
+                && array_is_list($props['groups'])
+                && is_array($props['manifest'])
+                && in_array($props['position'] ?? null, ['left', 'right'], true),
             default => false,
         };
         if (! $valid) {

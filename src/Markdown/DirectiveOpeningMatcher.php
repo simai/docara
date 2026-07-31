@@ -35,14 +35,14 @@ final readonly class DirectiveOpeningMatcher
         return preg_match(self::FRAMEWORK_NAME_PATTERN, $name) === 1;
     }
 
-    /** @return array{name: string, fence_length: int, family: string}|null */
+    /** @return array{name: string, fence_length: int, family: string, attributes: string}|null */
     public function match(string $line): ?array
     {
         $names = $this->portableAlternation();
         // Keep the lexical catch intentionally broader than admission. Any
         // whitespace-free token that starts with "ui" must reach the strict
         // canonical-ID gate instead of becoming inert Markdown after a typo.
-        $pattern = '/^(:{3,})(' . $names . '|ui[^\s]*)[ \t]*$/u';
+        $pattern = '/^(:{3,})(' . $names . '|ui[^\s{]*)(?:[ \t]+\{([^}\r\n]*)\})?[ \t]*$/u';
         if (preg_match($pattern, $line, $match) !== 1) {
             return null;
         }
@@ -53,6 +53,7 @@ final readonly class DirectiveOpeningMatcher
             'family' => in_array($match[2], $this->portableNames, true)
                 ? DirectiveBlockStartParser::PORTABLE
                 : DirectiveBlockStartParser::FRAMEWORK,
+            'attributes' => (string) ($match[3] ?? ''),
         ];
     }
 

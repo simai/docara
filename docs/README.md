@@ -17,6 +17,10 @@
 
 Архитектура единого декларативного конвейера описана в
 [`declarative-rendering-pipeline.md`](declarative-rendering-pipeline.md).
+Согласованный целевой синтаксис строчных, блочных и контейнерных компонентов
+зафиксирован в [`authoring-syntax-contract.md`](authoring-syntax-contract.md).
+Он является design contract для будущей реализации и пока не описывает
+возможности выпущенного parser runtime.
 Текущий список ещё не выпущенных изменений находится в
 [`changes.md`](changes.md).
 

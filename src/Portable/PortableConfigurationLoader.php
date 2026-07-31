@@ -251,10 +251,16 @@ final class PortableConfigurationLoader
             : [];
         $resolved = (new RegionCompositionResolver)->resolve($layout, $provenance);
         $layout['key'] = $resolved['key'];
+        $layout['container'] ??= RegionCompositionResolver::defaults()['container'];
+        $layout['scrollbar'] ??= RegionCompositionResolver::defaults()['scrollbar'];
+        $layout['content'] ??= RegionCompositionResolver::defaults()['content'];
         $layout['regions'] = $resolved['regions'];
         $configuration['layout'] = $layout;
 
         $provenance['/layout/key'] ??= '@defaults';
+        $provenance['/layout/container/max'] ??= '@defaults';
+        $provenance['/layout/scrollbar/preset'] ??= '@defaults';
+        $provenance['/layout/content/gap'] ??= '@defaults';
         foreach ($resolved['regions'] as $region => $regionConfiguration) {
             $pointer = '/layout/regions/' . $region;
             $provenance[$pointer . '/enabled'] ??= '@defaults';

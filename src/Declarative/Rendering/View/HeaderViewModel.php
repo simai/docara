@@ -9,6 +9,7 @@ final readonly class HeaderViewModel
     public function __construct(
         public string $title,
         public ?string $label,
+        public string $size,
         public string $homeUrl,
         public ?string $logo,
         public ?string $logoDark,

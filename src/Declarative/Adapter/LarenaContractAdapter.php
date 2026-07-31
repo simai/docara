@@ -77,12 +77,20 @@ final class LarenaContractAdapter
     /** @return array<string, mixed> */
     private function block(ResolvedBlockPlan $block): array
     {
+        $data = $block->data;
+        if (isset($data['nodes']) && is_array($data['nodes'])) {
+            $data['nodes'] = array_map(
+                fn (array $node): array => $this->block(ResolvedBlockPlan::fromArray($node)),
+                $data['nodes'],
+            );
+        }
+
         return [
             'id' => $block->id,
             'block' => $block->block,
             'slot' => $block->slot,
             'renderer' => $block->renderer,
-            'data' => $block->data,
+            'data' => $data,
             'smart' => $block->smart === null ? null : [
                 'key' => $block->smart->smart,
                 'view' => $block->smart->view,

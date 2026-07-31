@@ -1,0 +1,13 @@
+{
+  "schema": "docara.view_tree.v1",
+  "key": "section.docara.header",
+  "tree": {
+    "kind": "element",
+    "tag": "section",
+    "identity": "section",
+    "utilities": ["flex", "gap-2", "w-full"],
+    "children": [
+      {"kind": "slot", "slot": "content"}
+    ]
+  }
+}

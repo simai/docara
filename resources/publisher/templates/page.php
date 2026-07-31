@@ -20,39 +20,47 @@
 <?= $view->themeBootstrap ?>
 <?= $view->chrome['head'] ?>
 </head>
-<body class="bg-surface">
+<body class="bg-surface <?= $view->containerClass ?>">
     <a class="docara-skip-link bg-surface-0 border radius-1 p-1" href="#docara-main"><?= $view->copy['shell.skip_to_content'] ?></a>
     <header class="docara-header sticky top-0 z-2 bg-surface-0 border-bottom-1 border-outline-variant" data-docara-region="header">
-        <div class="docara-header-row flex items-center content-main-between gap-2 p-1">
+        <div class="docara-header-row container w-full m-inline-auto flex items-center content-main-between gap-2 p-1">
             <?= $view->regions['header'] ?>
             <?= $view->chrome['header_actions'] ?>
         </div>
         <?= $view->chrome['mobile_navigation'] ?>
     </header>
 <?php if ($view->preset === 'landing') { ?>
-    <main id="docara-main" tabindex="-1" class="docara-landing p-4" data-docara-region="main">
-        <article class="docara-content docara-prose flex min-w-0 flex-col gap-2" data-width="<?= $view->maxWidth ?>"><?= $view->regions['main'] ?></article>
+    <main id="docara-main" tabindex="-1" class="docara-landing" data-docara-region="main">
+        <article class="docara-content docara-prose container w-full m-inline-auto flex min-w-0 flex-col gap-<?= $view->contentGap ?>"><?= $view->regions['main'] ?></article>
     </main>
 <?php } else { ?>
-    <div class="docara-docs-layout gap-0" data-sidebar="<?= $view->regions['sidebar'] === '' ? 'false' : 'true' ?>" data-outline="<?= $view->regions['outline'] === '' ? 'false' : 'true' ?>" data-mobile-toc="<?= $view->mobileTocState ?>">
+    <div class="docara-docs-layout container w-full m-inline-auto gap-0" data-sidebar="<?= $view->regions['sidebar'] === '' ? 'false' : 'true' ?>" data-outline="<?= $view->regions['outline'] === '' ? 'false' : 'true' ?>" data-mobile-toc="<?= $view->mobileTocState ?>">
 <?php if ($view->regions['sidebar'] !== '') { ?>
-        <aside class="docara-sidebar" data-docara-region="sidebar"><?= $view->regions['sidebar'] ?></aside>
+        <aside class="docara-sidebar" data-docara-region="sidebar">
+            <div class="docara-sidebar-scroll sf-scrollbar"<?= $view->scrollbarPreset === 'overlay' ? '' : ' data-sf-scrollbar="' . $view->scrollbarPreset . '"' ?>>
+                <div class="sf-scrollbar__viewport" tabindex="0" aria-label="<?= $view->copy['navigation.sections'] ?>"><?= $view->regions['sidebar'] ?></div>
+            </div>
+        </aside>
 <?php } ?>
         <div class="docara-reading-column flex min-w-0 flex-col gap-2 p-3">
             <?= $view->chrome['breadcrumbs'] ?>
             <?= $view->chrome['mobile_toc'] ?>
-            <main id="docara-main" tabindex="-1" class="docara-content min-w-0" data-width="<?= $view->maxWidth ?>" data-docara-region="main">
-                <article class="docara-prose"><?= $view->regions['main'] ?></article>
+            <main id="docara-main" tabindex="-1" class="docara-content min-w-0" data-docara-region="main">
+                <article class="docara-prose flex min-w-0 flex-col gap-<?= $view->contentGap ?>"><?= $view->regions['main'] ?></article>
                 <?= $view->chrome['pager'] ?>
             </main>
         </div>
 <?php if ($view->regions['outline'] !== '') { ?>
-        <aside class="docara-outline-rail" data-docara-region="outline"><?= $view->regions['outline'] ?></aside>
+        <aside class="docara-outline-rail" data-docara-region="outline">
+            <div class="docara-outline-scroll sf-scrollbar"<?= $view->scrollbarPreset === 'overlay' ? '' : ' data-sf-scrollbar="' . $view->scrollbarPreset . '"' ?>>
+                <div class="sf-scrollbar__viewport" tabindex="0" aria-label="<?= $view->copy['navigation.outline'] ?>"><?= $view->regions['outline'] ?></div>
+            </div>
+        </aside>
 <?php } ?>
     </div>
 <?php } ?>
 <?php if ($view->regions['footer'] !== '') { ?>
-    <footer data-docara-region="footer"><?= $view->regions['footer'] ?></footer>
+    <footer class="container w-full m-inline-auto" data-docara-region="footer"><?= $view->regions['footer'] ?></footer>
 <?php } ?>
     <?= $view->chrome['search_dialog'] ?>
     <?= $view->chrome['reader_settings'] ?>

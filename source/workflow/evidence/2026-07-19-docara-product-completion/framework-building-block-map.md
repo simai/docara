@@ -8,7 +8,7 @@ Mode: exact-revision, read-only
 - Core: `simai/ui` `v5.3.2` at
   `7e836d8a9414d5da553fb1ab0404721e5b48769a`;
 - Smart: `simai/ui-smart` `v5.3.1` at
-  `dd786bbae98391fb21df9b4e1e6cd402ead0614c`;
+  `ab896dc7cd33f151377e3992ffb286769beee7f7`;
 - contract registry source: `b7e8a2e810c0d49e31cb749a7ab34c373dd48bc6`;
 - pair: `sf-v5.3.2-7e836d8a-dd786bba`.
 

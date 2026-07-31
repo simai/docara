@@ -72,6 +72,7 @@ final readonly class EffectiveComponentCatalogValidator
 
         foreach ($entries as $entry) {
             $this->assertFamilyContract($entry, $catalog);
+            $this->assertMetadataContract($entry);
             $lifecycle = $entry['lifecycle'] ?? null;
             if ($lifecycle === 'supported') {
                 $verification = $entry['verification'] ?? null;
@@ -86,6 +87,7 @@ final readonly class EffectiveComponentCatalogValidator
                         'Every supported catalogue entry needs renderer, tests, docs and demo evidence.',
                     );
                 }
+                $this->assertVariantCoverage($entry);
             } else {
                 if (($entry['verification']['demo'] ?? null) !== false) {
                     throw new PortableConfigurationException(
@@ -140,6 +142,79 @@ final readonly class EffectiveComponentCatalogValidator
         $this->schemas->assertValid($catalog, 'effective-component-catalog.schema.json');
     }
 
+    /** @param array<string, mixed> $entry */
+    private function assertMetadataContract(array $entry): void
+    {
+        if (($entry['lifecycle'] ?? null) !== 'supported') {
+            return;
+        }
+        $metadata = $entry['metadata'] ?? null;
+        $jobs = $entry['authoring']['jobs'] ?? null;
+        if (! is_array($metadata)
+            || ! is_string($metadata['owner'] ?? null)
+            || trim($metadata['owner']) === ''
+            || ! is_string($metadata['package'] ?? null)
+            || trim($metadata['package']) === ''
+            || ! is_string($metadata['version'] ?? null)
+            || trim($metadata['version']) === ''
+            || ! is_string($metadata['source_ref'] ?? null)
+            || ! is_array($metadata['capabilities'] ?? null)
+            || ! is_array($jobs)
+            || array_values($metadata['capabilities']) !== array_values($jobs)
+        ) {
+            throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_METADATA_INVALID',
+                'Every supported component needs source-derived owner, package, version, source and capabilities.',
+            );
+        }
+    }
+
+    /** @param array<string, mixed> $entry */
+    private function assertVariantCoverage(array $entry): void
+    {
+        $actual = $entry['verification']['variant_coverage'] ?? null;
+        if (! is_array($actual) || ! array_is_list($actual) || $actual === []) {
+            throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_VARIANT_COVERAGE_REQUIRED',
+                'Every supported component needs an explicit, source-derived variant coverage matrix.',
+            );
+        }
+        $expected = [['id' => 'base', 'kind' => 'base']];
+        foreach (($entry['states'] ?? []) as $state) {
+            $expected[] = [
+                'id' => 'state.' . (string) $state,
+                'kind' => 'state',
+                'name' => (string) $state,
+            ];
+        }
+        foreach (['preset', 'variant'] as $axis) {
+            foreach (($entry['authoring']['parameters'] ?? []) as $parameter) {
+                if (! is_array($parameter)
+                    || ($parameter['name'] ?? null) !== $axis
+                    || ! is_array($parameter['values'] ?? null)
+                ) {
+                    continue;
+                }
+                foreach ($parameter['values'] as $value) {
+                    $token = (string) $value;
+                    $expected[] = [
+                        'id' => 'parameter.' . $axis . '.' . ($token === '' ? 'framework-default' : $token),
+                        'kind' => 'parameter',
+                        'name' => $axis,
+                        'value' => $value,
+                    ];
+                }
+                break 2;
+            }
+        }
+        if ($actual !== $expected) {
+            throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_VARIANT_COVERAGE_MISMATCH',
+                'Variant coverage must exactly follow the admitted states and primary visual parameter axis.',
+            );
+        }
+    }
+
     /** @param array<string, mixed> $entry @param array<string, mixed> $catalog */
     private function assertFamilyContract(array $entry, array $catalog): void
     {
@@ -168,10 +243,14 @@ final readonly class EffectiveComponentCatalogValidator
 
         if ($family === 'docara_typed') {
             $name = str_starts_with($id, 'docara.') ? substr($id, strlen('docara.')) : '';
+            $isBlock = $syntax === 'directive'
+                && $sourceKind === 'typed_definition'
+                && ($entry['authoring']['call'] ?? null) === ':::' . $name;
+            $isInline = $syntax === 'inline'
+                && $sourceKind === 'inline_definition'
+                && ($entry['authoring']['call'] ?? null) === ':' . $name;
             if ($lifecycle !== 'supported'
-                || $syntax !== 'directive'
-                || $sourceKind !== 'typed_definition'
-                || ($entry['authoring']['call'] ?? null) !== ':::' . $name
+                || (! $isBlock && ! $isInline)
                 || isset($entry['consumer_policy'])
                 || isset($entry['gap'])
             ) {

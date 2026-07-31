@@ -1,3 +1,6 @@
+<!-- docara-variant:base -->
+<!-- docara-variant:state.stacked -->
+<!-- docara-variant:state.responsive_columns -->
 :::columns
 ### Markdown
 
@@ -17,7 +20,7 @@ The portable build does not require Node.js.
 
 ---
 
-### Simai Framework
+### SIMAI Framework
 
 The layout uses verified responsive utilities.
 :::

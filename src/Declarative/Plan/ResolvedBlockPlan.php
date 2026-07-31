@@ -30,4 +30,31 @@ final readonly class ResolvedBlockPlan
             'provenance' => $this->provenance,
         ];
     }
+
+    /** @param array<string, mixed> $payload */
+    public static function fromArray(array $payload): self
+    {
+        foreach (['id', 'block', 'slot', 'renderer'] as $key) {
+            if (! is_string($payload[$key] ?? null) || $payload[$key] === '') {
+                throw new \InvalidArgumentException('RESOLVED_BLOCK_PLAN_INVALID');
+            }
+        }
+        if (! is_array($payload['data'] ?? null) || ! is_array($payload['provenance'] ?? null)) {
+            throw new \InvalidArgumentException('RESOLVED_BLOCK_PLAN_INVALID');
+        }
+        $smart = $payload['smart'] ?? null;
+        if ($smart !== null && ! is_array($smart)) {
+            throw new \InvalidArgumentException('RESOLVED_BLOCK_PLAN_INVALID');
+        }
+
+        return new self(
+            $payload['id'],
+            $payload['block'],
+            $payload['slot'],
+            $payload['renderer'],
+            $payload['data'],
+            is_array($smart) ? ResolvedSmartPlan::fromArray($smart) : null,
+            $payload['provenance'],
+        );
+    }
 }

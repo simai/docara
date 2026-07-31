@@ -32,6 +32,49 @@ final class DocumentationContractTest extends TestCase
     ];
 
     #[Test]
+    public function product_surfaces_use_the_canonical_simai_brand_spelling(): void
+    {
+        $files = [
+            $this->repositoryRoot() . '/README.md',
+            $this->repositoryRoot() . '/CONTRIBUTING.md',
+        ];
+        foreach (['docs', 'resources', 'stubs', 'src', 'scripts'] as $directory) {
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator(
+                    $this->repositoryRoot() . '/' . $directory,
+                    RecursiveDirectoryIterator::SKIP_DOTS,
+                ),
+            );
+            foreach ($iterator as $file) {
+                if (! $file instanceof SplFileInfo || ! $file->isFile()) {
+                    continue;
+                }
+                $relative = $this->relativeToRepository($file->getPathname());
+                if (
+                    str_starts_with($relative, 'docs/site/build_')
+                    || str_contains($relative, '/.docara/')
+                    || str_starts_with($relative, 'resources/framework/manifests/')
+                ) {
+                    continue;
+                }
+                if (! in_array(strtolower($file->getExtension()), ['json', 'md', 'php', 'yaml', 'yml'], true)) {
+                    continue;
+                }
+                $files[] = $file->getPathname();
+            }
+        }
+
+        $nonCanonical = 'Simai' . ' Framework';
+        foreach ($files as $path) {
+            self::assertStringNotContainsString(
+                $nonCanonical,
+                (string) file_get_contents($path),
+                $this->relativeToRepository($path) . ' must spell the brand as SIMAI Framework.',
+            );
+        }
+    }
+
+    #[Test]
     public function authored_documentation_covers_five_audience_paths_and_every_page_has_one_h1(): void
     {
         $audiencePaths = [
@@ -77,7 +120,7 @@ final class DocumentationContractTest extends TestCase
         }
 
         $documents = $this->markdownDocuments();
-        self::assertCount(59, $documents, 'The authored documentation inventory must stay exact.');
+        self::assertCount(58, $documents, 'The authored documentation inventory must stay exact.');
 
         foreach ($documents as $path) {
             $markdown = (string) file_get_contents($path);
@@ -223,7 +266,7 @@ final class DocumentationContractTest extends TestCase
             $translator = new Translator($registry, new LanguagePackRepository($temporary));
             self::assertSame('Continuer', $translator->message('fr-CA', 'common.continue'));
             self::assertSame(
-                'Open documentation sections',
+                'Open navigation',
                 $translator->message('fr-CA', 'navigation.open'),
                 'The documented partial language pack must resolve missing messages through explicit fallback.',
             );
@@ -255,6 +298,28 @@ final class DocumentationContractTest extends TestCase
                 file_put_contents($temporary . '/content/' . $locale . '/index.md', "# $title\n");
                 file_put_contents($temporary . '/content/' . $locale . '/guide/install.md', "# Install $locale\n");
             }
+            foreach ([
+                'ru' => [
+                    ['id' => 'home', 'label' => 'Главная', 'href' => '/ru/'],
+                    ['id' => 'guide', 'label' => 'Руководство', 'href' => '/ru/guide/install/'],
+                ],
+                'en' => [
+                    ['id' => 'home', 'label' => 'Home', 'href' => '/en/'],
+                    ['id' => 'guide', 'label' => 'Guide', 'href' => '/en/guide/install/'],
+                    ['id' => 'github', 'label' => 'GitHub', 'href' => 'https://github.com/simai/docara'],
+                ],
+                'ar' => [
+                    ['id' => 'home', 'label' => 'الرئيسية', 'href' => '/ar/'],
+                ],
+            ] as $locale => $items) {
+                file_put_contents(
+                    $temporary . '/content/' . $locale . '/section.json',
+                    json_encode([
+                        'schema' => 'docara.section.v1',
+                        'header_navigation' => ['enabled' => true, 'items' => $items],
+                    ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR) . "\n",
+                );
+            }
 
             (new PortableSiteBuilder(
                 $filesystem,
@@ -267,6 +332,14 @@ final class DocumentationContractTest extends TestCase
             $arabic = (string) file_get_contents($temporary . '/build_test/ar/index.html');
             self::assertStringContainsString('lang="ar"', $arabic);
             self::assertStringContainsString('dir="rtl"', $arabic);
+            foreach (['ru' => 2, 'en' => 3, 'ar' => 1] as $locale => $expectedItems) {
+                $html = (string) file_get_contents($temporary . '/build_test/' . $locale . '/index.html');
+                self::assertSame(
+                    1,
+                    preg_match('/<nav class="docara-navigation docara-header-navigation".*?<\/nav>/s', $html, $match),
+                );
+                self::assertSame($expectedItems, substr_count($match[0], '<a '));
+            }
         } finally {
             $filesystem->deleteDirectory($temporary);
         }
@@ -459,7 +532,7 @@ final class DocumentationContractTest extends TestCase
         if ($target === '' || preg_match('~^(?:[a-z]+:|#)~i', $target)) {
             return false;
         }
-        if (str_contains($target, 'components/catalog/')) {
+        if (str_contains($target, 'components/')) {
             return false;
         }
 

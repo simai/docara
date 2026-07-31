@@ -52,6 +52,7 @@ Invalid-пример документирует ожидаемую ошибку;
 | `preset`, `title`, `locale` | ✓ | ✓ | ✓ |
 | `branding`, `layout`, `settings` | ✓ | ✓ | ✓ |
 | `navigation`, `search`, `reading` | ✓ | ✓ | ✓ |
+| `reader_preferences` | ✓ | — | — |
 | `framework_lock`, `content_root`, `base_url`, `default_locale`, `locales`, `locale_routing` | ✓ | — | — |
 | `documentation_version`, `redirects_file` | ✓ | — | — |
 | `description`, `slug` | — | — | ✓ |
@@ -61,13 +62,21 @@ Invalid-пример документирует ожидаемую ошибку;
 
 ## Presentation branches
 
-- `branding`: non-empty title/label/brand asset settings;
+- `branding`: непустые title/label, `mode` (`full`, `compact`, `logo`, `text`),
+  `size` (`small`, `medium`, `large`) и относительные пути brand assets;
 - `layout.key`: registered value `docara.docs`;
-- `layout.max_width`: `compact`, `normal`, `wide`, `full`;
+- `layout.container.max`: integer `1..8`, mapped to SIMAI Framework
+  `max-container-1..8`;
 - `layout.regions.<name>.enabled`: boolean;
 - `layout.regions.<name>.sections`: ordered registered
   Section -> Block -> Smart calls;
 - `settings.theme`: `system`, `light`, `dark`;
+- `settings.modal_blur`: `none`, `small`, `medium`, `large`;
+- `reader_preferences.enabled`: boolean;
+- `reader_preferences.view`: `side-panel`;
+- `reader_preferences.groups`: непустой список зарегистрированных групп и
+  полей; runtime дополнительно проверяет неизвестные ID, повторы, принадлежность
+  группе и безопасный effect contract;
 - `navigation.hidden`: boolean;
 - `navigation.order`: integer `0..2147483647`;
 - `search.enabled`, `search.indexed`: boolean;
@@ -127,7 +136,7 @@ Smart-компоненты, допущенные exact Framework lock. Requireme
 Root содержит immutable framework/provider identity, sorted entries,
 `content_sha256` и bounded nonclaims. Exact параметры, states, limitations и
 examples принадлежат source records/fixtures и показываются в
-[generated catalog](/components/catalog/), а не повторяются здесь.
+[справочнике компонентов](/components/), а не повторяются здесь.
 
 `_docara/component-catalog.json` является output. Автор не редактирует его и не
 может через него, Markdown или presentation JSON расширить Smart surface.

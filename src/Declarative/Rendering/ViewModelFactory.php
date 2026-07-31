@@ -12,6 +12,7 @@ use Simai\Docara\Declarative\Rendering\View\NavigationItemViewModel;
 use Simai\Docara\Declarative\Rendering\View\NavigationViewModel;
 use Simai\Docara\Declarative\Rendering\View\OutlineItemViewModel;
 use Simai\Docara\Declarative\Rendering\View\OutlineViewModel;
+use Simai\Docara\Declarative\Rendering\View\PreferencesViewModel;
 
 final class ViewModelFactory
 {
@@ -65,6 +66,7 @@ final class ViewModelFactory
         return new HeaderViewModel(
             $this->escape((string) $branding['title']),
             $branding['label'] === null ? null : $this->escape((string) $branding['label']),
+            $this->escape((string) $branding['size']),
             $this->escape((string) $branding['home_url']),
             $branding['logo'] === null ? null : $this->escape((string) $branding['logo']),
             $branding['logo_dark'] === null ? null : $this->escape((string) $branding['logo_dark']),
@@ -103,6 +105,46 @@ final class ViewModelFactory
         }
 
         return new OutlineViewModel($items, $this->escape((string) $plan->props['label']));
+    }
+
+    public function preferences(ResolvedSmartPlan $plan): PreferencesViewModel
+    {
+        $groups = [];
+        foreach ($plan->props['groups'] as $group) {
+            $fields = [];
+            foreach ($group['fields'] as $field) {
+                $options = [];
+                foreach ($field['options'] as $option) {
+                    $options[] = [
+                        'value' => $this->escape((string) $option['value']),
+                        'title' => $this->escape((string) $option['title']),
+                        'description' => $this->escape((string) $option['description']),
+                    ];
+                }
+                $fields[] = [
+                    'id' => $this->escape((string) $field['id']),
+                    'title' => $this->escape((string) $field['title']),
+                    'description' => $this->escape((string) $field['description']),
+                    'control' => $this->escape((string) $field['control']),
+                    'configured' => $this->escape((string) $field['configured']),
+                    'options' => $options,
+                ];
+            }
+            $groups[] = [
+                'id' => $this->escape((string) $group['id']),
+                'title' => $this->escape((string) $group['title']),
+                'description' => $this->escape((string) $group['description']),
+                'fields' => $fields,
+            ];
+        }
+
+        return new PreferencesViewModel(
+            $this->escape((string) $plan->props['position']),
+            $groups,
+            $this->escape((string) $plan->props['title']),
+            $this->escape((string) $plan->props['close_label']),
+            $this->escape((string) $plan->props['reset_label']),
+        );
     }
 
     /**

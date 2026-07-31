@@ -30,12 +30,17 @@ tests и consumer policy.
 компонентов в ручной справочник: generated artifacts отражают конкретную
 сборку без drift.
 
+К Framework-owned surface относятся не только Smart-компоненты, но и
+поведенческие компоненты Core. Например, `sf-scrollbar` поставляет режимы
+`overlay`, `persistent`, `standard` и `hidden`; Docara выбирает preset через
+`layout.scrollbar.preset`, но не копирует реализацию полосы прокрутки.
+
 ## Browser storage fallback
 
 Если зафиксированный Core использует browser storage, интеграционный слой может
 предоставить ограниченный in-memory fallback только для текущей страницы. Такой
 fallback не является persistent storage и не создаёт отдельную реализацию
-Simai Framework.
+SIMAI Framework.
 
 ## Граница
 

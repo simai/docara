@@ -50,14 +50,14 @@ php vendor/bin/docara serve local --host=localhost --port=8000
 
 Для локального просмотра используйте `docara serve`: встроенный read-only
 router понимает pretty URL и идентификаторы с точкой, например
-`/components/catalog/ui.alert/`.
+`/components/alert/`.
 
 На внешнем сервере включите обычное разрешение каталога в `index.html`. Не
 переписывайте URL на PHP и не направляйте запросы к Markdown-исходникам.
 
 ## Компонент отклонён
 
-Откройте [каталог компонентов](/components/catalog/) и найдите точный
+Откройте [справочник компонентов](/components/) и найдите точный
 идентификатор:
 
 - `supported` имеет рабочий вызов и живой пример;
@@ -103,7 +103,7 @@ php vendor/bin/docara verify-static build_production
 
 Не добавляйте собственные классы `theme-light` или `theme-dark` в Markdown.
 Выберите тему в настройках чтения, сбросьте пользовательский выбор и проверьте
-режим `system`. Интерфейс должен использовать токены Simai Framework, а не
+режим `system`. Интерфейс должен использовать токены SIMAI Framework, а не
 жёстко заданные цвета.
 
 ## Порт preview занят

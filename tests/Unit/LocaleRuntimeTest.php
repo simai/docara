@@ -132,7 +132,7 @@ final class LocaleRuntimeTest extends TestCase
             $projector->page('ru', 'guide/install'),
         );
         self::assertSame('/docs/guide/install/', $projector->unprefixed('ru', '/docs/ru/guide/install/'));
-        self::assertSame('ar/components/catalog/index.html', $projector->output('ar', 'components/catalog/index.html'));
+        self::assertSame('ar/components/index.html', $projector->output('ar', 'components/index.html'));
     }
 
     public function test_internal_link_projector_localizes_only_known_document_links(): void

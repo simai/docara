@@ -40,12 +40,17 @@ MD, 'content/install.md');
         );
         self::assertSame('docara.article', $payload['regions']['main'][0]['section']);
         self::assertSame(
-            ['content.markdown', 'content.smart', 'content.markdown'],
+            ['content.document'],
             array_column($payload['regions']['main'][0]['blocks'], 'block'),
+        );
+        $nodes = $payload['regions']['main'][0]['blocks'][0]['data']['nodes'];
+        self::assertSame(
+            ['content.markdown', 'content.smart', 'content.markdown'],
+            array_column($nodes, 'block'),
         );
         self::assertSame(
             'ui.alert',
-            $payload['regions']['main'][0]['blocks'][1]['smart']['key'],
+            $nodes[1]['smart']['key'],
         );
         self::assertSame($plan->canonicalHash(), $payload['source']['docara_plan_hash']);
         self::assertSame($plan->semanticProjection(), $larena->semantics);

@@ -3,6 +3,6 @@
   "title": "Документация",
   "preset": "docs",
   "layout": {
-    "max_width": "wide"
+    "container": {"max": 7}
   }
 }

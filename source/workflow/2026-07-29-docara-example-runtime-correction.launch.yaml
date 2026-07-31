@@ -1,0 +1,29 @@
+schema_version: "1.0.0"
+workflow_id: "2026-07-29-docara-example-runtime-correction"
+track_id: "docara-consolidation"
+status: "complete"
+process_model_id: "docara_documentation_site_publication"
+current_state: "readiness_verdict_recorded"
+target_state: "readiness_verdict_recorded"
+owner_skill: "dev"
+companion_skills:
+  - "tester"
+  - "ux"
+approved_by_user: true
+approval_note: "The user asked to correct example spacing and restore copy and navigation icons."
+memory_decision: "read_only"
+memory_reason: "Prior Docara and Framework ownership boundaries were consulted; no memory update was requested."
+current_goal: "Restore compact example panels and the immutable Framework icon font contract."
+done_when:
+  - "inactive example panels do not affect layout height"
+  - "source padding is symmetric"
+  - "copy and navigation icons render"
+  - "tests and static verification pass"
+repository: "/Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation"
+branch: "codex/docara-consolidation"
+forbidden_actions:
+  - "commit_or_push"
+  - "public_or_production_release"
+nonclaims:
+  - "no Framework release readiness claim"
+  - "no production readiness claim"

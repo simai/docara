@@ -31,6 +31,11 @@ final readonly class PublisherChromeRenderer
 
                 continue;
             }
+            if ($part === 'reader-settings' && ! $view->readerPreferencesEnabled) {
+                $result['reader_settings'] = '';
+
+                continue;
+            }
             $result[str_replace('-', '_', $part)] = $this->templates->render(
                 'publisher.docara.' . $part,
                 ['view' => $view],

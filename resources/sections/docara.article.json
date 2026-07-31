@@ -5,6 +5,6 @@
   "view": "section.docara.article",
   "allowed_regions": ["main"],
   "slots": ["content"],
-  "allowed_blocks": ["content.markdown", "content.smart"],
+  "allowed_blocks": ["content.document", "content.markdown", "content.smart"],
   "blocks": []
 }

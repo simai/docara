@@ -34,4 +34,31 @@ final readonly class ResolvedSmartPlan
             'provenance' => $this->provenance,
         ];
     }
+
+    /** @param array<string, mixed> $payload */
+    public static function fromArray(array $payload): self
+    {
+        foreach (['node_id', 'smart', 'view', 'template'] as $key) {
+            if (! is_string($payload[$key] ?? null) || $payload[$key] === '') {
+                throw new \InvalidArgumentException('RESOLVED_SMART_PLAN_INVALID');
+            }
+        }
+        if (! is_array($payload['props'] ?? null)
+            || ! is_array($payload['assets'] ?? null)
+            || ! is_array($payload['provenance'] ?? null)
+            || array_filter($payload['assets'], static fn (mixed $asset): bool => ! is_string($asset)) !== []
+        ) {
+            throw new \InvalidArgumentException('RESOLVED_SMART_PLAN_INVALID');
+        }
+
+        return new self(
+            $payload['node_id'],
+            $payload['smart'],
+            $payload['view'],
+            $payload['template'],
+            $payload['props'],
+            array_values($payload['assets']),
+            $payload['provenance'],
+        );
+    }
 }

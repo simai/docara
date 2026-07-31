@@ -6,6 +6,7 @@ namespace Simai\Docara\Console;
 
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
 use Throwable;
 
 final class BuildCommand extends Command
@@ -29,7 +30,13 @@ final class BuildCommand extends Command
     {
         $this->setName('build')
             ->setDescription('Build the portable Docara site atomically.')
-            ->addArgument('environment', InputArgument::OPTIONAL, 'Build output suffix.', 'local');
+            ->addArgument('environment', InputArgument::OPTIONAL, 'Build output suffix.', 'local')
+            ->addOption(
+                'page',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Rebuild one existing page by its public URL.',
+            );
     }
 
     protected function fire(): int
@@ -44,7 +51,12 @@ final class BuildCommand extends Command
         $destination = $this->base . '/build_' . $environment;
         $startedAt = microtime(true);
         try {
-            $pages = $this->builder->build($this->base, $destination);
+            $page = $this->input->getOption('page');
+            $pages = $this->builder->build(
+                $this->base,
+                $destination,
+                is_string($page) && trim($page) !== '' ? $page : null,
+            );
         } catch (Throwable $exception) {
             $this->console->error($exception->getMessage());
 

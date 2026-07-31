@@ -1,0 +1,22 @@
+{
+  "id": "docara.button",
+  "family": "docara_typed",
+  "category": "actions",
+  "lifecycle": "supported",
+  "authoring": {
+    "syntax": "inline",
+    "call": ":button",
+    "jobs": ["link_as_action"],
+    "parameters": [
+      {"name": "href", "type": "string", "required": true},
+      {"name": "type", "type": "enum", "required": false, "default": "default", "values": ["default", "tonal", "outline", "link"]},
+      {"name": "scheme", "type": "enum", "required": false, "default": "primary", "values": ["primary", "secondary", "on-surface"]},
+      {"name": "size", "type": "enum", "required": false, "default": "1", "values": ["1/2", "1", "2"]},
+      {"name": "icon", "type": "string", "required": false}
+    ]
+  },
+  "states": [],
+  "verification": {"renderer": true, "tests": true, "docs": true, "demo": true},
+  "docs_ref": "docs/site/content/ru/components/syntax.md",
+  "provenance": {"source_kind": "inline_definition", "definition_ref": "resources/component-catalog/inline/docara.button.json"}
+}

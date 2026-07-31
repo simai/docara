@@ -1,0 +1,948 @@
+<!doctype html>
+<html lang="ru" class="theme-light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Docara — визуальный контракт компонентов</title>
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/core/css/core.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/core/css/utility.full.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/component/icon/css/icon.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/component/icons/css/icons.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/component/buttons/css/buttons.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/component/badges/css/badges.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/component/alerts/css/alerts.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/component/tabs/css/tabs.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/component/tree/css/tree.css">
+  <!-- Static preview only: production uses the Framework icon subset runtime. -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@20..48,100..700,0..1&amp;family=Material+Symbols+Rounded:opsz,wght,FILL@20..48,100..700,0..1&amp;family=Material+Symbols+Sharp:opsz,wght,FILL@20..48,100..700,0..1&amp;display=block">
+  <style>
+    /* Prototype-only composition. Every value is based on a Framework token. */
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--sf-surface-0); color: var(--sf-on-surface); }
+    button, input { font: inherit; }
+    a { color: var(--sf-primary); }
+    code, pre { font-family: var(--sf-font-family-monospace, ui-monospace, monospace); }
+
+    .docara-prototype-shell { min-height: 100vh; }
+    .docara-prototype-header {
+      position: sticky; top: 0; z-index: 20;
+      border-bottom: 1px solid var(--sf-outline-variant);
+      background: color-mix(in srgb, var(--sf-surface-0) 92%, transparent);
+      backdrop-filter: blur(var(--sf-space-1\/3));
+    }
+    .docara-prototype-header-inner {
+      min-height: var(--sf-size-3, 3.5rem); margin-inline: auto;
+      padding: var(--sf-space-1\/2) var(--sf-space-1);
+      display: flex; align-items: center; justify-content: space-between; gap: var(--sf-space-1);
+      max-width: var(--sf-i3);
+    }
+    .docara-prototype-brand { display: flex; align-items: center; gap: var(--sf-space-1\/2); font-weight: 700; }
+    .docara-prototype-mark {
+      width: var(--sf-size-1, 2.5rem); aspect-ratio: 1; display: grid; place-items: center;
+      border-radius: var(--sf-radius-default); color: var(--sf-on-primary); background: var(--sf-primary);
+    }
+    .docara-prototype-theme { display: flex; flex-wrap: wrap; gap: var(--sf-space-1\/4); }
+    .docara-prototype-theme button[aria-pressed="true"] { background: var(--sf-primary-container); color: var(--sf-on-primary-container); }
+    .docara-prototype-layout {
+      max-width: var(--sf-i3); margin-inline: auto; display: grid;
+      grid-template-columns: minmax(12rem, 17rem) minmax(0, 1fr);
+    }
+    .docara-prototype-nav {
+      position: sticky; top: var(--sf-size-3, 3.5rem); align-self: start;
+      max-height: calc(100vh - var(--sf-size-3, 3.5rem)); overflow: auto;
+      padding: var(--sf-space-2) var(--sf-space-1); border-inline-end: 1px solid var(--sf-outline-variant);
+    }
+    .docara-prototype-nav a {
+      display: block; padding: var(--sf-space-1\/2); border-radius: var(--sf-radius-default);
+      color: var(--sf-on-surface-variant); text-decoration: none;
+    }
+    .docara-prototype-nav a:hover, .docara-prototype-nav a:focus-visible { background: var(--sf-surface-container); color: var(--sf-on-surface); }
+    .docara-prototype-main { min-width: 0; padding: var(--sf-space-3) clamp(var(--sf-space-1), 4vw, var(--sf-space-4)); }
+    .docara-prototype-intro { max-width: 54rem; margin-bottom: var(--sf-space-4); }
+    .docara-prototype-kicker { color: var(--sf-primary); font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+    .docara-prototype-note {
+      padding: var(--sf-space-1); border: 1px solid var(--sf-outline-variant);
+      border-radius: var(--sf-radius-default); background: var(--sf-surface-container);
+    }
+    .docara-prototype-group { margin-block: var(--sf-space-5); scroll-margin-top: var(--sf-space-5); }
+    .docara-prototype-group-heading { max-width: 50rem; margin-bottom: var(--sf-space-2); }
+    .docara-prototype-component {
+      margin-block: var(--sf-space-3); border: 1px solid var(--sf-outline-variant);
+      border-radius: var(--sf-radius-large, var(--sf-radius-default)); overflow: clip; background: var(--sf-surface-0);
+    }
+    .docara-prototype-component-head {
+      padding: var(--sf-space-1) var(--sf-space-2); display: flex; align-items: start;
+      justify-content: space-between; gap: var(--sf-space-1); background: var(--sf-surface-container);
+      border-bottom: 1px solid var(--sf-outline-variant);
+    }
+    .docara-prototype-component-head h3, .docara-prototype-component-head p { margin: 0; }
+    .docara-prototype-component-head p { color: var(--sf-on-surface-variant); }
+    .docara-prototype-stage { padding: var(--sf-space-2); }
+    .docara-prototype-variant-label { margin-bottom: var(--sf-space-1\/2); color: var(--sf-on-surface-variant); font-weight: 600; }
+    .docara-prototype-variant-separated { margin-top: var(--sf-space-2); }
+    .docara-prototype-syntax {
+      display: inline-flex; margin-top: var(--sf-space-1); padding: var(--sf-space-1\/3) var(--sf-space-1\/2);
+      border-radius: var(--sf-radius-default); background: var(--sf-surface-container-high, var(--sf-surface-container));
+      color: var(--sf-on-surface-variant); white-space: normal;
+    }
+    .docara-prototype-source-result { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--sf-space-1); }
+    .docara-prototype-source-result > div { min-width: 0; }
+    .docara-prototype-source-result pre { overflow-x: auto; margin: var(--sf-space-1\/2) 0 0; padding: var(--sf-space-1); border-radius: var(--sf-radius-default); background: var(--sf-surface-container); }
+    .docara-prototype-source-result code { white-space: pre-wrap; }
+    .docara-prototype-result { margin-top: var(--sf-space-1\/2); padding: var(--sf-space-1); border: 1px solid var(--sf-outline-variant); border-radius: var(--sf-radius-default); }
+    .docara-prototype-quote { margin: 0; padding: var(--sf-space-2); border-inline-start: var(--sf-space-1\/4) solid var(--sf-primary); background: var(--sf-surface-container); }
+    .docara-prototype-quote > * { margin: 0; }
+    .docara-prototype-quote footer { margin-top: var(--sf-space-1); color: var(--sf-on-surface-variant); }
+    .docara-prototype-grid { display: grid; gap: var(--sf-space-1); }
+    .docara-prototype-grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .docara-prototype-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .docara-prototype-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    .docara-prototype-grid-span-all { grid-column: 1 / -1; }
+    .docara-prototype-card {
+      min-width: 0; padding: var(--sf-space-2); border: 1px solid var(--sf-outline-variant);
+      border-radius: var(--sf-radius-default); background: var(--sf-surface-0);
+    }
+    .docara-prototype-card--plain { padding: 0; border: 0; border-radius: 0; background: transparent; }
+    .docara-prototype-card--media { display: flex; flex-direction: column; }
+    .docara-prototype-card--media .docara-prototype-figure { margin-bottom: var(--sf-space-1); }
+    .docara-prototype-card--media h5 { margin-top: 0; }
+    .docara-prototype-card > :first-child { margin-top: 0; }
+    .docara-prototype-card > :last-child { margin-bottom: 0; }
+    .docara-prototype-inline { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sf-space-1\/2); }
+    .docara-prototype-icon {
+      --docara-icon-color: var(--sf-on-surface);
+      --docara-icon-main: var(--sf-on-surface);
+      --docara-icon-on-main: var(--sf-surface-0);
+      --docara-icon-container: var(--sf-surface-container);
+      --docara-icon-on-container: var(--sf-on-surface);
+      display: inline-grid; place-items: center; flex: 0 0 auto;
+      color: var(--docara-icon-color); vertical-align: middle;
+    }
+    .docara-prototype-icon > .sf-icon { --sf-icon--color: currentColor; }
+    .docara-prototype-icon[data-scheme="primary"] {
+      --docara-icon-color: var(--sf-primary); --docara-icon-main: var(--sf-primary);
+      --docara-icon-on-main: var(--sf-on-primary); --docara-icon-container: var(--sf-primary-container);
+      --docara-icon-on-container: var(--sf-on-primary-container);
+    }
+    .docara-prototype-icon[data-scheme="secondary"] {
+      --docara-icon-color: var(--sf-secondary); --docara-icon-main: var(--sf-secondary);
+      --docara-icon-on-main: var(--sf-on-secondary); --docara-icon-container: var(--sf-secondary-container);
+      --docara-icon-on-container: var(--sf-on-secondary-container);
+    }
+    .docara-prototype-icon[data-scheme="info"] {
+      --docara-icon-color: var(--sf-info); --docara-icon-main: var(--sf-info);
+      --docara-icon-on-main: var(--sf-on-info); --docara-icon-container: var(--sf-info-container);
+      --docara-icon-on-container: var(--sf-on-info-container);
+    }
+    .docara-prototype-icon[data-scheme="success"] {
+      --docara-icon-color: var(--sf-success); --docara-icon-main: var(--sf-success);
+      --docara-icon-on-main: var(--sf-on-success); --docara-icon-container: var(--sf-success-container);
+      --docara-icon-on-container: var(--sf-on-success-container);
+    }
+    .docara-prototype-icon[data-scheme="warning"] {
+      --docara-icon-color: var(--sf-warning); --docara-icon-main: var(--sf-warning);
+      --docara-icon-on-main: var(--sf-on-warning); --docara-icon-container: var(--sf-warning-container);
+      --docara-icon-on-container: var(--sf-on-warning-container);
+    }
+    .docara-prototype-icon[data-scheme="error"] {
+      --docara-icon-color: var(--sf-error); --docara-icon-main: var(--sf-error);
+      --docara-icon-on-main: var(--sf-on-error); --docara-icon-container: var(--sf-error-container);
+      --docara-icon-on-container: var(--sf-on-error-container);
+    }
+    .docara-prototype-icon[data-variant="tonal"] { background: var(--docara-icon-container); color: var(--docara-icon-on-container); }
+    .docara-prototype-icon[data-variant="main"] { background: var(--docara-icon-main); color: var(--docara-icon-on-main); }
+    .docara-prototype-icon[data-variant="outline"] { border: 1px solid var(--docara-icon-color); color: var(--docara-icon-color); }
+    .docara-prototype-icon[data-container="square"], .docara-prototype-icon[data-container="circle"] { padding: var(--sf-space-1\/2); }
+    .docara-prototype-icon[data-container="square"] { border-radius: var(--sf-radius-default); }
+    .docara-prototype-icon[data-container="circle"] { border-radius: 50%; }
+    .docara-prototype-icon[data-size="1/3"][data-container]:not([data-container="none"]) { padding: var(--sf-space-1\/4); }
+    .docara-prototype-icon[data-size="1/2"][data-container]:not([data-container="none"]) { padding: var(--sf-space-1\/3); }
+    .docara-prototype-icon[data-size="2"][data-container]:not([data-container="none"]) { padding: var(--sf-space-1); }
+    .docara-prototype-icon-text-examples { display: grid; gap: var(--sf-space-1); }
+    .docara-prototype-icon-text-examples p { margin: 0; }
+    .docara-prototype-icon-samples { display: flex; flex-wrap: wrap; gap: var(--sf-space-1); }
+    .docara-prototype-icon-sample {
+      min-width: var(--sf-size-5); display: grid; justify-items: center; gap: var(--sf-space-1\/3);
+      color: var(--sf-on-surface-variant); text-align: center;
+    }
+    .docara-prototype-icon-sample > .docara-prototype-icon { color: var(--sf-primary); }
+    .docara-prototype-icon-sample small { line-height: var(--sf-text-height-1\/3); }
+    .docara-prototype-kbd {
+      display: inline-flex; min-width: var(--sf-c0); min-height: var(--sf-c0);
+      align-items: center; justify-content: center; padding-inline: var(--sf-a4);
+      border: 1px solid var(--sf-outline);
+      border-radius: var(--sf-radius-default); background: var(--sf-surface-container); font-size: var(--sf-text-size-1\/3);
+      line-height: var(--sf-text-height-1\/3); font-weight: 600; vertical-align: middle;
+    }
+    .docara-prototype-kbd-example { margin: 0; }
+    .docara-prototype-inline-code {
+      padding-inline: var(--sf-space-1\/4); border-radius: var(--sf-radius-default);
+      background: var(--sf-surface-container); color: var(--sf-on-surface);
+    }
+    .docara-prototype-alert-stack { display: grid; gap: var(--sf-space-1); }
+    /* Target contract preview only; the real correction belongs to ui-loader alerts source. */
+    .docara-prototype-alert-stack .sf-alert--success .sf-icon { --sf-icon--color: var(--sf-success); }
+    .docara-prototype-faq { border-top: 1px solid var(--sf-outline-variant); }
+    .docara-prototype-details { border-bottom: 1px solid var(--sf-outline-variant); }
+    .docara-prototype-details summary {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--sf-space-1);
+      cursor: pointer; padding-block: var(--sf-space-1); font-weight: 700; list-style: none;
+    }
+    .docara-prototype-details summary::-webkit-details-marker { display: none; }
+    .docara-prototype-details summary::after {
+      content: "add"; flex: 0 0 auto; font-family: "Material Symbols Outlined"; font-size: var(--sf-text-size-2);
+      font-weight: 400; color: var(--sf-on-surface-variant);
+    }
+    .docara-prototype-details[open] summary::after { content: "remove"; }
+    .docara-prototype-details > div { padding: 0 0 var(--sf-space-1); color: var(--sf-on-surface-variant); }
+    .docara-prototype-faq--surface { display: grid; gap: var(--sf-space-1\/2); border: 0; }
+    .docara-prototype-faq--surface .docara-prototype-details {
+      border: 1px solid var(--sf-outline-variant); border-radius: var(--sf-radius-default); background: var(--sf-surface-container);
+    }
+    .docara-prototype-faq--surface .docara-prototype-details summary { padding-inline: var(--sf-space-1); }
+    .docara-prototype-faq--surface .docara-prototype-details > div { padding-inline: var(--sf-space-1); }
+    .docara-prototype-tabs [role="tablist"] { display: flex; gap: var(--sf-space-1\/4); border-bottom: 1px solid var(--sf-outline-variant); }
+    .docara-prototype-tabs [role="tab"] { border: 0; background: transparent; color: var(--sf-on-surface-variant); padding: var(--sf-space-1); cursor: pointer; }
+    .docara-prototype-tabs [role="tab"][aria-selected="true"] { color: var(--sf-primary); box-shadow: inset 0 calc(-1 * var(--sf-space-1\/4)) 0 var(--sf-primary); }
+    .docara-prototype-tabs [role="tabpanel"] { padding: var(--sf-space-2) 0 0; }
+    .docara-prototype-tabs [hidden] { display: none; }
+    .docara-prototype-steps { display: grid; counter-reset: step; }
+    .docara-prototype-step { position: relative; display: grid; grid-template-columns: var(--sf-size-1, 2.5rem) 1fr; gap: var(--sf-space-1); align-items: start; padding-bottom: var(--sf-space-2); counter-increment: step; }
+    .docara-prototype-step::before {
+      content: counter(step); position: relative; z-index: 1; width: var(--sf-size-1, 2.5rem); height: var(--sf-size-1, 2.5rem);
+      display: grid; place-items: center; box-sizing: border-box; border: 1px solid var(--sf-outline);
+      border-radius: 50%; background: var(--sf-surface-0); color: var(--sf-on-surface); font-weight: 700;
+    }
+    .docara-prototype-step:not(:last-child)::after {
+      content: ""; position: absolute; inset-block-start: var(--sf-size-1, 2.5rem); inset-inline-start: calc(var(--sf-size-1, 2.5rem) / 2);
+      width: 1px; height: calc(100% - var(--sf-size-1, 2.5rem)); background: var(--sf-outline-variant);
+    }
+    .docara-prototype-step--complete::before { content: "check"; font-family: "Material Symbols Outlined"; background: var(--sf-primary); color: var(--sf-on-primary); border-color: var(--sf-primary); }
+    .docara-prototype-step--current::before { border: 2px solid var(--sf-primary); color: var(--sf-primary); background: var(--sf-primary-container); }
+    .docara-prototype-step-title {
+      display: block; margin: 0 0 var(--sf-space-1\/4); font-size: var(--sf-text-size-1);
+      line-height: var(--sf-text-height-1); font-weight: 700;
+    }
+    .docara-prototype-step p { margin: 0; color: var(--sf-on-surface-variant); }
+    .docara-prototype-tree { list-style: none; padding: 0; margin: 0; }
+    .docara-prototype-tree ul {
+      list-style: none; padding-inline-start: calc(var(--sf-icon--width, var(--sf-text-size-1)) + var(--sf-space-1\/3)); margin: 0;
+    }
+    .docara-prototype-tree-row {
+      width: 100%; min-height: var(--sf-size-1); display: grid;
+      grid-template-columns: var(--sf-text-size-1) var(--sf-text-size-2) minmax(0, 1fr);
+      align-items: center; column-gap: var(--sf-space-1\/2);
+      padding-inline: var(--sf-space-1\/3); border: 0; background: transparent;
+      color: inherit; text-align: start;
+    }
+    button.docara-prototype-tree-row { cursor: pointer; }
+    button.docara-prototype-tree-row:focus-visible { outline: 2px solid var(--sf-primary); outline-offset: -2px; }
+    .docara-prototype-tree-row .sf-icon { flex: 0 0 auto; color: var(--sf-on-surface-variant); }
+    .docara-prototype-tree-spacer { width: var(--sf-text-size-1); height: var(--sf-text-size-1); }
+    .docara-prototype-tree [hidden] { display: none; }
+    .docara-prototype-figure { margin: 0; }
+    .docara-prototype-figure-frame { overflow: hidden; border-radius: var(--sf-radius-default); background: var(--sf-surface-container); }
+    .docara-prototype-figure img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .docara-prototype-figure--contain img { object-fit: contain; }
+    .docara-prototype-figure figcaption { margin-top: var(--sf-space-1\/2); color: var(--sf-on-surface-variant); }
+    .docara-prototype-diagram { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--sf-space-1); padding: var(--sf-space-3); background: var(--sf-surface-container); border-radius: var(--sf-radius-default); }
+    .docara-prototype-node { padding: var(--sf-space-1); border: 1px solid var(--sf-outline-variant); border-radius: var(--sf-radius-default); background: var(--sf-surface-0); font-weight: 700; }
+    .docara-prototype-formula { overflow-x: auto; padding: var(--sf-space-2); text-align: center; font-family: serif; font-size: var(--sf-text-size-3); background: var(--sf-surface-container); border-radius: var(--sf-radius-default); }
+    .docara-prototype-heading-sample { display: grid; grid-template-columns: minmax(8rem, .3fr) 1fr; align-items: baseline; gap: var(--sf-space-1); border-bottom: 1px solid var(--sf-outline-variant); }
+    .docara-prototype-download { display: flex; align-items: center; justify-content: space-between; gap: var(--sf-space-1); padding: var(--sf-space-1); border: 1px solid var(--sf-outline-variant); border-radius: var(--sf-radius-default); }
+    .docara-prototype-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(18rem, .8fr); gap: var(--sf-space-3); align-items: center; padding: clamp(var(--sf-space-3), 6vw, var(--sf-space-6)); background: var(--sf-surface-container); }
+    .docara-prototype-hero img { width: 100%; max-height: 26rem; object-fit: contain; }
+    .docara-prototype-banner { display: flex; align-items: center; justify-content: space-between; gap: var(--sf-space-2); padding: var(--sf-space-2); background: var(--sf-primary-container); color: var(--sf-on-primary-container); }
+    .docara-prototype-logos { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: var(--sf-space-3); color: var(--sf-on-surface-variant); }
+    .docara-prototype-logo-word { padding: var(--sf-space-1); font-weight: 800; letter-spacing: .05em; }
+    .docara-prototype-media { display: grid; grid-template-columns: minmax(16rem, .8fr) minmax(0, 1fr); gap: var(--sf-space-3); align-items: center; }
+    .docara-prototype-media[data-side="right"] .docara-prototype-figure { order: 2; }
+    .docara-prototype-media[data-side="right"] .docara-prototype-media-copy { order: 1; }
+    .docara-prototype-media .docara-prototype-figure-frame { width: 100%; }
+    .docara-prototype-media-copy { display: flex; flex-direction: column; align-items: flex-start; gap: var(--sf-space-1); }
+    .docara-prototype-media-copy > * { margin: 0; }
+    .docara-prototype-media-icon { color: var(--sf-primary); }
+    .docara-prototype-code { overflow: auto; margin: 0; padding: var(--sf-space-1); border-radius: var(--sf-radius-default); background: var(--sf-surface-container); }
+    .docara-prototype-code-block { overflow: hidden; border: 1px solid var(--sf-outline-variant); border-radius: var(--sf-radius-default); background: var(--sf-surface-container); }
+    .docara-prototype-code-toolbar {
+      min-height: var(--sf-size-1); display: flex; align-items: center; justify-content: space-between;
+      gap: var(--sf-space-1); padding: var(--sf-space-1\/3) var(--sf-space-1);
+      border-bottom: 1px solid var(--sf-outline-variant); color: var(--sf-on-surface-variant);
+    }
+    .docara-prototype-code-toolbar strong { color: var(--sf-on-surface); }
+    .docara-prototype-code-copy {
+      width: var(--sf-size-1); height: var(--sf-size-1); display: inline-grid; place-items: center;
+      border: 0; border-radius: var(--sf-radius-default); background: transparent; color: var(--sf-on-surface-variant); cursor: pointer;
+    }
+    .docara-prototype-code-copy:hover, .docara-prototype-code-copy:focus-visible { background: var(--sf-surface-container-high); color: var(--sf-on-surface); }
+    .docara-prototype-code-block pre { overflow: auto; margin: 0; padding: var(--sf-space-1); background: transparent; }
+    .docara-prototype-code-block code { white-space: pre; }
+    .docara-prototype-example-viewer .docara-prototype-code-toolbar {
+      padding: 0 var(--sf-space-1);
+      background: var(--sf-surface-0);
+    }
+    .docara-prototype-example-viewer [role="tablist"] {
+      display: flex; align-self: stretch; gap: var(--sf-space-1\/4); border: 0;
+    }
+    .docara-prototype-example-viewer [role="tab"] {
+      min-height: var(--sf-size-1); padding: var(--sf-space-1\/3) var(--sf-space-1);
+      border: 0; background: transparent; color: var(--sf-on-surface-variant); cursor: pointer;
+    }
+    .docara-prototype-example-viewer [role="tab"][aria-selected="true"] {
+      color: var(--sf-primary); box-shadow: inset 0 -2px 0 var(--sf-primary);
+    }
+    .docara-prototype-example-viewer [role="tabpanel"] { min-width: 0; }
+    .docara-prototype-example-viewer [role="tabpanel"][hidden],
+    .docara-prototype-example-viewer [data-code-copy][hidden] { display: none; }
+    .docara-prototype-example-demo {
+      min-height: 10rem; display: flex; flex-wrap: wrap; align-items: center;
+      gap: var(--sf-space-1); padding: var(--sf-space-2); background: var(--sf-surface-0);
+    }
+    .docara-prototype-example-viewer [data-example-source],
+    .docara-prototype-example-viewer [data-example-source] pre {
+      background: var(--sf-surface-0);
+    }
+    .docara-prototype-example-viewer [data-example-source] pre { border-radius: 0; }
+    .docara-prototype-token-variable { color: var(--sf-primary); }
+    .docara-prototype-token-string { color: var(--sf-success); }
+    .docara-prototype-table-wrap { overflow-x: auto; border: 1px solid var(--sf-outline-variant); border-radius: var(--sf-radius-default); }
+    .docara-prototype-table { width: 100%; min-width: 38rem; border-collapse: collapse; }
+    .docara-prototype-table th, .docara-prototype-table td { padding: var(--sf-space-1); border-bottom: 1px solid var(--sf-outline-variant); text-align: start; vertical-align: top; }
+    .docara-prototype-table th { background: var(--sf-surface-container); }
+    .docara-prototype-table tr:last-child td { border-bottom: 0; }
+    .docara-prototype-reference-list, .docara-prototype-backlinks { display: grid; gap: var(--sf-space-1\/2); margin: 0; padding-inline-start: var(--sf-space-2); }
+    .docara-prototype-page-meta { display: flex; flex-wrap: wrap; align-items: center; gap: var(--sf-space-1); color: var(--sf-on-surface-variant); }
+    .docara-prototype-page-meta > span { display: inline-flex; align-items: center; gap: var(--sf-space-1\/3); }
+    .docara-prototype-metadata-preview {
+      overflow: hidden; display: grid; grid-template-columns: minmax(11rem, 14rem) minmax(0, 1fr);
+      border: 1px solid var(--sf-outline-variant); border-radius: var(--sf-radius-default); background: var(--sf-surface-0);
+    }
+    .docara-prototype-metadata-nav {
+      padding: var(--sf-space-1); border-inline-end: 1px solid var(--sf-outline-variant); background: var(--sf-surface-container);
+    }
+    .docara-prototype-metadata-package {
+      display: flex; align-items: center; justify-content: space-between; gap: var(--sf-space-1\/2);
+      padding-bottom: var(--sf-space-1); border-bottom: 1px solid var(--sf-outline-variant);
+    }
+    .docara-prototype-metadata-links { display: grid; gap: var(--sf-space-1\/4); margin-top: var(--sf-space-1); }
+    .docara-prototype-metadata-links a {
+      padding: var(--sf-space-1\/2); border-radius: var(--sf-radius-default); color: var(--sf-on-surface-variant); text-decoration: none;
+    }
+    .docara-prototype-metadata-links a[aria-current="page"] { background: var(--sf-primary-container); color: var(--sf-on-primary-container); font-weight: 700; }
+    .docara-prototype-metadata-page { min-width: 0; padding: var(--sf-space-2); }
+    .docara-prototype-metadata-header { display: flex; align-items: start; justify-content: space-between; gap: var(--sf-space-1); }
+    .docara-prototype-metadata-header h4, .docara-prototype-metadata-header p { margin: 0; }
+    .docara-prototype-metadata-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: var(--sf-space-1\/2); }
+    .docara-prototype-owner {
+      min-height: var(--sf-size-1); display: inline-flex; align-items: center; gap: var(--sf-space-1\/2);
+      padding-inline: var(--sf-space-1\/2); border-radius: var(--sf-radius-default); background: var(--sf-surface-container);
+      color: var(--sf-on-surface); white-space: nowrap;
+    }
+    .docara-prototype-owner-mark {
+      width: var(--sf-size-1\/2, 1.75rem); aspect-ratio: 1; display: inline-grid; place-items: center;
+      border-radius: 50%; background: var(--sf-primary-container); color: var(--sf-on-primary-container); font-weight: 700;
+    }
+    .docara-prototype-metadata-description { max-width: 46rem; margin-block: var(--sf-space-1); color: var(--sf-on-surface-variant); }
+    .docara-prototype-metadata-facets { display: flex; flex-wrap: wrap; gap: var(--sf-space-1\/2); }
+    .docara-prototype-metadata-history {
+      display: flex; flex-wrap: wrap; align-items: center; gap: var(--sf-space-1);
+      margin-top: var(--sf-space-2); padding-top: var(--sf-space-1); border-top: 1px solid var(--sf-outline-variant);
+      color: var(--sf-on-surface-variant);
+    }
+    .docara-prototype-metadata-history > span { display: inline-flex; align-items: center; gap: var(--sf-space-1\/3); }
+    .docara-prototype-article-preview {
+      padding: var(--sf-space-2); border: 1px solid var(--sf-outline-variant); border-radius: var(--sf-radius-default);
+      background: var(--sf-surface-0);
+    }
+    .docara-prototype-article-preview h4, .docara-prototype-article-preview p { margin-top: 0; }
+    .docara-prototype-metadata-source summary { cursor: pointer; font-weight: 700; }
+    .docara-prototype-metadata-source pre { overflow: auto; margin-bottom: 0; padding: var(--sf-space-1); border-radius: var(--sf-radius-default); background: var(--sf-surface-container); }
+    .docara-prototype-embed-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--sf-space-1); }
+    .docara-prototype-embed { overflow: hidden; border: 1px solid var(--sf-outline-variant); border-radius: var(--sf-radius-default); background: var(--sf-surface-container); }
+    .docara-prototype-embed-frame { aspect-ratio: 16 / 9; display: grid; place-items: center; padding: var(--sf-space-2); color: var(--sf-on-surface-variant); text-align: center; }
+    .docara-prototype-embed-frame .sf-icon { color: var(--sf-primary); font-size: var(--sf-text-size-4); }
+    .docara-prototype-embed figcaption { padding: var(--sf-space-1); border-top: 1px solid var(--sf-outline-variant); }
+    .docara-prototype-warning { border-inline-start: var(--sf-space-1\/4) solid var(--sf-warning, var(--sf-primary)); padding-inline-start: var(--sf-space-1); }
+
+    @media (max-width: 64rem) {
+      .docara-prototype-layout { grid-template-columns: 1fr; }
+      .docara-prototype-nav { position: static; max-height: none; display: flex; overflow-x: auto; border-inline-end: 0; border-bottom: 1px solid var(--sf-outline-variant); padding: var(--sf-space-1\/2); }
+      .docara-prototype-nav > div { display: flex; flex: 0 0 auto; }
+      .docara-prototype-nav h2 { display: none; }
+      .docara-prototype-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 42rem) {
+      .docara-prototype-header-inner { align-items: stretch; flex-direction: column; }
+      .docara-prototype-theme { width: 100%; }
+      .docara-prototype-theme .sf-button { flex: 1 1 auto; }
+      .docara-prototype-nav { min-width: 0; width: 100%; }
+      .docara-prototype-main { padding: var(--sf-space-2) var(--sf-space-1); }
+      .docara-prototype-component-head, .docara-prototype-banner, .docara-prototype-download { align-items: stretch; flex-direction: column; }
+      .docara-prototype-grid-2, .docara-prototype-grid-3, .docara-prototype-grid-4, .docara-prototype-hero, .docara-prototype-media { grid-template-columns: 1fr; }
+      .docara-prototype-embed-grid { grid-template-columns: 1fr; }
+      .docara-prototype-source-result { grid-template-columns: 1fr; }
+      .docara-prototype-metadata-preview { grid-template-columns: 1fr; }
+      .docara-prototype-metadata-nav { border-inline-end: 0; border-bottom: 1px solid var(--sf-outline-variant); }
+      .docara-prototype-metadata-links { display: flex; overflow-x: auto; }
+      .docara-prototype-metadata-links a { flex: 0 0 auto; }
+      .docara-prototype-metadata-header { align-items: stretch; flex-direction: column; }
+      .docara-prototype-metadata-actions { justify-content: flex-start; }
+      .docara-prototype-media[data-side="right"] .docara-prototype-figure,
+      .docara-prototype-media[data-side="right"] .docara-prototype-media-copy { order: initial; }
+      .docara-prototype-stage { padding: var(--sf-space-1); }
+    }
+  </style>
+</head>
+<body>
+<div class="docara-prototype-shell">
+  <header class="docara-prototype-header">
+    <div class="docara-prototype-header-inner">
+      <div class="docara-prototype-brand">
+        <span class="docara-prototype-mark"><i class="sf-icon sf-icon-loaded">description</i></span>
+        <span>Docara · компоненты</span>
+      </div>
+      <div class="docara-prototype-theme" aria-label="Тема демонстратора">
+        <button class="sf-button sf-button--link sf-button--on-surface sf-button--size-1" type="button" data-theme="system" aria-pressed="false"><span class="sf-button-text-container">Система</span></button>
+        <button class="sf-button sf-button--link sf-button--on-surface sf-button--size-1" type="button" data-theme="light" aria-pressed="true"><span class="sf-button-text-container">Светлая</span></button>
+        <button class="sf-button sf-button--link sf-button--on-surface sf-button--size-1" type="button" data-theme="dark" aria-pressed="false"><span class="sf-button-text-container">Тёмная</span></button>
+      </div>
+    </div>
+  </header>
+
+  <div class="docara-prototype-layout">
+    <nav class="docara-prototype-nav" aria-label="Разделы демонстратора">
+      <h2 class="sf-text-1">Компоненты</h2>
+      <div>
+        <a href="#inline">В строке</a><a href="#documentation">Документация</a><a href="#publishing">Код и связи</a><a href="#actions">Действия и сетка</a><a href="#landing">Лендинг</a><a href="#advanced">Расширение</a>
+      </div>
+    </nav>
+
+    <main class="docara-prototype-main">
+      <section class="docara-prototype-intro">
+        <div class="docara-prototype-kicker">UX-контракт до реализации</div>
+        <h1>Будущая библиотека компонентов Docara</h1>
+        <p>Одна страница показывает рекомендуемый публичный язык Markdown-компонентов и основные варианты. Внутри используются токены, утилиты и готовые элементы SIMAI Framework; новые композиции пока помечены как прототип.</p>
+        <div class="docara-prototype-note"><strong>Главное правило:</strong> автор выбирает смысл компонента, а не технический пакет. Ширина задаётся родительской сеткой, поэтому не нужны имена вроде <code>card-1/4</code>.</div>
+      </section>
+
+      <section class="docara-prototype-group" id="inline">
+        <div class="docara-prototype-group-heading"><div class="docara-prototype-kicker">Markdown · inline</div><h2>Небольшие элементы внутри текста</h2><p>Они не создают отдельную секцию и естественно встраиваются в абзац.</p></div>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Badge</h3><p>Актуальный контракт SIMAI Framework: тип, цветовая схема и размер задаются независимо.</p></div><code>:badge[текст]{type=tonal scheme=primary size=1/3}</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid docara-prototype-grid-3">
+            <div>
+              <div class="docara-prototype-variant-label">Main</div>
+              <div class="docara-prototype-inline">
+                <span class="sf-badge sf-badge--main sf-badge--primary sf-badge--size-1 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">Новая версия</span></span></span>
+                <span class="sf-badge sf-badge--main sf-badge--on-surface sf-badge--size-1 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">PHP 8.2</span></span></span>
+              </div>
+            </div>
+            <div>
+              <div class="docara-prototype-variant-label">Tonal</div>
+              <div class="docara-prototype-inline">
+                <span class="sf-badge sf-badge--tonal sf-badge--primary sf-badge--size-1 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">Рекомендуется</span></span></span>
+                <span class="sf-badge sf-badge--tonal sf-badge--secondary sf-badge--size-1 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">Beta</span></span></span>
+              </div>
+            </div>
+            <div>
+              <div class="docara-prototype-variant-label">Outline</div>
+              <div class="docara-prototype-inline">
+                <span class="sf-badge sf-badge--outline sf-badge--neutral sf-badge--size-1 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">Необязательно</span></span></span>
+                <span class="sf-badge sf-badge--outline sf-badge--tertiary sf-badge--size-1 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">Эксперимент</span></span></span>
+              </div>
+            </div>
+            <div class="docara-prototype-variant-separated docara-prototype-grid-span-all">
+              <div class="docara-prototype-variant-label">Размеры</div>
+              <div class="docara-prototype-inline">
+                <span class="sf-badge sf-badge--main sf-badge--primary sf-badge--size-1/3 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">1/3</span></span></span>
+                <span class="sf-badge sf-badge--main sf-badge--primary sf-badge--size-1/2 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">1/2</span></span></span>
+                <span class="sf-badge sf-badge--main sf-badge--primary sf-badge--size-1 flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">1</span></span></span>
+                <span class="color-on-surface-variant">42 допустимых сочетания; <code>tonal + on-surface</code> нормализуется в <code>main + on-surface</code>.</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Icon</h3><p>Одна универсальная иконка для текста и композиций. Размер, контейнер, семейство, толщина и заливка задаются независимо.</p></div><code>:icon[search]{size=1/2 weight=400 family=outlined}</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid docara-prototype-grid-2">
+            <div>
+              <div class="docara-prototype-variant-label">Внутри обычного текста</div>
+              <div class="docara-prototype-icon-text-examples">
+                <p>Найдите страницу через <span class="docara-prototype-icon" data-size="1/3" data-container="none" data-variant="plain" data-scheme="primary"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1/3" aria-hidden="true">search</i></span> поиск.</p>
+                <p>Сборка <span class="docara-prototype-icon" data-size="1/2" data-container="none" data-variant="plain" data-scheme="success"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1/2" aria-hidden="true">check_circle</i></span> успешно завершена.</p>
+                <p><span class="docara-prototype-icon" data-size="1" data-container="none" data-variant="plain" data-scheme="warning" role="img" aria-label="Внимание"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1" aria-hidden="true">warning</i></span> Проверьте настройки перед публикацией.</p>
+              </div>
+            </div>
+            <div>
+              <div class="docara-prototype-variant-label">Размеры · без контейнера</div>
+              <div class="docara-prototype-inline">
+                <span class="docara-prototype-icon" data-size="1/3" data-container="none" data-variant="plain" data-scheme="primary" title="Размер 1/3"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1/3" aria-hidden="true">star</i></span>
+                <span class="docara-prototype-icon" data-size="1/2" data-container="none" data-variant="plain" data-scheme="primary" title="Размер 1/2"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1/2" aria-hidden="true">star</i></span>
+                <span class="docara-prototype-icon" data-size="1" data-container="none" data-variant="plain" data-scheme="primary" title="Размер 1"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1" aria-hidden="true">star</i></span>
+                <span class="docara-prototype-icon" data-size="2" data-container="none" data-variant="plain" data-scheme="primary" title="Размер 2"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-2" aria-hidden="true">star</i></span>
+              </div>
+              <div class="docara-prototype-variant-label docara-prototype-variant-separated">Формы и оформление</div>
+              <div class="docara-prototype-inline">
+                <span class="docara-prototype-icon" data-size="1/2" data-container="square" data-variant="tonal" data-scheme="primary" title="Square · tonal · primary"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1/2" aria-hidden="true">edit_note</i></span>
+                <span class="docara-prototype-icon" data-size="1" data-container="circle" data-variant="tonal" data-scheme="secondary" title="Circle · tonal · secondary"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1" aria-hidden="true">schema</i></span>
+                <span class="docara-prototype-icon" data-size="1" data-container="square" data-variant="main" data-scheme="success" title="Square · main · success"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1" aria-hidden="true">check</i></span>
+                <span class="docara-prototype-icon" data-size="1" data-container="circle" data-variant="outline" data-scheme="warning" title="Circle · outline · warning"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1" aria-hidden="true">priority_high</i></span>
+                <span class="docara-prototype-icon" data-size="1" data-container="square" data-variant="tonal" data-scheme="error" title="Square · tonal · error"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1" aria-hidden="true">error</i></span>
+              </div>
+            </div>
+            <div class="docara-prototype-grid-span-all">
+              <div class="docara-prototype-variant-label">Семейства</div>
+              <div class="docara-prototype-icon-samples">
+                <span class="docara-prototype-icon-sample"><span class="docara-prototype-icon" data-size="3" data-container="none" data-variant="plain" data-scheme="primary"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-3" aria-hidden="true">home</i></span><small>Outlined<br>по умолчанию</small></span>
+                <span class="docara-prototype-icon-sample"><span class="docara-prototype-icon" data-size="3" data-container="none" data-variant="plain" data-scheme="primary"><i class="sf-icon sf-icon-loaded sf-icon-rounded sf-icon-regular sf-icon--size-3" aria-hidden="true">home</i></span><small>Rounded</small></span>
+                <span class="docara-prototype-icon-sample"><span class="docara-prototype-icon" data-size="3" data-container="none" data-variant="plain" data-scheme="primary"><i class="sf-icon sf-icon-loaded sf-icon-shape sf-icon-regular sf-icon--size-3" aria-hidden="true">home</i></span><small>Sharp</small></span>
+              </div>
+            </div>
+            <div class="docara-prototype-grid-span-all">
+              <div class="docara-prototype-variant-label">Толщина · три рекомендуемых веса</div>
+              <div class="docara-prototype-icon-samples">
+                <span class="docara-prototype-icon-sample"><span class="docara-prototype-icon" data-size="2" data-container="none" data-variant="plain" data-scheme="primary"><i class="sf-icon sf-icon-loaded sf-icon-light sf-icon--size-2" aria-hidden="true">settings</i></span><small>Light<br>300</small></span>
+                <span class="docara-prototype-icon-sample"><span class="docara-prototype-icon" data-size="2" data-container="none" data-variant="plain" data-scheme="primary"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-2" aria-hidden="true">settings</i></span><small>Regular<br>400</small></span>
+                <span class="docara-prototype-icon-sample"><span class="docara-prototype-icon" data-size="2" data-container="none" data-variant="plain" data-scheme="primary"><i class="sf-icon sf-icon-loaded sf-icon-medium sf-icon--size-2" aria-hidden="true">settings</i></span><small>Medium<br>500</small></span>
+              </div>
+            </div>
+            <div class="docara-prototype-grid-span-all">
+              <div class="docara-prototype-variant-label">Контурная и залитая версия</div>
+              <div class="docara-prototype-icon-samples">
+                <span class="docara-prototype-icon-sample"><span class="docara-prototype-icon" data-size="2" data-container="none" data-variant="plain" data-scheme="primary"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-2" aria-hidden="true">settings</i></span><small>Regular<br>filled=false</small></span>
+                <span class="docara-prototype-icon-sample"><span class="docara-prototype-icon" data-size="2" data-container="none" data-variant="plain" data-scheme="primary"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon-filled sf-icon--size-2" aria-hidden="true">settings</i></span><small>Filled<br>filled=true</small></span>
+              </div>
+              <span class="docara-prototype-syntax">Обычный вызов остаётся коротким: <code>:icon[search]</code>. Дополнительные параметры нужны только когда дизайн требует другого семейства, веса или заливки.</span>
+            </div>
+            <p class="docara-prototype-note docara-prototype-grid-span-all"><strong>Доступность:</strong> декоративная иконка скрывается от screen reader через <code>aria-hidden</code>. Если смысл передаётся только иконкой, контейнер получает понятный <code>aria-label</code>.</p>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Button</h3><p>Строчное действие: может находиться внутри композиции или отдельно на строке.</p></div><code>:button[Начать]{variant=main scheme=primary}</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid">
+            <div class="docara-prototype-inline"><button class="sf-button sf-button--default sf-button--primary sf-button--size-1" type="button"><span class="sf-button-text-container">Начать</span></button><button class="sf-button sf-button--tonal sf-button--on-surface sf-button--size-1" type="button"><span class="sf-button-text-container">Посмотреть пример</span></button><button class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1" type="button"><span class="sf-button-text-container">GitHub</span></button><button class="sf-button sf-button--link sf-button--primary sf-button--size-1" type="button"><span class="sf-button-text-container">Подробнее</span><i class="sf-icon sf-icon-loaded">arrow_forward</i></button></div>
+            <p class="docara-prototype-note"><strong>Композиция:</strong> несколько кнопок размещает родительский контейнер действий. Сама кнопка не создаёт секцию и не управляет шириной строки.</p>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Kbd</h3><p>Клавиша или сочетание клавиш, которое должен нажать пользователь.</p></div><code>:kbd[⌘ K]</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid">
+            <p class="docara-prototype-kbd-example">Нажмите <kbd class="docara-prototype-kbd">Esc</kbd>, чтобы закрыть окно.</p>
+            <p class="docara-prototype-kbd-example">Откройте поиск сочетанием <kbd class="docara-prototype-kbd">⌘</kbd> + <kbd class="docara-prototype-kbd">K</kbd>, затем нажмите <kbd class="docara-prototype-kbd">Enter</kbd>.</p>
+            <div class="docara-prototype-note"><strong>Когда использовать:</strong> только для пользовательского ввода с клавиатуры. Команды, пути и параметры оформляются как inline code.</div>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Inline code</h3><p>Команда, имя файла, параметр или машинное значение внутри обычного текста.</p></div><code>`default_locale`</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid">
+            <div class="docara-prototype-source-result">
+              <div><strong>Как написать в Markdown</strong><pre><code>Параметр `default_locale` задаётся в файле `docara.json`.</code></pre></div>
+              <div><strong>Что увидит читатель</strong><p class="docara-prototype-result">Параметр <code class="docara-prototype-inline-code">default_locale</code> задаётся в файле <code class="docara-prototype-inline-code">docara.json</code>.</p></div>
+            </div>
+            <div class="docara-prototype-source-result">
+              <div><strong>Другие примеры</strong><pre><code>`composer install`
+`content/ru/index.md`
+`APP_ENV=production`</code></pre></div>
+              <div><strong>Назначение</strong><p class="docara-prototype-result">Подходит для коротких команд, путей и значений. Для многострочного фрагмента используется отдельный блок кода.</p></div>
+            </div>
+            <div class="docara-prototype-note"><strong>Это обычный Markdown.</strong> Отдельная директива Docara не нужна: достаточно заключить значение в одиночные обратные кавычки.</div>
+          </div>
+        </article>
+      </section>
+
+      <section class="docara-prototype-group" id="documentation">
+        <div class="docara-prototype-group-heading"><div class="docara-prototype-kicker">Docara · documentation</div><h2>Компоненты для объяснения</h2><p>Подходят для руководств, справочников, API и обучающих материалов.</p></div>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Alert</h3><p>Единый рекомендуемый вариант: семантические фон, граница и иконка.</p></div><code>:::alert {type=info}</code></header>
+          <div class="docara-prototype-stage docara-prototype-alert-stack">
+            <div class="sf-alert sf-alert--info sf-alert--default flex items-main-start items-cross-start"><i class="sf-icon sf-icon-loaded sf-icon-solid">info</i><div class="sf-alert-wrap flex flex-col"><div class="sf-alert-text">Информация</div><div class="sf-alert--supporting-text">Нейтральное пояснение, которое помогает продолжить работу.</div></div></div>
+            <div class="sf-alert sf-alert--success sf-alert--default flex items-main-start items-cross-start"><i class="sf-icon sf-icon-loaded sf-icon-solid">check_circle</i><div class="sf-alert-wrap flex flex-col"><div class="sf-alert-text">Готово</div><div class="sf-alert--supporting-text">Сборка прошла проверку и готова к просмотру.</div></div></div>
+            <div class="sf-alert sf-alert--warning sf-alert--default flex items-main-start items-cross-start"><i class="sf-icon sf-icon-loaded sf-icon-solid">warning</i><div class="sf-alert-wrap flex flex-col"><div class="sf-alert-text">Обратите внимание</div><div class="sf-alert--supporting-text">Изменение затронет адреса опубликованных страниц.</div></div></div>
+            <div class="sf-alert sf-alert--danger sf-alert--default flex items-main-start items-cross-start"><i class="sf-icon sf-icon-loaded sf-icon-solid">dangerous</i><div class="sf-alert-wrap flex flex-col"><div class="sf-alert-text">Ошибка</div><div class="sf-alert--supporting-text">Исправьте конфигурацию перед публикацией.</div></div></div>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Quote</h3><p>Обычная цитата остаётся стандартным Markdown; сведения об авторе и источнике добавляются необязательными атрибутами.</p></div><code>&gt; Текст цитаты</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid">
+            <div class="docara-prototype-source-result">
+              <div><strong>Обычная цитата</strong><pre><code>&gt; Хорошая документация помогает выполнить задачу.</code></pre></div>
+              <div><strong>Результат</strong><div class="docara-prototype-result"><blockquote class="docara-prototype-quote"><p>Хорошая документация помогает выполнить задачу.</p></blockquote></div></div>
+            </div>
+            <div class="docara-prototype-source-result">
+              <div><strong>Цитата с указанием источника</strong><pre><code>&gt; Сначала определите задачу читателя, затем проектируйте структуру страницы.
+{author="Автор материала" source="Название источника" url="https://example.com/source"}</code></pre></div>
+              <div><strong>Результат</strong><div class="docara-prototype-result"><blockquote class="docara-prototype-quote"><p>Сначала определите задачу читателя, затем проектируйте структуру страницы.</p><footer>— <cite>Автор материала, Название источника</cite></footer></blockquote></div></div>
+            </div>
+            <p class="docara-prototype-note"><strong>Контракт:</strong> без атрибутов используется нативный Markdown. Атрибуты <code>author</code>, <code>source</code> и <code>url</code> нужны только для проверяемой атрибуции; пустые значения не выводятся.</p>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Details / FAQ</h3><p>Два спокойных представления без тяжёлой интерактивной заливки.</p></div><code>:::details {view=lines open=true}</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid docara-prototype-grid-2">
+            <div><div class="docara-prototype-variant-label">Линии · рекомендуется для документации</div><div class="docara-prototype-faq"><details class="docara-prototype-details" open><summary>Что требуется для установки?</summary><div>PHP, Composer и пустой каталог проекта. Node.js не требуется для portable-сборки.</div></details><details class="docara-prototype-details"><summary>Можно ли разместить на обычном хостинге?</summary><div>Да. Результат — статические файлы для любого HTTP-сервера.</div></details></div></div>
+            <div><div class="docara-prototype-variant-label">Мягкие блоки · для короткого FAQ</div><div class="docara-prototype-faq docara-prototype-faq--surface"><details class="docara-prototype-details" open><summary>Обновление безопасно?</summary><div>Сначала выполняется проверка, затем воспроизводимая сборка.</div></details><details class="docara-prototype-details"><summary>Можно изменить оформление?</summary><div>Да, через настройки и токены SIMAI Framework.</div></details></div></div>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Tabs</h3><p>Несколько взаимозаменяемых представлений одного материала.</p></div><code>:::tabs</code></header>
+          <div class="docara-prototype-stage docara-prototype-tabs" data-tabs>
+            <div role="tablist" aria-label="Пример установки"><button role="tab" aria-selected="true" aria-controls="tab-composer" id="button-composer">Composer</button><button role="tab" aria-selected="false" aria-controls="tab-manual" id="button-manual" tabindex="-1">Вручную</button><button role="tab" aria-selected="false" aria-controls="tab-result" id="button-result" tabindex="-1">Результат</button></div>
+            <div role="tabpanel" id="tab-composer" aria-labelledby="button-composer"><pre class="docara-prototype-code"><code>composer create-project simai/docara my-docs</code></pre></div>
+            <div role="tabpanel" id="tab-manual" aria-labelledby="button-manual" hidden><p>Скачайте архив, распакуйте его и запустите команду сборки.</p></div>
+            <div role="tabpanel" id="tab-result" aria-labelledby="button-result" hidden><p>Готовый сайт появится в каталоге <code>output/</code>.</p></div>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Steps</h3><p>Вертикальная временная шкала показывает ход инструкции и состояния шагов.</p></div><code>:::steps {view=timeline current=2}</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid docara-prototype-grid-2">
+            <div><div class="docara-prototype-variant-label">Инструкция · рекомендуемый вариант</div><div class="docara-prototype-steps"><div class="docara-prototype-step docara-prototype-step--complete"><div><strong class="docara-prototype-step-title">Создайте проект</strong><p>Одна команда готовит структуру.</p></div></div><div class="docara-prototype-step docara-prototype-step--current"><div><strong class="docara-prototype-step-title">Добавьте страницы</strong><p>Пишите содержание в Markdown.</p></div></div><div class="docara-prototype-step"><div><strong class="docara-prototype-step-title">Опубликуйте</strong><p>Проверьте и выгрузите результат.</p></div></div></div></div>
+            <div class="docara-prototype-note"><strong>Контракт состояний</strong><p><code>wait</code>, <code>process</code>, <code>finish</code> и <code>error</code>. Для короткого процесса остаётся существующий горизонтальный <code>sf-steps</code>; для документации предлагается добавить во Framework представление <code>timeline</code>.</p></div>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Tree</h3><p>Структура файлов, каталогов или иерархических сущностей.</p></div><code>:::tree</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid docara-prototype-grid-2">
+            <ul class="docara-prototype-tree"><li><button class="docara-prototype-tree-row" type="button" data-tree-toggle aria-expanded="true"><i class="sf-icon sf-icon-loaded" data-tree-chevron>expand_more</i><i class="sf-icon sf-icon-loaded" data-tree-folder>folder_open</i><span>content</span></button><ul><li><button class="docara-prototype-tree-row" type="button" data-tree-toggle aria-expanded="true"><i class="sf-icon sf-icon-loaded" data-tree-chevron>expand_more</i><i class="sf-icon sf-icon-loaded" data-tree-folder>folder_open</i><span>ru</span></button><ul><li><span class="docara-prototype-tree-row"><span class="docara-prototype-tree-spacer" aria-hidden="true"></span><i class="sf-icon sf-icon-loaded">description</i><span>index.md</span></span></li><li><span class="docara-prototype-tree-row"><span class="docara-prototype-tree-spacer" aria-hidden="true"></span><i class="sf-icon sf-icon-loaded">data_object</i><span>section.json</span></span></li></ul></li><li><button class="docara-prototype-tree-row" type="button" data-tree-toggle aria-expanded="false"><i class="sf-icon sf-icon-loaded" data-tree-chevron>chevron_right</i><i class="sf-icon sf-icon-loaded" data-tree-folder>folder</i><span>assets</span></button><ul hidden><li><span class="docara-prototype-tree-row"><span class="docara-prototype-tree-spacer" aria-hidden="true"></span><i class="sf-icon sf-icon-loaded">image</i><span>cover.webp</span></span></li></ul></li></ul></li><li><span class="docara-prototype-tree-row"><span class="docara-prototype-tree-spacer" aria-hidden="true"></span><i class="sf-icon sf-icon-loaded">data_object</i><span>docara.json</span></span></li></ul>
+            <div class="docara-prototype-note"><strong>Структура, а не меню.</strong><p>Строка не получает hover или постоянное выделение. Интерактивна только ветвь, которую можно раскрыть; клавиатурный фокус остаётся видимым. Между стрелкой, иконкой типа и текстом используется системный отступ.</p></div>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Image и Figure</h3><p>Простое Markdown-изображение и блочная иллюстрация с подписью используют одну модель медиа.</p></div><code>![alt](image.png){ratio=16x9 fit=cover}</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid">
+            <div class="docara-prototype-note"><strong>Правило отображения.</strong><p>Изображение внутри текста остаётся строчным и подходит для небольшого знака или логотипа. Изображение, которое одно занимает абзац, выводится блочно. <code>figure</code> — блочный семантический контейнер только для случая с подписью, источником или более сложной композицией.</p></div>
+            <div class="docara-prototype-grid docara-prototype-grid-3"><figure class="docara-prototype-figure"><div class="docara-prototype-figure-frame aspect-16x9"><img src="file:///Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/docs/site/assets/docara-flow.png" alt="Схема сборки Docara"></div><figcaption>16:9 · обложки и широкие схемы.</figcaption></figure><figure class="docara-prototype-figure"><div class="docara-prototype-figure-frame aspect-4x3"><img src="file:///Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/docs/site/assets/docara-screen.png" alt="Интерфейс документации"></div><figcaption>4:3 · снимки интерфейса.</figcaption></figure><figure class="docara-prototype-figure docara-prototype-figure--contain"><div class="docara-prototype-figure-frame aspect-1x1"><img src="file:///Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/docs/site/assets/docara-flow.png" alt="Схема в квадрате"></div><figcaption>1:1 + contain · схема без обрезки.</figcaption></figure></div>
+            <div class="docara-prototype-grid docara-prototype-grid-2"><span class="docara-prototype-syntax"><strong>Без подписи:</strong><br><code>![Схема](flow.png){ratio=16x9 fit=contain}</code></span><span class="docara-prototype-syntax"><strong>С подписью:</strong><br><code>:::figure {ratio=16x9 fit=contain}<br>![Схема](flow.png)<br>Как Docara собирает страницу.<br>:::</code></span></div>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Diagram</h3><p>Безопасный декларативный источник Mermaid превращается в доступный SVG.</p></div><code>:::diagram {engine=mermaid}</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid docara-prototype-grid-2"><div class="docara-prototype-diagram"><span class="docara-prototype-node">Markdown</span><i class="sf-icon sf-icon-loaded">arrow_forward</i><span class="docara-prototype-node">Parser</span><i class="sf-icon sf-icon-loaded">arrow_forward</i><span class="docara-prototype-node">HTML</span></div><pre class="docara-prototype-code"><code>flowchart LR
+  Markdown --&gt; Parser
+  Parser --&gt; HTML</code></pre></div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Math</h3><p>Формулы хранятся в стандартной TeX-нотации и отображаются закреплённой локальной версией KaTeX.</p></div><code>\(E=mc^2\) · \[...\]</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid docara-prototype-grid-2"><div><div class="docara-prototype-variant-label">Строчная формула</div><p>Энергия вычисляется как <strong>E = mc²</strong> внутри обычного абзаца.</p><pre class="docara-prototype-code"><code>Энергия: \(E=mc^2\)</code></pre></div><div><div class="docara-prototype-variant-label">Блочная формула</div><div class="docara-prototype-formula" role="math" aria-label="Интеграл от нуля до бесконечности">∫₀∞ e⁻ˣ dx = 1</div><pre class="docara-prototype-code"><code>\[\int_0^\infty e^{-x}\,dx = 1\]</code></pre></div></div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Download</h3><p>Файл с понятным именем, форматом, размером и контрольной суммой.</p></div><code>:::download</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid"><div class="docara-prototype-download"><div class="docara-prototype-inline"><i class="sf-icon sf-icon-loaded">download</i><div><strong>docara-portable.zip</strong><br><span>ZIP · 4,8 МБ · SHA-256 доступна</span></div></div><button class="sf-button sf-button--default sf-button--primary sf-button--size-1" type="button"><span class="sf-button-text-container">Скачать</span></button></div><div class="docara-prototype-download"><div><strong>Краткий вариант</strong><br><span>docara.schema.json · 18 КБ</span></div><button class="sf-button sf-button--link sf-button--primary sf-button--size-1" type="button"><span class="sf-button-text-container">Открыть</span></button></div></div>
+        </article>
+      </section>
+
+      <section class="docara-prototype-group" id="publishing">
+        <div class="docara-prototype-group-heading"><div class="docara-prototype-kicker">Markdown + Docara · publishing</div><h2>Код, данные и связи</h2><p>Практические сценарии, без которых документация остаётся набором отдельных страниц: воспроизводимые примеры, таблицы, источники, сведения о странице и связи между материалами.</p></div>
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Демонстрация с исходником</h3><p>Результат и код занимают одну область. Вкладка в шапке переключает содержимое, поэтому пример остаётся просторным на любом экране.</p></div><code>Демо · Markdown</code></header>
+          <div class="docara-prototype-stage">
+            <div class="docara-prototype-code-block docara-prototype-example-viewer" data-tabs data-example-viewer>
+              <div class="docara-prototype-code-toolbar">
+                <div role="tablist" aria-label="Пример компонента Badge">
+                  <button id="example-badge-demo-tab" role="tab" aria-selected="true" aria-controls="example-badge-demo">Демо</button>
+                  <button id="example-badge-source-tab" role="tab" aria-selected="false" aria-controls="example-badge-source" tabindex="-1">Markdown</button>
+                </div>
+                <button class="docara-prototype-code-copy" type="button" aria-label="Копировать код" data-code-copy hidden><i class="sf-icon sf-icon-loaded" aria-hidden="true">content_copy</i></button>
+              </div>
+              <div id="example-badge-demo" role="tabpanel" aria-labelledby="example-badge-demo-tab" data-example-demo>
+                <div class="docara-prototype-example-demo">
+                  <span class="sf-badge sf-badge--main sf-badge--primary sf-badge--size-1/3"><span class="sf-badge-text-container"><span class="sf-badge-text">Новая версия</span></span></span>
+                  <span class="sf-badge sf-badge--tonal sf-badge--primary sf-badge--size-1/3"><span class="sf-badge-text-container"><span class="sf-badge-text">Рекомендуется</span></span></span>
+                  <span class="sf-badge sf-badge--outline sf-badge--on-surface sf-badge--size-1/3"><span class="sf-badge-text-container"><span class="sf-badge-text">Необязательно</span></span></span>
+                </div>
+              </div>
+              <div id="example-badge-source" role="tabpanel" aria-labelledby="example-badge-source-tab" data-example-source hidden>
+                <pre><code>:badge[Новая версия]{type=main scheme=primary}
+:badge[Рекомендуется]{type=tonal scheme=primary}
+:badge[Необязательно]{type=outline scheme=on-surface}</code></pre>
+              </div>
+            </div>
+            <p class="docara-prototype-note"><strong>Один источник истины.</strong> Вкладка «Демо» показывает результат, а соседняя вкладка получает название языка исходника: Markdown, HTML, CSS, JSON или другой поддерживаемый формат. Кнопка копирования появляется только рядом с кодом.</p>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Code</h3><p>Один визуальный блок кода поддерживает содержимое из Markdown и подключение из внешнего файла.</p></div><code>```php … ``` · :::code {src="…"}</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid">
+            <div class="docara-prototype-code-block">
+              <div class="docara-prototype-code-toolbar"><span><strong>install.php</strong> · PHP</span><button class="docara-prototype-code-copy" type="button" aria-label="Копировать код" data-code-copy><i class="sf-icon sf-icon-loaded" aria-hidden="true">content_copy</i></button></div>
+              <pre><code><span class="docara-prototype-token-variable">$site</span> = <span class="docara-prototype-token-string">'Docara'</span>;
+echo <span class="docara-prototype-token-variable">$site</span>;</code></pre>
+            </div>
+            <div class="docara-prototype-source-result">
+              <div><strong>Код прямо в Markdown</strong><pre><code>```php
+$site = 'Docara';
+echo $site;
+```</code></pre></div>
+              <div><strong>Код из файла</strong><pre><code>:::code {src="examples/install.php" lang=php lines="1-8" title="install.php"}</code></pre></div>
+            </div>
+            <div class="docara-prototype-note"><strong>Один компонент, два источника.</strong><p>Оформление, подсветка, копирование и горизонтальная прокрутка одинаковы. <code>src</code> разрешает только файлы внутри проекта, а диапазон <code>lines</code> проверяется при сборке.</p></div>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Table</h3><p>Таблица остаётся нативным Markdown, а Docara добавляет адаптивную прокрутку и доступную разметку.</p></div><code>| Параметр | Значение | … |</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid">
+            <div class="docara-prototype-table-wrap" tabindex="0" role="region" aria-label="Параметры сборки, таблица с горизонтальной прокруткой">
+              <table class="docara-prototype-table"><thead><tr><th>Параметр</th><th>По умолчанию</th><th>Назначение</th><th>Пример</th></tr></thead><tbody><tr><td><code>default_locale</code></td><td><code>ru</code></td><td>Язык при первом открытии сайта</td><td><code>"default_locale": "ru"</code></td></tr><tr><td><code>preset</code></td><td><code>docs</code></td><td>Композиция документации или лендинга</td><td><code>"preset": "landing"</code></td></tr><tr><td><code>search.enabled</code></td><td><code>true</code></td><td>Показывает локальный поиск</td><td><code>"enabled": false</code></td></tr></tbody></table>
+            </div>
+            <pre class="docara-prototype-code"><code>| Параметр | По умолчанию | Назначение |
+| --- | --- | --- |
+| `default_locale` | `ru` | Язык первого открытия |
+| `preset` | `docs` | Композиция страницы |</code></pre>
+            <p class="docara-prototype-note"><strong>Без нового синтаксиса.</strong> На узком экране прокручивается только таблица, а не вся страница. Заголовки строк и столбцов остаются понятны скринридеру.</p>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Ссылки, сноски и источники</h3><p>Стандартный Markdown закрывает ссылку на источник и сноску; отдельный визуальный компонент не нужен.</p></div><code>[SIMAI Framework][sf] · [^1]</code></header>
+          <div class="docara-prototype-stage docara-prototype-source-result">
+            <div><strong>Как написать</strong><pre><code>Интерфейс строится на [SIMAI Framework][sf].[^1]
+
+[sf]: https://simai.io/
+[^1]: Версия Framework закрепляется в lock-файле.</code></pre></div>
+            <div><strong>Что увидит читатель</strong><div class="docara-prototype-result"><p>Интерфейс строится на <a href="https://simai.io/">SIMAI Framework</a>.<sup><a href="#prototype-footnote-1" aria-label="Сноска 1">1</a></sup></p><hr><ol class="docara-prototype-reference-list"><li id="prototype-footnote-1">Версия Framework закрепляется в lock-файле. <a href="#publishing" aria-label="Вернуться к тексту">↩</a></li></ol></div></div>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Автоматические метаданные</h3><p>Сведения показываются на том уровне, к которому относятся: пакет — в навигации, владелец и исходник — у компонента, история — после основного содержания.</p></div><code>manifest + lock + Git</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid">
+            <div class="docara-prototype-variant-label">Страница компонента</div>
+            <div class="docara-prototype-metadata-preview">
+              <aside class="docara-prototype-metadata-nav" aria-label="Компоненты пакета ui-smart">
+                <div class="docara-prototype-metadata-package">
+                  <strong>ui-smart</strong>
+                  <span class="sf-badge sf-badge--outline sf-badge--on-surface sf-badge--size-1/3"><span class="sf-badge-text-container"><span class="sf-badge-text">5.3.1</span></span></span>
+                </div>
+                <nav class="docara-prototype-metadata-links" aria-label="Компоненты">
+                  <a href="#publishing" aria-current="page">Badge</a>
+                  <a href="#publishing">Button</a>
+                  <a href="#publishing">Alert</a>
+                </nav>
+              </aside>
+              <div class="docara-prototype-metadata-page">
+                <header class="docara-prototype-metadata-header">
+                  <div><h4>Badge</h4><p>Короткая метка статуса, версии или применимости.</p></div>
+                  <div class="docara-prototype-metadata-actions">
+                    <span class="docara-prototype-owner" title="Постоянный владелец компонента"><span class="docara-prototype-owner-mark" aria-hidden="true">UI</span> Команда UI</span>
+                    <a class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1" href="https://github.com/" target="_blank" rel="noreferrer"><span class="sf-button-text-container">Исходник</span><i class="sf-icon sf-icon-loaded" aria-hidden="true">open_in_new</i></a>
+                  </div>
+                </header>
+                <p class="docara-prototype-metadata-description">Версия пакета не повторяется здесь. Страница показывает только сведения, относящиеся к самому компоненту.</p>
+                <div class="docara-prototype-metadata-facets" aria-label="Условия применения">
+                  <span class="sf-badge sf-badge--main sf-badge--on-surface sf-badge--size-1/3"><span class="sf-badge-text-container"><span class="sf-badge-text">On Surface</span></span></span>
+                  <span class="sf-badge sf-badge--outline sf-badge--primary sf-badge--size-1/3"><span class="sf-badge-text-container"><span class="sf-badge-text">Адаптивный</span></span></span>
+                  <span class="sf-badge sf-badge--outline sf-badge--primary sf-badge--size-1/3"><span class="sf-badge-text-container"><span class="sf-badge-text">Hover</span></span></span>
+                  <span class="sf-badge sf-badge--outline sf-badge--primary sf-badge--size-1/3"><span class="sf-badge-text-container"><span class="sf-badge-text">RTL</span></span></span>
+                </div>
+                <footer class="docara-prototype-metadata-history">
+                  <span><i class="sf-icon sf-icon-loaded" aria-hidden="true">update</i> 27 июля 2026</span>
+                  <span><i class="sf-icon sf-icon-loaded" aria-hidden="true">commit</i> a9f38d2</span>
+                  <span><i class="sf-icon sf-icon-loaded" aria-hidden="true">history_edu</i> Изменил ivanov</span>
+                </footer>
+              </div>
+            </div>
+
+            <div class="docara-prototype-variant-label docara-prototype-variant-separated">Обычная статья</div>
+            <article class="docara-prototype-article-preview">
+              <h4>Как создать мультиязычный сайт</h4>
+              <p>У обычной страницы нет пакета, surface и возможностей компонента, поэтому интерфейс не показывает лишние бейджи.</p>
+              <footer class="docara-prototype-metadata-history">
+                <span><i class="sf-icon sf-icon-loaded" aria-hidden="true">update</i> Обновлено 26 июля 2026</span>
+                <span><i class="sf-icon sf-icon-loaded" aria-hidden="true">person</i> Команда Docara</span>
+                <a href="https://github.com/" target="_blank" rel="noreferrer">Открыть исходник</a>
+              </footer>
+            </article>
+
+            <details class="docara-prototype-metadata-source">
+              <summary>Откуда берутся сведения</summary>
+              <pre><code>{
+  "package":     "simai-framework.lock.json",
+  "owner":       "component manifest",
+  "capabilities":"component registry",
+  "updated":     "Git history",
+  "revision":    "Git commit",
+  "override":    "&lt;page&gt;.page.json — только если значение нельзя вычислить"
+}</code></pre>
+            </details>
+            <p class="docara-prototype-note"><strong>Главное различие:</strong> <code>maintainer</code> — постоянный ответственный из manifest, а <code>last_changed_by</code> — последний автор изменения из Git. Эти значения не подменяют друг друга. Во время сборки Docara нормализует источники в один generated metadata index; автор страницы ничего не дублирует вручную.</p>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Backlinks</h3><p>Docara автоматически показывает страницы, которые ссылаются на текущий материал.</p></div><code>:::backlinks {limit=5}</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid docara-prototype-grid-2">
+            <div><div class="docara-prototype-variant-label">Результат</div><nav aria-label="Ссылаются на эту страницу"><ul class="docara-prototype-backlinks"><li><a href="#documentation">Компоненты для объяснения</a><br><small>Ссылка в разделе о справочных материалах</small></li><li><a href="#actions">Действия и композиция</a><br><small>Упоминание в примере карточки</small></li><li><a href="#advanced">Расширение библиотеки</a><br><small>Связь с контрактом компонентов</small></li></ul></nav></div>
+            <div class="docara-prototype-note"><strong>Генерируется при сборке.</strong><p>Автор не поддерживает этот список вручную: сборщик строит обратный индекс из внутренних ссылок. Директива нужна только для явного места вывода; в preset <code>docs</code> блок можно автоматически размещать после статьи.</p></div>
+          </div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Embed</h3><p>Один безопасный контейнер для видео, карты и внешнего виджета вместо набора компонентов по названиям сервисов.</p></div><code>:::embed {provider=video id="…" ratio=16x9}</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid">
+            <div class="docara-prototype-embed-grid">
+              <figure class="docara-prototype-embed"><div class="docara-prototype-embed-frame"><div><i class="sf-icon sf-icon-loaded" aria-hidden="true">play_circle</i><br><strong>Видео</strong><br><span>16:9 · загружается по действию читателя</span></div></div><figcaption><code>provider=video</code></figcaption></figure>
+              <figure class="docara-prototype-embed"><div class="docara-prototype-embed-frame"><div><i class="sf-icon sf-icon-loaded" aria-hidden="true">map</i><br><strong>Карта</strong><br><span>Место и текстовая альтернатива</span></div></div><figcaption><code>provider=map</code></figcaption></figure>
+              <figure class="docara-prototype-embed"><div class="docara-prototype-embed-frame"><div><i class="sf-icon sf-icon-loaded" aria-hidden="true">widgets</i><br><strong>Внешний виджет</strong><br><span>Только разрешённый источник</span></div></div><figcaption><code>provider=external</code></figcaption></figure>
+            </div>
+            <pre class="docara-prototype-code"><code>:::embed {provider=video id="intro" ratio=16x9 title="Знакомство с Docara" consent=required}
+Описание видео для читателя, который не может открыть внешний источник.
+:::</code></pre>
+            <p class="docara-prototype-note"><strong>Безопасность по умолчанию.</strong> Провайдер и домен входят в allowlist, iframe получает <code>sandbox</code>, обязательный <code>title</code>, фиксированное соотношение сторон и fallback-текст. Внешний ресурс не загружается до согласия или действия пользователя.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="docara-prototype-group" id="actions">
+        <div class="docara-prototype-group-heading"><div class="docara-prototype-kicker">Docara · actions &amp; layout</div><h2>Действия и композиция</h2><p>Компонент отвечает за смысл, а сетка — за расположение и ширину.</p></div>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Grid + Card</h3><p>Одна карточка; количество колонок задаёт родительская grid.</p></div><code>::::grid {columns=4} … :::card</code></header>
+          <div class="docara-prototype-stage">
+            <div class="docara-prototype-variant-label">4 колонки</div><div class="docara-prototype-grid docara-prototype-grid-4"><div class="docara-prototype-card"><strong>Markdown</strong><p>Контент остаётся читаемым исходником.</p></div><div class="docara-prototype-card"><strong>JSON</strong><p>Настройки проверяются схемами.</p></div><div class="docara-prototype-card"><strong>PHP</strong><p>Сборка воспроизводима.</p></div><div class="docara-prototype-card"><strong>HTML</strong><p>Результат работает без runtime.</p></div></div>
+            <div class="docara-prototype-variant-label docara-prototype-variant-separated">Рецепт преимуществ · Grid + Card + Icon</div><div class="docara-prototype-grid docara-prototype-grid-4"><div class="docara-prototype-card flex flex-col gap-1"><span class="docara-prototype-icon self-start" data-size="1" data-container="square" data-variant="tonal" data-scheme="primary"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1" aria-hidden="true">edit_note</i></span><strong class="m-0">Понятный исходник</strong><p class="m-0">Markdown остаётся главным содержанием.</p></div><div class="docara-prototype-card flex flex-col gap-1"><span class="docara-prototype-icon self-start" data-size="1" data-container="circle" data-variant="tonal" data-scheme="secondary"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1" aria-hidden="true">schema</i></span><strong class="m-0">Строгая схема</strong><p class="m-0">Ошибки настроек видны до публикации.</p></div><div class="docara-prototype-card flex flex-col gap-1"><span class="docara-prototype-icon self-start" data-size="1" data-container="square" data-variant="outline" data-scheme="info"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1" aria-hidden="true">devices</i></span><strong class="m-0">Адаптивность</strong><p class="m-0">Один интерфейс для любого экрана.</p></div><div class="docara-prototype-card flex flex-col gap-1"><span class="docara-prototype-icon self-start" data-size="1" data-container="circle" data-variant="main" data-scheme="success"><i class="sf-icon sf-icon-loaded sf-icon-regular sf-icon--size-1" aria-hidden="true">bolt</i></span><strong class="m-0">Быстрый результат</strong><p class="m-0">На сервере остаются статические файлы.</p></div></div><span class="docara-prototype-syntax">Это не отдельный компонент Features: автор собирает тот же результат из Grid, Card и Icon.</span>
+            <div class="docara-prototype-variant-label docara-prototype-variant-separated">2 колонки, те же карточки</div><div class="docara-prototype-grid docara-prototype-grid-2"><a class="docara-prototype-card" href="#landing"><strong>Карточка-ссылка</strong><p>Вся область кликабельна.</p></a><div class="docara-prototype-card"><strong>Карточка с действием</strong><p>Внутри может быть одна вторичная кнопка.</p><button class="sf-button sf-button--link sf-button--primary sf-button--size-1" type="button"><span class="sf-button-text-container">Открыть</span></button></div></div>
+            <div class="docara-prototype-variant-label docara-prototype-variant-separated">Без рамки и внутреннего отступа · без изображения</div><div class="docara-prototype-grid docara-prototype-grid-3"><div class="docara-prototype-card docara-prototype-card--plain"><strong>Та же сущность</strong><p>Не отдельный компонент, а <code>variant=plain</code>.</p></div><div class="docara-prototype-card docara-prototype-card--plain"><strong>Композицию задаёт grid</strong><p>Ширина и расстояние остаются ответственностью родителя.</p></div><div class="docara-prototype-card docara-prototype-card--plain"><strong>Без двойной геометрии</strong><p><code>padding=none</code> убирает внутренний отступ.</p></div></div>
+            <div class="docara-prototype-variant-label docara-prototype-variant-separated">Без рамки и внутреннего отступа · с Figure 16:9</div><div class="docara-prototype-grid docara-prototype-grid-3"><div class="docara-prototype-card docara-prototype-card--plain docara-prototype-card--media"><figure class="docara-prototype-figure"><div class="docara-prototype-figure-frame aspect-16x9"><img src="file:///Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/docs/site/assets/docara-screen.png" alt="Интерфейс документации"></div></figure><h5>Документация</h5><p>Figure 16:9 размещается над текстом, а после изображения используется <code>space-1</code>.</p></div><div class="docara-prototype-card docara-prototype-card--plain docara-prototype-card--media"><figure class="docara-prototype-figure docara-prototype-figure--contain"><div class="docara-prototype-figure-frame aspect-16x9"><img src="file:///Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/docs/site/assets/docara-flow.png" alt="Схема сборки Docara"></div></figure><h5>Понятная композиция</h5><p>Та же карточка принимает другой Figure и сохраняет одинаковый вертикальный ритм.</p></div><div class="docara-prototype-card docara-prototype-card--plain docara-prototype-card--media"><figure class="docara-prototype-figure docara-prototype-figure--contain"><div class="docara-prototype-figure-frame aspect-16x9"><img src="file:///Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/docs/site/assets/feature-markdown.png" alt="Markdown как основной источник"></div></figure><h5>Содержание остаётся простым</h5><p>Небольшой заголовок пятого уровня не конкурирует с заголовком раздела.</p></div></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="docara-prototype-group" id="landing">
+        <div class="docara-prototype-group-heading"><div class="docara-prototype-kicker">Docara · landing</div><h2>Компоненты продуктовой страницы</h2><p>Позволяют собрать лендинг, не смешивая рекламную композицию с документационными примитивами.</p></div>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Hero</h3><p>Первый экран страницы: обещание, пояснение, действия и иллюстрация.</p></div><code>:::hero {variant=split}</code></header>
+          <div class="docara-prototype-hero"><div><span class="sf-badge sf-badge--tonal sf-badge--primary sf-badge--size-1"><span class="sf-badge-text-container"><span class="sf-badge-text">Docs as code</span></span></span><h2>Документация, которую удобно писать и читать</h2><p>Markdown для содержания, JSON для композиции и SIMAI Framework для согласованного интерфейса.</p><div class="docara-prototype-inline"><button class="sf-button sf-button--default sf-button--primary sf-button--size-1" type="button"><span class="sf-button-text-container">Создать сайт</span></button><button class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1" type="button"><span class="sf-button-text-container">Документация</span></button></div></div><img src="file:///Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/docs/site/assets/docara-flow.png" alt="Документы превращаются в готовый сайт"></div>
+          <div class="docara-prototype-stage"><span class="docara-prototype-syntax">Варианты: split · centered · compact. Full-bleed задаёт секция макета, а не сам hero.</span></div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Banner</h3><p>Ограниченное сообщение внутри страницы; не дублирует hero.</p></div><code>:::banner {type=announcement}</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid"><div class="docara-prototype-banner"><div><strong>Вышла Docara 2</strong><br><span>Новый декларативный движок уже доступен для проверки.</span></div><button class="sf-button sf-button--default sf-button--primary sf-button--size-1" type="button"><span class="sf-button-text-container">Что изменилось</span></button></div><div class="docara-prototype-note">Краткий информационный banner без действия.</div></div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Logos</h3><p>Компактная полоса технологий, партнёров или клиентов.</p></div><code>:::logos {tone=muted}</code></header>
+          <div class="docara-prototype-stage docara-prototype-logos"><span class="docara-prototype-logo-word">SIMAI</span><span class="docara-prototype-logo-word">PHP</span><span class="docara-prototype-logo-word">Markdown</span><span class="docara-prototype-logo-word">Composer</span><span class="docara-prototype-logo-word">GitHub</span></div>
+        </article>
+
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Media</h3><p>Одна композиция с изображением или видео; сторона меняется параметром.</p></div><code>:::media {side=left|right}</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid">
+            <span class="docara-prototype-syntax">Изображение слева · <code>side=left</code></span>
+            <div class="docara-prototype-media" data-side="left"><figure class="docara-prototype-figure"><div class="docara-prototype-figure-frame aspect-16x9"><img src="file:///Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/docs/site/assets/docara-screen.png" alt="Экран документации"></div></figure><div class="docara-prototype-media-copy"><i class="sf-icon sf-icon-loaded docara-prototype-media-icon">account_tree</i><h3>Полноценная навигация</h3><p>Media компонует Figure с заданным соотношением сторон, текст и действие. Меню, поиск и содержание формируются из одного дерева материалов.</p><button class="sf-button sf-button--tonal sf-button--on-surface sf-button--size-1" type="button"><span class="sf-button-text-container">Посмотреть устройство</span></button></div></div>
+            <span class="docara-prototype-syntax">Изображение справа · <code>side=right</code></span>
+            <div class="docara-prototype-media" data-side="right"><figure class="docara-prototype-figure"><div class="docara-prototype-figure-frame aspect-16x9"><img src="file:///Users/rim/Documents/GitHub/larena-workspace/source/worktrees/docara-consolidation/docs/site/assets/docara-screen.png" alt="Экран документации"></div></figure><div class="docara-prototype-media-copy"><i class="sf-icon sf-icon-loaded docara-prototype-media-icon">account_tree</i><h3>Полноценная навигация</h3><p>Media компонует Figure с заданным соотношением сторон, текст и действие. Меню, поиск и содержание формируются из одного дерева материалов.</p><button class="sf-button sf-button--tonal sf-button--on-surface sf-button--size-1" type="button"><span class="sf-button-text-container">Посмотреть устройство</span></button></div></div>
+            <span class="docara-prototype-note">На узком экране оба варианта складываются одинаково: сначала медиа, затем текст. Так сохраняется предсказуемый порядок чтения.</span>
+          </div>
+        </article>
+      </section>
+
+      <section class="docara-prototype-group" id="advanced">
+        <div class="docara-prototype-group-heading"><div class="docara-prototype-kicker">Docara · advanced</div><h2>Контролируемое расширение</h2></div>
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>Заголовки и высота строки</h3><p>Нативные Markdown-заголовки используют типографику текущего SIMAI Framework без локальной подмены line-height.</p></div><code># H1 … ###### H6</code></header>
+          <div class="docara-prototype-stage"><div class="docara-prototype-heading-sample"><code>h1</code><h1>Заголовок первого уровня</h1></div><div class="docara-prototype-heading-sample"><code>h2</code><h2>Заголовок второго уровня</h2></div><div class="docara-prototype-heading-sample"><code>h3</code><h3>Заголовок третьего уровня</h3></div><div class="docara-prototype-heading-sample"><code>h4</code><h4>Заголовок четвёртого уровня</h4></div><p class="docara-prototype-note">В текущем исходнике Framework применяются пары <code>--sf-text-size-*</code> и <code>--sf-title-height-*</code>. Таблица с <code>--sf-heading-N--line-height</code> относится к прежнему контракту; локальный CSS Docara не должен его имитировать.</p></div>
+        </article>
+        <article class="docara-prototype-component">
+          <header class="docara-prototype-component-head"><div><h3>HTML</h3><p>Явный escape hatch для доверенного содержимого, когда готового компонента недостаточно.</p></div><code>:::html</code></header>
+          <div class="docara-prototype-stage docara-prototype-grid docara-prototype-grid-2"><div><pre class="docara-prototype-code"><code>&lt;aside aria-label="Статус"&gt;
+  Собственный HTML
+&lt;/aside&gt;</code></pre></div><div class="docara-prototype-warning"><strong>Не компонент по умолчанию.</strong><p>Нужны режим доверия, политика sanitization и явное предупреждение сборщика. Для повторяемого интерфейса следует создать обычный компонент.</p></div></div>
+        </article>
+      </section>
+    </main>
+  </div>
+</div>
+
+<script>
+  (() => {
+    const root = document.documentElement;
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const themeButtons = [...document.querySelectorAll('[data-theme]')];
+    let selectedTheme = 'light';
+
+    const applyTheme = (theme) => {
+      selectedTheme = theme;
+      const resolved = theme === 'system' ? (media.matches ? 'dark' : 'light') : theme;
+      root.classList.toggle('theme-dark', resolved === 'dark');
+      root.classList.toggle('theme-light', resolved !== 'dark');
+      themeButtons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.theme === theme)));
+    };
+    themeButtons.forEach((button) => button.addEventListener('click', () => applyTheme(button.dataset.theme)));
+    media.addEventListener?.('change', () => selectedTheme === 'system' && applyTheme('system'));
+
+    document.querySelectorAll('[data-tabs]').forEach((tabs) => {
+      const buttons = [...tabs.querySelectorAll('[role="tab"]')];
+      const select = (next) => {
+        buttons.forEach((button) => {
+          const active = button === next;
+          button.setAttribute('aria-selected', String(active));
+          button.tabIndex = active ? 0 : -1;
+          document.getElementById(button.getAttribute('aria-controls')).hidden = !active;
+        });
+        const viewer = next.closest('[data-example-viewer]');
+        const copy = viewer?.querySelector('[data-code-copy]');
+        if (copy) copy.hidden = !document.getElementById(next.getAttribute('aria-controls'))?.hasAttribute('data-example-source');
+        next.focus();
+      };
+      buttons.forEach((button, index) => {
+        button.addEventListener('click', () => select(button));
+        button.addEventListener('keydown', (event) => {
+          if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+          event.preventDefault();
+          if (event.key === 'Home') return select(buttons[0]);
+          if (event.key === 'End') return select(buttons[buttons.length - 1]);
+          const shift = event.key === 'ArrowRight' ? 1 : -1;
+          select(buttons[(index + shift + buttons.length) % buttons.length]);
+        });
+      });
+    });
+
+    document.querySelectorAll('[data-tree-toggle]').forEach((button) => button.addEventListener('click', () => {
+      const expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', String(!expanded));
+      const chevron = button.querySelector('[data-tree-chevron]');
+      const folder = button.querySelector('[data-tree-folder]');
+      if (chevron) chevron.textContent = expanded ? 'chevron_right' : 'expand_more';
+      if (folder) folder.textContent = expanded ? 'folder' : 'folder_open';
+      const branch = button.parentElement.querySelector(':scope > ul');
+      if (branch) branch.hidden = expanded;
+    }));
+
+    document.querySelectorAll('[data-code-copy]').forEach((button) => button.addEventListener('click', async () => {
+      const code = button.closest('.docara-prototype-code-block')?.querySelector('pre')?.innerText ?? '';
+      try {
+        await navigator.clipboard.writeText(code);
+        button.setAttribute('aria-label', 'Код скопирован');
+        const icon = button.querySelector('.sf-icon');
+        if (icon) icon.textContent = 'check';
+        window.setTimeout(() => {
+          button.setAttribute('aria-label', 'Копировать код');
+          if (icon) icon.textContent = 'content_copy';
+        }, 1600);
+      } catch {
+        button.setAttribute('aria-label', 'Не удалось скопировать код');
+      }
+    }));
+  })();
+</script>
+</body>
+</html>

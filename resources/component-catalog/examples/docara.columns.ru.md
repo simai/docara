@@ -1,3 +1,6 @@
+<!-- docara-variant:base -->
+<!-- docara-variant:state.stacked -->
+<!-- docara-variant:state.responsive_columns -->
 :::columns
 ### Markdown
 
@@ -17,7 +20,7 @@
 
 ---
 
-### Simai Framework
+### SIMAI Framework
 
 Макет использует проверенные адаптивные утилиты.
 :::

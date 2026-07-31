@@ -44,6 +44,9 @@
         "navigation": {
             "$ref": "presentation.schema.json#/$defs/navigation"
         },
+        "header_navigation": {
+            "$ref": "presentation.schema.json#/$defs/header_navigation"
+        },
         "search": {
             "$ref": "presentation.schema.json#/$defs/search"
         },

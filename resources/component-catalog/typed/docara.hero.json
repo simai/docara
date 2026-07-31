@@ -1,0 +1,35 @@
+{
+    "id": "docara.hero",
+    "name": "hero",
+    "renderer": "docara.hero.v1",
+    "family": "docara_typed",
+    "category": "landing",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive",
+        "call": ":::hero",
+        "jobs": [
+            "explain_product_value",
+            "primary_landing_action"
+        ],
+    "parameters": [
+      {"name": "variant", "type": "enum", "required": false, "default": "split", "values": ["split", "centered", "compact"]}
+    ]
+    },
+    "states": [
+        "text",
+        "text_with_action",
+        "text_with_media"
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": true
+    },
+    "docs_ref": "docs/site/content/ru/components/syntax.md",
+    "provenance": {
+        "source_kind": "typed_definition",
+        "definition_ref": "resources/component-catalog/typed/docara.hero.json"
+    }
+}

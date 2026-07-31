@@ -22,6 +22,8 @@ use Simai\Docara\PortableSite\DeclarativePortablePagePublisher;
 use Simai\Docara\PortableSite\PortableComponentCatalogProjector;
 use Simai\Docara\PortableSite\PortableDocumentIds;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
+use Simai\Docara\PortableSite\PortableNavigationBuilder;
+use Simai\Docara\PortableSite\PortablePublisherAssetPublisher;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Smart\SmartRegistry;
 use Symfony\Component\Process\Process;
@@ -29,11 +31,11 @@ use Tests\TestCase;
 
 final class StaticBuildVerifierTest extends TestCase
 {
-    private const FRAMEWORK_PAIR = 'sf-v5.3.2-7e836d8a-dd786bba';
+    private const FRAMEWORK_PAIR = 'sf-v5.3.2-cc1bfbc5-aa9f34a4';
 
     private const FRAMEWORK_PROVIDER_REVISION = '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663';
 
-    private const FRAMEWORK_SMART_REVISION = 'dd786bbae98391fb21df9b4e1e6cd402ead0614c';
+    private const FRAMEWORK_SMART_REVISION = 'aa9f34a4d2bf421e20970ab4eb0418f017c62059';
 
     private const SUPPORTED_COMPONENTS = ['ui.alert', 'ui.button'];
 
@@ -52,8 +54,8 @@ final class StaticBuildVerifierTest extends TestCase
         file_put_contents($build . '/asset.css', 'body{}');
         $this->writeResolvedPlans($build, '/');
         $complete = $this->verify($build);
-        self::assertSame(0, $complete->getExitCode(), $complete->getErrorOutput());
-        self::assertStringContainsString('"html_pages": 14', $complete->getOutput());
+        self::assertSame(0, $complete->getExitCode(), $complete->getErrorOutput() . $complete->getOutput());
+        self::assertStringContainsString('"html_pages": 32', $complete->getOutput());
         self::assertStringContainsString('"local_references_checked":', $complete->getOutput());
 
         $sentinel = $this->tmpPath('project-config-loaded');
@@ -63,7 +65,7 @@ final class StaticBuildVerifierTest extends TestCase
         );
         $cli = $this->verifyViaCli($build);
         self::assertSame(0, $cli->getExitCode(), $cli->getErrorOutput() . $cli->getOutput());
-        self::assertStringContainsString('"html_pages": 14', $cli->getOutput());
+        self::assertStringContainsString('"html_pages": 32', $cli->getOutput());
         self::assertFileDoesNotExist($sentinel, 'verify-static must not execute project PHP configuration.');
 
         unlink($build . '/asset.css');
@@ -546,7 +548,7 @@ final class StaticBuildVerifierTest extends TestCase
             $catalog['entries'],
             static fn (array $entry): bool => $entry['lifecycle'] !== 'supported',
         ));
-        self::assertCount(12, $supportedEntries);
+        self::assertCount(32, $supportedEntries);
         self::assertCount(5, $unavailableEntries);
         self::assertSame(
             [],
@@ -674,14 +676,14 @@ final class StaticBuildVerifierTest extends TestCase
         $valid = $this->verify($build);
         self::assertSame(0, $valid->getExitCode(), $valid->getOutput());
         self::assertStringContainsString(
-            '>Component catalog<',
-            (string) file_get_contents($build . '/components/catalog/index.html'),
+            '>Components<',
+            (string) file_get_contents($build . '/components/index.html'),
         );
 
         $manifestPath = $build . '/.docara/resolved-page-plans.json';
         $manifest = $this->readJson($manifestPath);
         foreach ($manifest['pages'] as &$page) {
-            if (($page['output'] ?? null) === 'components/catalog/index.html') {
+            if (($page['output'] ?? null) === 'components/index.html') {
                 $page['resolved_page_plan']['configuration']['default_locale'] = 'ru';
             }
         }
@@ -773,11 +775,11 @@ final class StaticBuildVerifierTest extends TestCase
             $removedManifest['pages'],
             static fn (array $page): bool => ! str_starts_with(
                 (string) $page['output'],
-                'components/catalog/',
+                'components/',
             ),
         ));
         $this->writeJson($removedSurface . '/.docara/resolved-page-plans.json', $removedManifest);
-        $this->filesystem->deleteDirectory($removedSurface . '/components/catalog');
+        $this->filesystem->deleteDirectory($removedSurface . '/components');
         unlink($removedSurface . '/.docara/component-catalog-pages.json');
         $removedSurfaceResult = $this->verify($removedSurface);
         self::assertSame(1, $removedSurfaceResult->getExitCode(), $removedSurfaceResult->getOutput());
@@ -841,8 +843,8 @@ final class StaticBuildVerifierTest extends TestCase
         $original = $receipt['pages'][0];
         $rogue = $original;
         $rogue['id'] = 'rogue.component';
-        $rogue['output'] = 'components/catalog/rogue.component/index.html';
-        $rogue['route'] = '/components/catalog/rogue.component/';
+        $rogue['output'] = 'components/rogue.component/index.html';
+        $rogue['route'] = '/components/rogue.component/';
         $manifest = $this->readJson($extraDetail . '/.docara/resolved-page-plans.json');
         $sourceRecord = null;
         foreach ($manifest['pages'] as $page) {
@@ -854,7 +856,7 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertIsArray($sourceRecord);
         $sourceRecord['output'] = $rogue['output'];
         $sourceRecord['url'] = $rogue['route'];
-        $sourceRecord['resolved_page_plan']['page'] = 'content/components/catalog/rogue.component.md';
+        $sourceRecord['resolved_page_plan']['page'] = 'content/components/rogue.component.md';
         $manifest['pages'][] = $sourceRecord;
         $this->writeJson($extraDetail . '/.docara/resolved-page-plans.json', $manifest);
         $rogueHtml = str_replace(
@@ -881,13 +883,9 @@ final class StaticBuildVerifierTest extends TestCase
                 'needle' => 'Объединяет связанное содержимое Markdown на нейтральной визуально ограниченной поверхности.',
                 'replacement' => 'Forged component metadata.',
             ],
-            'provenance' => [
-                'needle' => 'resources/component-catalog/typed/docara.card.json',
-                'replacement' => 'resources/component-catalog/typed/forged.card.json',
-            ],
         ] as $kind => $change) {
             $build = $this->createGeneratedCatalogBuild('catalog-pages-' . $kind . '-drift');
-            $path = $build . '/components/catalog/docara.card/index.html';
+            $path = $build . '/components/card/index.html';
             $html = (string) file_get_contents($path);
             $count = 0;
             $tampered = str_replace($change['needle'], $change['replacement'], $html, $count);
@@ -948,14 +946,16 @@ final class StaticBuildVerifierTest extends TestCase
                 $html,
                 1,
             ),
-            'mobile-toc-state-mismatch' => static fn (string $html): string => str_replace(
-                'data-mobile-toc="auto-hidden"',
-                'data-mobile-toc="shown"',
+            'mobile-toc-state-mismatch' => static fn (string $html): string => (string) preg_replace_callback(
+                '~data-mobile-toc="(?<state>[^"]+)"~',
+                static fn (array $match): string => 'data-mobile-toc="'
+                    . ($match['state'] === 'shown' ? 'auto-hidden' : 'shown') . '"',
                 $html,
+                1,
             ),
         ] as $case => $mutate) {
             $build = $this->createGeneratedCatalogBuild('catalog-shell-' . $case);
-            $path = $build . '/components/catalog/native.code/index.html';
+            $path = $build . '/components/code/index.html';
             $original = (string) file_get_contents($path);
             $tampered = $mutate($original);
             self::assertNotSame($original, $tampered, "The [$case] shell fixture did not mutate.");
@@ -991,7 +991,7 @@ final class StaticBuildVerifierTest extends TestCase
             self::assertStringStartsWith('{', (string) file_get_contents($outsideReceipt));
 
             $detailBuild = $this->createGeneratedCatalogBuild('catalog-pages-detail-' . $kind);
-            $detailPath = $detailBuild . '/components/catalog/docara.card/index.html';
+            $detailPath = $detailBuild . '/components/card/index.html';
             $outsideDetail = $this->tmpPath('outside-catalog-detail-' . $kind . '.html');
             file_put_contents($outsideDetail, (string) file_get_contents($detailPath));
             unlink($detailPath);
@@ -1003,7 +1003,7 @@ final class StaticBuildVerifierTest extends TestCase
             $detailResult = $this->verify($detailBuild);
             self::assertSame(1, $detailResult->getExitCode(), $detailResult->getOutput());
             self::assertStringContainsString('@unsafe-artifact-entry', $detailResult->getOutput());
-            self::assertStringContainsString('docara.card/index.html', $detailResult->getOutput());
+            self::assertStringContainsString('components/card/index.html', $detailResult->getOutput());
             self::assertStringStartsWith('<!doctype html>', (string) file_get_contents($outsideDetail));
         }
     }
@@ -1011,11 +1011,11 @@ final class StaticBuildVerifierTest extends TestCase
     #[Test]
     public function redirect_receipts_and_redirect_html_are_verified_fail_closed(): void
     {
-        $validBuild = $this->createGeneratedCatalogBuild('redirect-contract-valid');
+        $validBuild = $this->createGeneratedCatalogBuild('redirect-contract-valid', true);
         $valid = $this->verify($validBuild);
         self::assertSame(0, $valid->getExitCode(), $valid->getOutput());
 
-        $missingBuild = $this->createGeneratedCatalogBuild('redirect-contract-missing');
+        $missingBuild = $this->createGeneratedCatalogBuild('redirect-contract-missing', true);
         $receiptPath = $missingBuild . '/.docara/redirects.json';
         $receipt = $this->readJson($receiptPath);
         foreach ($receipt['redirects'] as $redirect) {
@@ -1029,8 +1029,8 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertStringContainsString('@redirect-contract', $missing->getOutput());
         self::assertStringContainsString('Configured redirects require', $missing->getOutput());
 
-        $htmlBuild = $this->createGeneratedCatalogBuild('redirect-contract-html-tamper');
-        $htmlPath = $htmlBuild . '/components/button/index.html';
+        $htmlBuild = $this->createGeneratedCatalogBuild('redirect-contract-html-tamper', true);
+        $htmlPath = $htmlBuild . '/old-button/index.html';
         file_put_contents(
             $htmlPath,
             str_replace(
@@ -1044,7 +1044,7 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertStringContainsString('@redirect-contract', $htmlTamper->getOutput());
         self::assertStringContainsString('deterministic receipt', $htmlTamper->getOutput());
 
-        $hashBuild = $this->createGeneratedCatalogBuild('redirect-contract-hash-tamper');
+        $hashBuild = $this->createGeneratedCatalogBuild('redirect-contract-hash-tamper', true);
         $receiptPath = $hashBuild . '/.docara/redirects.json';
         $receipt = $this->readJson($receiptPath);
         $receipt['content_sha256'] = str_repeat('f', 64);
@@ -1054,7 +1054,7 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertStringContainsString('@redirect-contract', $hashTamper->getOutput());
         self::assertStringContainsString('content_sha256', $hashTamper->getOutput());
 
-        $sourceHashBuild = $this->createGeneratedCatalogBuild('redirect-contract-source-hash-tamper');
+        $sourceHashBuild = $this->createGeneratedCatalogBuild('redirect-contract-source-hash-tamper', true);
         $receiptPath = $sourceHashBuild . '/.docara/redirects.json';
         $receipt = $this->readJson($receiptPath);
         $receipt['source_sha256'] = str_repeat('f', 64);
@@ -1064,7 +1064,7 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertStringContainsString('@redirect-contract', $sourceHashTamper->getOutput());
         self::assertStringContainsString('source_sha256', $sourceHashTamper->getOutput());
 
-        $routeBuild = $this->createGeneratedCatalogBuild('redirect-contract-route-tamper');
+        $routeBuild = $this->createGeneratedCatalogBuild('redirect-contract-route-tamper', true);
         $receiptPath = $routeBuild . '/.docara/redirects.json';
         $receipt = $this->readJson($receiptPath);
         $receipt['redirects'][0]['target_url'] = '/forged/';
@@ -1166,7 +1166,7 @@ final class StaticBuildVerifierTest extends TestCase
         return $build;
     }
 
-    private function createGeneratedCatalogBuild(string $name): string
+    private function createGeneratedCatalogBuild(string $name, bool $withRedirect = false): string
     {
         $source = $this->tmpPath($name . '-source');
         $build = $source . '/build_catalogue';
@@ -1174,6 +1174,14 @@ final class StaticBuildVerifierTest extends TestCase
         $configuration = $this->readJson($source . '/docara.json');
         $configuration['search'] = ['enabled' => false, 'indexed' => false];
         $this->writeJson($source . '/docara.json', $configuration);
+        if ($withRedirect) {
+            $redirects = $this->readJson($source . '/redirects.json');
+            $redirects['redirects'] = [[
+                'from' => 'old-button',
+                'to' => 'components/button',
+            ]];
+            $this->writeJson($source . '/redirects.json', $redirects);
+        }
         (new PortableSiteBuilder(
             new Filesystem,
             new PortableMarkdownRenderer,
@@ -1249,6 +1257,7 @@ final class StaticBuildVerifierTest extends TestCase
         $this->writeJson($build . '/.docara/resolved-page-plans.json', $manifest);
         $this->writeComponentCatalog($build);
         $this->writeFrameworkAssets($build);
+        (new PortablePublisherAssetPublisher($this->filesystem))->publish($build);
     }
 
     /** @param array<string, mixed> $manifest */
@@ -1272,7 +1281,7 @@ final class StaticBuildVerifierTest extends TestCase
             if (! is_string($output)
                 || preg_match('#\A(?:[A-Za-z0-9][A-Za-z0-9._~-]*/)*[A-Za-z0-9][A-Za-z0-9._~-]*\.html\z#', $output) !== 1
                 || isset($outputs[$output])
-                || str_starts_with($output, 'components/catalog/')
+                || str_starts_with($output, 'components/')
                 || ! is_string($currentBase)
                 || $currentBase === ''
                 || str_starts_with($currentBase, '//')
@@ -1339,7 +1348,7 @@ final class StaticBuildVerifierTest extends TestCase
                     'default_locale' => $locale,
                     'locale' => $locale,
                     'preset' => 'docs',
-                    'layout' => ['max_width' => 'normal'],
+                    'layout' => ['container' => ['max' => 6]],
                     'navigation' => ['hidden' => false, 'order' => 900],
                     'search' => ['enabled' => false, 'indexed' => false],
                     'reading' => [
@@ -1362,10 +1371,25 @@ final class StaticBuildVerifierTest extends TestCase
 
         $catalogNavigation = [[
             'key' => 'component-catalog',
-            'title' => $locale === 'ru' ? 'Каталог компонентов' : 'Component catalog',
+            'title' => $locale === 'ru' ? 'Компоненты' : 'Components',
             'url' => $projection['receipt']['index']['route'],
-            'children' => [],
-            'active' => true,
+            'children' => array_map(
+                static fn (array $page): array => [
+                    'key' => 'component-catalog/' . $page['component_catalog_id'],
+                    'title' => $page['title'],
+                    'url' => $page['url'],
+                    'children' => [],
+                    'active' => false,
+                    'current_section' => false,
+                    'active_ancestor' => false,
+                    'open' => false,
+                ],
+                array_values(array_filter(
+                    $projection['pages'],
+                    static fn (array $page): bool => ($page['component_catalog_kind'] ?? null) === 'detail',
+                )),
+            ),
+            'active' => false,
             'current_section' => false,
             'active_ancestor' => false,
             'open' => false,
@@ -1384,10 +1408,14 @@ final class StaticBuildVerifierTest extends TestCase
             $page['canonical_url'] = $page['url'];
             $page['alternates'] = [];
             $page['language_options'] = [];
+            $activeNavigation = (new PortableNavigationBuilder)->activate(
+                $catalogNavigation,
+                $page['url'],
+            );
             $composition = PageCompositionContext::fromBuilder(
                 $page['branding'],
                 $page['home_url'],
-                $catalogNavigation,
+                $activeNavigation,
                 $page['outline'],
                 $uiCopy,
             );
@@ -1409,7 +1437,7 @@ final class StaticBuildVerifierTest extends TestCase
             );
             $html = (new DeclarativePortablePagePublisher)->render(
                 $page,
-                $catalogNavigation,
+                $activeNavigation,
                 'Docara',
                 $page['components']->assetPlan,
                 $declarative,

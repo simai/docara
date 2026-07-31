@@ -118,7 +118,7 @@ Starter задаёт `default_locale`, явный реестр `locales`, сим
 - [Мультиязычный сайт](/authoring/multilingual-site/)
 - [Наследование и `$reset`](/authoring/inheritance/)
 - [Документация и лендинг](/authoring/layout-and-navigation/)
-- [Generated catalog компонентов](/components/catalog/)
+- [Справочник компонентов](/components/)
 - [Проверка сборки](/build/verify/)
 - [Публикация с rollback](/build/publish/)
 - [Обновление Docara](/build/update/)

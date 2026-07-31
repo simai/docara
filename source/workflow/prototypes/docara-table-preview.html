@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="ru" class="theme-dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Docara — прототип таблицы</title>
+  <script>
+    const uiRoot = location.protocol === 'file:'
+      ? 'file:///Users/rim/Documents/GitHub/ui'
+      : '/ui';
+    [
+      '/distr/core/css/core.css',
+      '/distr/core/css/utility.full.css',
+      '/distr/component/buttons/css/buttons.css',
+    ].forEach((path) => {
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      link.href = `${uiRoot}${path}`;
+      document.head.append(link);
+    });
+  </script>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--sf-surface-0);
+      color: var(--sf-on-surface);
+    }
+
+    button { font: inherit; }
+
+    .preview-shell {
+      width: min(calc(100% - 2 * var(--sf-space-1)), var(--sf-i1));
+      margin-inline: auto;
+      padding-block: var(--sf-space-3);
+    }
+
+    .preview-intro {
+      max-width: var(--sf-text--measure-wide, 52rem);
+      margin-block-end: var(--sf-space-2);
+    }
+
+    .preview-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sf-space-1\/3);
+      margin-block-end: var(--sf-space-2);
+    }
+
+    .preview-toolbar button[aria-pressed="true"] {
+      background: var(--sf-primary-container);
+      color: var(--sf-on-primary-container);
+    }
+
+    .preview-note {
+      margin-block: 0 var(--sf-space-1);
+      color: var(--sf-on-surface-variant);
+    }
+
+    /*
+     * Контур принадлежит оболочке, разделители — только соседним ячейкам.
+     * Поэтому вертикальные и горизонтальные линии всегда имеют одну толщину
+     * и нигде не складываются в двойную границу.
+     */
+    .docara-table-preview {
+      overflow-x: auto;
+      border: var(--sf-px, 1px) solid var(--sf-outline-variant);
+      border-radius: var(--sf-radius-2, var(--sf-radius-default));
+      background: var(--sf-surface-0);
+    }
+
+    .docara-table-preview table {
+      width: 100%;
+      min-width: 44rem;
+      margin: 0;
+      border: 0;
+      border-collapse: separate;
+      border-spacing: 0;
+      background: transparent;
+    }
+
+    .docara-table-preview th,
+    .docara-table-preview td {
+      padding-block: var(--sf-space-1\/2);
+      padding-inline: var(--sf-space-1);
+      border: 0;
+      border-inline-end: var(--sf-px, 1px) solid var(--sf-outline-variant);
+      border-block-end: var(--sf-px, 1px) solid var(--sf-outline-variant);
+      text-align: start;
+      vertical-align: top;
+    }
+
+    .docara-table-preview th {
+      padding-block: var(--sf-space-1);
+      background: var(--sf-surface-container);
+      color: var(--sf-on-surface);
+      font-weight: var(--sf-font-weight-bold, 700);
+    }
+
+    .docara-table-preview tr > :first-child {
+      width: 1%;
+      white-space: nowrap;
+    }
+
+    .docara-table-preview tr > :last-child { border-inline-end: 0; }
+    .docara-table-preview tbody tr:last-child > * { border-block-end: 0; }
+
+    .docara-table-preview code {
+      overflow-wrap: anywhere;
+      color: var(--sf-error, var(--sf-on-surface));
+    }
+
+    @media (max-width: 600px) {
+      .preview-shell {
+        width: min(calc(100% - 2 * var(--sf-space-1\/2)), var(--sf-i1));
+        padding-block: var(--sf-space-2);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="preview-shell">
+    <header class="preview-intro">
+      <p>Изолированный прототип на текущих переменных SIMAI Framework.</p>
+      <h1>Таблица Docara</h1>
+      <p>Рекомендуемый вариант: единые разделители 1 px, полупрозрачная шапка и удобные отступы в строках.</p>
+    </header>
+
+    <div class="preview-toolbar" aria-label="Настройки прототипа">
+      <button type="button" class="sf-button sf-button--default sf-button--on-surface sf-button--size-1" data-theme="light" aria-pressed="false">
+        <span class="sf-button-text-container">Светлая</span>
+      </button>
+      <button type="button" class="sf-button sf-button--default sf-button--on-surface sf-button--size-1" data-theme="dark" aria-pressed="true">
+        <span class="sf-button-text-container">Тёмная</span>
+      </button>
+    </div>
+
+    <p class="preview-note">Единая удобная плотность используется во всей документации.</p>
+
+    <div class="docara-table-preview" data-table-preview tabindex="0" aria-label="Пример таблицы с параметрами">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Значение</th>
+            <th scope="col">Назначение</th>
+            <th scope="col">Пример</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>primary</code></td>
+            <td>Основная цветовая схема</td>
+            <td>Ключевое действие или статус</td>
+          </tr>
+          <tr>
+            <td><code>secondary</code></td>
+            <td>Вторичная цветовая схема</td>
+            <td>Дополнительное действие</td>
+          </tr>
+          <tr>
+            <td><code>tertiary</code></td>
+            <td>Третичная цветовая схема</td>
+            <td>Вспомогательный акцент</td>
+          </tr>
+          <tr>
+            <td><code>neutral</code></td>
+            <td>Нейтральная схема без смыслового акцента</td>
+            <td>Техническая метка</td>
+          </tr>
+          <tr>
+            <td><code>info</code></td>
+            <td>Информация</td>
+            <td>Полезное пояснение</td>
+          </tr>
+          <tr>
+            <td><code>success</code></td>
+            <td>Успешное состояние</td>
+            <td>Операция завершена</td>
+          </tr>
+          <tr>
+            <td><code>warning</code></td>
+            <td>Предупреждение</td>
+            <td>Требуется внимание</td>
+          </tr>
+          <tr>
+            <td><code>danger</code></td>
+            <td>Опасность или ошибка</td>
+            <td>Действие невозможно выполнить</td>
+          </tr>
+          <tr>
+            <td><code>on-surface</code></td>
+            <td>Контрастное отображение на текущей поверхности</td>
+            <td>Универсальная метка без собственного смыслового цвета</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    const root = document.documentElement;
+    document.querySelectorAll('[data-theme]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const theme = button.dataset.theme;
+        root.classList.toggle('theme-light', theme === 'light');
+        root.classList.toggle('theme-dark', theme === 'dark');
+        document.querySelectorAll('[data-theme]').forEach((item) => {
+          item.setAttribute('aria-pressed', String(item === button));
+        });
+      });
+    });
+
+  </script>
+</body>
+</html>

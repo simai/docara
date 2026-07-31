@@ -1,0 +1,20 @@
+{
+  "id": "docara.badge",
+  "family": "docara_typed",
+  "category": "inline",
+  "lifecycle": "supported",
+  "authoring": {
+    "syntax": "inline",
+    "call": ":badge",
+    "jobs": ["label_status"],
+    "parameters": [
+      {"name": "type", "type": "enum", "required": false, "default": "tonal", "values": ["main", "tonal", "outline"]},
+      {"name": "scheme", "type": "enum", "required": false, "default": "primary", "values": ["primary", "secondary", "tertiary", "neutral", "info", "success", "warning", "danger", "on-surface"]},
+      {"name": "size", "type": "enum", "required": false, "default": "1/3", "values": ["1/3", "1/2", "1"]}
+    ]
+  },
+  "states": [],
+  "verification": {"renderer": true, "tests": true, "docs": true, "demo": true},
+  "docs_ref": "docs/site/content/ru/components/syntax.md",
+  "provenance": {"source_kind": "inline_definition", "definition_ref": "resources/component-catalog/inline/docara.badge.json"}
+}

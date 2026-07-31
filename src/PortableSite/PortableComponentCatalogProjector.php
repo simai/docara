@@ -10,9 +10,12 @@ use DOMNode;
 use Simai\Docara\Framework\ComponentDirectiveDocument;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\I18n\Translator;
+use Simai\Docara\ComponentCatalog\PublicComponentPolicy;
+use Simai\Docara\ComponentCatalog\PublicComponentPage;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\ResolvedPagePlan;
+use Simai\Docara\Preferences\ReaderPreferenceCompiler;
 
 final readonly class PortableComponentCatalogProjector
 {
@@ -20,6 +23,7 @@ final readonly class PortableComponentCatalogProjector
         private PortableMarkdownRenderer $markdown,
         private string $packageRoot = __DIR__ . '/../..',
         private ?Translator $translator = null,
+        private PortableExampleRenderer $examples = new PortableExampleRenderer,
     ) {}
 
     /**
@@ -38,6 +42,7 @@ final readonly class PortableComponentCatalogProjector
         string $homeUrl,
         string $outputPrefix = '',
         array $reservedDocumentIds = [],
+        array $authoredComponents = [],
     ): array {
         $entries = is_array($catalog['entries'] ?? null) ? array_values($catalog['entries']) : [];
         $supported = [];
@@ -62,7 +67,10 @@ final readonly class PortableComponentCatalogProjector
                     (string) ($entry['id'] ?? ''),
                 );
             }
-            if ($isSupported) {
+            if ($isSupported
+                && ($entry['family'] ?? null) !== 'framework_smart'
+                && (new PublicComponentPolicy)->exposes((string) ($entry['id'] ?? ''))
+            ) {
                 $supported[] = $entry;
             }
         }
@@ -80,12 +88,27 @@ final readonly class PortableComponentCatalogProjector
         );
         $copy = $this->copy($locale);
         $tocDepth = (int) data_get($basePlan->configuration, 'reading.toc_depth', 3);
-        $presentedEntries = array_map(
-            fn (array $entry): array => $this->presentEntry($entry, $locale),
-            $entries,
-        );
+        $presentedEntries = array_map(function (array $entry) use ($authoredComponents, $locale): array {
+            $id = $this->id($entry);
+            $authored = $authoredComponents[$id] ?? null;
+            if (! is_array($authored)) {
+                return $this->presentEntry($entry, $locale);
+            }
+            $title = trim((string) ($authored['title'] ?? ''));
+            $description = trim((string) ($authored['description'] ?? ''));
+            if ($title === '' || $description === '') {
+                throw new PortableConfigurationException(
+                    'AUTHORED_COMPONENT_PAGE_PRESENTATION_REQUIRED',
+                    "Authored component page [$id] requires a title and a short Markdown description.",
+                );
+            }
+            $entry['title'] = $title;
+            $entry['description'] = $description;
+
+            return $entry;
+        }, $supported);
         $deploymentBase = $baseUrl === '/' ? '/' : '/' . trim($baseUrl, '/') . '/';
-        $catalogRoute = $deploymentBase . 'components/catalog/';
+        $catalogRoute = $deploymentBase . 'components/';
         $brandTitle = (string) data_get(
             $basePlan->configuration,
             'branding.title',
@@ -104,17 +127,17 @@ final readonly class PortableComponentCatalogProjector
         $indexFragment = $indexOutline['html'];
         $index = $this->page(
             basePlan: $basePlan,
-            pagePath: $contentRoot . '/components/catalog/index.md',
+            pagePath: $contentRoot . '/components/index.md',
             title: $copy['catalog_title'],
             description: $copy['catalog_description'],
             url: $catalogRoute,
-            output: $this->output($outputPrefix, 'components/catalog/index.html'),
+            output: $this->output($outputPrefix, 'components/index.html'),
             contentHtml: $indexFragment,
             components: $indexComponents,
             homeUrl: $homeUrl,
             navigationHidden: null,
             sourceMarkdown: '# ' . $copy['catalog_title'] . "\n",
-            outline: $indexOutline['items'],
+            outline: [],
         );
         $index['component_catalog_kind'] = 'index';
         $index['component_catalog_breadcrumbs'] = $catalogBreadcrumbs;
@@ -125,11 +148,23 @@ final readonly class PortableComponentCatalogProjector
         $receiptPages = [];
         foreach ($supported as $entry) {
             $id = $this->id($entry);
+            if (isset($authoredComponents[$id])) {
+                continue;
+            }
             $presentedEntry = $this->presentEntry($entry, $locale);
+            $source = '';
+            $exampleHash = hash('sha256', '');
+            $renderedHash = hash('sha256', '');
+            $components = $runtime->extract('', '@docara/component-catalog/' . $id . '.md');
             $source = $this->exampleSource($presentedEntry);
+            $this->assertVariantExamples($presentedEntry, $source);
             $components = $runtime->extract($source, '@docara/component-catalog/' . $id . '.md');
             $renderedFragment = $components->hydrate(
-                $this->markdown->render($components->markdownWithPlaceholders),
+                $this->markdown->render(
+                    $components->markdownWithPlaceholders,
+                    $this->packageRoot,
+                    $this->packageRoot . '/' . (string) $presentedEntry['example_ref'],
+                ),
             );
             if (trim($renderedFragment) === '') {
                 throw new PortableConfigurationException(
@@ -137,27 +172,47 @@ final readonly class PortableComponentCatalogProjector
                     "Component [$id] produced an empty example.",
                 );
             }
-
             $exampleHash = hash('sha256', $source);
             $renderedHash = hash('sha256', $renderedFragment);
-            $route = $catalogRoute . rawurlencode($id) . '/';
-            $output = $this->output($outputPrefix, 'components/catalog/' . $id . '/index.html');
+            $exampleGroups = [];
+            foreach ($this->exampleSourceGroups($presentedEntry, $source, $copy) as $group) {
+                $groupComponents = $runtime->extract(
+                    $group['source'],
+                    '@docara/component-catalog/' . $id . '-' . count($exampleGroups) . '.md',
+                );
+                $exampleGroups[] = [
+                    ...$group,
+                    'rendered' => $groupComponents->hydrate(
+                        $this->markdown->render(
+                            $groupComponents->markdownWithPlaceholders,
+                            $this->packageRoot,
+                            $this->packageRoot . '/' . (string) $presentedEntry['example_ref'],
+                        ),
+                    ),
+                ];
+            }
+            $detailHtml = $this->detailFragment(
+                $presentedEntry,
+                $source,
+                $renderedFragment,
+                $exampleHash,
+                $renderedHash,
+                $copy,
+                $exampleGroups,
+                $locale,
+            );
+            $slug = $this->publicSlug($entry);
+            $route = $catalogRoute . rawurlencode($slug) . '/';
+            $output = $this->output($outputPrefix, 'components/' . $slug . '/index.html');
             $detailOutline = (new PortableDocumentOutlineBuilder)->build(
-                $this->detailFragment(
-                    $presentedEntry,
-                    $source,
-                    $renderedFragment,
-                    $exampleHash,
-                    $renderedHash,
-                    $copy,
-                ),
+                $detailHtml,
                 $tocDepth,
                 $reservedDocumentIds,
             );
             $detailFragment = $detailOutline['html'];
             $page = $this->page(
                 basePlan: $basePlan,
-                pagePath: $contentRoot . '/components/catalog/' . $id . '.md',
+                pagePath: $contentRoot . '/components/' . $slug . '.md',
                 title: (string) $presentedEntry['title'],
                 description: (string) $presentedEntry['description'],
                 url: $route,
@@ -165,7 +220,7 @@ final readonly class PortableComponentCatalogProjector
                 contentHtml: $detailFragment,
                 components: $components,
                 homeUrl: $homeUrl,
-                navigationHidden: true,
+                navigationHidden: null,
                 sourceMarkdown: $source,
                 outline: $detailOutline['items'],
             );
@@ -181,6 +236,7 @@ final readonly class PortableComponentCatalogProjector
             $receiptPages[] = [
                 'id' => $id,
                 'family' => (string) $entry['family'],
+                'lifecycle' => (string) $entry['lifecycle'],
                 'route' => $route,
                 'output' => $output,
                 'example_ref' => (string) $presentedEntry['example_ref'],
@@ -211,7 +267,7 @@ final readonly class PortableComponentCatalogProjector
             'catalog_content_sha256' => (string) ($catalog['content_sha256'] ?? ''),
             'index' => [
                 'route' => $catalogRoute,
-                'output' => $this->output($outputPrefix, 'components/catalog/index.html'),
+                'output' => $this->output($outputPrefix, 'components/index.html'),
                 'contract_fragment_sha256' => $this->normalizedFragmentHash($indexFragment),
             ],
             'pages' => $receiptPages,
@@ -451,42 +507,55 @@ final readonly class PortableComponentCatalogProjector
     /** @return array<string, string> */
     public function assets(): array
     {
-        $relative = 'resources/component-catalog/assets/docara-mark.svg';
-        $candidate = rtrim($this->packageRoot, '/\\');
-        foreach (explode('/', $relative) as $segment) {
-            $candidate .= DIRECTORY_SEPARATOR . $segment;
-            if (is_link($candidate)) {
+        $assets = [];
+        foreach ([
+            'docara-flow.png',
+            'docara-mark.svg',
+            'docara-screen.png',
+            'feature-build.png',
+            'feature-json.png',
+            'feature-markdown.png',
+            'simai.svg',
+        ] as $name) {
+            $relative = 'resources/component-catalog/assets/' . $name;
+            $candidate = rtrim($this->packageRoot, '/\\');
+            foreach (explode('/', $relative) as $segment) {
+                $candidate .= DIRECTORY_SEPARATOR . $segment;
+                if (! is_link($candidate)) {
+                    continue;
+                }
                 throw new PortableConfigurationException(
                     'COMPONENT_CATALOG_ASSET_INVALID',
                     $relative,
                 );
             }
-        }
-        $root = realpath($this->packageRoot);
-        $real = realpath($candidate);
-        $stat = @lstat($candidate);
-        if (! is_string($root)
-            || ! is_string($real)
-            || ! is_file($real)
-            || ! str_starts_with($real, rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)
-            || ! is_array($stat)
-            || (($stat['mode'] ?? 0) & 0170000) !== 0100000
-            || ($stat['nlink'] ?? 0) !== 1
-        ) {
-            throw new PortableConfigurationException(
-                'COMPONENT_CATALOG_ASSET_INVALID',
-                $relative,
-            );
-        }
-        $bytes = file_get_contents($real);
-        if (! is_string($bytes) || $bytes === '') {
-            throw new PortableConfigurationException(
-                'COMPONENT_CATALOG_ASSET_INVALID',
-                $relative,
-            );
+            $root = realpath($this->packageRoot);
+            $real = realpath($candidate);
+            $stat = @lstat($candidate);
+            if (! is_string($root)
+                || ! is_string($real)
+                || ! is_file($real)
+                || ! str_starts_with($real, rtrim($root, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR)
+                || ! is_array($stat)
+                || (($stat['mode'] ?? 0) & 0170000) !== 0100000
+                || ($stat['nlink'] ?? 0) !== 1
+            ) {
+                throw new PortableConfigurationException(
+                    'COMPONENT_CATALOG_ASSET_INVALID',
+                    $relative,
+                );
+            }
+            $bytes = file_get_contents($real);
+            if (! is_string($bytes) || $bytes === '') {
+                throw new PortableConfigurationException(
+                    'COMPONENT_CATALOG_ASSET_INVALID',
+                    $relative,
+                );
+            }
+            $assets['_docara/component-catalog/' . $name] = $bytes;
         }
 
-        return ['_docara/component-catalog/docara-mark.svg' => $bytes];
+        return $assets;
     }
 
     /**
@@ -556,7 +625,14 @@ final readonly class PortableComponentCatalogProjector
             'locale' => (string) ($configuration['locale'] ?? $configuration['default_locale'] ?? 'en'),
             'preset' => 'docs',
             'theme' => (string) data_get($configuration, 'settings.theme', 'system'),
-            'max_width' => (string) data_get($configuration, 'layout.max_width', 'normal'),
+            'modal_blur' => (string) data_get($configuration, 'settings.modal_blur', 'large'),
+            'reader_preferences' => is_array($configuration['reader_preferences'] ?? null)
+                ? $configuration['reader_preferences']
+                : ReaderPreferenceCompiler::defaultConfiguration(),
+            'reader_preferences_storage_key' => ReaderPreferenceCompiler::storageKey($configuration),
+            'container_max' => (int) data_get($configuration, 'layout.container.max', 7),
+            'scrollbar_preset' => (string) data_get($configuration, 'layout.scrollbar.preset', 'overlay'),
+            'content_gap' => (int) data_get($configuration, 'layout.content.gap', 0),
             'navigation_hidden' => (bool) data_get($configuration, 'navigation.hidden', false),
             'navigation_order' => data_get($configuration, 'navigation.order'),
             'search_enabled' => (bool) data_get($configuration, 'search.enabled', false),
@@ -586,180 +662,64 @@ final readonly class PortableComponentCatalogProjector
     public function indexFragment(array $entries, string $catalogRoute, array $copy): string
     {
         $groups = [
-            'native_markdown' => $copy['family_native_plural'],
-            'docara_typed' => $copy['family_typed_plural'],
-            'framework_smart' => $copy['family_smart_plural'],
+            'text_code' => [],
+            'structure' => [],
+            'media' => [],
+            'actions' => [],
         ];
-        $sections = [];
-        foreach ($groups as $family => $label) {
-            $items = [];
-            foreach ($entries as $entry) {
-                if (($entry['family'] ?? null) !== $family
-                    || ($entry['lifecycle'] ?? null) !== 'supported'
-                ) {
-                    continue;
-                }
-                $id = $this->id($entry);
-                $items[] = '<li ' . $this->filterItemAttributes($entry) . '>'
-                    . '<a class="docara-document-link flex flex-col gap-1 color-on-surface decoration-none'
-                    . ' bg-surface-0 border border-outline-variant radius-2 p-2 h-full w-full" href="'
-                    . $this->escape($catalogRoute . rawurlencode($id) . '/')
-                    . '"><span class="weight-7">' . $this->escape((string) $entry['title']) . '</span>'
-                    . '<code>' . $this->escape($id) . '</code>'
-                    . '<span class="color-on-surface-variant">'
-                    . $this->escape((string) $entry['description']) . '</span></a></li>';
-            }
-            if ($items !== []) {
-                $sections[] = '<section data-docara-component-section class="flex flex-col gap-2"><h2>'
-                    . $this->escape($label) . '</h2>'
-                    . '<ul class="grid grid-col-1 md:grid-col-2 gap-2 list-none m-0 p-0">'
-                    . implode('', $items) . '</ul></section>';
-            }
-        }
-
-        $unavailable = [];
         foreach ($entries as $entry) {
-            if (($entry['lifecycle'] ?? null) === 'supported') {
+            if (($entry['lifecycle'] ?? null) !== 'supported') {
                 continue;
             }
             $id = $this->id($entry);
-            $gap = is_array($entry['gap'] ?? null) ? $entry['gap'] : [];
-            $reason = (string) (
-                $gap['reason']
-                ?? ($entry['limitations'][0] ?? $copy['unavailable_fallback'])
-            );
-            $limitations = is_array($entry['limitations'] ?? null)
-                ? array_values($entry['limitations'])
-                : [];
-            $limitationHtml = $limitations === []
-                ? '<p>' . $this->escape($copy['no_limitations']) . '</p>'
-                : '<ul>' . implode('', array_map(
-                    fn (mixed $limitation): string => '<li>'
-                        . $this->escape((string) $limitation) . '</li>',
-                    $limitations,
-                )) . '</ul>';
-            $unavailable[] = '<li ' . $this->filterItemAttributes($entry)
-                . '><details data-docara-component-gap="' . $this->escape($id)
-                . '" class="bg-surface-0 border border-outline-variant radius-2 p-2">'
-                . '<summary data-docara-component-details-summary class="cursor-pointer">'
-                . '<span class="flex flex-wrap items-center gap-1"><strong>'
-                . $this->escape((string) $entry['title']) . '</strong><code>'
-                . $this->escape($id) . '</code></span></summary>'
-                . '<div class="flex flex-col gap-2 p-top-2">'
-                . '<p class="m-0">' . $this->escape($reason) . '</p>'
-                . '<dl class="flex flex-col gap-2 m-0">'
-                . '<div><dt class="weight-7">' . $this->escape($copy['owner'])
-                . '</dt><dd class="m-0"><code>'
-                . $this->escape((string) ($gap['owner'] ?? ''))
-                . '</code></dd></div>'
-                . '<div><dt class="weight-7">' . $this->escape($copy['fallback'])
-                . '</dt><dd class="m-0">' . $this->escape((string) ($gap['fallback'] ?? ''))
-                . '</dd></div><div><dt class="weight-7">'
-                . $this->escape($copy['admission_condition'])
-                . '</dt><dd class="m-0">'
-                . $this->escape((string) ($gap['admission_condition'] ?? ''))
-                . '</dd></div></dl><div><p class="m-0 weight-7">'
-                . $this->escape($copy['limitations']) . '</p>' . $limitationHtml
-                . '</div></div></details></li>';
-        }
-        if ($unavailable !== []) {
-            $sections[] = '<section data-docara-component-section class="flex flex-col gap-2"><h2>'
-                . $this->escape($copy['unavailable_title']) . '</h2>'
-                . '<ul class="flex flex-col gap-2 list-none m-0 p-0">'
-                . implode('', $unavailable) . '</ul></section>';
+            $group = $this->indexGroup($id);
+            $groups[$group][] = '<li data-docara-component-item="' . $this->escape($id) . '">'
+                . '<a href="' . $this->escape($catalogRoute . rawurlencode($this->publicSlug($entry)) . '/') . '">'
+                . $this->escape((string) $entry['title']) . '</a></li>';
         }
 
-        return '<div data-docara-component-catalog-index class="flex flex-col gap-3">'
+        $sections = [];
+        foreach ($groups as $group => $items) {
+            if ($items === []) {
+                continue;
+            }
+            $sections[] = '<section data-docara-component-group="' . $this->escape($group) . '">'
+                . '<h2 class="heading-4">' . $this->escape($copy['group_' . $group]) . '</h2>'
+                . '<ul class="list-none m-0 p-0 flex flex-col gap-1">'
+                . implode('', $items) . '</ul></section>';
+        }
+
+        return '<div data-docara-component-catalog-index>'
             . '<h1>' . $this->escape($copy['catalog_title']) . '</h1>'
             . '<p>' . $this->escape($copy['catalog_intro']) . '</p>'
-            . $this->filterFragment(count($entries), $copy)
-            . implode('', $sections)
-            . '<p data-docara-component-filter-empty hidden class="bg-surface border'
-            . ' border-outline-variant radius-2 p-2 m-0">'
-            . $this->escape($copy['filter_empty']) . '</p>'
+            . '<div class="flex flex-col gap-2">'
+            . implode('', $sections) . '</div>'
             . '</div>';
     }
 
-    /**
-     * @param  array<string, mixed>  $entry
-     */
-    private function filterItemAttributes(array $entry): string
+    private function indexGroup(string $id): string
     {
-        $lifecycle = (string) ($entry['lifecycle'] ?? '');
-        $availability = $lifecycle === 'supported' ? 'supported' : 'unavailable';
-        $gap = is_array($entry['gap'] ?? null) ? $entry['gap'] : [];
-        $limitations = is_array($entry['limitations'] ?? null) ? $entry['limitations'] : [];
-        $search = implode(' ', array_filter([
-            $this->id($entry),
-            (string) ($entry['title'] ?? ''),
-            (string) ($entry['description'] ?? ''),
-            (string) ($entry['family'] ?? ''),
-            $lifecycle,
-            (string) ($gap['reason'] ?? ''),
-            ...array_map('strval', $limitations),
-        ], static fn (string $value): bool => $value !== ''));
-
-        return 'data-docara-component-item="' . $this->escape($this->id($entry))
-            . '" data-docara-component-family="'
-            . $this->escape((string) ($entry['family'] ?? ''))
-            . '" data-docara-component-availability="' . $availability
-            . '" data-docara-component-search="' . $this->escape($search) . '"';
-    }
-
-    /**
-     * @param  array<string, string>  $copy
-     */
-    private function filterFragment(int $total, array $copy): string
-    {
-        return '<form data-docara-component-filter'
-            . ' data-docara-component-filter-controller="docara.component_filter.v1"'
-            . ' data-docara-component-total="' . $total . '"'
-            . ' data-docara-component-status-label="' . $this->escape($copy['filter_status'])
-            . '" class="bg-surface border border-outline-variant radius-2 p-2 flex flex-col gap-2">'
-            . '<fieldset class="m-0 p-0 border-none flex flex-col gap-2">'
-            . '<legend class="weight-7 p-0">' . $this->escape($copy['filter_title']) . '</legend>'
-            . '<div class="grid grid-col-1 md:grid-col-3 gap-2">'
-            . '<label class="sf-input sf-input--size-1 sf-input--bordered flex flex-col">'
-            . '<span class="sf-input-label flex"><span class="sf-input-text">'
-            . $this->escape($copy['filter_query_label']) . '</span></span>'
-            . '<span class="sf-input-field items-cross-center transition flex">'
-            . '<span class="sf-input-left flex"><sf-icon icon="search" aria-hidden="true"></sf-icon></span>'
-            . '<input data-docara-component-filter-query class="sf-input-text-container flex-1"'
-            . ' type="search" autocomplete="off" spellcheck="false" placeholder="'
-            . $this->escape($copy['filter_query_placeholder']) . '"></span></label>'
-            . '<label class="flex flex-col gap-1"><span class="weight-6">'
-            . $this->escape($copy['filter_family_label']) . '</span>'
-            . '<select data-docara-component-filter-family'
-            . ' class="docara-component-filter-control bg-surface-0 color-on-surface border'
-            . ' border-outline-variant radius-1 p-1">'
-            . '<option value="">' . $this->escape($copy['filter_family_all']) . '</option>'
-            . '<option value="native_markdown">' . $this->escape($copy['family_native_plural']) . '</option>'
-            . '<option value="docara_typed">' . $this->escape($copy['family_typed_plural']) . '</option>'
-            . '<option value="framework_smart">' . $this->escape($copy['family_smart_plural']) . '</option>'
-            . '<option value="requirement">' . $this->escape($copy['filter_requirements']) . '</option>'
-            . '</select></label>'
-            . '<label class="flex flex-col gap-1"><span class="weight-6">'
-            . $this->escape($copy['filter_availability_label']) . '</span>'
-            . '<select data-docara-component-filter-availability'
-            . ' class="docara-component-filter-control bg-surface-0 color-on-surface border'
-            . ' border-outline-variant radius-1 p-1">'
-            . '<option value="">' . $this->escape($copy['filter_availability_all']) . '</option>'
-            . '<option value="supported">' . $this->escape($copy['filter_supported']) . '</option>'
-            . '<option value="unavailable">' . $this->escape($copy['filter_unavailable']) . '</option>'
-            . '</select></label></div></fieldset>'
-            . '<div class="flex flex-wrap items-center content-main-between gap-1">'
-            . '<p data-docara-component-filter-status class="color-on-surface-variant m-0"'
-            . ' aria-live="polite">' . $this->escape($copy['filter_status']) . ': '
-            . $total . ' / ' . $total . '</p>'
-            . '<button data-docara-component-filter-reset hidden type="button"'
-            . ' class="sf-button sf-button--link sf-button--on-surface sf-button--size-1 radius-default">'
-            . '<span class="sf-button-text-container">' . $this->escape($copy['filter_reset'])
-            . '</span></button></div></form>';
+        return match ($id) {
+            'native.headings_and_text', 'native.lists_and_quotes', 'native.table',
+            'native.code', 'native.footnotes_and_sources', 'docara.badge', 'docara.kbd',
+            'docara.icon', 'docara.code', 'docara.diagram', 'docara.math', 'docara.html' => 'text_code',
+            'docara.card', 'docara.grid', 'docara.details', 'docara.example',
+            'docara.steps', 'docara.tabs', 'docara.tree', 'docara.backlinks' => 'structure',
+            'native.links_and_images', 'docara.figure', 'docara.media', 'docara.embed',
+            'docara.download', 'docara.logos' => 'media',
+            'docara.alert', 'docara.banner', 'docara.button', 'docara.hero',
+            'ui.alert', 'ui.button' => 'actions',
+            default => throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_INDEX_GROUP_REQUIRED',
+                $id,
+            ),
+        };
     }
 
     /**
      * @param  array<string, mixed>  $entry
      * @param  array<string, string>  $copy
+     * @param  list<array{label:string,source:string,rendered:string,parameter:?string}>  $exampleGroups
      */
     public function detailFragment(
         array $entry,
@@ -768,166 +728,503 @@ final readonly class PortableComponentCatalogProjector
         string $exampleHash,
         string $renderedHash,
         array $copy,
+        array $exampleGroups = [],
+        string $locale = 'en',
     ): string {
         $id = $this->id($entry);
-        $parts = [
-            '<h1>' . $this->escape((string) $entry['title']) . '</h1>',
-            '<p class="color-on-surface-variant"><code>' . $this->escape($id)
-                . '</code> · '
-                . $this->escape($this->familyLabel((string) $entry['family'], $copy)) . '</p>',
-            '<p>' . $this->escape((string) $entry['description']) . '</p>',
-            '<h2>' . $this->escape($copy['example']) . '</h2>',
-            '<div data-docara-component-demo="' . $this->escape($id)
-                . '" data-docara-outline-exclude class="bg-surface border border-outline-variant radius-2 p-3">'
-                . $renderedFragment . '</div>',
-            '<h2>' . $this->escape($copy['call']) . '</h2>',
-            '<pre data-docara-component-source="' . $this->escape($id)
-                . '" class="bg-surface border border-outline-variant radius-2 p-2 overflow-auto">'
-                . '<code class="language-markdown overflow-auto">'
-                . $this->escape(str_replace(["\r\n", "\r"], "\n", $source)) . '</code></pre>',
-        ];
-
         $parameters = is_array($entry['authoring']['parameters'] ?? null)
             ? array_values($entry['authoring']['parameters'])
             : [];
+        $parameterExamples = [];
+        $mainExamples = [];
+        foreach ($exampleGroups as $group) {
+            $parameterName = $group['parameter'] ?? null;
+            if ($parameterName === null) {
+                $mainExamples[] = $group;
+
+                continue;
+            }
+            $parameterExamples[$parameterName][] = $group;
+        }
+        if ($mainExamples === []) {
+            $mainExamples[] = [
+                'source' => $this->publishedExampleSource($source),
+                'rendered' => $renderedFragment,
+            ];
+        }
+        $publicSource = implode("\n", array_map(
+            static fn (array $example): string => rtrim($example['source']),
+            $mainExamples,
+        )) . "\n";
+        $mainPreview = implode('', array_map(
+            static fn (array $example): string => $example['rendered'],
+            $mainExamples,
+        ));
+        $sourceFragment = rtrim(
+            $this->markdown->render($this->sourceFence($publicSource)),
+            "\n",
+        );
+        $parts = [
+            '<h1>' . $this->escape((string) $entry['title']) . '</h1>',
+            '<p>' . $this->escape((string) $entry['description']) . '</p>',
+            '<pre hidden aria-hidden="true" data-docara-component-source="'
+                . $this->escape($id) . '">'
+                . $this->escape($this->publishedExampleSource($source)) . '</pre>',
+            '<div data-docara-component-source-display="' . $this->escape($id) . '">'
+                . $this->examples->render(
+                    id: 'component-' . $this->publicSlug($entry),
+                    preview: $mainPreview,
+                    sources: ['Markdown' => $sourceFragment],
+                    exampleLabel: $copy['example'],
+                    copyLabel: $copy['copy'],
+                    copiedLabel: $copy['copied'],
+                    legacyComponentId: $id,
+                ) . '</div>',
+        ];
+
         if ($parameters !== []) {
-            $rows = [];
-            foreach ($parameters as $parameter) {
-                if (! is_array($parameter)) {
-                    continue;
-                }
-                $values = is_array($parameter['values'] ?? null)
-                    ? $this->presentedValues(
-                        $parameter['values'],
-                        $entry['_localized_parameters'][$parameter['name']]['values'] ?? [],
-                    )
-                    : '';
-                $default = array_key_exists('default', $parameter)
-                    ? CanonicalJson::encode($parameter['default'])
-                    : '—';
-                $localized = $entry['_localized_parameters'][$parameter['name']] ?? [];
-                $rules = $this->parameterRules($parameter);
-                $rows[] = '<tr><td class="min-w-min"><span class="flex flex-col gap-1"><strong>'
-                    . $this->escape((string) ($localized['label'] ?? $parameter['name'] ?? ''))
-                    . '</strong><code class="wrap-none">' . $this->escape((string) ($parameter['name'] ?? ''))
-                    . '</code></span></td><td class="wrap-none">'
-                    . $this->escape((string) ($parameter['type'] ?? ''))
-                    . '</td><td class="wrap-none">' . (($parameter['required'] ?? false) === true
-                        ? $this->escape($copy['yes'])
-                        : $this->escape($copy['no']))
-                    . '</td><td class="wrap-none">' . $this->escape($default)
-                    . '</td><td>' . $this->escape($values)
-                    . '</td><td>' . $rules
-                    . '</td><td>' . $this->escape((string) (
-                        $localized['description'] ?? $parameter['description'] ?? ''
-                    ))
-                    . '</td></tr>';
-            }
-            $parts[] = '<h2>' . $this->escape($copy['parameters'])
-                . '</h2><div class="overflow-auto"><table class="min-w-full"><thead><tr>'
-                . '<th>' . $this->escape($copy['name']) . '</th>'
-                . '<th>' . $this->escape($copy['type']) . '</th>'
-                . '<th>' . $this->escape($copy['required']) . '</th>'
-                . '<th>' . $this->escape($copy['default']) . '</th>'
-                . '<th>' . $this->escape($copy['values']) . '</th>'
-                . '<th>' . $this->escape($copy['rules']) . '</th>'
-                . '<th>' . $this->escape($copy['purpose']) . '</th></tr></thead><tbody>'
-                . implode('', $rows) . '</tbody></table></div>';
+            $parts[] = $this->parameterDefinitions(
+                $entry,
+                $parameters,
+                $parameterExamples,
+                $copy,
+                $locale,
+            );
         }
-
-        $constraints = is_array($entry['authoring']['constraints'] ?? null)
-            ? $entry['authoring']['constraints']
-            : [];
-        $constraintItems = [];
-        foreach (($constraints['allowed_combinations'] ?? []) as $combination) {
-            if (! is_array($combination)) {
-                continue;
-            }
-            $constraintItems[] = '<li><span class="weight-7">'
-                . $this->escape($copy['allowed_combinations'])
-                . ' <code>allowed_combinations</code></span>'
-                . '<div class="overflow-auto"><code class="wrap-none">'
-                . $this->escape(CanonicalJson::encode($combination))
-                . '</code></div></li>';
-        }
-        foreach (($constraints['requires'] ?? []) as $requirement) {
-            if (! is_array($requirement)) {
-                continue;
-            }
-            $constraintItems[] = '<li><span class="weight-7"><code>requires</code></span>'
-                . '<div class="overflow-auto"><code class="wrap-none">'
-                . $this->escape($copy['when'] . ' '
-                    . CanonicalJson::encode($requirement['when'] ?? [])
-                    . ' → ' . $copy['then'] . ' '
-                    . CanonicalJson::encode($requirement['then'] ?? []))
-                . '</code></div></li>';
-        }
-        if ($constraintItems !== []) {
-            $parts[] = '<h2>' . $this->escape($copy['parameter_relationships'])
-                . '</h2><ul class="flex flex-col gap-2">'
-                . implode('', $constraintItems) . '</ul>';
-        }
-
-        $states = is_array($entry['states'] ?? null) ? array_values($entry['states']) : [];
-        if ($states !== []) {
-            $items = array_map(function (mixed $state) use ($entry): string {
-                $token = (string) $state;
-                $label = (string) ($entry['_localized_states'][$token] ?? $token);
-
-                return '<li><span class="flex items-center gap-1"><span>'
-                    . $this->escape($label) . '</span><code>' . $this->escape($token)
-                    . '</code></span></li>';
-            }, $states);
-            $parts[] = '<h2>' . $this->escape($copy['states'])
-                . '</h2><ul class="flex flex-wrap gap-1 list-none m-0 p-0">'
-                . implode('', $items) . '</ul>';
-        }
-
-        $sourceReferences = [];
-        $provenance = is_array($entry['provenance'] ?? null) ? $entry['provenance'] : [];
-        foreach ($provenance as $key => $value) {
-            if (is_scalar($value)) {
-                $sourceReferences[] = '<li><code>' . $this->escape((string) $key)
-                    . '</code>: ' . $this->escape((string) $value) . '</li>';
-            }
-        }
-        $sourceReferences[] = '<li><code>docs_ref</code>: '
-            . $this->escape((string) $entry['docs_ref']) . '</li>';
-        $sourceReferences[] = '<li><code>example_ref</code>: '
-            . $this->escape((string) $entry['example_ref']) . '</li>';
-        $limitations = is_array($entry['limitations'] ?? null) ? array_values($entry['limitations']) : [];
-        $limitationHtml = $limitations === []
-            ? '<p>' . $this->escape($copy['no_limitations']) . '</p>'
-            : '<ul>' . implode('', array_map(
-                fn (mixed $limitation): string => '<li>' . $this->escape((string) $limitation) . '</li>',
-                $limitations,
-            )) . '</ul>';
-        $parts[] = '<details class="bg-surface border border-outline-variant radius-2 p-2">'
-            . '<summary data-docara-component-details-summary class="weight-7 cursor-pointer">'
-            . $this->escape($copy['limitations_and_source']) . '</summary>'
-            . '<div class="flex flex-col gap-2 p-top-2">' . $limitationHtml
-            . '<ul>' . implode('', $sourceReferences) . '</ul></div></details>';
 
         return '<div data-docara-component-detail="' . $this->escape($id)
             . '" data-docara-example-source-sha256="' . $exampleHash
             . '" data-docara-example-render-sha256="' . $renderedHash
-            . '" class="flex flex-col gap-3">' . implode('', $parts) . '</div>';
+            . '">' . implode('', $parts) . '</div>';
+    }
+
+    /**
+     * @param array<string,mixed> $entry
+     * @param list<mixed> $parameters
+     * @param array<string,list<array{label:string,source:string,rendered:string,parameter:?string}>> $parameterExamples
+     * @param array<string,string> $copy
+     */
+    private function parameterDefinitions(
+        array $entry,
+        array $parameters,
+        array $parameterExamples,
+        array $copy,
+        string $locale,
+    ): string {
+        $items = [];
+        foreach ($parameters as $parameter) {
+            if (! is_array($parameter) || ! is_string($parameter['name'] ?? null)) {
+                continue;
+            }
+            $name = $parameter['name'];
+            $localized = is_array($entry['_localized_parameters'][$name] ?? null)
+                ? $entry['_localized_parameters'][$name]
+                : [];
+            $description = trim((string) ($localized['description'] ?? $parameter['description'] ?? ''));
+            $details = [];
+            $values = is_array($parameter['values'] ?? null)
+                ? array_values($parameter['values'])
+                : [];
+            if ($values === [] && ($parameter['type'] ?? null) === 'boolean') {
+                $values = [true, false];
+            }
+            if ($values !== []) {
+                $details[] = $this->parameterValuesTable(
+                    $values,
+                    is_array($localized['values'] ?? null) ? $localized['values'] : [],
+                    $copy,
+                    $parameter['default'] ?? null,
+                    array_key_exists('default', $parameter),
+                );
+            }
+            if ($values === [] && array_key_exists('default', $parameter)) {
+                $details[] = '<p><strong>' . $this->escape($copy['default']) . ':</strong> <code>'
+                    . $this->escape(CanonicalJson::encode($parameter['default'])) . '</code></p>';
+            }
+            if (($parameter['required'] ?? false) === true) {
+                $details[] = '<p><strong>' . $this->escape($copy['required']) . ':</strong> '
+                    . $this->escape($copy['yes']) . '</p>';
+            }
+            $parameterExample = '';
+            if (isset($parameterExamples[$name])) {
+                $examples = $parameterExamples[$name];
+                $exampleSource = implode("\n", array_map(
+                    static fn (array $example): string => rtrim($example['source']),
+                    $examples,
+                )) . "\n";
+                $examplePreview = implode('', array_map(
+                    static fn (array $example): string => $example['rendered'],
+                    $examples,
+                ));
+                $sourceFragment = rtrim(
+                    $this->markdown->render($this->sourceFence($exampleSource)),
+                    "\n",
+                );
+                $parameterExample = '<div data-docara-component-parameter-example="'
+                    . $this->escape($name) . '">'
+                    . $this->examples->render(
+                        id: 'component-' . $this->publicSlug($entry) . '-parameter-' . $name,
+                        preview: $examplePreview,
+                        sources: ['Markdown' => $sourceFragment],
+                        exampleLabel: $copy['example'],
+                        copyLabel: $copy['copy'],
+                        copiedLabel: $copy['copied'],
+                    ) . '</div>';
+            }
+            $items[] = '<section data-docara-component-parameter="' . $this->escape($name)
+                . '" class="m-bottom-1">'
+                . '<h2>' . $this->escape((string) ($localized['label'] ?? $name)) . '</h2>'
+                . ($description === '' ? '' : $this->parameterDescription($name, $description, $locale))
+                . implode('', $details)
+                . $parameterExample
+                . '</section>';
+        }
+
+        return '<div data-docara-component-parameters>' . implode('', $items) . '</div>';
+    }
+
+    /** @param array<string,mixed> $entry @param array<string,string> $copy @return list<array{label:string,source:string,parameter:?string}> */
+    private function exampleSourceGroups(array $entry, string $source, array $copy): array
+    {
+        $lines = preg_split('/\r\n|\n|\r/u', trim($source));
+        if (! is_array($lines)) {
+            return [];
+        }
+        $groups = [];
+        $current = [];
+        $hasContent = false;
+        foreach ($lines as $line) {
+            $isMarker = preg_match('/^<!--\s*docara-(?:variant|parameter):/D', trim($line)) === 1;
+            if ($isMarker && $hasContent) {
+                $groups[] = $current;
+                $current = [];
+                $hasContent = false;
+            }
+            $current[] = $line;
+            if (trim($line) !== '' && ! str_starts_with(trim($line), '<!--')) {
+                $hasContent = true;
+            }
+        }
+        if ($current !== []) {
+            $groups[] = $current;
+        }
+
+        $result = [];
+        foreach ($groups as $index => $groupLines) {
+            $raw = implode("\n", $groupLines) . "\n";
+            $label = '';
+            preg_match_all('/<!--\s*(?<label>[^>]+?)\s*-->/u', $raw, $labelMatches);
+            foreach (($labelMatches['label'] ?? []) as $candidate) {
+                $candidate = trim((string) $candidate);
+                if ($candidate !== ''
+                    && ! str_starts_with($candidate, 'docara-variant:')
+                    && ! str_starts_with($candidate, 'docara-parameter:')
+                ) {
+                    $label = $candidate;
+                    break;
+                }
+            }
+            if ($label === '') {
+                $label = $this->exampleGroupLabel($entry, $raw, $copy, $index);
+            }
+            $parameter = null;
+            if (preg_match(
+                '/<!--\s*docara-parameter:(?<name>[a-z][a-z0-9_]*)\s*-->/D',
+                $raw,
+                $parameterMatch,
+            ) === 1) {
+                $parameter = (string) $parameterMatch['name'];
+                $parameterNames = array_values(array_filter(array_map(
+                    static fn (mixed $parameter): ?string => is_array($parameter)
+                        && is_string($parameter['name'] ?? null)
+                            ? $parameter['name']
+                            : null,
+                    is_array($entry['authoring']['parameters'] ?? null)
+                        ? $entry['authoring']['parameters']
+                        : [],
+                )));
+                if (! in_array($parameter, $parameterNames, true)) {
+                    throw new PortableConfigurationException(
+                        'COMPONENT_CATALOG_PARAMETER_EXAMPLE_UNKNOWN',
+                        'Component [' . $this->id($entry)
+                            . "] example references unknown parameter [$parameter].",
+                    );
+                }
+            } else {
+                $parameter = $this->inferredExampleParameter($entry, $raw);
+            }
+            $result[] = [
+                'label' => $label,
+                'source' => $this->publishedExampleSource($raw),
+                'parameter' => $parameter,
+            ];
+        }
+
+        return $result;
+    }
+
+    /** @param array<string,mixed> $entry */
+    private function inferredExampleParameter(array $entry, string $source): ?string
+    {
+        preg_match_all(
+            '/<!--\s*docara-variant:(?<id>[a-z][a-z0-9_-]*(?:\.[a-z0-9_-]+)*)\s*-->/D',
+            $source,
+            $matches,
+        );
+        $ids = array_values(array_map('strval', $matches['id'] ?? []));
+        $coverage = is_array($entry['verification']['variant_coverage'] ?? null)
+            ? array_values($entry['verification']['variant_coverage'])
+            : [];
+        foreach (array_reverse($ids) as $id) {
+            foreach ($coverage as $variant) {
+                if (! is_array($variant) || ($variant['id'] ?? null) !== $id) {
+                    continue;
+                }
+                if (($variant['kind'] ?? null) === 'parameter'
+                    && is_string($variant['name'] ?? null)
+                ) {
+                    return $variant['name'];
+                }
+                if (($variant['kind'] ?? null) !== 'state'
+                    || ! is_string($variant['name'] ?? null)
+                ) {
+                    continue;
+                }
+                $state = $variant['name'];
+                $candidates = [];
+                foreach (($entry['authoring']['parameters'] ?? []) as $parameter) {
+                    if (! is_array($parameter) || ! is_string($parameter['name'] ?? null)) {
+                        continue;
+                    }
+                    $values = array_map(
+                        'strval',
+                        is_array($parameter['values'] ?? null) ? $parameter['values'] : [],
+                    );
+                    if (in_array($state, $values, true)) {
+                        $candidates[] = $parameter['name'];
+                    }
+                }
+                if (count($candidates) === 1) {
+                    return $candidates[0];
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /** @param array<string,mixed> $entry @param array<string,string> $copy */
+    private function exampleGroupLabel(array $entry, string $source, array $copy, int $index): string
+    {
+        preg_match_all(
+            '/<!--\s*docara-variant:(?<id>[a-z][a-z0-9_-]*(?:\.[a-z0-9_-]+)*)\s*-->/D',
+            $source,
+            $matches,
+        );
+        $ids = array_values(array_filter(
+            array_map('strval', $matches['id'] ?? []),
+            static fn (string $id): bool => $id !== 'base',
+        ));
+        $coverage = is_array($entry['verification']['variant_coverage'] ?? null)
+            ? array_values($entry['verification']['variant_coverage'])
+            : [];
+        foreach (array_reverse($ids) as $id) {
+            foreach ($coverage as $variant) {
+                if (! is_array($variant) || ($variant['id'] ?? null) !== $id) {
+                    continue;
+                }
+
+                return match ((string) ($variant['kind'] ?? '')) {
+                    'state' => (string) (
+                        $entry['_localized_states'][$variant['name'] ?? '']
+                        ?? $variant['name']
+                        ?? $id
+                    ),
+                    'parameter' => $this->variantParameterLabel($entry, $variant),
+                    default => $copy['variant_base'],
+                };
+            }
+        }
+
+        return $index === 0
+            ? $copy['variant_base']
+            : $copy['parameter_examples'] . ' ' . $index;
+    }
+
+    /** @param array<string, mixed> $entry @param array<string, string> $copy */
+    private function metadataFragment(array $entry, array $copy): string
+    {
+        $metadata = is_array($entry['metadata'] ?? null) ? $entry['metadata'] : [];
+        $capabilities = is_array($metadata['capabilities'] ?? null)
+            ? array_values($metadata['capabilities'])
+            : [];
+        $badges = implode('', array_map(
+            fn (mixed $capability): string => '<li><code>'
+                . $this->escape((string) $capability) . '</code></li>',
+            $capabilities,
+        ));
+        $sourceUrl = is_string($metadata['source_url'] ?? null) ? $metadata['source_url'] : null;
+        $historyUrl = is_string($metadata['history_url'] ?? null) ? $metadata['history_url'] : null;
+        $links = [];
+        if ($sourceUrl !== null) {
+            $links[] = '<a href="' . $this->escape($sourceUrl)
+                . '" rel="noopener noreferrer">' . $this->escape($copy['open_source']) . '</a>';
+        }
+        if ($historyUrl !== null) {
+            $links[] = '<a href="' . $this->escape($historyUrl)
+                . '" rel="noopener noreferrer">' . $this->escape($copy['open_history']) . '</a>';
+        }
+        $historyNotice = ($metadata['history_exact'] ?? false) === true
+            ? ''
+            : '<p class="color-on-surface-variant m-bottom-0">'
+                . $this->escape($copy['history_fallback']) . '</p>';
+
+        return '<section data-docara-component-metadata class="bg-surface-0 border border-outline-variant radius-2 p-2">'
+            . '<h2 class="m-top-0">' . $this->escape($copy['metadata']) . '</h2>'
+            . '<dl class="grid grid-col-1 md:grid-col-2 gap-2 m-0">'
+            . '<div><dt class="weight-7">' . $this->escape($copy['package'])
+            . '</dt><dd class="m-0"><code>' . $this->escape((string) ($metadata['package'] ?? ''))
+            . '</code></dd></div>'
+            . '<div><dt class="weight-7">' . $this->escape($copy['version'])
+            . '</dt><dd class="m-0"><code>' . $this->escape((string) ($metadata['version'] ?? ''))
+            . '</code></dd></div>'
+            . '<div><dt class="weight-7">' . $this->escape($copy['owner'])
+            . '</dt><dd class="m-0"><code>' . $this->escape((string) ($metadata['owner'] ?? ''))
+            . '</code></dd></div>'
+            . '<div><dt class="weight-7">' . $this->escape($copy['source'])
+            . '</dt><dd class="m-0"><code>' . $this->escape((string) ($metadata['source_ref'] ?? ''))
+            . '</code></dd></div>'
+            . '<div><dt class="weight-7">' . $this->escape($copy['revision'])
+            . '</dt><dd class="m-0"><code>' . $this->breakableCode((string) ($metadata['revision'] ?? ''))
+            . '</code></dd></div>'
+            . '<div><dt class="weight-7">' . $this->escape($copy['author'])
+            . '</dt><dd class="m-0">' . $this->escape((string) ($metadata['author'] ?? ''))
+            . '</dd></div>'
+            . '<div><dt class="weight-7">' . $this->escape($copy['changed_at'])
+            . '</dt><dd class="m-0"><time datetime="' . $this->escape((string) ($metadata['changed_at'] ?? ''))
+            . '">' . $this->escape((string) ($metadata['changed_at'] ?? '')) . '</time></dd></div>'
+            . '<div><dt class="weight-7">' . $this->escape($copy['source_hash'])
+            . '</dt><dd class="m-0"><code>' . $this->breakableCode((string) ($metadata['source_sha256'] ?? ''))
+            . '</code></dd></div></dl>'
+            . ($links === [] ? '' : '<p class="flex flex-wrap gap-1">' . implode('', $links) . '</p>')
+            . $historyNotice
+            . '<p class="weight-7">' . $this->escape($copy['capabilities']) . '</p>'
+            . '<ul class="flex flex-wrap gap-1 list-none m-0 p-0">' . $badges . '</ul>'
+            . '</section>';
+    }
+
+    private function breakableCode(string $value): string
+    {
+        return implode('<wbr>', array_map(
+            fn (string $chunk): string => $this->escape($chunk),
+            str_split($value, 8),
+        ));
+    }
+
+    /** @param array<string, mixed> $entry @param array<string, string> $copy */
+    private function variantCoverageFragment(array $entry, array $copy): string
+    {
+        $coverage = is_array($entry['verification']['variant_coverage'] ?? null)
+            ? array_values($entry['verification']['variant_coverage'])
+            : [];
+        $items = [];
+        foreach ($coverage as $variant) {
+            if (! is_array($variant)) {
+                continue;
+            }
+            $kind = (string) ($variant['kind'] ?? '');
+            $label = match ($kind) {
+                'base' => $copy['variant_base'],
+                'state' => (string) (
+                    $entry['_localized_states'][$variant['name'] ?? '']
+                    ?? $variant['name']
+                    ?? ''
+                ),
+                'parameter' => $this->variantParameterLabel($entry, $variant),
+                default => '',
+            };
+            $kindLabel = match ($kind) {
+                'base' => $copy['variant_base'],
+                'state' => $copy['variant_state'],
+                'parameter' => $copy['variant_parameter'],
+                default => '',
+            };
+            $items[] = '<li class="flex flex-col gap-1/4 bg-surface border border-outline-variant radius-1 p-1">'
+                . '<span class="label-medium color-on-surface-variant">'
+                . $this->escape($kindLabel) . '</span><strong>' . $this->escape($label)
+                . '</strong><code>' . $this->escape((string) ($variant['id'] ?? ''))
+                . '</code></li>';
+        }
+
+        return '<section data-docara-component-variants class="flex flex-col gap-2">'
+            . '<h2 class="m-0">' . $this->escape($copy['variants']) . '</h2>'
+            . '<ul class="grid grid-col-1 md:grid-col-2 gap-1 list-none m-0 p-0">'
+            . implode('', $items) . '</ul></section>';
+    }
+
+    /** @param array<string, mixed> $entry @param array<string, mixed> $variant */
+    private function variantParameterLabel(array $entry, array $variant): string
+    {
+        $name = (string) ($variant['name'] ?? '');
+        $value = (string) ($variant['value'] ?? '');
+        $localized = is_array($entry['_localized_parameters'][$name] ?? null)
+            ? $entry['_localized_parameters'][$name]
+            : [];
+        $parameter = (string) ($localized['label'] ?? $name);
+        $values = is_array($localized['values'] ?? null) ? $localized['values'] : [];
+        $valueLabel = (string) ($values[$value] ?? ($value === '' ? 'default' : $value));
+
+        return $parameter . ' · ' . $valueLabel;
+    }
+
+    /** @param array<string, mixed> $entry */
+    private function assertVariantExamples(array $entry, string $source): void
+    {
+        $coverage = is_array($entry['verification']['variant_coverage'] ?? null)
+            ? array_values($entry['verification']['variant_coverage'])
+            : [];
+        preg_match_all(
+            '/<!--\s*docara-variant:([a-z][a-z0-9_-]*(?:\.[a-z0-9_-]+)*)\s*-->/D',
+            $source,
+            $matches,
+        );
+        $actual = array_values(array_unique($matches[1] ?? []));
+        $expected = array_map(
+            static fn (array $variant): string => (string) $variant['id'],
+            $coverage,
+        );
+        sort($actual, SORT_STRING);
+        sort($expected, SORT_STRING);
+        if ($actual !== $expected) {
+            throw new PortableConfigurationException(
+                'COMPONENT_CATALOG_VARIANT_DEMO_MISMATCH',
+                'Component [' . $this->id($entry)
+                    . '] example markers must exactly cover its admitted variant matrix.',
+            );
+        }
     }
 
     /** @param array<string, mixed> $entry */
     private function id(array $entry): string
     {
-        $id = $entry['id'] ?? null;
-        if (! is_string($id)
-            || preg_match('/^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)+$/D', $id) !== 1
-        ) {
-            throw new PortableConfigurationException(
-                'COMPONENT_CATALOG_ID_INVALID',
-                is_scalar($id) ? (string) $id : '',
-            );
-        }
+        return PublicComponentPage::id($entry);
+    }
 
-        return $id;
+    /** @param array<string, mixed> $entry */
+    private function publicSlug(array $entry): string
+    {
+        return PublicComponentPage::slug($entry);
+    }
+
+    public function publishedExampleSource(string $source): string
+    {
+        $source = preg_replace(
+            '/^<!--\s*docara-(?:variant:[a-z][a-z0-9_-]*(?:\.[a-z0-9_-]+)*|parameter:[a-z][a-z0-9_]*)\s*-->\R?/mD',
+            '',
+            str_replace(["\r\n", "\r"], "\n", $source),
+        ) ?? $source;
+
+        return trim($source) . "\n";
     }
 
     /** @param array<string, string> $copy */
@@ -948,18 +1245,21 @@ final readonly class PortableComponentCatalogProjector
     private function copy(string $locale): array
     {
         $keys = [
-            'catalog_title', 'catalog_description', 'catalog_intro', 'filter_title',
-            'filter_query_label', 'filter_query_placeholder', 'filter_family_label',
-            'filter_family_all', 'filter_requirements', 'filter_availability_label',
-            'filter_availability_all', 'filter_supported', 'filter_unavailable',
-            'filter_reset', 'filter_status', 'filter_empty', 'family_native_plural',
+            'catalog_title', 'catalog_description', 'catalog_intro', 'family_native_plural',
             'family_typed_plural', 'family_smart_plural', 'family_native_single',
-            'family_typed_single', 'family_smart_single', 'unavailable_title',
-            'unavailable_fallback', 'fallback', 'admission_condition', 'limitations',
-            'owner', 'example', 'call', 'parameters', 'parameter_relationships',
+            'family_typed_single', 'family_smart_single', 'limitations',
+            'owner', 'example', 'result', 'important', 'call', 'parameters', 'parameter_relationships',
             'allowed_combinations', 'when', 'then', 'states', 'name', 'type',
             'required', 'default', 'values', 'rules', 'purpose', 'yes', 'no',
-            'no_limitations', 'limitations_and_source',
+            'no_limitations',
+            'metadata', 'package', 'version', 'source', 'revision', 'author',
+            'changed_at', 'source_hash', 'open_source', 'open_history',
+            'history_fallback', 'capabilities', 'variants',
+            'variant_base', 'variant_state', 'variant_parameter',
+            'component', 'component_family', 'component_purpose', 'group_text_code',
+            'group_structure', 'group_media', 'group_actions', 'call_intro',
+            'parameters_intro', 'parameter_examples', 'parameter_examples_intro',
+            'considerations', 'source_intro', 'copy', 'copied',
         ];
         $copy = [];
         foreach ($keys as $key) {
@@ -998,11 +1298,69 @@ final readonly class PortableComponentCatalogProjector
                 . implode('', $items) . '</ul>';
     }
 
+    /** @param list<mixed> $values @param array<string, mixed> $labels @param array<string,string> $copy */
+    private function parameterValuesTable(
+        array $values,
+        array $labels,
+        array $copy,
+        mixed $default,
+        bool $hasDefault,
+    ): string
+    {
+        $rows = implode('', array_map(
+            function (mixed $value) use ($labels, $copy, $default, $hasDefault): string {
+                $token = is_bool($value) ? ($value ? 'true' : 'false') : (string) $value;
+                $label = is_bool($value)
+                    ? ($value ? $copy['yes'] : $copy['no'])
+                    : (is_string($labels[$token] ?? null) ? $labels[$token] : $token);
+                $defaultLabel = $hasDefault && $value === $default
+                    ? ' <strong>· ' . $this->escape($copy['default']) . '</strong>'
+                    : '';
+
+                return '<tr><td><code>' . $this->escape($token) . '</code></td><td>'
+                    . $this->escape($label) . $defaultLabel . '</td></tr>';
+            },
+            $values,
+        ));
+
+        return '<div data-docara-table-scroll class="overflow-auto m-bottom-1"><table class="table table-border table-stripe">'
+            . '<thead><tr><th>' . $this->escape($copy['values']) . '</th><th>'
+            . $this->escape($copy['purpose']) . '</th></tr></thead><tbody>'
+            . $rows . '</tbody></table></div>';
+    }
+
+    private function parameterDescription(string $name, string $description, string $locale): string
+    {
+        $description = $this->lowercaseSentenceStart(trim($description));
+        $parameter = '<code>' . $this->escape($name) . '</code>';
+
+        return match ($locale) {
+            'ru' => '<p>Параметр ' . $parameter . ' ' . $this->escape($description) . '</p>',
+            'en' => '<p>The ' . $parameter . ' parameter ' . $this->escape($description) . '</p>',
+            default => '<p>' . $parameter . ': ' . $this->escape(trim($description)) . '</p>',
+        };
+    }
+
+    private function lowercaseSentenceStart(string $value): string
+    {
+        if ($value === '') {
+            return '';
+        }
+
+        $first = mb_substr($value, 0, 1, 'UTF-8');
+        $second = mb_substr($value, 1, 1, 'UTF-8');
+        if ($second !== '' && $second === mb_strtoupper($second, 'UTF-8')) {
+            return $value;
+        }
+
+        return mb_strtolower($first, 'UTF-8') . mb_substr($value, 1, null, 'UTF-8');
+    }
+
     /** @param list<mixed> $values @param array<string, mixed> $labels */
     private function presentedValues(array $values, array $labels): string
     {
         return implode(', ', array_map(
-            function (mixed $value) use ($labels): string {
+            static function (mixed $value) use ($labels): string {
                 $token = (string) $value;
                 $label = is_string($labels[$token] ?? null) ? $labels[$token] : $token;
 
@@ -1015,6 +1373,19 @@ final readonly class PortableComponentCatalogProjector
     private function escape(string $value): string
     {
         return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+
+    private function sourceFence(string $source): string
+    {
+        $normalized = rtrim(str_replace(["\r\n", "\r"], "\n", $source), "\n");
+        preg_match_all('/~+/', $normalized, $matches);
+        $longest = 0;
+        foreach ($matches[0] ?? [] as $run) {
+            $longest = max($longest, strlen($run));
+        }
+        $fence = str_repeat('~', max(4, $longest + 1));
+
+        return $fence . "markdown\n" . $normalized . "\n" . $fence . "\n";
     }
 
     public function normalizedFragmentHash(string $html): string

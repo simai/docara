@@ -1,0 +1,218 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.federation.technology_execution_packet",
+  "status": "success",
+  "technology_signature": "d96456d51d1c133a83a3140892f29414aaff7affa2ed2779514be0fbe803fafc",
+  "owner_skill": "docara",
+  "process_model_id": "docara_documentation_site_publication",
+  "process_state_machine_id": "docara_documentation_site_publication_state_machine",
+  "owner_contract_sha256": "8ec082cbfd1abb5b9098900e9a4be5752572a8ef2652851ea7699a031976c6c9",
+  "source_refs": [
+    {
+      "id": "6bd7bdf8d514fc46",
+      "authority": "raw_owner_source",
+      "repo": "ai-codex-skill-docara",
+      "repo_revision": "0aa77d09eec9f045683a9dcc91a17f126c820504",
+      "relative_path": "skills/docara/SKILL.md",
+      "role": "skill_entrypoint",
+      "required": true,
+      "sha256": "69b843029fbf5ea590948679c4fb508541d1877d85a63250f75b019b3f32c74b"
+    },
+    {
+      "id": "6e240758c51edbdc",
+      "authority": "canonical_graph_projection",
+      "repo": "ai-codex-skill-graph",
+      "repo_revision": "7c614b393b2af5ff68789be4f0ec82c7b78927b6",
+      "relative_path": "graph/generated/mirai-graph/federation-control-plane/federation-registry-20260530/federation-skill-registry.json",
+      "role": "process_registry",
+      "required": true,
+      "sha256": "2a2c931807c3a13f94c991b2c9497d6e1aec0890b8f15ed7710570c971715668"
+    }
+  ],
+  "invariants": [
+    "build_success_is_not_publication_success",
+    "github_pages_requires_settings_and_path_prefix_check",
+    "graph_sync_proposed_is_not_canonical_update",
+    "init_update_must_not_overwrite_source_docs",
+    "root_docs_output_is_not_docara_source",
+    "sample_branding_is_not_public_ready",
+    "technology_packet_is_not_conformance_evidence",
+    "translation_sync_is_not_translation_review",
+    "generated_contract_is_not_canonical_approval",
+    "owner_raw_sources_remain_authoritative_for_methodology",
+    "silent_merge_forbidden",
+    "uncontracted_hardcoded_fallback_forbidden",
+    "raw_owner_sources_remain_authoritative",
+    "graph_runtime_does_not_grant_authorization",
+    "completion_requires_current_conformance_evidence"
+  ],
+  "steps": [
+    {
+      "id": "doctor_result_recorded",
+      "required": true,
+      "evidence": [
+        "repo_root",
+        "docara_doctor_result_or_not_installed_reason",
+        "root_or_contained_docara_decision",
+        "docs_dir",
+        "locale_plan"
+      ]
+    },
+    {
+      "id": "project_model_recorded",
+      "required": true,
+      "evidence": [
+        "root_or_contained_docara_decision",
+        "docs_dir",
+        "locale_plan",
+        "source_docs_path",
+        "config_env_state",
+        "package_manager_state"
+      ]
+    },
+    {
+      "id": "source_config_recorded",
+      "required": true,
+      "evidence": [
+        "source_docs_path",
+        "config_env_state",
+        "package_manager_state",
+        "front_matter_settings_status",
+        "branding_status",
+        "theme_builder_removed_or_private_reason"
+      ]
+    },
+    {
+      "id": "authoring_branding_recorded",
+      "required": true,
+      "evidence": [
+        "frontend_build_result",
+        "docara_build_result",
+        "build_output_path",
+        "front_matter_settings_status",
+        "branding_status",
+        "theme_builder_removed_or_private_reason"
+      ]
+    },
+    {
+      "id": "build_result_recorded",
+      "required": true,
+      "evidence": [
+        "frontend_build_result",
+        "docara_build_result",
+        "build_output_path",
+        "publication_mode",
+        "workflow_or_skip_reason",
+        "pages_url_or_settings_blocker",
+        "path_prefix_check_when_project_pages"
+      ]
+    },
+    {
+      "id": "publication_result_recorded",
+      "required": true,
+      "evidence": [
+        "publication_mode",
+        "workflow_or_skip_reason",
+        "pages_url_or_settings_blocker",
+        "path_prefix_check_when_project_pages",
+        "translation_todo_status_or_not_multilingual_reason"
+      ]
+    },
+    {
+      "id": "translation_state_recorded",
+      "required": true,
+      "evidence": [
+        "translation_todo_status_or_not_multilingual_reason",
+        "verdict",
+        "remaining_blockers",
+        "manual_pages_settings_when_needed",
+        "next_actions"
+      ]
+    },
+    {
+      "id": "readiness_verdict_recorded",
+      "required": true,
+      "evidence": [
+        "stable_reusable_lessons_or_skip_reason",
+        "verdict",
+        "remaining_blockers",
+        "manual_pages_settings_when_needed",
+        "next_actions"
+      ]
+    }
+  ],
+  "required_checks": [
+    {
+      "id": "branding_gate",
+      "required": true
+    },
+    {
+      "id": "build_gate",
+      "required": true
+    },
+    {
+      "id": "docara_doctor_gate",
+      "required": true
+    },
+    {
+      "id": "federation_process_check",
+      "required": true
+    },
+    {
+      "id": "federation_process_resolve",
+      "required": true
+    },
+    {
+      "id": "federation_route_check",
+      "required": true
+    },
+    {
+      "id": "federation_verify",
+      "required": true
+    },
+    {
+      "id": "project_model_gate",
+      "required": true
+    },
+    {
+      "id": "publication_gate",
+      "required": true
+    },
+    {
+      "id": "skill_process_conversion_check",
+      "required": true
+    },
+    {
+      "id": "source_docs_authoring_gate",
+      "required": true
+    },
+    {
+      "id": "technology_conformance_check",
+      "required": true
+    },
+    {
+      "id": "technology_quality_feedback_check",
+      "required": true
+    },
+    {
+      "id": "translation_state_gate",
+      "required": true
+    }
+  ],
+  "conformance_required": true,
+  "deviation_policy": "explicit_reason_and_evidence_required",
+  "evidence_policy": {
+    "schema_version": "2.0.0",
+    "max_age_seconds": 86400,
+    "verification_run_binding_required": true,
+    "target_revision_binding_required": true,
+    "typed_result_artifacts_required": true,
+    "empty_write_diff_allowed": false,
+    "read_only_mode_must_be_explicit": true
+  },
+  "available_owner_process_models": [
+    "docara_documentation_site_publication"
+  ],
+  "blockers": [],
+  "warnings": []
+}

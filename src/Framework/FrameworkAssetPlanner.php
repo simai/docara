@@ -27,7 +27,10 @@ final readonly class FrameworkAssetPlanner
      * @param  list<string>  $componentKeys
      * @param  list<string>  $additionalRuntimeTags
      */
-    public function plan(array $componentKeys, array $additionalRuntimeTags = []): FrameworkAssetPlan
+    public function plan(
+        array $componentKeys,
+        array $additionalRuntimeTags = [],
+    ): FrameworkAssetPlan
     {
         $runtime = $this->repository->runtime();
         $uiCommit = (string) $runtime['ui']['commit'];
@@ -81,7 +84,7 @@ final readonly class FrameworkAssetPlanner
         ], [
             'key' => 'simai.framework.icon_font.css',
             'kind' => 'inline_css',
-            'content' => $this->iconFallbackCss($uiBase . '/fonts/MaterialSymbols-Outlined.woff2'),
+            'content' => $this->iconFallbackCss($uiBase . '/component/icons/fonts/MaterialSymbols-Outlined.woff2'),
             'source_revision' => $uiCommit,
         ], [
             'key' => 'simai.framework.icon_font.ready',
@@ -283,7 +286,7 @@ final readonly class FrameworkAssetPlanner
     {
         return '@font-face{font-family:"Docara Material Symbols";src:url("' . $fontUrl
             . '") format("woff2");font-style:normal;font-weight:100 700;font-display:block}'
-            . 'html body sf-icon > i.sf-icon{font-family:"Docara Material Symbols"!important;'
+            . 'html body sf-icon > .sf-icon{font-family:"Docara Material Symbols"!important;'
             . 'font-feature-settings:"liga"!important;font-variation-settings:"FILL" var(--sf-icon--fill,0),'
             . '"wght" var(--sf-icon--weight,400),"GRAD" var(--sf-icon--grade,0),'
             . '"opsz" var(--sf-icon--optical-size,24)}';
@@ -291,7 +294,7 @@ final readonly class FrameworkAssetPlanner
 
     private function iconFallbackReadyRuntime(): string
     {
-        return '(function(){var selector="sf-icon > i.sf-icon:not(.sf-icon-loaded)";'
+        return '(function(){var selector="sf-icon > .sf-icon:not(.sf-icon-loaded)";'
             . 'function mark(root){if(root.nodeType===1&&root.matches(selector)){root.classList.add("sf-icon-loaded")}if(root.querySelectorAll){root.querySelectorAll(selector).forEach(function(icon){icon.classList.add("sf-icon-loaded")})}}'
             . 'function watch(){mark(document);if(!document.body)return;new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(mark)})}).observe(document.body,{childList:true,subtree:true})}'
             . 'function start(){var ready=document.fonts&&document.fonts.load?document.fonts.load("400 24px \\"Docara Material Symbols\\""):Promise.resolve([true]);ready.then(function(faces){if(faces&&faces.length){document.documentElement.dataset.docaraFullFontReady="true";watch()}}).catch(function(){})}'

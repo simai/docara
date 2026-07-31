@@ -1,7 +1,7 @@
 # Docara
 
 Docara builds static documentation, reference sites and small landing pages
-from Markdown and validated JSON. Simai Framework supplies the interface;
+from Markdown and validated JSON. SIMAI Framework supplies the interface;
 authors do not need Node.js or a frontend toolchain.
 
 ## Quick start
@@ -48,7 +48,7 @@ version is a separate site variant and output with its own `base_url`.
 
 ```bash
 php vendor/bin/docara init [--update] [path]
-php vendor/bin/docara build [environment]
+php vendor/bin/docara build [environment] [--page=/public/url/]
 php vendor/bin/docara serve [environment] [--no-build]
 php vendor/bin/docara verify-static [build-directory]
 ```
@@ -60,6 +60,10 @@ must not be edited manually.
 The optional `path` may be absolute or relative to the current directory. If it
 is omitted, `init` uses the current directory. The same target path can be
 passed together with `--update`.
+
+After one complete build, `--page` atomically rebuilds one existing route for
+fast content review. Run a complete build again after structural, navigation,
+global configuration, or Framework lock changes.
 
 ## Documentation
 

@@ -12,7 +12,18 @@
             "group_content",
             "neutral_panel"
         ],
-        "parameters": []
+        "parameters": [
+            {
+                "name": "variant",
+                "type": "enum",
+                "required": false,
+                "default": "default",
+                "values": [
+                    "default",
+                    "plain"
+                ]
+            }
+        ]
     },
     "states": [],
     "verification": {

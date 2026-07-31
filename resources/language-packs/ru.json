@@ -5,9 +5,12 @@
         "common.continue": "Продолжить",
         "common.greeting": "Здравствуйте, {name}!",
         "shell.skip_to_content": "К содержанию",
-        "navigation.open": "Открыть разделы документации",
+        "navigation.open": "Открыть навигацию",
+        "navigation.mobile_title": "Навигация",
+        "navigation.primary": "Главное",
+        "navigation.sections": "Документация",
         "navigation.title": "Разделы",
-        "navigation.close": "Закрыть разделы документации",
+        "navigation.close": "Закрыть навигацию",
         "navigation.breadcrumbs": "Хлебные крошки",
         "navigation.breadcrumbs_expand": "Показать скрытые уровни навигационной цепочки",
         "navigation.outline": "Содержание",
@@ -37,23 +40,36 @@
         "reader.title": "Настройки чтения",
         "reader.close": "Закрыть настройки чтения",
         "reader.appearance": "Оформление",
-        "reader.help": "Выберите тему для этого браузера.",
+        "reader.appearance_description": "Настройте внешний вид документации в этом браузере.",
+        "reader.help": "Настройте внешний вид документации в этом браузере.",
         "reader.reset": "Вернуть настройку сайта",
+        "reader.theme_title": "Тема",
+        "reader.theme_description": "Выберите светлое или тёмное оформление.",
         "reader.theme_system": "Как в системе",
         "reader.theme_system_description": "Автоматически следует настройке устройства.",
         "reader.theme_light": "Светлая",
         "reader.theme_light_description": "Светлое оформление на всех страницах.",
         "reader.theme_dark": "Тёмная",
         "reader.theme_dark_description": "Тёмное оформление на всех страницах.",
-        "reader.saved": "Тема сохранена: {theme}.",
-        "reader.applied_not_saved": "Тема применена. Браузер не разрешил сохранить выбор.",
-        "reader.restored": "Восстановлена настройка темы сайта.",
+        "reader.modal_blur_title": "Размытие фона модальных окон",
+        "reader.modal_blur_description": "Определяет степень размытия страницы за поиском и настройками.",
+        "reader.modal_blur_none": "Без размытия",
+        "reader.modal_blur_none_description": "Сохраняет только штатное затемнение подложки.",
+        "reader.modal_blur_small": "Слабое",
+        "reader.modal_blur_small_description": "Слегка размывает содержимое позади окна.",
+        "reader.modal_blur_medium": "Среднее",
+        "reader.modal_blur_medium_description": "Заметно отделяет окно от страницы.",
+        "reader.modal_blur_large": "Максимальное",
+        "reader.modal_blur_large_description": "Максимально фокусирует внимание на открытом окне.",
+        "reader.saved": "Сохранено: {setting} — {value}.",
+        "reader.applied_not_saved": "Настройка применена. Браузер не разрешил сохранить выбор.",
+        "reader.restored": "Восстановлены настройки сайта.",
         "redirect.title": "Страница перемещена",
         "redirect.message": "Адрес страницы изменился.",
         "redirect.link": "Перейти к актуальной странице",
-        "catalog.catalog_title": "Каталог компонентов",
+        "catalog.catalog_title": "Компоненты",
         "catalog.catalog_description": "Живые примеры всех компонентов, которые поддерживает эта сборка Docara.",
-        "catalog.catalog_intro": "Проверенные примеры, точный синтаксис и границы компонентов этой сборки Docara.",
+        "catalog.catalog_intro": "Выберите компонент, чтобы посмотреть пример, параметры и код вызова.",
         "catalog.filter_title": "Найти компонент",
         "catalog.filter_query_label": "Поиск",
         "catalog.filter_query_placeholder": "Название, ID или назначение",
@@ -69,10 +85,10 @@
         "catalog.filter_empty": "По заданным условиям ничего не найдено.",
         "catalog.family_native_plural": "Markdown",
         "catalog.family_typed_plural": "Компоненты Docara",
-        "catalog.family_smart_plural": "Smart-компоненты Simai Framework",
+        "catalog.family_smart_plural": "Smart-компоненты SIMAI Framework",
         "catalog.family_native_single": "Markdown",
         "catalog.family_typed_single": "Компонент Docara",
-        "catalog.family_smart_single": "Smart-компонент Simai Framework",
+        "catalog.family_smart_single": "Smart-компонент SIMAI Framework",
         "catalog.unavailable_title": "Недоступно сейчас",
         "catalog.unavailable_fallback": "Недоступно в этой сборке.",
         "catalog.fallback": "Безопасная замена",
@@ -80,6 +96,8 @@
         "catalog.limitations": "Ограничения",
         "catalog.owner": "Владелец развития",
         "catalog.example": "Пример",
+        "catalog.result": "Результат",
+        "catalog.important": "Важно",
         "catalog.call": "Вызов",
         "catalog.parameters": "Параметры",
         "catalog.parameter_relationships": "Связи параметров",
@@ -91,13 +109,44 @@
         "catalog.type": "Тип",
         "catalog.required": "Обязателен",
         "catalog.default": "По умолчанию",
-        "catalog.values": "Значения",
+        "catalog.values": "Значение",
         "catalog.rules": "Правила",
-        "catalog.purpose": "Назначение",
+        "catalog.purpose": "Результат",
         "catalog.yes": "Да",
         "catalog.no": "Нет",
         "catalog.no_limitations": "Дополнительных ограничений не заявлено.",
         "catalog.limitations_and_source": "Ограничения и источник",
+        "catalog.metadata": "О компоненте",
+        "catalog.package": "Пакет",
+        "catalog.version": "Версия контракта",
+        "catalog.source": "Источник",
+        "catalog.revision": "Git revision",
+        "catalog.author": "Последний автор",
+        "catalog.changed_at": "Изменено",
+        "catalog.source_hash": "Хеш источника",
+        "catalog.open_source": "Открыть исходник",
+        "catalog.open_history": "История изменений",
+        "catalog.history_fallback": "Файл ещё не имеет собственной истории в зафиксированном revision; показаны сведения пакета.",
+        "catalog.capabilities": "Назначение",
+        "catalog.variants": "Варианты и состояния",
+        "catalog.variant_base": "Базовый пример",
+        "catalog.variant_state": "Состояние",
+        "catalog.variant_parameter": "Вариант параметра",
+        "catalog.component": "Компонент",
+        "catalog.component_family": "Тип",
+        "catalog.component_purpose": "Для чего нужен",
+        "catalog.group_text_code": "Текст и код",
+        "catalog.group_structure": "Структура",
+        "catalog.group_media": "Медиа",
+        "catalog.group_actions": "Действия и сообщения",
+        "catalog.call_intro": "Скопируйте пример и замените содержимое своими данными.",
+        "catalog.parameters_intro": "Параметры меняют поведение и внешний вид компонента. Если параметр не указан, используется значение по умолчанию.",
+        "catalog.parameter_examples": "Варианты",
+        "catalog.parameter_examples_intro": "Откройте нужный вариант, чтобы увидеть результат и скопировать его Markdown.",
+        "catalog.considerations": "Что учесть",
+        "catalog.source_intro": "Эти сведения нужны разработчику, который проверяет или расширяет компонент.",
+        "catalog.copy": "Скопировать код",
+        "catalog.copied": "Код скопирован",
         "examples.title": "Примеры макетов",
         "examples.description": "Живые результаты и точные исходные Markdown/JSON для декларативных возможностей Docara.",
         "examples.intro": "Выберите задачу, проверьте настоящий результат и скопируйте минимальные исходные файлы.",
@@ -120,7 +169,28 @@
                 "Наличие файлов среды выполнения само по себе не создаёт безопасный авторский API."
             ],
             "states": [],
-            "parameters": [],
+            "parameters": {
+                "ratio": {
+                    "label": "Соотношение сторон",
+                    "description": "Задаёт форму блочного изображения.",
+                    "values": {
+                        "auto": "По размеру файла",
+                        "1x1": "Квадрат 1:1",
+                        "4x3": "Классическое 4:3",
+                        "3x2": "Фотография 3:2",
+                        "16x9": "Широкое 16:9",
+                        "21x9": "Панорама 21:9"
+                    }
+                },
+                "fit": {
+                    "label": "Заполнение",
+                    "description": "Определяет, обрезать изображение до рамки или показать целиком.",
+                    "values": {
+                        "cover": "Заполнить с обрезкой",
+                        "contain": "Показать целиком"
+                    }
+                }
+            },
             "gap": {
                 "reason": "В закреплённой среде есть элемент иконки, но нет канонического авторского манифеста.",
                 "fallback": "Используйте содержательный текст или символ Unicode, смысл которого понятен без оформления.",
@@ -134,12 +204,21 @@
                 "Вложенные типизированные директивы Docara не поддерживаются."
             ],
             "states": [],
-            "parameters": [],
+            "parameters": {
+                "variant": {
+                    "label": "Оформление",
+                    "description": "Выбирает обычную карточку или композиционный блок без собственной рамки и внутренних отступов.",
+                    "values": {
+                        "default": "Карточка с поверхностью, рамкой и внутренними отступами",
+                        "plain": "Содержимое без дополнительного оформления"
+                    }
+                }
+            },
             "example_ref": "resources/component-catalog/examples/docara.card.ru.md"
         },
         "docara.columns": {
             "title": "Колонки",
-            "description": "Размещает от двух до четырёх областей Markdown в адаптивной сетке Simai Framework, сохраняя порядок исходного текста.",
+            "description": "Размещает от двух до четырёх областей Markdown в адаптивной сетке SIMAI Framework, сохраняя порядок исходного текста.",
             "limitations": [
                 "Содержимое должно включать от двух до четырёх непустых областей Markdown.",
                 "Области разделяются точной строкой верхнего уровня --- с пустыми строками вокруг.",
@@ -178,6 +257,84 @@
             "parameters": [],
             "example_ref": "resources/component-catalog/examples/docara.features.ru.md"
         },
+        "docara.hero": {
+            "title": "Первый экран",
+            "description": "Объясняет продукт, его ценность и следующий шаг на первом экране лендинга.",
+            "limitations": [
+                "Содержимое начинается с одного H1 и включает один–два описательных абзаца.",
+                "После описания можно добавить одну безопасную ссылку-действие и одно изображение с осмысленным alt-текстом.",
+                "Вложенные типизированные директивы Docara и Smart-компоненты не поддерживаются."
+            ],
+            "states": {
+                "text": "Текст",
+                "text_with_action": "Текст с действием",
+                "text_with_media": "Текст с изображением"
+            },
+            "parameters": {
+                "variant": {
+                    "label": "Компоновка",
+                    "description": "Выбирает компоновку первого экрана.",
+                    "values": {
+                        "split": "Текст и изображение",
+                        "centered": "По центру",
+                        "compact": "Компактная"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.hero.ru.md"
+        },
+        "docara.logos": {
+            "title": "Логотипы и участники",
+            "description": "Показывает компактный адаптивный ряд клиентов, партнёров или продуктов экосистемы.",
+            "limitations": [
+                "Содержимое должно включать один плоский маркированный список из двух–двенадцати пунктов.",
+                "Пункт может содержать текст, безопасную ссылку или изображение с осмысленным alt-текстом."
+            ],
+            "states": {
+                "text": "Текст",
+                "linked": "Ссылки",
+                "image": "Изображения"
+            },
+            "parameters": {
+                "tone": {
+                    "label": "Выразительность",
+                    "description": "Показывает логотипы обычно или приглушённо.",
+                    "values": {
+                        "normal": "Обычная",
+                        "muted": "Приглушённая"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.logos.ru.md"
+        },
+        "docara.promo": {
+            "title": "Промоблок",
+            "description": "Завершает лендинг коротким объяснением следующего шага, заметным действием и необязательной иллюстрацией.",
+            "limitations": [
+                "Содержимое начинается с H2, включает один–два абзаца и ровно одну безопасную ссылку-действие.",
+                "После действия можно добавить одно безопасное декоративное или информативное изображение."
+            ],
+            "states": {
+                "text": "Текст",
+                "text_with_media": "Текст с изображением"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.promo.ru.md"
+        },
+        "docara.showcase": {
+            "title": "Демонстрация продукта",
+            "description": "Показывает крупное доказательное изображение продукта рядом с объяснением и необязательной ссылкой.",
+            "limitations": [
+                "Содержимое начинается с H2, включает один–два абзаца и заканчивается изображением с осмысленным alt-текстом.",
+                "Перед изображением можно добавить одну безопасную ссылку-действие."
+            ],
+            "states": {
+                "media": "Изображение",
+                "media_with_action": "Изображение с действием"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.showcase.ru.md"
+        },
         "docara.steps": {
             "title": "Шаги",
             "description": "Показывает короткую упорядоченную последовательность действий.",
@@ -186,14 +343,27 @@
                 "Вложенные директивы Docara не поддерживаются."
             ],
             "states": [],
-            "parameters": [],
+            "parameters": {
+                "view": {
+                    "label": "Внешний вид",
+                    "description": "Показывает последовательность как временную линию или обычный список.",
+                    "values": {
+                        "timeline": "Временная линия",
+                        "list": "Список"
+                    }
+                },
+                "current": {
+                    "label": "Текущий шаг",
+                    "description": "Номер активного шага."
+                }
+            },
             "example_ref": "resources/component-catalog/examples/docara.steps.ru.md"
         },
         "native.code": {
             "title": "Код",
-            "description": "Выводит фрагменты и блоки кода из Markdown. Закреплённый Simai Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и номера строк; длинные строки прокручиваются внутри блока.",
+            "description": "Выводит фрагменты и блоки кода из Markdown. Закреплённый SIMAI Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и локальную прокрутку длинных строк.",
             "limitations": [
-                "Без загрузки закреплённого runtime остаётся читаемый статический pre/code; тонкие настройки подсветки и строк не предоставляются."
+                "Без загрузки закреплённого runtime остаётся читаемый статический pre/code; подсветка, копирование и улучшенная прокрутка не предоставляются."
             ],
             "states": [],
             "parameters": [],
@@ -209,8 +379,8 @@
             "parameters": [],
             "gap": {
                 "reason": "Нет принятого контракта для опциональных номеров, выделенных строк, diff-состояний и других editor-grade параметров.",
-                "fallback": "Используйте native.code: язык, копирование, подсветка, номера строк и локальная прокрутка уже предоставляются закреплённым Simai Framework.",
-                "admission_condition": "Добавить параметры в компонент Simai Framework, закрепить доступность и fallback, затем принять их в Docara с тестами, документацией и браузерной проверкой."
+                "fallback": "Используйте native.code: язык, копирование, подсветка и локальная прокрутка уже предоставляются закреплённым SIMAI Framework.",
+                "admission_condition": "Добавить параметры в компонент SIMAI Framework, закрепить доступность и fallback, затем принять их в Docara с тестами, документацией и браузерной проверкой."
             }
         },
         "native.headings_and_text": {
@@ -233,7 +403,28 @@
             "states": {
                 "link_focus": "Фокус ссылки"
             },
-            "parameters": [],
+            "parameters": {
+                "ratio": {
+                    "label": "Соотношение сторон",
+                    "description": "Задаёт форму блочного изображения.",
+                    "values": {
+                        "auto": "Использовать пропорции файла",
+                        "1x1": "Квадрат 1:1",
+                        "4x3": "Классическое 4:3",
+                        "3x2": "Фотография 3:2",
+                        "16x9": "Широкое 16:9",
+                        "21x9": "Панорама 21:9"
+                    }
+                },
+                "fit": {
+                    "label": "Размещение",
+                    "description": "Определяет, заполняет ли изображение рамку с обрезкой или показывается целиком.",
+                    "values": {
+                        "cover": "Заполнить с обрезкой",
+                        "contain": "Показать целиком"
+                    }
+                }
+            },
             "example_ref": "resources/component-catalog/examples/native.links_and_images.ru.md"
         },
         "native.lists_and_quotes": {
@@ -241,7 +432,20 @@
             "description": "Оформляет нумерованные и маркированные перечисления, а также семантические цитаты.",
             "limitations": [],
             "states": [],
-            "parameters": [],
+            "parameters": {
+                "author": {
+                    "label": "Автор",
+                    "description": "Имя автора цитаты."
+                },
+                "source": {
+                    "label": "Источник",
+                    "description": "Название публикации или другого источника."
+                },
+                "url": {
+                    "label": "Ссылка",
+                    "description": "Безопасный адрес источника."
+                }
+            },
             "example_ref": "resources/component-catalog/examples/native.lists_and_quotes.ru.md"
         },
         "native.table": {
@@ -382,7 +586,7 @@
                     "label": "Скругление",
                     "description": "Задаёт форму углов кнопки.",
                     "values": {
-                        "": "По умолчанию Simai Framework",
+                        "": "По умолчанию SIMAI Framework",
                         "default": "Стандартное",
                         "square": "Без скругления",
                         "rounded": "Полностью скруглённая"
@@ -399,7 +603,7 @@
                 },
                 "size": {
                     "label": "Размер",
-                    "description": "Задаёт размер кнопки по шкале Simai Framework.",
+                    "description": "Задаёт размер кнопки по шкале SIMAI Framework.",
                     "values": {
                         "1/3": "Очень маленькая · 1/3",
                         "1/2": "Маленькая · 1/2",
@@ -424,6 +628,564 @@
                 }
             },
             "example_ref": "resources/component-catalog/examples/ui.button.ru.md"
+        },
+        "docara.alert": {
+            "title": "Уведомление",
+            "description": "Сообщает важную информацию, результат, предупреждение или ошибку в едином стиле SIMAI Framework.",
+            "limitations": [
+                "Не передавайте смысл только цветом; заголовок и пояснение должны быть понятны сами по себе."
+            ],
+            "states": {
+                "clear": "Нейтральное",
+                "info": "Информация",
+                "success": "Успех",
+                "warning": "Предупреждение",
+                "danger": "Ошибка"
+            },
+            "parameters": {
+                "type": {
+                    "label": "Смысл",
+                    "description": "Выбирает семантический тип уведомления.",
+                    "values": {
+                        "clear": "Нейтральный",
+                        "info": "Информация",
+                        "success": "Успех",
+                        "warning": "Предупреждение",
+                        "danger": "Ошибка"
+                    }
+                },
+                "variant": {
+                    "label": "Оформление",
+                    "description": "Выбирает визуальный вариант Framework.",
+                    "values": {
+                        "default": "Обычный",
+                        "flat": "Плоский",
+                        "outlined": "Контурный"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.alert.ru.md"
+        },
+        "docara.details": {
+            "title": "Раскрывающийся блок",
+            "description": "Скрывает дополнительное пояснение, пока читатель не решит его открыть.",
+            "limitations": [
+                "Кратко называйте содержимое; обязательные инструкции должны оставаться видимыми."
+            ],
+            "states": {
+                "closed": "Закрыт",
+                "open": "Открыт"
+            },
+            "parameters": {
+                "open": {
+                    "label": "Открыт изначально",
+                    "description": "Открывает блок сразу после загрузки страницы."
+                },
+                "view": {
+                    "label": "Внешний вид",
+                    "description": "Выбирает карточное или линейное оформление.",
+                    "values": {
+                        "surface": "Карточка",
+                        "lines": "Линии"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.details.ru.md"
+        },
+        "docara.example": {
+            "title": "Пример",
+            "description": "Показывает готовый результат и исходный Markdown, HTML, CSS или JavaScript во вкладках одного компактного блока.",
+            "limitations": [
+                "Для Markdown используйте одну вкладку исходника. HTML можно дополнить отдельными CSS и JavaScript; JavaScript выполняется только в изолированном iframe."
+            ],
+            "states": [],
+            "parameters": {
+                "label": {
+                    "label": "Название вкладки",
+                    "description": "Задаёт понятное читателю название первой вкладки."
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.example.ru.md"
+        },
+        "docara.download": {
+            "title": "Скачивание",
+            "description": "Показывает скачивание файла как понятное доступное действие с пояснением.",
+            "limitations": [
+                "Адрес должен быть безопасным локальным или HTTP(S), а текст ссылки — называть файл."
+            ],
+            "states": [],
+            "parameters": {
+                "name": {
+                    "label": "Имя файла",
+                    "description": "Показывает понятное читателю имя файла."
+                },
+                "format": {
+                    "label": "Формат",
+                    "description": "Показывает тип или расширение файла."
+                },
+                "size": {
+                    "label": "Размер",
+                    "description": "Показывает размер файла до скачивания."
+                },
+                "checksum": {
+                    "label": "Контрольная сумма",
+                    "description": "Помогает проверить целостность скачанного файла."
+                },
+                "action": {
+                    "label": "Действие",
+                    "description": "Скачивает файл или открывает его в браузере.",
+                    "values": {
+                        "download": "Скачать",
+                        "open": "Открыть"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.download.ru.md"
+        },
+        "docara.embed": {
+            "title": "Встраиваемый материал",
+            "description": "Помещает доверенный внешний материал в адаптивную область с заданными пропорциями.",
+            "limitations": [
+                "Встраивайте только доверенные HTTPS-источники и задавайте осмысленный заголовок."
+            ],
+            "states": [],
+            "parameters": {
+                "provider": {
+                    "label": "Поставщик",
+                    "description": "Определяет тип внешнего материала.",
+                    "values": {
+                        "generic": "Обычный",
+                        "video": "Видео",
+                        "map": "Карта",
+                        "external": "Внешний виджет"
+                    }
+                },
+                "id": {
+                    "label": "Идентификатор",
+                    "description": "Идентификатор материала у поставщика."
+                },
+                "ratio": {
+                    "label": "Соотношение сторон",
+                    "description": "Задаёт пропорции адаптивной области.",
+                    "values": {
+                        "1/1": "Квадрат 1:1",
+                        "4/3": "Классическое 4:3",
+                        "16/9": "Широкое 16:9",
+                        "21/9": "Сверхширокое 21:9"
+                    }
+                },
+                "title": {
+                    "label": "Доступное название",
+                    "description": "Называет встроенный материал для вспомогательных технологий."
+                },
+                "consent": {
+                    "label": "Согласие",
+                    "description": "Определяет, загружать ли внешний материал только после согласия.",
+                    "values": {
+                        "required": "Требуется",
+                        "none": "Не требуется"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.embed.ru.md"
+        },
+        "docara.figure": {
+            "title": "Иллюстрация",
+            "description": "Показывает изображение с альтернативным текстом, подписью и управляемыми пропорциями.",
+            "limitations": [
+                "Альтернативный текст обязателен; подпись дополняет, но не заменяет его."
+            ],
+            "states": [],
+            "parameters": {
+                "ratio": {
+                    "label": "Соотношение сторон",
+                    "description": "Задаёт пропорции без искажения исходного изображения.",
+                    "values": {
+                        "auto": "Исходные пропорции",
+                        "1/1": "Квадрат 1:1",
+                        "4/3": "Классическое 4:3",
+                        "3/2": "Фотография 3:2",
+                        "16/9": "Широкое 16:9",
+                        "21/9": "Сверхширокое 21:9"
+                    }
+                },
+                "fit": {
+                    "label": "Вписывание",
+                    "description": "Определяет, заполняет ли изображение всю область или показывается целиком.",
+                    "values": {
+                        "cover": "Заполнить область",
+                        "contain": "Показать целиком"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.figure.ru.md"
+        },
+        "docara.grid": {
+            "title": "Сетка",
+            "description": "Располагает карточки и другие блоки в адаптивной сетке, не меняя их смысл.",
+            "limitations": [
+                "Сетка отвечает только за компоновку; смысл и содержимое остаются ответственностью дочерних компонентов."
+            ],
+            "states": {
+                "stacked": "В одну колонку",
+                "responsive": "Адаптивная"
+            },
+            "parameters": {
+                "columns": {
+                    "label": "Колонки",
+                    "description": "Задаёт максимальное число колонок на широком экране.",
+                    "values": {
+                        "1": "Одна",
+                        "2": "Две",
+                        "3": "Три",
+                        "4": "Четыре"
+                    }
+                },
+                "gap": {
+                    "label": "Расстояние",
+                    "description": "Задаёт расстояние SIMAI Framework между элементами.",
+                    "values": [
+                        "Без расстояния",
+                        "Шаг 1",
+                        "Шаг 2",
+                        "Шаг 3",
+                        "Шаг 4"
+                    ]
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.grid.ru.md"
+        },
+        "docara.media": {
+            "title": "Текст с изображением",
+            "description": "Объединяет текст и иллюстрацию и поддерживает изображение слева или справа.",
+            "limitations": [
+                "Изображению нужен осмысленный альтернативный текст; на тесном экране блок складывается вертикально."
+            ],
+            "states": {
+                "left": "Изображение слева",
+                "right": "Изображение справа",
+                "stacked": "Вертикально"
+            },
+            "parameters": {
+                "side": {
+                    "label": "Сторона изображения",
+                    "description": "Помещает изображение слева или справа на широком экране.",
+                    "values": {
+                        "left": "Слева",
+                        "right": "Справа"
+                    }
+                },
+                "ratio": {
+                    "label": "Соотношение сторон",
+                    "description": "Задаёт пропорции изображения.",
+                    "values": {
+                        "1/1": "Квадрат 1:1",
+                        "4/3": "Классическое 4:3",
+                        "3/2": "Фотография 3:2",
+                        "16/9": "Широкое 16:9"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.media.ru.md"
+        },
+        "docara.tree": {
+            "title": "Дерево файлов",
+            "description": "Объясняет вложенную структуру файлов и каталогов с явной иерархией.",
+            "limitations": [
+                "Используйте для структуры, а не как меню приложения; делайте подписи краткими."
+            ],
+            "states": {
+                "nested": "Вложенная структура"
+            },
+            "parameters": {
+                "interactive": {
+                    "label": "Интерактивность",
+                    "description": "Разрешает сворачивать и раскрывать каталоги."
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.tree.ru.md"
+        },
+        "docara.badge": {
+            "title": "Бейдж",
+            "description": "Добавляет компактную метку статуса, версии или категории внутрь текста и интерфейсных блоков.",
+            "limitations": [
+                "Делайте подпись короткой и не передавайте смысл одним только цветом."
+            ],
+            "states": [],
+            "parameters": {
+                "type": {
+                    "label": "Тип бейджа",
+                    "description": "Определяет, как бейдж выделяется на странице.",
+                    "values": {
+                        "main": "Основной",
+                        "tonal": "Тональный",
+                        "outline": "Контурный"
+                    }
+                },
+                "scheme": {
+                    "label": "Цветовая схема",
+                    "description": "Передаёт смысл бейджа цветом: например, информацию, успех или предупреждение.",
+                    "values": {
+                        "primary": "Основная",
+                        "secondary": "Вторичная",
+                        "tertiary": "Третичная",
+                        "neutral": "Нейтральная",
+                        "info": "Информация",
+                        "success": "Успех",
+                        "warning": "Предупреждение",
+                        "danger": "Опасность",
+                        "on-surface": "На поверхности"
+                    }
+                },
+                "size": {
+                    "label": "Размер",
+                    "description": "Использует шкалу размеров UI Framework.",
+                    "values": {
+                        "1/3": "Маленький 1/3",
+                        "1/2": "Средний 1/2",
+                        "1": "Обычный 1"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.badge.ru.md"
+        },
+        "docara.button": {
+            "title": "Кнопка-ссылка",
+            "description": "Показывает навигационную ссылку как строчное действие на официальном контракте кнопки Framework.",
+            "limitations": [
+                "Используйте для переходов; отправка формы остаётся задачей приложения."
+            ],
+            "states": [],
+            "parameters": {
+                "href": {
+                    "label": "Адрес",
+                    "description": "Безопасный локальный или HTTP(S)-адрес перехода."
+                },
+                "type": {
+                    "label": "Тип",
+                    "description": "Выбирает визуальное оформление кнопки.",
+                    "values": {
+                        "default": "С заливкой",
+                        "tonal": "Тональная",
+                        "outline": "Контурная",
+                        "link": "Ссылка"
+                    }
+                },
+                "scheme": {
+                    "label": "Схема",
+                    "description": "Выбирает семантическую цветовую схему.",
+                    "values": {
+                        "primary": "Основная",
+                        "secondary": "Вторичная",
+                        "on-surface": "На поверхности"
+                    }
+                },
+                "size": {
+                    "label": "Размер",
+                    "description": "Использует шкалу размеров UI Framework.",
+                    "values": {
+                        "1/2": "Маленький 1/2",
+                        "1": "Обычный 1",
+                        "2": "Большой 2"
+                    }
+                },
+                "icon": {
+                    "label": "Иконка",
+                    "description": "Необязательная иконка Material Symbols после подписи."
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.button.ru.md"
+        },
+        "docara.icon": {
+            "title": "Иконка",
+            "description": "Помещает Material Symbols в текст или композицию с управляемым семейством, толщиной и размером.",
+            "limitations": [
+                "Декоративные иконки скрыты от вспомогательных технологий; смысловым нужна подпись."
+            ],
+            "states": [],
+            "parameters": {
+                "size": {
+                    "label": "Размер",
+                    "description": "Использует шкалу размеров иконок Framework.",
+                    "values": {
+                        "1/3": "1/3",
+                        "1/2": "1/2",
+                        "1": "1",
+                        "2": "2",
+                        "3": "3"
+                    }
+                },
+                "family": {
+                    "label": "Семейство",
+                    "description": "Выбирает семейство Material Symbols.",
+                    "values": {
+                        "outlined": "Контурное",
+                        "rounded": "Скруглённое",
+                        "sharp": "Угловатое"
+                    }
+                },
+                "weight": {
+                    "label": "Толщина",
+                    "description": "Выбирает одну из полезных для документации толщин.",
+                    "values": {
+                        "light": "Тонкая",
+                        "regular": "Обычная",
+                        "medium": "Средняя"
+                    }
+                },
+                "filled": {
+                    "label": "Заливка",
+                    "description": "Использует вариант знака с заливкой."
+                },
+                "container": {
+                    "label": "Контейнер",
+                    "description": "Оставляет знак без фона или помещает его в квадрат либо круг.",
+                    "values": {
+                        "none": "Без контейнера",
+                        "square": "Квадрат",
+                        "circle": "Круг"
+                    }
+                },
+                "variant": {
+                    "label": "Оформление контейнера",
+                    "description": "Выбирает обычный знак, сплошной, тональный или контурный контейнер.",
+                    "values": {
+                        "plain": "Без контейнера",
+                        "main": "Сплошной",
+                        "tonal": "Тональный",
+                        "outline": "Контурный"
+                    }
+                },
+                "scheme": {
+                    "label": "Цветовая схема",
+                    "description": "Передаёт назначение иконки цветами Framework.",
+                    "values": {
+                        "primary": "Основная",
+                        "secondary": "Вторичная",
+                        "tertiary": "Третичная",
+                        "neutral": "Нейтральная",
+                        "info": "Информация",
+                        "success": "Успех",
+                        "warning": "Предупреждение",
+                        "danger": "Опасность",
+                        "on-surface": "На поверхности"
+                    }
+                },
+                "label": {
+                    "label": "Доступное название",
+                    "description": "Называет смысловую иконку для вспомогательных технологий."
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.icon.ru.md"
+        },
+        "docara.kbd": {
+            "title": "Клавиатурный ввод",
+            "description": "Обозначает клавишу или сочетание клавиш внутри обычной инструкции.",
+            "limitations": [
+                "Используйте внутри предложения и не имитируйте интерактивную кнопку."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.kbd.ru.md"
+        },
+        "docara.banner": {
+            "title": "Баннер",
+            "description": "Показывает короткое объявление уровня страницы, не заменяя первый экран.",
+            "limitations": [
+                "Пишите кратко; если сообщение относится к ходу документа, используйте уведомление."
+            ],
+            "states": [],
+            "parameters": {
+                "type": {
+                    "label": "Смысл",
+                    "description": "Выбирает семантический тип сообщения.",
+                    "values": {
+                        "info": "Информация",
+                        "success": "Успех",
+                        "warning": "Предупреждение",
+                        "danger": "Опасность"
+                    }
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.banner.ru.md"
+        },
+        "docara.diagram": {
+            "title": "Диаграмма",
+            "description": "Сохраняет исходник Mermaid читаемым и готовым к детерминированному отображению.",
+            "limitations": [
+                "Переносимая сборка пока показывает доступный исходник; Mermaid ещё не закреплён в неизменяемой поставке."
+            ],
+            "states": [],
+            "parameters": {
+                "engine": {
+                    "label": "Формат",
+                    "description": "Выбирает объявленный формат диаграммы.",
+                    "values": {
+                        "mermaid": "Mermaid"
+                    }
+                },
+                "title": {
+                    "label": "Название",
+                    "description": "Задаёт доступное название диаграммы."
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.diagram.ru.md"
+        },
+        "docara.html": {
+            "title": "Изолированный HTML",
+            "description": "Показывает явно доверенный HTML в песочнице, изолированной от страницы документации.",
+            "limitations": [
+                "Песочница намеренно запрещает скрипты и доступ к родительской странице."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.html.ru.md"
+        },
+        "docara.math": {
+            "title": "Математическая формула",
+            "description": "Сохраняет TeX читаемым и готовым к детерминированному отображению формулы.",
+            "limitations": [
+                "Переносимая сборка пока показывает доступный TeX; KaTeX ещё не закреплён в неизменяемой поставке."
+            ],
+            "states": [],
+            "parameters": {
+                "display": {
+                    "label": "Расположение",
+                    "description": "Выбирает строчное или блочное представление.",
+                    "values": {
+                        "inline": "В строке",
+                        "block": "Отдельным блоком"
+                    }
+                },
+                "label": {
+                    "label": "Доступное название",
+                    "description": "Называет формулу для вспомогательных технологий."
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.math.ru.md"
+        },
+        "docara.tabs": {
+            "title": "Вкладки",
+            "description": "Переключает равноценные представления содержимого с поддержкой клавиатуры и ARIA.",
+            "limitations": [
+                "Используйте вкладки только для равноценных представлений; последовательные инструкции оставляйте в обычном порядке документа."
+            ],
+            "states": {
+                "selected": "Выбрана",
+                "unselected": "Не выбрана"
+            },
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/docara.tabs.ru.md"
+        },
+        "native.footnotes_and_sources": {
+            "title": "Сноски и источники",
+            "description": "Добавляет примечания к источникам, не разрывая основной текст.",
+            "limitations": [
+                "Используйте устойчивые обозначения источников и сохраняйте доступность адреса для читателя."
+            ],
+            "states": [],
+            "parameters": [],
+            "example_ref": "resources/component-catalog/examples/native.footnotes_and_sources.ru.md"
         },
         "ui.dataview": {
             "title": "Представление данных",
@@ -453,6 +1215,51 @@
                 "fallback": "Используйте заголовки и последовательные разделы в порядке исходного текста.",
                 "admission_condition": "Опубликовать канонический доступный контракт и манифест вкладок, закрепить новую неизменяемую пару Framework и ревизию поставщика, затем пройти проверку схемы, ассетов, рендеринга и браузера Docara."
             }
+        },
+        "docara.code": {
+            "title": "Код из файла",
+            "description": "Вставляет проверенный фрагмент локального файла без копирования кода в Markdown.",
+            "limitations": [
+                "Путь должен оставаться внутри проекта; символические ссылки и файлы больше 1 МиБ запрещены."
+            ],
+            "states": [],
+            "parameters": {
+                "src": {
+                    "label": "Файл",
+                    "description": "Относительный путь внутри проекта."
+                },
+                "lang": {
+                    "label": "Язык",
+                    "description": "Язык подсветки синтаксиса."
+                },
+                "lines": {
+                    "label": "Строки",
+                    "description": "Одна строка или диапазон, например 1-8."
+                },
+                "title": {
+                    "label": "Заголовок",
+                    "description": "Подпись блока кода."
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.code.ru.md"
+        },
+        "docara.backlinks": {
+            "title": "Обратные ссылки",
+            "description": "Показывает страницы, которые ссылаются на текущий материал.",
+            "limitations": [
+                "Список формируется автоматически только из внутренних ссылок текущей сборки."
+            ],
+            "states": {
+                "empty": "Нет ссылок",
+                "populated": "Есть ссылки"
+            },
+            "parameters": {
+                "limit": {
+                    "label": "Количество",
+                    "description": "Максимальное число ссылок."
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.backlinks.ru.md"
         }
     }
 }

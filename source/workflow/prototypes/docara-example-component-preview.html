@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="ru" class="theme-dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Docara — прототип компонента «Пример»</title>
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/core/css/core.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/core/css/utility.full.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/component/icon/css/icon.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/component/icons/css/icons.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/component/buttons/css/buttons.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/component/icon-buttons/css/icon-buttons.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/component/badges/css/badges.css">
+  <link rel="stylesheet" href="file:///Users/rim/Documents/GitHub/ui/distr/component/tabs/css/tabs.css">
+  <style>
+    @font-face {
+      font-family: "Material Symbols Outlined";
+      src: url("file:///Users/rim/Documents/GitHub/ui/distr/component/icons/fonts/MaterialSymbols-Outlined.woff2") format("woff2");
+      font-style: normal;
+      font-weight: 100 700;
+      font-display: block;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--sf-surface);
+      color: var(--sf-on-surface);
+    }
+    button { font: inherit; }
+    .preview-shell {
+      width: min(calc(100% - 2 * var(--sf-space-1)), var(--sf-i1));
+      margin-inline: auto;
+      padding-block: var(--sf-space-3);
+    }
+    .preview-intro { max-width: 52rem; margin-bottom: var(--sf-space-2); }
+    .preview-toolbar { display: flex; flex-wrap: wrap; gap: var(--sf-space-1\/3); margin-bottom: var(--sf-space-2); }
+    .preview-toolbar button[aria-pressed="true"] {
+      background: var(--sf-primary-container);
+      color: var(--sf-on-primary-container);
+    }
+    .preview-grid { display: grid; gap: var(--sf-space-2); }
+    .preview-label { margin-bottom: var(--sf-space-1\/2); color: var(--sf-on-surface-variant); }
+
+    /*
+     * Focused contract prototype. All dimensions and colours come from the
+     * Framework. The shared moving indicator is the only proposed behaviour
+     * that the current sf-tabs underline preset does not yet provide.
+     */
+    .docara-example-preview {
+      overflow: hidden;
+      margin-bottom: var(--sf-space-1);
+      border: 1px solid var(--sf-outline-variant);
+      border-radius: var(--sf-radius-2, var(--sf-radius-default));
+      background: var(--sf-surface-0);
+    }
+    .docara-example-preview__header {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) var(--sf-ui-1--control-height);
+      align-items: center;
+      gap: var(--sf-space-1);
+      min-height: calc(var(--sf-ui-1--control-height) + 2 * var(--sf-space-1\/3));
+      padding: var(--sf-space-1\/3) var(--sf-space-1);
+      border-bottom: 1px solid var(--sf-outline-variant);
+      background: var(--sf-surface-0);
+    }
+    .docara-example-preview__tabs {
+      display: inline-flex;
+      width: max-content;
+      max-width: 100%;
+      align-items: center;
+      gap: 0;
+    }
+    .docara-example-preview__tab {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--sf-ui-1--control-height);
+      margin: 0;
+      padding-inline: var(--sf-space-1);
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--sf-on-surface-variant);
+      font-size: var(--sf-text-size-1);
+      line-height: var(--sf-text-height-1);
+      cursor: pointer;
+    }
+    .docara-example-preview__tab[aria-selected="true"] { color: var(--sf-on-surface); }
+    .docara-example-preview__tab:focus-visible {
+      outline: 2px solid var(--sf-primary);
+      outline-offset: -2px;
+    }
+    .docara-example-preview__indicator {
+      position: absolute;
+      inset-block-end: -1px;
+      inset-inline-start: 0;
+      z-index: 1;
+      width: 0;
+      height: 2px;
+      background: var(--sf-outline);
+      pointer-events: none;
+      transition: inset-inline-start 180ms ease, width 180ms ease;
+    }
+    .docara-example-preview__copy {
+      width: var(--sf-ui-1--control-height);
+      height: var(--sf-ui-1--control-height);
+      margin: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--sf-on-surface-variant);
+      visibility: hidden;
+    }
+    .docara-example-preview[data-source-active="true"] .docara-example-preview__copy { visibility: visible; }
+    .docara-example-preview__copy .sf-icon { --sf-icon--color: currentColor; }
+    .docara-example-preview__panels {
+      display: grid;
+      background: var(--sf-surface-0);
+    }
+    .docara-example-preview__panel {
+      grid-area: 1 / 1;
+      min-width: 0;
+      padding: var(--sf-space-2);
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .docara-example-preview__panel.is-active {
+      visibility: visible;
+      pointer-events: auto;
+    }
+    .docara-example-preview__panel pre {
+      overflow: auto;
+      margin: 0;
+      color: var(--sf-on-surface);
+      font-family: var(--sf-font-family-monospace, ui-monospace, monospace);
+      font-size: var(--sf-text-size-1);
+      line-height: var(--sf-text-height-1);
+      white-space: pre;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .docara-example-preview__indicator { transition: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="preview-shell">
+    <div class="preview-intro">
+      <p>Изолированный прототип на текущих ассетах SIMAI Framework.</p>
+      <h1>Компонент «Пример»</h1>
+      <p>Проверьте симметрию шапки, одинаковую высоту состояний и плавное движение общей полоски.</p>
+    </div>
+    <div class="preview-toolbar" aria-label="Тема прототипа">
+      <button type="button" class="sf-button sf-button--default sf-button--on-surface sf-button--size-1" data-theme="light" aria-pressed="false"><span class="sf-button-text-container">Светлая</span></button>
+      <button type="button" class="sf-button sf-button--default sf-button--on-surface sf-button--size-1" data-theme="dark" aria-pressed="true"><span class="sf-button-text-container">Тёмная</span></button>
+    </div>
+
+    <div class="preview-grid">
+      <section>
+        <p class="preview-label">Короткий результат и многострочный Markdown</p>
+        <div class="docara-example-preview" data-example-preview data-source-active="false">
+          <div class="docara-example-preview__header">
+            <div class="docara-example-preview__tabs" role="tablist" aria-label="Пример бейджа">
+              <button class="docara-example-preview__tab" type="button" role="tab" aria-selected="true" data-panel="example">Пример</button>
+              <button class="docara-example-preview__tab" type="button" role="tab" aria-selected="false" data-panel="markdown" tabindex="-1">Markdown</button>
+            </div>
+            <button class="docara-example-preview__copy sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 inline-grid items-center" type="button" aria-label="Копировать код">
+              <i class="sf-icon sf-icon-loaded" aria-hidden="true">content_copy</i>
+            </button>
+            <span class="docara-example-preview__indicator" aria-hidden="true"></span>
+          </div>
+          <div class="docara-example-preview__panels">
+            <div class="docara-example-preview__panel is-active" role="tabpanel" data-panel="example">
+              <span class="sf-badge sf-badge--tonal sf-badge--primary sf-badge--size-1\/3">Новое</span>
+            </div>
+            <div class="docara-example-preview__panel" role="tabpanel" data-panel="markdown" aria-hidden="true">
+              <pre>:badge[Новое]{type=tonal scheme=primary size=1/3}
+
+:badge[Рекомендуется]{type=tonal scheme=info size=1/2}
+
+:badge[Необязательно]{type=outline scheme=on-surface size=1}</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <p class="preview-label">Два состояния близкой высоты</p>
+        <div class="docara-example-preview" data-example-preview data-source-active="false">
+          <div class="docara-example-preview__header">
+            <div class="docara-example-preview__tabs" role="tablist" aria-label="Пример уведомления">
+              <button class="docara-example-preview__tab" type="button" role="tab" aria-selected="true" data-panel="example">Пример</button>
+              <button class="docara-example-preview__tab" type="button" role="tab" aria-selected="false" data-panel="markdown" tabindex="-1">Markdown</button>
+            </div>
+            <button class="docara-example-preview__copy sf-icon-button sf-icon-button--icon sf-icon-button--link sf-icon-button--on-surface sf-icon-button--size-1 inline-grid items-center" type="button" aria-label="Копировать код">
+              <i class="sf-icon sf-icon-loaded" aria-hidden="true">content_copy</i>
+            </button>
+            <span class="docara-example-preview__indicator" aria-hidden="true"></span>
+          </div>
+          <div class="docara-example-preview__panels">
+            <div class="docara-example-preview__panel is-active" role="tabpanel" data-panel="example">
+              <strong>Готово.</strong> Компонент проверен изолированно.
+            </div>
+            <div class="docara-example-preview__panel" role="tabpanel" data-panel="markdown" aria-hidden="true">
+              <pre>:::alert{type=success}
+Готово. Компонент проверен изолированно.
+:::</pre>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const positionIndicator = (root, animate = true) => {
+      const selected = root.querySelector('[role="tab"][aria-selected="true"]');
+      const indicator = root.querySelector('.docara-example-preview__indicator');
+      const header = root.querySelector('.docara-example-preview__header');
+      if (!selected || !indicator || !header) return;
+      if (!animate) indicator.style.transition = 'none';
+      const tabRect = selected.getBoundingClientRect();
+      const headerRect = header.getBoundingClientRect();
+      const inlineStart = document.documentElement.dir === 'rtl'
+        ? headerRect.right - tabRect.right
+        : tabRect.left - headerRect.left;
+      indicator.style.insetInlineStart = `${inlineStart}px`;
+      indicator.style.width = `${tabRect.width}px`;
+      if (!animate) requestAnimationFrame(() => indicator.style.removeProperty('transition'));
+    };
+
+    document.querySelectorAll('[data-example-preview]').forEach(root => {
+      const tabs = [...root.querySelectorAll('[role="tab"]')];
+      const panels = [...root.querySelectorAll('[role="tabpanel"]')];
+      tabs.forEach(tab => tab.addEventListener('click', () => {
+        tabs.forEach(item => {
+          const active = item === tab;
+          item.setAttribute('aria-selected', String(active));
+          item.tabIndex = active ? 0 : -1;
+        });
+        panels.forEach(panel => {
+          const active = panel.dataset.panel === tab.dataset.panel;
+          panel.classList.toggle('is-active', active);
+          panel.setAttribute('aria-hidden', String(!active));
+        });
+        root.dataset.sourceActive = String(tab.dataset.panel !== 'example');
+        positionIndicator(root);
+      }));
+      positionIndicator(root, false);
+    });
+
+    document.querySelectorAll('[data-theme]').forEach(button => button.addEventListener('click', () => {
+      document.documentElement.classList.toggle('theme-light', button.dataset.theme === 'light');
+      document.documentElement.classList.toggle('theme-dark', button.dataset.theme === 'dark');
+      document.querySelectorAll('[data-theme]').forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+      document.querySelectorAll('[data-example-preview]').forEach(root => positionIndicator(root, false));
+    }));
+
+    document.fonts?.ready.then(() => {
+      document.querySelectorAll('[data-example-preview]').forEach(root => positionIndicator(root, false));
+    });
+
+    window.addEventListener('resize', () => document.querySelectorAll('[data-example-preview]').forEach(root => positionIndicator(root, false)));
+  </script>
+</body>
+</html>

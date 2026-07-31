@@ -2,7 +2,7 @@
   "schema": "docara.declarative_example.v1",
   "id": "smart-alert",
   "title": "Smart-компонент Alert",
-  "description": "Уведомление с типизированными props из Markdown и шаблоном зафиксированного Simai Framework runtime.",
+  "description": "Уведомление с типизированными props из Markdown и шаблоном зафиксированного SIMAI Framework runtime.",
   "category": "smart",
   "order": 60,
   "result_page": "content/ru/demonstrator-results/smart-alert.md",

@@ -1,53 +1,216 @@
 {
-  "schema": "docara.language_pack.v1",
-  "locale": "fr-CA",
-  "messages": {
-    "common.continue": "Continuer",
-    "common.greeting": "Bonjour, {name}!",
-    "shell.skip_to_content": "Aller au contenu",
-    "navigation.open": "Ouvrir les sections de la documentation",
-    "navigation.title": "Sections",
-    "navigation.close": "Fermer les sections de la documentation",
-    "navigation.breadcrumbs": "Fil d’Ariane",
-    "navigation.breadcrumbs_expand": "Afficher les niveaux masqués du fil d’Ariane",
-    "navigation.outline": "Sommaire",
-    "navigation.outline_close": "Fermer le plan de la page",
-    "navigation.previous_next": "Navigation entre les pages",
-    "navigation.previous": "Précédente",
-    "navigation.next": "Suivante",
-    "navigation.expand": "Développer : ",
-    "navigation.collapse": "Réduire : ",
-    "navigation.contains_current": ", contient la page actuelle",
-    "language.label": "Langue",
-    "search.open": "Ouvrir la recherche dans la documentation",
-    "search.label": "Rechercher",
-    "search.title": "Rechercher dans la documentation",
-    "search.close": "Fermer la recherche",
-    "search.query": "Requête",
-    "search.placeholder": "Par exemple, héritage",
-    "search.idle": "Entrez au moins 2 caractères",
-    "search.loading": "Chargement de la recherche…",
-    "search.found": "Résultats : {count}",
-    "search.empty": "Aucun résultat",
-    "search.error": "La recherche est temporairement indisponible. Rechargez la page et réessayez.",
-    "reader.open": "Ouvrir les réglages de lecture",
-    "reader.title": "Réglages de lecture",
-    "reader.close": "Fermer les réglages de lecture",
-    "reader.appearance": "Apparence",
-    "reader.help": "Choisissez un thème pour ce navigateur.",
-    "reader.reset": "Rétablir le réglage du site",
-    "reader.theme_system": "Utiliser le réglage du système",
-    "reader.theme_system_description": "Suit automatiquement le réglage de l’appareil.",
-    "reader.theme_light": "Clair",
-    "reader.theme_light_description": "Utilise l’apparence claire sur toutes les pages.",
-    "reader.theme_dark": "Sombre",
-    "reader.theme_dark_description": "Utilise l’apparence sombre sur toutes les pages.",
-    "reader.saved": "Thème enregistré : {theme}.",
-    "reader.applied_not_saved": "Thème appliqué. Le navigateur n’a pas permis d’enregistrer le choix.",
-    "reader.restored": "Le réglage du thème du site a été rétabli.",
-    "redirect.title": "Page déplacée",
-    "redirect.message": "L’adresse de la page a changé.",
-    "redirect.link": "Ouvrir la page actuelle"
-  },
-  "components": {}
+    "schema": "docara.language_pack.v1",
+    "locale": "fr-CA",
+    "messages": {
+        "common.continue": "Continuer",
+        "common.greeting": "Bonjour, {name}!",
+        "shell.skip_to_content": "Aller au contenu",
+        "navigation.open": "Ouvrir la navigation",
+        "navigation.mobile_title": "Navigation",
+        "navigation.primary": "Principal",
+        "navigation.sections": "Documentation",
+        "navigation.title": "Sections",
+        "navigation.close": "Fermer la navigation",
+        "navigation.breadcrumbs": "Fil d’Ariane",
+        "navigation.breadcrumbs_expand": "Afficher les niveaux masqués du fil d’Ariane",
+        "navigation.outline": "Sommaire",
+        "navigation.outline_close": "Fermer le plan de la page",
+        "navigation.previous_next": "Navigation entre les pages",
+        "navigation.previous": "Précédente",
+        "navigation.next": "Suivante",
+        "navigation.expand": "Développer : ",
+        "navigation.collapse": "Réduire : ",
+        "navigation.contains_current": ", contient la page actuelle",
+        "language.label": "Langue",
+        "search.open": "Ouvrir la recherche dans la documentation",
+        "search.label": "Rechercher",
+        "search.title": "Rechercher dans la documentation",
+        "search.close": "Fermer la recherche",
+        "search.query": "Requête",
+        "search.placeholder": "Par exemple, héritage",
+        "search.idle": "Entrez au moins 2 caractères",
+        "search.loading": "Chargement de la recherche…",
+        "search.found": "Résultats : {count}",
+        "search.empty": "Aucun résultat",
+        "search.error": "La recherche est temporairement indisponible. Rechargez la page et réessayez.",
+        "reader.open": "Ouvrir les réglages de lecture",
+        "reader.title": "Réglages de lecture",
+        "reader.close": "Fermer les réglages de lecture",
+        "reader.appearance": "Apparence",
+        "reader.appearance_description": "Réglez l’apparence de la documentation dans ce navigateur.",
+        "reader.help": "Réglez l’apparence de la documentation dans ce navigateur.",
+        "reader.reset": "Rétablir le réglage du site",
+        "reader.theme_title": "Thème",
+        "reader.theme_description": "Choisissez une apparence claire ou sombre.",
+        "reader.theme_system": "Utiliser le réglage du système",
+        "reader.theme_system_description": "Suit automatiquement le réglage de l’appareil.",
+        "reader.theme_light": "Clair",
+        "reader.theme_light_description": "Utilise l’apparence claire sur toutes les pages.",
+        "reader.theme_dark": "Sombre",
+        "reader.theme_dark_description": "Utilise l’apparence sombre sur toutes les pages.",
+        "reader.modal_blur_title": "Flou d’arrière-plan des fenêtres modales",
+        "reader.modal_blur_description": "Contrôle le flou de la page derrière la recherche et les réglages.",
+        "reader.modal_blur_none": "Aucun flou",
+        "reader.modal_blur_none_description": "Conserve uniquement l’assombrissement standard.",
+        "reader.modal_blur_small": "Faible",
+        "reader.modal_blur_small_description": "Floute légèrement le contenu derrière la fenêtre.",
+        "reader.modal_blur_medium": "Moyen",
+        "reader.modal_blur_medium_description": "Sépare clairement la fenêtre de la page.",
+        "reader.modal_blur_large": "Maximum",
+        "reader.modal_blur_large_description": "Concentre l’attention sur la fenêtre ouverte.",
+        "reader.saved": "Enregistré : {setting} — {value}.",
+        "reader.applied_not_saved": "Le réglage a été appliqué. Le navigateur n’a pas permis d’enregistrer le choix.",
+        "reader.restored": "Les réglages du site ont été rétablis.",
+        "redirect.title": "Page déplacée",
+        "redirect.message": "L’adresse de la page a changé.",
+        "redirect.link": "Ouvrir la page actuelle"
+    },
+    "components": {
+        "docara.details": {
+            "parameters": {
+                "view": {
+                    "label": "View",
+                    "description": "Selects surface or line treatment.",
+                    "values": {
+                        "surface": "Surface",
+                        "lines": "Lines"
+                    }
+                }
+            }
+        },
+        "docara.steps": {
+            "parameters": {
+                "view": {
+                    "label": "View",
+                    "description": "Renders the sequence as a timeline or a list.",
+                    "values": {
+                        "timeline": "Timeline",
+                        "list": "List"
+                    }
+                },
+                "current": {
+                    "label": "Current step",
+                    "description": "Number of the active step."
+                }
+            }
+        },
+        "docara.tree": {
+            "parameters": {
+                "interactive": {
+                    "label": "Interactive",
+                    "description": "Allows folders to be collapsed and expanded."
+                }
+            }
+        },
+        "docara.hero": {
+            "parameters": {
+                "variant": {
+                    "label": "Layout",
+                    "description": "Selects the hero layout.",
+                    "values": {
+                        "split": "Split",
+                        "centered": "Centered",
+                        "compact": "Compact"
+                    }
+                }
+            }
+        },
+        "docara.logos": {
+            "parameters": {
+                "tone": {
+                    "label": "Tone",
+                    "description": "Shows logos normally or muted.",
+                    "values": {
+                        "normal": "Normal",
+                        "muted": "Muted"
+                    }
+                }
+            }
+        },
+        "docara.embed": {
+            "parameters": {
+                "provider": {
+                    "label": "Provider",
+                    "description": "Declares the external content provider.",
+                    "values": {
+                        "generic": "Generic",
+                        "video": "Video",
+                        "map": "Map",
+                        "external": "External widget"
+                    }
+                },
+                "id": {
+                    "label": "Identifier",
+                    "description": "Provider content identifier."
+                },
+                "ratio": {
+                    "label": "Aspect ratio",
+                    "description": "Controls the responsive frame proportions.",
+                    "values": {
+                        "1/1": "Square 1:1",
+                        "4/3": "Classic 4:3",
+                        "16/9": "Widescreen 16:9",
+                        "21/9": "Ultrawide 21:9"
+                    }
+                },
+                "title": {
+                    "label": "Accessible title",
+                    "description": "Names the embedded content for assistive technologies."
+                },
+                "consent": {
+                    "label": "Consent",
+                    "description": "Controls whether external content loads only after consent.",
+                    "values": {
+                        "required": "Required",
+                        "none": "Not required"
+                    }
+                }
+            }
+        },
+        "docara.code": {
+            "title": "Code from file",
+            "description": "Includes a verified local file fragment without duplicating it in Markdown.",
+            "limitations": [
+                "The path must remain inside the project; symlinks and files over 1 MiB are rejected."
+            ],
+            "states": [],
+            "parameters": {
+                "src": {
+                    "label": "File",
+                    "description": "Project-relative source path."
+                },
+                "lang": {
+                    "label": "Language",
+                    "description": "Syntax highlighting language."
+                },
+                "lines": {
+                    "label": "Lines",
+                    "description": "One line or a range such as 1-8."
+                },
+                "title": {
+                    "label": "Title",
+                    "description": "Code block label."
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.code.md"
+        },
+        "docara.backlinks": {
+            "title": "Backlinks",
+            "description": "Lists pages that link to the current page.",
+            "limitations": [
+                "The list is generated only from internal links in the current build."
+            ],
+            "states": {
+                "empty": "Empty",
+                "populated": "Populated"
+            },
+            "parameters": {
+                "limit": {
+                    "label": "Limit",
+                    "description": "Maximum number of links."
+                }
+            },
+            "example_ref": "resources/component-catalog/examples/docara.backlinks.md"
+        }
+    }
 }

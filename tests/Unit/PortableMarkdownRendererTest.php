@@ -12,6 +12,153 @@ use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 final class PortableMarkdownRendererTest extends TestCase
 {
     #[Test]
+    public function it_renders_markdown_and_multifile_examples_as_one_tabbed_surface(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $markdown = $renderer->render(<<<'MD'
+:::example {label=Пример}
+```markdown
+:badge[Готово]{type=main scheme=success size=1/2}
+```
+:::
+MD);
+
+        self::assertStringContainsString('data-docara-example=', $markdown);
+        self::assertStringContainsString('class="docara-example-preview__tab">Пример</button>', $markdown);
+        self::assertStringContainsString('data-docara-example-tab="markdown"', $markdown);
+        self::assertStringContainsString(
+            'data-docara-example-panel="markdown" aria-hidden="true" class="docara-example-preview__panel docara-example-preview__panel--source"',
+            $markdown,
+        );
+        self::assertStringContainsString('data-docara-example-tab="example" class="docara-example-preview__tab"', $markdown);
+        self::assertStringContainsString('data-docara-example-tab="markdown" class="docara-example-preview__tab"', $markdown);
+        self::assertStringContainsString('data-docara-example-copy', $markdown);
+        self::assertStringContainsString('sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1', $markdown);
+        self::assertStringContainsString('content-main-center m-0', $markdown);
+        self::assertStringContainsString('data-copy-icon="content_copy" data-copied-icon="check"', $markdown);
+        self::assertStringContainsString('<sf-icon icon="content_copy" aria-hidden="true"></sf-icon>', $markdown);
+        self::assertStringContainsString('class="docara-example-preview__header"', $markdown);
+        self::assertStringContainsString('class="docara-example-preview__tabs"', $markdown);
+        self::assertStringContainsString('class="docara-example-preview__indicator"', $markdown);
+        self::assertStringContainsString('class="docara-example-preview__panels"', $markdown);
+        self::assertStringNotContainsString('sf-tabs sf-tabs--underline', $markdown);
+        self::assertStringNotContainsString('style=', $markdown);
+        self::assertStringContainsString('sf-badge--success', $markdown);
+
+        $web = $renderer->render(<<<'MD'
+:::example {label=Preview}
+```html
+<button id="hello">Hello</button>
+```
+```css
+#hello { color: red; }
+```
+```javascript
+document.querySelector('#hello').dataset.ready = 'true';
+```
+:::
+MD);
+
+        self::assertStringContainsString('sandbox="allow-scripts"', $web);
+        self::assertStringContainsString('data-docara-example-tab="html"', $web);
+        self::assertStringContainsString('data-docara-example-tab="css"', $web);
+        self::assertStringContainsString('data-docara-example-tab="javascript"', $web);
+        self::assertStringContainsString('&lt;style&gt;#hello { color: red; }&lt;/style&gt;', $web);
+    }
+
+    #[Test]
+    public function it_renders_local_diagrams_math_and_consent_gated_embeds(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $diagram = $renderer->render(<<<'MD'
+:::diagram {engine=mermaid title="Build flow"}
+flowchart LR
+  Markdown --> HTML
+:::
+MD);
+        self::assertStringContainsString('data-docara-block="diagram"', $diagram);
+        self::assertStringContainsString('data-docara-diagram-source role="img" aria-label="Build flow"', $diagram);
+        self::assertStringContainsString('flowchart LR', $diagram);
+
+        $math = $renderer->render(<<<'MD'
+:::math {display=block label="Energy formula"}
+E=mc^2
+:::
+MD);
+        self::assertStringContainsString('data-docara-block="math"', $math);
+        self::assertStringContainsString('data-docara-math-source role="math" aria-label="Energy formula"', $math);
+
+        $embed = $renderer->render(<<<'MD'
+:::embed {provider=external title="External widget"}
+[Open widget](https://example.com/widget)
+:::
+MD);
+        self::assertStringContainsString('data-provider="external" data-consent="required"', $embed);
+        self::assertStringContainsString('class="ratio-16-9 ', $embed);
+        self::assertStringContainsString('data-docara-embed-consent', $embed);
+        self::assertStringContainsString('data-docara-embed-template', $embed);
+        self::assertStringNotContainsString(' src="https://example.com/widget"', $embed);
+        self::assertStringContainsString(' data-src="https://example.com/widget"', $embed);
+    }
+
+    #[Test]
+    public function it_renders_bounded_inline_components_without_touching_code_examples(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+Статус :badge[Готово]{type=main scheme=success size=1/2}, нажмите :kbd[Esc].
+
+:icon[search]{size=1 family=rounded weight=medium filled=true label="Поиск"}
+
+:icon[bolt]{size=1 container=circle variant=main scheme=success label="Быстро"}
+
+:button[Открыть]{href=/start/ type=outline scheme=on-surface icon=arrow_forward}
+
+`:badge[Не компонент]{type=main}`
+
+```text
+:icon[also_not_a_component]
+```
+MD);
+
+        self::assertStringContainsString('sf-badge--main sf-badge--success sf-badge--size-1/2', $html);
+        self::assertStringContainsString('<kbd class="inline-flex items-center', $html);
+        self::assertStringContainsString('sf-icon-rounded sf-icon-filled', $html);
+        self::assertStringContainsString('role="img" aria-label="Поиск"', $html);
+        self::assertStringContainsString(
+            'class="docara-icon inline-grid" data-docara-icon-container="circle" data-docara-icon-variant="main" data-docara-icon-scheme="success" data-docara-icon-size="1"',
+            $html,
+        );
+        self::assertStringContainsString('role="img" aria-label="Быстро"', $html);
+        self::assertStringContainsString('sf-button--outline sf-button--on-surface', $html);
+        self::assertStringContainsString('href="/start/"', $html);
+        self::assertStringContainsString('<code>:badge[Не компонент]{type=main}</code>', $html);
+        self::assertStringContainsString(':icon[also_not_a_component]', $html);
+    }
+
+    #[Test]
+    public function inline_components_fail_closed_on_unknown_or_unsafe_parameters(): void
+    {
+        $cases = [
+            [':badge[Test]{type=unknown}', 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID'],
+            [':icon[search]{weight=bold}', 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID'],
+            [':icon[search]{variant=main}', 'MARKDOWN_COMPONENT_ATTRIBUTE_COMBINATION_INVALID'],
+            [':icon[search]{container=square variant=plain}', 'MARKDOWN_COMPONENT_ATTRIBUTE_COMBINATION_INVALID'],
+            [':button[Run]{href=javascript:alert(1)}', 'MARKDOWN_BUTTON_HREF_UNSAFE'],
+            [':button[Run]', 'MARKDOWN_BUTTON_HREF_REQUIRED'],
+            [':kbd[Esc]{size=1}', 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN'],
+        ];
+
+        foreach ($cases as [$markdown, $code]) {
+            try {
+                (new PortableMarkdownRenderer)->render($markdown);
+                self::fail("Invalid inline component unexpectedly rendered for [$code].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($code, $exception->errorCode);
+            }
+        }
+    }
+
+    #[Test]
     public function it_renders_framework_utility_recipes_and_native_markdown_elements(): void
     {
         $markdown = <<<'MD'
@@ -38,19 +185,19 @@ MD;
         $html = (new PortableMarkdownRenderer)->render($markdown);
 
         self::assertStringContainsString(
-            '<section class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1">',
+            '<section data-docara-block="card" data-docara-card-variant="default" class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1 m-bottom-1">',
             $html,
         );
         self::assertStringContainsString(
-            '<ol class="flex flex-col gap-2 p-inline-start-3">',
+            '<ol class="m-0 p-0">',
             $html,
         );
         self::assertStringContainsString(
-            '<div class="overflow-auto"><table class="table table-border table-stripe">',
+            '<div data-docara-table-scroll class="overflow-auto m-bottom-1"><table class="table table-border table-stripe">',
             $html,
         );
         self::assertStringContainsString(
-            '<div data-docara-code-block class="source docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-0">',
+            '<div data-docara-code-block class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">',
             $html,
         );
         self::assertStringNotContainsString('data-docara-code-language', $html);
@@ -64,7 +211,7 @@ MD;
             strstr($html, '<div data-docara-code-block') ?: '',
             ' border ',
         ));
-        self::assertStringNotContainsString('docara-card', $html);
+        self::assertStringNotContainsString('class="docara-card', $html);
         self::assertStringNotContainsString('docara-steps', $html);
     }
 
@@ -84,7 +231,7 @@ MD;
 
         self::assertSame(1, substr_count($html, '<div data-docara-code-block'));
         self::assertSame(1, substr_count($html, ' border border-outline-variant'));
-        self::assertStringContainsString('class="source docara-code-block', $html);
+        self::assertStringContainsString('class="source init docara-code-block', $html);
         self::assertStringNotContainsString('data-docara-code-language', $html);
         self::assertStringNotContainsString('data-docara-code-copy', $html);
         self::assertStringContainsString(
@@ -104,7 +251,7 @@ MD;
 :::
 
 :::features
-- **Пишите в Markdown.** Страницы и код хранятся рядом с проектом.
+- ![](/assets/markdown.png) **Пишите в Markdown.** Страницы и код хранятся рядом с проектом.
 - *Настраивайте через [JSON](/json/).* Макет наследуется и проверяется схемой.
 - **Собирайте на `PHP`.** ~~Случайность~~ исключена.
 :::
@@ -113,20 +260,243 @@ MD;
         $html = (new PortableMarkdownRenderer)->render($markdown);
 
         self::assertStringContainsString(
-            '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start" href="/start/" title="Быстрый старт"><span class="sf-button-text-container">Начать работу</span></a>',
+            '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start m-bottom-1" href="/start/" title="Быстрый старт"><span class="sf-button-text-container">Начать работу</span></a>',
             $html,
         );
         self::assertStringNotContainsString('bg-primary color-on-primary p-1/2 line-none', $html);
         self::assertStringContainsString(
-            '<ul data-docara-block="features" class="grid grid-col-1 lg:grid-col-3 gap-2 list-none m-0 p-0">',
+            '<ul data-docara-block="features" class="grid grid-col-1 lg:grid-col-3 gap-2 list-none m-0 m-bottom-1 p-0">',
             $html,
         );
         self::assertSame(3, substr_count(
             $html,
             '<li class="bg-surface-0 border border-outline-variant radius-2 p-3 flex min-w-0 max-w-none flex-col gap-1">',
         ));
+        self::assertStringContainsString(
+            '<img data-docara-media="feature-icon" loading="lazy" decoding="async" src="/assets/markdown.png" alt="" />',
+            $html,
+        );
         self::assertStringNotContainsString('<sf-button', $html);
         self::assertStringNotContainsString('docara-feature-card', $html);
+    }
+
+    #[Test]
+    public function hero_renders_a_bounded_first_screen_with_an_optional_action_and_media(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+:::hero
+# Документация, которую удобно развивать
+
+Пишите содержимое в Markdown, а Docara соберёт адаптивный сайт.
+
+[Начать работу](/start/)
+
+![Схема сборки Docara](/assets/hero.png)
+:::
+MD);
+
+        self::assertStringContainsString(
+            '<section data-docara-block="hero" data-variant="split" data-docara-width="full" class="bg-surface-container',
+            $html,
+        );
+        self::assertStringContainsString(
+            '<div data-docara-container class="container m-inline-auto grid grid-col-1 lg:grid-col-2',
+            $html,
+        );
+        self::assertStringContainsString('<h1 class="m-0">Документация, которую удобно развивать</h1>', $html);
+        self::assertStringContainsString('<a data-docara-hero-action class="sf-button', $html);
+        self::assertStringContainsString('href="/start/"', $html);
+        self::assertStringContainsString(
+            '<img data-docara-media="hero" loading="eager" fetchpriority="high" decoding="async" src="/assets/hero.png" alt="Схема сборки Docara" />',
+            $html,
+        );
+    }
+
+    #[Test]
+    public function hero_groups_two_actions_into_one_responsive_row(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+:::hero
+# Docara
+
+Пишите содержимое в Markdown.
+
+[Начать](/start/)
+
+[Компоненты](/components/)
+:::
+MD);
+
+        self::assertStringContainsString(
+            '<div data-docara-hero-actions class="flex flex-wrap items-center gap-1">',
+            $html,
+        );
+        self::assertSame(2, substr_count($html, 'data-docara-hero-action class='));
+        self::assertStringContainsString('>Начать</span></a>', $html);
+        self::assertStringContainsString('>Компоненты</span></a>', $html);
+    }
+
+    #[Test]
+    public function four_features_use_the_four_column_responsive_grid(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+:::features
+- One
+- Two
+- Three
+- Four
+:::
+MD);
+
+        self::assertStringContainsString(
+            '<ul data-docara-block="features" class="grid grid-col-1 md:grid-col-2 lg:grid-col-4 gap-2 list-none m-0 m-bottom-1 p-0">',
+            $html,
+        );
+    }
+
+    #[Test]
+    public function hero_fails_closed_when_its_semantic_contract_is_broken(): void
+    {
+        $cases = [
+            [":::hero\nТолько текст.\n:::\n", 'MARKDOWN_HERO_H1_REQUIRED'],
+            [":::hero\n# Заголовок\n:::\n", 'MARKDOWN_HERO_DESCRIPTION_REQUIRED'],
+            [":::hero\n# Заголовок\n\nОдин.\n\nДва.\n\nТри.\n:::\n", 'MARKDOWN_HERO_DESCRIPTION_REQUIRED'],
+            [":::hero\n# Заголовок\n\nТекст.\n\n[Пуск](javascript:alert(1))\n:::\n", 'MARKDOWN_HERO_LINK_UNSAFE'],
+            [":::hero\n# Заголовок\n\nТекст.\n\n![Схема](data:image/png;base64,AA)\n:::\n", 'MARKDOWN_HERO_IMAGE_UNSAFE'],
+            [":::hero\n# Заголовок\n\nТекст.\n\n![Схема](/image.png)\n\n[Пуск](/start/)\n:::\n", 'MARKDOWN_HERO_STRUCTURE_INVALID'],
+        ];
+
+        foreach ($cases as [$markdown, $expected]) {
+            try {
+                (new PortableMarkdownRenderer)->render($markdown);
+                self::fail("Invalid hero unexpectedly rendered for [$expected].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($expected, $exception->errorCode);
+            }
+        }
+    }
+
+    #[Test]
+    public function logos_render_a_compact_responsive_ecosystem_list(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+:::logos
+- [SIMAI](https://simai.io/)
+- ![Docara](/assets/docara.svg)
+- Larena
+:::
+MD);
+
+        self::assertStringContainsString(
+            '<ul data-docara-block="logos" data-tone="normal" class="grid grid-col-2 md:grid-col-3 lg:grid-col-6',
+            $html,
+        );
+        self::assertSame(3, substr_count(
+            $html,
+            '<li class="min-w-0 flex items-center content-main-center">',
+        ));
+        self::assertStringContainsString('<a href="https://simai.io/">SIMAI</a>', $html);
+        self::assertStringContainsString(
+            '<img data-docara-media="logo" loading="lazy" decoding="async" src="/assets/docara.svg" alt="Docara" />',
+            $html,
+        );
+    }
+
+    #[Test]
+    public function showcase_renders_bounded_product_proof_with_lazy_media(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+:::showcase
+## Проверяемый результат
+
+Собранная документация видна до публикации.
+
+[Открыть пример](/landing/)
+
+![Интерфейс Docara](/assets/screen.png)
+:::
+MD);
+
+        self::assertStringContainsString(
+            '<section data-docara-block="showcase" data-docara-width="full" class="bg-surface-0',
+            $html,
+        );
+        self::assertStringContainsString(
+            '<img data-docara-media="showcase" loading="lazy" decoding="async" src="/assets/screen.png" alt="Интерфейс Docara" />',
+            $html,
+        );
+        self::assertStringContainsString('data-docara-showcase-action', $html);
+    }
+
+    #[Test]
+    public function promo_renders_one_action_and_explicit_decorative_media(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+:::promo
+## Соберите первый сайт
+
+Создайте проект и получите статический результат.
+
+[Начать](/start/)
+
+![](/assets/promo.png)
+:::
+MD);
+
+        self::assertStringContainsString(
+            '<section data-docara-block="promo" data-docara-width="full" class="bg-surface-container',
+            $html,
+        );
+        self::assertStringContainsString(
+            '<img data-docara-media="promo" loading="lazy" decoding="async" aria-hidden="true" src="/assets/promo.png" alt="" />',
+            $html,
+        );
+        self::assertStringContainsString('data-docara-promo-action', $html);
+    }
+
+    #[Test]
+    public function showcase_and_promo_fail_closed_for_unsafe_or_incomplete_content(): void
+    {
+        $cases = [
+            [":::showcase\n## Proof\n\nText.\n:::\n", 'MARKDOWN_SHOWCASE_IMAGE_REQUIRED'],
+            [":::showcase\n## Proof\n\nText.\n\n![](/screen.png)\n:::\n", 'MARKDOWN_SHOWCASE_IMAGE_ALT_REQUIRED'],
+            [":::showcase\n## Proof\n\nText.\n\n![UI](javascript:alert(1))\n:::\n", 'MARKDOWN_SHOWCASE_IMAGE_UNSAFE'],
+            [":::promo\n## Start\n\nText.\n:::\n", 'MARKDOWN_PROMO_LINK_REQUIRED'],
+            [":::promo\n## Start\n\nText.\n\n[Go](data:text/html,unsafe)\n:::\n", 'MARKDOWN_PROMO_LINK_UNSAFE'],
+        ];
+
+        foreach ($cases as [$markdown, $expected]) {
+            try {
+                (new PortableMarkdownRenderer)->render($markdown);
+                self::fail("Invalid media block unexpectedly rendered for [$expected].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($expected, $exception->errorCode);
+            }
+        }
+    }
+
+    #[Test]
+    public function logos_fail_closed_for_unbounded_or_unsafe_content(): void
+    {
+        $thirteen = implode("\n", array_fill(0, 13, '- Logo'));
+        $cases = [
+            [":::logos\n1. One\n2. Two\n:::\n", 'MARKDOWN_LOGOS_UNORDERED_LIST_REQUIRED'],
+            [":::logos\n- One\n:::\n", 'MARKDOWN_LOGOS_ITEM_COUNT_INVALID'],
+            [":::logos\n{$thirteen}\n:::\n", 'MARKDOWN_LOGOS_ITEM_COUNT_INVALID'],
+            [":::logos\n- One\n  - Nested\n- Two\n:::\n", 'MARKDOWN_LOGOS_ITEM_CONTENT_INVALID'],
+            [":::logos\n- [Unsafe](javascript:alert(1))\n- Two\n:::\n", 'MARKDOWN_LINK_URL_UNSAFE'],
+            [":::logos\n- ![Unsafe](data:image/png;base64,AA)\n- Two\n:::\n", 'MARKDOWN_IMAGE_URL_UNSAFE'],
+            [":::logos\n- ![](/empty.svg)\n- Two\n:::\n", 'MARKDOWN_LOGOS_ITEM_CONTENT_INVALID'],
+        ];
+
+        foreach ($cases as [$markdown, $expected]) {
+            try {
+                (new PortableMarkdownRenderer)->render($markdown);
+                self::fail("Invalid logos block unexpectedly rendered for [$expected].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($expected, $exception->errorCode);
+            }
+        }
     }
 
     #[Test]
@@ -154,7 +524,7 @@ MD;
             self::assertSame($first, $second, "{$count} columns must render deterministically.");
             self::assertStringContainsString(
                 '<section data-docara-block="columns" data-docara-columns="' . $count
-                . '" class="' . $classes . '">',
+                . '" class="' . $classes . ' m-bottom-1">',
                 $first,
             );
             self::assertSame($count, substr_count($first, '<div class="min-w-0">'));
@@ -733,11 +1103,15 @@ MD);
     #[Test]
     public function portable_blocks_reject_smart_components_instead_of_rendering_them_as_text(): void
     {
-        foreach (['card', 'steps', 'cta', 'features'] as $outer) {
+        foreach (['card', 'steps', 'cta', 'features', 'hero', 'logos'] as $outer) {
             $body = $outer === 'steps' ? "1. First step\n" : "Card body\n";
             if ($outer === 'cta') {
                 $body = "[Start](/start/)\n";
             } elseif ($outer === 'features') {
+                $body = "- First\n- Second\n";
+            } elseif ($outer === 'hero') {
+                $body = "# Heading\n\nDescription.\n";
+            } elseif ($outer === 'logos') {
                 $body = "- First\n- Second\n";
             }
             foreach (['ui.button', 'ui.alert'] as $inner) {
@@ -756,7 +1130,7 @@ MD);
     #[Test]
     public function steps_rejects_nested_portable_blocks_with_the_nesting_error(): void
     {
-        foreach (['card', 'steps', 'cta', 'features'] as $inner) {
+        foreach (['card', 'steps', 'cta', 'features', 'hero', 'logos'] as $inner) {
             try {
                 (new PortableMarkdownRenderer)->render(
                     "::::steps\n1. First step\n:::{$inner}\nNested\n:::\n::::\n",

@@ -27,8 +27,16 @@
       "items": {"$ref": "#/$defs/non_empty_string"}
     },
     "localized_labels": {
-      "type": "object",
-      "additionalProperties": {"$ref": "#/$defs/non_empty_string"}
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/non_empty_string"}
+        },
+        {
+          "type": "array",
+          "items": {"$ref": "#/$defs/non_empty_string"}
+        }
+      ]
     },
     "localized_parameter": {
       "type": "object",

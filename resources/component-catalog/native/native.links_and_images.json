@@ -10,7 +10,10 @@
             "link_content",
             "illustrate_content"
         ],
-        "parameters": []
+        "parameters": [
+            {"name": "ratio", "type": "enum", "required": false, "default": "auto", "values": ["auto", "1x1", "4x3", "3x2", "16x9", "21x9"]},
+            {"name": "fit", "type": "enum", "required": false, "default": "cover", "values": ["cover", "contain"]}
+        ]
     },
     "states": [
         "link_focus"

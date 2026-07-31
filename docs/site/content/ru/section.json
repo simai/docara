@@ -3,6 +3,15 @@
   "title": "Документация Docara",
   "preset": "docs",
   "layout": {
-    "max_width": "wide"
+    "container": {"max": 7}
+  },
+  "header_navigation": {
+    "enabled": true,
+    "items": [
+      {"id": "home", "label": "Главная", "href": "/ru/"},
+      {"id": "start", "label": "Быстрый старт", "href": "/ru/start/"},
+      {"id": "components", "label": "Компоненты", "href": "/ru/components/"},
+      {"id": "github", "label": "GitHub", "href": "https://github.com/simai/docara"}
+    ]
   }
 }

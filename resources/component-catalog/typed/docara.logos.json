@@ -1,0 +1,35 @@
+{
+    "id": "docara.logos",
+    "name": "logos",
+    "renderer": "docara.logos.v1",
+    "family": "docara_typed",
+    "category": "landing",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive",
+        "call": ":::logos",
+        "jobs": [
+            "show_trust_signals",
+            "show_ecosystem_members"
+        ],
+    "parameters": [
+      {"name": "tone", "type": "enum", "required": false, "default": "normal", "values": ["normal", "muted"]}
+    ]
+    },
+    "states": [
+        "text",
+        "linked",
+        "image"
+    ],
+    "verification": {
+        "renderer": true,
+        "tests": true,
+        "docs": true,
+        "demo": true
+    },
+    "docs_ref": "docs/site/content/ru/components/syntax.md",
+    "provenance": {
+        "source_kind": "typed_definition",
+        "definition_ref": "resources/component-catalog/typed/docara.logos.json"
+    }
+}

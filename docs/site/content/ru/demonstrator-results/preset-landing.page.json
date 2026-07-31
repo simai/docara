@@ -4,7 +4,7 @@
   "description": "Сфокусированный макет без документационной оболочки.",
   "preset": "landing",
   "layout": {
-    "max_width": "wide"
+    "container": {"max": 7}
   },
   "search": {
     "enabled": false,

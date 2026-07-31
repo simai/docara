@@ -1,0 +1,456 @@
+{
+  "schema_version": "2.0.0",
+  "operation_id": "simai.federation.technology_conformance_evidence",
+  "technology_signature": "d96456d51d1c133a83a3140892f29414aaff7affa2ed2779514be0fbe803fafc",
+  "verification_run_id": "docara-product-homepage-20260724",
+  "created_at": "2026-07-24T02:15:28.665627+00:00",
+  "target": {
+    "repo": "docara-consolidation",
+    "revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe"
+  },
+  "evidence": [
+    {
+      "id": "source_load-6bd7bdf8d514fc46",
+      "type": "source_load",
+      "subject_id": "6bd7bdf8d514fc46",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/source_load-6bd7bdf8d514fc46.json",
+      "sha256": "e5b41884a735c460a2fe7adbf573b169dbe5c71ab4043f1eb3f1dcee0a2a4a4b",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe"
+    },
+    {
+      "id": "source_load-6e240758c51edbdc",
+      "type": "source_load",
+      "subject_id": "6e240758c51edbdc",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/source_load-6e240758c51edbdc.json",
+      "sha256": "3e3b40784d7d5bec9a4ee5bf7a731b23d5c69ba1e0a6fd8dfc64008561abfc6a",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe"
+    },
+    {
+      "id": "step_result-doctor_result_recorded",
+      "type": "step_result",
+      "subject_id": "doctor_result_recorded",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/step_result-doctor_result_recorded.json",
+      "sha256": "c12c9c3146b87e4b2423d5082e44a953a5203f4703ddfcf376e8ca47655a3f34",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe"
+    },
+    {
+      "id": "step_result-project_model_recorded",
+      "type": "step_result",
+      "subject_id": "project_model_recorded",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/step_result-project_model_recorded.json",
+      "sha256": "022f4ebd43c1e31f9523750488fb487b76d50d8a8a58d122210bdaf84f0e30e5",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe"
+    },
+    {
+      "id": "step_result-source_config_recorded",
+      "type": "step_result",
+      "subject_id": "source_config_recorded",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/step_result-source_config_recorded.json",
+      "sha256": "69b31509377d1494672a6799716db123a0cac8a86c58d1787bdf8359b016ef89",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe"
+    },
+    {
+      "id": "step_result-authoring_branding_recorded",
+      "type": "step_result",
+      "subject_id": "authoring_branding_recorded",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/step_result-authoring_branding_recorded.json",
+      "sha256": "e8bf559d45a5430e1e9619bcddee60f4da7a09d23a3535a2360296e2ed4cc83c",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe"
+    },
+    {
+      "id": "step_result-build_result_recorded",
+      "type": "step_result",
+      "subject_id": "build_result_recorded",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/step_result-build_result_recorded.json",
+      "sha256": "fb205f19f288654c42a1d4c3fff85a02848f8e276f9ebbc691fcefd309468e47",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe"
+    },
+    {
+      "id": "step_result-publication_result_recorded",
+      "type": "step_result",
+      "subject_id": "publication_result_recorded",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/step_result-publication_result_recorded.json",
+      "sha256": "5f1e8a17db94038f0621a4e0c598e8ccc7a5c33859e187fae533ec2664573c03",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe"
+    },
+    {
+      "id": "step_result-translation_state_recorded",
+      "type": "step_result",
+      "subject_id": "translation_state_recorded",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/step_result-translation_state_recorded.json",
+      "sha256": "cb7a43047b837b6c4635e5e827fd1615688e61d7a0261d1a9b3f6d60cdfb6d59",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe"
+    },
+    {
+      "id": "step_result-readiness_verdict_recorded",
+      "type": "step_result",
+      "subject_id": "readiness_verdict_recorded",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/step_result-readiness_verdict_recorded.json",
+      "sha256": "1911c5b6b892652957fa4e7fe1859d612dae621c72741ad6c92c1874dd820fc1",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe"
+    },
+    {
+      "id": "validator_result-branding_gate",
+      "type": "validator_result",
+      "subject_id": "branding_gate",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-branding_gate.json",
+      "sha256": "5530ac7a320c26c778508cadcb7c6dd5b97d89574398158d0dcb556a968f1f66",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    },
+    {
+      "id": "validator_result-build_gate",
+      "type": "validator_result",
+      "subject_id": "build_gate",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-build_gate.json",
+      "sha256": "0786cd34598c834e507a0c5f89b949b34d114b9d236ba3c4245d5f88fb7779d8",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    },
+    {
+      "id": "validator_result-docara_doctor_gate",
+      "type": "validator_result",
+      "subject_id": "docara_doctor_gate",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-docara_doctor_gate.json",
+      "sha256": "71abfe2634596289a13c7892ddea4df1c8f3f44dcb882305a519a5321dd92eec",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    },
+    {
+      "id": "validator_result-federation_process_check",
+      "type": "validator_result",
+      "subject_id": "federation_process_check",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-federation_process_check.json",
+      "sha256": "57f90797fc4cdf90a8651ea0f26258b68ad1037c5aaec954066bd417c85694a8",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    },
+    {
+      "id": "validator_result-federation_process_resolve",
+      "type": "validator_result",
+      "subject_id": "federation_process_resolve",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-federation_process_resolve.json",
+      "sha256": "ffeb5775f87d76d638925b44c218e0e1f720410e8d04f15190a90e13d01f5825",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    },
+    {
+      "id": "validator_result-federation_route_check",
+      "type": "validator_result",
+      "subject_id": "federation_route_check",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-federation_route_check.json",
+      "sha256": "a09cea6dbdb2f14643a643dd453d36eddd962f249c155e87e5d0a6efcf606a88",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    },
+    {
+      "id": "validator_result-federation_verify",
+      "type": "validator_result",
+      "subject_id": "federation_verify",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-federation_verify.json",
+      "sha256": "9769c850e78f701b092825f7d234de400cbd8d78b24f754dc8560f96dcce7e2c",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    },
+    {
+      "id": "validator_result-project_model_gate",
+      "type": "validator_result",
+      "subject_id": "project_model_gate",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-project_model_gate.json",
+      "sha256": "6a9aaaf993a92bf71101852535286073f7ee4281a245fa1270eab3b60bff4a6c",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    },
+    {
+      "id": "validator_result-publication_gate",
+      "type": "validator_result",
+      "subject_id": "publication_gate",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-publication_gate.json",
+      "sha256": "22fa9346120b3e3630e13f7a4098cab13aac8d5e2e9fe12a6579bc0e0d0798d7",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    },
+    {
+      "id": "validator_result-skill_process_conversion_check",
+      "type": "validator_result",
+      "subject_id": "skill_process_conversion_check",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-skill_process_conversion_check.json",
+      "sha256": "716bbb8148788904435c816d7c72eadb8e31a7e1753152f033e34788c9d70b6d",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    },
+    {
+      "id": "validator_result-source_docs_authoring_gate",
+      "type": "validator_result",
+      "subject_id": "source_docs_authoring_gate",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-source_docs_authoring_gate.json",
+      "sha256": "f7bd4f4c584d05c43f591461612af07306b81294b7c6105f1bd5571ff290f8ad",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    },
+    {
+      "id": "validator_result-technology_conformance_check",
+      "type": "validator_result",
+      "subject_id": "technology_conformance_check",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-technology_conformance_check.json",
+      "sha256": "cc119292a5b668824cb5711bdb9a5724ad20ede76ecb043a8e5404c0ad34af43",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    },
+    {
+      "id": "validator_result-technology_quality_feedback_check",
+      "type": "validator_result",
+      "subject_id": "technology_quality_feedback_check",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-technology_quality_feedback_check.json",
+      "sha256": "92815264531a51110627ec21b41b17fa0b7ca6de25d090b0ee5fa3837ce51198",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    },
+    {
+      "id": "validator_result-translation_state_gate",
+      "type": "validator_result",
+      "subject_id": "translation_state_gate",
+      "path": "source/workflow/evidence/2026-07-24-docara-product-homepage/technology/validator_result-translation_state_gate.json",
+      "sha256": "7ebd9b7222d457b1ace470262d4e09f40fe4d184d0721d8e0fa9df1b1b413355",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "created_at": "2026-07-24T02:15:28.665627+00:00",
+      "target_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+      "exit_code": 0
+    }
+  ],
+  "sources_loaded": [
+    {
+      "id": "6bd7bdf8d514fc46",
+      "sha256": "69b843029fbf5ea590948679c4fb508541d1877d85a63250f75b019b3f32c74b",
+      "repo_revision": "0aa77d09eec9f045683a9dcc91a17f126c820504",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "loaded_at": "2026-07-24T02:15:28.665627+00:00",
+      "evidence_ref": "source_load-6bd7bdf8d514fc46"
+    },
+    {
+      "id": "6e240758c51edbdc",
+      "sha256": "2a2c931807c3a13f94c991b2c9497d6e1aec0890b8f15ed7710570c971715668",
+      "repo_revision": "7c614b393b2af5ff68789be4f0ec82c7b78927b6",
+      "verification_run_id": "docara-product-homepage-20260724",
+      "loaded_at": "2026-07-24T02:15:28.665627+00:00",
+      "evidence_ref": "source_load-6e240758c51edbdc"
+    }
+  ],
+  "steps": [
+    {
+      "id": "doctor_result_recorded",
+      "status": "success",
+      "evidence_refs": [
+        "step_result-doctor_result_recorded"
+      ]
+    },
+    {
+      "id": "project_model_recorded",
+      "status": "success",
+      "evidence_refs": [
+        "step_result-project_model_recorded"
+      ]
+    },
+    {
+      "id": "source_config_recorded",
+      "status": "success",
+      "evidence_refs": [
+        "step_result-source_config_recorded"
+      ]
+    },
+    {
+      "id": "authoring_branding_recorded",
+      "status": "success",
+      "evidence_refs": [
+        "step_result-authoring_branding_recorded"
+      ]
+    },
+    {
+      "id": "build_result_recorded",
+      "status": "success",
+      "evidence_refs": [
+        "step_result-build_result_recorded"
+      ]
+    },
+    {
+      "id": "publication_result_recorded",
+      "status": "success",
+      "evidence_refs": [
+        "step_result-publication_result_recorded"
+      ]
+    },
+    {
+      "id": "translation_state_recorded",
+      "status": "success",
+      "evidence_refs": [
+        "step_result-translation_state_recorded"
+      ]
+    },
+    {
+      "id": "readiness_verdict_recorded",
+      "status": "success",
+      "evidence_refs": [
+        "step_result-readiness_verdict_recorded"
+      ]
+    }
+  ],
+  "checks": [
+    {
+      "id": "branding_gate",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-branding_gate"
+      ]
+    },
+    {
+      "id": "build_gate",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-build_gate"
+      ]
+    },
+    {
+      "id": "docara_doctor_gate",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-docara_doctor_gate"
+      ]
+    },
+    {
+      "id": "federation_process_check",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-federation_process_check"
+      ]
+    },
+    {
+      "id": "federation_process_resolve",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-federation_process_resolve"
+      ]
+    },
+    {
+      "id": "federation_route_check",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-federation_route_check"
+      ]
+    },
+    {
+      "id": "federation_verify",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-federation_verify"
+      ]
+    },
+    {
+      "id": "project_model_gate",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-project_model_gate"
+      ]
+    },
+    {
+      "id": "publication_gate",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-publication_gate"
+      ]
+    },
+    {
+      "id": "skill_process_conversion_check",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-skill_process_conversion_check"
+      ]
+    },
+    {
+      "id": "source_docs_authoring_gate",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-source_docs_authoring_gate"
+      ]
+    },
+    {
+      "id": "technology_conformance_check",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-technology_conformance_check"
+      ]
+    },
+    {
+      "id": "technology_quality_feedback_check",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-technology_quality_feedback_check"
+      ]
+    },
+    {
+      "id": "translation_state_gate",
+      "status": "success",
+      "evidence_refs": [
+        "validator_result-translation_state_gate"
+      ]
+    }
+  ],
+  "deviations": [],
+  "diff": {
+    "mode": "write",
+    "base_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+    "head_revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+    "changed_files": [
+      {
+        "path": "docs/site/content/ru/index.md",
+        "status": "modified",
+        "sha256": "d07457ed1868f42ba9d601f459febf11ddcb4d4e1ee887995d22a70b38c0f869"
+      }
+    ]
+  }
+}

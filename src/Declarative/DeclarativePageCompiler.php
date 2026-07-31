@@ -8,36 +8,43 @@ use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\Composition\RegionCompositionResolver;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Document\DocumentAst;
-use Simai\Docara\Declarative\Document\MarkdownNode;
+use Simai\Docara\Declarative\Document\Compilation\DocumentNodeBlockRegistry;
 use Simai\Docara\Declarative\Document\SmartCallNode;
 use Simai\Docara\Declarative\Document\SourceSpan;
 use Simai\Docara\Declarative\Layout\LayoutDescriptor;
 use Simai\Docara\Declarative\Layout\LayoutRegion;
-use Simai\Docara\Declarative\Plan\ResolvedBlockPlan;
+use Simai\Docara\Declarative\Plan\ResolvedBlockFactory;
 use Simai\Docara\Declarative\Plan\ResolvedRenderPlan;
 use Simai\Docara\Declarative\Plan\ResolvedSectionPlan;
-use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
 use Simai\Docara\Declarative\Rendering\ViewTreeInspector;
-use Simai\Docara\Declarative\Smart\CompositeSmartPlanResolver;
-use Simai\Docara\Declarative\Smart\SmartPlanResolver;
+use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final readonly class DeclarativePageCompiler
 {
+    private ResolvedBlockFactory $blocks;
+
+    private DocumentNodeBlockRegistry $documentNodes;
+
     public function __construct(
         private DefinitionRepository $definitions,
-        private SmartPlanResolver $smart,
-        private CompositeSmartPlanResolver $composites = new CompositeSmartPlanResolver,
+        private SmartComponentGateway $smarts,
         private RegionCompositionResolver $regionComposition = new RegionCompositionResolver,
         private ViewTreeInspector $viewTrees = new ViewTreeInspector,
-    ) {}
+        ?ResolvedBlockFactory $blocks = null,
+        ?DocumentNodeBlockRegistry $documentNodes = null,
+    ) {
+        $this->blocks = $blocks ?? new ResolvedBlockFactory($this->definitions);
+        $this->documentNodes = $documentNodes
+            ?? DocumentNodeBlockRegistry::bundled($this->blocks, $this->smarts);
+    }
 
     /** @param array<string, mixed> $frameworkLock */
     public static function bundled(array $frameworkLock): self
     {
         return new self(
             new DefinitionRepository,
-            SmartPlanResolver::fromLock($frameworkLock),
+            SmartComponentGateway::bundled($frameworkLock),
         );
     }
 
@@ -70,23 +77,43 @@ final readonly class DeclarativePageCompiler
             );
         }
 
-        $blocks = [];
+        $documentBlocks = [];
         foreach ($document->nodes as $node) {
-            if ($node instanceof MarkdownNode) {
-                $blocks[] = $this->markdownBlock($node, $sectionDefinition);
-
-                continue;
-            }
-            if ($node instanceof SmartCallNode) {
-                $blocks[] = $this->smartBlock($node, $sectionDefinition);
-            }
+            $documentBlocks[] = $this->documentNodes->resolve($node, $sectionDefinition);
         }
-        if ($blocks === []) {
+        if ($documentBlocks === []) {
             throw new PortableConfigurationException(
                 'DECLARATIVE_PAGE_BLOCKS_REQUIRED',
                 'A declarative page must resolve at least one block.',
             );
         }
+        $documentBlockIds = [];
+        foreach ($documentBlocks as $documentBlock) {
+            if (isset($documentBlockIds[$documentBlock->id])) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_DOCUMENT_NODE_ID_DUPLICATED',
+                    "Document node block ID [{$documentBlock->id}] is duplicated.",
+                );
+            }
+            $documentBlockIds[$documentBlock->id] = true;
+        }
+        $blocks = [
+            $this->blocks->create(
+                'document-' . substr(hash('sha256', $pageKey . "\0" . $document->canonicalHash()), 0, 20),
+                'content.document',
+                'content',
+                [
+                    'schema' => 'docara.resolved_document.v1',
+                    'source' => $document->source,
+                    'nodes' => array_map(
+                        static fn ($block): array => $block->toArray(),
+                        $documentBlocks,
+                    ),
+                ],
+                null,
+                $sectionDefinition,
+            ),
+        ];
 
         $section = new ResolvedSectionPlan(
             'section-' . substr(hash('sha256', $pageKey . "\0docara.article"), 0, 20),
@@ -148,6 +175,11 @@ final readonly class DeclarativePageCompiler
         }
 
         $assets = $layout->assets;
+        foreach ($documentBlocks as $documentBlock) {
+            if ($documentBlock->smart !== null) {
+                array_push($assets, ...$documentBlock->smart->assets);
+            }
+        }
         foreach ($regions as $sections) {
             foreach ($sections as $regionSection) {
                 foreach ($regionSection->blocks as $block) {
@@ -240,7 +272,7 @@ final readonly class DeclarativePageCompiler
         $configurationSource = $this->configurationSource($layout, $region);
         foreach ($blockConfigurations as $ordinal => $blockConfiguration) {
             if (($blockConfiguration['block'] ?? null) === 'shell.element') {
-                $blocks[] = $this->block(
+                $blocks[] = $this->blocks->create(
                     (string) $configuration['id'] . '.' . $blockConfiguration['id'],
                     'shell.element',
                     (string) $blockConfiguration['slot'],
@@ -255,39 +287,35 @@ final readonly class DeclarativePageCompiler
                 continue;
             }
             $smart = (string) $blockConfiguration['smart'];
+            $hasBinding = is_string($blockConfiguration['bind'] ?? null);
+            $props = $hasBinding
+                ? $this->boundProps($blockConfiguration, $composition)
+                : (is_array($blockConfiguration['props'] ?? null)
+                    ? $blockConfiguration['props']
+                    : []);
+            $requestedView = is_string($blockConfiguration['view'] ?? null)
+                ? $blockConfiguration['view']
+                : $this->defaultCompositeView($smart, $props);
             $nodeId = 'smart-' . substr(
                 hash('sha256', $pageKey . "\0" . $region . "\0" . $configuration['id'] . "\0" . $blockConfiguration['id'] . "\0" . $smart),
                 0,
                 20,
             );
-            $resolvedSmart = str_starts_with($smart, 'ui.')
-                ? $this->smart->resolve(new SmartCallNode(
-                    $nodeId,
-                    $smart,
-                    is_string($blockConfiguration['view'] ?? null)
-                        ? $blockConfiguration['view']
-                        : 'default',
-                    is_array($blockConfiguration['props'] ?? null)
-                        ? $blockConfiguration['props']
-                        : [],
-                    $ordinal + 1,
-                    new SourceSpan($configurationSource, 1, 1),
-                ))
-                : $this->composites->resolve(
-                    $smart,
-                    $nodeId,
-                    $this->boundProps($blockConfiguration, $composition),
-                    is_string($blockConfiguration['view'] ?? null)
-                        ? $blockConfiguration['view']
-                        : 'default',
-                );
-            $blocks[] = $this->block(
+            $resolvedSmart = $this->smarts->resolve(new SmartCallNode(
+                $nodeId,
+                $smart,
+                $requestedView,
+                $props,
+                $ordinal + 1,
+                new SourceSpan($configurationSource, 1, 1),
+            ));
+            $blocks[] = $this->blocks->create(
                 (string) $configuration['id'] . '.' . $blockConfiguration['id'],
                 (string) $blockConfiguration['block'],
                 (string) $blockConfiguration['slot'],
-                str_starts_with($smart, 'ui.')
-                    ? ['source' => $configurationSource]
-                    : ['binding' => (string) $blockConfiguration['bind']],
+                $hasBinding
+                    ? ['binding' => (string) $blockConfiguration['bind']]
+                    : ['source' => $configurationSource],
                 $resolvedSmart,
                 $definition,
             );
@@ -355,11 +383,36 @@ final readonly class DeclarativePageCompiler
                 'collapse_label' => $composition->navigationCopy['collapse'],
                 'contains_current_label' => $composition->navigationCopy['contains_current'],
             ],
+            'header_navigation' => [
+                'items' => $composition->headerNavigation,
+                'maximum_depth' => 4,
+                'label' => $composition->headerNavigationLabel,
+                'expand_label' => $composition->navigationCopy['expand'],
+                'collapse_label' => $composition->navigationCopy['collapse'],
+                'contains_current_label' => $composition->navigationCopy['contains_current'],
+            ],
             'outline' => ['items' => $composition->outline, 'label' => $composition->tocLabel],
             default => throw new PortableConfigurationException(
                 'DECLARATIVE_REGION_BINDING_FORBIDDEN',
                 "Unknown declarative region binding [{$block['bind']}].",
             ),
+        };
+    }
+
+    /** @param array<string, mixed> $props */
+    private function defaultCompositeView(string $smart, array $props): string
+    {
+        if ($smart !== 'docara.brand') {
+            return 'default';
+        }
+
+        $branding = is_array($props['branding'] ?? null) ? $props['branding'] : [];
+
+        return match ($branding['mode'] ?? 'full') {
+            'compact' => 'compact',
+            'logo' => 'logo',
+            'text' => 'text',
+            default => 'default',
         };
     }
 
@@ -400,78 +453,6 @@ final readonly class DeclarativePageCompiler
                 'definition' => (string) $definition['_source'],
                 'sha256' => (string) $definition['_sha256'],
                 'configuration' => $configurationProvenance,
-            ],
-        );
-    }
-
-    /** @param array<string, mixed> $section */
-    private function markdownBlock(MarkdownNode $node, array $section): ResolvedBlockPlan
-    {
-        return $this->block(
-            $node->id(),
-            'content.markdown',
-            'content',
-            ['markdown' => $node->markdown, 'source' => $node->span()->toArray()],
-            null,
-            $section,
-        );
-    }
-
-    /** @param array<string, mixed> $section */
-    private function smartBlock(SmartCallNode $node, array $section): ResolvedBlockPlan
-    {
-        return $this->block(
-            $node->id(),
-            'content.smart',
-            'content',
-            ['source' => $node->span()->toArray()],
-            $this->smart->resolve($node),
-            $section,
-        );
-    }
-
-    /**
-     * @param  array<string, mixed>  $data
-     * @param  array<string, mixed>  $section
-     */
-    private function block(
-        string $id,
-        string $key,
-        string $slot,
-        array $data,
-        ?ResolvedSmartPlan $smart,
-        array $section,
-    ): ResolvedBlockPlan {
-        if (! in_array($key, $section['allowed_blocks'], true)) {
-            throw new PortableConfigurationException(
-                'DECLARATIVE_BLOCK_SECTION_FORBIDDEN',
-                "Block [$key] is not allowed in section [{$section['key']}].",
-            );
-        }
-        if (! in_array($slot, $section['slots'], true)) {
-            throw new PortableConfigurationException(
-                'DECLARATIVE_BLOCK_SLOT_FORBIDDEN',
-                "Block [$key] cannot target slot [$slot] in section [{$section['key']}].",
-            );
-        }
-        $definition = $this->definitions->block($key);
-        if ($smart !== null && ! in_array($smart->smart, $definition['allowed_smart'], true)) {
-            throw new PortableConfigurationException(
-                'DECLARATIVE_BLOCK_SMART_FORBIDDEN',
-                "Smart component [{$smart->smart}] is not allowed by block [$key].",
-            );
-        }
-
-        return new ResolvedBlockPlan(
-            $id,
-            $key,
-            $slot,
-            (string) $definition['renderer'],
-            $data,
-            $smart,
-            [
-                'definition' => (string) $definition['_source'],
-                'sha256' => (string) $definition['_sha256'],
             ],
         );
     }

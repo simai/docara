@@ -37,6 +37,8 @@ final readonly class PortableBrandAssetPlanner
             $resolved = [
                 'title' => (string) ($branding['title'] ?? $siteTitle),
                 'label' => is_string($branding['label'] ?? null) ? $branding['label'] : null,
+                'mode' => is_string($branding['mode'] ?? null) ? $branding['mode'] : 'full',
+                'size' => is_string($branding['size'] ?? null) ? $branding['size'] : 'medium',
                 'logo' => null,
                 'logo_dark' => null,
                 'favicon' => null,

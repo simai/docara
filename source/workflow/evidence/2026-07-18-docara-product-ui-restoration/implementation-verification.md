@@ -43,7 +43,7 @@ shell instead of flattening every page into one list.
 - Core: `simai/ui` tag `v5.3.2`, commit
   `7e836d8a9414d5da553fb1ab0404721e5b48769a`.
 - Smart: tag `v5.3.1`, commit
-  `dd786bbae98391fb21df9b4e1e6cd402ead0614c`.
+  `ab896dc7cd33f151377e3992ffb286769beee7f7`.
 - Pair: `sf-v5.3.2-7e836d8a-dd786bba`.
 - Moving `main`, `master`, and `latest` references are rejected.
 - Unreleased `sf-drawer`, `sf-tree`, and administrative `sf-admin-menu` were

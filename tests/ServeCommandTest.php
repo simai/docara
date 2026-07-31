@@ -123,10 +123,8 @@ class ServeCommandTest extends TestCase
         $this->createSource([
             'build' => [
                 'components' => [
-                    'catalog' => [
-                        'docara.columns' => [
-                            'index.html' => '<h1>Dotted route works</h1>',
-                        ],
+                    'docara.columns' => [
+                        'index.html' => '<h1>Dotted route works</h1>',
                     ],
                 ],
                 'assets' => [
@@ -152,8 +150,8 @@ class ServeCommandTest extends TestCase
         try {
             $this->waitForServer($port, $server);
 
-            $pretty = $this->request($server, $port, '/components/catalog/docara.columns/');
-            $exactIndex = $this->request($server, $port, '/components/catalog/docara.columns/index.html');
+            $pretty = $this->request($server, $port, '/components/docara.columns/');
+            $exactIndex = $this->request($server, $port, '/components/docara.columns/index.html');
             $exact = $this->request($server, $port, '/assets/app.css');
             $missing = $this->request($server, $port, '/missing/');
             $traversal = $this->request($server, $port, '/%2e%2e/outside.txt');

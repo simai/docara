@@ -18,16 +18,56 @@ use Tests\TestCase;
 final class PortableComponentCatalogProjectorTest extends TestCase
 {
     #[Test]
-    public function it_projects_one_searchable_static_detail_page_for_every_supported_entry(): void
+    public function it_projects_one_navigable_static_detail_page_for_every_supported_entry(): void
     {
         $build = $this->buildPortableSite();
         $catalog = $this->json($build . '/_docara/component-catalog.json');
         $receipt = $this->json($build . '/.docara/component-catalog-pages.json');
         $supported = array_values(array_filter(
             $catalog['entries'],
-            static fn (array $entry): bool => $entry['lifecycle'] === 'supported',
+            static fn (array $entry): bool => $entry['lifecycle'] === 'supported'
+                && $entry['family'] !== 'framework_smart',
         ));
         $supportedIds = array_column($supported, 'id');
+        $supportedSlugs = array_map(self::publicSlug(...), $supported);
+        $allIds = array_column($catalog['entries'], 'id');
+
+        $expectedPublicIds = [
+            'docara.alert',
+            'docara.backlinks',
+            'docara.badge',
+            'docara.banner',
+            'docara.button',
+            'docara.card',
+            'docara.code',
+            'docara.details',
+            'docara.diagram',
+            'docara.download',
+            'docara.embed',
+            'docara.example',
+            'docara.figure',
+            'docara.grid',
+            'docara.hero',
+            'docara.html',
+            'docara.icon',
+            'docara.kbd',
+            'docara.logos',
+            'docara.math',
+            'docara.media',
+            'docara.steps',
+            'docara.tabs',
+            'docara.tree',
+            'native.code',
+            'native.footnotes_and_sources',
+            'native.headings_and_text',
+            'native.links_and_images',
+            'native.lists_and_quotes',
+            'native.table',
+        ];
+        $actualPublicIds = $supportedIds;
+        sort($expectedPublicIds, SORT_STRING);
+        sort($actualPublicIds, SORT_STRING);
+        self::assertSame($expectedPublicIds, $actualPublicIds);
 
         self::assertSame('docara.component_catalog_pages.v1', $receipt['schema']);
         self::assertSame($catalog['content_sha256'], $receipt['catalog_content_sha256']);
@@ -44,113 +84,178 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             $receipt['index']['contract_fragment_sha256'],
         );
         self::assertSame($supportedIds, array_column($receipt['pages'], 'id'));
-        self::assertFileExists($build . '/components/catalog/index.html');
+        self::assertFileExists($build . '/components/index.html');
         self::assertSame(
-            $supportedIds,
+            $supportedSlugs,
             array_map(
                 static fn (array $page): string => basename(dirname($page['output'])),
                 $receipt['pages'],
             ),
         );
 
-        $index = (string) file_get_contents($build . '/components/catalog/index.html');
+        $index = (string) file_get_contents($build . '/components/index.html');
         self::assertStringContainsString('data-docara-component-catalog-index', $index);
-        self::assertStringContainsString('data-docara-component-filter', $index);
-        self::assertStringContainsString('data-docara-component-filter-query', $index);
-        self::assertStringContainsString('data-docara-component-filter-family', $index);
-        self::assertStringContainsString('data-docara-component-filter-availability', $index);
-        self::assertStringContainsString('data-docara-component-filter-status', $index);
-        self::assertStringContainsString('data-docara-component-filter-reset', $index);
-        self::assertStringContainsString('data-docara-component-filter-empty', $index);
-        self::assertStringContainsString('data-docara-component-filter-controller', $index);
-        self::assertSame(17, substr_count($index, 'data-docara-component-item='));
-        self::assertStringContainsString(
-            'data-docara-component-family="framework_smart"',
-            $index,
-        );
-        self::assertStringContainsString(
-            'data-docara-component-availability="unavailable"',
-            $index,
-        );
-        self::assertStringContainsString(
-            'data-docara-component-search="ui.button Кнопка Выводит визуальный элемент действия;',
-            $index,
-        );
-        self::assertStringContainsString(
-            'data-docara-component-search="ui.tabs Вкладки Доступный набор вкладок',
-            $index,
-        );
-        self::assertStringContainsString('Smart-компоненты Simai Framework', $index);
-        self::assertStringContainsString('Недоступно сейчас', $index);
-        self::assertStringContainsString('>Колонки<', $index);
+        self::assertStringNotContainsString('data-docara-component-filter', $index);
+        self::assertStringContainsString('>Компоненты<', $index);
+        self::assertStringContainsString('>Текст и код<', $index);
+        self::assertStringContainsString('>Структура<', $index);
+        self::assertStringContainsString('>Медиа<', $index);
+        self::assertStringContainsString('>Действия и сообщения<', $index);
+        self::assertStringContainsString('class="flex flex-col gap-2"', $index);
+        self::assertStringNotContainsString('lg:grid-col-4', $index);
+        self::assertSame(4, substr_count($index, 'data-docara-component-group='));
+        self::assertSame(count($supportedIds), substr_count($index, 'data-docara-component-item='));
+        self::assertStringNotContainsString('<table', $index);
+        self::assertStringNotContainsString('>Тип<', $index);
+        self::assertStringNotContainsString('>Для чего нужен<', $index);
+        self::assertStringNotContainsString('Smart-компонент SIMAI Framework', $index);
+        self::assertStringNotContainsString('<code>docara.', $index);
+        self::assertStringNotContainsString('<code>native.', $index);
+        self::assertStringNotContainsString('<code>ui.', $index);
+        self::assertStringNotContainsString('>Колонки<', $index);
         self::assertStringContainsString('>Уведомление<', $index);
         self::assertStringContainsString('>Вкладки<', $index);
-        self::assertStringContainsString(
-            'Используйте заголовки и последовательные разделы в порядке исходного текста.',
-            $index,
-        );
-        self::assertStringContainsString(
-            'Опубликовать канонический доступный контракт и манифест вкладок',
-            $index,
-        );
-        self::assertStringContainsString(
-            'Закреплённые исходники Core и Smart не содержат полного принятого контракта доступности.',
-            $index,
-        );
-        self::assertStringContainsString('simai/ui and larena/ui', $index);
-        self::assertStringContainsString('data-docara-component-gap="ui.tabs"', $index);
+        self::assertStringNotContainsString('data-docara-component-gap=', $index);
         self::assertStringNotContainsString('>Columns<', $index);
         self::assertStringNotContainsString('>Alert<', $index);
         self::assertStringNotContainsString('>Tabs<', $index);
         self::assertStringNotContainsString('fetch(', $index);
-        self::assertStringContainsString('docara-document-link flex flex-col', $index);
-        self::assertStringContainsString('h-full w-full', $index);
-        foreach ($supportedIds as $id) {
+        self::assertStringNotContainsString('docara-document-link flex flex-col', $index);
+        foreach ($supported as $entry) {
+            $id = $entry['id'];
+            $slug = self::publicSlug($entry);
             self::assertStringContainsString(
-                'href="/components/catalog/' . $id . '/"',
+                'href="/components/' . $slug . '/"',
                 $index,
             );
 
-            $detailPath = $build . '/components/catalog/' . $id . '/index.html';
+            $detailPath = $build . '/components/' . $slug . '/index.html';
             self::assertFileExists($detailPath);
             $detail = (string) file_get_contents($detailPath);
             self::assertStringContainsString('data-docara-component-detail="' . $id . '"', $detail);
             self::assertStringContainsString('data-docara-component-demo="' . $id . '"', $detail);
+            self::assertStringContainsString('data-docara-component-example', $detail);
+            self::assertStringContainsString('data-docara-component-source="' . $id . '"', $detail);
+            self::assertStringContainsString('data-docara-component-source-display="' . $id . '"', $detail);
             self::assertStringContainsString('>Пример<', $detail);
-            self::assertStringContainsString('>Вызов<', $detail);
-            self::assertStringContainsString('Ограничения и источник', $detail);
+            self::assertDoesNotMatchRegularExpression(
+                '/<h[2-6][^>]*>\s*(?:Пример|Параметры|Важно|Варианты)\s*<\/h[2-6]>/u',
+                $detail,
+            );
+            self::assertLessThan(
+                strpos($detail, 'data-docara-component-parameters') ?: PHP_INT_MAX,
+                strpos($detail, 'data-docara-component-source-display="' . $id . '"'),
+                "Component [$id] must show the main example before parameter sections.",
+            );
+            $parameters = is_array($entry['authoring']['parameters'] ?? null)
+                ? array_values($entry['authoring']['parameters'])
+                : [];
+            self::assertSame(
+                count($parameters),
+                substr_count($detail, 'data-docara-component-parameter="'),
+                "Component [$id] must render exactly one section per parameter.",
+            );
+            foreach ($parameters as $parameter) {
+                if (! is_array($parameter) || ! is_string($parameter['name'] ?? null)) {
+                    continue;
+                }
+                self::assertStringContainsString(
+                    'data-docara-component-parameter="' . $parameter['name'] . '"',
+                    $detail,
+                );
+            }
+            self::assertStringContainsString('role="tablist"', $detail);
+            self::assertStringContainsString('data-docara-example-tab="example"', $detail);
+            self::assertStringContainsString('data-docara-example-tab="markdown"', $detail);
+            self::assertStringContainsString('data-docara-example-copy', $detail);
+            self::assertDoesNotMatchRegularExpression(
+                '/<h[1-6][^>]*>\s*(?:О компоненте|Состояния|Что учесть)\s*<\/h[1-6]>/u',
+                $detail,
+            );
+            self::assertStringNotContainsString('data-docara-component-metadata', $detail);
+            self::assertStringNotContainsString('data-docara-component-source-reference', $detail);
+            self::assertStringNotContainsString('data-docara-component-variants', $detail);
+            self::assertStringNotContainsString('data-docara-component-parameter-examples', $detail);
             self::assertStringNotContainsString('fetch(', $detail);
         }
+        foreach (array_diff($allIds, $supportedIds) as $id) {
+            self::assertStringNotContainsString('data-docara-component-item="' . $id . '"', $index);
+        }
 
-        $alert = (string) file_get_contents($build . '/components/catalog/ui.alert/index.html');
-        self::assertStringContainsString('<h1 id="уведомление">Уведомление</h1>', $alert);
-        self::assertStringContainsString('Доступное имя', $alert);
-        self::assertStringContainsString('Кратко называет уведомление для вспомогательных технологий.', $alert);
-        self::assertStringContainsString('Информация — info', $alert);
-        self::assertStringContainsString('Обычное состояние', $alert);
-        self::assertStringContainsString('"type":"info"', $alert);
-        self::assertStringContainsString('class="language-markdown overflow-auto"', $alert);
-        self::assertStringContainsString('<table class="min-w-full">', $alert);
-        self::assertStringContainsString('<code class="wrap-none">aria-label</code>', $alert);
-        self::assertStringContainsString('<code>min_length</code>', $alert);
-        self::assertStringContainsString('<code>max_length</code>', $alert);
-        self::assertStringContainsString('<code>pattern</code>', $alert);
-        self::assertStringContainsString('data-docara-component-details-summary', $alert);
-        self::assertStringNotContainsString('Optional author override', $alert);
-        self::assertStringNotContainsString('closable=true is not admitted', $alert);
+        self::assertFileDoesNotExist($build . '/components/ui.alert/index.html');
+        self::assertFileDoesNotExist($build . '/components/ui.button/index.html');
 
-        $button = (string) file_get_contents($build . '/components/catalog/ui.button/index.html');
-        self::assertStringContainsString('Связи параметров', $button);
-        self::assertStringContainsString('allowed_combinations', $button);
-        self::assertStringContainsString('loading', $button);
-        self::assertStringContainsString('disabled', $button);
-        self::assertStringContainsString('<code>mirrors</code>', $button);
+        $docaraAlert = (string) file_get_contents($build . '/components/alert/index.html');
+        self::assertStringContainsString('<h1 id="уведомление">Уведомление</h1>', $docaraAlert);
+        self::assertStringContainsString('<sf-icon icon="info"', $docaraAlert);
+        self::assertStringContainsString('<sf-icon icon="check_circle"', $docaraAlert);
+        self::assertStringContainsString('<sf-icon icon="warning"', $docaraAlert);
+        self::assertStringContainsString('<sf-icon icon="error"', $docaraAlert);
+        self::assertStringContainsString(':::alert {type=info variant=default}', $docaraAlert);
+        self::assertStringContainsString('data-docara-component-parameters', $docaraAlert);
+        self::assertStringContainsString('data-docara-component-parameter="type"', $docaraAlert);
+        self::assertStringContainsString('data-docara-component-parameter="variant"', $docaraAlert);
+        self::assertStringNotContainsString('>Тип уведомления <code>type</code>', $docaraAlert);
+        self::assertStringNotContainsString('>Оформление <code>variant</code>', $docaraAlert);
+        self::assertStringNotContainsString('docara-variant:', $docaraAlert);
+
+        $badge = (string) file_get_contents($build . '/components/badge/index.html');
+        foreach (['type', 'scheme', 'size'] as $parameter) {
+            self::assertStringContainsString(
+                'data-docara-component-parameter-example="' . $parameter . '"',
+                $badge,
+            );
+            self::assertStringContainsString(
+                'data-docara-example="component-badge-parameter-' . $parameter . '"',
+                $badge,
+            );
+        }
+        self::assertSame(3, substr_count($badge, 'data-docara-component-parameter-example='));
+        self::assertStringContainsString(':badge[Новое]{type=tonal scheme=primary size=1}', $badge);
+        self::assertStringContainsString(':badge[Основной]{type=main scheme=primary size=1}', $badge);
+        self::assertStringContainsString(':badge[Основная]{scheme=primary size=1}', $badge);
+        self::assertStringContainsString(':badge[Маленький]{size=1/3}', $badge);
+        self::assertStringContainsString('<h2 id="тип-бейджа">Тип бейджа</h2>', $badge);
+        self::assertStringContainsString(
+            '<p>Параметр <code>type</code> определяет, как бейдж выделяется на странице.</p>',
+            $badge,
+        );
+        self::assertStringContainsString('<table class="table table-border table-stripe">', $badge);
+        self::assertStringContainsString('<th>Значение</th><th>Результат</th>', $badge);
+        self::assertStringNotContainsString('<th>Значения</th>', $badge);
+        self::assertStringNotContainsString('<th>Назначение</th>', $badge);
+        self::assertStringContainsString('<code>on-surface</code>', $badge);
+        self::assertStringContainsString(
+            'data-docara-component-parameters><section data-docara-component-parameter="type" class="m-bottom-1">',
+            $badge,
+        );
+        self::assertStringNotContainsString(
+            'border-bottom-1 border-outline-variant p-y-2',
+            $badge,
+        );
+        self::assertStringNotContainsString('docara-parameter:', $badge);
+
+        $nativeCode = (string) file_get_contents(
+            $build . '/components/code/index.html',
+        );
+        self::assertStringContainsString(
+            'data-docara-component-source="native.code"',
+            $nativeCode,
+        );
+        self::assertStringContainsString(
+            '```php',
+            $nativeCode,
+        );
+        self::assertStringNotContainsString(
+            'data-docara-component-source-display="native.code" class="bg-surface border',
+            $nativeCode,
+        );
 
         $search = $this->json($build . '/_docara/search-index.json');
         $indexedUrls = array_column($search['documents'], 'url');
-        self::assertContains('/components/catalog/', $indexedUrls);
-        foreach ($supportedIds as $id) {
-            self::assertContains('/components/catalog/' . $id . '/', $indexedUrls);
+        self::assertContains('/components/', $indexedUrls);
+        foreach ($supportedSlugs as $slug) {
+            self::assertContains('/components/' . $slug . '/', $indexedUrls);
         }
     }
 
@@ -158,35 +263,36 @@ final class PortableComponentCatalogProjectorTest extends TestCase
     public function catalog_shell_and_entry_metadata_follow_the_inherited_english_locale(): void
     {
         $build = $this->buildPortableSite('/', 'en');
-        $index = (string) file_get_contents($build . '/components/catalog/index.html');
-        $alert = (string) file_get_contents($build . '/components/catalog/ui.alert/index.html');
+        $index = (string) file_get_contents($build . '/components/index.html');
+        $alert = (string) file_get_contents($build . '/components/alert/index.html');
 
-        self::assertStringContainsString('>Component catalog<', $index);
-        self::assertStringContainsString('>Find a component<', $index);
-        self::assertStringContainsString('>All types<', $index);
-        self::assertStringContainsString('>All availability states<', $index);
-        self::assertStringContainsString('>Reset filters<', $index);
-        self::assertStringContainsString('>Docara components<', $index);
-        self::assertStringContainsString('>Simai Framework Smart components<', $index);
-        self::assertStringContainsString('>Unavailable in this build<', $index);
+        self::assertStringContainsString('>Components<', $index);
+        self::assertStringNotContainsString('>Find a component<', $index);
+        self::assertStringContainsString('>Text and code<', $index);
+        self::assertStringContainsString('>Structure<', $index);
+        self::assertStringContainsString('>Media<', $index);
+        self::assertStringContainsString('>Actions and messages<', $index);
+        self::assertStringNotContainsString('>Type<', $index);
+        self::assertStringNotContainsString('>What it is for<', $index);
+        self::assertStringNotContainsString('>Docara component<', $index);
+        self::assertStringNotContainsString('>SIMAI Framework Smart component<', $index);
+        self::assertStringNotContainsString('>Unavailable in this build<', $index);
         self::assertStringNotContainsString('Каталог компонентов', $index);
         self::assertStringNotContainsString('Недоступно сейчас', $index);
 
         self::assertStringContainsString('<h1 id="alert">Alert</h1>', $alert);
+        self::assertStringContainsString('The <code>type</code> parameter ', $alert);
+        self::assertStringContainsString('<th>Value</th><th>Result</th>', $alert);
         self::assertStringContainsString('>Example<', $alert);
-        self::assertStringContainsString('>Call<', $alert);
-        self::assertStringContainsString('>Parameters<', $alert);
-        self::assertStringContainsString('>States<', $alert);
-        self::assertStringContainsString('Limitations and source', $alert);
-        self::assertStringContainsString(
-            'Optional author override for exact manifest property [aria-label].',
-            $alert,
-        );
-        self::assertStringContainsString('Verified Smart component', $alert);
-        self::assertStringContainsString(
-            'This example uses the exact pinned Simai Framework contract.',
-            $alert,
-        );
+        self::assertStringContainsString('data-docara-example-tab="example"', $alert);
+        self::assertStringNotContainsString('<h2 id="result">Result</h2>', $alert);
+        self::assertStringNotContainsString('<h2 id="parameters">Parameters</h2>', $alert);
+        self::assertStringNotContainsString('<h2 id="important">Important</h2>', $alert);
+        self::assertStringNotContainsString('>Call<', $alert);
+        self::assertStringNotContainsString('>States<', $alert);
+        self::assertStringNotContainsString('>What to consider<', $alert);
+        self::assertStringNotContainsString('>Source<', $alert);
+        self::assertStringNotContainsString('>Variants and states<', $alert);
         self::assertStringNotContainsString('Проверенный Smart-компонент', $alert);
         self::assertStringNotContainsString('Пример использует точный закреплённый контракт', $alert);
         self::assertStringNotContainsString('>Пример<', $alert);
@@ -201,9 +307,19 @@ final class PortableComponentCatalogProjectorTest extends TestCase
 
         foreach ($receipt['pages'] as $page) {
             self::assertMatchesRegularExpression('/\A[a-f0-9]{64}\z/D', $page['catalog_entry_sha256']);
+            self::assertMatchesRegularExpression('/\A[a-f0-9]{64}\z/D', $page['contract_fragment_sha256']);
+            if ($page['lifecycle'] !== 'supported') {
+                self::assertNull($page['example_ref']);
+                self::assertNull($page['example_sha256']);
+                self::assertNull($page['rendered_fragment_sha256']);
+                $html = (string) file_get_contents($build . '/' . $page['output']);
+                self::assertStringContainsString('data-docara-component-unavailable', $html);
+                self::assertSame(1, substr_count($html, 'data-docara-component-detail='));
+
+                continue;
+            }
             self::assertMatchesRegularExpression('/\A[a-f0-9]{64}\z/D', $page['example_sha256']);
             self::assertMatchesRegularExpression('/\A[a-f0-9]{64}\z/D', $page['rendered_fragment_sha256']);
-            self::assertMatchesRegularExpression('/\A[a-f0-9]{64}\z/D', $page['contract_fragment_sha256']);
             self::assertSame(
                 hash_file('sha256', dirname(__DIR__, 2) . '/' . $page['example_ref']),
                 $page['example_sha256'],
@@ -227,7 +343,49 @@ final class PortableComponentCatalogProjectorTest extends TestCase
     }
 
     #[Test]
-    public function details_are_hidden_from_the_left_menu_but_keep_context_and_adjacency(): void
+    public function accepted_prototype_capabilities_remain_executable_catalog_fixtures(): void
+    {
+        $fixtures = [
+            'docara.hero.ru.md' => [
+                'docara-variant:parameter.variant.split',
+                'docara-variant:parameter.variant.compact',
+                'docara-variant:parameter.variant.centered',
+                '![Схема Docara]',
+            ],
+            'docara.logos.ru.md' => [
+                'docara-variant:state.text',
+                'docara-variant:state.linked',
+                'docara-variant:state.image',
+                'tone=muted',
+            ],
+            'docara.example.ru.md' => [
+                ':::example {label="Интерактивный пример"}',
+                '```html',
+                '```css',
+                '```javascript',
+            ],
+            'docara.diagram.ru.md' => [':::diagram', 'flowchart LR'],
+            'docara.math.ru.md' => [':::math {display=inline', ':::math {display=block'],
+            'docara.backlinks.ru.md' => [':::backlinks {limit=5}'],
+            'docara.html.ru.md' => [':::html', 'Изолированный HTML'],
+            'docara.banner.ru.md' => [':::banner {type=info}', ':::banner {type=warning}'],
+            'docara.tabs.ru.md' => [':::tabs', '### Composer', '### Вручную', '### Результат'],
+            'native.footnotes_and_sources.ru.md' => ['[^source]', '[^source]:'],
+        ];
+
+        foreach ($fixtures as $fixture => $markers) {
+            $path = dirname(__DIR__, 2) . '/resources/component-catalog/examples/' . $fixture;
+            self::assertFileExists($path);
+            $source = (string) file_get_contents($path);
+
+            foreach ($markers as $marker) {
+                self::assertStringContainsString($marker, $source, $fixture . ': ' . $marker);
+            }
+        }
+    }
+
+    #[Test]
+    public function details_are_available_from_the_left_menu_and_keep_context_and_adjacency(): void
     {
         $build = $this->buildPortableSite();
         $receipt = $this->json($build . '/.docara/component-catalog-pages.json');
@@ -248,14 +406,21 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             1,
             $xpath->query(
                 '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
-                . '//a[@href="/components/catalog/"]',
+                . '//a[@href="/components/"]',
             )?->length,
         );
         self::assertSame(
-            0,
+            count($receipt['pages']),
             $xpath->query(
                 '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
-                . '//a[starts-with(@href, "/components/catalog/") and @href!="/components/catalog/"]',
+                . '//a[starts-with(@href, "/components/") and @href!="/components/"]',
+            )?->length,
+        );
+        self::assertSame(
+            1,
+            $xpath->query(
+                '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
+                . '//a[@href="' . $middle['route'] . '" and @aria-current="page"]',
             )?->length,
         );
         self::assertSame(1, $xpath->query('//nav[@data-docara-previous-next]/a[@rel="prev"]')?->length);
@@ -268,59 +433,37 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         $build = $this->buildPortableSite('/project/docs/');
         $receipt = $this->json($build . '/.docara/component-catalog-pages.json');
 
-        self::assertSame('/project/docs/components/catalog/', $receipt['index']['route']);
+        self::assertSame('/project/docs/components/', $receipt['index']['route']);
         foreach ($receipt['pages'] as $page) {
-            self::assertStringStartsWith('/project/docs/components/catalog/', $page['route']);
+            self::assertStringStartsWith('/project/docs/components/', $page['route']);
         }
 
-        $index = (string) file_get_contents($build . '/components/catalog/index.html');
-        self::assertStringContainsString('href="/project/docs/components/catalog/', $index);
+        $index = (string) file_get_contents($build . '/components/index.html');
+        self::assertStringContainsString('href="/project/docs/components/', $index);
     }
 
     #[Test]
-    public function smart_demo_assets_are_scoped_to_smart_details(): void
+    public function public_catalog_does_not_publish_framework_smart_details(): void
     {
         $build = $this->buildPortableSite();
         $diagnostics = $this->json($build . '/.docara/resolved-page-plans.json');
         $byUrl = array_column($diagnostics['pages'], null, 'url');
         $native = json_encode(
-            $byUrl['/components/catalog/native.code/']['component_runtime']['asset_plan'],
-            JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES,
-        );
-        $alert = json_encode(
-            $byUrl['/components/catalog/ui.alert/']['component_runtime']['asset_plan'],
-            JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES,
-        );
-        $button = json_encode(
-            $byUrl['/components/catalog/ui.button/']['component_runtime']['asset_plan'],
+            $byUrl['/components/code/']['component_runtime']['asset_plan'],
             JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES,
         );
 
         $nativeCalls = array_column(
-            $byUrl['/components/catalog/native.code/']['component_runtime']['normalized_calls'],
-            'id',
-        );
-        $alertCalls = array_column(
-            $byUrl['/components/catalog/ui.alert/']['component_runtime']['normalized_calls'],
-            'id',
-        );
-        $buttonCalls = array_column(
-            $byUrl['/components/catalog/ui.button/']['component_runtime']['normalized_calls'],
+            $byUrl['/components/code/']['component_runtime']['normalized_calls'],
             'id',
         );
 
         self::assertStringNotContainsString('smart/alert/js/alert.js', $native);
         self::assertStringContainsString('smart/buttons/js/buttons.js', $native);
-        self::assertStringContainsString('smart/alert/js/alert.js', $alert);
-        self::assertStringContainsString('smart/buttons/js/buttons.js', $alert);
-        self::assertStringContainsString('smart/buttons/js/buttons.js', $button);
-        self::assertStringNotContainsString('smart/alert/js/alert.js', $button);
         self::assertNotContains('ui.alert', $nativeCalls);
         self::assertNotContains('ui.button', $nativeCalls);
-        self::assertContains('ui.alert', $alertCalls);
-        self::assertNotContains('ui.button', $alertCalls);
-        self::assertContains('ui.button', $buttonCalls);
-        self::assertNotContains('ui.alert', $buttonCalls);
+        self::assertArrayNotHasKey('/components/ui.alert/', $byUrl);
+        self::assertArrayNotHasKey('/components/ui.button/', $byUrl);
     }
 
     #[Test]
@@ -338,16 +481,17 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         );
         $build = $this->tmpPath('build_local');
         $this->builder()->build($this->tmp, $build);
+        $receipt = $this->json($build . '/.docara/component-catalog-pages.json');
         $diagnostics = $this->json($build . '/.docara/resolved-page-plans.json');
         $catalogPages = array_values(array_filter(
             $diagnostics['pages'],
             static fn (array $page): bool => str_starts_with(
                 (string) $page['output'],
-                'components/catalog/',
+                'components/',
             ),
         ));
 
-        self::assertCount(13, $catalogPages);
+        self::assertCount(count($receipt['pages']) + 1, $catalogPages);
         foreach ($catalogPages as $page) {
             $plan = $page['resolved_page_plan'];
             $sources = array_column($plan['trace'], 'source');
@@ -368,12 +512,12 @@ final class PortableComponentCatalogProjectorTest extends TestCase
     public function catalog_preserves_inherited_layout_search_reading_and_index_navigation(): void
     {
         $this->copyPortableFixture($this->tmp);
-        $this->filesystem->ensureDirectoryExists($this->tmpPath('content/components/catalog'));
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('content/components'));
         file_put_contents(
-            $this->tmpPath('content/components/catalog/section.json'),
+            $this->tmpPath('content/components/section.json'),
             json_encode([
                 'schema' => 'docara.section.v1',
-                'layout' => ['max_width' => 'full'],
+                'layout' => ['container' => ['max' => 8]],
                 'navigation' => ['hidden' => true, 'order' => 321],
                 'search' => ['enabled' => false, 'indexed' => false],
                 'reading' => [
@@ -387,19 +531,20 @@ final class PortableComponentCatalogProjectorTest extends TestCase
 
         $build = $this->tmpPath('build_local');
         $this->builder()->build($this->tmp, $build);
+        $receipt = $this->json($build . '/.docara/component-catalog-pages.json');
         $diagnostics = $this->json($build . '/.docara/resolved-page-plans.json');
         $catalogPages = array_values(array_filter(
             $diagnostics['pages'],
             static fn (array $page): bool => str_starts_with(
                 (string) $page['output'],
-                'components/catalog/',
+                'components/',
             ),
         ));
 
-        self::assertCount(13, $catalogPages);
+        self::assertCount(count($receipt['pages']) + 1, $catalogPages);
         foreach ($catalogPages as $page) {
             $configuration = $page['resolved_page_plan']['configuration'];
-            self::assertSame('full', $configuration['layout']['max_width']);
+            self::assertSame(8, $configuration['layout']['container']['max']);
             self::assertFalse($configuration['search']['enabled']);
             self::assertFalse($configuration['search']['indexed']);
             self::assertFalse($configuration['reading']['breadcrumbs']);
@@ -410,7 +555,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             self::assertSame(321, $configuration['navigation']['order']);
 
             $html = (string) file_get_contents($build . '/' . $page['output']);
-            self::assertStringContainsString('data-width="full"', $html);
+            self::assertStringContainsString('class="bg-surface max-container-8"', $html);
             self::assertStringNotContainsString('data-docara-breadcrumbs', $html);
             self::assertStringNotContainsString('data-docara-previous-next', $html);
             self::assertStringNotContainsString('data-docara-search-trigger', $html);
@@ -418,7 +563,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
 
         $search = $this->json($build . '/_docara/search-index.json');
         foreach ($search['documents'] as $document) {
-            self::assertStringNotContainsString('/components/catalog/', (string) $document['url']);
+            self::assertStringNotContainsString('/components/', (string) $document['url']);
         }
     }
 
@@ -468,13 +613,36 @@ final class PortableComponentCatalogProjectorTest extends TestCase
     public function authored_content_cannot_shadow_a_generated_catalog_route(): void
     {
         $this->copyPortableFixture($this->tmp);
-        $this->filesystem->ensureDirectoryExists($this->tmpPath('content/components/catalog'));
-        file_put_contents($this->tmpPath('content/components/catalog/index.md'), "# Shadow\n");
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('content/components'));
+        file_put_contents($this->tmpPath('content/components/index.md'), "# Shadow\n");
 
         $this->expectException(PortableConfigurationException::class);
         $this->expectExceptionMessage('COMPONENT_CATALOG_ROUTE_COLLISION');
 
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+    }
+
+    #[Test]
+    public function parameter_examples_reject_an_unknown_parameter(): void
+    {
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('COMPONENT_CATALOG_PARAMETER_EXAMPLE_UNKNOWN');
+
+        $this->exampleSourceGroups(
+            "<!-- Unknown binding -->\n<!-- docara-parameter:unknown -->\n:badge[Новое]\n",
+        );
+    }
+
+    #[Test]
+    public function parameter_examples_allow_multiple_groups_for_one_parameter(): void
+    {
+        $groups = $this->exampleSourceGroups(
+            "<!-- First binding -->\n<!-- docara-parameter:type -->\n:badge[Первый]\n"
+                . "<!-- Second binding -->\n<!-- docara-parameter:type -->\n:badge[Второй]\n",
+        );
+
+        self::assertCount(2, $groups);
+        self::assertSame(['type', 'type'], array_column($groups, 'parameter'));
     }
 
     private function buildPortableSite(string $baseUrl = '/', string $locale = 'ru'): string
@@ -495,6 +663,30 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         $this->builder()->build($this->tmp, $build);
 
         return $build;
+    }
+
+    /** @return list<array{label:string,source:string,parameter:?string}> */
+    private function exampleSourceGroups(string $source): array
+    {
+        $projector = new PortableComponentCatalogProjector(new PortableMarkdownRenderer);
+        $method = new \ReflectionMethod($projector, 'exampleSourceGroups');
+
+        /** @var list<array{label:string,source:string,parameter:?string}> $groups */
+        $groups = $method->invoke(
+            $projector,
+            [
+                'id' => 'docara.badge',
+                'authoring' => [
+                    'parameters' => [
+                        ['name' => 'type'],
+                    ],
+                ],
+            ],
+            $source,
+            ['parameter_examples' => 'Example'],
+        );
+
+        return $groups;
     }
 
     private function builder(): PortableSiteBuilder
@@ -559,5 +751,17 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         libxml_use_internal_errors($previous);
 
         return new DOMXPath($document);
+    }
+
+    /** @param array<string, mixed> $entry */
+    private static function publicSlug(array $entry): string
+    {
+        if (($entry['id'] ?? null) === 'docara.code') {
+            return 'code-from-file';
+        }
+
+        $parts = explode('.', (string) $entry['id'], 2);
+
+        return str_replace('_', '-', $parts[1] ?? $parts[0]);
     }
 }

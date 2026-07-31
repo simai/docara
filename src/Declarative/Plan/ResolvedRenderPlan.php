@@ -72,11 +72,11 @@ final readonly class ResolvedRenderPlan
         foreach ($this->regions as $sections) {
             foreach ($sections as $section) {
                 foreach ($section->blocks as $block) {
-                    if ($block->smart instanceof ResolvedSmartPlan) {
+                    foreach ($this->smartPlans($block) as $resolvedSmart) {
                         $smart[] = [
-                            'smart' => $block->smart->smart,
-                            'view' => $block->smart->view,
-                            'props' => $block->smart->props,
+                            'smart' => $resolvedSmart->smart,
+                            'view' => $resolvedSmart->view,
+                            'props' => $resolvedSmart->props,
                         ];
                     }
                 }
@@ -103,5 +103,24 @@ final readonly class ResolvedRenderPlan
             ),
             'smart' => $smart,
         ];
+    }
+
+    /** @return list<ResolvedSmartPlan> */
+    private function smartPlans(ResolvedBlockPlan $block): array
+    {
+        $smart = $block->smart instanceof ResolvedSmartPlan ? [$block->smart] : [];
+        $nodes = $block->data['nodes'] ?? null;
+        if (! is_array($nodes)) {
+            return $smart;
+        }
+        foreach ($nodes as $node) {
+            if (! is_array($node)) {
+                continue;
+            }
+            $nested = ResolvedBlockPlan::fromArray($node);
+            array_push($smart, ...$this->smartPlans($nested));
+        }
+
+        return $smart;
     }
 }

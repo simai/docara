@@ -6,7 +6,8 @@
     data-docara-transient-dialog
     data-docara-search-index="<?= $view->searchIndexUrl ?>"
     overlay="true"
-    overlay-class="backdrop-blur-small"
+    overlay-preset="default"
+    overlay-class="backdrop-blur-large"
     show-header="false"
     show-close="false"
     show-footer="false"

@@ -22,6 +22,9 @@ trash
 /codex-local-check.bak-1
 /codex-local-check.codex-bak-1
 npm-debug.log
+/output/
+__pycache__/
+*.pyc
 /package-lock.json
 /source/404.blade.php
 /source/favicon.ico

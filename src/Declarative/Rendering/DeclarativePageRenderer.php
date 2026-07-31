@@ -7,18 +7,27 @@ namespace Simai\Docara\Declarative\Rendering;
 use Simai\Docara\Declarative\Plan\ResolvedBlockPlan;
 use Simai\Docara\Declarative\Plan\ResolvedRenderPlan;
 use Simai\Docara\Declarative\Plan\ResolvedSectionPlan;
+use Simai\Docara\Declarative\Rendering\Document\DocumentNodeRendererRegistry;
+use Simai\Docara\Declarative\Rendering\Document\DocumentRenderer;
 use Simai\Docara\PortableSite\PortableDocumentOutlineBuilder;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
 final readonly class DeclarativePageRenderer
 {
+    private DocumentRenderer $documents;
+
     public function __construct(
         private PortableMarkdownRenderer $markdown,
         private SmartRenderer $smart = new SmartRenderer,
         private ViewTreeRenderer $viewTrees = new ViewTreeRenderer,
         private SafeElementRenderer $elements = new SafeElementRenderer,
         private array $reservedDocumentIds = [],
-    ) {}
+        ?DocumentRenderer $documents = null,
+    ) {
+        $this->documents = $documents ?? new DocumentRenderer(
+            DocumentNodeRendererRegistry::bundled($this->markdown, $this->smart, $this->elements),
+        );
+    }
 
     public function render(
         ResolvedRenderPlan $plan,
@@ -101,7 +110,9 @@ final readonly class DeclarativePageRenderer
             $slots[$block->slot] .= $artifact->html;
             array_push($assets, ...$artifact->assets);
             $blocks[] = $artifact->provenance;
-            if (isset($artifact->hydration['hydration_owner'])) {
+            if (isset($artifact->hydration['components']) && is_array($artifact->hydration['components'])) {
+                array_push($componentHydration, ...$artifact->hydration['components']);
+            } elseif (isset($artifact->hydration['hydration_owner'])) {
                 $componentHydration[] = $artifact->hydration;
             }
         }
@@ -125,6 +136,9 @@ final readonly class DeclarativePageRenderer
 
     private function block(ResolvedBlockPlan $block): RenderArtifact
     {
+        if ($block->renderer === 'block.document') {
+            return $this->documents->render($block);
+        }
         if ($block->renderer === 'block.markdown') {
             return new RenderArtifact(
                 $this->markdown->render((string) $block->data['markdown']),

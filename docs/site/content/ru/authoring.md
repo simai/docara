@@ -31,7 +31,7 @@
    [свой language pack](/authoring/language-packs/).
 8. При изменении URL [объявите redirect](/authoring/redirects/).
 9. [Сравните живые макеты и их точные исходники](/examples/).
-10. При необходимости [найдите компонент](/components/catalog/).
+10. При необходимости [найдите компонент](/components/).
 11. [Соберите и проверьте результат](/build/verify/).
 
 ## Не редактируйте output

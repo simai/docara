@@ -1,7 +1,7 @@
 {
   "schema": "larena.ui.smart_manifest.v1",
   "key": "docara.navigation",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "owner_package": "simai/docara",
   "kind": "composite",
   "props": {
@@ -39,8 +39,8 @@
   "events": {
     "docara-navigation-toggle": {"kind": "custom", "backend_handler_binding": false}
   },
-  "views": {"default": {}, "compact": {}, "tree": {}},
-  "presets": {"default": {"view": "default"}, "compact": {"view": "compact"}, "tree": {"view": "tree"}},
+  "views": {"default": {}, "compact": {}, "tree": {}, "header": {}},
+  "presets": {"default": {"view": "default"}, "compact": {"view": "compact"}, "tree": {"view": "tree"}, "header": {"view": "header"}},
   "constraints": {},
   "render": {"strategy": "host", "renderer": "docara.smart.template"},
   "frontend": {"runtime": null, "tag": null},
@@ -52,17 +52,17 @@
   "atlas": {
     "visible": true,
     "title": "Documentation navigation",
-    "description": "Displays a four-level documentation tree and its active path.",
+    "description": "Displays documentation trees, compact mobile navigation and horizontal header navigation.",
     "category": "navigation",
     "status": "developer_testable",
-    "states": ["default", "active", "ancestor", "expanded", "collapsed"],
+    "states": ["default", "active", "ancestor", "expanded", "collapsed", "header", "mobile"],
     "readiness": {
       "safe_to_suggest": true,
       "safe_to_render": true,
       "safe_to_bind_data": true,
       "safe_to_execute_effect": true
     },
-    "accessibility": ["four_level_tree", "active_page", "active_ancestor", "keyboard_disclosure"],
+    "accessibility": ["four_level_tree", "active_page", "active_ancestor", "keyboard_disclosure", "landmark_label"],
     "example_props": {"items": [], "maximum_depth": 4, "label": "Sections", "expand_label": "Expand: ", "collapse_label": "Collapse: ", "contains_current_label": ", contains the current page"},
     "controls": [
       {"key": "maximum_depth", "source": "prop", "widget": "number"},

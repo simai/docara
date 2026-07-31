@@ -6,23 +6,39 @@ namespace Simai\Docara\PortableSite;
 
 use Simai\Docara\Declarative\DeclarativePageResult;
 use Simai\Docara\Declarative\Rendering\PublisherChromeRenderer;
+use Simai\Docara\Declarative\Rendering\RenderArtifact;
+use Simai\Docara\Declarative\Rendering\SmartRenderer;
 use Simai\Docara\Declarative\Rendering\TrustedTemplateRegistry;
 use Simai\Docara\Declarative\Rendering\View\PortablePageViewModel;
 use Simai\Docara\Declarative\Rendering\View\PublisherChromeViewModel;
+use Simai\Docara\Declarative\Smart\CompositeSmartPlanResolver;
 use Simai\Docara\Framework\FrameworkAssetPlan;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\Preferences\ReaderPreferenceCompiler;
 use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class DeclarativePortablePagePublisher implements PortablePagePublisher
 {
     private SmartRegistry $smarts;
 
+    private CompositeSmartPlanResolver $composites;
+
+    private SmartRenderer $smartRenderer;
+
+    private ReaderPreferenceCompiler $preferenceCompiler;
+
     public function __construct(
         private TrustedTemplateRegistry $templates = new TrustedTemplateRegistry,
         ?SmartRegistry $smarts = null,
         private PublisherChromeRenderer $chrome = new PublisherChromeRenderer,
+        ?CompositeSmartPlanResolver $composites = null,
+        ?SmartRenderer $smartRenderer = null,
+        ?ReaderPreferenceCompiler $preferenceCompiler = null,
     ) {
         $this->smarts = $smarts ?? SmartRegistry::bundled();
+        $this->composites = $composites ?? new CompositeSmartPlanResolver(smarts: $this->smarts);
+        $this->smartRenderer = $smartRenderer ?? new SmartRenderer;
+        $this->preferenceCompiler = $preferenceCompiler ?? new ReaderPreferenceCompiler;
     }
 
     public function id(): string
@@ -57,11 +73,27 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         }
         $regions['sidebar_mobile'] = $this->mobileClone($regions['sidebar']);
         $regions['outline_mobile'] = $this->mobileOutlineClone($regions['outline']);
+        $copy = is_array($page['ui_copy'] ?? null) ? $page['ui_copy'] : [];
+        if ($copy === []) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_PRIMARY_COPY_REQUIRED',
+                "Page [{$page['url']}] has no resolved language-pack copy.",
+            );
+        }
+        $headerNavigation = is_array($page['header_navigation'] ?? null)
+            && array_is_list($page['header_navigation'])
+            ? $page['header_navigation']
+            : [];
+        $mobileHeaderNavigation = $this->mobileHeaderNavigation($headerNavigation, $copy, (string) $page['url']);
+        $regions['header_navigation_mobile'] = $mobileHeaderNavigation?->html ?? '';
         $branding = is_array($page['branding'] ?? null) ? $page['branding'] : [];
         $brandTitle = (string) ($branding['title'] ?? $siteTitle);
         $configuredTheme = in_array($page['theme'] ?? null, ['system', 'light', 'dark'], true)
             ? (string) $page['theme']
             : 'system';
+        $configuredModalBlur = in_array($page['modal_blur'] ?? null, ['none', 'small', 'medium', 'large'], true)
+            ? (string) $page['modal_blur']
+            : 'large';
         $searchEnabled = ($page['search_enabled'] ?? false) === true
             && is_string($page['search_runtime_url'] ?? null)
             && is_string($page['search_index_url'] ?? null);
@@ -72,26 +104,69 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 "Page [{$page['url']}] has an unsafe publisher asset base.",
             );
         }
-        $copy = is_array($page['ui_copy'] ?? null) ? $page['ui_copy'] : [];
-        if ($copy === []) {
-            throw new PortableConfigurationException(
-                'DECLARATIVE_PRIMARY_COPY_REQUIRED',
-                "Page [{$page['url']}] has no resolved language-pack copy.",
-            );
-        }
         $escapedCopy = [];
         foreach ($copy as $id => $message) {
             if (is_string($id) && is_string($message)) {
                 $escapedCopy[$id] = $this->escape($message);
             }
         }
+        $readerPreferences = $this->preferenceCompiler->compile(
+            is_array($page['reader_preferences'] ?? null) ? $page['reader_preferences'] : [],
+            [
+                'appearance.theme' => $configuredTheme,
+                'appearance.modal_blur' => $configuredModalBlur,
+            ],
+            $copy,
+            is_string($page['reader_preferences_storage_key'] ?? null)
+                ? $page['reader_preferences_storage_key']
+                : ReaderPreferenceCompiler::storageKey(['base_url' => '/']),
+        );
+        $readerPreferencesArtifact = null;
+        if ($readerPreferences['enabled']) {
+            $readerPreferencesArtifact = $this->smartRenderer->render(
+                $this->composites->resolve(
+                    'docara.preferences',
+                    'reader-preferences-' . substr(hash('sha256', (string) $page['url']), 0, 20),
+                    [
+                        'position' => ($page['direction'] ?? 'ltr') === 'rtl' ? 'left' : 'right',
+                        'title' => (string) $copy['reader.title'],
+                        'close_label' => (string) $copy['reader.close'],
+                        'reset_label' => (string) $copy['reader.reset'],
+                        'groups' => $readerPreferences['groups'],
+                        'manifest' => $readerPreferences,
+                    ],
+                    'side-panel',
+                ),
+            );
+        }
         $breadcrumbs = $this->breadcrumbs(is_array($page['breadcrumbs'] ?? null) ? $page['breadcrumbs'] : []);
         $previous = $this->readingLink(is_array($page['previous'] ?? null) ? $page['previous'] : null);
         $next = $this->readingLink(is_array($page['next'] ?? null) ? $page['next'] : null);
-        $themeOptions = $this->themeOptions($configuredTheme, $escapedCopy);
         $languageOptions = $this->languageOptions(is_array($page['language_options'] ?? null) ? $page['language_options'] : []);
         $preset = (string) $page['preset'] === 'landing' ? 'landing' : 'docs';
+        $containerMax = $page['container_max'] ?? null;
+        if (! is_int($containerMax) || $containerMax < 1 || $containerMax > 8) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_CONTAINER_MAX_INVALID',
+                "Page [{$page['url']}] must resolve layout.container.max to an integer from 1 through 8.",
+            );
+        }
+        $scrollbarPreset = in_array(
+            $page['scrollbar_preset'] ?? null,
+            ['overlay', 'persistent', 'standard', 'hidden'],
+            true,
+        ) ? (string) $page['scrollbar_preset'] : 'overlay';
+        $contentGap = $page['content_gap'] ?? null;
+        if (! is_int($contentGap) || $contentGap < 0 || $contentGap > 8) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_CONTENT_GAP_INVALID',
+                "Page [{$page['url']}] must resolve layout.content.gap to an integer from 0 through 8.",
+            );
+        }
         $mobileTocState = $regions['outline'] === '' ? 'unavailable' : $this->mobileTocState($page);
+        $primaryNavigationEnabled = $regions['header_navigation_mobile'] !== '';
+        $documentationNavigationEnabled = $preset === 'docs' && $regions['sidebar_mobile'] !== '';
+        $mobileNavigationEnabled = $primaryNavigationEnabled || $documentationNavigationEnabled;
         $chrome = $this->chrome->render(new PublisherChromeViewModel(
             $preset,
             $searchEnabled,
@@ -102,10 +177,13 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $breadcrumbs,
             $previous,
             $next,
-            $themeOptions,
-            $this->escape($configuredTheme),
             $escapedCopy,
             $languageOptions,
+            $mobileNavigationEnabled,
+            $primaryNavigationEnabled,
+            $documentationNavigationEnabled,
+            $readerPreferences['enabled'],
+            $readerPreferencesArtifact?->html ?? '',
         ));
 
         $view = new PortablePageViewModel(
@@ -123,24 +201,28 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 ? $this->escape($branding['favicon_type'])
                 : null,
             $assets->headHtml() . $this->smartAssetHead(
-                $declarative->artifact->assets,
+                array_values(array_unique([
+                    ...$declarative->artifact->assets,
+                    ...($mobileHeaderNavigation?->assets ?? []),
+                    ...($readerPreferencesArtifact?->assets ?? []),
+                ])),
                 $assetBase,
-            ),
-            $this->themeBootstrap($configuredTheme),
+            ) . $this->contentRuntimeHead($regions['main'], $assetBase),
+            $this->preferencesBootstrap($readerPreferences),
             $preset,
-            $this->escape((string) $page['max_width']),
+            'max-container-' . $containerMax,
+            $this->escape($scrollbarPreset),
+            $contentGap,
             $mobileTocState,
             $searchEnabled,
             $searchEnabled ? $this->escape((string) $page['search_runtime_url']) : null,
             $searchEnabled ? $this->escape((string) $page['search_index_url']) : null,
-            $this->escape($assetBase . '/declarative-shell.css'),
-            $this->escape($assetBase . '/declarative-shell.js'),
+            $this->publisherAssetUrl($assetBase, 'declarative-shell.css'),
+            $this->publisherAssetUrl($assetBase, 'declarative-shell.js'),
             $regions,
             $breadcrumbs,
             $previous,
             $next,
-            $themeOptions,
-            $this->escape($configuredTheme),
             $escapedCopy,
             $this->escape((string) ($page['canonical_url'] ?? $page['url'])),
             $this->alternates(is_array($page['alternates'] ?? null) ? $page['alternates'] : []),
@@ -150,6 +232,39 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         );
 
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
+    }
+
+    private function publisherAssetUrl(string $assetBase, string $name): string
+    {
+        $path = dirname(__DIR__, 2) . '/resources/portable/' . $name;
+        $hash = is_file($path) && ! is_link($path) ? hash_file('sha256', $path) : false;
+        if (! is_string($hash) || preg_match('/^[a-f0-9]{64}$/', $hash) !== 1) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_PUBLISHER_ASSET_INVALID',
+                "Declarative publisher asset [$name] cannot be versioned.",
+            );
+        }
+
+        return $this->escape($assetBase . '/' . $name . '?docara_v=' . $hash);
+    }
+
+    private function contentRuntimeHead(string $mainHtml, string $assetBase): string
+    {
+        $head = '';
+        if (str_contains($mainHtml, 'data-docara-block="diagram"')) {
+            $head .= '<script src="'
+                . $this->publisherAssetUrl($assetBase, 'vendor/mermaid/mermaid.min.js')
+                . '"></script>';
+        }
+        if (str_contains($mainHtml, 'data-docara-block="math"')) {
+            $head .= '<link rel="stylesheet" href="'
+                . $this->publisherAssetUrl($assetBase, 'vendor/katex/katex.min.css')
+                . '"><script src="'
+                . $this->publisherAssetUrl($assetBase, 'vendor/katex/katex.min.js')
+                . '"></script>';
+        }
+
+        return $head;
     }
 
     /** @param array<string, mixed> $page */
@@ -210,31 +325,6 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         ];
     }
 
-    /** @return list<array{value:string,title:string,description:string,checked:bool}> */
-    private function themeOptions(string $configured, array $copy): array
-    {
-        return [
-            [
-                'value' => 'system',
-                'title' => $copy['reader.theme_system'],
-                'description' => $copy['reader.theme_system_description'],
-                'checked' => $configured === 'system',
-            ],
-            [
-                'value' => 'light',
-                'title' => $copy['reader.theme_light'],
-                'description' => $copy['reader.theme_light_description'],
-                'checked' => $configured === 'light',
-            ],
-            [
-                'value' => 'dark',
-                'title' => $copy['reader.theme_dark'],
-                'description' => $copy['reader.theme_dark_description'],
-                'checked' => $configured === 'dark',
-            ],
-        ];
-    }
-
     /** @param list<array<string, mixed>> $alternates @return list<array{locale:string,url:string}> */
     private function alternates(array $alternates): array
     {
@@ -272,28 +362,70 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         return $resolved;
     }
 
-    private function themeBootstrap(string $configured): string
+    /** @param array<string, mixed> $manifest */
+    private function preferencesBootstrap(array $manifest): string
     {
-        $json = json_encode($configured, JSON_THROW_ON_ERROR);
+        $json = json_encode(
+            $manifest,
+            JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT,
+        );
 
-        return '<script data-docara-theme-bootstrap>(function(){var configured=' . $json
-            . ",key='docara.reader.theme.v1',valid=/^(system|light|dark)$/,volatile='';"
+        return '<script data-docara-preferences-bootstrap>(function(){var manifest=' . $json
+            . ',key=manifest.storage_key,fields={},defaults=manifest.values||{},volatile={};'
+            . 'manifest.groups.forEach(function(group){group.fields.forEach(function(field){fields[field.id]=field})});'
             . "function frameworkMemory(){return document.documentElement.dataset.docaraFrameworkStorage==='memory'}"
-            . "function stored(){if(frameworkMemory())return'';try{var value=window.localStorage.getItem(key)||'';return valid.test(value)?value:''}catch(error){return''}}"
-            . "function legacy(){var value=(document.cookie.split('; ').find(function(item){return item.indexOf('sf-theme=')===0})||'').split('=')[1]||'';return /^(light|dark)$/.test(value)?value:''}"
-            . "function clearLegacy(){document.cookie='sf-theme=; Path=/; Max-Age=0; SameSite=Lax'}"
-            . "function projectLegacy(mode){if(/^(light|dark)$/.test(mode)){document.cookie='sf-theme='+mode+'; Path=/; Max-Age=31536000; SameSite=Lax';return legacy()===mode}clearLegacy();return legacy()===''}"
-            . "function apply(mode,source){if(!valid.test(mode)){mode='system'}var dark=mode==='dark'||(mode==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);var root=document.documentElement;root.classList.remove('theme-light','theme-dark');root.classList.add(dark?'theme-dark':'theme-light');root.dataset.docaraThemePreference=mode;root.dataset.docaraThemeSource=source;return mode}"
-            . "function preference(){var reader=volatile||stored(),old=reader?'':legacy();return{mode:reader||old||configured,source:reader?'reader':(old?'legacy':'site')}}"
-            . "function set(mode){if(!valid.test(mode)){return{applied:false,persisted:false}}var persisted=false;if(!frameworkMemory()){try{window.localStorage.setItem(key,mode);persisted=window.localStorage.getItem(key)===mode}catch(error){}}var cookiePersisted=projectLegacy(mode);if(/^(light|dark)$/.test(mode)){persisted=persisted||cookiePersisted}volatile=persisted?'':mode;apply(mode,'reader');return{applied:true,persisted:persisted}}"
-            . "function reset(){volatile='';if(!frameworkMemory()){try{window.localStorage.removeItem(key)}catch(error){}}clearLegacy();apply(configured,'site')}"
-            . "var initial=preference();apply(initial.mode,initial.source);window.DocaraReaderTheme={configured:configured,key:key,apply:apply,preference:preference,set:set,reset:reset,syncExternal:function(){volatile='';return preference()},hasOverride:function(){return volatile!==''||stored()!==''||legacy()!==''}};"
+            . "function clean(values){var result={};if(!values||typeof values!=='object'||Array.isArray(values))return result;Object.keys(values).forEach(function(id){var field=fields[id],value=values[id];if(field&&field.values.indexOf(value)!==-1&&value!==defaults[id])result[id]=value});return result}"
+            . 'function stored(){if(!manifest.enabled||frameworkMemory())return{};try{var raw=window.localStorage.getItem(key);if(!raw)return{};var value=JSON.parse(raw);return value&&value.schema===manifest.schema?clean(value.values):{}}catch(error){return{}}}'
+            . 'function overrides(){return Object.assign({},stored(),volatile)}'
+            . "function current(id){var value=overrides()[id];return typeof value==='string'?value:defaults[id]}"
+            . "function applyTheme(mode,source){if(['system','light','dark'].indexOf(mode)===-1)mode='system';var dark=mode==='dark'||(mode==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);var root=document.documentElement;root.classList.remove('theme-light','theme-dark');root.classList.add(dark?'theme-dark':'theme-light');root.dataset.docaraThemePreference=mode;root.dataset.docaraThemeSource=source}"
+            . "function applyModalBlur(mode,source){if(['none','small','medium','large'].indexOf(mode)===-1)mode='large';var value='backdrop-blur-'+mode;document.documentElement.dataset.docaraModalBlurPreference=mode;document.documentElement.dataset.docaraModalBlurSource=source;document.querySelectorAll('sf-modal[data-docara-transient-dialog]').forEach(function(modal){modal.setAttribute('overlay-class',value)})}"
+            . "var effects={'docara.theme':applyTheme,'docara.modal_blur':applyModalBlur};"
+            . 'function applyField(id,source){var field=fields[id],effect=field&&effects[field.effect];if(effect)effect(current(id),source)}'
+            . 'function applyAll(source){Object.keys(fields).forEach(function(id){applyField(id,source)})}'
+            . 'function write(values){if(frameworkMemory())return false;try{var ids=Object.keys(values);if(ids.length){window.localStorage.setItem(key,JSON.stringify({schema:manifest.schema,values:values}))}else{window.localStorage.removeItem(key)}var verify=stored();return JSON.stringify(verify)===JSON.stringify(clean(values))}catch(error){return false}}'
+            . "function set(id,value){var field=fields[id];if(!manifest.enabled||!field||field.values.indexOf(value)===-1)return{applied:false,persisted:false};var values=overrides();if(value===defaults[id])delete values[id];else values[id]=value;var persisted=write(values);volatile=persisted?{}:clean(values);applyField(id,'reader');return{applied:true,persisted:persisted}}"
+            . "function reset(){volatile={};if(!frameworkMemory()){try{window.localStorage.removeItem(key)}catch(error){}}applyAll('site')}"
+            . "function syncExternal(){volatile={};applyAll(Object.keys(stored()).length?'reader':'site')}"
+            . 'function hasOverride(){return Object.keys(overrides()).length>0}'
+            . "var initialSource=Object.keys(stored()).length?'reader':'site';applyModalBlur(defaults['appearance.modal_blur']||'large','site');applyAll(initialSource);"
+            . 'window.DocaraReaderPreferences={manifest:manifest,key:key,current:current,set:set,reset:reset,syncExternal:syncExternal,hasOverride:hasOverride};'
+            . "document.dispatchEvent(new CustomEvent('docara:preferences-ready'));"
+            . "function revealFrameworkBody(){if(document.body)document.body.style.opacity='1'}"
+            . "if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){applyAll(initialSource);revealFrameworkBody()},{once:true})}else{applyAll(initialSource);revealFrameworkBody()}"
+            . "var media=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)');if(media&&media.addEventListener){media.addEventListener('change',function(){if(current('appearance.theme')==='system')applyField('appearance.theme',document.documentElement.dataset.docaraThemeSource||'site')})}"
             . 'window.SF_BOOT_CONFIG=window.SF_BOOT_CONFIG||{};window.SF_BOOT_CONFIG.preloader={enabled:false};})();</script>';
     }
 
     private function mobileClone(string $html): string
     {
         return preg_replace('/\\s+id="[^"]+"/', '', $html) ?? $html;
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $items
+     * @param  array<string, mixed>  $copy
+     */
+    private function mobileHeaderNavigation(array $items, array $copy, string $pageUrl): ?RenderArtifact
+    {
+        if ($items === []) {
+            return null;
+        }
+        $plan = $this->composites->resolve(
+            'docara.navigation',
+            'header-navigation-mobile-' . substr(hash('sha256', $pageUrl), 0, 20),
+            [
+                'items' => $items,
+                'maximum_depth' => 4,
+                'label' => (string) ($copy['navigation.primary'] ?? 'Primary navigation'),
+                'expand_label' => (string) ($copy['navigation.expand'] ?? 'Expand: '),
+                'collapse_label' => (string) ($copy['navigation.collapse'] ?? 'Collapse: '),
+                'contains_current_label' => (string) ($copy['navigation.contains_current'] ?? ', contains the current page'),
+            ],
+            'compact',
+        );
+
+        return $this->smartRenderer->render($plan);
     }
 
     private function mobileOutlineClone(string $html): string

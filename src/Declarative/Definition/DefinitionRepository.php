@@ -42,6 +42,10 @@ final class DefinitionRepository
             'path' => 'blocks/content.markdown.json',
             'schema' => 'declarative-block.schema.json',
         ],
+        'block:content.document' => [
+            'path' => 'blocks/content.document.json',
+            'schema' => 'declarative-block.schema.json',
+        ],
         'block:content.smart' => [
             'path' => 'blocks/content.smart.json',
             'schema' => 'declarative-block.schema.json',
@@ -60,6 +64,10 @@ final class DefinitionRepository
         ],
         'view:section.docara.article' => [
             'path' => 'views/section.docara.article.json',
+            'schema' => 'declarative-view-tree.schema.json',
+        ],
+        'view:section.docara.header' => [
+            'path' => 'views/section.docara.header.json',
             'schema' => 'declarative-view-tree.schema.json',
         ],
         'view:section.docara.shell' => [

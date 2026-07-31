@@ -1,7 +1,7 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://schemas.simai.io/docara/framework-lock/v1",
-    "title": "Docara wrapper for a pinned Simai Framework runtime",
+    "title": "Docara wrapper for a pinned SIMAI Framework runtime",
     "type": "object",
     "required": ["schema", "runtime", "manifests", "asset_projection", "nonclaims"],
     "properties": {
@@ -47,7 +47,10 @@
                 },
                 "publication_profile": {
                     "type": "string",
-                    "const": "verified-release-artifact-v1"
+                    "enum": [
+                        "verified-release-artifact-v1",
+                        "verified-commit-candidate-v1"
+                    ]
                 },
                 "tag": {
                     "type": "string",
@@ -339,6 +342,10 @@
                     "format": "docara-relative-path"
                 },
                 "css": {
+                    "type": ["string", "null"],
+                    "format": "docara-relative-path"
+                },
+                "core_css": {
                     "type": ["string", "null"],
                     "format": "docara-relative-path"
                 },

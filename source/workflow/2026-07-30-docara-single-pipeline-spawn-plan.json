@@ -1,0 +1,120 @@
+{
+  "assignments": [
+    {
+      "assignment_id": "docara-content-source-inventory",
+      "parent_goal_ref": "source/workflow/2026-07-30-docara-single-pipeline.md",
+      "objective": "Read-only inventory of every public Docara route and its real content source; identify Markdown-authored pages versus PHP/JSON/projected pages and propose the smallest safe migration order.",
+      "mode": "explore",
+      "owner": "docs",
+      "decision_boundary": "Report evidence and recommendations only; do not edit any repository file and do not redesign the renderer.",
+      "allowed_paths": [
+        "docs/site/content",
+        "resources/language-packs",
+        "resources/component-catalog",
+        "src/PortableSite",
+        "tests"
+      ],
+      "forbidden_paths": [
+        "vendor",
+        "public",
+        "build",
+        ".git"
+      ],
+      "dependencies": [],
+      "input_evidence": [
+        "source/workflow/2026-07-30-docara-single-pipeline.md"
+      ],
+      "done_when": [
+        "A concise source map identifies all non-Markdown public content producers.",
+        "A migration order is proposed with concrete file references.",
+        "No files are changed."
+      ],
+      "required_checks": [
+        "rg-based inventory",
+        "git status remains unchanged"
+      ],
+      "handoff_fields": [
+        "status",
+        "result",
+        "changed_paths",
+        "checks_run",
+        "evidence",
+        "assumptions",
+        "deviations",
+        "risks",
+        "integration_notes",
+        "unresolved"
+      ],
+      "integration_owner": "root_agent",
+      "model_policy": {
+        "capability_class": "frontier",
+        "preferred_model": "sol",
+        "reasoning_effort": "high"
+      },
+      "stop_conditions": [
+        "Any action would modify files.",
+        "The requested evidence lies outside allowed paths."
+      ]
+    },
+    {
+      "assignment_id": "docara-renderer-seam-inventory",
+      "parent_goal_ref": "source/workflow/2026-07-30-docara-single-pipeline.md",
+      "objective": "Read-only analysis of parser, IR, renderer, Smart component and full-versus-partial build seams; identify the smallest vertical slice for one canonical pipeline.",
+      "mode": "explore",
+      "owner": "dev",
+      "decision_boundary": "Report code-level seams and a migration slice only; do not edit files and do not inspect authored content ownership beyond interfaces needed by the pipeline.",
+      "allowed_paths": [
+        "src/Declarative",
+        "src/Framework",
+        "src/PortableSite",
+        "src/I18n",
+        "composer.json",
+        "tests/Unit"
+      ],
+      "forbidden_paths": [
+        "docs/site/content",
+        "resources/language-packs",
+        "resources/component-catalog",
+        "vendor",
+        "public",
+        "build",
+        ".git"
+      ],
+      "dependencies": [],
+      "input_evidence": [
+        "source/workflow/2026-07-30-docara-single-pipeline.md"
+      ],
+      "done_when": [
+        "Duplicate parser, renderer and Smart paths are mapped with concrete file references.",
+        "One minimal typed-IR vertical slice is proposed with test seams.",
+        "No files are changed."
+      ],
+      "required_checks": [
+        "rg-based call graph",
+        "git status remains unchanged"
+      ],
+      "handoff_fields": [
+        "status",
+        "result",
+        "changed_paths",
+        "checks_run",
+        "evidence",
+        "assumptions",
+        "deviations",
+        "risks",
+        "integration_notes",
+        "unresolved"
+      ],
+      "integration_owner": "root_agent",
+      "model_policy": {
+        "capability_class": "frontier",
+        "preferred_model": "sol",
+        "reasoning_effort": "high"
+      },
+      "stop_conditions": [
+        "Any action would modify files.",
+        "The requested evidence lies outside allowed paths."
+      ]
+    }
+  ]
+}

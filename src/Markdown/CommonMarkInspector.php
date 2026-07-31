@@ -47,7 +47,7 @@ final class CommonMarkInspector
      *     nested_lines: array<int, true>,
      *     top_level_thematic_break_lines: array<int, true>,
      *     references: list<array{label: string, destination: string, title: string}>,
-     *     directives: list<array{name: string, start_line: int, end_line: int, body: string, closed: bool, fence_length: int}>
+     *     directives: list<array{name: string, start_line: int, end_line: int, body: string, closed: bool, fence_length: int, attributes: string}>
      * }
      */
     public function inspect(string $markdown): array
@@ -97,7 +97,7 @@ final class CommonMarkInspector
      *     nested_lines: array<int, true>,
      *     top_level_thematic_break_lines: array<int, true>,
      *     references: list<array{label: string, destination: string, title: string}>,
-     *     directives: list<array{name: string, start_line: int, end_line: int, body: string, closed: bool, fence_length: int}>
+     *     directives: list<array{name: string, start_line: int, end_line: int, body: string, closed: bool, fence_length: int, attributes: string}>
      * }
      */
     public function inspectDirectives(string $markdown, string $family): array
@@ -155,6 +155,7 @@ final class CommonMarkInspector
             $isTopLevel = ! isset($workingInspection['code_lines'][$startLine])
                 && ! isset($workingInspection['nested_lines'][$startLine]);
             if ($isTopLevel && $this->belongsToFamily($marker['name'], $family)) {
+                $opening = $this->directiveMatcher->match($lines[$startLine - 1] ?? '');
                 $directives[] = [
                     'name' => $marker['name'],
                     'start_line' => $startLine,
@@ -162,6 +163,7 @@ final class CommonMarkInspector
                     'body' => implode("\n", $bodyLines),
                     'closed' => $closingLine !== null,
                     'fence_length' => $marker['fence_length'],
+                    'attributes' => (string) ($opening['attributes'] ?? ''),
                 ];
             }
 

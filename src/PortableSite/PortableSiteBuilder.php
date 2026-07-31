@@ -6,6 +6,7 @@ namespace Simai\Docara\PortableSite;
 
 use Illuminate\Support\Collection;
 use JsonException;
+use Simai\Docara\ComponentCatalog\AuthoredComponentPageIndex;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\DeclarativePipeline;
@@ -26,7 +27,8 @@ use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\PortableConfigurationLoader;
 use Simai\Docara\Portable\ResolvedPagePlan;
 use Simai\Docara\Portable\SchemaRepository;
-use Simai\Docara\Smart\SmartRegistry;
+use Simai\Docara\Preferences\ReaderPreferenceCompiler;
+use Symfony\Component\Process\Process;
 
 final readonly class PortableSiteBuilder
 {
@@ -41,7 +43,7 @@ final readonly class PortableSiteBuilder
     }
 
     /** @return Collection<string, array<string, mixed>> */
-    public function build(string $root, string $destination): Collection
+    public function build(string $root, string $destination, ?string $onlyPage = null): Collection
     {
         // Validate the caller's lexical root before realpath normalization so
         // link, link/ and link/. cannot hide the same symbolic-link root.
@@ -119,7 +121,11 @@ final readonly class PortableSiteBuilder
             );
             $components = $runtime->extract($plan->markdown, $plan->page);
             $outline = (new PortableDocumentOutlineBuilder)->build(
-                $this->markdown->render($components->markdownWithPlaceholders),
+                $this->markdown->render(
+                    $components->markdownWithPlaceholders,
+                    $root,
+                    $root . '/' . ltrim($pagePath, '/'),
+                ),
                 (int) data_get($plan->configuration, 'reading.toc_depth', 3),
                 PortableDocumentIds::reserved(),
             );
@@ -141,15 +147,23 @@ final readonly class PortableSiteBuilder
             $pages[] = [
                 'plan' => $plan,
                 'page_path' => $pagePath,
+                'page_source_kind' => 'authored_markdown',
                 'title' => $title,
-                'description' => (string) ($plan->configuration['description'] ?? ''),
+                'description' => $this->pageDescription($plan),
                 'locale' => $pageLocale,
                 'direction' => $localeDefinition->direction,
                 'translation_key' => $this->translationKey($plan->page, $localeDefinition->contentRoot),
                 'documentation_version' => $documentationVersion,
                 'preset' => (string) ($plan->configuration['preset'] ?? 'docs'),
                 'theme' => (string) data_get($plan->configuration, 'settings.theme', 'system'),
-                'max_width' => (string) data_get($plan->configuration, 'layout.max_width', 'normal'),
+                'modal_blur' => (string) data_get($plan->configuration, 'settings.modal_blur', 'large'),
+                'reader_preferences' => is_array($plan->configuration['reader_preferences'] ?? null)
+                    ? $plan->configuration['reader_preferences']
+                    : ReaderPreferenceCompiler::defaultConfiguration(),
+                'reader_preferences_storage_key' => ReaderPreferenceCompiler::storageKey($plan->configuration),
+                'container_max' => (int) data_get($plan->configuration, 'layout.container.max', 7),
+                'scrollbar_preset' => (string) data_get($plan->configuration, 'layout.scrollbar.preset', 'overlay'),
+                'content_gap' => (int) data_get($plan->configuration, 'layout.content.gap', 0),
                 'navigation_hidden' => (bool) data_get($plan->configuration, 'navigation.hidden', false),
                 'navigation_order' => data_get($plan->configuration, 'navigation.order'),
                 'search_enabled' => (bool) data_get($plan->configuration, 'search.enabled', false),
@@ -170,7 +184,7 @@ final readonly class PortableSiteBuilder
 
         $authoredPages = $pages;
         $catalogBasePlan = $loader->resolveGeneratedBase(
-            $contentRoot . '/components/catalog/index.md',
+            $contentRoot . '/components/index.md',
         );
         if (CanonicalJson::encode($catalogBasePlan->frameworkLock) !== $frameworkLockCanonical) {
             throw new PortableConfigurationException(
@@ -195,13 +209,22 @@ final readonly class PortableSiteBuilder
         foreach ($localeRegistry->all() as $locale => $definition) {
             $localeCatalogBasePlan = $locale === $buildLocale
                 ? $catalogBasePlan
-                : $loader->resolveGeneratedBase($definition->contentRoot . '/components/catalog/index.md');
+                : $loader->resolveGeneratedBase($definition->contentRoot . '/components/index.md');
             if (CanonicalJson::encode($localeCatalogBasePlan->frameworkLock) !== $frameworkLockCanonical) {
                 throw new PortableConfigurationException(
                     'FRAMEWORK_LOCK_CHANGED_DURING_BUILD',
                     'The Framework lock changed while a localized component catalogue was being resolved.',
                 );
             }
+            $localeAuthoredPages = array_values(array_filter(
+                $authoredPages,
+                static fn (array $page): bool => ($page['locale'] ?? null) === $locale,
+            ));
+            $authoredComponents = AuthoredComponentPageIndex::build(
+                $effectiveComponentCatalog,
+                $localeAuthoredPages,
+                $definition->publicPrefix,
+            );
             $componentCatalogProjection = $componentCatalogProjector->project(
                 catalog: $effectiveComponentCatalog,
                 runtime: $runtime,
@@ -211,6 +234,7 @@ final readonly class PortableSiteBuilder
                 homeUrl: $localeUrls->home($locale),
                 outputPrefix: $definition->publicPrefix,
                 reservedDocumentIds: PortableDocumentIds::reserved(),
+                authoredComponents: $authoredComponents,
             );
             $componentCatalogProjections[$locale] = $componentCatalogProjection;
             foreach ($componentCatalogProjection['pages'] as $catalogPage) {
@@ -311,6 +335,7 @@ final readonly class PortableSiteBuilder
             ];
         }
         unset($page);
+        $pages = (new PortableBacklinkHydrator)->hydrate($pages);
         $localeLinkRoutes = [];
         foreach ($pages as $page) {
             $pageLocale = (string) $page['locale'];
@@ -413,13 +438,79 @@ final readonly class PortableSiteBuilder
         }
         $componentCatalogJson = CanonicalJson::encodePretty($effectiveComponentCatalog);
 
+        $pagesToRender = $pages;
+        $selectedPageUrl = null;
+        if ($onlyPage !== null) {
+            $selectedPageUrl = $this->normalizePageSelector($onlyPage);
+            $pagesToRender = array_filter(
+                $pages,
+                static fn (array $page): bool => (string) $page['url'] === $selectedPageUrl,
+            );
+            if (count($pagesToRender) !== 1) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_PAGE_NOT_FOUND',
+                    "No existing Docara page resolves to [$selectedPageUrl]. Run a full build after structural changes.",
+                );
+            }
+            if (is_link($finalDestination) || ! $this->files->isDirectory($finalDestination)) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_BASE_MISSING',
+                    'A single-page build requires an existing complete build. Run a full build first.',
+                );
+            }
+            if ($searchPlan instanceof PortableSearchPlan) {
+                $existingSearchIndexPath = rtrim($finalDestination, '/\\')
+                    . '/_docara/search-index.json';
+                $existingSearchIndex = json_decode(
+                    (string) $this->files->get($existingSearchIndexPath),
+                    true,
+                    512,
+                    JSON_THROW_ON_ERROR,
+                );
+                $existingSearchHash = is_array($existingSearchIndex)
+                    ? ($existingSearchIndex['content_sha256'] ?? null)
+                    : null;
+                if (! is_string($existingSearchHash)
+                    || preg_match('/\A[a-f0-9]{64}\z/D', $existingSearchHash) !== 1
+                ) {
+                    throw new PortableConfigurationException(
+                        'PORTABLE_INCREMENTAL_SEARCH_BASE_INVALID',
+                        'The complete build has no valid search revision for an isolated page rebuild.',
+                    );
+                }
+                $existingSearchUrl = preg_replace(
+                    '/docara_v=[a-f0-9]{64}\z/D',
+                    'docara_v=' . $existingSearchHash,
+                    $searchPlan->indexUrl,
+                );
+                foreach ($pagesToRender as &$pageToRender) {
+                    if (($pageToRender['search_enabled'] ?? false) === true) {
+                        $pageToRender['search_index_url'] = $existingSearchUrl;
+                    }
+                }
+                unset($pageToRender);
+            }
+        }
+
         $this->prepareDestination($root, $destination);
+        if ($selectedPageUrl !== null && ! $this->files->copyDirectory($finalDestination, $destination)) {
+            throw new PortableConfigurationException(
+                'PORTABLE_INCREMENTAL_BASE_COPY_FAILED',
+                'The existing complete build could not be copied into the atomic candidate.',
+            );
+        }
         try {
             $result = collect();
-            $diagnostics = [];
+            $diagnosticsByUrl = $selectedPageUrl === null
+                ? []
+                : $this->existingDiagnosticsByUrl($destination);
             $docaraOutputDirectory = rtrim($destination, '/\\') . '/_docara';
             $this->files->ensureDirectoryExists($docaraOutputDirectory);
             $this->files->put($docaraOutputDirectory . '/component-catalog.json', $componentCatalogJson);
+            $this->files->put(
+                $docaraOutputDirectory . '/page-metadata.json',
+                $this->prettyCanonicalJson($this->pageMetadata($pages, $root, $documentationVersion)),
+            );
             $localeDestinations = [$destination];
             foreach ($localeRegistry->all() as $definition) {
                 if ($definition->publicPrefix !== '') {
@@ -465,7 +556,7 @@ final readonly class PortableSiteBuilder
                 }
             }
 
-            if ($searchPlan instanceof PortableSearchPlan) {
+            if ($searchPlan instanceof PortableSearchPlan && $selectedPageUrl === null) {
                 foreach ($localeDestinations as $localeDestination) {
                     $localizedDocaraDirectory = rtrim($localeDestination, '/\\') . '/_docara';
                     $this->files->ensureDirectoryExists($localizedDocaraDirectory);
@@ -474,7 +565,7 @@ final readonly class PortableSiteBuilder
                 }
             }
 
-            foreach ($pages as $pageIndex => $page) {
+            foreach ($pagesToRender as $pageIndex => $page) {
                 $declarative = null;
                 $pageLocale = (string) $page['locale'];
                 $page['branding'] = $brandPlan['pages'][$pageIndex];
@@ -518,6 +609,7 @@ final readonly class PortableSiteBuilder
                 $activeNavigation = $navigationBuilder->activate(
                     $pageNavigation,
                     ($page['component_catalog_kind'] ?? null) === 'detail'
+                        && ($page['navigation_hidden'] ?? false) === true
                         ? (string) $page['component_catalog_index_url']
                         : (($page['declarative_example_kind'] ?? null) === 'detail'
                             ? (string) $page['declarative_example_index_url']
@@ -531,7 +623,12 @@ final readonly class PortableSiteBuilder
                     $activeNavigation,
                     $page['outline'],
                     is_array($page['ui_copy'] ?? null) ? $page['ui_copy'] : [],
+                    is_array($declarativePlan->configuration['header_navigation'] ?? null)
+                        ? $declarativePlan->configuration['header_navigation']
+                        : [],
+                    (string) $page['url'],
                 );
+                $page['header_navigation'] = $composition->headerNavigation;
                 $declarativePipeline ??= DeclarativePipeline::bundled(
                     $declarativePlan->frameworkLock,
                     $this->markdown,
@@ -596,6 +693,11 @@ final readonly class PortableSiteBuilder
                 $plan = $page['plan'];
                 $record = [
                     'canonical_hash' => $plan->canonicalHash(),
+                    'page_path' => $page['page_path'],
+                    'page_source_kind' => $page['page_source_kind'] ?? 'generated_projection',
+                    'title' => $page['title'],
+                    'description' => $page['description'],
+                    'locale' => $page['locale'],
                     'output' => $page['output'],
                     'url' => $page['url'],
                     'resolved_page_plan' => $plan->toArray(),
@@ -606,7 +708,7 @@ final readonly class PortableSiteBuilder
                     ],
                     'declarative_pipeline' => $page['declarative_pipeline'],
                 ];
-                $diagnostics[] = $record;
+                $diagnosticsByUrl[(string) $page['url']] = $record;
                 $result->put((string) $page['url'], $record);
             }
             $redirectPublisher->publish($redirectPlan, $destination);
@@ -615,7 +717,7 @@ final readonly class PortableSiteBuilder
             $brandPublisher->publish($brandPlan['assets'], $destination);
             foreach ($localeDestinations as $localeDestination) {
                 $this->publishFrameworkAssets($catalogBasePlan->frameworkLock, $localeDestination);
-                $this->publishPagePublisherAssets($localeDestination);
+                (new PortablePublisherAssetPublisher($this->files))->publish($localeDestination);
             }
             $diagnosticPath = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
             $this->files->ensureDirectoryExists(dirname($diagnosticPath));
@@ -625,7 +727,7 @@ final readonly class PortableSiteBuilder
                     'locale' => $buildLocale,
                     'documentation_version' => $documentationVersion,
                 ],
-                'pages' => $diagnostics,
+                'pages' => $this->orderedDiagnostics($pages, $diagnosticsByUrl),
             ]));
             $this->promoteCandidate($root, $destination, $finalDestination);
         } catch (\Throwable $exception) {
@@ -685,6 +787,53 @@ final readonly class PortableSiteBuilder
         }
 
         return $real;
+    }
+
+    /**
+     * @param list<array<string, mixed>> $pages
+     * @return array<string, mixed>
+     */
+    private function pageMetadata(array $pages, string $root, string $documentationVersion): array
+    {
+        $records = [];
+        foreach ($pages as $page) {
+            $source = (string) ($page['page_path'] ?? '');
+            $record = [
+                'url' => (string) ($page['url'] ?? '/'),
+                'title' => (string) ($page['title'] ?? ''),
+                'locale' => (string) ($page['locale'] ?? ''),
+                'source' => $source,
+                'documentation_version' => $documentationVersion,
+                'updated_at' => null,
+                'revision' => null,
+                'author' => null,
+            ];
+            $sourcePath = $source !== '' && ! str_starts_with($source, '@') ? $root . '/' . ltrim($source, '/') : null;
+            if ($sourcePath !== null && is_file($sourcePath)) {
+                $record['updated_at'] = gmdate(DATE_ATOM, (int) filemtime($sourcePath));
+                try {
+                    $process = new Process(['git', '-C', $root, 'log', '-1', '--format=%cI%x00%h%x00%an', '--', $source]);
+                    $process->setTimeout(5);
+                    $process->run();
+                    if ($process->isSuccessful()) {
+                        $parts = explode("\0", trim($process->getOutput()), 3);
+                        if (count($parts) === 3) {
+                            [$record['updated_at'], $record['revision'], $record['author']] = $parts;
+                        }
+                    }
+                } catch (\Throwable) {
+                    // A portable source tree may intentionally be outside Git.
+                }
+            }
+            $records[] = $record;
+        }
+        usort($records, static fn (array $left, array $right): int => strcmp($left['url'], $right['url']));
+
+        return [
+            'schema' => 'docara.page_metadata.v1',
+            'documentation_version' => $documentationVersion,
+            'pages' => $records,
+        ];
     }
 
     /** @return list<string> */
@@ -765,6 +914,50 @@ final readonly class PortableSiteBuilder
         return (string) ($plan->configuration['title'] ?? pathinfo($plan->page, PATHINFO_FILENAME));
     }
 
+    private function pageDescription(ResolvedPagePlan $plan): string
+    {
+        $configured = trim((string) ($plan->configuration['description'] ?? ''));
+        if ($configured !== '') {
+            return $configured;
+        }
+
+        $paragraph = [];
+        $insideFence = false;
+        foreach (preg_split('/\R/u', $plan->markdown) ?: [] as $line) {
+            $trimmed = trim($line);
+            if (str_starts_with($trimmed, '```') || str_starts_with($trimmed, '~~~')) {
+                $insideFence = ! $insideFence;
+                continue;
+            }
+            if ($insideFence) {
+                continue;
+            }
+            if ($trimmed === '') {
+                if ($paragraph !== []) {
+                    break;
+                }
+                continue;
+            }
+            if ($paragraph === [] && (
+                str_starts_with($trimmed, '#')
+                || str_starts_with($trimmed, ':::')
+                || str_starts_with($trimmed, '<!--')
+                || str_starts_with($trimmed, '|')
+                || preg_match('/^(?:[-*+]\s|\d+[.)]\s|>\s)/u', $trimmed) === 1
+            )) {
+                continue;
+            }
+            $paragraph[] = $trimmed;
+        }
+
+        $description = trim(implode(' ', $paragraph));
+        $description = preg_replace('/!\[([^]]*)]\([^)]*\)/u', '$1', $description) ?? $description;
+        $description = preg_replace('/\[([^]]+)]\([^)]*\)/u', '$1', $description) ?? $description;
+        $description = preg_replace('/[*_`~]+/u', '', $description) ?? $description;
+
+        return trim($description);
+    }
+
     private function homeUrl(string $baseUrl): string
     {
         $base = trim($baseUrl, '/');
@@ -780,6 +973,89 @@ final readonly class PortableSiteBuilder
         ], static fn (string $part): bool => $part !== ''));
 
         return $path === '' ? '/' : '/' . $path . '/';
+    }
+
+    private function normalizePageSelector(string $selector): string
+    {
+        $selector = trim($selector);
+        $path = parse_url($selector, PHP_URL_PATH);
+        if (! is_string($path) || $path === '' || str_contains($path, '\\')) {
+            throw new PortableConfigurationException(
+                'PORTABLE_PAGE_SELECTOR_INVALID',
+                'The page selector must be a public URL such as [/ru/components/badge/].',
+            );
+        }
+
+        $segments = array_values(array_filter(
+            explode('/', trim($path, '/')),
+            static fn (string $segment): bool => $segment !== '',
+        ));
+        foreach ($segments as $segment) {
+            if ($segment === '.' || $segment === '..') {
+                throw new PortableConfigurationException(
+                    'PORTABLE_PAGE_SELECTOR_INVALID',
+                    'The page selector contains a forbidden path segment.',
+                );
+            }
+        }
+
+        return $segments === [] ? '/' : '/' . implode('/', $segments) . '/';
+    }
+
+    /** @return array<string, array<string, mixed>> */
+    private function existingDiagnosticsByUrl(string $destination): array
+    {
+        $path = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
+        try {
+            $document = json_decode((string) $this->files->get($path), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\Throwable $exception) {
+            throw new PortableConfigurationException(
+                'PORTABLE_INCREMENTAL_DIAGNOSTICS_INVALID',
+                'The existing build does not contain valid complete diagnostics. Run a full build first.',
+                $exception,
+            );
+        }
+        if (! is_array($document) || ! is_array($document['pages'] ?? null)) {
+            throw new PortableConfigurationException(
+                'PORTABLE_INCREMENTAL_DIAGNOSTICS_INVALID',
+                'The existing build diagnostics are incomplete. Run a full build first.',
+            );
+        }
+
+        $indexed = [];
+        foreach ($document['pages'] as $record) {
+            if (! is_array($record) || ! is_string($record['url'] ?? null)) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_DIAGNOSTICS_INVALID',
+                    'The existing build diagnostics contain an invalid page record. Run a full build first.',
+                );
+            }
+            $indexed[$record['url']] = $record;
+        }
+
+        return $indexed;
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $pages
+     * @param  array<string, array<string, mixed>>  $diagnosticsByUrl
+     * @return array<int, array<string, mixed>>
+     */
+    private function orderedDiagnostics(array $pages, array $diagnosticsByUrl): array
+    {
+        $ordered = [];
+        foreach ($pages as $page) {
+            $url = (string) $page['url'];
+            if (! isset($diagnosticsByUrl[$url])) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_DIAGNOSTICS_INCOMPLETE',
+                    "The existing build has no diagnostic record for [$url]. Run a full build first.",
+                );
+            }
+            $ordered[] = $diagnosticsByUrl[$url];
+        }
+
+        return $ordered;
     }
 
     private function prepareDestination(string $root, string $destination): void
@@ -1026,64 +1302,6 @@ final readonly class PortableSiteBuilder
                 throw new PortableConfigurationException(
                     'FRAMEWORK_ASSET_PUBLICATION_FAILED',
                     "Framework asset [$relativePath] could not be published deterministically.",
-                );
-            }
-        }
-    }
-
-    private function publishPagePublisherAssets(string $destination): void
-    {
-        if (! $this->publisher instanceof DeclarativePortablePagePublisher) {
-            return;
-        }
-        foreach (['declarative-shell.css', 'declarative-shell.js'] as $name) {
-            $source = dirname(__DIR__, 2) . '/resources/portable/' . $name;
-            if (! is_file($source) || is_link($source)) {
-                throw new PortableConfigurationException(
-                    'DECLARATIVE_PUBLISHER_ASSET_MISSING',
-                    "Declarative publisher asset [$name] is missing or unsafe.",
-                );
-            }
-            $bytes = file_get_contents($source);
-            if (! is_string($bytes) || $bytes === '') {
-                throw new PortableConfigurationException(
-                    'DECLARATIVE_PUBLISHER_ASSET_INVALID',
-                    "Declarative publisher asset [$name] is invalid.",
-                );
-            }
-            $target = rtrim($destination, '/\\') . '/_docara/' . $name;
-            if ($this->files->put($target, $bytes) === false
-                || ! hash_equals(hash('sha256', $bytes), (string) hash_file('sha256', $target))
-            ) {
-                throw new PortableConfigurationException(
-                    'DECLARATIVE_PUBLISHER_ASSET_PUBLICATION_FAILED',
-                    $name,
-                );
-            }
-        }
-        foreach (SmartRegistry::bundled()->assets() as $key => $asset) {
-            $source = dirname(__DIR__, 2) . '/resources/' . $asset['path'];
-            if (! is_file($source) || is_link($source)) {
-                throw new PortableConfigurationException(
-                    'DECLARATIVE_SMART_ASSET_MISSING',
-                    "Registered Smart asset [$key] is missing or unsafe.",
-                );
-            }
-            $bytes = file_get_contents($source);
-            if (! is_string($bytes) || $bytes === '') {
-                throw new PortableConfigurationException(
-                    'DECLARATIVE_SMART_ASSET_INVALID',
-                    "Registered Smart asset [$key] is invalid.",
-                );
-            }
-            $target = rtrim($destination, '/\\') . '/_docara/' . $asset['public'];
-            $this->files->ensureDirectoryExists(dirname($target));
-            if ($this->files->put($target, $bytes) === false
-                || ! hash_equals(hash('sha256', $bytes), (string) hash_file('sha256', $target))
-            ) {
-                throw new PortableConfigurationException(
-                    'DECLARATIVE_SMART_ASSET_PUBLICATION_FAILED',
-                    $key,
                 );
             }
         }

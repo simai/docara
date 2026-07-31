@@ -1,10 +1,15 @@
-.docara-brand{min-width:0;text-decoration:none}
-.docara-brand-mark{display:grid;place-items:center;inline-size:2rem;block-size:2rem;flex:0 0 auto}
+.docara-brand{min-width:0;max-inline-size:100%;text-decoration:none;--docara-brand-mark-size:var(--sf-c6)}
+.docara-brand--size-small{--docara-brand-mark-size:var(--sf-c2)}
+.docara-brand--size-large{--docara-brand-mark-size:var(--sf-d0)}
+.docara-brand-mark{display:grid;place-items:center;inline-size:var(--docara-brand-mark-size);block-size:var(--docara-brand-mark-size);flex:0 0 auto}
 .docara-brand-logo{display:block;max-inline-size:100%;max-block-size:100%;object-fit:contain}
 .docara-brand-logo--dark{display:none}
 .theme-dark .docara-brand-logo--light:has(+.docara-brand-logo--dark){display:none}
 .theme-dark .docara-brand-logo--dark{display:block}
-.docara-brand-copy{min-width:0}
+.docara-brand-copy{min-width:0;max-inline-size:18rem}
+.docara-brand-title,.docara-brand-label{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.docara-brand--size-small .docara-brand-title{font-size:var(--sf-text-small--size);line-height:var(--sf-text-small--height)}
+.docara-brand--size-large .docara-brand-title{font-size:var(--sf-text-large--size);line-height:var(--sf-text-large--height)}
 .docara-brand--compact .docara-brand-label{display:none}
 .docara-brand:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}
 @media(max-width:700px){.docara-brand-label{display:none}}

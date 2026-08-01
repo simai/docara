@@ -35,14 +35,14 @@ generated component page count и русский component-route allowlist ра�
 PageBuilder/registry/gateway; две clean full builds byte-identical; static и
 browser matrices зелёные; graph/workflow/handoff синхронны; worktree чистый.
 
-Current Remaining: 16 generated routes из 32; Alert, Badge, Syntax,
+Current Remaining: 14 generated routes из 32; Alert, Badge, Syntax,
 headings/text, lists/quotes, links/images, table, code, footnotes/sources,
-Details, Backlinks, Banner, Download, Button, Icon и Kbd уже физические.
+Details, Backlinks, Banner, Download, Button, Icon, Kbd, Card и Hero уже физические.
 
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.3 batch 13, Card and Hero.
+Next Safe Batch: M3.3 batch 14, Grid and Figure.
 
 ## Goal
 
@@ -184,8 +184,8 @@ checks, evidence update and a separate commit.
 | 10 | details and backlinks | disclosure/navigation parity | completed |
 | 11 | banner and download | variant/asset parity | completed |
 | 12 | button and icon/kbd | interactive/focus parity | completed |
-| 13 | card and hero | layout parity | in-progress |
-| 14 | grid and figure | layout/media parity | pending |
+| 13 | card and hero | layout parity | completed |
+| 14 | grid and figure | layout/media parity | in-progress |
 | 15 | media and logos | asset/responsive parity | pending |
 | 16 | diagram and math | runtime/asset parity | pending |
 | 17 | code-from-file and HTML | safe rendering parity | pending |
@@ -398,10 +398,21 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 13 — Card and Hero
 
+- status: completed;
+- parent: `ef7cf80`;
+- both routes have physical owners and reuse the generic typed-directive IR;
+- full/isolated output trees are exact, static verifies 18,922 references with
+  zero broken, and desktop/mobile browser checks prove all Card/Hero variants;
+- Russian pack prose, allowlist entries and zero-reference localized examples
+  are retired with commit rollback;
+- evidence: `m3-ru-components/batch-13-card-hero.md`.
+
+### Batch 14 — Grid and Figure
+
 - status: in-progress;
-- parent: batch 12 checkpoint commit;
-- objective: migrate the first layout pair through the existing generic typed
-  directive and prove responsive layout parity without a family-specific path.
+- parent: batch 13 checkpoint commit;
+- objective: migrate layout/media routes with responsive grid and accessible
+  figure evidence through the same generic typed-directive path.
 
 ## Kaizen
 

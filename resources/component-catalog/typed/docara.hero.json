@@ -27,7 +27,7 @@
         "docs": true,
         "demo": true
     },
-    "docs_ref": "docs/site/content/ru/components/syntax.md",
+    "docs_ref": "docs/site/content/ru/components/hero.md",
     "provenance": {
         "source_kind": "typed_definition",
         "definition_ref": "resources/component-catalog/typed/docara.hero.json"

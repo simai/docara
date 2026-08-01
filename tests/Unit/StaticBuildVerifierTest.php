@@ -872,20 +872,20 @@ final class StaticBuildVerifierTest extends TestCase
 
         foreach ([
             'source' => [
-                'needle' => "Markdown и JSON можно хранить рядом с кодом и проверять через Git.\n:::",
+                'needle' => "Понятный исходный формат.\n:::",
                 'replacement' => "Подменённый исходный код примера.\n:::",
             ],
             'rendered' => [
-                'needle' => '<p>Markdown и JSON можно хранить рядом с кодом и проверять через Git.</p>',
+                'needle' => '<p>Понятный исходный формат.</p>',
                 'replacement' => '<p>Подменённый отрисованный пример.</p>',
             ],
             'metadata' => [
-                'needle' => 'Объединяет связанное содержимое Markdown на нейтральной визуально ограниченной поверхности.',
+                'needle' => 'Располагает карточки и другие блоки в адаптивной сетке, не меняя их смысл.',
                 'replacement' => 'Forged component metadata.',
             ],
         ] as $kind => $change) {
             $build = $this->createGeneratedCatalogBuild('catalog-pages-' . $kind . '-drift');
-            $path = $build . '/components/card/index.html';
+            $path = $build . '/components/grid/index.html';
             $html = (string) file_get_contents($path);
             $count = 0;
             $tampered = str_replace($change['needle'], $change['replacement'], $html, $count);
@@ -899,7 +899,7 @@ final class StaticBuildVerifierTest extends TestCase
 
             $receipt = $this->readJson($build . '/.docara/component-catalog-pages.json');
             foreach ($receipt['pages'] as &$receiptPage) {
-                if ($receiptPage['id'] !== 'docara.card') {
+                if ($receiptPage['id'] !== 'docara.grid') {
                     continue;
                 }
                 $receiptPage['contract_fragment_sha256'] = hash('sha256', $tampered);
@@ -955,7 +955,7 @@ final class StaticBuildVerifierTest extends TestCase
             ),
         ] as $case => $mutate) {
             $build = $this->createGeneratedCatalogBuild('catalog-shell-' . $case);
-            $path = $build . '/components/card/index.html';
+            $path = $build . '/components/grid/index.html';
             $original = (string) file_get_contents($path);
             $tampered = $mutate($original);
             self::assertNotSame($original, $tampered, "The [$case] shell fixture did not mutate.");
@@ -991,7 +991,7 @@ final class StaticBuildVerifierTest extends TestCase
             self::assertStringStartsWith('{', (string) file_get_contents($outsideReceipt));
 
             $detailBuild = $this->createGeneratedCatalogBuild('catalog-pages-detail-' . $kind);
-            $detailPath = $detailBuild . '/components/card/index.html';
+            $detailPath = $detailBuild . '/components/grid/index.html';
             $outsideDetail = $this->tmpPath('outside-catalog-detail-' . $kind . '.html');
             file_put_contents($outsideDetail, (string) file_get_contents($detailPath));
             unlink($detailPath);
@@ -1003,7 +1003,7 @@ final class StaticBuildVerifierTest extends TestCase
             $detailResult = $this->verify($detailBuild);
             self::assertSame(1, $detailResult->getExitCode(), $detailResult->getOutput());
             self::assertStringContainsString('@unsafe-artifact-entry', $detailResult->getOutput());
-            self::assertStringContainsString('components/card/index.html', $detailResult->getOutput());
+            self::assertStringContainsString('components/grid/index.html', $detailResult->getOutput());
             self::assertStringStartsWith('<!doctype html>', (string) file_get_contents($outsideDetail));
         }
     }
@@ -1343,6 +1343,11 @@ final class StaticBuildVerifierTest extends TestCase
                 'title' => 'Кнопка-ссылка',
                 'description' => 'Переход, оформленный как заметное действие.',
             ],
+            'docara.card' => [
+                'slug' => 'card',
+                'title' => 'Карточка',
+                'description' => 'Связанное содержимое на отдельной поверхности.',
+            ],
             'docara.details' => [
                 'slug' => 'details',
                 'title' => 'Раскрывающийся блок',
@@ -1357,6 +1362,11 @@ final class StaticBuildVerifierTest extends TestCase
                 'slug' => 'icon',
                 'title' => 'Значок',
                 'description' => 'Смысловой или декоративный знак внутри текста.',
+            ],
+            'docara.hero' => [
+                'slug' => 'hero',
+                'title' => 'Первый экран',
+                'description' => 'Ценность страницы и следующий шаг.',
             ],
             'docara.kbd' => [
                 'slug' => 'kbd',

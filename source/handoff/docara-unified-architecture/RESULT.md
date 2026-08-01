@@ -368,3 +368,19 @@ Status: PASS; M3.3 continues
 
 Sixteen of 32 component routes are physical; batch 13 (Card and Hero) is next.
 Overall M3 and release/production readiness remain unclaimed.
+
+## M3.3 batch 13 result
+
+Status: PASS; M3.3 continues
+
+- Card and Hero now have physical Russian Markdown owners and portable starters;
+- both reuse the generic typed-directive IR and one PageBuilder/renderer path;
+- full/isolated trees are exact; static reports 206 HTML, 18,922 references and
+  zero broken; desktop-light Card and mobile-dark Hero checks cover every
+  layout variant, actions, accessible media and responsive overflow;
+- exact pack/allowlist records and zero-reference localized examples are
+  retired with commit rollback evidence;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-13-card-hero.md`.
+
+Eighteen of 32 component routes are physical; batch 14 (Grid and Figure) is
+next. Overall M3 and release/production readiness remain unclaimed.

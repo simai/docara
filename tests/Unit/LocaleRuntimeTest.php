@@ -260,7 +260,10 @@ HTML;
             'Ссылаются на эту страницу',
             $translator->message('ru', 'navigation.backlinks_heading'),
         );
-        self::assertArrayHasKey('title', $translator->component('ru', 'docara.card'));
+        $this->assertConfigurationError(
+            'COMPONENT_PRESENTATION_NOT_FOUND',
+            fn () => $translator->component('ru', 'docara.card'),
+        );
     }
 
     public function test_bundled_packs_cover_the_acceptance_locales_and_project_references_are_confined(): void

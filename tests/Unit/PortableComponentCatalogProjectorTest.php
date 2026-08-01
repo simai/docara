@@ -34,10 +34,12 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             'docara.backlinks',
             'docara.banner',
             'docara.button',
+            'docara.card',
             'docara.details',
             'docara.download',
             'docara.icon',
             'docara.kbd',
+            'docara.hero',
             'native.code',
             'native.footnotes_and_sources',
             'native.headings_and_text',
@@ -208,6 +210,18 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             if ($id === 'docara.kbd') {
                 self::assertStringContainsString('<h1 id="клавиатурный-ввод">Клавиатурный ввод</h1>', $detail);
                 self::assertStringContainsString('<kbd class="inline-flex ', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.card') {
+                self::assertStringContainsString('<h1 id="карточка">Карточка</h1>', $detail);
+                self::assertStringContainsString('data-docara-block="card"', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.hero') {
+                self::assertStringContainsString('<h1 id="первый-экран">Первый экран</h1>', $detail);
+                self::assertStringContainsString('data-docara-block="hero"', $detail);
 
                 continue;
             }
@@ -454,13 +468,14 @@ final class PortableComponentCatalogProjectorTest extends TestCase
     #[Test]
     public function accepted_prototype_capabilities_remain_executable_catalog_fixtures(): void
     {
+        $hero = (string) file_get_contents(
+            dirname(__DIR__, 2) . '/docs/site/content/ru/components/hero.md',
+        );
+        foreach (['variant=split', 'variant=compact', 'variant=centered', '![Компоненты Docara]'] as $marker) {
+            self::assertStringContainsString($marker, $hero);
+        }
+
         $fixtures = [
-            'docara.hero.ru.md' => [
-                'docara-variant:parameter.variant.split',
-                'docara-variant:parameter.variant.compact',
-                'docara-variant:parameter.variant.centered',
-                '![Схема Docara]',
-            ],
             'docara.logos.ru.md' => [
                 'docara-variant:state.text',
                 'docara-variant:state.linked',

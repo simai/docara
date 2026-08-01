@@ -7,20 +7,43 @@ namespace Simai\Docara\PortableSite;
 final class PortableBacklinkHydrator
 {
     /**
-     * @param list<array<string, mixed>> $pages
+     * @param  list<array<string, mixed>>  $pages
+     * @param  null|array<string, list<array{url:string,title:string}>>  $index
      * @return list<array<string, mixed>>
      */
-    public function hydrate(array $pages): array
+    public function hydrate(array $pages, ?array $index = null): array
+    {
+        $index ??= $this->index($pages);
+        foreach ($pages as &$page) {
+            $copy = is_array($page['ui_copy'] ?? null) ? $page['ui_copy'] : [];
+            $url = $this->normalizedInternalUrl((string) ($page['url'] ?? '/'));
+            $items = $index[$url] ?? $index[rtrim($url, '/') ?: '/'] ?? [];
+            $page['content_html'] = preg_replace_callback(
+                '/<nav\b(?<attributes>[^>]*)\bdata-docara-backlinks\b(?<tail>[^>]*)><\/nav>/iu',
+                fn (array $match): string => $this->render($match, $items, $copy),
+                (string) ($page['content_html'] ?? ''),
+            ) ?? (string) ($page['content_html'] ?? '');
+        }
+        unset($page);
+
+        return $pages;
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $pages
+     * @return array<string, list<array{url:string,title:string}>>
+     */
+    public function index(array $pages): array
     {
         $targets = [];
-        foreach ($pages as $index => $page) {
+        foreach ($pages as $page) {
             $url = $this->normalizedInternalUrl((string) ($page['url'] ?? '/'));
-            $targets[$url] = $index;
-            $targets[rtrim($url, '/') ?: '/'] = $index;
+            $targets[$url] = $url;
+            $targets[rtrim($url, '/') ?: '/'] = $url;
         }
 
         $backlinks = [];
-        foreach ($pages as $sourceIndex => $page) {
+        foreach ($pages as $page) {
             $sourceUrl = $this->normalizedInternalUrl((string) ($page['url'] ?? '/'));
             $html = (string) ($page['content_html'] ?? '');
             if (preg_match_all('/<a\b[^>]*\bhref="(?<href>[^"]+)"/iu', $html, $matches) !== 1
@@ -35,42 +58,38 @@ final class PortableBacklinkHydrator
                 if ($targetUrl === null) {
                     continue;
                 }
-                $targetIndex = $targets[$targetUrl] ?? $targets[rtrim($targetUrl, '/') ?: '/'] ?? null;
-                if (! is_int($targetIndex) || $targetIndex === $sourceIndex) {
+                $canonicalTarget = $targets[$targetUrl] ?? $targets[rtrim($targetUrl, '/') ?: '/'] ?? null;
+                if (! is_string($canonicalTarget) || $canonicalTarget === $sourceUrl) {
                     continue;
                 }
-                $backlinks[$targetIndex][$sourceUrl] = [
+                $backlinks[$canonicalTarget][$sourceUrl] = [
                     'url' => (string) ($page['url'] ?? $sourceUrl),
                     'title' => (string) ($page['title'] ?? $sourceUrl),
                 ];
             }
         }
 
-        foreach ($pages as $index => &$page) {
-            $locale = (string) ($page['locale'] ?? 'en');
-            $items = array_values($backlinks[$index] ?? []);
+        $result = [];
+        foreach ($backlinks as $target => $targetBacklinks) {
+            $items = array_values($targetBacklinks);
             usort($items, static fn (array $left, array $right): int => strcmp($left['title'], $right['title']));
-            $page['content_html'] = preg_replace_callback(
-                '/<nav\b(?<attributes>[^>]*)\bdata-docara-backlinks\b(?<tail>[^>]*)><\/nav>/iu',
-                fn (array $match): string => $this->render($match, $items, $locale),
-                (string) ($page['content_html'] ?? ''),
-            ) ?? (string) ($page['content_html'] ?? '');
+            $result[$target] = $items;
         }
-        unset($page);
+        ksort($result, SORT_STRING);
 
-        return $pages;
+        return $result;
     }
 
-    /** @param array<string, mixed> $match @param list<array<string, string>> $items */
-    private function render(array $match, array $items, string $locale): string
+    /** @param array<string, mixed> $match @param list<array<string, string>> $items @param array<string, string> $copy */
+    private function render(array $match, array $items, array $copy): string
     {
         $attributes = (string) ($match['attributes'] ?? '') . (string) ($match['tail'] ?? '');
         preg_match('/\bdata-docara-backlinks-limit="(?<limit>[0-9]+)"/u', $attributes, $limitMatch);
         $limit = max(1, min(50, (int) ($limitMatch['limit'] ?? 5)));
         $visible = array_slice($items, 0, $limit);
-        $heading = $locale === 'ru' ? 'Ссылаются на эту страницу' : 'Referenced by';
+        $heading = (string) ($copy['navigation.backlinks_heading'] ?? 'Referenced by');
         if ($visible === []) {
-            $empty = $locale === 'ru' ? 'Обратных ссылок пока нет.' : 'No backlinks yet.';
+            $empty = (string) ($copy['navigation.backlinks_empty'] ?? 'No backlinks yet.');
 
             return '<section data-docara-block="backlinks" class="m-bottom-1"><h2>'
                 . $this->escape($heading) . '</h2><p class="color-on-surface-variant">'
@@ -99,7 +118,10 @@ final class PortableBacklinkHydrator
             return null;
         }
         if (! str_starts_with($path, '/')) {
-            $path = rtrim(dirname($sourceUrl), '/.') . '/' . $path;
+            $base = str_ends_with($sourceUrl, '/')
+                ? rtrim($sourceUrl, '/')
+                : rtrim(dirname($sourceUrl), '/.');
+            $path = $base . '/' . $path;
         }
 
         return $this->normalizedInternalUrl($path);
@@ -114,6 +136,7 @@ final class PortableBacklinkHydrator
             }
             if ($segment === '..') {
                 array_pop($segments);
+
                 continue;
             }
             $segments[] = $segment;

@@ -307,3 +307,25 @@ Status: PASS; M3.3 continues
 
 Nine of 32 component routes are physical; batch 10 (details and backlinks) is
 next. Overall M3 and release/production readiness remain unclaimed.
+
+## M3.3 batch 10 result
+
+Status: PASS; M3.3 continues
+
+- `/ru/components/details/` and `/ru/components/backlinks/` now have one
+  physical Markdown owner each and useful user-facing documentation;
+- one generic `typed_directive` IR node covers both block shapes with exact
+  source ranges and fail-closed unknown aliases;
+- layout composition consumes the hash-checked PageBuilder main result instead
+  of reparsing page content, so hydrated Backlinks is no longer overwritten;
+- a disposable hash-bound backlink projection preserves exact isolated rebuild
+  parity without compiling other routes;
+- Russian Backlinks UI copy is resolved from `content/ru/lang.json`, while the
+  two pack prose records and localized examples are retired;
+- full/isolated trees are exact; static reports 206 HTML, 18,917 references and
+  zero broken; keyboard and desktop/mobile light/dark browser gates pass with
+  zero console warnings/errors;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-10-details-backlinks.md`.
+
+Eleven of 32 component routes are physical; batch 11 (Banner and Download) is
+next. Overall M3 and release/production readiness remain unclaimed.

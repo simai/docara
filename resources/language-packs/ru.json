@@ -544,32 +544,6 @@
             },
             "example_ref": "resources/component-catalog/examples/ui.button.ru.md"
         },
-        "docara.details": {
-            "title": "Раскрывающийся блок",
-            "description": "Скрывает дополнительное пояснение, пока читатель не решит его открыть.",
-            "limitations": [
-                "Кратко называйте содержимое; обязательные инструкции должны оставаться видимыми."
-            ],
-            "states": {
-                "closed": "Закрыт",
-                "open": "Открыт"
-            },
-            "parameters": {
-                "open": {
-                    "label": "Открыт изначально",
-                    "description": "Открывает блок сразу после загрузки страницы."
-                },
-                "view": {
-                    "label": "Внешний вид",
-                    "description": "Выбирает карточное или линейное оформление.",
-                    "values": {
-                        "surface": "Карточка",
-                        "lines": "Линии"
-                    }
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/docara.details.ru.md"
-        },
         "docara.example": {
             "title": "Пример",
             "description": "Показывает готовый результат и исходный Markdown, HTML, CSS или JavaScript во вкладках одного компактного блока.",
@@ -1110,24 +1084,6 @@
                 }
             },
             "example_ref": "resources/component-catalog/examples/docara.code.ru.md"
-        },
-        "docara.backlinks": {
-            "title": "Обратные ссылки",
-            "description": "Показывает страницы, которые ссылаются на текущий материал.",
-            "limitations": [
-                "Список формируется автоматически только из внутренних ссылок текущей сборки."
-            ],
-            "states": {
-                "empty": "Нет ссылок",
-                "populated": "Есть ссылки"
-            },
-            "parameters": {
-                "limit": {
-                    "label": "Количество",
-                    "description": "Максимальное число ссылок."
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/docara.backlinks.ru.md"
         }
     }
 }

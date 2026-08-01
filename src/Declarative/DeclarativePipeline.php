@@ -71,8 +71,32 @@ final readonly class DeclarativePipeline
         array $layoutConfiguration = [],
         array $configurationProvenance = [],
     ): DeclarativePageResult {
+        return $this->buildRendered(
+            $markdown,
+            $source,
+            $pageKey,
+            $title,
+            $outlineDepth,
+            $trustedMainHtml,
+            $composition,
+            $layoutConfiguration,
+            $configurationProvenance,
+        );
+    }
+
+    public function buildRendered(
+        string $markdown,
+        string $source,
+        string $pageKey,
+        string $title,
+        int $outlineDepth,
+        string $trustedMainHtml,
+        ?PageCompositionContext $composition = null,
+        array $layoutConfiguration = [],
+        array $configurationProvenance = [],
+    ): DeclarativePageResult {
         if (trim($trustedMainHtml) === '') {
-            throw new \InvalidArgumentException('DECLARATIVE_GENERATED_CONTENT_REQUIRED');
+            throw new \InvalidArgumentException('DECLARATIVE_RENDERED_CONTENT_REQUIRED');
         }
         $document = $this->parser->parse($markdown, $source);
         $plan = $this->compiler->compile(

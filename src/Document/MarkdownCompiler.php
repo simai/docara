@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Document;
 
+use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
 use Simai\Docara\Markdown\AuthoringAttributeParser;
 use Simai\Docara\Portable\PortableConfigurationException;
 
@@ -12,6 +13,7 @@ final readonly class MarkdownCompiler
     public function __construct(
         private ComponentAliasRegistry $aliases = new ComponentAliasRegistry,
         private AuthoringAttributeParser $attributes = new AuthoringAttributeParser,
+        private ?TypedComponentDefinitionRepository $typedComponents = null,
     ) {}
 
     public function compile(string $markdown, string $source): DocumentIr
@@ -35,8 +37,10 @@ final readonly class MarkdownCompiler
 
                 continue;
             }
-            if (preg_match('/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/', $line) === 1) {
-                [$node, $index] = $this->componentBlock($lines, $index, $source);
+            if (preg_match('/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/', $line, $directive) === 1) {
+                [$node, $index] = array_key_exists((string) $directive['alias'], $this->aliases->aliases())
+                    ? $this->componentBlock($lines, $index, $source)
+                    : $this->typedDirectiveBlock($lines, $index, $source);
                 $nodes[] = $node;
 
                 continue;
@@ -142,6 +146,56 @@ final readonly class MarkdownCompiler
         }
 
         return new DocumentIr($source, $nodes);
+    }
+
+    /** @param list<string> $lines @return array{0:SourceNode,1:int} */
+    private function typedDirectiveBlock(array $lines, int $start, string $source): array
+    {
+        preg_match(
+            '/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/',
+            $lines[$start],
+            $opening,
+        );
+        $alias = (string) ($opening['alias'] ?? '');
+        $location = new SourceLocation($source, $start + 1, 1, $start + 1);
+        $definition = ($this->typedComponents ?? TypedComponentDefinitionRepository::bundled())->findByName($alias);
+        if ($definition === null) {
+            throw new PortableConfigurationException(
+                'DOCUMENT_COMPONENT_ALIAS_UNKNOWN',
+                "Unknown component alias [$alias] at [{$location->label()}].",
+            );
+        }
+        $end = $start + 1;
+        while (isset($lines[$end]) && trim($lines[$end]) !== ':::') {
+            if (preg_match('/^:::[a-z]/', $lines[$end]) === 1) {
+                throw new PortableConfigurationException(
+                    'DOCUMENT_TYPED_DIRECTIVE_NESTED_FORBIDDEN',
+                    "Nested typed directive at [$source:" . ($end + 1) . ':1].',
+                );
+            }
+            $end++;
+        }
+        if (! isset($lines[$end])) {
+            throw new PortableConfigurationException(
+                'DOCUMENT_TYPED_DIRECTIVE_UNCLOSED',
+                "Unclosed typed directive [$alias] at [{$location->label()}].",
+            );
+        }
+
+        return [
+            new SourceNode(
+                'typed_directive',
+                implode("\n", array_slice($lines, $start, $end - $start + 1)),
+                new SourceLocation($source, $start + 1, 1, $end + 1),
+                [
+                    'alias' => $alias,
+                    'component' => (string) $definition['id'],
+                    'renderer' => (string) $definition['renderer'],
+                    'props' => $this->attributes->parse((string) ($opening['attributes'] ?? ''), $alias),
+                ],
+            ),
+            $end + 1,
+        ];
     }
 
     /** @param list<string> $lines @return array{0:ComponentBlockNode,1:int} */
@@ -315,8 +369,10 @@ final readonly class MarkdownCompiler
             $children[] = $code;
             if (($code->data['language'] ?? '') === 'markdown') {
                 for ($componentLine = $index + 1; $componentLine < $next - 1;) {
-                    if (preg_match('/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/', $lines[$componentLine]) === 1) {
-                        [$component, $componentLine] = $this->componentBlock($lines, $componentLine, $source);
+                    if (preg_match('/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/', $lines[$componentLine], $directive) === 1) {
+                        [$component, $componentLine] = array_key_exists((string) $directive['alias'], $this->aliases->aliases())
+                            ? $this->componentBlock($lines, $componentLine, $source)
+                            : $this->typedDirectiveBlock($lines, $componentLine, $source);
                         if ($componentLine > $next - 1) {
                             throw new PortableConfigurationException(
                                 'DOCUMENT_IR_EXAMPLE_COMPONENT_BOUNDARY_INVALID',

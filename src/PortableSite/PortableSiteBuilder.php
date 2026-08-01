@@ -16,6 +16,7 @@ use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
+use Simai\Docara\I18n\ContentLanguageRepository;
 use Simai\Docara\I18n\LanguagePackRepository;
 use Simai\Docara\I18n\LocaleInternalLinkProjector;
 use Simai\Docara\I18n\LocaleRegistry;
@@ -68,7 +69,12 @@ final readonly class PortableSiteBuilder
             $localeRegistry,
             $localeRouting,
         );
-        $translator = new Translator($localeRegistry, new LanguagePackRepository($root));
+        $contentLanguages = new ContentLanguageRepository($root);
+        $translator = new Translator(
+            $localeRegistry,
+            new LanguagePackRepository($root),
+            $contentLanguages,
+        );
         $uiCopy = new UiCopy($translator);
         $buildLocale = $localeRegistry->default()->tag->value();
         $documentationVersion = (string) ($site['documentation_version'] ?? 'current');
@@ -363,6 +369,12 @@ final readonly class PortableSiteBuilder
             $pageLocale = (string) $page['locale'];
             $page['direction'] = $localeRegistry->get($pageLocale)->direction;
             $page['ui_copy'] = $uiCopy->forLocale($pageLocale);
+            $contentMessages = $contentLanguages->messages($localeRegistry->get($pageLocale));
+            foreach (['navigation.backlinks_heading', 'navigation.backlinks_empty'] as $messageId) {
+                if (isset($contentMessages[$messageId])) {
+                    $page['ui_copy'][$messageId] = $contentMessages[$messageId];
+                }
+            }
             $page['canonical_url'] = (string) $page['url'];
             $available = $translations[(string) ($page['translation_key'] ?? $page['page_path'])] ?? [];
             $page['alternates'] = [];
@@ -388,10 +400,64 @@ final readonly class PortableSiteBuilder
             ];
         }
         unset($page);
-        if (! $earlyPhysicalSelection) {
-            $pages = (new PortableBacklinkHydrator)->hydrate($pages);
+        $backlinkHydrator = new PortableBacklinkHydrator;
+        $backlinkReceipt = null;
+        if ($earlyPhysicalSelection) {
+            $backlinkReceiptPath = rtrim($finalDestination, '/\\') . '/.docara/backlinks.json';
+            try {
+                $backlinkReceipt = json_decode(
+                    (string) $this->files->get($backlinkReceiptPath),
+                    true,
+                    512,
+                    JSON_THROW_ON_ERROR,
+                );
+            } catch (JsonException $exception) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_BACKLINK_BASE_INVALID',
+                    'The complete build has no valid backlink projection for an isolated page rebuild.',
+                    $exception,
+                );
+            }
+            if (! is_array($backlinkReceipt)
+                || ($backlinkReceipt['schema'] ?? null) !== 'docara.backlinks.v1'
+                || ! is_array($backlinkReceipt['targets'] ?? null)
+                || ! is_string($backlinkReceipt['content_sha256'] ?? null)
+                || ! hash_equals(
+                    $backlinkReceipt['content_sha256'],
+                    hash('sha256', CanonicalJson::encode($backlinkReceipt['targets'])),
+                )
+            ) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_BACKLINK_BASE_INVALID',
+                    'The complete build has no valid backlink projection for an isolated page rebuild.',
+                );
+            }
+            $pages = $backlinkHydrator->hydrate($pages, $backlinkReceipt['targets']);
+        } else {
+            $backlinkTargets = $backlinkHydrator->index($pages);
+            $backlinkReceipt = [
+                'schema' => 'docara.backlinks.v1',
+                'content_sha256' => hash('sha256', CanonicalJson::encode($backlinkTargets)),
+                'targets' => $backlinkTargets,
+            ];
+            $pages = $backlinkHydrator->hydrate($pages, $backlinkTargets);
             $contextPages = $pages;
         }
+        $outlineBuilder = new PortableDocumentOutlineBuilder;
+        foreach ($pages as &$hydratedPage) {
+            $hydratedPlan = $hydratedPage['plan'] ?? null;
+            if (! $hydratedPlan instanceof ResolvedPagePlan) {
+                continue;
+            }
+            $hydratedOutline = $outlineBuilder->build(
+                (string) $hydratedPage['content_html'],
+                (int) data_get($hydratedPlan->configuration, 'reading.toc_depth', 3),
+                PortableDocumentIds::reserved(),
+            );
+            $hydratedPage['content_html'] = $hydratedOutline['html'];
+            $hydratedPage['outline'] = $hydratedOutline['items'];
+        }
+        unset($hydratedPage);
         $localeLinkRoutes = [];
         foreach ($contextPages as $page) {
             $pageLocale = (string) $page['locale'];
@@ -555,6 +621,9 @@ final readonly class PortableSiteBuilder
             $docaraOutputDirectory = rtrim($destination, '/\\') . '/_docara';
             $this->files->ensureDirectoryExists($docaraOutputDirectory);
             if ($selectedPageUrl === null) {
+                $backlinkReceiptPath = rtrim($destination, '/\\') . '/.docara/backlinks.json';
+                $this->files->ensureDirectoryExists(dirname($backlinkReceiptPath));
+                $this->files->put($backlinkReceiptPath, $this->prettyCanonicalJson($backlinkReceipt));
                 $this->files->put($docaraOutputDirectory . '/component-catalog.json', $componentCatalogJson);
                 $this->files->put(
                     $docaraOutputDirectory . '/page-metadata.json',
@@ -690,39 +759,24 @@ final readonly class PortableSiteBuilder
                 $layoutConfiguration = is_array($declarativePlan->configuration['layout'] ?? null)
                     ? $declarativePlan->configuration['layout']
                     : [];
-                $generatedProjection = isset($page['component_catalog_kind'])
-                    || isset($page['declarative_example_kind']);
-                $declarative = $generatedProjection
-                    ? $declarativePipeline->buildGenerated(
-                        $declarativePlan->markdown,
-                        $declarativePlan->page,
-                        (string) $page['output'],
-                        (string) $page['title'],
-                        $outlineDepth,
-                        (string) $page['content_html'],
-                        $composition,
-                        $layoutConfiguration,
-                        $declarativePlan->provenance,
-                    )
-                    : $declarativePipeline->build(
-                        $declarativePlan->markdown,
-                        $declarativePlan->page,
-                        (string) $page['output'],
-                        (string) $page['title'],
-                        $outlineDepth,
-                        $composition,
-                        $layoutConfiguration,
-                        $declarativePlan->provenance,
+                $declarative = $declarativePipeline->buildRendered(
+                    $declarativePlan->markdown,
+                    $declarativePlan->page,
+                    (string) $page['output'],
+                    (string) $page['title'],
+                    $outlineDepth,
+                    (string) $page['content_html'],
+                    $composition,
+                    $layoutConfiguration,
+                    $declarativePlan->provenance,
+                );
+                $renderedMainHash = hash('sha256', (string) $page['content_html']);
+                $composedMainHash = hash('sha256', (string) ($declarative->artifact->hydration['regions']['main'] ?? ''));
+                if (! hash_equals($renderedMainHash, $composedMainHash)) {
+                    throw new PortableConfigurationException(
+                        'DECLARATIVE_RENDERED_CONTENT_PARITY_FAILED',
+                        "Rendered page [{$page['url']}] changed during declarative composition.",
                     );
-                if ($generatedProjection) {
-                    $generatedHash = hash('sha256', (string) $page['content_html']);
-                    $declarativeHash = hash('sha256', (string) ($declarative->artifact->hydration['regions']['main'] ?? ''));
-                    if (! hash_equals($generatedHash, $declarativeHash)) {
-                        throw new PortableConfigurationException(
-                            'DECLARATIVE_GENERATED_CONTENT_PARITY_FAILED',
-                            "Generated page [{$page['url']}] changed during declarative projection.",
-                        );
-                    }
                 }
                 $page['declarative_pipeline'] = [
                     'status' => 'published',

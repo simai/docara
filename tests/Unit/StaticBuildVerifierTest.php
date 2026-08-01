@@ -1328,6 +1328,16 @@ final class StaticBuildVerifierTest extends TestCase
                 'title' => 'Уведомление',
                 'description' => 'Важная информация, результат, предупреждение или ошибка.',
             ],
+            'docara.backlinks' => [
+                'slug' => 'backlinks',
+                'title' => 'Обратные ссылки',
+                'description' => 'Автоматический список страниц, которые ведут на текущий материал.',
+            ],
+            'docara.details' => [
+                'slug' => 'details',
+                'title' => 'Раскрывающийся блок',
+                'description' => 'Дополнительное пояснение, которое читатель открывает по необходимости.',
+            ],
             'native.code' => [
                 'slug' => 'code',
                 'title' => 'Код',

@@ -35,14 +35,14 @@ generated component page count и русский component-route allowlist ра�
 PageBuilder/registry/gateway; две clean full builds byte-identical; static и
 browser matrices зелёные; graph/workflow/handoff синхронны; worktree чистый.
 
-Current Remaining: 23 generated routes из 32; Alert, Badge, Syntax,
-headings/text, lists/quotes, links/images, table, code и footnotes/sources уже
-физические.
+Current Remaining: 21 generated route из 32; Alert, Badge, Syntax,
+headings/text, lists/quotes, links/images, table, code, footnotes/sources,
+Details и Backlinks уже физические.
 
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.3 batch 10, details and backlinks.
+Next Safe Batch: M3.3 batch 11, banner and download.
 
 ## Goal
 
@@ -181,8 +181,8 @@ checks, evidence update and a separate commit.
 | 07 | native headings/text and lists/quotes | route parity | completed |
 | 08 | native links/images and table | route parity + responsive table | completed |
 | 09 | native code and footnotes/sources | copy/code/anchors parity | completed |
-| 10 | details and backlinks | disclosure/navigation parity | in-progress |
-| 11 | banner and download | variant/asset parity | pending |
+| 10 | details and backlinks | disclosure/navigation parity | completed |
+| 11 | banner and download | variant/asset parity | in-progress |
 | 12 | button and icon/kbd | interactive/focus parity | pending |
 | 13 | card and hero | layout parity | pending |
 | 14 | grid and figure | layout/media parity | pending |
@@ -359,10 +359,24 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 10 — details and backlinks
 
+- status: completed;
+- parent: `dc15cc7`;
+- both routes have physical owners and use one generic `typed_directive` IR
+  node; no component-specific pipeline was added;
+- final layout consumes hash-checked PageBuilder main HTML, and the disposable
+  backlink projection gives full/isolated exact parity without unrelated page
+  compilation;
+- Russian Backlinks UI copy is read from `content/ru/lang.json`;
+- full/isolated trees are exact, static verifies 18,917 references with zero
+  broken, and keyboard/mobile/light/dark browser gates pass;
+- evidence: `m3-ru-components/batch-10-details-backlinks.md`.
+
+### Batch 11 — banner and download
+
 - status: in-progress;
-- parent: batch 09 checkpoint commit;
-- objective: migrate both routes through the existing generic directive/IR
-  contour and prove disclosure plus backlink/navigation behavior.
+- parent: batch 10 checkpoint commit;
+- objective: migrate both routes through the same generic typed-directive IR
+  and prove variants, download links/assets and isolated parity.
 
 ## Kaizen
 

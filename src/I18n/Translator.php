@@ -11,6 +11,7 @@ final readonly class Translator
     public function __construct(
         private LocaleRegistry $locales,
         private LanguagePackRepository $packs,
+        private ?ContentLanguageRepository $contentLanguages = null,
     ) {}
 
     /** @param array<string, scalar> $parameters */
@@ -20,28 +21,38 @@ final readonly class Translator
             throw new PortableConfigurationException('MESSAGE_ID_INVALID', "Message ID [$id] is invalid.");
         }
         foreach ($this->locales->fallbackChain($locale) as $candidate) {
+            $contentMessages = $this->contentLanguages?->messages($candidate) ?? [];
+            if (array_key_exists($id, $contentMessages)) {
+                return $this->replace($contentMessages[$id], $parameters);
+            }
             $pack = $this->packs->load($candidate);
             if (! array_key_exists($id, $pack->messages)) {
                 continue;
             }
-            $message = $pack->messages[$id];
-            foreach ($parameters as $name => $value) {
-                if (preg_match('/^[a-z][a-z0-9_]*$/D', $name) !== 1) {
-                    throw new PortableConfigurationException(
-                        'MESSAGE_PARAMETER_INVALID',
-                        "Message parameter [$name] is invalid.",
-                    );
-                }
-                $message = str_replace('{' . $name . '}', (string) $value, $message);
-            }
 
-            return $message;
+            return $this->replace($pack->messages[$id], $parameters);
         }
 
         throw new PortableConfigurationException(
             'MESSAGE_NOT_FOUND',
             "Message [$id] is not available for locale [" . LocaleTag::from($locale)->value() . '] or its fallbacks.',
         );
+    }
+
+    /** @param array<string, scalar> $parameters */
+    private function replace(string $message, array $parameters): string
+    {
+        foreach ($parameters as $name => $value) {
+            if (preg_match('/^[a-z][a-z0-9_]*$/D', $name) !== 1) {
+                throw new PortableConfigurationException(
+                    'MESSAGE_PARAMETER_INVALID',
+                    "Message parameter [$name] is invalid.",
+                );
+            }
+            $message = str_replace('{' . $name . '}', (string) $value, $message);
+        }
+
+        return $message;
     }
 
     /** @return array<string, mixed> */

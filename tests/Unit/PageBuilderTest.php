@@ -59,7 +59,7 @@ final class PageBuilderTest extends TestCase
         self::assertNotNull($result->document);
         self::assertCount(16, $result->componentArtifacts);
         self::assertSame(
-            ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'component', 'component_block'],
+            ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'typed_directive', 'component', 'component_block'],
             $result->componentArtifacts === []
                 ? []
                 : (new DocumentRendererRegistry([
@@ -89,7 +89,9 @@ final class PageBuilderTest extends TestCase
     {
         $root = dirname(__DIR__, 2) . '/docs/site';
         foreach ([
+            'backlinks' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
             'code' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
+            'details' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
             'footnotes-and-sources' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
             'headings-and-text' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
             'lists-and-quotes' => ['heading', 'paragraph', 'list', 'blockquote', 'code_block', 'example'],

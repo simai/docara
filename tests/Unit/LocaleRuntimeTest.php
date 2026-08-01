@@ -8,6 +8,7 @@ use FilesystemIterator;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Simai\Docara\I18n\ContentLanguageRepository;
 use Simai\Docara\I18n\LanguagePackRepository;
 use Simai\Docara\I18n\LocaleInternalLinkProjector;
 use Simai\Docara\I18n\LocaleRegistry;
@@ -233,6 +234,33 @@ HTML;
                 'tone' => ['label' => 'Ton', 'description' => 'Visual intent.'],
             ],
         ], $translator->component('fr-CA', 'ui.alert'));
+    }
+
+    public function test_content_language_is_the_public_ui_overlay_without_owning_component_prose(): void
+    {
+        mkdir($this->root . '/content/ru', 0777, true);
+        file_put_contents($this->root . '/content/ru/lang.json', json_encode([
+            'schema' => 'docara.lang.v1',
+            'version' => 1,
+            'common' => ['greeting' => 'Content owner: {name}'],
+            'navigation' => [
+                'backlinks_heading' => 'Ссылаются на эту страницу',
+                'backlinks_empty' => 'Обратных ссылок пока нет.',
+            ],
+        ], JSON_THROW_ON_ERROR));
+        $registry = LocaleRegistry::fromSite($this->site());
+        $translator = new Translator(
+            $registry,
+            new LanguagePackRepository($this->root),
+            new ContentLanguageRepository($this->root),
+        );
+
+        self::assertSame('Content owner: Rim', $translator->message('ru', 'common.greeting', ['name' => 'Rim']));
+        self::assertSame(
+            'Ссылаются на эту страницу',
+            $translator->message('ru', 'navigation.backlinks_heading'),
+        );
+        self::assertArrayHasKey('title', $translator->component('ru', 'docara.card'));
     }
 
     public function test_bundled_packs_cover_the_acceptance_locales_and_project_references_are_confined(): void

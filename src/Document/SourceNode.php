@@ -14,7 +14,7 @@ final readonly class SourceNode implements DocumentNode
         public array $data = [],
         private array $childNodes = [],
     ) {
-        if (! in_array($nodeType, ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example'], true)) {
+        if (! in_array($nodeType, ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'typed_directive'], true)) {
             throw new \InvalidArgumentException('DOCUMENT_IR_SOURCE_NODE_TYPE_INVALID');
         }
     }

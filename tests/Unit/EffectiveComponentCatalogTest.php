@@ -370,13 +370,13 @@ final class EffectiveComponentCatalogTest extends TestCase
         $expected = [
             'content.icon' => 'docs/site/content/ru/components/syntax.md',
             'docara.alert' => 'docs/site/content/ru/components/syntax.md',
-            'docara.backlinks' => 'docs/site/content/ru/components/syntax.md',
+            'docara.backlinks' => 'docs/site/content/ru/components/backlinks.md',
             'docara.badge' => 'docs/site/content/ru/components/syntax.md',
             'docara.banner' => 'docs/site/content/ru/components/syntax.md',
             'docara.button' => 'docs/site/content/ru/components/syntax.md',
             'docara.card' => 'docs/site/content/ru/components/syntax.md',
             'docara.code' => 'docs/site/content/ru/components/syntax.md',
-            'docara.details' => 'docs/site/content/ru/components/syntax.md',
+            'docara.details' => 'docs/site/content/ru/components/details.md',
             'docara.diagram' => 'docs/site/content/ru/components/syntax.md',
             'docara.download' => 'docs/site/content/ru/components/syntax.md',
             'docara.embed' => 'docs/site/content/ru/components/syntax.md',
@@ -752,6 +752,8 @@ final class EffectiveComponentCatalogTest extends TestCase
             self::assertNotSame('', trim($html), $entry['id']);
             if (in_array($entry['id'], [
                 'docara.alert',
+                'docara.backlinks',
+                'docara.details',
                 'native.code',
                 'native.footnotes_and_sources',
                 'native.headings_and_text',
@@ -760,6 +762,8 @@ final class EffectiveComponentCatalogTest extends TestCase
                 'native.table',
             ], true)) {
                 $slug = match ($entry['id']) {
+                    'docara.backlinks' => 'backlinks',
+                    'docara.details' => 'details',
                     'native.code' => 'code',
                     'native.footnotes_and_sources' => 'footnotes-and-sources',
                     'native.headings_and_text' => 'headings-and-text',

@@ -25,6 +25,8 @@
     "src/I18n/LocaleRegistry.php#LocaleRegistry::fromSite",
     "src/I18n/LocaleRoutingPolicy.php#LocaleRoutingPolicy::fromSite",
     "src/I18n/LocaleUrlProjector.php",
+    "src/I18n/ContentLanguageRepository.php#ContentLanguageRepository::messages",
+    "src/I18n/Translator.php#Translator::message",
     "src/Declarative/Composition/RegionCompositionResolver.php#RegionCompositionResolver::resolve",
     "src/Declarative/DeclarativePageCompiler.php#DeclarativePageCompiler::compile",
     "resources/schemas/site.schema.json",
@@ -46,7 +48,8 @@
   "evidence_refs": [
     "docara.evidence.m0_inventory",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-10-details-backlinks.md"
   ],
   "review_refs": ["docara.gate.source_ownership", "docara.gate.migration_coverage"],
   "current_behavior": [
@@ -54,13 +57,14 @@
     "LocaleRegistry supports arbitrary well-formed locale definitions, prefixes, fallbacks and direction.",
     "The documentation site currently declares only ru content, while five bundled language packs exist.",
     "DeclarativePageCompiler resolves region composition into layout, sections and blocks.",
-    "M1B provides docara.lang.v1 and a fail-closed target validator without switching the legacy renderer runtime."
+    "M1B provides docara.lang.v1 and a fail-closed target validator.",
+    "Batch 10 loads shared public UI messages from content/<locale>/lang.json before the transitional package fallback; Russian Backlinks copy is proven content-owned."
   ],
   "known_deviations": [
     "Current schemas still allow title and page description in composition JSON.",
     "No front matter parser owns target page metadata.",
     "The shipped documentation site does not prove separate Markdown trees for multiple locales.",
-    "Target shared strings now exist in content/ru/lang.json, while the active legacy shell still reads language-pack messages until M2 PageBuilder integration.",
+    "Non-migrated locales can still fall back to package language-pack messages until each locale owns content/<locale>/lang.json.",
     "Current site/config surfaces predate the accepted no-site.json-compatibility target.",
     "The former global source_ownership gate-order conflict is resolved by DOC-ADR-015 and badge_source_ready."
   ],
@@ -69,6 +73,6 @@
     "Remove prose-bearing config fields only after front matter/site-copy ownership and migration tests pass.",
     "Remove silent locale presentation fallback only after explicit missing-page policy tests pass."
   ],
-  "status": "m1_target_boundaries_implemented_runtime_switch_open",
-  "mapped_revision": "commit containing M1B-EVIDENCE.md; parent 87bad1d4bf03d312e3e8ea3455afa6a31bb2ba61"
+  "status": "m3_3_content_language_runtime_overlay_active",
+  "mapped_revision": "commit containing batch-10-details-backlinks.md; parent dc15cc7"
 }

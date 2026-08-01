@@ -215,6 +215,41 @@ MD;
         );
     }
 
+    public function test_known_typed_directives_use_one_generic_ir_node_and_keep_empty_blocks(): void
+    {
+        $document = (new MarkdownCompiler)->compile(<<<'MD'
+# Directives
+
+:::details {view=lines open=true}
+## Дополнительные сведения
+
+Содержимое можно раскрыть.
+:::
+
+:::backlinks {limit=5}
+:::
+MD, 'content/ru/components/details.md');
+        $directives = array_values(array_filter(
+            $document->allNodes(),
+            static fn (DocumentNode $node): bool => $node->type() === 'typed_directive',
+        ));
+
+        self::assertCount(2, $directives);
+        self::assertSame('docara.details', $directives[0]->data['component']);
+        self::assertSame(['open' => 'true', 'view' => 'lines'], $directives[0]->data['props']);
+        self::assertSame([3, 7], [$directives[0]->location()->line, $directives[0]->location()->endLine]);
+        self::assertSame('docara.backlinks', $directives[1]->data['component']);
+        self::assertSame([9, 10], [$directives[1]->location()->line, $directives[1]->location()->endLine]);
+
+        $rendered = DocumentRendererRegistry::bundled(new PortableMarkdownRenderer)->render(
+            $document,
+            new DocumentRenderContext(null, 'content/ru/components/details.md'),
+        );
+        self::assertStringContainsString('<details', $rendered['document']->html);
+        self::assertStringContainsString('data-docara-backlinks', $rendered['document']->html);
+        self::assertSame([], $rendered['components']);
+    }
+
     public function test_component_block_uses_the_bundled_registry_and_single_smart_gateway(): void
     {
         $compiler = new MarkdownCompiler;
@@ -337,7 +372,7 @@ MD, $source);
             (new ComponentAliasRegistry)->aliases(),
         );
         self::assertSame(
-            ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'component', 'component_block'],
+            ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'typed_directive', 'component', 'component_block'],
             DocumentRendererRegistry::bundled(new PortableMarkdownRenderer)->types(),
         );
     }

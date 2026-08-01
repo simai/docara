@@ -518,3 +518,23 @@ Status: PASS; M3.3 and M3.4 complete, M3 continues
 Batch 25 now retires the remaining Russian language-pack component prose and
 proves the zero-projection build no longer reads it. Overall M3 and
 release/production readiness remain unclaimed.
+
+## M3.5 batch 25 result
+
+Status: PASS; M3.5 continues
+
+- the package RU language pack has zero public messages and no component prose;
+- public declarative-example labels moved to `content/ru/lang.json`;
+- all eight remaining localized catalog examples and the Russian component
+  legacy allowlist entry were removed after zero-reference proof;
+- the starter physically owns its Russian index, Badge page and UI labels;
+- the Batch 25 full output is byte-identical to Batch 21, isolated index/Badge
+  hashes are exact, and static verification reports 18,942 references with
+  zero broken;
+- exact old hashes, replacements and rollback are recorded in
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/old-to-new-map.json`;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-25-language-pack-retirement.md`.
+
+Batch 26 must suppress zero-page component-catalog assets/receipts only when no
+locale projection uses them, then M3.6 performs integrated acceptance. Overall
+M3 and release/production readiness remain unclaimed.

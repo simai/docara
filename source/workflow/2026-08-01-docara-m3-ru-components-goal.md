@@ -496,6 +496,24 @@ Never infer completion from a checkpoint commit or chat summary.
 - full/index-single/detail-single/static/browser parity PASS;
 - evidence: `m3-ru-components/batch-21-component-index.md`.
 
+### Batch 25 — Russian public language-pack retirement
+
+- status: completed candidate; checkpoint commit follows this record;
+- parent: `fc3bd32c3453d863e278c7a61f07e794ccaeb1c7`;
+- package RU language data no longer owns public component prose or reusable
+  site UI labels; the public labels required by declarative examples live in
+  `content/ru/lang.json`;
+- the final eight zero-reference localized example projections and the broad
+  `/ru/components/` allowlist entry are retired with exact old hashes and
+  owner mappings;
+- the portable starter physically owns its index, Badge page and Russian
+  locale labels; generated legacy projection remains tested in English for
+  non-migrated locales;
+- the full public tree is byte-identical to batch 21, isolated index/Badge are
+  exact, and static verification reports zero broken references;
+- evidence: `m3-ru-components/batch-25-language-pack-retirement.md` and
+  `m3-ru-components/old-to-new-map.json`.
+
 ## Kaizen
 
 No reusable lesson accepted yet. Project-local process gaps remain evidence,

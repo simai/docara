@@ -492,6 +492,10 @@ final class StaticBuildVerifierTest extends TestCase
         $source = $this->tmpPath('component-catalogue-source');
         $build = $source . '/build_catalogue';
         $this->copyPortableFixtureLegacy($source);
+        $this->removeAuthoredComponentPages($source);
+        $configuration = $this->readJson($source . '/docara.json');
+        $configuration['default_locale'] = 'en';
+        $this->writeJson($source . '/docara.json', $configuration);
         (new PortableSiteBuilder(
             new Filesystem,
             new PortableMarkdownRenderer,
@@ -664,6 +668,7 @@ final class StaticBuildVerifierTest extends TestCase
         $source = $this->tmpPath('component-catalogue-english-source');
         $build = $source . '/build_catalogue';
         $this->copyPortableFixtureLegacy($source);
+        $this->removeAuthoredComponentPages($source);
         $configuration = $this->readJson($source . '/docara.json');
         $configuration['default_locale'] = 'en';
         $configuration['search'] = ['enabled' => false, 'indexed' => false];
@@ -705,7 +710,7 @@ final class StaticBuildVerifierTest extends TestCase
             'html-lang' => static function (string $build): void {
                 $path = $build . '/index.html';
                 $html = (string) file_get_contents($path);
-                file_put_contents($path, str_replace('lang="ru"', 'lang="en"', $html));
+                file_put_contents($path, str_replace('lang="en"', 'lang="ru"', $html));
             },
             'html-version-attribute' => static function (string $build): void {
                 $path = $build . '/index.html';
@@ -872,15 +877,15 @@ final class StaticBuildVerifierTest extends TestCase
 
         foreach ([
             'source' => [
-                'needle' => ':badge[Новое]',
+                'needle' => ':badge[New]',
                 'replacement' => "Подменённый исходный код примера.\n:::",
             ],
             'rendered' => [
-                'needle' => '>Новое</',
+                'needle' => '>New</',
                 'replacement' => '>Подменённый отрисованный пример.</',
             ],
             'metadata' => [
-                'needle' => 'Добавляет компактную метку статуса, версии или категории внутрь текста и интерфейсных блоков.',
+                'needle' => 'Adds a compact status, version or category label inside ordinary text and interface blocks.',
                 'replacement' => 'Forged component metadata.',
             ],
         ] as $kind => $change) {
@@ -1165,7 +1170,9 @@ final class StaticBuildVerifierTest extends TestCase
         $source = $this->tmpPath($name . '-source');
         $build = $source . '/build_catalogue';
         $this->copyPortableFixtureLegacy($source);
+        $this->removeAuthoredComponentPages($source);
         $configuration = $this->readJson($source . '/docara.json');
+        $configuration['default_locale'] = 'en';
         $configuration['search'] = ['enabled' => false, 'indexed' => false];
         $this->writeJson($source . '/docara.json', $configuration);
         if ($withRedirect) {
@@ -1501,12 +1508,28 @@ final class StaticBuildVerifierTest extends TestCase
                 ];
             }
         }
-        $translationConfiguration = $firstConfiguration;
-        $translationConfiguration['default_locale'] = $locale;
-        if (is_array($translationConfiguration['locales'] ?? null)
-            && ! isset($translationConfiguration['locales'][$locale])
-        ) {
-            unset($translationConfiguration['locales']);
+        $translationConfiguration = [
+            'default_locale' => $locale,
+            'locales' => [
+                $locale => [
+                    'label' => $locale,
+                    'direction' => 'ltr',
+                    'content_root' => 'content/' . $locale,
+                    'language_pack' => '@docara/' . $locale,
+                    'public_prefix' => '',
+                    'fallbacks' => $locale === 'en' ? [] : ['en'],
+                ],
+            ],
+        ];
+        if ($locale !== 'en') {
+            $translationConfiguration['locales']['en'] = [
+                'label' => 'en',
+                'direction' => 'ltr',
+                'content_root' => 'content/en',
+                'language_pack' => '@docara/en',
+                'public_prefix' => 'en',
+                'fallbacks' => [],
+            ];
         }
         $translator = new Translator(
             LocaleRegistry::fromSite($translationConfiguration),
@@ -1876,5 +1899,13 @@ final class StaticBuildVerifierTest extends TestCase
             ),
         ));
         $this->writeJson($target . '/redirects.json', $redirects);
+    }
+
+    private function removeAuthoredComponentPages(string $source): void
+    {
+        $this->filesystem->deleteDirectory($source . '/content/components');
+        if (is_file($source . '/content/components.md')) {
+            unlink($source . '/content/components.md');
+        }
     }
 }

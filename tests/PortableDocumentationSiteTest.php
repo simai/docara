@@ -210,7 +210,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
     }
 
     #[Test]
-    public function authored_badge_page_does_not_depend_on_legacy_language_pack_component_prose(): void
+    public function real_russian_site_uses_content_lang_and_not_package_component_prose(): void
     {
         $root = dirname(__DIR__);
         $site = $this->temporary . '/badge-source-boundary';
@@ -233,8 +233,11 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $builder = new PortableSiteBuilder($filesystem, new PortableMarkdownRenderer);
         $builder->build($site, $site . '/build_baseline');
         $baselineBadgeHash = hash_file('sha256', $site . '/build_baseline/ru/components/badge/index.html');
+        $baselineIndexHash = hash_file('sha256', $site . '/build_baseline/ru/components/index.html');
+        $baselineExamplesHash = hash_file('sha256', $site . '/build_baseline/ru/examples/index.html');
 
-        unset($languagePack['components']['docara.badge']);
+        $languagePack['messages']['examples.title'] = 'FORBIDDEN PACKAGE MESSAGE';
+        $languagePack['components']['docara.badge'] = ['title' => 'FORBIDDEN PACKAGE PROSE'];
         file_put_contents(
             $languagePackPath,
             json_encode($languagePack, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
@@ -246,6 +249,14 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertSame(
             $baselineBadgeHash,
             hash_file('sha256', $site . '/build_test/ru/components/badge/index.html'),
+        );
+        self::assertSame(
+            $baselineIndexHash,
+            hash_file('sha256', $site . '/build_test/ru/components/index.html'),
+        );
+        self::assertSame(
+            $baselineExamplesHash,
+            hash_file('sha256', $site . '/build_test/ru/examples/index.html'),
         );
     }
 

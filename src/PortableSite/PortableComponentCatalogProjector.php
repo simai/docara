@@ -82,6 +82,35 @@ final readonly class PortableComponentCatalogProjector
             );
         }
 
+        if (! $projectIndex) {
+            $missingAuthoredEntry = false;
+            foreach ($supported as $entry) {
+                if (! isset($authoredComponents[$this->id($entry)])) {
+                    $missingAuthoredEntry = true;
+                    break;
+                }
+            }
+            if (! $missingAuthoredEntry) {
+                $receiptCore = [
+                    'catalog_content_sha256' => (string) ($catalog['content_sha256'] ?? ''),
+                    'index' => null,
+                    'pages' => [],
+                ];
+
+                return [
+                    'pages' => [],
+                    'receipt' => [
+                        'schema' => 'docara.component_catalog_pages.v1',
+                        'version' => 1,
+                        'catalog_content_sha256' => $receiptCore['catalog_content_sha256'],
+                        'content_sha256' => hash('sha256', CanonicalJson::encode($receiptCore)),
+                        'index' => null,
+                        'pages' => [],
+                    ],
+                ];
+            }
+        }
+
         $locale = (string) (
             $basePlan->configuration['locale']
             ?? $basePlan->configuration['default_locale']

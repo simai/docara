@@ -23,8 +23,8 @@ Recovery source:
 - parent SHA: `b14fe4e1e70a5465fe382bd5ced1de26cb65a315`;
 - completed milestone: M3.1 durable execution contract and baseline;
 - latest completed batch: 21, physical component index and derived views;
-- current batch: 25, Russian language-pack prose retirement;
-- next evidence: zero-reference and old-to-new legacy mapping;
+- current batch: 25, Russian language-pack prose retirement (candidate PASS);
+- next batch: 26, zero-page catalog projection/asset retirement;
 - blockers: none; federation/process gaps are documented in the workflow.
 
 ## Evidence rules
@@ -60,3 +60,4 @@ Recovery source:
 | 19 | `batch-19-steps-tree.md` | PASS |
 | 20 | `batch-20-tabs.md` | PASS |
 | 21 | `batch-21-component-index.md` | PASS |
+| 25 | `batch-25-language-pack-retirement.md`, `old-to-new-map.json` | PASS |

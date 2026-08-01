@@ -1,0 +1,66 @@
+{
+  "schema": "docara.m3_legacy_mapping.v1",
+  "milestone": "M3.5",
+  "parent_sha": "fc3bd32c3453d863e278c7a61f07e794ccaeb1c7",
+  "rollback": "git revert <batch-25-commit>",
+  "records": [
+    {
+      "old": "resources/language-packs/ru.json",
+      "old_sha256": "c8392a6f6878283591ed21bb7757e375641ae614bc1e923782bd100c8a35c371",
+      "new": [
+        "docs/site/content/ru/lang.json",
+        "docs/site/content/ru/components.md",
+        "docs/site/content/ru/components/*.md"
+      ],
+      "disposition": "Package RU pack no longer owns public prose or UI copy; the empty record remains only as a compatibility boundary for package-owned legacy translation lookup."
+    },
+    {
+      "old": "resources/component-catalog/examples/docara.badge.ru.md",
+      "old_sha256": "e101c0985cb7a3f2ccf707337b13037574b5727cbe9d0d6245cdb122a7dde875",
+      "new": ["docs/site/content/ru/components/badge.md"],
+      "disposition": "deleted after zero-reference proof"
+    },
+    {
+      "old": "resources/component-catalog/examples/docara.columns.ru.md",
+      "old_sha256": "0adbaeefaabc2392b3972d0bfcf693742feabfeaea8f13ffc59e354477dc3d4e",
+      "new": ["docs/site/content/ru/components/grid.md"],
+      "disposition": "deleted after zero-reference proof; superseded authoring alias"
+    },
+    {
+      "old": "resources/component-catalog/examples/docara.cta.ru.md",
+      "old_sha256": "b9c71441e7b07ac69bf8886bb640c19abe1361cc3598f0cf8a8b9779b61dd566",
+      "new": ["docs/site/content/ru/components/button.md"],
+      "disposition": "deleted after zero-reference proof; superseded authoring alias"
+    },
+    {
+      "old": "resources/component-catalog/examples/docara.features.ru.md",
+      "old_sha256": "4c611a86cbbcd50142c3d608dcf1e94db8271892fdbbf4fef314a4c6cf524500",
+      "new": ["docs/site/content/ru/components/grid.md", "docs/site/content/ru/components/card.md"],
+      "disposition": "deleted after zero-reference proof; superseded composition"
+    },
+    {
+      "old": "resources/component-catalog/examples/docara.promo.ru.md",
+      "old_sha256": "990710ff0045949d10fee78f69756ea493f98f719fd106bf3310b3b74f769753",
+      "new": ["docs/site/content/ru/components/hero.md"],
+      "disposition": "deleted after zero-reference proof; superseded authoring alias"
+    },
+    {
+      "old": "resources/component-catalog/examples/docara.showcase.ru.md",
+      "old_sha256": "4efe60e1e67c67a89a022289a54eb4815cd380155f9217fa0630bce4be4477cb",
+      "new": ["docs/site/content/ru/components/card.md", "docs/site/content/ru/components/grid.md"],
+      "disposition": "deleted after zero-reference proof; superseded composition"
+    },
+    {
+      "old": "resources/component-catalog/examples/ui.alert.ru.md",
+      "old_sha256": "dad6ded3b5c1ff0daee0312ac29bc268d3c7456a92d6b94a492ae29c712b3a2c",
+      "new": ["docs/site/content/ru/components/alert.md"],
+      "disposition": "deleted after zero-reference proof; raw Smart authoring is internal"
+    },
+    {
+      "old": "resources/component-catalog/examples/ui.button.ru.md",
+      "old_sha256": "b931ba13253c9c5d99e62efc981c0e280eb5af3fd176159038d46c5e1120ac7a",
+      "new": ["docs/site/content/ru/components/button.md"],
+      "disposition": "deleted after zero-reference proof; raw Smart authoring is internal"
+    }
+  ]
+}

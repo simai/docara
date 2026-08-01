@@ -25,11 +25,13 @@ Evidence index:
 
 ## Execute M3.5
 
-1. Remove the remaining Russian component presentation prose from the package
-   language pack after proving the authored zero-projection path does not read it.
-2. Record exact old-to-new ownership mappings and zero-reference evidence.
-3. Retire only proved-unused Russian projector/allowlist/example surfaces;
-   preserve other locales and package-owned CLI messages.
+1. Batch 25 is PASS: the Russian public language-pack prose, allowlist entry and
+   eight zero-reference localized examples are retired with exact rollback.
+2. Batch 26 must stop publishing component-catalog assets only when every
+   locale projection has zero generated pages, while preserving generated
+   non-Russian legacy projection tests.
+3. Record the zero-reference asset inventory and exact full/single/static
+   results, then complete M3.5.
 4. Continue directly into M3.6 integrated acceptance after green legacy gates.
 5. Do not claim M3 complete before deterministic/static/browser/reverse gates.
 

@@ -25,6 +25,7 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
             $inventory['routes'],
             static fn (array $route): bool => $route['page_source_kind'] === 'generated_projection'
                 && ! in_array($route['url'], [
+                    '/ru/components/',
                     '/ru/components/alert/',
                     '/ru/components/backlinks/',
                     '/ru/components/banner/',
@@ -58,12 +59,13 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
         ));
         $allowlist = new LegacyPublicSourceAllowlist;
 
-        self::assertCount(15, $generated);
-        self::assertCount(15, $allowlist->generatedRoutes());
+        self::assertCount(14, $generated);
+        self::assertCount(14, $allowlist->generatedRoutes());
         foreach (['alert', 'backlinks', 'banner', 'button', 'card', 'code', 'code-from-file', 'details', 'diagram', 'download', 'embed', 'example', 'figure', 'footnotes-and-sources', 'grid', 'headings-and-text', 'hero', 'html', 'icon', 'kbd', 'links-and-images', 'lists-and-quotes', 'logos', 'math', 'media', 'steps', 'table', 'tabs', 'tree'] as $slug) {
             self::assertNotContains("/ru/components/$slug/", $allowlist->generatedRoutes());
         }
         self::assertNotContains('/ru/components/badge/', $allowlist->generatedRoutes());
+        self::assertNotContains('/ru/components/', $allowlist->generatedRoutes());
         $allowlist->assertGeneratedPages($generated);
 
         $generated[] = [
@@ -87,13 +89,14 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
 
         $allowlist = new LegacyPublicSourceAllowlist;
         $allowlist->assertLanguagePackComponentCounts($counts);
-        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 13, 'zh-Hans' => 8], $counts);
+        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 0, 'zh-Hans' => 8], $counts);
         $russian = json_decode(
             (string) file_get_contents($root . '/resources/language-packs/ru.json'),
             true,
             512,
             JSON_THROW_ON_ERROR,
-        )['components'];
+        )['components'] ?? [];
+        self::assertSame([], $russian);
         foreach ([
             'docara.alert',
             'docara.backlinks',

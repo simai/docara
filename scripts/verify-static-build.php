@@ -2870,8 +2870,31 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
         $localePolicy = LocaleRoutingPolicy::fromSite($expectedBaseConfiguration, $localeRegistry);
         $localeUrls = new LocaleUrlProjector($deploymentBase, $localeRegistry, $localePolicy);
         $catalogDefinition = $localeRegistry->get($catalogLocale);
+        $translationConfiguration = [
+            'default_locale' => $catalogLocale,
+            'locales' => [
+                $catalogLocale => [
+                    'label' => $catalogLocale,
+                    'direction' => 'ltr',
+                    'content_root' => 'content/' . $catalogLocale,
+                    'language_pack' => '@docara/' . $catalogLocale,
+                    'public_prefix' => '',
+                    'fallbacks' => $catalogLocale === 'en' ? [] : ['en'],
+                ],
+            ],
+        ];
+        if ($catalogLocale !== 'en') {
+            $translationConfiguration['locales']['en'] = [
+                'label' => 'en',
+                'direction' => 'ltr',
+                'content_root' => 'content/en',
+                'language_pack' => '@docara/en',
+                'public_prefix' => 'en',
+                'fallbacks' => [],
+            ];
+        }
         $translator = new Translator(
-            $localeRegistry,
+            LocaleRegistry::fromSite($translationConfiguration),
             new LanguagePackRepository($packageRoot),
         );
         $projector = new PortableComponentCatalogProjector(

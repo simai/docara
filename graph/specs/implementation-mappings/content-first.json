@@ -5,7 +5,7 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Content-first implementation mapping",
-  "summary": "M3.4 map of complete Russian component Markdown ownership and PageBuilder-derived views.",
+  "summary": "M3.5 map of complete Russian component Markdown ownership, PageBuilder-derived views and retired package-owned Russian public prose.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "R2_contract",
@@ -99,7 +99,9 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-18-embed-example.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-19-steps-tree.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-20-tabs.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-21-component-index.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-21-component-index.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-25-language-pack-retirement.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/old-to-new-map.json"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
@@ -108,7 +110,7 @@
     "M1B adds strict target config/lang/manifest input boundaries and a finite zero-growth allowlist for the remaining legacy public sources.",
     "89 physical Markdown files produce 89 authored routes after batch 21.",
     "PortableComponentCatalogProjector produces zero Russian component pages; PortableDeclarativeExampleProjector still produces 14 non-component public routes without physical Markdown.",
-    "The Russian language pack contains 13 component presentation records; English contains 42 and three other bundled packs contain 8 each.",
+    "The Russian package language pack contains zero public messages and no component presentation records; other locale legacy projection data remains unchanged.",
     "The badge route is owned by content/ru/components/badge.md and suppresses the generated badge detail route through AuthoredComponentPageIndex.",
     "M2 proves the physical Badge Markdown owns all page prose and examples while its structural component definition contains no documentation prose.",
     "M3.2 makes content/ru/components/alert.md the Alert owner, removes its Russian pack prose and generated-route allowlist entry, and retires its zero-reference Russian example projection.",
@@ -128,11 +130,12 @@
     "M3.3 batch 19 makes Steps and Tree physical, removes their Russian prose records/localized examples and adds accessible branch keyboard behavior through the shared declarative shell.",
     "M3.3 batch 20 makes Tabs physical, removes its Russian prose record/localized example and leaves a valid hash-bound empty detail receipt while the generated component index remains verified.",
     "M3.4 batch 21 makes the component index physical and derives its ordered list from PageBuilder route/title/description metadata through one generic typed-directive placeholder and hash-bound isolated-build receipt.",
-    "All 32 Russian component routes are authored Markdown; the Russian catalog page receipt contains no index and no details, while navigation, breadcrumbs, outline, previous/next and search use the same page-result topology."
+    "All 32 Russian component routes are authored Markdown; the Russian catalog page receipt contains no index and no details, while navigation, breadcrumbs, outline, previous/next and search use the same page-result topology.",
+    "M3.5 batch 25 moves the remaining reusable Russian public labels to content/ru/lang.json, retires the broad component allowlist entry and deletes eight zero-reference localized example projections with exact rollback hashes."
   ],
   "known_deviations": [
     "One-route-one-Markdown is true for all 32 Russian component routes but false for 14 of 103 logical pages outside this section.",
-    "The Russian language pack retains 13 component presentation records that must be removed after the zero-projection path stops reading them.",
+    "Zero-page Russian component catalog assets are still published and require an exact zero-reference retirement gate in batch 26.",
     "Generated routes use synthetic page_path values that resemble missing Markdown files."
   ],
   "deletion_gates": [
@@ -140,6 +143,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
   ],
-  "status": "m3_4_batch_21_implemented_m3_5_legacy_ready",
-  "mapped_revision": "commit containing batch-21-component-index.md; parent d243ec2e"
+  "status": "m3_5_batch_25_pass_asset_retirement_pending",
+  "mapped_revision": "commit containing batch-25-language-pack-retirement.md; parent fc3bd32c"
 }

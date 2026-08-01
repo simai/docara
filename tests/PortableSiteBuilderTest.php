@@ -116,6 +116,9 @@ final class PortableSiteBuilderTest extends TestCase
                     (string) file_get_contents($codePage),
                 ),
             );
+            if ($locale !== 'ru') {
+                unlink($this->tmpPath("content/$locale/lang.json"));
+            }
         }
         $this->filesystem->deleteDirectory($this->tmpPath('content-source'));
 
@@ -1295,6 +1298,7 @@ final class PortableSiteBuilderTest extends TestCase
         $componentRoutes = [
             '/components/alert/',
             '/components/backlinks/',
+            '/components/badge/',
             '/components/banner/',
             '/components/button/',
             '/components/card/',

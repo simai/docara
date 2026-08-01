@@ -1,0 +1,22 @@
+{
+  "id": "docara.batch.m0.contract_checkpoint",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "checkpoint",
+  "tz_role": "architecture_checkpoint",
+  "title": "M0. Architecture contract checkpoint",
+  "summary": "Synchronize the mandatory source, i18n, in-memory IR and PageBuilder decisions across specification, handoff, roadmap and graph before runtime changes.",
+  "owner": "teamlead",
+  "lifecycle": "completed",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/README.md", "source/handoff/docara-unified-architecture/START.md"],
+  "evidence_refs": ["docara.evidence.architecture_contract_checkpoint"],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.m0.contract",
+  "allowed_scope": ["Specification", "Graph", "Roadmap", "Handoff", "M0 discrepancy corrections", "Checkpoint evidence"],
+  "forbidden_scope": ["Runtime architecture implementation", "Legacy deletion", "Merge", "Tag", "Release", "Deploy"],
+  "checks": ["JSON syntax", "Graph validation", "Markdown links", "Mapping references", "git diff --check", "Separate commit"],
+  "status": "completed_with_evidence",
+  "next_action": "none"
+}

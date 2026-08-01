@@ -1,7 +1,7 @@
 # Docara unified architecture workflow
 
 Date: 2026-08-01
-State: architecture contract ready
+State: architecture-contract checkpoint passed; M1 ready
 Goal: `docara.goal.unified`
 Exact baseline: `a3ba9a4d04429f1f2046b8415764fe7bc89962c7`
 
@@ -75,3 +75,21 @@ Any recovered decision must be promoted into `docs/specification` and
 The architecture track is complete only when `docs/specification/ACCEPTANCE.md`
 and `graph/specs/gates/architecture-acceptance.json` pass with immutable
 evidence. Activity, screenshots or a successful build alone are not completion.
+
+## M0 progress
+
+- exact code, test, gap and deletion-gate references are recorded in all six
+  implementation mappings;
+- the 103-route inventory, dependency tuple, deterministic 321-file build
+  manifest and badge trace are preserved under
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/`;
+- two inherited documentation-count tests and the formatter baseline are red;
+- `DOC-ADR-015` resolves the gate-order divergence: badge-source readiness
+  precedes M2 and global source ownership remains open through M3;
+- `DOC-ADR-016` records library/consumer Composer lock ownership;
+- the target now has one `content/<locale>/lang.json`, in-memory typed IR and
+  one PageBuilder pipeline selected only by route set;
+- `docara.gate.m0_baseline` is accepted and `STATUS.yaml` advances to M1 after
+  green checkpoint verification;
+- next bounded proposal:
+  `source/workflow/2026-08-01-docara-m1-m2-bounded-plan.md`.

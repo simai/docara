@@ -9,9 +9,14 @@ PASS ставится только по воспроизводимому evidenc
 
 ## A. Источники истины
 
-- [ ] Каждый публичный route каждой локали имеет один физический Markdown.
+- [ ] Каждый публичный route каждой локали имеет ровно один
+      `content/<locale>/<route>.md`.
 - [ ] Один Markdown не создаёт несколько скрытых публичных страниц.
-- [ ] Language packs содержат только системные UI-сообщения.
+- [ ] Единственный источник общих видимых переводов локали —
+      `content/<locale>/lang.json`.
+- [ ] В target отсутствуют публичный `resources/i18n`, prose-bearing language
+      packs и compatibility path для `site.json`.
+- [ ] Package-owned CLI/build messages не входят в public page inputs.
 - [ ] Component manifests не содержат редакторскую прозу своих страниц.
 - [ ] Config содержит только композицию и настройки, без HTML/CSS/статей.
 - [ ] Удаление `build` и `var/cache` не удаляет исходные данные.
@@ -20,11 +25,13 @@ PASS ставится только по воспроизводимому evidenc
 
 ## B. Единственный конвейер
 
-- [ ] Full build вызывает `PageBuilder` для каждого route.
-- [ ] Single-page build вызывает тот же `PageBuilder` для одного route.
+- [ ] Full build передаёт полный набор route в один `PageBuilder` pipeline.
+- [ ] Single-page build передаёт набор из одного route в тот же pipeline.
 - [ ] Для одной revision full/single дают одинаковые HTML, assets и metadata.
 - [ ] Нет второго пути `trustedMainHtml`/`buildGenerated` для публичных страниц.
-- [ ] Markdown один раз компилируется в typed Document IR.
+- [ ] Markdown один раз компилируется в typed Document IR только в памяти.
+- [ ] Page-level IR JSON/JSONL не обязателен; cache, search index, `--dump-ir`
+      и test evidence удаляемы и не становятся source of truth.
 - [ ] Все IR nodes рендерятся через один `NodeRendererRegistry`.
 - [ ] Неизвестный node fail-closed с понятной source location.
 
@@ -87,7 +94,8 @@ PASS ставится только по воспроизводимому evidenc
 - [ ] Declarative example projector удалён после example parity.
 - [ ] `trustedMainHtml` и generated page bypass удалены.
 - [ ] Параллельные Smart renderers сведены к gateway и удалены.
-- [ ] Component prose удалена из language-pack schemas/data/models.
+- [ ] Публичный `resources/i18n`, `site.json` compatibility и component prose
+      удалены из public schemas/data/models.
 - [ ] Raw coarse Markdown fallback заменён typed IR там, где он обходил registry.
 - [ ] Zero-reference scan подтверждает отсутствие runtime references на
       удалённые пути.

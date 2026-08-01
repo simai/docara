@@ -40,7 +40,10 @@ Docara должна быть достаточно простой для один
 ### 4.1. Контент
 
 Контентом являются физические Markdown-файлы в `content/<locale>`. Один
-публичный route имеет ровно один исходный Markdown-файл. Заголовки, абзацы,
+публичный route одной локали имеет ровно один исходный Markdown-файл по
+контракту `content/<locale>/<route>.md`. Для route каталога `<route>` включает
+`index`, например `/ru/components/` принадлежит
+`content/ru/components/index.md`. Заголовки, абзацы,
 таблицы, код, примеры, описания параметров и вызовы компонентов находятся в
 этом файле.
 
@@ -87,7 +90,7 @@ my-docs/
 ├── simai-framework.lock.json
 ├── content/
 │   ├── ru/
-│   │   ├── site.json
+│   │   ├── lang.json
 │   │   ├── index.md
 │   │   ├── section.json
 │   │   └── components/
@@ -112,13 +115,20 @@ my-docs/
 страниц. Route между локалями связывается относительным путём, а при
 необходимости — явным translation key в front matter.
 
-Текст делится на три группы:
+В целевой архитектуре текст делится на два публичных контура:
 
-1. `resources/i18n/<locale>.json` пакета — только встроенные сообщения движка:
-   «Поиск», «Закрыть», «Скопировано», ошибки, accessibility labels;
-2. `content/<locale>/**/*.md` — редакторский контент страниц;
-3. `content/<locale>/site.json` — глобальный текст конкретного сайта: бренд,
-   верхнее меню, подписи общих форм и допустимые UI overrides.
+1. `content/<locale>/**/*.md` — редакторский контент страниц;
+2. `content/<locale>/lang.json` — только повторяющиеся видимые интерфейсные
+   строки локали: поиск, содержание, копирование, переходы, accessibility
+   labels и другие общие подписи.
+
+Публичного `resources/i18n` нет. Бренд, меню, CTA, layout и поведение задаются
+структурированными полями `docara.json`, `section.json` и `.page.json`, но эти
+файлы не владеют статьями. Обратная совместимость с `site.json` не требуется.
+
+Сообщения CLI, сборщика и внутренних ошибок не смешиваются с контентом сайта.
+Если им нужна локализация, это package-owned системный контур, который не
+загружается `PageBuilder` и не участвует в сборке публичных страниц.
 
 Отсутствующий перевод страницы не заменяется содержимым другой локали без
 явной политики. Сборка должна либо пропустить route, либо завершиться
@@ -143,8 +153,12 @@ diagnostics, provenance и hashes для incremental build. Готовый HTML 
 
 ## 8. Document IR
 
-IR — immutable производный формат между Markdown и HTML. Автор не пишет его
-вручную. Cache IR можно удалить без потери сайта.
+IR — immutable производный формат между Markdown и HTML. `MarkdownCompiler`
+создаёт типизированный `Document` только в памяти, автор не пишет его вручную.
+Обязательных промежуточных JSON/JSONL-файлов страницы нет. Сериализация
+разрешена лишь как полностью удаляемый cache, поисковый индекс,
+диагностический `--dump-ir` или test evidence; удаление любого такого файла не
+меняет источник истины и не препятствует полной пересборке.
 
 Обязательные типы узлов:
 
@@ -269,14 +283,16 @@ components. Локальный CSS допустим только для прод
 
 ## 14. Полная и частичная сборка
 
-Две команды используют один `PageBuilder`:
+Полная и одиночная сборка используют один `PageBuilder` и один и тот же
+конвейер. Различается только набор route, переданный в него:
 
 ```text
 docara build
 docara build-page <locale> <route>
 ```
 
-`build-page` не строит сначала весь сайт. Он находит один source, разрешает его
+`build-page` не строит сначала весь сайт. Селектор выбирает один route до
+компиляции, после чего тот же `PageBuilder` находит source, разрешает его
 config chain и необходимые shared dependencies, строит страницу и локально
 обновляет зависимые indexes. Результат route при full и single-page build для
 одной revision обязан быть семантически и байтово одинаковым, кроме явно
@@ -287,14 +303,14 @@ config chain и необходимые shared dependencies, строит стр�
 Следующее всегда можно удалить и восстановить:
 
 ```text
-var/cache/ir/**/*.json
+var/cache/ir/**/*
 var/cache/site-index.json
 var/cache/search-index.jsonl
 var/cache/backlinks.json
 build/**/*.html
 ```
 
-Search, navigation, outline, backlinks и component catalog строятся из
+IR-cache необязателен. Search, navigation, outline, backlinks и component catalog строятся из
 Markdown metadata, manifests и resolved config. Ни один индекс не становится
 авторским источником страницы.
 
@@ -337,7 +353,9 @@ Starter создаёт новый проект. Он не является ша�
 
 После доказанной замены удаляются:
 
-- редакторская проза и component records из language packs;
+- публичный `resources/i18n`, редакторская проза и component records из
+  language packs;
+- legacy `site.json` и его compatibility path;
 - публичные страницы, генерируемые component/example projectors;
 - `trustedMainHtml` и отдельный `buildGenerated()` путь;
 - параллельные `InlineComponentRenderer`, `SmartRenderer` и ранний

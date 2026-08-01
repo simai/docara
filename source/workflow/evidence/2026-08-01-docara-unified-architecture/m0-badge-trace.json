@@ -1,0 +1,98 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_id": "docara.evidence.m0_inventory.badge",
+  "candidate_revision": "2928d68b81665dd4873cebeb87a6192343c28805",
+  "route": "/ru/components/badge/",
+  "source": {
+    "path": "content/ru/components/badge.md",
+    "kind": "authored_markdown",
+    "sha256": "e490652875357f06228b62eee11873e67077d0232f6553ba8c1d91f9a943605b"
+  },
+  "configuration_trace": [
+    {
+      "role": "site",
+      "schema": "docara.site.v1",
+      "sha256": "c792f77847612ea93f17b3015c0c9277155a7c2ce984ca835a2c7d995ca8274a",
+      "source": "docara.json"
+    },
+    {
+      "role": "framework-lock",
+      "schema": "docara.framework_lock.v1",
+      "sha256": "ef641e0f94f2dd77a66c649922bd93be82d94e7504b9f84472522935b45e21a2",
+      "source": "simai-framework.lock.json"
+    },
+    {
+      "role": "section",
+      "schema": "docara.section.v1",
+      "sha256": "b12716cb041bccc425d5775b10909ee59aaf353d809c2ed5b125e9ad4183ce80",
+      "source": "content/ru/section.json"
+    },
+    {
+      "role": "section",
+      "schema": "docara.section.v1",
+      "sha256": "a5f984e79a2a5d9013bc71f7c3bf20dcfdb437babe768ab550e109f6038e8836",
+      "source": "content/ru/components/section.json"
+    },
+    {
+      "role": "content",
+      "sha256": "e490652875357f06228b62eee11873e67077d0232f6553ba8c1d91f9a943605b",
+      "source": "content/ru/components/badge.md"
+    }
+  ],
+  "canonical_hash": "a21866ff97a3625b16e4baf67f1fe095d64c67bee432dc378731489634466caf",
+  "document_ir": {
+    "plan_hash": "546aaaa6f45d7a3c93c7504d07fd0c844ed30ecac9fefb92d379f05f8aa3d197",
+    "normalized_component_calls": [],
+    "framework_rendered_components": [],
+    "observed_badge_path": [
+      "PortableConfigurationLoader::resolve",
+      "PortableSiteBuilder::build",
+      "FrameworkComponentRuntime::extract (no badge call found)",
+      "DeclarativePipeline::build",
+      "DocumentParser::parse -> MarkdownNode",
+      "DocumentNodeBlockRegistry -> MarkdownNodeBlockResolver",
+      "DocumentNodeRendererRegistry -> MarkdownDocumentNodeRenderer",
+      "PortableMarkdownRenderer::render",
+      "PortableExampleRenderer",
+      "InlineComponentRenderer::extract -> InlineComponentRenderer::badge",
+      "DeclarativePortablePagePublisher::render"
+    ]
+  },
+  "output": {
+    "path": "ru/components/badge/index.html",
+    "html_sha256": "faeb6c6a8e075bff9ad5602bcea4b1e019c700aeae74f696c0289e32fbb83f79",
+    "publisher": "docara.declarative_page_publisher.v1",
+    "badge_instances": 16
+  },
+  "assets": {
+    "declarative": [
+      "docara.reader",
+      "docara.smart.brand.css",
+      "docara.smart.navigation.css",
+      "docara.smart.navigation.js",
+      "docara.smart.toc.css",
+      "docara.smart.toc.js",
+      "simai.framework",
+      "simai.framework.core.css"
+    ],
+    "framework_asset_keys": [
+      "docara.framework.storage.compatibility",
+      "simai.framework.boot",
+      "simai.framework.core.css",
+      "simai.framework.utility.full.css",
+      "simai.framework.icon_font.css",
+      "simai.framework.icon_font.ready",
+      "simai.framework.smart_base.js",
+      "simai.framework.core.js",
+      "simai.framework.sf_button.js",
+      "simai.framework.sf_icon.js",
+      "simai.framework.sf_modal.js"
+    ]
+  },
+  "divergences": [
+    "Badge prose is authored in physical Markdown and the route is authored_markdown.",
+    "Badge calls occur inside example code fences and are rendered during example preview by InlineComponentRenderer.",
+    "Badge is not represented as a typed component node and does not pass SmartComponentGateway; normalized_component_calls is empty.",
+    "InlineComponentRenderer hard-codes badge props and HTML."
+  ]
+}

@@ -5,19 +5,53 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Smart gateway implementation mapping",
-  "summary": "Maps component syntax, manifests, parameter validation, templates and assets to a single gateway.",
+  "summary": "Exact M0 map of declarative gateway coverage and active parallel component renderers.",
   "owner": "dev",
-  "lifecycle": "planned",
-  "readiness": "R1_draft",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/DOCARA-TZ.md#10-smart-компоненты"],
   "profile_refs": ["docara.unified"],
   "from_ref": "docara.feature.smart_gateway",
   "to_refs": ["DOC-REQ-006"],
-  "code_refs": [],
-  "test_refs": [],
-  "evidence_refs": ["docara.evidence.badge_vertical_slice"],
+  "code_refs": [
+    "src/Declarative/Smart/SmartComponentGateway.php#SmartComponentGateway::resolve",
+    "src/Declarative/Smart/SmartPlanResolver.php#SmartPlanResolver::resolve",
+    "src/Declarative/Smart/CompositeSmartPlanResolver.php#CompositeSmartPlanResolver::resolve",
+    "src/Declarative/Rendering/SmartRenderer.php#SmartRenderer::render",
+    "src/Smart/SmartRegistry.php",
+    "src/Framework/FrameworkComponentRuntime.php#FrameworkComponentRuntime::extract",
+    "src/Markdown/InlineComponentRenderer.php#InlineComponentRenderer::extract",
+    "src/PortableSite/PortableMarkdownRenderer.php#PortableMarkdownRenderer::render"
+  ],
+  "test_refs": [
+    "tests/Unit/SmartComponentGatewayTest.php#test_it_routes_framework_and_product_components_through_one_gateway",
+    "tests/Unit/FrameworkComponentRuntimeTest.php#test_it_extracts_renders_and_hydrates_components_outside_code_fences",
+    "tests/Unit/CommonMarkInspectorTest.php",
+    "tests/Unit/PortableMarkdownRendererTest.php"
+  ],
+  "evidence_refs": [
+    "docara.evidence.m0_inventory",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json"
+  ],
   "review_refs": ["docara.gate.vertical_slice"],
-  "known_deviations": ["Current component parsing and public documentation projection include component-specific hardcoding."],
-  "status": "mapping_required_in_m0"
+  "current_behavior": [
+    "Declarative SmartComponentGateway routes ui.* and docara.* plan resolution through one facade when a SmartCallNode reaches it.",
+    "Framework manifests, props and assets are lock validated.",
+    "Product Smart resolution is registry backed, but SmartRenderer and semantic validation still enumerate the supported product set.",
+    "FrameworkComponentRuntime and InlineComponentRenderer remain separate active paths."
+  ],
+  "known_deviations": [
+    "DocumentParser hard-codes only ui.alert and ui.button as directive names.",
+    "Inline aliases badge, button, icon and kbd are regex matched and rendered as hard-coded HTML outside the gateway.",
+    "Badge receipt records zero normalized component calls despite 16 rendered badge examples.",
+    "The current facade returns a resolved plan; final HTML/assets/diagnostics/provenance are split across SmartRenderer and other runtimes rather than one target RenderArtifact gateway contract."
+  ],
+  "deletion_gates": [
+    "Retire InlineComponentRenderer::badge only after all badge calls reach one component node/gateway and exact HTML/assets parity passes.",
+    "Retire FrameworkComponentRuntime::extract only after block and inline Framework calls use the same gateway.",
+    "Remove component-specific SmartRenderer branches only after manifest-driven template/view resolution has parity and fail-closed tests."
+  ],
+  "status": "mapped_in_m0",
+  "mapped_revision": "2928d68b81665dd4873cebeb87a6192343c28805"
 }

@@ -5,7 +5,7 @@
   "subtype": "feature",
   "tz_role": "architecture_contract",
   "title": "Typed Document IR",
-  "summary": "Markdown compiles into immutable typed nodes with provenance before any HTML is rendered.",
+  "summary": "Markdown compiles into immutable typed in-memory nodes with provenance before any HTML is rendered.",
   "owner": "dev",
   "lifecycle": "accepted",
   "readiness": "R2_contract",
@@ -14,5 +14,5 @@
   "evidence_refs": [],
   "profile_refs": ["docara.unified"],
   "node_kinds": ["document", "heading", "paragraph", "text", "emphasis", "strong", "inline_code", "link", "image", "list", "list_item", "blockquote", "table", "code_block", "thematic_break", "component", "raw_html"],
-  "invariants": ["IR is derived and disposable.", "Every node has source file, line and column.", "HTML never re-enters the parser as trusted content."]
+  "invariants": ["IR is created in memory and is derived and disposable.", "No page JSON or JSONL is mandatory; serialization is limited to disposable cache, search index, --dump-ir or test evidence.", "Every node has source file, line and column.", "HTML never re-enters the parser as trusted content."]
 }

@@ -1,0 +1,735 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_id": "docara.evidence.m0_inventory.routes",
+  "candidate_revision": "2928d68b81665dd4873cebeb87a6192343c28805",
+  "baseline_parent": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7",
+  "counts": {
+    "physical_markdown": 59,
+    "public_pages": 103,
+    "authored_markdown_routes": 59,
+    "generated_projection_routes": 44
+  },
+  "routes": [
+    {
+      "url": "/ru/authoring/",
+      "output": "ru/authoring/index.html",
+      "page_path": "content/ru/authoring.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/branding/",
+      "output": "ru/authoring/branding/index.html",
+      "page_path": "content/ru/authoring/branding.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/configuration/",
+      "output": "ru/authoring/configuration/index.html",
+      "page_path": "content/ru/authoring/configuration.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/inheritance/",
+      "output": "ru/authoring/inheritance/index.html",
+      "page_path": "content/ru/authoring/inheritance.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/language-packs/",
+      "output": "ru/authoring/language-packs/index.html",
+      "page_path": "content/ru/authoring/language-packs.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/layout-and-navigation/",
+      "output": "ru/authoring/layout-and-navigation/index.html",
+      "page_path": "content/ru/authoring/layout-and-navigation.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/layout-and-navigation/hierarchy/",
+      "output": "ru/authoring/layout-and-navigation/hierarchy/index.html",
+      "page_path": "content/ru/authoring/layout-and-navigation/hierarchy.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/layout-and-navigation/hierarchy/four-level/",
+      "output": "ru/authoring/layout-and-navigation/hierarchy/four-level/index.html",
+      "page_path": "content/ru/authoring/layout-and-navigation/hierarchy/four-level.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/localization/",
+      "output": "ru/authoring/localization/index.html",
+      "page_path": "content/ru/authoring/localization.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/markdown/",
+      "output": "ru/authoring/markdown/index.html",
+      "page_path": "content/ru/authoring/markdown.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/multilingual-site/",
+      "output": "ru/authoring/multilingual-site/index.html",
+      "page_path": "content/ru/authoring/multilingual-site.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/project-files/",
+      "output": "ru/authoring/project-files/index.html",
+      "page_path": "content/ru/authoring/project-files.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/reader-settings/",
+      "output": "ru/authoring/reader-settings/index.html",
+      "page_path": "content/ru/authoring/reader-settings.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/reading-context/",
+      "output": "ru/authoring/reading-context/index.html",
+      "page_path": "content/ru/authoring/reading-context.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/redirects/",
+      "output": "ru/authoring/redirects/index.html",
+      "page_path": "content/ru/authoring/redirects.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/regions/",
+      "output": "ru/authoring/regions/index.html",
+      "page_path": "content/ru/authoring/regions.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/authoring/search/",
+      "output": "ru/authoring/search/index.html",
+      "page_path": "content/ru/authoring/search.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/build/",
+      "output": "ru/build/index.html",
+      "page_path": "content/ru/build.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/build/determinism/",
+      "output": "ru/build/determinism/index.html",
+      "page_path": "content/ru/build/determinism.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/build/local-preview/",
+      "output": "ru/build/local-preview/index.html",
+      "page_path": "content/ru/build/local-preview.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/build/php-only/",
+      "output": "ru/build/php-only/index.html",
+      "page_path": "content/ru/build/php-only.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/build/publish/",
+      "output": "ru/build/publish/index.html",
+      "page_path": "content/ru/build/publish.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/build/static-output/",
+      "output": "ru/build/static-output/index.html",
+      "page_path": "content/ru/build/static-output.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/build/update/",
+      "output": "ru/build/update/index.html",
+      "page_path": "content/ru/build/update.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/build/verify/",
+      "output": "ru/build/verify/index.html",
+      "page_path": "content/ru/build/verify.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/badge/",
+      "output": "ru/components/badge/index.html",
+      "page_path": "content/ru/components/badge.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/syntax/",
+      "output": "ru/components/syntax/index.html",
+      "page_path": "content/ru/components/syntax.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/demonstrator-results/composition-inheritance/page/",
+      "output": "ru/demonstrator-results/composition-inheritance/page/index.html",
+      "page_path": "content/ru/demonstrator-results/composition-inheritance/page.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/demonstrator-results/inheritance/page/",
+      "output": "ru/demonstrator-results/inheritance/page/index.html",
+      "page_path": "content/ru/demonstrator-results/inheritance/page.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/demonstrator-results/preset-docs/",
+      "output": "ru/demonstrator-results/preset-docs/index.html",
+      "page_path": "content/ru/demonstrator-results/preset-docs.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/demonstrator-results/preset-landing/",
+      "output": "ru/demonstrator-results/preset-landing/index.html",
+      "page_path": "content/ru/demonstrator-results/preset-landing.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/demonstrator-results/product-smart-runtime/",
+      "output": "ru/demonstrator-results/product-smart-runtime/index.html",
+      "page_path": "content/ru/demonstrator-results/product-smart-runtime.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/demonstrator-results/region-aside/",
+      "output": "ru/demonstrator-results/region-aside/index.html",
+      "page_path": "content/ru/demonstrator-results/region-aside.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/demonstrator-results/region-footer/",
+      "output": "ru/demonstrator-results/region-footer/index.html",
+      "page_path": "content/ru/demonstrator-results/region-footer.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/demonstrator-results/region-header/",
+      "output": "ru/demonstrator-results/region-header/index.html",
+      "page_path": "content/ru/demonstrator-results/region-header.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/demonstrator-results/region-sidebar/",
+      "output": "ru/demonstrator-results/region-sidebar/index.html",
+      "page_path": "content/ru/demonstrator-results/region-sidebar.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/demonstrator-results/regions-composed/",
+      "output": "ru/demonstrator-results/regions-composed/index.html",
+      "page_path": "content/ru/demonstrator-results/regions-composed.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/demonstrator-results/regions-disabled/",
+      "output": "ru/demonstrator-results/regions-disabled/index.html",
+      "page_path": "content/ru/demonstrator-results/regions-disabled.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/demonstrator-results/smart-alert/",
+      "output": "ru/demonstrator-results/smart-alert/index.html",
+      "page_path": "content/ru/demonstrator-results/smart-alert.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/demonstrator-results/smart-button/",
+      "output": "ru/demonstrator-results/smart-button/index.html",
+      "page_path": "content/ru/demonstrator-results/smart-button.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/development/",
+      "output": "ru/development/index.html",
+      "page_path": "content/ru/development.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/development/architecture/",
+      "output": "ru/development/architecture/index.html",
+      "page_path": "content/ru/development/architecture.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/development/composition-extensions/",
+      "output": "ru/development/composition-extensions/index.html",
+      "page_path": "content/ru/development/composition-extensions.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/development/extensions/",
+      "output": "ru/development/extensions/index.html",
+      "page_path": "content/ru/development/extensions.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/development/framework-components/",
+      "output": "ru/development/framework-components/index.html",
+      "page_path": "content/ru/development/framework-components.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/development/getting-started/",
+      "output": "ru/development/getting-started/index.html",
+      "page_path": "content/ru/development/getting-started.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/development/smart-components/",
+      "output": "ru/development/smart-components/index.html",
+      "page_path": "content/ru/development/smart-components.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/development/testing/",
+      "output": "ru/development/testing/index.html",
+      "page_path": "content/ru/development/testing.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/",
+      "output": "ru/index.html",
+      "page_path": "content/ru/index.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/landing/",
+      "output": "ru/landing/index.html",
+      "page_path": "content/ru/landing.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/migration/",
+      "output": "ru/migration/index.html",
+      "page_path": "content/ru/migration.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/reference/",
+      "output": "ru/reference/index.html",
+      "page_path": "content/ru/reference.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/reference/cli/",
+      "output": "ru/reference/cli/index.html",
+      "page_path": "content/ru/reference/cli.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/reference/framework-lock/",
+      "output": "ru/reference/framework-lock/index.html",
+      "page_path": "content/ru/reference/framework-lock.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/reference/resolved-plan/",
+      "output": "ru/reference/resolved-plan/index.html",
+      "page_path": "content/ru/reference/resolved-plan.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/reference/schemas/",
+      "output": "ru/reference/schemas/index.html",
+      "page_path": "content/ru/reference/schemas.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/reference/security-and-errors/",
+      "output": "ru/reference/security-and-errors/index.html",
+      "page_path": "content/ru/reference/security-and-errors.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/start/",
+      "output": "ru/start/index.html",
+      "page_path": "content/ru/start.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/troubleshooting/",
+      "output": "ru/troubleshooting/index.html",
+      "page_path": "content/ru/troubleshooting.md",
+      "page_source_kind": "authored_markdown",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/",
+      "output": "ru/components/index.html",
+      "page_path": "content/ru/components/index.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/alert/",
+      "output": "ru/components/alert/index.html",
+      "page_path": "content/ru/components/alert.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/backlinks/",
+      "output": "ru/components/backlinks/index.html",
+      "page_path": "content/ru/components/backlinks.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/banner/",
+      "output": "ru/components/banner/index.html",
+      "page_path": "content/ru/components/banner.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/button/",
+      "output": "ru/components/button/index.html",
+      "page_path": "content/ru/components/button.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/card/",
+      "output": "ru/components/card/index.html",
+      "page_path": "content/ru/components/card.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/code-from-file/",
+      "output": "ru/components/code-from-file/index.html",
+      "page_path": "content/ru/components/code-from-file.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/details/",
+      "output": "ru/components/details/index.html",
+      "page_path": "content/ru/components/details.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/diagram/",
+      "output": "ru/components/diagram/index.html",
+      "page_path": "content/ru/components/diagram.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/download/",
+      "output": "ru/components/download/index.html",
+      "page_path": "content/ru/components/download.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/embed/",
+      "output": "ru/components/embed/index.html",
+      "page_path": "content/ru/components/embed.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/example/",
+      "output": "ru/components/example/index.html",
+      "page_path": "content/ru/components/example.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/figure/",
+      "output": "ru/components/figure/index.html",
+      "page_path": "content/ru/components/figure.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/grid/",
+      "output": "ru/components/grid/index.html",
+      "page_path": "content/ru/components/grid.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/hero/",
+      "output": "ru/components/hero/index.html",
+      "page_path": "content/ru/components/hero.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/html/",
+      "output": "ru/components/html/index.html",
+      "page_path": "content/ru/components/html.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/icon/",
+      "output": "ru/components/icon/index.html",
+      "page_path": "content/ru/components/icon.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/kbd/",
+      "output": "ru/components/kbd/index.html",
+      "page_path": "content/ru/components/kbd.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/logos/",
+      "output": "ru/components/logos/index.html",
+      "page_path": "content/ru/components/logos.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/math/",
+      "output": "ru/components/math/index.html",
+      "page_path": "content/ru/components/math.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/media/",
+      "output": "ru/components/media/index.html",
+      "page_path": "content/ru/components/media.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/steps/",
+      "output": "ru/components/steps/index.html",
+      "page_path": "content/ru/components/steps.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/tabs/",
+      "output": "ru/components/tabs/index.html",
+      "page_path": "content/ru/components/tabs.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/tree/",
+      "output": "ru/components/tree/index.html",
+      "page_path": "content/ru/components/tree.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/code/",
+      "output": "ru/components/code/index.html",
+      "page_path": "content/ru/components/code.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/footnotes-and-sources/",
+      "output": "ru/components/footnotes-and-sources/index.html",
+      "page_path": "content/ru/components/footnotes-and-sources.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/headings-and-text/",
+      "output": "ru/components/headings-and-text/index.html",
+      "page_path": "content/ru/components/headings-and-text.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/links-and-images/",
+      "output": "ru/components/links-and-images/index.html",
+      "page_path": "content/ru/components/links-and-images.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/lists-and-quotes/",
+      "output": "ru/components/lists-and-quotes/index.html",
+      "page_path": "content/ru/components/lists-and-quotes.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/components/table/",
+      "output": "ru/components/table/index.html",
+      "page_path": "content/ru/components/table.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/",
+      "output": "ru/examples/index.html",
+      "page_path": "content/ru/examples/index.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/regions-composed/",
+      "output": "ru/examples/regions-composed/index.html",
+      "page_path": "content/ru/examples/regions-composed.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/region-header/",
+      "output": "ru/examples/region-header/index.html",
+      "page_path": "content/ru/examples/region-header.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/region-sidebar/",
+      "output": "ru/examples/region-sidebar/index.html",
+      "page_path": "content/ru/examples/region-sidebar.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/region-aside/",
+      "output": "ru/examples/region-aside/index.html",
+      "page_path": "content/ru/examples/region-aside.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/region-footer/",
+      "output": "ru/examples/region-footer/index.html",
+      "page_path": "content/ru/examples/region-footer.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/regions-disabled/",
+      "output": "ru/examples/regions-disabled/index.html",
+      "page_path": "content/ru/examples/regions-disabled.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/inheritance/",
+      "output": "ru/examples/inheritance/index.html",
+      "page_path": "content/ru/examples/inheritance.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/composition-inheritance/",
+      "output": "ru/examples/composition-inheritance/index.html",
+      "page_path": "content/ru/examples/composition-inheritance.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/preset-docs/",
+      "output": "ru/examples/preset-docs/index.html",
+      "page_path": "content/ru/examples/preset-docs.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/preset-landing/",
+      "output": "ru/examples/preset-landing/index.html",
+      "page_path": "content/ru/examples/preset-landing.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/product-smart-runtime/",
+      "output": "ru/examples/product-smart-runtime/index.html",
+      "page_path": "content/ru/examples/product-smart-runtime.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/smart-alert/",
+      "output": "ru/examples/smart-alert/index.html",
+      "page_path": "content/ru/examples/smart-alert.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    },
+    {
+      "url": "/ru/examples/smart-button/",
+      "output": "ru/examples/smart-button/index.html",
+      "page_path": "content/ru/examples/smart-button.md",
+      "page_source_kind": "generated_projection",
+      "locale": "ru"
+    }
+  ]
+}

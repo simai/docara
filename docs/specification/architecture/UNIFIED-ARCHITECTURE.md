@@ -16,7 +16,9 @@
 
 Ни один поздний слой не становится источником для раннего. В частности, HTML
 не парсится обратно, generated catalog не создаёт public prose, а UI
-translation pack не хранит страницу компонента.
+translation pack не хранит страницу компонента. Публичного package-owned
+translation pack вообще нет: общие видимые подписи локали читаются только из
+`content/<locale>/lang.json`.
 
 ## 2. Ответственности модулей
 
@@ -110,8 +112,10 @@ Resolved config содержит provenance каждого значения.
 
 Общие поля узла: `type`, `source`, optional `attributes`, optional `children`.
 Text node использует `value`. Component node использует `name`, `props`,
-`slots`. IR serializable в JSON для диагностики, но PHP runtime работает с
-типизированными immutable objects.
+`slots`. `MarkdownCompiler` создаёт typed IR только в памяти, и PHP runtime
+работает с immutable objects. Обязательного page-level JSON/JSONL нет.
+Сериализация допустима только как удаляемый cache, search projection,
+`--dump-ir` или test evidence.
 
 Parser не сохраняет целый документ в одном `MarkdownNode`. Native block и
 inline constructs получают собственные типы.
@@ -152,8 +156,13 @@ provenance. Поддерживаемые kinds первой версии: `slot`
 
 ## 9. PageBuilder и SiteBuilder
 
-`PageBuilder` является атомарной единицей. `SiteBuilder` только перечисляет
-routes, вызывает `PageBuilder` и объединяет site-level indexes.
+`PageBuilder` является атомарной единицей. `SiteBuilder` только формирует набор
+routes, вызывает тот же `PageBuilder` для каждого выбранного route и объединяет
+site-level indexes. Single-page режим передаёт набор из одного route; отдельной
+ветки parsing/rendering/composition у него нет.
+
+Локализованные сообщения CLI/сборщика, если появятся, принадлежат пакету и
+живут вне public content pipeline. `PageBuilder` их не загружает.
 
 Full/single parity проверяется на HTML, asset manifest, headings, links и
 diagnostics. Частичная сборка может использовать cache, но cache miss не меняет
@@ -218,3 +227,6 @@ Document IR и Smart invocation должны быть переносимы ка�
 baseline. Новый контент, компонент или renderer реализуется исключительно в
 целевом потоке. Каждый legacy path имеет deletion gate и удаляется сразу после
 parity evidence; постоянный compatibility layer не создаётся.
+
+Это правило включает `resources/i18n`, prose-bearing language packs и
+`site.json`: они не получают target compatibility layer.

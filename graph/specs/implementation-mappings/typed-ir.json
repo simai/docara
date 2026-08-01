@@ -5,19 +5,55 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Typed IR implementation mapping",
-  "summary": "Maps parser and node provenance requirements to the future typed IR implementation.",
+  "summary": "Exact M0 map of the partial declarative AST, coarse Markdown node and render registries.",
   "owner": "dev",
-  "lifecycle": "planned",
-  "readiness": "R1_draft",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/DOCARA-TZ.md#8-document-ir"],
   "profile_refs": ["docara.unified"],
   "from_ref": "docara.feature.typed_ir",
   "to_refs": ["DOC-REQ-004", "DOC-REQ-005"],
-  "code_refs": [],
-  "test_refs": [],
-  "evidence_refs": ["docara.evidence.badge_vertical_slice"],
+  "code_refs": [
+    "src/Declarative/Document/DocumentParser.php#DocumentParser::parse",
+    "src/Declarative/Document/DocumentAst.php",
+    "src/Declarative/Document/MarkdownNode.php",
+    "src/Declarative/Document/SmartCallNode.php",
+    "src/Declarative/Document/SourceSpan.php",
+    "src/Declarative/Document/Compilation/DocumentNodeBlockRegistry.php",
+    "src/Declarative/Rendering/Document/DocumentNodeRendererRegistry.php",
+    "src/Declarative/Rendering/Document/MarkdownDocumentNodeRenderer.php",
+    "src/PortableSite/PortableMarkdownRenderer.php"
+  ],
+  "test_refs": [
+    "tests/Unit/DeclarativeDocumentParserTest.php#test_it_parses_markdown_and_smart_calls_into_an_immutable_typed_ast",
+    "tests/Unit/DeclarativeDocumentParserTest.php#test_it_keeps_smart_examples_inside_code_fences_as_markdown",
+    "tests/Unit/DeclarativePageCompilerTest.php#test_document_node_registry_fails_closed_for_an_unknown_node_type",
+    "tests/Unit/DeclarativeRenderingTest.php#test_it_renders_the_resolved_plan_through_trusted_presentation_templates"
+  ],
+  "evidence_refs": [
+    "docara.evidence.m0_inventory",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json"
+  ],
   "review_refs": ["docara.gate.vertical_slice"],
-  "known_deviations": ["Current parser retains coarse raw Markdown nodes and separate projectors bypass a universal renderer registry."],
-  "status": "mapping_required_in_m0"
+  "current_behavior": [
+    "DocumentParser emits immutable MarkdownNode and SmartCallNode objects with line-range SourceSpan values.",
+    "A block resolver registry and a renderer registry fail closed for unknown registered types.",
+    "Headings and links are separately inspected for metadata.",
+    "Ordinary Markdown is still passed as one coarse string to PortableMarkdownRenderer."
+  ],
+  "known_deviations": [
+    "The current AST can be serialized in receipts, but the target permits no mandatory page-level JSON/JSONL.",
+    "Required native block and inline node types do not exist in Document IR.",
+    "SourceSpan has source/start/end lines but no required column.",
+    "PortableMarkdownRenderer performs a second parse plus component-specific HTML rendering behind the coarse node.",
+    "Badge calls inside example code fences are not component nodes."
+  ],
+  "deletion_gates": [
+    "Delete MarkdownNode only after typed block/inline coverage and exact badge parity.",
+    "Retire PortableMarkdownRenderer component logic only after every moved node renderer has positive, negative and source-location tests.",
+    "Delete duplicate metadata parsing only after headings and links are derived from the canonical IR."
+  ],
+  "status": "mapped_in_m0",
+  "mapped_revision": "2928d68b81665dd4873cebeb87a6192343c28805"
 }

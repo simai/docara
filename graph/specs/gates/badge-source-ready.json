@@ -1,0 +1,30 @@
+{
+  "id": "docara.gate.badge_source_ready",
+  "schema_version": "1.0.0",
+  "kind": "gate",
+  "subtype": "acceptance_gate",
+  "tz_role": "stage_gate",
+  "title": "Badge source boundary ready",
+  "summary": "M2 may start when the badge route is physically owned, target source rules are enforced for new work and the remaining generated-route baseline cannot grow.",
+  "owner": "tester",
+  "lifecycle": "blocked",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/implementation/ROADMAP.md", "source/workflow/2026-08-01-docara-m1-m2-bounded-plan.md"],
+  "evidence_refs": ["docara.evidence.source_boundary_tests"],
+  "profile_refs": ["docara.unified"],
+  "pass_conditions": [
+    "Badge route resolves to exactly content/ru/components/badge.md",
+    "New public routes require one physical Markdown owner",
+    "New public UI strings use content/<locale>/lang.json",
+    "Public resources/i18n and site.json target inputs are rejected",
+    "Existing generated prose routes are a finite zero-growth allowlist"
+  ],
+  "stop_conditions": [
+    "Badge prose depends on language-pack or projector data",
+    "A new generated public route can be introduced",
+    "CLI/build messages enter public PageBuilder inputs"
+  ],
+  "promotes_to": "docara.batch.m2.badge",
+  "nonclaims": ["Does not pass global source ownership or all-route migration"]
+}

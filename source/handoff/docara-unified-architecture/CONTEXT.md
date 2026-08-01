@@ -21,6 +21,13 @@ The audit preceding this branch found that ownership is blurred:
 - component rendering and documentation content are coupled;
 - current behavior is difficult to explain without reading a long task history.
 
+The accepted correction is stricter than the initial contract: public shared
+locale strings live only in `content/<locale>/lang.json`; `resources/i18n` and
+`site.json` have no target compatibility path. Package-owned CLI/build messages
+remain outside public builds. Typed Document IR is in-memory, with serialization
+limited to disposable cache, search, `--dump-ir` or tests. Full and single-page
+builds share the complete PageBuilder pipeline and differ only by route set.
+
 The latest audit snapshot found only a small physical Markdown surface compared
 with the generated public catalog, asymmetric locale records and several large
 projectors. Exact counts may change; M0 must refresh them and store commands and

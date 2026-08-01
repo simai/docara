@@ -5,19 +5,55 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Update and immutable lock mapping",
-  "summary": "Maps portable install, engine update, Framework tuple and deterministic build requirements.",
+  "summary": "Exact M0 map of portable init/update behavior, Framework locking and deterministic build evidence.",
   "owner": "dev",
-  "lifecycle": "planned",
-  "readiness": "R1_draft",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/DOCARA-TZ.md#16-обновление-docara"],
   "profile_refs": ["docara.unified"],
   "from_ref": "docara.feature.reproducible_update",
   "to_refs": ["DOC-REQ-009", "DOC-REQ-010", "DOC-REQ-012"],
-  "code_refs": [],
-  "test_refs": [],
-  "evidence_refs": ["docara.evidence.final_acceptance"],
+  "code_refs": [
+    "src/Console/InitCommand.php#InitCommand::fire",
+    "src/PortableSite/PortableProjectInitializer.php#PortableProjectInitializer::initialize",
+    "src/Framework/FrameworkLock.php#FrameworkLock::assertValid",
+    "src/Framework/FrameworkAdmissionPreflight.php#FrameworkAdmissionPreflight::assertReady",
+    "src/Portable/PortableConfigurationLoader.php#PortableConfigurationLoader::assertFrameworkLockSemantics",
+    "composer.json#archive",
+    ".gitattributes"
+  ],
+  "test_refs": [
+    "tests/PortableInitCommandTest.php#portable_init_creates_only_the_json_and_markdown_site_surface",
+    "tests/PortableInitCommandTest.php#portable_update_preserves_all_existing_json_and_markdown_and_restores_only_missing_files",
+    "tests/PortableInitCommandTest.php#portable_update_refuses_to_implicitly_migrate_a_legacy_site",
+    "tests/Unit/PortableConfigurationTest.php#test_moving_framework_references_are_rejected",
+    "tests/Unit/PortableConfigurationTest.php#test_the_shipped_portable_lock_is_accepted_with_its_independent_manifest_provider_revision",
+    "tests/Unit/ComposerPackageSurfaceTest.php"
+  ],
+  "evidence_refs": [
+    "docara.evidence.m0_inventory",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-dependency-snapshot.json",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-build-manifest.sha256"
+  ],
   "review_refs": ["docara.gate.architecture_acceptance"],
-  "known_deviations": [],
-  "status": "mapping_required_in_m0"
+  "current_behavior": [
+    "Framework runtime, manifests and asset projection are pinned to commit hashes and validated fail closed.",
+    "init creates the portable JSON/Markdown surface; init --update preserves existing files and restores only missing starter files.",
+    "Two exact-code M0 builds were byte-identical.",
+    "Composer archive and git export exclude local/development surfaces."
+  ],
+  "known_deviations": [
+    "The repository has no composer.lock, so dependency resolution is not immutable across future installs.",
+    "Update exposes no accepted dry-run/diff report or rollback package.",
+    "Preserve-or-add-missing behavior is not the full engine-owned versus project-owned migration contract.",
+    "M0 formatter and two documentation-count tests are red."
+  ],
+  "deletion_gates": [
+    "Do not replace init --update until a dry-run, ownership manifest, rollback package and preservation matrix pass.",
+    "Do not change Framework locks without exact tuple compatibility and asset projection evidence.",
+    "Decide and test product dependency-lock ownership before claiming reproducible clean installation."
+  ],
+  "status": "mapped_in_m0",
+  "mapped_revision": "2928d68b81665dd4873cebeb87a6192343c28805"
 }

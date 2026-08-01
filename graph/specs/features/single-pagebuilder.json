@@ -5,7 +5,7 @@
   "subtype": "feature",
   "tz_role": "architecture_contract",
   "title": "One PageBuilder for full and partial builds",
-  "summary": "Full-site and one-page commands call the same page pipeline; partial build filters inputs before page compilation and updates dependent indexes safely.",
+  "summary": "Full-site and one-page commands call the same PageBuilder pipeline and differ only by selected route set; partial build filters routes before page compilation and updates dependent indexes safely.",
   "owner": "dev",
   "lifecycle": "accepted",
   "readiness": "R2_contract",
@@ -14,5 +14,5 @@
   "evidence_refs": [],
   "profile_refs": ["docara.unified"],
   "modes": ["full", "page"],
-  "invariants": ["No second renderer for partial build.", "The selected page output matches full build semantically.", "Shared indexes are updated or explicitly reported stale."]
+  "invariants": ["No second parser, renderer, composer or PageBuilder for partial build.", "Build modes differ only in route selection.", "The selected page output matches full build semantically.", "Shared indexes are updated or explicitly reported stale."]
 }

@@ -5,19 +5,55 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Content-first implementation mapping",
-  "summary": "Maps content ownership contract to code and tests; exact current code references are intentionally completed by M0 inventory.",
+  "summary": "Exact M0 map of physical Markdown ownership and generated public-page producers at candidate 2928d68.",
   "owner": "dev",
-  "lifecycle": "planned",
-  "readiness": "R1_draft",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
   "profile_refs": ["docara.unified"],
   "from_ref": "docara.feature.content_first",
   "to_refs": ["DOC-REQ-001", "DOC-REQ-002", "DOC-REQ-003"],
-  "code_refs": [],
-  "test_refs": [],
-  "evidence_refs": ["docara.evidence.m0_inventory", "docara.evidence.source_boundary_tests"],
+  "code_refs": [
+    "src/Portable/PortableConfigurationLoader.php#PortableConfigurationLoader::resolve",
+    "src/Portable/PortableConfigurationLoader.php#PortableConfigurationLoader::resolveGeneratedBase",
+    "src/PortableSite/PortableSiteBuilder.php#PortableSiteBuilder::markdownFiles",
+    "src/ComponentCatalog/AuthoredComponentPageIndex.php#AuthoredComponentPageIndex::build",
+    "src/PortableSite/PortableComponentCatalogProjector.php#PortableComponentCatalogProjector::project",
+    "src/PortableSite/PortableDeclarativeExampleProjector.php#PortableDeclarativeExampleProjector::project",
+    "src/I18n/LanguagePack.php#LanguagePack::$components",
+    "src/I18n/LanguagePackRepository.php#LanguagePackRepository::load",
+    "resources/language-packs/*.json",
+    "resources/component-catalog/examples/*.md"
+  ],
+  "test_refs": [
+    "tests/Unit/DocumentationContractTest.php#authored_documentation_covers_five_audience_paths_and_every_page_has_one_h1",
+    "tests/PortableDocumentationSiteTest.php#real_documentation_build_matches_the_exact_product_matrix_and_static_verifier",
+    "tests/Unit/PortableComponentCatalogProjectorTest.php#authored_content_cannot_shadow_a_generated_catalog_route",
+    "tests/Unit/EffectiveComponentCatalogTest.php#every_entry_points_to_its_exact_authored_documentation_owner"
+  ],
+  "evidence_refs": [
+    "docara.evidence.m0_inventory",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M0-EVIDENCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-route-inventory.json"
+  ],
   "review_refs": ["docara.gate.source_ownership"],
-  "known_deviations": ["Current public component prose is partly projected from language-pack and catalog data."],
-  "status": "mapping_required_in_m0"
+  "current_behavior": [
+    "59 physical Markdown files produce 59 authored routes.",
+    "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 44 additional public routes without physical Markdown.",
+    "Russian and English language packs each contain 42 component presentation records; three other bundled packs contain 8 each.",
+    "The badge route is owned by content/ru/components/badge.md and suppresses the generated badge detail route through AuthoredComponentPageIndex."
+  ],
+  "known_deviations": [
+    "One-route-one-Markdown is false for 44 of 103 logical pages.",
+    "Language packs and catalog/example records remain public prose owners.",
+    "Generated routes use synthetic page_path values that resemble missing Markdown files."
+  ],
+  "deletion_gates": [
+    "Delete component detail projection only after every component route has physical Markdown and exact route/HTML/assets parity.",
+    "Delete declarative example projection only after every example route has a physical source and parity evidence.",
+    "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
+  ],
+  "status": "mapped_in_m0",
+  "mapped_revision": "2928d68b81665dd4873cebeb87a6192343c28805"
 }

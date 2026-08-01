@@ -6,19 +6,21 @@
     "docs/specification/README.md"
   ],
   "generated_at": "2026-08-01",
-  "status": "bootstrap_snapshot",
+  "status": "architecture_contract_checkpoint",
   "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7",
   "goal": "Replace parallel content and rendering paths with one Markdown-to-typed-IR-to-registry-to-Smart-gateway-to-layout pipeline.",
   "immutable_rules": [
-    "One route, one Markdown source.",
+    "One locale route, exactly one content/<locale>/<route>.md source.",
+    "content/<locale>/lang.json is the only shared public UI translation source.",
+    "Public resources/i18n and site.json compatibility are absent; CLI/build messages are package-owned and outside public builds.",
     "Configuration owns composition, not prose.",
-    "IR and HTML are derived.",
+    "Typed IR is created in memory; optional serialization and HTML are derived and disposable.",
     "One renderer registry and one Smart gateway.",
-    "One PageBuilder for full and page builds.",
+    "One PageBuilder pipeline for full and page builds; only the selected route set differs.",
     "Delete unpublished legacy after evidence; do not preserve it by default."
   ],
-  "current_stage": "docara.stage.m0.contract",
-  "current_batch": "docara.batch.m0.mapping",
-  "next_action": "Inventory current owners and call paths, reproduce baseline, and complete exact implementation mappings without changing runtime behavior.",
+  "current_stage": "docara.stage.m1.boundaries",
+  "current_batch": "docara.batch.m1.boundaries",
+  "next_action": "Execute bounded M1A typed source locator, then M1B zero-growth source boundaries before the badge vertical slice.",
   "forbidden_now": ["mass rewrite", "legacy deletion", "main merge", "tag", "release", "deploy", "stale Docara skill"]
 }

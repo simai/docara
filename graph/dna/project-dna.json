@@ -18,9 +18,10 @@
   "profile_refs": ["docara.unified"],
   "purpose": "Let an author build documentation, knowledge bases and landing pages from understandable files without coupling editorial content to the rendering engine.",
   "principles": [
-    "One public route has one physical Markdown source file.",
+    "One public route in one locale has exactly one content/<locale>/<route>.md source file.",
+    "content/<locale>/lang.json is the only source of shared public UI strings; public resources/i18n and site.json compatibility do not exist.",
     "Content, composition, presentation and engine logic have separate owners.",
-    "Markdown is compiled into immutable typed Document IR before rendering.",
+    "Markdown is compiled into immutable typed Document IR in memory before rendering; serialization is optional disposable evidence or cache.",
     "Every node is rendered through one registry and every Smart component through one gateway.",
     "Full and single-page builds use the same PageBuilder.",
     "Generated artifacts are disposable and never become editorial sources.",
@@ -30,7 +31,7 @@
   ],
   "non_goals": [
     "Reimplement Laravel inside Docara.",
-    "Store public documentation prose in PHP arrays or language packs.",
+    "Store public documentation prose in PHP arrays, language packs, resources/i18n or site.json.",
     "Maintain Jigsaw, Mix, trustedMainHtml or parallel projector pipelines.",
     "Claim production or release readiness before independent acceptance."
   ],

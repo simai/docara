@@ -14,17 +14,17 @@
   "evidence_refs": [],
   "profile_refs": ["docara.unified"],
   "requirements": [
-    {"id": "DOC-REQ-001", "statement": "One public route has exactly one Markdown source file.", "verification": "route inventory plus duplicate negative fixture"},
+    {"id": "DOC-REQ-001", "statement": "One public route in one locale has exactly one content/<locale>/<route>.md source file.", "verification": "route inventory plus duplicate negative fixture"},
     {"id": "DOC-REQ-002", "statement": "Configuration files contain composition only and reject unknown keys.", "verification": "schema tests"},
-    {"id": "DOC-REQ-003", "statement": "Language packs contain only engine UI messages.", "verification": "content-boundary validator"},
-    {"id": "DOC-REQ-004", "statement": "Markdown compiles into typed IR with source provenance.", "verification": "IR snapshots and error-location tests"},
+    {"id": "DOC-REQ-003", "statement": "content/<locale>/lang.json is the only shared public UI string source; public resources/i18n and site.json compatibility are absent.", "verification": "content-boundary validator plus zero-reference scan"},
+    {"id": "DOC-REQ-004", "statement": "Markdown compiles into typed in-memory IR with source provenance and no mandatory page JSON/JSONL.", "verification": "in-memory IR tests, optional dump snapshot and error-location tests"},
     {"id": "DOC-REQ-005", "statement": "All document nodes use one renderer registry.", "verification": "registry coverage and unknown-node failure"},
     {"id": "DOC-REQ-006", "statement": "All ui.* and docara.* component nodes use one Smart gateway.", "verification": "manifest, params, assets and unknown-component tests"},
-    {"id": "DOC-REQ-007", "statement": "Full and page builds call the same PageBuilder.", "verification": "call graph plus semantic parity"},
+    {"id": "DOC-REQ-007", "statement": "Full and page builds use one PageBuilder pipeline and differ only by selected route set.", "verification": "call graph, route-selection trace and semantic parity"},
     {"id": "DOC-REQ-008", "statement": "Every declared locale has explicit route and missing-page behavior.", "verification": "locale matrix"},
     {"id": "DOC-REQ-009", "statement": "Generated IR, HTML and indexes are disposable.", "verification": "clean rebuild after generated removal"},
     {"id": "DOC-REQ-010", "statement": "Engine and Framework inputs are immutable and recorded.", "verification": "lock validation and two clean builds"},
     {"id": "DOC-REQ-011", "statement": "Legacy paths are deleted only after parity and zero-reference evidence.", "verification": "deletion gate"},
-    {"id": "DOC-REQ-012", "statement": "No architecture acceptance implies release or production readiness.", "verification": "nonclaim scan"}
+    {"id": "DOC-REQ-012", "statement": "Package-owned CLI/build messages are isolated from public page inputs and no architecture acceptance implies release or production readiness.", "verification": "public-input and nonclaim scan"}
   ]
 }

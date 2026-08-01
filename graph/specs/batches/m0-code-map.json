@@ -7,7 +7,7 @@
   "title": "M0. Карта владельцев и baseline",
   "summary": "Read-only inventory plus reproducible baseline; the first batch for the new task.",
   "owner": "dev",
-  "lifecycle": "ready",
+  "lifecycle": "completed",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": [
@@ -36,6 +36,6 @@
     "Two baseline builds",
     "Route and content ownership inventory"
   ],
-  "status": "ready",
-  "next_action": "execute_inventory_and_mapping"
+  "status": "completed_with_evidence",
+  "next_action": "none"
 }

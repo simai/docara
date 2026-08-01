@@ -18,5 +18,5 @@
   "forbidden_scope": ["Bulk component migration", "Global CSS redesign", "Legacy deletion", "Release"],
   "checks": ["IR snapshot", "Source-location error", "Full/single parity", "Browser light/dark and mobile/desktop"],
   "status": "blocked_by_m1",
-  "next_action": "wait_for_docara_gate_source_ownership"
+  "next_action": "wait_for_docara_gate_badge_source_ready"
 }

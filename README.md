@@ -71,7 +71,7 @@ global configuration, or Framework lock changes.
 - [Quick start](docs/site/content/ru/start.md)
 - [Project files and configuration](docs/site/content/ru/authoring/project-files.md)
 - [Layouts, regions and navigation](docs/site/content/ru/authoring/layout-and-navigation.md)
-- [Components](docs/site/content/ru/components.md)
+- [Components](docs/site/content/ru/components/syntax.md)
 - [Build and verification](docs/site/content/ru/build.md)
 - [Portable format contract](docs/portable-format.md)
 

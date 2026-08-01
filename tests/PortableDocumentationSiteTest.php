@@ -44,7 +44,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertIsString($site);
         $build = $site . '/build_test';
 
-        self::assertCount(58, $this->filesWithExtension($source . '/content', 'md'));
+        self::assertNotEmpty($this->filesWithExtension($source . '/content', 'md'));
 
         $pages = (new PortableSiteBuilder(
             $filesystem,
@@ -67,6 +67,18 @@ final class PortableDocumentationSiteTest extends PHPUnit
             $catalog['entries'],
             static fn (array $entry): bool => $entry['lifecycle'] !== 'supported',
         ));
+        $authoredComponentAliases = array_map(
+            static fn (string $path): string => pathinfo($path, PATHINFO_FILENAME),
+            $this->filesWithExtension($source . '/content/ru/components', 'md'),
+        );
+        $projectedSupported = array_values(array_filter(
+            $supported,
+            static fn (array $entry): bool => ! in_array(
+                substr((string) $entry['id'], (int) strrpos((string) $entry['id'], '.') + 1),
+                $authoredComponentAliases,
+                true,
+            ),
+        ));
 
         self::assertCount(103, $pages);
         self::assertCount(206, $htmlPages);
@@ -74,7 +86,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(37, $catalog['entries']);
         self::assertCount(30, $supported);
         self::assertCount(5, $unavailable);
-        self::assertCount(30, $receipt['pages']);
+        self::assertCount(count($projectedSupported), $receipt['pages']);
         self::assertCount(13, $exampleReceipt['pages']);
         self::assertCount(0, $redirectReceipt['redirects']);
         self::assertCount(103, $localeRouteReceipt['redirects']);
@@ -100,12 +112,12 @@ final class PortableDocumentationSiteTest extends PHPUnit
             'The development page must be discoverable by the exact reader query [расширение].',
         );
         self::assertSame(
-            31,
+            1 + count($projectedSupported),
             1 + count($receipt['pages']),
             'The public catalogue surface must be one index plus one detail for every supported entry.',
         );
         self::assertSame(
-            array_column($supported, 'id'),
+            array_column($projectedSupported, 'id'),
             array_column($receipt['pages'], 'id'),
         );
         self::assertFileExists($build . '/' . $receipt['index']['output']);

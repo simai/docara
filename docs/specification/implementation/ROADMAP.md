@@ -21,7 +21,9 @@
 - утверждены ТЗ, authoring contract, архитектура и acceptance matrix;
 - каждый целевой модуль сопоставлен текущим классам, тестам и deletion gates;
 - сняты воспроизводимые baseline-артефакты для `components/badge`;
-- запрещено добавлять новый контент в language packs и projectors.
+- запрещено добавлять новый контент в language packs и projectors;
+- принят отдельный `badge_source_ready` gate: он разрешает M2 после закрытия
+  badge-среза и zero-growth границ, не выдавая ложный PASS глобальной миграции.
 
 На этом этапе продуктовый runtime не переписывается.
 
@@ -31,7 +33,9 @@
 
 - публичная страница требует физический Markdown-файл;
 - config schemas отклоняют prose, HTML и CSS;
-- `resources/i18n` принимает только системные UI-сообщения;
+- `content/<locale>/lang.json` является единственным public i18n source;
+- public `resources/i18n` и `site.json` исключены без compatibility layer;
+- package-owned CLI/build messages отделены от public build inputs;
 - component manifest не может владеть текстом своей документационной страницы;
 - generated/cache каталоги явно объявлены disposable.
 
@@ -40,11 +44,13 @@
 - route collision;
 - route без Markdown;
 - forbidden content in config/language pack/manifest;
-- удаление cache + полное воспроизведение результата.
+- удаление cache + полное воспроизведение результата;
+- отсутствие обязательных page IR JSON/JSONL.
 
 ## M2. Вертикальный срез `components/badge`
 
-Страница `content/ru/components/badge.md` проходит полный целевой путь:
+Страница `content/ru/components/badge.md` проходит полный целевой путь после
+локального gate `badge_source_ready`:
 
 ```text
 PageSourceLocator -> ConfigResolver -> MarkdownCompiler -> Document IR
@@ -59,6 +65,8 @@ PageSourceLocator -> ConfigResolver -> MarkdownCompiler -> Document IR
 - alias `badge` разрешается registry, а не условием в parser;
 - assets возвращаются через `RenderArtifact`;
 - full и single-page build byte-identical для выбранной страницы;
+- оба режима используют один PageBuilder pipeline и различаются только route
+  selection;
 - новый путь не принимает `trustedMainHtml`.
 
 Приёмка: PHP/unit tests, exact HTML/assets parity, светлая/тёмная тема,
@@ -90,7 +98,8 @@ desktop/mobile, LTR/RTL, broken links 0.
    один `PageBuilder`;
 4. ранние/параллельные Smart renderers — после единого IR component node и
    gateway;
-5. поле `components` в language-pack — после физического контента всех локалей;
+5. public `resources/i18n`, `site.json` compatibility и поле `components` в
+   language-pack — после физического контента всех локалей;
 6. coarse raw Markdown node — после типизированного block/inline IR и тестов.
 
 Временный compatibility layer не становится публичным API и удаляется в том же

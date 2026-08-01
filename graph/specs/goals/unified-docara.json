@@ -18,9 +18,11 @@
   "evidence_refs": [],
   "profile_refs": ["docara.unified"],
   "done_when": [
-    "Every public route has exactly one Markdown source in content/<locale>.",
+    "Every public route in every locale has exactly one content/<locale>/<route>.md source.",
+    "content/<locale>/lang.json is the only source of shared visible locale strings.",
+    "Public resources/i18n and site.json compatibility are absent; package-owned CLI messages stay outside public builds.",
     "Public prose is absent from engine arrays, language packs and component registry records.",
-    "A typed Document IR and one renderer registry serve all supported Markdown nodes.",
+    "A typed in-memory Document IR and one renderer registry serve all supported Markdown nodes without mandatory page JSON/JSONL.",
     "All ui.* and docara.* components pass through one Smart Component Gateway.",
     "Full and single-page builds use one PageBuilder and match semantically.",
     "All declared locales build independent route trees with explicit missing-page policy.",

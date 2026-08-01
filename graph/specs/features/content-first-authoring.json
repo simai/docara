@@ -5,7 +5,7 @@
   "subtype": "feature",
   "tz_role": "product_contract",
   "title": "Content-first authoring",
-  "summary": "One public route is authored in one Markdown file under the locale tree; public prose has no parallel owner.",
+  "summary": "One public route in one locale is authored in exactly one content/<locale>/<route>.md; public prose has no parallel owner.",
   "owner": "content",
   "lifecycle": "accepted",
   "readiness": "R2_contract",
@@ -13,11 +13,13 @@
   "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
   "evidence_refs": [],
   "profile_refs": ["docara.unified"],
-  "inputs": ["content/<locale>/**/*.md", "front matter"],
+  "inputs": ["content/<locale>/<route>.md", "content/<locale>/lang.json", "front matter"],
   "outputs": ["PageSource", "route identity", "editorial metadata"],
   "invariants": [
-    "One route has one Markdown owner.",
+    "One locale route has exactly one content/<locale>/<route>.md owner.",
     "A page does not require a sibling page JSON unless it overrides composition.",
-    "Page prose is not loaded from resources/i18n or component manifests."
+    "Shared public UI strings are loaded only from content/<locale>/lang.json.",
+    "Page prose is not loaded from resources/i18n, site.json or component manifests.",
+    "Package-owned CLI messages never enter public PageBuilder inputs."
   ]
 }

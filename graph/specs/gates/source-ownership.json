@@ -5,7 +5,7 @@
   "subtype": "acceptance_gate",
   "tz_role": "stage_gate",
   "title": "Source ownership accepted",
-  "summary": "Markdown, configuration and i18n boundaries are enforced before the new renderer is introduced.",
+  "summary": "All public routes and visible locale strings have reached their final Markdown/lang.json ownership after M3 migration.",
   "owner": "tester",
   "lifecycle": "blocked",
   "readiness": "R1_draft",
@@ -13,7 +13,7 @@
   "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
   "evidence_refs": ["docara.evidence.source_boundary_tests"],
   "profile_refs": ["docara.unified"],
-  "pass_conditions": ["One-route-one-Markdown positive matrix", "Duplicate route negative fixture", "Prose-free i18n validation", "Strict config schemas"],
+  "pass_conditions": ["All-route one-locale-route-one-Markdown positive matrix", "Duplicate route negative fixture", "content/<locale>/lang.json is the only shared public UI translation source", "Public resources/i18n and site.json compatibility are absent", "Package-owned CLI/build messages are absent from public inputs", "Strict config schemas"],
   "stop_conditions": ["Any public route still depends only on a language-pack or registry prose record"],
-  "promotes_to": "docara.batch.m2.badge"
+  "promotes_to": "docara.batch.m4.retire"
 }

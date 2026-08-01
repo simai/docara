@@ -22,6 +22,13 @@
     {"id": "DOC-ADR-006", "decision": "Keep system i18n separate from site and article content.", "reason": "Any locale can own its complete documentation without engine edits."},
     {"id": "DOC-ADR-007", "decision": "Do not preserve unpublished legacy storage compatibility.", "reason": "The product is still under development and simplicity is the priority."},
     {"id": "DOC-ADR-008", "decision": "Migrate through a badge vertical slice before bulk work.", "reason": "Proves the whole architecture with bounded risk."},
-    {"id": "DOC-ADR-009", "decision": "Do not use the installed stale Docara skill for this migration.", "reason": "It documents the retired Jigsaw/Mix architecture."}
+    {"id": "DOC-ADR-009", "decision": "Do not use the installed stale Docara skill for this migration.", "reason": "It documents the retired Jigsaw/Mix architecture."},
+    {"id": "DOC-ADR-010", "decision": "One public page in one locale is owned by exactly content/<locale>/<route>.md.", "reason": "Route ownership must be physically obvious and collision-safe."},
+    {"id": "DOC-ADR-011", "decision": "content/<locale>/lang.json is the only shared public UI translation source; public resources/i18n and site.json compatibility are removed from the target.", "reason": "Visible locale strings stay project-owned without creating a second article store."},
+    {"id": "DOC-ADR-012", "decision": "CLI and builder localization, if needed, is package-owned and excluded from public page inputs.", "reason": "Internal diagnostics must not become site content."},
+    {"id": "DOC-ADR-013", "decision": "MarkdownCompiler creates typed Document IR in memory with no mandatory page JSON or JSONL.", "reason": "Serialization is useful only for disposable cache, search, diagnostics or test evidence."},
+    {"id": "DOC-ADR-014", "decision": "Full and single-page builds use one PageBuilder pipeline and differ only by selected route set.", "reason": "Build-mode parity must be architectural, not merely output coincidence."},
+    {"id": "DOC-ADR-015", "decision": "Use badge_source_ready before M2 and keep global source_ownership open until M3 completes all route migration.", "reason": "A bounded vertical slice must not falsely claim that all 44 generated routes are already Markdown-owned."},
+    {"id": "DOC-ADR-016", "decision": "The Docara library repository does not own composer.lock; exact release evidence records the resolved dependency tuple and each consumer project owns its application lock.", "reason": "This preserves library dependency ranges while making candidate and consumer reproducibility explicit."}
   ]
 }

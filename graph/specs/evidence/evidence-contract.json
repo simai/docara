@@ -14,6 +14,7 @@
   "evidence_refs": [],
   "profile_refs": ["docara.unified"],
   "records": [
+    {"id": "docara.evidence.architecture_contract_checkpoint", "required": ["exact base and candidate revisions", "human spec and graph sync", "JSON and graph validation", "Markdown link validation", "mapping validation", "git diff --check", "separate checkpoint commit"]},
     {"id": "docara.evidence.m0_inventory", "required": ["exact revisions", "repo hygiene", "owner maps", "baseline test/build results"]},
     {"id": "docara.evidence.source_boundary_tests", "required": ["positive fixtures", "negative fixtures", "schema results"]},
     {"id": "docara.evidence.badge_vertical_slice", "required": ["IR snapshot", "mapping", "full/page parity", "browser captures"]},

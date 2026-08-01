@@ -32,16 +32,24 @@ already answer the question.
 
 ## 3. Execute only the ready batch
 
-The ready batch is `docara.batch.m0.mapping`. It changes no runtime behavior.
-Its output is an exact current-code map, reproducible baseline and a bounded
-proposal for the first vertical slice.
+M0 mapping is preserved in the worktree and the architecture-contract
+checkpoint resolves its recorded contradictions. After the checkpoint commit,
+the ready implementation sequence is the bounded M1A/M1B plan in
+`source/workflow/2026-08-01-docara-m1-m2-bounded-plan.md`; M2 starts only after
+`docara.gate.badge_source_ready` passes.
 
-Update:
+For the contract checkpoint update:
 
-- `graph/specs/implementation-mappings/*.json`;
+- `docs/specification`, graph, roadmap and this handoff;
+- preserve `graph/specs/implementation-mappings/*.json` from M0;
 - `source/handoff/docara-unified-architecture/RESULT.md`;
 - evidence under the workflow evidence root;
-- `STATUS.yaml` only after the batch gate passes.
+- `STATUS.yaml` only after the checkpoint validators and commit pass.
+
+Target invariants now include `content/<locale>/lang.json` as the sole public
+shared translation store, no public `resources/i18n` or `site.json`
+compatibility, in-memory typed IR without mandatory page JSON/JSONL, and one
+PageBuilder pipeline whose modes differ only by route selection.
 
 ## 4. Forbidden shortcuts
 

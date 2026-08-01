@@ -2,17 +2,17 @@ schema_version: 1
 goal: docara.goal.unified
 branch: codex/docara-unified-architecture
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: architecture_contract_ready
-current_stage: docara.stage.m0.contract
-current_batch: docara.batch.m0.mapping
-next_action: inventory_map_and_reproduce_baseline
+state: architecture_contract_checkpoint_passed
+current_stage: docara.stage.m1.boundaries
+current_batch: docara.batch.m1.boundaries
+next_action: implement_m1a_typed_source_locator
 source_of_truth:
   human: docs/specification/README.md
   machine: graph/graph.json
   start: source/handoff/docara-unified-architecture/START.md
 readiness:
   architecture_contract: accepted
-  implementation: not_started
+  implementation: ready_for_m1
   release: not_claimed
   production: not_claimed
 routing:

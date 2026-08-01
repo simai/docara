@@ -7,11 +7,11 @@
   "title": "M0. Контракт и карта текущего кода",
   "summary": "Зафиксировать целевую архитектуру и доказательную карту каждого текущего владельца контента, конфигурации, рендеринга и generated-выхода до изменения поведения.",
   "owner": "teamlead",
-  "lifecycle": "active",
+  "lifecycle": "completed",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/implementation/ROADMAP.md"],
-  "evidence_refs": [],
+  "evidence_refs": ["docara.evidence.m0_inventory", "docara.evidence.architecture_contract_checkpoint"],
   "profile_refs": ["docara.unified"],
   "parent_goal_ref": "docara.goal.unified",
   "done_when": [
@@ -20,7 +20,7 @@
     "A representative badge page baseline is reproducible.",
     "No runtime behavior has been changed."
   ],
-  "batch_refs": ["docara.batch.m0.mapping"],
+  "batch_refs": ["docara.batch.m0.mapping", "docara.batch.m0.contract_checkpoint"],
   "required_gates": ["docara.gate.m0_baseline"],
   "required_evidence": ["docara.evidence.m0_inventory"],
   "next_stage_ref": "docara.stage.m1.boundaries"

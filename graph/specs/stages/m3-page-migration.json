@@ -22,7 +22,7 @@
     "Broken links, missing assets and unknown components are zero."
   ],
   "batch_refs": ["docara.batch.m3.migrate"],
-  "required_gates": ["docara.gate.migration_coverage"],
+  "required_gates": ["docara.gate.source_ownership", "docara.gate.migration_coverage"],
   "required_evidence": ["docara.evidence.all_routes_parity"],
   "next_stage_ref": "docara.stage.m4.retirement"
 }

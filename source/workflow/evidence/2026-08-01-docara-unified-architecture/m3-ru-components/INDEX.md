@@ -15,7 +15,7 @@ Recovery source:
 | M3.2 | `M3.2-RUNTIME-ALERT.md` | PASS |
 | M3.3 | per-family records through `batch-21-component-index.md` | PASS |
 | M3.4 | `batch-21-component-index.md` | PASS |
-| M3.5 | `M3.5-LEGACY-RETIREMENT.md`, `old-to-new-map.json`, zero-reference records | pending |
+| M3.5 | `batch-25-language-pack-retirement.md`, `batch-26-zero-page-assets.md`, `old-to-new-map.json` | PASS |
 | M3.6 | `M3.6-INTEGRATED-ACCEPTANCE.md`, browser matrix and reverse audit | pending |
 
 ## Current checkpoint
@@ -23,8 +23,8 @@ Recovery source:
 - parent SHA: `b14fe4e1e70a5465fe382bd5ced1de26cb65a315`;
 - completed milestone: M3.1 durable execution contract and baseline;
 - latest completed batch: 21, physical component index and derived views;
-- current batch: 25, Russian language-pack prose retirement (candidate PASS);
-- next batch: 26, zero-page catalog projection/asset retirement;
+- latest completed batch: 26, zero-page catalog asset retirement;
+- current milestone: M3.6 integrated acceptance;
 - blockers: none; federation/process gaps are documented in the workflow.
 
 ## Evidence rules
@@ -61,3 +61,4 @@ Recovery source:
 | 20 | `batch-20-tabs.md` | PASS |
 | 21 | `batch-21-component-index.md` | PASS |
 | 25 | `batch-25-language-pack-retirement.md`, `old-to-new-map.json` | PASS |
+| 26 | `batch-26-zero-page-assets.md` | PASS |

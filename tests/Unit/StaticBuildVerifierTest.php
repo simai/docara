@@ -502,6 +502,7 @@ final class StaticBuildVerifierTest extends TestCase
         ))->build($source, $build);
 
         $catalogPath = $build . '/_docara/component-catalog.json';
+        self::assertDirectoryExists($build . '/_docara/component-catalog');
         $plansPath = $build . '/.docara/resolved-page-plans.json';
         $originalCatalog = (string) file_get_contents($catalogPath);
         $originalPlans = (string) file_get_contents($plansPath);

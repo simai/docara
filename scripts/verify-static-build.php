@@ -3134,10 +3134,15 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
             }
         }
 
-        $expectedAssets = $projector->assets();
+        $expectedAssets = ($expectedProjection['pages'] ?? []) === []
+            ? []
+            : $projector->assets();
         $expectedAssetOutputs = array_keys($expectedAssets);
         sort($expectedAssetOutputs, SORT_STRING);
-        $actualAssetOutputs = docaraSafeFileInventory($root, '_docara/component-catalog');
+        $catalogAssetRoot = $root . '/_docara/component-catalog';
+        $actualAssetOutputs = ! file_exists($catalogAssetRoot) && ! is_link($catalogAssetRoot)
+            ? []
+            : docaraSafeFileInventory($root, '_docara/component-catalog');
         if ($actualAssetOutputs !== $expectedAssetOutputs) {
             throw new RuntimeException(
                 'Generated component catalogue assets do not exactly match the trusted projection.',

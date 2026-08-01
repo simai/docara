@@ -1,4 +1,4 @@
-# Next executable checkpoint: M3.5 Russian component legacy retirement
+# Next executable checkpoint: M3.6 integrated acceptance
 
 Goal batch: `docara.batch.m3.migrate`
 
@@ -23,17 +23,16 @@ Evidence index:
   including generic typed directives, manifest-owned inline components,
   localized derived backlink hydration and isolated projection reuse.
 
-## Execute M3.5
+## Execute M3.6
 
-1. Batch 25 is PASS: the Russian public language-pack prose, allowlist entry and
-   eight zero-reference localized examples are retired with exact rollback.
-2. Batch 26 must stop publishing component-catalog assets only when every
-   locale projection has zero generated pages, while preserving generated
-   non-Russian legacy projection tests.
-3. Record the zero-reference asset inventory and exact full/single/static
-   results, then complete M3.5.
-4. Continue directly into M3.6 integrated acceptance after green legacy gates.
-5. Do not claim M3 complete before deterministic/static/browser/reverse gates.
+1. M3.5 is PASS: Russian public pack prose, the allowlist entry, localized
+   examples and zero-page asset copies are retired with rollback evidence.
+2. Run two clean disposable full builds and prove complete byte identity.
+3. Run representative and all-route single-page parity across every family.
+4. Run static, full test, source-boundary and no-second-engine scans.
+5. Execute the required desktop/mobile light/dark browser matrix and route
+   smoke, then record the reverse-outcome audit.
+6. Do not claim M3 complete before every Completion Gate is evidenced.
 
 ## Current boundaries
 

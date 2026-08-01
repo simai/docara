@@ -535,6 +535,22 @@ Status: PASS; M3.5 continues
   `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/old-to-new-map.json`;
 - evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-25-language-pack-retirement.md`.
 
-Batch 26 must suppress zero-page component-catalog assets/receipts only when no
-locale projection uses them, then M3.6 performs integrated acceptance. Overall
-M3 and release/production readiness remain unclaimed.
+Batch 26 was assigned to suppress zero-page component-catalog assets only when
+no locale projection uses them; the empty hash-bound receipt remains diagnostic
+evidence. Overall M3 and release/production readiness remain unclaimed.
+
+## M3.5 batch 26 result
+
+Status: PASS; M3.5 complete, M3 continues
+
+- Russian builds no longer publish the seven unreferenced packaged
+  component-catalog assets because their trusted projection has zero pages;
+- asset publication remains enabled and fail-closed for generated English and
+  other non-migrated locale projections;
+- full/index-single/Badge-single hashes remain exact and static verification
+  reports 18,942 references with zero broken;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-26-zero-page-assets.md`.
+
+M3.6 integrated deterministic, all-route single, static, browser and reverse
+acceptance is next. Overall M3 and release/production readiness remain
+unclaimed.

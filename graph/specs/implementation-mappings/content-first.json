@@ -101,7 +101,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-20-tabs.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-21-component-index.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-25-language-pack-retirement.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/old-to-new-map.json"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/old-to-new-map.json",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-26-zero-page-assets.md"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
@@ -135,7 +136,6 @@
   ],
   "known_deviations": [
     "One-route-one-Markdown is true for all 32 Russian component routes but false for 14 of 103 logical pages outside this section.",
-    "Zero-page Russian component catalog assets are still published and require an exact zero-reference retirement gate in batch 26.",
     "Generated routes use synthetic page_path values that resemble missing Markdown files."
   ],
   "deletion_gates": [
@@ -143,6 +143,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
   ],
-  "status": "m3_5_batch_25_pass_asset_retirement_pending",
-  "mapped_revision": "commit containing batch-25-language-pack-retirement.md; parent fc3bd32c"
+  "status": "m3_5_complete_m3_6_acceptance_pending",
+  "mapped_revision": "commit containing batch-26-zero-page-assets.md; parent a579390d"
 }

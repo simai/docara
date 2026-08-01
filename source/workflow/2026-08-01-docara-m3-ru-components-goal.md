@@ -514,6 +514,21 @@ Never infer completion from a checkpoint commit or chat summary.
 - evidence: `m3-ru-components/batch-25-language-pack-retirement.md` and
   `m3-ru-components/old-to-new-map.json`.
 
+### Batch 26 — zero-page catalog asset retirement
+
+- status: completed candidate; checkpoint commit follows this record;
+- parent: `a579390db9e8841f97d841ff060fba300d611ca4`;
+- component-catalog assets are published per locale only when the existing
+  projector has generated pages for that locale;
+- the fully authored Russian projection publishes zero legacy assets, while
+  generated English legacy projection and fail-closed verification remain;
+- full/index-single/Badge-single/static parity passes with no public HTML or
+  behavior change; the only tree delta is deletion of seven unreferenced build
+  copies whose package sources remain intact;
+- M3.5 is complete; M3.6 integrated deterministic/static/browser/reverse
+  acceptance is next;
+- evidence: `m3-ru-components/batch-26-zero-page-assets.md`.
+
 ## Kaizen
 
 No reusable lesson accepted yet. Project-local process gaps remain evidence,

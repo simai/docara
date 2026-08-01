@@ -732,7 +732,14 @@ final readonly class PortableSiteBuilder
                     $exampleReceipt,
                 );
             }
-            foreach ($selectedPageUrl === null ? $localeDestinations : [] as $localeDestination) {
+            foreach ($selectedPageUrl === null ? $componentCatalogProjections : [] as $locale => $projection) {
+                if (($projection['pages'] ?? []) === []) {
+                    continue;
+                }
+                $publicPrefix = $localeRegistry->get($locale)->publicPrefix;
+                $localeDestination = $publicPrefix === ''
+                    ? $destination
+                    : rtrim($destination, '/\\') . '/' . $publicPrefix;
                 foreach ($componentCatalogProjector->assets() as $relative => $bytes) {
                     $assetPath = rtrim($localeDestination, '/\\') . '/' . $relative;
                     $this->files->ensureDirectoryExists(dirname($assetPath));

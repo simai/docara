@@ -118,6 +118,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         );
         self::assertNull($receipt['index']);
         self::assertSame($generatedIds, array_column($receipt['pages'], 'id'));
+        self::assertDirectoryDoesNotExist($build . '/_docara/component-catalog');
         self::assertFileExists($build . '/components/index.html');
         self::assertSame(
             $generatedSlugs,

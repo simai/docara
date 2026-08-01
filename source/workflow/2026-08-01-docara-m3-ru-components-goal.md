@@ -35,14 +35,14 @@ generated component page count и русский component-route allowlist ра�
 PageBuilder/registry/gateway; две clean full builds byte-identical; static и
 browser matrices зелёные; graph/workflow/handoff синхронны; worktree чистый.
 
-Current Remaining: 12 generated routes из 32; Alert, Badge, Syntax,
+Current Remaining: 10 generated routes из 32; Alert, Badge, Syntax,
 headings/text, lists/quotes, links/images, table, code, footnotes/sources,
-Details, Backlinks, Banner, Download, Button, Icon, Kbd, Card, Hero, Grid и Figure уже физические.
+Details, Backlinks, Banner, Download, Button, Icon, Kbd, Card, Hero, Grid, Figure, Media и Logos уже физические.
 
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.3 batch 15, Media and Logos.
+Next Safe Batch: M3.3 batch 16, Diagram and Math.
 
 ## Goal
 
@@ -186,8 +186,8 @@ checks, evidence update and a separate commit.
 | 12 | button and icon/kbd | interactive/focus parity | completed |
 | 13 | card and hero | layout parity | completed |
 | 14 | grid and figure | layout/media parity | completed |
-| 15 | media and logos | asset/responsive parity | in-progress |
-| 16 | diagram and math | runtime/asset parity | pending |
+| 15 | media and logos | asset/responsive parity | completed |
+| 16 | diagram and math | runtime/asset parity | in-progress |
 | 17 | code-from-file and HTML | safe rendering parity | pending |
 | 18 | embed and example | embed/example tabs/copy parity | pending |
 | 19 | steps and tree | structure/responsive parity | pending |
@@ -419,10 +419,20 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 15 — Media and Logos
 
+- status: completed;
+- parent: `835df6d`;
+- both routes have physical owners and reuse generic typed-directive IR;
+- full/isolated exact, static zero broken, browser proves responsive loaded
+  media/logos without overflow;
+- exact prose/route/example legacy retired with rollback;
+- evidence: `m3-ru-components/batch-15-media-logos.md`.
+
+### Batch 16 — Diagram and Math
+
 - status: in-progress;
-- parent: batch 14 checkpoint commit;
-- objective: migrate responsive media/text and logo-list routes through the
-  same typed directive with content-owned assets and accessibility evidence.
+- parent: batch 15 checkpoint commit;
+- objective: migrate technical visualization routes without adding runtime
+  engines or changing their accepted source-display behavior.
 
 ## Kaizen
 

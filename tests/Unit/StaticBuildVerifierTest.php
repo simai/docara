@@ -872,20 +872,20 @@ final class StaticBuildVerifierTest extends TestCase
 
         foreach ([
             'source' => [
-                'needle' => "- SIMAI Framework\n- Docara",
+                'needle' => "1. Создайте проект.\n2. Добавьте страницы.",
                 'replacement' => "Подменённый исходный код примера.\n:::",
             ],
             'rendered' => [
-                'needle' => '>SIMAI Framework</li>',
-                'replacement' => '>Подменённый отрисованный пример.</li>',
+                'needle' => '>Создайте проект.</',
+                'replacement' => '>Подменённый отрисованный пример.</',
             ],
             'metadata' => [
-                'needle' => 'Показывает компактный адаптивный ряд клиентов, партнёров или продуктов экосистемы.',
+                'needle' => 'Показывает короткую упорядоченную последовательность действий.',
                 'replacement' => 'Forged component metadata.',
             ],
         ] as $kind => $change) {
             $build = $this->createGeneratedCatalogBuild('catalog-pages-' . $kind . '-drift');
-            $path = $build . '/components/logos/index.html';
+            $path = $build . '/components/steps/index.html';
             $html = (string) file_get_contents($path);
             $count = 0;
             $tampered = str_replace($change['needle'], $change['replacement'], $html, $count);
@@ -899,7 +899,7 @@ final class StaticBuildVerifierTest extends TestCase
 
             $receipt = $this->readJson($build . '/.docara/component-catalog-pages.json');
             foreach ($receipt['pages'] as &$receiptPage) {
-                if ($receiptPage['id'] !== 'docara.logos') {
+                if ($receiptPage['id'] !== 'docara.steps') {
                     continue;
                 }
                 $receiptPage['contract_fragment_sha256'] = hash('sha256', $tampered);
@@ -955,7 +955,7 @@ final class StaticBuildVerifierTest extends TestCase
             ),
         ] as $case => $mutate) {
             $build = $this->createGeneratedCatalogBuild('catalog-shell-' . $case);
-            $path = $build . '/components/logos/index.html';
+            $path = $build . '/components/steps/index.html';
             $original = (string) file_get_contents($path);
             $tampered = $mutate($original);
             self::assertNotSame($original, $tampered, "The [$case] shell fixture did not mutate.");
@@ -991,7 +991,7 @@ final class StaticBuildVerifierTest extends TestCase
             self::assertStringStartsWith('{', (string) file_get_contents($outsideReceipt));
 
             $detailBuild = $this->createGeneratedCatalogBuild('catalog-pages-detail-' . $kind);
-            $detailPath = $detailBuild . '/components/logos/index.html';
+            $detailPath = $detailBuild . '/components/steps/index.html';
             $outsideDetail = $this->tmpPath('outside-catalog-detail-' . $kind . '.html');
             file_put_contents($outsideDetail, (string) file_get_contents($detailPath));
             unlink($detailPath);
@@ -1003,7 +1003,7 @@ final class StaticBuildVerifierTest extends TestCase
             $detailResult = $this->verify($detailBuild);
             self::assertSame(1, $detailResult->getExitCode(), $detailResult->getOutput());
             self::assertStringContainsString('@unsafe-artifact-entry', $detailResult->getOutput());
-            self::assertStringContainsString('components/logos/index.html', $detailResult->getOutput());
+            self::assertStringContainsString('components/steps/index.html', $detailResult->getOutput());
             self::assertStringStartsWith('<!doctype html>', (string) file_get_contents($outsideDetail));
         }
     }
@@ -1377,6 +1377,16 @@ final class StaticBuildVerifierTest extends TestCase
                 'slug' => 'grid',
                 'title' => 'Сетка',
                 'description' => 'Адаптивное расположение самостоятельных блоков.',
+            ],
+            'docara.logos' => [
+                'slug' => 'logos',
+                'title' => 'Логотипы и участники',
+                'description' => 'Компактный ряд продуктов или участников.',
+            ],
+            'docara.media' => [
+                'slug' => 'media',
+                'title' => 'Текст с изображением',
+                'description' => 'Короткий текст рядом с одним изображением.',
             ],
             'docara.kbd' => [
                 'slug' => 'kbd',

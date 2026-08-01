@@ -6,7 +6,7 @@
     "docs/specification/README.md"
   ],
   "generated_at": "2026-08-01",
-  "status": "m3_ru_components_goal_in_progress_batch_14_pass",
+  "status": "m3_ru_components_goal_in_progress_batch_15_pass",
   "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7",
   "goal": "Replace parallel content and rendering paths with one Markdown-to-typed-IR-to-registry-to-Smart-gateway-to-layout pipeline.",
   "immutable_rules": [
@@ -21,6 +21,6 @@
   ],
   "current_stage": "docara.stage.m3.migration",
   "current_batch": "docara.batch.m3.migrate",
-  "next_action": "Implement M3.3 Media and Logos, then continue through the remaining Russian component families.",
+  "next_action": "Implement M3.3 Diagram and Math, then continue through the remaining Russian component families.",
   "forbidden_now": ["claiming M3 completion before 32/32 ownership and integrated acceptance", "parallel engine or content registry", "unproved legacy deletion", "other-locale migration", "main merge", "push", "tag", "release", "deploy", "stale Docara skill"]
 }

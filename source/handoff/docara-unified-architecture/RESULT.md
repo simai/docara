@@ -399,3 +399,18 @@ Status: PASS; M3.3 continues
 
 Twenty of 32 component routes are physical; batch 15 (Media and Logos) is next.
 Overall M3 and release/production readiness remain unclaimed.
+
+## M3.3 batch 15 result
+
+Status: PASS; M3.3 continues
+
+- Media and Logos now have physical Russian Markdown owners and starters;
+- both reuse generic typed-directive IR and one PageBuilder/renderer path;
+- full/isolated exact; static reports 206 HTML, 18,937 references, zero broken;
+  desktop/mobile light/dark browser checks prove loaded accessible assets,
+  responsive sides, links and tones with zero console issues;
+- pack/allowlist records and zero-reference localized examples retired;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-15-media-logos.md`.
+
+Twenty-two of 32 routes are physical; batch 16 (Diagram and Math) is next.
+Overall M3 and release/production readiness remain unclaimed.

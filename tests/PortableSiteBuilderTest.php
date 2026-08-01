@@ -1295,6 +1295,8 @@ final class PortableSiteBuilderTest extends TestCase
             '/components/kbd/',
             '/components/links-and-images/',
             '/components/lists-and-quotes/',
+            '/components/logos/',
+            '/components/media/',
             '/components/table/',
             ...array_column($catalogPages['pages'], 'route'),
         ];

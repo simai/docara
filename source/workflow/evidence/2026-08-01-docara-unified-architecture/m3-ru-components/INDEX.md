@@ -22,8 +22,8 @@ Recovery source:
 
 - parent SHA: `b14fe4e1e70a5465fe382bd5ced1de26cb65a315`;
 - completed milestone: M3.1 durable execution contract and baseline;
-- latest completed batch: 14, Grid and Figure family;
-- current batch: 15, Media and Logos family;
+- latest completed batch: 15, Media and Logos family;
+- current batch: 16, Diagram and Math family;
 - next evidence: per-family physical owners and route parity;
 - blockers: none; federation/process gaps are documented in the workflow.
 
@@ -53,3 +53,4 @@ Recovery source:
 | 12 | `batch-12-button-icon-kbd.md` | PASS |
 | 13 | `batch-13-card-hero.md` | PASS |
 | 14 | `batch-14-grid-figure.md` | PASS |
+| 15 | `batch-15-media-logos.md` | PASS |

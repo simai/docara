@@ -42,6 +42,8 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             'docara.icon',
             'docara.kbd',
             'docara.hero',
+            'docara.logos',
+            'docara.media',
             'native.code',
             'native.footnotes_and_sources',
             'native.headings_and_text',
@@ -236,6 +238,18 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             if ($id === 'docara.grid') {
                 self::assertStringContainsString('<h1 id="сетка">Сетка</h1>', $detail);
                 self::assertStringContainsString('data-docara-block="grid"', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.logos') {
+                self::assertStringContainsString('<h1 id="логотипы-и-участники">Логотипы и участники</h1>', $detail);
+                self::assertStringContainsString('data-docara-block="logos"', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.media') {
+                self::assertStringContainsString('<h1 id="текст-с-изображением">Текст с изображением</h1>', $detail);
+                self::assertStringContainsString('data-docara-block="media"', $detail);
 
                 continue;
             }
@@ -488,14 +502,14 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         foreach (['variant=split', 'variant=compact', 'variant=centered', '![Компоненты Docara]'] as $marker) {
             self::assertStringContainsString($marker, $hero);
         }
+        $logos = (string) file_get_contents(
+            dirname(__DIR__, 2) . '/docs/site/content/ru/components/logos.md',
+        );
+        foreach (['SIMAI Framework', 'tone=muted', '![SIMAI]', '![Docara]'] as $marker) {
+            self::assertStringContainsString($marker, $logos);
+        }
 
         $fixtures = [
-            'docara.logos.ru.md' => [
-                'docara-variant:state.text',
-                'docara-variant:state.linked',
-                'docara-variant:state.image',
-                'tone=muted',
-            ],
             'docara.example.ru.md' => [
                 ':::example {label="Интерактивный пример"}',
                 '```html',

@@ -1781,12 +1781,13 @@ final class PortableMarkdownRenderer
             $html,
         ) ?? $html;
 
-        $html = str_replace(
-            '<table>',
-            '<div data-docara-table-scroll class="overflow-auto m-bottom-1"><table class="table table-border table-stripe">',
+        $html = preg_replace_callback(
+            '/<table>(?<content>.*?)<\/table>/su',
+            static fn (array $matches): string => '<div data-docara-table-scroll class="overflow-auto m-bottom-1">'
+                . '<table class="table table-border table-stripe">'
+                . (string) $matches['content'] . '</table></div>',
             $html,
-        );
-        $html = str_replace('</table>', '</table></div>', $html);
+        ) ?? $html;
 
         return preg_replace_callback(
             '/<pre><code(?P<attributes>[^>]*)>(?P<content>.*?)<\/code><\/pre>/s',

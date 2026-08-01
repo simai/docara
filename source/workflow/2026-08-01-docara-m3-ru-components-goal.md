@@ -35,13 +35,13 @@ generated component page count и русский component-route allowlist ра�
 PageBuilder/registry/gateway; две clean full builds byte-identical; static и
 browser matrices зелёные; graph/workflow/handoff синхронны; worktree чистый.
 
-Current Remaining: 27 generated routes из 32; Alert, Badge, Syntax,
-headings/text и lists/quotes уже физические.
+Current Remaining: 25 generated routes из 32; Alert, Badge, Syntax,
+headings/text, lists/quotes, links/images и table уже физические.
 
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.3 batch 08, native links/images and table.
+Next Safe Batch: M3.3 batch 09, native code and footnotes/sources.
 
 ## Goal
 
@@ -178,8 +178,8 @@ checks, evidence update and a separate commit.
 | 05 | generic renderer-registry/Smart-gateway block artifact | registry/gateway focused tests | completed |
 | 06 | Alert Markdown owner | exact Alert full/single/browser parity | completed |
 | 07 | native headings/text and lists/quotes | route parity | completed |
-| 08 | native links/images and table | route parity + responsive table | in-progress |
-| 09 | native code and footnotes/sources | copy/code/anchors parity | pending |
+| 08 | native links/images and table | route parity + responsive table | completed |
+| 09 | native code and footnotes/sources | copy/code/anchors parity | in-progress |
 | 10 | details and backlinks | disclosure/navigation parity | pending |
 | 11 | banner and download | variant/asset parity | pending |
 | 12 | button and icon/kbd | interactive/focus parity | pending |
@@ -332,10 +332,25 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 08 — native links/images and table
 
+- status: completed;
+- parent: `50cb91d79af0f6bb435e3575c79e1f71964ef45f`;
+- two physical owners use one generic image SourceNode plus existing native
+  table/code/example nodes; no route-specific renderer was added;
+- browser acceptance found and fixed shared malformed-copy-attribute and
+  non-idempotent table-decoration defects, with regression coverage;
+- full/isolated trees are exact; static verification checks 206 HTML pages and
+  18,884 references with zero broken; responsive light/dark browser checks
+  pass with zero console warnings/errors;
+- exact pack/allowlist/example projections were retired after zero-reference
+  proof;
+- evidence: `m3-ru-components/batch-08-native-links-table.md`.
+
+### Batch 09 — native code and footnotes/sources
+
 - status: in-progress;
-- parent: batch 07 checkpoint commit;
-- objective: migrate the next two native routes and prove safe links/images
-  plus responsive table behavior before exact legacy reduction.
+- parent: batch 08 checkpoint commit;
+- objective: migrate the two routes and prove copy/code rendering plus stable
+  footnote/source anchors before exact legacy reduction.
 
 ## Kaizen
 

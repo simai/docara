@@ -1333,10 +1333,20 @@ final class StaticBuildVerifierTest extends TestCase
                 'title' => 'Заголовки и текст',
                 'description' => 'Понятная структура и смысловое выделение текста.',
             ],
+            'native.links_and_images' => [
+                'slug' => 'links-and-images',
+                'title' => 'Ссылки и изображения',
+                'description' => 'Безопасные переходы и доступные иллюстрации.',
+            ],
             'native.lists_and_quotes' => [
                 'slug' => 'lists-and-quotes',
                 'title' => 'Списки и цитаты',
                 'description' => 'Наборы, последовательности и точные внешние формулировки.',
+            ],
+            'native.table' => [
+                'slug' => 'table',
+                'title' => 'Таблица Markdown',
+                'description' => 'Компактное сравнение данных с безопасной прокруткой.',
             ],
         ];
         if ($locale === 'ru') {

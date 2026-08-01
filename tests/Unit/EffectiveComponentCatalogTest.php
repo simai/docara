@@ -753,11 +753,15 @@ final class EffectiveComponentCatalogTest extends TestCase
             if (in_array($entry['id'], [
                 'docara.alert',
                 'native.headings_and_text',
+                'native.links_and_images',
                 'native.lists_and_quotes',
+                'native.table',
             ], true)) {
                 $slug = match ($entry['id']) {
                     'native.headings_and_text' => 'headings-and-text',
+                    'native.links_and_images' => 'links-and-images',
                     'native.lists_and_quotes' => 'lists-and-quotes',
+                    'native.table' => 'table',
                     default => 'alert',
                 };
                 self::assertFileExists($root . "/docs/site/content/ru/components/$slug.md");

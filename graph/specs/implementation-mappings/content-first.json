@@ -5,7 +5,7 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Content-first implementation mapping",
-  "summary": "M3.2 map of physical Markdown ownership and the shrinking generated public-page boundary.",
+  "summary": "M3.3 map of physical Markdown ownership and the shrinking generated public-page boundary.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "R2_contract",
@@ -54,23 +54,25 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-07-native-text-lists.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-07-native-text-lists.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-08-native-links-table.md"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
     "M1A replaces implicit authored Markdown discovery with typed PageSource, PageSourceLocator and RouteMapper boundaries.",
     "Ambiguous physical routes, unknown locales, outside-root paths, traversal, symlinks and non-.md public page extensions fail before rendering.",
     "M1B adds strict target config/lang/manifest input boundaries and a finite zero-growth allowlist for the remaining legacy public sources.",
-    "62 physical Markdown files produce 62 authored routes after batch 07.",
-    "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 41 additional public routes without physical Markdown.",
-    "The Russian language pack contains 39 component presentation records; English contains 42 and three other bundled packs contain 8 each.",
+    "64 physical Markdown files produce 64 authored routes after batch 08.",
+    "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 39 additional public routes without physical Markdown.",
+    "The Russian language pack contains 37 component presentation records; English contains 42 and three other bundled packs contain 8 each.",
     "The badge route is owned by content/ru/components/badge.md and suppresses the generated badge detail route through AuthoredComponentPageIndex.",
     "M2 proves the physical Badge Markdown owns all page prose and examples while its structural component definition contains no documentation prose.",
     "M3.2 makes content/ru/components/alert.md the Alert owner, removes its Russian pack prose and generated-route allowlist entry, and retires its zero-reference Russian example projection.",
-    "M3.3 batch 07 makes headings/text and lists/quotes physical, removes their Russian prose records and retires their zero-reference localized examples."
+    "M3.3 batch 07 makes headings/text and lists/quotes physical, removes their Russian prose records and retires their zero-reference localized examples.",
+    "M3.3 batch 08 makes links/images and table physical, removes their Russian prose records and retires their zero-reference localized examples."
   ],
   "known_deviations": [
-    "One-route-one-Markdown is false for 41 of 103 logical pages.",
+    "One-route-one-Markdown is false for 39 of 103 logical pages.",
     "Language packs and catalog/example records remain public prose owners.",
     "Generated routes use synthetic page_path values that resemble missing Markdown files."
   ],
@@ -79,6 +81,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
   ],
-  "status": "m3_3_batch_07_implemented_batch_08_ready",
-  "mapped_revision": "commit containing batch-07-native-text-lists.md; parent feb297bdafb4ecbb83b8875c9665d9c611fd71b7"
+  "status": "m3_3_batch_08_implemented_batch_09_ready",
+  "mapped_revision": "commit containing batch-08-native-links-table.md; parent 50cb91d79af0f6bb435e3575c79e1f71964ef45f"
 }

@@ -112,13 +112,24 @@ final readonly class MarkdownCompiler
 
                 continue;
             }
+            if (preg_match('/^!\[(?<alt>[^]]+)]\((?<url>[^)]+)\)(?:\{(?<attributes>[^}]*)})?\s*$/u', $line, $image) === 1) {
+                $nodes[] = new SourceNode(
+                    'image',
+                    $line,
+                    new SourceLocation($source, $index + 1, 1, $index + 1),
+                    ['alt' => $image['alt'], 'url' => $image['url']],
+                );
+                $index++;
+
+                continue;
+            }
 
             $start = $index;
             do {
                 $index++;
             } while ($index < $count
                 && trim($lines[$index]) !== ''
-                && preg_match('/^(?:#{1,6}\s|```|~~~|:::[a-z]|\s*(?:[-+*]|\d+[.)])\s+|\s*>)/', $lines[$index]) !== 1
+                && preg_match('/^(?:#{1,6}\s|```|~~~|:::[a-z]|\s*(?:[-+*]|\d+[.)])\s+|\s*>|!\[)/', $lines[$index]) !== 1
                 && ! str_starts_with(trim($lines[$index]), '|')
             );
             $raw = implode("\n", array_slice($lines, $start, $index - $start));

@@ -264,3 +264,26 @@ Status: PASS; M3.3 continues
 
 Five of 32 component routes are physical; batch 08 (links/images and table) is
 next. Overall M3 and release/production readiness remain unclaimed.
+
+## M3.3 batch 08 result
+
+Status: PASS; M3.3 continues
+
+- `/ru/components/links-and-images/` and `/ru/components/table/` now have one
+  physical Markdown owner each;
+- typed native IR adds one generic image node and reuses the shared native
+  table/code/example renderers;
+- browser acceptance found and fixed two shared example-markup defects that
+  could discard content after a table preview; regression tests cover valid,
+  balanced markup and retained following sections;
+- full/isolated trees are exact; static verification reports 206 HTML pages,
+  18,884 local references and zero broken;
+- desktop/mobile light/dark checks pass images, tabs/copy, responsive tables,
+  post-example content and zero console warnings/errors;
+- Russian pack/allowlist records and two zero-reference localized examples are
+  retired with commit rollback;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-08-native-links-table.md`.
+
+Seven of 32 component routes are physical; batch 09 (code and
+footnotes/sources) is next. Overall M3 and release/production readiness remain
+unclaimed.

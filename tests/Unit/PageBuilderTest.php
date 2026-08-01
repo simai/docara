@@ -59,7 +59,7 @@ final class PageBuilderTest extends TestCase
         self::assertNotNull($result->document);
         self::assertCount(16, $result->componentArtifacts);
         self::assertSame(
-            ['heading', 'paragraph', 'list', 'blockquote', 'table', 'code_block', 'example', 'component', 'component_block'],
+            ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'component', 'component_block'],
             $result->componentArtifacts === []
                 ? []
                 : (new DocumentRendererRegistry([
@@ -91,6 +91,8 @@ final class PageBuilderTest extends TestCase
         foreach ([
             'headings-and-text' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
             'lists-and-quotes' => ['heading', 'paragraph', 'list', 'blockquote', 'code_block', 'example'],
+            'links-and-images' => ['heading', 'paragraph', 'list', 'image', 'table', 'code_block', 'example'],
+            'table' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
             'syntax' => ['heading', 'paragraph', 'list', 'code_block'],
         ] as $slug => $expectedTypes) {
             $plan = (new PortableConfigurationLoader($root))->resolve("content/ru/components/$slug.md");
@@ -109,6 +111,11 @@ final class PageBuilderTest extends TestCase
             sort($types, SORT_STRING);
             sort($expectedTypes, SORT_STRING);
             self::assertSame($expectedTypes, $types, $slug);
+            if ($slug === 'table') {
+                self::assertStringContainsString('Когда использовать', $result->contentHtml);
+                self::assertStringContainsString('Полная сборка', $result->contentHtml);
+                self::assertStringContainsString('Первая строка задаёт заголовки', $result->contentHtml);
+            }
         }
     }
 }

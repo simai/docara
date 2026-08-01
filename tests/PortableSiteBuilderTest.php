@@ -1280,7 +1280,9 @@ final class PortableSiteBuilderTest extends TestCase
         $componentRoutes = [
             '/components/alert/',
             '/components/headings-and-text/',
+            '/components/links-and-images/',
             '/components/lists-and-quotes/',
+            '/components/table/',
             ...array_column($catalogPages['pages'], 'route'),
         ];
         sort($componentRoutes, SORT_STRING);

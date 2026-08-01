@@ -337,7 +337,7 @@ MD, $source);
             (new ComponentAliasRegistry)->aliases(),
         );
         self::assertSame(
-            ['heading', 'paragraph', 'list', 'blockquote', 'table', 'code_block', 'example', 'component', 'component_block'],
+            ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'component', 'component_block'],
             DocumentRendererRegistry::bundled(new PortableMarkdownRenderer)->types(),
         );
     }
@@ -370,6 +370,30 @@ MD, 'content/ru/components/lists-and-quotes.md');
         self::assertStringContainsString('<blockquote', $html);
         self::assertStringContainsString('Author', $html);
         self::assertStringContainsString('https://example.com/source', $html);
+    }
+
+    public function test_block_image_keeps_alt_url_and_physical_location(): void
+    {
+        $document = (new MarkdownCompiler)->compile(<<<'MD'
+# Image
+
+![Знак Docara](/ru/assets/docara-mark.svg){ratio=16x9 fit=contain}
+MD, 'content/ru/components/links-and-images.md');
+        $image = $document->nodes[1];
+
+        self::assertSame('image', $image->type());
+        self::assertSame([
+            'alt' => 'Знак Docara',
+            'url' => '/ru/assets/docara-mark.svg',
+        ], $image->data);
+        self::assertSame('content/ru/components/links-and-images.md:3:1', $image->location()->label());
+        $html = DocumentRendererRegistry::bundled(new PortableMarkdownRenderer)->render(
+            $document,
+            new DocumentRenderContext(null, null),
+        )['document']->html;
+        self::assertStringContainsString('alt="Знак Docara"', $html);
+        self::assertStringContainsString('ratio-16-9', $html);
+        self::assertStringContainsString('object-contain', $html);
     }
 
     private function example(string $call): string

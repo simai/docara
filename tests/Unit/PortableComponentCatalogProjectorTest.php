@@ -29,7 +29,13 @@ final class PortableComponentCatalogProjectorTest extends TestCase
                 && $entry['family'] !== 'framework_smart',
         ));
         $supportedIds = array_column($supported, 'id');
-        $authoredIds = ['docara.alert', 'native.headings_and_text', 'native.lists_and_quotes'];
+        $authoredIds = [
+            'docara.alert',
+            'native.headings_and_text',
+            'native.links_and_images',
+            'native.lists_and_quotes',
+            'native.table',
+        ];
         $generated = array_values(array_filter(
             $supported,
             static fn (array $entry): bool => ! in_array($entry['id'], $authoredIds, true),
@@ -163,6 +169,18 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             if ($id === 'native.lists_and_quotes') {
                 self::assertStringContainsString('<h1 id="списки-и-цитаты">Списки и цитаты</h1>', $detail);
                 self::assertStringContainsString('<blockquote', $detail);
+
+                continue;
+            }
+            if ($id === 'native.links_and_images') {
+                self::assertStringContainsString('<h1 id="ссылки-и-изображения">Ссылки и изображения</h1>', $detail);
+                self::assertStringContainsString('alt="Знак Docara"', $detail);
+
+                continue;
+            }
+            if ($id === 'native.table') {
+                self::assertStringContainsString('<h1 id="таблица-markdown">Таблица Markdown</h1>', $detail);
+                self::assertStringContainsString('data-docara-table-scroll', $detail);
 
                 continue;
             }

@@ -27,14 +27,16 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
                 && ! in_array($route['url'], [
                     '/ru/components/alert/',
                     '/ru/components/headings-and-text/',
+                    '/ru/components/links-and-images/',
                     '/ru/components/lists-and-quotes/',
+                    '/ru/components/table/',
                 ], true),
         ));
         $allowlist = new LegacyPublicSourceAllowlist;
 
-        self::assertCount(41, $generated);
-        self::assertCount(41, $allowlist->generatedRoutes());
-        foreach (['alert', 'headings-and-text', 'lists-and-quotes'] as $slug) {
+        self::assertCount(39, $generated);
+        self::assertCount(39, $allowlist->generatedRoutes());
+        foreach (['alert', 'headings-and-text', 'links-and-images', 'lists-and-quotes', 'table'] as $slug) {
             self::assertNotContains("/ru/components/$slug/", $allowlist->generatedRoutes());
         }
         self::assertNotContains('/ru/components/badge/', $allowlist->generatedRoutes());
@@ -61,14 +63,20 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
 
         $allowlist = new LegacyPublicSourceAllowlist;
         $allowlist->assertLanguagePackComponentCounts($counts);
-        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 39, 'zh-Hans' => 8], $counts);
+        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 37, 'zh-Hans' => 8], $counts);
         $russian = json_decode(
             (string) file_get_contents($root . '/resources/language-packs/ru.json'),
             true,
             512,
             JSON_THROW_ON_ERROR,
         )['components'];
-        foreach (['docara.alert', 'native.headings_and_text', 'native.lists_and_quotes'] as $id) {
+        foreach ([
+            'docara.alert',
+            'native.headings_and_text',
+            'native.links_and_images',
+            'native.lists_and_quotes',
+            'native.table',
+        ] as $id) {
             self::assertArrayNotHasKey($id, $russian);
         }
 

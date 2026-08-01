@@ -36,6 +36,8 @@ MD);
         self::assertStringContainsString('sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1', $markdown);
         self::assertStringContainsString('content-main-center m-0', $markdown);
         self::assertStringContainsString('data-copy-icon="content_copy" data-copied-icon="check"', $markdown);
+        self::assertStringNotContainsString('data-copied-icon="check""', $markdown);
+        self::assertSame(substr_count($markdown, '<div'), substr_count($markdown, '</div>'));
         self::assertStringContainsString('<sf-icon icon="content_copy" aria-hidden="true"></sf-icon>', $markdown);
         self::assertStringContainsString('class="docara-example-preview__header"', $markdown);
         self::assertStringContainsString('class="docara-example-preview__tabs"', $markdown);
@@ -44,6 +46,18 @@ MD);
         self::assertStringNotContainsString('sf-tabs sf-tabs--underline', $markdown);
         self::assertStringNotContainsString('style=', $markdown);
         self::assertStringContainsString('sf-badge--success', $markdown);
+
+        $table = $renderer->render(<<<'MD'
+:::example {label=Таблица}
+```markdown
+| Имя | Значение |
+| --- | --- |
+| theme | system |
+```
+:::
+MD);
+        self::assertSame(1, substr_count($table, 'data-docara-table-scroll'));
+        self::assertSame(substr_count($table, '<div'), substr_count($table, '</div>'));
 
         $web = $renderer->render(<<<'MD'
 :::example {label=Preview}

@@ -12,7 +12,7 @@ Recovery source:
 | Milestone | Evidence | Verdict |
 | --- | --- | --- |
 | M3.1 | `M3.1-EXECUTION-CONTRACT.md`, `route-owner-inventory.json`, `baseline.json`, `browser-captures.json` | PASS |
-| M3.2 | `M3.2-RUNTIME-ALERT.md` | pending |
+| M3.2 | `M3.2-RUNTIME-ALERT.md` | PASS |
 | M3.3 | `M3.3-CONTENT-MIGRATION.md` and per-family records | pending |
 | M3.4 | `M3.4-DERIVED-VIEWS.md` | pending |
 | M3.5 | `M3.5-LEGACY-RETIREMENT.md`, `old-to-new-map.json`, zero-reference records | pending |
@@ -22,10 +22,9 @@ Recovery source:
 
 - parent SHA: `b14fe4e1e70a5465fe382bd5ced1de26cb65a315`;
 - completed milestone: M3.1 durable execution contract and baseline;
-- latest completed batch: 05, generic registry/gateway block artifact;
-- current batch: 06, physical Alert owner and vertical-slice parity;
-- next evidence: Alert owner/HTML/assets/full/isolated/static/browser and exact
-  legacy-boundary reduction;
+- latest completed batch: 06, physical Alert owner and vertical-slice parity;
+- current batch: 07, native headings/text and lists/quotes family;
+- next evidence: per-family physical owners and route parity;
 - blockers: none; federation/process gaps are documented in the workflow.
 
 ## Evidence rules
@@ -45,4 +44,4 @@ Recovery source:
 | 03 | `batch-03-early-route-selection.md` | PASS |
 | 04 | `batch-04-component-block-ir.md` | PASS |
 | 05 | `batch-05-component-block-gateway.md` | PASS |
-| 06 | `M3.2-RUNTIME-ALERT.md` | pending |
+| 06 | `M3.2-RUNTIME-ALERT.md` | PASS |

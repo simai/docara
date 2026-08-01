@@ -20,7 +20,6 @@ use SplFileInfo;
 final class DocumentationContractTest extends TestCase
 {
     private const RETIRED_COMPONENT_SLUGS = [
-        'alert',
         'button',
         'card',
         'code',
@@ -302,6 +301,13 @@ final class DocumentationContractTest extends TestCase
                 self::assertTrue(mkdir($temporary . '/content/' . $locale . '/guide', 0700, true));
                 file_put_contents($temporary . '/content/' . $locale . '/index.md', "# $title\n");
                 file_put_contents($temporary . '/content/' . $locale . '/guide/install.md', "# Install $locale\n");
+                if ($locale === 'ru') {
+                    self::assertTrue(mkdir($temporary . '/content/ru/components', 0700, true));
+                    copy(
+                        $this->repositoryRoot() . '/stubs/portable/content/ru/components/alert.md',
+                        $temporary . '/content/ru/components/alert.md',
+                    );
+                }
             }
             foreach ([
                 'ru' => [

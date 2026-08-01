@@ -5,7 +5,7 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Typed IR implementation mapping",
-  "summary": "M0 legacy map plus the accepted M2 typed in-memory Document IR vertical slice for Badge.",
+  "summary": "Accepted typed in-memory Document IR for Badge inline calls and generic Alert block components.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "R2_contract",
@@ -28,11 +28,13 @@
     "src/Document/DocumentNode.php",
     "src/Document/SourceNode.php",
     "src/Document/ComponentNode.php",
+    "src/Document/ComponentBlockNode.php",
     "src/Document/SourceLocation.php",
     "src/Document/MarkdownCompiler.php",
     "src/Document/DocumentRendererRegistry.php",
     "src/Document/SourceDocumentNodeRenderer.php",
-    "src/Document/ComponentDocumentNodeRenderer.php"
+    "src/Document/ComponentDocumentNodeRenderer.php",
+    "src/Document/ComponentBlockDocumentNodeRenderer.php"
   ],
   "test_refs": [
     "tests/Unit/DeclarativeDocumentParserTest.php#test_it_parses_markdown_and_smart_calls_into_an_immutable_typed_ast",
@@ -45,7 +47,8 @@
   "evidence_refs": [
     "docara.evidence.m0_inventory",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md"
   ],
   "review_refs": ["docara.gate.vertical_slice"],
   "current_behavior": [
@@ -54,11 +57,13 @@
     "Headings and links are separately inspected for metadata.",
     "Ordinary Markdown is still passed as one coarse string to PortableMarkdownRenderer.",
     "M2 adds a 35-node typed in-memory IR for Badge with heading, paragraph, table, code_block, example and component types plus physical file/line/column provenance.",
-    "The Badge IR is serialized only as a test fixture; the public build emits no mandatory page IR JSON or JSONL."
+    "The Badge IR is serialized only as a test fixture; the public build emits no mandatory page IR JSON or JSONL.",
+    "M3.2 adds one generic component_block node with typed children, props and exact source spans, including blocks inside fenced Markdown examples.",
+    "Alert uses five generic block nodes and no Alert-specific IR type."
   ],
   "known_deviations": [
     "The current AST can be serialized in receipts, but the target permits no mandatory page-level JSON/JSONL.",
-    "Typed native node coverage is currently bounded to the Badge grammar; remaining routes still use the coarse rollback adapter.",
+    "Typed native node coverage is currently bounded to the Badge and Alert grammars; remaining routes still use the coarse rollback adapter.",
     "The earlier declarative SourceSpan remains separate from the target SourceLocation.",
     "PortableMarkdownRenderer remains active for non-Badge routes until bounded M3 parity evidence exists."
   ],
@@ -67,6 +72,6 @@
     "Retire PortableMarkdownRenderer component logic only after every moved node renderer has positive, negative and source-location tests.",
     "Delete duplicate metadata parsing only after headings and links are derived from the canonical IR."
   ],
-  "status": "m2_badge_slice_implemented",
-  "mapped_revision": "commit containing M2-EVIDENCE.md; parent b45896ea9284bb4fb2090fcacac7681c49e00aa5"
+  "status": "m3_2_generic_block_ir_implemented",
+  "mapped_revision": "commit containing M3.2-RUNTIME-ALERT.md; parent 843d4cf38c17385854d3fa2a6dbafebd17cc169f"
 }

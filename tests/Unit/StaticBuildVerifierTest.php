@@ -1322,6 +1322,41 @@ final class StaticBuildVerifierTest extends TestCase
             $lock,
             rtrim($deploymentBase, '/') . '/_docara/framework',
         );
+        if ($locale === 'ru') {
+            $alertMarkdown = "# Уведомление\n\nВажная информация, результат, предупреждение или ошибка.\n";
+            $alertConfiguration = $firstConfiguration;
+            $alertConfiguration['default_locale'] = 'ru';
+            $alertConfiguration['locale'] = 'ru';
+            $alertConfiguration['search'] = ['enabled' => false, 'indexed' => false];
+            $alertPlan = new ResolvedPagePlan(
+                page: 'content/components/alert.md',
+                markdown: $alertMarkdown,
+                configuration: $alertConfiguration,
+                frameworkLock: $lock,
+                trace: [],
+                provenance: [],
+            );
+            $alertOutput = 'components/alert/index.html';
+            $alertUrl = $deploymentBase . 'components/alert/';
+            $this->filesystem->ensureDirectoryExists(dirname($build . '/' . $alertOutput));
+            file_put_contents(
+                $build . '/' . $alertOutput,
+                '<!doctype html><html lang="ru" data-docara-documentation-version="current"><head><meta charset="utf-8">'
+                . '<meta name="docara:documentation-version" content="current"><title>Уведомление</title></head>'
+                . '<body><main><h1>Уведомление</h1><p>Важная информация, результат, предупреждение или ошибка.</p></main></body></html>',
+            );
+            $manifest['pages'][] = [
+                'canonical_hash' => $alertPlan->canonicalHash(),
+                'page_path' => 'content/components/alert.md',
+                'page_source_kind' => 'authored_markdown',
+                'title' => 'Уведомление',
+                'description' => 'Важная информация, результат, предупреждение или ошибка.',
+                'output' => $alertOutput,
+                'url' => $alertUrl,
+                'resolved_page_plan' => $alertPlan->toArray(),
+                'component_runtime' => $runtime->extract($alertMarkdown, $alertPlan->page)->toArray(),
+            ];
+        }
         $translationConfiguration = $firstConfiguration;
         $translationConfiguration['default_locale'] = $locale;
         if (is_array($translationConfiguration['locales'] ?? null)
@@ -1367,6 +1402,12 @@ final class StaticBuildVerifierTest extends TestCase
             baseUrl: $deploymentBase,
             homeUrl: $deploymentBase,
             reservedDocumentIds: PortableDocumentIds::reserved(),
+            authoredComponents: $locale === 'ru'
+                ? ['docara.alert' => [
+                    'title' => 'Уведомление',
+                    'description' => 'Важная информация, результат, предупреждение или ошибка.',
+                ]]
+                : [],
         );
 
         $catalogNavigation = [[

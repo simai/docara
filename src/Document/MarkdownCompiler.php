@@ -230,7 +230,25 @@ final readonly class MarkdownCompiler
     private function example(array $lines, int $start, string $source): array
     {
         $end = $start + 1;
-        while (isset($lines[$end]) && trim($lines[$end]) !== ':::') {
+        $fence = null;
+        while (isset($lines[$end])) {
+            if ($fence !== null) {
+                if (str_starts_with($lines[$end], $fence)) {
+                    $fence = null;
+                }
+                $end++;
+
+                continue;
+            }
+            if (str_starts_with($lines[$end], '```') || str_starts_with($lines[$end], '~~~')) {
+                $fence = substr($lines[$end], 0, 3);
+                $end++;
+
+                continue;
+            }
+            if (trim($lines[$end]) === ':::') {
+                break;
+            }
             $end++;
         }
         if (! isset($lines[$end])) {
@@ -247,8 +265,27 @@ final readonly class MarkdownCompiler
             }
             [$code, $next] = $this->codeBlock($lines, $index, $source);
             $children[] = $code;
-            for ($componentLine = $index + 1; $componentLine < $next - 1; $componentLine++) {
-                array_push($children, ...$this->components($lines[$componentLine], $componentLine + 1, $source));
+            if (($code->data['language'] ?? '') === 'markdown') {
+                for ($componentLine = $index + 1; $componentLine < $next - 1;) {
+                    if (preg_match('/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/', $lines[$componentLine]) === 1) {
+                        [$component, $componentLine] = $this->componentBlock($lines, $componentLine, $source);
+                        if ($componentLine > $next - 1) {
+                            throw new PortableConfigurationException(
+                                'DOCUMENT_IR_EXAMPLE_COMPONENT_BOUNDARY_INVALID',
+                                "Example component crosses its Markdown fence at [$source:" . ($index + 1) . ':1].',
+                            );
+                        }
+                        $children[] = $component;
+
+                        continue;
+                    }
+                    array_push($children, ...$this->components(
+                        $lines[$componentLine],
+                        $componentLine + 1,
+                        $source,
+                    ));
+                    $componentLine++;
+                }
             }
             $index = $next - 1;
         }

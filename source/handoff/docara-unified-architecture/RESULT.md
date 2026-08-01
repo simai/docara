@@ -218,3 +218,30 @@ The next checkpoint is M3.2: early isolated-route selection, the shared
 typed-IR/registry/gateway runtime contract and the accepted Alert vertical
 slice. M3 completion, global ownership, legacy retirement, release and
 production readiness remain unclaimed.
+
+# M3.2 shared runtime and Alert result
+
+Status: PASS; overall M3 goal remains in progress
+
+- isolated physical routes are selected before unrelated page compilation,
+  component-catalog projection and declarative-example projection;
+- generic `component_block` IR, its renderer-registry entry and the existing
+  Smart gateway now render Alert without a component-specific pipeline;
+- `/ru/components/alert/` is owned by
+  `docs/site/content/ru/components/alert.md` and keeps five variants plus the
+  tabbed example/code/copy experience;
+- Russian Alert page prose is removed from the language pack, its route is
+  removed from the allowlist, and the zero-reference Russian example
+  projection is retired with a Git rollback boundary;
+- full and isolated trees are identical: 103 pages, 321 files, Alert SHA-256
+  `51897e5fc51ba73f2118e895065bf8d35c634c103206794d6e3e03d24a3c1e75`;
+- static verification covers 206 HTML documents and 18,872 references with
+  zero broken; PHPUnit passes 368 tests and 7,347 assertions;
+- desktop/mobile light/dark browser checks pass tabs, copy, focus, roles,
+  responsive tables and zero console/page errors;
+- evidence:
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md`.
+
+M3.3 is next. Three of 32 component routes are physical; global ownership,
+derived-view convergence, full legacy retirement, release and production
+readiness remain unclaimed.

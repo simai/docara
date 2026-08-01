@@ -629,43 +629,6 @@
             },
             "example_ref": "resources/component-catalog/examples/ui.button.ru.md"
         },
-        "docara.alert": {
-            "title": "Уведомление",
-            "description": "Сообщает важную информацию, результат, предупреждение или ошибку в едином стиле SIMAI Framework.",
-            "limitations": [
-                "Не передавайте смысл только цветом; заголовок и пояснение должны быть понятны сами по себе."
-            ],
-            "states": {
-                "clear": "Нейтральное",
-                "info": "Информация",
-                "success": "Успех",
-                "warning": "Предупреждение",
-                "danger": "Ошибка"
-            },
-            "parameters": {
-                "type": {
-                    "label": "Смысл",
-                    "description": "Выбирает семантический тип уведомления.",
-                    "values": {
-                        "clear": "Нейтральный",
-                        "info": "Информация",
-                        "success": "Успех",
-                        "warning": "Предупреждение",
-                        "danger": "Ошибка"
-                    }
-                },
-                "variant": {
-                    "label": "Оформление",
-                    "description": "Выбирает визуальный вариант Framework.",
-                    "values": {
-                        "default": "Обычный",
-                        "flat": "Плоский",
-                        "outlined": "Контурный"
-                    }
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/docara.alert.ru.md"
-        },
         "docara.details": {
             "title": "Раскрывающийся блок",
             "description": "Скрывает дополнительное пояснение, пока читатель не решит его открыть.",

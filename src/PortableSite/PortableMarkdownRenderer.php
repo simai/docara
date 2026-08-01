@@ -23,6 +23,10 @@ use League\CommonMark\Util\RegexHelper;
 use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
 use Simai\Docara\ComponentCatalog\TypedRendererId;
 use Simai\Docara\Declarative\Smart\SmartComponentGateway;
+use Simai\Docara\Document\ComponentAliasRegistry;
+use Simai\Docara\Document\ComponentBlockNode;
+use Simai\Docara\Document\SourceLocation;
+use Simai\Docara\Document\SourceNode;
 use Simai\Docara\Markdown\AuthoringAttributeParser;
 use Simai\Docara\Markdown\CommonMarkInspector;
 use Simai\Docara\Markdown\DirectiveBlockStartParser;
@@ -132,7 +136,11 @@ final class PortableMarkdownRenderer
                 TypedRendererId::Grid => $this->renderGrid($block['markdown'], $block['attributes']),
                 TypedRendererId::Media => $this->renderMedia($this->converter->convert($blockMarkdown), $block['attributes']),
                 TypedRendererId::Tree => $this->renderTree($this->converter->convert($blockMarkdown), $block['attributes']),
-                TypedRendererId::Alert => $this->renderAlert($this->converter->convert($blockMarkdown), $block['attributes']),
+                TypedRendererId::Alert => $this->renderAlert(
+                    $this->converter->convert($blockMarkdown),
+                    $block['attributes'],
+                    $sourceFile,
+                ),
                 TypedRendererId::Tabs => $this->renderTabs($this->converter->convert($blockMarkdown)),
                 TypedRendererId::Banner => $this->renderBanner($this->converter->convert($blockMarkdown), $block['attributes']),
                 TypedRendererId::Diagram => $this->renderDiagram($block['markdown'], $block['attributes']),
@@ -819,8 +827,11 @@ final class PortableMarkdownRenderer
     }
 
     /** @param array<string,string> $attributes */
-    private function renderAlert(RenderedContentInterface $rendered, array $attributes): string
-    {
+    private function renderAlert(
+        RenderedContentInterface $rendered,
+        array $attributes,
+        ?string $sourceFile,
+    ): string {
         $this->assertAttributes($attributes, ['type', 'variant'], 'alert');
         $type = $this->attributeOneOf(
             $attributes['type'] ?? 'info',
@@ -851,21 +862,24 @@ final class PortableMarkdownRenderer
         }
         $content = trim((string) $rendered);
         $content = preg_replace('/^<h[2-5][^>]*>.*?<\/h[2-5]>\s*/su', '', $content, 1) ?? $content;
-        $icon = match ($type) {
-            'success' => 'check_circle',
-            'warning' => 'warning',
-            'danger' => 'error',
-            'clear' => 'notifications',
-            default => 'info',
-        };
-        $role = $type === 'danger' ? 'alert' : 'status';
+        $location = new SourceLocation($sourceFile ?? '@markdown', 1, 1, 1);
+        $alias = 'alert';
 
-        return '<section data-docara-block="alert" role="' . $role . '" aria-label="'
-            . $this->escapeHtml($title) . '" class="sf-alert sf-alert--' . $type . ' sf-alert--' . $variant
-            . ' flex items-start m-bottom-1"><sf-icon icon="' . $icon . '" aria-hidden="true"></sf-icon>'
-            . '<div class="sf-alert-wrap flex flex-col flex-1"><div class="sf-alert-content flex flex-col flex-1">'
-            . '<div class="sf-alert-text">' . $this->escapeHtml($title) . '</div>'
-            . '<div class="sf-alert-supporting-text">' . $content . '</div></div></div></section>';
+        return $this->components->renderComponentBlock(
+            new ComponentBlockNode(
+                $alias,
+                (new ComponentAliasRegistry)->resolve($alias, $location),
+                ['type' => $type, 'variant' => $variant],
+                ':::alert',
+                $title . "\n\n" . strip_tags($content),
+                $location,
+                [
+                    new SourceNode('heading', $title, $location, ['level' => $heading->getLevel(), 'text' => $title]),
+                    new SourceNode('paragraph', strip_tags($content), $location, ['text' => strip_tags($content)]),
+                ],
+            ),
+            '<h' . $heading->getLevel() . '>' . $this->escapeHtml($title) . '</h' . $heading->getLevel() . '>' . $content,
+        )->html;
     }
 
     private function renderTabs(RenderedContentInterface $rendered): string

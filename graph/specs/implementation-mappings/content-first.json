@@ -5,7 +5,7 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Content-first implementation mapping",
-  "summary": "Exact M0 map of physical Markdown ownership and generated public-page producers at candidate 2928d68.",
+  "summary": "M3.2 map of physical Markdown ownership and the shrinking generated public-page boundary.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "R2_contract",
@@ -32,6 +32,8 @@
     "resources/legacy-public-source-allowlist.json",
     "resources/schemas/lang.schema.json",
     "resources/components/docara.badge.json",
+    "resources/components/docara.alert.json",
+    "docs/site/content/ru/components/alert.md",
     "docs/site/content/ru/lang.json",
     "resources/component-catalog/examples/*.md"
   ],
@@ -50,21 +52,23 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-route-inventory.json",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
     "M1A replaces implicit authored Markdown discovery with typed PageSource, PageSourceLocator and RouteMapper boundaries.",
     "Ambiguous physical routes, unknown locales, outside-root paths, traversal, symlinks and non-.md public page extensions fail before rendering.",
     "M1B adds strict target config/lang/manifest input boundaries and a finite zero-growth allowlist for the remaining legacy public sources.",
-    "59 physical Markdown files produce 59 authored routes.",
-    "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 44 additional public routes without physical Markdown.",
-    "Russian and English language packs each contain 42 component presentation records; three other bundled packs contain 8 each.",
+    "60 physical Markdown files produce 60 authored routes after the Alert migration.",
+    "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 43 additional public routes without physical Markdown.",
+    "The Russian language pack contains 41 component presentation records; English contains 42 and three other bundled packs contain 8 each.",
     "The badge route is owned by content/ru/components/badge.md and suppresses the generated badge detail route through AuthoredComponentPageIndex.",
-    "M2 proves the physical Badge Markdown owns all page prose and examples while its structural component definition contains no documentation prose."
+    "M2 proves the physical Badge Markdown owns all page prose and examples while its structural component definition contains no documentation prose.",
+    "M3.2 makes content/ru/components/alert.md the Alert owner, removes its Russian pack prose and generated-route allowlist entry, and retires its zero-reference Russian example projection."
   ],
   "known_deviations": [
-    "One-route-one-Markdown is false for 44 of 103 logical pages.",
+    "One-route-one-Markdown is false for 43 of 103 logical pages.",
     "Language packs and catalog/example records remain public prose owners.",
     "Generated routes use synthetic page_path values that resemble missing Markdown files."
   ],
@@ -73,6 +77,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
   ],
-  "status": "m2_badge_slice_implemented_m3_ready",
-  "mapped_revision": "commit containing M2-EVIDENCE.md; parent b45896ea9284bb4fb2090fcacac7681c49e00aa5"
+  "status": "m3_2_alert_slice_implemented_m3_3_ready",
+  "mapped_revision": "commit containing M3.2-RUNTIME-ALERT.md; parent 843d4cf38c17385854d3fa2a6dbafebd17cc169f"
 }

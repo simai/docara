@@ -29,7 +29,12 @@ final class PortableComponentCatalogProjectorTest extends TestCase
                 && $entry['family'] !== 'framework_smart',
         ));
         $supportedIds = array_column($supported, 'id');
-        $supportedSlugs = array_map(self::publicSlug(...), $supported);
+        $generated = array_values(array_filter(
+            $supported,
+            static fn (array $entry): bool => $entry['id'] !== 'docara.alert',
+        ));
+        $generatedIds = array_column($generated, 'id');
+        $generatedSlugs = array_map(self::publicSlug(...), $generated);
         $allIds = array_column($catalog['entries'], 'id');
 
         $expectedPublicIds = [
@@ -83,10 +88,10 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             '/\A[a-f0-9]{64}\z/D',
             $receipt['index']['contract_fragment_sha256'],
         );
-        self::assertSame($supportedIds, array_column($receipt['pages'], 'id'));
+        self::assertSame($generatedIds, array_column($receipt['pages'], 'id'));
         self::assertFileExists($build . '/components/index.html');
         self::assertSame(
-            $supportedSlugs,
+            $generatedSlugs,
             array_map(
                 static fn (array $page): string => basename(dirname($page['output'])),
                 $receipt['pages'],
@@ -132,6 +137,15 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             $detailPath = $build . '/components/' . $slug . '/index.html';
             self::assertFileExists($detailPath);
             $detail = (string) file_get_contents($detailPath);
+            if ($id === 'docara.alert') {
+                self::assertStringContainsString('<h1 id="уведомление">Уведомление</h1>', $detail);
+                self::assertSame(5, substr_count($detail, 'data-docara-block="alert"'));
+                self::assertStringContainsString('Параметр <code>type</code>', $detail);
+                self::assertStringContainsString('Параметр <code>variant</code>', $detail);
+                self::assertStringContainsString('data-docara-code-block', $detail);
+
+                continue;
+            }
             self::assertStringContainsString('data-docara-component-detail="' . $id . '"', $detail);
             self::assertStringContainsString('data-docara-component-demo="' . $id . '"', $detail);
             self::assertStringContainsString('data-docara-component-example', $detail);
@@ -192,9 +206,8 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         self::assertStringContainsString('<sf-icon icon="warning"', $docaraAlert);
         self::assertStringContainsString('<sf-icon icon="error"', $docaraAlert);
         self::assertStringContainsString(':::alert {type=info variant=default}', $docaraAlert);
-        self::assertStringContainsString('data-docara-component-parameters', $docaraAlert);
-        self::assertStringContainsString('data-docara-component-parameter="type"', $docaraAlert);
-        self::assertStringContainsString('data-docara-component-parameter="variant"', $docaraAlert);
+        self::assertStringNotContainsString('data-docara-component-detail', $docaraAlert);
+        self::assertSame(5, substr_count($docaraAlert, 'data-docara-block="alert"'));
         self::assertStringNotContainsString('>Тип уведомления <code>type</code>', $docaraAlert);
         self::assertStringNotContainsString('>Оформление <code>variant</code>', $docaraAlert);
         self::assertStringNotContainsString('docara-variant:', $docaraAlert);
@@ -410,7 +423,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             )?->length,
         );
         self::assertSame(
-            count($receipt['pages']),
+            count($receipt['pages']) + 1,
             $xpath->query(
                 '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
                 . '//a[starts-with(@href, "/components/") and @href!="/components/"]',
@@ -488,7 +501,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             static fn (array $page): bool => str_starts_with(
                 (string) $page['output'],
                 'components/',
-            ),
+            ) && ($page['page_source_kind'] ?? null) === 'generated_projection',
         ));
 
         self::assertCount(count($receipt['pages']) + 1, $catalogPages);
@@ -538,7 +551,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             static fn (array $page): bool => str_starts_with(
                 (string) $page['output'],
                 'components/',
-            ),
+            ) && ($page['page_source_kind'] ?? null) === 'generated_projection',
         ));
 
         self::assertCount(count($receipt['pages']) + 1, $catalogPages);
@@ -648,6 +661,9 @@ final class PortableComponentCatalogProjectorTest extends TestCase
     private function buildPortableSite(string $baseUrl = '/', string $locale = 'ru'): string
     {
         $this->copyPortableFixture($this->tmp);
+        if ($locale !== 'ru') {
+            unlink($this->tmpPath('content/components/alert.md'));
+        }
         if ($baseUrl !== '/' || $locale !== 'ru') {
             $sitePath = $this->tmpPath('docara.json');
             $site = $this->json($sitePath);

@@ -1273,6 +1273,7 @@ final class PortableSiteBuilderTest extends TestCase
             '/guides/platform/configuration/',
             '/guides/platform/configuration/layout/',
             '/components/',
+            '/components/alert/',
         ];
         $catalogPages = $this->jsonFile(
             $this->tmpPath('build_local/.docara/component-catalog-pages.json'),

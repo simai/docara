@@ -23,12 +23,14 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
         );
         $generated = array_values(array_filter(
             $inventory['routes'],
-            static fn (array $route): bool => $route['page_source_kind'] === 'generated_projection',
+            static fn (array $route): bool => $route['page_source_kind'] === 'generated_projection'
+                && $route['url'] !== '/ru/components/alert/',
         ));
         $allowlist = new LegacyPublicSourceAllowlist;
 
-        self::assertCount(44, $generated);
-        self::assertCount(44, $allowlist->generatedRoutes());
+        self::assertCount(43, $generated);
+        self::assertCount(43, $allowlist->generatedRoutes());
+        self::assertNotContains('/ru/components/alert/', $allowlist->generatedRoutes());
         self::assertNotContains('/ru/components/badge/', $allowlist->generatedRoutes());
         $allowlist->assertGeneratedPages($generated);
 
@@ -53,7 +55,16 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
 
         $allowlist = new LegacyPublicSourceAllowlist;
         $allowlist->assertLanguagePackComponentCounts($counts);
-        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 42, 'zh-Hans' => 8], $counts);
+        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 41, 'zh-Hans' => 8], $counts);
+        self::assertArrayNotHasKey(
+            'docara.alert',
+            json_decode(
+                (string) file_get_contents($root . '/resources/language-packs/ru.json'),
+                true,
+                512,
+                JSON_THROW_ON_ERROR,
+            )['components'],
+        );
 
         $counts['ru']++;
         $this->assertError(

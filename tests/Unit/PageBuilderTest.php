@@ -16,6 +16,35 @@ use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
 final class PageBuilderTest extends TestCase
 {
+    public function test_alert_uses_the_same_pagebuilder_with_five_typed_gateway_blocks(): void
+    {
+        $root = dirname(__DIR__, 2) . '/docs/site';
+        $plan = (new PortableConfigurationLoader($root))->resolve('content/ru/components/alert.md');
+        $result = (new PageBuilder(new PortableMarkdownRenderer))->build(
+            $plan,
+            $root,
+            FrameworkComponentRuntime::fromLock($plan->frameworkLock),
+            3,
+        );
+
+        self::assertNotNull($result->document);
+        self::assertCount(5, $result->componentArtifacts);
+        self::assertSame(
+            ['docara.alert'],
+            array_values(array_unique(array_column(
+                array_map(static fn ($artifact): array => $artifact->hydration, $result->componentArtifacts),
+                'smart',
+            ))),
+        );
+        self::assertSame(5, substr_count($result->contentHtml, 'data-docara-block="alert"'));
+        self::assertSame(2, substr_count($result->contentHtml, 'data-docara-code-block'));
+        foreach ($result->componentArtifacts as $artifact) {
+            self::assertSame('component_block', $artifact->hydration['node_type']);
+            self::assertSame('content/ru/components/alert.md', $artifact->hydration['source']['file']);
+            self::assertSame([], $artifact->assets);
+        }
+    }
+
     public function test_badge_uses_one_pagebuilder_with_typed_ir_and_sixteen_gateway_artifacts(): void
     {
         $root = dirname(__DIR__, 2) . '/docs/site';

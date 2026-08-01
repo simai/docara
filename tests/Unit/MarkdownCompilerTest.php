@@ -242,6 +242,48 @@ MD;
         );
     }
 
+    public function test_example_keeps_component_block_inside_markdown_fence_as_typed_ir(): void
+    {
+        $source = 'content/ru/components/alert.md';
+        $document = (new MarkdownCompiler)->compile(<<<'MD'
+# Alert
+
+:::example {label="Общий пример"}
+```markdown
+:::alert {type=info variant=default}
+#### Полезная информация
+
+Продолжайте работу в обычном порядке.
+:::
+```
+:::
+MD, $source);
+        $examples = array_values(array_filter(
+            $document->nodes,
+            static fn (DocumentNode $node): bool => $node->type() === 'example',
+        ));
+        $blocks = array_values(array_filter(
+            $document->allNodes(),
+            static fn (DocumentNode $node): bool => $node instanceof ComponentBlockNode,
+        ));
+
+        self::assertCount(1, $examples);
+        self::assertCount(1, $blocks);
+        self::assertSame('docara.alert', $blocks[0]->component);
+        self::assertSame(5, $blocks[0]->location()->line);
+        self::assertSame(9, $blocks[0]->location()->endLine);
+
+        $rendered = DocumentRendererRegistry::bundled(new PortableMarkdownRenderer)->render(
+            $document,
+            new DocumentRenderContext(null, $source),
+        );
+        self::assertCount(1, $rendered['components']);
+        self::assertStringContainsString('data-docara-example=', $rendered['document']->html);
+        self::assertStringContainsString('data-docara-example-tab="example"', $rendered['document']->html);
+        self::assertStringContainsString('data-docara-example-tab="markdown"', $rendered['document']->html);
+        self::assertStringContainsString('data-docara-block="alert"', $rendered['document']->html);
+    }
+
     public function test_component_block_prop_and_document_slot_failures_keep_source_locations(): void
     {
         $compiler = new MarkdownCompiler;

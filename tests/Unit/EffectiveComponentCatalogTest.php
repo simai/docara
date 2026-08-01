@@ -750,6 +750,20 @@ final class EffectiveComponentCatalogTest extends TestCase
                 $root . '/' . $englishReference,
             ));
             self::assertNotSame('', trim($html), $entry['id']);
+            if ($entry['id'] === 'docara.alert') {
+                self::assertFileExists($root . '/docs/site/content/ru/components/alert.md');
+                self::assertArrayNotHasKey(
+                    'docara.alert',
+                    json_decode(
+                        (string) file_get_contents($root . '/resources/language-packs/ru.json'),
+                        true,
+                        512,
+                        JSON_THROW_ON_ERROR,
+                    )['components'],
+                );
+
+                continue;
+            }
             $localizedReference = $translator->component('ru', (string) $entry['id'])['example_ref'] ?? null;
             self::assertIsString($localizedReference, $entry['id']);
             self::assertStringEndsWith('.ru.md', $localizedReference, $entry['id']);

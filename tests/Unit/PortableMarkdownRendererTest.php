@@ -67,6 +67,31 @@ MD);
     }
 
     #[Test]
+    public function alert_inside_markdown_example_uses_the_content_smart_gateway(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $html = $renderer->render(<<<'MD'
+:::example {label="Общий пример"}
+```markdown
+:::alert {type=warning variant=outlined}
+#### Обратите внимание
+
+Проверьте параметры перед публикацией.
+:::
+```
+:::
+MD, null, 'content/ru/components/alert.md');
+
+        self::assertStringContainsString('data-docara-example=', $html);
+        self::assertStringContainsString('data-docara-example-tab="example"', $html);
+        self::assertStringContainsString('data-docara-example-tab="markdown"', $html);
+        self::assertStringContainsString(
+            'data-docara-block="alert" role="status" aria-label="Обратите внимание" class="sf-alert sf-alert--warning sf-alert--outlined',
+            $html,
+        );
+    }
+
+    #[Test]
     public function it_renders_local_diagrams_math_and_consent_gated_embeds(): void
     {
         $renderer = new PortableMarkdownRenderer;

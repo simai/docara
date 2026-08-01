@@ -35,13 +35,13 @@ generated component page count и русский component-route allowlist ра�
 PageBuilder/registry/gateway; две clean full builds byte-identical; static и
 browser matrices зелёные; graph/workflow/handoff синхронны; worktree чистый.
 
-Current Remaining: 30 generated routes из 32; Badge и Syntax уже физические.
+Current Remaining: 29 generated routes из 32; Alert, Badge и Syntax уже
+физические.
 
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.2, ранний route selector и общий runtime-контракт перед
-Alert vertical slice.
+Next Safe Batch: M3.3 batch 07, native headings/text and lists/quotes.
 
 ## Goal
 
@@ -150,7 +150,7 @@ parity and rollback.
 | Milestone | Outcome | Completion evidence | Status |
 | --- | --- | --- | --- |
 | M3.1 | durable contract, inventory, family order and baseline | inventory + hashes + browser baseline + graph | completed |
-| M3.2 | common runtime contract and Alert vertical slice | focused/full/single/static/browser parity | pending |
+| M3.2 | common runtime contract and Alert vertical slice | focused/full/single/static/browser parity | completed |
 | M3.3 | all Russian component pages Markdown-owned | 32/32 ownership and family evidence | pending |
 | M3.4 | derived views use the same page-result contour | index/nav/search/outline/transitions tests | pending |
 | M3.5 | inactive Russian component legacy retired | zero-reference scans and rollback map | pending |
@@ -176,8 +176,8 @@ checks, evidence update and a separate commit.
 | 03 | early selector and route/source plan before projections | call-spy and full/single regression | completed |
 | 04 | generic block-component IR and compiler contract | typed snapshot and negative locations | completed |
 | 05 | generic renderer-registry/Smart-gateway block artifact | registry/gateway focused tests | completed |
-| 06 | Alert Markdown owner | exact Alert full/single/browser parity | in-progress |
-| 07 | native headings/text and lists/quotes | route parity | pending |
+| 06 | Alert Markdown owner | exact Alert full/single/browser parity | completed |
+| 07 | native headings/text and lists/quotes | route parity | in-progress |
 | 08 | native links/images and table | route parity + responsive table | pending |
 | 09 | native code and footnotes/sources | copy/code/anchors parity | pending |
 | 10 | details and backlinks | disclosure/navigation parity | pending |
@@ -306,11 +306,27 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 06 — Alert physical Markdown owner
 
+- status: completed;
+- parent: `843d4cf38c17385854d3fa2a6dbafebd17cc169f`;
+- `/ru/components/alert/` is owned by physical
+  `content/ru/components/alert.md` and uses five generic block nodes;
+- one tabbed general example preserves preview/Markdown/copy capability while
+  fenced block nodes retain typed source locations and render through the one
+  content Smart gateway;
+- full/isolated trees are identical, Alert HTML SHA-256 is
+  `51897e5fc51ba73f2118e895065bf8d35c634c103206794d6e3e03d24a3c1e75`;
+- production build: 103 pages/321 files; static: 206 HTML/18,872 references/0
+  broken; browser: desktop/mobile light/dark PASS; PHPUnit: 368/7,347 PASS;
+- Russian pack prose and allowlist entry are removed; zero-reference
+  `docara.alert.ru.md` is retired with commit rollback;
+- evidence: `m3-ru-components/M3.2-RUNTIME-ALERT.md`.
+
+### Batch 07 — native headings/text and lists/quotes
+
 - status: in-progress;
-- parent: batch 05 checkpoint commit;
-- objective: reproduce the accepted Alert page as one physical Markdown
-  owner, prove exact route/full/isolated/static/browser parity, then reduce only
-  its active legacy prose/allowlist entries.
+- parent: batch 06 checkpoint commit;
+- objective: create physical owners for the two native-content routes, retain
+  useful examples and prove full/isolated parity before exact legacy reduction.
 
 ## Kaizen
 

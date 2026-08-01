@@ -63,6 +63,10 @@ final readonly class PageBuilder
 
     private function usesTargetPipeline(string $page): bool
     {
-        return str_replace('\\', '/', $page) === 'content/ru/components/badge.md';
+        return in_array(str_replace('\\', '/', $page), [
+            'content/components/alert.md',
+            'content/ru/components/alert.md',
+            'content/ru/components/badge.md',
+        ], true);
     }
 }

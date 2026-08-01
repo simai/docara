@@ -5,7 +5,7 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Smart gateway implementation mapping",
-  "summary": "M0 legacy map plus the accepted M2 alias/registry/content-gateway path for all Badge calls.",
+  "summary": "One content Smart gateway path for Badge inline calls and generic Alert block components.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "R2_contract",
@@ -27,6 +27,10 @@
     "src/Document/ContentComponentRegistry.php",
     "src/Document/ContentComponentRenderer.php",
     "src/Document/ComponentDocumentNodeRenderer.php",
+    "src/Document/ComponentBlockNode.php",
+    "src/Document/ComponentBlockDocumentNodeRenderer.php",
+    "resources/components/docara.alert.json",
+    "resources/components/templates/alert.php",
     "resources/components/docara.badge.json",
     "resources/components/templates/badge.php"
   ],
@@ -41,7 +45,8 @@
   "evidence_refs": [
     "docara.evidence.m0_inventory",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md"
   ],
   "review_refs": ["docara.gate.vertical_slice"],
   "current_behavior": [
@@ -50,11 +55,13 @@
     "Product Smart resolution is registry backed, but SmartRenderer and semantic validation still enumerate the supported product set.",
     "FrameworkComponentRuntime and InlineComponentRenderer remain separate active paths for non-migrated routes.",
     "M2 resolves badge to docara.badge through ComponentAliasRegistry and routes all 16 calls through DocumentRendererRegistry and the content mode of the same SmartComponentGateway facade.",
-    "The structural component definition and template return HTML, diagnostics and provenance without owning public documentation prose."
+    "The structural component definition and template return HTML, diagnostics and provenance without owning public documentation prose.",
+    "M3.2 routes every authored Alert block through DocumentRendererRegistry and SmartComponentGateway::renderComponentBlock using one manifest/template contract.",
+    "The compatibility Markdown Alert renderer delegates to that same gateway and no longer assembles a second Alert HTML artifact."
   ],
   "known_deviations": [
     "DocumentParser hard-codes only ui.alert and ui.button as directive names.",
-    "Non-Badge inline aliases and block components remain on legacy paths until their bounded M3 slices.",
+    "Non-Badge inline aliases and non-Alert block components remain on legacy paths until their bounded M3 slices.",
     "The framework and product Smart plans still use their existing resolver path while content nodes use the new content registry behind the same facade."
   ],
   "deletion_gates": [
@@ -62,6 +69,6 @@
     "Retire FrameworkComponentRuntime::extract only after block and inline Framework calls use the same gateway.",
     "Remove component-specific SmartRenderer branches only after manifest-driven template/view resolution has parity and fail-closed tests."
   ],
-  "status": "m2_badge_slice_implemented",
-  "mapped_revision": "commit containing M2-EVIDENCE.md; parent b45896ea9284bb4fb2090fcacac7681c49e00aa5"
+  "status": "m3_2_badge_and_alert_gateway_implemented",
+  "mapped_revision": "commit containing M3.2-RUNTIME-ALERT.md; parent 843d4cf38c17385854d3fa2a6dbafebd17cc169f"
 }

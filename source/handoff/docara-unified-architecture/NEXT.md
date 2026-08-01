@@ -1,4 +1,4 @@
-# Next executable checkpoint: M3.2 shared runtime and Alert slice
+# Next executable checkpoint: M3.3 Russian component families
 
 Goal batch: `docara.batch.m3.migrate`
 
@@ -15,22 +15,23 @@ Evidence index:
 - M3.1 inventory/baseline PASS: 32 routes, 2 physical owners, 30 generated
   projections, deterministic full builds, all-route isolated parity, zero
   broken references and representative browser baseline;
-- no M3 runtime or content migration has yet been claimed.
+- M3.2 PASS: early physical route selection, generic block IR, one renderer
+  registry/gateway and physical Alert owner;
+- 3 of 32 Russian component routes are physical; 29 remain generated;
+- full/single/static/browser and full PHPUnit evidence are green at the Alert
+  checkpoint.
 
-## Execute M3.2
+## Execute M3.3
 
-1. Select an isolated route before compiling or projecting unrelated catalog
-   pages/examples while retaining the same PageBuilder used by full build.
-2. Extend the existing typed in-memory Document IR with the minimal generic
-   block-component contract required by Alert; do not add Alert-specific IR.
-3. Resolve the block through the one renderer registry and one Smart gateway,
-   including fail-closed route/source/line/column diagnostics.
-4. Move only `/ru/components/alert/` to
-   `docs/site/content/ru/components/alert.md` and prove focused/full/isolated/
-   static/browser parity.
-5. Reduce exact Alert legacy entries only after successful parity and a
-   zero-reference scan; retain a Git commit rollback path.
-6. Continue automatically into the remaining M3 families after M3.2 PASS.
+1. Migrate native headings/text and lists/quotes as the first family batch.
+2. Continue through the family sequence in the durable goal without waiting
+   after a green internal checkpoint.
+3. Keep one physical Markdown owner, useful prose and a common example/code
+   contract per route; do not move page prose into config or language packs.
+4. Reduce each exact projection/allowlist entry only after full/isolated parity
+   and a zero-reference scan with rollback evidence.
+5. Keep the component index and derived-view convergence for their declared
+   batches; do not claim M3 complete before 32/32 and M3.6 acceptance.
 
 ## Current boundaries
 

@@ -33,6 +33,7 @@ final readonly class DocumentRendererRegistry
         return new self([
             new SourceDocumentNodeRenderer($markdown),
             new ComponentDocumentNodeRenderer($markdown->componentGateway()),
+            new ComponentBlockDocumentNodeRenderer($markdown->componentGateway(), $markdown),
         ]);
     }
 
@@ -42,7 +43,7 @@ final readonly class DocumentRendererRegistry
         $componentArtifacts = [];
         $assets = [];
         foreach ($document->allNodes() as $node) {
-            if ($node instanceof ComponentNode) {
+            if ($node instanceof ComponentNode || $node instanceof ComponentBlockNode) {
                 $artifact = $this->renderer($node)->render($node, $context);
                 $componentArtifacts[] = $artifact;
                 array_push($assets, ...$artifact->assets);

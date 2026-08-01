@@ -175,8 +175,8 @@ checks, evidence update and a separate commit.
 | 02 | M3.1 clean full plus all-route isolated baseline hashes | deterministic/static/browser baseline | completed |
 | 03 | early selector and route/source plan before projections | call-spy and full/single regression | completed |
 | 04 | generic block-component IR and compiler contract | typed snapshot and negative locations | completed |
-| 05 | generic renderer-registry/Smart-gateway block artifact | registry/gateway focused tests | in-progress |
-| 06 | Alert Markdown owner | exact Alert full/single/browser parity | pending |
+| 05 | generic renderer-registry/Smart-gateway block artifact | registry/gateway focused tests | completed |
+| 06 | Alert Markdown owner | exact Alert full/single/browser parity | in-progress |
 | 07 | native headings/text and lists/quotes | route parity | pending |
 | 08 | native links/images and table | route parity + responsive table | pending |
 | 09 | native code and footnotes/sources | copy/code/anchors parity | pending |
@@ -289,10 +289,28 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 05 — generic component-block renderer and gateway
 
+- status: completed;
+- parent: `de272384c12d5d3d1d87f1a584dcaaa5a4a667a0`;
+- `component_block` is registered once in `DocumentRendererRegistry` and its
+  artifact delegates through the existing `SmartComponentGateway` content
+  mode;
+- `ContentComponentRenderer` now validates both plain-text and document slots
+  from structural manifests with one prop-normalization path;
+- the Alert manifest owns only id/aliases/prop/slot/template/assets structure;
+  all five legacy Alert artifacts match after insignificant trailing newline
+  normalization;
+- invalid prop, enum, heading shape and supporting content fail with the block
+  source location;
+- focused contracts, full/isolated Badge parity and static verification: PASS;
+- evidence: `m3-ru-components/batch-05-component-block-gateway.md`.
+
+### Batch 06 — Alert physical Markdown owner
+
 - status: in-progress;
-- parent: batch 04 checkpoint commit;
-- objective: register `component_block` once and delegate its validated
-  document slot through the existing content mode of the single Smart gateway.
+- parent: batch 05 checkpoint commit;
+- objective: reproduce the accepted Alert page as one physical Markdown
+  owner, prove exact route/full/isolated/static/browser parity, then reduce only
+  its active legacy prose/allowlist entries.
 
 ## Kaizen
 

@@ -7,6 +7,7 @@ namespace Simai\Docara\Declarative\Smart;
 use Simai\Docara\Declarative\Document\SmartCallNode;
 use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
 use Simai\Docara\Declarative\Rendering\RenderArtifact;
+use Simai\Docara\Document\ComponentBlockNode;
 use Simai\Docara\Document\ComponentNode;
 use Simai\Docara\Document\ContentComponentRenderer;
 use Simai\Docara\Portable\PortableConfigurationException;
@@ -60,5 +61,10 @@ final readonly class SmartComponentGateway
     public function renderComponent(ComponentNode $component): RenderArtifact
     {
         return $this->content->render($component);
+    }
+
+    public function renderComponentBlock(ComponentBlockNode $component, string $bodyHtml): RenderArtifact
+    {
+        return $this->content->renderBlock($component, $bodyHtml);
     }
 }

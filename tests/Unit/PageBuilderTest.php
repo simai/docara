@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Simai\Docara\Document\ComponentBlockDocumentNodeRenderer;
 use Simai\Docara\Document\ComponentDocumentNodeRenderer;
 use Simai\Docara\Document\DocumentRendererRegistry;
 use Simai\Docara\Document\SourceDocumentNodeRenderer;
@@ -29,13 +30,17 @@ final class PageBuilderTest extends TestCase
         self::assertNotNull($result->document);
         self::assertCount(16, $result->componentArtifacts);
         self::assertSame(
-            ['heading', 'paragraph', 'table', 'code_block', 'example', 'component'],
+            ['heading', 'paragraph', 'table', 'code_block', 'example', 'component', 'component_block'],
             $result->componentArtifacts === []
                 ? []
                 : (new DocumentRendererRegistry([
                     new SourceDocumentNodeRenderer(new PortableMarkdownRenderer),
                     new ComponentDocumentNodeRenderer(
                         (new PortableMarkdownRenderer)->componentGateway(),
+                    ),
+                    new ComponentBlockDocumentNodeRenderer(
+                        (new PortableMarkdownRenderer)->componentGateway(),
+                        new PortableMarkdownRenderer,
                     ),
                 ]))->types(),
         );

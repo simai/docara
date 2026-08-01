@@ -14,6 +14,103 @@ final readonly class ContentComponentRenderer
     public function render(ComponentNode $node): RenderArtifact
     {
         $definition = $this->registry->definition($node->component);
+        $props = $this->props($node, $definition);
+        $slot = $definition['slots']['default'] ?? null;
+        if (! is_array($slot) || ($slot['required'] ?? null) !== true || ($slot['kind'] ?? null) !== 'plain_text') {
+            throw $this->error('CONTENT_COMPONENT_SLOT_CONTRACT_INVALID', $node, 'The default plain-text slot contract is invalid.');
+        }
+
+        $label = trim($node->label);
+        if ($label === '') {
+            throw $this->error('CONTENT_COMPONENT_SLOT_REQUIRED', $node, 'The default plain-text slot is required.');
+        }
+        $label = htmlspecialchars($label, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
+        $html = $this->template((string) $definition['_template'], $props, label: $label);
+
+        return new RenderArtifact(
+            rtrim($html, "\r\n"),
+            array_values($definition['assets'] ?? []),
+            [
+                'runtime' => 'docara.content.smart',
+                'smart' => $node->component,
+                'alias' => $node->alias,
+                'source' => $node->location()->toArray(),
+            ],
+            [
+                'definition' => (string) $definition['_source'],
+                'template' => (string) $definition['_template'],
+                'source' => $node->location()->toArray(),
+            ],
+        );
+    }
+
+    public function renderBlock(ComponentBlockNode $node, string $bodyHtml): RenderArtifact
+    {
+        $definition = $this->registry->definition($node->component);
+        $props = $this->props($node, $definition);
+        $slot = $definition['slots']['default'] ?? null;
+        if (! is_array($slot) || ($slot['required'] ?? null) !== true || ($slot['kind'] ?? null) !== 'document') {
+            throw $this->error('CONTENT_COMPONENT_SLOT_CONTRACT_INVALID', $node, 'The default document slot contract is invalid.');
+        }
+        $children = $node->children();
+        $heading = $children[0] ?? null;
+        $levels = $slot['heading_levels'] ?? [];
+        if (! $heading instanceof SourceNode
+            || $heading->type() !== 'heading'
+            || ! is_array($levels)
+            || ! in_array($heading->data['level'] ?? null, $levels, true)
+        ) {
+            throw $this->error(
+                'CONTENT_COMPONENT_BLOCK_HEADING_REQUIRED',
+                $node,
+                'The document slot must start with an allowed heading.',
+            );
+        }
+        $title = trim((string) ($heading->data['text'] ?? ''));
+        $content = preg_replace('/^\s*<h[1-6][^>]*>.*?<\/h[1-6]>\s*/su', '', trim($bodyHtml), 1) ?? '';
+        if ($title === '' || count($children) < 2 || trim(strip_tags($content)) === '') {
+            throw $this->error(
+                'CONTENT_COMPONENT_BLOCK_CONTENT_REQUIRED',
+                $node,
+                'The document slot requires a visible heading and supporting content.',
+            );
+        }
+        $title = htmlspecialchars(
+            preg_replace('/[*_`~]+/u', '', $title) ?? $title,
+            ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5,
+            'UTF-8',
+        );
+        $html = $this->template(
+            (string) $definition['_template'],
+            $props,
+            title: $title,
+            content: $content,
+        );
+
+        return new RenderArtifact(
+            rtrim($html, "\r\n"),
+            array_values($definition['assets'] ?? []),
+            [
+                'runtime' => 'docara.content.smart',
+                'smart' => $node->component,
+                'alias' => $node->alias,
+                'node_type' => $node->type(),
+                'source' => $node->location()->toArray(),
+            ],
+            [
+                'definition' => (string) $definition['_source'],
+                'template' => (string) $definition['_template'],
+                'source' => $node->location()->toArray(),
+            ],
+        );
+    }
+
+    /**
+     * @param  array<string, mixed>  $definition
+     * @return array<string, string>
+     */
+    private function props(ComponentNode|ComponentBlockNode $node, array $definition): array
+    {
         if ($this->registry->canonical($node->alias) !== $node->component) {
             throw $this->error('CONTENT_COMPONENT_ALIAS_MISMATCH', $node, 'Alias does not resolve to the requested component.');
         }
@@ -44,33 +141,17 @@ final readonly class ContentComponentRenderer
             }
         }
 
-        $label = trim($node->label);
-        if ($label === '') {
-            throw $this->error('CONTENT_COMPONENT_SLOT_REQUIRED', $node, 'The default plain-text slot is required.');
-        }
-        $label = htmlspecialchars($label, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
-        $html = $this->template((string) $definition['_template'], $props, $label);
-
-        return new RenderArtifact(
-            rtrim($html, "\r\n"),
-            array_values($definition['assets'] ?? []),
-            [
-                'runtime' => 'docara.content.smart',
-                'smart' => $node->component,
-                'alias' => $node->alias,
-                'source' => $node->location()->toArray(),
-            ],
-            [
-                'definition' => (string) $definition['_source'],
-                'template' => (string) $definition['_template'],
-                'source' => $node->location()->toArray(),
-            ],
-        );
+        return $props;
     }
 
     /** @param array<string, string> $props */
-    private function template(string $path, array $props, string $label): string
-    {
+    private function template(
+        string $path,
+        array $props,
+        string $label = '',
+        string $title = '',
+        string $content = '',
+    ): string {
         ob_start();
         try {
             require $path;
@@ -82,8 +163,11 @@ final readonly class ContentComponentRenderer
         }
     }
 
-    private function error(string $code, ComponentNode $node, string $message): PortableConfigurationException
-    {
+    private function error(
+        string $code,
+        ComponentNode|ComponentBlockNode $node,
+        string $message,
+    ): PortableConfigurationException {
         return new PortableConfigurationException($code, $message . " Source [{$node->location()->label()}].");
     }
 }

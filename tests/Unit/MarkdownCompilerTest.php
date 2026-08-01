@@ -7,12 +7,14 @@ namespace Tests\Unit;
 use PHPUnit\Framework\TestCase;
 use Simai\Docara\Document\ComponentAliasRegistry;
 use Simai\Docara\Document\ComponentBlockNode;
+use Simai\Docara\Document\ComponentDocumentNodeRenderer;
 use Simai\Docara\Document\ComponentNode;
 use Simai\Docara\Document\DocumentIr;
 use Simai\Docara\Document\DocumentNode;
 use Simai\Docara\Document\DocumentRenderContext;
 use Simai\Docara\Document\DocumentRendererRegistry;
 use Simai\Docara\Document\MarkdownCompiler;
+use Simai\Docara\Document\SourceDocumentNodeRenderer;
 use Simai\Docara\Document\SourceLocation;
 use Simai\Docara\Markdown\InlineComponentRenderer;
 use Simai\Docara\Portable\CanonicalJson;
@@ -203,11 +205,84 @@ MD;
         $this->assertError(
             'DOCUMENT_IR_RENDERER_UNKNOWN',
             'content/ru/broken.md:2:1',
-            fn () => DocumentRendererRegistry::bundled(new PortableMarkdownRenderer)->render(
+            fn () => (new DocumentRendererRegistry([
+                new SourceDocumentNodeRenderer(new PortableMarkdownRenderer),
+                new ComponentDocumentNodeRenderer((new PortableMarkdownRenderer)->componentGateway()),
+            ]))->render(
                 $unrendered,
                 new DocumentRenderContext(null, null),
             ),
         );
+    }
+
+    public function test_component_block_uses_the_bundled_registry_and_single_smart_gateway(): void
+    {
+        $compiler = new MarkdownCompiler;
+        $source = 'content/ru/components/alert.md';
+        $document = $compiler->compile(
+            "# Alert\n\n:::alert {type=warning variant=outlined}\n#### Обратите внимание\n\nПроверьте параметры перед публикацией.\n:::\n",
+            $source,
+        );
+        $rendered = DocumentRendererRegistry::bundled(new PortableMarkdownRenderer)->render(
+            $document,
+            new DocumentRenderContext(null, null),
+        );
+
+        self::assertCount(1, $rendered['components']);
+        self::assertSame('docara.alert', $rendered['components'][0]->hydration['smart']);
+        self::assertSame('component_block', $rendered['components'][0]->hydration['node_type']);
+        self::assertSame($source, $rendered['components'][0]->hydration['source']['file']);
+        self::assertStringContainsString(
+            '<section data-docara-block="alert" role="status" aria-label="Обратите внимание" class="sf-alert sf-alert--warning sf-alert--outlined flex items-start m-bottom-1">',
+            $rendered['document']->html,
+        );
+        self::assertStringContainsString(
+            '<div class="sf-alert-supporting-text"><p>Проверьте параметры перед публикацией.</p></div>',
+            $rendered['document']->html,
+        );
+    }
+
+    public function test_component_block_prop_and_document_slot_failures_keep_source_locations(): void
+    {
+        $compiler = new MarkdownCompiler;
+        $renderer = DocumentRendererRegistry::bundled(new PortableMarkdownRenderer);
+        foreach ([
+            ['CONTENT_COMPONENT_PROP_UNKNOWN', ':::alert {unknown=yes}', "#### Title\n\nText"],
+            ['CONTENT_COMPONENT_PROP_INVALID', ':::alert {type=purple}', "#### Title\n\nText"],
+            ['CONTENT_COMPONENT_BLOCK_HEADING_REQUIRED', ':::alert', 'Text only'],
+            ['CONTENT_COMPONENT_BLOCK_CONTENT_REQUIRED', ':::alert', '#### Title'],
+        ] as [$code, $opening, $body]) {
+            $document = $compiler->compile(
+                "# Broken\n$opening\n$body\n:::\n",
+                'content/ru/broken.md',
+            );
+            $this->assertError(
+                $code,
+                'content/ru/broken.md:2:1',
+                fn () => $renderer->render($document, new DocumentRenderContext(null, null)),
+            );
+        }
+    }
+
+    public function test_all_alert_variants_match_the_accepted_legacy_artifact(): void
+    {
+        $markdown = new PortableMarkdownRenderer;
+        $registry = DocumentRendererRegistry::bundled($markdown);
+        foreach ([
+            ['info', 'default', 'Полезная информация', 'Продолжайте работу в обычном порядке.'],
+            ['clear', 'default', 'К сведению', 'Это сообщение не требует действия.'],
+            ['success', 'default', 'Готово', 'Сборка успешно прошла проверку.'],
+            ['warning', 'outlined', 'Обратите внимание', 'Проверьте параметры перед публикацией.'],
+            ['danger', 'flat', 'Требуется исправление', 'Конфигурация не прошла проверку.'],
+        ] as [$type, $variant, $title, $supporting]) {
+            $source = ":::alert {type=$type variant=$variant}\n#### $title\n\n$supporting\n:::\n";
+            $legacy = $markdown->render($source, null, null);
+            $document = (new MarkdownCompiler)->compile($source, 'content/ru/components/alert.md');
+            $target = $registry->render($document, new DocumentRenderContext(null, null));
+
+            self::assertSame(trim($legacy), trim($target['document']->html), "$type/$variant");
+            self::assertCount(1, $target['components']);
+        }
     }
 
     public function test_badge_alias_uses_the_single_content_gateway_and_no_hardcoded_inline_method_remains(): void
@@ -220,7 +295,7 @@ MD;
             (new ComponentAliasRegistry)->aliases(),
         );
         self::assertSame(
-            ['heading', 'paragraph', 'table', 'code_block', 'example', 'component'],
+            ['heading', 'paragraph', 'table', 'code_block', 'example', 'component', 'component_block'],
             DocumentRendererRegistry::bundled(new PortableMarkdownRenderer)->types(),
         );
     }

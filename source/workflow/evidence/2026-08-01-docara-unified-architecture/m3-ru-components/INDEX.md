@@ -22,9 +22,10 @@ Recovery source:
 
 - parent SHA: `b14fe4e1e70a5465fe382bd5ced1de26cb65a315`;
 - completed milestone: M3.1 durable execution contract and baseline;
-- latest completed batch: 04, generic block-component IR/compiler contract;
-- current batch: 05, registry/gateway renderer for generic blocks;
-- next evidence: registry/gateway artifact, prop/slot and provenance matrix;
+- latest completed batch: 05, generic registry/gateway block artifact;
+- current batch: 06, physical Alert owner and vertical-slice parity;
+- next evidence: Alert owner/HTML/assets/full/isolated/static/browser and exact
+  legacy-boundary reduction;
 - blockers: none; federation/process gaps are documented in the workflow.
 
 ## Evidence rules
@@ -43,4 +44,5 @@ Recovery source:
 | --- | --- | --- |
 | 03 | `batch-03-early-route-selection.md` | PASS |
 | 04 | `batch-04-component-block-ir.md` | PASS |
-| 05 | `batch-05-component-block-gateway.md` | pending |
+| 05 | `batch-05-component-block-gateway.md` | PASS |
+| 06 | `M3.2-RUNTIME-ALERT.md` | pending |

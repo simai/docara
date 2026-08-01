@@ -955,7 +955,7 @@ final class StaticBuildVerifierTest extends TestCase
             ),
         ] as $case => $mutate) {
             $build = $this->createGeneratedCatalogBuild('catalog-shell-' . $case);
-            $path = $build . '/components/code/index.html';
+            $path = $build . '/components/card/index.html';
             $original = (string) file_get_contents($path);
             $tampered = $mutate($original);
             self::assertNotSame($original, $tampered, "The [$case] shell fixture did not mutate.");
@@ -1327,6 +1327,16 @@ final class StaticBuildVerifierTest extends TestCase
                 'slug' => 'alert',
                 'title' => 'Уведомление',
                 'description' => 'Важная информация, результат, предупреждение или ошибка.',
+            ],
+            'native.code' => [
+                'slug' => 'code',
+                'title' => 'Код',
+                'description' => 'Читаемые фрагменты с языком и копированием.',
+            ],
+            'native.footnotes_and_sources' => [
+                'slug' => 'footnotes-and-sources',
+                'title' => 'Сноски и источники',
+                'description' => 'Проверяемые пояснения без разрыва основного текста.',
             ],
             'native.headings_and_text' => [
                 'slug' => 'headings-and-text',

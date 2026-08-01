@@ -1279,6 +1279,8 @@ final class PortableSiteBuilderTest extends TestCase
         );
         $componentRoutes = [
             '/components/alert/',
+            '/components/code/',
+            '/components/footnotes-and-sources/',
             '/components/headings-and-text/',
             '/components/links-and-images/',
             '/components/lists-and-quotes/',

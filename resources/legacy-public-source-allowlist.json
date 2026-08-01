@@ -12,14 +12,12 @@
         "/ru/components/button/",
         "/ru/components/card/",
         "/ru/components/code-from-file/",
-        "/ru/components/code/",
         "/ru/components/details/",
         "/ru/components/diagram/",
         "/ru/components/download/",
         "/ru/components/embed/",
         "/ru/components/example/",
         "/ru/components/figure/",
-        "/ru/components/footnotes-and-sources/",
         "/ru/components/grid/",
         "/ru/components/hero/",
         "/ru/components/html/",
@@ -51,7 +49,7 @@
         "ar": 8,
         "en": 42,
         "fr-CA": 8,
-        "ru": 37,
+        "ru": 35,
         "zh-Hans": 8
     }
 }

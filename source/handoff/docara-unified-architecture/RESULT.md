@@ -287,3 +287,23 @@ Status: PASS; M3.3 continues
 Seven of 32 component routes are physical; batch 09 (code and
 footnotes/sources) is next. Overall M3 and release/production readiness remain
 unclaimed.
+
+## M3.3 batch 09 result
+
+Status: PASS; M3.3 continues
+
+- `/ru/components/code/` and `/ru/components/footnotes-and-sources/` now have
+  one physical Markdown owner each;
+- one shared example contract accepts safe nested CommonMark fences; source
+  tabs no longer create an empty code block;
+- footnote/noteref/backlink roles and targets work inside the generic example
+  SourceNode without a Footnotes-specific pipeline;
+- full/isolated trees are exact; static reports 206 HTML, 18,890 references and
+  zero broken; desktop/mobile light/dark browser checks pass copy, code,
+  anchors and zero console warnings/errors;
+- exact Russian pack/allowlist records and two zero-reference localized
+  examples are retired with commit rollback;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-09-native-code-footnotes.md`.
+
+Nine of 32 component routes are physical; batch 10 (details and backlinks) is
+next. Overall M3 and release/production readiness remain unclaimed.

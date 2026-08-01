@@ -35,13 +35,14 @@ generated component page count и русский component-route allowlist ра�
 PageBuilder/registry/gateway; две clean full builds byte-identical; static и
 browser matrices зелёные; graph/workflow/handoff синхронны; worktree чистый.
 
-Current Remaining: 25 generated routes из 32; Alert, Badge, Syntax,
-headings/text, lists/quotes, links/images и table уже физические.
+Current Remaining: 23 generated routes из 32; Alert, Badge, Syntax,
+headings/text, lists/quotes, links/images, table, code и footnotes/sources уже
+физические.
 
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.3 batch 09, native code and footnotes/sources.
+Next Safe Batch: M3.3 batch 10, details and backlinks.
 
 ## Goal
 
@@ -179,8 +180,8 @@ checks, evidence update and a separate commit.
 | 06 | Alert Markdown owner | exact Alert full/single/browser parity | completed |
 | 07 | native headings/text and lists/quotes | route parity | completed |
 | 08 | native links/images and table | route parity + responsive table | completed |
-| 09 | native code and footnotes/sources | copy/code/anchors parity | in-progress |
-| 10 | details and backlinks | disclosure/navigation parity | pending |
+| 09 | native code and footnotes/sources | copy/code/anchors parity | completed |
+| 10 | details and backlinks | disclosure/navigation parity | in-progress |
 | 11 | banner and download | variant/asset parity | pending |
 | 12 | button and icon/kbd | interactive/focus parity | pending |
 | 13 | card and hero | layout parity | pending |
@@ -347,10 +348,21 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 09 — native code and footnotes/sources
 
+- status: completed;
+- parent: `74430d2`;
+- two physical owners reuse generic code/table/example nodes; the shared
+  example contract now safely supports nested CommonMark fences;
+- full/isolated trees are exact, static verifies 18,890 references with zero
+  broken, browser proves copy/code and footnote/backlink targets;
+- exact pack/allowlist/example projections retired after zero-reference proof;
+- evidence: `m3-ru-components/batch-09-native-code-footnotes.md`.
+
+### Batch 10 — details and backlinks
+
 - status: in-progress;
-- parent: batch 08 checkpoint commit;
-- objective: migrate the two routes and prove copy/code rendering plus stable
-  footnote/source anchors before exact legacy reduction.
+- parent: batch 09 checkpoint commit;
+- objective: migrate both routes through the existing generic directive/IR
+  contour and prove disclosure plus backlink/navigation behavior.
 
 ## Kaizen
 

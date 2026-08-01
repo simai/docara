@@ -359,16 +359,6 @@
             },
             "example_ref": "resources/component-catalog/examples/docara.steps.ru.md"
         },
-        "native.code": {
-            "title": "Код",
-            "description": "Выводит фрагменты и блоки кода из Markdown. Закреплённый SIMAI Framework добавляет один заголовок с языком и копированием, подсветку синтаксиса и локальную прокрутку длинных строк.",
-            "limitations": [
-                "Без загрузки закреплённого runtime остаётся читаемый статический pre/code; подсветка, копирование и улучшенная прокрутка не предоставляются."
-            ],
-            "states": [],
-            "parameters": [],
-            "example_ref": "resources/component-catalog/examples/native.code.ru.md"
-        },
         "native.code.enhanced": {
             "title": "Настраиваемый блок кода",
             "description": "Расширенный блок с управлением номерами строк, выделенными строками, diff-состояниями и другими параметрами автора.",
@@ -1064,16 +1054,6 @@
             },
             "parameters": [],
             "example_ref": "resources/component-catalog/examples/docara.tabs.ru.md"
-        },
-        "native.footnotes_and_sources": {
-            "title": "Сноски и источники",
-            "description": "Добавляет примечания к источникам, не разрывая основной текст.",
-            "limitations": [
-                "Используйте устойчивые обозначения источников и сохраняйте доступность адреса для читателя."
-            ],
-            "states": [],
-            "parameters": [],
-            "example_ref": "resources/component-catalog/examples/native.footnotes_and_sources.ru.md"
         },
         "ui.dataview": {
             "title": "Представление данных",

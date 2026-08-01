@@ -26,6 +26,8 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
             static fn (array $route): bool => $route['page_source_kind'] === 'generated_projection'
                 && ! in_array($route['url'], [
                     '/ru/components/alert/',
+                    '/ru/components/code/',
+                    '/ru/components/footnotes-and-sources/',
                     '/ru/components/headings-and-text/',
                     '/ru/components/links-and-images/',
                     '/ru/components/lists-and-quotes/',
@@ -34,9 +36,9 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
         ));
         $allowlist = new LegacyPublicSourceAllowlist;
 
-        self::assertCount(39, $generated);
-        self::assertCount(39, $allowlist->generatedRoutes());
-        foreach (['alert', 'headings-and-text', 'links-and-images', 'lists-and-quotes', 'table'] as $slug) {
+        self::assertCount(37, $generated);
+        self::assertCount(37, $allowlist->generatedRoutes());
+        foreach (['alert', 'code', 'footnotes-and-sources', 'headings-and-text', 'links-and-images', 'lists-and-quotes', 'table'] as $slug) {
             self::assertNotContains("/ru/components/$slug/", $allowlist->generatedRoutes());
         }
         self::assertNotContains('/ru/components/badge/', $allowlist->generatedRoutes());
@@ -63,7 +65,7 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
 
         $allowlist = new LegacyPublicSourceAllowlist;
         $allowlist->assertLanguagePackComponentCounts($counts);
-        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 37, 'zh-Hans' => 8], $counts);
+        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 35, 'zh-Hans' => 8], $counts);
         $russian = json_decode(
             (string) file_get_contents($root . '/resources/language-packs/ru.json'),
             true,
@@ -72,6 +74,8 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
         )['components'];
         foreach ([
             'docara.alert',
+            'native.code',
+            'native.footnotes_and_sources',
             'native.headings_and_text',
             'native.links_and_images',
             'native.lists_and_quotes',

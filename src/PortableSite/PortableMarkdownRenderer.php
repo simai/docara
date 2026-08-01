@@ -496,7 +496,8 @@ final class PortableMarkdownRenderer
         $renderedSources = [];
         foreach ($sources as $language => $source) {
             $renderedSources[$language] = $this->render(
-                '```' . strtolower($language) . "\n" . $source . "\n```\n",
+                $this->sourceFence($source) . strtolower($language) . "\n"
+                . $source . "\n" . $this->sourceFence($source) . "\n",
             );
         }
 
@@ -510,12 +511,24 @@ final class PortableMarkdownRenderer
         );
     }
 
+    private function sourceFence(string $source): string
+    {
+        preg_match_all('/`+/', $source, $backticks);
+        preg_match_all('/~+/', $source, $tildes);
+        $backtickLength = max(3, 1 + max(array_map('strlen', $backticks[0] ?: [''])));
+        $tildeLength = max(3, 1 + max(array_map('strlen', $tildes[0] ?: [''])));
+
+        return $tildeLength <= $backtickLength
+            ? str_repeat('~', $tildeLength)
+            : str_repeat('`', $backtickLength);
+    }
+
     /** @return array<string,string> */
     private function exampleSources(string $markdown): array
     {
         $normalized = trim(str_replace(["\r\n", "\r"], "\n", $markdown));
         if (preg_match_all(
-            '/(?:\A|\n)```(?<language>markdown|html|css|javascript|js)\h*\n(?<source>.*?)\n```(?=\n|\z)/su',
+            '/(?:\A|\n)(?<fence>`{3,}|~{3,})(?<language>markdown|html|css|javascript|js)\h*\n(?<source>.*?)\n\k<fence>(?=\n|\z)/su',
             $normalized,
             $matches,
             PREG_SET_ORDER,
@@ -527,7 +540,7 @@ final class PortableMarkdownRenderer
         }
 
         $remainder = preg_replace(
-            '/(?:\A|\n)```(?:markdown|html|css|javascript|js)\h*\n.*?\n```(?=\n|\z)/su',
+            '/(?:\A|\n)(?<fence>`{3,}|~{3,})(?:markdown|html|css|javascript|js)\h*\n.*?\n\k<fence>(?=\n|\z)/su',
             '',
             $normalized,
         );

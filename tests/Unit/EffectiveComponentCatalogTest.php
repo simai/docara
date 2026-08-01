@@ -752,12 +752,16 @@ final class EffectiveComponentCatalogTest extends TestCase
             self::assertNotSame('', trim($html), $entry['id']);
             if (in_array($entry['id'], [
                 'docara.alert',
+                'native.code',
+                'native.footnotes_and_sources',
                 'native.headings_and_text',
                 'native.links_and_images',
                 'native.lists_and_quotes',
                 'native.table',
             ], true)) {
                 $slug = match ($entry['id']) {
+                    'native.code' => 'code',
+                    'native.footnotes_and_sources' => 'footnotes-and-sources',
                     'native.headings_and_text' => 'headings-and-text',
                     'native.links_and_images' => 'links-and-images',
                     'native.lists_and_quotes' => 'lists-and-quotes',

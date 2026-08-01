@@ -59,6 +59,20 @@ MD);
         self::assertSame(1, substr_count($table, 'data-docara-table-scroll'));
         self::assertSame(substr_count($table, '<div'), substr_count($table, '</div>'));
 
+        $nestedCode = $renderer->render(<<<'MD'
+:::example {label=Код}
+~~~markdown
+```php
+echo 'Docara';
+```
+~~~
+:::
+MD);
+        self::assertStringContainsString('<code class="language-php">', $nestedCode);
+        self::assertStringContainsString('data-docara-example-tab="markdown"', $nestedCode);
+        self::assertStringContainsString("```php\necho 'Docara';\n```", $nestedCode);
+        self::assertSame(2, substr_count($nestedCode, 'data-docara-code-block'));
+
         $web = $renderer->render(<<<'MD'
 :::example {label=Preview}
 ```html

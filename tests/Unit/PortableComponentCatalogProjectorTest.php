@@ -31,6 +31,8 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         $supportedIds = array_column($supported, 'id');
         $authoredIds = [
             'docara.alert',
+            'native.code',
+            'native.footnotes_and_sources',
             'native.headings_and_text',
             'native.links_and_images',
             'native.lists_and_quotes',
@@ -184,6 +186,19 @@ final class PortableComponentCatalogProjectorTest extends TestCase
 
                 continue;
             }
+            if ($id === 'native.code') {
+                self::assertStringContainsString('<h1 id="код">Код</h1>', $detail);
+                self::assertStringContainsString('<code class="language-php">', $detail);
+
+                continue;
+            }
+            if ($id === 'native.footnotes_and_sources') {
+                self::assertStringContainsString('<h1 id="сноски-и-источники">Сноски и источники</h1>', $detail);
+                self::assertStringContainsString('role="doc-noteref"', $detail);
+                self::assertStringContainsString('role="doc-backlink"', $detail);
+
+                continue;
+            }
             self::assertStringContainsString('data-docara-component-detail="' . $id . '"', $detail);
             self::assertStringContainsString('data-docara-component-demo="' . $id . '"', $detail);
             self::assertStringContainsString('data-docara-component-example', $detail);
@@ -289,18 +304,13 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         $nativeCode = (string) file_get_contents(
             $build . '/components/code/index.html',
         );
-        self::assertStringContainsString(
-            'data-docara-component-source="native.code"',
-            $nativeCode,
-        );
+        self::assertStringNotContainsString('data-docara-component-source="native.code"', $nativeCode);
+        self::assertStringContainsString('<h1 id="код">Код</h1>', $nativeCode);
         self::assertStringContainsString(
             '```php',
             $nativeCode,
         );
-        self::assertStringNotContainsString(
-            'data-docara-component-source-display="native.code" class="bg-surface border',
-            $nativeCode,
-        );
+        self::assertSame(3, substr_count($nativeCode, 'data-docara-code-block'));
 
         $search = $this->json($build . '/_docara/search-index.json');
         $indexedUrls = array_column($search['documents'], 'url');
@@ -420,7 +430,6 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             'docara.html.ru.md' => [':::html', 'Изолированный HTML'],
             'docara.banner.ru.md' => [':::banner {type=info}', ':::banner {type=warning}'],
             'docara.tabs.ru.md' => [':::tabs', '### Composer', '### Вручную', '### Результат'],
-            'native.footnotes_and_sources.ru.md' => ['[^source]', '[^source]:'],
         ];
 
         foreach ($fixtures as $fixture => $markers) {

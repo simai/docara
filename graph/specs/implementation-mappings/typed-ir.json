@@ -52,7 +52,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-07-native-text-lists.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-08-native-links-table.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-09-native-code-footnotes.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-10-details-backlinks.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-10-details-backlinks.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-11-banner-download.md"
   ],
   "review_refs": ["docara.gate.vertical_slice"],
   "current_behavior": [
@@ -67,11 +68,12 @@
     "Batch 07 adds generic list and blockquote source nodes with exact ranges; both reuse SourceDocumentNodeRenderer.",
     "Batch 08 adds one generic image SourceNode with exact location and reuses SourceDocumentNodeRenderer; table/example markup remains one shared renderer path.",
     "Batch 09 reuses generic code_block and example nodes; nested source fences and footnote anchors remain inside the same shared Markdown renderer contract.",
-    "Batch 10 adds one generic typed_directive SourceNode with canonical component and renderer ids, props and exact ranges for all admitted catalog directives; Details and empty Backlinks use the same node and renderer-registry entry."
+    "Batch 10 adds one generic typed_directive SourceNode with canonical component and renderer ids, props and exact ranges for all admitted catalog directives; Details and empty Backlinks use the same node and renderer-registry entry.",
+    "Batch 11 reuses that same typed_directive node for Banner and Download without adding component-specific compiler or renderer paths."
   ],
   "known_deviations": [
     "The current AST can be serialized in receipts, but the target permits no mandatory page-level JSON/JSONL.",
-    "Typed native node coverage now includes Badge, Alert, headings/text, lists/quotes, links/images, table, code, footnotes/sources, Details, Backlinks and Syntax; remaining generated routes retain the rollback adapter.",
+    "Typed native node coverage now includes Badge, Alert, headings/text, lists/quotes, links/images, table, code, footnotes/sources, Details, Backlinks, Banner, Download and Syntax; remaining generated routes retain the rollback adapter.",
     "The earlier declarative SourceSpan remains separate from the target SourceLocation.",
     "PortableMarkdownRenderer remains active for non-Badge routes until bounded M3 parity evidence exists."
   ],
@@ -80,6 +82,6 @@
     "Retire PortableMarkdownRenderer component logic only after every moved node renderer has positive, negative and source-location tests.",
     "Delete duplicate metadata parsing only after headings and links are derived from the canonical IR."
   ],
-  "status": "m3_3_generic_typed_directive_ir_implemented",
-  "mapped_revision": "commit containing batch-10-details-backlinks.md; parent dc15cc7"
+  "status": "m3_3_generic_typed_directive_ir_scaling",
+  "mapped_revision": "commit containing batch-11-banner-download.md; parent b5cf224"
 }

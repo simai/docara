@@ -32,7 +32,9 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         $authoredIds = [
             'docara.alert',
             'docara.backlinks',
+            'docara.banner',
             'docara.details',
+            'docara.download',
             'native.code',
             'native.footnotes_and_sources',
             'native.headings_and_text',
@@ -173,6 +175,18 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             if ($id === 'docara.backlinks') {
                 self::assertStringContainsString('<h1 id="обратные-ссылки">Обратные ссылки</h1>', $detail);
                 self::assertStringContainsString('data-docara-block="backlinks"', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.banner') {
+                self::assertStringContainsString('<h1 id="баннер">Баннер</h1>', $detail);
+                self::assertSame(4, substr_count($detail, 'data-docara-block="banner"'));
+
+                continue;
+            }
+            if ($id === 'docara.download') {
+                self::assertStringContainsString('<h1 id="скачивание">Скачивание</h1>', $detail);
+                self::assertSame(3, substr_count($detail, 'data-docara-block="download"'));
 
                 continue;
             }
@@ -441,7 +455,6 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             'docara.diagram.ru.md' => [':::diagram', 'flowchart LR'],
             'docara.math.ru.md' => [':::math {display=inline', ':::math {display=block'],
             'docara.html.ru.md' => [':::html', 'Изолированный HTML'],
-            'docara.banner.ru.md' => [':::banner {type=info}', ':::banner {type=warning}'],
             'docara.tabs.ru.md' => [':::tabs', '### Composer', '### Вручную', '### Результат'],
         ];
 

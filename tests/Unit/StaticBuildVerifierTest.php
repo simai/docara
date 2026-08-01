@@ -1333,10 +1333,20 @@ final class StaticBuildVerifierTest extends TestCase
                 'title' => 'Обратные ссылки',
                 'description' => 'Автоматический список страниц, которые ведут на текущий материал.',
             ],
+            'docara.banner' => [
+                'slug' => 'banner',
+                'title' => 'Баннер',
+                'description' => 'Короткое объявление уровня страницы.',
+            ],
             'docara.details' => [
                 'slug' => 'details',
                 'title' => 'Раскрывающийся блок',
                 'description' => 'Дополнительное пояснение, которое читатель открывает по необходимости.',
+            ],
+            'docara.download' => [
+                'slug' => 'download',
+                'title' => 'Скачивание',
+                'description' => 'Понятное действие для загрузки или открытия файла.',
             ],
             'native.code' => [
                 'slug' => 'code',

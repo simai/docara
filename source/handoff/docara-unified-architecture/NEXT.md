@@ -17,15 +17,15 @@ Evidence index:
   broken references and representative browser baseline;
 - M3.2 PASS: early physical route selection, generic block IR, one renderer
   registry/gateway and physical Alert owner;
-- M3.3 batches 07-10 PASS: eleven of 32 Russian component routes are physical;
-  21 remain generated;
-- full/single/static/browser evidence is green through Details and Backlinks,
-  including generic typed directives, localized derived backlink hydration and
-  isolated projection reuse.
+- M3.3 batches 07-11 PASS: thirteen of 32 Russian component routes are physical;
+  19 remain generated;
+- full/single/static/browser evidence is green through Banner and Download,
+  including generic typed directives, localized derived backlink hydration,
+  isolated projection reuse and real asset-link behavior.
 
 ## Execute M3.3
 
-1. Migrate Banner and Download as the next family batch.
+1. Migrate Button and Icon/Kbd as the next family batch.
 2. Continue through the family sequence in the durable goal without waiting
    after a green internal checkpoint.
 3. Keep one physical Markdown owner, useful prose and a common example/code

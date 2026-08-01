@@ -1280,8 +1280,10 @@ final class PortableSiteBuilderTest extends TestCase
         $componentRoutes = [
             '/components/alert/',
             '/components/backlinks/',
+            '/components/banner/',
             '/components/code/',
             '/components/details/',
+            '/components/download/',
             '/components/footnotes-and-sources/',
             '/components/headings-and-text/',
             '/components/links-and-images/',

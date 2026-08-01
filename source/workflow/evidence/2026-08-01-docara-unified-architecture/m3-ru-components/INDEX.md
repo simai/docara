@@ -22,8 +22,8 @@ Recovery source:
 
 - parent SHA: `b14fe4e1e70a5465fe382bd5ced1de26cb65a315`;
 - completed milestone: M3.1 durable execution contract and baseline;
-- latest completed batch: 10, details and backlinks family;
-- current batch: 11, banner and download family;
+- latest completed batch: 11, Banner and Download family;
+- current batch: 12, Button and Icon/Kbd family;
 - next evidence: per-family physical owners and route parity;
 - blockers: none; federation/process gaps are documented in the workflow.
 
@@ -49,3 +49,4 @@ Recovery source:
 | 08 | `batch-08-native-links-table.md` | PASS |
 | 09 | `batch-09-native-code-footnotes.md` | PASS |
 | 10 | `batch-10-details-backlinks.md` | PASS |
+| 11 | `batch-11-banner-download.md` | PASS |

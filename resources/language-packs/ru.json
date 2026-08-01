@@ -559,41 +559,6 @@
             },
             "example_ref": "resources/component-catalog/examples/docara.example.ru.md"
         },
-        "docara.download": {
-            "title": "Скачивание",
-            "description": "Показывает скачивание файла как понятное доступное действие с пояснением.",
-            "limitations": [
-                "Адрес должен быть безопасным локальным или HTTP(S), а текст ссылки — называть файл."
-            ],
-            "states": [],
-            "parameters": {
-                "name": {
-                    "label": "Имя файла",
-                    "description": "Показывает понятное читателю имя файла."
-                },
-                "format": {
-                    "label": "Формат",
-                    "description": "Показывает тип или расширение файла."
-                },
-                "size": {
-                    "label": "Размер",
-                    "description": "Показывает размер файла до скачивания."
-                },
-                "checksum": {
-                    "label": "Контрольная сумма",
-                    "description": "Помогает проверить целостность скачанного файла."
-                },
-                "action": {
-                    "label": "Действие",
-                    "description": "Скачивает файл или открывает его в браузере.",
-                    "values": {
-                        "download": "Скачать",
-                        "open": "Открыть"
-                    }
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/docara.download.ru.md"
-        },
         "docara.embed": {
             "title": "Встраиваемый материал",
             "description": "Помещает доверенный внешний материал в адаптивную область с заданными пропорциями.",
@@ -939,27 +904,6 @@
             "states": [],
             "parameters": [],
             "example_ref": "resources/component-catalog/examples/docara.kbd.ru.md"
-        },
-        "docara.banner": {
-            "title": "Баннер",
-            "description": "Показывает короткое объявление уровня страницы, не заменяя первый экран.",
-            "limitations": [
-                "Пишите кратко; если сообщение относится к ходу документа, используйте уведомление."
-            ],
-            "states": [],
-            "parameters": {
-                "type": {
-                    "label": "Смысл",
-                    "description": "Выбирает семантический тип сообщения.",
-                    "values": {
-                        "info": "Информация",
-                        "success": "Успех",
-                        "warning": "Предупреждение",
-                        "danger": "Опасность"
-                    }
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/docara.banner.ru.md"
         },
         "docara.diagram": {
             "title": "Диаграмма",

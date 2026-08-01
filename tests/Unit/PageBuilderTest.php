@@ -90,8 +90,10 @@ final class PageBuilderTest extends TestCase
         $root = dirname(__DIR__, 2) . '/docs/site';
         foreach ([
             'backlinks' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
+            'banner' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
             'code' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
             'details' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
+            'download' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
             'footnotes-and-sources' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
             'headings-and-text' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
             'lists-and-quotes' => ['heading', 'paragraph', 'list', 'blockquote', 'code_block', 'example'],

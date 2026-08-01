@@ -1,0 +1,23 @@
+{
+  "id": "docara.mapping.composition_locales",
+  "schema_version": "1.0.0",
+  "kind": "relation",
+  "subtype": "implementation_mapping",
+  "tz_role": "traceability",
+  "title": "Composition and locale implementation mapping",
+  "summary": "Maps strict configuration inheritance and locale route trees to code and acceptance matrices.",
+  "owner": "dev",
+  "lifecycle": "planned",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/DOCARA-TZ.md#6-мультиязычность", "docs/specification/DOCARA-TZ.md#11-layout-и-области"],
+  "profile_refs": ["docara.unified"],
+  "from_ref": "docara.feature.declarative_composition",
+  "to_refs": ["docara.feature.multilingual", "DOC-REQ-002", "DOC-REQ-008"],
+  "code_refs": [],
+  "test_refs": [],
+  "evidence_refs": ["docara.evidence.source_boundary_tests", "docara.evidence.all_routes_parity"],
+  "review_refs": ["docara.gate.source_ownership", "docara.gate.migration_coverage"],
+  "known_deviations": ["Current Russian documentation can be generated from language-pack records instead of a complete content/ru tree."],
+  "status": "mapping_required_in_m0"
+}

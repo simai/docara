@@ -1,0 +1,23 @@
+{
+  "id": "docara.mapping.content_first",
+  "schema_version": "1.0.0",
+  "kind": "relation",
+  "subtype": "implementation_mapping",
+  "tz_role": "traceability",
+  "title": "Content-first implementation mapping",
+  "summary": "Maps content ownership contract to code and tests; exact current code references are intentionally completed by M0 inventory.",
+  "owner": "dev",
+  "lifecycle": "planned",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
+  "profile_refs": ["docara.unified"],
+  "from_ref": "docara.feature.content_first",
+  "to_refs": ["DOC-REQ-001", "DOC-REQ-002", "DOC-REQ-003"],
+  "code_refs": [],
+  "test_refs": [],
+  "evidence_refs": ["docara.evidence.m0_inventory", "docara.evidence.source_boundary_tests"],
+  "review_refs": ["docara.gate.source_ownership"],
+  "known_deviations": ["Current public component prose is partly projected from language-pack and catalog data."],
+  "status": "mapping_required_in_m0"
+}

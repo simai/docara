@@ -1,0 +1,23 @@
+{
+  "id": "docara.mapping.smart_gateway",
+  "schema_version": "1.0.0",
+  "kind": "relation",
+  "subtype": "implementation_mapping",
+  "tz_role": "traceability",
+  "title": "Smart gateway implementation mapping",
+  "summary": "Maps component syntax, manifests, parameter validation, templates and assets to a single gateway.",
+  "owner": "dev",
+  "lifecycle": "planned",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/DOCARA-TZ.md#10-smart-компоненты"],
+  "profile_refs": ["docara.unified"],
+  "from_ref": "docara.feature.smart_gateway",
+  "to_refs": ["DOC-REQ-006"],
+  "code_refs": [],
+  "test_refs": [],
+  "evidence_refs": ["docara.evidence.badge_vertical_slice"],
+  "review_refs": ["docara.gate.vertical_slice"],
+  "known_deviations": ["Current component parsing and public documentation projection include component-specific hardcoding."],
+  "status": "mapping_required_in_m0"
+}

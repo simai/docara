@@ -1,0 +1,21 @@
+{
+  "id": "docara.metric.legacy_active_paths",
+  "schema_version": "1.0.0",
+  "kind": "observation",
+  "subtype": "project_metric",
+  "tz_role": "risk_metric",
+  "title": "Active legacy paths",
+  "summary": "Count of runtime-reachable projectors, trusted HTML bridges or non-Markdown public prose owners.",
+  "owner": "teamlead",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/implementation/ROADMAP.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "metric_type": "count",
+  "scale": "0..n",
+  "calculation": "verified_runtime_reachable_legacy_paths",
+  "target": 0,
+  "unknown_policy": "block_deletion"
+}

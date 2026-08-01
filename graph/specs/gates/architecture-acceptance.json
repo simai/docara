@@ -1,0 +1,19 @@
+{
+  "id": "docara.gate.architecture_acceptance",
+  "schema_version": "1.0.0",
+  "kind": "gate",
+  "subtype": "acceptance_gate",
+  "tz_role": "goal_gate",
+  "title": "Unified architecture accepted",
+  "summary": "The exact candidate satisfies the Docara architecture goal; this does not authorize merge, release or production deployment.",
+  "owner": "tester",
+  "lifecycle": "blocked",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/ACCEPTANCE.md"],
+  "evidence_refs": ["docara.evidence.final_acceptance"],
+  "profile_refs": ["docara.unified"],
+  "pass_conditions": ["Exact archive", "Portable install", "Deterministic builds", "Full/page parity", "Browser and accessibility matrix", "Authoring usability", "Documentation and graph sync", "Explicit nonclaims"],
+  "stop_conditions": ["Candidate mutation during test", "Hidden parallel source or renderer", "Release readiness overclaim"],
+  "promotes_to": null
+}

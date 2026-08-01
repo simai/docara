@@ -1,0 +1,21 @@
+{
+  "id": "docara.metric.single_pipeline_coverage",
+  "schema_version": "1.0.0",
+  "kind": "observation",
+  "subtype": "project_metric",
+  "tz_role": "progress_metric",
+  "title": "Unified pipeline coverage",
+  "summary": "Share of public routes rendered exclusively through PageBuilder, typed IR and the renderer registry.",
+  "owner": "teamlead",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/architecture/UNIFIED-ARCHITECTURE.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "metric_type": "coverage",
+  "scale": "0..100 percent",
+  "calculation": "unified_pipeline_routes / all_public_routes",
+  "target": 100,
+  "unknown_policy": "show_unknown_not_zero"
+}

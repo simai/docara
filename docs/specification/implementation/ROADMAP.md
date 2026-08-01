@@ -1,0 +1,132 @@
+# Дорожная карта упрощения Docara
+
+Статус: план миграции, реализация не начата в этой ветке
+
+Переход выполняется вертикальными срезами. Цель — не переписать весь код за
+один раз, а доказать новый единственный конвейер на одной реальной странице,
+после чего последовательно удалить старые пути.
+
+## Нулевая точка
+
+- исходная revision: `a3ba9a4d04429f1f2046b8415764fe7bc89962c7`;
+- ветка спецификации: `codex/docara-unified-architecture`;
+- текущий старый runtime остаётся временным read-only baseline;
+- никакая готовность к релизу или production не заявляется;
+- несовместимые изменения допустимы: Docara 2 ещё не опубликована.
+
+## M0. Зафиксировать контракт и карту реализации
+
+Результат:
+
+- утверждены ТЗ, authoring contract, архитектура и acceptance matrix;
+- каждый целевой модуль сопоставлен текущим классам, тестам и deletion gates;
+- сняты воспроизводимые baseline-артефакты для `components/badge`;
+- запрещено добавлять новый контент в language packs и projectors.
+
+На этом этапе продуктовый runtime не переписывается.
+
+## M1. Закрыть границы источников
+
+Результат:
+
+- публичная страница требует физический Markdown-файл;
+- config schemas отклоняют prose, HTML и CSS;
+- `resources/i18n` принимает только системные UI-сообщения;
+- component manifest не может владеть текстом своей документационной страницы;
+- generated/cache каталоги явно объявлены disposable.
+
+Ключевые тесты:
+
+- route collision;
+- route без Markdown;
+- forbidden content in config/language pack/manifest;
+- удаление cache + полное воспроизведение результата.
+
+## M2. Вертикальный срез `components/badge`
+
+Страница `content/ru/components/badge.md` проходит полный целевой путь:
+
+```text
+PageSourceLocator -> ConfigResolver -> MarkdownCompiler -> Document IR
+-> NodeRendererRegistry -> SmartComponentGateway -> LayoutComposer
+-> PageBuilderResult
+```
+
+Результат:
+
+- физический Markdown владеет всей прозой и примерами страницы;
+- все native и component nodes имеют source location;
+- alias `badge` разрешается registry, а не условием в parser;
+- assets возвращаются через `RenderArtifact`;
+- full и single-page build byte-identical для выбранной страницы;
+- новый путь не принимает `trustedMainHtml`.
+
+Приёмка: PHP/unit tests, exact HTML/assets parity, светлая/тёмная тема,
+desktop/mobile, LTR/RTL, broken links 0.
+
+## M3. Перенести публичные страницы
+
+Результат:
+
+- у каждого route есть Markdown в своей locale;
+- страницы компонентов и examples больше не создаются projectors;
+- каталог строится из manifest + metadata Markdown и вставляется вызовом
+  одного продуктового компонента;
+- локали мигрируются независимо, без silent fallback редакторского текста;
+- single-page build не генерирует полный каталог и все примеры перед фильтром.
+
+Миграция выполняется небольшими пакетами страниц. После каждого пакета
+сохраняется parity evidence и обновляется implementation mapping.
+
+## M4. Удалить параллельные пути
+
+Удаление разрешено только после закрытия соответствующего gate:
+
+1. публичная page projection в component catalog — после физического Markdown
+   и parity всех component routes;
+2. declarative example projector — после переноса примеров в Markdown и
+   универсальные Smart-компоненты;
+3. `buildGenerated()` и `trustedMainHtml` — после перехода всех страниц на
+   один `PageBuilder`;
+4. ранние/параллельные Smart renderers — после единого IR component node и
+   gateway;
+5. поле `components` в language-pack — после физического контента всех локалей;
+6. coarse raw Markdown node — после типизированного block/inline IR и тестов.
+
+Временный compatibility layer не становится публичным API и удаляется в том же
+миграционном треке.
+
+## M5. Стабилизировать публичный продукт
+
+Результат:
+
+- один `build` для сайта и тот же `PageBuilder` для `--page`;
+- чистый `init` создаёт понятный переносимый проект;
+- update отделяет engine-owned файлы от project-owned content/config/assets;
+- документация описывает только реально работающие команды;
+- diagnostics ссылаются на source location;
+- все acceptance criteria имеют immutable evidence.
+
+Только после M5 разрешён отдельный release gate. Merge в default branch, tag,
+GitHub release и production deployment не являются частью этой дорожной карты.
+
+## Порядок работы нового треда
+
+Новый тред начинает не с массовой переписи, а с M0:
+
+1. читает `source/handoff/docara-unified-architecture/START.md`;
+2. проверяет exact revision и clean worktree;
+3. строит mapping текущий код -> целевой модуль -> тест -> deletion gate;
+4. снимает baseline badge page;
+5. предлагает bounded implementation batch M1/M2;
+6. только после проверки mapping меняет runtime.
+
+## Запрещённые сокращения
+
+- не генерировать Markdown-страницы из language pack;
+- не передавать готовый page HTML в основной renderer;
+- не создавать второй parser/renderer/build path ради компонента;
+- не считать generated catalog источником редакторского текста;
+- не переносить в Docara Laravel или базу данных;
+- не переписывать generated `ui`/`ui-smart` вручную;
+- не удалять baseline до parity evidence.

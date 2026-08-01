@@ -1,0 +1,18 @@
+{
+  "id": "docara.feature.smart_gateway",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "feature",
+  "tz_role": "architecture_contract",
+  "title": "Universal Smart Component Gateway",
+  "summary": "Framework and product Smart components are resolved, validated, rendered and asset-collected through one gateway.",
+  "owner": "dev",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/DOCARA-TZ.md#10-smart-компоненты"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "namespaces": {"framework": "ui.*", "product": "docara.*"},
+  "invariants": ["Unknown component fails with source location.", "Parameters validate before rendering.", "Assets are declared by manifests, not guessed by a page projector.", "Public documentation prose is not stored in the manifest."]
+}

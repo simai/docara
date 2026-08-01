@@ -1,0 +1,23 @@
+{
+  "id": "docara.mapping.typed_ir",
+  "schema_version": "1.0.0",
+  "kind": "relation",
+  "subtype": "implementation_mapping",
+  "tz_role": "traceability",
+  "title": "Typed IR implementation mapping",
+  "summary": "Maps parser and node provenance requirements to the future typed IR implementation.",
+  "owner": "dev",
+  "lifecycle": "planned",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/DOCARA-TZ.md#8-document-ir"],
+  "profile_refs": ["docara.unified"],
+  "from_ref": "docara.feature.typed_ir",
+  "to_refs": ["DOC-REQ-004", "DOC-REQ-005"],
+  "code_refs": [],
+  "test_refs": [],
+  "evidence_refs": ["docara.evidence.badge_vertical_slice"],
+  "review_refs": ["docara.gate.vertical_slice"],
+  "known_deviations": ["Current parser retains coarse raw Markdown nodes and separate projectors bypass a universal renderer registry."],
+  "status": "mapping_required_in_m0"
+}

@@ -1,0 +1,41 @@
+{
+  "id": "docara.batch.m0.mapping",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "M0. Карта владельцев и baseline",
+  "summary": "Read-only inventory plus reproducible baseline; the first batch for the new task.",
+  "owner": "dev",
+  "lifecycle": "ready",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": [
+    "docs/specification/DOCARA-TZ.md",
+    "source/handoff/docara-unified-architecture/START.md"
+  ],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.m0.contract",
+  "allowed_scope": [
+    "Read all current source and tests.",
+    "Record source-to-route, source-to-content, source-to-renderer and generated-output mappings.",
+    "Reproduce the current badge route and full build without changing behavior.",
+    "Propose exact M1 files and tests."
+  ],
+  "forbidden_scope": [
+    "No mass rewrite.",
+    "No deletion of legacy paths.",
+    "No main merge, tag, release or deploy.",
+    "No use of the stale installed Docara skill as authority."
+  ],
+  "checks": [
+    "Repository and worktree hygiene",
+    "Exact baseline revision",
+    "Existing test suite",
+    "Two baseline builds",
+    "Route and content ownership inventory"
+  ],
+  "status": "ready",
+  "next_action": "execute_inventory_and_mapping"
+}

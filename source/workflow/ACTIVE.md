@@ -1,63 +1,46 @@
-# Active workflow: Docara single content pipeline
+# Active workflow: Docara unified architecture
 
-Date: 2026-07-30
-Status: active
-Workflow ID: `2026-07-30-docara-single-pipeline`
-Track: `docara-consolidation`
+Date: 2026-08-01
+Status: architecture contract ready; implementation mapping not started
+Workflow ID: `2026-08-01-docara-unified-architecture`
+Graph goal: `docara.goal.unified`
 
-## Current Goal
+## Source of truth
 
-Replace the parallel authored/generated rendering paths with one pipeline:
+- start here: `source/handoff/docara-unified-architecture/START.md`;
+- human specification: `docs/specification/README.md`;
+- machine-readable state: `graph/graph.json` and `graph/specs/`;
+- exact baseline: `a3ba9a4d04429f1f2046b8415764fe7bc89962c7`;
+- branch: `codex/docara-unified-architecture`.
 
-`Markdown -> typed Document IR -> Node Renderer Registry -> Smart Component Gateway -> Layout Composer -> HTML`.
+## Current stage and batch
 
-Every public page must have one physical Markdown source. Configuration JSON
-controls composition only; language packs contain UI messages only.
+- stage: `docara.stage.m0.contract`;
+- batch: `docara.batch.m0.mapping`;
+- purpose: map the current implementation to the accepted architecture,
+  reproduce the baseline and prepare one bounded vertical slice;
+- runtime behavior must not change in this batch.
 
-## Current Batch
+## Accepted pipeline
 
-`B1-badge-single-pipeline`: провести физическую страницу
-`content/ru/components/badge.md` через новый IR, registry, Smart gateway и
-общий PageBuilder в полном и частичном режимах.
+```text
+Markdown -> typed Document IR -> NodeRendererRegistry
+         -> SmartComponentGateway -> LayoutComposer -> PageBuilderResult
+```
 
-## Stages
+Every public route has one physical Markdown source. JSON controls composition,
+language packs contain interface messages, and generated IR/HTML remain
+disposable.
 
-- [x] `contract` — границы source of truth и baseline зафиксированы.
-- [ ] `vertical-slice` — одна физическая Markdown-страница проходит единый
-  pipeline.
-- [ ] `content-migration` — публичные страницы и локали перенесены в Markdown.
-- [ ] `legacy-retirement` — параллельные generated/trusted-HTML пути удалены
-  после parity evidence.
-- [ ] `acceptance` — полная матрица сборки, ссылок, локалей и браузеров пройдена.
+## Predecessor
 
-## Batches
-
-- [x] `B0-contract-baseline` — inventory, ADR и воспроизводимый baseline.
-- [ ] `B1-badge-single-pipeline` — typed IR, registry, Smart gateway и общий
-  PageBuilder для страницы бейджа.
-- [ ] `B2-component-content-migration` — остальные component detail pages.
-- [ ] `B3-language-pack-boundary` — language packs содержат только UI copy.
-- [ ] `B4-public-content-migration` — остальные public routes и locale trees.
-- [ ] `B5-legacy-retirement` — удаление projector/trusted HTML после parity.
-- [ ] `B6-acceptance` — документация и итоговая verification matrix.
-
-## Done When
-
-- every public document route maps to physical Markdown;
-- full and partial builds use one PageBuilder and produce identical page HTML;
-- language packs contain no documentation prose;
-- one Smart gateway handles Framework and Docara components;
-- legacy generated and trusted-HTML paths are removed after parity evidence;
-- tests, deterministic build, static verification and browser acceptance pass.
-
-## Evidence
-
-- workflow: `source/workflow/2026-07-30-docara-single-pipeline.md`;
-- launch: `source/workflow/2026-07-30-docara-single-pipeline.launch.yaml`;
-- evidence root:
-  `source/workflow/evidence/2026-07-30-docara-single-pipeline/`.
+The 2026-07-30 single-pipeline workflow and its evidence remain historical
+input. Their status is not silently promoted into this new graph. M0 must
+verify which parts are actually present at the exact baseline before any
+implementation claim is made.
 
 ## Boundary
 
-No destructive cleanup before parity. No merge, tag, release, public deploy or
-production-readiness claim without a separate gate.
+No mass rewrite, legacy deletion, default-branch merge, tag, release, public
+deploy or readiness claim. The installed stale Docara skill is not a source of
+truth for this track.

@@ -1,0 +1,45 @@
+{
+  "id": "docara.dna.unified",
+  "schema_version": "1.0.0",
+  "kind": "policy",
+  "subtype": "project_dna",
+  "tz_role": "architecture_policy",
+  "title": "Docara Project DNA",
+  "summary": "A content-first, deterministic and portable static-site generator built from Markdown, declarative composition and SIMAI Framework Smart components.",
+  "owner": "teamlead",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": [
+    "docs/specification/DOCARA-TZ.md",
+    "docs/specification/architecture/UNIFIED-ARCHITECTURE.md"
+  ],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "purpose": "Let an author build documentation, knowledge bases and landing pages from understandable files without coupling editorial content to the rendering engine.",
+  "principles": [
+    "One public route has one physical Markdown source file.",
+    "Content, composition, presentation and engine logic have separate owners.",
+    "Markdown is compiled into immutable typed Document IR before rendering.",
+    "Every node is rendered through one registry and every Smart component through one gateway.",
+    "Full and single-page builds use the same PageBuilder.",
+    "Generated artifacts are disposable and never become editorial sources.",
+    "SIMAI Framework owns tokens, utilities and universal UI; Docara composes them.",
+    "Diagnostics point back to the source Markdown location.",
+    "Unpublished legacy compatibility is removed instead of preserved."
+  ],
+  "non_goals": [
+    "Reimplement Laravel inside Docara.",
+    "Store public documentation prose in PHP arrays or language packs.",
+    "Maintain Jigsaw, Mix, trustedMainHtml or parallel projector pipelines.",
+    "Claim production or release readiness before independent acceptance."
+  ],
+  "quality_bar": [
+    "A new contributor can find the source of a page, component and layout without chat history.",
+    "Two clean builds from the same immutable inputs are byte-identical.",
+    "One-page build and full build produce semantically identical output for the same route.",
+    "Unknown syntax and parameters fail with file, line and column diagnostics.",
+    "No public page is generated from a hidden catalog or language-pack record."
+  ],
+  "success_definition": "A clean starter can author, build, inspect, update and reproduce a multilingual Docara site through one documented pipeline, while the repository contains no active parallel content or rendering architecture."
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0.0",
+  "graph_id": "docara.unified",
+  "title": "Docara Unified Architecture Graph",
+  "graph_type": "project_management",
+  "owner": "teamlead",
+  "source_of_truth": "graph/specs",
+  "dna_path": "graph/dna",
+  "generated_path": "graph/generated",
+  "source_path": "graph/source",
+  "management_profile": {
+    "primary_owner_skill": "teamlead",
+    "structure_owner_skill": "graph",
+    "domain_owner_skill": "dev",
+    "companion_owner_skills": ["content", "ux", "tester"],
+    "default_cycle": "project_graph_execution_cycle"
+  },
+  "architecture_target": {
+    "human_spec": "docs/specification/DOCARA-TZ.md",
+    "pipeline": "Markdown -> typed Document IR -> Node Renderer Registry -> Smart Component Gateway -> Layout Composer -> HTML",
+    "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
+  },
+  "routing_gap": {
+    "status": "recorded",
+    "reason": "The installed Docara skill describes the retired architecture and is disabled for this work.",
+    "fallback": ["teamlead", "graph", "dev"]
+  },
+  "federation": {
+    "can_export": true,
+    "can_import": true,
+    "parent_graph": null,
+    "child_graphs": []
+  }
+}

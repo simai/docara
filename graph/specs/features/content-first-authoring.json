@@ -1,0 +1,23 @@
+{
+  "id": "docara.feature.content_first",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "feature",
+  "tz_role": "product_contract",
+  "title": "Content-first authoring",
+  "summary": "One public route is authored in one Markdown file under the locale tree; public prose has no parallel owner.",
+  "owner": "content",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "inputs": ["content/<locale>/**/*.md", "front matter"],
+  "outputs": ["PageSource", "route identity", "editorial metadata"],
+  "invariants": [
+    "One route has one Markdown owner.",
+    "A page does not require a sibling page JSON unless it overrides composition.",
+    "Page prose is not loaded from resources/i18n or component manifests."
+  ]
+}

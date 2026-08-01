@@ -1,0 +1,27 @@
+{
+  "id": "docara.stage.m4.retirement",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "milestone",
+  "tz_role": "implementation_stage",
+  "title": "M4. Удаление параллельной архитектуры",
+  "summary": "Удалить старые projectors, trusted HTML, content records и другие обходные пути только после доказанной замены и zero-reference scan.",
+  "owner": "dev",
+  "lifecycle": "planned",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/ACCEPTANCE.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "parent_goal_ref": "docara.goal.unified",
+  "done_when": [
+    "Legacy renderers and projectors have no active references.",
+    "Public prose is removed from language packs and registry records.",
+    "Generated output can be deleted and rebuilt from canonical sources.",
+    "Rollback is documented at the commit boundary."
+  ],
+  "batch_refs": ["docara.batch.m4.retire"],
+  "required_gates": ["docara.gate.legacy_deletion"],
+  "required_evidence": ["docara.evidence.zero_reference_scan"],
+  "next_stage_ref": "docara.stage.m5.acceptance"
+}

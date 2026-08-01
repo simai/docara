@@ -1,0 +1,19 @@
+{
+  "id": "docara.gate.legacy_deletion",
+  "schema_version": "1.0.0",
+  "kind": "gate",
+  "subtype": "destructive_gate",
+  "tz_role": "stage_gate",
+  "title": "Legacy deletion accepted",
+  "summary": "Removal is allowed only for paths proven replaced, unreferenced and recoverable by commit rollback.",
+  "owner": "teamlead",
+  "lifecycle": "blocked",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/ACCEPTANCE.md"],
+  "evidence_refs": ["docara.evidence.zero_reference_scan"],
+  "profile_refs": ["docara.unified"],
+  "pass_conditions": ["Positive parity", "Negative zero-reference scan", "Clean build after deletion", "Rollback commit boundary", "No canonical source deleted"],
+  "stop_conditions": ["Unmapped caller", "Generated artifact used as source", "No rollback path"],
+  "promotes_to": "docara.batch.m5.accept"
+}

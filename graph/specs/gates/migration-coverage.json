@@ -1,0 +1,19 @@
+{
+  "id": "docara.gate.migration_coverage",
+  "schema_version": "1.0.0",
+  "kind": "gate",
+  "subtype": "acceptance_gate",
+  "tz_role": "stage_gate",
+  "title": "All active routes migrated",
+  "summary": "Every supported route and node type is covered by the unified pipeline before legacy deletion.",
+  "owner": "tester",
+  "lifecycle": "blocked",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/ACCEPTANCE.md"],
+  "evidence_refs": ["docara.evidence.all_routes_parity"],
+  "profile_refs": ["docara.unified"],
+  "pass_conditions": ["Route coverage 100%", "Supported node coverage 100%", "Locale matrix complete", "Broken links and missing assets zero", "Derived indexes rebuilt"],
+  "stop_conditions": ["Any route still needs a legacy projector", "Unknown component or node silently omitted"],
+  "promotes_to": "docara.batch.m4.retire"
+}

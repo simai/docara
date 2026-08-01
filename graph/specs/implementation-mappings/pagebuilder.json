@@ -1,0 +1,23 @@
+{
+  "id": "docara.mapping.pagebuilder",
+  "schema_version": "1.0.0",
+  "kind": "relation",
+  "subtype": "implementation_mapping",
+  "tz_role": "traceability",
+  "title": "PageBuilder implementation mapping",
+  "summary": "Maps full and one-page commands to one pipeline and parity evidence.",
+  "owner": "dev",
+  "lifecycle": "planned",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/DOCARA-TZ.md#14-полная-и-частичная-сборка"],
+  "profile_refs": ["docara.unified"],
+  "from_ref": "docara.feature.single_pagebuilder",
+  "to_refs": ["DOC-REQ-007", "DOC-REQ-009"],
+  "code_refs": [],
+  "test_refs": [],
+  "evidence_refs": ["docara.evidence.badge_vertical_slice", "docara.evidence.final_acceptance"],
+  "review_refs": ["docara.gate.vertical_slice", "docara.gate.architecture_acceptance"],
+  "known_deviations": ["Current partial build filters after global content projections rather than before one page pipeline."],
+  "status": "mapping_required_in_m0"
+}

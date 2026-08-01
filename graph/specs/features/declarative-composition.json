@@ -1,0 +1,19 @@
+{
+  "id": "docara.feature.declarative_composition",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "feature",
+  "tz_role": "product_contract",
+  "title": "Declarative layouts and regions",
+  "summary": "Site, section and page JSON select layouts, regions, presets and behavior without owning article prose or CSS templates.",
+  "owner": "dev",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/DOCARA-TZ.md#11-layout-и-области"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "config_layers": ["docara.json", "section.json", "<page>.page.json"],
+  "resolution_order": ["engine defaults", "site", "ancestor sections", "page override"],
+  "invariants": ["Merge is deterministic.", "Unknown keys fail validation.", "A disabled region does not render or load its assets."]
+}

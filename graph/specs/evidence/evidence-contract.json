@@ -1,0 +1,25 @@
+{
+  "id": "docara.evidence.contract",
+  "schema_version": "1.0.0",
+  "kind": "evidence",
+  "subtype": "evidence_policy",
+  "tz_role": "verification_policy",
+  "title": "Docara evidence contract",
+  "summary": "Defines stable evidence identifiers and minimum proof for each architecture stage.",
+  "owner": "tester",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/ACCEPTANCE.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "records": [
+    {"id": "docara.evidence.m0_inventory", "required": ["exact revisions", "repo hygiene", "owner maps", "baseline test/build results"]},
+    {"id": "docara.evidence.source_boundary_tests", "required": ["positive fixtures", "negative fixtures", "schema results"]},
+    {"id": "docara.evidence.badge_vertical_slice", "required": ["IR snapshot", "mapping", "full/page parity", "browser captures"]},
+    {"id": "docara.evidence.all_routes_parity", "required": ["route matrix", "locale matrix", "link and asset verification"]},
+    {"id": "docara.evidence.zero_reference_scan", "required": ["search commands", "deletion diff", "post-delete build", "rollback"]},
+    {"id": "docara.evidence.final_acceptance", "required": ["exact archive", "determinism", "portable install", "UX and accessibility matrix", "nonclaims"]}
+  ],
+  "rules": ["Evidence belongs to an exact revision.", "Activity is not proof.", "A failed attempt is preserved and a retest uses a new path.", "Architecture acceptance does not imply release readiness."]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "docara.metric.public_markdown_ownership",
+  "schema_version": "1.0.0",
+  "kind": "observation",
+  "subtype": "project_metric",
+  "tz_role": "progress_metric",
+  "title": "Markdown ownership coverage",
+  "summary": "Share of public routes whose only editorial source is one physical Markdown file.",
+  "owner": "teamlead",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "metric_type": "coverage",
+  "scale": "0..100 percent",
+  "calculation": "markdown_owned_public_routes / all_public_routes",
+  "target": 100,
+  "unknown_policy": "show_unknown_not_zero"
+}

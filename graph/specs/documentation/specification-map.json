@@ -1,0 +1,24 @@
+{
+  "id": "docara.documentation.specification",
+  "schema_version": "1.0.0",
+  "kind": "documentation",
+  "subtype": "documentation_map",
+  "tz_role": "human_projection",
+  "title": "Docara specification map",
+  "summary": "Maps human-readable documents to the contracts they explain.",
+  "owner": "teamlead",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/README.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "documents": [
+    {"path": "docs/specification/DOCARA-TZ.md", "purpose": "Product and system requirements"},
+    {"path": "docs/specification/architecture/UNIFIED-ARCHITECTURE.md", "purpose": "Modules, ownership and data flow"},
+    {"path": "docs/specification/authoring/AUTHORING-CONTRACT.md", "purpose": "Author-facing Markdown and component rules"},
+    {"path": "docs/specification/implementation/ROADMAP.md", "purpose": "Bounded migration order"},
+    {"path": "docs/specification/ACCEPTANCE.md", "purpose": "Done conditions and nonclaims"}
+  ],
+  "sync_rule": "Accepted graph decisions are reflected in these files in the same change."
+}

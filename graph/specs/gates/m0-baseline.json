@@ -1,0 +1,19 @@
+{
+  "id": "docara.gate.m0_baseline",
+  "schema_version": "1.0.0",
+  "kind": "gate",
+  "subtype": "acceptance_gate",
+  "tz_role": "stage_gate",
+  "title": "M0 baseline accepted",
+  "summary": "The current system is mapped and reproducible before behavior changes.",
+  "owner": "tester",
+  "lifecycle": "pending",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["source/handoff/docara-unified-architecture/NEXT.md"],
+  "evidence_refs": ["docara.evidence.m0_inventory"],
+  "profile_refs": ["docara.unified"],
+  "pass_conditions": ["Exact baseline SHA", "Clean inventory", "Existing tests recorded", "Two baseline builds compared", "Content and render owner map complete"],
+  "stop_conditions": ["Unknown active renderer", "Unreproducible baseline", "Unmapped public prose owner"],
+  "promotes_to": "docara.batch.m1.boundaries"
+}

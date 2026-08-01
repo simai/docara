@@ -1,0 +1,27 @@
+{
+  "id": "docara.decisions.architecture",
+  "schema_version": "1.0.0",
+  "kind": "decision",
+  "subtype": "decision_register",
+  "tz_role": "architecture_decisions",
+  "title": "Accepted Docara architecture decisions",
+  "summary": "Decisions that a new task must not silently reverse.",
+  "owner": "teamlead",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/DOCARA-TZ.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "decisions": [
+    {"id": "DOC-ADR-001", "decision": "Keep specification and graph in the Docara repository, not a separate specs repository.", "reason": "Code and contract evolve atomically and avoid drift."},
+    {"id": "DOC-ADR-002", "decision": "Use one Markdown file per public route.", "reason": "Authors edit the real page source directly."},
+    {"id": "DOC-ADR-003", "decision": "Use typed internal IR, never hand-authored JSON content.", "reason": "Larena-compatible array processing without burdening Docara authors."},
+    {"id": "DOC-ADR-004", "decision": "Use a registry plus one Smart gateway.", "reason": "Component behavior is extensible without hardcoded page projectors."},
+    {"id": "DOC-ADR-005", "decision": "Use one PageBuilder for all build modes.", "reason": "Partial build cannot drift from full build."},
+    {"id": "DOC-ADR-006", "decision": "Keep system i18n separate from site and article content.", "reason": "Any locale can own its complete documentation without engine edits."},
+    {"id": "DOC-ADR-007", "decision": "Do not preserve unpublished legacy storage compatibility.", "reason": "The product is still under development and simplicity is the priority."},
+    {"id": "DOC-ADR-008", "decision": "Migrate through a badge vertical slice before bulk work.", "reason": "Proves the whole architecture with bounded risk."},
+    {"id": "DOC-ADR-009", "decision": "Do not use the installed stale Docara skill for this migration.", "reason": "It documents the retired Jigsaw/Mix architecture."}
+  ]
+}

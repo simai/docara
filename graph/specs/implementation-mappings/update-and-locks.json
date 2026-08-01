@@ -1,0 +1,23 @@
+{
+  "id": "docara.mapping.update_locks",
+  "schema_version": "1.0.0",
+  "kind": "relation",
+  "subtype": "implementation_mapping",
+  "tz_role": "traceability",
+  "title": "Update and immutable lock mapping",
+  "summary": "Maps portable install, engine update, Framework tuple and deterministic build requirements.",
+  "owner": "dev",
+  "lifecycle": "planned",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/DOCARA-TZ.md#16-обновление-docara"],
+  "profile_refs": ["docara.unified"],
+  "from_ref": "docara.feature.reproducible_update",
+  "to_refs": ["DOC-REQ-009", "DOC-REQ-010", "DOC-REQ-012"],
+  "code_refs": [],
+  "test_refs": [],
+  "evidence_refs": ["docara.evidence.final_acceptance"],
+  "review_refs": ["docara.gate.architecture_acceptance"],
+  "known_deviations": [],
+  "status": "mapping_required_in_m0"
+}

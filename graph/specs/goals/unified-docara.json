@@ -1,0 +1,65 @@
+{
+  "id": "docara.goal.unified",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "goal",
+  "tz_role": "primary_goal",
+  "title": "Единая понятная архитектура Docara",
+  "summary": "Перевести Docara на один content-first конвейер, где каждая страница хранится в Markdown, композиция — в JSON, компоненты — в реестре, а HTML всегда является производным результатом.",
+  "owner": "teamlead",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": [
+    "docs/specification/DOCARA-TZ.md",
+    "docs/specification/implementation/ROADMAP.md",
+    "docs/specification/ACCEPTANCE.md"
+  ],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "done_when": [
+    "Every public route has exactly one Markdown source in content/<locale>.",
+    "Public prose is absent from engine arrays, language packs and component registry records.",
+    "A typed Document IR and one renderer registry serve all supported Markdown nodes.",
+    "All ui.* and docara.* components pass through one Smart Component Gateway.",
+    "Full and single-page builds use one PageBuilder and match semantically.",
+    "All declared locales build independent route trees with explicit missing-page policy.",
+    "Legacy parallel projectors and trusted HTML paths are deleted after parity evidence.",
+    "Documentation, graph, code, tests and generated starter agree."
+  ],
+  "scope": [
+    "Source ownership and repository layout",
+    "Markdown authoring and metadata",
+    "Typed IR and rendering registry",
+    "Smart component gateway and manifests",
+    "Declarative layout and regions",
+    "Full and partial build",
+    "Localization, assets, diagnostics and update safety",
+    "Migration and removal of legacy paths"
+  ],
+  "non_goals": [
+    "Production release during architecture migration",
+    "Visual redesign unrelated to the unified pipeline",
+    "Backward compatibility with unpublished experimental storage formats"
+  ],
+  "stage_refs": [
+    "docara.stage.m0.contract",
+    "docara.stage.m1.boundaries",
+    "docara.stage.m2.vertical_slice",
+    "docara.stage.m3.migration",
+    "docara.stage.m4.retirement",
+    "docara.stage.m5.acceptance"
+  ],
+  "metric_refs": [
+    "docara.metric.public_markdown_ownership",
+    "docara.metric.single_pipeline_coverage",
+    "docara.metric.legacy_active_paths",
+    "docara.metric.build_parity"
+  ],
+  "evidence_policy": [
+    "Do not infer readiness from activity or file count.",
+    "Each stage needs code mapping, tests and exact-revision evidence.",
+    "Legacy deletion requires positive parity and negative no-reference checks.",
+    "Release readiness remains a separate gate."
+  ]
+}

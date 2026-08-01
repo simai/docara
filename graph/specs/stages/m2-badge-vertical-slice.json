@@ -1,0 +1,28 @@
+{
+  "id": "docara.stage.m2.vertical_slice",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "milestone",
+  "tz_role": "implementation_stage",
+  "title": "M2. Вертикальный срез страницы Badge",
+  "summary": "Провести одну реальную страницу от Markdown через typed IR, registry, Smart gateway и layout до HTML, не затрагивая остальные страницы.",
+  "owner": "dev",
+  "lifecycle": "planned",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/architecture/UNIFIED-ARCHITECTURE.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "parent_goal_ref": "docara.goal.unified",
+  "done_when": [
+    "content/ru/components/badge.md owns the complete page.",
+    "Source locations survive parsing into typed IR.",
+    "Badge examples render through the universal Smart gateway.",
+    "Single-page and full build outputs for the route are equivalent.",
+    "Old badge projection is no longer used for the migrated route."
+  ],
+  "batch_refs": ["docara.batch.m2.badge"],
+  "required_gates": ["docara.gate.vertical_slice"],
+  "required_evidence": ["docara.evidence.badge_vertical_slice"],
+  "next_stage_ref": "docara.stage.m3.migration"
+}

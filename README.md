@@ -67,6 +67,7 @@ global configuration, or Framework lock changes.
 
 ## Documentation
 
+- [Architecture source of truth](docs/specification/README.md)
 - [Quick start](docs/site/content/ru/start.md)
 - [Project files and configuration](docs/site/content/ru/authoring/project-files.md)
 - [Layouts, regions and navigation](docs/site/content/ru/authoring/layout-and-navigation.md)

@@ -1,0 +1,17 @@
+{
+  "id": "docara.feature.reproducible_update",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "feature",
+  "tz_role": "product_contract",
+  "title": "Portable, reproducible and update-safe",
+  "summary": "A project pins engine and Framework revisions, keeps user content outside package-owned files and can preview an update before applying it.",
+  "owner": "dev",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/DOCARA-TZ.md#16-обновление-docara"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "invariants": ["Package update never overwrites content.", "Framework tuple is immutable.", "Update supports verify and dry-run before apply.", "Rollback restores the previous package and lock tuple."]
+}

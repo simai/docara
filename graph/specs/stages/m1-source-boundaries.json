@@ -1,0 +1,27 @@
+{
+  "id": "docara.stage.m1.boundaries",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "milestone",
+  "tz_role": "implementation_stage",
+  "title": "M1. Границы источников",
+  "summary": "Сделать Markdown единственным владельцем публичных страниц, оставить language packs системными и ввести строгие schemas для конфигурации.",
+  "owner": "dev",
+  "lifecycle": "planned",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "parent_goal_ref": "docara.goal.unified",
+  "done_when": [
+    "One route resolves to one Markdown source.",
+    "Language packs contain only engine UI messages.",
+    "Site, section and page configuration are validated and prose-free.",
+    "Duplicate public content fails closed."
+  ],
+  "batch_refs": ["docara.batch.m1.boundaries"],
+  "required_gates": ["docara.gate.source_ownership"],
+  "required_evidence": ["docara.evidence.source_boundary_tests"],
+  "next_stage_ref": "docara.stage.m2.vertical_slice"
+}

@@ -1,0 +1,22 @@
+{
+  "id": "docara.batch.m3.migrate",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "M3. Последовательная миграция",
+  "summary": "Move remaining routes in bounded component and section groups after the badge slice is accepted.",
+  "owner": "dev",
+  "lifecycle": "blocked",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/implementation/ROADMAP.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.m3.migration",
+  "allowed_scope": ["Accepted route groups", "Component manifests", "Derived indexes", "Localization parity"],
+  "forbidden_scope": ["Unmapped deletion", "Unrelated visual redesign", "Release"],
+  "checks": ["Route matrix", "Broken links zero", "Missing assets zero", "Unknown nodes zero"],
+  "status": "blocked_by_m2",
+  "next_action": "wait_for_docara_gate_vertical_slice"
+}

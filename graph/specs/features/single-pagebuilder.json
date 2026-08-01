@@ -1,0 +1,18 @@
+{
+  "id": "docara.feature.single_pagebuilder",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "feature",
+  "tz_role": "architecture_contract",
+  "title": "One PageBuilder for full and partial builds",
+  "summary": "Full-site and one-page commands call the same page pipeline; partial build filters inputs before page compilation and updates dependent indexes safely.",
+  "owner": "dev",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/DOCARA-TZ.md#14-полная-и-частичная-сборка"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "modes": ["full", "page"],
+  "invariants": ["No second renderer for partial build.", "The selected page output matches full build semantically.", "Shared indexes are updated or explicitly reported stale."]
+}

@@ -1,0 +1,21 @@
+{
+  "id": "docara.metric.build_parity",
+  "schema_version": "1.0.0",
+  "kind": "observation",
+  "subtype": "project_metric",
+  "tz_role": "quality_metric",
+  "title": "Full and page build parity",
+  "summary": "Semantic differences between a route built alone and the same route from a full build.",
+  "owner": "tester",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/ACCEPTANCE.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "metric_type": "difference_count",
+  "scale": "0..n",
+  "calculation": "normalized_dom_and_asset_manifest_differences",
+  "target": 0,
+  "unknown_policy": "fail_closed"
+}

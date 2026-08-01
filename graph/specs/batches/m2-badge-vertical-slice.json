@@ -1,0 +1,22 @@
+{
+  "id": "docara.batch.m2.badge",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "M2. Badge через новый конвейер",
+  "summary": "Implement one end-to-end page to validate IR, registry, Smart gateway and PageBuilder before scaling migration.",
+  "owner": "dev",
+  "lifecycle": "blocked",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/architecture/UNIFIED-ARCHITECTURE.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.m2.vertical_slice",
+  "allowed_scope": ["Badge Markdown source", "Typed IR minimum", "Renderer registry", "Smart gateway", "Single-page build"],
+  "forbidden_scope": ["Bulk component migration", "Global CSS redesign", "Legacy deletion", "Release"],
+  "checks": ["IR snapshot", "Source-location error", "Full/single parity", "Browser light/dark and mobile/desktop"],
+  "status": "blocked_by_m1",
+  "next_action": "wait_for_docara_gate_source_ownership"
+}

@@ -1,0 +1,25 @@
+{
+  "id": "docara.risks.architecture",
+  "schema_version": "1.0.0",
+  "kind": "risk",
+  "subtype": "risk_register",
+  "tz_role": "delivery_risks",
+  "title": "Unified architecture risk register",
+  "summary": "Known ways the migration can appear successful while preserving the original problem.",
+  "owner": "teamlead",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/implementation/ROADMAP.md"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "risks": [
+    {"id": "DOC-RISK-001", "risk": "Bulk rewrite recreates undocumented behavior and loses working UX.", "mitigation": "One accepted vertical slice, then bounded route groups."},
+    {"id": "DOC-RISK-002", "risk": "New pipeline is added while old projectors remain active.", "mitigation": "Call-path mapping, coverage metric and final zero-reference deletion gate."},
+    {"id": "DOC-RISK-003", "risk": "Public prose moves from one hidden array to another.", "mitigation": "Content-boundary validator and one-route-one-Markdown invariant."},
+    {"id": "DOC-RISK-004", "risk": "Single-page build becomes a second renderer.", "mitigation": "One PageBuilder and semantic parity test."},
+    {"id": "DOC-RISK-005", "risk": "Docara patches Framework internals locally.", "mitigation": "Framework-first classification and immutable lock updates."},
+    {"id": "DOC-RISK-006", "risk": "Long chat history overrides the accepted contract.", "mitigation": "New task starts from committed spec, graph and handoff; chat is evidence only."},
+    {"id": "DOC-RISK-007", "risk": "Passing unit tests are misreported as release readiness.", "mitigation": "Separate architecture, consumer, release and production gates with explicit nonclaims."}
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "docara.feature.multilingual",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "feature",
+  "tz_role": "product_contract",
+  "title": "Unlimited locale trees",
+  "summary": "Every declared locale owns a complete independent content tree and predictable routes, with explicit missing-page behavior.",
+  "owner": "content",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/DOCARA-TZ.md#6-мультиязычность"],
+  "evidence_refs": [],
+  "profile_refs": ["docara.unified"],
+  "invariants": ["No implicit cross-locale prose fallback.", "System strings and article prose have separate stores.", "Translation pairing uses relative route or explicit translation_key."]
+}

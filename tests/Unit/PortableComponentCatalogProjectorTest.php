@@ -37,12 +37,14 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             'docara.card',
             'docara.details',
             'docara.download',
+            'docara.diagram',
             'docara.figure',
             'docara.grid',
             'docara.icon',
             'docara.kbd',
             'docara.hero',
             'docara.logos',
+            'docara.math',
             'docara.media',
             'native.code',
             'native.footnotes_and_sources',
@@ -250,6 +252,18 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             if ($id === 'docara.media') {
                 self::assertStringContainsString('<h1 id="текст-с-изображением">Текст с изображением</h1>', $detail);
                 self::assertStringContainsString('data-docara-block="media"', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.diagram') {
+                self::assertStringContainsString('<h1 id="диаграмма">Диаграмма</h1>', $detail);
+                self::assertStringContainsString('data-docara-block="diagram"', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.math') {
+                self::assertStringContainsString('<h1 id="математическая-формула">Математическая формула</h1>', $detail);
+                self::assertStringContainsString('data-docara-block="math"', $detail);
 
                 continue;
             }
@@ -508,6 +522,14 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         foreach (['SIMAI Framework', 'tone=muted', '![SIMAI]', '![Docara]'] as $marker) {
             self::assertStringContainsString($marker, $logos);
         }
+        foreach (['diagram.md' => [':::diagram', 'flowchart LR'], 'math.md' => ['display=inline', 'display=block']] as $file => $markers) {
+            $source = (string) file_get_contents(
+                dirname(__DIR__, 2) . '/docs/site/content/ru/components/' . $file,
+            );
+            foreach ($markers as $marker) {
+                self::assertStringContainsString($marker, $source);
+            }
+        }
 
         $fixtures = [
             'docara.example.ru.md' => [
@@ -516,8 +538,6 @@ final class PortableComponentCatalogProjectorTest extends TestCase
                 '```css',
                 '```javascript',
             ],
-            'docara.diagram.ru.md' => [':::diagram', 'flowchart LR'],
-            'docara.math.ru.md' => [':::math {display=inline', ':::math {display=block'],
             'docara.html.ru.md' => [':::html', 'Изолированный HTML'],
             'docara.tabs.ru.md' => [':::tabs', '### Composer', '### Вручную', '### Результат'],
         ];

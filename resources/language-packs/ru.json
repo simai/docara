@@ -598,28 +598,6 @@
             },
             "example_ref": "resources/component-catalog/examples/docara.badge.ru.md"
         },
-        "docara.diagram": {
-            "title": "Диаграмма",
-            "description": "Сохраняет исходник Mermaid читаемым и готовым к детерминированному отображению.",
-            "limitations": [
-                "Переносимая сборка пока показывает доступный исходник; Mermaid ещё не закреплён в неизменяемой поставке."
-            ],
-            "states": [],
-            "parameters": {
-                "engine": {
-                    "label": "Формат",
-                    "description": "Выбирает объявленный формат диаграммы.",
-                    "values": {
-                        "mermaid": "Mermaid"
-                    }
-                },
-                "title": {
-                    "label": "Название",
-                    "description": "Задаёт доступное название диаграммы."
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/docara.diagram.ru.md"
-        },
         "docara.html": {
             "title": "Изолированный HTML",
             "description": "Показывает явно доверенный HTML в песочнице, изолированной от страницы документации.",
@@ -629,29 +607,6 @@
             "states": [],
             "parameters": [],
             "example_ref": "resources/component-catalog/examples/docara.html.ru.md"
-        },
-        "docara.math": {
-            "title": "Математическая формула",
-            "description": "Сохраняет TeX читаемым и готовым к детерминированному отображению формулы.",
-            "limitations": [
-                "Переносимая сборка пока показывает доступный TeX; KaTeX ещё не закреплён в неизменяемой поставке."
-            ],
-            "states": [],
-            "parameters": {
-                "display": {
-                    "label": "Расположение",
-                    "description": "Выбирает строчное или блочное представление.",
-                    "values": {
-                        "inline": "В строке",
-                        "block": "Отдельным блоком"
-                    }
-                },
-                "label": {
-                    "label": "Доступное название",
-                    "description": "Называет формулу для вспомогательных технологий."
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/docara.math.ru.md"
         },
         "docara.tabs": {
             "title": "Вкладки",

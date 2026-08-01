@@ -1358,6 +1358,11 @@ final class StaticBuildVerifierTest extends TestCase
                 'title' => 'Скачивание',
                 'description' => 'Понятное действие для загрузки или открытия файла.',
             ],
+            'docara.diagram' => [
+                'slug' => 'diagram',
+                'title' => 'Диаграмма',
+                'description' => 'Проверяемая схема Mermaid.',
+            ],
             'docara.icon' => [
                 'slug' => 'icon',
                 'title' => 'Значок',
@@ -1382,6 +1387,11 @@ final class StaticBuildVerifierTest extends TestCase
                 'slug' => 'logos',
                 'title' => 'Логотипы и участники',
                 'description' => 'Компактный ряд продуктов или участников.',
+            ],
+            'docara.math' => [
+                'slug' => 'math',
+                'title' => 'Математическая формула',
+                'description' => 'Доступно подписанное выражение TeX.',
             ],
             'docara.media' => [
                 'slug' => 'media',

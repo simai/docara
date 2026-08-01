@@ -35,14 +35,14 @@ generated component page count и русский component-route allowlist ра�
 PageBuilder/registry/gateway; две clean full builds byte-identical; static и
 browser matrices зелёные; graph/workflow/handoff синхронны; worktree чистый.
 
-Current Remaining: 10 generated routes из 32; Alert, Badge, Syntax,
+Current Remaining: 8 generated routes из 32; Alert, Badge, Syntax,
 headings/text, lists/quotes, links/images, table, code, footnotes/sources,
-Details, Backlinks, Banner, Download, Button, Icon, Kbd, Card, Hero, Grid, Figure, Media и Logos уже физические.
+Details, Backlinks, Banner, Download, Button, Icon, Kbd, Card, Hero, Grid, Figure, Media, Logos, Diagram и Math уже физические.
 
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.3 batch 16, Diagram and Math.
+Next Safe Batch: M3.3 batch 17, Code-from-file and HTML.
 
 ## Goal
 
@@ -187,8 +187,8 @@ checks, evidence update and a separate commit.
 | 13 | card and hero | layout parity | completed |
 | 14 | grid and figure | layout/media parity | completed |
 | 15 | media and logos | asset/responsive parity | completed |
-| 16 | diagram and math | runtime/asset parity | in-progress |
-| 17 | code-from-file and HTML | safe rendering parity | pending |
+| 16 | diagram and math | runtime/asset parity | completed |
+| 17 | code-from-file and HTML | safe rendering parity | in-progress |
 | 18 | embed and example | embed/example tabs/copy parity | pending |
 | 19 | steps and tree | structure/responsive parity | pending |
 | 20 | tabs | keyboard/focus/tabset parity | pending |
@@ -429,10 +429,18 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 16 — Diagram and Math
 
+- status: completed;
+- parent: `0c3305c`;
+- physical owners reuse generic typed-directive IR; no new rendering engine;
+- full/isolated/static/browser parity PASS; pack/route/examples retired;
+- evidence: `m3-ru-components/batch-16-diagram-math.md`.
+
+### Batch 17 — Code-from-file and HTML
+
 - status: in-progress;
-- parent: batch 15 checkpoint commit;
-- objective: migrate technical visualization routes without adding runtime
-  engines or changing their accepted source-display behavior.
+- parent: batch 16 checkpoint commit;
+- objective: migrate safe external-code and sandboxed HTML documentation while
+  preserving exact security boundaries and one renderer path.
 
 ## Kaizen
 

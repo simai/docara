@@ -60,7 +60,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-12-button-icon-kbd.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-13-card-hero.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-14-grid-figure.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-15-media-logos.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-15-media-logos.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-16-diagram-math.md"
   ],
   "review_refs": ["docara.gate.vertical_slice"],
   "current_behavior": [
@@ -80,11 +81,12 @@
     "Batch 12 routes Badge, Button, Icon and Kbd through one manifest-owned inline ComponentNode contract and the existing renderer registry/Smart gateway; no component-specific IR type remains.",
     "Batch 13 reuses the generic typed_directive node for Card and Hero with no family-specific compiler, IR or renderer-registry path.",
     "Batch 14 reuses the generic typed_directive node for Grid and Figure with no layout/media-specific compiler, IR or renderer registry.",
-    "Batch 15 reuses the generic typed_directive node for Media and Logos with no media/logo-specific compiler, IR or renderer registry."
+    "Batch 15 reuses the generic typed_directive node for Media and Logos with no media/logo-specific compiler, IR or renderer registry.",
+    "Batch 16 reuses the generic typed_directive node for Diagram and Math with no technical-content-specific compiler, IR or renderer registry."
   ],
   "known_deviations": [
     "The current AST can be serialized in receipts, but the target permits no mandatory page-level JSON/JSONL.",
-    "Typed native node coverage now includes Badge, Button, Icon, Kbd, Alert, headings/text, lists/quotes, links/images, table, code, footnotes/sources, Details, Backlinks, Banner, Download, Card, Hero, Grid, Figure, Media, Logos and Syntax; remaining generated routes retain the rollback adapter.",
+    "Typed native node coverage now includes Badge, Button, Icon, Kbd, Alert, headings/text, lists/quotes, links/images, table, code, footnotes/sources, Details, Backlinks, Banner, Download, Card, Hero, Grid, Figure, Media, Logos, Diagram, Math and Syntax; remaining generated routes retain the rollback adapter.",
     "The earlier declarative SourceSpan remains separate from the target SourceLocation.",
     "PortableMarkdownRenderer remains active for non-Badge routes until bounded M3 parity evidence exists."
   ],
@@ -94,5 +96,5 @@
     "Delete duplicate metadata parsing only after headings and links are derived from the canonical IR."
   ],
   "status": "m3_3_generic_typed_directive_ir_scaling",
-  "mapped_revision": "commit containing batch-15-media-logos.md; parent 835df6d"
+  "mapped_revision": "commit containing batch-16-diagram-math.md; parent 0c3305c"
 }

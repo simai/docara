@@ -414,3 +414,18 @@ Status: PASS; M3.3 continues
 
 Twenty-two of 32 routes are physical; batch 16 (Diagram and Math) is next.
 Overall M3 and release/production readiness remain unclaimed.
+
+## M3.3 batch 16 result
+
+Status: PASS; M3.3 continues
+
+- Diagram and Math have physical Russian Markdown owners and starters;
+- generic typed-directive/PageBuilder path preserves accessible Mermaid source
+  and inline/block TeX without adding client runtime dependencies;
+- full/isolated exact; static 206 HTML, 18,939 references, zero broken; browser
+  desktop/mobile light/dark has zero overflow and console issues;
+- exact pack/allowlist/example legacy retired with rollback;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-16-diagram-math.md`.
+
+Twenty-four of 32 routes are physical; batch 17 is Code-from-file and HTML.
+Overall M3 remains unclaimed.

@@ -45,6 +45,7 @@
     "docs/site/content/ru/components/button.md",
     "docs/site/content/ru/components/card.md",
     "docs/site/content/ru/components/details.md",
+    "docs/site/content/ru/components/diagram.md",
     "docs/site/content/ru/components/download.md",
     "docs/site/content/ru/components/figure.md",
     "docs/site/content/ru/components/grid.md",
@@ -53,6 +54,7 @@
     "docs/site/content/ru/components/hero.md",
     "docs/site/content/ru/components/logos.md",
     "docs/site/content/ru/components/media.md",
+    "docs/site/content/ru/components/math.md",
     "docs/site/content/ru/lang.json",
     "resources/component-catalog/examples/*.md"
   ],
@@ -81,16 +83,17 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-12-button-icon-kbd.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-13-card-hero.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-14-grid-figure.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-15-media-logos.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-15-media-logos.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-16-diagram-math.md"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
     "M1A replaces implicit authored Markdown discovery with typed PageSource, PageSourceLocator and RouteMapper boundaries.",
     "Ambiguous physical routes, unknown locales, outside-root paths, traversal, symlinks and non-.md public page extensions fail before rendering.",
     "M1B adds strict target config/lang/manifest input boundaries and a finite zero-growth allowlist for the remaining legacy public sources.",
-    "79 physical Markdown files produce 79 authored routes after batch 15.",
-    "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 24 additional public routes without physical Markdown.",
-    "The Russian language pack contains 22 component presentation records; English contains 42 and three other bundled packs contain 8 each.",
+    "81 physical Markdown files produce 81 authored routes after batch 16.",
+    "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 22 additional public routes without physical Markdown.",
+    "The Russian language pack contains 20 component presentation records; English contains 42 and three other bundled packs contain 8 each.",
     "The badge route is owned by content/ru/components/badge.md and suppresses the generated badge detail route through AuthoredComponentPageIndex.",
     "M2 proves the physical Badge Markdown owns all page prose and examples while its structural component definition contains no documentation prose.",
     "M3.2 makes content/ru/components/alert.md the Alert owner, removes its Russian pack prose and generated-route allowlist entry, and retires its zero-reference Russian example projection.",
@@ -103,10 +106,11 @@
     "M3.3 batch 12 makes Button, Icon and Kbd physical, removes their Russian prose records/localized examples and replaces hard-coded inline branches with manifest-owned contracts through the same ComponentNode and Smart gateway.",
     "M3.3 batch 13 makes Card and Hero physical, removes their Russian prose records/localized examples and preserves all responsive layout variants through the shared typed-directive path.",
     "M3.3 batch 14 makes Grid and Figure physical, removes their Russian prose records/localized examples and preserves responsive composition and accessible content assets through the shared typed-directive path.",
-    "M3.3 batch 15 makes Media and Logos physical, removes their Russian prose records/localized examples and preserves responsive accessible assets through the shared typed-directive path."
+    "M3.3 batch 15 makes Media and Logos physical, removes their Russian prose records/localized examples and preserves responsive accessible assets through the shared typed-directive path.",
+    "M3.3 batch 16 makes Diagram and Math physical, removes their Russian prose records/localized examples and preserves accessible Mermaid/TeX source behavior without new client engines."
   ],
   "known_deviations": [
-    "One-route-one-Markdown is false for 24 of 103 logical pages.",
+    "One-route-one-Markdown is false for 22 of 103 logical pages.",
     "Language packs and catalog/example records remain public prose owners.",
     "Generated routes use synthetic page_path values that resemble missing Markdown files."
   ],
@@ -115,6 +119,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
   ],
-  "status": "m3_3_batch_15_implemented_batch_16_ready",
-  "mapped_revision": "commit containing batch-15-media-logos.md; parent 835df6d"
+  "status": "m3_3_batch_16_implemented_batch_17_ready",
+  "mapped_revision": "commit containing batch-16-diagram-math.md; parent 0c3305c"
 }

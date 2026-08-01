@@ -8,11 +8,9 @@
     "generated_routes": [
         "/ru/components/",
         "/ru/components/code-from-file/",
-        "/ru/components/diagram/",
         "/ru/components/embed/",
         "/ru/components/example/",
         "/ru/components/html/",
-        "/ru/components/math/",
         "/ru/components/steps/",
         "/ru/components/tabs/",
         "/ru/components/tree/",
@@ -36,7 +34,7 @@
         "ar": 8,
         "en": 42,
         "fr-CA": 8,
-        "ru": 22,
+        "ru": 20,
         "zh-Hans": 8
     }
 }

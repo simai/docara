@@ -35,6 +35,12 @@ final readonly class MarkdownCompiler
 
                 continue;
             }
+            if (preg_match('/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/', $line) === 1) {
+                [$node, $index] = $this->componentBlock($lines, $index, $source);
+                $nodes[] = $node;
+
+                continue;
+            }
             if (preg_match('/^(#{1,6})\s+(.+)$/u', $line, $heading) === 1) {
                 $nodes[] = new SourceNode(
                     'heading',
@@ -75,7 +81,7 @@ final readonly class MarkdownCompiler
                 $index++;
             } while ($index < $count
                 && trim($lines[$index]) !== ''
-                && preg_match('/^(?:#{1,6}\s|```|~~~|:::example)/', $lines[$index]) !== 1
+                && preg_match('/^(?:#{1,6}\s|```|~~~|:::[a-z])/', $lines[$index]) !== 1
                 && ! str_starts_with(trim($lines[$index]), '|')
             );
             $raw = implode("\n", array_slice($lines, $start, $index - $start));
@@ -88,6 +94,136 @@ final readonly class MarkdownCompiler
         }
 
         return new DocumentIr($source, $nodes);
+    }
+
+    /** @param list<string> $lines @return array{0:ComponentBlockNode,1:int} */
+    private function componentBlock(array $lines, int $start, string $source): array
+    {
+        preg_match(
+            '/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/',
+            $lines[$start],
+            $opening,
+        );
+        $alias = (string) ($opening['alias'] ?? '');
+        $location = new SourceLocation($source, $start + 1, 1, $start + 1);
+        $component = $this->aliases->resolve($alias, $location);
+        $end = $start + 1;
+        while (isset($lines[$end]) && trim($lines[$end]) !== ':::') {
+            if (preg_match('/^:::[a-z]/', $lines[$end]) === 1) {
+                throw new PortableConfigurationException(
+                    'DOCUMENT_COMPONENT_BLOCK_NESTED_FORBIDDEN',
+                    "Nested component block at [$source:" . ($end + 1) . ':1].',
+                );
+            }
+            $end++;
+        }
+        if (! isset($lines[$end])) {
+            throw new PortableConfigurationException(
+                'DOCUMENT_COMPONENT_BLOCK_UNCLOSED',
+                "Unclosed component [$alias] at [{$location->label()}].",
+            );
+        }
+        $body = implode("\n", array_slice($lines, $start + 1, $end - $start - 1));
+        $children = $this->componentBlockChildren($lines, $start + 1, $end, $source, $alias);
+        if (trim($body) === '' || $children === []) {
+            throw new PortableConfigurationException(
+                'DOCUMENT_COMPONENT_BLOCK_CONTENT_REQUIRED',
+                "Component [$alias] requires visible block content at [{$location->label()}].",
+            );
+        }
+
+        return [
+            new ComponentBlockNode(
+                $alias,
+                $component,
+                $this->attributes->parse((string) ($opening['attributes'] ?? ''), $alias),
+                implode("\n", array_slice($lines, $start, $end - $start + 1)),
+                $body,
+                new SourceLocation($source, $start + 1, 1, $end + 1),
+                $children,
+            ),
+            $end + 1,
+        ];
+    }
+
+    /**
+     * @param  list<string>  $lines
+     * @return list<DocumentNode>
+     */
+    private function componentBlockChildren(
+        array $lines,
+        int $start,
+        int $end,
+        string $source,
+        string $alias,
+    ): array {
+        $children = [];
+        for ($index = $start; $index < $end;) {
+            $line = $lines[$index];
+            if (trim($line) === '') {
+                $index++;
+
+                continue;
+            }
+            if (preg_match('/^(#{1,6})\s+(.+)$/u', $line, $heading) === 1) {
+                $children[] = new SourceNode(
+                    'heading',
+                    $line,
+                    new SourceLocation($source, $index + 1, 1, $index + 1),
+                    ['level' => strlen($heading[1]), 'text' => trim($heading[2])],
+                );
+                $index++;
+
+                continue;
+            }
+            if (str_starts_with($line, '```') || str_starts_with($line, '~~~')) {
+                [$code, $next] = $this->codeBlock($lines, $index, $source);
+                if ($next > $end) {
+                    throw new PortableConfigurationException(
+                        'DOCUMENT_COMPONENT_BLOCK_CHILD_INVALID',
+                        "Component [$alias] contains a code block outside its boundary at [$source:" . ($index + 1) . ':1].',
+                    );
+                }
+                $children[] = $code;
+                $index = $next;
+
+                continue;
+            }
+            if (str_starts_with(trim($line), '|') && isset($lines[$index + 1])
+                && preg_match('/^\s*\|?\s*:?-{3,}/', $lines[$index + 1]) === 1
+            ) {
+                $childStart = $index;
+                do {
+                    $index++;
+                } while ($index < $end && str_starts_with(trim($lines[$index]), '|'));
+                $children[] = new SourceNode(
+                    'table',
+                    implode("\n", array_slice($lines, $childStart, $index - $childStart)),
+                    new SourceLocation($source, $childStart + 1, 1, $index),
+                    ['rows' => max(0, $index - $childStart - 2)],
+                );
+
+                continue;
+            }
+
+            $childStart = $index;
+            do {
+                $index++;
+            } while ($index < $end
+                && trim($lines[$index]) !== ''
+                && preg_match('/^(?:#{1,6}\s|```|~~~|:::[a-z])/', $lines[$index]) !== 1
+                && ! str_starts_with(trim($lines[$index]), '|')
+            );
+            $raw = implode("\n", array_slice($lines, $childStart, $index - $childStart));
+            $children[] = new SourceNode(
+                'paragraph',
+                $raw,
+                new SourceLocation($source, $childStart + 1, 1, $index),
+                ['text' => trim(preg_replace('/\s+/u', ' ', $raw) ?? $raw)],
+            );
+        }
+
+        return $children;
     }
 
     /** @param list<string> $lines @return array{0:SourceNode,1:int} */

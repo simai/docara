@@ -174,8 +174,8 @@ checks, evidence update and a separate commit.
 | 01 | M3.1 workflow, launch, inventory and evidence index | graph/JSON/hygiene | completed |
 | 02 | M3.1 clean full plus all-route isolated baseline hashes | deterministic/static/browser baseline | completed |
 | 03 | early selector and route/source plan before projections | call-spy and full/single regression | completed |
-| 04 | generic block-component IR and compiler contract | typed snapshot and negative locations | in-progress |
-| 05 | generic renderer-registry/Smart-gateway block artifact | registry/gateway focused tests | pending |
+| 04 | generic block-component IR and compiler contract | typed snapshot and negative locations | completed |
+| 05 | generic renderer-registry/Smart-gateway block artifact | registry/gateway focused tests | in-progress |
 | 06 | Alert Markdown owner | exact Alert full/single/browser parity | pending |
 | 07 | native headings/text and lists/quotes | route parity | pending |
 | 08 | native links/images and table | route parity + responsive table | pending |
@@ -273,10 +273,26 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 04 — generic block-component IR
 
+- status: completed;
+- parent: `185db8b145dc3ed8f4b6876d37c07a850a3f738b`;
+- one `ComponentBlockNode` contract owns alias, canonical component, props,
+  ordered typed children, raw body and physical source span;
+- the generic compiler recognizes any fenced registered alias and contains no
+  Alert-specific parser or node;
+- unknown alias, nested/unclosed/empty block and absent renderer fail closed
+  with exact file/line/column;
+- the five current Alert examples compile as five `component_block`, five
+  headings and five supporting paragraphs (comments remain separate source
+  paragraphs);
+- focused compiler/PageBuilder tests and formatter/lint: PASS;
+- evidence: `m3-ru-components/batch-04-component-block-ir.md`.
+
+### Batch 05 — generic component-block renderer and gateway
+
 - status: in-progress;
-- parent: batch 03 checkpoint commit;
-- objective: compile a generic fenced Smart block with ordered typed children,
-  validated props and exact source spans; no Alert-specific parser/node.
+- parent: batch 04 checkpoint commit;
+- objective: register `component_block` once and delegate its validated
+  document slot through the existing content mode of the single Smart gateway.
 
 ## Kaizen
 

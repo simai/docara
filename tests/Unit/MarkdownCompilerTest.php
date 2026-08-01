@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Simai\Docara\Document\ComponentAliasRegistry;
+use Simai\Docara\Document\ComponentBlockNode;
 use Simai\Docara\Document\ComponentNode;
 use Simai\Docara\Document\DocumentIr;
 use Simai\Docara\Document\DocumentNode;
@@ -119,13 +120,103 @@ final class MarkdownCompilerTest extends TestCase
         );
     }
 
+    public function test_alert_fences_compile_to_one_generic_component_block_contract(): void
+    {
+        $markdown = <<<'MD'
+# Alert
+
+:::alert {type=warning variant=outlined}
+#### Обратите внимание
+
+Проверьте параметры перед публикацией.
+:::
+MD;
+        $document = (new MarkdownCompiler)->compile($markdown, 'content/ru/components/alert.md');
+        $blocks = array_values(array_filter(
+            $document->allNodes(),
+            static fn (DocumentNode $node): bool => $node instanceof ComponentBlockNode,
+        ));
+
+        self::assertCount(1, $blocks);
+        self::assertSame([
+            'type' => 'component_block',
+            'alias' => 'alert',
+            'component' => 'docara.alert',
+            'props' => ['type' => 'warning', 'variant' => 'outlined'],
+            'source' => [
+                'file' => 'content/ru/components/alert.md',
+                'line' => 3,
+                'column' => 1,
+                'end_line' => 7,
+            ],
+            'children' => [
+                [
+                    'type' => 'heading',
+                    'source' => [
+                        'file' => 'content/ru/components/alert.md',
+                        'line' => 4,
+                        'column' => 1,
+                        'end_line' => 4,
+                    ],
+                    'data' => ['level' => 4, 'text' => 'Обратите внимание'],
+                    'children' => [],
+                ],
+                [
+                    'type' => 'paragraph',
+                    'source' => [
+                        'file' => 'content/ru/components/alert.md',
+                        'line' => 6,
+                        'column' => 1,
+                        'end_line' => 6,
+                    ],
+                    'data' => ['text' => 'Проверьте параметры перед публикацией.'],
+                    'children' => [],
+                ],
+            ],
+        ], $blocks[0]->toArray());
+    }
+
+    public function test_component_block_failures_are_closed_with_physical_locations(): void
+    {
+        $compiler = new MarkdownCompiler;
+        $this->assertError(
+            'DOCUMENT_COMPONENT_ALIAS_UNKNOWN',
+            'content/ru/broken.md:2:1',
+            fn () => $compiler->compile("# Broken\n:::unknown\nText\n:::\n", 'content/ru/broken.md'),
+        );
+        $this->assertError(
+            'DOCUMENT_COMPONENT_BLOCK_UNCLOSED',
+            'content/ru/broken.md:2:1',
+            fn () => $compiler->compile("# Broken\n:::alert\nText\n", 'content/ru/broken.md'),
+        );
+        $this->assertError(
+            'DOCUMENT_COMPONENT_BLOCK_CONTENT_REQUIRED',
+            'content/ru/broken.md:2:1',
+            fn () => $compiler->compile("# Broken\n:::alert\n:::\n", 'content/ru/broken.md'),
+        );
+        $this->assertError(
+            'DOCUMENT_COMPONENT_BLOCK_NESTED_FORBIDDEN',
+            'content/ru/broken.md:3:1',
+            fn () => $compiler->compile("# Broken\n:::alert\n:::badge\nText\n:::\n:::\n", 'content/ru/broken.md'),
+        );
+        $unrendered = $compiler->compile("# Broken\n:::alert\nText\n:::\n", 'content/ru/broken.md');
+        $this->assertError(
+            'DOCUMENT_IR_RENDERER_UNKNOWN',
+            'content/ru/broken.md:2:1',
+            fn () => DocumentRendererRegistry::bundled(new PortableMarkdownRenderer)->render(
+                $unrendered,
+                new DocumentRenderContext(null, null),
+            ),
+        );
+    }
+
     public function test_badge_alias_uses_the_single_content_gateway_and_no_hardcoded_inline_method_remains(): void
     {
         $renderer = new \ReflectionClass(InlineComponentRenderer::class);
 
         self::assertFalse($renderer->hasMethod('badge'));
         self::assertSame(
-            ['badge' => 'docara.badge'],
+            ['alert' => 'docara.alert', 'badge' => 'docara.badge'],
             (new ComponentAliasRegistry)->aliases(),
         );
         self::assertSame(

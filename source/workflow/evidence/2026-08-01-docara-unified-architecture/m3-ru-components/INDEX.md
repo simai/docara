@@ -22,10 +22,9 @@ Recovery source:
 
 - parent SHA: `b14fe4e1e70a5465fe382bd5ced1de26cb65a315`;
 - completed milestone: M3.1 durable execution contract and baseline;
-- latest completed batch: 03, early physical-route selection before irrelevant
-  compilation/projections;
-- current batch: 04, generic block-component IR/compiler contract;
-- next evidence: typed snapshot and negative source-location matrix;
+- latest completed batch: 04, generic block-component IR/compiler contract;
+- current batch: 05, registry/gateway renderer for generic blocks;
+- next evidence: registry/gateway artifact, prop/slot and provenance matrix;
 - blockers: none; federation/process gaps are documented in the workflow.
 
 ## Evidence rules
@@ -43,4 +42,5 @@ Recovery source:
 | Batch | Evidence | Verdict |
 | --- | --- | --- |
 | 03 | `batch-03-early-route-selection.md` | PASS |
-| 04 | `batch-04-component-block-ir.md` | pending |
+| 04 | `batch-04-component-block-ir.md` | PASS |
+| 05 | `batch-05-component-block-gateway.md` | pending |

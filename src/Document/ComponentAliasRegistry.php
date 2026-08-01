@@ -9,7 +9,10 @@ use Simai\Docara\Portable\PortableConfigurationException;
 final readonly class ComponentAliasRegistry
 {
     /** @param array<string, string> $aliases */
-    public function __construct(private array $aliases = ['badge' => 'docara.badge']) {}
+    public function __construct(private array $aliases = [
+        'alert' => 'docara.alert',
+        'badge' => 'docara.badge',
+    ]) {}
 
     public function resolve(string $alias, SourceLocation $location): string
     {

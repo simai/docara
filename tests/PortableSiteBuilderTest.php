@@ -1320,6 +1320,7 @@ final class PortableSiteBuilderTest extends TestCase
             '/components/media/',
             '/components/steps/',
             '/components/table/',
+            '/components/tabs/',
             '/components/tree/',
             ...array_column($catalogPages['pages'], 'route'),
         ];

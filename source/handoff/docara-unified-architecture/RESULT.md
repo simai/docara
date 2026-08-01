@@ -481,3 +481,22 @@ Status: PASS; M3.3 continues
 
 Thirty of 32 component routes are physical; batch 20 is Tabs. Overall M3 and
 release/production readiness remain unclaimed.
+
+## M3.3 batch 20 result
+
+Status: PASS; M3.3 detail migration is complete, M3 continues
+
+- Tabs now has a physical Russian Markdown owner and starter;
+- it reuses generic typed-directive IR, the shared keyboard runtime and one
+  PageBuilder/registry/gateway;
+- full/isolated exact; static reports 206 HTML, 18,949 references and zero
+  broken; desktop/mobile light/dark browser checks prove ArrowLeft/ArrowRight,
+  Home/End, focus, ARIA panel selection and zero overflow/console issues;
+- the generated component detail receipt is now empty and valid; only the
+  generated component index remains;
+- exact pack/allowlist/example legacy retired with rollback;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-20-tabs.md`.
+
+Thirty-one of 32 routes are physical; batch 21 owns the component index and
+converges derived views. Overall M3 and release/production readiness remain
+unclaimed.

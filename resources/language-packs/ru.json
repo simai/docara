@@ -495,19 +495,6 @@
             },
             "example_ref": "resources/component-catalog/examples/docara.badge.ru.md"
         },
-        "docara.tabs": {
-            "title": "Вкладки",
-            "description": "Переключает равноценные представления содержимого с поддержкой клавиатуры и ARIA.",
-            "limitations": [
-                "Используйте вкладки только для равноценных представлений; последовательные инструкции оставляйте в обычном порядке документа."
-            ],
-            "states": {
-                "selected": "Выбрана",
-                "unselected": "Не выбрана"
-            },
-            "parameters": [],
-            "example_ref": "resources/component-catalog/examples/docara.tabs.ru.md"
-        },
         "ui.dataview": {
             "title": "Представление данных",
             "description": "Структурированный контракт данных и настроек для интерактивного представления информации.",

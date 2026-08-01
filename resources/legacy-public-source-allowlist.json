@@ -7,7 +7,6 @@
     "migration_rule": "Entries may be removed after Markdown parity evidence; new entries are forbidden.",
     "generated_routes": [
         "/ru/components/",
-        "/ru/components/tabs/",
         "/ru/examples/",
         "/ru/examples/composition-inheritance/",
         "/ru/examples/inheritance/",
@@ -28,7 +27,7 @@
         "ar": 8,
         "en": 42,
         "fr-CA": 8,
-        "ru": 14,
+        "ru": 13,
         "zh-Hans": 8
     }
 }

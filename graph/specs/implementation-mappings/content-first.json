@@ -60,6 +60,7 @@
     "docs/site/content/ru/components/media.md",
     "docs/site/content/ru/components/math.md",
     "docs/site/content/ru/components/steps.md",
+    "docs/site/content/ru/components/tabs.md",
     "docs/site/content/ru/components/tree.md",
     "docs/site/content/ru/lang.json",
     "resources/component-catalog/examples/*.md"
@@ -93,16 +94,17 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-16-diagram-math.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-17-code-html.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-18-embed-example.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-19-steps-tree.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-19-steps-tree.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-20-tabs.md"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
     "M1A replaces implicit authored Markdown discovery with typed PageSource, PageSourceLocator and RouteMapper boundaries.",
     "Ambiguous physical routes, unknown locales, outside-root paths, traversal, symlinks and non-.md public page extensions fail before rendering.",
     "M1B adds strict target config/lang/manifest input boundaries and a finite zero-growth allowlist for the remaining legacy public sources.",
-    "87 physical Markdown files produce 87 authored routes after batch 19.",
-    "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 16 additional public routes without physical Markdown.",
-    "The Russian language pack contains 14 component presentation records; English contains 42 and three other bundled packs contain 8 each.",
+    "88 physical Markdown files produce 88 authored routes after batch 20.",
+    "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 15 additional public routes without physical Markdown.",
+    "The Russian language pack contains 13 component presentation records; English contains 42 and three other bundled packs contain 8 each.",
     "The badge route is owned by content/ru/components/badge.md and suppresses the generated badge detail route through AuthoredComponentPageIndex.",
     "M2 proves the physical Badge Markdown owns all page prose and examples while its structural component definition contains no documentation prose.",
     "M3.2 makes content/ru/components/alert.md the Alert owner, removes its Russian pack prose and generated-route allowlist entry, and retires its zero-reference Russian example projection.",
@@ -119,10 +121,11 @@
     "M3.3 batch 16 makes Diagram and Math physical, removes their Russian prose records/localized examples and preserves accessible Mermaid/TeX source behavior without new client engines.",
     "M3.3 batch 17 makes Code-from-file and HTML physical, removes their Russian prose records/localized examples and preserves external-source and sandbox boundaries through the shared typed-directive/example renderer path.",
     "M3.3 batch 18 makes Embed and Example physical, removes their Russian prose records/localized examples, repairs the shared consent activation and derives visible loading labels from the Markdown owner.",
-    "M3.3 batch 19 makes Steps and Tree physical, removes their Russian prose records/localized examples and adds accessible branch keyboard behavior through the shared declarative shell."
+    "M3.3 batch 19 makes Steps and Tree physical, removes their Russian prose records/localized examples and adds accessible branch keyboard behavior through the shared declarative shell.",
+    "M3.3 batch 20 makes Tabs physical, removes its Russian prose record/localized example and leaves a valid hash-bound empty detail receipt while the generated component index remains verified."
   ],
   "known_deviations": [
-    "One-route-one-Markdown is false for 16 of 103 logical pages.",
+    "One-route-one-Markdown is false for 15 of 103 logical pages; within the Russian component section only the index remains generated.",
     "Language packs and catalog/example records remain public prose owners.",
     "Generated routes use synthetic page_path values that resemble missing Markdown files."
   ],
@@ -131,6 +134,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
   ],
-  "status": "m3_3_batch_19_implemented_batch_20_ready",
-  "mapped_revision": "commit containing batch-19-steps-tree.md; parent 5efab497"
+  "status": "m3_3_batch_20_implemented_m3_4_index_ready",
+  "mapped_revision": "commit containing batch-20-tabs.md; parent 585eab04"
 }

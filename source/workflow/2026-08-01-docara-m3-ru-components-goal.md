@@ -35,16 +35,16 @@ generated component page count и русский component-route allowlist ра�
 PageBuilder/registry/gateway; две clean full builds byte-identical; static и
 browser matrices зелёные; graph/workflow/handoff синхронны; worktree чистый.
 
-Current Remaining: 2 generated routes из 32; Alert, Badge, Syntax,
+Current Remaining: 1 generated route из 32; Alert, Badge, Syntax,
 headings/text, lists/quotes, links/images, table, code, footnotes/sources,
 Details, Backlinks, Banner, Download, Button, Icon, Kbd, Card, Hero, Grid,
 Figure, Media, Logos, Diagram, Math, Code-from-file, HTML, Embed, Example,
-Steps и Tree уже физические.
+Steps, Tabs и Tree уже физические.
 
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.3 batch 20, Tabs.
+Next Safe Batch: M3.4 batch 21, physical component index and derived views.
 
 ## Goal
 
@@ -474,10 +474,23 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 20 — Tabs
 
-- status: in-progress;
+- status: completed;
 - parent: batch 19 checkpoint commit;
-- objective: migrate the final generated component detail route while reusing
-  the common example/tab contract and one PageBuilder pipeline.
+- the final generated detail route has a physical owner and reuses the common
+  typed-directive/tab runtime and one PageBuilder pipeline;
+- a valid empty detail receipt remains hash-bound while the generated index is
+  still verified fail-closed;
+- full/isolated/static/browser parity PASS; exact pack/allowlist/example legacy
+  retired with rollback;
+- evidence: `m3-ru-components/batch-20-tabs.md`.
+
+### Batch 21 — physical component index and derived views
+
+- status: in-progress;
+- parent: batch 20 checkpoint commit;
+- objective: make `/ru/components/` physically Markdown-owned and derive its
+  component list, navigation and search metadata from the same PageBuilder
+  route results without a second prose registry.
 
 ## Kaizen
 

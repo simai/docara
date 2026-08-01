@@ -1283,7 +1283,6 @@ function docaraCatalogPagesReceipt(string $path): array
         || ! docaraExactKeys($receipt['index'], ['output', 'route', 'contract_fragment_sha256'])
         || ! is_array($receipt['pages'] ?? null)
         || ! array_is_list($receipt['pages'])
-        || $receipt['pages'] === []
     ) {
         throw new RuntimeException('Generated component catalogue page receipt root contract is invalid.');
     }

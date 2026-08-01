@@ -51,6 +51,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             'docara.math',
             'docara.media',
             'docara.steps',
+            'docara.tabs',
             'docara.tree',
             'native.code',
             'native.footnotes_and_sources',
@@ -300,6 +301,12 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             if ($id === 'docara.steps') {
                 self::assertStringContainsString('<h1 id="шаги">Шаги</h1>', $detail);
                 self::assertGreaterThanOrEqual(2, substr_count($detail, 'data-docara-block="steps"'));
+
+                continue;
+            }
+            if ($id === 'docara.tabs') {
+                self::assertStringContainsString('<h1 id="вкладки">Вкладки</h1>', $detail);
+                self::assertGreaterThanOrEqual(2, substr_count($detail, 'data-docara-block="tabs"'));
 
                 continue;
             }
@@ -573,18 +580,11 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             }
         }
 
-        $fixtures = [
-            'docara.tabs.ru.md' => [':::tabs', '### Composer', '### Вручную', '### Результат'],
-        ];
-
-        foreach ($fixtures as $fixture => $markers) {
-            $path = dirname(__DIR__, 2) . '/resources/component-catalog/examples/' . $fixture;
-            self::assertFileExists($path);
-            $source = (string) file_get_contents($path);
-
-            foreach ($markers as $marker) {
-                self::assertStringContainsString($marker, $source, $fixture . ': ' . $marker);
-            }
+        $tabs = (string) file_get_contents(
+            dirname(__DIR__, 2) . '/docs/site/content/ru/components/tabs.md',
+        );
+        foreach ([':::tabs', '### Composer', '### Архив', '### Результат'] as $marker) {
+            self::assertStringContainsString($marker, $tabs, 'tabs.md: ' . $marker);
         }
     }
 
@@ -635,7 +635,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         );
         $previous = $xpath->query('//nav[@data-docara-previous-next]/a[@rel="prev"]')?->length ?? 0;
         $next = $xpath->query('//nav[@data-docara-previous-next]/a[@rel="next"]')?->length ?? 0;
-        self::assertSame(1, $previous + $next);
+        self::assertSame(min(2, max(0, count($receipt['pages']) - 1)), $previous + $next);
     }
 
     #[Test]

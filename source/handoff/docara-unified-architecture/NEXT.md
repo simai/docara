@@ -17,15 +17,16 @@ Evidence index:
   broken references and representative browser baseline;
 - M3.2 PASS: early physical route selection, generic block IR, one renderer
   registry/gateway and physical Alert owner;
-- M3.3 batches 07-19 PASS: thirty of 32 Russian component routes are physical;
-  2 public routes remain generated (Tabs and the component index);
+- M3.3 batches 07-20 PASS: all component detail routes are physical;
+  1 public route remains generated (the component index);
 - full/single/static/browser evidence is green through Banner and Download,
   including generic typed directives, manifest-owned inline components,
   localized derived backlink hydration and isolated projection reuse.
 
 ## Execute M3.3
 
-1. Migrate Tabs as the final generated component detail route.
+1. Create the physical `/ru/components/` Markdown owner and converge its
+   derived component list, navigation and search metadata.
 2. Continue through the family sequence in the durable goal without waiting
    after a green internal checkpoint.
 3. Keep one physical Markdown owner, useful prose and a common example/code

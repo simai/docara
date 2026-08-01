@@ -872,20 +872,20 @@ final class StaticBuildVerifierTest extends TestCase
 
         foreach ([
             'source' => [
-                'needle' => "### Composer\n\n```bash",
+                'needle' => ':badge[Новое]',
                 'replacement' => "Подменённый исходный код примера.\n:::",
             ],
             'rendered' => [
-                'needle' => '>Composer</',
+                'needle' => '>Новое</',
                 'replacement' => '>Подменённый отрисованный пример.</',
             ],
             'metadata' => [
-                'needle' => 'Переключает равноценные представления содержимого с поддержкой клавиатуры и ARIA.',
+                'needle' => 'Добавляет компактную метку статуса, версии или категории внутрь текста и интерфейсных блоков.',
                 'replacement' => 'Forged component metadata.',
             ],
         ] as $kind => $change) {
             $build = $this->createGeneratedCatalogBuild('catalog-pages-' . $kind . '-drift');
-            $path = $build . '/components/tabs/index.html';
+            $path = $build . '/components/badge/index.html';
             $html = (string) file_get_contents($path);
             $count = 0;
             $tampered = str_replace($change['needle'], $change['replacement'], $html, $count);
@@ -899,7 +899,7 @@ final class StaticBuildVerifierTest extends TestCase
 
             $receipt = $this->readJson($build . '/.docara/component-catalog-pages.json');
             foreach ($receipt['pages'] as &$receiptPage) {
-                if ($receiptPage['id'] !== 'docara.tabs') {
+                if ($receiptPage['id'] !== 'docara.badge') {
                     continue;
                 }
                 $receiptPage['contract_fragment_sha256'] = hash('sha256', $tampered);
@@ -925,17 +925,11 @@ final class StaticBuildVerifierTest extends TestCase
     }
 
     #[Test]
-    public function generated_component_catalogue_shell_fails_closed_on_landmark_adjacency_and_sibling_drift(): void
+    public function generated_component_catalogue_shell_fails_closed_on_landmark_and_sibling_drift(): void
     {
         foreach ([
             'breadcrumbs-removed' => static fn (string $html): string => (string) preg_replace(
                 '~\s*<nav data-docara-breadcrumbs\b.*?</nav>\s*~s',
-                '',
-                $html,
-                1,
-            ),
-            'adjacency-removed' => static fn (string $html): string => (string) preg_replace(
-                '~\s*<nav data-docara-previous-next\b.*?</nav>\s*~s',
                 '',
                 $html,
                 1,
@@ -955,7 +949,7 @@ final class StaticBuildVerifierTest extends TestCase
             ),
         ] as $case => $mutate) {
             $build = $this->createGeneratedCatalogBuild('catalog-shell-' . $case);
-            $path = $build . '/components/tabs/index.html';
+            $path = $build . '/components/badge/index.html';
             $original = (string) file_get_contents($path);
             $tampered = $mutate($original);
             self::assertNotSame($original, $tampered, "The [$case] shell fixture did not mutate.");
@@ -991,7 +985,7 @@ final class StaticBuildVerifierTest extends TestCase
             self::assertStringStartsWith('{', (string) file_get_contents($outsideReceipt));
 
             $detailBuild = $this->createGeneratedCatalogBuild('catalog-pages-detail-' . $kind);
-            $detailPath = $detailBuild . '/components/tabs/index.html';
+            $detailPath = $detailBuild . '/components/badge/index.html';
             $outsideDetail = $this->tmpPath('outside-catalog-detail-' . $kind . '.html');
             file_put_contents($outsideDetail, (string) file_get_contents($detailPath));
             unlink($detailPath);
@@ -1003,7 +997,7 @@ final class StaticBuildVerifierTest extends TestCase
             $detailResult = $this->verify($detailBuild);
             self::assertSame(1, $detailResult->getExitCode(), $detailResult->getOutput());
             self::assertStringContainsString('@unsafe-artifact-entry', $detailResult->getOutput());
-            self::assertStringContainsString('components/tabs/index.html', $detailResult->getOutput());
+            self::assertStringContainsString('components/badge/index.html', $detailResult->getOutput());
             self::assertStringStartsWith('<!doctype html>', (string) file_get_contents($outsideDetail));
         }
     }
@@ -1422,6 +1416,11 @@ final class StaticBuildVerifierTest extends TestCase
                 'slug' => 'steps',
                 'title' => 'Шаги',
                 'description' => 'Короткая последовательность действий с текущим состоянием.',
+            ],
+            'docara.tabs' => [
+                'slug' => 'tabs',
+                'title' => 'Вкладки',
+                'description' => 'Равноценные представления в одном доступном переключателе.',
             ],
             'docara.tree' => [
                 'slug' => 'tree',

@@ -5,7 +5,7 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Content-first implementation mapping",
-  "summary": "M3.3 map of physical Markdown ownership and the shrinking generated public-page boundary.",
+  "summary": "M3.4 map of complete Russian component Markdown ownership and PageBuilder-derived views.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "R2_contract",
@@ -31,6 +31,7 @@
     "src/I18n/ContentLanguageRepository.php#ContentLanguageRepository::messages",
     "src/I18n/Translator.php#Translator::message",
     "src/PortableSite/PortableBacklinkHydrator.php",
+    "src/PortableSite/PortableComponentIndexHydrator.php",
     "resources/language-packs/*.json",
     "resources/legacy-public-source-allowlist.json",
     "resources/schemas/lang.schema.json",
@@ -62,6 +63,7 @@
     "docs/site/content/ru/components/steps.md",
     "docs/site/content/ru/components/tabs.md",
     "docs/site/content/ru/components/tree.md",
+    "docs/site/content/ru/components.md",
     "docs/site/content/ru/lang.json",
     "resources/component-catalog/examples/*.md"
   ],
@@ -71,7 +73,8 @@
     "tests/Unit/LegacyPublicSourceAllowlistTest.php",
     "tests/Unit/DocumentationContractTest.php#authored_documentation_covers_five_audience_paths_and_every_page_has_one_h1",
     "tests/PortableDocumentationSiteTest.php#real_documentation_build_matches_the_exact_product_matrix_and_static_verifier",
-    "tests/Unit/PortableComponentCatalogProjectorTest.php#authored_content_cannot_shadow_a_generated_catalog_route",
+    "tests/Unit/PortableComponentCatalogProjectorTest.php#authored_component_index_replaces_only_the_generated_index_projection",
+    "tests/Unit/PortableComponentIndexHydratorTest.php",
     "tests/Unit/EffectiveComponentCatalogTest.php#every_entry_points_to_its_exact_authored_documentation_owner"
   ],
   "evidence_refs": [
@@ -95,15 +98,16 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-17-code-html.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-18-embed-example.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-19-steps-tree.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-20-tabs.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-20-tabs.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-21-component-index.md"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
     "M1A replaces implicit authored Markdown discovery with typed PageSource, PageSourceLocator and RouteMapper boundaries.",
     "Ambiguous physical routes, unknown locales, outside-root paths, traversal, symlinks and non-.md public page extensions fail before rendering.",
     "M1B adds strict target config/lang/manifest input boundaries and a finite zero-growth allowlist for the remaining legacy public sources.",
-    "88 physical Markdown files produce 88 authored routes after batch 20.",
-    "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 15 additional public routes without physical Markdown.",
+    "89 physical Markdown files produce 89 authored routes after batch 21.",
+    "PortableComponentCatalogProjector produces zero Russian component pages; PortableDeclarativeExampleProjector still produces 14 non-component public routes without physical Markdown.",
     "The Russian language pack contains 13 component presentation records; English contains 42 and three other bundled packs contain 8 each.",
     "The badge route is owned by content/ru/components/badge.md and suppresses the generated badge detail route through AuthoredComponentPageIndex.",
     "M2 proves the physical Badge Markdown owns all page prose and examples while its structural component definition contains no documentation prose.",
@@ -122,11 +126,13 @@
     "M3.3 batch 17 makes Code-from-file and HTML physical, removes their Russian prose records/localized examples and preserves external-source and sandbox boundaries through the shared typed-directive/example renderer path.",
     "M3.3 batch 18 makes Embed and Example physical, removes their Russian prose records/localized examples, repairs the shared consent activation and derives visible loading labels from the Markdown owner.",
     "M3.3 batch 19 makes Steps and Tree physical, removes their Russian prose records/localized examples and adds accessible branch keyboard behavior through the shared declarative shell.",
-    "M3.3 batch 20 makes Tabs physical, removes its Russian prose record/localized example and leaves a valid hash-bound empty detail receipt while the generated component index remains verified."
+    "M3.3 batch 20 makes Tabs physical, removes its Russian prose record/localized example and leaves a valid hash-bound empty detail receipt while the generated component index remains verified.",
+    "M3.4 batch 21 makes the component index physical and derives its ordered list from PageBuilder route/title/description metadata through one generic typed-directive placeholder and hash-bound isolated-build receipt.",
+    "All 32 Russian component routes are authored Markdown; the Russian catalog page receipt contains no index and no details, while navigation, breadcrumbs, outline, previous/next and search use the same page-result topology."
   ],
   "known_deviations": [
-    "One-route-one-Markdown is false for 15 of 103 logical pages; within the Russian component section only the index remains generated.",
-    "Language packs and catalog/example records remain public prose owners.",
+    "One-route-one-Markdown is true for all 32 Russian component routes but false for 14 of 103 logical pages outside this section.",
+    "The Russian language pack retains 13 component presentation records that must be removed after the zero-projection path stops reading them.",
     "Generated routes use synthetic page_path values that resemble missing Markdown files."
   ],
   "deletion_gates": [
@@ -134,6 +140,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
   ],
-  "status": "m3_3_batch_20_implemented_m3_4_index_ready",
-  "mapped_revision": "commit containing batch-20-tabs.md; parent 585eab04"
+  "status": "m3_4_batch_21_implemented_m3_5_legacy_ready",
+  "mapped_revision": "commit containing batch-21-component-index.md; parent d243ec2e"
 }

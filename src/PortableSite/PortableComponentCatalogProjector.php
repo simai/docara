@@ -43,6 +43,7 @@ final readonly class PortableComponentCatalogProjector
         string $outputPrefix = '',
         array $reservedDocumentIds = [],
         array $authoredComponents = [],
+        bool $projectIndex = true,
     ): array {
         $entries = is_array($catalog['entries'] ?? null) ? array_values($catalog['entries']) : [];
         $supported = [];
@@ -265,11 +266,11 @@ final readonly class PortableComponentCatalogProjector
 
         $receiptCore = [
             'catalog_content_sha256' => (string) ($catalog['content_sha256'] ?? ''),
-            'index' => [
+            'index' => $projectIndex ? [
                 'route' => $catalogRoute,
                 'output' => $this->output($outputPrefix, 'components/index.html'),
                 'contract_fragment_sha256' => $this->normalizedFragmentHash($indexFragment),
-            ],
+            ] : null,
             'pages' => $receiptPages,
         ];
         $receipt = [
@@ -282,7 +283,7 @@ final readonly class PortableComponentCatalogProjector
         ];
 
         return [
-            'pages' => [$index, ...$pages],
+            'pages' => $projectIndex ? [$index, ...$pages] : $pages,
             'receipt' => $receipt,
         ];
     }

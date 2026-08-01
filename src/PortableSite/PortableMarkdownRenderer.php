@@ -153,6 +153,7 @@ final class PortableMarkdownRenderer
                 TypedRendererId::Html => $this->renderHtml($block['markdown']),
                 TypedRendererId::Code => $this->renderCode($block['attributes'], $sourceRoot, $sourceFile),
                 TypedRendererId::Backlinks => $this->renderBacklinks($block['attributes']),
+                TypedRendererId::ComponentIndex => $this->renderComponentIndex($block['attributes']),
             };
             $wrapper = '<p>' . $block['placeholder'] . '</p>';
             if (substr_count($html, $wrapper) !== 1) {
@@ -234,7 +235,11 @@ final class PortableMarkdownRenderer
                 );
             }
             $renderer = TypedRendererId::from((string) $definition['renderer']);
-            $allowsEmptyBody = in_array($renderer, [TypedRendererId::Code, TypedRendererId::Backlinks], true);
+            $allowsEmptyBody = in_array(
+                $renderer,
+                [TypedRendererId::Code, TypedRendererId::Backlinks, TypedRendererId::ComponentIndex],
+                true,
+            );
             if (trim($bodyMarkdown) === '' && ! $allowsEmptyBody) {
                 throw new PortableConfigurationException(
                     'MARKDOWN_BLOCK_EMPTY',
@@ -710,6 +715,15 @@ final class PortableMarkdownRenderer
 
         return '<nav data-docara-block="backlinks" data-docara-backlinks data-docara-backlinks-limit="' . $limit
             . '" class="m-bottom-1" aria-label="Backlinks"></nav>';
+    }
+
+    /** @param array<string,string> $attributes */
+    private function renderComponentIndex(array $attributes): string
+    {
+        $this->assertAttributes($attributes, [], 'component_index');
+
+        return '<nav data-docara-block="component-index" data-docara-component-index'
+            . ' class="m-bottom-1" aria-label="Component index"></nav>';
     }
 
     /** @param array<string,string> $attributes */

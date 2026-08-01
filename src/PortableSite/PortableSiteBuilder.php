@@ -274,6 +274,16 @@ final readonly class PortableSiteBuilder
                 $localeAuthoredPages,
                 $definition->publicPrefix,
             );
+            $catalogRoute = rtrim($localeUrls->home($locale), '/') . '/components/';
+            $hasAuthoredCatalogIndex = false;
+            foreach ($localeAuthoredPages as $localeAuthoredPage) {
+                if (($localeAuthoredPage['page_source_kind'] ?? null) === 'authored_markdown'
+                    && ($localeAuthoredPage['url'] ?? null) === $catalogRoute
+                ) {
+                    $hasAuthoredCatalogIndex = true;
+                    break;
+                }
+            }
             $this->observe('component_catalog.project', $locale);
             $componentCatalogProjection = $componentCatalogProjector->project(
                 catalog: $effectiveComponentCatalog,
@@ -285,6 +295,7 @@ final readonly class PortableSiteBuilder
                 outputPrefix: $definition->publicPrefix,
                 reservedDocumentIds: PortableDocumentIds::reserved(),
                 authoredComponents: $authoredComponents,
+                projectIndex: ! $hasAuthoredCatalogIndex,
             );
             $componentCatalogProjections[$locale] = $componentCatalogProjection;
             foreach ($componentCatalogProjection['pages'] as $catalogPage) {
@@ -441,6 +452,59 @@ final readonly class PortableSiteBuilder
                 'targets' => $backlinkTargets,
             ];
             $pages = $backlinkHydrator->hydrate($pages, $backlinkTargets);
+            $contextPages = $pages;
+        }
+        $componentIndexHydrator = new PortableComponentIndexHydrator;
+        $componentIndexReceipt = null;
+        if ($earlyPhysicalSelection) {
+            $componentIndexReceiptPath = rtrim($finalDestination, '/\\') . '/.docara/component-index.json';
+            try {
+                $componentIndexReceipt = json_decode(
+                    (string) $this->files->get($componentIndexReceiptPath),
+                    true,
+                    512,
+                    JSON_THROW_ON_ERROR,
+                );
+            } catch (JsonException $exception) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_COMPONENT_INDEX_BASE_INVALID',
+                    'The complete build has no valid component-index projection for an isolated page rebuild.',
+                    $exception,
+                );
+            }
+            if (! is_array($componentIndexReceipt)
+                || ($componentIndexReceipt['schema'] ?? null) !== 'docara.component_index.v1'
+                || ! is_array($componentIndexReceipt['indexes'] ?? null)
+                || ! is_string($componentIndexReceipt['content_sha256'] ?? null)
+                || ! hash_equals(
+                    $componentIndexReceipt['content_sha256'],
+                    hash('sha256', CanonicalJson::encode($componentIndexReceipt['indexes'])),
+                )
+            ) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_COMPONENT_INDEX_BASE_INVALID',
+                    'The complete build has no valid component-index projection for an isolated page rebuild.',
+                );
+            }
+            $pages = $componentIndexHydrator->hydrate($pages, $componentIndexReceipt['indexes']);
+        } else {
+            $componentIndexes = [];
+            foreach ($pages as $page) {
+                if (($page['page_source_kind'] ?? null) !== 'authored_markdown'
+                    || ! str_contains((string) ($page['content_html'] ?? ''), 'data-docara-component-index')
+                ) {
+                    continue;
+                }
+                $catalogRoute = '/' . trim((string) $page['url'], '/') . '/';
+                $componentIndexes[$catalogRoute] = $componentIndexHydrator->index($contextPages, $catalogRoute);
+            }
+            ksort($componentIndexes, SORT_STRING);
+            $componentIndexReceipt = [
+                'schema' => 'docara.component_index.v1',
+                'content_sha256' => hash('sha256', CanonicalJson::encode($componentIndexes)),
+                'indexes' => $componentIndexes,
+            ];
+            $pages = $componentIndexHydrator->hydrate($pages, $componentIndexes);
             $contextPages = $pages;
         }
         $outlineBuilder = new PortableDocumentOutlineBuilder;
@@ -624,6 +688,10 @@ final readonly class PortableSiteBuilder
                 $backlinkReceiptPath = rtrim($destination, '/\\') . '/.docara/backlinks.json';
                 $this->files->ensureDirectoryExists(dirname($backlinkReceiptPath));
                 $this->files->put($backlinkReceiptPath, $this->prettyCanonicalJson($backlinkReceipt));
+                $this->files->put(
+                    rtrim($destination, '/\\') . '/.docara/component-index.json',
+                    $this->prettyCanonicalJson($componentIndexReceipt),
+                );
                 $this->files->put($docaraOutputDirectory . '/component-catalog.json', $componentCatalogJson);
                 $this->files->put(
                     $docaraOutputDirectory . '/page-metadata.json',
@@ -640,10 +708,12 @@ final readonly class PortableSiteBuilder
             if ($selectedPageUrl === null) {
                 $catalogReceiptPath = rtrim($destination, '/\\') . '/.docara/component-catalog-pages.json';
                 $this->files->ensureDirectoryExists(dirname($catalogReceiptPath));
-                $this->files->put(
-                    $catalogReceiptPath,
-                    $this->prettyCanonicalJson($componentCatalogProjections[$buildLocale]['receipt']),
-                );
+                if (isset($componentCatalogProjections[$buildLocale]['receipt'])) {
+                    $this->files->put(
+                        $catalogReceiptPath,
+                        $this->prettyCanonicalJson($componentCatalogProjections[$buildLocale]['receipt']),
+                    );
+                }
             }
             foreach ($selectedPageUrl === null ? $componentCatalogProjections : [] as $locale => $projection) {
                 $localizedReceiptPath = rtrim($destination, '/\\')

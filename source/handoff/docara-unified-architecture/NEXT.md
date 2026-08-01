@@ -1,4 +1,4 @@
-# Next executable checkpoint: M3.3 Russian component families
+# Next executable checkpoint: M3.5 Russian component legacy retirement
 
 Goal batch: `docara.batch.m3.migrate`
 
@@ -17,24 +17,21 @@ Evidence index:
   broken references and representative browser baseline;
 - M3.2 PASS: early physical route selection, generic block IR, one renderer
   registry/gateway and physical Alert owner;
-- M3.3 batches 07-20 PASS: all component detail routes are physical;
-  1 public route remains generated (the component index);
+- M3.3/M3.4 PASS: all 32 Russian component routes are physical and the index
+  list/navigation/search/outline/transitions derive from PageBuilder results;
 - full/single/static/browser evidence is green through Banner and Download,
   including generic typed directives, manifest-owned inline components,
   localized derived backlink hydration and isolated projection reuse.
 
-## Execute M3.3
+## Execute M3.5
 
-1. Create the physical `/ru/components/` Markdown owner and converge its
-   derived component list, navigation and search metadata.
-2. Continue through the family sequence in the durable goal without waiting
-   after a green internal checkpoint.
-3. Keep one physical Markdown owner, useful prose and a common example/code
-   contract per route; do not move page prose into config or language packs.
-4. Reduce each exact projection/allowlist entry only after full/isolated parity
-   and a zero-reference scan with rollback evidence.
-5. Keep the component index and derived-view convergence for their declared
-   batches; do not claim M3 complete before 32/32 and M3.6 acceptance.
+1. Remove the remaining Russian component presentation prose from the package
+   language pack after proving the authored zero-projection path does not read it.
+2. Record exact old-to-new ownership mappings and zero-reference evidence.
+3. Retire only proved-unused Russian projector/allowlist/example surfaces;
+   preserve other locales and package-owned CLI messages.
+4. Continue directly into M3.6 integrated acceptance after green legacy gates.
+5. Do not claim M3 complete before deterministic/static/browser/reverse gates.
 
 ## Current boundaries
 

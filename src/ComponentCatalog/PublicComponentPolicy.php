@@ -20,6 +20,9 @@ final class PublicComponentPolicy
         'docara.features',
         'docara.promo',
         'docara.showcase',
+        // Build-owned derived view used only by the authored component index.
+        // It shares the typed renderer registry but is not a public authoring component.
+        'docara.component_index',
     ];
 
     public function exposes(string $id): bool

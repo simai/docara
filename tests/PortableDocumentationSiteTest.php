@@ -116,15 +116,19 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertSame(
             1 + count($projectedSupported),
             1 + count($receipt['pages']),
-            'The public catalogue surface must be one index plus one detail for every supported entry.',
+            'The public component surface must be one physical index plus every remaining projected detail.',
         );
         self::assertSame(
             array_column($projectedSupported, 'id'),
             array_column($receipt['pages'], 'id'),
         );
-        self::assertFileExists($build . '/' . $receipt['index']['output']);
+        self::assertNull($receipt['index']);
+        self::assertSame([], $receipt['pages']);
+        self::assertFileExists($build . '/ru/components/index.html');
 
-        $catalogIndex = (string) file_get_contents($build . '/' . $receipt['index']['output']);
+        $catalogIndex = (string) file_get_contents($build . '/ru/components/index.html');
+        self::assertStringContainsString('data-docara-component-index-view', $catalogIndex);
+        self::assertStringNotContainsString('data-docara-component-catalog-index', $catalogIndex);
         $shellCss = (string) file_get_contents($build . '/_docara/declarative-shell.css');
         self::assertSame(1, substr_count($catalogIndex, 'class="docara-navigation docara-header-navigation"'));
         self::assertStringContainsString('docara-header-navigation-link h-d0', $catalogIndex);

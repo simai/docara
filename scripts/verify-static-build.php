@@ -1278,22 +1278,23 @@ function docaraCatalogPagesReceipt(string $path): array
         || preg_match('/\A[a-f0-9]{64}\z/D', $receipt['catalog_content_sha256']) !== 1
         || ! is_string($receipt['content_sha256'] ?? null)
         || preg_match('/\A[a-f0-9]{64}\z/D', $receipt['content_sha256']) !== 1
-        || ! is_array($receipt['index'] ?? null)
-        || array_is_list($receipt['index'])
-        || ! docaraExactKeys($receipt['index'], ['output', 'route', 'contract_fragment_sha256'])
+        || (! is_null($receipt['index'] ?? null)
+            && (! is_array($receipt['index'])
+                || array_is_list($receipt['index'])
+                || ! docaraExactKeys($receipt['index'], ['output', 'route', 'contract_fragment_sha256'])))
         || ! is_array($receipt['pages'] ?? null)
         || ! array_is_list($receipt['pages'])
     ) {
         throw new RuntimeException('Generated component catalogue page receipt root contract is invalid.');
     }
-    if (! is_string($receipt['index']['output'] ?? null)
+    if (is_array($receipt['index']) && (! is_string($receipt['index']['output'] ?? null)
         || ! docaraCatalogSafePath($receipt['index']['output'])
         || ! ($receipt['index']['output'] === 'components/index.html'
             || str_ends_with($receipt['index']['output'], '/components/index.html'))
         || ! is_string($receipt['index']['route'] ?? null)
         || ! is_string($receipt['index']['contract_fragment_sha256'] ?? null)
         || preg_match('/\A[a-f0-9]{64}\z/D', $receipt['index']['contract_fragment_sha256']) !== 1
-    ) {
+    )) {
         throw new RuntimeException('Generated component catalogue index receipt is invalid.');
     }
 
@@ -1365,6 +1366,54 @@ function docaraCatalogPagesReceipt(string $path): array
         throw new RuntimeException(
             'Generated component catalogue page receipt content_sha256 does not match its canonical content.',
         );
+    }
+
+    return $receipt;
+}
+
+/** @return array<string, mixed> */
+function docaraComponentIndexReceipt(string $path): array
+{
+    if (! docaraSafeRegularFile($path)) {
+        throw new RuntimeException('Component index receipt is missing or unsafe.');
+    }
+    $receipt = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+    if (! is_array($receipt)
+        || array_is_list($receipt)
+        || ! docaraExactKeys($receipt, ['schema', 'content_sha256', 'indexes'])
+        || ($receipt['schema'] ?? null) !== 'docara.component_index.v1'
+        || ! is_string($receipt['content_sha256'] ?? null)
+        || preg_match('/\A[a-f0-9]{64}\z/D', $receipt['content_sha256']) !== 1
+        || ! is_array($receipt['indexes'] ?? null)
+        || ($receipt['indexes'] !== [] && array_is_list($receipt['indexes']))
+        || ! hash_equals(
+            $receipt['content_sha256'],
+            hash('sha256', docaraCanonicalJson($receipt['indexes'])),
+        )
+    ) {
+        throw new RuntimeException('Component index receipt root contract is invalid.');
+    }
+    foreach ($receipt['indexes'] as $route => $entries) {
+        if (! is_string($route)
+            || preg_match('#\A/(?:[^/]+/)*components/\z#D', $route) !== 1
+            || ! is_array($entries)
+            || ! array_is_list($entries)
+        ) {
+            throw new RuntimeException('Component index receipt route contract is invalid.');
+        }
+        foreach ($entries as $entry) {
+            if (! is_array($entry)
+                || array_is_list($entry)
+                || ! docaraExactKeys($entry, ['url', 'title', 'description'])
+                || ! is_string($entry['url'] ?? null)
+                || preg_match('#\A' . preg_quote($route, '#') . '[^/]+/\z#D', $entry['url']) !== 1
+                || ! is_string($entry['title'] ?? null)
+                || trim($entry['title']) === ''
+                || ! is_string($entry['description'] ?? null)
+            ) {
+                throw new RuntimeException('Component index receipt entry contract is invalid.');
+            }
+        }
     }
 
     return $receipt;
@@ -2850,6 +2899,13 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
             $catalogAuthoredPages,
             $catalogDefinition->publicPrefix,
         );
+        $hasAuthoredCatalogIndex = false;
+        foreach ($catalogAuthoredPages as $catalogAuthoredPage) {
+            if (($catalogAuthoredPage['output'] ?? null) === $catalogIndexOutput) {
+                $hasAuthoredCatalogIndex = true;
+                break;
+            }
+        }
         $expectedProjection = $projector->project(
             catalog: $freshTrustedCatalog,
             runtime: $runtime,
@@ -2860,6 +2916,7 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
             outputPrefix: $catalogDefinition->publicPrefix,
             reservedDocumentIds: PortableDocumentIds::reserved(),
             authoredComponents: $authoredComponents,
+            projectIndex: ! $hasAuthoredCatalogIndex,
         );
         $expectedReceipt = $expectedProjection['receipt'] ?? null;
         if (! is_array($expectedReceipt)) {
@@ -2899,7 +2956,7 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
         $catalogDirectory = dirname((string) $catalogIndexOutput);
         $actualCatalogOutputs = [];
         foreach (docaraSafeFileInventory($root, $catalogDirectory) as $output) {
-            if ($output === $catalogIndexOutput) {
+            if ($output === $catalogIndexOutput && is_array($expectedReceipt['index'] ?? null)) {
                 $actualCatalogOutputs[] = $output;
                 continue;
             }
@@ -2935,38 +2992,43 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
             }
         }
 
-        $expectedIndex = $expectedPagesByOutput[(string) $catalogIndexOutput] ?? null;
-        if (! is_array($expectedIndex)) {
-            throw new RuntimeException('Trusted component catalogue index projection is missing.');
-        }
-        $actualIndexHtml = file_get_contents($root . '/' . $catalogIndexOutput);
-        if (! is_string($actualIndexHtml)) {
-            throw new RuntimeException('Generated component catalogue index could not be read.');
-        }
-        $actualIndexFragment = docaraCatalogContractFragment(
-            $actualIndexHtml,
-            '//*[@data-docara-component-catalog-index]',
-        );
-        $expectedIndex['branding'] = ['title' => 'Docara'];
-        $expectedIndex['breadcrumbs'] = [];
-        $expectedIndex['previous'] = null;
-        $expectedIndex['next'] = null;
-        $expectedIndexFragment = docaraCatalogContractFragment(
-            (string) $expectedIndex['content_html'],
-            '//*[@data-docara-component-catalog-index]',
-        );
-        $actualIndexHash = $projector->normalizedFragmentHash($actualIndexFragment);
-        if (! hash_equals($projector->normalizedFragmentHash($expectedIndexFragment), $actualIndexHash)) {
-            throw new RuntimeException(
-                'Generated component catalogue index fragment does not match the trusted projection.',
+        if (is_array($expectedReceipt['index'] ?? null)) {
+            $expectedIndex = $expectedPagesByOutput[(string) $catalogIndexOutput] ?? null;
+            if (! is_array($expectedIndex)) {
+                throw new RuntimeException('Trusted component catalogue index projection is missing.');
+            }
+            $actualIndexHtml = file_get_contents($root . '/' . $catalogIndexOutput);
+            if (! is_string($actualIndexHtml)) {
+                throw new RuntimeException('Generated component catalogue index could not be read.');
+            }
+            $actualIndexFragment = docaraCatalogContractFragment(
+                $actualIndexHtml,
+                '//*[@data-docara-component-catalog-index]',
+            );
+            $expectedIndex['branding'] = ['title' => 'Docara'];
+            $expectedIndex['breadcrumbs'] = [];
+            $expectedIndex['previous'] = null;
+            $expectedIndex['next'] = null;
+            $expectedIndexFragment = docaraCatalogContractFragment(
+                (string) $expectedIndex['content_html'],
+                '//*[@data-docara-component-catalog-index]',
+            );
+            $actualIndexHash = $projector->normalizedFragmentHash($actualIndexFragment);
+            if (! hash_equals($projector->normalizedFragmentHash($expectedIndexFragment), $actualIndexHash)) {
+                throw new RuntimeException(
+                    'Generated component catalogue index fragment does not match the trusted projection.',
+                );
+            }
+            docaraAssertCatalogShellContract(
+                $actualIndexHtml,
+                $expectedIndex,
+                (string) $expectedReceipt['index']['route'],
+                (string) $expectedReceipt['index']['route'],
             );
         }
-        docaraAssertCatalogShellContract(
-            $actualIndexHtml,
-            $expectedIndex,
-            (string) $expectedReceipt['index']['route'],
-            (string) $expectedReceipt['index']['route'],
-        );
+        $catalogIndexRoute = is_array($expectedReceipt['index'] ?? null)
+            ? (string) $expectedReceipt['index']['route']
+            : rtrim($localeUrls->home($catalogLocale), '/') . '/components/';
 
         $trustedEntriesById = [];
         foreach ($freshTrustedCatalog['entries'] as $entry) {
@@ -3008,9 +3070,9 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
             docaraAssertCatalogShellContract(
                 $actualHtml,
                 $expectedPage,
-                (string) $expectedReceipt['index']['route'],
+                $catalogIndexRoute,
                 ($expectedPage['navigation_hidden'] ?? false) === true
-                    ? (string) $expectedReceipt['index']['route']
+                    ? $catalogIndexRoute
                     : (string) $receiptPage['route'],
             );
 
@@ -3068,6 +3130,91 @@ if ($manifestError === null && $trustedCatalogVerified && is_array($trustedCatal
         $broken[] = [
             'page' => '@build',
             'reference' => '@component-catalog-pages-contract',
+            'target' => $exception->getMessage(),
+        ];
+    }
+
+    try {
+        $componentIndexReceiptPath = $root . '/.docara/component-index.json';
+        $componentIndexReceipt = (file_exists($componentIndexReceiptPath) || is_link($componentIndexReceiptPath))
+            ? docaraComponentIndexReceipt($componentIndexReceiptPath)
+            : null;
+        $expectedIndexes = [];
+        foreach ($manifestPageRecords as $page) {
+            $route = $page['url'] ?? null;
+            if (($page['page_source_kind'] ?? null) !== 'authored_markdown'
+                || ! is_string($route)
+                || preg_match('#\A/(?:[^/]+/)*components/\z#D', $route) !== 1
+            ) {
+                continue;
+            }
+            $entries = [];
+            foreach ($manifestPageRecords as $candidate) {
+                $candidateUrl = $candidate['url'] ?? null;
+                if (($candidate['page_source_kind'] ?? null) !== 'authored_markdown'
+                    || ! is_string($candidateUrl)
+                    || preg_match('#\A' . preg_quote($route, '#') . '[^/]+/\z#D', $candidateUrl) !== 1
+                ) {
+                    continue;
+                }
+                $entries[] = [
+                    'url' => $candidateUrl,
+                    'title' => trim((string) ($candidate['title'] ?? '')),
+                    'description' => trim((string) ($candidate['description'] ?? '')),
+                ];
+            }
+            usort(
+                $entries,
+                static fn (array $left, array $right): int => strnatcasecmp($left['title'], $right['title'])
+                    ?: strcmp($left['url'], $right['url']),
+            );
+            $expectedIndexes[$route] = $entries;
+
+            $output = $page['output'] ?? null;
+            if (! is_string($output) || ! docaraSafeRegularFile($root . '/' . $output)) {
+                throw new RuntimeException("Authored component index [$route] output is missing or unsafe.");
+            }
+            $html = (string) file_get_contents($root . '/' . $output);
+            $document = new DOMDocument('1.0', 'UTF-8');
+            $previous = libxml_use_internal_errors(true);
+            $loaded = $document->loadHTML(
+                '<?xml encoding="utf-8" ?>' . $html,
+                LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING,
+            );
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+            if ($loaded !== true) {
+                throw new RuntimeException("Authored component index [$route] HTML is invalid.");
+            }
+            $nodes = (new DOMXPath($document))->query(
+                '//*[@data-docara-component-index-view]//li/a',
+            );
+            if ($nodes === false || $nodes->length !== count($entries)) {
+                throw new RuntimeException("Authored component index [$route] rendered entry count is invalid.");
+            }
+            foreach ($entries as $position => $entry) {
+                $node = $nodes->item($position);
+                if (! $node instanceof DOMElement
+                    || $node->getAttribute('href') !== $entry['url']
+                    || trim($node->textContent) !== $entry['title']
+                ) {
+                    throw new RuntimeException("Authored component index [$route] rendered entry is invalid.");
+                }
+            }
+        }
+        ksort($expectedIndexes, SORT_STRING);
+        if ($expectedIndexes !== [] && ! is_array($componentIndexReceipt)) {
+            throw new RuntimeException('Authored component index requires a hash-bound receipt.');
+        }
+        if (is_array($componentIndexReceipt)
+            && docaraCanonicalJson($componentIndexReceipt['indexes']) !== docaraCanonicalJson($expectedIndexes)
+        ) {
+            throw new RuntimeException('Component index receipt does not match authored PageBuilder metadata.');
+        }
+    } catch (Throwable $exception) {
+        $broken[] = [
+            'page' => '@build',
+            'reference' => '@component-index-contract',
             'target' => $exception->getMessage(),
         ];
     }

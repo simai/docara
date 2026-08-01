@@ -13,8 +13,8 @@ Recovery source:
 | --- | --- | --- |
 | M3.1 | `M3.1-EXECUTION-CONTRACT.md`, `route-owner-inventory.json`, `baseline.json`, `browser-captures.json` | PASS |
 | M3.2 | `M3.2-RUNTIME-ALERT.md` | PASS |
-| M3.3 | `M3.3-CONTENT-MIGRATION.md` and per-family records | pending |
-| M3.4 | `M3.4-DERIVED-VIEWS.md` | pending |
+| M3.3 | per-family records through `batch-21-component-index.md` | PASS |
+| M3.4 | `batch-21-component-index.md` | PASS |
 | M3.5 | `M3.5-LEGACY-RETIREMENT.md`, `old-to-new-map.json`, zero-reference records | pending |
 | M3.6 | `M3.6-INTEGRATED-ACCEPTANCE.md`, browser matrix and reverse audit | pending |
 
@@ -22,9 +22,9 @@ Recovery source:
 
 - parent SHA: `b14fe4e1e70a5465fe382bd5ced1de26cb65a315`;
 - completed milestone: M3.1 durable execution contract and baseline;
-- latest completed batch: 20, Tabs;
-- current batch: 21, physical component index and derived views;
-- next evidence: per-family physical owners and route parity;
+- latest completed batch: 21, physical component index and derived views;
+- current batch: 25, Russian language-pack prose retirement;
+- next evidence: zero-reference and old-to-new legacy mapping;
 - blockers: none; federation/process gaps are documented in the workflow.
 
 ## Evidence rules
@@ -59,3 +59,4 @@ Recovery source:
 | 18 | `batch-18-embed-example.md` | PASS |
 | 19 | `batch-19-steps-tree.md` | PASS |
 | 20 | `batch-20-tabs.md` | PASS |
+| 21 | `batch-21-component-index.md` | PASS |

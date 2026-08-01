@@ -44,7 +44,7 @@ Steps, Tabs и Tree уже физические.
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.4 batch 21, physical component index and derived views.
+Next Safe Batch: M3.5 batch 25, Russian language-pack component prose retirement.
 
 ## Goal
 
@@ -154,8 +154,8 @@ parity and rollback.
 | --- | --- | --- | --- |
 | M3.1 | durable contract, inventory, family order and baseline | inventory + hashes + browser baseline + graph | completed |
 | M3.2 | common runtime contract and Alert vertical slice | focused/full/single/static/browser parity | completed |
-| M3.3 | all Russian component pages Markdown-owned | 32/32 ownership and family evidence | pending |
-| M3.4 | derived views use the same page-result contour | index/nav/search/outline/transitions tests | pending |
+| M3.3 | all Russian component pages Markdown-owned | 32/32 ownership and family evidence | completed |
+| M3.4 | derived views use the same page-result contour | index/nav/search/outline/transitions tests | completed |
 | M3.5 | inactive Russian component legacy retired | zero-reference scans and rollback map | pending |
 | M3.6 | integrated goal acceptance | deterministic/static/browser/audit evidence | pending |
 
@@ -190,14 +190,14 @@ checks, evidence update and a separate commit.
 | 14 | grid and figure | layout/media parity | completed |
 | 15 | media and logos | asset/responsive parity | completed |
 | 16 | diagram and math | runtime/asset parity | completed |
-| 17 | code-from-file and HTML | safe rendering parity | in-progress |
-| 18 | embed and example | embed/example tabs/copy parity | pending |
-| 19 | steps and tree | structure/responsive parity | pending |
-| 20 | tabs | keyboard/focus/tabset parity | pending |
-| 21 | component index physical owner | list/URL/content parity | pending |
-| 22 | remaining discovered route gaps | inventory reaches 32/32 | pending |
-| 23 | PageBuilder-result metadata for index/nav/breadcrumbs/transitions | derived-view integration tests | pending |
-| 24 | search/outline and isolated global-artifact update | full/single semantic tests | pending |
+| 17 | code-from-file and HTML | safe rendering parity | completed |
+| 18 | embed and example | embed/example tabs/copy parity | completed |
+| 19 | steps and tree | structure/responsive parity | completed |
+| 20 | tabs | keyboard/focus/tabset parity | completed |
+| 21 | component index physical owner | list/URL/content parity | completed |
+| 22 | remaining discovered route gaps | inventory reaches 32/32 | completed (none found) |
+| 23 | PageBuilder-result metadata for index/nav/breadcrumbs/transitions | derived-view integration tests | completed in 21 |
+| 24 | search/outline and isolated global-artifact update | full/single semantic tests | completed in 21 |
 | 25 | Russian language-pack prose removal and boundary tests | zero forbidden prose | pending |
 | 26 | projector/allowlist/example zero-reference retirement | zero active refs + rollback map | pending |
 | 27 | full PHPUnit/lint/JSON/graph/static verification | all deterministic gates | pending |
@@ -486,11 +486,15 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 21 — physical component index and derived views
 
-- status: in-progress;
+- status: completed;
 - parent: batch 20 checkpoint commit;
-- objective: make `/ru/components/` physically Markdown-owned and derive its
-  component list, navigation and search metadata from the same PageBuilder
-  route results without a second prose registry.
+- `/ru/components/` is physically Markdown-owned and its 31-entry list is
+  derived from the same PageBuilder route/title/description results;
+- the common typed-directive registry emits a placeholder and one hash-bound
+  hydrator reuses the full-build projection during isolated builds;
+- generated Russian catalog index/details are zero; all 32 routes are physical;
+- full/index-single/detail-single/static/browser parity PASS;
+- evidence: `m3-ru-components/batch-21-component-index.md`.
 
 ## Kaizen
 

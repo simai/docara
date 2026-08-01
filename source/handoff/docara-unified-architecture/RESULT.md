@@ -500,3 +500,21 @@ Status: PASS; M3.3 detail migration is complete, M3 continues
 Thirty-one of 32 routes are physical; batch 21 owns the component index and
 converges derived views. Overall M3 and release/production readiness remain
 unclaimed.
+
+## M3.4 batch 21 result
+
+Status: PASS; M3.3 and M3.4 complete, M3 continues
+
+- all 32 Russian component routes now have physical Markdown owners;
+- `/ru/components/` derives its 31-entry list from PageBuilder metadata through
+  one generic typed-directive placeholder and hash-bound hydrator;
+- generated Russian component catalog pages are zero; navigation, breadcrumbs,
+  outline, previous/next and search remain on the same page-result topology;
+- full plus isolated index/Badge HTML are byte-identical; static reports 206
+  HTML, 18,942 references and zero broken; browser desktop/mobile light/dark
+  has zero overflow or console issues;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-21-component-index.md`.
+
+Batch 25 now retires the remaining Russian language-pack component prose and
+proves the zero-projection build no longer reads it. Overall M3 and
+release/production readiness remain unclaimed.

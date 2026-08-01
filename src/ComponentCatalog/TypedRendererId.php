@@ -31,6 +31,7 @@ enum TypedRendererId: string
     case Html = 'docara.html.v1';
     case Code = 'docara.code.v1';
     case Backlinks = 'docara.backlinks.v1';
+    case ComponentIndex = 'docara.component_index.v1';
 
     public function componentId(): string
     {

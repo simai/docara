@@ -821,16 +821,19 @@ final class PortableComponentCatalogProjectorTest extends TestCase
     }
 
     #[Test]
-    public function authored_content_cannot_shadow_a_generated_catalog_route(): void
+    public function authored_component_index_replaces_only_the_generated_index_projection(): void
     {
         $this->copyPortableFixture($this->tmp);
         $this->filesystem->ensureDirectoryExists($this->tmpPath('content/components'));
         file_put_contents($this->tmpPath('content/components/index.md'), "# Shadow\n");
 
-        $this->expectException(PortableConfigurationException::class);
-        $this->expectExceptionMessage('COMPONENT_CATALOG_ROUTE_COLLISION');
-
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        $receipt = $this->json($this->tmpPath('build_local/.docara/component-catalog-pages.json'));
+        $html = (string) file_get_contents($this->tmpPath('build_local/components/index.html'));
+
+        self::assertNull($receipt['index']);
+        self::assertStringContainsString('<h1 id="shadow">Shadow</h1>', $html);
+        self::assertStringNotContainsString('data-docara-component-catalog-index', $html);
     }
 
     #[Test]

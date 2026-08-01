@@ -63,7 +63,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-15-media-logos.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-16-diagram-math.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-17-code-html.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-18-embed-example.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-18-embed-example.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-19-steps-tree.md"
   ],
   "review_refs": ["docara.gate.vertical_slice"],
   "current_behavior": [
@@ -86,11 +87,12 @@
     "Batch 15 reuses the generic typed_directive node for Media and Logos with no media/logo-specific compiler, IR or renderer registry.",
     "Batch 16 reuses the generic typed_directive node for Diagram and Math with no technical-content-specific compiler, IR or renderer registry.",
     "Batch 17 reuses the generic typed_directive node for Code-from-file and HTML; the shared example renderer carries source context for nested external-code previews without adding a component-specific path.",
-    "Batch 18 reuses generic typed_directive and example nodes for consent-gated Embed and interactive Example without adding family-specific compiler, IR, registry or gateway paths."
+    "Batch 18 reuses generic typed_directive and example nodes for consent-gated Embed and interactive Example without adding family-specific compiler, IR, registry or gateway paths.",
+    "Batch 19 reuses generic typed_directive nodes for Steps and Tree; accessible Tree interaction lives in the shared declarative shell without a family-specific compiler, IR, registry, gateway or PageBuilder."
   ],
   "known_deviations": [
     "The current AST can be serialized in receipts, but the target permits no mandatory page-level JSON/JSONL.",
-    "Typed native node coverage now includes Badge, Button, Icon, Kbd, Alert, headings/text, lists/quotes, links/images, table, code, external code, isolated HTML, Embed, Example, footnotes/sources, Details, Backlinks, Banner, Download, Card, Hero, Grid, Figure, Media, Logos, Diagram, Math and Syntax; remaining generated routes retain the rollback adapter.",
+    "Typed native node coverage now includes Badge, Button, Icon, Kbd, Alert, headings/text, lists/quotes, links/images, table, code, external code, isolated HTML, Embed, Example, footnotes/sources, Details, Backlinks, Banner, Download, Card, Hero, Grid, Figure, Media, Logos, Diagram, Math, Steps, Tree and Syntax; remaining generated routes retain the rollback adapter.",
     "The earlier declarative SourceSpan remains separate from the target SourceLocation.",
     "PortableMarkdownRenderer remains active for non-Badge routes until bounded M3 parity evidence exists."
   ],
@@ -100,5 +102,5 @@
     "Delete duplicate metadata parsing only after headings and links are derived from the canonical IR."
   ],
   "status": "m3_3_generic_typed_directive_ir_scaling",
-  "mapped_revision": "commit containing batch-18-embed-example.md; parent b2f695f"
+  "mapped_revision": "commit containing batch-19-steps-tree.md; parent 5efab497"
 }

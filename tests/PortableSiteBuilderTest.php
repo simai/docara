@@ -259,6 +259,10 @@ final class PortableSiteBuilderTest extends TestCase
         );
         self::assertStringContainsString("template[data-docara-embed-template]", $shellRuntime);
         self::assertStringContainsString('iframe.src=iframe.dataset.src', $shellRuntime);
+        self::assertStringContainsString("[data-docara-tree-toggle]", $shellRuntime);
+        self::assertStringContainsString("event.key==='ArrowLeft'", $shellRuntime);
+        self::assertStringContainsString("event.key==='ArrowRight'", $shellRuntime);
+        self::assertStringContainsString('[data-docara-tree-toggle]+ul[hidden]{display:none}', $shellCss);
         $smartSurface = implode('', array_map(
             static fn (string $path): string => (string) file_get_contents($path),
             [
@@ -1314,7 +1318,9 @@ final class PortableSiteBuilderTest extends TestCase
             '/components/logos/',
             '/components/math/',
             '/components/media/',
+            '/components/steps/',
             '/components/table/',
+            '/components/tree/',
             ...array_column($catalogPages['pages'], 'route'),
         ];
         sort($componentRoutes, SORT_STRING);

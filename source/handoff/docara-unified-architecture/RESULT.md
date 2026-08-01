@@ -464,3 +464,20 @@ Status: PASS; M3.3 continues
 
 Twenty-eight of 32 component routes are physical; batch 19 is Steps and Tree.
 Overall M3 remains unclaimed.
+
+## M3.3 batch 19 result
+
+Status: PASS; M3.3 continues
+
+- Steps and Tree now have physical Russian Markdown owners and starters;
+- both reuse generic typed-directive IR and one PageBuilder/registry/gateway;
+- shared Tree keyboard behavior exposes correct expanded state, retains focus
+  and truly hides/restores branches without controls in static mode;
+- full/isolated exact; static reports 206 HTML, 18,944 references and zero
+  broken; desktop/mobile light/dark browser checks have zero overflow or
+  console issues;
+- exact pack/allowlist/example legacy retired with rollback;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-19-steps-tree.md`.
+
+Thirty of 32 component routes are physical; batch 20 is Tabs. Overall M3 and
+release/production readiness remain unclaimed.

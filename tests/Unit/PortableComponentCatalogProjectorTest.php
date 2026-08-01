@@ -50,6 +50,8 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             'docara.logos',
             'docara.math',
             'docara.media',
+            'docara.steps',
+            'docara.tree',
             'native.code',
             'native.footnotes_and_sources',
             'native.headings_and_text',
@@ -292,6 +294,18 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             if ($id === 'docara.example') {
                 self::assertStringContainsString('<h1 id="интерактивный-пример">Интерактивный пример</h1>', $detail);
                 self::assertGreaterThanOrEqual(1, substr_count($detail, 'data-docara-example='));
+
+                continue;
+            }
+            if ($id === 'docara.steps') {
+                self::assertStringContainsString('<h1 id="шаги">Шаги</h1>', $detail);
+                self::assertGreaterThanOrEqual(2, substr_count($detail, 'data-docara-block="steps"'));
+
+                continue;
+            }
+            if ($id === 'docara.tree') {
+                self::assertStringContainsString('<h1 id="дерево-файлов">Дерево файлов</h1>', $detail);
+                self::assertGreaterThanOrEqual(2, substr_count($detail, 'data-docara-block="tree"'));
 
                 continue;
             }
@@ -585,8 +599,8 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             static fn (array $entry): bool => $entry['lifecycle'] === 'supported'
                 && $entry['family'] !== 'framework_smart',
         ));
-        self::assertGreaterThanOrEqual(3, count($receipt['pages']));
-        $middle = $receipt['pages'][1];
+        self::assertGreaterThanOrEqual(1, count($receipt['pages']));
+        $middle = $receipt['pages'][0];
         $html = (string) file_get_contents($build . '/' . $middle['output']);
         $xpath = $this->xpath($html);
 
@@ -619,8 +633,9 @@ final class PortableComponentCatalogProjectorTest extends TestCase
                 . '//a[@href="' . $middle['route'] . '" and @aria-current="page"]',
             )?->length,
         );
-        self::assertSame(1, $xpath->query('//nav[@data-docara-previous-next]/a[@rel="prev"]')?->length);
-        self::assertSame(1, $xpath->query('//nav[@data-docara-previous-next]/a[@rel="next"]')?->length);
+        $previous = $xpath->query('//nav[@data-docara-previous-next]/a[@rel="prev"]')?->length ?? 0;
+        $next = $xpath->query('//nav[@data-docara-previous-next]/a[@rel="next"]')?->length ?? 0;
+        self::assertSame(1, $previous + $next);
     }
 
     #[Test]

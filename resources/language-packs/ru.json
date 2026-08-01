@@ -266,30 +266,6 @@
             "parameters": [],
             "example_ref": "resources/component-catalog/examples/docara.showcase.ru.md"
         },
-        "docara.steps": {
-            "title": "Шаги",
-            "description": "Показывает короткую упорядоченную последовательность действий.",
-            "limitations": [
-                "Содержимое должно включать ровно один нумерованный список Markdown.",
-                "Вложенные директивы Docara не поддерживаются."
-            ],
-            "states": [],
-            "parameters": {
-                "view": {
-                    "label": "Внешний вид",
-                    "description": "Показывает последовательность как временную линию или обычный список.",
-                    "values": {
-                        "timeline": "Временная линия",
-                        "list": "Список"
-                    }
-                },
-                "current": {
-                    "label": "Текущий шаг",
-                    "description": "Номер активного шага."
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/docara.steps.ru.md"
-        },
         "native.code.enhanced": {
             "title": "Настраиваемый блок кода",
             "description": "Расширенный блок с управлением номерами строк, выделенными строками, diff-состояниями и другими параметрами автора.",
@@ -474,23 +450,6 @@
                 }
             },
             "example_ref": "resources/component-catalog/examples/ui.button.ru.md"
-        },
-        "docara.tree": {
-            "title": "Дерево файлов",
-            "description": "Объясняет вложенную структуру файлов и каталогов с явной иерархией.",
-            "limitations": [
-                "Используйте для структуры, а не как меню приложения; делайте подписи краткими."
-            ],
-            "states": {
-                "nested": "Вложенная структура"
-            },
-            "parameters": {
-                "interactive": {
-                    "label": "Интерактивность",
-                    "description": "Разрешает сворачивать и раскрывать каталоги."
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/docara.tree.ru.md"
         },
         "docara.badge": {
             "title": "Бейдж",

@@ -90,6 +90,7 @@ sf-alert,sf-button{display:block}
 [data-docara-example-panel] .docara-code-scroll .hljs-ln-numbers{display:none}
 [data-docara-example-panel] .docara-code-scroll .hljs-ln-code{padding-inline:0}
 [data-docara-example-copy][hidden]{display:none}
+[data-docara-tree-toggle]+ul[hidden]{display:none}
 .docara-skip-link:focus-visible,.docara-document-link:focus-visible,[data-docara-component-details-summary]:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}
 @media(max-width:1152px){
   .docara-header-navigation{display:none}

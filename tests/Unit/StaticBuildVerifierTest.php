@@ -872,20 +872,20 @@ final class StaticBuildVerifierTest extends TestCase
 
         foreach ([
             'source' => [
-                'needle' => "1. Создайте проект.\n2. Добавьте страницы.",
+                'needle' => "### Composer\n\n```bash",
                 'replacement' => "Подменённый исходный код примера.\n:::",
             ],
             'rendered' => [
-                'needle' => '>Создайте проект.</',
+                'needle' => '>Composer</',
                 'replacement' => '>Подменённый отрисованный пример.</',
             ],
             'metadata' => [
-                'needle' => 'Показывает короткую упорядоченную последовательность действий.',
+                'needle' => 'Переключает равноценные представления содержимого с поддержкой клавиатуры и ARIA.',
                 'replacement' => 'Forged component metadata.',
             ],
         ] as $kind => $change) {
             $build = $this->createGeneratedCatalogBuild('catalog-pages-' . $kind . '-drift');
-            $path = $build . '/components/steps/index.html';
+            $path = $build . '/components/tabs/index.html';
             $html = (string) file_get_contents($path);
             $count = 0;
             $tampered = str_replace($change['needle'], $change['replacement'], $html, $count);
@@ -899,7 +899,7 @@ final class StaticBuildVerifierTest extends TestCase
 
             $receipt = $this->readJson($build . '/.docara/component-catalog-pages.json');
             foreach ($receipt['pages'] as &$receiptPage) {
-                if ($receiptPage['id'] !== 'docara.steps') {
+                if ($receiptPage['id'] !== 'docara.tabs') {
                     continue;
                 }
                 $receiptPage['contract_fragment_sha256'] = hash('sha256', $tampered);
@@ -955,7 +955,7 @@ final class StaticBuildVerifierTest extends TestCase
             ),
         ] as $case => $mutate) {
             $build = $this->createGeneratedCatalogBuild('catalog-shell-' . $case);
-            $path = $build . '/components/steps/index.html';
+            $path = $build . '/components/tabs/index.html';
             $original = (string) file_get_contents($path);
             $tampered = $mutate($original);
             self::assertNotSame($original, $tampered, "The [$case] shell fixture did not mutate.");
@@ -991,7 +991,7 @@ final class StaticBuildVerifierTest extends TestCase
             self::assertStringStartsWith('{', (string) file_get_contents($outsideReceipt));
 
             $detailBuild = $this->createGeneratedCatalogBuild('catalog-pages-detail-' . $kind);
-            $detailPath = $detailBuild . '/components/steps/index.html';
+            $detailPath = $detailBuild . '/components/tabs/index.html';
             $outsideDetail = $this->tmpPath('outside-catalog-detail-' . $kind . '.html');
             file_put_contents($outsideDetail, (string) file_get_contents($detailPath));
             unlink($detailPath);
@@ -1003,7 +1003,7 @@ final class StaticBuildVerifierTest extends TestCase
             $detailResult = $this->verify($detailBuild);
             self::assertSame(1, $detailResult->getExitCode(), $detailResult->getOutput());
             self::assertStringContainsString('@unsafe-artifact-entry', $detailResult->getOutput());
-            self::assertStringContainsString('components/steps/index.html', $detailResult->getOutput());
+            self::assertStringContainsString('components/tabs/index.html', $detailResult->getOutput());
             self::assertStringStartsWith('<!doctype html>', (string) file_get_contents($outsideDetail));
         }
     }
@@ -1417,6 +1417,16 @@ final class StaticBuildVerifierTest extends TestCase
                 'slug' => 'media',
                 'title' => 'Текст с изображением',
                 'description' => 'Короткий текст рядом с одним изображением.',
+            ],
+            'docara.steps' => [
+                'slug' => 'steps',
+                'title' => 'Шаги',
+                'description' => 'Короткая последовательность действий с текущим состоянием.',
+            ],
+            'docara.tree' => [
+                'slug' => 'tree',
+                'title' => 'Дерево файлов',
+                'description' => 'Вложенная структура каталогов и файлов.',
             ],
             'docara.kbd' => [
                 'slug' => 'kbd',

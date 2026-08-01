@@ -50,14 +50,16 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
                     '/ru/components/links-and-images/',
                     '/ru/components/lists-and-quotes/',
                     '/ru/components/media/',
+                    '/ru/components/steps/',
                     '/ru/components/table/',
+                    '/ru/components/tree/',
                 ], true),
         ));
         $allowlist = new LegacyPublicSourceAllowlist;
 
-        self::assertCount(18, $generated);
-        self::assertCount(18, $allowlist->generatedRoutes());
-        foreach (['alert', 'backlinks', 'banner', 'button', 'card', 'code', 'code-from-file', 'details', 'diagram', 'download', 'embed', 'example', 'figure', 'footnotes-and-sources', 'grid', 'headings-and-text', 'hero', 'html', 'icon', 'kbd', 'links-and-images', 'lists-and-quotes', 'logos', 'math', 'media', 'table'] as $slug) {
+        self::assertCount(16, $generated);
+        self::assertCount(16, $allowlist->generatedRoutes());
+        foreach (['alert', 'backlinks', 'banner', 'button', 'card', 'code', 'code-from-file', 'details', 'diagram', 'download', 'embed', 'example', 'figure', 'footnotes-and-sources', 'grid', 'headings-and-text', 'hero', 'html', 'icon', 'kbd', 'links-and-images', 'lists-and-quotes', 'logos', 'math', 'media', 'steps', 'table', 'tree'] as $slug) {
             self::assertNotContains("/ru/components/$slug/", $allowlist->generatedRoutes());
         }
         self::assertNotContains('/ru/components/badge/', $allowlist->generatedRoutes());
@@ -84,7 +86,7 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
 
         $allowlist = new LegacyPublicSourceAllowlist;
         $allowlist->assertLanguagePackComponentCounts($counts);
-        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 16, 'zh-Hans' => 8], $counts);
+        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 14, 'zh-Hans' => 8], $counts);
         $russian = json_decode(
             (string) file_get_contents($root . '/resources/language-packs/ru.json'),
             true,
@@ -108,6 +110,8 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
             'docara.logos',
             'docara.math',
             'docara.media',
+            'docara.steps',
+            'docara.tree',
             'docara.icon',
             'docara.kbd',
             'docara.hero',

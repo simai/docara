@@ -219,6 +219,34 @@ MD);
     }
 
     #[Test]
+    public function interactive_tree_branches_are_keyboard_operable_and_static_trees_have_no_controls(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $interactive = $renderer->render(<<<'MD'
+:::tree {interactive=true}
+- content
+  - ru
+    - index.md
+- docara.json
+:::
+MD);
+        self::assertStringContainsString('data-docara-block="tree" data-interactive="true"', $interactive);
+        self::assertSame(2, substr_count($interactive, 'data-docara-tree-toggle'));
+        self::assertSame(2, substr_count($interactive, 'aria-expanded="true"'));
+        self::assertStringNotContainsString('<span class="min-w-0">index.md</span>', $interactive);
+
+        $static = $renderer->render(<<<'MD'
+:::tree {interactive=false}
+- content
+  - index.md
+- docara.json
+:::
+MD);
+        self::assertStringContainsString('data-interactive="false"', $static);
+        self::assertStringNotContainsString('data-docara-tree-toggle', $static);
+    }
+
+    #[Test]
     public function inline_components_fail_closed_on_unknown_or_unsafe_parameters(): void
     {
         $cases = [

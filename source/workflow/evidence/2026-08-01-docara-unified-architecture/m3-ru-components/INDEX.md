@@ -22,8 +22,8 @@ Recovery source:
 
 - parent SHA: `b14fe4e1e70a5465fe382bd5ced1de26cb65a315`;
 - completed milestone: M3.1 durable execution contract and baseline;
-- latest completed batch: 18, Embed and Example family;
-- current batch: 19, Steps and Tree family;
+- latest completed batch: 19, Steps and Tree family;
+- current batch: 20, Tabs;
 - next evidence: per-family physical owners and route parity;
 - blockers: none; federation/process gaps are documented in the workflow.
 
@@ -57,3 +57,4 @@ Recovery source:
 | 16 | `batch-16-diagram-math.md` | PASS |
 | 17 | `batch-17-code-html.md` | PASS |
 | 18 | `batch-18-embed-example.md` | PASS |
+| 19 | `batch-19-steps-tree.md` | PASS |

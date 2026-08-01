@@ -35,14 +35,16 @@ generated component page count и русский component-route allowlist ра�
 PageBuilder/registry/gateway; две clean full builds byte-identical; static и
 browser matrices зелёные; graph/workflow/handoff синхронны; worktree чистый.
 
-Current Remaining: 8 generated routes из 32; Alert, Badge, Syntax,
+Current Remaining: 2 generated routes из 32; Alert, Badge, Syntax,
 headings/text, lists/quotes, links/images, table, code, footnotes/sources,
-Details, Backlinks, Banner, Download, Button, Icon, Kbd, Card, Hero, Grid, Figure, Media, Logos, Diagram и Math уже физические.
+Details, Backlinks, Banner, Download, Button, Icon, Kbd, Card, Hero, Grid,
+Figure, Media, Logos, Diagram, Math, Code-from-file, HTML, Embed, Example,
+Steps и Tree уже физические.
 
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.3 batch 17, Code-from-file and HTML.
+Next Safe Batch: M3.3 batch 20, Tabs.
 
 ## Goal
 
@@ -460,10 +462,22 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 19 — Steps and Tree
 
-- status: in-progress;
+- status: completed;
 - parent: batch 18 checkpoint commit;
-- objective: migrate ordered process and hierarchical file-tree pages through
-  generic typed directives without a family-specific pipeline.
+- both routes have physical owners and reuse generic typed-directive IR without
+  a family-specific pipeline;
+- Tree keyboard controls are implemented in the shared declarative shell with
+  fail-safe `aria-expanded`, focus retention and real hidden-state behavior;
+- full/isolated/static/browser parity PASS; exact pack/allowlist/examples
+  retired with rollback;
+- evidence: `m3-ru-components/batch-19-steps-tree.md`.
+
+### Batch 20 — Tabs
+
+- status: in-progress;
+- parent: batch 19 checkpoint commit;
+- objective: migrate the final generated component detail route while reusing
+  the common example/tab contract and one PageBuilder pipeline.
 
 ## Kaizen
 

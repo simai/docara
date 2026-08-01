@@ -850,6 +850,20 @@ final class PortableMarkdownRenderer
         $content = trim((string) $rendered);
         $content = preg_replace('/<ul>/u', '<ul class="list-none m-0 p-inline-start-2 flex flex-col gap-1/3">', $content) ?? $content;
         $content = preg_replace('/<li>/u', '<li class="min-w-0">', $content) ?? $content;
+        if ($interactive) {
+            $content = preg_replace_callback(
+                '/<li class="min-w-0">(?<label>(?:(?!<\/?li\b).)*?)(?=<ul class="list-none)/su',
+                static function (array $match): string {
+                    $label = trim((string) $match['label']);
+
+                    return '<li class="min-w-0"><button type="button" data-docara-tree-toggle aria-expanded="true" '
+                        . 'class="flex w-full items-cross-center content-main-between gap-1 p-1 border-none bg-transparent color-on-surface text-start cursor-pointer">'
+                        . '<span class="min-w-0">' . $label . '</span>'
+                        . '<span data-docara-tree-indicator aria-hidden="true">&#9662;</span></button>';
+                },
+                $content,
+            ) ?? $content;
+        }
 
         return '<div data-docara-block="tree" data-interactive="' . ($interactive ? 'true' : 'false')
             . '" class="bg-surface-0 border border-outline-variant radius-2 p-2 m-bottom-1">'

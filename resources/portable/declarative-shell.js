@@ -128,6 +128,24 @@
       embed.replaceChildren(fragment);
     });
   });
+  document.querySelectorAll('[data-docara-tree-toggle]').forEach(function(button){
+    var branch=button.nextElementSibling;
+    var indicator=button.querySelector('[data-docara-tree-indicator]');
+    if(!branch||branch.tagName!=='UL')return;
+    function setExpanded(expanded){
+      button.setAttribute('aria-expanded',expanded?'true':'false');
+      branch.hidden=!expanded;
+      if(indicator)indicator.textContent=expanded?'▾':'▸';
+    }
+    button.addEventListener('click',function(){setExpanded(button.getAttribute('aria-expanded')!=='true')});
+    button.addEventListener('keydown',function(event){
+      if(event.key==='ArrowLeft'&&button.getAttribute('aria-expanded')==='true'){
+        event.preventDefault();setExpanded(false);
+      }else if(event.key==='ArrowRight'&&button.getAttribute('aria-expanded')!=='true'){
+        event.preventDefault();setExpanded(true);
+      }
+    });
+  });
   document.querySelectorAll('[data-docara-math-source]').forEach(function(element){
     if(!window.katex||typeof window.katex.render!=='function')return;
     try{

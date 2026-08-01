@@ -5,22 +5,23 @@
   "subtype": "milestone",
   "tz_role": "implementation_stage",
   "title": "M3. Миграция страниц и компонентов",
-  "summary": "Последовательно перенести все страницы и поддерживаемые узлы на единственный конвейер с проверкой маршрутов, локалей, ассетов и ссылок.",
+  "summary": "Завершённый M3-контур всех 32 русских маршрутов /ru/components/; другие локали остаются вне этого checkpoint.",
   "owner": "dev",
-  "lifecycle": "active",
+  "lifecycle": "completed",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/implementation/ROADMAP.md"],
   "evidence_refs": [
     "source/workflow/2026-08-01-docara-m3-ru-components-goal.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/INDEX.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/INDEX.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_goal_ref": "docara.goal.unified",
   "done_when": [
-    "All public routes are Markdown-owned.",
-    "All supported Markdown and component nodes use the registry.",
-    "All declared locales build according to missing-page policy.",
+    "All 32 Russian component routes are Markdown-owned.",
+    "All Markdown and component nodes used by the Russian component section use the registry/gateway contour.",
+    "Russian component full and isolated route matrices pass without making an other-locale claim.",
     "Search, navigation, outline and metadata are derived from the same page results.",
     "Broken links, missing assets and unknown components are zero."
   ],

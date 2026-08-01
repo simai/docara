@@ -2,7 +2,7 @@
 
 Date: 2026-08-01
 
-Goal status: in-progress
+Goal status: completed
 
 Recovery source:
 `source/workflow/2026-08-01-docara-m3-ru-components-goal.md`
@@ -16,15 +16,14 @@ Recovery source:
 | M3.3 | per-family records through `batch-21-component-index.md` | PASS |
 | M3.4 | `batch-21-component-index.md` | PASS |
 | M3.5 | `batch-25-language-pack-retirement.md`, `batch-26-zero-page-assets.md`, `old-to-new-map.json` | PASS |
-| M3.6 | `M3.6-INTEGRATED-ACCEPTANCE.md`, browser matrix and reverse audit | pending |
+| M3.6 | `M3.6-INTEGRATED-ACCEPTANCE.md`, `browser-final-matrix.json`, `final-route-owners.json`, `M3-REVERSE-OUTCOME-AUDIT.md` | PASS |
 
 ## Current checkpoint
 
 - parent SHA: `b14fe4e1e70a5465fe382bd5ced1de26cb65a315`;
 - completed milestone: M3.1 durable execution contract and baseline;
-- latest completed batch: 21, physical component index and derived views;
-- latest completed batch: 26, zero-page catalog asset retirement;
-- current milestone: M3.6 integrated acceptance;
+- latest completed batch: 30, integrated acceptance and reverse audit;
+- current milestone: M3 complete for Russian `/ru/components/` scope;
 - blockers: none; federation/process gaps are documented in the workflow.
 
 ## Evidence rules
@@ -63,3 +62,6 @@ Recovery source:
 | 25 | `batch-25-language-pack-retirement.md`, `old-to-new-map.json` | PASS |
 | 26 | `batch-26-zero-page-assets.md` | PASS |
 | 27 | `batch-27-code-copy-localization.md` | PASS |
+| 28 | `M3.6-INTEGRATED-ACCEPTANCE.md`, `final-route-owners.json` | PASS |
+| 29 | `browser-final-matrix.json` | PASS |
+| 30 | `M3-REVERSE-OUTCOME-AUDIT.md` | PASS |

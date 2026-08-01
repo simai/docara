@@ -43,7 +43,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-03-early-route-selection.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-07-native-text-lists.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-10-details-backlinks.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-10-details-backlinks.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md"
   ],
   "review_refs": ["docara.gate.vertical_slice", "docara.gate.architecture_acceptance"],
   "current_behavior": [
@@ -60,15 +61,15 @@
     "A full build writes one hash-bound disposable backlink projection; an isolated build reuses it for the selected route without compiling other pages, and full/single trees remain exact."
   ],
   "known_deviations": [
-    "Generated-route isolated builds still require their legacy projections until those routes become physical.",
-    "The target PageBuilder path is proven for every current physical component page; remaining generated routes retain their projector rollback adapter.",
-    "Generated pages still originate in bounded projectors before their rendered main result enters the same layout-composition seam."
+    "All 32 Russian component routes are physical and proven through the target PageBuilder path.",
+    "Generated projectors remain only for routes/locales outside the accepted Russian component scope and are not a second Russian content owner.",
+    "Project-wide removal of buildGenerated/trustedMainHtml remains an M4 decision after every remaining external consumer is proved absent."
   ],
   "deletion_gates": [
     "Delete buildGenerated/trustedMainHtml only after every generated route has migrated to physical Markdown and PageBuilder parity passes.",
     "Move --page selection before global projection only after dependency/index update tests prove bounded work.",
     "Split SiteBuilder from PageBuilder only with full/single HTML, asset, metadata, heading, link and diagnostic parity."
   ],
-  "status": "m3_3_pagebuilder_main_and_isolated_projection_integrated",
-  "mapped_revision": "commit containing batch-10-details-backlinks.md; parent dc15cc7"
+  "status": "m3_ru_components_full_single_accepted",
+  "mapped_revision": "commit containing M3.6-INTEGRATED-ACCEPTANCE.md; runtime parent 59427fd7307d0981fa1627f83df4068c5d53fada"
 }

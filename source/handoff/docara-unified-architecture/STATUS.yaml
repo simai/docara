@@ -2,17 +2,17 @@ schema_version: 1
 goal: docara.goal.unified
 branch: codex/docara-unified-architecture
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: m2_badge_vertical_slice_passed
+state: m3_ru_components_passed
 current_stage: docara.stage.m3.migration
 current_batch: docara.batch.m3.migrate
-next_action: plan_first_bounded_m3_route_group
+next_action: independent_review_or_separately_authorized_next_stage
 source_of_truth:
   human: docs/specification/README.md
   machine: graph/graph.json
   start: source/handoff/docara-unified-architecture/START.md
 readiness:
   architecture_contract: accepted
-  implementation: m2_slice_passed_m3_ready
+  implementation: m3_ru_components_completed
   release: not_claimed
   production: not_claimed
 routing:

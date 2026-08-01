@@ -27,9 +27,9 @@
   },
   "implementation_state": {
     "current_stage": "docara.stage.m3.migration",
-    "completed_checkpoint": "m3_3_batch_07_native_text_and_lists",
-    "next_action": "implement_m3_3_links_images_and_table_family",
-    "evidence": "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-07-native-text-lists.md"
+    "completed_checkpoint": "m3_ru_components_integrated_acceptance",
+    "next_action": "independent_review_or_separately_authorized_next_stage",
+    "evidence": "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md"
   },
   "routing_gap": {
     "status": "recorded",

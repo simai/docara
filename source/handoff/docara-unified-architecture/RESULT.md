@@ -565,3 +565,35 @@ Status: PASS; integrated acceptance continues
   `content/ru/lang.json` runtime-copy contour and localizes injected controls;
 - focused/full/single/static/browser checks pass with zero console issues;
 - evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-27-code-copy-localization.md`.
+
+# M3 Russian components final result
+
+Status: PASS; the bounded M3 Goal is complete
+
+- all 32 public routes under `/ru/components/` have exactly one physical
+  Markdown owner: `docs/site/content/ru/components.md` plus 31 component files;
+- Russian package language data contains no page prose or public UI messages;
+  reusable public labels are owned by `docs/site/content/ru/lang.json`;
+- generated Russian component routes, their broad allowlist and localized
+  catalog examples are zero;
+- the runtime contains one `PageBuilder`, one `DocumentRendererRegistry`, one
+  `SmartComponentGateway` and generic typed component contracts; isolated
+  selection occurs before unrelated compilation/projection;
+- two disposable full builds selected 103 pages, produced 309 files and are
+  byte-identical with normalized tree SHA-256
+  `4aa179bde88d4391cd6b4a3ddeb112d0ef5ff6db2d04b6ec725d897fe0a29426`;
+- all 32 isolated component route HTML results exactly match the full build;
+- both static verifiers checked 206 HTML documents and 18,942 local references
+  with zero broken links/assets;
+- full PHPUnit on runtime commit `59427fd` passes 377 tests and 6,540
+  assertions; PHP lint passes all 226 source/test/script files;
+- browser smoke passes 32/32 routes with no overflow or console/page errors;
+  representative desktop/mobile light/dark, keyboard/focus, copy, tabs,
+  example/code, table and Smart-component checks pass;
+- final evidence is indexed at
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/INDEX.md`.
+
+Scope is deliberately exact: this closes Russian `/ru/components/` M3 only.
+Other locales, remaining project-wide M4 legacy retirement, release and
+production readiness are not claimed. No merge, push, tag, release or deploy
+was performed.

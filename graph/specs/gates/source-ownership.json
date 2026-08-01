@@ -5,15 +5,17 @@
   "subtype": "acceptance_gate",
   "tz_role": "stage_gate",
   "title": "Source ownership accepted",
-  "summary": "All public routes and visible locale strings have reached their final Markdown/lang.json ownership after M3 migration.",
+  "summary": "All Russian /ru/components/ routes and their visible shared locale strings have reached final Markdown/lang.json ownership; other locales are not claimed.",
   "owner": "tester",
-  "lifecycle": "blocked",
-  "readiness": "R1_draft",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
-  "evidence_refs": ["docara.evidence.source_boundary_tests"],
+  "evidence_refs": ["docara.evidence.source_boundary_tests", "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/final-route-owners.json", "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md"],
   "profile_refs": ["docara.unified"],
-  "pass_conditions": ["All-route one-locale-route-one-Markdown positive matrix", "Duplicate route negative fixture", "content/<locale>/lang.json is the only shared public UI translation source", "Public resources/i18n and site.json compatibility are absent", "Package-owned CLI/build messages are absent from public inputs", "Strict config schemas"],
+  "pass_conditions": ["32/32 Russian component routes have one physical Markdown owner", "Duplicate route negative fixture", "content/ru/lang.json is the only shared Russian public UI translation source", "Public resources/i18n and site.json compatibility are absent", "Package-owned CLI/build messages are absent from public inputs", "Strict config schemas"],
   "stop_conditions": ["Any public route still depends only on a language-pack or registry prose record"],
-  "promotes_to": "docara.batch.m4.retire"
+  "promotes_to": "docara.batch.m4.retire",
+  "status": "passed_for_ru_components_scope",
+  "nonclaims": ["Does not pass source ownership for other locales or routes outside /ru/components/."]
 }

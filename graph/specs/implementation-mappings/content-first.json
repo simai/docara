@@ -5,7 +5,7 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Content-first implementation mapping",
-  "summary": "M3.5 map of complete Russian component Markdown ownership, PageBuilder-derived views and retired package-owned Russian public prose.",
+  "summary": "Accepted M3 map of complete Russian component Markdown ownership, PageBuilder-derived views and retired package-owned Russian public prose.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "R2_contract",
@@ -102,7 +102,9 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-21-component-index.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-25-language-pack-retirement.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/old-to-new-map.json",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-26-zero-page-assets.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-26-zero-page-assets.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/final-route-owners.json",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
@@ -143,6 +145,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
   ],
-  "status": "m3_5_complete_m3_6_acceptance_pending",
-  "mapped_revision": "commit containing batch-26-zero-page-assets.md; parent a579390d"
+  "status": "m3_ru_components_accepted",
+  "mapped_revision": "commit containing M3.6-INTEGRATED-ACCEPTANCE.md; runtime parent 59427fd7307d0981fa1627f83df4068c5d53fada"
 }

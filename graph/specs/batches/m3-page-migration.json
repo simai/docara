@@ -7,7 +7,7 @@
   "title": "M3. Последовательная миграция",
   "summary": "Execute the single M3 goal that moves all 32 Russian component routes through bounded runtime, content, derived-view, retirement and acceptance batches.",
   "owner": "dev",
-  "lifecycle": "active",
+  "lifecycle": "completed",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/implementation/ROADMAP.md"],
@@ -21,13 +21,17 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-25-language-pack-retirement.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/old-to-new-map.json",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-26-zero-page-assets.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-27-code-copy-localization.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-27-code-copy-localization.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/final-route-owners.json",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/browser-final-matrix.json",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3-REVERSE-OUTCOME-AUDIT.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.m3.migration",
   "allowed_scope": ["All Russian /ru/components/ routes", "Shared typed IR and renderer runtime", "Derived indexes and reader navigation", "Proved Russian legacy retirement", "Integrated acceptance evidence"],
   "forbidden_scope": ["Unmapped deletion", "Unrelated visual redesign", "Release"],
   "checks": ["32 physical Markdown owners", "One PageBuilder registry and Smart gateway", "Early isolated route selection", "Route matrix", "Broken links zero", "Missing assets zero", "Unknown nodes zero", "Deterministic and browser acceptance"],
-  "status": "m3_5_pass_goal_in_progress",
-  "next_action": "run_m3_6_integrated_acceptance"
+  "status": "completed_with_evidence",
+  "next_action": "independent_review_or_separately_authorized_next_stage"
 }

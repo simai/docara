@@ -5,7 +5,7 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Smart gateway implementation mapping",
-  "summary": "One content Smart gateway path for Badge inline calls and generic Alert block components.",
+  "summary": "One registry and Smart gateway facade for inline and block components used by all 32 Russian component routes.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "R2_contract",
@@ -46,29 +46,29 @@
     "docara.evidence.m0_inventory",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md"
   ],
   "review_refs": ["docara.gate.vertical_slice"],
   "current_behavior": [
     "Declarative SmartComponentGateway routes ui.* and docara.* plan resolution through one facade when a SmartCallNode reaches it.",
     "Framework manifests, props and assets are lock validated.",
     "Product Smart resolution is registry backed, but SmartRenderer and semantic validation still enumerate the supported product set.",
-    "FrameworkComponentRuntime and InlineComponentRenderer remain separate active paths for non-migrated routes.",
+    "FrameworkComponentRuntime and InlineComponentRenderer remain compatibility extractors only for non-migrated routes outside the accepted Russian component scope; Smart resolution still enters the same gateway facade.",
     "M2 resolves badge to docara.badge through ComponentAliasRegistry and routes all 16 calls through DocumentRendererRegistry and the content mode of the same SmartComponentGateway facade.",
     "The structural component definition and template return HTML, diagnostics and provenance without owning public documentation prose.",
     "M3.2 routes every authored Alert block through DocumentRendererRegistry and SmartComponentGateway::renderComponentBlock using one manifest/template contract.",
     "The compatibility Markdown Alert renderer delegates to that same gateway and no longer assembles a second Alert HTML artifact."
   ],
   "known_deviations": [
-    "DocumentParser hard-codes only ui.alert and ui.button as directive names.",
-    "Non-Badge inline aliases and non-Alert block components remain on legacy paths until their bounded M3 slices.",
-    "The framework and product Smart plans still use their existing resolver path while content nodes use the new content registry behind the same facade."
+    "The accepted Russian component pages use generic component_block, typed_directive and inline component contracts rather than route-specific parser branches.",
+    "Framework and product Smart plans retain their structural resolvers behind the same SmartComponentGateway facade; removing package compatibility outside this scope belongs to M4."
   ],
   "deletion_gates": [
     "Retire InlineComponentRenderer::badge only after all badge calls reach one component node/gateway and exact HTML/assets parity passes.",
     "Retire FrameworkComponentRuntime::extract only after block and inline Framework calls use the same gateway.",
     "Remove component-specific SmartRenderer branches only after manifest-driven template/view resolution has parity and fail-closed tests."
   ],
-  "status": "m3_2_badge_and_alert_gateway_implemented",
-  "mapped_revision": "commit containing M3.2-RUNTIME-ALERT.md; parent 843d4cf38c17385854d3fa2a6dbafebd17cc169f"
+  "status": "m3_ru_components_gateway_accepted",
+  "mapped_revision": "commit containing M3.6-INTEGRATED-ACCEPTANCE.md; runtime parent 59427fd7307d0981fa1627f83df4068c5d53fada"
 }

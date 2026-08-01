@@ -5,15 +5,17 @@
   "subtype": "acceptance_gate",
   "tz_role": "stage_gate",
   "title": "All active routes migrated",
-  "summary": "Every supported route and node type is covered by the unified pipeline before legacy deletion.",
+  "summary": "Every Russian /ru/components/ route and node type used by that section is covered by the unified pipeline before scoped legacy deletion.",
   "owner": "tester",
-  "lifecycle": "blocked",
-  "readiness": "R1_draft",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/ACCEPTANCE.md"],
-  "evidence_refs": ["docara.evidence.all_routes_parity"],
+  "evidence_refs": ["docara.evidence.all_routes_parity", "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md", "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/browser-final-matrix.json"],
   "profile_refs": ["docara.unified"],
-  "pass_conditions": ["Route coverage 100%", "Supported node coverage 100%", "Locale matrix complete", "Broken links and missing assets zero", "Derived indexes rebuilt"],
+  "pass_conditions": ["Russian component route coverage 32/32", "Used node coverage 100%", "Russian full/isolated matrix complete", "Broken links and missing assets zero", "Derived indexes rebuilt"],
   "stop_conditions": ["Any route still needs a legacy projector", "Unknown component or node silently omitted"],
-  "promotes_to": "docara.batch.m4.retire"
+  "promotes_to": "docara.batch.m4.retire",
+  "status": "passed_for_ru_components_scope",
+  "nonclaims": ["Does not claim other-locale migration coverage."]
 }

@@ -2,11 +2,11 @@
 
 Date: 2026-08-01
 
-Status: in-progress
+Status: completed
 
 Process model: `general_delivery`
 
-Current state: `launch_record_ready`
+Current state: `repository_prepared`
 
 Target state: `repository_prepared`
 
@@ -35,16 +35,15 @@ generated component page count и русский component-route allowlist ра�
 PageBuilder/registry/gateway; две clean full builds byte-identical; static и
 browser matrices зелёные; graph/workflow/handoff синхронны; worktree чистый.
 
-Current Remaining: 1 generated route из 32; Alert, Badge, Syntax,
-headings/text, lists/quotes, links/images, table, code, footnotes/sources,
-Details, Backlinks, Banner, Download, Button, Icon, Kbd, Card, Hero, Grid,
-Figure, Media, Logos, Diagram, Math, Code-from-file, HTML, Embed, Example,
-Steps, Tabs и Tree уже физические.
+Current Remaining: none inside the accepted Russian `/ru/components/` scope;
+32/32 routes are physical, generated Russian component routes and their broad
+allowlist are zero, and integrated acceptance is PASS.
 
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.5 batch 25, Russian language-pack component prose retirement.
+Next Safe Batch: independent review of the completed M3 checkpoint; any M4,
+other-locale or release work requires a separately authorized goal.
 
 ## Goal
 
@@ -156,8 +155,8 @@ parity and rollback.
 | M3.2 | common runtime contract and Alert vertical slice | focused/full/single/static/browser parity | completed |
 | M3.3 | all Russian component pages Markdown-owned | 32/32 ownership and family evidence | completed |
 | M3.4 | derived views use the same page-result contour | index/nav/search/outline/transitions tests | completed |
-| M3.5 | inactive Russian component legacy retired | zero-reference scans and rollback map | pending |
-| M3.6 | integrated goal acceptance | deterministic/static/browser/audit evidence | pending |
+| M3.5 | inactive Russian component legacy retired | zero-reference scans and rollback map | completed |
+| M3.6 | integrated goal acceptance | deterministic/static/browser/audit evidence | completed |
 
 ## Batches
 
@@ -198,12 +197,12 @@ checks, evidence update and a separate commit.
 | 22 | remaining discovered route gaps | inventory reaches 32/32 | completed (none found) |
 | 23 | PageBuilder-result metadata for index/nav/breadcrumbs/transitions | derived-view integration tests | completed in 21 |
 | 24 | search/outline and isolated global-artifact update | full/single semantic tests | completed in 21 |
-| 25 | Russian language-pack prose removal and boundary tests | zero forbidden prose | pending |
-| 26 | projector/allowlist/example zero-reference retirement | zero active refs + rollback map | pending |
-| 27 | full PHPUnit/lint/JSON/graph/static verification | all deterministic gates | pending |
-| 28 | two clean full builds and representative isolated matrix | byte equality + route hashes | pending |
-| 29 | browser matrix and all-route smoke | accessibility/console/visual evidence | pending |
-| 30 | reverse-outcome audit, spec/graph/handoff and clean history | goal Completion Gate | pending |
+| 25 | Russian language-pack prose removal and boundary tests | zero forbidden prose | completed |
+| 26 | projector/allowlist/example zero-reference retirement | zero active refs + rollback map | completed |
+| 27 | full PHPUnit/lint/JSON/graph/static verification | all deterministic gates | completed |
+| 28 | two clean full builds and representative isolated matrix | byte equality + route hashes | completed |
+| 29 | browser matrix and all-route smoke | accessibility/console/visual evidence | completed |
+| 30 | reverse-outcome audit, spec/graph/handoff and clean history | goal Completion Gate | completed |
 
 Batch grouping may change when inventory proves a safer smaller/larger family,
 but milestone outcomes and Completion Gate do not change.
@@ -542,6 +541,28 @@ Never infer completion from a checkpoint commit or chat summary.
   controls; no route-specific renderer or Framework change was introduced;
 - focused/full/single/static/browser checks pass;
 - evidence: `m3-ru-components/batch-27-code-copy-localization.md`.
+
+### Batches 28–30 — integrated acceptance and closure
+
+- status: completed candidate; checkpoint commit contains the final records;
+- runtime parent: `59427fd7307d0981fa1627f83df4068c5d53fada`;
+- final ownership: 32 routes, 32 physical Markdown owners and zero generated
+  Russian component routes;
+- two clean 103-page/309-file full builds are byte-identical with normalized
+  tree SHA-256
+  `4aa179bde88d4391cd6b4a3ddeb112d0ef5ff6db2d04b6ec725d897fe0a29426`;
+- every one of the 32 isolated route HTML results equals its full-build peer;
+- both static verifications check 206 HTML documents and 18,942 local
+  references with zero broken links/assets;
+- all-route browser smoke and the representative desktop/mobile light/dark,
+  keyboard/focus/copy/tabs/code/table/Smart matrix pass with zero console/page
+  errors;
+- reverse-outcome audit: PASS, scoped to Russian `/ru/components/`; other
+  locales, M4, release and production remain unclaimed;
+- evidence: `m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md`,
+  `m3-ru-components/M3-REVERSE-OUTCOME-AUDIT.md`,
+  `m3-ru-components/final-route-owners.json` and
+  `m3-ru-components/browser-final-matrix.json`.
 
 ## Kaizen
 

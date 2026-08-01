@@ -5,7 +5,7 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Typed IR implementation mapping",
-  "summary": "Accepted typed in-memory Document IR for Badge inline calls and generic Alert block components.",
+  "summary": "Accepted typed in-memory Document IR and generic node contracts for all 32 Russian component routes.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "R2_contract",
@@ -100,13 +100,13 @@
     "The current AST can be serialized in receipts, but the target permits no mandatory page-level JSON/JSONL.",
     "Typed native node coverage now includes every Russian component route plus the physical component-index placeholder; no Russian component page uses the generated catalog adapter.",
     "The earlier declarative SourceSpan remains separate from the target SourceLocation.",
-    "PortableMarkdownRenderer remains active for non-Badge routes until bounded M3 parity evidence exists."
+    "PortableMarkdownRenderer remains only as shared Markdown rendering infrastructure or rollback compatibility outside the accepted Russian component scope; no Russian component page uses a generated catalog prose adapter."
   ],
   "deletion_gates": [
     "Delete MarkdownNode only after typed block/inline coverage and exact badge parity.",
     "Retire PortableMarkdownRenderer component logic only after every moved node renderer has positive, negative and source-location tests.",
     "Delete duplicate metadata parsing only after headings and links are derived from the canonical IR."
   ],
-  "status": "m3_3_generic_typed_directive_ir_scaling",
-  "mapped_revision": "commit containing batch-21-component-index.md; parent d243ec2e"
+  "status": "m3_ru_components_typed_ir_accepted",
+  "mapped_revision": "commit containing M3.6-INTEGRATED-ACCEPTANCE.md; runtime parent 59427fd7307d0981fa1627f83df4068c5d53fada"
 }

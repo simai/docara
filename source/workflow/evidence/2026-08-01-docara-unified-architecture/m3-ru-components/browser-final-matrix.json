@@ -1,0 +1,25 @@
+{
+  "schema": "docara.m3.browser_matrix.v1",
+  "runtime_parent_sha": "59427fd7307d0981fa1627f83df4068c5d53fada",
+  "base_build": "docs/site/build_m3-b27-full",
+  "all_route_smoke": {
+    "route_count": 32,
+    "http_200": 32,
+    "single_owner_h1": 32,
+    "horizontal_overflow": 0,
+    "console_or_page_errors": 0
+  },
+  "matrix": [
+    {"route": "/ru/components/alert/", "viewport": "1440 desktop", "theme": "light", "checks": ["five Smart alerts", "Russian copy controls", "no overflow", "console clean"], "screenshot": "output/playwright/m3-final/.playwright-cli/page-2026-08-01T23-32-49-360Z.png"},
+    {"route": "/ru/components/", "viewport": "1920 desktop", "theme": "light", "checks": ["31 component links", "breadcrumbs", "outline", "no overflow"], "screenshot": "output/playwright/m3-final/.playwright-cli/page-2026-08-01T23-33-05-806Z.png"},
+    {"route": "/ru/components/table/", "viewport": "390 mobile", "theme": "light", "checks": ["responsive scroll wrapper", "sidebar collapsed", "no document overflow"], "screenshot": "output/playwright/m3-final/.playwright-cli/page-2026-08-01T23-33-21-046Z.png"},
+    {"route": "/ru/components/table/", "viewport": "390 mobile", "theme": "dark", "checks": ["theme selected through settings UI", "responsive table", "no console errors"], "screenshot": "output/playwright/m3-final/.playwright-cli/page-2026-08-01T23-33-50-384Z.png"},
+    {"route": "/ru/components/tabs/", "viewport": "1440 desktop", "theme": "dark", "checks": ["click selection", "ArrowRight focus and selection", "matching tab panels", "no overflow"], "screenshot": "output/playwright/m3-final/.playwright-cli/page-2026-08-01T23-34-42-422Z.png"},
+    {"route": "/ru/components/media/", "viewport": "390 mobile", "theme": "light", "checks": ["two media blocks", "images loaded", "no document overflow"], "screenshot": "output/playwright/m3-final/.playwright-cli/page-2026-08-01T23-34-56-770Z.png"},
+    {"route": "/ru/components/tree/", "viewport": "1440 desktop", "theme": "light", "checks": ["keyboard focus", "ArrowLeft collapses branch", "aria-expanded false", "child hidden"]},
+    {"route": "/ru/components/badge/", "viewport": "1440 desktop", "theme": "light", "checks": ["16 badges", "four code blocks", "Russian copy labels"]},
+    {"route": "/ru/components/grid/", "viewport": "1440 desktop", "theme": "light", "checks": ["two responsive grids", "no overflow"]},
+    {"route": "/ru/components/example/", "viewport": "1440 desktop", "theme": "light", "checks": ["preview iframe", "tabs and code present"]}
+  ],
+  "verdict": "PASS"
+}

@@ -31,6 +31,7 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
                     '/ru/components/button/',
                     '/ru/components/card/',
                     '/ru/components/code/',
+                    '/ru/components/code-from-file/',
                     '/ru/components/details/',
                     '/ru/components/diagram/',
                     '/ru/components/download/',
@@ -43,6 +44,7 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
                     '/ru/components/logos/',
                     '/ru/components/math/',
                     '/ru/components/hero/',
+                    '/ru/components/html/',
                     '/ru/components/links-and-images/',
                     '/ru/components/lists-and-quotes/',
                     '/ru/components/media/',
@@ -51,9 +53,9 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
         ));
         $allowlist = new LegacyPublicSourceAllowlist;
 
-        self::assertCount(22, $generated);
-        self::assertCount(22, $allowlist->generatedRoutes());
-        foreach (['alert', 'backlinks', 'banner', 'button', 'card', 'code', 'details', 'diagram', 'download', 'figure', 'footnotes-and-sources', 'grid', 'headings-and-text', 'hero', 'icon', 'kbd', 'links-and-images', 'lists-and-quotes', 'logos', 'math', 'media', 'table'] as $slug) {
+        self::assertCount(20, $generated);
+        self::assertCount(20, $allowlist->generatedRoutes());
+        foreach (['alert', 'backlinks', 'banner', 'button', 'card', 'code', 'code-from-file', 'details', 'diagram', 'download', 'figure', 'footnotes-and-sources', 'grid', 'headings-and-text', 'hero', 'html', 'icon', 'kbd', 'links-and-images', 'lists-and-quotes', 'logos', 'math', 'media', 'table'] as $slug) {
             self::assertNotContains("/ru/components/$slug/", $allowlist->generatedRoutes());
         }
         self::assertNotContains('/ru/components/badge/', $allowlist->generatedRoutes());
@@ -80,7 +82,7 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
 
         $allowlist = new LegacyPublicSourceAllowlist;
         $allowlist->assertLanguagePackComponentCounts($counts);
-        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 20, 'zh-Hans' => 8], $counts);
+        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 18, 'zh-Hans' => 8], $counts);
         $russian = json_decode(
             (string) file_get_contents($root . '/resources/language-packs/ru.json'),
             true,
@@ -93,6 +95,7 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
             'docara.banner',
             'docara.button',
             'docara.card',
+            'docara.code',
             'docara.details',
             'docara.download',
             'docara.diagram',
@@ -104,6 +107,7 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
             'docara.icon',
             'docara.kbd',
             'docara.hero',
+            'docara.html',
             'native.code',
             'native.footnotes_and_sources',
             'native.headings_and_text',

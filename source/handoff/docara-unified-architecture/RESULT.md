@@ -429,3 +429,21 @@ Status: PASS; M3.3 continues
 
 Twenty-four of 32 routes are physical; batch 17 is Code-from-file and HTML.
 Overall M3 remains unclaimed.
+
+## M3.3 batch 17 result
+
+Status: PASS; M3.3 continues
+
+- Code-from-file and HTML now have physical Russian Markdown owners and
+  portable starters;
+- both reuse generic typed-directive IR and one PageBuilder/renderer path; the
+  shared Markdown example renderer now retains authored source context for an
+  external-code preview;
+- full/isolated trees are exact; static reports 206 HTML, 18,942 references and
+  zero broken; keyboard copy plus desktop/mobile light/dark browser gates pass
+  with zero overflow and console issues;
+- exact pack/allowlist/example legacy retired with rollback;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-17-code-html.md`.
+
+Twenty-six of 32 component routes are physical; batch 18 is Embed and Example.
+Overall M3 remains unclaimed.

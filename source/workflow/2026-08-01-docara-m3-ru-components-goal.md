@@ -437,10 +437,22 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 17 — Code-from-file and HTML
 
+- status: completed;
+- parent: `c158a5e`;
+- both routes have physical owners and reuse generic typed-directive IR;
+- the shared example renderer preserves authored source context for nested
+  external-code previews, with regression coverage and no component-specific
+  path;
+- full/isolated/static/browser parity PASS; exact pack/allowlist/examples
+  retired with rollback;
+- evidence: `m3-ru-components/batch-17-code-html.md`.
+
+### Batch 18 — Embed and Example
+
 - status: in-progress;
-- parent: batch 16 checkpoint commit;
-- objective: migrate safe external-code and sandboxed HTML documentation while
-  preserving exact security boundaries and one renderer path.
+- parent: batch 17 checkpoint commit;
+- objective: migrate consent-gated embeds and interactive multifile examples
+  through the existing generic directive/example contracts.
 
 ## Kaizen
 

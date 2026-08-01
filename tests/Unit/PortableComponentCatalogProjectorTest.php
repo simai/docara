@@ -35,6 +35,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             'docara.banner',
             'docara.button',
             'docara.card',
+            'docara.code',
             'docara.details',
             'docara.download',
             'docara.diagram',
@@ -43,6 +44,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             'docara.icon',
             'docara.kbd',
             'docara.hero',
+            'docara.html',
             'docara.logos',
             'docara.math',
             'docara.media',
@@ -264,6 +266,18 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             if ($id === 'docara.math') {
                 self::assertStringContainsString('<h1 id="математическая-формула">Математическая формула</h1>', $detail);
                 self::assertStringContainsString('data-docara-block="math"', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.code') {
+                self::assertStringContainsString('<h1 id="код-из-файла">Код из файла</h1>', $detail);
+                self::assertStringContainsString('data-docara-code-title="install.php"', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.html') {
+                self::assertStringContainsString('<h1 id="изолированный-html">Изолированный HTML</h1>', $detail);
+                self::assertStringContainsString('data-docara-block="html"', $detail);
 
                 continue;
             }
@@ -538,7 +552,6 @@ final class PortableComponentCatalogProjectorTest extends TestCase
                 '```css',
                 '```javascript',
             ],
-            'docara.html.ru.md' => [':::html', 'Изолированный HTML'],
             'docara.tabs.ru.md' => [':::tabs', '### Composer', '### Вручную', '### Результат'],
         ];
 
@@ -881,6 +894,15 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         rename($destination . '/content/ru', $destination . '/content-legacy');
         rmdir($destination . '/content');
         rename($destination . '/content-legacy', $destination . '/content');
+        $codePage = $destination . '/content/components/code-from-file.md';
+        file_put_contents(
+            $codePage,
+            str_replace(
+                '../../../snippets/install.php',
+                '../../snippets/install.php',
+                (string) file_get_contents($codePage),
+            ),
+        );
         $site = $this->json($destination . '/docara.json');
         $site['content_root'] = 'content';
         unset($site['locales']);

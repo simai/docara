@@ -598,16 +598,6 @@
             },
             "example_ref": "resources/component-catalog/examples/docara.badge.ru.md"
         },
-        "docara.html": {
-            "title": "Изолированный HTML",
-            "description": "Показывает явно доверенный HTML в песочнице, изолированной от страницы документации.",
-            "limitations": [
-                "Песочница намеренно запрещает скрипты и доступ к родительской странице."
-            ],
-            "states": [],
-            "parameters": [],
-            "example_ref": "resources/component-catalog/examples/docara.html.ru.md"
-        },
         "docara.tabs": {
             "title": "Вкладки",
             "description": "Переключает равноценные представления содержимого с поддержкой клавиатуры и ARIA.",
@@ -649,33 +639,6 @@
                 "fallback": "Используйте заголовки и последовательные разделы в порядке исходного текста.",
                 "admission_condition": "Опубликовать канонический доступный контракт и манифест вкладок, закрепить новую неизменяемую пару Framework и ревизию поставщика, затем пройти проверку схемы, ассетов, рендеринга и браузера Docara."
             }
-        },
-        "docara.code": {
-            "title": "Код из файла",
-            "description": "Вставляет проверенный фрагмент локального файла без копирования кода в Markdown.",
-            "limitations": [
-                "Путь должен оставаться внутри проекта; символические ссылки и файлы больше 1 МиБ запрещены."
-            ],
-            "states": [],
-            "parameters": {
-                "src": {
-                    "label": "Файл",
-                    "description": "Относительный путь внутри проекта."
-                },
-                "lang": {
-                    "label": "Язык",
-                    "description": "Язык подсветки синтаксиса."
-                },
-                "lines": {
-                    "label": "Строки",
-                    "description": "Одна строка или диапазон, например 1-8."
-                },
-                "title": {
-                    "label": "Заголовок",
-                    "description": "Подпись блока кода."
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/docara.code.ru.md"
         }
     }
 }

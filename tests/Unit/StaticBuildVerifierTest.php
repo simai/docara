@@ -1348,6 +1348,11 @@ final class StaticBuildVerifierTest extends TestCase
                 'title' => 'Карточка',
                 'description' => 'Связанное содержимое на отдельной поверхности.',
             ],
+            'docara.code' => [
+                'slug' => 'code-from-file',
+                'title' => 'Код из файла',
+                'description' => 'Проверяемый фрагмент локального файла без копирования кода в Markdown.',
+            ],
             'docara.details' => [
                 'slug' => 'details',
                 'title' => 'Раскрывающийся блок',
@@ -1372,6 +1377,11 @@ final class StaticBuildVerifierTest extends TestCase
                 'slug' => 'hero',
                 'title' => 'Первый экран',
                 'description' => 'Ценность страницы и следующий шаг.',
+            ],
+            'docara.html' => [
+                'slug' => 'html',
+                'title' => 'Изолированный HTML',
+                'description' => 'Доверенный HTML в отдельной безопасной песочнице.',
             ],
             'docara.figure' => [
                 'slug' => 'figure',
@@ -1816,6 +1826,15 @@ final class StaticBuildVerifierTest extends TestCase
         rename($target . '/content/ru', $target . '/content-legacy');
         rmdir($target . '/content');
         rename($target . '/content-legacy', $target . '/content');
+        $codePage = $target . '/content/components/code-from-file.md';
+        file_put_contents(
+            $codePage,
+            str_replace(
+                '../../../snippets/install.php',
+                '../../snippets/install.php',
+                (string) file_get_contents($codePage),
+            ),
+        );
         $site = $this->readJson($target . '/docara.json');
         $site['content_root'] = 'content';
         unset($site['locales']);

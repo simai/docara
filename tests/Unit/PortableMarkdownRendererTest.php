@@ -120,6 +120,33 @@ MD, null, 'content/ru/components/alert.md');
     }
 
     #[Test]
+    public function external_code_inside_markdown_example_keeps_the_authored_source_context(): void
+    {
+        $root = sys_get_temp_dir() . '/docara-code-example-' . bin2hex(random_bytes(8));
+        self::assertTrue(mkdir($root, 0700, true));
+        file_put_contents($root . '/snippet.php', "<?php\necho 'ready';\n");
+
+        try {
+            $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+:::example {label="Code"}
+```markdown
+:::code {src="snippet.php" lang=php lines="1-2" title="snippet.php"}
+:::
+```
+:::
+MD, $root, $root . '/page.md');
+
+            self::assertStringContainsString('data-docara-example=', $html);
+            self::assertStringContainsString('data-docara-code-title="snippet.php"', $html);
+            self::assertStringContainsString('&lt;?php', $html);
+            self::assertStringContainsString("echo 'ready';", $html);
+        } finally {
+            @unlink($root . '/snippet.php');
+            @rmdir($root);
+        }
+    }
+
+    #[Test]
     public function it_renders_local_diagrams_math_and_consent_gated_embeds(): void
     {
         $renderer = new PortableMarkdownRenderer;

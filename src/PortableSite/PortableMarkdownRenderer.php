@@ -131,7 +131,12 @@ final class PortableMarkdownRenderer
                     $block['attributes'],
                 ),
                 TypedRendererId::Embed => $this->renderEmbed($this->converter->convert($blockMarkdown), $block['attributes']),
-                TypedRendererId::Example => $this->renderExample($block['markdown'], $block['attributes']),
+                TypedRendererId::Example => $this->renderExample(
+                    $block['markdown'],
+                    $block['attributes'],
+                    $sourceRoot,
+                    $sourceFile,
+                ),
                 TypedRendererId::Figure => $this->renderFigure($this->converter->convert($blockMarkdown), $block['attributes']),
                 TypedRendererId::Grid => $this->renderGrid($block['markdown'], $block['attributes']),
                 TypedRendererId::Media => $this->renderMedia($this->converter->convert($blockMarkdown), $block['attributes']),
@@ -464,7 +469,12 @@ final class PortableMarkdownRenderer
     }
 
     /** @param array<string,string> $attributes */
-    private function renderExample(string $markdown, array $attributes): string
+    private function renderExample(
+        string $markdown,
+        array $attributes,
+        ?string $sourceRoot,
+        ?string $sourceFile,
+    ): string
     {
         $this->assertAttributes($attributes, ['label'], 'example');
         $label = trim($attributes['label'] ?? 'Example');
@@ -491,7 +501,7 @@ final class PortableMarkdownRenderer
         }
 
         $preview = $hasMarkdown
-            ? $this->render($sources['Markdown'])
+            ? $this->render($sources['Markdown'], $sourceRoot, $sourceFile)
             : $this->renderExampleDocument($sources);
         $renderedSources = [];
         foreach ($sources as $language => $source) {

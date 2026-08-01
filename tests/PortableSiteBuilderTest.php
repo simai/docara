@@ -107,6 +107,15 @@ final class PortableSiteBuilderTest extends TestCase
                 $this->tmpPath('content-source'),
                 $this->tmpPath('content/' . $locale),
             );
+            $codePage = $this->tmpPath("content/$locale/components/code-from-file.md");
+            file_put_contents(
+                $codePage,
+                str_replace(
+                    '../../snippets/install.php',
+                    '../../../snippets/install.php',
+                    (string) file_get_contents($codePage),
+                ),
+            );
         }
         $this->filesystem->deleteDirectory($this->tmpPath('content-source'));
 
@@ -1284,6 +1293,7 @@ final class PortableSiteBuilderTest extends TestCase
             '/components/button/',
             '/components/card/',
             '/components/code/',
+            '/components/code-from-file/',
             '/components/details/',
             '/components/diagram/',
             '/components/download/',
@@ -1292,6 +1302,7 @@ final class PortableSiteBuilderTest extends TestCase
             '/components/headings-and-text/',
             '/components/grid/',
             '/components/hero/',
+            '/components/html/',
             '/components/icon/',
             '/components/kbd/',
             '/components/links-and-images/',
@@ -2214,6 +2225,15 @@ MD;
         rename($target . '/content/ru', $target . '/content-legacy');
         rmdir($target . '/content');
         rename($target . '/content-legacy', $target . '/content');
+        $codePage = $target . '/content/components/code-from-file.md';
+        file_put_contents(
+            $codePage,
+            str_replace(
+                '../../../snippets/install.php',
+                '../../snippets/install.php',
+                (string) file_get_contents($codePage),
+            ),
+        );
         $site = $this->jsonFile($target . '/docara.json');
         $site['content_root'] = 'content';
         unset($site['locales']);

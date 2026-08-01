@@ -475,68 +475,6 @@
             },
             "example_ref": "resources/component-catalog/examples/ui.button.ru.md"
         },
-        "docara.example": {
-            "title": "Пример",
-            "description": "Показывает готовый результат и исходный Markdown, HTML, CSS или JavaScript во вкладках одного компактного блока.",
-            "limitations": [
-                "Для Markdown используйте одну вкладку исходника. HTML можно дополнить отдельными CSS и JavaScript; JavaScript выполняется только в изолированном iframe."
-            ],
-            "states": [],
-            "parameters": {
-                "label": {
-                    "label": "Название вкладки",
-                    "description": "Задаёт понятное читателю название первой вкладки."
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/docara.example.ru.md"
-        },
-        "docara.embed": {
-            "title": "Встраиваемый материал",
-            "description": "Помещает доверенный внешний материал в адаптивную область с заданными пропорциями.",
-            "limitations": [
-                "Встраивайте только доверенные HTTPS-источники и задавайте осмысленный заголовок."
-            ],
-            "states": [],
-            "parameters": {
-                "provider": {
-                    "label": "Поставщик",
-                    "description": "Определяет тип внешнего материала.",
-                    "values": {
-                        "generic": "Обычный",
-                        "video": "Видео",
-                        "map": "Карта",
-                        "external": "Внешний виджет"
-                    }
-                },
-                "id": {
-                    "label": "Идентификатор",
-                    "description": "Идентификатор материала у поставщика."
-                },
-                "ratio": {
-                    "label": "Соотношение сторон",
-                    "description": "Задаёт пропорции адаптивной области.",
-                    "values": {
-                        "1/1": "Квадрат 1:1",
-                        "4/3": "Классическое 4:3",
-                        "16/9": "Широкое 16:9",
-                        "21/9": "Сверхширокое 21:9"
-                    }
-                },
-                "title": {
-                    "label": "Доступное название",
-                    "description": "Называет встроенный материал для вспомогательных технологий."
-                },
-                "consent": {
-                    "label": "Согласие",
-                    "description": "Определяет, загружать ли внешний материал только после согласия.",
-                    "values": {
-                        "required": "Требуется",
-                        "none": "Не требуется"
-                    }
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/docara.embed.ru.md"
-        },
         "docara.tree": {
             "title": "Дерево файлов",
             "description": "Объясняет вложенную структуру файлов и каталогов с явной иерархией.",

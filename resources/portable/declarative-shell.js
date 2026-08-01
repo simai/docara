@@ -118,9 +118,13 @@
   document.querySelectorAll('[data-docara-embed-load]').forEach(function(button){
     button.addEventListener('click',function(){
       var embed=button.closest('[data-docara-block="embed"]');
-      var template=embed&&embed.querySelector('template[data-docara-embed-content]');
+      var template=embed&&embed.querySelector('template[data-docara-embed-template]');
       if(!embed||!template)return;
       var fragment=template.content.cloneNode(true);
+      var iframe=fragment.querySelector('iframe[data-src]');
+      if(!iframe)return;
+      iframe.src=iframe.dataset.src;
+      iframe.removeAttribute('data-src');
       embed.replaceChildren(fragment);
     });
   });

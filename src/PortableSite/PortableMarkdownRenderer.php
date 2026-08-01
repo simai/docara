@@ -609,13 +609,20 @@ final class PortableMarkdownRenderer
         }
         $title = trim($attributes['title'] ?? 'Embedded content');
         $content = trim((string) $rendered);
-        if (preg_match('/^<p><a href="(?<url>[^"]+)"[^>]*>.*<\/a><\/p>$/su', $content, $match) !== 1) {
+        if (preg_match('/^<p><a href="(?<url>[^"]+)"[^>]*>(?<label>.*)<\/a><\/p>$/su', $content, $match) !== 1) {
             throw new PortableConfigurationException(
                 'MARKDOWN_EMBED_LINK_REQUIRED',
                 'An embed block must contain exactly one Markdown link.',
             );
         }
         $this->assertSafeUrl($match['url'], 'MARKDOWN_EMBED_URL_UNSAFE');
+        $loadLabel = trim(strip_tags(html_entity_decode((string) $match['label'], ENT_QUOTES | ENT_HTML5, 'UTF-8')));
+        if ($loadLabel === '') {
+            throw new PortableConfigurationException(
+                'MARKDOWN_EMBED_LABEL_REQUIRED',
+                'An embed link requires a visible loading label.',
+            );
+        }
 
         $url = $this->escapeHtml($match['url']);
         $common = ' title="' . $this->escapeHtml($title)
@@ -623,8 +630,8 @@ final class PortableMarkdownRenderer
         $content = $consent === 'none'
             ? '<iframe src="' . $url . '"' . $common . '></iframe>'
             : '<div class="w-full h-full flex flex-col items-center content-main-center gap-1 p-2 text-center" data-docara-embed-consent>'
-                . '<p class="m-0">External content is loaded only after confirmation.</p>'
-                . '<button type="button" class="sf-button sf-button--main sf-button--primary sf-button--size-1" data-docara-embed-load>Load content</button>'
+                . '<button type="button" class="sf-button sf-button--main sf-button--primary sf-button--size-1" data-docara-embed-load>'
+                . $this->escapeHtml($loadLabel) . '</button>'
                 . '</div><template data-docara-embed-template><iframe data-src="' . $url . '"' . $common . '></iframe></template>';
 
         return '<div data-docara-block="embed" data-provider="' . $provider . '" data-consent="' . $consent

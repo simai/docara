@@ -35,6 +35,8 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
                     '/ru/components/details/',
                     '/ru/components/diagram/',
                     '/ru/components/download/',
+                    '/ru/components/embed/',
+                    '/ru/components/example/',
                     '/ru/components/figure/',
                     '/ru/components/footnotes-and-sources/',
                     '/ru/components/headings-and-text/',
@@ -53,9 +55,9 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
         ));
         $allowlist = new LegacyPublicSourceAllowlist;
 
-        self::assertCount(20, $generated);
-        self::assertCount(20, $allowlist->generatedRoutes());
-        foreach (['alert', 'backlinks', 'banner', 'button', 'card', 'code', 'code-from-file', 'details', 'diagram', 'download', 'figure', 'footnotes-and-sources', 'grid', 'headings-and-text', 'hero', 'html', 'icon', 'kbd', 'links-and-images', 'lists-and-quotes', 'logos', 'math', 'media', 'table'] as $slug) {
+        self::assertCount(18, $generated);
+        self::assertCount(18, $allowlist->generatedRoutes());
+        foreach (['alert', 'backlinks', 'banner', 'button', 'card', 'code', 'code-from-file', 'details', 'diagram', 'download', 'embed', 'example', 'figure', 'footnotes-and-sources', 'grid', 'headings-and-text', 'hero', 'html', 'icon', 'kbd', 'links-and-images', 'lists-and-quotes', 'logos', 'math', 'media', 'table'] as $slug) {
             self::assertNotContains("/ru/components/$slug/", $allowlist->generatedRoutes());
         }
         self::assertNotContains('/ru/components/badge/', $allowlist->generatedRoutes());
@@ -82,7 +84,7 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
 
         $allowlist = new LegacyPublicSourceAllowlist;
         $allowlist->assertLanguagePackComponentCounts($counts);
-        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 18, 'zh-Hans' => 8], $counts);
+        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 16, 'zh-Hans' => 8], $counts);
         $russian = json_decode(
             (string) file_get_contents($root . '/resources/language-packs/ru.json'),
             true,
@@ -98,6 +100,8 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
             'docara.code',
             'docara.details',
             'docara.download',
+            'docara.embed',
+            'docara.example',
             'docara.diagram',
             'docara.figure',
             'docara.grid',

@@ -7,8 +7,6 @@
     "migration_rule": "Entries may be removed after Markdown parity evidence; new entries are forbidden.",
     "generated_routes": [
         "/ru/components/",
-        "/ru/components/embed/",
-        "/ru/components/example/",
         "/ru/components/steps/",
         "/ru/components/tabs/",
         "/ru/components/tree/",
@@ -32,7 +30,7 @@
         "ar": 8,
         "en": 42,
         "fr-CA": 8,
-        "ru": 18,
+        "ru": 16,
         "zh-Hans": 8
     }
 }

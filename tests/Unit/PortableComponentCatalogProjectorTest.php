@@ -38,6 +38,8 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             'docara.code',
             'docara.details',
             'docara.download',
+            'docara.embed',
+            'docara.example',
             'docara.diagram',
             'docara.figure',
             'docara.grid',
@@ -278,6 +280,18 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             if ($id === 'docara.html') {
                 self::assertStringContainsString('<h1 id="изолированный-html">Изолированный HTML</h1>', $detail);
                 self::assertStringContainsString('data-docara-block="html"', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.embed') {
+                self::assertStringContainsString('<h1 id="встраиваемый-материал">Встраиваемый материал</h1>', $detail);
+                self::assertGreaterThanOrEqual(2, substr_count($detail, 'data-docara-block="embed"'));
+
+                continue;
+            }
+            if ($id === 'docara.example') {
+                self::assertStringContainsString('<h1 id="интерактивный-пример">Интерактивный пример</h1>', $detail);
+                self::assertGreaterThanOrEqual(1, substr_count($detail, 'data-docara-example='));
 
                 continue;
             }
@@ -546,12 +560,6 @@ final class PortableComponentCatalogProjectorTest extends TestCase
         }
 
         $fixtures = [
-            'docara.example.ru.md' => [
-                ':::example {label="Интерактивный пример"}',
-                '```html',
-                '```css',
-                '```javascript',
-            ],
             'docara.tabs.ru.md' => [':::tabs', '### Composer', '### Вручную', '### Результат'],
         ];
 

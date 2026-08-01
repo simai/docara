@@ -257,6 +257,8 @@ final class PortableSiteBuilderTest extends TestCase
         $shellRuntime = (string) file_get_contents(
             $this->tmpPath('build_local/_docara/declarative-shell.js'),
         );
+        self::assertStringContainsString("template[data-docara-embed-template]", $shellRuntime);
+        self::assertStringContainsString('iframe.src=iframe.dataset.src', $shellRuntime);
         $smartSurface = implode('', array_map(
             static fn (string $path): string => (string) file_get_contents($path),
             [
@@ -1297,6 +1299,8 @@ final class PortableSiteBuilderTest extends TestCase
             '/components/details/',
             '/components/diagram/',
             '/components/download/',
+            '/components/embed/',
+            '/components/example/',
             '/components/figure/',
             '/components/footnotes-and-sources/',
             '/components/headings-and-text/',

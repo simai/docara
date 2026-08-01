@@ -177,6 +177,9 @@ MD);
         self::assertStringContainsString('class="ratio-16-9 ', $embed);
         self::assertStringContainsString('data-docara-embed-consent', $embed);
         self::assertStringContainsString('data-docara-embed-template', $embed);
+        self::assertStringContainsString('data-docara-embed-load>Open widget</button>', $embed);
+        self::assertStringNotContainsString('External content is loaded', $embed);
+        self::assertStringNotContainsString('>Load content</button>', $embed);
         self::assertStringNotContainsString(' src="https://example.com/widget"', $embed);
         self::assertStringContainsString(' data-src="https://example.com/widget"', $embed);
     }

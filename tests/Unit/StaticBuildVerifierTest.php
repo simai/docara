@@ -1363,6 +1363,16 @@ final class StaticBuildVerifierTest extends TestCase
                 'title' => 'Скачивание',
                 'description' => 'Понятное действие для загрузки или открытия файла.',
             ],
+            'docara.embed' => [
+                'slug' => 'embed',
+                'title' => 'Встраиваемый материал',
+                'description' => 'Доверенный внешний материал с загрузкой после действия читателя.',
+            ],
+            'docara.example' => [
+                'slug' => 'example',
+                'title' => 'Интерактивный пример',
+                'description' => 'Готовый результат рядом с его точным исходником.',
+            ],
             'docara.diagram' => [
                 'slug' => 'diagram',
                 'title' => 'Диаграмма',

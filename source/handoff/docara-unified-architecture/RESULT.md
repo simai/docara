@@ -447,3 +447,20 @@ Status: PASS; M3.3 continues
 
 Twenty-six of 32 component routes are physical; batch 18 is Embed and Example.
 Overall M3 remains unclaimed.
+
+## M3.3 batch 18 result
+
+Status: PASS; M3.3 continues
+
+- Embed and Example now have physical Russian Markdown owners and starters;
+- both reuse generic typed-directive/example IR and one PageBuilder path;
+- browser acceptance fixed the common consent-template activation and now uses
+  Markdown-owned loading labels instead of hard-coded English public copy;
+- full/isolated exact; static reports 206 HTML, 18,942 references and zero
+  broken; offline consent activation and sandboxed interactive examples pass
+  at desktop/mobile light/dark with zero overflow or console issues;
+- exact pack/allowlist/example legacy retired with rollback;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-18-embed-example.md`.
+
+Twenty-eight of 32 component routes are physical; batch 19 is Steps and Tree.
+Overall M3 remains unclaimed.

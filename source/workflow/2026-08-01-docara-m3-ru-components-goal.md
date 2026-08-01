@@ -449,10 +449,21 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 18 — Embed and Example
 
+- status: completed;
+- parent: `b2f695f`;
+- both physical owners reuse generic typed-directive/example IR;
+- browser acceptance fixed the shared consent template/activation contract and
+  removed hard-coded English consent copy in favor of Markdown-owned labels;
+- full/isolated/static/browser parity PASS; exact pack/allowlist/examples
+  retired with rollback;
+- evidence: `m3-ru-components/batch-18-embed-example.md`.
+
+### Batch 19 — Steps and Tree
+
 - status: in-progress;
-- parent: batch 17 checkpoint commit;
-- objective: migrate consent-gated embeds and interactive multifile examples
-  through the existing generic directive/example contracts.
+- parent: batch 18 checkpoint commit;
+- objective: migrate ordered process and hierarchical file-tree pages through
+  generic typed directives without a family-specific pipeline.
 
 ## Kaizen
 

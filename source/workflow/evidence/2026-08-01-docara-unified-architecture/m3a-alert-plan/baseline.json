@@ -1,0 +1,86 @@
+{
+  "schema_version": "1.0.0",
+  "status": "pass",
+  "revision": "f911db16ba07aa6735f09ab2a63370bfd2fa608f",
+  "runtime": {
+    "php": "8.4.20",
+    "snapshot": "disposable git archive with vendor copied from the verified local runtime"
+  },
+  "route": {
+    "url": "/ru/components/alert/",
+    "output": "ru/components/alert/index.html",
+    "source_kind": "generated_projection",
+    "synthetic_page_path": "content/ru/components/alert.md",
+    "target_physical_source": "docs/site/content/ru/components/alert.md"
+  },
+  "commands": [
+    "php ../../docara build m3a-alert-full",
+    "php ../../docara verify-static build_m3a-alert-full",
+    "php ../../docara build m3a-alert-single",
+    "php ../../docara build m3a-alert-single --page=/ru/components/alert/",
+    "diff -qr build_m3a-alert-full build_m3a-alert-single"
+  ],
+  "hash_commands": [
+    "(cd build_m3a-alert-full && find . -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum | sha256sum)",
+    "(cd build_m3a-alert-single && find . -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum | sha256sum)",
+    "sha256sum build_m3a-alert-full/ru/components/alert/index.html build_m3a-alert-single/ru/components/alert/index.html",
+    "sha256sum build_m3a-alert-full/_docara/component-catalog.json build_m3a-alert-full/.docara/component-catalog-pages/ru.json"
+  ],
+  "build": {
+    "pages": 103,
+    "files": 321,
+    "static_html_documents": 206,
+    "local_references": 18866,
+    "broken_references": 0,
+    "full_single_tree_diff": "empty",
+    "tree_manifest_sha256": "aad7bbd5a3684e5eb21a43953cf737f1679959d98ae41121d248a683c0f0171d",
+    "alert_html_sha256": "a12740106a16dc42a4916c53e5f33f65fb4e18f527eaec857825f712f559dec9",
+    "component_catalog_sha256": "6fefd215e643548dab8a0fa0ef3096580c00cf1832fefec8c024999529523c3c",
+    "russian_catalog_receipts_sha256": "901eb8a94a6b79d4939af8f3d468e505833f736b2f6f1c91a5c4847b8a62aadd"
+  },
+  "alert_receipt": {
+    "catalog_entry_sha256": "0da517705ae4f20c1cfc880857fcd517721d1649a42ba9f0937ccd575da38554",
+    "contract_fragment_sha256": "de246204247657a814bf047efc84c3f819dedd0e7f29b57d077878e6ddcea0fe",
+    "example_ref": "resources/component-catalog/examples/docara.alert.ru.md",
+    "example_sha256": "b1576ae7bd5e15935d40e02c744c990deb0fcea51aaacffc8594e0936ecd7601",
+    "rendered_fragment_sha256": "ee6b989184b400eed9046ea027b32590380e6971dbf760b1c6ce8dc9cdf67443"
+  },
+  "linked_assets": {
+    "brand_svg": "10781f8fb31318e8807a215ec002ec1f8033227bf8678300e3dc63a7e3c1aebc",
+    "favicon": "9bcd7305a24235227b13096694eca338fddc72731a948bdf7a8a6d6a0958afda",
+    "search_js": "496506d5329b8a387972be85ac27ae390cced904acf596f4de905fb7bd096a90",
+    "declarative_shell_css": "34bab0a36d3256dcd9757ebad6a7187efafa3ee38cc28c7a90be2cb511b8ece1",
+    "smart_brand_css": "51eb6e7b9a83bbdbb75b15b80306eb8876fb505b8c13e8a0ece74aa0d453b1d4",
+    "smart_navigation_css": "e7d4cf8e4e07c8f937777b834b1e053a13d30961ad268b34809cd1c5f685e073",
+    "smart_navigation_js": "0b38bf7391535ef49fd2f78e2471e379b9a6b7af117156ccded50fd4608dd647",
+    "smart_toc_css": "40c1c9318b8ed26ab5b2a7da0943e9c908f6079139d6a52e85567b78708819b7",
+    "smart_toc_js": "9a37d8abe839647f5d1e366401e75afdef73b25fe210c567699279aa33f8b83d",
+    "smart_preferences_css": "290e2895bf233206cb90ac303578d6e70a142bfafc44b4be0e3d18fcdc1eea70",
+    "smart_preferences_js": "f16539ac44dc5064101c3c404e62fa6c13cab3361e9e5d3b2659e3bf90a7e8e1"
+  },
+  "external_ui_revision": "cc1bfbc53c197db54ea27c28e78f4c0af9b60d33",
+  "browser": {
+    "engine": "Chromium",
+    "console_errors": 0,
+    "console_warnings": 0,
+    "observed_alerts": 5,
+    "desktop_light_capture_sha256": "5f48fc733bf85af4be99380e02e6a4c945a13d47b65a324ce08e08af52f21cb8",
+    "mobile_light_capture_sha256": "b19f431aaa58f37b5624f294b62afd9bb3c93189cf51d4122d32a1126e5670f6",
+    "capture_location": "output/playwright/m3a-alert-plan (ignored local evidence)",
+    "commands": [
+      "php -S 127.0.0.1:8766 -t build_m3a-alert-full",
+      "npx playwright screenshot --viewport-size=1440,1000 http://127.0.0.1:8766/ru/components/alert/ output/playwright/m3a-alert-plan/desktop-light.png",
+      "npx playwright screenshot --viewport-size=390,844 http://127.0.0.1:8766/ru/components/alert/ output/playwright/m3a-alert-plan/mobile-light.png"
+    ]
+  },
+  "diagnostic_attempts": [
+    {
+      "command": "php ../../docara verify-static m3a-alert-full",
+      "result": "failed: verifier requires the actual build directory name; corrected to build_m3a-alert-full"
+    },
+    {
+      "action": "first browser screenshot",
+      "result": "failed: capture directory did not exist; directory was created and both captures then passed"
+    }
+  ]
+}

@@ -11,12 +11,12 @@
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/implementation/ROADMAP.md"],
-  "evidence_refs": [],
+  "evidence_refs": ["source/workflow/evidence/2026-08-01-docara-unified-architecture/m3a-alert-plan/PLAN-CHECKPOINT.md"],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.m3.migration",
   "allowed_scope": ["Accepted route groups", "Component manifests", "Derived indexes", "Localization parity"],
   "forbidden_scope": ["Unmapped deletion", "Unrelated visual redesign", "Release"],
   "checks": ["Route matrix", "Broken links zero", "Missing assets zero", "Unknown nodes zero"],
-  "status": "ready_for_bounded_route_group_plan",
-  "next_action": "plan_first_bounded_m3_route_group"
+  "status": "alert_plan_checkpoint_completed_review_required",
+  "next_action": "independent_review_m3a_alert_plan"
 }

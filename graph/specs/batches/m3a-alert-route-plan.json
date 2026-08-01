@@ -1,0 +1,29 @@
+{
+  "id": "docara.batch.m3a.alert_plan",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "checkpoint",
+  "tz_role": "production_test_plan_checkpoint",
+  "title": "M3-A. Alert route plan checkpoint",
+  "summary": "Freeze an independently reviewable production and test plan for moving only /ru/components/alert/ after exact legacy-owner and full/single baseline reproduction.",
+  "owner": "teamlead",
+  "lifecycle": "completed",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": [
+    "source/workflow/2026-08-01-docara-m3a-alert-route-plan.md",
+    "docs/specification/implementation/ROADMAP.md"
+  ],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3a-alert-plan/PLAN-CHECKPOINT.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3a-alert-plan/baseline.json",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3a-alert-plan/OWNER-MAP.md"
+  ],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.m3.migration",
+  "allowed_scope": ["One-route production/test plan", "Baseline", "Owner map", "Plan evidence", "Graph and handoff plan state"],
+  "forbidden_scope": ["Runtime", "Resources", "Public content", "Dependencies", "Locks", "Implementation readiness", "Legacy deletion", "Release"],
+  "checks": ["Exact full/single baseline", "Owner projection map", "Early route-selection design", "Focused/full/static/browser matrix", "Rollback and stop conditions", "Graph validation", "Repo hygiene"],
+  "status": "plan_checkpoint_completed_review_required",
+  "next_action": "independent_review_before_m3a_alert_implementation"
+}

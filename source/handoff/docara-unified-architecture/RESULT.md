@@ -161,3 +161,33 @@ Status: bounded Badge target pipeline accepted; exact output parity passed
 `docara.gate.vertical_slice` is accepted only for Badge. Global source
 ownership, full migration, release and production remain unclaimed. M3 is now
 eligible for a new bounded plan; it was not implemented in this assignment.
+
+# M3-A Alert plan checkpoint result
+
+Status: one-route production/test plan completed; independent review required
+
+- scope is exactly `/ru/components/alert/`; no migration was implemented;
+- the current path is traced from typed definition, Russian language-pack
+  prose and `resources/component-catalog/examples/docara.alert.ru.md` through
+  the catalog projector and legacy Alert renderer to
+  `ru/components/alert/index.html`;
+- the sole proposed owner is
+  `docs/site/content/ru/components/alert.md`;
+- a disposable build at M2 HEAD reproduced 103 pages, 321 files, 206 static
+  HTML documents, 18,866 local references and zero broken references;
+- full and isolated trees are byte-identical with manifest SHA-256
+  `aad7bbd5a3684e5eb21a43953cf737f1679959d98ae41121d248a683c0f0171d`;
+- Alert HTML SHA-256 is
+  `a12740106a16dc42a4916c53e5f33f65fb4e18f527eaec857825f712f559dec9`;
+- Chromium confirms all five Alert examples at desktop and mobile widths with
+  zero console errors and warnings;
+- the plan requires isolated route selection before compilation and
+  catalog/example projection, using the same `PageBuilder` as the full build;
+- the exact allowlist and Russian language-pack reductions are deferred until
+  successful implementation parity;
+- evidence:
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3a-alert-plan/`.
+
+M3-A implementation, global source ownership, migration coverage, release and
+production readiness remain unclaimed. The next action is independent review
+of the plan, not implementation.

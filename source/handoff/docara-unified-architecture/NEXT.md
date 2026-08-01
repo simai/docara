@@ -1,40 +1,47 @@
-# Next executable batch: bounded M3 route group
+# Next executable checkpoint: independent M3-A Alert plan review
 
-Batch ID: `docara.batch.m3.migrate`
+Checkpoint ID: `docara.batch.m3a.alert_plan`
 
-## Required work
+Route: `/ru/components/alert/`
 
-1. Select the smallest independently reversible group of generated routes.
-2. Add one physical Markdown source per selected locale route.
-3. Extend the accepted IR/registry/gateway/PageBuilder only for node types
-   required by that group.
-4. Preserve exact URLs, HTML, assets, content and full/single build parity.
-5. Reduce the explicit legacy allowlist only after route-level evidence; keep
-   the global source-ownership gate open until all 44 generated routes move.
+## Required review
 
-## Allowed writes
+1. Confirm the exact current owner/projection chain and the recorded
+   full/single/browser baseline.
+2. Confirm `docs/site/content/ru/components/alert.md` as the sole proposed
+   public page owner, with no page prose in language/config sources.
+3. Confirm that Alert needs only a generic typed block-component capability in
+   the existing compiler, registry, Smart gateway and `PageBuilder`.
+4. Confirm the early route-selection design: an isolated build must select the
+   physical source before compilation and catalog/example projection.
+5. Confirm the exact one-route allowlist/language-pack reduction, parity gates,
+   test matrix, rollback path and stop conditions.
 
-- a separately accepted bounded M3 production/test plan;
-- graph implementation mappings and state supported by evidence;
-- `source/workflow/evidence/2026-08-01-docara-unified-architecture/`;
-- this handoff's `RESULT.md` and, after a passing gate, `STATUS.yaml`;
-- a bounded follow-up assignment under `source/workflow/`.
+Plan:
+`source/workflow/2026-08-01-docara-m3a-alert-route-plan.md`.
 
-## Forbidden writes
+Evidence:
+`source/workflow/evidence/2026-08-01-docara-unified-architecture/m3a-alert-plan/`.
 
-- unrelated templates, assets, public content redesign and public build output;
-- legacy deletion outside the accepted and proven route group;
-- dependency/lock updates;
-- default branch, tag, release or deployment changes.
+## Allowed result
 
-## Done when
+An independent PASS, PASS_WITH_NOTES or blocking plan review. A passing review
+may authorize a separate M3-A implementation assignment limited to this route.
 
-- the selected route group has one Markdown owner per locale route;
-- full and single-page results preserve the M0 baseline for moved routes;
-- unknown nodes/components fail closed with source locations;
-- the allowlist and implementation mappings shrink without hidden fallback;
-- group evidence is committed before selecting the next group.
+## Forbidden now
 
-Completed M1/M2 evidence:
-`source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md`,
-`M1B-EVIDENCE.md` and `M2-EVIDENCE.md` in the same directory.
+- creating or migrating the Alert Markdown page;
+- changing `src/`, `resources/`, `docs/site/content/`, dependencies or locks;
+- reducing the allowlist or deleting legacy;
+- touching another route/component;
+- claiming M3 implementation, source ownership, migration coverage, release or
+  production readiness;
+- merge, push, tag, release or deploy.
+
+## Implementation boundary after a separate acceptance
+
+The future implementation must preserve the current URL, Russian content,
+HTML, assets, appearance and behavior; use the accepted single target pipeline;
+select the route before unrelated compilation/projection in isolated mode; and
+retain a one-commit rollback path. Full and isolated builds must pass after the
+slice before the exact Alert legacy entries may shrink.

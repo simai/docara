@@ -22,9 +22,10 @@ Recovery source:
 
 - parent SHA: `b14fe4e1e70a5465fe382bd5ced1de26cb65a315`;
 - completed milestone: M3.1 durable execution contract and baseline;
-- candidate SHA: commit containing this evidence (resolved by Git history);
-- current batch: 03, early route selection before irrelevant projections;
-- next evidence: focused call-spy plus full/isolated regression;
+- latest completed batch: 03, early physical-route selection before irrelevant
+  compilation/projections;
+- current batch: 04, generic block-component IR/compiler contract;
+- next evidence: typed snapshot and negative source-location matrix;
 - blockers: none; federation/process gaps are documented in the workflow.
 
 ## Evidence rules
@@ -36,3 +37,10 @@ Recovery source:
 - browser screenshots remain evidence, never source of truth;
 - rollback is the checkpoint commit or explicit old-to-new mapping;
 - milestone PASS never implies goal PASS before the Completion Gate.
+
+## Batch evidence
+
+| Batch | Evidence | Verdict |
+| --- | --- | --- |
+| 03 | `batch-03-early-route-selection.md` | PASS |
+| 04 | `batch-04-component-block-ir.md` | pending |

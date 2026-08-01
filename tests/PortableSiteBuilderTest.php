@@ -20,6 +20,29 @@ use Symfony\Component\Process\Process;
 final class PortableSiteBuilderTest extends TestCase
 {
     #[Test]
+    public function it_selects_a_physical_route_before_other_pages_and_global_projections(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $events = [];
+        $builder = new PortableSiteBuilder(
+            new Filesystem,
+            new PortableMarkdownRenderer,
+            observer: static function (string $event, string $subject) use (&$events): void {
+                $events[] = [$event, $subject];
+            },
+        );
+        $destination = $this->tmpPath('build_local');
+        $builder->build($this->tmp, $destination);
+        $events = [];
+
+        $builder->build($this->tmp, $destination, '/guides/getting-started/');
+
+        self::assertSame([
+            ['page.build', 'content/guides/getting-started.md'],
+        ], $events);
+    }
+
+    #[Test]
     public function it_atomically_rebuilds_one_existing_page_without_rerendering_neighbors(): void
     {
         $this->copyPortableFixture($this->tmp);

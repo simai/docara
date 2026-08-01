@@ -173,8 +173,8 @@ checks, evidence update and a separate commit.
 | --- | --- | --- | --- |
 | 01 | M3.1 workflow, launch, inventory and evidence index | graph/JSON/hygiene | completed |
 | 02 | M3.1 clean full plus all-route isolated baseline hashes | deterministic/static/browser baseline | completed |
-| 03 | early selector and route/source plan before projections | call-spy and full/single regression | in-progress |
-| 04 | generic block-component IR and compiler contract | typed snapshot and negative locations | pending |
+| 03 | early selector and route/source plan before projections | call-spy and full/single regression | completed |
+| 04 | generic block-component IR and compiler contract | typed snapshot and negative locations | in-progress |
 | 05 | generic renderer-registry/Smart-gateway block artifact | registry/gateway focused tests | pending |
 | 06 | Alert Markdown owner | exact Alert full/single/browser parity | pending |
 | 07 | native headings/text and lists/quotes | route parity | pending |
@@ -256,10 +256,27 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 03 — early route selection
 
+- status: completed;
+- parent: `cbfa846f710fe0be4d63504df921e90913ad9623`;
+- physical source selection occurs before `PortableConfigurationLoader`,
+  `PageBuilder`, component-catalog projection and example projection;
+- an isolated physical route builds exactly one source and reconstructs only
+  routing/navigation context from the accepted full-build diagnostics;
+- unchanged global projections/search/metadata are copied atomically from the
+  complete build rather than regenerated;
+- focused call-spy, 38-test builder suite, full/isolated exact tree and static
+  verification: PASS;
+- legacy generated routes retain their compatibility path until their physical
+  owner lands; this interim branch is deleted by the M3 ownership/retirement
+  gates, not treated as a second engine;
+- evidence: `m3-ru-components/batch-03-early-route-selection.md`.
+
+### Batch 04 — generic block-component IR
+
 - status: in-progress;
-- parent: M3.1 checkpoint commit;
-- objective: select the isolated route before irrelevant catalog/example
-  projections while retaining one PageBuilder and full-build behavior.
+- parent: batch 03 checkpoint commit;
+- objective: compile a generic fenced Smart block with ordered typed children,
+  validated props and exact source spans; no Alert-specific parser/node.
 
 ## Kaizen
 

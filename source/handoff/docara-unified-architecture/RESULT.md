@@ -348,3 +348,23 @@ Status: PASS; M3.3 continues
 
 Thirteen of 32 component routes are physical; batch 12 (Button and Icon/Kbd)
 is next. Overall M3 and release/production readiness remain unclaimed.
+
+## M3.3 batch 12 result
+
+Status: PASS; M3.3 continues
+
+- Button, Icon and Kbd now have physical Russian Markdown owners and matching
+  portable starters;
+- one manifest registry supplies Badge/Button/Icon/Kbd aliases, prop/slot
+  contracts and templates to the existing typed ComponentNode and Smart
+  gateway; former hard-coded Button/Icon/Kbd renderer branches are removed;
+- full/isolated trees are exact; static reports 206 HTML, 18,914 references and
+  zero broken; desktop-light and mobile-dark browser gates prove responsive
+  actions, accessible icons, keyboard notation, tabs/copy/focus and zero
+  console warnings/errors;
+- exact pack/allowlist records and zero-reference localized examples are
+  retired with commit rollback evidence;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-12-button-icon-kbd.md`.
+
+Sixteen of 32 component routes are physical; batch 13 (Card and Hero) is next.
+Overall M3 and release/production readiness remain unclaimed.

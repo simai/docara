@@ -36,11 +36,17 @@
     "resources/schemas/lang.schema.json",
     "resources/components/docara.badge.json",
     "resources/components/docara.alert.json",
+    "resources/components/docara.button.json",
+    "resources/components/docara.icon.json",
+    "resources/components/docara.kbd.json",
     "docs/site/content/ru/components/alert.md",
     "docs/site/content/ru/components/backlinks.md",
     "docs/site/content/ru/components/banner.md",
+    "docs/site/content/ru/components/button.md",
     "docs/site/content/ru/components/details.md",
     "docs/site/content/ru/components/download.md",
+    "docs/site/content/ru/components/icon.md",
+    "docs/site/content/ru/components/kbd.md",
     "docs/site/content/ru/lang.json",
     "resources/component-catalog/examples/*.md"
   ],
@@ -65,16 +71,17 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-08-native-links-table.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-09-native-code-footnotes.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-10-details-backlinks.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-11-banner-download.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-11-banner-download.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-12-button-icon-kbd.md"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
     "M1A replaces implicit authored Markdown discovery with typed PageSource, PageSourceLocator and RouteMapper boundaries.",
     "Ambiguous physical routes, unknown locales, outside-root paths, traversal, symlinks and non-.md public page extensions fail before rendering.",
     "M1B adds strict target config/lang/manifest input boundaries and a finite zero-growth allowlist for the remaining legacy public sources.",
-    "70 physical Markdown files produce 70 authored routes after batch 11.",
-    "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 33 additional public routes without physical Markdown.",
-    "The Russian language pack contains 31 component presentation records; English contains 42 and three other bundled packs contain 8 each.",
+    "73 physical Markdown files produce 73 authored routes after batch 12.",
+    "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 30 additional public routes without physical Markdown.",
+    "The Russian language pack contains 28 component presentation records; English contains 42 and three other bundled packs contain 8 each.",
     "The badge route is owned by content/ru/components/badge.md and suppresses the generated badge detail route through AuthoredComponentPageIndex.",
     "M2 proves the physical Badge Markdown owns all page prose and examples while its structural component definition contains no documentation prose.",
     "M3.2 makes content/ru/components/alert.md the Alert owner, removes its Russian pack prose and generated-route allowlist entry, and retires its zero-reference Russian example projection.",
@@ -83,10 +90,11 @@
     "M3.3 batch 09 makes code and footnotes/sources physical, removes their Russian prose records and retires their zero-reference localized examples.",
     "M3.3 batch 10 makes Details and Backlinks physical, removes their Russian prose records and localized examples, and resolves their repeated Russian UI copy from content/ru/lang.json.",
     "The hash-bound disposable backlink projection derives from PageBuilder page URLs, titles and links and is reused by isolated builds without becoming a page prose owner.",
-    "M3.3 batch 11 makes Banner and Download physical, removes their Russian prose records and localized examples, and preserves real asset-link behavior through the shared typed-directive path."
+    "M3.3 batch 11 makes Banner and Download physical, removes their Russian prose records and localized examples, and preserves real asset-link behavior through the shared typed-directive path.",
+    "M3.3 batch 12 makes Button, Icon and Kbd physical, removes their Russian prose records/localized examples and replaces hard-coded inline branches with manifest-owned contracts through the same ComponentNode and Smart gateway."
   ],
   "known_deviations": [
-    "One-route-one-Markdown is false for 33 of 103 logical pages.",
+    "One-route-one-Markdown is false for 30 of 103 logical pages.",
     "Language packs and catalog/example records remain public prose owners.",
     "Generated routes use synthetic page_path values that resemble missing Markdown files."
   ],
@@ -95,6 +103,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
   ],
-  "status": "m3_3_batch_11_implemented_batch_12_ready",
-  "mapped_revision": "commit containing batch-11-banner-download.md; parent b5cf224"
+  "status": "m3_3_batch_12_implemented_batch_13_ready",
+  "mapped_revision": "commit containing batch-12-button-icon-kbd.md; parent 0e16e54"
 }

@@ -28,11 +28,14 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
                     '/ru/components/alert/',
                     '/ru/components/backlinks/',
                     '/ru/components/banner/',
+                    '/ru/components/button/',
                     '/ru/components/code/',
                     '/ru/components/details/',
                     '/ru/components/download/',
                     '/ru/components/footnotes-and-sources/',
                     '/ru/components/headings-and-text/',
+                    '/ru/components/icon/',
+                    '/ru/components/kbd/',
                     '/ru/components/links-and-images/',
                     '/ru/components/lists-and-quotes/',
                     '/ru/components/table/',
@@ -40,9 +43,9 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
         ));
         $allowlist = new LegacyPublicSourceAllowlist;
 
-        self::assertCount(33, $generated);
-        self::assertCount(33, $allowlist->generatedRoutes());
-        foreach (['alert', 'backlinks', 'banner', 'code', 'details', 'download', 'footnotes-and-sources', 'headings-and-text', 'links-and-images', 'lists-and-quotes', 'table'] as $slug) {
+        self::assertCount(30, $generated);
+        self::assertCount(30, $allowlist->generatedRoutes());
+        foreach (['alert', 'backlinks', 'banner', 'button', 'code', 'details', 'download', 'footnotes-and-sources', 'headings-and-text', 'icon', 'kbd', 'links-and-images', 'lists-and-quotes', 'table'] as $slug) {
             self::assertNotContains("/ru/components/$slug/", $allowlist->generatedRoutes());
         }
         self::assertNotContains('/ru/components/badge/', $allowlist->generatedRoutes());
@@ -69,7 +72,7 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
 
         $allowlist = new LegacyPublicSourceAllowlist;
         $allowlist->assertLanguagePackComponentCounts($counts);
-        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 31, 'zh-Hans' => 8], $counts);
+        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 28, 'zh-Hans' => 8], $counts);
         $russian = json_decode(
             (string) file_get_contents($root . '/resources/language-packs/ru.json'),
             true,
@@ -80,8 +83,11 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
             'docara.alert',
             'docara.backlinks',
             'docara.banner',
+            'docara.button',
             'docara.details',
             'docara.download',
+            'docara.icon',
+            'docara.kbd',
             'native.code',
             'native.footnotes_and_sources',
             'native.headings_and_text',

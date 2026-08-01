@@ -193,12 +193,13 @@ MD);
     {
         $cases = [
             [':badge[Test]{type=unknown}', 'CONTENT_COMPONENT_PROP_INVALID'],
-            [':icon[search]{weight=bold}', 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID'],
-            [':icon[search]{variant=main}', 'MARKDOWN_COMPONENT_ATTRIBUTE_COMBINATION_INVALID'],
-            [':icon[search]{container=square variant=plain}', 'MARKDOWN_COMPONENT_ATTRIBUTE_COMBINATION_INVALID'],
-            [':button[Run]{href=javascript:alert(1)}', 'MARKDOWN_BUTTON_HREF_UNSAFE'],
-            [':button[Run]', 'MARKDOWN_BUTTON_HREF_REQUIRED'],
-            [':kbd[Esc]{size=1}', 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN'],
+            [':icon[search]{weight=bold}', 'CONTENT_COMPONENT_PROP_INVALID'],
+            [':icon[search]{variant=main}', 'CONTENT_COMPONENT_PROP_COMBINATION_INVALID'],
+            [':icon[search]{container=square variant=plain}', 'CONTENT_COMPONENT_PROP_COMBINATION_INVALID'],
+            [':icon[not an identifier]', 'CONTENT_COMPONENT_SLOT_INVALID'],
+            [':button[Run]{href=javascript:alert(1)}', 'CONTENT_COMPONENT_PROP_INVALID'],
+            [':button[Run]', 'CONTENT_COMPONENT_PROP_INVALID'],
+            [':kbd[Esc]{size=1}', 'CONTENT_COMPONENT_PROP_UNKNOWN'],
         ];
 
         foreach ($cases as [$markdown, $code]) {

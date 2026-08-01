@@ -35,14 +35,14 @@ generated component page count и русский component-route allowlist ра�
 PageBuilder/registry/gateway; две clean full builds byte-identical; static и
 browser matrices зелёные; graph/workflow/handoff синхронны; worktree чистый.
 
-Current Remaining: 19 generated routes из 32; Alert, Badge, Syntax,
+Current Remaining: 16 generated routes из 32; Alert, Badge, Syntax,
 headings/text, lists/quotes, links/images, table, code, footnotes/sources,
-Details, Backlinks, Banner и Download уже физические.
+Details, Backlinks, Banner, Download, Button, Icon и Kbd уже физические.
 
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.3 batch 12, Button and Icon/Kbd.
+Next Safe Batch: M3.3 batch 13, Card and Hero.
 
 ## Goal
 
@@ -183,8 +183,8 @@ checks, evidence update and a separate commit.
 | 09 | native code and footnotes/sources | copy/code/anchors parity | completed |
 | 10 | details and backlinks | disclosure/navigation parity | completed |
 | 11 | banner and download | variant/asset parity | completed |
-| 12 | button and icon/kbd | interactive/focus parity | in-progress |
-| 13 | card and hero | layout parity | pending |
+| 12 | button and icon/kbd | interactive/focus parity | completed |
+| 13 | card and hero | layout parity | in-progress |
 | 14 | grid and figure | layout/media parity | pending |
 | 15 | media and logos | asset/responsive parity | pending |
 | 16 | diagram and math | runtime/asset parity | pending |
@@ -384,10 +384,24 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 12 — Button and Icon/Kbd
 
+- status: completed;
+- parent: `0e16e54`;
+- all inline aliases now come from content-component manifests and use one
+  generic ComponentNode/renderer-registry/Smart-gateway path;
+- the three routes have physical Markdown owners, while their Russian pack
+  prose, generated-route entries and zero-reference localized examples are
+  retired with commit rollback;
+- full/isolated trees are exact, static verifies 18,914 references with zero
+  broken, and browser proves focus/tabs/copy, accessible icon labels and
+  keyboard notation without overflow or console errors;
+- evidence: `m3-ru-components/batch-12-button-icon-kbd.md`.
+
+### Batch 13 — Card and Hero
+
 - status: in-progress;
-- parent: batch 11 checkpoint commit;
-- objective: migrate the interactive/inline family and prove focus, accessible
-  labels, keyboard notation and isolated parity through shared IR contracts.
+- parent: batch 12 checkpoint commit;
+- objective: migrate the first layout pair through the existing generic typed
+  directive and prove responsive layout parity without a family-specific path.
 
 ## Kaizen
 

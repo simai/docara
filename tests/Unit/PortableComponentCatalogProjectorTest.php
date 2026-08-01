@@ -33,8 +33,11 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             'docara.alert',
             'docara.backlinks',
             'docara.banner',
+            'docara.button',
             'docara.details',
             'docara.download',
+            'docara.icon',
+            'docara.kbd',
             'native.code',
             'native.footnotes_and_sources',
             'native.headings_and_text',
@@ -187,6 +190,24 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             if ($id === 'docara.download') {
                 self::assertStringContainsString('<h1 id="скачивание">Скачивание</h1>', $detail);
                 self::assertSame(3, substr_count($detail, 'data-docara-block="download"'));
+
+                continue;
+            }
+            if ($id === 'docara.button') {
+                self::assertStringContainsString('<h1 id="кнопка-ссылка">Кнопка-ссылка</h1>', $detail);
+                self::assertStringContainsString('class="sf-button ', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.icon') {
+                self::assertStringContainsString('<h1 id="значок">Значок</h1>', $detail);
+                self::assertStringContainsString('class="docara-icon inline-grid"', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.kbd') {
+                self::assertStringContainsString('<h1 id="клавиатурный-ввод">Клавиатурный ввод</h1>', $detail);
+                self::assertStringContainsString('<kbd class="inline-flex ', $detail);
 
                 continue;
             }

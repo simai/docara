@@ -1,0 +1,10 @@
+{
+    "schema": "docara.content_component.v1",
+    "id": "docara.kbd",
+    "aliases": ["kbd"],
+    "props": {},
+    "slots": {"default": {"required": true, "kind": "plain_text"}},
+    "renderer": "docara.content.template",
+    "template": "templates/kbd.php",
+    "assets": []
+}

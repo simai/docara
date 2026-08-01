@@ -8,15 +8,11 @@ use Simai\Docara\Portable\PortableConfigurationException;
 
 final readonly class ComponentAliasRegistry
 {
-    /** @param array<string, string> $aliases */
-    public function __construct(private array $aliases = [
-        'alert' => 'docara.alert',
-        'badge' => 'docara.badge',
-    ]) {}
+    public function __construct(private ContentComponentRegistry $components = new ContentComponentRegistry) {}
 
     public function resolve(string $alias, SourceLocation $location): string
     {
-        return $this->aliases[$alias] ?? throw new PortableConfigurationException(
+        return $this->components->aliases()[$alias] ?? throw new PortableConfigurationException(
             'DOCUMENT_COMPONENT_ALIAS_UNKNOWN',
             "Unknown component alias [$alias] at [{$location->label()}].",
         );
@@ -25,6 +21,12 @@ final readonly class ComponentAliasRegistry
     /** @return array<string, string> */
     public function aliases(): array
     {
-        return $this->aliases;
+        return $this->components->aliases();
+    }
+
+    /** @return array<string, string> */
+    public function inlineAliases(): array
+    {
+        return $this->components->inlineAliases();
     }
 }

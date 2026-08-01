@@ -1338,6 +1338,11 @@ final class StaticBuildVerifierTest extends TestCase
                 'title' => 'Баннер',
                 'description' => 'Короткое объявление уровня страницы.',
             ],
+            'docara.button' => [
+                'slug' => 'button',
+                'title' => 'Кнопка-ссылка',
+                'description' => 'Переход, оформленный как заметное действие.',
+            ],
             'docara.details' => [
                 'slug' => 'details',
                 'title' => 'Раскрывающийся блок',
@@ -1347,6 +1352,16 @@ final class StaticBuildVerifierTest extends TestCase
                 'slug' => 'download',
                 'title' => 'Скачивание',
                 'description' => 'Понятное действие для загрузки или открытия файла.',
+            ],
+            'docara.icon' => [
+                'slug' => 'icon',
+                'title' => 'Значок',
+                'description' => 'Смысловой или декоративный знак внутри текста.',
+            ],
+            'docara.kbd' => [
+                'slug' => 'kbd',
+                'title' => 'Клавиатурный ввод',
+                'description' => 'Клавиша или сочетание внутри инструкции.',
             ],
             'native.code' => [
                 'slug' => 'code',

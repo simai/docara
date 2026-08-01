@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Document;
 
+use League\CommonMark\Util\RegexHelper;
 use Simai\Docara\Declarative\Rendering\RenderArtifact;
 use Simai\Docara\Portable\PortableConfigurationException;
 
@@ -23,6 +24,11 @@ final readonly class ContentComponentRenderer
         $label = trim($node->label);
         if ($label === '') {
             throw $this->error('CONTENT_COMPONENT_SLOT_REQUIRED', $node, 'The default plain-text slot is required.');
+        }
+        if (($slot['pattern'] ?? null) === 'identifier'
+            && preg_match('/^[a-z][a-z0-9_]*$/D', $label) !== 1
+        ) {
+            throw $this->error('CONTENT_COMPONENT_SLOT_INVALID', $node, 'The default plain-text slot must be an identifier.');
         }
         $label = htmlspecialchars($label, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8');
         $html = $this->template((string) $definition['_template'], $props, label: $label);
@@ -123,11 +129,12 @@ final readonly class ContentComponentRenderer
         }
         $props = [];
         foreach ($properties as $name => $contract) {
-            if (! is_array($contract) || ! is_string($contract['default'] ?? null) || ! is_array($contract['enum'] ?? null)) {
+            if (! is_array($contract) || ! is_string($contract['default'] ?? null)) {
                 throw $this->error('CONTENT_COMPONENT_PROP_CONTRACT_INVALID', $node, "Invalid prop contract [$name].");
             }
             $value = $node->props[$name] ?? $contract['default'];
-            if (! is_string($value) || ! in_array($value, $contract['enum'], true)) {
+            $kind = (string) ($contract['kind'] ?? 'enum');
+            if (! is_string($value) || ! $this->validProp($kind, $value, $contract)) {
                 throw $this->error('CONTENT_COMPONENT_PROP_INVALID', $node, "Invalid value for prop [$name].");
             }
             $props[$name] = $value;
@@ -140,8 +147,32 @@ final readonly class ContentComponentRenderer
                 $props = array_replace($props, $normalization['set']);
             }
         }
+        foreach (($definition['invalid_combinations'] ?? []) as $combination) {
+            if (! is_array($combination)) {
+                throw $this->error('CONTENT_COMPONENT_PROP_CONTRACT_INVALID', $node, 'Invalid prop combination contract.');
+            }
+            if (array_intersect_assoc($combination, $props) === $combination) {
+                throw $this->error('CONTENT_COMPONENT_PROP_COMBINATION_INVALID', $node, 'Invalid prop combination.');
+            }
+        }
 
         return $props;
+    }
+
+    /** @param array<string, mixed> $contract */
+    private function validProp(string $kind, string $value, array $contract): bool
+    {
+        if (($contract['required'] ?? false) === true && trim($value) === '') {
+            return false;
+        }
+
+        return match ($kind) {
+            'enum' => is_array($contract['enum'] ?? null) && in_array($value, $contract['enum'], true),
+            'string' => true,
+            'identifier' => $value === '' || preg_match('/^[a-z][a-z0-9_]*$/D', $value) === 1,
+            'safe_url' => $value !== '' && preg_match(RegexHelper::REGEX_UNSAFE_PROTOCOL, $value) !== 1,
+            default => false,
+        };
     }
 
     /** @param array<string, string> $props */

@@ -362,14 +362,32 @@ MD, $source);
         }
     }
 
-    public function test_badge_alias_uses_the_single_content_gateway_and_no_hardcoded_inline_method_remains(): void
+    public function test_inline_aliases_use_the_single_content_gateway_and_no_hardcoded_methods_remain(): void
     {
         $renderer = new \ReflectionClass(InlineComponentRenderer::class);
 
         self::assertFalse($renderer->hasMethod('badge'));
+        self::assertFalse($renderer->hasMethod('button'));
+        self::assertFalse($renderer->hasMethod('icon'));
+        self::assertFalse($renderer->hasMethod('kbd'));
         self::assertSame(
-            ['alert' => 'docara.alert', 'badge' => 'docara.badge'],
+            [
+                'alert' => 'docara.alert',
+                'badge' => 'docara.badge',
+                'button' => 'docara.button',
+                'icon' => 'docara.icon',
+                'kbd' => 'docara.kbd',
+            ],
             (new ComponentAliasRegistry)->aliases(),
+        );
+        self::assertSame(
+            [
+                'badge' => 'docara.badge',
+                'button' => 'docara.button',
+                'icon' => 'docara.icon',
+                'kbd' => 'docara.kbd',
+            ],
+            (new ComponentAliasRegistry)->inlineAliases(),
         );
         self::assertSame(
             ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'typed_directive', 'component', 'component_block'],

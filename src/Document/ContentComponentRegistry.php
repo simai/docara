@@ -93,4 +93,19 @@ final readonly class ContentComponentRegistry
     {
         return $this->aliases[$alias] ?? $alias;
     }
+
+    /** @return array<string, string> */
+    public function aliases(): array
+    {
+        return $this->aliases;
+    }
+
+    /** @return array<string, string> */
+    public function inlineAliases(): array
+    {
+        return array_filter(
+            $this->aliases,
+            fn (string $id): bool => ($this->definitions[$id]['slots']['default']['kind'] ?? null) === 'plain_text',
+        );
+    }
 }

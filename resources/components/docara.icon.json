@@ -1,0 +1,31 @@
+{
+    "schema": "docara.content_component.v1",
+    "id": "docara.icon",
+    "aliases": ["icon"],
+    "props": {
+        "size": {"default": "1/2", "enum": ["1/3", "1/2", "1", "2", "3"]},
+        "family": {"default": "outlined", "enum": ["outlined", "rounded", "sharp"]},
+        "weight": {"default": "regular", "enum": ["light", "regular", "medium"]},
+        "filled": {"default": "false", "enum": ["true", "false"]},
+        "label": {"kind": "string", "default": ""},
+        "container": {"default": "none", "enum": ["none", "square", "circle"]},
+        "variant": {"default": "auto", "enum": ["auto", "plain", "main", "tonal", "outline"]},
+        "scheme": {"default": "primary", "enum": ["primary", "secondary", "tertiary", "neutral", "info", "success", "warning", "danger", "on-surface"]}
+    },
+    "slots": {"default": {"required": true, "kind": "plain_text", "pattern": "identifier"}},
+    "normalization": [
+        {"when": {"container": "none", "variant": "auto"}, "set": {"variant": "plain"}},
+        {"when": {"container": "square", "variant": "auto"}, "set": {"variant": "tonal"}},
+        {"when": {"container": "circle", "variant": "auto"}, "set": {"variant": "tonal"}}
+    ],
+    "invalid_combinations": [
+        {"container": "none", "variant": "main"},
+        {"container": "none", "variant": "tonal"},
+        {"container": "none", "variant": "outline"},
+        {"container": "square", "variant": "plain"},
+        {"container": "circle", "variant": "plain"}
+    ],
+    "renderer": "docara.content.template",
+    "template": "templates/icon.php",
+    "assets": []
+}

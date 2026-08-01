@@ -2,7 +2,7 @@
 
 Date: 2026-08-01
 
-Status: M1A passed with evidence; M1B is next
+Status: M1A and M1B passed with evidence; scoped badge-source gate promotes M2
 
 Parent goal: `docara.goal.unified`
 

@@ -7,12 +7,13 @@
   "title": "M1. Границы источников",
   "summary": "Ввести typed source locator и zero-growth target boundaries, достаточные для badge-среза, не выдавая ложный PASS миграции всех legacy routes.",
   "owner": "dev",
-  "lifecycle": "active",
+  "lifecycle": "completed",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
   "evidence_refs": [
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_goal_ref": "docara.goal.unified",

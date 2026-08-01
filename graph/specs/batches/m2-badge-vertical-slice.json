@@ -7,8 +7,8 @@
   "title": "M2. Badge через новый конвейер",
   "summary": "Implement one end-to-end page to validate IR, registry, Smart gateway and PageBuilder before scaling migration.",
   "owner": "dev",
-  "lifecycle": "blocked",
-  "readiness": "R1_draft",
+  "lifecycle": "ready",
+  "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/architecture/UNIFIED-ARCHITECTURE.md"],
   "evidence_refs": [],
@@ -17,6 +17,6 @@
   "allowed_scope": ["Badge Markdown source", "Typed IR minimum", "Renderer registry", "Smart gateway", "Single-page build"],
   "forbidden_scope": ["Bulk component migration", "Global CSS redesign", "Legacy deletion", "Release"],
   "checks": ["IR snapshot", "Source-location error", "Full/single parity", "Browser light/dark and mobile/desktop"],
-  "status": "blocked_by_m1",
-  "next_action": "wait_for_docara_gate_badge_source_ready"
+  "status": "ready_after_badge_source_gate",
+  "next_action": "implement_badge_typed_ir_pagebuilder_slice"
 }

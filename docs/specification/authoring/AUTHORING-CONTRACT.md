@@ -101,6 +101,13 @@ Markdown-проза и CSS-фрагменты.
 переходы, accessibility labels и другие общие подписи. Статьи и документация
 компонентов остаются в Markdown.
 
+Файл имеет schema ID `docara.lang.v1` и version `1`. Корневые namespaces
+ограничены общими UI-контурами (`search`, `navigation`, `reader`, `shell`,
+`language`, `redirect`, `accessibility`, `copy`, `toc`, `transitions`,
+`common`); `pages`, `components`, `catalog` и `examples` запрещены. Значения —
+короткий plain text без Markdown, HTML и CSS. Исходный `lang.json` не
+публикуется как статический asset.
+
 Публичного `resources/i18n` в целевой архитектуре нет. `site.json` также не
 поддерживается: бренд, меню, CTA, layout и поведение задаются
 `docara.json`, `section.json` и `.page.json` как структурированная композиция.

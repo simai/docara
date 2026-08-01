@@ -112,5 +112,26 @@ Status: typed source locator implemented; exact build parity passed
 - evidence:
   `source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md`.
 
-M1B remains the next bounded checkpoint. The badge-source, global ownership,
-vertical-slice, release and production gates remain open.
+At the M1A checkpoint, M1B remained next and all later gates were still open.
+
+# M1B result
+
+Status: target source guards passed; badge-source gate accepted
+
+- target config and component manifests reject prose, Markdown, HTML and CSS;
+- `docara.lang.v1` is the versioned sole target contract for shared public UI
+  strings, and `content/ru/lang.json` now carries 66 shared labels without
+  page/component/catalog/example prose;
+- `site.json`, public `resources/i18n`, legacy language packs and package-owned
+  system messages are rejected as target PageBuilder inputs;
+- 44 generated routes and current language-pack component counts form an
+  explicit, removable-but-non-growing legacy allowlist;
+- removing `components.docara.badge` from the active Russian pack leaves the
+  authored badge output byte-identical, proving no badge-prose dependency;
+- full/single build parity and the exact M0 badge hash remain green;
+- PHPUnit passes with 355 tests and 7248 assertions;
+- evidence:
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md`.
+
+`docara.gate.badge_source_ready` is accepted and M2 is ready. Global source
+ownership, vertical-slice, release and production gates remain open.

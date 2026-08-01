@@ -1206,6 +1206,7 @@ final readonly class PortableSiteBuilder
             }
             if (in_array($extension, ['md', 'markdown'], true)
                 || $name === 'section.json'
+                || $name === 'lang.json'
                 || str_ends_with($name, '.page.json')
             ) {
                 continue;

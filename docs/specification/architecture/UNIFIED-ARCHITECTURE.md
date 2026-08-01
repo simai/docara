@@ -230,3 +230,9 @@ parity evidence; постоянный compatibility layer не создаётс�
 
 Это правило включает `resources/i18n`, prose-bearing language packs и
 `site.json`: они не получают target compatibility layer.
+
+M1 закрепляет это fail-closed профилем: target config и component manifests
+не принимают prose/Markdown/HTML/CSS, `lang.json` проверяется отдельной
+versioned schema, package-owned system messages исключены из PageBuilder
+inputs, а 44 generated routes и текущие language-pack component records
+зафиксированы как только уменьшающийся legacy allowlist.

@@ -7,21 +7,23 @@
   "title": "M1. Ввести границы источников",
   "summary": "Implement typed Markdown source location and zero-growth target boundaries for content/<locale>/lang.json, config and legacy generated prose after M0 acceptance.",
   "owner": "dev",
-  "lifecycle": "ready",
+  "lifecycle": "completed",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
   "evidence_refs": [
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.m1.boundaries",
   "allowed_scope": ["Source discovery", "Configuration schemas", "content/<locale>/lang.json boundaries", "Package-owned CLI/build message isolation", "Finite legacy allowlist", "Negative fixtures"],
   "forbidden_scope": ["Renderer replacement", "Legacy deletion", "Release"],
   "checks": ["Duplicate route fails", "New page without Markdown fails", "Public resources/i18n and site.json target inputs fail", "Shared public strings outside content/<locale>/lang.json fail", "Legacy generated route count cannot grow", "Missing locale policy is explicit"],
-  "status": "in_progress",
+  "status": "completed_with_evidence",
   "completed_checkpoints": [
-    "m1a_typed_source_locator"
+    "m1a_typed_source_locator",
+    "m1b_target_source_boundary_guards"
   ],
-  "next_action": "implement_m1b_target_source_boundary_guards"
+  "next_action": "none"
 }

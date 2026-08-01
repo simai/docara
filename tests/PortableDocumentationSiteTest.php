@@ -82,6 +82,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         self::assertCount(103, $pages);
         self::assertCount(206, $htmlPages);
+        self::assertFileDoesNotExist($build . '/ru/lang.json');
         self::assertCount(89, $search['documents']);
         self::assertCount(37, $catalog['entries']);
         self::assertCount(30, $supported);
@@ -201,6 +202,46 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertSame(206, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
+    }
+
+    #[Test]
+    public function authored_badge_page_does_not_depend_on_legacy_language_pack_component_prose(): void
+    {
+        $root = dirname(__DIR__);
+        $site = $this->temporary . '/badge-source-boundary';
+        $filesystem = new Filesystem;
+        $filesystem->copyDirectory($root . '/docs/site', $site);
+        $site = realpath($site);
+        self::assertIsString($site);
+        $languagePackPath = $site . '/language-pack-under-test.json';
+        $languagePack = $this->json($root . '/resources/language-packs/ru.json');
+        file_put_contents(
+            $languagePackPath,
+            json_encode($languagePack, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+        $configuration = $this->json($site . '/docara.json');
+        $configuration['locales']['ru']['language_pack'] = 'language-pack-under-test.json';
+        file_put_contents(
+            $site . '/docara.json',
+            json_encode($configuration, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+        $builder = new PortableSiteBuilder($filesystem, new PortableMarkdownRenderer);
+        $builder->build($site, $site . '/build_baseline');
+        $baselineBadgeHash = hash_file('sha256', $site . '/build_baseline/ru/components/badge/index.html');
+
+        unset($languagePack['components']['docara.badge']);
+        file_put_contents(
+            $languagePackPath,
+            json_encode($languagePack, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+
+        $pages = $builder->build($site, $site . '/build_test');
+
+        self::assertCount(103, $pages);
+        self::assertSame(
+            $baselineBadgeHash,
+            hash_file('sha256', $site . '/build_test/ru/components/badge/index.html'),
+        );
     }
 
     /** @return list<string> */

@@ -20,6 +20,8 @@
     "src/Content/PageSource.php#PageSource",
     "src/Content/PageSourceLocator.php#PageSourceLocator::forLocale",
     "src/Content/RouteMapper.php#RouteMapper::map",
+    "src/Content/SourceBoundaryValidator.php#SourceBoundaryValidator",
+    "src/Content/LegacyPublicSourceAllowlist.php#LegacyPublicSourceAllowlist",
     "src/PortableSite/PortableSiteBuilder.php#PortableSiteBuilder::build",
     "src/ComponentCatalog/AuthoredComponentPageIndex.php#AuthoredComponentPageIndex::build",
     "src/PortableSite/PortableComponentCatalogProjector.php#PortableComponentCatalogProjector::project",
@@ -27,10 +29,15 @@
     "src/I18n/LanguagePack.php#LanguagePack::$components",
     "src/I18n/LanguagePackRepository.php#LanguagePackRepository::load",
     "resources/language-packs/*.json",
+    "resources/legacy-public-source-allowlist.json",
+    "resources/schemas/lang.schema.json",
+    "docs/site/content/ru/lang.json",
     "resources/component-catalog/examples/*.md"
   ],
   "test_refs": [
     "tests/Unit/PageSourceLocatorTest.php",
+    "tests/Unit/SourceBoundaryValidatorTest.php",
+    "tests/Unit/LegacyPublicSourceAllowlistTest.php",
     "tests/Unit/DocumentationContractTest.php#authored_documentation_covers_five_audience_paths_and_every_page_has_one_h1",
     "tests/PortableDocumentationSiteTest.php#real_documentation_build_matches_the_exact_product_matrix_and_static_verifier",
     "tests/Unit/PortableComponentCatalogProjectorTest.php#authored_content_cannot_shadow_a_generated_catalog_route",
@@ -40,12 +47,14 @@
     "docara.evidence.m0_inventory",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M0-EVIDENCE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-route-inventory.json",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
     "M1A replaces implicit authored Markdown discovery with typed PageSource, PageSourceLocator and RouteMapper boundaries.",
     "Ambiguous physical routes, unknown locales, outside-root paths, traversal, symlinks and non-.md public page extensions fail before rendering.",
+    "M1B adds strict target config/lang/manifest input boundaries and a finite zero-growth allowlist for the remaining legacy public sources.",
     "59 physical Markdown files produce 59 authored routes.",
     "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 44 additional public routes without physical Markdown.",
     "Russian and English language packs each contain 42 component presentation records; three other bundled packs contain 8 each.",
@@ -61,6 +70,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
   ],
-  "status": "m1a_locator_implemented_m1b_open",
-  "mapped_revision": "commit containing M1A-EVIDENCE.md; parent 959591151d7622747ee9c273300ef7cc8611d647"
+  "status": "m1_source_boundaries_implemented_m2_ready",
+  "mapped_revision": "commit containing M1B-EVIDENCE.md; parent 87bad1d4bf03d312e3e8ea3455afa6a31bb2ba61"
 }

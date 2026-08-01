@@ -1,0 +1,21 @@
+{
+    "schema": "docara.source_boundary.v1",
+    "target_public_inputs": [
+        "docara.json",
+        "content/<locale>/<route>.md",
+        "content/<locale>/lang.json",
+        "content/<locale>/section.json",
+        "content/<locale>/<route>.page.json"
+    ],
+    "forbidden_public_inputs": [
+        "site.json",
+        "resources/i18n/**",
+        "resources/language-packs/**",
+        "resources/system-messages/**"
+    ],
+    "package_owned_system_inputs": [
+        "resources/system-messages/**"
+    ],
+    "config_forbidden_payloads": ["article prose", "Markdown", "HTML", "CSS"],
+    "component_manifest_forbidden_payloads": ["public page prose", "examples", "documentation copy"]
+}

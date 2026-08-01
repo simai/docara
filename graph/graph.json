@@ -26,10 +26,10 @@
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
   "implementation_state": {
-    "current_stage": "docara.stage.m1.boundaries",
-    "completed_checkpoint": "m1a_typed_source_locator",
-    "next_action": "implement_m1b_target_source_boundary_guards",
-    "evidence": "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md"
+    "current_stage": "docara.stage.m2.vertical_slice",
+    "completed_checkpoint": "m1_source_boundaries",
+    "next_action": "implement_badge_typed_ir_pagebuilder_slice",
+    "evidence": "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md"
   },
   "routing_gap": {
     "status": "recorded",

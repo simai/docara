@@ -21,6 +21,7 @@
     "src/Portable/PortableConfigurationLoader.php#PortableConfigurationLoader::resolveInheritedConfiguration",
     "src/Portable/ConfigurationMerger.php#ConfigurationMerger::merge",
     "src/Portable/SchemaRepository.php#SchemaRepository::assertValid",
+    "src/Content/SourceBoundaryValidator.php#SourceBoundaryValidator",
     "src/I18n/LocaleRegistry.php#LocaleRegistry::fromSite",
     "src/I18n/LocaleRoutingPolicy.php#LocaleRoutingPolicy::fromSite",
     "src/I18n/LocaleUrlProjector.php",
@@ -28,31 +29,38 @@
     "src/Declarative/DeclarativePageCompiler.php#DeclarativePageCompiler::compile",
     "resources/schemas/site.schema.json",
     "resources/schemas/section.schema.json",
-    "resources/schemas/page.schema.json"
+    "resources/schemas/page.schema.json",
+    "resources/schemas/lang.schema.json",
+    "resources/source-boundary-profile.json",
+    "docs/site/content/ru/lang.json"
   ],
   "test_refs": [
     "tests/Unit/PortableConfigurationTest.php#test_it_resolves_an_explainable_portable_page_plan",
     "tests/Unit/PortableConfigurationTest.php#test_repository_recipe_resolves_site_section_and_page_region_composition_with_provenance",
     "tests/Unit/PortableConfigurationTest.php#test_region_configuration_inherits_from_site_through_section_and_page_with_provenance",
     "tests/Unit/LocaleRuntimeTest.php#test_registry_preserves_arbitrary_locales_directions_roots_prefixes_and_fallback_order",
-    "tests/PortableSiteBuilderTest.php#it_builds_arbitrary_bcp47_locale_trees_with_rtl_switching_and_alternate_links"
+    "tests/PortableSiteBuilderTest.php#it_builds_arbitrary_bcp47_locale_trees_with_rtl_switching_and_alternate_links",
+    "tests/Unit/SourceBoundaryValidatorTest.php",
+    "tests/PortableDocumentationSiteTest.php#authored_badge_page_does_not_depend_on_legacy_language_pack_component_prose"
   ],
   "evidence_refs": [
     "docara.evidence.m0_inventory",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md"
   ],
   "review_refs": ["docara.gate.source_ownership", "docara.gate.migration_coverage"],
   "current_behavior": [
     "Configuration resolves defaults, docara.json, every section.json from root to leaf and an optional page sidecar with pointer-level provenance.",
     "LocaleRegistry supports arbitrary well-formed locale definitions, prefixes, fallbacks and direction.",
     "The documentation site currently declares only ru content, while five bundled language packs exist.",
-    "DeclarativePageCompiler resolves region composition into layout, sections and blocks."
+    "DeclarativePageCompiler resolves region composition into layout, sections and blocks.",
+    "M1B provides docara.lang.v1 and a fail-closed target validator without switching the legacy renderer runtime."
   ],
   "known_deviations": [
     "Current schemas still allow title and page description in composition JSON.",
     "No front matter parser owns target page metadata.",
     "The shipped documentation site does not prove separate Markdown trees for multiple locales.",
-    "Current public strings still come from legacy language-pack records instead of target content/<locale>/lang.json.",
+    "Target shared strings now exist in content/ru/lang.json, while the active legacy shell still reads language-pack messages until M2 PageBuilder integration.",
     "Current site/config surfaces predate the accepted no-site.json-compatibility target.",
     "The former global source_ownership gate-order conflict is resolved by DOC-ADR-015 and badge_source_ready."
   ],
@@ -61,6 +69,6 @@
     "Remove prose-bearing config fields only after front matter/site-copy ownership and migration tests pass.",
     "Remove silent locale presentation fallback only after explicit missing-page policy tests pass."
   ],
-  "status": "mapped_in_m0",
-  "mapped_revision": "2928d68b81665dd4873cebeb87a6192343c28805"
+  "status": "m1_target_boundaries_implemented_runtime_switch_open",
+  "mapped_revision": "commit containing M1B-EVIDENCE.md; parent 87bad1d4bf03d312e3e8ea3455afa6a31bb2ba61"
 }

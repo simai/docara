@@ -5,7 +5,7 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Smart gateway implementation mapping",
-  "summary": "Exact M0 map of declarative gateway coverage and active parallel component renderers.",
+  "summary": "M0 legacy map plus the accepted M2 alias/registry/content-gateway path for all Badge calls.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "R2_contract",
@@ -22,36 +22,46 @@
     "src/Smart/SmartRegistry.php",
     "src/Framework/FrameworkComponentRuntime.php#FrameworkComponentRuntime::extract",
     "src/Markdown/InlineComponentRenderer.php#InlineComponentRenderer::extract",
-    "src/PortableSite/PortableMarkdownRenderer.php#PortableMarkdownRenderer::render"
+    "src/PortableSite/PortableMarkdownRenderer.php#PortableMarkdownRenderer::render",
+    "src/Document/ComponentAliasRegistry.php",
+    "src/Document/ContentComponentRegistry.php",
+    "src/Document/ContentComponentRenderer.php",
+    "src/Document/ComponentDocumentNodeRenderer.php",
+    "resources/components/docara.badge.json",
+    "resources/components/templates/badge.php"
   ],
   "test_refs": [
     "tests/Unit/SmartComponentGatewayTest.php#test_it_routes_framework_and_product_components_through_one_gateway",
     "tests/Unit/FrameworkComponentRuntimeTest.php#test_it_extracts_renders_and_hydrates_components_outside_code_fences",
     "tests/Unit/CommonMarkInspectorTest.php",
-    "tests/Unit/PortableMarkdownRendererTest.php"
+    "tests/Unit/PortableMarkdownRendererTest.php",
+    "tests/Unit/MarkdownCompilerTest.php",
+    "tests/Unit/PageBuilderTest.php"
   ],
   "evidence_refs": [
     "docara.evidence.m0_inventory",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md"
   ],
   "review_refs": ["docara.gate.vertical_slice"],
   "current_behavior": [
     "Declarative SmartComponentGateway routes ui.* and docara.* plan resolution through one facade when a SmartCallNode reaches it.",
     "Framework manifests, props and assets are lock validated.",
     "Product Smart resolution is registry backed, but SmartRenderer and semantic validation still enumerate the supported product set.",
-    "FrameworkComponentRuntime and InlineComponentRenderer remain separate active paths."
+    "FrameworkComponentRuntime and InlineComponentRenderer remain separate active paths for non-migrated routes.",
+    "M2 resolves badge to docara.badge through ComponentAliasRegistry and routes all 16 calls through DocumentRendererRegistry and the content mode of the same SmartComponentGateway facade.",
+    "The structural component definition and template return HTML, diagnostics and provenance without owning public documentation prose."
   ],
   "known_deviations": [
     "DocumentParser hard-codes only ui.alert and ui.button as directive names.",
-    "Inline aliases badge, button, icon and kbd are regex matched and rendered as hard-coded HTML outside the gateway.",
-    "Badge receipt records zero normalized component calls despite 16 rendered badge examples.",
-    "The current facade returns a resolved plan; final HTML/assets/diagnostics/provenance are split across SmartRenderer and other runtimes rather than one target RenderArtifact gateway contract."
+    "Non-Badge inline aliases and block components remain on legacy paths until their bounded M3 slices.",
+    "The framework and product Smart plans still use their existing resolver path while content nodes use the new content registry behind the same facade."
   ],
   "deletion_gates": [
     "Retire InlineComponentRenderer::badge only after all badge calls reach one component node/gateway and exact HTML/assets parity passes.",
     "Retire FrameworkComponentRuntime::extract only after block and inline Framework calls use the same gateway.",
     "Remove component-specific SmartRenderer branches only after manifest-driven template/view resolution has parity and fail-closed tests."
   ],
-  "status": "mapped_in_m0",
-  "mapped_revision": "2928d68b81665dd4873cebeb87a6192343c28805"
+  "status": "m2_badge_slice_implemented",
+  "mapped_revision": "commit containing M2-EVIDENCE.md; parent b45896ea9284bb4fb2090fcacac7681c49e00aa5"
 }

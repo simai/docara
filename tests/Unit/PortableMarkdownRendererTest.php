@@ -139,7 +139,7 @@ MD);
     public function inline_components_fail_closed_on_unknown_or_unsafe_parameters(): void
     {
         $cases = [
-            [':badge[Test]{type=unknown}', 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID'],
+            [':badge[Test]{type=unknown}', 'CONTENT_COMPONENT_PROP_INVALID'],
             [':icon[search]{weight=bold}', 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID'],
             [':icon[search]{variant=main}', 'MARKDOWN_COMPONENT_ATTRIBUTE_COMBINATION_INVALID'],
             [':icon[search]{container=square variant=plain}', 'MARKDOWN_COMPONENT_ATTRIBUTE_COMBINATION_INVALID'],

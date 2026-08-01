@@ -7,13 +7,18 @@
   "title": "Badge vertical slice accepted",
   "summary": "The complete target pipeline is proven on one production-shaped page before bulk migration.",
   "owner": "tester",
-  "lifecycle": "blocked",
-  "readiness": "R1_draft",
+  "lifecycle": "accepted",
+  "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/architecture/UNIFIED-ARCHITECTURE.md"],
-  "evidence_refs": ["docara.evidence.badge_vertical_slice"],
+  "evidence_refs": [
+    "docara.evidence.badge_vertical_slice",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md"
+  ],
   "profile_refs": ["docara.unified"],
   "pass_conditions": ["Typed IR snapshot", "Universal registry and gateway", "Source-location diagnostics", "Full/page parity", "Browser matrix", "Old badge path inactive"],
   "stop_conditions": ["Second PageBuilder", "Hardcoded badge projector", "Public badge prose outside badge.md"],
-  "promotes_to": "docara.batch.m3.migrate"
+  "promotes_to": "docara.batch.m3.migrate",
+  "nonclaims": ["Does not pass global source ownership, all-route migration, release or production"],
+  "status": "passed_for_badge_slice"
 }

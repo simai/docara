@@ -6,13 +6,17 @@ namespace Simai\Docara\Declarative\Smart;
 
 use Simai\Docara\Declarative\Document\SmartCallNode;
 use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
+use Simai\Docara\Declarative\Rendering\RenderArtifact;
+use Simai\Docara\Document\ComponentNode;
+use Simai\Docara\Document\ContentComponentRenderer;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final readonly class SmartComponentGateway
 {
     public function __construct(
-        private SmartPlanResolver $framework,
+        private ?SmartPlanResolver $framework = null,
         private CompositeSmartPlanResolver $product = new CompositeSmartPlanResolver,
+        private ContentComponentRenderer $content = new ContentComponentRenderer,
     ) {}
 
     /** @param array<string, mixed> $frameworkLock */
@@ -21,9 +25,21 @@ final readonly class SmartComponentGateway
         return new self(SmartPlanResolver::fromLock($frameworkLock));
     }
 
+    public static function content(): self
+    {
+        return new self;
+    }
+
     public function resolve(SmartCallNode $call): ResolvedSmartPlan
     {
         if (str_starts_with($call->smart, 'ui.')) {
+            if (! $this->framework instanceof SmartPlanResolver) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_FRAMEWORK_GATEWAY_UNAVAILABLE',
+                    'The Framework Smart resolver is unavailable in this content-only gateway.',
+                );
+            }
+
             return $this->framework->resolve($call);
         }
         if (str_starts_with($call->smart, 'docara.')) {
@@ -39,5 +55,10 @@ final readonly class SmartComponentGateway
             'DECLARATIVE_SMART_NAMESPACE_UNSUPPORTED',
             "Smart component namespace [{$call->smart}] is unsupported.",
         );
+    }
+
+    public function renderComponent(ComponentNode $component): RenderArtifact
+    {
+        return $this->content->render($component);
     }
 }

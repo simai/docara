@@ -1,0 +1,519 @@
+{
+    "nodes": [
+        {
+            "children": [],
+            "data": {
+                "level": 1,
+                "text": "Бейдж"
+            },
+            "source": {
+                "column": 1,
+                "end_line": 1,
+                "file": "content/ru/components/badge.md",
+                "line": 1
+            },
+            "type": "heading"
+        },
+        {
+            "children": [],
+            "data": {
+                "text": "Бейдж добавляет короткую метку статуса, версии или категории внутрь текста и интерфейсных блоков."
+            },
+            "source": {
+                "column": 1,
+                "end_line": 4,
+                "file": "content/ru/components/badge.md",
+                "line": 3
+            },
+            "type": "paragraph"
+        },
+        {
+            "children": [
+                {
+                    "children": [],
+                    "data": {
+                        "language": "markdown"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 9,
+                        "file": "content/ru/components/badge.md",
+                        "line": 7
+                    },
+                    "type": "code_block"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Новое",
+                    "props": {
+                        "scheme": "primary",
+                        "size": "1",
+                        "type": "tonal"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 8,
+                        "file": "content/ru/components/badge.md",
+                        "line": 8
+                    },
+                    "type": "component"
+                }
+            ],
+            "data": {
+                "label": "Пример"
+            },
+            "source": {
+                "column": 1,
+                "end_line": 10,
+                "file": "content/ru/components/badge.md",
+                "line": 6
+            },
+            "type": "example"
+        },
+        {
+            "children": [],
+            "data": {
+                "level": 2,
+                "text": "Тип бейджа"
+            },
+            "source": {
+                "column": 1,
+                "end_line": 12,
+                "file": "content/ru/components/badge.md",
+                "line": 12
+            },
+            "type": "heading"
+        },
+        {
+            "children": [],
+            "data": {
+                "text": "Параметр `type` определяет, насколько заметно бейдж выделяется на странице."
+            },
+            "source": {
+                "column": 1,
+                "end_line": 14,
+                "file": "content/ru/components/badge.md",
+                "line": 14
+            },
+            "type": "paragraph"
+        },
+        {
+            "children": [],
+            "data": {
+                "rows": 3
+            },
+            "source": {
+                "column": 1,
+                "end_line": 20,
+                "file": "content/ru/components/badge.md",
+                "line": 16
+            },
+            "type": "table"
+        },
+        {
+            "children": [
+                {
+                    "children": [],
+                    "data": {
+                        "language": "markdown"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 27,
+                        "file": "content/ru/components/badge.md",
+                        "line": 23
+                    },
+                    "type": "code_block"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Основной",
+                    "props": {
+                        "scheme": "primary",
+                        "size": "1",
+                        "type": "main"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 24,
+                        "file": "content/ru/components/badge.md",
+                        "line": 24
+                    },
+                    "type": "component"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Тональный",
+                    "props": {
+                        "scheme": "primary",
+                        "size": "1",
+                        "type": "tonal"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 25,
+                        "file": "content/ru/components/badge.md",
+                        "line": 25
+                    },
+                    "type": "component"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Контурный",
+                    "props": {
+                        "scheme": "primary",
+                        "size": "1",
+                        "type": "outline"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 26,
+                        "file": "content/ru/components/badge.md",
+                        "line": 26
+                    },
+                    "type": "component"
+                }
+            ],
+            "data": {
+                "label": "Пример"
+            },
+            "source": {
+                "column": 1,
+                "end_line": 28,
+                "file": "content/ru/components/badge.md",
+                "line": 22
+            },
+            "type": "example"
+        },
+        {
+            "children": [],
+            "data": {
+                "level": 2,
+                "text": "Цветовая схема"
+            },
+            "source": {
+                "column": 1,
+                "end_line": 30,
+                "file": "content/ru/components/badge.md",
+                "line": 30
+            },
+            "type": "heading"
+        },
+        {
+            "children": [],
+            "data": {
+                "text": "Параметр `scheme` передаёт назначение бейджа цветом. Он не заменяет понятную текстовую подпись."
+            },
+            "source": {
+                "column": 1,
+                "end_line": 33,
+                "file": "content/ru/components/badge.md",
+                "line": 32
+            },
+            "type": "paragraph"
+        },
+        {
+            "children": [],
+            "data": {
+                "rows": 9
+            },
+            "source": {
+                "column": 1,
+                "end_line": 45,
+                "file": "content/ru/components/badge.md",
+                "line": 35
+            },
+            "type": "table"
+        },
+        {
+            "children": [
+                {
+                    "children": [],
+                    "data": {
+                        "language": "markdown"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 58,
+                        "file": "content/ru/components/badge.md",
+                        "line": 48
+                    },
+                    "type": "code_block"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Основная",
+                    "props": {
+                        "scheme": "primary",
+                        "size": "1"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 49,
+                        "file": "content/ru/components/badge.md",
+                        "line": 49
+                    },
+                    "type": "component"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Вторичная",
+                    "props": {
+                        "scheme": "secondary",
+                        "size": "1"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 50,
+                        "file": "content/ru/components/badge.md",
+                        "line": 50
+                    },
+                    "type": "component"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Третичная",
+                    "props": {
+                        "scheme": "tertiary",
+                        "size": "1"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 51,
+                        "file": "content/ru/components/badge.md",
+                        "line": 51
+                    },
+                    "type": "component"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Нейтральная",
+                    "props": {
+                        "scheme": "neutral",
+                        "size": "1"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 52,
+                        "file": "content/ru/components/badge.md",
+                        "line": 52
+                    },
+                    "type": "component"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Информация",
+                    "props": {
+                        "scheme": "info",
+                        "size": "1"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 53,
+                        "file": "content/ru/components/badge.md",
+                        "line": 53
+                    },
+                    "type": "component"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Успех",
+                    "props": {
+                        "scheme": "success",
+                        "size": "1"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 54,
+                        "file": "content/ru/components/badge.md",
+                        "line": 54
+                    },
+                    "type": "component"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Предупреждение",
+                    "props": {
+                        "scheme": "warning",
+                        "size": "1"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 55,
+                        "file": "content/ru/components/badge.md",
+                        "line": 55
+                    },
+                    "type": "component"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Ошибка",
+                    "props": {
+                        "scheme": "danger",
+                        "size": "1"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 56,
+                        "file": "content/ru/components/badge.md",
+                        "line": 56
+                    },
+                    "type": "component"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "На поверхности",
+                    "props": {
+                        "scheme": "on-surface",
+                        "size": "1",
+                        "type": "main"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 57,
+                        "file": "content/ru/components/badge.md",
+                        "line": 57
+                    },
+                    "type": "component"
+                }
+            ],
+            "data": {
+                "label": "Пример"
+            },
+            "source": {
+                "column": 1,
+                "end_line": 59,
+                "file": "content/ru/components/badge.md",
+                "line": 47
+            },
+            "type": "example"
+        },
+        {
+            "children": [],
+            "data": {
+                "level": 2,
+                "text": "Размер"
+            },
+            "source": {
+                "column": 1,
+                "end_line": 61,
+                "file": "content/ru/components/badge.md",
+                "line": 61
+            },
+            "type": "heading"
+        },
+        {
+            "children": [],
+            "data": {
+                "text": "Параметр `size` выбирает размер из общей шкалы SIMAI Framework."
+            },
+            "source": {
+                "column": 1,
+                "end_line": 63,
+                "file": "content/ru/components/badge.md",
+                "line": 63
+            },
+            "type": "paragraph"
+        },
+        {
+            "children": [],
+            "data": {
+                "rows": 3
+            },
+            "source": {
+                "column": 1,
+                "end_line": 69,
+                "file": "content/ru/components/badge.md",
+                "line": 65
+            },
+            "type": "table"
+        },
+        {
+            "children": [
+                {
+                    "children": [],
+                    "data": {
+                        "language": "markdown"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 76,
+                        "file": "content/ru/components/badge.md",
+                        "line": 72
+                    },
+                    "type": "code_block"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Маленький",
+                    "props": {
+                        "size": "1/3"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 73,
+                        "file": "content/ru/components/badge.md",
+                        "line": 73
+                    },
+                    "type": "component"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Средний",
+                    "props": {
+                        "size": "1/2"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 74,
+                        "file": "content/ru/components/badge.md",
+                        "line": 74
+                    },
+                    "type": "component"
+                },
+                {
+                    "alias": "badge",
+                    "component": "docara.badge",
+                    "label": "Обычный",
+                    "props": {
+                        "size": "1"
+                    },
+                    "source": {
+                        "column": 1,
+                        "end_line": 75,
+                        "file": "content/ru/components/badge.md",
+                        "line": 75
+                    },
+                    "type": "component"
+                }
+            ],
+            "data": {
+                "label": "Пример"
+            },
+            "source": {
+                "column": 1,
+                "end_line": 77,
+                "file": "content/ru/components/badge.md",
+                "line": 71
+            },
+            "type": "example"
+        }
+    ],
+    "schema": "docara.document_ir.v1",
+    "source": "content/ru/components/badge.md"
+}

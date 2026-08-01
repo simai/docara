@@ -1,0 +1,201 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Simai\Docara\Document;
+
+use Simai\Docara\Markdown\AuthoringAttributeParser;
+use Simai\Docara\Portable\PortableConfigurationException;
+
+final readonly class MarkdownCompiler
+{
+    public function __construct(
+        private ComponentAliasRegistry $aliases = new ComponentAliasRegistry,
+        private AuthoringAttributeParser $attributes = new AuthoringAttributeParser,
+    ) {}
+
+    public function compile(string $markdown, string $source): DocumentIr
+    {
+        $lines = preg_split('/\r\n|\n|\r/u', $markdown);
+        if (! is_array($lines) || $source === '' || trim($markdown) === '') {
+            throw new PortableConfigurationException('DOCUMENT_IR_INPUT_INVALID', "Cannot compile [$source].");
+        }
+
+        $nodes = [];
+        for ($index = 0, $count = count($lines); $index < $count;) {
+            $line = $lines[$index];
+            if (trim($line) === '') {
+                $index++;
+
+                continue;
+            }
+            if (preg_match('/^:::(?:example)(?:\s|\{|$)/', $line) === 1) {
+                [$node, $index] = $this->example($lines, $index, $source);
+                $nodes[] = $node;
+
+                continue;
+            }
+            if (preg_match('/^(#{1,6})\s+(.+)$/u', $line, $heading) === 1) {
+                $nodes[] = new SourceNode(
+                    'heading',
+                    $line,
+                    new SourceLocation($source, $index + 1, 1, $index + 1),
+                    ['level' => strlen($heading[1]), 'text' => trim($heading[2])],
+                );
+                $index++;
+
+                continue;
+            }
+            if (str_starts_with($line, '```') || str_starts_with($line, '~~~')) {
+                [$node, $index] = $this->codeBlock($lines, $index, $source);
+                $nodes[] = $node;
+
+                continue;
+            }
+            if (str_starts_with(trim($line), '|') && isset($lines[$index + 1])
+                && preg_match('/^\s*\|?\s*:?-{3,}/', $lines[$index + 1]) === 1
+            ) {
+                $start = $index;
+                do {
+                    $index++;
+                } while ($index < $count && str_starts_with(trim($lines[$index]), '|'));
+                $raw = implode("\n", array_slice($lines, $start, $index - $start));
+                $nodes[] = new SourceNode(
+                    'table',
+                    $raw,
+                    new SourceLocation($source, $start + 1, 1, $index),
+                    ['rows' => max(0, $index - $start - 2)],
+                );
+
+                continue;
+            }
+
+            $start = $index;
+            do {
+                $index++;
+            } while ($index < $count
+                && trim($lines[$index]) !== ''
+                && preg_match('/^(?:#{1,6}\s|```|~~~|:::example)/', $lines[$index]) !== 1
+                && ! str_starts_with(trim($lines[$index]), '|')
+            );
+            $raw = implode("\n", array_slice($lines, $start, $index - $start));
+            $nodes[] = new SourceNode(
+                'paragraph',
+                $raw,
+                new SourceLocation($source, $start + 1, 1, $index),
+                ['text' => trim(preg_replace('/\s+/u', ' ', $raw) ?? $raw)],
+            );
+        }
+
+        return new DocumentIr($source, $nodes);
+    }
+
+    /** @param list<string> $lines @return array{0:SourceNode,1:int} */
+    private function example(array $lines, int $start, string $source): array
+    {
+        $end = $start + 1;
+        while (isset($lines[$end]) && trim($lines[$end]) !== ':::') {
+            $end++;
+        }
+        if (! isset($lines[$end])) {
+            throw new PortableConfigurationException(
+                'DOCUMENT_IR_EXAMPLE_UNCLOSED',
+                "Unclosed example at [$source:" . ($start + 1) . ':1].',
+            );
+        }
+        $rawLines = array_slice($lines, $start, $end - $start + 1);
+        $children = [];
+        for ($index = $start + 1; $index < $end; $index++) {
+            if (! str_starts_with($lines[$index], '```') && ! str_starts_with($lines[$index], '~~~')) {
+                continue;
+            }
+            [$code, $next] = $this->codeBlock($lines, $index, $source);
+            $children[] = $code;
+            for ($componentLine = $index + 1; $componentLine < $next - 1; $componentLine++) {
+                array_push($children, ...$this->components($lines[$componentLine], $componentLine + 1, $source));
+            }
+            $index = $next - 1;
+        }
+
+        return [
+            new SourceNode(
+                'example',
+                implode("\n", $rawLines),
+                new SourceLocation($source, $start + 1, 1, $end + 1),
+                ['label' => $this->exampleLabel($lines[$start])],
+                $children,
+            ),
+            $end + 1,
+        ];
+    }
+
+    /** @param list<string> $lines @return array{0:SourceNode,1:int} */
+    private function codeBlock(array $lines, int $start, string $source): array
+    {
+        $fence = substr($lines[$start], 0, 3);
+        $language = trim(substr($lines[$start], 3));
+        $end = $start + 1;
+        while (isset($lines[$end]) && ! str_starts_with($lines[$end], $fence)) {
+            $end++;
+        }
+        if (! isset($lines[$end])) {
+            throw new PortableConfigurationException(
+                'DOCUMENT_IR_CODE_BLOCK_UNCLOSED',
+                "Unclosed code block at [$source:" . ($start + 1) . ':1].',
+            );
+        }
+
+        return [
+            new SourceNode(
+                'code_block',
+                implode("\n", array_slice($lines, $start, $end - $start + 1)),
+                new SourceLocation($source, $start + 1, 1, $end + 1),
+                ['language' => $language],
+            ),
+            $end + 1,
+        ];
+    }
+
+    /** @return list<ComponentNode> */
+    private function components(string $line, int $lineNumber, string $source): array
+    {
+        $matches = [];
+        preg_match_all(
+            '/(?<![\\\pL\pN_]):(?<alias>[a-z][a-z0-9_-]*)\[(?<label>[^\]\r\n]*)\](?:\{(?<attributes>[^}\r\n]*)\})?/u',
+            $line,
+            $matches,
+            PREG_SET_ORDER | PREG_OFFSET_CAPTURE,
+        );
+        $nodes = [];
+        foreach ($matches as $match) {
+            $alias = $match['alias'][0];
+            $location = new SourceLocation($source, $lineNumber, $match[0][1] + 1, $lineNumber);
+            $attributeSource = isset($match['attributes']) && $match['attributes'][1] >= 0
+                ? $match['attributes'][0]
+                : '';
+            if (trim($match['label'][0]) === '') {
+                throw new PortableConfigurationException(
+                    'DOCUMENT_COMPONENT_SLOT_REQUIRED',
+                    "Component [$alias] requires visible content at [{$location->label()}].",
+                );
+            }
+            $nodes[] = new ComponentNode(
+                $alias,
+                $this->aliases->resolve($alias, $location),
+                $match['label'][0],
+                $this->attributes->parse($attributeSource, $alias),
+                $match[0][0],
+                $location,
+            );
+        }
+
+        return $nodes;
+    }
+
+    private function exampleLabel(string $opening): string
+    {
+        return preg_match('/\blabel=(?:"([^"]+)"|([^\s}]+))/', $opening, $match) === 1
+            ? (string) ($match[1] !== '' ? $match[1] : $match[2])
+            : 'Example';
+    }
+}

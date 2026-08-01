@@ -31,6 +31,7 @@
     "resources/language-packs/*.json",
     "resources/legacy-public-source-allowlist.json",
     "resources/schemas/lang.schema.json",
+    "resources/components/docara.badge.json",
     "docs/site/content/ru/lang.json",
     "resources/component-catalog/examples/*.md"
   ],
@@ -48,7 +49,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M0-EVIDENCE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-route-inventory.json",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
@@ -58,7 +60,8 @@
     "59 physical Markdown files produce 59 authored routes.",
     "PortableComponentCatalogProjector and PortableDeclarativeExampleProjector produce 44 additional public routes without physical Markdown.",
     "Russian and English language packs each contain 42 component presentation records; three other bundled packs contain 8 each.",
-    "The badge route is owned by content/ru/components/badge.md and suppresses the generated badge detail route through AuthoredComponentPageIndex."
+    "The badge route is owned by content/ru/components/badge.md and suppresses the generated badge detail route through AuthoredComponentPageIndex.",
+    "M2 proves the physical Badge Markdown owns all page prose and examples while its structural component definition contains no documentation prose."
   ],
   "known_deviations": [
     "One-route-one-Markdown is false for 44 of 103 logical pages.",
@@ -70,6 +73,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
   ],
-  "status": "m1_source_boundaries_implemented_m2_ready",
-  "mapped_revision": "commit containing M1B-EVIDENCE.md; parent 87bad1d4bf03d312e3e8ea3455afa6a31bb2ba61"
+  "status": "m2_badge_slice_implemented_m3_ready",
+  "mapped_revision": "commit containing M2-EVIDENCE.md; parent b45896ea9284bb4fb2090fcacac7681c49e00aa5"
 }

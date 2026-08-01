@@ -1,6 +1,6 @@
 # Дорожная карта упрощения Docara
 
-Статус: план миграции, реализация не начата в этой ветке
+Статус: M0, M1 и ограниченный M2 завершены с evidence; M3 ещё не начат
 
 Переход выполняется вертикальными срезами. Цель — не переписать весь код за
 один раз, а доказать новый единственный конвейер на одной реальной странице,
@@ -53,6 +53,10 @@
 
 ## M2. Вертикальный срез `components/badge`
 
+Статус: принят ограниченный вертикальный срез. Typed in-memory IR, общий
+registry, существующий Smart gateway и единый PageBuilder доказаны на Badge;
+глобальная миграция и удаление legacy не заявлены.
+
 Страница `content/ru/components/badge.md` проходит полный целевой путь после
 локального gate `badge_source_ready`:
 
@@ -74,7 +78,8 @@ PageSourceLocator -> ConfigResolver -> MarkdownCompiler -> Document IR
 - новый путь не принимает `trustedMainHtml`.
 
 Приёмка: PHP/unit tests, exact HTML/assets parity, светлая/тёмная тема,
-desktop/mobile, LTR/RTL, broken links 0.
+desktop/mobile, LTR и broken links 0. RTL остаётся locale-wide проверкой M3/M5,
+поскольку M2 ограничен русской страницей.
 
 ## M3. Перенести публичные страницы
 

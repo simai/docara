@@ -2,7 +2,7 @@
 
 Date: 2026-08-01
 
-Status: M1A and M1B passed with evidence; scoped badge-source gate promotes M2
+Status: M1A, M1B and the bounded M2 badge slice passed with evidence
 
 Parent goal: `docara.goal.unified`
 
@@ -132,3 +132,7 @@ Rollback: keep the M0 manifest and badge hash, revert the badge PageBuilder
 switch and target classes as one commit, and return the route to the frozen
 legacy path. Do not delete the legacy implementation until the slice gate has
 independent PASS evidence.
+
+M2 verdict: PASS. Exact evidence is recorded in `M2-EVIDENCE.md`. This closes
+the bounded M1/M2 assignment and promotes M3 planning only; it does not claim
+global source ownership, release or production readiness.

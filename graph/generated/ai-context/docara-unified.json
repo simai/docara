@@ -6,7 +6,7 @@
     "docs/specification/README.md"
   ],
   "generated_at": "2026-08-01",
-  "status": "m1_source_boundaries_passed",
+  "status": "m2_badge_vertical_slice_passed",
   "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7",
   "goal": "Replace parallel content and rendering paths with one Markdown-to-typed-IR-to-registry-to-Smart-gateway-to-layout pipeline.",
   "immutable_rules": [
@@ -19,8 +19,8 @@
     "One PageBuilder pipeline for full and page builds; only the selected route set differs.",
     "Delete unpublished legacy after evidence; do not preserve it by default."
   ],
-  "current_stage": "docara.stage.m2.vertical_slice",
-  "current_batch": "docara.batch.m2.badge",
-  "next_action": "Implement the bounded badge typed-IR and PageBuilder vertical slice; the scoped badge source gate is green.",
+  "current_stage": "docara.stage.m3.migration",
+  "current_batch": "docara.batch.m3.migrate",
+  "next_action": "Plan the first independently reversible M3 route group; do not begin bulk migration without a bounded plan.",
   "forbidden_now": ["mass rewrite", "legacy deletion", "main merge", "tag", "release", "deploy", "stale Docara skill"]
 }

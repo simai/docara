@@ -22,6 +22,7 @@ use League\CommonMark\Output\RenderedContentInterface;
 use League\CommonMark\Util\RegexHelper;
 use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
 use Simai\Docara\ComponentCatalog\TypedRendererId;
+use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Markdown\AuthoringAttributeParser;
 use Simai\Docara\Markdown\CommonMarkInspector;
 use Simai\Docara\Markdown\DirectiveBlockStartParser;
@@ -46,9 +47,12 @@ final class PortableMarkdownRenderer
 
     private PortableExampleRenderer $examples;
 
+    private SmartComponentGateway $components;
+
     public function __construct(
         ?PortableMarkdownProfile $profile = null,
         ?TypedComponentDefinitionRepository $definitions = null,
+        ?SmartComponentGateway $components = null,
     ) {
         $profile ??= PortableMarkdownProfile::bundled();
         $this->definitions = $definitions ?? TypedComponentDefinitionRepository::bundled();
@@ -57,9 +61,15 @@ final class PortableMarkdownRenderer
             directiveMatcher: new DirectiveOpeningMatcher($this->definitions->names()),
         );
         $this->columnRegions = new PortableColumnRegionParser($this->inspector);
-        $this->inlineComponents = new InlineComponentRenderer;
+        $this->components = $components ?? SmartComponentGateway::content();
+        $this->inlineComponents = new InlineComponentRenderer(components: $this->components);
         $this->attributes = new AuthoringAttributeParser;
         $this->examples = new PortableExampleRenderer;
+    }
+
+    public function componentGateway(): SmartComponentGateway
+    {
+        return $this->components;
     }
 
     public function render(string $markdown, ?string $sourceRoot = null, ?string $sourceFile = null): string
@@ -72,7 +82,11 @@ final class PortableMarkdownRenderer
         }
 
         $nativeInspection = $this->inspector->inspect($markdown);
-        $inline = $this->inlineComponents->extract($markdown, $nativeInspection['literal_code_lines']);
+        $inline = $this->inlineComponents->extract(
+            $markdown,
+            $nativeInspection['literal_code_lines'],
+            $sourceFile ?? '@markdown',
+        );
         $markdown = $inline['markdown'];
         $inspection = $this->inspectDirectives($markdown);
         $this->assertDirectivePlacement($markdown, $inspection);

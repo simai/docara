@@ -1,0 +1,19 @@
+{
+    "schema": "docara.content_component.v1",
+    "id": "docara.badge",
+    "aliases": ["badge"],
+    "props": {
+        "type": {"default": "tonal", "enum": ["main", "tonal", "outline"]},
+        "scheme": {"default": "primary", "enum": ["primary", "secondary", "tertiary", "neutral", "info", "success", "warning", "danger", "on-surface"]},
+        "size": {"default": "1/3", "enum": ["1/3", "1/2", "1"]}
+    },
+    "slots": {
+        "default": {"required": true, "kind": "plain_text"}
+    },
+    "normalization": [
+        {"when": {"type": "tonal", "scheme": "on-surface"}, "set": {"type": "main"}}
+    ],
+    "renderer": "docara.content.template",
+    "template": "templates/badge.php",
+    "assets": []
+}

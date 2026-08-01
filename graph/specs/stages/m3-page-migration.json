@@ -8,7 +8,7 @@
   "summary": "Последовательно перенести все страницы и поддерживаемые узлы на единственный конвейер с проверкой маршрутов, локалей, ассетов и ссылок.",
   "owner": "dev",
   "lifecycle": "planned",
-  "readiness": "R1_draft",
+  "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/implementation/ROADMAP.md"],
   "evidence_refs": [],

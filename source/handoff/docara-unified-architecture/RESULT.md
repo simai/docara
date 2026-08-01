@@ -135,3 +135,29 @@ Status: target source guards passed; badge-source gate accepted
 
 `docara.gate.badge_source_ready` is accepted and M2 is ready. Global source
 ownership, vertical-slice, release and production gates remain open.
+
+# M2 result
+
+Status: bounded Badge target pipeline accepted; exact output parity passed
+
+- `content/ru/components/badge.md` now compiles to a 35-node typed in-memory
+  IR with file/line/column locations;
+- all 16 badge calls resolve through the alias registry, renderer registry and
+  the content mode of the existing Smart gateway;
+- the hard-coded `InlineComponentRenderer::badge` method is removed;
+- one `PageBuilder` serves authored pages in full and isolated builds; the
+  badge uses the target pipeline while other routes retain the rollback adapter;
+- the complete 103-page/321-file build is byte-identical to M1B, static
+  verification reports 0 broken references and badge HTML keeps SHA-256
+  `faeb6c6a8e075bff9ad5602bcea4b1e019c700aeae74f696c0289e32fbb83f79`;
+- no mandatory IR JSON/JSONL is emitted; the only serialization is the
+  test-only IR snapshot;
+- PHPUnit passes with 359 tests and 7350 assertions;
+- desktop/mobile and light/dark Chromium captures pass with 0 console errors
+  and 0 warnings;
+- evidence:
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md`.
+
+`docara.gate.vertical_slice` is accepted only for Badge. Global source
+ownership, full migration, release and production remain unclaimed. M3 is now
+eligible for a new bounded plan; it was not implemented in this assignment.

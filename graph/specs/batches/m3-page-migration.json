@@ -7,8 +7,8 @@
   "title": "M3. Последовательная миграция",
   "summary": "Move remaining routes in bounded component and section groups after the badge slice is accepted.",
   "owner": "dev",
-  "lifecycle": "blocked",
-  "readiness": "R1_draft",
+  "lifecycle": "ready",
+  "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/implementation/ROADMAP.md"],
   "evidence_refs": [],
@@ -17,6 +17,6 @@
   "allowed_scope": ["Accepted route groups", "Component manifests", "Derived indexes", "Localization parity"],
   "forbidden_scope": ["Unmapped deletion", "Unrelated visual redesign", "Release"],
   "checks": ["Route matrix", "Broken links zero", "Missing assets zero", "Unknown nodes zero"],
-  "status": "blocked_by_m2",
-  "next_action": "wait_for_docara_gate_vertical_slice"
+  "status": "ready_for_bounded_route_group_plan",
+  "next_action": "plan_first_bounded_m3_route_group"
 }

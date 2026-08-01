@@ -5,16 +5,24 @@ declare(strict_types=1);
 namespace Simai\Docara\Markdown;
 
 use League\CommonMark\Util\RegexHelper;
+use Simai\Docara\Declarative\Smart\SmartComponentGateway;
+use Simai\Docara\Document\ComponentAliasRegistry;
+use Simai\Docara\Document\ComponentNode;
+use Simai\Docara\Document\SourceLocation;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final class InlineComponentRenderer
 {
     private const NAMES = ['badge', 'button', 'icon', 'kbd'];
 
-    public function __construct(private readonly AuthoringAttributeParser $attributes = new AuthoringAttributeParser) {}
+    public function __construct(
+        private readonly AuthoringAttributeParser $attributes = new AuthoringAttributeParser,
+        private readonly ComponentAliasRegistry $aliases = new ComponentAliasRegistry,
+        private readonly SmartComponentGateway $components = new SmartComponentGateway,
+    ) {}
 
     /** @return array{markdown:string,replacements:array<string,string>} */
-    public function extract(string $markdown, array $literalCodeLines): array
+    public function extract(string $markdown, array $literalCodeLines, string $source = '@markdown'): array
     {
         $lines = preg_split('/\r\n|\n|\r/u', $markdown);
         if (! is_array($lines)) {
@@ -26,7 +34,7 @@ final class InlineComponentRenderer
             if (isset($literalCodeLines[$index + 1])) {
                 continue;
             }
-            $line = $this->extractLine($line, $replacements, $markdown);
+            $line = $this->extractLine($line, $replacements, $markdown, $source, $index + 1);
         }
         unset($line);
 
@@ -34,8 +42,13 @@ final class InlineComponentRenderer
     }
 
     /** @param array<string,string> $replacements */
-    private function extractLine(string $line, array &$replacements, string $source): string
-    {
+    private function extractLine(
+        string $line,
+        array &$replacements,
+        string $markdown,
+        string $source,
+        int $lineNumber,
+    ): string {
         $pattern = '/(?<![\\\\\pL\pN_]):(?<name>badge|button|icon|kbd)\[(?<label>[^\]\r\n]*)\](?:\{(?<attributes>[^}\r\n]*)\})?/u';
         $matches = [];
         if (preg_match_all($pattern, $line, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE) === false) {
@@ -58,10 +71,16 @@ final class InlineComponentRenderer
                 'sha256',
                 $name . "\0" . $label . "\0" . $attributeSource . "\0" . $offset . "\0" . count($replacements),
             ), 0, 24));
-            while (str_contains($source, $placeholder) || isset($replacements[$placeholder])) {
+            while (str_contains($markdown, $placeholder) || isset($replacements[$placeholder])) {
                 $placeholder .= 'X';
             }
-            $replacements[$placeholder] = $this->render($name, $label, $attributes);
+            $replacements[$placeholder] = $this->render(
+                $name,
+                $label,
+                $attributes,
+                new SourceLocation($source, $lineNumber, $offset + 1, $lineNumber),
+                $match[0][0],
+            );
             $line = substr_replace($line, $placeholder, $offset, strlen($match[0][0]));
         }
 
@@ -80,8 +99,13 @@ final class InlineComponentRenderer
     }
 
     /** @param array<string,string> $attributes */
-    private function render(string $name, string $label, array $attributes): string
-    {
+    private function render(
+        string $name,
+        string $label,
+        array $attributes,
+        SourceLocation $location,
+        string $raw,
+    ): string {
         if (! in_array($name, self::NAMES, true)) {
             throw new PortableConfigurationException('MARKDOWN_INLINE_COMPONENT_UNSUPPORTED', $name);
         }
@@ -93,33 +117,18 @@ final class InlineComponentRenderer
         }
 
         return match ($name) {
-            'badge' => $this->badge($label, $attributes),
+            'badge' => $this->components->renderComponent(new ComponentNode(
+                $name,
+                $this->aliases->resolve($name, $location),
+                $label,
+                $attributes,
+                $raw,
+                $location,
+            ))->html,
             'button' => $this->button($label, $attributes),
             'icon' => $this->icon($label, $attributes),
             'kbd' => $this->kbd($label, $attributes),
         };
-    }
-
-    /** @param array<string,string> $attributes */
-    private function badge(string $label, array $attributes): string
-    {
-        $this->only($attributes, ['type', 'scheme', 'size'], 'badge');
-        $type = $this->oneOf($attributes['type'] ?? 'tonal', ['main', 'tonal', 'outline'], 'badge', 'type');
-        $scheme = $this->oneOf(
-            $attributes['scheme'] ?? 'primary',
-            ['primary', 'secondary', 'tertiary', 'neutral', 'info', 'success', 'warning', 'danger', 'on-surface'],
-            'badge',
-            'scheme',
-        );
-        if ($type === 'tonal' && $scheme === 'on-surface') {
-            $type = 'main';
-        }
-        $size = $this->oneOf($attributes['size'] ?? '1/3', ['1/3', '1/2', '1'], 'badge', 'size');
-
-        return '<span class="sf-badge sf-badge--' . $type . ' sf-badge--' . $scheme
-            . ' sf-badge--size-' . $size . ' inline-flex flex-row flex-nowrap justify-center items-center">'
-            . '<span class="sf-badge-text-container flex items-center"><span class="sf-badge-text">'
-            . $this->escape($label) . '</span></span></span>';
     }
 
     /** @param array<string,string> $attributes */

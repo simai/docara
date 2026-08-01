@@ -5,7 +5,7 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "PageBuilder implementation mapping",
-  "summary": "Exact M0 map of full/single build entry points, late filtering and trusted generated HTML bypass.",
+  "summary": "M0 entry-point map plus the accepted M2 single PageBuilder seam and typed Badge result.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "R2_contract",
@@ -21,31 +21,36 @@
     "src/Declarative/DeclarativePipeline.php#DeclarativePipeline::buildGenerated",
     "src/PortableSite/DeclarativePortablePagePublisher.php#DeclarativePortablePagePublisher::render",
     "src/PortableSite/PortableSearchIndexBuilder.php",
-    "src/PortableSite/PortableNavigationBuilder.php"
+    "src/PortableSite/PortableNavigationBuilder.php",
+    "src/PortableSite/PageBuilder.php",
+    "src/PortableSite/PageBuilderResult.php"
   ],
   "test_refs": [
     "tests/PortableSiteBuilderTest.php#it_atomically_rebuilds_one_existing_page_without_rerendering_neighbors",
     "tests/PortableSiteBuilderTest.php#two_builds_are_byte_for_byte_deterministic",
     "tests/PortableSiteBuilderTest.php#it_requires_a_complete_base_build_for_single_page_rebuilds",
     "tests/PortableSiteBuilderTest.php#declarative_publication_is_transactional_and_keeps_the_previous_build_on_late_failure",
-    "tests/Unit/StaticBuildVerifierTest.php#empty_or_broken_builds_fail_and_complete_builds_pass"
+    "tests/Unit/StaticBuildVerifierTest.php#empty_or_broken_builds_fail_and_complete_builds_pass",
+    "tests/Unit/PageBuilderTest.php"
   ],
   "evidence_refs": [
     "docara.evidence.m0_inventory",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-build-manifest.sha256",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md"
   ],
   "review_refs": ["docara.gate.vertical_slice", "docara.gate.architecture_acceptance"],
   "current_behavior": [
     "BuildCommand calls one monolithic PortableSiteBuilder::build for full and --page modes.",
     "Two full M0 builds and one isolated badge rebuild produced an identical 321-file manifest.",
     "Single-page output is atomic by copying the complete previous build into a candidate directory.",
-    "Generated component/example pages enter DeclarativePipeline::buildGenerated with trustedMainHtml."
+    "Generated component/example pages enter DeclarativePipeline::buildGenerated with trustedMainHtml.",
+    "M2 routes all authored pages through one PageBuilder seam; Badge returns typed in-memory IR and 16 component artifacts while other routes retain the rollback adapter.",
+    "Full and isolated Badge builds call the same PageBuilder and are byte-identical; only the route set selected by PortableSiteBuilder differs."
   ],
   "known_deviations": [
-    "No PageBuilder or PageBuilderResult type exists.",
     "All authored pages, component/example projections, navigation, search and asset plans are built before --page filtering.",
-    "Current byte parity proves output stability but not the target one-pipeline architecture where only route selection differs.",
+    "The target PageBuilder path is proven only for Badge; non-Badge authored pages still use its legacy rendering adapter.",
     "Generated pages bypass ordinary document rendering through trustedMainHtml."
   ],
   "deletion_gates": [
@@ -53,6 +58,6 @@
     "Move --page selection before global projection only after dependency/index update tests prove bounded work.",
     "Split SiteBuilder from PageBuilder only with full/single HTML, asset, metadata, heading, link and diagnostic parity."
   ],
-  "status": "mapped_in_m0",
-  "mapped_revision": "2928d68b81665dd4873cebeb87a6192343c28805"
+  "status": "m2_badge_slice_implemented",
+  "mapped_revision": "commit containing M2-EVIDENCE.md; parent b45896ea9284bb4fb2090fcacac7681c49e00aa5"
 }

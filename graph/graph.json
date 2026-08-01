@@ -26,10 +26,10 @@
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
   "implementation_state": {
-    "current_stage": "docara.stage.m2.vertical_slice",
-    "completed_checkpoint": "m1_source_boundaries",
-    "next_action": "implement_badge_typed_ir_pagebuilder_slice",
-    "evidence": "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md"
+    "current_stage": "docara.stage.m3.migration",
+    "completed_checkpoint": "m2_badge_vertical_slice",
+    "next_action": "plan_first_bounded_m3_route_group",
+    "evidence": "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md"
   },
   "routing_gap": {
     "status": "recorded",

@@ -1,0 +1,1 @@
+<span class="sf-badge sf-badge--<?= $props['type'] ?> sf-badge--<?= $props['scheme'] ?> sf-badge--size-<?= $props['size'] ?> inline-flex flex-row flex-nowrap justify-center items-center"><span class="sf-badge-text-container flex items-center"><span class="sf-badge-text"><?= $label ?></span></span></span>

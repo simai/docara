@@ -7,11 +7,13 @@
   "title": "M2. Вертикальный срез страницы Badge",
   "summary": "Провести одну реальную страницу от Markdown через typed IR, registry, Smart gateway и layout до HTML, не затрагивая остальные страницы.",
   "owner": "dev",
-  "lifecycle": "active",
+  "lifecycle": "completed",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/architecture/UNIFIED-ARCHITECTURE.md"],
-  "evidence_refs": [],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md"
+  ],
   "profile_refs": ["docara.unified"],
   "parent_goal_ref": "docara.goal.unified",
   "done_when": [

@@ -103,6 +103,7 @@ final readonly class PortableSiteBuilder
         $frameworkLockCanonical = null;
         $runtime = null;
         $declarativePipeline = null;
+        $pageBuilder = new PageBuilder($this->markdown);
         foreach ($pagePaths as $pagePath) {
             $plan = $loader->resolve($pagePath);
             $pageLocale = (string) ($plan->configuration['locale'] ?? $buildLocale);
@@ -125,17 +126,15 @@ final readonly class PortableSiteBuilder
                 $plan->frameworkLock,
                 $this->frameworkAssetBase($plan->frameworkLock, (string) ($site['base_url'] ?? '/')),
             );
-            $components = $runtime->extract($plan->markdown, $plan->page);
-            $outline = (new PortableDocumentOutlineBuilder)->build(
-                $this->markdown->render(
-                    $components->markdownWithPlaceholders,
-                    $root,
-                    $root . '/' . ltrim($pagePath, '/'),
-                ),
+            $pageResult = $pageBuilder->build(
+                $plan,
+                $root,
+                $runtime,
                 (int) data_get($plan->configuration, 'reading.toc_depth', 3),
-                PortableDocumentIds::reserved(),
             );
-            $contentHtml = $components->hydrate($outline['html']);
+            $components = $pageResult->frameworkComponents;
+            $outline = $pageResult->outline;
+            $contentHtml = $pageResult->contentHtml;
             $route = $this->route(
                 $plan,
                 $localeDefinition->contentRoot,

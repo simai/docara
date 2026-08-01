@@ -1,0 +1,39 @@
+{
+  "schema_version": "1.0.0",
+  "status": "pass",
+  "revision": "b14fe4e1e70a5465fe382bd5ced1de26cb65a315",
+  "capture_root": "output/playwright/m3-ru-components-baseline",
+  "capture_count": 24,
+  "capture_manifest_sha256": "1116e46d2ffad8e7a85cf193fc804faf9a43504a4f67ae1591f7270ecc1ec5a7",
+  "console": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "accessible_snapshot": "Component index exposes 32 route links, breadcrumbs, navigation, four catalog groups and reader controls.",
+  "captures": {
+    "alert-desktop-1920-dark.png": "832355d4da3abbf92e1523c5cfd6fd0901fcb3ba23360e46fc0ee88864ed81e9",
+    "alert-desktop-light.png": "52d5c693703bc06412143924ba3ac23ef24055dc153f333fbd8423bd40cc4da9",
+    "alert-mobile-dark.png": "aa313863b72a85c4b6d33a3e9e3a56d2cdda4f2ea06c36a22e08253a58ac7008",
+    "alert-mobile-light.png": "d01836c651ae556139b69ecb767e1328e02e25c05a3483f4079233e4bda6a40b",
+    "index-desktop-1920-dark.png": "216b99f22109cb828106d6020f3d4dfe912a21eed9ce6b3e0d38939ef0618a11",
+    "index-desktop-light.png": "5838915103311b1ad5b948bbd30b72bebfb8204265e10cc1cbd4874d6b52a5b1",
+    "index-mobile-dark.png": "a70f499243a6ea2f44a1c7175bab5bfcc340c00d8eb04ad5b6101ede2dbfe6d8",
+    "index-mobile-light.png": "313c74f0ae31dbc61afc73144b5b116441928bda166f052c864253531877ca65",
+    "media-desktop-1920-dark.png": "9af3b2cbe4ed9f8346410095d6eda2a21ce871c5daa7a28e565cffccd12ce0f5",
+    "media-desktop-light.png": "9653da8f59fccf8fa8c14dd2a02e17854cefbedf49834f583c629924dd1885de",
+    "media-mobile-dark.png": "2e98381ba636c2b33aa9d516d43a91e7e1b8df24ede886123f3966999821d500",
+    "media-mobile-light.png": "67cb5b46ec5382c910b7dc0e43b334bba3b8028fc3961f078db41dcc4713a3c6",
+    "table-desktop-1920-dark.png": "4e6482a7204cea409f275e9ad9921886f12c28170f588aacdbcc12abab8f8527",
+    "table-desktop-light.png": "c4fdb202aebc2dd9de2916f1e3ff2ccf2bd2c30bfc0a15f2b23e36dc78793785",
+    "table-mobile-dark.png": "d43f1124095b199e359767bfcbd01a668128769f81bea2e0d599eb601314b382",
+    "table-mobile-light.png": "7335f35d52bb38e43b8a84a0d89e9307a860d7cacfbe9accdd8f079dadabb815",
+    "tabs-desktop-1920-dark.png": "5fa3c48e39c57e3c58e737f371ac8b424c26162060dd3a15086ce9014e29c187",
+    "tabs-desktop-light.png": "645aba4d939af74291e1929fd8498d6f24c95ddab0440c25f4768e249b8cdd47",
+    "tabs-mobile-dark.png": "4870c8b9ec665780f26e98c0b2f8e71cdbbc85ce1acfbfe223400cd107cf2b0a",
+    "tabs-mobile-light.png": "fd3afb1179499b45f3cf4c27177132cd847b1b89d288864e322b08c17ad6449c",
+    "tree-desktop-1920-dark.png": "8c4bd839dea0bfc82667bfd2730b66028c806e0096bc3e414f72bf7f47c216d1",
+    "tree-desktop-light.png": "3fe58442ddaafbfcacd5813256f105ff481b30581a73da8edc5ef6cfbdf08db6",
+    "tree-mobile-dark.png": "505292e2d9b184144b8e53c20fe3efcbf0aeac15a3a2eeb89046ca617e5075e7",
+    "tree-mobile-light.png": "eafd0cbf31039f2b7bb40a0b5fb413344f8ab1ea52e4d0f81afa7e4ce2d6c6e2"
+  }
+}

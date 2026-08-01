@@ -1,0 +1,296 @@
+{
+  "schema_version": "1.0.0",
+  "evidence_id": "docara.evidence.m3_ru_components.baseline",
+  "status": "pass",
+  "revision": "b14fe4e1e70a5465fe382bd5ced1de26cb65a315",
+  "runtime": {
+    "php": "8.4.20",
+    "source": "clean git archive",
+    "dependencies": "verified local vendor copied into disposable archive"
+  },
+  "commands": [
+    "php ../../docara build m3-baseline-a",
+    "php ../../docara build m3-baseline-b",
+    "php ../../docara verify-static build_m3-baseline-a",
+    "for each of 32 routes: copy full destination, then php ../../docara build <isolated-env> --page=<route>",
+    "diff -qr <full> <isolated>"
+  ],
+  "full_build": {
+    "pages": 103,
+    "files": 321,
+    "html_documents": 206,
+    "local_references": 18866,
+    "broken": 0,
+    "two_clean_tree_diff": "empty",
+    "tree_manifest_sha256": "7c9aa1ed9d3617fe98cf8e463c92c5fed72481910597da26e89cd9c40a33c105",
+    "manifest_command": "(cd <build> && find . -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum | sha256sum)"
+  },
+  "derived_artifacts": {
+    "component_catalog_sha256": "6fefd215e643548dab8a0fa0ef3096580c00cf1832fefec8c024999529523c3c",
+    "russian_component_receipts_sha256": "901eb8a94a6b79d4939af8f3d468e505833f736b2f6f1c91a5c4847b8a62aadd",
+    "search_index_sha256": "581a8edb1935be052e2878703c8f560dbc2a6c6383da8de64fe98d65fdaad17c",
+    "page_metadata_sha256": "85ea539344a6cc86b162efd34ffa27c30fcc61d7a2ec61a44bcd0bec5a239d86"
+  },
+  "component_routes": [
+    {
+      "route": "/ru/components/badge/",
+      "html_sha256": "faeb6c6a8e075bff9ad5602bcea4b1e019c700aeae74f696c0289e32fbb83f79",
+      "isolated_html_sha256": "faeb6c6a8e075bff9ad5602bcea4b1e019c700aeae74f696c0289e32fbb83f79",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/syntax/",
+      "html_sha256": "dd3b6ff47f0569aab881da7acd0a2cf0ff6491a33e6b75d969b837d047f7a6a5",
+      "isolated_html_sha256": "dd3b6ff47f0569aab881da7acd0a2cf0ff6491a33e6b75d969b837d047f7a6a5",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/",
+      "html_sha256": "ea7d7a0a4fbb764dffb78cd94acdb1aa1f69f9922ea5f5dfabf62dda20e9d8fc",
+      "isolated_html_sha256": "ea7d7a0a4fbb764dffb78cd94acdb1aa1f69f9922ea5f5dfabf62dda20e9d8fc",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/alert/",
+      "html_sha256": "a12740106a16dc42a4916c53e5f33f65fb4e18f527eaec857825f712f559dec9",
+      "isolated_html_sha256": "a12740106a16dc42a4916c53e5f33f65fb4e18f527eaec857825f712f559dec9",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/backlinks/",
+      "html_sha256": "58816c3d95117902cbe58430bad1f2099cd9ef6b464dd71f033f389e1dbcc3c4",
+      "isolated_html_sha256": "58816c3d95117902cbe58430bad1f2099cd9ef6b464dd71f033f389e1dbcc3c4",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/banner/",
+      "html_sha256": "7617e242a19965c327e8428220e30563bdb3dda47ede6fcc280c18c4b88a7c30",
+      "isolated_html_sha256": "7617e242a19965c327e8428220e30563bdb3dda47ede6fcc280c18c4b88a7c30",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/button/",
+      "html_sha256": "1090e0f2830a26e8ef7ef12e24ec8e61bb382b629d0153f46aedf1a55cb7c960",
+      "isolated_html_sha256": "1090e0f2830a26e8ef7ef12e24ec8e61bb382b629d0153f46aedf1a55cb7c960",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/card/",
+      "html_sha256": "68f925ffff5312b2ac055ee04d48a46afc5bd27262b64bf4ff953250bba8b40b",
+      "isolated_html_sha256": "68f925ffff5312b2ac055ee04d48a46afc5bd27262b64bf4ff953250bba8b40b",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/code-from-file/",
+      "html_sha256": "1461a31d1b0bd95420ac7272aef15656925575b5f74536dbd7917ce6d78aaa63",
+      "isolated_html_sha256": "1461a31d1b0bd95420ac7272aef15656925575b5f74536dbd7917ce6d78aaa63",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/details/",
+      "html_sha256": "8b42c9ad5604ea0db6d40b7b152de4428d507b8c49eae9a0a39b8c4d0719980d",
+      "isolated_html_sha256": "8b42c9ad5604ea0db6d40b7b152de4428d507b8c49eae9a0a39b8c4d0719980d",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/diagram/",
+      "html_sha256": "4aa4251503ea2fc291c219e105c596050719ffd755dd4efbcde4079f71b8bf87",
+      "isolated_html_sha256": "4aa4251503ea2fc291c219e105c596050719ffd755dd4efbcde4079f71b8bf87",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/download/",
+      "html_sha256": "ea748b8ff842a1c4bb38617c61084617bd81256e857e044ed0deeb471567fe66",
+      "isolated_html_sha256": "ea748b8ff842a1c4bb38617c61084617bd81256e857e044ed0deeb471567fe66",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/embed/",
+      "html_sha256": "0a190a956148d182d5218c651c997cdcf9e42f299246beeec8c3c765d83fa3b0",
+      "isolated_html_sha256": "0a190a956148d182d5218c651c997cdcf9e42f299246beeec8c3c765d83fa3b0",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/example/",
+      "html_sha256": "1931149205feb25228d04cc65ffe1fc9cfed47d4fc8fd91a19446ea8119b6367",
+      "isolated_html_sha256": "1931149205feb25228d04cc65ffe1fc9cfed47d4fc8fd91a19446ea8119b6367",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/figure/",
+      "html_sha256": "884c54f70dc572b1b7ee9d75ad4ae77c440dca223d950cfc59ecc27e4e89ed2a",
+      "isolated_html_sha256": "884c54f70dc572b1b7ee9d75ad4ae77c440dca223d950cfc59ecc27e4e89ed2a",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/grid/",
+      "html_sha256": "970bc42858c7e498001e191974280538eacc9c19d4b333a5d91eae868766ab83",
+      "isolated_html_sha256": "970bc42858c7e498001e191974280538eacc9c19d4b333a5d91eae868766ab83",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/hero/",
+      "html_sha256": "53e81b42b7573def3ace1f197654d884174316c30add829ac3c0d45ec0fd05d6",
+      "isolated_html_sha256": "53e81b42b7573def3ace1f197654d884174316c30add829ac3c0d45ec0fd05d6",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/html/",
+      "html_sha256": "8fe4215558da6dd41af784f65ae75402b86659438088c262c70168d326136b3c",
+      "isolated_html_sha256": "8fe4215558da6dd41af784f65ae75402b86659438088c262c70168d326136b3c",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/icon/",
+      "html_sha256": "20470cbe182b3f3a4a874083015f264a90841f69236d95923a28994c612afb8f",
+      "isolated_html_sha256": "20470cbe182b3f3a4a874083015f264a90841f69236d95923a28994c612afb8f",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/kbd/",
+      "html_sha256": "276907278af56a8d30be763590deec891f65c26a3536b17f03e6aaf60096c353",
+      "isolated_html_sha256": "276907278af56a8d30be763590deec891f65c26a3536b17f03e6aaf60096c353",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/logos/",
+      "html_sha256": "26e2197ee414392a113c379a0df720f2c7aa10d23fbcc0bb9a1cd0842f6386ac",
+      "isolated_html_sha256": "26e2197ee414392a113c379a0df720f2c7aa10d23fbcc0bb9a1cd0842f6386ac",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/math/",
+      "html_sha256": "bc9bd4b1c184e540a04ace38b88bd30155f6df175366ada6d63db210f4563c62",
+      "isolated_html_sha256": "bc9bd4b1c184e540a04ace38b88bd30155f6df175366ada6d63db210f4563c62",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/media/",
+      "html_sha256": "a207c18421215f8f738098a770341f9a4f469930d070aadf1dadabe25d1676f8",
+      "isolated_html_sha256": "a207c18421215f8f738098a770341f9a4f469930d070aadf1dadabe25d1676f8",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/steps/",
+      "html_sha256": "ee8e390ac8f98f6da985d3fdd45334753f4ef1ad7d137ef6d367939a50081172",
+      "isolated_html_sha256": "ee8e390ac8f98f6da985d3fdd45334753f4ef1ad7d137ef6d367939a50081172",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/tabs/",
+      "html_sha256": "3df038e0783b405153ae0437bb32944e3e56d88e73dbe571dcacbc156f86bb5c",
+      "isolated_html_sha256": "3df038e0783b405153ae0437bb32944e3e56d88e73dbe571dcacbc156f86bb5c",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/tree/",
+      "html_sha256": "f339e1be5dd706f6d51550b977051b97aff97d451166ac5640a98a1c71fb5217",
+      "isolated_html_sha256": "f339e1be5dd706f6d51550b977051b97aff97d451166ac5640a98a1c71fb5217",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/code/",
+      "html_sha256": "daac559da230599e0823280fdbe5eb7e1e9010a07f371febcd8c3aa065248b9a",
+      "isolated_html_sha256": "daac559da230599e0823280fdbe5eb7e1e9010a07f371febcd8c3aa065248b9a",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/footnotes-and-sources/",
+      "html_sha256": "6116a186d5a9b5d7bb86ac44421e48e799647d5f46c59f4ae00a891a35c07b06",
+      "isolated_html_sha256": "6116a186d5a9b5d7bb86ac44421e48e799647d5f46c59f4ae00a891a35c07b06",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/headings-and-text/",
+      "html_sha256": "c1beba2c313d8b4f4339f6787dc06ec464bbc42982ecb14f0d4b32a199d0fa52",
+      "isolated_html_sha256": "c1beba2c313d8b4f4339f6787dc06ec464bbc42982ecb14f0d4b32a199d0fa52",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/links-and-images/",
+      "html_sha256": "0357442964facfe8f28dfe38c65d27656e7f61c6df5057b59954a767afe4de11",
+      "isolated_html_sha256": "0357442964facfe8f28dfe38c65d27656e7f61c6df5057b59954a767afe4de11",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/lists-and-quotes/",
+      "html_sha256": "33ce4484e49d95e365243f6162d38607e7047e9bd75c639344d3a07a42fc33be",
+      "isolated_html_sha256": "33ce4484e49d95e365243f6162d38607e7047e9bd75c639344d3a07a42fc33be",
+      "full_tree_parity": "pass"
+    },
+    {
+      "route": "/ru/components/table/",
+      "html_sha256": "5df06aaf1965771498e2a3f52c65a4293324cb56ef312bcaabbde23764cdba08",
+      "isolated_html_sha256": "5df06aaf1965771498e2a3f52c65a4293324cb56ef312bcaabbde23764cdba08",
+      "full_tree_parity": "pass"
+    }
+  ],
+  "non_vendor_asset_sha256": {
+    "_docara/brand/10781f8fb31318e8807a215ec002ec1f8033227bf8678300e3dc63a7e3c1aebc.svg": "10781f8fb31318e8807a215ec002ec1f8033227bf8678300e3dc63a7e3c1aebc",
+    "_docara/brand/9bcd7305a24235227b13096694eca338fddc72731a948bdf7a8a6d6a0958afda.ico": "9bcd7305a24235227b13096694eca338fddc72731a948bdf7a8a6d6a0958afda",
+    "_docara/component-catalog/docara-flow.png": "c7ffa0a31f9c228fa85229a227b786891aa7702f1217e68d14e8f5449165e124",
+    "_docara/component-catalog/docara-mark.svg": "bdcbb55b92479cc9f2d390aadc78276d12500fda39e7c8dba9e977dfc20b6a16",
+    "_docara/component-catalog/docara-screen.png": "f3192e9a98abee5155b9546b321356a4e6e244223958f391bb88b7332a144502",
+    "_docara/component-catalog/feature-build.png": "97881fd1b4416f533f92688969e3ba0885d36f96018cfe12b512f834a698ca32",
+    "_docara/component-catalog/feature-json.png": "8bc203a44c69b172aad902985e254c321c4159c7ff35a393d91173a9ff69b327",
+    "_docara/component-catalog/feature-markdown.png": "ab83a4440cd0342045881a9190cc8a6a0fe9c70b2200bb0476acee8047a48124",
+    "_docara/component-catalog/simai.svg": "10781f8fb31318e8807a215ec002ec1f8033227bf8678300e3dc63a7e3c1aebc",
+    "_docara/component-catalog.json": "6fefd215e643548dab8a0fa0ef3096580c00cf1832fefec8c024999529523c3c",
+    "_docara/declarative-examples.json": "af4b2837b2104337d99cf442722d13043a3eda2681c6887b63ab901536f5c3f8",
+    "_docara/declarative-shell.css": "34bab0a36d3256dcd9757ebad6a7187efafa3ee38cc28c7a90be2cb511b8ece1",
+    "_docara/declarative-shell.js": "7ad60444fee6e44011442b441c29e6035fe9ce416e8271ef274b110bfcf9ab3a",
+    "_docara/framework/smart/alert/js/alert.js": "6720a3dd126f35c46fc09ecb6aeb0f2d9ebfcce82388ba8cc031c24cead426a7",
+    "_docara/framework/smart/buttons/js/buttons.js": "f9d400cd9d88c23243f75b313e9d0040ebee4e12e763d12a5ba86e556cf5c48b",
+    "_docara/framework/smart/icons/js/icons.js": "6fe9a1ac7436ba6017addd7c9d389633e1fe4be4ae86cc0cd7fb45c0b31902d1",
+    "_docara/framework/smart/modal/js/modal.js": "7ddde60f8a85cc9496685e6d70299d84e67b4cfecde845714ba7e2825b61a045",
+    "_docara/page-metadata.json": "85ea539344a6cc86b162efd34ffa27c30fcc61d7a2ec61a44bcd0bec5a239d86",
+    "_docara/search-index.json": "581a8edb1935be052e2878703c8f560dbc2a6c6383da8de64fe98d65fdaad17c",
+    "_docara/search.js": "496506d5329b8a387972be85ac27ae390cced904acf596f4de905fb7bd096a90",
+    "_docara/smart/brand.css": "51eb6e7b9a83bbdbb75b15b80306eb8876fb505b8c13e8a0ece74aa0d453b1d4",
+    "_docara/smart/navigation.css": "e7d4cf8e4e07c8f937777b834b1e053a13d30961ad268b34809cd1c5f685e073",
+    "_docara/smart/navigation.js": "0b38bf7391535ef49fd2f78e2471e379b9a6b7af117156ccded50fd4608dd647",
+    "_docara/smart/preferences.css": "290e2895bf233206cb90ac303578d6e70a142bfafc44b4be0e3d18fcdc1eea70",
+    "_docara/smart/preferences.js": "f16539ac44dc5064101c3c404e62fa6c13cab3361e9e5d3b2659e3bf90a7e8e1",
+    "_docara/smart/toc.css": "40c1c9318b8ed26ab5b2a7da0943e9c908f6079139d6a52e85567b78708819b7",
+    "_docara/smart/toc.js": "9a37d8abe839647f5d1e366401e75afdef73b25fe210c567699279aa33f8b83d"
+  },
+  "browser": {
+    "status": "pass",
+    "viewports": [
+      "1440x1000",
+      "1920x1080",
+      "390x844"
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "representatives": [
+      "/ru/components/",
+      "/ru/components/alert/",
+      "/ru/components/tabs/",
+      "/ru/components/table/",
+      "/ru/components/media/",
+      "/ru/components/tree/"
+    ],
+    "console_errors": 0,
+    "console_warnings": 0,
+    "capture_count": 24,
+    "capture_manifest_sha256": "1116e46d2ffad8e7a85cf193fc804faf9a43504a4f67ae1591f7270ecc1ec5a7",
+    "capture_hashes": "browser-captures.json"
+  },
+  "diagnostic_attempts": [
+    {
+      "attempt": "initial disposable build command",
+      "result": "failed",
+      "reason": "command ran from repository instead of the disposable docs/site directory and local vendor was absent",
+      "correction": "copied verified vendor from the prior disposable runtime and changed to disposable docs/site"
+    },
+    {
+      "attempt": "isolated routes 1-9",
+      "result": "failed",
+      "reason": "nl padded one-digit environment ids with spaces rejected by environment validation",
+      "correction": "regenerated ids with awk zero-padding; all nine routes then passed"
+    }
+  ]
+}

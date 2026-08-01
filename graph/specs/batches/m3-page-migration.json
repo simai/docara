@@ -5,18 +5,22 @@
   "subtype": "batch",
   "tz_role": "execution_batch",
   "title": "M3. Последовательная миграция",
-  "summary": "Move remaining routes in bounded component and section groups after the badge slice is accepted.",
+  "summary": "Execute the single M3 goal that moves all 32 Russian component routes through bounded runtime, content, derived-view, retirement and acceptance batches.",
   "owner": "dev",
-  "lifecycle": "ready",
+  "lifecycle": "active",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/implementation/ROADMAP.md"],
-  "evidence_refs": ["source/workflow/evidence/2026-08-01-docara-unified-architecture/m3a-alert-plan/PLAN-CHECKPOINT.md"],
+  "evidence_refs": [
+    "source/workflow/2026-08-01-docara-m3-ru-components-goal.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/INDEX.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.1-EXECUTION-CONTRACT.md"
+  ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.m3.migration",
-  "allowed_scope": ["Accepted route groups", "Component manifests", "Derived indexes", "Localization parity"],
+  "allowed_scope": ["All Russian /ru/components/ routes", "Shared typed IR and renderer runtime", "Derived indexes and reader navigation", "Proved Russian legacy retirement", "Integrated acceptance evidence"],
   "forbidden_scope": ["Unmapped deletion", "Unrelated visual redesign", "Release"],
-  "checks": ["Route matrix", "Broken links zero", "Missing assets zero", "Unknown nodes zero"],
-  "status": "alert_plan_checkpoint_completed_review_required",
-  "next_action": "independent_review_m3a_alert_plan"
+  "checks": ["32 physical Markdown owners", "One PageBuilder registry and Smart gateway", "Early isolated route selection", "Route matrix", "Broken links zero", "Missing assets zero", "Unknown nodes zero", "Deterministic and browser acceptance"],
+  "status": "m3_ru_components_goal_in_progress_m3_1_pass",
+  "next_action": "implement_m3_2_early_selection_shared_runtime_and_alert"
 }

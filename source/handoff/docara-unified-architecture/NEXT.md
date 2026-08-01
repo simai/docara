@@ -1,47 +1,41 @@
-# Next executable checkpoint: independent M3-A Alert plan review
+# Next executable checkpoint: M3.2 shared runtime and Alert slice
 
-Checkpoint ID: `docara.batch.m3a.alert_plan`
+Goal batch: `docara.batch.m3.migrate`
 
-Route: `/ru/components/alert/`
+Overall goal recovery source:
+`source/workflow/2026-08-01-docara-m3-ru-components-goal.md`.
 
-## Required review
+Evidence index:
+`source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/INDEX.md`.
 
-1. Confirm the exact current owner/projection chain and the recorded
-   full/single/browser baseline.
-2. Confirm `docs/site/content/ru/components/alert.md` as the sole proposed
-   public page owner, with no page prose in language/config sources.
-3. Confirm that Alert needs only a generic typed block-component capability in
-   the existing compiler, registry, Smart gateway and `PageBuilder`.
-4. Confirm the early route-selection design: an isolated build must select the
-   physical source before compilation and catalog/example projection.
-5. Confirm the exact one-route allowlist/language-pack reduction, parity gates,
-   test matrix, rollback path and stop conditions.
+## Accepted starting state
 
-Plan:
-`source/workflow/2026-08-01-docara-m3a-alert-route-plan.md`.
+- M3-A plan independently accepted at
+  `b14fe4e1e70a5465fe382bd5ced1de26cb65a315`;
+- M3.1 inventory/baseline PASS: 32 routes, 2 physical owners, 30 generated
+  projections, deterministic full builds, all-route isolated parity, zero
+  broken references and representative browser baseline;
+- no M3 runtime or content migration has yet been claimed.
 
-Evidence:
-`source/workflow/evidence/2026-08-01-docara-unified-architecture/m3a-alert-plan/`.
+## Execute M3.2
 
-## Allowed result
+1. Select an isolated route before compiling or projecting unrelated catalog
+   pages/examples while retaining the same PageBuilder used by full build.
+2. Extend the existing typed in-memory Document IR with the minimal generic
+   block-component contract required by Alert; do not add Alert-specific IR.
+3. Resolve the block through the one renderer registry and one Smart gateway,
+   including fail-closed route/source/line/column diagnostics.
+4. Move only `/ru/components/alert/` to
+   `docs/site/content/ru/components/alert.md` and prove focused/full/isolated/
+   static/browser parity.
+5. Reduce exact Alert legacy entries only after successful parity and a
+   zero-reference scan; retain a Git commit rollback path.
+6. Continue automatically into the remaining M3 families after M3.2 PASS.
 
-An independent PASS, PASS_WITH_NOTES or blocking plan review. A passing review
-may authorize a separate M3-A implementation assignment limited to this route.
+## Current boundaries
 
-## Forbidden now
-
-- creating or migrating the Alert Markdown page;
-- changing `src/`, `resources/`, `docs/site/content/`, dependencies or locks;
-- reducing the allowlist or deleting legacy;
-- touching another route/component;
-- claiming M3 implementation, source ownership, migration coverage, release or
-  production readiness;
-- merge, push, tag, release or deploy.
-
-## Implementation boundary after a separate acceptance
-
-The future implementation must preserve the current URL, Russian content,
-HTML, assets, appearance and behavior; use the accepted single target pipeline;
-select the route before unrelated compilation/projection in isolated mode; and
-retain a one-commit rollback path. Full and isolated builds must pass after the
-slice before the exact Alert legacy entries may shrink.
+- preserve public URLs, reader meaning, features, assets and appearance;
+- one PageBuilder, renderer registry and Smart gateway only;
+- no migration of other locales and no Framework/dependency-lock changes;
+- no unproved legacy deletion or M3 completion claim;
+- no merge, push, tag, release or deploy.

@@ -27,9 +27,9 @@
   },
   "implementation_state": {
     "current_stage": "docara.stage.m3.migration",
-    "completed_checkpoint": "m3a_alert_route_plan",
-    "next_action": "independent_review_before_m3a_alert_implementation",
-    "evidence": "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3a-alert-plan/PLAN-CHECKPOINT.md"
+    "completed_checkpoint": "m3_1_durable_execution_contract",
+    "next_action": "implement_m3_2_early_selection_shared_runtime_and_alert",
+    "evidence": "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.1-EXECUTION-CONTRACT.md"
   },
   "routing_gap": {
     "status": "recorded",

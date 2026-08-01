@@ -189,5 +189,32 @@ Status: one-route production/test plan completed; independent review required
   `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3a-alert-plan/`.
 
 M3-A implementation, global source ownership, migration coverage, release and
-production readiness remain unclaimed. The next action is independent review
-of the plan, not implementation.
+production readiness remain unclaimed. The plan was subsequently accepted by
+an independent audit at commit
+`b14fe4e1e70a5465fe382bd5ced1de26cb65a315`.
+
+# M3.1 Russian components execution-contract result
+
+Status: PASS; overall M3 goal remains in progress
+
+- one durable goal now covers all 32 public Russian component routes and its
+  recovery contract defines 30 bounded batches without treating each batch as
+  a completed goal;
+- the exact inventory contains 2 physical Markdown owners and 30 generated
+  projections at the accepted parent revision;
+- two clean full builds produce 103 pages and 321 files with byte-identical
+  trees; all 32 full/isolated component-route comparisons pass;
+- static verification covers 206 HTML documents and 18,866 local references
+  with zero broken references;
+- the browser baseline covers the index and five representative component
+  families in desktop/mobile and light/dark modes with zero console errors or
+  warnings;
+- M3.1 changes only workflow, evidence, graph and handoff; it implements no
+  runtime/content/resource/lock change;
+- evidence:
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/`.
+
+The next checkpoint is M3.2: early isolated-route selection, the shared
+typed-IR/registry/gateway runtime contract and the accepted Alert vertical
+slice. M3 completion, global ownership, legacy retirement, release and
+production readiness remain unclaimed.

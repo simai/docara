@@ -24,6 +24,6 @@
   "allowed_scope": ["One-route production/test plan", "Baseline", "Owner map", "Plan evidence", "Graph and handoff plan state"],
   "forbidden_scope": ["Runtime", "Resources", "Public content", "Dependencies", "Locks", "Implementation readiness", "Legacy deletion", "Release"],
   "checks": ["Exact full/single baseline", "Owner projection map", "Early route-selection design", "Focused/full/static/browser matrix", "Rollback and stop conditions", "Graph validation", "Repo hygiene"],
-  "status": "plan_checkpoint_completed_review_required",
-  "next_action": "independent_review_before_m3a_alert_implementation"
+  "status": "accepted_by_independent_audit",
+  "next_action": "execute_as_first_vertical_slice_under_docara_batch_m3_migrate"
 }

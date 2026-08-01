@@ -127,9 +127,14 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertFileExists($build . '/ru/components/index.html');
 
         $catalogIndex = (string) file_get_contents($build . '/ru/components/index.html');
+        $alertPage = (string) file_get_contents($build . '/ru/components/alert/index.html');
         self::assertStringContainsString('data-docara-component-index-view', $catalogIndex);
         self::assertStringNotContainsString('data-docara-component-catalog-index', $catalogIndex);
+        self::assertStringContainsString('"code.copy":"Скопировать"', $alertPage);
+        self::assertStringContainsString('"code.copied":"Скопировано"', $alertPage);
         $shellCss = (string) file_get_contents($build . '/_docara/declarative-shell.css');
+        $shellJs = (string) file_get_contents($build . '/_docara/declarative-shell.js');
+        self::assertStringContainsString('localizeCodeCopy', $shellJs);
         self::assertSame(1, substr_count($catalogIndex, 'class="docara-navigation docara-header-navigation"'));
         self::assertStringContainsString('docara-header-navigation-link h-d0', $catalogIndex);
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-primary-navigation'));

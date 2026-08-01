@@ -529,6 +529,20 @@ Never infer completion from a checkpoint commit or chat summary.
   acceptance is next;
 - evidence: `m3-ru-components/batch-26-zero-page-assets.md`.
 
+### Batch 27 — localized code-copy controls
+
+- status: completed candidate; checkpoint commit follows this record;
+- parent: `3293f65`;
+- the first M3.6 browser pass found and corrected English Framework-injected
+  code-copy text on Russian pages through the shared runtime-copy payload;
+- `code.copy` and `code.copied` are repeatable UI strings owned only by
+  `content/ru/lang.json`; other locales retain safe English fallback without a
+  migration claim;
+- the shared shell localizes both Framework-injected and existing example-copy
+  controls; no route-specific renderer or Framework change was introduced;
+- focused/full/single/static/browser checks pass;
+- evidence: `m3-ru-components/batch-27-code-copy-localization.md`.
+
 ## Kaizen
 
 No reusable lesson accepted yet. Project-local process gaps remain evidence,

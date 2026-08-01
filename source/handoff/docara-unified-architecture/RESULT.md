@@ -554,3 +554,14 @@ Status: PASS; M3.5 complete, M3 continues
 M3.6 integrated deterministic, all-route single, static, browser and reverse
 acceptance is next. Overall M3 and release/production readiness remain
 unclaimed.
+
+## M3.6 batch 27 correction
+
+Status: PASS; integrated acceptance continues
+
+- the real browser gate found English `Copy` text injected by Framework on
+  Russian code blocks;
+- the shared shell now takes `code.copy`/`code.copied` from the same public
+  `content/ru/lang.json` runtime-copy contour and localizes injected controls;
+- focused/full/single/static/browser checks pass with zero console issues;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-27-code-copy-localization.md`.

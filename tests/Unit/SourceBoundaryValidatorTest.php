@@ -71,6 +71,8 @@ final class SourceBoundaryValidatorTest extends TestCase
         self::assertArrayNotHasKey('catalog', $language);
         self::assertSame('Примеры макетов', $language['examples']['title'] ?? null);
         self::assertSame('Открыть пример', $language['examples']['open'] ?? null);
+        self::assertSame('Скопировать', $language['code']['copy'] ?? null);
+        self::assertSame('Скопировано', $language['code']['copied'] ?? null);
         self::assertArrayNotHasKey('components', $language);
         self::assertArrayNotHasKey('pages', $language);
     }

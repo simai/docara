@@ -62,3 +62,4 @@ Recovery source:
 | 21 | `batch-21-component-index.md` | PASS |
 | 25 | `batch-25-language-pack-retirement.md`, `old-to-new-map.json` | PASS |
 | 26 | `batch-26-zero-page-assets.md` | PASS |
+| 27 | `batch-27-code-copy-localization.md` | PASS |

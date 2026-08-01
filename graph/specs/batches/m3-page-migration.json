@@ -20,7 +20,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-21-component-index.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-25-language-pack-retirement.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/old-to-new-map.json",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-26-zero-page-assets.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-26-zero-page-assets.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-27-code-copy-localization.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.m3.migration",

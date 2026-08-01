@@ -19,7 +19,7 @@ final readonly class SourceBoundaryValidator
     ];
 
     private const LANG_NAMESPACES = [
-        'accessibility', 'common', 'copy', 'examples', 'language', 'navigation', 'reader', 'redirect',
+        'accessibility', 'code', 'common', 'copy', 'examples', 'language', 'navigation', 'reader', 'redirect',
         'search', 'shell', 'toc', 'transitions',
     ];
 

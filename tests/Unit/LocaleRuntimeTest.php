@@ -225,6 +225,8 @@ HTML;
         self::assertSame('Continuer', $translator->message('fr-ca', 'common.continue'));
         self::assertSame('Bonjour, Rim!', $translator->message('fr-CA', 'common.greeting', ['name' => 'Rim']));
         self::assertSame('English fallback', $translator->message('fr-CA', 'common.only_en'));
+        self::assertSame('Default {missing}', $translator->messageOr('fr-CA', 'code.copy', 'Default {missing}'));
+        self::assertSame('Default Rim', $translator->messageOr('fr-CA', 'code.copy', 'Default {name}', ['name' => 'Rim']));
         self::assertSame([
             'title' => 'Alerte',
             'description' => 'Shows an important message.',
@@ -260,6 +262,7 @@ HTML;
             'Ссылаются на эту страницу',
             $translator->message('ru', 'navigation.backlinks_heading'),
         );
+        self::assertSame('Copy', $translator->messageOr('ru', 'code.copy', 'Copy'));
         $this->assertConfigurationError(
             'COMPONENT_PRESENTATION_NOT_FOUND',
             fn () => $translator->component('ru', 'docara.card'),

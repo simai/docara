@@ -72,6 +72,11 @@ final readonly class UiCopy
         'redirect.link',
     ];
 
+    private const OPTIONAL_IDS = [
+        'code.copy' => 'Copy',
+        'code.copied' => 'Copied',
+    ];
+
     public function __construct(private Translator $translator) {}
 
     /** @return array<string, string> */
@@ -80,6 +85,9 @@ final readonly class UiCopy
         $copy = [];
         foreach (self::IDS as $id) {
             $copy[$id] = $this->translator->message($locale, $id);
+        }
+        foreach (self::OPTIONAL_IDS as $id => $default) {
+            $copy[$id] = $this->translator->messageOr($locale, $id, $default);
         }
 
         return $copy;

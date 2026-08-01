@@ -6,6 +6,20 @@
     Object.keys(parameters||{}).forEach(function(name){value=value.split('{'+name+'}').join(String(parameters[name]))});
     return value;
   }
+  function localizeCodeCopy(root){
+    var selector='[data-docara-code-block] button[data-clipboard-target]';
+    var scope=root&&root.querySelectorAll?root:document,buttons=[];
+    var direct=root&&root.nodeType===1&&root.closest?root.closest(selector):null;
+    if(direct){buttons.push(direct)}
+    scope.querySelectorAll(selector).forEach(function(button){if(buttons.indexOf(button)===-1){buttons.push(button)}});
+    buttons.forEach(function(button){
+      var text=button.querySelector('.sf-button-text-container'),icon=button.querySelector('.sf-icon');
+      var copied=(text&&/copied|скопировано/i.test(text.textContent||''))||(icon&&icon.textContent.trim()==='check');
+      var label=message(copied?'code.copied':'code.copy');
+      if(text&&text.textContent!==label){text.textContent=label}
+      button.setAttribute('aria-label',label);
+    });
+  }
   function closeTransientExcept(id){
     document.querySelectorAll('[data-docara-transient-dialog]').forEach(function(dialog){
       if(dialog.id===id)return;
@@ -262,6 +276,8 @@
       });
     });
     if(copyButton){
+      copyButton.dataset.copyLabel=message('code.copy');
+      copyButton.dataset.copiedLabel=message('code.copied');
       var copyResetTimer=0;
       function sourceText(code){
         var lines=Array.from(code.querySelectorAll('.hljs-ln-code'));
@@ -315,4 +331,13 @@
   window.addEventListener('resize',function(){
     docaraExamples.forEach(function(example){positionExampleIndicator(example,false)});
   },{passive:true});
+  localizeCodeCopy(document);
+  if(document.body){
+    new MutationObserver(function(records){
+      records.forEach(function(record){
+        if(record.type==='characterData'){localizeCodeCopy(record.target.parentElement);return}
+        record.addedNodes.forEach(localizeCodeCopy);
+      });
+    }).observe(document.body,{childList:true,subtree:true,characterData:true});
+  }
 })();

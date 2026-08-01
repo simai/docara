@@ -40,6 +40,20 @@ final readonly class Translator
     }
 
     /** @param array<string, scalar> $parameters */
+    public function messageOr(string $locale, string $id, string $default, array $parameters = []): string
+    {
+        try {
+            return $this->message($locale, $id, $parameters);
+        } catch (PortableConfigurationException $exception) {
+            if ($exception->errorCode !== 'MESSAGE_NOT_FOUND') {
+                throw $exception;
+            }
+
+            return $this->replace($default, $parameters);
+        }
+    }
+
+    /** @param array<string, scalar> $parameters */
     private function replace(string $message, array $parameters): string
     {
         foreach ($parameters as $name => $value) {

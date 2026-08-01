@@ -383,16 +383,6 @@
                 "admission_condition": "Добавить параметры в компонент SIMAI Framework, закрепить доступность и fallback, затем принять их в Docara с тестами, документацией и браузерной проверкой."
             }
         },
-        "native.headings_and_text": {
-            "title": "Заголовки и текст",
-            "description": "Структурирует текст с помощью заголовков, абзацев, курсива, жирного начертания и зачёркивания.",
-            "limitations": [
-                "Произвольный HTML нельзя использовать как сокращённый способ разметки."
-            ],
-            "states": [],
-            "parameters": [],
-            "example_ref": "resources/component-catalog/examples/native.headings_and_text.ru.md"
-        },
         "native.links_and_images": {
             "title": "Ссылки и изображения",
             "description": "Добавляет безопасные ссылки и изображения с заданным автором доступным описанием.",
@@ -426,27 +416,6 @@
                 }
             },
             "example_ref": "resources/component-catalog/examples/native.links_and_images.ru.md"
-        },
-        "native.lists_and_quotes": {
-            "title": "Списки и цитаты",
-            "description": "Оформляет нумерованные и маркированные перечисления, а также семантические цитаты.",
-            "limitations": [],
-            "states": [],
-            "parameters": {
-                "author": {
-                    "label": "Автор",
-                    "description": "Имя автора цитаты."
-                },
-                "source": {
-                    "label": "Источник",
-                    "description": "Название публикации или другого источника."
-                },
-                "url": {
-                    "label": "Ссылка",
-                    "description": "Безопасный адрес источника."
-                }
-            },
-            "example_ref": "resources/component-catalog/examples/native.lists_and_quotes.ru.md"
         },
         "native.table": {
             "title": "Таблица Markdown",

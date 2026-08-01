@@ -63,10 +63,9 @@ final readonly class PageBuilder
 
     private function usesTargetPipeline(string $page): bool
     {
-        return in_array(str_replace('\\', '/', $page), [
-            'content/components/alert.md',
-            'content/ru/components/alert.md',
-            'content/ru/components/badge.md',
-        ], true);
+        return preg_match(
+            '#\Acontent/(?:ru/)?components/[a-z0-9-]+\.md\z#D',
+            str_replace('\\', '/', $page),
+        ) === 1;
     }
 }

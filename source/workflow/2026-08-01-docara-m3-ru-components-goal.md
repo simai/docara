@@ -35,13 +35,13 @@ generated component page count и русский component-route allowlist ра�
 PageBuilder/registry/gateway; две clean full builds byte-identical; static и
 browser matrices зелёные; graph/workflow/handoff синхронны; worktree чистый.
 
-Current Remaining: 29 generated routes из 32; Alert, Badge и Syntax уже
-физические.
+Current Remaining: 27 generated routes из 32; Alert, Badge, Syntax,
+headings/text и lists/quotes уже физические.
 
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.3 batch 07, native headings/text and lists/quotes.
+Next Safe Batch: M3.3 batch 08, native links/images and table.
 
 ## Goal
 
@@ -177,8 +177,8 @@ checks, evidence update and a separate commit.
 | 04 | generic block-component IR and compiler contract | typed snapshot and negative locations | completed |
 | 05 | generic renderer-registry/Smart-gateway block artifact | registry/gateway focused tests | completed |
 | 06 | Alert Markdown owner | exact Alert full/single/browser parity | completed |
-| 07 | native headings/text and lists/quotes | route parity | in-progress |
-| 08 | native links/images and table | route parity + responsive table | pending |
+| 07 | native headings/text and lists/quotes | route parity | completed |
+| 08 | native links/images and table | route parity + responsive table | in-progress |
 | 09 | native code and footnotes/sources | copy/code/anchors parity | pending |
 | 10 | details and backlinks | disclosure/navigation parity | pending |
 | 11 | banner and download | variant/asset parity | pending |
@@ -323,10 +323,19 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 07 — native headings/text and lists/quotes
 
+- status: completed;
+- parent: `feb297bdafb4ecbb83b8875c9665d9c611fd71b7`;
+- two physical owners use the target PageBuilder and generic list/blockquote
+  nodes; full/isolated/static/browser/focused checks pass;
+- exact pack/allowlist/example projections retired after zero-reference proof;
+- evidence: `m3-ru-components/batch-07-native-text-lists.md`.
+
+### Batch 08 — native links/images and table
+
 - status: in-progress;
-- parent: batch 06 checkpoint commit;
-- objective: create physical owners for the two native-content routes, retain
-  useful examples and prove full/isolated parity before exact legacy reduction.
+- parent: batch 07 checkpoint commit;
+- objective: migrate the next two native routes and prove safe links/images
+  plus responsive table behavior before exact legacy reduction.
 
 ## Kaizen
 

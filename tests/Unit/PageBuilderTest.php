@@ -59,7 +59,7 @@ final class PageBuilderTest extends TestCase
         self::assertNotNull($result->document);
         self::assertCount(16, $result->componentArtifacts);
         self::assertSame(
-            ['heading', 'paragraph', 'table', 'code_block', 'example', 'component', 'component_block'],
+            ['heading', 'paragraph', 'list', 'blockquote', 'table', 'code_block', 'example', 'component', 'component_block'],
             $result->componentArtifacts === []
                 ? []
                 : (new DocumentRendererRegistry([
@@ -82,6 +82,33 @@ final class PageBuilderTest extends TestCase
             self::assertSame('badge', $artifact->hydration['alias']);
             self::assertSame('content/ru/components/badge.md', $artifact->hydration['source']['file']);
             self::assertSame([], $artifact->assets);
+        }
+    }
+
+    public function test_all_physical_component_pages_use_typed_ir_and_native_family_nodes(): void
+    {
+        $root = dirname(__DIR__, 2) . '/docs/site';
+        foreach ([
+            'headings-and-text' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
+            'lists-and-quotes' => ['heading', 'paragraph', 'list', 'blockquote', 'code_block', 'example'],
+            'syntax' => ['heading', 'paragraph', 'list', 'code_block'],
+        ] as $slug => $expectedTypes) {
+            $plan = (new PortableConfigurationLoader($root))->resolve("content/ru/components/$slug.md");
+            $result = (new PageBuilder(new PortableMarkdownRenderer))->build(
+                $plan,
+                $root,
+                FrameworkComponentRuntime::fromLock($plan->frameworkLock),
+                3,
+            );
+
+            self::assertNotNull($result->document, $slug);
+            $types = array_values(array_unique(array_map(
+                static fn ($node): string => $node->type(),
+                $result->document->allNodes(),
+            )));
+            sort($types, SORT_STRING);
+            sort($expectedTypes, SORT_STRING);
+            self::assertSame($expectedTypes, $types, $slug);
         }
     }
 }

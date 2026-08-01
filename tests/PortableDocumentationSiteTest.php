@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase as PHPUnit;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Simai\Docara\ComponentCatalog\PublicComponentPage;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
@@ -74,7 +75,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $projectedSupported = array_values(array_filter(
             $supported,
             static fn (array $entry): bool => ! in_array(
-                substr((string) $entry['id'], (int) strrpos((string) $entry['id'], '.') + 1),
+                PublicComponentPage::slug($entry),
                 $authoredComponentAliases,
                 true,
             ),

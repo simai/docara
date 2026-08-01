@@ -1322,40 +1322,60 @@ final class StaticBuildVerifierTest extends TestCase
             $lock,
             rtrim($deploymentBase, '/') . '/_docara/framework',
         );
-        if ($locale === 'ru') {
-            $alertMarkdown = "# Уведомление\n\nВажная информация, результат, предупреждение или ошибка.\n";
-            $alertConfiguration = $firstConfiguration;
-            $alertConfiguration['default_locale'] = 'ru';
-            $alertConfiguration['locale'] = 'ru';
-            $alertConfiguration['search'] = ['enabled' => false, 'indexed' => false];
-            $alertPlan = new ResolvedPagePlan(
-                page: 'content/components/alert.md',
-                markdown: $alertMarkdown,
-                configuration: $alertConfiguration,
-                frameworkLock: $lock,
-                trace: [],
-                provenance: [],
-            );
-            $alertOutput = 'components/alert/index.html';
-            $alertUrl = $deploymentBase . 'components/alert/';
-            $this->filesystem->ensureDirectoryExists(dirname($build . '/' . $alertOutput));
-            file_put_contents(
-                $build . '/' . $alertOutput,
-                '<!doctype html><html lang="ru" data-docara-documentation-version="current"><head><meta charset="utf-8">'
-                . '<meta name="docara:documentation-version" content="current"><title>Уведомление</title></head>'
-                . '<body><main><h1>Уведомление</h1><p>Важная информация, результат, предупреждение или ошибка.</p></main></body></html>',
-            );
-            $manifest['pages'][] = [
-                'canonical_hash' => $alertPlan->canonicalHash(),
-                'page_path' => 'content/components/alert.md',
-                'page_source_kind' => 'authored_markdown',
+        $authoredFixtures = [
+            'docara.alert' => [
+                'slug' => 'alert',
                 'title' => 'Уведомление',
                 'description' => 'Важная информация, результат, предупреждение или ошибка.',
-                'output' => $alertOutput,
-                'url' => $alertUrl,
-                'resolved_page_plan' => $alertPlan->toArray(),
-                'component_runtime' => $runtime->extract($alertMarkdown, $alertPlan->page)->toArray(),
-            ];
+            ],
+            'native.headings_and_text' => [
+                'slug' => 'headings-and-text',
+                'title' => 'Заголовки и текст',
+                'description' => 'Понятная структура и смысловое выделение текста.',
+            ],
+            'native.lists_and_quotes' => [
+                'slug' => 'lists-and-quotes',
+                'title' => 'Списки и цитаты',
+                'description' => 'Наборы, последовательности и точные внешние формулировки.',
+            ],
+        ];
+        if ($locale === 'ru') {
+            foreach ($authoredFixtures as $fixture) {
+                $markdown = "# {$fixture['title']}\n\n{$fixture['description']}\n";
+                $configuration = $firstConfiguration;
+                $configuration['default_locale'] = 'ru';
+                $configuration['locale'] = 'ru';
+                $configuration['search'] = ['enabled' => false, 'indexed' => false];
+                $page = "content/components/{$fixture['slug']}.md";
+                $plan = new ResolvedPagePlan(
+                    page: $page,
+                    markdown: $markdown,
+                    configuration: $configuration,
+                    frameworkLock: $lock,
+                    trace: [],
+                    provenance: [],
+                );
+                $output = "components/{$fixture['slug']}/index.html";
+                $url = $deploymentBase . "components/{$fixture['slug']}/";
+                $this->filesystem->ensureDirectoryExists(dirname($build . '/' . $output));
+                file_put_contents(
+                    $build . '/' . $output,
+                    '<!doctype html><html lang="ru" data-docara-documentation-version="current"><head><meta charset="utf-8">'
+                    . '<meta name="docara:documentation-version" content="current"><title>' . $fixture['title'] . '</title></head>'
+                    . '<body><main><h1>' . $fixture['title'] . '</h1><p>' . $fixture['description'] . '</p></main></body></html>',
+                );
+                $manifest['pages'][] = [
+                    'canonical_hash' => $plan->canonicalHash(),
+                    'page_path' => $page,
+                    'page_source_kind' => 'authored_markdown',
+                    'title' => $fixture['title'],
+                    'description' => $fixture['description'],
+                    'output' => $output,
+                    'url' => $url,
+                    'resolved_page_plan' => $plan->toArray(),
+                    'component_runtime' => $runtime->extract($markdown, $plan->page)->toArray(),
+                ];
+            }
         }
         $translationConfiguration = $firstConfiguration;
         $translationConfiguration['default_locale'] = $locale;
@@ -1403,10 +1423,13 @@ final class StaticBuildVerifierTest extends TestCase
             homeUrl: $deploymentBase,
             reservedDocumentIds: PortableDocumentIds::reserved(),
             authoredComponents: $locale === 'ru'
-                ? ['docara.alert' => [
-                    'title' => 'Уведомление',
-                    'description' => 'Важная информация, результат, предупреждение или ошибка.',
-                ]]
+                ? array_map(
+                    static fn (array $fixture): array => [
+                        'title' => $fixture['title'],
+                        'description' => $fixture['description'],
+                    ],
+                    $authoredFixtures,
+                )
                 : [],
         );
 

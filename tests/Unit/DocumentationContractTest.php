@@ -303,10 +303,12 @@ final class DocumentationContractTest extends TestCase
                 file_put_contents($temporary . '/content/' . $locale . '/guide/install.md', "# Install $locale\n");
                 if ($locale === 'ru') {
                     self::assertTrue(mkdir($temporary . '/content/ru/components', 0700, true));
-                    copy(
-                        $this->repositoryRoot() . '/stubs/portable/content/ru/components/alert.md',
-                        $temporary . '/content/ru/components/alert.md',
-                    );
+                    foreach (['alert', 'headings-and-text', 'lists-and-quotes'] as $slug) {
+                        copy(
+                            $this->repositoryRoot() . "/stubs/portable/content/ru/components/$slug.md",
+                            $temporary . "/content/ru/components/$slug.md",
+                        );
+                    }
                 }
             }
             foreach ([

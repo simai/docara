@@ -23,7 +23,7 @@ Evidence index:
 
 ## Execute M3.3
 
-1. Migrate native headings/text and lists/quotes as the first family batch.
+1. Migrate native links/images and table as the next family batch.
 2. Continue through the family sequence in the durable goal without waiting
    after a green internal checkpoint.
 3. Keep one physical Markdown owner, useful prose and a common example/code

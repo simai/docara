@@ -75,13 +75,50 @@ final readonly class MarkdownCompiler
 
                 continue;
             }
+            if (preg_match('/^\s*(?:[-+*]|\d+[.)])\s+/u', $line) === 1) {
+                $start = $index;
+                do {
+                    $index++;
+                } while ($index < $count && (
+                    trim($lines[$index]) === ''
+                    || preg_match('/^\s+(?:[-+*]|\d+[.)])\s+|^\s{2,}\S/u', $lines[$index]) === 1
+                    || preg_match('/^\s*(?:[-+*]|\d+[.)])\s+/u', $lines[$index]) === 1
+                ));
+                while ($index > $start && trim($lines[$index - 1]) === '') {
+                    $index--;
+                }
+                $nodes[] = new SourceNode(
+                    'list',
+                    implode("\n", array_slice($lines, $start, $index - $start)),
+                    new SourceLocation($source, $start + 1, 1, $index),
+                    ['ordered' => preg_match('/^\s*\d+[.)]\s+/u', $line) === 1],
+                );
+
+                continue;
+            }
+            if (preg_match('/^\s*>/u', $line) === 1) {
+                $start = $index;
+                do {
+                    $index++;
+                } while ($index < $count && (
+                    preg_match('/^\s*>/u', $lines[$index]) === 1
+                    || preg_match('/^\s*\{(?:author|source|url)=/u', $lines[$index]) === 1
+                ));
+                $nodes[] = new SourceNode(
+                    'blockquote',
+                    implode("\n", array_slice($lines, $start, $index - $start)),
+                    new SourceLocation($source, $start + 1, 1, $index),
+                );
+
+                continue;
+            }
 
             $start = $index;
             do {
                 $index++;
             } while ($index < $count
                 && trim($lines[$index]) !== ''
-                && preg_match('/^(?:#{1,6}\s|```|~~~|:::[a-z])/', $lines[$index]) !== 1
+                && preg_match('/^(?:#{1,6}\s|```|~~~|:::[a-z]|\s*(?:[-+*]|\d+[.)])\s+|\s*>)/', $lines[$index]) !== 1
                 && ! str_starts_with(trim($lines[$index]), '|')
             );
             $raw = implode("\n", array_slice($lines, $start, $index - $start));

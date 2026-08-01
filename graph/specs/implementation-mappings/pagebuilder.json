@@ -39,7 +39,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-03-early-route-selection.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-07-native-text-lists.md"
   ],
   "review_refs": ["docara.gate.vertical_slice", "docara.gate.architecture_acceptance"],
   "current_behavior": [
@@ -50,11 +51,12 @@
     "M2 routes all authored pages through one PageBuilder seam; Badge returns typed in-memory IR and 16 component artifacts while other routes retain the rollback adapter.",
     "Full and isolated Badge builds call the same PageBuilder and are byte-identical; only the route set selected by PortableSiteBuilder differs.",
     "M3.2 selects an isolated physical route before compiling pages or running component-catalog/declarative-example projectors, while preserving the same PageBuilder and final publication loop.",
-    "Alert full and isolated trees are byte-identical and an observer proves unrelated projections are not entered."
+    "Alert full and isolated trees are byte-identical and an observer proves unrelated projections are not entered.",
+    "Batch 07 replaces the per-route target whitelist with one content/(ru/)?components/<slug>.md boundary, so every new physical component owner automatically uses the same typed PageBuilder."
   ],
   "known_deviations": [
     "Generated-route isolated builds still require their legacy projections until those routes become physical.",
-    "The target PageBuilder path is proven for Badge and Alert; other authored pages still use its legacy rendering adapter.",
+    "The target PageBuilder path is proven for every current physical component page; authored pages outside the component section retain the legacy rendering adapter.",
     "Generated pages bypass ordinary document rendering through trustedMainHtml."
   ],
   "deletion_gates": [
@@ -62,6 +64,6 @@
     "Move --page selection before global projection only after dependency/index update tests prove bounded work.",
     "Split SiteBuilder from PageBuilder only with full/single HTML, asset, metadata, heading, link and diagnostic parity."
   ],
-  "status": "m3_2_early_selection_badge_alert_implemented",
-  "mapped_revision": "commit containing M3.2-RUNTIME-ALERT.md; parent 843d4cf38c17385854d3fa2a6dbafebd17cc169f"
+  "status": "m3_3_all_physical_component_pages_use_one_pagebuilder",
+  "mapped_revision": "commit containing batch-07-native-text-lists.md; parent feb297bdafb4ecbb83b8875c9665d9c611fd71b7"
 }

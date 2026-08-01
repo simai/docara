@@ -337,9 +337,39 @@ MD, $source);
             (new ComponentAliasRegistry)->aliases(),
         );
         self::assertSame(
-            ['heading', 'paragraph', 'table', 'code_block', 'example', 'component', 'component_block'],
+            ['heading', 'paragraph', 'list', 'blockquote', 'table', 'code_block', 'example', 'component', 'component_block'],
             DocumentRendererRegistry::bundled(new PortableMarkdownRenderer)->types(),
         );
+    }
+
+    public function test_native_lists_and_quotes_keep_typed_source_ranges(): void
+    {
+        $document = (new MarkdownCompiler)->compile(<<<'MD'
+# Content
+
+- First
+- Second
+  - Nested
+
+> Exact quote.
+{author="Author" source="Source" url="https://example.com/source"}
+MD, 'content/ru/components/lists-and-quotes.md');
+        $nodes = $document->nodes;
+
+        self::assertSame(['heading', 'list', 'blockquote'], array_map(
+            static fn (DocumentNode $node): string => $node->type(),
+            $nodes,
+        ));
+        self::assertSame([3, 5], [$nodes[1]->location()->line, $nodes[1]->location()->endLine]);
+        self::assertSame([7, 8], [$nodes[2]->location()->line, $nodes[2]->location()->endLine]);
+        $html = DocumentRendererRegistry::bundled(new PortableMarkdownRenderer)->render(
+            $document,
+            new DocumentRenderContext(null, null),
+        )['document']->html;
+        self::assertStringContainsString('<ul>', $html);
+        self::assertStringContainsString('<blockquote', $html);
+        self::assertStringContainsString('Author', $html);
+        self::assertStringContainsString('https://example.com/source', $html);
     }
 
     private function example(string $call): string

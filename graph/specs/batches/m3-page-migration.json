@@ -15,13 +15,14 @@
     "source/workflow/2026-08-01-docara-m3-ru-components-goal.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/INDEX.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.1-EXECUTION-CONTRACT.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-07-native-text-lists.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.m3.migration",
   "allowed_scope": ["All Russian /ru/components/ routes", "Shared typed IR and renderer runtime", "Derived indexes and reader navigation", "Proved Russian legacy retirement", "Integrated acceptance evidence"],
   "forbidden_scope": ["Unmapped deletion", "Unrelated visual redesign", "Release"],
   "checks": ["32 physical Markdown owners", "One PageBuilder registry and Smart gateway", "Early isolated route selection", "Route matrix", "Broken links zero", "Missing assets zero", "Unknown nodes zero", "Deterministic and browser acceptance"],
-  "status": "m3_ru_components_goal_in_progress_m3_2_pass",
-  "next_action": "implement_m3_3_native_text_and_lists_family"
+  "status": "m3_ru_components_goal_in_progress_batch_07_pass",
+  "next_action": "implement_m3_3_links_images_and_table_family"
 }

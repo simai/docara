@@ -29,9 +29,10 @@ final class PortableComponentCatalogProjectorTest extends TestCase
                 && $entry['family'] !== 'framework_smart',
         ));
         $supportedIds = array_column($supported, 'id');
+        $authoredIds = ['docara.alert', 'native.headings_and_text', 'native.lists_and_quotes'];
         $generated = array_values(array_filter(
             $supported,
-            static fn (array $entry): bool => $entry['id'] !== 'docara.alert',
+            static fn (array $entry): bool => ! in_array($entry['id'], $authoredIds, true),
         ));
         $generatedIds = array_column($generated, 'id');
         $generatedSlugs = array_map(self::publicSlug(...), $generated);
@@ -137,12 +138,31 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             $detailPath = $build . '/components/' . $slug . '/index.html';
             self::assertFileExists($detailPath);
             $detail = (string) file_get_contents($detailPath);
+            if (in_array($id, $authoredIds, true)) {
+                self::assertStringContainsString('<h1 ', $detail);
+                self::assertStringContainsString('data-docara-example=', $detail);
+                self::assertStringContainsString('data-docara-example-tab="example"', $detail);
+                self::assertStringContainsString('data-docara-example-tab="markdown"', $detail);
+                self::assertStringContainsString('data-docara-example-copy', $detail);
+            }
             if ($id === 'docara.alert') {
                 self::assertStringContainsString('<h1 id="уведомление">Уведомление</h1>', $detail);
                 self::assertSame(5, substr_count($detail, 'data-docara-block="alert"'));
                 self::assertStringContainsString('Параметр <code>type</code>', $detail);
                 self::assertStringContainsString('Параметр <code>variant</code>', $detail);
                 self::assertStringContainsString('data-docara-code-block', $detail);
+
+                continue;
+            }
+            if ($id === 'native.headings_and_text') {
+                self::assertStringContainsString('<h1 id="заголовки-и-текст">Заголовки и текст</h1>', $detail);
+                self::assertStringContainsString('Не пропускайте уровни заголовков', $detail);
+
+                continue;
+            }
+            if ($id === 'native.lists_and_quotes') {
+                self::assertStringContainsString('<h1 id="списки-и-цитаты">Списки и цитаты</h1>', $detail);
+                self::assertStringContainsString('<blockquote', $detail);
 
                 continue;
             }
@@ -317,7 +337,6 @@ final class PortableComponentCatalogProjectorTest extends TestCase
     {
         $build = $this->buildPortableSite();
         $receipt = $this->json($build . '/.docara/component-catalog-pages.json');
-
         foreach ($receipt['pages'] as $page) {
             self::assertMatchesRegularExpression('/\A[a-f0-9]{64}\z/D', $page['catalog_entry_sha256']);
             self::assertMatchesRegularExpression('/\A[a-f0-9]{64}\z/D', $page['contract_fragment_sha256']);
@@ -402,6 +421,12 @@ final class PortableComponentCatalogProjectorTest extends TestCase
     {
         $build = $this->buildPortableSite();
         $receipt = $this->json($build . '/.docara/component-catalog-pages.json');
+        $catalog = $this->json($build . '/_docara/component-catalog.json');
+        $publicDetails = count(array_filter(
+            $catalog['entries'],
+            static fn (array $entry): bool => $entry['lifecycle'] === 'supported'
+                && $entry['family'] !== 'framework_smart',
+        ));
         self::assertGreaterThanOrEqual(3, count($receipt['pages']));
         $middle = $receipt['pages'][1];
         $html = (string) file_get_contents($build . '/' . $middle['output']);
@@ -423,7 +448,7 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             )?->length,
         );
         self::assertSame(
-            count($receipt['pages']) + 1,
+            $publicDetails,
             $xpath->query(
                 '//aside[contains(concat(" ", normalize-space(@class), " "), " docara-sidebar ")]'
                 . '//a[starts-with(@href, "/components/") and @href!="/components/"]',

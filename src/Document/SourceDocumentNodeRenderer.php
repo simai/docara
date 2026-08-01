@@ -13,7 +13,7 @@ final readonly class SourceDocumentNodeRenderer implements DocumentNodeRenderer
 
     public function types(): array
     {
-        return ['heading', 'paragraph', 'table', 'code_block', 'example'];
+        return ['heading', 'paragraph', 'list', 'blockquote', 'table', 'code_block', 'example'];
     }
 
     public function render(DocumentNode $node, DocumentRenderContext $context): RenderArtifact

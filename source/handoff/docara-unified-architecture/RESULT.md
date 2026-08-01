@@ -245,3 +245,22 @@ Status: PASS; overall M3 goal remains in progress
 M3.3 is next. Three of 32 component routes are physical; global ownership,
 derived-view convergence, full legacy retirement, release and production
 readiness remain unclaimed.
+
+## M3.3 batch 07 result
+
+Status: PASS; M3.3 continues
+
+- `/ru/components/headings-and-text/` and
+  `/ru/components/lists-and-quotes/` now have physical Markdown owners;
+- all physical component pages enter the target PageBuilder by one route
+  pattern, not a per-component whitelist;
+- typed native IR now includes generic list and blockquote nodes with physical
+  source ranges;
+- full/isolated trees are exact, static verification reports 0 broken, and
+  desktop/mobile browser smoke passes tabs, copy, focus and responsive layout;
+- the two Russian pack/allowlist records and zero-reference localized examples
+  are retired with commit rollback;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-07-native-text-lists.md`.
+
+Five of 32 component routes are physical; batch 08 (links/images and table) is
+next. Overall M3 and release/production readiness remain unclaimed.

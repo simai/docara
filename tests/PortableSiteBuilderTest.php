@@ -1273,14 +1273,18 @@ final class PortableSiteBuilderTest extends TestCase
             '/guides/platform/configuration/',
             '/guides/platform/configuration/layout/',
             '/components/',
-            '/components/alert/',
         ];
         $catalogPages = $this->jsonFile(
             $this->tmpPath('build_local/.docara/component-catalog-pages.json'),
         );
-        $catalogRoutes = array_column($catalogPages['pages'], 'route');
-        sort($catalogRoutes, SORT_STRING);
-        $expected = [...$expected, ...$catalogRoutes];
+        $componentRoutes = [
+            '/components/alert/',
+            '/components/headings-and-text/',
+            '/components/lists-and-quotes/',
+            ...array_column($catalogPages['pages'], 'route'),
+        ];
+        sort($componentRoutes, SORT_STRING);
+        $expected = [...$expected, ...$componentRoutes];
 
         self::assertSame($expected, $this->desktopNavigationLinks($html));
 

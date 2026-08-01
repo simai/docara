@@ -750,10 +750,19 @@ final class EffectiveComponentCatalogTest extends TestCase
                 $root . '/' . $englishReference,
             ));
             self::assertNotSame('', trim($html), $entry['id']);
-            if ($entry['id'] === 'docara.alert') {
-                self::assertFileExists($root . '/docs/site/content/ru/components/alert.md');
+            if (in_array($entry['id'], [
+                'docara.alert',
+                'native.headings_and_text',
+                'native.lists_and_quotes',
+            ], true)) {
+                $slug = match ($entry['id']) {
+                    'native.headings_and_text' => 'headings-and-text',
+                    'native.lists_and_quotes' => 'lists-and-quotes',
+                    default => 'alert',
+                };
+                self::assertFileExists($root . "/docs/site/content/ru/components/$slug.md");
                 self::assertArrayNotHasKey(
-                    'docara.alert',
+                    $entry['id'],
                     json_decode(
                         (string) file_get_contents($root . '/resources/language-packs/ru.json'),
                         true,

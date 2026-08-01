@@ -48,7 +48,8 @@
     "docara.evidence.m0_inventory",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-07-native-text-lists.md"
   ],
   "review_refs": ["docara.gate.vertical_slice"],
   "current_behavior": [
@@ -59,11 +60,12 @@
     "M2 adds a 35-node typed in-memory IR for Badge with heading, paragraph, table, code_block, example and component types plus physical file/line/column provenance.",
     "The Badge IR is serialized only as a test fixture; the public build emits no mandatory page IR JSON or JSONL.",
     "M3.2 adds one generic component_block node with typed children, props and exact source spans, including blocks inside fenced Markdown examples.",
-    "Alert uses five generic block nodes and no Alert-specific IR type."
+    "Alert uses five generic block nodes and no Alert-specific IR type.",
+    "Batch 07 adds generic list and blockquote source nodes with exact ranges; both reuse SourceDocumentNodeRenderer."
   ],
   "known_deviations": [
     "The current AST can be serialized in receipts, but the target permits no mandatory page-level JSON/JSONL.",
-    "Typed native node coverage is currently bounded to the Badge and Alert grammars; remaining routes still use the coarse rollback adapter.",
+    "Typed native node coverage now includes Badge, Alert, headings/text, lists/quotes and Syntax; remaining generated routes retain the rollback adapter.",
     "The earlier declarative SourceSpan remains separate from the target SourceLocation.",
     "PortableMarkdownRenderer remains active for non-Badge routes until bounded M3 parity evidence exists."
   ],
@@ -72,6 +74,6 @@
     "Retire PortableMarkdownRenderer component logic only after every moved node renderer has positive, negative and source-location tests.",
     "Delete duplicate metadata parsing only after headings and links are derived from the canonical IR."
   ],
-  "status": "m3_2_generic_block_ir_implemented",
-  "mapped_revision": "commit containing M3.2-RUNTIME-ALERT.md; parent 843d4cf38c17385854d3fa2a6dbafebd17cc169f"
+  "status": "m3_3_native_list_quote_ir_implemented",
+  "mapped_revision": "commit containing batch-07-native-text-lists.md; parent feb297bdafb4ecbb83b8875c9665d9c611fd71b7"
 }

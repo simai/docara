@@ -384,3 +384,18 @@ Status: PASS; M3.3 continues
 
 Eighteen of 32 component routes are physical; batch 14 (Grid and Figure) is
 next. Overall M3 and release/production readiness remain unclaimed.
+
+## M3.3 batch 14 result
+
+Status: PASS; M3.3 continues
+
+- Grid and Figure now have physical Russian Markdown owners and portable starters;
+- both reuse generic typed-directive IR and one PageBuilder/renderer path;
+- full/isolated trees are exact; static reports 206 HTML, 18,925 references and
+  zero broken; browser verifies responsive Grid and loaded accessible Figure
+  images at desktop/mobile and light/dark;
+- exact pack/allowlist records and zero-reference localized examples retired;
+- evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-14-grid-figure.md`.
+
+Twenty of 32 component routes are physical; batch 15 (Media and Logos) is next.
+Overall M3 and release/production readiness remain unclaimed.

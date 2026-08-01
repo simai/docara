@@ -33,8 +33,10 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
                     '/ru/components/code/',
                     '/ru/components/details/',
                     '/ru/components/download/',
+                    '/ru/components/figure/',
                     '/ru/components/footnotes-and-sources/',
                     '/ru/components/headings-and-text/',
+                    '/ru/components/grid/',
                     '/ru/components/icon/',
                     '/ru/components/kbd/',
                     '/ru/components/hero/',
@@ -45,9 +47,9 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
         ));
         $allowlist = new LegacyPublicSourceAllowlist;
 
-        self::assertCount(28, $generated);
-        self::assertCount(28, $allowlist->generatedRoutes());
-        foreach (['alert', 'backlinks', 'banner', 'button', 'card', 'code', 'details', 'download', 'footnotes-and-sources', 'headings-and-text', 'hero', 'icon', 'kbd', 'links-and-images', 'lists-and-quotes', 'table'] as $slug) {
+        self::assertCount(26, $generated);
+        self::assertCount(26, $allowlist->generatedRoutes());
+        foreach (['alert', 'backlinks', 'banner', 'button', 'card', 'code', 'details', 'download', 'figure', 'footnotes-and-sources', 'grid', 'headings-and-text', 'hero', 'icon', 'kbd', 'links-and-images', 'lists-and-quotes', 'table'] as $slug) {
             self::assertNotContains("/ru/components/$slug/", $allowlist->generatedRoutes());
         }
         self::assertNotContains('/ru/components/badge/', $allowlist->generatedRoutes());
@@ -74,7 +76,7 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
 
         $allowlist = new LegacyPublicSourceAllowlist;
         $allowlist->assertLanguagePackComponentCounts($counts);
-        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 26, 'zh-Hans' => 8], $counts);
+        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 24, 'zh-Hans' => 8], $counts);
         $russian = json_decode(
             (string) file_get_contents($root . '/resources/language-packs/ru.json'),
             true,
@@ -89,6 +91,8 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
             'docara.card',
             'docara.details',
             'docara.download',
+            'docara.figure',
+            'docara.grid',
             'docara.icon',
             'docara.kbd',
             'docara.hero',

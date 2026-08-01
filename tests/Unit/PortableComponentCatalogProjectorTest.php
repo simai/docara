@@ -37,6 +37,8 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             'docara.card',
             'docara.details',
             'docara.download',
+            'docara.figure',
+            'docara.grid',
             'docara.icon',
             'docara.kbd',
             'docara.hero',
@@ -222,6 +224,18 @@ final class PortableComponentCatalogProjectorTest extends TestCase
             if ($id === 'docara.hero') {
                 self::assertStringContainsString('<h1 id="первый-экран">Первый экран</h1>', $detail);
                 self::assertStringContainsString('data-docara-block="hero"', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.figure') {
+                self::assertStringContainsString('<h1 id="иллюстрация">Иллюстрация</h1>', $detail);
+                self::assertStringContainsString('data-docara-block="figure"', $detail);
+
+                continue;
+            }
+            if ($id === 'docara.grid') {
+                self::assertStringContainsString('<h1 id="сетка">Сетка</h1>', $detail);
+                self::assertStringContainsString('data-docara-block="grid"', $detail);
 
                 continue;
             }

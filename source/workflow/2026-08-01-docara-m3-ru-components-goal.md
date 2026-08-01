@@ -35,14 +35,14 @@ generated component page count и русский component-route allowlist ра�
 PageBuilder/registry/gateway; две clean full builds byte-identical; static и
 browser matrices зелёные; graph/workflow/handoff синхронны; worktree чистый.
 
-Current Remaining: 14 generated routes из 32; Alert, Badge, Syntax,
+Current Remaining: 12 generated routes из 32; Alert, Badge, Syntax,
 headings/text, lists/quotes, links/images, table, code, footnotes/sources,
-Details, Backlinks, Banner, Download, Button, Icon, Kbd, Card и Hero уже физические.
+Details, Backlinks, Banner, Download, Button, Icon, Kbd, Card, Hero, Grid и Figure уже физические.
 
 Do Not Complete Until: все критерии Completion Gate подтверждены свежей
 evidence на интегрированном HEAD.
 
-Next Safe Batch: M3.3 batch 14, Grid and Figure.
+Next Safe Batch: M3.3 batch 15, Media and Logos.
 
 ## Goal
 
@@ -185,8 +185,8 @@ checks, evidence update and a separate commit.
 | 11 | banner and download | variant/asset parity | completed |
 | 12 | button and icon/kbd | interactive/focus parity | completed |
 | 13 | card and hero | layout parity | completed |
-| 14 | grid and figure | layout/media parity | in-progress |
-| 15 | media and logos | asset/responsive parity | pending |
+| 14 | grid and figure | layout/media parity | completed |
+| 15 | media and logos | asset/responsive parity | in-progress |
 | 16 | diagram and math | runtime/asset parity | pending |
 | 17 | code-from-file and HTML | safe rendering parity | pending |
 | 18 | embed and example | embed/example tabs/copy parity | pending |
@@ -409,10 +409,20 @@ Never infer completion from a checkpoint commit or chat summary.
 
 ### Batch 14 — Grid and Figure
 
+- status: completed;
+- parent: `5cb1a51`;
+- both routes have physical owners and reuse generic typed-directive IR;
+- full/isolated trees are exact, static has zero broken, browser proves
+  responsive Grid and loaded accessible Figure assets;
+- exact pack/allowlist/example legacy retired with commit rollback;
+- evidence: `m3-ru-components/batch-14-grid-figure.md`.
+
+### Batch 15 — Media and Logos
+
 - status: in-progress;
-- parent: batch 13 checkpoint commit;
-- objective: migrate layout/media routes with responsive grid and accessible
-  figure evidence through the same generic typed-directive path.
+- parent: batch 14 checkpoint commit;
+- objective: migrate responsive media/text and logo-list routes through the
+  same typed directive with content-owned assets and accessibility evidence.
 
 ## Kaizen
 

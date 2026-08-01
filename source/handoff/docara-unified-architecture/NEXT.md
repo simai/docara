@@ -4,8 +4,8 @@ Batch ID: `docara.batch.m1.boundaries`
 
 ## Required work
 
-1. Implement M1A typed physical Markdown source locator and fail-closed route
-   mapping without changing output.
+1. Keep the accepted M1A typed physical Markdown source locator unchanged;
+   its full/single parity evidence is green.
 2. Implement M1B target source-boundary guards and the finite zero-growth
    legacy allowlist.
 3. Prove `content/<locale>/lang.json` ownership and isolation of package-owned
@@ -36,3 +36,6 @@ Batch ID: `docara.batch.m1.boundaries`
 - legacy generated-route/prose inventory cannot grow;
 - full and single-page output remain at the M0 baseline;
 - `graph/specs/gates/badge-source-ready.json` passes before M2.
+
+M1A evidence:
+`source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md`.

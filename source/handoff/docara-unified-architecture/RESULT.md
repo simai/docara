@@ -93,3 +93,24 @@ release and production gates remain unclaimed.
 - no implementation readiness claimed;
 - no release or production readiness claimed;
 - no default-branch, tag, release or deployment action performed.
+
+# M1A result
+
+Status: typed source locator implemented; exact build parity passed
+
+- authored Markdown discovery now returns typed `PageSource` objects through
+  one fail-closed locator and route mapper;
+- ambiguous physical routes, unknown locales, outside-root/traversal paths,
+  symlinks and non-`.md` public page sources fail before rendering;
+- the builder integration changes discovery only; renderer, generated routes,
+  content, templates and assets remain unchanged;
+- exact base-code versus candidate full builds match across all 321 files;
+- full build contains 103 pages; single badge build selects one page;
+- badge remains byte-identical at SHA-256
+  `faeb6c6a8e075bff9ad5602bcea4b1e019c700aeae74f696c0289e32fbb83f79`;
+- PHPUnit passes with 347 tests and 7206 assertions on PHP 8.4.20;
+- evidence:
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md`.
+
+M1B remains the next bounded checkpoint. The badge-source, global ownership,
+vertical-slice, release and production gates remain open.

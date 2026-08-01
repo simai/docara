@@ -8,6 +8,8 @@ use Illuminate\Support\Collection;
 use JsonException;
 use Simai\Docara\ComponentCatalog\AuthoredComponentPageIndex;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
+use Simai\Docara\Content\PageSource;
+use Simai\Docara\Content\PageSourceLocator;
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\DeclarativePipeline;
 use Simai\Docara\File\Filesystem;
@@ -67,10 +69,11 @@ final readonly class PortableSiteBuilder
         $contentPath = $this->confinedDirectory($root, $contentRoot);
         $contentContexts = [];
         $pagePaths = [];
+        $pageSourceLocator = new PageSourceLocator($root, $localeRegistry);
         foreach ($localeRegistry->all() as $locale => $definition) {
             $localeContentPath = $this->confinedDirectory($root, $definition->contentRoot);
-            $localePagePaths = $this->markdownFiles($root, $localeContentPath);
-            if ($localePagePaths === []) {
+            $localePageSources = $pageSourceLocator->forLocale($locale);
+            if ($localePageSources === []) {
                 throw new PortableConfigurationException(
                     'PORTABLE_LOCALE_CONTENT_EMPTY',
                     "Portable content for locale [$locale] does not contain Markdown pages.",
@@ -81,7 +84,10 @@ final readonly class PortableSiteBuilder
                 'path' => $localeContentPath,
                 'prefix' => $definition->publicPrefix,
             ];
-            array_push($pagePaths, ...$localePagePaths);
+            array_push(
+                $pagePaths,
+                ...array_map(static fn (PageSource $source): string => $source->path, $localePageSources),
+            );
         }
         sort($pagePaths, SORT_STRING);
         $this->assertDestinationInputBoundary(
@@ -790,7 +796,7 @@ final readonly class PortableSiteBuilder
     }
 
     /**
-     * @param list<array<string, mixed>> $pages
+     * @param  list<array<string, mixed>>  $pages
      * @return array<string, mixed>
      */
     private function pageMetadata(array $pages, string $root, string $documentationVersion): array
@@ -834,27 +840,6 @@ final readonly class PortableSiteBuilder
             'documentation_version' => $documentationVersion,
             'pages' => $records,
         ];
-    }
-
-    /** @return list<string> */
-    private function markdownFiles(string $root, string $contentPath): array
-    {
-        $pages = [];
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($contentPath, \FilesystemIterator::SKIP_DOTS),
-        );
-        foreach ($iterator as $file) {
-            if ($file->isLink()) {
-                throw new PortableConfigurationException('SYMLINK_FORBIDDEN', 'Portable content cannot contain symbolic links.');
-            }
-            if (! $file->isFile() || ! in_array(strtolower($file->getExtension()), ['md', 'markdown'], true)) {
-                continue;
-            }
-            $pages[] = str_replace('\\', '/', substr($file->getPathname(), strlen($root) + 1));
-        }
-        sort($pages, SORT_STRING);
-
-        return $pages;
     }
 
     /** @return array{url:string,output:string} */
@@ -927,6 +912,7 @@ final readonly class PortableSiteBuilder
             $trimmed = trim($line);
             if (str_starts_with($trimmed, '```') || str_starts_with($trimmed, '~~~')) {
                 $insideFence = ! $insideFence;
+
                 continue;
             }
             if ($insideFence) {
@@ -936,6 +922,7 @@ final readonly class PortableSiteBuilder
                 if ($paragraph !== []) {
                     break;
                 }
+
                 continue;
             }
             if ($paragraph === [] && (

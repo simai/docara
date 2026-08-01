@@ -25,6 +25,12 @@
     "build_mode_difference": "selected_route_set_only",
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
+  "implementation_state": {
+    "current_stage": "docara.stage.m1.boundaries",
+    "completed_checkpoint": "m1a_typed_source_locator",
+    "next_action": "implement_m1b_target_source_boundary_guards",
+    "evidence": "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1A-EVIDENCE.md"
+  },
   "routing_gap": {
     "status": "recorded",
     "reason": "The installed Docara skill describes the retired architecture and is disabled for this work.",

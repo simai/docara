@@ -2,11 +2,20 @@
 
 Date: 2026-08-01
 
-Status: accepted contract after architecture checkpoint; implementation not started
+Status: M1A passed with evidence; M1B is next
 
 Parent goal: `docara.goal.unified`
 
 Evidence: `source/workflow/evidence/2026-08-01-docara-unified-architecture/`
+
+Execution boundary:
+
+- action gate: preflight and pre-commit checks passed for this local,
+  reversible, non-release batch;
+- evidence path: `source/workflow/evidence/2026-08-01-docara-unified-architecture/`;
+- stop conditions: any public URL, HTML, asset manifest or route-count drift;
+  any source ambiguity not rejected before rendering; any need to delete legacy;
+- rollback owner: executor, by reverting only the M1A commit.
 
 ## Required decision before coding
 

@@ -12,7 +12,8 @@
   "visibility": "repository",
   "source_refs": ["docs/specification/ACCEPTANCE.md"],
   "evidence_refs": [
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.7-CANDIDATE-VERIFICATION.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.7-CANDIDATE-VERIFICATION.md",
+    "source/workflow/evidence/2026-08-02-docara-r1c-semantic-correction/r1c-candidate-and-update.md"
   ],
   "profile_refs": ["docara.unified"],
   "metric_type": "difference_count",

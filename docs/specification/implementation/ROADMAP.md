@@ -1,9 +1,9 @@
 # Дорожная карта упрощения Docara
 
-Статус: R1 independent audit вернул `CORRECTION_REQUIRED`. Artifact
-`83afd355…` классифицирован `superseded_after_audit`; R1-C исправляет semantic
-drift runtime/schema/docs/tests и готовит новый exact candidate. Release и
-production не заявлены.
+Статус: R1-C implementation завершена и новый exact candidate готов к
+independent retest. Artifact `83afd355…` остаётся
+`superseded_after_audit`; текущий executor candidate — source `56a2abf8…`, ZIP
+`04c18c95…`. Local release readiness, release и production не заявлены.
 
 Переход выполняется вертикальными срезами. Цель — не переписать весь код за
 один раз, а доказать новый единственный конвейер на одной реальной странице,
@@ -161,18 +161,18 @@ policy и security tests проходят. Эти положительные р�
 
 ## R1-C. Устранить semantic drift перед новым candidate
 
-Статус: выполняется. Обязательные результаты: удалить public `language_pack`,
-переписать public authoring docs и negative gates, реализовать принятые front
-matter/missing-page contracts, проверить ссылки внутри ZIP, затем создать и
-независимо перепроверить новый immutable artifact. Recovery source:
+Статус: executor implementation PASS; independent exact-artifact retest
+ожидается. Public `language_pack` удалён, public authoring docs и negative gates
+переписаны, front matter/missing-page contracts работают, ссылки внутри ZIP
+проверяются, новый immutable artifact воспроизводим. Recovery source:
 `source/workflow/2026-08-02-docara-r1c-semantic-correction-goal.md`.
 
 ## Порядок продолжения
 
 Текущий recovery source — R1-C workflow и evidence index. M0–M5 и прежний R1
-не переигрываются; старый R1 ZIP остаётся immutable negative baseline. После
-зелёного correction candidate требуется отдельный independent exact-archive
-retest, затем только user-approved release action.
+не переигрываются; старый R1 ZIP остаётся immutable negative baseline. Сейчас
+требуется отдельный independent exact-archive retest source `56a2abf8…` / ZIP
+`04c18c95…`, затем только user-approved release action.
 
 ## Запрещённые сокращения
 

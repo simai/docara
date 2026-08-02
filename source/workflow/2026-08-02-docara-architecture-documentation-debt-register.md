@@ -1,6 +1,7 @@
 # Docara architecture and documentation debt register
 
-Status: `open`; repository-owned R1-C execution copy
+Status: `closed_by_executor_evidence`; independent artifact retest remains
+separate
 
 Auditor source (read-only provenance):
 `/Users/rim/Documents/GitHub/larena-workspace/source/workflow/2026-08-02-docara-architecture-documentation-debt-audit.md`
@@ -92,18 +93,20 @@ runtime, docs and tests.
 
 | Debt | Status | Evidence |
 | --- | --- | --- |
-| DOCARA-DEBT-001 | open | — |
-| DOCARA-DEBT-002 | open | — |
-| DOCARA-DEBT-003 | open | — |
-| DOCARA-DEBT-004 | in_progress | correction governance checkpoint |
-| DOCARA-DEBT-005 | open | — |
-| DOCARA-DEBT-006 | open | — |
-| DOCARA-DEBT-007 | open | — |
-| DOCARA-DEBT-008 | open | — |
-| DOCARA-DEBT-009 | open | — |
-| DOCARA-DEBT-010 | open | — |
-| DOCARA-DEBT-011 | open | — |
-| DOCARA-DEBT-012 | open | — |
+| DOCARA-DEBT-001 | closed | public field/schema/model removed; `r1c-language-boundary.md` |
+| DOCARA-DEBT-002 | closed | public guides use only Markdown + locale `lang.json`; `r1c-authoring-runtime.md` |
+| DOCARA-DEBT-003 | closed | positive new contract and negative legacy gates; `r1c-semantic-gates.md` |
+| DOCARA-DEBT-004 | closed | readiness withdrawn, old artifact superseded, new gate remains pending independent retest |
+| DOCARA-DEBT-005 | closed | ZIP link verifier and exact artifact broken=0; `r1c-candidate-and-update.md` |
+| DOCARA-DEBT-006 | closed | flat owner recommended, compatible `index.md` documented and collision tested |
+| DOCARA-DEBT-007 | closed | front matter and missing-page policy implemented/tested; `r1c-authoring-runtime.md` |
+| DOCARA-DEBT-008 | closed | actual class/error-code mapping in architecture specification |
+| DOCARA-DEBT-009 | closed | dead pack runtime/schema/data removed after consumer inventory |
+| DOCARA-DEBT-010 | closed | public docs describe physical owners and derived navigation/search |
+| DOCARA-DEBT-011 | closed | public project tree uses literal locale directory paths |
+| DOCARA-DEBT-012 | closed | one schema/runtime/docs namespace list; `examples` rejected |
 
-Completion gate: remaining debt count must be 0 with fresh evidence bound to a
-new source and artifact SHA. Structural tests alone cannot close an item.
+Remaining debt count: 0. Closure binds to source `56a2abf8…` and artifact
+`04c18c95…`; structural tests are supplemented by exact ZIP, consumer,
+update/rollback, public build/static and browser evidence. This does not pass
+the tester-owned local release-readiness gate.

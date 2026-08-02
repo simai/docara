@@ -808,5 +808,30 @@ remain immutable historical evidence with status `superseded_after_audit`.
 
 R1-C is active at
 `source/workflow/2026-08-02-docara-r1c-semantic-correction-goal.md`. No current
-corrected candidate or local release-readiness claim exists until a new exact
-ZIP passes independent retest.
+corrected candidate or local release-readiness claim existed at that audit
+boundary.
+
+# R1-C semantic correction candidate
+
+Status: `IMPLEMENTATION_PASS`; independent exact-artifact retest pending
+
+- public `language_pack` config/model/schema/data/runtime is removed; public
+  pages use physical Markdown and shared UI labels use only locale `lang.json`;
+- front matter and `locales.missing_page_policy` are executable, diagnosed and
+  covered by positive/negative tests;
+- public docs, specification, actual classes/error codes and semantic tests now
+  agree; repository and exact-ZIP documentation links fail closed;
+- exact source `56a2abf8bad05923f689141afc0bb045aa4d6734` produces a
+  reproducible 650-file ZIP with SHA-256
+  `04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753`;
+- two fresh dist consumers, 103-route public deterministic/full-single/static
+  matrices and a real old-R1-to-R1-C update/rollback pass;
+- fresh RU LTR/AR RTL light/dark screenshots at 1920/1440/390 bind to that
+  artifact; overflow and console errors are zero;
+- evidence:
+  `source/workflow/evidence/2026-08-02-docara-r1c-semantic-correction/INDEX.md`.
+
+The old `83afd355…` artifact remains immutable and superseded. The new
+`04c18c95…` artifact is the only current independent-retest target. The
+tester-owned local release-readiness gate is not passed here; merge, push, tag,
+release, publication and deploy were not performed.

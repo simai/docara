@@ -1,0 +1,24 @@
+{
+  "schema": "docara.r1c_browser_evidence.v1",
+  "source_revision": "56a2abf8bad05923f689141afc0bb045aa4d6734",
+  "archive_sha256": "04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753",
+  "engine": "Chromium via Playwright CLI",
+  "cases": [
+    {"route": "/ru/", "viewport": "1920x1080", "theme": "light", "direction": "ltr", "overflow": 0, "console_errors": 0, "screenshot": "browser/ru-landing-1920-light.png", "sha256": "32daa958973639339d3f9929c57d6e6d55d005cfe652643a93591c1f26ebe7b5"},
+    {"route": "/ru/examples/", "viewport": "1440x900", "theme": "light", "direction": "ltr", "overflow": 0, "console_errors": 0, "screenshot": "browser/ru-examples-1440-light.png", "sha256": "208d60c1d395436aefac6afc6e4e9a620b4a835017d3ad5ce93c59f16f6199f1"},
+    {"route": "/ru/components/alert/", "viewport": "1920x1080", "theme": "light", "direction": "ltr", "overflow": 0, "console_errors": 0, "screenshot": "browser/ru-alert-1920-light.png", "sha256": "c1464fd973294c0295a2b3106b25bba6e1b0ebb78b60e5c30c1602d3f4bb554c"},
+    {"route": "/ru/components/alert/", "viewport": "1440x900", "theme": "dark", "direction": "ltr", "overflow": 0, "console_errors": 0, "screenshot": "browser/ru-alert-1440-dark.png", "sha256": "40d932dfc7ab4349cf0ac7a7a6a4b1d2e71bd5404d1f12aac1114573ce080405"},
+    {"route": "/ru/components/alert/", "viewport": "390x844", "theme": "dark", "direction": "ltr", "overflow": 0, "console_errors": 0, "screenshot": "browser/ru-alert-390-dark.png", "sha256": "0315c3f4076aecf18b46628485219533b83114a7432bd149e0c16d46ef39e186"},
+    {"route": "/ar/", "viewport": "1440x900", "theme": "light", "direction": "rtl", "overflow": 0, "console_errors": 0, "screenshot": "browser/ar-fixture-1440-light.png", "sha256": "ed7c9300f00a17fa35205f196ca428826d5e559615b4a15fcdca0ae64376ee9c"},
+    {"route": "/ar/", "viewport": "390x844", "theme": "dark", "direction": "rtl", "overflow": 0, "console_errors": 0, "screenshot": "browser/ar-fixture-390-dark.png", "sha256": "e43eff445c000c35c043a17a4f8307bfdc19b5ac16d87a7d88f8ab541f6d8c1a"}
+  ],
+  "interactions": {
+    "tabs": "mouse selection exposes the Markdown tab panel",
+    "copy": "button reports localized temporary Copied state",
+    "tree": "mouse collapse and keyboard Enter expansion pass",
+    "search": "localized query returns indexed results and Escape restores trigger focus",
+    "settings": "dark theme applies and Escape restores trigger focus",
+    "mobile_navigation": "dialog opens and Escape restores trigger focus",
+    "reduced_motion": true
+  }
+}

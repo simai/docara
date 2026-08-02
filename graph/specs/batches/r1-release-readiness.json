@@ -7,21 +7,28 @@
   "title": "R1. Детерминированная release readiness",
   "summary": "Implement deterministic packaging, real update/rollback and exact-artifact consumer, security and browser verification.",
   "owner": "dev",
-  "lifecycle": "active",
+  "lifecycle": "completed",
   "readiness": "R2_contract",
   "visibility": "repository",
-  "source_refs": ["source/workflow/2026-08-02-docara-r1-release-readiness-goal.md"],
+  "source_refs": ["source/workflow/2026-08-02-docara-r1c-semantic-correction-goal.md"],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/INDEX.md",
     "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/R1.2-DETERMINISTIC-PACKAGE.md",
     "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/R1.4-VERSIONED-UPDATE-ROLLBACK.md",
-    "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/R1.6-RELEASE-READINESS-PACKET.md"
+    "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/R1.6-RELEASE-READINESS-PACKET.md",
+    "source/workflow/evidence/2026-08-02-docara-r1c-semantic-correction/INDEX.md",
+    "source/workflow/evidence/2026-08-02-docara-r1c-semantic-correction/release-candidate.json"
   ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.r1.release_readiness",
   "allowed_scope": ["Release package tooling", "Disposable consumers", "Update fixtures", "Verification and documentation"],
   "forbidden_scope": ["Merge", "Push", "Tag", "Publication", "Deploy", "Framework producer change"],
   "checks": ["Deterministic ZIP", "Archive policy", "Fresh consumers", "Versioned update rollback", "Build/static/browser/security"],
-  "status": "r1c_semantic_correction_in_progress",
-  "next_action": "retire_public_language_pack_contract_and_build_new_candidate"
+  "status": "r1c_executor_implementation_complete",
+  "exact_candidate": {
+    "source_revision": "56a2abf8bad05923f689141afc0bb045aa4d6734",
+    "archive_sha256": "04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753",
+    "independent_retest": "pending"
+  },
+  "next_action": "tester_owned_exact_artifact_retest"
 }

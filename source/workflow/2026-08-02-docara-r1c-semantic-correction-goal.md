@@ -1,6 +1,6 @@
 # R1-C semantic architecture correction goal
 
-Status: `in_progress`
+Status: `implementation_complete_pending_independent_retest`
 
 Input/rollback revision:
 `3c491e5bfdf60c8227954b27d50dc050f058d71b`
@@ -44,9 +44,9 @@ fresh evidence without rewriting the superseded artifact.
 | R1-C.1 truthful governance | debt intake, correction state, historical artifact table | graph/JSON/YAML/diff | pass (`218ff1f`) |
 | R1-C.2 source boundaries | consumer inventory, remove public packs/field, zero-reference | focused runtime/schema/init tests | pass (`ce136d5`) |
 | R1-C.3 truthful authoring | public docs, route convention, front matter, missing-page policy, class/error map | focused positive/negative docs/runtime tests | pass (`43fcba1`) |
-| R1-C.4 semantic gates | source links, artifact links, schema/starter/runtime vocabulary | focused and negative fixtures | pass (candidate commit) |
-| R1-C.5 new candidate | two clean packages/consumers, old-to-new update/rollback | hashes, preservation and negative matrix | planned |
-| R1-C.6 integrated retest | full suite/build/parity/static/browser/security, graph/handoff | reverse-outcome review | planned |
+| R1-C.4 semantic gates | source links, artifact links, schema/starter/runtime vocabulary | focused and negative fixtures | pass (`ae3d2b9`, follow-ups `8d8c22d`, `56a2abf`) |
+| R1-C.5 new candidate | two clean packages/consumers, old-to-new update/rollback | hashes, preservation and negative matrix | implementation pass (`56a2abf` exact source) |
+| R1-C.6 integrated retest | full suite/build/parity/static/browser/security, graph/handoff | reverse-outcome review | executor pass; independent retest pending |
 
 Each green implementation batch is committed separately and immediately opens
 the next safe batch. Historical evidence is append-only and is not edited to
@@ -82,13 +82,16 @@ artifact. Continue all independent safe batches before reporting a blocker.
 
 ## Current state
 
-- current batch: R1-C.4 semantic documentation gates;
-- implementation correction is complete through source/runtime/docs semantic
-  enforcement; release evidence is still pending;
-- next safe action: commit semantic gates, then freeze a new exact source
-  revision for deterministic packaging and old-to-new update proof.
+- current batch: R1-C executor handoff;
+- exact corrected source: `56a2abf8bad05923f689141afc0bb045aa4d6734`;
+- exact corrected ZIP SHA-256:
+  `04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753`;
+- all twelve debt items have executor evidence; local release readiness remains
+  pending until a separate tester reproduces the exact artifact;
+- next safe action: read-only independent R1-C exact-archive retest.
 
 ## Nonclaims
 
-No new candidate exists yet. Local release readiness, release, merge, push,
+A corrected candidate exists and has executor-owned implementation evidence.
+Independent R1-C acceptance, local release readiness, release, merge, push,
 tag, publication, production and full non-Russian translation are not claimed.

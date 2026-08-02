@@ -10,10 +10,11 @@
   "lifecycle": "active",
   "readiness": "R2_contract",
   "visibility": "repository",
-  "source_refs": ["source/workflow/2026-08-02-docara-r1-release-readiness-goal.md"],
+  "source_refs": ["source/workflow/2026-08-02-docara-r1c-semantic-correction-goal.md"],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/INDEX.md",
-    "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/R1.6-RELEASE-READINESS-PACKET.md"
+    "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/R1.6-RELEASE-READINESS-PACKET.md",
+    "source/workflow/evidence/2026-08-02-docara-r1c-semantic-correction/INDEX.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_goal_ref": "docara.goal.unified",
@@ -22,5 +23,5 @@
   "required_gates": ["docara.gate.local_release_readiness"],
   "required_evidence": ["Deterministic exact-revision package", "Two fresh dist consumers", "Real versioned update and rollback", "Explicit compatibility gaps and nonclaims"],
   "next_stage_ref": null,
-  "status": "correction_pending_after_independent_artifact_audit"
+  "status": "corrected_candidate_ready_for_independent_retest"
 }

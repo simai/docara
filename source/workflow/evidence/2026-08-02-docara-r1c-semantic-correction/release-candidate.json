@@ -1,0 +1,51 @@
+{
+  "schema": "docara.r1c_release_candidate_evidence.v1",
+  "status": "implementation_complete_pending_independent_retest",
+  "source_revision": "56a2abf8bad05923f689141afc0bb045aa4d6734",
+  "version_parameter": "2.0.0-rc.2",
+  "tag_parameter": "v2.0.0-rc.2",
+  "published": false,
+  "archive": {
+    "sha256": "04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753",
+    "file_count": 650,
+    "release_manifest_sha256": "d709d27cc226a3833c05ca62271525dfe48042d967940eaa9e8b9ac6a7185669",
+    "checksums_sha256": "4cea80db782ae402bdd3c36b9f799afe548dd2fd46fe35c594900141058fdb9b",
+    "clean_clone_builds": 2,
+    "byte_identical": true,
+    "packaged_local_links_broken": 0,
+    "obsolete_public_language_pack_paths": 0
+  },
+  "consumers": {
+    "fresh_dist_consumers": 2,
+    "exact_dist_reference": "56a2abf8bad05923f689141afc0bb045aa4d6734",
+    "starter_routes": 38,
+    "starter_static_html": 76,
+    "starter_local_references": 3742,
+    "starter_broken": 0,
+    "public_routes": 103,
+    "public_output_files": 305,
+    "public_full_single_parity": "103/103",
+    "public_static_html": 206,
+    "public_local_references": 21437,
+    "public_broken": 0
+  },
+  "update": {
+    "predecessor_source": "8c0d14566837b6e6f4552d14c656ea14b202cd18",
+    "predecessor_archive_sha256": "83afd355436284a0040390c88e1d125f3e5648932a23ff324ba9afa9af5eb561",
+    "before_engine_files": 28,
+    "after_engine_files": 27,
+    "before_engine_sha256": "43181f4f61f608e0fd723875f9a3988bb431f7211648cde0e8ca58330bb12355",
+    "after_engine_sha256": "a45bebff16e5d3e20165d3184811000119c9b0af8c18229d7f65d709186d49b0",
+    "plan_sha256": "0916bf069e9c393168ce1c0ed937414a76b66003a8cfbc4c25632bba8c52ad37",
+    "rollback_exact": true,
+    "project_owned_preserved": true
+  },
+  "tests": {
+    "phpunit_tests": 390,
+    "phpunit_assertions": 6024,
+    "composer_advisories": 0
+  },
+  "verified_compatibility": ["macOS PHP 8.4.20", "Composer 2.7.1 exact dist consumer"],
+  "unverified_compatibility": ["PHP 8.3", "complete Linux matrix"],
+  "nonclaims": ["independent R1-C acceptance", "merge", "push", "tag", "release", "publication", "deploy", "complete non-Russian translations"]
+}

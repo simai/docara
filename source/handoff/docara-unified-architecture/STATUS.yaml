@@ -2,13 +2,13 @@ schema_version: 1
 goal: docara.goal.unified
 branch: codex/docara-unified-architecture
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: r1c_semantic_correction_in_progress
+state: r1c_candidate_ready_for_independent_retest
 current_stage: docara.stage.r1.release_readiness
 current_batch: docara.batch.r1.prepare
-next_action: execute_r1c_semantic_correction_and_create_new_candidate
-candidate_revision: null
-candidate_archive_sha256: null
-candidate_manifest_sha256: null
+next_action: independently_rebuild_and_retest_exact_r1c_candidate
+candidate_revision: 56a2abf8bad05923f689141afc0bb045aa4d6734
+candidate_archive_sha256: 04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753
+candidate_manifest_sha256: d709d27cc226a3833c05ca62271525dfe48042d967940eaa9e8b9ac6a7185669
 superseded_candidate_revision: 8c0d14566837b6e6f4552d14c656ea14b202cd18
 superseded_candidate_archive_sha256: 83afd355436284a0040390c88e1d125f3e5648932a23ff324ba9afa9af5eb561
 source_of_truth:
@@ -19,8 +19,8 @@ readiness:
   architecture_contract: accepted
   implementation: m5_stabilization_complete
   architecture_acceptance: accepted_exact_m5_candidate
-  local_release_readiness: correction_pending
-  release: blocked_until_new_exact_artifact_independent_retest
+  local_release_readiness: corrected_candidate_pending_independent_retest
+  release: blocked_until_r1c_exact_artifact_independent_retest
   production: not_claimed
 routing:
   primary_domain: docara

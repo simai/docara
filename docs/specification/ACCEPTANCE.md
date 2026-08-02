@@ -1,8 +1,9 @@
 # Приёмка единой архитектуры Docara
 
-Статус: `CORRECTION_PENDING`. Независимый R1 audit обнаружил semantic drift
-между runtime, schemas, public docs, tests и exact ZIP. Старый R1 artifact
-superseded; release и production gates закрыты.
+Статус: `CORRECTION_CANDIDATE_READY_FOR_INDEPENDENT_RETEST`. R1-C executor
+устранил semantic drift и собрал новый exact ZIP. Старый R1 artifact остаётся
+superseded; tester-owned local release readiness, release и production gates
+закрыты до отдельной перепроверки.
 
 M5 implementation candidate подтверждает текущий русский публичный сайт и
 минимальные EN LTR/AR RTL product fixtures через единый runtime. Чекбоксы
@@ -100,7 +101,7 @@ PASS ставится только по воспроизводимому evidenc
 - [x] Declarative example projector удалён после example parity.
 - [x] `trustedMainHtml` и generated page bypass удалены.
 - [x] Публичные component adapters сведены к одному gateway и registry.
-- [ ] Публичный `resources/i18n`, `site.json` compatibility и component prose
+- [x] Публичный `resources/i18n`, `site.json` compatibility и component prose
       удалены из public schemas/data/models.
 - [x] Raw coarse Markdown fallback заменён typed IR там, где он обходил registry.
 - [x] Zero-reference scan подтверждает отсутствие runtime references на
@@ -110,7 +111,7 @@ PASS ставится только по воспроизводимому evidenc
 
 - [x] PHPUnit, formatter/static checks и `git diff --check` проходят.
 - [x] Полная документационная сборка и static verifier проходят.
-- [ ] README, CLI help и публичная документация совпадают с runtime.
+- [x] README, CLI help и публичная документация совпадают с runtime.
 - [x] Architecture graph валиден и mappings отражают exact code/tests/evidence.
 - [x] Worktree чист после фиксации candidate.
 - [ ] Независимый tester проверил новый исправленный exact archive, а не

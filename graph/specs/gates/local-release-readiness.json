@@ -5,10 +5,10 @@
   "subtype": "release_readiness_gate",
   "tz_role": "stage_gate",
   "title": "Local exact-artifact release readiness verified",
-  "summary": "Independent reverse-outcome audit reproduced and accepted the corrected exact package with explicit compatibility notes.",
+  "summary": "The repository correction retest reproduced the corrected exact package across independent clean clones and dist consumers with explicit compatibility evidence.",
   "owner": "tester",
-  "lifecycle": "blocked",
-  "readiness": "R2_correction_required",
+  "lifecycle": "complete",
+  "readiness": "accepted_corrected_exact_candidate",
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-02-docara-r1-release-readiness-goal.md",
@@ -18,17 +18,20 @@
     "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/INDEX.md",
     "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/R1.6-RELEASE-READINESS-PACKET.md",
     "source/workflow/evidence/2026-08-02-docara-r1c-semantic-correction/INDEX.md",
-    "source/workflow/evidence/2026-08-02-docara-r2-production-readiness/R2.1-INDEPENDENT-ACCEPTANCE.md"
+    "source/workflow/evidence/2026-08-02-docara-r2-production-readiness/R2.1-INDEPENDENT-ACCEPTANCE.md",
+    "source/workflow/evidence/2026-08-02-docara-r2-determinism-correction/INDEX.md"
   ],
   "profile_refs": ["docara.unified"],
   "pass_conditions": ["Byte-identical packages from two clean clones", "Two fresh dist consumers", "Versioned update and rollback", "Artifact policy and security checks", "Explicit compatibility gaps"],
   "stop_conditions": ["Artifact hash drift", "Data-loss or rollback failure", "Publication without explicit approval"],
   "promotes_to": null,
-  "status": "withdrawn_pending_new_deterministic_candidate",
+  "status": "accepted_after_determinism_correction_and_complete_retest",
   "candidate_binding": {
-    "source_revision": "56a2abf8bad05923f689141afc0bb045aa4d6734",
-    "archive_sha256": "04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753"
+    "source_revision": "be0ba2db5254e468c7c014016ade02e8b4f3f16c",
+    "archive_sha256": "630d971e94a1222624304a3a5c2a7791586c0b7866ede5b8f3506c93bdebadc0",
+    "manifest_sha256": "0d0c280fc93824d76bafb703a5be8b70cf3cf34128e94ac4bf6906e3648a35af",
+    "public_tree_sha256": "425da363fc51d33d2c5b42577980f4ca4603b83814440dbfb06fe419b4cade46"
   },
-  "independent_checks": {"package_files": 650, "phpunit_tests": 390, "phpunit_assertions": 6024, "public_routes": 103, "static_references": 21437, "broken": 0},
-  "nonclaims": ["The 83afd355 artifact is superseded after audit.", "The 04c18c95 artifact is superseded after the R2 determinism audit.", "No current local release candidate exists until the rc.3 correction matrix passes.", "No merge, push, tag, release, publication or deployment is authorized."]
+  "independent_checks": {"package_files": 650, "phpunit_tests": 393, "phpunit_assertions": 7173, "public_routes": 103, "public_files": 305, "static_references": 21437, "broken": 0, "dist_consumer_trees_identical": true},
+  "nonclaims": ["The 83afd355 artifact is superseded after audit.", "The 04c18c95 artifact is superseded after the R2 determinism audit.", "No merge, push, tag, release, publication or deployment is authorized."]
 }

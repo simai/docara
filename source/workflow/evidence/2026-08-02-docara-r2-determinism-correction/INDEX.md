@@ -1,6 +1,6 @@
 # R2 determinism correction evidence
 
-Status: `correction_verified_pending_governance_commit`
+Status: `complete_disposable_corrected`
 
 This contour supersedes R2 deployment readiness as an actionable result while
 preserving all former R2 files unchanged as audit history.
@@ -14,6 +14,6 @@ preserving all former R2 files unchanged as audit history.
 | C5 independent dist consumers | pass | [complete-tree equality](C5-INDEPENDENT-DIST-CONSUMERS.md) |
 | C6 product/release matrix | pass | [compatibility, security and browser](C6-PRODUCT-RELEASE-MATRIX.md) |
 | C7 cutover/rollback retest | pass | [delta and exact rollback](C7-DEPLOYMENT-DOSSIER-RETEST.md) |
-| C8 integrated handoff | planned | pending |
+| C8 integrated handoff | pass | [final governance and verification](C8-INTEGRATED-HANDOFF.md) |
 
 No entry in this index authorizes release, publication or live deployment.

@@ -27,9 +27,9 @@
   },
   "implementation_state": {
     "current_stage": "docara.stage.r2.production_readiness",
-    "completed_checkpoint": "r2_production_readiness_pass_disposable",
+    "completed_checkpoint": "r2_production_readiness_pass_disposable_corrected",
     "next_action": "explicit_user_decision_deploy_or_do_not_deploy_docara_test",
-    "evidence": "source/workflow/evidence/2026-08-02-docara-r2-production-readiness/INDEX.md"
+    "evidence": "source/workflow/evidence/2026-08-02-docara-r2-determinism-correction/INDEX.md"
   },
   "routing_gap": {
     "status": "recorded",

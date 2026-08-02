@@ -1,11 +1,12 @@
 # Приёмка единой архитектуры Docara
 
-Статус: `R2_CORRECTION_REQUIRED`. Независимый reverse-outcome audit R2 доказал,
-что два fresh dist consumer одного exact ZIP создают разные public tree из-за
-filesystem-derived `updated_at`. Кандидат `56a2abf8…` / `04c18c95…` и его R2
-dossier имеют статус `superseded_after_determinism_audit`. Local release,
-release, live cutover и production gates закрыты до нового exact candidate и
-полного retest.
+Статус: `R2_PASS_DISPOSABLE_CORRECTED`. Дефект filesystem-derived `updated_at`
+исправлен: два fresh dist consumer нового exact ZIP с различными source mtimes
+создают byte-identical полный public tree, включая page metadata. Новый
+локальный кандидат — source `be0ba2d…`, ZIP `630d971e…`, tree `425da363…`.
+Прежний `56a2abf8…` / `04c18c95…` остаётся
+`superseded_after_determinism_audit`. Tag, release, live cutover и production
+acceptance требуют отдельного решения и не заявлены.
 
 M5 implementation candidate подтверждает текущий русский публичный сайт и
 минимальные EN LTR/AR RTL product fixtures через единый runtime. Чекбоксы
@@ -121,20 +122,22 @@ PASS ставится только по воспроизводимому evidenc
 
 ## J. R2 production dossier
 
-- [ ] Новый deterministic ZIP повторно проверен и установлен как dist без package `.git`.
-- [ ] Два независимых fresh consumer создают byte-identical 305 outputs, включая page metadata.
-- [ ] Fresh consumers проходят macOS/PHP 8.4, macOS/PHP 8.3 и Linux/PHP 8.3.
-- [ ] Production-like HTTP smoke проходит 103/103 canonical routes.
-- [ ] Exact current/new-candidate tree digests и полный path delta записаны.
-- [ ] Same-filesystem cutover и exact rollback доказаны для нового candidate.
-- [ ] Caddy root, TLS health, retention, smoke и stop thresholds перепроверены.
+- [x] Новый deterministic ZIP повторно проверен и установлен как dist без package `.git`.
+- [x] Два независимых fresh consumer создают byte-identical 305 outputs, включая page metadata.
+- [x] Fresh consumers проходят macOS/PHP 8.4, macOS/PHP 8.3 и Linux/PHP 8.3.
+- [x] Production-like HTTP smoke проходит 103/103 canonical routes.
+- [x] Exact current/new-candidate tree digests и полный path delta записаны.
+- [x] Same-filesystem cutover и exact rollback доказаны для нового candidate.
+- [x] Caddy root, TLS health, retention, smoke и stop thresholds перепроверены.
 - [ ] Пользователь явно разрешил live cutover `docara.test`.
 - [ ] Live preflight повторно подтвердил current/candidate digests и окно.
 - [ ] Live cutover, post-cutover smoke и production acceptance выполнены.
 
 ## Итоговый release gate
 
-Действующего release candidate сейчас нет. Source `56a2abf8…`, ZIP
-`04c18c95…` и tree `457790d4…` отозваны после determinism audit. Новый
-`2.0.0-rc.3` может стать кандидатом только после полного correction/retest; tag,
-release, merge и production deployment всё равно потребуют отдельного решения.
+Локальный unpublished release candidate: planned `2.0.0-rc.3`, source
+`be0ba2db5254e468c7c014016ade02e8b4f3f16c`, ZIP
+`630d971e94a1222624304a3a5c2a7791586c0b7866ede5b8f3506c93bdebadc0`,
+tree `425da363fc51d33d2c5b42577980f4ca4603b83814440dbfb06fe419b4cade46`.
+Tag не создан; release, merge и production deployment требуют отдельных
+решений.

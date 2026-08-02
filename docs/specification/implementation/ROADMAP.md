@@ -1,9 +1,10 @@
 # Дорожная карта упрощения Docara
 
-Статус: R2 `CORRECTION_REQUIRED`. Кандидат source `56a2abf8…`, ZIP
-`04c18c95…` отозван как `superseded_after_determinism_audit`: независимые dist
-consumers дали разные page metadata и tree hashes. Активен bounded correction
-к новому unpublished `2.0.0-rc.3`; tag, release и production не заявлены.
+Статус: R2 `PASS_DISPOSABLE_CORRECTED`. Кандидат source `56a2abf8…`, ZIP
+`04c18c95…` отозван как `superseded_after_determinism_audit`. Исправленный
+unpublished `2.0.0-rc.3` — source `be0ba2d…`, ZIP `630d971e…`, полный tree
+`425da363…`; два независимых dist consumer дают одинаковые 305 outputs. Tag,
+release и production не заявлены.
 
 Переход выполняется вертикальными срезами. Цель — не переписать весь код за
 один раз, а доказать новый единственный конвейер на одной реальной странице,
@@ -169,18 +170,18 @@ immutable artifact независимо воспроизведён. Evidence sou
 
 ## R2. Подготовить production-readiness dossier
 
-Статус: correction in progress. Предыдущие package/consumer/browser/cutover
-результаты сохранены как исторические, но не являются release evidence из-за
-недетерминированного `updated_at`. Новый gate требует два независимых dist
-consumer с различными filesystem mtimes и byte-identical полными деревьями,
-после чего вся R2 матрица повторяется для нового exact candidate.
+Статус: corrected disposable dossier PASS. Новый gate закрыт двумя независимыми
+dist consumer с различными filesystem mtimes и byte-identical полными
+деревьями. Package, compatibility, security, HTTP/browser, delta и
+cutover/rollback матрицы повторены для exact rc.3. Live deployment остаётся
+отдельным закрытым gate до явного решения пользователя.
 
 ## Порядок продолжения
 
 Текущий recovery source —
 `source/workflow/2026-08-02-docara-r2-determinism-correction.md`. M0–M5 и R1-C
-не переигрываются. Следующий пользовательский deployment decision появится
-только после нового integrated retest; production gate остаётся закрытым.
+не переигрываются. Следующее действие — явный выбор пользователя: разворачивать
+или не разворачивать exact rc.3 на `docara.test`; production gate пока закрыт.
 
 ## Запрещённые сокращения
 

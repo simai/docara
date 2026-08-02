@@ -1,6 +1,6 @@
 # R2 determinism correction and retest
 
-Status: `in_progress`
+Status: `complete_disposable_corrected`
 
 Input revision: `96e0c82900d7689c3045ac22d950c76129bff674`
 
@@ -59,7 +59,7 @@ page metadata from comparison, or normalizing consumer files to hide drift.
 | C5 | Independent dist consumers | different extraction times, identical 305 outputs including metadata | pass |
 | C6 | Product/release matrix | macOS 8.4/8.3, Linux 8.3, full/single/static/HTTP/browser/security | pass |
 | C7 | Deployment dossier retest | live delta, accepted digest, mirror cutover/smoke/exact rollback | pass |
-| C8 | Integrated governance | acceptance/roadmap/graph/handoff, clean worktree | planned |
+| C8 | Integrated governance | acceptance/roadmap/graph/handoff, clean worktree | pass |
 
 ## Done When
 
@@ -110,3 +110,10 @@ produced identical complete 305-file public trees with digest
 `425da363fc51d33d2c5b42577980f4ca4603b83814440dbfb06fe419b4cade46`.
 Compatibility, static, HTTP/browser and disposable cutover/rollback checks pass.
 The live site remains byte-for-byte unchanged.
+
+C8 binds acceptance, roadmap, graph and handoff to this single current
+candidate. Final source checks repeat at 393 tests / 7,173 assertions; Pint,
+Composer strict, exact-consumer Composer audit, 237 PHP lint, 438 JSON, 165
+YAML, project graph and diff checks pass. R2 is complete only in the disposable
+production-like contour. The production gate remains closed pending explicit
+user approval and a fresh live digest preflight.

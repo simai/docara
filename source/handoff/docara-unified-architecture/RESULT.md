@@ -908,3 +908,27 @@ Active recovery source:
 replacement is unpublished `2.0.0-rc.3`, subject to full independent package,
 consumer, build, browser, security and disposable rollback retest. Live
 `docara.test` remains unchanged; release and production gates are closed.
+
+# R2 deterministic correction result
+
+Status: `PASS_DISPOSABLE_CORRECTED`
+
+The public metadata contract no longer derives `updated_at` from filesystem
+times outside Git. Exact source
+`be0ba2db5254e468c7c014016ade02e8b4f3f16c` produces the unpublished rc.3 ZIP
+`630d971e94a1222624304a3a5c2a7791586c0b7866ede5b8f3506c93bdebadc0`.
+Two clean clones reproduced the package and two fresh dist consumers with
+different content mtimes produced the same complete 305-file tree
+`425da363fc51d33d2c5b42577980f4ca4603b83814440dbfb06fe419b4cade46`,
+including identical page metadata.
+
+The complete macOS PHP 8.4/8.3 and Linux PHP 8.3, static, security,
+full/single, 103-route HTTP, browser, old-rc.2 update/rollback and disposable
+atomic cutover/rollback matrices pass. The live tree remains unchanged at
+`b98ea2f66b733c5146360af68c1fe15b55aa099b33957fe52813772d93ce836f`.
+Evidence:
+`source/workflow/evidence/2026-08-02-docara-r2-determinism-correction/INDEX.md`.
+
+No merge, push, tag, release, publication, Caddy reload or live deployment was
+performed. Production remains closed until the user explicitly approves this
+exact candidate and the live preflight confirms unchanged inputs.

@@ -110,13 +110,15 @@ from a clean checkout and pass a planned version/tag as parameters:
 
 ```bash
 REVISION=$(git rev-parse HEAD)
+PLANNED_VERSION="replace-with-approved-version"
+PLANNED_TAG="replace-with-approved-tag"
 php scripts/build-release-package.php \
   --revision="$REVISION" \
-  --version=2.0.0-rc.1 \
-  --tag=v2.0.0-rc.1 \
+  --version="$PLANNED_VERSION" \
+  --tag="$PLANNED_TAG" \
   --output=build_release
 php scripts/verify-release-package.php \
-  build_release/docara-2.0.0-rc.1.release-manifest.json
+  "build_release/docara-$PLANNED_VERSION.release-manifest.json"
 ```
 
 The command reads only committed blobs from that exact revision. It writes a

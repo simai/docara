@@ -12,7 +12,10 @@ use Simai\Docara\Content\PageSourceLocator;
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\DeclarativePipeline;
 use Simai\Docara\Declarative\Rendering\RenderArtifact;
+use Simai\Docara\Declarative\Rendering\SmartRenderer;
+use Simai\Docara\Declarative\Rendering\TrustedTemplateRegistry;
 use Simai\Docara\Declarative\Smart\CompositeSmartPlanResolver;
+use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Document\DocumentIr;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
@@ -47,6 +50,8 @@ final readonly class PortableSiteBuilder
 
     private bool $publisherInjected;
 
+    private bool $pageBuilderInjected;
+
     public function __construct(
         private Filesystem $files,
         private PortableMarkdownRenderer $markdown,
@@ -55,6 +60,7 @@ final readonly class PortableSiteBuilder
         ?\Closure $observer = null,
     ) {
         $this->publisherInjected = $publisher !== null;
+        $this->pageBuilderInjected = $pageBuilder !== null;
         $this->publisher = $publisher ?? new DeclarativePortablePagePublisher;
         $this->pageBuilder = $pageBuilder ?? new PageBuilder($markdown);
         $this->observer = $observer;
@@ -73,18 +79,19 @@ final readonly class PortableSiteBuilder
         )->toArray();
         $projectSmart = ProjectSmartRuntime::fromSite($root, $site, $frameworkLock);
         $smartRegistry = $projectSmart?->registry ?? SmartRegistry::bundled();
-        $markdown = $projectSmart instanceof ProjectSmartRuntime
-            ? new PortableMarkdownRenderer(components: $projectSmart->gateway)
-            : $this->markdown;
-        $pageBuilder = $projectSmart instanceof ProjectSmartRuntime
-            ? new PageBuilder($markdown, smartRenderer: $projectSmart->renderer)
-            : $this->pageBuilder;
-        $publisher = $projectSmart instanceof ProjectSmartRuntime && ! $this->publisherInjected
+        $gateway = $projectSmart?->gateway ?? SmartComponentGateway::bundled($frameworkLock);
+        $templates = $projectSmart?->templates ?? new TrustedTemplateRegistry(smarts: $smartRegistry);
+        $smartRenderer = $projectSmart?->renderer ?? new SmartRenderer($templates);
+        $markdown = new PortableMarkdownRenderer(components: $gateway);
+        $pageBuilder = $this->pageBuilderInjected
+            ? $this->pageBuilder
+            : new PageBuilder($markdown, smartRenderer: $smartRenderer);
+        $publisher = ! $this->publisherInjected
             ? new DeclarativePortablePagePublisher(
-                $projectSmart->templates,
-                $projectSmart->registry,
-                composites: new CompositeSmartPlanResolver(smarts: $projectSmart->registry),
-                smartRenderer: $projectSmart->renderer,
+                $templates,
+                $smartRegistry,
+                composites: new CompositeSmartPlanResolver(smarts: $smartRegistry),
+                smartRenderer: $smartRenderer,
             )
             : $this->publisher;
         $explicitLocaleRegistry = is_array($site['locales'] ?? null) && $site['locales'] !== [];

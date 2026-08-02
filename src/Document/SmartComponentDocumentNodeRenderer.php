@@ -29,13 +29,26 @@ final readonly class SmartComponentDocumentNodeRenderer implements DocumentNodeR
         }
         $location = $node->location();
 
-        return $this->renderer->render($this->gateway->resolve(new SmartCallNode(
+        $plan = $this->gateway->resolve(new SmartCallNode(
             'smart-' . substr(hash('sha256', $location->label() . "\0" . $node->smart), 0, 20),
             $node->smart,
             $node->view,
             $node->props,
-            1,
+            $node->ordinal,
             new SourceSpan($location->file, $location->line, $location->endLine),
-        )));
+        ));
+        $artifact = $this->renderer->render($plan);
+
+        return new RenderArtifact(
+            $artifact->html,
+            $artifact->assets,
+            $artifact->hydration + [
+                'node_id' => $plan->nodeId,
+                'props' => $plan->props,
+                'ordinal' => $node->ordinal,
+                'source' => $location->toArray(),
+            ],
+            $artifact->provenance,
+        );
     }
 }

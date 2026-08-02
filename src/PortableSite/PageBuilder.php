@@ -31,8 +31,7 @@ final readonly class PageBuilder
         FrameworkComponentRuntime $runtime,
         int $tocDepth,
     ): PageBuilderResult {
-        $framework = $runtime->extract($plan->markdown, $plan->page);
-        $document = $this->compiler->compile($framework->markdownWithPlaceholders, $plan->page);
+        $document = $this->compiler->compile($plan->markdown, $plan->page);
         $rendered = $this->renderers->render(
             $document,
             new DocumentRenderContext($root, $root . '/' . ltrim($plan->page, '/')),
@@ -45,7 +44,26 @@ final readonly class PageBuilder
             PortableDocumentIds::reserved(),
         );
 
-        $contentHtml = $framework->hydrate($outline['html']);
+        $contentHtml = $outline['html'];
+        $frameworkCalls = [];
+        foreach ($componentArtifacts as $artifact) {
+            if (($artifact->hydration['runtime'] ?? null) !== 'simai-framework') {
+                continue;
+            }
+            $frameworkCalls[] = [
+                'schema' => 'docara.component_call.v1',
+                'id' => (string) $artifact->hydration['smart'],
+                'props' => $artifact->hydration['props'] ?? [],
+                'ordinal' => (int) ($artifact->hydration['ordinal'] ?? 0),
+                'line' => (int) ($artifact->hydration['source']['line'] ?? 0),
+                'node_id' => (string) ($artifact->hydration['node_id'] ?? ''),
+                'html_sha256' => hash('sha256', $artifact->html),
+                'manifest_version' => (string) ($artifact->provenance['manifest_version'] ?? ''),
+                'provider' => (string) ($artifact->provenance['provider'] ?? ''),
+                'provider_revision' => (string) ($artifact->provenance['provider_revision'] ?? ''),
+            ];
+        }
+        $framework = $runtime->recordGatewayCalls($plan->markdown, $frameworkCalls);
         $documentArtifact = new RenderArtifact(
             $contentHtml,
             $rendered['document']->assets,

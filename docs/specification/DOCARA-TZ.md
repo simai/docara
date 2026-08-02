@@ -373,8 +373,12 @@ Starter создаёт новый проект. Он не является ша�
 После parity и rollback evidence удалены public `resources/i18n`, package
 language packs, `site.json` compatibility, generated component/example page
 projectors, `trustedMainHtml` и отдельный `buildGenerated()` path. Текущий
-`FrameworkComponentRuntime::extract()` является одним preprocessor вызовов
-Smart-компонентов перед `MarkdownCompiler`, а не вторым public renderer.
+Framework Smart directives больше не извлекаются и не гидратируются до
+`MarkdownCompiler`: `ui.*`, `docara.*` и project-local Smart создают один
+`smart_component` узел typed Document IR и разрешаются одним
+`SmartComponentGateway`. `FrameworkComponentRuntime` после Gateway только
+формирует детерминированный asset plan и diagnostics уже выполненных вызовов;
+он не рендерит HTML страницы.
 `SourceNode` представляет отдельные типизированные native blocks; whole-page
 coarse Markdown node отсутствует.
 

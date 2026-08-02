@@ -5,9 +5,13 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Simai\Docara\Declarative\Rendering\SmartRenderer;
+use Simai\Docara\Declarative\Rendering\TrustedTemplateRegistry;
+use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Document\ComponentBlockDocumentNodeRenderer;
 use Simai\Docara\Document\ComponentDocumentNodeRenderer;
 use Simai\Docara\Document\DocumentRendererRegistry;
+use Simai\Docara\Document\SmartComponentNode;
 use Simai\Docara\Document\SourceDocumentNodeRenderer;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Portable\PortableConfigurationLoader;
@@ -16,6 +20,38 @@ use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
 final class PageBuilderTest extends TestCase
 {
+    public function test_framework_smart_directives_use_typed_ir_and_the_shared_gateway(): void
+    {
+        $root = dirname(__DIR__, 2) . '/docs/site';
+        $plan = (new PortableConfigurationLoader($root))->resolve('content/ru/demonstrator-results/smart-alert.md');
+        $gateway = SmartComponentGateway::bundled($plan->frameworkLock);
+        $templates = new TrustedTemplateRegistry;
+        $result = (new PageBuilder(
+            new PortableMarkdownRenderer(components: $gateway),
+            smartRenderer: new SmartRenderer($templates),
+        ))->build(
+            $plan,
+            $root,
+            FrameworkComponentRuntime::fromLock($plan->frameworkLock),
+            3,
+        );
+
+        $smartNodes = array_values(array_filter(
+            $result->document->allNodes(),
+            static fn ($node): bool => $node instanceof SmartComponentNode,
+        ));
+        self::assertCount(1, $smartNodes);
+        self::assertSame('ui.alert', $smartNodes[0]->smart);
+        self::assertSame(1, $smartNodes[0]->ordinal);
+        self::assertSame('ui.alert', $result->componentArtifacts[0]->hydration['smart']);
+        self::assertSame('simai-framework', $result->componentArtifacts[0]->hydration['runtime']);
+        self::assertSame('shared_smart_gateway', $result->frameworkComponents->diagnostics['mode']);
+        self::assertSame(['ui.alert'], array_column($result->frameworkComponents->normalizedCalls, 'id'));
+        self::assertSame([], $result->frameworkComponents->renderedHtml);
+        self::assertStringNotContainsString('DOCARA_FRAMEWORK_COMPONENT_', $result->contentHtml);
+        self::assertStringContainsString('<sf-alert', $result->contentHtml);
+    }
+
     public function test_alert_uses_the_same_pagebuilder_with_five_typed_gateway_blocks(): void
     {
         $root = dirname(__DIR__, 2) . '/docs/site';

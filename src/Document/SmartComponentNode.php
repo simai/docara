@@ -11,9 +11,14 @@ final readonly class SmartComponentNode implements DocumentNode
         public string $smart,
         public string $view,
         public array $props,
+        public int $ordinal,
         private string $source,
         private SourceLocation $sourceLocation,
-    ) {}
+    ) {
+        if ($ordinal < 1) {
+            throw new \InvalidArgumentException('DOCUMENT_SMART_COMPONENT_ORDINAL_INVALID');
+        }
+    }
 
     public function type(): string
     {
@@ -42,6 +47,7 @@ final readonly class SmartComponentNode implements DocumentNode
             'smart' => $this->smart,
             'view' => $this->view,
             'props' => $this->props,
+            'ordinal' => $this->ordinal,
             'source' => $this->sourceLocation->toArray(),
         ];
     }

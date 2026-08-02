@@ -124,6 +124,41 @@ final readonly class FrameworkComponentRuntime
     }
 
     /**
+     * Records Framework calls that have already been resolved and rendered by
+     * the shared SmartComponentGateway. This method never renders page HTML.
+     *
+     * @param  list<array<string,mixed>>  $calls
+     */
+    public function recordGatewayCalls(string $markdown, array $calls): ComponentDirectiveDocument
+    {
+        $components = [];
+        foreach ($calls as $call) {
+            $component = $call['id'] ?? null;
+            if (! is_string($component) || $component === '') {
+                throw new FrameworkComponentException('FRAMEWORK_GATEWAY_CALL_INVALID', 'component');
+            }
+            $components[] = $component;
+        }
+
+        return new ComponentDirectiveDocument(
+            $markdown,
+            [],
+            $calls,
+            $this->assetPlanner->plan($components),
+            [
+                'schema' => 'docara.framework_component_runtime.v1',
+                'mode' => 'shared_smart_gateway',
+                'runtime_pair' => $this->manifests->pairId(),
+                'provider' => 'larena/ui',
+                'provider_revision' => $this->manifests->providerRevision($this->manifests->keys()[0]),
+                'supported_components' => $this->manifests->keys(),
+                'consumer_policy_sha256' => $this->consumerPolicyHash(),
+                'nonclaims' => $this->manifests->nonclaims(),
+            ],
+        );
+    }
+
+    /**
      * @param  array<string, mixed>  $manifest
      * @param  array<string, mixed>  $authorProps
      * @return array<string, mixed>

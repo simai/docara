@@ -24,6 +24,7 @@ final readonly class MarkdownCompiler
         }
 
         $nodes = [];
+        $smartOrdinal = 0;
         for ($index = 0, $count = count($lines); $index < $count;) {
             $line = $lines[$index];
             if (trim($line) === '') {
@@ -58,7 +59,13 @@ final readonly class MarkdownCompiler
                 continue;
             }
             if (preg_match('/^:::(?<smart>[a-z][a-z0-9-]*\.[a-z][a-z0-9.-]*)\s*$/D', $line, $smart) === 1) {
-                [$node, $index] = $this->smartComponent($lines, $index, $source, (string) $smart['smart']);
+                [$node, $index] = $this->smartComponent(
+                    $lines,
+                    $index,
+                    $source,
+                    (string) $smart['smart'],
+                    ++$smartOrdinal,
+                );
                 $nodes[] = $node;
 
                 continue;
@@ -175,7 +182,7 @@ final readonly class MarkdownCompiler
     }
 
     /** @param list<string> $lines @return array{0:SmartComponentNode,1:int} */
-    private function smartComponent(array $lines, int $start, string $source, string $smart): array
+    private function smartComponent(array $lines, int $start, string $source, string $smart, int $ordinal): array
     {
         $end = $start + 1;
         while (isset($lines[$end]) && trim($lines[$end]) !== ':::') {
@@ -207,6 +214,7 @@ final readonly class MarkdownCompiler
             $smart,
             $view,
             $props,
+            $ordinal,
             implode("\n", array_slice($lines, $start, $end - $start + 1)),
             new SourceLocation($source, $start + 1, 1, $end + 1),
         ), $end + 1];

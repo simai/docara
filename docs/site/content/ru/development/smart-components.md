@@ -57,6 +57,11 @@ Manifest использует tracked SIMAI Framework Smart artifact v1. Мин�
 чужой namespace, symlink, traversal, неизвестный view/preset/prop, template или
 asset завершают сборку ошибкой.
 
+View выбирается одинаково для любого provider: явно указанный view имеет
+приоритет; иначе named preset выбирает зарегистрированный view; если не задано
+ни то ни другое, используется `default`. Это данные артефакта, поэтому новый
+компонент или вариант не требует условия по component ID в engine.
+
 ## Контекст шаблона и assets
 
 Docara передаёт portable PHP-шаблону целевой array ABI SIMAI Framework 5 Smart v1 и не

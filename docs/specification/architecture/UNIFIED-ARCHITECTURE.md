@@ -134,6 +134,12 @@ Manifest registry сначала определяет provider owner, затем
 resolver проверяет полное имя, props, slots, view/preset, template и assets.
 Gateway не содержит веток по namespace или component ID.
 
+View выбирается общим зарегистрированным механизмом, а не compiler branch:
+явно заданный view имеет приоритет; иначе выбранный preset может ссылаться на
+зарегистрированный view; при отсутствии обоих используется `default`. Binding
+может передать семантическое имя preset, но не выбирает Smart по component ID.
+Этот порядок одинаков для Framework, Docara и project providers.
+
 Portable template ABI совпадает с source-pinned SF5 Smart artifact v1:
 `$id` и `$smart` — строки; `$manifest`, `$view`, `$preset`, `$props` — массивы;
 `$childrenHtml` и `$slot` — строки. Typed objects остаются внутри Docara

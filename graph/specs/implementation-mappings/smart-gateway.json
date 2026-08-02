@@ -59,13 +59,15 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.4-BUILD-AND-COMPONENT-CONTOUR.md",
     "source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/INDEX.md",
     "source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-correction/INDEX.md",
-    "source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-resume/INDEX.md"
+    "source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-resume/INDEX.md",
+    "source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md"
   ],
   "review_refs": ["docara.gate.vertical_slice"],
   "current_behavior": [
     "SmartComponentGateway resolves every Smart definition through provider ownership and contains no namespace or component-ID dispatch.",
     "Framework manifests, props and assets are lock validated.",
     "SmartRenderer consumes one normalized invocation/context and registered adapter/strategy IDs; it contains no component-ID list.",
+    "DeclarativePageCompiler passes an optional view and semantic preset without inspecting a Smart ID; every provider resolves explicit view, preset-selected view and default through the same registered artifact rule.",
     "ProjectSmartProvider compiles a fixed smart/ root under one declared namespace; project.notice proves the typed IR and asset path without engine registration.",
     "Every public Framework dotted directive compiles to SmartComponentNode and resolves through the same provider-owned Gateway; the old Framework extract/hydrate renderer path is deleted.",
     "M2 resolves badge to docara.badge through ComponentAliasRegistry and routes all 16 calls through DocumentRendererRegistry and the content mode of the same SmartComponentGateway facade.",
@@ -84,6 +86,6 @@
     "Retire InlineComponentRenderer::badge only after all badge calls reach one component node/gateway and exact HTML/assets parity passes.",
     "Remove LegacyBundledSmartProvider only after bundled artifact directories are physically normalized with exact public parity."
   ],
-  "status": "goal1d_correction_in_progress_declarative_compiler_branch",
-  "mapped_revision": "94d2afd9cb71d6b02d8f4a63d4f807e127b1b190"
+  "status": "goal1d_complete_audit_pending",
+  "mapped_revision": "44acc1ff91233fa78140222fcb0589bf55b65ca0"
 }

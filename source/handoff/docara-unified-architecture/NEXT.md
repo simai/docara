@@ -1,18 +1,15 @@
-# Next action: complete Goal 1-D generic Smart view correction
+# Next action: independent Goal 1 reverse-outcome audit
 
-Independent audit rejected exact candidate
-`c5ea85f8d25deff99b671486fdc4d1e820a86491`: active
-`DeclarativePageCompiler::defaultCompositeView()` selected behavior by the
-literal component ID `docara.brand`, while the structural regression omitted
-that source file. Accepted ABI/cross-host evidence remains valid.
+Goal 1-D correction is complete at implementation candidate
+`44acc1ff91233fa78140222fcb0589bf55b65ca0`. Generic artifact/provider data now
+resolve explicit view, preset-selected view and `default`; the active central
+source structural gate includes `DeclarativePageCompiler` and rejects known
+component IDs or the retired `defaultCompositeView` helper.
 
-The correction must replace that branch with generic preset/view resolution
-owned by registered artifact data, extend structural scanning to the active
-compiler/compose/runtime set, and rerun the complete Goal 1 matrix. Recovery:
-`source/workflow/2026-08-02-docara-goal1d-generic-smart-view-correction.md`.
-
-Goal 1 is `correction_in_progress`; Goal 2/3 remain unstarted. No live/release
-action is authorized.
+Review the reproducible commands and hashes in
+`source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md`.
+Goal 1 is `ready_for_independent_audit`, not accepted. Goal 2/3 remain
+unstarted. No live/release action is authorized.
 
 ## Historical deployment decision (parked)
 

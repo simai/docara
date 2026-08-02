@@ -1,10 +1,10 @@
 # Goal 1 — Portable Smart Runtime and project-local components
 
 Date: 2026-08-02
-Status: `goal1d_correction_in_progress`
+Status: `ready_for_independent_audit`
 Project mode: `productization`
 Process model: `general_delivery`
-Current state: `goal1d_generic_smart_view_correction`
+Current state: `goal1_implementation_complete_audit_pending`
 Repository: `/Users/rim/Documents/GitHub/docara-unified`
 Branch: `codex/docara-unified-architecture`
 Input revision: `313afa17e21df2299a6276d246cb4508c7ec00b5`
@@ -133,6 +133,9 @@ evidence is indexed at
 `source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-resume/INDEX.md`.
 The next independent audit found a remaining `docara.brand` view-selection
 branch in `DeclarativePageCompiler`, outside the prior structural scan. Goal
-1-D is the active correction source:
+1-D removed it through generic artifact-owned preset/view resolution and
+expanded the structural regression across the active central source set. Its
+fresh correction source is
 `source/workflow/2026-08-02-docara-goal1d-generic-smart-view-correction.md`.
-Goal 2 has not started and must not start before a fresh audit accepts Goal 1.
+Goal 1 is ready for a fresh independent audit, not accepted. Goal 2 has not
+started and must not start before that audit accepts Goal 1.

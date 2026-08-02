@@ -8,7 +8,7 @@
   "summary": "Framework, Docara and declared project Smart components are resolved, validated, rendered and asset-collected through one gateway and deterministic provider ownership.",
   "owner": "dev",
   "lifecycle": "active",
-  "readiness": "goal1d_correction_in_progress",
+  "readiness": "ready_for_independent_audit",
   "visibility": "repository",
   "source_refs": ["docs/specification/DOCARA-TZ.md#10-smart-компоненты"],
   "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md"],

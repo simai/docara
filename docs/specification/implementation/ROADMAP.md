@@ -57,11 +57,13 @@ release и production не заявлены.
 
 ## Goal 1. Portable Smart Runtime
 
-Статус: `Goal 1-D correction_required`. Portable ABI и cross-host outcome на
-exact SF5 adapter `b3cdff87…` приняты, но независимый аудит нашёл пропущенную
-component-ID view branch в `DeclarativePageCompiler`. Generic preset/view
-resolution и расширенный structural gate исправляются до нового audit-pending
-candidate. Goal 2 не начат.
+Статус: `Goal 1-D ready_for_independent_audit`. Portable ABI и cross-host
+outcome на exact SF5 adapter `b3cdff87…` сохранены. Component-ID выбор view
+удалён из `DeclarativePageCompiler`; artifact/provider data теперь разрешают
+explicit view, preset-selected view и `default` одинаково для product и
+project-local Smart. Расширенный structural gate покрывает активные центральные
+compile/resolve/render/search/admission surfaces. Goal 1 ещё не принят
+независимым аудитом; Goal 2 не начат.
 
 ## M2. Вертикальный срез `components/badge`
 

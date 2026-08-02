@@ -1,0 +1,39 @@
+{
+  "schema": "docara.goal1d.browser.v1",
+  "implementation_revision": "44acc1ff91233fa78140222fcb0589bf55b65ca0",
+  "live_sites_touched": false,
+  "representative": {
+    "alert": {
+      "viewport": "1440x1000",
+      "theme": "light",
+      "smart_alert_blocks": 5,
+      "markdown_tab_selected": true,
+      "settings_escape_focus_return": true,
+      "brand_view": "compact",
+      "overflow_px": 0,
+      "console_errors": 0,
+      "console_warnings": 0,
+      "screenshot": "browser/alert-1440-light.png",
+      "screenshot_sha256": "635c9064117332db113c3f17334e9480571a0c8b482d849adef99f8a11cd4dea"
+    },
+    "button": {
+      "viewport": "390x844",
+      "smart_buttons": 15,
+      "mobile_nav_search_settings": "pass",
+      "escape_focus_return": true,
+      "overflow_px": 0,
+      "console_errors": 0,
+      "console_warnings": 0,
+      "screenshot": "browser/button-390.png",
+      "screenshot_sha256": "9d4b8b30be67b55a65ef1404d4d53067803eb8635996eeb9798b7a3d4b104604"
+    }
+  },
+  "brand_modes": {
+    "full": {"resolved_view": "default", "text": "Docara", "overflow_px": 0},
+    "compact": {"resolved_view": "compact", "text": "Docara", "overflow_px": 0},
+    "logo": {"resolved_view": "logo", "text": "", "overflow_px": 0},
+    "text": {"resolved_view": "text", "text": "Docara", "overflow_px": 0}
+  },
+  "brand_matrix_console_errors": 0,
+  "brand_matrix_console_warnings": 0
+}

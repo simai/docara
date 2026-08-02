@@ -1,7 +1,7 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-02
-Status: Goal 1-D generic Smart view correction in progress
+Status: Goal 1 ready for independent reverse-outcome audit
 Workflow ID: `2026-08-02-docara-goal1d-generic-smart-view-correction`
 Graph goal: `docara.goal.unified`
 
@@ -13,6 +13,7 @@ Graph goal: `docara.goal.unified`
 - active recovery: `source/workflow/2026-08-02-docara-goal1d-generic-smart-view-correction.md`;
 - fresh evidence: `source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md`;
 - rejected audit candidate: `c5ea85f8d25deff99b671486fdc4d1e820a86491`;
+- corrected implementation candidate: `44acc1ff91233fa78140222fcb0589bf55b65ca0`;
 - branch: `codex/docara-unified-architecture`.
 
 ## Current stage and batch
@@ -20,7 +21,7 @@ Graph goal: `docara.goal.unified`
 - stage: `docara.stage.g1.portable_smart_runtime`;
 - batch: `docara.batch.g1.portable_smart_runtime`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: remove component-specific view selection and retest Goal 1;
+- next action: independent Goal 1 reverse-outcome audit;
 - Goal 2 remains unstarted.
 
 ## Accepted pipeline

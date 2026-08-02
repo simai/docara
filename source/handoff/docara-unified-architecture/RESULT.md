@@ -1,13 +1,19 @@
 # Goal 1 current result
 
-Status: `GOAL_1D_CORRECTION_IN_PROGRESS`
+Status: `READY_FOR_INDEPENDENT_AUDIT`
 
-Independent audit rejected Goal 1 candidate `c5ea85f8…` because
-`DeclarativePageCompiler::defaultCompositeView()` contained an active
-`docara.brand` component-ID branch that previous evidence and tests missed.
-The exact ABI pin and cross-host equality remain accepted inputs; the generic
-runtime claim is withdrawn until Goal 1-D removes the branch and completes a
-fresh integrated retest. Goal 2 remains unstarted.
+Goal 1-D removes the component-ID view branch that invalidated candidate
+`c5ea85f8…`. `DeclarativePageCompiler` no longer knows `docara.brand` or any
+other Smart ID: explicit view, preset-selected view and `default` are resolved
+by the same registered artifact/provider mechanism. Brand modes keep their
+public behavior, and a new provider-local variant fixture proves the mechanism
+without an engine source edit.
+
+Corrected implementation candidate:
+`44acc1ff91233fa78140222fcb0589bf55b65ca0`. Fresh focused/full, exact
+cross-host, determinism, full/single, static, security, structural and browser
+evidence is indexed below. This is executor evidence awaiting independent
+acceptance; Goal 2 remains unstarted.
 
 Correction source and evidence:
 

@@ -1,7 +1,7 @@
 # Goal 1-D — generic Smart view selection correction
 
 Date: 2026-08-02
-Status: `correction_in_progress`
+Status: `ready_for_independent_audit`
 Repository: `/Users/rim/Documents/GitHub/docara-unified`
 Branch: `codex/docara-unified-architecture`
 Input revision: `c5ea85f8d25deff99b671486fdc4d1e820a86491`
@@ -37,10 +37,10 @@ Markdown -> typed Document IR -> DocumentRendererRegistry
 | Batch | Result | Status |
 | --- | --- | --- |
 | G1D.0 | recovery, false-green registration and rollback | pass |
-| G1D.1 | generic preset/view resolution across product and portable providers | in progress |
-| G1D.2 | broad structural and behavioral regressions | pending |
-| G1D.3 | focused/full/build/browser/security retest | pending |
-| G1D.4 | graph/spec/handoff and audit-pending evidence | pending |
+| G1D.1 | generic preset/view resolution across product and portable providers | pass |
+| G1D.2 | broad structural and behavioral regressions | pass |
+| G1D.3 | focused/full/build/browser/security retest | pass |
+| G1D.4 | graph/spec/handoff and audit-pending evidence | pass; audit pending |
 
 ## Boundaries
 

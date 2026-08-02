@@ -6,6 +6,7 @@
 /composer.lock export-ignore
 .DS_Store export-ignore
 build_* export-ignore
+/graph export-ignore
 /output export-ignore
 /vendor export-ignore
 .cache export-ignore

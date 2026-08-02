@@ -3,7 +3,8 @@
 
 declare(strict_types=1);
 
-require dirname(__DIR__) . '/vendor/autoload.php';
+require dirname(__DIR__) . '/src/Release/DeterministicZipWriter.php';
+require dirname(__DIR__) . '/src/Release/ReleasePackageBuilder.php';
 
 use Simai\Docara\Release\DeterministicZipWriter;
 use Simai\Docara\Release\ReleasePackageBuilder;

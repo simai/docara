@@ -7,8 +7,8 @@ preserving all former R2 files unchanged as audit history.
 
 | Checkpoint | Status | Evidence |
 | --- | --- | --- |
-| C1 governance withdrawal | in progress | [audit intake](C1-AUDIT-INTAKE.md) |
-| C2 deterministic metadata | planned | pending |
+| C1 governance withdrawal | pass | [audit intake](C1-AUDIT-INTAKE.md) |
+| C2 deterministic metadata | pass | [contract and regression](C2-DETERMINISTIC-METADATA.md) |
 | C3 source verification | planned | pending |
 | C4 exact rc.3 package | planned | pending |
 | C5 independent dist consumers | planned | pending |
@@ -17,4 +17,3 @@ preserving all former R2 files unchanged as audit history.
 | C8 integrated handoff | planned | pending |
 
 No entry in this index authorizes release, publication or live deployment.
-

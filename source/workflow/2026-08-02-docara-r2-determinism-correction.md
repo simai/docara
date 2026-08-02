@@ -52,8 +52,8 @@ page metadata from comparison, or normalizing consumer files to hide drift.
 
 | Batch | Result | Verification | Status |
 | --- | --- | --- | --- |
-| C1 | Withdraw rc.2/R2 PASS and open correction | graph/docs/handoff/diff/JSON | in progress |
-| C2 | Deterministic metadata contract | focused positive/negative tests | planned |
+| C1 | Withdraw rc.2/R2 PASS and open correction | graph/docs/handoff/diff/JSON | pass |
+| C2 | Deterministic metadata contract | focused positive/negative tests | pass |
 | C3 | Integrated source verification | PHPUnit/Pint/Composer/lint/JSON/YAML/graph | planned |
 | C4 | Exact rc.3 package | two clean-clone byte-identical ZIP/manifest/SBOM | planned |
 | C5 | Independent dist consumers | different extraction times, identical 305 outputs including metadata | planned |
@@ -86,3 +86,13 @@ or a materially new metadata product decision.
 Evidence index:
 `source/workflow/evidence/2026-08-02-docara-r2-determinism-correction/INDEX.md`.
 
+## Progress
+
+- C1 commit: `d7943ed`; rc.2 and the previous R2 PASS were withdrawn before
+  runtime changes.
+- C2 removes the filesystem-time fallback. A new real-site regression builds
+  two independent copied sources with deliberately different Markdown mtimes
+  and proves equality of all 305 files, including
+  `_docara/page-metadata.json`; outside Git all 103 page audit fields are null.
+- Focused result: 2 tests, 1,503 assertions, PASS; Pint and PHP lint PASS.
+- Current batch: C3 integrated source verification.

@@ -926,7 +926,6 @@ final readonly class PortableSiteBuilder
             ];
             $sourcePath = $source !== '' && ! str_starts_with($source, '@') ? $root . '/' . ltrim($source, '/') : null;
             if ($sourcePath !== null && is_file($sourcePath)) {
-                $record['updated_at'] = gmdate(DATE_ATOM, (int) filemtime($sourcePath));
                 try {
                     $process = new Process(['git', '-C', $root, 'log', '-1', '--format=%cI%x00%h%x00%an', '--', $source]);
                     $process->setTimeout(5);

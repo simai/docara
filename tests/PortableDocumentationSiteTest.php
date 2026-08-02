@@ -268,6 +268,50 @@ final class PortableDocumentationSiteTest extends PHPUnit
         }
     }
 
+    #[Test]
+    public function independent_dist_sources_with_different_mtimes_produce_identical_complete_trees(): void
+    {
+        $filesystem = new Filesystem;
+        $source = dirname(__DIR__) . '/docs/site';
+        $firstSite = $this->temporary . '/dist-consumer-one/site';
+        $secondSite = $this->temporary . '/dist-consumer-two/site';
+        $filesystem->copyDirectory($source, $firstSite);
+        $filesystem->copyDirectory($source, $secondSite);
+        $firstSite = realpath($firstSite);
+        $secondSite = realpath($secondSite);
+        self::assertIsString($firstSite);
+        self::assertIsString($secondSite);
+
+        $firstTimestamp = 946684800;
+        $secondTimestamp = 1893456000;
+        foreach ($this->filesWithExtension($firstSite . '/content', 'md') as $path) {
+            self::assertTrue(touch($path, $firstTimestamp));
+        }
+        foreach ($this->filesWithExtension($secondSite . '/content', 'md') as $path) {
+            self::assertTrue(touch($path, $secondTimestamp));
+        }
+
+        $builder = new PortableSiteBuilder($filesystem, new PortableMarkdownRenderer);
+        $firstBuild = $firstSite . '/build_dist';
+        $secondBuild = $secondSite . '/build_dist';
+        $builder->build($firstSite, $firstBuild);
+        $builder->build($secondSite, $secondBuild);
+
+        $firstFiles = $this->treeHashes($firstBuild);
+        $secondFiles = $this->treeHashes($secondBuild);
+        self::assertCount(305, $firstFiles);
+        self::assertSame($firstFiles, $secondFiles);
+        self::assertArrayHasKey('_docara/page-metadata.json', $firstFiles);
+
+        $metadata = $this->json($firstBuild . '/_docara/page-metadata.json');
+        self::assertCount(103, $metadata['pages']);
+        foreach ($metadata['pages'] as $page) {
+            self::assertNull($page['updated_at']);
+            self::assertNull($page['revision']);
+            self::assertNull($page['author']);
+        }
+    }
+
     /** @return list<string> */
     private function filesWithExtension(string $root, string $extension): array
     {
@@ -284,6 +328,28 @@ final class PortableDocumentationSiteTest extends PHPUnit
         sort($paths, SORT_STRING);
 
         return $paths;
+    }
+
+    /** @return array<string, string> */
+    private function treeHashes(string $root): array
+    {
+        $hashes = [];
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($root, RecursiveDirectoryIterator::SKIP_DOTS),
+        );
+        /** @var SplFileInfo $file */
+        foreach ($iterator as $file) {
+            if (! $file->isFile()) {
+                continue;
+            }
+            $relative = str_replace('\\', '/', substr($file->getPathname(), strlen($root) + 1));
+            $hash = hash_file('sha256', $file->getPathname());
+            self::assertIsString($hash);
+            $hashes[$relative] = $hash;
+        }
+        ksort($hashes, SORT_STRING);
+
+        return $hashes;
     }
 
     /** @return array<string, mixed> */

@@ -1,6 +1,7 @@
 # Файлы переносимого проекта
 
-Starter состоит из трёх корневых JSON-файлов и каталога содержания.
+Starter состоит из трёх корневых JSON-файлов, каталога содержания и
+machine-readable ownership state.
 
 ```text
 docara.json
@@ -17,6 +18,9 @@ content/
     section.json
     install.md
     install.page.json  # необязательная настройка только этой страницы
+.docara/
+  engine/
+    ownership.json
 ```
 
 `docara.json` задаёт общие параметры и указывает `redirects_file`.
@@ -36,7 +40,12 @@ JSON нужен только когда требуется изменить titl
 не потерялись незаметно.
 
 `build_local` и `build_production` — результаты сборки, а не источник истины.
-Служебные `_docara` и `.docara` зарезервированы генератором.
+В `.docara/engine` находится package-owned snapshot и ownership manifest;
+рядом update временно хранит план и проверяемые rollback packages. Эти файлы
+не редактируют вручную. Внутренний `_docara` внутри build-каталога также
+генерируется. `content`, `assets`, корневые JSON и consumer-owned
+`composer.lock` остаются пользовательскими файлами и не являются update
+targets.
 Корневой `assets/` удобен для логотипов и favicon; содержательные изображения
 можно хранить рядом с Markdown. Брендовые пути указываются в `docara.json` и
 проверяются до очистки предыдущей сборки.

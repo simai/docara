@@ -28,6 +28,20 @@ final class PortableMarkdownRendererTest extends TestCase
             }
         }
 
+        $inlineCode = $renderer->render(
+            'Use `<page>.page.json` and ``<literal>`` as code.',
+            '/workspace',
+            '/workspace/content/en/security.md',
+        );
+        self::assertStringContainsString('&lt;page&gt;.page.json', $inlineCode);
+        try {
+            $renderer->render('<script>unsafe</script>', '/workspace', '/workspace/content/en/security.md');
+            self::fail('Absolute source location unexpectedly passed raw HTML validation.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertStringContainsString('content/en/security.md:1:1', $exception->getMessage());
+            self::assertStringNotContainsString('/workspace', $exception->getMessage());
+        }
+
         $sandboxed = $renderer->render(<<<'MD'
 :::html
 ```html

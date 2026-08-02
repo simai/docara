@@ -20,7 +20,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.1-RECOVERY.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.2-M5.3-PORTABLE-UPDATE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.4-BUILD-AND-COMPONENT-CONTOUR.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.5-LOCALE-SECURITY-ACCESSIBILITY.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.5-LOCALE-SECURITY-ACCESSIBILITY.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.6-AUTHOR-WORKFLOW-AND-DOCUMENTATION.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.m5.acceptance",
@@ -28,5 +29,5 @@
   "forbidden_scope": ["Independent acceptance", "Framework producer change", "Merge", "Tag", "Release", "Deploy"],
   "checks": ["Empty init", "Update preview/apply/rollback", "Preservation matrix", "Consumer dependency tuple", "Full/single parity", "Security and browser matrix"],
   "status": "in_progress",
-  "next_action": "complete_clean_consumer_author_workflow_and_public_documentation"
+  "next_action": "complete_exported_archive_consumer_and_integrated_candidate_matrix"
 }

@@ -19,17 +19,27 @@ php docara init /path/to/my-docara
 После init выполняйте остальные команды из каталога созданного сайта, указывая
 путь к `docara` из того же checkout.
 
-Init создаёт starter в пустом каталоге. Для безопасного обновления
-engine-owned starter-файлов позднее используйте:
+Init создаёт starter только в пустом каталоге. Для безопасного обновления
+package-owned engine state позднее используйте отдельный workflow:
 
 ```bash
-php vendor/bin/docara init --update
+php vendor/bin/docara update --verify
+php vendor/bin/docara update --dry-run
+# прочитайте список операций
+php vendor/bin/docara update --apply
 ```
 
-`--update` сохраняет существующие Markdown и JSON.
+Apply разрешён только для неизменившегося hash-bound плана и создаёт проверяемый
+rollback package. Вернуться к последнему состоянию можно командой
+`php vendor/bin/docara update --rollback=latest`. Project-owned Markdown,
+assets, `docara.json`, section/page settings, locale files и consumer-owned
+`composer.lock` не являются целями update. Dirty, unknown, conflicting или
+symlinked engine state останавливает операцию до записи.
+
 Путь может быть абсолютным или относительным к текущему каталогу. Если путь не
-указан, `init` работает с текущим каталогом. Обновить тот же проект извне можно
-командой `php /path/to/docara/docara init --update /path/to/my-docara`.
+указан, `init` и `update` работают с текущим каталогом. Проверить тот же проект
+извне можно командой
+`php /path/to/docara/docara update /path/to/my-docara --verify`.
 
 ## 2. Соберите production-каталог
 
@@ -71,13 +81,12 @@ Server started on http://127.0.0.1:8000
 ## Что появилось
 
 ```text
-composer.json
-composer.lock
-vendor/
 docara.json
 redirects.json
 simai-framework.lock.json
 assets/
+.docara/
+  engine/
 content/
   ru/
     section.json
@@ -92,7 +101,8 @@ content/
 
 1. Откройте `content/ru/index.md`.
 2. Измените заголовок или текст.
-3. Повторите `build production`.
+3. После уже выполненной полной сборки запустите
+   `php vendor/bin/docara build production --page=/ru/`.
 4. Повторите `verify-static`.
 5. Перезапустите HTTP preview или запустите `serve production` без
    `--no-build`, чтобы сначала пересобрать сайт.
@@ -102,6 +112,11 @@ content/
 каталога, а соседний `<page>.page.json` — только для настройки одной страницы.
 Starter содержит несколько таких файлов как рабочие примеры, а не как
 обязательную пару для каждого Markdown-файла.
+
+`--page` предназначен только для изменения существующего Markdown-owner. После
+добавления, переименования или удаления `.md`, изменения маршрутизации, меню,
+глобальной конфигурации или Framework lock выполните полную
+`php vendor/bin/docara build production`.
 
 Starter задаёт `default_locale`, явный реестр `locales`, симметричный
 `locale_routing`, одну `documentation_version` и декларативный

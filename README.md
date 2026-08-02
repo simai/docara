@@ -29,6 +29,7 @@ redirects.json              explicit redirects
 simai-framework.lock.json   immutable Framework revisions
 assets/                     project-owned public assets
 content/<locale>/           Markdown and inherited JSON settings
+.docara/engine/             package-owned engine snapshot and ownership manifest
 ```
 
 Settings resolve deterministically:
@@ -47,23 +48,33 @@ version is a separate site variant and output with its own `base_url`.
 ## Commands
 
 ```bash
-php vendor/bin/docara init [--update] [path]
+php vendor/bin/docara init [path]
+php vendor/bin/docara update [path] --verify
+php vendor/bin/docara update [path] --dry-run
+php vendor/bin/docara update [path] --apply
+php vendor/bin/docara update [path] --rollback=latest
 php vendor/bin/docara build [environment] [--page=/public/url/]
 php vendor/bin/docara serve [environment] [--no-build]
 php vendor/bin/docara verify-static [build-directory]
 ```
 
-`init --update` updates engine-owned starter files and preserves documented
-project-owned content and settings. Generated `build_*` and `.docara` files
-must not be edited manually.
+`init` accepts only an empty target. Updating is an explicit transaction:
+verify ownership, write and review a hash-bound dry-run plan, then apply that
+unchanged plan. Apply replaces only `.docara/engine`, records an immutable
+rollback package and never targets `content/**`, `assets/**`, `docara.json`,
+section/page settings, locale files or the consumer-owned `composer.lock`.
+Unknown, dirty, conflicting or symlinked ownership fails closed. Generated
+`build_*` files and package-owned `.docara` state must not be edited manually.
 
 The optional `path` may be absolute or relative to the current directory. If it
-is omitted, `init` uses the current directory. The same target path can be
-passed together with `--update`.
+is omitted, `init` and `update` use the current directory. `init --update` is a
+disabled compatibility guard and prints the explicit update workflow.
 
-After one complete build, `--page` atomically rebuilds one existing route for
-fast content review. Run a complete build again after structural, navigation,
-global configuration, or Framework lock changes.
+After one complete build, changing one Markdown owner and using `--page`
+atomically rebuilds only that existing route through the same PageBuilder.
+Adding, renaming or deleting a route requires a complete build so navigation,
+search, redirects and receipts change together. Run a complete build after
+other structural, global configuration or Framework lock changes as well.
 
 ## Documentation
 
@@ -75,9 +86,9 @@ global configuration, or Framework lock changes.
 - [Build and verification](docs/site/content/ru/build.md)
 - [Portable format contract](docs/portable-format.md)
 
-Every build contains a generated component catalogue at
-`/components/catalog/`. It is derived from the exact Framework lock and is the
-source of truth for components available in that build.
+The component index, menu, search, outline and previous/next links are derived
+from the same physical Markdown route set; there is no separate public page
+catalogue.
 
 ## Repository checks
 

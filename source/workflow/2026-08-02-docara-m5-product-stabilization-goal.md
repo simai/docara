@@ -99,10 +99,15 @@ Evidence:
 
 ### M5.6 Consumer author workflow and documentation
 
+Status: `PASS`
+
 - use a clean initialized consumer to edit one Markdown owner and rebuild one
   route;
 - cover add/rename/delete route behavior and when full build is required;
 - synchronize README, CLI help and public docs with the one actual contract.
+
+Evidence:
+`source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.6-AUTHOR-WORKFLOW-AND-DOCUMENTATION.md`.
 
 ### M5.7 Candidate verification and handoff
 

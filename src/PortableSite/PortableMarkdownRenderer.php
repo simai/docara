@@ -84,7 +84,7 @@ final class PortableMarkdownRenderer
                 'Portable Markdown must be valid UTF-8.',
             );
         }
-        $this->assertRawHtmlPolicy($markdown, $sourceFile ?? '@markdown');
+        $this->assertRawHtmlPolicy($markdown, $this->diagnosticSource($sourceRoot, $sourceFile));
 
         return $this->renderCompiled($markdown, $sourceRoot, $sourceFile);
     }
@@ -96,7 +96,7 @@ final class PortableMarkdownRenderer
         $inline = $this->inlineComponents->extract(
             $markdown,
             $nativeInspection['literal_code_lines'],
-            $sourceFile ?? '@markdown',
+            $this->diagnosticSource($sourceRoot, $sourceFile),
         );
         $markdown = $inline['markdown'];
         $inspection = $this->inspectDirectives($markdown);
@@ -736,7 +736,8 @@ final class PortableMarkdownRenderer
 
                 continue;
             }
-            if (preg_match('/<\/?[A-Za-z][A-Za-z0-9-]*(?:\s|\/?>)/', $line, $match, PREG_OFFSET_CAPTURE) === 1) {
+            $authored = $this->maskInlineCode($line);
+            if (preg_match('/<\/?[A-Za-z][A-Za-z0-9-]*(?:\s|\/?>)/', $authored, $match, PREG_OFFSET_CAPTURE) === 1) {
                 $column = $match[0][1] + 1;
                 throw new PortableConfigurationException(
                     'MARKDOWN_RAW_HTML_FORBIDDEN',
@@ -744,6 +745,53 @@ final class PortableMarkdownRenderer
                 );
             }
         }
+    }
+
+    private function diagnosticSource(?string $sourceRoot, ?string $sourceFile): string
+    {
+        if ($sourceFile === null || trim($sourceFile) === '') {
+            return '@markdown';
+        }
+        $file = str_replace('\\', '/', $sourceFile);
+        if ($sourceRoot !== null && trim($sourceRoot) !== '') {
+            $root = rtrim(str_replace('\\', '/', $sourceRoot), '/');
+            if ($file === $root) {
+                return basename($file);
+            }
+            if (str_starts_with($file, $root . '/')) {
+                return substr($file, strlen($root) + 1);
+            }
+        }
+
+        return str_starts_with($file, '/') || preg_match('/^[A-Za-z]:\//', $file) === 1
+            ? basename($file)
+            : ltrim($file, '/');
+    }
+
+    private function maskInlineCode(string $line): string
+    {
+        $masked = $line;
+        $offset = 0;
+        $length = strlen($line);
+        while ($offset < $length && preg_match('/`+/', $line, $opening, PREG_OFFSET_CAPTURE, $offset) === 1) {
+            $run = $opening[0][0];
+            $start = $opening[0][1];
+            $search = $start + strlen($run);
+            $closing = strpos($line, $run, $search);
+            while ($closing !== false
+                && (($line[$closing - 1] ?? '') === '`' || ($line[$closing + strlen($run)] ?? '') === '`')
+            ) {
+                $closing = strpos($line, $run, $closing + 1);
+            }
+            if ($closing === false) {
+                break;
+            }
+            $spanLength = $closing + strlen($run) - $start;
+            $masked = substr_replace($masked, str_repeat(' ', $spanLength), $start, $spanLength);
+            $offset = $closing + strlen($run);
+        }
+
+        return $masked;
     }
 
     private function assertEmbedPolicy(string $provider, string $consent, string $url): void

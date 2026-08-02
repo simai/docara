@@ -24,12 +24,16 @@
     "src/Framework/FrameworkLock.php#FrameworkLock::assertValid",
     "src/Framework/FrameworkAdmissionPreflight.php#FrameworkAdmissionPreflight::assertReady",
     "src/Portable/PortableConfigurationLoader.php#PortableConfigurationLoader::assertFrameworkLockSemantics",
+    "README.md#commands",
+    "docs/site/content/ru/build/update.md",
+    "docs/site/content/ru/reference/cli.md",
     "composer.json#archive",
     ".gitattributes"
   ],
   "test_refs": [
     "tests/PortableInitCommandTest.php#portable_init_creates_only_the_json_and_markdown_site_surface",
     "tests/PortableUpdateCommandTest.php",
+    "tests/PortableAuthorWorkflowTest.php#one_markdown_edit_rebuilds_one_route_while_route_structure_requires_a_full_build",
     "tests/PortableInitCommandTest.php#portable_update_refuses_to_implicitly_migrate_a_legacy_site",
     "tests/Unit/PortableConfigurationTest.php#test_moving_framework_references_are_rejected",
     "tests/Unit/PortableConfigurationTest.php#test_the_shipped_portable_lock_is_accepted_with_its_independent_manifest_provider_revision",
@@ -37,7 +41,8 @@
   ],
   "evidence_refs": [
     "docara.evidence.m0_inventory",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.2-M5.3-PORTABLE-UPDATE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.2-M5.3-PORTABLE-UPDATE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.6-AUTHOR-WORKFLOW-AND-DOCUMENTATION.md"
   ],
   "review_refs": ["docara.gate.architecture_acceptance"],
   "current_behavior": [
@@ -45,16 +50,16 @@
     "init creates project-owned JSON/Markdown plus a versioned package-owned engine state only in an empty target.",
     "update verifies ownership, writes a hash-bound dry-run plan, applies by atomic engine-directory swap and preserves a validated rollback package.",
     "project-owned files are never update targets; dirty, unknown, symlinked, stale or corrupt state fails closed.",
-    "Composer archive and git export exclude local/development surfaces; exported-consumer dependency proof remains an M5.7 gate."
+    "Composer archive and git export exclude local/development surfaces; exported-consumer dependency proof remains an M5.7 gate.",
+    "README, CLI help and public docs expose the same explicit init/update/build/verify/serve contract and the tested add/rename/delete full-build boundary."
   ],
   "known_deviations": [
-    "The package does not own a root composer.lock; M5.7 must prove that a fresh consumer lock resolves the recorded immutable package tuple from an exact archive.",
-    "Build receipts do not yet bind the complete engine/template/asset input chain."
+    "The package does not own a root composer.lock; M5.7 must prove that a fresh consumer lock resolves the recorded immutable package tuple from an exact archive."
   ],
   "deletion_gates": [
     "Do not claim the portable lifecycle complete until the exported archive and fresh consumer lock matrix pass.",
     "Do not change Framework locks without exact tuple compatibility and asset projection evidence.",
-    "Decide and test product dependency-lock ownership before claiming reproducible clean installation."
+    "Prove the documented consumer-owned dependency lock against the exported archive before claiming reproducible clean installation."
   ],
   "status": "implemented_pending_candidate_matrix",
   "mapped_revision": "candidate_commit_containing_m5_2_m5_3_evidence"

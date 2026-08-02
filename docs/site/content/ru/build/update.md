@@ -1,50 +1,70 @@
 # Обновление Docara без потери сайта
 
-Обновление состоит из трёх независимых действий: Composer меняет package,
-`docara init --update` обновляет engine-owned starter-файлы, новая сборка
-создаёт проверяемый static output. Пользовательские Markdown и JSON не должны
-перезаписываться автоматически.
+Docara обновляет только package-owned state. Пользовательский контент,
+настройки сайта и dependency lock принадлежат проекту и не перезаписываются.
+Операция всегда разделена на проверку, preview, явный apply и rollback.
 
-## 1. Зафиксируйте исходное состояние
+## 1. Зафиксируйте желаемую версию engine
 
-В Git-проекте сначала убедитесь, что понятны все текущие изменения:
+Команду update запускают из точной новой версии Docara. До выпуска это exact
+source checkout:
+
+```bash
+cd /path/to/exact-docara-candidate
+git rev-parse HEAD
+composer install --no-interaction
+php docara update /path/to/my-docara --verify
+```
+
+После выпуска consumer выбирает точную package-версию средствами Composer и
+фиксирует результат в своём `composer.lock`. Moving branch и `latest`
+запрещены. Сам `docara update` не меняет Composer dependencies или lock.
+
+## 2. Проверьте текущее состояние
 
 ```bash
 git status --short
 php vendor/bin/docara verify-static build_production
+php vendor/bin/docara update --verify
 ```
 
-Создайте отдельную backup-ветку или commit средствами вашего Git workflow.
-Дополнительно сохраните `composer.json`, `composer.lock`, `docara.json`,
-`content`, `languages`, `assets` и текущий опубликованный static-каталог вне
-рабочего каталога. Не продолжайте, если не можете назвать путь восстановления.
+Ownership manifest различает:
 
-## 2. Обновите source candidate
+- engine-owned `.docara/engine/**`;
+- project-owned `content/**`, `assets/**`, `docara.json`, redirects,
+  `section.json`, `.page.json`, locale files и `composer.lock`;
+- generated `build_*/**`, update plan и rollback packages.
 
-До публичного выпуска Docara 2 используйте тот же локальный checkout, что и в
-быстром старте:
+Unknown files, локальные изменения engine state, symlinks, ownership conflict
+или несовпадающий immutable package/Framework/dependency tuple дают ошибку без
+изменения проекта.
+
+## 3. Создайте и прочитайте план
 
 ```bash
-cd /path/to/docara
-git rev-parse HEAD
-composer install
+php vendor/bin/docara update --dry-run
 ```
 
-Запишите SHA и не меняйте checkout между init, build и verify. Release-инструкция
-в будущем заменит local source candidate точной опубликованной версией.
+Команда записывает hash-bound plan и печатает точные `add`, `replace` и
+`delete` только внутри engine-owned state. `--diff` означает то же самое. Для
+автоматизации добавьте `--json`.
 
-## 3. Добавьте только отсутствующие starter-файлы
+Не продолжайте, если в плане есть пользовательский путь или непонятная
+операция. После preview не меняйте package, Framework lock, plan или текущее
+engine state: apply обязан отказаться от stale-плана.
+
+## 4. Примените план
 
 ```bash
-php vendor/bin/docara init --update
+php vendor/bin/docara update --apply
 ```
 
-Команда сохраняет каждый существующий файл. Она не обновляет старый
-`docara.json`, не переписывает Markdown и не выполняет миграцию schema. Если в
-новой Docara изменился canonical starter, сравните проект с
-`vendor/simai/docara/stubs/portable` и перенесите нужные изменения вручную.
+Apply сначала собирает новое состояние во временном каталоге, затем атомарно
+заменяет `.docara/engine`. Предыдущее состояние, ownership manifest, Framework
+lock и hashes сохраняются в `.docara/rollbacks/<id>/`. Команда сообщает
+`rollback_id`.
 
-## 4. Соберите кандидат и проверьте его
+## 5. Соберите и проверьте сайт
 
 ```bash
 php vendor/bin/docara build production
@@ -53,18 +73,21 @@ php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 ```
 
 Проверьте главную страницу, вложенное меню, поиск, темы, локали и ключевые
-компоненты. Только проверенный каталог переносите в staging и переключайте по
+компоненты. Только проверенный каталог переносите в staging по
 [сценарию публикации](/build/publish/).
 
 ## Rollback
 
-Если package или сборка не прошли проверку:
+```bash
+php vendor/bin/docara update --rollback=latest
+# или точный id из apply
+php vendor/bin/docara update --rollback=20260802000000-012345abcdef
+```
 
-1. верните сохранённые `composer.json` и `composer.lock`;
-2. выполните `composer install --no-interaction`;
-3. верните сохранённые пользовательские файлы только если вы меняли их вручную;
-4. восстановите прежний static-каталог или переключите hosting на его backup;
-5. повторите `verify-static` и HTTP smoke для восстановленной версии.
+Rollback проверяет manifest, hashes и Framework lock до изменения текущего
+state. Повреждённый package fail-closed. После восстановления снова выполните
+полную сборку, `verify-static` и HTTP smoke.
 
-Не лечите проблему редактированием `vendor/` или `build_production`: такие
-изменения исчезнут при следующей установке или сборке.
+`init --update` не является сокращением этого процесса: команда отключена и
+только подсказывает безопасный update workflow. Не редактируйте `.docara`,
+`vendor/` или `build_production` вручную.

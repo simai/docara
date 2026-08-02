@@ -311,6 +311,11 @@ final class DocumentationContractTest extends TestCase
                             $temporary . "/content/ru/components/$slug.md",
                         );
                     }
+                } else {
+                    copy(
+                        $this->repositoryRoot() . "/tests/fixtures/m5-multilingual-site/content/$locale/lang.json",
+                        $temporary . "/content/$locale/lang.json",
+                    );
                 }
             }
             foreach ([
@@ -369,9 +374,14 @@ final class DocumentationContractTest extends TestCase
 
         $update = (string) file_get_contents($this->contentRoot() . '/build/update.md');
         self::assertStringContainsString('init --update', $update);
+        self::assertStringContainsString('update --verify', $update);
+        self::assertStringContainsString('update --dry-run', $update);
+        self::assertStringContainsString('update --apply', $update);
+        self::assertStringContainsString('update --rollback=latest', $update);
+        self::assertStringContainsString('ownership manifest', $update);
         self::assertStringContainsString('composer.lock', $update);
         self::assertStringContainsString('Rollback', $update);
-        self::assertStringContainsString('git rev-parse HEAD', $update);
+        self::assertStringContainsString('hash-bound plan', $update);
 
         $composition = (string) file_get_contents(
             $this->contentRoot() . '/development/composition-extensions.md',

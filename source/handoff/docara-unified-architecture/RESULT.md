@@ -1,18 +1,18 @@
 # Goal 1 current result
 
-Status: `G1.0 baseline checkpoint in progress`
+Status: `GOAL_1C_CORRECTION_IN_PROGRESS`
 
-The accepted extensible LEGO roadmap is now executing as a separate bounded
-Goal 1 workflow. Input revision is
-`313afa17e21df2299a6276d246cb4508c7ec00b5`; the accepted rc.3 and its test-site
-evidence remain historical baselines, not deployable identities for the new
-product source.
+Independent reverse-outcome audit rejected the previous Goal 1 candidate. Its
+provider/Gateway work remains the correction baseline, but its portable
+template context is incompatible with pinned SF5 arrays and its cross-host
+evidence is invalid. Active recovery and evidence:
 
-G1.0 records the current six built-in Smart artifacts, every central
-component-ID/namespace branch, the false acceptance row, source-pinned committed
-SF5 candidate revision and a disposable 103-route public baseline. Runtime code
-has not changed yet. Evidence:
-`source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/G1.0-BASELINE-AND-PATH-MAP.md`.
+- `source/workflow/2026-08-02-docara-goal1c-portable-smart-abi-correction.md`;
+- `source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-correction/INDEX.md`.
+
+The superseded source is
+`34496d49ce366f1108d2aed37c0adda35f6e5f58`. No corrected candidate exists yet.
+Goal 2, live sites, merge, push, tag, release and deploy remain out of scope.
 
 # M0 result
 

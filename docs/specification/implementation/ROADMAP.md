@@ -57,14 +57,11 @@ release и production не заявлены.
 
 ## Goal 1. Portable Smart Runtime
 
-Статус: implementation complete, ожидает независимый reverse-outcome audit.
-Tracked SF5 Smart artifact v1 принят через source-pinned adapter. Bundled и
-project providers компилируют один `SmartRegistry`; Gateway выбирает resolver
-по provider ownership. Component-ID branches, `ViewModelFactory` и manual
-contribution lists удалены. Fresh project содержит portable `project.notice`,
-который проходит typed IR, общий renderer registry, Gateway и PageBuilder без
-правки engine `src/` для конкретного ID. Старые Framework pre-IR
-extract/hydrate и host renderer удалены после byte-identical parity.
+Статус: `Goal 1-C correction in progress`; предыдущий кандидат отклонён
+независимым аудитом. Provider runtime и единый Gateway сохранены, но переносимый
+template context должен быть приведён к точному SF5 array ABI, а оставшиеся
+search/parser/admission component-ID зависимости — удалены. Goal 2 не начат и
+остаётся заблокированным до нового независимого аудита.
 
 ## M2. Вертикальный срез `components/badge`
 

@@ -1,10 +1,10 @@
 # Goal 1 — Portable Smart Runtime and project-local components
 
 Date: 2026-08-02
-Status: `implementation_complete_audit_pending`
+Status: `correction_required_superseded_candidate`
 Project mode: `productization`
 Process model: `general_delivery`
-Current state: `g1_6_integrated_candidate`
+Current state: `goal1c_correction_in_progress`
 Repository: `/Users/rim/Documents/GitHub/docara-unified`
 Branch: `codex/docara-unified-architecture`
 Input revision: `313afa17e21df2299a6276d246cb4508c7ec00b5`
@@ -125,7 +125,9 @@ browser smoke.
 
 ## Recovery state
 
-G1.0–G1.6 are implemented. Exact product-source candidate:
-`34496d49ce366f1108d2aed37c0adda35f6e5f58`. The only next action is an
-independent read-only reverse-outcome audit against the evidence index. Goal 2
-must not start before that audit accepts Goal 1.
+G1.0–G1.6 produced implementation candidate
+`34496d49ce366f1108d2aed37c0adda35f6e5f58`, but the independent audit rejected
+its cross-host ABI proof and found remaining Goal 1 component-ID dependencies.
+That candidate is superseded for acceptance. Correction recovery source:
+`source/workflow/2026-08-02-docara-goal1c-portable-smart-abi-correction.md`.
+Goal 2 must not start before a new audit accepts the corrected Goal 1.

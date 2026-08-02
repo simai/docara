@@ -1,21 +1,22 @@
-# Next action: independently audit Goal 1 Portable Smart Runtime
+# Next action: execute Goal 1-C portable SF5 ABI correction
 
-The user explicitly postponed any live action and authorized Goal 1 from
-`source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md`.
-The active recovery source is
-`source/workflow/2026-08-02-docara-goal1-portable-smart-runtime.md`. G1.0–G1.6
-are implemented as separate recoverable checkpoints. The next action is a
-read-only reverse-outcome audit bound to the final exact candidate and
-`source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/INDEX.md`.
+The independent Goal 1 audit returned `CORRECTION_REQUIRED`. The active
+recovery source is
+`source/workflow/2026-08-02-docara-goal1c-portable-smart-abi-correction.md` and
+the fresh evidence contour is
+`source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-correction/INDEX.md`.
 
-Exact Goal 1 implementation source:
-`34496d49ce366f1108d2aed37c0adda35f6e5f58`; deterministic public tree:
-`300eb592287db7f25010b583a3cca585e6a0888b0ab12ee42f8969b4e0142eb2`.
-This is a product-source audit candidate, not a new release/deploy candidate.
+The prior Goal 1 implementation source
+`34496d49ce366f1108d2aed37c0adda35f6e5f58` and public tree
+`300eb592287db7f25010b583a3cca585e6a0888b0ab12ee42f8969b4e0142eb2`
+are superseded for Goal 1 acceptance because their cross-host proof used an
+incompatible Docara-only template context.
 
-Do not touch `docara-new.test`, `docara.test` or external Framework repositories.
-Do not start Goal 2/3, merge, push, tag, release or deploy. Stop for independent
-audit only after all Goal 1 Done When rows have fresh evidence.
+Correct the SF5 array ABI, provider/admission context and active component-ID
+dependencies; then rebuild exact evidence. Do not touch `docara-new.test`,
+`docara.test` or external Framework repositories. Do not start Goal 2/3,
+merge, push, tag, release or deploy. The next external checkpoint is a new
+independent audit of the corrected candidate.
 
 ## Historical deployment decision (parked)
 

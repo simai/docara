@@ -63,8 +63,9 @@ final readonly class TrustedTemplateRegistry
             }
         }
 
-        $root = realpath($this->resourceRoot);
-        $path = $this->resourceRoot . '/' . $record['path'];
+        $templateRoot = is_string($record['root'] ?? null) ? $record['root'] : $this->resourceRoot;
+        $root = realpath($templateRoot);
+        $path = $templateRoot . '/' . $record['path'];
         $real = realpath($path);
         $stat = @lstat($path);
         if ($root === false

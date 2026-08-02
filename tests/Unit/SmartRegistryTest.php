@@ -26,6 +26,33 @@ final class SmartRegistryTest extends TestCase
         self::assertSame('docara.toc', $registry->canonicalKey('docara.outline'));
         self::assertTrue($registry->resolution('docara.header')['deprecated']);
         self::assertFalse($registry->resolution('docara.brand')['deprecated']);
+
+        foreach ($registry->keys() as $key) {
+            self::assertContains($registry->definition($key)->providerId, ['docara.package', 'framework.lock']);
+            self::assertNotSame('legacy.contribution', $registry->definition($key)->providerId);
+            self::assertSame($key, $registry->definition($key)->portableManifest['code']);
+        }
+    }
+
+    public function test_gateway_dispatches_by_provider_ownership_not_component_namespace(): void
+    {
+        $source = (string) file_get_contents(
+            dirname(__DIR__, 2) . '/src/Declarative/Smart/SmartComponentGateway.php',
+        );
+
+        self::assertStringNotContainsString('str_starts_with($call->smart', $source);
+        self::assertStringNotContainsString("'ui.'", $source);
+        self::assertStringNotContainsString("'docara.'", $source);
+        self::assertStringContainsString('definition($call->smart)', $source);
+        self::assertStringContainsString('providerId', $source);
+    }
+
+    public function test_manual_contribution_surface_is_removed(): void
+    {
+        $root = dirname(__DIR__, 2);
+        foreach (['SmartContribution.php', 'DocaraSmartContribution.php', 'FrameworkSmartContribution.php'] as $file) {
+            self::assertFileDoesNotExist($root . '/src/Smart/' . $file);
+        }
     }
 
     public function test_one_validator_accepts_framework_and_product_manifests(): void

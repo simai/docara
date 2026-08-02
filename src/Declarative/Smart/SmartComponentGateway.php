@@ -12,51 +12,41 @@ use Simai\Docara\Document\ComponentContractNode;
 use Simai\Docara\Document\ComponentNode;
 use Simai\Docara\Document\ContentComponentRenderer;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class SmartComponentGateway
 {
     public function __construct(
-        private ?SmartPlanResolver $framework = null,
-        private CompositeSmartPlanResolver $product = new CompositeSmartPlanResolver,
+        private SmartRegistry $smarts = new SmartRegistry([]),
+        private ProviderPlanResolverRegistry $resolvers = new ProviderPlanResolverRegistry([]),
         private ContentComponentRenderer $content = new ContentComponentRenderer,
     ) {}
 
     /** @param array<string, mixed> $frameworkLock */
     public static function bundled(array $frameworkLock): self
     {
-        return new self(SmartPlanResolver::fromLock($frameworkLock));
+        $smarts = SmartRegistry::bundled();
+
+        return new self($smarts, new ProviderPlanResolverRegistry([
+            new DocaraProviderPlanResolver(new CompositeSmartPlanResolver(smarts: $smarts)),
+            new FrameworkProviderPlanResolver(SmartPlanResolver::fromLock($frameworkLock)),
+        ]));
     }
 
     public static function content(): self
     {
-        return new self;
+        $smarts = SmartRegistry::bundled();
+
+        return new self($smarts, new ProviderPlanResolverRegistry([
+            new DocaraProviderPlanResolver(new CompositeSmartPlanResolver(smarts: $smarts)),
+        ]));
     }
 
     public function resolve(SmartCallNode $call): ResolvedSmartPlan
     {
-        if (str_starts_with($call->smart, 'ui.')) {
-            if (! $this->framework instanceof SmartPlanResolver) {
-                throw new PortableConfigurationException(
-                    'DECLARATIVE_FRAMEWORK_GATEWAY_UNAVAILABLE',
-                    'The Framework Smart resolver is unavailable in this content-only gateway.',
-                );
-            }
+        $definition = $this->smarts->definition($call->smart);
 
-            return $this->framework->resolve($call);
-        }
-        if (str_starts_with($call->smart, 'docara.')) {
-            return $this->product->resolve(
-                $call->smart,
-                $call->id(),
-                $call->props,
-                $call->view,
-            );
-        }
-
-        throw new PortableConfigurationException(
-            'DECLARATIVE_SMART_NAMESPACE_UNSUPPORTED',
-            "Smart component namespace [{$call->smart}] is unsupported.",
-        );
+        return $this->resolvers->get($definition->providerId)->resolve($call);
     }
 
     public function renderComponentContract(ComponentContractNode $component, ?string $bodyHtml = null): RenderArtifact

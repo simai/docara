@@ -87,8 +87,8 @@ record replace that false association for Goal 1. Execution mode is
 | G1.0 | exact baseline, Smart path map, accepted contract, launch/evidence contour | pass |
 | G1.1 | versioned source-pinned SF5 Smart v1 snapshot/adapter and fixtures | pass |
 | G1.2 | descriptors/providers/compiler and ownership/path policy | pass |
-| G1.3 | normalized invocation/context/strategy registry behind existing gateway | pass candidate |
-| G1.4 | migrate `ui.alert`, `ui.button` and every `docara.*` | pending |
+| G1.3 | normalized invocation/context/strategy registry behind existing gateway | pass |
+| G1.4 | migrate `ui.alert`, `ui.button` and every `docara.*` | pass candidate |
 | G1.5 | project Smart root and `fixture.notice` without engine source edit | pending |
 | G1.6 | cross-host/full-single/determinism/static/browser/docs/graph handoff | pending |
 
@@ -125,7 +125,7 @@ browser smoke.
 
 ## Recovery state
 
-Current remaining after G1.3: 3 batches. Do not complete until all Goal 1 Done
+Current remaining after G1.4: 2 batches. Do not complete until all Goal 1 Done
 When rows are evidenced or a stated stop condition is recorded. Next safe
-batch: migrate every bundled Smart to provider-backed ownership through the
-same gateway, prove parity, and only then remove contribution lists.
+batch: wire the fixed project Smart root and prove `fixture.notice` through the
+same compiler, gateway and renderer without an engine component registration.

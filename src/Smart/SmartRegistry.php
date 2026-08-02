@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Smart;
 
+use Simai\Docara\Smart\Artifact\Sf5SmartArtifactV1Contract;
+use Simai\Docara\Smart\Provider\LegacyBundledSmartProvider;
+use Simai\Docara\Smart\Provider\SmartRegistryCompiler;
+
 final readonly class SmartRegistry
 {
     /** @var array<string, SmartComponentDefinition> */
@@ -31,22 +35,17 @@ final readonly class SmartRegistry
         $this->aliases = $aliases;
     }
 
-    /** @param iterable<SmartContribution> $contributions */
-    public static function fromContributions(iterable $contributions): self
-    {
-        $builder = new SmartRegistryBuilder;
-        foreach ($contributions as $contribution) {
-            $contribution->contribute($builder);
-        }
-
-        return $builder->build();
-    }
-
     public static function bundled(): self
     {
-        return self::fromContributions([
-            new FrameworkSmartContribution,
-            new DocaraSmartContribution,
+        $root = dirname(__DIR__, 2) . '/resources';
+
+        return (new SmartRegistryCompiler)->compile([
+            new LegacyBundledSmartProvider(
+                'docara.package', 300, 'docara', $root, 'simai/docara', 'repository-tree',
+            ),
+            new LegacyBundledSmartProvider(
+                'framework.lock', 400, 'ui', $root, 'larena/ui', Sf5SmartArtifactV1Contract::SOURCE_REVISION,
+            ),
         ]);
     }
 
@@ -91,12 +90,12 @@ final readonly class SmartRegistry
         return $this->aliases;
     }
 
-    /** @return array{path:string,renderer:string} */
+    /** @return array{path:string,renderer:string,root?:string} */
     public function template(string $templateId): array
     {
         foreach ($this->definitions as $definition) {
             if (isset($definition->templates[$templateId])) {
-                return $definition->templates[$templateId];
+                return $definition->templates[$templateId] + ['root' => $definition->root];
             }
         }
 

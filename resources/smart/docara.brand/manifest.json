@@ -55,6 +55,7 @@
     },
     "controls": []
   },
+  "extensions": {"docara": {"aliases": {"docara.header": "Renamed because header is a layout region; use docara.brand."}}},
   "provenance": {
     "source": "simai/docara",
     "reference_status": "product_owned",

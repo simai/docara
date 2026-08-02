@@ -57,6 +57,7 @@
     "example_props": {"items": [], "label": "Contents"},
     "controls": [{"key": "label", "source": "prop", "widget": "text"}]
   },
+  "extensions": {"docara": {"aliases": {"docara.outline": "Renamed because outline is a layout region; use docara.toc."}}},
   "provenance": {
     "source": "simai/docara",
     "reference_status": "product_owned",

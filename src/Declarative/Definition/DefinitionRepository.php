@@ -123,6 +123,7 @@ final class DefinitionRepository
         return $this->load(
             'smart-view:' . $this->smarts->canonicalKey($smart) . ':' . $view,
             ['path' => $record['path'], 'schema' => $record['schema']],
+            $definition->root,
         );
     }
 
@@ -133,6 +134,7 @@ final class DefinitionRepository
         $manifest = $this->load(
             'smart-manifest:' . $definition->key,
             $definition->manifest,
+            $definition->root,
         );
         try {
             $this->manifestValidator->assertValid($definition->key, $manifest);
@@ -174,12 +176,12 @@ final class DefinitionRepository
      * @param  array{path:string,schema:?string}  $record
      * @return array<string, mixed>
      */
-    private function load(string $id, array $record): array
+    private function load(string $id, array $record, ?string $root = null): array
     {
         if (isset($this->loaded[$id])) {
             return $this->loaded[$id];
         }
-        $path = rtrim($this->resourceRoot, DIRECTORY_SEPARATOR)
+        $path = rtrim($root ?? $this->resourceRoot, DIRECTORY_SEPARATOR)
             . DIRECTORY_SEPARATOR . $record['path'];
         if (! is_file($path) || is_link($path)) {
             throw new PortableConfigurationException(

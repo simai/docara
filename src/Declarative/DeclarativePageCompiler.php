@@ -7,8 +7,8 @@ namespace Simai\Docara\Declarative;
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\Composition\RegionCompositionResolver;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
-use Simai\Docara\Declarative\Document\DocumentAst;
 use Simai\Docara\Declarative\Document\Compilation\DocumentNodeBlockRegistry;
+use Simai\Docara\Declarative\Document\DocumentAst;
 use Simai\Docara\Declarative\Document\SmartCallNode;
 use Simai\Docara\Declarative\Document\SourceSpan;
 use Simai\Docara\Declarative\Layout\LayoutDescriptor;
@@ -18,6 +18,8 @@ use Simai\Docara\Declarative\Plan\ResolvedRenderPlan;
 use Simai\Docara\Declarative\Plan\ResolvedSectionPlan;
 use Simai\Docara\Declarative\Rendering\ViewTreeInspector;
 use Simai\Docara\Declarative\Smart\SmartComponentGateway;
+use Simai\Docara\Document\DocumentIr;
+use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final readonly class DeclarativePageCompiler
@@ -49,7 +51,7 @@ final readonly class DeclarativePageCompiler
     }
 
     public function compile(
-        DocumentAst $document,
+        DocumentAst|DocumentIr $document,
         string $pageKey,
         string $title,
         int $outlineDepth = 3,
@@ -78,14 +80,10 @@ final readonly class DeclarativePageCompiler
         }
 
         $documentBlocks = [];
-        foreach ($document->nodes as $node) {
-            $documentBlocks[] = $this->documentNodes->resolve($node, $sectionDefinition);
-        }
-        if ($documentBlocks === []) {
-            throw new PortableConfigurationException(
-                'DECLARATIVE_PAGE_BLOCKS_REQUIRED',
-                'A declarative page must resolve at least one block.',
-            );
+        if ($document instanceof DocumentAst) {
+            foreach ($document->nodes as $node) {
+                $documentBlocks[] = $this->documentNodes->resolve($node, $sectionDefinition);
+            }
         }
         $documentBlockIds = [];
         foreach ($documentBlocks as $documentBlock) {
@@ -97,19 +95,27 @@ final readonly class DeclarativePageCompiler
             }
             $documentBlockIds[$documentBlock->id] = true;
         }
+        $documentData = $document instanceof DocumentAst
+            ? [
+                'schema' => 'docara.resolved_document.v1',
+                'source' => $document->source,
+                'nodes' => array_map(
+                    static fn ($block): array => $block->toArray(),
+                    $documentBlocks,
+                ),
+            ]
+            : [
+                'schema' => 'docara.document_ir_reference.v1',
+                'source' => $document->source,
+                'node_count' => count($document->allNodes()),
+                'sha256' => hash('sha256', CanonicalJson::encode($document->toArray())),
+            ];
         $blocks = [
             $this->blocks->create(
                 'document-' . substr(hash('sha256', $pageKey . "\0" . $document->canonicalHash()), 0, 20),
                 'content.document',
                 'content',
-                [
-                    'schema' => 'docara.resolved_document.v1',
-                    'source' => $document->source,
-                    'nodes' => array_map(
-                        static fn ($block): array => $block->toArray(),
-                        $documentBlocks,
-                    ),
-                ],
+                $documentData,
                 null,
                 $sectionDefinition,
             ),

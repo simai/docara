@@ -6,6 +6,8 @@ namespace Simai\Docara\Declarative\Plan;
 
 use Simai\Docara\Declarative\Document\DocumentAst;
 use Simai\Docara\Declarative\Layout\LayoutDescriptor;
+use Simai\Docara\Document\DocumentIr;
+use Simai\Docara\Document\SourceNode;
 use Simai\Docara\Portable\CanonicalJson;
 
 final readonly class ResolvedRenderPlan
@@ -21,7 +23,7 @@ final readonly class ResolvedRenderPlan
         public string $title,
         public int $outlineDepth,
         public LayoutDescriptor $layout,
-        public DocumentAst $document,
+        public DocumentAst|DocumentIr $document,
         public array $regions,
         public array $assets,
         public array $provenance,
@@ -86,23 +88,52 @@ final readonly class ResolvedRenderPlan
         return [
             'title' => $this->title,
             'regions' => array_keys($this->regions),
-            'headings' => array_map(
+            'headings' => $this->headings(),
+            'links' => $this->links(),
+            'smart' => $smart,
+        ];
+    }
+
+    /** @return list<array<string, mixed>> */
+    private function headings(): array
+    {
+        if ($this->document instanceof DocumentAst) {
+            return array_map(
                 static fn ($heading): array => [
                     'id' => $heading->id,
                     'level' => $heading->level,
                     'text' => $heading->text,
                 ],
                 $this->document->headings,
-            ),
-            'links' => array_map(
+            );
+        }
+
+        $headings = [];
+        foreach ($this->document->allNodes() as $node) {
+            if ($node->type() === 'heading' && $node instanceof SourceNode) {
+                $headings[] = [
+                    'id' => null,
+                    'level' => $node->data['level'] ?? null,
+                    'text' => $node->data['text'] ?? '',
+                ];
+            }
+        }
+
+        return $headings;
+    }
+
+    /** @return list<array<string, mixed>> */
+    private function links(): array
+    {
+        return $this->document instanceof DocumentAst
+            ? array_map(
                 static fn ($link): array => [
                     'destination' => $link->destination,
                     'label' => $link->label,
                 ],
                 $this->document->links,
-            ),
-            'smart' => $smart,
-        ];
+            )
+            : [];
     }
 
     /** @return list<ResolvedSmartPlan> */

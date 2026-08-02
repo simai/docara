@@ -11,12 +11,15 @@
 :::steps
 1. Загрузить и проверить site, section, page и Framework lock.
 2. Разрешить наследование и provenance каждой страницы.
-3. Преобразовать Markdown и Smart-вызовы в типизированный `DocumentAst`.
+3. Один раз скомпилировать Markdown и Smart-вызовы в типизированный `DocumentIr`
+   в памяти.
 4. Разрешить `Layout -> Region -> Section -> Block -> Smart`.
 5. Построить маршруты, каноническую топологию и asset plan.
 6. Получить из одной топологии видимое меню, breadcrumbs и previous/next.
-7. Отрендерить regions через trusted templates и immutable view models.
-8. Построить эффективный каталог и сгенерировать его index/detail страницы.
+7. Отрендерить содержимое через единый registry/Smart gateway, а regions —
+   через зарегистрированные templates и immutable view models.
+8. Построить производные индекс, меню, breadcrumbs, outline, previous/next,
+   search и эффективный machine-readable каталог из результатов PageBuilder.
 9. Собрать полный документ через зарегистрированный publisher template.
 10. Записать кандидатный HTML, общие shell assets, search index, receipts и plans.
 11. Только после полного успеха транзакционно заменить действующий `build_*`.
@@ -42,13 +45,18 @@ Smart-компонентов. Он назначает H1–H6 уникальны
 - `EffectiveComponentCatalogBuilder` создаёт один проверяемый каталог;
 - страницы компонентов принадлежат Markdown, а их индекс строится из метаданных
   результатов PageBuilder без generated index/detail projector;
-- `_docara/component-catalog.json`, generated HTML и page receipt являются
+- `_docara/component-catalog.json`, HTML и диагностический receipt являются
   производными результатами, а не вторым источником истины.
 
 Техническая canonical-запись компонента хранит стабильный ID, контракт и
-lifecycle. Переводимые названия, описания и подписи находятся в language packs,
-а исполняемые exact fixtures — в каталоге примеров. Отдельные ручные страницы
-для каждого компонента не нужны: generated catalog объединяет эти источники.
+lifecycle. Текст каждой русской публичной страницы находится в одном Markdown,
+а повторяющиеся интерфейсные подписи — в `content/ru/lang.json`. Package-owned
+fixtures и данные других локалей не являются владельцами русской страницы.
+
+Все 103 текущих русских route проходят через один PageBuilder и один typed
+Document IR renderer registry. Layout composer принимает типизированный
+PageBuilder artifact; сырого `trustedMainHtml`, generated-page bypass и
+публичных page projector больше нет.
 
 Файлы являются источником истины; база данных, runtime CRUD, роли и workflow не
 входят в standalone Docara.

@@ -59,7 +59,7 @@ final class PageBuilderTest extends TestCase
         self::assertNotNull($result->document);
         self::assertCount(16, $result->componentArtifacts);
         self::assertSame(
-            ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'typed_directive', 'component', 'component_block'],
+            ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'typed_directive', 'html_comment', 'component', 'component_block'],
             $result->componentArtifacts === []
                 ? []
                 : (new DocumentRendererRegistry([

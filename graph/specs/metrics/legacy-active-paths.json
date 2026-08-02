@@ -19,7 +19,10 @@
   "scale": "0..n",
   "calculation": "verified_runtime_reachable_legacy_paths",
   "target": 0,
-  "observed": 1,
-  "observed_detail": ["trusted-main declarative layout bridge pending M4.4"],
+  "observed": 0,
+  "observed_detail": [
+    "No runtime-reachable generated projector or trusted-main public page path",
+    "Package declarative parser and shell Smart renderer are classified non-public compatibility/composition APIs"
+  ],
   "unknown_policy": "block_deletion"
 }

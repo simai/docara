@@ -13,12 +13,17 @@ final readonly class SourceDocumentNodeRenderer implements DocumentNodeRenderer
 
     public function types(): array
     {
-        return ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'typed_directive'];
+        return ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'typed_directive', 'html_comment'];
     }
 
     public function render(DocumentNode $node, DocumentRenderContext $context): RenderArtifact
     {
-        $html = $this->markdown->render($node->raw(), $context->sourceRoot, $context->sourceFile);
+        $html = $node->type() === 'html_comment'
+            ? "\n"
+            : $this->markdown->render($node->raw(), $context->sourceRoot, $context->sourceFile);
+        if ($html === '') {
+            $html = "\n";
+        }
 
         return new RenderArtifact(
             $html,

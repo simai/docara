@@ -109,8 +109,8 @@ Markdown-owner, производные представления использ
    и parity всех component routes;
 2. declarative example projector — после переноса примеров в Markdown и
    универсальные Smart-компоненты;
-3. `buildGenerated()` и `trustedMainHtml` — после перехода всех страниц на
-   один `PageBuilder`;
+3. `buildGenerated()` и `trustedMainHtml` удалены в M4 после перехода всех 103
+   русских страниц на один typed `PageBuilder` artifact;
 4. ранние/параллельные Smart renderers — после единого IR component node и
    gateway;
 5. public `resources/i18n`, `site.json` compatibility и поле `components` в

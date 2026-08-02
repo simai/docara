@@ -80,6 +80,11 @@ final class PortableDocumentationSiteTest extends PHPUnit
         ));
 
         self::assertCount(103, $pages);
+        foreach ($pages as $page) {
+            self::assertSame('pagebuilder_document_ir', $page['declarative_pipeline']['main_source']);
+            self::assertSame('docara.document_ir.v1', $page['declarative_pipeline']['document_ir']['schema']);
+            self::assertGreaterThan(0, $page['declarative_pipeline']['document_ir']['nodes']);
+        }
         self::assertCount(206, $htmlPages);
         self::assertFileDoesNotExist($build . '/ru/lang.json');
         self::assertCount(89, $search['documents']);

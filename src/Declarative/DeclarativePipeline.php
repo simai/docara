@@ -7,6 +7,8 @@ namespace Simai\Docara\Declarative;
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\Document\DocumentParser;
 use Simai\Docara\Declarative\Rendering\DeclarativePageRenderer;
+use Simai\Docara\Declarative\Rendering\RenderArtifact;
+use Simai\Docara\Document\DocumentIr;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
 final readonly class DeclarativePipeline
@@ -60,45 +62,16 @@ final readonly class DeclarativePipeline
         return new DeclarativePageResult($plan, $this->renderer->render($plan));
     }
 
-    public function buildGenerated(
-        string $markdown,
-        string $source,
+    public function compose(
+        DocumentIr $document,
         string $pageKey,
         string $title,
         int $outlineDepth,
-        string $trustedMainHtml,
+        RenderArtifact $mainDocument,
         ?PageCompositionContext $composition = null,
         array $layoutConfiguration = [],
         array $configurationProvenance = [],
     ): DeclarativePageResult {
-        return $this->buildRendered(
-            $markdown,
-            $source,
-            $pageKey,
-            $title,
-            $outlineDepth,
-            $trustedMainHtml,
-            $composition,
-            $layoutConfiguration,
-            $configurationProvenance,
-        );
-    }
-
-    public function buildRendered(
-        string $markdown,
-        string $source,
-        string $pageKey,
-        string $title,
-        int $outlineDepth,
-        string $trustedMainHtml,
-        ?PageCompositionContext $composition = null,
-        array $layoutConfiguration = [],
-        array $configurationProvenance = [],
-    ): DeclarativePageResult {
-        if (trim($trustedMainHtml) === '') {
-            throw new \InvalidArgumentException('DECLARATIVE_RENDERED_CONTENT_REQUIRED');
-        }
-        $document = $this->parser->parse($markdown, $source);
         $plan = $this->compiler->compile(
             $document,
             $pageKey,
@@ -111,7 +84,7 @@ final readonly class DeclarativePipeline
 
         return new DeclarativePageResult(
             $plan,
-            $this->renderer->render($plan, $trustedMainHtml),
+            $this->renderer->render($plan, $mainDocument),
         );
     }
 }

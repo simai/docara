@@ -11,6 +11,8 @@ use Simai\Docara\Content\PageSource;
 use Simai\Docara\Content\PageSourceLocator;
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\DeclarativePipeline;
+use Simai\Docara\Declarative\Rendering\RenderArtifact;
+use Simai\Docara\Document\DocumentIr;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
@@ -169,12 +171,20 @@ final readonly class PortableSiteBuilder
                 $plan->frameworkLock,
                 $this->frameworkAssetBase($plan->frameworkLock, (string) ($site['base_url'] ?? '/')),
             );
-            $pageResult = $this->pageBuilder->build(
-                $plan,
-                $root,
-                $runtime,
-                (int) data_get($plan->configuration, 'reading.toc_depth', 3),
-            );
+            try {
+                $pageResult = $this->pageBuilder->build(
+                    $plan,
+                    $root,
+                    $runtime,
+                    (int) data_get($plan->configuration, 'reading.toc_depth', 3),
+                );
+            } catch (\Throwable $exception) {
+                throw new PortableConfigurationException(
+                    'PAGE_BUILDER_FAILED',
+                    "PageBuilder failed for [$pagePath]: {$exception->getMessage()}",
+                    previous: $exception,
+                );
+            }
             $components = $pageResult->frameworkComponents;
             $outline = $pageResult->outline;
             $contentHtml = $pageResult->contentHtml;
@@ -225,6 +235,8 @@ final readonly class PortableSiteBuilder
                 'output' => $route['output'],
                 'home_url' => $localeUrls->home($pageLocale),
                 'content_html' => $contentHtml,
+                'document_artifact' => $pageResult->documentArtifact,
+                'document_ir' => $pageResult->document,
                 'components' => $components,
                 'component_calls' => $components->normalizedCalls,
             ];
@@ -677,18 +689,39 @@ final readonly class PortableSiteBuilder
                 $layoutConfiguration = is_array($declarativePlan->configuration['layout'] ?? null)
                     ? $declarativePlan->configuration['layout']
                     : [];
-                $declarative = $declarativePipeline->buildRendered(
-                    $declarativePlan->markdown,
-                    $declarativePlan->page,
+                $document = $page['document_artifact'];
+                if (! $document instanceof RenderArtifact
+                    || ! $page['plan'] instanceof ResolvedPagePlan
+                ) {
+                    throw new PortableConfigurationException(
+                        'PAGE_BUILDER_DOCUMENT_ARTIFACT_REQUIRED',
+                        "Page [{$page['url']}] has no typed PageBuilder document artifact.",
+                    );
+                }
+                $document = new RenderArtifact(
+                    (string) $page['content_html'],
+                    $document->assets,
+                    $document->hydration + ['derived_views_applied' => true],
+                    $document->provenance + ['derived_views' => 'pagebuilder_route_metadata'],
+                );
+                $documentIr = $page['document_ir'];
+                if (! $documentIr instanceof DocumentIr) {
+                    throw new PortableConfigurationException(
+                        'PAGE_BUILDER_DOCUMENT_IR_REQUIRED',
+                        "Page [{$page['url']}] has no typed Document IR.",
+                    );
+                }
+                $declarative = $declarativePipeline->compose(
+                    $documentIr,
                     (string) $page['output'],
                     (string) $page['title'],
                     $outlineDepth,
-                    (string) $page['content_html'],
+                    $document,
                     $composition,
                     $layoutConfiguration,
                     $declarativePlan->provenance,
                 );
-                $renderedMainHash = hash('sha256', (string) $page['content_html']);
+                $renderedMainHash = hash('sha256', $document->html);
                 $composedMainHash = hash('sha256', (string) ($declarative->artifact->hydration['regions']['main'] ?? ''));
                 if (! hash_equals($renderedMainHash, $composedMainHash)) {
                     throw new PortableConfigurationException(
@@ -700,6 +733,13 @@ final readonly class PortableSiteBuilder
                     'status' => 'published',
                     'plan_hash' => $declarative->plan->canonicalHash(),
                     'assets' => $declarative->artifact->assets,
+                    'main_source' => $declarative->artifact->hydration['main_source'] ?? null,
+                    'document_ir' => [
+                        'schema' => 'docara.document_ir.v1',
+                        'source' => $documentIr->source,
+                        'nodes' => count($documentIr->allNodes()),
+                        'sha256' => $documentIr->canonicalHash(),
+                    ],
                 ];
                 $outputPath = rtrim($destination, '/\\') . '/' . $page['output'];
                 $this->files->ensureDirectoryExists(dirname($outputPath));

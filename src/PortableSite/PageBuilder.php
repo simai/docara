@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\PortableSite;
 
+use Simai\Docara\Declarative\Rendering\RenderArtifact;
 use Simai\Docara\Document\DocumentRenderContext;
 use Simai\Docara\Document\DocumentRendererRegistry;
 use Simai\Docara\Document\MarkdownCompiler;
@@ -29,43 +30,42 @@ final readonly class PageBuilder
         int $tocDepth,
     ): PageBuilderResult {
         $framework = $runtime->extract($plan->markdown, $plan->page);
-        $document = null;
-        $componentArtifacts = [];
-        if ($this->usesTargetPipeline($plan->page)) {
-            $document = $this->compiler->compile($framework->markdownWithPlaceholders, $plan->page);
-            $rendered = $this->renderers->render(
-                $document,
-                new DocumentRenderContext($root, $root . '/' . ltrim($plan->page, '/')),
-            );
-            $renderedMarkdown = $rendered['document']->html;
-            $componentArtifacts = $rendered['components'];
-        } else {
-            $renderedMarkdown = $this->markdown->render(
-                $framework->markdownWithPlaceholders,
-                $root,
-                $root . '/' . ltrim($plan->page, '/'),
-            );
-        }
+        $document = $this->compiler->compile($framework->markdownWithPlaceholders, $plan->page);
+        $rendered = $this->renderers->render(
+            $document,
+            new DocumentRenderContext($root, $root . '/' . ltrim($plan->page, '/')),
+        );
+        $renderedMarkdown = $rendered['document']->html;
+        $componentArtifacts = $rendered['components'];
         $outline = (new PortableDocumentOutlineBuilder)->build(
             $renderedMarkdown,
             $tocDepth,
             PortableDocumentIds::reserved(),
         );
 
+        $contentHtml = $framework->hydrate($outline['html']);
+        $documentArtifact = new RenderArtifact(
+            $contentHtml,
+            $rendered['document']->assets,
+            $rendered['document']->hydration + [
+                'document_ir' => $document->toArray(),
+                'components' => array_map(
+                    static fn (RenderArtifact $artifact): array => $artifact->hydration,
+                    $componentArtifacts,
+                ),
+            ],
+            $rendered['document']->provenance + [
+                'document_ir_sha256' => hash('sha256', json_encode($document->toArray(), JSON_THROW_ON_ERROR)),
+            ],
+        );
+
         return new PageBuilderResult(
-            $framework->hydrate($outline['html']),
+            $contentHtml,
+            $documentArtifact,
             $outline,
             $framework,
             $document,
             $componentArtifacts,
         );
-    }
-
-    private function usesTargetPipeline(string $page): bool
-    {
-        return preg_match(
-            '#\Acontent/(?:ru/)?(?:components/[a-z0-9-]+|examples(?:/[a-z0-9-]+)?)\.md\z#D',
-            str_replace('\\', '/', $page),
-        ) === 1;
     }
 }

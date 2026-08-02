@@ -42,11 +42,12 @@ php ../../docara verify-static build_production
 php ../../docara serve production --host=localhost --port=8000 --no-build
 ```
 
-Документация должна иметь один H1 на authored page, ноль ссылок на выведенные
-ручные component routes и ноль сломанных локальных ссылок. Generated catalog
-должен содержать ровно одну index-поверхность и одну generic detail-страницу
-для каждой поддерживаемой записи. Проверяйте фактические counts из принятого
-Batch contract; не заменяйте их широким readiness-утверждением.
+Документация должна иметь один H1 на authored page, ровно один физический
+Markdown-owner для каждого публичного route, ноль generated page owners и
+ноль сломанных локальных ссылок. Проверяйте, что все записи диагностического
+receipt имеют `main_source=pagebuilder_document_ir`, а full/single HTML
+совпадает. Machine-readable component catalog остаётся производным output; он
+не создаёт публичные страницы.
 
 Для контекста чтения обязательны отрицательные проверки глубины 1/7,
 повторяющихся HTML `id`, отсутствующего fragment и неправильной

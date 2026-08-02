@@ -31,6 +31,26 @@ final readonly class MarkdownCompiler
 
                 continue;
             }
+            if (str_starts_with(ltrim($line), '<!--')) {
+                $start = $index;
+                do {
+                    $closed = str_contains($lines[$index], '-->');
+                    $index++;
+                } while (! $closed && $index < $count);
+                if (! $closed) {
+                    throw new PortableConfigurationException(
+                        'DOCUMENT_HTML_COMMENT_UNCLOSED',
+                        "Unclosed HTML comment at [$source:" . ($index + 1) . ':1].',
+                    );
+                }
+                $nodes[] = new SourceNode(
+                    'html_comment',
+                    implode("\n", array_slice($lines, $start, $index - $start)),
+                    new SourceLocation($source, $start + 1, 1, $index),
+                );
+
+                continue;
+            }
             if (preg_match('/^:::(?:example)(?:\s|\{|$)/', $line) === 1) {
                 [$node, $index] = $this->example($lines, $index, $source);
                 $nodes[] = $node;
@@ -409,10 +429,16 @@ final readonly class MarkdownCompiler
     /** @param list<string> $lines @return array{0:SourceNode,1:int} */
     private function codeBlock(array $lines, int $start, string $source): array
     {
-        $fence = substr($lines[$start], 0, 3);
-        $language = trim(substr($lines[$start], 3));
+        if (preg_match('/^(?<fence>`{3,}|~{3,})(?<language>.*)$/', $lines[$start], $opening) !== 1) {
+            throw new PortableConfigurationException(
+                'DOCUMENT_IR_CODE_BLOCK_OPENING_INVALID',
+                "Invalid code block opening at [$source:" . ($start + 1) . ':1].',
+            );
+        }
+        $fence = (string) $opening['fence'];
+        $language = trim((string) $opening['language']);
         $end = $start + 1;
-        while (isset($lines[$end]) && ! str_starts_with($lines[$end], $fence)) {
+        while (isset($lines[$end]) && trim($lines[$end]) !== $fence) {
             $end++;
         }
         if (! isset($lines[$end])) {

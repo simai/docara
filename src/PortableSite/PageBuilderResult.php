@@ -16,9 +16,10 @@ final readonly class PageBuilderResult
      */
     public function __construct(
         public string $contentHtml,
+        public RenderArtifact $documentArtifact,
         public array $outline,
         public ComponentDirectiveDocument $frameworkComponents,
-        public ?DocumentIr $document,
+        public DocumentIr $document,
         public array $componentArtifacts,
     ) {}
 }

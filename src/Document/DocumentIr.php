@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Document;
 
+use Simai\Docara\Portable\CanonicalJson;
+
 final readonly class DocumentIr
 {
     /** @param list<DocumentNode> $nodes */
@@ -39,5 +41,10 @@ final readonly class DocumentIr
             'source' => $this->source,
             'nodes' => array_map(static fn (DocumentNode $node): array => $node->toArray(), $this->nodes),
         ];
+    }
+
+    public function canonicalHash(): string
+    {
+        return hash('sha256', CanonicalJson::encode($this->toArray()));
     }
 }

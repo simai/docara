@@ -1,13 +1,14 @@
 # G1C.4 — integrated retest before the cross-host stop
 
 Status: `PARTIAL_PASS_NO_ACCEPTANCE_CANDIDATE`
-Tested product/docs revision: `5124959521b6ae51c7e5fa925b3c3230a65a54ef`
+Two-build/parity revision: `5124959521b6ae51c7e5fa925b3c3230a65a54ef`
+Final blocker-governance verification revision: `4d240944377a354f9a50ff6fe52fc31ed2bc7148`
 Environment: macOS, PHP 8.4.20
 
 ## Test and build results
 
-- full PHPUnit before the final blocker-only governance update: 372 tests,
-  7,218 assertions, PASS;
+- full PHPUnit after the blocker documentation update: 372 tests,
+  7,222 assertions, PASS;
 - focused portable/provider/search/security matrix: 78 tests, 654 assertions,
   PASS;
 - two disposable full builds: 103 routes, 305 files, 206 HTML each;
@@ -18,6 +19,11 @@ Environment: macOS, PHP 8.4.20
 - baseline comparison: 205 HTML equal after replacing only the proven
   `search-index.json?docara_v=<sha256>` query; one intentional content delta is
   `/ru/development/smart-components/`; unexpected deltas=0.
+- final blocker-governance site build: 103 routes, 206 HTML, static verifier
+  21,430 references and broken=0;
+- Pint, Composer strict, 309-file PHP lint, 455 JSON files, 199 YAML files,
+  graph validation and `git diff --check`: PASS. Graph summary: 1 goal,
+  9 stages, 12 batches, 6 mappings, warnings=0, blockers=0.
 
 Correct labels at the tested revision:
 

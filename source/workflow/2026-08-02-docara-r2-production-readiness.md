@@ -1,6 +1,6 @@
 # R2 production-readiness goal
 
-Status: `active`
+Status: `implementation_complete_pending_integrated_verification`
 
 Input revision: `f50ce3c816867936f7697af8413120259c023089`
 
@@ -115,12 +115,12 @@ Required cutover stop thresholds:
 
 | Stage | Scope | Evidence | Status |
 | --- | --- | --- | --- |
-| R2.1 | Record independent R1-C acceptance and release identity | governance commit, exact hashes | active |
-| R2.2 | Rebuild/install exact package in disposable consumers | package/consumer manifests | pending |
-| R2.3 | Compatibility and security closure | PHP/macOS/Linux matrix, audits/scans | pending |
-| R2.4 | Exact HTTP/browser/product acceptance | route smoke, interactions, screenshots | pending |
-| R2.5 | Current/candidate delta and deployment dossier | classified diff, mirror cutover/rollback | pending |
-| R2.6 | Integrated outcome review and handoff | graph/docs/handoff, clean worktree | pending |
+| R2.1 | Record independent R1-C acceptance and release identity | governance commit, exact hashes | pass |
+| R2.2 | Rebuild/install exact package in disposable consumers | package/consumer manifests | pass |
+| R2.3 | Compatibility and security closure | PHP/macOS/Linux matrix, audits/scans | pass |
+| R2.4 | Exact HTTP/browser/product acceptance | route smoke, interactions, screenshots | pass |
+| R2.5 | Current/candidate delta and deployment dossier | classified diff, mirror cutover/rollback | pass |
+| R2.6 | Integrated outcome review and handoff | graph/docs/handoff, clean worktree | active |
 
 ## Batches
 
@@ -154,9 +154,10 @@ Required cutover stop thresholds:
   `source/workflow/evidence/2026-08-02-docara-r2-production-readiness/INDEX.md`;
 - rollback boundary: input revision `f50ce3c…` plus logical R2 commits;
 - recovery source: this file;
-- current batch: R2.1 governance and read-only environment inventory;
-- next safe action: record the independent acceptance, inventory release
-  identity/package/runtime surfaces, then repeat the action-gate preflight.
+- current batch: R2.6 integrated verification and handoff;
+- next safe action after a green checkpoint: only the user's explicit choice
+  whether to run the documented live cutover; no further process design is
+  required.
 
 ## Evidence Plan
 

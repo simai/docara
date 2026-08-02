@@ -1,0 +1,17 @@
+{
+  "schema": "docara.r2_browser_evidence.v1",
+  "artifact_source": "56a2abf8bad05923f689141afc0bb045aa4d6734",
+  "archive_sha256": "04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753",
+  "candidate_tree_sha256": "457790d4cf212174b7ef34893f8ee3cfc11f8973022c8f28c18348e46f2a3bae",
+  "html_binding": {"compared": 206, "different": 0},
+  "http": {"canonical_routes": 103, "failures": 0, "assets_failures": 0},
+  "screenshots": [
+    {"route": "/ru/", "viewport": "1920x1080", "theme": "light", "direction": "ltr", "overflow": 0, "console_errors": 0, "file": "browser/r2-home-1920-light.png", "sha256": "eec48ab81302bd9a694ff9c483e6ee36c0d039785604751f7714773ea0044905"},
+    {"route": "/ru/components/alert/", "viewport": "1440x1000", "theme": "light", "direction": "ltr", "overflow": 0, "console_errors": 0, "file": "browser/r2-alert-1440-light.png", "sha256": "28dec7d1d9a6316e23471fe26caa58751cd71d925bf16632ef2b4fcf9401aae5"},
+    {"route": "/ru/components/alert/", "viewport": "1440x1000", "theme": "dark", "direction": "ltr", "overflow": 0, "console_errors": 0, "file": "browser/r2-alert-1440-dark.png", "sha256": "ab316d7490751fa2babe4cdcdecb51aad9c6fd345d94daed8988a09047ee6fa6"},
+    {"route": "/ru/components/alert/", "viewport": "390x844", "theme": "dark", "direction": "ltr", "overflow": 0, "console_errors": 0, "file": "browser/r2-alert-390-dark.png", "sha256": "0b2bf23adfb1fd053ae61e55a85262b22c234d91a3a6e4ae4347b3843615521e"},
+    {"route": "/ar/", "viewport": "1440x900", "theme": "light", "direction": "rtl", "overflow": 0, "console_errors": 0, "file": "browser/r2-ar-1440-light.png", "sha256": "3cc6635e7702db9196ef63f3f655e90a98e8456879d2e67ad88d3bf12ab85b72"},
+    {"route": "/ar/", "viewport": "390x844", "theme": "dark", "direction": "rtl", "overflow": 0, "console_errors": 0, "file": "browser/r2-ar-390-dark.png", "sha256": "4395770452adb57e5921368bcc10a440044e1533bfab94efe888ac02f5fcac10"}
+  ],
+  "interactions": {"search": "pass", "settings": "pass", "mobile_navigation": "pass", "tabs": "pass", "copy_feedback": "pass", "tree_keyboard": "pass", "responsive_tables": "pass", "reduced_motion": "pass"}
+}

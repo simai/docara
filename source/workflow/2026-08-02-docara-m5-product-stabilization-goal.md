@@ -54,6 +54,8 @@ does not authorize merge, push, tag, release or deployment.
 
 ### M5.2 Ownership and immutable install contract
 
+Status: `PASS`
+
 - ship a versioned machine-readable ownership contract;
 - classify package-owned `.docara/engine/**`, project-owned content/config/assets
   and generated output patterns;
@@ -61,6 +63,8 @@ does not authorize merge, push, tag, release or deployment.
 - initialize the ownership state from an empty directory without Node.js.
 
 ### M5.3 Transactional update lifecycle
+
+Status: `PASS`
 
 - implement `update --verify`, `--dry-run`, explicit `--apply` and
   `--rollback=<id|latest>`;
@@ -71,6 +75,8 @@ does not authorize merge, push, tag, release or deployment.
   stale plans, ownership conflicts and corrupt rollback artifacts.
 
 ### M5.4 Build/diagnostics and architecture proof
+
+Status: `in_progress`
 
 - bind receipts to package revision, Framework tuple, source/config/template,
   manifest and asset hashes without private absolute paths;

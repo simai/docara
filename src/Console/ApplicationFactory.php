@@ -8,6 +8,7 @@ use Composer\InstalledVersions;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableProjectInitializer;
+use Simai\Docara\PortableSite\PortableProjectUpdater;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Symfony\Component\Console\Application;
 
@@ -25,6 +26,7 @@ final class ApplicationFactory
         $application = new Application('Docara', $version);
         $application->addCommands([
             (new InitCommand($files, new PortableProjectInitializer($files)))->setBase($base),
+            (new UpdateCommand(new PortableProjectUpdater($files)))->setBase($base),
             (new BuildCommand($builder))->setBase($base),
             (new ServeCommand)->setBase($base),
             (new VerifyStaticCommand)->setBase($base),

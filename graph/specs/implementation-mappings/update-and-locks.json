@@ -5,7 +5,7 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Update and immutable lock mapping",
-  "summary": "Exact M0 map of portable init/update behavior, Framework locking and deterministic build evidence.",
+  "summary": "M5 implementation map of ownership-aware portable init/update behavior, immutable package and Framework state, deterministic apply and verified rollback.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "R2_contract",
@@ -16,7 +16,11 @@
   "to_refs": ["DOC-REQ-009", "DOC-REQ-010", "DOC-REQ-012"],
   "code_refs": [
     "src/Console/InitCommand.php#InitCommand::fire",
+    "src/Console/UpdateCommand.php#UpdateCommand::fire",
     "src/PortableSite/PortableProjectInitializer.php#PortableProjectInitializer::initialize",
+    "src/PortableSite/PortableProjectUpdater.php",
+    "src/PortableSite/PortableOwnershipContract.php",
+    "src/PortableSite/PortableRuntimeMetadata.php",
     "src/Framework/FrameworkLock.php#FrameworkLock::assertValid",
     "src/Framework/FrameworkAdmissionPreflight.php#FrameworkAdmissionPreflight::assertReady",
     "src/Portable/PortableConfigurationLoader.php#PortableConfigurationLoader::assertFrameworkLockSemantics",
@@ -25,7 +29,7 @@
   ],
   "test_refs": [
     "tests/PortableInitCommandTest.php#portable_init_creates_only_the_json_and_markdown_site_surface",
-    "tests/PortableInitCommandTest.php#portable_update_preserves_all_existing_json_and_markdown_and_restores_only_missing_files",
+    "tests/PortableUpdateCommandTest.php",
     "tests/PortableInitCommandTest.php#portable_update_refuses_to_implicitly_migrate_a_legacy_site",
     "tests/Unit/PortableConfigurationTest.php#test_moving_framework_references_are_rejected",
     "tests/Unit/PortableConfigurationTest.php#test_the_shipped_portable_lock_is_accepted_with_its_independent_manifest_provider_revision",
@@ -33,27 +37,25 @@
   ],
   "evidence_refs": [
     "docara.evidence.m0_inventory",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-dependency-snapshot.json",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-build-manifest.sha256"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.2-M5.3-PORTABLE-UPDATE.md"
   ],
   "review_refs": ["docara.gate.architecture_acceptance"],
   "current_behavior": [
     "Framework runtime, manifests and asset projection are pinned to commit hashes and validated fail closed.",
-    "init creates the portable JSON/Markdown surface; init --update preserves existing files and restores only missing starter files.",
-    "Two exact-code M0 builds were byte-identical.",
-    "Composer archive and git export exclude local/development surfaces."
+    "init creates project-owned JSON/Markdown plus a versioned package-owned engine state only in an empty target.",
+    "update verifies ownership, writes a hash-bound dry-run plan, applies by atomic engine-directory swap and preserves a validated rollback package.",
+    "project-owned files are never update targets; dirty, unknown, symlinked, stale or corrupt state fails closed.",
+    "Composer archive and git export exclude local/development surfaces; exported-consumer dependency proof remains an M5.7 gate."
   ],
   "known_deviations": [
-    "The repository has no composer.lock, so dependency resolution is not immutable across future installs.",
-    "Update exposes no accepted dry-run/diff report or rollback package.",
-    "Preserve-or-add-missing behavior is not the full engine-owned versus project-owned migration contract.",
-    "M0 formatter and two documentation-count tests are red."
+    "The package does not own a root composer.lock; M5.7 must prove that a fresh consumer lock resolves the recorded immutable package tuple from an exact archive.",
+    "Build receipts do not yet bind the complete engine/template/asset input chain."
   ],
   "deletion_gates": [
-    "Do not replace init --update until a dry-run, ownership manifest, rollback package and preservation matrix pass.",
+    "Do not claim the portable lifecycle complete until the exported archive and fresh consumer lock matrix pass.",
     "Do not change Framework locks without exact tuple compatibility and asset projection evidence.",
     "Decide and test product dependency-lock ownership before claiming reproducible clean installation."
   ],
-  "status": "mapped_in_m0",
-  "mapped_revision": "2928d68b81665dd4873cebeb87a6192343c28805"
+  "status": "implemented_pending_candidate_matrix",
+  "mapped_revision": "candidate_commit_containing_m5_2_m5_3_evidence"
 }

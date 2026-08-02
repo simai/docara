@@ -9,8 +9,8 @@ Input revision: `900c688fbf320a8e893b4d97838c611526c2a0d8`
 | Checkpoint | Status | Evidence |
 | --- | --- | --- |
 | M5.1 recovery and execution contract | PASS | [M5.1-RECOVERY.md](M5.1-RECOVERY.md) |
-| M5.2 ownership and immutable install | pending | — |
-| M5.3 transactional update | pending | — |
+| M5.2 ownership and immutable install | PASS | [M5.2-M5.3-PORTABLE-UPDATE.md](M5.2-M5.3-PORTABLE-UPDATE.md) |
+| M5.3 transactional update | PASS | [M5.2-M5.3-PORTABLE-UPDATE.md](M5.2-M5.3-PORTABLE-UPDATE.md) |
 | M5.4 build/diagnostics/architecture | pending | — |
 | M5.5 locale/security/accessibility | pending | — |
 | M5.6 author workflow/documentation | pending | — |

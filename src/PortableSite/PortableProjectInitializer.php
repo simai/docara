@@ -15,7 +15,7 @@ final readonly class PortableProjectInitializer
     public function __construct(private Filesystem $files) {}
 
     /**
-     * @return array{copied:int,preserved:int}
+     * @return array{copied:int,preserved:int,engine_files:int,engine_sha256:string}
      */
     public function initialize(string $root): array
     {
@@ -49,6 +49,13 @@ final readonly class PortableProjectInitializer
             $copied++;
         }
 
-        return ['copied' => $copied, 'preserved' => $preserved];
+        $engine = (new PortableProjectUpdater($this->files))->installEngineState($root);
+
+        return [
+            'copied' => $copied,
+            'preserved' => $preserved,
+            'engine_files' => (int) $engine['engine_files'],
+            'engine_sha256' => (string) $engine['current_sha256'],
+        ];
     }
 }

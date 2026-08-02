@@ -30,6 +30,14 @@ class PortableInitCommandTest extends TestCase
         $this->assertFileExists($this->tmpPath('content/ru/index.page.json'));
         $this->assertFileExists($this->tmpPath('content/ru/landing.md'));
         $this->assertFileExists($this->tmpPath('content/ru/landing.page.json'));
+        $this->assertFileExists($this->tmpPath('.docara/engine/ownership.json'));
+        $this->assertFileExists($this->tmpPath('.docara/engine/dependency-lock.json'));
+        $this->assertFileExists($this->tmpPath('.docara/engine/framework-lock.json'));
+        $ownership = $this->json('.docara/engine/ownership.json');
+        $this->assertSame('docara.project_ownership.v1', $ownership['schema']);
+        $this->assertSame(['.docara/engine/**'], $ownership['owners']['engine']);
+        $this->assertContains('content/**', $ownership['owners']['project']);
+        $this->assertContains('build_*/**', $ownership['owners']['generated']);
 
         $this->assertFileDoesNotExist($this->tmpPath('.env'));
         $this->assertFileDoesNotExist($this->tmpPath('config.php'));
@@ -53,7 +61,7 @@ class PortableInitCommandTest extends TestCase
     }
 
     #[Test]
-    public function portable_init_accepts_an_absolute_target_directory_and_updates_it_safely(): void
+    public function portable_init_accepts_an_absolute_target_and_refuses_the_old_implicit_update(): void
     {
         $target = $this->tmpPath('absolute-target');
 
@@ -69,7 +77,8 @@ class PortableInitCommandTest extends TestCase
             '--update' => true,
         ]);
 
-        $this->assertSame(Command::SUCCESS, $updateStatus, $updateConsole->getDisplay());
+        $this->assertSame(Command::FAILURE, $updateStatus, $updateConsole->getDisplay());
+        $this->assertStringContainsString('implicit "init --update" workflow is disabled', $updateConsole->getDisplay());
         $this->assertSame($contents, file_get_contents($site));
     }
 
@@ -183,39 +192,21 @@ class PortableInitCommandTest extends TestCase
     }
 
     #[Test]
-    public function portable_update_preserves_all_existing_json_and_markdown_and_restores_only_missing_files(): void
+    public function deprecated_init_update_never_restores_or_changes_project_owned_files(): void
     {
         [$status] = $this->executeInit([]);
         $this->assertSame(Command::SUCCESS, $status);
 
-        $preserved = [];
-        $iterator = new \RecursiveIteratorIterator(
-            new \RecursiveDirectoryIterator($this->tmp, \FilesystemIterator::SKIP_DOTS)
-        );
-        foreach ($iterator as $file) {
-            if (! $file->isFile() || ! in_array(strtolower($file->getExtension()), ['json', 'md', 'markdown'], true)) {
-                continue;
-            }
-
-            $relative = ltrim(str_replace('\\', '/', substr($file->getPathname(), strlen($this->tmp))), '/');
-            if ($relative === 'content/ru/landing.page.json') {
-                continue;
-            }
-
-            $contents = "user-owned: {$relative}\n";
-            file_put_contents($file->getPathname(), $contents);
-            $preserved[$relative] = $contents;
-        }
+        $page = $this->tmpPath('content/ru/index.md');
+        $contents = "# User owned\n";
+        file_put_contents($page, $contents);
         unlink($this->tmpPath('content/ru/landing.page.json'));
 
         [$updateStatus, $console] = $this->executeInit(['--update' => true]);
 
-        $this->assertSame(Command::SUCCESS, $updateStatus, $console->getDisplay());
-        foreach ($preserved as $relative => $contents) {
-            $this->assertSame($contents, file_get_contents($this->tmpPath($relative)), "Portable update overwrote {$relative}");
-        }
-        $this->assertFileExists($this->tmpPath('content/ru/landing.page.json'));
-        $this->assertSame('docara.page.v1', $this->json('content/ru/landing.page.json')['schema']);
+        $this->assertSame(Command::FAILURE, $updateStatus, $console->getDisplay());
+        $this->assertSame($contents, file_get_contents($page));
+        $this->assertFileDoesNotExist($this->tmpPath('content/ru/landing.page.json'));
     }
 
     #[Test]

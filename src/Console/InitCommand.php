@@ -43,7 +43,7 @@ final class InitCommand extends Command
                 'update',
                 'u',
                 InputOption::VALUE_NONE,
-                'Add missing starter files without overwriting project-owned files.',
+                'Deprecated safety guard. Use the explicit "docara update" workflow.',
             );
     }
 
@@ -65,12 +65,25 @@ final class InitCommand extends Command
             return self::FAILURE;
         }
 
-        $portableMarkers = $this->markers($target, ['docara.json', 'simai-framework.lock.json', 'content']);
         $update = (bool) $this->input->getOption('update');
-        if ($portableMarkers !== [] && ! $update) {
+        if ($update) {
+            $this->console
+                ->error('The implicit "init --update" workflow is disabled.')
+                ->comment('Run "docara update --verify", then "--dry-run", then explicit "--apply".');
+
+            return self::FAILURE;
+        }
+
+        $portableMarkers = $this->markers($target, ['docara.json', 'simai-framework.lock.json', 'content']);
+        if ($portableMarkers !== []) {
             $this->console
                 ->error('Detected an existing Docara project: ' . implode(', ', $portableMarkers))
-                ->comment('Run "docara init --update" to add only missing starter files.');
+                ->comment('Use the explicit "docara update" workflow for an initialized project.');
+
+            return self::FAILURE;
+        }
+        if ($this->files->isDirectory($target) && (array_diff(scandir($target) ?: [], ['.', '..']) !== [])) {
+            $this->console->error('Initialization requires an empty target directory. No files were changed.');
 
             return self::FAILURE;
         }
@@ -86,9 +99,8 @@ final class InitCommand extends Command
         $this->console
             ->comment("Project directory: {$target}")
             ->comment("Starter files: copied={$result['copied']}, preserved={$result['preserved']}")
-            ->info($update
-                ? 'Your Docara project was updated without overwriting existing files.'
-                : 'Your Docara project was initialized successfully.');
+            ->comment("Package-owned state: files={$result['engine_files']}, sha256={$result['engine_sha256']}")
+            ->info('Your Docara project was initialized successfully.');
 
         return self::SUCCESS;
     }

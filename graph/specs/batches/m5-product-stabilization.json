@@ -17,7 +17,8 @@
   ],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/INDEX.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.1-RECOVERY.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.1-RECOVERY.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.2-M5.3-PORTABLE-UPDATE.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.m5.acceptance",
@@ -25,5 +26,5 @@
   "forbidden_scope": ["Independent acceptance", "Framework producer change", "Merge", "Tag", "Release", "Deploy"],
   "checks": ["Empty init", "Update preview/apply/rollback", "Preservation matrix", "Consumer dependency tuple", "Full/single parity", "Security and browser matrix"],
   "status": "in_progress",
-  "next_action": "implement_machine_readable_ownership_and_immutable_install_contract"
+  "next_action": "bind_build_receipts_and_prove_failed_partial_output_preservation"
 }

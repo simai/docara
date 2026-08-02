@@ -2,17 +2,18 @@ schema_version: 1
 goal: docara.goal.unified
 branch: codex/docara-unified-architecture
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: m5_product_stabilization_in_progress
+state: m5_candidate_ready_for_independent_acceptance
 current_stage: docara.stage.m5.acceptance
-current_batch: docara.batch.m5.stabilize
-next_action: implement_portable_ownership_and_transactional_update_contract
+current_batch: docara.batch.m5.accept
+next_action: independently_accept_exact_exported_archive_without_candidate_mutation
 source_of_truth:
   human: docs/specification/README.md
   machine: graph/graph.json
   start: source/handoff/docara-unified-architecture/START.md
 readiness:
   architecture_contract: accepted
-  implementation: m5_stabilization_in_progress
+  implementation: m5_stabilization_complete
+  architecture_acceptance: pending_independent_tester
   release: not_claimed
   production: not_claimed
 routing:

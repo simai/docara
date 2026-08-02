@@ -26,10 +26,10 @@
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
   "implementation_state": {
-    "current_stage": "docara.stage.m3.migration",
-    "completed_checkpoint": "m3_ru_components_integrated_acceptance",
-    "next_action": "independent_review_or_separately_authorized_next_stage",
-    "evidence": "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md"
+    "current_stage": "docara.stage.m5.acceptance",
+    "completed_checkpoint": "m5_product_stabilization_candidate",
+    "next_action": "independent_exact_archive_acceptance_without_candidate_mutation",
+    "evidence": "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/INDEX.md"
   },
   "routing_gap": {
     "status": "recorded",

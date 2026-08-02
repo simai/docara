@@ -714,3 +714,34 @@ Status: PASS_WITH_NONCLAIMS; M4 is complete
 M5 exact-archive acceptance is now ready but not executed. Other locales,
 release and production remain unclaimed. No merge, push, tag, release or deploy
 was performed.
+
+# M5 product stabilization result
+
+Status: IMPLEMENTATION PASS; independent exact-archive acceptance pending
+
+- portable `init` creates a clean project without Node.js and records explicit
+  engine/project/generated ownership plus immutable package, dependency and
+  Framework provenance;
+- `update` has machine-readable verify/dry-run/diff, explicit atomic apply and
+  validated rollback; dirty, unknown, conflicting, stale, symlinked or corrupt
+  states fail before mutation and project-owned files are never update targets;
+- an exported Composer ZIP installs as dist into a clean consumer whose lock
+  resolves the exact candidate revision; the installed CLI works from the
+  separately initialized project directory;
+- full and isolated builds share one PageBuilder, typed in-memory IR, renderer
+  registry and Smart gateway; failed isolated compilation preserves all
+  accepted output and receipts;
+- 103/103 public routes reproduce their full-build HTML, two 305-file builds
+  are byte-identical, and static verification reports 21,440 references with
+  zero broken;
+- full PHPUnit passes 376 tests and 6,045 assertions; Pint, PHP lint, JSON,
+  YAML, Composer, graph and diff checks pass;
+- minimal EN LTR and AR RTL fixtures, security policy, browser/a11y matrix and
+  the one-Markdown author workflow pass without claiming full translations;
+- final evidence:
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/INDEX.md`.
+
+`docara.batch.m5.stabilize` is complete. `docara.batch.m5.accept` is now ready
+for a separate tester-owned read-only run. The global architecture acceptance
+gate remains open; merge, push, tag, release and deploy remain unclaimed and
+unauthorized.

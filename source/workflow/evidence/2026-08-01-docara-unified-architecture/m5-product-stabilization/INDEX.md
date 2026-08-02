@@ -1,6 +1,6 @@
 # M5 product stabilization evidence
 
-Goal status: `in_progress`
+Goal status: `implementation_complete_pending_independent_acceptance`
 
 Input revision: `900c688fbf320a8e893b4d97838c611526c2a0d8`
 
@@ -14,13 +14,13 @@ Input revision: `900c688fbf320a8e893b4d97838c611526c2a0d8`
 | M5.4 build/diagnostics/architecture | PASS | [M5.4-BUILD-AND-COMPONENT-CONTOUR.md](M5.4-BUILD-AND-COMPONENT-CONTOUR.md) |
 | M5.5 locale/security/accessibility | PASS | [M5.5-LOCALE-SECURITY-ACCESSIBILITY.md](M5.5-LOCALE-SECURITY-ACCESSIBILITY.md) |
 | M5.6 author workflow/documentation | PASS | [M5.6-AUTHOR-WORKFLOW-AND-DOCUMENTATION.md](M5.6-AUTHOR-WORKFLOW-AND-DOCUMENTATION.md) |
-| M5.7 candidate verification/handoff | pending | — |
+| M5.7 candidate verification/handoff | PASS | [M5.7-CANDIDATE-VERIFICATION.md](M5.7-CANDIDATE-VERIFICATION.md) |
 
 Evidence is exact-revision and command bound. Generated output and screenshots
 are evidence only, never source of truth.
 
 ## Nonclaims
 
-- implementation candidate is not yet complete;
+- implementation candidate is complete but not independently accepted;
 - read-only independent M5 acceptance is not performed here;
 - release and production readiness are not claimed.

@@ -1,7 +1,8 @@
 # Дорожная карта упрощения Docara
 
-Статус: M0-M4 завершены с evidence; M5 product stabilization выполняется перед
-отдельной read-only acceptance. Другие локали, release и production не заявлены
+Статус: M0-M4 и M5 product stabilization завершены с evidence; отдельная
+read-only exact-archive acceptance готова к запуску. Другие локали, release и
+production не заявлены
 
 Переход выполняется вертикальными срезами. Цель — не переписать весь код за
 один раз, а доказать новый единственный конвейер на одной реальной странице,
@@ -126,8 +127,8 @@ zero-reference evidence.
 
 ## M5. Стабилизировать публичный продукт
 
-Статус: implementation batch активен; независимый acceptance batch остаётся
-заблокированным до exact clean candidate.
+Статус: implementation batch завершён; exact clean candidate передан в
+отдельный tester-owned acceptance batch, который ещё не выполнен.
 
 Результат:
 

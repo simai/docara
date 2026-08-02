@@ -11,11 +11,15 @@
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/architecture/UNIFIED-ARCHITECTURE.md"],
-  "evidence_refs": [],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.7-CANDIDATE-VERIFICATION.md"
+  ],
   "profile_refs": ["docara.unified"],
   "metric_type": "coverage",
   "scale": "0..100 percent",
   "calculation": "unified_pipeline_routes / all_public_routes",
   "target": 100,
+  "observed": 100,
+  "observed_counts": {"unified_pipeline_routes": 103, "all_public_routes": 103},
   "unknown_policy": "show_unknown_not_zero"
 }

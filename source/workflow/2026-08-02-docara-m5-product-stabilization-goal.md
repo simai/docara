@@ -1,6 +1,6 @@
 # M5 product stabilization implementation goal
 
-Status: `in_progress`
+Status: `implementation_complete_pending_independent_acceptance`
 
 Input revision: `900c688fbf320a8e893b4d97838c611526c2a0d8`
 
@@ -111,11 +111,16 @@ Evidence:
 
 ### M5.7 Candidate verification and handoff
 
+Status: `PASS`
+
 - build an exported Composer archive and install a disposable consumer against
   the immutable dependency contract;
 - run update/full/single/static/security/browser/quality matrices;
 - update acceptance, graph, mappings, handoff and exact evidence;
 - leave a clean candidate ready for read-only `docara.batch.m5.accept`.
+
+Evidence:
+`source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.7-CANDIDATE-VERIFICATION.md`.
 
 ## Risk map
 

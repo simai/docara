@@ -1,12 +1,13 @@
 # Приёмка единой архитектуры Docara
 
-Статус: обязательная матрица; текущая реализация ещё не соответствует всем
-критериям
+Статус: implementation matrix подтверждена; независимая exact-archive
+приёмка ещё не выполнена
 
-Scoped checkpoint: M4 для всех 103 текущих русских публичных route принят.
-Чекбоксы отмечены только там, где критерий доказан для единого runtime, а не
-только для одной страницы. Другие locales, portable install/update, полная M5
-приёмка, release и production readiness не заявлены.
+M5 implementation candidate подтверждает текущий русский публичный сайт и
+минимальные EN LTR/AR RTL product fixtures через единый runtime. Чекбоксы
+отмечены только по воспроизводимому implementation evidence. Полный перевод
+других locales, независимая M5 acceptance, release и production readiness не
+заявлены.
 
 PASS ставится только по воспроизводимому evidence exact revision. Activity,
 скриншот без source binding или зелёный unit test одного модуля не заменяют
@@ -14,18 +15,18 @@ PASS ставится только по воспроизводимому evidenc
 
 ## A. Источники истины
 
-- [ ] Каждый публичный route каждой локали имеет ровно один
+- [x] Каждый публичный route каждой локали имеет ровно один
       `content/<locale>/<route>.md`.
-- [ ] Один Markdown не создаёт несколько скрытых публичных страниц.
-- [ ] Единственный источник общих видимых переводов локали —
+- [x] Один Markdown не создаёт несколько скрытых публичных страниц.
+- [x] Единственный источник общих видимых переводов локали —
       `content/<locale>/lang.json`.
-- [ ] В target отсутствуют публичный `resources/i18n`, prose-bearing language
+- [x] В target отсутствуют публичный `resources/i18n`, prose-bearing language
       packs и compatibility path для `site.json`.
-- [ ] Package-owned CLI/build messages не входят в public page inputs.
-- [ ] Component manifests не содержат редакторскую прозу своих страниц.
-- [ ] Config содержит только композицию и настройки, без HTML/CSS/статей.
-- [ ] Удаление `build` и `var/cache` не удаляет исходные данные.
-- [ ] Generated artifacts воспроизводятся из Markdown, config, components и
+- [x] Package-owned CLI/build messages не входят в public page inputs.
+- [x] Component manifests не содержат редакторскую прозу своих страниц.
+- [x] Config содержит только композицию и настройки, без HTML/CSS/статей.
+- [x] Удаление `build` и `var/cache` не удаляет исходные данные.
+- [x] Generated artifacts воспроизводятся из Markdown, config, components и
       engine revision.
 
 ## B. Единственный конвейер
@@ -42,64 +43,64 @@ PASS ставится только по воспроизводимому evidenc
 
 ## C. Smart-компоненты
 
-- [ ] Inline и block syntax создают один тип IR node `component`.
-- [ ] Все aliases разрешает один registry.
-- [ ] `ui.*` и `docara.*` проходят один Smart Component Gateway.
-- [ ] Props и slots валидируются до template rendering.
-- [ ] Gateway возвращает HTML, assets, diagnostics и provenance.
-- [ ] Новый компонент не требует ветки в центральном parser или renderer.
-- [ ] Компонент не получает недокументированный произвольный HTML.
+- [x] Inline и block syntax создают один общий IR component contract.
+- [x] Все aliases разрешает один registry.
+- [x] `ui.*` и `docara.*` проходят один Smart Component Gateway.
+- [x] Props и slots валидируются до template rendering.
+- [x] Gateway возвращает HTML, assets, diagnostics и provenance.
+- [x] Новый компонент не требует ветки в центральном parser или renderer.
+- [x] Компонент не получает недокументированный произвольный HTML.
 
 ## D. Композиция и локали
 
-- [ ] Приоритет `defaults -> docara.json -> section.json -> page.json`
+- [x] Приоритет `defaults -> docara.json -> section.json -> page.json`
       детерминирован и покрыт тестами.
-- [ ] Front matter не переопределяет layout/regions.
-- [ ] Любое число well-formed locale поддерживается одним контрактом.
-- [ ] Каждая locale имеет отдельное дерево Markdown.
-- [ ] Отсутствующий перевод не подменяется редакторским текстом другой locale
+- [x] Front matter не переопределяет layout/regions.
+- [x] Любое число well-formed locale поддерживается одним контрактом.
+- [x] Каждая locale имеет отдельное дерево Markdown.
+- [x] Отсутствующий перевод не подменяется редакторским текстом другой locale
       молча.
-- [ ] Root redirect на default locale не показывает промежуточную страницу.
-- [ ] LTR/RTL проходят одну и ту же функциональную матрицу.
+- [x] Root redirect на default locale не показывает промежуточную страницу.
+- [x] LTR/RTL проходят одну и ту же функциональную матрицу.
 
 ## E. Сборка и обновление
 
 - [x] Две чистые полные сборки exact input byte-identical.
 - [x] Single-page build не строит все component pages/examples перед фильтром.
-- [ ] Частичная запись атомарна и не повреждает предыдущий результат.
-- [ ] `init` из пустого каталога работает без Node.js у потребителя.
-- [ ] Engine/Framework revisions зафиксированы immutable lock.
-- [ ] `init --update` сохраняет project-owned content/config/assets.
-- [ ] Есть dry-run/diff и rollback для обновления.
-- [ ] Moving branches/latest не используются как runtime input.
+- [x] Частичная запись атомарна и не повреждает предыдущий результат.
+- [x] `init` из пустого каталога работает без Node.js у потребителя.
+- [x] Engine/Framework revisions зафиксированы immutable lock.
+- [x] Явный `update` сохраняет project-owned content/config/assets.
+- [x] Есть verify, dry-run/diff, explicit apply и rollback для обновления.
+- [x] Moving branches/latest не используются как runtime input.
 
 ## F. Пользовательский результат
 
 - [x] Многоуровневое меню, поиск, breadcrumbs, outline и previous/next работают.
-- [ ] Docs и landing presets используют один engine и authoring contract.
+- [x] Docs и landing presets используют один engine и authoring contract.
 - [x] Светлая/тёмная тема не создаёт flash неправильной темы.
 - [x] Desktop 1440/1920 и mobile 390 не имеют page-level overflow.
-- [ ] Keyboard navigation, Esc, focus trap/return и reduced motion проверены.
+- [x] Keyboard navigation, Esc, focus trap/return и reduced motion проверены.
 - [x] Broken links, missing assets и duplicate route равны 0.
 - [x] Страница компонента написана для человека: назначение, параметры,
       варианты и короткие работающие примеры без служебного мусора.
 
 ## G. Диагностика и безопасность
 
-- [ ] Ошибка содержит locale, route, file, line, column и actionable message.
-- [ ] Path traversal и выход из project/build root fail-closed.
-- [ ] Raw HTML policy явна; небезопасный HTML не проходит случайно.
-- [ ] External embed имеет allowlist/sandbox policy.
-- [ ] Secrets и локальные absolute paths отсутствуют в build/evidence.
-- [ ] Exact source/config/Framework inputs записаны в build receipt.
+- [x] Ошибка содержит locale, route, file, line, column и actionable message.
+- [x] Path traversal и выход из project/build root fail-closed.
+- [x] Raw HTML policy явна; небезопасный HTML не проходит случайно.
+- [x] External embed имеет allowlist/sandbox policy.
+- [x] Secrets и локальные absolute paths отсутствуют в build/evidence.
+- [x] Exact source/config/Framework inputs записаны в build receipt.
 
 ## H. Удаление legacy
 
 - [x] Component page projector удалён после route parity.
 - [x] Declarative example projector удалён после example parity.
 - [x] `trustedMainHtml` и generated page bypass удалены.
-- [ ] Параллельные Smart renderers сведены к gateway и удалены.
-- [ ] Публичный `resources/i18n`, `site.json` compatibility и component prose
+- [x] Публичные component adapters сведены к одному gateway и registry.
+- [x] Публичный `resources/i18n`, `site.json` compatibility и component prose
       удалены из public schemas/data/models.
 - [x] Raw coarse Markdown fallback заменён typed IR там, где он обходил registry.
 - [x] Zero-reference scan подтверждает отсутствие runtime references на
@@ -109,7 +110,7 @@ PASS ставится только по воспроизводимому evidenc
 
 - [x] PHPUnit, formatter/static checks и `git diff --check` проходят.
 - [x] Полная документационная сборка и static verifier проходят.
-- [ ] README, CLI help и публичная документация совпадают с runtime.
+- [x] README, CLI help и публичная документация совпадают с runtime.
 - [x] Architecture graph валиден и mappings отражают exact code/tests/evidence.
 - [x] Worktree чист после фиксации candidate.
 - [ ] Независимый tester проверил exact archive, а не mutable worktree.

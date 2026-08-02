@@ -44,8 +44,6 @@ final class FrameworkNativeSurfaceTest extends TestCase
             $root . '/src/PortableSite/PortableMarkdownRenderer.php',
             $root . '/resources/previews/templates/index.php',
             $root . '/resources/previews/templates/page.php',
-            $root . '/resources/demonstrator/templates/index.php',
-            $root . '/resources/demonstrator/templates/detail.php',
         ];
 
         foreach ($sources as $source) {

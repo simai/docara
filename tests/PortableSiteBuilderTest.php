@@ -260,9 +260,9 @@ final class PortableSiteBuilderTest extends TestCase
         $shellRuntime = (string) file_get_contents(
             $this->tmpPath('build_local/_docara/declarative-shell.js'),
         );
-        self::assertStringContainsString("template[data-docara-embed-template]", $shellRuntime);
+        self::assertStringContainsString('template[data-docara-embed-template]', $shellRuntime);
         self::assertStringContainsString('iframe.src=iframe.dataset.src', $shellRuntime);
-        self::assertStringContainsString("[data-docara-tree-toggle]", $shellRuntime);
+        self::assertStringContainsString('[data-docara-tree-toggle]', $shellRuntime);
         self::assertStringContainsString("event.key==='ArrowLeft'", $shellRuntime);
         self::assertStringContainsString("event.key==='ArrowRight'", $shellRuntime);
         self::assertStringContainsString('[data-docara-tree-toggle]+ul[hidden]{display:none}', $shellCss);

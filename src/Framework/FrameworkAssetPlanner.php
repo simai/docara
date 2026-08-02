@@ -30,8 +30,7 @@ final readonly class FrameworkAssetPlanner
     public function plan(
         array $componentKeys,
         array $additionalRuntimeTags = [],
-    ): FrameworkAssetPlan
-    {
+    ): FrameworkAssetPlan {
         $runtime = $this->repository->runtime();
         $uiCommit = (string) $runtime['ui']['commit'];
         $smartCommit = (string) $runtime['ui_smart']['commit'];

@@ -44,6 +44,7 @@ final class AuthoringAttributeParser
                     $character = $source[$offset++];
                     if ($character === '\\' && $offset < $length) {
                         $value .= $source[$offset++];
+
                         continue;
                     }
                     if ($character === $quote) {

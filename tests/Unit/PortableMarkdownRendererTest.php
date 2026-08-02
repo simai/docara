@@ -30,6 +30,7 @@ final class PortableMarkdownRendererTest extends TestCase
             ":::internal_preview {title=\"Unsafe\"}\n[Открыть](https://example.com/)\n:::\n",
         );
     }
+
     #[Test]
     public function it_renders_markdown_and_multifile_examples_as_one_tabbed_surface(): void
     {

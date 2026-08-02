@@ -9,8 +9,8 @@ use Simai\Docara\Portable\PortableConfigurationException;
 final class AuthoredComponentPageIndex
 {
     /**
-     * @param array<string, mixed> $catalog
-     * @param list<array<string, mixed>> $pages
+     * @param  array<string, mixed>  $catalog
+     * @param  list<array<string, mixed>>  $pages
      * @return array<string, array{
      *     id: string,
      *     slug: string,

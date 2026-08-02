@@ -87,4 +87,4 @@ $snapshot = [
 ];
 $json = json_encode($snapshot, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
 file_put_contents($root . '/resources/component-catalog/source-metadata.json', $json);
-fwrite(STDOUT, "Captured " . count($entries) . " component source records at $revision.\n");
+fwrite(STDOUT, 'Captured ' . count($entries) . " component source records at $revision.\n");

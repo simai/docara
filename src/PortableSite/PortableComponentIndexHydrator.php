@@ -7,8 +7,8 @@ namespace Simai\Docara\PortableSite;
 final class PortableComponentIndexHydrator
 {
     /**
-     * @param list<array<string, mixed>> $pages
-     * @param array<string, list<array{url:string,title:string,description:string}>> $indexes
+     * @param  list<array<string, mixed>>  $pages
+     * @param  array<string, list<array{url:string,title:string,description:string}>>  $indexes
      * @return list<array<string, mixed>>
      */
     public function hydrate(array $pages, array $indexes): array
@@ -28,7 +28,7 @@ final class PortableComponentIndexHydrator
     }
 
     /**
-     * @param list<array<string, mixed>> $pages
+     * @param  list<array<string, mixed>>  $pages
      * @return list<array{url:string,title:string,description:string}>
      */
     public function index(array $pages, string $catalogRoute): array

@@ -711,7 +711,6 @@ final class StaticBuildVerifierTest extends TestCase
         );
     }
 
-
     #[Test]
     public function redirect_receipts_and_redirect_html_are_verified_fail_closed(): void
     {

@@ -269,8 +269,7 @@ final readonly class EffectiveComponentCatalogBuilder
         string $version,
         string $sourceRef,
         ComponentSourceMetadataRepository $sourceMetadata,
-    ): array
-    {
+    ): array {
         $capabilities = array_values(array_map(
             'strval',
             is_array($entry['authoring']['jobs'] ?? null)

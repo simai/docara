@@ -480,8 +480,7 @@ final class PortableMarkdownRenderer
         array $attributes,
         ?string $sourceRoot,
         ?string $sourceFile,
-    ): string
-    {
+    ): string {
         $this->assertAttributes($attributes, ['label'], 'example');
         $label = trim($attributes['label'] ?? 'Example');
         if ($label === '') {

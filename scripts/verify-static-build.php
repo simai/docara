@@ -2577,8 +2577,8 @@ if ($manifestError === null) {
                 'reference' => '@component-catalog-contract',
                 'target' => $exception->getMessage(),
             ];
+        }
     }
-}
 
     try {
         $componentIndexReceiptPath = $root . '/.docara/component-index.json';

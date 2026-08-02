@@ -1,0 +1,22 @@
+{
+  "id": "docara.batch.r2.prepare_deployment",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "R2. Production-readiness dossier",
+  "summary": "Prove the accepted exact package in production-like disposable contours and prepare an atomic cutover/rollback dossier without touching the live site.",
+  "owner": "ops",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-02-docara-r2-production-readiness.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-r2-production-readiness/INDEX.md"],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.r2.production_readiness",
+  "allowed_scope": ["Repository governance and release dossier", "Read-only docara.test inventory", "Disposable package/consumer/HTTP/browser/cutover mirrors"],
+  "forbidden_scope": ["Write to /Users/rim/Sites/docara.test", "Caddy reload", "Merge", "Push", "Tag", "Publication", "Release", "Deploy"],
+  "checks": ["Exact artifact", "Compatibility and security", "103-route HTTP/browser", "Current-candidate delta", "Atomic mirror cutover and exact rollback"],
+  "status": "governance_and_inventory",
+  "next_action": "exact_package_and_runtime_inventory"
+}

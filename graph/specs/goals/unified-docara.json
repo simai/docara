@@ -51,7 +51,8 @@
     "docara.stage.m3.migration",
     "docara.stage.m4.retirement",
     "docara.stage.m5.acceptance",
-    "docara.stage.r1.release_readiness"
+    "docara.stage.r1.release_readiness",
+    "docara.stage.r2.production_readiness"
   ],
   "metric_refs": [
     "docara.metric.public_markdown_ownership",

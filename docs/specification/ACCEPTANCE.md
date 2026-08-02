@@ -1,9 +1,9 @@
 # Приёмка единой архитектуры Docara
 
-Статус: `CORRECTION_CANDIDATE_READY_FOR_INDEPENDENT_RETEST`. R1-C executor
-устранил semantic drift и собрал новый exact ZIP. Старый R1 artifact остаётся
-superseded; tester-owned local release readiness, release и production gates
-закрыты до отдельной перепроверки.
+Статус: `LOCAL_RELEASE_CANDIDATE_ACCEPTED`. Независимый reverse-outcome audit
+принял R1-C с verdict `PASS_WITH_NOTES` и повторно воспроизвёл exact ZIP.
+Старый R1 artifact остаётся superseded; release, live cutover и production
+gates закрыты до R2 dossier и отдельного решения пользователя.
 
 M5 implementation candidate подтверждает текущий русский публичный сайт и
 минимальные EN LTR/AR RTL product fixtures через единый runtime. Чекбоксы
@@ -114,11 +114,12 @@ PASS ставится только по воспроизводимому evidenc
 - [x] README, CLI help и публичная документация совпадают с runtime.
 - [x] Architecture graph валиден и mappings отражают exact code/tests/evidence.
 - [x] Worktree чист после фиксации candidate.
-- [ ] Независимый tester проверил новый исправленный exact archive, а не
+- [x] Независимый tester проверил новый исправленный exact archive, а не
       mutable worktree или superseded artifact.
 
 ## Итоговый release gate
 
-Завершение этого списка означает готовность архитектурного кандидата к
-отдельному release review. Оно не создаёт автоматически tag, release,
-default-branch merge или production deployment.
+Этот список подтверждает локальный exact release candidate source `56a2abf8…`
+и ZIP `04c18c95…`. Он не создаёт автоматически tag, release, default-branch
+merge или production deployment. Эти действия требуют отдельного R2
+production dossier и явного пользовательского approval.

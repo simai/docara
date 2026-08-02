@@ -835,3 +835,27 @@ The old `83afd355…` artifact remains immutable and superseded. The new
 `04c18c95…` artifact is the only current independent-retest target. The
 tester-owned local release-readiness gate is not passed here; merge, push, tag,
 release, publication and deploy were not performed.
+
+# R1-C independent acceptance and R2 opening
+
+Status: `PASS_WITH_NOTES`; local release candidate accepted
+
+The independent reverse-outcome audit reproduced exact source
+`56a2abf8bad05923f689141afc0bb045aa4d6734`, ZIP
+`04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753`
+and manifest `d709d27…`. The verifier passed 650 packaged files; PHPUnit passed
+390 tests and 6,024 assertions; the 103-route/305-file public build and 21,437
+static references had zero broken links. The retired public language-pack
+surface is absent from the artifact.
+
+Local release-readiness is therefore accepted. Planned version
+`2.0.0-rc.2`/tag `v2.0.0-rc.2` remain unpublished parameters. The only valid
+future tag target for this artifact is its source `56a2abf8…`; subsequent
+governance HEADs are dossier revisions, not alternate artifact sources.
+
+R2 is active at
+`source/workflow/2026-08-02-docara-r2-production-readiness.md`. It prepares a
+production-like exact-package matrix, current/candidate delta and disposable
+atomic cutover/rollback proof. `/Users/rim/Sites/docara.test` remains read-only.
+Release, tag, publication, live cutover and production are not authorized or
+claimed.

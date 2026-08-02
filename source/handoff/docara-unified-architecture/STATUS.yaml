@@ -2,10 +2,10 @@ schema_version: 1
 goal: docara.goal.unified
 branch: codex/docara-unified-architecture
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: r1c_candidate_ready_for_independent_retest
-current_stage: docara.stage.r1.release_readiness
-current_batch: docara.batch.r1.prepare
-next_action: independently_rebuild_and_retest_exact_r1c_candidate
+state: r2_production_readiness_active
+current_stage: docara.stage.r2.production_readiness
+current_batch: docara.batch.r2.prepare_deployment
+next_action: prove_exact_candidate_in_disposable_production_like_contours
 candidate_revision: 56a2abf8bad05923f689141afc0bb045aa4d6734
 candidate_archive_sha256: 04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753
 candidate_manifest_sha256: d709d27cc226a3833c05ca62271525dfe48042d967940eaa9e8b9ac6a7185669
@@ -19,9 +19,9 @@ readiness:
   architecture_contract: accepted
   implementation: m5_stabilization_complete
   architecture_acceptance: accepted_exact_m5_candidate
-  local_release_readiness: corrected_candidate_pending_independent_retest
-  release: blocked_until_r1c_exact_artifact_independent_retest
-  production: not_claimed
+  local_release_readiness: accepted_pass_with_notes
+  release: blocked_until_r2_and_explicit_user_approval
+  production: blocked_no_live_cutover_authorized
 routing:
   primary_domain: docara
   active_owner_fallback:

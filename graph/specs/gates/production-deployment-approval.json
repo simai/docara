@@ -1,0 +1,21 @@
+{
+  "id": "docara.gate.production_deployment_approval",
+  "schema_version": "1.0.0",
+  "kind": "gate",
+  "subtype": "production_gate",
+  "tz_role": "stage_gate",
+  "title": "Explicit approval for docara.test cutover",
+  "summary": "A live cutover is forbidden until R2 evidence is complete and the user explicitly chooses to deploy the exact candidate.",
+  "owner": "ops",
+  "lifecycle": "blocked",
+  "readiness": "R1_draft",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-02-docara-r2-production-readiness.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-r2-production-readiness/INDEX.md"],
+  "profile_refs": ["docara.unified"],
+  "pass_conditions": ["R2 production-like and rollback evidence passes", "One exact artifact and tag target are named", "User explicitly approves the live cutover", "Live preflight confirms backup, rollback, smoke and change window"],
+  "stop_conditions": ["Missing approval", "Artifact or digest drift", "Failed rollback proof", "Required-route or asset failure"],
+  "promotes_to": null,
+  "status": "closed_pending_r2_and_user_approval",
+  "nonclaims": ["This gate record is not approval.", "R2 performs no live write."]
+}

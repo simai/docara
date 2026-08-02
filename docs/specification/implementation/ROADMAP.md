@@ -1,9 +1,9 @@
 # Дорожная карта упрощения Docara
 
-Статус: R1-C implementation завершена и новый exact candidate готов к
-independent retest. Artifact `83afd355…` остаётся
-`superseded_after_audit`; текущий executor candidate — source `56a2abf8…`, ZIP
-`04c18c95…`. Local release readiness, release и production не заявлены.
+Статус: R1-C independently accepted с verdict `PASS_WITH_NOTES`. Artifact
+`83afd355…` остаётся `superseded_after_audit`; единственный принятый local
+release candidate — source `56a2abf8…`, ZIP `04c18c95…`. R2 готовит
+production dossier; tag, release и production не заявлены.
 
 Переход выполняется вертикальными срезами. Цель — не переписать весь код за
 один раз, а доказать новый единственный конвейер на одной реальной странице,
@@ -161,18 +161,28 @@ policy и security tests проходят. Эти положительные р�
 
 ## R1-C. Устранить semantic drift перед новым candidate
 
-Статус: executor implementation PASS; independent exact-artifact retest
-ожидается. Public `language_pack` удалён, public authoring docs и negative gates
-переписаны, front matter/missing-page contracts работают, ссылки внутри ZIP
-проверяются, новый immutable artifact воспроизводим. Recovery source:
+Статус: independently accepted `PASS_WITH_NOTES`. Public `language_pack`
+удалён, public authoring docs и negative gates переписаны, front
+matter/missing-page contracts работают, ссылки внутри ZIP проверяются, новый
+immutable artifact независимо воспроизведён. Evidence source:
 `source/workflow/2026-08-02-docara-r1c-semantic-correction-goal.md`.
+
+## R2. Подготовить production-readiness dossier
+
+Статус: выполняется без live cutover. R2 повторяет exact package в disposable
+production-like consumer, закрывает совместимость/security, классифицирует
+current/candidate delta и проверяет same-filesystem atomic rename/rollback на
+зеркале. Будущий planned tag однозначно относится к source `56a2abf8…`, потому
+что именно этот SHA записан в принятом artifact manifest; последующие
+governance commits являются dossier, а не подменой release source.
 
 ## Порядок продолжения
 
-Текущий recovery source — R1-C workflow и evidence index. M0–M5 и прежний R1
-не переигрываются; старый R1 ZIP остаётся immutable negative baseline. Сейчас
-требуется отдельный independent exact-archive retest source `56a2abf8…` / ZIP
-`04c18c95…`, затем только user-approved release action.
+Текущий recovery source —
+`source/workflow/2026-08-02-docara-r2-production-readiness.md`. M0–M5 и прежний
+R1 не переигрываются; старый R1 ZIP остаётся immutable negative baseline.
+После R2 единственным следующим шагом может быть отдельное user-approved
+развёртывание exact artifact на `docara.test`.
 
 ## Запрещённые сокращения
 

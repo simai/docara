@@ -26,10 +26,10 @@
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
   "implementation_state": {
-    "current_stage": "docara.stage.r1.release_readiness",
-    "completed_checkpoint": "r1c_executor_implementation_complete",
-    "next_action": "independent_exact_artifact_retest_56a2abf8",
-    "evidence": "source/workflow/evidence/2026-08-02-docara-r1c-semantic-correction/INDEX.md"
+    "current_stage": "docara.stage.r2.production_readiness",
+    "completed_checkpoint": "r1c_independently_accepted_pass_with_notes",
+    "next_action": "r2_exact_package_and_production_like_evidence",
+    "evidence": "source/workflow/evidence/2026-08-02-docara-r2-production-readiness/INDEX.md"
   },
   "routing_gap": {
     "status": "recorded",

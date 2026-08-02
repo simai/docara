@@ -28,7 +28,7 @@
   "exact_candidate": {
     "source_revision": "56a2abf8bad05923f689141afc0bb045aa4d6734",
     "archive_sha256": "04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753",
-    "independent_retest": "pending"
+    "independent_retest": "accepted_pass_with_notes"
   },
-  "next_action": "tester_owned_exact_artifact_retest"
+  "next_action": "r2_production_readiness_dossier"
 }

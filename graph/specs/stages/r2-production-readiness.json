@@ -1,0 +1,23 @@
+{
+  "id": "docara.stage.r2.production_readiness",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "milestone",
+  "tz_role": "implementation_stage",
+  "title": "R2. Production readiness без live cutover",
+  "summary": "Prepare exact-package, compatibility, browser, delta and atomic rollback evidence so the only remaining decision is whether to deploy.",
+  "owner": "teamlead",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-02-docara-r2-production-readiness.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-r2-production-readiness/INDEX.md"],
+  "profile_refs": ["docara.unified"],
+  "parent_goal_ref": "docara.goal.unified",
+  "done_when": ["Exact artifact passes production-like disposable consumer and HTTP/browser matrices.", "Current/candidate delta is classified.", "Disposable atomic cutover and exact rollback pass.", "Production gate remains closed until explicit user approval."],
+  "batch_refs": ["docara.batch.r2.prepare_deployment"],
+  "required_gates": ["docara.gate.local_release_readiness", "docara.gate.production_deployment_approval"],
+  "required_evidence": ["Accepted R1-C audit", "Compatibility/security matrix", "HTTP/browser matrix", "Delta classification", "Mirror cutover/rollback proof"],
+  "next_stage_ref": null,
+  "status": "active_governance_and_inventory"
+}

@@ -6,7 +6,7 @@
     "docs/specification/README.md"
   ],
   "generated_at": "2026-08-02",
-  "status": "r1c_candidate_ready_for_independent_retest",
+  "status": "r2_production_readiness_active",
   "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7",
   "candidate_revision": "56a2abf8bad05923f689141afc0bb045aa4d6734",
   "candidate_archive_sha256": "04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753",
@@ -23,10 +23,12 @@
     "One PageBuilder pipeline for full and page builds; only the selected route set differs.",
     "Delete unpublished legacy after evidence; do not preserve it by default."
   ],
-  "current_stage": "docara.stage.r1.release_readiness",
-  "current_batch": "docara.batch.r1.prepare",
-  "next_action": "Independently rebuild and retest source 56a2abf8 and expected ZIP 04c18c95; do not use the superseded artifact.",
+  "planned_tag_target": "56a2abf8bad05923f689141afc0bb045aa4d6734",
+  "governance_head_at_r2_start": "f50ce3c816867936f7697af8413120259c023089",
+  "current_stage": "docara.stage.r2.production_readiness",
+  "current_batch": "docara.batch.r2.prepare_deployment",
+  "next_action": "Prove the accepted exact artifact in production-like disposable contours and prepare atomic cutover/rollback without touching docara.test.",
   "verified_compatibility": ["macOS PHP 8.4.20"],
-  "unverified_compatibility": ["PHP 8.2 exact R1-C candidate cell", "PHP 8.3 local cell", "complete Linux matrix"],
+  "unverified_compatibility": ["PHP 8.3 exact R2 cell", "complete Linux matrix"],
   "forbidden_now": ["claiming complete other-locale translation", "parallel engine or content registry", "main merge", "push", "tag", "release", "deploy", "stale Docara skill"]
 }

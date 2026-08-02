@@ -27,8 +27,8 @@
   },
   "implementation_state": {
     "current_stage": "docara.stage.r2.production_readiness",
-    "completed_checkpoint": "r1c_independently_accepted_pass_with_notes",
-    "next_action": "r2_exact_package_and_production_like_evidence",
+    "completed_checkpoint": "r2_production_readiness_pass_disposable",
+    "next_action": "explicit_user_decision_deploy_or_do_not_deploy_docara_test",
     "evidence": "source/workflow/evidence/2026-08-02-docara-r2-production-readiness/INDEX.md"
   },
   "routing_gap": {

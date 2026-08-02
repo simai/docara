@@ -3,7 +3,8 @@
 Статус: `LOCAL_RELEASE_CANDIDATE_ACCEPTED`. Независимый reverse-outcome audit
 принял R1-C с verdict `PASS_WITH_NOTES` и повторно воспроизвёл exact ZIP.
 Старый R1 artifact остаётся superseded; release, live cutover и production
-gates закрыты до R2 dossier и отдельного решения пользователя.
+gates закрыты до отдельного решения пользователя. R2 production dossier
+выполнен в disposable контуре; live cutover не выполнялся.
 
 M5 implementation candidate подтверждает текущий русский публичный сайт и
 минимальные EN LTR/AR RTL product fixtures через единый runtime. Чекбоксы
@@ -117,9 +118,22 @@ PASS ставится только по воспроизводимому evidenc
 - [x] Независимый tester проверил новый исправленный exact archive, а не
       mutable worktree или superseded artifact.
 
+## J. R2 production dossier
+
+- [x] Exact ZIP повторно проверен и установлен как dist без package `.git`.
+- [x] Fresh consumers проходят macOS/PHP 8.4, macOS/PHP 8.3 и Linux/PHP 8.3.
+- [x] Production-like HTTP smoke проходит 103/103 canonical routes.
+- [x] Exact current/candidate tree digests и полный path delta записаны.
+- [x] Same-filesystem cutover и exact rollback доказаны в disposable mirror.
+- [x] Caddy root, TLS health, retention, smoke и stop thresholds записаны.
+- [ ] Пользователь явно разрешил live cutover `docara.test`.
+- [ ] Live preflight повторно подтвердил current/candidate digests и окно.
+- [ ] Live cutover, post-cutover smoke и production acceptance выполнены.
+
 ## Итоговый release gate
 
 Этот список подтверждает локальный exact release candidate source `56a2abf8…`
 и ZIP `04c18c95…`. Он не создаёт автоматически tag, release, default-branch
 merge или production deployment. Эти действия требуют отдельного R2
-production dossier и явного пользовательского approval.
+production dossier уже подготовлен, но production action всё ещё требует
+явного пользовательского approval.

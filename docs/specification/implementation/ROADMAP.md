@@ -169,11 +169,12 @@ immutable artifact независимо воспроизведён. Evidence sou
 
 ## R2. Подготовить production-readiness dossier
 
-Статус: выполняется без live cutover. R2 повторяет exact package в disposable
-production-like consumer, закрывает совместимость/security, классифицирует
-current/candidate delta и проверяет same-filesystem atomic rename/rollback на
-зеркале. Будущий planned tag однозначно относится к source `56a2abf8…`, потому
-что именно этот SHA записан в принятом artifact manifest; последующие
+Статус: implementation PASS без live cutover. Exact package прошёл fresh dist
+consumer на macOS/PHP 8.4, macOS/PHP 8.3 и Linux/PHP 8.3, HTTP/browser/security
+матрицы, а текущий и candidate каталоги полностью классифицированы. В
+disposable same-filesystem mirror доказаны cutover, 103-route smoke и exact
+rollback. Будущий planned tag однозначно относится к source `56a2abf8…`,
+потому что именно этот SHA записан в принятом artifact manifest; последующие
 governance commits являются dossier, а не подменой release source.
 
 ## Порядок продолжения
@@ -181,8 +182,9 @@ governance commits являются dossier, а не подменой release so
 Текущий recovery source —
 `source/workflow/2026-08-02-docara-r2-production-readiness.md`. M0–M5 и прежний
 R1 не переигрываются; старый R1 ZIP остаётся immutable negative baseline.
-После R2 единственным следующим шагом может быть отдельное user-approved
-развёртывание exact artifact на `docara.test`.
+После R2 единственный следующий шаг — решение пользователя: развернуть exact
+artifact на `docara.test` по готовому dossier либо оставить текущую публикацию.
+Без такого approval production gate остаётся закрытым.
 
 ## Запрещённые сокращения
 

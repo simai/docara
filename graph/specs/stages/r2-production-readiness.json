@@ -7,8 +7,8 @@
   "title": "R2. Production readiness без live cutover",
   "summary": "Prepare exact-package, compatibility, browser, delta and atomic rollback evidence so the only remaining decision is whether to deploy.",
   "owner": "teamlead",
-  "lifecycle": "active",
-  "readiness": "R2_contract",
+  "lifecycle": "complete",
+  "readiness": "R2_pass_disposable",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-02-docara-r2-production-readiness.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-r2-production-readiness/INDEX.md"],
@@ -19,5 +19,5 @@
   "required_gates": ["docara.gate.local_release_readiness", "docara.gate.production_deployment_approval"],
   "required_evidence": ["Accepted R1-C audit", "Compatibility/security matrix", "HTTP/browser matrix", "Delta classification", "Mirror cutover/rollback proof"],
   "next_stage_ref": null,
-  "status": "active_governance_and_inventory"
+  "status": "pass_awaiting_explicit_live_approval"
 }

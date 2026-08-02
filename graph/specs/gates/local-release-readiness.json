@@ -8,7 +8,7 @@
   "summary": "Independent reverse-outcome audit reproduced and accepted the corrected exact package with explicit compatibility notes.",
   "owner": "tester",
   "lifecycle": "accepted",
-  "readiness": "R2_contract",
+  "readiness": "R2_pass_disposable",
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-02-docara-r1-release-readiness-goal.md",
@@ -30,5 +30,5 @@
     "archive_sha256": "04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753"
   },
   "independent_checks": {"package_files": 650, "phpunit_tests": 390, "phpunit_assertions": 6024, "public_routes": 103, "static_references": 21437, "broken": 0},
-  "nonclaims": ["The 83afd355 artifact is superseded after audit.", "Local release-candidate acceptance does not authorize merge, push, tag, release, publication or deployment.", "Production compatibility and cutover remain owned by R2."]
+  "nonclaims": ["The 83afd355 artifact is superseded after audit.", "Local release-candidate acceptance does not authorize merge, push, tag, release, publication or deployment.", "R2 proves production-like compatibility and disposable cutover only; the live production gate remains closed."]
 }

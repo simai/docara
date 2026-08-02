@@ -6,7 +6,7 @@
     "docs/specification/README.md"
   ],
   "generated_at": "2026-08-02",
-  "status": "r2_production_readiness_active",
+  "status": "r2_complete_awaiting_explicit_deployment_decision",
   "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7",
   "candidate_revision": "56a2abf8bad05923f689141afc0bb045aa4d6734",
   "candidate_archive_sha256": "04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753",
@@ -27,8 +27,8 @@
   "governance_head_at_r2_start": "f50ce3c816867936f7697af8413120259c023089",
   "current_stage": "docara.stage.r2.production_readiness",
   "current_batch": "docara.batch.r2.prepare_deployment",
-  "next_action": "Prove the accepted exact artifact in production-like disposable contours and prepare atomic cutover/rollback without touching docara.test.",
-  "verified_compatibility": ["macOS PHP 8.4.20"],
-  "unverified_compatibility": ["PHP 8.3 exact R2 cell", "complete Linux matrix"],
+  "next_action": "Ask the user to deploy or not deploy the exact candidate to docara.test; if approved, repeat live preflight and execute the verified cutover/rollback dossier.",
+  "verified_compatibility": ["macOS PHP 8.4.20", "macOS PHP 8.3.31", "Debian bookworm PHP 8.3.33"],
+  "unverified_compatibility": ["live docara.test cutover and post-cutover production acceptance"],
   "forbidden_now": ["claiming complete other-locale translation", "parallel engine or content registry", "main merge", "push", "tag", "release", "deploy", "stale Docara skill"]
 }

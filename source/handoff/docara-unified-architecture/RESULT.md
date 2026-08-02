@@ -859,3 +859,36 @@ production-like exact-package matrix, current/candidate delta and disposable
 atomic cutover/rollback proof. `/Users/rim/Sites/docara.test` remains read-only.
 Release, tag, publication, live cutover and production are not authorized or
 claimed.
+
+# R2 production-readiness dossier result
+
+Status: `PASS_DISPOSABLE`; explicit live approval still required
+
+- exact source `56a2abf8bad05923f689141afc0bb045aa4d6734`, ZIP
+  `04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753`
+  and manifest `d709d27…` remain the only accepted candidate identity;
+- fresh dist consumers pass macOS/PHP 8.4.20, macOS/PHP 8.3.31 and Linux
+  Debian/PHP 8.3.33; package `.git` is absent;
+- the exact public candidate has 103 selected routes, 305 files, 206 HTML,
+  21,437 checked references and zero broken; two same-lock clean consumers
+  produce byte-identical tree `457790d4…`;
+- HTTP smoke passes 103/103 canonical routes; fresh 1920/1440/390,
+  light/dark, RU LTR and AR RTL browser evidence has zero console/page errors
+  and zero page overflow;
+- archive/package/security checks pass with zero advisories, unsafe archive
+  paths, private absolute paths or sampled secret signatures;
+- the read-only served baseline is 322 files/206 HTML with tree
+  `b98ea2f…`; exact SHA inventory classifies 112 changed, 19 removed and 2
+  added paths without losing a route or required asset;
+- the repository-owned fail-closed cutover helper passed current -> candidate
+  -> 103-route smoke -> rollback in a same-filesystem disposable mirror and
+  restored the exact current digest;
+- Caddy root/TLS health, retention proposal, release window, stop thresholds,
+  smoke and rollback commands are recorded in the deployment dossier;
+- evidence:
+  `source/workflow/evidence/2026-08-02-docara-r2-production-readiness/INDEX.md`.
+
+No file under `/Users/rim/Sites/docara.test`, no Caddy/service state and no
+existing backup/staging directory was changed. Merge, push, tag, publication,
+release and deploy were not performed. The only next action is the user's
+explicit choice whether to deploy this exact candidate to `docara.test`.

@@ -1,7 +1,7 @@
 # Goal 1-D — project context freshness correction
 
 Date: 2026-08-03
-Status: `in_progress`
+Status: `complete_ready_for_independent_audit`
 Repository: `/Users/rim/Documents/GitHub/docara-unified`
 Branch: `codex/docara-unified-architecture`
 Input revision: `65097a45b2a39ec8350c0f4a05f95dc7c9c80590`
@@ -49,9 +49,9 @@ independent decision record.
 | Batch | Work | Verification | Status |
 | --- | --- | --- | --- |
 | G1D-C1 | record stale R2/M1 router and canonical ownership | before semantic diff, action gates | pass |
-| G1D-C2 | deterministic project-context generator and synchronized handoff | positive/negative freshness tests | in progress |
-| G1D-C3 | full source/build/static/single/cross-host retest | exact commands and hashes | pending |
-| G1D-C4 | evidence, graph/handoff final state and clean commit | reverse-outcome review | pending |
+| G1D-C2 | deterministic project-context generator and synchronized handoff | positive/negative freshness tests | pass |
+| G1D-C3 | full source/build/static/single/cross-host retest | exact commands and hashes | pass |
+| G1D-C4 | evidence, graph/handoff final state and clean commit | reverse-outcome review | pass |
 
 ## Constraints And Stop Conditions
 

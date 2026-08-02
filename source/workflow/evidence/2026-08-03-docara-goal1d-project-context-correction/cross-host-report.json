@@ -1,0 +1,154 @@
+{
+    "schema": "docara.sf_cross_host_report.v3",
+    "source_revision": "b3cdff87563ff78e7eddf044048a4b298fc69036",
+    "contract": {
+        "contract_id": "sf.smart_artifact_abi",
+        "schema_version": "1.0.0",
+        "compatibility_id": "sf-smart-artifact-abi-v1",
+        "storage_compatibility_alias": "sf5.smart.artifact.v1"
+    },
+    "artifact": {
+        "path": "tests/fixtures/smart/portable/fixture.notice",
+        "tree_sha256": "eb6fd28f295c360fa80375beb21aba634c14d2466699ca55509b64ac39f2d058"
+    },
+    "docara": {
+        "html": "<aside data-fixture-notice data-view=\"default\" data-preset=\"compact\" data-slot=\"content\"><strong>Portable title</strong><p>Portable text</p></aside>",
+        "assets": [
+            "project.fixture.fixture.notice.css.notice.css",
+            "simai.ui"
+        ],
+        "hydration": {
+            "runtime": "portable-smart",
+            "smart": "fixture.notice",
+            "view": "default",
+            "owner": "project.fixture",
+            "asset_owner": "fixture.notice",
+            "hydration_owner": "fixture.notice",
+            "assets": [
+                "project.fixture.fixture.notice.css.notice.css",
+                "simai.ui"
+            ],
+            "render": {
+                "mode": "server-first",
+                "strategy": "server-static",
+                "template": "default",
+                "hydration": "none",
+                "domStrategy": "none",
+                "updateStrategy": "none",
+                "initialHtml": "complete",
+                "frontendOwnership": "none"
+            },
+            "template_abi": "sf5.smart.template.v1"
+        },
+        "provenance": {
+            "provider": "project.fixture",
+            "provider_revision": "fixture-revision-v1",
+            "contract_id": "sf.smart_artifact_abi",
+            "contract_schema_version": "1.0.0",
+            "contract_compatibility_id": "sf-smart-artifact-abi-v1",
+            "storage_compatibility_alias": "sf5.smart.artifact.v1",
+            "template_abi": "sf5.smart.template.v1"
+        },
+        "exit_code": 0,
+        "stderr": "",
+        "warnings": []
+    },
+    "sf5": {
+        "schemaVersion": "1.0",
+        "kind": "smart.render-result",
+        "html": "<aside data-fixture-notice data-view=\"default\" data-preset=\"compact\" data-slot=\"content\"><strong>Portable title</strong><p>Portable text</p></aside>",
+        "assets": {
+            "smart": [
+                "fixture.notice"
+            ],
+            "depends": [
+                "simai.ui",
+                "simai.ui.smart"
+            ],
+            "css": [
+                "assets/notice.css"
+            ],
+            "js": []
+        },
+        "hydration": {
+            "nodes": [
+                {
+                    "id": "fixture-notice",
+                    "smart": "fixture.notice",
+                    "view": "default",
+                    "slot": "content",
+                    "template": "default",
+                    "render": {
+                        "mode": "server-first",
+                        "strategy": "server-static",
+                        "hydration": "none",
+                        "domStrategy": "none",
+                        "updateStrategy": "none",
+                        "initialHtml": "complete",
+                        "frontendOwnership": "none"
+                    },
+                    "propsHash": "d82f20c297eb8401"
+                }
+            ]
+        },
+        "cache": {
+            "key": "smart-tree:876344c0d82addaa",
+            "tags": [
+                "smart:fixture.notice"
+            ]
+        },
+        "resolvedArtifacts": [
+            {
+                "smart": "fixture.notice",
+                "kind": "manifest",
+                "code": "default",
+                "path": "fixture.notice/manifest.json"
+            },
+            {
+                "smart": "fixture.notice",
+                "kind": "preset",
+                "code": "compact",
+                "path": "fixture.notice/preset/compact.json"
+            },
+            {
+                "smart": "fixture.notice",
+                "kind": "view",
+                "code": "default",
+                "path": "fixture.notice/view/default.json"
+            },
+            {
+                "smart": "fixture.notice",
+                "kind": "template",
+                "code": "default",
+                "path": "fixture.notice/template/default.php"
+            }
+        ],
+        "treeHtml": "<aside data-fixture-notice data-view=\"default\" data-preset=\"compact\" data-slot=\"content\"><strong>Portable title</strong><p>Portable text</p></aside>",
+        "exit_code": 0,
+        "stderr": "",
+        "warnings": []
+    },
+    "comparison": {
+        "html_byte_equal": true,
+        "full_context_compatible": true,
+        "docara_html_sha256": "7133c5dcd44aa85f351a85c61c280aa883abd5cdb3c91206168ad63ada497b38",
+        "sf5_html_sha256": "7133c5dcd44aa85f351a85c61c280aa883abd5cdb3c91206168ad63ada497b38",
+        "docara_normalized_html_sha256": "7133c5dcd44aa85f351a85c61c280aa883abd5cdb3c91206168ad63ada497b38",
+        "sf5_normalized_html_sha256": "7133c5dcd44aa85f351a85c61c280aa883abd5cdb3c91206168ad63ada497b38",
+        "title_text_present_both": true,
+        "selected_view": {
+            "docara": "default",
+            "sf5": "default"
+        },
+        "selected_preset": {
+            "docara": "compact",
+            "sf5": "compact"
+        },
+        "slot": {
+            "docara": "content",
+            "sf5": "content"
+        },
+        "render_strategy_equal": true,
+        "blockers": []
+    }
+}

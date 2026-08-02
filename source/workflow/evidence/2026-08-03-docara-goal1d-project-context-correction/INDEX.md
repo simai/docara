@@ -1,8 +1,9 @@
 # Goal 1-D project-context correction evidence
 
 Date: 2026-08-03
-Status: `in_progress`
+Status: `ready_for_independent_audit`
 Input revision: `65097a45b2a39ec8350c0f4a05f95dc7c9c80590`
+Router implementation revision: `facafaf`
 
 ## Reproduced contradiction
 
@@ -20,7 +21,15 @@ At the input revision:
 The previous project-graph validator checked graph structure but did not compare
 the project-specific generated router or handoff semantics.
 
-## Required evidence
+## Integrated evidence
+
+- [G1D-CONTEXT-INTEGRATED-RETEST.md](G1D-CONTEXT-INTEGRATED-RETEST.md) —
+  before/after semantics, deterministic generation, permanent regression,
+  exact QA/build/static/single results, browser rebind and rollback;
+- [cross-host-report.json](cross-host-report.json) — unchanged exact SF5/Docara
+  ABI regression, 1 test / 45 assertions, byte-identical HTML.
+
+## Required evidence — result
 
 - deterministic generator/check command and canonical source digest;
 - positive check and negative stale-stage/batch/next/evidence/candidate cases;
@@ -28,3 +37,7 @@ the project-specific generated router or handoff semantics.
 - JSON/YAML/link/project-graph/full PHPUnit/Pint/Composer/diff checks;
 - exact cross-host and unchanged full/static/single build evidence;
 - final candidate, rollback and explicit Goal 2/release nonclaims.
+
+All required evidence is present. Goal 1 remains executor-owned
+`ready_for_independent_audit`; this contour does not record independent
+acceptance.

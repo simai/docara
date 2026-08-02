@@ -19,6 +19,7 @@ claims after the independent `CORRECTION_REQUIRED` verdict.
 | G1C.2 | `G1C.2-PROVIDER-AND-ADMISSION.md` | pass within Docara |
 | G1C.3 | `G1C.3-ID-LIST-RETIREMENT.md` | pass |
 | G1C.4 | `G1C.4-INTEGRATED-RETEST.md`, `browser/` | partial pass; no candidate |
+| G1C.5 | `G1C.5-BLOCKED-AUDIT.md` | third repeated exact-host blocker confirmed |
 
 ## Evidence policy
 

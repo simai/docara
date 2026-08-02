@@ -11,8 +11,9 @@ smoke pass for the corrected Docara side.
 No Goal 1 acceptance candidate exists because exact SF5 pin `d6f90bba…`
 violates the required normalized context: it overwrites the resolved view
 record before `renderTemplate()` and does not forward `slot` through
-`Smart::render()`. The props-only fixture is byte-equal but insufficient for
-the mandatory outcome. Active recovery and evidence:
+`Smart::render()`. The unchanged tracked fixture now proves the mismatch at
+runtime: title/text/preset survive, but Docara receives selected view `default`
+and exact SF5 receives `null`. Active recovery and evidence:
 
 - `source/workflow/2026-08-02-docara-goal1c-portable-smart-abi-correction.md`;
 - `source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-correction/INDEX.md`.

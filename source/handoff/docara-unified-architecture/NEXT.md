@@ -15,8 +15,9 @@ incompatible Docara-only template context.
 Docara now uses the SF5 array variable surface, exact-lock policy and generic
 search/parser admission. However exact pin `d6f90bba…` overwrites resolved
 `$view` before its template call and `Smart::render()` does not forward `slot`
-as a node field. The narrow props-only fixture is byte-equal, but it cannot
-prove the mandatory full context.
+as a node field. The unchanged tracked fixture now exercises view/preset and
+produces `full_context_compatible=false`: Docara receives view `default`, exact
+SF5 receives `null`, while title/text/preset and warnings remain valid.
 
 Required decision: publish/select a new exact SF5 revision that preserves the
 resolved view record and forwards slot, or explicitly reduce the portable ABI.

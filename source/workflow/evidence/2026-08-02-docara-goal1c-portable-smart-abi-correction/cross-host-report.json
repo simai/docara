@@ -1,12 +1,12 @@
 {
-    "schema": "docara.sf5_cross_host_report.v1",
+    "schema": "docara.sf5_cross_host_report.v2",
     "source_revision": "d6f90bba6a9a2f30ac41075d62cf51f1014b7e78",
     "artifact": {
         "path": "tests/fixtures/smart/portable/fixture.notice",
-        "tree_sha256": "233a8a0e7d6feaca9eb6ea1138be4abcdc1a9d6ac8e8790ec7bcf7e6d6fe6609"
+        "tree_sha256": "4809847abe679fb4ad5912970356aaf99f9454b0e5668bfc74c4e7f8b8297cab"
     },
     "docara": {
-        "html": "<aside data-fixture-notice><strong>Portable title</strong><p>Portable text</p></aside>",
+        "html": "<aside data-fixture-notice data-view=\"default\" data-preset=\"compact\"><strong>Portable title</strong><p>Portable text</p></aside>",
         "assets": [
             "project.fixture.fixture.notice.css.notice.css",
             "simai.ui"
@@ -47,7 +47,7 @@
     "sf5": {
         "schemaVersion": "1.0",
         "kind": "smart.render-result",
-        "html": "<aside data-fixture-notice><strong>Portable title</strong><p>Portable text</p></aside>",
+        "html": "<aside data-fixture-notice data-view=\"\" data-preset=\"compact\"><strong>Portable title</strong><p>Portable text</p></aside>",
         "assets": {
             "smart": [
                 "fixture.notice"
@@ -119,10 +119,25 @@
         "warnings": []
     },
     "comparison": {
-        "html_byte_equal": true,
-        "html_sha256": "0273ded8d5be7cf89f89289323659322a87a2df5468b3f39314b15417e99ca65",
-        "normalized_html_sha256": "0273ded8d5be7cf89f89289323659322a87a2df5468b3f39314b15417e99ca65",
-        "title_text_present": true,
-        "render_strategy_equal": true
+        "html_byte_equal": false,
+        "full_context_compatible": false,
+        "docara_html_sha256": "3d49ef1993486c7204de4e44aca78c73339a81951c4051c721eee94ddb84ef34",
+        "sf5_html_sha256": "49df999c4ffe1a983bca2f2e16636b731fb608d140be70e538a6d28f87fe2996",
+        "docara_normalized_html_sha256": "3d49ef1993486c7204de4e44aca78c73339a81951c4051c721eee94ddb84ef34",
+        "sf5_normalized_html_sha256": "49df999c4ffe1a983bca2f2e16636b731fb608d140be70e538a6d28f87fe2996",
+        "title_text_present_both": true,
+        "selected_view": {
+            "docara": "default",
+            "sf5": null
+        },
+        "selected_preset": {
+            "docara": "compact",
+            "sf5": "compact"
+        },
+        "render_strategy_equal": true,
+        "blockers": [
+            "exact_sf5_resolved_view_record_overwritten_before_template",
+            "exact_sf5_render_shortcut_does_not_forward_slot_as_node_field"
+        ]
     }
 }

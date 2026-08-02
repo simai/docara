@@ -5,22 +5,29 @@ Docara runtime commit: `2d779107add39155edc26537929323aebe066984`
 Documentation checkpoint: `5124959521b6ae51c7e5fa925b3c3230a65a54ef`
 Pinned SF5 source: `d6f90bba6a9a2f30ac41075d62cf51f1014b7e78`
 
-## Proven subset
+## Executable full-context probe
 
 `Sf5CrossHostSmartCompatibilityTest` verifies every tracked upstream blob with
 `git show <pin>:<path>`, exports that exact revision, and renders one unchanged
-`fixture.notice` artifact through Docara and exact SF5. The props-only template
-produces under both hosts:
+`fixture.notice` artifact through Docara and exact SF5. The tracked template
+uses title/text plus the selected view and preset. Both hosts preserve the
+visible title/text and preset without warnings, but the selected view differs:
 
 ```html
-<aside data-fixture-notice><strong>Portable title</strong><p>Portable text</p></aside>
+Docara: <aside data-fixture-notice data-view="default" data-preset="compact"><strong>Portable title</strong><p>Portable text</p></aside>
+SF5:    <aside data-fixture-notice data-view="" data-preset="compact"><strong>Portable title</strong><p>Portable text</p></aside>
 ```
 
 - exit codes: 0 / 0;
 - stderr and warnings: empty / empty;
-- HTML SHA-256: `0273ded8d5be7cf89f89289323659322a87a2df5468b3f39314b15417e99ca65`;
+- Docara HTML SHA-256: `3d49ef1993486c7204de4e44aca78c73339a81951c4051c721eee94ddb84ef34`;
+- SF5 HTML SHA-256: `49df999c4ffe1a983bca2f2e16636b731fb608d140be70e538a6d28f87fe2996`;
+- `html_byte_equal=false`, `full_context_compatible=false`;
+- selected view: Docara `default`, exact SF5 `null`;
+- selected preset: Docara/SF5 `compact`;
 - render strategy: `server-static` / `server-static`;
-- report SHA-256: `f67abd0bb9ba3c7d61cd9c5dfddd792951daf6352c80c597f32844cd8339c473`;
+- artifact tree SHA-256: `4809847abe679fb4ad5912970356aaf99f9454b0e5668bfc74c4e7f8b8297cab`;
+- report SHA-256: `7537ac88feaa2542bf6ecabcc6d57bb2b7c39c4504ecf62ab34293506fa7053e`;
 - report contains only repository-relative artifact paths.
 
 Reproduction:
@@ -33,8 +40,8 @@ vendor/bin/phpunit --filter Sf5CrossHostSmartCompatibilityTest
 
 ## Mandatory context blocker
 
-The props-only equality is not sufficient for Goal 1 acceptance. Read-only
-inspection of the same immutable source proves two contradictions:
+The executable mismatch and read-only inspection of the same immutable source
+prove two contradictions:
 
 1. `Smart::renderTreeNode()` resolves `$view` as an artifact record, then line
    350 assigns `$view = (string)($node['view'] ?? '')`. At the template call,

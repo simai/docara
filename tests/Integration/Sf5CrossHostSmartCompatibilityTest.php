@@ -43,7 +43,7 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
         rmdir($this->temporaryRoot);
     }
 
-    public function test_one_unchanged_artifact_renders_through_docara_and_exact_sf5(): void
+    public function test_one_unchanged_artifact_exposes_the_exact_sf5_view_context_blocker(): void
     {
         $projectRoot = dirname(__DIR__, 2);
         $artifactRoot = realpath(dirname(__DIR__) . '/fixtures/smart/portable');
@@ -62,9 +62,13 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
         $docara = $this->renderWithDocara($artifactRoot);
         $sf5 = $this->renderWithSf5($sf5Root, $artifactRoot);
 
-        self::assertSame('<aside data-fixture-notice><strong>Portable title</strong><p>Portable text</p></aside>', $docara['html']);
-        self::assertSame($docara['html'], $sf5['html']);
-        self::assertSame(hash('sha256', $docara['html']), hash('sha256', $sf5['html']));
+        self::assertSame('<aside data-fixture-notice data-view="default" data-preset="compact"><strong>Portable title</strong><p>Portable text</p></aside>', $docara['html']);
+        self::assertSame('<aside data-fixture-notice data-view="" data-preset="compact"><strong>Portable title</strong><p>Portable text</p></aside>', $sf5['html']);
+        self::assertNotSame($docara['html'], $sf5['html']);
+        self::assertStringContainsString('Portable title', $docara['html']);
+        self::assertStringContainsString('Portable title', $sf5['html']);
+        self::assertStringContainsString('Portable text', $docara['html']);
+        self::assertStringContainsString('Portable text', $sf5['html']);
         self::assertSame('sf5.smart.template.v1', $docara['hydration']['template_abi']);
         self::assertSame('server-static', $docara['hydration']['render']['strategy']);
         self::assertSame('server-static', $sf5['hydration']['nodes'][0]['render']['strategy']);
@@ -75,7 +79,7 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
         $reportPath = getenv('DOCARA_SF5_CROSS_HOST_REPORT');
         if (is_string($reportPath) && $reportPath !== '') {
             $report = [
-                'schema' => 'docara.sf5_cross_host_report.v1',
+                'schema' => 'docara.sf5_cross_host_report.v2',
                 'source_revision' => $source['source_revision'],
                 'artifact' => [
                     'path' => 'tests/fixtures/smart/portable/fixture.notice',
@@ -85,12 +89,29 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
                 'sf5' => $sf5,
                 'comparison' => [
                     'html_byte_equal' => $docara['html'] === $sf5['html'],
-                    'html_sha256' => hash('sha256', $docara['html']),
-                    'normalized_html_sha256' => hash('sha256', $this->normalizeHtml($docara['html'])),
-                    'title_text_present' => str_contains($docara['html'], 'Portable title')
-                        && str_contains($docara['html'], 'Portable text'),
+                    'full_context_compatible' => false,
+                    'docara_html_sha256' => hash('sha256', $docara['html']),
+                    'sf5_html_sha256' => hash('sha256', $sf5['html']),
+                    'docara_normalized_html_sha256' => hash('sha256', $this->normalizeHtml($docara['html'])),
+                    'sf5_normalized_html_sha256' => hash('sha256', $this->normalizeHtml($sf5['html'])),
+                    'title_text_present_both' => str_contains($docara['html'], 'Portable title')
+                        && str_contains($docara['html'], 'Portable text')
+                        && str_contains($sf5['html'], 'Portable title')
+                        && str_contains($sf5['html'], 'Portable text'),
+                    'selected_view' => [
+                        'docara' => 'default',
+                        'sf5' => null,
+                    ],
+                    'selected_preset' => [
+                        'docara' => 'compact',
+                        'sf5' => 'compact',
+                    ],
                     'render_strategy_equal' => $docara['hydration']['render']['strategy']
                         === $sf5['hydration']['nodes'][0]['render']['strategy'],
+                    'blockers' => [
+                        'exact_sf5_resolved_view_record_overwritten_before_template',
+                        'exact_sf5_render_shortcut_does_not_forward_slot_as_node_field',
+                    ],
                 ],
             ];
             self::assertNotFalse(file_put_contents(

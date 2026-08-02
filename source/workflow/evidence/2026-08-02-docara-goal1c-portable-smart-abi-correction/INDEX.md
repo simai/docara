@@ -25,5 +25,5 @@ claims after the independent `CORRECTION_REQUIRED` verdict.
 Every compatibility claim must include a reproducible command, exact upstream
 revision, the unchanged artifact root, stdout/stderr, exit code, normalized
 comparison and SHA-256. Integrated evidence is bound to the exact correction
-implementation/evidence revisions. Goal 1 remains `audit_pending`; executor
-evidence cannot mark it accepted.
+implementation/evidence revisions. Goal 1 remains blocked on the recorded
+exact-host contract decision and is neither accepted nor `audit_pending`.

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart.preset",
+  "smart": "fixture.notice",
+  "code": "compact",
+  "view": "default",
+  "props": {"compact": true}
+}

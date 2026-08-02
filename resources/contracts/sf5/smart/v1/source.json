@@ -1,0 +1,34 @@
+{
+  "schema": "docara.source_pinned_contract.v1",
+  "contract": "sf5.smart.artifact.v1",
+  "schema_version": "1.0",
+  "source_repository": "simai/bx-simai.main",
+  "source_revision": "d6f90bba6a9a2f30ac41075d62cf51f1014b7e78",
+  "tracked_files": {
+    "manifest_schema": {
+      "path": "docs/developer/specifications/schemas/smart.manifest.schema.json",
+      "sha256": "9d65a9b3d63567ef8a12dd43f5c3e24913e2659105b088778dc50476a9578037"
+    },
+    "view_schema": {
+      "path": "docs/developer/specifications/schemas/smart.view.schema.json",
+      "sha256": "f7592ddd3c1fabf8ed9a6f32984f8745f0e4f031b50ab1b15617f093ab26ffdc"
+    },
+    "preset_schema": {
+      "path": "docs/developer/specifications/schemas/smart.preset.schema.json",
+      "sha256": "cbaa993e005a710a79a0dce4c2cd41063d8fc8da6cd4b01b9ea1ee6d039cea5c"
+    },
+    "runtime": {
+      "path": "local/modules/simai.main/lib/UI/Smart.php",
+      "sha256": "d1dda73289cdc6915dd90172498edffa2a1d44ce27a1e4a7def6667d5f238cfd"
+    },
+    "runtime_proof": {
+      "path": "docs/developer/specifications/tools/proof_smart_runtime_api.php",
+      "sha256": "bf7276a9fff990b40047d9155c5ba4c7b24fc44359d87e1c95125f3263663221"
+    }
+  },
+  "policy": {
+    "moving_refs_allowed": false,
+    "external_worktree_files_allowed": false,
+    "normal_build_network_access": false
+  }
+}

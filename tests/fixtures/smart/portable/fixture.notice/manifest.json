@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart",
+  "code": "fixture.notice",
+  "title": "Fixture notice",
+  "render": {
+    "mode": "server-first",
+    "strategy": "server-static",
+    "template": "default",
+    "hydration": "none",
+    "domStrategy": "none",
+    "updateStrategy": "none",
+    "initialHtml": "complete",
+    "frontendOwnership": "none"
+  },
+  "props": {
+    "title": {"type": "string", "required": true},
+    "text": {"type": "string", "required": true}
+  },
+  "assets": {
+    "css": ["assets/notice.css"],
+    "js": [],
+    "depends": ["simai.ui"]
+  },
+  "meta": {
+    "ownerPackage": "fixture/project",
+    "version": "1.0.0"
+  }
+}

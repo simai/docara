@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart.contract",
+  "manifest": {
+    "required": ["schemaVersion", "kind", "code", "title", "render"],
+    "codePattern": "^[a-z0-9][a-z0-9.-]*$",
+    "renderModes": ["server-first", "client-only", "hybrid"],
+    "renderStrategies": ["server-static", "server-first-hydratable", "client-owned", "shadow-dom-owned"],
+    "hydration": ["none", "optional", "required"],
+    "domStrategies": ["none", "light-dom-adopt", "host-attributes", "shadow-dom"],
+    "updateStrategies": ["none", "patch", "rerender"],
+    "initialHtml": ["complete", "skeleton", "host-only"],
+    "frontendOwnership": ["none", "behavior", "dom"],
+    "propTypes": ["string", "number", "boolean", "enum", "object", "array", "content", "asset", "link"],
+    "assetGroups": ["css", "js", "depends"]
+  },
+  "view": {
+    "kind": "smart.view",
+    "required": ["schemaVersion", "kind", "smart", "code"]
+  },
+  "preset": {
+    "kind": "smart.preset",
+    "required": ["schemaVersion", "kind", "smart", "code"]
+  },
+  "artifactLayout": {
+    "manifest": "<root>/<smart>/manifest.json",
+    "view": "<root>/<smart>/view/<code>.json",
+    "preset": "<root>/<smart>/preset/<code>.json",
+    "template": "<root>/<smart>/template/<code>.php"
+  },
+  "propsMerge": ["preset", "view", "invocation"]
+}

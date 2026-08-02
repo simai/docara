@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Declarative\Definition;
 
+use Simai\Docara\Design\Artifact\DesignArtifactKind;
+use Simai\Docara\Design\Provider\BuiltinDesignProvider;
+use Simai\Docara\Design\Registry\DesignRegistry;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\SchemaRepository;
 use Simai\Docara\Smart\SmartManifestValidationException;
@@ -12,82 +15,24 @@ use Simai\Docara\Smart\SmartRegistry;
 
 final class DefinitionRepository
 {
-    /** @var array<string, array{path: string, schema: string}> */
-    private const DEFINITIONS = [
-        'layout:docara.docs' => [
-            'path' => 'layouts/docara.docs.json',
-            'schema' => 'declarative-layout.schema.json',
-        ],
-        'section:docara.article' => [
-            'path' => 'sections/docara.article.json',
-            'schema' => 'declarative-section.schema.json',
-        ],
-        'section:docara.header' => [
-            'path' => 'sections/docara.header.json',
-            'schema' => 'declarative-section.schema.json',
-        ],
-        'section:docara.navigation' => [
-            'path' => 'sections/docara.navigation.json',
-            'schema' => 'declarative-section.schema.json',
-        ],
-        'section:docara.outline' => [
-            'path' => 'sections/docara.outline.json',
-            'schema' => 'declarative-section.schema.json',
-        ],
-        'section:docara.shell' => [
-            'path' => 'sections/docara.shell.json',
-            'schema' => 'declarative-section.schema.json',
-        ],
-        'block:content.markdown' => [
-            'path' => 'blocks/content.markdown.json',
-            'schema' => 'declarative-block.schema.json',
-        ],
-        'block:content.document' => [
-            'path' => 'blocks/content.document.json',
-            'schema' => 'declarative-block.schema.json',
-        ],
-        'block:content.smart' => [
-            'path' => 'blocks/content.smart.json',
-            'schema' => 'declarative-block.schema.json',
-        ],
-        'block:shell.smart' => [
-            'path' => 'blocks/shell.smart.json',
-            'schema' => 'declarative-block.schema.json',
-        ],
-        'block:shell.element' => [
-            'path' => 'blocks/shell.element.json',
-            'schema' => 'declarative-block.schema.json',
-        ],
-        'view:layout.docara.docs' => [
-            'path' => 'views/layout.docara.docs.json',
-            'schema' => 'declarative-view-tree.schema.json',
-        ],
-        'view:section.docara.article' => [
-            'path' => 'views/section.docara.article.json',
-            'schema' => 'declarative-view-tree.schema.json',
-        ],
-        'view:section.docara.header' => [
-            'path' => 'views/section.docara.header.json',
-            'schema' => 'declarative-view-tree.schema.json',
-        ],
-        'view:section.docara.shell' => [
-            'path' => 'views/section.docara.shell.json',
-            'schema' => 'declarative-view-tree.schema.json',
-        ],
-    ];
-
     /** @var array<string, array<string, mixed>> */
     private array $loaded = [];
 
     private readonly SmartRegistry $smarts;
+
+    private readonly DesignRegistry $designs;
 
     public function __construct(
         private readonly string $resourceRoot = __DIR__ . '/../../../resources',
         private readonly SchemaRepository $schemas = new SchemaRepository,
         ?SmartRegistry $smarts = null,
         private readonly SmartManifestValidator $manifestValidator = new SmartManifestValidator,
+        ?DesignRegistry $designs = null,
     ) {
         $this->smarts = $smarts ?? SmartRegistry::bundled();
+        $this->designs = $designs ?? new DesignRegistry([
+            new BuiltinDesignProvider($this->resourceRoot),
+        ], $this->schemas);
     }
 
     /** @return array<string, mixed> */
@@ -161,15 +106,24 @@ final class DefinitionRepository
         if (isset($this->loaded[$id])) {
             return $this->loaded[$id];
         }
-        $record = self::DEFINITIONS[$id] ?? null;
-        if (! is_array($record)) {
-            throw new PortableConfigurationException(
+        [$kind, $key] = explode(':', $id, 2) + [null, null];
+        $artifactKind = match ($kind) {
+            'layout' => DesignArtifactKind::Layout,
+            'view' => DesignArtifactKind::View,
+            'section' => DesignArtifactKind::Section,
+            'block' => DesignArtifactKind::Block,
+            default => throw new PortableConfigurationException(
                 'DECLARATIVE_DEFINITION_NOT_ALLOWED',
                 "Definition [$id] is not registered.",
-            );
-        }
+            ),
+        };
+        $descriptor = $this->designs->get($artifactKind, (string) $key);
 
-        return $this->load($id, $record);
+        return $this->loaded[$id] = $descriptor->definition + [
+            '_source' => $descriptor->relativePath,
+            '_sha256' => $descriptor->sha256,
+            '_design' => $descriptor->provenance(),
+        ];
     }
 
     /**

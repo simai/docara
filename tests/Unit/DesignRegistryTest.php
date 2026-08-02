@@ -30,6 +30,10 @@ final class DesignRegistryTest extends TestCase
             $first->namespaceOwners(),
         );
         self::assertCount(15, $first->all());
+        self::assertStringNotContainsString(
+            'private const DEFINITIONS',
+            (string) file_get_contents(dirname(__DIR__, 2) . '/src/Declarative/Definition/DefinitionRepository.php'),
+        );
     }
 
     #[Test]

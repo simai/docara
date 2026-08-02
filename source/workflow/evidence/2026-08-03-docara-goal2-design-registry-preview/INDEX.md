@@ -16,6 +16,8 @@ Independent Goal 1 audit: `PASS_WITH_NOTES`, marker
   inputs, state-driven freshness regression and Goal 2 transition proof.
 - [G2.1-DESIGN-REGISTRY.md](G2.1-DESIGN-REGISTRY.md) — artifact/provider/
   registry contract and security-focused checks.
+- [G2.2-BUILTIN-MIGRATION.md](G2.2-BUILTIN-MIGRATION.md) — constant-table
+  retirement, exact public parity and rollback.
 
 Later batch evidence must bind exact candidate/parent revisions, affected
 artifacts, commands/results, parity/security hashes, rollback and nonclaims.

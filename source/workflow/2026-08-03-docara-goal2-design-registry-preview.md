@@ -67,8 +67,8 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
 | --- | --- | --- | --- |
 | G2.0 | acceptance freeze, state-driven router, responsibility map | context positive/negative, graph/handoff consistency | pass |
 | G2.1 | typed artifacts/providers and one deterministic DesignRegistry | provider/ownership/path/schema tests | pass |
-| G2.2 | built-ins migrated from constant registration | byte parity, zero-reference scan | in progress |
-| G2.3 | data-driven composition and project `design/` fixture | no engine ID lists, fixture without `src/` edit | pending |
+| G2.2 | built-ins migrated from constant registration | byte parity, zero-reference scan | pass |
+| G2.3 | data-driven composition and project `design/` fixture | no engine ID lists, fixture without `src/` edit | in progress |
 | G2.4 | PreviewKernel and PreviewShell over production services | HTML/assets/provenance parity, receipt isolation | pending |
 | G2.5 | preview commands and PHP watch | human/JSON/exit-code fixtures, dependency invalidation | pending |
 | G2.6 | integrated docs/graph/build/browser acceptance | full matrix and reverse-outcome evidence | pending |
@@ -101,6 +101,20 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
 - Focused registry suite: 6 tests / 18 assertions, PASS.
 - Next: make DefinitionRepository consume the registry and remove its constant
   table only after built-in parity.
+
+### G2.2
+
+- `DefinitionRepository` is now a compatibility facade over the single
+  DesignRegistry; the fixed `DEFINITIONS` table and literal artifact paths are
+  removed.
+- All 15 built-in definitions retain their paths/hashes while adding provider
+  provenance.
+- Exact input-versus-candidate full builds are recursively byte-identical:
+  103 routes, 305 files, 206 HTML; static 21,430 references, broken=0.
+- Focused compiler/Smart/registry tests pass and a permanent structural
+  assertion rejects restoration of the constant table.
+- Next: remove composition ID lists and wire trusted project `design/` into the
+  production compiler.
 
 ## Remaining
 

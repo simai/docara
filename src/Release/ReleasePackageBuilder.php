@@ -205,7 +205,8 @@ final class ReleasePackageBuilder
 
     private function assertNoPrivateLeak(string $path, string $contents): void
     {
-        if (preg_match('#(?:/Users/[^/\s]+|/home/[^/\s]+|[A-Za-z]:\\\\Users\\\\[^\\\\\s]+)#', $contents) === 1
+        if (preg_match('#/(?:Users|home)/[A-Za-z0-9._-]+/#', $contents) === 1
+            || preg_match('#[A-Za-z]:\\\\(?:Users)\\\\[A-Za-z0-9._-]+\\\\#', $contents) === 1
             || preg_match('/-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/', $contents) === 1) {
             throw new RuntimeException("Private path or key material detected in release file [{$path}].");
         }

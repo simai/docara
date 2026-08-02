@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Simai\Docara\Declarative\Document\SmartCallNode;
+use Simai\Docara\Declarative\Document\SourceSpan;
 use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
 use Simai\Docara\Smart\Runtime\Context\GenericPropsContextAdapter;
 use Simai\Docara\Smart\Runtime\Context\SmartContextAdapterRegistry;
@@ -57,6 +59,22 @@ final class SmartGenericRuntimeTest extends TestCase
         $this->expectExceptionMessage('SMART_RENDER_STRATEGY_UNKNOWN:missing-strategy');
 
         $registry->get('missing-strategy');
+    }
+
+    public function test_portable_slot_is_a_bounded_typed_value(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('DOCUMENT_SMART_CALL_NODE_INVALID');
+
+        new SmartCallNode(
+            'fixture-notice',
+            'fixture.notice',
+            'default',
+            [],
+            1,
+            new SourceSpan('content/fixture.md', 1, 1),
+            '../outside',
+        );
     }
 
     public function test_invocation_is_normalized_from_provenance_without_component_dispatch(): void

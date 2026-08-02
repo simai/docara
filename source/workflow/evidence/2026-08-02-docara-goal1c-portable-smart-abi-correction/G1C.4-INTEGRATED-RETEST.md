@@ -7,9 +7,9 @@ Environment: macOS, PHP 8.4.20
 
 ## Test and build results
 
-- full PHPUnit after the executable full-context probe: 372 tests,
-  7,226 assertions, PASS;
-- focused portable/provider/search/security matrix: 78 tests, 658 assertions,
+- full PHPUnit after the executable context probe and disposable patch proof:
+  374 tests, 7,267 assertions, PASS;
+- focused portable/provider/search/security matrix: 80 tests, 699 assertions,
   PASS;
 - two disposable full builds: 103 routes, 305 files, 206 HTML each;
 - byte-identical file ledgers:

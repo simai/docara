@@ -71,6 +71,8 @@ final readonly class PortableProviderPlanResolver implements ProviderSmartPlanRe
                 'portable_manifest' => $definition->portableManifest,
                 'portable_view' => $view,
                 'portable_preset' => $preset,
+                'children_html' => $call->childrenHtml,
+                'slot' => $call->slot,
                 'template_abi' => (string) ($definition->provenance['template_abi'] ?? ''),
                 'view' => $viewRecord['path'],
                 'view_sha256' => hash_file('sha256', $definition->root . '/' . $viewRecord['path']),

@@ -109,6 +109,8 @@ final readonly class SmartPlanResolver
                 'portable_strategy' => (string) $portableManifest['render']['strategy'],
                 'input_adapter' => 'smart.props',
                 'portable_manifest' => $portableManifest,
+                'children_html' => $call->childrenHtml,
+                'slot' => $call->slot,
                 'template_abi' => 'docara.legacy.object-view.v1',
             ],
         );

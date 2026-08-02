@@ -3,10 +3,10 @@
     "source_revision": "d6f90bba6a9a2f30ac41075d62cf51f1014b7e78",
     "artifact": {
         "path": "tests/fixtures/smart/portable/fixture.notice",
-        "tree_sha256": "4809847abe679fb4ad5912970356aaf99f9454b0e5668bfc74c4e7f8b8297cab"
+        "tree_sha256": "eb6fd28f295c360fa80375beb21aba634c14d2466699ca55509b64ac39f2d058"
     },
     "docara": {
-        "html": "<aside data-fixture-notice data-view=\"default\" data-preset=\"compact\"><strong>Portable title</strong><p>Portable text</p></aside>",
+        "html": "<aside data-fixture-notice data-view=\"default\" data-preset=\"compact\" data-slot=\"content\"><strong>Portable title</strong><p>Portable text</p></aside>",
         "assets": [
             "project.fixture.fixture.notice.css.notice.css",
             "simai.ui"
@@ -47,7 +47,7 @@
     "sf5": {
         "schemaVersion": "1.0",
         "kind": "smart.render-result",
-        "html": "<aside data-fixture-notice data-view=\"\" data-preset=\"compact\"><strong>Portable title</strong><p>Portable text</p></aside>",
+        "html": "<aside data-fixture-notice data-view=\"\" data-preset=\"compact\" data-slot=\"\"><strong>Portable title</strong><p>Portable text</p></aside>",
         "assets": {
             "smart": [
                 "fixture.notice"
@@ -67,7 +67,7 @@
                     "id": "fixture-notice",
                     "smart": "fixture.notice",
                     "view": "default",
-                    "slot": null,
+                    "slot": "content",
                     "template": "default",
                     "render": {
                         "mode": "server-first",
@@ -83,7 +83,7 @@
             ]
         },
         "cache": {
-            "key": "smart-tree:53b1107d2112d555",
+            "key": "smart-tree:876344c0d82addaa",
             "tags": [
                 "smart:fixture.notice"
             ]
@@ -114,6 +114,7 @@
                 "path": "fixture.notice/template/default.php"
             }
         ],
+        "treeHtml": "<aside data-fixture-notice data-view=\"\" data-preset=\"compact\" data-slot=\"content\"><strong>Portable title</strong><p>Portable text</p></aside>",
         "exit_code": 0,
         "stderr": "",
         "warnings": []
@@ -121,10 +122,10 @@
     "comparison": {
         "html_byte_equal": false,
         "full_context_compatible": false,
-        "docara_html_sha256": "3d49ef1993486c7204de4e44aca78c73339a81951c4051c721eee94ddb84ef34",
-        "sf5_html_sha256": "49df999c4ffe1a983bca2f2e16636b731fb608d140be70e538a6d28f87fe2996",
-        "docara_normalized_html_sha256": "3d49ef1993486c7204de4e44aca78c73339a81951c4051c721eee94ddb84ef34",
-        "sf5_normalized_html_sha256": "49df999c4ffe1a983bca2f2e16636b731fb608d140be70e538a6d28f87fe2996",
+        "docara_html_sha256": "7133c5dcd44aa85f351a85c61c280aa883abd5cdb3c91206168ad63ada497b38",
+        "sf5_html_sha256": "9e0cfeb4f6332d54d457cecb9e06a774f9e465d7933c89e70881fc5cf75ce6fe",
+        "docara_normalized_html_sha256": "7133c5dcd44aa85f351a85c61c280aa883abd5cdb3c91206168ad63ada497b38",
+        "sf5_normalized_html_sha256": "9e0cfeb4f6332d54d457cecb9e06a774f9e465d7933c89e70881fc5cf75ce6fe",
         "title_text_present_both": true,
         "selected_view": {
             "docara": "default",
@@ -133,6 +134,10 @@
         "selected_preset": {
             "docara": "compact",
             "sf5": "compact"
+        },
+        "slot": {
+            "docara": "content",
+            "sf5": null
         },
         "render_strategy_equal": true,
         "blockers": [

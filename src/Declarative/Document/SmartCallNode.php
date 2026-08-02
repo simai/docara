@@ -14,11 +14,14 @@ final readonly class SmartCallNode implements DocumentNode
         public array $props,
         public int $ordinal,
         private SourceSpan $sourceSpan,
+        public string $slot = '',
+        public string $childrenHtml = '',
     ) {
         if ($nodeId === ''
             || preg_match('/^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9_-]*)+$/D', $smart) !== 1
             || $view === ''
             || $ordinal < 1
+            || ($slot !== '' && preg_match('/^[a-z][a-z0-9_-]*$/D', $slot) !== 1)
         ) {
             throw new \InvalidArgumentException('DOCUMENT_SMART_CALL_NODE_INVALID');
         }

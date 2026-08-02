@@ -24,7 +24,7 @@ SmartGenericRuntimeTest, SmartComponentGatewayTest,
 FrameworkComponentRuntimeTest, DeclarativeRenderingTest,
 PortableSearchTextExtractorTest, PortableConfigurationTest
 
-78 tests, 658 assertions, PASS
+80 tests, 699 assertions, PASS
 ```
 
 Nonclaim: exact SF5 currently loses selected view data and render-shortcut slot;

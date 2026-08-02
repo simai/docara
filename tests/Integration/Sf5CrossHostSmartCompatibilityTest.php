@@ -62,8 +62,8 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
         $docara = $this->renderWithDocara($artifactRoot);
         $sf5 = $this->renderWithSf5($sf5Root, $artifactRoot);
 
-        self::assertSame('<aside data-fixture-notice data-view="default" data-preset="compact"><strong>Portable title</strong><p>Portable text</p></aside>', $docara['html']);
-        self::assertSame('<aside data-fixture-notice data-view="" data-preset="compact"><strong>Portable title</strong><p>Portable text</p></aside>', $sf5['html']);
+        self::assertSame('<aside data-fixture-notice data-view="default" data-preset="compact" data-slot="content"><strong>Portable title</strong><p>Portable text</p></aside>', $docara['html']);
+        self::assertSame('<aside data-fixture-notice data-view="" data-preset="compact" data-slot=""><strong>Portable title</strong><p>Portable text</p></aside>', $sf5['html']);
         self::assertNotSame($docara['html'], $sf5['html']);
         self::assertStringContainsString('Portable title', $docara['html']);
         self::assertStringContainsString('Portable title', $sf5['html']);
@@ -106,6 +106,10 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
                         'docara' => 'compact',
                         'sf5' => 'compact',
                     ],
+                    'slot' => [
+                        'docara' => 'content',
+                        'sf5' => null,
+                    ],
                     'render_strategy_equal' => $docara['hydration']['render']['strategy']
                         === $sf5['hydration']['nodes'][0]['render']['strategy'],
                     'blockers' => [
@@ -119,6 +123,32 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
                 json_encode($report, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n",
             ));
         }
+    }
+
+    public function test_minimal_host_patch_restores_the_full_fixture_context_in_a_disposable_export(): void
+    {
+        $projectRoot = dirname(__DIR__, 2);
+        $artifactRoot = realpath(dirname(__DIR__) . '/fixtures/smart/portable');
+        self::assertIsString($artifactRoot);
+        $source = $this->sourceContract($projectRoot);
+        $sf5Repository = getenv('DOCARA_SF5_SOURCE_REPO');
+        if (! is_string($sf5Repository) || $sf5Repository === '') {
+            $sf5Repository = dirname($projectRoot) . '/bx-simai.main';
+        }
+        if (! is_dir($sf5Repository . '/.git')) {
+            self::markTestSkipped('Set DOCARA_SF5_SOURCE_REPO to an exact bx-simai.main Git checkout.');
+        }
+
+        $this->assertPinnedBlobs($sf5Repository, $source);
+        $sf5Root = $this->exportExactRevision($sf5Repository, (string) $source['source_revision']);
+        $this->applyProposedHostContextPatch($sf5Root);
+        $docara = $this->renderWithDocara($artifactRoot);
+        $patchedSf5 = $this->renderWithSf5($sf5Root, $artifactRoot);
+
+        self::assertSame($docara['html'], $patchedSf5['html']);
+        self::assertSame('content', $patchedSf5['hydration']['nodes'][0]['slot']);
+        self::assertSame('', $patchedSf5['stderr']);
+        self::assertSame([], $patchedSf5['warnings']);
     }
 
     /** @return array<string, mixed> */
@@ -141,6 +171,7 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
             ],
             1,
             new SourceSpan('content/fixture.md', 1, 4),
+            'content',
         );
         $renderer = new SmartRenderer(new TrustedTemplateRegistry(smarts: $registry));
         $warnings = [];
@@ -195,6 +226,18 @@ spl_autoload_register(static function (string $class) use ($sf5Root): void {
     }
 });
 require_once $sf5Root . '/local/modules/simai.main/lib/UI/Smart.php';
+$options = [
+    'artifactRoots' => [$artifactRoot],
+    'id' => 'fixture-notice',
+    'view' => 'default',
+    'preset' => 'compact',
+    'slot' => 'content',
+    'props' => [
+        'title' => 'Portable title',
+        'text' => 'Portable text',
+    ],
+];
+$shortcutHtml = Simai\Main\UI\Smart::render('fixture.notice', $options);
 $result = Simai\Main\UI\Smart::tree([
     'schemaVersion' => '1.0',
     'kind' => 'smart.tree',
@@ -203,12 +246,15 @@ $result = Simai\Main\UI\Smart::tree([
         'smart' => 'fixture.notice',
         'view' => 'default',
         'preset' => 'compact',
+        'slot' => 'content',
         'props' => [
             'title' => 'Portable title',
             'text' => 'Portable text',
         ],
     ],
 ], ['artifactRoots' => [$artifactRoot]]);
+$result['treeHtml'] = $result['html'];
+$result['html'] = $shortcutHtml;
 echo json_encode($result, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
 PHP;
         self::assertNotFalse(file_put_contents($runner, $source));
@@ -263,6 +309,22 @@ PHP;
         self::assertSame(0, $extractProcess->getExitCode(), $extractProcess->getErrorOutput());
 
         return $root;
+    }
+
+    private function applyProposedHostContextPatch(string $sf5Root): void
+    {
+        $smartPath = $sf5Root . '/local/modules/simai.main/lib/UI/Smart.php';
+        $source = (string) file_get_contents($smartPath);
+        $replacements = [
+            "            'children' => true,\n" => "            'children' => true,\n            'slot' => true,\n",
+            "        foreach (['view', 'preset', 'children'] as \$key) {" => "        foreach (['view', 'preset', 'children', 'slot'] as \$key) {",
+            "        \$view = (string)(\$node['view'] ?? '');\n        \$slot = (string)(\$node['slot'] ?? '');" => "        \$slot = (string)(\$node['slot'] ?? '');",
+        ];
+        foreach ($replacements as $before => $after) {
+            self::assertSame(1, substr_count($source, $before));
+            $source = str_replace($before, $after, $source);
+        }
+        self::assertNotFalse(file_put_contents($smartPath, $source));
     }
 
     /** @return array<string,mixed> */

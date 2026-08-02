@@ -54,7 +54,7 @@ page metadata from comparison, or normalizing consumer files to hide drift.
 | --- | --- | --- | --- |
 | C1 | Withdraw rc.2/R2 PASS and open correction | graph/docs/handoff/diff/JSON | pass |
 | C2 | Deterministic metadata contract | focused positive/negative tests | pass |
-| C3 | Integrated source verification | PHPUnit/Pint/Composer/lint/JSON/YAML/graph | planned |
+| C3 | Integrated source verification | PHPUnit/Pint/Composer/lint/JSON/YAML/graph | pass |
 | C4 | Exact rc.3 package | two clean-clone byte-identical ZIP/manifest/SBOM | planned |
 | C5 | Independent dist consumers | different extraction times, identical 305 outputs including metadata | planned |
 | C6 | Product/release matrix | macOS 8.4/8.3, Linux 8.3, full/single/static/HTTP/browser/security | planned |
@@ -96,3 +96,8 @@ Evidence index:
   `_docara/page-metadata.json`; outside Git all 103 page audit fields are null.
 - Focused result: 2 tests, 1,503 assertions, PASS; Pint and PHP lint PASS.
 - Current batch: C3 integrated source verification.
+
+C3 result: PHPUnit 393/393 with 7,173 assertions; Pint, Composer strict, 237
+PHP files, 437 JSON files, 153 YAML files and project graph validation all
+pass. The next commit becomes the immutable product-source boundary for rc.3;
+later package/browser/governance evidence must bind that exact revision.

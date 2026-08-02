@@ -123,6 +123,7 @@
   },
   "provenance": {
     "source": "simai/docara",
-    "reference_status": "product_owned"
+    "reference_status": "product_owned",
+    "input_adapter": "docara.preferences"
   }
 }

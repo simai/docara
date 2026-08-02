@@ -7,6 +7,7 @@ namespace Simai\Docara\Declarative\Smart;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\Smart\Artifact\LegacySmartManifestV1Adapter;
 use Simai\Docara\Smart\SmartPropsValidationException;
 use Simai\Docara\Smart\SmartPropsValidator;
 use Simai\Docara\Smart\SmartRegistry;
@@ -19,6 +20,7 @@ final readonly class CompositeSmartPlanResolver
         private DefinitionRepository $definitions = new DefinitionRepository,
         ?SmartRegistry $smarts = null,
         private SmartPropsValidator $propsValidator = new SmartPropsValidator,
+        private LegacySmartManifestV1Adapter $portable = new LegacySmartManifestV1Adapter,
     ) {
         $this->smarts = $smarts ?? SmartRegistry::bundled();
     }
@@ -44,7 +46,7 @@ final readonly class CompositeSmartPlanResolver
                 $exception,
             );
         }
-        $this->assertSemanticProps($canonical, $props);
+        $portableManifest = $this->portable->adapt($manifest, $canonical);
 
         $assets = [];
         foreach ($manifest['assets'] as $asset) {
@@ -75,6 +77,10 @@ final readonly class CompositeSmartPlanResolver
                 'alias_reason' => $resolution['reason'],
                 'view' => (string) $view['_source'],
                 'view_sha256' => (string) $view['_sha256'],
+                'runtime' => 'docara.smart.template',
+                'portable_strategy' => (string) $portableManifest['render']['strategy'],
+                'input_adapter' => (string) ($manifest['provenance']['input_adapter'] ?? 'smart.props'),
+                'portable_manifest' => $portableManifest,
             ],
         );
     }
@@ -91,33 +97,6 @@ final readonly class CompositeSmartPlanResolver
             throw new PortableConfigurationException(
                 'DECLARATIVE_COMPOSITE_MANIFEST_INVALID',
                 "Composite Smart manifest [$smart] is invalid.",
-            );
-        }
-    }
-
-    /** @param array<string, mixed> $props */
-    private function assertSemanticProps(string $smart, array $props): void
-    {
-        $valid = match ($smart) {
-            'docara.brand' => isset($props['branding']) && is_array($props['branding']),
-            'docara.navigation' => isset($props['items'])
-                && is_array($props['items'])
-                && array_is_list($props['items'])
-                && ($props['maximum_depth'] ?? null) === 4,
-            'docara.toc' => isset($props['items'])
-                && is_array($props['items'])
-                && array_is_list($props['items']),
-            'docara.preferences' => isset($props['groups'], $props['manifest'])
-                && is_array($props['groups'])
-                && array_is_list($props['groups'])
-                && is_array($props['manifest'])
-                && in_array($props['position'] ?? null, ['left', 'right'], true),
-            default => false,
-        };
-        if (! $valid) {
-            throw new PortableConfigurationException(
-                'DECLARATIVE_COMPOSITE_PROPS_INVALID',
-                "Composite Smart props [$smart] are invalid.",
             );
         }
     }

@@ -5,40 +5,48 @@ declare(strict_types=1);
 namespace Simai\Docara\Declarative\Rendering;
 
 use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
-use Simai\Docara\Declarative\Rendering\View\NavigationItemTemplateViewModel;
-use Simai\Docara\Declarative\Rendering\View\NavigationItemViewModel;
-use Simai\Docara\Declarative\Rendering\View\NavigationViewModel;
+use Simai\Docara\Smart\Runtime\Context\BrandingContextAdapter;
+use Simai\Docara\Smart\Runtime\Context\GenericPropsContextAdapter;
+use Simai\Docara\Smart\Runtime\Context\NavigationContextAdapter;
+use Simai\Docara\Smart\Runtime\Context\OutlineContextAdapter;
+use Simai\Docara\Smart\Runtime\Context\PreferencesContextAdapter;
+use Simai\Docara\Smart\Runtime\Context\SmartContextAdapterRegistry;
+use Simai\Docara\Smart\Runtime\SmartInvocation;
+use Simai\Docara\Smart\Runtime\SmartTemplateContext;
+use Simai\Docara\Smart\Runtime\Strategy\RegisteredTemplateStrategy;
+use Simai\Docara\Smart\Runtime\Strategy\SmartRendererStrategyRegistry;
 
 final readonly class SmartRenderer
 {
     public function __construct(
         private TrustedTemplateRegistry $templates = new TrustedTemplateRegistry,
-        private ViewModelFactory $viewModels = new ViewModelFactory,
+        private SmartContextAdapterRegistry $adapters = new SmartContextAdapterRegistry([
+            new GenericPropsContextAdapter,
+            new BrandingContextAdapter,
+            new NavigationContextAdapter,
+            new OutlineContextAdapter,
+            new PreferencesContextAdapter,
+        ]),
+        private SmartRendererStrategyRegistry $strategies = new SmartRendererStrategyRegistry([
+            new RegisteredTemplateStrategy('server-static'),
+            new RegisteredTemplateStrategy('server-first-hydratable'),
+            new RegisteredTemplateStrategy('client-owned'),
+            new RegisteredTemplateStrategy('shadow-dom-owned'),
+        ]),
     ) {}
 
     public function render(ResolvedSmartPlan $plan): RenderArtifact
     {
-        $view = match ($plan->smart) {
-            'ui.alert' => $this->viewModels->alert($plan),
-            'ui.button' => $this->viewModels->button($plan),
-            'docara.brand' => $this->viewModels->brand($plan),
-            'docara.navigation' => $this->viewModels->navigation($plan),
-            'docara.toc' => $this->viewModels->toc($plan),
-            'docara.preferences' => $this->viewModels->preferences($plan),
-            default => throw new \InvalidArgumentException('SMART_RENDERER_UNSUPPORTED'),
-        };
-
-        $html = $view instanceof NavigationViewModel
-            ? $this->navigation($plan->template, $view, $plan->view)
-            : $this->templates->render($plan->template, ['view' => $view]);
+        $invocation = SmartInvocation::fromPlan($plan);
+        $view = $this->adapters->get($invocation->adapter)->prepare($invocation);
+        $context = SmartTemplateContext::forInvocation($invocation, $view);
+        $html = $this->strategies->get($invocation->strategy)->render($invocation, $context, $this->templates);
 
         return new RenderArtifact(
             $html,
             $plan->assets,
             [
-                'runtime' => str_starts_with($plan->smart, 'ui.')
-                    ? 'simai-framework'
-                    : 'docara.smart.template',
+                'runtime' => (string) ($plan->provenance['runtime'] ?? 'portable-smart'),
                 'smart' => $plan->smart,
                 'view' => $plan->view,
                 'owner' => (string) ($plan->provenance['provider'] ?? 'unknown'),
@@ -46,64 +54,11 @@ final readonly class SmartRenderer
                 'hydration_owner' => $plan->smart,
                 'assets' => $plan->assets,
             ],
-            $plan->provenance + ['template' => $plan->template],
+            $plan->provenance + [
+                'template' => $plan->template,
+                'portable_strategy' => $invocation->strategy,
+                'input_adapter' => $invocation->adapter,
+            ],
         );
-    }
-
-    private function navigation(string $template, NavigationViewModel $view, string $requestedView): string
-    {
-        $items = '';
-        foreach ($view->items as $item) {
-            $items .= $this->navigationItem($item, $view, $requestedView);
-        }
-        $rendered = new class($view->maximumDepth, $items, $view->label, $view->expandLabel, $view->collapseLabel, $view->containsCurrentLabel, $view->items !== [])
-        {
-            public function __construct(
-                public readonly int $maximumDepth,
-                public readonly string $itemsHtml,
-                public readonly string $label,
-                public readonly string $expandLabel,
-                public readonly string $collapseLabel,
-                public readonly string $containsCurrentLabel,
-                public readonly bool $hasItems,
-            ) {}
-        };
-
-        return $this->templates->render($template, ['view' => $rendered]);
-    }
-
-    private function navigationItem(
-        NavigationItemViewModel $item,
-        NavigationViewModel $navigation,
-        string $view,
-    ): string {
-        $children = '';
-        foreach ($item->children as $child) {
-            $children .= $this->navigationItem($child, $navigation, $view);
-        }
-        $activeRole = $item->active
-            ? 'page'
-            : ($item->currentSection ? 'section' : ($item->activeAncestor ? 'ancestor' : null));
-        $weightClass = match ($activeRole) {
-            'page', 'section' => ' weight-5',
-            default => '',
-        };
-
-        return $this->templates->render(
-            $view === 'header'
-                ? 'smart.docara.navigation.header-item'
-                : 'smart.docara.navigation.item',
-            [
-                'view' => new NavigationItemTemplateViewModel(
-                    $item,
-                    $children,
-                    $activeRole,
-                    $weightClass,
-                    min(4, $item->depth),
-                    $navigation->expandLabel,
-                    $navigation->collapseLabel,
-                    $navigation->containsCurrentLabel,
-                ),
-            ]);
     }
 }

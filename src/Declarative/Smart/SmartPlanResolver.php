@@ -13,6 +13,7 @@ use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestContract;
 use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\Framework\FrameworkPropsValidator;
+use Simai\Docara\Smart\Artifact\LegacySmartManifestV1Adapter;
 
 final readonly class SmartPlanResolver
 {
@@ -22,6 +23,7 @@ final readonly class SmartPlanResolver
         private FrameworkConsumerPolicy $consumerPolicy = new FrameworkConsumerPolicy,
         private FrameworkPropsValidator $validator = new FrameworkPropsValidator,
         private FrameworkManifestContract $manifestContract = new FrameworkManifestContract,
+        private LegacySmartManifestV1Adapter $portable = new LegacySmartManifestV1Adapter,
     ) {}
 
     /** @param array<string, mixed> $lock */
@@ -74,6 +76,7 @@ final readonly class SmartPlanResolver
             $call->ordinal,
         );
         $this->validator->validate($manifest, $props);
+        $portableManifest = $this->portable->adapt($manifest, $call->smart);
 
         $omitted = array_fill_keys($this->consumerPolicy->omittedAssets($call->smart), true);
         $assets = [];
@@ -99,6 +102,10 @@ final readonly class SmartPlanResolver
                 'view' => (string) $view['_source'],
                 'view_sha256' => (string) $view['_sha256'],
                 'runtime_pair' => $this->manifests->pairId(),
+                'runtime' => 'simai-framework',
+                'portable_strategy' => (string) $portableManifest['render']['strategy'],
+                'input_adapter' => 'smart.props',
+                'portable_manifest' => $portableManifest,
             ],
         );
     }

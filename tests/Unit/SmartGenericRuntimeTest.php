@@ -1,0 +1,68 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Tests\Unit;
+
+use PHPUnit\Framework\TestCase;
+use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
+use Simai\Docara\Smart\Runtime\Context\GenericPropsContextAdapter;
+use Simai\Docara\Smart\Runtime\Context\SmartContextAdapterRegistry;
+use Simai\Docara\Smart\Runtime\SmartInvocation;
+use Simai\Docara\Smart\Runtime\Strategy\RegisteredTemplateStrategy;
+use Simai\Docara\Smart\Runtime\Strategy\SmartRendererStrategyRegistry;
+
+final class SmartGenericRuntimeTest extends TestCase
+{
+    public function test_renderer_source_contains_no_component_identity_dispatch(): void
+    {
+        $source = (string) file_get_contents(dirname(__DIR__, 2) . '/src/Declarative/Rendering/SmartRenderer.php');
+
+        foreach (['ui.alert', 'ui.button', 'docara.brand', 'docara.navigation', 'docara.toc', 'docara.preferences'] as $id) {
+            self::assertStringNotContainsString($id, $source);
+        }
+        self::assertStringNotContainsString('match ($plan->smart)', $source);
+    }
+
+    public function test_unknown_context_adapter_fails_closed(): void
+    {
+        $registry = new SmartContextAdapterRegistry([new GenericPropsContextAdapter]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('SMART_CONTEXT_ADAPTER_UNKNOWN:missing.adapter');
+
+        $registry->get('missing.adapter');
+    }
+
+    public function test_unknown_render_strategy_fails_closed(): void
+    {
+        $registry = new SmartRendererStrategyRegistry([new RegisteredTemplateStrategy('server-static')]);
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('SMART_RENDER_STRATEGY_UNKNOWN:missing-strategy');
+
+        $registry->get('missing-strategy');
+    }
+
+    public function test_invocation_is_normalized_from_provenance_without_component_dispatch(): void
+    {
+        $invocation = SmartInvocation::fromPlan(new ResolvedSmartPlan(
+            'local-notice',
+            'fixture.notice',
+            'default',
+            'smart.fixture.notice.default',
+            ['title' => 'Portable'],
+            [],
+            [
+                'portable_strategy' => 'server-static',
+                'input_adapter' => 'smart.props',
+                'preset' => 'compact',
+            ],
+        ));
+
+        self::assertSame('fixture.notice', $invocation->smart);
+        self::assertSame('server-static', $invocation->strategy);
+        self::assertSame('smart.props', $invocation->adapter);
+        self::assertSame('compact', $invocation->preset);
+    }
+}

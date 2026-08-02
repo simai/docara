@@ -26,7 +26,7 @@ final readonly class ComponentBlockDocumentNodeRenderer implements DocumentNodeR
             throw new \LogicException('DOCUMENT_COMPONENT_BLOCK_RENDERER_NODE_INVALID');
         }
 
-        return $this->components->renderComponentBlock(
+        return $this->components->renderComponentContract(
             $node,
             $this->markdown->render($node->body, $context->sourceRoot, $context->sourceFile),
         );

@@ -27,6 +27,7 @@
     "src/Document/ContentComponentRegistry.php",
     "src/Document/ContentComponentRenderer.php",
     "src/Document/ComponentDocumentNodeRenderer.php",
+    "src/Document/ComponentContractNode.php",
     "src/Document/ComponentBlockNode.php",
     "src/Document/ComponentBlockDocumentNodeRenderer.php",
     "resources/components/docara.alert.json",
@@ -47,7 +48,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M2-EVIDENCE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.4-BUILD-AND-COMPONENT-CONTOUR.md"
   ],
   "review_refs": ["docara.gate.vertical_slice"],
   "current_behavior": [
@@ -58,7 +60,8 @@
     "M2 resolves badge to docara.badge through ComponentAliasRegistry and routes all 16 calls through DocumentRendererRegistry and the content mode of the same SmartComponentGateway facade.",
     "The structural component definition and template return HTML, diagnostics and provenance without owning public documentation prose.",
     "M3.2 routes every authored Alert block through DocumentRendererRegistry and SmartComponentGateway::renderComponentBlock using one manifest/template contract.",
-    "The compatibility Markdown Alert renderer delegates to that same gateway and no longer assembles a second Alert HTML artifact."
+    "The compatibility Markdown Alert renderer delegates to that same gateway and no longer assembles a second Alert HTML artifact.",
+    "M5.4 replaces the separate inline/block gateway methods with one renderComponentContract entrypoint over the shared ComponentContractNode interface."
   ],
   "known_deviations": [
     "The accepted Russian component pages use generic component_block, typed_directive and inline component contracts rather than route-specific parser branches.",
@@ -69,6 +72,6 @@
     "Retire FrameworkComponentRuntime::extract only after block and inline Framework calls use the same gateway.",
     "Remove component-specific SmartRenderer branches only after manifest-driven template/view resolution has parity and fail-closed tests."
   ],
-  "status": "m3_ru_components_gateway_accepted",
-  "mapped_revision": "commit containing M3.6-INTEGRATED-ACCEPTANCE.md; runtime parent 59427fd7307d0981fa1627f83df4068c5d53fada"
+  "status": "m5_single_component_gateway_entrypoint_implemented",
+  "mapped_revision": "candidate commit containing M5.4-BUILD-AND-COMPONENT-CONTOUR.md"
 }

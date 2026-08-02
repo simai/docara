@@ -75,6 +75,31 @@ final readonly class PortableRuntimeMetadata
         ];
     }
 
+    /** @return array<string, array{files:int,sha256:string}> */
+    public function productionInputGroups(): array
+    {
+        $groups = [];
+        foreach ([
+            'component_contracts' => 'resources/component-catalog',
+            'component_templates' => 'resources/components',
+            'declarative_contracts' => 'resources/blocks',
+            'framework_manifests_assets' => 'resources/framework',
+            'layout_contracts' => 'resources/layouts',
+            'publisher_templates' => 'resources/publisher',
+            'publisher_runtime_assets' => 'resources/portable',
+            'smart_gateway_assets' => 'resources/smart',
+            'view_contracts' => 'resources/views',
+        ] as $id => $relative) {
+            $records = $this->treeRecords($relative);
+            $groups[$id] = [
+                'files' => count($records),
+                'sha256' => hash('sha256', CanonicalJson::encode($records)),
+            ];
+        }
+
+        return $groups;
+    }
+
     private function packageTreeHash(): string
     {
         $records = [];
@@ -104,6 +129,29 @@ final readonly class PortableRuntimeMetadata
         ksort($records, SORT_STRING);
 
         return hash('sha256', CanonicalJson::encode($records));
+    }
+
+    /** @return array<string, string> */
+    private function treeRecords(string $relativeRoot): array
+    {
+        $root = $this->packageRoot . '/' . $relativeRoot;
+        if (! is_dir($root) || is_link($root)) {
+            throw new RuntimeException("Package production input directory [{$relativeRoot}] is missing or unsafe.");
+        }
+        $records = [];
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($root, FilesystemIterator::SKIP_DOTS),
+        );
+        foreach ($iterator as $file) {
+            if (! $file->isFile() || $file->isLink()) {
+                continue;
+            }
+            $relative = str_replace('\\', '/', substr($file->getPathname(), strlen($this->packageRoot) + 1));
+            $records[$relative] = hash_file('sha256', $file->getPathname());
+        }
+        ksort($records, SORT_STRING);
+
+        return $records;
     }
 
     /** @return array<string, mixed> */

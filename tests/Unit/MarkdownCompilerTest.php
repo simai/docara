@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Document\ComponentAliasRegistry;
 use Simai\Docara\Document\ComponentBlockNode;
+use Simai\Docara\Document\ComponentContractNode;
 use Simai\Docara\Document\ComponentDocumentNodeRenderer;
 use Simai\Docara\Document\ComponentNode;
 use Simai\Docara\Document\DocumentIr;
@@ -393,6 +395,12 @@ MD, $source);
             ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'typed_directive', 'html_comment', 'component', 'component_block'],
             DocumentRendererRegistry::bundled(new PortableMarkdownRenderer)->types(),
         );
+        self::assertContains(ComponentContractNode::class, class_implements(ComponentNode::class));
+        self::assertContains(ComponentContractNode::class, class_implements(ComponentBlockNode::class));
+        $gateway = new \ReflectionClass(SmartComponentGateway::class);
+        self::assertTrue($gateway->hasMethod('renderComponentContract'));
+        self::assertFalse($gateway->hasMethod('renderComponent'));
+        self::assertFalse($gateway->hasMethod('renderComponentBlock'));
     }
 
     public function test_native_lists_and_quotes_keep_typed_source_ranges(): void

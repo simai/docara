@@ -114,7 +114,7 @@ final class InlineComponentRenderer
             );
         }
 
-        return $this->components->renderComponent(new ComponentNode(
+        return $this->components->renderComponentContract(new ComponentNode(
             $name,
             $this->aliases->resolve($name, $location),
             $label,

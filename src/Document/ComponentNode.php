@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Document;
 
-final readonly class ComponentNode implements DocumentNode
+final readonly class ComponentNode implements ComponentContractNode
 {
     /** @param array<string, string> $props */
     public function __construct(
@@ -23,6 +23,21 @@ final readonly class ComponentNode implements DocumentNode
     public function type(): string
     {
         return 'component';
+    }
+
+    public function alias(): string
+    {
+        return $this->alias;
+    }
+
+    public function component(): string
+    {
+        return $this->component;
+    }
+
+    public function props(): array
+    {
+        return $this->props;
     }
 
     public function raw(): string

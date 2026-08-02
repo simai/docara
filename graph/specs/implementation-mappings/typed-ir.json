@@ -30,6 +30,7 @@
     "src/Document/SourceNode.php",
     "src/Document/ComponentNode.php",
     "src/Document/ComponentBlockNode.php",
+    "src/Document/ComponentContractNode.php",
     "src/Document/SourceLocation.php",
     "src/Document/MarkdownCompiler.php",
     "src/Document/DocumentRendererRegistry.php",
@@ -68,7 +69,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-18-embed-example.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-19-steps-tree.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-20-tabs.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-21-component-index.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-21-component-index.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.4-BUILD-AND-COMPONENT-CONTOUR.md"
   ],
   "review_refs": ["docara.gate.vertical_slice"],
   "current_behavior": [
@@ -94,7 +96,8 @@
     "Batch 18 reuses generic typed_directive and example nodes for consent-gated Embed and interactive Example without adding family-specific compiler, IR, registry or gateway paths.",
     "Batch 19 reuses generic typed_directive nodes for Steps and Tree; accessible Tree interaction lives in the shared declarative shell without a family-specific compiler, IR, registry, gateway or PageBuilder.",
     "Batch 20 reuses the same generic typed_directive node and shared tab keyboard runtime for Tabs without a component-specific compiler, IR, registry, gateway or PageBuilder.",
-    "Batch 21 compiles the internal component_index view through the same generic typed_directive node and renderer registry; its post-PageBuilder hydrator consumes only page-result metadata and adds no page-prose registry."
+    "Batch 21 compiles the internal component_index view through the same generic typed_directive node and renderer registry; its post-PageBuilder hydrator consumes only page-result metadata and adds no page-prose registry.",
+    "M5.4 gives inline and block component nodes one ComponentContractNode interface and one SmartComponentGateway rendering entrypoint while keeping Document IR in memory."
   ],
   "known_deviations": [
     "The current AST can be serialized in receipts, but the target permits no mandatory page-level JSON/JSONL.",
@@ -107,6 +110,6 @@
     "Retire PortableMarkdownRenderer component logic only after every moved node renderer has positive, negative and source-location tests.",
     "Delete duplicate metadata parsing only after headings and links are derived from the canonical IR."
   ],
-  "status": "m3_ru_components_typed_ir_accepted",
-  "mapped_revision": "commit containing M3.6-INTEGRATED-ACCEPTANCE.md; runtime parent 59427fd7307d0981fa1627f83df4068c5d53fada"
+  "status": "m5_single_component_contract_implemented",
+  "mapped_revision": "candidate commit containing M5.4-BUILD-AND-COMPONENT-CONTOUR.md"
 }

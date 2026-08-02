@@ -18,7 +18,6 @@ use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\I18n\ContentLanguageRepository;
-use Simai\Docara\I18n\LanguagePackRepository;
 use Simai\Docara\I18n\LocaleInternalLinkProjector;
 use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\LocaleRoutingPolicy;
@@ -73,10 +72,14 @@ final readonly class PortableSiteBuilder
         $contentLanguages = new ContentLanguageRepository($root);
         $translator = new Translator(
             $localeRegistry,
-            new LanguagePackRepository($root),
+            null,
             $contentLanguages,
+            false,
         );
         $uiCopy = new UiCopy($translator);
+        $runtimeMetadata = new PortableRuntimeMetadata(dirname(__DIR__, 2));
+        $engineRevision = $runtimeMetadata->package();
+        $dependencyLock = $runtimeMetadata->dependencies();
         $buildLocale = $localeRegistry->default()->tag->value();
         $documentationVersion = (string) ($site['documentation_version'] ?? 'current');
         $defaultLocale = $localeRegistry->default();
@@ -126,6 +129,19 @@ final readonly class PortableSiteBuilder
                 );
             }
             $existingDiagnostics = $this->existingDiagnosticsByUrl($finalDestination);
+            $existingBuild = $this->existingBuildProvenance($finalDestination);
+            if (! hash_equals(
+                (string) ($existingBuild['engine']['tree_sha256'] ?? ''),
+                (string) $engineRevision['tree_sha256'],
+            ) || ! hash_equals(
+                (string) ($existingBuild['dependencies']['runtime_tuple_sha256'] ?? ''),
+                (string) $dependencyLock['runtime_tuple_sha256'],
+            )) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_ENGINE_CHANGED',
+                    'The engine or dependency tuple changed after the complete build. Run a full build before rebuilding one page.',
+                );
+            }
             if (! isset($existingDiagnostics[$selectedPageUrl])) {
                 throw new PortableConfigurationException(
                     'PORTABLE_PAGE_NOT_FOUND',
@@ -171,6 +187,12 @@ final readonly class PortableSiteBuilder
                 $plan->frameworkLock,
                 $this->frameworkAssetBase($plan->frameworkLock, (string) ($site['base_url'] ?? '/')),
             );
+            $route = $this->route(
+                $plan,
+                $localeDefinition->contentRoot,
+                $localeUrls,
+                $pageLocale,
+            );
             try {
                 $pageResult = $this->pageBuilder->build(
                     $plan,
@@ -181,19 +203,13 @@ final readonly class PortableSiteBuilder
             } catch (\Throwable $exception) {
                 throw new PortableConfigurationException(
                     'PAGE_BUILDER_FAILED',
-                    "PageBuilder failed for [$pagePath]: {$exception->getMessage()}",
+                    "PageBuilder failed for locale [$pageLocale], route [{$route['url']}], source [$pagePath]: {$exception->getMessage()}",
                     previous: $exception,
                 );
             }
             $components = $pageResult->frameworkComponents;
             $outline = $pageResult->outline;
             $contentHtml = $pageResult->contentHtml;
-            $route = $this->route(
-                $plan,
-                $localeDefinition->contentRoot,
-                $localeUrls,
-                $pageLocale,
-            );
             if (isset($outputs[$route['output']])) {
                 throw new PortableConfigurationException(
                     'PORTABLE_OUTPUT_COLLISION',
@@ -773,6 +789,13 @@ final readonly class PortableSiteBuilder
                         'html_sha256' => hash('sha256', $rendered),
                     ],
                     'declarative_pipeline' => $page['declarative_pipeline'],
+                    'input_chain' => [
+                        'resolved_plan_sha256' => $plan->canonicalHash(),
+                        'trace' => $plan->trace,
+                        'document_ir_sha256' => $documentIr->canonicalHash(),
+                        'framework_lock_sha256' => hash('sha256', CanonicalJson::encode($plan->frameworkLock)),
+                        'component_runtime_sha256' => hash('sha256', CanonicalJson::encode($page['components']->toArray())),
+                    ],
                 ];
                 $diagnosticsByUrl[(string) $page['url']] = $record;
                 $result->put((string) $page['url'], $record);
@@ -792,6 +815,18 @@ final readonly class PortableSiteBuilder
                 'build' => [
                     'locale' => $buildLocale,
                     'documentation_version' => $documentationVersion,
+                    'engine' => $engineRevision,
+                    'dependencies' => $dependencyLock,
+                    'framework' => [
+                        'lock_sha256' => hash('sha256', CanonicalJson::encode($buildBasePlan->frameworkLock)),
+                        'runtime' => $buildBasePlan->frameworkLock['runtime'],
+                        'manifests' => $buildBasePlan->frameworkLock['manifests'],
+                        'asset_projection' => $buildBasePlan->frameworkLock['asset_projection'],
+                    ],
+                    'production_inputs' => $runtimeMetadata->productionInputGroups(),
+                    'component_catalog_sha256' => hash('sha256', CanonicalJson::encode($effectiveComponentCatalog)),
+                    'publisher' => $this->publisher->id(),
+                    'locale_sources' => $this->localeSourceHashes($root, $contentContexts),
                 ],
                 'pages' => $this->orderedDiagnostics($contextPages, $diagnosticsByUrl),
             ]));
@@ -1148,6 +1183,52 @@ final readonly class PortableSiteBuilder
         }
 
         return $indexed;
+    }
+
+    /** @return array<string, mixed> */
+    private function existingBuildProvenance(string $destination): array
+    {
+        $path = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
+        try {
+            $document = json_decode((string) $this->files->get($path), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\Throwable $exception) {
+            throw new PortableConfigurationException(
+                'PORTABLE_INCREMENTAL_DIAGNOSTICS_INVALID',
+                'The existing build does not contain valid complete provenance. Run a full build first.',
+                $exception,
+            );
+        }
+        if (! is_array($document) || ! is_array($document['build'] ?? null)) {
+            throw new PortableConfigurationException(
+                'PORTABLE_INCREMENTAL_DIAGNOSTICS_INVALID',
+                'The existing build provenance is incomplete. Run a full build first.',
+            );
+        }
+
+        return $document['build'];
+    }
+
+    /**
+     * @param  array<string, array{root:string,path:string,prefix:string}>  $contentContexts
+     * @return array<string, array{path:string,sha256:string}>
+     */
+    private function localeSourceHashes(string $root, array $contentContexts): array
+    {
+        $sources = [];
+        foreach ($contentContexts as $locale => $context) {
+            $relative = rtrim($context['root'], '/\\') . '/lang.json';
+            $path = $root . '/' . $relative;
+            if (! is_file($path) || is_link($path)) {
+                continue;
+            }
+            $sources[$locale] = [
+                'path' => $relative,
+                'sha256' => hash_file('sha256', $path),
+            ];
+        }
+        ksort($sources, SORT_STRING);
+
+        return $sources;
     }
 
     /**

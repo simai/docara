@@ -45,7 +45,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-10-details-backlinks.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.4-TYPED-CONTOUR.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.4-BUILD-AND-COMPONENT-CONTOUR.md"
   ],
   "review_refs": ["docara.gate.vertical_slice", "docara.gate.architecture_acceptance"],
   "current_behavior": [
@@ -59,7 +60,8 @@
     "Alert full and isolated trees are byte-identical and an observer proves unrelated projections are not entered.",
     "Batch 07 replaces the per-route target whitelist with one content/(ru/)?components/<slug>.md boundary, so every new physical component owner automatically uses the same typed PageBuilder.",
     "M4.4 composes the PageBuilder document artifact with the declarative shell and records main_source=pagebuilder_document_ir for every route.",
-    "A full build writes one hash-bound disposable backlink projection; an isolated build reuses it for the selected route without compiling other pages, and full/single trees remain exact."
+    "A full build writes one hash-bound disposable backlink projection; an isolated build reuses it for the selected route without compiling other pages, and full/single trees remain exact.",
+    "M5.4 binds receipts to the exact engine/dependency/Framework and production-input hashes, refuses stale-engine partial builds and proves a selected-page failure preserves the entire accepted output."
   ],
   "known_deviations": [
     "All 103 Russian routes are physical and proven through the same typed PageBuilder path.",
@@ -71,6 +73,6 @@
     "Keep --page selection before compilation and prove it with observer tests.",
     "Change the typed artifact seam only with full/single HTML, asset, metadata, heading, link and diagnostic parity."
   ],
-  "status": "m4_all_current_public_ru_routes_typed_pagebuilder_accepted",
-  "mapped_revision": "commit containing M4.4-TYPED-CONTOUR.md; parent 7ba1033"
+  "status": "m5_stabilized_pending_candidate_matrix",
+  "mapped_revision": "candidate commit containing M5.4-BUILD-AND-COMPONENT-CONTOUR.md"
 }

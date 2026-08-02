@@ -12,6 +12,7 @@ use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortablePublisherAssetPublisher;
+use Simai\Docara\PortableSite\PortableRuntimeMetadata;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Smart\SmartRegistry;
 use Symfony\Component\Process\Process;
@@ -473,8 +474,8 @@ final class StaticBuildVerifierTest extends TestCase
         $this->writeJson($plansPath, $plans);
         $unknownLockField = $this->verify($build);
         self::assertSame(1, $unknownLockField->getExitCode(), $unknownLockField->getOutput());
-        self::assertStringContainsString('@framework-asset-projection', $unknownLockField->getOutput());
-        self::assertStringContainsString('not an allowed property', $unknownLockField->getOutput());
+        self::assertStringContainsString('@resolved-page-plans', $unknownLockField->getOutput());
+        self::assertStringContainsString('Framework tuple does not match', $unknownLockField->getOutput());
         file_put_contents($plansPath, $originalPlans);
 
         $buttonAssetPath = $build . '/_docara/framework/smart/buttons/js/buttons.js';
@@ -910,10 +911,10 @@ final class StaticBuildVerifierTest extends TestCase
     {
         if (is_array($manifest['pages'] ?? null)) {
             foreach ($manifest['pages'] as &$page) {
-                if (! is_array($page) || array_key_exists('component_runtime', $page)) {
+                if (! is_array($page)) {
                     continue;
                 }
-                $page['component_runtime'] = [
+                $page['component_runtime'] ??= [
                     'diagnostics' => [
                         'runtime_pair' => self::FRAMEWORK_PAIR,
                         'provider_revision' => self::FRAMEWORK_PROVIDER_REVISION,
@@ -925,6 +926,34 @@ final class StaticBuildVerifierTest extends TestCase
                     ],
                 ];
                 $page['resolved_page_plan']['framework_lock'] ??= $this->frameworkLock();
+                $resolved = $page['resolved_page_plan'] ?? null;
+                if (! is_array($resolved) || ! is_array($resolved['configuration'] ?? null)) {
+                    continue;
+                }
+                $resolved['contract_version'] ??= 1;
+                $resolved['page'] ??= 'content/index.md';
+                $resolved['markdown'] ??= '# Fixture';
+                $resolved['provenance'] ??= [];
+                $resolved['trace'] ??= [[
+                    'role' => 'content',
+                    'source' => $resolved['page'],
+                    'sha256' => hash('sha256', (string) $resolved['markdown']),
+                ]];
+                $page['resolved_page_plan'] = $resolved;
+                $page['input_chain'] = [
+                    'resolved_plan_sha256' => hash('sha256', CanonicalJson::encode([
+                        'contract_version' => $resolved['contract_version'],
+                        'page' => $resolved['page'],
+                        'markdown' => $resolved['markdown'],
+                        'configuration' => $resolved['configuration'],
+                        'framework_lock' => $resolved['framework_lock'],
+                        'provenance' => $resolved['provenance'],
+                    ])),
+                    'trace' => $resolved['trace'],
+                    'document_ir_sha256' => hash('sha256', 'synthetic-document-ir'),
+                    'framework_lock_sha256' => hash('sha256', CanonicalJson::encode($resolved['framework_lock'])),
+                    'component_runtime_sha256' => hash('sha256', CanonicalJson::encode($page['component_runtime'])),
+                ];
             }
             unset($page);
         }
@@ -936,11 +965,34 @@ final class StaticBuildVerifierTest extends TestCase
         ) {
             $configuration = $manifest['pages'][0]['resolved_page_plan']['configuration'] ?? null;
             if (is_array($configuration)) {
+                $metadata = new PortableRuntimeMetadata(dirname(__DIR__, 2));
+                $frameworkLock = $this->frameworkLock();
+                $catalog = EffectiveComponentCatalogBuilder::bundled(
+                    FrameworkLock::fromArray($frameworkLock),
+                )->build();
+                $locale = $configuration['default_locale']
+                    ?? $configuration['locale']
+                    ?? 'en';
                 $manifest['build'] = [
                     'documentation_version' => $configuration['documentation_version'] ?? 'current',
-                    'locale' => $configuration['default_locale']
-                        ?? $configuration['locale']
-                        ?? 'en',
+                    'locale' => $locale,
+                    'engine' => $metadata->package(),
+                    'dependencies' => $metadata->dependencies(),
+                    'framework' => [
+                        'lock_sha256' => hash('sha256', CanonicalJson::encode($frameworkLock)),
+                        'runtime' => $frameworkLock['runtime'],
+                        'manifests' => $frameworkLock['manifests'],
+                        'asset_projection' => $frameworkLock['asset_projection'],
+                    ],
+                    'production_inputs' => $metadata->productionInputGroups(),
+                    'component_catalog_sha256' => hash('sha256', CanonicalJson::encode($catalog)),
+                    'publisher' => 'test.static_fixture',
+                    'locale_sources' => [
+                        $locale => [
+                            'path' => 'content/' . $locale . '/lang.json',
+                            'sha256' => hash('sha256', 'synthetic-locale-source:' . $locale),
+                        ],
+                    ],
                 ];
             }
         }

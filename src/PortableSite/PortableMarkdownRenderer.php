@@ -967,7 +967,7 @@ final class PortableMarkdownRenderer
         $location = new SourceLocation($sourceFile ?? '@markdown', 1, 1, 1);
         $alias = 'alert';
 
-        return $this->components->renderComponentBlock(
+        return $this->components->renderComponentContract(
             new ComponentBlockNode(
                 $alias,
                 (new ComponentAliasRegistry)->resolve($alias, $location),

@@ -83,6 +83,81 @@ final class PortableSiteBuilderTest extends TestCase
     }
 
     #[Test]
+    public function it_records_exact_safe_build_and_page_input_provenance(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+
+        $receipt = $this->jsonFile($this->tmpPath('build_local/.docara/resolved-page-plans.json'));
+        self::assertSame('docara.package_revision.v1', $receipt['build']['engine']['schema']);
+        self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $receipt['build']['engine']['tree_sha256']);
+        self::assertSame('docara.dependency_lock.v1', $receipt['build']['dependencies']['schema']);
+        self::assertFalse($receipt['build']['dependencies']['moving_references_allowed']);
+        self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $receipt['build']['framework']['lock_sha256']);
+        self::assertArrayHasKey('publisher_templates', $receipt['build']['production_inputs']);
+        self::assertArrayHasKey('publisher_runtime_assets', $receipt['build']['production_inputs']);
+        self::assertArrayHasKey('framework_manifests_assets', $receipt['build']['production_inputs']);
+        self::assertSame('content/lang.json', $receipt['build']['locale_sources']['ru']['path']);
+        self::assertStringNotContainsString($this->tmp, json_encode($receipt, JSON_THROW_ON_ERROR));
+
+        $page = collect($receipt['pages'])->firstWhere('url', '/guides/getting-started/');
+        self::assertIsArray($page);
+        self::assertSame($page['canonical_hash'], $page['input_chain']['resolved_plan_sha256']);
+        self::assertSame('content/guides/getting-started.md', $page['input_chain']['trace'][count($page['input_chain']['trace']) - 1]['source']);
+        self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $page['input_chain']['document_ir_sha256']);
+        self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $page['input_chain']['component_runtime_sha256']);
+    }
+
+    #[Test]
+    public function a_failed_single_page_compile_preserves_the_entire_accepted_output(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $destination = $this->tmpPath('build_local');
+        $builder = $this->builder();
+        $builder->build($this->tmp, $destination);
+        $accepted = $this->treeHashes($destination);
+        $source = $this->tmpPath('content/guides/getting-started.md');
+        file_put_contents($source, (string) file_get_contents($source) . "\n:::unknown\nBroken\n:::\n");
+
+        try {
+            $builder->build($this->tmp, $destination, '/guides/getting-started/');
+            self::fail('An invalid selected page unexpectedly replaced the accepted output.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('PAGE_BUILDER_FAILED', $exception->errorCode);
+            self::assertStringContainsString('locale [ru]', $exception->getMessage());
+            self::assertStringContainsString('route [/guides/getting-started/]', $exception->getMessage());
+            self::assertStringContainsString('content/guides/getting-started.md:', $exception->getMessage());
+        }
+
+        self::assertSame($accepted, $this->treeHashes($destination));
+        self::assertDirectoryDoesNotExist($destination . '.docara-candidate');
+    }
+
+    #[Test]
+    public function single_page_build_fails_closed_when_the_complete_build_engine_provenance_differs(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $destination = $this->tmpPath('build_local');
+        $builder = $this->builder();
+        $builder->build($this->tmp, $destination);
+        $receiptPath = $destination . '/.docara/resolved-page-plans.json';
+        $receipt = $this->jsonFile($receiptPath);
+        $receipt['build']['engine']['tree_sha256'] = str_repeat('0', 64);
+        file_put_contents($receiptPath, CanonicalJson::encodePretty($receipt));
+        $accepted = $this->treeHashes($destination);
+
+        try {
+            $builder->build($this->tmp, $destination, '/guides/getting-started/');
+            self::fail('A stale complete-build engine unexpectedly allowed a partial build.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('PORTABLE_INCREMENTAL_ENGINE_CHANGED', $exception->errorCode);
+        }
+
+        self::assertSame($accepted, $this->treeHashes($destination));
+        self::assertDirectoryDoesNotExist($destination . '.docara-candidate');
+    }
+
+    #[Test]
     public function it_requires_a_complete_base_build_for_single_page_rebuilds(): void
     {
         $this->copyPortableFixture($this->tmp);
@@ -117,7 +192,7 @@ final class PortableSiteBuilderTest extends TestCase
                 ),
             );
             if ($locale !== 'ru') {
-                unlink($this->tmpPath("content/$locale/lang.json"));
+                $this->installContentLanguageFromPackage($locale, $this->tmpPath("content/$locale/lang.json"));
             }
         }
         $this->filesystem->deleteDirectory($this->tmpPath('content-source'));
@@ -208,6 +283,47 @@ final class PortableSiteBuilderTest extends TestCase
             $verification->getExitCode(),
             $verification->getErrorOutput() . $verification->getOutput(),
         );
+    }
+
+    #[Test]
+    public function public_build_reads_ui_copy_only_from_locale_content_and_never_from_package_language_packs(): void
+    {
+        $this->copyPortableFixture($this->tmp, legacyCompatibility: false);
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('resources/language-packs'));
+        file_put_contents($this->tmpPath('resources/language-packs/ru.json'), '{not-json');
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+
+        $receipt = $this->jsonFile($this->tmpPath('build_local/.docara/resolved-page-plans.json'));
+        self::assertSame('content/ru/lang.json', $receipt['build']['locale_sources']['ru']['path']);
+        self::assertStringContainsString(
+            'Открыть поиск по документации',
+            (string) file_get_contents($this->tmpPath('build_local/ru/index.html')),
+        );
+    }
+
+    #[Test]
+    public function declared_locale_without_its_own_ui_copy_fails_without_silent_fallback_and_preserves_output(): void
+    {
+        $this->copyPortableFixture($this->tmp, legacyCompatibility: false);
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('content/en'));
+        file_put_contents($this->tmpPath('content/en/index.md'), "# English fixture\n\nExact locale owner.\n");
+        $site = $this->jsonFile($this->tmpPath('docara.json'));
+        $site['locales']['en'] = $this->localeDefinition('English', 'ltr', 'content/en', '@docara/en', 'en', ['ru']);
+        file_put_contents($this->tmpPath('docara.json'), CanonicalJson::encodePretty($site));
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('build_local'));
+        file_put_contents($this->tmpPath('build_local/sentinel.txt'), 'accepted');
+
+        try {
+            $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+            self::fail('A declared locale without content/<locale>/lang.json unexpectedly used a fallback.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('MESSAGE_NOT_FOUND', $exception->errorCode);
+            self::assertStringContainsString('locale [en]', $exception->getMessage());
+            self::assertStringNotContainsString('fallbacks', $exception->getMessage());
+        }
+
+        self::assertSame('accepted', file_get_contents($this->tmpPath('build_local/sentinel.txt')));
     }
 
     #[Test]
@@ -2244,6 +2360,31 @@ MD;
                     'language' => 'json',
                 ]],
             ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+    }
+
+    private function installContentLanguageFromPackage(string $locale, string $target): void
+    {
+        $pack = $this->jsonFile(dirname(__DIR__) . '/resources/language-packs/' . $locale . '.json');
+        $language = $this->jsonFile(dirname(__DIR__) . '/stubs/portable/content/ru/lang.json');
+        foreach ($pack['messages'] as $id => $message) {
+            $namespace = explode('.', (string) $id, 2)[0];
+            if (! isset($language[$namespace]) || ! is_array($language[$namespace])) {
+                continue;
+            }
+            $cursor = &$language;
+            foreach (explode('.', (string) $id) as $segment) {
+                if (! isset($cursor[$segment]) || ! is_array($cursor[$segment])) {
+                    $cursor[$segment] = [];
+                }
+                $cursor = &$cursor[$segment];
+            }
+            $cursor = $message;
+            unset($cursor);
+        }
+        file_put_contents(
+            $target,
+            json_encode($language, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . "\n",
         );
     }
 

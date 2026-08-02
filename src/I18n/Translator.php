@@ -10,8 +10,9 @@ final readonly class Translator
 {
     public function __construct(
         private LocaleRegistry $locales,
-        private LanguagePackRepository $packs,
+        private ?LanguagePackRepository $packs,
         private ?ContentLanguageRepository $contentLanguages = null,
+        private bool $allowMessageFallbacks = true,
     ) {}
 
     /** @param array<string, scalar> $parameters */
@@ -20,10 +21,16 @@ final readonly class Translator
         if (preg_match('/^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9_-]*)+$/D', $id) !== 1) {
             throw new PortableConfigurationException('MESSAGE_ID_INVALID', "Message ID [$id] is invalid.");
         }
-        foreach ($this->locales->fallbackChain($locale) as $candidate) {
+        $candidates = $this->allowMessageFallbacks
+            ? $this->locales->fallbackChain($locale)
+            : [$this->locales->get($locale)];
+        foreach ($candidates as $candidate) {
             $contentMessages = $this->contentLanguages?->messages($candidate) ?? [];
             if (array_key_exists($id, $contentMessages)) {
                 return $this->replace($contentMessages[$id], $parameters);
+            }
+            if ($this->packs === null) {
+                continue;
             }
             $pack = $this->packs->load($candidate);
             if (! array_key_exists($id, $pack->messages)) {
@@ -35,7 +42,8 @@ final readonly class Translator
 
         throw new PortableConfigurationException(
             'MESSAGE_NOT_FOUND',
-            "Message [$id] is not available for locale [" . LocaleTag::from($locale)->value() . '] or its fallbacks.',
+            "Message [$id] is not available for locale [" . LocaleTag::from($locale)->value() . ']'
+                . ($this->allowMessageFallbacks ? ' or its fallbacks.' : '.'),
         );
     }
 
@@ -72,6 +80,12 @@ final readonly class Translator
     /** @return array<string, mixed> */
     public function component(string $locale, string $componentId): array
     {
+        if ($this->packs === null) {
+            throw new PortableConfigurationException(
+                'COMPONENT_PRESENTATION_PACKAGE_ONLY',
+                'Public content-only translation does not expose package component presentations.',
+            );
+        }
         $resolved = [];
         $found = false;
         $chain = array_reverse($this->locales->fallbackChain($locale));

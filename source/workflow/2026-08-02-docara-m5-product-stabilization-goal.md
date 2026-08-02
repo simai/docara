@@ -76,7 +76,7 @@ Status: `PASS`
 
 ### M5.4 Build/diagnostics and architecture proof
 
-Status: `in_progress`
+Status: `PASS`
 
 - bind receipts to package revision, Framework tuple, source/config/template,
   manifest and asset hashes without private absolute paths;
@@ -85,6 +85,8 @@ Status: `in_progress`
 - keep typed Document IR in memory without mandatory page IR files.
 
 ### M5.5 Locale, security and accessibility fixtures
+
+Status: `in_progress`
 
 - add a minimal second LTR and RTL portable fixture through the same engine;
 - prove locale routing, no silent editorial fallback, logical layout and

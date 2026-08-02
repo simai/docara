@@ -22,6 +22,6 @@ final readonly class ComponentDocumentNodeRenderer implements DocumentNodeRender
             throw new \LogicException('DOCUMENT_COMPONENT_RENDERER_NODE_INVALID');
         }
 
-        return $this->components->renderComponent($node);
+        return $this->components->renderComponentContract($node);
     }
 }

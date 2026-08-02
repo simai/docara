@@ -8,6 +8,7 @@ use Simai\Docara\Declarative\Document\SmartCallNode;
 use Simai\Docara\Declarative\Plan\ResolvedSmartPlan;
 use Simai\Docara\Declarative\Rendering\RenderArtifact;
 use Simai\Docara\Document\ComponentBlockNode;
+use Simai\Docara\Document\ComponentContractNode;
 use Simai\Docara\Document\ComponentNode;
 use Simai\Docara\Document\ContentComponentRenderer;
 use Simai\Docara\Portable\PortableConfigurationException;
@@ -58,13 +59,25 @@ final readonly class SmartComponentGateway
         );
     }
 
-    public function renderComponent(ComponentNode $component): RenderArtifact
+    public function renderComponentContract(ComponentContractNode $component, ?string $bodyHtml = null): RenderArtifact
     {
-        return $this->content->render($component);
-    }
+        if ($component instanceof ComponentNode) {
+            if ($bodyHtml !== null) {
+                throw new PortableConfigurationException(
+                    'CONTENT_COMPONENT_INLINE_BODY_FORBIDDEN',
+                    "Inline component [{$component->component()}] cannot receive a document body at [{$component->location()->label()}].",
+                );
+            }
 
-    public function renderComponentBlock(ComponentBlockNode $component, string $bodyHtml): RenderArtifact
-    {
-        return $this->content->renderBlock($component, $bodyHtml);
+            return $this->content->render($component);
+        }
+        if ($component instanceof ComponentBlockNode && $bodyHtml !== null) {
+            return $this->content->renderBlock($component, $bodyHtml);
+        }
+
+        throw new PortableConfigurationException(
+            'CONTENT_COMPONENT_DOCUMENT_BODY_REQUIRED',
+            "Block component [{$component->component()}] requires a rendered document body at [{$component->location()->label()}].",
+        );
     }
 }

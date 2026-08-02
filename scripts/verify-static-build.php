@@ -1628,6 +1628,7 @@ $expectedConsumerPolicyHash = null;
 $expectedFrameworkLock = null;
 $expectedBuildLocale = null;
 $expectedDocumentationVersion = null;
+$expectedBuildComponentCatalogHash = null;
 $expectedRedirectSource = null;
 $redirectSourceInitialized = false;
 $trustedCatalog = null;
@@ -1725,6 +1726,46 @@ if (is_link($manifestDirectory)
                 $outputs[$output] = true;
                 $manifestPageRecords[] = $page;
 
+                $inputChain = $page['input_chain'] ?? null;
+                $trace = is_array($inputChain) ? ($inputChain['trace'] ?? null) : null;
+                if (! is_array($inputChain)
+                    || ! docaraExactKeys($inputChain, [
+                        'resolved_plan_sha256',
+                        'trace',
+                        'document_ir_sha256',
+                        'framework_lock_sha256',
+                        'component_runtime_sha256',
+                    ])
+                    || ! is_array($trace)
+                    || ! array_is_list($trace)
+                    || $trace === []
+                ) {
+                    throw new RuntimeException("Resolved page-plan record [$index] has no exact input chain.");
+                }
+                foreach ([
+                    'resolved_plan_sha256',
+                    'document_ir_sha256',
+                    'framework_lock_sha256',
+                    'component_runtime_sha256',
+                ] as $hashField) {
+                    if (! is_string($inputChain[$hashField] ?? null)
+                        || preg_match('/\A[a-f0-9]{64}\z/D', $inputChain[$hashField]) !== 1
+                    ) {
+                        throw new RuntimeException("Resolved page-plan record [$index] has an invalid [$hashField].");
+                    }
+                }
+                foreach ($trace as $traceIndex => $traceRecord) {
+                    if (! is_array($traceRecord)
+                        || ! is_string($traceRecord['role'] ?? null)
+                        || ! is_string($traceRecord['source'] ?? null)
+                        || ! docaraCatalogSafePath($traceRecord['source'])
+                        || ! is_string($traceRecord['sha256'] ?? null)
+                        || preg_match('/\A[a-f0-9]{64}\z/D', $traceRecord['sha256']) !== 1
+                    ) {
+                        throw new RuntimeException("Resolved page-plan trace [$index:$traceIndex] is incomplete or unsafe.");
+                    }
+                }
+
                 $diagnostics = $page['component_runtime']['diagnostics'] ?? null;
                 $runtimePair = is_array($diagnostics) ? ($diagnostics['runtime_pair'] ?? null) : null;
                 $providerRevision = is_array($diagnostics) ? ($diagnostics['provider_revision'] ?? null) : null;
@@ -1808,13 +1849,117 @@ if (is_link($manifestDirectory)
             $deploymentBase = $configuredBase === '/' ? '/' : '/' . trim($configuredBase, '/') . '/';
             $manifestBuild = $manifest['build'] ?? null;
             if (! is_array($manifestBuild)
-                || ! docaraExactKeys($manifestBuild, ['locale', 'documentation_version'])
-                || ($manifestBuild['locale'] ?? null) !== $expectedBuildLocale
-                || ($manifestBuild['documentation_version'] ?? null) !== $expectedDocumentationVersion
+                || ! docaraExactKeys($manifestBuild, [
+                    'locale',
+                    'documentation_version',
+                    'engine',
+                    'dependencies',
+                    'framework',
+                    'production_inputs',
+                    'component_catalog_sha256',
+                    'publisher',
+                    'locale_sources',
+                ])
             ) {
                 throw new RuntimeException(
-                    'Resolved build metadata is required and must match page locale and version metadata.',
+                    'Resolved build metadata is required and must contain the exact provenance contract.',
                 );
+            }
+            if (($manifestBuild['locale'] ?? null) !== $expectedBuildLocale
+                || ($manifestBuild['documentation_version'] ?? null) !== $expectedDocumentationVersion
+            ) {
+                throw new RuntimeException('Resolved build locale and version must match page metadata.');
+            }
+            $engine = $manifestBuild['engine'] ?? null;
+            if (! is_array($engine)
+                || ! docaraExactKeys($engine, ['schema', 'name', 'version', 'source_revision', 'tree_sha256', 'immutable'])
+                || ($engine['schema'] ?? null) !== 'docara.package_revision.v1'
+                || ($engine['name'] ?? null) !== 'simai/docara'
+                || ($engine['immutable'] ?? null) !== true
+                || ! is_string($engine['version'] ?? null)
+                || ! is_string($engine['source_revision'] ?? null)
+                || preg_match('/\A(?:[a-f0-9]{40}|sha256:[a-f0-9]{64})\z/D', $engine['source_revision']) !== 1
+                || ! is_string($engine['tree_sha256'] ?? null)
+                || preg_match('/\A[a-f0-9]{64}\z/D', $engine['tree_sha256']) !== 1
+            ) {
+                throw new RuntimeException('Resolved build engine revision is incomplete or mutable.');
+            }
+            $dependencies = $manifestBuild['dependencies'] ?? null;
+            if (! is_array($dependencies)
+                || ($dependencies['schema'] ?? null) !== 'docara.dependency_lock.v1'
+                || ($dependencies['owner'] ?? null) !== 'consumer'
+                || ($dependencies['moving_references_allowed'] ?? null) !== false
+                || ! is_string($dependencies['runtime_tuple_sha256'] ?? null)
+                || preg_match('/\A[a-f0-9]{64}\z/D', $dependencies['runtime_tuple_sha256']) !== 1
+                || ! is_array($dependencies['packages'] ?? null)
+                || array_is_list($dependencies['packages'])
+            ) {
+                throw new RuntimeException('Resolved build dependency tuple is incomplete or mutable.');
+            }
+            foreach ($dependencies['packages'] as $package => $record) {
+                if (! is_string($package)
+                    || ! is_array($record)
+                    || ! is_string($record['version'] ?? null)
+                    || ! is_string($record['reference'] ?? null)
+                    || preg_match('/\A[a-f0-9]{40}\z/D', $record['reference']) !== 1
+                ) {
+                    throw new RuntimeException('Resolved build dependency tuple contains an unpinned package.');
+                }
+            }
+            $frameworkBuild = $manifestBuild['framework'] ?? null;
+            if (! is_array($frameworkBuild)
+                || ! docaraExactKeys($frameworkBuild, ['lock_sha256', 'runtime', 'manifests', 'asset_projection'])
+                || ! is_string($frameworkBuild['lock_sha256'] ?? null)
+                || ! hash_equals(
+                    $frameworkBuild['lock_sha256'],
+                    hash('sha256', docaraCanonicalJson($expectedFrameworkLock)),
+                )
+                || ($frameworkBuild['runtime'] ?? null) !== ($expectedFrameworkLock['runtime'] ?? null)
+                || ($frameworkBuild['manifests'] ?? null) !== ($expectedFrameworkLock['manifests'] ?? null)
+                || ($frameworkBuild['asset_projection'] ?? null) !== ($expectedFrameworkLock['asset_projection'] ?? null)
+            ) {
+                throw new RuntimeException('Resolved build Framework tuple does not match its page plans.');
+            }
+            $productionInputs = $manifestBuild['production_inputs'] ?? null;
+            if (! is_array($productionInputs) || array_is_list($productionInputs) || $productionInputs === []) {
+                throw new RuntimeException('Resolved build production input hashes are missing.');
+            }
+            foreach ($productionInputs as $group => $record) {
+                if (! is_string($group)
+                    || ! is_array($record)
+                    || ! docaraExactKeys($record, ['files', 'sha256'])
+                    || ! is_int($record['files'] ?? null)
+                    || $record['files'] < 1
+                    || ! is_string($record['sha256'] ?? null)
+                    || preg_match('/\A[a-f0-9]{64}\z/D', $record['sha256']) !== 1
+                ) {
+                    throw new RuntimeException('Resolved build production input hashes are invalid.');
+                }
+            }
+            if (! is_string($manifestBuild['component_catalog_sha256'] ?? null)
+                || preg_match('/\A[a-f0-9]{64}\z/D', $manifestBuild['component_catalog_sha256']) !== 1
+                || ! is_string($manifestBuild['publisher'] ?? null)
+                || $manifestBuild['publisher'] === ''
+            ) {
+                throw new RuntimeException('Resolved build catalogue or publisher provenance is invalid.');
+            }
+            $expectedBuildComponentCatalogHash = $manifestBuild['component_catalog_sha256'];
+            $localeSources = $manifestBuild['locale_sources'] ?? null;
+            if (! is_array($localeSources) || array_is_list($localeSources)) {
+                throw new RuntimeException('Resolved build locale source provenance is invalid.');
+            }
+            foreach ($localeSources as $locale => $record) {
+                if (! is_string($locale)
+                    || ! LocaleTag::isWellFormed($locale)
+                    || ! is_array($record)
+                    || ! docaraExactKeys($record, ['path', 'sha256'])
+                    || ! is_string($record['path'] ?? null)
+                    || ! docaraCatalogSafePath($record['path'])
+                    || ! is_string($record['sha256'] ?? null)
+                    || preg_match('/\A[a-f0-9]{64}\z/D', $record['sha256']) !== 1
+                ) {
+                    throw new RuntimeException('Resolved build locale source provenance is invalid.');
+                }
             }
 
             foreach ($manifestPageRecords as $index => $page) {
@@ -2445,7 +2590,6 @@ if ($manifestError === null) {
             ) {
                 throw new RuntimeException('Effective component catalogue root contract is invalid.');
             }
-
             $nonclaims = $catalog['nonclaims'] ?? null;
             if (! is_array($nonclaims)
                 || array_is_list($nonclaims)
@@ -2554,6 +2698,14 @@ if ($manifestError === null) {
                 throw new RuntimeException(
                     'Effective component catalogue does not match the trusted source projection.',
                 );
+            }
+            if (! is_string($expectedBuildComponentCatalogHash)
+                || ! hash_equals(
+                    $expectedBuildComponentCatalogHash,
+                    hash('sha256', docaraCanonicalJson($catalog)),
+                )
+            ) {
+                throw new RuntimeException('Effective component catalogue does not match the resolved build provenance hash.');
             }
             $trustedCatalogVerified = true;
             foreach ($catalog['entries'] as $entry) {

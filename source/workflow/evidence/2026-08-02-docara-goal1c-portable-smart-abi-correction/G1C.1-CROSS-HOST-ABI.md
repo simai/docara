@@ -4,6 +4,7 @@ Status: `BLOCKED_EXACT_SF5_HOST_CONTRACT`
 Docara runtime commit: `2d779107add39155edc26537929323aebe066984`
 Documentation checkpoint: `5124959521b6ae51c7e5fa925b3c3230a65a54ef`
 Executable context-probe commit: `c82dba1859a9dab5f4318c37f2bd7b7dfdab239e`
+Disposable remediation proof commit: `598746d749fe56a4b028898d7b0aed6726f25895`
 Pinned SF5 source: `d6f90bba6a9a2f30ac41075d62cf51f1014b7e78`
 
 ## Executable full-context probe

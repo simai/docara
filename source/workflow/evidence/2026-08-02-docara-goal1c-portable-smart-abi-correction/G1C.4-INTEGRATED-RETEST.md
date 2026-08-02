@@ -3,6 +3,7 @@
 Status: `PARTIAL_PASS_NO_ACCEPTANCE_CANDIDATE`
 Two-build/parity revision: `5124959521b6ae51c7e5fa925b3c3230a65a54ef`
 Final blocker-governance verification revision: `4d240944377a354f9a50ff6fe52fc31ed2bc7148`
+Latest bounded remediation verification revision: `598746d749fe56a4b028898d7b0aed6726f25895`
 Environment: macOS, PHP 8.4.20
 
 ## Test and build results

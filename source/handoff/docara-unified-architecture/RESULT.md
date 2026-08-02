@@ -597,3 +597,23 @@ Scope is deliberately exact: this closes Russian `/ru/components/` M3 only.
 Other locales, remaining project-wide M4 legacy retirement, release and
 production readiness are not claimed. No merge, push, tag, release or deploy
 was performed.
+
+## M4.1 recovery and governance checkpoint
+
+Status: PASS; M4 implementation continues
+
+- exact accepted M3 input is `230ce7504e72162dfb85db4687ba851b49353335`;
+- the current Russian build selects 103 pages: 89 physical Markdown owners and
+  exactly 14 generated `/ru/examples/` owners;
+- all 14 generated routes reproduce byte-identical HTML in full and isolated
+  builds;
+- the baseline has 309 files; static verification checks 206 HTML and 18,942
+  local references with zero broken;
+- representative index/detail browser baselines cover desktop/mobile and
+  light/dark with zero console errors;
+- M4 graph lifecycle is active at contract readiness, not implementation PASS;
+- recovery and evidence:
+  `source/workflow/2026-08-02-docara-m4-public-ru-unification-goal.md` and
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/INDEX.md`.
+
+No runtime or content migration and no legacy deletion is claimed by M4.1.

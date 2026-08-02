@@ -1,10 +1,11 @@
-# Next checkpoint: independent review or separately authorized stage
+# Next checkpoint: M4 physical examples migration
 
-The bounded M3 Russian components Goal is complete. Recovery source:
-`source/workflow/2026-08-01-docara-m3-ru-components-goal.md`.
+The bounded M3 Russian components Goal is complete and independently accepted.
+M4 is now active. Recovery source:
+`source/workflow/2026-08-02-docara-m4-public-ru-unification-goal.md`.
 
-Final evidence index:
-`source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/INDEX.md`.
+Live evidence index:
+`source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/INDEX.md`.
 
 ## Accepted state
 
@@ -17,12 +18,11 @@ Final evidence index:
   static broken links/assets are zero, and the required browser matrix passes;
 - M3 reverse-outcome audit: PASS.
 
-## Next authorized choices
+## Active next action
 
-1. Independent read-only audit of the final M3 checkpoint.
-2. A separately scoped M4 batch for remaining project-wide legacy that still
-   has consumers or requires cross-locale proof.
-3. A separately scoped migration for another locale.
+Migrate the 14 generated `/ru/examples/` routes to physical Markdown owners,
+preserving the canonical demonstrator result pages and public behavior. Only
+after parity may their generated allowlist/projector publication path shrink.
 
-Do not infer release or production readiness from M3. Merge, push, tag,
-release and deploy still require separate instructions.
+M4 PASS, M5/global acceptance, other locales, release and production remain
+unclaimed. Merge, push, tag, release and deploy remain forbidden.

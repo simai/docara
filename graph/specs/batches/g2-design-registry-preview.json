@@ -1,0 +1,23 @@
+{
+  "id": "docara.batch.g2.design_registry_preview",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "Goal 2 Design Registry and preview execution",
+  "summary": "Execute G2.0-G2.6 as recoverable checkpoints without starting the Developer/AI SDK goal.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "in_progress",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-03-docara-goal2-design-registry-preview.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md"],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.g2.design_registry_preview",
+  "allowed_scope": ["Docara design registry, declarative composition, preview runtime and CLI, trusted project fixtures, tests, documentation, graph, workflow and handoff"],
+  "forbidden_scope": ["External Framework repositories", "docara-new.test", "docara.test", "Goal 3", "SDK", "MCP", "Merge", "Push", "Tag", "Release", "Deploy"],
+  "checks": ["Design provider and compatibility tests", "Security negatives", "Preview-to-build parity", "Watch invalidation", "Goal 1 regression", "Full/single parity", "Deterministic builds", "Static verifier", "Browser matrix", "Graph and documentation validation"],
+  "status": "g2_0_governance_and_inventory_active",
+  "candidate_revision": "40f5c5d14dce74383a57d408fd593507addd43d0",
+  "next_action": "execute_g2_1_design_registry"
+}

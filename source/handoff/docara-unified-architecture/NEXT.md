@@ -1,15 +1,17 @@
-# Next action: independent Goal 1 reverse-outcome audit
+# Next action: `execute_g2_1_design_registry`
 
-Goal 1-D correction is complete at implementation candidate
-`44acc1ff91233fa78140222fcb0589bf55b65ca0`. Generic artifact/provider data now
-resolve explicit view, preset-selected view and `default`; the active central
-source structural gate includes `DeclarativePageCompiler` and rejects known
-component IDs or the retired `defaultCompositeView` helper.
+Current state: `goal2_in_progress`
 
-Review the reproducible commands and hashes in
-`source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md`.
-Goal 1 is `ready_for_independent_audit`, not accepted. Goal 2/3 remain
-unstarted. No live/release action is authorized.
+Current candidate: `40f5c5d14dce74383a57d408fd593507addd43d0`
+
+Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md`
+
+Goal 1 was independently accepted. Execute Goal 2 batches G2.1-G2.6 from
+`source/workflow/2026-08-03-docara-goal2-design-registry-preview.md`, beginning
+with one deterministic DesignRegistry and its provider/security contract.
+
+Goal 2 must finish `ready_for_independent_audit`, not self-accepted. Goal 3 and
+all live/release actions remain unauthorized.
 
 ## Historical deployment decision (parked, not executable)
 

@@ -7,8 +7,8 @@
   "title": "Goal 1 portable Smart runtime execution",
   "summary": "Execute G1.0-G1.6 as recoverable checkpoints without starting the design-registry or SDK goals.",
   "owner": "dev",
-  "lifecycle": "active",
-  "readiness": "ready_for_independent_audit",
+  "lifecycle": "completed",
+  "readiness": "accepted",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-02-docara-goal1-portable-smart-runtime.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md"],
@@ -17,8 +17,8 @@
   "allowed_scope": ["Docara Smart runtime, artifacts, project fixture, tests, specification, graph, workflow and handoff"],
   "forbidden_scope": ["External Framework repositories", "docara-new.test", "docara.test", "Goal 2", "Goal 3", "Merge", "Push", "Tag", "Release", "Deploy"],
   "checks": ["Provider and gateway tests", "Security negatives", "Cross-host proof", "Full/single parity", "Deterministic builds", "Static verifier", "Browser smoke", "Graph and documentation validation"],
-  "status": "goal1d_complete_audit_pending",
+  "status": "goal1_independently_accepted",
   "candidate_revision": "44acc1ff91233fa78140222fcb0589bf55b65ca0",
   "superseded_candidate_revision": "34496d49ce366f1108d2aed37c0adda35f6e5f58",
-  "next_action": "independent_goal1_reverse_outcome_audit"
+  "next_action": "execute_goal2_design_registry_preview"
 }

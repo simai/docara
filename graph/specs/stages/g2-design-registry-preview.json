@@ -1,0 +1,28 @@
+{
+  "id": "docara.stage.g2.design_registry_preview",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "milestone",
+  "tz_role": "implementation_stage",
+  "title": "Goal 2. Project Design Registry and production-faithful preview",
+  "summary": "Replace fixed design and composition tables with one deterministic provider registry and add isolated preview over the same production services.",
+  "owner": "teamlead",
+  "lifecycle": "active",
+  "readiness": "in_progress",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-03-docara-goal2-design-registry-preview.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md"],
+  "profile_refs": ["docara.unified"],
+  "parent_goal_ref": "docara.goal.unified",
+  "done_when": [
+    "One deterministic DesignRegistry owns built-in, package and project layouts, views, sections and blocks.",
+    "Composition compatibility is artifact-driven without central layout, region, section, block or Smart ID lists.",
+    "Preview reuses production registries, Gateway, renderer, composer and PageBuilder with isolated output.",
+    "Public full/single parity, determinism, static, security and browser evidence pass."
+  ],
+  "batch_refs": ["docara.batch.g2.design_registry_preview"],
+  "required_gates": ["docara.gate.architecture_acceptance"],
+  "required_evidence": ["Design responsibility map", "Provider security negatives", "Built-in parity", "Project-local fixture", "Preview parity", "Watch invalidation", "Independent reverse-outcome audit"],
+  "next_stage_ref": null,
+  "status": "goal2_execution_active_goal3_unstarted"
+}

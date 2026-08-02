@@ -6,38 +6,38 @@
         "graph/graph.json",
         "graph/dna/project-dna.json",
         "graph/specs/goals/unified-docara.json",
-        "graph/specs/stages/g1-portable-smart-runtime.json",
-        "graph/specs/batches/g1-portable-smart-runtime.json"
+        "graph/specs/stages/g2-design-registry-preview.json",
+        "graph/specs/batches/g2-design-registry-preview.json"
     ],
-    "canonical_sha256": "c672c9ad05ec743948eaf981f8c8dc3e19641a26943909216fed95e87750c89c",
+    "canonical_sha256": "452ef8024d05eb48d2fa6c495bf85a6e4387bd04ee0adc056afce99f7eeabf29",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "goal1_ready_for_independent_audit",
+        "state": "goal2_in_progress",
         "goal": "docara.goal.unified",
-        "goal_readiness": "goal1_ready_for_independent_audit",
-        "stage": "docara.stage.g1.portable_smart_runtime",
-        "stage_readiness": "ready_for_independent_audit",
-        "stage_status": "goal1_implementation_complete_audit_pending_goal2_unstarted",
-        "batch": "docara.batch.g1.portable_smart_runtime",
-        "batch_readiness": "ready_for_independent_audit",
-        "batch_status": "goal1d_complete_audit_pending",
-        "completed_checkpoint": "goal1d_generic_smart_view_correction",
-        "candidate_revision": "44acc1ff91233fa78140222fcb0589bf55b65ca0",
-        "next_action": "independent_goal1_reverse_outcome_audit",
-        "evidence": "source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md"
+        "goal_readiness": "goal2_in_progress",
+        "stage": "docara.stage.g2.design_registry_preview",
+        "stage_readiness": "in_progress",
+        "stage_status": "goal2_execution_active_goal3_unstarted",
+        "batch": "docara.batch.g2.design_registry_preview",
+        "batch_readiness": "in_progress",
+        "batch_status": "g2_0_governance_and_inventory_active",
+        "completed_checkpoint": "goal1_independently_accepted",
+        "candidate_revision": "40f5c5d14dce74383a57d408fd593507addd43d0",
+        "next_action": "execute_g2_1_design_registry",
+        "evidence": "source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md"
     },
     "roadmap": {
         "source": "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md",
         "next_goal": {
-            "id": "docara.goal.2.design_registry",
-            "title": "Goal 2 — Project Design Registry and production-faithful preview",
+            "id": "docara.goal.3.developer_sdk",
+            "title": "Goal 3 — Developer and AI SDK with optional MCP",
             "status": "unstarted",
             "authorized": false,
-            "source": "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md#goal-2--project-design-registry-and-production-faithful-preview"
+            "source": "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md#goal-3--developerai-sdk-structured-qa-and-optional-mcp"
         }
     },
     "architecture": {
@@ -66,8 +66,9 @@
         "External Framework repositories",
         "docara-new.test",
         "docara.test",
-        "Goal 2",
         "Goal 3",
+        "SDK",
+        "MCP",
         "Merge",
         "Push",
         "Tag",
@@ -79,8 +80,8 @@
         "source/workflow/ACTIVE.md",
         "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md",
         "graph/graph.json",
-        "graph/specs/stages/g1-portable-smart-runtime.json",
-        "graph/specs/batches/g1-portable-smart-runtime.json",
+        "graph/specs/stages/g2-design-registry-preview.json",
+        "graph/specs/batches/g2-design-registry-preview.json",
         "graph/generated/ai-context/docara-unified.json",
         "source/handoff/docara-unified-architecture/NEXT.md",
         "source/handoff/docara-unified-architecture/RESULT.md"

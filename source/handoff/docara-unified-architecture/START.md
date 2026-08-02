@@ -18,21 +18,29 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal1_ready_for_independent_audit`
+Current state: `goal2_in_progress`
 
-Current stage: `docara.stage.g1.portable_smart_runtime`
+Current goal: `docara.goal.unified`
 
-Current batch: `docara.batch.g1.portable_smart_runtime`
+Current stage: `docara.stage.g2.design_registry_preview`
 
-Current next action: `independent_goal1_reverse_outcome_audit`
+Current batch: `docara.batch.g2.design_registry_preview`
 
-Current evidence: `source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md`
+Current next action: `execute_g2_1_design_registry`
 
-Goal 2 status: `unstarted`
+Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md`
 
-Goal 1 is implementation-complete and awaits an independent reverse-outcome
-audit. It is not accepted by executor evidence. Goal 2 Design Registry/Preview
-and Goal 3 SDK/MCP are not authorized until their preceding independent gate.
+Current candidate: `40f5c5d14dce74383a57d408fd593507addd43d0`
+
+Next roadmap goal: `docara.goal.3.developer_sdk`
+
+Next roadmap status: `unstarted`
+
+Next roadmap authorized: `false`
+
+Goal 1 was independently accepted with `PASS_WITH_NOTES`. Goal 2 Design
+Registry/Preview is active. Goal 3 SDK/MCP is not authorized until an
+independent Goal 2 audit accepts its exact candidate.
 
 ## 3. Read in this order
 
@@ -49,12 +57,13 @@ Canonical current state belongs to `graph/graph.json` plus `graph/specs`.
 checked by the repository command documented in `graph/README.md`; it never
 overrides canonical graph or workflow sources.
 
-## 4. Execute only the current gate
+## 4. Execute only the current goal
 
-The only current action is an independent Goal 1 reverse-outcome audit using
-the exact candidate and evidence above. Do not continue to Goal 2 after an
-executor-only PASS. A separate independent acceptance must first update the
-canonical graph and regenerate the router.
+Execute G2.1-G2.6 from
+`source/workflow/2026-08-03-docara-goal2-design-registry-preview.md`. Preserve
+the accepted Goal 1 Gateway/provider/PageBuilder/runtime invariants. Stop at
+Goal 2 `ready_for_independent_audit`; do not start Goal 3 from executor
+evidence.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,
@@ -66,7 +75,7 @@ explicitly accepted.
 - do not move public prose into JSON, PHP projectors or component manifests;
 - do not create a second parser, renderer, Gateway or PageBuilder;
 - do not delete legacy without parity and rollback evidence;
-- do not start Goal 2 or Goal 3 from this handoff;
+- do not start Goal 3 from this handoff;
 - do not merge, push, tag, release, publish or deploy;
 - do not write to `docara.test` or `docara-new.test`;
 - do not claim independent acceptance from executor evidence.

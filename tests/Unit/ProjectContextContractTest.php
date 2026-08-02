@@ -19,10 +19,11 @@ final class ProjectContextContractTest extends TestCase
         self::assertSame([], ProjectContext::check($this->repositoryRoot()));
 
         $context = ProjectContext::expected($this->repositoryRoot());
-        self::assertSame('goal1_ready_for_independent_audit', $context['active']['state']);
-        self::assertSame('docara.stage.g1.portable_smart_runtime', $context['active']['stage']);
-        self::assertSame('docara.batch.g1.portable_smart_runtime', $context['active']['batch']);
-        self::assertSame('independent_goal1_reverse_outcome_audit', $context['active']['next_action']);
+        self::assertSame('goal2_in_progress', $context['active']['state']);
+        self::assertSame('docara.stage.g2.design_registry_preview', $context['active']['stage']);
+        self::assertSame('docara.batch.g2.design_registry_preview', $context['active']['batch']);
+        self::assertSame('execute_g2_1_design_registry', $context['active']['next_action']);
+        self::assertSame('docara.goal.3.developer_sdk', $context['roadmap']['next_goal']['id']);
         self::assertSame('unstarted', $context['roadmap']['next_goal']['status']);
         self::assertFalse($context['roadmap']['next_goal']['authorized']);
         self::assertFalse($context['historical_context']['release_baseline']['executable']);
@@ -94,7 +95,7 @@ final class ProjectContextContractTest extends TestCase
     {
         $root = $this->shadowRoot();
         $graphPath = $root . '/graph/graph.json';
-        $batchPath = $root . '/graph/specs/batches/g1-portable-smart-runtime.json';
+        $batchPath = $root . '/graph/specs/batches/g2-design-registry-preview.json';
         $graph = $this->json($graphPath);
         $batch = $this->json($batchPath);
         $graph['implementation_state']['next_action'] = 'fresh_independent_audit_action';
@@ -110,22 +111,22 @@ final class ProjectContextContractTest extends TestCase
     }
 
     #[Test]
-    public function active_router_contains_no_r2_or_deploy_instruction(): void
+    public function stale_handoff_marker_fails_even_after_context_regeneration(): void
     {
-        $surfaces = implode("\n", [
-            (string) file_get_contents($this->repositoryRoot() . '/source/handoff/docara-unified-architecture/START.md'),
-            (string) file_get_contents($this->repositoryRoot() . '/graph/generated/ai-context/docara-unified.json'),
-        ]);
+        $root = $this->shadowRoot();
+        $startPath = $root . '/source/handoff/docara-unified-architecture/START.md';
+        $start = (string) file_get_contents($startPath);
+        $start = str_replace(
+            'Current stage: `docara.stage.g2.design_registry_preview`',
+            'Current stage: `docara.stage.r2.production_readiness`',
+            $start,
+        );
+        $this->filesystem->put($startPath, $start);
+        ProjectContext::generate($root);
 
-        foreach ([
-            'r2_corrected_complete_awaiting_explicit_deployment_decision',
-            '"current_stage": "docara.stage.r2.production_readiness"',
-            '"current_batch": "docara.batch.r2.prepare_deployment"',
-            'deploy docara.test',
-            'bounded M1A/M1B plan',
-        ] as $stale) {
-            self::assertStringNotContainsString($stale, $surfaces);
-        }
+        $codes = array_column(ProjectContext::check($root), 'code');
+        self::assertNotContains('derived_context_stale', $codes);
+        self::assertContains('handoff_semantic_marker_missing', $codes);
     }
 
     private function repositoryRoot(): string
@@ -141,8 +142,10 @@ final class ProjectContextContractTest extends TestCase
             'graph/dna/project-dna.json',
             'graph/specs/goals/unified-docara.json',
             'graph/specs/stages/g1-portable-smart-runtime.json',
+            'graph/specs/stages/g2-design-registry-preview.json',
             'graph/specs/stages/r2-production-readiness.json',
             'graph/specs/batches/g1-portable-smart-runtime.json',
+            'graph/specs/batches/g2-design-registry-preview.json',
             'graph/specs/batches/r2-production-readiness.json',
             'graph/generated/ai-context/docara-unified.json',
             'source/handoff/docara-unified-architecture/START.md',

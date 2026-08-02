@@ -7,8 +7,8 @@
   "title": "Goal 1. Portable Smart Runtime and project-local components",
   "summary": "Replace component-ID Smart dispatch with one source-pinned portable artifact/provider runtime behind the existing gateway and prove one trusted project-local Smart across Docara and SF5.",
   "owner": "teamlead",
-  "lifecycle": "active",
-  "readiness": "ready_for_independent_audit",
+  "lifecycle": "completed",
+  "readiness": "accepted",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-02-docara-goal1-portable-smart-runtime.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md"],
@@ -23,6 +23,6 @@
   "batch_refs": ["docara.batch.g1.portable_smart_runtime"],
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Smart path inventory", "Source-pinned SF5 contract", "Security negatives", "Cross-host compatibility", "Public parity", "Independent reverse-outcome audit"],
-  "next_stage_ref": null,
-  "status": "goal1_implementation_complete_audit_pending_goal2_unstarted"
+  "next_stage_ref": "docara.stage.g2.design_registry_preview",
+  "status": "goal1_independently_accepted_goal2_active"
 }

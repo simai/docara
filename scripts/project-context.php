@@ -172,16 +172,22 @@ final class ProjectContext
         $batch = self::string($active, 'batch', 'active');
         $next = self::string($active, 'next_action', 'active');
         $evidence = self::string($active, 'evidence', 'active');
+        $goal = self::string($active, 'goal', 'active');
+        $nextGoalId = self::string($nextGoal, 'id', 'next_goal');
+        $nextGoalStatus = self::string($nextGoal, 'status', 'next_goal');
+        $nextGoalAuthorized = ($nextGoal['authorized'] ?? null) === true ? 'true' : 'false';
         $issues = [];
 
         $statusPath = 'source/handoff/docara-unified-architecture/STATUS.yaml';
         $status = self::text($root, $statusPath);
         foreach ([
+            'goal' => $goal,
             'state' => $state,
             'current_stage' => $stage,
             'current_batch' => $batch,
             'next_action' => $next,
-            'goal1_candidate_revision' => $candidate,
+            'candidate_revision' => $candidate,
+            'evidence' => $evidence,
         ] as $key => $value) {
             if (self::yamlScalar($status, $key) !== $value) {
                 $issues[] = self::issue("handoff_status_{$key}_mismatch", "$statusPath must expose $key=$value");
@@ -191,31 +197,42 @@ final class ProjectContext
         $required = [
             'source/handoff/docara-unified-architecture/START.md' => [
                 "Current state: `$state`",
+                "Current goal: `$goal`",
                 "Current stage: `$stage`",
                 "Current batch: `$batch`",
                 "Current next action: `$next`",
                 "Current evidence: `$evidence`",
-                'Goal 2 status: `' . self::string($nextGoal, 'status', 'next_goal') . '`',
+                "Current candidate: `$candidate`",
+                "Next roadmap goal: `$nextGoalId`",
+                "Next roadmap status: `$nextGoalStatus`",
+                "Next roadmap authorized: `$nextGoalAuthorized`",
             ],
             'source/workflow/ACTIVE.md' => [
+                "- state: `$state`;",
+                "- goal: `$goal`;",
                 "- stage: `$stage`;",
                 "- batch: `$batch`;",
-                '- next action: independent Goal 1 reverse-outcome audit;',
+                "- next action: `$next`;",
+                "- candidate: `$candidate`;",
                 "- fresh evidence: `$evidence`;",
             ],
             'source/handoff/docara-unified-architecture/NEXT.md' => [
-                '# Next action: independent Goal 1 reverse-outcome audit',
-                "`$candidate`",
-                "`$evidence`",
+                "# Next action: `$next`",
+                "Current state: `$state`",
+                "Current candidate: `$candidate`",
+                "Current evidence: `$evidence`",
             ],
             'source/handoff/docara-unified-architecture/RESULT.md' => [
-                'Status: `READY_FOR_INDEPENDENT_AUDIT`',
-                "`$candidate`",
+                "Current state: `$state`",
+                "Current candidate: `$candidate`",
+                "Current evidence: `$evidence`",
             ],
             'source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md' => [
-                'Status: `goal_1_ready_for_independent_audit`',
-                'Current mode: `independent_reverse_outcome_audit_pending`',
-                'Goal 2 status: `unstarted_not_authorized`',
+                "Status: `$state`",
+                "Current stage: `$stage`",
+                "Current batch: `$batch`",
+                "Current next action: `$next`",
+                "Next roadmap goal: `$nextGoalId` (`$nextGoalStatus`, authorized=`$nextGoalAuthorized`)",
             ],
         ];
         foreach ($required as $relative => $needles) {
@@ -227,18 +244,11 @@ final class ProjectContext
             }
         }
 
-        $staleMarkers = [
-            'r2_corrected_complete_awaiting_explicit_deployment_decision',
-            'Current stage: `docara.stage.r2.production_readiness`',
-            'Current batch: `docara.batch.r2.prepare_deployment`',
-            'deploy docara.test',
-            'bounded M1A/M1B plan',
-        ];
-        foreach (['source/handoff/docara-unified-architecture/START.md', self::OUTPUT] as $relative) {
+        foreach (['source/handoff/docara-unified-architecture/START.md'] as $relative) {
             $contents = self::text($root, $relative);
-            foreach ($staleMarkers as $marker) {
-                if (str_contains(strtolower($contents), strtolower($marker))) {
-                    $issues[] = self::issue('active_router_contains_stale_directive', "$relative contains $marker");
+            foreach (['Current state:', 'Current stage:', 'Current batch:', 'Current next action:'] as $label) {
+                if (substr_count($contents, $label) !== 1) {
+                    $issues[] = self::issue('active_router_marker_cardinality_invalid', "$relative must contain exactly one [$label] marker");
                 }
             }
         }

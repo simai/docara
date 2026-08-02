@@ -1,6 +1,19 @@
-# Goal 1 current result
+# Current Docara result
 
-Status: `READY_FOR_INDEPENDENT_AUDIT`
+Current state: `goal2_in_progress`
+
+Current candidate: `40f5c5d14dce74383a57d408fd593507addd43d0`
+
+Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md`
+
+## Goal 2 current result
+
+Goal 1 was independently accepted with `PASS_WITH_NOTES`. G2.0 has frozen its
+exact runtime/SF5 inputs, mapped design/composition responsibilities and moved
+the canonical router to Goal 2. The current implementation work is the
+provider-backed DesignRegistry; Goal 3 remains unstarted.
+
+## Accepted Goal 1 result
 
 Goal 1-D removes the component-ID view branch that invalidated candidate
 `c5ea85f8…`. `DeclarativePageCompiler` no longer knows `docara.brand` or any

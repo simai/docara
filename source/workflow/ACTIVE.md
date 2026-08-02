@@ -1,8 +1,8 @@
 # Active workflow: Docara unified architecture
 
-Date: 2026-08-02
-Status: Goal 1 ready for independent reverse-outcome audit
-Workflow ID: `2026-08-02-docara-goal1d-generic-smart-view-correction`
+Date: 2026-08-03
+Status: Goal 2 in progress
+Workflow ID: `2026-08-03-docara-goal2-design-registry-preview`
 Graph goal: `docara.goal.unified`
 
 ## Source of truth
@@ -10,21 +10,24 @@ Graph goal: `docara.goal.unified`
 - start here: `source/handoff/docara-unified-architecture/START.md`;
 - human specification: `docs/specification/README.md`;
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
-- active recovery: `source/workflow/2026-08-02-docara-goal1d-generic-smart-view-correction.md`;
-- fresh evidence: `source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md`;
+- active recovery: `source/workflow/2026-08-03-docara-goal2-design-registry-preview.md`;
+- fresh evidence: `source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md`;
 - project-context freshness correction:
   `source/workflow/2026-08-03-docara-goal1d-project-context-correction.md`;
 - rejected audit candidate: `c5ea85f8d25deff99b671486fdc4d1e820a86491`;
 - corrected implementation candidate: `44acc1ff91233fa78140222fcb0589bf55b65ca0`;
 - branch: `codex/docara-unified-architecture`.
 
-## Current stage and batch
+## Current state, stage and batch
 
-- stage: `docara.stage.g1.portable_smart_runtime`;
-- batch: `docara.batch.g1.portable_smart_runtime`;
+- state: `goal2_in_progress`;
+- goal: `docara.goal.unified`;
+- stage: `docara.stage.g2.design_registry_preview`;
+- batch: `docara.batch.g2.design_registry_preview`;
+- candidate: `40f5c5d14dce74383a57d408fd593507addd43d0`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: independent Goal 1 reverse-outcome audit;
-- Goal 2 remains unstarted.
+- next action: `execute_g2_1_design_registry`;
+- Goal 1 is independently accepted; Goal 3 remains unstarted and unauthorized.
 
 ## Accepted pipeline
 
@@ -39,11 +42,10 @@ disposable.
 
 ## Current result
 
-The neutral `sf.smart_artifact_abi` v1 contract is source-pinned and renders an
-unchanged fixture byte-identically under Docara and exact SF5. Generic provider
-ownership, the single Gateway and PageBuilder, security negatives, public
-full/single parity, determinism and browser behavior are recorded in fresh
-evidence. This is implementation evidence, not independent acceptance.
+The neutral `sf.smart_artifact_abi` v1 contract and the single Gateway/provider
+runtime were independently accepted. Goal 2 now introduces a deterministic
+Design Registry and isolated preview over the same production services without
+a parallel engine.
 
 ## Boundary
 

@@ -52,10 +52,11 @@ PASS ставится только по воспроизводимому evidenc
 - [x] `ui.*` и `docara.*` проходят один Smart Component Gateway.
 - [x] Props и slots валидируются до template rendering.
 - [x] Gateway возвращает HTML, assets, diagnostics и provenance.
-- [x] Новый Smart-компонент не требует component-ID ветки в центральном
-      parser, renderer, ViewModel factory, semantic validator или contribution
-      list. Goal 1-C удалил search/parser/admission ID-зависимости; ограничение
-      shell regions остаётся явно Goal 2-owned boundary.
+- [ ] Новый Smart-компонент не требует component-ID ветки в центральном
+      compiler, parser, renderer, ViewModel factory, semantic validator или
+      contribution list. Независимый аудит нашёл `docara.brand` view branch в
+      `DeclarativePageCompiler`; Goal 1-D исправляет false-green. Ограничение
+      shell regions остаётся отдельно Goal 2-owned boundary.
 - [x] Project Smart root фиксирован как `smart/`; namespace принадлежит одному
       provider, а paths/symlinks/templates/assets fail-closed.
 - [x] Portable Smart manifest соответствует source-pinned SF5 artifact v1;

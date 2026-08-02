@@ -1,22 +1,18 @@
-# Next action: independent reverse-outcome audit of Goal 1
+# Next action: complete Goal 1-D generic Smart view correction
 
-Goal 1-C implementation is complete and ready for independent audit. Exact
-Docara implementation source is `94d2afd9cb71d6b02d8f4a63d4f807e127b1b190`;
-the final governance/evidence SHA is recorded in the fresh index after commit.
-The accepted immutable adapter is
-`b3cdff87563ff78e7eddf044048a4b298fc69036`.
+Independent audit rejected exact candidate
+`c5ea85f8d25deff99b671486fdc4d1e820a86491`: active
+`DeclarativePageCompiler::defaultCompositeView()` selected behavior by the
+literal component ID `docara.brand`, while the structural regression omitted
+that source file. Accepted ABI/cross-host evidence remains valid.
 
-The neutral `sf.smart_artifact_abi` v1 contract, provider ownership and the
-single Gateway/PageBuilder path pass focused/full tests, security negatives,
-cross-host byte equality, full/single equality, deterministic public builds,
-static verification and browser smoke. The unchanged cross-host fixture HTML
-SHA-256 is `7133c5dcd44aa85f351a85c61c280aa883abd5cdb3c91206168ad63ada497b38`.
-Fresh evidence:
-`source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-resume/INDEX.md`.
+The correction must replace that branch with generic preset/view resolution
+owned by registered artifact data, extend structural scanning to the active
+compiler/compose/runtime set, and rerun the complete Goal 1 matrix. Recovery:
+`source/workflow/2026-08-02-docara-goal1d-generic-smart-view-correction.md`.
 
-The old `34496d49…` Goal 1 candidate and the failing `d6f90bba…` pin remain
-superseded historical evidence. Goal 1 is not yet independently accepted.
-Goal 2/3 remain unstarted; no live/release action is authorized.
+Goal 1 is `correction_in_progress`; Goal 2/3 remain unstarted. No live/release
+action is authorized.
 
 ## Historical deployment decision (parked)
 

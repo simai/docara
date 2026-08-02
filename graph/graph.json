@@ -27,9 +27,9 @@
   },
   "implementation_state": {
     "current_stage": "docara.stage.g1.portable_smart_runtime",
-    "completed_checkpoint": "goal1c_implementation_complete_audit_pending",
-    "next_action": "independent_reverse_outcome_audit_goal1",
-    "evidence": "source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-resume/INDEX.md"
+    "completed_checkpoint": "goal1_audit_found_declarative_compiler_component_id_branch",
+    "next_action": "goal1d_generic_smart_view_correction",
+    "evidence": "source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md"
   },
   "routing_gap": {
     "status": "recorded",

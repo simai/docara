@@ -1,6 +1,20 @@
 # Goal 1 current result
 
-Status: `GOAL_1C_IMPLEMENTATION_COMPLETE_AUDIT_PENDING`
+Status: `GOAL_1D_CORRECTION_IN_PROGRESS`
+
+Independent audit rejected Goal 1 candidate `c5ea85f8…` because
+`DeclarativePageCompiler::defaultCompositeView()` contained an active
+`docara.brand` component-ID branch that previous evidence and tests missed.
+The exact ABI pin and cross-host equality remain accepted inputs; the generic
+runtime claim is withdrawn until Goal 1-D removes the branch and completes a
+fresh integrated retest. Goal 2 remains unstarted.
+
+Correction source and evidence:
+
+- `source/workflow/2026-08-02-docara-goal1d-generic-smart-view-correction.md`;
+- `source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md`.
+
+## Superseded Goal 1-C result
 
 Goal 1-C is corrected against accepted exact SF5 adapter
 `b3cdff87563ff78e7eddf044048a4b298fc69036`. Docara consumes the neutral

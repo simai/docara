@@ -1,10 +1,10 @@
 # Goal 1 — Portable Smart Runtime and project-local components
 
 Date: 2026-08-02
-Status: `correction_required_superseded_candidate`
+Status: `goal1d_correction_in_progress`
 Project mode: `productization`
 Process model: `general_delivery`
-Current state: `goal1c_correction_in_progress`
+Current state: `goal1d_generic_smart_view_correction`
 Repository: `/Users/rim/Documents/GitHub/docara-unified`
 Branch: `codex/docara-unified-architecture`
 Input revision: `313afa17e21df2299a6276d246cb4508c7ec00b5`
@@ -131,5 +131,8 @@ after the accepted external ABI correction, repinned the portable contract to
 exact adapter `b3cdff87563ff78e7eddf044048a4b298fc69036`. The final correction
 evidence is indexed at
 `source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-resume/INDEX.md`.
-Status is `ready_for_independent_audit`; Goal 2 has not started and must not
-start before that audit accepts Goal 1.
+The next independent audit found a remaining `docara.brand` view-selection
+branch in `DeclarativePageCompiler`, outside the prior structural scan. Goal
+1-D is the active correction source:
+`source/workflow/2026-08-02-docara-goal1d-generic-smart-view-correction.md`.
+Goal 2 has not started and must not start before a fresh audit accepts Goal 1.

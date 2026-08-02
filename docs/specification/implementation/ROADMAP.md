@@ -57,11 +57,11 @@ release и production не заявлены.
 
 ## Goal 1. Portable Smart Runtime
 
-Статус: `Goal 1-C ready_for_independent_audit`. Portable ABI перепривязан к
-exact SF5 adapter `b3cdff87…`; один неизменённый fixture сохраняет view,
-preset, slot и hydration и даёт byte-identical HTML под обоими host. Exact-lock
-policy и search/parser/admission cleanup повторно проверены. Goal 2 не начат и
-не может начаться до независимого принятия Goal 1.
+Статус: `Goal 1-D correction_required`. Portable ABI и cross-host outcome на
+exact SF5 adapter `b3cdff87…` приняты, но независимый аудит нашёл пропущенную
+component-ID view branch в `DeclarativePageCompiler`. Generic preset/view
+resolution и расширенный structural gate исправляются до нового audit-pending
+candidate. Goal 2 не начат.
 
 ## M2. Вертикальный срез `components/badge`
 

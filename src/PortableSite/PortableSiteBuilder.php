@@ -511,11 +511,13 @@ final readonly class PortableSiteBuilder
         }
         $searchPlan = null;
         if ($searchEnabled) {
-            $searchPlan = (new PortableSearchIndexBuilder)->plan(
-                $pages,
-                $topology,
-                $localeUrls->rootUrl(),
-            );
+            $searchPlan = $earlyPhysicalSelection
+                ? $this->existingSearchPlan($finalDestination, $localeUrls->rootUrl())
+                : (new PortableSearchIndexBuilder)->plan(
+                    $pages,
+                    $topology,
+                    $localeUrls->rootUrl(),
+                );
             foreach ($pages as &$page) {
                 if ($page['search_enabled'] === true) {
                     $page['search_index_url'] = $searchPlan->indexUrl;
@@ -1423,5 +1425,50 @@ final readonly class PortableSiteBuilder
     private function prettyCanonicalJson(mixed $value): string
     {
         return CanonicalJson::encodePretty($value);
+    }
+
+    private function existingSearchPlan(string $destination, string $baseUrl): PortableSearchPlan
+    {
+        $indexPath = rtrim($destination, '/\\') . '/_docara/search-index.json';
+        $runtimePath = rtrim($destination, '/\\') . '/_docara/search.js';
+        try {
+            $indexJson = (string) $this->files->get($indexPath);
+            $index = json_decode($indexJson, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $exception) {
+            throw new PortableConfigurationException(
+                'PORTABLE_INCREMENTAL_SEARCH_BASE_INVALID',
+                'The complete build has no valid search index for an isolated page rebuild.',
+                $exception,
+            );
+        }
+        $runtime = (string) $this->files->get($runtimePath);
+        $documents = is_array($index) ? ($index['documents'] ?? null) : null;
+        $contentHash = is_array($index) ? ($index['content_sha256'] ?? null) : null;
+        if (! is_array($index)
+            || ($index['schema'] ?? null) !== 'docara.search_index.v1'
+            || ! is_array($documents)
+            || ! is_string($contentHash)
+            || ! hash_equals($contentHash, hash('sha256', CanonicalJson::encode($documents)))
+            || $runtime === ''
+            || preg_match('//u', $runtime) !== 1
+        ) {
+            throw new PortableConfigurationException(
+                'PORTABLE_INCREMENTAL_SEARCH_BASE_INVALID',
+                'The complete build has no valid search projection for an isolated page rebuild.',
+            );
+        }
+        (new SchemaRepository)->assertValid($index, 'search-index.schema.json');
+        $runtimeHash = hash('sha256', $runtime);
+        $deploymentBase = $baseUrl === '/' ? '' : '/' . trim($baseUrl, '/');
+
+        return new PortableSearchPlan(
+            $index,
+            $indexJson,
+            $runtime,
+            $contentHash,
+            $runtimeHash,
+            $deploymentBase . '/_docara/search-index.json?docara_v=' . $contentHash,
+            $deploymentBase . '/_docara/search.js?docara_v=' . $runtimeHash,
+        );
     }
 }

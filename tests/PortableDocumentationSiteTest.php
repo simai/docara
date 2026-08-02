@@ -86,6 +86,14 @@ final class PortableDocumentationSiteTest extends PHPUnit
             self::assertGreaterThan(0, $page['declarative_pipeline']['document_ir']['nodes']);
         }
         self::assertCount(206, $htmlPages);
+        $nonIndexedOutput = $build . '/ru/demonstrator-results/composition-inheritance/page/index.html';
+        $nonIndexedHash = hash_file('sha256', $nonIndexedOutput);
+        $singleNonIndexed = (new PortableSiteBuilder(
+            $filesystem,
+            new PortableMarkdownRenderer,
+        ))->build($site, $build, '/ru/demonstrator-results/composition-inheritance/page/');
+        self::assertCount(1, $singleNonIndexed);
+        self::assertSame($nonIndexedHash, hash_file('sha256', $nonIndexedOutput));
         self::assertFileDoesNotExist($build . '/ru/lang.json');
         self::assertCount(89, $search['documents']);
         self::assertCount(37, $catalog['entries']);

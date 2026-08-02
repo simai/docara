@@ -1,7 +1,7 @@
 # G1C.2 — provider, context and admission cleanup
 
 Status: `PASS_WITH_CROSS_HOST_NONCLAIM`
-Implementation: `2d779107193ca6e074eb243433236324bb091247`
+Implementation: `2d779107add39155edc26537929323aebe066984`
 
 - portable provider records `sf5.smart.template.v1`; legacy package templates
   use an explicit `docara.legacy.object-view.v1` adapter;

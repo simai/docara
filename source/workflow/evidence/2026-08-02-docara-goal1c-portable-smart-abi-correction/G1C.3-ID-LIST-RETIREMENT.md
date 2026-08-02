@@ -1,7 +1,7 @@
 # G1C.3 — central component-ID retirement
 
 Status: `PASS`
-Implementation: `2d779107193ca6e074eb243433236324bb091247`
+Implementation: `2d779107add39155edc26537929323aebe066984`
 
 The accepted Goal 1 scope no longer contains `ui.alert`, `ui.button` or another
 component-specific dispatch/list in:

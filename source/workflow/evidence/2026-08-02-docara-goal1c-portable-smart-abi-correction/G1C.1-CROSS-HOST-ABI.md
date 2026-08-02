@@ -1,7 +1,7 @@
 # G1C.1 — portable ABI and exact-host blocker
 
 Status: `BLOCKED_EXACT_SF5_HOST_CONTRACT`
-Docara runtime commit: `2d779107193ca6e074eb243433236324bb091247`
+Docara runtime commit: `2d779107add39155edc26537929323aebe066984`
 Documentation checkpoint: `5124959521b6ae51c7e5fa925b3c3230a65a54ef`
 Pinned SF5 source: `d6f90bba6a9a2f30ac41075d62cf51f1014b7e78`
 

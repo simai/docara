@@ -1,0 +1,22 @@
+{
+  "$schema": "docara.release_surface.v1",
+  "include": [
+    "LICENSE",
+    "README.md",
+    "composer.json",
+    "docara",
+    "docs/site/",
+    "resources/",
+    "src/",
+    "stubs/"
+  ],
+  "executable": ["docara"],
+  "forbidden_prefixes": [
+    ".git/",
+    ".github/",
+    "graph/",
+    "source/",
+    "tests/",
+    "vendor/"
+  ]
+}

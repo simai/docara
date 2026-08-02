@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\PortableSite;
 
 use Simai\Docara\Declarative\Rendering\RenderArtifact;
+use Simai\Docara\Declarative\Rendering\SmartRenderer;
 use Simai\Docara\Document\DocumentRenderContext;
 use Simai\Docara\Document\DocumentRendererRegistry;
 use Simai\Docara\Document\MarkdownCompiler;
@@ -19,8 +20,9 @@ final readonly class PageBuilder
         private PortableMarkdownRenderer $markdown,
         private MarkdownCompiler $compiler = new MarkdownCompiler,
         ?DocumentRendererRegistry $renderers = null,
+        ?SmartRenderer $smartRenderer = null,
     ) {
-        $this->renderers = $renderers ?? DocumentRendererRegistry::bundled($markdown);
+        $this->renderers = $renderers ?? DocumentRendererRegistry::bundled($markdown, $smartRenderer);
     }
 
     public function build(

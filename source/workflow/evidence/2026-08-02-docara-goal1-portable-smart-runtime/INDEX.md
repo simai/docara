@@ -1,6 +1,6 @@
 # Goal 1 evidence index
 
-Status: `g1_4_pass_candidate`
+Status: `g1_5_pass_candidate`
 Input revision: `313afa17e21df2299a6276d246cb4508c7ec00b5`
 Branch: `codex/docara-unified-architecture`
 Workflow: `source/workflow/2026-08-02-docara-goal1-portable-smart-runtime.md`
@@ -15,8 +15,8 @@ reverse order from the exact accepted predecessor.
 | G1.1 | `G1.1-SF5-CONTRACT.md` | pass |
 | G1.2 | `G1.2-PROVIDERS-AND-SECURITY.md` | pass |
 | G1.3 | `G1.3-GENERIC-RUNTIME.md` | pass |
-| G1.4 | `G1.4-BUILTIN-MIGRATION.md` | pass candidate |
-| G1.5 | `G1.5-PROJECT-LOCAL-FIXTURE.md` | pending |
+| G1.4 | `G1.4-BUILTIN-MIGRATION.md` | pass |
+| G1.5 | `G1.5-PROJECT-LOCAL-FIXTURE.md` | pass candidate |
 | G1.6 | `G1.6-INTEGRATED-ACCEPTANCE.md` | pending |
 
 ## Evidence policy

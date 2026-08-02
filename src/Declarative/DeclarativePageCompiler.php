@@ -21,6 +21,7 @@ use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Document\DocumentIr;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class DeclarativePageCompiler
 {
@@ -42,11 +43,16 @@ final readonly class DeclarativePageCompiler
     }
 
     /** @param array<string, mixed> $frameworkLock */
-    public static function bundled(array $frameworkLock): self
-    {
+    public static function bundled(
+        array $frameworkLock,
+        ?SmartRegistry $smarts = null,
+        ?SmartComponentGateway $gateway = null,
+    ): self {
+        $smarts ??= SmartRegistry::bundled();
+
         return new self(
-            new DefinitionRepository,
-            SmartComponentGateway::bundled($frameworkLock),
+            new DefinitionRepository(smarts: $smarts),
+            $gateway ?? SmartComponentGateway::bundled($frameworkLock),
         );
     }
 

@@ -10,7 +10,10 @@ use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class PortablePublisherAssetPublisher
 {
-    public function __construct(private Filesystem $files) {}
+    public function __construct(
+        private Filesystem $files,
+        private SmartRegistry $smarts = new SmartRegistry([]),
+    ) {}
 
     public function publish(string $destination): void
     {
@@ -23,9 +26,10 @@ final readonly class PortablePublisherAssetPublisher
             );
         }
 
-        foreach (SmartRegistry::bundled()->assets() as $key => $asset) {
+        $smarts = $this->smarts->keys() === [] ? SmartRegistry::bundled() : $this->smarts;
+        foreach ($smarts->assets() as $key => $asset) {
             $this->publishAsset(
-                dirname(__DIR__, 2) . '/resources/' . $asset['path'],
+                (is_string($asset['root'] ?? null) ? $asset['root'] : dirname(__DIR__, 2) . '/resources') . '/' . $asset['path'],
                 rtrim($destination, '/\\') . '/_docara/' . $asset['public'],
                 'DECLARATIVE_SMART_ASSET',
                 (string) $key,

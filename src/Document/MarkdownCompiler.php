@@ -57,6 +57,12 @@ final readonly class MarkdownCompiler
 
                 continue;
             }
+            if (preg_match('/^:::(?<smart>[a-z][a-z0-9-]*\.[a-z][a-z0-9.-]*)\s*$/D', $line, $smart) === 1) {
+                [$node, $index] = $this->smartComponent($lines, $index, $source, (string) $smart['smart']);
+                $nodes[] = $node;
+
+                continue;
+            }
             if (preg_match('/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/', $line, $directive) === 1) {
                 [$node, $index] = array_key_exists((string) $directive['alias'], $this->aliases->aliases())
                     ? $this->componentBlock($lines, $index, $source)
@@ -166,6 +172,44 @@ final readonly class MarkdownCompiler
         }
 
         return new DocumentIr($source, $nodes);
+    }
+
+    /** @param list<string> $lines @return array{0:SmartComponentNode,1:int} */
+    private function smartComponent(array $lines, int $start, string $source, string $smart): array
+    {
+        $end = $start + 1;
+        while (isset($lines[$end]) && trim($lines[$end]) !== ':::') {
+            if (preg_match('/^:::[a-z]/', $lines[$end]) === 1) {
+                throw new PortableConfigurationException('DOCUMENT_SMART_NESTED_FORBIDDEN', "$smart at $source:" . ($end + 1));
+            }
+            $end++;
+        }
+        $location = new SourceLocation($source, $start + 1, 1, $start + 1);
+        if (! isset($lines[$end])) {
+            throw new PortableConfigurationException('DOCUMENT_SMART_UNCLOSED', "$smart at {$location->label()}");
+        }
+        $payload = trim(implode("\n", array_slice($lines, $start + 1, $end - $start - 1)));
+        try {
+            $props = $payload === '' ? [] : json_decode($payload, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $exception) {
+            throw new PortableConfigurationException('DOCUMENT_SMART_PROPS_JSON_INVALID', "$smart at {$location->label()}", $exception);
+        }
+        if (! is_array($props) || ($props !== [] && array_is_list($props))) {
+            throw new PortableConfigurationException('DOCUMENT_SMART_PROPS_INVALID', "$smart at {$location->label()}");
+        }
+        $view = $props['view'] ?? 'default';
+        unset($props['view']);
+        if (! is_string($view) || preg_match('/^[a-z][a-z0-9_-]*$/D', $view) !== 1) {
+            throw new PortableConfigurationException('DOCUMENT_SMART_VIEW_INVALID', "$smart at {$location->label()}");
+        }
+
+        return [new SmartComponentNode(
+            $smart,
+            $view,
+            $props,
+            implode("\n", array_slice($lines, $start, $end - $start + 1)),
+            new SourceLocation($source, $start + 1, 1, $end + 1),
+        ), $end + 1];
     }
 
     /** @param list<string> $lines @return array{0:SourceNode,1:int} */

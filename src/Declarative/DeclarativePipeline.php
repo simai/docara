@@ -8,8 +8,11 @@ use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\Document\DocumentParser;
 use Simai\Docara\Declarative\Rendering\DeclarativePageRenderer;
 use Simai\Docara\Declarative\Rendering\RenderArtifact;
+use Simai\Docara\Declarative\Rendering\SmartRenderer;
+use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Document\DocumentIr;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
+use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class DeclarativePipeline
 {
@@ -27,12 +30,16 @@ final readonly class DeclarativePipeline
         array $frameworkLock,
         PortableMarkdownRenderer $markdown,
         array $reservedDocumentIds = [],
+        ?SmartRegistry $smarts = null,
+        ?SmartComponentGateway $gateway = null,
+        ?SmartRenderer $smartRenderer = null,
     ): self {
         return new self(
             new DocumentParser,
-            DeclarativePageCompiler::bundled($frameworkLock),
+            DeclarativePageCompiler::bundled($frameworkLock, $smarts, $gateway),
             new DeclarativePageRenderer(
                 $markdown,
+                $smartRenderer ?? new SmartRenderer,
                 reservedDocumentIds: $reservedDocumentIds,
             ),
         );

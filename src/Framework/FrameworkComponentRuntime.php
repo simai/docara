@@ -53,7 +53,7 @@ final readonly class FrameworkComponentRuntime
 
         return new self(
             $repository,
-            new ComponentDirectiveParser($repository->keys()),
+            new ComponentDirectiveParser($repository->keys(), false, ['ui']),
             new SchemaRepository,
             $propsValidator,
             $renderer,

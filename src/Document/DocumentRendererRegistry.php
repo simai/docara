@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Document;
 
 use Simai\Docara\Declarative\Rendering\RenderArtifact;
+use Simai\Docara\Declarative\Rendering\SmartRenderer;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
@@ -28,12 +29,15 @@ final readonly class DocumentRendererRegistry
         $this->renderers = $indexed;
     }
 
-    public static function bundled(PortableMarkdownRenderer $markdown): self
+    public static function bundled(PortableMarkdownRenderer $markdown, ?SmartRenderer $smartRenderer = null): self
     {
+        $smartRenderer ??= new SmartRenderer;
+
         return new self([
             new SourceDocumentNodeRenderer($markdown),
             new ComponentDocumentNodeRenderer($markdown->componentGateway()),
             new ComponentBlockDocumentNodeRenderer($markdown->componentGateway(), $markdown),
+            new SmartComponentDocumentNodeRenderer($markdown->componentGateway(), $smartRenderer),
         ]);
     }
 
@@ -43,7 +47,7 @@ final readonly class DocumentRendererRegistry
         $componentArtifacts = [];
         $assets = [];
         foreach ($document->allNodes() as $node) {
-            if ($node instanceof ComponentNode || $node instanceof ComponentBlockNode) {
+            if ($node instanceof ComponentNode || $node instanceof ComponentBlockNode || $node instanceof SmartComponentNode) {
                 $artifact = $this->renderer($node)->render($node, $context);
                 $componentArtifacts[] = $artifact;
                 array_push($assets, ...$artifact->assets);

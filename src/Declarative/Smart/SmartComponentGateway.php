@@ -42,6 +42,16 @@ final readonly class SmartComponentGateway
         ]));
     }
 
+    /** @param array<string,mixed> $frameworkLock */
+    public static function withProject(SmartRegistry $smarts, string $projectProviderId, array $frameworkLock): self
+    {
+        return new self($smarts, new ProviderPlanResolverRegistry([
+            new PortableProviderPlanResolver($projectProviderId, $smarts),
+            new DocaraProviderPlanResolver(new CompositeSmartPlanResolver(smarts: $smarts)),
+            new FrameworkProviderPlanResolver(SmartPlanResolver::fromLock($frameworkLock)),
+        ]));
+    }
+
     public function resolve(SmartCallNode $call): ResolvedSmartPlan
     {
         $definition = $this->smarts->definition($call->smart);

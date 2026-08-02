@@ -6,6 +6,8 @@ namespace Simai\Docara\Smart;
 
 use Simai\Docara\Smart\Artifact\Sf5SmartArtifactV1Contract;
 use Simai\Docara\Smart\Provider\LegacyBundledSmartProvider;
+use Simai\Docara\Smart\Provider\ProjectSmartProvider;
+use Simai\Docara\Smart\Provider\SmartArtifactProvider;
 use Simai\Docara\Smart\Provider\SmartRegistryCompiler;
 
 final readonly class SmartRegistry
@@ -37,16 +39,30 @@ final readonly class SmartRegistry
 
     public static function bundled(): self
     {
+        return (new SmartRegistryCompiler)->compile(self::bundledProviders());
+    }
+
+    public static function withProject(string $namespace, string $root, string $revision): self
+    {
+        return (new SmartRegistryCompiler)->compile([
+            new ProjectSmartProvider($namespace, $root, 'project/' . $namespace, $revision),
+            ...self::bundledProviders(),
+        ]);
+    }
+
+    /** @return list<SmartArtifactProvider> */
+    private static function bundledProviders(): array
+    {
         $root = dirname(__DIR__, 2) . '/resources';
 
-        return (new SmartRegistryCompiler)->compile([
+        return [
             new LegacyBundledSmartProvider(
                 'docara.package', 300, 'docara', $root, 'simai/docara', 'repository-tree',
             ),
             new LegacyBundledSmartProvider(
                 'framework.lock', 400, 'ui', $root, 'larena/ui', Sf5SmartArtifactV1Contract::SOURCE_REVISION,
             ),
-        ]);
+        ];
     }
 
     public function definition(string $key): SmartComponentDefinition
@@ -114,7 +130,7 @@ final readonly class SmartRegistry
         throw new \InvalidArgumentException('SMART_REGISTRY_ASSET_NOT_FOUND:' . $assetKey);
     }
 
-    /** @return array<string, array{path:string,kind:string,public:string,version:string}> */
+    /** @return array<string, array{path:string,kind:string,public:string,version:string,root?:string}> */
     public function assets(): array
     {
         $assets = [];
@@ -123,7 +139,7 @@ final readonly class SmartRegistry
                 if (isset($assets[$key])) {
                     throw new \LogicException('SMART_REGISTRY_DUPLICATE_ASSET:' . $key);
                 }
-                $assets[$key] = $asset;
+                $assets[$key] = $asset + ['root' => $definition->root];
             }
         }
         ksort($assets, SORT_STRING);

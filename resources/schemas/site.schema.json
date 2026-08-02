@@ -91,10 +91,24 @@
         },
         "reading": {
             "$ref": "presentation.schema.json#/$defs/reading"
+        },
+        "smart": {
+            "$ref": "#/$defs/projectSmart"
         }
     },
     "additionalProperties": false,
     "$defs": {
+        "projectSmart": {
+            "type": "object",
+            "required": ["namespace"],
+            "properties": {
+                "namespace": {
+                    "type": "string",
+                    "pattern": "^(?!ui$|docara$)[a-z][a-z0-9-]*$"
+                }
+            },
+            "additionalProperties": false
+        },
         "readerPreferences": {
             "type": "object",
             "required": ["enabled", "view", "groups"],

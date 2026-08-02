@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
   "kind": "smart",
-  "code": "fixture.notice",
-  "title": "Fixture notice",
+  "code": "project.notice",
+  "title": "Project notice",
   "render": {
     "mode": "server-first",
     "strategy": "server-static",
@@ -15,16 +15,12 @@
   },
   "props": {
     "title": {"type": "string", "required": true},
-    "text": {"type": "string", "required": true},
-    "tone": {"type": "enum", "values": ["info", "success", "warning"]}
+    "text": {"type": "string", "required": true}
   },
   "assets": {
     "css": ["assets/notice.css"],
     "js": [],
-    "depends": ["simai.ui"]
+    "depends": ["simai.framework.core.css"]
   },
-  "meta": {
-    "ownerPackage": "fixture/project",
-    "version": "1.0.0"
-  }
+  "meta": {"ownerPackage": "project/site", "version": "1.0.0"}
 }

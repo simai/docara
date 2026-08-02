@@ -12,6 +12,7 @@ use Simai\Docara\Content\PageSourceLocator;
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\DeclarativePipeline;
 use Simai\Docara\Declarative\Rendering\RenderArtifact;
+use Simai\Docara\Declarative\Smart\CompositeSmartPlanResolver;
 use Simai\Docara\Document\DocumentIr;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
@@ -32,6 +33,8 @@ use Simai\Docara\Portable\PortableConfigurationLoader;
 use Simai\Docara\Portable\ResolvedPagePlan;
 use Simai\Docara\Portable\SchemaRepository;
 use Simai\Docara\Preferences\ReaderPreferenceCompiler;
+use Simai\Docara\Smart\Runtime\ProjectSmartRuntime;
+use Simai\Docara\Smart\SmartRegistry;
 use Symfony\Component\Process\Process;
 
 final readonly class PortableSiteBuilder
@@ -62,6 +65,25 @@ final readonly class PortableSiteBuilder
         $loader = new PortableConfigurationLoader($root);
         $root = $this->realDirectory($root, 'PORTABLE_ROOT_INVALID');
         $site = $this->siteConfiguration($root);
+        $frameworkLock = FrameworkLock::fromJsonFile(
+            $root . '/' . ltrim((string) $site['framework_lock'], '/'),
+        )->toArray();
+        $projectSmart = ProjectSmartRuntime::fromSite($root, $site, $frameworkLock);
+        $smartRegistry = $projectSmart?->registry ?? SmartRegistry::bundled();
+        $markdown = $projectSmart instanceof ProjectSmartRuntime
+            ? new PortableMarkdownRenderer(components: $projectSmart->gateway)
+            : $this->markdown;
+        $pageBuilder = $projectSmart instanceof ProjectSmartRuntime
+            ? new PageBuilder($markdown, smartRenderer: $projectSmart->renderer)
+            : $this->pageBuilder;
+        $publisher = $projectSmart instanceof ProjectSmartRuntime
+            ? new DeclarativePortablePagePublisher(
+                $projectSmart->templates,
+                $projectSmart->registry,
+                composites: new CompositeSmartPlanResolver(smarts: $projectSmart->registry),
+                smartRenderer: $projectSmart->renderer,
+            )
+            : $this->publisher;
         $explicitLocaleRegistry = is_array($site['locales'] ?? null) && $site['locales'] !== [];
         $localeRegistry = LocaleRegistry::fromSite($site);
         $missingPagePolicy = LocaleMissingPagePolicy::fromSite($site);
@@ -206,7 +228,7 @@ final readonly class PortableSiteBuilder
                 $this->frameworkAssetBase($plan->frameworkLock, (string) ($site['base_url'] ?? '/')),
             );
             try {
-                $pageResult = $this->pageBuilder->build(
+                $pageResult = $pageBuilder->build(
                     $plan,
                     $root,
                     $runtime,
@@ -713,8 +735,11 @@ final readonly class PortableSiteBuilder
                 $page['header_navigation'] = $composition->headerNavigation;
                 $declarativePipeline ??= DeclarativePipeline::bundled(
                     $declarativePlan->frameworkLock,
-                    $this->markdown,
+                    $markdown,
                     PortableDocumentIds::reserved(),
+                    $smartRegistry,
+                    $projectSmart?->gateway,
+                    $projectSmart?->renderer,
                 );
                 $outlineDepth = (int) data_get($declarativePlan->configuration, 'reading.toc_depth', 3);
                 $layoutConfiguration = is_array($declarativePlan->configuration['layout'] ?? null)
@@ -774,7 +799,7 @@ final readonly class PortableSiteBuilder
                 ];
                 $outputPath = rtrim($destination, '/\\') . '/' . $page['output'];
                 $this->files->ensureDirectoryExists(dirname($outputPath));
-                $rendered = $this->publisher->render(
+                $rendered = $publisher->render(
                     $page,
                     $activeNavigation,
                     $siteTitle,
@@ -800,7 +825,7 @@ final readonly class PortableSiteBuilder
                     'resolved_page_plan' => $plan->toArray(),
                     'component_runtime' => $page['components']->toArray(),
                     'publisher' => [
-                        'id' => $this->publisher->id(),
+                        'id' => $publisher->id(),
                         'html_sha256' => hash('sha256', $rendered),
                     ],
                     'declarative_pipeline' => $page['declarative_pipeline'],
@@ -821,7 +846,7 @@ final readonly class PortableSiteBuilder
             $brandPublisher->publish($brandPlan['assets'], $destination);
             foreach ($localeDestinations as $localeDestination) {
                 $this->publishFrameworkAssets($buildBasePlan->frameworkLock, $localeDestination);
-                (new PortablePublisherAssetPublisher($this->files))->publish($localeDestination);
+                (new PortablePublisherAssetPublisher($this->files, $smartRegistry))->publish($localeDestination);
             }
             $diagnosticPath = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
             $this->files->ensureDirectoryExists(dirname($diagnosticPath));
@@ -840,7 +865,7 @@ final readonly class PortableSiteBuilder
                     ],
                     'production_inputs' => $runtimeMetadata->productionInputGroups(),
                     'component_catalog_sha256' => hash('sha256', CanonicalJson::encode($effectiveComponentCatalog)),
-                    'publisher' => $this->publisher->id(),
+                    'publisher' => $publisher->id(),
                     'locale_sources' => $this->localeSourceHashes($root, $contentContexts),
                 ],
                 'pages' => $this->orderedDiagnostics($contextPages, $diagnosticsByUrl),

@@ -16,7 +16,7 @@ final readonly class SmartCallNode implements DocumentNode
         private SourceSpan $sourceSpan,
     ) {
         if ($nodeId === ''
-            || preg_match('/^(?:ui|docara)(?:\.[a-z][a-z0-9_]*)+$/D', $smart) !== 1
+            || preg_match('/^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9_-]*)+$/D', $smart) !== 1
             || $view === ''
             || $ordinal < 1
         ) {

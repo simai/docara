@@ -16,9 +16,12 @@ final class ComponentDirectiveParser
     /** @var array<string, true> */
     private array $supportedComponents;
 
-    /** @param list<string> $supportedComponents */
-    public function __construct(array $supportedComponents)
-    {
+    /** @param list<string> $supportedComponents @param list<string> $ownedNamespaces */
+    public function __construct(
+        array $supportedComponents,
+        private readonly bool $rejectUnknown = true,
+        private readonly array $ownedNamespaces = [],
+    ) {
         $this->supportedComponents = array_fill_keys($supportedComponents, true);
         $this->inspector = new CommonMarkInspector;
     }
@@ -99,6 +102,15 @@ final class ComponentDirectiveParser
                 );
             }
             if (! isset($this->supportedComponents[$component])) {
+                $owned = array_filter(
+                    $this->ownedNamespaces,
+                    static fn (string $namespace): bool => str_starts_with($component, $namespace . '.'),
+                ) !== [];
+                if (! $this->rejectUnknown && ! $owned) {
+                    $output[] = $line;
+
+                    continue;
+                }
                 throw new FrameworkComponentException('FRAMEWORK_COMPONENT_UNSUPPORTED', $component . ':' . $lineNumber);
             }
             $startLine = $parsed['start_line'];

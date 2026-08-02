@@ -7,8 +7,8 @@
   "title": "Local exact-artifact release readiness verified",
   "summary": "Independent reverse-outcome audit reproduced and accepted the corrected exact package with explicit compatibility notes.",
   "owner": "tester",
-  "lifecycle": "accepted",
-  "readiness": "R2_pass_disposable",
+  "lifecycle": "blocked",
+  "readiness": "R2_correction_required",
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-02-docara-r1-release-readiness-goal.md",
@@ -24,11 +24,11 @@
   "pass_conditions": ["Byte-identical packages from two clean clones", "Two fresh dist consumers", "Versioned update and rollback", "Artifact policy and security checks", "Explicit compatibility gaps"],
   "stop_conditions": ["Artifact hash drift", "Data-loss or rollback failure", "Publication without explicit approval"],
   "promotes_to": null,
-  "status": "accepted_pass_with_notes",
+  "status": "withdrawn_pending_new_deterministic_candidate",
   "candidate_binding": {
     "source_revision": "56a2abf8bad05923f689141afc0bb045aa4d6734",
     "archive_sha256": "04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753"
   },
   "independent_checks": {"package_files": 650, "phpunit_tests": 390, "phpunit_assertions": 6024, "public_routes": 103, "static_references": 21437, "broken": 0},
-  "nonclaims": ["The 83afd355 artifact is superseded after audit.", "Local release-candidate acceptance does not authorize merge, push, tag, release, publication or deployment.", "R2 proves production-like compatibility and disposable cutover only; the live production gate remains closed."]
+  "nonclaims": ["The 83afd355 artifact is superseded after audit.", "The 04c18c95 artifact is superseded after the R2 determinism audit.", "No current local release candidate exists until the rc.3 correction matrix passes.", "No merge, push, tag, release, publication or deployment is authorized."]
 }

@@ -1,25 +1,25 @@
-# Next action: explicit `docara.test` deployment decision
+# Next action: deterministic R2 correction and retest
 
-Independent reverse-outcome audit accepted R1-C with verdict
-`PASS_WITH_NOTES`. Local release-readiness is accepted for the exact artifact;
-release, production and live cutover remain closed.
+Independent reverse-outcome audit R2 returned `CORRECTION_REQUIRED`: two fresh
+dist consumers of the same exact package produced different public metadata and
+tree hashes. Local release-readiness and the deployment dossier are withdrawn
+until a new candidate passes the complete retest.
 
-## One current candidate
+## Current correction target
 
 | Field | Exact value |
 | --- | --- |
-| Planned version | `2.0.0-rc.2` |
-| Planned tag | `v2.0.0-rc.2` — not created |
-| Future tag target | `56a2abf8bad05923f689141afc0bb045aa4d6734` |
-| ZIP SHA-256 | `04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753` |
-| Manifest SHA-256 | `d709d27cc226a3833c05ca62271525dfe48042d967940eaa9e8b9ac6a7185669` |
-| Candidate tree SHA-256 | `457790d4cf212174b7ef34893f8ee3cfc11f8973022c8f28c18348e46f2a3bae` |
+| Planned version | `2.0.0-rc.3` |
+| Planned tag | `v2.0.0-rc.3` — not created |
+| Future tag target | pending exact product source revision |
+| ZIP SHA-256 | pending independent reproducible package build |
+| Manifest SHA-256 | pending |
+| Candidate tree SHA-256 | pending two-consumer equality proof |
 | Current served tree SHA-256 | `b98ea2f66b733c5146360af68c1fe15b55aa099b33957fe52813772d93ce836f` |
-| State | accepted local release candidate; R2 dossier complete; live gate closed |
+| State | correction in progress; no valid deploy candidate |
 
-The branch HEAD contains later governance/evidence commits. It is not an
-alternative artifact source and must not be tagged as though it produced the
-accepted ZIP.
+The former source `56a2abf8…`, ZIP `04c18c95…` and tree `457790d4…` are
+`superseded_after_determinism_audit`; they must not be tagged or deployed.
 
 ## Completed preparation
 
@@ -42,10 +42,9 @@ accepted ZIP.
 
 ## Next authorized action
 
-Ask the user for exactly one decision: deploy or do not deploy the exact
-candidate to `docara.test`. If approved, repeat the documented read-only
-digest/TLS preflight, create the same-filesystem candidate, run the verified
-cutover helper and execute the required smoke. Any threshold failure triggers
-the documented exact rollback.
+Complete the repository-only determinism correction at
+`source/workflow/2026-08-02-docara-r2-determinism-correction.md`, create a new
+exact unpublished candidate and repeat R2. A deployment decision is not yet an
+authorized or meaningful next action.
 
 No merge, push, tag, publication, release or live deployment is authorized.

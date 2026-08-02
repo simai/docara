@@ -1,6 +1,12 @@
 # R2 production-readiness goal
 
-Status: `pass_disposable_awaiting_explicit_live_decision`
+Status: `superseded_after_determinism_audit`
+
+Correction notice: the independent R2 audit found that two fresh dist
+consumers produced different `_docara/page-metadata.json` and tree hashes.
+Therefore every PASS below is retained only as historical evidence and cannot
+authorize deployment. The active recovery source is
+`source/workflow/2026-08-02-docara-r2-determinism-correction.md`.
 
 Input revision: `f50ce3c816867936f7697af8413120259c023089`
 

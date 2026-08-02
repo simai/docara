@@ -892,3 +892,19 @@ No file under `/Users/rim/Sites/docara.test`, no Caddy/service state and no
 existing backup/staging directory was changed. Merge, push, tag, publication,
 release and deploy were not performed. The only next action is the user's
 explicit choice whether to deploy this exact candidate to `docara.test`.
+
+# R2 independent determinism correction
+
+Status: `CORRECTION_REQUIRED`
+
+An independent retest disproved the former two-consumer tree-equality claim:
+outside Git, `page-metadata.json` used Composer extraction-time `filemtime` as
+public `updated_at`. Source `56a2abf8…`, ZIP `04c18c95…` and tree
+`457790d4…` are therefore `superseded_after_determinism_audit`, and the prior
+R2 PASS is historical only. No valid deploy candidate currently exists.
+
+Active recovery source:
+`source/workflow/2026-08-02-docara-r2-determinism-correction.md`. The planned
+replacement is unpublished `2.0.0-rc.3`, subject to full independent package,
+consumer, build, browser, security and disposable rollback retest. Live
+`docara.test` remains unchanged; release and production gates are closed.

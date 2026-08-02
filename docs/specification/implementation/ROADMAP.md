@@ -1,9 +1,9 @@
 # Дорожная карта упрощения Docara
 
-Статус: R1-C independently accepted с verdict `PASS_WITH_NOTES`. Artifact
-`83afd355…` остаётся `superseded_after_audit`; единственный принятый local
-release candidate — source `56a2abf8…`, ZIP `04c18c95…`. R2 готовит
-production dossier; tag, release и production не заявлены.
+Статус: R2 `CORRECTION_REQUIRED`. Кандидат source `56a2abf8…`, ZIP
+`04c18c95…` отозван как `superseded_after_determinism_audit`: независимые dist
+consumers дали разные page metadata и tree hashes. Активен bounded correction
+к новому unpublished `2.0.0-rc.3`; tag, release и production не заявлены.
 
 Переход выполняется вертикальными срезами. Цель — не переписать весь код за
 один раз, а доказать новый единственный конвейер на одной реальной странице,
@@ -169,22 +169,18 @@ immutable artifact независимо воспроизведён. Evidence sou
 
 ## R2. Подготовить production-readiness dossier
 
-Статус: implementation PASS без live cutover. Exact package прошёл fresh dist
-consumer на macOS/PHP 8.4, macOS/PHP 8.3 и Linux/PHP 8.3, HTTP/browser/security
-матрицы, а текущий и candidate каталоги полностью классифицированы. В
-disposable same-filesystem mirror доказаны cutover, 103-route smoke и exact
-rollback. Будущий planned tag однозначно относится к source `56a2abf8…`,
-потому что именно этот SHA записан в принятом artifact manifest; последующие
-governance commits являются dossier, а не подменой release source.
+Статус: correction in progress. Предыдущие package/consumer/browser/cutover
+результаты сохранены как исторические, но не являются release evidence из-за
+недетерминированного `updated_at`. Новый gate требует два независимых dist
+consumer с различными filesystem mtimes и byte-identical полными деревьями,
+после чего вся R2 матрица повторяется для нового exact candidate.
 
 ## Порядок продолжения
 
 Текущий recovery source —
-`source/workflow/2026-08-02-docara-r2-production-readiness.md`. M0–M5 и прежний
-R1 не переигрываются; старый R1 ZIP остаётся immutable negative baseline.
-После R2 единственный следующий шаг — решение пользователя: развернуть exact
-artifact на `docara.test` по готовому dossier либо оставить текущую публикацию.
-Без такого approval production gate остаётся закрытым.
+`source/workflow/2026-08-02-docara-r2-determinism-correction.md`. M0–M5 и R1-C
+не переигрываются. Следующий пользовательский deployment decision появится
+только после нового integrated retest; production gate остаётся закрытым.
 
 ## Запрещённые сокращения
 

@@ -5,10 +5,10 @@
   "subtype": "production_gate",
   "tz_role": "stage_gate",
   "title": "Explicit approval for docara.test cutover",
-  "summary": "R2 disposable evidence is complete; live cutover remains forbidden until the user explicitly chooses to deploy the exact candidate and live preflight repeats the bound digests.",
+  "summary": "R2 evidence was invalidated by independent dist-consumer nondeterminism; live cutover is forbidden until a new exact candidate passes the complete correction/retest matrix and the user separately approves deployment.",
   "owner": "ops",
   "lifecycle": "blocked",
-  "readiness": "R2_dossier_pass",
+  "readiness": "R2_correction_required",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-02-docara-r2-production-readiness.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-r2-production-readiness/INDEX.md"],
@@ -16,6 +16,6 @@
   "pass_conditions": ["R2 production-like and rollback evidence passes", "One exact artifact and tag target are named", "User explicitly approves the live cutover", "Live preflight confirms backup, rollback, smoke and change window"],
   "stop_conditions": ["Missing approval", "Artifact or digest drift", "Failed rollback proof", "Required-route or asset failure"],
   "promotes_to": null,
-  "status": "closed_pending_explicit_user_approval_and_live_preflight",
+  "status": "closed_no_valid_candidate_pending_correction_retest",
   "nonclaims": ["This gate record is not approval.", "R2 performs no live write."]
 }

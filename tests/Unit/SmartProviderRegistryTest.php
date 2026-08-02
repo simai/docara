@@ -127,6 +127,60 @@ final class SmartProviderRegistryTest extends TestCase
         self::assertSame([], $policy->omittedAssets('ui.notice'));
     }
 
+    public function test_project_provider_preset_selects_a_registered_view_without_an_engine_id_branch(): void
+    {
+        $root = dirname(__DIR__) . '/fixtures/smart/variant';
+        $provider = new ProjectSmartProvider('variant', $root, 'variant/project', 'variant-revision');
+        $registry = (new SmartRegistryCompiler)->compile([$provider]);
+        $gateway = new SmartComponentGateway(
+            $registry,
+            new ProviderPlanResolverRegistry([
+                new PortableProviderPlanResolver('project.variant', $registry),
+            ]),
+        );
+        $renderer = new SmartRenderer(new TrustedTemplateRegistry(smarts: $registry));
+
+        $presetPlan = $gateway->resolve(new SmartCallNode(
+            'variant-card-preset',
+            'variant.card',
+            '',
+            ['preset' => 'compact', 'title' => 'Generic preset'],
+            1,
+            new SourceSpan('content/variant.md', 1, 1),
+        ));
+        self::assertSame('compact', $presetPlan->view);
+        self::assertSame('compact', $presetPlan->provenance['preset']);
+        self::assertStringContainsString(
+            'data-variant-view="compact"',
+            $renderer->render($presetPlan)->html,
+        );
+
+        $explicitPlan = $gateway->resolve(new SmartCallNode(
+            'variant-card-explicit',
+            'variant.card',
+            'default',
+            ['preset' => 'compact', 'title' => 'Explicit view'],
+            2,
+            new SourceSpan('content/variant.md', 2, 2),
+        ));
+        self::assertSame('default', $explicitPlan->view);
+        self::assertStringContainsString(
+            'data-variant-view="default"',
+            $renderer->render($explicitPlan)->html,
+        );
+
+        $this->expectException(\Simai\Docara\Portable\PortableConfigurationException::class);
+        $this->expectExceptionMessage('PORTABLE_SMART_PRESET_UNKNOWN');
+        $gateway->resolve(new SmartCallNode(
+            'variant-card-unknown',
+            'variant.card',
+            '',
+            ['preset' => 'missing', 'title' => 'Unknown preset'],
+            3,
+            new SourceSpan('content/variant.md', 3, 3),
+        ));
+    }
+
     public function test_provider_namespace_collision_fails_closed(): void
     {
         $root = dirname(__DIR__) . '/fixtures/smart/portable';

@@ -19,7 +19,6 @@ final readonly class SmartCallNode implements DocumentNode
     ) {
         if ($nodeId === ''
             || preg_match('/^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9_-]*)+$/D', $smart) !== 1
-            || $view === ''
             || $ordinal < 1
             || ($slot !== '' && preg_match('/^[a-z][a-z0-9_-]*$/D', $slot) !== 1)
         ) {

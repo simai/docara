@@ -40,7 +40,6 @@ final readonly class SmartPlanResolver
     public function resolve(SmartCallNode $call): ResolvedSmartPlan
     {
         $manifest = $this->manifests->get($call->smart);
-        $view = $this->definitions->smartView($call->smart, $call->view);
         $this->consumerPolicy->assertNarrowing($call->smart, $manifest);
         $authorProps = $call->props;
         $preset = $authorProps['preset'] ?? null;
@@ -49,10 +48,21 @@ final readonly class SmartPlanResolver
         if ($preset !== null && ! is_string($preset)) {
             throw new FrameworkComponentException('FRAMEWORK_PRESET_INVALID', $call->smart);
         }
+        $presetRecord = $preset === null ? [] : ($manifest['presets'][$preset] ?? null);
+        if (! is_array($presetRecord)) {
+            throw new FrameworkComponentException(
+                'FRAMEWORK_PRESET_UNKNOWN',
+                $call->smart . ':' . $preset,
+            );
+        }
+        $viewCode = $call->view !== ''
+            ? $call->view
+            : (is_string($presetRecord['view'] ?? null) ? $presetRecord['view'] : 'default');
+        $view = $this->definitions->smartView($call->smart, $viewCode);
 
         $props = $manifest['atlas']['example_props'];
         if ($preset !== null) {
-            $presetProps = $manifest['presets'][$preset]['props'] ?? null;
+            $presetProps = $presetRecord['props'] ?? null;
             if (! is_array($presetProps)) {
                 throw new FrameworkComponentException(
                     'FRAMEWORK_PRESET_UNKNOWN',
@@ -93,7 +103,7 @@ final readonly class SmartPlanResolver
         return new ResolvedSmartPlan(
             $call->id(),
             $call->smart,
-            $call->view,
+            $viewCode,
             (string) $view['template'],
             $props,
             $assets,
@@ -108,6 +118,7 @@ final readonly class SmartPlanResolver
                 'runtime' => 'simai-framework',
                 'portable_strategy' => (string) $portableManifest['render']['strategy'],
                 'input_adapter' => 'smart.props',
+                'preset' => $preset,
                 'portable_manifest' => $portableManifest,
                 'children_html' => $call->childrenHtml,
                 'slot' => $call->slot,

@@ -13,6 +13,7 @@ use Simai\Docara\Smart\Runtime\Context\SmartContextAdapterRegistry;
 use Simai\Docara\Smart\Runtime\SmartInvocation;
 use Simai\Docara\Smart\Runtime\Strategy\RegisteredTemplateStrategy;
 use Simai\Docara\Smart\Runtime\Strategy\SmartRendererStrategyRegistry;
+use Simai\Docara\Smart\SmartRegistry;
 
 final class SmartGenericRuntimeTest extends TestCase
 {
@@ -29,15 +30,31 @@ final class SmartGenericRuntimeTest extends TestCase
     public function test_goal_one_runtime_search_and_admission_sources_have_no_component_id_lists(): void
     {
         $root = dirname(__DIR__, 2);
+        $componentIds = array_values(array_unique([
+            ...SmartRegistry::bundled()->keys(),
+            'fixture.notice',
+            'variant.card',
+        ]));
+        sort($componentIds, SORT_STRING);
         foreach ([
+            'src/Declarative/DeclarativePageCompiler.php',
             'src/Declarative/Document/DocumentParser.php',
+            'src/Declarative/Rendering/SmartRenderer.php',
+            'src/Declarative/Smart/CompositeSmartPlanResolver.php',
+            'src/Declarative/Smart/PortableProviderPlanResolver.php',
+            'src/Declarative/Smart/ProviderPlanResolverRegistry.php',
+            'src/Declarative/Smart/SmartComponentGateway.php',
+            'src/Declarative/Smart/SmartPlanResolver.php',
             'src/PortableSite/PortableSearchTextExtractor.php',
             'src/Framework/FrameworkConsumerPolicy.php',
+            'src/Smart/Provider/SmartRegistryCompiler.php',
+            'src/Smart/SmartRegistry.php',
         ] as $relative) {
             $source = (string) file_get_contents($root . '/' . $relative);
-            foreach (['ui.alert', 'ui.button', 'docara.brand', 'fixture.notice'] as $id) {
+            foreach ($componentIds as $id) {
                 self::assertStringNotContainsString($id, $source, $relative);
             }
+            self::assertStringNotContainsString('defaultCompositeView', $source, $relative);
         }
     }
 

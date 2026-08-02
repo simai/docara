@@ -29,11 +29,6 @@ final readonly class PortableProviderPlanResolver implements ProviderSmartPlanRe
         if ($definition->providerId !== $this->ownedProviderId || $definition->root === null) {
             throw new PortableConfigurationException('PORTABLE_SMART_PROVIDER_MISMATCH', $call->smart);
         }
-        $viewRecord = $definition->views[$call->view] ?? null;
-        if (! is_array($viewRecord)) {
-            throw new PortableConfigurationException('PORTABLE_SMART_VIEW_UNKNOWN', $call->smart . ':' . $call->view);
-        }
-        $view = $this->json($definition->root, $viewRecord['path'], $call->smart . ':view');
         $presetCode = $call->props['preset'] ?? null;
         $authorProps = $call->props;
         unset($authorProps['preset']);
@@ -44,6 +39,14 @@ final readonly class PortableProviderPlanResolver implements ProviderSmartPlanRe
             }
             $preset = $this->json($definition->root, $definition->presets[$presetCode]['path'], $call->smart . ':preset');
         }
+        $viewCode = $call->view !== ''
+            ? $call->view
+            : (is_string($preset['view'] ?? null) ? $preset['view'] : 'default');
+        $viewRecord = $definition->views[$viewCode] ?? null;
+        if (! is_array($viewRecord)) {
+            throw new PortableConfigurationException('PORTABLE_SMART_VIEW_UNKNOWN', $call->smart . ':' . $viewCode);
+        }
+        $view = $this->json($definition->root, $viewRecord['path'], $call->smart . ':view');
         $props = array_replace(
             is_array($preset['props'] ?? null) ? $preset['props'] : [],
             is_array($view['props'] ?? null) ? $view['props'] : [],
@@ -59,7 +62,7 @@ final readonly class PortableProviderPlanResolver implements ProviderSmartPlanRe
         return new ResolvedSmartPlan(
             $call->id(),
             $definition->key,
-            $call->view,
+            $viewCode,
             $viewRecord['template'],
             $props,
             $assets,

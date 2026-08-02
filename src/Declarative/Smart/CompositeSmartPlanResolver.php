@@ -35,10 +35,30 @@ final readonly class CompositeSmartPlanResolver
         $resolution = $this->smarts->resolution($smart);
         $canonical = $resolution['canonical'];
         $manifest = $this->definitions->smartManifest($smart);
-        $view = $this->definitions->smartView($smart, $requestedView);
         $this->assertProductManifest($canonical, $manifest);
+        $authorProps = $props;
+        $presetCode = $authorProps['preset'] ?? null;
+        unset($authorProps['preset']);
+        if ($presetCode !== null && ! is_string($presetCode)) {
+            throw new PortableConfigurationException('DECLARATIVE_COMPOSITE_PRESET_INVALID', $canonical);
+        }
+        $preset = $presetCode === null ? [] : ($manifest['presets'][$presetCode] ?? null);
+        if (! is_array($preset)) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_COMPOSITE_PRESET_UNKNOWN',
+                $canonical . ':' . $presetCode,
+            );
+        }
+        $resolvedView = $requestedView !== ''
+            ? $requestedView
+            : (is_string($preset['view'] ?? null) ? $preset['view'] : 'default');
+        $view = $this->definitions->smartView($smart, $resolvedView);
+        $resolvedProps = array_replace(
+            is_array($preset['props'] ?? null) ? $preset['props'] : [],
+            $authorProps,
+        );
         try {
-            $this->propsValidator->assertValid($canonical, $manifest, $props);
+            $this->propsValidator->assertValid($canonical, $manifest, $resolvedProps);
         } catch (SmartPropsValidationException $exception) {
             throw new PortableConfigurationException(
                 'DECLARATIVE_COMPOSITE_PROPS_INVALID',
@@ -60,9 +80,9 @@ final readonly class CompositeSmartPlanResolver
         return new ResolvedSmartPlan(
             $nodeId,
             $canonical,
-            $requestedView,
+            $resolvedView,
             (string) $view['template'],
-            $props,
+            $resolvedProps,
             $assets,
             [
                 'manifest' => (string) $manifest['_source'],
@@ -80,6 +100,7 @@ final readonly class CompositeSmartPlanResolver
                 'runtime' => 'docara.smart.template',
                 'portable_strategy' => (string) $portableManifest['render']['strategy'],
                 'input_adapter' => (string) ($manifest['provenance']['input_adapter'] ?? 'smart.props'),
+                'preset' => $presetCode,
                 'portable_manifest' => $portableManifest,
                 'template_abi' => 'docara.legacy.object-view.v1',
             ],

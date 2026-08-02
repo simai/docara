@@ -307,7 +307,7 @@ final readonly class DeclarativePageCompiler
                     : []);
             $requestedView = is_string($blockConfiguration['view'] ?? null)
                 ? $blockConfiguration['view']
-                : $this->defaultCompositeView($smart, $props);
+                : '';
             $nodeId = 'smart-' . substr(
                 hash('sha256', $pageKey . "\0" . $region . "\0" . $configuration['id'] . "\0" . $blockConfiguration['id'] . "\0" . $smart),
                 0,
@@ -386,7 +386,12 @@ final readonly class DeclarativePageCompiler
     private function boundProps(array $block, PageCompositionContext $composition): array
     {
         return match ($block['bind']) {
-            'branding' => ['branding' => $composition->branding],
+            'branding' => [
+                'branding' => $composition->branding,
+                'preset' => $composition->branding['mode'] === 'full'
+                    ? 'default'
+                    : $composition->branding['mode'],
+            ],
             'navigation' => [
                 'items' => $composition->navigation,
                 'maximum_depth' => (int) ($block['props']['maximum_depth'] ?? 4),
@@ -408,23 +413,6 @@ final readonly class DeclarativePageCompiler
                 'DECLARATIVE_REGION_BINDING_FORBIDDEN',
                 "Unknown declarative region binding [{$block['bind']}].",
             ),
-        };
-    }
-
-    /** @param array<string, mixed> $props */
-    private function defaultCompositeView(string $smart, array $props): string
-    {
-        if ($smart !== 'docara.brand') {
-            return 'default';
-        }
-
-        $branding = is_array($props['branding'] ?? null) ? $props['branding'] : [];
-
-        return match ($branding['mode'] ?? 'full') {
-            'compact' => 'compact',
-            'logo' => 'logo',
-            'text' => 'text',
-            default => 'default',
         };
     }
 

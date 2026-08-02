@@ -1,0 +1,22 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart",
+  "code": "variant.card",
+  "title": "Variant card",
+  "render": {
+    "mode": "server-first",
+    "strategy": "server-static",
+    "template": "default",
+    "hydration": "none",
+    "domStrategy": "none",
+    "updateStrategy": "none",
+    "initialHtml": "complete",
+    "frontendOwnership": "none"
+  },
+  "props": {
+    "title": {"type": "string", "required": true},
+    "dense": {"type": "boolean"}
+  },
+  "assets": {"css": [], "js": [], "depends": []},
+  "meta": {"ownerPackage": "variant/project", "version": "1.0.0"}
+}

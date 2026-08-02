@@ -93,11 +93,11 @@ final class DeclarativeViewCompositionTest extends TestCase
     public function test_branding_mode_selects_only_registered_smart_views(): void
     {
         foreach ([
-            'full' => 'default',
-            'compact' => 'compact',
-            'logo' => 'logo',
-            'text' => 'text',
-        ] as $mode => $expectedView) {
+            'full' => ['default', 'default'],
+            'compact' => ['compact', 'compact'],
+            'logo' => ['logo', 'logo'],
+            'text' => ['text', 'text'],
+        ] as $mode => [$expectedView, $expectedPreset]) {
             $context = PageCompositionContext::fromBuilder(
                 [
                     'title' => 'Docara',
@@ -117,11 +117,13 @@ final class DeclarativeViewCompositionTest extends TestCase
                 $context,
             );
 
+            $smart = $plan->toArray()['regions']['header'][0]['blocks'][0]['smart'];
             self::assertSame(
                 $expectedView,
-                $plan->toArray()['regions']['header'][0]['blocks'][0]['smart']['view'],
+                $smart['view'],
                 "Unexpected Smart view for branding mode [$mode].",
             );
+            self::assertSame($expectedPreset, $smart['provenance']['preset']);
         }
     }
 

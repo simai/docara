@@ -6,9 +6,17 @@ namespace Simai\Docara\Smart\Artifact;
 
 final class Sf5SmartArtifactV1Contract
 {
-    public const ID = 'sf5.smart.artifact.v1';
+    /** Framework-owned portable ABI identity. The class name is a historical Docara consumer label. */
+    public const CONTRACT_ID = 'sf.smart_artifact_abi';
 
-    public const SOURCE_REVISION = 'd6f90bba6a9a2f30ac41075d62cf51f1014b7e78';
+    public const SCHEMA_VERSION = '1.0.0';
+
+    public const COMPATIBILITY_ID = 'sf-smart-artifact-abi-v1';
+
+    /** Storage/source-layout compatibility alias; it is not another ABI dialect. */
+    public const STORAGE_COMPATIBILITY_ALIAS = 'sf5.smart.artifact.v1';
+
+    public const SOURCE_REVISION = 'b3cdff87563ff78e7eddf044048a4b298fc69036';
 
     /** @var list<string> */
     private const STRATEGIES = [
@@ -112,10 +120,16 @@ final class Sf5SmartArtifactV1Contract
         $this->assertNamedArtifact($artifact, 'smart.preset', $smart, $code);
     }
 
-    /** @return array{contract:string,source_revision:string} */
+    /** @return array{contract_id:string,schema_version:string,compatibility_id:string,storage_compatibility_alias:string,source_revision:string} */
     public function provenance(): array
     {
-        return ['contract' => self::ID, 'source_revision' => self::SOURCE_REVISION];
+        return [
+            'contract_id' => self::CONTRACT_ID,
+            'schema_version' => self::SCHEMA_VERSION,
+            'compatibility_id' => self::COMPATIBILITY_ID,
+            'storage_compatibility_alias' => self::STORAGE_COMPATIBILITY_ALIAS,
+            'source_revision' => self::SOURCE_REVISION,
+        ];
     }
 
     /** @param array<string, mixed> $artifact */

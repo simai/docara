@@ -43,7 +43,7 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
         rmdir($this->temporaryRoot);
     }
 
-    public function test_one_unchanged_artifact_exposes_the_exact_sf5_view_context_blocker(): void
+    public function test_one_unchanged_artifact_is_byte_identical_across_docara_and_corrected_framework_host(): void
     {
         $projectRoot = dirname(__DIR__, 2);
         $artifactRoot = realpath(dirname(__DIR__) . '/fixtures/smart/portable');
@@ -53,7 +53,7 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
         if (! is_string($sf5Repository) || $sf5Repository === '') {
             $sf5Repository = dirname($projectRoot) . '/bx-simai.main';
         }
-        if (! is_dir($sf5Repository . '/.git')) {
+        if (! is_dir($sf5Repository . '/.git') && ! is_file($sf5Repository . '/.git')) {
             self::markTestSkipped('Set DOCARA_SF5_SOURCE_REPO to an exact bx-simai.main Git checkout.');
         }
 
@@ -63,8 +63,8 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
         $sf5 = $this->renderWithSf5($sf5Root, $artifactRoot);
 
         self::assertSame('<aside data-fixture-notice data-view="default" data-preset="compact" data-slot="content"><strong>Portable title</strong><p>Portable text</p></aside>', $docara['html']);
-        self::assertSame('<aside data-fixture-notice data-view="" data-preset="compact" data-slot=""><strong>Portable title</strong><p>Portable text</p></aside>', $sf5['html']);
-        self::assertNotSame($docara['html'], $sf5['html']);
+        self::assertSame('<aside data-fixture-notice data-view="default" data-preset="compact" data-slot="content"><strong>Portable title</strong><p>Portable text</p></aside>', $sf5['html']);
+        self::assertSame($docara['html'], $sf5['html']);
         self::assertStringContainsString('Portable title', $docara['html']);
         self::assertStringContainsString('Portable title', $sf5['html']);
         self::assertStringContainsString('Portable text', $docara['html']);
@@ -79,8 +79,14 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
         $reportPath = getenv('DOCARA_SF5_CROSS_HOST_REPORT');
         if (is_string($reportPath) && $reportPath !== '') {
             $report = [
-                'schema' => 'docara.sf5_cross_host_report.v2',
+                'schema' => 'docara.sf_cross_host_report.v3',
                 'source_revision' => $source['source_revision'],
+                'contract' => [
+                    'contract_id' => $source['contract_id'],
+                    'schema_version' => $source['schema_version'],
+                    'compatibility_id' => $source['compatibility_id'],
+                    'storage_compatibility_alias' => $source['storage_compatibility_alias'],
+                ],
                 'artifact' => [
                     'path' => 'tests/fixtures/smart/portable/fixture.notice',
                     'tree_sha256' => $this->treeHash($artifactRoot . '/fixture.notice'),
@@ -89,7 +95,7 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
                 'sf5' => $sf5,
                 'comparison' => [
                     'html_byte_equal' => $docara['html'] === $sf5['html'],
-                    'full_context_compatible' => false,
+                    'full_context_compatible' => true,
                     'docara_html_sha256' => hash('sha256', $docara['html']),
                     'sf5_html_sha256' => hash('sha256', $sf5['html']),
                     'docara_normalized_html_sha256' => hash('sha256', $this->normalizeHtml($docara['html'])),
@@ -100,7 +106,7 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
                         && str_contains($sf5['html'], 'Portable text'),
                     'selected_view' => [
                         'docara' => 'default',
-                        'sf5' => null,
+                        'sf5' => 'default',
                     ],
                     'selected_preset' => [
                         'docara' => 'compact',
@@ -108,14 +114,11 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
                     ],
                     'slot' => [
                         'docara' => 'content',
-                        'sf5' => null,
+                        'sf5' => 'content',
                     ],
                     'render_strategy_equal' => $docara['hydration']['render']['strategy']
                         === $sf5['hydration']['nodes'][0]['render']['strategy'],
-                    'blockers' => [
-                        'exact_sf5_resolved_view_record_overwritten_before_template',
-                        'exact_sf5_render_shortcut_does_not_forward_slot_as_node_field',
-                    ],
+                    'blockers' => [],
                 ],
             ];
             self::assertNotFalse(file_put_contents(
@@ -123,32 +126,6 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
                 json_encode($report, JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n",
             ));
         }
-    }
-
-    public function test_minimal_host_patch_restores_the_full_fixture_context_in_a_disposable_export(): void
-    {
-        $projectRoot = dirname(__DIR__, 2);
-        $artifactRoot = realpath(dirname(__DIR__) . '/fixtures/smart/portable');
-        self::assertIsString($artifactRoot);
-        $source = $this->sourceContract($projectRoot);
-        $sf5Repository = getenv('DOCARA_SF5_SOURCE_REPO');
-        if (! is_string($sf5Repository) || $sf5Repository === '') {
-            $sf5Repository = dirname($projectRoot) . '/bx-simai.main';
-        }
-        if (! is_dir($sf5Repository . '/.git')) {
-            self::markTestSkipped('Set DOCARA_SF5_SOURCE_REPO to an exact bx-simai.main Git checkout.');
-        }
-
-        $this->assertPinnedBlobs($sf5Repository, $source);
-        $sf5Root = $this->exportExactRevision($sf5Repository, (string) $source['source_revision']);
-        $this->applyProposedHostContextPatch($sf5Root);
-        $docara = $this->renderWithDocara($artifactRoot);
-        $patchedSf5 = $this->renderWithSf5($sf5Root, $artifactRoot);
-
-        self::assertSame($docara['html'], $patchedSf5['html']);
-        self::assertSame('content', $patchedSf5['hydration']['nodes'][0]['slot']);
-        self::assertSame('', $patchedSf5['stderr']);
-        self::assertSame([], $patchedSf5['warnings']);
     }
 
     /** @return array<string, mixed> */
@@ -193,7 +170,10 @@ final class Sf5CrossHostSmartCompatibilityTest extends TestCase
             'provenance' => [
                 'provider' => $artifact->provenance['provider'] ?? null,
                 'provider_revision' => $artifact->provenance['provider_revision'] ?? null,
-                'contract' => $artifact->provenance['contract'] ?? null,
+                'contract_id' => $artifact->provenance['contract_id'] ?? null,
+                'contract_schema_version' => $artifact->provenance['contract_schema_version'] ?? null,
+                'contract_compatibility_id' => $artifact->provenance['contract_compatibility_id'] ?? null,
+                'storage_compatibility_alias' => $artifact->provenance['storage_compatibility_alias'] ?? null,
                 'template_abi' => $artifact->provenance['template_abi'] ?? null,
             ],
             'exit_code' => 0,
@@ -309,22 +289,6 @@ PHP;
         self::assertSame(0, $extractProcess->getExitCode(), $extractProcess->getErrorOutput());
 
         return $root;
-    }
-
-    private function applyProposedHostContextPatch(string $sf5Root): void
-    {
-        $smartPath = $sf5Root . '/local/modules/simai.main/lib/UI/Smart.php';
-        $source = (string) file_get_contents($smartPath);
-        $replacements = [
-            "            'children' => true,\n" => "            'children' => true,\n            'slot' => true,\n",
-            "        foreach (['view', 'preset', 'children'] as \$key) {" => "        foreach (['view', 'preset', 'children', 'slot'] as \$key) {",
-            "        \$view = (string)(\$node['view'] ?? '');\n        \$slot = (string)(\$node['slot'] ?? '');" => "        \$slot = (string)(\$node['slot'] ?? '');",
-        ];
-        foreach ($replacements as $before => $after) {
-            self::assertSame(1, substr_count($source, $before));
-            $source = str_replace($before, $after, $source);
-        }
-        self::assertNotFalse(file_put_contents($smartPath, $source));
     }
 
     /** @return array<string,mixed> */

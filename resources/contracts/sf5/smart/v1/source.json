@@ -1,9 +1,11 @@
 {
   "schema": "docara.source_pinned_contract.v1",
-  "contract": "sf5.smart.artifact.v1",
-  "schema_version": "1.0",
+  "contract_id": "sf.smart_artifact_abi",
+  "schema_version": "1.0.0",
+  "compatibility_id": "sf-smart-artifact-abi-v1",
+  "storage_compatibility_alias": "sf5.smart.artifact.v1",
   "source_repository": "simai/bx-simai.main",
-  "source_revision": "d6f90bba6a9a2f30ac41075d62cf51f1014b7e78",
+  "source_revision": "b3cdff87563ff78e7eddf044048a4b298fc69036",
   "tracked_files": {
     "manifest_schema": {
       "path": "docs/developer/specifications/schemas/smart.manifest.schema.json",
@@ -19,7 +21,7 @@
     },
     "runtime": {
       "path": "local/modules/simai.main/lib/UI/Smart.php",
-      "sha256": "d1dda73289cdc6915dd90172498edffa2a1d44ce27a1e4a7def6667d5f238cfd"
+      "sha256": "5052fad560faf71766a52ed2402266d8ef5f64c3467b6d4294b9763a766fae9a"
     },
     "runtime_proof": {
       "path": "docs/developer/specifications/tools/proof_smart_runtime_api.php",

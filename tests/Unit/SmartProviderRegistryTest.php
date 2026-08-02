@@ -49,7 +49,10 @@ final class SmartProviderRegistryTest extends TestCase
         $definition = $registry->definition('fixture.notice');
         self::assertSame('project.fixture', $definition->providerId);
         self::assertSame('server-static', $definition->strategy);
-        self::assertSame('sf5.smart.artifact.v1', $definition->provenance['contract']);
+        self::assertSame('sf.smart_artifact_abi', $definition->provenance['contract_id']);
+        self::assertSame('1.0.0', $definition->provenance['contract_schema_version']);
+        self::assertSame('sf-smart-artifact-abi-v1', $definition->provenance['contract_compatibility_id']);
+        self::assertSame('sf5.smart.artifact.v1', $definition->provenance['storage_compatibility_alias']);
         self::assertArrayHasKey('smart.fixture.notice.default', $definition->templates);
         self::assertArrayHasKey('default', $definition->views);
         self::assertArrayHasKey('compact', $definition->presets);

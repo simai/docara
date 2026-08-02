@@ -1,4 +1,8 @@
 {
+  "contract_id": "sf.smart_artifact_abi",
+  "schema_version": "1.0.0",
+  "compatibility_id": "sf-smart-artifact-abi-v1",
+  "storage_compatibility_alias": "sf5.smart.artifact.v1",
   "schemaVersion": "1.0",
   "kind": "smart.contract",
   "manifest": {

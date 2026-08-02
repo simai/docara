@@ -28,8 +28,11 @@ final class Sf5SmartArtifactV1ContractTest extends TestCase
         $contract->assertPreset($this->json('preset/compact.json'), 'fixture.notice', 'compact');
 
         self::assertSame([
-            'contract' => 'sf5.smart.artifact.v1',
-            'source_revision' => 'd6f90bba6a9a2f30ac41075d62cf51f1014b7e78',
+            'contract_id' => 'sf.smart_artifact_abi',
+            'schema_version' => '1.0.0',
+            'compatibility_id' => 'sf-smart-artifact-abi-v1',
+            'storage_compatibility_alias' => 'sf5.smart.artifact.v1',
+            'source_revision' => 'b3cdff87563ff78e7eddf044048a4b298fc69036',
         ], $contract->provenance());
     }
 
@@ -54,9 +57,23 @@ final class Sf5SmartArtifactV1ContractTest extends TestCase
         $contract = json_decode((string) file_get_contents($root . '/contract.json'), true, 512, JSON_THROW_ON_ERROR);
 
         self::assertSame(Sf5SmartArtifactV1Contract::SOURCE_REVISION, $source['source_revision']);
+        self::assertSame(Sf5SmartArtifactV1Contract::CONTRACT_ID, $source['contract_id']);
+        self::assertSame(Sf5SmartArtifactV1Contract::SCHEMA_VERSION, $source['schema_version']);
+        self::assertSame(Sf5SmartArtifactV1Contract::COMPATIBILITY_ID, $source['compatibility_id']);
+        self::assertSame(
+            Sf5SmartArtifactV1Contract::STORAGE_COMPATIBILITY_ALIAS,
+            $source['storage_compatibility_alias'],
+        );
         self::assertFalse($source['policy']['moving_refs_allowed']);
         self::assertFalse($source['policy']['external_worktree_files_allowed']);
         self::assertSame('1.0', $contract['schemaVersion']);
+        self::assertSame(Sf5SmartArtifactV1Contract::CONTRACT_ID, $contract['contract_id']);
+        self::assertSame(Sf5SmartArtifactV1Contract::SCHEMA_VERSION, $contract['schema_version']);
+        self::assertSame(Sf5SmartArtifactV1Contract::COMPATIBILITY_ID, $contract['compatibility_id']);
+        self::assertSame(
+            Sf5SmartArtifactV1Contract::STORAGE_COMPATIBILITY_ALIAS,
+            $contract['storage_compatibility_alias'],
+        );
         self::assertSame('smart.contract', $contract['kind']);
         self::assertSame(
             ['server-static', 'server-first-hydratable', 'client-owned', 'shadow-dom-owned'],

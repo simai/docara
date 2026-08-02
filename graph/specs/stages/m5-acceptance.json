@@ -7,11 +7,13 @@
   "title": "M5. Продуктовая приёмка архитектуры",
   "summary": "Подтвердить понятность авторинга, детерминизм, portable install, обновление, браузерный результат и отсутствие активного legacy без заявления release readiness.",
   "owner": "tester",
-  "lifecycle": "planned",
-  "readiness": "R1_draft",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/ACCEPTANCE.md"],
-  "evidence_refs": [],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/INDEX.md"
+  ],
   "profile_refs": ["docara.unified"],
   "parent_goal_ref": "docara.goal.unified",
   "done_when": [

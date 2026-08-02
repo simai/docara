@@ -103,7 +103,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/final-route-owners.json",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.2-PHYSICAL-EXAMPLES.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
@@ -146,6 +147,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
   ],
-  "status": "m4_all_ru_routes_markdown_owned_projectors_retired",
+  "status": "m4_all_current_public_ru_routes_markdown_owned_and_accepted",
   "mapped_revision": "commit containing M4.3-PROJECTOR-RETIREMENT.md; parent 76a7239c8dd84541a8baac2c9414364fd9749fc1"
 }

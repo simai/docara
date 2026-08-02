@@ -672,3 +672,26 @@ Status: PASS; integrated M4 acceptance continues
 All-route isolated and complete browser acceptance remain M4.5 work. Other
 locales, package compatibility API removal, M5, release and production remain
 unclaimed.
+
+## M4.5 integrated acceptance
+
+Status: PASS; final reverse audit and handoff remain
+
+- all 103 current Russian public routes have one physical Markdown owner and
+  zero generated public owners;
+- 103/103 isolated builds produce exact full-build HTML;
+- two disposable 103-page builds contain 305 files each and are byte-identical
+  with normalized tree SHA-256
+  `e76f488fd24638eb630ae32b345f60505fd9ecc9e6d2b94a2368e5b9366bb245`;
+- both static verifiers check 206 HTML documents and 21,436 local references
+  with zero broken;
+- full PHPUnit passes 359 tests and 5,935 assertions; Pint, PHP lint, JSON,
+  YAML, Composer, graph and diff checks pass;
+- browser acceptance passes 24 representative viewport/theme cases and smoke
+  103/103 routes with zero page overflow or console/page errors; keyboard tabs,
+  tree focus, copy, responsive tables and media pass;
+- evidence:
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md`.
+
+M5 exact-archive acceptance, other locales, release and production remain
+unclaimed. No merge, push, tag, release or deploy was performed.

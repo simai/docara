@@ -7,12 +7,13 @@
   "title": "M4. Удаление параллельной архитектуры",
   "summary": "Удалить старые projectors, trusted HTML, content records и другие обходные пути только после доказанной замены и zero-reference scan.",
   "owner": "dev",
-  "lifecycle": "active",
+  "lifecycle": "completed",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/ACCEPTANCE.md"],
   "evidence_refs": [
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/INDEX.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/INDEX.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_goal_ref": "docara.goal.unified",
@@ -25,5 +26,10 @@
   "batch_refs": ["docara.batch.m4.retire"],
   "required_gates": ["docara.gate.legacy_deletion"],
   "required_evidence": ["docara.evidence.zero_reference_scan"],
-  "next_stage_ref": "docara.stage.m5.acceptance"
+  "next_stage_ref": "docara.stage.m5.acceptance",
+  "status": "accepted_for_current_public_ru_scope",
+  "nonclaims": [
+    "Other locales are not migrated.",
+    "M5, release and production readiness are not accepted."
+  ]
 }

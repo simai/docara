@@ -7,7 +7,7 @@
   "title": "M4. Удалить доказанно заменённый legacy",
   "summary": "Delete only code and data paths with complete mapping, parity evidence and zero active references.",
   "owner": "dev",
-  "lifecycle": "active",
+  "lifecycle": "completed",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": [
@@ -17,13 +17,15 @@
   "evidence_refs": [
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.1-BASELINE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.2-PHYSICAL-EXAMPLES.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.4-TYPED-CONTOUR.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.m4.retirement",
   "allowed_scope": ["Mapped legacy projectors", "Public prose copies", "Trusted HTML bridge", "Obsolete tests and docs"],
   "forbidden_scope": ["Delete before parity", "Delete canonical Markdown", "Rewrite git history", "Release"],
   "checks": ["Zero-reference scan", "Clean build", "Rollback commit", "No generated source dependency"],
-  "status": "in_progress",
-  "next_action": "remove_build_generated_and_trusted_main_bridge_after_all_page_pagebuilder_parity"
+  "status": "completed_with_evidence",
+  "next_action": "run_m4_reverse_audit_then_handoff_exact_candidate_to_m5"
 }

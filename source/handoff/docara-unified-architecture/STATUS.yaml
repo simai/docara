@@ -2,17 +2,17 @@ schema_version: 1
 goal: docara.goal.unified
 branch: codex/docara-unified-architecture
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: m4_public_ru_unification_in_progress
+state: m4_integrated_acceptance_passed_handoff_pending
 current_stage: docara.stage.m4.retirement
 current_batch: docara.batch.m4.retire
-next_action: run_m4_integrated_all_route_static_browser_acceptance
+next_action: run_m4_reverse_outcome_audit_and_handoff_exact_candidate_to_m5
 source_of_truth:
   human: docs/specification/README.md
   machine: graph/graph.json
   start: source/handoff/docara-unified-architecture/START.md
 readiness:
   architecture_contract: accepted
-  implementation: m4_typed_public_contour_accepted_integrated_acceptance_in_progress
+  implementation: m4_integrated_acceptance_passed_handoff_pending
   release: not_claimed
   production: not_claimed
 routing:

@@ -7,16 +7,20 @@
   "title": "Legacy deletion accepted",
   "summary": "Removal is allowed only for paths proven replaced, unreferenced and recoverable by commit rollback.",
   "owner": "teamlead",
-  "lifecycle": "active",
+  "lifecycle": "accepted",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/ACCEPTANCE.md"],
   "evidence_refs": [
     "docara.evidence.zero_reference_scan",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.4-TYPED-CONTOUR.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md"
   ],
   "profile_refs": ["docara.unified"],
   "pass_conditions": ["Positive parity", "Negative zero-reference scan", "Clean build after deletion", "Rollback commit boundary", "No canonical source deleted"],
   "stop_conditions": ["Unmapped caller", "Generated artifact used as source", "No rollback path"],
-  "promotes_to": "docara.batch.m5.accept"
+  "promotes_to": "docara.batch.m5.accept",
+  "status": "passed_for_current_public_ru_scope",
+  "nonclaims": ["Does not authorize deletion of other-locale package data."]
 }

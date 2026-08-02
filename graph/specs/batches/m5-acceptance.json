@@ -7,16 +7,18 @@
   "title": "M5. Независимая приёмка",
   "summary": "Test the exact candidate from a clean archive and record architecture acceptance without merging or releasing.",
   "owner": "tester",
-  "lifecycle": "blocked",
-  "readiness": "R1_draft",
+  "lifecycle": "planned",
+  "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/ACCEPTANCE.md"],
-  "evidence_refs": [],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/INDEX.md"
+  ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.m5.acceptance",
   "allowed_scope": ["Read-only exact-candidate acceptance", "Portable install", "Build parity", "Browser matrix", "Documentation audit"],
   "forbidden_scope": ["Candidate mutation", "Readiness promotion", "Merge", "Tag", "Release", "Deploy"],
   "checks": ["Exact archive", "Determinism", "Single/full parity", "Link and asset integrity", "Author workflow", "Nonclaims"],
-  "status": "blocked_by_m4",
-  "next_action": "wait_for_docara_gate_legacy_deletion"
+  "status": "ready_for_exact_candidate_acceptance",
+  "next_action": "accept_exact_m4_candidate_from_clean_archive_without_mutation"
 }

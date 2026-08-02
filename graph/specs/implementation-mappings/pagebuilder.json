@@ -44,7 +44,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-07-native-text-lists.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-10-details-backlinks.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.4-TYPED-CONTOUR.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.4-TYPED-CONTOUR.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md"
   ],
   "review_refs": ["docara.gate.vertical_slice", "docara.gate.architecture_acceptance"],
   "current_behavior": [
@@ -70,6 +71,6 @@
     "Keep --page selection before compilation and prove it with observer tests.",
     "Change the typed artifact seam only with full/single HTML, asset, metadata, heading, link and diagnostic parity."
   ],
-  "status": "m4_all_ru_routes_typed_pagebuilder_checkpoint",
+  "status": "m4_all_current_public_ru_routes_typed_pagebuilder_accepted",
   "mapped_revision": "commit containing M4.4-TYPED-CONTOUR.md; parent 7ba1033"
 }

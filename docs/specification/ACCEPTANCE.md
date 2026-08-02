@@ -3,11 +3,10 @@
 Статус: обязательная матрица; текущая реализация ещё не соответствует всем
 критериям
 
-Scoped checkpoint: M3 для всех 32 русских route `/ru/components/` принят по
-матрицам A–C и относящимся к этому разделу критериям сборки/UX. Чекбоксы ниже
-остаются глобальными и не отмечаются как выполненные на основании одной
-локали: другие route/locales, полное M4-удаление legacy, release и production
-readiness не заявлены.
+Scoped checkpoint: M4 для всех 103 текущих русских публичных route принят.
+Чекбоксы отмечены только там, где критерий доказан для единого runtime, а не
+только для одной страницы. Другие locales, portable install/update, полная M5
+приёмка, release и production readiness не заявлены.
 
 PASS ставится только по воспроизводимому evidence exact revision. Activity,
 скриншот без source binding или зелёный unit test одного модуля не заменяют
@@ -31,15 +30,15 @@ PASS ставится только по воспроизводимому evidenc
 
 ## B. Единственный конвейер
 
-- [ ] Full build передаёт полный набор route в один `PageBuilder` pipeline.
-- [ ] Single-page build передаёт набор из одного route в тот же pipeline.
-- [ ] Для одной revision full/single дают одинаковые HTML, assets и metadata.
-- [ ] Нет второго пути `trustedMainHtml`/`buildGenerated` для публичных страниц.
-- [ ] Markdown один раз компилируется в typed Document IR только в памяти.
-- [ ] Page-level IR JSON/JSONL не обязателен; cache, search index, `--dump-ir`
+- [x] Full build передаёт полный набор route в один `PageBuilder` pipeline.
+- [x] Single-page build передаёт набор из одного route в тот же pipeline.
+- [x] Для одной revision full/single дают одинаковые HTML, assets и metadata.
+- [x] Нет второго пути `trustedMainHtml`/`buildGenerated` для публичных страниц.
+- [x] Markdown один раз компилируется в typed Document IR только в памяти.
+- [x] Page-level IR JSON/JSONL не обязателен; cache, search index, `--dump-ir`
       и test evidence удаляемы и не становятся source of truth.
-- [ ] Все IR nodes рендерятся через один `NodeRendererRegistry`.
-- [ ] Неизвестный node fail-closed с понятной source location.
+- [x] Все IR nodes рендерятся через один `NodeRendererRegistry`.
+- [x] Неизвестный node fail-closed с понятной source location.
 
 ## C. Smart-компоненты
 
@@ -65,8 +64,8 @@ PASS ставится только по воспроизводимому evidenc
 
 ## E. Сборка и обновление
 
-- [ ] Две чистые полные сборки exact input byte-identical.
-- [ ] Single-page build не строит все component pages/examples перед фильтром.
+- [x] Две чистые полные сборки exact input byte-identical.
+- [x] Single-page build не строит все component pages/examples перед фильтром.
 - [ ] Частичная запись атомарна и не повреждает предыдущий результат.
 - [ ] `init` из пустого каталога работает без Node.js у потребителя.
 - [ ] Engine/Framework revisions зафиксированы immutable lock.
@@ -76,13 +75,13 @@ PASS ставится только по воспроизводимому evidenc
 
 ## F. Пользовательский результат
 
-- [ ] Многоуровневое меню, поиск, breadcrumbs, outline и previous/next работают.
+- [x] Многоуровневое меню, поиск, breadcrumbs, outline и previous/next работают.
 - [ ] Docs и landing presets используют один engine и authoring contract.
-- [ ] Светлая/тёмная тема не создаёт flash неправильной темы.
-- [ ] Desktop 1440/1920 и mobile 390 не имеют page-level overflow.
+- [x] Светлая/тёмная тема не создаёт flash неправильной темы.
+- [x] Desktop 1440/1920 и mobile 390 не имеют page-level overflow.
 - [ ] Keyboard navigation, Esc, focus trap/return и reduced motion проверены.
-- [ ] Broken links, missing assets и duplicate route равны 0.
-- [ ] Страница компонента написана для человека: назначение, параметры,
+- [x] Broken links, missing assets и duplicate route равны 0.
+- [x] Страница компонента написана для человека: назначение, параметры,
       варианты и короткие работающие примеры без служебного мусора.
 
 ## G. Диагностика и безопасность
@@ -96,22 +95,22 @@ PASS ставится только по воспроизводимому evidenc
 
 ## H. Удаление legacy
 
-- [ ] Component page projector удалён после route parity.
-- [ ] Declarative example projector удалён после example parity.
-- [ ] `trustedMainHtml` и generated page bypass удалены.
+- [x] Component page projector удалён после route parity.
+- [x] Declarative example projector удалён после example parity.
+- [x] `trustedMainHtml` и generated page bypass удалены.
 - [ ] Параллельные Smart renderers сведены к gateway и удалены.
 - [ ] Публичный `resources/i18n`, `site.json` compatibility и component prose
       удалены из public schemas/data/models.
-- [ ] Raw coarse Markdown fallback заменён typed IR там, где он обходил registry.
-- [ ] Zero-reference scan подтверждает отсутствие runtime references на
+- [x] Raw coarse Markdown fallback заменён typed IR там, где он обходил registry.
+- [x] Zero-reference scan подтверждает отсутствие runtime references на
       удалённые пути.
 
 ## I. Качество репозитория
 
-- [ ] PHPUnit, formatter/static checks и `git diff --check` проходят.
-- [ ] Полная документационная сборка и static verifier проходят.
+- [x] PHPUnit, formatter/static checks и `git diff --check` проходят.
+- [x] Полная документационная сборка и static verifier проходят.
 - [ ] README, CLI help и публичная документация совпадают с runtime.
-- [ ] Architecture graph валиден и mappings отражают exact code/tests/evidence.
+- [x] Architecture graph валиден и mappings отражают exact code/tests/evidence.
 - [ ] Worktree чист после фиксации candidate.
 - [ ] Независимый tester проверил exact archive, а не mutable worktree.
 

@@ -2,13 +2,15 @@ schema_version: 1
 goal: docara.goal.unified
 branch: codex/docara-unified-architecture
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: r1_local_release_readiness_complete
+state: r1c_semantic_correction_in_progress
 current_stage: docara.stage.r1.release_readiness
 current_batch: docara.batch.r1.prepare
-next_action: separate_user_approved_exact_artifact_release_review
-candidate_revision: 8c0d14566837b6e6f4552d14c656ea14b202cd18
-candidate_archive_sha256: 83afd355436284a0040390c88e1d125f3e5648932a23ff324ba9afa9af5eb561
-candidate_manifest_sha256: 77e781122cdc2bd5b6091fea74803ea26f5a0e4c8c8d0e9c3282cf0112c7a51a
+next_action: execute_r1c_semantic_correction_and_create_new_candidate
+candidate_revision: null
+candidate_archive_sha256: null
+candidate_manifest_sha256: null
+superseded_candidate_revision: 8c0d14566837b6e6f4552d14c656ea14b202cd18
+superseded_candidate_archive_sha256: 83afd355436284a0040390c88e1d125f3e5648932a23ff324ba9afa9af5eb561
 source_of_truth:
   human: docs/specification/README.md
   machine: graph/graph.json
@@ -17,8 +19,8 @@ readiness:
   architecture_contract: accepted
   implementation: m5_stabilization_complete
   architecture_acceptance: accepted_exact_m5_candidate
-  local_release_readiness: accepted_with_explicit_compatibility_gaps
-  release: requires_separate_user_approval
+  local_release_readiness: correction_pending
+  release: blocked_until_new_exact_artifact_independent_retest
   production: not_claimed
 routing:
   primary_domain: docara

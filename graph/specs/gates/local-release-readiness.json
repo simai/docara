@@ -5,9 +5,9 @@
   "subtype": "release_readiness_gate",
   "tz_role": "stage_gate",
   "title": "Local exact-artifact release readiness verified",
-  "summary": "The repository can reproduce and verify an exact local release package; publication still requires separate user approval.",
+  "summary": "The previous local package was reproducible but failed semantic artifact audit; readiness is reopened until a corrected exact artifact is independently retested.",
   "owner": "tester",
-  "lifecycle": "accepted",
+  "lifecycle": "changes_requested",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-02-docara-r1-release-readiness-goal.md"],
@@ -19,6 +19,6 @@
   "pass_conditions": ["Byte-identical packages from two clean clones", "Two fresh dist consumers", "Versioned update and rollback", "Artifact policy and security checks", "Explicit compatibility gaps"],
   "stop_conditions": ["Artifact hash drift", "Data-loss or rollback failure", "Publication without explicit approval"],
   "promotes_to": null,
-  "status": "passed_for_local_candidate_only",
-  "nonclaims": ["Does not authorize merge, push, tag, release, publication or deployment."]
+  "status": "correction_pending_old_artifact_superseded",
+  "nonclaims": ["The 83afd355 artifact is superseded after audit.", "Does not authorize merge, push, tag, release, publication or deployment."]
 }

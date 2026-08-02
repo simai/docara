@@ -27,9 +27,9 @@
   },
   "implementation_state": {
     "current_stage": "docara.stage.r1.release_readiness",
-    "completed_checkpoint": "r1_local_release_readiness_verified",
-    "next_action": "separate_user_approved_exact_artifact_release_review",
-    "evidence": "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/INDEX.md"
+    "completed_checkpoint": "r1_independent_audit_correction_required",
+    "next_action": "execute_r1c_semantic_correction_before_new_candidate",
+    "evidence": "source/workflow/evidence/2026-08-02-docara-r1c-semantic-correction/INDEX.md"
   },
   "routing_gap": {
     "status": "recorded",

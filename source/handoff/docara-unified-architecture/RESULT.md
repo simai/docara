@@ -795,3 +795,18 @@ Status: PASS_WITH_EXPLICIT_GAPS; separate release approval still required
 
 No merge, push, tag, release, publication or deploy was performed. The only
 next action is a separate user-approved exact-artifact release review/action.
+
+# R1 independent reverse-audit correction
+
+Status: `CORRECTION_REQUIRED`; previous local readiness withdrawn
+
+The independent audit reproduced deterministic packaging but found broken
+local README links inside the exact ZIP and an obsolete public language-pack
+contract across schema, starter, public docs, tests and packaged resources.
+Source `8c0d14566837b6e6f4552d14c656ea14b202cd18` and ZIP `83afd355…`
+remain immutable historical evidence with status `superseded_after_audit`.
+
+R1-C is active at
+`source/workflow/2026-08-02-docara-r1c-semantic-correction-goal.md`. No current
+corrected candidate or local release-readiness claim exists until a new exact
+ZIP passes independent retest.

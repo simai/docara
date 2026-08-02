@@ -7,7 +7,7 @@
   "title": "R1. Подготовка release-ready пакета",
   "summary": "Build and verify a deterministic exact-revision package and release-readiness evidence without publishing it.",
   "owner": "teamlead",
-  "lifecycle": "completed",
+  "lifecycle": "active",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-02-docara-r1-release-readiness-goal.md"],
@@ -22,5 +22,5 @@
   "required_gates": ["docara.gate.local_release_readiness"],
   "required_evidence": ["Deterministic exact-revision package", "Two fresh dist consumers", "Real versioned update and rollback", "Explicit compatibility gaps and nonclaims"],
   "next_stage_ref": null,
-  "status": "ready_for_separate_user_approved_release_review"
+  "status": "correction_pending_after_independent_artifact_audit"
 }

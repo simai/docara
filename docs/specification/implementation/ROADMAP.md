@@ -1,9 +1,9 @@
 # Дорожная карта упрощения Docara
 
-Статус: M0-M5 завершены; exact-archive product candidate независимо принят.
-R1 завершил локально воспроизводимый release-ready пакет с явно записанными
-compatibility gaps. Release и production не заявлены и требуют отдельного
-разрешения.
+Статус: R1 independent audit вернул `CORRECTION_REQUIRED`. Artifact
+`83afd355…` классифицирован `superseded_after_audit`; R1-C исправляет semantic
+drift runtime/schema/docs/tests и готовит новый exact candidate. Release и
+production не заявлены.
 
 Переход выполняется вертикальными срезами. Цель — не переписать весь код за
 один раз, а доказать новый единственный конвейер на одной реальной странице,
@@ -128,17 +128,19 @@ zero-reference evidence.
 
 ## M5. Стабилизировать публичный продукт
 
-Статус: implementation batch и tester-owned exact-archive acceptance
-завершены. Architecture/product-candidate gate принят без release approval.
+Статус: implementation runtime и bounded product-candidate acceptance
+завершены. R1 audit позже переоткрыл semantic docs/artifact acceptance; release
+approval отсутствует.
 
 Результат:
 
 - один `build` для сайта и тот же `PageBuilder` для `--page`;
 - чистый `init` создаёт понятный переносимый проект;
 - update отделяет engine-owned файлы от project-owned content/config/assets;
-- документация описывает только реально работающие команды;
+- runtime-команды и ownership lifecycle доказаны; semantic public docs требуют
+  R1-C correction;
 - diagnostics ссылаются на source location;
-- все acceptance criteria имеют immutable evidence.
+- immutable M5 evidence сохраняется, но не подменяет R1-C release evidence.
 
 После M5 выполняется R1: детерминированная упаковка, versioned update/rollback,
 fresh-consumer и release verification. Даже зелёный R1 лишь готовит отдельное
@@ -146,15 +148,24 @@ release review; merge, tag, публикация и deploy не выполняю
 
 ## R1. Подготовить локальный release candidate
 
-Статус: завершён с явными gaps PHP 8.3, полной Linux-матрицы и exact screenshot
-capture. Эти клетки не объявлены зелёными.
+Статус: `correction_pending` после independent audit. Прежние reproducibility,
+consumer и update evidence остаются историческими, но local release readiness
+отозвана из-за obsolete public language-pack contract и broken packaged links.
 
 Доказано: два clean clone создают byte-identical ZIP/manifest/checksums; два
 fresh dist consumer проходят init/build/static; текущий публичный сайт даёт
 103/103 full/single parity; реальный predecessor/current update атомарно
 применяется и точно откатывается с сохранением project-owned файлов; artifact
-policy и security tests проходят. Следующий шаг — только отдельный
-user-approved exact-artifact release review/action.
+policy и security tests проходят. Эти положительные результаты сохраняются как
+история, но следующий шаг — R1-C correction и новый independent artifact retest.
+
+## R1-C. Устранить semantic drift перед новым candidate
+
+Статус: выполняется. Обязательные результаты: удалить public `language_pack`,
+переписать public authoring docs и negative gates, реализовать принятые front
+matter/missing-page contracts, проверить ссылки внутри ZIP, затем создать и
+независимо перепроверить новый immutable artifact. Recovery source:
+`source/workflow/2026-08-02-docara-r1c-semantic-correction-goal.md`.
 
 ## Порядок работы нового треда
 

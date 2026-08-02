@@ -1,45 +1,32 @@
-# Next checkpoint: separately approved exact-artifact release review
+# Next checkpoint: R1-C semantic correction
 
-M5 product stabilization, independent exact-archive acceptance and R1 local
-release readiness are complete. The repository now waits for an explicit user
-decision to run a separate exact-artifact release review/action.
+Independent audit rejected local release readiness because the exact R1 ZIP
+contained broken README links and the retired public language-pack contract.
+The current target is R1-C; no corrected candidate exists yet.
 
-## Candidate contract
+## Current correction target
 
-- exact archive revision:
-  `48751b8ca221f7185a72ce19188b1441aea93d2e`;
-- ZIP SHA-256:
-  `d12169b3c5080f219dada00cc976a758263cbc38ef845da11176ed7e34e8334a`;
-- recovery and implementation workflow:
-  `source/workflow/2026-08-02-docara-m5-product-stabilization-goal.md`;
+- recovery workflow:
+  `source/workflow/2026-08-02-docara-r1c-semantic-correction-goal.md`;
+- debt register:
+  `source/workflow/2026-08-02-docara-architecture-documentation-debt-register.md`;
 - evidence index:
-  `source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/INDEX.md`;
-- all 103 current Russian public routes have one physical Markdown owner and
-  one PageBuilder/typed-IR/registry/Smart-gateway contour;
-- portable init/update is ownership-aware, previewable, atomic, reversible and
-  fail-closed;
-- consumer-owned Composer lock and immutable engine/Framework provenance are
-  recorded and verified;
-- minimal EN LTR and AR RTL fixtures test the same engine without claiming a
-  complete translation.
+  `source/workflow/evidence/2026-08-02-docara-r1c-semantic-correction/INDEX.md`;
+- current action: remove public `language_pack` schema/config/runtime/starter
+  surfaces, then converge public docs/spec/tests before packaging;
+- completion requires a new immutable source SHA, ZIP SHA and independent
+  exact-artifact retest.
 
-## Exact local candidate
+## Historical artifacts
 
-- source revision: `8c0d14566837b6e6f4552d14c656ea14b202cd18`;
-- ZIP SHA-256:
-  `83afd355436284a0040390c88e1d125f3e5648932a23ff324ba9afa9af5eb561`;
-- release manifest SHA-256:
-  `77e781122cdc2bd5b6091fea74803ea26f5a0e4c8c8d0e9c3282cf0112c7a51a`;
-- evidence:
-  `source/workflow/evidence/2026-08-02-docara-r1-release-readiness/INDEX.md`.
+| Artifact | Source revision | ZIP SHA-256 | Status |
+| --- | --- | --- | --- |
+| M5 product candidate | `48751b8ca221f7185a72ce19188b1441aea93d2e` | `d12169b3c5080f219dada00cc976a758263cbc38ef845da11176ed7e34e8334a` | historical bounded M5 product evidence; not release target |
+| R1 local candidate | `8c0d14566837b6e6f4552d14c656ea14b202cd18` | `83afd355436284a0040390c88e1d125f3e5648932a23ff324ba9afa9af5eb561` | `superseded_after_audit`; immutable negative baseline |
 
-PHP 8.2 and 8.4 are locally proved. PHP 8.3 and the complete Linux matrix are
-unexecuted CI cells. Exact screenshots were not captured because external-font
-waiting timed out; direct exact-runtime assertions and UI-equivalent M5 images
-remain explicitly distinguished.
+Do not select either historical artifact as the current release target.
 
 ## Nonclaims
 
-Architecture/product-candidate acceptance and local release readiness are PASS
-within the evidence boundary. Full translations of other locales, merge, push,
-tag, publication, release and production deploy are not authorized or claimed.
+Local release readiness, merge, push, tag, publication, release, production
+deploy and complete non-Russian translations are not authorized or claimed.

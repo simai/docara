@@ -312,6 +312,7 @@
           ?(copyButton.dataset.copiedIcon||'check')
           :(copyButton.dataset.copyIcon||'content_copy'))}
       }
+      showCopyState(false);
       copyButton.addEventListener('click',function(){
         var panel=panels.find(function(candidate){return candidate.classList.contains('is-active')})||null;
         var code=panel&&panel.querySelector('code');

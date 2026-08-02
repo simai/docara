@@ -749,3 +749,22 @@ unauthorized.
 Exact archive candidate: `48751b8ca221f7185a72ce19188b1441aea93d2e`,
 ZIP SHA-256
 `d12169b3c5080f219dada00cc976a758263cbc38ef845da11176ed7e34e8334a`.
+
+# Independent M5 acceptance result
+
+Status: PASS_WITH_NOTES; architecture/product candidate accepted
+
+- the independent audit tested exact revision `48751b8` and archive SHA-256
+  `d12169b3c5080f219dada00cc976a758263cbc38ef845da11176ed7e34e8334a`;
+- the exact-clone result is 376 tests and 6,062 assertions; the earlier 6,061
+  executor count is retained as an environment/reporting discrepancy, not
+  rewritten into the immutable candidate;
+- fresh dist install, lifecycle, 103-route deterministic/full-single/static
+  matrices and source/architecture boundaries pass;
+- the broad browser matrix is UI-equivalent inherited evidence, while the
+  exact candidate has direct representative desktop/mobile smoke;
+- evidence:
+  `source/workflow/evidence/2026-08-02-docara-r1-release-readiness/R1.1-M5-INDEPENDENT-ACCEPTANCE.md`.
+
+Release, merge, push, tag, publication and production remain unclaimed. R1
+release-readiness implementation is active.

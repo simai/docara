@@ -7,16 +7,19 @@
   "title": "Unified architecture accepted",
   "summary": "The exact candidate satisfies the Docara architecture goal; this does not authorize merge, release or production deployment.",
   "owner": "tester",
-  "lifecycle": "active",
+  "lifecycle": "accepted",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/ACCEPTANCE.md"],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/INDEX.md",
-    "docara.evidence.final_acceptance"
+    "docara.evidence.final_acceptance",
+    "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/R1.1-M5-INDEPENDENT-ACCEPTANCE.md"
   ],
   "profile_refs": ["docara.unified"],
   "pass_conditions": ["Exact archive", "Portable install", "Deterministic builds", "Full/page parity", "Browser and accessibility matrix", "Authoring usability", "Documentation and graph sync", "Explicit nonclaims"],
   "stop_conditions": ["Candidate mutation during test", "Hidden parallel source or renderer", "Release readiness overclaim"],
-  "promotes_to": null
+  "promotes_to": "docara.batch.r1.prepare",
+  "status": "passed_for_exact_m5_product_candidate",
+  "nonclaims": ["Does not authorize merge, tag, release, publication or deployment."]
 }

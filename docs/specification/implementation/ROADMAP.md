@@ -1,8 +1,8 @@
 # Дорожная карта упрощения Docara
 
-Статус: M0-M4 и M5 product stabilization завершены с evidence; отдельная
-read-only exact-archive acceptance готова к запуску. Другие локали, release и
-production не заявлены
+Статус: M0-M5 завершены; exact-archive product candidate независимо принят.
+R1 готовит локально воспроизводимый release-ready пакет. Release и production
+не заявлены и требуют отдельного разрешения
 
 Переход выполняется вертикальными срезами. Цель — не переписать весь код за
 один раз, а доказать новый единственный конвейер на одной реальной странице,
@@ -127,8 +127,8 @@ zero-reference evidence.
 
 ## M5. Стабилизировать публичный продукт
 
-Статус: implementation batch завершён; exact clean candidate передан в
-отдельный tester-owned acceptance batch, который ещё не выполнен.
+Статус: implementation batch и tester-owned exact-archive acceptance
+завершены. Architecture/product-candidate gate принят без release approval.
 
 Результат:
 
@@ -139,8 +139,9 @@ zero-reference evidence.
 - diagnostics ссылаются на source location;
 - все acceptance criteria имеют immutable evidence.
 
-Только после M5 разрешён отдельный release gate. Merge в default branch, tag,
-GitHub release и production deployment не являются частью этой дорожной карты.
+После M5 выполняется R1: детерминированная упаковка, versioned update/rollback,
+fresh-consumer и release verification. Даже зелёный R1 лишь готовит отдельное
+release review; merge, tag, публикация и deploy не выполняются автоматически.
 
 ## Порядок работы нового треда
 

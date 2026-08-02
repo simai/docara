@@ -1,13 +1,12 @@
 # Приёмка единой архитектуры Docara
 
-Статус: implementation matrix подтверждена; независимая exact-archive
-приёмка ещё не выполнена
+Статус: архитектура и product candidate независимо приняты; release и
+production остаются отдельными закрытыми gates
 
 M5 implementation candidate подтверждает текущий русский публичный сайт и
 минимальные EN LTR/AR RTL product fixtures через единый runtime. Чекбоксы
 отмечены только по воспроизводимому implementation evidence. Полный перевод
-других locales, независимая M5 acceptance, release и production readiness не
-заявлены.
+других locales, release и production readiness не заявлены.
 
 PASS ставится только по воспроизводимому evidence exact revision. Activity,
 скриншот без source binding или зелёный unit test одного модуля не заменяют
@@ -113,7 +112,7 @@ PASS ставится только по воспроизводимому evidenc
 - [x] README, CLI help и публичная документация совпадают с runtime.
 - [x] Architecture graph валиден и mappings отражают exact code/tests/evidence.
 - [x] Worktree чист после фиксации candidate.
-- [ ] Независимый tester проверил exact archive, а не mutable worktree.
+- [x] Независимый tester проверил exact archive, а не mutable worktree.
 
 ## Итоговый release gate
 

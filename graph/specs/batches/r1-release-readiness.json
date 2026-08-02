@@ -1,0 +1,22 @@
+{
+  "id": "docara.batch.r1.prepare",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "R1. Детерминированная release readiness",
+  "summary": "Implement deterministic packaging, real update/rollback and exact-artifact consumer, security and browser verification.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-02-docara-r1-release-readiness-goal.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-r1-release-readiness/INDEX.md"],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.r1.release_readiness",
+  "allowed_scope": ["Release package tooling", "Disposable consumers", "Update fixtures", "Verification and documentation"],
+  "forbidden_scope": ["Merge", "Push", "Tag", "Publication", "Deploy", "Framework producer change"],
+  "checks": ["Deterministic ZIP", "Archive policy", "Fresh consumers", "Versioned update rollback", "Build/static/browser/security"],
+  "status": "in_progress",
+  "next_action": "implement_deterministic_release_package"
+}

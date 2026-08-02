@@ -2,10 +2,10 @@ schema_version: 1
 goal: docara.goal.unified
 branch: codex/docara-unified-architecture
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: m5_candidate_ready_for_independent_acceptance
-current_stage: docara.stage.m5.acceptance
-current_batch: docara.batch.m5.accept
-next_action: independently_accept_exact_exported_archive_without_candidate_mutation
+state: r1_release_readiness_in_progress
+current_stage: docara.stage.r1.release_readiness
+current_batch: docara.batch.r1.prepare
+next_action: build_deterministic_release_package_without_publication
 candidate_revision: 48751b8ca221f7185a72ce19188b1441aea93d2e
 candidate_archive_sha256: d12169b3c5080f219dada00cc976a758263cbc38ef845da11176ed7e34e8334a
 source_of_truth:
@@ -15,7 +15,7 @@ source_of_truth:
 readiness:
   architecture_contract: accepted
   implementation: m5_stabilization_complete
-  architecture_acceptance: pending_independent_tester
+  architecture_acceptance: accepted_exact_m5_candidate
   release: not_claimed
   production: not_claimed
 routing:

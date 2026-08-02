@@ -1,8 +1,8 @@
-# Next checkpoint: independent M5 exact-archive acceptance
+# Next checkpoint: R1 deterministic release readiness
 
-M5 product stabilization implementation is complete. The next bounded action
-is read-only tester-owned `docara.batch.m5.accept`; it must test the exact
-exported archive and must not mutate the candidate.
+M5 product stabilization and independent exact-archive acceptance are complete.
+R1 now builds a deterministic release package and verifies it locally without
+publishing, tagging, merging or deploying.
 
 ## Candidate contract
 
@@ -23,15 +23,15 @@ exported archive and must not mutate the candidate.
 - minimal EN LTR and AR RTL fixtures test the same engine without claiming a
   complete translation.
 
-## Required independent action
+## Required R1 action
 
-Reproduce the archive install, lifecycle, deterministic full builds, all-route
-full/single parity, static/security/browser/accessibility and author workflow
-matrices from M5.7. Record the exact archive hash and candidate revision. A
-candidate mutation invalidates that acceptance attempt.
+Build the package twice from exact clean revisions, verify identical ZIP and
+manifests, exercise a real predecessor/current update and rollback, and bind
+fresh-consumer, authoring, security, build and browser evidence to the exact
+release artifact.
 
 ## Nonclaims
 
-Architecture acceptance remains pending the independent tester. Full
-translations of other locales, merge, push, tag, release and production deploy
-are not authorized or claimed.
+Architecture/product-candidate acceptance is PASS. Full translations of other
+locales, merge, push, tag, publication, release and production deploy are not
+authorized or claimed.

@@ -7,19 +7,22 @@
   "title": "M5. Независимая приёмка",
   "summary": "Test the exact candidate from a clean archive and record architecture acceptance without merging or releasing.",
   "owner": "tester",
-  "lifecycle": "active",
+  "lifecycle": "accepted",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/ACCEPTANCE.md"],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/INDEX.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/INDEX.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/INDEX.md",
+    "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/R1.1-M5-INDEPENDENT-ACCEPTANCE.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.m5.acceptance",
   "allowed_scope": ["Read-only exact-candidate acceptance", "Portable install", "Build parity", "Browser matrix", "Documentation audit"],
   "forbidden_scope": ["Candidate mutation", "Readiness promotion", "Merge", "Tag", "Release", "Deploy"],
   "checks": ["Exact archive", "Determinism", "Single/full parity", "Link and asset integrity", "Author workflow", "Nonclaims"],
-  "status": "ready_for_independent_exact_archive_acceptance",
-  "next_action": "test_exact_candidate_without_mutation"
+  "status": "independently_accepted_exact_archive",
+  "accepted_revision": "48751b8ca221f7185a72ce19188b1441aea93d2e",
+  "accepted_archive_sha256": "d12169b3c5080f219dada00cc976a758263cbc38ef845da11176ed7e34e8334a",
+  "next_action": "prepare_release_readiness_without_publication"
 }

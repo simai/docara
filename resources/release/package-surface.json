@@ -7,6 +7,7 @@
     "docara",
     "docs/site/",
     "resources/",
+    "scripts/verify-static-build.php",
     "src/",
     "stubs/"
   ],

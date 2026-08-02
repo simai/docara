@@ -15,7 +15,7 @@ final class ReleasePackageBuilder
     public function build(string $repository, string $revision, string $version, string $tag, string $outputDirectory): array
     {
         $repository = realpath($repository) ?: '';
-        if ($repository === '' || ! is_dir($repository . '/.git')) {
+        if ($repository === '' || ! file_exists($repository . '/.git')) {
             throw new RuntimeException('Release source must be a Git checkout.');
         }
         if (preg_match('/^[a-f0-9]{40}$/', $revision) !== 1 || $this->git($repository, ['rev-parse', $revision . '^{commit}']) !== $revision) {

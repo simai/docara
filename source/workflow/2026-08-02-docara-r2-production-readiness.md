@@ -1,6 +1,6 @@
 # R2 production-readiness goal
 
-Status: `implementation_complete_pending_integrated_verification`
+Status: `pass_disposable_awaiting_explicit_live_decision`
 
 Input revision: `f50ce3c816867936f7697af8413120259c023089`
 
@@ -120,7 +120,7 @@ Required cutover stop thresholds:
 | R2.3 | Compatibility and security closure | PHP/macOS/Linux matrix, audits/scans | pass |
 | R2.4 | Exact HTTP/browser/product acceptance | route smoke, interactions, screenshots | pass |
 | R2.5 | Current/candidate delta and deployment dossier | classified diff, mirror cutover/rollback | pass |
-| R2.6 | Integrated outcome review and handoff | graph/docs/handoff, clean worktree | active |
+| R2.6 | Integrated outcome review and handoff | graph/docs/handoff, clean worktree | pass |
 
 ## Batches
 
@@ -154,8 +154,8 @@ Required cutover stop thresholds:
   `source/workflow/evidence/2026-08-02-docara-r2-production-readiness/INDEX.md`;
 - rollback boundary: input revision `f50ce3c…` plus logical R2 commits;
 - recovery source: this file;
-- current batch: R2.6 integrated verification and handoff;
-- next safe action after a green checkpoint: only the user's explicit choice
+- current batch: complete;
+- next safe action: only the user's explicit choice
   whether to run the documented live cutover; no further process design is
   required.
 

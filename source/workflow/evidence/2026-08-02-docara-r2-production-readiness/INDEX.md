@@ -1,6 +1,6 @@
 # R2 production-readiness evidence
 
-Status: `implementation_complete_pending_final_governance_commit`
+Status: `pass_disposable_awaiting_explicit_live_decision`
 
 Input HEAD: `f50ce3c816867936f7697af8413120259c023089`
 
@@ -17,7 +17,7 @@ Exact ZIP SHA-256:
 | R2.3 compatibility and security | pass | [compatibility and security](R2.3-COMPATIBILITY-SECURITY.md) |
 | R2.4 HTTP/browser acceptance | pass | [HTTP/browser matrix](R2.4-HTTP-BROWSER.md), [machine results](browser-results.json) |
 | R2.5 delta and disposable cutover/rollback | pass | [deployment dossier](R2.5-DELTA-DEPLOYMENT-DOSSIER.md) |
-| R2.6 integrated handoff | active | final repository/graph verification and governance commit |
+| R2.6 integrated handoff | pass | [integrated verification](R2.6-INTEGRATED-VERIFICATION.md) |
 
 Historical R1/R1-C evidence remains immutable. R2 adds fresh compact evidence
 and does not copy build trees, vendor directories, secrets or private raw logs

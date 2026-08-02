@@ -7,7 +7,7 @@
   "title": "M5. Независимая приёмка",
   "summary": "Test the exact candidate from a clean archive and record architecture acceptance without merging or releasing.",
   "owner": "tester",
-  "lifecycle": "planned",
+  "lifecycle": "blocked",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/ACCEPTANCE.md"],
@@ -19,6 +19,6 @@
   "allowed_scope": ["Read-only exact-candidate acceptance", "Portable install", "Build parity", "Browser matrix", "Documentation audit"],
   "forbidden_scope": ["Candidate mutation", "Readiness promotion", "Merge", "Tag", "Release", "Deploy"],
   "checks": ["Exact archive", "Determinism", "Single/full parity", "Link and asset integrity", "Author workflow", "Nonclaims"],
-  "status": "ready_for_exact_candidate_acceptance",
-  "next_action": "accept_exact_m4_candidate_from_clean_archive_without_mutation"
+  "status": "blocked_by_m5_stabilization",
+  "next_action": "wait_for_exact_m5_stabilization_candidate"
 }

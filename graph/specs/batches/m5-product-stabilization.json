@@ -1,0 +1,29 @@
+{
+  "id": "docara.batch.m5.stabilize",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "M5. Стабилизировать продуктовый кандидат",
+  "summary": "Implement ownership-aware portable updates, immutable install verification, diagnostics, locale/security/accessibility fixtures and consumer author workflows before read-only acceptance.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
+  "visibility": "repository",
+  "source_refs": [
+    "docs/specification/DOCARA-TZ.md#16-обновление-docara",
+    "docs/specification/ACCEPTANCE.md",
+    "source/workflow/2026-08-02-docara-m5-product-stabilization-goal.md"
+  ],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/INDEX.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.1-RECOVERY.md"
+  ],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.m5.acceptance",
+  "allowed_scope": ["Portable init/update runtime", "Ownership and dependency manifests", "Build receipts and diagnostics", "Product fixtures", "Tests and documentation"],
+  "forbidden_scope": ["Independent acceptance", "Framework producer change", "Merge", "Tag", "Release", "Deploy"],
+  "checks": ["Empty init", "Update preview/apply/rollback", "Preservation matrix", "Consumer dependency tuple", "Full/single parity", "Security and browser matrix"],
+  "status": "in_progress",
+  "next_action": "implement_machine_readable_ownership_and_immutable_install_contract"
+}

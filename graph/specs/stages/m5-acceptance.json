@@ -5,8 +5,8 @@
   "subtype": "milestone",
   "tz_role": "implementation_stage",
   "title": "M5. Продуктовая приёмка архитектуры",
-  "summary": "Подтвердить понятность авторинга, детерминизм, portable install, обновление, браузерный результат и отсутствие активного legacy без заявления release readiness.",
-  "owner": "tester",
+  "summary": "Сначала стабилизировать продуктовый кандидат, затем независимо подтвердить понятность авторинга, portable lifecycle, детерминизм и браузерный результат без заявления release readiness.",
+  "owner": "teamlead",
   "lifecycle": "active",
   "readiness": "R2_contract",
   "visibility": "repository",
@@ -24,7 +24,7 @@
     "A new author can edit one Markdown file and rebuild that page.",
     "Independent acceptance records exact revisions and nonclaims."
   ],
-  "batch_refs": ["docara.batch.m5.accept"],
+  "batch_refs": ["docara.batch.m5.stabilize", "docara.batch.m5.accept"],
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["docara.evidence.final_acceptance"],
   "next_stage_ref": null

@@ -1,7 +1,7 @@
 # Дорожная карта упрощения Docara
 
-Статус: M0, M1, ограниченный M2 и M3 для всего русского `/ru/components/`
-завершены с evidence; другие локали, M4, release и production не заявлены
+Статус: M0-M4 завершены с evidence; M5 product stabilization выполняется перед
+отдельной read-only acceptance. Другие локали, release и production не заявлены
 
 Переход выполняется вертикальными срезами. Цель — не переписать весь код за
 один раз, а доказать новый единственный конвейер на одной реальной странице,
@@ -103,6 +103,10 @@ Markdown-owner, производные представления использ
 
 ## M4. Удалить параллельные пути
 
+Статус: завершён для всех 103 текущих русских публичных route; projectors,
+generated owners/allowlist и trusted-main bypass удалены после parity и
+zero-reference evidence.
+
 Удаление разрешено только после закрытия соответствующего gate:
 
 1. публичная page projection в component catalog — после физического Markdown
@@ -121,6 +125,9 @@ Markdown-owner, производные представления использ
 миграционном треке.
 
 ## M5. Стабилизировать публичный продукт
+
+Статус: implementation batch активен; независимый acceptance batch остаётся
+заблокированным до exact clean candidate.
 
 Результат:
 

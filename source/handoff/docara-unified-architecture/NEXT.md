@@ -1,4 +1,4 @@
-# Next checkpoint: M5 exact-candidate acceptance
+# Next checkpoint: M5 product stabilization implementation
 
 The bounded M3 Russian components Goal is complete and independently accepted.
 M4 is now active. Recovery source:
@@ -41,11 +41,13 @@ green on runtime candidate `45ac1e2`. Evidence is
 M4 reverse-outcome audit is `PASS_WITH_NONCLAIMS`. The current Russian public
 site is unified; M5 is unblocked.
 
-## Active next action
+## Active implementation action
 
-Test the exact clean archive without mutating the candidate. M5 must cover
-portable init/update, the global author workflow, remaining accessibility and
-locale/security acceptance items, and an independent exact-revision review.
+Implement the ownership-aware portable lifecycle, immutable consumer contract,
+build diagnostics and product fixtures described in
+`source/workflow/2026-08-02-docara-m5-product-stabilization-goal.md`. Only after
+that candidate is clean may the separate tester-owned exact-archive acceptance
+run without mutating it.
 
 M5/global acceptance, other locales, release and production remain unclaimed.
 Merge, push, tag, release and deploy remain forbidden until separate approval.

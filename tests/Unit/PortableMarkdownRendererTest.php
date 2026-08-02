@@ -12,6 +12,68 @@ use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 final class PortableMarkdownRendererTest extends TestCase
 {
     #[Test]
+    public function raw_html_fails_closed_while_sandboxed_html_and_example_sources_remain_explicit(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        foreach ([
+            "# Unsafe\n\n<script>alert(1)</script>\n",
+            "Text <span data-secret=\"x\">unsafe</span>.\n",
+        ] as $markdown) {
+            try {
+                $renderer->render($markdown, null, 'content/en/security.md');
+                self::fail('Unsafe raw HTML unexpectedly rendered.');
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('MARKDOWN_RAW_HTML_FORBIDDEN', $exception->errorCode);
+                self::assertStringContainsString('content/en/security.md:', $exception->getMessage());
+            }
+        }
+
+        $sandboxed = $renderer->render(<<<'MD'
+:::html
+```html
+<button onclick="document.body.dataset.ready='yes'">Run</button>
+```
+:::
+
+:::example {label=Source}
+```html
+<strong>Safe source</strong>
+```
+:::
+MD);
+        self::assertStringContainsString('sandbox srcdoc=', $sandboxed);
+        self::assertStringContainsString('sandbox="allow-scripts"', $sandboxed);
+    }
+
+    #[Test]
+    public function embeds_use_an_explicit_provider_origin_consent_and_sandbox_allowlist(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        foreach ([
+            ":::embed {provider=generic consent=none}\n[Open](/preview/)\n:::\n",
+            ":::embed {provider=video}\n[Open](https://www.youtube-nocookie.com/embed/example)\n:::\n",
+            ":::embed {provider=map}\n[Open](https://www.openstreetmap.org/export/embed.html)\n:::\n",
+            ":::embed {provider=external consent=required}\n[Open](https://example.com/widget)\n:::\n",
+        ] as $markdown) {
+            $html = $renderer->render($markdown);
+            self::assertStringContainsString('sandbox="allow-scripts allow-same-origin allow-presentation"', $html);
+        }
+        foreach ([
+            ":::embed {provider=generic}\n[Open](https://example.com/)\n:::\n",
+            ":::embed {provider=video}\n[Open](https://evil.example/video)\n:::\n",
+            ":::embed {provider=map}\n[Open](http://www.openstreetmap.org/export/embed.html)\n:::\n",
+            ":::embed {provider=external consent=none}\n[Open](https://example.com/widget)\n:::\n",
+        ] as $markdown) {
+            try {
+                $renderer->render($markdown);
+                self::fail('An embed outside the explicit policy unexpectedly rendered.');
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('MARKDOWN_EMBED_ORIGIN_FORBIDDEN', $exception->errorCode);
+            }
+        }
+    }
+
+    #[Test]
     public function internal_preview_accepts_only_same_origin_routes_and_preserves_preview_size(): void
     {
         $renderer = new PortableMarkdownRenderer;
@@ -1048,14 +1110,16 @@ MD);
     }
 
     #[Test]
-    public function custom_boundaries_preserve_following_html_block_opacity(): void
+    public function raw_html_cannot_hide_later_directives_inside_an_opaque_commonmark_block(): void
     {
-        $html = (new PortableMarkdownRenderer)->render(
+        $this->expectExceptionObject(new PortableConfigurationException(
+            'MARKDOWN_RAW_HTML_FORBIDDEN',
+            'Raw HTML is forbidden at [@markdown:5:1]. Use Markdown or the sandboxed html/example directive.',
+        ));
+
+        (new PortableMarkdownRenderer)->render(
             ":::card\nFirst\n\n:::\n<span>\n:::card\nSecond\n\n:::\n</span>\n",
         );
-
-        self::assertSame(1, substr_count($html, '<section'));
-        self::assertStringNotContainsString('Second', $html);
     }
 
     #[Test]

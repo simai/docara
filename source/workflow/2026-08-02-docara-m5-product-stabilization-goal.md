@@ -86,13 +86,16 @@ Status: `PASS`
 
 ### M5.5 Locale, security and accessibility fixtures
 
-Status: `in_progress`
+Status: `PASS`
 
 - add a minimal second LTR and RTL portable fixture through the same engine;
 - prove locale routing, no silent editorial fallback, logical layout and
   locale-safe navigation/search;
 - cover traversal/symlink/include/output/raw HTML/embed/secrets policies;
 - run desktop/mobile light/dark LTR/RTL browser and interaction checks.
+
+Evidence:
+`source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.5-LOCALE-SECURITY-ACCESSIBILITY.md`.
 
 ### M5.6 Consumer author workflow and documentation
 

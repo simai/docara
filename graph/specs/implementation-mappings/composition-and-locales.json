@@ -5,7 +5,7 @@
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
   "title": "Composition and locale implementation mapping",
-  "summary": "Exact M0 map of configuration inheritance, locale routing and current composition boundaries.",
+  "summary": "Configuration inheritance, content-owned locale routing and current composition boundaries through the M5 product fixture.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "R2_contract",
@@ -42,6 +42,7 @@
     "tests/Unit/PortableConfigurationTest.php#test_region_configuration_inherits_from_site_through_section_and_page_with_provenance",
     "tests/Unit/LocaleRuntimeTest.php#test_registry_preserves_arbitrary_locales_directions_roots_prefixes_and_fallback_order",
     "tests/PortableSiteBuilderTest.php#it_builds_arbitrary_bcp47_locale_trees_with_rtl_switching_and_alternate_links",
+    "tests/PortableMultilingualProductTest.php#physical_english_ltr_and_arabic_rtl_routes_use_the_same_full_and_single_pipeline",
     "tests/Unit/SourceBoundaryValidatorTest.php",
     "tests/PortableDocumentationSiteTest.php#authored_badge_page_does_not_depend_on_legacy_language_pack_component_prose"
   ],
@@ -49,30 +50,30 @@
     "docara.evidence.m0_inventory",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m0-badge-trace.json",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-10-details-backlinks.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-10-details-backlinks.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.5-LOCALE-SECURITY-ACCESSIBILITY.md"
   ],
   "review_refs": ["docara.gate.source_ownership", "docara.gate.migration_coverage"],
   "current_behavior": [
     "Configuration resolves defaults, docara.json, every section.json from root to leaf and an optional page sidecar with pointer-level provenance.",
     "LocaleRegistry supports arbitrary well-formed locale definitions, prefixes, fallbacks and direction.",
-    "The documentation site currently declares only ru content, while five bundled language packs exist.",
+    "The public documentation site declares only ru content; a minimal physical English LTR and Arabic RTL consumer fixture proves the same engine without claiming translation coverage.",
     "DeclarativePageCompiler resolves region composition into layout, sections and blocks.",
     "M1B provides docara.lang.v1 and a fail-closed target validator.",
-    "Batch 10 loads shared public UI messages from content/<locale>/lang.json before the transitional package fallback; Russian Backlinks copy is proven content-owned."
+    "Public builds load shared UI messages only from content/<locale>/lang.json and fail without the selected locale file; package and cross-locale presentation fallback are absent."
   ],
   "known_deviations": [
     "Current schemas still allow title and page description in composition JSON.",
     "No front matter parser owns target page metadata.",
-    "The shipped documentation site does not prove separate Markdown trees for multiple locales.",
-    "Non-migrated locales can still fall back to package language-pack messages until each locale owns content/<locale>/lang.json.",
+    "The shipped documentation site remains Russian-only; the English and Arabic trees are deliberately minimal product fixtures, not translated documentation.",
     "Current site/config surfaces predate the accepted no-site.json-compatibility target.",
     "The former global source_ownership gate-order conflict is resolved by DOC-ADR-015 and badge_source_ready."
   ],
   "deletion_gates": [
     "Remove generated-base config resolution only after all public generated routes have physical sources.",
     "Remove prose-bearing config fields only after front matter/site-copy ownership and migration tests pass.",
-    "Remove silent locale presentation fallback only after explicit missing-page policy tests pass."
+    "Do not claim a locale as public documentation until its complete physical Markdown and lang.json ownership matrix passes."
   ],
-  "status": "m3_3_content_language_runtime_overlay_active",
-  "mapped_revision": "commit containing batch-10-details-backlinks.md; parent dc15cc7"
+  "status": "m5_content_only_locale_fixture_verified",
+  "mapped_revision": "commit containing M5.5-LOCALE-SECURITY-ACCESSIBILITY.md; parent 936d524"
 }

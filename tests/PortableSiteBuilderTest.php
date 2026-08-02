@@ -343,10 +343,6 @@ final class PortableSiteBuilderTest extends TestCase
             json_encode($guidePage, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
         );
         file_put_contents(
-            $this->tmpPath('content/index.md'),
-            file_get_contents($this->tmpPath('content/index.md')) . "\n<script id=\"unsafe\">alert(1)</script>\n",
-        );
-        file_put_contents(
             $this->tmpPath('content/guides/getting-started.md'),
             file_get_contents($this->tmpPath('content/guides/getting-started.md'))
             . "\n## Параметры\n\nОписание параметров.\n\n### Наследование\n\nОписание наследования.\n",

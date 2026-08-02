@@ -84,6 +84,13 @@ final class PortableMarkdownRenderer
                 'Portable Markdown must be valid UTF-8.',
             );
         }
+        $this->assertRawHtmlPolicy($markdown, $sourceFile ?? '@markdown');
+
+        return $this->renderCompiled($markdown, $sourceRoot, $sourceFile);
+    }
+
+    private function renderCompiled(string $markdown, ?string $sourceRoot = null, ?string $sourceFile = null): string
+    {
 
         $nativeInspection = $this->inspector->inspect($markdown);
         $inline = $this->inlineComponents->extract(
@@ -111,7 +118,7 @@ final class PortableMarkdownRenderer
             $renderer = TypedRendererId::from($block['renderer']);
             $rendered = match ($renderer) {
                 TypedRendererId::Card => $this->renderCard(
-                    $this->render($blockMarkdown, $sourceRoot, $sourceFile),
+                    $this->renderCompiled($blockMarkdown, $sourceRoot, $sourceFile),
                     $block['attributes'],
                 ),
                 TypedRendererId::Columns => $this->renderColumns(
@@ -506,11 +513,11 @@ final class PortableMarkdownRenderer
         }
 
         $preview = $hasMarkdown
-            ? $this->render($sources['Markdown'], $sourceRoot, $sourceFile)
+            ? $this->renderCompiled($sources['Markdown'], $sourceRoot, $sourceFile)
             : $this->renderExampleDocument($sources);
         $renderedSources = [];
         foreach ($sources as $language => $source) {
-            $renderedSources[$language] = $this->render(
+            $renderedSources[$language] = $this->renderCompiled(
                 $this->sourceFence($source) . strtolower($language) . "\n"
                 . $source . "\n" . $this->sourceFence($source) . "\n",
             );
@@ -621,6 +628,7 @@ final class PortableMarkdownRenderer
             );
         }
         $this->assertSafeUrl($match['url'], 'MARKDOWN_EMBED_URL_UNSAFE');
+        $this->assertEmbedPolicy($provider, $consent, $match['url']);
         $loadLabel = trim(strip_tags(html_entity_decode((string) $match['label'], ENT_QUOTES | ENT_HTML5, 'UTF-8')));
         if ($loadLabel === '') {
             throw new PortableConfigurationException(
@@ -689,6 +697,80 @@ final class PortableMarkdownRenderer
             . '" title="' . $this->escapeHtml($title) . '" loading="lazy"></iframe></div>';
     }
 
+    private function assertRawHtmlPolicy(string $markdown, string $source): void
+    {
+        /** @var array{character:string,length:int}|null $fence */
+        $fence = null;
+        $directiveLength = null;
+        foreach (preg_split('/\r\n|\n|\r/u', $markdown) ?: [] as $index => $line) {
+            $trimmed = ltrim($line);
+            if ($fence !== null) {
+                $closing = '/^(?<fence>' . preg_quote($fence['character'], '/') . '+)\s*$/';
+                if (preg_match($closing, $trimmed, $match) === 1
+                    && strlen($match['fence']) >= $fence['length']
+                ) {
+                    $fence = null;
+                }
+
+                continue;
+            }
+            if (preg_match('/^(?<fence>`{3,}|~{3,})/', $trimmed, $match) === 1) {
+                $fence = [
+                    'character' => $match['fence'][0],
+                    'length' => strlen($match['fence']),
+                ];
+
+                continue;
+            }
+            if ($directiveLength !== null) {
+                if (preg_match('/^(?<fence>:+)\s*$/', $trimmed, $match) === 1
+                    && strlen($match['fence']) === $directiveLength
+                ) {
+                    $directiveLength = null;
+                }
+
+                continue;
+            }
+            if (preg_match('/^(?<fence>:{3,})\s*[A-Za-z][A-Za-z0-9_-]*(?:\s|\{|$)/', $trimmed, $match) === 1) {
+                $directiveLength = strlen($match['fence']);
+
+                continue;
+            }
+            if (preg_match('/<\/?[A-Za-z][A-Za-z0-9-]*(?:\s|\/?>)/', $line, $match, PREG_OFFSET_CAPTURE) === 1) {
+                $column = $match[0][1] + 1;
+                throw new PortableConfigurationException(
+                    'MARKDOWN_RAW_HTML_FORBIDDEN',
+                    "Raw HTML is forbidden at [$source:" . ($index + 1) . ":$column]. Use Markdown or the sandboxed html/example directive.",
+                );
+            }
+        }
+    }
+
+    private function assertEmbedPolicy(string $provider, string $consent, string $url): void
+    {
+        $sameOrigin = str_starts_with($url, '/') && ! str_starts_with($url, '//');
+        $parts = $sameOrigin ? [] : parse_url($url);
+        $scheme = strtolower((string) ($parts['scheme'] ?? ''));
+        $host = strtolower((string) ($parts['host'] ?? ''));
+        $allowedHosts = match ($provider) {
+            'video' => ['youtube.com', 'www.youtube.com', 'youtube-nocookie.com', 'www.youtube-nocookie.com', 'player.vimeo.com'],
+            'map' => ['openstreetmap.org', 'www.openstreetmap.org'],
+            default => [],
+        };
+        $allowed = match ($provider) {
+            'generic' => $sameOrigin,
+            'video', 'map' => $scheme === 'https' && in_array($host, $allowedHosts, true),
+            'external' => $scheme === 'https' && $host !== '' && $consent === 'required',
+            default => false,
+        };
+        if (! $allowed || ($consent === 'none' && ! $sameOrigin)) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_EMBED_ORIGIN_FORBIDDEN',
+                "Embed provider [$provider] does not allow URL [$url] with consent policy [$consent].",
+            );
+        }
+    }
+
     /** @param array<string,string> $attributes */
     private function renderCode(array $attributes, ?string $sourceRoot, ?string $sourceFile): string
     {
@@ -733,7 +815,7 @@ final class PortableMarkdownRenderer
         }
         $title = trim($attributes['title'] ?? basename($path));
         $markdown = '```' . $lang . "\n" . rtrim($source) . "\n```\n";
-        $rendered = $this->render($markdown);
+        $rendered = $this->renderCompiled($markdown);
 
         if ($title === '') {
             return $rendered;
@@ -820,7 +902,7 @@ final class PortableMarkdownRenderer
             );
         }
 
-        $html = $this->render($markdown);
+        $html = $this->renderCompiled($markdown);
         $cardRoot = '<section data-docara-block="card"';
         $count = substr_count($html, $cardRoot);
         if ($count < 1) {

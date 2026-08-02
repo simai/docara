@@ -1,0 +1,40 @@
+{
+    "schema": "docara.lang.v1",
+    "version": 1,
+    "shell": {"skip_to_content": "Skip to content"},
+    "navigation": {
+        "open": "Open navigation", "mobile_title": "Navigation", "primary": "Primary",
+        "sections": "Documentation", "title": "Sections", "close": "Close navigation",
+        "breadcrumbs": "Breadcrumbs", "breadcrumbs_expand": "Show hidden breadcrumb levels",
+        "outline": "Contents", "outline_close": "Close page outline", "previous_next": "Page navigation",
+        "previous": "Previous", "next": "Next", "expand": "Expand: ", "collapse": "Collapse: ",
+        "contains_current": ", contains the current page", "backlinks_heading": "Links to this page",
+        "backlinks_empty": "No backlinks yet."
+    },
+    "language": {"label": "Language"},
+    "search": {
+        "open": "Open documentation search", "label": "Search", "title": "Search documentation",
+        "close": "Close search", "query": "Query", "placeholder": "For example, inheritance",
+        "idle": "Enter at least 2 characters", "loading": "Loading search…", "found": "Found: {count}",
+        "empty": "No results found", "error": "Search is temporarily unavailable. Reload the page and try again.",
+        "navigate": "navigate", "open_result": "open", "dismiss": "close"
+    },
+    "reader": {
+        "open": "Open reading settings", "title": "Reading settings", "close": "Close reading settings",
+        "appearance": "Appearance", "appearance_description": "Adjust how the documentation looks in this browser.",
+        "help": "Adjust how the documentation looks in this browser.", "reset": "Restore site setting",
+        "theme_title": "Theme", "theme_description": "Choose a light or dark appearance.",
+        "theme_system": "Use system setting", "theme_system_description": "Automatically follows the device setting.",
+        "theme_light": "Light", "theme_light_description": "Use the light appearance on every page.",
+        "theme_dark": "Dark", "theme_dark_description": "Use the dark appearance on every page.",
+        "modal_blur_title": "Modal background blur", "modal_blur_description": "Controls how much the page is blurred behind search and settings.",
+        "modal_blur_none": "No blur", "modal_blur_none_description": "Keeps only the standard dark overlay.",
+        "modal_blur_small": "Small", "modal_blur_small_description": "Slightly blurs the content behind the window.",
+        "modal_blur_medium": "Medium", "modal_blur_medium_description": "Clearly separates the window from the page.",
+        "modal_blur_large": "Maximum", "modal_blur_large_description": "Keeps attention focused on the open window.",
+        "saved": "Saved: {setting} — {value}.", "applied_not_saved": "The setting was applied. The browser did not allow the choice to be saved.",
+        "restored": "The site settings have been restored."
+    },
+    "redirect": {"title": "Page moved", "message": "The page address has changed.", "link": "Open the current page"},
+    "code": {"copy": "Copy", "copied": "Copied"}
+}

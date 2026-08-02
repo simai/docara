@@ -34,9 +34,9 @@ final class ContentLanguageRepository
         if (isset($this->loaded[$tag])) {
             return $this->loaded[$tag];
         }
+        $relative = trim($locale->contentRoot, '/') . '/lang.json';
         $path = $this->projectRoot . DIRECTORY_SEPARATOR
-            . str_replace('/', DIRECTORY_SEPARATOR, trim($locale->contentRoot, '/'))
-            . DIRECTORY_SEPARATOR . 'lang.json';
+            . str_replace('/', DIRECTORY_SEPARATOR, $relative);
         if (! is_file($path)) {
             return $this->loaded[$tag] = [];
         }
@@ -47,7 +47,7 @@ final class ContentLanguageRepository
         ) {
             throw new PortableConfigurationException(
                 'CONTENT_LANGUAGE_SOURCE_INVALID',
-                "Content language [$path] is not a safe file.",
+                "Content language [$relative] is not a safe file.",
             );
         }
         try {
@@ -55,14 +55,14 @@ final class ContentLanguageRepository
         } catch (JsonException $exception) {
             throw new PortableConfigurationException(
                 'CONTENT_LANGUAGE_INVALID',
-                "Content language [$path] is not valid JSON.",
+                "Content language [$relative] is not valid JSON.",
                 $exception,
             );
         }
         if (! is_array($language)) {
             throw new PortableConfigurationException(
                 'CONTENT_LANGUAGE_INVALID',
-                "Content language [$path] must be an object.",
+                "Content language [$relative] must be an object.",
             );
         }
         (new SourceBoundaryValidator)->assertLanguage($language);

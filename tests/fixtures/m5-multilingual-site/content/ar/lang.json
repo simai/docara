@@ -1,0 +1,40 @@
+{
+    "schema": "docara.lang.v1",
+    "version": 1,
+    "shell": {"skip_to_content": "الانتقال إلى المحتوى"},
+    "navigation": {
+        "open": "فتح التنقل", "mobile_title": "التنقل", "primary": "الرئيسية",
+        "sections": "التوثيق", "title": "الأقسام", "close": "إغلاق التنقل",
+        "breadcrumbs": "مسار التنقل", "breadcrumbs_expand": "إظهار مستويات مسار التنقل المخفية",
+        "outline": "المحتويات", "outline_close": "إغلاق مخطط الصفحة", "previous_next": "التنقل بين الصفحات",
+        "previous": "السابقة", "next": "التالية", "expand": "توسيع: ", "collapse": "طي: ",
+        "contains_current": "، يحتوي على الصفحة الحالية", "backlinks_heading": "صفحات تشير إلى هذه الصفحة",
+        "backlinks_empty": "لا توجد روابط خلفية بعد."
+    },
+    "language": {"label": "اللغة"},
+    "search": {
+        "open": "فتح البحث في التوثيق", "label": "بحث", "title": "البحث في التوثيق",
+        "close": "إغلاق البحث", "query": "الاستعلام", "placeholder": "على سبيل المثال، الوراثة",
+        "idle": "أدخل حرفين على الأقل", "loading": "جارٍ تحميل البحث…", "found": "النتائج: {count}",
+        "empty": "لم يتم العثور على نتائج", "error": "البحث غير متاح مؤقتًا. أعد تحميل الصفحة وحاول مرة أخرى.",
+        "navigate": "تنقّل", "open_result": "فتح", "dismiss": "إغلاق"
+    },
+    "reader": {
+        "open": "فتح إعدادات القراءة", "title": "إعدادات القراءة", "close": "إغلاق إعدادات القراءة",
+        "appearance": "المظهر", "appearance_description": "اضبط مظهر الوثائق في هذا المتصفح.",
+        "help": "اضبط مظهر الوثائق في هذا المتصفح.", "reset": "استعادة إعداد الموقع",
+        "theme_title": "السمة", "theme_description": "اختر المظهر الفاتح أو الداكن.",
+        "theme_system": "استخدام إعداد النظام", "theme_system_description": "يتبع إعداد الجهاز تلقائيًا.",
+        "theme_light": "فاتح", "theme_light_description": "استخدام المظهر الفاتح في جميع الصفحات.",
+        "theme_dark": "داكن", "theme_dark_description": "استخدام المظهر الداكن في جميع الصفحات.",
+        "modal_blur_title": "تمويه خلفية النوافذ المنبثقة", "modal_blur_description": "يحدد مقدار تمويه الصفحة خلف البحث والإعدادات.",
+        "modal_blur_none": "بدون تمويه", "modal_blur_none_description": "يبقي التعتيم القياسي فقط.",
+        "modal_blur_small": "خفيف", "modal_blur_small_description": "يموه المحتوى خلف النافذة قليلاً.",
+        "modal_blur_medium": "متوسط", "modal_blur_medium_description": "يفصل النافذة بوضوح عن الصفحة.",
+        "modal_blur_large": "أقصى", "modal_blur_large_description": "يركز الانتباه على النافذة المفتوحة.",
+        "saved": "تم الحفظ: {setting} — {value}.", "applied_not_saved": "تم تطبيق الإعداد. لم يسمح المتصفح بحفظ الاختيار.",
+        "restored": "تمت استعادة إعدادات الموقع."
+    },
+    "redirect": {"title": "تم نقل الصفحة", "message": "تم تغيير عنوان الصفحة.", "link": "فتح الصفحة الحالية"},
+    "code": {"copy": "نسخ", "copied": "تم النسخ"}
+}

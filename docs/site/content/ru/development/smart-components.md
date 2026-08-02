@@ -43,7 +43,7 @@ Template получает immutable ViewModel. CSS и JavaScript публику�
 компонентов, которые присутствуют в asset plan страницы.
 
 Интерфейсные подписи также входят в проверяемые props. Builder берёт их из
-language pack текущей страницы и передаёт в `docara.navigation` и
+`content/<locale>/lang.json` текущей страницы и передаёт в `docara.navigation` и
 `docara.toc`; product template и component JavaScript не содержат
 языкозависимых строк. Поэтому один компонент работает с любым числом локалей и
 RTL без отдельных шаблонов.

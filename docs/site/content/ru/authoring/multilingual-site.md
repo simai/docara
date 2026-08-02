@@ -49,6 +49,7 @@ content/
   "documentation_version": "current",
   "base_url": "/",
   "locales": {
+    "missing_page_policy": "skip",
     "ru": {
       "label": "Русский",
       "direction": "ltr",
@@ -145,10 +146,10 @@ php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 
 ## Когда перевода нет
 
-Если `content/ar/guide/install.md` отсутствует, арабская страница установки не
-создаётся и переключатель не ведёт на выдуманный URL. Добавьте файл или
-оставьте маршрут недоступным. Не копируйте русский Markdown как скрытый
-fallback.
+При `missing_page_policy: "skip"`, если `content/ar/guide/install.md`
+отсутствует, арабская страница установки не создаётся и переключатель не ведёт
+на выдуманный URL. Для строгой симметрии выберите `"error"`: сборка остановится
+с точным ожидаемым путём. Не копируйте русский Markdown как скрытый fallback.
 
 Далее: [модель локалей](/authoring/localization/) и
 [общие подписи локали](/authoring/language-packs/).

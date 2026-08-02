@@ -16,21 +16,17 @@
   "to_refs": ["DOC-REQ-001", "DOC-REQ-002", "DOC-REQ-003"],
   "code_refs": [
     "src/Portable/PortableConfigurationLoader.php#PortableConfigurationLoader::resolve",
-    "src/Portable/PortableConfigurationLoader.php#PortableConfigurationLoader::resolveGeneratedBase",
+    "src/Content/FrontMatterParser.php#FrontMatterParser::parse",
     "src/Content/PageSource.php#PageSource",
     "src/Content/PageSourceLocator.php#PageSourceLocator::forLocale",
     "src/Content/RouteMapper.php#RouteMapper::map",
     "src/Content/SourceBoundaryValidator.php#SourceBoundaryValidator",
     "src/Content/LegacyPublicSourceAllowlist.php#LegacyPublicSourceAllowlist",
     "src/PortableSite/PortableSiteBuilder.php#PortableSiteBuilder::build",
-    "src/ComponentCatalog/AuthoredComponentPageIndex.php#AuthoredComponentPageIndex::build",
-    "src/I18n/LanguagePack.php#LanguagePack::$components",
-    "src/I18n/LanguagePackRepository.php#LanguagePackRepository::load",
     "src/I18n/ContentLanguageRepository.php#ContentLanguageRepository::messages",
     "src/I18n/Translator.php#Translator::message",
     "src/PortableSite/PortableBacklinkHydrator.php",
     "src/PortableSite/PortableComponentIndexHydrator.php",
-    "resources/language-packs/*.json",
     "resources/legacy-public-source-allowlist.json",
     "resources/schemas/lang.schema.json",
     "resources/components/docara.badge.json",
@@ -67,6 +63,7 @@
   ],
   "test_refs": [
     "tests/Unit/PageSourceLocatorTest.php",
+    "tests/Unit/FrontMatterParserTest.php",
     "tests/Unit/SourceBoundaryValidatorTest.php",
     "tests/Unit/LegacyPublicSourceAllowlistTest.php",
     "tests/Unit/DocumentationContractTest.php#authored_documentation_covers_five_audience_paths_and_every_page_has_one_h1",
@@ -113,7 +110,7 @@
     "M1B adds strict target config/lang/manifest input boundaries and a finite zero-growth allowlist for the remaining legacy public sources.",
     "All 103 selected Russian public routes have one physical Markdown owner after M4.2.",
     "The obsolete component-catalog and declarative-example public page projectors are removed after M4.3 parity and zero-reference proof.",
-    "The Russian package language pack contains zero public messages and no component presentation records; other locale legacy projection data remains unchanged.",
+    "Package language packs, their schema and public locale field are retired; all public UI copy is read from content/<locale>/lang.json.",
     "The badge route is owned by content/ru/components/badge.md and suppresses the generated badge detail route through AuthoredComponentPageIndex.",
     "M2 proves the physical Badge Markdown owns all page prose and examples while its structural component definition contains no documentation prose.",
     "M3.2 makes content/ru/components/alert.md the Alert owner, removes its Russian pack prose and generated-route allowlist entry, and retires its zero-reference Russian example projection.",
@@ -139,14 +136,13 @@
     "M4.3 reduces generated owners and allowlist routes to zero and removes both zero-consumer public projectors, their page receipts, descriptors, schema, templates and view models."
   ],
   "known_deviations": [
-    "Other locales retain package-owned language/catalog data and are not claimed as migrated.",
-    "The trusted-main declarative layout bridge remains a separate M4.4 deletion gate."
+    "English and Arabic remain bounded engine fixtures, not claims of complete translated documentation."
   ],
   "deletion_gates": [
     "Delete component detail projection only after every component route has physical Markdown and exact route/HTML/assets parity.",
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
-    "Remove LanguagePack::$components and schema data only after all locale prose has moved and zero-reference tests pass."
+    "Keep retired language-pack paths absent from production and release-package surfaces."
   ],
-  "status": "m4_all_current_public_ru_routes_markdown_owned_and_accepted",
-  "mapped_revision": "commit containing M4.3-PROJECTOR-RETIREMENT.md; parent 76a7239c8dd84541a8baac2c9414364fd9749fc1"
+  "status": "r1c_content_lang_and_front_matter_converged",
+  "mapped_revision": "R1-C implementation checkpoint after ce136d5"
 }

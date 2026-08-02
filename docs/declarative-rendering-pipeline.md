@@ -22,5 +22,5 @@ Product-owned `docara.*` Smart components remain in Docara. Framework-owned
 the same manifest and prop-validation rules.
 
 There is no alternate page renderer or runtime mode. Development inspection is
-provided by tests, receipts and the generated component catalogue rather than a
-second preview site.
+provided by tests, receipts and the machine-readable component inventory rather
+than a second preview site or generated public page path.

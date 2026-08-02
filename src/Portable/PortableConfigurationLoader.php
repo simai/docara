@@ -3,6 +3,7 @@
 namespace Simai\Docara\Portable;
 
 use JsonException;
+use Simai\Docara\Content\FrontMatterParser;
 use Simai\Docara\Declarative\Composition\RegionCompositionResolver;
 use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkLock;
@@ -57,7 +58,7 @@ final class PortableConfigurationLoader
         $page = $this->normalizePage($page);
         $pagePath = $this->confinedFile($page, true);
         [$configuration, $frameworkLock, $trace, $provenance] =
-            $this->resolveInheritedConfiguration($page, true);
+            $this->resolveInheritedConfiguration($page);
 
         $markdown = @file_get_contents($pagePath);
         if (! is_string($markdown)) {
@@ -67,34 +68,19 @@ final class PortableConfigurationLoader
             );
         }
         $trace[] = $this->trace('content', $page, $markdown, null);
+        $frontMatter = (new FrontMatterParser)->parse($markdown, $page);
+        foreach (array_keys($frontMatter->metadata) as $field) {
+            $provenance['/front_matter/' . $field] = $page . ':' . $field;
+        }
 
         return new ResolvedPagePlan(
             $page,
-            $markdown,
+            $frontMatter->markdown,
             $configuration,
             $frameworkLock,
             $trace,
             $provenance,
-        );
-    }
-
-    /**
-     * Resolve site and section inheritance for a generated page without
-     * pretending that an authored Markdown file or page sidecar exists.
-     */
-    public function resolveGeneratedBase(string $page): ResolvedPagePlan
-    {
-        $page = $this->normalizePage($page);
-        [$configuration, $frameworkLock, $trace, $provenance] =
-            $this->resolveInheritedConfiguration($page, false);
-
-        return new ResolvedPagePlan(
-            $page,
-            '',
-            $configuration,
-            $frameworkLock,
-            $trace,
-            $provenance,
+            $frontMatter->metadata,
         );
     }
 
@@ -116,7 +102,7 @@ final class PortableConfigurationLoader
      *     3: array<string, string>
      * }
      */
-    private function resolveInheritedConfiguration(string $page, bool $includePageSidecar): array
+    private function resolveInheritedConfiguration(string $page): array
     {
         $trace = [];
 
@@ -190,20 +176,18 @@ final class PortableConfigurationLoader
             $provenance = $result->provenance;
         }
 
-        if ($includePageSidecar) {
-            $sidecar = $this->pageSidecar($page);
-            [$pageConfiguration, $pageTrace] = $this->loadJson($sidecar, 'page.schema.json', 'page', false);
-            if ($pageConfiguration !== null) {
-                $trace[] = $pageTrace;
-                $result = $this->merger->merge(
-                    $configuration,
-                    $this->configurationPayload($pageConfiguration),
-                    $sidecar,
-                    $provenance,
-                );
-                $configuration = $result->configuration;
-                $provenance = $result->provenance;
-            }
+        $sidecar = $this->pageSidecar($page);
+        [$pageConfiguration, $pageTrace] = $this->loadJson($sidecar, 'page.schema.json', 'page', false);
+        if ($pageConfiguration !== null) {
+            $trace[] = $pageTrace;
+            $result = $this->merger->merge(
+                $configuration,
+                $this->configurationPayload($pageConfiguration),
+                $sidecar,
+                $provenance,
+            );
+            $configuration = $result->configuration;
+            $provenance = $result->provenance;
         }
 
         [$configuration, $provenance] = $this->normalizeStructuralLayout(

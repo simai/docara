@@ -135,6 +135,7 @@ final class JsonSchemaValidator
         }
 
         $properties = is_array($schema['properties'] ?? null) ? $schema['properties'] : [];
+        $patternProperties = is_array($schema['patternProperties'] ?? null) ? $schema['patternProperties'] : [];
 
         if (is_array($schema['propertyNames'] ?? null)) {
             foreach (array_keys($data) as $key) {
@@ -148,6 +149,20 @@ final class JsonSchemaValidator
             if (isset($properties[$key]) && is_array($properties[$key])) {
                 $this->validate($value, $properties[$key], $this->child($pointer, $key), $schemaName);
 
+                continue;
+            }
+
+            $matchedPattern = false;
+            foreach ($patternProperties as $pattern => $patternSchema) {
+                if (! is_string($pattern) || ! is_array($patternSchema)) {
+                    continue;
+                }
+                if (@preg_match('~' . str_replace('~', '\\~', $pattern) . '~D', $key) === 1) {
+                    $this->validate($value, $patternSchema, $this->child($pointer, $key), $schemaName);
+                    $matchedPattern = true;
+                }
+            }
+            if ($matchedPattern) {
                 continue;
             }
 

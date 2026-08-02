@@ -53,6 +53,7 @@ Resolver начинает с небольшого встроенного наб�
   "framework_lock": "simai-framework.lock.json",
   "default_locale": "ru",
   "locales": {
+    "missing_page_policy": "skip",
     "ru": {
       "label": "Русский",
       "direction": "ltr",
@@ -132,6 +133,11 @@ Resolver начинает с небольшого встроенного наб�
 число локалей из `locales`. Для каждой задаются отдельное Markdown-дерево,
 URL-префикс, направление `ltr/rtl` и явные fallback для UI-подписей. Подробный
 контракт описан в разделе [Языки и локали](/authoring/localization/).
+
+`locales.missing_page_policy` имеет два значения: `skip` публикует только
+фактически существующие Markdown-owner, `error` требует одинаковый route set у
+всех локалей и останавливает сборку с `LOCALE_PAGE_MISSING`. Ни один режим не
+копирует редакторский текст из другой локали.
 
 `locale_routing` задаётся только на уровне сайта. Новый starter использует
 симметричную стратегию `prefixed`; прежняя стратегия

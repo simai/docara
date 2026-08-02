@@ -16,7 +16,7 @@ unknown fields, неверные типы и unsafe paths.
 | `https://schemas.simai.io/docara/typed-component-definition/v1` | `resources/component-catalog/typed/*.json` | Typed owner record |
 | `docara.effective_component_catalog.v1` | `_docara/component-catalog.json` | Производный catalog exact build |
 | `docara.search_index.v1` | `_docara/search-index.json` | Локальный search index |
-| `docara.language_pack.v1` | `resources/language-packs` или project path | Системные переводы и представления компонентов |
+| `docara.lang.v1` | `content/<locale>/lang.json` | Только общие UI-подписи локали |
 
 ## Исполняемые примеры schema
 
@@ -150,8 +150,9 @@ Schema подтверждает форму, но builder дополнитель�
 - brand asset type/size/hash;
 - Framework lock semantics и immutable references;
 - manifest, props, dependencies и asset projection;
-- принадлежность каждой страницы объявленному locale, BCP 47 tags, непересекающиеся
-  content roots, fallback-циклы и отдельную `documentation_version`;
+- принадлежность каждой страницы объявленному locale, BCP 47 tags,
+  непересекающиеся content roots, fallback-циклы,
+  `locales.missing_page_policy` и отдельную `documentation_version`;
 - redirect target existence, collision, chain/cycle и confinement внутри
   `base_url`;
 - output collisions.

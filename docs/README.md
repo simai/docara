@@ -33,24 +33,23 @@
 
 - Markdown и JSON в `docs/site` владеют объяснением пользовательских задач.
 - `resources/schemas` и реализация CLI владеют исполняемым контрактом.
-- `resources/component-catalog` и точные example fixtures владеют сведениями о
-  компонентах.
-- `resources/language-packs` и проектные `languages/*.json` владеют
-  переводимыми системными подписями и presentation компонентов; canonical
-  технический контракт остаётся в component catalog.
+- `resources/component-catalog` и точные example fixtures владеют техническим
+  контрактом компонентов, но не публичной прозой.
+- `content/<locale>/lang.json` владеет только повторяющимися UI-подписями;
+  страницы и объяснения компонентов принадлежат физическим Markdown-файлам.
 - `resources/layouts`, `sections`, `blocks`, `views` и `smart` владеют
   зарегистрированной декларативной композицией; авторский JSON только вызывает
   разрешённые ID.
-- `/components/catalog/` генерируется при сборке и является единственным
-  детальным справочником компонентов.
+- `content/ru/components.md` и соседние `components/<slug>.md` владеют
+  публичным справочником компонентов.
 - `docs/site/content/ru/examples*.md` владеют страницами `/ru/examples/`;
   detail-страницы показывают живой результат и точные исходные файлы через
   общий typed renderer.
 - `_docara/component-catalog.json` и `.docara/resolved-page-plans.json` —
   диагностические результаты, а не редактируемые источники.
 
-Не создавайте ручную страницу с копией параметров, состояний или ограничений
-компонента. Обновите владеющую запись и пример, затем пересоберите каталог.
+Не создавайте prose в manifest или config. Обновите Markdown-owner страницы,
+техническую definition и проверяемый пример одним изменением.
 
 ## Когда обновлять документацию
 
@@ -61,7 +60,7 @@
 - изменился способ допуска native, typed или Smart-компонента;
 - изменился migration или security boundary.
 - изменился accepted portable candidate или update/rollback contract;
-- изменились locale registry, fallback либо language-pack schema;
+- изменились locale registry, fallback либо `lang.json` schema;
 - добавлена регистрационная поверхность Layout, Section, Block, View Tree или
   Smart-компонента.
 

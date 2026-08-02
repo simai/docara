@@ -41,9 +41,9 @@ fresh evidence without rewriting the superseded artifact.
 
 | Milestone | Batches | Verification | Status |
 | --- | --- | --- | --- |
-| R1-C.1 truthful governance | debt intake, correction state, historical artifact table | graph/JSON/YAML/diff | in_progress |
-| R1-C.2 source boundaries | consumer inventory, remove public packs/field, zero-reference | focused runtime/schema/init tests | planned |
-| R1-C.3 truthful authoring | public docs, route convention, front matter, missing-page policy, class/error map | focused positive/negative docs/runtime tests | planned |
+| R1-C.1 truthful governance | debt intake, correction state, historical artifact table | graph/JSON/YAML/diff | pass (`218ff1f`) |
+| R1-C.2 source boundaries | consumer inventory, remove public packs/field, zero-reference | focused runtime/schema/init tests | pass (`ce136d5`) |
+| R1-C.3 truthful authoring | public docs, route convention, front matter, missing-page policy, class/error map | focused positive/negative docs/runtime tests | pass (candidate commit) |
 | R1-C.4 semantic gates | source links, artifact links, schema/starter/runtime vocabulary | focused and negative fixtures | planned |
 | R1-C.5 new candidate | two clean packages/consumers, old-to-new update/rollback | hashes, preservation and negative matrix | planned |
 | R1-C.6 integrated retest | full suite/build/parity/static/browser/security, graph/handoff | reverse-outcome review | planned |

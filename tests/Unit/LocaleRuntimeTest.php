@@ -76,7 +76,7 @@ final class LocaleRuntimeTest extends TestCase
         unset($site['locales']['zh-Hans']);
 
         $this->expectException(PortableConfigurationException::class);
-        $this->expectExceptionMessage('docara-bcp47');
+        $this->expectExceptionMessage('SCHEMA_VALIDATION_FAILED');
         (new SchemaRepository)->assertValid($site, 'site.schema.json');
     }
 

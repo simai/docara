@@ -101,11 +101,12 @@ All components use the same attribute grammar:
 - `hero` introduces a page; `promo` closes a landing page;
 - raw `ui.*`, `<sf-*>` and renderer names are provenance, not author syntax.
 
-## Generated reference
+## Component reference
 
-The exact callable surface is projected from the fail-closed effective
-catalog. Every entry receives one localized page and one navigation item. A
-supported page contains:
+Every public component route has one physical Markdown owner in
+`content/<locale>/components/<slug>.md`. The effective machine catalogue
+validates the callable surface but never generates page prose. A supported
+page contains:
 
 - a short purpose statement;
 - one primary executable example with copy-ready source;
@@ -113,8 +114,8 @@ supported page contains:
 - compact executable variation examples;
 - only limitations that materially help the author.
 
-Unavailable requirements also have a page, but never become callable: their
-page explains the reason, fallback, owner and admission condition.
+Unavailable requirements stay machine-only until an author has a useful
+public page and the runtime contract is admitted.
 
 The build consumes `resources/component-catalog/source-metadata.json`, so the
 same facts remain available in a portable archive without `.git`. Before
@@ -132,6 +133,6 @@ php scripts/capture-component-source-metadata.php
 - invalid combinations fail closed;
 - every supported entry has renderer, tests, docs and an executable fixture;
 - every declared state or variant has an exact marker in that fixture;
-- generated pages and receipts are verified against the trusted projection;
+- physical component pages and receipts are verified against the same route set;
 - Framework implementation details remain replaceable without changing
   authored Markdown.

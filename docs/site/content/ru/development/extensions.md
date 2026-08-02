@@ -23,8 +23,8 @@ Typed-компонент подходит для повторяемого сем
 2. Зафиксируйте новый versioned renderer id.
 3. Опишите узкий авторский синтаксис и ограничения.
 4. Добавьте exact fixture, positive и negative renderer tests.
-5. Убедитесь, что generated catalog создаёт одну detail-страницу без ручного
-   Markdown-дубля.
+5. Добавьте один физический Markdown-owner страницы компонента и проверьте его
+   через тот же PageBuilder.
 
 Typed renderer может использовать только проверенные утилиты и компоненты
 SIMAI Framework; он не создаёт независимую дизайн-систему.
@@ -40,9 +40,8 @@ runtime-поведение.
 3. Добавьте только сужающие consumer metadata.
 4. Проверьте props, constraints, dependency closure, темы, клавиатуру,
    адаптивность и accessibility.
-5. Добавьте presentation в language packs и отдельный exact fixture; generated
-   catalog объединит переводимый текст с параметрами и ограничениями
-   эффективной записи.
+5. Добавьте физическую Markdown-страницу и отдельный exact fixture. Публичный
+   текст не переносите в manifest, config или `lang.json`.
 
 Consumer metadata не может расширить manifest или самостоятельно повысить
 readiness. Подробный admission contract находится в
@@ -71,7 +70,7 @@ Requirement нельзя переключить в `supported` на месте.
 2. Добавьте executable owner record в native profile, typed definitions либо
    Smart metadata с exact-lock admission.
 3. Добавьте renderer, tests, docs и exact fixture.
-4. Проверьте generated catalog, static verifier и browser matrix.
+4. Проверьте Markdown-owner, machine catalog, static verifier и browser matrix.
 5. Заявляйте только lifecycle конкретной возможности.
 
 Готовность одной записи не означает production readiness Docara, public

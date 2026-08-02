@@ -2,8 +2,8 @@
 
 Версия: 1.0
 Дата: 2026-08-01
-Статус: принятая архитектурная цель, реализация не начата
-Базовый снимок: `a3ba9a4d04429f1f2046b8415764fe7bc89962c7`
+Статус: реализованный архитектурный контракт; release требует отдельного gate
+Базовый снимок: исторический M0 `a3ba9a4d04429f1f2046b8415764fe7bc89962c7`
 
 ## 1. Назначение продукта
 
@@ -41,9 +41,11 @@ Docara должна быть достаточно простой для один
 
 Контентом являются физические Markdown-файлы в `content/<locale>`. Один
 публичный route одной локали имеет ровно один исходный Markdown-файл по
-контракту `content/<locale>/<route>.md`. Для route каталога `<route>` включает
-`index`, например `/ru/components/` принадлежит
-`content/ru/components/index.md`. Заголовки, абзацы,
+контракту `content/<locale>/<route>.md`. Для раздела рекомендуется плоский
+owner рядом с одноимённым каталогом: `/ru/components/` принадлежит
+`content/ru/components.md`, а дочерние страницы живут в `components/`.
+Совместимая форма `components/index.md` разрешена, но обе формы одновременно
+запрещены как неоднозначные. Заголовки, абзацы,
 таблицы, код, примеры, описания параметров и вызовы компонентов находятся в
 этом файле.
 
@@ -93,8 +95,8 @@ my-docs/
 │   │   ├── lang.json
 │   │   ├── index.md
 │   │   ├── section.json
+│   │   ├── components.md
 │   │   └── components/
-│   │       ├── index.md
 │   │       ├── section.json
 │   │       ├── badge.md
 │   │       └── alert.md
@@ -106,7 +108,9 @@ my-docs/
 Маршруты выводятся без скрытой магии:
 
 - `content/ru/index.md` -> `/ru/`;
-- `content/ru/components/index.md` -> `/ru/components/`;
+- `content/ru/components.md` -> `/ru/components/`;
+- `content/ru/components/index.md` -> `/ru/components/` как совместимая
+  альтернативная форма, если `components.md` отсутствует;
 - `content/ru/components/badge.md` -> `/ru/components/badge/`.
 
 ## 6. Мультиязычность
@@ -132,16 +136,18 @@ my-docs/
 
 Отсутствующий перевод страницы не заменяется содержимым другой локали без
 явной политики. Сборка должна либо пропустить route, либо завершиться
-диагностикой согласно `locales.missing_page_policy`.
+диагностикой согласно `locales.missing_page_policy`. Значение `skip` публикует
+только существующие owner, `error` требует route во всех объявленных локалях и
+возвращает `LOCALE_PAGE_MISSING`; editorial fallback отсутствует.
 
 ## 7. Единственный конвейер страницы
 
 ```text
 PageSourceLocator
-  -> ConfigResolver
+  -> PortableConfigurationLoader
   -> MarkdownCompiler
   -> typed Document IR
-  -> NodeRendererRegistry
+  -> DocumentRendererRegistry
        -> component node: SmartComponentGateway
   -> LayoutComposer
   -> PageBuilderResult
@@ -189,6 +195,12 @@ draft: false
 translation_key: components.badge
 ---
 ```
+
+Runtime принимает только `title`, `description`, `tags`, `draft` и
+`translation_key`. `draft: true` исключает страницу из полной публикации.
+Неизвестное поле, неверный тип, незакрытый блок и ошибочный identifier
+fail-closed с source file, line и column. Front matter вырезается до
+`MarkdownCompiler`, сохраняя номера строк исходного файла.
 
 Дата изменения, автор, commit, версия пакета и совместимость вычисляются из Git,
 manifest и lock-файлов, если источник доступен. Ручное значение допускается
@@ -349,23 +361,17 @@ Starter создаёт новый проект. Он не является ша�
   public routes;
 - порядок filesystem discovery нормализован и стабилен.
 
-## 19. Что удалить из текущей архитектуры
+## 19. Закрытая legacy-граница
 
-После доказанной замены удаляются:
+После parity и rollback evidence удалены public `resources/i18n`, package
+language packs, `site.json` compatibility, generated component/example page
+projectors, `trustedMainHtml` и отдельный `buildGenerated()` path. Текущий
+`FrameworkComponentRuntime::extract()` является одним preprocessor вызовов
+Smart-компонентов перед `MarkdownCompiler`, а не вторым public renderer.
+`SourceNode` представляет отдельные типизированные native blocks; whole-page
+coarse Markdown node отсутствует.
 
-- публичный `resources/i18n`, редакторская проза и component records из
-  language packs;
-- legacy `site.json` и его compatibility path;
-- публичные страницы, генерируемые component/example projectors;
-- `trustedMainHtml` и отдельный `buildGenerated()` путь;
-- параллельные `InlineComponentRenderer`, `SmartRenderer` и ранний
-  `FrameworkComponentRuntime::extract()`;
-- coarse Markdown node после полной typed IR coverage;
-- legacy Jigsaw/Mix и любые инструкции для прежнего runtime;
-- дублирующие CSS/asset loaders;
-- пустой `docara-mix` как необходимая зависимость новой Docara.
-
-Удаление выполняется только после parity evidence и rollback point, но новые
+Дальнейшее удаление допустимо только после zero-reference и parity, но новые
 возможности в legacy-путь больше не добавляются.
 
 ## 20. Не-цели

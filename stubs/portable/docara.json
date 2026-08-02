@@ -6,6 +6,7 @@
   "framework_lock": "simai-framework.lock.json",
   "default_locale": "ru",
   "locales": {
+    "missing_page_policy": "skip",
     "ru": {
       "label": "Русский",
       "direction": "ltr",

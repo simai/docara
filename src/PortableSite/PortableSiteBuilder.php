@@ -19,6 +19,7 @@ use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\I18n\ContentLanguageRepository;
 use Simai\Docara\I18n\LocaleInternalLinkProjector;
+use Simai\Docara\I18n\LocaleMissingPagePolicy;
 use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\LocaleRoutingPolicy;
 use Simai\Docara\I18n\LocaleUrlProjector;
@@ -63,6 +64,7 @@ final readonly class PortableSiteBuilder
         $site = $this->siteConfiguration($root);
         $explicitLocaleRegistry = is_array($site['locales'] ?? null) && $site['locales'] !== [];
         $localeRegistry = LocaleRegistry::fromSite($site);
+        $missingPagePolicy = LocaleMissingPagePolicy::fromSite($site);
         $localeRouting = LocaleRoutingPolicy::fromSite($site, $localeRegistry);
         $localeUrls = new LocaleUrlProjector(
             (string) ($site['base_url'] ?? '/'),
@@ -108,6 +110,7 @@ final readonly class PortableSiteBuilder
                 ...array_map(static fn (PageSource $source): string => $source->path, $localePageSources),
             );
         }
+        $this->assertMissingPagePolicy($pageSources, $localeRegistry, $missingPagePolicy);
         sort($pagePaths, SORT_STRING);
         $this->assertDestinationInputBoundary(
             $root,
@@ -174,6 +177,22 @@ final readonly class PortableSiteBuilder
                 );
             }
             $localeDefinition = $localeRegistry->get($pageLocale);
+            $route = $this->route(
+                $plan,
+                $localeDefinition->contentRoot,
+                $localeUrls,
+                $pageLocale,
+            );
+            if (($plan->frontMatter['draft'] ?? false) === true) {
+                if ($selectedPageUrl !== null) {
+                    throw new PortableConfigurationException(
+                        'PAGE_DRAFT_NOT_PUBLISHED',
+                        "Draft page for locale [$pageLocale], route [{$route['url']}], source [$pagePath] cannot be rebuilt as a public page.",
+                    );
+                }
+
+                continue;
+            }
             $currentFrameworkLock = CanonicalJson::encode($plan->frameworkLock);
             if ($frameworkLockCanonical !== null && $frameworkLockCanonical !== $currentFrameworkLock) {
                 throw new PortableConfigurationException(
@@ -185,12 +204,6 @@ final readonly class PortableSiteBuilder
             $runtime ??= FrameworkComponentRuntime::fromLock(
                 $plan->frameworkLock,
                 $this->frameworkAssetBase($plan->frameworkLock, (string) ($site['base_url'] ?? '/')),
-            );
-            $route = $this->route(
-                $plan,
-                $localeDefinition->contentRoot,
-                $localeUrls,
-                $pageLocale,
             );
             try {
                 $pageResult = $this->pageBuilder->build(
@@ -225,7 +238,8 @@ final readonly class PortableSiteBuilder
                 'description' => $this->pageDescription($plan),
                 'locale' => $pageLocale,
                 'direction' => $localeDefinition->direction,
-                'translation_key' => $this->translationKey($plan->page, $localeDefinition->contentRoot),
+                'translation_key' => $this->translationKey($plan, $localeDefinition->contentRoot),
+                'tags' => $plan->frontMatter['tags'] ?? [],
                 'documentation_version' => $documentationVersion,
                 'preset' => (string) ($plan->configuration['preset'] ?? 'docs'),
                 'theme' => (string) data_get($plan->configuration, 'settings.theme', 'system'),
@@ -780,6 +794,7 @@ final readonly class PortableSiteBuilder
                     'description' => $page['description'],
                     'locale' => $page['locale'],
                     'translation_key' => $page['translation_key'],
+                    'tags' => $page['tags'] ?? [],
                     'output' => $page['output'],
                     'url' => $page['url'],
                     'resolved_page_plan' => $plan->toArray(),
@@ -976,13 +991,17 @@ final readonly class PortableSiteBuilder
         return $urls->page($locale, $encoded);
     }
 
-    private function translationKey(string $page, string $contentRoot): string
+    private function translationKey(ResolvedPagePlan $plan, string $contentRoot): string
     {
-        return substr($page, strlen(rtrim($contentRoot, '/') . '/'));
+        return (string) ($plan->frontMatter['translation_key']
+            ?? substr($plan->page, strlen(rtrim($contentRoot, '/') . '/')));
     }
 
     private function pageTitle(ResolvedPagePlan $plan): string
     {
+        if (is_string($plan->frontMatter['title'] ?? null)) {
+            return $plan->frontMatter['title'];
+        }
         $titleSource = $plan->provenance['/title'] ?? '';
         if (str_ends_with($titleSource, '.page.json') && is_string($plan->configuration['title'] ?? null)) {
             return $plan->configuration['title'];
@@ -996,6 +1015,9 @@ final readonly class PortableSiteBuilder
 
     private function pageDescription(ResolvedPagePlan $plan): string
     {
+        if (is_string($plan->frontMatter['description'] ?? null)) {
+            return $plan->frontMatter['description'];
+        }
         $configured = trim((string) ($plan->configuration['description'] ?? ''));
         if ($configured !== '') {
             return $configured;
@@ -1055,6 +1077,36 @@ final readonly class PortableSiteBuilder
         ], static fn (string $part): bool => $part !== ''));
 
         return $path === '' ? '/' : '/' . $path . '/';
+    }
+
+    /** @param PageSource[] $sources */
+    private function assertMissingPagePolicy(
+        array $sources,
+        LocaleRegistry $locales,
+        LocaleMissingPagePolicy $policy,
+    ): void {
+        if ($policy->value === LocaleMissingPagePolicy::SKIP) {
+            return;
+        }
+
+        $routes = [];
+        foreach ($sources as $source) {
+            $routes[$source->route][$source->locale] = $source->path;
+        }
+        ksort($routes, SORT_STRING);
+        foreach ($routes as $route => $owners) {
+            foreach ($locales->all() as $locale => $definition) {
+                if (isset($owners[$locale])) {
+                    continue;
+                }
+                $expected = rtrim($definition->contentRoot, '/') . '/'
+                    . ($route === '' ? 'index' : $route) . '.md';
+                throw new PortableConfigurationException(
+                    'LOCALE_PAGE_MISSING',
+                    "Locale [$locale] has no Markdown owner for route [$route]. Expected source [$expected] because locales.missing_page_policy is error.",
+                );
+            }
+        }
     }
 
     private function normalizePageSelector(string $selector): string

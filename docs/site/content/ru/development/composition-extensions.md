@@ -98,8 +98,8 @@ View Tree описывает только структуру: безопасны
 8. resolver/factory branch в `SmartRenderer` и `ViewModelFactory`;
 9. если вызов разрешён в authored shell — enum schema, allowlist и prop checks
    в `RegionCompositionResolver`;
-10. language-pack presentation, exact fixture, positive/negative tests,
-   generated catalog и browser acceptance.
+10. физический Markdown-owner, exact fixture, positive/negative tests,
+   machine catalog и browser acceptance.
 
 Template получает только object ViewModel. Не передавайте в него сырой
 авторский массив и не читайте JSON из template.
@@ -130,6 +130,6 @@ php ../../docara build production
 php ../../docara verify-static build_production
 ```
 
-После этого проверьте exact fixture в generated catalog и браузере. PASS одного
+После этого проверьте exact fixture, Markdown-owner и результат в браузере. PASS одного
 компонента не означает готовность всего Framework, public release или
 production readiness Docara.

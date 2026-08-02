@@ -20,6 +20,76 @@ use Symfony\Component\Process\Process;
 final class PortableSiteBuilderTest extends TestCase
 {
     #[Test]
+    public function front_matter_controls_public_metadata_without_entering_rendered_markdown(): void
+    {
+        $this->copyPortableFixture($this->tmp, false);
+        $path = $this->tmpPath('content/ru/index.md');
+        file_put_contents($path, <<<'MD'
+---
+title: Заголовок из front matter
+description: Описание из front matter.
+tags: [start, docs]
+draft: false
+translation_key: home
+---
+# Видимый заголовок
+
+Видимый текст.
+MD);
+
+        $result = $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        $page = $result->get('/ru/');
+        self::assertIsArray($page);
+        self::assertSame('Заголовок из front matter', $page['title']);
+        self::assertSame('Описание из front matter.', $page['description']);
+        self::assertSame('home', $page['translation_key']);
+        self::assertSame(['start', 'docs'], $page['tags']);
+        $html = (string) file_get_contents($this->tmpPath('build_local/ru/index.html'));
+        self::assertStringContainsString('Видимый заголовок', $html);
+        self::assertStringNotContainsString('title: Заголовок из front matter', $html);
+    }
+
+    #[Test]
+    public function missing_page_policy_error_rejects_an_incomplete_locale_tree_and_skip_allows_it(): void
+    {
+        $this->copyPortableFixture($this->tmp, false);
+        $this->filesystem->copyDirectory($this->tmpPath('content/ru'), $this->tmpPath('content/en'));
+        unlink($this->tmpPath('content/en/components/alert.md'));
+        $site = $this->jsonFile($this->tmpPath('docara.json'));
+        $site['locales']['missing_page_policy'] = 'error';
+        $site['locales']['en'] = $this->localeDefinition('English', 'ltr', 'content/en', 'en', []);
+        file_put_contents($this->tmpPath('docara.json'), CanonicalJson::encodePretty($site));
+
+        try {
+            $this->builder()->build($this->tmp, $this->tmpPath('build_error'));
+            self::fail('An incomplete locale tree unexpectedly passed missing_page_policy=error.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('LOCALE_PAGE_MISSING', $exception->errorCode);
+            self::assertStringContainsString('Locale [en]', $exception->getMessage());
+            self::assertStringContainsString('route [components/alert]', $exception->getMessage());
+            self::assertStringContainsString('content/en/components/alert.md', $exception->getMessage());
+        }
+
+        $site['locales']['missing_page_policy'] = 'skip';
+        file_put_contents($this->tmpPath('docara.json'), CanonicalJson::encodePretty($site));
+        $result = $this->builder()->build($this->tmp, $this->tmpPath('build_skip'));
+        self::assertFalse($result->has('/en/components/alert/'));
+        self::assertTrue($result->has('/ru/components/alert/'));
+    }
+
+    #[Test]
+    public function drafts_are_omitted_from_full_builds(): void
+    {
+        $this->copyPortableFixture($this->tmp, false);
+        $path = $this->tmpPath('content/ru/components/alert.md');
+        file_put_contents($path, "---\ndraft: true\n---\n" . file_get_contents($path));
+
+        $result = $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+        self::assertFalse($result->has('/ru/components/alert/'));
+        self::assertFileDoesNotExist($this->tmpPath('build_local/ru/components/alert/index.html'));
+    }
+
+    #[Test]
     public function it_selects_a_physical_route_before_other_pages_and_global_projections(): void
     {
         $this->copyPortableFixture($this->tmp);

@@ -31,6 +31,13 @@ final readonly class LocaleRegistry
                 ],
             ];
         }
+        unset($configured['missing_page_policy']);
+        if ($configured === []) {
+            throw new PortableConfigurationException(
+                'LOCALE_REGISTRY_EMPTY',
+                'The locale registry must contain at least one BCP 47 locale definition.',
+            );
+        }
 
         $locales = [];
         $prefixes = [];

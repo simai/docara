@@ -27,7 +27,7 @@ php vendor/bin/docara verify-static
 - опубликованные content assets;
 - search index и pinned search runtime;
 - redirect receipt, статические redirect pages и их targets;
-- effective component catalog и generated catalog pages;
+- effective component catalog и физические Markdown-owner страниц компонентов;
 - точная asset projection SIMAI Framework;
 - отсутствие лишней или пропавшей поверхности, охваченной manifest.
 

@@ -20,7 +20,7 @@ PASS ставится только по воспроизводимому evidenc
 - [x] Один Markdown не создаёт несколько скрытых публичных страниц.
 - [x] Единственный источник общих видимых переводов локали —
       `content/<locale>/lang.json`.
-- [ ] В target отсутствуют публичный `resources/i18n`, prose-bearing language
+- [x] В target отсутствуют публичный `resources/i18n`, prose-bearing language
       packs и compatibility path для `site.json`.
 - [x] Package-owned CLI/build messages не входят в public page inputs.
 - [x] Component manifests не содержат редакторскую прозу своих страниц.
@@ -38,7 +38,7 @@ PASS ставится только по воспроизводимому evidenc
 - [x] Markdown один раз компилируется в typed Document IR только в памяти.
 - [x] Page-level IR JSON/JSONL не обязателен; cache, search index, `--dump-ir`
       и test evidence удаляемы и не становятся source of truth.
-- [x] Все IR nodes рендерятся через один `NodeRendererRegistry`.
+- [x] Все IR nodes рендерятся через один `DocumentRendererRegistry`.
 - [x] Неизвестный node fail-closed с понятной source location.
 
 ## C. Smart-компоненты

@@ -78,13 +78,13 @@ other structural, global configuration or Framework lock changes as well.
 
 ## Documentation
 
-- [Architecture source of truth](docs/specification/README.md)
+- [How the engine is organized](docs/site/content/ru/development/architecture.md)
 - [Quick start](docs/site/content/ru/start.md)
 - [Project files and configuration](docs/site/content/ru/authoring/project-files.md)
 - [Layouts, regions and navigation](docs/site/content/ru/authoring/layout-and-navigation.md)
 - [Components](docs/site/content/ru/components/syntax.md)
 - [Build and verification](docs/site/content/ru/build.md)
-- [Portable format contract](docs/portable-format.md)
+- [Portable project format](docs/site/content/ru/authoring/project-files.md)
 
 The component index, menu, search, outline and previous/next links are derived
 from the same physical Markdown route set; there is no separate public page

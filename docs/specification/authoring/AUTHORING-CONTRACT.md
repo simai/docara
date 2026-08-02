@@ -37,11 +37,15 @@ content/
 Маршруты выводятся механически:
 
 - `content/ru/index.md` -> `/ru/`;
-- `content/ru/components/index.md` -> `/ru/components/`;
+- `content/ru/components.md` -> `/ru/components/` (рекомендуемая форма);
+- `content/ru/components/index.md` -> тот же route только как совместимая
+  альтернативная форма;
 - `content/ru/components/badge.md` -> `/ru/components/badge/`.
 
 Не должно существовать скрытого projector, который создаёт публичный route без
 Markdown-файла.
+Одновременные `components.md` и `components/index.md` fail-closed как
+`PAGE_SOURCE_ROUTE_AMBIGUOUS`.
 
 ## 3. Что хранится в Markdown
 

@@ -23,6 +23,7 @@
     "src/Portable/SchemaRepository.php#SchemaRepository::assertValid",
     "src/Content/SourceBoundaryValidator.php#SourceBoundaryValidator",
     "src/I18n/LocaleRegistry.php#LocaleRegistry::fromSite",
+    "src/I18n/LocaleMissingPagePolicy.php#LocaleMissingPagePolicy::fromSite",
     "src/I18n/LocaleRoutingPolicy.php#LocaleRoutingPolicy::fromSite",
     "src/I18n/LocaleUrlProjector.php",
     "src/I18n/ContentLanguageRepository.php#ContentLanguageRepository::messages",
@@ -41,10 +42,12 @@
     "tests/Unit/PortableConfigurationTest.php#test_repository_recipe_resolves_site_section_and_page_region_composition_with_provenance",
     "tests/Unit/PortableConfigurationTest.php#test_region_configuration_inherits_from_site_through_section_and_page_with_provenance",
     "tests/Unit/LocaleRuntimeTest.php#test_registry_preserves_arbitrary_locales_directions_roots_prefixes_and_fallback_order",
+    "tests/Unit/FrontMatterParserTest.php",
+    "tests/PortableSiteBuilderTest.php#missing_page_policy_error_rejects_an_incomplete_locale_tree_and_skip_allows_it",
     "tests/PortableSiteBuilderTest.php#it_builds_arbitrary_bcp47_locale_trees_with_rtl_switching_and_alternate_links",
     "tests/PortableMultilingualProductTest.php#physical_english_ltr_and_arabic_rtl_routes_use_the_same_full_and_single_pipeline",
     "tests/Unit/SourceBoundaryValidatorTest.php",
-    "tests/PortableDocumentationSiteTest.php#authored_badge_page_does_not_depend_on_legacy_language_pack_component_prose"
+    "tests/PortableDocumentationSiteTest.php#real_russian_site_uses_content_lang_and_rejects_the_retired_pack_field"
   ],
   "evidence_refs": [
     "docara.evidence.m0_inventory",
@@ -60,20 +63,20 @@
     "The public documentation site declares only ru content; a minimal physical English LTR and Arabic RTL consumer fixture proves the same engine without claiming translation coverage.",
     "DeclarativePageCompiler resolves region composition into layout, sections and blocks.",
     "M1B provides docara.lang.v1 and a fail-closed target validator.",
-    "Public builds load shared UI messages only from content/<locale>/lang.json and fail without the selected locale file; package and cross-locale presentation fallback are absent."
+    "Public builds load shared UI messages only from content/<locale>/lang.json and fail without the selected locale file; package presentation fallback is absent.",
+    "FrontMatterParser implements title, description, tags, draft and translation_key with source line/column diagnostics.",
+    "locales.missing_page_policy is explicit: skip publishes only physical owners and error fails with LOCALE_PAGE_MISSING."
   ],
   "known_deviations": [
-    "Current schemas still allow title and page description in composition JSON.",
-    "No front matter parser owns target page metadata.",
+    "Page-sidecar title and description remain a pre-release compatibility surface; new authoring uses front matter.",
     "The shipped documentation site remains Russian-only; the English and Arabic trees are deliberately minimal product fixtures, not translated documentation.",
-    "Current site/config surfaces predate the accepted no-site.json-compatibility target.",
     "The former global source_ownership gate-order conflict is resolved by DOC-ADR-015 and badge_source_ready."
   ],
   "deletion_gates": [
     "Remove generated-base config resolution only after all public generated routes have physical sources.",
-    "Remove prose-bearing config fields only after front matter/site-copy ownership and migration tests pass.",
+    "Remove remaining page-sidecar prose fields only with an explicit consumer migration and parity proof.",
     "Do not claim a locale as public documentation until its complete physical Markdown and lang.json ownership matrix passes."
   ],
-  "status": "m5_content_only_locale_fixture_verified",
-  "mapped_revision": "commit containing M5.5-LOCALE-SECURITY-ACCESSIBILITY.md; parent 936d524"
+  "status": "r1c_front_matter_and_missing_page_policy_verified",
+  "mapped_revision": "R1-C implementation checkpoint after ce136d5"
 }

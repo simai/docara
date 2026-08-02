@@ -36,12 +36,18 @@
         "locales": {
             "type": "object",
             "minProperties": 1,
-            "propertyNames": {
-                "format": "docara-bcp47"
+            "properties": {
+                "missing_page_policy": {
+                    "type": "string",
+                    "enum": ["skip", "error"]
+                }
             },
-            "additionalProperties": {
-                "$ref": "#/$defs/locale"
-            }
+            "patternProperties": {
+                "^(?!missing_page_policy$)[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$": {
+                    "$ref": "#/$defs/locale"
+                }
+            },
+            "additionalProperties": false
         },
         "locale_routing": {
             "$ref": "#/$defs/localeRouting"

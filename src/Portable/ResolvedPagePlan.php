@@ -11,6 +11,7 @@ final readonly class ResolvedPagePlan
      * @param  array<string, mixed>  $frameworkLock
      * @param  list<array<string, mixed>>  $trace
      * @param  array<string, string>  $provenance
+     * @param  array{title?:string,description?:string,tags?:list<string>,draft?:bool,translation_key?:string}  $frontMatter
      */
     public function __construct(
         public string $page,
@@ -19,6 +20,7 @@ final readonly class ResolvedPagePlan
         public array $frameworkLock,
         public array $trace,
         public array $provenance,
+        public array $frontMatter = [],
     ) {}
 
     /**
@@ -34,6 +36,7 @@ final readonly class ResolvedPagePlan
             'framework_lock' => $this->frameworkLock,
             'trace' => $this->trace,
             'provenance' => $this->provenance,
+            'front_matter' => $this->frontMatter,
         ];
     }
 
@@ -46,6 +49,7 @@ final readonly class ResolvedPagePlan
             'configuration' => $this->configuration,
             'framework_lock' => $this->frameworkLock,
             'provenance' => $this->provenance,
+            'front_matter' => $this->frontMatter,
         ]));
     }
 }

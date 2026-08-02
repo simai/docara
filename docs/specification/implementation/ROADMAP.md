@@ -64,8 +64,8 @@ registry, существующий Smart gateway и единый PageBuilder д�
 локального gate `badge_source_ready`:
 
 ```text
-PageSourceLocator -> ConfigResolver -> MarkdownCompiler -> Document IR
--> NodeRendererRegistry -> SmartComponentGateway -> LayoutComposer
+PageSourceLocator -> PortableConfigurationLoader -> MarkdownCompiler -> Document IR
+-> DocumentRendererRegistry -> SmartComponentGateway -> layout composition
 -> PageBuilderResult
 ```
 
@@ -167,16 +167,12 @@ matter/missing-page contracts, проверить ссылки внутри ZIP,
 независимо перепроверить новый immutable artifact. Recovery source:
 `source/workflow/2026-08-02-docara-r1c-semantic-correction-goal.md`.
 
-## Порядок работы нового треда
+## Порядок продолжения
 
-Новый тред начинает не с массовой переписи, а с M0:
-
-1. читает `source/handoff/docara-unified-architecture/START.md`;
-2. проверяет exact revision и clean worktree;
-3. строит mapping текущий код -> целевой модуль -> тест -> deletion gate;
-4. снимает baseline badge page;
-5. предлагает bounded implementation batch M1/M2;
-6. только после проверки mapping меняет runtime.
+Текущий recovery source — R1-C workflow и evidence index. M0–M5 и прежний R1
+не переигрываются; старый R1 ZIP остаётся immutable negative baseline. После
+зелёного correction candidate требуется отдельный independent exact-archive
+retest, затем только user-approved release action.
 
 ## Запрещённые сокращения
 

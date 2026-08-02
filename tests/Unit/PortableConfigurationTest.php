@@ -112,44 +112,6 @@ final class PortableConfigurationTest extends TestCase
         self::assertStringNotContainsString($this->root, CanonicalJson::encode($serialized));
     }
 
-    public function test_generated_base_inherits_real_sections_without_an_authored_page_or_sidecar(): void
-    {
-        $this->writeJson('content/components/section.json', [
-            'schema' => 'docara.section.v1',
-            'locale' => 'ru',
-            'layout' => ['container' => ['max' => 8]],
-            'settings' => ['theme' => 'light'],
-        ]);
-        $this->writeJson('content/components/index.page.json', [
-            'schema' => 'docara.page.v1',
-            'preset' => 'landing',
-            'locale' => 'en',
-            'settings' => ['theme' => 'dark'],
-        ]);
-
-        $plan = (new PortableConfigurationLoader($this->root))
-            ->resolveGeneratedBase('content/components/index.md');
-
-        self::assertSame('content/components/index.md', $plan->page);
-        self::assertSame('', $plan->markdown);
-        self::assertSame('ru', $plan->configuration['locale']);
-        self::assertSame(8, $plan->configuration['layout']['container']['max']);
-        self::assertSame('light', $plan->configuration['settings']['theme']);
-        self::assertSame('content/components/section.json', $plan->provenance['/locale']);
-        self::assertSame('content/components/section.json', $plan->provenance['/settings/theme']);
-        self::assertSame(
-            [
-                'docara.json',
-                'framework.lock.json',
-                'section.json',
-                'content/section.json',
-                'content/components/section.json',
-            ],
-            array_column($plan->trace, 'source'),
-        );
-        self::assertNotContains('content/components/index.page.json', array_column($plan->trace, 'source'));
-    }
-
     public function test_repository_recipe_resolves_site_section_and_page_region_composition_with_provenance(): void
     {
         $site = dirname(__DIR__, 2) . '/docs/site';

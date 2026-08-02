@@ -12,12 +12,15 @@ assets/
   logo-dark.svg
   favicon.svg
 content/
-  section.json
-  index.md
-  guides/
+  ru/
+    lang.json
     section.json
-    install.md
-    install.page.json  # необязательная настройка только этой страницы
+    index.md
+    guides.md
+    guides/
+      section.json
+      install.md
+      install.page.json  # необязательная композиция только этой страницы
 .docara/
   engine/
     ownership.json
@@ -30,9 +33,15 @@ content/
 ветке не нужны собственные настройки. Sidecar `<page>.page.json`
 переопределяет настройки одной страницы и тоже необязателен: `install.md`
 соберётся без `install.page.json`, унаследовав сайт и родительские разделы.
-JSON нужен только когда требуется изменить title, slug, preset, навигацию,
-макет или другую настройку именно этой страницы. Markdown остаётся
-содержанием.
+JSON нужен только когда требуется изменить slug, preset, навигацию, макет или
+другое поведение именно этой страницы. `title`, `description`, `tags`, `draft`
+и `translation_key` задавайте в front matter Markdown.
+
+Рекомендуемая форма раздела плоская: `content/ru/guides.md` владеет
+`/ru/guides/`, а соседний каталог `content/ru/guides/` содержит дочерние
+страницы и `section.json`. Runtime также понимает
+`content/ru/guides/index.md`, но одновременно создавать обе формы нельзя:
+сборка завершится `PAGE_SOURCE_ROUTE_AMBIGUOUS`.
 
 Для всех уровней используется одно имя `section.json`, без начального
 подчёркивания. Если в старом проекте остался `_section.json`, переименуйте его:

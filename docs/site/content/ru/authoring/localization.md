@@ -22,6 +22,7 @@ Docara не ограничивает проект русским и англий
 {
   "default_locale": "ru",
   "locales": {
+    "missing_page_policy": "skip",
     "ru": {
       "label": "Русский",
       "direction": "ltr",
@@ -76,6 +77,10 @@ Docara не ограничивает проект русским и англий
 `strategy: "default_unprefixed"` оставляет пустой префикс основной локали и
 публикует её в корне, как прежняя Docara. Оба режима проходят один validator,
 но смешивать их правила в одной конфигурации нельзя.
+
+`locales.missing_page_policy: "skip"` публикует только существующие
+Markdown-owner. Значение `"error"` требует одинаковый набор routes у всех
+локалей и сообщает `LOCALE_PAGE_MISSING` с ожидаемым путём файла.
 
 ## `lang.json` и fallback
 

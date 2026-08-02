@@ -20,60 +20,45 @@ translation pack не хранит страницу компонента. Пуб
 translation pack вообще нет: общие видимые подписи локали читаются только из
 `content/<locale>/lang.json`.
 
-## 2. Ответственности модулей
+## 2. Ответственности и фактические классы
 
-```text
-src/
-├── Content/
-│   ├── PageSourceLocator.php
-│   ├── RouteMapper.php
-│   └── FrontMatterParser.php
-├── Config/
-│   ├── ConfigResolver.php
-│   ├── ConfigMerger.php
-│   └── SchemaValidator.php
-├── Document/
-│   ├── MarkdownCompiler.php
-│   ├── Document.php
-│   └── Node/
-├── Rendering/
-│   ├── DocumentRenderer.php
-│   ├── NodeRendererRegistry.php
-│   └── Renderer/
-├── Smart/
-│   ├── SmartComponentGateway.php
-│   ├── SmartComponentRegistry.php
-│   ├── SmartComponentDefinition.php
-│   └── RenderArtifact.php
-├── Layout/
-│   ├── LayoutResolver.php
-│   ├── RegionComposer.php
-│   └── LayoutComposer.php
-├── Index/
-│   ├── NavigationIndex.php
-│   ├── SearchIndex.php
-│   └── BacklinkIndex.php
-└── Build/
-    ├── PageBuilder.php
-    ├── SiteBuilder.php
-    └── BuildResult.php
-```
+| Логическая ответственность | Фактический namespace/class |
+| --- | --- |
+| Поиск Markdown-owner | `Simai\Docara\Content\PageSourceLocator` |
+| Route из физического пути | `Simai\Docara\Content\RouteMapper` |
+| Front matter | `Simai\Docara\Content\FrontMatterParser` |
+| JSON inheritance/schema | `Simai\Docara\Portable\PortableConfigurationLoader`, `ConfigurationMerger`, `SchemaRepository`, `JsonSchemaValidator` |
+| Typed Document IR | `Simai\Docara\Document\MarkdownCompiler`, `DocumentIr`, typed node classes |
+| Renderer registry | `Simai\Docara\Document\DocumentRendererRegistry` |
+| Один component gateway | `Simai\Docara\Declarative\Smart\SmartComponentGateway` |
+| Component aliases/contracts | `Simai\Docara\Document\ComponentAliasRegistry`, `ContentComponentRegistry` и общий declarative Smart registry |
+| Одна страница | `Simai\Docara\PortableSite\PageBuilder`, `PageBuilderResult` |
+| Полная/одиночная сборка | `Simai\Docara\PortableSite\PortableSiteBuilder` с одним `PageBuilder` |
+| Navigation/search/backlinks | `PortableNavigationBuilder`, `PortableSearchIndexBuilder`, `PortableBacklinkHydrator` |
+| Публикация HTML/assets | `DeclarativePortablePagePublisher`, `FrameworkAssetPublisher` |
 
-Это логические границы. Маленькие value objects можно объединять, но нельзя
-возвращать параллельные конвейеры.
+Таблица описывает текущий код, а не желаемое дерево каталогов. Маленькие value
+objects могут объединяться, но второй compiler, registry, gateway или
+PageBuilder запрещён.
 
 ## 3. Контракт исходной страницы
 
-`PageSourceLocator(locale, route)` возвращает ровно один `PageSource` или
-типизированную ошибку:
+`PageSourceLocator::forLocale()` возвращает отсортированный список физических
+`PageSource(locale, path, route)`. Фактические discovery codes:
 
-- `PAGE_NOT_FOUND`;
-- `PAGE_ROUTE_AMBIGUOUS`;
-- `LOCALE_NOT_DECLARED`;
-- `SOURCE_OUTSIDE_CONTENT_ROOT`.
+| Code | Условие |
+| --- | --- |
+| `PAGE_SOURCE_LOCALE_ROOT_MISSING` | нет content root локали |
+| `PAGE_SOURCE_SYMLINK_FORBIDDEN` | symlink внутри публичного content |
+| `PAGE_SOURCE_EXTENSION_INVALID` | публичный source не `.md` |
+| `PAGE_SOURCE_ROUTE_AMBIGUOUS` | два файла дают один locale route |
+| `PAGE_SOURCE_OUTSIDE_LOCALE_ROOT` | путь не принадлежит content root |
+| `PAGE_SOURCE_PATH_INVALID` | parent traversal или невалидный путь |
+| `LOCALE_NOT_CONFIGURED` | route ссылается на необъявленную локаль |
+| `LOCALE_PAGE_MISSING` | strict missing-page policy не нашла owner |
 
-`PageSource` содержит path, locale, route, raw Markdown и content hash. Route
-не зависит от title и перевода интерфейса.
+Route не зависит от title и UI-перевода. Front matter errors используют
+`FRONT_MATTER_*` codes и всегда называют relative source, line и column.
 
 ## 4. Config resolution
 
@@ -102,18 +87,23 @@ Resolved config содержит provenance каждого значения.
 
 ```json
 {
-  "type": "document",
-  "schema_version": "1.0.0",
-  "metadata": {},
-  "children": [],
-  "source": {"file": "content/ru/index.md", "line": 1, "column": 1}
+  "schema": "docara.document_ir.v1",
+  "source": "content/ru/index.md",
+  "nodes": [
+    {
+      "type": "heading",
+      "source": {"file": "content/ru/index.md", "line": 1, "column": 1, "end_line": 1},
+      "data": {"level": 1, "text": "Docara"},
+      "children": []
+    }
+  ]
 }
 ```
 
-Общие поля узла: `type`, `source`, optional `attributes`, optional `children`.
-Text node использует `value`. Component node использует `name`, `props`,
-`slots`. `MarkdownCompiler` создаёт typed IR только в памяти, и PHP runtime
-работает с immutable objects. Обязательного page-level JSON/JSONL нет.
+Общие поля узла: `type`, `source`, `data`, `children`. Component nodes имеют
+отдельные typed classes с alias/component, props, source location и block body.
+`MarkdownCompiler` создаёт typed IR только в памяти, и PHP runtime работает с
+immutable objects. Обязательного page-level JSON/JSONL нет.
 Сериализация допустима только как удаляемый cache, search projection,
 `--dump-ir` или test evidence.
 
@@ -132,8 +122,10 @@ code_block -> CodeBlockRenderer
 component -> ComponentNodeRenderer -> SmartComponentGateway
 ```
 
-Unknown node fail-closed. Renderer получает `RenderContext` и возвращает
-`RenderArtifact`, не пишет глобальные assets побочным эффектом.
+Unknown node fail-closed с `DOCUMENT_IR_RENDERER_UNKNOWN`. Неизвестный alias
+возвращает `DOCUMENT_COMPONENT_ALIAS_UNKNOWN`; неизвестный registered content
+component — `CONTENT_COMPONENT_UNKNOWN`. Renderer получает `RenderContext` и
+возвращает `RenderArtifact`, не пишет глобальные assets побочным эффектом.
 
 ## 7. Smart gateway
 
@@ -154,12 +146,12 @@ Region item имеет стабильный id, kind, params, visibility conditi
 provenance. Поддерживаемые kinds первой версии: `slot`, `component`, `native`,
 `include`. Произвольный PHP callback в пользовательском JSON запрещён.
 
-## 9. PageBuilder и SiteBuilder
+## 9. PageBuilder и PortableSiteBuilder
 
-`PageBuilder` является атомарной единицей. `SiteBuilder` только формирует набор
-routes, вызывает тот же `PageBuilder` для каждого выбранного route и объединяет
-site-level indexes. Single-page режим передаёт набор из одного route; отдельной
-ветки parsing/rendering/composition у него нет.
+`PageBuilder` является атомарной единицей. `PortableSiteBuilder` только
+формирует набор routes, вызывает тот же `PageBuilder` для каждого выбранного
+route и объединяет site-level indexes. Single-page режим передаёт набор из
+одного route; отдельной ветки parsing/rendering/composition у него нет.
 
 Локализованные сообщения CLI/сборщика, если появятся, принадлежат пакету и
 живут вне public content pipeline. `PageBuilder` их не загружает.
@@ -223,16 +215,8 @@ Document IR и Smart invocation должны быть переносимы ка�
 
 ## 15. Миграционная граница
 
-До завершения перехода legacy код может существовать только как frozen
-baseline. Новый контент, компонент или renderer реализуется исключительно в
-целевом потоке. Каждый legacy path имеет deletion gate и удаляется сразу после
-parity evidence; постоянный compatibility layer не создаётся.
-
-Это правило включает `resources/i18n`, prose-bearing language packs и
-`site.json`: они не получают target compatibility layer.
-
-M1 закрепляет это fail-closed профилем: target config и component manifests
-не принимают prose/Markdown/HTML/CSS, `lang.json` проверяется отдельной
-versioned schema, package-owned system messages исключены из PageBuilder
-inputs, а 44 generated routes и текущие language-pack component records
-зафиксированы как только уменьшающийся legacy allowlist.
+Legacy publication paths удалены после M3/M4 parity. Target config и component
+manifests не принимают prose/Markdown/HTML/CSS, `lang.json` проверяется
+отдельной versioned schema, package-owned system messages исключены из
+PageBuilder inputs, generated public owners равны нулю. Отрицательные guards
+могут называть retired paths, но сами paths не входят в release package.

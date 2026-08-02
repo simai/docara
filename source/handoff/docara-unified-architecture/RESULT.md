@@ -20,6 +20,11 @@ Correction source and evidence:
 - `source/workflow/2026-08-02-docara-goal1d-generic-smart-view-correction.md`;
 - `source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md`.
 
+The current router is generated deterministically from canonical graph state and
+checked against START/STATUS/ACTIVE/NEXT/RESULT. Completed R2 release/deploy
+facts remain historical only and cannot replace the independent Goal 1 audit as
+the next action.
+
 ## Superseded Goal 1-C result
 
 Goal 1-C is corrected against accepted exact SF5 adapter

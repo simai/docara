@@ -10,8 +10,9 @@
 - `docs/specification` объясняет те же решения людям;
 - `source/workflow` хранит исполняемые задания и свидетельства конкретных
   попыток;
-- код, тесты и generated-файлы подтверждают реализацию, но сами по себе не
-  переопределяют цель.
+- код и тесты подтверждают реализацию;
+- `graph/generated/ai-context/docara-unified.json` — детерминированная проекция
+  текущего canonical state и никогда не переопределяет цель.
 
 Если описание и граф расходятся, сначала принимается новое decision-объект в
 `graph/specs/decisions`, затем синхронизируются ТЗ и реализация.
@@ -33,12 +34,32 @@
   production readiness;
 - `generated/ai-context` — производный компактный пакет для нового task.
 
+## Регенерация и freshness gate
+
+Из корня репозитория:
+
+```bash
+php scripts/project-context.php generate
+php scripts/project-context.php check
+```
+
+`generate` читает `graph/graph.json` и разрешённые из него current goal/stage/
+batch specs, записывает компактный context атомарно и без текущего времени.
+`check` требует byte-identical проекцию и дополнительно сверяет
+`START.md`, `STATUS.yaml`, `ACTIVE.md`, `NEXT.md`, `RESULT.md` и LEGO-roadmap.
+Изменение current stage, batch, candidate, next action или evidence без
+регенерации и handoff-синхронизации завершает проверку ошибкой.
+
+Generated context нельзя править как самостоятельное решение. Сначала меняют
+canonical graph/specs, затем handoff и только после этого запускают `generate`
+и `check`.
+
 ## Как работать
 
 1. Прочитать `docs/specification/README.md`.
 2. Прочитать `source/handoff/docara-unified-architecture/START.md`.
-3. Проверить активный batch и его forbidden scope.
-4. Реализовать только один вертикальный срез.
-5. Записать проверки и mapping до удаления старого пути.
+3. Проверить active goal/stage/batch/next action в canonical graph.
+4. Запустить `php scripts/project-context.php check`.
+5. Выполнять только разрешённый current gate и записать evidence до перехода.
 
 История прежнего task — полезное свидетельство, но не runtime-инструкция.

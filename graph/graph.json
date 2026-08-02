@@ -26,10 +26,30 @@
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
   "implementation_state": {
+    "state": "goal1_ready_for_independent_audit",
+    "current_goal": "docara.goal.unified",
     "current_stage": "docara.stage.g1.portable_smart_runtime",
+    "current_batch": "docara.batch.g1.portable_smart_runtime",
     "completed_checkpoint": "goal1d_generic_smart_view_correction",
+    "candidate_revision": "44acc1ff91233fa78140222fcb0589bf55b65ca0",
     "next_action": "independent_goal1_reverse_outcome_audit",
-    "evidence": "source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md"
+    "evidence": "source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md",
+    "next_goal": {
+      "id": "docara.goal.2.design_registry",
+      "title": "Goal 2 — Project Design Registry and production-faithful preview",
+      "status": "unstarted",
+      "authorized": false,
+      "source": "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md#goal-2--project-design-registry-and-production-faithful-preview"
+    }
+  },
+  "historical_context": {
+    "release_baseline": {
+      "status": "parked_not_current",
+      "stage_ref": "docara.stage.r2.production_readiness",
+      "batch_ref": "docara.batch.r2.prepare_deployment",
+      "executable": false,
+      "source": "source/workflow/2026-08-02-docara-r2-production-readiness.md"
+    }
   },
   "routing_gap": {
     "status": "recorded",

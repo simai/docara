@@ -1,6 +1,7 @@
 # Start here: Docara unified architecture
 
-This is the only required entry point for a fresh task.
+This is the only required entry point for a fresh task. It routes current work;
+M0-M5 and R1/R2 remain historical evidence, not executable instructions.
 
 ## 1. Verify the workspace
 
@@ -11,59 +12,61 @@ git rev-parse HEAD
 git status --short
 ```
 
-Expected branch: `codex/docara-unified-architecture`. The committed baseline
-recorded by this handoff is `a3ba9a4d04429f1f2046b8415764fe7bc89962c7`;
-after the architecture commit, verify its parent is that exact revision.
+Expected branch: `codex/docara-unified-architecture`. Preserve any user changes
+and stop on an overlapping dirty worktree. Do not use the installed stale
+Docara skill and do not work in another checkout or site root.
 
-Do not work in the dirty canonical checkout or in the old Larena-nested
-worktree.
+## 2. Current router
 
-## 2. Read in this order
+Current state: `goal1_ready_for_independent_audit`
+
+Current stage: `docara.stage.g1.portable_smart_runtime`
+
+Current batch: `docara.batch.g1.portable_smart_runtime`
+
+Current next action: `independent_goal1_reverse_outcome_audit`
+
+Current evidence: `source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md`
+
+Goal 2 status: `unstarted`
+
+Goal 1 is implementation-complete and awaits an independent reverse-outcome
+audit. It is not accepted by executor evidence. Goal 2 Design Registry/Preview
+and Goal 3 SDK/MCP are not authorized until their preceding independent gate.
+
+## 3. Read in this order
 
 1. `source/handoff/docara-unified-architecture/STATUS.yaml`;
-2. `docs/specification/README.md` and the five documents it links;
-3. `graph/generated/ai-context/docara-unified.json`;
-4. `graph/specs/batches/m0-code-map.json`;
-5. `source/handoff/docara-unified-architecture/CONTEXT.md`;
-6. `source/handoff/docara-unified-architecture/NEXT.md`.
+2. `source/workflow/ACTIVE.md`;
+3. `source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md`;
+4. `graph/graph.json` and its current stage/batch specs;
+5. `graph/generated/ai-context/docara-unified.json` as a checked derived view;
+6. `source/handoff/docara-unified-architecture/NEXT.md` and `RESULT.md`;
+7. `docs/specification/README.md` and its linked contracts.
 
-Do not reconstruct the architecture from task history when these sources
-already answer the question.
+Canonical current state belongs to `graph/graph.json` plus `graph/specs`.
+`graph/generated/ai-context/docara-unified.json` must be regenerated and
+checked by the repository command documented in `graph/README.md`; it never
+overrides canonical graph or workflow sources.
 
-## 3. Execute only the ready batch
+## 4. Execute only the current gate
 
-M0 mapping is preserved in the worktree and the architecture-contract
-checkpoint resolves its recorded contradictions. After the checkpoint commit,
-the ready implementation sequence is the bounded M1A/M1B plan in
-`source/workflow/2026-08-01-docara-m1-m2-bounded-plan.md`; M2 starts only after
-`docara.gate.badge_source_ready` passes.
+The only current action is an independent Goal 1 reverse-outcome audit using
+the exact candidate and evidence above. Do not continue to Goal 2 after an
+executor-only PASS. A separate independent acceptance must first update the
+canonical graph and regenerate the router.
 
-For the contract checkpoint update:
+M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
+They may support regression analysis but cannot become the current stage,
+batch, candidate or next action unless a new canonical graph transition is
+explicitly accepted.
 
-- `docs/specification`, graph, roadmap and this handoff;
-- preserve `graph/specs/implementation-mappings/*.json` from M0;
-- `source/handoff/docara-unified-architecture/RESULT.md`;
-- evidence under the workflow evidence root;
-- `STATUS.yaml` only after the checkpoint validators and commit pass.
+## 5. Forbidden shortcuts
 
-Target invariants now include `content/<locale>/lang.json` as the sole public
-shared translation store, no public `resources/i18n` or `site.json`
-compatibility, in-memory typed IR without mandatory page JSON/JSONL, and one
-PageBuilder pipeline whose modes differ only by route selection.
-
-## 4. Forbidden shortcuts
-
-- do not use the installed stale Docara skill;
 - do not move public prose into JSON, PHP projectors or component manifests;
-- do not create a second parser, renderer or build path;
-- do not mass-rewrite runtime during M0;
-- do not delete legacy before parity evidence;
-- do not merge to a default branch, tag, release or deploy;
-- do not claim release or production readiness.
-
-## 5. Historical task
-
-The previous long task remains available as an archive of discussions,
-screenshots and rejected alternatives. It is not required context for routine
-work. If it reveals a missing accepted decision, record that decision in the
-specification and graph before implementation.
+- do not create a second parser, renderer, Gateway or PageBuilder;
+- do not delete legacy without parity and rollback evidence;
+- do not start Goal 2 or Goal 3 from this handoff;
+- do not merge, push, tag, release, publish or deploy;
+- do not write to `docara.test` or `docara-new.test`;
+- do not claim independent acceptance from executor evidence.

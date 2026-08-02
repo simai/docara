@@ -12,6 +12,8 @@ Graph goal: `docara.goal.unified`
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
 - active recovery: `source/workflow/2026-08-02-docara-goal1d-generic-smart-view-correction.md`;
 - fresh evidence: `source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md`;
+- project-context freshness correction:
+  `source/workflow/2026-08-03-docara-goal1d-project-context-correction.md`;
 - rejected audit candidate: `c5ea85f8d25deff99b671486fdc4d1e820a86491`;
 - corrected implementation candidate: `44acc1ff91233fa78140222fcb0589bf55b65ca0`;
 - branch: `codex/docara-unified-architecture`.

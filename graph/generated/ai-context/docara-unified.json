@@ -1,38 +1,88 @@
 {
-  "generated_from": [
-    "graph/graph.json",
-    "graph/dna/project-dna.json",
-    "graph/specs/goals/unified-docara.json",
-    "docs/specification/README.md"
-  ],
-  "generated_at": "2026-08-02",
-  "status": "r2_corrected_complete_awaiting_explicit_deployment_decision",
-  "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7",
-  "candidate_revision": "be0ba2db5254e468c7c014016ade02e8b4f3f16c",
-  "candidate_archive_sha256": "630d971e94a1222624304a3a5c2a7791586c0b7866ede5b8f3506c93bdebadc0",
-  "candidate_manifest_sha256": "0d0c280fc93824d76bafb703a5be8b70cf3cf34128e94ac4bf6906e3648a35af",
-  "candidate_tree_sha256": "425da363fc51d33d2c5b42577980f4ca4603b83814440dbfb06fe419b4cade46",
-  "determinism_superseded_candidate_revision": "56a2abf8bad05923f689141afc0bb045aa4d6734",
-  "determinism_superseded_candidate_archive_sha256": "04c18c95f2599905b1908fae3e326a9cf1ba47f29327ddd88465c4b4b792f753",
-  "superseded_candidate_revision": "8c0d14566837b6e6f4552d14c656ea14b202cd18",
-  "superseded_candidate_archive_sha256": "83afd355436284a0040390c88e1d125f3e5648932a23ff324ba9afa9af5eb561",
-  "goal": "Replace parallel content and rendering paths with one Markdown-to-typed-IR-to-registry-to-Smart-gateway-to-layout pipeline.",
-  "immutable_rules": [
-    "One locale route, exactly one content/<locale>/<route>.md source.",
-    "content/<locale>/lang.json is the only shared public UI translation source.",
-    "Public resources/i18n and site.json compatibility are absent; CLI/build messages are package-owned and outside public builds.",
-    "Configuration owns composition, not prose.",
-    "Typed IR is created in memory; optional serialization and HTML are derived and disposable.",
-    "One renderer registry and one Smart gateway.",
-    "One PageBuilder pipeline for full and page builds; only the selected route set differs.",
-    "Delete unpublished legacy after evidence; do not preserve it by default."
-  ],
-  "planned_tag_target": "be0ba2db5254e468c7c014016ade02e8b4f3f16c",
-  "governance_head_at_r2_start": "f50ce3c816867936f7697af8413120259c023089",
-  "current_stage": "docara.stage.r2.production_readiness",
-  "current_batch": "docara.batch.r2.prepare_deployment",
-  "next_action": "Ask the user to deploy or not deploy the exact candidate to docara.test; if approved, repeat live preflight and execute the verified cutover/rollback dossier.",
-  "verified_compatibility": ["macOS PHP 8.4.20", "macOS PHP 8.3.31", "Debian bookworm PHP 8.3.33"],
-  "unverified_compatibility": ["live docara.test cutover and post-cutover production acceptance"],
-  "forbidden_now": ["claiming complete other-locale translation", "parallel engine or content registry", "main merge", "push", "tag", "release", "deploy", "stale Docara skill"]
+    "schema_version": "1.0.0",
+    "context_id": "docara.unified.active",
+    "generated_by": "scripts/project-context.php",
+    "canonical_sources": [
+        "graph/graph.json",
+        "graph/dna/project-dna.json",
+        "graph/specs/goals/unified-docara.json",
+        "graph/specs/stages/g1-portable-smart-runtime.json",
+        "graph/specs/batches/g1-portable-smart-runtime.json"
+    ],
+    "canonical_sha256": "c672c9ad05ec743948eaf981f8c8dc3e19641a26943909216fed95e87750c89c",
+    "project": {
+        "id": "docara.unified",
+        "title": "Docara Unified Architecture Graph",
+        "profile": "project_management"
+    },
+    "active": {
+        "state": "goal1_ready_for_independent_audit",
+        "goal": "docara.goal.unified",
+        "goal_readiness": "goal1_ready_for_independent_audit",
+        "stage": "docara.stage.g1.portable_smart_runtime",
+        "stage_readiness": "ready_for_independent_audit",
+        "stage_status": "goal1_implementation_complete_audit_pending_goal2_unstarted",
+        "batch": "docara.batch.g1.portable_smart_runtime",
+        "batch_readiness": "ready_for_independent_audit",
+        "batch_status": "goal1d_complete_audit_pending",
+        "completed_checkpoint": "goal1d_generic_smart_view_correction",
+        "candidate_revision": "44acc1ff91233fa78140222fcb0589bf55b65ca0",
+        "next_action": "independent_goal1_reverse_outcome_audit",
+        "evidence": "source/workflow/evidence/2026-08-02-docara-goal1d-generic-smart-view-correction/INDEX.md"
+    },
+    "roadmap": {
+        "source": "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md",
+        "next_goal": {
+            "id": "docara.goal.2.design_registry",
+            "title": "Goal 2 — Project Design Registry and production-faithful preview",
+            "status": "unstarted",
+            "authorized": false,
+            "source": "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md#goal-2--project-design-registry-and-production-faithful-preview"
+        }
+    },
+    "architecture": {
+        "human_spec": "docs/specification/DOCARA-TZ.md",
+        "pipeline": "Markdown -> typed Document IR -> Node Renderer Registry -> Smart Component Gateway -> Layout Composer -> HTML",
+        "page_source": "content/<locale>/<route>.md",
+        "public_locale_strings": "content/<locale>/lang.json",
+        "public_i18n_absent": [
+            "resources/i18n",
+            "site.json compatibility"
+        ],
+        "ir_runtime": "in_memory_only_with_optional_disposable_serialization",
+        "build_mode_difference": "selected_route_set_only",
+        "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
+    },
+    "historical_context": {
+        "release_baseline": {
+            "status": "parked_not_current",
+            "stage_ref": "docara.stage.r2.production_readiness",
+            "batch_ref": "docara.batch.r2.prepare_deployment",
+            "executable": false,
+            "source": "source/workflow/2026-08-02-docara-r2-production-readiness.md"
+        }
+    },
+    "forbidden_now": [
+        "External Framework repositories",
+        "docara-new.test",
+        "docara.test",
+        "Goal 2",
+        "Goal 3",
+        "Merge",
+        "Push",
+        "Tag",
+        "Release",
+        "Deploy"
+    ],
+    "read_order": [
+        "source/handoff/docara-unified-architecture/STATUS.yaml",
+        "source/workflow/ACTIVE.md",
+        "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md",
+        "graph/graph.json",
+        "graph/specs/stages/g1-portable-smart-runtime.json",
+        "graph/specs/batches/g1-portable-smart-runtime.json",
+        "graph/generated/ai-context/docara-unified.json",
+        "source/handoff/docara-unified-architecture/NEXT.md",
+        "source/handoff/docara-unified-architecture/RESULT.md"
+    ]
 }

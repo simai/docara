@@ -11,7 +11,7 @@ Review the reproducible commands and hashes in
 Goal 1 is `ready_for_independent_audit`, not accepted. Goal 2/3 remain
 unstarted. No live/release action is authorized.
 
-## Historical deployment decision (parked)
+## Historical deployment decision (parked, not executable)
 
 The deterministic R2 correction and complete disposable retest pass. The live
 site is unchanged. There is now one exact unpublished candidate and one
@@ -22,7 +22,7 @@ The same exact candidate is deployed for user validation at
 representative browser interactions pass. This test deployment does not open
 the separate `docara.test` production gate.
 
-## Current correction target
+## Historical rc.3 release baseline
 
 | Field | Exact value |
 | --- | --- |
@@ -33,12 +33,12 @@ the separate `docara.test` production gate.
 | Manifest SHA-256 | `0d0c280fc93824d76bafb703a5be8b70cf3cf34128e94ac4bf6906e3648a35af` |
 | Candidate tree SHA-256 | `425da363fc51d33d2c5b42577980f4ca4603b83814440dbfb06fe419b4cade46` |
 | Current served tree SHA-256 | `b98ea2f66b733c5146360af68c1fe15b55aa099b33957fe52813772d93ce836f` |
-| State | local release candidate accepted; production gate closed pending explicit approval |
+| State | historical local release baseline; not the current architecture candidate or next action |
 
 The former source `56a2abf8…`, ZIP `04c18c95…` and tree `457790d4…` are
 `superseded_after_determinism_audit`; they must not be tagged or deployed.
 
-## Completed proof
+## Historical R2 proof
 
 - correction workflow:
   `source/workflow/2026-08-02-docara-r2-determinism-correction.md`;

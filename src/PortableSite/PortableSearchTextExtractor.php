@@ -79,27 +79,28 @@ final readonly class PortableSearchTextExtractor
         }
 
         $parts = [$this->normalizeText($root->textContent)];
+        foreach ($xpath->query('//*[@id="docara-search-root"]//*') ?: [] as $element) {
+            if (! $element instanceof DOMElement
+                || (! str_contains(strtolower($element->tagName), '-')
+                    && ! $element->hasAttribute('data-docara-smart')
+                    && ! $element->hasAttribute('data-project-smart'))
+            ) {
+                continue;
+            }
+            foreach (['title', 'text', 'supporting-text', 'label', 'description'] as $attribute) {
+                if ($element->hasAttribute($attribute)) {
+                    $parts[] = $this->normalizeText($element->getAttribute($attribute));
+                }
+            }
+        }
         foreach ($componentCalls as $call) {
             $id = $call['id'] ?? null;
             $props = $call['props'] ?? null;
             if (! is_string($id) || ! is_array($props)) {
                 throw new PortableConfigurationException(
-                    'SEARCH_COMPONENT_TEXT_PROJECTION_MISSING',
-                    'Search component call does not expose a supported text projection.',
+                    'SEARCH_COMPONENT_CALL_INVALID',
+                    'Search component call metadata is invalid.',
                 );
-            }
-            $keys = match ($id) {
-                'ui.alert' => ['title', 'supporting-text'],
-                'ui.button' => ['text'],
-                default => throw new PortableConfigurationException(
-                    'SEARCH_COMPONENT_TEXT_PROJECTION_MISSING',
-                    "Search text projection is missing for component [$id].",
-                ),
-            };
-            foreach ($keys as $key) {
-                if (is_string($props[$key] ?? null)) {
-                    $parts[] = $this->normalizeText($props[$key]);
-                }
             }
         }
 

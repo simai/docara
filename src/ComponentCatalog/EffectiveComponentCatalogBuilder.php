@@ -41,7 +41,7 @@ final readonly class EffectiveComponentCatalogBuilder
             TypedComponentDefinitionRepository::bundled(),
             $frameworkLock,
             FrameworkManifestRepository::bundled($frameworkLock),
-            new FrameworkConsumerPolicy,
+            FrameworkConsumerPolicy::fromLock($frameworkLock),
             sourceMetadata: new ComponentSourceMetadataRepository(
                 $root . '/resources/component-catalog/source-metadata.json',
             ),

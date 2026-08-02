@@ -1027,11 +1027,23 @@ final class PortableConfigurationTest extends TestCase
                     'provider' => 'larena/ui',
                     'provider_revision' => '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663',
                     'sha256' => str_repeat('2', 64),
+                    'consumer_policy' => [
+                        'managed' => [],
+                        'blocked' => [],
+                        'omitted_assets' => [],
+                        'excluded_states' => [],
+                    ],
                 ],
                 'ui.alert' => [
                     'provider' => 'larena/ui',
                     'provider_revision' => '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663',
                     'sha256' => str_repeat('3', 64),
+                    'consumer_policy' => [
+                        'managed' => [],
+                        'blocked' => [],
+                        'omitted_assets' => [],
+                        'excluded_states' => [],
+                    ],
                 ],
             ],
             'asset_projection' => [

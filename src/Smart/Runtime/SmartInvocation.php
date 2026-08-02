@@ -18,6 +18,7 @@ final readonly class SmartInvocation
         public string $template,
         public string $strategy,
         public string $adapter,
+        public string $templateAbi,
         public array $provenance,
     ) {}
 
@@ -25,7 +26,8 @@ final readonly class SmartInvocation
     {
         $strategy = $plan->provenance['portable_strategy'] ?? 'server-static';
         $adapter = $plan->provenance['input_adapter'] ?? 'smart.props';
-        if (! is_string($strategy) || ! is_string($adapter)) {
+        $templateAbi = $plan->provenance['template_abi'] ?? 'docara.legacy.object-view.v1';
+        if (! is_string($strategy) || ! is_string($adapter) || ! is_string($templateAbi)) {
             throw new \InvalidArgumentException('SMART_INVOCATION_INVALID');
         }
 
@@ -38,6 +40,7 @@ final readonly class SmartInvocation
             $plan->template,
             $strategy,
             $adapter,
+            $templateAbi,
             $plan->provenance,
         );
     }

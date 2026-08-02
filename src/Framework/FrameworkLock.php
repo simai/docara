@@ -88,6 +88,28 @@ final readonly class FrameworkLock
         return $keys;
     }
 
+    /** @return array<string, array<string, mixed>> */
+    public function consumerPolicies(): array
+    {
+        $policies = [];
+        foreach ($this->manifestKeys() as $key) {
+            $policies[$key] = $this->consumerPolicy($key);
+        }
+
+        return $policies;
+    }
+
+    /** @return array<string, mixed> */
+    public function consumerPolicy(string $key): array
+    {
+        $policy = $this->manifest($key)['consumer_policy'] ?? null;
+        if (! is_array($policy) || array_is_list($policy)) {
+            throw new FrameworkComponentException('FRAMEWORK_CONSUMER_POLICY_INVALID', $key);
+        }
+
+        return $policy;
+    }
+
     /** @return array<string, mixed> */
     public function toArray(): array
     {
@@ -127,6 +149,8 @@ final readonly class FrameworkLock
                 || ($record['provider'] ?? null) !== 'larena/ui'
                 || ! $this->isCommit($record['provider_revision'] ?? null)
                 || ! $this->isSha256($record['sha256'] ?? null)
+                || ! is_array($record['consumer_policy'] ?? null)
+                || array_is_list($record['consumer_policy'])
             ) {
                 throw new FrameworkComponentException('FRAMEWORK_MANIFEST_LOCK_INVALID', $key);
             }

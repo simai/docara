@@ -14,6 +14,7 @@ use League\CommonMark\Parser\MarkdownParser;
 use Simai\Docara\Framework\ComponentDirective;
 use Simai\Docara\Framework\ComponentDirectiveParser;
 use Simai\Docara\Portable\CanonicalJson;
+use Simai\Docara\Smart\SmartRegistry;
 
 final class DocumentParser
 {
@@ -21,9 +22,11 @@ final class DocumentParser
 
     private MarkdownParser $markdown;
 
-    public function __construct()
+    public function __construct(?SmartRegistry $smarts = null)
     {
-        $this->directives = new ComponentDirectiveParser(['ui.alert', 'ui.button']);
+        $this->directives = new ComponentDirectiveParser(
+            ($smarts ?? SmartRegistry::bundled())->keys(),
+        );
         $environment = new Environment([
             'html_input' => 'strip',
             'allow_unsafe_links' => false,

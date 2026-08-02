@@ -74,6 +74,16 @@ MD, 'content/install.md'),
         (new TrustedTemplateRegistry)->render('smart.ui.alert.default', ['view' => []]);
     }
 
+    public function test_portable_template_registry_rejects_a_non_sf5_context_shape(): void
+    {
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('DECLARATIVE_PORTABLE_TEMPLATE_CONTEXT_INVALID');
+
+        (new TrustedTemplateRegistry)->renderPortable('smart.ui.alert.default', [
+            'view' => [],
+        ]);
+    }
+
     public function test_templates_are_presentation_only_and_assets_are_not_embedded(): void
     {
         $root = dirname(__DIR__, 2) . '/resources';

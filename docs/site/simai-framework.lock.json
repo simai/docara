@@ -120,12 +120,34 @@
     "ui.button": {
       "provider": "larena/ui",
       "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
-      "sha256": "16657a8d75efc86383039ec746ffe7b291c8669569995f5fd1c6161eba55d9e9"
+      "sha256": "16657a8d75efc86383039ec746ffe7b291c8669569995f5fd1c6161eba55d9e9",
+      "consumer_policy": {
+        "managed": {},
+        "blocked": [],
+        "omitted_assets": {
+          "simai.framework.bridge.js": "portable_backend_bridge_not_admitted"
+        },
+        "excluded_states": {}
+      }
     },
     "ui.alert": {
       "provider": "larena/ui",
       "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
-      "sha256": "b6e7c91da1157335ac2a017571aeed8b518a95bb41c88688e6ef122bf39efc29"
+      "sha256": "b6e7c91da1157335ac2a017571aeed8b518a95bb41c88688e6ef122bf39efc29",
+      "consumer_policy": {
+        "managed": {"id": "deterministic_id"},
+        "blocked": [
+          {"prop": "closable", "value": true, "code": "FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME"},
+          {"prop": "type", "value": "success", "code": "FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME"}
+        ],
+        "omitted_assets": {
+          "simai.framework.bridge.js": "portable_backend_bridge_not_admitted"
+        },
+        "excluded_states": {
+          "closable": {"prop": "closable", "value": true},
+          "success": {"prop": "type", "value": "success"}
+        }
+      }
     }
   },
   "asset_projection": {

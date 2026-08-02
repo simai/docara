@@ -17,37 +17,34 @@ final readonly class FrameworkConsumerPolicy
      *     excluded_states: array<string, array{prop: string, value: mixed}>
      * }>
      */
-    private const POLICIES = [
-        'ui.alert' => [
-            'managed' => [
-                'id' => 'deterministic_id',
-            ],
-            'blocked' => [[
-                'prop' => 'closable',
-                'value' => true,
-                'code' => 'FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME',
-            ], [
-                'prop' => 'type',
-                'value' => 'success',
-                'code' => 'FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME',
-            ]],
-            'omitted_assets' => [
-                'simai.framework.bridge.js' => 'portable_backend_bridge_not_admitted',
-            ],
-            'excluded_states' => [
-                'closable' => ['prop' => 'closable', 'value' => true],
-                'success' => ['prop' => 'type', 'value' => 'success'],
-            ],
-        ],
-        'ui.button' => [
-            'managed' => [],
-            'blocked' => [],
-            'omitted_assets' => [
-                'simai.framework.bridge.js' => 'portable_backend_bridge_not_admitted',
-            ],
-            'excluded_states' => [],
-        ],
-    ];
+    private array $policies;
+
+    /** @param null|array<string, array<string, mixed>> $policies */
+    public function __construct(?array $policies = null)
+    {
+        if ($policies === null) {
+            $lock = FrameworkLock::fromJsonFile(
+                dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json',
+            );
+            $policies = $lock->consumerPolicies();
+        }
+        ksort($policies, SORT_STRING);
+        foreach ($policies as $component => $policy) {
+            if (! is_string($component) || ! is_array($policy)) {
+                throw new FrameworkComponentException(
+                    'FRAMEWORK_CONSUMER_POLICY_INVALID',
+                    (string) $component,
+                );
+            }
+            $this->assertPolicyShape($component, $policy);
+        }
+        $this->policies = $policies;
+    }
+
+    public static function fromLock(FrameworkLock $lock): self
+    {
+        return new self($lock->consumerPolicies());
+    }
 
     /** @param array<string, mixed> $manifest */
     public function assertNarrowing(string $component, array $manifest): void
@@ -259,11 +256,69 @@ final readonly class FrameworkConsumerPolicy
      */
     private function policy(string $component): array
     {
-        $policy = self::POLICIES[$component] ?? null;
+        $policy = $this->policies[$component] ?? null;
         if (! is_array($policy)) {
             throw new FrameworkComponentException('FRAMEWORK_CONSUMER_POLICY_MISSING', $component);
         }
 
         return $policy;
+    }
+
+    /** @param array<string, mixed> $policy */
+    private function assertPolicyShape(string $component, array $policy): void
+    {
+        $keys = array_keys($policy);
+        sort($keys, SORT_STRING);
+        if ($keys !== ['blocked', 'excluded_states', 'managed', 'omitted_assets']
+            || ! is_array($policy['managed'])
+            || ! is_array($policy['blocked'])
+            || ! array_is_list($policy['blocked'])
+            || ! is_array($policy['omitted_assets'])
+            || ! is_array($policy['excluded_states'])
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_CONSUMER_POLICY_INVALID', $component);
+        }
+        foreach ($policy['managed'] as $prop => $strategy) {
+            if (! is_string($prop) || $prop === '' || $strategy !== 'deterministic_id') {
+                throw new FrameworkComponentException('FRAMEWORK_CONSUMER_POLICY_INVALID', $component . ':managed');
+            }
+        }
+        foreach ($policy['blocked'] as $blocked) {
+            if (! is_array($blocked)
+                || ! $this->hasExactKeys($blocked, ['prop', 'value', 'code'])
+                || ! is_string($blocked['prop'])
+                || $blocked['prop'] === ''
+                || ! is_string($blocked['code'])
+                || $blocked['code'] === ''
+            ) {
+                throw new FrameworkComponentException('FRAMEWORK_CONSUMER_POLICY_INVALID', $component . ':blocked');
+            }
+        }
+        foreach ($policy['omitted_assets'] as $asset => $reason) {
+            if (! is_string($asset) || $asset === '' || ! is_string($reason) || $reason === '') {
+                throw new FrameworkComponentException('FRAMEWORK_CONSUMER_POLICY_INVALID', $component . ':assets');
+            }
+        }
+        foreach ($policy['excluded_states'] as $state => $restriction) {
+            if (! is_string($state)
+                || $state === ''
+                || ! is_array($restriction)
+                || ! $this->hasExactKeys($restriction, ['prop', 'value'])
+                || ! is_string($restriction['prop'])
+                || $restriction['prop'] === ''
+            ) {
+                throw new FrameworkComponentException('FRAMEWORK_CONSUMER_POLICY_INVALID', $component . ':states');
+            }
+        }
+    }
+
+    /** @param list<string> $expected */
+    private function hasExactKeys(array $value, array $expected): bool
+    {
+        $keys = array_keys($value);
+        sort($keys, SORT_STRING);
+        sort($expected, SORT_STRING);
+
+        return $keys === $expected;
     }
 }

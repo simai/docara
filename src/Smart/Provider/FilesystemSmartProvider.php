@@ -88,6 +88,7 @@ class FilesystemSmartProvider implements SmartArtifactProvider
                     'provider_revision' => $this->revision,
                     'contract' => Sf5SmartArtifactV1Contract::ID,
                     'contract_source_revision' => Sf5SmartArtifactV1Contract::SOURCE_REVISION,
+                    'template_abi' => 'sf5.smart.template.v1',
                     'manifest_sha256' => hash_file('sha256', $manifestPath),
                 ],
             );

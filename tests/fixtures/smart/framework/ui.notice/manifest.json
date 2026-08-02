@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1.0",
   "kind": "smart",
-  "code": "fixture.notice",
-  "title": "Fixture notice",
+  "code": "ui.notice",
+  "title": "Framework fixture notice",
   "render": {
     "mode": "server-first",
     "strategy": "server-static",
@@ -15,9 +15,7 @@
   },
   "props": {
     "title": {"type": "string", "required": true},
-    "text": {"type": "string", "required": true},
-    "tone": {"type": "enum", "values": ["info", "success", "warning"]},
-    "compact": {"type": "boolean"}
+    "text": {"type": "string", "required": true}
   },
   "assets": {
     "css": ["assets/notice.css"],
@@ -25,7 +23,7 @@
     "depends": ["simai.ui"]
   },
   "meta": {
-    "ownerPackage": "fixture/project",
+    "ownerPackage": "larena/ui",
     "version": "1.0.0"
   }
 }

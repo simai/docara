@@ -53,6 +53,10 @@ final readonly class SmartRenderer
                 'asset_owner' => $plan->smart,
                 'hydration_owner' => $plan->smart,
                 'assets' => $plan->assets,
+                'render' => is_array($context->manifest['render'] ?? null)
+                    ? $context->manifest['render']
+                    : [],
+                'template_abi' => $invocation->templateAbi,
             ],
             $plan->provenance + [
                 'template' => $plan->template,

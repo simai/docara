@@ -81,6 +81,7 @@ final readonly class CompositeSmartPlanResolver
                 'portable_strategy' => (string) $portableManifest['render']['strategy'],
                 'input_adapter' => (string) ($manifest['provenance']['input_adapter'] ?? 'smart.props'),
                 'portable_manifest' => $portableManifest,
+                'template_abi' => 'docara.legacy.object-view.v1',
             ],
         );
     }

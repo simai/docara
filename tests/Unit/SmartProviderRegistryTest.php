@@ -5,6 +5,16 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
+use Simai\Docara\Declarative\Document\SmartCallNode;
+use Simai\Docara\Declarative\Document\SourceSpan;
+use Simai\Docara\Declarative\Rendering\SmartRenderer;
+use Simai\Docara\Declarative\Rendering\TrustedTemplateRegistry;
+use Simai\Docara\Declarative\Smart\PortableProviderPlanResolver;
+use Simai\Docara\Declarative\Smart\ProviderPlanResolverRegistry;
+use Simai\Docara\Declarative\Smart\SmartComponentGateway;
+use Simai\Docara\Framework\FrameworkConsumerPolicy;
+use Simai\Docara\Framework\FrameworkLock;
+use Simai\Docara\Smart\Artifact\Sf5SmartArtifactV1Contract;
 use Simai\Docara\Smart\Provider\FrameworkLockSmartProvider;
 use Simai\Docara\Smart\Provider\PackageSmartProvider;
 use Simai\Docara\Smart\Provider\ProjectSmartProvider;
@@ -63,6 +73,55 @@ final class SmartProviderRegistryTest extends TestCase
             'larena/ui',
             'latest',
         );
+    }
+
+    public function test_new_exact_lock_framework_fixture_uses_provider_data_without_an_engine_id_branch(): void
+    {
+        $root = dirname(__DIR__) . '/fixtures/smart/framework';
+        $provider = new FrameworkLockSmartProvider(
+            $root,
+            'larena/ui',
+            Sf5SmartArtifactV1Contract::SOURCE_REVISION,
+        );
+        $registry = (new SmartRegistryCompiler)->compile([$provider]);
+        $gateway = new SmartComponentGateway(
+            $registry,
+            new ProviderPlanResolverRegistry([
+                new PortableProviderPlanResolver('framework.lock', $registry),
+            ]),
+        );
+        $call = new SmartCallNode(
+            'framework-notice',
+            'ui.notice',
+            'default',
+            ['title' => 'Framework title', 'text' => 'Framework text'],
+            1,
+            new SourceSpan('content/framework.md', 1, 4),
+        );
+        $artifact = (new SmartRenderer(new TrustedTemplateRegistry(smarts: $registry)))
+            ->render($gateway->resolve($call));
+
+        self::assertSame(['ui.notice'], $registry->keys());
+        self::assertStringContainsString('Framework title', $artifact->html);
+        self::assertStringContainsString('Framework text', $artifact->html);
+        self::assertSame('framework.lock', $artifact->hydration['owner']);
+        self::assertSame('sf5.smart.template.v1', $artifact->hydration['template_abi']);
+
+        $lock = $this->frameworkLock();
+        $lock['manifests']['ui.notice'] = [
+            'provider' => 'larena/ui',
+            'provider_revision' => Sf5SmartArtifactV1Contract::SOURCE_REVISION,
+            'sha256' => str_repeat('a', 64),
+            'consumer_policy' => [
+                'managed' => [],
+                'blocked' => [],
+                'omitted_assets' => [],
+                'excluded_states' => [],
+            ],
+        ];
+        $policy = FrameworkConsumerPolicy::fromLock(FrameworkLock::fromArray($lock));
+        self::assertSame([], $policy->managedProperties('ui.notice'));
+        self::assertSame([], $policy->omittedAssets('ui.notice'));
     }
 
     public function test_provider_namespace_collision_fails_closed(): void
@@ -200,5 +259,16 @@ final class SmartProviderRegistryTest extends TestCase
         }
 
         return $root;
+    }
+
+    /** @return array<string,mixed> */
+    private function frameworkLock(): array
+    {
+        return json_decode(
+            (string) file_get_contents(dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
     }
 }

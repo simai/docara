@@ -2,5 +2,6 @@
 
 declare(strict_types=1);
 
-$portable = isset($view) ? $view : (object) ($props ?? []);
-echo '<aside class="project-notice" data-project-smart="project.notice"><strong>' . $portable->title . '</strong><p>' . $portable->text . '</p></aside>';
+$title = htmlspecialchars((string) ($props['title'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+$text = htmlspecialchars((string) ($props['text'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+echo '<aside class="project-notice" data-project-smart="project.notice"><strong>' . $title . '</strong><p>' . $text . '</p></aside>';

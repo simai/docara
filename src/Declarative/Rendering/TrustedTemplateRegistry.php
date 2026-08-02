@@ -37,6 +37,53 @@ final readonly class TrustedTemplateRegistry
     /** @param array<string, object> $context */
     public function render(string $templateId, array $context): string
     {
+        foreach ($context as $name => $value) {
+            if (! is_string($name)
+                || preg_match('/^[a-z][a-zA-Z0-9]*$/D', $name) !== 1
+                || ! is_object($value)
+            ) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_TEMPLATE_CONTEXT_INVALID',
+                    "Template [$templateId] received an invalid context.",
+                );
+            }
+        }
+
+        return $this->renderRegistered($templateId, $context);
+    }
+
+    /**
+     * Render the exact source-pinned SF5 Smart template ABI v1.
+     *
+     * @param  array{id:string,smart:string,manifest:array<string,mixed>,view:array<string,mixed>,preset:array<string,mixed>,props:array<string,mixed>,childrenHtml:string,slot:string}  $context
+     */
+    public function renderPortable(string $templateId, array $context): string
+    {
+        $expected = ['childrenHtml', 'id', 'manifest', 'preset', 'props', 'slot', 'smart', 'view'];
+        $actual = array_keys($context);
+        sort($actual, SORT_STRING);
+        if ($actual !== $expected
+            || ! is_string($context['id'] ?? null)
+            || ! is_string($context['smart'] ?? null)
+            || ! is_array($context['manifest'] ?? null)
+            || ! is_array($context['view'] ?? null)
+            || ! is_array($context['preset'] ?? null)
+            || ! is_array($context['props'] ?? null)
+            || ! is_string($context['childrenHtml'] ?? null)
+            || ! is_string($context['slot'] ?? null)
+        ) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_PORTABLE_TEMPLATE_CONTEXT_INVALID',
+                "Portable template [$templateId] received an invalid SF5 v1 context.",
+            );
+        }
+
+        return $this->renderRegistered($templateId, $context);
+    }
+
+    /** @param array<string, mixed> $context */
+    private function renderRegistered(string $templateId, array $context): string
+    {
         $record = self::APPLICATION_TEMPLATES[$templateId] ?? null;
         if (! is_array($record)) {
             try {
@@ -51,18 +98,6 @@ final readonly class TrustedTemplateRegistry
                 "Template [$templateId] is not registered.",
             );
         }
-        foreach ($context as $name => $value) {
-            if (! is_string($name)
-                || preg_match('/^[a-z][a-zA-Z0-9]*$/D', $name) !== 1
-                || ! is_object($value)
-            ) {
-                throw new PortableConfigurationException(
-                    'DECLARATIVE_TEMPLATE_CONTEXT_INVALID',
-                    "Template [$templateId] received an invalid context.",
-                );
-            }
-        }
-
         $templateRoot = is_string($record['root'] ?? null) ? $record['root'] : $this->resourceRoot;
         $root = realpath($templateRoot);
         $path = $templateRoot . '/' . $record['path'];

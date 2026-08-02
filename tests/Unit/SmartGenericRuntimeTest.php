@@ -24,6 +24,21 @@ final class SmartGenericRuntimeTest extends TestCase
         self::assertStringNotContainsString('match ($plan->smart)', $source);
     }
 
+    public function test_goal_one_runtime_search_and_admission_sources_have_no_component_id_lists(): void
+    {
+        $root = dirname(__DIR__, 2);
+        foreach ([
+            'src/Declarative/Document/DocumentParser.php',
+            'src/PortableSite/PortableSearchTextExtractor.php',
+            'src/Framework/FrameworkConsumerPolicy.php',
+        ] as $relative) {
+            $source = (string) file_get_contents($root . '/' . $relative);
+            foreach (['ui.alert', 'ui.button', 'docara.brand', 'fixture.notice'] as $id) {
+                self::assertStringNotContainsString($id, $source, $relative);
+            }
+        }
+    }
+
     public function test_unknown_context_adapter_fails_closed(): void
     {
         $registry = new SmartContextAdapterRegistry([new GenericPropsContextAdapter]);
@@ -56,6 +71,7 @@ final class SmartGenericRuntimeTest extends TestCase
             [
                 'portable_strategy' => 'server-static',
                 'input_adapter' => 'smart.props',
+                'template_abi' => 'sf5.smart.template.v1',
                 'preset' => 'compact',
             ],
         ));
@@ -63,6 +79,7 @@ final class SmartGenericRuntimeTest extends TestCase
         self::assertSame('fixture.notice', $invocation->smart);
         self::assertSame('server-static', $invocation->strategy);
         self::assertSame('smart.props', $invocation->adapter);
+        self::assertSame('sf5.smart.template.v1', $invocation->templateAbi);
         self::assertSame('compact', $invocation->preset);
     }
 }

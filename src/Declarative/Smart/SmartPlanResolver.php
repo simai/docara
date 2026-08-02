@@ -29,8 +29,11 @@ final readonly class SmartPlanResolver
     /** @param array<string, mixed> $lock */
     public static function fromLock(array $lock): self
     {
+        $frameworkLock = FrameworkLock::fromArray($lock);
+
         return new self(
-            FrameworkManifestRepository::bundled(FrameworkLock::fromArray($lock)),
+            FrameworkManifestRepository::bundled($frameworkLock),
+            consumerPolicy: FrameworkConsumerPolicy::fromLock($frameworkLock),
         );
     }
 
@@ -106,6 +109,7 @@ final readonly class SmartPlanResolver
                 'portable_strategy' => (string) $portableManifest['render']['strategy'],
                 'input_adapter' => 'smart.props',
                 'portable_manifest' => $portableManifest,
+                'template_abi' => 'docara.legacy.object-view.v1',
             ],
         );
     }

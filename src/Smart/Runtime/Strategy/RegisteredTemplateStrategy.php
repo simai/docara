@@ -19,9 +19,18 @@ final readonly class RegisteredTemplateStrategy implements SmartRendererStrategy
 
     public function render(SmartInvocation $invocation, SmartTemplateContext $context, TrustedTemplateRegistry $templates): string
     {
-        return $templates->render($invocation->template, [
-            'view' => $context->viewModel,
-            'smartContext' => $context,
-        ]);
+        return match ($invocation->templateAbi) {
+            'sf5.smart.template.v1' => $templates->renderPortable(
+                $invocation->template,
+                $context->portableVariables(),
+            ),
+            'docara.legacy.object-view.v1' => $templates->render(
+                $invocation->template,
+                $context->legacyVariables(),
+            ),
+            default => throw new \InvalidArgumentException(
+                'SMART_TEMPLATE_ABI_UNKNOWN:' . $invocation->templateAbi,
+            ),
+        };
     }
 }

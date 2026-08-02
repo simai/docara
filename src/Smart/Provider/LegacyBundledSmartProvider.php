@@ -79,6 +79,7 @@ final class LegacyBundledSmartProvider implements SmartArtifactProvider
                     'provider' => $this->providerId,
                     'provider_revision' => $this->revision,
                     'contract' => 'sf5.smart-artifact.v1',
+                    'template_abi' => 'docara.legacy.object-view.v1',
                     'manifest_sha256' => hash_file('sha256', $manifestPath),
                     'legacy_adapter' => 'docara.legacy-smart-manifest.v1',
                 ],

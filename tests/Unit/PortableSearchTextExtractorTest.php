@@ -18,7 +18,9 @@ final class PortableSearchTextExtractorTest extends TestCase
             '<h1>Начало</h1><h2>Наследование</h2><p>Видимый текст.</p>'
             . '<div hidden>Скрытое содержимое</div><p aria-hidden="true">Скрыто от чтения</p>'
             . '<script>danger()</script><style>.secret{}</style><template>Черновик</template>'
-            . '<pre><code>docara build production</code></pre>',
+            . '<pre><code>docara build production</code></pre>'
+            . '<sf-alert title="Обратите внимание" supporting-text="Индекс строится локально." aria-label="Не индексировать повторно"></sf-alert>'
+            . '<sf-button text="Открыть руководство" data-action="unsafeInternalAction"></sf-button>',
             [
                 [
                     'id' => 'ui.alert',
@@ -57,11 +59,11 @@ final class PortableSearchTextExtractorTest extends TestCase
     }
 
     #[Test]
-    public function it_rejects_invalid_utf8_and_unprojected_components(): void
+    public function it_rejects_invalid_utf8_and_invalid_component_metadata(): void
     {
         foreach ([
             ["<p>\xB1\x31</p>", [], 'SEARCH_TEXT_INVALID_UTF8'],
-            ['<p>Text</p>', [['id' => 'ui.tabs', 'props' => []]], 'SEARCH_COMPONENT_TEXT_PROJECTION_MISSING'],
+            ['<p>Text</p>', [['id' => null, 'props' => []]], 'SEARCH_COMPONENT_CALL_INVALID'],
         ] as [$html, $calls, $expectedCode]) {
             try {
                 (new PortableSearchTextExtractor)->extract($html, $calls);
@@ -70,5 +72,17 @@ final class PortableSearchTextExtractorTest extends TestCase
                 self::assertSame($expectedCode, $exception->errorCode);
             }
         }
+    }
+
+    #[Test]
+    public function it_indexes_unknown_custom_elements_without_a_component_id_policy(): void
+    {
+        $result = (new PortableSearchTextExtractor)->extract(
+            '<acme-notice title="Local title" description="Local description"></acme-notice>',
+            [['id' => 'acme.notice', 'props' => ['internal' => 'not projected']]],
+        );
+
+        self::assertSame('Local title Local description', $result['text']);
+        self::assertStringNotContainsString('not projected', $result['text']);
     }
 }

@@ -35,7 +35,7 @@ final readonly class DeclarativePipeline
         ?SmartRenderer $smartRenderer = null,
     ): self {
         return new self(
-            new DocumentParser,
+            new DocumentParser($smarts ?? SmartRegistry::bundled()),
             DeclarativePageCompiler::bundled($frameworkLock, $smarts, $gateway),
             new DeclarativePageRenderer(
                 $markdown,

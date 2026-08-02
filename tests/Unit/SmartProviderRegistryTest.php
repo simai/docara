@@ -14,6 +14,7 @@ use Simai\Docara\Declarative\Smart\ProviderPlanResolverRegistry;
 use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Framework\FrameworkConsumerPolicy;
 use Simai\Docara\Framework\FrameworkLock;
+use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Smart\Artifact\Sf5SmartArtifactV1Contract;
 use Simai\Docara\Smart\Provider\FrameworkLockSmartProvider;
 use Simai\Docara\Smart\Provider\PackageSmartProvider;
@@ -169,7 +170,7 @@ final class SmartProviderRegistryTest extends TestCase
             $renderer->render($explicitPlan)->html,
         );
 
-        $this->expectException(\Simai\Docara\Portable\PortableConfigurationException::class);
+        $this->expectException(PortableConfigurationException::class);
         $this->expectExceptionMessage('PORTABLE_SMART_PRESET_UNKNOWN');
         $gateway->resolve(new SmartCallNode(
             'variant-card-unknown',

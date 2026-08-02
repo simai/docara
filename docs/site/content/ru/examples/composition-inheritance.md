@@ -13,7 +13,7 @@
 
 ## Исходные файлы
 
-:::code {src="../../../examples/composition-inheritance.json" lang=json title="Descriptor · examples/composition-inheritance.json"}
+:::code {src="./composition-inheritance.md" lang=markdown title="Страница примера · content/ru/examples/composition-inheritance.md"}
 :::
 
 :::code {src="../../../docara.json" lang=json title="Настройки сайта · docara.json"}

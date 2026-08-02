@@ -15,7 +15,7 @@ Markdown-контент.
 
 Именно эти файлы проходят основной конфигурационный и декларативный pipeline.
 
-:::code {src="../../../examples/regions-composed.json" lang=json title="Descriptor · examples/regions-composed.json"}
+:::code {src="./regions-composed.md" lang=markdown title="Страница примера · content/ru/examples/regions-composed.md"}
 :::
 
 :::code {src="../demonstrator-results/regions-composed.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/regions-composed.md"}

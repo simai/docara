@@ -244,7 +244,7 @@ final class PortableSiteBuilderTest extends TestCase
         self::assertFileExists($this->tmpPath('build_local/guides/platform/configuration/layout/index.html'));
         self::assertFileExists($this->tmpPath('build_local/landing/index.html'));
         self::assertFileExists($this->tmpPath('build_local/_docara/component-catalog.json'));
-        self::assertFileExists($this->tmpPath('build_local/.docara/component-catalog-pages.json'));
+        self::assertFileDoesNotExist($this->tmpPath('build_local/.docara/component-catalog-pages.json'));
         self::assertFileExists($this->tmpPath('build_local/components/index.html'));
         self::assertFileExists($this->tmpPath('build_local/components/card/index.html'));
         self::assertFileExists($this->tmpPath('build_local/_docara/search-index.json'));
@@ -1164,96 +1164,21 @@ final class PortableSiteBuilderTest extends TestCase
     }
 
     #[Test]
-    public function declarative_examples_publish_live_results_and_exact_sources_through_primary_pipeline(): void
+    public function legacy_example_descriptors_do_not_publish_public_pages_or_receipts(): void
     {
         $this->copyPortableFixture($this->tmp);
         $this->installDeclarativeExampleFixture($this->tmp);
 
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
-        self::assertFileExists($this->tmpPath('build_local/examples/index.html'));
-        self::assertFileExists($this->tmpPath('build_local/examples/smart-button/index.html'));
+        self::assertFileDoesNotExist($this->tmpPath('build_local/examples/index.html'));
+        self::assertFileDoesNotExist($this->tmpPath('build_local/examples/smart-button/index.html'));
         self::assertFileExists($this->tmpPath('build_local/example-results/button/index.html'));
-        self::assertFileExists($this->tmpPath('build_local/_docara/declarative-examples.json'));
-        self::assertFileExists($this->tmpPath('build_local/.docara/declarative-example-pages.json'));
+        self::assertFileDoesNotExist($this->tmpPath('build_local/_docara/declarative-examples.json'));
+        self::assertFileDoesNotExist($this->tmpPath('build_local/.docara/declarative-example-pages.json'));
 
-        $index = (string) file_get_contents($this->tmpPath('build_local/examples/index.html'));
-        $detail = (string) file_get_contents($this->tmpPath('build_local/examples/smart-button/index.html'));
         $result = (string) file_get_contents($this->tmpPath('build_local/example-results/button/index.html'));
-        self::assertStringContainsString('href="/examples/" aria-current="page"', $index);
-        self::assertStringContainsString('data-docara-demonstrator-detail', $detail);
-        self::assertStringContainsString('src="/example-results/button/"', $detail);
-        self::assertStringNotContainsString(' sandbox=', $detail);
-        self::assertStringContainsString('# Кнопка', $detail);
-        self::assertStringContainsString('{"text":"Продолжить","preset":"primary"}', $detail);
         self::assertStringContainsString('<sf-button', $result);
-
-        $receipt = $this->jsonFile($this->tmpPath('build_local/_docara/declarative-examples.json'));
-        self::assertSame('docara.declarative_examples.v1', $receipt['schema']);
-        self::assertSame('smart-button', $receipt['pages'][0]['id']);
-        self::assertCount(3, $receipt['pages'][0]['sources']);
-        foreach ($receipt['pages'][0]['sources'] as $source) {
-            self::assertSame(
-                hash_file('sha256', $this->tmpPath($source['path'])),
-                $source['sha256'],
-            );
-        }
-    }
-
-    #[Test]
-    public function declarative_example_preflight_fails_closed_and_preserves_existing_output(): void
-    {
-        foreach ([
-            'invalid-schema' => 'SCHEMA_VALIDATION_FAILED',
-            'missing-source' => 'DECLARATIVE_EXAMPLE_SOURCE_MISSING',
-            'visible-result' => 'DECLARATIVE_EXAMPLE_RESULT_MUST_BE_HIDDEN',
-            'route-collision' => 'DECLARATIVE_EXAMPLE_ROUTE_COLLISION',
-            'symlink-source' => 'DECLARATIVE_EXAMPLE_SOURCE_SYMLINK_FORBIDDEN',
-        ] as $case => $expected) {
-            $siteRoot = $this->tmpPath('declarative-example-' . $case);
-            $this->copyPortableFixture($siteRoot);
-            $this->installDeclarativeExampleFixture($siteRoot);
-            $descriptorPath = $siteRoot . '/examples/smart-button.json';
-            $descriptor = $this->jsonFile($descriptorPath);
-
-            if ($case === 'invalid-schema') {
-                $descriptor['preview'] = 'unsupported';
-            } elseif ($case === 'missing-source') {
-                $descriptor['sources'][] = [
-                    'label' => 'Missing',
-                    'path' => 'content/example-results/missing.json',
-                    'language' => 'json',
-                ];
-            } elseif ($case === 'visible-result') {
-                unlink($siteRoot . '/content/example-results/section.json');
-            } elseif ($case === 'route-collision') {
-                file_put_contents($siteRoot . '/content/examples.md', "# Collision\n");
-            } else {
-                $outside = $this->tmpPath('outside-example.json');
-                file_put_contents($outside, "{}\n");
-                $this->filesystem->ensureDirectoryExists($siteRoot . '/examples/sources');
-                self::assertTrue(symlink($outside, $siteRoot . '/examples/sources/linked.json'));
-                $descriptor['sources'][] = [
-                    'label' => 'Linked',
-                    'path' => 'examples/sources/linked.json',
-                    'language' => 'json',
-                ];
-            }
-            file_put_contents(
-                $descriptorPath,
-                json_encode($descriptor, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
-            );
-            $this->filesystem->ensureDirectoryExists($siteRoot . '/build_local');
-            file_put_contents($siteRoot . '/build_local/sentinel.txt', 'keep-output');
-
-            try {
-                $this->builder()->build($siteRoot, $siteRoot . '/build_local');
-                self::fail("Unsafe declarative example case [$case] unexpectedly passed.");
-            } catch (PortableConfigurationException $exception) {
-                self::assertSame($expected, $exception->errorCode);
-            }
-            self::assertSame('keep-output', file_get_contents($siteRoot . '/build_local/sentinel.txt'));
-        }
     }
 
     #[Test]
@@ -1292,9 +1217,6 @@ final class PortableSiteBuilderTest extends TestCase
             '/guides/platform/configuration/layout/',
             '/components/',
         ];
-        $catalogPages = $this->jsonFile(
-            $this->tmpPath('build_local/.docara/component-catalog-pages.json'),
-        );
         $componentRoutes = [
             '/components/alert/',
             '/components/backlinks/',
@@ -1326,7 +1248,6 @@ final class PortableSiteBuilderTest extends TestCase
             '/components/table/',
             '/components/tabs/',
             '/components/tree/',
-            ...array_column($catalogPages['pages'], 'route'),
         ];
         sort($componentRoutes, SORT_STRING);
         $expected = [...$expected, ...$componentRoutes];

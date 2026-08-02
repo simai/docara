@@ -13,7 +13,7 @@
 
 ## Исходные файлы
 
-:::code {src="../../../examples/region-aside.json" lang=json title="Descriptor · examples/region-aside.json"}
+:::code {src="./region-aside.md" lang=markdown title="Страница примера · content/ru/examples/region-aside.md"}
 :::
 
 :::code {src="../demonstrator-results/region-aside.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/region-aside.md"}

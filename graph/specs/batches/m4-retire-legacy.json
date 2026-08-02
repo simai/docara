@@ -15,7 +15,9 @@
     "source/workflow/2026-08-02-docara-m4-public-ru-unification-goal.md"
   ],
   "evidence_refs": [
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.1-BASELINE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.1-BASELINE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.2-PHYSICAL-EXAMPLES.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.m4.retirement",
@@ -23,5 +25,5 @@
   "forbidden_scope": ["Delete before parity", "Delete canonical Markdown", "Rewrite git history", "Release"],
   "checks": ["Zero-reference scan", "Clean build", "Rollback commit", "No generated source dependency"],
   "status": "in_progress",
-  "next_action": "migrate_fourteen_ru_example_routes_to_physical_markdown_before_deletion"
+  "next_action": "remove_build_generated_and_trusted_main_bridge_after_all_page_pagebuilder_parity"
 }

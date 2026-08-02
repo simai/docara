@@ -13,7 +13,7 @@
 
 ## Исходные файлы
 
-:::code {src="../../../examples/region-sidebar.json" lang=json title="Descriptor · examples/region-sidebar.json"}
+:::code {src="./region-sidebar.md" lang=markdown title="Страница примера · content/ru/examples/region-sidebar.md"}
 :::
 
 :::code {src="../demonstrator-results/region-sidebar.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/region-sidebar.md"}

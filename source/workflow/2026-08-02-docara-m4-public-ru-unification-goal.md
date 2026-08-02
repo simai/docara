@@ -126,5 +126,8 @@ test or browser defects are fixed inside this goal.
 
 ## Current checkpoint
 
-M4.1 baseline reproduction is green. Implementation/readiness, M4 PASS,
-release and production remain unclaimed.
+M4.1-M4.3 are green. All 103 selected routes now have physical Markdown
+owners, generated public owners are zero, and both obsolete public projector
+paths are retired with full/single/static/zero-reference proof. M4.4 typed
+contour convergence is active. M4 PASS, release and production remain
+unclaimed.

@@ -13,7 +13,7 @@ Smart-компонентов с собственными assets.
 
 ## Исходные файлы
 
-:::code {src="../../../examples/product-smart-runtime.json" lang=json title="Descriptor · examples/product-smart-runtime.json"}
+:::code {src="./product-smart-runtime.md" lang=markdown title="Страница примера · content/ru/examples/product-smart-runtime.md"}
 :::
 
 :::code {src="../demonstrator-results/product-smart-runtime.md" lang=markdown title="Markdown результата · content/ru/demonstrator-results/product-smart-runtime.md"}

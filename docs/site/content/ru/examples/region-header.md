@@ -13,7 +13,7 @@
 
 ## Исходные файлы
 
-:::code {src="../../../examples/region-header.json" lang=json title="Descriptor · examples/region-header.json"}
+:::code {src="./region-header.md" lang=markdown title="Страница примера · content/ru/examples/region-header.md"}
 :::
 
 :::code {src="../demonstrator-results/region-header.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/region-header.md"}

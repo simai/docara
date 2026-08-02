@@ -40,7 +40,8 @@ Smart-компонентов. Он назначает H1–H6 уникальны
   содержат owner-записи возможностей;
 - exact Framework lock и manifests ограничивают Smart admission;
 - `EffectiveComponentCatalogBuilder` создаёт один проверяемый каталог;
-- `PortableComponentCatalogProjector` использует один общий index/detail shape;
+- страницы компонентов принадлежат Markdown, а их индекс строится из метаданных
+  результатов PageBuilder без generated index/detail projector;
 - `_docara/component-catalog.json`, generated HTML и page receipt являются
   производными результатами, а не вторым источником истины.
 

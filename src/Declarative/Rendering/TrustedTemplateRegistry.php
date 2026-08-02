@@ -22,8 +22,6 @@ final readonly class TrustedTemplateRegistry
         'publisher.docara.pager' => ['path' => 'publisher/components/pager.php', 'renderer' => 'php'],
         'publisher.docara.search-dialog' => ['path' => 'publisher/components/search-dialog.php', 'renderer' => 'php'],
         'publisher.docara.reader-settings' => ['path' => 'publisher/components/reader-settings.php', 'renderer' => 'php'],
-        'demonstrator.docara.index' => ['path' => 'demonstrator/templates/index.php', 'renderer' => 'php'],
-        'demonstrator.docara.detail' => ['path' => 'demonstrator/templates/detail.php', 'renderer' => 'php'],
     ];
 
     private SmartRegistry $smarts;

@@ -13,7 +13,7 @@ Sidebar и outline отключаются без пустых контейнер
 
 ## Исходные файлы
 
-:::code {src="../../../examples/regions-disabled.json" lang=json title="Descriptor · examples/regions-disabled.json"}
+:::code {src="./regions-disabled.md" lang=markdown title="Страница примера · content/ru/examples/regions-disabled.md"}
 :::
 
 :::code {src="../demonstrator-results/regions-disabled.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/regions-disabled.md"}

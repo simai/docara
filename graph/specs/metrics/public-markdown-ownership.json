@@ -11,11 +11,16 @@
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
-  "evidence_refs": [],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.2-PHYSICAL-EXAMPLES.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md"
+  ],
   "profile_refs": ["docara.unified"],
   "metric_type": "coverage",
   "scale": "0..100 percent",
   "calculation": "markdown_owned_public_routes / all_public_routes",
   "target": 100,
+  "observed": 100,
+  "observed_counts": {"markdown_owned_public_routes": 103, "all_public_routes": 103},
   "unknown_policy": "show_unknown_not_zero"
 }

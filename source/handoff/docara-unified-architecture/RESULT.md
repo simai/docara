@@ -617,3 +617,37 @@ Status: PASS; M4 implementation continues
   `source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/INDEX.md`.
 
 No runtime or content migration and no legacy deletion is claimed by M4.1.
+
+## M4.2 physical examples checkpoint
+
+Status: PASS; M4 implementation continues
+
+- `/ru/examples/` and all thirteen detail routes now have canonical physical
+  Markdown owners under `docs/site/content/ru/examples*`;
+- URLs, source presentation, internal preview behavior, navigation, search,
+  outline, breadcrumbs and previous/next are preserved;
+- all fourteen full/isolated HTML results match exactly and static verification
+  reports zero broken links/assets;
+- evidence:
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.2-PHYSICAL-EXAMPLES.md`.
+
+## M4.3 generated public path retirement
+
+Status: PASS; M4 typed-contour convergence continues
+
+- all 103 selected Russian routes are physical Markdown owners and generated
+  public owners are zero;
+- both obsolete public page projectors, legacy example descriptors/schema,
+  demonstrator page templates/view models and both generated-page receipts are
+  removed after parity and zero-reference proof;
+- a disposable 103-page full build passes static verification at 206 HTML,
+  21,436 local references and zero broken; all fourteen example routes remain
+  exact in isolated builds;
+- package-owned sources for other locales and the effective machine component
+  catalog remain intentionally intact;
+- evidence:
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md`.
+
+M4.4 must still remove the trusted-main/generated pipeline bypass and prove all
+103 routes use the typed PageBuilder contour. Full M4, M5, release and
+production remain unclaimed.

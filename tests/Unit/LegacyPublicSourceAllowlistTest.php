@@ -10,7 +10,7 @@ use Simai\Docara\Portable\PortableConfigurationException;
 
 final class LegacyPublicSourceAllowlistTest extends TestCase
 {
-    public function test_exact_m0_generated_routes_are_finite_and_cannot_grow(): void
+    public function test_m0_generated_routes_are_retired_and_cannot_return(): void
     {
         $root = dirname(__DIR__, 2);
         $inventory = json_decode(
@@ -60,18 +60,13 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
         $allowlist = new LegacyPublicSourceAllowlist;
 
         self::assertCount(14, $generated);
-        self::assertCount(14, $allowlist->generatedRoutes());
-        foreach (['alert', 'backlinks', 'banner', 'button', 'card', 'code', 'code-from-file', 'details', 'diagram', 'download', 'embed', 'example', 'figure', 'footnotes-and-sources', 'grid', 'headings-and-text', 'hero', 'html', 'icon', 'kbd', 'links-and-images', 'lists-and-quotes', 'logos', 'math', 'media', 'steps', 'table', 'tabs', 'tree'] as $slug) {
-            self::assertNotContains("/ru/components/$slug/", $allowlist->generatedRoutes());
-        }
-        self::assertNotContains('/ru/components/badge/', $allowlist->generatedRoutes());
-        self::assertNotContains('/ru/components/', $allowlist->generatedRoutes());
-        $allowlist->assertGeneratedPages($generated);
+        self::assertSame([], $allowlist->generatedRoutes());
+        $allowlist->assertGeneratedPages([]);
 
-        $generated[] = [
+        $generated = [[
             'url' => '/ru/generated-growth/',
             'page_source_kind' => 'generated_projection',
-        ];
+        ]];
         $this->assertError(
             'LEGACY_GENERATED_ROUTE_GROWTH_FORBIDDEN',
             fn () => $allowlist->assertGeneratedPages($generated),

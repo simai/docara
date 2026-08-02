@@ -6,23 +6,11 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
-use Simai\Docara\Declarative\Composition\PageCompositionContext;
-use Simai\Docara\Declarative\DeclarativePipeline;
 use Simai\Docara\File\Filesystem;
-use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkConsumerPolicy;
 use Simai\Docara\Framework\FrameworkLock;
-use Simai\Docara\I18n\LanguagePackRepository;
-use Simai\Docara\I18n\LocaleRegistry;
-use Simai\Docara\I18n\Translator;
-use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\CanonicalJson;
-use Simai\Docara\Portable\ResolvedPagePlan;
-use Simai\Docara\PortableSite\DeclarativePortablePagePublisher;
-use Simai\Docara\PortableSite\PortableComponentCatalogProjector;
-use Simai\Docara\PortableSite\PortableDocumentIds;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
-use Simai\Docara\PortableSite\PortableNavigationBuilder;
 use Simai\Docara\PortableSite\PortablePublisherAssetPublisher;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Smart\SmartRegistry;
@@ -55,7 +43,7 @@ final class StaticBuildVerifierTest extends TestCase
         $this->writeResolvedPlans($build, '/');
         $complete = $this->verify($build);
         self::assertSame(0, $complete->getExitCode(), $complete->getErrorOutput() . $complete->getOutput());
-        self::assertStringContainsString('"html_pages": 32', $complete->getOutput());
+        self::assertStringContainsString('"html_pages": 1', $complete->getOutput());
         self::assertStringContainsString('"local_references_checked":', $complete->getOutput());
 
         $sentinel = $this->tmpPath('project-config-loaded');
@@ -65,45 +53,13 @@ final class StaticBuildVerifierTest extends TestCase
         );
         $cli = $this->verifyViaCli($build);
         self::assertSame(0, $cli->getExitCode(), $cli->getErrorOutput() . $cli->getOutput());
-        self::assertStringContainsString('"html_pages": 32', $cli->getOutput());
+        self::assertStringContainsString('"html_pages": 1', $cli->getOutput());
         self::assertFileDoesNotExist($sentinel, 'verify-static must not execute project PHP configuration.');
 
         unlink($build . '/asset.css');
         $broken = $this->verify($build);
         self::assertSame(1, $broken->getExitCode());
         self::assertStringContainsString('asset.css', $broken->getOutput());
-    }
-
-    #[Test]
-    public function declarative_example_receipt_and_rendered_exact_sources_are_verified_fail_closed(): void
-    {
-        $site = $this->tmpPath('declarative-example-site');
-        $this->copyPortableFixtureLegacy($site);
-        $this->installDeclarativeExampleFixture($site);
-        $build = $site . '/build_local';
-        (new PortableSiteBuilder(
-            new Filesystem,
-            new PortableMarkdownRenderer,
-        ))->build($site, $build);
-
-        $valid = $this->verify($build, normalizeBuildIdentity: false);
-        self::assertSame(0, $valid->getExitCode(), $valid->getErrorOutput() . $valid->getOutput());
-
-        $publicPath = $build . '/_docara/declarative-examples.json';
-        $privatePath = $build . '/.docara/declarative-example-pages.json';
-        $receipt = $this->readJson($publicPath);
-        $receipt['pages'][0]['sources'][1]['sha256'] = str_repeat('0', 64);
-        $receipt['content_sha256'] = hash('sha256', CanonicalJson::encode([
-            'index' => $receipt['index'],
-            'pages' => $receipt['pages'],
-        ]));
-        $this->writeJson($publicPath, $receipt);
-        $this->writeJson($privatePath, $receipt);
-
-        $tampered = $this->verify($build, normalizeBuildIdentity: false);
-        self::assertSame(1, $tampered->getExitCode());
-        self::assertStringContainsString('@declarative-examples-contract', $tampered->getOutput());
-        self::assertStringContainsString('does not match rendered exact code', $tampered->getOutput());
     }
 
     #[Test]
@@ -487,7 +443,7 @@ final class StaticBuildVerifierTest extends TestCase
     }
 
     #[Test]
-    public function generated_component_catalogue_is_required_hash_bound_and_fail_closed(): void
+    public function effective_component_catalogue_is_required_hash_bound_and_fail_closed(): void
     {
         $source = $this->tmpPath('component-catalogue-source');
         $build = $source . '/build_catalogue';
@@ -502,7 +458,7 @@ final class StaticBuildVerifierTest extends TestCase
         ))->build($source, $build);
 
         $catalogPath = $build . '/_docara/component-catalog.json';
-        self::assertDirectoryExists($build . '/_docara/component-catalog');
+        self::assertDirectoryDoesNotExist($build . '/_docara/component-catalog');
         $plansPath = $build . '/.docara/resolved-page-plans.json';
         $originalCatalog = (string) file_get_contents($catalogPath);
         $originalPlans = (string) file_get_contents($plansPath);
@@ -664,7 +620,7 @@ final class StaticBuildVerifierTest extends TestCase
     }
 
     #[Test]
-    public function generated_component_catalogue_verification_uses_the_exact_resolved_locale(): void
+    public function component_catalogue_verification_uses_the_exact_resolved_locale(): void
     {
         $source = $this->tmpPath('component-catalogue-english-source');
         $build = $source . '/build_catalogue';
@@ -681,19 +637,9 @@ final class StaticBuildVerifierTest extends TestCase
 
         $valid = $this->verify($build);
         self::assertSame(0, $valid->getExitCode(), $valid->getOutput());
-        self::assertStringContainsString(
-            '>Components<',
-            (string) file_get_contents($build . '/components/index.html'),
-        );
-
         $manifestPath = $build . '/.docara/resolved-page-plans.json';
         $manifest = $this->readJson($manifestPath);
-        foreach ($manifest['pages'] as &$page) {
-            if (($page['output'] ?? null) === 'components/index.html') {
-                $page['resolved_page_plan']['configuration']['default_locale'] = 'ru';
-            }
-        }
-        unset($page);
+        $manifest['pages'][0]['resolved_page_plan']['configuration']['default_locale'] = 'ru';
         $this->writeJson($manifestPath, $manifest);
 
         $localeDrift = $this->verify($build);
@@ -765,248 +711,6 @@ final class StaticBuildVerifierTest extends TestCase
         );
     }
 
-    #[Test]
-    public function generated_component_catalogue_pages_fail_closed_on_receipt_inventory_and_semantic_drift(): void
-    {
-        $missingReceipt = $this->createGeneratedCatalogBuild('catalog-pages-missing-receipt');
-        unlink($missingReceipt . '/.docara/component-catalog-pages.json');
-        $missingReceiptResult = $this->verify($missingReceipt);
-        self::assertSame(1, $missingReceiptResult->getExitCode(), $missingReceiptResult->getOutput());
-        self::assertStringContainsString('@component-catalog-pages-contract', $missingReceiptResult->getOutput());
-        self::assertStringContainsString('receipt is missing or unsafe', $missingReceiptResult->getOutput());
-
-        $removedSurface = $this->createGeneratedCatalogBuild('catalog-pages-surface-removed');
-        $removedManifest = $this->readJson($removedSurface . '/.docara/resolved-page-plans.json');
-        $removedManifest['pages'] = array_values(array_filter(
-            $removedManifest['pages'],
-            static fn (array $page): bool => ! str_starts_with(
-                (string) $page['output'],
-                'components/',
-            ),
-        ));
-        $this->writeJson($removedSurface . '/.docara/resolved-page-plans.json', $removedManifest);
-        $this->filesystem->deleteDirectory($removedSurface . '/components');
-        unlink($removedSurface . '/.docara/component-catalog-pages.json');
-        $removedSurfaceResult = $this->verify($removedSurface);
-        self::assertSame(1, $removedSurfaceResult->getExitCode(), $removedSurfaceResult->getOutput());
-        self::assertStringContainsString('@component-catalog-pages-contract', $removedSurfaceResult->getOutput());
-
-        $receiptHashTamper = $this->createGeneratedCatalogBuild('catalog-pages-receipt-hash-tamper');
-        $receipt = $this->readJson($receiptHashTamper . '/.docara/component-catalog-pages.json');
-        $receipt['index']['route'] = '/stale-hash/catalog/';
-        $this->writeJson($receiptHashTamper . '/.docara/component-catalog-pages.json', $receipt);
-        $receiptHashResult = $this->verify($receiptHashTamper);
-        self::assertSame(1, $receiptHashResult->getExitCode(), $receiptHashResult->getOutput());
-        self::assertStringContainsString('@component-catalog-pages-contract', $receiptHashResult->getOutput());
-        self::assertStringContainsString('content_sha256', $receiptHashResult->getOutput());
-
-        $receiptTamper = $this->createGeneratedCatalogBuild('catalog-pages-receipt-tamper');
-        $receipt = $this->readJson($receiptTamper . '/.docara/component-catalog-pages.json');
-        $receipt['index']['route'] = '/forged/catalog/';
-        $this->rehashCatalogPagesReceipt($receipt);
-        $this->writeJson($receiptTamper . '/.docara/component-catalog-pages.json', $receipt);
-        $receiptTamperResult = $this->verify($receiptTamper);
-        self::assertSame(1, $receiptTamperResult->getExitCode(), $receiptTamperResult->getOutput());
-        self::assertStringContainsString('@component-catalog-pages-contract', $receiptTamperResult->getOutput());
-        self::assertStringContainsString('trusted page projection', $receiptTamperResult->getOutput());
-
-        $receiptSplit = $this->createGeneratedCatalogBuild('catalog-pages-receipt-split');
-        $receipt = $this->readJson($receiptSplit . '/.docara/component-catalog-pages.json');
-        $receipt['catalog_content_sha256'] = str_repeat('f', 64);
-        $this->rehashCatalogPagesReceipt($receipt);
-        $this->writeJson($receiptSplit . '/.docara/component-catalog-pages.json', $receipt);
-        $receiptSplitResult = $this->verify($receiptSplit);
-        self::assertSame(1, $receiptSplitResult->getExitCode(), $receiptSplitResult->getOutput());
-        self::assertStringContainsString('@component-catalog-pages-contract', $receiptSplitResult->getOutput());
-        self::assertStringContainsString('trusted catalogue hash', $receiptSplitResult->getOutput());
-
-        $wrongId = $this->createGeneratedCatalogBuild('catalog-pages-wrong-id');
-        $receipt = $this->readJson($wrongId . '/.docara/component-catalog-pages.json');
-        $receipt['pages'][0]['id'] = 'aaa.component';
-        $this->rehashCatalogPagesReceipt($receipt);
-        $this->writeJson($wrongId . '/.docara/component-catalog-pages.json', $receipt);
-        $wrongIdResult = $this->verify($wrongId);
-        self::assertSame(1, $wrongIdResult->getExitCode(), $wrongIdResult->getOutput());
-        self::assertStringContainsString('@component-catalog-pages-contract', $wrongIdResult->getOutput());
-        self::assertStringContainsString('trusted page projection', $wrongIdResult->getOutput());
-
-        $missingDetail = $this->createGeneratedCatalogBuild('catalog-pages-missing-detail');
-        $receipt = $this->readJson($missingDetail . '/.docara/component-catalog-pages.json');
-        $removed = $receipt['pages'][0];
-        $manifest = $this->readJson($missingDetail . '/.docara/resolved-page-plans.json');
-        $manifest['pages'] = array_values(array_filter(
-            $manifest['pages'],
-            static fn (array $page): bool => $page['output'] !== $removed['output'],
-        ));
-        $this->writeJson($missingDetail . '/.docara/resolved-page-plans.json', $manifest);
-        $this->filesystem->deleteDirectory(dirname($missingDetail . '/' . $removed['output']));
-        $missingDetailResult = $this->verify($missingDetail);
-        self::assertSame(1, $missingDetailResult->getExitCode(), $missingDetailResult->getOutput());
-        self::assertStringContainsString('@component-catalog-pages-contract', $missingDetailResult->getOutput());
-
-        $extraDetail = $this->createGeneratedCatalogBuild('catalog-pages-extra-detail');
-        $receipt = $this->readJson($extraDetail . '/.docara/component-catalog-pages.json');
-        $original = $receipt['pages'][0];
-        $rogue = $original;
-        $rogue['id'] = 'rogue.component';
-        $rogue['output'] = 'components/rogue.component/index.html';
-        $rogue['route'] = '/components/rogue.component/';
-        $manifest = $this->readJson($extraDetail . '/.docara/resolved-page-plans.json');
-        $sourceRecord = null;
-        foreach ($manifest['pages'] as $page) {
-            if ($page['output'] === $original['output']) {
-                $sourceRecord = $page;
-                break;
-            }
-        }
-        self::assertIsArray($sourceRecord);
-        $sourceRecord['output'] = $rogue['output'];
-        $sourceRecord['url'] = $rogue['route'];
-        $sourceRecord['resolved_page_plan']['page'] = 'content/components/rogue.component.md';
-        $manifest['pages'][] = $sourceRecord;
-        $this->writeJson($extraDetail . '/.docara/resolved-page-plans.json', $manifest);
-        $rogueHtml = str_replace(
-            (string) $original['id'],
-            (string) $rogue['id'],
-            (string) file_get_contents($extraDetail . '/' . $original['output']),
-        );
-        $this->filesystem->ensureDirectoryExists(dirname($extraDetail . '/' . $rogue['output']));
-        file_put_contents($extraDetail . '/' . $rogue['output'], $rogueHtml);
-        $extraDetailResult = $this->verify($extraDetail);
-        self::assertSame(1, $extraDetailResult->getExitCode(), $extraDetailResult->getOutput());
-        self::assertStringContainsString('@component-catalog-pages-contract', $extraDetailResult->getOutput());
-
-        foreach ([
-            'source' => [
-                'needle' => ':badge[New]',
-                'replacement' => "Подменённый исходный код примера.\n:::",
-            ],
-            'rendered' => [
-                'needle' => '>New</',
-                'replacement' => '>Подменённый отрисованный пример.</',
-            ],
-            'metadata' => [
-                'needle' => 'Adds a compact status, version or category label inside ordinary text and interface blocks.',
-                'replacement' => 'Forged component metadata.',
-            ],
-        ] as $kind => $change) {
-            $build = $this->createGeneratedCatalogBuild('catalog-pages-' . $kind . '-drift');
-            $path = $build . '/components/badge/index.html';
-            $html = (string) file_get_contents($path);
-            $count = 0;
-            $tampered = str_replace($change['needle'], $change['replacement'], $html, $count);
-            self::assertGreaterThan(0, $count, "The [$kind] drift fixture did not match generated HTML.");
-            file_put_contents($path, $tampered);
-
-            $result = $this->verify($build);
-            self::assertSame(1, $result->getExitCode(), $result->getOutput());
-            self::assertStringContainsString('@component-catalog-pages-contract', $result->getOutput());
-            self::assertStringContainsString('trusted contract fragment', $result->getOutput());
-
-            $receipt = $this->readJson($build . '/.docara/component-catalog-pages.json');
-            foreach ($receipt['pages'] as &$receiptPage) {
-                if ($receiptPage['id'] !== 'docara.badge') {
-                    continue;
-                }
-                $receiptPage['contract_fragment_sha256'] = hash('sha256', $tampered);
-                if ($kind === 'source') {
-                    $receiptPage['example_sha256'] = hash('sha256', $change['replacement']);
-                } elseif ($kind === 'rendered') {
-                    $receiptPage['rendered_fragment_sha256'] = hash('sha256', $change['replacement']);
-                } else {
-                    $receiptPage['catalog_entry_sha256'] = hash('sha256', $change['replacement']);
-                }
-            }
-            unset($receiptPage);
-            $this->rehashCatalogPagesReceipt($receipt);
-            $this->writeJson($build . '/.docara/component-catalog-pages.json', $receipt);
-            $selfConsistentResult = $this->verify($build);
-            self::assertSame(1, $selfConsistentResult->getExitCode(), $selfConsistentResult->getOutput());
-            self::assertStringContainsString(
-                '@component-catalog-pages-contract',
-                $selfConsistentResult->getOutput(),
-            );
-            self::assertStringContainsString('trusted page projection', $selfConsistentResult->getOutput());
-        }
-    }
-
-    #[Test]
-    public function generated_component_catalogue_shell_fails_closed_on_landmark_and_sibling_drift(): void
-    {
-        foreach ([
-            'breadcrumbs-removed' => static fn (string $html): string => (string) preg_replace(
-                '~\s*<nav data-docara-breadcrumbs\b.*?</nav>\s*~s',
-                '',
-                $html,
-                1,
-            ),
-            'article-sibling-injected' => static fn (string $html): string => (string) preg_replace(
-                '~</article>~',
-                '<aside data-forged-shell-sibling>forged</aside></article>',
-                $html,
-                1,
-            ),
-            'mobile-toc-state-mismatch' => static fn (string $html): string => (string) preg_replace_callback(
-                '~data-mobile-toc="(?<state>[^"]+)"~',
-                static fn (array $match): string => 'data-mobile-toc="'
-                    . ($match['state'] === 'shown' ? 'auto-hidden' : 'shown') . '"',
-                $html,
-                1,
-            ),
-        ] as $case => $mutate) {
-            $build = $this->createGeneratedCatalogBuild('catalog-shell-' . $case);
-            $path = $build . '/components/badge/index.html';
-            $original = (string) file_get_contents($path);
-            $tampered = $mutate($original);
-            self::assertNotSame($original, $tampered, "The [$case] shell fixture did not mutate.");
-            file_put_contents($path, $tampered);
-
-            $result = $this->verify($build);
-            self::assertSame(1, $result->getExitCode(), $result->getOutput());
-            self::assertStringContainsString(
-                '@component-catalog-pages-contract',
-                $result->getOutput(),
-            );
-        }
-    }
-
-    #[Test]
-    public function generated_component_catalogue_receipt_and_detail_links_are_rejected_as_unsafe(): void
-    {
-        foreach (['symlink', 'hardlink'] as $kind) {
-            $receiptBuild = $this->createGeneratedCatalogBuild('catalog-pages-receipt-' . $kind);
-            $receiptPath = $receiptBuild . '/.docara/component-catalog-pages.json';
-            $outsideReceipt = $this->tmpPath('outside-catalog-receipt-' . $kind . '.json');
-            file_put_contents($outsideReceipt, (string) file_get_contents($receiptPath));
-            unlink($receiptPath);
-            self::assertTrue(
-                $kind === 'symlink'
-                    ? symlink($outsideReceipt, $receiptPath)
-                    : link($outsideReceipt, $receiptPath),
-            );
-            $receiptResult = $this->verify($receiptBuild);
-            self::assertSame(1, $receiptResult->getExitCode(), $receiptResult->getOutput());
-            self::assertStringContainsString('@component-catalog-pages-contract', $receiptResult->getOutput());
-            self::assertStringContainsString('receipt is missing or unsafe', $receiptResult->getOutput());
-            self::assertStringStartsWith('{', (string) file_get_contents($outsideReceipt));
-
-            $detailBuild = $this->createGeneratedCatalogBuild('catalog-pages-detail-' . $kind);
-            $detailPath = $detailBuild . '/components/badge/index.html';
-            $outsideDetail = $this->tmpPath('outside-catalog-detail-' . $kind . '.html');
-            file_put_contents($outsideDetail, (string) file_get_contents($detailPath));
-            unlink($detailPath);
-            self::assertTrue(
-                $kind === 'symlink'
-                    ? symlink($outsideDetail, $detailPath)
-                    : link($outsideDetail, $detailPath),
-            );
-            $detailResult = $this->verify($detailBuild);
-            self::assertSame(1, $detailResult->getExitCode(), $detailResult->getOutput());
-            self::assertStringContainsString('@unsafe-artifact-entry', $detailResult->getOutput());
-            self::assertStringContainsString('components/badge/index.html', $detailResult->getOutput());
-            self::assertStringStartsWith('<!doctype html>', (string) file_get_contents($outsideDetail));
-        }
-    }
 
     #[Test]
     public function redirect_receipts_and_redirect_html_are_verified_fail_closed(): void
@@ -1171,7 +875,6 @@ final class StaticBuildVerifierTest extends TestCase
         $source = $this->tmpPath($name . '-source');
         $build = $source . '/build_catalogue';
         $this->copyPortableFixtureLegacy($source);
-        $this->removeAuthoredComponentPages($source);
         $configuration = $this->readJson($source . '/docara.json');
         $configuration['default_locale'] = 'en';
         $configuration['search'] = ['enabled' => false, 'indexed' => false];
@@ -1201,16 +904,6 @@ final class StaticBuildVerifierTest extends TestCase
             512,
             JSON_THROW_ON_ERROR,
         );
-    }
-
-    /** @param array<string, mixed> $receipt */
-    private function rehashCatalogPagesReceipt(array &$receipt): void
-    {
-        $receipt['content_sha256'] = hash('sha256', CanonicalJson::encode([
-            'catalog_content_sha256' => $receipt['catalog_content_sha256'],
-            'index' => $receipt['index'],
-            'pages' => $receipt['pages'],
-        ]));
     }
 
     /** @param array<string, mixed> $manifest */
@@ -1252,430 +945,11 @@ final class StaticBuildVerifierTest extends TestCase
                 ];
             }
         }
-        if ($this->manifestSupportsComponentCatalogProjection($manifest)) {
-            $manifest = $this->appendComponentCatalogProjection($build, $manifest);
-        }
         $this->filesystem->ensureDirectoryExists($build . '/.docara');
         $this->writeJson($build . '/.docara/resolved-page-plans.json', $manifest);
         $this->writeComponentCatalog($build);
         $this->writeFrameworkAssets($build);
         (new PortablePublisherAssetPublisher($this->filesystem))->publish($build);
-    }
-
-    /** @param array<string, mixed> $manifest */
-    private function manifestSupportsComponentCatalogProjection(array $manifest): bool
-    {
-        if (($manifest['schema'] ?? null) !== 'docara.resolved_page_plans.v1'
-            || ! is_array($manifest['pages'] ?? null)
-            || ! array_is_list($manifest['pages'])
-            || $manifest['pages'] === []
-        ) {
-            return false;
-        }
-        $outputs = [];
-        $baseUrl = null;
-        foreach ($manifest['pages'] as $page) {
-            $output = is_array($page) ? ($page['output'] ?? null) : null;
-            $configuration = is_array($page)
-                ? ($page['resolved_page_plan']['configuration'] ?? null)
-                : null;
-            $currentBase = is_array($configuration) ? ($configuration['base_url'] ?? null) : null;
-            if (! is_string($output)
-                || preg_match('#\A(?:[A-Za-z0-9][A-Za-z0-9._~-]*/)*[A-Za-z0-9][A-Za-z0-9._~-]*\.html\z#', $output) !== 1
-                || isset($outputs[$output])
-                || str_starts_with($output, 'components/')
-                || ! is_string($currentBase)
-                || $currentBase === ''
-                || str_starts_with($currentBase, '//')
-                || preg_match('#\A/(?:[A-Za-z0-9._~!$&\'()*+,;=:@%-]+(?:/[A-Za-z0-9._~!$&\'()*+,;=:@%-]+)*)?/?\z#', $currentBase) !== 1
-            ) {
-                return false;
-            }
-            $outputs[$output] = true;
-            $baseUrl ??= $currentBase;
-            if ($currentBase !== $baseUrl) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * @param  array<string, mixed>  $manifest
-     * @return array<string, mixed>
-     */
-    private function appendComponentCatalogProjection(string $build, array $manifest): array
-    {
-        $first = $manifest['pages'][0];
-        $lock = $first['resolved_page_plan']['framework_lock'];
-        $firstConfiguration = $first['resolved_page_plan']['configuration'];
-        $baseUrl = (string) $firstConfiguration['base_url'];
-        $locale = (string) (
-            $firstConfiguration['locale']
-            ?? $firstConfiguration['default_locale']
-            ?? 'en'
-        );
-        $deploymentBase = $baseUrl === '/' ? '/' : '/' . trim($baseUrl, '/') . '/';
-        $catalog = EffectiveComponentCatalogBuilder::bundled(
-            FrameworkLock::fromArray($lock),
-        )->build();
-        $runtime = FrameworkComponentRuntime::fromLock(
-            $lock,
-            rtrim($deploymentBase, '/') . '/_docara/framework',
-        );
-        $authoredFixtures = [
-            'docara.alert' => [
-                'slug' => 'alert',
-                'title' => 'Уведомление',
-                'description' => 'Важная информация, результат, предупреждение или ошибка.',
-            ],
-            'docara.backlinks' => [
-                'slug' => 'backlinks',
-                'title' => 'Обратные ссылки',
-                'description' => 'Автоматический список страниц, которые ведут на текущий материал.',
-            ],
-            'docara.banner' => [
-                'slug' => 'banner',
-                'title' => 'Баннер',
-                'description' => 'Короткое объявление уровня страницы.',
-            ],
-            'docara.button' => [
-                'slug' => 'button',
-                'title' => 'Кнопка-ссылка',
-                'description' => 'Переход, оформленный как заметное действие.',
-            ],
-            'docara.card' => [
-                'slug' => 'card',
-                'title' => 'Карточка',
-                'description' => 'Связанное содержимое на отдельной поверхности.',
-            ],
-            'docara.code' => [
-                'slug' => 'code-from-file',
-                'title' => 'Код из файла',
-                'description' => 'Проверяемый фрагмент локального файла без копирования кода в Markdown.',
-            ],
-            'docara.details' => [
-                'slug' => 'details',
-                'title' => 'Раскрывающийся блок',
-                'description' => 'Дополнительное пояснение, которое читатель открывает по необходимости.',
-            ],
-            'docara.download' => [
-                'slug' => 'download',
-                'title' => 'Скачивание',
-                'description' => 'Понятное действие для загрузки или открытия файла.',
-            ],
-            'docara.embed' => [
-                'slug' => 'embed',
-                'title' => 'Встраиваемый материал',
-                'description' => 'Доверенный внешний материал с загрузкой после действия читателя.',
-            ],
-            'docara.example' => [
-                'slug' => 'example',
-                'title' => 'Интерактивный пример',
-                'description' => 'Готовый результат рядом с его точным исходником.',
-            ],
-            'docara.diagram' => [
-                'slug' => 'diagram',
-                'title' => 'Диаграмма',
-                'description' => 'Проверяемая схема Mermaid.',
-            ],
-            'docara.icon' => [
-                'slug' => 'icon',
-                'title' => 'Значок',
-                'description' => 'Смысловой или декоративный знак внутри текста.',
-            ],
-            'docara.hero' => [
-                'slug' => 'hero',
-                'title' => 'Первый экран',
-                'description' => 'Ценность страницы и следующий шаг.',
-            ],
-            'docara.html' => [
-                'slug' => 'html',
-                'title' => 'Изолированный HTML',
-                'description' => 'Доверенный HTML в отдельной безопасной песочнице.',
-            ],
-            'docara.figure' => [
-                'slug' => 'figure',
-                'title' => 'Иллюстрация',
-                'description' => 'Изображение с alt-текстом и подписью.',
-            ],
-            'docara.grid' => [
-                'slug' => 'grid',
-                'title' => 'Сетка',
-                'description' => 'Адаптивное расположение самостоятельных блоков.',
-            ],
-            'docara.logos' => [
-                'slug' => 'logos',
-                'title' => 'Логотипы и участники',
-                'description' => 'Компактный ряд продуктов или участников.',
-            ],
-            'docara.math' => [
-                'slug' => 'math',
-                'title' => 'Математическая формула',
-                'description' => 'Доступно подписанное выражение TeX.',
-            ],
-            'docara.media' => [
-                'slug' => 'media',
-                'title' => 'Текст с изображением',
-                'description' => 'Короткий текст рядом с одним изображением.',
-            ],
-            'docara.steps' => [
-                'slug' => 'steps',
-                'title' => 'Шаги',
-                'description' => 'Короткая последовательность действий с текущим состоянием.',
-            ],
-            'docara.tabs' => [
-                'slug' => 'tabs',
-                'title' => 'Вкладки',
-                'description' => 'Равноценные представления в одном доступном переключателе.',
-            ],
-            'docara.tree' => [
-                'slug' => 'tree',
-                'title' => 'Дерево файлов',
-                'description' => 'Вложенная структура каталогов и файлов.',
-            ],
-            'docara.kbd' => [
-                'slug' => 'kbd',
-                'title' => 'Клавиатурный ввод',
-                'description' => 'Клавиша или сочетание внутри инструкции.',
-            ],
-            'native.code' => [
-                'slug' => 'code',
-                'title' => 'Код',
-                'description' => 'Читаемые фрагменты с языком и копированием.',
-            ],
-            'native.footnotes_and_sources' => [
-                'slug' => 'footnotes-and-sources',
-                'title' => 'Сноски и источники',
-                'description' => 'Проверяемые пояснения без разрыва основного текста.',
-            ],
-            'native.headings_and_text' => [
-                'slug' => 'headings-and-text',
-                'title' => 'Заголовки и текст',
-                'description' => 'Понятная структура и смысловое выделение текста.',
-            ],
-            'native.links_and_images' => [
-                'slug' => 'links-and-images',
-                'title' => 'Ссылки и изображения',
-                'description' => 'Безопасные переходы и доступные иллюстрации.',
-            ],
-            'native.lists_and_quotes' => [
-                'slug' => 'lists-and-quotes',
-                'title' => 'Списки и цитаты',
-                'description' => 'Наборы, последовательности и точные внешние формулировки.',
-            ],
-            'native.table' => [
-                'slug' => 'table',
-                'title' => 'Таблица Markdown',
-                'description' => 'Компактное сравнение данных с безопасной прокруткой.',
-            ],
-        ];
-        if ($locale === 'ru') {
-            foreach ($authoredFixtures as $fixture) {
-                $markdown = "# {$fixture['title']}\n\n{$fixture['description']}\n";
-                $configuration = $firstConfiguration;
-                $configuration['default_locale'] = 'ru';
-                $configuration['locale'] = 'ru';
-                $configuration['search'] = ['enabled' => false, 'indexed' => false];
-                $page = "content/components/{$fixture['slug']}.md";
-                $plan = new ResolvedPagePlan(
-                    page: $page,
-                    markdown: $markdown,
-                    configuration: $configuration,
-                    frameworkLock: $lock,
-                    trace: [],
-                    provenance: [],
-                );
-                $output = "components/{$fixture['slug']}/index.html";
-                $url = $deploymentBase . "components/{$fixture['slug']}/";
-                $this->filesystem->ensureDirectoryExists(dirname($build . '/' . $output));
-                file_put_contents(
-                    $build . '/' . $output,
-                    '<!doctype html><html lang="ru" data-docara-documentation-version="current"><head><meta charset="utf-8">'
-                    . '<meta name="docara:documentation-version" content="current"><title>' . $fixture['title'] . '</title></head>'
-                    . '<body><main><h1>' . $fixture['title'] . '</h1><p>' . $fixture['description'] . '</p></main></body></html>',
-                );
-                $manifest['pages'][] = [
-                    'canonical_hash' => $plan->canonicalHash(),
-                    'page_path' => $page,
-                    'page_source_kind' => 'authored_markdown',
-                    'title' => $fixture['title'],
-                    'description' => $fixture['description'],
-                    'output' => $output,
-                    'url' => $url,
-                    'resolved_page_plan' => $plan->toArray(),
-                    'component_runtime' => $runtime->extract($markdown, $plan->page)->toArray(),
-                ];
-            }
-        }
-        $translationConfiguration = [
-            'default_locale' => $locale,
-            'locales' => [
-                $locale => [
-                    'label' => $locale,
-                    'direction' => 'ltr',
-                    'content_root' => 'content/' . $locale,
-                    'language_pack' => '@docara/' . $locale,
-                    'public_prefix' => '',
-                    'fallbacks' => $locale === 'en' ? [] : ['en'],
-                ],
-            ],
-        ];
-        if ($locale !== 'en') {
-            $translationConfiguration['locales']['en'] = [
-                'label' => 'en',
-                'direction' => 'ltr',
-                'content_root' => 'content/en',
-                'language_pack' => '@docara/en',
-                'public_prefix' => 'en',
-                'fallbacks' => [],
-            ];
-        }
-        $translator = new Translator(
-            LocaleRegistry::fromSite($translationConfiguration),
-            new LanguagePackRepository(dirname(__DIR__, 2)),
-        );
-        $projector = new PortableComponentCatalogProjector(
-            new PortableMarkdownRenderer,
-            translator: $translator,
-        );
-        $projection = $projector->project(
-            catalog: $catalog,
-            runtime: $runtime,
-            basePlan: new ResolvedPagePlan(
-                page: '@test/component-catalog.md',
-                markdown: '',
-                configuration: [
-                    'base_url' => $baseUrl,
-                    'default_locale' => $locale,
-                    'locale' => $locale,
-                    'preset' => 'docs',
-                    'layout' => ['container' => ['max' => 6]],
-                    'navigation' => ['hidden' => false, 'order' => 900],
-                    'search' => ['enabled' => false, 'indexed' => false],
-                    'reading' => [
-                        'breadcrumbs' => true,
-                        'toc' => true,
-                        'toc_depth' => 3,
-                        'previous_next' => true,
-                    ],
-                    'settings' => ['theme' => 'system'],
-                ],
-                frameworkLock: $lock,
-                trace: [],
-                provenance: [],
-            ),
-            contentRoot: 'content',
-            baseUrl: $deploymentBase,
-            homeUrl: $deploymentBase,
-            reservedDocumentIds: PortableDocumentIds::reserved(),
-            authoredComponents: $locale === 'ru'
-                ? array_map(
-                    static fn (array $fixture): array => [
-                        'title' => $fixture['title'],
-                        'description' => $fixture['description'],
-                    ],
-                    $authoredFixtures,
-                )
-                : [],
-        );
-
-        $catalogNavigation = [[
-            'key' => 'component-catalog',
-            'title' => $locale === 'ru' ? 'Компоненты' : 'Components',
-            'url' => $projection['receipt']['index']['route'],
-            'children' => array_map(
-                static fn (array $page): array => [
-                    'key' => 'component-catalog/' . $page['component_catalog_id'],
-                    'title' => $page['title'],
-                    'url' => $page['url'],
-                    'children' => [],
-                    'active' => false,
-                    'current_section' => false,
-                    'active_ancestor' => false,
-                    'open' => false,
-                ],
-                array_values(array_filter(
-                    $projection['pages'],
-                    static fn (array $page): bool => ($page['component_catalog_kind'] ?? null) === 'detail',
-                )),
-            ),
-            'active' => false,
-            'current_section' => false,
-            'active_ancestor' => false,
-            'open' => false,
-        ]];
-        foreach ($projection['pages'] as $page) {
-            $page['branding'] = ['title' => 'Docara'];
-            $page['breadcrumbs'] = $page['component_catalog_breadcrumbs'];
-            $page['previous'] = $page['component_catalog_previous'];
-            $page['next'] = $page['component_catalog_next'];
-            $output = $build . '/' . $page['output'];
-            $this->filesystem->ensureDirectoryExists(dirname($output));
-            $uiCopy = (new UiCopy($translator))->forLocale($locale);
-            $page['direction'] = 'ltr';
-            $page['documentation_version'] = 'current';
-            $page['ui_copy'] = $uiCopy;
-            $page['canonical_url'] = $page['url'];
-            $page['alternates'] = [];
-            $page['language_options'] = [];
-            $activeNavigation = (new PortableNavigationBuilder)->activate(
-                $catalogNavigation,
-                $page['url'],
-            );
-            $composition = PageCompositionContext::fromBuilder(
-                $page['branding'],
-                $page['home_url'],
-                $activeNavigation,
-                $page['outline'],
-                $uiCopy,
-            );
-            $pipeline = DeclarativePipeline::bundled(
-                $page['plan']->frameworkLock,
-                new PortableMarkdownRenderer,
-                PortableDocumentIds::reserved(),
-            );
-            $declarative = $pipeline->buildGenerated(
-                $page['plan']->markdown,
-                $page['plan']->page,
-                $page['output'],
-                $page['title'],
-                3,
-                $page['content_html'],
-                $composition,
-                $page['plan']->configuration['layout'] ?? [],
-                $page['plan']->provenance,
-            );
-            $html = (new DeclarativePortablePagePublisher)->render(
-                $page,
-                $activeNavigation,
-                'Docara',
-                $page['components']->assetPlan,
-                $declarative,
-            );
-            file_put_contents($output, $html);
-            $manifest['pages'][] = [
-                'canonical_hash' => $page['plan']->canonicalHash(),
-                'output' => $page['output'],
-                'url' => $page['url'],
-                'resolved_page_plan' => $page['plan']->toArray(),
-                'component_runtime' => $page['components']->toArray(),
-            ];
-        }
-
-        $this->filesystem->ensureDirectoryExists($build . '/.docara');
-        $this->writeJson(
-            $build . '/.docara/component-catalog-pages.json',
-            $projection['receipt'],
-        );
-        foreach ($projector->assets() as $relative => $bytes) {
-            $target = $build . '/' . $relative;
-            $this->filesystem->ensureDirectoryExists(dirname($target));
-            file_put_contents($target, $bytes);
-        }
-
-        return $manifest;
     }
 
     private function writeComponentCatalog(string $build): void
@@ -1685,44 +959,6 @@ final class StaticBuildVerifierTest extends TestCase
         )->build();
         $this->filesystem->ensureDirectoryExists($build . '/_docara');
         $this->writeJson($build . '/_docara/component-catalog.json', $catalog);
-    }
-
-    private function installDeclarativeExampleFixture(string $site): void
-    {
-        $this->filesystem->ensureDirectoryExists($site . '/examples');
-        $this->filesystem->ensureDirectoryExists($site . '/content/example-results');
-        $this->writeJson($site . '/content/example-results/section.json', [
-            'schema' => 'docara.section.v1',
-            'navigation' => ['hidden' => true],
-            'search' => ['indexed' => false],
-        ]);
-        file_put_contents(
-            $site . '/content/example-results/button.md',
-            "# Button\n\n:::ui.button\n{\"text\":\"Continue\",\"preset\":\"primary\"}\n:::\n",
-        );
-        $this->writeJson($site . '/content/example-results/button.page.json', [
-            'schema' => 'docara.page.v1',
-            'title' => 'Button',
-        ]);
-        $this->writeJson($site . '/examples/smart-button.json', [
-            'schema' => 'docara.declarative_example.v1',
-            'id' => 'smart-button',
-            'title' => 'Smart Button',
-            'description' => 'A real Smart component example.',
-            'category' => 'smart',
-            'order' => 10,
-            'result_page' => 'content/example-results/button.md',
-            'preview' => 'compact',
-            'sources' => [[
-                'label' => 'Markdown',
-                'path' => 'content/example-results/button.md',
-                'language' => 'markdown',
-            ], [
-                'label' => 'Page settings',
-                'path' => 'content/example-results/button.page.json',
-                'language' => 'json',
-            ]],
-        ]);
     }
 
     /** @return array<string, array<string, mixed>> */

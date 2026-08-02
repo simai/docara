@@ -7,11 +7,14 @@
   "title": "Legacy deletion accepted",
   "summary": "Removal is allowed only for paths proven replaced, unreferenced and recoverable by commit rollback.",
   "owner": "teamlead",
-  "lifecycle": "blocked",
-  "readiness": "R1_draft",
+  "lifecycle": "active",
+  "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["docs/specification/ACCEPTANCE.md"],
-  "evidence_refs": ["docara.evidence.zero_reference_scan"],
+  "evidence_refs": [
+    "docara.evidence.zero_reference_scan",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md"
+  ],
   "profile_refs": ["docara.unified"],
   "pass_conditions": ["Positive parity", "Negative zero-reference scan", "Clean build after deletion", "Rollback commit boundary", "No canonical source deleted"],
   "stop_conditions": ["Unmapped caller", "Generated artifact used as source", "No rollback path"],

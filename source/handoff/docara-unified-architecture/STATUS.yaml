@@ -5,14 +5,14 @@ baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
 state: m4_public_ru_unification_in_progress
 current_stage: docara.stage.m4.retirement
 current_batch: docara.batch.m4.retire
-next_action: migrate_fourteen_ru_example_routes_to_physical_markdown_before_deletion
+next_action: remove_build_generated_and_trusted_main_bridge_after_all_page_pagebuilder_parity
 source_of_truth:
   human: docs/specification/README.md
   machine: graph/graph.json
   start: source/handoff/docara-unified-architecture/START.md
 readiness:
   architecture_contract: accepted
-  implementation: m4_baseline_contract_accepted_implementation_in_progress
+  implementation: m4_physical_owners_and_projector_retirement_accepted_typed_contour_in_progress
   release: not_claimed
   production: not_claimed
 routing:

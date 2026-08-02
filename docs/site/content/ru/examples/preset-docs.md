@@ -13,7 +13,7 @@
 
 ## Исходные файлы
 
-:::code {src="../../../examples/preset-docs.json" lang=json title="Descriptor · examples/preset-docs.json"}
+:::code {src="./preset-docs.md" lang=markdown title="Страница примера · content/ru/examples/preset-docs.md"}
 :::
 
 :::code {src="../demonstrator-results/preset-docs.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/preset-docs.md"}

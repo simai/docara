@@ -13,7 +13,7 @@
 
 ## Исходные файлы
 
-:::code {src="../../../examples/preset-landing.json" lang=json title="Descriptor · examples/preset-landing.json"}
+:::code {src="./preset-landing.md" lang=markdown title="Страница примера · content/ru/examples/preset-landing.md"}
 :::
 
 :::code {src="../demonstrator-results/preset-landing.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/preset-landing.md"}

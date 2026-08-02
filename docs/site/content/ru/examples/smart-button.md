@@ -12,7 +12,7 @@
 
 ## Исходные файлы
 
-:::code {src="../../../examples/smart-button.json" lang=json title="Descriptor · examples/smart-button.json"}
+:::code {src="./smart-button.md" lang=markdown title="Страница примера · content/ru/examples/smart-button.md"}
 :::
 
 :::code {src="../demonstrator-results/smart-button.md" lang=markdown title="Markdown и вызов Smart-компонента · content/ru/demonstrator-results/smart-button.md"}

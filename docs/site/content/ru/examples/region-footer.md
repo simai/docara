@@ -13,7 +13,7 @@
 
 ## Исходные файлы
 
-:::code {src="../../../examples/region-footer.json" lang=json title="Descriptor · examples/region-footer.json"}
+:::code {src="./region-footer.md" lang=markdown title="Страница примера · content/ru/examples/region-footer.md"}
 :::
 
 :::code {src="../demonstrator-results/region-footer.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/region-footer.md"}

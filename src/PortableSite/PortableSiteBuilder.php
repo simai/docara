@@ -6,7 +6,6 @@ namespace Simai\Docara\PortableSite;
 
 use Illuminate\Support\Collection;
 use JsonException;
-use Simai\Docara\ComponentCatalog\AuthoredComponentPageIndex;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
 use Simai\Docara\Content\PageSource;
 use Simai\Docara\Content\PageSourceLocator;
@@ -231,135 +230,16 @@ final readonly class PortableSiteBuilder
             ];
         }
 
-        $authoredPages = $pages;
-        $catalogBasePlan = $loader->resolveGeneratedBase(
-            $contentRoot . '/components/index.md',
-        );
-        if (CanonicalJson::encode($catalogBasePlan->frameworkLock) !== $frameworkLockCanonical) {
-            throw new PortableConfigurationException(
-                'FRAMEWORK_LOCK_CHANGED_DURING_BUILD',
-                'The Framework lock changed while the generated component catalogue was being resolved.',
-            );
-        }
-        if (! $runtime instanceof FrameworkComponentRuntime) {
+        $buildBasePlan = $pages[0]['plan'] ?? null;
+        if (! $buildBasePlan instanceof ResolvedPagePlan || ! $runtime instanceof FrameworkComponentRuntime) {
             throw new PortableConfigurationException(
                 'FRAMEWORK_RUNTIME_MISSING',
-                'The component runtime was not initialized for the portable build.',
+                'The build requires at least one authored page and an initialized component runtime.',
             );
         }
         $effectiveComponentCatalog = EffectiveComponentCatalogBuilder::bundled(
-            FrameworkLock::fromArray($catalogBasePlan->frameworkLock),
+            FrameworkLock::fromArray($buildBasePlan->frameworkLock),
         )->build();
-        $componentCatalogProjector = new PortableComponentCatalogProjector(
-            $this->markdown,
-            translator: $translator,
-        );
-        $componentCatalogProjections = [];
-        foreach ($earlyPhysicalSelection ? [] : $localeRegistry->all() as $locale => $definition) {
-            $localeCatalogBasePlan = $locale === $buildLocale
-                ? $catalogBasePlan
-                : $loader->resolveGeneratedBase($definition->contentRoot . '/components/index.md');
-            if (CanonicalJson::encode($localeCatalogBasePlan->frameworkLock) !== $frameworkLockCanonical) {
-                throw new PortableConfigurationException(
-                    'FRAMEWORK_LOCK_CHANGED_DURING_BUILD',
-                    'The Framework lock changed while a localized component catalogue was being resolved.',
-                );
-            }
-            $localeAuthoredPages = array_values(array_filter(
-                $authoredPages,
-                static fn (array $page): bool => ($page['locale'] ?? null) === $locale,
-            ));
-            $authoredComponents = AuthoredComponentPageIndex::build(
-                $effectiveComponentCatalog,
-                $localeAuthoredPages,
-                $definition->publicPrefix,
-            );
-            $catalogRoute = rtrim($localeUrls->home($locale), '/') . '/components/';
-            $hasAuthoredCatalogIndex = false;
-            foreach ($localeAuthoredPages as $localeAuthoredPage) {
-                if (($localeAuthoredPage['page_source_kind'] ?? null) === 'authored_markdown'
-                    && ($localeAuthoredPage['url'] ?? null) === $catalogRoute
-                ) {
-                    $hasAuthoredCatalogIndex = true;
-                    break;
-                }
-            }
-            $this->observe('component_catalog.project', $locale);
-            $componentCatalogProjection = $componentCatalogProjector->project(
-                catalog: $effectiveComponentCatalog,
-                runtime: $runtime,
-                basePlan: $localeCatalogBasePlan,
-                contentRoot: $definition->contentRoot,
-                baseUrl: $localeUrls->home($locale),
-                homeUrl: $localeUrls->home($locale),
-                outputPrefix: $definition->publicPrefix,
-                reservedDocumentIds: PortableDocumentIds::reserved(),
-                authoredComponents: $authoredComponents,
-                projectIndex: ! $hasAuthoredCatalogIndex,
-            );
-            $componentCatalogProjections[$locale] = $componentCatalogProjection;
-            foreach ($componentCatalogProjection['pages'] as $catalogPage) {
-                if (isset($outputs[$catalogPage['output']])) {
-                    throw new PortableConfigurationException(
-                        'COMPONENT_CATALOG_ROUTE_COLLISION',
-                        "Authored page [{$outputs[$catalogPage['output']]}] shadows generated component catalogue route [{$catalogPage['output']}].",
-                    );
-                }
-                $outputs[$catalogPage['output']] = '@docara/component-catalog/' . $locale;
-                $catalogPage['documentation_version'] = $documentationVersion;
-                $catalogPage['translation_key'] = ($catalogPage['component_catalog_kind'] ?? null) === 'detail'
-                    ? '@catalog/' . (string) $catalogPage['component_catalog_id']
-                    : '@catalog/index';
-                $pages[] = $catalogPage;
-            }
-        }
-
-        $declarativeExampleProjector = new PortableDeclarativeExampleProjector(translator: $translator);
-        $declarativeExampleProjection = null;
-        $authoredExampleIndexRoute = rtrim($localeUrls->home($buildLocale), '/') . '/examples/';
-        $hasAuthoredExampleIndex = false;
-        foreach ($authoredPages as $authoredPage) {
-            if (($authoredPage['page_source_kind'] ?? null) === 'authored_markdown'
-                && ($authoredPage['url'] ?? null) === $authoredExampleIndexRoute
-            ) {
-                $hasAuthoredExampleIndex = true;
-                break;
-            }
-        }
-        if (! $earlyPhysicalSelection && ! $hasAuthoredExampleIndex && $declarativeExampleProjector->exists($root)) {
-            $this->observe('declarative_examples.project', $buildLocale);
-            $exampleBasePlan = $loader->resolveGeneratedBase(
-                $contentRoot . '/examples/index.md',
-            );
-            if (CanonicalJson::encode($exampleBasePlan->frameworkLock) !== $frameworkLockCanonical) {
-                throw new PortableConfigurationException(
-                    'FRAMEWORK_LOCK_CHANGED_DURING_BUILD',
-                    'The Framework lock changed while declarative examples were being resolved.',
-                );
-            }
-            $declarativeExampleProjection = $declarativeExampleProjector->project(
-                root: $root,
-                authoredPages: $authoredPages,
-                runtime: $runtime,
-                basePlan: $exampleBasePlan,
-                contentRoot: $contentRoot,
-                baseUrl: $localeUrls->home($buildLocale),
-                homeUrl: $localeUrls->home($buildLocale),
-                outputPrefix: $localeRegistry->get($buildLocale)->publicPrefix,
-                reservedDocumentIds: PortableDocumentIds::reserved(),
-            );
-            foreach ($declarativeExampleProjection['pages'] as $examplePage) {
-                if (isset($outputs[$examplePage['output']])) {
-                    throw new PortableConfigurationException(
-                        'DECLARATIVE_EXAMPLE_ROUTE_COLLISION',
-                        "Page [{$outputs[$examplePage['output']]}] shadows declarative example route [{$examplePage['output']}].",
-                    );
-                }
-                $outputs[$examplePage['output']] = '@docara/declarative-examples';
-                $examplePage['documentation_version'] = $documentationVersion;
-                $pages[] = $examplePage;
-            }
-        }
 
         if (! $explicitLocaleRegistry) {
             foreach ($pages as $page) {
@@ -715,55 +595,6 @@ final readonly class PortableSiteBuilder
                 }
             }
             $localeDestinations = array_values(array_unique($localeDestinations));
-            if ($selectedPageUrl === null) {
-                $catalogReceiptPath = rtrim($destination, '/\\') . '/.docara/component-catalog-pages.json';
-                $this->files->ensureDirectoryExists(dirname($catalogReceiptPath));
-                if (isset($componentCatalogProjections[$buildLocale]['receipt'])) {
-                    $this->files->put(
-                        $catalogReceiptPath,
-                        $this->prettyCanonicalJson($componentCatalogProjections[$buildLocale]['receipt']),
-                    );
-                }
-            }
-            foreach ($selectedPageUrl === null ? $componentCatalogProjections : [] as $locale => $projection) {
-                $localizedReceiptPath = rtrim($destination, '/\\')
-                    . '/.docara/component-catalog-pages/' . rawurlencode($locale) . '.json';
-                $this->files->ensureDirectoryExists(dirname($localizedReceiptPath));
-                $this->files->put($localizedReceiptPath, $this->prettyCanonicalJson($projection['receipt']));
-            }
-            if (is_array($declarativeExampleProjection)) {
-                $exampleReceipt = $this->prettyCanonicalJson($declarativeExampleProjection['receipt']);
-                $this->files->put(
-                    rtrim($destination, '/\\') . '/.docara/declarative-example-pages.json',
-                    $exampleReceipt,
-                );
-                $this->files->put(
-                    $docaraOutputDirectory . '/declarative-examples.json',
-                    $exampleReceipt,
-                );
-            }
-            foreach ($selectedPageUrl === null ? $componentCatalogProjections : [] as $locale => $projection) {
-                if (($projection['pages'] ?? []) === []) {
-                    continue;
-                }
-                $publicPrefix = $localeRegistry->get($locale)->publicPrefix;
-                $localeDestination = $publicPrefix === ''
-                    ? $destination
-                    : rtrim($destination, '/\\') . '/' . $publicPrefix;
-                foreach ($componentCatalogProjector->assets() as $relative => $bytes) {
-                    $assetPath = rtrim($localeDestination, '/\\') . '/' . $relative;
-                    $this->files->ensureDirectoryExists(dirname($assetPath));
-                    if ($this->files->put($assetPath, $bytes) === false
-                        || ! hash_equals(hash('sha256', $bytes), (string) hash_file('sha256', $assetPath))
-                    ) {
-                        throw new PortableConfigurationException(
-                            'COMPONENT_CATALOG_ASSET_PUBLICATION_FAILED',
-                            $relative,
-                        );
-                    }
-                }
-            }
-
             if ($searchPlan instanceof PortableSearchPlan && $selectedPageUrl === null) {
                 foreach ($localeDestinations as $localeDestination) {
                     $localizedDocaraDirectory = rtrim($localeDestination, '/\\') . '/_docara';
@@ -909,7 +740,7 @@ final readonly class PortableSiteBuilder
             $this->copyContentAssets($contentAssets, $destination);
             $brandPublisher->publish($brandPlan['assets'], $destination);
             foreach ($localeDestinations as $localeDestination) {
-                $this->publishFrameworkAssets($catalogBasePlan->frameworkLock, $localeDestination);
+                $this->publishFrameworkAssets($buildBasePlan->frameworkLock, $localeDestination);
                 (new PortablePublisherAssetPublisher($this->files))->publish($localeDestination);
             }
             $diagnosticPath = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';

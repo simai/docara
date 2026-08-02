@@ -13,7 +13,6 @@ vendor/bin/phpunit --do-not-cache-result \
   tests/Unit/StaticBuildVerifierTest.php \
   tests/Unit/FrameworkComponentRuntimeTest.php \
   tests/Unit/EffectiveComponentCatalogTest.php \
-  tests/Unit/PortableComponentCatalogProjectorTest.php \
   tests/Unit/DocumentationContractTest.php \
   tests/Unit/DocumentationExamplesTest.php \
   tests/PortableSiteBuilderTest.php \

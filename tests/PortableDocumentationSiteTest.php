@@ -54,7 +54,6 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $htmlPages = $this->filesWithExtension($build, 'html');
         $catalog = $this->json($build . '/_docara/component-catalog.json');
-        $receipt = $this->json($build . '/.docara/component-catalog-pages.json');
         $redirectReceipt = $this->json($build . '/.docara/redirects.json');
         $localeRouteReceipt = $this->json($build . '/.docara/locale-routes.json');
         $search = $this->json($build . '/_docara/search-index.json');
@@ -87,7 +86,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(37, $catalog['entries']);
         self::assertCount(30, $supported);
         self::assertCount(5, $unavailable);
-        self::assertCount(count($projectedSupported), $receipt['pages']);
+        self::assertFileDoesNotExist($build . '/.docara/component-catalog-pages.json');
         self::assertFileDoesNotExist($build . '/.docara/declarative-example-pages.json');
         self::assertFileDoesNotExist($build . '/_docara/declarative-examples.json');
         self::assertSame(
@@ -120,17 +119,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             ])),
             'The development page must be discoverable by the exact reader query [расширение].',
         );
-        self::assertSame(
-            1 + count($projectedSupported),
-            1 + count($receipt['pages']),
-            'The public component surface must be one physical index plus every remaining projected detail.',
-        );
-        self::assertSame(
-            array_column($projectedSupported, 'id'),
-            array_column($receipt['pages'], 'id'),
-        );
-        self::assertNull($receipt['index']);
-        self::assertSame([], $receipt['pages']);
+        self::assertSame([], $projectedSupported);
         self::assertFileExists($build . '/ru/components/index.html');
 
         $catalogIndex = (string) file_get_contents($build . '/ru/components/index.html');

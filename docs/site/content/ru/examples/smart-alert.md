@@ -13,7 +13,7 @@ SIMAI Framework runtime.
 
 ## Исходные файлы
 
-:::code {src="../../../examples/smart-alert.json" lang=json title="Descriptor · examples/smart-alert.json"}
+:::code {src="./smart-alert.md" lang=markdown title="Страница примера · content/ru/examples/smart-alert.md"}
 :::
 
 :::code {src="../demonstrator-results/smart-alert.md" lang=markdown title="Markdown и вызов Smart-компонента · content/ru/demonstrator-results/smart-alert.md"}

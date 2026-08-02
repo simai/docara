@@ -1,4 +1,4 @@
-# Next checkpoint: M4 physical examples migration
+# Next checkpoint: M4 one typed rendering contour
 
 The bounded M3 Russian components Goal is complete and independently accepted.
 M4 is now active. Recovery source:
@@ -18,11 +18,19 @@ Live evidence index:
   static broken links/assets are zero, and the required browser matrix passes;
 - M3 reverse-outcome audit: PASS.
 
+## Accepted M4 state
+
+- all 103 selected routes have one physical Markdown owner;
+- generated public page owners and the generated-route allowlist are zero;
+- the declarative-example and component-catalog public page projectors,
+  obsolete descriptors/templates/view models and both page receipts are
+  retired with parity and zero-reference evidence.
+
 ## Active next action
 
-Migrate the 14 generated `/ru/examples/` routes to physical Markdown owners,
-preserving the canonical demonstrator result pages and public behavior. Only
-after parity may their generated allowlist/projector publication path shrink.
+Converge every authored route on the typed in-memory PageBuilder contour, then
+remove `DeclarativePipeline::buildGenerated()`, `trustedMainHtml` and the
+generated-page bypass only after positive/negative and full/single proof.
 
 M4 PASS, M5/global acceptance, other locales, release and production remain
 unclaimed. Merge, push, tag, release and deploy remain forbidden.

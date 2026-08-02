@@ -13,7 +13,7 @@
 
 ## Исходные файлы
 
-:::code {src="../../../examples/inheritance.json" lang=json title="Descriptor · examples/inheritance.json"}
+:::code {src="./inheritance.md" lang=markdown title="Страница примера · content/ru/examples/inheritance.md"}
 :::
 
 :::code {src="../demonstrator-results/inheritance/page.md" lang=markdown title="Markdown страницы · content/ru/demonstrator-results/inheritance/page.md"}

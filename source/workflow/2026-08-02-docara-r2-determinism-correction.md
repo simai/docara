@@ -55,10 +55,10 @@ page metadata from comparison, or normalizing consumer files to hide drift.
 | C1 | Withdraw rc.2/R2 PASS and open correction | graph/docs/handoff/diff/JSON | pass |
 | C2 | Deterministic metadata contract | focused positive/negative tests | pass |
 | C3 | Integrated source verification | PHPUnit/Pint/Composer/lint/JSON/YAML/graph | pass |
-| C4 | Exact rc.3 package | two clean-clone byte-identical ZIP/manifest/SBOM | planned |
-| C5 | Independent dist consumers | different extraction times, identical 305 outputs including metadata | planned |
-| C6 | Product/release matrix | macOS 8.4/8.3, Linux 8.3, full/single/static/HTTP/browser/security | planned |
-| C7 | Deployment dossier retest | live delta, accepted digest, mirror cutover/smoke/exact rollback | planned |
+| C4 | Exact rc.3 package | two clean-clone byte-identical ZIP/manifest/SBOM | pass |
+| C5 | Independent dist consumers | different extraction times, identical 305 outputs including metadata | pass |
+| C6 | Product/release matrix | macOS 8.4/8.3, Linux 8.3, full/single/static/HTTP/browser/security | pass |
+| C7 | Deployment dossier retest | live delta, accepted digest, mirror cutover/smoke/exact rollback | pass |
 | C8 | Integrated governance | acceptance/roadmap/graph/handoff, clean worktree | planned |
 
 ## Done When
@@ -101,3 +101,12 @@ C3 result: PHPUnit 393/393 with 7,173 assertions; Pint, Composer strict, 237
 PHP files, 437 JSON files, 153 YAML files and project graph validation all
 pass. The next commit becomes the immutable product-source boundary for rc.3;
 later package/browser/governance evidence must bind that exact revision.
+
+C4-C7 bind source `be0ba2db5254e468c7c014016ade02e8b4f3f16c` to
+unpublished `2.0.0-rc.3`. Two clean clones produced identical 650-file ZIPs
+with SHA-256 `630d971e94a1222624304a3a5c2a7791586c0b7866ede5b8f3506c93bdebadc0`.
+Two independent dist consumers, deliberately given different content mtimes,
+produced identical complete 305-file public trees with digest
+`425da363fc51d33d2c5b42577980f4ca4603b83814440dbfb06fe419b4cade46`.
+Compatibility, static, HTTP/browser and disposable cutover/rollback checks pass.
+The live site remains byte-for-byte unchanged.

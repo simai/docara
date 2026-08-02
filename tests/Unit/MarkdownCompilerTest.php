@@ -392,7 +392,7 @@ MD, $source);
             (new ComponentAliasRegistry)->inlineAliases(),
         );
         self::assertSame(
-            ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'typed_directive', 'html_comment', 'component', 'component_block'],
+            ['heading', 'paragraph', 'list', 'blockquote', 'image', 'table', 'code_block', 'example', 'typed_directive', 'html_comment', 'component', 'component_block', 'smart_component'],
             DocumentRendererRegistry::bundled(new PortableMarkdownRenderer)->types(),
         );
         self::assertContains(ComponentContractNode::class, class_implements(ComponentNode::class));

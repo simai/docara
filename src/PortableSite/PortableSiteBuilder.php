@@ -45,6 +45,8 @@ final readonly class PortableSiteBuilder
 
     private ?\Closure $observer;
 
+    private bool $publisherInjected;
+
     public function __construct(
         private Filesystem $files,
         private PortableMarkdownRenderer $markdown,
@@ -52,6 +54,7 @@ final readonly class PortableSiteBuilder
         ?PageBuilder $pageBuilder = null,
         ?\Closure $observer = null,
     ) {
+        $this->publisherInjected = $publisher !== null;
         $this->publisher = $publisher ?? new DeclarativePortablePagePublisher;
         $this->pageBuilder = $pageBuilder ?? new PageBuilder($markdown);
         $this->observer = $observer;
@@ -76,7 +79,7 @@ final readonly class PortableSiteBuilder
         $pageBuilder = $projectSmart instanceof ProjectSmartRuntime
             ? new PageBuilder($markdown, smartRenderer: $projectSmart->renderer)
             : $this->pageBuilder;
-        $publisher = $projectSmart instanceof ProjectSmartRuntime
+        $publisher = $projectSmart instanceof ProjectSmartRuntime && ! $this->publisherInjected
             ? new DeclarativePortablePagePublisher(
                 $projectSmart->templates,
                 $projectSmart->registry,

@@ -55,7 +55,6 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $htmlPages = $this->filesWithExtension($build, 'html');
         $catalog = $this->json($build . '/_docara/component-catalog.json');
         $receipt = $this->json($build . '/.docara/component-catalog-pages.json');
-        $exampleReceipt = $this->json($build . '/.docara/declarative-example-pages.json');
         $redirectReceipt = $this->json($build . '/.docara/redirects.json');
         $localeRouteReceipt = $this->json($build . '/.docara/locale-routes.json');
         $search = $this->json($build . '/_docara/search-index.json');
@@ -89,7 +88,15 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(30, $supported);
         self::assertCount(5, $unavailable);
         self::assertCount(count($projectedSupported), $receipt['pages']);
-        self::assertCount(13, $exampleReceipt['pages']);
+        self::assertFileDoesNotExist($build . '/.docara/declarative-example-pages.json');
+        self::assertFileDoesNotExist($build . '/_docara/declarative-examples.json');
+        self::assertSame(
+            14,
+            $pages->filter(
+                static fn (array $page): bool => str_starts_with((string) ($page['url'] ?? ''), '/ru/examples/')
+                    && ($page['page_source_kind'] ?? null) === 'authored_markdown',
+            )->count(),
+        );
         self::assertCount(0, $redirectReceipt['redirects']);
         self::assertCount(103, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(

@@ -18,6 +18,7 @@ enum TypedRendererId: string
     case Details = 'docara.details.v1';
     case Download = 'docara.download.v1';
     case Embed = 'docara.embed.v1';
+    case InternalPreview = 'docara.internal_preview.v1';
     case Example = 'docara.example.v1';
     case Figure = 'docara.figure.v1';
     case Grid = 'docara.grid.v1';

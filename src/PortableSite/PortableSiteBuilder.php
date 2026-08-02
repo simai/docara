@@ -316,7 +316,17 @@ final readonly class PortableSiteBuilder
 
         $declarativeExampleProjector = new PortableDeclarativeExampleProjector(translator: $translator);
         $declarativeExampleProjection = null;
-        if (! $earlyPhysicalSelection && $declarativeExampleProjector->exists($root)) {
+        $authoredExampleIndexRoute = rtrim($localeUrls->home($buildLocale), '/') . '/examples/';
+        $hasAuthoredExampleIndex = false;
+        foreach ($authoredPages as $authoredPage) {
+            if (($authoredPage['page_source_kind'] ?? null) === 'authored_markdown'
+                && ($authoredPage['url'] ?? null) === $authoredExampleIndexRoute
+            ) {
+                $hasAuthoredExampleIndex = true;
+                break;
+            }
+        }
+        if (! $earlyPhysicalSelection && ! $hasAuthoredExampleIndex && $declarativeExampleProjector->exists($root)) {
             $this->observe('declarative_examples.project', $buildLocale);
             $exampleBasePlan = $loader->resolveGeneratedBase(
                 $contentRoot . '/examples/index.md',

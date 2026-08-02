@@ -9,7 +9,7 @@ Input revision: `230ce7504e72162dfb85db4687ba851b49353335`
 | Checkpoint | Status | Evidence |
 | --- | --- | --- |
 | M4.1 recovery and inventory | PASS | [M4.1-BASELINE.md](M4.1-BASELINE.md) |
-| M4.2 physical `/ru/examples/` owners | pending | — |
+| M4.2 physical `/ru/examples/` owners | PASS | [M4.2-PHYSICAL-EXAMPLES.md](M4.2-PHYSICAL-EXAMPLES.md) |
 | M4.3 generated path retirement | pending | — |
 | M4.4 typed contour convergence | pending | — |
 | M4.5 integrated acceptance | pending | — |

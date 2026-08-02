@@ -131,6 +131,7 @@ final class PortableMarkdownRenderer
                     $block['attributes'],
                 ),
                 TypedRendererId::Embed => $this->renderEmbed($this->converter->convert($blockMarkdown), $block['attributes']),
+                TypedRendererId::InternalPreview => $this->renderInternalPreview($this->converter->convert($blockMarkdown), $block['attributes']),
                 TypedRendererId::Example => $this->renderExample(
                     $block['markdown'],
                     $block['attributes'],
@@ -643,6 +644,50 @@ final class PortableMarkdownRenderer
             . '"' . ($id !== '' ? ' id="' . $this->escapeHtml($id) . '"' : '')
             . ' class="ratio-' . str_replace('/', '-', $ratio)
             . ' overflow-hidden bg-surface-container radius-2 m-bottom-1">' . $content . '</div>';
+    }
+
+    /** @param array<string,string> $attributes */
+    private function renderInternalPreview(RenderedContentInterface $rendered, array $attributes): string
+    {
+        $this->assertAttributes($attributes, ['size', 'title'], 'internal_preview');
+        $size = $this->attributeOneOf(
+            $attributes['size'] ?? 'normal',
+            ['compact', 'normal', 'tall'],
+            'internal_preview',
+            'size',
+        );
+        $title = trim($attributes['title'] ?? 'Результат примера');
+        if ($title === '') {
+            throw new PortableConfigurationException(
+                'MARKDOWN_INTERNAL_PREVIEW_TITLE_REQUIRED',
+                'An internal preview requires a visible iframe title.',
+            );
+        }
+        $content = trim((string) $rendered);
+        if (preg_match('/^<p><a href="(?<url>[^"]+)"[^>]*>(?<label>.*)<\/a><\/p>$/su', $content, $match) !== 1) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_INTERNAL_PREVIEW_LINK_REQUIRED',
+                'An internal preview must contain exactly one Markdown link.',
+            );
+        }
+        $url = html_entity_decode((string) $match['url'], ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $parts = parse_url($url);
+        if (! str_starts_with($url, '/')
+            || str_starts_with($url, '//')
+            || preg_match('/[\x00-\x20\x7f]/', $url) === 1
+            || $parts === false
+            || isset($parts['scheme'])
+            || isset($parts['host'])
+        ) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_INTERNAL_PREVIEW_URL_UNSAFE',
+                'An internal preview link must be a same-origin absolute path.',
+            );
+        }
+
+        return '<div data-docara-block="internal-preview" class="docara-example-preview surface-0 border border-outline-variant radius-2 overflow-hidden"'
+            . ' data-preview-size="' . $size . '"><iframe src="' . $this->escapeHtml($url)
+            . '" title="' . $this->escapeHtml($title) . '" loading="lazy"></iframe></div>';
     }
 
     /** @param array<string,string> $attributes */

@@ -12,6 +12,25 @@ use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 final class PortableMarkdownRendererTest extends TestCase
 {
     #[Test]
+    public function internal_preview_accepts_only_same_origin_routes_and_preserves_preview_size(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $html = $renderer->render(
+            ":::internal_preview {size=tall title=\"Результат примера\"}\n[Открыть](/ru/result/)\n:::\n",
+        );
+
+        self::assertStringContainsString('data-docara-block="internal-preview"', $html);
+        self::assertStringContainsString('data-preview-size="tall"', $html);
+        self::assertStringContainsString('src="/ru/result/"', $html);
+        self::assertStringNotContainsString(' sandbox=', $html);
+
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('same-origin absolute path');
+        $renderer->render(
+            ":::internal_preview {title=\"Unsafe\"}\n[Открыть](https://example.com/)\n:::\n",
+        );
+    }
+    #[Test]
     public function it_renders_markdown_and_multifile_examples_as_one_tabbed_surface(): void
     {
         $renderer = new PortableMarkdownRenderer;

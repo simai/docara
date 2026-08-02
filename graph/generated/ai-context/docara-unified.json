@@ -8,6 +8,8 @@
   "generated_at": "2026-08-02",
   "status": "m5_candidate_ready_for_independent_acceptance",
   "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7",
+  "candidate_revision": "48751b8ca221f7185a72ce19188b1441aea93d2e",
+  "candidate_archive_sha256": "d12169b3c5080f219dada00cc976a758263cbc38ef845da11176ed7e34e8334a",
   "goal": "Replace parallel content and rendering paths with one Markdown-to-typed-IR-to-registry-to-Smart-gateway-to-layout pipeline.",
   "immutable_rules": [
     "One locale route, exactly one content/<locale>/<route>.md source.",

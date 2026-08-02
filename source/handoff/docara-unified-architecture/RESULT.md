@@ -734,7 +734,7 @@ Status: IMPLEMENTATION PASS; independent exact-archive acceptance pending
 - 103/103 public routes reproduce their full-build HTML, two 305-file builds
   are byte-identical, and static verification reports 21,440 references with
   zero broken;
-- full PHPUnit passes 376 tests and 6,045 assertions; Pint, PHP lint, JSON,
+- full PHPUnit passes 376 tests and 6,061 assertions; Pint, PHP lint, JSON,
   YAML, Composer, graph and diff checks pass;
 - minimal EN LTR and AR RTL fixtures, security policy, browser/a11y matrix and
   the one-Markdown author workflow pass without claiming full translations;
@@ -745,3 +745,7 @@ Status: IMPLEMENTATION PASS; independent exact-archive acceptance pending
 for a separate tester-owned read-only run. The global architecture acceptance
 gate remains open; merge, push, tag, release and deploy remain unclaimed and
 unauthorized.
+
+Exact archive candidate: `48751b8ca221f7185a72ce19188b1441aea93d2e`,
+ZIP SHA-256
+`d12169b3c5080f219dada00cc976a758263cbc38ef845da11176ed7e34e8334a`.

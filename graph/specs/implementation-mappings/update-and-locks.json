@@ -61,5 +61,5 @@
     "Prove the documented consumer-owned dependency lock against the exported archive before claiming reproducible clean installation."
   ],
   "status": "implemented_candidate_verified",
-  "mapped_revision": "72ad27e34e1dbf2c3a24363d5871bed876e42b68"
+  "mapped_revision": "48751b8ca221f7185a72ce19188b1441aea93d2e"
 }

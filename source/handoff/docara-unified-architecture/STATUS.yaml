@@ -6,6 +6,8 @@ state: m5_candidate_ready_for_independent_acceptance
 current_stage: docara.stage.m5.acceptance
 current_batch: docara.batch.m5.accept
 next_action: independently_accept_exact_exported_archive_without_candidate_mutation
+candidate_revision: 48751b8ca221f7185a72ce19188b1441aea93d2e
+candidate_archive_sha256: d12169b3c5080f219dada00cc976a758263cbc38ef845da11176ed7e34e8334a
 source_of_truth:
   human: docs/specification/README.md
   machine: graph/graph.json

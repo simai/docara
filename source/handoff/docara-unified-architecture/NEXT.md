@@ -6,6 +6,10 @@ exported archive and must not mutate the candidate.
 
 ## Candidate contract
 
+- exact archive revision:
+  `48751b8ca221f7185a72ce19188b1441aea93d2e`;
+- ZIP SHA-256:
+  `d12169b3c5080f219dada00cc976a758263cbc38ef845da11176ed7e34e8334a`;
 - recovery and implementation workflow:
   `source/workflow/2026-08-02-docara-m5-product-stabilization-goal.md`;
 - evidence index:

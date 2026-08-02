@@ -457,17 +457,12 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
     {
         $tags = [];
         foreach (array_values(array_unique($assetKeys)) as $key) {
-            if (! str_starts_with($key, 'docara.smart.')) {
-                continue;
-            }
             try {
                 $asset = $this->smarts->asset($key);
-            } catch (\InvalidArgumentException $exception) {
-                throw new PortableConfigurationException(
-                    'DECLARATIVE_SMART_ASSET_NOT_REGISTERED',
-                    $key,
-                    $exception,
-                );
+            } catch (\InvalidArgumentException) {
+                // Package/runtime dependencies are published by their owning
+                // asset planner. File-backed Smart assets are registry-owned.
+                continue;
             }
             $url = $this->escape(
                 $assetBase . '/' . $asset['public'] . '?docara_v=' . $asset['version'],

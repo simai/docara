@@ -66,8 +66,8 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
 | Batch | Outcome | Primary verification | Status |
 | --- | --- | --- | --- |
 | G2.0 | acceptance freeze, state-driven router, responsibility map | context positive/negative, graph/handoff consistency | pass |
-| G2.1 | typed artifacts/providers and one deterministic DesignRegistry | provider/ownership/path/schema tests | in progress |
-| G2.2 | built-ins migrated from constant registration | byte parity, zero-reference scan | pending |
+| G2.1 | typed artifacts/providers and one deterministic DesignRegistry | provider/ownership/path/schema tests | pass |
+| G2.2 | built-ins migrated from constant registration | byte parity, zero-reference scan | in progress |
 | G2.3 | data-driven composition and project `design/` fixture | no engine ID lists, fixture without `src/` edit | pending |
 | G2.4 | PreviewKernel and PreviewShell over production services | HTML/assets/provenance parity, receipt isolation | pending |
 | G2.5 | preview commands and PHP watch | human/JSON/exit-code fixtures, dependency invalidation | pending |
@@ -88,6 +88,19 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
   of Goal-number-specific prose. Nine positive/negative tests pass with 154
   assertions, including stale handoff after a legitimate regeneration.
 - Next: implement typed design artifacts/providers and one registry.
+
+### G2.1
+
+- Added typed artifact kind/descriptor, provider interface, deterministic
+  filesystem/built-in/project providers and one immutable registry.
+- Namespace ownership is exclusive; priority orders discovery but cannot
+  shadow an existing namespace or definition.
+- Fixed roots, direct JSON artifacts, schema validation, source hashes and
+  provider provenance are enforced. Missing optional project root is empty;
+  symlink, outside-root, invalid ID/schema and reserved namespace fail closed.
+- Focused registry suite: 6 tests / 18 assertions, PASS.
+- Next: make DefinitionRepository consume the registry and remove its constant
+  table only after built-in parity.
 
 ## Remaining
 

@@ -14,6 +14,8 @@ Independent Goal 1 audit: `PASS_WITH_NOTES`, marker
   hard-coded boundaries, target owners and deletion gates.
 - [G2.0-GOVERNANCE-CHECKPOINT.md](G2.0-GOVERNANCE-CHECKPOINT.md) — accepted
   inputs, state-driven freshness regression and Goal 2 transition proof.
+- [G2.1-DESIGN-REGISTRY.md](G2.1-DESIGN-REGISTRY.md) — artifact/provider/
+  registry contract and security-focused checks.
 
 Later batch evidence must bind exact candidate/parent revisions, affected
 artifacts, commands/results, parity/security hashes, rollback and nonclaims.

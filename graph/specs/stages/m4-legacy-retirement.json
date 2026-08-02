@@ -13,7 +13,8 @@
   "source_refs": ["docs/specification/ACCEPTANCE.md"],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/INDEX.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.6-REVERSE-OUTCOME-AUDIT.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_goal_ref": "docara.goal.unified",

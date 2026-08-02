@@ -111,7 +111,7 @@ PASS ставится только по воспроизводимому evidenc
 - [x] Полная документационная сборка и static verifier проходят.
 - [ ] README, CLI help и публичная документация совпадают с runtime.
 - [x] Architecture graph валиден и mappings отражают exact code/tests/evidence.
-- [ ] Worktree чист после фиксации candidate.
+- [x] Worktree чист после фиксации candidate.
 - [ ] Независимый tester проверил exact archive, а не mutable worktree.
 
 ## Итоговый release gate

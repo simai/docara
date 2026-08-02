@@ -19,7 +19,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.2-PHYSICAL-EXAMPLES.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.4-TYPED-CONTOUR.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.6-REVERSE-OUTCOME-AUDIT.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.m4.retirement",
@@ -27,5 +28,5 @@
   "forbidden_scope": ["Delete before parity", "Delete canonical Markdown", "Rewrite git history", "Release"],
   "checks": ["Zero-reference scan", "Clean build", "Rollback commit", "No generated source dependency"],
   "status": "completed_with_evidence",
-  "next_action": "run_m4_reverse_audit_then_handoff_exact_candidate_to_m5"
+  "next_action": "handoff_exact_candidate_to_m5"
 }

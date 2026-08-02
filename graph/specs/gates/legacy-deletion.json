@@ -15,7 +15,8 @@
     "docara.evidence.zero_reference_scan",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.4-TYPED-CONTOUR.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md",
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.6-REVERSE-OUTCOME-AUDIT.md"
   ],
   "profile_refs": ["docara.unified"],
   "pass_conditions": ["Positive parity", "Negative zero-reference scan", "Clean build after deletion", "Rollback commit boundary", "No canonical source deleted"],

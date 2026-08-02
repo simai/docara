@@ -1,4 +1,4 @@
-# Next checkpoint: M4 reverse audit and M5 handoff
+# Next checkpoint: M5 exact-candidate acceptance
 
 The bounded M3 Russian components Goal is complete and independently accepted.
 M4 is now active. Recovery source:
@@ -36,12 +36,16 @@ static/format/graph checks and the complete representative browser matrix are
 green on runtime candidate `45ac1e2`. Evidence is
 `M4.5-INTEGRATED-ACCEPTANCE.md` in the M4 evidence directory.
 
+## M4 handoff decision
+
+M4 reverse-outcome audit is `PASS_WITH_NONCLAIMS`. The current Russian public
+site is unified; M5 is unblocked.
+
 ## Active next action
 
-Perform the final reverse-outcome audit over the committed M4 evidence and
-leave a clean exact candidate for M5. M5 must test a clean archive without
-mutating the candidate, including portable init/update and the global
-acceptance items deliberately left unchecked.
+Test the exact clean archive without mutating the candidate. M5 must cover
+portable init/update, the global author workflow, remaining accessibility and
+locale/security acceptance items, and an independent exact-revision review.
 
 M5/global acceptance, other locales, release and production remain unclaimed.
-Merge, push, tag, release and deploy remain forbidden.
+Merge, push, tag, release and deploy remain forbidden until separate approval.

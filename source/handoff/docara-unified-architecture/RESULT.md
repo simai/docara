@@ -695,3 +695,22 @@ Status: PASS; final reverse audit and handoff remain
 
 M5 exact-archive acceptance, other locales, release and production remain
 unclaimed. No merge, push, tag, release or deploy was performed.
+
+# M4 final result
+
+Status: PASS_WITH_NONCLAIMS; M4 is complete
+
+- the full current Russian public site has 103 physical Markdown owners and no
+  generated public owner;
+- one PageBuilder, typed in-memory Document IR, renderer registry and Smart
+  gateway serve full and isolated builds;
+- retired public projectors, generated allowlist/receipts and trusted-main
+  bypass have zero runtime/test references and commit-addressable rollback;
+- 103/103 full/single HTML parity, deterministic full builds, zero broken
+  links/assets, full tests and browser acceptance pass;
+- reverse audit:
+  `source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.6-REVERSE-OUTCOME-AUDIT.md`.
+
+M5 exact-archive acceptance is now ready but not executed. Other locales,
+release and production remain unclaimed. No merge, push, tag, release or deploy
+was performed.

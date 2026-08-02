@@ -72,7 +72,6 @@ final readonly class PortableSiteBuilder
         $contentLanguages = new ContentLanguageRepository($root);
         $translator = new Translator(
             $localeRegistry,
-            null,
             $contentLanguages,
             false,
         );

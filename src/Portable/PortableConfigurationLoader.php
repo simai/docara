@@ -224,9 +224,8 @@ final class PortableConfigurationLoader
             $configuration['locale'] = $locale->tag->value();
             $configuration['direction'] = $locale->direction;
             $configuration['content_root'] = $locale->contentRoot;
-            $configuration['language_pack'] = $locale->languagePack;
             $configuration['public_prefix'] = $locale->publicPrefix;
-            foreach (['locale', 'direction', 'content_root', 'language_pack', 'public_prefix'] as $field) {
+            foreach (['locale', 'direction', 'content_root', 'public_prefix'] as $field) {
                 $provenance['/' . $field] = '@locale-registry/' . $locale->tag->value();
             }
         }

@@ -10,7 +10,6 @@
     "forbidden_public_inputs": [
         "site.json",
         "resources/i18n/**",
-        "resources/language-packs/**",
         "resources/system-messages/**"
     ],
     "package_owned_system_inputs": [

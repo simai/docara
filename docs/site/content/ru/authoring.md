@@ -14,7 +14,7 @@
 
 Начинайте с обычного Markdown. Добавляйте JSON только для представления и
 навигации. Выбирайте компонент только тогда, когда Markdown недостаточно, и
-берите точный вызов из generated catalog.
+берите точный вызов из справочника компонентов.
 
 :::
 
@@ -27,8 +27,8 @@
 5. [Проверьте наследование и `$reset`](/authoring/inheritance/).
 6. [Выберите `docs` или `landing`](/authoring/layout-and-navigation/).
 7. Для нескольких языков соберите
-   [мультиязычный сайт](/authoring/multilingual-site/) и при необходимости
-   [свой language pack](/authoring/language-packs/).
+   [мультиязычный сайт](/authoring/multilingual-site/) и настройте
+   [общие подписи локали](/authoring/language-packs/).
 8. При изменении URL [объявите redirect](/authoring/redirects/).
 9. [Сравните живые макеты и их точные исходники](/examples/).
 10. При необходимости [найдите компонент](/components/).

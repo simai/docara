@@ -192,7 +192,7 @@ final class PortableSiteBuilderTest extends TestCase
                 ),
             );
             if ($locale !== 'ru') {
-                $this->installContentLanguageFromPackage($locale, $this->tmpPath("content/$locale/lang.json"));
+                $this->installTestContentLanguage($locale, $this->tmpPath("content/$locale/lang.json"));
             }
         }
         $this->filesystem->deleteDirectory($this->tmpPath('content-source'));
@@ -211,11 +211,11 @@ final class PortableSiteBuilderTest extends TestCase
         $site = $this->jsonFile($this->tmpPath('docara.json'));
         $site['content_root'] = 'content/ru';
         $site['locales'] = [
-            'ru' => $this->localeDefinition('Русский', 'ltr', 'content/ru', '@docara/ru', '', []),
-            'en' => $this->localeDefinition('English', 'ltr', 'content/en', '@docara/en', 'en', []),
-            'ar' => $this->localeDefinition('العربية', 'rtl', 'content/ar', '@docara/ar', 'ar', ['en']),
-            'zh-Hans' => $this->localeDefinition('简体中文', 'ltr', 'content/zh-Hans', '@docara/zh-Hans', 'zh-hans', ['en']),
-            'fr-CA' => $this->localeDefinition('Français (Canada)', 'ltr', 'content/fr-CA', '@docara/fr-CA', 'fr-ca', ['en']),
+            'ru' => $this->localeDefinition('Русский', 'ltr', 'content/ru', '', []),
+            'en' => $this->localeDefinition('English', 'ltr', 'content/en', 'en', []),
+            'ar' => $this->localeDefinition('العربية', 'rtl', 'content/ar', 'ar', ['en']),
+            'zh-Hans' => $this->localeDefinition('简体中文', 'ltr', 'content/zh-Hans', 'zh-hans', ['en']),
+            'fr-CA' => $this->localeDefinition('Français (Canada)', 'ltr', 'content/fr-CA', 'fr-ca', ['en']),
         ];
         file_put_contents(
             $this->tmpPath('docara.json'),
@@ -309,7 +309,7 @@ final class PortableSiteBuilderTest extends TestCase
         $this->filesystem->ensureDirectoryExists($this->tmpPath('content/en'));
         file_put_contents($this->tmpPath('content/en/index.md'), "# English fixture\n\nExact locale owner.\n");
         $site = $this->jsonFile($this->tmpPath('docara.json'));
-        $site['locales']['en'] = $this->localeDefinition('English', 'ltr', 'content/en', '@docara/en', 'en', ['ru']);
+        $site['locales']['en'] = $this->localeDefinition('English', 'ltr', 'content/en', 'en', ['ru']);
         file_put_contents($this->tmpPath('docara.json'), CanonicalJson::encodePretty($site));
         $this->filesystem->ensureDirectoryExists($this->tmpPath('build_local'));
         file_put_contents($this->tmpPath('build_local/sentinel.txt'), 'accepted');
@@ -2249,7 +2249,6 @@ MD;
         string $label,
         string $direction,
         string $contentRoot,
-        string $languagePack,
         string $publicPrefix,
         array $fallbacks,
     ): array {
@@ -2257,7 +2256,6 @@ MD;
             'label' => $label,
             'direction' => $direction,
             'content_root' => $contentRoot,
-            'language_pack' => $languagePack,
             'public_prefix' => $publicPrefix,
             'fallbacks' => $fallbacks,
         ];
@@ -2359,24 +2357,21 @@ MD;
         );
     }
 
-    private function installContentLanguageFromPackage(string $locale, string $target): void
+    private function installTestContentLanguage(string $locale, string $target): void
     {
-        $pack = $this->jsonFile(dirname(__DIR__) . '/resources/language-packs/' . $locale . '.json');
+        $fixture = dirname(__DIR__) . "/tests/fixtures/m5-multilingual-site/content/$locale/lang.json";
+        if (is_file($fixture)) {
+            copy($fixture, $target);
+
+            return;
+        }
+
         $language = $this->jsonFile(dirname(__DIR__) . '/stubs/portable/content/ru/lang.json');
-        foreach ($pack['messages'] as $id => $message) {
-            $namespace = explode('.', (string) $id, 2)[0];
-            if (! isset($language[$namespace]) || ! is_array($language[$namespace])) {
-                continue;
-            }
-            $cursor = &$language;
-            foreach (explode('.', (string) $id) as $segment) {
-                if (! isset($cursor[$segment]) || ! is_array($cursor[$segment])) {
-                    $cursor[$segment] = [];
-                }
-                $cursor = &$cursor[$segment];
-            }
-            $cursor = $message;
-            unset($cursor);
+        if ($locale === 'zh-Hans') {
+            $language['language']['label'] = '语言';
+            $language['reader']['title'] = '阅读设置';
+            $language['navigation']['sections'] = '章节';
+            $language['navigation']['outline'] = '目录';
         }
         file_put_contents(
             $target,

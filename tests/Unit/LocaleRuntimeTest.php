@@ -9,7 +9,6 @@ use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Simai\Docara\I18n\ContentLanguageRepository;
-use Simai\Docara\I18n\LanguagePackRepository;
 use Simai\Docara\I18n\LocaleInternalLinkProjector;
 use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\LocaleRoutingPolicy;
@@ -28,7 +27,7 @@ final class LocaleRuntimeTest extends TestCase
         parent::setUp();
 
         $this->root = sys_get_temp_dir() . '/docara-i18n-' . bin2hex(random_bytes(8));
-        mkdir($this->root . '/languages', 0777, true);
+        mkdir($this->root, 0777, true);
     }
 
     protected function tearDown(): void
@@ -184,42 +183,23 @@ HTML;
         $this->assertConfigurationError('DEFAULT_LOCALE_MUST_BE_UNPREFIXED', fn () => LocaleRoutingPolicy::fromSite($site, $registry));
     }
 
-    public function test_language_packs_and_translator_resolve_exact_and_configured_fallback_copy(): void
+    public function test_content_lang_and_translator_resolve_exact_and_configured_fallback_copy(): void
     {
-        $this->writePack('en', [
+        $this->writeLang('en', [
             'common.greeting' => 'Hello, {name}!',
             'common.only_en' => 'English fallback',
-        ], [
-            'ui.alert' => [
-                'title' => 'Alert',
-                'description' => 'Shows an important message.',
-                'limitations' => [],
-                'states' => ['info' => 'Information'],
-                'parameters' => [
-                    'tone' => ['label' => 'Tone', 'description' => 'Visual intent.'],
-                ],
-            ],
         ]);
-        $this->writePack('fr', [
+        $this->writeLang('fr', [
             'common.greeting' => 'Bonjour, {name}!',
-        ], [
-            'ui.alert' => [
-                'title' => 'Alerte',
-                'states' => ['info' => 'Information'],
-                'parameters' => ['tone' => ['label' => 'Ton']],
-            ],
         ]);
-        $this->writePack('fr-CA', [
+        $this->writeLang('fr-CA', [
             'common.continue' => 'Continuer',
-        ], []);
+        ]);
 
         $site = $this->site();
-        foreach (['en', 'fr', 'fr-CA'] as $tag) {
-            $site['locales'][$tag]['language_pack'] = "languages/$tag.json";
-        }
         $translator = new Translator(
             LocaleRegistry::fromSite($site),
-            new LanguagePackRepository($this->root),
+            new ContentLanguageRepository($this->root),
         );
 
         self::assertSame('Continuer', $translator->message('fr-ca', 'common.continue'));
@@ -227,15 +207,6 @@ HTML;
         self::assertSame('English fallback', $translator->message('fr-CA', 'common.only_en'));
         self::assertSame('Default {missing}', $translator->messageOr('fr-CA', 'code.copy', 'Default {missing}'));
         self::assertSame('Default Rim', $translator->messageOr('fr-CA', 'code.copy', 'Default {name}', ['name' => 'Rim']));
-        self::assertSame([
-            'title' => 'Alerte',
-            'description' => 'Shows an important message.',
-            'limitations' => [],
-            'states' => ['info' => 'Information'],
-            'parameters' => [
-                'tone' => ['label' => 'Ton', 'description' => 'Visual intent.'],
-            ],
-        ], $translator->component('fr-CA', 'ui.alert'));
     }
 
     public function test_content_language_is_the_public_ui_overlay_without_owning_component_prose(): void
@@ -253,7 +224,6 @@ HTML;
         $registry = LocaleRegistry::fromSite($this->site());
         $translator = new Translator(
             $registry,
-            new LanguagePackRepository($this->root),
             new ContentLanguageRepository($this->root),
         );
 
@@ -263,27 +233,15 @@ HTML;
             $translator->message('ru', 'navigation.backlinks_heading'),
         );
         self::assertSame('Copy', $translator->messageOr('ru', 'code.copy', 'Copy'));
-        $this->assertConfigurationError(
-            'COMPONENT_PRESENTATION_NOT_FOUND',
-            fn () => $translator->component('ru', 'docara.card'),
-        );
     }
 
-    public function test_bundled_packs_cover_the_acceptance_locales_and_project_references_are_confined(): void
+    public function test_site_schema_rejects_the_retired_public_language_pack_field(): void
     {
         $site = $this->site();
-        $repository = new LanguagePackRepository($this->root);
-        $registry = LocaleRegistry::fromSite($site);
-
-        foreach (['ru', 'en', 'ar', 'zh-Hans', 'fr-CA'] as $tag) {
-            self::assertSame($tag, $repository->load($registry->get($tag))->locale->value());
-        }
-
         $site['locales']['ru']['language_pack'] = '../outside.json';
-        $registry = LocaleRegistry::fromSite($site);
         $this->assertConfigurationError(
-            'LANGUAGE_PACK_REFERENCE_INVALID',
-            fn () => $repository->load($registry->get('ru')),
+            'SCHEMA_VALIDATION_FAILED',
+            fn () => (new SchemaRepository)->assertValid($site, 'site.schema.json'),
         );
     }
 
@@ -298,12 +256,12 @@ HTML;
             'framework_lock' => 'framework.lock.json',
             'default_locale' => 'ru',
             'locales' => [
-                'ru' => $this->locale('Русский', 'ltr', 'content/ru', '@docara/ru', '', []),
-                'en' => $this->locale('English', 'ltr', 'content/en', '@docara/en', 'en', []),
-                'ar' => $this->locale('العربية', 'rtl', 'content/ar', '@docara/ar', 'ar', ['en']),
-                'zh-Hans' => $this->locale('简体中文', 'ltr', 'content/zh-Hans', '@docara/zh-Hans', 'zh-hans', ['en']),
-                'fr' => $this->locale('Français', 'ltr', 'content/fr', 'languages/fr.json', 'fr', ['en']),
-                'fr-CA' => $this->locale('Français (Canada)', 'ltr', 'content/fr-CA', '@docara/fr-CA', 'fr-ca', ['fr']),
+                'ru' => $this->locale('Русский', 'ltr', 'content/ru', '', []),
+                'en' => $this->locale('English', 'ltr', 'content/en', 'en', []),
+                'ar' => $this->locale('العربية', 'rtl', 'content/ar', 'ar', ['en']),
+                'zh-Hans' => $this->locale('简体中文', 'ltr', 'content/zh-Hans', 'zh-hans', ['en']),
+                'fr' => $this->locale('Français', 'ltr', 'content/fr', 'fr', ['en']),
+                'fr-CA' => $this->locale('Français (Canada)', 'ltr', 'content/fr-CA', 'fr-ca', ['fr']),
             ],
         ];
     }
@@ -313,7 +271,6 @@ HTML;
         string $label,
         string $direction,
         string $root,
-        string $pack,
         string $prefix,
         array $fallbacks,
     ): array {
@@ -321,21 +278,25 @@ HTML;
             'label' => $label,
             'direction' => $direction,
             'content_root' => $root,
-            'language_pack' => $pack,
             'public_prefix' => $prefix,
             'fallbacks' => $fallbacks,
         ];
     }
 
-    /** @param array<string, string> $messages @param array<string, array<string, mixed>> $components */
-    private function writePack(string $locale, array $messages, array $components): void
+    /** @param array<string, string> $messages */
+    private function writeLang(string $locale, array $messages): void
     {
-        file_put_contents($this->root . "/languages/$locale.json", json_encode([
-            'schema' => 'docara.language_pack.v1',
-            'locale' => $locale,
-            'messages' => $messages,
-            'components' => $components,
-        ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
+        $root = $this->root . "/content/$locale";
+        mkdir($root, 0777, true);
+        $document = ['schema' => 'docara.lang.v1', 'version' => 1];
+        foreach ($messages as $id => $message) {
+            [$namespace, $key] = explode('.', $id, 2);
+            $document[$namespace][$key] = $message;
+        }
+        file_put_contents(
+            "$root/lang.json",
+            json_encode($document, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+        );
     }
 
     private function assertConfigurationError(string $code, callable $callback): void

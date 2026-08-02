@@ -10,6 +10,7 @@ use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Simai\Docara\ComponentCatalog\PublicComponentPage;
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use SplFileInfo;
@@ -225,7 +226,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
     }
 
     #[Test]
-    public function real_russian_site_uses_content_lang_and_not_package_component_prose(): void
+    public function real_russian_site_uses_content_lang_and_rejects_the_retired_pack_field(): void
     {
         $root = dirname(__DIR__);
         $site = $this->temporary . '/badge-source-boundary';
@@ -233,46 +234,38 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $filesystem->copyDirectory($root . '/docs/site', $site);
         $site = realpath($site);
         self::assertIsString($site);
-        $languagePackPath = $site . '/language-pack-under-test.json';
-        $languagePack = $this->json($root . '/resources/language-packs/ru.json');
+        $builder = new PortableSiteBuilder($filesystem, new PortableMarkdownRenderer);
+        $builder->build($site, $site . '/build_baseline');
+        $baseline = (string) file_get_contents($site . '/build_baseline/ru/index.html');
+        self::assertStringContainsString('Поиск', $baseline);
+
+        $langPath = $site . '/content/ru/lang.json';
+        $lang = $this->json($langPath);
+        $lang['search']['label'] = 'Поиск из content lang';
         file_put_contents(
-            $languagePackPath,
-            json_encode($languagePack, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+            $langPath,
+            json_encode($lang, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
         );
+
+        $pages = $builder->build($site, $site . '/build_test');
+        self::assertCount(103, $pages);
+        self::assertStringContainsString(
+            'Поиск из content lang',
+            (string) file_get_contents($site . '/build_test/ru/index.html'),
+        );
+
         $configuration = $this->json($site . '/docara.json');
-        $configuration['locales']['ru']['language_pack'] = 'language-pack-under-test.json';
+        $configuration['locales']['ru']['language_pack'] = '@docara/ru';
         file_put_contents(
             $site . '/docara.json',
             json_encode($configuration, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
         );
-        $builder = new PortableSiteBuilder($filesystem, new PortableMarkdownRenderer);
-        $builder->build($site, $site . '/build_baseline');
-        $baselineBadgeHash = hash_file('sha256', $site . '/build_baseline/ru/components/badge/index.html');
-        $baselineIndexHash = hash_file('sha256', $site . '/build_baseline/ru/components/index.html');
-        $baselineExamplesHash = hash_file('sha256', $site . '/build_baseline/ru/examples/index.html');
-
-        $languagePack['messages']['examples.title'] = 'FORBIDDEN PACKAGE MESSAGE';
-        $languagePack['components']['docara.badge'] = ['title' => 'FORBIDDEN PACKAGE PROSE'];
-        file_put_contents(
-            $languagePackPath,
-            json_encode($languagePack, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
-        );
-
-        $pages = $builder->build($site, $site . '/build_test');
-
-        self::assertCount(103, $pages);
-        self::assertSame(
-            $baselineBadgeHash,
-            hash_file('sha256', $site . '/build_test/ru/components/badge/index.html'),
-        );
-        self::assertSame(
-            $baselineIndexHash,
-            hash_file('sha256', $site . '/build_test/ru/components/index.html'),
-        );
-        self::assertSame(
-            $baselineExamplesHash,
-            hash_file('sha256', $site . '/build_test/ru/examples/index.html'),
-        );
+        try {
+            $builder->build($site, $site . '/build_rejected');
+            self::fail('The retired public language_pack field unexpectedly passed site validation.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
+        }
     }
 
     /** @return list<string> */

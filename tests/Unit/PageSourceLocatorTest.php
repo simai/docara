@@ -94,7 +94,6 @@ final class PageSourceLocatorTest extends TestCase
                     'label' => 'Русский',
                     'direction' => 'ltr',
                     'content_root' => 'content/ru',
-                    'language_pack' => '@docara/ru',
                     'public_prefix' => 'ru',
                     'fallbacks' => [],
                 ],

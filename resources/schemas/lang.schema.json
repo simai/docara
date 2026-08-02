@@ -17,7 +17,6 @@
         "language": {"$ref": "#/$defs/group"},
         "reader": {"$ref": "#/$defs/group"},
         "redirect": {"$ref": "#/$defs/group"},
-        "examples": {"$ref": "#/$defs/group"},
         "code": {"$ref": "#/$defs/group"},
         "shell": {"$ref": "#/$defs/group"}
     },

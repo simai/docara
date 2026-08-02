@@ -53,7 +53,6 @@ content/
       "label": "Русский",
       "direction": "ltr",
       "content_root": "content/ru",
-      "language_pack": "@docara/ru",
       "public_prefix": "ru",
       "fallbacks": []
     },
@@ -61,7 +60,6 @@ content/
       "label": "English",
       "direction": "ltr",
       "content_root": "content/en",
-      "language_pack": "@docara/en",
       "public_prefix": "en",
       "fallbacks": []
     },
@@ -69,7 +67,6 @@ content/
       "label": "العربية",
       "direction": "rtl",
       "content_root": "content/ar",
-      "language_pack": "@docara/ar",
       "public_prefix": "ar",
       "fallbacks": ["en"]
     }
@@ -94,8 +91,9 @@ content/
 ```
 
 Все locale из `fallbacks` обязаны присутствовать в этом же реестре. Арабский
-встроенный pack дополняется английским, но Markdown-контент не переводится
-fallback-механизмом. Для RTL явно задаётся `"direction": "rtl"`.
+`content/ar/lang.json` может дополняться общими английскими UI-подписями, но
+Markdown-контент не переводится fallback-механизмом. Для RTL явно задаётся
+`"direction": "rtl"`.
 
 Каждая локаль также может иметь собственное верхнее меню. Например,
 `content/ru/section.json` содержит русские подписи:
@@ -153,4 +151,4 @@ php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 fallback.
 
 Далее: [модель локалей](/authoring/localization/) и
-[собственный language pack](/authoring/language-packs/).
+[общие подписи локали](/authoring/language-packs/).

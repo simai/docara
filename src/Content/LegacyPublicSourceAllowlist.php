@@ -12,9 +12,6 @@ final readonly class LegacyPublicSourceAllowlist
     /** @var array<string, true> */
     private array $generatedRoutes;
 
-    /** @var array<string, int> */
-    private array $languagePackComponentMaxima;
-
     public function __construct(?string $path = null)
     {
         $path ??= __DIR__ . '/../../resources/legacy-public-source-allowlist.json';
@@ -35,15 +32,13 @@ final readonly class LegacyPublicSourceAllowlist
         }
 
         $routes = $decoded['generated_routes'] ?? null;
-        $maxima = $decoded['language_pack_component_maxima'] ?? null;
-        if (! is_array($routes) || ! array_is_list($routes) || ! is_array($maxima)) {
+        if (! is_array($routes) || ! array_is_list($routes)) {
             throw new PortableConfigurationException(
                 'LEGACY_PUBLIC_SOURCE_ALLOWLIST_INVALID',
-                'Legacy generated routes and language-pack maxima must be explicit collections.',
+                'Legacy generated routes must be an explicit list.',
             );
         }
         $this->generatedRoutes = array_fill_keys($routes, true);
-        $this->languagePackComponentMaxima = array_map(static fn (mixed $count): int => (int) $count, $maxima);
     }
 
     /** @param list<array<string, mixed>> $pages */
@@ -58,20 +53,6 @@ final readonly class LegacyPublicSourceAllowlist
                 throw new PortableConfigurationException(
                     'LEGACY_GENERATED_ROUTE_GROWTH_FORBIDDEN',
                     "Generated public route [$url] is outside the finite migration allowlist.",
-                );
-            }
-        }
-    }
-
-    /** @param array<string, int> $counts */
-    public function assertLanguagePackComponentCounts(array $counts): void
-    {
-        foreach ($counts as $locale => $count) {
-            $maximum = $this->languagePackComponentMaxima[$locale] ?? null;
-            if ($maximum === null || $count > $maximum) {
-                throw new PortableConfigurationException(
-                    'LEGACY_LANGUAGE_PACK_PROSE_GROWTH_FORBIDDEN',
-                    "Language pack [$locale] has [$count] component prose records; maximum is [" . ($maximum ?? 0) . '].',
                 );
             }
         }

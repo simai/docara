@@ -76,7 +76,6 @@ final class PortableMultilingualProductTest extends TestCase
             'label' => $label,
             'direction' => $direction,
             'content_root' => $contentRoot,
-            'language_pack' => '@docara/' . $prefix,
             'public_prefix' => $prefix,
             'fallbacks' => [],
         ];

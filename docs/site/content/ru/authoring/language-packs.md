@@ -1,100 +1,65 @@
-# Проектный language pack
+# Общие подписи локали
 
-Language pack переводит системные подписи Docara и представления компонентов,
-но не Markdown-страницы. Создавайте собственный pack, когда встроенного
-`@docara/<tag>` нет или проекту нужна своя терминология.
+Каждая локаль хранит повторяющиеся подписи интерфейса в одном файле:
+`content/<locale>/lang.json`. Здесь находятся поиск, содержание, кнопка
+копирования, переходы и accessibility labels. Текст страниц и описания
+компонентов остаются в Markdown.
 
-## 1. Создайте файл словаря
+## Создайте `lang.json`
 
-Например, `languages/fr-CA.json`:
-
-```json
-{
-  "schema": "docara.language_pack.v1",
-  "locale": "fr-CA",
-  "messages": {
-    "common.continue": "Continuer",
-    "common.greeting": "Bonjour, {name}!"
-  }
-}
-```
-
-Это полный schema-valid файл, но намеренно неполный перевод. Ключи сообщений
-имеют вид `group.message_id`; значения непустые. Имена параметров в фигурных
-скобках должны совпадать с canonical сообщением.
-
-## 2. Подключите pack и явный fallback
-
-В объекте `locales` файла `docara.json` добавьте `fr-CA` и уже настроенный
-`en`:
+Например, `content/fr-CA/lang.json`:
 
 ```json
 {
-  "en": {
-    "label": "English",
-    "direction": "ltr",
-    "content_root": "content/en",
-    "language_pack": "@docara/en",
-    "public_prefix": "en",
-    "fallbacks": []
+  "schema": "docara.lang.v1",
+  "version": 1,
+  "common": {
+    "continue": "Continuer"
   },
-  "fr-CA": {
-    "label": "Français (Canada)",
-    "direction": "ltr",
-    "content_root": "content/fr-CA",
-    "language_pack": "languages/fr-CA.json",
-    "public_prefix": "fr-ca",
-    "fallbacks": ["en"]
+  "code": {
+    "copy": "Copier",
+    "copied": "Copié"
   }
 }
 ```
 
-Этот блок является содержимым поля `locales`, а не самостоятельным
-`docara.json`. Сначала проверяется проектный pack `fr-CA`, затем английский.
-Fallback никогда не выводится автоматически из части тега `fr-CA`.
+Корневые группы ограничены общей UI-лексикой из
+`resources/schemas/lang.schema.json`. Группы `pages`, `components`, `catalog`
+и `examples` запрещены: пользовательский текст для них принадлежит Markdown.
 
-## 3. Переведите представление компонента
+## Объявите локаль
 
-Поле `components` необязательно. Добавляйте его только для точного ID из
-generated catalog. Пример фрагмента внутри корневого объекта pack:
+В `docara.json` укажите дерево контента, URL-префикс, направление и явные
+fallback-локали:
 
 ```json
 {
-  "components": {
-    "ui.alert": {
-      "title": "Alerte",
-      "description": "Affiche un message important dans le contenu."
-    }
-  }
+  "label": "Français (Canada)",
+  "direction": "ltr",
+  "content_root": "content/fr-CA",
+  "public_prefix": "fr-ca",
+  "fallbacks": ["en"]
 }
 ```
 
-Это фрагмент для объединения с полным файлом выше. Параметры, состояния и enum
-нельзя придумывать или удалять: после merge Docara сравнивает presentation с
-технической canonical-записью. Для полного перевода удобнее скопировать
-структуру соответствующего встроенного pack и менять только текстовые
-значения.
+Это содержимое записи `locales.fr-CA`, а не отдельный `docara.json`. Если общей
+подписи нет во французском `lang.json`, Docara может взять её из явно
+настроенного `content/en/lang.json`. Markdown-страницы таким способом никогда
+не подменяются.
 
-## 4. Проверьте pack реальной сборкой
+## Проверьте сайт
 
 ```bash
 php vendor/bin/docara build production
 php vendor/bin/docara verify-static build_production
 ```
 
-Build проверяет JSON Schema, совпадение `locale`, безопасный относительный путь,
-fallback-граф и наличие всех реально запрошенных сообщений и представлений.
-`verify-static` затем проверяет локализованные страницы, ссылки, поиск и
-generated catalog.
+Сборка проверяет схему `lang.json`, BCP 47, fallback-граф и наличие реально
+используемых UI-строк. Частые ошибки:
 
-Частые ошибки:
-
-- `LANGUAGE_PACK_LOCALE_MISMATCH` — поле `locale` не совпало с ключом реестра;
 - `LOCALE_FALLBACK_NOT_CONFIGURED` — fallback не объявлен в `locales`;
-- `LOCALE_FALLBACK_CYCLE` — цепочка замкнулась;
-- `MESSAGE_NOT_FOUND` — сообщения нет ни в pack, ни в fallback;
-- `COMPONENT_PRESENTATION_NOT_FOUND` — нет представления компонента.
+- `LOCALE_FALLBACK_CYCLE` — цепочка fallback замкнулась;
+- `MESSAGE_NOT_FOUND` — общей подписи нет в локали и её явных fallback.
 
-Schema находится в `resources/schemas/language-pack.schema.json`, а встроенные
-pack — в `resources/language-packs`. Эти package-файлы не редактируйте из
-проекта: создавайте собственный файл в `languages/`.
+Отдельного публичного language pack, поля `language_pack` и каталога
+`languages/` в Docara 2 нет.

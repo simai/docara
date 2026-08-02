@@ -57,7 +57,6 @@ Resolver начинает с небольшого встроенного наб�
       "label": "Русский",
       "direction": "ltr",
       "content_root": "content/ru",
-      "language_pack": "@docara/ru",
       "public_prefix": "ru",
       "fallbacks": []
     }
@@ -131,7 +130,7 @@ Resolver начинает с небольшого встроенного наб�
 
 `default_locale` выбирает язык, на который ведёт корень, но одна сборка может содержать любое
 число локалей из `locales`. Для каждой задаются отдельное Markdown-дерево,
-language pack, URL-префикс, направление `ltr/rtl` и явные fallback. Подробный
+URL-префикс, направление `ltr/rtl` и явные fallback для UI-подписей. Подробный
 контракт описан в разделе [Языки и локали](/authoring/localization/).
 
 `locale_routing` задаётся только на уровне сайта. Новый starter использует

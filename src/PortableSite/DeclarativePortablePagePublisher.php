@@ -77,7 +77,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         if ($copy === []) {
             throw new PortableConfigurationException(
                 'DECLARATIVE_PRIMARY_COPY_REQUIRED',
-                "Page [{$page['url']}] has no resolved language-pack copy.",
+                "Page [{$page['url']}] has no resolved locale UI copy from content/<locale>/lang.json.",
             );
         }
         $headerNavigation = is_array($page['header_navigation'] ?? null)

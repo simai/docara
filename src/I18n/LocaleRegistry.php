@@ -26,7 +26,6 @@ final readonly class LocaleRegistry
                     'label' => $tag,
                     'direction' => 'ltr',
                     'content_root' => (string) ($site['content_root'] ?? 'content'),
-                    'language_pack' => '@docara/' . $tag,
                     'public_prefix' => '',
                     'fallbacks' => [],
                 ],
@@ -92,14 +91,6 @@ final readonly class LocaleRegistry
             }
             $contentRoots[$contentRoot] = $tag;
 
-            $languagePack = trim((string) ($record['language_pack'] ?? ''));
-            if ($languagePack === '') {
-                throw new PortableConfigurationException(
-                    'LOCALE_LANGUAGE_PACK_REQUIRED',
-                    "Locale [$tag] must declare a language pack.",
-                );
-            }
-
             $fallbacks = [];
             foreach (($record['fallbacks'] ?? []) as $fallback) {
                 if (! is_string($fallback)) {
@@ -122,7 +113,6 @@ final readonly class LocaleRegistry
                 (string) ($record['label'] ?? $tag),
                 $direction,
                 $contentRoot,
-                $languagePack,
                 $prefix,
                 $fallbacks,
             );

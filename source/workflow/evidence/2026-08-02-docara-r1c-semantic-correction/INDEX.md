@@ -6,8 +6,8 @@ Input revision: `3c491e5bfdf60c8227954b27d50dc050f058d71b`
 
 | Checkpoint | Status | Evidence |
 | --- | --- | --- |
-| R1-C.1 correction governance | in_progress | this index and debt register |
-| R1-C.2 public language-pack retirement | pending | — |
+| R1-C.1 correction governance | pass | commit `218ff1f` and debt register |
+| R1-C.2 public language-pack retirement | pass | [runtime/source boundary](r1c-language-boundary.md) |
 | R1-C.3 authoring/spec/runtime convergence | pending | — |
 | R1-C.4 semantic documentation gates | pending | — |
 | R1-C.5 new exact candidate and update | pending | — |

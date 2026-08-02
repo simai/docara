@@ -12,7 +12,6 @@ final readonly class LocaleDefinition
         public string $label,
         public string $direction,
         public string $contentRoot,
-        public string $languagePack,
         public string $publicPrefix,
         public array $fallbacks,
     ) {}
@@ -25,7 +24,6 @@ final readonly class LocaleDefinition
             'label' => $this->label,
             'direction' => $this->direction,
             'content_root' => $this->contentRoot,
-            'language_pack' => $this->languagePack,
             'public_prefix' => $this->publicPrefix,
             'fallbacks' => $this->fallbacks,
         ];

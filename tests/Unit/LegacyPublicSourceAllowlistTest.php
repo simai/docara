@@ -73,64 +73,13 @@ final class LegacyPublicSourceAllowlistTest extends TestCase
         );
     }
 
-    public function test_bundled_language_pack_component_prose_counts_can_only_decrease(): void
+    public function test_retired_public_language_pack_contract_is_absent(): void
     {
         $root = dirname(__DIR__, 2);
-        $counts = [];
-        foreach (glob($root . '/resources/language-packs/*.json') ?: [] as $path) {
-            $pack = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
-            $counts[pathinfo($path, PATHINFO_FILENAME)] = count($pack['components'] ?? []);
-        }
-
-        $allowlist = new LegacyPublicSourceAllowlist;
-        $allowlist->assertLanguagePackComponentCounts($counts);
-        self::assertSame(['ar' => 8, 'en' => 42, 'fr-CA' => 8, 'ru' => 0, 'zh-Hans' => 8], $counts);
-        $russian = json_decode(
-            (string) file_get_contents($root . '/resources/language-packs/ru.json'),
-            true,
-            512,
-            JSON_THROW_ON_ERROR,
-        )['components'] ?? [];
-        self::assertSame([], $russian);
-        foreach ([
-            'docara.alert',
-            'docara.backlinks',
-            'docara.banner',
-            'docara.button',
-            'docara.card',
-            'docara.code',
-            'docara.details',
-            'docara.download',
-            'docara.embed',
-            'docara.example',
-            'docara.diagram',
-            'docara.figure',
-            'docara.grid',
-            'docara.logos',
-            'docara.math',
-            'docara.media',
-            'docara.steps',
-            'docara.tabs',
-            'docara.tree',
-            'docara.icon',
-            'docara.kbd',
-            'docara.hero',
-            'docara.html',
-            'native.code',
-            'native.footnotes_and_sources',
-            'native.headings_and_text',
-            'native.links_and_images',
-            'native.lists_and_quotes',
-            'native.table',
-        ] as $id) {
-            self::assertArrayNotHasKey($id, $russian);
-        }
-
-        $counts['ru']++;
-        $this->assertError(
-            'LEGACY_LANGUAGE_PACK_PROSE_GROWTH_FORBIDDEN',
-            fn () => $allowlist->assertLanguagePackComponentCounts($counts),
-        );
+        self::assertDirectoryDoesNotExist($root . '/resources/language-packs');
+        self::assertFileDoesNotExist($root . '/resources/schemas/language-pack.schema.json');
+        self::assertFileDoesNotExist($root . '/src/I18n/LanguagePack.php');
+        self::assertFileDoesNotExist($root . '/src/I18n/LanguagePackRepository.php');
     }
 
     private function assertError(string $code, callable $callback): void

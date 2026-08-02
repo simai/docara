@@ -4,14 +4,6 @@
     "baseline_revision": "2928d68b81665dd4873cebeb87a6192343c28805",
     "generated_route_owner": "none",
     "deletion_gate": "docara.gate.source_ownership",
-    "migration_rule": "Entries may be removed after Markdown parity evidence; new entries are forbidden.",
-    "generated_routes": [],
-    "language_pack_component_owner": "resources/language-packs/*.json",
-    "language_pack_component_maxima": {
-        "ar": 8,
-        "en": 42,
-        "fr-CA": 8,
-        "ru": 0,
-        "zh-Hans": 8
-    }
+    "migration_rule": "Generated public routes are retired; new entries are forbidden.",
+    "generated_routes": []
 }

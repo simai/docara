@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Simai\Docara\File\Filesystem;
-use Simai\Docara\I18n\LanguagePackRepository;
+use Simai\Docara\I18n\ContentLanguageRepository;
 use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\Translator;
 use Simai\Docara\Portable\SchemaRepository;
@@ -229,17 +229,23 @@ final class DocumentationContractTest extends TestCase
         self::assertCount(3, $multilingualRegistry->all());
         self::assertSame('rtl', $multilingualRegistry->get('ar')->direction);
 
-        $languagePack = $this->firstJsonExample('authoring/language-packs.md');
-        (new SchemaRepository)->assertValid($languagePack, 'language-pack.schema.json');
-        self::assertSame('fr-CA', $languagePack['locale']);
+        $language = $this->firstJsonExample('authoring/language-packs.md');
+        (new SchemaRepository)->assertValid($language, 'lang.schema.json');
+        self::assertSame('docara.lang.v1', $language['schema']);
 
-        $temporary = sys_get_temp_dir() . '/docara-documented-language-pack-' . bin2hex(random_bytes(8));
-        self::assertTrue(mkdir($temporary . '/languages', 0700, true));
+        $temporary = sys_get_temp_dir() . '/docara-documented-content-lang-' . bin2hex(random_bytes(8));
+        self::assertTrue(mkdir($temporary . '/content/fr-CA', 0700, true));
+        self::assertTrue(mkdir($temporary . '/content/en', 0700, true));
         try {
             file_put_contents(
-                $temporary . '/languages/fr-CA.json',
-                json_encode($languagePack, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
+                $temporary . '/content/fr-CA/lang.json',
+                json_encode($language, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR),
             );
+            file_put_contents($temporary . '/content/en/lang.json', json_encode([
+                'schema' => 'docara.lang.v1',
+                'version' => 1,
+                'navigation' => ['open' => 'Open navigation'],
+            ], JSON_THROW_ON_ERROR));
             $registry = LocaleRegistry::fromSite([
                 'default_locale' => 'en',
                 'locales' => [
@@ -247,7 +253,6 @@ final class DocumentationContractTest extends TestCase
                         'label' => 'English',
                         'direction' => 'ltr',
                         'content_root' => 'content/en',
-                        'language_pack' => '@docara/en',
                         'public_prefix' => 'en',
                         'fallbacks' => [],
                     ],
@@ -255,18 +260,17 @@ final class DocumentationContractTest extends TestCase
                         'label' => 'Français (Canada)',
                         'direction' => 'ltr',
                         'content_root' => 'content/fr-CA',
-                        'language_pack' => 'languages/fr-CA.json',
                         'public_prefix' => 'fr-ca',
                         'fallbacks' => ['en'],
                     ],
                 ],
             ]);
-            $translator = new Translator($registry, new LanguagePackRepository($temporary));
+            $translator = new Translator($registry, new ContentLanguageRepository($temporary));
             self::assertSame('Continuer', $translator->message('fr-CA', 'common.continue'));
             self::assertSame(
                 'Open navigation',
                 $translator->message('fr-CA', 'navigation.open'),
-                'The documented partial language pack must resolve missing messages through explicit fallback.',
+                'The documented partial content lang file must resolve missing UI messages through explicit fallback.',
             );
         } finally {
             (new Filesystem)->deleteDirectory($temporary);

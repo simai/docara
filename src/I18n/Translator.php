@@ -10,7 +10,6 @@ final readonly class Translator
 {
     public function __construct(
         private LocaleRegistry $locales,
-        private ?LanguagePackRepository $packs,
         private ?ContentLanguageRepository $contentLanguages = null,
         private bool $allowMessageFallbacks = true,
     ) {}
@@ -29,15 +28,6 @@ final readonly class Translator
             if (array_key_exists($id, $contentMessages)) {
                 return $this->replace($contentMessages[$id], $parameters);
             }
-            if ($this->packs === null) {
-                continue;
-            }
-            $pack = $this->packs->load($candidate);
-            if (! array_key_exists($id, $pack->messages)) {
-                continue;
-            }
-
-            return $this->replace($pack->messages[$id], $parameters);
         }
 
         throw new PortableConfigurationException(
@@ -75,51 +65,5 @@ final readonly class Translator
         }
 
         return $message;
-    }
-
-    /** @return array<string, mixed> */
-    public function component(string $locale, string $componentId): array
-    {
-        if ($this->packs === null) {
-            throw new PortableConfigurationException(
-                'COMPONENT_PRESENTATION_PACKAGE_ONLY',
-                'Public content-only translation does not expose package component presentations.',
-            );
-        }
-        $resolved = [];
-        $found = false;
-        $chain = array_reverse($this->locales->fallbackChain($locale));
-        foreach ($chain as $candidate) {
-            $presentation = $this->packs->load($candidate)->components[$componentId] ?? null;
-            if (! is_array($presentation)) {
-                continue;
-            }
-            $resolved = $this->merge($resolved, $presentation);
-            $found = true;
-        }
-        if (! $found) {
-            throw new PortableConfigurationException(
-                'COMPONENT_PRESENTATION_NOT_FOUND',
-                "Component [$componentId] has no presentation for locale [" . LocaleTag::from($locale)->value() . '] or its fallbacks.',
-            );
-        }
-
-        return $resolved;
-    }
-
-    /** @param array<string, mixed> $base @param array<string, mixed> $overlay @return array<string, mixed> */
-    private function merge(array $base, array $overlay): array
-    {
-        foreach ($overlay as $key => $value) {
-            if (is_array($value) && ! array_is_list($value) && is_array($base[$key] ?? null)
-                && ! array_is_list($base[$key])
-            ) {
-                $base[$key] = $this->merge($base[$key], $value);
-            } else {
-                $base[$key] = $value;
-            }
-        }
-
-        return $base;
     }
 }

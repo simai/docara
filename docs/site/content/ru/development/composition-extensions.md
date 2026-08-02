@@ -22,13 +22,13 @@ Layout
 | Section | `resources/sections/*.json` | зарегистрированный section View Tree |
 | Block | `resources/blocks/*.json` | renderer, разрешённый Section |
 | View Tree | `resources/views/*.json` | общий `ViewTreeRenderer` |
-| Product Smart | `resources/smart/<id>/manifest.json` и `views/*.json` | trusted template + immutable ViewModel |
+| Product Smart | `resources/smart/<id>/manifest.json` и `views/*.json` | provider + registered adapter/template |
 | Framework Smart | owner manifest + exact Framework lock | consumer policy + registered view/template |
+| Project Smart | `smart/<namespace>.<name>/` | portable SIMAI Framework v1 artifact через тот же Gateway |
 
-Файлы не обнаруживаются по glob. Каждый executable ID регистрируется явно и
-проверяется fail-closed. Layout, Section, Block и View Tree принадлежат
-`DefinitionRepository`; Smart-компоненты подключаются через расширяемый
-`SmartContribution` и единый `SmartRegistry`.
+Layout, Section, Block и View Tree принадлежат `DefinitionRepository`.
+Smart roots обнаруживаются детерминированными providers; каждый artifact и его
+исполняемые файлы проверяются fail-closed до включения в единый `SmartRegistry`.
 
 ## Добавление Layout
 
@@ -82,33 +82,24 @@ View Tree описывает только структуру: безопасны
 5. Запустите inspector/render tests для неизвестного kind, тега, utility,
    region и slot.
 
-## Добавление product Smart-компонента
+## Добавление project Smart-компонента
 
-Для `docara.<name>` нужны все части одной регистрации:
+1. Объявите namespace в `docara.json`; root всегда `smart/`.
+2. Создайте `smart/<namespace>.<name>/manifest.json` по portable SIMAI Framework v1.
+3. Добавьте `view/<code>.json`, `template/<code>.php` и объявленные assets.
+4. Вызовите canonical ID из Markdown dotted directive.
+5. Проверьте positive render и negatives для props, view, paths и symlinks.
 
-1. `resources/smart/<id>/manifest.json` — props, views, assets, lifecycle и
-   owner;
-2. `resources/smart/<id>/views/default.json` — template ID;
-3. immutable ViewModel в `src/Declarative/Rendering/View` и factory method;
-4. trusted PHP или Blade template в `resources/smart/<id>/templates`;
-5. CSS/JS в `resources/smart/assets`, объявленные в manifest и contribution;
-6. реализация `SmartContribution`, возвращающая definition, views, templates,
-   assets и, при переименовании, deprecated aliases;
-7. подключение contribution в `SmartRegistryBuilder`;
-8. resolver/factory branch в `SmartRenderer` и `ViewModelFactory`;
-9. если вызов разрешён в authored shell — enum schema, allowlist и prop checks
-   в `RegionCompositionResolver`;
-10. физический Markdown-owner, exact fixture, positive/negative tests,
-   machine catalog и browser acceptance.
-
-Template получает только object ViewModel. Не передавайте в него сырой
-авторский массив и не читайте JSON из template.
+Не добавляйте component ID в engine PHP, schema enum или contribution list.
+Provider registry сам связывает manifest, template и assets; Gateway выбирает
+resolver по provider ownership. Template получает стандартный context и
+проверенный `$view`.
 
 Один `SmartManifestValidator` проверяет общую форму `ui.*` и `docara.*`:
 props, events, views, presets, assets, Atlas и readiness. Для Framework Smart
-после этого действует дополнительный exact-lock admission. Product Smart не
-нужно дублировать в `DefinitionRepository` или `TrustedTemplateRegistry`:
-реестр строит обе проекции из contribution.
+после этого действует дополнительный exact-lock admission. Product/project
+Smart не нужно дублировать в `DefinitionRepository`: provider compiler строит
+registry и trusted template projection из одного artifact root.
 
 ## Добавление Smart-компонента SIMAI Framework
 

@@ -8,7 +8,7 @@
   "summary": "Replace component-ID Smart dispatch with one source-pinned portable artifact/provider runtime behind the existing gateway and prove one trusted project-local Smart across Docara and SF5.",
   "owner": "teamlead",
   "lifecycle": "active",
-  "readiness": "in_progress",
+  "readiness": "implementation_complete_audit_pending",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-02-docara-goal1-portable-smart-runtime.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/INDEX.md"],
@@ -24,5 +24,5 @@
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Smart path inventory", "Source-pinned SF5 contract", "Security negatives", "Cross-host compatibility", "Public parity", "Independent reverse-outcome audit"],
   "next_stage_ref": null,
-  "status": "g1_0_baseline_pass_candidate"
+  "status": "g1_6_integrated_candidate_ready_for_independent_audit"
 }

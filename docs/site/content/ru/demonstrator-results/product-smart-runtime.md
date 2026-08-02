@@ -19,7 +19,7 @@
 
 `ui.*` и `docara.*` проходят общий manifest contract. Framework-компоненты
 дополнительно проверяются по exact lock, а product-компоненты поставляются
-через `DocaraSmartContribution`.
+через provider-backed `SmartRegistry` и единый `SmartComponentGateway`.
 
 ## Portable runtime
 

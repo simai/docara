@@ -129,9 +129,10 @@ component — `CONTENT_COMPONENT_UNKNOWN`. Renderer получает `RenderCont
 
 ## 7. Smart gateway
 
-`SmartComponentGateway::render(ComponentInvocation, RenderContext)` —
-единственная точка вызова компонентов. Manifest registry разрешает alias,
-полное имя, owner, props, slots, view, normalizer и assets.
+`SmartComponentGateway` — единственная точка разрешения Smart-компонентов.
+Manifest registry сначала определяет provider owner, затем зарегистрированный
+resolver проверяет полное имя, props, slots, view/preset, template и assets.
+Gateway не содержит веток по namespace или component ID.
 
 Normalizer чистый: одинаковый call/context даёт одинаковый normalized call.
 Template не читает глобальные config напрямую. Любая зависимость приходит в
@@ -192,7 +193,7 @@ search — по text projection, backlinks — по link edges. Они не ре
 Разрешённые расширения:
 
 - новый node renderer через registry;
-- новый Smart manifest/template через registry contribution;
+- новый Smart manifest/template через provider-owned artifact root;
 - новый layout preset;
 - новый index projector;
 - новый source adapter в будущем.

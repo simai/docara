@@ -949,6 +949,26 @@ No merge, push, tag, release, publication, Caddy reload or live deployment was
 performed. Production remains closed until the user explicitly approves this
 exact candidate and the live preflight confirms unchanged inputs.
 
+# Goal 1 Portable Smart Runtime candidate
+
+Status: `IMPLEMENTATION_COMPLETE_AUDIT_PENDING`
+
+Tracked SF5 Smart artifact v1 is source-pinned and consumed through a bounded
+adapter. Deterministic project/package/Docara/Framework providers compile one
+SmartRegistry. The existing SmartComponentGateway dispatches by provider
+ownership, while SmartRenderer uses registered context/strategy IDs without a
+component-ID list. Manual contribution classes, ViewModelFactory and semantic
+component switches were removed after exact public parity.
+
+The initialized portable project includes one `project.notice` artifact under
+the fixed `smart/` root. It compiles into typed in-memory Document IR, renders
+and publishes its CSS through the same registry/Gateway/PageBuilder, without a
+component-specific engine source edit. Full integrated, cross-host, security,
+determinism, static and browser evidence is indexed at
+`source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/INDEX.md`.
+
+Goal 2/3, release identity and both live sites remain unchanged and unclaimed.
+
 # Exact rc.3 validation deployment
 
 Status: `PASS` at `https://docara-new.test`

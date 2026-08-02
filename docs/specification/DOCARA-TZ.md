@@ -239,8 +239,15 @@ Block-вызов использует контейнер:
 
 - `ui.*` — SIMAI Framework;
 - `docara.*` — продукт Docara;
+- объявленный namespace проекта — фиксированный project provider из `smart/`;
 - `badge`, `alert`, `example` и другие aliases — только удобные authoring names;
 - центральный builder не содержит `if`/`switch` для конкретного компонента.
+
+Project Smart использует tracked SF5 Smart artifact v1: `manifest.json`,
+`view/`, необязательный `preset/`, `template/` и объявленные `assets/`.
+Namespace задаётся в `docara.json`, но путь к PHP/template никогда не приходит
+из authored config или Markdown. Provider ownership выбирает resolver внутри
+единственного Gateway.
 
 ## 11. Layout и области
 

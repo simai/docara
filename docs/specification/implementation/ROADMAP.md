@@ -55,6 +55,16 @@ release и production не заявлены.
 - удаление cache + полное воспроизведение результата;
 - отсутствие обязательных page IR JSON/JSONL.
 
+## Goal 1. Portable Smart Runtime
+
+Статус: implementation complete, ожидает независимый reverse-outcome audit.
+Tracked SF5 Smart artifact v1 принят через source-pinned adapter. Bundled и
+project providers компилируют один `SmartRegistry`; Gateway выбирает resolver
+по provider ownership. Component-ID branches, `ViewModelFactory` и manual
+contribution lists удалены. Fresh project содержит portable `project.notice`,
+который проходит typed IR, общий renderer registry, Gateway и PageBuilder без
+правки engine `src/` для конкретного ID.
+
 ## M2. Вертикальный срез `components/badge`
 
 Статус: принят ограниченный вертикальный срез. Typed in-memory IR, общий

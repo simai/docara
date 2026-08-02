@@ -439,16 +439,18 @@ final class DocumentationContractTest extends TestCase
         $composition = (string) file_get_contents(
             $this->contentRoot() . '/development/composition-extensions.md',
         );
-        foreach (['Layout', 'Section', 'Block', 'View Tree', 'Smart', 'SmartContribution', 'SmartRegistry'] as $term) {
+        foreach (['Layout', 'Section', 'Block', 'View Tree', 'Smart', 'provider', 'SmartRegistry'] as $term) {
             self::assertStringContainsString($term, $composition);
         }
-        self::assertStringContainsString('Файлы не обнаруживаются по glob', $composition);
+        self::assertStringContainsString('детерминированными providers', $composition);
 
         $smart = (string) file_get_contents($this->contentRoot() . '/development/smart-components.md');
-        foreach (['docara.brand', 'docara.navigation', 'docara.toc', 'SmartManifestValidator', 'DocaraSmartContribution'] as $term) {
+        foreach (['docara.brand', 'docara.navigation', 'docara.toc', 'SmartComponentGateway', 'project.notice'] as $term) {
             self::assertStringContainsString($term, $smart);
         }
-        self::assertStringContainsString('не получает runtime-зависимость от Laravel', $smart);
+        foreach (['DocaraSmartContribution', 'FrameworkSmartContribution', 'ViewModelFactory'] as $obsolete) {
+            self::assertStringNotContainsString($obsolete, $smart . $composition);
+        }
     }
 
     #[Test]

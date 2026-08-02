@@ -8,10 +8,10 @@
   "summary": "Framework, Docara and declared project Smart components are resolved, validated, rendered and asset-collected through one gateway and deterministic provider ownership.",
   "owner": "dev",
   "lifecycle": "accepted",
-  "readiness": "goal1_extension_pending",
+  "readiness": "goal1_implemented_audit_pending",
   "visibility": "repository",
   "source_refs": ["docs/specification/DOCARA-TZ.md#10-smart-компоненты"],
-  "evidence_refs": [],
+  "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/INDEX.md"],
   "profile_refs": ["docara.unified"],
   "namespaces": {"framework": "ui.*", "product": "docara.*", "project": "<declared-project-namespace>.*"},
   "invariants": ["Unknown component fails with source location.", "Parameters validate before rendering.", "Assets are declared by manifests, not guessed by a page projector.", "Public documentation prose is not stored in the manifest."]

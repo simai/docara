@@ -1,144 +1,88 @@
 # Smart-компоненты Docara
 
-Docara использует тот же основной принцип, что Larena и SIMAI Framework:
-интерфейс собирается из компонентов с известным контрактом, а не из HTML,
-спрятанного в compiler или builder. Standalone-сборка при этом остаётся
-PHP-only и не получает runtime-зависимость от Laravel.
-
-## Три разных слоя
+Smart-компонент — переносимый UI-артефакт с проверяемым manifest,
+представлениями, шаблоном и assets. Все компоненты проходят один путь:
 
 ```text
-Layout region -> Section recipe -> Smart component
+Markdown -> typed Document IR -> renderer registry
+-> SmartComponentGateway -> LayoutComposer -> PageBuilder
 ```
 
-| Что видит пользователь | Область | Секция | Smart-компонент |
-| --- | --- | --- | --- |
-| Бренд в шапке | `header` | `docara.header` | `docara.brand` |
-| Левое меню | `sidebar` | `docara.navigation` | `docara.navigation` |
-| Содержание страницы | `outline` | `docara.outline` | `docara.toc` |
+Docara не выбирает renderer по имени компонента. Provider registry определяет
+владельца namespace, затем Gateway проверяет manifest, view, preset, props,
+template и assets. Неизвестное или небезопасное значение останавливает сборку.
 
-Область задаёт место в макете. Секция описывает, какими блоками это место
-наполнено. Smart-компонент владеет props, представлениями, шаблонами, assets,
-frontend-событиями и readiness.
+## Встроенные владельцы
 
-Имена `docara.header` и `docara.outline` остаются у секций ради стабильности
-конфигурации. Старые component ID принимаются только как deprecated aliases:
-`docara.header` разрешается в `docara.brand`, а `docara.outline` — в
-`docara.toc`. Новому коду следует использовать только canonical ID.
+| Namespace | Provider | Назначение |
+| --- | --- | --- |
+| `ui.*` | source-pinned `framework.lock` | Smart-компоненты SIMAI Framework |
+| `docara.*` | `docara.package` | shell и навигация Docara |
+| namespace проекта | `project.<namespace>` | компоненты конкретного сайта |
 
-## Где находится компонент
+`ui.alert`, `ui.button`, `docara.brand`, `docara.navigation`, `docara.toc` и
+`docara.preferences` разрешаются тем же Gateway. Deprecated aliases
+`docara.header` и `docara.outline` хранятся в artifact metadata, а не в PHP
+ветвлении.
+
+## Компонент проекта
+
+Объявите один namespace в `docara.json`:
+
+```json
+{"smart":{"namespace":"project"}}
+```
+
+Корень фиксирован: `smart/`. Config и Markdown не могут выбрать PHP-класс,
+callback или путь к template.
 
 ```text
-resources/smart/docara.<name>/manifest.json
-resources/smart/docara.<name>/views/*.json
-resources/smart/docara.<name>/templates/*
-resources/smart/assets/*
-src/Smart/DocaraSmartContribution.php
-src/Declarative/Rendering/View/*ViewModel.php
+smart/project.notice/
+├── manifest.json
+├── view/default.json
+├── template/default.php
+└── assets/notice.css
 ```
 
-Manifest описывает контракт и Atlas: props, events, views, presets, assets,
-состояния и readiness. View выбирает только зарегистрированный template.
-Template получает immutable ViewModel. CSS и JavaScript публикуются только для
-компонентов, которые присутствуют в asset plan страницы.
+Manifest использует tracked SIMAI Framework Smart artifact v1. Минимальный пример уже есть
+после `docara init`. В Markdown он вызывается так:
 
-Интерфейсные подписи также входят в проверяемые props. Builder берёт их из
-`content/<locale>/lang.json` текущей страницы и передаёт в `docara.navigation` и
-`docara.toc`; product template и component JavaScript не содержат
-языкозависимых строк. Поэтому один компонент работает с любым числом локалей и
-RTL без отдельных шаблонов.
-
-## Представления и presets
-
-- `docara.brand`: `default`, `compact`, `logo`, `text`;
-- `docara.navigation`: `default`, `compact`, `tree`;
-- `docara.toc`: `default`, `compact`.
-
-View определяет способ отображения одного контракта. Preset даёт именованную
-готовую конфигурацию view. Встроенная секция навигации использует `tree`, чтобы
-показывать до четырёх уровней, сохранять вложенность и раскрывать активную
-ветвь.
-
-## Общий реестр
-
-`SmartRegistry` строится из contributions. Встроенные contributions сейчас:
-
-- `FrameworkSmartContribution` для допущенных `ui.*`;
-- `DocaraSmartContribution` для product-компонентов `docara.*`.
-
-Один `SmartManifestValidator` проверяет общую платформонезависимую часть обоих
-семейств. Для `ui.*` дополнительно действует exact Framework lock и consumer
-policy. Registry fail-closed отклоняет неизвестный component, view, template,
-asset, несовместимые props или неполную readiness-запись.
-
-## Frontend-поведение
-
-`docara.navigation` сам владеет раскрытием дерева, защитой ссылок с дочерними
-пунктами, показом активной ветви и своим CSS. `docara.toc` владеет событием
-перехода по содержанию, определяет активный заголовок при прокрутке, помечает
-его через `aria-current="location"` и выводит маркер на линии правой области.
-`docara.brand` владеет вариантами бренда и адаптивным отображением подписи.
-Пользовательские `branding.mode` и `branding.size` преобразуются в
-зарегистрированный view и размер по шкале SIMAI Framework до рендеринга;
-произвольный template или список классов в конфигурацию не передаётся.
-
-Общий publisher shell только размещает готовые артефакты и registered chrome
-fragments. Он не содержит разметку product-компонентов и не выбирает их по
-именам.
-
-## Как изменить вид левого меню
-
-Левое меню не зашито в макет страницы. Его данные и внешний вид разделены:
-
-```text
-section/region JSON
-  -> props с деревом навигации
-  -> view docara.navigation
-  -> template + component-owned CSS/JavaScript
+```markdown
+:::project.notice
+{"title":"Компонент проекта","text":"Собран общим конвейером."}
+:::
 ```
 
-Для изменения только внешнего вида не нужно править Markdown, builder или
-publisher shell:
+Добавление нового `project.*` артефакта не требует правок `src/`. Duplicate ID,
+чужой namespace, symlink, traversal, неизвестный view/preset/prop, template или
+asset завершают сборку ошибкой.
 
-| Задача | Источник |
-| --- | --- |
-| Контракт props, views, presets и assets | `resources/smart/docara.navigation/manifest.json` |
-| Выбор зарегистрированного template | `resources/smart/docara.navigation/views/*.json` |
-| Разметка всего меню | `resources/smart/docara.navigation/templates/*.blade.php` |
-| Разметка одного рекурсивного пункта | `resources/smart/docara.navigation/templates/item.php` |
-| Состояния, токены и адаптация Framework Menu | `resources/smart/assets/navigation.css` |
-| Раскрытие ветвей и component event | `resources/smart/assets/navigation.js` |
-| Выбор view встроенной секцией | `resources/sections/docara.navigation.json` |
+## Контекст и assets
 
-Встроенный `tree` использует настоящие примитивы SIMAI Framework:
-`sf-menu`, `sf-menu-item`, `sf-menu-element`, `sf-icon-button` и `sf-icon`.
-Размеры, отступы, цвета hover/active, радиусы и темы задаются токенами
-Framework. Поэтому светлая, тёмная и системная темы не требуют отдельных
-шаблонов.
+Шаблон получает стандартный `SmartTemplateContext` и совместимый объект
+`$view` с проверенными и экранированными props. Общий contract включает locale,
+direction, route, slots/children, asset URL, escape и provenance. Host-bound
+адаптер выбирается package-owned manifest, а не component ID.
 
-Если нужен существенно другой вариант, добавьте новый зарегистрированный view
-в `resources/smart/docara.navigation/views/`, соответствующий template и
-preset в manifest, а затем выберите его в section JSON. Не создавайте
-page-specific CSS и не
-редактируйте `build_local` или `build_production`: это generated output.
+Project template считается trusted developer source. Его путь выводится только
+из фиксированного provider root и manifest/view записи. CSS/JavaScript также
+объявляются в manifest, проверяются по физическим файлам и публикуются через
+общий asset plan.
 
-Текущий `tree` сопоставлен с Simple Menu из SF UI Kit: Figma node
-`17583:25972` задаёт Menu Item и его состояния, а `17607:34059` показывает
-собранное многоуровневое меню. Фиксированная ширина демонстрации Figma не
-копируется — компонент занимает доступную ширину responsive-области `sidebar`.
+Интерфейсные подписи сайта приходят из `content/<locale>/lang.json`. Текст
+страниц остаётся в Markdown; manifest и project config не являются источником
+публичной документационной прозы.
 
-## Как добавить новый product Smart
+## Проверка
 
-1. Создайте manifest, views, templates и component-owned assets.
-2. Добавьте immutable ViewModel и преобразование проверенных props.
-3. Верните definition из отдельного `SmartContribution` или расширьте
-   `DocaraSmartContribution`.
-4. Если компонент доступен автору, отдельно сузьте allowlist соответствующего
-   Block или Section.
-5. Добавьте positive, negative, alias/compatibility и browser tests.
-6. Покажите компонент в source-backed демонстраторе.
+```bash
+php vendor/bin/phpunit tests/Unit/ProjectLocalSmartRuntimeTest.php
+php vendor/bin/phpunit tests/Unit/SmartProviderRegistryTest.php
+cd docs/site
+php ../../docara build production
+php ../../docara verify-static build_production
+```
 
-Project JSON не может указывать PHP-класс, callback, template path, raw HTML или
-JavaScript. Это сохраняет portable-сборку детерминированной и безопасной.
-
-Живой результат: [product Smart-компоненты в одном макете](/examples/product-smart-runtime/).
+Full и `--page` используют один PageBuilder. После изменения структуры routes
+нужна full build; для содержимого существующей страницы доступен single-page
+rebuild.

@@ -1,10 +1,12 @@
-# Next action: execute Goal 1 Portable Smart Runtime
+# Next action: independently audit Goal 1 Portable Smart Runtime
 
 The user explicitly postponed any live action and authorized Goal 1 from
 `source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md`.
-The active recovery source is now
-`source/workflow/2026-08-02-docara-goal1-portable-smart-runtime.md`; the next
-safe batch is G1.1 after the separate G1.0 baseline commit.
+The active recovery source is
+`source/workflow/2026-08-02-docara-goal1-portable-smart-runtime.md`. G1.0–G1.6
+are implemented as separate recoverable checkpoints. The next action is a
+read-only reverse-outcome audit bound to the final exact candidate and
+`source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/INDEX.md`.
 
 Do not touch `docara-new.test`, `docara.test` or external Framework repositories.
 Do not start Goal 2/3, merge, push, tag, release or deploy. Stop for independent

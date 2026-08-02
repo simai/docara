@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
+use Simai\Docara\Console\PreviewCommand;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
@@ -12,6 +13,9 @@ use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Preview\PreviewKernel;
 use Simai\Docara\Preview\PreviewShell;
 use Simai\Docara\Preview\PreviewTarget;
+use Simai\Docara\Preview\PreviewWatcher;
+use Symfony\Component\Console\Application;
+use Symfony\Component\Console\Tester\CommandTester;
 use Tests\TestCase;
 
 final class PreviewKernelTest extends TestCase
@@ -53,6 +57,40 @@ final class PreviewKernelTest extends TestCase
         self::assertFileExists($this->tmpPath('.docara-preview/output/smart/artifact.html'));
         self::assertFileDoesNotExist($this->tmpPath('.docara-preview/output/smart/.docara/resolved-page-plans.json'));
 
+        $application = new Application;
+        $application->add((new PreviewCommand($this->kernel, new PreviewShell(new Filesystem)))->setBase($this->tmp));
+        $tester = new CommandTester($application->find('preview'));
+        self::assertSame(0, $tester->execute([
+            'target' => 'region',
+            '--page' => '/ru/components/alert/',
+            '--selector' => 'main',
+            '--json' => true,
+        ]));
+        $json = json_decode(trim($tester->getDisplay()), true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('docara.preview_artifact.v1', $json['schema']);
+        self::assertFalse($json['accepted_build_receipt']);
+
+        self::assertSame(0, $tester->execute([
+            'target' => 'layout',
+            '--page' => '/ru/components/alert/',
+            '--json' => true,
+            '--watch' => true,
+            '--interval' => '50',
+            '--max-cycles' => '1',
+        ]));
+        $watched = json_decode(trim($tester->getDisplay()), true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame(['cycles_rebuilt' => 0, 'target_only' => true], $watched['watch']);
+
+        self::assertSame(1, $tester->execute([
+            'target' => 'smart',
+            '--page' => '/ru/components/alert/',
+            '--selector' => '../unsafe',
+            '--json' => true,
+        ]));
+        $error = json_decode(trim($tester->getDisplay()), true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('docara.cli_error.v1', $error['schema']);
+        self::assertSame('error', $error['status']);
+
     }
 
     #[Test]
@@ -62,6 +100,33 @@ final class PreviewKernelTest extends TestCase
         $this->expectExceptionMessage('PREVIEW_TARGET_NOT_FOUND');
 
         $this->kernel->render($this->tmp, '/ru/components/alert/', PreviewTarget::Smart, 'project.missing');
+    }
+
+    #[Test]
+    public function php_watch_invalidates_only_the_selected_target_dependency_closure(): void
+    {
+        $artifact = $this->kernel->render($this->tmp, '/ru/components/alert/', PreviewTarget::Region, 'main');
+        self::assertContains('content/ru/components/alert.md', $artifact->dependencies);
+        self::assertContains('content/ru/lang.json', $artifact->dependencies);
+        $watcher = new PreviewWatcher;
+        $watcher->prime($this->tmp, $artifact);
+        $this->filesystem->append($this->tmpPath('content/ru/components/alert.md'), "\n");
+        $calls = 0;
+        $rebuilt = $watcher->run(
+            $this->tmp,
+            $artifact,
+            function () use (&$calls) {
+                $calls++;
+
+                return $this->kernel->render($this->tmp, '/ru/components/alert/', PreviewTarget::Region, 'main');
+            },
+            50,
+            1,
+        );
+
+        self::assertSame(1, $calls);
+        self::assertCount(1, $rebuilt);
+        self::assertSame('/ru/components/alert/', $rebuilt[0]->page);
     }
 
     private function body(string $html): string

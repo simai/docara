@@ -10,6 +10,8 @@ use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableProjectInitializer;
 use Simai\Docara\PortableSite\PortableProjectUpdater;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
+use Simai\Docara\Preview\PreviewKernel;
+use Simai\Docara\Preview\PreviewShell;
 use Symfony\Component\Console\Application;
 
 final class ApplicationFactory
@@ -28,6 +30,7 @@ final class ApplicationFactory
             (new InitCommand($files, new PortableProjectInitializer($files)))->setBase($base),
             (new UpdateCommand(new PortableProjectUpdater($files)))->setBase($base),
             (new BuildCommand($builder))->setBase($base),
+            (new PreviewCommand(new PreviewKernel($builder, $files), new PreviewShell($files)))->setBase($base),
             (new ServeCommand)->setBase($base),
             (new VerifyStaticCommand)->setBase($base),
         ]);

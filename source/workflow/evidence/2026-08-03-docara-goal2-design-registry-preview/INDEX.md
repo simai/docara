@@ -22,6 +22,8 @@ Independent Goal 1 audit: `PASS_WITH_NOTES`, marker
   composition, project fixture and public parity.
 - [G2.4-PRODUCTION-PREVIEW.md](G2.4-PRODUCTION-PREVIEW.md) — production-build
   extraction parity and isolated output contract.
+- [G2.5-PREVIEW-CLI-WATCH.md](G2.5-PREVIEW-CLI-WATCH.md) — stable command
+  contract, target dependency closure and PHP-only invalidation.
 
 Later batch evidence must bind exact candidate/parent revisions, affected
 artifacts, commands/results, parity/security hashes, rollback and nonclaims.

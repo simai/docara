@@ -70,8 +70,8 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
 | G2.2 | built-ins migrated from constant registration | byte parity, zero-reference scan | pass |
 | G2.3 | data-driven composition and project `design/` fixture | no engine ID lists, fixture without `src/` edit | pass |
 | G2.4 | PreviewKernel and PreviewShell over production services | HTML/assets/provenance parity, receipt isolation | pass |
-| G2.5 | preview commands and PHP watch | human/JSON/exit-code fixtures, dependency invalidation | in progress |
-| G2.6 | integrated docs/graph/build/browser acceptance | full matrix and reverse-outcome evidence | pending |
+| G2.5 | preview commands and PHP watch | human/JSON/exit-code fixtures, dependency invalidation | pass |
+| G2.6 | integrated docs/graph/build/browser acceptance | full matrix and reverse-outcome evidence | in progress |
 
 ## Current Progress
 
@@ -140,7 +140,18 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
   from published preview output.
 - Next: stable CLI and target-only PHP watch.
 
+### G2.5
+
+- `docara preview smart|region|layout|page --page=...` emits human output or a
+  stable JSON artifact contract with deterministic hashes and exit codes.
+- `--watch` is PHP-only, monitors the route input chain plus locale UI copy and
+  confined project design/Smart/assets, then runs only the selected route.
+- Watch interval/cycles are bounded and invalid selectors fail closed before
+  any extraction or authored executable path can be accepted.
+- Focused command/kernel/watch suite: 3 tests / 33 assertions, PASS.
+- Next: documentation, graph/handoff and full build/browser acceptance.
+
 ## Remaining
 
-G2.5-G2.6 implementation and integrated acceptance remain. Goal 3 is not
+G2.6 integrated acceptance remains. Goal 3 is not
 authorized by this workflow.

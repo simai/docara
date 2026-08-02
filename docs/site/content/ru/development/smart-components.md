@@ -57,12 +57,26 @@ Manifest использует tracked SIMAI Framework Smart artifact v1. Мин�
 чужой namespace, symlink, traversal, неизвестный view/preset/prop, template или
 asset завершают сборку ошибкой.
 
-## Контекст и assets
+## Контекст шаблона и assets
 
-Шаблон получает стандартный `SmartTemplateContext` и совместимый объект
-`$view` с проверенными и экранированными props. Общий contract включает locale,
-direction, route, slots/children, asset URL, escape и provenance. Host-bound
-адаптер выбирается package-owned manifest, а не component ID.
+Переносимый PHP-шаблон получает тот же array ABI, что и source-pinned SF5
+Smart v1. Docara не вводит собственный template dialect.
+
+| Переменная | Форма |
+| --- | --- |
+| `$id` | строковый ID узла |
+| `$smart` | полное имя компонента |
+| `$manifest` | проверенный массив manifest |
+| `$view` | выбранный массив view |
+| `$preset` | выбранный массив preset либо пустой массив |
+| `$props` | проверенный массив author props |
+| `$childrenHtml` | готовая строка дочернего HTML |
+| `$slot` | строка slot либо пустая строка |
+
+Например, безопасный шаблон читает `<?= htmlspecialchars((string)
+($props['title'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>`. Объект
+`$view` и `SmartTemplateContext` относятся только к ограниченному legacy
+host-adapter старых package-owned шаблонов и не являются portable ABI.
 
 Project template считается trusted developer source. Его путь выводится только
 из фиксированного provider root и manifest/view записи. CSS/JavaScript также

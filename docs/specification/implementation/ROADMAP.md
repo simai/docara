@@ -57,11 +57,12 @@ release и production не заявлены.
 
 ## Goal 1. Portable Smart Runtime
 
-Статус: `Goal 1-C correction in progress`; предыдущий кандидат отклонён
-независимым аудитом. Provider runtime и единый Gateway сохранены, но переносимый
-template context должен быть приведён к точному SF5 array ABI, а оставшиеся
-search/parser/admission component-ID зависимости — удалены. Goal 2 не начат и
-остаётся заблокированным до нового независимого аудита.
+Статус: `Goal 1-C implementation complete, audit pending`; предыдущий кандидат
+отклонён независимым аудитом и остаётся historical. Исправленный portable
+template context использует точный SF5 array ABI, exact-lock policy заменила
+центральную Framework ID-карту, а search/parser/admission ID-зависимости
+удалены. Goal 2 не начат и остаётся заблокированным до нового независимого
+reverse-outcome audit.
 
 ## M2. Вертикальный срез `components/badge`
 

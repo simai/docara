@@ -134,9 +134,22 @@ Manifest registry сначала определяет provider owner, затем
 resolver проверяет полное имя, props, slots, view/preset, template и assets.
 Gateway не содержит веток по namespace или component ID.
 
+Portable template ABI совпадает с source-pinned SF5 Smart artifact v1:
+`$id` и `$smart` — строки; `$manifest`, `$view`, `$preset`, `$props` — массивы;
+`$childrenHtml` и `$slot` — строки. Typed objects остаются внутри Docara
+runtime. Старые package-owned object-view templates допускаются только через
+явный legacy ABI adapter; новые Framework/project artifacts используют один
+`sf5.smart.template.v1` contract. Framework consumer narrowing хранится в
+exact immutable lock рядом с manifest pin, а не в PHP-карте component IDs.
+
 Normalizer чистый: одинаковый call/context даёт одинаковый normalized call.
 Template не читает глобальные config напрямую. Любая зависимость приходит в
 context и отражается в provenance/hash.
+
+`RegionCompositionResolver` пока сохраняет ограниченный список shell region
+components. Это boundary будущего Goal 2 Design Registry, а не завершённая
+часть Goal 1; он не участвует в Markdown component parsing, search projection
+или Framework admission.
 
 ## 8. Layout composition
 

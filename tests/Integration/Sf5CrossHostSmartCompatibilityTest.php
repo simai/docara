@@ -198,12 +198,14 @@ PHP;
         self::assertSame('', $process->getErrorOutput());
 
         $result = json_decode($process->getOutput(), true, 512, JSON_THROW_ON_ERROR);
-        foreach ($result['resolvedArtifacts'] ?? [] as &$artifact) {
+        foreach (array_keys($result['resolvedArtifacts'] ?? []) as $index) {
+            $artifact = &$result['resolvedArtifacts'][$index];
             if (is_array($artifact) && is_string($artifact['path'] ?? null)) {
                 $artifact['path'] = ltrim(substr($artifact['path'], strlen($artifactRoot)), '/');
+                self::assertFalse(str_starts_with($artifact['path'], '/'));
             }
+            unset($artifact);
         }
-        unset($artifact);
         $result['exit_code'] = $process->getExitCode();
         $result['stderr'] = $process->getErrorOutput();
         $result['warnings'] = [];

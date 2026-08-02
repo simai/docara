@@ -52,13 +52,13 @@ PASS ставится только по воспроизводимому evidenc
 - [x] `ui.*` и `docara.*` проходят один Smart Component Gateway.
 - [x] Props и slots валидируются до template rendering.
 - [x] Gateway возвращает HTML, assets, diagnostics и provenance.
-- [ ] Новый Smart-компонент не требует component-ID ветки в центральном
+- [x] Новый Smart-компонент не требует component-ID ветки в центральном
       parser, renderer, ViewModel factory, semantic validator или contribution
-      list. Goal 1-C закрывает оставшиеся search/parser/admission ID-зависимости
-      и повторяет cross-host evidence.
+      list. Goal 1-C удалил search/parser/admission ID-зависимости; ограничение
+      shell regions остаётся явно Goal 2-owned boundary.
 - [x] Project Smart root фиксирован как `smart/`; namespace принадлежит одному
       provider, а paths/symlinks/templates/assets fail-closed.
-- [ ] Portable Smart manifest соответствует source-pinned SF5 artifact v1;
+- [x] Portable Smart manifest соответствует source-pinned SF5 artifact v1;
       host-bound adapters отделены от переносимого manifest/view/preset слоя.
 - [x] Компонент не получает недокументированный произвольный HTML.
 

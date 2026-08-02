@@ -27,8 +27,8 @@
   },
   "implementation_state": {
     "current_stage": "docara.stage.g1.portable_smart_runtime",
-    "completed_checkpoint": "r2_production_readiness_pass_disposable_corrected",
-    "next_action": "execute_goal1_portable_smart_runtime_batches",
+    "completed_checkpoint": "goal1_implementation_complete_audit_pending",
+    "next_action": "independent_reverse_outcome_audit_goal_1",
     "evidence": "source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/INDEX.md"
   },
   "routing_gap": {

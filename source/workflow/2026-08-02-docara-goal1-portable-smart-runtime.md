@@ -1,10 +1,10 @@
 # Goal 1 — Portable Smart Runtime and project-local components
 
 Date: 2026-08-02
-Status: `in_progress`
+Status: `implementation_complete_audit_pending`
 Project mode: `productization`
 Process model: `general_delivery`
-Current state: `repository_prepared`
+Current state: `g1_6_integrated_candidate`
 Repository: `/Users/rim/Documents/GitHub/docara-unified`
 Branch: `codex/docara-unified-architecture`
 Input revision: `313afa17e21df2299a6276d246cb4508c7ec00b5`
@@ -89,8 +89,8 @@ record replace that false association for Goal 1. Execution mode is
 | G1.2 | descriptors/providers/compiler and ownership/path policy | pass |
 | G1.3 | normalized invocation/context/strategy registry behind existing gateway | pass |
 | G1.4 | migrate `ui.alert`, `ui.button` and every `docara.*` | pass |
-| G1.5 | project Smart root and `fixture.notice` without engine source edit | pass candidate |
-| G1.6 | cross-host/full-single/determinism/static/browser/docs/graph handoff | pending |
+| G1.5 | project Smart root and `fixture.notice` without engine source edit | pass |
+| G1.6 | cross-host/full-single/determinism/static/browser/docs/graph handoff | pass candidate; audit pending |
 
 ## Human-centered simplicity contract
 
@@ -125,7 +125,7 @@ browser smoke.
 
 ## Recovery state
 
-Current remaining after G1.5: integration batch G1.6. Do not complete until all
-Goal 1 Done When rows are evidenced or a stated stop condition is recorded.
-Next safe batch: cross-host compatibility, full/single/determinism/static/browser
-acceptance and truthful specification/graph/handoff synchronization.
+G1.0–G1.6 are implemented. Exact product-source candidate:
+`34496d49ce366f1108d2aed37c0adda35f6e5f58`. The only next action is an
+independent read-only reverse-outcome audit against the evidence index. Goal 2
+must not start before that audit accepts Goal 1.

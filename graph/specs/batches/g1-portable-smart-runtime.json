@@ -18,5 +18,6 @@
   "forbidden_scope": ["External Framework repositories", "docara-new.test", "docara.test", "Goal 2", "Goal 3", "Merge", "Push", "Tag", "Release", "Deploy"],
   "checks": ["Provider and gateway tests", "Security negatives", "Cross-host proof", "Full/single parity", "Deterministic builds", "Static verifier", "Browser smoke", "Graph and documentation validation"],
   "status": "g1_6_integrated_candidate",
+  "candidate_revision": "34496d49ce366f1108d2aed37c0adda35f6e5f58",
   "next_action": "independent_reverse_outcome_audit_goal_1"
 }

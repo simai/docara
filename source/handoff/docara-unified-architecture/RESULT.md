@@ -969,6 +969,14 @@ determinism, static and browser evidence is indexed at
 
 Goal 2/3, release identity and both live sites remain unchanged and unclaimed.
 
+Final correction: public `ui.*` Markdown no longer enters a pre-IR
+extract/hydrate path. It compiles to `SmartComponentNode` and reaches the same
+provider-owned Gateway as project and `docara.*` Smart components. The retired
+`FrameworkComponentRuntime::extract()` API and `FrameworkHostRenderer` were
+deleted after byte-identical Framework Alert/Button proof. Exact implementation
+source: `34496d49ce366f1108d2aed37c0adda35f6e5f58`; deterministic 305-file tree:
+`300eb592287db7f25010b583a3cca585e6a0888b0ab12ee42f8969b4e0142eb2`.
+
 # Exact rc.3 validation deployment
 
 Status: `PASS` at `https://docara-new.test`

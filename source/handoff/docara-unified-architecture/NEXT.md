@@ -8,6 +8,11 @@ are implemented as separate recoverable checkpoints. The next action is a
 read-only reverse-outcome audit bound to the final exact candidate and
 `source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/INDEX.md`.
 
+Exact Goal 1 implementation source:
+`34496d49ce366f1108d2aed37c0adda35f6e5f58`; deterministic public tree:
+`300eb592287db7f25010b583a3cca585e6a0888b0ab12ee42f8969b4e0142eb2`.
+This is a product-source audit candidate, not a new release/deploy candidate.
+
 Do not touch `docara-new.test`, `docara.test` or external Framework repositories.
 Do not start Goal 2/3, merge, push, tag, release or deploy. Stop for independent
 audit only after all Goal 1 Done When rows have fresh evidence.

@@ -8,7 +8,7 @@
   "summary": "Перевести Docara на один content-first конвейер, где каждая страница хранится в Markdown, композиция — в JSON, компоненты — в реестре, а HTML всегда является производным результатом.",
   "owner": "teamlead",
   "lifecycle": "active",
-  "readiness": "goal1_portable_smart_runtime_in_progress",
+  "readiness": "goal1_implementation_complete_audit_pending",
   "visibility": "repository",
   "source_refs": [
     "docs/specification/DOCARA-TZ.md",

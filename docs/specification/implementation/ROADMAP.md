@@ -63,7 +63,8 @@ project providers компилируют один `SmartRegistry`; Gateway вы�
 по provider ownership. Component-ID branches, `ViewModelFactory` и manual
 contribution lists удалены. Fresh project содержит portable `project.notice`,
 который проходит typed IR, общий renderer registry, Gateway и PageBuilder без
-правки engine `src/` для конкретного ID.
+правки engine `src/` для конкретного ID. Старые Framework pre-IR
+extract/hydrate и host renderer удалены после byte-identical parity.
 
 ## M2. Вертикальный срез `components/badge`
 

@@ -59,7 +59,7 @@ asset завершают сборку ошибкой.
 
 ## Контекст шаблона и assets
 
-Docara передаёт portable PHP-шаблону целевой array ABI SF5 Smart v1 и не
+Docara передаёт portable PHP-шаблону целевой array ABI SIMAI Framework 5 Smart v1 и не
 вводит собственный template dialect.
 
 | Переменная | Форма |
@@ -78,11 +78,11 @@ Docara передаёт portable PHP-шаблону целевой array ABI SF5
 `$view` и `SmartTemplateContext` относятся только к ограниченному legacy
 host-adapter старых package-owned шаблонов и не являются portable ABI.
 
-Текущий exact SF5 pin `d6f90bba…` имеет открытый host defect: выбранный view
+Текущий exact SIMAI Framework 5 pin `d6f90bba…` имеет открытый host defect: выбранный view
 разрешается, но перед `renderTemplate()` его record перезаписывается строковым
 кодом, поэтому `$view` внутри template становится пустым массивом; shortcut
 `Smart::render()` также не переносит `slot` как поле узла. До нового
-source-pinned SF5 revision полная cross-host portability остаётся заблокирована.
+source-pinned Framework revision полная cross-host portability остаётся заблокирована.
 Не обходите это отдельным Docara template dialect.
 
 Project template считается trusted developer source. Его путь выводится только

@@ -1,13 +1,20 @@
 {
   "schema": "docara.layout.v1",
   "key": "docara.docs",
+  "default": true,
   "view": "layout.docara.docs",
+  "configuration": {
+    "container": {"max": 7},
+    "scrollbar": {"preset": "overlay"},
+    "content": {"gap": 0}
+  },
+  "document": {"region": "main", "section": "docara.article", "slot": "content", "block": "content.document"},
   "regions": {
-    "header": {"required": false, "section_types": ["navigation", "shell"]},
-    "sidebar": {"required": false, "section_types": ["navigation", "shell"]},
-    "main": {"required": true, "section_types": ["content"]},
-    "outline": {"required": false, "section_types": ["navigation", "shell"]},
-    "footer": {"required": false, "section_types": ["shell"]}
+    "header": {"required": false, "default_enabled": true, "default_sections": [{"id": "site-header", "section": "docara.header"}], "section_types": ["navigation", "shell"]},
+    "sidebar": {"required": false, "default_enabled": true, "default_sections": [{"id": "docs-navigation", "section": "docara.navigation"}], "section_types": ["navigation", "shell"]},
+    "main": {"required": true, "default_enabled": true, "default_sections": [], "section_types": ["content"]},
+    "outline": {"required": false, "default_enabled": true, "default_sections": [{"id": "page-outline", "section": "docara.outline"}], "section_types": ["navigation", "shell"]},
+    "footer": {"required": false, "default_enabled": false, "default_sections": [], "section_types": ["shell"]}
   },
   "assets": ["simai.framework", "docara.reader"]
 }

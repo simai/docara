@@ -16,17 +16,17 @@ final readonly class LayoutDescriptor
         public string $view,
         public array $viewTree,
         public array $regions,
+        public string $documentRegion,
         public array $assets,
         public array $provenance,
     ) {
-        if ($key === '' || $view === '' || $viewTree === [] || array_keys($regions) !== [
-            'header',
-            'sidebar',
-            'main',
-            'outline',
-            'footer',
-        ]) {
+        if ($key === '' || $view === '' || $viewTree === [] || $regions === [] || ! isset($regions[$documentRegion])) {
             throw new \InvalidArgumentException('LAYOUT_DESCRIPTOR_INVALID');
+        }
+        foreach ($regions as $regionKey => $region) {
+            if (! is_string($regionKey) || ! $region instanceof LayoutRegion || $regionKey !== $region->key) {
+                throw new \InvalidArgumentException('LAYOUT_DESCRIPTOR_INVALID');
+            }
         }
     }
 
@@ -41,6 +41,7 @@ final readonly class LayoutDescriptor
                 static fn (LayoutRegion $region): array => $region->toArray(),
                 $this->regions,
             ),
+            'document_region' => $this->documentRegion,
             'assets' => $this->assets,
             'provenance' => $this->provenance,
         ];

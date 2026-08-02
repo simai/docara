@@ -1,0 +1,5 @@
+{
+  "schema": "docara.view_tree.v1",
+  "key": "section.acme.article",
+  "tree": {"kind": "element", "tag": "section", "identity": "section", "children": [{"kind": "slot", "slot": "content"}]}
+}

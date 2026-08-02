@@ -18,6 +18,8 @@ Independent Goal 1 audit: `PASS_WITH_NOTES`, marker
   registry contract and security-focused checks.
 - [G2.2-BUILTIN-MIGRATION.md](G2.2-BUILTIN-MIGRATION.md) — constant-table
   retirement, exact public parity and rollback.
+- [G2.3-DATA-DRIVEN-COMPOSITION.md](G2.3-DATA-DRIVEN-COMPOSITION.md) — generic
+  composition, project fixture and public parity.
 
 Later batch evidence must bind exact candidate/parent revisions, affected
 artifacts, commands/results, parity/security hashes, rollback and nonclaims.

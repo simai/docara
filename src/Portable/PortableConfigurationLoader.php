@@ -5,6 +5,8 @@ namespace Simai\Docara\Portable;
 use JsonException;
 use Simai\Docara\Content\FrontMatterParser;
 use Simai\Docara\Declarative\Composition\RegionCompositionResolver;
+use Simai\Docara\Declarative\Definition\DefinitionRepository;
+use Simai\Docara\Design\Registry\DesignRegistry;
 use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\I18n\LocaleRegistry;
@@ -108,6 +110,12 @@ final class PortableConfigurationLoader
 
         [$site, $siteTrace] = $this->loadJson('docara.json', 'site.schema.json', 'site', true);
         $trace[] = $siteTrace;
+        $projectNamespace = is_string($site['smart']['namespace'] ?? null)
+            ? $site['smart']['namespace']
+            : null;
+        $definitions = new DefinitionRepository(
+            designs: DesignRegistry::bundled($this->root, $projectNamespace),
+        );
         $explicitLocaleRegistry = is_array($site['locales'] ?? null) && $site['locales'] !== [];
         $localeRegistry = LocaleRegistry::fromSite($site);
         if (! $explicitLocaleRegistry) {
@@ -134,7 +142,7 @@ final class PortableConfigurationLoader
 
         $result = $this->merger->merge([], [
             'content_root' => 'content',
-            'layout' => RegionCompositionResolver::defaults(),
+            'layout' => RegionCompositionResolver::defaults($definitions),
             'search' => [
                 'enabled' => false,
                 'indexed' => true,
@@ -193,6 +201,7 @@ final class PortableConfigurationLoader
         [$configuration, $provenance] = $this->normalizeStructuralLayout(
             $configuration,
             $provenance,
+            $definitions,
         );
 
         if ($explicitLocaleRegistry) {
@@ -227,16 +236,24 @@ final class PortableConfigurationLoader
      * @param  array<string, string>  $provenance
      * @return array{0:array<string,mixed>,1:array<string,string>}
      */
-    private function normalizeStructuralLayout(array $configuration, array $provenance): array
-    {
+    private function normalizeStructuralLayout(
+        array $configuration,
+        array $provenance,
+        DefinitionRepository $definitions,
+    ): array {
         $layout = is_array($configuration['layout'] ?? null)
             ? $configuration['layout']
             : [];
-        $resolved = (new RegionCompositionResolver)->resolve($layout, $provenance);
+        $resolver = new RegionCompositionResolver($definitions);
+        $selectedLayout = is_string($layout['key'] ?? null)
+            ? $layout['key']
+            : (string) RegionCompositionResolver::defaults($definitions)['key'];
+        $defaults = RegionCompositionResolver::defaultsFor($selectedLayout, $definitions);
+        $resolved = $resolver->resolve($layout, $provenance);
         $layout['key'] = $resolved['key'];
-        $layout['container'] ??= RegionCompositionResolver::defaults()['container'];
-        $layout['scrollbar'] ??= RegionCompositionResolver::defaults()['scrollbar'];
-        $layout['content'] ??= RegionCompositionResolver::defaults()['content'];
+        $layout['container'] ??= $defaults['container'];
+        $layout['scrollbar'] ??= $defaults['scrollbar'];
+        $layout['content'] ??= $defaults['content'];
         $layout['regions'] = $resolved['regions'];
         $configuration['layout'] = $layout;
 

@@ -1,6 +1,6 @@
 {
   "schema": "docara.block.v1",
-  "key": "content.document",
+  "key": "acme.document",
   "kind": "content",
   "renderer": "block.document"
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Declarative;
 
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
+use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Document\DocumentParser;
 use Simai\Docara\Declarative\Rendering\DeclarativePageRenderer;
 use Simai\Docara\Declarative\Rendering\RenderArtifact;
@@ -33,10 +34,11 @@ final readonly class DeclarativePipeline
         ?SmartRegistry $smarts = null,
         ?SmartComponentGateway $gateway = null,
         ?SmartRenderer $smartRenderer = null,
+        ?DefinitionRepository $definitions = null,
     ): self {
         return new self(
             new DocumentParser($smarts ?? SmartRegistry::bundled()),
-            DeclarativePageCompiler::bundled($frameworkLock, $smarts, $gateway),
+            DeclarativePageCompiler::bundled($frameworkLock, $smarts, $gateway, $definitions),
             new DeclarativePageRenderer(
                 $markdown,
                 $smartRenderer ?? new SmartRenderer,

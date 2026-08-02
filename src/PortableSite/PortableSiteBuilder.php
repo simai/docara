@@ -11,11 +11,13 @@ use Simai\Docara\Content\PageSource;
 use Simai\Docara\Content\PageSourceLocator;
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\DeclarativePipeline;
+use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Rendering\RenderArtifact;
 use Simai\Docara\Declarative\Rendering\SmartRenderer;
 use Simai\Docara\Declarative\Rendering\TrustedTemplateRegistry;
 use Simai\Docara\Declarative\Smart\CompositeSmartPlanResolver;
 use Simai\Docara\Declarative\Smart\SmartComponentGateway;
+use Simai\Docara\Design\Registry\DesignRegistry;
 use Simai\Docara\Document\DocumentIr;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
@@ -82,6 +84,11 @@ final readonly class PortableSiteBuilder
         $gateway = $projectSmart?->gateway ?? SmartComponentGateway::bundled($frameworkLock);
         $templates = $projectSmart?->templates ?? new TrustedTemplateRegistry(smarts: $smartRegistry);
         $smartRenderer = $projectSmart?->renderer ?? new SmartRenderer($templates);
+        $projectNamespace = is_string($site['smart']['namespace'] ?? null)
+            ? $site['smart']['namespace']
+            : null;
+        $designRegistry = DesignRegistry::bundled($root, $projectNamespace);
+        $definitions = new DefinitionRepository(smarts: $smartRegistry, designs: $designRegistry);
         $markdown = new PortableMarkdownRenderer(components: $gateway);
         $pageBuilder = $this->pageBuilderInjected
             ? $this->pageBuilder
@@ -750,6 +757,7 @@ final readonly class PortableSiteBuilder
                     $smartRegistry,
                     $projectSmart?->gateway,
                     $projectSmart?->renderer,
+                    $definitions,
                 );
                 $outlineDepth = (int) data_get($declarativePlan->configuration, 'reading.toc_depth', 3);
                 $layoutConfiguration = is_array($declarativePlan->configuration['layout'] ?? null)

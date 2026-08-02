@@ -91,6 +91,22 @@ final class DesignRegistry
         return $descriptor;
     }
 
+    public function defaultLayout(): DesignArtifactDescriptor
+    {
+        $defaults = array_values(array_filter(
+            $this->all(DesignArtifactKind::Layout),
+            static fn (DesignArtifactDescriptor $descriptor): bool => ($descriptor->definition['default'] ?? false) === true,
+        ));
+        if (count($defaults) !== 1) {
+            throw new PortableConfigurationException(
+                'DESIGN_DEFAULT_LAYOUT_INVALID',
+                'Exactly one registered layout must declare itself as the default.',
+            );
+        }
+
+        return $defaults[0];
+    }
+
     /** @return list<DesignArtifactDescriptor> */
     public function all(?DesignArtifactKind $kind = null): array
     {

@@ -37,8 +37,9 @@ final readonly class DeclarativePageRenderer
         $assets = $plan->assets;
         $sectionEvidence = [];
         $componentHydration = [];
+        $documentRegion = $plan->layout->documentRegion;
         foreach ($plan->regions as $region => $sections) {
-            if ($region === 'main' && $mainDocument !== null) {
+            if ($region === $documentRegion && $mainDocument !== null) {
                 $regions[$region] = $mainDocument->html;
                 array_push($assets, ...$mainDocument->assets);
                 $sectionEvidence[] = $mainDocument->provenance;
@@ -57,11 +58,11 @@ final readonly class DeclarativePageRenderer
             $regions[$region] = implode('', $renderedSections);
         }
         $outline = (new PortableDocumentOutlineBuilder)->build(
-            $regions['main'],
+            $regions[$documentRegion],
             $plan->outlineDepth,
             $this->reservedDocumentIds,
         );
-        $regions['main'] = $outline['html'];
+        $regions[$documentRegion] = $outline['html'];
         $assets = array_values(array_unique($assets));
         sort($assets, SORT_STRING);
 

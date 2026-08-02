@@ -50,7 +50,7 @@
                 },
                 "key": {
                     "type": "string",
-                    "enum": ["docara.docs"]
+                    "pattern": "^[a-z][a-z0-9_.-]+$"
                 },
                 "container": {
                     "type": "object",
@@ -99,23 +99,9 @@
             "properties": {
                 "$reset": {
                     "const": true
-                },
-                "header": {
-                    "$ref": "#/$defs/region"
-                },
-                "sidebar": {
-                    "$ref": "#/$defs/region"
-                },
-                "main": {
-                    "$ref": "#/$defs/region"
-                },
-                "outline": {
-                    "$ref": "#/$defs/region"
-                },
-                "footer": {
-                    "$ref": "#/$defs/region"
                 }
             },
+            "patternProperties": {"^[a-z][a-z0-9_.-]+$": {"$ref": "#/$defs/region"}},
             "additionalProperties": false
         },
         "region": {
@@ -148,7 +134,7 @@
                 },
                 "section": {
                     "type": "string",
-                    "enum": ["docara.header", "docara.navigation", "docara.outline", "docara.shell"]
+                    "pattern": "^[a-z][a-z0-9_.-]+$"
                 },
                 "blocks": {
                     "type": "array",
@@ -174,8 +160,8 @@
                     "required": ["id", "block", "slot", "element"],
                     "properties": {
                         "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
-                        "block": {"const": "shell.element"},
-                        "slot": {"const": "content"},
+                        "block": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+                        "slot": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
                         "element": {
                             "type": "object",
                             "required": ["tag", "text"],
@@ -201,10 +187,10 @@
                     "required": ["id", "block", "slot", "smart", "props"],
                     "properties": {
                         "id": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
-                        "block": {"const": "shell.smart"},
-                        "slot": {"const": "content"},
-                        "smart": {"type": "string", "enum": ["ui.alert", "ui.button"]},
-                        "view": {"type": "string", "const": "default"},
+                        "block": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+                        "slot": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+                        "smart": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+                        "view": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
                         "props": {"type": "object", "maxProperties": 32}
                     },
                     "additionalProperties": false

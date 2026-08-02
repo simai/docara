@@ -42,6 +42,12 @@ final class DefinitionRepository
     }
 
     /** @return array<string, mixed> */
+    public function defaultLayout(): array
+    {
+        return $this->layout($this->designs->defaultLayout()->id);
+    }
+
+    /** @return array<string, mixed> */
     public function section(string $key): array
     {
         return $this->definition('section:' . $key);
@@ -92,6 +98,11 @@ final class DefinitionRepository
         }
 
         return $manifest + ['_resolution' => $this->smarts->resolution($smart)];
+    }
+
+    public function assertSmartRegistered(string $smart): void
+    {
+        $this->smarts->definition($smart);
     }
 
     /** @return array<string, mixed> */

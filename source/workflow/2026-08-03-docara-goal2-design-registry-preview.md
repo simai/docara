@@ -68,8 +68,8 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
 | G2.0 | acceptance freeze, state-driven router, responsibility map | context positive/negative, graph/handoff consistency | pass |
 | G2.1 | typed artifacts/providers and one deterministic DesignRegistry | provider/ownership/path/schema tests | pass |
 | G2.2 | built-ins migrated from constant registration | byte parity, zero-reference scan | pass |
-| G2.3 | data-driven composition and project `design/` fixture | no engine ID lists, fixture without `src/` edit | in progress |
-| G2.4 | PreviewKernel and PreviewShell over production services | HTML/assets/provenance parity, receipt isolation | pending |
+| G2.3 | data-driven composition and project `design/` fixture | no engine ID lists, fixture without `src/` edit | pass |
+| G2.4 | PreviewKernel and PreviewShell over production services | HTML/assets/provenance parity, receipt isolation | in progress |
 | G2.5 | preview commands and PHP watch | human/JSON/exit-code fixtures, dependency invalidation | pending |
 | G2.6 | integrated docs/graph/build/browser acceptance | full matrix and reverse-outcome evidence | pending |
 
@@ -116,7 +116,19 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
 - Next: remove composition ID lists and wire trusted project `design/` into the
   production compiler.
 
+### G2.3
+
+- Layout artifacts now own region defaults and document placement; resolver
+  and compiler contain no concrete layout, region, section, block or Smart ID.
+- Block admission follows registered kind data and Smart identity is resolved
+  by the accepted SmartRegistry/Gateway.
+- Loader and builder share a project-aware registry rooted at confined
+  `design/`; the tracked `acme.*` fixture compiles through production services.
+- Public parity is preserved at 103 routes / 305 files / 206 HTML, broken=0;
+  only internal resolved-plan provenance changes.
+- Next: bounded preview targets over these same production services.
+
 ## Remaining
 
-All G2.1-G2.6 implementation and integrated acceptance remain. Goal 3 is not
+G2.4-G2.6 implementation and integrated acceptance remain. Goal 3 is not
 authorized by this workflow.

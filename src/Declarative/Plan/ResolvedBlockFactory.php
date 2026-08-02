@@ -36,10 +36,11 @@ final readonly class ResolvedBlockFactory
             );
         }
         $definition = $this->definitions->block($key);
-        if ($smart !== null && ! in_array($smart->smart, $definition['allowed_smart'], true)) {
+        $expectsSmart = ($definition['kind'] ?? null) === 'smart';
+        if ($expectsSmart !== ($smart !== null)) {
             throw new PortableConfigurationException(
-                'DECLARATIVE_BLOCK_SMART_FORBIDDEN',
-                "Smart component [{$smart->smart}] is not allowed by block [$key].",
+                'DECLARATIVE_BLOCK_PAYLOAD_MISMATCH',
+                "Block [$key] received a payload that does not match its registered kind.",
             );
         }
 

@@ -1,0 +1,16 @@
+{
+  "schema": "docara.layout.v1",
+  "key": "acme.docs",
+  "default": false,
+  "view": "layout.acme.docs",
+  "configuration": {
+    "container": {"max": 7},
+    "scrollbar": {"preset": "overlay"},
+    "content": {"gap": 0}
+  },
+  "document": {"region": "stage", "section": "acme.article", "slot": "content", "block": "acme.document"},
+  "regions": {
+    "stage": {"required": true, "default_enabled": true, "default_sections": [], "section_types": ["content"]}
+  },
+  "assets": []
+}

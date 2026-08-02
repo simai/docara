@@ -106,13 +106,21 @@ final class DesignRegistryTest extends TestCase
         $this->artifact('layouts', "$namespace.docs.json", [
             'schema' => 'docara.layout.v1',
             'key' => "$namespace.docs",
+            'default' => false,
             'view' => "layout.$namespace.docs",
+            'configuration' => [
+                'container' => ['max' => 7],
+                'scrollbar' => ['preset' => 'overlay'],
+                'content' => ['gap' => 0],
+            ],
+            'document' => [
+                'region' => 'main',
+                'section' => "$namespace.hero",
+                'slot' => 'content',
+                'block' => "$namespace.notice",
+            ],
             'regions' => [
-                'header' => ['required' => false, 'section_types' => ['shell']],
-                'sidebar' => ['required' => false, 'section_types' => ['shell']],
-                'main' => ['required' => true, 'section_types' => ['content']],
-                'outline' => ['required' => false, 'section_types' => ['shell']],
-                'footer' => ['required' => false, 'section_types' => ['shell']],
+                'main' => ['required' => true, 'default_enabled' => true, 'default_sections' => [], 'section_types' => ['content']],
             ],
             'assets' => [],
         ]);
@@ -142,7 +150,6 @@ final class DesignRegistryTest extends TestCase
             'key' => $key,
             'kind' => 'element',
             'renderer' => 'block.element',
-            'allowed_smart' => [],
         ];
     }
 

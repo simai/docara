@@ -1,0 +1,5 @@
+{
+  "schema": "docara.view_tree.v1",
+  "key": "layout.acme.docs",
+  "tree": {"kind": "region", "region": "stage", "tag": "main"}
+}

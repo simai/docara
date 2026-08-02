@@ -25,6 +25,8 @@ use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class DeclarativePageCompiler
 {
+    private RegionCompositionResolver $regionComposition;
+
     private ResolvedBlockFactory $blocks;
 
     private DocumentNodeBlockRegistry $documentNodes;
@@ -32,11 +34,12 @@ final readonly class DeclarativePageCompiler
     public function __construct(
         private DefinitionRepository $definitions,
         private SmartComponentGateway $smarts,
-        private RegionCompositionResolver $regionComposition = new RegionCompositionResolver,
+        ?RegionCompositionResolver $regionComposition = null,
         private ViewTreeInspector $viewTrees = new ViewTreeInspector,
         ?ResolvedBlockFactory $blocks = null,
         ?DocumentNodeBlockRegistry $documentNodes = null,
     ) {
+        $this->regionComposition = $regionComposition ?? new RegionCompositionResolver($this->definitions);
         $this->blocks = $blocks ?? new ResolvedBlockFactory($this->definitions);
         $this->documentNodes = $documentNodes
             ?? DocumentNodeBlockRegistry::bundled($this->blocks, $this->smarts);
@@ -47,11 +50,13 @@ final readonly class DeclarativePageCompiler
         array $frameworkLock,
         ?SmartRegistry $smarts = null,
         ?SmartComponentGateway $gateway = null,
+        ?DefinitionRepository $definitions = null,
     ): self {
         $smarts ??= SmartRegistry::bundled();
+        $definitions ??= new DefinitionRepository(smarts: $smarts);
 
         return new self(
-            new DefinitionRepository(smarts: $smarts),
+            $definitions,
             $gateway ?? SmartComponentGateway::bundled($frameworkLock),
         );
     }
@@ -75,13 +80,19 @@ final readonly class DeclarativePageCompiler
             $regionComposition['regions'],
             $regionComposition['provenance'],
         );
-        $sectionDefinition = $this->definitions->section('docara.article');
-        if (! in_array('main', $sectionDefinition['allowed_regions'], true)
-            || ! in_array((string) $sectionDefinition['type'], $layout->regions['main']->sectionTypes, true)
+        $documentContract = $layoutDefinition['document'];
+        $documentRegion = (string) $documentContract['region'];
+        $documentSection = (string) $documentContract['section'];
+        $documentSlot = (string) $documentContract['slot'];
+        $documentBlockKey = (string) $documentContract['block'];
+        $sectionDefinition = $this->definitions->section($documentSection);
+        if (! isset($layout->regions[$documentRegion])
+            || ! in_array($documentRegion, $sectionDefinition['allowed_regions'], true)
+            || ! in_array((string) $sectionDefinition['type'], $layout->regions[$documentRegion]->sectionTypes, true)
         ) {
             throw new PortableConfigurationException(
                 'DECLARATIVE_SECTION_REGION_FORBIDDEN',
-                'Section [docara.article] is not allowed in region [main].',
+                "Section [$documentSection] is not allowed in region [$documentRegion].",
             );
         }
 
@@ -119,8 +130,8 @@ final readonly class DeclarativePageCompiler
         $blocks = [
             $this->blocks->create(
                 'document-' . substr(hash('sha256', $pageKey . "\0" . $document->canonicalHash()), 0, 20),
-                'content.document',
-                'content',
+                $documentBlockKey,
+                $documentSlot,
                 $documentData,
                 null,
                 $sectionDefinition,
@@ -128,10 +139,10 @@ final readonly class DeclarativePageCompiler
         ];
 
         $section = new ResolvedSectionPlan(
-            'section-' . substr(hash('sha256', $pageKey . "\0docara.article"), 0, 20),
-            'docara.article',
+            'section-' . substr(hash('sha256', $pageKey . "\0" . $documentSection), 0, 20),
+            $documentSection,
             (string) $sectionDefinition['type'],
-            'main',
+            $documentRegion,
             (string) $sectionDefinition['view'],
             $this->viewTree((string) $sectionDefinition['view']),
             $sectionDefinition['slots'],
@@ -143,13 +154,13 @@ final readonly class DeclarativePageCompiler
         );
         $regions = [];
         foreach (array_keys($layout->regions) as $region) {
-            $regions[$region] = $region === 'main' && $layout->regions[$region]->enabled
+            $regions[$region] = $region === $documentRegion && $layout->regions[$region]->enabled
                 ? [$section]
                 : [];
         }
         if ($composition !== null) {
             foreach ($regionComposition['regions'] as $region => $regionConfiguration) {
-                if ($region === 'main' || ! $regionConfiguration['enabled']) {
+                if ($region === $documentRegion || ! $regionConfiguration['enabled']) {
                     continue;
                 }
                 foreach ($regionConfiguration['sections'] as $sectionConfiguration) {
@@ -283,10 +294,12 @@ final readonly class DeclarativePageCompiler
             : $definition['blocks'];
         $configurationSource = $this->configurationSource($layout, $region);
         foreach ($blockConfigurations as $ordinal => $blockConfiguration) {
-            if (($blockConfiguration['block'] ?? null) === 'shell.element') {
+            $blockKey = (string) ($blockConfiguration['block'] ?? '');
+            $blockDefinition = $this->definitions->block($blockKey);
+            if (($blockDefinition['kind'] ?? null) === 'element') {
                 $blocks[] = $this->blocks->create(
                     (string) $configuration['id'] . '.' . $blockConfiguration['id'],
-                    'shell.element',
+                    $blockKey,
                     (string) $blockConfiguration['slot'],
                     [
                         'element' => $blockConfiguration['element'],
@@ -297,6 +310,12 @@ final readonly class DeclarativePageCompiler
                 );
 
                 continue;
+            }
+            if (($blockDefinition['kind'] ?? null) !== 'smart') {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_REGION_BLOCK_KIND_FORBIDDEN',
+                    "Block [$blockKey] cannot be invoked by a configured shell section.",
+                );
             }
             $smart = (string) $blockConfiguration['smart'];
             $hasBinding = is_string($blockConfiguration['bind'] ?? null);
@@ -323,7 +342,7 @@ final readonly class DeclarativePageCompiler
             ));
             $blocks[] = $this->blocks->create(
                 (string) $configuration['id'] . '.' . $blockConfiguration['id'],
-                (string) $blockConfiguration['block'],
+                $blockKey,
                 (string) $blockConfiguration['slot'],
                 $hasBinding
                     ? ['binding' => (string) $blockConfiguration['bind']]
@@ -448,6 +467,7 @@ final readonly class DeclarativePageCompiler
             (string) $definition['view'],
             $this->viewTree((string) $definition['view']),
             $regions,
+            (string) $definition['document']['region'],
             $definition['assets'],
             [
                 'definition' => (string) $definition['_source'],

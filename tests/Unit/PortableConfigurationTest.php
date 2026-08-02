@@ -449,7 +449,7 @@ final class PortableConfigurationTest extends TestCase
             [['schema' => 'docara.page.v1', 'branding' => ['logo' => '/absolute/logo.svg']], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'branding' => ['logo' => '../logo.svg']], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'branding' => ['logo' => 'assets\\logo.svg']], 'page.schema.json'],
-            [['schema' => 'docara.page.v1', 'layout' => ['regions' => ['aside' => ['enabled' => true]]]], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'layout' => ['regions' => ['Aside' => ['enabled' => true]]]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'layout' => ['regions' => ['sidebar' => ['enabled' => 'false']]]], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'layout' => ['regions' => ['header' => ['sections' => [[
                 'section' => 'docara.shell',

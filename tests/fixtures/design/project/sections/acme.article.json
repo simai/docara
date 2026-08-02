@@ -1,0 +1,10 @@
+{
+  "schema": "docara.section.v1",
+  "key": "acme.article",
+  "type": "content",
+  "view": "section.acme.article",
+  "allowed_regions": ["stage"],
+  "slots": ["content"],
+  "allowed_blocks": ["acme.document", "content.markdown", "content.smart"],
+  "blocks": []
+}

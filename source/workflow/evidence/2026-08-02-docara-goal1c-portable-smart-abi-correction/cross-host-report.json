@@ -1,0 +1,128 @@
+{
+    "schema": "docara.sf5_cross_host_report.v1",
+    "source_revision": "d6f90bba6a9a2f30ac41075d62cf51f1014b7e78",
+    "artifact": {
+        "path": "tests/fixtures/smart/portable/fixture.notice",
+        "tree_sha256": "233a8a0e7d6feaca9eb6ea1138be4abcdc1a9d6ac8e8790ec7bcf7e6d6fe6609"
+    },
+    "docara": {
+        "html": "<aside data-fixture-notice><strong>Portable title</strong><p>Portable text</p></aside>",
+        "assets": [
+            "project.fixture.fixture.notice.css.notice.css",
+            "simai.ui"
+        ],
+        "hydration": {
+            "runtime": "portable-smart",
+            "smart": "fixture.notice",
+            "view": "default",
+            "owner": "project.fixture",
+            "asset_owner": "fixture.notice",
+            "hydration_owner": "fixture.notice",
+            "assets": [
+                "project.fixture.fixture.notice.css.notice.css",
+                "simai.ui"
+            ],
+            "render": {
+                "mode": "server-first",
+                "strategy": "server-static",
+                "template": "default",
+                "hydration": "none",
+                "domStrategy": "none",
+                "updateStrategy": "none",
+                "initialHtml": "complete",
+                "frontendOwnership": "none"
+            },
+            "template_abi": "sf5.smart.template.v1"
+        },
+        "provenance": {
+            "provider": "project.fixture",
+            "provider_revision": "fixture-revision-v1",
+            "contract": "sf5.smart.artifact.v1",
+            "template_abi": "sf5.smart.template.v1"
+        },
+        "exit_code": 0,
+        "stderr": "",
+        "warnings": []
+    },
+    "sf5": {
+        "schemaVersion": "1.0",
+        "kind": "smart.render-result",
+        "html": "<aside data-fixture-notice><strong>Portable title</strong><p>Portable text</p></aside>",
+        "assets": {
+            "smart": [
+                "fixture.notice"
+            ],
+            "depends": [
+                "simai.ui",
+                "simai.ui.smart"
+            ],
+            "css": [
+                "assets/notice.css"
+            ],
+            "js": []
+        },
+        "hydration": {
+            "nodes": [
+                {
+                    "id": "fixture-notice",
+                    "smart": "fixture.notice",
+                    "view": "default",
+                    "slot": null,
+                    "template": "default",
+                    "render": {
+                        "mode": "server-first",
+                        "strategy": "server-static",
+                        "hydration": "none",
+                        "domStrategy": "none",
+                        "updateStrategy": "none",
+                        "initialHtml": "complete",
+                        "frontendOwnership": "none"
+                    },
+                    "propsHash": "d82f20c297eb8401"
+                }
+            ]
+        },
+        "cache": {
+            "key": "smart-tree:53b1107d2112d555",
+            "tags": [
+                "smart:fixture.notice"
+            ]
+        },
+        "resolvedArtifacts": [
+            {
+                "smart": "fixture.notice",
+                "kind": "manifest",
+                "code": "default",
+                "path": "fixture.notice/manifest.json"
+            },
+            {
+                "smart": "fixture.notice",
+                "kind": "preset",
+                "code": "compact",
+                "path": "fixture.notice/preset/compact.json"
+            },
+            {
+                "smart": "fixture.notice",
+                "kind": "view",
+                "code": "default",
+                "path": "fixture.notice/view/default.json"
+            },
+            {
+                "smart": "fixture.notice",
+                "kind": "template",
+                "code": "default",
+                "path": "fixture.notice/template/default.php"
+            }
+        ],
+        "exit_code": 0,
+        "stderr": "",
+        "warnings": []
+    },
+    "comparison": {
+        "html_byte_equal": true,
+        "html_sha256": "0273ded8d5be7cf89f89289323659322a87a2df5468b3f39314b15417e99ca65",
+        "normalized_html_sha256": "0273ded8d5be7cf89f89289323659322a87a2df5468b3f39314b15417e99ca65",
+        "title_text_present": true,
+        "render_strategy_equal": true
+    }
+}

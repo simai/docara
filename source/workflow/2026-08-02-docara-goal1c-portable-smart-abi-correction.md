@@ -1,7 +1,7 @@
 # Goal 1-C — portable SF5 Smart ABI correction
 
 Date: 2026-08-02
-Status: `correction_in_progress`
+Status: `blocked_cross_repo_contract_decision`
 Project mode: `productization`
 Repository: `/Users/rim/Documents/GitHub/docara-unified`
 Branch: `codex/docara-unified-architecture`
@@ -73,11 +73,11 @@ release or deploy, and deletion without parity plus zero-reference evidence.
 
 | Batch | Outcome | Verification | Status |
 | --- | --- | --- | --- |
-| G1C.0 | recovery, rejected-claim register, exact SF5 ABI inventory | git/source pin checks, action gates | in progress |
-| G1C.1 | array-compatible portable context and exact cross-host harness | same artifact, two hosts, stderr/HTML/hash assertions | pending |
-| G1C.2 | provider/context/admission data-driven completion | provider/lock/gateway/template positive and negative tests | pending |
-| G1C.3 | active search/parser ID-list retirement | focused search/parser tests and structural scan | pending |
-| G1C.4 | integrated builds, parity, security, browser and governance | complete acceptance matrix | pending |
+| G1C.0 | recovery, rejected-claim register, exact SF5 ABI inventory | git/source pin checks, action gates | pass |
+| G1C.1 | array-compatible portable context and exact cross-host harness | same artifact, two hosts, stderr/HTML/hash assertions | blocked: pinned host loses view/slot context |
+| G1C.2 | provider/context/admission data-driven completion | provider/lock/gateway/template positive and negative tests | pass within Docara |
+| G1C.3 | active search/parser ID-list retirement | focused search/parser tests and structural scan | pass |
+| G1C.4 | integrated builds, parity, security, browser and governance | complete acceptance matrix | partial; no acceptance candidate |
 
 ## Gates and assumptions
 
@@ -93,6 +93,8 @@ release or deploy, and deletion without parity plus zero-reference evidence.
 
 ## Current state
 
-Goal 1 is not accepted. G1C.0 is active. Goal 2 remains blocked pending a new
-independent reverse-outcome audit of the final Goal 1-C candidate.
-
+Goal 1 is not accepted. Exact SF5 pin `d6f90bba…` overwrites its resolved view
+record with a string before `renderTemplate()` and `Smart::render()` does not
+reserve/forward `slot`. That makes the mandatory full normalized template
+context impossible without a new Framework revision or a separately accepted
+contract reduction. Docara-only emulation is forbidden. Goal 2 remains blocked.

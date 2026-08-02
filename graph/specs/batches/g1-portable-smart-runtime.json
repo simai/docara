@@ -8,17 +8,17 @@
   "summary": "Execute G1.0-G1.6 as recoverable checkpoints without starting the design-registry or SDK goals.",
   "owner": "dev",
   "lifecycle": "active",
-  "readiness": "correction_in_progress",
+  "readiness": "blocked_external_contract",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-02-docara-goal1-portable-smart-runtime.md"],
-  "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/INDEX.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-correction/INDEX.md"],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.g1.portable_smart_runtime",
   "allowed_scope": ["Docara Smart runtime, artifacts, project fixture, tests, specification, graph, workflow and handoff"],
   "forbidden_scope": ["External Framework repositories", "docara-new.test", "docara.test", "Goal 2", "Goal 3", "Merge", "Push", "Tag", "Release", "Deploy"],
   "checks": ["Provider and gateway tests", "Security negatives", "Cross-host proof", "Full/single parity", "Deterministic builds", "Static verifier", "Browser smoke", "Graph and documentation validation"],
-  "status": "goal1c_portable_abi_correction",
+  "status": "goal1c_blocked_exact_sf5_host_contract",
   "candidate_revision": null,
   "superseded_candidate_revision": "34496d49ce366f1108d2aed37c0adda35f6e5f58",
-  "next_action": "execute_goal1c_correction_then_independent_reaudit"
+  "next_action": "decide_new_exact_sf5_revision_or_contract_reduction"
 }

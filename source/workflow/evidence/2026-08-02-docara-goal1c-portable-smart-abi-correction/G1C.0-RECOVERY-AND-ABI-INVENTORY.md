@@ -1,6 +1,6 @@
 # G1C.0 — recovery and ABI inventory
 
-Status: `IN_PROGRESS`
+Status: `PASS`
 Input revision: `531ccdbb3493a3109bfabe91bb3f2e00a17447ce`
 
 ## Recovery
@@ -35,6 +35,17 @@ Result: PASS for `pre_commit_safety_gate`,
 `runtime_naming_gate`; blockers zero. Route selected disabled `docara`, so the
 repository-local contract and documented fallback owners govern execution.
 
-The exact upstream paths, blob hashes and render ABI will be appended after
-read-only `git show` inventory and before runtime implementation.
+## Exact upstream inventory
 
+All five records in `resources/contracts/sf5/smart/v1/source.json` match
+`git show d6f90bba…:<path>` byte-for-byte:
+
+- manifest schema `9d65a9b3…`;
+- view schema `f7592ddd…`;
+- preset schema `cbaa993e…`;
+- `Smart.php` `d1dda732…`;
+- runtime proof `bf7276a9…`.
+
+The template variables are arrays/scalars named `id`, `smart`, `manifest`,
+`view`, `preset`, `props`, `childrenHtml`, `slot`. G1C.1 records the discovered
+exact-host implementation contradiction for resolved view data and slot.

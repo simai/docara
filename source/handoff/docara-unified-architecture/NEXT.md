@@ -1,7 +1,7 @@
-# Next action: execute Goal 1-C portable SF5 ABI correction
+# Next action: resolve the exact SF5 Smart v1 host-contract blocker
 
-The independent Goal 1 audit returned `CORRECTION_REQUIRED`. The active
-recovery source is
+Goal 1-C completed all independent Docara-side cleanup but reached its explicit
+cross-repository stop condition. The active recovery source is
 `source/workflow/2026-08-02-docara-goal1c-portable-smart-abi-correction.md` and
 the fresh evidence contour is
 `source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-correction/INDEX.md`.
@@ -12,11 +12,17 @@ The prior Goal 1 implementation source
 are superseded for Goal 1 acceptance because their cross-host proof used an
 incompatible Docara-only template context.
 
-Correct the SF5 array ABI, provider/admission context and active component-ID
-dependencies; then rebuild exact evidence. Do not touch `docara-new.test`,
-`docara.test` or external Framework repositories. Do not start Goal 2/3,
-merge, push, tag, release or deploy. The next external checkpoint is a new
-independent audit of the corrected candidate.
+Docara now uses the SF5 array variable surface, exact-lock policy and generic
+search/parser admission. However exact pin `d6f90bba…` overwrites resolved
+`$view` before its template call and `Smart::render()` does not forward `slot`
+as a node field. The narrow props-only fixture is byte-equal, but it cannot
+prove the mandatory full context.
+
+Required decision: publish/select a new exact SF5 revision that preserves the
+resolved view record and forwards slot, or explicitly reduce the portable ABI.
+The recommended action is the new pinned revision; a Docara-only dialect is
+not acceptable. Until that decision Goal 1 stays blocked, Goal 2/3 stay
+unstarted, and no live/release action is authorized.
 
 ## Historical deployment decision (parked)
 

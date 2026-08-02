@@ -142,6 +142,13 @@ runtime. Старые package-owned object-view templates допускаются
 `sf5.smart.template.v1` contract. Framework consumer narrowing хранится в
 exact immutable lock рядом с manifest pin, а не в PHP-карте component IDs.
 
+Correction stop condition: exact pin `d6f90bba…` нарушает собственный
+normalized-context contract в `Smart::renderTreeNode()`: resolved view record
+перезаписывается строкой до `renderTemplate()`, а `Smart::render()` не переносит
+`slot` в node. Поэтому полный cross-host outcome не считается принятым, пока
+Framework не предоставит новый exact revision или не будет отдельно изменён
+публичный portable contract. Docara-only обход запрещён.
+
 Normalizer чистый: одинаковый call/context даёт одинаковый normalized call.
 Template не читает глобальные config напрямую. Любая зависимость приходит в
 context и отражается в provenance/hash.

@@ -1,17 +1,24 @@
 # Goal 1 current result
 
-Status: `GOAL_1C_CORRECTION_IN_PROGRESS`
+Status: `GOAL_1C_BLOCKED_EXACT_SF5_HOST_CONTRACT`
 
-Independent reverse-outcome audit rejected the previous Goal 1 candidate. Its
-provider/Gateway work remains the correction baseline, but its portable
-template context is incompatible with pinned SF5 arrays and its cross-host
-evidence is invalid. Active recovery and evidence:
+The previous Goal 1 candidate remains rejected. Goal 1-C corrected the Docara
+array template path, moved Framework narrowing to exact lock data and removed
+the active search/parser/admission component-ID lists. Focused/full tests,
+public determinism, full/single equality, static verification and fresh browser
+smoke pass for the corrected Docara side.
+
+No Goal 1 acceptance candidate exists because exact SF5 pin `d6f90bba…`
+violates the required normalized context: it overwrites the resolved view
+record before `renderTemplate()` and does not forward `slot` through
+`Smart::render()`. The props-only fixture is byte-equal but insufficient for
+the mandatory outcome. Active recovery and evidence:
 
 - `source/workflow/2026-08-02-docara-goal1c-portable-smart-abi-correction.md`;
 - `source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-correction/INDEX.md`.
 
-The superseded source is
-`34496d49ce366f1108d2aed37c0adda35f6e5f58`. No corrected candidate exists yet.
+The superseded source is `34496d49ce366f1108d2aed37c0adda35f6e5f58`.
+The next action is a separate cross-repository contract decision/new SF5 pin;
 Goal 2, live sites, merge, push, tag, release and deploy remain out of scope.
 
 # M0 result

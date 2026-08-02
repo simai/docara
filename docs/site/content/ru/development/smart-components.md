@@ -59,8 +59,8 @@ asset завершают сборку ошибкой.
 
 ## Контекст шаблона и assets
 
-Переносимый PHP-шаблон получает тот же array ABI, что и source-pinned SF5
-Smart v1. Docara не вводит собственный template dialect.
+Docara передаёт portable PHP-шаблону целевой array ABI SF5 Smart v1 и не
+вводит собственный template dialect.
 
 | Переменная | Форма |
 | --- | --- |
@@ -77,6 +77,13 @@ Smart v1. Docara не вводит собственный template dialect.
 ($props['title'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>`. Объект
 `$view` и `SmartTemplateContext` относятся только к ограниченному legacy
 host-adapter старых package-owned шаблонов и не являются portable ABI.
+
+Текущий exact SF5 pin `d6f90bba…` имеет открытый host defect: выбранный view
+разрешается, но перед `renderTemplate()` его record перезаписывается строковым
+кодом, поэтому `$view` внутри template становится пустым массивом; shortcut
+`Smart::render()` также не переносит `slot` как поле узла. До нового
+source-pinned SF5 revision полная cross-host portability остаётся заблокирована.
+Не обходите это отдельным Docara template dialect.
 
 Project template считается trusted developer source. Его путь выводится только
 из фиксированного provider root и manifest/view записи. CSS/JavaScript также

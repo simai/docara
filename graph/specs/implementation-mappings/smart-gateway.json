@@ -57,7 +57,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.2-RUNTIME-ALERT.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.4-BUILD-AND-COMPONENT-CONTOUR.md",
-    "source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/INDEX.md"
+    "source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/INDEX.md",
+    "source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-correction/INDEX.md"
   ],
   "review_refs": ["docara.gate.vertical_slice"],
   "current_behavior": [
@@ -74,12 +75,14 @@
   ],
   "known_deviations": [
     "The accepted Russian component pages use generic component_block, typed_directive and inline component contracts rather than route-specific parser branches.",
-    "The bounded LegacyBundledSmartProvider adapts the six pre-portable repository layouts into the pinned v1 contract; new project/package artifacts use the portable filesystem layout directly."
+    "The bounded LegacyBundledSmartProvider adapts the six pre-portable repository layouts into the pinned v1 contract; new project/package artifacts use the portable filesystem layout directly.",
+    "Exact SF5 pin d6f90bba resolves view data and then overwrites that record with a string before renderTemplate; Smart::render also treats slot as a prop. Full cross-host normalized context is blocked pending a new exact Framework revision or explicit contract decision.",
+    "RegionCompositionResolver keeps the Goal 2-owned shell region allowlist; Goal 1 does not claim Design Registry completion."
   ],
   "deletion_gates": [
     "Retire InlineComponentRenderer::badge only after all badge calls reach one component node/gateway and exact HTML/assets parity passes.",
     "Remove LegacyBundledSmartProvider only after bundled artifact directories are physically normalized with exact public parity."
   ],
-  "status": "goal1_provider_runtime_implemented_audit_pending",
-  "mapped_revision": "34496d49ce366f1108d2aed37c0adda35f6e5f58"
+  "status": "goal1c_docara_runtime_corrected_cross_host_blocked",
+  "mapped_revision": "5124959521b6ae51c7e5fa925b3c3230a65a54ef"
 }

@@ -932,3 +932,21 @@ Evidence:
 No merge, push, tag, release, publication, Caddy reload or live deployment was
 performed. Production remains closed until the user explicitly approves this
 exact candidate and the live preflight confirms unchanged inputs.
+
+# Exact rc.3 validation deployment
+
+Status: `PASS` at `https://docara-new.test`
+
+The accepted exact rc.3 public tree was deployed to the new empty local test
+site by same-filesystem atomic rename, without Caddy reload. The active tree is
+`425da363fc51d33d2c5b42577980f4ca4603b83814440dbfb06fe419b4cade46`:
+305 files, 206 HTML, 103/103 routes over HTTPS and static broken=0. Search,
+settings, tabs, copy and the 390px mobile layout passed browser smoke with zero
+page/console errors and zero horizontal overflow.
+
+Immediate rollback is retained at
+`/Users/rim/Sites/.docara-new.test-backup-before-rc3-be0ba2d`. The original
+target was empty, so the backup contains zero files and exact empty-tree digest
+`01ba4719…`. `docara.test`, Caddy configuration and the Caddy process were not
+changed. Deployment evidence:
+`source/workflow/2026-08-02-docara-new-test-deployment.md`.

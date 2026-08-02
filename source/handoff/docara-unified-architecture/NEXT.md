@@ -4,6 +4,11 @@ The deterministic R2 correction and complete disposable retest pass. The live
 site is unchanged. There is now one exact unpublished candidate and one
 remaining production decision.
 
+The same exact candidate is deployed for user validation at
+`https://docara-new.test`. Its 103/103 route smoke, static verification and
+representative browser interactions pass. This test deployment does not open
+the separate `docara.test` production gate.
+
 ## Current correction target
 
 | Field | Exact value |

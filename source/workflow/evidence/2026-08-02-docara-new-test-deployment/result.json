@@ -1,0 +1,30 @@
+{
+  "schema": "docara.local_deployment_evidence.v1",
+  "status": "pass",
+  "site": "https://docara-new.test",
+  "product_source_revision": "be0ba2db5254e468c7c014016ade02e8b4f3f16c",
+  "archive_sha256": "630d971e94a1222624304a3a5c2a7791586c0b7866ede5b8f3506c93bdebadc0",
+  "active_tree_sha256": "425da363fc51d33d2c5b42577980f4ca4603b83814440dbfb06fe419b4cade46",
+  "previous_tree_sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+  "active_files": 305,
+  "html_files": 206,
+  "routes": {"checked": 103, "passed": 103, "failed": 0},
+  "static": {"references": 21437, "broken": 0},
+  "http": {"https_status": 200, "protocol": "HTTP/2", "http_redirect_status": 301},
+  "browser": {
+    "pages": ["/ru/", "/ru/components/alert/"],
+    "viewports": ["desktop", "390x844"],
+    "interactions": ["search", "settings", "escape", "tabs", "copy"],
+    "page_errors": 0,
+    "console_errors": 0,
+    "horizontal_overflow": 0,
+    "non_error_warnings": 2
+  },
+  "cutover": {"preflight": "pass", "atomic_rename": "pass", "caddy_reload": false},
+  "rollback": {
+    "available": true,
+    "backup_name": ".docara-new.test-backup-before-rc3-be0ba2d",
+    "backup_files": 0
+  },
+  "untouched": ["/Users/rim/Sites/docara.test", "Caddy configuration", "Caddy process"]
+}

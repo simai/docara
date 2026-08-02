@@ -1,6 +1,6 @@
 # docara-new.test exact rc.3 deployment
 
-Status: `preflight_ready`
+Status: `deployed_and_verified`
 
 ## Scope and identity
 
@@ -55,3 +55,34 @@ Required verification:
 Stop immediately and roll back on digest mismatch, any required route 4xx/5xx,
 broken asset, browser page/console error, overflow, or failed rollback
 precondition.
+
+## Result
+
+Deployment completed without Caddy reload. The atomic helper passed preflight
+and cutover with the exact empty-current and rc.3 candidate digests. The active
+target now has 305 files and exact tree SHA-256
+`425da363fc51d33d2c5b42577980f4ca4603b83814440dbfb06fe419b4cade46`.
+
+Post-cutover verification:
+
+- HTTPS root: 200 over HTTP/2; HTTP redirects 301 to HTTPS;
+- page metadata inventory: 103 routes; HTTP smoke: 103/103 passed;
+- static verifier: 206 HTML, 21,437 local references, broken=0;
+- representative home, Alert and metadata asset: 200;
+- browser home and Alert: page errors=0, console errors=0, overflow=0;
+- search/settings dialogs open and close with Escape;
+- Alert Markdown tab and copy action work;
+- mobile viewport 390x844 has zero horizontal overflow.
+
+The home page emitted two non-error Highlight.js warnings for the unsupported
+`shell` grammar and correctly fell back to unhighlighted code. The Alert page
+console was clean. This does not affect content, navigation or smoke status.
+
+Rollback remains immediately available at
+`/Users/rim/Sites/.docara-new.test-backup-before-rc3-be0ba2d`. It contains the
+exact original empty tree (zero files). The candidate is now active, so rollback
+must use `scripts/atomic-static-cutover.php rollback` with current digest
+`01ba4719…` and candidate digest `425da363…`; no manual deletion is required.
+
+Machine-readable evidence:
+`source/workflow/evidence/2026-08-02-docara-new-test-deployment/result.json`.

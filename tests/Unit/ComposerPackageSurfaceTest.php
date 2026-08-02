@@ -10,6 +10,15 @@ use Tests\TestCase;
 final class ComposerPackageSurfaceTest extends TestCase
 {
     #[Test]
+    public function composer_binary_uses_the_proxy_autoload_outside_the_consumer_root(): void
+    {
+        $binary = (string) file_get_contents(dirname(__DIR__, 2) . '/docara');
+
+        self::assertStringContainsString('$GLOBALS[\'_composer_autoload_path\']', $binary);
+        self::assertStringContainsString('require_once $composerAutoload;', $binary);
+    }
+
+    #[Test]
     public function composer_archive_excludes_local_state_and_development_surfaces(): void
     {
         $composer = json_decode(

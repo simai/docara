@@ -5,6 +5,11 @@ declare(strict_types=1);
 
 use Simai\Docara\Console\ApplicationFactory;
 
+$composerAutoload = $GLOBALS['_composer_autoload_path'] ?? null;
+if (is_string($composerAutoload) && is_file($composerAutoload)) {
+    require_once $composerAutoload;
+}
+
 $projectAutoload = (getcwd() ?: '.') . '/vendor/autoload.php';
 if (is_file($projectAutoload)) {
     require_once $projectAutoload;

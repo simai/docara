@@ -103,6 +103,34 @@ php ../../docara verify-static build_production
 This branch is a Docara 2 candidate. It does not itself claim a public release
 or production readiness.
 
+## Local release-readiness check
+
+Release packaging is an exact-revision, non-publishing operation. Run it only
+from a clean checkout and pass a planned version/tag as parameters:
+
+```bash
+REVISION=$(git rev-parse HEAD)
+php scripts/build-release-package.php \
+  --revision="$REVISION" \
+  --version=2.0.0-rc.1 \
+  --tag=v2.0.0-rc.1 \
+  --output=build_release
+php scripts/verify-release-package.php \
+  build_release/docara-2.0.0-rc.1.release-manifest.json
+```
+
+The command reads only committed blobs from that exact revision. It writes a
+deterministic ZIP, a paired manifest containing the archive checksum and full
+file ledger, a checksum file and an in-archive CycloneDX dependency inventory.
+The package excludes VCS, CI, tests, graph, workflow evidence, caches and
+credentials. `published=false` and the tag is only a planned parameter: no tag,
+GitHub release or package publication is created.
+
+Before an approved release, build twice in independent clean clones, install
+both ZIPs into fresh Composer consumers, verify their consumer-owned locks,
+run init/update/build/static/browser checks, and retain the exact rollback and
+smoke plan. See [publishing and rollback](docs/site/content/ru/build/publish.md).
+
 ## License
 
 MIT

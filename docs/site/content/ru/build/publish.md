@@ -4,6 +4,31 @@
 зависит от конкретного hosting provider: названия команд копирования и
 переключения замените на принятые в вашей инфраструктуре.
 
+## Подготовьте проверяемый пакет
+
+Release-ready не означает «уже опубликовано». Из чистого exact revision
+соберите ZIP командой `scripts/build-release-package.php`, затем проверьте
+парный `release-manifest.json` через `scripts/verify-release-package.php`.
+Два независимых checkout с одинаковыми revision, version и planned tag должны
+дать байтово одинаковые ZIP, manifest и checksum.
+
+Manifest фиксирует source revision, SHA-256 архива и каждого файла, immutable
+SIMAI Framework tuple, ownership consumer lock и SBOM. Архив не содержит Git,
+CI, tests, graph/workflow evidence, локальные cache или credentials. Значение
+`published=false` обязательно до отдельного решения о выпуске.
+
+Перед обновлением сохраните проект и его consumer-owned `composer.lock`.
+Установите точный ZIP, затем выполните `update --verify`, `update --dry-run` и
+только после проверки операций — `update --apply`. Контент, assets,
+`docara.json`, section/page settings и locale `lang.json` остаются
+project-owned и не являются целями операции. При ошибке используйте
+`update --rollback=<id>` и проверьте восстановленные engine hash и lock.
+
+Остановите выпуск при несовпадении revision/hash, dirty или unknown ownership,
+stale plan, повреждённом rollback, moving dependency, broken static reference,
+ошибке browser/security matrix либо невозможности повторить ZIP во втором
+чистом checkout.
+
 ## 1. Зафиксируйте public path
 
 До сборки задайте `base_url` в `docara.json`:

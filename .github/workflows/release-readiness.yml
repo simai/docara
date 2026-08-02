@@ -1,0 +1,56 @@
+name: Release readiness (no publication)
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ["8.2", "8.3", "8.4"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          coverage: none
+          tools: composer
+      - run: composer validate --strict --no-check-publish
+      - run: composer install --no-interaction --prefer-dist
+      - run: vendor/bin/pint --test
+      - run: vendor/bin/phpunit
+
+  deterministic-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: source-a
+      - uses: actions/checkout@v4
+        with:
+          path: source-b
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+      - name: Build independently from the exact revision
+        env:
+          REVISION: ${{ github.sha }}
+        run: |
+          php source-a/scripts/build-release-package.php --revision="$REVISION" --version=0.0.0-ci --tag="ci-$REVISION" --output=source-a/release-out
+          php source-b/scripts/build-release-package.php --revision="$REVISION" --version=0.0.0-ci --tag="ci-$REVISION" --output=source-b/release-out
+      - name: Verify policy and byte identity
+        run: |
+          php source-a/scripts/verify-release-package.php source-a/release-out/docara-0.0.0-ci.release-manifest.json
+          php source-b/scripts/verify-release-package.php source-b/release-out/docara-0.0.0-ci.release-manifest.json
+          cmp source-a/release-out/docara-0.0.0-ci.zip source-b/release-out/docara-0.0.0-ci.zip
+          cmp source-a/release-out/docara-0.0.0-ci.release-manifest.json source-b/release-out/docara-0.0.0-ci.release-manifest.json
+          cmp source-a/release-out/docara-0.0.0-ci.sha256 source-b/release-out/docara-0.0.0-ci.sha256
+
+  # No artifact upload, release permission or publication step is allowed here.

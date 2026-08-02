@@ -26,10 +26,10 @@
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
   "implementation_state": {
-    "current_stage": "docara.stage.r2.production_readiness",
+    "current_stage": "docara.stage.g1.portable_smart_runtime",
     "completed_checkpoint": "r2_production_readiness_pass_disposable_corrected",
-    "next_action": "explicit_user_decision_deploy_or_do_not_deploy_docara_test",
-    "evidence": "source/workflow/evidence/2026-08-02-docara-r2-determinism-correction/INDEX.md"
+    "next_action": "execute_goal1_portable_smart_runtime_batches",
+    "evidence": "source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/INDEX.md"
   },
   "routing_gap": {
     "status": "recorded",

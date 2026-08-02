@@ -1,0 +1,64 @@
+schema_version: 1.0.0
+workflow_id: 2026-08-02-docara-goal1-portable-smart-runtime
+process_model_id: general_delivery
+cycle_id: implementation_planning_cycle
+state: repository_prepared
+owner_skill: teamlead
+companion_skills:
+  - dev
+  - sf5
+  - tester
+approved_by_user: true
+approval_note: Explicit Goal 1 implementation instruction on 2026-08-02.
+repository: /Users/rim/Documents/GitHub/docara-unified
+worktree: /Users/rim/Documents/GitHub/docara-unified
+branch: codex/docara-unified-architecture
+revision: 313afa17e21df2299a6276d246cb4508c7ec00b5
+allowed_files:
+  - /Users/rim/Documents/GitHub/docara-unified/**
+  - /private/tmp/**
+forbidden_files:
+  - /Users/rim/Documents/GitHub/docara/**
+  - /Users/rim/Documents/GitHub/bx-simai.main/**
+  - /Users/rim/Documents/GitHub/ui/**
+  - /Users/rim/Documents/GitHub/ui-smart/**
+  - /Users/rim/Documents/GitHub/ui-control/**
+  - /Users/rim/Sites/docara-new.test/**
+  - /Users/rim/Sites/docara.test/**
+  - '**/.env'
+  - '**/.env.*'
+allowed_actions:
+  - implement_portable_smart_runtime
+  - add_project_local_smart_fixture
+  - add_focused_tests_and_schemas
+  - run_disposable_builds_and_browser_smoke
+  - update_repository_specification_graph_workflow_handoff
+  - create_bounded_checkpoint_commits
+forbidden_actions:
+  - goal_2_or_goal_3_implementation
+  - mutate_external_framework_repository
+  - write_validation_or_live_sites
+  - merge_push_tag_release_or_deploy
+  - expose_or_commit_secrets
+required_gates:
+  - env_policy_gate
+  - repo_hygiene_gate
+  - source_policy_gate
+  - sf5_source_pinned_contract
+  - smart_security_negatives
+  - tester_goal_acceptance
+required_evidence:
+  - workflow
+  - smart_path_inventory
+  - compatibility_report
+  - parity_and_determinism
+  - security_matrix
+  - browser_smoke
+  - documentation_and_graph_validation
+evidence_path: source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime
+stop_conditions:
+  - tracked_sf5_contract_capability_gap
+  - unpinned_framework_source_required
+  - authored_executable_path_reachable
+  - parity_missing_before_legacy_deletion
+  - external_or_live_action_required

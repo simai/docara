@@ -1,4 +1,16 @@
-# Next action: decide whether to deploy exact rc.3 to docara.test
+# Next action: execute Goal 1 Portable Smart Runtime
+
+The user explicitly postponed any live action and authorized Goal 1 from
+`source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md`.
+The active recovery source is now
+`source/workflow/2026-08-02-docara-goal1-portable-smart-runtime.md`; the next
+safe batch is G1.1 after the separate G1.0 baseline commit.
+
+Do not touch `docara-new.test`, `docara.test` or external Framework repositories.
+Do not start Goal 2/3, merge, push, tag, release or deploy. Stop for independent
+audit only after all Goal 1 Done When rows have fresh evidence.
+
+## Historical deployment decision (parked)
 
 The deterministic R2 correction and complete disposable retest pass. The live
 site is unchanged. There is now one exact unpublished candidate and one
@@ -44,11 +56,10 @@ The former source `56a2abf8…`, ZIP `04c18c95…` and tree `457790d4…` are
 | Rejected R1 candidate | `8c0d145…` | `83afd355…` | `superseded_after_audit`; immutable negative baseline |
 | Rejected rc.2 candidate | `56a2abf8…` | `04c18c95…` | `superseded_after_determinism_audit`; immutable negative baseline |
 
-## Next authorized action
+## Parked live action
 
-The user chooses `deploy` or `do not deploy` for this exact candidate. If
-deployment is approved, repeat the documented read-only live digest preflight
-and use the already verified atomic cutover/smoke/rollback dossier. Any digest
-drift closes the gate.
+The previous next action was to choose `deploy` or `do not deploy` for the rc.3
+candidate. It remains historical and unauthorized while Goal 1 changes product
+source. Any future deployment requires a new exact candidate and fresh dossier.
 
 No merge, push, tag, publication, release or live deployment is authorized.

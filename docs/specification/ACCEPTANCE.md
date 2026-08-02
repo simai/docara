@@ -52,7 +52,10 @@ PASS ставится только по воспроизводимому evidenc
 - [x] `ui.*` и `docara.*` проходят один Smart Component Gateway.
 - [x] Props и slots валидируются до template rendering.
 - [x] Gateway возвращает HTML, assets, diagnostics и provenance.
-- [x] Новый компонент не требует ветки в центральном parser или renderer.
+- [ ] Новый Smart-компонент не требует component-ID ветки в центральном
+      parser, renderer, ViewModel factory, semantic validator или contribution
+      list. Текущий parser уже общий, но renderer/runtime остаются перечисляющими;
+      критерий переоткрыт в Goal 1 после architecture review.
 - [x] Компонент не получает недокументированный произвольный HTML.
 
 ## D. Композиция и локали

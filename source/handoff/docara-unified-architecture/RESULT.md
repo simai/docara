@@ -1,3 +1,19 @@
+# Goal 1 current result
+
+Status: `G1.0 baseline checkpoint in progress`
+
+The accepted extensible LEGO roadmap is now executing as a separate bounded
+Goal 1 workflow. Input revision is
+`313afa17e21df2299a6276d246cb4508c7ec00b5`; the accepted rc.3 and its test-site
+evidence remain historical baselines, not deployable identities for the new
+product source.
+
+G1.0 records the current six built-in Smart artifacts, every central
+component-ID/namespace branch, the false acceptance row, source-pinned committed
+SF5 candidate revision and a disposable 103-route public baseline. Runtime code
+has not changed yet. Evidence:
+`source/workflow/evidence/2026-08-02-docara-goal1-portable-smart-runtime/G1.0-BASELINE-AND-PATH-MAP.md`.
+
 # M0 result
 
 Status: mapping preserved; contract contradictions resolved; checkpoint verified

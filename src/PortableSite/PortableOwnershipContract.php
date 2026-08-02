@@ -70,8 +70,8 @@ final readonly class PortableOwnershipContract
             'engine_root' => self::ENGINE_ROOT,
             'owners' => [
                 'engine' => ['.docara/engine/**'],
-                'project' => ['content/**', 'assets/**', 'docara.json', 'redirects.json', 'simai-framework.lock.json', 'snippets/**'],
-                'generated' => ['build/**', 'build_*/**', 'var/cache/**', '.docara/update-plan.json', '.docara/rollbacks/**'],
+                'project' => ['content/**', 'assets/**', 'design/**', 'smart/**', 'docara.json', 'redirects.json', 'simai-framework.lock.json', 'snippets/**'],
+                'generated' => ['build/**', 'build_*/**', '.docara-preview/**', 'var/cache/**', '.docara/update-plan.json', '.docara/rollbacks/**'],
             ],
             'engine_files' => $hashes,
             'starter_project_files' => $projectFiles,

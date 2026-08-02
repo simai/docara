@@ -27,9 +27,11 @@ final readonly class PreviewShell
         $this->files->ensureDirectoryExists(dirname($destination));
         $this->files->ensureDirectoryExists($candidate);
         $this->files->put($candidate . '/artifact.html', $artifact->html);
+        $this->files->put($candidate . '/index.html', $artifact->pageHtml);
         $result = $artifact->toArray() + [
             'output' => '.docara-preview/output/' . $artifact->target->value . '/artifact.html',
             'manifest' => '.docara-preview/output/' . $artifact->target->value . '/preview.json',
+            'preview' => '.docara-preview/output/' . $artifact->target->value . '/index.html',
         ];
         $this->files->put($candidate . '/preview.json', CanonicalJson::encodePretty($result));
         $this->files->deleteDirectory($previous);

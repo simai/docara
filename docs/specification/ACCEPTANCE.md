@@ -57,7 +57,8 @@ PASS ставится только по воспроизводимому evidenc
       contribution list. Goal 1-D удалил `docara.brand` view branch из
       `DeclarativePageCompiler`: explicit view имеет приоритет, иначе view
       выбирает зарегистрированный preset, затем применяется `default`.
-      Ограничение shell regions остаётся отдельно Goal 2-owned boundary.
+      Goal 2 удалил прежний shell-region allowlist: design compatibility теперь
+      определяется artifacts и одним DesignRegistry.
 - [x] Project Smart root фиксирован как `smart/`; namespace принадлежит одному
       provider, а paths/symlinks/templates/assets fail-closed.
 - [x] Portable Smart manifest соответствует source-pinned SF5 artifact v1;
@@ -78,6 +79,15 @@ PASS ставится только по воспроизводимому evidenc
       молча.
 - [x] Root redirect на default locale не показывает промежуточную страницу.
 - [x] LTR/RTL проходят одну и ту же функциональную матрицу.
+- [x] Built-in/package/project Layout, Section, Block и View Tree разрешаются
+      одним deterministic DesignRegistry без implicit shadowing.
+- [x] Region resolver/compiler не содержат конкретных design/Smart IDs.
+- [x] Project-local design подключается только artifacts в `design/`, без
+      engine source edit и без executable/template path из project JSON.
+- [x] Smart/region/layout/page preview использует production PageBuilder path;
+      output изолирован и не является accepted build receipt.
+- [x] PHP-only watch отслеживает dependency closure выбранного route и не
+      компилирует другие страницы.
 
 ## E. Сборка и обновление
 

@@ -1,126 +1,117 @@
-# Расширение декларативной композиции
+# Макеты и блоки проекта
 
-Этот путь предназначен для maintainer-разработчика пакета Docara. Автор сайта
-может выбирать только зарегистрированные элементы через JSON; project JSON не
-может указывать PHP, Blade, HTML template, callback или путь к исполняемому
-файлу.
+Проект может добавить свой Layout, Section, Block и безопасный View Tree в
+каталог `design/`. Менять движок для этого не нужно.
 
-## Модель владения
+## Как устроена композиция
 
 ```text
-Layout
-  -> Region
-    -> Section
-      -> Slot
-        -> Block
-          -> Smart или безопасный element
+Layout → Region → Section → Slot → Block → Smart или безопасный element
 ```
 
-| Слой | Canonical definition | Исполняемая часть |
-| --- | --- | --- |
-| Layout | `resources/layouts/*.json` | зарегистрированный layout View Tree |
-| Section | `resources/sections/*.json` | зарегистрированный section View Tree |
-| Block | `resources/blocks/*.json` | renderer, разрешённый Section |
-| View Tree | `resources/views/*.json` | общий `ViewTreeRenderer` |
-| Product Smart | `resources/smart/<id>/manifest.json` и `views/*.json` | provider + registered adapter/template |
-| Framework Smart | owner manifest + exact Framework lock | consumer policy + registered view/template |
-| Project Smart | `smart/<namespace>.<name>/` | portable SIMAI Framework v1 artifact через тот же Gateway |
+Все определения читает один `DesignRegistry`. Встроенные ID принадлежат
+пакету, project ID — namespace из `docara.json`:
 
-Layout, Section, Block и View Tree принадлежат `DefinitionRepository`.
-Smart roots обнаруживаются детерминированными providers; каждый artifact и его
-исполняемые файлы проверяются fail-closed до включения в единый `SmartRegistry`.
+```json
+{"smart":{"namespace":"project"}}
+```
 
-## Добавление Layout
+Project artifact должен начинаться с `project.`. Он не может заменить
+`docara.*`, `content.*`, `shell.*` или `ui.*`. Дубликаты, symlink, выход из
+корня и неизвестные определения останавливают сборку.
 
-1. Создайте `resources/layouts/<id>.json` по
-   `resources/schemas/declarative-layout.schema.json`.
-2. Создайте `resources/views/layout.<id>.json` по schema View Tree. Дерево
-   содержит только разрешённые element/region nodes и утилиты Framework.
-3. Зарегистрируйте оба файла в `DefinitionRepository::DEFINITIONS`.
-4. Добавьте ID в enum `layout.key` файла `presentation.schema.json`.
-5. Расширьте `RegionCompositionResolver`: допустимый key, список областей,
-   section matrix и структурные defaults должны согласовываться с manifest.
-6. Добавьте positive test разрешения и rendering, negative test неизвестного
-   Layout и browser fixture.
+## Файлы
 
-Сейчас продукт публично допускает только `docara.docs`; одного нового JSON-файла
-для второго Layout недостаточно.
+```text
+design/
+├── layouts/project.docs.json
+├── sections/project.article.json
+├── blocks/project.document.json
+└── views/
+    ├── layout.project.docs.json
+    └── section.project.article.json
+```
 
-## Добавление Section и Slot
+Layout задаёт безопасный View Tree, regions, их defaults и место документа:
 
-1. Создайте `resources/sections/<id>.json`: задайте тип, разрешённые regions,
-   slots, blocks и View Tree ID.
-2. Создайте `resources/views/section.<id>.json`. Каждый slot в tree обязан
-   существовать в Section manifest.
-3. Зарегистрируйте Section и View Tree в `DefinitionRepository`.
-4. Разрешите Section только в нужных regions в schema и
-   `RegionCompositionResolver`; не добавляйте глобальный wildcard.
-5. Проверьте duplicate ID, неверный region, неизвестный slot, пустую Section и
-   успешную композицию.
+```json
+{
+  "schema": "docara.layout.v1",
+  "key": "project.docs",
+  "default": false,
+  "view": "layout.project.docs",
+  "configuration": {
+    "container": {"max": 7},
+    "scrollbar": {"preset": "overlay"},
+    "content": {"gap": 0}
+  },
+  "document": {
+    "region": "stage",
+    "section": "project.article",
+    "slot": "content",
+    "block": "project.document"
+  },
+  "regions": {
+    "stage": {
+      "required": true,
+      "default_enabled": true,
+      "default_sections": [],
+      "section_types": ["content"]
+    }
+  },
+  "assets": []
+}
+```
 
-## Добавление Block
+Section объявляет совместимые regions, slots и blocks. Block выбирает один из
+уже зарегистрированных безопасных renderer kinds. JSON не принимает PHP,
+template path, callback, произвольный HTML или CSS.
 
-1. Создайте `resources/blocks/<id>.json` по declarative Block schema.
-2. Зарегистрируйте definition и добавьте ID только в `allowed_blocks` нужной
-   Section.
-3. Если Block доступен автору, расширьте узкий JSON contract и серверный
-   validator одинаково. Schema без runtime-проверки или runtime без schema
-   считаются незавершённой регистрацией.
-4. Свяжите Block с существующим renderer либо добавьте отдельный renderer с
-   immutable input model; HTML не должен появляться в compiler.
-5. Добавьте positive/negative tests и точный пример.
+Чтобы выбрать project layout, сбросьте унаследованную ветку:
 
-## Добавление View Tree
+```json
+{
+  "layout": {
+    "$reset": true,
+    "key": "project.docs"
+  }
+}
+```
 
-View Tree описывает только структуру: безопасные HTML-теги, utilities, regions
-и slots. Он не содержит переводимого текста и не исполняет PHP.
+## Предпросмотр
 
-1. Скопируйте ближайшее дерево из `resources/views` и смените ID.
-2. Проверьте его `declarative-view-tree.schema.json`.
-3. Зарегистрируйте `view:<id>` в `DefinitionRepository`.
-4. Укажите ID из соответствующего Layout или Section manifest.
-5. Запустите inspector/render tests для неизвестного kind, тега, utility,
-   region и slot.
-
-## Добавление project Smart-компонента
-
-1. Объявите namespace в `docara.json`; root всегда `smart/`.
-2. Создайте `smart/<namespace>.<name>/manifest.json` по portable SIMAI Framework v1.
-3. Добавьте `view/<code>.json`, `template/<code>.php` и объявленные assets.
-4. Вызовите canonical ID из Markdown dotted directive.
-5. Проверьте positive render и negatives для props, view, paths и symlinks.
-
-Не добавляйте component ID в engine PHP, schema enum или contribution list.
-Provider registry сам связывает manifest, template и assets; Gateway выбирает
-resolver по provider ownership. Template получает стандартный context и
-проверенный `$view`.
-
-Один `SmartManifestValidator` проверяет общую форму `ui.*` и `docara.*`:
-props, events, views, presets, assets, Atlas и readiness. Для Framework Smart
-после этого действует дополнительный exact-lock admission. Product/project
-Smart не нужно дублировать в `DefinitionRepository`: provider compiler строит
-registry и trusted template projection из одного artifact root.
-
-## Добавление Smart-компонента SIMAI Framework
-
-Сначала пройдите owner admission: manifest и assets должны существовать в
-зафиксированной паре Core/Smart, а provider revision и SHA-256 — в exact lock.
-Затем добавьте только сужающие consumer metadata, view, ViewModel, trusted
-template и проверки из списка выше. Подробности:
-[Framework-компоненты](/development/framework-components/).
-
-## Обязательная проверка
+Preview использует обычный `PortableSiteBuilder`, PageBuilder, registries,
+Smart gateway, renderer и layout composer. Результат изолирован в
+`.docara-preview/` и не считается production build receipt.
+В manifest это явно записано как `accepted_build_receipt=false`.
 
 ```bash
-php vendor/bin/phpunit tests/Unit/DeclarativeViewCompositionTest.php
-php vendor/bin/phpunit tests/Unit/DeclarativeRegionCompositionTest.php
-php vendor/bin/phpunit tests/Unit/DeclarativePageCompilerTest.php
-php vendor/bin/phpunit tests/Unit/DeclarativeRenderingTest.php
+docara preview page --page=/ru/components/alert/
+docara preview layout --page=/ru/components/alert/
+docara preview region --page=/ru/components/alert/ --selector=main
+docara preview smart --page=/ru/components/alert/ --selector=ui.alert
+```
+
+Для автоматизации добавьте `--json`. PHP-only watch следит только за input
+chain выбранного route и его project design/Smart/assets:
+
+```bash
+docara preview region --page=/ru/components/alert/ --selector=main --watch
+```
+
+`artifact.html` содержит точный выбранный fragment, `index.html` — ту же
+production page для проверки в браузере, `preview.json` — assets, provenance,
+dependencies и hashes. Normal `build_*` preview не перезаписывает.
+
+## Проверка
+
+```bash
+php vendor/bin/phpunit --filter 'DesignRegistryTest|ProjectDesignCompositionTest|PreviewKernelTest'
 cd docs/site
 php ../../docara build production
 php ../../docara verify-static build_production
 ```
 
-После этого проверьте exact fixture, Markdown-owner и результат в браузере. PASS одного
-компонента не означает готовность всего Framework, public release или
-production readiness Docara.
+Не добавляйте ID проекта в engine PHP или schema enum. Если нужен новый
+исполняемый renderer/API, это отдельное расширение платформы, а не project
+JSON.

@@ -439,10 +439,12 @@ final class DocumentationContractTest extends TestCase
         $composition = (string) file_get_contents(
             $this->contentRoot() . '/development/composition-extensions.md',
         );
-        foreach (['Layout', 'Section', 'Block', 'View Tree', 'Smart', 'provider', 'SmartRegistry'] as $term) {
+        foreach (['Layout', 'Section', 'Block', 'View Tree', 'Smart', 'DesignRegistry', 'design/', 'docara preview'] as $term) {
             self::assertStringContainsString($term, $composition);
         }
-        self::assertStringContainsString('детерминированными providers', $composition);
+        self::assertStringContainsString('accepted_build_receipt=false', $composition);
+        self::assertStringNotContainsString('DefinitionRepository::DEFINITIONS', $composition);
+        self::assertStringNotContainsString('Расширьте `RegionCompositionResolver`', $composition);
 
         $smart = (string) file_get_contents($this->contentRoot() . '/development/smart-components.md');
         foreach (['docara.brand', 'docara.navigation', 'docara.toc', 'SmartComponentGateway', 'project.notice'] as $term) {

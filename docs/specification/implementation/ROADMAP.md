@@ -57,13 +57,15 @@ release и production не заявлены.
 
 ## Goal 1. Portable Smart Runtime
 
-Статус: `Goal 1-D ready_for_independent_audit`. Portable ABI и cross-host
-outcome на exact SF5 adapter `b3cdff87…` сохранены. Component-ID выбор view
-удалён из `DeclarativePageCompiler`; artifact/provider data теперь разрешают
-explicit view, preset-selected view и `default` одинаково для product и
-project-local Smart. Расширенный structural gate покрывает активные центральные
-compile/resolve/render/search/admission surfaces. Goal 1 ещё не принят
-независимым аудитом; Goal 2 не начат.
+Статус: независимо принят `PASS_WITH_NOTES`. Exact runtime candidate
+`44acc1ff…`, SF5 adapter `b3cdff87…`; cross-host fixture byte-identical.
+
+## Goal 2. Project Design Registry and Preview
+
+Статус: implementation complete, `ready_for_independent_audit`. Один
+DesignRegistry владеет package/project design artifacts, composition не знает
+конкретных IDs, а Smart/region/layout/page preview извлекается из normal
+PortableSiteBuilder output. Goal 3 остаётся `unstarted` до отдельного аудита.
 
 ## M2. Вертикальный срез `components/badge`
 

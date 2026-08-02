@@ -1,0 +1,16 @@
+{
+  "schema": "docara.layout.v1",
+  "key": "project.docs",
+  "default": false,
+  "view": "layout.project.docs",
+  "configuration": {
+    "container": {"max": 7},
+    "scrollbar": {"preset": "overlay"},
+    "content": {"gap": 0}
+  },
+  "document": {"region": "stage", "section": "project.article", "slot": "content", "block": "project.document"},
+  "regions": {
+    "stage": {"required": true, "default_enabled": true, "default_sections": [], "section_types": ["content"]}
+  },
+  "assets": []
+}

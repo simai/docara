@@ -65,6 +65,7 @@ final readonly class PreviewKernel
             $page,
             $selector,
             $artifactHtml,
+            $html,
             $assets,
             $this->dependencies($root, $record),
             [

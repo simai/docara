@@ -163,10 +163,11 @@ Normalizer чистый: одинаковый call/context даёт одинак
 Template не читает глобальные config напрямую. Любая зависимость приходит в
 context и отражается в provenance/hash.
 
-`RegionCompositionResolver` пока сохраняет ограниченный список shell region
-components. Это boundary будущего Goal 2 Design Registry, а не завершённая
-часть Goal 1; он не участвует в Markdown component parsing, search projection
-или Framework admission.
+Goal 2 удаляет последний shell-region allowlist. `DesignRegistry` собирает
+package и project artifacts из фиксированных roots, проверяет namespace owner,
+schema, duplicate, traversal и symlink до композиции. Resolver и compiler
+работают с descriptor data и не знают конкретных layout, region, section,
+block или Smart IDs.
 
 ## 8. Layout composition
 
@@ -176,6 +177,18 @@ region plan. Он не разбирает Markdown и не знает component 
 Region item имеет стабильный id, kind, params, visibility condition и source
 provenance. Поддерживаемые kinds первой версии: `slot`, `component`, `native`,
 `include`. Произвольный PHP callback в пользовательском JSON запрещён.
+
+Один Layout descriptor объявляет regions, required/default state и document
+region/section/slot/block. Section descriptor задаёт совместимые regions,
+slots и blocks; Block descriptor — безопасный зарегистрированный renderer kind.
+Project artifacts живут в `design/{layouts,sections,blocks,views}` и используют
+namespace проекта. Они не могут неявно заменить package ID.
+
+`PreviewKernel` не является renderer. Он вызывает normal
+`PortableSiteBuilder` в изолированном preview cache и извлекает Smart, region,
+layout или page из production HTML/diagnostics. `PreviewShell` публикует только
+disposable artifact/manifest и помечает `accepted_build_receipt=false`.
+PHP-only watch пересобирает тот же выбранный route через один PageBuilder.
 
 ## 9. PageBuilder и PortableSiteBuilder
 

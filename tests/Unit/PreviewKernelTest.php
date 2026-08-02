@@ -55,6 +55,8 @@ final class PreviewKernelTest extends TestCase
         $result = (new PreviewShell(new Filesystem))->publish($this->tmp, $smart);
         self::assertFalse($result['accepted_build_receipt']);
         self::assertFileExists($this->tmpPath('.docara-preview/output/smart/artifact.html'));
+        self::assertSame($page->html, $smart->pageHtml);
+        self::assertSame($smart->pageHtml, (string) file_get_contents($this->tmpPath('.docara-preview/output/smart/index.html')));
         self::assertFileDoesNotExist($this->tmpPath('.docara-preview/output/smart/.docara/resolved-page-plans.json'));
 
         $application = new Application;

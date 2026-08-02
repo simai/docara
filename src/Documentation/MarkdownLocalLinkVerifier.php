@@ -21,7 +21,8 @@ final class MarkdownLocalLinkVerifier
         }
 
         foreach ($normalized as $source => $markdown) {
-            if (! str_ends_with(strtolower($source), '.md')) {
+            if (! str_ends_with(strtolower($source), '.md')
+                || ($source !== 'README.md' && ! str_starts_with($source, 'docs/'))) {
                 continue;
             }
             if (str_starts_with($source, 'docs/site/content/')) {

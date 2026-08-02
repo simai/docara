@@ -18,6 +18,7 @@ final class MarkdownLocalLinkVerifierTest extends TestCase
             'README.md' => '[Guide](docs/guide.md) [Docs](docs/) [Route](/ru/) [Web](https://example.com)',
             'docs/guide.md' => '[Back](../README.md#start) ![Image](assets/example.png)',
             'docs/assets/example.png' => 'png',
+            'resources/example.md' => '[Runtime-owned projection](../generated/asset.svg)',
         ]);
 
         self::addToAssertionCount(1);

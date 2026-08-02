@@ -768,3 +768,30 @@ Status: PASS_WITH_NOTES; architecture/product candidate accepted
 
 Release, merge, push, tag, publication and production remain unclaimed. R1
 release-readiness implementation is active.
+
+# R1 local release-readiness result
+
+Status: PASS_WITH_EXPLICIT_GAPS; separate release approval still required
+
+- exact source `8c0d14566837b6e6f4552d14c656ea14b202cd18` produces a
+  655-file ZIP with SHA-256
+  `83afd355436284a0040390c88e1d125f3e5648932a23ff324ba9afa9af5eb561`;
+- two independent clean clones produce byte-identical ZIP, manifest and
+  checksums; two fresh dist consumers have the same lock and pass init, build
+  and static verification;
+- the packaged public site has 103 routes, 305 files, 103/103 isolated parity,
+  21,442 checked references and zero broken;
+- a real predecessor/current engine change passes verify, dry-run, apply and
+  exact rollback while project-owned files remain preserved;
+- 378 tests and 6,076 assertions pass in exhaustive bounded partitions; Pint,
+  Composer, lint, JSON/YAML/graph and archive/security scans pass;
+- PHP 8.2 and 8.4 are proved locally; PHP 8.3 and the complete Linux matrix are
+  honest unexecuted cells;
+- exact browser assertions pass RU desktop/mobile and AR RTL without errors or
+  overflow; exact screenshots are not claimed because external-font waiting
+  timed out, while accepted M5 screenshots are explicitly UI-equivalent only;
+- evidence:
+  `source/workflow/evidence/2026-08-02-docara-r1-release-readiness/INDEX.md`.
+
+No merge, push, tag, release, publication or deploy was performed. The only
+next action is a separate user-approved exact-artifact release review/action.

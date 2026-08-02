@@ -1,8 +1,9 @@
 # Дорожная карта упрощения Docara
 
 Статус: M0-M5 завершены; exact-archive product candidate независимо принят.
-R1 готовит локально воспроизводимый release-ready пакет. Release и production
-не заявлены и требуют отдельного разрешения
+R1 завершил локально воспроизводимый release-ready пакет с явно записанными
+compatibility gaps. Release и production не заявлены и требуют отдельного
+разрешения.
 
 Переход выполняется вертикальными срезами. Цель — не переписать весь код за
 один раз, а доказать новый единственный конвейер на одной реальной странице,
@@ -142,6 +143,18 @@ zero-reference evidence.
 После M5 выполняется R1: детерминированная упаковка, versioned update/rollback,
 fresh-consumer и release verification. Даже зелёный R1 лишь готовит отдельное
 release review; merge, tag, публикация и deploy не выполняются автоматически.
+
+## R1. Подготовить локальный release candidate
+
+Статус: завершён с явными gaps PHP 8.3, полной Linux-матрицы и exact screenshot
+capture. Эти клетки не объявлены зелёными.
+
+Доказано: два clean clone создают byte-identical ZIP/manifest/checksums; два
+fresh dist consumer проходят init/build/static; текущий публичный сайт даёт
+103/103 full/single parity; реальный predecessor/current update атомарно
+применяется и точно откатывается с сохранением project-owned файлов; artifact
+policy и security tests проходят. Следующий шаг — только отдельный
+user-approved exact-artifact release review/action.
 
 ## Порядок работы нового треда
 

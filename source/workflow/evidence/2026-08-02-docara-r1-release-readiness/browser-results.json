@@ -1,0 +1,15 @@
+{
+  "schema": "docara.r1_browser_evidence.v1",
+  "candidate_source_revision": "8c0d14566837b6e6f4552d14c656ea14b202cd18",
+  "candidate_archive_sha256": "83afd355436284a0040390c88e1d125f3e5648932a23ff324ba9afa9af5eb561",
+  "direct_checks": [
+    {"route": "/ru/", "viewport_width": 1920, "direction": "ltr", "overflow": 0, "console_errors": 0, "console_warnings": 0, "checks": ["settings dialog", "dark selection", "Escape close", "focus return"]},
+    {"route": "/ru/components/alert/", "viewport_width": 390, "direction": "ltr", "overflow": 0, "page_errors": 0, "console_errors": 0, "console_warnings": 0, "checks": ["Markdown tab", "copy feedback"]},
+    {"route": "/ar/", "viewport_width": 1440, "direction": "rtl", "overflow": 0, "console_errors": 0, "console_warnings": 0, "checks": ["Arabic heading", "locale-safe route"]}
+  ],
+  "screenshots": {
+    "exact_candidate": "not_captured_external_font_wait_timeout",
+    "ui_equivalent_evidence": "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/screenshots",
+    "binding": "No public runtime, template, CSS or JavaScript changed after the accepted M5 UI checkpoint; exact-runtime assertions above are direct, while screenshots are not relabeled exact."
+  }
+}

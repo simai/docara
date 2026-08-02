@@ -27,8 +27,8 @@
   },
   "implementation_state": {
     "current_stage": "docara.stage.r1.release_readiness",
-    "completed_checkpoint": "m5_exact_archive_independently_accepted",
-    "next_action": "build_deterministic_release_readiness_package_without_publication",
+    "completed_checkpoint": "r1_local_release_readiness_verified",
+    "next_action": "separate_user_approved_exact_artifact_release_review",
     "evidence": "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/INDEX.md"
   },
   "routing_gap": {

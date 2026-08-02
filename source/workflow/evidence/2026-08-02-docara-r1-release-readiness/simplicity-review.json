@@ -1,0 +1,13 @@
+{
+  "schema": "docara.simplicity_review.v1",
+  "verdict": "keep",
+  "scope": "R1 release packaging and readiness",
+  "review": [
+    {"surface": "release builder", "decision": "keep", "reason": "single repository-owned deterministic entrypoint"},
+    {"surface": "paired external manifest", "decision": "keep", "reason": "avoids impossible self-referential archive hash while preserving exact binding"},
+    {"surface": "package allowlist", "decision": "keep", "reason": "smallest auditable positive surface and forbidden-file guard"},
+    {"surface": "non-publishing CI", "decision": "keep", "reason": "defines unexecuted compatibility cells without implying artifact publication"},
+    {"surface": "second release engine or updater", "decision": "absent", "reason": "existing CLI lifecycle is reused"}
+  ],
+  "protected_controls": ["exact revision binding", "deterministic metadata", "ownership preservation", "atomic rollback", "artifact policy scan", "separate publication approval"]
+}

@@ -1,8 +1,8 @@
-# Next checkpoint: R1 deterministic release readiness
+# Next checkpoint: separately approved exact-artifact release review
 
-M5 product stabilization and independent exact-archive acceptance are complete.
-R1 now builds a deterministic release package and verifies it locally without
-publishing, tagging, merging or deploying.
+M5 product stabilization, independent exact-archive acceptance and R1 local
+release readiness are complete. The repository now waits for an explicit user
+decision to run a separate exact-artifact release review/action.
 
 ## Candidate contract
 
@@ -23,15 +23,23 @@ publishing, tagging, merging or deploying.
 - minimal EN LTR and AR RTL fixtures test the same engine without claiming a
   complete translation.
 
-## Required R1 action
+## Exact local candidate
 
-Build the package twice from exact clean revisions, verify identical ZIP and
-manifests, exercise a real predecessor/current update and rollback, and bind
-fresh-consumer, authoring, security, build and browser evidence to the exact
-release artifact.
+- source revision: `8c0d14566837b6e6f4552d14c656ea14b202cd18`;
+- ZIP SHA-256:
+  `83afd355436284a0040390c88e1d125f3e5648932a23ff324ba9afa9af5eb561`;
+- release manifest SHA-256:
+  `77e781122cdc2bd5b6091fea74803ea26f5a0e4c8c8d0e9c3282cf0112c7a51a`;
+- evidence:
+  `source/workflow/evidence/2026-08-02-docara-r1-release-readiness/INDEX.md`.
+
+PHP 8.2 and 8.4 are locally proved. PHP 8.3 and the complete Linux matrix are
+unexecuted CI cells. Exact screenshots were not captured because external-font
+waiting timed out; direct exact-runtime assertions and UI-equivalent M5 images
+remain explicitly distinguished.
 
 ## Nonclaims
 
-Architecture/product-candidate acceptance is PASS. Full translations of other
-locales, merge, push, tag, publication, release and production deploy are not
-authorized or claimed.
+Architecture/product-candidate acceptance and local release readiness are PASS
+within the evidence boundary. Full translations of other locales, merge, push,
+tag, publication, release and production deploy are not authorized or claimed.

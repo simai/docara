@@ -1,6 +1,6 @@
 # R1 release-readiness implementation goal
 
-Status: `in_progress`
+Status: `complete_with_explicit_compatibility_gaps`
 
 Input revision: `afc5e0477e0ba9f65765e1cb1016bd996cb8fa75`
 
@@ -85,3 +85,15 @@ recovery. Continue all independent safe work before reporting a stop.
 - no complete translation of non-Russian documentation;
 - no Framework producer change;
 - no production approval.
+
+## Completion result
+
+The exact local release candidate is source revision
+`8c0d14566837b6e6f4552d14c656ea14b202cd18`, archive SHA-256
+`83afd355436284a0040390c88e1d125f3e5648932a23ff324ba9afa9af5eb561`.
+Two clean clones produce byte-identical release artifacts; two fresh dist
+consumers, the 103-route public build, versioned update/rollback, security and
+direct browser assertions pass. PHP 8.2 and 8.4 are proved locally. PHP 8.3 and
+the complete Linux matrix remain unexecuted CI cells, and exact screenshots
+remain an explicit evidence limitation. These gaps do not authorize or imply a
+release; they are inputs to the separate user-approved release review.

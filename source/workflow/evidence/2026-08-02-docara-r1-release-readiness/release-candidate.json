@@ -1,0 +1,33 @@
+{
+  "schema": "docara.r1_release_candidate_evidence.v1",
+  "status": "pass_with_explicit_gaps",
+  "source_revision": "8c0d14566837b6e6f4552d14c656ea14b202cd18",
+  "version_parameter": "2.0.0-rc.1",
+  "tag_parameter": "v2.0.0-rc.1",
+  "archive": {
+    "sha256": "83afd355436284a0040390c88e1d125f3e5648932a23ff324ba9afa9af5eb561",
+    "file_count": 655,
+    "release_manifest_sha256": "77e781122cdc2bd5b6091fea74803ea26f5a0e4c8c8d0e9c3282cf0112c7a51a",
+    "checksums_sha256": "f96d3deccf59971f5a5b5bd0dbea73f11cb365db610cc863eeda9e6417ecc252",
+    "clean_clone_builds": 2,
+    "byte_identical": true
+  },
+  "consumers": {
+    "fresh_dist_consumers": 2,
+    "lock_sha256": "176748244149dcf5ddc41dfe6365c17e6547239cce18a5f5e5de6809bdbcacbb",
+    "starter_routes": 38,
+    "public_routes": 103,
+    "full_single_parity": "103/103",
+    "broken_local_references": 0
+  },
+  "tests": {
+    "phpunit_tests": 378,
+    "phpunit_assertions": 6076,
+    "execution": "exhaustive_bounded_partitions",
+    "composer_advisories": 0
+  },
+  "verified_compatibility": ["macOS PHP 8.2.29", "macOS PHP 8.4.20"],
+  "unverified_compatibility": ["PHP 8.3", "complete Linux matrix"],
+  "evidence_limits": ["Exact screenshot capture timed out while waiting for external fonts; direct exact-runtime assertions and UI-equivalent M5 screenshots are kept distinct."],
+  "nonclaims": ["merge", "push", "tag", "release", "publication", "deploy", "complete non-Russian translations"]
+}

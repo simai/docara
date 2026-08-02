@@ -7,16 +7,21 @@
   "title": "R1. Детерминированная release readiness",
   "summary": "Implement deterministic packaging, real update/rollback and exact-artifact consumer, security and browser verification.",
   "owner": "dev",
-  "lifecycle": "active",
+  "lifecycle": "completed",
   "readiness": "R2_contract",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-02-docara-r1-release-readiness-goal.md"],
-  "evidence_refs": ["source/workflow/evidence/2026-08-02-docara-r1-release-readiness/INDEX.md"],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/INDEX.md",
+    "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/R1.2-DETERMINISTIC-PACKAGE.md",
+    "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/R1.4-VERSIONED-UPDATE-ROLLBACK.md",
+    "source/workflow/evidence/2026-08-02-docara-r1-release-readiness/R1.6-RELEASE-READINESS-PACKET.md"
+  ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.r1.release_readiness",
   "allowed_scope": ["Release package tooling", "Disposable consumers", "Update fixtures", "Verification and documentation"],
   "forbidden_scope": ["Merge", "Push", "Tag", "Publication", "Deploy", "Framework producer change"],
   "checks": ["Deterministic ZIP", "Archive policy", "Fresh consumers", "Versioned update rollback", "Build/static/browser/security"],
-  "status": "in_progress",
-  "next_action": "implement_deterministic_release_package"
+  "status": "passed_with_php83_linux_and_exact_screenshot_gaps",
+  "next_action": "separate_user_approved_exact_artifact_release_review"
 }

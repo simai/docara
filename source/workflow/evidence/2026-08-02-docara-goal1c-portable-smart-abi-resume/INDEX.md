@@ -5,7 +5,7 @@ Status: `ready_for_independent_audit`
 Branch: `codex/docara-unified-architecture`
 Input Docara revision: `7ea63d797cd0de3aa424ea0a9279abaf22775908`
 Runtime implementation revision: `94d2afd9cb71d6b02d8f4a63d4f807e127b1b190`
-Final governance revision: recorded in `G1C-R5-INTEGRATED-ACCEPTANCE.md`
+Verified governance revision: `46c9ac6ad99ec0b4bb72501ddab954925becf19c`
 Rollback: revert Goal 1-C resume commits in reverse order; do not rewrite history
 
 ## Outcome
@@ -31,7 +31,8 @@ not started.
   verification;
 - `G1C-R4-BROWSER.md` and `browser/` — fresh desktop/mobile interaction smoke;
 - `G1C-R5-INTEGRATED-ACCEPTANCE.md` — final repository checks and exact
-  candidate binding.
+  candidate binding. The later evidence-only commit does not change runtime,
+  public documentation, graph state or tests.
 
 ## Immutable external inputs
 

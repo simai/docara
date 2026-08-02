@@ -69,8 +69,8 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
 | G2.1 | typed artifacts/providers and one deterministic DesignRegistry | provider/ownership/path/schema tests | pass |
 | G2.2 | built-ins migrated from constant registration | byte parity, zero-reference scan | pass |
 | G2.3 | data-driven composition and project `design/` fixture | no engine ID lists, fixture without `src/` edit | pass |
-| G2.4 | PreviewKernel and PreviewShell over production services | HTML/assets/provenance parity, receipt isolation | in progress |
-| G2.5 | preview commands and PHP watch | human/JSON/exit-code fixtures, dependency invalidation | pending |
+| G2.4 | PreviewKernel and PreviewShell over production services | HTML/assets/provenance parity, receipt isolation | pass |
+| G2.5 | preview commands and PHP watch | human/JSON/exit-code fixtures, dependency invalidation | in progress |
 | G2.6 | integrated docs/graph/build/browser acceptance | full matrix and reverse-outcome evidence | pending |
 
 ## Current Progress
@@ -128,7 +128,19 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
   only internal resolved-plan provenance changes.
 - Next: bounded preview targets over these same production services.
 
+### G2.4
+
+- PreviewKernel invokes the normal PortableSiteBuilder inside an explicitly
+  non-accepted preview cache, then extracts Smart/region/layout/page from the
+  exact production HTML and diagnostics.
+- PreviewShell publishes only `artifact.html` and `preview.json` under the
+  isolated `.docara-preview/output/`; normal build directories are untouched.
+- Tests prove page equality, DOM-exact layout/region/Smart extraction, common
+  asset/plan provenance, target failures and absence of a production receipt
+  from published preview output.
+- Next: stable CLI and target-only PHP watch.
+
 ## Remaining
 
-G2.4-G2.6 implementation and integrated acceptance remain. Goal 3 is not
+G2.5-G2.6 implementation and integrated acceptance remain. Goal 3 is not
 authorized by this workflow.

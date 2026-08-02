@@ -20,6 +20,8 @@ Independent Goal 1 audit: `PASS_WITH_NOTES`, marker
   retirement, exact public parity and rollback.
 - [G2.3-DATA-DRIVEN-COMPOSITION.md](G2.3-DATA-DRIVEN-COMPOSITION.md) — generic
   composition, project fixture and public parity.
+- [G2.4-PRODUCTION-PREVIEW.md](G2.4-PRODUCTION-PREVIEW.md) — production-build
+  extraction parity and isolated output contract.
 
 Later batch evidence must bind exact candidate/parent revisions, affected
 artifacts, commands/results, parity/security hashes, rollback and nonclaims.

@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Simai\Docara\Documentation\MarkdownLocalLinkVerifier;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\I18n\ContentLanguageRepository;
 use Simai\Docara\I18n\LocaleRegistry;
@@ -65,6 +66,54 @@ final class DocumentationContractTest extends TestCase
                 $this->relativeToRepository($path) . ' must spell the brand as SIMAI Framework.',
             );
         }
+    }
+
+    #[Test]
+    public function source_documentation_has_no_broken_local_links(): void
+    {
+        (new MarkdownLocalLinkVerifier)->verify($this->documentationInventory());
+
+        self::addToAssertionCount(1);
+    }
+
+    #[Test]
+    public function public_localization_surfaces_expose_only_content_locale_lang_files(): void
+    {
+        self::assertFileDoesNotExist($this->repositoryRoot() . '/resources/schemas/language-pack.schema.json');
+        self::assertDirectoryDoesNotExist($this->repositoryRoot() . '/resources/language-packs');
+        self::assertFileDoesNotExist($this->repositoryRoot() . '/src/I18n/LanguagePack.php');
+        self::assertFileDoesNotExist($this->repositoryRoot() . '/src/I18n/LanguagePackRepository.php');
+
+        $siteSchema = (string) file_get_contents($this->repositoryRoot() . '/resources/schemas/site.schema.json');
+        $starter = (string) file_get_contents($this->repositoryRoot() . '/stubs/portable/docara.json');
+        self::assertStringNotContainsString('language_pack', $siteSchema);
+        self::assertStringNotContainsString('language_pack', $starter);
+
+        $langSchema = json_decode(
+            (string) file_get_contents($this->repositoryRoot() . '/resources/schemas/lang.schema.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        self::assertSame([
+            'accessibility', 'code', 'common', 'copy', 'language', 'navigation',
+            'reader', 'redirect', 'search', 'shell', 'toc', 'transitions',
+        ], $this->langNamespaces($langSchema));
+
+        foreach ([$this->repositoryRoot() . '/README.md', ...$this->markdownDocuments()] as $path) {
+            $contents = (string) file_get_contents($path);
+            self::assertDoesNotMatchRegularExpression(
+                '~(?:`|["\'])languages/[a-z<{]|["\']language_pack["\']\s*:|docara\.language_pack\.v1|resources/schemas/language-pack\.schema\.json~ui',
+                $contents,
+                $this->relativeToRepository($path) . ' teaches the retired public language-pack contract.',
+            );
+        }
+
+        $guide = (string) file_get_contents($this->contentRoot() . '/authoring/language-packs.md');
+        self::assertStringContainsString('content/<locale>/lang.json', $guide);
+        self::assertStringContainsString('повторяющиеся подписи интерфейса', $guide);
+        self::assertStringContainsString('Текст страниц и описания', $guide);
+        self::assertStringContainsString('остаются в Markdown', $guide);
     }
 
     #[Test]
@@ -526,6 +575,49 @@ final class DocumentationContractTest extends TestCase
         sort($paths, SORT_STRING);
 
         return $paths;
+    }
+
+    /** @return array<string, string> */
+    private function documentationInventory(): array
+    {
+        $inventory = [];
+        $process = proc_open(
+            ['git', '-C', $this->repositoryRoot(), 'ls-files', '-z'],
+            [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+            $pipes,
+        );
+        self::assertIsResource($process);
+        $tracked = stream_get_contents($pipes[1]);
+        $error = stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        self::assertSame(0, proc_close($process), (string) $error);
+
+        foreach (array_filter(explode("\0", (string) $tracked)) as $relative) {
+            if (str_starts_with($relative, 'docs/site/build_')) {
+                continue;
+            }
+            $path = $this->repositoryRoot() . '/' . $relative;
+            $inventory[$relative] = str_ends_with(strtolower($relative), '.md')
+                && (str_starts_with($relative, 'docs/') || in_array($relative, ['README.md', 'CONTRIBUTING.md'], true))
+                ? (string) file_get_contents($path)
+                : '';
+        }
+
+        return $inventory;
+    }
+
+    /** @param array<string, mixed> $schema @return list<string> */
+    private function langNamespaces(array $schema): array
+    {
+        $namespaces = array_keys(array_filter(
+            is_array($schema['properties'] ?? null) ? $schema['properties'] : [],
+            static fn (mixed $_value, string $key): bool => ! in_array($key, ['schema', 'version'], true),
+            ARRAY_FILTER_USE_BOTH,
+        ));
+        sort($namespaces, SORT_STRING);
+
+        return $namespaces;
     }
 
     private function withoutFencedCode(string $markdown): string

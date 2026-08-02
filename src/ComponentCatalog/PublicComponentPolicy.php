@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\ComponentCatalog;
 
 /**
- * One public-product policy for the generated catalogue and its pages.
+ * One public-product policy for the Markdown-owned component documentation.
  *
  * The retired renderers remain readable while projects are being migrated,
  * but they are not advertised as independent building blocks. Their jobs are

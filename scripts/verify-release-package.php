@@ -3,6 +3,10 @@
 
 declare(strict_types=1);
 
+require dirname(__DIR__) . '/vendor/autoload.php';
+
+use Simai\Docara\Documentation\MarkdownLocalLinkVerifier;
+
 $manifestPath = $argv[1] ?? '';
 if ($manifestPath === '' || count($argv) !== 2) {
     fwrite(STDERR, "Usage: php scripts/verify-release-package.php <release-manifest.json>\n");
@@ -24,6 +28,7 @@ try {
         throw new RuntimeException('Release archive cannot be opened.');
     }
     $names = [];
+    $contentsByName = [];
     $caseNames = [];
     $normalizedMtime = null;
     for ($index = 0; $index < $zip->numFiles; $index++) {
@@ -58,6 +63,7 @@ try {
         if (! is_string($contents) || ! hash_equals((string) ($manifest['files'][$name] ?? ''), hash('sha256', $contents))) {
             throw new RuntimeException("Archive file hash mismatch [{$name}].");
         }
+        $contentsByName[$name] = $contents;
     }
     $zip->close();
     sort($names, SORT_STRING);
@@ -78,6 +84,7 @@ try {
             }
         }
     }
+    (new MarkdownLocalLinkVerifier)->verify($contentsByName);
 } catch (Throwable $exception) {
     fwrite(STDERR, $exception->getMessage() . "\n");
     exit(1);

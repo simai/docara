@@ -47,4 +47,94 @@ final class ReleasePackageTest extends TestCase
             ['../escape' => ['contents' => 'x', 'executable' => false]],
         );
     }
+
+    public function test_artifact_verifier_accepts_packaged_documentation_links(): void
+    {
+        [$manifest, $root] = $this->releaseFixture('[Guide](docs/guide.md)', true);
+
+        try {
+            [$status, $stdout, $stderr] = $this->verifyArtifact($manifest);
+            self::assertSame(0, $status, $stderr);
+            self::assertStringContainsString('Release package verified:', $stdout);
+        } finally {
+            $this->deleteDirectory($root);
+        }
+    }
+
+    public function test_artifact_verifier_rejects_a_broken_readme_link(): void
+    {
+        [$manifest, $root] = $this->releaseFixture('[Missing](docs/missing.md)', false);
+
+        try {
+            [$status, $stdout, $stderr] = $this->verifyArtifact($manifest);
+            self::assertSame('', $stdout);
+            self::assertSame(1, $status);
+            self::assertStringContainsString('Broken local documentation link [README.md -> docs/missing.md]', $stderr);
+        } finally {
+            $this->deleteDirectory($root);
+        }
+    }
+
+    /** @return array{string, string} */
+    private function releaseFixture(string $readme, bool $includeGuide): array
+    {
+        $root = sys_get_temp_dir() . '/docara-release-verifier-' . bin2hex(random_bytes(6));
+        mkdir($root, 0777, true);
+        $archive = $root . '/fixture.zip';
+        $files = [
+            'RELEASE-MANIFEST.json' => ['contents' => "{}\n", 'executable' => false],
+            'RELEASE-SBOM.cdx.json' => ['contents' => "{}\n", 'executable' => false],
+            'LICENSE' => ['contents' => 'MIT', 'executable' => false],
+            'README.md' => ['contents' => $readme, 'executable' => false],
+            'composer.json' => ['contents' => "{}\n", 'executable' => false],
+            'docara' => ['contents' => '#!/usr/bin/env php', 'executable' => true],
+        ];
+        if ($includeGuide) {
+            $files['docs/guide.md'] = ['contents' => '# Guide', 'executable' => false];
+        }
+        (new DeterministicZipWriter)->write($archive, $files);
+        $hashes = [];
+        foreach ($files as $path => $file) {
+            $hashes[$path] = hash('sha256', $file['contents']);
+        }
+        $manifest = $root . '/fixture.release-manifest.json';
+        file_put_contents($manifest, json_encode([
+            'schema' => 'docara.release_artifact_manifest.v1',
+            'archive' => basename($archive),
+            'archive_sha256' => hash_file('sha256', $archive),
+            'file_count' => count($files),
+            'files' => $hashes,
+        ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR));
+
+        return [$manifest, $root];
+    }
+
+    /** @return array{int, string, string} */
+    private function verifyArtifact(string $manifest): array
+    {
+        $process = proc_open(
+            [PHP_BINARY, dirname(__DIR__, 2) . '/scripts/verify-release-package.php', $manifest],
+            [1 => ['pipe', 'w'], 2 => ['pipe', 'w']],
+            $pipes,
+        );
+        self::assertIsResource($process);
+        $stdout = stream_get_contents($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+
+        return [proc_close($process), (string) $stdout, (string) $stderr];
+    }
+
+    private function deleteDirectory(string $directory): void
+    {
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST,
+        );
+        foreach ($iterator as $entry) {
+            $entry->isDir() ? rmdir($entry->getPathname()) : unlink($entry->getPathname());
+        }
+        rmdir($directory);
+    }
 }

@@ -4,6 +4,7 @@ Date: 2026-08-02
 Status: `ready_for_independent_audit`
 Input revision: `c5ea85f8d25deff99b671486fdc4d1e820a86491`
 Implementation revision: `44acc1ff91233fa78140222fcb0589bf55b65ca0`
+Verified governance/source revision: `01fce2b`
 
 The independent audit found a component-ID view branch in active production
 code that the previous structural test did not scan. This contour supersedes

@@ -1,26 +1,27 @@
 # Goal 1 current result
 
-Status: `GOAL_1C_BLOCKED_EXACT_SF5_HOST_CONTRACT`
+Status: `GOAL_1C_IMPLEMENTATION_COMPLETE_AUDIT_PENDING`
 
-The previous Goal 1 candidate remains rejected. Goal 1-C corrected the Docara
-array template path, moved Framework narrowing to exact lock data and removed
-the active search/parser/admission component-ID lists. Focused/full tests,
-public determinism, full/single equality, static verification and fresh browser
-smoke pass for the corrected Docara side.
+Goal 1-C is corrected against accepted exact SF5 adapter
+`b3cdff87563ff78e7eddf044048a4b298fc69036`. Docara consumes the neutral
+`sf.smart_artifact_abi` v1 array contract; `sf5.smart.artifact.v1` is only the
+documented storage compatibility alias. One unchanged tracked fixture keeps
+view, preset, slot and hydration and renders byte-identical HTML under Docara
+and SF5, with empty stderr/warnings.
 
-No Goal 1 acceptance candidate exists because exact SF5 pin `d6f90bba…`
-violates the required normalized context: it overwrites the resolved view
-record before `renderTemplate()` and does not forward `slot` through
-`Smart::render()`. The unchanged tracked fixture now proves the mismatch at
-runtime: title/text/preset survive, but Docara receives selected view `default`
-and exact SF5 receives `null`. Active recovery and evidence:
+Implementation source `94d2afd9cb71d6b02d8f4a63d4f807e127b1b190`
+also preserves one Gateway, one renderer registry and one PageBuilder, removes
+active component-ID lists from Goal 1 runtime/search/admission, and keeps all
+path, namespace, duplicate and symlink gates fail-closed. Full/focused tests,
+full/single equality, two-build determinism, public parity, static verification
+and browser smoke are recorded at:
 
 - `source/workflow/2026-08-02-docara-goal1c-portable-smart-abi-correction.md`;
-- `source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-correction/INDEX.md`.
+- `source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-resume/INDEX.md`.
 
-The superseded source is `34496d49ce366f1108d2aed37c0adda35f6e5f58`.
-The next action is a separate cross-repository contract decision/new SF5 pin;
-Goal 2, live sites, merge, push, tag, release and deploy remain out of scope.
+Goal 1 is ready for independent reverse-outcome audit, not accepted. The old
+`34496d49…` candidate and `d6f90bba…` pin remain superseded history. Goal 2,
+live sites, merge, push, tag, release and deploy remain out of scope.
 
 # M0 result
 

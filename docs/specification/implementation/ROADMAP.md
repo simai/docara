@@ -57,12 +57,11 @@ release и production не заявлены.
 
 ## Goal 1. Portable Smart Runtime
 
-Статус: `Goal 1-C blocked on exact SF5 host contract`; предыдущий кандидат
-отклонён независимым аудитом и остаётся historical. Docara array path,
-exact-lock policy и search/parser/admission cleanup реализованы и проверены, но
-pin `d6f90bba…` теряет resolved view record перед template и не переносит
-`slot` через `Smart::render()`. Нужен отдельный cross-repository contract
-decision и новый exact SF5 revision. Goal 2 не начат.
+Статус: `Goal 1-C ready_for_independent_audit`. Portable ABI перепривязан к
+exact SF5 adapter `b3cdff87…`; один неизменённый fixture сохраняет view,
+preset, slot и hydration и даёт byte-identical HTML под обоими host. Exact-lock
+policy и search/parser/admission cleanup повторно проверены. Goal 2 не начат и
+не может начаться до независимого принятия Goal 1.
 
 ## M2. Вертикальный срез `components/badge`
 

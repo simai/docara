@@ -78,12 +78,13 @@ Docara передаёт portable PHP-шаблону целевой array ABI SIM
 `$view` и `SmartTemplateContext` относятся только к ограниченному legacy
 host-adapter старых package-owned шаблонов и не являются portable ABI.
 
-Текущий exact SIMAI Framework 5 pin `d6f90bba…` имеет открытый host defect: выбранный view
-разрешается, но перед `renderTemplate()` его record перезаписывается строковым
-кодом, поэтому `$view` внутри template становится пустым массивом; shortcut
-`Smart::render()` также не переносит `slot` как поле узла. До нового
-source-pinned Framework revision полная cross-host portability остаётся заблокирована.
-Не обходите это отдельным Docara template dialect.
+Переносимый артефакт использует нейтральный Framework-owned контракт
+`sf.smart_artifact_abi` версии `1.0.0` и compatibility id
+`sf-smart-artifact-abi-v1`. Историческое имя `sf5.smart.artifact.v1`
+обозначает только совместимый layout файлов, а не второй формат. Exact pin
+`b3cdff87563ff78e7eddf044048a4b298fc69036` передаёт выбранные view, preset,
+slot и hydration одинаково под SIMAI Framework 5 и Docara. Не создавайте отдельный Docara
+template dialect.
 
 Project template считается trusted developer source. Его путь выводится только
 из фиксированного provider root и manifest/view записи. CSS/JavaScript также

@@ -137,17 +137,21 @@ Gateway не содержит веток по namespace или component ID.
 Portable template ABI совпадает с source-pinned SF5 Smart artifact v1:
 `$id` и `$smart` — строки; `$manifest`, `$view`, `$preset`, `$props` — массивы;
 `$childrenHtml` и `$slot` — строки. Typed objects остаются внутри Docara
-runtime. Старые package-owned object-view templates допускаются только через
-явный legacy ABI adapter; новые Framework/project artifacts используют один
-`sf5.smart.template.v1` contract. Framework consumer narrowing хранится в
-exact immutable lock рядом с manifest pin, а не в PHP-карте component IDs.
+runtime. Нейтральная Framework-owned идентичность артефакта:
+`contract_id=sf.smart_artifact_abi`, `schema_version=1.0.0`,
+`compatibility_id=sf-smart-artifact-abi-v1`. Значение
+`sf5.smart.artifact.v1` остаётся только явно названным storage compatibility
+alias для исторического layout файлов; это не второй dialect и не новый
+владелец. Template surface версии 1 обозначается `sf5.smart.template.v1`.
+Framework consumer narrowing хранится в exact immutable lock рядом с manifest
+pin, а не в PHP-карте component IDs.
 
-Correction stop condition: exact pin `d6f90bba…` нарушает собственный
-normalized-context contract в `Smart::renderTreeNode()`: resolved view record
-перезаписывается строкой до `renderTemplate()`, а `Smart::render()` не переносит
-`slot` в node. Поэтому полный cross-host outcome не считается принятым, пока
-Framework не предоставит новый exact revision или не будет отдельно изменён
-публичный portable contract. Docara-only обход запрещён.
+Exact adapter pin `b3cdff87563ff78e7eddf044048a4b298fc69036` сохраняет
+resolved view, preset, slot и hydration. Постоянный cross-host regression
+рендерит один неизменённый tracked artifact под Docara и SF5 и требует
+byte-identical HTML без warnings. Исторический дефект pin `d6f90bba…`
+сохранён только в evidence; Docara-only обход и отдельный template dialect
+запрещены.
 
 Normalizer чистый: одинаковый call/context даёт одинаковый normalized call.
 Template не читает глобальные config напрямую. Любая зависимость приходит в

@@ -1,29 +1,22 @@
-# Next action: resolve the exact SF5 Smart v1 host-contract blocker
+# Next action: independent reverse-outcome audit of Goal 1
 
-Goal 1-C completed all independent Docara-side cleanup but reached its explicit
-cross-repository stop condition. The active recovery source is
-`source/workflow/2026-08-02-docara-goal1c-portable-smart-abi-correction.md` and
-the fresh evidence contour is
-`source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-correction/INDEX.md`.
+Goal 1-C implementation is complete and ready for independent audit. Exact
+Docara implementation source is `94d2afd9cb71d6b02d8f4a63d4f807e127b1b190`;
+the final governance/evidence SHA is recorded in the fresh index after commit.
+The accepted immutable adapter is
+`b3cdff87563ff78e7eddf044048a4b298fc69036`.
 
-The prior Goal 1 implementation source
-`34496d49ce366f1108d2aed37c0adda35f6e5f58` and public tree
-`300eb592287db7f25010b583a3cca585e6a0888b0ab12ee42f8969b4e0142eb2`
-are superseded for Goal 1 acceptance because their cross-host proof used an
-incompatible Docara-only template context.
+The neutral `sf.smart_artifact_abi` v1 contract, provider ownership and the
+single Gateway/PageBuilder path pass focused/full tests, security negatives,
+cross-host byte equality, full/single equality, deterministic public builds,
+static verification and browser smoke. The unchanged cross-host fixture HTML
+SHA-256 is `7133c5dcd44aa85f351a85c61c280aa883abd5cdb3c91206168ad63ada497b38`.
+Fresh evidence:
+`source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-resume/INDEX.md`.
 
-Docara now uses the SF5 array variable surface, exact-lock policy and generic
-search/parser admission. However exact pin `d6f90bba…` overwrites resolved
-`$view` before its template call and `Smart::render()` does not forward `slot`
-as a node field. The unchanged tracked fixture now exercises view/preset and
-produces `full_context_compatible=false`: Docara receives view `default`, exact
-SF5 receives `null`, while title/text/preset and warnings remain valid.
-
-Required decision: publish/select a new exact SF5 revision that preserves the
-resolved view record and forwards slot, or explicitly reduce the portable ABI.
-The recommended action is the new pinned revision; a Docara-only dialect is
-not acceptable. Until that decision Goal 1 stays blocked, Goal 2/3 stay
-unstarted, and no live/release action is authorized.
+The old `34496d49…` Goal 1 candidate and the failing `d6f90bba…` pin remain
+superseded historical evidence. Goal 1 is not yet independently accepted.
+Goal 2/3 remain unstarted; no live/release action is authorized.
 
 ## Historical deployment decision (parked)
 

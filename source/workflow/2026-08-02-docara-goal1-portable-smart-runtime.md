@@ -125,9 +125,11 @@ browser smoke.
 
 ## Recovery state
 
-G1.0–G1.6 produced implementation candidate
-`34496d49ce366f1108d2aed37c0adda35f6e5f58`, but the independent audit rejected
-its cross-host ABI proof and found remaining Goal 1 component-ID dependencies.
-That candidate is superseded for acceptance. Correction recovery source:
-`source/workflow/2026-08-02-docara-goal1c-portable-smart-abi-correction.md`.
-Goal 2 must not start before a new audit accepts the corrected Goal 1.
+G1.0–G1.6 candidate `34496d49ce366f1108d2aed37c0adda35f6e5f58`
+remains superseded. Goal 1-C removed the audited component-ID dependencies and,
+after the accepted external ABI correction, repinned the portable contract to
+exact adapter `b3cdff87563ff78e7eddf044048a4b298fc69036`. The final correction
+evidence is indexed at
+`source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-resume/INDEX.md`.
+Status is `ready_for_independent_audit`; Goal 2 has not started and must not
+start before that audit accepts Goal 1.

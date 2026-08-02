@@ -1,8 +1,8 @@
 # Active workflow: Docara unified architecture
 
-Date: 2026-08-01
-Status: architecture contract ready; implementation mapping not started
-Workflow ID: `2026-08-01-docara-unified-architecture`
+Date: 2026-08-02
+Status: Goal 1-C implementation complete; independent audit pending
+Workflow ID: `2026-08-02-docara-goal1-portable-smart-runtime`
 Graph goal: `docara.goal.unified`
 
 ## Source of truth
@@ -10,16 +10,18 @@ Graph goal: `docara.goal.unified`
 - start here: `source/handoff/docara-unified-architecture/START.md`;
 - human specification: `docs/specification/README.md`;
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
-- exact baseline: `a3ba9a4d04429f1f2046b8415764fe7bc89962c7`;
+- active recovery: `source/workflow/2026-08-02-docara-goal1c-portable-smart-abi-correction.md`;
+- fresh evidence: `source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-resume/INDEX.md`;
+- implementation candidate: `94d2afd9cb71d6b02d8f4a63d4f807e127b1b190`;
 - branch: `codex/docara-unified-architecture`.
 
 ## Current stage and batch
 
-- stage: `docara.stage.m0.contract`;
-- batch: `docara.batch.m0.mapping`;
-- purpose: map the current implementation to the accepted architecture,
-  reproduce the baseline and prepare one bounded vertical slice;
-- runtime behavior must not change in this batch.
+- stage: `docara.stage.g1.portable_smart_runtime`;
+- batch: `docara.batch.g1.portable_smart_runtime`;
+- exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
+- next action: independent reverse-outcome audit of Goal 1;
+- Goal 2 remains unstarted.
 
 ## Accepted pipeline
 
@@ -32,12 +34,13 @@ Every public route has one physical Markdown source. JSON controls composition,
 language packs contain interface messages, and generated IR/HTML remain
 disposable.
 
-## Predecessor
+## Current result
 
-The 2026-07-30 single-pipeline workflow and its evidence remain historical
-input. Their status is not silently promoted into this new graph. M0 must
-verify which parts are actually present at the exact baseline before any
-implementation claim is made.
+The neutral `sf.smart_artifact_abi` v1 contract is source-pinned and renders an
+unchanged fixture byte-identically under Docara and exact SF5. Generic provider
+ownership, the single Gateway and PageBuilder, security negatives, public
+full/single parity, determinism and browser behavior are recorded in fresh
+evidence. This is implementation evidence, not independent acceptance.
 
 ## Boundary
 

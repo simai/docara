@@ -58,10 +58,11 @@ PASS ставится только по воспроизводимому evidenc
       shell regions остаётся явно Goal 2-owned boundary.
 - [x] Project Smart root фиксирован как `smart/`; namespace принадлежит одному
       provider, а paths/symlinks/templates/assets fail-closed.
-- [ ] Portable Smart manifest соответствует source-pinned SF5 artifact v1;
+- [x] Portable Smart manifest соответствует source-pinned SF5 artifact v1;
       host-bound adapters отделены от переносимого manifest/view/preset слоя.
-      Docara array path готов, но exact SF5 pin теряет resolved view data и
-      `slot` в `Smart::render()`, поэтому cross-host gate заблокирован.
+      Exact pin `b3cdff87…` сохраняет view, preset, slot и hydration; один
+      неизменённый fixture даёт byte-identical HTML под Docara и SF5. Goal 1
+      готов к независимому аудиту, но ещё не принят им.
 - [x] Компонент не получает недокументированный произвольный HTML.
 
 ## D. Композиция и локали

@@ -530,7 +530,7 @@ final class DocumentationContractTest extends TestCase
         foreach ($surfaces as $path) {
             $contents = (string) file_get_contents($path);
             self::assertDoesNotMatchRegularExpression(
-                '/\bSF5\b/ui',
+                '/\bSF5\b(?!\.smart\.artifact\.v1)/ui',
                 $contents,
                 $this->relativeToRepository($path) . ' uses the retired technical shorthand.',
             );

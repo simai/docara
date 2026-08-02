@@ -25,6 +25,7 @@ try {
     }
     $names = [];
     $caseNames = [];
+    $normalizedMtime = null;
     for ($index = 0; $index < $zip->numFiles; $index++) {
         $stat = $zip->statIndex($index);
         $name = is_array($stat) ? (string) ($stat['name'] ?? '') : '';
@@ -37,6 +38,22 @@ try {
         }
         $caseNames[$lower] = true;
         $names[] = $name;
+        $operationsSystem = 0;
+        $externalAttributes = 0;
+        if (! $zip->getExternalAttributesIndex($index, $operationsSystem, $externalAttributes)
+            || $operationsSystem !== ZipArchive::OPSYS_UNIX) {
+            throw new RuntimeException("Archive entry has no normalized Unix permissions [{$name}].");
+        }
+        $mode = ($externalAttributes >> 16) & 0xFFFF;
+        $expectedMode = $name === 'docara' ? 0100755 : 0100644;
+        if ($mode !== $expectedMode) {
+            throw new RuntimeException(sprintf('Archive mode mismatch [%s]: %o.', $name, $mode));
+        }
+        $mtime = (int) ($stat['mtime'] ?? 0);
+        $normalizedMtime ??= $mtime;
+        if ($mtime !== $normalizedMtime || $mtime < 315500000 || $mtime > 315600000) {
+            throw new RuntimeException("Archive timestamp is not normalized [{$name}].");
+        }
         $contents = $zip->getFromIndex($index);
         if (! is_string($contents) || ! hash_equals((string) ($manifest['files'][$name] ?? ''), hash('sha256', $contents))) {
             throw new RuntimeException("Archive file hash mismatch [{$name}].");

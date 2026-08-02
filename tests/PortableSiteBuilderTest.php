@@ -6,10 +6,11 @@ namespace Tests;
 
 use PHPUnit\Framework\Attributes\Test;
 use Simai\Docara\Declarative\DeclarativePageResult;
+use Simai\Docara\Document\MarkdownCompiler;
+use Simai\Docara\Document\SmartComponentNode;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkAssetPlan;
 use Simai\Docara\Framework\FrameworkComponentException;
-use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
@@ -1518,8 +1519,6 @@ MD);
     #[Test]
     public function russian_json_component_payload_is_not_split_as_a_unicode_newline(): void
     {
-        $lock = $this->jsonFile(dirname(__DIR__) . '/stubs/portable/simai-framework.lock.json');
-        $runtime = FrameworkComponentRuntime::fromLock($lock);
         $markdown = <<<'MD'
 # Проверка
 
@@ -1530,11 +1529,15 @@ MD);
 :::
 MD;
 
-        $document = $runtime->extract($markdown, 'content/unicode.md');
+        $document = (new MarkdownCompiler)->compile($markdown, 'content/unicode.md');
+        $nodes = array_values(array_filter(
+            $document->allNodes(),
+            static fn ($node): bool => $node instanceof SmartComponentNode,
+        ));
 
-        self::assertCount(1, $document->normalizedCalls);
-        self::assertSame('Наследование работает', $document->normalizedCalls[0]['props']['title']);
-        self::assertSame('Параметры страницы сохраняются целиком.', $document->normalizedCalls[0]['props']['supporting-text']);
+        self::assertCount(1, $nodes);
+        self::assertSame('Наследование работает', $nodes[0]->props['title']);
+        self::assertSame('Параметры страницы сохраняются целиком.', $nodes[0]->props['supporting-text']);
     }
 
     #[Test]

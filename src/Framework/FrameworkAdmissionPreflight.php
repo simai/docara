@@ -10,7 +10,6 @@ final readonly class FrameworkAdmissionPreflight
         private FrameworkManifestRepository $manifests,
         private FrameworkConsumerPolicy $consumerPolicy,
         private FrameworkPropsValidator $propsValidator,
-        private FrameworkHostRenderer $renderer,
         private FrameworkAssetPlanner $assetPlanner,
     ) {}
 
@@ -86,6 +85,13 @@ final readonly class FrameworkAdmissionPreflight
     {
         $props = $this->consumerPolicy->apply($key, $props, $pagePath, 0);
         $this->propsValidator->validate($manifest, $props);
-        $this->renderer->render($manifest, $props, $this->manifests->pairId());
+        $tag = $manifest['frontend']['tag'] ?? null;
+        $properties = $manifest['props']['properties'] ?? null;
+        if (! is_string($tag)
+            || preg_match('/^sf-[a-z][a-z0-9-]*$/D', $tag) !== 1
+            || ! is_array($properties)
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_RENDER_MANIFEST_INVALID');
+        }
     }
 }

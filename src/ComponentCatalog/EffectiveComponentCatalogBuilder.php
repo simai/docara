@@ -8,7 +8,6 @@ use JsonException;
 use Simai\Docara\Framework\FrameworkAdmissionPreflight;
 use Simai\Docara\Framework\FrameworkAssetPlanner;
 use Simai\Docara\Framework\FrameworkConsumerPolicy;
-use Simai\Docara\Framework\FrameworkHostRenderer;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestContract;
 use Simai\Docara\Framework\FrameworkManifestRepository;
@@ -369,7 +368,6 @@ final readonly class EffectiveComponentCatalogBuilder
             $this->manifests,
             $this->consumerPolicy,
             new FrameworkPropsValidator,
-            new FrameworkHostRenderer,
             new FrameworkAssetPlanner($this->manifests, '/_docara/framework'),
         ))->assertReady();
     }

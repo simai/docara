@@ -9,8 +9,16 @@ use PHPUnit\Framework\TestCase;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogValidator;
 use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
+use Simai\Docara\Declarative\Document\SmartCallNode;
+use Simai\Docara\Declarative\Document\SourceSpan;
+use Simai\Docara\Declarative\Rendering\SmartRenderer;
+use Simai\Docara\Declarative\Rendering\TrustedTemplateRegistry;
+use Simai\Docara\Declarative\Smart\SmartComponentGateway;
+use Simai\Docara\Document\DocumentRenderContext;
+use Simai\Docara\Document\DocumentRendererRegistry;
+use Simai\Docara\Document\MarkdownCompiler;
+use Simai\Docara\Document\SmartComponentNode;
 use Simai\Docara\Framework\FrameworkComponentException;
-use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkConsumerPolicy;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
@@ -293,11 +301,16 @@ final class EffectiveComponentCatalogTest extends TestCase
             }
         }
         self::assertSame([], $minimalAuthorProps);
-        $minimalCall = ":::ui.button\n{}\n:::\n";
-        $minimalDocument = FrameworkComponentRuntime::fromLockFile(
-            dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json',
-        )->extract($minimalCall, 'catalog-minimal-button.md');
-        self::assertSame('Save', $minimalDocument->normalizedCalls[0]['props']['text']);
+        $lock = FrameworkLock::fromJsonFile(dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json')->toArray();
+        $minimalPlan = SmartComponentGateway::bundled($lock)->resolve(new SmartCallNode(
+            'catalog-minimal-button',
+            'ui.button',
+            'default',
+            [],
+            1,
+            new SourceSpan('catalog-minimal-button.md', 1, 3),
+        ));
+        self::assertSame('Save', $minimalPlan->props['text']);
 
         $panel = array_values(array_filter(
             $first['entries'],
@@ -525,8 +538,13 @@ final class EffectiveComponentCatalogTest extends TestCase
     {
         $root = dirname(__DIR__, 2);
         $catalog = $this->builder()->build();
-        $runtime = FrameworkComponentRuntime::fromLockFile($root . '/docs/site/simai-framework.lock.json');
-        $renderer = new PortableMarkdownRenderer;
+        $lock = FrameworkLock::fromJsonFile($root . '/docs/site/simai-framework.lock.json')->toArray();
+        $gateway = SmartComponentGateway::bundled($lock);
+        $renderer = new PortableMarkdownRenderer(components: $gateway);
+        $documentRenderers = DocumentRendererRegistry::bundled(
+            $renderer,
+            new SmartRenderer(new TrustedTemplateRegistry),
+        );
         $nativeIdentity = [
             'native.code' => [
                 'markdown' => ['```php', "\$site = 'Docara';"],
@@ -721,12 +739,17 @@ final class EffectiveComponentCatalogTest extends TestCase
             );
             $markdown = file_get_contents($root . '/' . $englishReference);
             self::assertIsString($markdown, $entry['id']);
-            $document = $runtime->extract($markdown, $englishReference);
-            $html = $document->hydrate($renderer->render(
-                $document->markdownWithPlaceholders,
-                $root,
-                $root . '/' . $englishReference,
+            $document = (new MarkdownCompiler)->compile($markdown, $englishReference);
+            $smartNodes = array_values(array_filter(
+                $document->allNodes(),
+                static fn ($node): bool => $node instanceof SmartComponentNode,
             ));
+            $html = $entry['family'] === 'framework_smart'
+                ? $documentRenderers->render(
+                    $document,
+                    new DocumentRenderContext($root, $root . '/' . $englishReference),
+                )['document']->html
+                : $renderer->render($markdown, $root, $root . '/' . $englishReference);
             self::assertNotSame('', trim($html), $entry['id']);
             if (in_array($entry['id'], [
                 'docara.alert',
@@ -796,7 +819,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             }
 
             if ($entry['family'] === 'native_markdown') {
-                self::assertSame([], $document->normalizedCalls, $entry['id']);
+                self::assertSame([], $smartNodes, $entry['id']);
                 self::assertArrayHasKey($entry['id'], $nativeIdentity);
                 foreach ($nativeIdentity[$entry['id']]['markdown'] as $marker) {
                     self::assertStringContainsString($marker, $markdown, $entry['id']);
@@ -811,7 +834,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             $call = $entry['authoring']['call'];
             self::assertIsString($call, $entry['id']);
             if (($entry['authoring']['syntax'] ?? null) === 'inline') {
-                self::assertSame([], $document->normalizedCalls, $entry['id']);
+                self::assertSame([], $smartNodes, $entry['id']);
                 self::assertArrayHasKey($entry['id'], $inlineIdentity);
                 self::assertStringContainsString($call . '[', $markdown, $entry['id']);
                 self::assertStringContainsString($inlineIdentity[$entry['id']], $html, $entry['id']);
@@ -832,7 +855,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             );
 
             if ($entry['family'] === 'docara_typed') {
-                self::assertSame([], $document->normalizedCalls, $entry['id']);
+                self::assertSame([], $smartNodes, $entry['id']);
                 self::assertArrayHasKey($entry['id'], $typedIdentity);
                 foreach ($typedIdentity[$entry['id']] as $marker) {
                     self::assertStringContainsString($marker, $html, $entry['id']);
@@ -843,9 +866,9 @@ final class EffectiveComponentCatalogTest extends TestCase
 
             self::assertSame('framework_smart', $entry['family'], $entry['id']);
             self::assertArrayHasKey($entry['id'], $smartIdentity);
-            self::assertCount($directiveCount, $document->normalizedCalls, $entry['id']);
-            foreach ($document->normalizedCalls as $callRecord) {
-                self::assertSame($entry['id'], $callRecord['id']);
+            self::assertCount($directiveCount, $smartNodes, $entry['id']);
+            foreach ($smartNodes as $smartNode) {
+                self::assertSame($entry['id'], $smartNode->smart);
             }
             self::assertSame(
                 $directiveCount,

@@ -31,9 +31,9 @@
     "current_stage": "docara.stage.g3.developer_sdk",
     "current_batch": "docara.batch.g3.developer_sdk",
     "completed_checkpoint": "goal3_implementation_complete_audit_pending",
-    "candidate_revision": "8cd695ffdef2adf3fa4475b4d0d3e9ba948da560",
+    "candidate_revision": "a027c9ab399c62f6ecaa830a73d4f44684e7ed81",
     "next_action": "independent_goal3_reverse_outcome_audit",
-    "evidence": "source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md",
+    "evidence": "source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md",
     "next_goal": {
       "id": "docara.goal.3.independent_audit",
       "title": "Independent Goal 3 reverse-outcome audit",

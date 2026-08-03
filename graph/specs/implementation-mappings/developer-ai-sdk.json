@@ -10,7 +10,7 @@
   "lifecycle": "active",
   "readiness": "ready_for_independent_audit",
   "visibility": "repository",
-  "source_refs": ["source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md"],
+  "source_refs": ["source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md"],
   "profile_refs": ["docara.unified"],
   "from_ref": "docara.feature.developer_ai_sdk",
   "to_refs": ["DOC-REQ-006"],
@@ -21,7 +21,9 @@
     "src/Application/ValidationService.php",
     "src/Application/ArtifactTestService.php",
     "src/Application/QaService.php",
+    "src/Application/OperationFailureMapper.php",
     "src/Application/McpAdapter.php",
+    "src/File/ProjectFilesystemGuard.php",
     "src/Console/ApplicationCommand.php",
     "tools/mcp-docara/server.php"
   ],
@@ -30,10 +32,12 @@
     "tests/Unit/ScaffoldServiceTest.php",
     "tests/Unit/DeveloperValidationTest.php",
     "tests/Unit/QaServiceTest.php",
+    "tests/Unit/Goal3WriteContainmentTest.php",
+    "tests/Unit/Goal3DiagnosticParityTest.php",
     "tests/Unit/McpAdapterTest.php",
     "tests/Unit/ReleasePackageTest.php"
   ],
-  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md"],
   "review_refs": ["docara.gate.architecture_acceptance"],
   "current_behavior": [
     "One operation result object drives human, JSON and MCP structured output.",
@@ -44,5 +48,5 @@
   "known_deviations": ["Independent Goal 3 reverse-outcome audit is pending."],
   "deletion_gates": [],
   "status": "implementation_complete_audit_pending",
-  "mapped_revision": "8cd695ffdef2adf3fa4475b4d0d3e9ba948da560"
+  "mapped_revision": "a027c9ab399c62f6ecaa830a73d4f44684e7ed81"
 }

@@ -10,8 +10,8 @@
   "lifecycle": "active",
   "readiness": "ready_for_independent_audit",
   "visibility": "repository",
-  "source_refs": ["source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md"],
-  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md"],
+  "source_refs": ["source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md"],
   "profile_refs": ["docara.unified"],
   "requirements": [
     "Human and JSON formats consume one operation result.",

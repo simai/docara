@@ -2,17 +2,18 @@
 
 Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `8cd695ffdef2adf3fa4475b4d0d3e9ba948da560`
+Current candidate: `a027c9ab399c62f6ecaa830a73d4f44684e7ed81`
 
-Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md`
 
 ## Goal 3 current result
 
 Goal 2-C was independently accepted with `PASS_WITH_NOTES`. G3.0-G3.6 now add
 stable discovery, hash-bound project scaffold, validation/test, optional visual
 QA and optional local MCP over the accepted production services. Exact product
-source `8cd695f…` has reproducible package/consumer/full-single/static/browser
-evidence. Goal 3 is implementation-complete but remains audit pending.
+source `a027c9a…` has reproducible package/consumer/full-single/static/browser
+evidence, pre-mutation containment and complete CLI/JSON/MCP diagnostics. Goal 3
+is implementation-complete but remains audit pending.
 
 The exact unpublished audit ZIP is `e63d2edb…` with manifest `9a9b74a0…`
 (731 files). Two fresh dist consumers, including deliberately different content

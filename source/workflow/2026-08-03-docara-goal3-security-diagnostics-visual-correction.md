@@ -1,7 +1,7 @@
 # Goal 3 correction — contained writes, diagnostic parity and visual acceptance
 
 Date: 2026-08-03
-Status: `in_progress`
+Status: `ready_for_independent_audit`
 Project mode: `productization`
 Audit marker: `4a1444b1-0f6c-454a-8ed4-83fb6a06969d`
 Branch: `codex/docara-unified-architecture`
@@ -59,7 +59,7 @@ repository Goal 3 plus raw owner sources above remain authoritative.
 | C3.2 | one exception-to-operation-result/diagnostic mapping for CLI human/JSON and MCP | real-command golden parity and schema negatives | complete |
 | C3.3 | production-bound Smart/region/layout QA | 24 browser scenarios, reports and screenshots | complete |
 | C3.4 | integrated deterministic build/package/consumer regression | full/focused/static/cross-host/package/two consumers | complete |
-| C3.5 | exact candidate governance and handoff | graph/context/docs checks, clean commits/worktree | in progress |
+| C3.5 | exact candidate governance and handoff | graph/context/docs checks, clean commits/worktree | complete |
 
 ## Invariants and non-goals
 
@@ -80,14 +80,14 @@ implementation defects must be corrected inside this workflow.
 
 ## Current state
 
-- current batch: C3.5;
+- current batch: independent Goal 3 reverse-outcome audit;
 - C3.1 implementation boundary: `496df2cab420a5f93560ea376ae44417368d1ba4`;
 - C3.2 implementation boundary: `ea6cead5cbb8a1d693aa1debcf6223633b5c323f`;
 - C3.3 implementation/evidence runner boundary: `526beeee8882189e01e636e73c65c3ebd87b6b8b`;
 - exact product candidate: `a027c9ab399c62f6ecaa830a73d4f44684e7ed81`;
-- remaining batch: C3.5;
-- next safe action: bind graph, generated context and handoff to the correction
-  evidence and stop at independent Goal 3 audit;
+- remaining implementation batches: none;
+- next safe action: independently audit the exact correction candidate and
+  evidence; Goal 4 remains unstarted and unauthorized;
 - do not complete until the new exact candidate passes independent-ready gates.
 
 ## Kaizen

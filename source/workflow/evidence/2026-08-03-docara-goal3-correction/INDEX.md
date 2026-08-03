@@ -1,7 +1,7 @@
 # Goal 3 correction evidence index
 
 Date: 2026-08-03
-Status: `in_progress`
+Status: `ready_for_independent_audit`
 Audit marker: `4a1444b1-0f6c-454a-8ed4-83fb6a06969d`
 Input HEAD: `17be51d90c7e68c7389c917b2c4c0d0697dc35c3`
 Rejected candidate: `8cd695ffdef2adf3fa4475b4d0d3e9ba948da560`
@@ -17,7 +17,7 @@ the former candidate as fresh proof.
 | `C3.2-DIAGNOSTIC-PARITY.md` | CLI human/JSON/MCP result parity | PASS at implementation boundary `ea6cead` |
 | `C3.3-VISUAL-QA.md` | Smart/region/layout 24-scenario browser matrix | PASS at boundary `526beee` |
 | `C3.4-INTEGRATED-RETEST.md` | full/build/package/consumer/cross-host | PASS at candidate `a027c9a` |
-| `C3.5-HANDOFF.md` | exact candidate, graph/context and hygiene | pending |
+| `C3.5-HANDOFF.md` | exact candidate, graph/context and hygiene | PASS; audit pending |
 
 No entry in this directory self-accepts Goal 3 or authorizes Goal 4, release or
 live actions.

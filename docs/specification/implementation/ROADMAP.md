@@ -1,7 +1,7 @@
 # Дорожная карта упрощения Docara
 
 Текущий статус архитектурного roadmap: Goal 1 и Goal 2 независимо приняты;
-Goal 3 implementation завершена на exact source `8cd695f…` и ожидает
+Goal 3 correction завершена на exact source `a027c9a…` и ожидает
 независимого reverse-outcome audit. Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
@@ -74,13 +74,15 @@ assets, watch closure была широкой, а schema `oneOf` не испол
 
 ## Goal 3. Developer/AI SDK, structured QA and optional MCP
 
-Статус: implementation complete, `ready_for_independent_audit`. Один application result обслуживает human
+Статус: correction complete, `ready_for_independent_audit`. Один application result обслуживает human
 и JSON CLI. Discovery читает существующие Smart/Design registries. Scaffold
 работает через hash-bound dry-run/apply только в project-owned roots.
 Validate/test/QA делегируют принятые validators и PreviewKernel. Optional MCP —
 отдельный PHP stdio adapter над теми же services, read-only по умолчанию и без
 normal consumer dependency. Exact package/consumer, full/single/static и
-isolated browser/QA evidence зелёные; независимая приёмка ещё не заявлена.
+isolated Smart/region/layout browser/QA evidence зелёные. Все generated write
+roots проверяются до первой filesystem mutation; независимая приёмка ещё не
+заявлена.
 
 ## M2. Вертикальный срез `components/badge`
 
@@ -206,7 +208,7 @@ cutover/rollback матрицы повторены для exact rc.3. Live deplo
 ## Порядок продолжения
 
 Текущий recovery source —
-`source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md`. M0–M5, R1-C и
+`source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`. M0–M5, R1-C и
 R2 не переигрываются. Следующее действие — независимый Goal 3 audit. Goal 4,
 release review и production gates пока не открыты.
 

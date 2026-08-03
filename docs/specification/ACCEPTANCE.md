@@ -1,7 +1,7 @@
 # Приёмка единой архитектуры Docara
 
-Текущий статус: Goal 1 и Goal 2 независимо приняты. Goal 3 implementation
-завершена на exact source `8cd695f…` и ожидает независимого audit.
+Текущий статус: Goal 1 и Goal 2 независимо приняты. Goal 3 correction
+завершена на exact source `a027c9a…` и ожидает независимого audit.
 Исторический R2 `PASS_DISPOSABLE_CORRECTED` и unpublished release artifact
 остаются parked baseline, а не текущим архитектурным кандидатом. Tag, release,
 live cutover и production acceptance требуют отдельного решения и не заявлены.
@@ -155,11 +155,15 @@ PASS ставится только по воспроизводимому evidenc
 - [x] Traversal, symlink, hardlink, duplicate namespace/target, stale/tampered
       plan и forbidden roots fail-closed; source writes ограничены `smart/` и
       `design/`.
+- [x] `.docara-preview`, `.docara-qa` и scaffold/MCP writes используют одну
+      pre-mutation containment policy; error path не меняет external roots.
 - [x] Validate/test используют production validators и PreviewKernel, а scaffold
       output проходит registry reload и готов к preview.
 - [x] QA plan привязан к isolated production-path preview и exact browser
       matrix; report требует screenshots и нулевые a11y/console/overflow/
       visual-diff defects.
+- [x] Smart, region и layout прошли 24 exact browser scenarios, а CLI human,
+      JSON и MCP failures имеют один полный diagnostic/provenance contract.
 - [x] Optional MCP делегирует те же services, не принимает внешний root/path и
       требует отдельную process capability плюс exact plan для apply.
 - [x] Goal 3 exact candidate прошёл executor-owned полную regression/package/

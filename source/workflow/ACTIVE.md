@@ -10,8 +10,8 @@ Graph goal: `docara.goal.unified`
 - start here: `source/handoff/docara-unified-architecture/START.md`;
 - human specification: `docs/specification/README.md`;
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
-- active recovery: `source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md`;
-- fresh evidence: `source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md`;
+- active recovery: `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`;
+- fresh evidence: `source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md`;
 - project-context freshness correction:
   `source/workflow/2026-08-03-docara-goal1d-project-context-correction.md`;
 - rejected audit candidate: `c5ea85f8d25deff99b671486fdc4d1e820a86491`;
@@ -26,7 +26,7 @@ Graph goal: `docara.goal.unified`
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.g3.developer_sdk`;
 - batch: `docara.batch.g3.developer_sdk`;
-- candidate: `8cd695ffdef2adf3fa4475b4d0d3e9ba948da560`;
+- candidate: `a027c9ab399c62f6ecaa830a73d4f44684e7ed81`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
 - next action: `independent_goal3_reverse_outcome_audit`;
 - Goal 1 and Goal 2 are independently accepted; release review remains unauthorized.
@@ -47,8 +47,9 @@ disposable.
 The neutral `sf.smart_artifact_abi` v1 contract and the single Gateway/provider
 runtime and Goal 2 DesignRegistry/preview were independently accepted. Goal 3
 now provides one application-service/CLI/optional-MCP surface over that
-production path. G3.0-G3.6 are complete and exact evidence is ready for an
-independent reverse-outcome audit; no release-review action is authorized.
+production path. Its security, diagnostics and visual correction is complete
+and exact evidence is ready for an independent reverse-outcome audit; no
+release-review action is authorized.
 
 ## Boundary
 

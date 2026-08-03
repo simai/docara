@@ -28,9 +28,9 @@ Current batch: `docara.batch.g3.developer_sdk`
 
 Current next action: `independent_goal3_reverse_outcome_audit`
 
-Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md`
 
-Current candidate: `8cd695ffdef2adf3fa4475b4d0d3e9ba948da560`
+Current candidate: `a027c9ab399c62f6ecaa830a73d4f44684e7ed81`
 
 Next roadmap goal: `docara.goal.3.independent_audit`
 
@@ -60,10 +60,10 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only the current goal
 
-Independently audit G3.0-G3.6 against
-`source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md` and the current
-evidence index. Preserve accepted Goal 1/2 runtime invariants. Do not implement
-Goal 4 and do not start release review.
+Independently audit the completed Goal 3 correction against
+`source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`
+and the current evidence index. Preserve accepted Goal 1/2 runtime invariants.
+Do not implement Goal 4 and do not start release review.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,

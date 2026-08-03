@@ -2,11 +2,11 @@
 
 Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `8cd695ffdef2adf3fa4475b4d0d3e9ba948da560`
+Current candidate: `a027c9ab399c62f6ecaa830a73d4f44684e7ed81`
 
-Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md`
 
-Goal 1 and Goal 2 are independently accepted. G3.0-G3.6 are implementation
+Goal 1 and Goal 2 are independently accepted. Goal 3 correction is implementation
 complete through the single application-service/runtime path. Independently
 reproduce the exact Goal 3 candidate and evidence; do not implement Goal 4 or
 start release review. Release and live actions remain unauthorized.

@@ -60,6 +60,8 @@ final readonly class QaService
             'subject' => $kind . ':' . $id,
             'preview' => (string) $published['preview'],
             'artifact_sha256' => $artifact->sha256(),
+            'target' => $this->targetContract($kind, $id, $artifact->sha256()),
+            'reference' => $this->referenceContract($kind, $id, $artifact->sha256(), $artifact->pageSha256()),
             'scenarios' => $scenarios,
             'assertions' => ['local_assets_200', 'a11y_violations_zero', 'console_errors_zero', 'console_warnings_zero', 'horizontal_overflow_zero', 'keyboard_focus_escape', 'reduced_motion', 'visual_diff_zero'],
         ];
@@ -92,8 +94,17 @@ final readonly class QaService
         }
         $plan = $this->read($runtime->root, '.docara-qa/plans/' . $planId . '.json', 'qa-plan.schema.json');
         $report = $this->read($runtime->root, '.docara-qa/results/' . $planId . '/report.json', 'qa-report.schema.json');
+        $referenceId = (string) ($plan['reference']['reference_id'] ?? '');
+        $reference = $this->read($runtime->root, '.docara-qa/references/' . $referenceId . '/reference.json', 'qa-reference.schema.json');
         if (($plan['plan_id'] ?? null) !== $planId || ($report['plan_id'] ?? null) !== $planId
-            || ($report['artifact_sha256'] ?? null) !== ($plan['artifact_sha256'] ?? null)) {
+            || ($report['artifact_sha256'] ?? null) !== ($plan['artifact_sha256'] ?? null)
+            || ($report['target'] ?? null) !== ($plan['target'] ?? null)
+            || ($report['reference'] ?? null) !== ($plan['reference'] ?? null)
+            || ($reference['reference_id'] ?? null) !== $referenceId
+            || ($reference['subject'] ?? null) !== ($plan['subject'] ?? null)
+            || ($reference['target'] ?? null) !== ($plan['target'] ?? null)
+            || ($reference['artifact_sha256'] ?? null) !== ($plan['artifact_sha256'] ?? null)
+            || ($reference['page_html_sha256'] ?? null) !== ($plan['reference']['page_html_sha256'] ?? null)) {
             throw new PortableConfigurationException('QA_REPORT_BINDING_INVALID', 'QA report is not bound to the exact plan and preview artifact.');
         }
         $expected = array_column($plan['scenarios'], 'id');
@@ -104,6 +115,24 @@ final readonly class QaService
             throw new PortableConfigurationException('QA_REPORT_SCENARIOS_INCOMPLETE', 'QA report does not cover the exact planned scenario matrix.');
         }
         foreach ($report['scenarios'] as $scenario) {
+            $referenceScenario = null;
+            foreach ($reference['scenarios'] as $candidate) {
+                if (($candidate['id'] ?? null) === $scenario['id']) {
+                    $referenceScenario = $candidate;
+                    break;
+                }
+            }
+            if (! is_array($referenceScenario)
+                || ($scenario['reference_sha256'] ?? null) !== ($referenceScenario['screenshot_sha256'] ?? null)) {
+                throw new PortableConfigurationException('QA_REFERENCE_BINDING_INVALID', "QA scenario [{$scenario['id']}] is not bound to its production reference.");
+            }
+            $referenceScreenshot = $this->writes->regularFile(
+                $runtime->root,
+                '.docara-qa/references/' . $referenceId . '/' . $referenceScenario['screenshot'],
+            );
+            if (! hash_equals((string) $referenceScenario['screenshot_sha256'], hash_file('sha256', $referenceScreenshot) ?: '')) {
+                throw new PortableConfigurationException('QA_REFERENCE_INVALID', "QA reference [{$scenario['id']}] does not match its declared hash.");
+            }
             $screenshot = $this->writes->regularFile(
                 $runtime->root,
                 '.docara-qa/results/' . $planId . '/' . $scenario['screenshot'],
@@ -125,6 +154,27 @@ final readonly class QaService
             'scenarios_verified' => count($report['scenarios']),
             'status' => 'pass',
         ], $runtime->provenance());
+    }
+
+    /** @return array{kind:string,id:string,scope:string,locator:string,html_sha256:string} */
+    private function targetContract(string $kind, string $id, string $htmlSha256): array
+    {
+        $locator = match ($kind) {
+            'layout' => 'body',
+            'region' => '[data-docara-region="' . $id . '"]',
+            'smart' => '[data-docara-smart="' . $id . '"],[data-docara-block="' . preg_replace('/^.*\./', '', $id) . '"]',
+            default => throw new \LogicException('Unsupported QA target.'),
+        };
+
+        return ['kind' => $kind, 'id' => $id, 'scope' => $kind === 'layout' ? 'document' : 'element', 'locator' => $locator, 'html_sha256' => $htmlSha256];
+    }
+
+    /** @return array{contract:string,reference_id:string,page_html_sha256:string,artifact_sha256:string} */
+    private function referenceContract(string $kind, string $id, string $artifactSha256, string $pageHtmlSha256): array
+    {
+        $identity = ['contract' => 'docara.production_target_reference.v1', 'kind' => $kind, 'id' => $id, 'page_html_sha256' => $pageHtmlSha256, 'artifact_sha256' => $artifactSha256];
+
+        return $identity + ['reference_id' => hash('sha256', CanonicalJson::encode($identity))];
     }
 
     /** @return array<string, mixed> */

@@ -69,6 +69,11 @@ php vendor/bin/docara qa smart|region|layout <id> --page=/public/route/ --dry-ru
 
 For layout test/QA, the selected page must actually resolve that layout; a
 context mismatch fails closed instead of testing a different production page.
+Each QA plan declares a target locator and a hash-bound production reference.
+Optional browser tooling first records that reference, then captures the Smart,
+region or layout target and performs a real pixel comparison. A repeated frame
+without a declared reference is only a stability observation and is not an
+accepted visual diff.
 
 `init` accepts only an empty target. Updating is an explicit transaction:
 verify ownership, write and review a hash-bound dry-run plan, then apply that

@@ -61,11 +61,16 @@ docara qa smart project.notice-card \
 ```
 
 Команда сначала публикует isolated production-path preview, затем создаёт
-hash-bound план для desktop/mobile, light/dark и LTR/RTL. Browser runner остаётся
-необязательным development-инструментом. Его report принимается только при
-совпадении plan/artifact hashes, полном наборе screenshots и нулевых a11y,
-console, overflow и visual-diff дефектах. Обычные `init`, `build` и
-`verify-static` остаются PHP-only и не требуют Node.js.
+hash-bound план для desktop/mobile, light/dark и LTR/RTL. План явно фиксирует
+проверяемую поверхность и locator: сам Smart, выбранный region или весь layout.
+Browser runner остаётся необязательным development-инструментом. Сначала он
+записывает production reference, привязанный к target HTML и полной странице,
+затем отдельно снимает target и сравнивает пиксели с этим reference. Повторный
+снимок текущего frame считается только stability check и не заменяет visual
+diff. Report принимается только при совпадении plan, target, artifact и
+reference hashes, полном наборе screenshots и нулевых a11y, console, overflow
+и visual-diff дефектах. Обычные `init`, `build` и `verify-static` остаются
+PHP-only и не требуют Node.js.
 
 Для `test layout` и `qa layout` указанный route обязан фактически выбирать
 этот layout. Несовпадение останавливается кодом

@@ -26,6 +26,11 @@ final readonly class PreviewArtifact
         return hash('sha256', $this->html);
     }
 
+    public function pageSha256(): string
+    {
+        return hash('sha256', $this->pageHtml);
+    }
+
     /** @return array<string, mixed> */
     public function toArray(): array
     {

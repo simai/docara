@@ -111,7 +111,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             )->count(),
         );
         self::assertCount(0, $redirectReceipt['redirects']);
-        self::assertCount(103, $localeRouteReceipt['redirects']);
+        self::assertCount(104, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(
             $localeRouteReceipt['redirects'],
             static fn (array $redirect): bool => $redirect['kind'] === 'root',

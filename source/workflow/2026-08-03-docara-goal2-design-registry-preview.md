@@ -1,7 +1,7 @@
 # Goal 2 — Project Design Registry and production-faithful preview
 
 Date: 2026-08-03
-Status: `ready_for_independent_audit`
+Status: `superseded_by_goal2c_correction`
 Track: Docara extensible LEGO architecture
 Current goal: Goal 2
 Input repository revision: `40f5c5d14dce74383a57d408fd593507addd43d0`
@@ -131,14 +131,11 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
 ### G2.4
 
 - PreviewKernel invokes the normal PortableSiteBuilder inside an explicitly
-  non-accepted preview cache, then extracts Smart/region/layout/page from the
-  exact production HTML and diagnostics.
-- PreviewShell publishes only `artifact.html` and `preview.json` under the
-  isolated `.docara-preview/output/`; normal build directories are untouched.
-- Tests prove page equality, DOM-exact layout/region/Smart extraction, common
-  asset/plan provenance, target failures and absence of a production receipt
-  from published preview output.
-- Next: stable CLI and target-only PHP watch.
+  isolated cache and extracts Smart/region/layout/page from exact production
+  HTML and diagnostics. The original adjacent non-acceptance marker was not a
+  trust boundary: the independent audit proved that normal `verify-static`
+  accepted its receipt. Goal 2-C replaces this with typed receipt purpose and
+  a verifier failure code.
 
 ### G2.5
 
@@ -146,6 +143,10 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
   stable JSON artifact contract with deterministic hashes and exit codes.
 - `--watch` is PHP-only, monitors the route input chain plus locale UI copy and
   confined project design/Smart/assets, then runs only the selected route.
+  Independent audit proved that this original closure included unrelated
+  project artifacts and omitted package dependencies. Goal 2-C replaces it
+  with selected project/package artifact trees and permanent edit/create/delete
+  regressions.
 - Watch interval/cycles are bounded and invalid selectors fail closed before
   any extraction or authored executable path can be accepted.
 - Focused command/kernel/watch suite: 3 tests / 33 assertions, PASS.
@@ -173,5 +174,7 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
 
 ## Remaining
 
-Only an independent reverse-outcome audit may accept Goal 2. Goal 3 is still
-unstarted and is not authorized by this workflow.
+This candidate was rejected. Current recovery and evidence belong to
+`source/workflow/2026-08-03-docara-goal2c-preview-validation-correction.md`.
+Only a new independent reverse-outcome audit may accept Goal 2. Goal 3 is still
+unstarted and unauthorized.

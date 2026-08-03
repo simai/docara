@@ -83,9 +83,14 @@ PASS ставится только по воспроизводимому evidenc
 - [x] Project-local design подключается только artifacts в `design/`, без
       engine source edit и без executable/template path из project JSON.
 - [x] Smart/region/layout/page preview использует production PageBuilder path;
-      output изолирован и не является accepted build receipt.
+      receipt имеет typed preview purpose, production verifier отвергает его,
+      а self-contained HTTP output не содержит production receipt.
 - [x] PHP-only watch отслеживает dependency closure выбранного route и не
-      компилирует другие страницы.
+      компилирует другие страницы; unrelated project artifact не инвалидирует
+      target, relevant project/package edit/create/delete инвалидирует один раз.
+- [x] View Tree `oneOf`, safe tag/attribute/utility и descriptor-owned
+      region/slot contracts проверяются до регистрации; dynamic region не
+      требует engine enum.
 
 ## E. Сборка и обновление
 

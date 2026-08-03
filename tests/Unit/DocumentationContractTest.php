@@ -442,7 +442,9 @@ final class DocumentationContractTest extends TestCase
         foreach (['Layout', 'Section', 'Block', 'View Tree', 'Smart', 'DesignRegistry', 'design/', 'docara preview'] as $term) {
             self::assertStringContainsString($term, $composition);
         }
-        self::assertStringContainsString('accepted_build_receipt=false', $composition);
+        self::assertStringContainsString('build.purpose=preview', $composition);
+        self::assertStringContainsString('PREVIEW_BUILD_PURPOSE_FORBIDDEN', $composition);
+        self::assertStringNotContainsString('accepted_build_receipt=false', $composition);
         self::assertStringNotContainsString('DefinitionRepository::DEFINITIONS', $composition);
         self::assertStringNotContainsString('Расширьте `RegionCompositionResolver`', $composition);
 

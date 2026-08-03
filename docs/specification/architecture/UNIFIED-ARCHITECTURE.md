@@ -186,9 +186,25 @@ namespace проекта. Они не могут неявно заменить p
 
 `PreviewKernel` не является renderer. Он вызывает normal
 `PortableSiteBuilder` в изолированном preview cache и извлекает Smart, region,
-layout или page из production HTML/diagnostics. `PreviewShell` публикует только
-disposable artifact/manifest и помечает `accepted_build_receipt=false`.
-PHP-only watch пересобирает тот же выбранный route через один PageBuilder.
+layout или page из production HTML/diagnostics. Receipt содержит обязательный
+`build.purpose`: normal build использует `production`, preview cache —
+`preview`. Production/static verifier отвергает preview-purpose output с
+`PREVIEW_BUILD_PURPOSE_FORBIDDEN`; соседний marker не является границей
+доверия.
+
+`PreviewShell` атомарно публикует полный production HTML выбранной страницы,
+её fragment, manifest и проверенные local runtime/assets, но не переносит
+`.docara` receipt и другие HTML routes. Поэтому documented preview root
+самостоятельно обслуживается по HTTP, но не может быть принят как full build.
+PHP-only watch получает effective page/config/lang, реально разрешённые
+Design/Smart artifacts, templates и assets. Project/package tree dependency
+отслеживает edit/create/delete; нерелевантный artifact отсутствует в closure.
+Каждая пересборка всё равно проходит тот же выбранный route и один PageBuilder.
+
+View Tree проходит две границы до регистрации: JSON Schema с поддержанным
+`oneOf` проверяет форму узла, затем `ViewTreeInspector` проверяет safe tags,
+attributes и utility registry. Region и slot сопоставляются descriptor-owned
+Layout/Section contract; глобального enum регионов нет.
 
 ## 9. PageBuilder и PortableSiteBuilder
 

@@ -168,7 +168,7 @@
                             "properties": {
                                 "tag": {"type": "string", "enum": ["div", "p", "span", "a"]},
                                 "text": {"type": "string", "minLength": 1, "maxLength": 500},
-                                "href": {"type": "string", "pattern": "^(?:/|#)[^\\u0000-\\u0020\\\"'<>\\\\]+$"},
+                                "href": {"type": "string", "pattern": "^(?:/|[/#][^\\u0000-\\u0020\\\"'<>\\\\]+)$"},
                                 "aria_label": {"type": "string", "minLength": 1, "maxLength": 160},
                                 "utilities": {
                                     "type": "array",

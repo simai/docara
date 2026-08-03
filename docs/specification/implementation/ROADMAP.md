@@ -66,9 +66,12 @@ baseline, а не текущим кандидатом или действием.
 Статус: implementation complete, `ready_for_independent_audit`. Один
 DesignRegistry владеет package/project design artifacts, composition не знает
 конкретных IDs, а Smart/region/layout/page preview извлекается из normal
-PortableSiteBuilder output. Exact candidate `33a3777…`; full PHPUnit
-394/7,612, две идентичные сборки 103 routes/305 files/206 HTML, static
-broken=0. Goal 3 остаётся `unstarted` до отдельного аудита.
+PortableSiteBuilder output. Первый candidate `33a3777…` отклонён независимым
+аудитом: production verifier принимал preview receipt, isolated output не имел
+assets, watch closure была широкой, а schema `oneOf` не исполнялась. Goal 2-C
+исправляет эти четыре outcomes и остаётся `audit_pending`; новый exact
+candidate и свежая матрица фиксируются в correction evidence. Goal 3 остаётся
+`unstarted` до отдельного аудита.
 
 ## M2. Вертикальный срез `components/badge`
 

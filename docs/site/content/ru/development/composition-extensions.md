@@ -82,8 +82,10 @@ template path, callback, произвольный HTML или CSS.
 
 Preview использует обычный `PortableSiteBuilder`, PageBuilder, registries,
 Smart gateway, renderer и layout composer. Результат изолирован в
-`.docara-preview/` и не считается production build receipt.
-В manifest это явно записано как `accepted_build_receipt=false`.
+`.docara-preview/` и не считается production build receipt. Cache receipt
+имеет `build.purpose=preview`, поэтому `verify-static` завершится ошибкой
+`PREVIEW_BUILD_PURPOSE_FORBIDDEN`. Это защита самого receipt, а не соседний
+служебный marker.
 
 ```bash
 docara preview page --page=/ru/components/alert/
@@ -92,8 +94,9 @@ docara preview region --page=/ru/components/alert/ --selector=main
 docara preview smart --page=/ru/components/alert/ --selector=ui.alert
 ```
 
-Для автоматизации добавьте `--json`. PHP-only watch следит только за input
-chain выбранного route и его project design/Smart/assets:
+Для автоматизации добавьте `--json`. PHP-only watch следит за effective input
+chain выбранного route, locale UI-copy и реально разрешёнными layout, section,
+block, Smart, template и asset dependencies из package/project providers:
 
 ```bash
 docara preview region --page=/ru/components/alert/ --selector=main --watch
@@ -101,7 +104,15 @@ docara preview region --page=/ru/components/alert/ --selector=main --watch
 
 `artifact.html` содержит точный выбранный fragment, `index.html` — ту же
 production page для проверки в браузере, `preview.json` — assets, provenance,
-dependencies и hashes. Normal `build_*` preview не перезаписывает.
+dependencies и hashes. В том же preview-root публикуются нужные local CSS, JS,
+Framework и content assets, поэтому открывайте `index.html` через HTTP именно
+из `.docara-preview/output/<target>/`. Production receipt и прочие HTML routes
+туда не копируются. Normal `build_*` preview не перезаписывает.
+
+Изменение нерелевантного project Smart не пересобирает выбранный target.
+Изменение, появление или удаление файла внутри реально выбранного project или
+package artifact вызывает одну single-page пересборку. `target_only=true`
+выводится из scope и результата пересборки, а не задаётся константой.
 
 ## Проверка
 

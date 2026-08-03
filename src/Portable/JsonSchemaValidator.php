@@ -90,7 +90,7 @@ final class JsonSchemaValidator
             }
 
             if (isset($schema['pattern'])
-                && preg_match('~' . str_replace('~', '\\~', (string) $schema['pattern']) . '~u', $data) !== 1
+                && $this->matchesPattern($data, (string) $schema['pattern'], $pointer) !== true
             ) {
                 $this->fail($pointer, 'does not match the required pattern');
             }
@@ -175,7 +175,7 @@ final class JsonSchemaValidator
                 if (! is_string($pattern) || ! is_array($patternSchema)) {
                     continue;
                 }
-                if (@preg_match('~' . str_replace('~', '\\~', $pattern) . '~D', $key) === 1) {
+                if ($this->matchesPattern($key, $pattern, $this->child($pointer, $key), true)) {
                     $this->validate($value, $patternSchema, $this->child($pointer, $key), $schemaName);
                     $matchedPattern = true;
                 }
@@ -311,6 +311,21 @@ final class JsonSchemaValidator
     private function isRelativeDirectory(string $path): bool
     {
         return str_ends_with($path, '/') && $this->isRelativePath(rtrim($path, '/'));
+    }
+
+    private function matchesPattern(string $value, string $pattern, string $pointer, bool $anchored = false): bool
+    {
+        $pattern = preg_replace('/\\\\u([0-9A-Fa-f]{4})/', '\\\\x{$1}', $pattern);
+        if (! is_string($pattern)) {
+            throw new PortableConfigurationException('SCHEMA_INVALID', "Schema pattern at [$pointer] is invalid.");
+        }
+        $expression = '~' . str_replace('~', '\\~', $pattern) . '~u' . ($anchored ? 'D' : '');
+        $result = @preg_match($expression, $value);
+        if ($result === false) {
+            throw new PortableConfigurationException('SCHEMA_INVALID', "Schema pattern at [$pointer] cannot be compiled.");
+        }
+
+        return $result === 1;
     }
 
     private function child(string $pointer, string $key): string

@@ -83,6 +83,21 @@ final class FrameworkNativeSurfaceTest extends TestCase
     }
 
     #[Test]
+    public function modal_hosts_delegate_the_document_id_to_the_framework_generated_dialog(): void
+    {
+        $root = dirname(__DIR__, 2);
+        foreach ([
+            $root . '/resources/publisher/components/search-dialog.php' => 'docara-search-dialog',
+            $root . '/resources/smart/docara.preferences/templates/side-panel.php' => 'docara-reader-settings-dialog',
+        ] as $path => $id) {
+            $template = file_get_contents($path);
+            self::assertIsString($template);
+            self::assertStringContainsString('modal-id="' . $id . '"', $template);
+            self::assertDoesNotMatchRegularExpression('/(?:^|\\s)id="' . preg_quote($id, '/') . '"/', $template);
+        }
+    }
+
+    #[Test]
     public function framework_outline_buttons_keep_their_logical_side_borders(): void
     {
         $root = dirname(__DIR__, 2);

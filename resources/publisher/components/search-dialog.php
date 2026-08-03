@@ -1,6 +1,5 @@
 <?php if ($view->searchEnabled) { ?>
 <sf-modal
-    id="docara-search-dialog"
     modal-id="docara-search-dialog"
     data-docara-search-dialog
     data-docara-transient-dialog

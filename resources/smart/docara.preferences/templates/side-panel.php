@@ -1,5 +1,4 @@
 <sf-modal
-    id="docara-reader-settings-dialog"
     modal-id="docara-reader-settings-dialog"
     data-docara-reader-settings-dialog
     data-docara-transient-dialog

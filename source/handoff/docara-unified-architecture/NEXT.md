@@ -1,16 +1,15 @@
-# Next action: `execute_g3_1_discovery_services`
+# Next action: `independent_goal3_reverse_outcome_audit`
 
-Current state: `goal3_in_progress`
+Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `6e92c60438618533157c6889fbc8da7c3729891b`
+Current candidate: `fface98a8d5fc572b0f2b30e58049981fa9fad3a`
 
 Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md`
 
-Goal 1 and Goal 2 are independently accepted. Execute G3.0-G3.6 through the
-single application-service/runtime path from
-`source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md`. Stop at a clean
-Goal 3 candidate ready for independent audit. Release and live actions remain
-unauthorized.
+Goal 1 and Goal 2 are independently accepted. G3.0-G3.6 are implementation
+complete through the single application-service/runtime path. Independently
+reproduce the exact Goal 3 candidate and evidence; do not implement Goal 4 or
+start release review. Release and live actions remain unauthorized.
 
 ## Historical deployment decision (parked, not executable)
 

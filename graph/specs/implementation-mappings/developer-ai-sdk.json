@@ -1,0 +1,48 @@
+{
+  "id": "docara.mapping.developer_ai_sdk",
+  "schema_version": "1.0.0",
+  "kind": "relation",
+  "subtype": "implementation_mapping",
+  "tz_role": "traceability",
+  "title": "Developer and AI SDK implementation mapping",
+  "summary": "Maps Goal 3 application services, CLI, optional QA and MCP to exact tests and evidence.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "ready_for_independent_audit",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md"],
+  "profile_refs": ["docara.unified"],
+  "from_ref": "docara.feature.developer_ai_sdk",
+  "to_refs": ["DOC-REQ-006"],
+  "code_refs": [
+    "src/Application/SdkService.php",
+    "src/Application/DiscoveryService.php",
+    "src/Application/ScaffoldService.php",
+    "src/Application/ValidationService.php",
+    "src/Application/ArtifactTestService.php",
+    "src/Application/QaService.php",
+    "src/Application/McpAdapter.php",
+    "src/Console/ApplicationCommand.php",
+    "tools/mcp-docara/server.php"
+  ],
+  "test_refs": [
+    "tests/Unit/DeveloperDiscoveryCommandTest.php",
+    "tests/Unit/ScaffoldServiceTest.php",
+    "tests/Unit/DeveloperValidationTest.php",
+    "tests/Unit/QaServiceTest.php",
+    "tests/Unit/McpAdapterTest.php",
+    "tests/Unit/ReleasePackageTest.php"
+  ],
+  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md"],
+  "review_refs": ["docara.gate.architecture_acceptance"],
+  "current_behavior": [
+    "One operation result object drives human, JSON and MCP structured output.",
+    "Project-local Smart and design scaffold is deterministic, hash-bound and limited to owned roots.",
+    "Validate, test and QA delegate accepted registries and PreviewKernel.",
+    "Optional MCP has no root parameter, starts read-only and cannot bypass exact-plan apply."
+  ],
+  "known_deviations": ["Independent Goal 3 reverse-outcome audit is pending."],
+  "deletion_gates": [],
+  "status": "implementation_complete_audit_pending",
+  "mapped_revision": "fface98a8d5fc572b0f2b30e58049981fa9fad3a"
+}

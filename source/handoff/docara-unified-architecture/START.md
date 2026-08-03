@@ -18,7 +18,7 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal3_in_progress`
+Current state: `goal3_ready_for_independent_audit`
 
 Current goal: `docara.goal.unified`
 
@@ -26,21 +26,22 @@ Current stage: `docara.stage.g3.developer_sdk`
 
 Current batch: `docara.batch.g3.developer_sdk`
 
-Current next action: `execute_g3_1_discovery_services`
+Current next action: `independent_goal3_reverse_outcome_audit`
 
 Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md`
 
-Current candidate: `6e92c60438618533157c6889fbc8da7c3729891b`
+Current candidate: `fface98a8d5fc572b0f2b30e58049981fa9fad3a`
 
 Next roadmap goal: `docara.goal.3.independent_audit`
 
-Next roadmap status: `blocked_until_goal3_ready`
+Next roadmap status: `ready_for_independent_audit`
 
-Next roadmap authorized: `false`
+Next roadmap authorized: `true`
 
 Goal 1 and Goal 2 were independently accepted with `PASS_WITH_NOTES`.
-Goal 3 Developer/AI SDK is the only active implementation. Its result must stop
-at `ready_for_independent_audit`; release review remains unauthorized.
+Goal 3 Developer/AI SDK implementation is complete and stops at
+`ready_for_independent_audit`; the only current action is its independent
+reverse-outcome audit. Release review remains unauthorized.
 
 ## 3. Read in this order
 
@@ -59,10 +60,10 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only the current goal
 
-Execute G3.0-G3.6 from
+Independently audit G3.0-G3.6 against
 `source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md` and the current
-evidence index. Preserve accepted Goal 1/2 runtime invariants. Do not self-accept
-Goal 3 and do not start release review.
+evidence index. Preserve accepted Goal 1/2 runtime invariants. Do not implement
+Goal 4 and do not start release review.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,

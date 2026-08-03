@@ -19,13 +19,13 @@ final class ProjectContextContractTest extends TestCase
         self::assertSame([], ProjectContext::check($this->repositoryRoot()));
 
         $context = ProjectContext::expected($this->repositoryRoot());
-        self::assertSame('goal3_in_progress', $context['active']['state']);
+        self::assertSame('goal3_ready_for_independent_audit', $context['active']['state']);
         self::assertSame('docara.stage.g3.developer_sdk', $context['active']['stage']);
         self::assertSame('docara.batch.g3.developer_sdk', $context['active']['batch']);
-        self::assertSame('execute_g3_1_discovery_services', $context['active']['next_action']);
+        self::assertSame('independent_goal3_reverse_outcome_audit', $context['active']['next_action']);
         self::assertSame('docara.goal.3.independent_audit', $context['roadmap']['next_goal']['id']);
-        self::assertSame('blocked_until_goal3_ready', $context['roadmap']['next_goal']['status']);
-        self::assertFalse($context['roadmap']['next_goal']['authorized']);
+        self::assertSame('ready_for_independent_audit', $context['roadmap']['next_goal']['status']);
+        self::assertTrue($context['roadmap']['next_goal']['authorized']);
         self::assertFalse($context['historical_context']['release_baseline']['executable']);
     }
 

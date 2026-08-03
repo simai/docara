@@ -7,8 +7,8 @@
   "title": "Goal 3. Developer and AI SDK with structured QA and optional MCP",
   "summary": "Expose stable read, plan, apply, validation, preview and test application services without creating a second runtime.",
   "owner": "teamlead",
-  "lifecycle": "active",
-  "readiness": "in_progress",
+  "lifecycle": "complete",
+  "readiness": "ready_for_independent_audit",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md"],
@@ -25,5 +25,5 @@
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Golden result fixtures", "Write-boundary negatives", "SDK end-to-end", "MCP delegation", "Visual QA", "Package and consumer regression", "Independent reverse-outcome audit"],
   "next_stage_ref": null,
-  "status": "g3_0_complete_g3_1_in_progress_goal2_independently_accepted"
+  "status": "g3_0_through_g3_6_complete_independent_audit_pending"
 }

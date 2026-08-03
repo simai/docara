@@ -1,12 +1,12 @@
 # Docara Extensible LEGO Architecture — planning simulation and execution roadmap
 
 Date: 2026-08-02
-Status: `goal3_in_progress`
+Status: `goal3_ready_for_independent_audit`
 Project mode: `productization`
 Current stage: `docara.stage.g3.developer_sdk`
 Current batch: `docara.batch.g3.developer_sdk`
-Current next action: `execute_g3_1_discovery_services`
-Next roadmap goal: `docara.goal.3.independent_audit` (`blocked_until_goal3_ready`, authorized=`false`)
+Current next action: `independent_goal3_reverse_outcome_audit`
+Next roadmap goal: `docara.goal.3.independent_audit` (`ready_for_independent_audit`, authorized=`true`)
 Accepted by: explicit user Goal 1 instruction on 2026-08-02
 Repository: `/Users/rim/Documents/GitHub/docara-unified`
 Planning branch: `codex/docara-unified-architecture`
@@ -15,8 +15,9 @@ Historical pre-LEGO product baseline: `be0ba2db5254e468c7c014016ade02e8b4f3f16c`
 Historical validation surface: `https://docara-new.test` (not a current action)
 
 This document is the accepted roadmap and executor contract. Goal 1 and Goal 2
-are independently accepted; Goal 3 is the current authorized implementation
-goal. It does not authorize Goal 3 self-acceptance and does not replace the current release
+are independently accepted; Goal 3 implementation is complete and its
+independent reverse-outcome audit is the only current action. This does not
+authorize Goal 3 self-acceptance and does not replace the current release
 dossier, and is not a release/deploy approval. The existing
 Docara skill is disabled as stale; the repository, current specification, graph,
 code, tests, the tracked SF5 Smart contract, and exact release evidence are the

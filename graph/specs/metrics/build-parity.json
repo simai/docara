@@ -8,13 +8,14 @@
   "summary": "Semantic differences between a route built alone and the same route from a full build.",
   "owner": "tester",
   "lifecycle": "active",
-  "readiness": "R2_pass_disposable_corrected",
+  "readiness": "goal3_candidate",
   "visibility": "repository",
   "source_refs": ["docs/specification/ACCEPTANCE.md"],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.7-CANDIDATE-VERIFICATION.md",
     "source/workflow/evidence/2026-08-02-docara-r1c-semantic-correction/r1c-candidate-and-update.md",
-    "source/workflow/evidence/2026-08-02-docara-r2-determinism-correction/C5-INDEPENDENT-DIST-CONSUMERS.md"
+    "source/workflow/evidence/2026-08-02-docara-r2-determinism-correction/C5-INDEPENDENT-DIST-CONSUMERS.md",
+    "source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/G3.6-INTEGRATED-ACCEPTANCE.md"
   ],
   "profile_refs": ["docara.unified"],
   "metric_type": "difference_count",
@@ -22,7 +23,7 @@
   "calculation": "normalized_dom_and_asset_manifest_differences",
   "target": 0,
   "observed": 0,
-  "observed_counts": {"routes_checked": 103, "differences": 0, "independent_dist_consumers": 2, "complete_output_files_compared": 305, "complete_tree_differences": 0},
-  "observed_tree_sha256": "425da363fc51d33d2c5b42577980f4ca4603b83814440dbfb06fe419b4cade46",
+  "observed_counts": {"routes_checked": 104, "differences": 0, "independent_dist_consumers": 2, "complete_output_files_compared": 168, "complete_tree_differences": 0, "documentation_output_files_compared": 307},
+  "observed_tree_sha256": "9f217060e7c2e13da789e8259bd22e590b0ed43bfdcbf2cdb3a2bd32b8322777",
   "unknown_policy": "fail_closed"
 }

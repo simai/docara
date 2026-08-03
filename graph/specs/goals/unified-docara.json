@@ -8,14 +8,14 @@
   "summary": "Перевести Docara на один content-first конвейер, где каждая страница хранится в Markdown, композиция — в JSON, компоненты — в реестре, а HTML всегда является производным результатом.",
   "owner": "teamlead",
   "lifecycle": "active",
-  "readiness": "goal3_in_progress",
+  "readiness": "goal3_ready_for_independent_audit",
   "visibility": "repository",
   "source_refs": [
     "docs/specification/DOCARA-TZ.md",
     "docs/specification/implementation/ROADMAP.md",
     "docs/specification/ACCEPTANCE.md"
   ],
-  "evidence_refs": [],
+  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md"],
   "profile_refs": ["docara.unified"],
   "done_when": [
     "Every public route in every locale has exactly one content/<locale>/<route>.md source.",

@@ -8,11 +8,12 @@
   "summary": "Share of public routes rendered exclusively through PageBuilder, typed IR and the renderer registry.",
   "owner": "teamlead",
   "lifecycle": "active",
-  "readiness": "R2_contract",
+  "readiness": "goal3_candidate",
   "visibility": "repository",
   "source_refs": ["docs/specification/architecture/UNIFIED-ARCHITECTURE.md"],
   "evidence_refs": [
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.7-CANDIDATE-VERIFICATION.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.7-CANDIDATE-VERIFICATION.md",
+    "source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/G3.6-INTEGRATED-ACCEPTANCE.md"
   ],
   "profile_refs": ["docara.unified"],
   "metric_type": "coverage",
@@ -20,6 +21,6 @@
   "calculation": "unified_pipeline_routes / all_public_routes",
   "target": 100,
   "observed": 100,
-  "observed_counts": {"unified_pipeline_routes": 103, "all_public_routes": 103},
+  "observed_counts": {"unified_pipeline_routes": 104, "all_public_routes": 104},
   "unknown_policy": "show_unknown_not_zero"
 }

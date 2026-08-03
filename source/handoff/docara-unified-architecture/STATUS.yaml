@@ -2,11 +2,11 @@ schema_version: 1
 goal: docara.goal.unified
 branch: codex/docara-unified-architecture
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: goal3_in_progress
+state: goal3_ready_for_independent_audit
 current_stage: docara.stage.g3.developer_sdk
 current_batch: docara.batch.g3.developer_sdk
-next_action: execute_g3_1_discovery_services
-candidate_revision: 6e92c60438618533157c6889fbc8da7c3729891b
+next_action: independent_goal3_reverse_outcome_audit
+candidate_revision: fface98a8d5fc572b0f2b30e58049981fa9fad3a
 evidence: source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md
 goal1_candidate_revision: 44acc1ff91233fa78140222fcb0589bf55b65ca0
 goal1_sf5_adapter_revision: b3cdff87563ff78e7eddf044048a4b298fc69036
@@ -38,7 +38,7 @@ readiness:
   r2_production_dossier: pass_disposable_corrected
   goal1_portable_smart_runtime: independently_accepted_pass_with_notes
   goal2_design_registry_preview: independently_accepted_pass_with_notes
-  goal3_developer_sdk: in_progress
+  goal3_developer_sdk: ready_for_independent_audit
   release: blocked_explicit_user_action
   production: blocked_explicit_user_approval_and_live_preflight
 routing:

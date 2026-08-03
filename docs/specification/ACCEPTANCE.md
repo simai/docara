@@ -1,7 +1,7 @@
 # Приёмка единой архитектуры Docara
 
 Текущий статус: Goal 1 и Goal 2 независимо приняты. Goal 3 implementation
-выполняется от handoff `adb27f1…` и ещё не прошла независимый audit.
+завершена на exact source `fface98a…` и ожидает независимого audit.
 Исторический R2 `PASS_DISPOSABLE_CORRECTED` и unpublished release artifact
 остаются parked baseline, а не текущим архитектурным кандидатом. Tag, release,
 live cutover и production acceptance требуют отдельного решения и не заявлены.
@@ -162,8 +162,9 @@ PASS ставится только по воспроизводимому evidenc
       visual-diff defects.
 - [x] Optional MCP делегирует те же services, не принимает внешний root/path и
       требует отдельную process capability плюс exact plan для apply.
-- [ ] Goal 3 exact candidate прошёл полную regression/package/consumer/browser
-      матрицу и независимый reverse-outcome audit.
+- [x] Goal 3 exact candidate прошёл executor-owned полную regression/package/
+      consumer/browser матрицу.
+- [ ] Независимый reverse-outcome audit принял exact Goal 3 candidate.
 
 ## J. R2 production dossier
 

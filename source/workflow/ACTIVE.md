@@ -1,7 +1,7 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-03
-Status: Goal 3 in progress
+Status: Goal 3 ready for independent audit
 Workflow ID: `2026-08-03-docara-goal3-developer-ai-sdk`
 Graph goal: `docara.goal.unified`
 
@@ -22,13 +22,13 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `goal3_in_progress`;
+- state: `goal3_ready_for_independent_audit`;
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.g3.developer_sdk`;
 - batch: `docara.batch.g3.developer_sdk`;
-- candidate: `6e92c60438618533157c6889fbc8da7c3729891b`;
+- candidate: `fface98a8d5fc572b0f2b30e58049981fa9fad3a`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `execute_g3_1_discovery_services`;
+- next action: `independent_goal3_reverse_outcome_audit`;
 - Goal 1 and Goal 2 are independently accepted; release review remains unauthorized.
 
 ## Accepted pipeline
@@ -46,8 +46,9 @@ disposable.
 
 The neutral `sf.smart_artifact_abi` v1 contract and the single Gateway/provider
 runtime and Goal 2 DesignRegistry/preview were independently accepted. Goal 3
-now builds one application-service/CLI/optional-MCP surface over that production
-path. G3.0 contract freeze is current; no release-review action is authorized.
+now provides one application-service/CLI/optional-MCP surface over that
+production path. G3.0-G3.6 are complete and exact evidence is ready for an
+independent reverse-outcome audit; no release-review action is authorized.
 
 ## Boundary
 

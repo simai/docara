@@ -1,0 +1,23 @@
+{
+  "id": "docara.feature.developer_ai_sdk",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "product_feature",
+  "tz_role": "developer_surface",
+  "title": "Developer and AI SDK",
+  "summary": "Stable inspect, plan, apply, validate, preview, test and optional MCP surfaces delegate the single production application runtime.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "ready_for_independent_audit",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md"],
+  "profile_refs": ["docara.unified"],
+  "requirements": [
+    "Human and JSON formats consume one operation result.",
+    "Scaffold apply requires an exact persisted dry-run plan and unchanged inputs.",
+    "Validation, test, QA and MCP delegate accepted production services.",
+    "Normal consumer build remains PHP-only and independent of optional visual and MCP tooling."
+  ],
+  "status": "implementation_complete_audit_pending"
+}

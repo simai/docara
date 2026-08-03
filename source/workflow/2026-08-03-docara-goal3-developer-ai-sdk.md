@@ -1,7 +1,7 @@
 # Goal 3 — Developer/AI SDK, structured QA and optional MCP
 
 Date: 2026-08-03
-Status: `in_progress`
+Status: `ready_for_independent_audit`
 Project mode: `productization`
 Input handoff: `adb27f1acde6dfa5f018f7b2e3c2f20b404a0ed2`
 Accepted Goal 2 candidate: `39f1e3f6e97d7f8138e892b5884ba194cc889a7f`
@@ -66,12 +66,12 @@ it owns no renderer, validator, registry, gateway, composer or PageBuilder.
 | Batch | Result | Status |
 | --- | --- | --- |
 | G3.0 | service/result/diagnostic/write/MCP contracts and golden fixtures | complete |
-| G3.1 | doctor/list/inspect/schema application services and commands | in progress |
-| G3.2 | hash-bound Smart/design scaffold dry-run/apply | pending |
-| G3.3 | validate/test orchestration over accepted services | pending |
-| G3.4 | optional screenshot/a11y/visual QA orchestration | pending |
-| G3.5 | optional local MCP delegation adapter | pending |
-| G3.6 | docs/metadata/package/consumer/security/browser/graph handoff | pending |
+| G3.1 | doctor/list/inspect/schema application services and commands | complete |
+| G3.2 | hash-bound Smart/design scaffold dry-run/apply | complete |
+| G3.3 | validate/test orchestration over accepted services | complete |
+| G3.4 | optional screenshot/a11y/visual QA orchestration | complete |
+| G3.5 | optional local MCP delegation adapter | complete |
+| G3.6 | docs/metadata/package/consumer/security/browser/graph handoff | complete; audit pending |
 
 Each green batch gets focused tests, evidence and a recoverable commit, then the
 next batch starts automatically.
@@ -83,6 +83,15 @@ accepted Goal 3 assignment and Goal 3 section of
 `source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md`.
 Executor completion means only `ready_for_independent_audit`; it never means
 release, merge, tag, deploy or self-acceptance.
+
+## Exact candidate
+
+- product/docs/test source: `fface98a8d5fc572b0f2b30e58049981fa9fad3a`;
+- deterministic audit ZIP: `f01c612a1abe21a4c658528210d621a18b926259643429be643f8962f49d2ea5`;
+- release-manifest SHA-256: `b849d11b6140e0ea6d19a9fa9a25f1623c1cc5f10e0cace1728170647831d085`;
+- exact Composer lock SHA-256: `eece48daca67e2b5cefa645b8a310bbc04da2cbecbcb3ab8060dd44381d65847`;
+- planned package value `2.0.0-alpha3` is an unpublished audit parameter, not a release claim;
+- next action: `independent_goal3_reverse_outcome_audit`.
 
 ## Rollback
 

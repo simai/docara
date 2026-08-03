@@ -1,7 +1,7 @@
 # Goal 2 evidence index
 
 Date: 2026-08-03
-Status: `in_progress`
+Status: `ready_for_independent_audit`
 Input revision: `40f5c5d14dce74383a57d408fd593507addd43d0`
 Accepted Goal 1 runtime: `44acc1ff91233fa78140222fcb0589bf55b65ca0`
 Accepted SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`
@@ -24,7 +24,12 @@ Independent Goal 1 audit: `PASS_WITH_NOTES`, marker
   extraction parity and isolated output contract.
 - [G2.5-PREVIEW-CLI-WATCH.md](G2.5-PREVIEW-CLI-WATCH.md) — stable command
   contract, target dependency closure and PHP-only invalidation.
+- [G2.6-INTEGRATED-ACCEPTANCE.md](G2.6-INTEGRATED-ACCEPTANCE.md) — exact
+  candidate, full verification, production/preview parity, browser matrix,
+  governance and rollback.
+- `browser/` — exact-candidate desktop/mobile/light/dark and RTL-layout
+  screenshots.
 
-Later batch evidence must bind exact candidate/parent revisions, affected
-artifacts, commands/results, parity/security hashes, rollback and nonclaims.
-Goal 2 cannot become accepted from executor evidence.
+All executor batches are complete. Goal 2 cannot become accepted from this
+evidence; its next action is an independent reverse-outcome audit. Goal 3 is
+unstarted and unauthorized.

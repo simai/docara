@@ -7,8 +7,8 @@
   "title": "Goal 2. Project Design Registry and production-faithful preview",
   "summary": "Replace fixed design and composition tables with one deterministic provider registry and add isolated preview over the same production services.",
   "owner": "teamlead",
-  "lifecycle": "active",
-  "readiness": "in_progress",
+  "lifecycle": "verification",
+  "readiness": "audit_pending",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-03-docara-goal2-design-registry-preview.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md"],
@@ -24,5 +24,5 @@
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Design responsibility map", "Provider security negatives", "Built-in parity", "Project-local fixture", "Preview parity", "Watch invalidation", "Independent reverse-outcome audit"],
   "next_stage_ref": null,
-  "status": "goal2_execution_active_goal3_unstarted"
+  "status": "goal2_implementation_complete_ready_for_independent_audit_goal3_unstarted"
 }

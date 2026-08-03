@@ -1,17 +1,17 @@
-# Next action: `execute_g2_1_design_registry`
+# Next action: `independent_goal2_reverse_outcome_audit`
 
-Current state: `goal2_in_progress`
+Current state: `goal2_ready_for_independent_audit`
 
-Current candidate: `40f5c5d14dce74383a57d408fd593507addd43d0`
+Current candidate: `33a377758f12d02a34e50c2f4f6d2aa760cf678b`
 
 Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md`
 
-Goal 1 was independently accepted. Execute Goal 2 batches G2.1-G2.6 from
-`source/workflow/2026-08-03-docara-goal2-design-registry-preview.md`, beginning
-with one deterministic DesignRegistry and its provider/security contract.
+Goal 1 was independently accepted. Goal 2 batches G2.0-G2.6 are implemented
+and executor verification is green. Independently audit the exact candidate
+against `source/workflow/2026-08-03-docara-goal2-design-registry-preview.md`
+and its evidence index. Do not treat executor evidence as acceptance.
 
-Goal 2 must finish `ready_for_independent_audit`, not self-accepted. Goal 3 and
-all live/release actions remain unauthorized.
+Goal 3 and all live/release actions remain unstarted and unauthorized.
 
 ## Historical deployment decision (parked, not executable)
 

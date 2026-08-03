@@ -1,11 +1,11 @@
 # Docara Extensible LEGO Architecture — planning simulation and execution roadmap
 
 Date: 2026-08-02
-Status: `goal2_in_progress`
+Status: `goal2_ready_for_independent_audit`
 Project mode: `productization`
 Current stage: `docara.stage.g2.design_registry_preview`
 Current batch: `docara.batch.g2.design_registry_preview`
-Current next action: `execute_g2_1_design_registry`
+Current next action: `independent_goal2_reverse_outcome_audit`
 Next roadmap goal: `docara.goal.3.developer_sdk` (`unstarted`, authorized=`false`)
 Accepted by: explicit user Goal 1 instruction on 2026-08-02
 Repository: `/Users/rim/Documents/GitHub/docara-unified`
@@ -15,7 +15,8 @@ Historical pre-LEGO product baseline: `be0ba2db5254e468c7c014016ade02e8b4f3f16c`
 Historical validation surface: `https://docara-new.test` (not a current action)
 
 This document is the accepted roadmap and executor contract. Goal 1 is
-independently accepted and Goal 2 is active. It does not authorize Goal 3, does not replace the current release
+independently accepted and Goal 2 implementation is complete pending an
+independent reverse-outcome audit. It does not authorize Goal 3, does not replace the current release
 dossier, and is not a release/deploy approval. The existing
 Docara skill is disabled as stale; the repository, current specification, graph,
 code, tests, the tracked SF5 Smart contract, and exact release evidence are the

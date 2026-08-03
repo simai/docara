@@ -9,25 +9,25 @@
         "graph/specs/stages/g2-design-registry-preview.json",
         "graph/specs/batches/g2-design-registry-preview.json"
     ],
-    "canonical_sha256": "452ef8024d05eb48d2fa6c495bf85a6e4387bd04ee0adc056afce99f7eeabf29",
+    "canonical_sha256": "04587f2926b5c335c5400781c5acd73e9d17c385b2d6c7994bd643584406e089",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "goal2_in_progress",
+        "state": "goal2_ready_for_independent_audit",
         "goal": "docara.goal.unified",
-        "goal_readiness": "goal2_in_progress",
+        "goal_readiness": "goal2_ready_for_independent_audit",
         "stage": "docara.stage.g2.design_registry_preview",
-        "stage_readiness": "in_progress",
-        "stage_status": "goal2_execution_active_goal3_unstarted",
+        "stage_readiness": "audit_pending",
+        "stage_status": "goal2_implementation_complete_ready_for_independent_audit_goal3_unstarted",
         "batch": "docara.batch.g2.design_registry_preview",
-        "batch_readiness": "in_progress",
-        "batch_status": "g2_0_governance_and_inventory_active",
-        "completed_checkpoint": "goal1_independently_accepted",
-        "candidate_revision": "40f5c5d14dce74383a57d408fd593507addd43d0",
-        "next_action": "execute_g2_1_design_registry",
+        "batch_readiness": "audit_pending",
+        "batch_status": "g2_0_through_g2_6_complete_ready_for_independent_audit",
+        "completed_checkpoint": "goal2_implementation_complete",
+        "candidate_revision": "33a377758f12d02a34e50c2f4f6d2aa760cf678b",
+        "next_action": "independent_goal2_reverse_outcome_audit",
         "evidence": "source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md"
     },
     "roadmap": {

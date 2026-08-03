@@ -1,7 +1,7 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-03
-Status: Goal 2 in progress
+Status: Goal 2 ready for independent audit
 Workflow ID: `2026-08-03-docara-goal2-design-registry-preview`
 Graph goal: `docara.goal.unified`
 
@@ -20,13 +20,13 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `goal2_in_progress`;
+- state: `goal2_ready_for_independent_audit`;
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.g2.design_registry_preview`;
 - batch: `docara.batch.g2.design_registry_preview`;
-- candidate: `40f5c5d14dce74383a57d408fd593507addd43d0`;
+- candidate: `33a377758f12d02a34e50c2f4f6d2aa760cf678b`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `execute_g2_1_design_registry`;
+- next action: `independent_goal2_reverse_outcome_audit`;
 - Goal 1 is independently accepted; Goal 3 remains unstarted and unauthorized.
 
 ## Accepted pipeline
@@ -43,9 +43,10 @@ disposable.
 ## Current result
 
 The neutral `sf.smart_artifact_abi` v1 contract and the single Gateway/provider
-runtime were independently accepted. Goal 2 now introduces a deterministic
-Design Registry and isolated preview over the same production services without
-a parallel engine.
+runtime were independently accepted. Goal 2 now has one deterministic Design
+Registry and isolated preview over the same production services without a
+parallel engine. Executor verification is complete; only an independent Goal 2
+reverse-outcome audit is current. Goal 3 stays unstarted.
 
 ## Boundary
 

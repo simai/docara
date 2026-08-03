@@ -19,10 +19,10 @@ final class ProjectContextContractTest extends TestCase
         self::assertSame([], ProjectContext::check($this->repositoryRoot()));
 
         $context = ProjectContext::expected($this->repositoryRoot());
-        self::assertSame('goal2_in_progress', $context['active']['state']);
+        self::assertSame('goal2_ready_for_independent_audit', $context['active']['state']);
         self::assertSame('docara.stage.g2.design_registry_preview', $context['active']['stage']);
         self::assertSame('docara.batch.g2.design_registry_preview', $context['active']['batch']);
-        self::assertSame('execute_g2_1_design_registry', $context['active']['next_action']);
+        self::assertSame('independent_goal2_reverse_outcome_audit', $context['active']['next_action']);
         self::assertSame('docara.goal.3.developer_sdk', $context['roadmap']['next_goal']['id']);
         self::assertSame('unstarted', $context['roadmap']['next_goal']['status']);
         self::assertFalse($context['roadmap']['next_goal']['authorized']);

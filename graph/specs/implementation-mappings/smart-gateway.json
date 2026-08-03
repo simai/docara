@@ -80,12 +80,12 @@
     "The accepted Russian component pages use generic component_block, typed_directive and inline component contracts rather than route-specific parser branches.",
     "The bounded LegacyBundledSmartProvider adapts the six pre-portable repository layouts into the pinned v1 contract; new project/package artifacts use the portable filesystem layout directly.",
     "The historical exact SF5 pin d6f90bba failed the normalized-context contract. Exact adapter b3cdff87563ff78e7eddf044048a4b298fc69036 supersedes it and passes unchanged-fixture byte-equality for view, preset, slot and hydration.",
-    "RegionCompositionResolver keeps the Goal 2-owned shell region allowlist; Goal 1 does not claim Design Registry completion."
+    "Goal 2 removed the former shell-region and Smart-ID composition allowlist; layout/section/block compatibility now comes from the deterministic DesignRegistry artifacts."
   ],
   "deletion_gates": [
     "Retire InlineComponentRenderer::badge only after all badge calls reach one component node/gateway and exact HTML/assets parity passes.",
     "Remove LegacyBundledSmartProvider only after bundled artifact directories are physically normalized with exact public parity."
   ],
-  "status": "goal1d_complete_audit_pending",
-  "mapped_revision": "44acc1ff91233fa78140222fcb0589bf55b65ca0"
+  "status": "goal1_accepted_goal2_implementation_complete_audit_pending",
+  "mapped_revision": "33a377758f12d02a34e50c2f4f6d2aa760cf678b"
 }

@@ -1,7 +1,7 @@
 # Goal 2 — Project Design Registry and production-faithful preview
 
 Date: 2026-08-03
-Status: `in_progress`
+Status: `ready_for_independent_audit`
 Track: Docara extensible LEGO architecture
 Current goal: Goal 2
 Input repository revision: `40f5c5d14dce74383a57d408fd593507addd43d0`
@@ -71,7 +71,7 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
 | G2.3 | data-driven composition and project `design/` fixture | no engine ID lists, fixture without `src/` edit | pass |
 | G2.4 | PreviewKernel and PreviewShell over production services | HTML/assets/provenance parity, receipt isolation | pass |
 | G2.5 | preview commands and PHP watch | human/JSON/exit-code fixtures, dependency invalidation | pass |
-| G2.6 | integrated docs/graph/build/browser acceptance | full matrix and reverse-outcome evidence | in progress |
+| G2.6 | integrated docs/graph/build/browser acceptance | full matrix and reverse-outcome evidence | pass |
 
 ## Current Progress
 
@@ -151,7 +151,27 @@ Ordinary implementation/test/browser defects are corrected inside this goal.
 - Focused command/kernel/watch suite: 3 tests / 33 assertions, PASS.
 - Next: documentation, graph/handoff and full build/browser acceptance.
 
+### G2.6
+
+- Public authoring and architecture documentation now describes the one
+  package/project DesignRegistry and isolated production-path preview contract.
+- Exact implementation candidate `33a377758f12d02a34e50c2f4f6d2aa760cf678b`
+  passes 394 tests / 7,612 assertions, the focused Goal 1/Goal 2 matrix,
+  formatter, Composer strict validation, lint and source-format checks.
+- Two disposable full builds are byte-identical at 103 routes / 305 files /
+  206 HTML. A single Alert rebuild preserves the complete ledger
+  `a4045e033cea8ab7a8bb1ebde5d550fba42dc16482d41ad837c6a3fd7130e7eb`;
+  static verification reports 21,421 references and broken=0.
+- The Smart preview full-page shell is byte-identical to production Alert HTML
+  (`a948b13465c5b2050107fd7ec3f44d7985c81219b5116bdcda6a0535f7b12703`)
+  while its manifest remains explicitly non-accepted.
+- Exact-build browser evidence covers 1920/1440/390, light/dark, reduced
+  motion, search/settings/mobile focus and Esc, tabs/copy, LTR and an RTL
+  logical-layout fixture with console warnings/errors=0 and overflow=0.
+- Integrated commands, hashes, security/structural checks and rollback are in
+  `G2.6-INTEGRATED-ACCEPTANCE.md`.
+
 ## Remaining
 
-G2.6 integrated acceptance remains. Goal 3 is not
-authorized by this workflow.
+Only an independent reverse-outcome audit may accept Goal 2. Goal 3 is still
+unstarted and is not authorized by this workflow.

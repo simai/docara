@@ -1,12 +1,10 @@
 # Приёмка единой архитектуры Docara
 
-Статус: `R2_PASS_DISPOSABLE_CORRECTED`. Дефект filesystem-derived `updated_at`
-исправлен: два fresh dist consumer нового exact ZIP с различными source mtimes
-создают byte-identical полный public tree, включая page metadata. Новый
-локальный кандидат — source `be0ba2d…`, ZIP `630d971e…`, tree `425da363…`.
-Прежний `56a2abf8…` / `04c18c95…` остаётся
-`superseded_after_determinism_audit`. Tag, release, live cutover и production
-acceptance требуют отдельного решения и не заявлены.
+Текущий статус: Goal 1 независимо принят; Goal 2 implementation complete на
+`33a3777…` и ждёт независимого reverse-outcome audit. Goal 3 не начат.
+Исторический R2 `PASS_DISPOSABLE_CORRECTED` и unpublished release artifact
+остаются parked baseline, а не текущим архитектурным кандидатом. Tag, release,
+live cutover и production acceptance требуют отдельного решения и не заявлены.
 
 M5 implementation candidate подтверждает текущий русский публичный сайт и
 минимальные EN LTR/AR RTL product fixtures через единый runtime. Чекбоксы
@@ -65,7 +63,7 @@ PASS ставится только по воспроизводимому evidenc
       host-bound adapters отделены от переносимого manifest/view/preset слоя.
       Exact pin `b3cdff87…` сохраняет view, preset, slot и hydration; один
       неизменённый fixture даёт byte-identical HTML под Docara и SF5. Goal 1
-      готов к независимому аудиту, но ещё не принят им.
+      независимо принят с `PASS_WITH_NOTES`.
 - [x] Компонент не получает недокументированный произвольный HTML.
 
 ## D. Композиция и локали

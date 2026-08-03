@@ -18,7 +18,7 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal2_in_progress`
+Current state: `goal2_ready_for_independent_audit`
 
 Current goal: `docara.goal.unified`
 
@@ -26,11 +26,11 @@ Current stage: `docara.stage.g2.design_registry_preview`
 
 Current batch: `docara.batch.g2.design_registry_preview`
 
-Current next action: `execute_g2_1_design_registry`
+Current next action: `independent_goal2_reverse_outcome_audit`
 
 Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md`
 
-Current candidate: `40f5c5d14dce74383a57d408fd593507addd43d0`
+Current candidate: `33a377758f12d02a34e50c2f4f6d2aa760cf678b`
 
 Next roadmap goal: `docara.goal.3.developer_sdk`
 
@@ -39,8 +39,8 @@ Next roadmap status: `unstarted`
 Next roadmap authorized: `false`
 
 Goal 1 was independently accepted with `PASS_WITH_NOTES`. Goal 2 Design
-Registry/Preview is active. Goal 3 SDK/MCP is not authorized until an
-independent Goal 2 audit accepts its exact candidate.
+Registry/Preview implementation is complete and awaits independent audit.
+Goal 3 SDK/MCP is not authorized until that audit accepts the exact candidate.
 
 ## 3. Read in this order
 
@@ -59,11 +59,11 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only the current goal
 
-Execute G2.1-G2.6 from
-`source/workflow/2026-08-03-docara-goal2-design-registry-preview.md`. Preserve
-the accepted Goal 1 Gateway/provider/PageBuilder/runtime invariants. Stop at
-Goal 2 `ready_for_independent_audit`; do not start Goal 3 from executor
-evidence.
+Audit G2.0-G2.6 against
+`source/workflow/2026-08-03-docara-goal2-design-registry-preview.md` and the
+current evidence index. Preserve the accepted Goal 1
+Gateway/provider/PageBuilder/runtime invariants. Do not accept Goal 2 from
+executor evidence and do not start Goal 3.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,

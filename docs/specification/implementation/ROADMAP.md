@@ -1,10 +1,11 @@
 # Дорожная карта упрощения Docara
 
-Статус: R2 `PASS_DISPOSABLE_CORRECTED`. Кандидат source `56a2abf8…`, ZIP
-`04c18c95…` отозван как `superseded_after_determinism_audit`. Исправленный
-unpublished `2.0.0-rc.3` — source `be0ba2d…`, ZIP `630d971e…`, полный tree
-`425da363…`; два независимых dist consumer дают одинаковые 305 outputs. Tag,
-release и production не заявлены.
+Текущий статус архитектурного roadmap: Goal 1 независимо принят,
+Goal 2 implementation complete на `33a3777…` и
+`ready_for_independent_audit`; Goal 3 не начат. Исторический R2
+`PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
+baseline, а не текущим кандидатом или действием. Tag, release и production не
+заявлены.
 
 Переход выполняется вертикальными срезами. Цель — не переписать весь код за
 один раз, а доказать новый единственный конвейер на одной реальной странице,
@@ -65,7 +66,9 @@ release и production не заявлены.
 Статус: implementation complete, `ready_for_independent_audit`. Один
 DesignRegistry владеет package/project design artifacts, composition не знает
 конкретных IDs, а Smart/region/layout/page preview извлекается из normal
-PortableSiteBuilder output. Goal 3 остаётся `unstarted` до отдельного аудита.
+PortableSiteBuilder output. Exact candidate `33a3777…`; full PHPUnit
+394/7,612, две идентичные сборки 103 routes/305 files/206 HTML, static
+broken=0. Goal 3 остаётся `unstarted` до отдельного аудита.
 
 ## M2. Вертикальный срез `components/badge`
 

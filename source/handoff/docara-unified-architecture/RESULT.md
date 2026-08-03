@@ -1,17 +1,29 @@
 # Current Docara result
 
-Current state: `goal2_in_progress`
+Current state: `goal2_ready_for_independent_audit`
 
-Current candidate: `40f5c5d14dce74383a57d408fd593507addd43d0`
+Current candidate: `33a377758f12d02a34e50c2f4f6d2aa760cf678b`
 
 Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md`
 
 ## Goal 2 current result
 
-Goal 1 was independently accepted with `PASS_WITH_NOTES`. G2.0 has frozen its
-exact runtime/SF5 inputs, mapped design/composition responsibilities and moved
-the canonical router to Goal 2. The current implementation work is the
-provider-backed DesignRegistry; Goal 3 remains unstarted.
+Goal 1 was independently accepted with `PASS_WITH_NOTES`. Goal 2 G2.0-G2.6 is
+implemented on candidate `33a3777…`: one deterministic DesignRegistry owns
+package/project layouts, views, sections and blocks; composition is descriptor
+driven; a project `acme.*` fixture needs no engine edit; bounded preview and
+PHP-only watch reuse the production PortableSiteBuilder path and publish only
+non-accepted isolated output.
+
+Full PHPUnit passes 394 tests / 7,612 assertions. Two full builds are identical
+at 103 routes / 305 files / 206 HTML; single Alert preserves ledger
+`a4045e03…`, static verification reports 21,421 references and broken=0, and
+preview full-page HTML equals production Alert hash `a948b134…`. Browser
+desktop/mobile/light/dark/reduced-motion/LTR/RTL-layout smoke has no console
+errors/warnings or overflow. Exact evidence is the current index above.
+
+Goal 2 is `ready_for_independent_audit`, not accepted. Goal 3 remains
+unstarted and unauthorized.
 
 ## Accepted Goal 1 result
 
@@ -26,7 +38,7 @@ Corrected implementation candidate:
 `44acc1ff91233fa78140222fcb0589bf55b65ca0`. Fresh focused/full, exact
 cross-host, determinism, full/single, static, security, structural and browser
 evidence is indexed below. This is executor evidence awaiting independent
-acceptance; Goal 2 remains unstarted.
+acceptance; at that historical checkpoint Goal 2 remained unstarted.
 
 Correction source and evidence:
 

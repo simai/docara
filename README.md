@@ -70,6 +70,11 @@ php vendor/bin/docara qa smart|region|layout <id> --page=/public/route/ --dry-ru
 For layout test/QA, the selected page must actually resolve that layout; a
 context mismatch fails closed instead of testing a different production page.
 Each QA plan declares a target locator and a hash-bound production reference.
+`plan_id` is the SHA-256 of canonical plan JSON without `plan_id`, and
+`reference_id` uses the same rule for the reference identity. Verification
+recomputes both identities, re-hashes the published preview target/page bytes,
+and compares each candidate PNG with its declared reference; reported zero
+pixel differences are never trusted on their own.
 Optional browser tooling first records that reference, then captures the Smart,
 region or layout target and performs a real pixel comparison. A repeated frame
 without a declared reference is only a stability observation and is not an

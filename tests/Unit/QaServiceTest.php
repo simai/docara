@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
+use Simai\Docara\Application\QaIdentity;
 use Simai\Docara\Application\QaService;
+use Simai\Docara\Console\ApplicationFactory;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
@@ -13,6 +15,7 @@ use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Preview\PreviewKernel;
 use Simai\Docara\Preview\PreviewShell;
+use Symfony\Component\Console\Tester\CommandTester;
 use Tests\TestCase;
 
 final class QaServiceTest extends TestCase
@@ -110,6 +113,79 @@ final class QaServiceTest extends TestCase
         $this->expectException(PortableConfigurationException::class);
         $this->expectExceptionMessage('does not match its declared hash');
         $service->verify($this->tmp, $planned['data']['plan_id']);
+    }
+
+    #[Test]
+    public function plan_and_reference_ids_are_recomputed_from_canonical_content(): void
+    {
+        $service = $this->service();
+        $planned = $service->plan($this->tmp, 'smart', 'ui.alert', '/ru/components/alert/')->toArray();
+        $planId = $planned['data']['plan_id'];
+        $path = $this->tmpPath('.docara-qa/plans/' . $planId . '.json');
+        $plan = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+        $plan['subject'] = 'layout:foreign';
+        $plan['target']['kind'] = 'layout';
+        $plan['target']['id'] = 'foreign';
+        $plan['target']['scope'] = 'document';
+        $plan['target']['locator'] = 'body';
+        $this->filesystem->put($path, CanonicalJson::encodePretty($plan));
+
+        try {
+            $service->verify($this->tmp, $planId);
+            self::fail('Mutated plan core was accepted under the original id.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('QA_PLAN_ID_MISMATCH', $exception->errorCode);
+        }
+
+        $plan = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+        $plan['subject'] = 'smart:ui.alert';
+        $plan['target'] = ['kind' => 'smart', 'id' => 'ui.alert', 'scope' => 'element', 'locator' => '[data-docara-smart="ui.alert"],[data-docara-block="alert"]', 'html_sha256' => $plan['artifact_sha256']];
+        $plan['reference']['reference_id'] = str_repeat('f', 64);
+        $newPlanId = QaIdentity::planId($plan);
+        $plan['plan_id'] = $newPlanId;
+        $this->filesystem->put($this->tmpPath('.docara-qa/plans/' . $newPlanId . '.json'), CanonicalJson::encodePretty($plan));
+        try {
+            $service->verify($this->tmp, $newPlanId);
+            self::fail('Mutated reference identity was accepted under a forged id.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('QA_REFERENCE_ID_MISMATCH', $exception->errorCode);
+        }
+    }
+
+    #[Test]
+    public function verify_rejects_forged_zero_diff_when_candidate_png_differs(): void
+    {
+        $service = $this->service();
+        $planned = $service->plan($this->tmp, 'region', 'main', '/ru/components/alert/')->toArray();
+        $planId = $planned['data']['plan_id'];
+        $plan = json_decode((string) file_get_contents($this->tmpPath('.docara-qa/plans/' . $planId . '.json')), true, 512, JSON_THROW_ON_ERROR);
+        [$report] = $this->writeBoundArtifacts($plan);
+        $candidate = $this->tmpPath('.docara-qa/results/' . $planId . '/' . $report['scenarios'][0]['screenshot']);
+        $this->filesystem->put($candidate, "\x89PNG\r\n\x1a\nchanged-candidate-pixels");
+        $report['scenarios'][0]['screenshot_sha256'] = hash_file('sha256', $candidate);
+        $report['scenarios'][0]['visual_diff_pixels'] = 0;
+        $this->filesystem->put($this->tmpPath('.docara-qa/results/' . $planId . '/report.json'), CanonicalJson::encodePretty($report));
+
+        $command = new CommandTester(ApplicationFactory::create($this->tmp)->find('qa'));
+        self::assertSame(2, $command->execute(['--verify' => $planId, '--json' => true]));
+        $result = json_decode($command->getDisplay(), true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame('QA_VISUAL_DIFF_MISMATCH', $result['diagnostics'][0]['code']);
+        self::assertSame($planId, $result['subject']);
+    }
+
+    #[Test]
+    public function verify_rejects_plan_when_preview_bytes_no_longer_match(): void
+    {
+        $service = $this->service();
+        $planned = $service->plan($this->tmp, 'layout', 'docara.docs', '/ru/components/alert/')->toArray();
+        $this->filesystem->put($this->tmpPath('.docara-preview/output/layout/artifact.html'), '<main>mutated</main>');
+
+        try {
+            $service->verify($this->tmp, $planned['data']['plan_id']);
+            self::fail('Plan with mutated preview bytes was accepted.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('QA_PREVIEW_BINDING_INVALID', $exception->errorCode);
+        }
     }
 
     #[Test]

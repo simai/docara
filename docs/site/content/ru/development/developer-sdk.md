@@ -65,6 +65,9 @@ hash-bound план для desktop/mobile, light/dark и LTR/RTL. План яв�
 проверяемую поверхность и locator: сам Smart, выбранный region или весь layout.
 Browser runner остаётся необязательным development-инструментом. Сначала он
 записывает production reference, привязанный к target HTML и полной странице,
+пересчитывает content-addressed `plan_id` и `reference_id`, а при приёмке сам
+сверяет байты candidate/reference PNG. Поле отчёта с числом отличающихся
+пикселей не является самостоятельным доказательством.
 затем отдельно снимает target и сравнивает пиксели с этим reference. Повторный
 снимок текущего frame считается только stability check и не заменяет visual
 diff. Report принимается только при совпадении plan, target, artifact и

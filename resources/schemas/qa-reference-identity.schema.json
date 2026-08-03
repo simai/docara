@@ -3,7 +3,7 @@
   "$id": "https://docara.local/schemas/qa-reference-identity.schema.json",
   "type": "object",
   "additionalProperties": false,
-  "required": ["contract", "reference_id", "page_html_sha256", "artifact_sha256"],
+  "required": ["contract", "reference_id", "kind", "id", "page_html_sha256", "artifact_sha256"],
   "properties": {
     "contract": {"const": "docara.production_target_reference.v1"},
     "reference_id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},

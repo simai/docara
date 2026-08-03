@@ -61,6 +61,20 @@ function mime(path) {
 
 function sha(value) { return createHash('sha256').update(value).digest('hex'); }
 
+function canonical(value) {
+  if (Array.isArray(value)) return value.map(canonical);
+  if (value !== null && typeof value === 'object') {
+    return Object.fromEntries(Object.keys(value).sort().map((key) => [key, canonical(value[key])]));
+  }
+  return value;
+}
+
+function contentId(value, omittedKey) {
+  const core = {...value};
+  delete core[omittedKey];
+  return sha(JSON.stringify(canonical(core)));
+}
+
 async function pixelDiff(context, reference, candidate) {
   const comparison = await context.newPage();
   try {
@@ -96,8 +110,20 @@ for (const planId of planIds) {
   const planBytes = readFileSync(planPath);
   const plan = JSON.parse(planBytes);
   if (plan.plan_id !== planId) throw new Error('Plan binding mismatch.');
+  if (contentId(plan, 'plan_id') !== planId) throw new Error('Plan content-address mismatch.');
   if (!plan.target?.locator || !plan.reference?.reference_id) throw new Error('Plan target/reference binding is missing.');
+  if (contentId(plan.reference, 'reference_id') !== plan.reference.reference_id) throw new Error('Reference content-address mismatch.');
+  const [subjectKind, subjectId] = String(plan.subject || '').split(':', 2);
+  if (subjectKind !== plan.target.kind || subjectId !== plan.target.id) throw new Error('Subject/target binding mismatch.');
   const previewRoot = contained(join(project, plan.preview.replace(/\/index\.html$/, '')));
+  const previewArtifact = readFileSync(contained(join(previewRoot, 'artifact.html')));
+  const previewPage = readFileSync(contained(join(previewRoot, 'index.html')));
+  if (sha(previewArtifact) !== plan.artifact_sha256
+    || sha(previewArtifact) !== plan.target.html_sha256
+    || sha(previewArtifact) !== plan.reference.artifact_sha256
+    || sha(previewPage) !== plan.reference.page_html_sha256) {
+    throw new Error('Preview byte binding mismatch.');
+  }
   const resultRoot = contained(join(project, '.docara-qa', 'results', planId));
   const referenceRoot = contained(join(project, '.docara-qa', 'references', plan.reference.reference_id));
   if (recordReferences) {

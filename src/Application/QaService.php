@@ -65,7 +65,7 @@ final readonly class QaService
             'scenarios' => $scenarios,
             'assertions' => ['local_assets_200', 'a11y_violations_zero', 'console_errors_zero', 'console_warnings_zero', 'horizontal_overflow_zero', 'keyboard_focus_escape', 'reduced_motion', 'visual_diff_zero'],
         ];
-        $planId = hash('sha256', CanonicalJson::encode($core));
+        $planId = QaIdentity::planId($core);
         $plan = ['plan_id' => $planId] + $core;
         (new SchemaRepository)->assertValid($plan, 'qa-plan.schema.json');
         $encoded = CanonicalJson::encodePretty($plan);
@@ -93,8 +93,15 @@ final readonly class QaService
             throw new PortableConfigurationException('QA_PLAN_ID_INVALID', 'QA verify requires the exact plan SHA-256.');
         }
         $plan = $this->read($runtime->root, '.docara-qa/plans/' . $planId . '.json', 'qa-plan.schema.json');
-        $report = $this->read($runtime->root, '.docara-qa/results/' . $planId . '/report.json', 'qa-report.schema.json');
+        if (! hash_equals($planId, QaIdentity::planId($plan))) {
+            throw new PortableConfigurationException('QA_PLAN_ID_MISMATCH', 'QA plan content does not match its content-addressed plan id.');
+        }
+        $this->assertPreviewBinding($runtime->root, $plan);
         $referenceId = (string) ($plan['reference']['reference_id'] ?? '');
+        if (! hash_equals($referenceId, QaIdentity::referenceId((array) $plan['reference']))) {
+            throw new PortableConfigurationException('QA_REFERENCE_ID_MISMATCH', 'QA plan reference identity does not match its content-addressed reference id.');
+        }
+        $report = $this->read($runtime->root, '.docara-qa/results/' . $planId . '/report.json', 'qa-report.schema.json');
         $reference = $this->read($runtime->root, '.docara-qa/references/' . $referenceId . '/reference.json', 'qa-reference.schema.json');
         if (($plan['plan_id'] ?? null) !== $planId || ($report['plan_id'] ?? null) !== $planId
             || ($report['artifact_sha256'] ?? null) !== ($plan['artifact_sha256'] ?? null)
@@ -141,6 +148,9 @@ final readonly class QaService
                 || (string) file_get_contents($screenshot, false, null, 0, 8) !== "\x89PNG\r\n\x1a\n") {
                 throw new PortableConfigurationException('QA_SCREENSHOT_INVALID', "QA screenshot [{$scenario['id']}] is missing or does not match its hash.");
             }
+            if (! hash_equals(hash_file('sha256', $referenceScreenshot) ?: '', hash_file('sha256', $screenshot) ?: '')) {
+                throw new PortableConfigurationException('QA_VISUAL_DIFF_MISMATCH', "QA screenshot [{$scenario['id']}] differs from its production reference.");
+            }
             if ($scenario['a11y_violations'] !== 0 || $scenario['console_errors'] !== 0 || $scenario['console_warnings'] !== 0
                 || $scenario['overflow'] !== 0 || $scenario['keyboard'] !== 'pass' || $scenario['reduced_motion'] !== 'pass'
                 || $scenario['visual_diff_pixels'] !== 0) {
@@ -174,7 +184,29 @@ final readonly class QaService
     {
         $identity = ['contract' => 'docara.production_target_reference.v1', 'kind' => $kind, 'id' => $id, 'page_html_sha256' => $pageHtmlSha256, 'artifact_sha256' => $artifactSha256];
 
-        return $identity + ['reference_id' => hash('sha256', CanonicalJson::encode($identity))];
+        return $identity + ['reference_id' => QaIdentity::referenceId($identity)];
+    }
+
+    /** @param array<string, mixed> $plan */
+    private function assertPreviewBinding(string $root, array $plan): void
+    {
+        $preview = (string) ($plan['preview'] ?? '');
+        $previewRoot = preg_replace('~/index\.html$~', '', $preview);
+        if (! is_string($previewRoot) || $previewRoot === $preview) {
+            throw new PortableConfigurationException('QA_PREVIEW_BINDING_INVALID', 'QA plan preview path is invalid.');
+        }
+        $artifact = $this->writes->regularFile($root, $previewRoot . '/artifact.html');
+        $page = $this->writes->regularFile($root, $preview);
+        if (! hash_equals((string) ($plan['artifact_sha256'] ?? ''), hash_file('sha256', $artifact) ?: '')
+            || ! hash_equals((string) ($plan['target']['html_sha256'] ?? ''), hash_file('sha256', $artifact) ?: '')
+            || ! hash_equals((string) ($plan['reference']['artifact_sha256'] ?? ''), hash_file('sha256', $artifact) ?: '')
+            || ! hash_equals((string) ($plan['reference']['page_html_sha256'] ?? ''), hash_file('sha256', $page) ?: '')) {
+            throw new PortableConfigurationException('QA_PREVIEW_BINDING_INVALID', 'QA plan is not bound to the current immutable preview artifact and page bytes.');
+        }
+        $subject = explode(':', (string) ($plan['subject'] ?? ''), 2);
+        if (count($subject) !== 2 || $subject[0] !== ($plan['target']['kind'] ?? null) || $subject[1] !== ($plan['target']['id'] ?? null)) {
+            throw new PortableConfigurationException('QA_TARGET_BINDING_INVALID', 'QA subject and target identity do not match.');
+        }
     }
 
     /** @return array<string, mixed> */

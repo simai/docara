@@ -137,6 +137,25 @@ final class Goal3DiagnosticParityTest extends TestCase
         self::assertNotEmpty($json['diagnostics'][0]['owner']);
         self::assertNotEmpty($json['diagnostics'][0]['provenance']);
         self::assertNotEmpty($json['diagnostics'][0]['suggestion']);
+        $validator = new JsonSchemaValidator(new SchemaRepository);
+        foreach (['missing_line', 'missing_column', 'null_line', 'null_column'] as $mutation) {
+            $invalid = $json;
+            if ($mutation === 'missing_line') {
+                unset($invalid['diagnostics'][0]['source']['line']);
+            } elseif ($mutation === 'missing_column') {
+                unset($invalid['diagnostics'][0]['source']['column']);
+            } elseif ($mutation === 'null_line') {
+                $invalid['diagnostics'][0]['source']['line'] = null;
+            } else {
+                $invalid['diagnostics'][0]['source']['column'] = null;
+            }
+            try {
+                $validator->assertValid($invalid, 'operation-result.schema.json');
+                self::fail("File-backed diagnostic mutation [$mutation] was accepted for [$path].");
+            } catch (PortableConfigurationException) {
+                self::assertTrue(true);
+            }
+        }
 
         $humanCommand = new CommandTester(ApplicationFactory::create($this->tmp)->find($command));
         self::assertSame(2, $humanCommand->execute($arguments));

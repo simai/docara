@@ -1,7 +1,7 @@
 # Приёмка единой архитектуры Docara
 
 Текущий статус: Goal 1 и Goal 2 независимо приняты. Goal 3 correction
-завершена на exact source `a027c9a…` и ожидает независимого audit.
+завершена на exact source `6f54781…` и ожидает независимого audit.
 Исторический R2 `PASS_DISPOSABLE_CORRECTED` и unpublished release artifact
 остаются parked baseline, а не текущим архитектурным кандидатом. Tag, release,
 live cutover и production acceptance требуют отдельного решения и не заявлены.
@@ -164,6 +164,9 @@ PASS ставится только по воспроизводимому evidenc
       visual-diff defects.
 - [x] Smart, region и layout прошли 24 exact browser scenarios, а CLI human,
       JSON и MCP failures имеют один полный diagnostic/provenance contract.
+- [x] File-backed failures содержат relative path, pointer, line и column;
+      visual QA сравнивает target с hash-bound production reference, а не с
+      повторным текущим frame.
 - [x] Optional MCP делегирует те же services, не принимает внешний root/path и
       требует отдельную process capability плюс exact plan для apply.
 - [x] Goal 3 exact candidate прошёл executor-owned полную regression/package/

@@ -2,7 +2,7 @@
 
 Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `a027c9ab399c62f6ecaa830a73d4f44684e7ed81`
+Current candidate: `6f547810583a16114ed15a8199f698e1dadb70a9`
 
 Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md`
 
@@ -11,16 +11,26 @@ Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-correction/I
 Goal 2-C was independently accepted with `PASS_WITH_NOTES`. G3.0-G3.6 now add
 stable discovery, hash-bound project scaffold, validation/test, optional visual
 QA and optional local MCP over the accepted production services. Exact product
-source `a027c9a…` has reproducible package/consumer/full-single/static/browser
-evidence, pre-mutation containment and complete CLI/JSON/MCP diagnostics. Goal 3
-is implementation-complete but remains audit pending.
+source `6f54781…` has reproducible package/consumer/full-single/static/browser
+evidence, pre-mutation containment, file-backed locations and complete
+CLI/JSON/MCP diagnostics. Goal 3 is implementation-complete but remains audit
+pending.
 
-The exact unpublished audit ZIP is `e63d2edb…` with manifest `9a9b74a0…`
-(731 files). Two fresh dist consumers, including deliberately different content
-mtimes, produce the same 168-file public tree `65fa3e2e…`; single Alert rebuild
-preserves it. The repository documentation site has 104 routes / 307 files /
-208 HTML at ledger `a70741dd…`, with 21,842 references and broken=0. Full
-PHPUnit is 420 tests / 7,816 assertions. Release and live gates remain closed.
+The exact unpublished audit ZIP is `ee117ee91618e223c00eda3cd38af46da4d714c5f74dabcf107d6faa2b3fea10`
+with manifest `1478eaefbae26492a370790dc00425ae10cf45c4439239e1734bdd900cf39323`
+(738 files). Two same-lock fresh dist consumers produce the same 168-file
+ledger `ca429c2c603a92eeee4408abf9321476718edda52ac704790c6f6c6f75c728d6`;
+single Alert rebuild preserves it. The repository documentation site has 104
+routes / 307 files / 208 HTML at ledger `03220a0a5986811213ec1948495ca479e0cbfaa9a256174ceefeb9af304488d3`,
+with 21,842 references and broken=0. Full PHPUnit is 433 tests / 7,939
+assertions. Release and live gates remain closed.
+
+### Rejected Goal 3 audit artifacts
+
+Sources `8cd695ff…` and `a027c9ab…`, ZIPs `e63d2edb…` and `32a638b1…`,
+manifest `9a9b74a0…`, and ledgers `65fa3e2e…` / `a70741dd…` were rejected by
+independent audits. They are historical traceability only and are not current
+candidate, metric or release evidence.
 
 ## Accepted Goal 2 result
 

@@ -15,7 +15,7 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.7-CANDIDATE-VERIFICATION.md",
     "source/workflow/evidence/2026-08-02-docara-r1c-semantic-correction/r1c-candidate-and-update.md",
     "source/workflow/evidence/2026-08-02-docara-r2-determinism-correction/C5-INDEPENDENT-DIST-CONSUMERS.md",
-    "source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/G3.6-INTEGRATED-ACCEPTANCE.md"
+    "source/workflow/evidence/2026-08-03-docara-goal3-correction/C3.7-INTEGRATED-RETEST.md"
   ],
   "profile_refs": ["docara.unified"],
   "metric_type": "difference_count",
@@ -24,6 +24,6 @@
   "target": 0,
   "observed": 0,
   "observed_counts": {"routes_checked": 104, "differences": 0, "independent_dist_consumers": 2, "complete_output_files_compared": 168, "complete_tree_differences": 0, "documentation_output_files_compared": 307},
-  "observed_tree_sha256": "a70741ddd526c193762f279a51cff07a80b7e1a8758632244b0ed734f3ae5700",
+  "observed_tree_sha256": "03220a0a5986811213ec1948495ca479e0cbfaa9a256174ceefeb9af304488d3",
   "unknown_policy": "fail_closed"
 }

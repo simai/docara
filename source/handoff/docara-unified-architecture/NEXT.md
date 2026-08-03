@@ -2,7 +2,7 @@
 
 Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `a027c9ab399c62f6ecaa830a73d4f44684e7ed81`
+Current candidate: `6f547810583a16114ed15a8199f698e1dadb70a9`
 
 Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md`
 

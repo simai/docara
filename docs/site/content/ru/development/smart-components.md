@@ -103,12 +103,19 @@ Project template считается trusted developer source. Его путь в
 ## Проверка
 
 ```bash
+docara doctor
+docara inspect smart project.notice --json
+docara validate smart project.notice
 php vendor/bin/phpunit tests/Unit/ProjectLocalSmartRuntimeTest.php
 php vendor/bin/phpunit tests/Unit/SmartProviderRegistryTest.php
 cd docs/site
 php ../../docara build production
 php ../../docara verify-static build_production
 ```
+
+Для нового артефакта используйте hash-bound workflow `docara scaffold smart
+project.name --dry-run`, затем `docara scaffold --apply=<plan_id>`. Полный путь
+описан в [Developer и AI SDK](/development/developer-sdk/).
 
 Full и `--page` используют один PageBuilder. После изменения структуры routes
 нужна full build; для содержимого существующей страницы доступен single-page

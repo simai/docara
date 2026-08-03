@@ -1,7 +1,7 @@
 # Приёмка единой архитектуры Docara
 
-Текущий статус: Goal 1 независимо принят; Goal 2 implementation complete на
-`33a3777…` и ждёт независимого reverse-outcome audit. Goal 3 не начат.
+Текущий статус: Goal 1 и Goal 2 независимо приняты. Goal 3 implementation
+выполняется от handoff `adb27f1…` и ещё не прошла независимый audit.
 Исторический R2 `PASS_DISPOSABLE_CORRECTED` и unpublished release artifact
 остаются parked baseline, а не текущим архитектурным кандидатом. Tag, release,
 live cutover и production acceptance требуют отдельного решения и не заявлены.
@@ -144,6 +144,26 @@ PASS ставится только по воспроизводимому evidenc
 - [x] Worktree чист после фиксации candidate.
 - [ ] Независимый tester повторно проверил новый deterministic exact archive,
       включая два независимых dist consumer и полный public tree.
+
+## I.1 Developer/AI SDK (Goal 3 implementation gate)
+
+- [x] Human и JSON CLI формируются из одного `OperationResult`.
+- [x] Doctor/list/inspect/schema читают существующие Smart/Design registries,
+      provider ownership, provenance и реальные schemas без component-ID list.
+- [x] Smart/design scaffold требует hash-bound dry-run plan и повторно
+      проверяет inputs/targets/content перед explicit apply.
+- [x] Traversal, symlink, hardlink, duplicate namespace/target, stale/tampered
+      plan и forbidden roots fail-closed; source writes ограничены `smart/` и
+      `design/`.
+- [x] Validate/test используют production validators и PreviewKernel, а scaffold
+      output проходит registry reload и готов к preview.
+- [x] QA plan привязан к isolated production-path preview и exact browser
+      matrix; report требует screenshots и нулевые a11y/console/overflow/
+      visual-diff defects.
+- [x] Optional MCP делегирует те же services, не принимает внешний root/path и
+      требует отдельную process capability плюс exact plan для apply.
+- [ ] Goal 3 exact candidate прошёл полную regression/package/consumer/browser
+      матрицу и независимый reverse-outcome audit.
 
 ## J. R2 production dossier
 

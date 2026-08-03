@@ -1,8 +1,7 @@
 # Дорожная карта упрощения Docara
 
-Текущий статус архитектурного roadmap: Goal 1 независимо принят,
-Goal 2 correction complete на `39f1e3f…` и
-`ready_for_independent_audit`; Goal 3 не начат. Исторический R2
+Текущий статус архитектурного roadmap: Goal 1 и Goal 2 независимо приняты;
+Goal 3 выполняется поверх exact handoff `adb27f1…`. Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
 заявлены.
@@ -63,15 +62,23 @@ baseline, а не текущим кандидатом или действием.
 
 ## Goal 2. Project Design Registry and Preview
 
-Статус: implementation complete, `ready_for_independent_audit`. Один
+Статус: независимо принят `PASS_WITH_NOTES`. Один
 DesignRegistry владеет package/project design artifacts, composition не знает
 конкретных IDs, а Smart/region/layout/page preview извлекается из normal
 PortableSiteBuilder output. Первый candidate `33a3777…` отклонён независимым
 аудитом: production verifier принимал preview receipt, isolated output не имел
 assets, watch closure была широкой, а schema `oneOf` не исполнялась. Goal 2-C
-исправляет эти четыре outcomes и остаётся `audit_pending`; новый exact
-candidate и свежая матрица фиксируются в correction evidence. Goal 3 остаётся
-`unstarted` до отдельного аудита.
+исправил эти четыре outcomes; exact accepted product/docs candidate —
+`39f1e3f…`, handoff — `adb27f1…`.
+
+## Goal 3. Developer/AI SDK, structured QA and optional MCP
+
+Статус: implementation in progress. Один application result обслуживает human
+и JSON CLI. Discovery читает существующие Smart/Design registries. Scaffold
+работает через hash-bound dry-run/apply только в project-owned roots.
+Validate/test/QA делегируют принятые validators и PreviewKernel. Optional MCP —
+отдельный PHP stdio adapter над теми же services, read-only по умолчанию и без
+normal consumer dependency.
 
 ## M2. Вертикальный срез `components/badge`
 

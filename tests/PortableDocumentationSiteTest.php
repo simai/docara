@@ -80,13 +80,13 @@ final class PortableDocumentationSiteTest extends PHPUnit
             ),
         ));
 
-        self::assertCount(103, $pages);
+        self::assertCount(104, $pages);
         foreach ($pages as $page) {
             self::assertSame('pagebuilder_document_ir', $page['declarative_pipeline']['main_source']);
             self::assertSame('docara.document_ir.v1', $page['declarative_pipeline']['document_ir']['schema']);
             self::assertGreaterThan(0, $page['declarative_pipeline']['document_ir']['nodes']);
         }
-        self::assertCount(206, $htmlPages);
+        self::assertCount(208, $htmlPages);
         $nonIndexedOutput = $build . '/ru/demonstrator-results/composition-inheritance/page/index.html';
         $nonIndexedHash = hash_file('sha256', $nonIndexedOutput);
         $singleNonIndexed = (new PortableSiteBuilder(
@@ -96,7 +96,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(1, $singleNonIndexed);
         self::assertSame($nonIndexedHash, hash_file('sha256', $nonIndexedOutput));
         self::assertFileDoesNotExist($build . '/ru/lang.json');
-        self::assertCount(89, $search['documents']);
+        self::assertCount(90, $search['documents']);
         self::assertCount(37, $catalog['entries']);
         self::assertCount(30, $supported);
         self::assertCount(5, $unavailable);
@@ -248,7 +248,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         );
 
         $pages = $builder->build($site, $site . '/build_test');
-        self::assertCount(103, $pages);
+        self::assertCount(104, $pages);
         self::assertStringContainsString(
             'Поиск из content lang',
             (string) file_get_contents($site . '/build_test/ru/index.html'),
@@ -299,12 +299,12 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $firstFiles = $this->treeHashes($firstBuild);
         $secondFiles = $this->treeHashes($secondBuild);
-        self::assertCount(305, $firstFiles);
+        self::assertCount(307, $firstFiles);
         self::assertSame($firstFiles, $secondFiles);
         self::assertArrayHasKey('_docara/page-metadata.json', $firstFiles);
 
         $metadata = $this->json($firstBuild . '/_docara/page-metadata.json');
-        self::assertCount(103, $metadata['pages']);
+        self::assertCount(104, $metadata['pages']);
         foreach ($metadata['pages'] as $page) {
             self::assertNull($page['updated_at']);
             self::assertNull($page['revision']);

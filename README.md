@@ -56,6 +56,15 @@ php vendor/bin/docara update [path] --rollback=latest
 php vendor/bin/docara build [environment] [--page=/public/url/]
 php vendor/bin/docara serve [environment] [--no-build]
 php vendor/bin/docara verify-static [build-directory]
+php vendor/bin/docara doctor [--json]
+php vendor/bin/docara list smart|layout|view|section|block|provider|fixture|state|schema [--json]
+php vendor/bin/docara inspect smart|layout|view|section|block|provider|fixture|state|schema <id> [--json]
+php vendor/bin/docara schema smart|layout|view|section|block [--json]
+php vendor/bin/docara scaffold smart|design <project.id> --dry-run [--json]
+php vendor/bin/docara scaffold --apply=<exact-plan-sha256> [--json]
+php vendor/bin/docara validate project|smart|layout|view|section|block [id] [--json]
+php vendor/bin/docara test smart|layout <id> --page=/public/route/ [--json]
+php vendor/bin/docara qa smart|region|layout <id> --page=/public/route/ --dry-run [--json]
 ```
 
 `init` accepts only an empty target. Updating is an explicit transaction:
@@ -76,9 +85,18 @@ Adding, renaming or deleting a route requires a complete build so navigation,
 search, redirects and receipts change together. Run a complete build after
 other structural, global configuration or Framework lock changes as well.
 
+The developer SDK uses one operation result for human and `--json` output.
+Scaffolding is never a one-step write: review the deterministic dry-run diff,
+then apply its exact SHA-256 plan. Only project-owned `smart/` and `design/`
+sources can be created. Validation, test and QA delegate the production
+registries and PreviewKernel. The optional PHP stdio MCP adapter is
+`tools/mcp-docara/server.php`; it is read-only unless started explicitly with
+`--allow-writes`, and even then apply requires the unchanged dry-run plan.
+
 ## Documentation
 
 - [How the engine is organized](docs/site/content/ru/development/architecture.md)
+- [Developer and AI SDK](docs/site/content/ru/development/developer-sdk.md)
 - [Quick start](docs/site/content/ru/start.md)
 - [Project files and configuration](docs/site/content/ru/authoring/project-files.md)
 - [Layouts, regions and navigation](docs/site/content/ru/authoring/layout-and-navigation.md)

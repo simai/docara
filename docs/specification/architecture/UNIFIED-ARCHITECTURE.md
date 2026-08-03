@@ -260,6 +260,26 @@ search — по text projection, backlinks — по link edges. Они не ре
 Расширение не может добавлять скрытый второй `PageBuilder`, direct trusted HTML
 path или редакторский текст в PHP.
 
+### Developer/AI application services
+
+`Simai\Docara\Application\DiscoveryService`, `ScaffoldService`,
+`ValidationService`, `ArtifactTestService` и `QaService` являются тонким
+application layer над принятыми registries, validators и `PreviewKernel`.
+`OperationResult` формирует один `docara.operation_result.v1`, из которого
+строятся human и JSON ответы CLI.
+
+Scaffold использует persisted hash-bound plan: apply повторно проверяет
+`docara.json`, отсутствие каждого target, plan/content SHA-256, namespace и
+безопасность parent paths. Запись разрешена только в project-owned `smart/` и
+`design/`; engine, lock, generated public output и external roots не являются
+целями.
+
+Optional `McpAdapter` делегирует `SdkService` и не владеет registry, validator,
+renderer или composition. MCP process фиксирует project root при запуске, по
+умолчанию запрещает apply и не входит в normal consumer/build dependency graph.
+QA plan использует isolated output существующего `PreviewKernel`; Node и browser
+tooling остаются optional development surface.
+
 ## 14. Связь с Larena
 
 Общий концептуальный контракт:

@@ -9,6 +9,7 @@ use DOMElement;
 use DOMXPath;
 use JsonException;
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\File\ProjectFilesystemGuard;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\BuildPurpose;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
@@ -19,6 +20,7 @@ final readonly class PreviewKernel
     public function __construct(
         private PortableSiteBuilder $builder,
         private Filesystem $files,
+        private ProjectFilesystemGuard $writes = new ProjectFilesystemGuard,
     ) {}
 
     public function render(
@@ -27,10 +29,13 @@ final readonly class PreviewKernel
         PreviewTarget $target,
         ?string $selector = null,
     ): PreviewArtifact {
-        $root = $this->realRoot($projectRoot);
+        $root = $this->writes->root($projectRoot);
         $page = $this->page($page);
         $selector = $this->selector($target, $selector);
         $cache = $root . '/build_preview-cache';
+        foreach (['build_preview-cache', 'build_preview-cache.docara-candidate', 'build_preview-cache.docara-rollback'] as $generated) {
+            $this->writes->directoryPath($root, $generated);
+        }
         $receipt = $cache . '/.docara/resolved-page-plans.json';
         $buildMode = is_file($receipt) ? 'single_page' : 'full_site';
         if (! is_file($receipt)) {
@@ -82,16 +87,6 @@ final readonly class PreviewKernel
             ],
             $cache,
         );
-    }
-
-    private function realRoot(string $root): string
-    {
-        $real = realpath($root);
-        if ($real === false || ! is_dir($real) || is_link($root)) {
-            throw new PortableConfigurationException('PREVIEW_ROOT_INVALID', 'Preview root must be a real project directory.');
-        }
-
-        return rtrim($real, '/\\');
     }
 
     private function page(string $page): string

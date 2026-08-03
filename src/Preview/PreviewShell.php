@@ -5,48 +5,55 @@ declare(strict_types=1);
 namespace Simai\Docara\Preview;
 
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\File\ProjectFilesystemGuard;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final readonly class PreviewShell
 {
-    public function __construct(private Filesystem $files) {}
+    public function __construct(
+        private Filesystem $files,
+        private ProjectFilesystemGuard $writes = new ProjectFilesystemGuard,
+    ) {}
 
     /** @return array<string, mixed> */
     public function publish(string $projectRoot, PreviewArtifact $artifact): array
     {
-        $root = realpath($projectRoot);
-        if ($root === false || is_link($projectRoot)) {
-            throw new PortableConfigurationException('PREVIEW_ROOT_INVALID', 'Preview root must be a real project directory.');
+        $root = $this->writes->root($projectRoot);
+        $destination = '.docara-preview/output/' . $artifact->target->value;
+        $candidate = '.docara-preview/.candidate-' . $artifact->target->value;
+        $previous = '.docara-preview/.previous-' . $artifact->target->value;
+        foreach ([$destination, $candidate, $previous] as $generated) {
+            $this->writes->directoryPath($root, $generated);
         }
-        $previewRoot = rtrim($root, '/\\') . '/.docara-preview';
-        $destination = $previewRoot . '/output/' . $artifact->target->value;
-        $candidate = $previewRoot . '/.candidate-' . $artifact->target->value;
-        $previous = $previewRoot . '/.previous-' . $artifact->target->value;
-        $this->files->deleteDirectory($candidate);
-        $this->files->ensureDirectoryExists(dirname($destination));
-        $this->files->ensureDirectoryExists($candidate);
+        $this->writes->deleteDirectory($root, $candidate, $this->files);
+        $this->writes->ensureDirectory($root, dirname($destination));
+        $this->writes->ensureDirectory($root, $candidate);
         $publishedFiles = $this->publishRuntimeFiles($root, $candidate, $artifact->publicRoot);
-        $this->files->put($candidate . '/artifact.html', $artifact->html);
-        $this->files->put($candidate . '/index.html', $artifact->pageHtml);
+        $this->writes->putNew($root, $candidate . '/artifact.html', $artifact->html, 'PREVIEW_OUTPUT_COLLISION');
+        $this->writes->putNew($root, $candidate . '/index.html', $artifact->pageHtml, 'PREVIEW_OUTPUT_COLLISION');
         $result = $artifact->toArray() + [
             'output' => '.docara-preview/output/' . $artifact->target->value . '/artifact.html',
             'manifest' => '.docara-preview/output/' . $artifact->target->value . '/preview.json',
             'preview' => '.docara-preview/output/' . $artifact->target->value . '/index.html',
             'published_files' => $publishedFiles,
         ];
-        $this->files->put($candidate . '/preview.json', CanonicalJson::encodePretty($result));
-        $this->files->deleteDirectory($previous);
-        if (is_dir($destination) && ! rename($destination, $previous)) {
-            throw new PortableConfigurationException('PREVIEW_OUTPUT_SWAP_FAILED', 'Previous preview output could not be staged.');
+        $this->writes->putNew($root, $candidate . '/preview.json', CanonicalJson::encodePretty($result), 'PREVIEW_OUTPUT_COLLISION');
+        $this->writes->deleteDirectory($root, $previous, $this->files);
+        $destinationPath = $this->writes->directoryPath($root, $destination);
+        $hadPrevious = is_dir($destinationPath);
+        if ($hadPrevious) {
+            $this->writes->moveDirectory($root, $destination, $previous);
         }
-        if (! rename($candidate, $destination)) {
-            if (is_dir($previous)) {
-                rename($previous, $destination);
+        try {
+            $this->writes->moveDirectory($root, $candidate, $destination);
+        } catch (PortableConfigurationException $exception) {
+            if ($hadPrevious && is_dir($this->writes->directoryPath($root, $previous))) {
+                $this->writes->moveDirectory($root, $previous, $destination);
             }
-            throw new PortableConfigurationException('PREVIEW_OUTPUT_SWAP_FAILED', 'Preview output could not be published atomically.');
+            throw $exception;
         }
-        $this->files->deleteDirectory($previous);
+        $this->writes->deleteDirectory($root, $previous, $this->files);
 
         return $result;
     }
@@ -98,14 +105,7 @@ final readonly class PreviewShell
                     "Preview public file [$relative] is unsafe.",
                 );
             }
-            $target = $candidate . '/' . $relative;
-            $this->files->ensureDirectoryExists(dirname($target));
-            if (! $this->files->copy($path, $target)) {
-                throw new PortableConfigurationException(
-                    'PREVIEW_PUBLIC_FILE_COPY_FAILED',
-                    "Preview public file [$relative] could not be copied.",
-                );
-            }
+            $this->writes->copyNew($projectRoot, $path, $candidate . '/' . $relative, 'PREVIEW_OUTPUT_COLLISION');
             $hashes[$relative] = hash_file('sha256', $path);
         }
         ksort($hashes, SORT_STRING);

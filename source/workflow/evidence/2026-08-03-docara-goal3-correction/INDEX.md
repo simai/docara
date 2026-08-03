@@ -13,7 +13,7 @@ the former candidate as fresh proof.
 | Evidence | Scope | Status |
 | --- | --- | --- |
 | `C3.0-RED-BASELINE.md` | preview/QA root escape and diagnostic gaps | RED confirmed |
-| `C3.1-CONTAINMENT.md` | pre-mutation guard and attack matrix | pending |
+| `C3.1-CONTAINMENT.md` | pre-mutation guard and attack matrix | PASS at implementation boundary `496df2c` |
 | `C3.2-DIAGNOSTIC-PARITY.md` | CLI human/JSON/MCP result parity | pending |
 | `C3.3-VISUAL-QA.md` | Smart/region/layout 24-scenario browser matrix | pending |
 | `C3.4-INTEGRATED-RETEST.md` | full/build/package/consumer/cross-host | pending |

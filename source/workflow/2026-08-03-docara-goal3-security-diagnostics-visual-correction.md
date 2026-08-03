@@ -55,8 +55,8 @@ repository Goal 3 plus raw owner sources above remain authoritative.
 | Batch | Outcome | Verification | Status |
 | --- | --- | --- | --- |
 | C3.0 | freeze correction and preserve RED exploit/diagnostic baselines | exact disposable reproductions and external tree ledgers | complete |
-| C3.1 | one generated-root containment guard used by preview, QA, scaffold and MCP write surfaces | focused security matrix and zero external diff | in progress |
-| C3.2 | one exception-to-operation-result/diagnostic mapping for CLI human/JSON and MCP | real-command golden parity and schema negatives | pending |
+| C3.1 | one generated-root containment guard used by preview, QA, scaffold and MCP write surfaces | focused security matrix and zero external diff | complete |
+| C3.2 | one exception-to-operation-result/diagnostic mapping for CLI human/JSON and MCP | real-command golden parity and schema negatives | in progress |
 | C3.3 | production-bound Smart/region/layout QA | 24 browser scenarios, reports and screenshots | pending |
 | C3.4 | integrated deterministic build/package/consumer regression | full/focused/static/cross-host/package/two consumers | pending |
 | C3.5 | exact candidate governance and handoff | graph/context/docs checks, clean commits/worktree | pending |
@@ -80,11 +80,11 @@ implementation defects must be corrected inside this workflow.
 
 ## Current state
 
-- current batch: C3.1;
-- remaining batches: C3.1–C3.5;
-- next safe action: add permanent red-before/green-after security regressions,
-  implement one pre-mutation containment guard and integrate every writable
-  Goal 3 root;
+- current batch: C3.2;
+- C3.1 implementation boundary: `496df2c5801a791950a95fe8c2e0a2e62ee7f11e`;
+- remaining batches: C3.2–C3.5;
+- next safe action: centralize exception-to-diagnostic conversion and bind real
+  CLI human/JSON and MCP failures to the same complete operation result;
 - do not complete until the new exact candidate passes independent-ready gates.
 
 ## Kaizen

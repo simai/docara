@@ -81,7 +81,7 @@ implementation defects must be corrected inside this workflow.
 ## Current state
 
 - current batch: C3.2;
-- C3.1 implementation boundary: `496df2c5801a791950a95fe8c2e0a2e62ee7f11e`;
+- C3.1 implementation boundary: `496df2cab420a5f93560ea376ae44417368d1ba4`;
 - remaining batches: C3.2–C3.5;
 - next safe action: centralize exception-to-diagnostic conversion and bind real
   CLI human/JSON and MCP failures to the same complete operation result;

@@ -18,30 +18,29 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal2_ready_for_independent_audit`
+Current state: `goal3_in_progress`
 
 Current goal: `docara.goal.unified`
 
-Current stage: `docara.stage.g2.design_registry_preview`
+Current stage: `docara.stage.g3.developer_sdk`
 
-Current batch: `docara.batch.g2.design_registry_preview`
+Current batch: `docara.batch.g3.developer_sdk`
 
-Current next action: `independent_goal2_reverse_outcome_audit`
+Current next action: `execute_g3_0_contract_freeze`
 
-Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md`
 
-Current candidate: `39f1e3f6e97d7f8138e892b5884ba194cc889a7f`
+Current candidate: `adb27f1acde6dfa5f018f7b2e3c2f20b404a0ed2`
 
-Next roadmap goal: `docara.goal.3.developer_sdk`
+Next roadmap goal: `docara.goal.3.independent_audit`
 
-Next roadmap status: `unstarted`
+Next roadmap status: `blocked_until_goal3_ready`
 
 Next roadmap authorized: `false`
 
-Goal 1 was independently accepted with `PASS_WITH_NOTES`. Goal 2 Design
-Registry/Preview correction is complete and awaits independent audit. The
-former `33a3777…` candidate is a rejected historical baseline.
-Goal 3 SDK/MCP is not authorized until that audit accepts the exact candidate.
+Goal 1 and Goal 2 were independently accepted with `PASS_WITH_NOTES`.
+Goal 3 Developer/AI SDK is the only active implementation. Its result must stop
+at `ready_for_independent_audit`; release review remains unauthorized.
 
 ## 3. Read in this order
 
@@ -60,11 +59,10 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only the current goal
 
-Audit Goal 2-C against
-`source/workflow/2026-08-03-docara-goal2c-preview-validation-correction.md` and
-the current evidence index. Preserve the accepted Goal 1
-Gateway/provider/PageBuilder/runtime invariants. Do not accept Goal 2 from
-executor evidence and do not start Goal 3.
+Execute G3.0-G3.6 from
+`source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md` and the current
+evidence index. Preserve accepted Goal 1/2 runtime invariants. Do not self-accept
+Goal 3 and do not start release review.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,
@@ -76,7 +74,7 @@ explicitly accepted.
 - do not move public prose into JSON, PHP projectors or component manifests;
 - do not create a second parser, renderer, Gateway or PageBuilder;
 - do not delete legacy without parity and rollback evidence;
-- do not start Goal 3 from this handoff;
+- do not start release review from this handoff;
 - do not merge, push, tag, release, publish or deploy;
 - do not write to `docara.test` or `docara-new.test`;
 - do not claim independent acceptance from executor evidence.

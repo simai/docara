@@ -1,0 +1,33 @@
+{
+    "data": {
+        "plan_id": "fixture-plan"
+    },
+    "diagnostics": [
+        {
+            "code": "SCAFFOLD_PLAN_STALE",
+            "message": "The project changed after dry-run.",
+            "owner": "project.acme",
+            "provenance": {
+                "plan_id": "fixture-plan"
+            },
+            "severity": "error",
+            "source": {
+                "column": null,
+                "line": null,
+                "path": "docara.json",
+                "pointer": "/project/namespace"
+            },
+            "suggestion": "Run scaffold dry-run again and review the new plan."
+        }
+    ],
+    "exit_code": 3,
+    "operation": "scaffold.apply",
+    "provenance": {
+        "engine_revision": "fixture-revision",
+        "input_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "project_root": "."
+    },
+    "schema": "docara.operation_result.v1",
+    "status": "error",
+    "subject": "acme.notice"
+}

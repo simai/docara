@@ -1,0 +1,21 @@
+{
+    "data": {
+        "checks": [
+            {
+                "id": "project.config",
+                "status": "pass"
+            }
+        ]
+    },
+    "diagnostics": [],
+    "exit_code": 0,
+    "operation": "doctor",
+    "provenance": {
+        "engine_revision": "fixture-revision",
+        "input_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "project_root": "."
+    },
+    "schema": "docara.operation_result.v1",
+    "status": "success",
+    "subject": "."
+}

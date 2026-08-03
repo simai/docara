@@ -1,0 +1,23 @@
+{
+  "id": "docara.batch.g3.developer_sdk",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "Goal 3 Developer and AI SDK execution",
+  "summary": "Execute G3.0-G3.6 sequentially and stop at independent Goal 3 audit.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "in_progress",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md"],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.g3.developer_sdk",
+  "allowed_scope": ["Docara application services, CLI formatters and commands, project-local scaffold plans, existing validation and preview orchestration, optional development QA and MCP adapter, tests, public docs, graph, workflow and handoff"],
+  "forbidden_scope": ["Second parser", "Second renderer", "Second DesignRegistry", "Second Smart Gateway", "Second LayoutComposer", "Second PageBuilder", "External Framework repositories", "docara-new.test", "docara.test", "Merge", "Push", "Tag", "Release", "Deploy"],
+  "checks": ["Golden human and JSON results", "Stable exit codes", "Discovery and schema coverage", "Hash-bound scaffold security", "Validate and test delegation", "Optional visual QA", "MCP boundaries", "Full regression", "Package and consumer", "Graph and documentation validation"],
+  "status": "g3_0_contract_freeze_in_progress",
+  "candidate_revision": "adb27f1acde6dfa5f018f7b2e3c2f20b404a0ed2",
+  "next_action": "execute_g3_0_contract_freeze"
+}

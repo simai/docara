@@ -1,0 +1,3 @@
+ERROR SCAFFOLD_PLAN_STALE: The project changed after dry-run.
+  at docara.json#/project/namespace
+  Run scaffold dry-run again and review the new plan.

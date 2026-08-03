@@ -1,0 +1,29 @@
+{
+  "id": "docara.stage.g3.developer_sdk",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "milestone",
+  "tz_role": "implementation_stage",
+  "title": "Goal 3. Developer and AI SDK with structured QA and optional MCP",
+  "summary": "Expose stable read, plan, apply, validation, preview and test application services without creating a second runtime.",
+  "owner": "teamlead",
+  "lifecycle": "active",
+  "readiness": "in_progress",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md"],
+  "profile_refs": ["docara.unified"],
+  "parent_goal_ref": "docara.goal.unified",
+  "done_when": [
+    "Human and JSON commands consume one deterministic application result contract.",
+    "Discovery covers every Smart, design artifact, provider, owner, provenance and effective schema without central ID lists.",
+    "Scaffold dry-run and apply are hash-bound, fail-closed, atomic and limited to project-owned roots.",
+    "Validation, preview, test, visual QA and optional MCP delegate the accepted registries, Gateway, PreviewKernel and PageBuilder.",
+    "Public parity, full/single equality, determinism, package, consumer, security, documentation and browser evidence pass."
+  ],
+  "batch_refs": ["docara.batch.g3.developer_sdk"],
+  "required_gates": ["docara.gate.architecture_acceptance"],
+  "required_evidence": ["Golden result fixtures", "Write-boundary negatives", "SDK end-to-end", "MCP delegation", "Visual QA", "Package and consumer regression", "Independent reverse-outcome audit"],
+  "next_stage_ref": null,
+  "status": "g3_0_contract_freeze_in_progress_goal2_independently_accepted"
+}

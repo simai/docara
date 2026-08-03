@@ -26,18 +26,18 @@
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
   "implementation_state": {
-    "state": "goal2_ready_for_independent_audit",
+    "state": "goal3_in_progress",
     "current_goal": "docara.goal.unified",
-    "current_stage": "docara.stage.g2.design_registry_preview",
-    "current_batch": "docara.batch.g2.design_registry_preview",
-    "completed_checkpoint": "goal2_correction_implementation_complete",
-    "candidate_revision": "39f1e3f6e97d7f8138e892b5884ba194cc889a7f",
-    "next_action": "independent_goal2_reverse_outcome_audit",
-    "evidence": "source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md",
+    "current_stage": "docara.stage.g3.developer_sdk",
+    "current_batch": "docara.batch.g3.developer_sdk",
+    "completed_checkpoint": "goal2_independently_accepted_pass_with_notes",
+    "candidate_revision": "adb27f1acde6dfa5f018f7b2e3c2f20b404a0ed2",
+    "next_action": "execute_g3_0_contract_freeze",
+    "evidence": "source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md",
     "next_goal": {
-      "id": "docara.goal.3.developer_sdk",
-      "title": "Goal 3 — Developer and AI SDK with optional MCP",
-      "status": "unstarted",
+      "id": "docara.goal.3.independent_audit",
+      "title": "Independent Goal 3 reverse-outcome audit",
+      "status": "blocked_until_goal3_ready",
       "authorized": false,
       "source": "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md#goal-3--developerai-sdk-structured-qa-and-optional-mcp"
     }

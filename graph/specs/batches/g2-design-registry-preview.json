@@ -7,8 +7,8 @@
   "title": "Goal 2 Design Registry and preview execution",
   "summary": "Execute G2.0-G2.6 as recoverable checkpoints without starting the Developer/AI SDK goal.",
   "owner": "dev",
-  "lifecycle": "verification",
-  "readiness": "audit_pending",
+  "lifecycle": "completed",
+  "readiness": "accepted",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-03-docara-goal2c-preview-validation-correction.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md"],
@@ -17,7 +17,7 @@
   "allowed_scope": ["Docara design registry, declarative composition, preview runtime and CLI, trusted project fixtures, tests, documentation, graph, workflow and handoff"],
   "forbidden_scope": ["External Framework repositories", "docara-new.test", "docara.test", "Goal 3", "SDK", "MCP", "Merge", "Push", "Tag", "Release", "Deploy"],
   "checks": ["Design provider and compatibility tests", "Security negatives", "Preview-to-build parity", "Watch invalidation", "Goal 1 regression", "Full/single parity", "Deterministic builds", "Static verifier", "Browser matrix", "Graph and documentation validation"],
-  "status": "goal2_correction_complete_ready_for_independent_audit",
+  "status": "independently_accepted_pass_with_notes",
   "candidate_revision": "39f1e3f6e97d7f8138e892b5884ba194cc889a7f",
-  "next_action": "independent_goal2_reverse_outcome_audit"
+  "next_action": "execute_goal3_after_accepted_goal2"
 }

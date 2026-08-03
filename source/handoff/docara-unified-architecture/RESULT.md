@@ -1,12 +1,19 @@
 # Current Docara result
 
-Current state: `goal2_ready_for_independent_audit`
+Current state: `goal3_in_progress`
 
-Current candidate: `39f1e3f6e97d7f8138e892b5884ba194cc889a7f`
+Current candidate: `adb27f1acde6dfa5f018f7b2e3c2f20b404a0ed2`
 
-Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md`
 
-## Goal 2 current result
+## Goal 3 current result
+
+Goal 2-C was independently accepted with `PASS_WITH_NOTES`. Goal 3 is active on
+the exact accepted handoff `adb27f1…`; G3.0 freezes the service/result,
+diagnostic, write and optional MCP boundaries before runtime implementation.
+No Goal 3 readiness claim exists yet.
+
+## Accepted Goal 2 result
 
 Goal 1 was independently accepted with `PASS_WITH_NOTES`. The first Goal 2
 candidate `33a3777…` was rejected. Candidate `39f1e3f…` keeps its accepted one
@@ -19,10 +26,8 @@ Full PHPUnit passes 398 tests / 7,640 assertions. Two full builds are identical
 at 103 routes / 305 files / 206 HTML; single Alert preserves ledger
 `40d6da7d…`, static verification reports 21,421 references and broken=0.
 Exact preview HTTP browser checks have no console errors/warnings or overflow.
-Exact evidence is the current index above.
-
-Goal 2 is `ready_for_independent_audit`, not accepted. Goal 3 remains
-unstarted and unauthorized.
+Goal 2 was independently accepted with `PASS_WITH_NOTES`; its evidence remains
+at `source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md`.
 
 ## Accepted Goal 1 result
 
@@ -36,8 +41,7 @@ without an engine source edit.
 Corrected implementation candidate:
 `44acc1ff91233fa78140222fcb0589bf55b65ca0`. Fresh focused/full, exact
 cross-host, determinism, full/single, static, security, structural and browser
-evidence is indexed below. This is executor evidence awaiting independent
-acceptance; at that historical checkpoint Goal 2 remained unstarted.
+evidence was independently accepted before Goal 2 began.
 
 Correction source and evidence:
 
@@ -68,9 +72,10 @@ and browser smoke are recorded at:
 - `source/workflow/2026-08-02-docara-goal1c-portable-smart-abi-correction.md`;
 - `source/workflow/evidence/2026-08-02-docara-goal1c-portable-smart-abi-resume/INDEX.md`.
 
-Goal 1 is ready for independent reverse-outcome audit, not accepted. The old
-`34496d49…` candidate and `d6f90bba…` pin remain superseded history. Goal 2,
-live sites, merge, push, tag, release and deploy remain out of scope.
+That historical Goal 1 candidate was superseded by the accepted Goal 1-D
+correction. The old `34496d49…` candidate and `d6f90bba…` pin remain
+superseded history. Live sites, merge, push, tag, release and deploy remain out
+of scope.
 
 # M0 result
 

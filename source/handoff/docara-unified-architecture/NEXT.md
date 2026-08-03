@@ -1,19 +1,16 @@
-# Next action: `independent_goal2_reverse_outcome_audit`
+# Next action: `execute_g3_0_contract_freeze`
 
-Current state: `goal2_ready_for_independent_audit`
+Current state: `goal3_in_progress`
 
-Current candidate: `39f1e3f6e97d7f8138e892b5884ba194cc889a7f`
+Current candidate: `adb27f1acde6dfa5f018f7b2e3c2f20b404a0ed2`
 
-Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md`
 
-Goal 1 was independently accepted. The first Goal 2 candidate `33a3777…` was
-rejected. Goal 2-C fixes its receipt, standalone asset, watch closure and View
-Tree validation defects; executor verification is green. Independently audit
-the exact current candidate against
-`source/workflow/2026-08-03-docara-goal2c-preview-validation-correction.md`
-and its evidence index. Do not treat executor evidence as acceptance.
-
-Goal 3 and all live/release actions remain unstarted and unauthorized.
+Goal 1 and Goal 2 are independently accepted. Execute G3.0-G3.6 through the
+single application-service/runtime path from
+`source/workflow/2026-08-03-docara-goal3-developer-ai-sdk.md`. Stop at a clean
+Goal 3 candidate ready for independent audit. Release and live actions remain
+unauthorized.
 
 ## Historical deployment decision (parked, not executable)
 

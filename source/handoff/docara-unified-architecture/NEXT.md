@@ -2,13 +2,15 @@
 
 Current state: `goal2_ready_for_independent_audit`
 
-Current candidate: `33a377758f12d02a34e50c2f4f6d2aa760cf678b`
+Current candidate: `39f1e3f6e97d7f8138e892b5884ba194cc889a7f`
 
-Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md`
 
-Goal 1 was independently accepted. Goal 2 batches G2.0-G2.6 are implemented
-and executor verification is green. Independently audit the exact candidate
-against `source/workflow/2026-08-03-docara-goal2-design-registry-preview.md`
+Goal 1 was independently accepted. The first Goal 2 candidate `33a3777…` was
+rejected. Goal 2-C fixes its receipt, standalone asset, watch closure and View
+Tree validation defects; executor verification is green. Independently audit
+the exact current candidate against
+`source/workflow/2026-08-03-docara-goal2c-preview-validation-correction.md`
 and its evidence index. Do not treat executor evidence as acceptance.
 
 Goal 3 and all live/release actions remain unstarted and unauthorized.

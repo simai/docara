@@ -30,10 +30,10 @@
     "current_goal": "docara.goal.unified",
     "current_stage": "docara.stage.g2.design_registry_preview",
     "current_batch": "docara.batch.g2.design_registry_preview",
-    "completed_checkpoint": "goal2_implementation_complete",
-    "candidate_revision": "33a377758f12d02a34e50c2f4f6d2aa760cf678b",
+    "completed_checkpoint": "goal2_correction_implementation_complete",
+    "candidate_revision": "39f1e3f6e97d7f8138e892b5884ba194cc889a7f",
     "next_action": "independent_goal2_reverse_outcome_audit",
-    "evidence": "source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md",
+    "evidence": "source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md",
     "next_goal": {
       "id": "docara.goal.3.developer_sdk",
       "title": "Goal 3 — Developer and AI SDK with optional MCP",

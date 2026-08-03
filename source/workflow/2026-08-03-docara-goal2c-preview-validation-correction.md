@@ -1,7 +1,7 @@
 # Goal 2-C — preview and design validation correction
 
 Date: 2026-08-03
-Status: `in_progress`
+Status: `ready_for_independent_audit`
 Track: Docara extensible LEGO architecture
 Current goal: Goal 2 correction
 Input revision: `4c0f623403773c00669ef53782785d750839de0a`
@@ -58,10 +58,10 @@ fallback instead of enabling or using that skill.
 | --- | --- | --- | --- |
 | C2.0 | recovery, exact defect reproductions, correction state | four RED regressions and durable inventory | complete |
 | C2.1 | typed preview purpose and receipt boundary | preview verifier non-zero; full verifier pass | implementation green |
-| C2.2 | self-contained isolated preview runtime | all preview HTTP assets 200/correct MIME; browser clean | implementation green; browser pending |
+| C2.2 | self-contained isolated preview runtime | all preview HTTP assets 200/correct MIME; browser clean | complete |
 | C2.3 | actual target dependency graph/watch | unrelated=0; relevant edit/create/delete=1 | implementation green |
 | C2.4 | registry-time View Tree validation | invalid constructs fail; dynamic region passes | implementation green |
-| C2.5 | full retest, documentation, graph and handoff | complete Goal 2 matrix, clean worktree | pending |
+| C2.5 | full retest, documentation, graph and handoff | complete Goal 2 matrix, clean worktree | complete |
 
 ## Current progress
 
@@ -71,10 +71,21 @@ fallback instead of enabling or using that skill.
   preview/design/static verification passes 30 tests and 246 assertions on the
   working candidate; the broader preview/design/declarative suite passes 113
   tests and 1,572 assertions.
-- Next: bind the implementation checkpoint, run exact preview HTTP/browser
-  acceptance, then complete the full Goal 2 regression and governance contour.
+- Exact preview HTTP/browser acceptance and the full Goal 2 regression and
+  governance contour are complete on the candidate below.
+
+## Final result
+
+Exact product/docs candidate:
+`39f1e3f6e97d7f8138e892b5884ba194cc889a7f`. Full PHPUnit, two-build
+determinism, full/single equality, static verification, exact isolated preview
+HTTP/browser, Goal 1 cross-host and security regressions are green. Detailed
+commands, counts and hashes are in the evidence index.
+
+The next action is only `independent_goal2_reverse_outcome_audit`. Goal 2 is
+not self-accepted; Goal 3 remains unstarted and unauthorized.
 
 ## Remaining
 
-C2.5 plus browser acceptance. Stop only on the assignment stop conditions; ordinary test,
-schema, preview and browser defects are corrected inside this goal.
+Only independent audit remains. No implementation batch or Goal 3 work is
+authorized from this workflow.

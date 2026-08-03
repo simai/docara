@@ -28,9 +28,9 @@ Current batch: `docara.batch.g2.design_registry_preview`
 
 Current next action: `independent_goal2_reverse_outcome_audit`
 
-Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md`
 
-Current candidate: `33a377758f12d02a34e50c2f4f6d2aa760cf678b`
+Current candidate: `39f1e3f6e97d7f8138e892b5884ba194cc889a7f`
 
 Next roadmap goal: `docara.goal.3.developer_sdk`
 
@@ -39,7 +39,8 @@ Next roadmap status: `unstarted`
 Next roadmap authorized: `false`
 
 Goal 1 was independently accepted with `PASS_WITH_NOTES`. Goal 2 Design
-Registry/Preview implementation is complete and awaits independent audit.
+Registry/Preview correction is complete and awaits independent audit. The
+former `33a3777…` candidate is a rejected historical baseline.
 Goal 3 SDK/MCP is not authorized until that audit accepts the exact candidate.
 
 ## 3. Read in this order
@@ -59,9 +60,9 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only the current goal
 
-Audit G2.0-G2.6 against
-`source/workflow/2026-08-03-docara-goal2-design-registry-preview.md` and the
-current evidence index. Preserve the accepted Goal 1
+Audit Goal 2-C against
+`source/workflow/2026-08-03-docara-goal2c-preview-validation-correction.md` and
+the current evidence index. Preserve the accepted Goal 1
 Gateway/provider/PageBuilder/runtime invariants. Do not accept Goal 2 from
 executor evidence and do not start Goal 3.
 

@@ -60,7 +60,7 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-10-details-backlinks.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.5-LOCALE-SECURITY-ACCESSIBILITY.md"
-    ,"source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md"
+    ,"source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md"
   ],
   "review_refs": ["docara.gate.source_ownership", "docara.gate.migration_coverage"],
   "current_behavior": [
@@ -69,7 +69,7 @@
     "The public documentation site declares only ru content; a minimal physical English LTR and Arabic RTL consumer fixture proves the same engine without claiming translation coverage.",
     "DeclarativePageCompiler resolves region composition through one DesignRegistry into descriptor-owned layout regions, sections and blocks without concrete design or Smart IDs.",
     "Package and project design providers have exclusive namespaces, deterministic precedence and fail-closed duplicate/path/symlink rules.",
-    "Preview uses PortableSiteBuilder production services and publishes only explicitly non-accepted isolated artifacts.",
+    "Preview uses PortableSiteBuilder production services, carries typed preview build purpose, publishes its required local assets without a production receipt and is rejected by production verification.",
     "M1B provides docara.lang.v1 and a fail-closed target validator.",
     "Public builds load shared UI messages only from content/<locale>/lang.json and fail without the selected locale file; package presentation fallback is absent.",
     "FrontMatterParser implements title, description, tags, draft and translation_key with source line/column diagnostics.",
@@ -85,6 +85,6 @@
     "Remove remaining page-sidecar prose fields only with an explicit consumer migration and parity proof.",
     "Do not claim a locale as public documentation until its complete physical Markdown and lang.json ownership matrix passes."
   ],
-  "status": "goal2_design_registry_preview_implementation_complete_audit_pending",
-  "mapped_revision": "33a377758f12d02a34e50c2f4f6d2aa760cf678b"
+  "status": "goal2_correction_implementation_complete_audit_pending",
+  "mapped_revision": "39f1e3f6e97d7f8138e892b5884ba194cc889a7f"
 }

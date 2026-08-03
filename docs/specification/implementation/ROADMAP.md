@@ -1,7 +1,7 @@
 # Дорожная карта упрощения Docara
 
 Текущий статус архитектурного roadmap: Goal 1 независимо принят,
-Goal 2 implementation complete на `33a3777…` и
+Goal 2 correction complete на `39f1e3f…` и
 `ready_for_independent_audit`; Goal 3 не начат. Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не

@@ -86,6 +86,6 @@
     "Retire InlineComponentRenderer::badge only after all badge calls reach one component node/gateway and exact HTML/assets parity passes.",
     "Remove LegacyBundledSmartProvider only after bundled artifact directories are physically normalized with exact public parity."
   ],
-  "status": "goal1_accepted_goal2_implementation_complete_audit_pending",
-  "mapped_revision": "33a377758f12d02a34e50c2f4f6d2aa760cf678b"
+  "status": "goal1_accepted_goal2_correction_complete_audit_pending",
+  "mapped_revision": "39f1e3f6e97d7f8138e892b5884ba194cc889a7f"
 }

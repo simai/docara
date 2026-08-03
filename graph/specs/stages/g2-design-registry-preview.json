@@ -10,8 +10,8 @@
   "lifecycle": "verification",
   "readiness": "audit_pending",
   "visibility": "repository",
-  "source_refs": ["source/workflow/2026-08-03-docara-goal2-design-registry-preview.md"],
-  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md"],
+  "source_refs": ["source/workflow/2026-08-03-docara-goal2c-preview-validation-correction.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md"],
   "profile_refs": ["docara.unified"],
   "parent_goal_ref": "docara.goal.unified",
   "done_when": [
@@ -24,5 +24,5 @@
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Design responsibility map", "Provider security negatives", "Built-in parity", "Project-local fixture", "Preview parity", "Watch invalidation", "Independent reverse-outcome audit"],
   "next_stage_ref": null,
-  "status": "goal2_implementation_complete_ready_for_independent_audit_goal3_unstarted"
+  "status": "goal2_correction_complete_ready_for_independent_audit_goal3_unstarted"
 }

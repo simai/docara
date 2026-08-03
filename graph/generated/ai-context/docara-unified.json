@@ -9,7 +9,7 @@
         "graph/specs/stages/g2-design-registry-preview.json",
         "graph/specs/batches/g2-design-registry-preview.json"
     ],
-    "canonical_sha256": "04587f2926b5c335c5400781c5acd73e9d17c385b2d6c7994bd643584406e089",
+    "canonical_sha256": "2b72076ca3171e040d2ed1d3a327d2893654a795c642750fb57f10641be2fee3",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -21,14 +21,14 @@
         "goal_readiness": "goal2_ready_for_independent_audit",
         "stage": "docara.stage.g2.design_registry_preview",
         "stage_readiness": "audit_pending",
-        "stage_status": "goal2_implementation_complete_ready_for_independent_audit_goal3_unstarted",
+        "stage_status": "goal2_correction_complete_ready_for_independent_audit_goal3_unstarted",
         "batch": "docara.batch.g2.design_registry_preview",
         "batch_readiness": "audit_pending",
-        "batch_status": "g2_0_through_g2_6_complete_ready_for_independent_audit",
-        "completed_checkpoint": "goal2_implementation_complete",
-        "candidate_revision": "33a377758f12d02a34e50c2f4f6d2aa760cf678b",
+        "batch_status": "goal2_correction_complete_ready_for_independent_audit",
+        "completed_checkpoint": "goal2_correction_implementation_complete",
+        "candidate_revision": "39f1e3f6e97d7f8138e892b5884ba194cc889a7f",
         "next_action": "independent_goal2_reverse_outcome_audit",
-        "evidence": "source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md"
+        "evidence": "source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md"
     },
     "roadmap": {
         "source": "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md",

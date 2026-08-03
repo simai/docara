@@ -1,7 +1,7 @@
 # Goal 2-C correction evidence index
 
 Date: 2026-08-03
-Status: `in_progress`
+Status: `ready_for_independent_audit`
 Input revision: `4c0f623403773c00669ef53782785d750839de0a`
 Rejected candidate: `33a377758f12d02a34e50c2f4f6d2aa760cf678b`
 Audit marker: `019fc4b1-57f1-7f10-a7e0-92a9322f4bee`
@@ -40,5 +40,16 @@ Results:
 - broader affected surface: 113 tests, 1,572 assertions, PASS;
 - Pint and diff check: PASS.
 
-Candidate SHA and final artifact/browser hashes are intentionally deferred
-until the runtime checkpoint is committed and exact-revision acceptance runs.
+## Final evidence map
+
+- C2.1-C2.4 implementation, negative codes, hashes and rollback:
+  `C2.1-C2.4-CORRECTION.md`;
+- exact-candidate full/static/cross-host/browser/governance retest:
+  `C2.5-INTEGRATED-RETEST.md`;
+- exact preview screenshots: `browser/`.
+
+Exact product/docs candidate:
+`39f1e3f6e97d7f8138e892b5884ba194cc889a7f`.
+
+This executor contour is ready for an independent reverse-outcome audit. It
+does not self-accept Goal 2 or authorize Goal 3.

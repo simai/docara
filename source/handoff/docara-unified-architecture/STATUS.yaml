@@ -6,8 +6,8 @@ state: goal2_ready_for_independent_audit
 current_stage: docara.stage.g2.design_registry_preview
 current_batch: docara.batch.g2.design_registry_preview
 next_action: independent_goal2_reverse_outcome_audit
-candidate_revision: 33a377758f12d02a34e50c2f4f6d2aa760cf678b
-evidence: source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md
+candidate_revision: 39f1e3f6e97d7f8138e892b5884ba194cc889a7f
+evidence: source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md
 goal1_candidate_revision: 44acc1ff91233fa78140222fcb0589bf55b65ca0
 goal1_sf5_adapter_revision: b3cdff87563ff78e7eddf044048a4b298fc69036
 goal1_cross_host_html_sha256: 7133c5dcd44aa85f351a85c61c280aa883abd5cdb3c91206168ad63ada497b38
@@ -37,7 +37,7 @@ readiness:
   local_release_readiness: accepted_corrected_exact_candidate
   r2_production_dossier: pass_disposable_corrected
   goal1_portable_smart_runtime: independently_accepted_pass_with_notes
-  goal2_design_registry_preview: ready_for_independent_audit
+  goal2_design_registry_preview: correction_complete_ready_for_independent_audit
   goal3_developer_sdk: unstarted_not_authorized
   release: blocked_explicit_user_action
   production: blocked_explicit_user_approval_and_live_preflight

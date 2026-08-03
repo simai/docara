@@ -2,25 +2,24 @@
 
 Current state: `goal2_ready_for_independent_audit`
 
-Current candidate: `33a377758f12d02a34e50c2f4f6d2aa760cf678b`
+Current candidate: `39f1e3f6e97d7f8138e892b5884ba194cc889a7f`
 
-Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2-design-registry-preview/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md`
 
 ## Goal 2 current result
 
-Goal 1 was independently accepted with `PASS_WITH_NOTES`. Goal 2 G2.0-G2.6 is
-implemented on candidate `33a3777…`: one deterministic DesignRegistry owns
-package/project layouts, views, sections and blocks; composition is descriptor
-driven; a project `acme.*` fixture needs no engine edit; bounded preview and
-PHP-only watch reuse the production PortableSiteBuilder path and publish only
-non-accepted isolated output.
+Goal 1 was independently accepted with `PASS_WITH_NOTES`. The first Goal 2
+candidate `33a3777…` was rejected. Candidate `39f1e3f…` keeps its accepted one
+DesignRegistry and production path, but gives preview receipt a typed purpose,
+publishes standalone local assets, watches selected project/package
+dependencies, and validates `oneOf` plus descriptor-owned View Tree contracts
+before registration.
 
-Full PHPUnit passes 394 tests / 7,612 assertions. Two full builds are identical
+Full PHPUnit passes 398 tests / 7,640 assertions. Two full builds are identical
 at 103 routes / 305 files / 206 HTML; single Alert preserves ledger
-`a4045e03…`, static verification reports 21,421 references and broken=0, and
-preview full-page HTML equals production Alert hash `a948b134…`. Browser
-desktop/mobile/light/dark/reduced-motion/LTR/RTL-layout smoke has no console
-errors/warnings or overflow. Exact evidence is the current index above.
+`40d6da7d…`, static verification reports 21,421 references and broken=0.
+Exact preview HTTP browser checks have no console errors/warnings or overflow.
+Exact evidence is the current index above.
 
 Goal 2 is `ready_for_independent_audit`, not accepted. Goal 3 remains
 unstarted and unauthorized.

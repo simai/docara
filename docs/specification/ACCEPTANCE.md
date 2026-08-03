@@ -1,7 +1,7 @@
 # Приёмка единой архитектуры Docara
 
 Текущий статус: Goal 1 и Goal 2 независимо приняты. Goal 3 implementation
-завершена на exact source `fface98a…` и ожидает независимого audit.
+завершена на exact source `8cd695f…` и ожидает независимого audit.
 Исторический R2 `PASS_DISPOSABLE_CORRECTED` и unpublished release artifact
 остаются parked baseline, а не текущим архитектурным кандидатом. Tag, release,
 live cutover и production acceptance требуют отдельного решения и не заявлены.

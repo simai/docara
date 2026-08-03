@@ -1,7 +1,7 @@
 # Дорожная карта упрощения Docara
 
 Текущий статус архитектурного roadmap: Goal 1 и Goal 2 независимо приняты;
-Goal 3 implementation завершена на exact source `fface98a…` и ожидает
+Goal 3 implementation завершена на exact source `8cd695f…` и ожидает
 независимого reverse-outcome audit. Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не

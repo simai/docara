@@ -2,7 +2,7 @@
 
 Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `fface98a8d5fc572b0f2b30e58049981fa9fad3a`
+Current candidate: `8cd695ffdef2adf3fa4475b4d0d3e9ba948da560`
 
 Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md`
 
@@ -11,8 +11,15 @@ Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-developer-ai
 Goal 2-C was independently accepted with `PASS_WITH_NOTES`. G3.0-G3.6 now add
 stable discovery, hash-bound project scaffold, validation/test, optional visual
 QA and optional local MCP over the accepted production services. Exact product
-source `fface98a…` has reproducible package/consumer/full-single/static/browser
+source `8cd695f…` has reproducible package/consumer/full-single/static/browser
 evidence. Goal 3 is implementation-complete but remains audit pending.
+
+The exact unpublished audit ZIP is `e63d2edb…` with manifest `9a9b74a0…`
+(731 files). Two fresh dist consumers, including deliberately different content
+mtimes, produce the same 168-file public tree `65fa3e2e…`; single Alert rebuild
+preserves it. The repository documentation site has 104 routes / 307 files /
+208 HTML at ledger `a70741dd…`, with 21,842 references and broken=0. Full
+PHPUnit is 420 tests / 7,808 assertions. Release and live gates remain closed.
 
 ## Accepted Goal 2 result
 

@@ -44,5 +44,5 @@
   "known_deviations": ["Independent Goal 3 reverse-outcome audit is pending."],
   "deletion_gates": [],
   "status": "implementation_complete_audit_pending",
-  "mapped_revision": "fface98a8d5fc572b0f2b30e58049981fa9fad3a"
+  "mapped_revision": "8cd695ffdef2adf3fa4475b4d0d3e9ba948da560"
 }

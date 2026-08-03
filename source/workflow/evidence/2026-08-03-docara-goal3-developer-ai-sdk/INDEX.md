@@ -21,6 +21,6 @@ self-accept Goal 3 and cannot authorize release-review, merge, tag or deploy.
 | G3.5 | `G3.5-OPTIONAL-MCP.md` | PASS |
 | G3.6 | `G3.6-INTEGRATED-ACCEPTANCE.md` | PASS; independent audit pending |
 
-Exact implementation source: `fface98a8d5fc572b0f2b30e58049981fa9fad3a`.
+Exact implementation source: `8cd695ffdef2adf3fa4475b4d0d3e9ba948da560`.
 The later handoff commit changes governance/evidence only. No release, tag,
 merge, push or deployment was performed.

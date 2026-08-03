@@ -26,7 +26,7 @@ Graph goal: `docara.goal.unified`
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.g3.developer_sdk`;
 - batch: `docara.batch.g3.developer_sdk`;
-- candidate: `fface98a8d5fc572b0f2b30e58049981fa9fad3a`;
+- candidate: `8cd695ffdef2adf3fa4475b4d0d3e9ba948da560`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
 - next action: `independent_goal3_reverse_outcome_audit`;
 - Goal 1 and Goal 2 are independently accepted; release review remains unauthorized.

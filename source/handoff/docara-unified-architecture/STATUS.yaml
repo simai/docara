@@ -6,7 +6,7 @@ state: goal3_ready_for_independent_audit
 current_stage: docara.stage.g3.developer_sdk
 current_batch: docara.batch.g3.developer_sdk
 next_action: independent_goal3_reverse_outcome_audit
-candidate_revision: fface98a8d5fc572b0f2b30e58049981fa9fad3a
+candidate_revision: 8cd695ffdef2adf3fa4475b4d0d3e9ba948da560
 evidence: source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md
 goal1_candidate_revision: 44acc1ff91233fa78140222fcb0589bf55b65ca0
 goal1_sf5_adapter_revision: b3cdff87563ff78e7eddf044048a4b298fc69036

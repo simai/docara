@@ -86,10 +86,10 @@ release, merge, tag, deploy or self-acceptance.
 
 ## Exact candidate
 
-- product/docs/test source: `fface98a8d5fc572b0f2b30e58049981fa9fad3a`;
-- deterministic audit ZIP: `f01c612a1abe21a4c658528210d621a18b926259643429be643f8962f49d2ea5`;
-- release-manifest SHA-256: `b849d11b6140e0ea6d19a9fa9a25f1623c1cc5f10e0cace1728170647831d085`;
-- exact Composer lock SHA-256: `eece48daca67e2b5cefa645b8a310bbc04da2cbecbcb3ab8060dd44381d65847`;
+- product/docs/test source: `8cd695ffdef2adf3fa4475b4d0d3e9ba948da560`;
+- deterministic audit ZIP: `e63d2edb1040c22504bc8b486abfbccdde9095c53f16d825afb58dec1b27ffb8`;
+- release-manifest SHA-256: `9a9b74a03addd985711f9c982d959fdd2a1965deeeff225d87240d70b6753c83`;
+- exact Composer lock SHA-256: `493ce1b7ad5116a6f76d1c6330e3fab03584aa94b9f040dcb2fc0605e0d1b26e`;
 - planned package value `2.0.0-alpha3` is an unpublished audit parameter, not a release claim;
 - next action: `independent_goal3_reverse_outcome_audit`.
 

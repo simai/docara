@@ -56,8 +56,8 @@ repository Goal 3 plus raw owner sources above remain authoritative.
 | --- | --- | --- | --- |
 | C3.0 | freeze correction and preserve RED exploit/diagnostic baselines | exact disposable reproductions and external tree ledgers | complete |
 | C3.1 | one generated-root containment guard used by preview, QA, scaffold and MCP write surfaces | focused security matrix and zero external diff | complete |
-| C3.2 | one exception-to-operation-result/diagnostic mapping for CLI human/JSON and MCP | real-command golden parity and schema negatives | in progress |
-| C3.3 | production-bound Smart/region/layout QA | 24 browser scenarios, reports and screenshots | pending |
+| C3.2 | one exception-to-operation-result/diagnostic mapping for CLI human/JSON and MCP | real-command golden parity and schema negatives | complete |
+| C3.3 | production-bound Smart/region/layout QA | 24 browser scenarios, reports and screenshots | in progress |
 | C3.4 | integrated deterministic build/package/consumer regression | full/focused/static/cross-host/package/two consumers | pending |
 | C3.5 | exact candidate governance and handoff | graph/context/docs checks, clean commits/worktree | pending |
 
@@ -80,11 +80,12 @@ implementation defects must be corrected inside this workflow.
 
 ## Current state
 
-- current batch: C3.2;
+- current batch: C3.3;
 - C3.1 implementation boundary: `496df2cab420a5f93560ea376ae44417368d1ba4`;
-- remaining batches: C3.2–C3.5;
-- next safe action: centralize exception-to-diagnostic conversion and bind real
-  CLI human/JSON and MCP failures to the same complete operation result;
+- C3.2 implementation boundary: `ea6cead5cbb8a1d693aa1debcf6223633b5c323f`;
+- remaining batches: C3.3–C3.5;
+- next safe action: generate and execute exact Smart, region and layout QA plans
+  through the accepted PreviewKernel/PageBuilder output;
 - do not complete until the new exact candidate passes independent-ready gates.
 
 ## Kaizen

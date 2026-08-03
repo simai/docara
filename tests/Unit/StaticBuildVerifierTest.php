@@ -974,6 +974,7 @@ final class StaticBuildVerifierTest extends TestCase
                     ?? $configuration['locale']
                     ?? 'en';
                 $manifest['build'] = [
+                    'purpose' => 'production',
                     'documentation_version' => $configuration['documentation_version'] ?? 'current',
                     'locale' => $locale,
                     'engine' => $metadata->package(),

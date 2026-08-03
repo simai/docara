@@ -18,6 +18,7 @@ final readonly class PreviewArtifact
         public array $assets,
         public array $dependencies,
         public array $provenance,
+        public string $publicRoot,
     ) {}
 
     public function sha256(): string

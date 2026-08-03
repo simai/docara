@@ -16,6 +16,7 @@ use Simai\Docara\Preview\PreviewTarget;
 use Simai\Docara\Preview\PreviewWatcher;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
+use Symfony\Component\Process\Process;
 use Tests\TestCase;
 
 final class PreviewKernelTest extends TestCase
@@ -50,7 +51,25 @@ final class PreviewKernelTest extends TestCase
         self::assertSame('portable_site_builder', $smart->provenance['runtime']);
         self::assertSame($page->provenance['plan_hash'], $smart->provenance['plan_hash']);
         self::assertFileExists($this->tmpPath('build_preview-cache/.docara/resolved-page-plans.json'));
-        self::assertFileExists($this->tmpPath('build_preview-cache/.docara-preview-cache.json'));
+        $receipt = json_decode(
+            (string) file_get_contents($this->tmpPath('build_preview-cache/.docara/resolved-page-plans.json')),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        self::assertSame('preview', $receipt['build']['purpose']);
+        self::assertFileDoesNotExist($this->tmpPath('build_preview-cache/.docara-preview-cache.json'));
+        $verification = new Process([
+            PHP_BINARY,
+            dirname(__DIR__, 2) . '/scripts/verify-static-build.php',
+            $this->tmpPath('build_preview-cache'),
+        ]);
+        $verification->run();
+        self::assertSame(1, $verification->getExitCode());
+        self::assertStringContainsString(
+            'PREVIEW_BUILD_PURPOSE_FORBIDDEN',
+            $verification->getOutput() . $verification->getErrorOutput(),
+        );
 
         $result = (new PreviewShell(new Filesystem))->publish($this->tmp, $smart);
         self::assertFalse($result['accepted_build_receipt']);
@@ -58,6 +77,18 @@ final class PreviewKernelTest extends TestCase
         self::assertSame($page->html, $smart->pageHtml);
         self::assertSame($smart->pageHtml, (string) file_get_contents($this->tmpPath('.docara-preview/output/smart/index.html')));
         self::assertFileDoesNotExist($this->tmpPath('.docara-preview/output/smart/.docara/resolved-page-plans.json'));
+        foreach ([
+            'ru/_docara/declarative-shell.js',
+            'ru/_docara/smart/navigation.js',
+            'ru/_docara/smart/preferences.js',
+            'ru/_docara/framework/smart/alert/js/alert.js',
+        ] as $asset) {
+            $published = $this->tmpPath('.docara-preview/output/smart/' . $asset);
+            $production = $this->tmpPath('build_preview-cache/' . $asset);
+            self::assertFileExists($published);
+            self::assertSame(hash_file('sha256', $production), hash_file('sha256', $published));
+        }
+        self::assertGreaterThan(0, $result['published_files']['count']);
 
         $application = new Application;
         $application->add((new PreviewCommand($this->kernel, new PreviewShell(new Filesystem)))->setBase($this->tmp));
@@ -110,8 +141,26 @@ final class PreviewKernelTest extends TestCase
         $artifact = $this->kernel->render($this->tmp, '/ru/components/alert/', PreviewTarget::Region, 'main');
         self::assertContains('content/ru/components/alert.md', $artifact->dependencies);
         self::assertContains('content/ru/lang.json', $artifact->dependencies);
+        self::assertContains('@package-tree:resources/smart/ui.alert', $artifact->dependencies);
+        self::assertNotContains('@project-tree:smart/project.notice', $artifact->dependencies);
         $watcher = new PreviewWatcher;
         $watcher->prime($this->tmp, $artifact);
+        $this->filesystem->append($this->tmpPath('smart/project.notice/template/default.php'), "\n");
+        $unrelatedCalls = 0;
+        $unrelated = $watcher->run(
+            $this->tmp,
+            $artifact,
+            function () use (&$unrelatedCalls, $artifact) {
+                $unrelatedCalls++;
+
+                return $artifact;
+            },
+            50,
+            1,
+        );
+        self::assertSame(0, $unrelatedCalls);
+        self::assertSame([], $unrelated);
+
         $this->filesystem->append($this->tmpPath('content/ru/components/alert.md'), "\n");
         $calls = 0;
         $rebuilt = $watcher->run(
@@ -129,6 +178,32 @@ final class PreviewKernelTest extends TestCase
         self::assertSame(1, $calls);
         self::assertCount(1, $rebuilt);
         self::assertSame('/ru/components/alert/', $rebuilt[0]->page);
+
+        $packageRoot = $this->tmpPath('package-fixture');
+        $this->filesystem->copyDirectory(
+            dirname(__DIR__, 2) . '/resources/smart/ui.alert',
+            $packageRoot . '/resources/smart/ui.alert',
+        );
+        $packageWatcher = new PreviewWatcher($packageRoot);
+        $packageWatcher->prime($this->tmp, $artifact);
+        $this->filesystem->append($packageRoot . '/resources/smart/ui.alert/templates/default.php', "\n");
+        self::assertCount(1, $packageWatcher->run($this->tmp, $artifact, fn () => $artifact, 50, 1));
+    }
+
+    #[Test]
+    public function selected_project_smart_tree_detects_edit_create_and_delete_once(): void
+    {
+        $artifact = $this->kernel->render($this->tmp, '/ru/', PreviewTarget::Page);
+        self::assertContains('@project-tree:smart/project.notice', $artifact->dependencies);
+        $watcher = new PreviewWatcher;
+        $watcher->prime($this->tmp, $artifact);
+        $created = $this->tmpPath('smart/project.notice/assets/runtime-created.css');
+        $this->filesystem->put($created, '.fixture{}');
+        self::assertCount(1, $watcher->run($this->tmp, $artifact, fn () => $artifact, 50, 1));
+
+        $watcher->prime($this->tmp, $artifact);
+        unlink($created);
+        self::assertCount(1, $watcher->run($this->tmp, $artifact, fn () => $artifact, 50, 1));
     }
 
     private function body(string $html): string

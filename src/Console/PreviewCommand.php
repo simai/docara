@@ -76,7 +76,13 @@ final class PreviewCommand extends Command
                     (int) $this->input->getOption('interval'),
                     (int) $this->input->getOption('max-cycles'),
                 );
-                $result['watch'] = ['cycles_rebuilt' => count($rebuilt), 'target_only' => true];
+                $targetOnly = ($artifact->provenance['dependency_scope'] ?? null) === 'selected_target';
+                foreach ($rebuilt as $rebuiltArtifact) {
+                    $targetOnly = $targetOnly
+                        && $rebuiltArtifact->page === $artifact->page
+                        && ($rebuiltArtifact->provenance['build_mode'] ?? null) === 'single_page';
+                }
+                $result['watch'] = ['cycles_rebuilt' => count($rebuilt), 'target_only' => $targetOnly];
             }
         } catch (Throwable $exception) {
             if ((bool) $this->input->getOption('json')) {

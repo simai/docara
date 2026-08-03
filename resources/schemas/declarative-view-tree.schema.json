@@ -54,7 +54,7 @@
             "kind": {"const": "region"},
             "region": {
               "type": "string",
-              "enum": ["header", "sidebar", "main", "outline", "footer"]
+              "pattern": "^[a-z][a-z0-9_.-]+$"
             },
             "tag": {
               "type": "string",

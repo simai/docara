@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Design\Registry;
 
+use Simai\Docara\Declarative\Rendering\ViewTreeInspector;
 use Simai\Docara\Design\Artifact\DesignArtifactDescriptor;
 use Simai\Docara\Design\Artifact\DesignArtifactKind;
 use Simai\Docara\Design\Provider\BuiltinDesignProvider;
@@ -62,6 +63,7 @@ final class DesignRegistry
         }
         ksort($this->artifacts, SORT_STRING);
         ksort($this->namespaceOwners, SORT_STRING);
+        $this->assertContextualContracts();
     }
 
     public static function bundled(?string $projectRoot = null, ?string $projectNamespace = null): self
@@ -139,5 +141,89 @@ final class DesignRegistry
     private function key(DesignArtifactKind $kind, string $id): string
     {
         return $kind->value . ':' . $id;
+    }
+
+    private function assertContextualContracts(): void
+    {
+        $inspector = new ViewTreeInspector;
+        $views = [];
+        foreach ($this->all(DesignArtifactKind::View) as $view) {
+            $tree = $view->definition['tree'] ?? null;
+            if (! is_array($tree)) {
+                throw new PortableConfigurationException(
+                    'DESIGN_VIEW_TREE_INVALID',
+                    "Design view [{$view->id}] has no valid View Tree.",
+                );
+            }
+            $views[$view->id] = $inspector->inspect($tree);
+        }
+
+        foreach ($this->all(DesignArtifactKind::Layout) as $layout) {
+            $viewId = $layout->definition['view'] ?? null;
+            $regions = $layout->definition['regions'] ?? null;
+            if (! is_string($viewId) || ! isset($views[$viewId]) || ! is_array($regions)) {
+                throw new PortableConfigurationException(
+                    'DESIGN_LAYOUT_VIEW_INVALID',
+                    "Design layout [{$layout->id}] does not resolve one registered View Tree.",
+                );
+            }
+            $declared = array_keys($regions);
+            $rendered = $views[$viewId]['regions'];
+            sort($declared, SORT_STRING);
+            sort($rendered, SORT_STRING);
+            if ($declared !== $rendered) {
+                throw new PortableConfigurationException(
+                    'DESIGN_LAYOUT_REGION_CONTRACT_INVALID',
+                    "Design layout [{$layout->id}] regions do not match View Tree [$viewId].",
+                );
+            }
+        }
+
+        foreach ($this->all(DesignArtifactKind::Section) as $section) {
+            $viewId = $section->definition['view'] ?? null;
+            $slots = $section->definition['slots'] ?? null;
+            if (! is_string($viewId) || ! isset($views[$viewId]) || ! is_array($slots)) {
+                throw new PortableConfigurationException(
+                    'DESIGN_SECTION_VIEW_INVALID',
+                    "Design section [{$section->id}] does not resolve one registered View Tree.",
+                );
+            }
+            $declared = array_values($slots);
+            $rendered = $views[$viewId]['slots'];
+            sort($declared, SORT_STRING);
+            sort($rendered, SORT_STRING);
+            if ($declared !== $rendered) {
+                throw new PortableConfigurationException(
+                    'DESIGN_SECTION_SLOT_CONTRACT_INVALID',
+                    "Design section [{$section->id}] slots do not match View Tree [$viewId].",
+                );
+            }
+            $allowedRegions = $section->definition['allowed_regions'] ?? [];
+            $type = $section->definition['type'] ?? null;
+            foreach ($allowedRegions as $region) {
+                $compatible = false;
+                foreach ($this->all(DesignArtifactKind::Layout) as $layout) {
+                    $contract = $layout->definition['regions'][$region] ?? null;
+                    if (is_array($contract) && in_array($type, $contract['section_types'] ?? [], true)) {
+                        $compatible = true;
+                        break;
+                    }
+                }
+                if (! $compatible) {
+                    throw new PortableConfigurationException(
+                        'DESIGN_SECTION_REGION_CONTRACT_INVALID',
+                        "Design section [{$section->id}] is not compatible with registered region [$region].",
+                    );
+                }
+            }
+            foreach ($section->definition['allowed_blocks'] ?? [] as $blockId) {
+                if (! isset($this->artifacts[$this->key(DesignArtifactKind::Block, (string) $blockId)])) {
+                    throw new PortableConfigurationException(
+                        'DESIGN_SECTION_BLOCK_CONTRACT_INVALID',
+                        "Design section [{$section->id}] references unknown block [$blockId].",
+                    );
+                }
+            }
+        }
     }
 }

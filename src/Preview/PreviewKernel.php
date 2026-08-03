@@ -10,7 +10,9 @@ use DOMXPath;
 use JsonException;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\PortableSite\BuildPurpose;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
+use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class PreviewKernel
 {
@@ -30,11 +32,11 @@ final readonly class PreviewKernel
         $selector = $this->selector($target, $selector);
         $cache = $root . '/build_preview-cache';
         $receipt = $cache . '/.docara/resolved-page-plans.json';
+        $buildMode = is_file($receipt) ? 'single_page' : 'full_site';
         if (! is_file($receipt)) {
-            $this->builder->build($root, $cache);
-            $this->files->put($cache . '/.docara-preview-cache.json', '{"accepted_build_receipt":false,"purpose":"preview-cache"}');
+            $this->builder->build($root, $cache, purpose: BuildPurpose::Preview);
         } else {
-            $this->builder->build($root, $cache, $page);
+            $this->builder->build($root, $cache, $page, BuildPurpose::Preview);
         }
 
         $record = $this->record($receipt, $page);
@@ -67,14 +69,17 @@ final readonly class PreviewKernel
             $artifactHtml,
             $html,
             $assets,
-            $this->dependencies($root, $record),
+            $this->dependencies($root, $record, $html, $target, $selector),
             [
                 'runtime' => 'portable_site_builder',
                 'renderer_path' => 'markdown>typed-ir>registry>gateway>layout-composer>page-builder',
                 'production_output' => $output,
                 'plan_hash' => $record['declarative_pipeline']['plan_hash'] ?? null,
                 'source_kind' => $record['page_source_kind'] ?? null,
+                'build_mode' => $buildMode,
+                'dependency_scope' => 'selected_target',
             ],
+            $cache,
         );
     }
 
@@ -169,8 +174,13 @@ final readonly class PreviewKernel
     }
 
     /** @param array<string, mixed> $record @return list<string> */
-    private function dependencies(string $root, array $record): array
-    {
+    private function dependencies(
+        string $root,
+        array $record,
+        string $html,
+        PreviewTarget $target,
+        ?string $selector,
+    ): array {
         $dependencies = [];
         foreach ($record['input_chain']['trace'] ?? [] as $trace) {
             $source = is_array($trace) ? ($trace['source'] ?? null) : null;
@@ -187,38 +197,147 @@ final readonly class PreviewKernel
                 if (is_file($root . '/' . $lang)) {
                     $dependencies[$lang] = true;
                 }
-                $localeAssets = $localeRoot . '/assets';
-                if (is_dir($root . '/' . $localeAssets)) {
-                    $this->collectDirectoryDependencies($root, $localeAssets, $dependencies);
-                }
             }
         }
-        foreach (['design', 'smart', 'assets'] as $directory) {
-            $path = $root . '/' . $directory;
-            if (! is_dir($path) || is_link($path)) {
-                continue;
+
+        $this->collectDesignDependencies($root, $record, $dependencies);
+        $smartIds = $this->smartIds($root, $record, $html);
+        if ($target === PreviewTarget::Smart && is_string($selector)) {
+            $smartIds[] = $selector;
+        }
+        foreach (array_values(array_unique($smartIds)) as $smartId) {
+            $project = 'smart/' . $smartId;
+            $package = 'resources/smart/' . $smartId;
+            if (is_dir($root . '/' . $project)) {
+                $dependencies['@project-tree:' . $project] = true;
+            } elseif (is_dir(dirname(__DIR__, 2) . '/' . $package)) {
+                $dependencies['@package-tree:' . $package] = true;
             }
-            $this->collectDirectoryDependencies($root, $directory, $dependencies);
+            $frameworkManifest = 'resources/framework/manifests/' . str_replace('.', '-', $smartId) . '.json';
+            if (is_file(dirname(__DIR__, 2) . '/' . $frameworkManifest)) {
+                $dependencies['@package-file:' . $frameworkManifest] = true;
+            }
+        }
+
+        foreach (['resources/publisher', 'resources/schemas'] as $packageTree) {
+            $dependencies['@package-tree:' . $packageTree] = true;
+        }
+        foreach (['src/Declarative', 'src/Design', 'src/PortableSite', 'src/Preview', 'src/Smart'] as $packageTree) {
+            $dependencies['@package-tree:' . $packageTree] = true;
+        }
+        foreach (['declarative-shell.css', 'declarative-shell.js', 'search.js'] as $runtimeFile) {
+            if (str_contains($html, '/' . $runtimeFile)) {
+                $dependencies['@package-file:resources/portable/' . $runtimeFile] = true;
+            }
+        }
+        if (str_contains($html, '/_docara/framework/')) {
+            $dependencies['@package-tree:resources/framework/assets'] = true;
+            $dependencies['@package-file:resources/framework/runtime-lock.json'] = true;
         }
         ksort($dependencies, SORT_STRING);
 
         return array_keys($dependencies);
     }
 
-    /** @param array<string, bool> $dependencies */
-    private function collectDirectoryDependencies(string $root, string $relative, array &$dependencies): void
+    /** @param array<string, bool> $dependencies @param array<string, mixed> $record */
+    private function collectDesignDependencies(string $root, array $record, array &$dependencies): void
     {
-        $path = $root . '/' . $relative;
-        if (is_link($path)) {
-            throw new PortableConfigurationException('PREVIEW_DEPENDENCY_PATH_INVALID', 'Preview dependency root cannot be a symlink.');
+        $configuration = $record['resolved_page_plan']['configuration'] ?? null;
+        $layout = is_array($configuration) ? ($configuration['layout'] ?? null) : null;
+        $layoutId = is_array($layout) ? ($layout['key'] ?? null) : null;
+        if (! is_string($layoutId)) {
+            return;
         }
-        foreach ($this->files->allFiles($path) as $file) {
-            $real = $file->getRealPath();
-            if ($real === false || is_link($real) || ! str_starts_with($real, $path . DIRECTORY_SEPARATOR)) {
-                throw new PortableConfigurationException('PREVIEW_DEPENDENCY_PATH_INVALID', 'Preview dependency escapes its project root.');
+        $layoutDefinition = $this->addDesignArtifact($root, 'layouts', $layoutId, $dependencies);
+        $this->addDesignArtifact($root, 'views', 'layout.' . $layoutId, $dependencies);
+        $sectionIds = [];
+        foreach (($layout['regions'] ?? []) as $region) {
+            foreach (is_array($region) ? ($region['sections'] ?? []) : [] as $section) {
+                if (is_array($section) && is_string($section['section'] ?? null)) {
+                    $sectionIds[$section['section']] = true;
+                }
             }
-            $dependencies[str_replace(DIRECTORY_SEPARATOR, '/', substr($real, strlen($root) + 1))] = true;
         }
+        if (is_array($layoutDefinition)) {
+            $documentSection = $layoutDefinition['document']['section'] ?? null;
+            if (is_string($documentSection)) {
+                $sectionIds[$documentSection] = true;
+            }
+            foreach ($layoutDefinition['regions'] ?? [] as $region) {
+                foreach (is_array($region) ? ($region['default_sections'] ?? []) : [] as $section) {
+                    if (is_array($section) && is_string($section['section'] ?? null)) {
+                        $sectionIds[$section['section']] = true;
+                    }
+                }
+            }
+        }
+        foreach (array_keys($sectionIds) as $sectionId) {
+            $section = $this->addDesignArtifact($root, 'sections', $sectionId, $dependencies);
+            $this->addDesignArtifact($root, 'views', 'section.' . $sectionId, $dependencies);
+            foreach (is_array($section) ? ($section['allowed_blocks'] ?? []) : [] as $blockId) {
+                if (is_string($blockId)) {
+                    $this->addDesignArtifact($root, 'blocks', $blockId, $dependencies);
+                }
+            }
+        }
+    }
+
+    /** @param array<string, bool> $dependencies @return array<string, mixed>|null */
+    private function addDesignArtifact(string $root, string $kind, string $id, array &$dependencies): ?array
+    {
+        foreach ([
+            ['owner' => 'project', 'relative' => 'design/' . $kind . '/' . $id . '.json', 'base' => $root],
+            ['owner' => 'package', 'relative' => 'resources/' . $kind . '/' . $id . '.json', 'base' => dirname(__DIR__, 2)],
+        ] as $candidate) {
+            $path = $candidate['base'] . '/' . $candidate['relative'];
+            if (! is_file($path) || is_link($path)) {
+                continue;
+            }
+            $key = $candidate['owner'] === 'project'
+                ? $candidate['relative']
+                : '@package-file:' . $candidate['relative'];
+            $dependencies[$key] = true;
+            $decoded = json_decode((string) file_get_contents($path), true);
+
+            return is_array($decoded) ? $decoded : null;
+        }
+
+        return null;
+    }
+
+    /** @param array<string, mixed> $record @return list<string> */
+    private function smartIds(string $root, array $record, string $html): array
+    {
+        preg_match_all('/\bdata-docara-smart="([a-z][a-z0-9_.-]+)"/', $html, $matches);
+        $ids = $matches[1] ?? [];
+        $registry = SmartRegistry::bundled();
+        foreach ($registry->keys() as $smartId) {
+            $definition = $registry->definition($smartId);
+            $tag = $definition->portableManifest['frontend']['tag'] ?? null;
+            if (! is_string($tag) && is_string($definition->root)) {
+                $manifestPath = $definition->root . '/' . ($definition->manifest['path'] ?? '');
+                $manifest = is_file($manifestPath)
+                    ? json_decode((string) file_get_contents($manifestPath), true)
+                    : null;
+                $tag = is_array($manifest) ? ($manifest['frontend']['tag'] ?? null) : null;
+            }
+            if (is_string($tag) && preg_match('/<' . preg_quote($tag, '/') . '\b/i', $html) === 1) {
+                $ids[] = $smartId;
+            }
+            $shortId = (string) preg_replace('/^.*\./', '', $smartId);
+            if (preg_match('/\bdata-docara-block="' . preg_quote($shortId, '/') . '"/', $html) === 1) {
+                $ids[] = $smartId;
+            }
+        }
+        $source = $record['page_path'] ?? null;
+        if (is_string($source) && $this->safeRelative($source) && is_file($root . '/' . $source)) {
+            preg_match_all('/^:::\s*([a-z][a-z0-9-]*\.[a-z][a-z0-9_.-]*)\b/m', (string) file_get_contents($root . '/' . $source), $sourceMatches);
+            array_push($ids, ...($sourceMatches[1] ?? []));
+        }
+        $ids = array_values(array_unique($ids));
+        sort($ids, SORT_STRING);
+
+        return $ids;
     }
 
     private function safeRelative(string $path): bool

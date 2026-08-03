@@ -1848,8 +1848,14 @@ if (is_link($manifestDirectory)
             }
             $deploymentBase = $configuredBase === '/' ? '/' : '/' . trim($configuredBase, '/') . '/';
             $manifestBuild = $manifest['build'] ?? null;
+            if (is_array($manifestBuild) && ($manifestBuild['purpose'] ?? null) === 'preview') {
+                throw new RuntimeException(
+                    '[PREVIEW_BUILD_PURPOSE_FORBIDDEN] Preview-purpose output cannot be accepted as a production static build.',
+                );
+            }
             if (! is_array($manifestBuild)
                 || ! docaraExactKeys($manifestBuild, [
+                    'purpose',
                     'locale',
                     'documentation_version',
                     'engine',
@@ -1864,6 +1870,9 @@ if (is_link($manifestDirectory)
                 throw new RuntimeException(
                     'Resolved build metadata is required and must contain the exact provenance contract.',
                 );
+            }
+            if (($manifestBuild['purpose'] ?? null) !== 'production') {
+                throw new RuntimeException('[BUILD_PURPOSE_UNSUPPORTED] Production build purpose is required.');
             }
             if (($manifestBuild['locale'] ?? null) !== $expectedBuildLocale
                 || ($manifestBuild['documentation_version'] ?? null) !== $expectedDocumentationVersion

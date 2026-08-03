@@ -27,6 +27,24 @@ final class JsonSchemaValidator
             return;
         }
 
+        if (is_array($schema['oneOf'] ?? null)) {
+            $matches = 0;
+            foreach ($schema['oneOf'] as $branch) {
+                if (! is_array($branch)) {
+                    throw new PortableConfigurationException(
+                        'SCHEMA_INVALID',
+                        "Schema [oneOf] branch at [$pointer] must be an object.",
+                    );
+                }
+                if ($this->matchesSchema($data, $branch, $pointer, $schemaName)) {
+                    $matches++;
+                }
+            }
+            if ($matches !== 1) {
+                $this->fail($pointer, 'must match exactly one supported schema branch');
+            }
+        }
+
         if (is_array($schema['allOf'] ?? null)) {
             foreach ($schema['allOf'] as $branch) {
                 if (! is_array($branch)) {

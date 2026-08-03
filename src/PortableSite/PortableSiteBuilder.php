@@ -69,8 +69,12 @@ final readonly class PortableSiteBuilder
     }
 
     /** @return Collection<string, array<string, mixed>> */
-    public function build(string $root, string $destination, ?string $onlyPage = null): Collection
-    {
+    public function build(
+        string $root,
+        string $destination,
+        ?string $onlyPage = null,
+        BuildPurpose $purpose = BuildPurpose::Production,
+    ): Collection {
         // Validate the caller's lexical root before realpath normalization so
         // link, link/ and link/. cannot hide the same symbolic-link root.
         $loader = new PortableConfigurationLoader($root);
@@ -171,6 +175,12 @@ final readonly class PortableSiteBuilder
             }
             $existingDiagnostics = $this->existingDiagnosticsByUrl($finalDestination);
             $existingBuild = $this->existingBuildProvenance($finalDestination);
+            if (($existingBuild['purpose'] ?? null) !== $purpose->value) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_BUILD_PURPOSE_CHANGED',
+                    "The existing build purpose does not match [{$purpose->value}]. Run a complete build for that purpose first.",
+                );
+            }
             if (! hash_equals(
                 (string) ($existingBuild['engine']['tree_sha256'] ?? ''),
                 (string) $engineRevision['tree_sha256'],
@@ -871,6 +881,7 @@ final readonly class PortableSiteBuilder
             $this->files->put($diagnosticPath, $this->prettyCanonicalJson([
                 'schema' => 'docara.resolved_page_plans.v1',
                 'build' => [
+                    'purpose' => $purpose->value,
                     'locale' => $buildLocale,
                     'documentation_version' => $documentationVersion,
                     'engine' => $engineRevision,

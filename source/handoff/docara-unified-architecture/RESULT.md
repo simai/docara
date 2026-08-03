@@ -28,6 +28,12 @@ routes / 307 files / 208 HTML at ledger `5dc4112d3a0424ca74fca1b73a27392532cfdff
 with 21,842 references and broken=0. Full PHPUnit is 437 tests / 7,966
 assertions. Release and live gates remain closed.
 
+The exact product candidate is deployed only to the local validation site
+`https://docara-new.test`: active tree `5dc4112d…`, 104/104 HTTPS route smoke,
+static broken=0 and representative Firefox browser smoke pass. The previous
+rc.3 tree remains as an exact rollback directory. This validation deployment
+does not accept Goal 3 and does not open release or `docara.test` gates.
+
 ### Rejected Goal 3 audit artifacts
 
 Sources `8cd695ff…`, `a027c9ab…`, `6f547810…` and `ea85222…`, ZIPs `e63d2edb…`,

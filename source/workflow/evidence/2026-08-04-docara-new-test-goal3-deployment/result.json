@@ -1,0 +1,84 @@
+{
+  "schema": "docara.local_deployment_evidence.v2",
+  "status": "pass",
+  "site": "https://docara-new.test",
+  "product_source_revision": "2a7237bc59265d976b6871cb637e7ae67ca2c00b",
+  "handoff_input_revision": "0a09faa6b42444ce0d2fa50c94a69395125b6e49",
+  "active_tree_sha256": "5dc4112d3a0424ca74fca1b73a27392532cfdff84011369a5c3b38984fc32e9d",
+  "previous_tree_sha256": "425da363fc51d33d2c5b42577980f4ca4603b83814440dbfb06fe419b4cade46",
+  "active_files": 307,
+  "html_files": 208,
+  "routes": {
+    "checked": 104,
+    "passed": 104,
+    "failed": 0
+  },
+  "static": {
+    "references": 21842,
+    "broken": 0
+  },
+  "http": {
+    "https_status": 200,
+    "protocol": "HTTP/2",
+    "http_redirect_status": 301
+  },
+  "build": {
+    "clean_clone": true,
+    "runs": 2,
+    "byte_identical": true,
+    "routes": 104,
+    "files": 307
+  },
+  "browser": {
+    "engine": "Firefox via Playwright CLI",
+    "pages": [
+      "/ru/",
+      "/ru/components/alert/"
+    ],
+    "viewports": [
+      "1440x1000",
+      "390x844"
+    ],
+    "interactions": [
+      "search",
+      "settings",
+      "escape",
+      "tabs",
+      "copy"
+    ],
+    "page_errors": 0,
+    "console_errors": 0,
+    "console_warnings": 0,
+    "horizontal_overflow": 0,
+    "informational_highlight_logs": 2
+  },
+  "cutover": {
+    "preflight": "pass",
+    "atomic_rename": "pass",
+    "caddy_reload": false,
+    "first_attempt_rolled_back": true,
+    "first_attempt_reason": "Chromium external jsDelivr QUIC/socket errors",
+    "first_rollback_exact": true
+  },
+  "rollback": {
+    "available": true,
+    "backup_name": ".docara-new.test-backup-before-goal3-2a7237b-20260804",
+    "backup_tree_sha256": "425da363fc51d33d2c5b42577980f4ca4603b83814440dbfb06fe419b4cade46",
+    "backup_files": 305
+  },
+  "untouched": [
+    "/Users/rim/Sites/docara.test",
+    "Caddy configuration",
+    "Caddy process",
+    "external repositories",
+    "existing rc.3 backup"
+  ],
+  "nonclaims": [
+    "Goal 3 independent acceptance",
+    "merge",
+    "push",
+    "tag",
+    "release",
+    "production deployment"
+  ]
+}

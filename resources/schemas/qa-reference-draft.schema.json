@@ -1,13 +1,12 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://docara.local/schemas/qa-reference.schema.json",
+  "$id": "https://docara.local/schemas/qa-reference-draft.schema.json",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schema", "reference_id", "source_plan_id", "subject", "target", "artifact_sha256", "page_html_sha256", "scenarios"],
+  "required": ["schema", "draft_plan_id", "subject", "target", "artifact_sha256", "page_html_sha256", "scenarios"],
   "properties": {
-    "schema": {"const": "docara.qa_reference.v2"},
-    "reference_id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
-    "source_plan_id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "schema": {"const": "docara.qa_reference_draft.v1"},
+    "draft_plan_id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "subject": {"type": "string", "minLength": 1},
     "target": {"$ref": "qa-target.schema.json"},
     "artifact_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},

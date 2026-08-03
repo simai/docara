@@ -278,7 +278,12 @@ Optional `McpAdapter` делегирует `SdkService` и не владеет r
 renderer или composition. MCP process фиксирует project root при запуске, по
 умолчанию запрещает apply и не входит в normal consumer/build dependency graph.
 QA plan использует isolated output существующего `PreviewKernel`; Node и browser
-tooling остаются optional development surface.
+tooling остаются optional development surface. Visual reference проходит
+двухфазную фиксацию: PHP создаёт immutable draft plan, browser записывает
+reference draft, затем PHP валидирует ordered scenario matrix и реальные PNG,
+вычисляет identity полного reference manifest и выпускает новый immutable
+finalized plan. Только finalized plan может породить report или пройти
+verification; browser JSON не является самостоятельным trusted root.
 
 ## 14. Связь с Larena
 

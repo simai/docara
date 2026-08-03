@@ -5,7 +5,7 @@
   "additionalProperties": false,
   "required": ["schema", "plan_id", "artifact_sha256", "target", "reference", "scenarios"],
   "properties": {
-    "schema": {"const": "docara.qa_report.v1"},
+    "schema": {"const": "docara.qa_report.v2"},
     "plan_id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "artifact_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "target": {"$ref": "qa-target.schema.json"},

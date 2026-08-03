@@ -23,4 +23,10 @@ final class QaIdentity
 
         return hash('sha256', CanonicalJson::encode($reference));
     }
+
+    /** @param array<string, mixed> $reference */
+    public static function referenceManifestSha256(array $reference): string
+    {
+        return hash('sha256', CanonicalJson::encode($reference));
+    }
 }

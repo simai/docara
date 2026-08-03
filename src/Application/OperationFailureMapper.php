@@ -57,7 +57,7 @@ final readonly class OperationFailureMapper
     /** @param array<string, mixed> $arguments */
     public function subject(string $operation, array $arguments): ?string
     {
-        if (in_array($operation, ['scaffold.apply', 'qa.verify'], true)) {
+        if (in_array($operation, ['scaffold.apply', 'qa.finalize_reference', 'qa.verify'], true)) {
             return $this->scalar($arguments['plan_id'] ?? null) ?? 'plan';
         }
         $kind = $this->scalar($arguments['kind'] ?? null);

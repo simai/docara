@@ -57,7 +57,11 @@ abstract class ApplicationCommand extends Command
             return is_string($this->input->getOption('apply')) ? 'scaffold.apply' : 'scaffold.plan';
         }
         if ($command === 'qa') {
-            return is_string($this->input->getOption('verify')) ? 'qa.verify' : 'qa.plan';
+            if (is_string($this->input->getOption('verify'))) {
+                return 'qa.verify';
+            }
+
+            return is_string($this->input->getOption('finalize-reference')) ? 'qa.finalize_reference' : 'qa.plan';
         }
 
         return $command;
@@ -67,11 +71,11 @@ abstract class ApplicationCommand extends Command
     private function operationArguments(): array
     {
         $arguments = $this->input->getArguments();
-        foreach (['page', 'apply', 'verify'] as $option) {
+        foreach (['page', 'apply', 'verify', 'finalize-reference'] as $option) {
             if ($this->input->hasOption($option)) {
                 $value = $this->input->getOption($option);
                 if ($value !== null && $value !== false) {
-                    $arguments[$option === 'apply' || $option === 'verify' ? 'plan_id' : $option] = $value;
+                    $arguments[in_array($option, ['apply', 'verify', 'finalize-reference'], true) ? 'plan_id' : $option] = $value;
                 }
             }
         }

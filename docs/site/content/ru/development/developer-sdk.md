@@ -61,19 +61,22 @@ docara qa smart project.notice-card \
 ```
 
 Команда сначала публикует isolated production-path preview, затем создаёт
-hash-bound план для desktop/mobile, light/dark и LTR/RTL. План явно фиксирует
-проверяемую поверхность и locator: сам Smart, выбранный region или весь layout.
-Browser runner остаётся необязательным development-инструментом. Сначала он
-записывает production reference, привязанный к target HTML и полной странице,
-пересчитывает content-addressed `plan_id` и `reference_id`, а при приёмке сам
-сверяет байты candidate/reference PNG. Поле отчёта с числом отличающихся
-пикселей не является самостоятельным доказательством.
-затем отдельно снимает target и сравнивает пиксели с этим reference. Повторный
-снимок текущего frame считается только stability check и не заменяет visual
-diff. Report принимается только при совпадении plan, target, artifact и
-reference hashes, полном наборе screenshots и нулевых a11y, console, overflow
-и visual-diff дефектах. Обычные `init`, `build` и `verify-static` остаются
-PHP-only и не требуют Node.js.
+hash-bound draft-план для desktop/mobile, light/dark и LTR/RTL. План явно
+фиксирует проверяемую поверхность и locator: сам Smart, выбранный region или
+весь layout. Browser runner остаётся необязательным development-инструментом и
+сначала записывает reference draft. Затем PHP-команда
+`docara qa --finalize-reference=<draft-plan-id>` проверяет все PNG и создаёт
+новый immutable finalized plan. Его `reference_id` охватывает полный manifest:
+target, страницу, artifact, упорядоченные scenario ID, screenshot paths и
+SHA-256 каждого изображения.
+
+Только finalized plan передаётся browser runner для сравнения и команде
+`docara qa --verify=<finalized-plan-id>`. Verification повторно вычисляет
+полную identity и manifest seal, проверяет реальные candidate/reference bytes
+и не доверяет одному полю `visual_diff_pixels=0`. Report принимается только
+при полном наборе screenshots и нулевых a11y, console, overflow и visual-diff
+дефектах. Обычные `init`, `build` и `verify-static` остаются PHP-only и не
+требуют Node.js.
 
 Для `test layout` и `qa layout` указанный route обязан фактически выбирать
 этот layout. Несовпадение останавливается кодом

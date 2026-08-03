@@ -171,6 +171,10 @@ PASS ставится только по воспроизводимому evidenc
       column; QA verifier пересчитывает canonical plan/reference identities,
       сверяет immutable preview bytes и самостоятельно сравнивает
       candidate/reference PNG.
+- [x] Finalized visual reference привязан к immutable plan через полный
+      content-addressed manifest: ordered scenario IDs, screenshot paths и
+      каждый screenshot SHA-256; согласованная подмена reference/candidate/
+      report под старым plan ID fail-closed.
 - [x] Optional MCP делегирует те же services, не принимает внешний root/path и
       требует отдельную process capability плюс exact plan для apply.
 - [x] Goal 3 exact candidate прошёл executor-owned полную regression/package/

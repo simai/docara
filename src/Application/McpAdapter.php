@@ -83,7 +83,7 @@ final readonly class McpAdapter
                 'description' => 'Delegate Docara application operation ' . $operation . '.',
                 'inputSchema' => ['type' => 'object', 'additionalProperties' => false, 'properties' => $this->properties($operation)],
                 'annotations' => [
-                    'readOnlyHint' => ! in_array($operation, ['scaffold.plan', 'scaffold.apply', 'qa.plan'], true),
+                    'readOnlyHint' => ! in_array($operation, ['scaffold.plan', 'scaffold.apply', 'qa.plan', 'qa.finalize_reference'], true),
                     'destructiveHint' => false,
                     'idempotentHint' => true,
                     'openWorldHint' => false,
@@ -100,7 +100,8 @@ final readonly class McpAdapter
         return [
             'docara_doctor' => 'doctor', 'docara_list' => 'list', 'docara_inspect' => 'inspect', 'docara_schema' => 'schema',
             'docara_scaffold_plan' => 'scaffold.plan', 'docara_scaffold_apply' => 'scaffold.apply',
-            'docara_validate' => 'validate', 'docara_test' => 'test', 'docara_qa_plan' => 'qa.plan', 'docara_qa_verify' => 'qa.verify',
+            'docara_validate' => 'validate', 'docara_test' => 'test', 'docara_qa_plan' => 'qa.plan',
+            'docara_qa_finalize_reference' => 'qa.finalize_reference', 'docara_qa_verify' => 'qa.verify',
         ];
     }
 
@@ -113,7 +114,7 @@ final readonly class McpAdapter
             'doctor' => [],
             'list', 'schema' => ['kind' => $string],
             'inspect', 'scaffold.plan', 'validate' => ['kind' => $string, 'id' => $string],
-            'scaffold.apply', 'qa.verify' => ['plan_id' => $string],
+            'scaffold.apply', 'qa.finalize_reference', 'qa.verify' => ['plan_id' => $string],
             'test', 'qa.plan' => ['kind' => $string, 'id' => $string, 'page' => $string],
             default => [],
         };

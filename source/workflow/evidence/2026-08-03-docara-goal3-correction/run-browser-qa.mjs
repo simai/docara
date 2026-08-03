@@ -111,8 +111,14 @@ for (const planId of planIds) {
   const plan = JSON.parse(planBytes);
   if (plan.plan_id !== planId) throw new Error('Plan binding mismatch.');
   if (contentId(plan, 'plan_id') !== planId) throw new Error('Plan content-address mismatch.');
-  if (!plan.target?.locator || !plan.reference?.reference_id) throw new Error('Plan target/reference binding is missing.');
-  if (contentId(plan.reference, 'reference_id') !== plan.reference.reference_id) throw new Error('Reference content-address mismatch.');
+  if (!plan.target?.locator) throw new Error('Plan target binding is missing.');
+  if (recordReferences) {
+    if (plan.schema !== 'docara.qa_plan_draft.v1' || plan.phase !== 'draft' || plan.reference?.reference_id) {
+      throw new Error('Reference recording requires an immutable draft plan.');
+    }
+  } else if (plan.schema !== 'docara.qa_plan.v2' || plan.phase !== 'finalized' || !plan.reference?.reference_id || !plan.reference?.manifest_sha256) {
+    throw new Error('Browser comparison requires a PHP-finalized immutable plan.');
+  }
   const [subjectKind, subjectId] = String(plan.subject || '').split(':', 2);
   if (subjectKind !== plan.target.kind || subjectId !== plan.target.id) throw new Error('Subject/target binding mismatch.');
   const previewRoot = contained(join(project, plan.preview.replace(/\/index\.html$/, '')));
@@ -125,9 +131,11 @@ for (const planId of planIds) {
     throw new Error('Preview byte binding mismatch.');
   }
   const resultRoot = contained(join(project, '.docara-qa', 'results', planId));
-  const referenceRoot = contained(join(project, '.docara-qa', 'references', plan.reference.reference_id));
+  const referenceRoot = contained(recordReferences
+    ? join(project, '.docara-qa', 'reference-drafts', planId)
+    : join(project, '.docara-qa', 'references', plan.reference.reference_id));
   if (recordReferences) {
-    if (existsSync(referenceRoot)) throw new Error(`Reference already exists for ${plan.reference.reference_id}.`);
+    if (existsSync(referenceRoot)) throw new Error(`Reference draft already exists for ${planId}.`);
     ensure(join(referenceRoot, 'screenshots'));
   } else {
     if (existsSync(resultRoot)) throw new Error(`Result already exists for ${planId}.`);
@@ -157,6 +165,9 @@ for (const planId of planIds) {
   const scenarios = [];
   const referenceManifest = recordReferences ? null : JSON.parse(readFileSync(contained(join(referenceRoot, 'reference.json'))));
   if (!recordReferences && (referenceManifest.reference_id !== plan.reference.reference_id
+    || contentId(referenceManifest, 'reference_id') !== plan.reference.reference_id
+    || sha(JSON.stringify(canonical(referenceManifest))) !== plan.reference.manifest_sha256
+    || referenceManifest.source_plan_id !== plan.source_plan_id
     || referenceManifest.subject !== plan.subject
     || JSON.stringify(referenceManifest.target) !== JSON.stringify(plan.target)
     || referenceManifest.artifact_sha256 !== plan.artifact_sha256
@@ -256,12 +267,12 @@ for (const planId of planIds) {
     await new Promise((resolveClose) => server.close(resolveClose));
   }
   if (recordReferences) {
-    const reference = {schema:'docara.qa_reference.v1', reference_id:plan.reference.reference_id, subject:plan.subject, target:plan.target, artifact_sha256:plan.artifact_sha256, page_html_sha256:plan.reference.page_html_sha256, scenarios};
+    const reference = {schema:'docara.qa_reference_draft.v1', draft_plan_id:planId, subject:plan.subject, target:plan.target, artifact_sha256:plan.artifact_sha256, page_html_sha256:plan.reference.page_html_sha256, scenarios};
     const referenceBytes = JSON.stringify(reference, null, 4) + '\n';
     putNew(join(referenceRoot, 'reference.json'), referenceBytes);
-    process.stdout.write(JSON.stringify({plan_id:planId, reference_id:plan.reference.reference_id, target:plan.target, reference_sha256:sha(referenceBytes), scenarios:scenarios.length}) + '\n');
+    process.stdout.write(JSON.stringify({draft_plan_id:planId, target:plan.target, reference_draft_sha256:sha(JSON.stringify(canonical(reference))), scenarios:scenarios.length, next_operation:'qa.finalize_reference'}) + '\n');
   } else {
-    const report = {schema:'docara.qa_report.v1', plan_id:planId, artifact_sha256:plan.artifact_sha256, target:plan.target, reference:plan.reference, scenarios};
+    const report = {schema:'docara.qa_report.v2', plan_id:planId, artifact_sha256:plan.artifact_sha256, target:plan.target, reference:plan.reference, scenarios};
     const reportBytes = JSON.stringify(report, null, 4) + '\n';
     putNew(join(resultRoot, 'report.json'), reportBytes);
     process.stdout.write(JSON.stringify({plan_id:planId, plan_sha256:sha(planBytes), target:plan.target, reference_id:plan.reference.reference_id, artifact_sha256:plan.artifact_sha256, report_sha256:sha(reportBytes), scenarios:scenarios.length}) + '\n');

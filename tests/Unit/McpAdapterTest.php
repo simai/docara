@@ -25,7 +25,7 @@ final class McpAdapterTest extends TestCase
         self::assertSame('docara-local-sdk', $initialize['result']['serverInfo']['name']);
 
         $tools = $adapter->handle(['jsonrpc' => '2.0', 'id' => 2, 'method' => 'tools/list']);
-        self::assertCount(10, $tools['result']['tools']);
+        self::assertCount(11, $tools['result']['tools']);
         self::assertContains('docara_inspect', array_column($tools['result']['tools'], 'name'));
 
         $call = $adapter->handle(['jsonrpc' => '2.0', 'id' => 3, 'method' => 'tools/call', 'params' => [

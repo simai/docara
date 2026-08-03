@@ -23,6 +23,7 @@ final class QaCommand extends ApplicationCommand
             ->addArgument('id', InputArgument::OPTIONAL)
             ->addOption('page', null, InputOption::VALUE_REQUIRED)
             ->addOption('dry-run', null, InputOption::VALUE_NONE, 'Publish preview and create a deterministic QA scenario plan.')
+            ->addOption('finalize-reference', null, InputOption::VALUE_REQUIRED, 'Validate a recorded reference draft and bind its full manifest to a new immutable plan.')
             ->addOption('verify', null, InputOption::VALUE_REQUIRED, 'Verify an exact externally produced QA report by plan SHA-256.')
             ->addOption('json', null, InputOption::VALUE_NONE, 'Emit the stable operation result as JSON.');
     }
@@ -32,6 +33,10 @@ final class QaCommand extends ApplicationCommand
         $verify = $this->input->getOption('verify');
         if (is_string($verify) && $verify !== '') {
             return $this->runOperation(fn () => $this->service->verify($this->base, $verify));
+        }
+        $finalize = $this->input->getOption('finalize-reference');
+        if (is_string($finalize) && $finalize !== '') {
+            return $this->runOperation(fn () => $this->service->finalizeReference($this->base, $finalize));
         }
         $page = $this->input->getOption('page');
         if (! (bool) $this->input->getOption('dry-run') || ! is_string($page) || trim($page) === '') {

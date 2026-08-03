@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
 use Simai\Docara\Console\ApplicationFactory;
+use Simai\Docara\Portable\CanonicalJson;
 use Symfony\Component\Console\Tester\CommandTester;
 use Tests\TestCase;
 
@@ -65,7 +66,7 @@ final class Goal3WriteContainmentTest extends TestCase
     #[Test]
     public function qa_verify_rejects_symlinked_results_parent_without_reading_or_mutating_external_artifacts(): void
     {
-        $plan = $this->qaPlan();
+        $plan = $this->qaFinalPlan();
         $results = $this->project . '/.docara-qa/results';
         self::assertTrue(symlink($this->outside, $results));
         $this->filesystem->put($this->outside . '/report.json', '{}');
@@ -164,6 +165,27 @@ final class Goal3WriteContainmentTest extends TestCase
             '--dry-run' => true,
             '--json' => true,
         ]));
+        $result = json_decode($tester->getDisplay(), true, 512, JSON_THROW_ON_ERROR);
+
+        return (string) $result['data']['draft_plan_id'];
+    }
+
+    private function qaFinalPlan(): string
+    {
+        $draftId = $this->qaPlan();
+        $draft = json_decode((string) file_get_contents($this->project . '/.docara-qa/plans/' . $draftId . '.json'), true, 512, JSON_THROW_ON_ERROR);
+        $root = $this->project . '/.docara-qa/reference-drafts/' . $draftId;
+        $this->filesystem->ensureDirectoryExists($root . '/screenshots');
+        $scenarios = [];
+        foreach ($draft['scenarios'] as $scenario) {
+            $bytes = "\x89PNG\r\n\x1a\n" . $scenario['id'];
+            $this->filesystem->put($root . '/' . $scenario['screenshot'], $bytes);
+            $scenarios[] = ['id' => $scenario['id'], 'screenshot' => $scenario['screenshot'], 'screenshot_sha256' => hash('sha256', $bytes)];
+        }
+        $reference = ['schema' => 'docara.qa_reference_draft.v1', 'draft_plan_id' => $draftId, 'subject' => $draft['subject'], 'target' => $draft['target'], 'artifact_sha256' => $draft['artifact_sha256'], 'page_html_sha256' => $draft['reference']['page_html_sha256'], 'scenarios' => $scenarios];
+        $this->filesystem->put($root . '/reference.json', CanonicalJson::encodePretty($reference));
+        $tester = new CommandTester(ApplicationFactory::create($this->project)->find('qa'));
+        self::assertSame(0, $tester->execute(['--finalize-reference' => $draftId, '--json' => true]));
         $result = json_decode($tester->getDisplay(), true, 512, JSON_THROW_ON_ERROR);
 
         return (string) $result['data']['plan_id'];

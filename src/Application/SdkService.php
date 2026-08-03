@@ -27,6 +27,7 @@ final readonly class SdkService
             'validate' => $this->validation->validate($root, $this->string($arguments, 'kind'), $this->optionalString($arguments, 'id')),
             'test' => $this->test->test($root, $this->string($arguments, 'kind'), $this->string($arguments, 'id'), $this->string($arguments, 'page')),
             'qa.plan' => $this->qa->plan($root, $this->string($arguments, 'kind'), $this->string($arguments, 'id'), $this->string($arguments, 'page')),
+            'qa.finalize_reference' => $this->qa->finalizeReference($root, $this->string($arguments, 'plan_id')),
             'qa.verify' => $this->qa->verify($root, $this->string($arguments, 'plan_id')),
             default => throw new \InvalidArgumentException('SDK_OPERATION_UNKNOWN:' . $operation),
         };

@@ -19,7 +19,7 @@ The exact unpublished audit ZIP is `e63d2edb…` with manifest `9a9b74a0…`
 mtimes, produce the same 168-file public tree `65fa3e2e…`; single Alert rebuild
 preserves it. The repository documentation site has 104 routes / 307 files /
 208 HTML at ledger `a70741dd…`, with 21,842 references and broken=0. Full
-PHPUnit is 420 tests / 7,808 assertions. Release and live gates remain closed.
+PHPUnit is 420 tests / 7,816 assertions. Release and live gates remain closed.
 
 ## Accepted Goal 2 result
 

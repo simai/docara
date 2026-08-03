@@ -31,8 +31,8 @@
     "current_stage": "docara.stage.g3.developer_sdk",
     "current_batch": "docara.batch.g3.developer_sdk",
     "completed_checkpoint": "goal2_independently_accepted_pass_with_notes",
-    "candidate_revision": "adb27f1acde6dfa5f018f7b2e3c2f20b404a0ed2",
-    "next_action": "execute_g3_0_contract_freeze",
+    "candidate_revision": "6e92c60438618533157c6889fbc8da7c3729891b",
+    "next_action": "execute_g3_1_discovery_services",
     "evidence": "source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md",
     "next_goal": {
       "id": "docara.goal.3.independent_audit",

@@ -25,5 +25,5 @@
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Golden result fixtures", "Write-boundary negatives", "SDK end-to-end", "MCP delegation", "Visual QA", "Package and consumer regression", "Independent reverse-outcome audit"],
   "next_stage_ref": null,
-  "status": "g3_0_contract_freeze_in_progress_goal2_independently_accepted"
+  "status": "g3_0_complete_g3_1_in_progress_goal2_independently_accepted"
 }

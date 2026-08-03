@@ -2,16 +2,15 @@
 
 Current state: `goal3_in_progress`
 
-Current candidate: `adb27f1acde6dfa5f018f7b2e3c2f20b404a0ed2`
+Current candidate: `6e92c60438618533157c6889fbc8da7c3729891b`
 
 Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md`
 
 ## Goal 3 current result
 
-Goal 2-C was independently accepted with `PASS_WITH_NOTES`. Goal 3 is active on
-the exact accepted handoff `adb27f1…`; G3.0 freezes the service/result,
-diagnostic, write and optional MCP boundaries before runtime implementation.
-No Goal 3 readiness claim exists yet.
+Goal 2-C was independently accepted with `PASS_WITH_NOTES`. G3.0 freezes the
+service/result, diagnostic, write and optional MCP boundaries on `6e92c60…`.
+G3.1 discovery services are current. No Goal 3 readiness claim exists yet.
 
 ## Accepted Goal 2 result
 

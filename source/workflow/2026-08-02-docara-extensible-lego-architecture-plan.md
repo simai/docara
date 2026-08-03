@@ -5,7 +5,7 @@ Status: `goal3_in_progress`
 Project mode: `productization`
 Current stage: `docara.stage.g3.developer_sdk`
 Current batch: `docara.batch.g3.developer_sdk`
-Current next action: `execute_g3_0_contract_freeze`
+Current next action: `execute_g3_1_discovery_services`
 Next roadmap goal: `docara.goal.3.independent_audit` (`blocked_until_goal3_ready`, authorized=`false`)
 Accepted by: explicit user Goal 1 instruction on 2026-08-02
 Repository: `/Users/rim/Documents/GitHub/docara-unified`

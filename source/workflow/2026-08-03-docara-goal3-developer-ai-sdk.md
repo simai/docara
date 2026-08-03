@@ -66,7 +66,7 @@ it owns no renderer, validator, registry, gateway, composer or PageBuilder.
 | Batch | Result | Status |
 | --- | --- | --- |
 | G3.0 | service/result/diagnostic/write/MCP contracts and golden fixtures | complete |
-| G3.1 | doctor/list/inspect/schema application services and commands | pending |
+| G3.1 | doctor/list/inspect/schema application services and commands | in progress |
 | G3.2 | hash-bound Smart/design scaffold dry-run/apply | pending |
 | G3.3 | validate/test orchestration over accepted services | pending |
 | G3.4 | optional screenshot/a11y/visual QA orchestration | pending |

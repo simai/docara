@@ -26,9 +26,9 @@ Graph goal: `docara.goal.unified`
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.g3.developer_sdk`;
 - batch: `docara.batch.g3.developer_sdk`;
-- candidate: `adb27f1acde6dfa5f018f7b2e3c2f20b404a0ed2`;
+- candidate: `6e92c60438618533157c6889fbc8da7c3729891b`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `execute_g3_0_contract_freeze`;
+- next action: `execute_g3_1_discovery_services`;
 - Goal 1 and Goal 2 are independently accepted; release review remains unauthorized.
 
 ## Accepted pipeline

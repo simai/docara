@@ -1,8 +1,8 @@
-# Next action: `execute_g3_0_contract_freeze`
+# Next action: `execute_g3_1_discovery_services`
 
 Current state: `goal3_in_progress`
 
-Current candidate: `adb27f1acde6dfa5f018f7b2e3c2f20b404a0ed2`
+Current candidate: `6e92c60438618533157c6889fbc8da7c3729891b`
 
 Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-developer-ai-sdk/INDEX.md`
 

@@ -17,7 +17,7 @@
   "allowed_scope": ["Docara application services, CLI formatters and commands, project-local scaffold plans, existing validation and preview orchestration, optional development QA and MCP adapter, tests, public docs, graph, workflow and handoff"],
   "forbidden_scope": ["Second parser", "Second renderer", "Second DesignRegistry", "Second Smart Gateway", "Second LayoutComposer", "Second PageBuilder", "External Framework repositories", "docara-new.test", "docara.test", "Merge", "Push", "Tag", "Release", "Deploy"],
   "checks": ["Golden human and JSON results", "Stable exit codes", "Discovery and schema coverage", "Hash-bound scaffold security", "Validate and test delegation", "Optional visual QA", "MCP boundaries", "Full regression", "Package and consumer", "Graph and documentation validation"],
-  "status": "g3_0_contract_freeze_in_progress",
-  "candidate_revision": "adb27f1acde6dfa5f018f7b2e3c2f20b404a0ed2",
-  "next_action": "execute_g3_0_contract_freeze"
+  "status": "g3_0_complete_g3_1_in_progress",
+  "candidate_revision": "6e92c60438618533157c6889fbc8da7c3729891b",
+  "next_action": "execute_g3_1_discovery_services"
 }

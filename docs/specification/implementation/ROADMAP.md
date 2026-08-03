@@ -1,7 +1,7 @@
 # Дорожная карта упрощения Docara
 
 Текущий статус архитектурного roadmap: Goal 1 и Goal 2 независимо приняты;
-Goal 3 correction завершена на exact source `6f54781…` и ожидает
+Goal 3 correction завершена на exact source `ea85222…` и ожидает
 независимого reverse-outcome audit. Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
@@ -82,7 +82,9 @@ Validate/test/QA делегируют принятые validators и PreviewKern
 normal consumer dependency. Exact package/consumer, full/single/static и
 isolated Smart/region/layout browser/QA evidence зелёные. Все generated write
 roots проверяются до первой filesystem mutation; независимая приёмка ещё не
-заявлена.
+заявлена. Третий integrity correction запрещает nullable file coordinates,
+пересчитывает canonical QA identities, связывает их с exact preview bytes и
+проверяет candidate/reference PNG в PHP verifier независимо от report counters.
 
 ## M2. Вертикальный срез `components/badge`
 

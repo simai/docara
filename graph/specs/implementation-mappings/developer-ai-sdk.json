@@ -21,6 +21,7 @@
     "src/Application/ValidationService.php",
     "src/Application/ArtifactTestService.php",
     "src/Application/QaService.php",
+    "src/Application/QaIdentity.php",
     "src/Application/OperationFailureMapper.php",
     "src/Application/McpAdapter.php",
     "src/File/ProjectFilesystemGuard.php",
@@ -48,5 +49,5 @@
   "known_deviations": ["Independent Goal 3 reverse-outcome audit is pending."],
   "deletion_gates": [],
   "status": "implementation_complete_audit_pending",
-  "mapped_revision": "6f547810583a16114ed15a8199f698e1dadb70a9"
+  "mapped_revision": "ea85222dabebff21e90dcc6c365831de912ef979"
 }

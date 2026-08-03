@@ -9,7 +9,7 @@
         "graph/specs/stages/g3-developer-sdk.json",
         "graph/specs/batches/g3-developer-sdk.json"
     ],
-    "canonical_sha256": "ece0d5ad0fd57210f6dfddea51744051458460e3700823583e1cb05143e4c5f1",
+    "canonical_sha256": "1e0c4055aa71afe8bc854b2b5c583105b2e507b83e48ca79a0b59a9e89cb55db",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -26,7 +26,7 @@
         "batch_readiness": "ready_for_independent_audit",
         "batch_status": "goal3_correction_complete_independent_audit_pending",
         "completed_checkpoint": "goal3_implementation_complete_audit_pending",
-        "candidate_revision": "6f547810583a16114ed15a8199f698e1dadb70a9",
+        "candidate_revision": "ea85222dabebff21e90dcc6c365831de912ef979",
         "next_action": "independent_goal3_reverse_outcome_audit",
         "evidence": "source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md"
     },

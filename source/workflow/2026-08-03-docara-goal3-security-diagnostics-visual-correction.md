@@ -1,7 +1,7 @@
 # Goal 3 correction — contained writes, diagnostic parity and visual acceptance
 
 Date: 2026-08-03
-Status: `in_progress`
+Status: `ready_for_independent_audit`
 Project mode: `productization`
 Audit marker: `4a1444b1-0f6c-454a-8ed4-83fb6a06969d`
 Second correction audit marker: `019fc76b-c201-7770-8ff0-117ca22df873`
@@ -64,8 +64,8 @@ repository Goal 3 plus raw owner sources above remain authoritative.
 | C3.5 | exact candidate governance and handoff | graph/context/docs checks, clean commits/worktree | complete |
 | C3.6 | file-backed locations, target-bound visual references and candidate-range hygiene | actual-command goldens, mutation negative, 24 scenarios, range diff | complete |
 | C3.7 | exact integrated retest and corrected governance | full/build/package/two consumers, graph/context/handoff | complete |
-| C3.8 | schema and QA content-address integrity correction | null-location negatives, canonical identities, authoritative PNG comparison | in progress |
-| C3.9 | exact integrated retest and final handoff | 24 scenarios, full/build/package/consumers, graph/context | pending |
+| C3.8 | schema and QA content-address integrity correction | null-location negatives, canonical identities, authoritative PNG comparison | complete |
+| C3.9 | exact integrated retest and final handoff | 24 scenarios, full/build/package/consumers, graph/context | complete |
 
 ## Invariants and non-goals
 
@@ -86,15 +86,16 @@ implementation defects must be corrected inside this workflow.
 
 ## Current state
 
-- current batch: C3.8 schema and QA content-address integrity correction;
+- current batch: independent Goal 3 reverse-outcome audit;
 - C3.1 implementation boundary: `496df2cab420a5f93560ea376ae44417368d1ba4`;
 - C3.2 implementation boundary: `ea6cead5cbb8a1d693aa1debcf6223633b5c323f`;
 - C3.3 implementation/evidence runner boundary: `526beeee8882189e01e636e73c65c3ebd87b6b8b`;
-- exact product candidate: `6f547810583a16114ed15a8199f698e1dadb70a9`;
-- remaining implementation batches: C3.8 and C3.9;
-- next safe action: finish the canonical identity and authoritative visual
-  verification regressions, then repeat the exact integrated matrix;
-- rejected audit candidates `8cd695ff…` and `a027c9ab…` remain history only.
+- exact product candidate: `ea85222dabebff21e90dcc6c365831de912ef979`;
+- remaining implementation batches: none;
+- next safe action: independently audit the exact correction candidate and
+  evidence; Goal 4 remains unstarted and unauthorized;
+- rejected audit candidates `8cd695ff…`, `a027c9ab…` and `6f547810…` remain
+  history only.
 - do not complete until the new exact candidate passes independent-ready gates.
 
 ## Kaizen

@@ -30,7 +30,7 @@ Current next action: `independent_goal3_reverse_outcome_audit`
 
 Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md`
 
-Current candidate: `6f547810583a16114ed15a8199f698e1dadb70a9`
+Current candidate: `ea85222dabebff21e90dcc6c365831de912ef979`
 
 Next roadmap goal: `docara.goal.3.independent_audit`
 

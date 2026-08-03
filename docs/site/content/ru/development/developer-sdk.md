@@ -47,9 +47,11 @@ Scaffold создаёт только новые project-owned файлы под 
 `content/`, `assets/`, lock, build output либо внешний repository. Traversal,
 symlink, hardlink, duplicate namespace и stale plan отклоняются.
 
-Smart scaffold следует portable SIMAI Framework 5 Smart ABI v1. Design scaffold создаёт связанный
-layout, layout View Tree, section, section View Tree и block. Их можно
-доработать только в пределах проверяемых JSON-схем.
+Smart scaffold следует portable SIMAI Framework 5 Smart ABI v1. Design scaffold
+создаёт связанный docs-shell-compatible layout, layout View Tree, section,
+section View Tree и block. Результат сразу проходит registry validation и может
+быть выбран в JSON-настройках страницы. Их можно доработать только в пределах
+проверяемых JSON-схем.
 
 ## Structured QA
 
@@ -64,6 +66,11 @@ hash-bound план для desktop/mobile, light/dark и LTR/RTL. Browser runner
 совпадении plan/artifact hashes, полном наборе screenshots и нулевых a11y,
 console, overflow и visual-diff дефектах. Обычные `init`, `build` и
 `verify-static` остаются PHP-only и не требуют Node.js.
+
+Для `test layout` и `qa layout` указанный route обязан фактически выбирать
+этот layout. Несовпадение останавливается кодом
+`SDK_TEST_LAYOUT_CONTEXT_MISMATCH` или `QA_LAYOUT_CONTEXT_MISMATCH`: команда не
+подменяет проверяемый artifact похожей страницей.
 
 ## Optional MCP
 

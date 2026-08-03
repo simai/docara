@@ -67,6 +67,9 @@ php vendor/bin/docara test smart|layout <id> --page=/public/route/ [--json]
 php vendor/bin/docara qa smart|region|layout <id> --page=/public/route/ --dry-run [--json]
 ```
 
+For layout test/QA, the selected page must actually resolve that layout; a
+context mismatch fails closed instead of testing a different production page.
+
 `init` accepts only an empty target. Updating is an explicit transaction:
 verify ownership, write and review a hash-bound dry-run plan, then apply that
 unchanged plan. Apply replaces only `.docara/engine`, records an immutable

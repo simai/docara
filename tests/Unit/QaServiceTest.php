@@ -67,6 +67,14 @@ final class QaServiceTest extends TestCase
         $service->verify($this->tmp, $planId);
     }
 
+    #[Test]
+    public function layout_plan_is_bound_to_the_layout_selected_by_the_page(): void
+    {
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('instead of [docara.landing]');
+        $this->service()->plan($this->tmp, 'layout', 'docara.landing', '/ru/');
+    }
+
     private function service(): QaService
     {
         $files = new Filesystem;

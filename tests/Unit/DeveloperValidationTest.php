@@ -9,6 +9,8 @@ use Simai\Docara\Application\ArtifactTestService;
 use Simai\Docara\Application\ScaffoldService;
 use Simai\Docara\Application\ValidationService;
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\Portable\CanonicalJson;
+use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Preview\PreviewKernel;
@@ -61,6 +63,44 @@ MD);
         self::assertSame('success', $result['status']);
         self::assertContains('SMART_MANIFEST_VALID', array_column($result['data']['checks'], 'code'));
         self::assertGreaterThanOrEqual(1, $result['data']['not_declared']);
+    }
+
+    #[Test]
+    public function scaffold_validate_preview_test_binds_project_layout_to_the_real_page_context(): void
+    {
+        $scaffold = new ScaffoldService;
+        $plan = $scaffold->plan($this->tmp, 'design', 'project.marketing')->toArray();
+        $scaffold->apply($this->tmp, $plan['data']['plan_id']);
+        $page = json_decode((string) file_get_contents($this->tmpPath('content/ru/index.page.json')), true, 512, JSON_THROW_ON_ERROR);
+        $page['layout'] = ['$reset' => true, 'key' => 'project.marketing'];
+        $this->filesystem->put($this->tmpPath('content/ru/index.page.json'), CanonicalJson::encodePretty($page));
+
+        $validated = (new ValidationService)->validate($this->tmp, 'layout', 'project.marketing')->toArray();
+        self::assertSame('success', $validated['status']);
+
+        $builder = new PortableSiteBuilder(new Filesystem, new PortableMarkdownRenderer);
+        $tested = (new ArtifactTestService(new PreviewKernel($builder, new Filesystem)))->test(
+            $this->tmp,
+            'layout',
+            'project.marketing',
+            '/ru/',
+        )->toArray();
+        self::assertSame('project.marketing', $tested['data']['provenance']['layout_id']);
+        self::assertSame('layout', $tested['data']['fixture']['target']);
+        self::assertFalse($tested['data']['accepted_build_receipt']);
+    }
+
+    #[Test]
+    public function layout_test_rejects_a_page_using_a_different_layout(): void
+    {
+        $scaffold = new ScaffoldService;
+        $plan = $scaffold->plan($this->tmp, 'design', 'project.marketing')->toArray();
+        $scaffold->apply($this->tmp, $plan['data']['plan_id']);
+        $builder = new PortableSiteBuilder(new Filesystem, new PortableMarkdownRenderer);
+        $service = new ArtifactTestService(new PreviewKernel($builder, new Filesystem));
+        $this->expectException(PortableConfigurationException::class);
+        $this->expectExceptionMessage('instead of [project.marketing]');
+        $service->test($this->tmp, 'layout', 'project.marketing', '/ru/');
     }
 
     #[Test]

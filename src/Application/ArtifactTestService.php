@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Application;
 
+use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Preview\PreviewKernel;
 use Simai\Docara\Preview\PreviewTarget;
 
@@ -20,6 +21,12 @@ final readonly class ArtifactTestService
         $validated = $this->validation->validate($root, $validationKind, $id);
         $target = $kind === 'smart' ? PreviewTarget::Smart : PreviewTarget::Layout;
         $artifact = $this->preview->render($root, $page, $target, $kind === 'smart' ? $id : null);
+        if ($kind === 'layout' && ($artifact->provenance['layout_id'] ?? null) !== $id) {
+            throw new PortableConfigurationException(
+                'SDK_TEST_LAYOUT_CONTEXT_MISMATCH',
+                "Test page [$page] uses layout [" . ($artifact->provenance['layout_id'] ?? 'unknown') . "] instead of [$id].",
+            );
+        }
         $runtime = ProjectRuntime::load($root);
 
         return OperationResult::success('test', $kind . ':' . $id, [

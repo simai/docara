@@ -25,6 +25,12 @@ final readonly class QaService
             default => throw new PortableConfigurationException('QA_KIND_INVALID', 'QA kind must be smart, region or layout.'),
         };
         $artifact = $this->preview->render($root, $page, $target, $target === PreviewTarget::Layout ? null : $id);
+        if ($target === PreviewTarget::Layout && ($artifact->provenance['layout_id'] ?? null) !== $id) {
+            throw new PortableConfigurationException(
+                'QA_LAYOUT_CONTEXT_MISMATCH',
+                "QA page [$page] uses layout [" . ($artifact->provenance['layout_id'] ?? 'unknown') . "] instead of [$id].",
+            );
+        }
         $published = $this->shell->publish($root, $artifact);
         $scenarios = [];
         foreach ([['desktop', 1440, 900], ['mobile', 390, 844]] as [$viewport, $width, $height]) {

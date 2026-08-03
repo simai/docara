@@ -76,6 +76,7 @@ final readonly class PreviewKernel
                 'production_output' => $output,
                 'plan_hash' => $record['declarative_pipeline']['plan_hash'] ?? null,
                 'source_kind' => $record['page_source_kind'] ?? null,
+                'layout_id' => $record['resolved_page_plan']['configuration']['layout']['key'] ?? null,
                 'build_mode' => $buildMode,
                 'dependency_scope' => 'selected_target',
             ],

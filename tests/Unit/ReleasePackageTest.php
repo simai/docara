@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use RuntimeException;
 use Simai\Docara\Release\DeterministicZipWriter;
 use Tests\TestCase;
@@ -11,6 +12,13 @@ use ZipArchive;
 
 final class ReleasePackageTest extends TestCase
 {
+    #[Test]
+    public function verifier_knows_the_complete_bounded_executable_surface(): void
+    {
+        $verifier = (string) file_get_contents(dirname(__DIR__, 2) . '/scripts/verify-release-package.php');
+        self::assertStringContainsString("['docara', 'tools/mcp-docara/server.php']", $verifier);
+    }
+
     public function test_zip_is_byte_identical_regardless_of_input_order(): void
     {
         $root = sys_get_temp_dir() . '/docara-release-test-' . bin2hex(random_bytes(6));

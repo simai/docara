@@ -50,7 +50,7 @@ try {
             throw new RuntimeException("Archive entry has no normalized Unix permissions [{$name}].");
         }
         $mode = ($externalAttributes >> 16) & 0xFFFF;
-        $expectedMode = $name === 'docara' ? 0100755 : 0100644;
+        $expectedMode = in_array($name, ['docara', 'tools/mcp-docara/server.php'], true) ? 0100755 : 0100644;
         if ($mode !== $expectedMode) {
             throw new RuntimeException(sprintf('Archive mode mismatch [%s]: %o.', $name, $mode));
         }

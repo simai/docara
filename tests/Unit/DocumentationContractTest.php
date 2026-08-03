@@ -46,6 +46,8 @@ final class DocumentationContractTest extends TestCase
                 $relative = $this->relativeToRepository($file->getPathname());
                 if (
                     str_starts_with($relative, 'docs/site/build_')
+                    || str_contains($relative, '/.docara-preview/')
+                    || str_contains($relative, '/.docara-qa/')
                     || str_contains($relative, '/.docara/')
                     || str_starts_with($relative, 'resources/framework/manifests/')
                 ) {

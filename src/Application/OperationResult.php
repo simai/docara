@@ -50,18 +50,26 @@ final readonly class OperationResult
         return new self($operation, 'success', 0, $subject, $data, [], $provenance);
     }
 
-    public static function failure(string $operation, ?string $subject, Diagnostic $diagnostic, int $exitCode = 2): self
-    {
-        return new self($operation, 'error', $exitCode, $subject, [], [$diagnostic], self::fallbackProvenance());
+    /** @param array<string, mixed> $provenance */
+    public static function failure(
+        string $operation,
+        ?string $subject,
+        Diagnostic $diagnostic,
+        int $exitCode = 2,
+        array $provenance = [],
+    ): self {
+        $provenance += self::fallbackProvenance();
+
+        return new self($operation, 'error', $exitCode, $subject, [], [$diagnostic], $provenance);
     }
 
     /** @return array{engine_revision:string,project_root:string,input_sha256:string} */
     private static function fallbackProvenance(): array
     {
         return [
-            'engine_revision' => 'unresolved',
+            'engine_revision' => 'sha256:' . (hash_file('sha256', __FILE__) ?: hash('sha256', self::class)),
             'project_root' => '.',
-            'input_sha256' => str_repeat('0', 64),
+            'input_sha256' => hash('sha256', 'docara:unbound-operation'),
         ];
     }
 }

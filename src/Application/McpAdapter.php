@@ -42,13 +42,13 @@ final readonly class McpAdapter
             }
             $operation = $this->operations()[$name];
             if ($operation === 'scaffold.apply' && ! $this->allowWrites) {
-                $result = OperationResult::failure('scaffold.apply', $arguments['plan_id'] ?? null, new Diagnostic(
-                    'MCP_WRITE_CAPABILITY_REQUIRED',
-                    'error',
-                    'Scaffold apply is disabled for this MCP process.',
-                    owner: 'docara.application',
-                    suggestion: 'Restart the local adapter with --allow-writes after reviewing the exact dry-run plan.',
-                ), 3);
+                $result = (new OperationFailureMapper)->map(
+                    $this->root,
+                    $operation,
+                    $arguments,
+                    new \InvalidArgumentException('MCP_WRITE_CAPABILITY_REQUIRED:Scaffold apply is disabled for this MCP process.'),
+                    3,
+                );
             } else {
                 $result = $this->sdk->invoke($this->root, $operation, $arguments);
             }
@@ -59,10 +59,11 @@ final readonly class McpAdapter
                 'isError' => $result->exitCode !== 0,
             ]);
         } catch (Throwable $exception) {
-            $result = OperationResult::failure('mcp.tool', null, new Diagnostic(
-                $this->code($exception), 'error', $exception->getMessage(), owner: 'docara.application',
-                suggestion: 'Correct the tool arguments or project contract and retry.',
-            ));
+            $params = is_array($request['params'] ?? null) ? $request['params'] : [];
+            $name = is_string($params['name'] ?? null) ? $params['name'] : 'unknown';
+            $arguments = is_array($params['arguments'] ?? null) ? $params['arguments'] : [];
+            $operation = $this->operations()[$name] ?? 'mcp.tool';
+            $result = (new OperationFailureMapper)->map($this->root, $operation, $arguments, $exception);
 
             return $this->success($id, [
                 'content' => [['type' => 'text', 'text' => CanonicalJson::encodePretty($result->toArray())]],
@@ -128,14 +129,5 @@ final readonly class McpAdapter
     private function error(mixed $id, int $code, string $message): array
     {
         return ['jsonrpc' => '2.0', 'id' => $id, 'error' => ['code' => $code, 'message' => $message]];
-    }
-
-    private function code(Throwable $exception): string
-    {
-        if (preg_match('/\[?([A-Z][A-Z0-9_]+)[:\]]/', $exception->getMessage(), $matches) === 1) {
-            return $matches[1];
-        }
-
-        return 'MCP_TOOL_FAILED';
     }
 }

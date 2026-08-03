@@ -2,10 +2,26 @@
     "data": {
         "checks": [
             {
-                "id": "project.config",
+                "code": "PROJECT_CONFIG_VALID",
+                "status": "pass"
+            },
+            {
+                "code": "SMART_REGISTRY_VALID",
+                "count": 7,
+                "status": "pass"
+            },
+            {
+                "code": "DESIGN_REGISTRY_VALID",
+                "count": 15,
+                "status": "pass"
+            },
+            {
+                "code": "SCHEMA_CATALOG_VALID",
+                "count": 26,
                 "status": "pass"
             }
-        ]
+        ],
+        "design_fingerprint": "66f1720dce5be364ce731b19add0855d9d001a5597b0fe7ce631a8148989eea4"
     },
     "diagnostics": [],
     "exit_code": 0,
@@ -17,5 +33,5 @@
     },
     "schema": "docara.operation_result.v1",
     "status": "success",
-    "subject": "."
+    "subject": "project"
 }

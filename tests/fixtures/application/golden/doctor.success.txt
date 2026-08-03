@@ -1,3 +1,5 @@
-Doctor: project is ready.
-
-PASS  project.config
+SUCCESS: doctor [project]
+- PASS PROJECT_CONFIG_VALID
+- PASS SMART_REGISTRY_VALID (7)
+- PASS DESIGN_REGISTRY_VALID (15)
+- PASS SCHEMA_CATALOG_VALID (26)

@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Console;
 
-use Simai\Docara\Application\Diagnostic;
+use Simai\Docara\Application\OperationFailureMapper;
 use Simai\Docara\Application\OperationResult;
-use Simai\Docara\Portable\PortableConfigurationException;
 use Throwable;
 
 abstract class ApplicationCommand extends Command
@@ -20,7 +19,8 @@ abstract class ApplicationCommand extends Command
         return $this;
     }
 
-    protected function runOperation(callable $operation): int
+    /** @param array<string, mixed> $arguments */
+    protected function runOperation(callable $operation, ?string $name = null, array $arguments = []): int
     {
         try {
             $result = $operation();
@@ -28,18 +28,11 @@ abstract class ApplicationCommand extends Command
                 throw new \LogicException('SDK_RESULT_CONTRACT_INVALID');
             }
         } catch (Throwable $exception) {
-            $code = $this->diagnosticCode($exception);
-            $result = OperationResult::failure(
-                $this->getName() ?? 'operation',
-                $this->getName(),
-                new Diagnostic(
-                    $code,
-                    'error',
-                    $exception->getMessage(),
-                    owner: 'docara.application',
-                    suggestion: $this->suggestion($code),
-                ),
-                2,
+            $result = (new OperationFailureMapper)->map(
+                $this->base,
+                $name ?? $this->operationName(),
+                $arguments === [] ? $this->operationArguments() : $arguments,
+                $exception,
             );
         }
 
@@ -57,25 +50,32 @@ abstract class ApplicationCommand extends Command
         parent::printBanner();
     }
 
-    private function diagnosticCode(Throwable $exception): string
+    private function operationName(): string
     {
-        if ($exception instanceof PortableConfigurationException) {
-            return $exception->errorCode;
+        $command = $this->getName() ?? 'operation';
+        if ($command === 'scaffold') {
+            return is_string($this->input->getOption('apply')) ? 'scaffold.apply' : 'scaffold.plan';
         }
-        $message = $exception->getMessage();
-        if (preg_match('/^([A-Z][A-Z0-9_]+):/', $message, $matches) === 1) {
-            return $matches[1];
+        if ($command === 'qa') {
+            return is_string($this->input->getOption('verify')) ? 'qa.verify' : 'qa.plan';
         }
 
-        return $exception instanceof \InvalidArgumentException ? 'SDK_INPUT_INVALID' : 'SDK_OPERATION_FAILED';
+        return $command;
     }
 
-    private function suggestion(string $code): string
+    /** @return array<string, mixed> */
+    private function operationArguments(): array
     {
-        return match ($code) {
-            'SDK_PROJECT_CONFIG_MISSING' => 'Run the command from an initialized Docara project root.',
-            'SDK_DISCOVERY_KIND_UNKNOWN', 'SDK_SCHEMA_KIND_UNKNOWN' => 'Use one of the kinds shown by docara list --help.',
-            default => 'Fix the reported input or project contract and retry the same command.',
-        };
+        $arguments = $this->input->getArguments();
+        foreach (['page', 'apply', 'verify'] as $option) {
+            if ($this->input->hasOption($option)) {
+                $value = $this->input->getOption($option);
+                if ($value !== null && $value !== false) {
+                    $arguments[$option === 'apply' || $option === 'verify' ? 'plan_id' : $option] = $value;
+                }
+            }
+        }
+
+        return $arguments;
     }
 }

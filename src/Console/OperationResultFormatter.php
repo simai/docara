@@ -33,6 +33,16 @@ final class OperationResultFormatter
         }
         foreach ($value['diagnostics'] as $diagnostic) {
             $lines[] = sprintf('- %s %s: %s', strtoupper($diagnostic['severity']), $diagnostic['code'], $diagnostic['message']);
+            $source = $diagnostic['source'] ?? [];
+            if (is_array($source) && is_string($source['path'] ?? null)) {
+                $lines[] = '  Source: ' . $source['path'] . (is_string($source['pointer'] ?? null) ? '#' . $source['pointer'] : '');
+            }
+            if (is_string($diagnostic['owner'] ?? null)) {
+                $lines[] = '  Owner: ' . $diagnostic['owner'];
+            }
+            if (is_array($diagnostic['provenance'] ?? null) && $diagnostic['provenance'] !== []) {
+                $lines[] = '  Provenance: ' . CanonicalJson::encode($diagnostic['provenance']);
+            }
             if (is_string($diagnostic['suggestion'] ?? null)) {
                 $lines[] = '  Suggestion: ' . $diagnostic['suggestion'];
             }

@@ -35,7 +35,8 @@ final class OperationResultFormatter
             $lines[] = sprintf('- %s %s: %s', strtoupper($diagnostic['severity']), $diagnostic['code'], $diagnostic['message']);
             $source = $diagnostic['source'] ?? [];
             if (is_array($source) && is_string($source['path'] ?? null)) {
-                $lines[] = '  Source: ' . $source['path'] . (is_string($source['pointer'] ?? null) ? '#' . $source['pointer'] : '');
+                $location = isset($source['line'], $source['column']) ? ':' . $source['line'] . ':' . $source['column'] : '';
+                $lines[] = '  Source: ' . $source['path'] . $location . (is_string($source['pointer'] ?? null) ? '#' . $source['pointer'] : '');
             }
             if (is_string($diagnostic['owner'] ?? null)) {
                 $lines[] = '  Owner: ' . $diagnostic['owner'];

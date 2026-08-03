@@ -6,6 +6,8 @@ namespace Simai\Docara\Application;
 
 use Simai\Docara\Portable\FilesystemPath;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\Portable\SourceLocatedException;
+use Simai\Docara\Smart\Provider\SmartProviderException;
 use Simai\Docara\PortableSite\PortableRuntimeMetadata;
 use Throwable;
 
@@ -22,8 +24,9 @@ final readonly class OperationFailureMapper
         $code = $this->code($exception);
         $subject = $this->subject($operation, $arguments);
         $provenance = $this->provenance($root);
-        $pointer = $this->pointer($code, $operation, $arguments);
-        $source = $this->source($root);
+        $located = $this->location($exception);
+        $pointer = $located['pointer'] ?? $this->pointer($code, $operation, $arguments);
+        $source = $located['path'] ?? 'command';
         $diagnosticProvenance = [
             'operation' => $operation,
             'subject' => $subject ?? 'project',
@@ -40,6 +43,8 @@ final readonly class OperationFailureMapper
                 $this->safeMessage($exception->getMessage(), $root),
                 $source,
                 $pointer,
+                $located['line'] ?? null,
+                $located['column'] ?? null,
                 owner: 'docara.application',
                 provenance: $diagnosticProvenance,
                 suggestion: $this->suggestion($code),
@@ -92,14 +97,25 @@ final readonly class OperationFailureMapper
         return '/operations/' . str_replace('.', '/', $operation);
     }
 
-    private function source(string $root): string
+    /** @return array{path:string,pointer:string,line:int,column:int}|null */
+    private function location(Throwable $exception): ?array
     {
-        $real = realpath($root);
-        if ($real !== false && is_file($real . '/docara.json') && ! is_link($real . '/docara.json')) {
-            return 'docara.json';
+        if ($exception instanceof PortableConfigurationException && ! $exception->hasFileLocation()) {
+            return null;
+        }
+        if ($exception instanceof SmartProviderException && ! $exception->hasFileLocation()) {
+            return null;
+        }
+        if ($exception instanceof SourceLocatedException) {
+            return [
+                'path' => $exception->sourcePath(),
+                'pointer' => $exception->sourcePointer(),
+                'line' => $exception->sourceLine(),
+                'column' => $exception->sourceColumn(),
+            ];
         }
 
-        return 'command';
+        return null;
     }
 
     /** @return array{engine_revision:string,project_root:string,input_sha256:string} */

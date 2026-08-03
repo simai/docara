@@ -7,6 +7,7 @@ namespace Simai\Docara\Application;
 use JsonException;
 use Simai\Docara\Design\Registry\DesignRegistry;
 use Simai\Docara\Portable\FilesystemPath;
+use Simai\Docara\Portable\JsonDiagnosticLocator;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableRuntimeMetadata;
 use Simai\Docara\Smart\SmartRegistry;
@@ -34,9 +35,19 @@ final readonly class ProjectRuntime
             throw new PortableConfigurationException('SDK_PROJECT_CONFIG_MISSING', 'Project root must contain a regular docara.json.');
         }
         try {
-            $site = json_decode((string) file_get_contents($config), true, 512, JSON_THROW_ON_ERROR);
+            $contents = (string) file_get_contents($config);
+            $site = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $exception) {
-            throw new PortableConfigurationException('SDK_PROJECT_CONFIG_INVALID', 'docara.json must be valid JSON.', $exception);
+            $location = JsonDiagnosticLocator::locate($contents ?? '');
+            throw new PortableConfigurationException(
+                'SDK_PROJECT_CONFIG_INVALID',
+                'docara.json must be valid JSON.',
+                $exception,
+                'docara.json',
+                $location['pointer'],
+                $location['line'],
+                $location['column'],
+            );
         }
         if (! is_array($site)) {
             throw new PortableConfigurationException('SDK_PROJECT_CONFIG_INVALID', 'docara.json must contain a JSON object.');

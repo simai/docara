@@ -1,6 +1,6 @@
 ERROR: inspect [smart:project.missing]
 - ERROR SMART_REGISTRY_COMPONENT_NOT_FOUND: SMART_REGISTRY_COMPONENT_NOT_FOUND:project.missing
-  Source: docara.json#/arguments/id
+  Source: command#/arguments/id
   Owner: docara.application
   Provenance: {"engine_revision":"fixture-revision","input_sha256":"bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb","operation":"inspect","subject":"smart:project.missing"}
   Suggestion: Inspect the registered artifacts and retry with an exact owned identifier.

@@ -31,6 +31,12 @@
               "line": {"type": ["integer", "null"], "minimum": 1},
               "column": {"type": ["integer", "null"], "minimum": 1}
             },
+            "allOf": [
+              {
+                "if": {"properties": {"path": {"pattern": "\\.(?:json|md)$"}}, "required": ["path"]},
+                "then": {"required": ["line", "column"]}
+              }
+            ],
             "additionalProperties": false
           },
           "owner": {"type": "string", "minLength": 1},

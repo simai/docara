@@ -294,10 +294,15 @@ final class PortableConfigurationLoader
         try {
             $decoded = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
         } catch (JsonException $exception) {
+            $location = JsonDiagnosticLocator::locate($contents);
             throw new PortableConfigurationException(
                 'JSON_INVALID',
                 "File [$relative] is not valid JSON: {$exception->getMessage()}",
                 $exception,
+                $relative,
+                $location['pointer'],
+                $location['line'],
+                $location['column'],
             );
         }
 

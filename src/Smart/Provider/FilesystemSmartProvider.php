@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Smart\Provider;
 
+use Simai\Docara\Portable\JsonDiagnosticLocator;
 use Simai\Docara\Smart\Artifact\Sf5SmartArtifactV1Contract;
 
 class FilesystemSmartProvider implements SmartArtifactProvider
@@ -262,10 +263,19 @@ class FilesystemSmartProvider implements SmartArtifactProvider
     /** @return array<string, mixed> */
     private function json(string $path, string $label): array
     {
+        $contents = (string) file_get_contents($path);
         try {
-            $decoded = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+            $decoded = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $exception) {
-            throw new SmartProviderException('SMART_PROVIDER_JSON_INVALID', $label . ':' . $exception->getMessage());
+            $location = JsonDiagnosticLocator::locate($contents);
+            throw new SmartProviderException(
+                'SMART_PROVIDER_JSON_INVALID',
+                $label . ':' . $exception->getMessage(),
+                basename($this->safeRoot) . '/' . $this->relative($path),
+                $location['pointer'],
+                $location['line'],
+                $location['column'],
+            );
         }
         if (! is_array($decoded) || array_is_list($decoded)) {
             throw new SmartProviderException('SMART_PROVIDER_JSON_INVALID', $label);

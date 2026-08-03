@@ -20,9 +20,7 @@ final class ApplicationContractTest extends TestCase
         $root = dirname(__DIR__, 2);
         $validator = new JsonSchemaValidator(new SchemaRepository($root . '/resources/schemas'));
 
-        $project = $this->tmpPath('project');
-        $this->filesystem->copyDirectory($root . '/stubs/portable', $project);
-        foreach ($this->actualCases($project) as $name => $actual) {
+        foreach ($this->actualCases($this->tmpPath('projects')) as $name => $actual) {
             $path = $root . '/tests/fixtures/application/golden/' . $name . '.json';
             $contents = (string) file_get_contents($path);
             $decoded = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
@@ -50,13 +48,22 @@ final class ApplicationContractTest extends TestCase
     }
 
     /** @return array<string, array{json:array<string,mixed>,human:string}> */
-    private function actualCases(string $project): array
+    private function actualCases(string $projects): array
     {
         $cases = [];
         foreach ([
-            'doctor.success' => ['doctor', []],
-            'inspect.missing' => ['inspect', ['kind' => 'smart', 'id' => 'project.missing']],
-        ] as $name => [$command, $arguments]) {
+            'doctor.success' => ['doctor', [], null],
+            'inspect.missing' => ['inspect', ['kind' => 'smart', 'id' => 'project.missing'], null],
+            'doctor.malformed-config' => ['doctor', [], 'config'],
+            'inspect.malformed-manifest' => ['inspect', ['kind' => 'smart', 'id' => 'project.notice'], 'manifest'],
+        ] as $name => [$command, $arguments, $mutation]) {
+            $project = $projects . '/' . $name;
+            $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $project);
+            if ($mutation === 'config') {
+                $this->filesystem->put($project . '/docara.json', "{\n    \"schema\": \"docara.site.v1\",\n}\n");
+            } elseif ($mutation === 'manifest') {
+                $this->filesystem->put($project . '/smart/project.notice/manifest.json', "{\n    project: true\n}\n");
+            }
             $json = new CommandTester(ApplicationFactory::create($project)->find($command));
             $json->execute($arguments + ['--json' => true]);
             $human = new CommandTester(ApplicationFactory::create($project)->find($command));
@@ -73,7 +80,12 @@ final class ApplicationContractTest extends TestCase
     /** @param array<string,mixed> $value @return array<string,mixed> */
     private function normalize(array $value, string $name): array
     {
-        $hash = str_starts_with($name, 'doctor.') ? str_repeat('a', 64) : str_repeat('b', 64);
+        $hash = str_repeat(match ($name) {
+            'doctor.success' => 'a',
+            'inspect.missing' => 'b',
+            'doctor.malformed-config' => 'c',
+            'inspect.malformed-manifest' => 'd',
+        }, 64);
         $value['provenance']['engine_revision'] = 'fixture-revision';
         $value['provenance']['input_sha256'] = $hash;
         foreach ($value['diagnostics'] as &$diagnostic) {
@@ -87,12 +99,17 @@ final class ApplicationContractTest extends TestCase
 
     private function normalizeHuman(string $value, string $name): string
     {
-        $status = str_starts_with($name, 'doctor.') ? 'SUCCESS:' : 'ERROR:';
+        $status = $name === 'doctor.success' ? 'SUCCESS:' : 'ERROR:';
         $offset = strpos($value, $status);
         if ($offset !== false) {
             $value = substr($value, $offset);
         }
-        $hash = str_starts_with($name, 'doctor.') ? str_repeat('a', 64) : str_repeat('b', 64);
+        $hash = str_repeat(match ($name) {
+            'doctor.success' => 'a',
+            'inspect.missing' => 'b',
+            'doctor.malformed-config' => 'c',
+            'inspect.malformed-manifest' => 'd',
+        }, 64);
         $value = preg_replace('/sha256:[a-f0-9]{64}/', 'fixture-revision', $value) ?? $value;
 
         return preg_replace('/[a-f0-9]{64}/', $hash, $value) ?? $value;

@@ -13,7 +13,7 @@
             },
             "severity": "error",
             "source": {
-                "path": "docara.json",
+                "path": "command",
                 "pointer": "/arguments/id"
             },
             "suggestion": "Inspect the registered artifacts and retry with an exact owned identifier."

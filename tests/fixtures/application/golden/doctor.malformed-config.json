@@ -1,0 +1,34 @@
+{
+    "data": [],
+    "diagnostics": [
+        {
+            "code": "SDK_PROJECT_CONFIG_INVALID",
+            "message": "[SDK_PROJECT_CONFIG_INVALID] docara.json must be valid JSON.",
+            "owner": "docara.application",
+            "provenance": {
+                "engine_revision": "fixture-revision",
+                "input_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+                "operation": "doctor",
+                "subject": "project"
+            },
+            "severity": "error",
+            "source": {
+                "column": 31,
+                "line": 2,
+                "path": "docara.json",
+                "pointer": "/"
+            },
+            "suggestion": "Correct the referenced argument or project contract and retry the same operation."
+        }
+    ],
+    "exit_code": 2,
+    "operation": "doctor",
+    "provenance": {
+        "engine_revision": "fixture-revision",
+        "input_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+        "project_root": "."
+    },
+    "schema": "docara.operation_result.v1",
+    "status": "error",
+    "subject": "project"
+}

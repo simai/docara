@@ -7,8 +7,14 @@ use Simai\Docara\Application\McpAdapter;
 use Simai\Docara\Application\SdkServiceFactory;
 use Simai\Docara\Portable\CanonicalJson;
 
-$autoload = dirname(__DIR__, 2) . '/vendor/autoload.php';
-if (! is_file($autoload)) {
+$autoload = null;
+foreach ([dirname(__DIR__, 2) . '/vendor/autoload.php', dirname(__DIR__, 4) . '/autoload.php'] as $candidate) {
+    if (is_file($candidate)) {
+        $autoload = $candidate;
+        break;
+    }
+}
+if (! is_string($autoload)) {
     fwrite(STDERR, "MCP_AUTOLOAD_MISSING\n");
     exit(1);
 }

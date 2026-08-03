@@ -9,9 +9,10 @@
     "resources/",
     "scripts/verify-static-build.php",
     "src/",
-    "stubs/"
+    "stubs/",
+    "tools/mcp-docara/"
   ],
-  "executable": ["docara"],
+  "executable": ["docara", "tools/mcp-docara/server.php"],
   "forbidden_prefixes": [
     ".git/",
     ".github/",

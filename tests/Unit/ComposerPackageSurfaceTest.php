@@ -84,4 +84,18 @@ final class ComposerPackageSurfaceTest extends TestCase
             self::assertStringContainsString($rule, $attributes);
         }
     }
+
+    #[Test]
+    public function optional_mcp_is_packaged_but_not_registered_as_a_normal_runtime_binary_or_dependency(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $surface = json_decode((string) file_get_contents($root . '/resources/release/package-surface.json'), true, 512, JSON_THROW_ON_ERROR);
+        $composer = json_decode((string) file_get_contents($root . '/composer.json'), true, 512, JSON_THROW_ON_ERROR);
+
+        self::assertContains('tools/mcp-docara/', $surface['include']);
+        self::assertContains('tools/mcp-docara/server.php', $surface['executable']);
+        self::assertNotContains('tools/mcp-docara/server.php', $composer['bin']);
+        self::assertArrayNotHasKey('node', $composer['require']);
+        self::assertArrayNotHasKey('playwright', $composer['require']);
+    }
 }

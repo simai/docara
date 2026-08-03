@@ -5,8 +5,11 @@ declare(strict_types=1);
 namespace Simai\Docara\Console;
 
 use Composer\InstalledVersions;
+use Simai\Docara\Application\ArtifactTestService;
 use Simai\Docara\Application\DiscoveryService;
+use Simai\Docara\Application\QaService;
 use Simai\Docara\Application\ScaffoldService;
+use Simai\Docara\Application\ValidationService;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableProjectInitializer;
@@ -29,11 +32,12 @@ final class ApplicationFactory
 
         $application = new Application('Docara', $version);
         $discovery = new DiscoveryService;
+        $preview = new PreviewKernel($builder, $files);
         $application->addCommands([
             (new InitCommand($files, new PortableProjectInitializer($files)))->setBase($base),
             (new UpdateCommand(new PortableProjectUpdater($files)))->setBase($base),
             (new BuildCommand($builder))->setBase($base),
-            (new PreviewCommand(new PreviewKernel($builder, $files), new PreviewShell($files)))->setBase($base),
+            (new PreviewCommand($preview, new PreviewShell($files)))->setBase($base),
             (new ServeCommand)->setBase($base),
             (new VerifyStaticCommand)->setBase($base),
             (new DoctorCommand($discovery))->setBase($base),
@@ -41,6 +45,9 @@ final class ApplicationFactory
             (new InspectCommand($discovery))->setBase($base),
             (new SchemaCommand($discovery))->setBase($base),
             (new ScaffoldCommand(new ScaffoldService))->setBase($base),
+            (new ValidateCommand(new ValidationService))->setBase($base),
+            (new TestArtifactCommand(new ArtifactTestService($preview)))->setBase($base),
+            (new QaCommand(new QaService($preview, new PreviewShell($files))))->setBase($base),
         ]);
 
         return $application;

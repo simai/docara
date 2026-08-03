@@ -143,7 +143,13 @@ final readonly class ScaffoldService
             'props' => ['title' => ['type' => 'string', 'required' => true], 'text' => ['type' => 'string', 'required' => true]],
             'slots' => [], 'assets' => ['css' => [], 'js' => [], 'depends' => ['simai.ui']],
             'meta' => ['ownerPackage' => 'project/' . explode('.', $id)[0], 'version' => '1.0.0'],
-            'ai' => ['summary' => 'Project-local portable Smart scaffold.', 'when_to_use' => ['Use for project-owned content with a title and text.']],
+            'ai' => [
+                'summary' => 'Project-local portable Smart scaffold.',
+                'when_to_use' => ['Use for project-owned content with a title and text.'],
+                'accessibility' => ['role' => 'region', 'accessible_name_prop' => 'title'],
+                'fixtures' => ['default' => ['props' => ['title' => 'Example title', 'text' => 'Example text']]],
+                'states' => ['default' => ['fixture' => 'default']],
+            ],
         ];
         $view = ['schemaVersion' => '1.0', 'kind' => 'smart.view', 'smart' => $id, 'code' => 'default', 'template' => 'default', 'props' => []];
         $template = <<<'PHP'
@@ -153,7 +159,7 @@ declare(strict_types=1);
 
 $title = htmlspecialchars((string) ($props['title'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 $text = htmlspecialchars((string) ($props['text'] ?? ''), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-echo '<aside data-project-smart="__ID__"><strong>' . $title . '</strong><p>' . $text . '</p></aside>';
+echo '<aside data-docara-smart="__ID__"><strong>' . $title . '</strong><p>' . $text . '</p></aside>';
 PHP;
         $template = str_replace('__ID__', $escaped, $template) . "\n";
         $base = 'smart/' . $id;

@@ -158,7 +158,9 @@ final readonly class DiscoveryService
         $items = [];
         foreach ($runtime->smarts->keys() as $id) {
             $manifest = $runtime->smarts->definition($id)->portableManifest;
-            foreach (($manifest[$kind === 'fixture' ? 'fixtures' : 'states'] ?? []) as $key => $value) {
+            $field = $kind === 'fixture' ? 'fixtures' : 'states';
+            $definitions = $manifest[$field] ?? $manifest['ai'][$field] ?? [];
+            foreach ($definitions as $key => $value) {
                 $fixtureId = is_string($key) ? $id . ':' . $key : $id . ':' . (string) $value;
                 $items[] = ['id' => $fixtureId, 'kind' => $kind, 'smart' => $id, 'definition' => $value];
             }

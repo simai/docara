@@ -31,7 +31,7 @@
     "current_stage": "docara.stage.g3.developer_sdk",
     "current_batch": "docara.batch.g3.developer_sdk",
     "completed_checkpoint": "goal3_implementation_complete_audit_pending",
-    "candidate_revision": "ea85222dabebff21e90dcc6c365831de912ef979",
+    "candidate_revision": "2a7237bc59265d976b6871cb637e7ae67ca2c00b",
     "next_action": "independent_goal3_reverse_outcome_audit",
     "evidence": "source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md",
     "next_goal": {

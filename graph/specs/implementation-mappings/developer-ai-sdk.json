@@ -43,11 +43,11 @@
   "current_behavior": [
     "One operation result object drives human, JSON and MCP structured output.",
     "Project-local Smart and design scaffold is deterministic, hash-bound and limited to owned roots.",
-    "Validate, test and QA delegate accepted registries and PreviewKernel.",
+    "Validate, test and QA delegate accepted registries and PreviewKernel; finalized QA references are fully content-addressed and sealed into immutable plans.",
     "Optional MCP has no root parameter, starts read-only and cannot bypass exact-plan apply."
   ],
   "known_deviations": ["Independent Goal 3 reverse-outcome audit is pending."],
   "deletion_gates": [],
   "status": "implementation_complete_audit_pending",
-  "mapped_revision": "ea85222dabebff21e90dcc6c365831de912ef979"
+  "mapped_revision": "2a7237bc59265d976b6871cb637e7ae67ca2c00b"
 }

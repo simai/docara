@@ -2,7 +2,7 @@
 
 Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `ea85222dabebff21e90dcc6c365831de912ef979`
+Current candidate: `2a7237bc59265d976b6871cb637e7ae67ca2c00b`
 
 Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md`
 
@@ -11,27 +11,29 @@ Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-correction/I
 Goal 2-C was independently accepted with `PASS_WITH_NOTES`. G3.0-G3.6 now add
 stable discovery, hash-bound project scaffold, validation/test, optional visual
 QA and optional local MCP over the accepted production services. Exact product
-source `ea85222…` has reproducible package/consumer/full-single/static/browser
+source `2a7237b…` has reproducible package/consumer/full-single/static/browser
 evidence, pre-mutation containment, non-null file-backed locations and complete
-CLI/JSON/MCP diagnostics. Canonical QA plan/reference identities are recomputed,
-bound to exact preview bytes, and PHP acceptance independently compares
-candidate/reference PNG bytes. Goal 3 is implementation-complete but remains
-audit pending.
+CLI/JSON/MCP diagnostics. Finalized QA references content-address the complete
+ordered screenshot manifest and are sealed into an immutable finalized plan;
+PHP acceptance recomputes the seal and independently compares exact PNG bytes.
+Coherent mutation of reference, candidate and report under an old plan is now
+rejected. Goal 3 is implementation-complete but remains audit pending.
 
-The exact unpublished audit ZIP is `8b76462626d2a8730a0be6d2eacd286a915c1f63a7baf92c4b41b28bbffb1bd3`
-with manifest `41a1e84eb570690c6b2967d4641c35b7ad41f4eafddb78be181d4944a40724e2`
-(739 files). Two same-lock fresh dist consumers produce the same 168-file
-ledger `c880dbb864cb0186c65aed5b10c341813c0c6c7f6cb9cb24e190a1166b5f8c2a`;
+The exact unpublished audit ZIP is `210215e09ccd156be54e3999dad8b4e846eacc2894a861f3add61f5807c4c984`
+with manifest `5511646ee8cefd17449c03294f60292258d79fcdade34c33bd0c36eca0dc5c53`
+(741 files). Two same-lock fresh dist consumers produce the same 168-file
+ledger `751702bc1e3345305e053553b45ca1da50bf51514363b020f97ea4a925738a7b`;
 single Alert rebuild preserves it. The repository documentation site has 104
-routes / 307 files / 208 HTML at ledger `079536b6e63f8533d7064ac06f74b61e831d479dade90d54e5ffc1ec831c6443`,
-with 21,842 references and broken=0. Full PHPUnit is 436 tests / 7,954
+routes / 307 files / 208 HTML at ledger `5dc4112d3a0424ca74fca1b73a27392532cfdff84011369a5c3b38984fc32e9d`,
+with 21,842 references and broken=0. Full PHPUnit is 437 tests / 7,966
 assertions. Release and live gates remain closed.
 
 ### Rejected Goal 3 audit artifacts
 
-Sources `8cd695ff…`, `a027c9ab…` and `6f547810…`, ZIPs `e63d2edb…`,
-`32a638b1…` and `ee117ee9…`, manifests `9a9b74a0…` and `1478eaef…`, and
-ledgers `65fa3e2e…`, `a70741dd…` and `03220a0a…` were rejected by independent
+Sources `8cd695ff…`, `a027c9ab…`, `6f547810…` and `ea85222…`, ZIPs `e63d2edb…`,
+`32a638b1…`, `ee117ee9…` and `8b764626…`, manifests `9a9b74a0…`, `1478eaef…`
+and `41a1e84e…`, and ledgers `65fa3e2e…`, `a70741dd…`, `03220a0a…`,
+`079536b6…` and `c880dbb8…` were rejected by independent
 audits. They are historical traceability only and are not current candidate,
 metric or release evidence.
 

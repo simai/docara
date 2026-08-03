@@ -18,6 +18,6 @@
   "forbidden_scope": ["Second parser", "Second renderer", "Second DesignRegistry", "Second Smart Gateway", "Second LayoutComposer", "Second PageBuilder", "External Framework repositories", "docara-new.test", "docara.test", "Merge", "Push", "Tag", "Release", "Deploy"],
   "checks": ["Golden human and JSON results", "Stable exit codes", "Discovery and schema coverage", "Hash-bound scaffold security", "Validate and test delegation", "Optional visual QA", "MCP boundaries", "Full regression", "Package and consumer", "Graph and documentation validation"],
   "status": "goal3_correction_complete_independent_audit_pending",
-  "candidate_revision": "ea85222dabebff21e90dcc6c365831de912ef979",
+  "candidate_revision": "2a7237bc59265d976b6871cb637e7ae67ca2c00b",
   "next_action": "independent_goal3_reverse_outcome_audit"
 }

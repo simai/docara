@@ -1,7 +1,9 @@
 # Приёмка единой архитектуры Docara
 
 Текущий статус: Goal 1 и Goal 2 независимо приняты. Goal 3 correction
-завершена на exact source `ea85222…` и ожидает независимого audit.
+завершена на exact source `2a7237b…` и ожидает независимого audit. Finalized
+QA reference целиком content-addressed и привязан к immutable plan; совместная
+подмена reference/candidate/report fail-closed.
 Исторический R2 `PASS_DISPOSABLE_CORRECTED` и unpublished release artifact
 остаются parked baseline, а не текущим архитектурным кандидатом. Tag, release,
 live cutover и production acceptance требуют отдельного решения и не заявлены.

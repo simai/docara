@@ -1,14 +1,16 @@
 # Docara / SF5 UI radius integration
 
 Date: 2026-08-04
-Status: framework candidates complete; Docara repin blocked on immutable source availability
-Docara input revision: `01d941dc9db40540c3f7907ffdf9c603c1084542`
+Status: implementation complete; ready for independent audit
+Docara product candidate: `6bbe0653265bbfb08027b717ed2981a1add79c2e`
+Evidence: `source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md`
 
 ## User outcome
 
-One framework-owned radius controls the default rounding of small UI controls.
-Components keep their own override variable, while a future Docara reader
-preference changes only the shared token through a bounded preset.
+Modal search/settings windows start without background blur. A reader can choose
+standard, medium or large rounding; the choice changes one Framework-owned
+token and is restored across pages. Components keep their own native override
+variables and explicit square/pill/circle variants remain authoritative.
 
 ## Contract
 
@@ -18,69 +20,42 @@ preference changes only the shared token through a bounded preset.
 --sf-button--radius: var(--sf-radius--ui);
 ```
 
-The same inheritance is implemented for icon buttons, inputs and dropdowns.
-The historical `--sf-ui-radius-default` is an alias to the shared token for
-existing input-like controls. Per-corner overrides and explicit circle, pill
-and square variants remain authoritative.
+The same inheritance exists for icon buttons, inputs and dropdowns. Docara's
+allowlist maps `default`, `medium`, `large` to Framework primitives
+`--sf-radius-1/3`, `--sf-radius-1/2`, `--sf-radius-1`; arbitrary CSS from
+Markdown or configuration remains forbidden.
 
-## Exact local candidates
+## Exact owners
 
-| Surface | Branch | Commit | Tree |
-| --- | --- | --- | --- |
-| Framework source (`simai/ui-loader`) | `codex/sf5-ui-radius-contract` | `36123543027d6b363c2242c747bf1fd8ec7d6c88` | `248caa7bdee5bacb29ae1e59fc7e47e9d66b8329` |
-| Framework distribution (`simai/ui`) | `codex/sf5-ui-radius-contract` | `ed829c3bf53d3bfc37e628e601da73183961ae72` | `28e0477a4f7b9226e8d351b5669dc70d49f54bc7` |
+| Surface | Branch | Exact commit |
+| --- | --- | --- |
+| Framework source (`simai/ui-loader`) | `codex/sf5-ui-radius-contract` | `36123543027d6b363c2242c747bf1fd8ec7d6c88` |
+| Framework distribution (`simai/ui`) | `codex/sf5-ui-radius-contract` | `d1daa951dd08b94a9f209fd9f31a78d2b3779563` |
+| Docara product | `codex/docara-unified-architecture` | `6bbe0653265bbfb08027b717ed2981a1add79c2e` |
 
-Neither commit exists in a fetched remote ref. No push, tag, release or deploy
-was performed.
+The distribution tree is the accepted Docara baseline plus the bounded radius
+delta. Intermediate distribution commits `ed829c3…`, `96c17a26…` and
+`89d4ea3c…` are superseded history and are not consumer pins.
 
-## Verification
+## Verification and recovery
 
-- source focused: 2/2 PASS;
-- source full: 42/42 PASS;
-- two-wave product build: PASS and byte-identical for Core, Component, Utility
-  and Smart;
-- build report SHA-256:
-  `369e33aa18a32231e39e71d61e924b9c31686e423732347fdf190f7de4878edc`;
-- deterministic distribution transform: two clean parent archives produce the
-  same selected-tree digest
-  `6aa761876740432c7ed9299b27f3adf6bd6092b124122650498a255c753b1a4b`;
-- distribution focused test: 3/3 PASS;
-- browser computed values for button, icon button, input and dropdown:
-  default `2px`, shared-token override `8px`, console warnings/errors `0`.
+The exact commands, hashes, browser values, nonclaims and rollback boundaries
+are recorded in the evidence index. Full and single-page build still use the
+same PageBuilder; no renderer, Gateway, registry or component-ID branch was
+added.
 
-The pre-existing Framework registry suite is not claimed green: its current
-`distr/rule/rule.json` is invalid at line 495 independently of this radius
-delta. The radius-focused contract and deterministic output are green.
+## Human-centered simplicity
 
-## Integration boundary
-
-Docara's `resources/framework/runtime-lock.json` resolves `simai/ui` through an
-exact jsDelivr Git commit. Repinning it to a local-only commit would create an
-unresolvable build and violate the immutable runtime contract. Therefore this
-batch intentionally does not change the Docara runtime lock, schemas or reader
-settings yet.
-
-After explicit publication approval, the bounded continuation is:
-
-1. push the two owner branches through their normal review flow;
-2. verify the exact `simai/ui` commit is fetchable from the declared source;
-3. update Docara's runtime lock and registry binding;
-4. add a bounded reader preference such as `compact`, `default`, `comfortable`
-   that maps only to allowlisted Framework radius primitives;
-5. run full/single, deterministic, static and browser parity, then create a new
-   Docara candidate for independent audit.
-
-Arbitrary CSS values from Markdown or project configuration remain forbidden.
+One shared token is the smallest control surface that satisfies the request.
+Three named presets are understandable in settings, preserve accessibility and
+avoid exposing implementation CSS. No new page source, renderer or engine path
+was introduced.
 
 ## Rollback
 
-- source: revert `36123543027d6b363c2242c747bf1fd8ec7d6c88`;
-- distribution: revert `ed829c3bf53d3bfc37e628e601da73183961ae72`;
-- Docara: no runtime change exists in this checkpoint.
+- Docara: revert product commits from `42babb7…` through `6bbe065…`;
+- Framework distribution: repin to the prior exact `cc1bfbc…` baseline or
+  revert the bounded `d1daa951…` branch commits;
+- Framework source: revert `36123543…`.
 
-## Stop condition reached
-
-An immutable consumer pin requires an external owner-repository push/review
-action that is outside the currently authorized local-only boundary. Do not
-fake the pin, vendor an untracked local path or add a Docara-only component
-radius dialect.
+No merge, tag, release or deploy was performed.

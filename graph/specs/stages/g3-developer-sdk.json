@@ -11,7 +11,10 @@
   "readiness": "ready_for_independent_audit",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md"],
-  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md"],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md",
+    "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md"
+  ],
   "profile_refs": ["docara.unified"],
   "parent_goal_ref": "docara.goal.unified",
   "done_when": [

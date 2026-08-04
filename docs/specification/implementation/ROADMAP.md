@@ -1,8 +1,8 @@
 # Дорожная карта упрощения Docara
 
 Текущий статус архитектурного roadmap: Goal 1 и Goal 2 независимо приняты;
-Goal 3 correction завершена на exact source `2a7237b…` и ожидает
-независимого reverse-outcome audit. Исторический R2
+Goal 3 correction и bounded SF5 UI-radius integration завершены на exact
+source `6bbe065…` и ожидают независимого reverse-outcome audit. Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
 заявлены.
@@ -74,8 +74,9 @@ assets, watch closure была широкой, а schema `oneOf` не испол
 
 ## Goal 3. Developer/AI SDK, structured QA and optional MCP
 
-Статус: correction complete, `ready_for_independent_audit`. Один application result обслуживает human
-и JSON CLI. Discovery читает существующие Smart/Design registries. Scaffold
+Статус: correction complete, `ready_for_independent_audit`. Один application
+result обслуживает human и JSON CLI. Discovery читает существующие
+Smart/Design registries. Scaffold
 работает через hash-bound dry-run/apply только в project-owned roots.
 Validate/test/QA делегируют принятые validators и PreviewKernel. Optional MCP —
 отдельный PHP stdio adapter над теми же services, read-only по умолчанию и без
@@ -85,6 +86,10 @@ roots проверяются до первой filesystem mutation; незави
 заявлена. Третий integrity correction запрещает nullable file coordinates,
 пересчитывает canonical QA identities, связывает их с exact preview bytes и
 проверяет candidate/reference PNG в PHP verifier независимо от report counters.
+Bounded UI extension сохраняет тот же pipeline: Framework-owned
+`--sf-radius--ui` становится общей базой малых controls, reader settings
+выбирают только default/medium/large, а transient search/settings modals по
+умолчанию используют `backdrop-blur-none`.
 
 ## M2. Вертикальный срез `components/badge`
 

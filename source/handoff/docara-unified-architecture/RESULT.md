@@ -2,37 +2,47 @@
 
 Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `2a7237bc59265d976b6871cb637e7ae67ca2c00b`
+Current candidate: `6bbe0653265bbfb08027b717ed2981a1add79c2e`
 
-Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md`
 
 ## Goal 3 current result
 
 Goal 2-C was independently accepted with `PASS_WITH_NOTES`. G3.0-G3.6 now add
 stable discovery, hash-bound project scaffold, validation/test, optional visual
-QA and optional local MCP over the accepted production services. Exact product
-source `2a7237b…` has reproducible package/consumer/full-single/static/browser
-evidence, pre-mutation containment, non-null file-backed locations and complete
-CLI/JSON/MCP diagnostics. Finalized QA references content-address the complete
-ordered screenshot manifest and are sealed into an immutable finalized plan;
-PHP acceptance recomputes the seal and independently compares exact PNG bytes.
-Coherent mutation of reference, candidate and report under an old plan is now
-rejected. Goal 3 is implementation-complete but remains audit pending.
+QA and optional local MCP over the accepted production services. Those Goal 3
+properties remain covered by parent candidate `2a7237b…`. Current cumulative
+source `6bbe065…` additionally removes default search/settings modal blur,
+repins the exact Framework distribution and exposes a three-value reader
+preference over Framework-owned `--sf-radius--ui`. It adds no renderer,
+Gateway, registry or PageBuilder path. Goal 3 remains implementation-complete
+but audit pending.
 
-The exact unpublished audit ZIP is `210215e09ccd156be54e3999dad8b4e846eacc2894a861f3add61f5807c4c984`
-with manifest `5511646ee8cefd17449c03294f60292258d79fcdade34c33bd0c36eca0dc5c53`
-(741 files). Two same-lock fresh dist consumers produce the same 168-file
-ledger `751702bc1e3345305e053553b45ca1da50bf51514363b020f97ea4a925738a7b`;
-single Alert rebuild preserves it. The repository documentation site has 104
-routes / 307 files / 208 HTML at ledger `5dc4112d3a0424ca74fca1b73a27392532cfdff84011369a5c3b38984fc32e9d`,
-with 21,842 references and broken=0. Full PHPUnit is 437 tests / 7,966
-assertions. Release and live gates remain closed.
+The current unpublished audit ZIP is
+`b2c6f4f956fb1e8b84cbd4c62f7c8c77d76894d7403e6db66abdece6407eafa9`
+with manifest
+`1c96e776f711710f60c1744a8b4a0a87398f20a1afce11bc277f01232bf170b9`
+(741 files); two independent clean clones produced identical artifacts and the
+repository verifier passed. Two same-lock fresh dist consumers built identical
+168-file trees at ledger `81ac6548…`; selected Alert rebuilds preserved the
+complete ledger and static verification reported broken=0. The documentation
+site has 104 routes / 307 files / 208 HTML at normalized ledger
+`164a03d2e296dd2ed5db90319656c0df9d38bbaa0d82fbc5ecd4d24f44d50010`,
+with 21,842 references and broken=0. Full/single output is identical and full
+PHPUnit is 437 tests / 7,974 assertions. Browser evidence confirms 2/4/8 px
+reader modes, restored 2 px default, blur-free transient modals and zero
+captured console/overflow defects. Release and live gates remain closed.
 
-The exact product candidate is deployed only to the local validation site
-`https://docara-new.test`: active tree `5dc4112d…`, 104/104 HTTPS route smoke,
-static broken=0 and representative Firefox browser smoke pass. The previous
-rc.3 tree remains as an exact rollback directory. This validation deployment
-does not accept Goal 3 and does not open release or `docara.test` gates.
+No site was changed for this cumulative candidate. The earlier validation of
+parent candidate `2a7237b…` at `https://docara-new.test` is historical and is
+not evidence that current source `6bbe065…` was deployed.
+
+### Superseded current Goal 3 baseline
+
+Source `2a7237b…`, ZIP `210215e0…`, manifest `5511646e…`, consumer ledger
+`751702bc…` and public ledger `5dc4112d…` remain valid historical Goal 3
+evidence, but they are superseded as current artifact identities by the bounded
+SF5 UI-radius integration above.
 
 ### Rejected Goal 3 audit artifacts
 

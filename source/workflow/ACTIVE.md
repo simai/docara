@@ -1,6 +1,6 @@
 # Active workflow: Docara unified architecture
 
-Date: 2026-08-03
+Date: 2026-08-04
 Status: Goal 3 ready for independent audit
 Workflow ID: `2026-08-03-docara-goal3-developer-ai-sdk`
 Graph goal: `docara.goal.unified`
@@ -10,8 +10,10 @@ Graph goal: `docara.goal.unified`
 - start here: `source/handoff/docara-unified-architecture/START.md`;
 - human specification: `docs/specification/README.md`;
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
-- active recovery: `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`;
-- fresh evidence: `source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md`;
+- active recovery: `source/workflow/2026-08-04-docara-sf5-ui-radius-integration.md`;
+- parent Goal 3 recovery:
+  `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`;
+- fresh evidence: `source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md`;
 - project-context freshness correction:
   `source/workflow/2026-08-03-docara-goal1d-project-context-correction.md`;
 - rejected audit candidate: `c5ea85f8d25deff99b671486fdc4d1e820a86491`;
@@ -26,7 +28,7 @@ Graph goal: `docara.goal.unified`
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.g3.developer_sdk`;
 - batch: `docara.batch.g3.developer_sdk`;
-- candidate: `2a7237bc59265d976b6871cb637e7ae67ca2c00b`;
+- candidate: `6bbe0653265bbfb08027b717ed2981a1add79c2e`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
 - next action: `independent_goal3_reverse_outcome_audit`;
 - Goal 1 and Goal 2 are independently accepted; release review remains unauthorized.
@@ -39,17 +41,19 @@ Markdown -> typed Document IR -> NodeRendererRegistry
 ```
 
 Every public route has one physical Markdown source. JSON controls composition,
-language packs contain interface messages, and generated IR/HTML remain
-disposable.
+`content/<locale>/lang.json` contains shared interface messages, and generated
+IR/HTML remain disposable.
 
 ## Current result
 
 The neutral `sf.smart_artifact_abi` v1 contract and the single Gateway/provider
 runtime and Goal 2 DesignRegistry/preview were independently accepted. Goal 3
 now provides one application-service/CLI/optional-MCP surface over that
-production path. Its security, diagnostics and visual correction is complete
-and exact evidence is ready for an independent reverse-outcome audit; no
-release-review action is authorized.
+production path. Its security, diagnostics and visual correction remains
+intact. The current candidate also integrates the exact SF5 UI-radius contract
+and Docara's allowlisted reader preference through that same path. Combined
+evidence is ready for an independent reverse-outcome audit; no release-review
+action is authorized.
 
 ## Boundary
 

@@ -38,7 +38,10 @@
     "tests/Unit/McpAdapterTest.php",
     "tests/Unit/ReleasePackageTest.php"
   ],
-  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md"],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md",
+    "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md"
+  ],
   "review_refs": ["docara.gate.architecture_acceptance"],
   "current_behavior": [
     "One operation result object drives human, JSON and MCP structured output.",
@@ -49,5 +52,5 @@
   "known_deviations": ["Independent Goal 3 reverse-outcome audit is pending."],
   "deletion_gates": [],
   "status": "implementation_complete_audit_pending",
-  "mapped_revision": "2a7237bc59265d976b6871cb637e7ae67ca2c00b"
+  "mapped_revision": "6bbe0653265bbfb08027b717ed2981a1add79c2e"
 }

@@ -2,14 +2,17 @@
 
 Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `2a7237bc59265d976b6871cb637e7ae67ca2c00b`
+Current candidate: `6bbe0653265bbfb08027b717ed2981a1add79c2e`
 
-Current evidence: `source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md`
 
-Goal 1 and Goal 2 are independently accepted. Goal 3 correction is implementation
-complete through the single application-service/runtime path. Independently
-reproduce the exact Goal 3 candidate and evidence; do not implement Goal 4 or
-start release review. Release and live actions remain unauthorized.
+Goal 1 and Goal 2 are independently accepted. Goal 3 correction remains
+implementation-complete through the single application-service/runtime path.
+The current cumulative candidate adds exact SF5 UI-radius inheritance and an
+allowlisted Docara reader preference without a second runtime path.
+Independently reproduce this candidate and its parent Goal 3 evidence; do not
+implement Goal 4 or start release review. Release and live actions remain
+unauthorized.
 
 ## Historical deployment decision (parked, not executable)
 

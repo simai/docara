@@ -1,9 +1,10 @@
 # Приёмка единой архитектуры Docara
 
-Текущий статус: Goal 1 и Goal 2 независимо приняты. Goal 3 correction
-завершена на exact source `2a7237b…` и ожидает независимого audit. Finalized
-QA reference целиком content-addressed и привязан к immutable plan; совместная
-подмена reference/candidate/report fail-closed.
+Текущий статус: Goal 1 и Goal 2 независимо приняты. Goal 3 correction и
+ограниченная интеграция SF5 UI-radius завершены на exact source `6bbe065…` и
+ожидают независимого audit. Finalized QA reference целиком content-addressed и
+привязан к immutable plan; совместная подмена reference/candidate/report
+fail-closed.
 Исторический R2 `PASS_DISPOSABLE_CORRECTED` и unpublished release artifact
 остаются parked baseline, а не текущим архитектурным кандидатом. Tag, release,
 live cutover и production acceptance требуют отдельного решения и не заявлены.
@@ -181,6 +182,11 @@ PASS ставится только по воспроизводимому evidenc
       требует отдельную process capability плюс exact plan для apply.
 - [x] Goal 3 exact candidate прошёл executor-owned полную regression/package/
       consumer/browser матрицу.
+- [x] Current cumulative candidate использует Framework-owned
+      `--sf-radius--ui`, ограничивает reader choice значениями default/medium/
+      large и оставляет component-native radius overrides авторитетными.
+- [x] Search/settings modals по умолчанию не размывают фон; пользовательская
+      настройка blur остаётся доступна как явный выбор.
 - [ ] Независимый reverse-outcome audit принял exact Goal 3 candidate.
 
 ## J. R2 production dossier

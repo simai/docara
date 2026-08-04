@@ -8,7 +8,7 @@
   "summary": "M5 implementation map of ownership-aware portable init/update behavior, immutable package and Framework state, deterministic apply and verified rollback.",
   "owner": "dev",
   "lifecycle": "completed",
-  "readiness": "R2_contract",
+  "readiness": "goal3_candidate",
   "visibility": "repository",
   "source_refs": ["docs/specification/DOCARA-TZ.md#16-обновление-docara"],
   "profile_refs": ["docara.unified"],
@@ -24,6 +24,8 @@
     "src/Framework/FrameworkLock.php#FrameworkLock::assertValid",
     "src/Framework/FrameworkAdmissionPreflight.php#FrameworkAdmissionPreflight::assertReady",
     "src/Portable/PortableConfigurationLoader.php#PortableConfigurationLoader::assertFrameworkLockSemantics",
+    "resources/framework/runtime-lock.json",
+    "resources/framework/view-utilities.json",
     "README.md#commands",
     "docs/site/content/ru/build/update.md",
     "docs/site/content/ru/reference/cli.md",
@@ -37,17 +39,20 @@
     "tests/PortableInitCommandTest.php#portable_update_refuses_to_implicitly_migrate_a_legacy_site",
     "tests/Unit/PortableConfigurationTest.php#test_moving_framework_references_are_rejected",
     "tests/Unit/PortableConfigurationTest.php#test_the_shipped_portable_lock_is_accepted_with_its_independent_manifest_provider_revision",
-    "tests/Unit/ComposerPackageSurfaceTest.php"
+    "tests/Unit/ComposerPackageSurfaceTest.php",
+    "tests/Unit/FrameworkLockTest.php",
+    "tests/Unit/FrameworkRegistryTest.php"
   ],
   "evidence_refs": [
     "docara.evidence.m0_inventory",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.2-M5.3-PORTABLE-UPDATE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.6-AUTHOR-WORKFLOW-AND-DOCUMENTATION.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.7-CANDIDATE-VERIFICATION.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.7-CANDIDATE-VERIFICATION.md",
+    "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md"
   ],
   "review_refs": ["docara.gate.architecture_acceptance"],
   "current_behavior": [
-    "Framework runtime, manifests and asset projection are pinned to commit hashes and validated fail closed.",
+    "Framework runtime, manifests and asset projection are pinned to commit hashes and validated fail closed; the current exact distribution includes the Framework-owned shared UI-radius contract.",
     "init creates project-owned JSON/Markdown plus a versioned package-owned engine state only in an empty target.",
     "update verifies ownership, writes a hash-bound dry-run plan, applies by atomic engine-directory swap and preserves a validated rollback package.",
     "project-owned files are never update targets; dirty, unknown, symlinked, stale or corrupt state fails closed.",
@@ -60,6 +65,6 @@
     "Do not change Framework locks without exact tuple compatibility and asset projection evidence.",
     "Prove the documented consumer-owned dependency lock against the exported archive before claiming reproducible clean installation."
   ],
-  "status": "implemented_candidate_verified",
-  "mapped_revision": "48751b8ca221f7185a72ce19188b1441aea93d2e"
+  "status": "current_candidate_verified_audit_pending",
+  "mapped_revision": "6bbe0653265bbfb08027b717ed2981a1add79c2e"
 }

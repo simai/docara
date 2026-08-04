@@ -8,7 +8,7 @@
   "summary": "Configuration inheritance, content-owned locale routing and current composition boundaries through the M5 product fixture.",
   "owner": "dev",
   "lifecycle": "active",
-  "readiness": "R2_contract",
+  "readiness": "goal3_candidate",
   "visibility": "repository",
   "source_refs": [
     "docs/specification/DOCARA-TZ.md#6-мультиязычность",
@@ -32,6 +32,8 @@
     "src/Declarative/DeclarativePageCompiler.php#DeclarativePageCompiler::compile",
     "src/Design/Registry/DesignRegistry.php#DesignRegistry",
     "src/Preview/PreviewKernel.php#PreviewKernel",
+    "src/Preferences/CoreReaderPreferenceContribution.php",
+    "src/Preferences/ReaderPreferenceCompiler.php",
     "resources/schemas/site.schema.json",
     "resources/schemas/section.schema.json",
     "resources/schemas/page.schema.json",
@@ -52,6 +54,7 @@
     "tests/PortableSiteBuilderTest.php#it_builds_arbitrary_bcp47_locale_trees_with_rtl_switching_and_alternate_links",
     "tests/PortableMultilingualProductTest.php#physical_english_ltr_and_arabic_rtl_routes_use_the_same_full_and_single_pipeline",
     "tests/Unit/SourceBoundaryValidatorTest.php",
+    "tests/Unit/ReaderPreferenceCompilerTest.php",
     "tests/PortableDocumentationSiteTest.php#real_russian_site_uses_content_lang_and_rejects_the_retired_pack_field"
   ],
   "evidence_refs": [
@@ -60,7 +63,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/M1B-EVIDENCE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/batch-10-details-backlinks.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.5-LOCALE-SECURITY-ACCESSIBILITY.md"
-    ,"source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md"
+    ,"source/workflow/evidence/2026-08-03-docara-goal2c-preview-validation-correction/INDEX.md",
+    "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md"
   ],
   "review_refs": ["docara.gate.source_ownership", "docara.gate.migration_coverage"],
   "current_behavior": [
@@ -73,7 +77,8 @@
     "M1B provides docara.lang.v1 and a fail-closed target validator.",
     "Public builds load shared UI messages only from content/<locale>/lang.json and fail without the selected locale file; package presentation fallback is absent.",
     "FrontMatterParser implements title, description, tags, draft and translation_key with source line/column diagnostics.",
-    "locales.missing_page_policy is explicit: skip publishes only physical owners and error fails with LOCALE_PAGE_MISSING."
+    "locales.missing_page_policy is explicit: skip publishes only physical owners and error fails with LOCALE_PAGE_MISSING.",
+    "Reader settings expose only allowlisted UI-radius presets over Framework-owned tokens; arbitrary CSS remains outside project configuration."
   ],
   "known_deviations": [
     "Page-sidecar title and description remain a pre-release compatibility surface; new authoring uses front matter.",
@@ -85,6 +90,6 @@
     "Remove remaining page-sidecar prose fields only with an explicit consumer migration and parity proof.",
     "Do not claim a locale as public documentation until its complete physical Markdown and lang.json ownership matrix passes."
   ],
-  "status": "goal2_correction_implementation_complete_audit_pending",
-  "mapped_revision": "39f1e3f6e97d7f8138e892b5884ba194cc889a7f"
+  "status": "current_candidate_verified_audit_pending",
+  "mapped_revision": "6bbe0653265bbfb08027b717ed2981a1add79c2e"
 }

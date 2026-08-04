@@ -15,7 +15,10 @@
     "docs/specification/implementation/ROADMAP.md",
     "docs/specification/ACCEPTANCE.md"
   ],
-  "evidence_refs": ["source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md"],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md",
+    "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md"
+  ],
   "profile_refs": ["docara.unified"],
   "done_when": [
     "Every public route in every locale has exactly one content/<locale>/<route>.md source.",

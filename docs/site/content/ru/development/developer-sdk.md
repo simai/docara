@@ -40,6 +40,19 @@ provider, fixture, state и schema. Human и `--json` — два предста�
 `docara.operation_result.v1`: у diagnostics стабильны code, severity, owner,
 provenance, source location и suggestion.
 
+`schema smart --json` возвращает именно схему переносимого manifest, который
+создаёт `scaffold smart`: `portable-smart-manifest.schema.json`. В результате
+также есть машинная identity контракта:
+`sf.smart_artifact_abi` / `1.0.0` /
+`sf-smart-artifact-abi-v1`. Поэтому manifest из dry-run можно проверить этой
+схемой напрямую, без конвертации в package-specific формат.
+
+`inspect smart` показывает эту же neutral identity для Framework-, Docara- и
+project-owned компонентов. Поля `provider_adapter` и `template_abi` отдельно
+объясняют, как конкретный provider подключил artifact. Историческое имя
+`sf5.smart.artifact.v1` публикуется только как
+`storage_compatibility_alias`, а не как второй Smart-контракт.
+
 ## Границы записи
 
 Scaffold создаёт только новые project-owned файлы под `smart/` или `design/`.

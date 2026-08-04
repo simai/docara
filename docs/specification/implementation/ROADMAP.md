@@ -89,7 +89,12 @@ roots проверяются до первой filesystem mutation; незави
 Bounded UI extension сохраняет тот же pipeline: Framework-owned
 `--sf-radius--ui` становится общей базой малых controls, reader settings
 выбирают только default/medium/large, а transient search/settings modals по
-умолчанию используют `backdrop-blur-none`.
+умолчанию используют `backdrop-blur-none`. Goal 3D correction дополнительно
+связывает публичный `schema smart` с реальным portable scaffold manifest и
+нормализует inspect provenance всех providers на neutral
+`sf.smart_artifact_abi`; legacy storage alias и host template adapter остаются
+отдельными provenance facts. Независимый audit нового cumulative candidate
+всё ещё обязателен.
 
 ## M2. Вертикальный срез `components/badge`
 

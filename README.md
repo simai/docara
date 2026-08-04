@@ -69,6 +69,11 @@ php vendor/bin/docara qa --finalize-reference=<exact-draft-plan-sha256> [--json]
 php vendor/bin/docara qa --verify=<exact-finalized-plan-sha256> [--json]
 ```
 
+`schema smart` возвращает neutral
+`sf.smart_artifact_abi` v1 manifest schema, которой напрямую проверяется
+результат `scaffold smart`; package compatibility adapters не являются вторым
+публичным Smart-форматом.
+
 For layout test/QA, the selected page must actually resolve that layout; a
 context mismatch fails closed instead of testing a different production page.
 Each QA run uses an explicit immutable chain. `qa ... --dry-run` creates a

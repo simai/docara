@@ -152,6 +152,15 @@ alias для исторического layout файлов; это не вто�
 Framework consumer narrowing хранится в exact immutable lock рядом с manifest
 pin, а не в PHP-карте component IDs.
 
+Developer SDK публикует тот же контракт, а не package legacy storage schema:
+`schema smart` выбирает `portable-smart-manifest.schema.json`, и scaffold
+manifest валидируется этой схемой без адаптации. Effective registry provenance
+для package, Framework и project providers всегда содержит neutral
+`contract_id`, `contract_schema_version` и `contract_compatibility_id`.
+`storage_compatibility_alias`, `provider_adapter` и `template_abi` являются
+раздельными фактами происхождения; legacy adapter не становится вторым
+публичным Smart dialect.
+
 Exact adapter pin `b3cdff87563ff78e7eddf044048a4b298fc69036` сохраняет
 resolved view, preset, slot и hydration. Постоянный cross-host regression
 рендерит один неизменённый tracked artifact под Docara и SF5 и требует

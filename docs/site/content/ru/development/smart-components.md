@@ -91,6 +91,14 @@ host-adapter старых package-owned шаблонов и не являютс�
 slot и hydration одинаково под SIMAI Framework 5 и Docara. Не создавайте отдельный Docara
 template dialect.
 
+Команда `docara schema smart --json` возвращает authoritative
+`portable-smart-manifest.schema.json`; неизменённый manifest из
+`docara scaffold smart ... --dry-run` проходит именно эту схему. Команда
+`inspect smart ... --json` одинаково сообщает neutral contract identity для
+`ui.*`, `docara.*` и project namespace. Host-bound преобразование старых
+package manifests видно отдельно в `provider_adapter`, а форма template — в
+`template_abi`. Ни одно из этих полей не создаёт новый публичный dialect.
+
 Project template считается trusted developer source. Его путь выводится только
 из фиксированного provider root и manifest/view записи. CSS/JavaScript также
 объявляются в manifest, проверяются по физическим файлам и публикуются через

@@ -152,7 +152,7 @@ final readonly class ReaderPreferenceCompiler
             'enabled' => true,
             'view' => 'side-panel',
             'groups' => [
-                ['id' => 'appearance', 'fields' => ['appearance.theme', 'appearance.modal_blur']],
+                ['id' => 'appearance', 'fields' => ['appearance.theme', 'appearance.modal_blur', 'appearance.ui_radius']],
             ],
         ];
     }

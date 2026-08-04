@@ -41,7 +41,8 @@
   },
   "settings": {
     "theme": "system",
-    "modal_blur": "none"
+    "modal_blur": "none",
+    "ui_radius": "default"
   },
   "reader_preferences": {
     "enabled": true,
@@ -49,7 +50,7 @@
     "groups": [
       {
         "id": "appearance",
-        "fields": ["appearance.theme", "appearance.modal_blur"]
+        "fields": ["appearance.theme", "appearance.modal_blur", "appearance.ui_radius"]
       }
     ]
   },

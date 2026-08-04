@@ -141,8 +141,8 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);
-        $this->assertSame('sf-v5.3.2-cc1bfbc5-aa9f34a4', $lock['runtime']['pair_id']);
-        $this->assertSame('cc1bfbc53c197db54ea27c28e78f4c0af9b60d33', $lock['runtime']['ui']['commit']);
+        $this->assertSame('sf-v5.3.2-96c17a26-aa9f34a4', $lock['runtime']['pair_id']);
+        $this->assertSame('96c17a2633a176bc77821632703930dc16276c7b', $lock['runtime']['ui']['commit']);
         $this->assertSame('aa9f34a4d2bf421e20970ab4eb0418f017c62059', $lock['runtime']['ui_smart']['commit']);
         $this->assertSame('b7e8a2e810c0d49e31cb749a7ab34c373dd48bc6', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);

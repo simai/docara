@@ -37,7 +37,8 @@
 {
   "settings": {
     "theme": "system",
-    "modal_blur": "none"
+    "modal_blur": "none",
+    "ui_radius": "default"
   }
 }
 ```
@@ -59,7 +60,7 @@
     "groups": [
       {
         "id": "appearance",
-        "fields": ["appearance.theme", "appearance.modal_blur"]
+        "fields": ["appearance.theme", "appearance.modal_blur", "appearance.ui_radius"]
       }
     ]
   }
@@ -87,7 +88,8 @@ Docara сохраняет один версионированный JSON-док�
   "schema": 1,
   "values": {
     "appearance.theme": "dark",
-    "appearance.modal_blur": "medium"
+    "appearance.modal_blur": "medium",
+    "appearance.ui_radius": "large"
   }
 }
 ```
@@ -103,6 +105,12 @@ Docara сохраняет один версионированный JSON-док�
 событие браузера `storage`.
 
 ## Почему настройки остаются одной группой
+
+Закругление использует один токен Framework `--sf-radius--ui`. В режиме
+«Стандартное» он равен `--sf-radius-1/3`; варианты «Среднее» и «Крупное»
+переключают его на `--sf-radius-1/2` и `--sf-radius-1`. Кнопки, поля и
+выпадающие списки наследуют этот токен через собственные переменные компонентов,
+поэтому Docara не хранит произвольный CSS и не ветвится по component ID.
 
 Масштаб текста уже надёжно меняется средствами браузера и операционной системы.
 Ширину общей сетки задаёт автор через `layout.container.max` и штатные

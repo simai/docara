@@ -780,7 +780,7 @@ MD);
             self::assertStringNotContainsString('[data-docara-reader-settings-close]:focus-visible', $surface);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
-            self::assertStringContainsString('@cc1bfbc53c197db54ea27c28e78f4c0af9b60d33/', $html);
+            self::assertStringContainsString('@96c17a2633a176bc77821632703930dc16276c7b/', $html);
             self::assertStringNotContainsString('simai/ui-smart@', $html);
             self::assertStringContainsString('window.sfSmartPath="/_docara/framework"', $html);
             self::assertStringContainsString('/distr/component/icons/fonts/MaterialSymbols-Outlined.woff2', $html);
@@ -1103,7 +1103,7 @@ MD);
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('sf-v5.3.2-cc1bfbc5-aa9f34a4', $componentCatalog['framework_pair']);
+        self::assertSame('sf-v5.3.2-96c17a26-aa9f34a4', $componentCatalog['framework_pair']);
         self::assertCount(37, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -1183,7 +1183,7 @@ MD);
         $this->copyPortableFixture($this->tmp);
         $sectionPath = $this->tmpPath('content/guides/section.json');
         $section = $this->jsonFile($sectionPath);
-        $section['settings'] = ['theme' => 'dark', 'modal_blur' => 'small'];
+        $section['settings'] = ['theme' => 'dark', 'modal_blur' => 'small', 'ui_radius' => 'large'];
         file_put_contents(
             $sectionPath,
             json_encode($section, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
@@ -1192,7 +1192,7 @@ MD);
         $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
         $html = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
-        self::assertStringContainsString('"values":{"appearance.theme":"dark","appearance.modal_blur":"small"}', $html);
+        self::assertStringContainsString('"values":{"appearance.theme":"dark","appearance.modal_blur":"small","appearance.ui_radius":"large"}', $html);
         self::assertMatchesRegularExpression(
             '~data-docara-preference-option name="docara-preference-appearance\\.theme" type="radio" value="dark" data-preference-id="appearance\\.theme" checked~',
             $html,
@@ -1201,6 +1201,12 @@ MD);
             '~data-docara-preference-option name="docara-preference-appearance\.modal_blur" type="radio" value="small" data-preference-id="appearance\.modal_blur" checked~',
             $html,
         );
+        self::assertMatchesRegularExpression(
+            '~data-docara-preference-option name="docara-preference-appearance\.ui_radius" type="radio" value="large" data-preference-id="appearance\.ui_radius" checked~',
+            $html,
+        );
+        self::assertStringContainsString("root.style.setProperty('--sf-radius--ui',values[mode])", $html);
+        self::assertStringContainsString("root.style.removeProperty('--sf-radius--ui')", $html);
         self::assertStringContainsString("'sf-modal[data-docara-transient-dialog]'", $html);
         self::assertStringContainsString("modal.setAttribute('overlay-class',value)", $html);
         self::assertStringContainsString("document.addEventListener('DOMContentLoaded',function(){applyAll(initialSource);revealFrameworkBody()},{once:true})", $html);
@@ -1576,7 +1582,7 @@ MD;
             $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-cc1bfbc5-aa9f34a4-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-96c17a26-aa9f34a4-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework/smart/alert/js/alert.js'));

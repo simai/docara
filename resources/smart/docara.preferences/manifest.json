@@ -117,7 +117,7 @@
       "close_label": "Close",
       "reset_label": "Restore site setting",
       "groups": [],
-      "manifest": {"enabled": true, "view": "side-panel", "storage_key": "docara.preferences.example.v1", "schema": 1, "groups": [], "values": {"appearance.theme": "system", "appearance.modal_blur": "none"}}
+      "manifest": {"enabled": true, "view": "side-panel", "storage_key": "docara.preferences.example.v1", "schema": 1, "groups": [], "values": {"appearance.theme": "system", "appearance.modal_blur": "none", "appearance.ui_radius": "default"}}
     },
     "controls": []
   },

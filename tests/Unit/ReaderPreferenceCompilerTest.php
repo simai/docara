@@ -14,7 +14,7 @@ final class ReaderPreferenceCompilerTest extends TestCase
     {
         $manifest = (new ReaderPreferenceCompiler)->compile(
             ReaderPreferenceCompiler::defaultConfiguration(),
-            ['appearance.theme' => 'system', 'appearance.modal_blur' => 'none'],
+            ['appearance.theme' => 'system', 'appearance.modal_blur' => 'none', 'appearance.ui_radius' => 'default'],
             $this->copy(),
             'docara.preferences.site.v1',
         );
@@ -34,6 +34,10 @@ final class ReaderPreferenceCompilerTest extends TestCase
         self::assertSame('none', $manifest['groups'][0]['fields'][1]['configured']);
         self::assertSame('docara.modal_blur', $manifest['groups'][0]['fields'][1]['effect']);
         self::assertSame(['none', 'small', 'medium', 'large'], $manifest['groups'][0]['fields'][1]['values']);
+        self::assertSame('appearance.ui_radius', $manifest['groups'][0]['fields'][2]['id']);
+        self::assertSame('default', $manifest['groups'][0]['fields'][2]['configured']);
+        self::assertSame('docara.ui_radius', $manifest['groups'][0]['fields'][2]['effect']);
+        self::assertSame(['default', 'medium', 'large'], $manifest['groups'][0]['fields'][2]['values']);
     }
 
     public function test_it_fails_closed_for_an_unknown_field(): void
@@ -109,6 +113,14 @@ final class ReaderPreferenceCompilerTest extends TestCase
             'reader.modal_blur_medium_description' => 'Среднее размытие.',
             'reader.modal_blur_large' => 'Максимальное',
             'reader.modal_blur_large_description' => 'Максимальное размытие.',
+            'reader.ui_radius_title' => 'Закругление элементов',
+            'reader.ui_radius_description' => 'Выбор общего радиуса.',
+            'reader.ui_radius_default' => 'Стандартное',
+            'reader.ui_radius_default_description' => 'Системный радиус.',
+            'reader.ui_radius_medium' => 'Среднее',
+            'reader.ui_radius_medium_description' => 'Средний радиус.',
+            'reader.ui_radius_large' => 'Крупное',
+            'reader.ui_radius_large_description' => 'Крупный радиус.',
         ];
     }
 }

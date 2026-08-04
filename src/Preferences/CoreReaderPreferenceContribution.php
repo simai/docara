@@ -52,5 +52,26 @@ final class CoreReaderPreferenceContribution implements ReaderPreferenceContribu
             'reader.modal_blur_title',
             'reader.modal_blur_description',
         ));
+        $registry->add(new ReaderPreferenceDefinition(
+            'appearance.ui_radius',
+            'appearance',
+            'choice',
+            ['default', 'medium', 'large'],
+            'docara.ui_radius',
+            'prepaint',
+            'site',
+            [
+                'default' => 'reader.ui_radius_default',
+                'medium' => 'reader.ui_radius_medium',
+                'large' => 'reader.ui_radius_large',
+            ],
+            [
+                'default' => 'reader.ui_radius_default_description',
+                'medium' => 'reader.ui_radius_medium_description',
+                'large' => 'reader.ui_radius_large_description',
+            ],
+            'reader.ui_radius_title',
+            'reader.ui_radius_description',
+        ));
     }
 }

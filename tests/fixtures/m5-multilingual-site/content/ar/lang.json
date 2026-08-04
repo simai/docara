@@ -32,6 +32,10 @@
         "modal_blur_small": "خفيف", "modal_blur_small_description": "يموه المحتوى خلف النافذة قليلاً.",
         "modal_blur_medium": "متوسط", "modal_blur_medium_description": "يفصل النافذة بوضوح عن الصفحة.",
         "modal_blur_large": "أقصى", "modal_blur_large_description": "يركز الانتباه على النافذة المفتوحة.",
+        "ui_radius_title": "استدارة عناصر التحكم", "ui_radius_description": "يغير نصف القطر المشترك للأزرار والحقول والقوائم.",
+        "ui_radius_default": "افتراضي", "ui_radius_default_description": "يستخدم رمز Framework --sf-radius-1/3.",
+        "ui_radius_medium": "متوسط", "ui_radius_medium_description": "يستخدم رمز Framework --sf-radius-1/2.",
+        "ui_radius_large": "كبير", "ui_radius_large_description": "يستخدم رمز Framework --sf-radius-1.",
         "saved": "تم الحفظ: {setting} — {value}.", "applied_not_saved": "تم تطبيق الإعداد. لم يسمح المتصفح بحفظ الاختيار.",
         "restored": "تمت استعادة إعدادات الموقع."
     },

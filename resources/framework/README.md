@@ -5,7 +5,7 @@ Docara prototype. It contains byte-identical copies of the accepted
 `larena/ui` manifests for `ui.alert` and `ui.button`, the exact accepted Simai
 Framework runtime lock and four locally projected Smart assets from the
 published Framework pair
-`ui@cc1bfbc53c197db54ea27c28e78f4c0af9b60d33` /
+`ui@96c17a2633a176bc77821632703930dc16276c7b` /
 `ui-smart@aa9f34a4d2bf421e20970ab4eb0418f017c62059`:
 
 - `smart/alert/js/alert.js` —

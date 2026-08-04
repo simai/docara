@@ -72,6 +72,7 @@ Invalid-пример документирует ожидаемую ошибку;
   Section -> Block -> Smart calls;
 - `settings.theme`: `system`, `light`, `dark`;
 - `settings.modal_blur`: `none`, `small`, `medium`, `large`;
+- `settings.ui_radius`: `default`, `medium`, `large`;
 - `reader_preferences.enabled`: boolean;
 - `reader_preferences.view`: `side-panel`;
 - `reader_preferences.groups`: непустой список зарегистрированных групп и

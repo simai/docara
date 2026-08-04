@@ -128,7 +128,9 @@ php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 `settings.theme` принимает `system`, `light`, `dark`. Параметр
 `settings.modal_blur` управляет размытием страницы за модальными окнами и
 принимает `none`, `small`, `medium`, `large`; по умолчанию используется
-`large`.
+`none`. `settings.ui_radius` принимает `default`, `medium`, `large` и управляет
+общим Framework-токеном `--sf-radius--ui`; стандартное значение —
+`--sf-radius-1/3`.
 
 `layout.scrollbar.preset` управляет полосами прокрутки длинного левого меню и
 правого содержания. Режим `overlay` используется по умолчанию: полоса не

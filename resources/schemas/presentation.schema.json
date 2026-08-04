@@ -211,6 +211,10 @@
                 "modal_blur": {
                     "type": "string",
                     "enum": ["none", "small", "medium", "large"]
+                },
+                "ui_radius": {
+                    "type": "string",
+                    "enum": ["default", "medium", "large"]
                 }
             },
             "additionalProperties": false

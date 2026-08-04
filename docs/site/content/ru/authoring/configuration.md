@@ -86,7 +86,8 @@ Resolver начинает с небольшого встроенного наб�
   },
   "settings": {
     "theme": "system",
-    "modal_blur": "none"
+    "modal_blur": "none",
+    "ui_radius": "default"
   },
   "reader_preferences": {
     "enabled": true,
@@ -94,7 +95,7 @@ Resolver начинает с небольшого встроенного наб�
     "groups": [
       {
         "id": "appearance",
-        "fields": ["appearance.theme", "appearance.modal_blur"]
+        "fields": ["appearance.theme", "appearance.modal_blur", "appearance.ui_radius"]
       }
     ]
   },
@@ -183,6 +184,8 @@ URL, query, fragment, self redirect, chain, cycle, collision со страниц
 - `settings.theme`: `system`, `light`, `dark`;
 - `settings.modal_blur`: `none`, `small`, `medium`, `large`; по умолчанию
   размытие выключено (`none`), остаётся штатное затемнение подложки;
+- `settings.ui_radius`: `default`, `medium`, `large`; безопасно выбирает общий
+  токен Framework `--sf-radius--ui`, без произвольного CSS;
 - `reader_preferences`: включение и состав зарегистрированных настроек
   читателя; ветка разрешена только в `docara.json`;
 - `navigation.hidden`: убрать страницу из меню;

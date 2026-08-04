@@ -13,6 +13,7 @@ use Simai\Docara\Portable\JsonSchemaValidator;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\SchemaRepository;
 use Simai\Docara\Smart\Artifact\DocaraPortableSmartAdmissionPolicy;
+use Simai\Docara\Smart\Artifact\PortableSmartContractException;
 use Symfony\Component\Console\Tester\CommandTester;
 use Tests\TestCase;
 
@@ -149,7 +150,7 @@ final class SmartSdkPortableContractTest extends TestCase
 
         (new JsonSchemaValidator(new SchemaRepository))->assertValid($manifest, 'smart.manifest.schema.json');
 
-        $this->expectException(\Simai\Docara\Smart\Artifact\PortableSmartContractException::class);
+        $this->expectException(PortableSmartContractException::class);
         $this->expectExceptionMessage('PORTABLE_SMART_CONTRACT_INVALID:project.notice:render.hydration');
         (new DocaraPortableSmartAdmissionPolicy)->assertAdmitted($manifest, 'project.notice');
     }

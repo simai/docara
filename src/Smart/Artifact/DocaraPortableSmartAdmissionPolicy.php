@@ -29,4 +29,3 @@ final readonly class DocaraPortableSmartAdmissionPolicy
         $this->contract->assertManifest($manifest, $expectedCode);
     }
 }
-

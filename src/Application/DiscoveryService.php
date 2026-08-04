@@ -6,6 +6,7 @@ namespace Simai\Docara\Application;
 
 use Simai\Docara\Design\Artifact\DesignArtifactKind;
 use Simai\Docara\Portable\SchemaRepository;
+use Simai\Docara\Smart\Artifact\DocaraPortableSmartAdmissionPolicy;
 use Simai\Docara\Smart\Artifact\Sf5SmartArtifactV1Contract;
 
 final readonly class DiscoveryService
@@ -93,7 +94,7 @@ final readonly class DiscoveryService
                 'source_revision' => Sf5SmartArtifactV1Contract::SOURCE_REVISION,
                 'source_path' => 'docs/developer/specifications/schemas/smart.manifest.schema.json',
                 'source_sha256' => '9d65a9b3d63567ef8a12dd43f5c3e24913e2659105b088778dc50476a9578037',
-                'admission_policy' => \Simai\Docara\Smart\Artifact\DocaraPortableSmartAdmissionPolicy::POLICY_ID,
+                'admission_policy' => DocaraPortableSmartAdmissionPolicy::POLICY_ID,
             ];
         }
 

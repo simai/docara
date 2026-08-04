@@ -11,6 +11,8 @@ use Simai\Docara\Framework\FrameworkComponentException;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\LocaleTag;
+use Simai\Docara\Smart\Runtime\ProjectSmartRuntime;
+use Simai\Docara\Smart\SmartRegistry;
 
 final class PortableConfigurationLoader
 {
@@ -113,9 +115,6 @@ final class PortableConfigurationLoader
         $projectNamespace = is_string($site['smart']['namespace'] ?? null)
             ? $site['smart']['namespace']
             : null;
-        $definitions = new DefinitionRepository(
-            designs: DesignRegistry::bundled($this->root, $projectNamespace),
-        );
         $explicitLocaleRegistry = is_array($site['locales'] ?? null) && $site['locales'] !== [];
         $localeRegistry = LocaleRegistry::fromSite($site);
         if (! $explicitLocaleRegistry) {
@@ -139,6 +138,11 @@ final class PortableConfigurationLoader
         );
         $trace[] = $frameworkTrace;
         $this->assertFrameworkLockSemantics($frameworkLock);
+        $projectSmart = ProjectSmartRuntime::fromSite($this->root, $site, $frameworkLock);
+        $definitions = new DefinitionRepository(
+            smarts: $projectSmart?->registry ?? SmartRegistry::bundled(),
+            designs: DesignRegistry::bundled($this->root, $projectNamespace),
+        );
 
         $result = $this->merger->merge([], [
             'content_root' => 'content',

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart",
+  "code": "project.product-configurator",
+  "title": "Static product configurator",
+  "description": "Calculates a local illustrative configuration without an order or network request.",
+  "category": "product",
+  "render": {
+    "mode": "server-first",
+    "strategy": "server-first-hydratable",
+    "template": "default",
+    "hydration": "required",
+    "domStrategy": "light-dom-adopt",
+    "updateStrategy": "patch",
+    "initialHtml": "complete",
+    "frontendOwnership": "behavior"
+  },
+  "props": {
+    "title": {"type": "string", "required": true},
+    "base_price": {"type": "number", "required": true},
+    "currency": {"type": "string", "required": true}
+  },
+  "assets": {
+    "css": ["assets/product-configurator.css"],
+    "js": ["assets/product-configurator.js"],
+    "depends": ["simai.framework.core.css"]
+  },
+  "ai": {
+    "tags": ["product", "configuration", "static"],
+    "summary": "Demonstrates deterministic client-only configuration with no order side effect."
+  },
+  "meta": {"ownerPackage": "project/project", "version": "1.0.0"},
+  "extensions": {"docara": {"aliases": {"project.product_configurator": "Portable ABI identifiers use hyphens; the underscore name remains an authoring alias."}}}
+}

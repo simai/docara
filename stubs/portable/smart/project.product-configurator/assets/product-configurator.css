@@ -1,0 +1,4 @@
+/* Project-owned, locally served demo asset. */
+.project-product-configurator fieldset {
+    max-inline-size: 32rem;
+}

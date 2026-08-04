@@ -1,0 +1,4 @@
+.project-footer-links {
+    padding-block: var(--sf-space-2);
+    border-block-start: 1px solid var(--sf-color--outline-variant);
+}

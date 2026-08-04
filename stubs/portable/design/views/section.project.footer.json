@@ -1,0 +1,10 @@
+{
+  "schema": "docara.view_tree.v1",
+  "key": "section.project.footer",
+  "tree": {
+    "kind": "element",
+    "tag": "section",
+    "identity": "section",
+    "children": [{"kind": "slot", "slot": "content"}]
+  }
+}

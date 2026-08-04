@@ -87,7 +87,7 @@ final class DesignAtlasTest extends TestCase
     public function atlas_cannot_publish_unregistered_files_as_definitions(): void
     {
         $before = (new DesignAtlasService)->atlas($this->tmp)->toArray()['data'];
-        $this->filesystem->makeDirectory($this->tmpPath('design'), 0755, true);
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('design'));
         $this->filesystem->put($this->tmpPath('design/README.txt'), "not an artifact\n");
         $after = (new DesignAtlasService)->atlas($this->tmp)->toArray()['data'];
 

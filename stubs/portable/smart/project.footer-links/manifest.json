@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart",
+  "code": "project.footer-links",
+  "title": "Project footer links",
+  "description": "Adds a bounded local link group to an admitted footer slot.",
+  "category": "shell",
+  "render": {
+    "mode": "server-first",
+    "strategy": "server-static",
+    "template": "default",
+    "hydration": "none",
+    "domStrategy": "none",
+    "updateStrategy": "none",
+    "initialHtml": "complete",
+    "frontendOwnership": "none"
+  },
+  "props": {
+    "title": {"type": "string", "required": true}
+  },
+  "assets": {
+    "css": ["assets/footer-links.css"],
+    "js": [],
+    "depends": ["simai.framework.core.css"]
+  },
+  "ai": {
+    "tags": ["footer", "links", "shell"],
+    "summary": "Contributes local documentation links to the admitted footer slot."
+  },
+  "meta": {"ownerPackage": "project/project", "version": "1.0.0"},
+  "extensions": {"docara": {"aliases": {"project.footer_links": "Portable ABI identifiers use hyphens; the underscore name remains an authoring alias."}}}
+}

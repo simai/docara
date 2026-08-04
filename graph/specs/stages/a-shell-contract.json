@@ -8,7 +8,7 @@
   "summary": "Replace closed shell binding lists with one typed provider-owned registry and prove navigation variants plus a safe project shell contribution.",
   "owner": "teamlead",
   "lifecycle": "active",
-  "readiness": "implementation_in_progress",
+  "readiness": "ready_for_independent_audit",
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-04-docara-content-design-settings-track.md#15-goal-a--shell-contract--safe-configuration",
@@ -31,5 +31,5 @@
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Binding inventory", "Default byte parity", "Navigation preview matrix", "Project shell fixture", "Security negatives", "Integrated build and browser acceptance", "Independent reverse-outcome audit"],
   "next_stage_ref": null,
-  "status": "a1_binding_registry_complete_a2_in_progress"
+  "status": "executor_complete_audit_pending"
 }

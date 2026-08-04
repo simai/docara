@@ -1,20 +1,20 @@
 # Current Docara result
 
-Current state: `goal_a_in_progress`
+Current state: `goal_a_ready_for_independent_audit`
 
-Current candidate: `1fb4b5c6c1cb72c29d61b8f85959966438202474`
+Current candidate: `8c04160ab50549b060fb933cf80f86193cd92113`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md`
 
 ## Goal A current result
 
 Goal 3 exact product candidate `1e571b6e16ebc4520121aff0ae868de3b986dff3`
-was independently accepted with `PASS`. Goal A is activated on governance HEAD
-`d748eca04cd09e79ed6e2079a56b077265bcf905`. A0 froze the typed binding and
-shell-capability contract plus a byte-identical default baseline. A1 candidate
-`1fb4b5c6c1cb72c29d61b8f85959966438202474` replaces compiler binding-ID
-branching with one typed provider-owned registry while preserving public
-output. Goal A readiness or independent acceptance is not claimed.
+was independently accepted with `PASS`. Goal A candidate `8c04160…` replaces
+compiler binding-ID branching with one typed provider-owned registry, validates
+shell capabilities, supports header/tree/compact through one navigation Smart,
+and proves project-owned shell composition without an engine-source fixture
+edit. Two full builds and selected-page output are deterministic; 24 browser
+scenarios pass. Executor readiness is claimed; independent acceptance is not.
 
 ## Goal 3 current result
 
@@ -28,8 +28,8 @@ returns the byte-exact Framework owner schema while a separately named Docara
 admission policy validates unchanged scaffold manifests. All package, Framework and project
 providers expose the same neutral ABI identity. Storage aliases, provider
 adapters and template ABI remain separate provenance facts. It adds no
-renderer, Gateway, registry or PageBuilder path. Goal 3 remains
-implementation-complete but audit pending.
+renderer, Gateway, registry or PageBuilder path. Goal 3 is independently
+accepted with `PASS` on exact candidate `1e571b6…`.
 
 The current unpublished audit ZIP is
 `ca21bce847e991c715dfe2033aa923d48c19554b85f29050d026dd110b2362a9`

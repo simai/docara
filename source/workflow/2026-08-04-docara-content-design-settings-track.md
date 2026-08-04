@@ -1,20 +1,20 @@
 # Docara: Content, Design & Settings product track
 
 Date: 2026-08-04
-Status: `active_goal_a`
+Status: `goal_a_ready_for_independent_audit`
 Track ID: `docara.track.content_design_settings`
 Type: post-LEGO product proposal
 Planning baseline HEAD: `d748eca04cd09e79ed6e2079a56b077265bcf905`
 Accepted Goal 3 product candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`
 Branch: `codex/docara-unified-architecture`
-Remaining proposed goals: 3
-Current canonical next action: `goal_a_binding_registry_implementation`
+Remaining unstarted goals: 2
+Current canonical next action: `independent_goal_a_reverse_outcome_audit`
 
-Status: `goal_a_in_progress`
+Status: `goal_a_ready_for_independent_audit`
 Current stage: `docara.stage.a.shell_contract`
 Current batch: `docara.batch.a.shell_contract`
-Current next action: `goal_a_binding_registry_implementation`
-Next roadmap goal: `docara.goal.a.independent_audit` (`not_ready`, authorized=`false`)
+Current next action: `independent_goal_a_reverse_outcome_audit`
+Next roadmap goal: `docara.goal.a.independent_audit` (`ready_for_independent_audit`, authorized=`true`)
 
 ## 0. Status and authority
 
@@ -24,18 +24,17 @@ accepted and the user explicitly activated Goal A on 2026-08-04. The accepted
 Goal A execution contract is
 `source/workflow/2026-08-04-docara-goal-a-shell-contract.md`.
 
-Activation does not authorize:
+Activation and executor completion do not authorize:
 
-- `source/workflow/ACTIVE.md`;
-- `source/handoff/docara-unified-architecture/`;
-- `graph/graph.json` or any accepted graph object;
+- Goal B or Goal C implementation before the independent Goal A verdict;
 - rewriting the accepted Goal 3 candidate or historical evidence;
-- product runtime, public documentation, Framework owner repositories or sites.
+- external Framework owner repositories or sites;
+- merge, push, tag, release or deploy.
 
 The only authorized current action is:
 
 ```text
-goal_a_binding_registry_implementation
+independent_goal_a_reverse_outcome_audit
 ```
 
 ### Start gate
@@ -1571,12 +1570,12 @@ At each independent audit:
 
 ## 25. Next safe action
 
-Goal A is active. The next safe action for the repository is:
+Goal A is executor-complete. The next safe action for the repository is:
 
 ```text
-Implement the typed provider-owned BindingRegistry from
-source/workflow/2026-08-04-docara-goal-a-shell-contract.md.
-Preserve the accepted Goal 3 candidate, one production path and default output.
+Independently audit exact Goal A candidate
+8c04160ab50549b060fb933cf80f86193cd92113 against
+source/workflow/2026-08-04-docara-goal-a-shell-contract.md and its evidence.
 Do not start Goal B, release review, merge, tag or deploy.
 ```
 

@@ -9,25 +9,25 @@
         "graph/specs/stages/a-shell-contract.json",
         "graph/specs/batches/a-shell-contract.json"
     ],
-    "canonical_sha256": "3789949467ab41adfe227e646cb2147eb5dacbb13170d756dcced3ef6070dc1a",
+    "canonical_sha256": "2c46d5b365d89ed2b8683d703b679f9fcd548fd579c2523f49b291b67ca8eb5e",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "goal_a_in_progress",
+        "state": "goal_a_ready_for_independent_audit",
         "goal": "docara.goal.unified",
-        "goal_readiness": "goal_a_in_progress",
+        "goal_readiness": "goal_a_ready_for_independent_audit",
         "stage": "docara.stage.a.shell_contract",
-        "stage_readiness": "implementation_in_progress",
-        "stage_status": "a1_binding_registry_complete_a2_in_progress",
+        "stage_readiness": "ready_for_independent_audit",
+        "stage_status": "executor_complete_audit_pending",
         "batch": "docara.batch.a.shell_contract",
-        "batch_readiness": "implementation_in_progress",
-        "batch_status": "a1_binding_registry_complete_a2_in_progress",
-        "completed_checkpoint": "goal3_independently_accepted_pass",
-        "candidate_revision": "1fb4b5c6c1cb72c29d61b8f85959966438202474",
-        "next_action": "goal_a_binding_registry_implementation",
+        "batch_readiness": "ready_for_independent_audit",
+        "batch_status": "executor_complete_audit_pending",
+        "completed_checkpoint": "goal_a_executor_complete",
+        "candidate_revision": "8c04160ab50549b060fb933cf80f86193cd92113",
+        "next_action": "independent_goal_a_reverse_outcome_audit",
         "evidence": "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md"
     },
     "roadmap": {
@@ -35,8 +35,8 @@
         "next_goal": {
             "id": "docara.goal.a.independent_audit",
             "title": "Independent Goal A reverse-outcome audit",
-            "status": "not_ready",
-            "authorized": false,
+            "status": "ready_for_independent_audit",
+            "authorized": true,
             "source": "source/workflow/2026-08-04-docara-goal-a-shell-contract.md"
         }
     },

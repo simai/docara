@@ -2,8 +2,8 @@
 
 Текущий статус архитектурного roadmap: Goal 1, Goal 2 и Goal 3 независимо
 приняты. Exact accepted Goal 3 product candidate — `1e571b6…`. Goal A Shell
-Contract & Safe Configuration активирован на governance baseline `d748eca…`;
-текущий bounded action — typed provider-owned BindingRegistry. Исторический R2
+Contract & Safe Configuration завершён исполнителем на `8c04160…` и ожидает
+независимого reverse-outcome audit. Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
 заявлены.
@@ -100,7 +100,7 @@ provenance facts. Exact accepted product candidate — `1e571b6…`.
 
 ## Goal A. Shell Contract & Safe Configuration
 
-Статус: реализация активна, readiness не заявлена. Goal A заменяет закрытый
+Статус: `ready_for_independent_audit`, независимый PASS не заявлен. Goal A заменяет закрытый
 список shell bindings одним типизированным provider-owned BindingRegistry.
 Project config сможет выбирать только зарегистрированные IDs и данные, без
 callback, class, PHP/template или filesystem paths. Первый вертикальный срез —
@@ -111,7 +111,7 @@ output должен остаться byte-identical. Project-owned shell contrib
 Recovery source:
 `source/workflow/2026-08-04-docara-goal-a-shell-contract.md`.
 
-Текущий action: `goal_a_binding_registry_implementation`. Goal B и release не
+Текущий action: `independent_goal_a_reverse_outcome_audit`. Goal B и release не
 авторизованы.
 
 ## M2. Вертикальный срез `components/badge`

@@ -18,7 +18,7 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal_a_in_progress`
+Current state: `goal_a_ready_for_independent_audit`
 
 Current goal: `docara.goal.unified`
 
@@ -26,21 +26,22 @@ Current stage: `docara.stage.a.shell_contract`
 
 Current batch: `docara.batch.a.shell_contract`
 
-Current next action: `goal_a_binding_registry_implementation`
+Current next action: `independent_goal_a_reverse_outcome_audit`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md`
 
-Current candidate: `1fb4b5c6c1cb72c29d61b8f85959966438202474`
+Current candidate: `8c04160ab50549b060fb933cf80f86193cd92113`
 
 Next roadmap goal: `docara.goal.a.independent_audit`
 
-Next roadmap status: `not_ready`
+Next roadmap status: `ready_for_independent_audit`
 
-Next roadmap authorized: `false`
+Next roadmap authorized: `true`
 
 Goal 1 and Goal 2 were independently accepted with `PASS_WITH_NOTES`; Goal 3
 was independently accepted with `PASS`. Goal A Shell Contract & Safe
-Configuration is active. Goal B and release review remain unauthorized.
+Configuration is executor-complete and awaits independent audit. Goal B and
+release review remain unauthorized.
 
 ## 3. Read in this order
 
@@ -59,10 +60,9 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only the current goal
 
-Execute Goal A from
-`source/workflow/2026-08-04-docara-goal-a-shell-contract.md`. Preserve accepted
-Goal 1-3 runtime invariants, the single production path and default byte
-output. Do not start Goal B or release review.
+Audit Goal A from `source/workflow/2026-08-04-docara-goal-a-shell-contract.md`
+and its indexed evidence against exact candidate `8c04160…`. Preserve accepted
+Goal 1-3 runtime invariants. Do not implement Goal B or start release review.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,

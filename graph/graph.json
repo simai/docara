@@ -26,20 +26,20 @@
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
   "implementation_state": {
-    "state": "goal_a_in_progress",
+    "state": "goal_a_ready_for_independent_audit",
     "current_goal": "docara.goal.unified",
     "current_stage": "docara.stage.a.shell_contract",
     "current_batch": "docara.batch.a.shell_contract",
-    "completed_checkpoint": "goal3_independently_accepted_pass",
-    "candidate_revision": "1fb4b5c6c1cb72c29d61b8f85959966438202474",
-    "next_action": "goal_a_binding_registry_implementation",
+    "completed_checkpoint": "goal_a_executor_complete",
+    "candidate_revision": "8c04160ab50549b060fb933cf80f86193cd92113",
+    "next_action": "independent_goal_a_reverse_outcome_audit",
     "evidence": "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md",
     "roadmap_source": "source/workflow/2026-08-04-docara-content-design-settings-track.md",
     "next_goal": {
       "id": "docara.goal.a.independent_audit",
       "title": "Independent Goal A reverse-outcome audit",
-      "status": "not_ready",
-      "authorized": false,
+      "status": "ready_for_independent_audit",
+      "authorized": true,
       "source": "source/workflow/2026-08-04-docara-goal-a-shell-contract.md"
     }
   },

@@ -19,13 +19,13 @@ final class ProjectContextContractTest extends TestCase
         self::assertSame([], ProjectContext::check($this->repositoryRoot()));
 
         $context = ProjectContext::expected($this->repositoryRoot());
-        self::assertSame('goal_a_in_progress', $context['active']['state']);
+        self::assertSame('goal_a_ready_for_independent_audit', $context['active']['state']);
         self::assertSame('docara.stage.a.shell_contract', $context['active']['stage']);
         self::assertSame('docara.batch.a.shell_contract', $context['active']['batch']);
-        self::assertSame('goal_a_binding_registry_implementation', $context['active']['next_action']);
+        self::assertSame('independent_goal_a_reverse_outcome_audit', $context['active']['next_action']);
         self::assertSame('docara.goal.a.independent_audit', $context['roadmap']['next_goal']['id']);
-        self::assertSame('not_ready', $context['roadmap']['next_goal']['status']);
-        self::assertFalse($context['roadmap']['next_goal']['authorized']);
+        self::assertSame('ready_for_independent_audit', $context['roadmap']['next_goal']['status']);
+        self::assertTrue($context['roadmap']['next_goal']['authorized']);
         self::assertSame('source/workflow/2026-08-04-docara-content-design-settings-track.md', $context['roadmap']['source']);
         self::assertFalse($context['historical_context']['release_baseline']['executable']);
     }

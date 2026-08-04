@@ -8,7 +8,7 @@
   "summary": "Maps Goal 3 application services, CLI, optional QA and MCP to exact tests and evidence.",
   "owner": "dev",
   "lifecycle": "active",
-  "readiness": "ready_for_independent_audit",
+  "readiness": "independently_accepted",
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md",
@@ -58,8 +58,8 @@
     "Optional MCP has no root parameter, starts read-only and cannot bypass exact-plan apply.",
     "Public schema is the byte-exact Framework owner blob; the separately named Docara admission policy and inspect provenance keep ABI, storage compatibility and template adapter facts distinct."
   ],
-  "known_deviations": ["Independent Goal 3 reverse-outcome audit is pending."],
+  "known_deviations": [],
   "deletion_gates": [],
-  "status": "implementation_complete_audit_pending",
+  "status": "independently_accepted_pass",
   "mapped_revision": "1e571b6e16ebc4520121aff0ae868de3b986dff3"
 }

@@ -8,7 +8,7 @@
   "summary": "Execute A0-A5 sequentially and stop at independent Goal A audit.",
   "owner": "dev",
   "lifecycle": "active",
-  "readiness": "implementation_in_progress",
+  "readiness": "ready_for_independent_audit",
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-04-docara-goal-a-shell-contract.md"
@@ -21,9 +21,9 @@
   "allowed_scope": ["Declarative binding contracts and compiler integration", "Registered layout, section, block, Smart and project fixtures", "Inspect and Preview projections", "Tests, specification, graph, workflow, handoff and evidence"],
   "forbidden_scope": ["Second parser or renderer", "Second Gateway, DesignRegistry, LayoutComposer, PageBuilder or preview engine", "Project executable adapters or arbitrary paths", "Goal B or Goal C", "External repositories or sites", "Merge, Push, Tag, Release, Deploy"],
   "checks": ["Binding registry and schema tests", "Security negatives", "Default public byte parity", "Navigation variant preview and browser matrix", "Project fixture without engine edit", "Full regression and deterministic builds", "Graph and documentation validation"],
-  "status": "a1_binding_registry_complete_a2_in_progress",
+  "status": "executor_complete_audit_pending",
   "baseline_revision": "d748eca04cd09e79ed6e2079a56b077265bcf905",
-  "candidate_revision": "1fb4b5c6c1cb72c29d61b8f85959966438202474",
+  "candidate_revision": "8c04160ab50549b060fb933cf80f86193cd92113",
   "accepted_goal3_candidate": "1e571b6e16ebc4520121aff0ae868de3b986dff3",
-  "next_action": "goal_a_binding_registry_implementation"
+  "next_action": "independent_goal_a_reverse_outcome_audit"
 }

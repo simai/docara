@@ -8,7 +8,7 @@
   "summary": "Goal A mapping from the accepted binding/capability contract to implementation and evidence.",
   "owner": "dev",
   "lifecycle": "active",
-  "readiness": "implementation_in_progress",
+  "readiness": "ready_for_independent_audit",
   "visibility": "repository",
   "source_refs": [
     "docs/specification/architecture/SHELL-CONTRACT.md"
@@ -17,29 +17,42 @@
   "from_ref": "docara.feature.shell_contract",
   "to_refs": ["docara.feature.declarative_composition", "docara.feature.smart_gateway"],
   "code_refs": [
-    "src/Declarative/DeclarativePageCompiler.php#DeclarativePageCompiler::configuredShellSection",
+    "src/Declarative/Binding/BindingRegistry.php#BindingRegistry",
+    "src/Declarative/Binding/BuiltinBindingProvider.php#BuiltinBindingProvider",
+    "src/Declarative/DeclarativePageCompiler.php#DeclarativePageCompiler",
     "src/Declarative/Composition/RegionCompositionResolver.php#RegionCompositionResolver",
     "src/Design/Registry/DesignRegistry.php#DesignRegistry",
     "resources/schemas/declarative-section.schema.json",
     "resources/smart/docara.navigation/manifest.json"
   ],
-  "test_refs": [],
+  "test_refs": [
+    "tests/Unit/BindingRegistryTest.php",
+    "tests/Unit/DeclarativeViewCompositionTest.php",
+    "tests/Unit/ProjectDesignCompositionTest.php",
+    "tests/Unit/PreviewKernelTest.php",
+    "tests/Unit/DeveloperDiscoveryCommandTest.php"
+  ],
   "evidence_refs": [
-    "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A0-CONTRACT-AND-BASELINE.md"
+    "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A0-CONTRACT-AND-BASELINE.md",
+    "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A1-BINDING-REGISTRY.md",
+    "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A2-NAVIGATION-VARIANTS.md",
+    "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A3-PROJECT-SHELL.md",
+    "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A4-INTEGRATED-ACCEPTANCE.md"
   ],
   "review_refs": ["docara.gate.architecture_acceptance"],
   "current_behavior": [
-    "A0 found a closed four-value bind enum and compiler match.",
-    "docara.navigation already owns header, tree and compact Views in one Smart artifact.",
-    "Goal A implementation is additive-first and default output is frozen."
+    "One typed provider-owned BindingRegistry resolves built-ins with provenance, capabilities and schemas.",
+    "docara.navigation owns header, tree and compact Views through one Gateway and composition path.",
+    "Project design artifacts contribute shell content through admitted capabilities without engine source edits.",
+    "Default runtime output is preserved; only two intentional documentation pages and their derived search/provenance files differ."
   ],
   "known_deviations": [
-    "Typed BindingRegistry and shell capability validation are not implemented at A0."
+    "Independent Goal A reverse-outcome audit is pending."
   ],
   "deletion_gates": [
-    "Remove DeclarativePageCompiler::boundProps only after registered built-ins pass exact default parity.",
-    "Remove the closed schema enum only after registry-aware contextual validation is permanent."
+    "Completed: DeclarativePageCompiler::boundProps removed after registered built-ins passed default parity.",
+    "Completed: authored binding schema now accepts safe IDs and registry-aware contextual validation is permanent."
   ],
-  "status": "a0_contract_checkpoint_in_progress",
-  "mapped_revision": "1fb4b5c6c1cb72c29d61b8f85959966438202474"
+  "status": "executor_complete_audit_pending",
+  "mapped_revision": "8c04160ab50549b060fb933cf80f86193cd92113"
 }

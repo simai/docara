@@ -1,7 +1,7 @@
 # Goal A — Shell Contract & Safe Configuration
 
 Date: 2026-08-04
-Status: `in_progress`
+Status: `goal_a_ready_for_independent_audit`
 Track: `docara.track.content_design_settings`
 Goal: `docara.goal.a.shell_contract`
 Baseline HEAD: `d748eca04cd09e79ed6e2079a56b077265bcf905`
@@ -80,10 +80,10 @@ and source-policy checks with no blocker.
 | --- | --- | --- | --- |
 | A0 | baseline, inventory, naming/decision freeze, graph activation | baseline full/single hashes, source map, context/graph checks | PASS |
 | A1 | typed providers/descriptors/BindingRegistry and migrated built-ins | focused registry/schema/security and default parity | PASS |
-| A2 | navigation header/tree/compact vertical slice | production/preview/browser matrix | in progress |
-| A3 | project shell fixture through admitted capability | no-src fixture proof and negative security matrix | pending |
-| A4 | full integration, determinism and legacy-reference audit | full tests/build/static/browser/zero-reference | pending |
-| A5 | exact evidence and independent-ready handoff | graph/context/docs/hygiene and clean commits | pending |
+| A2 | navigation header/tree/compact vertical slice | production/preview/browser matrix | PASS |
+| A3 | project shell fixture through admitted capability | no-src fixture proof and negative security matrix | PASS |
+| A4 | full integration, determinism and legacy-reference audit | full tests/build/static/browser/zero-reference | PASS |
+| A5 | exact evidence and independent-ready handoff | graph/context/docs/hygiene and clean commits | PASS |
 
 ## Allowed surfaces
 
@@ -142,6 +142,26 @@ inside Goal A.
   receipt equality and Alert HTML parity pass.
 - Next: A2 explicit navigation presentation selection through the same
   descriptor, Gateway and composer path.
+
+### A2-A4
+
+- Done: capability-aware composition; one navigation binding with header,
+  tree and compact; exact production-node preview binding; 24/24 browser QA;
+  project shell fixture with no engine `src` diff; SDK inspect/schema/provider
+  provenance; security negatives and permanent central-ID regression.
+- Integrated: full PHPUnit/static/tooling pass, two byte-identical 104-route
+  builds, selected-route equality and exact normalized default parity.
+- Candidate: `8c04160ab50549b060fb933cf80f86193cd92113`.
+- Next: A5 governance and independent-audit handoff only.
+
+### A5
+
+- Done: exact evidence index, content-addressed browser packet, specification,
+  canonical graph, generated context and handoff synchronized.
+- Final executor state: `goal_a_ready_for_independent_audit`.
+- Product candidate: `8c04160ab50549b060fb933cf80f86193cd92113`.
+- Next action: independent reverse-outcome audit only. Goal B remains
+  unauthorized.
 
 ## Rollback
 

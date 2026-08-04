@@ -1,0 +1,127 @@
+{
+    "schema": "docara.qa_report.v2",
+    "plan_id": "ce35579f5f6d241a5ca6c223ef20afe7808cf711016ebae36d0722604ef1f946",
+    "artifact_sha256": "f9b8cc756e440996b0720a265306078e6bfff3c2af5ae670d79ef1cc74d06534",
+    "target": {
+        "html_sha256": "f9b8cc756e440996b0720a265306078e6bfff3c2af5ae670d79ef1cc74d06534",
+        "id": "docara.docs",
+        "kind": "layout",
+        "locator": "body",
+        "scope": "document"
+    },
+    "reference": {
+        "artifact_sha256": "f9b8cc756e440996b0720a265306078e6bfff3c2af5ae670d79ef1cc74d06534",
+        "contract": "docara.production_target_reference.v2",
+        "id": "docara.docs",
+        "kind": "layout",
+        "manifest_sha256": "74a95918c2ab047a0b400110c98f093b215e7696ddc026d5fbe47ff7c143ecd2",
+        "page_html_sha256": "54e2de1ff31a079ef505d56f9e5ce08819df08a6be9a18bcb4340ca52c496bf2",
+        "reference_id": "18977cbc6428c003d1b50a6c75fc8d59dad8eb6fec59c743f070bb1083a679b1"
+    },
+    "scenarios": [
+        {
+            "id": "desktop-light-ltr",
+            "screenshot": "screenshots/desktop-light-ltr.png",
+            "screenshot_sha256": "74533ddb86157aeae66605c447195d4391e52c119149da43c9da76e40f3c8e38",
+            "reference_sha256": "74533ddb86157aeae66605c447195d4391e52c119149da43c9da76e40f3c8e38",
+            "a11y_violations": 0,
+            "console_errors": 0,
+            "console_warnings": 0,
+            "overflow": 0,
+            "keyboard": "pass",
+            "reduced_motion": "pass",
+            "visual_diff_pixels": 0
+        },
+        {
+            "id": "desktop-light-rtl",
+            "screenshot": "screenshots/desktop-light-rtl.png",
+            "screenshot_sha256": "1ef8a8412d89c6a364539f1967847e0c9931dfceffcc6bd4454e2d4c7bfa7701",
+            "reference_sha256": "1ef8a8412d89c6a364539f1967847e0c9931dfceffcc6bd4454e2d4c7bfa7701",
+            "a11y_violations": 0,
+            "console_errors": 0,
+            "console_warnings": 0,
+            "overflow": 0,
+            "keyboard": "pass",
+            "reduced_motion": "pass",
+            "visual_diff_pixels": 0
+        },
+        {
+            "id": "desktop-dark-ltr",
+            "screenshot": "screenshots/desktop-dark-ltr.png",
+            "screenshot_sha256": "bd4f05bb43ef43620620263b7989ebfab2da057c21de98f532d566e2c3a6dcb0",
+            "reference_sha256": "bd4f05bb43ef43620620263b7989ebfab2da057c21de98f532d566e2c3a6dcb0",
+            "a11y_violations": 0,
+            "console_errors": 0,
+            "console_warnings": 0,
+            "overflow": 0,
+            "keyboard": "pass",
+            "reduced_motion": "pass",
+            "visual_diff_pixels": 0
+        },
+        {
+            "id": "desktop-dark-rtl",
+            "screenshot": "screenshots/desktop-dark-rtl.png",
+            "screenshot_sha256": "588863226778d3b12430903ff13c0b70be7b8ebb475f6e6c11c5db157d7fc1b1",
+            "reference_sha256": "588863226778d3b12430903ff13c0b70be7b8ebb475f6e6c11c5db157d7fc1b1",
+            "a11y_violations": 0,
+            "console_errors": 0,
+            "console_warnings": 0,
+            "overflow": 0,
+            "keyboard": "pass",
+            "reduced_motion": "pass",
+            "visual_diff_pixels": 0
+        },
+        {
+            "id": "mobile-light-ltr",
+            "screenshot": "screenshots/mobile-light-ltr.png",
+            "screenshot_sha256": "529b497b7cadcf13cea6717bff7d4c46f4f250add8a9e0f7a49fcf7a8e91dfa6",
+            "reference_sha256": "529b497b7cadcf13cea6717bff7d4c46f4f250add8a9e0f7a49fcf7a8e91dfa6",
+            "a11y_violations": 0,
+            "console_errors": 0,
+            "console_warnings": 0,
+            "overflow": 0,
+            "keyboard": "pass",
+            "reduced_motion": "pass",
+            "visual_diff_pixels": 0
+        },
+        {
+            "id": "mobile-light-rtl",
+            "screenshot": "screenshots/mobile-light-rtl.png",
+            "screenshot_sha256": "b0ae02e374ee10aacc16343ee9873dfc39ed76cc6f2479e1bf1b471075e9b1e9",
+            "reference_sha256": "b0ae02e374ee10aacc16343ee9873dfc39ed76cc6f2479e1bf1b471075e9b1e9",
+            "a11y_violations": 0,
+            "console_errors": 0,
+            "console_warnings": 0,
+            "overflow": 0,
+            "keyboard": "pass",
+            "reduced_motion": "pass",
+            "visual_diff_pixels": 0
+        },
+        {
+            "id": "mobile-dark-ltr",
+            "screenshot": "screenshots/mobile-dark-ltr.png",
+            "screenshot_sha256": "d8a2e3ef756420e4649aa222b248c086dab771e9b15ed0857d1ab7da1efc3c80",
+            "reference_sha256": "d8a2e3ef756420e4649aa222b248c086dab771e9b15ed0857d1ab7da1efc3c80",
+            "a11y_violations": 0,
+            "console_errors": 0,
+            "console_warnings": 0,
+            "overflow": 0,
+            "keyboard": "pass",
+            "reduced_motion": "pass",
+            "visual_diff_pixels": 0
+        },
+        {
+            "id": "mobile-dark-rtl",
+            "screenshot": "screenshots/mobile-dark-rtl.png",
+            "screenshot_sha256": "94b0355005a90a97816165920b98e4f3c9db4228d0ca7b165dad185e106d38fc",
+            "reference_sha256": "94b0355005a90a97816165920b98e4f3c9db4228d0ca7b165dad185e106d38fc",
+            "a11y_violations": 0,
+            "console_errors": 0,
+            "console_warnings": 0,
+            "overflow": 0,
+            "keyboard": "pass",
+            "reduced_motion": "pass",
+            "visual_diff_pixels": 0
+        }
+    ]
+}

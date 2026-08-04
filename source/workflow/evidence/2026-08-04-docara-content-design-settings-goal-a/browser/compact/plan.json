@@ -1,0 +1,125 @@
+{
+    "artifact_sha256": "f9b8cc756e440996b0720a265306078e6bfff3c2af5ae670d79ef1cc74d06534",
+    "assertions": [
+        "local_assets_200",
+        "a11y_violations_zero",
+        "console_errors_zero",
+        "console_warnings_zero",
+        "horizontal_overflow_zero",
+        "keyboard_focus_escape",
+        "reduced_motion",
+        "visual_diff_zero"
+    ],
+    "phase": "finalized",
+    "plan_id": "ce35579f5f6d241a5ca6c223ef20afe7808cf711016ebae36d0722604ef1f946",
+    "preview": ".docara-preview/output/layout/index.html",
+    "reference": {
+        "artifact_sha256": "f9b8cc756e440996b0720a265306078e6bfff3c2af5ae670d79ef1cc74d06534",
+        "contract": "docara.production_target_reference.v2",
+        "id": "docara.docs",
+        "kind": "layout",
+        "manifest_sha256": "74a95918c2ab047a0b400110c98f093b215e7696ddc026d5fbe47ff7c143ecd2",
+        "page_html_sha256": "54e2de1ff31a079ef505d56f9e5ce08819df08a6be9a18bcb4340ca52c496bf2",
+        "reference_id": "18977cbc6428c003d1b50a6c75fc8d59dad8eb6fec59c743f070bb1083a679b1"
+    },
+    "scenarios": [
+        {
+            "direction": "ltr",
+            "id": "desktop-light-ltr",
+            "reduced_motion": true,
+            "screenshot": "screenshots/desktop-light-ltr.png",
+            "theme": "light",
+            "viewport": {
+                "height": 900,
+                "width": 1440
+            }
+        },
+        {
+            "direction": "rtl",
+            "id": "desktop-light-rtl",
+            "reduced_motion": true,
+            "screenshot": "screenshots/desktop-light-rtl.png",
+            "theme": "light",
+            "viewport": {
+                "height": 900,
+                "width": 1440
+            }
+        },
+        {
+            "direction": "ltr",
+            "id": "desktop-dark-ltr",
+            "reduced_motion": true,
+            "screenshot": "screenshots/desktop-dark-ltr.png",
+            "theme": "dark",
+            "viewport": {
+                "height": 900,
+                "width": 1440
+            }
+        },
+        {
+            "direction": "rtl",
+            "id": "desktop-dark-rtl",
+            "reduced_motion": true,
+            "screenshot": "screenshots/desktop-dark-rtl.png",
+            "theme": "dark",
+            "viewport": {
+                "height": 900,
+                "width": 1440
+            }
+        },
+        {
+            "direction": "ltr",
+            "id": "mobile-light-ltr",
+            "reduced_motion": true,
+            "screenshot": "screenshots/mobile-light-ltr.png",
+            "theme": "light",
+            "viewport": {
+                "height": 844,
+                "width": 390
+            }
+        },
+        {
+            "direction": "rtl",
+            "id": "mobile-light-rtl",
+            "reduced_motion": true,
+            "screenshot": "screenshots/mobile-light-rtl.png",
+            "theme": "light",
+            "viewport": {
+                "height": 844,
+                "width": 390
+            }
+        },
+        {
+            "direction": "ltr",
+            "id": "mobile-dark-ltr",
+            "reduced_motion": true,
+            "screenshot": "screenshots/mobile-dark-ltr.png",
+            "theme": "dark",
+            "viewport": {
+                "height": 844,
+                "width": 390
+            }
+        },
+        {
+            "direction": "rtl",
+            "id": "mobile-dark-rtl",
+            "reduced_motion": true,
+            "screenshot": "screenshots/mobile-dark-rtl.png",
+            "theme": "dark",
+            "viewport": {
+                "height": 844,
+                "width": 390
+            }
+        }
+    ],
+    "schema": "docara.qa_plan.v2",
+    "source_plan_id": "405d047a9fb681f6994a5d07b756f90163ba36f519f8e1bddacb750fa36507db",
+    "subject": "layout:docara.docs",
+    "target": {
+        "html_sha256": "f9b8cc756e440996b0720a265306078e6bfff3c2af5ae670d79ef1cc74d06534",
+        "id": "docara.docs",
+        "kind": "layout",
+        "locator": "body",
+        "scope": "document"
+    }
+}

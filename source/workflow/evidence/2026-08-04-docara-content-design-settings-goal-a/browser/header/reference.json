@@ -1,0 +1,57 @@
+{
+    "artifact_sha256": "06c9f6b213b4579a5c75f9337410b64ee9ba7891223a673dd33416c56bd145de",
+    "page_html_sha256": "e660f2fe13eec6d5d04c385d193878486f32837a0c1edf590c4283aca590c9a0",
+    "reference_id": "3e29e1071fcee0070bf54f254e76bfc63fe3a576389c236d75f3fe8410934a63",
+    "scenarios": [
+        {
+            "id": "desktop-light-ltr",
+            "screenshot": "screenshots/desktop-light-ltr.png",
+            "screenshot_sha256": "6192fc99fe0d9ad16969f443713efd946a59273167efec1f4119819a96110fa6"
+        },
+        {
+            "id": "desktop-light-rtl",
+            "screenshot": "screenshots/desktop-light-rtl.png",
+            "screenshot_sha256": "efc964d749d03d61c4e017349aa88c0de5b833b4f83971881b79ba5c2cd720c6"
+        },
+        {
+            "id": "desktop-dark-ltr",
+            "screenshot": "screenshots/desktop-dark-ltr.png",
+            "screenshot_sha256": "0d989519ed6b5c040878f329f4706662b9df688f6fe2d70e0698252507c0733c"
+        },
+        {
+            "id": "desktop-dark-rtl",
+            "screenshot": "screenshots/desktop-dark-rtl.png",
+            "screenshot_sha256": "80958d465d21550f75bb4f441e90d39a27bb850463fb31011ef244503dd6dc1d"
+        },
+        {
+            "id": "mobile-light-ltr",
+            "screenshot": "screenshots/mobile-light-ltr.png",
+            "screenshot_sha256": "4966d8e837b768ac9788132444254082e5575f1c1397303c9141c74f73fbb5ff"
+        },
+        {
+            "id": "mobile-light-rtl",
+            "screenshot": "screenshots/mobile-light-rtl.png",
+            "screenshot_sha256": "0451d07475ffa31d3b6bf93c70c1d4843cc24cdce0f2f98198012e385ca69f2c"
+        },
+        {
+            "id": "mobile-dark-ltr",
+            "screenshot": "screenshots/mobile-dark-ltr.png",
+            "screenshot_sha256": "e665dea8fc8330707820d25a487fea40611d7d35c52c4da90722204bc7aed719"
+        },
+        {
+            "id": "mobile-dark-rtl",
+            "screenshot": "screenshots/mobile-dark-rtl.png",
+            "screenshot_sha256": "9e556ec5b7603f8e7a7e758f557ab36fc471241b6421b6c0cbaa3fc59243fc6c"
+        }
+    ],
+    "schema": "docara.qa_reference.v2",
+    "source_plan_id": "239842b98785f6e03275356eb138223bd78d6c1d5cb7b77b32535dcbd9381ae1",
+    "subject": "layout:docara.docs",
+    "target": {
+        "html_sha256": "06c9f6b213b4579a5c75f9337410b64ee9ba7891223a673dd33416c56bd145de",
+        "id": "docara.docs",
+        "kind": "layout",
+        "locator": "body",
+        "scope": "document"
+    }
+}

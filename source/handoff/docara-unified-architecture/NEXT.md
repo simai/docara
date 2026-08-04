@@ -1,15 +1,14 @@
-# Next action: `goal_a_binding_registry_implementation`
+# Next action: `independent_goal_a_reverse_outcome_audit`
 
-Current state: `goal_a_in_progress`
+Current state: `goal_a_ready_for_independent_audit`
 
-Current candidate: `1fb4b5c6c1cb72c29d61b8f85959966438202474`
+Current candidate: `8c04160ab50549b060fb933cf80f86193cd92113`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md`
 
-Goal 1-3 are independently accepted. Implement A1 from
-`source/workflow/2026-08-04-docara-goal-a-shell-contract.md`: one typed
-provider-owned BindingRegistry, no executable project hooks, and exact default
-parity. Goal B, release and live actions remain unauthorized.
+Goal 1-3 are independently accepted. Independently review Goal A against its
+Done When and indexed exact evidence. The executor does not claim acceptance.
+Goal B, release and live actions remain unauthorized.
 
 ## Historical deployment decision (parked, not executable)
 

@@ -1,7 +1,7 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-04
-Status: Goal A implementation in progress
+Status: Goal A ready for independent audit
 Workflow ID: `2026-08-04-docara-goal-a-shell-contract`
 Graph goal: `docara.goal.unified`
 
@@ -25,13 +25,13 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `goal_a_in_progress`;
+- state: `goal_a_ready_for_independent_audit`;
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.a.shell_contract`;
 - batch: `docara.batch.a.shell_contract`;
-- candidate: `1fb4b5c6c1cb72c29d61b8f85959966438202474`;
+- candidate: `8c04160ab50549b060fb933cf80f86193cd92113`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `goal_a_binding_registry_implementation`;
+- next action: `independent_goal_a_reverse_outcome_audit`;
 - Goal 1-3 are independently accepted; Goal B and release review remain unauthorized.
 
 ## Accepted pipeline
@@ -48,10 +48,10 @@ IR/HTML remain disposable.
 ## Current result
 
 Goal 3 exact product candidate `1e571b6…` was independently accepted. Goal A
-now replaces the closed shell binding list with one typed provider-owned
-BindingRegistry, proves `docara.navigation` presentations and a safe project
-shell contribution, and must preserve the accepted production path and default
-output. No release-review action is authorized.
+executor work now provides one typed provider-owned BindingRegistry,
+capability-aware shell composition, three `docara.navigation` presentations and
+a safe project shell contribution while preserving the accepted production
+path. Independent Goal A audit is the only authorized next action.
 
 ## Boundary
 

@@ -2,9 +2,9 @@
 
 Текущий статус: Goal 1, Goal 2 и Goal 3 независимо приняты. Exact accepted Goal
 3 product candidate — `1e571b6e16ebc4520121aff0ae868de3b986dff3`.
-Goal A Shell Contract & Safe Configuration активирован на governance baseline
-`d748eca04cd09e79ed6e2079a56b077265bcf905`; implementation readiness и
-независимая приёмка Goal A ещё не заявлены.
+Goal A Shell Contract & Safe Configuration завершён исполнителем на exact
+candidate `8c04160ab50549b060fb933cf80f86193cd92113` и готов к независимому
+аудиту; независимая приёмка Goal A ещё не заявлена.
 Source `1dee6d19…` остаётся только historical/superseded radius baseline.
 Finalized QA reference целиком content-addressed и привязан к immutable plan;
 совместная подмена reference/candidate/report fail-closed.
@@ -25,16 +25,16 @@ PASS ставится только по воспроизводимому evidenc
 
 - [x] A0 фиксирует baseline, namespace ownership, shell capabilities, rollback
       и запрет project executable paths.
-- [ ] Built-in bindings разрешаются одним typed provider-owned
+- [x] Built-in bindings разрешаются одним typed provider-owned
       `BindingRegistry` с owner/provenance/capabilities/schema.
-- [ ] `docara.navigation` variants `header`, `tree`, `compact` проходят один
+- [x] `docara.navigation` variants `header`, `tree`, `compact` проходят один
       Gateway/composer path, а default output остаётся byte-identical.
-- [ ] Project-owned shell contribution подключается artifact/config-only без
+- [x] Project-owned shell contribution подключается artifact/config-only без
       изменения engine `src`.
-- [ ] Duplicate/namespace/capability/prop/path/symlink/case conflicts
+- [x] Duplicate/namespace/capability/prop/path/symlink/case conflicts
       fail-closed до render.
-- [ ] Full/single, two-build determinism и preview/production parity доказаны.
-- [ ] Goal A имеет independent-ready evidence и чистый tracked worktree.
+- [x] Full/single, two-build determinism и preview/production parity доказаны.
+- [x] Goal A имеет independent-ready evidence и чистый tracked worktree.
 
 ## A. Источники истины
 
@@ -210,7 +210,8 @@ PASS ставится только по воспроизводимому evidenc
       large и оставляет component-native radius overrides авторитетными.
 - [x] Search/settings modals по умолчанию не размывают фон; пользовательская
       настройка blur остаётся доступна как явный выбор.
-- [ ] Независимый reverse-outcome audit принял exact Goal 3 candidate.
+- [x] Независимый reverse-outcome audit принял exact Goal 3 candidate
+      `1e571b6e16ebc4520121aff0ae868de3b986dff3`.
 
 ## J. R2 production dossier
 

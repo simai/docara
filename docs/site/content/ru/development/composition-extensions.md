@@ -20,6 +20,36 @@ Project artifact должен начинаться с `project.`. Он не мо
 `docara.*`, `content.*`, `shell.*` или `ui.*`. Дубликаты, symlink, выход из
 корня и неизвестные определения останавливают сборку.
 
+## Привязки данных оболочки
+
+Блок `shell.smart` может выбрать только зарегистрированную привязку `bind`.
+Привязка соединяет данные страницы с уже зарегистрированным Smart-компонентом;
+она не является PHP callback или путём к шаблону. Встроенный реестр содержит:
+
+| ID | Возможности | Smart |
+| --- | --- | --- |
+| `docara.branding` | `shell.brand` | `docara.brand` |
+| `docara.navigation` | `shell.primary-navigation`, `shell.secondary-navigation` | `docara.navigation` |
+| `docara.outline` | `shell.outline` | `docara.toc` |
+
+Проверьте effective descriptor и его происхождение командами:
+
+```bash
+docara list binding
+docara inspect binding docara.navigation
+docara schema binding
+```
+
+Layout region и Section объявляют совместимые capabilities. Сборка до render
+отклонит неизвестную привязку, несовместимую capability, попытку передать
+binding-owned props или подменить package ID. Project JSON не может задавать
+class, callback, PHP/template path или произвольный filesystem path.
+
+Один `docara.navigation` поддерживает presentations `header`, `tree` и
+`compact`. Вызов остаётся тем же `shell.smart`, Gateway и PageBuilder; меняется
+только зарегистрированный `view`. Если `view` явно не указан, сохраняется
+совместимое поведение по умолчанию.
+
 ## Файлы
 
 ```text

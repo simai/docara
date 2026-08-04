@@ -83,9 +83,9 @@ Page -> Region -> Section -> Block -> Smart
 
 | Область | Секция | Smart-компонент | Данные |
 | --- | --- | --- | --- |
-| `header` | `docara.header` | `docara.brand` | `branding` |
-| `sidebar` | `docara.navigation` | `docara.navigation` | `navigation` |
-| `outline` | `docara.outline` | `docara.toc` | `outline` |
+| `header` | `docara.header` | `docara.brand` | `docara.branding` |
+| `sidebar` | `docara.navigation` | `docara.navigation` | `docara.navigation` |
+| `outline` | `docara.outline` | `docara.toc` | `docara.outline` |
 
 Секция — это зарегистрированный рецепт наполнения области. Smart-компонент —
 самостоятельный интерфейсный элемент с manifest, props, views, шаблонами,
@@ -103,8 +103,9 @@ Framework и два типа вызовов:
 
 - `shell.element` — один безопасный семантический элемент с текстом и, для
   `a`, локальным `href`;
-- `shell.smart` — зарегистрированный `ui.alert` или `ui.button` с props,
-  проверенными по точному manifest зафиксированного Framework runtime.
+- `shell.smart` — зарегистрированный Smart с props, проверенными по его точному
+  manifest. Если Smart читает данные оболочки, `bind` выбирается только из
+  typed `BindingRegistry` и должен соответствовать capability области.
 
 Минимальный footer:
 
@@ -143,6 +144,25 @@ Framework и два типа вызовов:
 ссылку и утилиты из точной Framework projection. PHP, Blade, raw HTML,
 обработчики событий, JavaScript URL, style/class string, callback и пути к
 шаблонам остаются недоступны.
+
+Для навигации доступны три зарегистрированных presentation-варианта:
+`header`, `tree` и `compact`. Они принадлежат одному `docara.navigation` и
+проходят тот же Gateway. Пример блока внутри совместимой секции:
+
+```json
+{
+  "id": "navigation",
+  "block": "shell.smart",
+  "slot": "content",
+  "smart": "docara.navigation",
+  "view": "compact",
+  "bind": "docara.navigation",
+  "props": {"maximum_depth": 4}
+}
+```
+
+Поля `items`, `label`, `expand_label`, `collapse_label` и
+`contains_current_label` принадлежат binding и не задаются вручную.
 
 Живые исходники:
 

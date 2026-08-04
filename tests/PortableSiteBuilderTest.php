@@ -906,7 +906,7 @@ MD);
         self::assertStringNotContainsString('.sf-breadcrumbs{min-width:0;', $shellCss);
         self::assertStringContainsString('.sf-breadcrumbs-item[hidden]{display:none}', $shellCss);
 
-        self::assertSame(7, substr_count($index, '<input data-docara-preference-option'));
+        self::assertSame(10, substr_count($index, '<input data-docara-preference-option'));
         self::assertMatchesRegularExpression('/docara\\.preferences\\.[a-f0-9]{16}\\.v1/', $index);
         self::assertStringContainsString("matchMedia('(prefers-color-scheme: dark)')", $index);
         self::assertStringContainsString('localStorage.getItem', $index);

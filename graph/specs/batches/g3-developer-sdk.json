@@ -12,19 +12,21 @@
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md",
-    "source/workflow/2026-08-04-docara-goal3d-smart-sdk-schema-provenance-correction.md"
+    "source/workflow/2026-08-04-docara-goal3d-smart-sdk-schema-provenance-correction.md",
+    "source/workflow/2026-08-04-docara-goal3e-owner-schema-fidelity-correction.md"
   ],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md",
     "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md",
-    "source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md"
+    "source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md",
+    "source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/INDEX.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.g3.developer_sdk",
   "allowed_scope": ["Docara application services, CLI formatters and commands, project-local scaffold plans, existing validation and preview orchestration, optional development QA and MCP adapter, tests, public docs, graph, workflow and handoff"],
   "forbidden_scope": ["Second parser", "Second renderer", "Second DesignRegistry", "Second Smart Gateway", "Second LayoutComposer", "Second PageBuilder", "External Framework repositories", "docara-new.test", "docara.test", "Merge", "Push", "Tag", "Release", "Deploy"],
   "checks": ["Golden human and JSON results", "Stable exit codes", "Discovery and schema coverage", "Hash-bound scaffold security", "Validate and test delegation", "Optional visual QA", "MCP boundaries", "Full regression", "Package and consumer", "Graph and documentation validation"],
-  "status": "goal3d_smart_sdk_contract_correction_complete_independent_audit_pending",
-  "candidate_revision": "ba89bccf8e2ad11ed7c72d89d380e924aaaf17d8",
+  "status": "goal3e_owner_schema_fidelity_complete_independent_audit_pending",
+  "candidate_revision": "1e571b6e16ebc4520121aff0ae868de3b986dff3",
   "next_action": "independent_goal3_reverse_outcome_audit"
 }

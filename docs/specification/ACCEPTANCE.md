@@ -182,8 +182,9 @@ PASS ставится только по воспроизводимому evidenc
       требует отдельную process capability плюс exact plan для apply.
 - [x] Goal 3 exact candidate прошёл executor-owned полную regression/package/
       consumer/browser матрицу.
-- [x] `schema smart` публикует neutral portable manifest schema, которая
-      напрямую валидирует Smart scaffold; inspect package/Framework/project
+- [x] `schema smart` публикует byte-exact Framework-owned portable manifest
+      schema; Smart scaffold проходит её без преобразования, затем отдельную
+      Docara admission policy; inspect package/Framework/project
       definitions сообщает одну `sf.smart_artifact_abi` identity, отделяя
       storage alias, provider adapter и template ABI.
 - [x] Current cumulative candidate использует Framework-owned

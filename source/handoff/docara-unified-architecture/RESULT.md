@@ -2,9 +2,9 @@
 
 Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `ba89bccf8e2ad11ed7c72d89d380e924aaaf17d8`
+Current candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`
 
-Current evidence: `source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/INDEX.md`
 
 ## Goal 3 current result
 
@@ -12,33 +12,40 @@ Goal 2-C was independently accepted with `PASS_WITH_NOTES`. G3.0-G3.6 now add
 stable discovery, hash-bound project scaffold, validation/test, optional visual
 QA and optional local MCP over the accepted production services. Those Goal 3
 properties remain covered by parent candidate `2a7237b…`. Current cumulative
-source `ba89bcc…` retains the blur-free modal and three-value reader radius
+source `1e571b6…` retains the blur-free modal and three-value reader radius
 preference, and corrects the public Smart SDK contract: `schema smart`
-validates unchanged scaffold manifests while all package, Framework and project
+returns the byte-exact Framework owner schema while a separately named Docara
+admission policy validates unchanged scaffold manifests. All package, Framework and project
 providers expose the same neutral ABI identity. Storage aliases, provider
 adapters and template ABI remain separate provenance facts. It adds no
 renderer, Gateway, registry or PageBuilder path. Goal 3 remains
 implementation-complete but audit pending.
 
 The current unpublished audit ZIP is
-`105a12843ea4cdfa6fe3f30458e43095c5fc80740d2f0912bd0a21817208fb45`
+`ca21bce847e991c715dfe2033aa923d48c19554b85f29050d026dd110b2362a9`
 with manifest
-`9e7096a1c2164e7c23af5236bde76a86894cac21360ca8f578c132c11a9c38d9`
-(741 files); two independent clean clones produced identical artifacts and the
+`84528d29bfaa1ae19c20b37bf901b13f13778d71ca7e2940846f9c41cf5f4081`
+(742 files); two independent clean clones produced identical artifacts and the
 repository verifier passed. Two same-lock fresh dist consumers built identical
-168-file trees at ledger `d8b21cd7…`; selected Alert rebuilds preserved the
+168-file trees at ledger `48deda0a…`; selected Alert rebuilds preserved the
 complete ledger and static verification reported broken=0. The documentation
 site has 104 routes / 307 files / 208 HTML at normalized ledger
-`44d4b62f377fca72866874f4bbf6a3029fcf74f52575b811cfd1debbdde96744`,
+`e39061c0c952556a5fa82803c58f5dc2270855318f4d56346f3d8af627c7d331`,
 with 21,842 references and broken=0. Full/single output is identical and full
-PHPUnit is 440 tests / 8,078 assertions. Fresh Smart/region/layout browser QA
+PHPUnit is 442 tests / 8,086 assertions. Fresh Smart/region/layout browser QA
 passes 24/24 with zero a11y, console, overflow and visual-diff defects; the
 parent radius evidence remains unchanged. Release and live gates remain
 closed.
 
 No site was changed for this cumulative candidate. The earlier validation of
 parent candidate `2a7237b…` at `https://docara-new.test` is historical and is
-not evidence that current source `ba89bcc…` was deployed.
+not evidence that current source `1e571b6…` was deployed.
+
+### Rejected Goal 3D schema-fidelity candidate
+
+Source `ba89bcc…`, ZIP `105a1284…` and manifest `9e7096a1…` remain historical
+Goal 3D evidence only. Independent audit found that its public schema was a
+Docara-local dialect presented under the owner revision; it is not current.
 
 ### Superseded cumulative UI-radius baseline
 

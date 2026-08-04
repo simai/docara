@@ -2,14 +2,14 @@
 
 Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `ba89bccf8e2ad11ed7c72d89d380e924aaaf17d8`
+Current candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`
 
-Current evidence: `source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/INDEX.md`
 
 Goal 1 and Goal 2 are independently accepted. Goal 3 correction remains
 implementation-complete through the single application-service/runtime path.
 The current cumulative candidate retains exact SF5 UI-radius inheritance and
-adds one authoritative portable Smart schema plus neutral inspect provenance
+adds the byte-exact owner Smart schema, a separate Docara admission policy and neutral inspect provenance
 without a second public dialect or runtime path.
 Independently reproduce this candidate and its parent Goal 3 evidence; do not
 implement Goal 4 or start release review. Release and live actions remain

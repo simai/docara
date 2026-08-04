@@ -12,7 +12,8 @@
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md",
-    "source/workflow/2026-08-04-docara-goal3d-smart-sdk-schema-provenance-correction.md"
+    "source/workflow/2026-08-04-docara-goal3d-smart-sdk-schema-provenance-correction.md",
+    "source/workflow/2026-08-04-docara-goal3e-owner-schema-fidelity-correction.md"
   ],
   "profile_refs": ["docara.unified"],
   "from_ref": "docara.feature.developer_ai_sdk",
@@ -27,6 +28,7 @@
     "src/Application/QaIdentity.php",
     "src/Application/OperationFailureMapper.php",
     "src/Application/McpAdapter.php",
+    "src/Smart/Artifact/DocaraPortableSmartAdmissionPolicy.php",
     "src/File/ProjectFilesystemGuard.php",
     "src/Console/ApplicationCommand.php",
     "tools/mcp-docara/server.php"
@@ -45,7 +47,8 @@
   "evidence_refs": [
     "source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md",
     "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md",
-    "source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md"
+    "source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md",
+    "source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/INDEX.md"
   ],
   "review_refs": ["docara.gate.architecture_acceptance"],
   "current_behavior": [
@@ -53,10 +56,10 @@
     "Project-local Smart and design scaffold is deterministic, hash-bound and limited to owned roots.",
     "Validate, test and QA delegate accepted registries and PreviewKernel; finalized QA references are fully content-addressed and sealed into immutable plans.",
     "Optional MCP has no root parameter, starts read-only and cannot bypass exact-plan apply.",
-    "Public schema and inspect provenance expose the neutral Portable Smart ABI while keeping storage compatibility and template adapter facts separate."
+    "Public schema is the byte-exact Framework owner blob; the separately named Docara admission policy and inspect provenance keep ABI, storage compatibility and template adapter facts distinct."
   ],
   "known_deviations": ["Independent Goal 3 reverse-outcome audit is pending."],
   "deletion_gates": [],
   "status": "implementation_complete_audit_pending",
-  "mapped_revision": "ba89bccf8e2ad11ed7c72d89d380e924aaaf17d8"
+  "mapped_revision": "1e571b6e16ebc4520121aff0ae868de3b986dff3"
 }

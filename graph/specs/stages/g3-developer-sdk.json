@@ -12,12 +12,14 @@
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md",
-    "source/workflow/2026-08-04-docara-goal3d-smart-sdk-schema-provenance-correction.md"
+    "source/workflow/2026-08-04-docara-goal3d-smart-sdk-schema-provenance-correction.md",
+    "source/workflow/2026-08-04-docara-goal3e-owner-schema-fidelity-correction.md"
   ],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md",
     "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md",
-    "source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md"
+    "source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md",
+    "source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/INDEX.md"
   ],
   "profile_refs": ["docara.unified"],
   "parent_goal_ref": "docara.goal.unified",
@@ -32,5 +34,5 @@
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Golden result fixtures", "Write-boundary negatives", "SDK end-to-end", "MCP delegation", "Visual QA", "Package and consumer regression", "Independent reverse-outcome audit"],
   "next_stage_ref": null,
-  "status": "goal3d_smart_sdk_contract_correction_complete_independent_audit_pending"
+  "status": "goal3e_owner_schema_fidelity_complete_independent_audit_pending"
 }

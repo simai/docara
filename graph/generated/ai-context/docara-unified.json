@@ -9,7 +9,7 @@
         "graph/specs/stages/g3-developer-sdk.json",
         "graph/specs/batches/g3-developer-sdk.json"
     ],
-    "canonical_sha256": "b9618a87cdbb9a32a6c37dfd34b4e2535c4fd20bd5b385043ebc0b9296c23724",
+    "canonical_sha256": "f59f54a8a17bc89cb72c874d72bbc1e3f7e95486c0de83bc126a27ab23bd0d57",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -21,14 +21,14 @@
         "goal_readiness": "goal3_ready_for_independent_audit",
         "stage": "docara.stage.g3.developer_sdk",
         "stage_readiness": "ready_for_independent_audit",
-        "stage_status": "goal3d_smart_sdk_contract_correction_complete_independent_audit_pending",
+        "stage_status": "goal3e_owner_schema_fidelity_complete_independent_audit_pending",
         "batch": "docara.batch.g3.developer_sdk",
         "batch_readiness": "ready_for_independent_audit",
-        "batch_status": "goal3d_smart_sdk_contract_correction_complete_independent_audit_pending",
-        "completed_checkpoint": "goal3d_smart_sdk_contract_correction_complete_audit_pending",
-        "candidate_revision": "ba89bccf8e2ad11ed7c72d89d380e924aaaf17d8",
+        "batch_status": "goal3e_owner_schema_fidelity_complete_independent_audit_pending",
+        "completed_checkpoint": "goal3e_owner_schema_fidelity_complete_audit_pending",
+        "candidate_revision": "1e571b6e16ebc4520121aff0ae868de3b986dff3",
         "next_action": "independent_goal3_reverse_outcome_audit",
-        "evidence": "source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md"
+        "evidence": "source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/INDEX.md"
     },
     "roadmap": {
         "source": "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md",

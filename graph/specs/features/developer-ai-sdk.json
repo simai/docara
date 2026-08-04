@@ -12,19 +12,21 @@
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md",
-    "source/workflow/2026-08-04-docara-goal3d-smart-sdk-schema-provenance-correction.md"
+    "source/workflow/2026-08-04-docara-goal3d-smart-sdk-schema-provenance-correction.md",
+    "source/workflow/2026-08-04-docara-goal3e-owner-schema-fidelity-correction.md"
   ],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md",
     "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md",
-    "source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md"
+    "source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md",
+    "source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/INDEX.md"
   ],
   "profile_refs": ["docara.unified"],
   "requirements": [
     "Human and JSON formats consume one operation result.",
     "Scaffold apply requires an exact persisted dry-run plan and unchanged inputs.",
     "Validation, test, QA and MCP delegate accepted production services.",
-    "The public Smart schema validates scaffold output directly and inspect provenance exposes the neutral Portable Smart ABI identity for every provider.",
+    "The public Smart schema is the byte-exact owner blob, validates scaffold output directly, and inspect provenance exposes the neutral Portable Smart ABI identity for every provider.",
     "Normal consumer build remains PHP-only and independent of optional visual and MCP tooling."
   ],
   "status": "implementation_complete_audit_pending"

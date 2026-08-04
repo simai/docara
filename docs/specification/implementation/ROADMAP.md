@@ -1,8 +1,8 @@
 # Дорожная карта упрощения Docara
 
 Текущий статус архитектурного roadmap: Goal 1 и Goal 2 независимо приняты;
-Goal 3 correction, bounded SF5 UI-radius integration и Goal 3D neutral Smart
-SDK correction завершены на exact source `ba89bcc…` и ожидают независимого
+Goal 3 correction, bounded SF5 UI-radius integration и Goal 3E owner-schema
+fidelity correction завершены на exact source `1e571b6…` и ожидают независимого
 reverse-outcome audit. Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
@@ -93,8 +93,10 @@ Bounded UI extension сохраняет тот же pipeline: Framework-owned
 умолчанию используют `backdrop-blur-none`. Goal 3D correction дополнительно
 связывает публичный `schema smart` с реальным portable scaffold manifest и
 нормализует inspect provenance всех providers на neutral
-`sf.smart_artifact_abi`; legacy storage alias и host template adapter остаются
-отдельными provenance facts. Независимый audit нового cumulative candidate
+`sf.smart_artifact_abi`; Goal 3E заменяет локальный dialect byte-exact owner
+schema с SHA-256 `9d65a9b…`, а Docara cross-field admission остаётся отдельной
+policy. Legacy storage alias и host template adapter остаются отдельными
+provenance facts. Независимый audit нового cumulative candidate
 всё ещё обязателен.
 
 ## M2. Вертикальный срез `components/badge`

@@ -4,6 +4,7 @@
   "type": "content",
   "view": "section.docara.article",
   "allowed_regions": ["main"],
+  "capabilities": ["content.document"],
   "slots": ["content"],
   "allowed_blocks": ["content.document", "content.markdown", "content.smart"],
   "blocks": []

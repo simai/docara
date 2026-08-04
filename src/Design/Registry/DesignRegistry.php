@@ -200,11 +200,22 @@ final class DesignRegistry
             }
             $allowedRegions = $section->definition['allowed_regions'] ?? [];
             $type = $section->definition['type'] ?? null;
+            $sectionCapabilities = is_array($section->definition['capabilities'] ?? null)
+                ? $section->definition['capabilities']
+                : [];
             foreach ($allowedRegions as $region) {
                 $compatible = false;
                 foreach ($this->all(DesignArtifactKind::Layout) as $layout) {
                     $contract = $layout->definition['regions'][$region] ?? null;
-                    if (is_array($contract) && in_array($type, $contract['section_types'] ?? [], true)) {
+                    $regionCapabilities = is_array($contract) && is_array($contract['capabilities'] ?? null)
+                        ? $contract['capabilities']
+                        : [];
+                    if (is_array($contract)
+                        && in_array($type, $contract['section_types'] ?? [], true)
+                        && ($sectionCapabilities === []
+                            || $regionCapabilities === []
+                            || array_intersect($sectionCapabilities, $regionCapabilities) !== [])
+                    ) {
                         $compatible = true;
                         break;
                     }

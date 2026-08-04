@@ -432,6 +432,9 @@ final readonly class DeclarativePageCompiler
                 (bool) $region['required'],
                 $enabled,
                 $region['section_types'],
+                is_array($region['capabilities'] ?? null)
+                    ? $region['capabilities']
+                    : ['region.' . $key],
             );
         }
 

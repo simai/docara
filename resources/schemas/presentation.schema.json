@@ -191,6 +191,7 @@
                         "slot": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
                         "smart": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
                         "view": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
+                        "bind": {"type": "string", "pattern": "^[a-z][a-z0-9-]*\\.[a-z][a-z0-9_.-]+$"},
                         "props": {"type": "object", "maxProperties": 32}
                     },
                     "additionalProperties": false

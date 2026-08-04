@@ -6,14 +6,15 @@ namespace Simai\Docara\Declarative\Layout;
 
 final readonly class LayoutRegion
 {
-    /** @param list<string> $sectionTypes */
+    /** @param list<string> $sectionTypes @param list<string> $capabilities */
     public function __construct(
         public string $key,
         public bool $required,
         public bool $enabled,
         public array $sectionTypes,
+        public array $capabilities,
     ) {
-        if ($key === '' || $sectionTypes === [] || ($required && ! $enabled)) {
+        if ($key === '' || $sectionTypes === [] || $capabilities === [] || ($required && ! $enabled)) {
             throw new \InvalidArgumentException('LAYOUT_REGION_INVALID');
         }
     }

@@ -26,6 +26,11 @@
       "items": {"type": "string", "pattern": "^[a-z][a-z0-9_.-]+$"},
       "uniqueItems": true
     },
+    "capabilities": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "^[a-z][a-z0-9-]*\\.[a-z][a-z0-9_.-]+$"},
+      "uniqueItems": true
+    },
     "blocks": {
       "type": "array",
       "items": {

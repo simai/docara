@@ -10,11 +10,11 @@
   },
   "document": {"region": "main", "section": "docara.article", "slot": "content", "block": "content.document"},
   "regions": {
-    "header": {"required": false, "default_enabled": true, "default_sections": [{"id": "site-header", "section": "docara.header"}], "section_types": ["navigation", "shell"]},
-    "sidebar": {"required": false, "default_enabled": true, "default_sections": [{"id": "docs-navigation", "section": "docara.navigation"}], "section_types": ["navigation", "shell"]},
-    "main": {"required": true, "default_enabled": true, "default_sections": [], "section_types": ["content"]},
-    "outline": {"required": false, "default_enabled": true, "default_sections": [{"id": "page-outline", "section": "docara.outline"}], "section_types": ["navigation", "shell"]},
-    "footer": {"required": false, "default_enabled": false, "default_sections": [], "section_types": ["shell"]}
+    "header": {"required": false, "default_enabled": true, "default_sections": [{"id": "site-header", "section": "docara.header"}], "section_types": ["navigation", "shell"], "capabilities": ["shell.brand", "shell.primary-navigation"]},
+    "sidebar": {"required": false, "default_enabled": true, "default_sections": [{"id": "docs-navigation", "section": "docara.navigation"}], "section_types": ["navigation", "shell"], "capabilities": ["shell.secondary-navigation", "shell.content-before"]},
+    "main": {"required": true, "default_enabled": true, "default_sections": [], "section_types": ["content"], "capabilities": ["content.document"]},
+    "outline": {"required": false, "default_enabled": true, "default_sections": [{"id": "page-outline", "section": "docara.outline"}], "section_types": ["navigation", "shell"], "capabilities": ["shell.outline"]},
+    "footer": {"required": false, "default_enabled": false, "default_sections": [], "section_types": ["shell"], "capabilities": ["shell.content-after", "shell.footer"]}
   },
   "assets": ["simai.framework", "docara.reader"]
 }

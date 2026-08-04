@@ -196,15 +196,27 @@ final readonly class RegionCompositionResolver
                     "Section [$sectionKey] is not allowed in region [$region].",
                 );
             }
+            $sectionCapabilities = is_array($definition['capabilities'] ?? null)
+                ? $definition['capabilities']
+                : [];
+            $regionCapabilities = is_array($regionDefinition['capabilities'] ?? null)
+                ? $regionDefinition['capabilities']
+                : ['region.' . $region];
+            if ($sectionCapabilities !== [] && array_intersect($sectionCapabilities, $regionCapabilities) === []) {
+                throw new PortableConfigurationException(
+                    'DECLARATIVE_SECTION_CAPABILITY_MISMATCH',
+                    "Section [$sectionKey] has no capability admitted by region [$region].",
+                );
+            }
             if ($blocks !== null) {
-                $this->assertBlocks($region, $id, $blocks, $definition);
+                $this->assertBlocks($region, $id, $blocks, $definition, $regionCapabilities);
             }
             $ids[$id] = true;
         }
     }
 
     /** @param list<array<string, mixed>> $blocks @param array<string, mixed> $section */
-    private function assertBlocks(string $region, string $sectionId, array $blocks, array $section): void
+    private function assertBlocks(string $region, string $sectionId, array $blocks, array $section, array $regionCapabilities): void
     {
         if (count($blocks) > 12) {
             throw new PortableConfigurationException(
@@ -233,7 +245,7 @@ final readonly class RegionCompositionResolver
             $definition = $this->definitions->block($key);
             match ($definition['kind']) {
                 'element' => $this->assertElementBlock($sectionId, $id, $block),
-                'smart' => $this->assertSmartBlock($sectionId, $id, $block),
+                'smart' => $this->assertSmartBlock($sectionId, $id, $block, $section, $regionCapabilities),
                 default => throw new PortableConfigurationException(
                     'DECLARATIVE_REGION_BLOCK_KIND_FORBIDDEN',
                     "Block [$key] cannot be authored in a shell region.",
@@ -270,10 +282,10 @@ final readonly class RegionCompositionResolver
     }
 
     /** @param array<string, mixed> $block */
-    private function assertSmartBlock(string $sectionId, string $id, array $block): void
+    private function assertSmartBlock(string $sectionId, string $id, array $block, array $section, array $regionCapabilities): void
     {
         $smart = $block['smart'] ?? null;
-        if (array_diff(array_keys($block), ['id', 'block', 'slot', 'smart', 'view', 'props']) !== []
+        if (array_diff(array_keys($block), ['id', 'block', 'slot', 'smart', 'view', 'bind', 'props']) !== []
             || ! is_string($smart)
             || (array_key_exists('view', $block) && ! is_string($block['view']))
             || ! is_array($block['props'] ?? null)
@@ -292,6 +304,19 @@ final readonly class RegionCompositionResolver
                 "Declarative Smart block [$sectionId.$id] references an unregistered component [$smart].",
                 $exception,
             );
+        }
+        if (array_key_exists('bind', $block)) {
+            if (! is_string($block['bind']) || preg_match('/^[a-z][a-z0-9-]*\.[a-z][a-z0-9_.-]+$/D', $block['bind']) !== 1) {
+                throw new PortableConfigurationException('DECLARATIVE_REGION_BINDING_FORBIDDEN', "Declarative Smart block [$sectionId.$id] has an invalid binding ID.");
+            }
+            $binding = $this->definitions->bindings()->get($block['bind']);
+            $sectionCapabilities = is_array($section['capabilities'] ?? null) ? $section['capabilities'] : [];
+            if ($binding->smart !== $smart
+                || array_intersect($binding->capabilities, $regionCapabilities) === []
+                || ($sectionCapabilities !== [] && array_intersect($binding->capabilities, $sectionCapabilities) === [])
+            ) {
+                throw new PortableConfigurationException('DECLARATIVE_BINDING_CAPABILITY_MISMATCH', "Binding [{$block['bind']}] is not admitted for Smart [$smart] in this shell capability.");
+            }
         }
     }
 }

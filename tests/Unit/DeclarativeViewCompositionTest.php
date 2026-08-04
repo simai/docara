@@ -164,6 +164,82 @@ final class DeclarativeViewCompositionTest extends TestCase
         self::assertFalse($headerBlocks[1]['smart']['props']['items'][1]['active']);
     }
 
+    public function test_canonical_navigation_binding_selects_header_tree_and_compact_without_an_engine_branch(): void
+    {
+        foreach ([
+            'header' => 'header',
+            'tree' => 'sidebar',
+            'compact' => 'sidebar',
+        ] as $view => $region) {
+            $layout = RegionCompositionResolver::defaults();
+            $layout['regions'][$region]['sections'] = [[
+                'id' => 'fixture-' . $view,
+                'section' => 'docara.shell',
+                'blocks' => [[
+                    'id' => 'navigation',
+                    'block' => 'shell.smart',
+                    'slot' => 'content',
+                    'smart' => 'docara.navigation',
+                    'view' => $view,
+                    'bind' => 'docara.navigation',
+                    'props' => ['maximum_depth' => 4],
+                ]],
+            ]];
+
+            $resolved = DeclarativePageCompiler::bundled($this->frameworkLock())->compile(
+                (new DocumentParser)->parse("# $view\n", "content/$view.md"),
+                $view,
+                ucfirst($view),
+                3,
+                $this->context(),
+                $layout,
+            )->toArray();
+
+            self::assertSame($view, $resolved['regions'][$region][0]['blocks'][0]['smart']['view']);
+            self::assertSame('docara.navigation', $resolved['regions'][$region][0]['blocks'][0]['smart']['smart']);
+        }
+    }
+
+    public function test_binding_capability_and_owned_prop_spoofing_fail_before_render(): void
+    {
+        foreach ([
+            ['region' => 'footer', 'bind' => 'docara.navigation', 'props' => ['maximum_depth' => 4]],
+            ['region' => 'sidebar', 'bind' => 'docara.navigation', 'props' => ['maximum_depth' => 4, 'items' => []]],
+        ] as $case) {
+            $layout = RegionCompositionResolver::defaults();
+            $layout['regions'][$case['region']]['enabled'] = true;
+            $layout['regions'][$case['region']]['sections'] = [[
+                'id' => 'unsafe-shell',
+                'section' => 'docara.shell',
+                'blocks' => [[
+                    'id' => 'unsafe-navigation',
+                    'block' => 'shell.smart',
+                    'slot' => 'content',
+                    'smart' => 'docara.navigation',
+                    'view' => 'tree',
+                    'bind' => $case['bind'],
+                    'props' => $case['props'],
+                ]],
+            ]];
+            try {
+                DeclarativePageCompiler::bundled($this->frameworkLock())->compile(
+                    (new DocumentParser)->parse('# Unsafe', 'content/unsafe-binding.md'),
+                    'unsafe-binding',
+                    'Unsafe binding',
+                    3,
+                    $this->context(),
+                    $layout,
+                );
+                self::fail('Unsafe binding configuration unexpectedly passed.');
+            } catch (PortableConfigurationException $exception) {
+                self::assertContains($exception->errorCode, [
+                    'DECLARATIVE_BINDING_CAPABILITY_MISMATCH',
+                    'BINDING_OWNED_PROP_COLLISION',
+                ]);
+            }
+        }
+    }
+
     public function test_disabled_header_navigation_projects_no_empty_navigation(): void
     {
         $context = PageCompositionContext::fromBuilder(

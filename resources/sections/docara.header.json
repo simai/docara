@@ -4,6 +4,7 @@
   "type": "navigation",
   "view": "section.docara.header",
   "allowed_regions": ["header"],
+  "capabilities": ["shell.brand", "shell.primary-navigation"],
   "slots": ["content"],
   "allowed_blocks": ["shell.smart"],
   "blocks": [

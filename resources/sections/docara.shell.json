@@ -4,6 +4,7 @@
   "type": "shell",
   "view": "section.docara.shell",
   "allowed_regions": ["header", "sidebar", "outline", "footer"],
+  "capabilities": ["shell.brand", "shell.primary-navigation", "shell.secondary-navigation", "shell.outline", "shell.content-before", "shell.content-after", "shell.footer"],
   "slots": ["content"],
   "allowed_blocks": ["shell.element", "shell.smart"],
   "blocks": []

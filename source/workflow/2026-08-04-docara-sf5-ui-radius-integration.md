@@ -2,7 +2,7 @@
 
 Date: 2026-08-04
 Status: implementation complete; ready for independent audit
-Docara product candidate: `6bbe0653265bbfb08027b717ed2981a1add79c2e`
+Docara product candidate: `1dee6d19e2d9a6c35402b3552f3f5c8c366317b6`
 Evidence: `source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md`
 
 ## User outcome
@@ -31,7 +31,7 @@ Markdown or configuration remains forbidden.
 | --- | --- | --- |
 | Framework source (`simai/ui-loader`) | `codex/sf5-ui-radius-contract` | `36123543027d6b363c2242c747bf1fd8ec7d6c88` |
 | Framework distribution (`simai/ui`) | `codex/sf5-ui-radius-contract` | `d1daa951dd08b94a9f209fd9f31a78d2b3779563` |
-| Docara product | `codex/docara-unified-architecture` | `6bbe0653265bbfb08027b717ed2981a1add79c2e` |
+| Docara product | `codex/docara-unified-architecture` | `1dee6d19e2d9a6c35402b3552f3f5c8c366317b6` |
 
 The distribution tree is the accepted Docara baseline plus the bounded radius
 delta. Intermediate distribution commits `ed829c3…`, `96c17a26…` and
@@ -53,7 +53,7 @@ was introduced.
 
 ## Rollback
 
-- Docara: revert product commits from `42babb7…` through `6bbe065…`;
+- Docara: revert product commits from `42babb7…` through `1dee6d1…`;
 - Framework distribution: repin to the prior exact `cc1bfbc…` baseline or
   revert the bounded `d1daa951…` branch commits;
 - Framework source: revert `36123543…`.

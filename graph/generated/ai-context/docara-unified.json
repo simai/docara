@@ -9,7 +9,7 @@
         "graph/specs/stages/g3-developer-sdk.json",
         "graph/specs/batches/g3-developer-sdk.json"
     ],
-    "canonical_sha256": "f61a532175b48db7ca8bea11cce5edf282b5bafc5874dd806d8707cd6e7e94a6",
+    "canonical_sha256": "cb212f0d6453315311c723c9c800e9d5466dc5885a99e7afdcd1f92332b8bf98",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -26,7 +26,7 @@
         "batch_readiness": "ready_for_independent_audit",
         "batch_status": "goal3_correction_complete_independent_audit_pending",
         "completed_checkpoint": "goal3_implementation_complete_audit_pending",
-        "candidate_revision": "6bbe0653265bbfb08027b717ed2981a1add79c2e",
+        "candidate_revision": "1dee6d19e2d9a6c35402b3552f3f5c8c366317b6",
         "next_action": "independent_goal3_reverse_outcome_audit",
         "evidence": "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md"
     },

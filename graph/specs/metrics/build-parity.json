@@ -25,6 +25,6 @@
   "target": 0,
   "observed": 0,
   "observed_counts": {"routes_checked": 104, "differences": 0, "independent_dist_consumers": 2, "complete_output_files_compared": 168, "complete_tree_differences": 0, "documentation_output_files_compared": 307},
-  "observed_tree_sha256": "164a03d2e296dd2ed5db90319656c0df9d38bbaa0d82fbc5ecd4d24f44d50010",
+  "observed_tree_sha256": "981bef4125456978b75b85b85bf3f06ecdb8c5bfa15fb1b05874fa770fbd2404",
   "unknown_policy": "fail_closed"
 }

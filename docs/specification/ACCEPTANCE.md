@@ -1,7 +1,7 @@
 # Приёмка единой архитектуры Docara
 
 Текущий статус: Goal 1 и Goal 2 независимо приняты. Goal 3 correction и
-ограниченная интеграция SF5 UI-radius завершены на exact source `6bbe065…` и
+ограниченная интеграция SF5 UI-radius завершены на exact source `1dee6d1…` и
 ожидают независимого audit. Finalized QA reference целиком content-addressed и
 привязан к immutable plan; совместная подмена reference/candidate/report
 fail-closed.

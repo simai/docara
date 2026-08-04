@@ -2,7 +2,7 @@
 
 Date: 2026-08-04
 Status: ready for independent audit
-Docara product candidate: `6bbe0653265bbfb08027b717ed2981a1add79c2e`
+Docara product candidate: `1dee6d19e2d9a6c35402b3552f3f5c8c366317b6`
 
 ## Immutable Framework inputs
 
@@ -37,15 +37,15 @@ Full PHPUnit: 437 tests / 7974 assertions — PASS
 ## Deterministic release package
 
 Two independent `git clone --no-local` checkouts of exact product revision
-`6bbe0653265bbfb08027b717ed2981a1add79c2e` produced byte-identical release
+`1dee6d19e2d9a6c35402b3552f3f5c8c366317b6` produced byte-identical release
 artifacts with the repository-owned packager:
 
 - ZIP SHA-256:
-  `b2c6f4f956fb1e8b84cbd4c62f7c8c77d76894d7403e6db66abdece6407eafa9`;
+  `276f1491eaeda4c86432f793267d45980ec074e39588fdcfe38a67ea11a08dc2`;
 - manifest SHA-256:
-  `1c96e776f711710f60c1744a8b4a0a87398f20a1afce11bc277f01232bf170b9`;
+  `d78f77ce619edbdc54e94e031f55f2659dade0cf17501bf331a5ba784df8c8c2`;
 - checksum-file SHA-256:
-  `fe09bf0b172964c59d72cc4797238f088a6ccdacbe17b933cc4457270b620150`;
+  `cfd6de2e5e252aa23483a1b41f8ca3d451bd3eedd52b58ca440f718dd0b70456`;
 - package files: `741`;
 - repository verifier: PASS.
 
@@ -59,11 +59,11 @@ same immutable consumer lock. Neither contains package `.git` or Node runtime
 dependencies.
 
 - consumer lock SHA-256:
-  `efbd5de5be737769f75c2f0c72dccd9c6f43681ddc810ff0a0fbdeaeb53c52d1`;
+  `4adfd98be91cdec885515fd1384da545c8c75d040bc95cd0892f5fa4699f2592`;
 - both initialized the package starter and built `38` routes / `168` files;
 - both static verifiers: `76` HTML / `3743` references / broken `0`;
 - byte-identical consumer ledger:
-  `81ac6548aa1c430bbad33f5ca6945fe80e2e77dc6744a56423c25803f9505386`;
+  `ee9cb243bfac8328236a6e839f8a61973fd1463650bcc0c92cb5f4bc492a969d`;
 - selected `/ru/components/alert/` rebuild preserves the complete ledger in
   both consumers.
 
@@ -84,11 +84,11 @@ Results:
 
 - both full builds: `104` routes, `307` files, byte-identical;
 - normalized full tree SHA-256:
-  `164a03d2e296dd2ed5db90319656c0df9d38bbaa0d82fbc5ecd4d24f44d50010`;
+  `981bef4125456978b75b85b85bf3f06ecdb8c5bfa15fb1b05874fa770fbd2404`;
 - static verifier: `208` HTML, `21842` references, broken `0`;
 - full/single complete tree equality: PASS;
 - Button HTML SHA-256:
-  `1b6637d92473a8469ae28ad0292800eec5b232f98e38e6c0d491d7e87d16ffd0`.
+  `8adfbe6e0f2e6e834ab015073ccde0e971ff083a3eb61306aecc0db3c567cc6b`.
 
 ## Exact browser proof
 
@@ -107,6 +107,10 @@ Both transient modals expose `backdrop-blur-none`; captured-run console errors
 `74bce39fc552a1219105812e9e2c938d1238b5dbac15ecfa49758f8d0d5a12a4`.
 Initial Chromium requests intermittently reported CDN socket errors; the exact
 repeatable captured reload was clean and independent `curl` byte checks passed.
+The final candidate differs from the captured runtime candidate only in the
+reader-settings Markdown wording; runtime, templates, Framework assets and UI
+configuration are byte-identical, so the browser proof is rebound without
+claiming a new screenshot run.
 
 ## Boundaries
 

@@ -2,7 +2,7 @@
 
 Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `6bbe0653265bbfb08027b717ed2981a1add79c2e`
+Current candidate: `1dee6d19e2d9a6c35402b3552f3f5c8c366317b6`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md`
 
@@ -12,22 +12,22 @@ Goal 2-C was independently accepted with `PASS_WITH_NOTES`. G3.0-G3.6 now add
 stable discovery, hash-bound project scaffold, validation/test, optional visual
 QA and optional local MCP over the accepted production services. Those Goal 3
 properties remain covered by parent candidate `2a7237b…`. Current cumulative
-source `6bbe065…` additionally removes default search/settings modal blur,
+source `1dee6d1…` additionally removes default search/settings modal blur,
 repins the exact Framework distribution and exposes a three-value reader
 preference over Framework-owned `--sf-radius--ui`. It adds no renderer,
 Gateway, registry or PageBuilder path. Goal 3 remains implementation-complete
 but audit pending.
 
 The current unpublished audit ZIP is
-`b2c6f4f956fb1e8b84cbd4c62f7c8c77d76894d7403e6db66abdece6407eafa9`
+`276f1491eaeda4c86432f793267d45980ec074e39588fdcfe38a67ea11a08dc2`
 with manifest
-`1c96e776f711710f60c1744a8b4a0a87398f20a1afce11bc277f01232bf170b9`
+`d78f77ce619edbdc54e94e031f55f2659dade0cf17501bf331a5ba784df8c8c2`
 (741 files); two independent clean clones produced identical artifacts and the
 repository verifier passed. Two same-lock fresh dist consumers built identical
-168-file trees at ledger `81ac6548…`; selected Alert rebuilds preserved the
+168-file trees at ledger `ee9cb243…`; selected Alert rebuilds preserved the
 complete ledger and static verification reported broken=0. The documentation
 site has 104 routes / 307 files / 208 HTML at normalized ledger
-`164a03d2e296dd2ed5db90319656c0df9d38bbaa0d82fbc5ecd4d24f44d50010`,
+`981bef4125456978b75b85b85bf3f06ecdb8c5bfa15fb1b05874fa770fbd2404`,
 with 21,842 references and broken=0. Full/single output is identical and full
 PHPUnit is 437 tests / 7,974 assertions. Browser evidence confirms 2/4/8 px
 reader modes, restored 2 px default, blur-free transient modals and zero
@@ -35,14 +35,17 @@ captured console/overflow defects. Release and live gates remain closed.
 
 No site was changed for this cumulative candidate. The earlier validation of
 parent candidate `2a7237b…` at `https://docara-new.test` is historical and is
-not evidence that current source `6bbe065…` was deployed.
+not evidence that current source `1dee6d1…` was deployed.
 
 ### Superseded current Goal 3 baseline
 
 Source `2a7237b…`, ZIP `210215e0…`, manifest `5511646e…`, consumer ledger
 `751702bc…` and public ledger `5dc4112d…` remain valid historical Goal 3
 evidence, but they are superseded as current artifact identities by the bounded
-SF5 UI-radius integration above.
+SF5 UI-radius integration above. Intermediate source `6bbe065…`, ZIP
+`b2c6f4f9…`, manifest `1c96e776…`, consumer ledger `81ac6548…` and public
+ledger `164a03d2…` were superseded when the final documentation wording was
+corrected; they are not current release identities.
 
 ### Rejected Goal 3 audit artifacts
 

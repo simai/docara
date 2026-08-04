@@ -2,7 +2,7 @@
 
 Текущий статус архитектурного roadmap: Goal 1 и Goal 2 независимо приняты;
 Goal 3 correction и bounded SF5 UI-radius integration завершены на exact
-source `6bbe065…` и ожидают независимого reverse-outcome audit. Исторический R2
+source `1dee6d1…` и ожидают независимого reverse-outcome audit. Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
 заявлены.

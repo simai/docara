@@ -2,7 +2,7 @@
 
 Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `6bbe0653265bbfb08027b717ed2981a1add79c2e`
+Current candidate: `1dee6d19e2d9a6c35402b3552f3f5c8c366317b6`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md`
 

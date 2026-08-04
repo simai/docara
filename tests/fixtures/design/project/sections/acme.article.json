@@ -4,6 +4,7 @@
   "type": "content",
   "view": "section.acme.article",
   "allowed_regions": ["stage"],
+  "capabilities": ["content.document"],
   "slots": ["content"],
   "allowed_blocks": ["acme.document", "content.markdown", "content.smart"],
   "blocks": []

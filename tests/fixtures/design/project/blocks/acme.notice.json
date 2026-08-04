@@ -1,0 +1,6 @@
+{
+  "schema": "docara.block.v1",
+  "key": "acme.notice",
+  "kind": "element",
+  "renderer": "block.element"
+}

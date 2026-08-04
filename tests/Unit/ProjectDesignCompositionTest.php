@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
+use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\Composition\RegionCompositionResolver;
 use Simai\Docara\Declarative\DeclarativePageCompiler;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
@@ -61,6 +62,53 @@ final class ProjectDesignCompositionTest extends TestCase
         self::assertStringContainsString('data-docara-region="stage"', $html);
         self::assertStringContainsString('Artifact-only composition.', $html);
         self::assertStringNotContainsString('/Users/', json_encode($plan->provenance, JSON_THROW_ON_ERROR));
+    }
+
+    #[Test]
+    public function project_shell_section_and_block_use_an_admitted_capability_without_engine_edits(): void
+    {
+        $this->filesystem->copyDirectory(
+            dirname(__DIR__) . '/fixtures/design/project',
+            $this->tmpPath('design'),
+        );
+        $definitions = new DefinitionRepository(
+            designs: DesignRegistry::bundled($this->tmp, 'acme'),
+        );
+        $layout = RegionCompositionResolver::defaults($definitions);
+        $layout['regions']['footer'] = [
+            'enabled' => true,
+            'sections' => [[
+                'id' => 'project-footer',
+                'section' => 'acme.footer',
+                'blocks' => [[
+                    'id' => 'notice',
+                    'block' => 'acme.notice',
+                    'slot' => 'content',
+                    'element' => [
+                        'tag' => 'p',
+                        'text' => 'Project-owned shell contribution',
+                        'utilities' => [],
+                    ],
+                ]],
+            ]],
+        ];
+
+        $plan = DeclarativePageCompiler::bundled(
+            $this->frameworkLock(),
+            definitions: $definitions,
+        )->compile(
+            (new DocumentParser)->parse("# Project shell\n", 'content/project-shell.md'),
+            'project-shell',
+            'Project shell',
+            composition: PageCompositionContext::fromBuilder(['title' => 'Docara'], '/', [], []),
+            layoutConfiguration: $layout,
+        );
+        $html = (new DeclarativePageRenderer(new PortableMarkdownRenderer))->render($plan)->html;
+
+        self::assertSame('acme.footer', $plan->regions['footer'][0]->section);
+        self::assertSame('acme.notice', $plan->regions['footer'][0]->blocks[0]->block);
+        self::assertStringContainsString('Project-owned shell contribution', $html);
+        self::assertStringContainsString('data-docara-region="footer"', $html);
     }
 
     /** @return array<string, mixed> */

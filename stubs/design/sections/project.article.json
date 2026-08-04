@@ -4,6 +4,7 @@
   "type": "content",
   "view": "section.project.article",
   "allowed_regions": ["stage"],
+  "capabilities": ["content.document"],
   "slots": ["content"],
   "allowed_blocks": ["project.document", "content.markdown", "content.smart"],
   "blocks": []

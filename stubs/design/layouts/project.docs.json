@@ -10,7 +10,7 @@
   },
   "document": {"region": "stage", "section": "project.article", "slot": "content", "block": "project.document"},
   "regions": {
-    "stage": {"required": true, "default_enabled": true, "default_sections": [], "section_types": ["content"]}
+    "stage": {"required": true, "default_enabled": true, "default_sections": [], "section_types": ["content"], "capabilities": ["content.document"]}
   },
   "assets": []
 }

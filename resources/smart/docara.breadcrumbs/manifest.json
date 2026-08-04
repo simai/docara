@@ -1,0 +1,52 @@
+{
+  "schema": "larena.ui.smart_manifest.v1",
+  "key": "docara.breadcrumbs",
+  "version": "1.0.0",
+  "owner_package": "simai/docara",
+  "kind": "composite",
+  "props": {
+    "type": "object",
+    "properties": {
+      "items": {
+        "type": "array",
+        "maxItems": 32,
+        "items": {
+          "type": "object",
+          "properties": {
+            "title": {"type": "string", "minLength": 1, "maxLength": 500},
+            "url": {"type": ["string", "null"], "maxLength": 2000},
+            "current": {"type": "boolean"}
+          },
+          "required": ["title", "url", "current"],
+          "additionalProperties": false
+        }
+      },
+      "label": {"type": "string", "minLength": 1, "maxLength": 200},
+      "expand_label": {"type": "string", "minLength": 1, "maxLength": 200},
+      "max_items": {"type": "integer", "minimum": 1, "maximum": 8}
+    },
+    "required": ["items", "label", "expand_label", "max_items"],
+    "additionalProperties": false
+  },
+  "slots": {},
+  "events": {},
+  "views": {"default": {}},
+  "presets": {"default": {"view": "default"}},
+  "constraints": {},
+  "render": {"strategy": "host", "renderer": "docara.smart.template"},
+  "frontend": {"runtime": null, "tag": null},
+  "assets": [{"key": "simai.framework.core.css", "kind": "css", "critical": true}],
+  "atlas": {
+    "visible": true,
+    "title": "Breadcrumbs",
+    "description": "Displays the current route hierarchy.",
+    "category": "navigation",
+    "status": "developer_testable",
+    "states": ["default", "empty", "overflow"],
+    "readiness": {"safe_to_suggest": true, "safe_to_render": true, "safe_to_bind_data": true, "safe_to_execute_effect": false},
+    "accessibility": ["navigation_landmark", "current_page"],
+    "example_props": {"items": [], "label": "Breadcrumbs", "expand_label": "Show path", "max_items": 3},
+    "controls": []
+  },
+  "provenance": {"source": "simai/docara", "reference_status": "product_owned", "input_adapter": "smart.props"}
+}

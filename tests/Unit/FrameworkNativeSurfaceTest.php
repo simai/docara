@@ -87,7 +87,7 @@ final class FrameworkNativeSurfaceTest extends TestCase
     {
         $root = dirname(__DIR__, 2);
         foreach ([
-            $root . '/resources/publisher/components/search-dialog.php' => 'docara-search-dialog',
+            $root . '/resources/smart/docara.search/templates/default.php' => 'docara-search-dialog',
             $root . '/resources/smart/docara.preferences/templates/side-panel.php' => 'docara-reader-settings-dialog',
         ] as $path => $id) {
             $template = file_get_contents($path);

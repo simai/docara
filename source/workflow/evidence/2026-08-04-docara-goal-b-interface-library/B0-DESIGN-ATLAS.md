@@ -55,7 +55,7 @@ vendor/bin/pint --test src tests/Unit/DesignAtlasTest.php
 PASS
 
 php vendor/bin/phpunit --filter 'DesignAtlasTest|McpAdapterTest|DeveloperDiscoveryCommandTest'
-PASS — 11 tests, 96 assertions
+PASS — 11 tests, 101 assertions
 
 JsonSchemaValidator(design-atlas.schema.json)
 PASS

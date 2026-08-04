@@ -1,0 +1,40 @@
+{
+  "schema": "larena.ui.smart_manifest.v1",
+  "key": "docara.pager",
+  "version": "1.0.0",
+  "owner_package": "simai/docara",
+  "kind": "composite",
+  "props": {
+    "type": "object",
+    "properties": {
+      "previous": {"type": ["object", "null"]},
+      "next": {"type": ["object", "null"]},
+      "label": {"type": "string", "minLength": 1, "maxLength": 200},
+      "previous_label": {"type": "string", "minLength": 1, "maxLength": 200},
+      "next_label": {"type": "string", "minLength": 1, "maxLength": 200}
+    },
+    "required": ["previous", "next", "label", "previous_label", "next_label"],
+    "additionalProperties": false
+  },
+  "slots": {},
+  "events": {},
+  "views": {"default": {}},
+  "presets": {"default": {"view": "default"}},
+  "constraints": {},
+  "render": {"strategy": "host", "renderer": "docara.smart.template"},
+  "frontend": {"runtime": null, "tag": null},
+  "assets": [{"key": "simai.framework.core.css", "kind": "css", "critical": true}],
+  "atlas": {
+    "visible": true,
+    "title": "Previous and next navigation",
+    "description": "Links adjacent documentation routes.",
+    "category": "navigation",
+    "status": "developer_testable",
+    "states": ["both", "previous", "next", "empty"],
+    "readiness": {"safe_to_suggest": true, "safe_to_render": true, "safe_to_bind_data": true, "safe_to_execute_effect": false},
+    "accessibility": ["navigation_landmark", "link_relations"],
+    "example_props": {"previous": null, "next": null, "label": "Page navigation", "previous_label": "Previous", "next_label": "Next"},
+    "controls": []
+  },
+  "provenance": {"source": "simai/docara", "reference_status": "product_owned", "input_adapter": "smart.props"}
+}

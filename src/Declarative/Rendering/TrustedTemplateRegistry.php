@@ -17,10 +17,7 @@ final readonly class TrustedTemplateRegistry
         'publisher.docara.head' => ['path' => 'publisher/components/head.php', 'renderer' => 'php'],
         'publisher.docara.header-actions' => ['path' => 'publisher/components/header-actions.php', 'renderer' => 'php'],
         'publisher.docara.mobile-navigation' => ['path' => 'publisher/components/mobile-navigation.php', 'renderer' => 'php'],
-        'publisher.docara.breadcrumbs' => ['path' => 'publisher/components/breadcrumbs.php', 'renderer' => 'php'],
         'publisher.docara.mobile-toc' => ['path' => 'publisher/components/mobile-toc.php', 'renderer' => 'php'],
-        'publisher.docara.pager' => ['path' => 'publisher/components/pager.php', 'renderer' => 'php'],
-        'publisher.docara.search-dialog' => ['path' => 'publisher/components/search-dialog.php', 'renderer' => 'php'],
         'publisher.docara.reader-settings' => ['path' => 'publisher/components/reader-settings.php', 'renderer' => 'php'],
     ];
 

@@ -1,0 +1,45 @@
+{
+  "schema": "larena.ui.smart_manifest.v1",
+  "key": "docara.search",
+  "version": "1.0.0",
+  "owner_package": "simai/docara",
+  "kind": "composite",
+  "props": {
+    "type": "object",
+    "properties": {
+      "enabled": {"type": "boolean"},
+      "index_url": {"type": ["string", "null"], "maxLength": 2000},
+      "placeholder": {"type": "string", "minLength": 1, "maxLength": 200},
+      "query_label": {"type": "string", "minLength": 1, "maxLength": 200},
+      "close_label": {"type": "string", "minLength": 1, "maxLength": 200},
+      "title": {"type": "string", "minLength": 1, "maxLength": 200},
+      "idle_label": {"type": "string", "minLength": 1, "maxLength": 500},
+      "navigate_label": {"type": "string", "minLength": 1, "maxLength": 200},
+      "open_label": {"type": "string", "minLength": 1, "maxLength": 200},
+      "dismiss_label": {"type": "string", "minLength": 1, "maxLength": 200}
+    },
+    "required": ["enabled", "index_url", "placeholder", "query_label", "close_label", "title", "idle_label", "navigate_label", "open_label", "dismiss_label"],
+    "additionalProperties": false
+  },
+  "slots": {},
+  "events": {"docara-search-open": {"kind": "custom", "backend_handler_binding": false}},
+  "views": {"default": {}},
+  "presets": {"default": {"view": "default"}},
+  "constraints": {},
+  "render": {"strategy": "host", "renderer": "docara.smart.template"},
+  "frontend": {"runtime": null, "tag": null},
+  "assets": [{"key": "simai.framework.core.css", "kind": "css", "critical": true}],
+  "atlas": {
+    "visible": true,
+    "title": "Search dialog",
+    "description": "Displays the local documentation search dialog.",
+    "category": "navigation",
+    "status": "developer_testable",
+    "states": ["closed", "open", "results", "empty", "disabled"],
+    "readiness": {"safe_to_suggest": true, "safe_to_render": true, "safe_to_bind_data": true, "safe_to_execute_effect": true},
+    "accessibility": ["dialog_focus_management", "escape_close", "live_results"],
+    "example_props": {"enabled": false, "index_url": null, "placeholder": "Search", "query_label": "Query", "close_label": "Close", "title": "Search", "idle_label": "Start typing", "navigate_label": "Navigate", "open_label": "Open", "dismiss_label": "Close"},
+    "controls": []
+  },
+  "provenance": {"source": "simai/docara", "reference_status": "product_owned", "input_adapter": "smart.props"}
+}

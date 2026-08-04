@@ -19,7 +19,7 @@ final class SmartRegistryTest extends TestCase
         $registry = SmartRegistry::bundled();
 
         self::assertSame(
-            ['docara.brand', 'docara.navigation', 'docara.preferences', 'docara.toc', 'ui.alert', 'ui.button'],
+            ['docara.brand', 'docara.breadcrumbs', 'docara.navigation', 'docara.pager', 'docara.preferences', 'docara.search', 'docara.toc', 'ui.alert', 'ui.button'],
             $registry->keys(),
         );
         self::assertSame('docara.brand', $registry->canonicalKey('docara.header'));
@@ -55,12 +55,29 @@ final class SmartRegistryTest extends TestCase
         }
     }
 
+    public function test_replaceable_chrome_leaves_are_not_trusted_application_templates(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $source = (string) file_get_contents($root . '/src/Declarative/Rendering/TrustedTemplateRegistry.php');
+        $publisher = (string) file_get_contents($root . '/src/Declarative/Rendering/PublisherChromeRenderer.php');
+
+        foreach (['breadcrumbs', 'pager', 'search-dialog'] as $leaf) {
+            self::assertStringNotContainsString("publisher.docara.$leaf", $source);
+            self::assertFileDoesNotExist($root . '/resources/publisher/components/' . $leaf . '.php');
+        }
+        foreach (['docara.breadcrumbs', 'docara.pager', 'docara.search'] as $smart) {
+            self::assertSame($smart, SmartRegistry::bundled()->definition($smart)->key);
+        }
+        self::assertStringContainsString('SmartComponentGateway', $publisher);
+        self::assertStringNotContainsString('CompositeSmartPlanResolver', $publisher);
+    }
+
     public function test_one_validator_accepts_framework_and_product_manifests(): void
     {
         $repository = new DefinitionRepository;
         $validator = new SmartManifestValidator;
 
-        foreach (['ui.alert', 'ui.button', 'docara.brand', 'docara.navigation', 'docara.preferences', 'docara.toc'] as $key) {
+        foreach (['ui.alert', 'ui.button', 'docara.brand', 'docara.breadcrumbs', 'docara.navigation', 'docara.pager', 'docara.preferences', 'docara.search', 'docara.toc'] as $key) {
             $manifest = $repository->smartManifest($key);
             $validator->assertValid($key, $manifest);
             self::assertSame('larena.ui.smart_manifest.v1', $manifest['schema']);

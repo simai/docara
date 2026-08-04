@@ -1,0 +1,6 @@
+{
+  "schema": "docara.smart_view.v1",
+  "smart": "docara.pager",
+  "view": "default",
+  "template": "smart.docara.pager.default"
+}

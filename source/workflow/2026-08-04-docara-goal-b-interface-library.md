@@ -78,7 +78,7 @@ Evidence:
 
 ### B1 — Replaceable chrome migration
 
-Status: `pending`.
+Status: `pass`.
 
 - migrate search, breadcrumbs and pager to registered `docara.*` Smart leaves;
 - reuse navigation, TOC and preferences for desktop/mobile shell;

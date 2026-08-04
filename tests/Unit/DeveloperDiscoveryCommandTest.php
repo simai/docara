@@ -29,7 +29,7 @@ final class DeveloperDiscoveryCommandTest extends TestCase
         (new JsonSchemaValidator(new SchemaRepository))->assertValid($result, 'operation-result.schema.json');
 
         self::assertSame('list', $result['operation']);
-        self::assertSame(['docara.brand', 'docara.navigation', 'docara.preferences', 'docara.toc', 'ui.alert', 'ui.button'], array_column($result['data']['items'], 'id'));
+        self::assertSame(['docara.brand', 'docara.breadcrumbs', 'docara.navigation', 'docara.pager', 'docara.preferences', 'docara.search', 'docara.toc', 'ui.alert', 'ui.button'], array_column($result['data']['items'], 'id'));
 
         $human = new CommandTester($application->find('list'));
         self::assertSame(0, $human->execute(['kind' => 'smart']));

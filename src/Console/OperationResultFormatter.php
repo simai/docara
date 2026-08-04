@@ -22,6 +22,9 @@ final class OperationResultFormatter
         if (isset($value['data']['count'])) {
             $lines[] = 'Count: ' . $value['data']['count'];
         }
+        if (is_string($value['data']['fingerprint'] ?? null)) {
+            $lines[] = 'Fingerprint: ' . $value['data']['fingerprint'];
+        }
         foreach ($value['data']['items'] ?? [] as $item) {
             $lines[] = sprintf('- %s:%s (%s)', $item['kind'] ?? 'item', $item['id'] ?? '?', $item['provider'] ?? $item['owner'] ?? 'registered');
         }

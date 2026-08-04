@@ -11,10 +11,12 @@ Docara. Он заменяет необходимость восстанавли�
    данных и физическая структура репозитория.
 3. [Контракт оболочки](architecture/SHELL-CONTRACT.md) — безопасные bindings,
    shell capabilities и project-owned contributions.
-4. [Контент и компоненты](authoring/AUTHORING-CONTRACT.md) — Markdown,
+4. [Design Atlas](DESIGN-ATLAS-CONTRACT.md) — детерминированная проекция
+   принятых registries и bounded child contracts.
+5. [Контент и компоненты](authoring/AUTHORING-CONTRACT.md) — Markdown,
    front matter, локали и синтаксис Smart-компонентов.
-5. [План реализации](implementation/ROADMAP.md) — безопасный порядок перехода.
-6. [Приёмка](ACCEPTANCE.md) — проверяемые критерии завершения.
+6. [План реализации](implementation/ROADMAP.md) — безопасный порядок перехода.
+7. [Приёмка](ACCEPTANCE.md) — проверяемые критерии завершения.
 
 Машинный источник состояния находится в [`graph/specs`](../../graph/specs).
 Если этот текст и объект графа расходятся, изменение сначала оформляется как

@@ -48,6 +48,7 @@ final class DeveloperDiscoveryCommandTest extends TestCase
             ['inspect', ['kind' => 'binding', 'id' => 'docara.navigation']],
             ['schema', ['kind' => 'binding']],
             ['schema', ['kind' => 'layout']],
+            ['atlas', []],
         ] as [$name, $arguments]) {
             $tester = new CommandTester($application->find($name));
             $exit = $tester->execute($arguments + ['--json' => true]);

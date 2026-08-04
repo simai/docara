@@ -26,6 +26,7 @@ final class SdkServiceFactory
             new ValidationService,
             new ArtifactTestService($preview),
             new QaService($preview, new PreviewShell($files, $writes), $writes),
+            new DesignAtlasService,
         );
     }
 }

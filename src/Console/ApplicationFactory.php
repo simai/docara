@@ -6,6 +6,7 @@ namespace Simai\Docara\Console;
 
 use Composer\InstalledVersions;
 use Simai\Docara\Application\ArtifactTestService;
+use Simai\Docara\Application\DesignAtlasService;
 use Simai\Docara\Application\DiscoveryService;
 use Simai\Docara\Application\QaService;
 use Simai\Docara\Application\ScaffoldService;
@@ -46,6 +47,7 @@ final class ApplicationFactory
             (new ListCommand($discovery))->setBase($base),
             (new InspectCommand($discovery))->setBase($base),
             (new SchemaCommand($discovery))->setBase($base),
+            (new AtlasCommand(new DesignAtlasService))->setBase($base),
             (new ScaffoldCommand(new ScaffoldService($writes)))->setBase($base),
             (new ValidateCommand(new ValidationService))->setBase($base),
             (new TestArtifactCommand(new ArtifactTestService($preview)))->setBase($base),

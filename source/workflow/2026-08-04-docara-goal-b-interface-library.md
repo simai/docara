@@ -62,7 +62,7 @@ projection; repository routing therefore continues through the recorded
 
 ### B0 — Design Atlas contract
 
-Status: `in_progress`.
+Status: `pass`.
 
 - freeze `docara.design_atlas.v1`, support vocabulary and deterministic order;
 - project Layout/View/Section/Block, Smart, binding and preset descriptors from

@@ -12,6 +12,7 @@ final readonly class SdkService
         public ValidationService $validation,
         public ArtifactTestService $test,
         public QaService $qa,
+        public DesignAtlasService $atlas,
     ) {}
 
     /** @param array<string, mixed> $arguments */
@@ -22,6 +23,7 @@ final readonly class SdkService
             'list' => $this->discovery->list($root, $this->string($arguments, 'kind')),
             'inspect' => $this->discovery->inspect($root, $this->string($arguments, 'kind'), $this->string($arguments, 'id')),
             'schema' => $this->discovery->schema($root, $this->string($arguments, 'kind')),
+            'atlas' => $this->atlas->atlas($root),
             'scaffold.plan' => $this->scaffold->plan($root, $this->string($arguments, 'kind'), $this->string($arguments, 'id')),
             'scaffold.apply' => $this->scaffold->apply($root, $this->string($arguments, 'plan_id')),
             'validate' => $this->validation->validate($root, $this->string($arguments, 'kind'), $this->optionalString($arguments, 'id')),

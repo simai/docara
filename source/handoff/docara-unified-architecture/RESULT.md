@@ -1,20 +1,30 @@
 # Current Docara result
 
-Current state: `goal_a_ready_for_independent_audit`
+Current state: `goal_b_in_progress`
 
-Current candidate: `8c04160ab50549b060fb933cf80f86193cd92113`
+Current candidate: `3280a89cc21f2b4fcfc8e7539c673ca62a199446`
 
-Current evidence: `source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
 
-## Goal A current result
+## Goal B current result
+
+Independent audit accepted Goal A candidate `8c04160…` with exact public tree
+`8b7fdb61…`. Goal B is now active from governance baseline `3280a89…`. B0 is
+building one deterministic Atlas projection over the accepted Design, Smart and
+Binding registries. Repository inventory confirms that `ui.input`,
+`ui.dropdown` and `ui.checkbox` do not yet have accepted exact-pinned artifacts
+in Docara; their B4 consumption remains an explicit external-dependency gate.
+No external repository or site is changed.
+
+## Accepted Goal A result
 
 Goal 3 exact product candidate `1e571b6e16ebc4520121aff0ae868de3b986dff3`
 was independently accepted with `PASS`. Goal A candidate `8c04160…` replaces
 compiler binding-ID branching with one typed provider-owned registry, validates
 shell capabilities, supports header/tree/compact through one navigation Smart,
 and proves project-owned shell composition without an engine-source fixture
-edit. Two full builds and selected-page output are deterministic; 24 browser
-scenarios pass. Executor readiness is claimed; independent acceptance is not.
+edit. Two fresh full builds and selected-page output are deterministic; 24
+browser scenarios pass. Independent reverse-outcome audit returned `PASS`.
 
 ## Goal 3 current result
 

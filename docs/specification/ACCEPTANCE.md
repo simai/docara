@@ -1,10 +1,11 @@
 # Приёмка единой архитектуры Docara
 
-Текущий статус: Goal 1, Goal 2 и Goal 3 независимо приняты. Exact accepted Goal
-3 product candidate — `1e571b6e16ebc4520121aff0ae868de3b986dff3`.
-Goal A Shell Contract & Safe Configuration завершён исполнителем на exact
-candidate `8c04160ab50549b060fb933cf80f86193cd92113` и готов к независимому
-аудиту; независимая приёмка Goal A ещё не заявлена.
+Текущий статус: Goal 1, Goal 2, Goal 3 и Goal A независимо приняты. Exact
+accepted Goal A product/runtime candidate —
+`8c04160ab50549b060fb933cf80f86193cd92113`. Goal B Full Interface Library &
+Useful Extension Demos активен из governance baseline
+`3280a89cc21f2b4fcfc8e7539c673ca62a199446`; B0 implementation evidence ещё
+не является независимой приёмкой Goal B.
 Source `1dee6d19…` остаётся только historical/superseded radius baseline.
 Finalized QA reference целиком content-addressed и привязан к immutable plan;
 совместная подмена reference/candidate/report fail-closed.
@@ -35,6 +36,21 @@ PASS ставится только по воспроизводимому evidenc
       fail-closed до render.
 - [x] Full/single, two-build determinism и preview/production parity доказаны.
 - [x] Goal A имеет independent-ready evidence и чистый tracked worktree.
+- [x] Независимый reverse-outcome audit Goal A завершён с `PASS`.
+
+## Goal B. Full Interface Library & Useful Extension Demos
+
+- [ ] Design Atlas детерминированно строится только из accepted registries.
+- [ ] Ownership и `authoring_kind` независимы; container child contracts
+      ограничивают slots/count/order/depth до render.
+- [ ] Search, breadcrumbs, pager, navigation, TOC и preferences проходят один
+      production Gateway/composition path.
+- [ ] Project install builder, product configurator и footer устанавливаются
+      data-only без engine source edits и backend side effects.
+- [ ] Framework input/dropdown/checkbox exact-pinned, independently accepted и
+      cross-host proven до support claim.
+- [ ] Full/single/determinism/security/default/browser/a11y matrix зелёная на
+      одном exact Goal B candidate.
 
 ## A. Источники истины
 

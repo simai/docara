@@ -1,14 +1,16 @@
-# Next action: `independent_goal_a_reverse_outcome_audit`
+# Next action: `implement_b0_design_atlas_contract`
 
-Current state: `goal_a_ready_for_independent_audit`
+Current state: `goal_b_in_progress`
 
-Current candidate: `8c04160ab50549b060fb933cf80f86193cd92113`
+Current candidate: `3280a89cc21f2b4fcfc8e7539c673ca62a199446`
 
-Current evidence: `source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
 
-Goal 1-3 are independently accepted. Independently review Goal A against its
-Done When and indexed exact evidence. The executor does not claim acceptance.
-Goal B, release and live actions remain unauthorized.
+Goal 1-3 and Goal A are independently accepted. Implement B0 from the Goal B
+workflow: one deterministic registry-derived Atlas, finite container contracts
+and one CLI/JSON/MCP projection. Do not begin Goal C, release or live actions.
+Do not implement missing Framework controls locally: B4 waits for exact
+independently accepted owner artifacts.
 
 ## Historical deployment decision (parked, not executable)
 

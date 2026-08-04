@@ -18,30 +18,30 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal_a_ready_for_independent_audit`
+Current state: `goal_b_in_progress`
 
 Current goal: `docara.goal.unified`
 
-Current stage: `docara.stage.a.shell_contract`
+Current stage: `docara.stage.b.interface_library`
 
-Current batch: `docara.batch.a.shell_contract`
+Current batch: `docara.batch.b.interface_library`
 
-Current next action: `independent_goal_a_reverse_outcome_audit`
+Current next action: `implement_b0_design_atlas_contract`
 
-Current evidence: `source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
 
-Current candidate: `8c04160ab50549b060fb933cf80f86193cd92113`
+Current candidate: `3280a89cc21f2b4fcfc8e7539c673ca62a199446`
 
-Next roadmap goal: `docara.goal.a.independent_audit`
+Next roadmap goal: `docara.goal.b.interface_library`
 
-Next roadmap status: `ready_for_independent_audit`
+Next roadmap status: `in_progress`
 
 Next roadmap authorized: `true`
 
 Goal 1 and Goal 2 were independently accepted with `PASS_WITH_NOTES`; Goal 3
-was independently accepted with `PASS`. Goal A Shell Contract & Safe
-Configuration is executor-complete and awaits independent audit. Goal B and
-release review remain unauthorized.
+and Goal A were independently accepted with `PASS`. Goal B Full Interface
+Library & Useful Extension Demos is the only active implementation goal. Goal C
+and release review remain unauthorized.
 
 ## 3. Read in this order
 
@@ -60,9 +60,12 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only the current goal
 
-Audit Goal A from `source/workflow/2026-08-04-docara-goal-a-shell-contract.md`
-and its indexed evidence against exact candidate `8c04160…`. Preserve accepted
-Goal 1-3 runtime invariants. Do not implement Goal B or start release review.
+Execute Goal B from
+`source/workflow/2026-08-04-docara-goal-b-interface-library.md` and its indexed
+evidence. Preserve accepted Goal 1-3 and Goal A runtime invariants. Do not
+implement Goal C or start release review. Framework components may be consumed
+only from exact independently accepted owner artifacts; missing artifacts are
+an explicit external-dependency gate, not permission for a local fork.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,

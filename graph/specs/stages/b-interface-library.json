@@ -1,0 +1,34 @@
+{
+  "id": "docara.stage.b.interface_library",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "milestone",
+  "tz_role": "implementation_stage",
+  "title": "Goal B. Full Interface Library and Useful Extension Demos",
+  "summary": "Project one accepted-registry Design Atlas, migrate replaceable chrome and add useful project demos while preserving one production pipeline.",
+  "owner": "teamlead",
+  "lifecycle": "active",
+  "readiness": "implementation_in_progress",
+  "visibility": "repository",
+  "source_refs": [
+    "source/workflow/2026-08-04-docara-content-design-settings-track.md#16-goal-b--full-interface-library--useful-extension-demos",
+    "source/workflow/2026-08-04-docara-goal-b-interface-library.md"
+  ],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md"
+  ],
+  "profile_refs": ["docara.unified"],
+  "parent_goal_ref": "docara.goal.unified",
+  "done_when": [
+    "Design Atlas is deterministic and derived only from admitted registries.",
+    "Replaceable shell leaves use the single Gateway and production composition path.",
+    "Project content and shell demos install without engine source edits or backend side effects.",
+    "The minimum Framework wave is exact-pinned, independently accepted and cross-host proven.",
+    "Default/full/single/security/browser/accessibility evidence passes on one exact candidate."
+  ],
+  "batch_refs": ["docara.batch.b.interface_library"],
+  "required_gates": ["docara.gate.architecture_acceptance"],
+  "required_evidence": ["Atlas contract and freshness", "Chrome parity and zero references", "Project demos", "Framework cross-host proof", "Integrated build/browser/security matrix", "Independent reverse-outcome audit"],
+  "next_stage_ref": null,
+  "status": "in_progress"
+}

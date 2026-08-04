@@ -19,14 +19,14 @@ final class ProjectContextContractTest extends TestCase
         self::assertSame([], ProjectContext::check($this->repositoryRoot()));
 
         $context = ProjectContext::expected($this->repositoryRoot());
-        self::assertSame('goal_a_ready_for_independent_audit', $context['active']['state']);
-        self::assertSame('docara.stage.a.shell_contract', $context['active']['stage']);
-        self::assertSame('docara.batch.a.shell_contract', $context['active']['batch']);
-        self::assertSame('independent_goal_a_reverse_outcome_audit', $context['active']['next_action']);
-        self::assertSame('docara.goal.a.independent_audit', $context['roadmap']['next_goal']['id']);
-        self::assertSame('ready_for_independent_audit', $context['roadmap']['next_goal']['status']);
-        self::assertTrue($context['roadmap']['next_goal']['authorized']);
-        self::assertSame('source/workflow/2026-08-04-docara-content-design-settings-track.md', $context['roadmap']['source']);
+        $graph = $this->json($this->repositoryRoot() . '/graph/graph.json');
+        $state = $graph['implementation_state'];
+        self::assertSame($state['state'], $context['active']['state']);
+        self::assertSame($state['current_stage'], $context['active']['stage']);
+        self::assertSame($state['current_batch'], $context['active']['batch']);
+        self::assertSame($state['next_action'], $context['active']['next_action']);
+        self::assertSame($state['next_goal'], $context['roadmap']['next_goal']);
+        self::assertSame($state['roadmap_source'], $context['roadmap']['source']);
         self::assertFalse($context['historical_context']['release_baseline']['executable']);
     }
 
@@ -96,8 +96,8 @@ final class ProjectContextContractTest extends TestCase
     {
         $root = $this->shadowRoot();
         $graphPath = $root . '/graph/graph.json';
-        $batchPath = $root . '/graph/specs/batches/a-shell-contract.json';
         $graph = $this->json($graphPath);
+        $batchPath = $this->specPathForId($root, 'batches', $graph['implementation_state']['current_batch']);
         $batch = $this->json($batchPath);
         $graph['implementation_state']['next_action'] = 'fresh_independent_audit_action';
         $batch['next_action'] = 'fresh_independent_audit_action';
@@ -117,8 +117,9 @@ final class ProjectContextContractTest extends TestCase
         $root = $this->shadowRoot();
         $startPath = $root . '/source/handoff/docara-unified-architecture/START.md';
         $start = (string) file_get_contents($startPath);
+        $graph = $this->json($root . '/graph/graph.json');
         $start = str_replace(
-            'Current stage: `docara.stage.a.shell_contract`',
+            'Current stage: `' . $graph['implementation_state']['current_stage'] . '`',
             'Current stage: `docara.stage.r2.production_readiness`',
             $start,
         );
@@ -138,20 +139,9 @@ final class ProjectContextContractTest extends TestCase
     private function shadowRoot(): string
     {
         $root = $this->tmpPath('project-context');
-        foreach ([
+        $files = [
             'graph/graph.json',
             'graph/dna/project-dna.json',
-            'graph/specs/goals/unified-docara.json',
-            'graph/specs/stages/g1-portable-smart-runtime.json',
-            'graph/specs/stages/g2-design-registry-preview.json',
-            'graph/specs/stages/g3-developer-sdk.json',
-            'graph/specs/stages/a-shell-contract.json',
-            'graph/specs/stages/r2-production-readiness.json',
-            'graph/specs/batches/g1-portable-smart-runtime.json',
-            'graph/specs/batches/g2-design-registry-preview.json',
-            'graph/specs/batches/g3-developer-sdk.json',
-            'graph/specs/batches/a-shell-contract.json',
-            'graph/specs/batches/r2-production-readiness.json',
             'graph/generated/ai-context/docara-unified.json',
             'source/handoff/docara-unified-architecture/START.md',
             'source/handoff/docara-unified-architecture/STATUS.yaml',
@@ -160,13 +150,30 @@ final class ProjectContextContractTest extends TestCase
             'source/workflow/ACTIVE.md',
             'source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md',
             'source/workflow/2026-08-04-docara-content-design-settings-track.md',
-        ] as $relative) {
+        ];
+        foreach (['goals', 'stages', 'batches'] as $directory) {
+            foreach (glob($this->repositoryRoot() . '/graph/specs/' . $directory . '/*.json') ?: [] as $path) {
+                $files[] = substr($path, strlen($this->repositoryRoot()) + 1);
+            }
+        }
+        foreach ($files as $relative) {
             $target = $root . '/' . $relative;
             $this->filesystem->ensureDirectoryExists(dirname($target));
             self::assertTrue(copy($this->repositoryRoot() . '/' . $relative, $target), $relative);
         }
 
         return $root;
+    }
+
+    private function specPathForId(string $root, string $directory, string $id): string
+    {
+        foreach (glob($root . '/graph/specs/' . $directory . '/*.json') ?: [] as $path) {
+            if (($this->json($path)['id'] ?? null) === $id) {
+                return $path;
+            }
+        }
+
+        self::fail("Missing graph spec [$directory:$id].");
     }
 
     /** @return array<string, mixed> */

@@ -1,9 +1,9 @@
 # Дорожная карта упрощения Docara
 
-Текущий статус архитектурного roadmap: Goal 1, Goal 2 и Goal 3 независимо
-приняты. Exact accepted Goal 3 product candidate — `1e571b6…`. Goal A Shell
-Contract & Safe Configuration завершён исполнителем на `8c04160…` и ожидает
-независимого reverse-outcome audit. Исторический R2
+Текущий статус архитектурного roadmap: Goal 1, Goal 2, Goal 3 и Goal A
+независимо приняты. Exact accepted Goal A product/runtime candidate —
+`8c04160…`. Goal B Full Interface Library & Useful Extension Demos активирован
+из governance baseline `3280a89…`; текущий батч — B0 Design Atlas. Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
 заявлены.
@@ -100,7 +100,7 @@ provenance facts. Exact accepted product candidate — `1e571b6…`.
 
 ## Goal A. Shell Contract & Safe Configuration
 
-Статус: `ready_for_independent_audit`, независимый PASS не заявлен. Goal A заменяет закрытый
+Статус: независимо принят `PASS`. Goal A заменяет закрытый
 список shell bindings одним типизированным provider-owned BindingRegistry.
 Project config сможет выбирать только зарегистрированные IDs и данные, без
 callback, class, PHP/template или filesystem paths. Первый вертикальный срез —
@@ -111,8 +111,20 @@ output должен остаться byte-identical. Project-owned shell contrib
 Recovery source:
 `source/workflow/2026-08-04-docara-goal-a-shell-contract.md`.
 
-Текущий action: `independent_goal_a_reverse_outcome_audit`. Goal B и release не
-авторизованы.
+Goal B авторизован отдельным independent verdict и активен. Release не
+авторизован.
+
+## Goal B. Full Interface Library & Useful Extension Demos
+
+Статус: `goal_b_in_progress`. B0 вводит один детерминированный Design Atlas как
+проекцию принятых registries, а не второй реестр. Затем B1-B3 переводят
+replaceable chrome и полезные project-owned demos на тот же production path.
+B4 не может объявить `ui.input`, `ui.dropdown`, `ui.checkbox` supported до
+появления exact independently accepted owner artifacts; локальная подмена
+запрещена.
+
+Recovery source:
+`source/workflow/2026-08-04-docara-goal-b-interface-library.md`.
 
 ## M2. Вертикальный срез `components/badge`
 

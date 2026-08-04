@@ -1,0 +1,23 @@
+{
+  "id": "docara.decisions.content_design_settings_goal_b",
+  "schema_version": "1.0.0",
+  "kind": "decision",
+  "subtype": "decision_register",
+  "tz_role": "architecture_decisions",
+  "title": "Goal B interface-library decisions",
+  "summary": "Accepted bounded decisions for Goal B after independent Goal A acceptance.",
+  "owner": "teamlead",
+  "lifecycle": "accepted",
+  "readiness": "T4_implementation_ready",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-04-docara-content-design-settings-track.md#16-goal-b--full-interface-library--useful-extension-demos"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/B0-DESIGN-ATLAS.md"],
+  "profile_refs": ["docara.unified"],
+  "decisions": [
+    {"id": "DCSI-B-001", "decision": "Design Atlas is a deterministic projection of accepted registries, never an independent handwritten registry.", "reason": "Runtime, docs, CLI and MCP must not drift."},
+    {"id": "DCSI-B-002", "decision": "Ownership and authoring_kind are independent Atlas facets; fence length never determines type.", "reason": "Provider ownership and Markdown syntax are separate contracts."},
+    {"id": "DCSI-B-003", "decision": "Every container publishes finite children, slots, count, order and maximum-depth rules.", "reason": "Nesting must fail closed before rendering."},
+    {"id": "DCSI-B-004", "decision": "Search, breadcrumbs and pager become registered Docara leaves while page/head stay application-owned.", "reason": "Only replaceable chrome belongs in the interface library."},
+    {"id": "DCSI-B-005", "decision": "Framework components are supported only from exact independently accepted owner artifacts.", "reason": "Docara must not invent or fork Framework controls."}
+  ]
+}

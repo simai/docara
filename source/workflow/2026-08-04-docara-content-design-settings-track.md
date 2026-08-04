@@ -10,11 +10,11 @@ Branch: `codex/docara-unified-architecture`
 Remaining unstarted goals: 2
 Current canonical next action: `independent_goal_a_reverse_outcome_audit`
 
-Status: `goal_a_ready_for_independent_audit`
-Current stage: `docara.stage.a.shell_contract`
-Current batch: `docara.batch.a.shell_contract`
-Current next action: `independent_goal_a_reverse_outcome_audit`
-Next roadmap goal: `docara.goal.a.independent_audit` (`ready_for_independent_audit`, authorized=`true`)
+Status: `goal_b_in_progress`
+Current stage: `docara.stage.b.interface_library`
+Current batch: `docara.batch.b.interface_library`
+Current next action: `implement_b0_design_atlas_contract`
+Next roadmap goal: `docara.goal.b.interface_library` (`in_progress`, authorized=`true`)
 
 ## 0. Status and authority
 
@@ -1533,15 +1533,15 @@ Current recovery returns to:
 
 ```text
 source/handoff/docara-unified-architecture/START.md
--> source/workflow/2026-08-04-docara-goal-a-shell-contract.md
+-> source/workflow/2026-08-04-docara-goal-b-interface-library.md
 ```
 
-The accepted Goal A workflow, canonical graph and handoff are the executable
-router. This track remains the parent product contract.
+The independently accepted Goal A evidence is the frozen predecessor. The Goal
+B workflow, canonical graph and handoff are the executable router. This track
+remains the parent product contract.
 
-After activation, the accepted canonical graph and `ACTIVE.md` identify exactly
-one current goal/batch and one next action. Goal B/C remain unauthorized until
-the preceding independent audit is accepted.
+The canonical graph and `ACTIVE.md` identify exactly one current goal/batch and
+one next action. Goal C remains unauthorized until Goal B independent audit.
 
 ### 24.2 Progress reporting
 
@@ -1570,14 +1570,16 @@ At each independent audit:
 
 ## 25. Next safe action
 
-Goal A is executor-complete. The next safe action for the repository is:
+Goal A is independently accepted. The next safe action for the repository is:
 
 ```text
-Independently audit exact Goal A candidate
-8c04160ab50549b060fb933cf80f86193cd92113 against
-source/workflow/2026-08-04-docara-goal-a-shell-contract.md and its evidence.
-Do not start Goal B, release review, merge, tag or deploy.
+Implement B0 Design Atlas from
+source/workflow/2026-08-04-docara-goal-b-interface-library.md.
+Preserve the exact accepted Goal A runtime and do not start Goal C, release
+review, merge, tag or deploy.
 ```
 
-After Goal A implementation and integrated evidence, stop at
-`goal_a_ready_for_independent_audit` for an independent verdict.
+After the complete Goal B implementation and integrated evidence, stop at
+`goal_b_ready_for_independent_audit` for an independent verdict. If the exact
+Framework wave remains unavailable, stop at its recorded external gate without
+claiming Goal B readiness.

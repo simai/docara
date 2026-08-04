@@ -7,8 +7,8 @@
   "title": "Shell contract implementation mapping",
   "summary": "Goal A mapping from the accepted binding/capability contract to implementation and evidence.",
   "owner": "dev",
-  "lifecycle": "active",
-  "readiness": "ready_for_independent_audit",
+  "lifecycle": "accepted",
+  "readiness": "independently_accepted",
   "visibility": "repository",
   "source_refs": [
     "docs/specification/architecture/SHELL-CONTRACT.md"
@@ -46,13 +46,11 @@
     "Project design artifacts contribute shell content through admitted capabilities without engine source edits.",
     "Default runtime output is preserved; only two intentional documentation pages and their derived search/provenance files differ."
   ],
-  "known_deviations": [
-    "Independent Goal A reverse-outcome audit is pending."
-  ],
+  "known_deviations": [],
   "deletion_gates": [
     "Completed: DeclarativePageCompiler::boundProps removed after registered built-ins passed default parity.",
     "Completed: authored binding schema now accepts safe IDs and registry-aware contextual validation is permanent."
   ],
-  "status": "executor_complete_audit_pending",
+  "status": "independently_accepted_pass",
   "mapped_revision": "8c04160ab50549b060fb933cf80f86193cd92113"
 }

@@ -48,7 +48,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.2-M5.3-PORTABLE-UPDATE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.6-AUTHOR-WORKFLOW-AND-DOCUMENTATION.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m5-product-stabilization/M5.7-CANDIDATE-VERIFICATION.md",
-    "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md"
+    "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md",
+    "source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/G3E.3-INTEGRATED-RETEST.md"
   ],
   "review_refs": ["docara.gate.architecture_acceptance"],
   "current_behavior": [
@@ -66,5 +67,5 @@
     "Prove the documented consumer-owned dependency lock against the exported archive before claiming reproducible clean installation."
   ],
   "status": "current_candidate_verified_audit_pending",
-  "mapped_revision": "1dee6d19e2d9a6c35402b3552f3f5c8c366317b6"
+  "mapped_revision": "1e571b6e16ebc4520121aff0ae868de3b986dff3"
 }

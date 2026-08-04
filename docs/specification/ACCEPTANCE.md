@@ -1,10 +1,12 @@
 # Приёмка единой архитектуры Docara
 
-Текущий статус: Goal 1 и Goal 2 независимо приняты. Goal 3 correction и
-ограниченная интеграция SF5 UI-radius завершены на exact source `1dee6d1…` и
-ожидают независимого audit. Finalized QA reference целиком content-addressed и
-привязан к immutable plan; совместная подмена reference/candidate/report
-fail-closed.
+Текущий статус: Goal 1 и Goal 2 независимо приняты. Goal 3 correction,
+ограниченная интеграция SF5 UI-radius и owner-schema fidelity correction
+завершены на exact product candidate
+`1e571b6e16ebc4520121aff0ae868de3b986dff3` и ожидают независимого audit.
+Source `1dee6d19…` остаётся только historical/superseded radius baseline.
+Finalized QA reference целиком content-addressed и привязан к immutable plan;
+совместная подмена reference/candidate/report fail-closed.
 Исторический R2 `PASS_DISPOSABLE_CORRECTED` и unpublished release artifact
 остаются parked baseline, а не текущим архитектурным кандидатом. Tag, release,
 live cutover и production acceptance требуют отдельного решения и не заявлены.

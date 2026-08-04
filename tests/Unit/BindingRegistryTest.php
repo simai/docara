@@ -92,6 +92,34 @@ final class BindingRegistryTest extends TestCase
         }
     }
 
+    #[Test]
+    public function active_shell_orchestration_contains_no_binding_or_component_identity_dispatch(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $identities = [
+            'docara.branding',
+            'docara.navigation',
+            'docara.outline',
+            'docara.brand',
+            'docara.toc',
+            'ui.alert',
+            'ui.button',
+        ];
+        foreach ([
+            'src/Declarative/DeclarativePageCompiler.php',
+            'src/Declarative/Composition/RegionCompositionResolver.php',
+            'src/Declarative/Rendering/ViewTreeRenderer.php',
+            'src/Application/DiscoveryService.php',
+            'src/Preview/PreviewKernel.php',
+        ] as $relative) {
+            $source = (string) file_get_contents($root . '/' . $relative);
+            foreach ($identities as $identity) {
+                self::assertStringNotContainsString($identity, $source, $relative);
+            }
+            self::assertStringNotContainsString('boundProps', $source, $relative);
+        }
+    }
+
     private function context(): PageCompositionContext
     {
         return PageCompositionContext::fromBuilder(

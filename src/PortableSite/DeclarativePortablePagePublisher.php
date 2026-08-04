@@ -93,7 +93,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             : 'system';
         $configuredModalBlur = in_array($page['modal_blur'] ?? null, ['none', 'small', 'medium', 'large'], true)
             ? (string) $page['modal_blur']
-            : 'large';
+            : 'none';
         $searchEnabled = ($page['search_enabled'] ?? false) === true
             && is_string($page['search_runtime_url'] ?? null)
             && is_string($page['search_index_url'] ?? null);
@@ -379,7 +379,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             . 'function overrides(){return Object.assign({},stored(),volatile)}'
             . "function current(id){var value=overrides()[id];return typeof value==='string'?value:defaults[id]}"
             . "function applyTheme(mode,source){if(['system','light','dark'].indexOf(mode)===-1)mode='system';var dark=mode==='dark'||(mode==='system'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);var root=document.documentElement;root.classList.remove('theme-light','theme-dark');root.classList.add(dark?'theme-dark':'theme-light');root.dataset.docaraThemePreference=mode;root.dataset.docaraThemeSource=source}"
-            . "function applyModalBlur(mode,source){if(['none','small','medium','large'].indexOf(mode)===-1)mode='large';var value='backdrop-blur-'+mode;document.documentElement.dataset.docaraModalBlurPreference=mode;document.documentElement.dataset.docaraModalBlurSource=source;document.querySelectorAll('sf-modal[data-docara-transient-dialog]').forEach(function(modal){modal.setAttribute('overlay-class',value)})}"
+            . "function applyModalBlur(mode,source){if(['none','small','medium','large'].indexOf(mode)===-1)mode='none';var value='backdrop-blur-'+mode;document.documentElement.dataset.docaraModalBlurPreference=mode;document.documentElement.dataset.docaraModalBlurSource=source;document.querySelectorAll('sf-modal[data-docara-transient-dialog]').forEach(function(modal){modal.setAttribute('overlay-class',value)})}"
             . "var effects={'docara.theme':applyTheme,'docara.modal_blur':applyModalBlur};"
             . 'function applyField(id,source){var field=fields[id],effect=field&&effects[field.effect];if(effect)effect(current(id),source)}'
             . 'function applyAll(source){Object.keys(fields).forEach(function(id){applyField(id,source)})}'
@@ -388,7 +388,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             . "function reset(){volatile={};if(!frameworkMemory()){try{window.localStorage.removeItem(key)}catch(error){}}applyAll('site')}"
             . "function syncExternal(){volatile={};applyAll(Object.keys(stored()).length?'reader':'site')}"
             . 'function hasOverride(){return Object.keys(overrides()).length>0}'
-            . "var initialSource=Object.keys(stored()).length?'reader':'site';applyModalBlur(defaults['appearance.modal_blur']||'large','site');applyAll(initialSource);"
+            . "var initialSource=Object.keys(stored()).length?'reader':'site';applyModalBlur(defaults['appearance.modal_blur']||'none','site');applyAll(initialSource);"
             . 'window.DocaraReaderPreferences={manifest:manifest,key:key,current:current,set:set,reset:reset,syncExternal:syncExternal,hasOverride:hasOverride};'
             . "document.dispatchEvent(new CustomEvent('docara:preferences-ready'));"
             . "function revealFrameworkBody(){if(document.body)document.body.style.opacity='1'}"

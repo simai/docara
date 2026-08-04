@@ -292,7 +292,7 @@ final readonly class PortableSiteBuilder
                 'documentation_version' => $documentationVersion,
                 'preset' => (string) ($plan->configuration['preset'] ?? 'docs'),
                 'theme' => (string) data_get($plan->configuration, 'settings.theme', 'system'),
-                'modal_blur' => (string) data_get($plan->configuration, 'settings.modal_blur', 'large'),
+                'modal_blur' => (string) data_get($plan->configuration, 'settings.modal_blur', 'none'),
                 'reader_preferences' => is_array($plan->configuration['reader_preferences'] ?? null)
                     ? $plan->configuration['reader_preferences']
                     : ReaderPreferenceCompiler::defaultConfiguration(),

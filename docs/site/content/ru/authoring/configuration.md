@@ -86,7 +86,7 @@ Resolver начинает с небольшого встроенного наб�
   },
   "settings": {
     "theme": "system",
-    "modal_blur": "large"
+    "modal_blur": "none"
   },
   "reader_preferences": {
     "enabled": true,
@@ -182,7 +182,7 @@ URL, query, fragment, self redirect, chain, cycle, collision со страниц
 - `layout.regions`: включение и состав областей макета;
 - `settings.theme`: `system`, `light`, `dark`;
 - `settings.modal_blur`: `none`, `small`, `medium`, `large`; по умолчанию
-  используется максимальное размытие `large`;
+  размытие выключено (`none`), остаётся штатное затемнение подложки;
 - `reader_preferences`: включение и состав зарегистрированных настроек
   читателя; ветка разрешена только в `docara.json`;
 - `navigation.hidden`: убрать страницу из меню;

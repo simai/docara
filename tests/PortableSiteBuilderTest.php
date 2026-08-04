@@ -805,7 +805,7 @@ MD);
             self::assertStringContainsString('data-docara-search-dialog', $html);
             self::assertStringContainsString('<sf-modal', $html);
             self::assertStringContainsString('overlay="true"', $html);
-            self::assertStringContainsString('overlay-class="backdrop-blur-large"', $html);
+            self::assertStringContainsString('overlay-class="backdrop-blur-none"', $html);
             self::assertStringNotContainsString('blur="small"', $html);
             self::assertStringContainsString('show-header="false"', $html);
             self::assertStringContainsString('show-close="false"', $html);

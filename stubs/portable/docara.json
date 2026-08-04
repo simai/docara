@@ -41,7 +41,7 @@
   },
   "settings": {
     "theme": "system",
-    "modal_blur": "large"
+    "modal_blur": "none"
   },
   "reader_preferences": {
     "enabled": true,

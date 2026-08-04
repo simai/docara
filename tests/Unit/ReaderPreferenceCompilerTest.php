@@ -14,7 +14,7 @@ final class ReaderPreferenceCompilerTest extends TestCase
     {
         $manifest = (new ReaderPreferenceCompiler)->compile(
             ReaderPreferenceCompiler::defaultConfiguration(),
-            ['appearance.theme' => 'system', 'appearance.modal_blur' => 'large'],
+            ['appearance.theme' => 'system', 'appearance.modal_blur' => 'none'],
             $this->copy(),
             'docara.preferences.site.v1',
         );
@@ -31,7 +31,7 @@ final class ReaderPreferenceCompilerTest extends TestCase
         self::assertSame(['system', 'light', 'dark'], $manifest['groups'][0]['fields'][0]['values']);
         self::assertSame('Тема', $manifest['groups'][0]['fields'][0]['title']);
         self::assertSame('appearance.modal_blur', $manifest['groups'][0]['fields'][1]['id']);
-        self::assertSame('large', $manifest['groups'][0]['fields'][1]['configured']);
+        self::assertSame('none', $manifest['groups'][0]['fields'][1]['configured']);
         self::assertSame('docara.modal_blur', $manifest['groups'][0]['fields'][1]['effect']);
         self::assertSame(['none', 'small', 'medium', 'large'], $manifest['groups'][0]['fields'][1]['values']);
     }

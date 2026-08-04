@@ -6,7 +6,7 @@
     data-docara-search-index="<?= $view->searchIndexUrl ?>"
     overlay="true"
     overlay-preset="default"
-    overlay-class="backdrop-blur-large"
+    overlay-class="backdrop-blur-none"
     show-header="false"
     show-close="false"
     show-footer="false"

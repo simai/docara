@@ -421,7 +421,7 @@ MD);
 
         $result = $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
 
-        self::assertCount(38, $result);
+        self::assertCount(39, $result);
         self::assertFileExists($this->tmpPath('build_local/index.html'));
         self::assertFileExists($this->tmpPath('build_local/guides/getting-started/index.html'));
         self::assertFileExists($this->tmpPath('build_local/guides/platform/configuration/layout/index.html'));
@@ -1061,7 +1061,7 @@ MD);
         self::assertDoesNotMatchRegularExpression('/"navigation":\s*\[\]/', $diagnosticJson);
         $diagnostics = $this->jsonFile($diagnosticPath);
         self::assertSame('docara.resolved_page_plans.v1', $diagnostics['schema']);
-        self::assertCount(38, $diagnostics['pages']);
+        self::assertCount(39, $diagnostics['pages']);
         $indexPlan = collect($diagnostics['pages'])->firstWhere('output', 'index.html');
         self::assertIsArray($indexPlan);
         self::assertSame('published', $indexPlan['declarative_pipeline']['status']);
@@ -1090,7 +1090,7 @@ MD);
         $searchIndex = $this->jsonFile($this->tmpPath('build_local/_docara/search-index.json'));
         self::assertSame('docara.search_index.v1', $searchIndex['schema']);
         self::assertSame('docara-prefix-v1', $searchIndex['algorithm']);
-        self::assertCount(37, $searchIndex['documents']);
+        self::assertCount(38, $searchIndex['documents']);
         self::assertNotContains('/landing/', array_column($searchIndex['documents'], 'url'));
         self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $searchIndex['content_sha256']);
         $searchText = implode(' ', array_column($searchIndex['documents'], 'text'));
@@ -1440,7 +1440,7 @@ MD);
             '/components/tree/',
         ];
         sort($componentRoutes, SORT_STRING);
-        $expected = [...$expected, ...$componentRoutes];
+        $expected = [...$expected, ...$componentRoutes, '/project-demos/'];
 
         self::assertSame($expected, $this->desktopNavigationLinks($html));
 
@@ -1488,6 +1488,7 @@ MD);
             '/later/',
             '/z-explicit-max/',
             '/a-unspecified/',
+            '/project-demos/',
         ], $this->desktopNavigationLinks($html, topLevelOnly: true));
 
         $first = (string) file_get_contents($this->tmpPath('build_local/first/index.html'));

@@ -38,6 +38,14 @@ final class DesignAtlasTest extends TestCase
         self::assertSame(hash('sha256', CanonicalJson::encode($core)), $first['data']['fingerprint']);
         self::assertSame('admitted_registry_descriptor', $first['data']['vocabulary']['typing_source']);
         self::assertSame('none', $first['data']['vocabulary']['fence_length_semantics']);
+
+        $secondRoot = $this->tmpPath('independent-project-root');
+        $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $secondRoot);
+        self::assertSame(
+            $first['data']['fingerprint'],
+            (new DesignAtlasService)->atlas($secondRoot)->toArray()['data']['fingerprint'],
+            'Atlas identity must not depend on the absolute consumer extraction path.',
+        );
     }
 
     #[Test]

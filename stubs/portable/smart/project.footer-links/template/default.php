@@ -7,6 +7,6 @@ $title = $escape($props['title'] ?? 'Links');
 ?>
 <nav class="project-footer-links flex flex-wrap items-cross-center gap-2" aria-label="<?= $title ?>" data-docara-smart="project.footer-links" data-project-footer-links>
     <strong><?= $title ?></strong>
-    <a href="/ru/">Документация</a>
-    <a href="/ru/project-demos/">Компоненты проекта</a>
+    <a href="../">Документация</a>
+    <a href="./">Компоненты проекта</a>
 </nav>

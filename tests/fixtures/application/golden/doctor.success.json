@@ -8,12 +8,12 @@
             },
             {
                 "code": "SMART_REGISTRY_VALID",
-                "count": 7,
+                "count": 13,
                 "status": "pass"
             },
             {
                 "code": "DESIGN_REGISTRY_VALID",
-                "count": 15,
+                "count": 18,
                 "status": "pass"
             },
             {
@@ -23,11 +23,11 @@
             },
             {
                 "code": "SCHEMA_CATALOG_VALID",
-                "count": 35,
+                "count": 36,
                 "status": "pass"
             }
         ],
-        "design_fingerprint": "f2946fe388de4d03df6b346bfa267b3adb140feb86c11355006ff0691f38b23f"
+        "design_fingerprint": "426cd3fea5dbf6edd4ced6e495942553577efd629e9ca4bc329bb87ca4896490"
     },
     "diagnostics": [],
     "exit_code": 0,

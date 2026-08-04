@@ -36,7 +36,7 @@ final class PortableMultilingualProductTest extends TestCase
         );
         $destination = $this->tmpPath('build_product');
         $first = $builder->build($this->tmp, $destination);
-        self::assertCount(40, $first);
+        self::assertCount(41, $first);
         $firstTree = $this->tree($destination);
         $builder->build($this->tmp, $destination);
         self::assertSame($firstTree, $this->tree($destination));

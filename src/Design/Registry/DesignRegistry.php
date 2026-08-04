@@ -73,7 +73,7 @@ final class DesignRegistry
             $providers[] = new ProjectDesignProvider(
                 $projectRoot,
                 $projectNamespace,
-                'project-design-' . substr(hash('sha256', $projectRoot . "\0" . $projectNamespace), 0, 16),
+                'project-design-' . substr(hash('sha256', $projectNamespace), 0, 16),
             );
         }
 

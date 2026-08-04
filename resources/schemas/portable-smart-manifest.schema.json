@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.simai.io/sf/smart-artifact-abi/v1/manifest",
+  "x-contract-id": "sf.smart_artifact_abi",
+  "x-contract-schema-version": "1.0.0",
+  "x-compatibility-id": "sf-smart-artifact-abi-v1",
+  "x-storage-compatibility-alias": "sf5.smart.artifact.v1",
+  "title": "Portable Smart artifact manifest v1",
+  "description": "Manifest schema for sf.smart_artifact_abi 1.0.0 (sf-smart-artifact-abi-v1).",
+  "type": "object",
+  "required": ["schemaVersion", "kind", "code", "title", "render"],
+  "properties": {
+    "schemaVersion": {"type": "string", "const": "1.0"},
+    "kind": {"type": "string", "const": "smart"},
+    "code": {"type": "string", "pattern": "^[a-z0-9][a-z0-9.-]*$"},
+    "title": {"type": "string", "minLength": 1},
+    "description": {"type": "string"},
+    "category": {"type": "string"},
+    "render": {
+      "type": "object",
+      "required": ["mode", "strategy", "template", "hydration", "domStrategy", "updateStrategy", "initialHtml", "frontendOwnership"],
+      "properties": {
+        "mode": {"type": "string", "enum": ["server-first", "client-only", "hybrid"]},
+        "strategy": {"type": "string", "enum": ["server-static", "server-first-hydratable", "client-owned", "shadow-dom-owned"]},
+        "template": {"type": "string", "pattern": "^[a-z0-9][a-z0-9.-]*$"},
+        "hydration": {"type": "string", "enum": ["none", "optional", "required"]},
+        "domStrategy": {"type": "string", "enum": ["none", "light-dom-adopt", "host-attributes", "shadow-dom"]},
+        "updateStrategy": {"type": "string", "enum": ["none", "patch", "rerender"]},
+        "initialHtml": {"type": "string", "enum": ["complete", "skeleton", "host-only"]},
+        "frontendOwnership": {"type": "string", "enum": ["none", "behavior", "dom"]}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"strategy": {"const": "server-static"}}},
+          "then": {"properties": {
+            "hydration": {"const": "none"},
+            "domStrategy": {"const": "none"},
+            "initialHtml": {"const": "complete"},
+            "frontendOwnership": {"const": "none"}
+          }}
+        },
+        {
+          "if": {"properties": {"strategy": {"const": "server-first-hydratable"}}},
+          "then": {"properties": {
+            "hydration": {"const": "required"},
+            "domStrategy": {"const": "light-dom-adopt"},
+            "initialHtml": {"const": "complete"},
+            "frontendOwnership": {"const": "behavior"}
+          }}
+        },
+        {
+          "if": {"properties": {"strategy": {"const": "client-owned"}}},
+          "then": {"properties": {
+            "hydration": {"const": "required"},
+            "domStrategy": {"const": "host-attributes"},
+            "initialHtml": {"enum": ["skeleton", "host-only"]},
+            "frontendOwnership": {"const": "dom"}
+          }}
+        },
+        {
+          "if": {"properties": {"strategy": {"const": "shadow-dom-owned"}}},
+          "then": {"properties": {
+            "hydration": {"const": "required"},
+            "domStrategy": {"const": "shadow-dom"},
+            "initialHtml": {"enum": ["skeleton", "host-only"]},
+            "frontendOwnership": {"const": "dom"}
+          }}
+        }
+      ],
+      "additionalProperties": false
+    },
+    "props": {
+      "type": "object",
+      "propertyNames": {"pattern": "^[a-z][a-zA-Z0-9_-]*$"},
+      "additionalProperties": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": {"type": "string", "enum": ["string", "number", "boolean", "enum", "object", "array", "content", "asset", "link"]},
+          "required": {"type": "boolean"},
+          "values": {"type": "array", "minItems": 1, "items": {"type": ["string", "number", "boolean", "null"]}},
+          "description": {"type": "string"}
+        },
+        "if": {"properties": {"type": {"const": "enum"}}},
+        "then": {"required": ["values"]},
+        "additionalProperties": true
+      }
+    },
+    "assets": {
+      "type": "object",
+      "propertyNames": {"enum": ["css", "js", "depends"]},
+      "additionalProperties": {"type": "array", "items": {"type": "string", "minLength": 1}}
+    },
+    "slots": {"type": "object"},
+    "events": {"type": "object"},
+    "regions": {"type": "object"},
+    "meta": {"type": "object"},
+    "extensions": {"type": "object"},
+    "ai": {"type": "object"},
+    "cache": {"type": "object"}
+  },
+  "additionalProperties": false
+}

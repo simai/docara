@@ -6,6 +6,7 @@ namespace Simai\Docara\Application;
 
 use Simai\Docara\Design\Artifact\DesignArtifactKind;
 use Simai\Docara\Portable\SchemaRepository;
+use Simai\Docara\Smart\Artifact\Sf5SmartArtifactV1Contract;
 
 final readonly class DiscoveryService
 {
@@ -71,7 +72,7 @@ final readonly class DiscoveryService
     {
         $runtime = ProjectRuntime::load($root);
         $schema = match ($kind) {
-            'smart' => 'declarative-smart-manifest.schema.json',
+            'smart' => 'portable-smart-manifest.schema.json',
             'layout' => DesignArtifactKind::Layout->schema(),
             'view' => DesignArtifactKind::View->schema(),
             'section' => DesignArtifactKind::Section->schema(),
@@ -79,9 +80,21 @@ final readonly class DiscoveryService
             default => str_ends_with($kind, '.schema.json') ? $kind : throw new \InvalidArgumentException('SDK_SCHEMA_KIND_UNKNOWN:' . $kind),
         };
 
-        return OperationResult::success('schema', $kind . ':' . $schema, [
+        $data = [
+            'schema_id' => $schema,
             'schema' => (new SchemaRepository($this->schemaRoot))->get($schema),
-        ], $runtime->provenance());
+        ];
+        if ($kind === 'smart') {
+            $data['contract'] = [
+                'contract_id' => Sf5SmartArtifactV1Contract::CONTRACT_ID,
+                'schema_version' => Sf5SmartArtifactV1Contract::SCHEMA_VERSION,
+                'compatibility_id' => Sf5SmartArtifactV1Contract::COMPATIBILITY_ID,
+                'storage_compatibility_alias' => Sf5SmartArtifactV1Contract::STORAGE_COMPATIBILITY_ALIAS,
+                'source_revision' => Sf5SmartArtifactV1Contract::SOURCE_REVISION,
+            ];
+        }
+
+        return OperationResult::success('schema', $kind . ':' . $schema, $data, $runtime->provenance());
     }
 
     private function smartSummary(ProjectRuntime $runtime, string $id): array

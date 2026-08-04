@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Smart\Provider;
 
 use Simai\Docara\Smart\Artifact\LegacySmartManifestV1Adapter;
+use Simai\Docara\Smart\Artifact\Sf5SmartArtifactV1Contract;
 
 /**
  * Bounded adapter for the six repository-owned pre-portable artifacts.
@@ -20,6 +21,7 @@ final class LegacyBundledSmartProvider implements SmartArtifactProvider
         private readonly string $ownerPackage,
         private readonly string $revision,
         private readonly LegacySmartManifestV1Adapter $adapter = new LegacySmartManifestV1Adapter,
+        private readonly Sf5SmartArtifactV1Contract $contract = new Sf5SmartArtifactV1Contract,
     ) {}
 
     public function id(): string
@@ -75,14 +77,13 @@ final class LegacyBundledSmartProvider implements SmartArtifactProvider
                 is_string($legacy['provenance']['input_adapter'] ?? null)
                     ? $legacy['provenance']['input_adapter']
                     : 'smart.props',
-                [
-                    'provider' => $this->providerId,
-                    'provider_revision' => $this->revision,
-                    'contract' => 'sf5.smart-artifact.v1',
-                    'template_abi' => 'docara.legacy.object-view.v1',
-                    'manifest_sha256' => hash_file('sha256', $manifestPath),
-                    'legacy_adapter' => 'docara.legacy-smart-manifest.v1',
-                ],
+                $this->contract->effectiveProvenance(
+                    $this->providerId,
+                    $this->revision,
+                    'docara.legacy-smart-manifest.v1',
+                    'docara.legacy.object-view.v1',
+                    (string) hash_file('sha256', $manifestPath),
+                ),
             );
         }
     }

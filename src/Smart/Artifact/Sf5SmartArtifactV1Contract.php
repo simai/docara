@@ -132,6 +132,43 @@ final class Sf5SmartArtifactV1Contract
         ];
     }
 
+    /**
+     * Public effective-artifact identity shared by every provider adapter.
+     *
+     * @return array{
+     *   provider:string,
+     *   provider_revision:string,
+     *   contract_id:string,
+     *   contract_schema_version:string,
+     *   contract_compatibility_id:string,
+     *   storage_compatibility_alias:string,
+     *   contract_source_revision:string,
+     *   provider_adapter:string,
+     *   template_abi:string,
+     *   manifest_sha256:string
+     * }
+     */
+    public function effectiveProvenance(
+        string $provider,
+        string $providerRevision,
+        string $providerAdapter,
+        string $templateAbi,
+        string $manifestSha256,
+    ): array {
+        return [
+            'provider' => $provider,
+            'provider_revision' => $providerRevision,
+            'contract_id' => self::CONTRACT_ID,
+            'contract_schema_version' => self::SCHEMA_VERSION,
+            'contract_compatibility_id' => self::COMPATIBILITY_ID,
+            'storage_compatibility_alias' => self::STORAGE_COMPATIBILITY_ALIAS,
+            'contract_source_revision' => self::SOURCE_REVISION,
+            'provider_adapter' => $providerAdapter,
+            'template_abi' => $templateAbi,
+            'manifest_sha256' => $manifestSha256,
+        ];
+    }
+
     /** @param array<string, mixed> $artifact */
     private function assertNamedArtifact(array $artifact, string $kind, string $smart, string $code): void
     {

@@ -1,0 +1,48 @@
+{
+    "contract": {
+        "compatibility_id": "sf-smart-artifact-abi-v1",
+        "contract_id": "sf.smart_artifact_abi",
+        "schema_version": "1.0.0",
+        "source_revision": "b3cdff87563ff78e7eddf044048a4b298fc69036",
+        "storage_compatibility_alias": "sf5.smart.artifact.v1"
+    },
+    "definitions": {
+        "docara.brand": {
+            "provider": "docara.package",
+            "provider_adapter": "docara.legacy-smart-manifest.v1",
+            "template_abi": "docara.legacy.object-view.v1"
+        },
+        "docara.navigation": {
+            "provider": "docara.package",
+            "provider_adapter": "docara.legacy-smart-manifest.v1",
+            "template_abi": "docara.legacy.object-view.v1"
+        },
+        "docara.preferences": {
+            "provider": "docara.package",
+            "provider_adapter": "docara.legacy-smart-manifest.v1",
+            "template_abi": "docara.legacy.object-view.v1"
+        },
+        "docara.toc": {
+            "provider": "docara.package",
+            "provider_adapter": "docara.legacy-smart-manifest.v1",
+            "template_abi": "docara.legacy.object-view.v1"
+        },
+        "project.notice": {
+            "provider": "project.project",
+            "provider_adapter": "portable.manifest.direct",
+            "template_abi": "sf5.smart.template.v1"
+        },
+        "ui.alert": {
+            "provider": "framework.lock",
+            "provider_adapter": "docara.legacy-smart-manifest.v1",
+            "template_abi": "docara.legacy.object-view.v1"
+        },
+        "ui.button": {
+            "provider": "framework.lock",
+            "provider_adapter": "docara.legacy-smart-manifest.v1",
+            "template_abi": "docara.legacy.object-view.v1"
+        }
+    },
+    "schema_id": "portable-smart-manifest.schema.json",
+    "subject": "smart:portable-smart-manifest.schema.json"
+}

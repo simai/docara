@@ -13,7 +13,7 @@ Branch: `codex/docara-unified-architecture`
 | B1 replaceable chrome | pass | [B1-REPLACEABLE-CHROME.md](B1-REPLACEABLE-CHROME.md) |
 | B2 variants and presets | pass | [B2-INTERFACE-PRESETS.md](B2-INTERFACE-PRESETS.md) |
 | B3 project demos | pass | [B3-PROJECT-DEMOS.md](B3-PROJECT-DEMOS.md) |
-| B4 Framework wave | external dependency pending | [B4-FRAMEWORK-WAVE.md](B4-FRAMEWORK-WAVE.md) |
+| B4 Framework wave | external dependency pending; second audit confirmed | [B4-FRAMEWORK-WAVE.md](B4-FRAMEWORK-WAVE.md), [B4-SECOND-BLOCKER-AUDIT.md](B4-SECOND-BLOCKER-AUDIT.md) |
 | B5 integration/handoff | partial pass; blocked by B4 | [B5-INTEGRATED-ACCEPTANCE.md](B5-INTEGRATED-ACCEPTANCE.md) |
 
 Goal B cannot become independent-ready until every Done When criterion,

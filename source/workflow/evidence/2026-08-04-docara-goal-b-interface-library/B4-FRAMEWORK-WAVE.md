@@ -54,3 +54,8 @@ owner revision and hashes, plus independent cross-host HTML/assets/hydration
 evidence with empty warnings/stderr. Docara can then admit the artifacts through
 the existing Framework provider and rerun B4/B5 without a new renderer,
 Gateway, registry, LayoutComposer or PageBuilder.
+
+The second read-only blocker audit confirms that exact `b3cdff87…` starter
+skeletons exist but remain unaccepted component inputs according to canonical
+compatibility state. See
+[B4-SECOND-BLOCKER-AUDIT.md](B4-SECOND-BLOCKER-AUDIT.md).

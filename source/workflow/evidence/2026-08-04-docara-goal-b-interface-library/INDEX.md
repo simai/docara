@@ -10,8 +10,8 @@ Branch: `codex/docara-unified-architecture`
 | --- | --- | --- |
 | B0 Design Atlas | pass | [B0-DESIGN-ATLAS.md](B0-DESIGN-ATLAS.md) |
 | B1 replaceable chrome | pass | [B1-REPLACEABLE-CHROME.md](B1-REPLACEABLE-CHROME.md) |
-| B2 variants and presets | pending | `B2-INTERFACE-PRESETS.md` |
-| B3 project demos | pending | `B3-PROJECT-DEMOS.md` |
+| B2 variants and presets | pass | [B2-INTERFACE-PRESETS.md](B2-INTERFACE-PRESETS.md) |
+| B3 project demos | pass | [B3-PROJECT-DEMOS.md](B3-PROJECT-DEMOS.md) |
 | B4 Framework wave | external dependency pending | `B4-FRAMEWORK-WAVE.md` |
 | B5 integration/handoff | pending | `B5-INTEGRATED-ACCEPTANCE.md` |
 

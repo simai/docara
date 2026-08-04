@@ -3,7 +3,8 @@
 Текущий статус архитектурного roadmap: Goal 1, Goal 2, Goal 3 и Goal A
 независимо приняты. Exact accepted Goal A product/runtime candidate —
 `8c04160…`. Goal B Full Interface Library & Useful Extension Demos активирован
-из governance baseline `3280a89…`; текущий батч — B0 Design Atlas. Исторический R2
+из governance baseline `3280a89…`; B0-B3 реализованы, а B4 остановлен на
+отсутствующем independently accepted Framework artifact wave. Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
 заявлены.
@@ -116,12 +117,14 @@ Goal B авторизован отдельным independent verdict и акти
 
 ## Goal B. Full Interface Library & Useful Extension Demos
 
-Статус: `goal_b_in_progress`. B0 вводит один детерминированный Design Atlas как
-проекцию принятых registries, а не второй реестр. Затем B1-B3 переводят
-replaceable chrome и полезные project-owned demos на тот же production path.
-B4 не может объявить `ui.input`, `ui.dropdown`, `ui.checkbox` supported до
-появления exact independently accepted owner artifacts; локальная подмена
-запрещена.
+Статус: `goal_b_in_progress`, B0-B3 `pass`, B4
+`external_dependency_pending`. Design Atlas является детерминированной
+проекцией принятых registries, а не вторым реестром. Search, breadcrumbs и
+pager переведены в зарегистрированные Smart leaves с точной default HTML
+parity. Starter содержит безопасные project-owned install builder, product
+configurator и footer links на том же production/preview path. B4 не может
+объявить `ui.input`, `ui.dropdown`, `ui.checkbox` supported до появления exact
+independently accepted owner artifacts; локальная подмена запрещена.
 
 Recovery source:
 `source/workflow/2026-08-04-docara-goal-b-interface-library.md`.

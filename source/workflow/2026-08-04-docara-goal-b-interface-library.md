@@ -4,7 +4,7 @@ Date: 2026-08-04
 Status: `goal_b_in_progress`
 Current stage: `docara.stage.b.interface_library`
 Current batch: `docara.batch.b.interface_library`
-Current next action: `implement_b0_design_atlas_contract`
+Current next action: `complete_independent_b5_checks_then_stop_at_b4_external_gate`
 Next roadmap goal: `docara.goal.b.interface_library` (`in_progress`, authorized=`true`)
 
 ## Track and entry baseline
@@ -87,7 +87,7 @@ Status: `pass`.
 
 ### B2 — Interface variants and presets
 
-Status: `pending`.
+Status: `pass`.
 
 - package coherent docs/site/landing presets;
 - preserve the three accepted navigation presentations;
@@ -96,7 +96,7 @@ Status: `pending`.
 
 ### B3 — Project demos
 
-Status: `pending`.
+Status: `pass`.
 
 - add data-only `project.install_builder` content demo;
 - add data-only `project.product_configurator` site demo;

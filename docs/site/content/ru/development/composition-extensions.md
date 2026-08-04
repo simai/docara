@@ -20,6 +20,12 @@ Project artifact должен начинаться с `project.`. Он не мо
 `docara.*`, `content.*`, `shell.*` или `ui.*`. Дубликаты, symlink, выход из
 корня и неизвестные определения останавливают сборку.
 
+Команда `docara atlas --json` показывает effective Layout, View, Section,
+Block, Smart, binding и preset из принятых registries. Atlas — только
+детерминированная проекция: редактировать его как источник регистрации нельзя.
+Для контейнеров он также показывает допустимые children, slots, порядок,
+количество и максимальную глубину.
+
 ## Привязки данных оболочки
 
 Блок `shell.smart` может выбрать только зарегистрированную привязку `bind`.
@@ -49,6 +55,11 @@ class, callback, PHP/template path или произвольный filesystem pa
 `compact`. Вызов остаётся тем же `shell.smart`, Gateway и PageBuilder; меняется
 только зарегистрированный `view`. Если `view` явно не указан, сохраняется
 совместимое поведение по умолчанию.
+
+Starter содержит небольшой footer-пример: project Section и Block допускают
+только зарегистрированный `project.footer-links` в region `footer`. Ни config,
+ни Markdown не выбирают PHP/template path; component, View и assets разрешает
+обычный project Smart provider.
 
 ## Файлы
 

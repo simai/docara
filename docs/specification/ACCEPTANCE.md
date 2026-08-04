@@ -4,8 +4,8 @@
 accepted Goal A product/runtime candidate —
 `8c04160ab50549b060fb933cf80f86193cd92113`. Goal B Full Interface Library &
 Useful Extension Demos активен из governance baseline
-`3280a89cc21f2b4fcfc8e7539c673ca62a199446`; B0 implementation evidence ещё
-не является независимой приёмкой Goal B.
+`3280a89cc21f2b4fcfc8e7539c673ca62a199446`; B0-B3 implementation evidence не
+является независимой приёмкой Goal B, а B4 остаётся external dependency gate.
 Source `1dee6d19…` остаётся только historical/superseded radius baseline.
 Finalized QA reference целиком content-addressed и привязан к immutable plan;
 совместная подмена reference/candidate/report fail-closed.
@@ -40,12 +40,12 @@ PASS ставится только по воспроизводимому evidenc
 
 ## Goal B. Full Interface Library & Useful Extension Demos
 
-- [ ] Design Atlas детерминированно строится только из accepted registries.
-- [ ] Ownership и `authoring_kind` независимы; container child contracts
+- [x] Design Atlas детерминированно строится только из accepted registries.
+- [x] Ownership и `authoring_kind` независимы; container child contracts
       ограничивают slots/count/order/depth до render.
-- [ ] Search, breadcrumbs, pager, navigation, TOC и preferences проходят один
+- [x] Search, breadcrumbs, pager, navigation, TOC и preferences проходят один
       production Gateway/composition path.
-- [ ] Project install builder, product configurator и footer устанавливаются
+- [x] Project install builder, product configurator и footer устанавливаются
       data-only без engine source edits и backend side effects.
 - [ ] Framework input/dropdown/checkbox exact-pinned, independently accepted и
       cross-host proven до support claim.

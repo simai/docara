@@ -57,6 +57,14 @@ Manifest использует tracked SIMAI Framework Smart artifact v1. Мин�
 чужой namespace, symlink, traversal, неизвестный view/preset/prop, template или
 asset завершают сборку ошибкой.
 
+После `docara init` страница `/ru/project-demos/` показывает два полезных
+локальных примера: `project.install-builder` только формирует и копирует
+Composer-команду, а `project.product-configurator` считает демонстрационный
+итог в браузере. Их совместимые authoring aliases —
+`project.install_builder` и `project.product_configurator`; канонические ABI IDs
+используют дефисы. Оба примера обходятся без fetch, backend, заказа, оплаты или
+выполнения команды.
+
 View выбирается одинаково для любого provider: явно указанный view имеет
 приоритет; иначе named preset выбирает зарегистрированный view; если не задано
 ни то ни другое, используется `default`. Это данные артефакта, поэтому новый

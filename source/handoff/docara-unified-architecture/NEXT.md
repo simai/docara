@@ -2,7 +2,7 @@
 
 Current state: `goal_a_in_progress`
 
-Current candidate: `d748eca04cd09e79ed6e2079a56b077265bcf905`
+Current candidate: `1fb4b5c6c1cb72c29d61b8f85959966438202474`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md`
 

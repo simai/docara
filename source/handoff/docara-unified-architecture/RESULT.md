@@ -2,7 +2,7 @@
 
 Current state: `goal_a_in_progress`
 
-Current candidate: `d748eca04cd09e79ed6e2079a56b077265bcf905`
+Current candidate: `1fb4b5c6c1cb72c29d61b8f85959966438202474`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md`
 
@@ -11,9 +11,10 @@ Current evidence: `source/workflow/evidence/2026-08-04-docara-content-design-set
 Goal 3 exact product candidate `1e571b6e16ebc4520121aff0ae868de3b986dff3`
 was independently accepted with `PASS`. Goal A is activated on governance HEAD
 `d748eca04cd09e79ed6e2079a56b077265bcf905`. A0 froze the typed binding and
-shell-capability contract plus a byte-identical default baseline. Runtime
-implementation is in progress; no Goal A readiness or independent acceptance
-is claimed.
+shell-capability contract plus a byte-identical default baseline. A1 candidate
+`1fb4b5c6c1cb72c29d61b8f85959966438202474` replaces compiler binding-ID
+branching with one typed provider-owned registry while preserving public
+output. Goal A readiness or independent acceptance is not claimed.
 
 ## Goal 3 current result
 

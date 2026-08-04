@@ -31,7 +31,7 @@
     "current_stage": "docara.stage.a.shell_contract",
     "current_batch": "docara.batch.a.shell_contract",
     "completed_checkpoint": "goal3_independently_accepted_pass",
-    "candidate_revision": "d748eca04cd09e79ed6e2079a56b077265bcf905",
+    "candidate_revision": "1fb4b5c6c1cb72c29d61b8f85959966438202474",
     "next_action": "goal_a_binding_registry_implementation",
     "evidence": "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md",
     "roadmap_source": "source/workflow/2026-08-04-docara-content-design-settings-track.md",

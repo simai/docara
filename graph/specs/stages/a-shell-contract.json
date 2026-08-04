@@ -31,5 +31,5 @@
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Binding inventory", "Default byte parity", "Navigation preview matrix", "Project shell fixture", "Security negatives", "Integrated build and browser acceptance", "Independent reverse-outcome audit"],
   "next_stage_ref": null,
-  "status": "a0_contract_checkpoint_complete_a1_in_progress"
+  "status": "a1_binding_registry_complete_a2_in_progress"
 }

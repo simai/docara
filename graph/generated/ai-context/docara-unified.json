@@ -9,7 +9,7 @@
         "graph/specs/stages/a-shell-contract.json",
         "graph/specs/batches/a-shell-contract.json"
     ],
-    "canonical_sha256": "fd080a73010fff65306637e845d6af17fa68ec04b8c1580dc397e0fd1ec4db33",
+    "canonical_sha256": "3789949467ab41adfe227e646cb2147eb5dacbb13170d756dcced3ef6070dc1a",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -21,12 +21,12 @@
         "goal_readiness": "goal_a_in_progress",
         "stage": "docara.stage.a.shell_contract",
         "stage_readiness": "implementation_in_progress",
-        "stage_status": "a0_contract_checkpoint_complete_a1_in_progress",
+        "stage_status": "a1_binding_registry_complete_a2_in_progress",
         "batch": "docara.batch.a.shell_contract",
         "batch_readiness": "implementation_in_progress",
-        "batch_status": "a0_contract_checkpoint_complete_a1_in_progress",
+        "batch_status": "a1_binding_registry_complete_a2_in_progress",
         "completed_checkpoint": "goal3_independently_accepted_pass",
-        "candidate_revision": "d748eca04cd09e79ed6e2079a56b077265bcf905",
+        "candidate_revision": "1fb4b5c6c1cb72c29d61b8f85959966438202474",
         "next_action": "goal_a_binding_registry_implementation",
         "evidence": "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md"
     },

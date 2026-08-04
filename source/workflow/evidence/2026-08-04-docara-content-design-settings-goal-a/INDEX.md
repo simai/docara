@@ -9,7 +9,7 @@ Branch: `codex/docara-unified-architecture`
 | Evidence | Result | Address |
 | --- | --- | --- |
 | A0 contract and baseline | PASS | [A0-CONTRACT-AND-BASELINE.md](A0-CONTRACT-AND-BASELINE.md) |
-| A1 registry | pending | `A1-BINDING-REGISTRY.md` |
+| A1 registry | PASS | [A1-BINDING-REGISTRY.md](A1-BINDING-REGISTRY.md) |
 | A2 navigation | pending | `A2-NAVIGATION-VARIANTS.md` |
 | A3 project shell | pending | `A3-PROJECT-SHELL.md` |
 | A4 integrated acceptance | pending | `A4-INTEGRATED-ACCEPTANCE.md` |

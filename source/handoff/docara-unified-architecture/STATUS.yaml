@@ -6,7 +6,7 @@ state: goal_a_in_progress
 current_stage: docara.stage.a.shell_contract
 current_batch: docara.batch.a.shell_contract
 next_action: goal_a_binding_registry_implementation
-candidate_revision: d748eca04cd09e79ed6e2079a56b077265bcf905
+candidate_revision: 1fb4b5c6c1cb72c29d61b8f85959966438202474
 evidence: source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md
 goal1_candidate_revision: 44acc1ff91233fa78140222fcb0589bf55b65ca0
 goal1_sf5_adapter_revision: b3cdff87563ff78e7eddf044048a4b298fc69036

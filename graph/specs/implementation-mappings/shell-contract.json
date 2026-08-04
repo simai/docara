@@ -41,5 +41,5 @@
     "Remove the closed schema enum only after registry-aware contextual validation is permanent."
   ],
   "status": "a0_contract_checkpoint_in_progress",
-  "mapped_revision": "d748eca04cd09e79ed6e2079a56b077265bcf905"
+  "mapped_revision": "1fb4b5c6c1cb72c29d61b8f85959966438202474"
 }

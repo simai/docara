@@ -79,8 +79,8 @@ and source-policy checks with no blocker.
 | Batch | Outcome | Verification | Status |
 | --- | --- | --- | --- |
 | A0 | baseline, inventory, naming/decision freeze, graph activation | baseline full/single hashes, source map, context/graph checks | PASS |
-| A1 | typed providers/descriptors/BindingRegistry and migrated built-ins | focused registry/schema/security and default parity | in progress |
-| A2 | navigation header/tree/compact vertical slice | production/preview/browser matrix | pending |
+| A1 | typed providers/descriptors/BindingRegistry and migrated built-ins | focused registry/schema/security and default parity | PASS |
+| A2 | navigation header/tree/compact vertical slice | production/preview/browser matrix | in progress |
 | A3 | project shell fixture through admitted capability | no-src fixture proof and negative security matrix | pending |
 | A4 | full integration, determinism and legacy-reference audit | full tests/build/static/browser/zero-reference | pending |
 | A5 | exact evidence and independent-ready handoff | graph/context/docs/hygiene and clean commits | pending |
@@ -131,6 +131,17 @@ inside Goal A.
   current shell call sites inventoried; baseline full/single output frozen;
   canonical graph/router activation and freshness checks passed.
 - Next: implement A1 typed binding registry.
+
+### A1
+
+- Done: one deterministic provider-owned BindingRegistry; canonical built-in
+  descriptors; internal storage aliases; descriptor output schemas; collision,
+  target and presentation fail-closed checks; compiler ID match removed.
+- Default parity: all 306 non-receipt files byte-identical; receipt delta is
+  limited to the required engine source/tree digest. Full/single candidate
+  receipt equality and Alert HTML parity pass.
+- Next: A2 explicit navigation presentation selection through the same
+  descriptor, Gateway and composer path.
 
 ## Rollback
 

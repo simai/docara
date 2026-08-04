@@ -29,7 +29,7 @@ Graph goal: `docara.goal.unified`
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.a.shell_contract`;
 - batch: `docara.batch.a.shell_contract`;
-- candidate: `d748eca04cd09e79ed6e2079a56b077265bcf905`;
+- candidate: `1fb4b5c6c1cb72c29d61b8f85959966438202474`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
 - next action: `goal_a_binding_registry_implementation`;
 - Goal 1-3 are independently accepted; Goal B and release review remain unauthorized.

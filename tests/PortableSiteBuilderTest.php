@@ -1207,6 +1207,7 @@ MD);
         );
         self::assertStringContainsString("root.style.setProperty('--sf-radius--ui',values[mode])", $html);
         self::assertStringContainsString("root.style.removeProperty('--sf-radius--ui')", $html);
+        self::assertStringContainsString("medium:'var(--sf-radius-1\\\\/2)'", $html);
         self::assertStringContainsString("'sf-modal[data-docara-transient-dialog]'", $html);
         self::assertStringContainsString("modal.setAttribute('overlay-class',value)", $html);
         self::assertStringContainsString("document.addEventListener('DOMContentLoaded',function(){applyAll(initialSource);revealFrameworkBody()},{once:true})", $html);

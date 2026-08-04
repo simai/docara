@@ -153,7 +153,11 @@ Framework consumer narrowing хранится в exact immutable lock рядом
 pin, а не в PHP-карте component IDs.
 
 Developer SDK публикует тот же контракт, а не package legacy storage schema:
-`schema smart` выбирает `portable-smart-manifest.schema.json`, и scaffold
+`schema smart` возвращает byte-exact Framework-owned
+`smart.manifest.schema.json` из revision
+`b3cdff87563ff78e7eddf044048a4b298fc69036`. Scaffold сначала проходит эту
+owner schema, затем отдельно именованную Docara admission policy
+`docara.smart_admission.v1`; policy не является вторым ABI или dialect. Scaffold
 manifest валидируется этой схемой без адаптации. Effective registry provenance
 для package, Framework и project providers всегда содержит neutral
 `contract_id`, `contract_schema_version` и `contract_compatibility_id`.

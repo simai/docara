@@ -1,9 +1,12 @@
 {
     "contract": {
+        "admission_policy": "docara.smart_admission.v1",
         "compatibility_id": "sf-smart-artifact-abi-v1",
         "contract_id": "sf.smart_artifact_abi",
         "schema_version": "1.0.0",
+        "source_path": "docs/developer/specifications/schemas/smart.manifest.schema.json",
         "source_revision": "b3cdff87563ff78e7eddf044048a4b298fc69036",
+        "source_sha256": "9d65a9b3d63567ef8a12dd43f5c3e24913e2659105b088778dc50476a9578037",
         "storage_compatibility_alias": "sf5.smart.artifact.v1"
     },
     "definitions": {
@@ -43,6 +46,6 @@
             "template_abi": "docara.legacy.object-view.v1"
         }
     },
-    "schema_id": "portable-smart-manifest.schema.json",
-    "subject": "smart:portable-smart-manifest.schema.json"
+    "schema_id": "smart.manifest.schema.json",
+    "subject": "smart:smart.manifest.schema.json"
 }

@@ -12,6 +12,7 @@ use Simai\Docara\Console\ApplicationFactory;
 use Simai\Docara\Portable\JsonSchemaValidator;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\SchemaRepository;
+use Simai\Docara\Smart\Artifact\DocaraPortableSmartAdmissionPolicy;
 use Symfony\Component\Console\Tester\CommandTester;
 use Tests\TestCase;
 
@@ -28,10 +29,10 @@ final class SmartSdkPortableContractTest extends TestCase
     {
         $application = ApplicationFactory::create($this->tmp);
         $schema = $this->jsonCommand($application, 'schema', ['kind' => 'smart']);
-        self::assertSame('portable-smart-manifest.schema.json', $schema['data']['schema_id']);
+        self::assertSame('smart.manifest.schema.json', $schema['data']['schema_id']);
         self::assertSame($this->golden()['contract'], $schema['data']['contract']);
         self::assertEquals(
-            (new SchemaRepository)->get('portable-smart-manifest.schema.json'),
+            (new SchemaRepository)->get('smart.manifest.schema.json'),
             $schema['data']['schema'],
         );
 
@@ -54,6 +55,7 @@ final class SmartSdkPortableContractTest extends TestCase
         }
         self::assertIsArray($manifest);
         (new JsonSchemaValidator(new SchemaRepository))->assertValid($manifest, $schema['data']['schema_id']);
+        (new DocaraPortableSmartAdmissionPolicy)->assertAdmitted($manifest, 'project.audit-card');
 
         $runtime = ProjectRuntime::load($this->tmp);
         foreach ($runtime->smarts->keys() as $id) {
@@ -102,7 +104,7 @@ final class SmartSdkPortableContractTest extends TestCase
     }
 
     #[Test]
-    public function public_catalog_has_no_legacy_smart_dialect_and_rejects_invalid_portable_combinations(): void
+    public function exact_owner_schema_accepts_owner_surface_and_rejects_invalid_nested_fields(): void
     {
         $schemas = new SchemaRepository;
         try {
@@ -113,14 +115,43 @@ final class SmartSdkPortableContractTest extends TestCase
         }
 
         $manifest = ProjectRuntime::load($this->tmp)->smarts->definition('project.notice')->portableManifest;
-        $manifest['render']['strategy'] = 'server-first-hydratable';
-        $manifest['render']['hydration'] = 'none';
+        $manifest['family'] = 'project.cards';
+        $manifest['children'] = [['id' => 'child', 'smart' => 'ui.alert']];
+        $manifest['constraints'] = [['scope' => 'documentation']];
+        (new JsonSchemaValidator($schemas))->assertValid($manifest, 'smart.manifest.schema.json');
+
+        $manifest['slots'] = ['main' => ['unexpected' => true]];
         try {
-            (new JsonSchemaValidator($schemas))->assertValid($manifest, 'portable-smart-manifest.schema.json');
-            self::fail('An invalid strategy/hydration combination passed the public schema.');
+            (new JsonSchemaValidator($schemas))->assertValid($manifest, 'smart.manifest.schema.json');
+            self::fail('An owner-invalid nested slot passed the exact owner schema.');
         } catch (PortableConfigurationException $exception) {
             self::assertSame('SCHEMA_VALIDATION_FAILED', $exception->errorCode);
         }
+    }
+
+    #[Test]
+    public function vendored_schema_is_the_exact_source_pinned_owner_blob(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $source = json_decode((string) file_get_contents($root . '/resources/contracts/sf5/smart/v1/source.json'), true, 512, JSON_THROW_ON_ERROR);
+        $path = $root . '/resources/schemas/smart.manifest.schema.json';
+
+        self::assertSame($source['tracked_files']['manifest_schema']['sha256'], hash_file('sha256', $path));
+        self::assertSame('9d65a9b3d63567ef8a12dd43f5c3e24913e2659105b088778dc50476a9578037', hash_file('sha256', $path));
+    }
+
+    #[Test]
+    public function docara_cross_field_admission_is_separate_from_the_owner_schema(): void
+    {
+        $manifest = ProjectRuntime::load($this->tmp)->smarts->definition('project.notice')->portableManifest;
+        $manifest['render']['strategy'] = 'server-first-hydratable';
+        $manifest['render']['hydration'] = 'none';
+
+        (new JsonSchemaValidator(new SchemaRepository))->assertValid($manifest, 'smart.manifest.schema.json');
+
+        $this->expectException(\Simai\Docara\Smart\Artifact\PortableSmartContractException::class);
+        $this->expectExceptionMessage('PORTABLE_SMART_CONTRACT_INVALID:project.notice:render.hydration');
+        (new DocaraPortableSmartAdmissionPolicy)->assertAdmitted($manifest, 'project.notice');
     }
 
     /** @return array<string, mixed> */

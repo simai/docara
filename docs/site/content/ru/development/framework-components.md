@@ -13,7 +13,8 @@
 
 1. подтвердить, что задачу нельзя решить native Markdown или существующим
    typed-компонентом Docara;
-2. добавить source-backed `larena.ui.smart_manifest.v1` с props, host renderer
+2. для нового переносимого компонента добавить manifest по публичному
+   `sf.smart_artifact_abi` / `smart.manifest.schema.json`, props и host renderer
    и immutable upstream revision;
 3. добавить manifest в точный SIMAI Framework lock с provider revision и
    SHA-256;
@@ -86,3 +87,6 @@ authoritative source: native profile, typed definition либо Smart metadata �
 `_docara/component-catalog.json` в output сборки не является каноническим
 реестром SIMAI Framework и не подтверждает production или public-release
 readiness.
+`larena.ui.smart_manifest.v1` встречается только во внутренних package-owned
+артефактах старого storage adapter. Это не публичная authoring-схема и не
+альтернативный Portable Smart ABI.

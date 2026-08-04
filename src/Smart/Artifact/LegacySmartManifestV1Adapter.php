@@ -6,7 +6,9 @@ namespace Simai\Docara\Smart\Artifact;
 
 final readonly class LegacySmartManifestV1Adapter
 {
-    public function __construct(private Sf5SmartArtifactV1Contract $contract = new Sf5SmartArtifactV1Contract) {}
+    public function __construct(
+        private DocaraPortableSmartAdmissionPolicy $admission = new DocaraPortableSmartAdmissionPolicy,
+    ) {}
 
     /**
      * @param  array<string, mixed>  $legacy
@@ -73,7 +75,7 @@ final readonly class LegacySmartManifestV1Adapter
                 ],
             ],
         ];
-        $this->contract->assertManifest($manifest, $expectedCode);
+        $this->admission->assertAdmitted($manifest, $expectedCode);
 
         return $manifest;
     }

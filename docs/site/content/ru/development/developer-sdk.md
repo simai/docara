@@ -40,8 +40,10 @@ provider, fixture, state и schema. Human и `--json` — два предста�
 `docara.operation_result.v1`: у diagnostics стабильны code, severity, owner,
 provenance, source location и suggestion.
 
-`schema smart --json` возвращает именно схему переносимого manifest, который
-создаёт `scaffold smart`: `portable-smart-manifest.schema.json`. В результате
+`schema smart --json` возвращает byte-exact Framework-owned схему переносимого
+manifest, который создаёт `scaffold smart`: `smart.manifest.schema.json` из
+зафиксированной owner revision. После неё применяется отдельно названная
+Docara policy `docara.smart_admission.v1`; это не второй формат. В результате
 также есть машинная identity контракта:
 `sf.smart_artifact_abi` / `1.0.0` /
 `sf-smart-artifact-abi-v1`. Поэтому manifest из dry-run можно проверить этой

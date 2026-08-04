@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Smart\Provider;
 
 use Simai\Docara\Portable\JsonDiagnosticLocator;
+use Simai\Docara\Smart\Artifact\DocaraPortableSmartAdmissionPolicy;
 use Simai\Docara\Smart\Artifact\Sf5SmartArtifactV1Contract;
 
 class FilesystemSmartProvider implements SmartArtifactProvider
@@ -25,6 +26,7 @@ class FilesystemSmartProvider implements SmartArtifactProvider
         private readonly string $ownerPackage,
         private readonly string $revision,
         private readonly Sf5SmartArtifactV1Contract $contract = new Sf5SmartArtifactV1Contract,
+        private readonly DocaraPortableSmartAdmissionPolicy $admission = new DocaraPortableSmartAdmissionPolicy,
     ) {
         $this->ownedNamespaces = $this->normalizeNamespaces($namespaces);
         $this->safeRoot = $this->safeDirectory($root, 'root');
@@ -57,7 +59,7 @@ class FilesystemSmartProvider implements SmartArtifactProvider
             $this->assertOwned($id);
             $manifestPath = $this->safeFile($directory . '/manifest.json', $id . '/manifest.json');
             $manifest = $this->json($manifestPath, $id . '/manifest.json');
-            $this->contract->assertManifest($manifest, $id);
+            $this->admission->assertAdmitted($manifest, $id);
             $views = $this->namedJsonArtifacts($directory, $id, 'view', 'smart.view');
             $presets = $this->namedJsonArtifacts($directory, $id, 'preset', 'smart.preset');
             $templates = $this->templates($directory, $id);

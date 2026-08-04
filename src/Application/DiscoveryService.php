@@ -72,7 +72,7 @@ final readonly class DiscoveryService
     {
         $runtime = ProjectRuntime::load($root);
         $schema = match ($kind) {
-            'smart' => 'portable-smart-manifest.schema.json',
+            'smart' => 'smart.manifest.schema.json',
             'layout' => DesignArtifactKind::Layout->schema(),
             'view' => DesignArtifactKind::View->schema(),
             'section' => DesignArtifactKind::Section->schema(),
@@ -91,6 +91,9 @@ final readonly class DiscoveryService
                 'compatibility_id' => Sf5SmartArtifactV1Contract::COMPATIBILITY_ID,
                 'storage_compatibility_alias' => Sf5SmartArtifactV1Contract::STORAGE_COMPATIBILITY_ALIAS,
                 'source_revision' => Sf5SmartArtifactV1Contract::SOURCE_REVISION,
+                'source_path' => 'docs/developer/specifications/schemas/smart.manifest.schema.json',
+                'source_sha256' => '9d65a9b3d63567ef8a12dd43f5c3e24913e2659105b088778dc50476a9578037',
+                'admission_policy' => \Simai\Docara\Smart\Artifact\DocaraPortableSmartAdmissionPolicy::POLICY_ID,
             ];
         }
 

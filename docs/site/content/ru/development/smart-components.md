@@ -92,7 +92,10 @@ slot и hydration одинаково под SIMAI Framework 5 и Docara. Не с
 template dialect.
 
 Команда `docara schema smart --json` возвращает authoritative
-`portable-smart-manifest.schema.json`; неизменённый manifest из
+byte-exact Framework-owned `smart.manifest.schema.json`; неизменённый manifest из
+scaffold проходит её без преобразования. Дополнительные требования Docara
+проверяет отдельная policy `docara.smart_admission.v1`, а не альтернативная
+публичная схема. Manifest из
 `docara scaffold smart ... --dry-run` проходит именно эту схему. Команда
 `inspect smart ... --json` одинаково сообщает neutral contract identity для
 `ui.*`, `docara.*` и project namespace. Host-bound преобразование старых

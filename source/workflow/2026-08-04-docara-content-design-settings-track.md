@@ -1,20 +1,20 @@
 # Docara: Content, Design & Settings product track
 
 Date: 2026-08-04
-Status: `goal_b_external_dependency_blocked`
+Status: `goal_b_ui_list_item_dependency_blocked`
 Track ID: `docara.track.content_design_settings`
 Type: post-LEGO product proposal
 Planning baseline HEAD: `d748eca04cd09e79ed6e2079a56b077265bcf905`
 Accepted Goal 3 product candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`
 Branch: `codex/docara-unified-architecture`
 Remaining unstarted goals: 1
-Current canonical next action: `obtain_independently_accepted_framework_wave`
+Current canonical next action: `obtain_independently_accepted_ui_list_item_artifact`
 
-Status: `goal_b_external_dependency_blocked`
+Status: `goal_b_ui_list_item_dependency_blocked`
 Current stage: `docara.stage.b.interface_library`
 Current batch: `docara.batch.b.interface_library`
-Current next action: `obtain_independently_accepted_framework_wave`
-Next roadmap goal: `docara.goal.b.interface_library` (`external_dependency_blocked`, authorized=`true`)
+Current next action: `obtain_independently_accepted_ui_list_item_artifact`
+Next roadmap goal: `docara.goal.b.interface_library` (`ui_list_item_dependency_blocked`, authorized=`true`)
 
 ## 0. Status and authority
 
@@ -26,8 +26,9 @@ Goal A execution contract is
 
 Goal 3 and Goal A are independently accepted. Goal B was activated and B0-B3
 plus the available B5 matrix are implemented on exact candidate `ccb076a…`.
-Its required Framework wave remains externally blocked. Activation and partial
-implementation do not authorize:
+Its input/dropdown/checkbox Framework wave is accepted, but the dropdown's
+required `ui.list-item` dependency remains externally blocked. Activation and
+partial implementation do not authorize:
 
 - Goal C implementation before an independent Goal B verdict;
 - rewriting the accepted Goal 3 candidate or historical evidence;
@@ -37,7 +38,7 @@ implementation do not authorize:
 The only authorized current action is:
 
 ```text
-obtain_independently_accepted_framework_wave
+obtain_independently_accepted_ui_list_item_artifact
 ```
 
 ### Start gate

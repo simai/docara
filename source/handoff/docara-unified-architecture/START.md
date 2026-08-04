@@ -18,7 +18,7 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal_b_external_dependency_blocked`
+Current state: `goal_b_ui_list_item_dependency_blocked`
 
 Current goal: `docara.goal.unified`
 
@@ -26,7 +26,7 @@ Current stage: `docara.stage.b.interface_library`
 
 Current batch: `docara.batch.b.interface_library`
 
-Current next action: `obtain_independently_accepted_framework_wave`
+Current next action: `obtain_independently_accepted_ui_list_item_artifact`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
 
@@ -34,15 +34,16 @@ Current candidate: `ccb076a89535954022ca89eb70b84d6c81d80de3`
 
 Next roadmap goal: `docara.goal.b.interface_library`
 
-Next roadmap status: `external_dependency_blocked`
+Next roadmap status: `ui_list_item_dependency_blocked`
 
 Next roadmap authorized: `true`
 
 Goal 1 and Goal 2 were independently accepted with `PASS_WITH_NOTES`; Goal 3
 and Goal A were independently accepted with `PASS`. Goal B Full Interface
 Library & Useful Extension Demos is the only active implementation goal, but
-its B4 Framework wave is externally blocked. Goal C and release review remain
-unauthorized.
+its accepted B4 form wave cannot provide a useful dropdown until the owner
+supplies an independently accepted `ui.list-item` dependency. Goal C and
+release review remain unauthorized.
 
 ## 3. Read in this order
 
@@ -61,8 +62,9 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only the current goal
 
-Resume Goal B only after exact independently accepted owner artifacts for
-`ui.input`, `ui.dropdown` and `ui.checkbox` are available. Then execute B4 and
+Resume Goal B only after an exact independently accepted owner artifact for
+`ui.list-item` is available. The input/dropdown/checkbox packet is accepted,
+but dropdown options admit only that missing dependency. Then execute B4 and
 repeat the affected B5 matrix from
 `source/workflow/2026-08-04-docara-goal-b-interface-library.md`. Preserve
 accepted Goal 1-3 and Goal A runtime invariants. Do not implement Goal C or

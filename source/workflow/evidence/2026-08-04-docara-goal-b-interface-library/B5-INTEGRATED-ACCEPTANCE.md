@@ -1,18 +1,19 @@
 # B5 integrated verification and external gate
 
 Date: 2026-08-04
-Status: `partial_pass_external_dependency_gate`
+Status: `historical_partial_pass_before_accepted_form_wave`
 Exact product candidate: `ccb076a89535954022ca89eb70b84d6c81d80de3`
 Accepted Goal A parent: `8c04160ab50549b060fb933cf80f86193cd92113`
 
 ## Result
 
-All Goal B work that can be completed inside Docara is green. B0-B3 provide a
+This matrix remains the exact proof for the unchanged B0-B3 product candidate.
+B0-B3 provide a
 registry-derived Atlas, registered publisher chrome, safe presentation presets
 and useful project-owned content/shell demos. Goal B is **not** ready for
-independent acceptance because the required independently accepted owner
-artifacts for `ui.input`, `ui.dropdown` and `ui.checkbox` do not exist in the
-allowed inputs. Docara did not recreate or claim support for them.
+independent acceptance. The later accepted form wave is recorded separately in
+`B4-ACCEPTED-FORM-WAVE-LIST-ITEM-GATE.md`; its dropdown requires an unaccepted
+`ui.list-item`, so the product/runtime candidate was intentionally not changed.
 
 ## Product and test matrix
 
@@ -107,13 +108,12 @@ browser acceptance cannot be claimed until B4 has accepted owner artifacts.
 
 ## External stop condition
 
-The exact gate is documented in [B4-FRAMEWORK-WAVE.md](B4-FRAMEWORK-WAVE.md).
-The repository contains accepted portable artifacts only for `ui.alert` and
-`ui.button`. A raw Framework registry mention is not a portable manifest/view/
-preset/template/assets package and has no independent cross-host acceptance.
-The only safe next action is to obtain independently accepted, exact-pinned
-owner artifacts for `ui.input`, `ui.dropdown` and `ui.checkbox`, then resume B4
-and repeat the affected B5 matrix. Goal C remains unauthorized.
+The original gate is documented in [B4-FRAMEWORK-WAVE.md](B4-FRAMEWORK-WAVE.md).
+It was narrowed after owner acceptance by
+[B4-ACCEPTED-FORM-WAVE-LIST-ITEM-GATE.md](B4-ACCEPTED-FORM-WAVE-LIST-ITEM-GATE.md).
+The only safe next action is to obtain an independently accepted exact-pinned
+`ui.list-item` owner artifact, then resume B4 and repeat the affected B5
+matrix. Goal C remains unauthorized.
 
 ## Governance validation
 

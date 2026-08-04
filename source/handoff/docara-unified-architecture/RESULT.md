@@ -1,6 +1,6 @@
 # Current Docara result
 
-Current state: `goal_b_external_dependency_blocked`
+Current state: `goal_b_ui_list_item_dependency_blocked`
 
 Current candidate: `ccb076a89535954022ca89eb70b84d6c81d80de3`
 
@@ -19,11 +19,15 @@ clones produce identical ZIP `1b66bd96…` and manifest `45b48236…`; a fresh
 dist consumer builds and verifies the 39-route starter without Node or package
 `.git`. Exact browser smoke has zero console errors/warnings and overflow.
 
-Goal B is not independent-ready. `ui.input`, `ui.dropdown` and `ui.checkbox`
-still have no accepted exact-pinned portable owner artifacts and cross-host
-evidence. B4 therefore remains an explicit external-dependency gate; Docara did
-not recreate the components locally. Goal C and release remain unauthorized,
-and no external repository or site changed.
+Goal B is not independent-ready. The exact `ui.input`, `ui.dropdown` and
+`ui.checkbox` owner packet is independently accepted, but its dropdown options
+slot admits only `ui.list-item`. That dependency is not in the packet or the
+current Docara registry. A local `items` dialect, raw markup or a Docara-owned
+replacement is forbidden, so no partial form-wave runtime import was made and
+the exact partial product candidate remains `ccb076a…`.
+
+B4 therefore remains an explicit, narrower external-dependency gate. Goal C
+and release remain unauthorized, and no external repository or site changed.
 
 ## Accepted Goal A result
 

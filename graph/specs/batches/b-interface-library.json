@@ -8,7 +8,7 @@
   "summary": "Execute B0-B5 sequentially and stop at independent Goal B audit or the exact Framework external-dependency gate.",
   "owner": "dev",
   "lifecycle": "active",
-  "readiness": "external_dependency_blocked",
+  "readiness": "ui_list_item_dependency_blocked",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-04-docara-goal-b-interface-library.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md"],
@@ -17,10 +17,13 @@
   "allowed_scope": ["Atlas application service and schemas", "Accepted Design, Smart and Binding registry projections", "Existing publisher/compiler/composition integration", "Registered package/project artifacts and fixtures", "Tests, specification, graph, workflow, handoff and evidence"],
   "forbidden_scope": ["Second parser, renderer, DesignRegistry, Gateway, LayoutComposer, PageBuilder or preview engine", "Project executable adapters or arbitrary paths", "Unsupported Framework components labeled supported", "Goal C", "External repositories or sites", "Merge, Push, Tag, Release, Deploy"],
   "checks": ["Atlas schema/generation/freshness and CLI-MCP parity", "Container admission and security negatives", "Default and preset parity", "Project fixture without engine edit", "Framework exact pin and cross-host proof", "Full regression and deterministic builds", "Browser and accessibility matrix", "Graph and documentation validation"],
-  "status": "blocked_external_framework_wave",
+  "status": "blocked_unaccepted_ui_list_item",
   "baseline_revision": "3280a89cc21f2b4fcfc8e7539c673ca62a199446",
   "candidate_revision": "ccb076a89535954022ca89eb70b84d6c81d80de3",
   "accepted_goal_a_candidate": "8c04160ab50549b060fb933cf80f86193cd92113",
-  "framework_wave_status": "external_dependency_pending",
-  "next_action": "obtain_independently_accepted_framework_wave"
+  "framework_wave_status": "accepted_form_wave_blocked_on_ui_list_item",
+  "framework_wave_product_candidate": "7e0b87187ceb1f89fad730094bcc4aada3e4f3f2",
+  "framework_wave_packet_sha256": "83551f972ad0b1a6e2037f61583769e32a4a78081e01ed0a0fe888b1187baca1",
+  "missing_dependency": "ui.list-item",
+  "next_action": "obtain_independently_accepted_ui_list_item_artifact"
 }

@@ -3,8 +3,9 @@
 Текущий статус: Goal 1, Goal 2, Goal 3 и Goal A независимо приняты. Exact
 accepted Goal A product/runtime candidate —
 `8c04160ab50549b060fb933cf80f86193cd92113`. Goal B Full Interface Library &
-Useful Extension Demos остановлен на внешнем dependency gate. Exact частичный
-product candidate — `ccb076a89535954022ca89eb70b84d6c81d80de3`;
+Useful Extension Demos остановлен на точном `ui.list-item` dependency gate.
+Exact частичный product candidate —
+`ccb076a89535954022ca89eb70b84d6c81d80de3`;
 B0-B3 и доступная B5-матрица зелёные, но не являются независимой приёмкой Goal
 B, а B4 остаётся обязательным external dependency gate.
 Source `1dee6d19…` остаётся только historical/superseded radius baseline.
@@ -49,7 +50,8 @@ PASS ставится только по воспроизводимому evidenc
 - [x] Project install builder, product configurator и footer устанавливаются
       data-only без engine source edits и backend side effects.
 - [ ] Framework input/dropdown/checkbox exact-pinned, independently accepted и
-      cross-host proven до support claim.
+      cross-host proven до support claim. Form-wave принят, но полезный
+      `ui.dropdown` блокируется непринятым `ui.list-item`.
 - [x] Доступная full/single/determinism/security/default/package/consumer и
       representative browser matrix зелёная на exact partial candidate.
 - [ ] Полная Goal B browser/a11y и cross-host matrix повторена после принятия

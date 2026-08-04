@@ -4,7 +4,8 @@
 независимо приняты. Exact accepted Goal A product/runtime candidate —
 `8c04160…`. Goal B Full Interface Library & Useful Extension Demos активирован
 из governance baseline `3280a89…`; B0-B3 реализованы, а B4 остановлен на
-отсутствующем independently accepted Framework artifact wave. Исторический R2
+непринятом `ui.list-item`, который требуется accepted dropdown-контракту.
+Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
 заявлены.
@@ -117,14 +118,15 @@ Goal B авторизован отдельным independent verdict и акти
 
 ## Goal B. Full Interface Library & Useful Extension Demos
 
-Статус: `goal_b_external_dependency_blocked`, B0-B3 `pass`, B4
-`external_dependency_blocked`. Design Atlas является детерминированной
+Статус: `goal_b_ui_list_item_dependency_blocked`, B0-B3 `pass`, B4
+`blocked_unaccepted_ui_list_item`. Design Atlas является детерминированной
 проекцией принятых registries, а не вторым реестром. Search, breadcrumbs и
 pager переведены в зарегистрированные Smart leaves с точной default HTML
 parity. Starter содержит безопасные project-owned install builder, product
-configurator и footer links на том же production/preview path. B4 не может
-объявить `ui.input`, `ui.dropdown`, `ui.checkbox` supported до появления exact
-independently accepted owner artifacts; локальная подмена запрещена.
+configurator и footer links на том же production/preview path. Exact owner
+packet для `ui.input`, `ui.dropdown`, `ui.checkbox` принят. Однако полезный
+dropdown принимает options только через ещё не принятый `ui.list-item`;
+локальные `items`, raw markup и Docara-owned подмена запрещены.
 Все независимые B5-проверки на candidate `ccb076a…` зелёные: две full-сборки,
 selected build, static, package, fresh consumer и representative browser smoke.
 Это не заменяет обязательный B4 cross-host acceptance и не открывает Goal C.

@@ -1,16 +1,19 @@
-# Next action: `obtain_independently_accepted_framework_wave`
+# Next action: `obtain_independently_accepted_ui_list_item_artifact`
 
-Current state: `goal_b_external_dependency_blocked`
+Current state: `goal_b_ui_list_item_dependency_blocked`
 
 Current candidate: `ccb076a89535954022ca89eb70b84d6c81d80de3`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
 
 Goal 1-3 and Goal A are independently accepted. Goal B B0-B3 and the available
-B5 matrix are green on the exact partial candidate. Obtain exact independently
-accepted owner artifacts for `ui.input`, `ui.dropdown` and `ui.checkbox`, then
-resume B4 and repeat the affected B5 checks. Do not implement those controls
-locally. Do not begin Goal C, release or live actions.
+B5 matrix are green on the exact partial candidate. The immutable
+`ui.input`/`ui.dropdown`/`ui.checkbox` owner packet is accepted, but the useful
+dropdown contract admits only `ui.list-item` children and that dependency is
+not accepted. Obtain an exact independently accepted `ui.list-item` artifact,
+then resume B4 and repeat the affected B5 checks. Do not invent `items`, inject
+raw option markup or implement the Framework component locally. Do not begin
+Goal C, release or live actions.
 
 ## Historical deployment decision (parked, not executable)
 

@@ -1,11 +1,11 @@
 # Goal B — Full Interface Library & Useful Extension Demos
 
 Date: 2026-08-04
-Status: `goal_b_external_dependency_blocked`
+Status: `goal_b_ui_list_item_dependency_blocked`
 Current stage: `docara.stage.b.interface_library`
 Current batch: `docara.batch.b.interface_library`
-Current next action: `obtain_independently_accepted_framework_wave`
-Next roadmap goal: `docara.goal.b.interface_library` (`external_dependency_blocked`, authorized=`true`)
+Current next action: `obtain_independently_accepted_ui_list_item_artifact`
+Next roadmap goal: `docara.goal.b.interface_library` (`ui_list_item_dependency_blocked`, authorized=`true`)
 
 ## Track and entry baseline
 
@@ -105,14 +105,21 @@ Status: `pass`.
 
 ### B4 — Framework useful-component consumption
 
-Status: `external_dependency_pending`.
+Status: `blocked_unaccepted_ui_list_item`.
 
-Repository inventory at entry found no accepted artifacts or immutable pins for
-`ui.input`, `ui.dropdown` or `ui.checkbox`. Only the accepted neutral ABI pin
-and compatibility `ui.alert`/`ui.button` consumers are present. B4 may start
-only when exact independently accepted owner manifests/views/presets/templates,
-assets and cross-host evidence are available without writing an external repo.
-Docara must not recreate those components locally.
+The independently accepted immutable owner packet now supplies exact
+`ui.input`, `ui.dropdown` and `ui.checkbox` manifests, views, presets,
+templates, asset/hydration hashes and cross-host proof. Its exact product
+candidate is `7e0b87187ceb1f89fad730094bcc4aada3e4f3f2` and packet content SHA-256 is
+`83551f972ad0b1a6e2037f61583769e32a4a78081e01ed0a0fe888b1187baca1`.
+
+The accepted `ui.dropdown` options slot depends on `ui.list-item`, which is not
+part of the accepted packet and is absent from the admitted Docara registry.
+A useful populated dropdown would therefore require an unaccepted component,
+an invented `items` dialect or raw markup. All three alternatives violate the
+Goal B contract. B4 stops at this narrower external owner gate without a
+partial runtime import. Exact proof is recorded in
+`B4-ACCEPTED-FORM-WAVE-LIST-ITEM-GATE.md`.
 
 ### B5 — Integration and audit handoff
 
@@ -128,7 +135,8 @@ The independent safe matrix is recorded in
 `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/B5-INTEGRATED-ACCEPTANCE.md`.
 Full/full/single, static, package, fresh-consumer and representative browser
 checks are green on exact candidate `ccb076a89535954022ca89eb70b84d6c81d80de3`.
-Goal B readiness remains blocked exclusively by B4.
+Goal B readiness remains blocked exclusively by B4's exact `ui.list-item`
+dependency gate.
 
 ## Allowed surfaces
 

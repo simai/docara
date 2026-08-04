@@ -1,16 +1,16 @@
-# Next action: `implement_b0_design_atlas_contract`
+# Next action: `obtain_independently_accepted_framework_wave`
 
-Current state: `goal_b_in_progress`
+Current state: `goal_b_external_dependency_blocked`
 
-Current candidate: `3280a89cc21f2b4fcfc8e7539c673ca62a199446`
+Current candidate: `ccb076a89535954022ca89eb70b84d6c81d80de3`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
 
-Goal 1-3 and Goal A are independently accepted. Implement B0 from the Goal B
-workflow: one deterministic registry-derived Atlas, finite container contracts
-and one CLI/JSON/MCP projection. Do not begin Goal C, release or live actions.
-Do not implement missing Framework controls locally: B4 waits for exact
-independently accepted owner artifacts.
+Goal 1-3 and Goal A are independently accepted. Goal B B0-B3 and the available
+B5 matrix are green on the exact partial candidate. Obtain exact independently
+accepted owner artifacts for `ui.input`, `ui.dropdown` and `ui.checkbox`, then
+resume B4 and repeat the affected B5 checks. Do not implement those controls
+locally. Do not begin Goal C, release or live actions.
 
 ## Historical deployment decision (parked, not executable)
 

@@ -9,25 +9,25 @@
         "graph/specs/stages/b-interface-library.json",
         "graph/specs/batches/b-interface-library.json"
     ],
-    "canonical_sha256": "99558ce3da26f7e18cf0a7675ad3fdefdcd95f0587f1b57555d2975dc31ffa8c",
+    "canonical_sha256": "a03bdbc500aacb412e2025713579b543265a9c615147d76588d93d6ac64415bf",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "goal_b_in_progress",
+        "state": "goal_b_external_dependency_blocked",
         "goal": "docara.goal.unified",
-        "goal_readiness": "goal_b_in_progress",
+        "goal_readiness": "goal_b_external_dependency_blocked",
         "stage": "docara.stage.b.interface_library",
-        "stage_readiness": "implementation_in_progress",
-        "stage_status": "in_progress",
+        "stage_readiness": "external_dependency_blocked",
+        "stage_status": "blocked_external_framework_wave",
         "batch": "docara.batch.b.interface_library",
-        "batch_readiness": "implementation_in_progress",
-        "batch_status": "in_progress",
+        "batch_readiness": "external_dependency_blocked",
+        "batch_status": "blocked_external_framework_wave",
         "completed_checkpoint": "goal_a_independently_accepted_pass",
-        "candidate_revision": "3280a89cc21f2b4fcfc8e7539c673ca62a199446",
-        "next_action": "implement_b0_design_atlas_contract",
+        "candidate_revision": "ccb076a89535954022ca89eb70b84d6c81d80de3",
+        "next_action": "obtain_independently_accepted_framework_wave",
         "evidence": "source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md"
     },
     "roadmap": {
@@ -35,7 +35,7 @@
         "next_goal": {
             "id": "docara.goal.b.interface_library",
             "title": "Goal B Full Interface Library and Useful Extension Demos",
-            "status": "in_progress",
+            "status": "external_dependency_blocked",
             "authorized": true,
             "source": "source/workflow/2026-08-04-docara-goal-b-interface-library.md"
         }

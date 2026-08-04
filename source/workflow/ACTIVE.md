@@ -1,7 +1,7 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-04
-Status: Goal B in progress
+Status: Goal B blocked on external Framework wave
 Workflow ID: `2026-08-04-docara-goal-b-interface-library`
 Graph goal: `docara.goal.unified`
 
@@ -25,13 +25,13 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `goal_b_in_progress`;
+- state: `goal_b_external_dependency_blocked`;
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.b.interface_library`;
 - batch: `docara.batch.b.interface_library`;
-- candidate: `3280a89cc21f2b4fcfc8e7539c673ca62a199446`;
+- candidate: `ccb076a89535954022ca89eb70b84d6c81d80de3`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `implement_b0_design_atlas_contract`;
+- next action: `obtain_independently_accepted_framework_wave`;
 - Goal 1-3 and Goal A are independently accepted; Goal C and release review remain unauthorized.
 
 ## Accepted pipeline
@@ -48,10 +48,10 @@ IR/HTML remain disposable.
 ## Current result
 
 Goal A exact product/runtime candidate `8c04160…` was independently accepted.
-Goal B is active from governance baseline `3280a89…`: B0 builds one
-registry-derived Design Atlas and finite container contract before replaceable
-chrome and project demos. The Framework input/dropdown/checkbox wave remains
-blocked until exact independently accepted owner artifacts exist.
+Goal B partial candidate `ccb076a…` completes B0-B3 and every independent safe
+B5 check. The Framework input/dropdown/checkbox wave remains blocked until
+exact independently accepted owner artifacts exist, so Goal B is not
+independent-ready and Goal C remains unauthorized.
 
 ## Boundary
 

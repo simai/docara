@@ -2,11 +2,11 @@ schema_version: 1
 goal: docara.goal.unified
 branch: codex/docara-unified-architecture
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: goal_b_in_progress
+state: goal_b_external_dependency_blocked
 current_stage: docara.stage.b.interface_library
 current_batch: docara.batch.b.interface_library
-next_action: implement_b0_design_atlas_contract
-candidate_revision: 3280a89cc21f2b4fcfc8e7539c673ca62a199446
+next_action: obtain_independently_accepted_framework_wave
+candidate_revision: ccb076a89535954022ca89eb70b84d6c81d80de3
 evidence: source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md
 goal1_candidate_revision: 44acc1ff91233fa78140222fcb0589bf55b65ca0
 goal1_sf5_adapter_revision: b3cdff87563ff78e7eddf044048a4b298fc69036
@@ -40,7 +40,7 @@ readiness:
   goal2_design_registry_preview: independently_accepted_pass_with_notes
   goal3_developer_sdk: independently_accepted_pass
   goal_a_shell_contract: independently_accepted_pass
-  goal_b_interface_library: implementation_in_progress
+  goal_b_interface_library: blocked_external_framework_wave
   release: blocked_explicit_user_action
   production: blocked_explicit_user_approval_and_live_preflight
 routing:

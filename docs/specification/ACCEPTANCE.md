@@ -3,9 +3,10 @@
 Текущий статус: Goal 1, Goal 2, Goal 3 и Goal A независимо приняты. Exact
 accepted Goal A product/runtime candidate —
 `8c04160ab50549b060fb933cf80f86193cd92113`. Goal B Full Interface Library &
-Useful Extension Demos активен из governance baseline
-`3280a89cc21f2b4fcfc8e7539c673ca62a199446`; B0-B3 implementation evidence не
-является независимой приёмкой Goal B, а B4 остаётся external dependency gate.
+Useful Extension Demos остановлен на внешнем dependency gate. Exact частичный
+product candidate — `ccb076a89535954022ca89eb70b84d6c81d80de3`;
+B0-B3 и доступная B5-матрица зелёные, но не являются независимой приёмкой Goal
+B, а B4 остаётся обязательным external dependency gate.
 Source `1dee6d19…` остаётся только historical/superseded radius baseline.
 Finalized QA reference целиком content-addressed и привязан к immutable plan;
 совместная подмена reference/candidate/report fail-closed.
@@ -49,8 +50,10 @@ PASS ставится только по воспроизводимому evidenc
       data-only без engine source edits и backend side effects.
 - [ ] Framework input/dropdown/checkbox exact-pinned, independently accepted и
       cross-host proven до support claim.
-- [ ] Full/single/determinism/security/default/browser/a11y matrix зелёная на
-      одном exact Goal B candidate.
+- [x] Доступная full/single/determinism/security/default/package/consumer и
+      representative browser matrix зелёная на exact partial candidate.
+- [ ] Полная Goal B browser/a11y и cross-host matrix повторена после принятия
+      Framework wave на одном independent-ready candidate.
 
 ## A. Источники истины
 

@@ -1,11 +1,11 @@
 # Goal B — Full Interface Library & Useful Extension Demos
 
 Date: 2026-08-04
-Status: `goal_b_in_progress`
+Status: `goal_b_external_dependency_blocked`
 Current stage: `docara.stage.b.interface_library`
 Current batch: `docara.batch.b.interface_library`
-Current next action: `complete_independent_b5_checks_then_stop_at_b4_external_gate`
-Next roadmap goal: `docara.goal.b.interface_library` (`in_progress`, authorized=`true`)
+Current next action: `obtain_independently_accepted_framework_wave`
+Next roadmap goal: `docara.goal.b.interface_library` (`external_dependency_blocked`, authorized=`true`)
 
 ## Track and entry baseline
 
@@ -116,13 +116,19 @@ Docara must not recreate those components locally.
 
 ### B5 — Integration and audit handoff
 
-Status: `pending`.
+Status: `partial_pass_external_dependency_gate`.
 
 Run the complete focused/full/package/consumer/full-single/static/browser/a11y
 matrix, record default and intentional preset deltas, synchronize graph/specs/
 handoff and stop at `goal_b_ready_for_independent_audit`. If B4 remains
 unavailable, complete every independent safe batch and stop with the exact
 external gate instead of claiming Goal B readiness.
+
+The independent safe matrix is recorded in
+`source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/B5-INTEGRATED-ACCEPTANCE.md`.
+Full/full/single, static, package, fresh-consumer and representative browser
+checks are green on exact candidate `ccb076a89535954022ca89eb70b84d6c81d80de3`.
+Goal B readiness remains blocked exclusively by B4.
 
 ## Allowed surfaces
 

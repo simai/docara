@@ -1,20 +1,20 @@
 # Docara: Content, Design & Settings product track
 
 Date: 2026-08-04
-Status: `goal_a_ready_for_independent_audit`
+Status: `goal_b_external_dependency_blocked`
 Track ID: `docara.track.content_design_settings`
 Type: post-LEGO product proposal
 Planning baseline HEAD: `d748eca04cd09e79ed6e2079a56b077265bcf905`
 Accepted Goal 3 product candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`
 Branch: `codex/docara-unified-architecture`
-Remaining unstarted goals: 2
-Current canonical next action: `independent_goal_a_reverse_outcome_audit`
+Remaining unstarted goals: 1
+Current canonical next action: `obtain_independently_accepted_framework_wave`
 
-Status: `goal_b_in_progress`
+Status: `goal_b_external_dependency_blocked`
 Current stage: `docara.stage.b.interface_library`
 Current batch: `docara.batch.b.interface_library`
-Current next action: `implement_b0_design_atlas_contract`
-Next roadmap goal: `docara.goal.b.interface_library` (`in_progress`, authorized=`true`)
+Current next action: `obtain_independently_accepted_framework_wave`
+Next roadmap goal: `docara.goal.b.interface_library` (`external_dependency_blocked`, authorized=`true`)
 
 ## 0. Status and authority
 
@@ -24,9 +24,12 @@ accepted and the user explicitly activated Goal A on 2026-08-04. The accepted
 Goal A execution contract is
 `source/workflow/2026-08-04-docara-goal-a-shell-contract.md`.
 
-Activation and executor completion do not authorize:
+Goal 3 and Goal A are independently accepted. Goal B was activated and B0-B3
+plus the available B5 matrix are implemented on exact candidate `ccb076a…`.
+Its required Framework wave remains externally blocked. Activation and partial
+implementation do not authorize:
 
-- Goal B or Goal C implementation before the independent Goal A verdict;
+- Goal C implementation before an independent Goal B verdict;
 - rewriting the accepted Goal 3 candidate or historical evidence;
 - external Framework owner repositories or sites;
 - merge, push, tag, release or deploy.
@@ -34,7 +37,7 @@ Activation and executor completion do not authorize:
 The only authorized current action is:
 
 ```text
-independent_goal_a_reverse_outcome_audit
+obtain_independently_accepted_framework_wave
 ```
 
 ### Start gate
@@ -52,8 +55,9 @@ Goal A started only after all conditions became true:
 6. the first bounded goal has a named executor, independent auditor and exact
    evidence directory.
 
-The independent Goal 3 verdict is `PASS`. Goals B and C remain unauthorized
-until the preceding goal has its own independent accepted verdict.
+The independent Goal 3 and Goal A verdicts are `PASS`. Goal B remains the
+active authorized goal but cannot continue until the exact independently
+accepted Framework owner artifacts exist. Goal C remains unauthorized.
 
 ## 1. Track objective
 

@@ -1,20 +1,29 @@
 # Current Docara result
 
-Current state: `goal_b_in_progress`
+Current state: `goal_b_external_dependency_blocked`
 
-Current candidate: `3280a89cc21f2b4fcfc8e7539c673ca62a199446`
+Current candidate: `ccb076a89535954022ca89eb70b84d6c81d80de3`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
 
 ## Goal B current result
 
 Independent audit accepted Goal A candidate `8c04160…` with exact public tree
-`8b7fdb61…`. Goal B is now active from governance baseline `3280a89…`. B0 is
-building one deterministic Atlas projection over the accepted Design, Smart and
-Binding registries. Repository inventory confirms that `ui.input`,
-`ui.dropdown` and `ui.checkbox` do not yet have accepted exact-pinned artifacts
-in Docara; their B4 consumption remains an explicit external-dependency gate.
-No external repository or site is changed.
+`8b7fdb61…`. Goal B partial candidate `ccb076a…` completes B0-B3: one
+deterministic registry-derived Atlas, registered search/breadcrumbs/pager,
+coherent interface presets and safe project-owned install builder, product
+configurator and footer. Full PHPUnit is 460 tests / 8,544 assertions. Two
+exact full builds and selected Alert output share complete ledger `417ebc62…`;
+static verification checks 208 HTML / 21,844 references / broken=0. Two clean
+clones produce identical ZIP `1b66bd96…` and manifest `45b48236…`; a fresh
+dist consumer builds and verifies the 39-route starter without Node or package
+`.git`. Exact browser smoke has zero console errors/warnings and overflow.
+
+Goal B is not independent-ready. `ui.input`, `ui.dropdown` and `ui.checkbox`
+still have no accepted exact-pinned portable owner artifacts and cross-host
+evidence. B4 therefore remains an explicit external-dependency gate; Docara did
+not recreate the components locally. Goal C and release remain unauthorized,
+and no external repository or site changed.
 
 ## Accepted Goal A result
 

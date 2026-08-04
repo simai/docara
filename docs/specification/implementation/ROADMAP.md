@@ -117,14 +117,17 @@ Goal B авторизован отдельным independent verdict и акти
 
 ## Goal B. Full Interface Library & Useful Extension Demos
 
-Статус: `goal_b_in_progress`, B0-B3 `pass`, B4
-`external_dependency_pending`. Design Atlas является детерминированной
+Статус: `goal_b_external_dependency_blocked`, B0-B3 `pass`, B4
+`external_dependency_blocked`. Design Atlas является детерминированной
 проекцией принятых registries, а не вторым реестром. Search, breadcrumbs и
 pager переведены в зарегистрированные Smart leaves с точной default HTML
 parity. Starter содержит безопасные project-owned install builder, product
 configurator и footer links на том же production/preview path. B4 не может
 объявить `ui.input`, `ui.dropdown`, `ui.checkbox` supported до появления exact
 independently accepted owner artifacts; локальная подмена запрещена.
+Все независимые B5-проверки на candidate `ccb076a…` зелёные: две full-сборки,
+selected build, static, package, fresh consumer и representative browser smoke.
+Это не заменяет обязательный B4 cross-host acceptance и не открывает Goal C.
 
 Recovery source:
 `source/workflow/2026-08-04-docara-goal-b-interface-library.md`.

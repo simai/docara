@@ -18,7 +18,7 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal_b_in_progress`
+Current state: `goal_b_external_dependency_blocked`
 
 Current goal: `docara.goal.unified`
 
@@ -26,22 +26,23 @@ Current stage: `docara.stage.b.interface_library`
 
 Current batch: `docara.batch.b.interface_library`
 
-Current next action: `implement_b0_design_atlas_contract`
+Current next action: `obtain_independently_accepted_framework_wave`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
 
-Current candidate: `3280a89cc21f2b4fcfc8e7539c673ca62a199446`
+Current candidate: `ccb076a89535954022ca89eb70b84d6c81d80de3`
 
 Next roadmap goal: `docara.goal.b.interface_library`
 
-Next roadmap status: `in_progress`
+Next roadmap status: `external_dependency_blocked`
 
 Next roadmap authorized: `true`
 
 Goal 1 and Goal 2 were independently accepted with `PASS_WITH_NOTES`; Goal 3
 and Goal A were independently accepted with `PASS`. Goal B Full Interface
-Library & Useful Extension Demos is the only active implementation goal. Goal C
-and release review remain unauthorized.
+Library & Useful Extension Demos is the only active implementation goal, but
+its B4 Framework wave is externally blocked. Goal C and release review remain
+unauthorized.
 
 ## 3. Read in this order
 
@@ -60,12 +61,13 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only the current goal
 
-Execute Goal B from
-`source/workflow/2026-08-04-docara-goal-b-interface-library.md` and its indexed
-evidence. Preserve accepted Goal 1-3 and Goal A runtime invariants. Do not
-implement Goal C or start release review. Framework components may be consumed
-only from exact independently accepted owner artifacts; missing artifacts are
-an explicit external-dependency gate, not permission for a local fork.
+Resume Goal B only after exact independently accepted owner artifacts for
+`ui.input`, `ui.dropdown` and `ui.checkbox` are available. Then execute B4 and
+repeat the affected B5 matrix from
+`source/workflow/2026-08-04-docara-goal-b-interface-library.md`. Preserve
+accepted Goal 1-3 and Goal A runtime invariants. Do not implement Goal C or
+start release review. Missing artifacts are an explicit external-dependency
+gate, not permission for a local fork.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,

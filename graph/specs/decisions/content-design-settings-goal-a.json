@@ -1,0 +1,30 @@
+{
+  "id": "docara.decisions.content_design_settings_goal_a",
+  "schema_version": "1.0.0",
+  "kind": "decision",
+  "subtype": "decision_register",
+  "tz_role": "architecture_decisions",
+  "title": "Accepted Goal A shell decisions",
+  "summary": "Canonical decisions accepted for Goal A without authorizing Goals B or C.",
+  "owner": "teamlead",
+  "lifecycle": "accepted",
+  "readiness": "T4_implementation_ready",
+  "visibility": "repository",
+  "source_refs": [
+    "source/workflow/2026-08-04-docara-content-design-settings-track.md#15-goal-a--shell-contract--safe-configuration",
+    "docs/specification/architecture/SHELL-CONTRACT.md"
+  ],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A0-CONTRACT-AND-BASELINE.md"
+  ],
+  "profile_refs": ["docara.unified"],
+  "decisions": [
+    {"id": "DCSI-A-001", "decision": "Replace closed binding enums and compiler matches with one typed provider-owned BindingRegistry.", "reason": "New admitted bindings must not require a central component-ID branch."},
+    {"id": "DCSI-A-002", "decision": "Project configuration selects registered IDs and data only; project executable adapters and arbitrary paths are forbidden.", "reason": "Shell extensibility must preserve fail-closed static-site security."},
+    {"id": "DCSI-A-003", "decision": "Use one semantic docara.navigation with header, tree and compact Views/presets.", "reason": "Presentation variants do not justify component-ID proliferation or a renderer branch."},
+    {"id": "DCSI-A-004", "decision": "Use versioned shell capability IDs instead of DOM selectors or component-name policy.", "reason": "Layout and project contributions need a stable typed compatibility boundary."},
+    {"id": "DCSI-A-005", "decision": "Keep the outer page and document head application-owned.", "reason": "Metadata, asset order, locale, security bootstrap and receipts remain trusted boundaries."},
+    {"id": "DCSI-A-006", "decision": "Goal A is additive-first and default output must remain byte-identical.", "reason": "Existing sites cannot silently change when safe extension points are added."},
+    {"id": "DCSI-A-007", "decision": "Goals B and C require sequential independent acceptance and are not authorized by Goal A activation.", "reason": "The product track remains bounded and auditable."}
+  ]
+}

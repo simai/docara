@@ -2,12 +2,12 @@ schema_version: 1
 goal: docara.goal.unified
 branch: codex/docara-unified-architecture
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: goal3_ready_for_independent_audit
-current_stage: docara.stage.g3.developer_sdk
-current_batch: docara.batch.g3.developer_sdk
-next_action: independent_goal3_reverse_outcome_audit
-candidate_revision: 1e571b6e16ebc4520121aff0ae868de3b986dff3
-evidence: source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/INDEX.md
+state: goal_a_in_progress
+current_stage: docara.stage.a.shell_contract
+current_batch: docara.batch.a.shell_contract
+next_action: goal_a_binding_registry_implementation
+candidate_revision: d748eca04cd09e79ed6e2079a56b077265bcf905
+evidence: source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md
 goal1_candidate_revision: 44acc1ff91233fa78140222fcb0589bf55b65ca0
 goal1_sf5_adapter_revision: b3cdff87563ff78e7eddf044048a4b298fc69036
 goal1_cross_host_html_sha256: 7133c5dcd44aa85f351a85c61c280aa883abd5cdb3c91206168ad63ada497b38
@@ -38,7 +38,8 @@ readiness:
   r2_production_dossier: pass_disposable_corrected
   goal1_portable_smart_runtime: independently_accepted_pass_with_notes
   goal2_design_registry_preview: independently_accepted_pass_with_notes
-  goal3_developer_sdk: ready_for_independent_audit
+  goal3_developer_sdk: independently_accepted_pass
+  goal_a_shell_contract: implementation_in_progress
   release: blocked_explicit_user_action
   production: blocked_explicit_user_approval_and_live_preflight
 routing:

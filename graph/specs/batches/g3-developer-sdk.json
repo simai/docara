@@ -8,7 +8,7 @@
   "summary": "Execute G3.0-G3.6 sequentially and stop at independent Goal 3 audit.",
   "owner": "dev",
   "lifecycle": "complete",
-  "readiness": "ready_for_independent_audit",
+  "readiness": "independently_accepted",
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md",
@@ -26,7 +26,7 @@
   "allowed_scope": ["Docara application services, CLI formatters and commands, project-local scaffold plans, existing validation and preview orchestration, optional development QA and MCP adapter, tests, public docs, graph, workflow and handoff"],
   "forbidden_scope": ["Second parser", "Second renderer", "Second DesignRegistry", "Second Smart Gateway", "Second LayoutComposer", "Second PageBuilder", "External Framework repositories", "docara-new.test", "docara.test", "Merge", "Push", "Tag", "Release", "Deploy"],
   "checks": ["Golden human and JSON results", "Stable exit codes", "Discovery and schema coverage", "Hash-bound scaffold security", "Validate and test delegation", "Optional visual QA", "MCP boundaries", "Full regression", "Package and consumer", "Graph and documentation validation"],
-  "status": "goal3e_owner_schema_fidelity_complete_independent_audit_pending",
+  "status": "independently_accepted_pass",
   "candidate_revision": "1e571b6e16ebc4520121aff0ae868de3b986dff3",
-  "next_action": "independent_goal3_reverse_outcome_audit"
+  "next_action": "goal_a_shell_contract_activation"
 }

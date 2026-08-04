@@ -24,6 +24,7 @@ final class ProjectContext
         $goalData = $goal['data'];
         $stageData = $stage['data'];
         $batchData = $batch['data'];
+        $roadmapSource = self::string($state, 'roadmap_source', 'implementation_state');
         $sources = [
             'graph/graph.json',
             'graph/dna/project-dna.json',
@@ -59,7 +60,7 @@ final class ProjectContext
                 'evidence' => self::string($state, 'evidence', 'implementation_state'),
             ],
             'roadmap' => [
-                'source' => 'source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md',
+                'source' => $roadmapSource,
                 'next_goal' => self::map($state, 'next_goal', 'implementation_state'),
             ],
             'architecture' => self::map($graph, 'architecture_target', 'graph/graph.json'),
@@ -68,7 +69,7 @@ final class ProjectContext
             'read_order' => [
                 'source/handoff/docara-unified-architecture/STATUS.yaml',
                 'source/workflow/ACTIVE.md',
-                'source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md',
+                $roadmapSource,
                 'graph/graph.json',
                 $stage['path'],
                 $batch['path'],
@@ -176,6 +177,7 @@ final class ProjectContext
         $nextGoalId = self::string($nextGoal, 'id', 'next_goal');
         $nextGoalStatus = self::string($nextGoal, 'status', 'next_goal');
         $nextGoalAuthorized = ($nextGoal['authorized'] ?? null) === true ? 'true' : 'false';
+        $roadmapSource = self::string(self::map($expected, 'roadmap', 'expected context'), 'source', 'roadmap');
         $issues = [];
 
         $statusPath = 'source/handoff/docara-unified-architecture/STATUS.yaml';
@@ -227,7 +229,7 @@ final class ProjectContext
                 "Current candidate: `$candidate`",
                 "Current evidence: `$evidence`",
             ],
-            'source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md' => [
+            $roadmapSource => [
                 "Status: `$state`",
                 "Current stage: `$stage`",
                 "Current batch: `$batch`",

@@ -1,10 +1,19 @@
 # Current Docara result
 
-Current state: `goal3_ready_for_independent_audit`
+Current state: `goal_a_in_progress`
 
-Current candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`
+Current candidate: `d748eca04cd09e79ed6e2079a56b077265bcf905`
 
-Current evidence: `source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md`
+
+## Goal A current result
+
+Goal 3 exact product candidate `1e571b6e16ebc4520121aff0ae868de3b986dff3`
+was independently accepted with `PASS`. Goal A is activated on governance HEAD
+`d748eca04cd09e79ed6e2079a56b077265bcf905`. A0 froze the typed binding and
+shell-capability contract plus a byte-identical default baseline. Runtime
+implementation is in progress; no Goal A readiness or independent acceptance
+is claimed.
 
 ## Goal 3 current result
 

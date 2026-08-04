@@ -6,38 +6,38 @@
         "graph/graph.json",
         "graph/dna/project-dna.json",
         "graph/specs/goals/unified-docara.json",
-        "graph/specs/stages/g3-developer-sdk.json",
-        "graph/specs/batches/g3-developer-sdk.json"
+        "graph/specs/stages/a-shell-contract.json",
+        "graph/specs/batches/a-shell-contract.json"
     ],
-    "canonical_sha256": "f59f54a8a17bc89cb72c874d72bbc1e3f7e95486c0de83bc126a27ab23bd0d57",
+    "canonical_sha256": "fd080a73010fff65306637e845d6af17fa68ec04b8c1580dc397e0fd1ec4db33",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "goal3_ready_for_independent_audit",
+        "state": "goal_a_in_progress",
         "goal": "docara.goal.unified",
-        "goal_readiness": "goal3_ready_for_independent_audit",
-        "stage": "docara.stage.g3.developer_sdk",
-        "stage_readiness": "ready_for_independent_audit",
-        "stage_status": "goal3e_owner_schema_fidelity_complete_independent_audit_pending",
-        "batch": "docara.batch.g3.developer_sdk",
-        "batch_readiness": "ready_for_independent_audit",
-        "batch_status": "goal3e_owner_schema_fidelity_complete_independent_audit_pending",
-        "completed_checkpoint": "goal3e_owner_schema_fidelity_complete_audit_pending",
-        "candidate_revision": "1e571b6e16ebc4520121aff0ae868de3b986dff3",
-        "next_action": "independent_goal3_reverse_outcome_audit",
-        "evidence": "source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/INDEX.md"
+        "goal_readiness": "goal_a_in_progress",
+        "stage": "docara.stage.a.shell_contract",
+        "stage_readiness": "implementation_in_progress",
+        "stage_status": "a0_contract_checkpoint_complete_a1_in_progress",
+        "batch": "docara.batch.a.shell_contract",
+        "batch_readiness": "implementation_in_progress",
+        "batch_status": "a0_contract_checkpoint_complete_a1_in_progress",
+        "completed_checkpoint": "goal3_independently_accepted_pass",
+        "candidate_revision": "d748eca04cd09e79ed6e2079a56b077265bcf905",
+        "next_action": "goal_a_binding_registry_implementation",
+        "evidence": "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md"
     },
     "roadmap": {
-        "source": "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md",
+        "source": "source/workflow/2026-08-04-docara-content-design-settings-track.md",
         "next_goal": {
-            "id": "docara.goal.3.independent_audit",
-            "title": "Independent Goal 3 reverse-outcome audit",
-            "status": "ready_for_independent_audit",
-            "authorized": true,
-            "source": "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md#goal-3--developerai-sdk-structured-qa-and-optional-mcp"
+            "id": "docara.goal.a.independent_audit",
+            "title": "Independent Goal A reverse-outcome audit",
+            "status": "not_ready",
+            "authorized": false,
+            "source": "source/workflow/2026-08-04-docara-goal-a-shell-contract.md"
         }
     },
     "architecture": {
@@ -63,28 +63,20 @@
         }
     },
     "forbidden_now": [
-        "Second parser",
-        "Second renderer",
-        "Second DesignRegistry",
-        "Second Smart Gateway",
-        "Second LayoutComposer",
-        "Second PageBuilder",
-        "External Framework repositories",
-        "docara-new.test",
-        "docara.test",
-        "Merge",
-        "Push",
-        "Tag",
-        "Release",
-        "Deploy"
+        "Second parser or renderer",
+        "Second Gateway, DesignRegistry, LayoutComposer, PageBuilder or preview engine",
+        "Project executable adapters or arbitrary paths",
+        "Goal B or Goal C",
+        "External repositories or sites",
+        "Merge, Push, Tag, Release, Deploy"
     ],
     "read_order": [
         "source/handoff/docara-unified-architecture/STATUS.yaml",
         "source/workflow/ACTIVE.md",
-        "source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md",
+        "source/workflow/2026-08-04-docara-content-design-settings-track.md",
         "graph/graph.json",
-        "graph/specs/stages/g3-developer-sdk.json",
-        "graph/specs/batches/g3-developer-sdk.json",
+        "graph/specs/stages/a-shell-contract.json",
+        "graph/specs/batches/a-shell-contract.json",
         "graph/generated/ai-context/docara-unified.json",
         "source/handoff/docara-unified-architecture/NEXT.md",
         "source/handoff/docara-unified-architecture/RESULT.md"

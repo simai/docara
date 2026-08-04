@@ -18,36 +18,35 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal3_ready_for_independent_audit`
+Current state: `goal_a_in_progress`
 
 Current goal: `docara.goal.unified`
 
-Current stage: `docara.stage.g3.developer_sdk`
+Current stage: `docara.stage.a.shell_contract`
 
-Current batch: `docara.batch.g3.developer_sdk`
+Current batch: `docara.batch.a.shell_contract`
 
-Current next action: `independent_goal3_reverse_outcome_audit`
+Current next action: `goal_a_binding_registry_implementation`
 
-Current evidence: `source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md`
 
-Current candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`
+Current candidate: `d748eca04cd09e79ed6e2079a56b077265bcf905`
 
-Next roadmap goal: `docara.goal.3.independent_audit`
+Next roadmap goal: `docara.goal.a.independent_audit`
 
-Next roadmap status: `ready_for_independent_audit`
+Next roadmap status: `not_ready`
 
-Next roadmap authorized: `true`
+Next roadmap authorized: `false`
 
-Goal 1 and Goal 2 were independently accepted with `PASS_WITH_NOTES`.
-Goal 3 Developer/AI SDK implementation is complete and stops at
-`ready_for_independent_audit`; the only current action is its independent
-reverse-outcome audit. Release review remains unauthorized.
+Goal 1 and Goal 2 were independently accepted with `PASS_WITH_NOTES`; Goal 3
+was independently accepted with `PASS`. Goal A Shell Contract & Safe
+Configuration is active. Goal B and release review remain unauthorized.
 
 ## 3. Read in this order
 
 1. `source/handoff/docara-unified-architecture/STATUS.yaml`;
 2. `source/workflow/ACTIVE.md`;
-3. `source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md`;
+3. `source/workflow/2026-08-04-docara-content-design-settings-track.md`;
 4. `graph/graph.json` and its current stage/batch specs;
 5. `graph/generated/ai-context/docara-unified.json` as a checked derived view;
 6. `source/handoff/docara-unified-architecture/NEXT.md` and `RESULT.md`;
@@ -60,13 +59,10 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only the current goal
 
-Independently audit the completed Goal 3 correction, its bounded SF5 UI-radius
-integration and the neutral Smart SDK schema/provenance correction against
-`source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`,
-`source/workflow/2026-08-04-docara-sf5-ui-radius-integration.md`,
-`source/workflow/2026-08-04-docara-goal3e-owner-schema-fidelity-correction.md` and the current
-evidence index. Preserve accepted Goal 1/2 runtime invariants. Do not implement
-Goal 4 and do not start release review.
+Execute Goal A from
+`source/workflow/2026-08-04-docara-goal-a-shell-contract.md`. Preserve accepted
+Goal 1-3 runtime invariants, the single production path and default byte
+output. Do not start Goal B or release review.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,

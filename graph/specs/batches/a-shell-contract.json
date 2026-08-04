@@ -1,0 +1,29 @@
+{
+  "id": "docara.batch.a.shell_contract",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "Goal A Shell Contract execution",
+  "summary": "Execute A0-A5 sequentially and stop at independent Goal A audit.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "implementation_in_progress",
+  "visibility": "repository",
+  "source_refs": [
+    "source/workflow/2026-08-04-docara-goal-a-shell-contract.md"
+  ],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md"
+  ],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.a.shell_contract",
+  "allowed_scope": ["Declarative binding contracts and compiler integration", "Registered layout, section, block, Smart and project fixtures", "Inspect and Preview projections", "Tests, specification, graph, workflow, handoff and evidence"],
+  "forbidden_scope": ["Second parser or renderer", "Second Gateway, DesignRegistry, LayoutComposer, PageBuilder or preview engine", "Project executable adapters or arbitrary paths", "Goal B or Goal C", "External repositories or sites", "Merge, Push, Tag, Release, Deploy"],
+  "checks": ["Binding registry and schema tests", "Security negatives", "Default public byte parity", "Navigation variant preview and browser matrix", "Project fixture without engine edit", "Full regression and deterministic builds", "Graph and documentation validation"],
+  "status": "a0_contract_checkpoint_complete_a1_in_progress",
+  "baseline_revision": "d748eca04cd09e79ed6e2079a56b077265bcf905",
+  "candidate_revision": "d748eca04cd09e79ed6e2079a56b077265bcf905",
+  "accepted_goal3_candidate": "1e571b6e16ebc4520121aff0ae868de3b986dff3",
+  "next_action": "goal_a_binding_registry_implementation"
+}

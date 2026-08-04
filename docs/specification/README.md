@@ -9,10 +9,12 @@ Docara. Он заменяет необходимость восстанавли�
 1. [Техническое задание](DOCARA-TZ.md) — продукт, границы и итоговый результат.
 2. [Архитектура](architecture/UNIFIED-ARCHITECTURE.md) — единственный конвейер
    данных и физическая структура репозитория.
-3. [Контент и компоненты](authoring/AUTHORING-CONTRACT.md) — Markdown,
+3. [Контракт оболочки](architecture/SHELL-CONTRACT.md) — безопасные bindings,
+   shell capabilities и project-owned contributions.
+4. [Контент и компоненты](authoring/AUTHORING-CONTRACT.md) — Markdown,
    front matter, локали и синтаксис Smart-компонентов.
-4. [План реализации](implementation/ROADMAP.md) — безопасный порядок перехода.
-5. [Приёмка](ACCEPTANCE.md) — проверяемые критерии завершения.
+5. [План реализации](implementation/ROADMAP.md) — безопасный порядок перехода.
+6. [Приёмка](ACCEPTANCE.md) — проверяемые критерии завершения.
 
 Машинный источник состояния находится в [`graph/specs`](../../graph/specs).
 Если этот текст и объект графа расходятся, изменение сначала оформляется как
@@ -32,6 +34,8 @@ Docara. Он заменяет необходимость восстанавли�
   лишь как удаляемый cache, поисковый индекс, `--dump-ir` или test evidence;
 - все узлы документа рендерятся через один registry;
 - все `ui.*` и `docara.*` Smart-компоненты вызываются через один gateway;
+- shell bindings выбираются только из typed provider-owned registry, а project
+  config не задаёт executable callbacks/classes/templates/paths;
 - полная и частичная сборка используют один `PageBuilder`;
 - внутренние сообщения CLI/сборщика являются package-owned системным контуром
   и не участвуют в сборке публичных страниц;

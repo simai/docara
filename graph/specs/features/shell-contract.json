@@ -1,0 +1,30 @@
+{
+  "id": "docara.feature.shell_contract",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "feature",
+  "tz_role": "product_contract",
+  "title": "Safe extensible shell contract",
+  "summary": "Typed provider-owned bindings and versioned shell capabilities let configuration select admitted composition without executable project adapters.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "T4_implementation_ready",
+  "visibility": "repository",
+  "source_refs": [
+    "docs/specification/architecture/SHELL-CONTRACT.md",
+    "source/workflow/2026-08-04-docara-goal-a-shell-contract.md"
+  ],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md"
+  ],
+  "profile_refs": ["docara.unified"],
+  "binding_ids": ["docara.branding", "docara.navigation", "docara.outline"],
+  "capabilities": ["shell.brand", "shell.primary-navigation", "shell.secondary-navigation", "shell.outline", "shell.content-before", "shell.content-after", "shell.footer"],
+  "navigation_presentations": ["header", "tree", "compact"],
+  "invariants": [
+    "Project configuration selects registered IDs and data only.",
+    "Binding-owned props cannot be supplied by static project configuration.",
+    "One Smart Gateway, LayoutComposer and PageBuilder serve build and preview.",
+    "The default shell remains byte-identical until a presentation is explicitly selected."
+  ]
+}

@@ -1,9 +1,10 @@
 # Приёмка единой архитектуры Docara
 
-Текущий статус: Goal 1 и Goal 2 независимо приняты. Goal 3 correction,
-ограниченная интеграция SF5 UI-radius и owner-schema fidelity correction
-завершены на exact product candidate
-`1e571b6e16ebc4520121aff0ae868de3b986dff3` и ожидают независимого audit.
+Текущий статус: Goal 1, Goal 2 и Goal 3 независимо приняты. Exact accepted Goal
+3 product candidate — `1e571b6e16ebc4520121aff0ae868de3b986dff3`.
+Goal A Shell Contract & Safe Configuration активирован на governance baseline
+`d748eca04cd09e79ed6e2079a56b077265bcf905`; implementation readiness и
+независимая приёмка Goal A ещё не заявлены.
 Source `1dee6d19…` остаётся только historical/superseded radius baseline.
 Finalized QA reference целиком content-addressed и привязан к immutable plan;
 совместная подмена reference/candidate/report fail-closed.
@@ -19,6 +20,21 @@ M5 implementation candidate подтверждает текущий русски
 PASS ставится только по воспроизводимому evidence exact revision. Activity,
 скриншот без source binding или зелёный unit test одного модуля не заменяют
 приёмку результата.
+
+## Goal A. Shell Contract & Safe Configuration
+
+- [x] A0 фиксирует baseline, namespace ownership, shell capabilities, rollback
+      и запрет project executable paths.
+- [ ] Built-in bindings разрешаются одним typed provider-owned
+      `BindingRegistry` с owner/provenance/capabilities/schema.
+- [ ] `docara.navigation` variants `header`, `tree`, `compact` проходят один
+      Gateway/composer path, а default output остаётся byte-identical.
+- [ ] Project-owned shell contribution подключается artifact/config-only без
+      изменения engine `src`.
+- [ ] Duplicate/namespace/capability/prop/path/symlink/case conflicts
+      fail-closed до render.
+- [ ] Full/single, two-build determinism и preview/production parity доказаны.
+- [ ] Goal A имеет independent-ready evidence и чистый tracked worktree.
 
 ## A. Источники истины
 

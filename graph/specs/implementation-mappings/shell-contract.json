@@ -1,0 +1,45 @@
+{
+  "id": "docara.mapping.shell_contract",
+  "schema_version": "1.0.0",
+  "kind": "relation",
+  "subtype": "implementation_mapping",
+  "tz_role": "traceability",
+  "title": "Shell contract implementation mapping",
+  "summary": "Goal A mapping from the accepted binding/capability contract to implementation and evidence.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "implementation_in_progress",
+  "visibility": "repository",
+  "source_refs": [
+    "docs/specification/architecture/SHELL-CONTRACT.md"
+  ],
+  "profile_refs": ["docara.unified"],
+  "from_ref": "docara.feature.shell_contract",
+  "to_refs": ["docara.feature.declarative_composition", "docara.feature.smart_gateway"],
+  "code_refs": [
+    "src/Declarative/DeclarativePageCompiler.php#DeclarativePageCompiler::configuredShellSection",
+    "src/Declarative/Composition/RegionCompositionResolver.php#RegionCompositionResolver",
+    "src/Design/Registry/DesignRegistry.php#DesignRegistry",
+    "resources/schemas/declarative-section.schema.json",
+    "resources/smart/docara.navigation/manifest.json"
+  ],
+  "test_refs": [],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A0-CONTRACT-AND-BASELINE.md"
+  ],
+  "review_refs": ["docara.gate.architecture_acceptance"],
+  "current_behavior": [
+    "A0 found a closed four-value bind enum and compiler match.",
+    "docara.navigation already owns header, tree and compact Views in one Smart artifact.",
+    "Goal A implementation is additive-first and default output is frozen."
+  ],
+  "known_deviations": [
+    "Typed BindingRegistry and shell capability validation are not implemented at A0."
+  ],
+  "deletion_gates": [
+    "Remove DeclarativePageCompiler::boundProps only after registered built-ins pass exact default parity.",
+    "Remove the closed schema enum only after registry-aware contextual validation is permanent."
+  ],
+  "status": "a0_contract_checkpoint_in_progress",
+  "mapped_revision": "d748eca04cd09e79ed6e2079a56b077265bcf905"
+}

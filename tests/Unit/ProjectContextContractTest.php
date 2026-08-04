@@ -19,13 +19,14 @@ final class ProjectContextContractTest extends TestCase
         self::assertSame([], ProjectContext::check($this->repositoryRoot()));
 
         $context = ProjectContext::expected($this->repositoryRoot());
-        self::assertSame('goal3_ready_for_independent_audit', $context['active']['state']);
-        self::assertSame('docara.stage.g3.developer_sdk', $context['active']['stage']);
-        self::assertSame('docara.batch.g3.developer_sdk', $context['active']['batch']);
-        self::assertSame('independent_goal3_reverse_outcome_audit', $context['active']['next_action']);
-        self::assertSame('docara.goal.3.independent_audit', $context['roadmap']['next_goal']['id']);
-        self::assertSame('ready_for_independent_audit', $context['roadmap']['next_goal']['status']);
-        self::assertTrue($context['roadmap']['next_goal']['authorized']);
+        self::assertSame('goal_a_in_progress', $context['active']['state']);
+        self::assertSame('docara.stage.a.shell_contract', $context['active']['stage']);
+        self::assertSame('docara.batch.a.shell_contract', $context['active']['batch']);
+        self::assertSame('goal_a_binding_registry_implementation', $context['active']['next_action']);
+        self::assertSame('docara.goal.a.independent_audit', $context['roadmap']['next_goal']['id']);
+        self::assertSame('not_ready', $context['roadmap']['next_goal']['status']);
+        self::assertFalse($context['roadmap']['next_goal']['authorized']);
+        self::assertSame('source/workflow/2026-08-04-docara-content-design-settings-track.md', $context['roadmap']['source']);
         self::assertFalse($context['historical_context']['release_baseline']['executable']);
     }
 
@@ -95,7 +96,7 @@ final class ProjectContextContractTest extends TestCase
     {
         $root = $this->shadowRoot();
         $graphPath = $root . '/graph/graph.json';
-        $batchPath = $root . '/graph/specs/batches/g3-developer-sdk.json';
+        $batchPath = $root . '/graph/specs/batches/a-shell-contract.json';
         $graph = $this->json($graphPath);
         $batch = $this->json($batchPath);
         $graph['implementation_state']['next_action'] = 'fresh_independent_audit_action';
@@ -117,7 +118,7 @@ final class ProjectContextContractTest extends TestCase
         $startPath = $root . '/source/handoff/docara-unified-architecture/START.md';
         $start = (string) file_get_contents($startPath);
         $start = str_replace(
-            'Current stage: `docara.stage.g3.developer_sdk`',
+            'Current stage: `docara.stage.a.shell_contract`',
             'Current stage: `docara.stage.r2.production_readiness`',
             $start,
         );
@@ -144,10 +145,12 @@ final class ProjectContextContractTest extends TestCase
             'graph/specs/stages/g1-portable-smart-runtime.json',
             'graph/specs/stages/g2-design-registry-preview.json',
             'graph/specs/stages/g3-developer-sdk.json',
+            'graph/specs/stages/a-shell-contract.json',
             'graph/specs/stages/r2-production-readiness.json',
             'graph/specs/batches/g1-portable-smart-runtime.json',
             'graph/specs/batches/g2-design-registry-preview.json',
             'graph/specs/batches/g3-developer-sdk.json',
+            'graph/specs/batches/a-shell-contract.json',
             'graph/specs/batches/r2-production-readiness.json',
             'graph/generated/ai-context/docara-unified.json',
             'source/handoff/docara-unified-architecture/START.md',
@@ -156,6 +159,7 @@ final class ProjectContextContractTest extends TestCase
             'source/handoff/docara-unified-architecture/RESULT.md',
             'source/workflow/ACTIVE.md',
             'source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md',
+            'source/workflow/2026-08-04-docara-content-design-settings-track.md',
         ] as $relative) {
             $target = $root . '/' . $relative;
             $this->filesystem->ensureDirectoryExists(dirname($target));

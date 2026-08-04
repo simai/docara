@@ -1,0 +1,64 @@
+schema_version: 1.0.0
+workflow_id: 2026-08-04-docara-goal-a-shell-contract
+process_model_id: general_delivery
+cycle_id: implementation_planning_cycle
+state: repository_prepared
+owner_skill: teamlead
+companion_skills:
+  - dev
+  - graph
+  - tester
+approved_by_user: true
+approval_note: Goal 3 independent PASS and explicit Goal A activation on 2026-08-04.
+repository: /Users/rim/Documents/GitHub/docara-unified
+worktree: /Users/rim/Documents/GitHub/docara-unified
+branch: codex/docara-unified-architecture
+revision: d748eca04cd09e79ed6e2079a56b077265bcf905
+allowed_files:
+  - /Users/rim/Documents/GitHub/docara-unified/**
+  - /private/tmp/**
+forbidden_files:
+  - /Users/rim/Documents/GitHub/docara/**
+  - /Users/rim/Documents/GitHub/bx-simai.main/**
+  - /Users/rim/Sites/docara-new.test/**
+  - /Users/rim/Sites/docara.test/**
+  - '**/.env'
+  - '**/.env.*'
+allowed_actions:
+  - implement_typed_binding_registry
+  - migrate_built_in_bindings
+  - add_navigation_presentations
+  - add_project_shell_fixture
+  - run_disposable_build_preview_browser_checks
+  - update_repository_specification_graph_workflow_handoff
+  - create_bounded_checkpoint_commits
+forbidden_actions:
+  - goal_b_or_goal_c_implementation
+  - project_executable_adapter_registration
+  - mutate_external_framework_repository
+  - write_validation_or_live_sites
+  - merge_push_tag_release_or_deploy
+  - expose_or_commit_secrets
+required_gates:
+  - env_policy_gate
+  - repo_hygiene_gate
+  - source_policy_gate
+  - default_output_parity
+  - binding_security_negatives
+  - independent_goal_a_audit
+required_evidence:
+  - workflow
+  - binding_and_shell_inventory
+  - baseline_and_candidate_parity
+  - navigation_preview_matrix
+  - project_fixture_and_security_matrix
+  - deterministic_build_and_browser_matrix
+  - documentation_graph_and_handoff_validation
+evidence_path: source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a
+stop_conditions:
+  - second_runtime_path_required
+  - project_executable_or_arbitrary_path_required
+  - unapproved_default_output_delta
+  - external_owner_decision_or_write_required
+  - overlapping_user_changes
+  - independently_reproducible_evidence_impossible

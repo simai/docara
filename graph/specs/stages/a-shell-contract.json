@@ -1,0 +1,35 @@
+{
+  "id": "docara.stage.a.shell_contract",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "milestone",
+  "tz_role": "implementation_stage",
+  "title": "Goal A. Shell Contract and Safe Configuration",
+  "summary": "Replace closed shell binding lists with one typed provider-owned registry and prove navigation variants plus a safe project shell contribution.",
+  "owner": "teamlead",
+  "lifecycle": "active",
+  "readiness": "implementation_in_progress",
+  "visibility": "repository",
+  "source_refs": [
+    "source/workflow/2026-08-04-docara-content-design-settings-track.md#15-goal-a--shell-contract--safe-configuration",
+    "source/workflow/2026-08-04-docara-goal-a-shell-contract.md",
+    "docs/specification/architecture/SHELL-CONTRACT.md"
+  ],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md"
+  ],
+  "profile_refs": ["docara.unified"],
+  "parent_goal_ref": "docara.goal.unified",
+  "done_when": [
+    "Every built-in binding is represented by a typed provenance-aware descriptor.",
+    "Configuration selects admitted binding and presentation IDs without executable code or paths.",
+    "docara.navigation header, tree and compact presentations use one Gateway and composition path.",
+    "A project-owned shell fixture is admitted without an engine source edit.",
+    "Default output parity, full/single equality, determinism, preview and security evidence pass."
+  ],
+  "batch_refs": ["docara.batch.a.shell_contract"],
+  "required_gates": ["docara.gate.architecture_acceptance"],
+  "required_evidence": ["Binding inventory", "Default byte parity", "Navigation preview matrix", "Project shell fixture", "Security negatives", "Integrated build and browser acceptance", "Independent reverse-outcome audit"],
+  "next_stage_ref": null,
+  "status": "a0_contract_checkpoint_complete_a1_in_progress"
+}

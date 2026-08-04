@@ -1,19 +1,15 @@
-# Next action: `independent_goal3_reverse_outcome_audit`
+# Next action: `goal_a_binding_registry_implementation`
 
-Current state: `goal3_ready_for_independent_audit`
+Current state: `goal_a_in_progress`
 
-Current candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`
+Current candidate: `d748eca04cd09e79ed6e2079a56b077265bcf905`
 
-Current evidence: `source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md`
 
-Goal 1 and Goal 2 are independently accepted. Goal 3 correction remains
-implementation-complete through the single application-service/runtime path.
-The current cumulative candidate retains exact SF5 UI-radius inheritance and
-adds the byte-exact owner Smart schema, a separate Docara admission policy and neutral inspect provenance
-without a second public dialect or runtime path.
-Independently reproduce this candidate and its parent Goal 3 evidence; do not
-implement Goal 4 or start release review. Release and live actions remain
-unauthorized.
+Goal 1-3 are independently accepted. Implement A1 from
+`source/workflow/2026-08-04-docara-goal-a-shell-contract.md`: one typed
+provider-owned BindingRegistry, no executable project hooks, and exact default
+parity. Goal B, release and live actions remain unauthorized.
 
 ## Historical deployment decision (parked, not executable)
 

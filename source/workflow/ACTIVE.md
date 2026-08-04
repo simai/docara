@@ -1,8 +1,8 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-04
-Status: Goal 3 ready for independent audit
-Workflow ID: `2026-08-03-docara-goal3-developer-ai-sdk`
+Status: Goal A implementation in progress
+Workflow ID: `2026-08-04-docara-goal-a-shell-contract`
 Graph goal: `docara.goal.unified`
 
 ## Source of truth
@@ -10,10 +10,11 @@ Graph goal: `docara.goal.unified`
 - start here: `source/handoff/docara-unified-architecture/START.md`;
 - human specification: `docs/specification/README.md`;
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
-- active recovery: `source/workflow/2026-08-04-docara-goal3e-owner-schema-fidelity-correction.md`;
+- active recovery: `source/workflow/2026-08-04-docara-goal-a-shell-contract.md`;
+- active track: `source/workflow/2026-08-04-docara-content-design-settings-track.md`;
 - parent Goal 3 recovery:
   `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`;
-- fresh evidence: `source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/INDEX.md`;
+- fresh evidence: `source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/INDEX.md`;
 - project-context freshness correction:
   `source/workflow/2026-08-03-docara-goal1d-project-context-correction.md`;
 - rejected audit candidate: `c5ea85f8d25deff99b671486fdc4d1e820a86491`;
@@ -24,14 +25,14 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `goal3_ready_for_independent_audit`;
+- state: `goal_a_in_progress`;
 - goal: `docara.goal.unified`;
-- stage: `docara.stage.g3.developer_sdk`;
-- batch: `docara.batch.g3.developer_sdk`;
-- candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`;
+- stage: `docara.stage.a.shell_contract`;
+- batch: `docara.batch.a.shell_contract`;
+- candidate: `d748eca04cd09e79ed6e2079a56b077265bcf905`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `independent_goal3_reverse_outcome_audit`;
-- Goal 1 and Goal 2 are independently accepted; release review remains unauthorized.
+- next action: `goal_a_binding_registry_implementation`;
+- Goal 1-3 are independently accepted; Goal B and release review remain unauthorized.
 
 ## Accepted pipeline
 
@@ -46,16 +47,11 @@ IR/HTML remain disposable.
 
 ## Current result
 
-The neutral `sf.smart_artifact_abi` v1 contract and the single Gateway/provider
-runtime and Goal 2 DesignRegistry/preview were independently accepted. Goal 3
-now provides one application-service/CLI/optional-MCP surface over that
-production path. Its security, diagnostics and visual correction remain
-intact. The cumulative candidate retains the exact SF5 UI-radius contract and
-now makes `schema smart`, scaffold output and every provider's inspect
-provenance agree on the byte-exact owner Portable Smart ABI; Docara admission
-is a separately named consumer policy. Combined evidence is ready
-for an independent reverse-outcome audit; no release-review action is
-authorized.
+Goal 3 exact product candidate `1e571b6…` was independently accepted. Goal A
+now replaces the closed shell binding list with one typed provider-owned
+BindingRegistry, proves `docara.navigation` presentations and a safe project
+shell contribution, and must preserve the accepted production path and default
+output. No release-review action is authorized.
 
 ## Boundary
 

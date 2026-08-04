@@ -1,9 +1,9 @@
 # Дорожная карта упрощения Docara
 
-Текущий статус архитектурного roadmap: Goal 1 и Goal 2 независимо приняты;
-Goal 3 correction, bounded SF5 UI-radius integration и Goal 3E owner-schema
-fidelity correction завершены на exact source `1e571b6…` и ожидают независимого
-reverse-outcome audit. Исторический R2
+Текущий статус архитектурного roadmap: Goal 1, Goal 2 и Goal 3 независимо
+приняты. Exact accepted Goal 3 product candidate — `1e571b6…`. Goal A Shell
+Contract & Safe Configuration активирован на governance baseline `d748eca…`;
+текущий bounded action — typed provider-owned BindingRegistry. Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
 заявлены.
@@ -75,7 +75,7 @@ assets, watch closure была широкой, а schema `oneOf` не испол
 
 ## Goal 3. Developer/AI SDK, structured QA and optional MCP
 
-Статус: correction complete, `ready_for_independent_audit`. Один application
+Статус: независимо принят `PASS`. Один application
 result обслуживает human и JSON CLI. Discovery читает существующие
 Smart/Design registries. Scaffold
 работает через hash-bound dry-run/apply только в project-owned roots.
@@ -96,8 +96,23 @@ Bounded UI extension сохраняет тот же pipeline: Framework-owned
 `sf.smart_artifact_abi`; Goal 3E заменяет локальный dialect byte-exact owner
 schema с SHA-256 `9d65a9b…`, а Docara cross-field admission остаётся отдельной
 policy. Legacy storage alias и host template adapter остаются отдельными
-provenance facts. Независимый audit нового cumulative candidate
-всё ещё обязателен.
+provenance facts. Exact accepted product candidate — `1e571b6…`.
+
+## Goal A. Shell Contract & Safe Configuration
+
+Статус: реализация активна, readiness не заявлена. Goal A заменяет закрытый
+список shell bindings одним типизированным provider-owned BindingRegistry.
+Project config сможет выбирать только зарегистрированные IDs и данные, без
+callback, class, PHP/template или filesystem paths. Первый вертикальный срез —
+один `docara.navigation` с presentations `header`, `tree`, `compact`; default
+output должен остаться byte-identical. Project-owned shell contribution
+доказывается через разрешённую capability без изменения engine `src/`.
+
+Recovery source:
+`source/workflow/2026-08-04-docara-goal-a-shell-contract.md`.
+
+Текущий action: `goal_a_binding_registry_implementation`. Goal B и release не
+авторизованы.
 
 ## M2. Вертикальный срез `components/badge`
 
@@ -223,9 +238,9 @@ cutover/rollback матрицы повторены для exact rc.3. Live deplo
 ## Порядок продолжения
 
 Текущий recovery source —
-`source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`. M0–M5, R1-C и
-R2 не переигрываются. Следующее действие — независимый Goal 3 audit. Goal 4,
-release review и production gates пока не открыты.
+`source/workflow/2026-08-04-docara-goal-a-shell-contract.md`. M0–M5, R1-C, R2 и
+принятые Goal 1–3 не переигрываются. Следующее действие — A1 typed
+BindingRegistry. Goal B, release review и production gates пока не открыты.
 
 ## Запрещённые сокращения
 

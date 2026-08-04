@@ -24,4 +24,3 @@ Two semantic divergences were reproduced:
 This proves that the rejected file was neither the owner blob nor a faithful
 public projection. The correction vendors the byte-exact blob and keeps any
 Docara cross-field restrictions in a separately identified admission policy.
-

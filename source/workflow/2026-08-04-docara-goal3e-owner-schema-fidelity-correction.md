@@ -34,4 +34,3 @@ the same neutral identity and validation chain.
 
 The untracked content/design/settings proposal is user-owned and excluded from
 this goal.
-

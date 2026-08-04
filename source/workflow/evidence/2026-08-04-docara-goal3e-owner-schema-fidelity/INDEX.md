@@ -9,4 +9,3 @@ Status: `in_progress`
 | G3E.2 | SDK/provenance/security tests | pending |
 | G3E.3 | full/build/package/consumer/browser matrix | pending |
 | G3E.4 | graph/handoff/current candidate | pending |
-

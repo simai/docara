@@ -29,11 +29,16 @@ Goal B, release review, merge, push, tag and deploy remain unauthorized.
 - graph: 1 goal / 12 stages / 15 batches / 4 metrics / 8 mappings,
   warnings=0, blockers=0;
 - two full builds: 104 routes / 307 files / 208 HTML, complete tree
-  `2e1ecaa1da0d5d0303b65b450d8655e16992377c7f26055f7713a9afad5d9d42`;
+  `8b7fdb611647e545c6dabe11ed9e31a43a655f36e87739be5fc44dddd6ca25f2`;
 - selected Alert rebuild: same complete tree;
 - static verification: 21,844 local references, broken=0;
 - navigation browser QA: 24/24 across header/tree/compact;
 - candidate-range and worktree `git diff --check`: PASS.
+
+The replaced ledger
+`2e1ecaa1da0d5d0303b65b450d8655e16992377c7f26055f7713a9afad5d9d42`
+belongs only to a pre-final-doc historical build. `A6-EXACT-CANDIDATE-BUILD-REFRESH.md`
+binds the current ledger to the unchanged exact product candidate.
 
 ## Independent audit entry points
 

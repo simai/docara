@@ -14,6 +14,7 @@ Branch: `codex/docara-unified-architecture`
 | A3 project shell | PASS | [A3-PROJECT-SHELL.md](A3-PROJECT-SHELL.md) |
 | A4 integrated acceptance | PASS | [A4-INTEGRATED-ACCEPTANCE.md](A4-INTEGRATED-ACCEPTANCE.md) |
 | A5 handoff | PASS | [A5-HANDOFF.md](A5-HANDOFF.md) |
+| A6 exact-candidate build refresh | PASS | [A6-EXACT-CANDIDATE-BUILD-REFRESH.md](A6-EXACT-CANDIDATE-BUILD-REFRESH.md) |
 
 Executor completion will mean only `goal_a_ready_for_independent_audit`.
 Goal B, merge, push, tag, release and deploy remain unauthorized.

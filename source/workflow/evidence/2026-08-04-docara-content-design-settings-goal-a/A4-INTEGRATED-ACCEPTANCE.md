@@ -28,12 +28,19 @@ This is executor evidence, not independent acceptance.
 Two independent full builds each produced 104 routes, 307 files and 208 HTML.
 Their complete trees are byte-identical:
 
-`2e1ecaa1da0d5d0303b65b450d8655e16992377c7f26055f7713a9afad5d9d42`
+`8b7fdb611647e545c6dabe11ed9e31a43a655f36e87739be5fc44dddd6ca25f2`
 
 Both static verifications checked 21,844 local references with `broken=[]`.
 A selected `/ru/components/alert/` build preserved the same complete ledger.
 Candidate Alert HTML is
 `23f4f52e645e61060afd88abd36012c8566540e058923338b12380d0ec328e40`.
+
+This exact-candidate ledger was refreshed after the final public-guide commit;
+the reproducible commands and metadata revision proof are recorded in
+`A6-EXACT-CANDIDATE-BUILD-REFRESH.md`. The earlier ledger
+`2e1ecaa1da0d5d0303b65b450d8655e16992377c7f26055f7713a9afad5d9d42`
+is historical pre-final-doc evidence only and is not evidence for the exact
+Goal A product candidate.
 
 Against the A1 default-parity build, normalizing only the content-addressed
 search-index query left exactly five intended differences:

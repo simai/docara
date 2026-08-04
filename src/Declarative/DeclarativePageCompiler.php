@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Declarative;
 
+use Simai\Docara\Declarative\Binding\BindingInvocation;
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\Composition\RegionCompositionResolver;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
@@ -320,7 +321,16 @@ final readonly class DeclarativePageCompiler
             $smart = (string) $blockConfiguration['smart'];
             $hasBinding = is_string($blockConfiguration['bind'] ?? null);
             $props = $hasBinding
-                ? $this->boundProps($blockConfiguration, $composition)
+                ? $this->definitions->bindings()->resolve(
+                    (string) $blockConfiguration['bind'],
+                    new BindingInvocation(
+                        $smart,
+                        is_string($blockConfiguration['view'] ?? null) ? $blockConfiguration['view'] : '',
+                        is_array($blockConfiguration['props'] ?? null) ? $blockConfiguration['props'] : [],
+                        $configurationSource,
+                    ),
+                    $composition,
+                )
                 : (is_array($blockConfiguration['props'] ?? null)
                     ? $blockConfiguration['props']
                     : []);
@@ -396,43 +406,6 @@ final readonly class DeclarativePageCompiler
         $resolved['tree']['utilities'] = array_values(array_unique([...$existing, ...$utilities]));
 
         return $resolved;
-    }
-
-    /**
-     * @param  array<string, mixed>  $block
-     * @return array<string, mixed>
-     */
-    private function boundProps(array $block, PageCompositionContext $composition): array
-    {
-        return match ($block['bind']) {
-            'branding' => [
-                'branding' => $composition->branding,
-                'preset' => $composition->branding['mode'] === 'full'
-                    ? 'default'
-                    : $composition->branding['mode'],
-            ],
-            'navigation' => [
-                'items' => $composition->navigation,
-                'maximum_depth' => (int) ($block['props']['maximum_depth'] ?? 4),
-                'label' => $composition->navigationCopy['label'],
-                'expand_label' => $composition->navigationCopy['expand'],
-                'collapse_label' => $composition->navigationCopy['collapse'],
-                'contains_current_label' => $composition->navigationCopy['contains_current'],
-            ],
-            'header_navigation' => [
-                'items' => $composition->headerNavigation,
-                'maximum_depth' => 4,
-                'label' => $composition->headerNavigationLabel,
-                'expand_label' => $composition->navigationCopy['expand'],
-                'collapse_label' => $composition->navigationCopy['collapse'],
-                'contains_current_label' => $composition->navigationCopy['contains_current'],
-            ],
-            'outline' => ['items' => $composition->outline, 'label' => $composition->tocLabel],
-            default => throw new PortableConfigurationException(
-                'DECLARATIVE_REGION_BINDING_FORBIDDEN',
-                "Unknown declarative region binding [{$block['bind']}].",
-            ),
-        };
     }
 
     /**

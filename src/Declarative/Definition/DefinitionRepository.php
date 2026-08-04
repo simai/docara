@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Declarative\Definition;
 
+use Simai\Docara\Declarative\Binding\BindingRegistry;
 use Simai\Docara\Design\Artifact\DesignArtifactKind;
 use Simai\Docara\Design\Provider\BuiltinDesignProvider;
 use Simai\Docara\Design\Registry\DesignRegistry;
@@ -22,17 +23,21 @@ final class DefinitionRepository
 
     private readonly DesignRegistry $designs;
 
+    private readonly BindingRegistry $bindings;
+
     public function __construct(
         private readonly string $resourceRoot = __DIR__ . '/../../../resources',
         private readonly SchemaRepository $schemas = new SchemaRepository,
         ?SmartRegistry $smarts = null,
         private readonly SmartManifestValidator $manifestValidator = new SmartManifestValidator,
         ?DesignRegistry $designs = null,
+        ?BindingRegistry $bindings = null,
     ) {
         $this->smarts = $smarts ?? SmartRegistry::bundled();
         $this->designs = $designs ?? new DesignRegistry([
             new BuiltinDesignProvider($this->resourceRoot),
         ], $this->schemas);
+        $this->bindings = $bindings ?? BindingRegistry::bundled();
     }
 
     /** @return array<string, mixed> */
@@ -103,6 +108,11 @@ final class DefinitionRepository
     public function assertSmartRegistered(string $smart): void
     {
         $this->smarts->definition($smart);
+    }
+
+    public function bindings(): BindingRegistry
+    {
+        return $this->bindings;
     }
 
     /** @return array<string, mixed> */

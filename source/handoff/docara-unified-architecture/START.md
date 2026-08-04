@@ -28,9 +28,9 @@ Current batch: `docara.batch.g3.developer_sdk`
 
 Current next action: `independent_goal3_reverse_outcome_audit`
 
-Current evidence: `source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md`
 
-Current candidate: `1dee6d19e2d9a6c35402b3552f3f5c8c366317b6`
+Current candidate: `ba89bccf8e2ad11ed7c72d89d380e924aaaf17d8`
 
 Next roadmap goal: `docara.goal.3.independent_audit`
 
@@ -60,10 +60,11 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only the current goal
 
-Independently audit the completed Goal 3 correction and its bounded SF5
-UI-radius integration against
+Independently audit the completed Goal 3 correction, its bounded SF5 UI-radius
+integration and the neutral Smart SDK schema/provenance correction against
 `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`,
-`source/workflow/2026-08-04-docara-sf5-ui-radius-integration.md` and the current
+`source/workflow/2026-08-04-docara-sf5-ui-radius-integration.md`,
+`source/workflow/2026-08-04-docara-goal3d-smart-sdk-schema-provenance-correction.md` and the current
 evidence index. Preserve accepted Goal 1/2 runtime invariants. Do not implement
 Goal 4 and do not start release review.
 

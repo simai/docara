@@ -2,9 +2,9 @@
 
 Current state: `goal3_ready_for_independent_audit`
 
-Current candidate: `1dee6d19e2d9a6c35402b3552f3f5c8c366317b6`
+Current candidate: `ba89bccf8e2ad11ed7c72d89d380e924aaaf17d8`
 
-Current evidence: `source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md`
 
 ## Goal 3 current result
 
@@ -12,30 +12,40 @@ Goal 2-C was independently accepted with `PASS_WITH_NOTES`. G3.0-G3.6 now add
 stable discovery, hash-bound project scaffold, validation/test, optional visual
 QA and optional local MCP over the accepted production services. Those Goal 3
 properties remain covered by parent candidate `2a7237b…`. Current cumulative
-source `1dee6d1…` additionally removes default search/settings modal blur,
-repins the exact Framework distribution and exposes a three-value reader
-preference over Framework-owned `--sf-radius--ui`. It adds no renderer,
-Gateway, registry or PageBuilder path. Goal 3 remains implementation-complete
-but audit pending.
+source `ba89bcc…` retains the blur-free modal and three-value reader radius
+preference, and corrects the public Smart SDK contract: `schema smart`
+validates unchanged scaffold manifests while all package, Framework and project
+providers expose the same neutral ABI identity. Storage aliases, provider
+adapters and template ABI remain separate provenance facts. It adds no
+renderer, Gateway, registry or PageBuilder path. Goal 3 remains
+implementation-complete but audit pending.
 
 The current unpublished audit ZIP is
-`276f1491eaeda4c86432f793267d45980ec074e39588fdcfe38a67ea11a08dc2`
+`105a12843ea4cdfa6fe3f30458e43095c5fc80740d2f0912bd0a21817208fb45`
 with manifest
-`d78f77ce619edbdc54e94e031f55f2659dade0cf17501bf331a5ba784df8c8c2`
+`9e7096a1c2164e7c23af5236bde76a86894cac21360ca8f578c132c11a9c38d9`
 (741 files); two independent clean clones produced identical artifacts and the
 repository verifier passed. Two same-lock fresh dist consumers built identical
-168-file trees at ledger `ee9cb243…`; selected Alert rebuilds preserved the
+168-file trees at ledger `d8b21cd7…`; selected Alert rebuilds preserved the
 complete ledger and static verification reported broken=0. The documentation
 site has 104 routes / 307 files / 208 HTML at normalized ledger
-`981bef4125456978b75b85b85bf3f06ecdb8c5bfa15fb1b05874fa770fbd2404`,
+`44d4b62f377fca72866874f4bbf6a3029fcf74f52575b811cfd1debbdde96744`,
 with 21,842 references and broken=0. Full/single output is identical and full
-PHPUnit is 437 tests / 7,974 assertions. Browser evidence confirms 2/4/8 px
-reader modes, restored 2 px default, blur-free transient modals and zero
-captured console/overflow defects. Release and live gates remain closed.
+PHPUnit is 440 tests / 8,078 assertions. Fresh Smart/region/layout browser QA
+passes 24/24 with zero a11y, console, overflow and visual-diff defects; the
+parent radius evidence remains unchanged. Release and live gates remain
+closed.
 
 No site was changed for this cumulative candidate. The earlier validation of
 parent candidate `2a7237b…` at `https://docara-new.test` is historical and is
-not evidence that current source `1dee6d1…` was deployed.
+not evidence that current source `ba89bcc…` was deployed.
+
+### Superseded cumulative UI-radius baseline
+
+Source `1dee6d1…`, ZIP `276f1491…`, manifest `d78f77ce…`, consumer ledger
+`ee9cb243…` and public ledger `981bef41…` remain valid historical evidence for
+the bounded radius integration, but they are superseded as current candidate
+identities by Goal 3D.
 
 ### Superseded current Goal 3 baseline
 

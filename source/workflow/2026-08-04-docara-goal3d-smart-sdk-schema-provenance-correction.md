@@ -1,11 +1,12 @@
 # Goal 3D: Smart SDK schema and provenance correction
 
 Date: 2026-08-04
-Status: in_progress
+Status: `ready_for_independent_audit`; not self-accepted
 Branch: `codex/docara-unified-architecture`
 Input HEAD: `f39cd3c61b0510d3092831001e7eb88ac5c459d1`
 Input product candidate: `1dee6d19e2d9a6c35402b3552f3f5c8c366317b6`
 Parent Goal 3 candidate: `2a7237bc59265d976b6871cb637e7ae67ca2c00b`
+Exact product/docs candidate: `ba89bccf8e2ad11ed7c72d89d380e924aaaf17d8`
 
 ## Objective
 

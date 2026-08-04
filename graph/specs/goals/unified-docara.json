@@ -17,7 +17,8 @@
   ],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-03-docara-goal3-correction/INDEX.md",
-    "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md"
+    "source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md",
+    "source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md"
   ],
   "profile_refs": ["docara.unified"],
   "done_when": [

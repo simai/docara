@@ -1,7 +1,8 @@
 # Goal 3D Smart SDK schema and provenance evidence
 
-Status: in_progress
+Status: `ready_for_independent_audit`; not self-accepted
 Input HEAD: `f39cd3c61b0510d3092831001e7eb88ac5c459d1`
+Exact product/docs candidate: `ba89bccf8e2ad11ed7c72d89d380e924aaaf17d8`
 
 ## Checkpoints
 

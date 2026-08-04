@@ -10,10 +10,10 @@ Graph goal: `docara.goal.unified`
 - start here: `source/handoff/docara-unified-architecture/START.md`;
 - human specification: `docs/specification/README.md`;
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
-- active recovery: `source/workflow/2026-08-04-docara-sf5-ui-radius-integration.md`;
+- active recovery: `source/workflow/2026-08-04-docara-goal3d-smart-sdk-schema-provenance-correction.md`;
 - parent Goal 3 recovery:
   `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`;
-- fresh evidence: `source/workflow/evidence/2026-08-04-docara-sf5-ui-radius/INDEX.md`;
+- fresh evidence: `source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/INDEX.md`;
 - project-context freshness correction:
   `source/workflow/2026-08-03-docara-goal1d-project-context-correction.md`;
 - rejected audit candidate: `c5ea85f8d25deff99b671486fdc4d1e820a86491`;
@@ -28,7 +28,7 @@ Graph goal: `docara.goal.unified`
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.g3.developer_sdk`;
 - batch: `docara.batch.g3.developer_sdk`;
-- candidate: `1dee6d19e2d9a6c35402b3552f3f5c8c366317b6`;
+- candidate: `ba89bccf8e2ad11ed7c72d89d380e924aaaf17d8`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
 - next action: `independent_goal3_reverse_outcome_audit`;
 - Goal 1 and Goal 2 are independently accepted; release review remains unauthorized.
@@ -49,11 +49,12 @@ IR/HTML remain disposable.
 The neutral `sf.smart_artifact_abi` v1 contract and the single Gateway/provider
 runtime and Goal 2 DesignRegistry/preview were independently accepted. Goal 3
 now provides one application-service/CLI/optional-MCP surface over that
-production path. Its security, diagnostics and visual correction remains
-intact. The current candidate also integrates the exact SF5 UI-radius contract
-and Docara's allowlisted reader preference through that same path. Combined
-evidence is ready for an independent reverse-outcome audit; no release-review
-action is authorized.
+production path. Its security, diagnostics and visual correction remain
+intact. The cumulative candidate retains the exact SF5 UI-radius contract and
+now makes `schema smart`, scaffold output and every provider's inspect
+provenance agree on the neutral Portable Smart ABI. Combined evidence is ready
+for an independent reverse-outcome audit; no release-review action is
+authorized.
 
 ## Boundary
 

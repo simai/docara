@@ -1,0 +1,23 @@
+{
+  "schema": "docara.page.v1",
+  "layout": {
+    "regions": {
+      "header": {"enabled": false},
+      "sidebar": {
+        "sections": [{
+          "id": "navigation-compact",
+          "section": "docara.shell",
+          "blocks": [{
+            "id": "navigation",
+            "block": "shell.smart",
+            "slot": "content",
+            "smart": "docara.navigation",
+            "view": "compact",
+            "bind": "docara.navigation",
+            "props": {"maximum_depth": 4}
+          }]
+        }]
+      }
+    }
+  }
+}

@@ -178,11 +178,11 @@ PHP;
         $layoutView = 'layout.' . $layout;
         $sectionView = 'section.' . $section;
         $regions = [
-            'header' => ['required' => false, 'default_enabled' => true, 'default_sections' => [['id' => 'site-header', 'section' => 'docara.header']], 'section_types' => ['navigation', 'shell']],
-            'sidebar' => ['required' => false, 'default_enabled' => true, 'default_sections' => [['id' => 'docs-navigation', 'section' => 'docara.navigation']], 'section_types' => ['navigation', 'shell']],
-            'main' => ['required' => true, 'default_enabled' => true, 'default_sections' => [], 'section_types' => ['content']],
-            'outline' => ['required' => false, 'default_enabled' => true, 'default_sections' => [['id' => 'page-outline', 'section' => 'docara.outline']], 'section_types' => ['navigation', 'shell']],
-            'footer' => ['required' => false, 'default_enabled' => false, 'default_sections' => [], 'section_types' => ['shell']],
+            'header' => ['required' => false, 'default_enabled' => true, 'default_sections' => [['id' => 'site-header', 'section' => 'docara.header']], 'section_types' => ['navigation', 'shell'], 'capabilities' => ['shell.brand', 'shell.primary-navigation']],
+            'sidebar' => ['required' => false, 'default_enabled' => true, 'default_sections' => [['id' => 'docs-navigation', 'section' => 'docara.navigation']], 'section_types' => ['navigation', 'shell'], 'capabilities' => ['shell.secondary-navigation', 'shell.content-before']],
+            'main' => ['required' => true, 'default_enabled' => true, 'default_sections' => [], 'section_types' => ['content'], 'capabilities' => ['content.document']],
+            'outline' => ['required' => false, 'default_enabled' => true, 'default_sections' => [['id' => 'page-outline', 'section' => 'docara.outline']], 'section_types' => ['navigation', 'shell'], 'capabilities' => ['shell.outline']],
+            'footer' => ['required' => false, 'default_enabled' => false, 'default_sections' => [], 'section_types' => ['shell'], 'capabilities' => ['shell.content-after', 'shell.footer']],
         ];
         $layoutTree = [
             'kind' => 'element', 'tag' => 'article', 'identity' => 'page',
@@ -201,7 +201,7 @@ PHP;
         return [
             'design/layouts/' . $layout . '.json' => json_encode(['schema' => 'docara.layout.v1', 'key' => $layout, 'default' => false, 'view' => $layoutView, 'configuration' => ['container' => ['max' => 7], 'scrollbar' => ['preset' => 'overlay'], 'content' => ['gap' => 0]], 'document' => ['region' => 'main', 'section' => $section, 'slot' => 'content', 'block' => $block], 'regions' => $regions, 'assets' => ['simai.framework', 'docara.reader']], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "\n",
             'design/views/' . $layoutView . '.json' => CanonicalJson::encodePretty(['schema' => 'docara.view_tree.v1', 'key' => $layoutView, 'tree' => $layoutTree]),
-            'design/sections/' . $section . '.json' => CanonicalJson::encodePretty(['schema' => 'docara.section.v1', 'key' => $section, 'type' => 'content', 'view' => $sectionView, 'allowed_regions' => ['main'], 'slots' => ['content'], 'allowed_blocks' => [$block, 'content.markdown', 'content.smart'], 'blocks' => []]),
+            'design/sections/' . $section . '.json' => CanonicalJson::encodePretty(['schema' => 'docara.section.v1', 'key' => $section, 'type' => 'content', 'view' => $sectionView, 'allowed_regions' => ['main'], 'capabilities' => ['content.document'], 'slots' => ['content'], 'allowed_blocks' => [$block, 'content.markdown', 'content.smart'], 'blocks' => []]),
             'design/views/' . $sectionView . '.json' => CanonicalJson::encodePretty(['schema' => 'docara.view_tree.v1', 'key' => $sectionView, 'tree' => ['kind' => 'element', 'tag' => 'section', 'identity' => 'section', 'children' => [['kind' => 'slot', 'slot' => 'content']]]]),
             'design/blocks/' . $block . '.json' => CanonicalJson::encodePretty(['schema' => 'docara.block.v1', 'key' => $block, 'kind' => 'content', 'renderer' => 'block.document']),
         ];

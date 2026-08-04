@@ -45,6 +45,8 @@ final class DeveloperDiscoveryCommandTest extends TestCase
         foreach ([
             ['doctor', []],
             ['inspect', ['kind' => 'smart', 'id' => 'ui.alert']],
+            ['inspect', ['kind' => 'binding', 'id' => 'docara.navigation']],
+            ['schema', ['kind' => 'binding']],
             ['schema', ['kind' => 'layout']],
         ] as [$name, $arguments]) {
             $tester = new CommandTester($application->find($name));
@@ -55,6 +57,32 @@ final class DeveloperDiscoveryCommandTest extends TestCase
             self::assertSame('.', $result['provenance']['project_root']);
             self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $result['provenance']['input_sha256']);
         }
+    }
+
+    #[Test]
+    public function binding_discovery_exposes_effective_descriptor_and_dependency_trace(): void
+    {
+        $application = ApplicationFactory::create($this->tmp);
+        $list = new CommandTester($application->find('list'));
+        self::assertSame(0, $list->execute(['kind' => 'binding', '--json' => true]));
+        $listed = json_decode($list->getDisplay(), true, 512, JSON_THROW_ON_ERROR);
+        self::assertSame(
+            ['docara.branding', 'docara.navigation', 'docara.outline'],
+            array_column($listed['data']['items'], 'id'),
+        );
+
+        $inspect = new CommandTester($application->find('inspect'));
+        self::assertSame(0, $inspect->execute([
+            'kind' => 'binding',
+            'id' => 'docara.navigation',
+            '--json' => true,
+        ]));
+        $detail = json_decode($inspect->getDisplay(), true, 512, JSON_THROW_ON_ERROR)['data'];
+        self::assertSame('docara.navigation', $detail['id']);
+        self::assertSame('docara.builtin-bindings', $detail['provider']);
+        self::assertSame('docara.navigation', $detail['dependency_trace']['smart']);
+        self::assertSame('binding-navigation-props.schema.json', $detail['dependency_trace']['schema']);
+        self::assertSame(['navigation', 'header_navigation'], $detail['storage_compatibility_aliases']);
     }
 
     #[Test]

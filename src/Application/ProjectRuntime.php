@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Application;
 
 use JsonException;
+use Simai\Docara\Declarative\Binding\BindingRegistry;
 use Simai\Docara\Design\Registry\DesignRegistry;
 use Simai\Docara\Portable\FilesystemPath;
 use Simai\Docara\Portable\JsonDiagnosticLocator;
@@ -21,6 +22,7 @@ final readonly class ProjectRuntime
         public ?string $namespace,
         public SmartRegistry $smarts,
         public DesignRegistry $designs,
+        public BindingRegistry $bindings,
     ) {}
 
     public static function load(string $root): self
@@ -71,6 +73,7 @@ final readonly class ProjectRuntime
                 ? SmartRegistry::bundled()
                 : SmartRegistry::withProject($namespace, $real . '/smart', $revision),
             DesignRegistry::bundled($real, $namespace),
+            BindingRegistry::bundled(),
         );
     }
 

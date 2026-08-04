@@ -61,6 +61,7 @@ final readonly class PreviewKernel
         $artifactHtml = $target === PreviewTarget::Page
             ? $html
             : $this->extract($html, $target, $selector);
+        $targetLocator = $this->targetLocator($html, $target, $selector);
         $assets = $record['declarative_pipeline']['assets'] ?? [];
         if (! is_array($assets) || ! array_is_list($assets) || count(array_filter($assets, 'is_string')) !== count($assets)) {
             throw new PortableConfigurationException('PREVIEW_ASSET_PROVENANCE_INVALID', 'Preview asset provenance is invalid.');
@@ -84,6 +85,7 @@ final readonly class PreviewKernel
                 'layout_id' => $record['resolved_page_plan']['configuration']['layout']['key'] ?? null,
                 'build_mode' => $buildMode,
                 'dependency_scope' => 'selected_target',
+                'target_locator' => $targetLocator,
             ],
             $cache,
         );
@@ -167,6 +169,50 @@ final readonly class PreviewKernel
     private function xpathLiteral(string $value): string
     {
         return "'" . str_replace("'", '&apos;', $value) . "'";
+    }
+
+    private function targetLocator(string $html, PreviewTarget $target, ?string $selector): string
+    {
+        if ($target === PreviewTarget::Page || $target === PreviewTarget::Layout) {
+            return 'body';
+        }
+        if ($target === PreviewTarget::Region) {
+            return '[data-docara-region="' . $selector . '"]';
+        }
+
+        $document = new DOMDocument('1.0', 'UTF-8');
+        $previous = libxml_use_internal_errors(true);
+        try {
+            $loaded = $document->loadHTML($html, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING);
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
+        }
+        if ($loaded !== true) {
+            throw new PortableConfigurationException('PREVIEW_HTML_INVALID', 'Production HTML could not be parsed for preview target binding.');
+        }
+        $node = (new DOMXPath($document))->query(
+            '//*[@data-docara-smart=' . $this->xpathLiteral((string) $selector)
+                . ' or @data-docara-block=' . $this->xpathLiteral((string) preg_replace('/^.*\./', '', (string) $selector)) . '][1]',
+        )?->item(0);
+        if (! $node instanceof DOMElement) {
+            throw new PortableConfigurationException('PREVIEW_TARGET_NOT_FOUND', "Preview target [smart:$selector] does not exist on the production page.");
+        }
+        $locator = $node->getAttribute('data-docara-smart') === $selector
+            ? '[data-docara-smart="' . $selector . '"]'
+            : '[data-docara-block="' . preg_replace('/^.*\./', '', (string) $selector) . '"]';
+        $view = $node->getAttribute('data-docara-view');
+        if ($view !== '') {
+            $locator .= '[data-docara-view="' . $view . '"]';
+        }
+        for ($parent = $node->parentNode; $parent instanceof DOMElement; $parent = $parent->parentNode) {
+            $region = $parent->getAttribute('data-docara-region');
+            if ($region !== '') {
+                return '[data-docara-region="' . $region . '"] ' . $locator;
+            }
+        }
+
+        return $locator;
     }
 
     /** @param array<string, mixed> $record @return list<string> */

@@ -32,7 +32,7 @@ final readonly class BindingDescriptor
     public function provenance(): array
     {
         return [
-            'binding' => $this->id,
+            'id' => $this->id,
             'owner_namespace' => $this->ownerNamespace,
             'provider' => $this->provider,
             'provider_revision' => $this->providerRevision,

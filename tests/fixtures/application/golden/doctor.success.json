@@ -1,5 +1,6 @@
 {
     "data": {
+        "binding_fingerprint": "80f51fcc93ea35fb3b62041ad9c86bf2d60af53ba4583c1afe4aea9f0e6ea85a",
         "checks": [
             {
                 "code": "PROJECT_CONFIG_VALID",
@@ -16,12 +17,17 @@
                 "status": "pass"
             },
             {
+                "code": "BINDING_REGISTRY_VALID",
+                "count": 3,
+                "status": "pass"
+            },
+            {
                 "code": "SCHEMA_CATALOG_VALID",
-                "count": 31,
+                "count": 35,
                 "status": "pass"
             }
         ],
-        "design_fingerprint": "66f1720dce5be364ce731b19add0855d9d001a5597b0fe7ce631a8148989eea4"
+        "design_fingerprint": "f2946fe388de4d03df6b346bfa267b3adb140feb86c11355006ff0691f38b23f"
     },
     "diagnostics": [],
     "exit_code": 0,

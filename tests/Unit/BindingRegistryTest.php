@@ -31,7 +31,7 @@ final class BindingRegistryTest extends TestCase
         self::assertSame('docara.builtin-bindings', $navigation->provider);
         self::assertSame(['shell.primary-navigation', 'shell.secondary-navigation'], $navigation->capabilities);
         self::assertSame('binding-navigation-props.schema.json', $navigation->outputSchema);
-        self::assertSame('docara.navigation', $navigation->provenance()['binding']);
+        self::assertSame('docara.navigation', $navigation->provenance()['id']);
     }
 
     #[Test]

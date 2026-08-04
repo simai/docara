@@ -22,9 +22,11 @@ final readonly class DiscoveryService
                 ['code' => 'PROJECT_CONFIG_VALID', 'status' => 'pass'],
                 ['code' => 'SMART_REGISTRY_VALID', 'status' => 'pass', 'count' => count($runtime->smarts->keys())],
                 ['code' => 'DESIGN_REGISTRY_VALID', 'status' => 'pass', 'count' => count($runtime->designs->all())],
+                ['code' => 'BINDING_REGISTRY_VALID', 'status' => 'pass', 'count' => count($runtime->bindings->all())],
                 ['code' => 'SCHEMA_CATALOG_VALID', 'status' => 'pass', 'count' => count($this->schemaNames())],
             ],
             'design_fingerprint' => $runtime->designs->fingerprint(),
+            'binding_fingerprint' => $runtime->bindings->fingerprint(),
         ], $runtime->provenance());
     }
 
@@ -33,6 +35,19 @@ final readonly class DiscoveryService
         $runtime = ProjectRuntime::load($root);
         $items = match ($kind) {
             'smart' => array_map(fn (string $id): array => $this->smartSummary($runtime, $id), $runtime->smarts->keys()),
+            'binding' => array_map(
+                static fn ($descriptor): array => [
+                    'id' => $descriptor->id,
+                    'kind' => 'binding',
+                    'owner' => $descriptor->ownerNamespace,
+                    'provider' => $descriptor->provider,
+                    'capabilities' => $descriptor->capabilities,
+                    'smart' => $descriptor->smart,
+                    'source' => $descriptor->source,
+                    'sha256' => $descriptor->sha256,
+                ],
+                $runtime->bindings->all(),
+            ),
             'layout', 'view', 'section', 'block' => array_map(
                 static fn ($descriptor): array => [
                     'id' => $descriptor->id,
@@ -59,6 +74,15 @@ final readonly class DiscoveryService
         $runtime = ProjectRuntime::load($root);
         $data = match ($kind) {
             'smart' => $this->smartDetail($runtime, $id),
+            'binding' => $runtime->bindings->get($id)->provenance() + [
+                'owned_props' => $runtime->bindings->get($id)->ownedProps,
+                'storage_compatibility_aliases' => $runtime->bindings->get($id)->storageCompatibilityAliases,
+                'dependency_trace' => [
+                    'provider' => $runtime->bindings->get($id)->provider,
+                    'smart' => $runtime->bindings->get($id)->smart,
+                    'schema' => $runtime->bindings->get($id)->outputSchema,
+                ],
+            ],
             'layout', 'view', 'section', 'block' => $this->designDetail($runtime, DesignArtifactKind::from($kind), $id),
             'provider' => $this->oneById($this->providers($runtime), $id),
             'schema' => ['id' => $id, 'schema' => (new SchemaRepository($this->schemaRoot))->get($id)],
@@ -78,6 +102,7 @@ final readonly class DiscoveryService
             'view' => DesignArtifactKind::View->schema(),
             'section' => DesignArtifactKind::Section->schema(),
             'block' => DesignArtifactKind::Block->schema(),
+            'binding' => 'binding-descriptor.schema.json',
             default => str_ends_with($kind, '.schema.json') ? $kind : throw new \InvalidArgumentException('SDK_SCHEMA_KIND_UNKNOWN:' . $kind),
         };
 
@@ -160,6 +185,15 @@ final readonly class DiscoveryService
                 'id' => $descriptor->provider,
                 'kind' => 'provider',
                 'surface' => 'design',
+                'owner' => $descriptor->ownerNamespace,
+                'revision' => $descriptor->providerRevision,
+            ];
+        }
+        foreach ($runtime->bindings->all() as $descriptor) {
+            $providers[$descriptor->provider] = [
+                'id' => $descriptor->provider,
+                'kind' => 'provider',
+                'surface' => 'binding',
                 'owner' => $descriptor->ownerNamespace,
                 'revision' => $descriptor->providerRevision,
             ];

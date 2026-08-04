@@ -355,7 +355,12 @@ final readonly class DeclarativePageCompiler
                 $blockKey,
                 (string) $blockConfiguration['slot'],
                 $hasBinding
-                    ? ['binding' => (string) $blockConfiguration['bind']]
+                    ? [
+                        'binding' => (string) $blockConfiguration['bind'],
+                        'binding_descriptor' => $this->definitions->bindings()
+                            ->get((string) $blockConfiguration['bind'])
+                            ->provenance(),
+                    ]
                     : ['source' => $configurationSource],
                 $resolvedSmart,
                 $definition,

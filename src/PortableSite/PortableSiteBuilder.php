@@ -9,6 +9,7 @@ use JsonException;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
 use Simai\Docara\Content\PageSource;
 use Simai\Docara\Content\PageSourceLocator;
+use Simai\Docara\Declarative\Binding\BindingRegistry;
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\DeclarativePipeline;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
@@ -92,7 +93,11 @@ final readonly class PortableSiteBuilder
             ? $site['smart']['namespace']
             : null;
         $designRegistry = DesignRegistry::bundled($root, $projectNamespace);
-        $definitions = new DefinitionRepository(smarts: $smartRegistry, designs: $designRegistry);
+        $definitions = new DefinitionRepository(
+            smarts: $smartRegistry,
+            designs: $designRegistry,
+            bindings: BindingRegistry::bundled(),
+        );
         $markdown = new PortableMarkdownRenderer(components: $gateway);
         $pageBuilder = $this->pageBuilderInjected
             ? $this->pageBuilder

@@ -63,7 +63,12 @@ final readonly class QaService
             'subject' => $kind . ':' . $id,
             'preview' => (string) $published['preview'],
             'artifact_sha256' => $artifact->sha256(),
-            'target' => $this->targetContract($kind, $id, $artifact->sha256()),
+            'target' => $this->targetContract(
+                $kind,
+                $id,
+                $artifact->sha256(),
+                (string) ($artifact->provenance['target_locator'] ?? ''),
+            ),
             'reference' => $this->referenceDraftContract($kind, $id, $artifact->sha256(), $artifact->pageSha256()),
             'scenarios' => $scenarios,
             'assertions' => ['local_assets_200', 'a11y_violations_zero', 'console_errors_zero', 'console_warnings_zero', 'horizontal_overflow_zero', 'keyboard_focus_escape', 'reduced_motion', 'visual_diff_zero'],
@@ -270,14 +275,11 @@ final readonly class QaService
     }
 
     /** @return array{kind:string,id:string,scope:string,locator:string,html_sha256:string} */
-    private function targetContract(string $kind, string $id, string $htmlSha256): array
+    private function targetContract(string $kind, string $id, string $htmlSha256, string $locator): array
     {
-        $locator = match ($kind) {
-            'layout' => 'body',
-            'region' => '[data-docara-region="' . $id . '"]',
-            'smart' => '[data-docara-smart="' . $id . '"],[data-docara-block="' . preg_replace('/^.*\./', '', $id) . '"]',
-            default => throw new \LogicException('Unsupported QA target.'),
-        };
+        if ($locator === '') {
+            throw new PortableConfigurationException('QA_TARGET_LOCATOR_MISSING', 'Production preview did not provide an exact target locator.');
+        }
 
         return ['kind' => $kind, 'id' => $id, 'scope' => $kind === 'layout' ? 'document' : 'element', 'locator' => $locator, 'html_sha256' => $htmlSha256];
     }

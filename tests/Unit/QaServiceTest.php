@@ -40,7 +40,8 @@ final class QaServiceTest extends TestCase
         self::assertFileExists($this->tmpPath($first['data']['preview']));
         $plan = json_decode((string) file_get_contents($this->tmpPath('.docara-qa/plans/' . $first['data']['draft_plan_id'] . '.json')), true, 512, JSON_THROW_ON_ERROR);
         self::assertSame('element', $plan['target']['scope']);
-        self::assertStringContainsString('data-docara-block="alert"', $plan['target']['locator']);
+        self::assertStringContainsString('[data-docara-region="main"]', $plan['target']['locator']);
+        self::assertStringContainsString('[data-docara-block="alert"]', $plan['target']['locator']);
         self::assertSame('docara.production_target_reference_draft.v1', $plan['reference']['contract']);
         self::assertSame('draft', $plan['phase']);
         $this->writeReferenceDraft($plan);

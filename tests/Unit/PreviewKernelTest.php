@@ -7,6 +7,7 @@ namespace Tests\Unit;
 use PHPUnit\Framework\Attributes\Test;
 use Simai\Docara\Console\PreviewCommand;
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
@@ -124,6 +125,57 @@ final class PreviewKernelTest extends TestCase
         self::assertSame('docara.cli_error.v1', $error['schema']);
         self::assertSame('error', $error['status']);
 
+    }
+
+    #[Test]
+    public function navigation_presentations_keep_preview_bound_to_the_production_page(): void
+    {
+        foreach (['header', 'tree', 'compact'] as $view) {
+            $root = $this->tmpPath('navigation-' . $view);
+            $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $root);
+            $region = $view === 'header' ? 'header' : 'sidebar';
+            $disabled = $view === 'header' ? 'sidebar' : 'header';
+            $configuration = [
+                'schema' => 'docara.page.v1',
+                'layout' => ['regions' => [
+                    $disabled => ['enabled' => false],
+                    $region => ['sections' => [[
+                        'id' => 'navigation-' . $view,
+                        'section' => 'docara.shell',
+                        'blocks' => [[
+                            'id' => 'navigation',
+                            'block' => 'shell.smart',
+                            'slot' => 'content',
+                            'smart' => 'docara.navigation',
+                            'view' => $view,
+                            'bind' => 'docara.navigation',
+                            'props' => ['maximum_depth' => 4],
+                        ]],
+                    ]]],
+                ]],
+            ];
+            if ($view === 'header') {
+                $configuration['header_navigation'] = [
+                    'enabled' => true,
+                    'items' => [['id' => 'home', 'label' => 'Home', 'href' => '/ru/']],
+                ];
+            }
+            $this->filesystem->put(
+                $root . '/content/ru/components/alert.page.json',
+                CanonicalJson::encodePretty($configuration),
+            );
+            $files = new Filesystem;
+            $kernel = new PreviewKernel(new PortableSiteBuilder($files, new PortableMarkdownRenderer), $files);
+            $artifact = $kernel->render($root, '/ru/components/alert/', PreviewTarget::Region, $region);
+
+            self::assertStringContainsString('data-docara-view="' . $view . '"', $artifact->html);
+            self::assertSame(
+                $this->node($artifact->pageHtml, '//*[@data-docara-region="' . $region . '"][1]'),
+                $artifact->html,
+            );
+            self::assertSame('portable_site_builder', $artifact->provenance['runtime']);
+            self::assertContains('@package-tree:resources/smart/docara.navigation', $artifact->dependencies);
+        }
     }
 
     #[Test]

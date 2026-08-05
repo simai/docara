@@ -1,7 +1,7 @@
 # B4 — exact Framework form wave consumption
 
-Date: 2026-08-05  
-Input Docara HEAD: `f2da4cc0e53d4a4104dc28f6fb38ce9717e6b0b3`  
+Date: 2026-08-05
+Input Docara HEAD: `f2da4cc0e53d4a4104dc28f6fb38ce9717e6b0b3`
 Status: `implementation_green_integration_pending`
 
 ## Immutable owner inputs

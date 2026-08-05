@@ -4,6 +4,10 @@
 исходные файлы. Каждый пример показывает отдельную публичную страницу,
 собранную тем же PageBuilder, что и остальная документация.
 
+[Полезные Framework и project-сценарии](/ru/examples/extensions/) показывают
+accepted form controls, install builder, product configurator и footer без
+backend side effects.
+
 :::columns
 ### Явная композиция областей
 

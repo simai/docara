@@ -1,5 +1,9 @@
 # Разработка Docara
 
+[Путь разработчика и AI-агента](/ru/development/agent-journey/) ведёт через
+discover → plan → preview → dry-run → hash-bound apply → validate на одних
+application services.
+
 Этот раздел предназначен для maintainers движка. Пользователю переносимого
 сайта не нужно устанавливать Node.js или изменять тему.
 

@@ -111,4 +111,25 @@ final class GoalCPublicDocumentationTest extends TestCase
         self::assertStringContainsString(':::schema_reference {schema=page scope=page}', (string) file_get_contents($base . '/page.md'));
         self::assertStringContainsString(':::schema_reference {schema=framework-lock scope=lock}', (string) file_get_contents($base . '/framework-lock-and-providers.md'));
     }
+
+    #[Test]
+    public function agent_journey_and_extension_demos_preserve_safe_service_and_support_boundaries(): void
+    {
+        $root = dirname(__DIR__, 2) . '/docs/site/content/ru';
+        $journey = (string) file_get_contents($root . '/development/agent-journey.md');
+        foreach (['discover', 'plan', 'preview', 'dry-run', 'Hash-bound apply', 'DesignAtlasService', 'ScaffoldService', 'SDK_WRITE_PATH_UNSAFE', '--allow-writes'] as $marker) {
+            self::assertStringContainsStringIgnoringCase($marker, $journey);
+        }
+        foreach (['traversal', 'symlink/hardlink', 'engine/lock/generated/external root'] as $negative) {
+            self::assertStringContainsString($negative, $journey);
+        }
+        $demos = (string) file_get_contents($root . '/examples/extensions.md');
+        foreach (['ui.input', 'ui.checkbox', 'ui.dropdown', 'ui.list-item(type=text)', 'project', 'network/order/payment/command side effects'] as $marker) {
+            self::assertStringContainsString($marker, $demos);
+        }
+        self::assertStringContainsString('icons, avatars, tags', $demos);
+        self::assertFileExists($root . '/project-demos.md');
+        self::assertFileExists(dirname(__DIR__, 2) . '/docs/site/smart/project.install-builder/manifest.json');
+        self::assertFileExists(dirname(__DIR__, 2) . '/docs/site/design/sections/project.footer.json');
+    }
 }

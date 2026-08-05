@@ -1,0 +1,11 @@
+{
+  "schema": "docara.section.v1",
+  "key": "project.footer",
+  "type": "shell",
+  "view": "section.project.footer",
+  "allowed_regions": ["footer"],
+  "capabilities": ["shell.footer"],
+  "slots": ["content"],
+  "allowed_blocks": ["project.footer-smart"],
+  "blocks": []
+}

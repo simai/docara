@@ -1,0 +1,37 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart",
+  "code": "project.install-builder",
+  "title": "Install command builder",
+  "description": "Builds a copyable installation command locally without executing it.",
+  "category": "developer-tools",
+  "render": {
+    "mode": "server-first",
+    "strategy": "server-first-hydratable",
+    "template": "default",
+    "hydration": "required",
+    "domStrategy": "light-dom-adopt",
+    "updateStrategy": "patch",
+    "initialHtml": "complete",
+    "frontendOwnership": "behavior"
+  },
+  "props": {
+    "title": {"type": "string", "required": true},
+    "package": {"type": "string", "required": true},
+    "version": {"type": "string", "required": true}
+  },
+  "slots": {
+    "controls": {"accepts": ["ui.dropdown", "ui.input", "ui.checkbox"], "required": true, "multiple": true}
+  },
+  "assets": {
+    "css": ["assets/install-builder.css"],
+    "js": ["assets/install-builder.js"],
+    "depends": ["simai.framework.core.css"]
+  },
+  "ai": {
+    "tags": ["install", "composer", "copy"],
+    "summary": "Choose a safe install mode and copy the generated Composer command."
+  },
+  "meta": {"ownerPackage": "project/project", "version": "1.0.0"},
+  "extensions": {"docara": {"aliases": {"project.install_builder": "Portable ABI identifiers use hyphens; the underscore name remains an authoring alias."}}}
+}

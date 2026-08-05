@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart.view",
+  "smart": "project.install-builder",
+  "code": "default",
+  "template": "default",
+  "props": {},
+  "children": {
+    "operating-system": {
+      "smart": "ui.dropdown",
+      "slot": "controls",
+      "preset": "default",
+      "props": {"label": "Операционная система", "name": "operating-system", "placeholder": "Выберите ОС", "ariaLabel": "Операционная система", "search": false},
+      "children": {
+        "macos": {"smart": "ui.list-item", "slot": "options", "preset": "default", "props": {"type": "text", "text": "macOS", "selected": true}},
+        "linux": {"smart": "ui.list-item", "slot": "options", "preset": "default", "props": {"type": "text", "text": "Linux"}},
+        "windows": {"smart": "ui.list-item", "slot": "options", "preset": "default", "props": {"type": "text", "text": "Windows PowerShell"}}
+      }
+    },
+    "method": {
+      "smart": "ui.dropdown",
+      "slot": "controls",
+      "preset": "default",
+      "props": {"label": "Способ запуска Composer", "name": "install-method", "placeholder": "Выберите способ", "ariaLabel": "Способ запуска Composer", "search": false},
+      "children": {
+        "composer": {"smart": "ui.list-item", "slot": "options", "preset": "default", "props": {"type": "text", "text": "Composer", "selected": true}},
+        "phar": {"smart": "ui.list-item", "slot": "options", "preset": "default", "props": {"type": "text", "text": "Composer PHAR"}}
+      }
+    },
+    "package": {
+      "smart": "ui.input",
+      "slot": "controls",
+      "preset": "default",
+      "props": {"label": "Composer package", "name": "package", "value": "simai/docara", "hint": "Формат vendor/package"}
+    },
+    "version": {
+      "smart": "ui.input",
+      "slot": "controls",
+      "preset": "default",
+      "props": {"label": "Версия", "name": "version", "value": "^2.0", "hint": "Например ^2.0"}
+    },
+    "development": {
+      "smart": "ui.checkbox",
+      "slot": "controls",
+      "preset": "default",
+      "props": {"label": "Добавить как зависимость для разработки (--dev)", "name": "development", "value": "--dev"}
+    },
+    "prefer-dist": {
+      "smart": "ui.checkbox",
+      "slot": "controls",
+      "preset": "default",
+      "props": {"label": "Предпочесть готовый архив (--prefer-dist)", "name": "prefer-dist", "value": "--prefer-dist"}
+    }
+  }
+}

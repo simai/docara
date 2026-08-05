@@ -50,6 +50,9 @@ final class DocumentationContractTest extends TestCase
                     || str_contains($relative, '/.docara-qa/')
                     || str_contains($relative, '/.docara/')
                     || str_starts_with($relative, 'resources/framework/manifests/')
+                    // Independently accepted owner bytes remain byte-exact;
+                    // their wording is protected by the portable packet lock.
+                    || str_starts_with($relative, 'resources/framework/portable-smart/')
                 ) {
                     continue;
                 }

@@ -8,7 +8,7 @@
             },
             {
                 "code": "SMART_REGISTRY_VALID",
-                "count": 13,
+                "count": 17,
                 "status": "pass"
             },
             {
@@ -23,7 +23,7 @@
             },
             {
                 "code": "SCHEMA_CATALOG_VALID",
-                "count": 36,
+                "count": 38,
                 "status": "pass"
             }
         ],

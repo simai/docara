@@ -19,7 +19,21 @@ final class SmartRegistryTest extends TestCase
         $registry = SmartRegistry::bundled();
 
         self::assertSame(
-            ['docara.brand', 'docara.breadcrumbs', 'docara.navigation', 'docara.pager', 'docara.preferences', 'docara.search', 'docara.toc', 'ui.alert', 'ui.button'],
+            [
+                'docara.brand',
+                'docara.breadcrumbs',
+                'docara.navigation',
+                'docara.pager',
+                'docara.preferences',
+                'docara.search',
+                'docara.toc',
+                'ui.alert',
+                'ui.button',
+                'ui.checkbox',
+                'ui.dropdown',
+                'ui.input',
+                'ui.list-item',
+            ],
             $registry->keys(),
         );
         self::assertSame('docara.brand', $registry->canonicalKey('docara.header'));

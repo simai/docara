@@ -1,7 +1,7 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-04
-Status: Goal B blocked on unaccepted Framework `ui.list-item`
+Status: Goal B ready for independent reverse-outcome audit
 Workflow ID: `2026-08-04-docara-goal-b-interface-library`
 Graph goal: `docara.goal.unified`
 
@@ -25,13 +25,13 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `goal_b_ui_list_item_dependency_blocked`;
+- state: `goal_b_ready_for_independent_audit`;
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.b.interface_library`;
 - batch: `docara.batch.b.interface_library`;
-- candidate: `ccb076a89535954022ca89eb70b84d6c81d80de3`;
+- candidate: `e06ff0c945dafd4e9678794773d8bde83c8de535`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `obtain_independently_accepted_ui_list_item_artifact`;
+- next action: `independent_goal_b_reverse_outcome_audit`;
 - Goal 1-3 and Goal A are independently accepted; Goal C and release review remain unauthorized.
 
 ## Accepted pipeline
@@ -48,11 +48,11 @@ IR/HTML remain disposable.
 ## Current result
 
 Goal A exact product/runtime candidate `8c04160…` was independently accepted.
-Goal B partial candidate `ccb076a…` completes B0-B3 and every independent safe
-B5 check. The exact input/dropdown/checkbox owner packet is now accepted, but
-its dropdown options slot requires the still-unaccepted `ui.list-item` Smart.
-No local `items` or raw-markup substitute is allowed, so Goal B remains blocked
-at that exact dependency and Goal C remains unauthorized.
+Goal B exact product candidate `e06ff0c…` completes B0-B5. Exact accepted
+input/dropdown/checkbox and list-item owner packets are consumed through the
+single Gateway path; the useful dropdown admits only text list-item children.
+Full/package/two-consumer/browser/security evidence is fresh. Goal B is ready
+for independent audit, not self-accepted, and Goal C remains unauthorized.
 
 ## Boundary
 

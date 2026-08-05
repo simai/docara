@@ -1,33 +1,32 @@
 # Current Docara result
 
-Current state: `goal_b_ui_list_item_dependency_blocked`
+Current state: `goal_b_ready_for_independent_audit`
 
-Current candidate: `ccb076a89535954022ca89eb70b84d6c81d80de3`
+Current candidate: `e06ff0c945dafd4e9678794773d8bde83c8de535`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
 
 ## Goal B current result
 
 Independent audit accepted Goal A candidate `8c04160…` with exact public tree
-`8b7fdb61…`. Goal B partial candidate `ccb076a…` completes B0-B3: one
-deterministic registry-derived Atlas, registered search/breadcrumbs/pager,
-coherent interface presets and safe project-owned install builder, product
-configurator and footer. Full PHPUnit is 460 tests / 8,544 assertions. Two
-exact full builds and selected Alert output share complete ledger `417ebc62…`;
-static verification checks 208 HTML / 21,844 references / broken=0. Two clean
-clones produce identical ZIP `1b66bd96…` and manifest `45b48236…`; a fresh
-dist consumer builds and verifies the 39-route starter without Node or package
-`.git`. Exact browser smoke has zero console errors/warnings and overflow.
+`8b7fdb61…`. Goal B exact product candidate `e06ff0c…` completes B0-B5: one
+deterministic registry-derived Atlas, registered publisher chrome, coherent
+presets, safe project demos and exact accepted Framework form controls. The
+populated dropdown uses three admitted text-only `ui.list-item` children through
+the single Gateway; raw items/markup and related icon/avatar/tag surfaces are
+not supported.
 
-Goal B is not independent-ready. The exact `ui.input`, `ui.dropdown` and
-`ui.checkbox` owner packet is independently accepted, but its dropdown options
-slot admits only `ui.list-item`. That dependency is not in the packet or the
-current Docara registry. A local `items` dialect, raw markup or a Docara-owned
-replacement is forbidden, so no partial form-wave runtime import was made and
-the exact partial product candidate remains `ccb076a…`.
+Full PHPUnit is 467 tests / 8,699 assertions. Two exact full builds and selected
+Alert output share complete ledger `7771142e…`; static verification checks 208
+HTML / 21,844 references / broken=0. Two clean clones produce identical
+809-file ZIP `1dea7df7…` and manifest `af9012a2…`; two same-lock fresh dist
+consumers produce identical full/single ledger `79d2ada0…` without Node or
+package `.git`. Project-demo and public-shell browser matrices pass
+desktop/mobile, light/dark and LTR/RTL with zero console/network errors and
+overflow.
 
-B4 therefore remains an explicit, narrower external-dependency gate. Goal C
-and release remain unauthorized, and no external repository or site changed.
+Goal B is ready for independent audit, not self-accepted. Goal C and release
+remain unauthorized, and no external repository or site changed.
 
 ## Accepted Goal A result
 

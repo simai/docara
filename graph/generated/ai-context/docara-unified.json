@@ -9,25 +9,25 @@
         "graph/specs/stages/b-interface-library.json",
         "graph/specs/batches/b-interface-library.json"
     ],
-    "canonical_sha256": "b2e81ee8080648c968504e1e226d51c053cac5d4f39520b9c9d192b2fe4ae095",
+    "canonical_sha256": "08f75b8d4bd34285f1ba6a4573c31695682517874c5d00d845c895be8ad72c57",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "goal_b_ui_list_item_dependency_blocked",
+        "state": "goal_b_ready_for_independent_audit",
         "goal": "docara.goal.unified",
-        "goal_readiness": "goal_b_ui_list_item_dependency_blocked",
+        "goal_readiness": "goal_b_ready_for_independent_audit",
         "stage": "docara.stage.b.interface_library",
-        "stage_readiness": "ui_list_item_dependency_blocked",
-        "stage_status": "blocked_unaccepted_ui_list_item",
+        "stage_readiness": "ready_for_independent_audit",
+        "stage_status": "ready_for_independent_audit",
         "batch": "docara.batch.b.interface_library",
-        "batch_readiness": "ui_list_item_dependency_blocked",
-        "batch_status": "blocked_unaccepted_ui_list_item",
-        "completed_checkpoint": "goal_a_independently_accepted_pass",
-        "candidate_revision": "ccb076a89535954022ca89eb70b84d6c81d80de3",
-        "next_action": "obtain_independently_accepted_ui_list_item_artifact",
+        "batch_readiness": "ready_for_independent_audit",
+        "batch_status": "ready_for_independent_audit",
+        "completed_checkpoint": "goal_b_b0_b5_executor_matrix_complete",
+        "candidate_revision": "e06ff0c945dafd4e9678794773d8bde83c8de535",
+        "next_action": "independent_goal_b_reverse_outcome_audit",
         "evidence": "source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md"
     },
     "roadmap": {
@@ -35,7 +35,7 @@
         "next_goal": {
             "id": "docara.goal.b.interface_library",
             "title": "Goal B Full Interface Library and Useful Extension Demos",
-            "status": "ui_list_item_dependency_blocked",
+            "status": "ready_for_independent_audit",
             "authorized": true,
             "source": "source/workflow/2026-08-04-docara-goal-b-interface-library.md"
         }

@@ -1,20 +1,20 @@
 # Docara: Content, Design & Settings product track
 
 Date: 2026-08-04
-Status: `goal_b_ui_list_item_dependency_blocked`
+Status: `goal_b_ready_for_independent_audit`
 Track ID: `docara.track.content_design_settings`
 Type: post-LEGO product proposal
 Planning baseline HEAD: `d748eca04cd09e79ed6e2079a56b077265bcf905`
 Accepted Goal 3 product candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`
 Branch: `codex/docara-unified-architecture`
 Remaining unstarted goals: 1
-Current canonical next action: `obtain_independently_accepted_ui_list_item_artifact`
+Current canonical next action: `independent_goal_b_reverse_outcome_audit`
 
-Status: `goal_b_ui_list_item_dependency_blocked`
+Status: `goal_b_ready_for_independent_audit`
 Current stage: `docara.stage.b.interface_library`
 Current batch: `docara.batch.b.interface_library`
-Current next action: `obtain_independently_accepted_ui_list_item_artifact`
-Next roadmap goal: `docara.goal.b.interface_library` (`ui_list_item_dependency_blocked`, authorized=`true`)
+Current next action: `independent_goal_b_reverse_outcome_audit`
+Next roadmap goal: `docara.goal.b.interface_library` (`ready_for_independent_audit`, authorized=`true`)
 
 ## 0. Status and authority
 
@@ -24,11 +24,11 @@ accepted and the user explicitly activated Goal A on 2026-08-04. The accepted
 Goal A execution contract is
 `source/workflow/2026-08-04-docara-goal-a-shell-contract.md`.
 
-Goal 3 and Goal A are independently accepted. Goal B was activated and B0-B3
-plus the available B5 matrix are implemented on exact candidate `ccb076a…`.
-Its input/dropdown/checkbox Framework wave is accepted, but the dropdown's
-required `ui.list-item` dependency remains externally blocked. Activation and
-partial implementation do not authorize:
+Goal 3 and Goal A are independently accepted. Goal B B0-B5 and the full fresh
+matrix are implemented on exact candidate `e06ff0c…`. Its accepted
+input/dropdown/checkbox Framework wave and accepted text-only `ui.list-item`
+dependency use the single production path. Executor readiness does not
+authorize:
 
 - Goal C implementation before an independent Goal B verdict;
 - rewriting the accepted Goal 3 candidate or historical evidence;
@@ -38,7 +38,7 @@ partial implementation do not authorize:
 The only authorized current action is:
 
 ```text
-obtain_independently_accepted_ui_list_item_artifact
+independent_goal_b_reverse_outcome_audit
 ```
 
 ### Start gate

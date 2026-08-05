@@ -1,11 +1,11 @@
 # Goal B — Full Interface Library & Useful Extension Demos
 
 Date: 2026-08-04
-Status: `in_progress`
+Status: `ready_for_independent_audit`
 Current stage: `docara.stage.b.interface_library`
 Current batch: `docara.batch.b.interface_library`
-Current next action: `complete_b4_b5_exact_candidate_matrix`
-Next roadmap goal: `docara.goal.b.interface_library` (`in_progress`, authorized=`true`)
+Current next action: `independent_goal_b_reverse_outcome_audit`
+Next roadmap goal: `docara.goal.b.interface_library` (`ready_for_independent_audit`, authorized=`true`)
 
 ## Track and entry baseline
 
@@ -105,7 +105,7 @@ Status: `pass`.
 
 ### B4 — Framework useful-component consumption
 
-Status: `implementation_green_integration_pending`.
+Status: `pass`.
 
 The independently accepted immutable owner packet now supplies exact
 `ui.input`, `ui.dropdown` and `ui.checkbox` manifests, views, presets,
@@ -131,20 +131,22 @@ default site tree. Focused implementation evidence is recorded in
 
 ### B5 — Integration and audit handoff
 
-Status: `in_progress`.
+Status: `ready_for_independent_audit`.
 
-Run the complete focused/full/package/consumer/full-single/static/browser/a11y
-matrix, record default and intentional preset deltas, synchronize graph/specs/
-handoff and stop at `goal_b_ready_for_independent_audit`. If B4 remains
-unavailable, complete every independent safe batch and stop with the exact
-external gate instead of claiming Goal B readiness.
+The complete focused/full/package/consumer/full-single/static/browser/a11y
+matrix is green on exact product candidate
+`e06ff0c945dafd4e9678794773d8bde83c8de535`. Default output remains
+usage-driven and unchanged, while the admitted project demonstrations exercise
+the intentional Framework surfaces. Graph/specs/handoff are synchronized and
+the executor stops at `goal_b_ready_for_independent_audit`.
 
 The pre-unblock independent safe matrix is recorded in
 `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/B5-INTEGRATED-ACCEPTANCE.md`.
 Full/full/single, static, package, fresh-consumer and representative browser
 checks are green on exact candidate `ccb076a89535954022ca89eb70b84d6c81d80de3`.
-That matrix is historical baseline evidence only. B5 must now be rerun on the
-new exact B4 candidate before Goal B can become independent-ready.
+That matrix is historical baseline evidence only. Fresh final evidence is
+recorded in `B5-FINAL-INTEGRATED-ACCEPTANCE.md`; independent acceptance remains
+owned by the external reverse-outcome audit.
 
 ## Allowed surfaces
 

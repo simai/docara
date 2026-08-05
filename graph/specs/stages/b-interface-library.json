@@ -8,7 +8,7 @@
   "summary": "Project one accepted-registry Design Atlas, migrate replaceable chrome and add useful project demos while preserving one production pipeline.",
   "owner": "teamlead",
   "lifecycle": "active",
-  "readiness": "ui_list_item_dependency_blocked",
+  "readiness": "ready_for_independent_audit",
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-04-docara-content-design-settings-track.md#16-goal-b--full-interface-library--useful-extension-demos",
@@ -30,5 +30,7 @@
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Atlas contract and freshness", "Chrome parity and zero references", "Project demos", "Framework cross-host proof", "Integrated build/browser/security matrix", "Independent reverse-outcome audit"],
   "next_stage_ref": null,
-  "status": "blocked_unaccepted_ui_list_item"
+  "status": "ready_for_independent_audit",
+  "candidate_revision": "e06ff0c945dafd4e9678794773d8bde83c8de535",
+  "next_action": "independent_goal_b_reverse_outcome_audit"
 }

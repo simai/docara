@@ -1,19 +1,16 @@
-# Next action: `obtain_independently_accepted_ui_list_item_artifact`
+# Next action: `independent_goal_b_reverse_outcome_audit`
 
-Current state: `goal_b_ui_list_item_dependency_blocked`
+Current state: `goal_b_ready_for_independent_audit`
 
-Current candidate: `ccb076a89535954022ca89eb70b84d6c81d80de3`
+Current candidate: `e06ff0c945dafd4e9678794773d8bde83c8de535`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
 
-Goal 1-3 and Goal A are independently accepted. Goal B B0-B3 and the available
-B5 matrix are green on the exact partial candidate. The immutable
-`ui.input`/`ui.dropdown`/`ui.checkbox` owner packet is accepted, but the useful
-dropdown contract admits only `ui.list-item` children and that dependency is
-not accepted. Obtain an exact independently accepted `ui.list-item` artifact,
-then resume B4 and repeat the affected B5 checks. Do not invent `items`, inject
-raw option markup or implement the Framework component locally. Do not begin
-Goal C, release or live actions.
+Goal 1-3 and Goal A are independently accepted. Goal B B0-B5 and the full
+fresh matrix are green on exact product candidate `e06ff0c…`. The immutable
+form wave and text-only list-item dependency are exact-pinned and flow through
+one provider/registry/Gateway/renderer path. Perform the independent Goal B
+audit only. Do not begin Goal C, release or live actions.
 
 ## Historical deployment decision (parked, not executable)
 

@@ -18,6 +18,8 @@
   "props": {
     "title": {"type": "string", "required": true},
     "base_price": {"type": "number", "required": true},
+    "team_price": {"type": "number", "required": false, "default": 4500},
+    "business_price": {"type": "number", "required": false, "default": 8000},
     "currency": {"type": "string", "required": true}
   },
   "slots": {

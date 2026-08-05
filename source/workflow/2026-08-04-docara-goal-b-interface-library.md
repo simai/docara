@@ -1,11 +1,11 @@
 # Goal B — Full Interface Library & Useful Extension Demos
 
 Date: 2026-08-04
-Status: `ready_for_independent_audit`
+Status: `correction_in_progress`
 Current stage: `docara.stage.b.interface_library`
 Current batch: `docara.batch.b.interface_library`
-Current next action: `independent_goal_b_reverse_outcome_audit`
-Next roadmap goal: `docara.goal.b.interface_library` (`ready_for_independent_audit`, authorized=`true`)
+Current next action: `complete_goal_b_useful_demo_semantic_correction`
+Next roadmap goal: `docara.goal.b.interface_library` (`correction_in_progress`, authorized=`true`)
 
 ## Track and entry baseline
 

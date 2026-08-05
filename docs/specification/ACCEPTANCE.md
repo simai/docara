@@ -1,13 +1,13 @@
 # Приёмка единой архитектуры Docara
 
-Текущий статус: Goal 1, Goal 2, Goal 3, Goal A и Goal B независимо приняты. Exact
+Текущий статус: Goal 1, Goal 2, Goal 3 и Goals A-C независимо приняты. Exact
 accepted Goal A product/runtime candidate —
 `8c04160ab50549b060fb933cf80f86193cd92113`. Goal B Full Interface Library &
 Useful Extension Demos принят на exact candidate
 `c3b91eee71ab906cd79ae7a119c6961664f03528`. Goal C C1 устранил найденные
 semantic/evidence defects на exact candidate
-`eb35f5c6f18e5eb9be69e91887b09486f5703136`; состояние только
-`goal_c_ready_for_independent_audit`, независимая приёмка ещё не заявлена. Частичный
+`eb35f5c6f18e5eb9be69e91887b09486f5703136`; независимый reverse-outcome
+audit принял его с `PASS`, а product track завершён. Частичный
 candidate `ccb076a89535954022ca89eb70b84d6c81d80de3` остаётся historical
 baseline.
 Source `1dee6d19…` остаётся только historical/superseded radius baseline.
@@ -80,7 +80,8 @@ PASS ставится только по воспроизводимому evidenc
 - [x] Full/full/single, static, package/consumer, browser/SEO и cross-host
       executor evidence зелёные на exact candidate `eb35f5c6…`; complete-tree
       digest `44d827a6…`, package ZIP `50a0f7cf…`.
-- [ ] Независимый reverse-outcome audit Goal C.
+- [x] Независимый reverse-outcome audit Goal C завершён с `PASS` на exact
+      product candidate `eb35f5c6…`.
 
 ## A. Источники истины
 

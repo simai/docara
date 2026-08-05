@@ -1,7 +1,7 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-05
-Status: Goal C C1 correction complete; independent audit pending
+Status: Goal C independently accepted; product track complete
 Workflow ID: `2026-08-05-docara-goal-c-c1-truthfulness-correction`
 Graph goal: `docara.goal.unified`
 
@@ -25,14 +25,14 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `goal_c_ready_for_independent_audit`;
+- state: `ready_for_user_release_decision`;
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.c.public_documentation`;
 - batch: `docara.batch.c.public_documentation`;
 - candidate: `eb35f5c6f18e5eb9be69e91887b09486f5703136`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `independent_goal_c_reverse_outcome_audit`;
-- Goal 1-3, Goal A and Goal B are independently accepted. Goal C is implementation-complete and audit-pending; release review remains unauthorized.
+- next action: `explicit_user_release_decision`;
+- Goal 1-3 and Goals A-C are independently accepted. The product track is complete; release review remains unauthorized until an explicit user decision.
 
 ## Accepted pipeline
 

@@ -7,8 +7,8 @@
   "title": "Goal C. Public Documentation, Settings Reference and Agent Journey",
   "summary": "Project the accepted Atlas, schemas and application services into one discoverable Markdown-owned public product journey.",
   "owner": "teamlead",
-  "lifecycle": "active",
-  "readiness": "ready_for_independent_audit",
+  "lifecycle": "complete",
+  "readiness": "accepted",
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-04-docara-content-design-settings-track.md#17-goal-c--public-documentation-settings-reference--agent-journey",
@@ -28,8 +28,8 @@
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Route/source/redirect inventory", "Atlas and schema freshness", "Component/design/settings journeys", "Build and browser matrix", "Independent reverse-outcome audit"],
   "next_stage_ref": null,
-  "status": "implementation_complete_audit_pending",
+  "status": "independently_accepted_pass",
   "baseline_revision": "481e34cccade12a0d7f8d2dbf9b4d37933e49419",
   "candidate_revision": "eb35f5c6f18e5eb9be69e91887b09486f5703136",
-  "next_action": "independent_goal_c_reverse_outcome_audit"
+  "next_action": "explicit_user_release_decision"
 }

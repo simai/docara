@@ -8,7 +8,7 @@
   "summary": "M4 map of complete Russian public Markdown ownership, PageBuilder-derived views and retired generated public page projectors.",
   "owner": "dev",
   "lifecycle": "active",
-  "readiness": "goal_c_ready_for_independent_audit",
+  "readiness": "accepted",
   "visibility": "repository",
   "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
   "profile_refs": ["docara.unified"],
@@ -156,6 +156,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Keep retired language-pack paths absent from production and release-package surfaces."
   ],
-  "status": "goal_c_implementation_complete_audit_pending",
+  "status": "goal_c_independently_accepted_pass",
   "mapped_revision": "eb35f5c6f18e5eb9be69e91887b09486f5703136"
 }

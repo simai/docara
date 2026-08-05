@@ -1,16 +1,16 @@
-# Next action: `independent_goal_c_reverse_outcome_audit`
+# Next action: `explicit_user_release_decision`
 
-Current state: `goal_c_ready_for_independent_audit`
+Current state: `ready_for_user_release_decision`
 
 Current candidate: `eb35f5c6f18e5eb9be69e91887b09486f5703136`
 
 Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md`
 
-Goal 1-3, Goal A and Goal B are independently accepted. Goal C C1 is
-implementation-complete on one exact candidate. Independently audit the six
-truthful component groups, exhaustive settings roots, executable safe agent
-journey, derived receipts and integrated matrix. Do not start release or live
-actions.
+Goal 1-3 and Goals A-C are independently accepted. The product track is
+complete on exact candidate `eb35f5c6…`. The only next action is an explicit
+user decision whether to open a separate release-review workflow. No merge,
+push, tag, release, publication, deploy or live-site write is authorized by
+this handoff.
 
 ## Historical deployment decision (parked, not executable)
 

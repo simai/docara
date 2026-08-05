@@ -8,7 +8,7 @@
   "summary": "Share of public routes whose only editorial source is one physical Markdown file.",
   "owner": "teamlead",
   "lifecycle": "active",
-  "readiness": "goal_c_ready_for_independent_audit",
+  "readiness": "accepted",
   "visibility": "repository",
   "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
   "evidence_refs": [

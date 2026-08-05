@@ -8,7 +8,7 @@
   "summary": "Semantic differences between a route built alone and the same route from a full build.",
   "owner": "tester",
   "lifecycle": "active",
-  "readiness": "goal_c_ready_for_independent_audit",
+  "readiness": "accepted",
   "visibility": "repository",
   "source_refs": ["docs/specification/ACCEPTANCE.md"],
   "evidence_refs": [

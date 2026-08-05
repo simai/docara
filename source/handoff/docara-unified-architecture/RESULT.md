@@ -1,6 +1,6 @@
 # Current Docara result
 
-Current state: `goal_c_ready_for_independent_audit`
+Current state: `ready_for_user_release_decision`
 
 Current candidate: `eb35f5c6f18e5eb9be69e91887b09486f5703136`
 
@@ -20,8 +20,10 @@ verification reports 264 HTML / 35,044 references / broken=0. Two clean clones
 produce the same 862-file ZIP `50a0f7cf…`; two same-lock consumers produce the
 same 198-file tree `e1fd1964…` without Node or package `.git`. Browser is
 132/132 HTTP and 27/27 representative checks; exact SF5 cross-host is 1/44.
-Goal C is ready for independent audit, not self-accepted; release remains
-unauthorized. The former `b8b47a83…` current ledger is rejected historical
+Independent reverse-outcome audit accepted Goal C with `PASS` on exact product
+candidate `eb35f5c6…` and audited governance boundary `c5004ee…`. The product
+track is complete; release review remains unauthorized pending an explicit
+user decision. The former `b8b47a83…` current ledger is rejected historical
 evidence only.
 
 ## Accepted Goal B result

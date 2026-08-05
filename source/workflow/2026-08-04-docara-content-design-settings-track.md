@@ -1,20 +1,20 @@
 # Docara: Content, Design & Settings product track
 
 Date: 2026-08-04
-Status: `goal_c_ready_for_independent_audit`
+Status: `ready_for_user_release_decision`
 Track ID: `docara.track.content_design_settings`
 Type: post-LEGO product proposal
 Planning baseline HEAD: `d748eca04cd09e79ed6e2079a56b077265bcf905`
 Accepted Goal 3 product candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`
 Branch: `codex/docara-unified-architecture`
-Remaining unstarted goals: 0
-Current canonical next action: `independent_goal_c_reverse_outcome_audit`
+Remaining unstarted goals: 0; product track complete
+Current canonical next action: `explicit_user_release_decision`
 
-Status: `goal_c_ready_for_independent_audit`
+Status: `ready_for_user_release_decision`
 Current stage: `docara.stage.c.public_documentation`
 Current batch: `docara.batch.c.public_documentation`
-Current next action: `independent_goal_c_reverse_outcome_audit`
-Next roadmap goal: `docara.goal.c.public_documentation` (`ready_for_independent_audit`, authorized=`true`)
+Current next action: `explicit_user_release_decision`
+Next roadmap goal: `docara.decision.release_review` (`awaiting_explicit_user_decision`, authorized=`false`)
 
 ## 0. Status and authority
 
@@ -34,10 +34,13 @@ authorize:
 - external Framework owner repositories or sites;
 - merge, push, tag, release or deploy.
 
-The only current action is:
+Goal C is independently accepted with `PASS` on exact product/runtime candidate
+`eb35f5c6f18e5eb9be69e91887b09486f5703136`. Goals A, B and C are complete;
+the product track is closed. The only current action is an explicit user
+decision:
 
 ```text
-independent_goal_c_reverse_outcome_audit
+explicit_user_release_decision
 ```
 
 ### Start gate

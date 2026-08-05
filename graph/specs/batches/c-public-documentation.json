@@ -7,8 +7,8 @@
   "title": "Goal C public documentation execution",
   "summary": "Execute C0-C6 sequentially and stop at independent Goal C audit.",
   "owner": "dev",
-  "lifecycle": "active",
-  "readiness": "ready_for_independent_audit",
+  "lifecycle": "complete",
+  "readiness": "accepted",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-05-docara-goal-c-c1-truthfulness-correction.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md"],
@@ -17,9 +17,9 @@
   "allowed_scope": ["Markdown public owners", "Atlas and schema derived projections", "Existing parser/compiler/PageBuilder integration", "Tests, specification, graph, workflow, handoff and evidence"],
   "forbidden_scope": ["Second parser, renderer, registry, Gateway, LayoutComposer, PageBuilder or preview engine", "Public prose in PHP or JSON", "Unsupported Framework support claims", "Goal D", "External repositories or sites", "Merge, Push, Tag, Release, Deploy"],
   "checks": ["Route/source/redirect ownership", "Atlas and schema coverage/freshness", "Container and unsafe-operation negatives", "Full/full/single determinism", "Static, browser, accessibility and SEO", "Graph and documentation validation"],
-  "status": "implementation_complete_audit_pending",
+  "status": "independently_accepted_pass",
   "baseline_revision": "481e34cccade12a0d7f8d2dbf9b4d37933e49419",
   "candidate_revision": "eb35f5c6f18e5eb9be69e91887b09486f5703136",
   "accepted_goal_b_candidate": "c3b91eee71ab906cd79ae7a119c6961664f03528",
-  "next_action": "independent_goal_c_reverse_outcome_audit"
+  "next_action": "explicit_user_release_decision"
 }

@@ -18,7 +18,7 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal_c_ready_for_independent_audit`
+Current state: `ready_for_user_release_decision`
 
 Current goal: `docara.goal.unified`
 
@@ -26,23 +26,23 @@ Current stage: `docara.stage.c.public_documentation`
 
 Current batch: `docara.batch.c.public_documentation`
 
-Current next action: `independent_goal_c_reverse_outcome_audit`
+Current next action: `explicit_user_release_decision`
 
 Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md`
 
 Current candidate: `eb35f5c6f18e5eb9be69e91887b09486f5703136`
 
-Next roadmap goal: `docara.goal.c.public_documentation`
+Next roadmap goal: `docara.decision.release_review`
 
-Next roadmap status: `ready_for_independent_audit`
+Next roadmap status: `awaiting_explicit_user_decision`
 
-Next roadmap authorized: `true`
+Next roadmap authorized: `false`
 
 Goal 1, Goal 2 and Goal B were independently accepted with `PASS_WITH_NOTES`;
-Goal 3 and Goal A were accepted with `PASS`. Goal C C1 truthfulness correction
-is complete on one exact product candidate; all 132 routes remain physical
-Markdown owners and the only next action is independent Goal C audit. Release
-review remains unauthorized.
+Goal 3, Goal A and Goal C were accepted with `PASS`. Goal C is frozen on exact
+product candidate `eb35f5c6…`; all 132 routes remain physical Markdown owners
+and the content/design/settings product track is complete. Release review and
+all live actions remain unauthorized until an explicit user decision.
 
 ## 3. Read in this order
 
@@ -59,11 +59,12 @@ Canonical current state belongs to `graph/graph.json` plus `graph/specs`.
 checked by the repository command documented in `graph/README.md`; it never
 overrides canonical graph or workflow sources.
 
-## 4. Execute only the current goal
+## 4. Execute only an explicitly authorized next action
 
-Run an independent reverse-outcome audit against the exact Goal C candidate and
-fresh evidence. Preserve accepted Goal 1-3, Goal A and Goal B runtime/support
-invariants. Do not self-accept or start release review.
+There is no active implementation goal. Preserve the accepted product
+candidate and its Goal 1-3/A/B/C invariants. The next action is only the user's
+explicit decision whether to open a separate release-review/merge/tag/deploy
+workflow; this handoff does not authorize any of those actions.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,

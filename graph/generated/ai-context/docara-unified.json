@@ -9,35 +9,35 @@
         "graph/specs/stages/c-public-documentation.json",
         "graph/specs/batches/c-public-documentation.json"
     ],
-    "canonical_sha256": "3d227fa300e77c17fd404d9696a80a2539e2c2b56a767e888570a1fbb9959a36",
+    "canonical_sha256": "3c9c5cbff87216963ee967307050a8ec9ff38a8e14c00dcbc474387232553913",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "goal_c_ready_for_independent_audit",
+        "state": "ready_for_user_release_decision",
         "goal": "docara.goal.unified",
-        "goal_readiness": "goal_c_ready_for_independent_audit",
+        "goal_readiness": "ready_for_user_release_decision",
         "stage": "docara.stage.c.public_documentation",
-        "stage_readiness": "ready_for_independent_audit",
-        "stage_status": "implementation_complete_audit_pending",
+        "stage_readiness": "accepted",
+        "stage_status": "independently_accepted_pass",
         "batch": "docara.batch.c.public_documentation",
-        "batch_readiness": "ready_for_independent_audit",
-        "batch_status": "implementation_complete_audit_pending",
-        "completed_checkpoint": "goal_c_c1_truthfulness_correction_and_exact_retest_complete",
+        "batch_readiness": "accepted",
+        "batch_status": "independently_accepted_pass",
+        "completed_checkpoint": "product_track_complete_goal_c_independently_accepted",
         "candidate_revision": "eb35f5c6f18e5eb9be69e91887b09486f5703136",
-        "next_action": "independent_goal_c_reverse_outcome_audit",
+        "next_action": "explicit_user_release_decision",
         "evidence": "source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md"
     },
     "roadmap": {
         "source": "source/workflow/2026-08-04-docara-content-design-settings-track.md",
         "next_goal": {
-            "id": "docara.goal.c.public_documentation",
-            "title": "Goal C Public Documentation, Settings Reference and Agent Journey",
-            "status": "ready_for_independent_audit",
-            "authorized": true,
-            "source": "source/workflow/2026-08-05-docara-goal-c-c1-truthfulness-correction.md"
+            "id": "docara.decision.release_review",
+            "title": "Explicit user release-review decision",
+            "status": "awaiting_explicit_user_decision",
+            "authorized": false,
+            "source": "source/handoff/docara-unified-architecture/NEXT.md"
         }
     },
     "architecture": {

@@ -7,8 +7,8 @@
   "title": "Единая понятная архитектура Docara",
   "summary": "Перевести Docara на один content-first конвейер, где каждая страница хранится в Markdown, композиция — в JSON, компоненты — в реестре, а HTML всегда является производным результатом.",
   "owner": "teamlead",
-  "lifecycle": "active",
-  "readiness": "goal_c_ready_for_independent_audit",
+  "lifecycle": "complete",
+  "readiness": "ready_for_user_release_decision",
   "visibility": "repository",
   "source_refs": [
     "docs/specification/DOCARA-TZ.md",

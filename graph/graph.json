@@ -26,21 +26,21 @@
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
   "implementation_state": {
-    "state": "goal_c_ready_for_independent_audit",
+    "state": "ready_for_user_release_decision",
     "current_goal": "docara.goal.unified",
     "current_stage": "docara.stage.c.public_documentation",
     "current_batch": "docara.batch.c.public_documentation",
-    "completed_checkpoint": "goal_c_c1_truthfulness_correction_and_exact_retest_complete",
+    "completed_checkpoint": "product_track_complete_goal_c_independently_accepted",
     "candidate_revision": "eb35f5c6f18e5eb9be69e91887b09486f5703136",
-    "next_action": "independent_goal_c_reverse_outcome_audit",
+    "next_action": "explicit_user_release_decision",
     "evidence": "source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md",
     "roadmap_source": "source/workflow/2026-08-04-docara-content-design-settings-track.md",
     "next_goal": {
-      "id": "docara.goal.c.public_documentation",
-      "title": "Goal C Public Documentation, Settings Reference and Agent Journey",
-      "status": "ready_for_independent_audit",
-      "authorized": true,
-      "source": "source/workflow/2026-08-05-docara-goal-c-c1-truthfulness-correction.md"
+      "id": "docara.decision.release_review",
+      "title": "Explicit user release-review decision",
+      "status": "awaiting_explicit_user_decision",
+      "authorized": false,
+      "source": "source/handoff/docara-unified-architecture/NEXT.md"
     }
   },
   "historical_context": {

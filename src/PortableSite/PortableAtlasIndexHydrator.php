@@ -7,8 +7,8 @@ namespace Simai\Docara\PortableSite;
 final class PortableAtlasIndexHydrator
 {
     /**
-     * @param list<array<string, mixed>> $pages
-     * @param array<string, mixed> $atlas
+     * @param  list<array<string, mixed>>  $pages
+     * @param  array<string, mixed>  $atlas
      * @return list<array<string, mixed>>
      */
     public function hydrate(array $pages, array $atlas): array
@@ -38,8 +38,8 @@ final class PortableAtlasIndexHydrator
     }
 
     /**
-     * @param list<array<string, mixed>> $entries
-     * @param array<string, list<string>> $filters
+     * @param  list<array<string, mixed>>  $entries
+     * @param  array<string, list<string>>  $filters
      * @return list<array<string, mixed>>
      */
     private function filter(array $entries, array $filters): array

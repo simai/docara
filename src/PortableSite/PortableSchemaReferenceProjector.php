@@ -51,9 +51,9 @@ final class PortableSchemaReferenceProjector
     }
 
     /**
-     * @param array<string,mixed> $node
-     * @param list<array<string,mixed>> $records
-     * @param array<string,true> $stack
+     * @param  array<string,mixed>  $node
+     * @param  list<array<string,mixed>>  $records
+     * @param  array<string,true>  $stack
      */
     private function walk(array $node, string $file, string $path, string $scope, array &$records, array $stack): void
     {

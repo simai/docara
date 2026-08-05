@@ -159,18 +159,18 @@ final class FrameworkPortableWaveTest extends TestCase
     {
         $build = $this->tmpPath('unused-assets');
         (new PortablePublisherAssetPublisher(new Filesystem, SmartRegistry::bundled()))->publish($build, []);
-        self::assertFileDoesNotExist($build . '/_docara/vendor/simai/ui/inputs/js/inputs.js');
+        self::assertFileDoesNotExist($build . '/_docara/framework/smart/inputs/js/inputs.js');
 
         (new PortablePublisherAssetPublisher(new Filesystem, SmartRegistry::bundled()))->publish(
             $build,
             ['framework.portable.ui.input.js'],
         );
-        self::assertFileExists($build . '/_docara/vendor/simai/ui/inputs/js/inputs.js');
+        self::assertFileExists($build . '/_docara/framework/smart/inputs/js/inputs.js');
         self::assertSame(
             '344464ac91ce3997dce7bf46ff0635da49f21087f055987bcc24d84f1d3de123',
-            hash_file('sha256', $build . '/_docara/vendor/simai/ui/inputs/js/inputs.js'),
+            hash_file('sha256', $build . '/_docara/framework/smart/inputs/js/inputs.js'),
         );
-        self::assertFileDoesNotExist($build . '/_docara/vendor/simai/ui/dropdown/js/dropdown.js');
+        self::assertFileDoesNotExist($build . '/_docara/framework/smart/dropdown/js/dropdown.js');
     }
 
     /** @return array<string, mixed> */

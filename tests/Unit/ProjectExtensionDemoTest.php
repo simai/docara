@@ -57,16 +57,18 @@ final class ProjectExtensionDemoTest extends TestCase
             self::assertFileExists($build . '/_docara/smart/' . $asset);
         }
         foreach ([
-            'vendor/simai/ui/inputs/css/inputs.css',
-            'vendor/simai/ui/inputs/js/inputs.js',
-            'vendor/simai/ui/dropdown/js/dropdown.js',
-            'vendor/simai/ui/checkbox/css/checkbox.css',
-            'vendor/simai/ui/checkbox/js/checkbox.js',
-            'vendor/simai/ui/list-item/js/list-item.js',
+            'framework/smart/inputs/css/inputs.css',
+            'framework/smart/inputs/css/inputs.min.css',
+            'framework/smart/inputs/js/inputs.js',
+            'framework/smart/dropdown/js/dropdown.js',
+            'framework/smart/checkbox/css/checkbox.css',
+            'framework/smart/checkbox/css/checkbox.min.css',
+            'framework/smart/checkbox/js/checkbox.js',
+            'framework/smart/list-item/js/list-item.js',
         ] as $asset) {
             self::assertFileExists($build . '/_docara/' . $asset);
-            self::assertStringContainsString('/_docara/' . $asset, $html);
         }
+        self::assertStringNotContainsString('data-docara-smart-asset="framework.portable.', $html);
     }
 
     #[Test]

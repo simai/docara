@@ -105,10 +105,10 @@ final readonly class FrameworkPortableSmartLock
         }
     }
 
-    /** @return array<string, array{path:string,kind:string,public:string,sha256:string}> */
+    /** @return array<string, array{path:string,kind:string,public:string,sha256:string,head:bool}> */
     public function runtimeAssets(string $id): array
     {
-        /** @var array<string, array{path:string,kind:string,public:string,sha256:string}> $assets */
+        /** @var array<string, array{path:string,kind:string,public:string,sha256:string,head:bool}> $assets */
         $assets = $this->artifact($id)['runtime_assets'];
 
         return $assets;
@@ -190,6 +190,7 @@ final readonly class FrameworkPortableSmartLock
                     || ! is_string($asset['public'] ?? null) || str_starts_with($asset['public'], '/')
                     || str_contains($asset['public'], '..') || str_contains($asset['public'], '\\')
                     || ! $this->sha($asset['sha256'] ?? null)
+                    || ! is_bool($asset['head'] ?? null)
                 ) {
                     throw new SmartProviderException('SMART_FRAMEWORK_RUNTIME_ASSET_LOCK_INVALID', $id . ':' . (string) $key);
                 }

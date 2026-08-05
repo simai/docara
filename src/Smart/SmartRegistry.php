@@ -123,7 +123,7 @@ final readonly class SmartRegistry
         throw new \InvalidArgumentException('SMART_REGISTRY_TEMPLATE_NOT_FOUND:' . $templateId);
     }
 
-    /** @return array{path:string,kind:string,public:string,version:string,root?:string} */
+    /** @return array{path:string,kind:string,public:string,version:string,root?:string,head?:bool} */
     public function asset(string $assetKey): array
     {
         foreach ($this->definitions as $definition) {
@@ -135,7 +135,7 @@ final readonly class SmartRegistry
         throw new \InvalidArgumentException('SMART_REGISTRY_ASSET_NOT_FOUND:' . $assetKey);
     }
 
-    /** @return array<string, array{path:string,kind:string,public:string,version:string,root?:string}> */
+    /** @return array<string, array{path:string,kind:string,public:string,version:string,root?:string,head?:bool}> */
     public function assets(): array
     {
         $assets = [];

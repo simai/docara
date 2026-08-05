@@ -469,6 +469,9 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
                 // asset planner. File-backed Smart assets are registry-owned.
                 continue;
             }
+            if (($asset['head'] ?? true) !== true) {
+                continue;
+            }
             $url = $this->escape(
                 $assetBase . '/' . $asset['public'] . '?docara_v=' . $asset['version'],
             );

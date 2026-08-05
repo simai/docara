@@ -86,6 +86,7 @@ final class FrameworkLockSmartProvider implements SmartArtifactProvider
                     'public' => $asset['public'],
                     'version' => $asset['sha256'],
                     'root' => dirname($descriptor->root),
+                    'head' => $asset['head'],
                 ];
             }
             yield new SmartArtifactDescriptor(

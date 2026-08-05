@@ -65,6 +65,18 @@ Composer-команду, а `project.product-configurator` считает дем
 используют дефисы. Оба примера обходятся без fetch, backend, заказа, оплаты или
 выполнения команды.
 
+`project.install-builder` использует принятые `ui.input` и `ui.checkbox`.
+`project.product-configurator` показывает заполненный `ui.dropdown`; варианты
+в его slot `options` — только принятые дочерние `ui.list-item` с `type=text`.
+Все четыре Framework-компонента проходят тот же registry, Gateway и renderer,
+что и остальные Smart-компоненты. Их manifest, view, preset, template, assets
+и hydration contract проверяются по exact lock до render.
+
+Поддержка `ui.list-item` здесь намеренно узкая: это текстовый option для
+`ui.dropdown`. Icons, avatars, tags и самостоятельное использование
+`ui.list-item` не входят в контракт. Нельзя заменять options массивом `items`,
+raw-разметкой или локальной копией Framework-компонента.
+
 View выбирается одинаково для любого provider: явно указанный view имеет
 приоритет; иначе named preset выбирает зарегистрированный view; если не задано
 ни то ни другое, используется `default`. Это данные артефакта, поэтому новый

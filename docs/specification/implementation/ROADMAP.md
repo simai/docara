@@ -3,8 +3,8 @@
 Текущий статус архитектурного roadmap: Goal 1, Goal 2, Goal 3 и Goal A
 независимо приняты. Exact accepted Goal A product/runtime candidate —
 `8c04160…`. Goal B Full Interface Library & Useful Extension Demos активирован
-из governance baseline `3280a89…`; B0-B3 реализованы, а B4 остановлен на
-непринятом `ui.list-item`, который требуется accepted dropdown-контракту.
+из governance baseline `3280a89…`; B0-B3 реализованы, а independently accepted
+form-wave и text-only `ui.list-item` сейчас проходят финальную B4/B5-матрицу.
 Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
@@ -118,18 +118,18 @@ Goal B авторизован отдельным independent verdict и акти
 
 ## Goal B. Full Interface Library & Useful Extension Demos
 
-Статус: `goal_b_ui_list_item_dependency_blocked`, B0-B3 `pass`, B4
-`blocked_unaccepted_ui_list_item`. Design Atlas является детерминированной
+Статус: `goal_b_in_progress`, B0-B4 implementation `pass`, B5
+`in_progress`. Design Atlas является детерминированной
 проекцией принятых registries, а не вторым реестром. Search, breadcrumbs и
 pager переведены в зарегистрированные Smart leaves с точной default HTML
 parity. Starter содержит безопасные project-owned install builder, product
 configurator и footer links на том же production/preview path. Exact owner
-packet для `ui.input`, `ui.dropdown`, `ui.checkbox` принят. Однако полезный
-dropdown принимает options только через ещё не принятый `ui.list-item`;
-локальные `items`, raw markup и Docara-owned подмена запрещены.
-Все независимые B5-проверки на candidate `ccb076a…` зелёные: две full-сборки,
-selected build, static, package, fresh consumer и representative browser smoke.
-Это не заменяет обязательный B4 cross-host acceptance и не открывает Goal C.
+packet для `ui.input`, `ui.dropdown`, `ui.checkbox` и отдельный exact owner
+artifact `ui.list-item` приняты. Полезный dropdown использует только admitted
+`type=text` children; локальные `items`, raw markup и Docara-owned подмена
+запрещены. Candidate `ccb076a…` остаётся pre-wave historical baseline. Новый
+exact B4 candidate обязан повторно пройти full/package/consumer/browser B5 до
+independent-ready состояния. Это не открывает Goal C.
 
 Recovery source:
 `source/workflow/2026-08-04-docara-goal-b-interface-library.md`.

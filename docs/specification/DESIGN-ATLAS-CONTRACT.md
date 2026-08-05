@@ -36,6 +36,12 @@ Layouts derive the contract from registered regions. Sections derive it from
 registered slots and allowed blocks. Portable Smart containers derive it from
 the accepted owner manifest. Unknown files and prose cannot add Atlas entries.
 
+For the accepted Framework form wave, `ui.dropdown` therefore exposes
+`ui.list-item` as its only admitted child in slot `options`. The list item is
+supported only as `type=text` in that parent. Icons, avatars, tags and
+standalone list-item usage remain explicit nonclaims in provenance rather than
+implicit Atlas capabilities.
+
 ## Integrity
 
 The result has fingerprints for all three registries and one canonical Atlas

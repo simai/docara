@@ -877,6 +877,14 @@ final readonly class PortableSiteBuilder
                 $diagnosticsByUrl[(string) $page['url']] = $record;
                 $result->put((string) $page['url'], $record);
             }
+            foreach ($diagnosticsByUrl as $diagnosticRecord) {
+                foreach (($diagnosticRecord['declarative_pipeline']['assets'] ?? []) as $assetKey) {
+                    if (is_string($assetKey)) {
+                        $requiredSmartAssets[] = $assetKey;
+                    }
+                }
+            }
+            $requiredSmartAssets = array_values(array_unique($requiredSmartAssets));
             $redirectPublisher->publish($redirectPlan, $destination);
             $localeRoutePublisher->publish($localeRoutePlan, $destination);
             $this->copyContentAssets($contentAssets, $destination);
@@ -885,7 +893,7 @@ final readonly class PortableSiteBuilder
                 $this->publishFrameworkAssets($buildBasePlan->frameworkLock, $localeDestination);
                 (new PortablePublisherAssetPublisher($this->files, $smartRegistry))->publish(
                     $localeDestination,
-                    array_values(array_unique($requiredSmartAssets)),
+                    $requiredSmartAssets,
                 );
             }
             $diagnosticPath = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
@@ -904,7 +912,7 @@ final readonly class PortableSiteBuilder
                         'manifests' => $buildBasePlan->frameworkLock['manifests'],
                         'asset_projection' => $buildBasePlan->frameworkLock['asset_projection'],
                         'portable_smart_asset_projection' => (new FrameworkPortableAssetProjection($smartRegistry))
-                            ->forKeys(array_values(array_unique($requiredSmartAssets))),
+                            ->forKeys($requiredSmartAssets),
                     ],
                     'production_inputs' => $runtimeMetadata->productionInputGroups(),
                     'component_catalog_sha256' => hash('sha256', CanonicalJson::encode($effectiveComponentCatalog)),

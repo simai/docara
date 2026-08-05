@@ -21,6 +21,8 @@ use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Preview\PreviewKernel;
 use Simai\Docara\Preview\PreviewTarget;
 use Simai\Docara\Smart\Artifact\Sf5SmartArtifactV1Contract;
+use Simai\Docara\Smart\Provider\FrameworkLockSmartProvider;
+use Simai\Docara\Smart\Provider\SmartProviderException;
 use Simai\Docara\Smart\SmartRegistry;
 use Tests\TestCase;
 
@@ -171,6 +173,62 @@ final class FrameworkPortableWaveTest extends TestCase
             hash_file('sha256', $build . '/_docara/framework/smart/inputs/js/inputs.js'),
         );
         self::assertFileDoesNotExist($build . '/_docara/framework/smart/dropdown/js/dropdown.js');
+    }
+
+    #[Test]
+    public function immutable_framework_bytes_and_paths_fail_closed_before_registration(): void
+    {
+        $framework = $this->tmpPath('framework-lock-fixture');
+        $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/resources/framework', $framework);
+
+        $asset = $framework . '/assets/smart/inputs/js/inputs.js';
+        file_put_contents($asset, "\n/* mutation */\n", FILE_APPEND);
+        $this->expectException(SmartProviderException::class);
+        $this->expectExceptionMessage('SMART_FRAMEWORK_RUNTIME_ASSET_MISMATCH');
+        iterator_to_array($this->frameworkProvider($framework)->descriptors());
+    }
+
+    #[Test]
+    public function immutable_framework_symlink_and_lock_traversal_fail_closed(): void
+    {
+        $framework = $this->tmpPath('framework-symlink-fixture');
+        $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/resources/framework', $framework);
+        $template = $framework . '/portable-smart/ui.list-item/template/default.php';
+        $outside = $this->tmpPath('outside-template.php');
+        file_put_contents($outside, '<?php echo "outside";');
+        unlink($template);
+        symlink($outside, $template);
+
+        try {
+            iterator_to_array($this->frameworkProvider($framework)->descriptors());
+            self::fail('A symlinked immutable Framework template unexpectedly passed admission.');
+        } catch (SmartProviderException $exception) {
+            self::assertMatchesRegularExpression(
+                '/SMART_(?:FRAMEWORK_ARTIFACT|PROVIDER)_PATH_UNSAFE/',
+                $exception->getMessage(),
+            );
+        }
+
+        $framework = $this->tmpPath('framework-traversal-fixture');
+        $this->filesystem->copyDirectory(dirname(__DIR__, 2) . '/resources/framework', $framework);
+        $lockPath = $framework . '/portable-smart-lock.json';
+        $lock = $this->json($lockPath);
+        $lock['artifacts']['ui.input']['runtime_assets']['framework.portable.ui.input.js']['path'] = '../outside.js';
+        file_put_contents($lockPath, json_encode($lock, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");
+
+        $this->expectException(SmartProviderException::class);
+        $this->expectExceptionMessage('SMART_FRAMEWORK_RUNTIME_ASSET_LOCK_INVALID');
+        iterator_to_array($this->frameworkProvider($framework)->descriptors());
+    }
+
+    private function frameworkProvider(string $framework): FrameworkLockSmartProvider
+    {
+        return new FrameworkLockSmartProvider(
+            $framework . '/portable-smart',
+            'simai/bx-simai.main',
+            'b3cdff87563ff78e7eddf044048a4b298fc69036',
+            $framework . '/portable-smart-lock.json',
+        );
     }
 
     /** @return array<string, mixed> */

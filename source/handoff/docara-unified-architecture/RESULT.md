@@ -51,8 +51,10 @@ Rejected semantic candidate `e06ff0c…` and its B5 hashes remain historical:
 independent audit proved its displayed demo controls did not all affect their
 results. They are not current candidate evidence.
 
-Goal B is ready for independent audit, not self-accepted. Goal C and release
-remain unauthorized, and no external repository or site changed.
+Independent reverse-outcome audit accepted Goal B with `PASS_WITH_NOTES` on
+exact candidate `c3b91eee…`; the accepted Goal C result above completed the
+product track. Release review remains a separate unauthorized action, and no
+external repository or site changed.
 
 ## Accepted Goal A result
 

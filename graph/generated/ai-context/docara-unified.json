@@ -9,7 +9,7 @@
         "graph/specs/stages/c-public-documentation.json",
         "graph/specs/batches/c-public-documentation.json"
     ],
-    "canonical_sha256": "3c9c5cbff87216963ee967307050a8ec9ff38a8e14c00dcbc474387232553913",
+    "canonical_sha256": "74727b6cbf9123cb7076e27628cf89cf068b85d4fdadc2542a24508c31cbefc7",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",

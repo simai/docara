@@ -3,7 +3,7 @@
 Date: 2026-08-04
 Status: `ready_for_user_release_decision`
 Track ID: `docara.track.content_design_settings`
-Type: post-LEGO product proposal
+Type: completed post-LEGO product track
 Planning baseline HEAD: `d748eca04cd09e79ed6e2079a56b077265bcf905`
 Accepted Goal 3 product candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`
 Branch: `codex/docara-unified-architecture`
@@ -58,13 +58,13 @@ Goal A started only after all conditions became true:
 6. the first bounded goal has a named executor, independent auditor and exact
    evidence directory.
 
-The independent Goal 3 and Goal A verdicts are `PASS`; Goal B is accepted with
-`PASS_WITH_NOTES`. Goal C is authorized and active from exact handoff boundary
-`481e34cc…`.
+The independent Goal 3, Goal A and Goal C verdicts are `PASS`; Goal B is
+accepted with `PASS_WITH_NOTES`. Goal C ran from exact handoff boundary
+`481e34cc…` and is now complete on frozen candidate `eb35f5c6…`.
 
 ## 1. Track objective
 
-Copy-ready objective for a future Goal/track:
+Historical objective that governed the completed track:
 
 ```text
 После независимого принятия текущего Goal 3 превратить Docara в понятный расширяемый конструктор контентных сайтов: разделить библиотеки контента и оболочки, сделать зарегистрированные макеты, секции и варианты интерфейса безопасно выбираемыми через существующий DesignRegistry, перевести заменяемый publisher UI в общий SmartComponentGateway, создать отдельные разделы «Дизайн и интерфейс» и «Настройки», добавить полезные недублирующие Framework- и project-демонстрации и доказать production/preview parity без второго renderer, произвольных executable paths и ослабления безопасности.
@@ -1161,7 +1161,7 @@ Stop and return a blocker/correction instead of widening scope if:
 - an external owner change becomes necessary;
 - the goal exceeds its allowed surfaces or cannot produce independent evidence.
 
-## 16. Goal B — Full Interface Library & Useful Extension Demos
+## 16. Historical completed execution contract: Goal B — Full Interface Library & Useful Extension Demos
 
 ### 16.1 Entry gate
 
@@ -1230,7 +1230,8 @@ nonduplicating Framework artifacts.
 - default-site parity and explicit-preset deltas;
 - legacy publisher-leaf zero references before deletion;
 - synchronized specification/graph/handoff/evidence;
-- stop at Goal B `ready_for_independent_audit`.
+- the historical executor boundary was the Goal B independent-audit handoff;
+  the later `PASS_WITH_NOTES` verdict is recorded in the current status block.
 
 ### 16.4 Goal B Done When
 
@@ -1272,7 +1273,7 @@ nonduplicating Framework artifacts.
 - a demo requires backend, network, order/payment or command execution;
 - external repositories/sites would need to be changed from the Docara goal.
 
-## 17. Goal C — Public Documentation, Settings Reference & Agent Journey
+## 17. Historical completed execution contract: Goal C — Public Documentation, Settings Reference & Agent Journey
 
 ### 17.1 Entry gate
 
@@ -1343,7 +1344,8 @@ complete component, design, settings and agent documentation.
 - compare full/single and two builds;
 - run browser/responsive/accessibility/SEO smoke;
 - synchronize specification, graph, handoff and evidence;
-- stop at Goal C `ready_for_independent_audit`.
+- the historical executor boundary was the Goal C independent-audit handoff;
+  the later independent `PASS` is recorded in the current status block.
 
 ### 17.4 Goal C Done When
 
@@ -1540,15 +1542,19 @@ Current recovery returns to:
 
 ```text
 source/handoff/docara-unified-architecture/START.md
--> source/workflow/2026-08-04-docara-goal-b-interface-library.md
+-> graph/graph.json + graph/generated/ai-context/docara-unified.json
+-> explicit_user_release_decision
 ```
 
-The independently accepted Goal A evidence is the frozen predecessor. The Goal
-B workflow, canonical graph and handoff are the executable router. This track
-remains the parent product contract.
+Goals A, B and C are independently accepted and frozen predecessors. `START.md`
+and the terminal canonical graph/context are the only executable router; the
+older Goal A/B/C workflows remain historical evidence. This track remains the
+completed parent product contract.
 
-The canonical graph and `ACTIVE.md` identify exactly one current goal/batch and
-one next action. Goal C remains unauthorized until Goal B independent audit.
+The canonical graph and `ACTIVE.md` identify no active implementation goal and
+one next action: an explicit user decision whether to authorize a separate
+release-review workflow. Release review, merge, tag and deploy are not
+authorized by this track.
 
 ### 24.2 Progress reporting
 
@@ -1577,16 +1583,14 @@ At each independent audit:
 
 ## 25. Next safe action
 
-Goal A is independently accepted. The next safe action for the repository is:
+Goals A, B and C are independently accepted and the product track is complete.
+The next safe action for the repository is only an explicit user decision:
 
 ```text
-Implement B0 Design Atlas from
-source/workflow/2026-08-04-docara-goal-b-interface-library.md.
-Preserve the exact accepted Goal A runtime and do not start Goal C, release
-review, merge, tag or deploy.
+Decide whether to authorize a separate release-review workflow for exact
+product candidate eb35f5c6f18e5eb9be69e91887b09486f5703136.
 ```
 
-After the complete Goal B implementation and integrated evidence, stop at
-`goal_b_ready_for_independent_audit` for an independent verdict. If the exact
-Framework wave remains unavailable, stop at its recorded external gate without
-claiming Goal B readiness.
+Until that decision, preserve the exact candidate and terminal graph/context.
+Do not start release review, merge, push, tag, publication or deploy from this
+completed track.

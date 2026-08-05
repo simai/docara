@@ -121,8 +121,8 @@ Goal B и Goal C независимо приняты. Product track заверш
 
 ## Goal B. Full Interface Library & Useful Extension Demos
 
-Статус: `goal_b_ready_for_independent_audit`, B0-B6 implementation и
-интеграционная матрица `pass`. Design Atlas является детерминированной
+Статус: независимо принят `PASS_WITH_NOTES`; B0-B6 implementation и
+интеграционная матрица завершены. Design Atlas является детерминированной
 проекцией принятых registries, а не вторым реестром. Search, breadcrumbs и
 pager переведены в зарегистрированные Smart leaves с точной default HTML
 parity. Starter содержит безопасные project-owned install builder, product
@@ -132,9 +132,9 @@ artifact `ui.list-item` приняты. Полезный dropdown использ
 `type=text` children; локальные `items`, raw markup и Docara-owned подмена
 запрещены. Candidate `ccb076a…` остаётся pre-wave historical baseline. Exact
 product candidate `c3b91eee71ab906cd79ae7a119c6961664f03528` прошёл fresh
-full/package/two-consumer/browser B6 и передан на независимый аудит. Каждый
-отображаемый demo control влияет на allowlisted локальную команду или итог. Это не
-открывает Goal C.
+full/package/two-consumer/browser B6 и независимый reverse-outcome audit.
+Каждый отображаемый demo control влияет на allowlisted локальную команду или
+итог. Goal C также независимо принят на последующем frozen candidate.
 
 Recovery source:
 `source/workflow/2026-08-04-docara-goal-b-interface-library.md`.

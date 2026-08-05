@@ -13,6 +13,7 @@ Exact product candidate: `eb35f5c6f18e5eb9be69e91887b09486f5703136`
 | C1.4 | [integrated exact-candidate matrix](C1.4-INTEGRATED-RETEST.md) | complete |
 | C1.5 | [graph, handoff, rollback and nonclaims](C1.5-HANDOFF.md) | complete |
 | C1.6 | [independent reverse-outcome acceptance](C1.6-INDEPENDENT-ACCEPTANCE.md) | PASS |
+| C1.7 | [terminal router contradiction correction](C1.7-TERMINAL-ROUTER-CORRECTION.md) | complete |
 
 The prior `b8b47a…` public ledger is rejected current evidence. The independent
 audit reproduced the old source at ledger `c778f629…`; both remain historical

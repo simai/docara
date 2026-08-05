@@ -61,4 +61,32 @@ final class GoalCPublicDocumentationTest extends TestCase
         self::assertStringContainsString('icons, avatars, tags', $framework);
         self::assertStringContainsString(':::atlas_index {kind=smart owner=ui support=supported}', $framework);
     }
+
+    #[Test]
+    public function design_root_maps_every_shell_surface_and_real_insertion_file(): void
+    {
+        $base = dirname(__DIR__, 2) . '/docs/site/content/ru/design';
+        foreach (['composition', 'interface', 'project-shell', 'previews'] as $route) {
+            self::assertFileExists($base . '/' . $route . '.md');
+        }
+        $composition = (string) file_get_contents($base . '/composition.md');
+        foreach ([
+            'resources/layouts/docara.docs.json',
+            'resources/views/layout.docara.docs.json',
+            'resources/sections/docara.article.json',
+            'resources/blocks/content.document.json',
+            'SmartComponentGateway',
+            'LayoutComposer',
+            'PageBuilder',
+        ] as $marker) {
+            self::assertStringContainsString($marker, $composition);
+        }
+        $interface = (string) file_get_contents($base . '/interface.md');
+        foreach (['Brand', 'Header navigation', 'Sidebar tree', 'Mobile/compact navigation', 'Outline / TOC', 'Search', 'Breadcrumbs', 'Previous/next pager', 'Reader preferences', 'Footer', 'Outer document'] as $surface) {
+            self::assertStringContainsString($surface, $interface);
+        }
+        $previews = (string) file_get_contents($base . '/previews.md');
+        self::assertSame(3, substr_count($previews, ':::internal_preview'));
+        self::assertStringContainsString('PREVIEW_BUILD_PURPOSE_FORBIDDEN', $previews);
+    }
 }

@@ -36,7 +36,10 @@ final readonly class DesignAtlasService
             }
         }
         $frameworkLock = $runtime->site['framework_lock'] ?? null;
-        if (is_string($frameworkLock) && $frameworkLock !== '') {
+        if (is_string($frameworkLock)
+            && $frameworkLock !== ''
+            && is_file($runtime->root . '/' . ltrim($frameworkLock, '/'))
+        ) {
             $catalog = EffectiveComponentCatalogBuilder::bundled(
                 FrameworkLock::fromJsonFile($runtime->root . '/' . ltrim($frameworkLock, '/')),
             )->build();

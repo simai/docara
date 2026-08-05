@@ -17,8 +17,8 @@
 
 ```bash
 docara inspect smart project.install-builder --json
-docara scaffold smart project.example --dry-run --json
-docara scaffold --apply=<exact-plan-sha256> --json
+PLAN_SHA256="$(docara scaffold smart project.example --dry-run --json | php -r '$r=json_decode(stream_get_contents(STDIN),true,512,JSON_THROW_ON_ERROR); echo $r["data"]["plan_id"];')"
+docara scaffold --apply="$PLAN_SHA256" --json
 docara validate smart project.example --json
 docara preview smart --page=/ru/project-demos/ --selector=ui.dropdown --json
 docara test smart ui.dropdown --page=/ru/project-demos/ --json

@@ -22,4 +22,3 @@ Dropdown меняет базовый тариф, checkboxes — локальны
 
 :::atlas_index {support=project}
 :::
-

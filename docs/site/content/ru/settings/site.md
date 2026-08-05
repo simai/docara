@@ -8,4 +8,3 @@
 :::
 
 `Default: не объявлен` означает, что JSON Schema не приписывает скрытое значение: effective value приходит из принятого runtime/preset/inheritance и проверяется через inspect/receipt. Это честнее, чем дублировать runtime default в prose.
-

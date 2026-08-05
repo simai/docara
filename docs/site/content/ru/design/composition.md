@@ -41,4 +41,3 @@ Atlas публикует для каждого container `allowed_children`, `sl
 
 :::atlas_index {kind=layout,section,block}
 :::
-

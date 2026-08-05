@@ -6,4 +6,3 @@ Page level задаёт title/description/slug/locale и разрешённые 
 :::
 
 Минимальный front matter contract: `title`, `description`, `tags`, `draft`, `translation_key`. Draft нельзя собрать как public `--page`. Route rename требует full build и явный redirect со старого URL.
-

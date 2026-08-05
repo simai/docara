@@ -13,4 +13,3 @@ docara schema smart --json
 Build receipt связывает route с source/config chain, engine revision, Framework tuple, manifests/templates/assets hashes, Document IR hash и PageBuilder provenance без private absolute paths. Schema-derived tables на этих страницах содержат точный `resources/schemas/<file>#<pointer>` для каждого поля.
 
 При file-backed ошибке сначала исправьте названный path/pointer/location, повторите doctor/validate, затем preview/build. Не редактируйте generated receipt как способ «исправить» provenance.
-

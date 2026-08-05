@@ -6,4 +6,3 @@
 :::
 
 После изменения section inheritance выполните full build: navigation, search, previous/next и несколько descendants могут измениться одновременно.
-

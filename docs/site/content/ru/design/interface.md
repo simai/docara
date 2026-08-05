@@ -26,4 +26,3 @@
 ## Граница page/head
 
 Project contribution не может заменить canonical URL, locale metadata, build receipt, search/navigation provenance или произвольный `<head>` fragment. Эти поверхности остаются application-owned, чтобы static verification и full/single parity были проверяемыми.
-

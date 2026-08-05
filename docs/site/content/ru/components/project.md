@@ -27,4 +27,3 @@ docara test smart project.example --page=/ru/examples/ --json
 Dry-run фиксирует diff и input hashes; apply повторно проверяет exact plan и project root. Traversal, symlink/hardlink, duplicate namespace, stale plan и запись в engine/generated/lock/external roots отклоняются.
 
 Полный путь разработчика описан в [Developer/AI SDK](/ru/development/developer-sdk/), а принятые полезные сценарии — в [примерах](/ru/examples/).
-

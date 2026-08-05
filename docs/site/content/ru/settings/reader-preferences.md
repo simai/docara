@@ -7,4 +7,3 @@
 ```
 
 Панель обязана поддерживать keyboard, focus trap/return, Esc и reduced motion. Неизвестная group/field, duplicate или превышение schema limits отклоняется. Local storage не является project configuration provenance.
-

@@ -28,4 +28,3 @@ Manifest, view, preset, slot, template, assets и hydration проверяютс
 ## Доступность и ошибки
 
 Label, keyboard, focus-return и объявленные slots принадлежат owner artifact. Unknown component, version/hash mismatch, неразрешённый child или unsafe path останавливают сборку до template execution.
-

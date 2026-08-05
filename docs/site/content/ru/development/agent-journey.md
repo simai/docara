@@ -61,4 +61,3 @@ suggestion: remove the unsafe symlink and repeat dry-run
 ```
 
 Не правьте plan/report/receipt. Устраните причину в project-owned source, повторите discover/validate/dry-run и получите новый content-addressed plan.
-

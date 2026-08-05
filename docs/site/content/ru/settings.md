@@ -29,4 +29,3 @@
 
 :::schema_reference {schema=presentation scope=shared}
 :::
-

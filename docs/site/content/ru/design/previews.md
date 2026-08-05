@@ -21,4 +21,3 @@ Preview не имеет собственного renderer. `PreviewKernel` вы�
 :::
 
 Команда `docara preview smart|region|layout|page` публикует isolated tree в `.docara-preview/output/<target>/`. `verify-static` обязан вернуть `PREVIEW_BUILD_PURPOSE_FORBIDDEN`; для production нужен обычный full build.
-

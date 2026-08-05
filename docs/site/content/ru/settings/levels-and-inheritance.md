@@ -16,4 +16,3 @@ docara build production --page=/ru/components/alert/
 ```
 
 Global locale, route, navigation topology, shared lang или schema change требует full build; обычная правка prose/локального page setting допускает single-page rebuild при сохранённом accepted full receipt.
-

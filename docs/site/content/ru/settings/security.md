@@ -13,4 +13,3 @@ Fail-closed запрещены:
 - stale/hash-mismatched apply plan.
 
 Ошибка не должна менять ни одного байта вне verified project root. Diagnostics используют safe relative path/pointer/location и не публикуют secrets/private absolute paths.
-

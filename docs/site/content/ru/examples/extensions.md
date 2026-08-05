@@ -26,4 +26,3 @@
 ## Как читать статусы
 
 `supported` и `project` — доступные public scenarios. `compatibility` означает лишь доказательство совместимости. Proposal/rejected artifacts не попадают в admitted Atlas и не могут быть показаны как рабочий public example.
-

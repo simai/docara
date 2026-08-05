@@ -7,4 +7,3 @@
 ```
 
 Regions принадлежат layout descriptor, а compatible Sections/slots/Blocks видны в [Design Atlas](/ru/design/composition/). Unknown region, incompatible section/block, invalid View Tree utility или unsafe path отклоняется до render.
-

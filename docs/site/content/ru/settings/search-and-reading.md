@@ -7,4 +7,3 @@
 ```
 
 Search text строится из typed/rendered document semantics без component-ID allowlist. Navigation, outline, breadcrumbs и pager используют тот же PageBuilder context. Изменение shared search/reading policy требует full build.
-

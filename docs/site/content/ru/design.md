@@ -15,4 +15,3 @@ Docara собирает интерфейс как LEGO на трёх уровн�
 :::
 
 Atlas строится командой `docara atlas --json` только из admitted DesignRegistry, SmartRegistry и BindingRegistry. Его fingerprint входит в build-owned projection; ручного списка компонентов здесь нет.
-

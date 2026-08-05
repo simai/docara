@@ -23,4 +23,3 @@ Project-owned shell contribution — это data-only artifact в разрешё
 - shell contribution не меняет outer page/head.
 
 Пример footer из принятого Goal B показывает shell-role, а install builder и product configurator — content-role. Все три проходят существующие registries и Gateway.
-

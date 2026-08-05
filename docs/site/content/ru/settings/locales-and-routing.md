@@ -14,4 +14,3 @@
 ```
 
 UI copy хранится только в `content/<locale>/lang.json`; page prose и component presentation туда не переносятся. Root/legacy redirects создаёт builder, project route redirects — `redirects.json`.
-

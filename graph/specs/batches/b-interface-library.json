@@ -7,8 +7,8 @@
   "title": "Goal B interface library execution",
   "summary": "Execute B0-B6 sequentially, including useful-demo semantics, and stop at independent Goal B audit or an exact external-dependency gate.",
   "owner": "dev",
-  "lifecycle": "active",
-  "readiness": "ready_for_independent_audit",
+  "lifecycle": "complete",
+  "readiness": "accepted",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-04-docara-goal-b-interface-library.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md"],
@@ -17,7 +17,7 @@
   "allowed_scope": ["Atlas application service and schemas", "Accepted Design, Smart and Binding registry projections", "Existing publisher/compiler/composition integration", "Registered package/project artifacts and fixtures", "Tests, specification, graph, workflow, handoff and evidence"],
   "forbidden_scope": ["Second parser, renderer, DesignRegistry, Gateway, LayoutComposer, PageBuilder or preview engine", "Project executable adapters or arbitrary paths", "Unsupported Framework components labeled supported", "Goal C", "External repositories or sites", "Merge, Push, Tag, Release, Deploy"],
   "checks": ["Atlas schema/generation/freshness and CLI-MCP parity", "Container admission and security negatives", "Default and preset parity", "Project fixture without engine edit", "Framework exact pin and cross-host proof", "Full regression and deterministic builds", "Browser and accessibility matrix", "Graph and documentation validation"],
-  "status": "ready_for_independent_audit",
+  "status": "accepted",
   "baseline_revision": "3280a89cc21f2b4fcfc8e7539c673ca62a199446",
   "candidate_revision": "c3b91eee71ab906cd79ae7a119c6961664f03528",
   "accepted_goal_a_candidate": "8c04160ab50549b060fb933cf80f86193cd92113",
@@ -28,5 +28,5 @@
   "ui_list_item_packet_sha256": "7dbcb161e8bb48c342a385c3f28f7dc8628eecdf0c09758ab3113eb8dc2107db",
   "public_tree_sha256": "1fc8625032cca56da7256b7eaac4981ddae11a3dd8263178337fc55666772274",
   "package_sha256": "7dc6d43537abdb58a503808ba7fef4dd33d8e7a19b1e82ebe07befcfa109b205",
-  "next_action": "independent_goal_b_reverse_outcome_audit"
+  "next_action": "execute_goal_c_c1_components"
 }

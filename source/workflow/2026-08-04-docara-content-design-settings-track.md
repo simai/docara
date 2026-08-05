@@ -1,20 +1,20 @@
 # Docara: Content, Design & Settings product track
 
 Date: 2026-08-04
-Status: `goal_b_ready_for_independent_audit`
+Status: `goal_c_in_progress`
 Track ID: `docara.track.content_design_settings`
 Type: post-LEGO product proposal
 Planning baseline HEAD: `d748eca04cd09e79ed6e2079a56b077265bcf905`
 Accepted Goal 3 product candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`
 Branch: `codex/docara-unified-architecture`
-Remaining unstarted goals: 1
-Current canonical next action: `independent_goal_b_reverse_outcome_audit`
+Remaining unstarted goals: 0
+Current canonical next action: `execute_goal_c_c1_components`
 
-Status: `goal_b_ready_for_independent_audit`
-Current stage: `docara.stage.b.interface_library`
-Current batch: `docara.batch.b.interface_library`
-Current next action: `independent_goal_b_reverse_outcome_audit`
-Next roadmap goal: `docara.goal.b.interface_library` (`ready_for_independent_audit`, authorized=`true`)
+Status: `goal_c_in_progress`
+Current stage: `docara.stage.c.public_documentation`
+Current batch: `docara.batch.c.public_documentation`
+Current next action: `execute_goal_c_c1_components`
+Next roadmap goal: `docara.goal.c.public_documentation` (`in_progress`, authorized=`true`)
 
 ## 0. Status and authority
 
@@ -24,21 +24,20 @@ accepted and the user explicitly activated Goal A on 2026-08-04. The accepted
 Goal A execution contract is
 `source/workflow/2026-08-04-docara-goal-a-shell-contract.md`.
 
-Goal 3 and Goal A are independently accepted. Goal B B0-B6 and the full fresh
-matrix are implemented on corrected exact candidate `c3b91eee…`. Its accepted
+Goal 3, Goal A and Goal B are independently accepted. Goal B B0-B6 and the full
+fresh matrix pass on corrected exact candidate `c3b91eee…`. Its accepted
 input/dropdown/checkbox Framework wave and accepted text-only `ui.list-item`
 dependency use the single production path. Executor readiness does not
 authorize:
 
-- Goal C implementation before an independent Goal B verdict;
 - rewriting the accepted Goal 3 candidate or historical evidence;
 - external Framework owner repositories or sites;
 - merge, push, tag, release or deploy.
 
-The only authorized current action is:
+The authorized current action is:
 
 ```text
-independent_goal_b_reverse_outcome_audit
+execute_goal_c_c1_components
 ```
 
 ### Start gate
@@ -56,9 +55,9 @@ Goal A started only after all conditions became true:
 6. the first bounded goal has a named executor, independent auditor and exact
    evidence directory.
 
-The independent Goal 3 and Goal A verdicts are `PASS`. Goal B accepted exact
-Framework inputs are present; the corrected executor result now awaits an
-independent reverse-outcome audit. Goal C remains unauthorized.
+The independent Goal 3 and Goal A verdicts are `PASS`; Goal B is accepted with
+`PASS_WITH_NOTES`. Goal C is authorized and active from exact handoff boundary
+`481e34cc…`.
 
 ## 1. Track objective
 

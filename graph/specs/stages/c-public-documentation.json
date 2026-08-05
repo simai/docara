@@ -1,0 +1,34 @@
+{
+  "id": "docara.stage.c.public_documentation",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "milestone",
+  "tz_role": "implementation_stage",
+  "title": "Goal C. Public Documentation, Settings Reference and Agent Journey",
+  "summary": "Project the accepted Atlas, schemas and application services into one discoverable Markdown-owned public product journey.",
+  "owner": "teamlead",
+  "lifecycle": "active",
+  "readiness": "in_progress",
+  "visibility": "repository",
+  "source_refs": [
+    "source/workflow/2026-08-04-docara-content-design-settings-track.md#17-goal-c--public-documentation-settings-reference--agent-journey",
+    "source/workflow/2026-08-05-docara-goal-c-public-documentation-settings-agent-journey.md"
+  ],
+  "evidence_refs": ["source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md"],
+  "profile_refs": ["docara.unified"],
+  "parent_goal_ref": "docara.goal.unified",
+  "done_when": [
+    "Components exposes six Atlas-backed entry points and complete supported Markdown/container coverage.",
+    "Design documents the real registry-to-layout insertion chain and every replaceable shell surface.",
+    "Settings combines task guides with exhaustive schema-derived scope, default, validation and provenance.",
+    "CLI, JSON and optional MCP document one safe discover-plan-preview-apply-validate service path.",
+    "Routes, links, schemas, builds, browser, accessibility and SEO evidence pass on one exact candidate."
+  ],
+  "batch_refs": ["docara.batch.c.public_documentation"],
+  "required_gates": ["docara.gate.architecture_acceptance"],
+  "required_evidence": ["Route/source/redirect inventory", "Atlas and schema freshness", "Component/design/settings journeys", "Build and browser matrix", "Independent reverse-outcome audit"],
+  "next_stage_ref": null,
+  "status": "in_progress",
+  "baseline_revision": "481e34cccade12a0d7f8d2dbf9b4d37933e49419",
+  "next_action": "execute_goal_c_c1_components"
+}

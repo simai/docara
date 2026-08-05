@@ -1,12 +1,18 @@
 # Current Docara result
 
-Current state: `goal_b_ready_for_independent_audit`
+Current state: `goal_c_in_progress`
 
-Current candidate: `c3b91eee71ab906cd79ae7a119c6961664f03528`
+Current candidate: `481e34cccade12a0d7f8d2dbf9b4d37933e49419`
 
-Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md`
 
-## Goal B current result
+## Goal C current result
+
+Goal B product `c3b91eee…` is independently accepted. Goal C C0 has frozen 104
+physical Markdown owners, an empty project redirect set and stable navigation.
+C1-C6 are active; no Goal C product candidate or acceptance is claimed yet.
+
+## Accepted Goal B result
 
 Independent audit accepted Goal A candidate `8c04160…` with exact public tree
 `8b7fdb61…`. Goal B exact product candidate `c3b91eee…` completes B0-B6: one

@@ -6,38 +6,38 @@
         "graph/graph.json",
         "graph/dna/project-dna.json",
         "graph/specs/goals/unified-docara.json",
-        "graph/specs/stages/b-interface-library.json",
-        "graph/specs/batches/b-interface-library.json"
+        "graph/specs/stages/c-public-documentation.json",
+        "graph/specs/batches/c-public-documentation.json"
     ],
-    "canonical_sha256": "19c7c06ac1a1502b0a445b306dd667d806845a35fb204f6b2cbe55ac388faf93",
+    "canonical_sha256": "9167a9a53129da12305c4be8147df81eba42785015e2059c3d606dc8a7df4112",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "goal_b_ready_for_independent_audit",
+        "state": "goal_c_in_progress",
         "goal": "docara.goal.unified",
-        "goal_readiness": "goal_b_ready_for_independent_audit",
-        "stage": "docara.stage.b.interface_library",
-        "stage_readiness": "ready_for_independent_audit",
-        "stage_status": "ready_for_independent_audit",
-        "batch": "docara.batch.b.interface_library",
-        "batch_readiness": "ready_for_independent_audit",
-        "batch_status": "ready_for_independent_audit",
-        "completed_checkpoint": "goal_b_b6_semantic_correction_executor_matrix_complete",
-        "candidate_revision": "c3b91eee71ab906cd79ae7a119c6961664f03528",
-        "next_action": "independent_goal_b_reverse_outcome_audit",
-        "evidence": "source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md"
+        "goal_readiness": "goal_c_in_progress",
+        "stage": "docara.stage.c.public_documentation",
+        "stage_readiness": "in_progress",
+        "stage_status": "in_progress",
+        "batch": "docara.batch.c.public_documentation",
+        "batch_readiness": "in_progress",
+        "batch_status": "in_progress",
+        "completed_checkpoint": "goal_c_c0_route_source_redirect_inventory_frozen",
+        "candidate_revision": "481e34cccade12a0d7f8d2dbf9b4d37933e49419",
+        "next_action": "execute_goal_c_c1_components",
+        "evidence": "source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md"
     },
     "roadmap": {
         "source": "source/workflow/2026-08-04-docara-content-design-settings-track.md",
         "next_goal": {
-            "id": "docara.goal.b.interface_library",
-            "title": "Goal B Full Interface Library and Useful Extension Demos",
-            "status": "ready_for_independent_audit",
+            "id": "docara.goal.c.public_documentation",
+            "title": "Goal C Public Documentation, Settings Reference and Agent Journey",
+            "status": "in_progress",
             "authorized": true,
-            "source": "source/workflow/2026-08-04-docara-goal-b-interface-library.md"
+            "source": "source/workflow/2026-08-05-docara-goal-c-public-documentation-settings-agent-journey.md"
         }
     },
     "architecture": {
@@ -63,10 +63,10 @@
         }
     },
     "forbidden_now": [
-        "Second parser, renderer, DesignRegistry, Gateway, LayoutComposer, PageBuilder or preview engine",
-        "Project executable adapters or arbitrary paths",
-        "Unsupported Framework components labeled supported",
-        "Goal C",
+        "Second parser, renderer, registry, Gateway, LayoutComposer, PageBuilder or preview engine",
+        "Public prose in PHP or JSON",
+        "Unsupported Framework support claims",
+        "Goal D",
         "External repositories or sites",
         "Merge, Push, Tag, Release, Deploy"
     ],
@@ -75,8 +75,8 @@
         "source/workflow/ACTIVE.md",
         "source/workflow/2026-08-04-docara-content-design-settings-track.md",
         "graph/graph.json",
-        "graph/specs/stages/b-interface-library.json",
-        "graph/specs/batches/b-interface-library.json",
+        "graph/specs/stages/c-public-documentation.json",
+        "graph/specs/batches/c-public-documentation.json",
         "graph/generated/ai-context/docara-unified.json",
         "source/handoff/docara-unified-architecture/NEXT.md",
         "source/handoff/docara-unified-architecture/RESULT.md"

@@ -18,32 +18,30 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal_b_ready_for_independent_audit`
+Current state: `goal_c_in_progress`
 
 Current goal: `docara.goal.unified`
 
-Current stage: `docara.stage.b.interface_library`
+Current stage: `docara.stage.c.public_documentation`
 
-Current batch: `docara.batch.b.interface_library`
+Current batch: `docara.batch.c.public_documentation`
 
-Current next action: `independent_goal_b_reverse_outcome_audit`
+Current next action: `execute_goal_c_c1_components`
 
-Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md`
 
-Current candidate: `c3b91eee71ab906cd79ae7a119c6961664f03528`
+Current candidate: `481e34cccade12a0d7f8d2dbf9b4d37933e49419`
 
-Next roadmap goal: `docara.goal.b.interface_library`
+Next roadmap goal: `docara.goal.c.public_documentation`
 
-Next roadmap status: `ready_for_independent_audit`
+Next roadmap status: `in_progress`
 
 Next roadmap authorized: `true`
 
-Goal 1 and Goal 2 were independently accepted with `PASS_WITH_NOTES`; Goal 3
-and Goal A were independently accepted with `PASS`. Goal B Full Interface
-Library & Useful Extension Demos is complete at executor level on one corrected
-exact candidate and awaits independent reverse-outcome audit. The accepted form wave
-and accepted text-only `ui.list-item` dependency are consumed without a local
-dialect. Goal C and release review remain unauthorized.
+Goal 1, Goal 2 and Goal B were independently accepted with `PASS_WITH_NOTES`;
+Goal 3 and Goal A were accepted with `PASS`. Goal C is now authorized. C0 keeps
+all 104 entry routes canonical and freezes navigation/redirect decisions. The
+next work is C1 through C6; release review remains unauthorized.
 
 ## 3. Read in this order
 
@@ -62,10 +60,9 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only the current goal
 
-Run only the independent Goal B reverse-outcome audit against candidate
-`c3b91eee…` and the final B6 evidence. Preserve accepted Goal 1-3 and Goal A
-runtime invariants. Do not implement Goal C or start release review. Executor
-evidence is not independent acceptance.
+Execute Goal C C1-C6 from the active recovery file. Preserve accepted Goal 1-3,
+Goal A and Goal B runtime/support invariants. Stop at
+`goal_c_ready_for_independent_audit`; do not self-accept or start release review.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,

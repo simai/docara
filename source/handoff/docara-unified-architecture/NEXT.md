@@ -1,17 +1,15 @@
-# Next action: `independent_goal_b_reverse_outcome_audit`
+# Next action: `execute_goal_c_c1_components`
 
-Current state: `goal_b_ready_for_independent_audit`
+Current state: `goal_c_in_progress`
 
-Current candidate: `c3b91eee71ab906cd79ae7a119c6961664f03528`
+Current candidate: `481e34cccade12a0d7f8d2dbf9b4d37933e49419`
 
-Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md`
 
-Goal 1-3 and Goal A are independently accepted. Goal B B0-B6 and the full
-fresh matrix are green on exact product candidate `c3b91eee…`. The immutable
-form wave and text-only list-item dependency are exact-pinned and flow through
-one provider/registry/Gateway/renderer path. Every displayed demo control now
-changes its allowlisted local result. Perform the independent Goal B
-audit only. Do not begin Goal C, release or live actions.
+Goal 1-3, Goal A and Goal B are independently accepted. Goal C is active. C0
+keeps all 104 entry routes canonical; execute C1-C6 to publish the six component
+entry points, design/settings roots, safe agent journey and integrated evidence.
+Do not start release or live actions.
 
 ## Historical deployment decision (parked, not executable)
 

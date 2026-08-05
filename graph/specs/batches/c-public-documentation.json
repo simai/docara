@@ -10,8 +10,8 @@
   "lifecycle": "active",
   "readiness": "ready_for_independent_audit",
   "visibility": "repository",
-  "source_refs": ["source/workflow/2026-08-05-docara-goal-c-public-documentation-settings-agent-journey.md"],
-  "evidence_refs": ["source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md"],
+  "source_refs": ["source/workflow/2026-08-05-docara-goal-c-c1-truthfulness-correction.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md"],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.c.public_documentation",
   "allowed_scope": ["Markdown public owners", "Atlas and schema derived projections", "Existing parser/compiler/PageBuilder integration", "Tests, specification, graph, workflow, handoff and evidence"],
@@ -19,7 +19,7 @@
   "checks": ["Route/source/redirect ownership", "Atlas and schema coverage/freshness", "Container and unsafe-operation negatives", "Full/full/single determinism", "Static, browser, accessibility and SEO", "Graph and documentation validation"],
   "status": "implementation_complete_audit_pending",
   "baseline_revision": "481e34cccade12a0d7f8d2dbf9b4d37933e49419",
-  "candidate_revision": "ae6a1e918e248517b728cf40460d6c359991b66e",
+  "candidate_revision": "eb35f5c6f18e5eb9be69e91887b09486f5703136",
   "accepted_goal_b_candidate": "c3b91eee71ab906cd79ae7a119c6961664f03528",
   "next_action": "independent_goal_c_reverse_outcome_audit"
 }

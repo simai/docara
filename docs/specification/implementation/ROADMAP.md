@@ -1,11 +1,12 @@
 # Дорожная карта упрощения Docara
 
 Текущий статус архитектурного roadmap: Goal 1, Goal 2, Goal 3, Goal A и Goal B
-независимо приняты. Goal C реализован на exact product candidate
-`ae6a1e918e248517b728cf40460d6c359991b66e` и ожидает только независимый
-reverse-outcome audit. Шесть входов компонентов, разделы дизайна и настроек,
-safe agent journey и принятые extension demos опубликованы из Markdown, Atlas
-и schema-derived проекций без второго publication path.
+независимо приняты. Goal C C1 исправил projection/settings/journey defects на
+exact product candidate `eb35f5c6f18e5eb9be69e91887b09486f5703136` и
+ожидает только независимый reverse-outcome audit. Шесть входов компонентов,
+разделы дизайна и настроек, исполняемый safe agent journey и принятые extension
+demos опубликованы из Markdown, admitted Atlas и exhaustive schema-derived
+проекций без второго publication path.
 Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не

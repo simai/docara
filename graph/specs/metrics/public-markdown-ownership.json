@@ -15,7 +15,7 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.2-PHYSICAL-EXAMPLES.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md",
     "source/workflow/evidence/2026-08-03-docara-goal3-correction/C3.11-INTEGRATED-RETEST.md",
-    "source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/C6-INTEGRATED-HANDOFF.md"
+    "source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/C1.4-INTEGRATED-RETEST.md"
   ],
   "profile_refs": ["docara.unified"],
   "metric_type": "coverage",

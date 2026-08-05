@@ -4,8 +4,9 @@
 accepted Goal A product/runtime candidate —
 `8c04160ab50549b060fb933cf80f86193cd92113`. Goal B Full Interface Library &
 Useful Extension Demos принят на exact candidate
-`c3b91eee71ab906cd79ae7a119c6961664f03528`. Goal C завершил implementation на
-exact candidate `ae6a1e918e248517b728cf40460d6c359991b66e`; состояние только
+`c3b91eee71ab906cd79ae7a119c6961664f03528`. Goal C C1 устранил найденные
+semantic/evidence defects на exact candidate
+`eb35f5c6f18e5eb9be69e91887b09486f5703136`; состояние только
 `goal_c_ready_for_independent_audit`, независимая приёмка ещё не заявлена. Частичный
 candidate `ccb076a89535954022ca89eb70b84d6c81d80de3` остаётся historical
 baseline.
@@ -61,20 +62,24 @@ PASS ставится только по воспроизводимому evidenc
 
 ## Goal C. Public Documentation, Settings Reference & Agent Journey
 
-- [x] `/components/` публикует шесть Markdown-owned входов с Atlas-derived
-      status/cards и полным contract/failure coverage.
+- [x] `/components/` публикует шесть Markdown-owned входов из одной admitted
+      Atlas projection; namespace, owner, origin, provider, authoring kind и
+      support независимы, а real-project tests проверяют rendered groups.
 - [x] `/design/` объясняет реальную Layout -> region -> Section -> slot ->
       Block -> Smart -> View цепочку и границу application-owned page/head.
-- [x] Все 13 `/settings/` task guides используют одну schema-derived ссылочную
-      проекцию с scope/default/validation/provenance.
-- [x] CLI/JSON/MCP journey документирует один discover -> plan -> preview ->
-      dry-run -> hash-bound apply -> validate service path.
+- [x] Все 13 `/settings/` task guides используют одну exhaustive schema-derived
+      проекцию с `$defs`/refs, compositions/conditionals, exact JSON pointers,
+      scope/default/validation/provenance.
+- [x] CLI/JSON/MCP journey документирует и в disposable project исполняет один
+      discover -> plan -> preview -> dry-run -> hash-bound apply -> validate
+      service path.
 - [x] Все 132 route имеют один физический Markdown owner; redirects не нужны и
       duplicate prose owners отсутствуют.
 - [x] Atlas/schema receipts hash-bound к production build receipt и
       fail-closed проверяются static verifier.
 - [x] Full/full/single, static, package/consumer, browser/SEO и cross-host
-      executor evidence зелёные на exact candidate `ae6a1e91…`.
+      executor evidence зелёные на exact candidate `eb35f5c6…`; complete-tree
+      digest `44d827a6…`, package ZIP `50a0f7cf…`.
 - [ ] Независимый reverse-outcome audit Goal C.
 
 ## A. Источники истины

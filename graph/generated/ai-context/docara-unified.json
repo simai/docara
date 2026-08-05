@@ -9,7 +9,7 @@
         "graph/specs/stages/c-public-documentation.json",
         "graph/specs/batches/c-public-documentation.json"
     ],
-    "canonical_sha256": "0b3acffcc1b8c752ab497a5c267205be649a3a0653326016709648dce9f74681",
+    "canonical_sha256": "3d227fa300e77c17fd404d9696a80a2539e2c2b56a767e888570a1fbb9959a36",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -25,10 +25,10 @@
         "batch": "docara.batch.c.public_documentation",
         "batch_readiness": "ready_for_independent_audit",
         "batch_status": "implementation_complete_audit_pending",
-        "completed_checkpoint": "goal_c_c0_through_c6_implementation_and_evidence_complete",
-        "candidate_revision": "ae6a1e918e248517b728cf40460d6c359991b66e",
+        "completed_checkpoint": "goal_c_c1_truthfulness_correction_and_exact_retest_complete",
+        "candidate_revision": "eb35f5c6f18e5eb9be69e91887b09486f5703136",
         "next_action": "independent_goal_c_reverse_outcome_audit",
-        "evidence": "source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md"
+        "evidence": "source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md"
     },
     "roadmap": {
         "source": "source/workflow/2026-08-04-docara-content-design-settings-track.md",
@@ -37,7 +37,7 @@
             "title": "Goal C Public Documentation, Settings Reference and Agent Journey",
             "status": "ready_for_independent_audit",
             "authorized": true,
-            "source": "source/workflow/2026-08-05-docara-goal-c-public-documentation-settings-agent-journey.md"
+            "source": "source/workflow/2026-08-05-docara-goal-c-c1-truthfulness-correction.md"
         }
     },
     "architecture": {

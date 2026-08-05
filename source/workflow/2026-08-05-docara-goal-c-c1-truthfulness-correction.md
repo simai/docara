@@ -1,7 +1,7 @@
 # Docara Goal C-C1 — catalog, settings and agent-journey truthfulness correction
 
 Date: 2026-08-05
-Status: `correction_in_progress`
+Status: `goal_c_ready_for_independent_audit`
 Parent goal: Goal C — Public Documentation, Settings Reference & Agent Journey
 Rejected product candidate: `ae6a1e918e248517b728cf40460d6c359991b66e`
 Rejected governance HEAD: `26a212aff337254f75cf4df426c0684e5ee8f4e9`
@@ -43,12 +43,12 @@ rebuild all Goal C evidence on one new exact candidate.
 
 | Batch | Work | Verification | Status |
 | --- | --- | --- | --- |
-| C1.0 | Freeze baseline and preserve RED reproductions | exact audit facts and focused RED commands | in progress |
-| C1.1 | Admitted catalog facets and six rendered outcomes | real docs/site runtime tests | pending |
-| C1.2 | Exhaustive schema projection | pointer/branch/constraint tests | pending |
-| C1.3 | Executable CLI/JSON/MCP journey | disposable-project command test | pending |
-| C1.4 | Integrated exact-candidate retest | full matrix and fresh hashes | pending |
-| C1.5 | Governance/handoff sync | graph/context/diff/clean checks | pending |
+| C1.0 | Freeze baseline and preserve RED reproductions | exact audit facts and focused RED commands | complete |
+| C1.1 | Admitted catalog facets and six rendered outcomes | real docs/site runtime tests | complete |
+| C1.2 | Exhaustive schema projection | pointer/branch/constraint tests | complete |
+| C1.3 | Executable CLI/JSON/MCP journey | disposable-project command test | complete |
+| C1.4 | Integrated exact-candidate retest | full matrix and fresh hashes | complete |
+| C1.5 | Governance/handoff sync | graph/context/diff/clean checks | complete |
 
 ## Evidence
 
@@ -56,4 +56,6 @@ rebuild all Goal C evidence on one new exact candidate.
 
 ## Current Next
 
-Preserve the four independently reproduced RED outcomes, then implement C1.1.
+Run an independent reverse-outcome audit of exact product candidate
+`eb35f5c6f18e5eb9be69e91887b09486f5703136` and the correction evidence. Goal
+C is not self-accepted and Goal D remains unauthorized.

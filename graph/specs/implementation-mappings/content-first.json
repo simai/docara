@@ -112,7 +112,7 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.2-PHYSICAL-EXAMPLES.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md",
-    "source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md"
+    "source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
@@ -157,5 +157,5 @@
     "Keep retired language-pack paths absent from production and release-package surfaces."
   ],
   "status": "goal_c_implementation_complete_audit_pending",
-  "mapped_revision": "ae6a1e918e248517b728cf40460d6c359991b66e"
+  "mapped_revision": "eb35f5c6f18e5eb9be69e91887b09486f5703136"
 }

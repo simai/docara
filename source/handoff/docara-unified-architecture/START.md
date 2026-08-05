@@ -28,9 +28,9 @@ Current batch: `docara.batch.c.public_documentation`
 
 Current next action: `independent_goal_c_reverse_outcome_audit`
 
-Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md`
 
-Current candidate: `ae6a1e918e248517b728cf40460d6c359991b66e`
+Current candidate: `eb35f5c6f18e5eb9be69e91887b09486f5703136`
 
 Next roadmap goal: `docara.goal.c.public_documentation`
 
@@ -39,10 +39,10 @@ Next roadmap status: `ready_for_independent_audit`
 Next roadmap authorized: `true`
 
 Goal 1, Goal 2 and Goal B were independently accepted with `PASS_WITH_NOTES`;
-Goal 3 and Goal A were accepted with `PASS`. Goal C C0-C6 are complete on one
-exact product candidate; all 132 routes remain physical Markdown owners and
-the only next action is independent Goal C audit. Release review remains
-unauthorized.
+Goal 3 and Goal A were accepted with `PASS`. Goal C C1 truthfulness correction
+is complete on one exact product candidate; all 132 routes remain physical
+Markdown owners and the only next action is independent Goal C audit. Release
+review remains unauthorized.
 
 ## 3. Read in this order
 

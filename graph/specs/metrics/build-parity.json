@@ -20,7 +20,7 @@
     "source/workflow/evidence/2026-08-04-docara-goal3d-smart-sdk-schema-provenance/G3D.2-INTEGRATED-RETEST.md",
     "source/workflow/evidence/2026-08-04-docara-goal3e-owner-schema-fidelity/G3E.3-INTEGRATED-RETEST.md",
     "source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/B6-SEMANTIC-CORRECTION.md",
-    "source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/C6-INTEGRATED-HANDOFF.md"
+    "source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/C1.4-INTEGRATED-RETEST.md"
   ],
   "profile_refs": ["docara.unified"],
   "metric_type": "difference_count",
@@ -29,6 +29,6 @@
   "target": 0,
   "observed": 0,
   "observed_counts": {"routes_checked": 132, "differences": 0, "independent_dist_consumers": 2, "complete_output_files_compared": 198, "complete_tree_differences": 0, "documentation_output_files_compared": 391},
-  "observed_tree_sha256": "b8b47a837f2ac067434a8da27fd950d93e99916f107441dec42dedb3c9843e81",
+  "observed_tree_sha256": "44d827a6576d16ec39a9787887ed123a5447ecb484c98780c696121584d2b7b4",
   "unknown_policy": "fail_closed"
 }

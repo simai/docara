@@ -1,16 +1,18 @@
 # Goal C-C1 correction evidence
 
-Status: `correction_in_progress`
+Status: `goal_c_ready_for_independent_audit`
+
+Exact product candidate: `eb35f5c6f18e5eb9be69e91887b09486f5703136`
 
 | Checkpoint | Evidence | State |
 | --- | --- | --- |
-| C1.0 | [rejected baseline and RED reproduction](C1.0-RED-BASELINE.md) | recording |
-| C1.1 | admitted catalog projection and six real outcomes | pending |
-| C1.2 | exhaustive settings schema projection | pending |
-| C1.3 | executable CLI/JSON/MCP journey | pending |
-| C1.4 | integrated exact-candidate matrix | pending |
-| C1.5 | graph/handoff and rollback | pending |
+| C1.0 | [rejected baseline and RED reproduction](C1.0-RED-BASELINE.md) | complete |
+| C1.1 | [admitted catalog projection and six real outcomes](C1.1-CATALOG.md) | complete |
+| C1.2 | [exhaustive settings schema projection](C1.2-SETTINGS.md) | complete |
+| C1.3 | [executable CLI/JSON/MCP journey](C1.3-EXECUTABLE-JOURNEY.md) | complete |
+| C1.4 | [integrated exact-candidate matrix](C1.4-INTEGRATED-RETEST.md) | complete |
+| C1.5 | [graph, handoff, rollback and nonclaims](C1.5-HANDOFF.md) | complete |
 
 The prior `b8b47a…` public ledger is rejected current evidence. The independent
 audit reproduced the old source at ledger `c778f629…`; both remain historical
-after the new candidate is built.
+and are not current evidence for exact candidate `eb35f5c6…`.

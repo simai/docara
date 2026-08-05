@@ -1,0 +1,31 @@
+{
+  "schema": "docara.goal_c_c1_browser_acceptance.v1",
+  "product_candidate": "eb35f5c6f18e5eb9be69e91887b09486f5703136",
+  "build_tree_sha256": "44d827a6576d16ec39a9787887ed123a5447ecb484c98780c696121584d2b7b4",
+  "route_http": {
+    "checked": 132,
+    "failed": []
+  },
+  "representative_matrix": {
+    "routes": 9,
+    "scenarios": [
+      "desktop-light-ltr",
+      "desktop-dark-rtl-reduced",
+      "mobile-light-ltr"
+    ],
+    "checks": 27,
+    "failed": [],
+    "console_issues": [],
+    "request_failures": []
+  },
+  "keyboard": {
+    "search_escape_focus_return": true,
+    "settings_escape_focus_return": true
+  },
+  "screenshots": {
+    "framework-desktop.png": "03a59c6b00a95760566c92085d0153e9d503cacc9bf5f09a055130d84c9e4feb",
+    "settings-desktop.png": "44644624242e97b86e0aedced0f817b94904af7674d0caef46efc761358a34ed",
+    "catalog-mobile.png": "4b41c0f4b326a9200ce4eaa5d153c2fe07dd1fc4653ba3c59e31abbc1a737cf0"
+  },
+  "rtl_note": "The exact RU production page is switched to dir=rtl after load to exercise logical CSS; generated lang=ar/dir=rtl output remains covered by the PHP product suite."
+}

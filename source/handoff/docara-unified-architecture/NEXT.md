@@ -2,14 +2,15 @@
 
 Current state: `goal_c_ready_for_independent_audit`
 
-Current candidate: `ae6a1e918e248517b728cf40460d6c359991b66e`
+Current candidate: `eb35f5c6f18e5eb9be69e91887b09486f5703136`
 
-Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md`
 
-Goal 1-3, Goal A and Goal B are independently accepted. Goal C C0-C6 are
+Goal 1-3, Goal A and Goal B are independently accepted. Goal C C1 is
 implementation-complete on one exact candidate. Independently audit the six
-component entries, design/settings roots, safe agent journey, derived receipts
-and integrated matrix. Do not start release or live actions.
+truthful component groups, exhaustive settings roots, executable safe agent
+journey, derived receipts and integrated matrix. Do not start release or live
+actions.
 
 ## Historical deployment decision (parked, not executable)
 

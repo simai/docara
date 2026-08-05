@@ -2,25 +2,27 @@
 
 Current state: `goal_c_ready_for_independent_audit`
 
-Current candidate: `ae6a1e918e248517b728cf40460d6c359991b66e`
+Current candidate: `eb35f5c6f18e5eb9be69e91887b09486f5703136`
 
-Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md`
 
 ## Goal C current result
 
-Goal B product `c3b91eee…` is independently accepted. Goal C publishes 132
-physical Markdown owners and keeps the project redirect set empty. Six
-component entry points, real design composition, all 13 settings guides, the
-safe CLI/MCP journey and accepted demos are discoverable from one PageBuilder
-path. Atlas and schema facts remain derived, hash-bound views rather than prose
-owners.
+Goal B product `c3b91eee…` is independently accepted. Goal C C1 publishes 132
+physical Markdown owners and keeps the project redirect set empty. Its six
+component entry points use truthful admitted facets; all 13 settings guides use
+an exhaustive exact-pointer schema projection; the documented CLI/JSON/MCP
+journey executes in a disposable project through one PageBuilder path. Atlas
+and schema facts remain derived, hash-bound views rather than prose owners.
 
-Two full builds and selected Alert rebuild share tree `b8b47a83…`; static
+Two full builds and selected Alert rebuild share tree `44d827a6…`; static
 verification reports 264 HTML / 35,044 references / broken=0. Two clean clones
-produce the same 862-file ZIP `a5b02a25…`; two same-lock consumers produce the
-same 198-file tree `35491e8a…` without Node or package `.git`. Exact browser
-and cross-host evidence pass. Goal C is ready for independent audit, not
-self-accepted; release remains unauthorized.
+produce the same 862-file ZIP `50a0f7cf…`; two same-lock consumers produce the
+same 198-file tree `e1fd1964…` without Node or package `.git`. Browser is
+132/132 HTTP and 27/27 representative checks; exact SF5 cross-host is 1/44.
+Goal C is ready for independent audit, not self-accepted; release remains
+unauthorized. The former `b8b47a83…` current ledger is rejected historical
+evidence only.
 
 ## Accepted Goal B result
 

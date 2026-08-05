@@ -6,10 +6,12 @@ declare(strict_types=1);
 use League\CommonMark\Environment\Environment;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
 use Simai\Docara\Framework\FrameworkLock;
+use Simai\Docara\Framework\FrameworkPortableAssetProjection;
 use Simai\Docara\I18n\LocaleTag;
 use Simai\Docara\Portable\JsonSchemaValidator;
 use Simai\Docara\Portable\SchemaRepository;
 use Simai\Docara\PortableSite\PortableRedirectPublisher;
+use Simai\Docara\Smart\SmartRegistry;
 
 function docaraBootstrapTrustedSource(): void
 {
@@ -1917,7 +1919,7 @@ if (is_link($manifestDirectory)
             }
             $frameworkBuild = $manifestBuild['framework'] ?? null;
             if (! is_array($frameworkBuild)
-                || ! docaraExactKeys($frameworkBuild, ['lock_sha256', 'runtime', 'manifests', 'asset_projection'])
+                || ! docaraExactKeys($frameworkBuild, ['lock_sha256', 'runtime', 'manifests', 'asset_projection', 'portable_smart_asset_projection'])
                 || ! is_string($frameworkBuild['lock_sha256'] ?? null)
                 || ! hash_equals(
                     $frameworkBuild['lock_sha256'],
@@ -1928,6 +1930,24 @@ if (is_link($manifestDirectory)
                 || ($frameworkBuild['asset_projection'] ?? null) !== ($expectedFrameworkLock['asset_projection'] ?? null)
             ) {
                 throw new RuntimeException('Resolved build Framework tuple does not match its page plans.');
+            }
+            $requiredPortableAssets = [];
+            foreach ($manifestPageRecords as $pageRecord) {
+                foreach (($pageRecord['declarative_pipeline']['assets'] ?? []) as $assetKey) {
+                    if (is_string($assetKey) && str_starts_with($assetKey, 'framework.portable.')) {
+                        $requiredPortableAssets[] = $assetKey;
+                    }
+                }
+            }
+            $expectedPortableProjection = (new FrameworkPortableAssetProjection(SmartRegistry::bundled()))
+                ->forKeys($requiredPortableAssets);
+            if (! is_array($frameworkBuild['portable_smart_asset_projection'] ?? null)
+                || ! hash_equals(
+                    hash('sha256', docaraCanonicalJson($expectedPortableProjection)),
+                    hash('sha256', docaraCanonicalJson($frameworkBuild['portable_smart_asset_projection'])),
+                )
+            ) {
+                throw new RuntimeException('Resolved build portable Framework assets do not match exact page usage.');
             }
             $productionInputs = $manifestBuild['production_inputs'] ?? null;
             if (! is_array($productionInputs) || array_is_list($productionInputs) || $productionInputs === []) {
@@ -2164,6 +2184,17 @@ if ($manifestError !== null) {
         if (! is_array($files) || array_is_list($files) || $files === []) {
             throw new RuntimeException('Exact Framework asset projection is missing.');
         }
+        $portableProjection = $manifestBuild['framework']['portable_smart_asset_projection'] ?? null;
+        $portableFiles = is_array($portableProjection) ? ($portableProjection['files'] ?? null) : null;
+        if (! is_array($portableFiles) || ($portableFiles !== [] && array_is_list($portableFiles))) {
+            throw new RuntimeException('Exact portable Framework asset projection is missing.');
+        }
+        foreach ($portableFiles as $relativePath => $record) {
+            if (isset($files[$relativePath])) {
+                throw new RuntimeException("Portable Framework asset [$relativePath] collides with the base projection.");
+            }
+            $files[$relativePath] = $record;
+        }
 
         $frameworkRoot = $root . '/_docara/framework';
         $frameworkRootStat = @lstat($frameworkRoot);
@@ -2212,7 +2243,12 @@ if ($manifestError !== null) {
         }
         sort($actualAssets, SORT_STRING);
         if ($actualAssets !== $expectedAssets) {
-            throw new RuntimeException('Materialized Framework assets do not exactly match the locked projection.');
+            throw new RuntimeException(
+                'Materialized Framework assets do not exactly match the locked projection. Missing: '
+                . json_encode(array_values(array_diff($expectedAssets, $actualAssets)), JSON_UNESCAPED_SLASHES)
+                . '; unexpected: '
+                . json_encode(array_values(array_diff($actualAssets, $expectedAssets)), JSON_UNESCAPED_SLASHES),
+            );
         }
     } catch (Throwable $exception) {
         $broken[] = [

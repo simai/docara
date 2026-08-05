@@ -24,6 +24,7 @@ use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
+use Simai\Docara\Framework\FrameworkPortableAssetProjection;
 use Simai\Docara\I18n\ContentLanguageRepository;
 use Simai\Docara\I18n\LocaleInternalLinkProjector;
 use Simai\Docara\I18n\LocaleMissingPagePolicy;
@@ -902,6 +903,8 @@ final readonly class PortableSiteBuilder
                         'runtime' => $buildBasePlan->frameworkLock['runtime'],
                         'manifests' => $buildBasePlan->frameworkLock['manifests'],
                         'asset_projection' => $buildBasePlan->frameworkLock['asset_projection'],
+                        'portable_smart_asset_projection' => (new FrameworkPortableAssetProjection($smartRegistry))
+                            ->forKeys(array_values(array_unique($requiredSmartAssets))),
                     ],
                     'production_inputs' => $runtimeMetadata->productionInputGroups(),
                     'component_catalog_sha256' => hash('sha256', CanonicalJson::encode($effectiveComponentCatalog)),

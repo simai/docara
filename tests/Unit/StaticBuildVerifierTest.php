@@ -9,6 +9,7 @@ use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkConsumerPolicy;
 use Simai\Docara\Framework\FrameworkLock;
+use Simai\Docara\Framework\FrameworkPortableAssetProjection;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortablePublisherAssetPublisher;
@@ -477,6 +478,22 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertStringContainsString('@resolved-page-plans', $unknownLockField->getOutput());
         self::assertStringContainsString('Framework tuple does not match', $unknownLockField->getOutput());
         file_put_contents($plansPath, $originalPlans);
+
+        $plans = json_decode($originalPlans, true, flags: JSON_THROW_ON_ERROR);
+        $plans['build']['framework']['portable_smart_asset_projection']['files']['smart/inputs/js/inputs.js']['sha256'] = str_repeat('f', 64);
+        $this->writeJson($plansPath, $plans);
+        $tamperedPortableProjection = $this->verify($build);
+        self::assertSame(1, $tamperedPortableProjection->getExitCode(), $tamperedPortableProjection->getOutput());
+        self::assertStringContainsString('portable Framework assets do not match exact page usage', $tamperedPortableProjection->getOutput());
+        file_put_contents($plansPath, $originalPlans);
+
+        $inputAssetPath = $build . '/_docara/framework/smart/inputs/js/inputs.js';
+        $inputAsset = (string) file_get_contents($inputAssetPath);
+        file_put_contents($inputAssetPath, $inputAsset . "\n/* tampered */\n");
+        $tamperedPortableAsset = $this->verify($build);
+        self::assertSame(1, $tamperedPortableAsset->getExitCode(), $tamperedPortableAsset->getOutput());
+        self::assertStringContainsString('incorrect SHA-256', $tamperedPortableAsset->getOutput());
+        file_put_contents($inputAssetPath, $inputAsset);
 
         $buttonAssetPath = $build . '/_docara/framework/smart/buttons/js/buttons.js';
         $buttonAsset = (string) file_get_contents($buttonAssetPath);
@@ -973,6 +990,7 @@ final class StaticBuildVerifierTest extends TestCase
                 $locale = $configuration['default_locale']
                     ?? $configuration['locale']
                     ?? 'en';
+                $requiredPortableAssets = $this->requiredPortableAssets($manifest['pages']);
                 $manifest['build'] = [
                     'purpose' => 'production',
                     'documentation_version' => $configuration['documentation_version'] ?? 'current',
@@ -984,6 +1002,8 @@ final class StaticBuildVerifierTest extends TestCase
                         'runtime' => $frameworkLock['runtime'],
                         'manifests' => $frameworkLock['manifests'],
                         'asset_projection' => $frameworkLock['asset_projection'],
+                        'portable_smart_asset_projection' => (new FrameworkPortableAssetProjection(SmartRegistry::bundled()))
+                            ->forKeys($requiredPortableAssets),
                     ],
                     'production_inputs' => $metadata->productionInputGroups(),
                     'component_catalog_sha256' => hash('sha256', CanonicalJson::encode($catalog)),
@@ -1000,8 +1020,9 @@ final class StaticBuildVerifierTest extends TestCase
         $this->filesystem->ensureDirectoryExists($build . '/.docara');
         $this->writeJson($build . '/.docara/resolved-page-plans.json', $manifest);
         $this->writeComponentCatalog($build);
-        $this->writeFrameworkAssets($build);
-        (new PortablePublisherAssetPublisher($this->filesystem))->publish($build);
+        $requiredPortableAssets = $this->requiredPortableAssets($manifest['pages'] ?? []);
+        $this->writeFrameworkAssets($build, $requiredPortableAssets);
+        (new PortablePublisherAssetPublisher($this->filesystem))->publish($build, $requiredPortableAssets);
     }
 
     private function writeComponentCatalog(string $build): void
@@ -1036,7 +1057,8 @@ final class StaticBuildVerifierTest extends TestCase
         );
     }
 
-    private function writeFrameworkAssets(string $build): void
+    /** @param list<string> $requiredPortableAssets */
+    private function writeFrameworkAssets(string $build, array $requiredPortableAssets): void
     {
         $root = dirname(__DIR__, 2);
         foreach (array_keys($this->frameworkLock()['asset_projection']['files']) as $relativePath) {
@@ -1050,11 +1072,31 @@ final class StaticBuildVerifierTest extends TestCase
             $this->filesystem->ensureDirectoryExists(dirname($target));
             file_put_contents($target, (string) file_get_contents($root . '/resources/portable/' . $name));
         }
-        foreach (SmartRegistry::bundled()->assets() as $asset) {
+        foreach (SmartRegistry::bundled()->assets() as $key => $asset) {
+            if (str_starts_with((string) $key, 'framework.portable.')
+                && ! in_array($key, $requiredPortableAssets, true)
+            ) {
+                continue;
+            }
             $target = $build . '/_docara/' . $asset['public'];
             $this->filesystem->ensureDirectoryExists(dirname($target));
             file_put_contents($target, (string) file_get_contents($root . '/resources/' . $asset['path']));
         }
+    }
+
+    /** @param list<array<string, mixed>> $pages @return list<string> */
+    private function requiredPortableAssets(array $pages): array
+    {
+        $required = [];
+        foreach ($pages as $page) {
+            foreach (($page['declarative_pipeline']['assets'] ?? []) as $asset) {
+                if (is_string($asset) && str_starts_with($asset, 'framework.portable.')) {
+                    $required[] = $asset;
+                }
+            }
+        }
+
+        return array_values(array_unique($required));
     }
 
     /** @param array<string, mixed> $value */

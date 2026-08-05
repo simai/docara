@@ -20,6 +20,9 @@
     "package": {"type": "string", "required": true},
     "version": {"type": "string", "required": true}
   },
+  "slots": {
+    "controls": {"accepts": ["ui.input", "ui.checkbox"], "required": true, "multiple": true}
+  },
   "assets": {
     "css": ["assets/install-builder.css"],
     "js": ["assets/install-builder.js"],

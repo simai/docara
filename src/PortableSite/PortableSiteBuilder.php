@@ -702,6 +702,7 @@ final readonly class PortableSiteBuilder
                 }
             }
 
+            $requiredSmartAssets = [];
             foreach ($pagesToRender as $pageIndex => $page) {
                 $declarative = null;
                 $pageLocale = (string) $page['locale'];
@@ -831,6 +832,7 @@ final readonly class PortableSiteBuilder
                         'sha256' => $documentIr->canonicalHash(),
                     ],
                 ];
+                array_push($requiredSmartAssets, ...$declarative->artifact->assets);
                 $outputPath = rtrim($destination, '/\\') . '/' . $page['output'];
                 $this->files->ensureDirectoryExists(dirname($outputPath));
                 $rendered = $publisher->render(
@@ -880,7 +882,10 @@ final readonly class PortableSiteBuilder
             $brandPublisher->publish($brandPlan['assets'], $destination);
             foreach ($localeDestinations as $localeDestination) {
                 $this->publishFrameworkAssets($buildBasePlan->frameworkLock, $localeDestination);
-                (new PortablePublisherAssetPublisher($this->files, $smartRegistry))->publish($localeDestination);
+                (new PortablePublisherAssetPublisher($this->files, $smartRegistry))->publish(
+                    $localeDestination,
+                    array_values(array_unique($requiredSmartAssets)),
+                );
             }
             $diagnosticPath = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
             $this->files->ensureDirectoryExists(dirname($diagnosticPath));

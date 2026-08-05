@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0",
+  "kind": "smart",
+  "code": "ui.checkbox",
+  "title": "Simai Framework Checkbox",
+  "description": "Portable binary form control rendered by an admitted host and hydrated by Simai Framework.",
+  "family": "input",
+  "category": "form",
+  "render": {
+    "mode": "server-first",
+    "strategy": "client-owned",
+    "template": "default",
+    "hydration": "required",
+    "domStrategy": "host-attributes",
+    "updateStrategy": "rerender",
+    "initialHtml": "host-only",
+    "frontendOwnership": "dom"
+  },
+  "props": {
+    "size": {"type": "string", "default": "1"},
+    "label": {"type": "string", "default": ""},
+    "description": {"type": "string", "default": ""},
+    "help": {"type": "string", "default": ""},
+    "position": {"type": "string", "default": "start"},
+    "checked": {"type": "boolean", "default": false},
+    "disabled": {"type": "boolean", "default": false},
+    "indeterminate": {"type": "boolean", "default": false},
+    "name": {"type": "string", "default": ""},
+    "value": {"type": "string", "default": ""},
+    "error": {"type": "boolean", "default": false},
+    "rootClass": {"type": "string", "default": ""}
+  },
+  "slots": {},
+  "assets": {
+    "css": [],
+    "js": [],
+    "depends": ["simai.ui", "simai.ui.smart"]
+  },
+  "cache": {"fragment": true, "tags": ["smart:ui.checkbox"], "varyBy": ["props", "design", "locale"]},
+  "ai": {
+    "useWhen": "Use for binary or multi-select form values.",
+    "avoidWhen": "Use a switch for an immediate setting change.",
+    "composeWith": ["form.field", "filter.group"],
+    "tags": ["form", "checkbox", "input"]
+  },
+  "meta": {
+    "owner": "Simai Framework",
+    "sourceComponent": "checkbox",
+    "sourceRevision": "f615583112c16d05ba75dbc7e0f99eadd4c4d9d9",
+    "sourcePath": "src/smart/checkbox"
+  }
+}

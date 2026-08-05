@@ -37,14 +37,40 @@ final readonly class SmartRenderer
 
     public function render(ResolvedSmartPlan $plan): RenderArtifact
     {
-        $invocation = SmartInvocation::fromPlan($plan);
+        $childrenHtml = '';
+        $assets = $plan->assets;
+        $childProvenance = [];
+        foreach ($plan->children as $child) {
+            $artifact = $this->render($child);
+            $childrenHtml .= $artifact->html;
+            array_push($assets, ...$artifact->assets);
+            $childProvenance[] = $artifact->provenance;
+        }
+        $assets = array_values(array_unique($assets));
+        sort($assets, SORT_STRING);
+        $effective = new ResolvedSmartPlan(
+            $plan->nodeId,
+            $plan->smart,
+            $plan->view,
+            $plan->template,
+            $plan->props,
+            $assets,
+            array_replace($plan->provenance, [
+                'children_html' => $childrenHtml !== ''
+                    ? $childrenHtml
+                    : ($plan->provenance['children_html'] ?? ''),
+                'resolved_children' => $childProvenance,
+            ]),
+            $plan->children,
+        );
+        $invocation = SmartInvocation::fromPlan($effective);
         $view = $this->adapters->get($invocation->adapter)->prepare($invocation);
         $context = SmartTemplateContext::forInvocation($invocation, $view);
         $html = $this->strategies->get($invocation->strategy)->render($invocation, $context, $this->templates);
 
         return new RenderArtifact(
             $html,
-            $plan->assets,
+            $assets,
             [
                 'runtime' => (string) ($plan->provenance['runtime'] ?? 'portable-smart'),
                 'smart' => $plan->smart,
@@ -52,13 +78,13 @@ final readonly class SmartRenderer
                 'owner' => (string) ($plan->provenance['provider'] ?? 'unknown'),
                 'asset_owner' => $plan->smart,
                 'hydration_owner' => $plan->smart,
-                'assets' => $plan->assets,
+                'assets' => $assets,
                 'render' => is_array($context->manifest['render'] ?? null)
                     ? $context->manifest['render']
                     : [],
                 'template_abi' => $invocation->templateAbi,
             ],
-            $plan->provenance + [
+            $effective->provenance + [
                 'template' => $plan->template,
                 'portable_strategy' => $invocation->strategy,
                 'input_adapter' => $invocation->adapter,

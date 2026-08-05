@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Smart;
 
 use Simai\Docara\Smart\Artifact\Sf5SmartArtifactV1Contract;
+use Simai\Docara\Smart\Provider\FrameworkLockSmartProvider;
 use Simai\Docara\Smart\Provider\LegacyBundledSmartProvider;
 use Simai\Docara\Smart\Provider\ProjectSmartProvider;
 use Simai\Docara\Smart\Provider\SmartArtifactProvider;
@@ -59,8 +60,12 @@ final readonly class SmartRegistry
             new LegacyBundledSmartProvider(
                 'docara.package', 300, 'docara', $root, 'simai/docara', 'repository-tree',
             ),
-            new LegacyBundledSmartProvider(
-                'framework.lock', 400, 'ui', $root, 'larena/ui', Sf5SmartArtifactV1Contract::SOURCE_REVISION,
+            new FrameworkLockSmartProvider(
+                $root . '/framework/portable-smart',
+                'simai/bx-simai.main',
+                Sf5SmartArtifactV1Contract::SOURCE_REVISION,
+                $root . '/framework/portable-smart-lock.json',
+                $root,
             ),
         ];
     }
@@ -118,7 +123,7 @@ final readonly class SmartRegistry
         throw new \InvalidArgumentException('SMART_REGISTRY_TEMPLATE_NOT_FOUND:' . $templateId);
     }
 
-    /** @return array{path:string,kind:string,public:string,version:string} */
+    /** @return array{path:string,kind:string,public:string,version:string,root?:string} */
     public function asset(string $assetKey): array
     {
         foreach ($this->definitions as $definition) {

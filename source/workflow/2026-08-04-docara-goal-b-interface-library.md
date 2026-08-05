@@ -1,11 +1,11 @@
 # Goal B — Full Interface Library & Useful Extension Demos
 
 Date: 2026-08-04
-Status: `goal_b_ui_list_item_dependency_blocked`
+Status: `in_progress`
 Current stage: `docara.stage.b.interface_library`
 Current batch: `docara.batch.b.interface_library`
-Current next action: `obtain_independently_accepted_ui_list_item_artifact`
-Next roadmap goal: `docara.goal.b.interface_library` (`ui_list_item_dependency_blocked`, authorized=`true`)
+Current next action: `complete_b4_b5_exact_candidate_matrix`
+Next roadmap goal: `docara.goal.b.interface_library` (`in_progress`, authorized=`true`)
 
 ## Track and entry baseline
 
@@ -105,7 +105,7 @@ Status: `pass`.
 
 ### B4 — Framework useful-component consumption
 
-Status: `blocked_unaccepted_ui_list_item`.
+Status: `implementation_green_integration_pending`.
 
 The independently accepted immutable owner packet now supplies exact
 `ui.input`, `ui.dropdown` and `ui.checkbox` manifests, views, presets,
@@ -113,17 +113,25 @@ templates, asset/hydration hashes and cross-host proof. Its exact product
 candidate is `7e0b87187ceb1f89fad730094bcc4aada3e4f3f2` and packet content SHA-256 is
 `83551f972ad0b1a6e2037f61583769e32a4a78081e01ed0a0fe888b1187baca1`.
 
-The accepted `ui.dropdown` options slot depends on `ui.list-item`, which is not
-part of the accepted packet and is absent from the admitted Docara registry.
-A useful populated dropdown would therefore require an unaccepted component,
-an invented `items` dialect or raw markup. All three alternatives violate the
-Goal B contract. B4 stops at this narrower external owner gate without a
-partial runtime import. Exact proof is recorded in
-`B4-ACCEPTED-FORM-WAVE-LIST-ITEM-GATE.md`.
+The external gate was closed by the independently accepted immutable
+`ui.list-item` owner candidate
+`639d7b67833cfdf1e2c349c5f83669ba0e34fe05`, packet content SHA-256
+`7dbcb161e8bb48c342a385c3f28f7dc8628eecdf0c09758ab3113eb8dc2107db`.
+Its scope is limited to a `type=text` direct child of `ui.dropdown`; icons,
+avatars, tags and standalone form-control support remain explicit nonclaims.
+
+The unchanged form-wave and list-item artifacts are now admitted by one
+content-addressed Framework lock and the existing `FrameworkLockSmartProvider`
+path. A populated project configurator resolves `ui.dropdown -> ui.list-item`
+recursively through the same Gateway and renderer; install builder/input and
+checkbox scenarios use the same path. Runtime assets are exact-hash checked
+before render and usage-published, so unused form assets do not alter the
+default site tree. Focused implementation evidence is recorded in
+`B4-RESUMED-IMPLEMENTATION.md`.
 
 ### B5 — Integration and audit handoff
 
-Status: `partial_pass_external_dependency_gate`.
+Status: `in_progress`.
 
 Run the complete focused/full/package/consumer/full-single/static/browser/a11y
 matrix, record default and intentional preset deltas, synchronize graph/specs/
@@ -131,12 +139,12 @@ handoff and stop at `goal_b_ready_for_independent_audit`. If B4 remains
 unavailable, complete every independent safe batch and stop with the exact
 external gate instead of claiming Goal B readiness.
 
-The independent safe matrix is recorded in
+The pre-unblock independent safe matrix is recorded in
 `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/B5-INTEGRATED-ACCEPTANCE.md`.
 Full/full/single, static, package, fresh-consumer and representative browser
 checks are green on exact candidate `ccb076a89535954022ca89eb70b84d6c81d80de3`.
-Goal B readiness remains blocked exclusively by B4's exact `ui.list-item`
-dependency gate.
+That matrix is historical baseline evidence only. B5 must now be rerun on the
+new exact B4 candidate before Goal B can become independent-ready.
 
 ## Allowed surfaces
 

@@ -158,7 +158,7 @@ class FilesystemSmartProvider implements SmartArtifactProvider
                 : (string) ($artifact['view'] ?? 'default');
             $records[$code] = [
                 'path' => $this->relative($safe),
-                'schema' => '',
+                'schema' => $expectedKind . '.schema.json',
                 'template' => 'smart.' . $id . '.' . $template,
             ];
         }

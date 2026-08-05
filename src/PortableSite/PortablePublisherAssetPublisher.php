@@ -15,7 +15,8 @@ final readonly class PortablePublisherAssetPublisher
         private SmartRegistry $smarts = new SmartRegistry([]),
     ) {}
 
-    public function publish(string $destination): void
+    /** @param list<string>|null $requiredSmartAssets */
+    public function publish(string $destination, ?array $requiredSmartAssets = null): void
     {
         foreach ($this->assetNames() as $name) {
             $this->publishAsset(
@@ -28,6 +29,12 @@ final readonly class PortablePublisherAssetPublisher
 
         $smarts = $this->smarts->keys() === [] ? SmartRegistry::bundled() : $this->smarts;
         foreach ($smarts->assets() as $key => $asset) {
+            if (str_starts_with((string) $key, 'framework.portable.')
+                && $requiredSmartAssets !== null
+                && ! in_array($key, $requiredSmartAssets, true)
+            ) {
+                continue;
+            }
             $this->publishAsset(
                 (is_string($asset['root'] ?? null) ? $asset['root'] : dirname(__DIR__, 2) . '/resources') . '/' . $asset['path'],
                 rtrim($destination, '/\\') . '/_docara/' . $asset['public'],

@@ -10,6 +10,7 @@ final readonly class ResolvedSmartPlan
      * @param  array<string, mixed>  $props
      * @param  list<string>  $assets
      * @param  array<string, mixed>  $provenance
+     * @param  list<self>  $children
      */
     public function __construct(
         public string $nodeId,
@@ -19,6 +20,7 @@ final readonly class ResolvedSmartPlan
         public array $props,
         public array $assets,
         public array $provenance,
+        public array $children = [],
     ) {}
 
     /** @return array<string, mixed> */
@@ -32,6 +34,7 @@ final readonly class ResolvedSmartPlan
             'props' => $this->props,
             'assets' => $this->assets,
             'provenance' => $this->provenance,
+            'children' => array_map(static fn (self $child): array => $child->toArray(), $this->children),
         ];
     }
 
@@ -46,6 +49,7 @@ final readonly class ResolvedSmartPlan
         if (! is_array($payload['props'] ?? null)
             || ! is_array($payload['assets'] ?? null)
             || ! is_array($payload['provenance'] ?? null)
+            || ! is_array($payload['children'] ?? [])
             || array_filter($payload['assets'], static fn (mixed $asset): bool => ! is_string($asset)) !== []
         ) {
             throw new \InvalidArgumentException('RESOLVED_SMART_PLAN_INVALID');
@@ -59,6 +63,12 @@ final readonly class ResolvedSmartPlan
             $payload['props'],
             array_values($payload['assets']),
             $payload['provenance'],
+            array_map(
+                static fn (mixed $child): self => is_array($child)
+                    ? self::fromArray($child)
+                    : throw new \InvalidArgumentException('RESOLVED_SMART_PLAN_INVALID'),
+                $payload['children'] ?? [],
+            ),
         );
     }
 }

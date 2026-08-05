@@ -1,0 +1,115 @@
+{
+  "schema": "docara.framework_portable_smart_lock.v1",
+  "contract": {
+    "contract_id": "sf.smart_artifact_abi",
+    "schema_version": "1.0.0",
+    "compatibility_id": "sf-smart-artifact-abi-v1",
+    "storage_compatibility_alias": "sf5.smart.artifact.v1",
+    "template_abi": "sf5.smart.template.v1"
+  },
+  "source": {
+    "repository": "simai/bx-simai.main",
+    "host_adapter_revision": "b3cdff87563ff78e7eddf044048a4b298fc69036",
+    "framework_source_revision": "f615583112c16d05ba75dbc7e0f99eadd4c4d9d9",
+    "framework_builder_revision": "367b3423f9707b850c6bef9476ab8d1ed44039e1"
+  },
+  "packets": {
+    "form-wave": {
+      "product_candidate": "7e0b87187ceb1f89fad730094bcc4aada3e4f3f2",
+      "packet_content_sha256": "83551f972ad0b1a6e2037f61583769e32a4a78081e01ed0a0fe888b1187baca1",
+      "packet_file_sha256": "010aa62831a7f0e3e7a12c96cd14843436ce97872426cb2b9447ffeaf04b5598",
+      "build_tree_sha256": "e595b910e991ef126355ac9e907e0438ccf8686102466713122708354e8246c8"
+    },
+    "list-item": {
+      "product_candidate": "639d7b67833cfdf1e2c349c5f83669ba0e34fe05",
+      "handoff_revision": "95932c20f6d5bbe12fc27d3870b75161cd395fa4",
+      "packet_content_sha256": "7dbcb161e8bb48c342a385c3f28f7dc8628eecdf0c09758ab3113eb8dc2107db",
+      "packet_file_sha256": "008e5d4c7a6afc7b0dc99b39c6bfe9c328627391116f84793d79cbc91346c5a6",
+      "build_tree_sha256": "e595b910e991ef126355ac9e907e0438ccf8686102466713122708354e8246c8"
+    }
+  },
+  "artifacts": {
+    "ui.checkbox": {
+      "packet": "form-wave",
+      "artifact_tree_sha256": "cb3f0a565993743a58c5c4d3c09f6d6b998d7b7b11af0793996dee44a0748a11",
+      "files": {
+        "manifest.json": "0a115b2f6fb152dce8cb9b42501e5dccba83177ac46ed8c1cafc359639e1cfe0",
+        "preset/default.json": "40119f4fad2407eaed04f6d1cc5c42d55eb7938a5d7224afcd8c28f773b1986e",
+        "template/default.php": "949ad27d28277e773d435a8127875a095dea22e2e76cf72a6f637915845f0f2e",
+        "view/default.json": "1b4e81dc4b2bfdafdd1caf2a0f53fa678f659814343057d7c683ef07563bcbbb"
+      },
+      "dependencies": [],
+      "slot_contract_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "asset_contract_sha256": "90cff331c05e2566eca5badb74ca754d42588a75c2e2470e524be233750323fd",
+      "hydration_contract_sha256": "fbef57ba00992e89e0bdcad395f1e108196fad9423d1ec87be44b05bbca8e314",
+      "runtime_assets": {
+        "framework.portable.ui.checkbox.css": {"path": "assets/smart/checkbox/css/checkbox.css", "kind": "css", "public": "vendor/simai/ui/checkbox/css/checkbox.css", "sha256": "ae9457f4fb3a0f5a8bce4578583fdfef3a081e7503af9dbe2b805c5860771e6a"},
+        "framework.portable.ui.checkbox.js": {"path": "assets/smart/checkbox/js/checkbox.js", "kind": "javascript", "public": "vendor/simai/ui/checkbox/js/checkbox.js", "sha256": "3cce0a6b03b47d020986d60ac07cf6da284a725c9ef2b0fa62825163030ee027"}
+      },
+      "support": "accepted",
+      "constraints": {}
+    },
+    "ui.dropdown": {
+      "packet": "form-wave",
+      "artifact_tree_sha256": "2b148478ffd73e5e1f1162249ed2d7d0a10e11e16545bf99dfba41501c4e2131",
+      "files": {
+        "manifest.json": "d8e74951e446575b5736616625906780d731f2b6d25a872b68ce84df4ff1ffe7",
+        "preset/default.json": "057ea842814808b8d78d968f821d996f8651d755bba1a58146094119bd635c0d",
+        "template/default.php": "3edc09e05bb11952b922d32968ca0ce8b348d919b5bb15f5b98a29efeb912c74",
+        "view/default.json": "d98c3ee971958cc5268b350387262b0d0220316c379bccb235f5c9534d429852"
+      },
+      "dependencies": ["ui.list-item"],
+      "slot_contract_sha256": "2d02cb5f4ec6b78048a2f71c8da4a5099aedef8f288d1e2b97b39947c899fd20",
+      "asset_contract_sha256": "90cff331c05e2566eca5badb74ca754d42588a75c2e2470e524be233750323fd",
+      "hydration_contract_sha256": "fbef57ba00992e89e0bdcad395f1e108196fad9423d1ec87be44b05bbca8e314",
+      "runtime_assets": {
+        "framework.portable.ui.dropdown.js": {"path": "assets/smart/dropdown/js/dropdown.js", "kind": "javascript", "public": "vendor/simai/ui/dropdown/js/dropdown.js", "sha256": "8753d182eecf03c9c02563cd91e9316bd5a1ea3aaf430b49968ba147214dc2c1"}
+      },
+      "support": "accepted_with_admitted_dependency",
+      "constraints": {}
+    },
+    "ui.input": {
+      "packet": "form-wave",
+      "artifact_tree_sha256": "412ad74b135d1fd7b4bb9fd60b928552a9dc5241a1c904ba47d2d44a5bf40fd6",
+      "files": {
+        "manifest.json": "33651019a01d3cec1aea5d1ac08c71e7968c1095512262652fb15cc320cff4fa",
+        "preset/default.json": "7514a93dc827d840647d7944919e63dc25363dcd4eda96ad0dde93fa2ad9ee2d",
+        "template/default.php": "d9b739f8ed177bb4cc23280e24a34550d8861d87c9af14d2e48024617e8ea464",
+        "view/default.json": "f80bad3870327e98160484c87c7e76cd95e12743be6d272fdd92b0483c50571d"
+      },
+      "dependencies": [],
+      "slot_contract_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "asset_contract_sha256": "90cff331c05e2566eca5badb74ca754d42588a75c2e2470e524be233750323fd",
+      "hydration_contract_sha256": "fbef57ba00992e89e0bdcad395f1e108196fad9423d1ec87be44b05bbca8e314",
+      "runtime_assets": {
+        "framework.portable.ui.input.css": {"path": "assets/smart/inputs/css/inputs.css", "kind": "css", "public": "vendor/simai/ui/inputs/css/inputs.css", "sha256": "86d652b11e1a5db20ddaa2c0964a71da85793b9a26538b6ed0a78e0e43ed266e"},
+        "framework.portable.ui.input.js": {"path": "assets/smart/inputs/js/inputs.js", "kind": "javascript", "public": "vendor/simai/ui/inputs/js/inputs.js", "sha256": "344464ac91ce3997dce7bf46ff0635da49f21087f055987bcc24d84f1d3de123"}
+      },
+      "support": "accepted",
+      "constraints": {}
+    },
+    "ui.list-item": {
+      "packet": "list-item",
+      "artifact_tree_sha256": "6029ca7c9ded244d5d4326d526dd9d91396551cf595ce872bc95119fda90a47c",
+      "files": {
+        "manifest.json": "784222c486044802c95464ff7fa474c84dcc3461ff3fe1542c2ae82b8943fa54",
+        "preset/default.json": "25617df062ed2714ffa3b159f7bb244eda85259b5fd5b75322373b3e62ae4233",
+        "template/default.php": "ceaaca37e93d2b3349a1015dc913221ffefcfd24ddd382a62074d418f060c726",
+        "view/default.json": "7c73e21ebc710dea6e920625342fbc12aa803c200cdc78ec2f2e398cb748fc7f"
+      },
+      "dependencies": [],
+      "slot_contract_sha256": "397f36d6b7f3cfb8bf2f44e396b32dde67eb466d0d51b2993fcd3c116cca6e60",
+      "asset_contract_sha256": "90cff331c05e2566eca5badb74ca754d42588a75c2e2470e524be233750323fd",
+      "hydration_contract_sha256": "fbef57ba00992e89e0bdcad395f1e108196fad9423d1ec87be44b05bbca8e314",
+      "runtime_assets": {
+        "framework.portable.ui.list-item.js": {"path": "assets/smart/list-item/js/list-item.js", "kind": "javascript", "public": "vendor/simai/ui/list-item/js/list-item.js", "sha256": "734b0e12d50d713567b8cbf1a03e50895031eeca46c23776abcaece14a0b4ee9"}
+      },
+      "support": "accepted_for_ui.dropdown_text_options_only",
+      "constraints": {
+        "admitted_parents": ["ui.dropdown"],
+        "prop_values": {"type": ["text"]}
+      },
+      "nonclaims": ["icons", "avatars", "tags", "standalone_form_control"]
+    }
+  }
+}

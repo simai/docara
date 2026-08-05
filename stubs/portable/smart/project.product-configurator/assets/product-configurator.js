@@ -2,13 +2,19 @@
 document.querySelectorAll('[data-project-product-configurator]').forEach((root) => {
     const total = root.querySelector('[data-config-total]');
     if (!(total instanceof HTMLElement)) return;
+    const options = [...root.querySelectorAll('sf-checkbox[name="features"]')];
     const render = () => {
         let value = Number(root.dataset.basePrice || 0);
-        root.querySelectorAll('[data-config-option]:checked').forEach((option) => {
-            if (option instanceof HTMLInputElement) value += Number(option.value || 0);
+        options.forEach((option) => {
+            if (option instanceof HTMLElement && (option.hasAttribute('checked') || option.getAttribute('aria-checked') === 'true')) {
+                value += Number(option.getAttribute('value') || 0);
+            }
         });
         total.textContent = `${new Intl.NumberFormat(document.documentElement.lang || 'ru').format(value)} ${root.dataset.currency || ''}`.trim();
     };
-    root.querySelectorAll('[data-config-option]').forEach((option) => option.addEventListener('change', render));
+    options.forEach((option) => {
+        option.addEventListener('change', render);
+        option.addEventListener('click', () => queueMicrotask(render));
+    });
     render();
 });

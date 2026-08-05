@@ -148,11 +148,13 @@ final readonly class PreviewKernel
             throw new PortableConfigurationException('PREVIEW_HTML_INVALID', 'Production HTML could not be parsed for preview extraction.');
         }
         $xpath = new DOMXPath($document);
+        $smartTag = $target === PreviewTarget::Smart ? $this->smartTag((string) $selector) : null;
         $query = match ($target) {
             PreviewTarget::Layout => '//body[1]',
             PreviewTarget::Region => '//*[@data-docara-region=' . $this->xpathLiteral((string) $selector) . '][1]',
             PreviewTarget::Smart => '//*[@data-docara-smart=' . $this->xpathLiteral((string) $selector)
-                . ' or @data-docara-block=' . $this->xpathLiteral((string) preg_replace('/^.*\./', '', (string) $selector)) . '][1]',
+                . ' or @data-docara-block=' . $this->xpathLiteral((string) preg_replace('/^.*\./', '', (string) $selector))
+                . ($smartTag === null ? '' : ' or self::' . $smartTag) . '][1]',
             PreviewTarget::Page => throw new \LogicException('Page extraction is not required.'),
         };
         $node = $xpath->query($query)?->item(0);
@@ -191,16 +193,20 @@ final readonly class PreviewKernel
         if ($loaded !== true) {
             throw new PortableConfigurationException('PREVIEW_HTML_INVALID', 'Production HTML could not be parsed for preview target binding.');
         }
+        $smartTag = $this->smartTag((string) $selector);
         $node = (new DOMXPath($document))->query(
             '//*[@data-docara-smart=' . $this->xpathLiteral((string) $selector)
-                . ' or @data-docara-block=' . $this->xpathLiteral((string) preg_replace('/^.*\./', '', (string) $selector)) . '][1]',
+                . ' or @data-docara-block=' . $this->xpathLiteral((string) preg_replace('/^.*\./', '', (string) $selector))
+                . ($smartTag === null ? '' : ' or self::' . $smartTag) . '][1]',
         )?->item(0);
         if (! $node instanceof DOMElement) {
             throw new PortableConfigurationException('PREVIEW_TARGET_NOT_FOUND', "Preview target [smart:$selector] does not exist on the production page.");
         }
         $locator = $node->getAttribute('data-docara-smart') === $selector
             ? '[data-docara-smart="' . $selector . '"]'
-            : '[data-docara-block="' . preg_replace('/^.*\./', '', (string) $selector) . '"]';
+            : ($node->getAttribute('data-docara-block') !== ''
+                ? '[data-docara-block="' . preg_replace('/^.*\./', '', (string) $selector) . '"]'
+                : (string) $smartTag);
         $view = $node->getAttribute('data-docara-view');
         if ($view !== '') {
             $locator .= '[data-docara-view="' . $view . '"]';
@@ -250,10 +256,14 @@ final readonly class PreviewKernel
         foreach (array_values(array_unique($smartIds)) as $smartId) {
             $project = 'smart/' . $smartId;
             $package = 'resources/smart/' . $smartId;
+            $frameworkPortable = 'resources/framework/portable-smart/' . $smartId;
             if (is_dir($root . '/' . $project)) {
                 $dependencies['@project-tree:' . $project] = true;
             } elseif (is_dir(dirname(__DIR__, 2) . '/' . $package)) {
                 $dependencies['@package-tree:' . $package] = true;
+            } elseif (is_dir(dirname(__DIR__, 2) . '/' . $frameworkPortable)) {
+                $dependencies['@package-tree:' . $frameworkPortable] = true;
+                $dependencies['@package-file:resources/framework/portable-smart-lock.json'] = true;
             }
             $frameworkManifest = 'resources/framework/manifests/' . str_replace('.', '-', $smartId) . '.json';
             if (is_file(dirname(__DIR__, 2) . '/' . $frameworkManifest)) {
@@ -363,6 +373,7 @@ final readonly class PreviewKernel
                     : null;
                 $tag = is_array($manifest) ? ($manifest['frontend']['tag'] ?? null) : null;
             }
+            $tag = is_string($tag) ? $tag : $this->smartTag($smartId);
             if (is_string($tag) && preg_match('/<' . preg_quote($tag, '/') . '\b/i', $html) === 1) {
                 $ids[] = $smartId;
             }
@@ -380,6 +391,28 @@ final readonly class PreviewKernel
         sort($ids, SORT_STRING);
 
         return $ids;
+    }
+
+    private function smartTag(string $smartId): ?string
+    {
+        try {
+            $definition = SmartRegistry::bundled()->definition($smartId);
+        } catch (\InvalidArgumentException) {
+            return null;
+        }
+        foreach ($definition->templates as $template) {
+            $relative = is_array($template) ? ($template['path'] ?? null) : null;
+            if (! is_string($relative) || ! is_string($definition->root)) {
+                continue;
+            }
+            $path = $definition->root . '/' . $relative;
+            $source = is_file($path) && ! is_link($path) ? file_get_contents($path) : false;
+            if (is_string($source) && preg_match('/<(sf-[a-z0-9-]+)\b/', $source, $match) === 1) {
+                return $match[1];
+            }
+        }
+
+        return null;
     }
 
     private function safeRelative(string $path): bool

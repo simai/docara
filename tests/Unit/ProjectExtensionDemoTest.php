@@ -41,6 +41,11 @@ final class ProjectExtensionDemoTest extends TestCase
         self::assertStringContainsString('data-project-install-builder', $html);
         self::assertStringContainsString('data-project-product-configurator', $html);
         self::assertStringContainsString('data-project-footer-links', $html);
+        self::assertStringContainsString('<sf-input', $html);
+        self::assertStringContainsString('<sf-dropdown', $html);
+        self::assertSame(3, substr_count($html, '<sf-list-item'));
+        self::assertGreaterThanOrEqual(4, substr_count($html, '<sf-checkbox'));
+        self::assertStringContainsString('type="text"', $html);
         self::assertStringNotContainsString(':::project.', $html);
         foreach ([
             'project.install-builder/assets/install-builder.css',
@@ -50,6 +55,17 @@ final class ProjectExtensionDemoTest extends TestCase
             'project.footer-links/assets/footer-links.css',
         ] as $asset) {
             self::assertFileExists($build . '/_docara/smart/' . $asset);
+        }
+        foreach ([
+            'vendor/simai/ui/inputs/css/inputs.css',
+            'vendor/simai/ui/inputs/js/inputs.js',
+            'vendor/simai/ui/dropdown/js/dropdown.js',
+            'vendor/simai/ui/checkbox/css/checkbox.css',
+            'vendor/simai/ui/checkbox/js/checkbox.js',
+            'vendor/simai/ui/list-item/js/list-item.js',
+        ] as $asset) {
+            self::assertFileExists($build . '/_docara/' . $asset);
+            self::assertStringContainsString('/_docara/' . $asset, $html);
         }
     }
 

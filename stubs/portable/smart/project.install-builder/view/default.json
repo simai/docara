@@ -4,5 +4,19 @@
   "smart": "project.install-builder",
   "code": "default",
   "template": "default",
-  "props": {}
+  "props": {},
+  "children": {
+    "package": {
+      "smart": "ui.input",
+      "slot": "controls",
+      "preset": "default",
+      "props": {"label": "Composer package", "name": "package", "value": "simai/docara", "readonly": true}
+    },
+    "development": {
+      "smart": "ui.checkbox",
+      "slot": "controls",
+      "preset": "default",
+      "props": {"label": "Добавить как зависимость для разработки", "name": "development", "value": "dev"}
+    }
+  }
 }

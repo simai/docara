@@ -4,5 +4,21 @@
   "smart": "project.product-configurator",
   "code": "default",
   "template": "default",
-  "props": {}
+  "props": {},
+  "children": {
+    "product": {
+      "smart": "ui.dropdown",
+      "slot": "controls",
+      "preset": "default",
+      "props": {"label": "Вариант продукта", "name": "product", "placeholder": "Выберите вариант", "ariaLabel": "Вариант продукта"},
+      "children": {
+        "starter": {"smart": "ui.list-item", "slot": "options", "preset": "default", "props": {"type": "text", "text": "Стартовый", "selected": true}},
+        "team": {"smart": "ui.list-item", "slot": "options", "preset": "default", "props": {"type": "text", "text": "Командный"}},
+        "business": {"smart": "ui.list-item", "slot": "options", "preset": "default", "props": {"type": "text", "text": "Бизнес"}}
+      }
+    },
+    "analytics": {"smart": "ui.checkbox", "slot": "controls", "preset": "default", "props": {"label": "Расширенная аналитика", "name": "features", "value": "1200"}},
+    "teamwork": {"smart": "ui.checkbox", "slot": "controls", "preset": "default", "props": {"label": "Командная работа", "name": "features", "value": "800"}},
+    "export": {"smart": "ui.checkbox", "slot": "controls", "preset": "default", "props": {"label": "Экспорт данных", "name": "features", "value": "500"}}
+  }
 }

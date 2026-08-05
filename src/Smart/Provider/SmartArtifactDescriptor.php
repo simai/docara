@@ -14,7 +14,7 @@ final readonly class SmartArtifactDescriptor
      * @param  array<string, array{path:string,schema:string,template:string}>  $presets
      * @param  array<string, array{path:string,renderer:string}>  $templates
      * @param  array<string, string>  $aliases
-     * @param  array<string, array{path:string,kind:string,public:string,version:string}>  $assets
+     * @param  array<string, array{path:string,kind:string,public:string,version:string,root?:string}>  $assets
      * @param  array<string, mixed>  $portableManifest
      * @param  array<string, mixed>  $provenance
      */

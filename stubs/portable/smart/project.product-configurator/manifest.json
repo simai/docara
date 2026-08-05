@@ -20,6 +20,9 @@
     "base_price": {"type": "number", "required": true},
     "currency": {"type": "string", "required": true}
   },
+  "slots": {
+    "controls": {"accepts": ["ui.dropdown", "ui.checkbox"], "required": true, "multiple": true}
+  },
   "assets": {
     "css": ["assets/product-configurator.css"],
     "js": ["assets/product-configurator.js"],

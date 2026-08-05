@@ -87,17 +87,35 @@ final readonly class DesignAtlasService
     {
         $manifest = $definition->portableManifest;
         $children = is_array($manifest['children'] ?? null) ? $manifest['children'] : [];
-        $slots = is_array($manifest['slots'] ?? null) ? array_keys($manifest['slots']) : [];
+        $slotContracts = is_array($manifest['slots'] ?? null) ? $manifest['slots'] : [];
+        $slots = array_keys($slotContracts);
         sort($slots, SORT_STRING);
-        $contract = $children === [] && $slots === [] ? null : [
-            'allowed_children' => array_values(array_unique(array_map(
+        $allowedChildren = array_values(array_unique(array_filter([
+            ...array_map(
                 static fn (array $child): string => (string) ($child['smart'] ?? ''),
                 array_values(array_filter($children, 'is_array')),
-            ))),
+            ),
+            ...array_merge(...array_map(
+                static fn (mixed $slot): array => is_array($slot) && is_array($slot['accepts'] ?? null)
+                    ? array_values(array_filter($slot['accepts'], 'is_string'))
+                    : [],
+                array_values($slotContracts),
+            )),
+        ], static fn (string $id): bool => $id !== '')));
+        sort($allowedChildren, SORT_STRING);
+        $requiredSlots = array_filter(
+            $slotContracts,
+            static fn (mixed $slot): bool => is_array($slot) && ($slot['required'] ?? false) === true,
+        );
+        $contract = $children === [] && $slots === [] ? null : [
+            'allowed_children' => $allowedChildren,
             'slots' => $slots,
-            'min_children' => 0,
-            'max_children' => max(count($children), count($slots), 1),
-            'order' => 'manifest',
+            'min_children' => count($requiredSlots),
+            'max_children' => array_filter(
+                $slotContracts,
+                static fn (mixed $slot): bool => is_array($slot) && ($slot['multiple'] ?? false) === true,
+            ) === [] ? max(count($children), count($slots), 1) : 64,
+            'order' => 'declared',
             'max_depth' => 8,
         ];
 

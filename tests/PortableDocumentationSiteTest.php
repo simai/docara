@@ -58,6 +58,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $redirectReceipt = $this->json($build . '/.docara/redirects.json');
         $localeRouteReceipt = $this->json($build . '/.docara/locale-routes.json');
         $search = $this->json($build . '/_docara/search-index.json');
+        $resolvedPlans = $this->json($build . '/.docara/resolved-page-plans.json');
+        $atlasProjection = $this->json($build . '/.docara/design-atlas.json');
+        $schemaProjection = $this->json($build . '/.docara/schema-reference.json');
         $supported = array_values(array_filter(
             $catalog['entries'],
             static fn (array $entry): bool => $entry['lifecycle'] === 'supported'
@@ -81,6 +84,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         ));
 
         self::assertCount(132, $pages);
+        self::assertSame([
+            'design_atlas_sha256' => $atlasProjection['content_sha256'],
+            'schema_reference_sha256' => $schemaProjection['content_sha256'],
+        ], $resolvedPlans['build']['public_projections']);
         foreach ($pages as $page) {
             self::assertSame('pagebuilder_document_ir', $page['declarative_pipeline']['main_source']);
             self::assertSame('docara.document_ir.v1', $page['declarative_pipeline']['document_ir']['schema']);
@@ -223,6 +230,18 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertSame(264, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
+
+        $resolvedPlans['build']['public_projections']['design_atlas_sha256'] = str_repeat('0', 64);
+        file_put_contents(
+            $build . '/.docara/resolved-page-plans.json',
+            json_encode($resolvedPlans, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+        );
+        $verification->run();
+        self::assertFalse($verification->isSuccessful());
+        self::assertStringContainsString(
+            'Public projections do not match the accepted build receipt.',
+            $verification->getOutput(),
+        );
     }
 
     #[Test]

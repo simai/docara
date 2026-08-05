@@ -1006,6 +1006,10 @@ final readonly class PortableSiteBuilder
                             ->forKeys($requiredSmartAssets),
                     ],
                     'production_inputs' => $runtimeMetadata->productionInputGroups(),
+                    'public_projections' => [
+                        'design_atlas_sha256' => $atlasReceipt['content_sha256'],
+                        'schema_reference_sha256' => $schemaReferenceReceipt['content_sha256'],
+                    ],
                     'component_catalog_sha256' => hash('sha256', CanonicalJson::encode($effectiveComponentCatalog)),
                     'publisher' => $publisher->id(),
                     'locale_sources' => $this->localeSourceHashes($root, $contentContexts),

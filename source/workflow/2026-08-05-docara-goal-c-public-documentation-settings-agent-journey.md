@@ -28,7 +28,7 @@ publication path.
 - [x] C0 — freeze route/source/redirect/navigation inventory.
 - [x] C1 — six component entry points and complete Markdown/container coverage.
 - [x] C2 — design root, real insertion chain and interface matrix.
-- [ ] C3 — settings root, task guides and schema-derived field reference.
+- [x] C3 — settings root, task guides and schema-derived field reference.
 - [ ] C4 — discover/plan/preview/dry-run/apply/validate CLI/MCP/AI journey.
 - [ ] C5 — accepted Framework/project demos with Atlas support labels.
 - [ ] C6 — integrated route/link/schema/build/browser/SEO evidence and handoff.

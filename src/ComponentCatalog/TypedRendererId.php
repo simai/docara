@@ -34,6 +34,7 @@ enum TypedRendererId: string
     case Backlinks = 'docara.backlinks.v1';
     case ComponentIndex = 'docara.component_index.v1';
     case AtlasIndex = 'docara.atlas_index.v1';
+    case SchemaReference = 'docara.schema_reference.v1';
 
     public function componentId(): string
     {

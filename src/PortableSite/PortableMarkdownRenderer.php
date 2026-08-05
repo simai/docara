@@ -163,6 +163,7 @@ final class PortableMarkdownRenderer
                 TypedRendererId::Backlinks => $this->renderBacklinks($block['attributes']),
                 TypedRendererId::ComponentIndex => $this->renderComponentIndex($block['attributes']),
                 TypedRendererId::AtlasIndex => $this->renderAtlasIndex($block['attributes']),
+                TypedRendererId::SchemaReference => $this->renderSchemaReference($block['attributes']),
             };
             $wrapper = '<p>' . $block['placeholder'] . '</p>';
             if (substr_count($html, $wrapper) !== 1) {
@@ -246,7 +247,7 @@ final class PortableMarkdownRenderer
             $renderer = TypedRendererId::from((string) $definition['renderer']);
             $allowsEmptyBody = in_array(
                 $renderer,
-                [TypedRendererId::Code, TypedRendererId::Backlinks, TypedRendererId::ComponentIndex, TypedRendererId::AtlasIndex],
+                [TypedRendererId::Code, TypedRendererId::Backlinks, TypedRendererId::ComponentIndex, TypedRendererId::AtlasIndex, TypedRendererId::SchemaReference],
                 true,
             );
             if (trim($bodyMarkdown) === '' && ! $allowsEmptyBody) {
@@ -922,6 +923,28 @@ final class PortableMarkdownRenderer
 
         return '<nav data-docara-block="atlas-index" data-docara-atlas-index' . $serialized
             . ' class="m-bottom-1" aria-label="Design Atlas index"></nav>';
+    }
+
+    /** @param array<string,string> $attributes */
+    private function renderSchemaReference(array $attributes): string
+    {
+        $this->assertAttributes($attributes, ['schema', 'scope'], 'schema_reference');
+        $schema = $this->attributeOneOf(
+            $attributes['schema'] ?? '',
+            ['site', 'section', 'page', 'presentation', 'framework-lock'],
+            'schema_reference',
+            'schema',
+        );
+        $scope = $this->attributeOneOf(
+            $attributes['scope'] ?? '',
+            ['site', 'section', 'page', 'shared', 'lock'],
+            'schema_reference',
+            'scope',
+        );
+
+        return '<div data-docara-block="schema-reference" data-docara-schema-reference'
+            . ' data-schema-name="' . $this->escapeHtml($schema) . '"'
+            . ' data-schema-scope="' . $this->escapeHtml($scope) . '"></div>';
     }
 
     /** @param array<string,string> $attributes */

@@ -89,4 +89,26 @@ final class GoalCPublicDocumentationTest extends TestCase
         self::assertSame(3, substr_count($previews, ':::internal_preview'));
         self::assertStringContainsString('PREVIEW_BUILD_PURPOSE_FORBIDDEN', $previews);
     }
+
+    #[Test]
+    public function settings_root_implements_the_complete_route_map_and_schema_derived_references(): void
+    {
+        $base = dirname(__DIR__, 2) . '/docs/site/content/ru/settings';
+        $routes = [
+            'levels-and-inheritance', 'site', 'section', 'page', 'locales-and-routing',
+            'branding-and-theme', 'layout-and-regions', 'navigation', 'search-and-reading',
+            'reader-preferences', 'framework-lock-and-providers', 'security',
+            'diagnostics-and-provenance',
+        ];
+        $root = (string) file_get_contents(dirname($base) . '/settings.md');
+        foreach ($routes as $route) {
+            self::assertFileExists($base . '/' . $route . '.md');
+            self::assertStringContainsString('/ru/settings/' . $route . '/', $root);
+        }
+        self::assertStringContainsString(':::schema_reference {schema=presentation scope=shared}', $root);
+        self::assertStringContainsString(':::schema_reference {schema=site scope=site}', (string) file_get_contents($base . '/site.md'));
+        self::assertStringContainsString(':::schema_reference {schema=section scope=section}', (string) file_get_contents($base . '/section.md'));
+        self::assertStringContainsString(':::schema_reference {schema=page scope=page}', (string) file_get_contents($base . '/page.md'));
+        self::assertStringContainsString(':::schema_reference {schema=framework-lock scope=lock}', (string) file_get_contents($base . '/framework-lock-and-providers.md'));
+    }
 }

@@ -539,6 +539,44 @@ final readonly class PortableSiteBuilder
         if (! $earlyPhysicalSelection) {
             $contextPages = $pages;
         }
+        $schemaReferenceProjector = new PortableSchemaReferenceProjector;
+        $schemaReferenceReceipt = $schemaReferenceProjector->receipt();
+        if ($earlyPhysicalSelection) {
+            $schemaReferenceReceiptPath = rtrim($finalDestination, '/\\') . '/.docara/schema-reference.json';
+            try {
+                $acceptedSchemaReferenceReceipt = json_decode(
+                    (string) $this->files->get($schemaReferenceReceiptPath),
+                    true,
+                    512,
+                    JSON_THROW_ON_ERROR,
+                );
+            } catch (JsonException $exception) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_SCHEMA_REFERENCE_BASE_INVALID',
+                    'The complete build has no valid schema-reference projection for an isolated page rebuild.',
+                    $exception,
+                );
+            }
+            if (! is_array($acceptedSchemaReferenceReceipt)
+                || ($acceptedSchemaReferenceReceipt['schema'] ?? null) !== 'docara.public_schema_reference.v1'
+                || ! is_array($acceptedSchemaReferenceReceipt['sources'] ?? null)
+                || ! is_string($acceptedSchemaReferenceReceipt['content_sha256'] ?? null)
+                || ! hash_equals(
+                    $acceptedSchemaReferenceReceipt['content_sha256'],
+                    hash('sha256', CanonicalJson::encode($acceptedSchemaReferenceReceipt['sources'])),
+                )
+                || ! hash_equals($schemaReferenceReceipt['content_sha256'], $acceptedSchemaReferenceReceipt['content_sha256'])
+            ) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_SCHEMA_REFERENCE_BASE_INVALID',
+                    'The accepted full build schemas differ from current package schemas; run a full build.',
+                );
+            }
+        }
+        $pages = (new PortableSchemaReferenceHydrator($schemaReferenceProjector))->hydrate($pages);
+        if (! $earlyPhysicalSelection) {
+            $contextPages = $pages;
+        }
         $outlineBuilder = new PortableDocumentOutlineBuilder;
         foreach ($pages as &$hydratedPage) {
             $hydratedPlan = $hydratedPage['plan'] ?? null;
@@ -729,6 +767,10 @@ final readonly class PortableSiteBuilder
                 $this->files->put(
                     rtrim($destination, '/\\') . '/.docara/design-atlas.json',
                     $this->prettyCanonicalJson($atlasReceipt),
+                );
+                $this->files->put(
+                    rtrim($destination, '/\\') . '/.docara/schema-reference.json',
+                    $this->prettyCanonicalJson($schemaReferenceReceipt),
                 );
                 $this->files->put($docaraOutputDirectory . '/component-catalog.json', $componentCatalogJson);
                 $this->files->put(

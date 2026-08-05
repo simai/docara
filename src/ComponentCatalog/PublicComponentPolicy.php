@@ -24,6 +24,7 @@ final class PublicComponentPolicy
         // It shares the typed renderer registry but is not a public authoring component.
         'docara.component_index',
         'docara.atlas_index',
+        'docara.schema_reference',
         'docara.internal_preview',
     ];
 

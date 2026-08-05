@@ -9,7 +9,7 @@
         "graph/specs/stages/b-interface-library.json",
         "graph/specs/batches/b-interface-library.json"
     ],
-    "canonical_sha256": "08f75b8d4bd34285f1ba6a4573c31695682517874c5d00d845c895be8ad72c57",
+    "canonical_sha256": "19c7c06ac1a1502b0a445b306dd667d806845a35fb204f6b2cbe55ac388faf93",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -25,8 +25,8 @@
         "batch": "docara.batch.b.interface_library",
         "batch_readiness": "ready_for_independent_audit",
         "batch_status": "ready_for_independent_audit",
-        "completed_checkpoint": "goal_b_b0_b5_executor_matrix_complete",
-        "candidate_revision": "e06ff0c945dafd4e9678794773d8bde83c8de535",
+        "completed_checkpoint": "goal_b_b6_semantic_correction_executor_matrix_complete",
+        "candidate_revision": "c3b91eee71ab906cd79ae7a119c6961664f03528",
         "next_action": "independent_goal_b_reverse_outcome_audit",
         "evidence": "source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md"
     },

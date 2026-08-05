@@ -1,13 +1,15 @@
 # B5 final integrated acceptance candidate
 
 Date: 2026-08-05
-Status: `ready_for_independent_audit`
+Status: `rejected_semantic_baseline`
 Branch: `codex/docara-unified-architecture`
 Exact product candidate: `e06ff0c945dafd4e9678794773d8bde83c8de535`
 Entry/rollback boundary: `3280a89cc21f2b4fcfc8e7539c673ca62a199446`
 
-This is executor evidence, not independent acceptance. Goal C, merge, push,
-tag, release and deploy remain unauthorized.
+Independent audit found that displayed controls in both project demos did not
+all affect their claimed result. This immutable B5 packet is superseded by the
+B6 semantic correction and is not current readiness evidence. Goal C, merge,
+push, tag, release and deploy remain unauthorized.
 
 Product checkpoint commits after the Goal A handoff:
 

@@ -4,7 +4,7 @@
 независимо приняты. Exact accepted Goal A product/runtime candidate —
 `8c04160…`. Goal B Full Interface Library & Useful Extension Demos активирован
 из governance baseline `3280a89…`; B0-B3 реализованы, а independently accepted
-form-wave и text-only `ui.list-item` сейчас проходят финальную B4/B5-матрицу.
+form-wave и text-only `ui.list-item` прошли corrected B6-матрицу.
 Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
@@ -118,7 +118,7 @@ Goal B авторизован отдельным independent verdict и акти
 
 ## Goal B. Full Interface Library & Useful Extension Demos
 
-Статус: `goal_b_ready_for_independent_audit`, B0-B5 implementation и
+Статус: `goal_b_ready_for_independent_audit`, B0-B6 implementation и
 интеграционная матрица `pass`. Design Atlas является детерминированной
 проекцией принятых registries, а не вторым реестром. Search, breadcrumbs и
 pager переведены в зарегистрированные Smart leaves с точной default HTML
@@ -128,8 +128,9 @@ packet для `ui.input`, `ui.dropdown`, `ui.checkbox` и отдельный exa
 artifact `ui.list-item` приняты. Полезный dropdown использует только admitted
 `type=text` children; локальные `items`, raw markup и Docara-owned подмена
 запрещены. Candidate `ccb076a…` остаётся pre-wave historical baseline. Exact
-product candidate `e06ff0c945dafd4e9678794773d8bde83c8de535` прошёл fresh
-full/package/two-consumer/browser B5 и передан на независимый аудит. Это не
+product candidate `c3b91eee71ab906cd79ae7a119c6961664f03528` прошёл fresh
+full/package/two-consumer/browser B6 и передан на независимый аудит. Каждый
+отображаемый demo control влияет на allowlisted локальную команду или итог. Это не
 открывает Goal C.
 
 Recovery source:

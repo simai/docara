@@ -29,7 +29,7 @@ Graph goal: `docara.goal.unified`
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.b.interface_library`;
 - batch: `docara.batch.b.interface_library`;
-- candidate: `e06ff0c945dafd4e9678794773d8bde83c8de535`;
+- candidate: `c3b91eee71ab906cd79ae7a119c6961664f03528`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
 - next action: `independent_goal_b_reverse_outcome_audit`;
 - Goal 1-3 and Goal A are independently accepted; Goal C and release review remain unauthorized.
@@ -48,10 +48,12 @@ IR/HTML remain disposable.
 ## Current result
 
 Goal A exact product/runtime candidate `8c04160…` was independently accepted.
-Goal B exact product candidate `e06ff0c…` completes B0-B5. Exact accepted
+Goal B exact product candidate `c3b91eee…` completes B0-B6. Exact accepted
 input/dropdown/checkbox and list-item owner packets are consumed through the
 single Gateway path; the useful dropdown admits only text list-item children.
-Full/package/two-consumer/browser/security evidence is fresh. Goal B is ready
+Install Builder controls now all update one safe copy-only command, and the
+configurator dropdown plus checkboxes update one local total. Full/package/
+two-consumer/browser/security evidence is fresh. Goal B is ready
 for independent audit, not self-accepted, and Goal C remains unauthorized.
 
 ## Boundary

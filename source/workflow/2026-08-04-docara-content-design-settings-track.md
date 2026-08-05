@@ -24,8 +24,8 @@ accepted and the user explicitly activated Goal A on 2026-08-04. The accepted
 Goal A execution contract is
 `source/workflow/2026-08-04-docara-goal-a-shell-contract.md`.
 
-Goal 3 and Goal A are independently accepted. Goal B B0-B5 and the full fresh
-matrix are implemented on exact candidate `e06ff0c…`. Its accepted
+Goal 3 and Goal A are independently accepted. Goal B B0-B6 and the full fresh
+matrix are implemented on corrected exact candidate `c3b91eee…`. Its accepted
 input/dropdown/checkbox Framework wave and accepted text-only `ui.list-item`
 dependency use the single production path. Executor readiness does not
 authorize:
@@ -56,9 +56,9 @@ Goal A started only after all conditions became true:
 6. the first bounded goal has a named executor, independent auditor and exact
    evidence directory.
 
-The independent Goal 3 and Goal A verdicts are `PASS`. Goal B remains the
-active authorized goal but cannot continue until the exact independently
-accepted Framework owner artifacts exist. Goal C remains unauthorized.
+The independent Goal 3 and Goal A verdicts are `PASS`. Goal B accepted exact
+Framework inputs are present; the corrected executor result now awaits an
+independent reverse-outcome audit. Goal C remains unauthorized.
 
 ## 1. Track objective
 

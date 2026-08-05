@@ -3,8 +3,8 @@
 Текущий статус: Goal 1, Goal 2, Goal 3 и Goal A независимо приняты. Exact
 accepted Goal A product/runtime candidate —
 `8c04160ab50549b060fb933cf80f86193cd92113`. Goal B Full Interface Library &
-Useful Extension Demos завершил implementation и полную B5-матрицу на exact
-candidate `e06ff0c945dafd4e9678794773d8bde83c8de535`; состояние только
+Useful Extension Demos завершил implementation и corrected B6-матрицу на exact
+candidate `c3b91eee71ab906cd79ae7a119c6961664f03528`; состояние только
 `ready_for_independent_audit`, независимая приёмка ещё не заявлена. Частичный
 candidate `ccb076a89535954022ca89eb70b84d6c81d80de3` остаётся historical
 baseline.
@@ -48,12 +48,13 @@ PASS ставится только по воспроизводимому evidenc
 - [x] Search, breadcrumbs, pager, navigation, TOC и preferences проходят один
       production Gateway/composition path.
 - [x] Project install builder, product configurator и footer устанавливаются
-      data-only без engine source edits и backend side effects.
+      data-only без engine source edits и backend side effects; каждый
+      отображаемый Framework-контрол меняет свой allowlisted локальный итог.
 - [x] Framework input/dropdown/checkbox и обязательный text-only list-item
       exact-pinned, independently accepted и cross-host proven до support
       claim; dropdown options проходят только admitted child contract.
 - [x] Full/single/determinism/security/default/package/consumer matrix зелёная
-      на exact product candidate `e06ff0c…`.
+      на exact product candidate `c3b91eee…`.
 - [x] Полная Goal B browser/a11y и cross-host matrix повторена на том же exact
       independent-ready candidate.
 

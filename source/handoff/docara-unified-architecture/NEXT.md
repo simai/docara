@@ -2,14 +2,15 @@
 
 Current state: `goal_b_ready_for_independent_audit`
 
-Current candidate: `e06ff0c945dafd4e9678794773d8bde83c8de535`
+Current candidate: `c3b91eee71ab906cd79ae7a119c6961664f03528`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
 
-Goal 1-3 and Goal A are independently accepted. Goal B B0-B5 and the full
-fresh matrix are green on exact product candidate `e06ff0c…`. The immutable
+Goal 1-3 and Goal A are independently accepted. Goal B B0-B6 and the full
+fresh matrix are green on exact product candidate `c3b91eee…`. The immutable
 form wave and text-only list-item dependency are exact-pinned and flow through
-one provider/registry/Gateway/renderer path. Perform the independent Goal B
+one provider/registry/Gateway/renderer path. Every displayed demo control now
+changes its allowlisted local result. Perform the independent Goal B
 audit only. Do not begin Goal C, release or live actions.
 
 ## Historical deployment decision (parked, not executable)

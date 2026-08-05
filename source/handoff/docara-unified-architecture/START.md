@@ -30,7 +30,7 @@ Current next action: `independent_goal_b_reverse_outcome_audit`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
 
-Current candidate: `e06ff0c945dafd4e9678794773d8bde83c8de535`
+Current candidate: `c3b91eee71ab906cd79ae7a119c6961664f03528`
 
 Next roadmap goal: `docara.goal.b.interface_library`
 
@@ -40,8 +40,8 @@ Next roadmap authorized: `true`
 
 Goal 1 and Goal 2 were independently accepted with `PASS_WITH_NOTES`; Goal 3
 and Goal A were independently accepted with `PASS`. Goal B Full Interface
-Library & Useful Extension Demos is complete at executor level on one exact
-candidate and awaits independent reverse-outcome audit. The accepted form wave
+Library & Useful Extension Demos is complete at executor level on one corrected
+exact candidate and awaits independent reverse-outcome audit. The accepted form wave
 and accepted text-only `ui.list-item` dependency are consumed without a local
 dialect. Goal C and release review remain unauthorized.
 
@@ -63,7 +63,7 @@ overrides canonical graph or workflow sources.
 ## 4. Execute only the current goal
 
 Run only the independent Goal B reverse-outcome audit against candidate
-`e06ff0c…` and the final B5 evidence. Preserve accepted Goal 1-3 and Goal A
+`c3b91eee…` and the final B6 evidence. Preserve accepted Goal 1-3 and Goal A
 runtime invariants. Do not implement Goal C or start release review. Executor
 evidence is not independent acceptance.
 

@@ -31,6 +31,6 @@
   "required_evidence": ["Atlas contract and freshness", "Chrome parity and zero references", "Project demos", "Framework cross-host proof", "Integrated build/browser/security matrix", "Independent reverse-outcome audit"],
   "next_stage_ref": null,
   "status": "ready_for_independent_audit",
-  "candidate_revision": "e06ff0c945dafd4e9678794773d8bde83c8de535",
+  "candidate_revision": "c3b91eee71ab906cd79ae7a119c6961664f03528",
   "next_action": "independent_goal_b_reverse_outcome_audit"
 }

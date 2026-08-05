@@ -2,28 +2,34 @@
 
 Current state: `goal_b_ready_for_independent_audit`
 
-Current candidate: `e06ff0c945dafd4e9678794773d8bde83c8de535`
+Current candidate: `c3b91eee71ab906cd79ae7a119c6961664f03528`
 
 Current evidence: `source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md`
 
 ## Goal B current result
 
 Independent audit accepted Goal A candidate `8c04160…` with exact public tree
-`8b7fdb61…`. Goal B exact product candidate `e06ff0c…` completes B0-B5: one
+`8b7fdb61…`. Goal B exact product candidate `c3b91eee…` completes B0-B6: one
 deterministic registry-derived Atlas, registered publisher chrome, coherent
 presets, safe project demos and exact accepted Framework form controls. The
 populated dropdown uses three admitted text-only `ui.list-item` children through
 the single Gateway; raw items/markup and related icon/avatar/tag surfaces are
-not supported.
+not supported. Install Builder now maps OS, method, package, version and admitted
+options to one escaped copy-only command. Product Configurator maps its admitted
+dropdown tariff and checkbox options to one local summary and total.
 
-Full PHPUnit is 467 tests / 8,699 assertions. Two exact full builds and selected
-Alert output share complete ledger `7771142e…`; static verification checks 208
+Full PHPUnit is 468 tests / 8,725 assertions. Two exact full builds and selected
+Alert output share complete ledger `1fc86250…`; static verification checks 208
 HTML / 21,844 references / broken=0. Two clean clones produce identical
-809-file ZIP `1dea7df7…` and manifest `af9012a2…`; two same-lock fresh dist
-consumers produce identical full/single ledger `79d2ada0…` without Node or
+809-file ZIP `7dc6d435…` and manifest file `30fe6546…`; two same-lock fresh dist
+consumers produce identical full/single ledger `8a624eba…` without Node or
 package `.git`. Project-demo and public-shell browser matrices pass
 desktop/mobile, light/dark and LTR/RTL with zero console/network errors and
 overflow.
+
+Rejected semantic candidate `e06ff0c…` and its B5 hashes remain historical:
+independent audit proved its displayed demo controls did not all affect their
+results. They are not current candidate evidence.
 
 Goal B is ready for independent audit, not self-accepted. Goal C and release
 remain unauthorized, and no external repository or site changed.

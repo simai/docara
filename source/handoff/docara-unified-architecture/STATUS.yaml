@@ -6,7 +6,7 @@ state: goal_b_ready_for_independent_audit
 current_stage: docara.stage.b.interface_library
 current_batch: docara.batch.b.interface_library
 next_action: independent_goal_b_reverse_outcome_audit
-candidate_revision: e06ff0c945dafd4e9678794773d8bde83c8de535
+candidate_revision: c3b91eee71ab906cd79ae7a119c6961664f03528
 evidence: source/workflow/evidence/2026-08-04-docara-goal-b-interface-library/INDEX.md
 goal1_candidate_revision: 44acc1ff91233fa78140222fcb0589bf55b65ca0
 goal1_sf5_adapter_revision: b3cdff87563ff78e7eddf044048a4b298fc69036

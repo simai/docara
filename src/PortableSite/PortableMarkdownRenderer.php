@@ -905,9 +905,9 @@ final class PortableMarkdownRenderer
     /** @param array<string,string> $attributes */
     private function renderAtlasIndex(array $attributes): string
     {
-        $this->assertAttributes($attributes, ['kind', 'authoring', 'support', 'owner', 'ids'], 'atlas_index');
+        $this->assertAttributes($attributes, ['kind', 'authoring', 'support', 'status', 'namespace', 'owner', 'origin', 'provider', 'ids'], 'atlas_index');
         $serialized = '';
-        foreach (['kind', 'authoring', 'support', 'owner', 'ids'] as $name) {
+        foreach (['kind', 'authoring', 'support', 'status', 'namespace', 'owner', 'origin', 'provider', 'ids'] as $name) {
             $value = trim($attributes[$name] ?? '');
             if ($value === '') {
                 continue;

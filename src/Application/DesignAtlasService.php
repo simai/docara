@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Application;
 
+use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
 use Simai\Docara\Declarative\Binding\BindingDescriptor;
 use Simai\Docara\Design\Artifact\DesignArtifactDescriptor;
 use Simai\Docara\Design\Artifact\DesignArtifactKind;
+use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Smart\SmartComponentDefinition;
 
@@ -33,19 +35,32 @@ final readonly class DesignAtlasService
                 $entries[] = $this->bindingPreset($descriptor, $presentation);
             }
         }
+        $frameworkLock = $runtime->site['framework_lock'] ?? null;
+        if (is_string($frameworkLock) && $frameworkLock !== '') {
+            $catalog = EffectiveComponentCatalogBuilder::bundled(
+                FrameworkLock::fromJsonFile($runtime->root . '/' . ltrim($frameworkLock, '/')),
+            )->build();
+            foreach ($catalog['entries'] as $entry) {
+                if (is_array($entry) && ($entry['family'] ?? null) !== 'framework_smart') {
+                    $entries[] = $this->component($entry);
+                }
+            }
+        }
 
         usort($entries, static fn (array $left, array $right): int => [$left['kind'], $left['id']] <=> [$right['kind'], $right['id']]);
         $core = [
             'schema' => 'docara.design_atlas.v1',
             'vocabulary' => [
                 'kinds' => ['binding', 'block', 'layout', 'preset', 'section', 'smart', 'view'],
-                'authoring_kinds' => ['configuration', 'container', 'inline', 'block', 'none'],
-                'support_states' => ['supported', 'compatibility', 'project'],
+                'authoring_kinds' => ['configuration', 'container', 'inline', 'block', 'markdown', 'none'],
+                'support_states' => ['supported', 'compatibility', 'project', 'proposal', 'rejected'],
+                'origins' => ['docara', 'framework', 'native', 'project', 'requirement'],
                 'typing_source' => 'admitted_registry_descriptor',
                 'fence_length_semantics' => 'none',
             ],
             'registry_fingerprints' => [
                 'bindings' => $runtime->bindings->fingerprint(),
+                'components' => isset($catalog) ? (string) $catalog['content_sha256'] : hash('sha256', ''),
                 'design' => $runtime->designs->fingerprint(),
                 'smart' => $this->smartFingerprint($runtime),
             ],
@@ -70,10 +85,8 @@ final readonly class DesignAtlasService
         return [
             'id' => $descriptor->id,
             'kind' => $descriptor->kind->value,
-            'owner' => $descriptor->ownerNamespace,
+            ...$this->facets($descriptor->id, $descriptor->ownerNamespace, $this->ownerPackage($descriptor->provider, $descriptor->ownerNamespace), $descriptor->provider, $this->support($descriptor->provider)),
             'authoring_kind' => $contract === null ? 'configuration' : 'container',
-            'support' => str_starts_with($descriptor->provider, 'project.') ? 'project' : 'supported',
-            'provider' => $descriptor->provider,
             'capabilities' => $this->strings($descriptor->definition['capabilities'] ?? []),
             'preview_supported' => true,
             'schema' => $descriptor->kind->schema(),
@@ -122,10 +135,8 @@ final readonly class DesignAtlasService
         return [
             'id' => $definition->key,
             'kind' => 'smart',
-            'owner' => $definition->ownerPackage,
+            ...$this->facets($definition->key, $this->namespace($definition->key), $definition->ownerPackage, $definition->providerId, $this->support($definition->providerId, $definition->adapterId !== null)),
             'authoring_kind' => $contract === null ? 'block' : 'container',
-            'support' => str_starts_with($definition->providerId, 'project.') ? 'project' : ($definition->adapterId === null ? 'supported' : 'compatibility'),
-            'provider' => $definition->providerId,
             'capabilities' => $this->smartCapabilities($manifest),
             'preview_supported' => true,
             'schema' => 'smart.manifest.schema.json',
@@ -140,10 +151,8 @@ final readonly class DesignAtlasService
         return [
             'id' => $definition->key . ':' . $preset,
             'kind' => 'preset',
-            'owner' => $definition->ownerPackage,
+            ...$this->facets($definition->key . ':' . $preset, $this->namespace($definition->key), $definition->ownerPackage, $definition->providerId, $this->support($definition->providerId)),
             'authoring_kind' => 'configuration',
-            'support' => str_starts_with($definition->providerId, 'project.') ? 'project' : 'supported',
-            'provider' => $definition->providerId,
             'capabilities' => ['smart.preset'],
             'preview_supported' => true,
             'schema' => (string) ($record['schema'] ?? 'smart.preset.schema.json'),
@@ -158,10 +167,8 @@ final readonly class DesignAtlasService
         return [
             'id' => $descriptor->id,
             'kind' => 'binding',
-            'owner' => $descriptor->ownerNamespace,
+            ...$this->facets($descriptor->id, $descriptor->ownerNamespace, $this->ownerPackage($descriptor->provider, $descriptor->ownerNamespace), $descriptor->provider, $this->support($descriptor->provider)),
             'authoring_kind' => 'configuration',
-            'support' => str_starts_with($descriptor->provider, 'project.') ? 'project' : 'supported',
-            'provider' => $descriptor->provider,
             'capabilities' => $descriptor->capabilities,
             'preview_supported' => true,
             'schema' => $descriptor->outputSchema,
@@ -176,10 +183,8 @@ final readonly class DesignAtlasService
         return [
             'id' => $descriptor->id . ':' . $presentation,
             'kind' => 'preset',
-            'owner' => $descriptor->ownerNamespace,
+            ...$this->facets($descriptor->id . ':' . $presentation, $descriptor->ownerNamespace, $this->ownerPackage($descriptor->provider, $descriptor->ownerNamespace), $descriptor->provider, $this->support($descriptor->provider)),
             'authoring_kind' => 'configuration',
-            'support' => str_starts_with($descriptor->provider, 'project.') ? 'project' : 'supported',
-            'provider' => $descriptor->provider,
             'capabilities' => $descriptor->capabilities,
             'preview_supported' => true,
             'schema' => $descriptor->outputSchema,
@@ -251,5 +256,96 @@ final readonly class DesignAtlasService
         }
 
         return hash('sha256', CanonicalJson::encode($records));
+    }
+
+    /** @param array<string,mixed> $entry @return array<string,mixed> */
+    private function component(array $entry): array
+    {
+        $id = (string) ($entry['id'] ?? '');
+        $authoring = is_array($entry['authoring'] ?? null) ? $entry['authoring'] : [];
+        $metadata = is_array($entry['metadata'] ?? null) ? $entry['metadata'] : [];
+        $provenance = is_array($entry['provenance'] ?? null) ? $entry['provenance'] : [];
+        $family = (string) ($entry['family'] ?? '');
+        $lifecycle = (string) ($entry['lifecycle'] ?? 'deferred');
+        $syntax = (string) ($authoring['syntax'] ?? 'unavailable');
+        $container = is_array($entry['container_contract'] ?? null) ? $entry['container_contract'] : null;
+        $authoringKind = match (true) {
+            $family === 'native_markdown' => 'markdown',
+            $syntax === 'inline' => 'inline',
+            $container !== null => 'container',
+            default => 'block',
+        };
+        $support = match ($lifecycle) {
+            'supported' => 'supported',
+            'framework_gap' => 'rejected',
+            default => 'proposal',
+        };
+        $sourceKind = (string) ($provenance['source_kind'] ?? 'catalog');
+        $origin = match (true) {
+            $family === 'native_markdown' => 'native',
+            $family === 'requirement' => 'requirement',
+            default => 'docara',
+        };
+
+        return [
+            'id' => $id,
+            'kind' => 'block',
+            ...$this->facets(
+                $id,
+                $this->namespace($id),
+                (string) ($metadata['owner'] ?? $metadata['package'] ?? 'simai/docara'),
+                'component.catalog.' . $sourceKind,
+                $support,
+                $origin,
+                $lifecycle,
+            ),
+            'authoring_kind' => $authoringKind,
+            'capabilities' => $this->strings($metadata['capabilities'] ?? $authoring['jobs'] ?? []),
+            'preview_supported' => $lifecycle === 'supported',
+            'schema' => 'component-catalog-entry.schema.json',
+            'container_contract' => $container,
+            'provenance' => $provenance + ['docs_ref' => (string) ($entry['docs_ref'] ?? '')],
+        ];
+    }
+
+    /** @return array<string,string> */
+    private function facets(string $id, string $namespace, string $ownerPackage, string $provider, string $support, ?string $origin = null, ?string $status = null): array
+    {
+        $origin ??= match (true) {
+            str_starts_with($provider, 'project.') => 'project',
+            str_starts_with($provider, 'framework.') => 'framework',
+            default => 'docara',
+        };
+
+        return [
+            'namespace' => $namespace !== '' ? $namespace : $this->namespace($id),
+            'owner' => $ownerPackage,
+            'owner_package' => $ownerPackage,
+            'origin' => $origin,
+            'provider' => $provider,
+            'support' => $support,
+            'status' => $status ?? $support,
+        ];
+    }
+
+    private function namespace(string $id): string
+    {
+        $separator = strpos($id, '.');
+
+        return $separator === false ? $id : substr($id, 0, $separator);
+    }
+
+    private function support(string $provider, bool $compatibility = false): string
+    {
+        if (str_starts_with($provider, 'project.')) {
+            return 'project';
+        }
+
+        return $compatibility ? 'compatibility' : 'supported';
+    }
+
+    private function ownerPackage(string $provider, string $namespace): string
+    {
+        return str_starts_with($provider, 'project.') ? 'project/' . $namespace : 'simai/docara';
     }
 }

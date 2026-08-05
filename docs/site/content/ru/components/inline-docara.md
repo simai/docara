@@ -4,7 +4,7 @@ Inline-компонент добавляет короткий визуальны
 
 ## Принятые inline entries
 
-:::atlas_index {kind=smart authoring=inline}
+:::atlas_index {kind=block origin=docara authoring=inline support=supported}
 :::
 
 ## Исходник и результат

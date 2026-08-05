@@ -143,6 +143,31 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertSame([], $projectedSupported);
         self::assertFileExists($build . '/ru/components/index.html');
 
+        $publicGroups = [
+            'native-markdown' => ['native.code', 'native.table'],
+            'inline-docara' => ['docara.badge', 'docara.kbd'],
+            'block-docara' => ['docara.alert', 'docara.card'],
+            'containers' => ['docara.grid'],
+            'framework' => ['ui.input', 'ui.dropdown', 'ui.checkbox', 'ui.list-item'],
+            'project' => ['project.install-builder', 'project.footer-links'],
+        ];
+        foreach ($publicGroups as $route => $ids) {
+            $group = (string) file_get_contents($build . '/ru/components/' . $route . '/index.html');
+            self::assertStringNotContainsString('В принятом Atlas нет элементов', $group, $route);
+            foreach ($ids as $id) {
+                self::assertStringContainsString('<code>' . $id . '</code>', $group, $route . ':' . $id);
+            }
+        }
+        $containers = (string) file_get_contents($build . '/ru/components/containers/index.html');
+        self::assertStringNotContainsString('<code>docara.docs</code>', $containers);
+        self::assertStringNotContainsString('<code>docara.article</code>', $containers);
+        self::assertStringContainsString('allowed_children=[docara.card]', $containers);
+        $settingsReference = (string) file_get_contents($build . '/ru/settings/index.html');
+        self::assertStringContainsString('/layout/regions/', $settingsReference);
+        self::assertStringContainsString('uniqueItems=true', $settingsReference);
+        self::assertStringContainsString('minimum=0', $settingsReference);
+        self::assertDoesNotMatchRegularExpression('~resources/schemas/[a-z0-9.-]+\\.schema\\.json#</code>~', $settingsReference);
+
         $catalogIndex = (string) file_get_contents($build . '/ru/components/index.html');
         $alertPage = (string) file_get_contents($build . '/ru/components/alert/index.html');
         self::assertStringContainsString('data-docara-component-index-view', $catalogIndex);

@@ -15,14 +15,14 @@ final class PortableAtlasIndexHydratorTest extends TestCase
     #[Test]
     public function it_filters_and_renders_only_admitted_atlas_entries(): void
     {
-        $placeholder = (new PortableMarkdownRenderer)->render(":::atlas_index {kind=smart support=supported owner=ui}\n:::\n");
+        $placeholder = (new PortableMarkdownRenderer)->render(":::atlas_index {kind=smart support=supported namespace=ui}\n:::\n");
         $pages = [['content_html' => $placeholder]];
         $atlas = [
             'fingerprint' => str_repeat('a', 64),
             'entries' => [
-                $this->entry('ui.input', 'smart', 'ui', 'supported'),
-                $this->entry('project.notice', 'smart', 'project', 'project'),
-                $this->entry('docara.docs', 'layout', 'docara', 'supported'),
+                $this->entry('ui.input', 'smart', 'ui', 'simai/bx-simai.main', 'framework', 'supported'),
+                $this->entry('project.notice', 'smart', 'project', 'project/project', 'project', 'project'),
+                $this->entry('docara.docs', 'layout', 'docara', 'simai/docara', 'docara', 'supported'),
             ],
         ];
 
@@ -43,14 +43,18 @@ final class PortableAtlasIndexHydratorTest extends TestCase
     }
 
     /** @return array<string,mixed> */
-    private function entry(string $id, string $kind, string $owner, string $support): array
+    private function entry(string $id, string $kind, string $namespace, string $owner, string $origin, string $support): array
     {
         return [
             'id' => $id,
             'kind' => $kind,
+            'namespace' => $namespace,
             'owner' => $owner,
+            'owner_package' => $owner,
+            'origin' => $origin,
             'authoring_kind' => 'block',
             'support' => $support,
+            'status' => $support,
             'provider' => $owner . '.provider',
             'capabilities' => ['content'],
         ];

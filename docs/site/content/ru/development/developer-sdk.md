@@ -22,10 +22,10 @@ docara inspect smart ui.alert --json
 docara schema smart --json
 
 docara scaffold smart project.notice-card --dry-run --json
-docara scaffold --apply=<plan_id> --json
+docara scaffold --apply=<exact-plan-sha256> --json
 docara validate smart project.notice-card
-docara preview smart --page=/ru/example/ --selector=project.notice-card
-docara test smart project.notice-card --page=/ru/example/ --json
+docara preview smart --page=/ru/project-demos/ --selector=ui.dropdown
+docara test smart ui.dropdown --page=/ru/project-demos/ --json
 ```
 
 `--dry-run` возвращает список создаваемых файлов, SHA-256 их содержимого,
@@ -71,8 +71,8 @@ section View Tree и block. Результат сразу проходит regis
 ## Structured QA
 
 ```bash
-docara qa smart project.notice-card \
-  --page=/ru/example/ --dry-run --json
+docara qa smart ui.dropdown \
+  --page=/ru/project-demos/ --dry-run --json
 ```
 
 Команда сначала публикует isolated production-path preview, затем создаёт

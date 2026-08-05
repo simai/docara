@@ -4,7 +4,7 @@
 
 ## Принятые block entries
 
-:::atlas_index {kind=smart authoring=block}
+:::atlas_index {kind=block origin=docara authoring=block support=supported}
 :::
 
 ## Исходник и результат

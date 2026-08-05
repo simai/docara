@@ -578,7 +578,7 @@ function docaraCatalogEntryContractError(
         'docs_ref',
         'provenance',
     ];
-    $allowed = [...$required, 'metadata', 'consumer_policy', 'gap'];
+    $allowed = [...$required, 'metadata', 'consumer_policy', 'gap', 'container_contract'];
     if (array_diff($required, array_keys($entry)) !== []
         || array_diff(array_keys($entry), $allowed) !== []
         || ! is_string($entry['id'])
@@ -600,6 +600,29 @@ function docaraCatalogEntryContractError(
         || ! docaraCatalogSafePath($entry['docs_ref'])
     ) {
         return 'The effective component catalogue entry shape is invalid.';
+    }
+    if (isset($entry['container_contract'])) {
+        $container = $entry['container_contract'];
+        $containerKeys = ['allowed_children', 'slots', 'min_children', 'max_children', 'order', 'max_depth'];
+        if (! is_array($container)
+            || array_is_list($container)
+            || array_diff($containerKeys, array_keys($container)) !== []
+            || array_diff(array_keys($container), $containerKeys) !== []
+            || ! docaraCatalogStringList($container['allowed_children'])
+            || ! docaraCatalogStringList($container['slots'])
+            || ! is_int($container['min_children'])
+            || $container['min_children'] < 0
+            || ! is_int($container['max_children'])
+            || $container['max_children'] < 1
+            || $container['max_children'] > 512
+            || $container['min_children'] > $container['max_children']
+            || ! in_array($container['order'], ['declared', 'layout_regions', 'manifest'], true)
+            || ! is_int($container['max_depth'])
+            || $container['max_depth'] < 1
+            || $container['max_depth'] > 16
+        ) {
+            return 'The effective component catalogue container contract is invalid.';
+        }
     }
 
     $authoring = $entry['authoring'];

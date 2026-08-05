@@ -6,7 +6,10 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Simai\Docara\Application\DesignAtlasService;
+use Simai\Docara\PortableSite\PortableAtlasIndexHydrator;
 use Simai\Docara\PortableSite\PortableMarkdownProfile;
+use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
 final class GoalCPublicDocumentationTest extends TestCase
 {
@@ -59,7 +62,38 @@ final class GoalCPublicDocumentationTest extends TestCase
         self::assertStringContainsString('ui.dropdown', $framework);
         self::assertStringContainsString('ui.list-item', $framework);
         self::assertStringContainsString('icons, avatars, tags', $framework);
-        self::assertStringContainsString(':::atlas_index {kind=smart owner=ui support=supported}', $framework);
+        self::assertStringContainsString(':::atlas_index {kind=smart namespace=ui origin=framework support=supported}', $framework);
+    }
+
+    #[Test]
+    public function real_docs_project_renders_truthful_nonempty_component_groups(): void
+    {
+        $root = dirname(__DIR__, 2) . '/docs/site';
+        $atlas = (new DesignAtlasService)->atlas($root)->toArray()['data'];
+        self::assertSame(85, $atlas['count']);
+        $groups = [
+            'native' => [':::atlas_index {origin=native authoring=markdown support=supported}', ['native.code', 'native.table']],
+            'inline' => [':::atlas_index {kind=block origin=docara authoring=inline support=supported}', ['docara.badge', 'docara.button', 'docara.icon', 'docara.kbd']],
+            'block' => [':::atlas_index {kind=block origin=docara authoring=block support=supported}', ['docara.alert', 'docara.card']],
+            'containers' => [':::atlas_index {kind=block origin=docara authoring=container support=supported}', ['docara.grid']],
+            'framework' => [':::atlas_index {kind=smart namespace=ui origin=framework support=supported}', ['ui.input', 'ui.dropdown', 'ui.checkbox', 'ui.list-item']],
+            'project' => [':::atlas_index {origin=project}', ['project.install-builder', 'project.footer-links']],
+        ];
+        foreach ($groups as $name => [$directive, $ids]) {
+            $placeholder = (new PortableMarkdownRenderer)->render($directive . "\n:::\n");
+            $html = (new PortableAtlasIndexHydrator)->hydrate([['content_html' => $placeholder]], $atlas)[0]['content_html'];
+            self::assertStringNotContainsString('нет элементов', $html, $name);
+            foreach ($ids as $id) {
+                self::assertStringContainsString('<code>' . $id . '</code>', $html, $name . ':' . $id);
+            }
+            if ($name === 'containers') {
+                self::assertStringNotContainsString('<code>docara.docs</code>', $html);
+                self::assertStringNotContainsString('<code>docara.article</code>', $html);
+                foreach (['allowed_children=[docara.card]', 'min_children=1', 'max_children=12', 'order=declared', 'max_depth=2'] as $rule) {
+                    self::assertStringContainsString($rule, $html);
+                }
+            }
+        }
     }
 
     #[Test]

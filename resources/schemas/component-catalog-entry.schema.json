@@ -50,6 +50,9 @@
         },
         "gap": {
             "$ref": "#/$defs/gap"
+        },
+        "container_contract": {
+            "$ref": "design-atlas.schema.json#/$defs/container"
         }
     },
     "additionalProperties": false,

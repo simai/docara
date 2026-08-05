@@ -7,11 +7,12 @@
     "schema": {"type": "string", "const": "docara.design_atlas.v1"},
     "vocabulary": {
       "type": "object",
-      "required": ["kinds", "authoring_kinds", "support_states", "typing_source", "fence_length_semantics"],
+      "required": ["kinds", "authoring_kinds", "support_states", "origins", "typing_source", "fence_length_semantics"],
       "properties": {
         "kinds": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
         "authoring_kinds": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
         "support_states": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "origins": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
         "typing_source": {"type": "string", "const": "admitted_registry_descriptor"},
         "fence_length_semantics": {"type": "string", "const": "none"}
       },
@@ -19,9 +20,10 @@
     },
     "registry_fingerprints": {
       "type": "object",
-      "required": ["bindings", "design", "smart"],
+      "required": ["bindings", "components", "design", "smart"],
       "properties": {
         "bindings": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "components": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
         "design": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
         "smart": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
       },
@@ -37,13 +39,17 @@
   "$defs": {
     "entry": {
       "type": "object",
-      "required": ["id", "kind", "owner", "authoring_kind", "support", "provider", "capabilities", "preview_supported", "schema", "container_contract", "provenance"],
+      "required": ["id", "kind", "namespace", "owner", "owner_package", "origin", "authoring_kind", "support", "status", "provider", "capabilities", "preview_supported", "schema", "container_contract", "provenance"],
       "properties": {
         "id": {"type": "string", "minLength": 1},
         "kind": {"type": "string", "enum": ["binding", "block", "layout", "preset", "section", "smart", "view"]},
         "owner": {"type": "string", "minLength": 1},
-        "authoring_kind": {"type": "string", "enum": ["configuration", "container", "inline", "block", "none"]},
-        "support": {"type": "string", "enum": ["supported", "compatibility", "project"]},
+        "namespace": {"type": "string", "minLength": 1},
+        "owner_package": {"type": "string", "minLength": 1},
+        "origin": {"type": "string", "enum": ["docara", "framework", "native", "project", "requirement"]},
+        "authoring_kind": {"type": "string", "enum": ["configuration", "container", "inline", "block", "markdown", "none"]},
+        "support": {"type": "string", "enum": ["supported", "compatibility", "project", "proposal", "rejected"]},
+        "status": {"type": "string", "minLength": 1},
         "provider": {"type": "string", "minLength": 1},
         "capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
         "preview_supported": {"type": "boolean"},

@@ -13,6 +13,9 @@
 | Таблицы | GFM table | [Таблица](/ru/components/table/) |
 | Сноски и источники | `[^id]` | [Сноски и источники](/ru/components/footnotes-and-sources/) |
 
+:::atlas_index {origin=native authoring=markdown support=supported}
+:::
+
 Этот перечень соответствует шести `native.*` capability-записям `PortableMarkdownProfile`; длина fence не меняет тип компонента.
 
 ## Исходник и результат

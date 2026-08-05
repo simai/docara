@@ -37,6 +37,31 @@ final class PortableSchemaReferenceProjectorTest extends TestCase
     }
 
     #[Test]
+    public function selected_defs_compositions_conditionals_and_exact_pointers_are_projected(): void
+    {
+        $presentation = (new PortableSchemaReferenceProjector)->project('presentation', 'shared');
+        self::assertNotEmpty($presentation);
+        $byPath = [];
+        foreach ($presentation as $record) {
+            $byPath[$record['path']][] = $record;
+            self::assertDoesNotMatchRegularExpression('~#$~', $record['provenance']);
+            self::assertMatchesRegularExpression('~\.schema\.json#/~', $record['provenance']);
+        }
+        foreach ([
+            '/branding/title',
+            '/layout/regions/<^[a-z][a-z0-9_.-]+$>/sections/*/blocks/*/smart',
+            '/layout/regions/<^[a-z][a-z0-9_.-]+$>/sections/*/blocks/*/element/utilities',
+        ] as $path) {
+            self::assertArrayHasKey($path, $byPath);
+        }
+        self::assertStringContainsString('uniqueItems=true', $byPath['/layout/regions/<^[a-z][a-z0-9_.-]+$>/sections/*/blocks/*/element/utilities'][0]['validation']);
+        self::assertStringContainsString('minimum=0', $byPath['/layout/content/gap'][0]['validation']);
+        self::assertTrue((bool) array_filter($presentation, static fn (array $record): bool => str_contains($record['validation'], 'oneOf=')));
+        self::assertTrue((bool) array_filter($presentation, static fn (array $record): bool => str_contains($record['provenance'], '/if') || str_contains($record['provenance'], '/then')));
+        self::assertArrayNotHasKey('/region', $byPath, 'Internal definitions are traversed through admitted public surfaces, not published as duplicate roots.');
+    }
+
+    #[Test]
     public function typed_placeholder_hydrates_scope_default_validation_and_provenance(): void
     {
         $placeholder = (new PortableMarkdownRenderer)->render(":::schema_reference {schema=page scope=page}\n:::\n");

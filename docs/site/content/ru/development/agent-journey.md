@@ -24,8 +24,8 @@ Read operations по умолчанию ничего не меняют. Result �
 
 ```bash
 docara scaffold smart project.notice-card --dry-run --json
-docara preview smart project.notice-card --page=/ru/project-demos/ --json
-docara test smart project.notice-card --page=/ru/project-demos/ --json
+docara preview smart --page=/ru/project-demos/ --selector=ui.dropdown --json
+docara test smart ui.dropdown --page=/ru/project-demos/ --json
 ```
 
 Dry-run возвращает exact target paths/content, input hashes и `plan_id`. Preview вызывает production `PreviewKernel/PageBuilder`, публикуется изолированно и не проходит production verifier.
@@ -33,7 +33,7 @@ Dry-run возвращает exact target paths/content, input hashes и `plan_i
 ## 3. Hash-bound apply
 
 ```bash
-docara scaffold --apply=<plan_id> --json
+docara scaffold --apply=<exact-plan-sha256> --json
 docara validate smart project.notice-card --json
 ```
 

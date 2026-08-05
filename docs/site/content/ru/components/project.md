@@ -4,7 +4,7 @@
 
 ## Project-owned entries
 
-:::atlas_index {support=project}
+:::atlas_index {origin=project}
 :::
 
 ## Content и shell
@@ -18,12 +18,12 @@
 ```bash
 docara inspect smart project.install-builder --json
 docara scaffold smart project.example --dry-run --json
-docara scaffold smart project.example --apply-plan=<plan-id> --json
+docara scaffold --apply=<exact-plan-sha256> --json
 docara validate smart project.example --json
-docara preview smart project.example --page=/ru/examples/ --json
-docara test smart project.example --page=/ru/examples/ --json
+docara preview smart --page=/ru/project-demos/ --selector=ui.dropdown --json
+docara test smart ui.dropdown --page=/ru/project-demos/ --json
 ```
 
-Dry-run фиксирует diff и input hashes; apply повторно проверяет exact plan и project root. Traversal, symlink/hardlink, duplicate namespace, stale plan и запись в engine/generated/lock/external roots отклоняются.
+Dry-run фиксирует diff и input hashes; apply повторно проверяет exact plan и project root. Preview и test выше используют уже подключённый к странице компонент: новый scaffold сначала нужно явно добавить в Markdown-владельца страницы. Traversal, symlink/hardlink, duplicate namespace, stale plan и запись в engine/generated/lock/external roots отклоняются.
 
 Полный путь разработчика описан в [Developer/AI SDK](/ru/development/developer-sdk/), а принятые полезные сценарии — в [примерах](/ru/examples/).

@@ -57,15 +57,17 @@ final class DesignAtlasTest extends TestCase
         $smart = $this->entry($entries, 'smart', 'project.notice');
         $preset = $this->entry($entries, 'preset', 'docara.navigation:header');
 
-        self::assertSame('docara', $layout['owner']);
+        self::assertSame('docara', $layout['namespace']);
+        self::assertSame('simai/docara', $layout['owner_package']);
         self::assertSame('container', $layout['authoring_kind']);
         self::assertSame(['section'], $layout['container_contract']['allowed_children']);
         self::assertSame(3, $layout['container_contract']['max_depth']);
         self::assertSame(64, $section['container_contract']['max_children']);
-        self::assertSame('project/project', $smart['owner']);
+        self::assertSame('project', $smart['namespace']);
+        self::assertSame('project/project', $smart['owner_package']);
         self::assertSame('block', $smart['authoring_kind']);
         self::assertNull($smart['container_contract']);
-        self::assertSame('docara', $preset['owner']);
+        self::assertSame('docara', $preset['namespace']);
         self::assertSame('configuration', $preset['authoring_kind']);
     }
 

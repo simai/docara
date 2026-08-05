@@ -4,7 +4,7 @@ Docara поддерживает только immutable Framework artifacts, ко
 
 ## Поддерживаемые Framework Smart
 
-:::atlas_index {kind=smart owner=ui support=supported}
+:::atlas_index {kind=smart namespace=ui origin=framework support=supported}
 :::
 
 ## Как использовать

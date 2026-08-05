@@ -4,7 +4,7 @@
 
 ## Контейнерные записи Atlas
 
-:::atlas_index {authoring=container}
+:::atlas_index {kind=block origin=docara authoring=container support=supported}
 :::
 
 Atlas является источником правил `allowed_children`, `slots`, `min_children`, `max_children`, `order` и `max_depth`. Fence length не определяет тип и не ослабляет ограничения.

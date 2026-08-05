@@ -52,4 +52,3 @@ post-Goal-C route set.
 - Existing routes are not moved, so no project redirect is required.
 - New Goal C pages use new routes and cannot shadow an existing owner.
 - Locale redirects remain recorded in generated `.docara/locale-routes.json`.
-

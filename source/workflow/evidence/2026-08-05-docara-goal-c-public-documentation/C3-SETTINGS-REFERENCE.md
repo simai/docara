@@ -28,4 +28,3 @@ Disposable build root: `/tmp/docara-goalc-c3.NpYkrW` (ephemeral evidence only).
 
 Rollback: revert the C3 commit. Existing settings runtime and old authoring
 routes are unchanged; no redirect is required.
-

@@ -34,4 +34,3 @@ Disposable build root: `/tmp/docara-goalc-c5.gseYWy` (ephemeral evidence only).
 
 Rollback: revert the C4-C5 commit. Accepted package/Framework packets and engine
 runtime remain unchanged; no external repository or site was written.
-

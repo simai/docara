@@ -39,4 +39,3 @@ not a source and not committed).
 
 Revert the C1 commit. The preceding C0 workflow commit `d25e89d` remains the
 recovery boundary; no existing route was moved or removed.
-

@@ -12,4 +12,3 @@ create a second preview engine or accepted production receipt.
 Focused contract: `GoalCPublicDocumentationTest::design_root_maps_every_shell_surface_and_real_insertion_file`.
 
 Rollback: revert the C2 commit; no existing route or design artifact is changed.
-

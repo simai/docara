@@ -1,6 +1,6 @@
 # Goal C evidence index
 
-Status: `in_progress`
+Status: `goal_c_ready_for_independent_audit`
 
 | Batch | Evidence | State |
 | --- | --- | --- |
@@ -10,7 +10,7 @@ Status: `in_progress`
 | C3 | [settings guides and schema-derived reference](C3-SETTINGS-REFERENCE.md) | PASS |
 | C4 | [CLI/MCP/AI journey](C4-C5-AGENT-DEMOS.md) | PASS |
 | C5 | [accepted demos and support-state proof](C4-C5-AGENT-DEMOS.md) | PASS |
-| C6 | integrated build/browser/security/SEO handoff | pending |
+| C6 | [integrated build/browser/security/SEO handoff](C6-INTEGRATED-HANDOFF.md) | PASS |
 
 Every final PASS row must name an exact candidate, commands, output hashes and
 addressable files. Screenshots are evidence only, never content source.

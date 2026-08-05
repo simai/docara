@@ -1,16 +1,26 @@
 # Current Docara result
 
-Current state: `goal_c_in_progress`
+Current state: `goal_c_ready_for_independent_audit`
 
-Current candidate: `481e34cccade12a0d7f8d2dbf9b4d37933e49419`
+Current candidate: `ae6a1e918e248517b728cf40460d6c359991b66e`
 
 Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md`
 
 ## Goal C current result
 
-Goal B product `c3b91eee…` is independently accepted. Goal C C0 has frozen 104
-physical Markdown owners, an empty project redirect set and stable navigation.
-C1-C6 are active; no Goal C product candidate or acceptance is claimed yet.
+Goal B product `c3b91eee…` is independently accepted. Goal C publishes 132
+physical Markdown owners and keeps the project redirect set empty. Six
+component entry points, real design composition, all 13 settings guides, the
+safe CLI/MCP journey and accepted demos are discoverable from one PageBuilder
+path. Atlas and schema facts remain derived, hash-bound views rather than prose
+owners.
+
+Two full builds and selected Alert rebuild share tree `b8b47a83…`; static
+verification reports 264 HTML / 35,044 references / broken=0. Two clean clones
+produce the same 862-file ZIP `a5b02a25…`; two same-lock consumers produce the
+same 198-file tree `35491e8a…` without Node or package `.git`. Exact browser
+and cross-host evidence pass. Goal C is ready for independent audit, not
+self-accepted; release remains unauthorized.
 
 ## Accepted Goal B result
 

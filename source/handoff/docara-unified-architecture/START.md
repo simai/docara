@@ -18,7 +18,7 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal_c_in_progress`
+Current state: `goal_c_ready_for_independent_audit`
 
 Current goal: `docara.goal.unified`
 
@@ -26,22 +26,23 @@ Current stage: `docara.stage.c.public_documentation`
 
 Current batch: `docara.batch.c.public_documentation`
 
-Current next action: `execute_goal_c_c1_components`
+Current next action: `independent_goal_c_reverse_outcome_audit`
 
 Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md`
 
-Current candidate: `481e34cccade12a0d7f8d2dbf9b4d37933e49419`
+Current candidate: `ae6a1e918e248517b728cf40460d6c359991b66e`
 
 Next roadmap goal: `docara.goal.c.public_documentation`
 
-Next roadmap status: `in_progress`
+Next roadmap status: `ready_for_independent_audit`
 
 Next roadmap authorized: `true`
 
 Goal 1, Goal 2 and Goal B were independently accepted with `PASS_WITH_NOTES`;
-Goal 3 and Goal A were accepted with `PASS`. Goal C is now authorized. C0 keeps
-all 104 entry routes canonical and freezes navigation/redirect decisions. The
-next work is C1 through C6; release review remains unauthorized.
+Goal 3 and Goal A were accepted with `PASS`. Goal C C0-C6 are complete on one
+exact product candidate; all 132 routes remain physical Markdown owners and
+the only next action is independent Goal C audit. Release review remains
+unauthorized.
 
 ## 3. Read in this order
 
@@ -60,9 +61,9 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only the current goal
 
-Execute Goal C C1-C6 from the active recovery file. Preserve accepted Goal 1-3,
-Goal A and Goal B runtime/support invariants. Stop at
-`goal_c_ready_for_independent_audit`; do not self-accept or start release review.
+Run an independent reverse-outcome audit against the exact Goal C candidate and
+fresh evidence. Preserve accepted Goal 1-3, Goal A and Goal B runtime/support
+invariants. Do not self-accept or start release review.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,

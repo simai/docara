@@ -1,6 +1,6 @@
 # Docara Goal C — Public Documentation, Settings Reference & Agent Journey
 
-Status: `in_progress`
+Status: `goal_c_ready_for_independent_audit`
 
 ## Exact entry boundary
 
@@ -31,7 +31,7 @@ publication path.
 - [x] C3 — settings root, task guides and schema-derived field reference.
 - [x] C4 — discover/plan/preview/dry-run/apply/validate CLI/MCP/AI journey.
 - [x] C5 — accepted Framework/project demos with Atlas support labels.
-- [ ] C6 — integrated route/link/schema/build/browser/SEO evidence and handoff.
+- [x] C6 — integrated route/link/schema/build/browser/SEO evidence and handoff.
 
 ## C0 decisions
 
@@ -62,6 +62,11 @@ publication path.
 The Goal B boundary `481e34cccade12a0d7f8d2dbf9b4d37933e49419` is the recovery point. Each green
 batch is committed separately; rollback is by reverting Goal C commits, never by
 rewriting history or deleting user changes.
+
+The exact Goal C product candidate is
+`ae6a1e918e248517b728cf40460d6c359991b66e`. Its complete public-tree digest is
+`b8b47a837f2ac067434a8da27fd950d93e99916f107441dec42dedb3c9843e81`.
+The only next action is an independent Goal C reverse-outcome audit.
 
 ## Nonclaims
 

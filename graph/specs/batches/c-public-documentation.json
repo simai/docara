@@ -8,7 +8,7 @@
   "summary": "Execute C0-C6 sequentially and stop at independent Goal C audit.",
   "owner": "dev",
   "lifecycle": "active",
-  "readiness": "in_progress",
+  "readiness": "ready_for_independent_audit",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-05-docara-goal-c-public-documentation-settings-agent-journey.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md"],
@@ -17,9 +17,9 @@
   "allowed_scope": ["Markdown public owners", "Atlas and schema derived projections", "Existing parser/compiler/PageBuilder integration", "Tests, specification, graph, workflow, handoff and evidence"],
   "forbidden_scope": ["Second parser, renderer, registry, Gateway, LayoutComposer, PageBuilder or preview engine", "Public prose in PHP or JSON", "Unsupported Framework support claims", "Goal D", "External repositories or sites", "Merge, Push, Tag, Release, Deploy"],
   "checks": ["Route/source/redirect ownership", "Atlas and schema coverage/freshness", "Container and unsafe-operation negatives", "Full/full/single determinism", "Static, browser, accessibility and SEO", "Graph and documentation validation"],
-  "status": "in_progress",
+  "status": "implementation_complete_audit_pending",
   "baseline_revision": "481e34cccade12a0d7f8d2dbf9b4d37933e49419",
-  "candidate_revision": "481e34cccade12a0d7f8d2dbf9b4d37933e49419",
+  "candidate_revision": "ae6a1e918e248517b728cf40460d6c359991b66e",
   "accepted_goal_b_candidate": "c3b91eee71ab906cd79ae7a119c6961664f03528",
-  "next_action": "execute_goal_c_c1_components"
+  "next_action": "independent_goal_c_reverse_outcome_audit"
 }

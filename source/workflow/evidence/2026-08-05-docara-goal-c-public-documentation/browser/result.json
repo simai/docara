@@ -1,0 +1,36 @@
+{
+  "schema": "docara.goal_c_browser_acceptance.v1",
+  "product_candidate": "ae6a1e918e248517b728cf40460d6c359991b66e",
+  "server_root": "disposable_exact_candidate_build",
+  "route_http": {
+    "checked": 132,
+    "failed": []
+  },
+  "representative_matrix": {
+    "routes": 9,
+    "scenarios": [
+      "desktop-light-1440x1000",
+      "desktop-dark-reduced-motion-1920x1080",
+      "mobile-light-390x844"
+    ],
+    "checks": 27,
+    "failed": [],
+    "console_errors": 0,
+    "console_warnings": 0,
+    "horizontal_overflow": 0
+  },
+  "keyboard": {
+    "search_escape_focus_return": true,
+    "settings_escape_focus_return": true
+  },
+  "online_dependency": {
+    "url": "https://cdn.jsdelivr.net/gh/simai/ui@d1daa951dd08b94a9f209fd9f31a78d2b3779563/distr/core/css/utility.full.css",
+    "direct_status": 200,
+    "note": "The first browser open recorded the accepted Goal B transient ERR_SOCKET_NOT_CONNECTED note; reload and the complete matrix were clean. Offline Framework bundling is not claimed."
+  },
+  "screenshots": {
+    "design-desktop.png": "7e2fac545d2da108b616e6d7d25b573bf6dd1d9f3c2171cd80e1478e85a49bb6",
+    "project-demos-mobile.png": "29db213ee3a904616ffac4af4f2b1650e19606b974720d78785ef614509575f2",
+    "settings-desktop.png": "e628861e097ed93fdb79c403514f708548f8c29372c881f9d458e4955a9587be"
+  }
+}

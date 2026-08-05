@@ -2,11 +2,11 @@ schema_version: 1
 goal: docara.goal.unified
 branch: codex/docara-unified-architecture
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: goal_c_in_progress
+state: goal_c_ready_for_independent_audit
 current_stage: docara.stage.c.public_documentation
 current_batch: docara.batch.c.public_documentation
-next_action: execute_goal_c_c1_components
-candidate_revision: 481e34cccade12a0d7f8d2dbf9b4d37933e49419
+next_action: independent_goal_c_reverse_outcome_audit
+candidate_revision: ae6a1e918e248517b728cf40460d6c359991b66e
 evidence: source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md
 goal1_candidate_revision: 44acc1ff91233fa78140222fcb0589bf55b65ca0
 goal1_sf5_adapter_revision: b3cdff87563ff78e7eddf044048a4b298fc69036
@@ -41,7 +41,7 @@ readiness:
   goal3_developer_sdk: independently_accepted_pass
   goal_a_shell_contract: independently_accepted_pass
   goal_b_interface_library: independently_accepted_pass_with_notes
-  goal_c_public_documentation: in_progress
+  goal_c_public_documentation: ready_for_independent_audit
   release: blocked_explicit_user_action
   production: blocked_explicit_user_approval_and_live_preflight
 routing:

@@ -1,7 +1,7 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-05
-Status: Goal C in progress (C0 complete; C1 next)
+Status: Goal C implementation complete; independent audit pending
 Workflow ID: `2026-08-05-docara-goal-c-public-documentation-settings-agent-journey`
 Graph goal: `docara.goal.unified`
 
@@ -25,14 +25,14 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `goal_c_in_progress`;
+- state: `goal_c_ready_for_independent_audit`;
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.c.public_documentation`;
 - batch: `docara.batch.c.public_documentation`;
-- candidate: `481e34cccade12a0d7f8d2dbf9b4d37933e49419`;
+- candidate: `ae6a1e918e248517b728cf40460d6c359991b66e`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `execute_goal_c_c1_components`;
-- Goal 1-3, Goal A and Goal B are independently accepted. Goal C is authorized and active; release review remains unauthorized.
+- next action: `independent_goal_c_reverse_outcome_audit`;
+- Goal 1-3, Goal A and Goal B are independently accepted. Goal C is implementation-complete and audit-pending; release review remains unauthorized.
 
 ## Accepted pipeline
 
@@ -51,11 +51,12 @@ Goal A exact product/runtime candidate `8c04160…` and Goal B exact product
 candidate `c3b91eee…` were independently accepted. Exact accepted
 input/dropdown/checkbox and list-item owner packets are consumed through the
 single Gateway path; the useful dropdown admits only text list-item children.
-Install Builder controls now all update one safe copy-only command, and the
-configurator dropdown plus checkboxes update one local total. Full/package/
-two-consumer/browser/security evidence remains the entry baseline. Goal C C0
-freezes all 104 physical routes as canonical and begins the public components,
-design, settings and agent journey without adding a publication path.
+Install Builder controls update one safe copy-only command, and the configurator
+dropdown plus checkboxes update one local total. Goal C now publishes 132
+Markdown-owned routes, six component entries, design/settings roots, one safe
+agent journey and exact demos. Atlas/schema projections are hash-bound derived
+views; full/full/single, package/consumer, browser and static evidence pass on
+candidate `ae6a1e91…` without adding a publication path.
 
 ## Boundary
 

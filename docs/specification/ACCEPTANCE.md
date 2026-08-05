@@ -1,11 +1,12 @@
 # Приёмка единой архитектуры Docara
 
-Текущий статус: Goal 1, Goal 2, Goal 3 и Goal A независимо приняты. Exact
+Текущий статус: Goal 1, Goal 2, Goal 3, Goal A и Goal B независимо приняты. Exact
 accepted Goal A product/runtime candidate —
 `8c04160ab50549b060fb933cf80f86193cd92113`. Goal B Full Interface Library &
-Useful Extension Demos завершил implementation и corrected B6-матрицу на exact
-candidate `c3b91eee71ab906cd79ae7a119c6961664f03528`; состояние только
-`ready_for_independent_audit`, независимая приёмка ещё не заявлена. Частичный
+Useful Extension Demos принят на exact candidate
+`c3b91eee71ab906cd79ae7a119c6961664f03528`. Goal C завершил implementation на
+exact candidate `ae6a1e918e248517b728cf40460d6c359991b66e`; состояние только
+`goal_c_ready_for_independent_audit`, независимая приёмка ещё не заявлена. Частичный
 candidate `ccb076a89535954022ca89eb70b84d6c81d80de3` остаётся historical
 baseline.
 Source `1dee6d19…` остаётся только historical/superseded radius baseline.
@@ -57,6 +58,24 @@ PASS ставится только по воспроизводимому evidenc
       на exact product candidate `c3b91eee…`.
 - [x] Полная Goal B browser/a11y и cross-host matrix повторена на том же exact
       independent-ready candidate.
+
+## Goal C. Public Documentation, Settings Reference & Agent Journey
+
+- [x] `/components/` публикует шесть Markdown-owned входов с Atlas-derived
+      status/cards и полным contract/failure coverage.
+- [x] `/design/` объясняет реальную Layout -> region -> Section -> slot ->
+      Block -> Smart -> View цепочку и границу application-owned page/head.
+- [x] Все 13 `/settings/` task guides используют одну schema-derived ссылочную
+      проекцию с scope/default/validation/provenance.
+- [x] CLI/JSON/MCP journey документирует один discover -> plan -> preview ->
+      dry-run -> hash-bound apply -> validate service path.
+- [x] Все 132 route имеют один физический Markdown owner; redirects не нужны и
+      duplicate prose owners отсутствуют.
+- [x] Atlas/schema receipts hash-bound к production build receipt и
+      fail-closed проверяются static verifier.
+- [x] Full/full/single, static, package/consumer, browser/SEO и cross-host
+      executor evidence зелёные на exact candidate `ae6a1e91…`.
+- [ ] Независимый reverse-outcome audit Goal C.
 
 ## A. Источники истины
 

@@ -1,15 +1,15 @@
-# Next action: `execute_goal_c_c1_components`
+# Next action: `independent_goal_c_reverse_outcome_audit`
 
-Current state: `goal_c_in_progress`
+Current state: `goal_c_ready_for_independent_audit`
 
-Current candidate: `481e34cccade12a0d7f8d2dbf9b4d37933e49419`
+Current candidate: `ae6a1e918e248517b728cf40460d6c359991b66e`
 
 Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md`
 
-Goal 1-3, Goal A and Goal B are independently accepted. Goal C is active. C0
-keeps all 104 entry routes canonical; execute C1-C6 to publish the six component
-entry points, design/settings roots, safe agent journey and integrated evidence.
-Do not start release or live actions.
+Goal 1-3, Goal A and Goal B are independently accepted. Goal C C0-C6 are
+implementation-complete on one exact candidate. Independently audit the six
+component entries, design/settings roots, safe agent journey, derived receipts
+and integrated matrix. Do not start release or live actions.
 
 ## Historical deployment decision (parked, not executable)
 

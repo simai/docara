@@ -1,20 +1,20 @@
 # Docara: Content, Design & Settings product track
 
 Date: 2026-08-04
-Status: `goal_c_in_progress`
+Status: `goal_c_ready_for_independent_audit`
 Track ID: `docara.track.content_design_settings`
 Type: post-LEGO product proposal
 Planning baseline HEAD: `d748eca04cd09e79ed6e2079a56b077265bcf905`
 Accepted Goal 3 product candidate: `1e571b6e16ebc4520121aff0ae868de3b986dff3`
 Branch: `codex/docara-unified-architecture`
 Remaining unstarted goals: 0
-Current canonical next action: `execute_goal_c_c1_components`
+Current canonical next action: `independent_goal_c_reverse_outcome_audit`
 
-Status: `goal_c_in_progress`
+Status: `goal_c_ready_for_independent_audit`
 Current stage: `docara.stage.c.public_documentation`
 Current batch: `docara.batch.c.public_documentation`
-Current next action: `execute_goal_c_c1_components`
-Next roadmap goal: `docara.goal.c.public_documentation` (`in_progress`, authorized=`true`)
+Current next action: `independent_goal_c_reverse_outcome_audit`
+Next roadmap goal: `docara.goal.c.public_documentation` (`ready_for_independent_audit`, authorized=`true`)
 
 ## 0. Status and authority
 
@@ -34,10 +34,10 @@ authorize:
 - external Framework owner repositories or sites;
 - merge, push, tag, release or deploy.
 
-The authorized current action is:
+The only current action is:
 
 ```text
-execute_goal_c_c1_components
+independent_goal_c_reverse_outcome_audit
 ```
 
 ### Start gate

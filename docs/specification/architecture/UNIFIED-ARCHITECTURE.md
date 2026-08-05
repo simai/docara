@@ -260,6 +260,13 @@ search — по text projection, backlinks — по link edges. Они не ре
 вручную. Component catalog собирает manifests и Markdown metadata, но не
 генерирует содержание component pages.
 
+Публичные Atlas-карточки и exhaustive settings reference — такие же derived
+views. `PortableAtlasIndexHydrator` читает admitted `DesignAtlasService`, а
+`PortableSchemaReferenceProjector` читает только package-owned schemas. Их
+content hashes входят в production build receipt; static verifier проверяет
+receipt, Atlas schema и exact source-schema hashes. Видимая поясняющая проза
+остаётся в единственном Markdown-owner.
+
 ## 13. Extension points
 
 Разрешённые расширения:

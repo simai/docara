@@ -8,7 +8,7 @@
   "summary": "M4 map of complete Russian public Markdown ownership, PageBuilder-derived views and retired generated public page projectors.",
   "owner": "dev",
   "lifecycle": "active",
-  "readiness": "R2_contract",
+  "readiness": "goal_c_ready_for_independent_audit",
   "visibility": "repository",
   "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
   "profile_refs": ["docara.unified"],
@@ -27,6 +27,10 @@
     "src/I18n/Translator.php#Translator::message",
     "src/PortableSite/PortableBacklinkHydrator.php",
     "src/PortableSite/PortableComponentIndexHydrator.php",
+    "src/PortableSite/PortableAtlasIndexHydrator.php",
+    "src/PortableSite/PortableSchemaReferenceProjector.php",
+    "src/PortableSite/PortableSchemaReferenceHydrator.php",
+    "scripts/verify-static-build.php",
     "resources/legacy-public-source-allowlist.json",
     "resources/schemas/lang.schema.json",
     "resources/components/docara.badge.json",
@@ -59,7 +63,10 @@
     "docs/site/content/ru/components/tree.md",
     "docs/site/content/ru/components.md",
     "docs/site/content/ru/lang.json",
-    "resources/component-catalog/examples/*.md"
+    "resources/component-catalog/examples/*.md",
+    "docs/site/content/ru/design.md",
+    "docs/site/content/ru/settings.md",
+    "docs/site/content/ru/development/agent-journey.md"
   ],
   "test_refs": [
     "tests/Unit/PageSourceLocatorTest.php",
@@ -69,7 +76,10 @@
     "tests/Unit/DocumentationContractTest.php#authored_documentation_covers_five_audience_paths_and_every_page_has_one_h1",
     "tests/PortableDocumentationSiteTest.php#real_documentation_build_matches_the_exact_product_matrix_and_static_verifier",
     "tests/Unit/PortableComponentIndexHydratorTest.php",
-    "tests/Unit/EffectiveComponentCatalogTest.php#every_entry_points_to_its_exact_authored_documentation_owner"
+    "tests/Unit/EffectiveComponentCatalogTest.php#every_entry_points_to_its_exact_authored_documentation_owner",
+    "tests/Unit/GoalCPublicDocumentationTest.php",
+    "tests/Unit/PortableAtlasIndexHydratorTest.php",
+    "tests/Unit/PortableSchemaReferenceProjectorTest.php"
   ],
   "evidence_refs": [
     "docara.evidence.m0_inventory",
@@ -101,7 +111,8 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m3-ru-components/M3.6-INTEGRATED-ACCEPTANCE.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.2-PHYSICAL-EXAMPLES.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md",
-    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md"
+    "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md",
+    "source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/INDEX.md"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
@@ -133,7 +144,9 @@
     "All 32 Russian component routes are authored Markdown; the Russian catalog page receipt contains no index and no details, while navigation, breadcrumbs, outline, previous/next and search use the same page-result topology.",
     "M3.5 batch 25 moves the remaining reusable Russian public labels to content/ru/lang.json, retires the broad component allowlist entry and deletes eight zero-reference localized example projections with exact rollback hashes.",
     "M4.2 gives the examples index and thirteen detail routes physical Markdown owners and preserves their public URLs and internal previews.",
-    "M4.3 reduces generated owners and allowlist routes to zero and removes both zero-consumer public projectors, their page receipts, descriptors, schema, templates and view models."
+    "M4.3 reduces generated owners and allowlist routes to zero and removes both zero-consumer public projectors, their page receipts, descriptors, schema, templates and view models.",
+    "Goal C publishes 132 Markdown-owned routes and derives only Atlas cards and exhaustive settings facts from admitted registries and trusted schemas.",
+    "Production receipts hash-bind the public Atlas and schema-reference projections; the static verifier rejects a mutated binding."
   ],
   "known_deviations": [
     "English and Arabic remain bounded engine fixtures, not claims of complete translated documentation."
@@ -143,6 +156,6 @@
     "Delete declarative example projection only after every example route has a physical source and parity evidence.",
     "Keep retired language-pack paths absent from production and release-package surfaces."
   ],
-  "status": "r1c_content_lang_and_front_matter_converged",
-  "mapped_revision": "R1-C implementation checkpoint after ce136d5"
+  "status": "goal_c_implementation_complete_audit_pending",
+  "mapped_revision": "ae6a1e918e248517b728cf40460d6c359991b66e"
 }

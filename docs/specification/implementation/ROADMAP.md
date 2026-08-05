@@ -1,10 +1,11 @@
 # Дорожная карта упрощения Docara
 
-Текущий статус архитектурного roadmap: Goal 1, Goal 2, Goal 3 и Goal A
-независимо приняты. Exact accepted Goal A product/runtime candidate —
-`8c04160…`. Goal B Full Interface Library & Useful Extension Demos активирован
-из governance baseline `3280a89…`; B0-B3 реализованы, а independently accepted
-form-wave и text-only `ui.list-item` прошли corrected B6-матрицу.
+Текущий статус архитектурного roadmap: Goal 1, Goal 2, Goal 3, Goal A и Goal B
+независимо приняты. Goal C реализован на exact product candidate
+`ae6a1e918e248517b728cf40460d6c359991b66e` и ожидает только независимый
+reverse-outcome audit. Шесть входов компонентов, разделы дизайна и настроек,
+safe agent journey и принятые extension demos опубликованы из Markdown, Atlas
+и schema-derived проекций без второго publication path.
 Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
@@ -113,7 +114,7 @@ output должен остаться byte-identical. Project-owned shell contrib
 Recovery source:
 `source/workflow/2026-08-04-docara-goal-a-shell-contract.md`.
 
-Goal B авторизован отдельным independent verdict и активен. Release не
+Goal B независимо принят. Goal C готов к независимому аудиту. Release не
 авторизован.
 
 ## Goal B. Full Interface Library & Useful Extension Demos

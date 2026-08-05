@@ -8,13 +8,14 @@
   "summary": "Share of public routes whose only editorial source is one physical Markdown file.",
   "owner": "teamlead",
   "lifecycle": "active",
-  "readiness": "goal3_candidate",
+  "readiness": "goal_c_ready_for_independent_audit",
   "visibility": "repository",
   "source_refs": ["docs/specification/authoring/AUTHORING-CONTRACT.md"],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.2-PHYSICAL-EXAMPLES.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md",
-    "source/workflow/evidence/2026-08-03-docara-goal3-correction/C3.11-INTEGRATED-RETEST.md"
+    "source/workflow/evidence/2026-08-03-docara-goal3-correction/C3.11-INTEGRATED-RETEST.md",
+    "source/workflow/evidence/2026-08-05-docara-goal-c-public-documentation/C6-INTEGRATED-HANDOFF.md"
   ],
   "profile_refs": ["docara.unified"],
   "metric_type": "coverage",
@@ -22,6 +23,6 @@
   "calculation": "markdown_owned_public_routes / all_public_routes",
   "target": 100,
   "observed": 100,
-  "observed_counts": {"markdown_owned_public_routes": 104, "all_public_routes": 104},
+  "observed_counts": {"markdown_owned_public_routes": 132, "all_public_routes": 132},
   "unknown_policy": "show_unknown_not_zero"
 }

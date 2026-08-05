@@ -2863,6 +2863,57 @@ if ($manifestError === null) {
     }
 }
 
+try {
+    docaraBootstrapTrustedSource();
+    $atlasPath = $root . '/.docara/design-atlas.json';
+    $atlasReceipt = json_decode((string) file_get_contents($atlasPath), true, 512, JSON_THROW_ON_ERROR);
+    if (! docaraSafeRegularFile($atlasPath)
+        || ! is_array($atlasReceipt)
+        || ! docaraExactKeys($atlasReceipt, ['schema', 'content_sha256', 'atlas'])
+        || ($atlasReceipt['schema'] ?? null) !== 'docara.public_atlas_projection.v1'
+        || ! is_array($atlasReceipt['atlas'] ?? null)
+        || ! is_string($atlasReceipt['content_sha256'] ?? null)
+        || ! hash_equals($atlasReceipt['content_sha256'], hash('sha256', docaraCanonicalJson($atlasReceipt['atlas'])))
+    ) {
+        throw new RuntimeException('Public Atlas projection receipt is invalid.');
+    }
+    (new JsonSchemaValidator(new SchemaRepository))->assertValid($atlasReceipt['atlas'], 'design-atlas.schema.json');
+
+    $schemaPath = $root . '/.docara/schema-reference.json';
+    $schemaReceipt = json_decode((string) file_get_contents($schemaPath), true, 512, JSON_THROW_ON_ERROR);
+    $schemaFiles = [
+        'site' => 'site.schema.json',
+        'section' => 'section.schema.json',
+        'page' => 'page.schema.json',
+        'presentation' => 'presentation.schema.json',
+        'framework-lock' => 'framework-lock.schema.json',
+    ];
+    if (! docaraSafeRegularFile($schemaPath)
+        || ! is_array($schemaReceipt)
+        || ! docaraExactKeys($schemaReceipt, ['schema', 'content_sha256', 'sources'])
+        || ($schemaReceipt['schema'] ?? null) !== 'docara.public_schema_reference.v1'
+        || ! is_array($schemaReceipt['sources'] ?? null)
+        || ! hash_equals($schemaReceipt['content_sha256'] ?? '', hash('sha256', docaraCanonicalJson($schemaReceipt['sources'])))
+    ) {
+        throw new RuntimeException('Public schema-reference receipt is invalid.');
+    }
+    $repository = new SchemaRepository;
+    foreach ($schemaFiles as $name => $file) {
+        $expected = hash('sha256', docaraCanonicalJson($repository->get($file)));
+        if (! is_string($schemaReceipt['sources'][$name] ?? null)
+            || ! hash_equals($expected, $schemaReceipt['sources'][$name])
+        ) {
+            throw new RuntimeException("Public schema-reference source [$name] differs from the trusted package schema.");
+        }
+    }
+} catch (Throwable $exception) {
+    $broken[] = [
+        'page' => '@build',
+        'reference' => '@public-registry-schema-projections',
+        'target' => $exception->getMessage(),
+    ];
+}
+
 $result = [
     'schema' => 'docara.static_build_verification.v1',
     'deployment_base' => $deploymentBase,

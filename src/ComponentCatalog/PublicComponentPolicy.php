@@ -23,6 +23,7 @@ final class PublicComponentPolicy
         // Build-owned derived view used only by the authored component index.
         // It shares the typed renderer registry but is not a public authoring component.
         'docara.component_index',
+        'docara.atlas_index',
         'docara.internal_preview',
     ];
 

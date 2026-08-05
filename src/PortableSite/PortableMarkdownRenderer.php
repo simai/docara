@@ -162,6 +162,7 @@ final class PortableMarkdownRenderer
                 TypedRendererId::Code => $this->renderCode($block['attributes'], $sourceRoot, $sourceFile),
                 TypedRendererId::Backlinks => $this->renderBacklinks($block['attributes']),
                 TypedRendererId::ComponentIndex => $this->renderComponentIndex($block['attributes']),
+                TypedRendererId::AtlasIndex => $this->renderAtlasIndex($block['attributes']),
             };
             $wrapper = '<p>' . $block['placeholder'] . '</p>';
             if (substr_count($html, $wrapper) !== 1) {
@@ -245,7 +246,7 @@ final class PortableMarkdownRenderer
             $renderer = TypedRendererId::from((string) $definition['renderer']);
             $allowsEmptyBody = in_array(
                 $renderer,
-                [TypedRendererId::Code, TypedRendererId::Backlinks, TypedRendererId::ComponentIndex],
+                [TypedRendererId::Code, TypedRendererId::Backlinks, TypedRendererId::ComponentIndex, TypedRendererId::AtlasIndex],
                 true,
             );
             if (trim($bodyMarkdown) === '' && ! $allowsEmptyBody) {
@@ -898,6 +899,29 @@ final class PortableMarkdownRenderer
 
         return '<nav data-docara-block="component-index" data-docara-component-index'
             . ' class="m-bottom-1" aria-label="Component index"></nav>';
+    }
+
+    /** @param array<string,string> $attributes */
+    private function renderAtlasIndex(array $attributes): string
+    {
+        $this->assertAttributes($attributes, ['kind', 'authoring', 'support', 'owner', 'ids'], 'atlas_index');
+        $serialized = '';
+        foreach (['kind', 'authoring', 'support', 'owner', 'ids'] as $name) {
+            $value = trim($attributes[$name] ?? '');
+            if ($value === '') {
+                continue;
+            }
+            if (preg_match('/\A[a-z0-9_.-]+(?:,[a-z0-9_.-]+)*\z/D', $value) !== 1) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_ATLAS_FILTER_INVALID',
+                    "Atlas filter [$name] must be a comma-separated list of safe IDs.",
+                );
+            }
+            $serialized .= ' data-atlas-' . $name . '="' . $this->escapeHtml($value) . '"';
+        }
+
+        return '<nav data-docara-block="atlas-index" data-docara-atlas-index' . $serialized
+            . ' class="m-bottom-1" aria-label="Design Atlas index"></nav>';
     }
 
     /** @param array<string,string> $attributes */

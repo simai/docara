@@ -36,6 +36,7 @@ final class EffectiveComponentCatalogTest extends TestCase
 
         self::assertSame([
             'alert',
+            'atlas_index',
             'backlinks',
             'banner',
             'card',
@@ -65,6 +66,7 @@ final class EffectiveComponentCatalogTest extends TestCase
         ], $repository->names());
         self::assertSame([
             'docara.alert',
+            'docara.atlas_index',
             'docara.backlinks',
             'docara.banner',
             'docara.card',

@@ -6,6 +6,7 @@ namespace Simai\Docara\PortableSite;
 
 use Illuminate\Support\Collection;
 use JsonException;
+use Simai\Docara\Application\DesignAtlasService;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
 use Simai\Docara\Content\PageSource;
 use Simai\Docara\Content\PageSourceLocator;
@@ -494,6 +495,50 @@ final readonly class PortableSiteBuilder
             $pages = $componentIndexHydrator->hydrate($pages, $componentIndexes);
             $contextPages = $pages;
         }
+        $atlasHydrator = new PortableAtlasIndexHydrator;
+        $currentAtlas = (new DesignAtlasService)->atlas($root)->data;
+        $atlasReceipt = [
+            'schema' => 'docara.public_atlas_projection.v1',
+            'content_sha256' => hash('sha256', CanonicalJson::encode($currentAtlas)),
+            'atlas' => $currentAtlas,
+        ];
+        if ($earlyPhysicalSelection) {
+            $atlasReceiptPath = rtrim($finalDestination, '/\\') . '/.docara/design-atlas.json';
+            try {
+                $acceptedAtlasReceipt = json_decode(
+                    (string) $this->files->get($atlasReceiptPath),
+                    true,
+                    512,
+                    JSON_THROW_ON_ERROR,
+                );
+            } catch (JsonException $exception) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_ATLAS_BASE_INVALID',
+                    'The complete build has no valid Atlas projection for an isolated page rebuild.',
+                    $exception,
+                );
+            }
+            if (! is_array($acceptedAtlasReceipt)
+                || ($acceptedAtlasReceipt['schema'] ?? null) !== 'docara.public_atlas_projection.v1'
+                || ! is_array($acceptedAtlasReceipt['atlas'] ?? null)
+                || ! is_string($acceptedAtlasReceipt['content_sha256'] ?? null)
+                || ! hash_equals(
+                    $acceptedAtlasReceipt['content_sha256'],
+                    hash('sha256', CanonicalJson::encode($acceptedAtlasReceipt['atlas'])),
+                )
+                || ! hash_equals($atlasReceipt['content_sha256'], $acceptedAtlasReceipt['content_sha256'])
+            ) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_ATLAS_BASE_INVALID',
+                    'The accepted full build Atlas differs from the current admitted registries; run a full build.',
+                );
+            }
+            $atlasReceipt = $acceptedAtlasReceipt;
+        }
+        $pages = $atlasHydrator->hydrate($pages, $atlasReceipt['atlas']);
+        if (! $earlyPhysicalSelection) {
+            $contextPages = $pages;
+        }
         $outlineBuilder = new PortableDocumentOutlineBuilder;
         foreach ($pages as &$hydratedPage) {
             $hydratedPlan = $hydratedPage['plan'] ?? null;
@@ -680,6 +725,10 @@ final readonly class PortableSiteBuilder
                 $this->files->put(
                     rtrim($destination, '/\\') . '/.docara/component-index.json',
                     $this->prettyCanonicalJson($componentIndexReceipt),
+                );
+                $this->files->put(
+                    rtrim($destination, '/\\') . '/.docara/design-atlas.json',
+                    $this->prettyCanonicalJson($atlasReceipt),
                 );
                 $this->files->put($docaraOutputDirectory . '/component-catalog.json', $componentCatalogJson);
                 $this->files->put(

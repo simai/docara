@@ -1,8 +1,8 @@
 # Surface & Hero evidence index
 
 Track: `docara.track.surface-hero-media`
-Current goal: S1
-Status: `goal_s1_ready_for_independent_audit`
+Current goal: S2
+Status: `goal_s2_in_progress`
 Exact product candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
 
 | Evidence | Purpose |
@@ -12,9 +12,10 @@ Exact product candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
 | [S1-C1 pipeline/container correction](S1-C1-PIPELINE-CONTAINER-CORRECTION.md) | superseded nested IR/container evidence retained for audit history |
 | [S1-C2 relative-depth correction](S1-C2-DEPTH-CONTRACT-CORRECTION.md) | current exact-candidate relative subtree semantics, registry capability admission and fresh integrated retest |
 | [S1-C3 ledger/router correction](S1-C3-EVIDENCE-LEDGER-ROUTER-CORRECTION.md) | current reproducible canonical full/full/single/clean-clone ledger and synchronized audit router |
+| [S1 independent acceptance](S1-INDEPENDENT-ACCEPTANCE.md) | independent PASS, exact accepted product/governance revisions and S2 entry gate |
 
 The earlier S1 and S1-C1 integrated documents are retained as rejected or
 superseded history where their hashes differ. The S1-C2 runtime proof remains
 valid, but its former `90bf6378…` ledger is explicitly rejected and superseded
-by S1-C3 evidence. S2 and S3 have not started. This index does not self-accept
-Goal S1.
+by S1-C3 evidence. Goal S1 is independently accepted; S2 is active and S3 has
+not started. This index does not self-accept Goal S2.

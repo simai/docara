@@ -2,10 +2,9 @@
 
 Текущий статус архитектурного roadmap: Goal 1, Goal 2, Goal 3 и Goals A-C
 независимо приняты. Отдельно авторизованный post-roadmap track Surface & Hero
-Media активен только до Goal S1: runtime frozen после relative-depth correction
-на exact candidate `ac53ea4d372a47dc8278b595accca9e7b85c66a3`, а S1-C3 исправил только
-canonical ledger/router evidence; следующий шаг — независимый reverse-outcome
-audit. S2 не начат. Goal C C1 исправил projection/settings/journey defects на
+Media независимо принял Goal S1 на exact candidate
+`ac53ea4d372a47dc8278b595accca9e7b85c66a3` (`PASS`). Goal S2 Hero Media —
+единственный активный scope; S3 не начат. Goal C C1 исправил projection/settings/journey defects на
 exact product candidate `eb35f5c6f18e5eb9be69e91887b09486f5703136`,
 который независимый reverse-outcome audit принял с `PASS`. Шесть входов компонентов,
 разделы дизайна и настроек, исполняемый safe agent journey и принятые extension
@@ -23,7 +22,7 @@ baseline, а не текущим кандидатом или действием.
 
 ## Goal S1. Full-bleed Geometry & Shared Surface Runtime
 
-Статус: `ready_for_independent_audit`. Exact product candidate `ac53ea4…`.
+Статус: `independently_accepted`. Exact product candidate `ac53ea4…`.
 Один typed `docara.surface` использует существующий Markdown -> typed IR ->
 renderer registry -> Smart Gateway -> LayoutComposer -> PageBuilder path.
 Landing full-bleed и docs main-bounded geometry доказаны; Hero HTML не изменён.
@@ -31,7 +30,13 @@ Landing full-bleed и docs main-bounded geometry доказаны; Hero HTML н�
 Surface -> Grid -> Card проходит точные границы 3/3 и 2/2.
 Fresh full/full/single и clean-clone evidence сходятся на path-sorted canonical
 digest `650a678c…`; прежний `90bf6378…` отвергнут как unreproducible evidence.
-S2 Hero Media не начат до независимого S1 verdict.
+Independent verdict: `PASS`; Goal S2 entry gate открыт.
+
+## Goal S2. Hero Background Media
+
+Статус: `in_progress`. Добавляется закрытый `media=auto|side|background|none`
+контракт существующего Hero. Default остаётся byte-identical, а background
+делегирует geometry/media/overlay принятому shared Surface presentation.
 
 ## Нулевая точка
 

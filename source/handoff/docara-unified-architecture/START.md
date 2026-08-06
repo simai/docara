@@ -18,41 +18,38 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal_s1_ready_for_independent_audit`
+Current state: `goal_s2_in_progress`
 
 Current goal: `docara.goal.unified`
 
-Current stage: `docara.stage.s1.surface_runtime`
+Current stage: `docara.stage.s2.hero_media`
 
-Current batch: `docara.batch.s1.evidence_ledger_router_correction`
+Current batch: `docara.batch.s2.hero_background`
 
-Current next action: `independent_goal_s1_reverse_outcome_audit`
+Current next action: `execute_goal_s2_hero_background_media`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
 Current candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
 
-Next roadmap goal: `docara.goal.s1_c3`
+Next roadmap goal: `docara.goal.s2`
 
-Next roadmap status: `audit_pending`
+Next roadmap status: `in_progress`
 
-Next roadmap authorized: `false`
+Next roadmap authorized: `true`
 
 Goal 1-3 and Goals A-C remain independently accepted. The explicitly
-authorized post-roadmap Surface & Hero Media track is now active only at Goal
-S1. Independent audits rejected candidate `45276f6…` and then `80b8102…`.
-Correction candidate `ac53ea4…` owns nested IR, relative subtree depth,
-registry-driven capability admission and exact source locations. The S1-C3
-governance-only correction binds it to the reproducible canonical ledger
-`650a678c…` and removes conflicting router markers. It awaits independent
-audit. S2 and all release/live actions remain unauthorized.
+authorized post-roadmap Surface & Hero Media track has independently accepted
+Goal S1 at exact product `ac53ea4…` and governance `4feb910…`. Goal S2 is the
+only active scope: closed semantic Hero media modes through the accepted shared
+Surface presentation. S3 and all release/live actions remain unauthorized.
 
 ## 3. Read in this order
 
 1. `source/handoff/docara-unified-architecture/STATUS.yaml`;
 2. `source/workflow/ACTIVE.md`;
 3. `source/workflow/2026-08-06-docara-surface-hero-track.md` and
-   `source/workflow/2026-08-06-docara-goal-s1-c3-evidence-ledger-router-correction.md`;
+   `source/workflow/2026-08-06-docara-goal-s2-hero-background-media.md`;
 4. `graph/graph.json` and its current stage/batch specs;
 5. `graph/generated/ai-context/docara-unified.json` as a checked derived view;
 6. `source/handoff/docara-unified-architecture/NEXT.md` and `RESULT.md`;
@@ -65,9 +62,8 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only an explicitly authorized next action
 
-Execute only an independent read-only Goal S1 audit. Do not self-accept or
-begin S2. This handoff does not authorize release review, merge, tag or
-deployment.
+Execute only Goal S2 and stop for an independent audit. Do not begin S3. This
+handoff does not authorize release review, merge, tag or deployment.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,

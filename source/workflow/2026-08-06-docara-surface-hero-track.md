@@ -1,12 +1,12 @@
 # Docara Surface & Hero Media post-roadmap track
 
 Date: 2026-08-06
-Status: `goal_s1_ready_for_independent_audit`
-Current stage: `docara.stage.s1.surface_runtime`
-Current batch: `docara.batch.s1.evidence_ledger_router_correction`
+Status: `goal_s2_in_progress`
+Current stage: `docara.stage.s2.hero_media`
+Current batch: `docara.batch.s2.hero_background`
 Current product candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
-Next roadmap goal: `docara.goal.s1_c3` (`audit_pending`, authorized=`false`)
-Current next action: `independent_goal_s1_reverse_outcome_audit`
+Next roadmap goal: `docara.goal.s2` (`in_progress`, authorized=`true`)
+Current next action: `execute_goal_s2_hero_background_media`
 Track ID: `docara.track.surface-hero-media`
 Repository: `/Users/rim/Documents/GitHub/docara-unified`
 Branch: `codex/docara-unified-architecture`
@@ -50,11 +50,11 @@ Goal S3 Adoption, documentation and integrated acceptance
 Do not start a later goal before the preceding goal has an independent
 `PASS` or `PASS_WITH_NOTES` verdict.
 
-The S1-C3 batch changes only evidence and governance. Product/runtime/public
-documentation remain frozen at `ac53ea4...`. The independently reproduced
-canonical 393-file ledger is `650a678c...`; the former `90bf6378...` claim is
-rejected as an incorrectly ordered digest calculation. Goal S1 still awaits an
-independent audit, and S2 remains unauthorized.
+Goal S1 is independently accepted with `PASS` on product candidate
+`ac53ea4...` and audited governance HEAD `4feb910...`. Its independently
+reproduced canonical 393-file ledger is `650a678c...`; the former
+`90bf6378...` claim remains rejected. That verdict opens only Goal S2. Goal S3
+and release/live actions remain unauthorized.
 
 ## 1. Problem and factual baseline
 

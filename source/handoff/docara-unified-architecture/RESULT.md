@@ -1,12 +1,12 @@
 # Current Docara result
 
-Current state: `goal_s1_ready_for_independent_audit`
+Current state: `goal_s2_in_progress`
 
 Current candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
-## Goal S1 current result
+## Accepted Goal S1 result and Goal S2 launch
 
 Independent reverse-outcome audit returned `CORRECTION_REQUIRED` for historical
 candidate `45276f6…`. Candidate `80b8102…` closed those four defects but
@@ -18,7 +18,8 @@ nested Surface Smart is first-class typed IR, its artifacts are aggregated once,
 the registry contract governs slot/count/order/depth/capability, and failures
 carry exact file/line/column locations.
 
-Goal S1 fixes the landing direct-child full-bleed geometry and adds one typed
+Goal S1 independently passed on product `ac53ea4…` and audited governance
+`4feb910…`. It fixes the landing direct-child full-bleed geometry and adds one typed
 public `docara.surface` container through the existing registry/Gateway/
 LayoutComposer/PageBuilder path. Surface accepts only closed width, media,
 overlay, padding and tone values; local media and capability-owned children are
@@ -32,8 +33,8 @@ static verification checks 266 HTML / 35,581 references with `broken=0`.
 Full PHPUnit is 493 tests / 10,465 assertions. Two clean clones produce the
 same verified 869-file ZIP `3433618e…`; the exact dist consumer passes init,
 doctor, full/single and 78-HTML static verification without package `.git` or
-Node. Browser and exact SF5 cross-host evidence are green. S1 awaits independent
-audit; Hero background media, homepage art direction and S2 are not implemented.
+Node. Browser and exact SF5 cross-host evidence are green. Goal S2 is now
+active; homepage art direction remains unchanged and S3 is not authorized.
 
 The former ledgers `129eef82…`, `51718be2…` and `935fd289…` are rejected or
 superseded evidence and are not exact-candidate proofs. The former

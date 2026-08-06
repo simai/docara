@@ -6,37 +6,37 @@
         "graph/graph.json",
         "graph/dna/project-dna.json",
         "graph/specs/goals/unified-docara.json",
-        "graph/specs/stages/s1-surface-runtime.json",
-        "graph/specs/batches/s1-evidence-ledger-router-correction.json"
+        "graph/specs/stages/s2-hero-media.json",
+        "graph/specs/batches/s2-hero-background.json"
     ],
-    "canonical_sha256": "97e21e9b769a39951665901057363d80d81097177140b885bb8e0b9c4e46f122",
+    "canonical_sha256": "2709043e5c0c2ef0f07ac2ae027ba024ccb1886108e058d1a143ce49ace64b14",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "goal_s1_ready_for_independent_audit",
+        "state": "goal_s2_in_progress",
         "goal": "docara.goal.unified",
-        "goal_readiness": "goal_s1_ready_for_independent_audit",
-        "stage": "docara.stage.s1.surface_runtime",
-        "stage_readiness": "ready_for_independent_audit",
-        "stage_status": "ready_for_independent_audit",
-        "batch": "docara.batch.s1.evidence_ledger_router_correction",
-        "batch_readiness": "ready_for_independent_audit",
-        "batch_status": "ready_for_independent_audit",
-        "completed_checkpoint": "goal_s1_c3_evidence_ledger_router_correction_complete",
+        "goal_readiness": "goal_s2_in_progress",
+        "stage": "docara.stage.s2.hero_media",
+        "stage_readiness": "in_progress",
+        "stage_status": "in_progress",
+        "batch": "docara.batch.s2.hero_background",
+        "batch_readiness": "in_progress",
+        "batch_status": "in_progress",
+        "completed_checkpoint": "goal_s1_independently_accepted",
         "candidate_revision": "ac53ea4d372a47dc8278b595accca9e7b85c66a3",
-        "next_action": "independent_goal_s1_reverse_outcome_audit",
+        "next_action": "execute_goal_s2_hero_background_media",
         "evidence": "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md"
     },
     "roadmap": {
         "source": "source/workflow/2026-08-06-docara-surface-hero-track.md",
         "next_goal": {
-            "id": "docara.goal.s1_c3",
-            "title": "Goal S1-C3 evidence ledger and router hygiene correction",
-            "status": "audit_pending",
-            "authorized": false,
+            "id": "docara.goal.s2",
+            "title": "Goal S2 Hero Background Media on the Shared Surface",
+            "status": "in_progress",
+            "authorized": true,
             "source": "source/handoff/docara-unified-architecture/NEXT.md"
         }
     },
@@ -63,9 +63,9 @@
         }
     },
     "forbidden_now": [
-        "Product/runtime/public guide changes",
-        "S2",
-        "Hero background media",
+        "S3",
+        "Homepage art-direction change",
+        "Second rendering path",
         "External repositories or sites",
         "Merge",
         "Push",
@@ -78,8 +78,8 @@
         "source/workflow/ACTIVE.md",
         "source/workflow/2026-08-06-docara-surface-hero-track.md",
         "graph/graph.json",
-        "graph/specs/stages/s1-surface-runtime.json",
-        "graph/specs/batches/s1-evidence-ledger-router-correction.json",
+        "graph/specs/stages/s2-hero-media.json",
+        "graph/specs/batches/s2-hero-background.json",
         "graph/generated/ai-context/docara-unified.json",
         "source/handoff/docara-unified-architecture/NEXT.md",
         "source/handoff/docara-unified-architecture/RESULT.md"

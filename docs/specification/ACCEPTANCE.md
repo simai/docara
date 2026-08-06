@@ -2,10 +2,10 @@
 
 Текущий статус: Goal 1, Goal 2, Goal 3 и Goals A-C независимо приняты. Новый
 отдельно авторизованный post-roadmap track Surface & Hero Media находится на
-Goal S1: runtime frozen после relative-depth correction на exact product
-candidate `ac53ea4d372a47dc8278b595accca9e7b85c66a3`; S1-C3 исправил только
-canonical ledger/router evidence, независимый audit ожидается. S2 не начат и
-не авторизован этим контуром. Exact accepted Goal A
+Goal S1: exact product candidate
+`ac53ea4d372a47dc8278b595accca9e7b85c66a3` независимо принят с `PASS`,
+governance HEAD `4feb910b4d1a822dd323d559855c020ba4e3480d`. Goal S2 Hero Media активен;
+S3 не начат. Exact accepted Goal A
 product/runtime candidate —
 `8c04160ab50549b060fb933cf80f86193cd92113`. Goal B Full Interface Library &
 Useful Extension Demos принят на exact candidate
@@ -50,7 +50,16 @@ PASS ставится только по воспроизводимому evidenc
       full/full/single и clean clone имеют canonical digest `650a678c…`.
 - [x] Existing Hero section byte-identical baseline; background mode и
       homepage art direction не входят в S1.
-- [ ] Независимый reverse-outcome audit Goal S1.
+- [x] Независимый reverse-outcome audit Goal S1 завершён с `PASS`.
+
+## Goal S2. Hero Background Media
+
+- [ ] `media=auto` сохраняет точный принятый S1 Hero output.
+- [ ] `side`, `background` и `none` имеют закрытый typed contract.
+- [ ] Background использует один admitted local image через shared Surface.
+- [ ] Invalid combinations/assets fail-closed с точной source location.
+- [ ] Build/package/browser evidence связано с одним exact candidate.
+- [ ] Независимый reverse-outcome audit Goal S2.
 
 ## Goal A. Shell Contract & Safe Configuration
 

@@ -1,12 +1,12 @@
 # Goal S1 — Full-bleed Geometry & Shared Surface Runtime
 
 Date: 2026-08-06
-Status: in progress
+Status: `goal_s1_ready_for_independent_audit`
 Track: `docara.track.surface-hero-media`
 Branch: `codex/docara-unified-architecture`
 Entry HEAD: `8e4b71c58065a1f49382dd8077809363e0eed873`
 Accepted parent product: `eb35f5c6f18e5eb9be69e91887b09486f5703136`
-Implementation checkpoint: `6348bd39da15628ba540b0d7761106d72f881b23`
+Exact product candidate: `45276f63422e8b8465b33e415d3fc302dfeac570`
 
 ## Outcome
 
@@ -53,3 +53,15 @@ external repository is modified. Generated build/evidence roots are disposable.
   implemented;
 - release, merge, tag, publication and deployment are not authorized.
 
+## Exact result
+
+- `docara.surface` is a typed, registry-owned public container with closed
+  presentation enums and project-local decorative media admission;
+- landing direct-child full-bleed reaches the viewport while the inner
+  container remains aligned; documentation full width is bounded by `main`;
+- full/full/single build ledger:
+  `129eef82bdcefc29174115cc51e9e2698cdf110ac8f66e6c67e36ea128547d42`;
+- existing Hero section is byte-identical to the entry baseline at
+  `5a5e8996aae6dad9ed410070d06cdc277c193e02dd659c00796818e711bd2a49`;
+- integrated evidence is indexed in
+  `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`.

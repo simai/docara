@@ -1,10 +1,26 @@
 # Current Docara result
 
-Current state: `ready_for_user_release_decision`
+Current state: `goal_s1_ready_for_independent_audit`
 
-Current candidate: `eb35f5c6f18e5eb9be69e91887b09486f5703136`
+Current candidate: `45276f63422e8b8465b33e415d3fc302dfeac570`
 
-Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
+
+## Goal S1 current result
+
+Goal S1 fixes the landing direct-child full-bleed geometry and adds one typed
+public `docara.surface` container through the existing registry/Gateway/
+LayoutComposer/PageBuilder path. Surface accepts only closed width, media,
+overlay, padding and tone values; local media and capability-owned children are
+admitted fail-closed. Documentation full width remains inside `main`, while the
+landing outer Hero reaches the viewport and keeps aligned inner content.
+
+Two full builds and a selected Surface rebuild share exact ledger
+`129eef82…`; static verification checks 266 HTML / 35,574 references with
+`broken=0`. Exact Hero section HTML remains byte-identical to baseline at
+`5a5e8996…`. Full PHPUnit, preview, browser, package and fresh-consumer evidence
+are bound to product candidate `45276f6…`. S1 awaits independent audit; Hero
+background media, homepage art direction and S2 are not implemented.
 
 ## Goal C current result
 

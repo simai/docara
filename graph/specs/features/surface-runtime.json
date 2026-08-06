@@ -1,0 +1,27 @@
+{
+  "id": "docara.feature.surface_runtime",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "feature",
+  "tz_role": "product_contract",
+  "title": "Shared Surface presentation runtime",
+  "summary": "A typed public Surface container provides bounded full-bleed geometry, local decorative media and registry-owned nesting through the existing document pipeline.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "ready_for_independent_audit",
+  "visibility": "repository",
+  "source_refs": [
+    "source/workflow/2026-08-06-docara-surface-hero-track.md#8-goal-s1--full-bleed-geometry--shared-surface-runtime",
+    "docs/specification/authoring/AUTHORING-CONTRACT.md"
+  ],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md"
+  ],
+  "profile_refs": ["docara.unified"],
+  "invariants": [
+    "Surface is a typed registry-owned container rendered by the existing renderer registry, Smart Gateway, LayoutComposer and PageBuilder.",
+    "Width, media, overlay, padding and tone accept only closed values and admitted project-local media.",
+    "Child admission is capability-driven with bounded slots, count, order and depth.",
+    "Hero semantics and homepage art direction remain unchanged in Goal S1."
+  ]
+}

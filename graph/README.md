@@ -21,7 +21,8 @@
 
 - `dna/project-dna.json` — назначение и неизменяемые принципы;
 - `specs/goals` — пользовательский итог;
-- `specs/stages` — последовательные вехи M0–M5;
+- `specs/stages` — последовательные архитектурные, product-track и явно
+  авторизованные post-roadmap вехи;
 - `specs/batches` — ограниченные исполняемые пакеты;
 - `specs/features` — целевые возможности продукта;
 - `specs/requirements` — проверяемые требования;

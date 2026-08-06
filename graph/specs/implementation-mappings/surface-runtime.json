@@ -1,0 +1,51 @@
+{
+  "id": "docara.mapping.surface_runtime",
+  "schema_version": "1.0.0",
+  "kind": "relation",
+  "subtype": "implementation_mapping",
+  "tz_role": "traceability",
+  "title": "Surface runtime implementation mapping",
+  "summary": "Goal S1 mapping from the typed Surface contract to implementation, tests and exact-candidate evidence.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "ready_for_independent_audit",
+  "visibility": "repository",
+  "source_refs": [
+    "source/workflow/2026-08-06-docara-surface-hero-track.md#8-goal-s1--full-bleed-geometry--shared-surface-runtime"
+  ],
+  "profile_refs": ["docara.unified"],
+  "from_ref": "docara.feature.surface_runtime",
+  "to_refs": ["docara.feature.declarative_composition", "docara.feature.single_pagebuilder"],
+  "code_refs": [
+    "src/PortableSite/SurfacePresentation.php#SurfacePresentation",
+    "src/PortableSite/PortableMarkdownRenderer.php#PortableMarkdownRenderer",
+    "src/ComponentCatalog/TypedRendererId.php#TypedRendererId",
+    "resources/schemas/declarative-surface.schema.json",
+    "resources/portable/declarative-shell.css",
+    "docs/site/content/ru/components/surface.md"
+  ],
+  "test_refs": [
+    "tests/Unit/SurfaceRuntimeTest.php",
+    "tests/Unit/GoalCPublicDocumentationTest.php",
+    "tests/Unit/PortableSiteBuilderTest.php"
+  ],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-BASELINE-AND-SURFACE.md",
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-INTEGRATED-ACCEPTANCE.md"
+  ],
+  "review_refs": ["docara.gate.architecture_acceptance"],
+  "current_behavior": [
+    "Landing direct-child full-bleed reaches the viewport while its inner container aligns with adjacent content.",
+    "Documentation Surface full width is bounded to the main region and does not overlap sidebar or outline.",
+    "Decorative media is project-local, published through the normal asset contour and hidden from accessibility APIs.",
+    "Full, single and isolated preview use one production renderer and PageBuilder path."
+  ],
+  "known_deviations": [
+    "Nested project Smart examples prove static rendering; interactive project asset contribution from nested source examples is not claimed by S1."
+  ],
+  "deletion_gates": [
+    "No legacy Surface runtime was deleted; rollback is revert to entry boundary 8e4b71c58065a1f49382dd8077809363e0eed873."
+  ],
+  "status": "ready_for_independent_audit",
+  "mapped_revision": "45276f63422e8b8465b33e415d3fc302dfeac570"
+}

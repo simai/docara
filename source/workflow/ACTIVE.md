@@ -1,8 +1,8 @@
 # Active workflow: Docara unified architecture
 
-Date: 2026-08-05
-Status: Goal C independently accepted; product track complete
-Workflow ID: `2026-08-05-docara-goal-c-c1-truthfulness-correction`
+Date: 2026-08-06
+Status: Goal S1 implementation complete; independent audit pending
+Workflow ID: `2026-08-06-docara-goal-s1-surface-runtime`
 Graph goal: `docara.goal.unified`
 
 ## Source of truth
@@ -10,11 +10,11 @@ Graph goal: `docara.goal.unified`
 - start here: `source/handoff/docara-unified-architecture/START.md`;
 - human specification: `docs/specification/README.md`;
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
-- active recovery: `source/workflow/2026-08-05-docara-goal-c-c1-truthfulness-correction.md`;
-- active track: `source/workflow/2026-08-04-docara-content-design-settings-track.md`;
+- active workflow: `source/workflow/2026-08-06-docara-goal-s1-surface-runtime.md`;
+- active track: `source/workflow/2026-08-06-docara-surface-hero-track.md`;
 - parent Goal 3 recovery:
   `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`;
-- fresh evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md`;
+- fresh evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`;
 - project-context freshness correction:
   `source/workflow/2026-08-03-docara-goal1d-project-context-correction.md`;
 - rejected audit candidate: `c5ea85f8d25deff99b671486fdc4d1e820a86491`;
@@ -25,14 +25,16 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `ready_for_user_release_decision`;
+- state: `goal_s1_ready_for_independent_audit`;
 - goal: `docara.goal.unified`;
-- stage: `docara.stage.c.public_documentation`;
-- batch: `docara.batch.c.public_documentation`;
-- candidate: `eb35f5c6f18e5eb9be69e91887b09486f5703136`;
+- stage: `docara.stage.s1.surface_runtime`;
+- batch: `docara.batch.s1.surface_runtime`;
+- candidate: `45276f63422e8b8465b33e415d3fc302dfeac570`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `explicit_user_release_decision`;
-- Goal 1-3 and Goals A-C are independently accepted. The product track is complete; release review remains unauthorized until an explicit user decision.
+- next action: `independent_goal_s1_reverse_outcome_audit`;
+- Goal 1-3 and Goals A-C remain independently accepted. The separately
+  authorized Surface & Hero Media track is active only through completed Goal
+  S1 implementation; S1 is not self-accepted and S2 is unstarted.
 
 ## Accepted pipeline
 
@@ -47,20 +49,15 @@ IR/HTML remain disposable.
 
 ## Current result
 
-Goal A exact product/runtime candidate `8c04160…` and Goal B exact product
-candidate `c3b91eee…` were independently accepted. Exact accepted
-input/dropdown/checkbox and list-item owner packets are consumed through the
-single Gateway path; the useful dropdown admits only text list-item children.
-Install Builder controls update one safe copy-only command, and the configurator
-dropdown plus checkboxes update one local total. Goal C C1 now publishes 132
-Markdown-owned routes, six truthful admitted catalog entries, exhaustive
-schema-derived settings and one executable safe agent journey. Atlas/schema
-projections are hash-bound derived views; full/full/single, package/consumer,
-browser and static evidence pass on candidate `eb35f5c6…` without adding a
-publication path.
+Goal S1 adds one typed, registry-owned `docara.surface`, fixes the landing
+direct-child full-bleed contract and keeps documentation full width bounded to
+its `main` region. Closed tokens and project-local media admission are
+fail-closed. Existing Hero HTML is unchanged. Full/full/single, preview,
+static, browser, package and fresh-consumer evidence pass on exact candidate
+`45276f6…` through the accepted single production pipeline.
 
 ## Boundary
 
-No mass rewrite, legacy deletion, default-branch merge, tag, release, public
-deploy or readiness claim. The installed stale Docara skill is not a source of
-truth for this track.
+No S2, Hero background mode, homepage art-direction change, mass rewrite,
+default-branch merge, tag, release or deploy is authorized. The installed stale
+Docara skill is not a source of truth for this track.

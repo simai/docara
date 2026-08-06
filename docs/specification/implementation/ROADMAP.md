@@ -1,13 +1,16 @@
 # Дорожная карта упрощения Docara
 
 Текущий статус архитектурного roadmap: Goal 1, Goal 2, Goal 3 и Goals A-C
-независимо приняты. Goal C C1 исправил projection/settings/journey defects на
+независимо приняты. Отдельно авторизованный post-roadmap track Surface & Hero
+Media активен только до Goal S1: implementation complete на exact candidate
+`45276f63422e8b8465b33e415d3fc302dfeac570`, следующий шаг — независимый
+reverse-outcome audit. S2 не начат. Goal C C1 исправил projection/settings/journey defects на
 exact product candidate `eb35f5c6f18e5eb9be69e91887b09486f5703136`,
 который независимый reverse-outcome audit принял с `PASS`. Шесть входов компонентов,
 разделы дизайна и настроек, исполняемый safe agent journey и принятые extension
 demos опубликованы из Markdown, admitted Atlas и exhaustive schema-derived
-проекций без второго publication path. Product track завершён; единственный
-следующий шаг — отдельное явное решение пользователя об открытии release review.
+проекций без второго publication path. Product track A-C завершён; release
+review остаётся отдельным неавторизованным действием.
 Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
 baseline, а не текущим кандидатом или действием. Tag, release и production не
@@ -16,6 +19,14 @@ baseline, а не текущим кандидатом или действием.
 Переход выполняется вертикальными срезами. Цель — не переписать весь код за
 один раз, а доказать новый единственный конвейер на одной реальной странице,
 после чего последовательно удалить старые пути.
+
+## Goal S1. Full-bleed Geometry & Shared Surface Runtime
+
+Статус: `ready_for_independent_audit`. Exact product candidate `45276f6…`.
+Один typed `docara.surface` использует существующий Markdown -> typed IR ->
+renderer registry -> Smart Gateway -> LayoutComposer -> PageBuilder path.
+Landing full-bleed и docs main-bounded geometry доказаны; Hero HTML не изменён.
+S2 Hero Media не начат до независимого S1 verdict.
 
 ## Нулевая точка
 

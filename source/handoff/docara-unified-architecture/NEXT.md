@@ -1,16 +1,16 @@
-# Next action: `explicit_user_release_decision`
+# Next action: `independent_goal_s1_reverse_outcome_audit`
 
-Current state: `ready_for_user_release_decision`
+Current state: `goal_s1_ready_for_independent_audit`
 
-Current candidate: `eb35f5c6f18e5eb9be69e91887b09486f5703136`
+Current candidate: `45276f63422e8b8465b33e415d3fc302dfeac570`
 
-Current evidence: `source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
-Goal 1-3 and Goals A-C are independently accepted. The product track is
-complete on exact candidate `eb35f5c6…`. The only next action is an explicit
-user decision whether to open a separate release-review workflow. No merge,
-push, tag, release, publication, deploy or live-site write is authorized by
-this handoff.
+Goal 1-3 and Goals A-C remain independently accepted. The separately
+authorized Surface & Hero Media track has completed only Goal S1 implementation
+on exact candidate `45276f6…`. The only next action is its independent
+reverse-outcome audit. S2, merge, push, tag, release, publication, deploy and
+live-site writes remain unauthorized.
 
 ## Historical deployment decision (parked, not executable)
 

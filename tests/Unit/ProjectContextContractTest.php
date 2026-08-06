@@ -139,6 +139,9 @@ final class ProjectContextContractTest extends TestCase
     private function shadowRoot(): string
     {
         $root = $this->tmpPath('project-context');
+        $graph = $this->json($this->repositoryRoot() . '/graph/graph.json');
+        $roadmapSource = $graph['implementation_state']['roadmap_source'] ?? null;
+        self::assertIsString($roadmapSource);
         $files = [
             'graph/graph.json',
             'graph/dna/project-dna.json',
@@ -150,6 +153,7 @@ final class ProjectContextContractTest extends TestCase
             'source/workflow/ACTIVE.md',
             'source/workflow/2026-08-02-docara-extensible-lego-architecture-plan.md',
             'source/workflow/2026-08-04-docara-content-design-settings-track.md',
+            $roadmapSource,
         ];
         foreach (['goals', 'stages', 'batches'] as $directory) {
             foreach (glob($this->repositoryRoot() . '/graph/specs/' . $directory . '/*.json') ?: [] as $path) {

@@ -1,7 +1,11 @@
 # Приёмка единой архитектуры Docara
 
-Текущий статус: Goal 1, Goal 2, Goal 3 и Goals A-C независимо приняты. Exact
-accepted Goal A product/runtime candidate —
+Текущий статус: Goal 1, Goal 2, Goal 3 и Goals A-C независимо приняты. Новый
+отдельно авторизованный post-roadmap track Surface & Hero Media находится на
+Goal S1: implementation complete на exact product candidate
+`45276f63422e8b8465b33e415d3fc302dfeac570`, независимый audit ожидается. S2
+не начат и не авторизован этим контуром. Exact accepted Goal A
+product/runtime candidate —
 `8c04160ab50549b060fb933cf80f86193cd92113`. Goal B Full Interface Library &
 Useful Extension Demos принят на exact candidate
 `c3b91eee71ab906cd79ae7a119c6961664f03528`. Goal C C1 устранил найденные
@@ -25,6 +29,23 @@ M5 implementation candidate подтверждает текущий русски
 PASS ставится только по воспроизводимому evidence exact revision. Activity,
 скриншот без source binding или зелёный unit test одного модуля не заменяют
 приёмку результата.
+
+## Goal S1. Full-bleed Geometry & Shared Surface Runtime
+
+- [x] Landing direct-child full-bleed достигает viewport, а внутренний
+      контейнер сохраняет общий контентный ритм.
+- [x] Публичный `docara.surface` зарегистрирован как один typed container с
+      `content/full` outer width, `container/full` inner width и закрытыми
+      presentation tokens.
+- [x] Декоративный media layer принимает только project-local admitted asset;
+      traversal, protocol, symlink, hardlink и case mismatch fail-closed.
+- [x] Child/slot/count/order/depth contract принадлежит registry capabilities,
+      а не component-ID веткам или длине fence.
+- [x] Full/full/single, preview/production, static, browser, package и fresh
+      consumer executor evidence зелёные на exact candidate `45276f6…`.
+- [x] Existing Hero section byte-identical baseline; background mode и
+      homepage art direction не входят в S1.
+- [ ] Независимый reverse-outcome audit Goal S1.
 
 ## Goal A. Shell Contract & Safe Configuration
 

@@ -133,6 +133,7 @@ final readonly class DesignAtlasService
             ) === [] ? max(count($children), count($slots), 1) : 64,
             'order' => 'declared',
             'max_depth' => 8,
+            'depth_semantics' => 'relative_subtree_root_level_1',
         ];
 
         return [
@@ -210,6 +211,7 @@ final readonly class DesignAtlasService
             'max_children' => $max,
             'order' => 'layout_regions',
             'max_depth' => 3,
+            'depth_semantics' => 'relative_subtree_root_level_1',
         ];
     }
 
@@ -223,6 +225,7 @@ final readonly class DesignAtlasService
             'max_children' => 64,
             'order' => 'declared',
             'max_depth' => 2,
+            'depth_semantics' => 'relative_subtree_root_level_1',
         ];
     }
 

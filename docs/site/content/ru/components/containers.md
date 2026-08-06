@@ -7,7 +7,12 @@
 :::atlas_index {kind=block origin=docara authoring=container support=supported}
 :::
 
-Atlas является источником правил `allowed_children`, `slots`, `min_children`, `max_children`, `order` и `max_depth`. Fence length не определяет тип и не ослабляет ограничения.
+Atlas является источником правил `allowed_children`, `slots`, `min_children`,
+`max_children`, `order`, `max_depth` и `depth_semantics`. Единственная семантика
+глубины — `relative_subtree_root_level_1`: каждый container считает себя
+уровнем 1 и проверяет собственное subtree. Поэтому Surface → Grid → Card имеет
+глубину 3 для Surface и 2 для Grid. Fence length не определяет тип и не
+ослабляет ограничения.
 
 Для полноширинной контентной полосы используйте [Surface](/ru/components/surface/): её внешняя и внутренняя ширина, локальный декоративный фон и token-настройки проходят тот же typed runtime. Surface принимает только children с зарегистрированной capability `content.embeddable`; вложенные Surface и landing-блоки не допускаются.
 

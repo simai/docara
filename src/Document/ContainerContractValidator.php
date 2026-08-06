@@ -16,7 +16,7 @@ final readonly class ContainerContractValidator
     ) {}
 
     /** @param list<DocumentNode> $children */
-    public function validate(string $parent, array $children, SourceLocation $location, int $depth = 1): void
+    public function validate(string $parent, array $children, SourceLocation $location): void
     {
         $contract = $this->definitions->containerContract($parent);
         if ($contract === null) {
@@ -41,19 +41,21 @@ final readonly class ContainerContractValidator
         if (($contract['order'] ?? null) !== 'declared') {
             throw $this->error('DOCUMENT_CONTAINER_ORDER_INVALID', $location, "Container [$parent] has an unsupported registry order contract.");
         }
+        if (($contract['depth_semantics'] ?? null) !== 'relative_subtree_root_level_1') {
+            throw $this->error('DOCUMENT_CONTAINER_DEPTH_SEMANTICS_INVALID', $location, "Container [$parent] has an unsupported depth semantics contract.");
+        }
         $slots = array_values(array_filter($contract['slots'] ?? [], 'is_string'));
         if ($slots !== [] && $slots !== ['content']) {
             throw $this->error('DOCUMENT_CONTAINER_SLOT_INVALID', $location, "Container [$parent] has an unsupported slot contract.");
         }
-        $maxDepth = (int) ($contract['max_depth'] ?? 0);
-        if ($depth > $maxDepth) {
-            throw $this->error('DOCUMENT_CONTAINER_DEPTH_EXCEEDED', $location, "Container [$parent] exceeds max_depth [$maxDepth].");
-        }
+        $this->assertRelativeDepth($parent, $children, (int) ($contract['max_depth'] ?? 0), 1);
 
         foreach ($children as $child) {
             if ($child instanceof SmartComponentNode) {
-                if (! $this->smarts->supportsCapability($child->smart, 'content.embeddable')) {
-                    throw $this->error('DOCUMENT_CONTAINER_SMART_CHILD_FORBIDDEN', $child->location(), "Smart child [{$child->smart}] is not admitted as content.embeddable.");
+                $capabilities = $this->definitions->allowedChildCapabilities($parent);
+                if (! $this->supportsAnyCapability($child->smart, $capabilities)) {
+                    $required = implode(', ', $capabilities);
+                    throw $this->error('DOCUMENT_CONTAINER_SMART_CHILD_FORBIDDEN', $child->location(), "Smart child [{$child->smart}] is not admitted by [$parent] capabilities [$required].");
                 }
 
                 continue;
@@ -62,7 +64,7 @@ final readonly class ContainerContractValidator
                 if (! $this->definitions->allowsChild($parent, $child->alias)) {
                     throw $this->error('DOCUMENT_CONTAINER_CHILD_FORBIDDEN', $child->location(), "Container child [{$child->alias}] is not admitted by [$parent].");
                 }
-                $this->validate($child->alias, $child->children(), $child->location(), $depth + 1);
+                $this->validate($child->alias, $child->children(), $child->location());
 
                 continue;
             }
@@ -89,6 +91,37 @@ final readonly class ContainerContractValidator
             }
             throw $this->error('DOCUMENT_CONTAINER_CHILD_FORBIDDEN', $child->location(), "Child [{$child->type()}] is not admitted by [$parent].");
         }
+    }
+
+    /** @param list<DocumentNode> $children */
+    private function assertRelativeDepth(string $parent, array $children, int $maxDepth, int $level): void
+    {
+        foreach ($children as $child) {
+            if (! $child instanceof ContainerNode) {
+                continue;
+            }
+            $childLevel = $level + 1;
+            if ($maxDepth < 1 || $childLevel > $maxDepth) {
+                throw $this->error(
+                    'DOCUMENT_CONTAINER_DEPTH_EXCEEDED',
+                    $child->location(),
+                    "Container [$parent] exceeds max_depth [$maxDepth] at child [{$child->alias}].",
+                );
+            }
+            $this->assertRelativeDepth($parent, $child->children(), $maxDepth, $childLevel);
+        }
+    }
+
+    /** @param list<string> $capabilities */
+    private function supportsAnyCapability(string $smart, array $capabilities): bool
+    {
+        foreach ($capabilities as $capability) {
+            if ($this->smarts->supportsCapability($smart, $capability)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function error(string $code, SourceLocation $location, string $message): PortableConfigurationException

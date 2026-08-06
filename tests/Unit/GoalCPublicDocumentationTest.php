@@ -52,7 +52,7 @@ final class GoalCPublicDocumentationTest extends TestCase
     public function container_and_framework_guides_expose_registry_contract_and_nonclaims(): void
     {
         $containers = (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/content/ru/components/containers.md');
-        foreach (['allowed_children', 'slots', 'min_children', 'max_children', 'order', 'max_depth'] as $field) {
+        foreach (['allowed_children', 'slots', 'min_children', 'max_children', 'order', 'max_depth', 'depth_semantics'] as $field) {
             self::assertStringContainsString('`' . $field . '`', $containers);
         }
         foreach (['MARKDOWN_GRID_CARD_REQUIRED', 'MARKDOWN_COLUMNS_REGION_COUNT_INVALID', 'MARKDOWN_STEPS_ORDERED_LIST_REQUIRED', 'MARKDOWN_BLOCK_UNCLOSED'] as $code) {
@@ -89,7 +89,7 @@ final class GoalCPublicDocumentationTest extends TestCase
             if ($name === 'containers') {
                 self::assertStringNotContainsString('<code>docara.docs</code>', $html);
                 self::assertStringNotContainsString('<code>docara.article</code>', $html);
-                foreach (['allowed_children=[docara.card]', 'min_children=1', 'max_children=12', 'order=declared', 'max_depth=2'] as $rule) {
+                foreach (['allowed_children=[docara.card]', 'min_children=1', 'max_children=12', 'order=declared', 'max_depth=2', 'depth_semantics=relative_subtree_root_level_1'] as $rule) {
                     self::assertStringContainsString($rule, $html);
                 }
             }

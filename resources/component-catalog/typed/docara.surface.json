@@ -32,7 +32,8 @@
         "min_children": 1,
         "max_children": 64,
         "order": "declared",
-        "max_depth": 3
+        "max_depth": 3,
+        "depth_semantics": "relative_subtree_root_level_1"
     },
     "provenance": {
         "source_kind": "typed_definition",

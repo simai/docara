@@ -170,6 +170,22 @@ final class TypedComponentDefinitionRepository
         return $required !== [] && array_intersect($required, $capabilities) !== [];
     }
 
+    /** @return list<string> */
+    public function allowedChildCapabilities(string $parentName): array
+    {
+        $contract = $this->containerContract($parentName);
+        if ($contract === null) {
+            return [];
+        }
+        $capabilities = array_values(array_unique(array_filter(
+            $contract['allowed_child_capabilities'] ?? [],
+            'is_string',
+        )));
+        sort($capabilities, SORT_STRING);
+
+        return $capabilities;
+    }
+
     /** @return array<string, mixed>|null */
     public function containerContract(string $name): ?array
     {

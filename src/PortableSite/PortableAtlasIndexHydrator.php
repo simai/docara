@@ -112,6 +112,7 @@ final class PortableAtlasIndexHydrator
             . 'min_children=' . $this->escape((string) ($contract['min_children'] ?? '')) . '; '
             . 'max_children=' . $this->escape((string) ($contract['max_children'] ?? '')) . '; '
             . 'order=' . $this->escape((string) ($contract['order'] ?? '')) . '; '
-            . 'max_depth=' . $this->escape((string) ($contract['max_depth'] ?? '')) . '.</p>';
+            . 'max_depth=' . $this->escape((string) ($contract['max_depth'] ?? '')) . ', '
+            . 'depth_semantics=' . $this->escape((string) ($contract['depth_semantics'] ?? '')) . '.</p>';
     }
 }

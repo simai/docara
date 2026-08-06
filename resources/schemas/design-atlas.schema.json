@@ -66,7 +66,7 @@
     },
     "container": {
       "type": "object",
-      "required": ["allowed_children", "slots", "min_children", "max_children", "order", "max_depth"],
+      "required": ["allowed_children", "slots", "min_children", "max_children", "order", "max_depth", "depth_semantics"],
       "properties": {
         "allowed_children": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
         "allowed_child_capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
@@ -74,7 +74,8 @@
         "min_children": {"type": "integer", "minimum": 0},
         "max_children": {"type": "integer", "minimum": 1, "maximum": 512},
         "order": {"type": "string", "enum": ["declared", "layout_regions", "manifest"]},
-        "max_depth": {"type": "integer", "minimum": 1, "maximum": 16}
+        "max_depth": {"type": "integer", "minimum": 1, "maximum": 16},
+        "depth_semantics": {"type": "string", "enum": ["relative_subtree_root_level_1"]}
       },
       "additionalProperties": false
     }

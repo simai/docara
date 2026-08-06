@@ -62,6 +62,7 @@ final class DesignAtlasTest extends TestCase
         self::assertSame('container', $layout['authoring_kind']);
         self::assertSame(['section'], $layout['container_contract']['allowed_children']);
         self::assertSame(3, $layout['container_contract']['max_depth']);
+        self::assertSame('relative_subtree_root_level_1', $layout['container_contract']['depth_semantics']);
         self::assertSame(64, $section['container_contract']['max_children']);
         self::assertSame('project', $smart['namespace']);
         self::assertSame('project/project', $smart['owner_package']);

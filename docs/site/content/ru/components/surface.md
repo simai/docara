@@ -44,7 +44,9 @@ Surface принимает обычный Markdown и только зареги�
 компоненты. Вложенный Surface, Hero, Promo, Showcase, shell-компоненты,
 неизвестные children и небезопасные пути отклоняются до публикации. Допустимые
 children, slot `content`, порядок, количество и глубина публикуются в Design
-Atlas из реального registry descriptor.
+Atlas из реального registry descriptor. `max_depth=3` считается относительно
+Surface как уровня 1; вложенный Grid отдельно считает себя уровнем 1, поэтому
+каноническая цепочка Surface → Grid → Card допустима без глобального depth.
 
 Проектный Smart тоже проходит тот же Gateway, если его собственный manifest
 явно объявляет capability `content.embeddable`:

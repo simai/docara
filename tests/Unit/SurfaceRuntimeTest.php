@@ -8,9 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Simai\Docara\Application\DesignAtlasService;
 use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
-use Simai\Docara\Document\ContainerContractValidator;
-use Simai\Docara\Document\SourceLocation;
-use Simai\Docara\Document\SourceNode;
+use Simai\Docara\Document\MarkdownCompiler;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Portable\PortableConfigurationException;
@@ -174,6 +172,7 @@ MD);
         self::assertSame(64, $surface['container_contract']['max_children']);
         self::assertSame('declared', $surface['container_contract']['order']);
         self::assertSame(3, $surface['container_contract']['max_depth']);
+        self::assertSame('relative_subtree_root_level_1', $surface['container_contract']['depth_semantics']);
         self::assertSame(
             'resources/component-catalog/typed/docara.surface.json',
             $surface['provenance']['definition_ref'],
@@ -272,22 +271,92 @@ MD);
             }
         }
 
-        $location = new SourceLocation('content/ru/components/surface-contract.md', 9, 1, 9);
+        self::assertStringNotContainsString(
+            "supportsCapability(\$child->smart, 'content.embeddable')",
+            (string) file_get_contents(dirname(__DIR__, 2) . '/src/Document/ContainerContractValidator.php'),
+        );
+    }
+
+    #[Test]
+    public function production_page_builder_accepts_canonical_surface_grid_card_relative_depth(): void
+    {
+        $source = implode("\n", [
+            '::::::surface',
+            ':::::grid {columns=1}',
+            '::::card',
+            'Body.',
+            '::::',
+            ':::::',
+            '::::::',
+        ]);
+        $built = $this->buildMarkdown($source);
+
+        $document = $built->document->toArray();
+        self::assertSame('container', $document['nodes'][0]['type'] ?? null);
+        self::assertSame('surface', $document['nodes'][0]['alias'] ?? null);
+        self::assertSame('grid', $document['nodes'][0]['children'][0]['alias'] ?? null);
+        self::assertSame('card', $document['nodes'][0]['children'][0]['children'][0]['alias'] ?? null);
+        self::assertStringContainsString('data-docara-surface', $built->contentHtml);
+        self::assertStringContainsString('data-docara-block="grid"', $built->contentHtml);
+        self::assertStringContainsString('data-docara-block="card"', $built->contentHtml);
+        self::assertStringContainsString('Body.', $built->contentHtml);
+
+        $direct = (new PortableMarkdownRenderer)->render($source);
+        self::assertStringContainsString('data-docara-block="surface"', $direct);
+        self::assertStringContainsString('data-docara-block="grid"', $direct);
+        self::assertStringContainsString('data-docara-block="card"', $direct);
+        self::assertSame(
+            ['content.embeddable'],
+            TypedComponentDefinitionRepository::bundled()->allowedChildCapabilities('surface'),
+        );
+    }
+
+    #[Test]
+    public function production_page_builder_rejects_one_level_beyond_registry_relative_depth(): void
+    {
+        $filesystem = new Filesystem;
+        $root = sys_get_temp_dir() . '/docara-container-depth-' . bin2hex(random_bytes(8));
+        $definitionsRoot = $root . '/typed';
+        self::assertTrue($filesystem->copyDirectory(
+            dirname(__DIR__, 2) . '/resources/component-catalog/typed',
+            $definitionsRoot,
+        ));
         try {
-            (new ContainerContractValidator(
-                TypedComponentDefinitionRepository::bundled(),
-                $this->projectRuntime()->gateway,
-            ))->validate('surface', [new SourceNode('paragraph', 'Body.', $location)], $location, 4);
-            self::fail('Expected max_depth failure.');
-        } catch (PortableConfigurationException $exception) {
-            self::assertSame('DOCUMENT_CONTAINER_DEPTH_EXCEEDED', $exception->errorCode);
-            self::assertTrue($exception->hasFileLocation());
-            self::assertSame(9, $exception->sourceLine());
+            $gridPath = $definitionsRoot . '/docara.grid.json';
+            $grid = json_decode((string) file_get_contents($gridPath), true, 512, JSON_THROW_ON_ERROR);
+            $grid['container_contract']['max_depth'] = 1;
+            file_put_contents($gridPath, json_encode($grid, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");
+            $definitions = new TypedComponentDefinitionRepository($definitionsRoot);
+            $project = $this->projectRuntime();
+            $compiler = new MarkdownCompiler(typedComponents: $definitions, smarts: $project->gateway);
+
+            try {
+                $this->buildMarkdown(implode("\n", [
+                    '::::::surface',
+                    ':::::grid {columns=1}',
+                    '::::card',
+                    'Body.',
+                    '::::',
+                    ':::::',
+                    '::::::',
+                ]), $compiler, $definitions);
+                self::fail('Expected relative max_depth overflow.');
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame('DOCUMENT_CONTAINER_DEPTH_EXCEEDED', $exception->errorCode);
+                self::assertSame('content/ru/components/surface-contract.md', $exception->sourcePath());
+                self::assertSame(3, $exception->sourceLine());
+                self::assertSame(1, $exception->sourceColumn());
+            }
+        } finally {
+            $filesystem->deleteDirectory($root);
         }
     }
 
-    private function buildMarkdown(string $markdown): PageBuilderResult
-    {
+    private function buildMarkdown(
+        string $markdown,
+        ?MarkdownCompiler $compiler = null,
+        ?TypedComponentDefinitionRepository $definitions = null,
+    ): PageBuilderResult {
         $base = (new PortableConfigurationLoader($this->site))->resolve('content/ru/components/surface.md');
         $site = json_decode((string) file_get_contents($this->site . '/docara.json'), true, 512, JSON_THROW_ON_ERROR);
         $project = $this->projectRuntime($base->frameworkLock);
@@ -299,9 +368,13 @@ MD);
             $base->trace,
             $base->provenance,
         );
-        $renderer = new PortableMarkdownRenderer(components: $project->gateway, smartRenderer: $project->renderer);
+        $renderer = new PortableMarkdownRenderer(
+            definitions: $definitions,
+            components: $project->gateway,
+            smartRenderer: $project->renderer,
+        );
 
-        return (new PageBuilder($renderer, smartRenderer: $project->renderer))->build(
+        return (new PageBuilder($renderer, compiler: $compiler, smartRenderer: $project->renderer))->build(
             $plan,
             $this->site,
             FrameworkComponentRuntime::fromLock($plan->frameworkLock),

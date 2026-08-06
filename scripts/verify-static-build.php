@@ -609,7 +609,7 @@ function docaraCatalogEntryContractError(
             continue;
         }
         $container = $entry[$contractName];
-        $requiredContainerKeys = ['allowed_children', 'slots', 'min_children', 'max_children', 'order', 'max_depth'];
+        $requiredContainerKeys = ['allowed_children', 'slots', 'min_children', 'max_children', 'order', 'max_depth', 'depth_semantics'];
         $containerKeys = [...$requiredContainerKeys, 'allowed_child_capabilities'];
         if (! is_array($container)
             || array_is_list($container)
@@ -628,6 +628,7 @@ function docaraCatalogEntryContractError(
             || ! is_int($container['max_depth'])
             || $container['max_depth'] < 1
             || $container['max_depth'] > 16
+            || $container['depth_semantics'] !== 'relative_subtree_root_level_1'
         ) {
             return 'The effective component catalogue container contract is invalid.';
         }

@@ -12,7 +12,8 @@
         "min_children": 1,
         "max_children": 1,
         "order": "declared",
-        "max_depth": 2
+        "max_depth": 2,
+        "depth_semantics": "relative_subtree_root_level_1"
     },
     "authoring": {
         "syntax": "directive",

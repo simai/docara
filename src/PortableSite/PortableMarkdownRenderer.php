@@ -321,6 +321,7 @@ final class PortableMarkdownRenderer
             $bodyInspection = $this->inspectDirectives($bodyMarkdown);
             $frameworkBodyInspection = $this->inspectFrameworkDirectives($bodyMarkdown);
             $nestedPortable = $bodyInspection['directives'];
+            $allowedChildCapabilities = $this->definitions->allowedChildCapabilities($type);
             $allowsNestedPortable = $nestedPortable !== []
                 && array_reduce(
                     $nestedPortable,
@@ -333,7 +334,7 @@ final class PortableMarkdownRenderer
                 && array_reduce(
                     $frameworkBodyInspection['directives'],
                     fn (bool $allowed, array $child): bool => $allowed
-                        && $this->components->supportsCapability((string) $child['name'], 'content.embeddable'),
+                        && $this->supportsAnyCapability((string) $child['name'], $allowedChildCapabilities),
                     true,
                 );
             if (($nestedPortable !== [] && ! $allowsNestedPortable)
@@ -390,6 +391,18 @@ final class PortableMarkdownRenderer
         }
 
         return [$result, $blocks, $referenceResult];
+    }
+
+    /** @param list<string> $capabilities */
+    private function supportsAnyCapability(string $smart, array $capabilities): bool
+    {
+        foreach ($capabilities as $capability) {
+            if ($this->components->supportsCapability($smart, $capability)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** @param array<string, mixed> $inspection */

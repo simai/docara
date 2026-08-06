@@ -225,6 +225,9 @@ The Surface v1 container contract is:
 - one declared `content` slot;
 - `min_children=1`, `max_children=64`, `order=declared`,
   `max_depth=3`;
+- `depth_semantics=relative_subtree_root_level_1`: every container is level 1
+  of its own subtree; Surface -> Grid -> Card is 3/3 for Surface and 2/2 for
+  Grid;
 - native Markdown is admitted;
 - inline components remain inside admitted Markdown;
 - typed and Smart children require a registry-owned content-embeddable

@@ -37,7 +37,12 @@ Markdown owner
 
 ## Кто проверяет совместимость
 
-Atlas публикует для каждого container `allowed_children`, `slots`, `min_children`, `max_children`, `order` и `max_depth`. Registry отклоняет unknown View Tree kind/tag/attribute/utility/region/slot до registration. Project config выбирает только admitted IDs и не содержит class/callback/PHP/template path.
+Atlas публикует для каждого container `allowed_children`, `slots`, `min_children`,
+`max_children`, `order`, `max_depth` и machine-readable `depth_semantics`.
+Значение `relative_subtree_root_level_1` означает, что каждый container считает
+собственный root уровнем 1. Registry отклоняет unknown View Tree
+kind/tag/attribute/utility/region/slot до registration. Project config выбирает
+только admitted IDs и не содержит class/callback/PHP/template path.
 
 :::atlas_index {kind=layout,section,block}
 :::

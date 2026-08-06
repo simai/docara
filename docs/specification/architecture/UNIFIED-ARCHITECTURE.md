@@ -187,6 +187,15 @@ block или Smart IDs.
 `LayoutComposer` получает уже отрендеренный материал `main`, resolved layout и
 region plan. Он не разбирает Markdown и не знает component authoring syntax.
 
+Full-bleed является Layout-owned геометрией: direct child с
+`data-docara-width=full` расширяется только до границы текущего document
+region через container-query units, без `100vw`. Один immutable
+`SurfacePresentation` строит уже проверенные outer/inner width, декоративный
+media layer, overlay и token spacing/tone для typed `docara.surface`; он не
+парсит Markdown, не выбирает component ID и не принимает filesystem path.
+Container admission остаётся registry-owned через capability и точный
+slot/count/order/depth contract.
+
 Region item имеет стабильный id, kind, params, visibility condition и source
 provenance. Поддерживаемые kinds первой версии: `slot`, `component`, `native`,
 `include`. Произвольный PHP callback в пользовательском JSON запрещён.

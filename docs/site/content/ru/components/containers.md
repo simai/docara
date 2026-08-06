@@ -9,6 +9,8 @@
 
 Atlas является источником правил `allowed_children`, `slots`, `min_children`, `max_children`, `order` и `max_depth`. Fence length не определяет тип и не ослабляет ограничения.
 
+Для полноширинной контентной полосы используйте [Surface](/ru/components/surface/): её внешняя и внутренняя ширина, локальный декоративный фон и token-настройки проходят тот же typed runtime. Surface принимает только children с зарегистрированной capability `content.embeddable`; вложенные Surface и landing-блоки не допускаются.
+
 ## Валидное вложение
 
 :::example {label="Grid with cards"}

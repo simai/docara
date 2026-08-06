@@ -100,7 +100,7 @@ final readonly class PortableSiteBuilder
             designs: $designRegistry,
             bindings: BindingRegistry::bundled(),
         );
-        $markdown = new PortableMarkdownRenderer(components: $gateway);
+        $markdown = new PortableMarkdownRenderer(components: $gateway, smartRenderer: $smartRenderer);
         $pageBuilder = $this->pageBuilderInjected
             ? $this->pageBuilder
             : new PageBuilder($markdown, smartRenderer: $smartRenderer);

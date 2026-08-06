@@ -62,6 +62,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'schema_reference',
             'showcase',
             'steps',
+            'surface',
             'tabs',
             'tree',
         ], $repository->names());
@@ -93,6 +94,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.schema_reference',
             'docara.showcase',
             'docara.steps',
+            'docara.surface',
             'docara.tabs',
             'docara.tree',
         ], array_column($repository->all(), 'id'));
@@ -388,6 +390,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.math' => 'docs/site/content/ru/components/math.md',
             'docara.media' => 'docs/site/content/ru/components/media.md',
             'docara.steps' => 'docs/site/content/ru/components/steps.md',
+            'docara.surface' => 'docs/site/content/ru/components/surface.md',
             'docara.tabs' => 'docs/site/content/ru/components/tabs.md',
             'docara.tree' => 'docs/site/content/ru/components/tree.md',
             'native.code' => 'docs/site/content/ru/authoring/markdown.md',
@@ -692,6 +695,10 @@ final class EffectiveComponentCatalogTest extends TestCase
                 '<section data-docara-block="steps" data-view="timeline" class="bg-surface-0 border border-outline-variant radius-2 p-3 m-bottom-1">',
                 '<ol class="m-0 p-0">',
             ],
+            'docara.surface' => [
+                '<section data-docara-block="surface" data-docara-surface',
+                'data-docara-content-width="container"',
+            ],
             'docara.tabs' => [
                 '<section data-docara-block="tabs"',
                 'role="tablist"',
@@ -715,7 +722,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             $catalog['entries'],
             static fn (array $entry): bool => ($entry['lifecycle'] ?? null) === 'supported',
         ));
-        self::assertCount(32, $supported);
+        self::assertCount(33, $supported);
         $expectedIds = array_merge(
             array_keys($nativeIdentity),
             array_keys($typedIdentity),
@@ -807,6 +814,7 @@ final class EffectiveComponentCatalogTest extends TestCase
                     'docara.math' => 'math',
                     'docara.media' => 'media',
                     'docara.steps' => 'steps',
+                    'docara.surface' => 'surface',
                     'docara.tabs' => 'tabs',
                     'docara.tree' => 'tree',
                     'native.code' => 'code',

@@ -69,6 +69,7 @@
       "required": ["allowed_children", "slots", "min_children", "max_children", "order", "max_depth"],
       "properties": {
         "allowed_children": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "allowed_child_capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
         "slots": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
         "min_children": {"type": "integer", "minimum": 0},
         "max_children": {"type": "integer", "minimum": 1, "maximum": 512},

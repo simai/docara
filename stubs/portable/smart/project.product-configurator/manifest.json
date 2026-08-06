@@ -31,7 +31,7 @@
     "depends": ["simai.framework.core.css"]
   },
   "ai": {
-    "tags": ["product", "configuration", "static"],
+    "tags": ["product", "configuration", "static", "content.embeddable"],
     "summary": "Demonstrates deterministic client-only configuration with no order side effect."
   },
   "meta": {"ownerPackage": "project/project", "version": "1.0.0"},

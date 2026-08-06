@@ -151,4 +151,30 @@ final class TypedComponentDefinitionRepository
 
         return null;
     }
+
+    public function allowsChild(string $parentName, string $childName): bool
+    {
+        $parent = $this->byName($parentName);
+        $child = $this->byName($childName);
+        $contract = $parent['container_contract'] ?? $parent['nesting_contract'] ?? null;
+        if (! is_array($contract)) {
+            return false;
+        }
+        if (in_array($child['id'], $contract['allowed_children'] ?? [], true)) {
+            return true;
+        }
+
+        $required = array_values(array_filter($contract['allowed_child_capabilities'] ?? [], 'is_string'));
+        $capabilities = array_values(array_filter($child['capabilities'] ?? [], 'is_string'));
+
+        return $required !== [] && array_intersect($required, $capabilities) !== [];
+    }
+
+    /** @return array<string, mixed>|null */
+    public function containerContract(string $name): ?array
+    {
+        $contract = $this->byName($name)['container_contract'] ?? null;
+
+        return is_array($contract) ? $contract : null;
+    }
 }

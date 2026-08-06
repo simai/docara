@@ -53,6 +53,12 @@
         },
         "container_contract": {
             "$ref": "design-atlas.schema.json#/$defs/container"
+        },
+        "nesting_contract": {
+            "$ref": "design-atlas.schema.json#/$defs/container"
+        },
+        "capabilities": {
+            "$ref": "#/$defs/string_list"
         }
     },
     "additionalProperties": false,

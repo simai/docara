@@ -554,9 +554,9 @@ MD);
             'The declarative main-region wrapper must not inset full-width landing blocks.',
         );
         self::assertStringContainsString(
-            '.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100cqw;margin-inline:calc(50% - 50cqw)}',
+            '.docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100cqw;margin-inline:calc(50% - 50cqw)}',
             $shellCss,
-            'Full-width landing surfaces must escape the standard Framework container while their inner content stays aligned.',
+            'Direct and Section-wrapped full-width landing surfaces must escape the standard Framework container while their inner content stays aligned.',
         );
         self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:transparent;', $shellCss);
         self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre}', $shellCss);
@@ -1104,7 +1104,7 @@ MD);
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
         self::assertSame('sf-v5.3.2-d1daa951-aa9f34a4', $componentCatalog['framework_pair']);
-        self::assertCount(37, $componentCatalog['entries']);
+        self::assertCount(38, $componentCatalog['entries']);
         self::assertEquals(
             [
                 'catalog_is_canonical_framework_registry' => false,

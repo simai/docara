@@ -57,6 +57,20 @@ final readonly class SmartComponentGateway
         return $this->resolveAt($call, null, 0, []);
     }
 
+    public function supportsCapability(string $smart, string $capability): bool
+    {
+        $definition = $this->smarts->definition($smart);
+        $tags = $definition->portableManifest['ai']['tags'] ?? [];
+
+        return is_array($tags) && in_array($capability, $tags, true);
+    }
+
+    /** @return list<string> */
+    public function keys(): array
+    {
+        return $this->smarts->keys();
+    }
+
     /** @param array<string, mixed> $declaredChildren */
     private function resolveAt(
         SmartCallNode $call,

@@ -22,6 +22,9 @@ use League\CommonMark\Output\RenderedContentInterface;
 use League\CommonMark\Util\RegexHelper;
 use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
 use Simai\Docara\ComponentCatalog\TypedRendererId;
+use Simai\Docara\Declarative\Document\SmartCallNode;
+use Simai\Docara\Declarative\Document\SourceSpan;
+use Simai\Docara\Declarative\Rendering\SmartRenderer;
 use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Document\ComponentAliasRegistry;
 use Simai\Docara\Document\ComponentBlockNode;
@@ -53,19 +56,30 @@ final class PortableMarkdownRenderer
 
     private SmartComponentGateway $components;
 
+    private SurfacePresentation $surfaces;
+
+    private SmartRenderer $smartRenderer;
+
     public function __construct(
         ?PortableMarkdownProfile $profile = null,
         ?TypedComponentDefinitionRepository $definitions = null,
         ?SmartComponentGateway $components = null,
+        ?SurfacePresentation $surfaces = null,
+        ?SmartRenderer $smartRenderer = null,
     ) {
         $profile ??= PortableMarkdownProfile::bundled();
         $this->definitions = $definitions ?? TypedComponentDefinitionRepository::bundled();
+        $this->components = $components ?? SmartComponentGateway::content();
         $this->converter = new MarkdownConverter($profile->environment());
         $this->inspector = new CommonMarkInspector(
-            directiveMatcher: new DirectiveOpeningMatcher($this->definitions->names()),
+            directiveMatcher: new DirectiveOpeningMatcher(
+                $this->definitions->names(),
+                $this->components->keys(),
+            ),
         );
         $this->columnRegions = new PortableColumnRegionParser($this->inspector);
-        $this->components = $components ?? SmartComponentGateway::content();
+        $this->surfaces = $surfaces ?? new SurfacePresentation;
+        $this->smartRenderer = $smartRenderer ?? new SmartRenderer;
         $this->inlineComponents = new InlineComponentRenderer(components: $this->components);
         $this->attributes = new AuthoringAttributeParser;
         $this->examples = new PortableExampleRenderer;
@@ -74,6 +88,11 @@ final class PortableMarkdownRenderer
     public function componentGateway(): SmartComponentGateway
     {
         return $this->components;
+    }
+
+    public function smartRenderer(): SmartRenderer
+    {
+        return $this->smartRenderer;
     }
 
     public function render(string $markdown, ?string $sourceRoot = null, ?string $sourceFile = null): string
@@ -164,6 +183,12 @@ final class PortableMarkdownRenderer
                 TypedRendererId::ComponentIndex => $this->renderComponentIndex($block['attributes']),
                 TypedRendererId::AtlasIndex => $this->renderAtlasIndex($block['attributes']),
                 TypedRendererId::SchemaReference => $this->renderSchemaReference($block['attributes']),
+                TypedRendererId::Surface => $this->renderSurface(
+                    $block['markdown'],
+                    $block['attributes'],
+                    $sourceRoot,
+                    $sourceFile,
+                ),
             };
             $wrapper = '<p>' . $block['placeholder'] . '</p>';
             if (substr_count($html, $wrapper) !== 1) {
@@ -259,15 +284,26 @@ final class PortableMarkdownRenderer
             $bodyInspection = $this->inspectDirectives($bodyMarkdown);
             $frameworkBodyInspection = $this->inspectFrameworkDirectives($bodyMarkdown);
             $nestedPortable = $bodyInspection['directives'];
-            $gridNesting = $type === 'grid'
-                && $nestedPortable !== []
-                && array_values(array_unique(array_column($nestedPortable, 'name'))) === ['card'];
-            $cardFigureNesting = $type === 'card'
-                && $nestedPortable !== []
-                && array_values(array_unique(array_column($nestedPortable, 'name'))) === ['figure'];
-            if ((! $gridNesting && ! $cardFigureNesting && $nestedPortable !== [])
-                || $frameworkBodyInspection['directives'] !== []
-                || (! $gridNesting && ! $cardFigureNesting && $this->inspector->containsDirectiveLikeOpening($bodyMarkdown))
+            $allowsNestedPortable = $nestedPortable !== []
+                && array_reduce(
+                    $nestedPortable,
+                    fn (bool $allowed, array $child): bool => $allowed
+                        && $this->definitions->allowsChild($type, (string) $child['name']),
+                    true,
+                );
+            $allowsFramework = $frameworkBodyInspection['directives'] !== []
+                && $this->definitions->containerContract($type) !== null
+                && array_reduce(
+                    $frameworkBodyInspection['directives'],
+                    fn (bool $allowed, array $child): bool => $allowed
+                        && $this->components->supportsCapability((string) $child['name'], 'content.embeddable'),
+                    true,
+                );
+            if (($nestedPortable !== [] && ! $allowsNestedPortable)
+                || ($frameworkBodyInspection['directives'] !== [] && ! $allowsFramework)
+                || ($nestedPortable === []
+                    && $frameworkBodyInspection['directives'] === []
+                    && $this->inspector->containsDirectiveLikeOpening($bodyMarkdown))
             ) {
                 throw new PortableConfigurationException(
                     'MARKDOWN_BLOCK_NESTING_UNSUPPORTED',
@@ -1739,6 +1775,214 @@ final class PortableMarkdownRenderer
             actionRequired: false,
             surfaceClass: 'bg-surface-0',
         );
+    }
+
+    /** @param array<string,string> $attributes */
+    private function renderSurface(
+        string $markdown,
+        array $attributes,
+        ?string $sourceRoot,
+        ?string $sourceFile,
+    ): string {
+        $allowed = [
+            'width', 'content_width', 'background_image', 'background_fit', 'background_x',
+            'background_y', 'overlay', 'overlay_strength', 'padding', 'tone',
+        ];
+        $this->assertAttributes($attributes, $allowed, 'surface');
+        $props = [
+            'width' => $this->attributeOneOf($attributes['width'] ?? 'content', ['content', 'full'], 'surface', 'width'),
+            'content_width' => $this->attributeOneOf($attributes['content_width'] ?? 'container', ['container', 'full'], 'surface', 'content_width'),
+            'background_fit' => $this->attributeOneOf($attributes['background_fit'] ?? 'cover', ['cover', 'contain', 'auto'], 'surface', 'background_fit'),
+            'background_x' => $this->attributeOneOf($attributes['background_x'] ?? 'center', ['left', 'center', 'right'], 'surface', 'background_x'),
+            'background_y' => $this->attributeOneOf($attributes['background_y'] ?? 'center', ['top', 'center', 'bottom'], 'surface', 'background_y'),
+            'overlay' => $this->attributeOneOf($attributes['overlay'] ?? 'none', ['none', 'light', 'dark'], 'surface', 'overlay'),
+            'overlay_strength' => $this->attributeOneOf($attributes['overlay_strength'] ?? 'medium', ['soft', 'medium', 'strong'], 'surface', 'overlay_strength'),
+            'padding' => $this->attributeOneOf($attributes['padding'] ?? 'md', ['none', 'sm', 'md', 'lg', 'xl'], 'surface', 'padding'),
+            'tone' => $this->attributeOneOf($attributes['tone'] ?? 'default', ['default', 'muted', 'accent', 'contrast'], 'surface', 'tone'),
+        ];
+        $background = trim($attributes['background_image'] ?? '');
+        if ($background === '' && array_intersect(array_keys($attributes), ['background_fit', 'background_x', 'background_y']) !== []) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_SURFACE_BACKGROUND_REQUIRED',
+                'Surface background positioning requires background_image.',
+            );
+        }
+        if ($props['overlay'] === 'none' && array_key_exists('overlay_strength', $attributes)) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_SURFACE_OVERLAY_REQUIRED',
+                'Surface overlay_strength requires a light or dark overlay.',
+            );
+        }
+        if ($props['overlay'] !== 'none' && $background === '') {
+            throw new PortableConfigurationException(
+                'MARKDOWN_SURFACE_BACKGROUND_REQUIRED',
+                'Surface overlay requires background_image.',
+            );
+        }
+        $backgroundUrl = $background === ''
+            ? ''
+            : $this->localSurfaceAsset($background, $sourceRoot, $sourceFile);
+        [$markdown, $smartReplacements] = $this->extractSurfaceSmartChildren($markdown, $sourceFile);
+        $content = trim($this->renderCompiled($markdown, $sourceRoot, $sourceFile));
+        foreach ($smartReplacements as $placeholder => $html) {
+            $wrapper = '<p>' . $placeholder . '</p>';
+            if (substr_count($content, $wrapper) !== 1) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_SURFACE_CHILD_PLACEHOLDER_INVALID',
+                    'A Surface Smart child placeholder is ambiguous after rendering.',
+                );
+            }
+            $content = str_replace($wrapper, $html, $content);
+        }
+        if ($content === '' || ! $this->containsVisibleText(strip_tags($content))) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_SURFACE_CONTENT_REQUIRED',
+                'Surface requires visible admitted content.',
+            );
+        }
+
+        return $this->surfaces->render($props, $content, $backgroundUrl);
+    }
+
+    /** @return array{0:string,1:array<string,string>} */
+    private function extractSurfaceSmartChildren(string $markdown, ?string $sourceFile): array
+    {
+        $inspection = $this->inspectFrameworkDirectives($markdown);
+        $replacements = [];
+        $directives = array_reverse($inspection['directives']);
+        foreach ($directives as $index => $directive) {
+            $smart = (string) $directive['name'];
+            if (($directive['closed'] ?? false) !== true
+                || ! $this->components->supportsCapability($smart, 'content.embeddable')
+            ) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_SURFACE_SMART_CHILD_FORBIDDEN',
+                    "Surface Smart child [$smart] is not admitted as content.embeddable.",
+                );
+            }
+            $payload = trim((string) $directive['body']);
+            try {
+                $props = $payload === '' ? [] : json_decode($payload, true, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException $exception) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_SURFACE_SMART_PROPS_INVALID',
+                    "Surface Smart child [$smart] requires an object JSON payload.",
+                    $exception,
+                );
+            }
+            if (! is_array($props) || ($props !== [] && array_is_list($props))) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_SURFACE_SMART_PROPS_INVALID',
+                    "Surface Smart child [$smart] requires an object JSON payload.",
+                );
+            }
+            $view = $props['view'] ?? 'default';
+            unset($props['view']);
+            if (! is_string($view) || preg_match('/^[a-z][a-z0-9_-]*$/D', $view) !== 1) {
+                throw new PortableConfigurationException('MARKDOWN_SURFACE_SMART_VIEW_INVALID', $smart);
+            }
+            $line = (int) $directive['start_line'];
+            $plan = $this->components->resolve(new SmartCallNode(
+                'surface-smart-' . substr(hash('sha256', $smart . "\0" . $line . "\0" . $payload), 0, 20),
+                $smart,
+                $view,
+                $props,
+                $index + 1,
+                new SourceSpan($sourceFile ?? '@markdown', $line, (int) $directive['end_line']),
+            ));
+            $placeholder = 'DOCARA_SURFACE_SMART_' . strtoupper(substr(hash('sha256', $plan->nodeId), 0, 24));
+            $replacements[$placeholder] = $this->smartRenderer->render($plan)->html;
+            $lines = preg_split('/\r\n|\n|\r/u', $markdown) ?: [];
+            array_splice(
+                $lines,
+                $line - 1,
+                (int) $directive['end_line'] - $line + 1,
+                [$placeholder],
+            );
+            $markdown = implode("\n", $lines);
+        }
+
+        return [$markdown, $replacements];
+    }
+
+    private function localSurfaceAsset(string $url, ?string $sourceRoot, ?string $sourceFile): string
+    {
+        if ($sourceRoot === null
+            || str_contains($url, "\0")
+            || preg_match('/[\x00-\x1F\x7F]/u', $url) === 1
+            || ! str_starts_with($url, '/assets/')
+            || str_starts_with($url, '//')
+            || str_contains($url, '..')
+            || str_contains($url, '\\')
+            || str_contains($url, '?')
+            || str_contains($url, '#')
+        ) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_SURFACE_BACKGROUND_UNSAFE',
+                'Surface background_image must be a local /assets/ path.',
+            );
+        }
+        $root = realpath($sourceRoot);
+        $assetLexical = $root === false ? false : $root . '/assets';
+        $lexical = $root === false ? false : $root . '/' . ltrim($url, '/');
+        $assetRoot = $assetLexical === false ? false : realpath($assetLexical);
+        $path = $lexical === false ? false : realpath($lexical);
+        $extension = strtolower(pathinfo($url, PATHINFO_EXTENSION));
+        if ($root === false || $assetRoot === false || $path === false
+            || $assetLexical === false || $lexical === false
+            || is_link($assetLexical) || is_link($lexical) || ! is_file($path)
+            || ! str_starts_with($assetRoot, $root . DIRECTORY_SEPARATOR)
+            || ! str_starts_with($path, $assetRoot . DIRECTORY_SEPARATOR)
+            || ! in_array($extension, ['avif', 'gif', 'jpeg', 'jpg', 'png', 'svg', 'webp'], true)
+            || ((int) (lstat($lexical)['nlink'] ?? 0)) !== 1
+        ) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_SURFACE_BACKGROUND_UNSAFE',
+                "Surface background asset [$url] is missing or outside the admitted asset root.",
+            );
+        }
+        $relative = ltrim($url, '/');
+        $cursor = $root;
+        foreach (explode('/', $relative) as $segment) {
+            $names = scandir($cursor);
+            if (! is_array($names) || ! in_array($segment, $names, true)) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_SURFACE_BACKGROUND_CASE_MISMATCH',
+                    "Surface background asset [$url] does not match filesystem case.",
+                );
+            }
+            $cursor .= DIRECTORY_SEPARATOR . $segment;
+            if (is_link($cursor)) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_SURFACE_BACKGROUND_UNSAFE',
+                    "Surface background asset [$url] crosses a symbolic link.",
+                );
+            }
+        }
+        if ($cursor !== $lexical) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_SURFACE_BACKGROUND_CASE_MISMATCH',
+                "Surface background asset [$url] does not match filesystem case.",
+            );
+        }
+
+        $relativeSource = $sourceFile === null || $root === false
+            ? ''
+            : ltrim(str_replace('\\', '/', substr($sourceFile, strlen($root))), '/');
+        if (preg_match('#^content/[^/]+/(?<route>.+)\.md$#D', $relativeSource, $match) !== 1) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_SURFACE_BACKGROUND_CONTEXT_INVALID',
+                'Surface background_image requires an authored locale page context.',
+            );
+        }
+        $route = (string) $match['route'];
+        $segments = array_values(array_filter(explode('/', $route), static fn (string $part): bool => $part !== ''));
+        if (($segments[array_key_last($segments)] ?? null) === 'index') {
+            array_pop($segments);
+        }
+        $relativeUrl = str_repeat('../', count($segments)) . ltrim($url, '/');
+
+        return $this->escapeHtml($relativeUrl);
     }
 
     private function renderPromo(RenderedContentInterface $rendered): string

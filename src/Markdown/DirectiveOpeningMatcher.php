@@ -10,8 +10,8 @@ final readonly class DirectiveOpeningMatcher
 {
     private const FRAMEWORK_NAME_PATTERN = '/\Aui(?:\.[a-z][a-z0-9_]*)+\z/D';
 
-    /** @param list<string> $portableNames */
-    public function __construct(private array $portableNames)
+    /** @param list<string> $portableNames @param list<string> $smartNames */
+    public function __construct(private array $portableNames, private array $smartNames = [])
     {
         foreach ($portableNames as $name) {
             if (! is_string($name)
@@ -21,6 +21,11 @@ final readonly class DirectiveOpeningMatcher
                 throw new \InvalidArgumentException(
                     'Portable directive names must be safe lower-case identifiers outside the reserved ui namespace.',
                 );
+            }
+        }
+        foreach ($smartNames as $name) {
+            if (! is_string($name) || preg_match('/^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$/D', $name) !== 1) {
+                throw new \InvalidArgumentException('Smart directive names must be canonical dotted identifiers.');
             }
         }
     }
@@ -42,7 +47,9 @@ final readonly class DirectiveOpeningMatcher
         // Keep the lexical catch intentionally broader than admission. Any
         // whitespace-free token that starts with "ui" must reach the strict
         // canonical-ID gate instead of becoming inert Markdown after a typo.
-        $pattern = '/^(:{3,})(' . $names . '|ui[^\s{]*)(?:[ \t]+\{([^}\r\n]*)\})?[ \t]*$/u';
+        $smartNames = $this->smartAlternation();
+        $pattern = '/^(:{3,})(' . $names . ($smartNames !== '' ? '|' . $smartNames : '')
+            . '|ui[^\s{]*)(?:[ \t]+\{([^}\r\n]*)\})?[ \t]*$/u';
         if (preg_match($pattern, $line, $match) !== 1) {
             return null;
         }
@@ -77,12 +84,23 @@ final readonly class DirectiveOpeningMatcher
     {
         return $family === DirectiveBlockStartParser::PORTABLE
             ? in_array($name, $this->portableNames, true)
-            : str_starts_with($name, 'ui');
+            : in_array($name, $this->smartNames, true) || str_starts_with($name, 'ui');
     }
 
     private function portableAlternation(): string
     {
         $names = $this->portableNames;
+        usort($names, static fn (string $left, string $right): int => strlen($right) <=> strlen($left) ?: $left <=> $right);
+
+        return implode('|', array_map(
+            static fn (string $name): string => preg_quote($name, '/'),
+            $names,
+        ));
+    }
+
+    private function smartAlternation(): string
+    {
+        $names = $this->smartNames;
         usort($names, static fn (string $left, string $right): int => strlen($right) <=> strlen($left) ?: $left <=> $right);
 
         return implode('|', array_map(

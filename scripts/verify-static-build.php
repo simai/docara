@@ -578,7 +578,7 @@ function docaraCatalogEntryContractError(
         'docs_ref',
         'provenance',
     ];
-    $allowed = [...$required, 'metadata', 'consumer_policy', 'gap', 'container_contract'];
+    $allowed = [...$required, 'metadata', 'consumer_policy', 'gap', 'container_contract', 'nesting_contract', 'capabilities'];
     if (array_diff($required, array_keys($entry)) !== []
         || array_diff(array_keys($entry), $allowed) !== []
         || ! is_string($entry['id'])
@@ -601,14 +601,22 @@ function docaraCatalogEntryContractError(
     ) {
         return 'The effective component catalogue entry shape is invalid.';
     }
-    if (isset($entry['container_contract'])) {
-        $container = $entry['container_contract'];
-        $containerKeys = ['allowed_children', 'slots', 'min_children', 'max_children', 'order', 'max_depth'];
+    if (isset($entry['capabilities']) && ! docaraCatalogStringList($entry['capabilities'])) {
+        return 'The effective component catalogue capability contract is invalid.';
+    }
+    foreach (['container_contract', 'nesting_contract'] as $contractName) {
+        if (! isset($entry[$contractName])) {
+            continue;
+        }
+        $container = $entry[$contractName];
+        $requiredContainerKeys = ['allowed_children', 'slots', 'min_children', 'max_children', 'order', 'max_depth'];
+        $containerKeys = [...$requiredContainerKeys, 'allowed_child_capabilities'];
         if (! is_array($container)
             || array_is_list($container)
-            || array_diff($containerKeys, array_keys($container)) !== []
+            || array_diff($requiredContainerKeys, array_keys($container)) !== []
             || array_diff(array_keys($container), $containerKeys) !== []
             || ! docaraCatalogStringList($container['allowed_children'])
+            || (isset($container['allowed_child_capabilities']) && ! docaraCatalogStringList($container['allowed_child_capabilities']))
             || ! docaraCatalogStringList($container['slots'])
             || ! is_int($container['min_children'])
             || $container['min_children'] < 0

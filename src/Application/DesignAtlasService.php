@@ -233,6 +233,9 @@ final readonly class DesignAtlasService
         if (($manifest['render']['hydration'] ?? 'none') !== 'none') {
             $capabilities[] = 'smart.hydration';
         }
+        if (in_array('content.embeddable', $manifest['ai']['tags'] ?? [], true)) {
+            $capabilities[] = 'content.embeddable';
+        }
         if (($manifest['slots'] ?? []) !== [] || ($manifest['children'] ?? []) !== []) {
             $capabilities[] = 'smart.children';
         }
@@ -303,7 +306,7 @@ final readonly class DesignAtlasService
                 $lifecycle,
             ),
             'authoring_kind' => $authoringKind,
-            'capabilities' => $this->strings($metadata['capabilities'] ?? $authoring['jobs'] ?? []),
+            'capabilities' => $this->strings($entry['capabilities'] ?? $metadata['capabilities'] ?? $authoring['jobs'] ?? []),
             'preview_supported' => $lifecycle === 'supported',
             'schema' => 'component-catalog-entry.schema.json',
             'container_contract' => $container,

@@ -96,13 +96,13 @@
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.card.json",
-            "source_sha256": "3ea01763c786587b6165c0c341d43d34389e3363b00878ebc13bce6dfa7b8097",
-            "revision": "e8aaac5c6b485e099dd6217687601bf64feb5323",
+            "source_sha256": "942d04d50c7f35c27d5a78794f2acdf391f2c2918ce378ec2a76052f5b85bf1b",
+            "revision": "8e4b71c58065a1f49382dd8077809363e0eed873",
             "author": "Rim Zabarov",
-            "changed_at": "2026-07-21T18:17:07+03:00",
-            "source_url": "https://github.com/simai/docara/blob/e8aaac5c6b485e099dd6217687601bf64feb5323/resources/component-catalog/typed/docara.card.json",
+            "changed_at": "2026-08-06T14:30:00+03:00",
+            "source_url": null,
             "history_url": "https://github.com/simai/docara/commits/ecfc8b72f34a020b1f7374e11eb5b33c0838aabe/resources/component-catalog/typed/docara.card.json",
-            "history_exact": true
+            "history_exact": false
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.code.json",
@@ -206,10 +206,10 @@
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.grid.json",
-            "source_sha256": "0eca64f6feef1e6a7c566533342270c6f1d9f211c949076ee4b0e941869e6a0e",
-            "revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
+            "source_sha256": "ebe70ced95e194073e7803006a9f6c1719fb6ce22df2cab3d1c8b70e4c0acdd9",
+            "revision": "8e4b71c58065a1f49382dd8077809363e0eed873",
             "author": "Rim Zabarov",
-            "changed_at": "2026-07-23T11:25:59+03:00",
+            "changed_at": "2026-08-06T14:30:00+03:00",
             "source_url": null,
             "history_url": null,
             "history_exact": false
@@ -295,6 +295,16 @@
             "history_exact": true
         },
         {
+            "source_ref": "resources/component-catalog/typed/docara.surface.json",
+            "source_sha256": "82de5a0d920a99f28c761646acf2bf1c2e8f5b61024864b703507707c211a8de",
+            "revision": "8e4b71c58065a1f49382dd8077809363e0eed873",
+            "author": "Rim Zabarov",
+            "changed_at": "2026-08-06T14:30:00+03:00",
+            "source_url": null,
+            "history_url": null,
+            "history_exact": false
+        },
+        {
             "source_ref": "resources/component-catalog/typed/docara.tabs.json",
             "source_sha256": "fdbc2a8a4eab33fc70b760319365879b220023e5b452c39b75f7833cb2e181db",
             "revision": "ecfc8b72f34a020b1f7374e11eb5b33c0838aabe",
@@ -335,5 +345,5 @@
             "history_exact": true
         }
     ],
-    "content_sha256": "b984801559a3351a915b7394515e36b6b1dbf7cb1bb8f3627ac8b6e13c296f62"
+    "content_sha256": "1b7b0bdd5fe86a9bfcbb8dd16a2b3e2595bac6e103dbad695ec39f9cff6fb84c"
 }

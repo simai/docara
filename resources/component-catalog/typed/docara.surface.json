@@ -1,0 +1,41 @@
+{
+    "id": "docara.surface",
+    "name": "surface",
+    "renderer": "docara.surface.v1",
+    "family": "docara_typed",
+    "category": "content_structure",
+    "lifecycle": "supported",
+    "authoring": {
+        "syntax": "directive",
+        "call": ":::surface",
+        "jobs": ["present_content_surface"],
+        "parameters": [
+            {"name": "width", "type": "enum", "required": false, "default": "content", "values": ["content", "full"]},
+            {"name": "content_width", "type": "enum", "required": false, "default": "container", "values": ["container", "full"]},
+            {"name": "background_image", "type": "string", "required": false, "default": ""},
+            {"name": "background_fit", "type": "enum", "required": false, "default": "cover", "values": ["cover", "contain", "auto"]},
+            {"name": "background_x", "type": "enum", "required": false, "default": "center", "values": ["left", "center", "right"]},
+            {"name": "background_y", "type": "enum", "required": false, "default": "center", "values": ["top", "center", "bottom"]},
+            {"name": "overlay", "type": "enum", "required": false, "default": "none", "values": ["none", "light", "dark"]},
+            {"name": "overlay_strength", "type": "enum", "required": false, "default": "medium", "values": ["soft", "medium", "strong"]},
+            {"name": "padding", "type": "enum", "required": false, "default": "md", "values": ["none", "sm", "md", "lg", "xl"]},
+            {"name": "tone", "type": "enum", "required": false, "default": "default", "values": ["default", "muted", "accent", "contrast"]}
+        ]
+    },
+    "states": ["contained", "full_bleed", "decorative_media"],
+    "verification": {"renderer": true, "tests": true, "docs": true, "demo": true},
+    "docs_ref": "docs/site/content/ru/components/surface.md",
+    "container_contract": {
+        "allowed_children": [],
+        "allowed_child_capabilities": ["content.embeddable"],
+        "slots": ["content"],
+        "min_children": 1,
+        "max_children": 64,
+        "order": "declared",
+        "max_depth": 3
+    },
+    "provenance": {
+        "source_kind": "typed_definition",
+        "definition_ref": "resources/component-catalog/typed/docara.surface.json"
+    }
+}

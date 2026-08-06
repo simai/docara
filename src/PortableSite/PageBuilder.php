@@ -22,7 +22,10 @@ final readonly class PageBuilder
         ?DocumentRendererRegistry $renderers = null,
         ?SmartRenderer $smartRenderer = null,
     ) {
-        $this->renderers = $renderers ?? DocumentRendererRegistry::bundled($markdown, $smartRenderer);
+        $this->renderers = $renderers ?? DocumentRendererRegistry::bundled(
+            $markdown,
+            $smartRenderer ?? $markdown->smartRenderer(),
+        );
     }
 
     public function build(

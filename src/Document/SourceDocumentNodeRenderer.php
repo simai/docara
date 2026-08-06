@@ -34,6 +34,7 @@ final readonly class SourceDocumentNodeRenderer implements DocumentNodeRenderer
             $context->sourceRoot,
             $context->sourceFile,
         );
+        $html = $this->markdown->stripLocalPublicAssetReceipts($html);
 
         return new RenderArtifact(
             $html,

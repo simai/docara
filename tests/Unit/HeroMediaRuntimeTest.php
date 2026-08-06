@@ -128,7 +128,7 @@ final class HeroMediaRuntimeTest extends TestCase
             );
             $html = (string) file_get_contents($root . '/build_test/ru/components/hero/index.html');
             self::assertSame(1, substr_count($html, 'src="../../assets/hero.png"'));
-            self::assertSame(1, substr_count($html, 'data-docara-publish-local-asset'));
+            self::assertStringNotContainsString('data-docara-publish-local-asset', $html);
         } finally {
             $files->deleteDirectory($root);
         }

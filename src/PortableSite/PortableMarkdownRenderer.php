@@ -133,6 +133,11 @@ final class PortableMarkdownRenderer
         return $assets;
     }
 
+    public function stripLocalPublicAssetReceipts(string $html): string
+    {
+        return str_replace(' data-docara-publish-local-asset', '', $html);
+    }
+
     public function renderContainer(
         ContainerNode $node,
         string $contentHtml,

@@ -2,7 +2,7 @@
 
 Date: 2026-08-06
 Status: Goal S2 ready for independent audit
-Workflow ID: `2026-08-06-docara-goal-s2-hero-background-media`
+Workflow ID: `2026-08-06-docara-goal-s2-c1-hero-diagnostic-location`
 Graph goal: `docara.goal.unified`
 
 ## Source of truth
@@ -10,7 +10,7 @@ Graph goal: `docara.goal.unified`
 - start here: `source/handoff/docara-unified-architecture/START.md`;
 - human specification: `docs/specification/README.md`;
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
-- active workflow: `source/workflow/2026-08-06-docara-goal-s2-hero-background-media.md`;
+- active workflow: `source/workflow/2026-08-06-docara-goal-s2-c1-hero-diagnostic-location.md`;
 - active track: `source/workflow/2026-08-06-docara-surface-hero-track.md`;
 - parent Goal 3 recovery:
   `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`;
@@ -29,7 +29,7 @@ Graph goal: `docara.goal.unified`
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.s2.hero_media`;
 - batch: `docara.batch.s2.hero_background`;
-- candidate: `794fac076be86ed4d03167120800ab0e91715aff`;
+- candidate: `7eeba4ad7b5acd00f833bf2022e45775444fb69c`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
 - next action: `independent_goal_s2_reverse_outcome_audit`;
 - Goal 1-3 and Goals A-C remain independently accepted. The separately
@@ -60,9 +60,11 @@ clone all produce 393 files at canonical digest `650a678c…`; both full roots
 pass 266 HTML / 35,581 references / broken=0.
 
 Goal S2 adds closed Hero media modes while keeping the default Hero bytes and
-delegating background presentation to the same Surface primitive. Exact
-candidate `794fac0…` passes 501/10,594 PHPUnit, full/full/single digest
-`7a8c5645…`, verified ZIP `94bfda5a…`, fresh consumer and browser 20/20.
+delegating background presentation to the same Surface primitive. S2-C1 keeps
+the unchanged fail-closed policy while relocating every Hero image failure to
+the authored image. Exact candidate `7eeba4a…` passes 502/10,650 PHPUnit,
+full/full/single digest `108cba01…`, verified ZIP `40d86ea6…`, fresh consumer
+and clean proportional desktop/mobile browser regression.
 
 ## Boundary
 

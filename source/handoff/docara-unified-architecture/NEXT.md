@@ -2,15 +2,16 @@
 
 Current state: `goal_s2_ready_for_independent_audit`
 
-Current candidate: `794fac076be86ed4d03167120800ab0e91715aff`
+Current candidate: `7eeba4ad7b5acd00f833bf2022e45775444fb69c`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
-Goal 1-3, Goals A-C and Goal S1 are independently accepted. Goal S2 product
-candidate `794fac0…` is complete and has executor evidence for exact default
-Hero parity, shared Surface background media, 393-file canonical digest
-`7a8c5645…`, verified ZIP `94bfda5a…`, fresh consumer and browser 20/20.
-Perform only its independent reverse-outcome audit. S3, merge, push, tag,
+Goal 1-3, Goals A-C and Goal S1 are independently accepted. Goal S2/S2-C1
+product candidate `7eeba4a…` is complete and has executor evidence for exact
+default Hero parity, shared Surface background media, image diagnostics,
+393-file canonical digest `108cba01…`, verified ZIP `40d86ea6…`, fresh
+consumer and proportional browser regression. Perform only its independent
+reverse-outcome audit. S3, merge, push, tag,
 release, publication, deploy and live-site writes remain unauthorized.
 
 ## Historical deployment decision (parked, not executable)

@@ -1,14 +1,14 @@
 # Goal S2 — Hero Background Media on the Shared Surface
 
 Date: 2026-08-06
-Status: `correction_in_progress`
+Status: `goal_s2_ready_for_independent_audit`
 Workflow ID: `2026-08-06-docara-goal-s2-hero-background-media`
 Track: `docara.track.surface-hero-media`
 Entry product candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
 Entry governance HEAD: `4feb910b4d1a822dd323d559855c020ba4e3480d`
 Independent S1 verdict: `PASS`
 Branch: `codex/docara-unified-architecture`
-Exact product candidate: `794fac076be86ed4d03167120800ab0e91715aff`
+Exact product candidate: `7eeba4ad7b5acd00f833bf2022e45775444fb69c`
 
 ## Authority and process selection
 
@@ -51,11 +51,12 @@ LayoutComposer or PageBuilder is allowed.
 
 ## Final result
 
-S2.0-S2.5 are complete on exact product candidate `794fac0…`. Full PHPUnit is
-501/10,594; fresh full/full/single share 393 files and canonical digest
-`7a8c5645…`; static checks 266 HTML / 35,583 references / broken=0. Two clean
-clones reproduce the verified ZIP `94bfda5a…`; the fresh dist consumer and
-20/20 browser matrix are green. Detailed commands and hashes are linked from
+S2.0-S2.5 plus correction S2-C1 are complete on exact product candidate
+`7eeba4a…`. Full PHPUnit is 502/10,650; fresh full/full/single share 393 files
+and canonical digest `108cba01…`; static checks 266 HTML / 35,583 references /
+broken=0. Two clean clones reproduce verified ZIP `40d86ea6…`; fresh dist
+consumer and proportional desktop/mobile browser regression are green.
+Detailed commands and hashes are linked from
 `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`.
 
 The result is executor-ready only. Next action is
@@ -63,9 +64,10 @@ The result is executor-ready only. Next action is
 
 Independent audit returned `CORRECTION_REQUIRED` for exact candidate
 `794fac0…`: early generic unsafe-protocol rejection lost the Markdown image
-line for `data:` and `javascript:` URLs in production PageBuilder. Bounded
-correction S2-C1 is tracked in
-`source/workflow/2026-08-06-docara-goal-s2-c1-hero-diagnostic-location.md`.
+line for `data:` and `javascript:` URLs in production PageBuilder. Completed
+bounded correction S2-C1 is tracked in
+`source/workflow/2026-08-06-docara-goal-s2-c1-hero-diagnostic-location.md`;
+`794fac0…` and ledger `7a8c5645…` remain rejected history.
 
 ## Safety and rollback
 

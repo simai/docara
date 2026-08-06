@@ -30,6 +30,6 @@
   "next_stage_ref": null,
   "status": "ready_for_independent_audit",
   "baseline_revision": "ac53ea4d372a47dc8278b595accca9e7b85c66a3",
-  "candidate_revision": "794fac076be86ed4d03167120800ab0e91715aff",
+  "candidate_revision": "7eeba4ad7b5acd00f833bf2022e45775444fb69c",
   "next_action": "independent_goal_s2_reverse_outcome_audit"
 }

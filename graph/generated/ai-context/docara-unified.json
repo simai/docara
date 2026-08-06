@@ -9,7 +9,7 @@
         "graph/specs/stages/s2-hero-media.json",
         "graph/specs/batches/s2-hero-background.json"
     ],
-    "canonical_sha256": "a772d64e0c1a4a90783fa5631cacd02f2c15523bdf80726526b521c7308d7182",
+    "canonical_sha256": "1fb852f24fe9d16c0c7cf68932393bd4093d9fb9ab5fb12b803d950d312f2752",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -25,8 +25,8 @@
         "batch": "docara.batch.s2.hero_background",
         "batch_readiness": "ready_for_independent_audit",
         "batch_status": "ready_for_independent_audit",
-        "completed_checkpoint": "goal_s2_implementation_complete",
-        "candidate_revision": "794fac076be86ed4d03167120800ab0e91715aff",
+        "completed_checkpoint": "goal_s2_c1_diagnostic_location_complete",
+        "candidate_revision": "7eeba4ad7b5acd00f833bf2022e45775444fb69c",
         "next_action": "independent_goal_s2_reverse_outcome_audit",
         "evidence": "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md"
     },

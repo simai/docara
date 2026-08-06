@@ -3,7 +3,7 @@
 Track: `docara.track.surface-hero-media`
 Current goal: S2
 Status: `goal_s2_ready_for_independent_audit`
-Exact product candidate: `794fac076be86ed4d03167120800ab0e91715aff`
+Exact product candidate: `7eeba4ad7b5acd00f833bf2022e45775444fb69c`
 
 | Evidence | Purpose |
 | --- | --- |
@@ -15,10 +15,13 @@ Exact product candidate: `794fac076be86ed4d03167120800ab0e91715aff`
 | [S1 independent acceptance](S1-INDEPENDENT-ACCEPTANCE.md) | independent PASS, exact accepted product/governance revisions and S2 entry gate |
 | [S2 Hero background](S2-HERO-BACKGROUND.md) | typed modes, shared Surface integration, exact diagnostics, asset receipt and rollback |
 | [S2 integrated acceptance](S2-INTEGRATED-ACCEPTANCE.md) | exact tests, builds, package, consumer and browser evidence |
+| [S2-C1 diagnostic-location correction](S2-C1-DIAGNOSTIC-LOCATION-CORRECTION.md) | production PageBuilder location matrix and fresh exact-candidate integrated retest |
 
 The earlier S1 and S1-C1 integrated documents are retained as rejected or
 superseded history where their hashes differ. The S1-C2 runtime proof remains
 valid, but its former `90bf6378…` ledger is explicitly rejected and superseded
 by S1-C3 evidence. Goal S1 is independently accepted; S2 implementation is
-ready for an independent reverse-outcome audit and S3 has not started. This
-index does not self-accept Goal S2.
+ready for an independent reverse-outcome audit and S3 has not started. The
+former candidate `794fac0…`, ledger `7a8c5645…` and ZIP `94bfda5a…` are
+rejected historical S2 evidence, not current S2-C1 proof. This index does not
+self-accept Goal S2.

@@ -2,25 +2,29 @@
 
 Current state: `goal_s2_ready_for_independent_audit`
 
-Current candidate: `794fac076be86ed4d03167120800ab0e91715aff`
+Current candidate: `7eeba4ad7b5acd00f833bf2022e45775444fb69c`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
 ## Goal S2 result awaiting independent audit
 
-Exact product candidate `794fac0…` adds the closed Hero
+Exact product candidate `7eeba4a…` retains the closed Hero
 `media=auto|side|background|none` contract. Default and explicit auto preserve
 the accepted S1 Hero bytes; side keeps meaningful split media; background uses
 one empty-alt local image through the shared Surface presentation and normal
 asset receipt; none rejects authored media. Invalid combinations and unsafe
-assets fail with exact locations. No homepage art direction changed.
+assets fail with exact locations. S2-C1 corrects the production diagnostic
+boundary so unsafe image classes point to the real Markdown image instead of
+the directive opener. No homepage art direction changed.
 
-Full PHPUnit is 501 tests / 10,594 assertions. Fresh full/full/single outputs
-contain 393 files at canonical digest `7a8c5645…`; static checks 266 HTML /
+Full PHPUnit is 502 tests / 10,650 assertions. Fresh full/full/single outputs
+contain 393 files at canonical digest `108cba01…`; static checks 266 HTML /
 35,583 references / broken=0. Two clean clones reproduce verified 869-file ZIP
-`94bfda5a…`; the fresh dist consumer shares full/single digest `9548afa1…`.
-The responsive LTR/RTL browser matrix passes 20/20 with clean assets, console,
-accessibility and overflow checks. S2 is not self-accepted; its only next action
+`40d86ea6…`; the fresh dist consumer shares full/single digest `8fed7a14…`.
+The accepted parent responsive matrix remains unchanged and proportional
+desktop/mobile browser regression has clean assets, console and overflow.
+Rejected candidate `794fac0…` and ledger `7a8c5645…` remain historical.
+S2 is not self-accepted; its only next action
 is independent audit, and S3 remains unstarted.
 
 ## Accepted Goal S1 result and Goal S2 entry

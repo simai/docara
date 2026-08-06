@@ -5,7 +5,7 @@
 Goal S1: exact product candidate
 `ac53ea4d372a47dc8278b595accca9e7b85c66a3` независимо принят с `PASS`,
 governance HEAD `4feb910b4d1a822dd323d559855c020ba4e3480d`. Goal S2 Hero Media реализован на
-exact candidate `794fac076be86ed4d03167120800ab0e91715aff` и ожидает независимый аудит;
+exact candidate `7eeba4ad7b5acd00f833bf2022e45775444fb69c` и ожидает независимый аудит;
 S3 не начат. Exact accepted Goal A
 product/runtime candidate —
 `8c04160ab50549b060fb933cf80f86193cd92113`. Goal B Full Interface Library &
@@ -59,7 +59,9 @@ PASS ставится только по воспроизводимому evidenc
 - [x] `side`, `background` и `none` имеют закрытый typed contract.
 - [x] Background использует один admitted local image через shared Surface.
 - [x] Invalid combinations/assets fail-closed с точной source location.
-- [x] Build/package/browser evidence связано с exact candidate `794fac0…`.
+- [x] Все unsafe Hero image diagnostics через PageBuilder указывают на точную
+      строку Markdown image, включая data/javascript/symlink/hardlink.
+- [x] Build/package/browser evidence связано с exact candidate `7eeba4a…`.
 - [ ] Независимый reverse-outcome audit Goal S2.
 
 ## Goal A. Shell Contract & Safe Configuration

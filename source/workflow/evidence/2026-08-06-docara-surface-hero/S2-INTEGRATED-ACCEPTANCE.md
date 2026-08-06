@@ -1,8 +1,15 @@
 # S2 integrated acceptance evidence
 
 Date: 2026-08-06
-Status: `ready_for_independent_audit`
+Status: `rejected_historical_parent_evidence`
 Exact product candidate: `794fac076be86ed4d03167120800ab0e91715aff`
+
+Independent audit rejected this candidate only because early unsafe-protocol
+Hero errors reported the directive opener instead of the image location. The
+current exact-candidate proof is
+[S2-C1-DIAGNOSTIC-LOCATION-CORRECTION.md](S2-C1-DIAGNOSTIC-LOCATION-CORRECTION.md).
+All hashes below remain immutable historical parent evidence, not current
+S2-C1 claims.
 
 ## Tests and hygiene
 

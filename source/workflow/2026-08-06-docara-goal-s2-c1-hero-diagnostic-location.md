@@ -1,7 +1,7 @@
 # Goal S2-C1 — Hero media diagnostic-location correction
 
 Date: 2026-08-06
-Status: `in_progress`
+Status: `goal_s2_ready_for_independent_audit`
 Parent goal: `docara.goal.s2`
 Entry product candidate: `794fac076be86ed4d03167120800ab0e91715aff`
 Entry governance HEAD: `ed6aab88e09388e113ec0db4f7e760e70371d40b`
@@ -41,8 +41,8 @@ point to the exact authored Markdown image path, line and column.
 | --- | --- | --- | --- |
 | C1.0 | Freeze boundary and reproduce lost location | exact data/javascript PageBuilder RED | complete |
 | C1.1 | Propagate the image SourceLocation across early URL validation | production-path location matrix | complete |
-| C1.2 | Focused/full and deterministic integration retest | tests/build/static/package/consumer/browser | in_progress |
-| C1.3 | Exact evidence and router/handoff synchronization | graph/context/diff/clean worktree | pending |
+| C1.2 | Focused/full and deterministic integration retest | tests/build/static/package/consumer/browser | complete |
+| C1.3 | Exact evidence and router/handoff synchronization | graph/context/diff/clean worktree | complete |
 
 ## Process record
 
@@ -64,3 +64,16 @@ exception to `/document/hero/image`; related image alt/none/structure failures
 use the same existing image location. The permanent matrix covers all required
 URL/filesystem classes through PageBuilder. Focused Hero tests pass 9/152 and
 the Hero/Surface/Atlas/PageBuilder/build contour passes 74/1,485.
+
+## C1.2-C1.3 result
+
+Exact replacement product candidate:
+`7eeba4ad7b5acd00f833bf2022e45775444fb69c`.
+
+Full PHPUnit passes 502/10,650. Fresh full/full/single outputs contain 393
+files and share canonical digest `108cba01…`; static checks are 266 HTML /
+35,583 references / broken=0. Two clean clones reproduce verified ZIP
+`40d86ea6…`; the fresh dist consumer passes init/doctor/full/single/static and
+shares 198-file digest `8fed7a14…`. Desktop/mobile real-browser smoke is clean.
+Exact commands and hashes are in
+`source/workflow/evidence/2026-08-06-docara-surface-hero/S2-C1-DIAGNOSTIC-LOCATION-CORRECTION.md`.

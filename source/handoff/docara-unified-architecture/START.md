@@ -30,7 +30,7 @@ Current next action: `independent_goal_s2_reverse_outcome_audit`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
-Current candidate: `794fac076be86ed4d03167120800ab0e91715aff`
+Current candidate: `7eeba4ad7b5acd00f833bf2022e45775444fb69c`
 
 Next roadmap goal: `docara.goal.s2`
 
@@ -40,8 +40,8 @@ Next roadmap authorized: `true`
 
 Goal 1-3 and Goals A-C remain independently accepted. The explicitly
 authorized post-roadmap Surface & Hero Media track has independently accepted
-Goal S1 at exact product `ac53ea4…` and governance `4feb910…`. Goal S2 is
-implemented on exact candidate `794fac0…` and awaits an independent audit.
+Goal S1 at exact product `ac53ea4…` and governance `4feb910…`. Goal S2 plus
+S2-C1 is implemented on exact candidate `7eeba4a…` and awaits an independent audit.
 S3 and all release/live actions remain unauthorized.
 
 ## 3. Read in this order

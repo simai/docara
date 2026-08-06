@@ -16,6 +16,7 @@ Exact product candidate: `7eeba4ad7b5acd00f833bf2022e45775444fb69c`
 | [S2 Hero background](S2-HERO-BACKGROUND.md) | typed modes, shared Surface integration, exact diagnostics, asset receipt and rollback |
 | [S2 integrated acceptance](S2-INTEGRATED-ACCEPTANCE.md) | exact tests, builds, package, consumer and browser evidence |
 | [S2-C1 diagnostic-location correction](S2-C1-DIAGNOSTIC-LOCATION-CORRECTION.md) | production PageBuilder location matrix and fresh exact-candidate integrated retest |
+| [S2 independent acceptance](S2-INDEPENDENT-ACCEPTANCE.md) | independent PASS_WITH_NOTES and exact package reproduction tag at the S3 entry boundary |
 
 The earlier S1 and S1-C1 integrated documents are retained as rejected or
 superseded history where their hashes differ. The S1-C2 runtime proof remains

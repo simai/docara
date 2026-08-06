@@ -38,6 +38,7 @@ final readonly class DocumentRendererRegistry
             new ComponentDocumentNodeRenderer($markdown->componentGateway()),
             new ComponentBlockDocumentNodeRenderer($markdown->componentGateway(), $markdown),
             new SmartComponentDocumentNodeRenderer($markdown->componentGateway(), $smartRenderer),
+            new ContainerDocumentNodeRenderer($markdown),
         ]);
     }
 
@@ -46,18 +47,12 @@ final readonly class DocumentRendererRegistry
     {
         $componentArtifacts = [];
         $assets = [];
-        foreach ($document->allNodes() as $node) {
-            if ($node instanceof ComponentNode || $node instanceof ComponentBlockNode || $node instanceof SmartComponentNode) {
-                $artifact = $this->renderer($node)->render($node, $context);
-                $componentArtifacts[] = $artifact;
-                array_push($assets, ...$artifact->assets);
-            }
-        }
         $html = '';
         foreach ($document->nodes as $node) {
-            $artifact = $this->renderer($node)->render($node, $context);
+            [$artifact, $nestedComponents] = $this->renderTree($node, $context);
             $html .= $artifact->html;
             array_push($assets, ...$artifact->assets);
+            array_push($componentArtifacts, ...$nestedComponents);
         }
         $assets = array_values(array_unique($assets));
         sort($assets, SORT_STRING);
@@ -74,6 +69,54 @@ final readonly class DocumentRendererRegistry
             ),
             'components' => $componentArtifacts,
         ];
+    }
+
+    /** @return array{0:RenderArtifact,1:list<RenderArtifact>} */
+    private function renderTree(DocumentNode $node, DocumentRenderContext $context): array
+    {
+        if ($node instanceof ContainerNode) {
+            $children = [];
+            $components = [];
+            foreach ($node->children() as $child) {
+                [$artifact, $childComponents] = $this->renderTree($child, $context);
+                $children[] = $artifact;
+                array_push($components, ...$childComponents);
+            }
+            $renderer = $this->renderer($node);
+            if (! $renderer instanceof ContainerDocumentNodeRenderer) {
+                throw new \LogicException('DOCUMENT_CONTAINER_RENDERER_INVALID');
+            }
+
+            return [$renderer->renderChildren($node, $children, $context), $components];
+        }
+
+        $components = [];
+        foreach ($node->children() as $child) {
+            [, $childComponents] = $this->renderTree($child, $context);
+            array_push($components, ...$childComponents);
+        }
+        try {
+            $artifact = $this->renderer($node)->render($node, $context);
+        } catch (PortableConfigurationException $exception) {
+            if ($exception->hasFileLocation()) {
+                throw $exception;
+            }
+            $location = $node->location();
+            throw new PortableConfigurationException(
+                $exception->errorCode,
+                $exception->getMessage() . ' Source [' . $location->label() . '].',
+                $exception,
+                $location->file,
+                '/document/node',
+                $location->line,
+                $location->column,
+            );
+        }
+        if ($node instanceof ComponentNode || $node instanceof ComponentBlockNode || $node instanceof SmartComponentNode) {
+            $components[] = $artifact;
+        }
+
+        return [$artifact, $components];
     }
 
     /** @return list<string> */

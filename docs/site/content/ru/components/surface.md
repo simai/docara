@@ -49,6 +49,12 @@ Atlas из реального registry descriptor.
 Проектный Smart тоже проходит тот же Gateway, если его собственный manifest
 явно объявляет capability `content.embeddable`:
 
+:::::surface {width=content content_width=container padding=md tone=default}
+:::project.product-configurator
+{"title":"Локальный конфигуратор","base_price":2500,"team_price":4500,"business_price":8000,"currency":"₽"}
+:::
+:::::
+
 :::example {label="Project Smart внутри Surface"}
 ``````markdown
 :::::surface {width=content content_width=container padding=md tone=default}

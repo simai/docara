@@ -22,12 +22,11 @@ use League\CommonMark\Output\RenderedContentInterface;
 use League\CommonMark\Util\RegexHelper;
 use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
 use Simai\Docara\ComponentCatalog\TypedRendererId;
-use Simai\Docara\Declarative\Document\SmartCallNode;
-use Simai\Docara\Declarative\Document\SourceSpan;
 use Simai\Docara\Declarative\Rendering\SmartRenderer;
 use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Document\ComponentAliasRegistry;
 use Simai\Docara\Document\ComponentBlockNode;
+use Simai\Docara\Document\ContainerNode;
 use Simai\Docara\Document\SourceLocation;
 use Simai\Docara\Document\SourceNode;
 use Simai\Docara\Markdown\AuthoringAttributeParser;
@@ -93,6 +92,44 @@ final class PortableMarkdownRenderer
     public function smartRenderer(): SmartRenderer
     {
         return $this->smartRenderer;
+    }
+
+    public function renderContainer(
+        ContainerNode $node,
+        string $contentHtml,
+        ?string $sourceRoot = null,
+        ?string $sourceFile = null,
+    ): string {
+        try {
+            return match (TypedRendererId::from($node->renderer)) {
+                TypedRendererId::Surface => $this->renderSurfaceContent(
+                    $contentHtml,
+                    $node->props,
+                    $sourceRoot,
+                    $sourceFile,
+                ),
+                TypedRendererId::Grid => $this->renderGridContent($contentHtml, $node->props),
+                TypedRendererId::Card => $this->renderCardContent($contentHtml, $node->props),
+                default => throw new PortableConfigurationException(
+                    'DOCUMENT_CONTAINER_RENDERER_UNSUPPORTED',
+                    "Container renderer [{$node->renderer}] is not supported by the shared presentation runtime.",
+                ),
+            };
+        } catch (PortableConfigurationException $exception) {
+            if ($exception->hasFileLocation()) {
+                throw $exception;
+            }
+            $location = $node->location();
+            throw new PortableConfigurationException(
+                $exception->errorCode,
+                $exception->getMessage() . ' Source [' . $location->label() . '].',
+                $exception,
+                $location->file,
+                '/document/container/props',
+                $location->line,
+                $location->column,
+            );
+        }
     }
 
     public function render(string $markdown, ?string $sourceRoot = null, ?string $sourceFile = null): string
@@ -1034,6 +1071,16 @@ final class PortableMarkdownRenderer
         }
 
         $html = $this->renderCompiled($markdown);
+
+        return $this->renderGridContent($html, $attributes);
+    }
+
+    /** @param array<string,string> $attributes */
+    private function renderGridContent(string $html, array $attributes): string
+    {
+        $this->assertAttributes($attributes, ['columns', 'gap'], 'grid');
+        $columns = $this->attributeOneOf($attributes['columns'] ?? '3', ['1', '2', '3', '4'], 'grid', 'columns');
+        $gap = $this->attributeOneOf($attributes['gap'] ?? '2', ['0', '1', '2', '3', '4'], 'grid', 'gap');
         $cardRoot = '<section data-docara-block="card"';
         $count = substr_count($html, $cardRoot);
         if ($count < 1) {
@@ -1340,6 +1387,12 @@ final class PortableMarkdownRenderer
 
     /** @param array<string,string> $attributes */
     private function renderCard(string $rendered, array $attributes): string
+    {
+        return $this->renderCardContent($rendered, $attributes);
+    }
+
+    /** @param array<string,string> $attributes */
+    private function renderCardContent(string $rendered, array $attributes): string
     {
         $this->assertAttributes($attributes, ['variant'], 'card');
         $variant = $this->attributeOneOf(
@@ -1784,6 +1837,18 @@ final class PortableMarkdownRenderer
         ?string $sourceRoot,
         ?string $sourceFile,
     ): string {
+        $content = trim($this->renderCompiled($markdown, $sourceRoot, $sourceFile));
+
+        return $this->renderSurfaceContent($content, $attributes, $sourceRoot, $sourceFile);
+    }
+
+    /** @param array<string,string> $attributes */
+    private function renderSurfaceContent(
+        string $content,
+        array $attributes,
+        ?string $sourceRoot,
+        ?string $sourceFile,
+    ): string {
         $allowed = [
             'width', 'content_width', 'background_image', 'background_fit', 'background_x',
             'background_y', 'overlay', 'overlay_strength', 'padding', 'tone',
@@ -1802,38 +1867,15 @@ final class PortableMarkdownRenderer
         ];
         $background = trim($attributes['background_image'] ?? '');
         if ($background === '' && array_intersect(array_keys($attributes), ['background_fit', 'background_x', 'background_y']) !== []) {
-            throw new PortableConfigurationException(
-                'MARKDOWN_SURFACE_BACKGROUND_REQUIRED',
-                'Surface background positioning requires background_image.',
-            );
+            throw new PortableConfigurationException('MARKDOWN_SURFACE_BACKGROUND_REQUIRED', 'Surface background positioning requires background_image.');
         }
         if ($props['overlay'] === 'none' && array_key_exists('overlay_strength', $attributes)) {
-            throw new PortableConfigurationException(
-                'MARKDOWN_SURFACE_OVERLAY_REQUIRED',
-                'Surface overlay_strength requires a light or dark overlay.',
-            );
+            throw new PortableConfigurationException('MARKDOWN_SURFACE_OVERLAY_REQUIRED', 'Surface overlay_strength requires a light or dark overlay.');
         }
         if ($props['overlay'] !== 'none' && $background === '') {
-            throw new PortableConfigurationException(
-                'MARKDOWN_SURFACE_BACKGROUND_REQUIRED',
-                'Surface overlay requires background_image.',
-            );
+            throw new PortableConfigurationException('MARKDOWN_SURFACE_BACKGROUND_REQUIRED', 'Surface overlay requires background_image.');
         }
-        $backgroundUrl = $background === ''
-            ? ''
-            : $this->localSurfaceAsset($background, $sourceRoot, $sourceFile);
-        [$markdown, $smartReplacements] = $this->extractSurfaceSmartChildren($markdown, $sourceFile);
-        $content = trim($this->renderCompiled($markdown, $sourceRoot, $sourceFile));
-        foreach ($smartReplacements as $placeholder => $html) {
-            $wrapper = '<p>' . $placeholder . '</p>';
-            if (substr_count($content, $wrapper) !== 1) {
-                throw new PortableConfigurationException(
-                    'MARKDOWN_SURFACE_CHILD_PLACEHOLDER_INVALID',
-                    'A Surface Smart child placeholder is ambiguous after rendering.',
-                );
-            }
-            $content = str_replace($wrapper, $html, $content);
-        }
+        $backgroundUrl = $background === '' ? '' : $this->localSurfaceAsset($background, $sourceRoot, $sourceFile);
         if ($content === '' || ! $this->containsVisibleText(strip_tags($content))) {
             throw new PortableConfigurationException(
                 'MARKDOWN_SURFACE_CONTENT_REQUIRED',
@@ -1842,67 +1884,6 @@ final class PortableMarkdownRenderer
         }
 
         return $this->surfaces->render($props, $content, $backgroundUrl);
-    }
-
-    /** @return array{0:string,1:array<string,string>} */
-    private function extractSurfaceSmartChildren(string $markdown, ?string $sourceFile): array
-    {
-        $inspection = $this->inspectFrameworkDirectives($markdown);
-        $replacements = [];
-        $directives = array_reverse($inspection['directives']);
-        foreach ($directives as $index => $directive) {
-            $smart = (string) $directive['name'];
-            if (($directive['closed'] ?? false) !== true
-                || ! $this->components->supportsCapability($smart, 'content.embeddable')
-            ) {
-                throw new PortableConfigurationException(
-                    'MARKDOWN_SURFACE_SMART_CHILD_FORBIDDEN',
-                    "Surface Smart child [$smart] is not admitted as content.embeddable.",
-                );
-            }
-            $payload = trim((string) $directive['body']);
-            try {
-                $props = $payload === '' ? [] : json_decode($payload, true, 512, JSON_THROW_ON_ERROR);
-            } catch (\JsonException $exception) {
-                throw new PortableConfigurationException(
-                    'MARKDOWN_SURFACE_SMART_PROPS_INVALID',
-                    "Surface Smart child [$smart] requires an object JSON payload.",
-                    $exception,
-                );
-            }
-            if (! is_array($props) || ($props !== [] && array_is_list($props))) {
-                throw new PortableConfigurationException(
-                    'MARKDOWN_SURFACE_SMART_PROPS_INVALID',
-                    "Surface Smart child [$smart] requires an object JSON payload.",
-                );
-            }
-            $view = $props['view'] ?? 'default';
-            unset($props['view']);
-            if (! is_string($view) || preg_match('/^[a-z][a-z0-9_-]*$/D', $view) !== 1) {
-                throw new PortableConfigurationException('MARKDOWN_SURFACE_SMART_VIEW_INVALID', $smart);
-            }
-            $line = (int) $directive['start_line'];
-            $plan = $this->components->resolve(new SmartCallNode(
-                'surface-smart-' . substr(hash('sha256', $smart . "\0" . $line . "\0" . $payload), 0, 20),
-                $smart,
-                $view,
-                $props,
-                $index + 1,
-                new SourceSpan($sourceFile ?? '@markdown', $line, (int) $directive['end_line']),
-            ));
-            $placeholder = 'DOCARA_SURFACE_SMART_' . strtoupper(substr(hash('sha256', $plan->nodeId), 0, 24));
-            $replacements[$placeholder] = $this->smartRenderer->render($plan)->html;
-            $lines = preg_split('/\r\n|\n|\r/u', $markdown) ?: [];
-            array_splice(
-                $lines,
-                $line - 1,
-                (int) $directive['end_line'] - $line + 1,
-                [$placeholder],
-            );
-            $markdown = implode("\n", $lines);
-        }
-
-        return [$markdown, $replacements];
     }
 
     private function localSurfaceAsset(string $url, ?string $sourceRoot, ?string $sourceFile): string

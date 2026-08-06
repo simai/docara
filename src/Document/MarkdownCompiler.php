@@ -5,209 +5,230 @@ declare(strict_types=1);
 namespace Simai\Docara\Document;
 
 use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
+use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Markdown\AuthoringAttributeParser;
 use Simai\Docara\Portable\PortableConfigurationException;
 
-final readonly class MarkdownCompiler
+final class MarkdownCompiler
 {
+    private int $smartOrdinal = 0;
+
+    private int $compileDepth = 0;
+
+    private int $directiveCount = 0;
+
     public function __construct(
-        private ComponentAliasRegistry $aliases = new ComponentAliasRegistry,
-        private AuthoringAttributeParser $attributes = new AuthoringAttributeParser,
-        private ?TypedComponentDefinitionRepository $typedComponents = null,
+        private readonly ComponentAliasRegistry $aliases = new ComponentAliasRegistry,
+        private readonly AuthoringAttributeParser $attributes = new AuthoringAttributeParser,
+        private readonly ?TypedComponentDefinitionRepository $typedComponents = null,
+        private readonly ?SmartComponentGateway $smarts = null,
     ) {}
 
     public function compile(string $markdown, string $source): DocumentIr
     {
-        $lines = preg_split('/\r\n|\n|\r/u', $markdown);
-        if (! is_array($lines) || $source === '' || trim($markdown) === '') {
-            throw new PortableConfigurationException('DOCUMENT_IR_INPUT_INVALID', "Cannot compile [$source].");
+        if ($this->compileDepth === 0) {
+            $this->smartOrdinal = 0;
+            $this->directiveCount = 0;
         }
-
-        $nodes = [];
-        $smartOrdinal = 0;
-        for ($index = 0, $count = count($lines); $index < $count;) {
-            $line = $lines[$index];
-            if (trim($line) === '') {
-                $index++;
-
-                continue;
+        $this->compileDepth++;
+        try {
+            $lines = preg_split('/\r\n|\n|\r/u', $markdown);
+            if (! is_array($lines) || $source === '' || trim($markdown) === '') {
+                throw new PortableConfigurationException('DOCUMENT_IR_INPUT_INVALID', "Cannot compile [$source].");
             }
-            if (str_starts_with(ltrim($line), '<!--')) {
-                $start = $index;
-                do {
-                    $closed = str_contains($lines[$index], '-->');
+
+            $nodes = [];
+            $smartOrdinal = 0;
+            for ($index = 0, $count = count($lines); $index < $count;) {
+                $line = $lines[$index];
+                if (trim($line) === '') {
                     $index++;
-                } while (! $closed && $index < $count);
-                if (! $closed) {
-                    throw new PortableConfigurationException(
-                        'DOCUMENT_HTML_COMMENT_UNCLOSED',
-                        "Unclosed HTML comment at [$source:" . ($index + 1) . ':1].',
-                    );
+
+                    continue;
                 }
-                $nodes[] = new SourceNode(
-                    'html_comment',
-                    implode("\n", array_slice($lines, $start, $index - $start)),
-                    new SourceLocation($source, $start + 1, 1, $index),
-                );
+                if (str_starts_with(ltrim($line), '<!--')) {
+                    $start = $index;
+                    do {
+                        $closed = str_contains($lines[$index], '-->');
+                        $index++;
+                    } while (! $closed && $index < $count);
+                    if (! $closed) {
+                        throw new PortableConfigurationException(
+                            'DOCUMENT_HTML_COMMENT_UNCLOSED',
+                            "Unclosed HTML comment at [$source:" . ($index + 1) . ':1].',
+                        );
+                    }
+                    $nodes[] = new SourceNode(
+                        'html_comment',
+                        implode("\n", array_slice($lines, $start, $index - $start)),
+                        new SourceLocation($source, $start + 1, 1, $index),
+                    );
 
-                continue;
-            }
-            if (preg_match('/^:::(?:example)(?:\s|\{|$)/', $line) === 1) {
-                [$node, $index] = $this->example($lines, $index, $source);
-                $nodes[] = $node;
+                    continue;
+                }
+                if (preg_match('/^:::(?:example)(?:\s|\{|$)/', $line) === 1) {
+                    [$node, $index] = $this->example($lines, $index, $source);
+                    $nodes[] = $node;
 
-                continue;
-            }
-            if (preg_match('/^:::(?<smart>[a-z][a-z0-9-]*\.[a-z][a-z0-9.-]*)\s*$/D', $line, $smart) === 1) {
-                [$node, $index] = $this->smartComponent(
-                    $lines,
-                    $index,
-                    $source,
-                    (string) $smart['smart'],
-                    ++$smartOrdinal,
-                );
-                $nodes[] = $node;
+                    continue;
+                }
+                if (preg_match('/^(?<fence>:{3,})(?<smart>[a-z][a-z0-9-]*\.[a-z][a-z0-9.-]*)\s*$/D', $line, $smart) === 1) {
+                    $this->countDirective($source, $index + 1);
+                    [$node, $index] = $this->smartComponent(
+                        $lines,
+                        $index,
+                        $source,
+                        (string) $smart['smart'],
+                        ++$this->smartOrdinal,
+                    );
+                    $nodes[] = $node;
 
-                continue;
-            }
-            if (preg_match('/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/', $line, $directive) === 1) {
-                [$node, $index] = array_key_exists((string) $directive['alias'], $this->aliases->aliases())
-                    ? $this->componentBlock($lines, $index, $source)
-                    : $this->typedDirectiveBlock($lines, $index, $source);
-                $nodes[] = $node;
+                    continue;
+                }
+                if (preg_match('/^(?<fence>:{3,})(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/', $line, $directive) === 1) {
+                    $this->countDirective($source, $index + 1);
+                    [$node, $index] = array_key_exists((string) $directive['alias'], $this->aliases->aliases())
+                        ? $this->componentBlock($lines, $index, $source)
+                        : $this->typedDirectiveBlock($lines, $index, $source);
+                    $nodes[] = $node;
 
-                continue;
-            }
-            if (preg_match('/^(#{1,6})\s+(.+)$/u', $line, $heading) === 1) {
-                $nodes[] = new SourceNode(
-                    'heading',
-                    $line,
-                    new SourceLocation($source, $index + 1, 1, $index + 1),
-                    ['level' => strlen($heading[1]), 'text' => trim($heading[2])],
-                );
-                $index++;
+                    continue;
+                }
+                if (preg_match('/^(#{1,6})\s+(.+)$/u', $line, $heading) === 1) {
+                    $nodes[] = new SourceNode(
+                        'heading',
+                        $line,
+                        new SourceLocation($source, $index + 1, 1, $index + 1),
+                        ['level' => strlen($heading[1]), 'text' => trim($heading[2])],
+                    );
+                    $index++;
 
-                continue;
-            }
-            if (str_starts_with($line, '```') || str_starts_with($line, '~~~')) {
-                [$node, $index] = $this->codeBlock($lines, $index, $source);
-                $nodes[] = $node;
+                    continue;
+                }
+                if (str_starts_with($line, '```') || str_starts_with($line, '~~~')) {
+                    [$node, $index] = $this->codeBlock($lines, $index, $source);
+                    $nodes[] = $node;
 
-                continue;
-            }
-            if (str_starts_with(trim($line), '|') && isset($lines[$index + 1])
-                && preg_match('/^\s*\|?\s*:?-{3,}/', $lines[$index + 1]) === 1
-            ) {
+                    continue;
+                }
+                if (str_starts_with(trim($line), '|') && isset($lines[$index + 1])
+                    && preg_match('/^\s*\|?\s*:?-{3,}/', $lines[$index + 1]) === 1
+                ) {
+                    $start = $index;
+                    do {
+                        $index++;
+                    } while ($index < $count && str_starts_with(trim($lines[$index]), '|'));
+                    $raw = implode("\n", array_slice($lines, $start, $index - $start));
+                    $nodes[] = new SourceNode(
+                        'table',
+                        $raw,
+                        new SourceLocation($source, $start + 1, 1, $index),
+                        ['rows' => max(0, $index - $start - 2)],
+                    );
+
+                    continue;
+                }
+                if (preg_match('/^\s*(?:[-+*]|\d+[.)])\s+/u', $line) === 1) {
+                    $start = $index;
+                    do {
+                        $index++;
+                    } while ($index < $count && (
+                        trim($lines[$index]) === ''
+                        || preg_match('/^\s+(?:[-+*]|\d+[.)])\s+|^\s{2,}\S/u', $lines[$index]) === 1
+                        || preg_match('/^\s*(?:[-+*]|\d+[.)])\s+/u', $lines[$index]) === 1
+                    ));
+                    while ($index > $start && trim($lines[$index - 1]) === '') {
+                        $index--;
+                    }
+                    $nodes[] = new SourceNode(
+                        'list',
+                        implode("\n", array_slice($lines, $start, $index - $start)),
+                        new SourceLocation($source, $start + 1, 1, $index),
+                        ['ordered' => preg_match('/^\s*\d+[.)]\s+/u', $line) === 1],
+                    );
+
+                    continue;
+                }
+                if (preg_match('/^\s*>/u', $line) === 1) {
+                    $start = $index;
+                    do {
+                        $index++;
+                    } while ($index < $count && (
+                        preg_match('/^\s*>/u', $lines[$index]) === 1
+                        || preg_match('/^\s*\{(?:author|source|url)=/u', $lines[$index]) === 1
+                    ));
+                    $nodes[] = new SourceNode(
+                        'blockquote',
+                        implode("\n", array_slice($lines, $start, $index - $start)),
+                        new SourceLocation($source, $start + 1, 1, $index),
+                    );
+
+                    continue;
+                }
+                if (preg_match('/^!\[(?<alt>[^]]+)]\((?<url>[^)]+)\)(?:\{(?<attributes>[^}]*)})?\s*$/u', $line, $image) === 1) {
+                    $nodes[] = new SourceNode(
+                        'image',
+                        $line,
+                        new SourceLocation($source, $index + 1, 1, $index + 1),
+                        ['alt' => $image['alt'], 'url' => $image['url']],
+                    );
+                    $index++;
+
+                    continue;
+                }
+
                 $start = $index;
                 do {
                     $index++;
-                } while ($index < $count && str_starts_with(trim($lines[$index]), '|'));
+                } while ($index < $count
+                    && trim($lines[$index]) !== ''
+                    && preg_match('/^(?:#{1,6}\s|```|~~~|:::[a-z]|\s*(?:[-+*]|\d+[.)])\s+|\s*>|!\[)/', $lines[$index]) !== 1
+                    && ! str_starts_with(trim($lines[$index]), '|')
+                );
                 $raw = implode("\n", array_slice($lines, $start, $index - $start));
                 $nodes[] = new SourceNode(
-                    'table',
+                    'paragraph',
                     $raw,
                     new SourceLocation($source, $start + 1, 1, $index),
-                    ['rows' => max(0, $index - $start - 2)],
+                    ['text' => trim(preg_replace('/\s+/u', ' ', $raw) ?? $raw)],
                 );
-
-                continue;
-            }
-            if (preg_match('/^\s*(?:[-+*]|\d+[.)])\s+/u', $line) === 1) {
-                $start = $index;
-                do {
-                    $index++;
-                } while ($index < $count && (
-                    trim($lines[$index]) === ''
-                    || preg_match('/^\s+(?:[-+*]|\d+[.)])\s+|^\s{2,}\S/u', $lines[$index]) === 1
-                    || preg_match('/^\s*(?:[-+*]|\d+[.)])\s+/u', $lines[$index]) === 1
-                ));
-                while ($index > $start && trim($lines[$index - 1]) === '') {
-                    $index--;
-                }
-                $nodes[] = new SourceNode(
-                    'list',
-                    implode("\n", array_slice($lines, $start, $index - $start)),
-                    new SourceLocation($source, $start + 1, 1, $index),
-                    ['ordered' => preg_match('/^\s*\d+[.)]\s+/u', $line) === 1],
-                );
-
-                continue;
-            }
-            if (preg_match('/^\s*>/u', $line) === 1) {
-                $start = $index;
-                do {
-                    $index++;
-                } while ($index < $count && (
-                    preg_match('/^\s*>/u', $lines[$index]) === 1
-                    || preg_match('/^\s*\{(?:author|source|url)=/u', $lines[$index]) === 1
-                ));
-                $nodes[] = new SourceNode(
-                    'blockquote',
-                    implode("\n", array_slice($lines, $start, $index - $start)),
-                    new SourceLocation($source, $start + 1, 1, $index),
-                );
-
-                continue;
-            }
-            if (preg_match('/^!\[(?<alt>[^]]+)]\((?<url>[^)]+)\)(?:\{(?<attributes>[^}]*)})?\s*$/u', $line, $image) === 1) {
-                $nodes[] = new SourceNode(
-                    'image',
-                    $line,
-                    new SourceLocation($source, $index + 1, 1, $index + 1),
-                    ['alt' => $image['alt'], 'url' => $image['url']],
-                );
-                $index++;
-
-                continue;
             }
 
-            $start = $index;
-            do {
-                $index++;
-            } while ($index < $count
-                && trim($lines[$index]) !== ''
-                && preg_match('/^(?:#{1,6}\s|```|~~~|:::[a-z]|\s*(?:[-+*]|\d+[.)])\s+|\s*>|!\[)/', $lines[$index]) !== 1
-                && ! str_starts_with(trim($lines[$index]), '|')
-            );
-            $raw = implode("\n", array_slice($lines, $start, $index - $start));
-            $nodes[] = new SourceNode(
-                'paragraph',
-                $raw,
-                new SourceLocation($source, $start + 1, 1, $index),
-                ['text' => trim(preg_replace('/\s+/u', ' ', $raw) ?? $raw)],
-            );
+            return new DocumentIr($source, $nodes);
+        } finally {
+            $this->compileDepth--;
         }
-
-        return new DocumentIr($source, $nodes);
     }
 
     /** @param list<string> $lines @return array{0:SmartComponentNode,1:int} */
     private function smartComponent(array $lines, int $start, string $source, string $smart, int $ordinal): array
     {
+        preg_match('/^(?<fence>:{3,})/', $lines[$start], $opening);
+        $fence = (string) ($opening['fence'] ?? ':::');
         $end = $start + 1;
-        while (isset($lines[$end]) && trim($lines[$end]) !== ':::') {
-            if (preg_match('/^:::[a-z]/', $lines[$end]) === 1) {
+        while (isset($lines[$end]) && trim($lines[$end]) !== $fence) {
+            if (preg_match('/^:{3,}[a-z]/', $lines[$end]) === 1) {
                 throw new PortableConfigurationException('DOCUMENT_SMART_NESTED_FORBIDDEN', "$smart at $source:" . ($end + 1));
             }
             $end++;
         }
         $location = new SourceLocation($source, $start + 1, 1, $start + 1);
         if (! isset($lines[$end])) {
-            throw new PortableConfigurationException('DOCUMENT_SMART_UNCLOSED', "$smart at {$location->label()}");
+            throw $this->locatedException('DOCUMENT_SMART_UNCLOSED', "$smart is not closed.", $location);
         }
         $payload = trim(implode("\n", array_slice($lines, $start + 1, $end - $start - 1)));
         try {
             $props = $payload === '' ? [] : json_decode($payload, true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $exception) {
-            throw new PortableConfigurationException('DOCUMENT_SMART_PROPS_JSON_INVALID', "$smart at {$location->label()}", $exception);
+            throw $this->locatedException('DOCUMENT_SMART_PROPS_JSON_INVALID', "$smart requires valid JSON props.", $location, $exception);
         }
         if (! is_array($props) || ($props !== [] && array_is_list($props))) {
-            throw new PortableConfigurationException('DOCUMENT_SMART_PROPS_INVALID', "$smart at {$location->label()}");
+            throw $this->locatedException('DOCUMENT_SMART_PROPS_INVALID', "$smart requires object props.", $location);
         }
         $view = $props['view'] ?? 'default';
         unset($props['view']);
         if (! is_string($view) || preg_match('/^[a-z][a-z0-9_-]*$/D', $view) !== 1) {
-            throw new PortableConfigurationException('DOCUMENT_SMART_VIEW_INVALID', "$smart at {$location->label()}");
+            throw $this->locatedException('DOCUMENT_SMART_VIEW_INVALID', "$smart has an invalid view.", $location);
         }
 
         return [new SmartComponentNode(
@@ -220,11 +241,11 @@ final readonly class MarkdownCompiler
         ), $end + 1];
     }
 
-    /** @param list<string> $lines @return array{0:SourceNode,1:int} */
+    /** @param list<string> $lines @return array{0:SourceNode|ContainerNode,1:int} */
     private function typedDirectiveBlock(array $lines, int $start, string $source): array
     {
         preg_match(
-            '/^:::(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/',
+            '/^(?<fence>:{3,})(?<alias>[a-z][a-z0-9_-]*)(?:\s+\{(?<attributes>[^}]*)\})?\s*$/',
             $lines[$start],
             $opening,
         );
@@ -237,21 +258,57 @@ final readonly class MarkdownCompiler
                 "Unknown component alias [$alias] at [{$location->label()}].",
             );
         }
+        $fence = (string) ($opening['fence'] ?? ':::');
         $end = $start + 1;
-        while (isset($lines[$end]) && trim($lines[$end]) !== ':::') {
-            if (preg_match('/^:::[a-z]/', $lines[$end]) === 1) {
-                throw new PortableConfigurationException(
+        while (isset($lines[$end]) && trim($lines[$end]) !== $fence) {
+            if (! $this->isContainerDefinition($definition)
+            && preg_match('/^:{3,}[a-z]/', $lines[$end]) === 1
+            ) {
+                throw $this->locatedException(
                     'DOCUMENT_TYPED_DIRECTIVE_NESTED_FORBIDDEN',
-                    "Nested typed directive at [$source:" . ($end + 1) . ':1].',
+                    'A non-container typed directive cannot contain another directive.',
+                    new SourceLocation($source, $end + 1, 1, $end + 1),
                 );
             }
             $end++;
         }
         if (! isset($lines[$end])) {
-            throw new PortableConfigurationException(
+            throw $this->locatedException(
                 'DOCUMENT_TYPED_DIRECTIVE_UNCLOSED',
-                "Unclosed typed directive [$alias] at [{$location->label()}].",
+                "Typed directive [$alias] is not closed.",
+                $location,
             );
+        }
+
+        if ($this->isContainerDefinition($definition)) {
+            $bodyLines = array_slice($lines, $start + 1, $end - $start - 1);
+            $body = implode("\n", array_merge(array_fill(0, $start + 1, ''), $bodyLines));
+            if (trim($body) === '') {
+                throw new PortableConfigurationException(
+                    'DOCUMENT_CONTAINER_CHILD_COUNT_MIN',
+                    "Container [$alias] is empty at [{$location->label()}].",
+                    diagnosticPath: $source,
+                    diagnosticPointer: '/document/container',
+                    diagnosticLine: $location->line,
+                    diagnosticColumn: $location->column,
+                );
+            }
+            $children = $this->compile($body, $source)->nodes;
+            $node = new ContainerNode(
+                $alias,
+                (string) $definition['id'],
+                (string) $definition['renderer'],
+                $this->locatedAttributes((string) ($opening['attributes'] ?? ''), $alias, $location),
+                implode("\n", array_slice($lines, $start, $end - $start + 1)),
+                new SourceLocation($source, $start + 1, 1, $end + 1),
+                $children,
+            );
+            (new ContainerContractValidator(
+                $this->typedComponents ?? TypedComponentDefinitionRepository::bundled(),
+                $this->smarts ?? SmartComponentGateway::content(),
+            ))->validate($alias, $children, $node->location());
+
+            return [$node, $end + 1];
         }
 
         return [
@@ -263,11 +320,69 @@ final readonly class MarkdownCompiler
                     'alias' => $alias,
                     'component' => (string) $definition['id'],
                     'renderer' => (string) $definition['renderer'],
-                    'props' => $this->attributes->parse((string) ($opening['attributes'] ?? ''), $alias),
+                    'props' => $this->locatedAttributes((string) ($opening['attributes'] ?? ''), $alias, $location),
                 ],
             ),
             $end + 1,
         ];
+    }
+
+    /** @return array<string,string> */
+    private function locatedAttributes(string $source, string $component, SourceLocation $location): array
+    {
+        try {
+            return $this->attributes->parse($source, $component);
+        } catch (PortableConfigurationException $exception) {
+            throw new PortableConfigurationException(
+                $exception->errorCode,
+                $exception->getMessage() . ' Source [' . $location->label() . '].',
+                $exception,
+                $location->file,
+                '/document/attributes',
+                $location->line,
+                $location->column,
+            );
+        }
+    }
+
+    private function countDirective(string $source, int $line): void
+    {
+        $this->directiveCount++;
+        if ($this->directiveCount <= 128) {
+            return;
+        }
+        throw new PortableConfigurationException(
+            'DOCUMENT_DIRECTIVE_LIMIT_EXCEEDED',
+            'A compiled Markdown document may contain at most 128 admitted directive nodes.',
+            diagnosticPath: $source,
+            diagnosticPointer: '/document/directives',
+            diagnosticLine: $line,
+            diagnosticColumn: 1,
+        );
+    }
+
+    private function locatedException(
+        string $code,
+        string $message,
+        SourceLocation $location,
+        ?\Throwable $previous = null,
+    ): PortableConfigurationException {
+        return new PortableConfigurationException(
+            $code,
+            $message . ' Source [' . $location->label() . '].',
+            $previous,
+            $location->file,
+            '/document/directive',
+            $location->line,
+            $location->column,
+        );
+    }
+
+    /** @param array<string,mixed> $definition */
+    private function isContainerDefinition(array $definition): bool
+    {
+        return is_array($definition['container_contract'] ?? null)
+            || is_array($definition['nesting_contract'] ?? null);
     }
 
     /** @param list<string> $lines @return array{0:ComponentBlockNode,1:int} */

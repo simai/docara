@@ -173,7 +173,8 @@ final class TypedComponentDefinitionRepository
     /** @return array<string, mixed>|null */
     public function containerContract(string $name): ?array
     {
-        $contract = $this->byName($name)['container_contract'] ?? null;
+        $definition = $this->byName($name);
+        $contract = $definition['container_contract'] ?? $definition['nesting_contract'] ?? null;
 
         return is_array($contract) ? $contract : null;
     }

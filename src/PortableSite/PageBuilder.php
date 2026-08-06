@@ -18,15 +18,18 @@ final readonly class PageBuilder
 
     public function __construct(
         private PortableMarkdownRenderer $markdown,
-        private MarkdownCompiler $compiler = new MarkdownCompiler,
+        ?MarkdownCompiler $compiler = null,
         ?DocumentRendererRegistry $renderers = null,
         ?SmartRenderer $smartRenderer = null,
     ) {
+        $this->compiler = $compiler ?? new MarkdownCompiler(smarts: $markdown->componentGateway());
         $this->renderers = $renderers ?? DocumentRendererRegistry::bundled(
             $markdown,
             $smartRenderer ?? $markdown->smartRenderer(),
         );
     }
+
+    private MarkdownCompiler $compiler;
 
     public function build(
         ResolvedPagePlan $plan,

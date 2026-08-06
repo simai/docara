@@ -7,9 +7,20 @@ namespace Tests\Unit;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Simai\Docara\Application\DesignAtlasService;
+use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
+use Simai\Docara\Document\ContainerContractValidator;
+use Simai\Docara\Document\SourceLocation;
+use Simai\Docara\Document\SourceNode;
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\Portable\PortableConfigurationLoader;
+use Simai\Docara\Portable\ResolvedPagePlan;
+use Simai\Docara\PortableSite\PageBuilder;
+use Simai\Docara\PortableSite\PageBuilderResult;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
+use Simai\Docara\PortableSite\PortableSiteBuilder;
+use Simai\Docara\Smart\Runtime\ProjectSmartRuntime;
 
 final class SurfaceRuntimeTest extends TestCase
 {
@@ -167,5 +178,146 @@ MD);
             'resources/component-catalog/typed/docara.surface.json',
             $surface['provenance']['definition_ref'],
         );
+    }
+
+    #[Test]
+    public function actual_surface_document_uses_nested_typed_ir_and_preserves_project_smart_artifacts_once(): void
+    {
+        $destination = $this->site . '/build_surface-pagebuilder-' . bin2hex(random_bytes(8));
+        try {
+            $plan = (new PortableConfigurationLoader($this->site))->resolve('content/ru/components/surface.md');
+            $site = json_decode((string) file_get_contents($this->site . '/docara.json'), true, 512, JSON_THROW_ON_ERROR);
+            $project = ProjectSmartRuntime::fromSite($this->site, $site, $plan->frameworkLock);
+            self::assertNotNull($project);
+            $markdown = new PortableMarkdownRenderer(components: $project->gateway, smartRenderer: $project->renderer);
+            $built = (new PageBuilder($markdown, smartRenderer: $project->renderer))->build(
+                $plan,
+                $this->site,
+                FrameworkComponentRuntime::fromLock($plan->frameworkLock),
+                3,
+            );
+            $document = $built->document->toArray();
+            $nodes = $document['nodes'] ?? [];
+            $containers = array_values(array_filter($nodes, static fn (array $node): bool => ($node['type'] ?? null) === 'container'));
+            self::assertNotEmpty($containers);
+            $nested = [];
+            $walk = function (array $node) use (&$walk, &$nested): void {
+                if (($node['type'] ?? null) === 'smart_component') {
+                    $nested[] = $node;
+                }
+                foreach ($node['children'] ?? [] as $child) {
+                    if (is_array($child)) {
+                        $walk($child);
+                    }
+                }
+            };
+            foreach ($containers as $container) {
+                $walk($container);
+            }
+            self::assertCount(1, array_filter($nested, static fn (array $node): bool => ($node['smart'] ?? null) === 'project.product-configurator'));
+            $projectArtifacts = array_values(array_filter(
+                $built->componentArtifacts,
+                static fn ($artifact): bool => ($artifact->hydration['smart'] ?? null) === 'project.product-configurator',
+            ));
+            self::assertCount(1, $projectArtifacts);
+            self::assertCount(2, array_filter(
+                $projectArtifacts[0]->assets,
+                static fn (string $asset): bool => str_contains($asset, 'project.product-configurator'),
+            ));
+            self::assertSame('project.project', $projectArtifacts[0]->provenance['provider']);
+
+            (new PortableSiteBuilder(new Filesystem, new PortableMarkdownRenderer))->build($this->site, $destination);
+
+            $html = (string) file_get_contents($destination . '/ru/components/surface/index.html');
+            self::assertSame(1, substr_count($html, 'data-project-product-configurator'));
+            self::assertSame(1, substr_count($html, '/_docara/smart/project.product-configurator/assets/product-configurator.js'));
+            self::assertFileExists($destination . '/_docara/smart/project.product-configurator/assets/product-configurator.js');
+            self::assertFileExists($destination . '/_docara/smart/project.product-configurator/assets/product-configurator.css');
+        } finally {
+            (new Filesystem)->deleteDirectory($destination);
+        }
+    }
+
+    #[Test]
+    public function registry_container_contract_accepts_exact_bounds_and_reports_precise_failures(): void
+    {
+        foreach ([1, 64] as $count) {
+            $cards = implode("\n", array_fill(0, $count, ":::card\nBody.\n:::"));
+            $result = $this->buildMarkdown(":::::surface\n$cards\n:::::");
+            self::assertSame($count, substr_count($result->contentHtml, 'data-docara-block="card"'));
+        }
+
+        $cases = [
+            [":::::surface\n:::::", 'DOCUMENT_CONTAINER_CHILD_COUNT_MIN', 1],
+            [":::::surface\n" . implode("\n", array_fill(0, 65, ":::card\nBody.\n:::")) . "\n:::::", 'DOCUMENT_CONTAINER_CHILD_COUNT_MAX', 1],
+            [":::::surface\n:::hero\n# Hero\n:::\n:::::", 'DOCUMENT_CONTAINER_CHILD_FORBIDDEN', 2],
+            [":::::surface\n:::surface\nText\n:::\n:::::", 'DOCUMENT_CONTAINER_CHILD_FORBIDDEN', 2],
+            [":::::surface\n:::docara.navigation\n{}\n:::\n:::::", 'DOCUMENT_CONTAINER_SMART_CHILD_FORBIDDEN', 2],
+            [":::::surface {padding=huge}\nText\n:::::", 'MARKDOWN_COMPONENT_ATTRIBUTE_VALUE_INVALID', 1],
+            [":::::surface {slot=aside}\nText\n:::::", 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN', 1],
+            [":::::surface {order=reverse}\nText\n:::::", 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN', 1],
+            [":::::surface\n:::project.product-configurator\n{bad}\n:::\n:::::", 'DOCUMENT_SMART_PROPS_JSON_INVALID', 2],
+            [":::::surface\nText\n::::", 'DOCUMENT_TYPED_DIRECTIVE_UNCLOSED', 1],
+        ];
+        foreach ($cases as [$source, $code, $line]) {
+            try {
+                $this->buildMarkdown($source);
+                self::fail("Expected [$code].");
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame($code, $exception->errorCode, $exception->getMessage());
+                self::assertTrue($exception->hasFileLocation(), $exception->getMessage());
+                self::assertSame('content/ru/components/surface-contract.md', $exception->sourcePath());
+                self::assertSame($line, $exception->sourceLine());
+                self::assertSame(1, $exception->sourceColumn());
+            }
+        }
+
+        $location = new SourceLocation('content/ru/components/surface-contract.md', 9, 1, 9);
+        try {
+            (new ContainerContractValidator(
+                TypedComponentDefinitionRepository::bundled(),
+                $this->projectRuntime()->gateway,
+            ))->validate('surface', [new SourceNode('paragraph', 'Body.', $location)], $location, 4);
+            self::fail('Expected max_depth failure.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('DOCUMENT_CONTAINER_DEPTH_EXCEEDED', $exception->errorCode);
+            self::assertTrue($exception->hasFileLocation());
+            self::assertSame(9, $exception->sourceLine());
+        }
+    }
+
+    private function buildMarkdown(string $markdown): PageBuilderResult
+    {
+        $base = (new PortableConfigurationLoader($this->site))->resolve('content/ru/components/surface.md');
+        $site = json_decode((string) file_get_contents($this->site . '/docara.json'), true, 512, JSON_THROW_ON_ERROR);
+        $project = $this->projectRuntime($base->frameworkLock);
+        $plan = new ResolvedPagePlan(
+            'content/ru/components/surface-contract.md',
+            $markdown,
+            $base->configuration,
+            $base->frameworkLock,
+            $base->trace,
+            $base->provenance,
+        );
+        $renderer = new PortableMarkdownRenderer(components: $project->gateway, smartRenderer: $project->renderer);
+
+        return (new PageBuilder($renderer, smartRenderer: $project->renderer))->build(
+            $plan,
+            $this->site,
+            FrameworkComponentRuntime::fromLock($plan->frameworkLock),
+            3,
+        );
+    }
+
+    /** @param array<string,mixed>|null $frameworkLock */
+    private function projectRuntime(?array $frameworkLock = null): ProjectSmartRuntime
+    {
+        $site = json_decode((string) file_get_contents($this->site . '/docara.json'), true, 512, JSON_THROW_ON_ERROR);
+        $frameworkLock ??= (new PortableConfigurationLoader($this->site))
+            ->resolve('content/ru/components/surface.md')->frameworkLock;
+        $project = ProjectSmartRuntime::fromSite($this->site, $site, $frameworkLock);
+        self::assertNotNull($project);
+
+        return $project;
     }
 }

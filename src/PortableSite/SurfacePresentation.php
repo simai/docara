@@ -69,6 +69,46 @@ final readonly class SurfacePresentation
         );
     }
 
+    /**
+     * Render the common outer frame for semantic content blocks whose media
+     * remains ordinary meaningful content. Component renderers own their
+     * content semantics; this presentation owns only the admitted surface
+     * geometry and token classes.
+     */
+    public function renderSemanticFrame(
+        string $semanticBlock,
+        string $variant,
+        string $tone,
+        string $padding,
+        bool $twoColumns,
+        string $content,
+        string $media = '',
+    ): string {
+        if (preg_match('/^[a-z][a-z0-9-]*$/D', $semanticBlock) !== 1
+            || ($variant !== '' && preg_match('/^[a-z][a-z0-9-]*$/D', $variant) !== 1)
+        ) {
+            throw new \LogicException('SURFACE_SEMANTIC_FRAME_INVALID');
+        }
+
+        $surfaceClass = match ($tone) {
+            'default' => 'bg-surface-0',
+            'muted' => 'bg-surface-container',
+            default => throw new \LogicException('SURFACE_SEMANTIC_TONE_INVALID'),
+        };
+        $paddingClass = match ($padding) {
+            'lg' => 'p-3',
+            'xl' => 'p-4',
+            default => throw new \LogicException('SURFACE_SEMANTIC_PADDING_INVALID'),
+        };
+        $columns = $twoColumns ? 'grid-col-1 lg:grid-col-2' : 'grid-col-1';
+        $variantAttribute = $variant === '' ? '' : ' data-variant="' . $variant . '"';
+
+        return '<section data-docara-block="' . $semanticBlock . '"' . $variantAttribute
+            . ' data-docara-width="full" class="' . $surfaceClass . ' overflow-hidden m-bottom-1">'
+            . '<div data-docara-container class="container m-inline-auto grid ' . $columns
+            . ' gap-4 items-center ' . $paddingClass . '">' . $content . $media . '</div></section>';
+    }
+
     private function toneClass(string $tone): string
     {
         return match ($tone) {

@@ -1958,11 +1958,15 @@ final class PortableMarkdownRenderer
             );
         }
 
-        return '<section data-docara-block="hero" data-variant="' . $variant
-            . '" data-docara-width="full" class="bg-surface-container overflow-hidden m-bottom-1">'
-            . '<div data-docara-container class="container m-inline-auto grid ' . $columns . ' gap-4 items-center' . $spacing . '">'
-            . '<div class="min-w-0 flex flex-col gap-2' . $alignment . '">' . $content . '</div>'
-            . $image . '</div></section>';
+        return $this->surfaces->renderSemanticFrame(
+            semanticBlock: 'hero',
+            variant: $variant,
+            tone: 'muted',
+            padding: $spacing === ' p-3' ? 'lg' : 'xl',
+            twoColumns: $columns === 'grid-col-1 lg:grid-col-2',
+            content: '<div class="min-w-0 flex flex-col gap-2' . $alignment . '">' . $content . '</div>',
+            media: $image,
+        );
     }
 
     /** @param array<string,string> $attributes */
@@ -2036,7 +2040,7 @@ final class PortableMarkdownRenderer
             headingLevel: 2,
             imageRequired: true,
             actionRequired: false,
-            surfaceClass: 'bg-surface-0',
+            surfaceTone: 'default',
         );
     }
 
@@ -2253,7 +2257,7 @@ final class PortableMarkdownRenderer
             headingLevel: 2,
             imageRequired: false,
             actionRequired: true,
-            surfaceClass: 'bg-surface-container',
+            surfaceTone: 'muted',
         );
     }
 
@@ -2263,7 +2267,7 @@ final class PortableMarkdownRenderer
         int $headingLevel,
         bool $imageRequired,
         bool $actionRequired,
-        string $surfaceClass,
+        string $surfaceTone,
     ): string {
         $nodes = iterator_to_array($rendered->getDocument()->children());
         $heading = $nodes[0] ?? null;
@@ -2403,10 +2407,15 @@ final class PortableMarkdownRenderer
 
         $columns = $image === '' ? 'grid-col-1' : 'grid-col-1 lg:grid-col-2';
 
-        return '<section data-docara-block="' . $block . '" data-docara-width="full" class="'
-            . $surfaceClass . ' overflow-hidden m-bottom-1"><div data-docara-container class="container m-inline-auto grid '
-            . $columns . ' gap-4 items-center p-4"><div class="min-w-0 flex flex-col gap-2">'
-            . $content . '</div>' . $image . '</div></section>';
+        return $this->surfaces->renderSemanticFrame(
+            semanticBlock: $block,
+            variant: '',
+            tone: $surfaceTone,
+            padding: 'xl',
+            twoColumns: $columns === 'grid-col-1 lg:grid-col-2',
+            content: '<div class="min-w-0 flex flex-col gap-2">' . $content . '</div>',
+            media: $image,
+        );
     }
 
     private function renderColumns(string $markdown, string $referenceDefinitions): string

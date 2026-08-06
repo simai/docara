@@ -90,7 +90,7 @@ JSON хранит языки, области, макеты и наследова
 4. Проверьте результат в staging и публикуйте с подготовленным rollback.
 :::
 
-```shell
+```bash
 php vendor/bin/docara init
 php vendor/bin/docara build local
 php vendor/bin/docara verify-static build_local

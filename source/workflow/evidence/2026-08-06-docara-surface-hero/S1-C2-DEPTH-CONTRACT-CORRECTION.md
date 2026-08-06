@@ -68,10 +68,13 @@ full builds have 133 routes. Static verification of each full build checks
 35,581 local references with `broken=[]`; the selected rebuild of
 `/ru/components/surface/` preserves the complete tree byte-for-byte.
 
-The canonical digest algorithm is
-`sha256(sorted("<file-sha256>  <relative-path>\n"))`. All three roots equal:
-
+The original executor report incorrectly described the canonical digest as a
+sort of complete hash-first records and published
 `90bf637819d38456d745578011d2bf4f1e6e5cb6b349ebc230ee569da91f8b26`.
+Independent audit proved that value unreproducible under
+`scripts/atomic-static-cutover.php::treeDigest()`. It is rejected evidence, not
+an alternative current hash. The corrected exact-candidate ledger and commands
+are recorded in `S1-C3-EVIDENCE-LEDGER-ROUTER-CORRECTION.md`.
 
 The S1-C1 ledger `935fd289…`, first-candidate `129eef82…` and independently
 observed pre-correction `51718be2…` are historical/rejected, not current proof.

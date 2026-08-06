@@ -6,11 +6,12 @@ Current candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
-Goal 1-3 and Goals A-C remain independently accepted. Independent Goal S1 audit
-rejected exact candidate `45276f6…`, while the next audit rejected `80b8102…`
-for document-global depth semantics. Candidate `ac53ea4…` contains the bounded
-S1-C2 relative-depth correction and is ready only for a new independent audit. S2,
-merge, push, tag, release, publication, deploy and live-site writes remain
+Goal 1-3 and Goals A-C remain independently accepted. Independent Goal S1 audits
+rejected exact candidates `45276f6…` and `80b8102…`; the S1-C3 correction keeps
+product candidate `ac53ea4…` frozen and replaces only its unreproducible ledger
+and conflicting router evidence. The current 393-file canonical digest is
+`650a678c…`. Candidate `ac53ea4…` is ready only for a new independent audit.
+S2, merge, push, tag, release, publication, deploy and live-site writes remain
 unauthorized.
 
 ## Historical deployment decision (parked, not executable)

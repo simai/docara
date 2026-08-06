@@ -7,9 +7,9 @@
         "graph/dna/project-dna.json",
         "graph/specs/goals/unified-docara.json",
         "graph/specs/stages/s1-surface-runtime.json",
-        "graph/specs/batches/s1-depth-contract-correction.json"
+        "graph/specs/batches/s1-evidence-ledger-router-correction.json"
     ],
-    "canonical_sha256": "761c1b396a646f2ae43cc88f9dcd8f3d9ac6cd932f3230829a2bd86ad05abe69",
+    "canonical_sha256": "97e21e9b769a39951665901057363d80d81097177140b885bb8e0b9c4e46f122",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -22,10 +22,10 @@
         "stage": "docara.stage.s1.surface_runtime",
         "stage_readiness": "ready_for_independent_audit",
         "stage_status": "ready_for_independent_audit",
-        "batch": "docara.batch.s1.depth_contract_correction",
+        "batch": "docara.batch.s1.evidence_ledger_router_correction",
         "batch_readiness": "ready_for_independent_audit",
         "batch_status": "ready_for_independent_audit",
-        "completed_checkpoint": "goal_s1_c2_integrated_retest_complete",
+        "completed_checkpoint": "goal_s1_c3_evidence_ledger_router_correction_complete",
         "candidate_revision": "ac53ea4d372a47dc8278b595accca9e7b85c66a3",
         "next_action": "independent_goal_s1_reverse_outcome_audit",
         "evidence": "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md"
@@ -33,8 +33,8 @@
     "roadmap": {
         "source": "source/workflow/2026-08-06-docara-surface-hero-track.md",
         "next_goal": {
-            "id": "docara.goal.s1_c2",
-            "title": "Goal S1-C2 relative depth contract correction",
+            "id": "docara.goal.s1_c3",
+            "title": "Goal S1-C3 evidence ledger and router hygiene correction",
             "status": "audit_pending",
             "authorized": false,
             "source": "source/handoff/docara-unified-architecture/NEXT.md"
@@ -63,11 +63,9 @@
         }
     },
     "forbidden_now": [
-        "Hero background media",
-        "Homepage art direction",
-        "Second pipeline",
-        "Arbitrary executable or filesystem paths",
+        "Product/runtime/public guide changes",
         "S2",
+        "Hero background media",
         "External repositories or sites",
         "Merge",
         "Push",
@@ -81,7 +79,7 @@
         "source/workflow/2026-08-06-docara-surface-hero-track.md",
         "graph/graph.json",
         "graph/specs/stages/s1-surface-runtime.json",
-        "graph/specs/batches/s1-depth-contract-correction.json",
+        "graph/specs/batches/s1-evidence-ledger-router-correction.json",
         "graph/generated/ai-context/docara-unified.json",
         "source/handoff/docara-unified-architecture/NEXT.md",
         "source/handoff/docara-unified-architecture/RESULT.md"

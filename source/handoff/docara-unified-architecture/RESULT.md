@@ -25,8 +25,9 @@ overlay, padding and tone values; local media and capability-owned children are
 admitted fail-closed. Documentation full width remains inside `main`, while the
 landing outer Hero reaches the viewport and keeps aligned inner content.
 
-Two final full builds and a selected Surface rebuild contain 393 files and
-share exact canonical ledger `90bf637819d38456d745578011d2bf4f1e6e5cb6b349ebc230ee569da91f8b26`;
+Two fresh full builds, a selected Surface rebuild and a clean no-local clone
+contain 393 files and share exact canonical ledger
+`650a678ccddcfac806e1c0c3b2d5327565a01ae06d0b77b5ed8a501c3118d10e`;
 static verification checks 266 HTML / 35,581 references with `broken=0`.
 Full PHPUnit is 493 tests / 10,465 assertions. Two clean clones produce the
 same verified 869-file ZIP `3433618e…`; the exact dist consumer passes init,
@@ -35,7 +36,9 @@ Node. Browser and exact SF5 cross-host evidence are green. S1 awaits independent
 audit; Hero background media, homepage art direction and S2 are not implemented.
 
 The former ledgers `129eef82…`, `51718be2…` and `935fd289…` are rejected or
-superseded evidence and are not exact-candidate proofs.
+superseded evidence and are not exact-candidate proofs. The former
+`90bf6378…` value is also rejected/unreproducible: it sorted complete hash-first
+records instead of sorting records by canonical relative path.
 
 ## Goal C current result
 

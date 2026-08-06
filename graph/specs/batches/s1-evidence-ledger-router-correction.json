@@ -1,0 +1,27 @@
+{
+  "id": "docara.batch.s1.evidence_ledger_router_correction",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "Goal S1-C3 evidence ledger and router hygiene correction",
+  "summary": "Freeze the S1 runtime candidate, bind it to the reproducible path-sorted tree ledger and expose one unambiguous independent-audit router.",
+  "owner": "teamlead",
+  "lifecycle": "complete",
+  "readiness": "ready_for_independent_audit",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-06-docara-goal-s1-c3-evidence-ledger-router-correction.md"],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md",
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-C3-EVIDENCE-LEDGER-ROUTER-CORRECTION.md"
+  ],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.s1.surface_runtime",
+  "allowed_scope": ["Exact-candidate build ledger reproduction", "Evidence correction", "Current router and graph/handoff synchronization"],
+  "forbidden_scope": ["Product/runtime/public guide changes", "S2", "Hero background media", "External repositories or sites", "Merge", "Push", "Tag", "Release", "Deploy"],
+  "checks": ["Two full and representative single ledger equality", "Clean no-local clone ledger", "Static verifier", "Project context and graph", "JSON/YAML and diff checks", "Frozen product tree"],
+  "status": "ready_for_independent_audit",
+  "baseline_revision": "7e350d38feb5f692ce516ca4f72981f835f659e5",
+  "candidate_revision": "ac53ea4d372a47dc8278b595accca9e7b85c66a3",
+  "next_action": "independent_goal_s1_reverse_outcome_audit"
+}

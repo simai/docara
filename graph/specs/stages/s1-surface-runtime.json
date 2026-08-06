@@ -5,7 +5,7 @@
   "subtype": "milestone",
   "tz_role": "implementation_stage",
   "title": "Goal S1. Full-bleed Geometry and Shared Surface Runtime",
-  "summary": "The bounded relative-depth correction is complete and awaits independent Goal S1 audit.",
+  "summary": "The runtime candidate is frozen; its canonical ledger and current router are corrected and await independent Goal S1 audit.",
   "owner": "teamlead",
   "lifecycle": "active",
   "readiness": "ready_for_independent_audit",
@@ -24,7 +24,7 @@
     "Full, single and preview share the accepted production path and deterministic evidence.",
     "Hero output remains byte-identical and S2 remains unstarted."
   ],
-  "batch_refs": ["docara.batch.s1.surface_runtime", "docara.batch.s1.pipeline_container_correction", "docara.batch.s1.depth_contract_correction"],
+  "batch_refs": ["docara.batch.s1.surface_runtime", "docara.batch.s1.pipeline_container_correction", "docara.batch.s1.depth_contract_correction", "docara.batch.s1.evidence_ledger_router_correction"],
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Surface schema and security matrix", "Full/full/single determinism", "Preview and browser geometry", "Package and fresh consumer", "Independent reverse-outcome audit"],
   "next_stage_ref": null,

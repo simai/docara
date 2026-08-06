@@ -24,7 +24,7 @@ Current goal: `docara.goal.unified`
 
 Current stage: `docara.stage.s1.surface_runtime`
 
-Current batch: `docara.batch.s1.depth_contract_correction`
+Current batch: `docara.batch.s1.evidence_ledger_router_correction`
 
 Current next action: `independent_goal_s1_reverse_outcome_audit`
 
@@ -32,7 +32,7 @@ Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX
 
 Current candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
 
-Next roadmap goal: `docara.goal.s1_c2`
+Next roadmap goal: `docara.goal.s1_c3`
 
 Next roadmap status: `audit_pending`
 
@@ -41,16 +41,18 @@ Next roadmap authorized: `false`
 Goal 1-3 and Goals A-C remain independently accepted. The explicitly
 authorized post-roadmap Surface & Hero Media track is now active only at Goal
 S1. Independent audits rejected candidate `45276f6…` and then `80b8102…`.
-Correction candidate `ac53ea4…` now owns nested IR, relative subtree depth,
-registry-driven capability admission, exact source locations and fresh evidence
-proofs. It awaits independent audit. S2 and all release/live actions remain
-unauthorized.
+Correction candidate `ac53ea4…` owns nested IR, relative subtree depth,
+registry-driven capability admission and exact source locations. The S1-C3
+governance-only correction binds it to the reproducible canonical ledger
+`650a678c…` and removes conflicting router markers. It awaits independent
+audit. S2 and all release/live actions remain unauthorized.
 
 ## 3. Read in this order
 
 1. `source/handoff/docara-unified-architecture/STATUS.yaml`;
 2. `source/workflow/ACTIVE.md`;
-3. `source/workflow/2026-08-06-docara-surface-hero-track.md` and the current S1 workflow;
+3. `source/workflow/2026-08-06-docara-surface-hero-track.md` and
+   `source/workflow/2026-08-06-docara-goal-s1-c3-evidence-ledger-router-correction.md`;
 4. `graph/graph.json` and its current stage/batch specs;
 5. `graph/generated/ai-context/docara-unified.json` as a checked derived view;
 6. `source/handoff/docara-unified-architecture/NEXT.md` and `RESULT.md`;

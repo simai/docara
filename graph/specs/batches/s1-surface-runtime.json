@@ -19,6 +19,6 @@
   "checks": ["Surface capability and security negatives", "Full/full/single determinism", "Static and preview verification", "Browser geometry/accessibility", "Package and fresh consumer", "Graph and documentation validation"],
   "status": "ready_for_independent_audit",
   "baseline_revision": "8e4b71c58065a1f49382dd8077809363e0eed873",
-  "candidate_revision": "80b8102632c922ec44d16947456babeab6d15e25",
+  "candidate_revision": "ac53ea4d372a47dc8278b595accca9e7b85c66a3",
   "next_action": "independent_goal_s1_reverse_outcome_audit"
 }

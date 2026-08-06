@@ -5,7 +5,7 @@
   "subtype": "milestone",
   "tz_role": "implementation_stage",
   "title": "Goal S1. Full-bleed Geometry and Shared Surface Runtime",
-  "summary": "The bounded pipeline/container correction is complete and awaits independent Goal S1 audit.",
+  "summary": "The bounded relative-depth correction is complete and awaits independent Goal S1 audit.",
   "owner": "teamlead",
   "lifecycle": "active",
   "readiness": "ready_for_independent_audit",
@@ -24,12 +24,12 @@
     "Full, single and preview share the accepted production path and deterministic evidence.",
     "Hero output remains byte-identical and S2 remains unstarted."
   ],
-  "batch_refs": ["docara.batch.s1.surface_runtime", "docara.batch.s1.pipeline_container_correction"],
+  "batch_refs": ["docara.batch.s1.surface_runtime", "docara.batch.s1.pipeline_container_correction", "docara.batch.s1.depth_contract_correction"],
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Surface schema and security matrix", "Full/full/single determinism", "Preview and browser geometry", "Package and fresh consumer", "Independent reverse-outcome audit"],
   "next_stage_ref": null,
   "status": "ready_for_independent_audit",
   "baseline_revision": "8e4b71c58065a1f49382dd8077809363e0eed873",
-  "candidate_revision": "80b8102632c922ec44d16947456babeab6d15e25",
+  "candidate_revision": "ac53ea4d372a47dc8278b595accca9e7b85c66a3",
   "next_action": "independent_goal_s1_reverse_outcome_audit"
 }

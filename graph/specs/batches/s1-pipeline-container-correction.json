@@ -8,7 +8,7 @@
   "summary": "Correct independently reproduced nested-IR, container-contract, source-location and evidence-freshness defects without entering S2.",
   "owner": "dev",
   "lifecycle": "complete",
-  "readiness": "ready_for_independent_audit",
+  "readiness": "superseded_after_audit",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-06-docara-goal-s1-c1-pipeline-container-correction.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md"],
@@ -17,8 +17,8 @@
   "allowed_scope": ["MarkdownCompiler typed nested directives", "IR and render artifact aggregation", "Registry container validation", "Source diagnostics", "Tests, public Surface docs, specification, graph, workflow, handoff and evidence"],
   "forbidden_scope": ["Hero background media", "Homepage art direction", "Second pipeline", "Arbitrary executable or filesystem paths", "S2", "External repositories or sites", "Merge", "Push", "Tag", "Release", "Deploy"],
   "checks": ["Nested Surface project Smart PageBuilder proof", "Container contract and source-location negatives", "Full/full/single determinism", "Preview/static/browser", "Package and fresh consumer", "Graph/context/diff"],
-  "status": "ready_for_independent_audit",
+  "status": "superseded_after_audit",
   "baseline_revision": "f99ce6a653aeca9fc2ccf5434fc094b7cb8ca66e",
   "candidate_revision": "80b8102632c922ec44d16947456babeab6d15e25",
-  "next_action": "independent_goal_s1_reverse_outcome_audit"
+  "next_action": "docara.batch.s1.depth_contract_correction"
 }

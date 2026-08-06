@@ -1,10 +1,14 @@
 # S1-C1 pipeline/container correction — integrated evidence
 
 Date: 2026-08-06
-Status: `ready_for_independent_audit`
+Status: `superseded_after_relative_depth_audit`
 Exact product candidate: `80b8102632c922ec44d16947456babeab6d15e25`
 Correction boundary: `f99ce6a653aeca9fc2ccf5434fc094b7cb8ca66e`
 Rejected first candidate: `45276f63422e8b8465b33e415d3fc302dfeac570`
+
+Historical note: independent S1-C2 audit rejected this candidate because its
+validator compared nested contracts with document-global depth. Its counts and
+hashes remain immutable historical evidence, not current Goal S1 proof.
 
 ## Outcome binding
 

@@ -3,8 +3,9 @@
 Date: 2026-08-06
 Status: `goal_s1_ready_for_independent_audit`
 Current stage: `docara.stage.s1.surface_runtime`
-Current batch: `docara.batch.s1.pipeline_container_correction`
-Current product candidate: `80b8102632c922ec44d16947456babeab6d15e25`
+Current batch: `docara.batch.s1.depth_contract_correction`
+Current product candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
+Next roadmap goal: `docara.goal.s1_c2` (`audit_pending`, authorized=`false`)
 Current next action: `independent_goal_s1_reverse_outcome_audit`
 Next roadmap goal: `docara.goal.s1_c1` (`audit_pending`, authorized=`false`)
 Track ID: `docara.track.surface-hero-media`

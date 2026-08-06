@@ -2,8 +2,8 @@
 
 Текущий статус: Goal 1, Goal 2, Goal 3 и Goals A-C независимо приняты. Новый
 отдельно авторизованный post-roadmap track Surface & Hero Media находится на
-Goal S1: implementation complete на exact product candidate
-`80b8102632c922ec44d16947456babeab6d15e25`, независимый audit ожидается. S2
+Goal S1: implementation complete после relative-depth correction на exact
+product candidate `ac53ea4d372a47dc8278b595accca9e7b85c66a3`, независимый audit ожидается. S2
 не начат и не авторизован этим контуром. Exact accepted Goal A
 product/runtime candidate —
 `8c04160ab50549b060fb933cf80f86193cd92113`. Goal B Full Interface Library &
@@ -41,8 +41,11 @@ PASS ставится только по воспроизводимому evidenc
       traversal, protocol, symlink, hardlink и case mismatch fail-closed.
 - [x] Child/slot/count/order/depth contract принадлежит registry capabilities,
       а не component-ID веткам или длине fence.
+- [x] `max_depth` считается относительно каждого container root; canonical
+      Surface -> Grid -> Card проходит Surface 3/3 и Grid 2/2, а истинное
+      превышение сохраняет exact source location.
 - [x] Full/full/single, preview/production, static, browser, package и fresh
-      consumer executor evidence зелёные на exact candidate `80b8102…`.
+      consumer executor evidence зелёные на exact candidate `ac53ea4…`.
 - [x] Existing Hero section byte-identical baseline; background mode и
       homepage art direction не входят в S1.
 - [ ] Независимый reverse-outcome audit Goal S1.

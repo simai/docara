@@ -1,0 +1,27 @@
+{
+  "id": "docara.batch.s1.depth_contract_correction",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "Goal S1-C2 relative depth contract correction",
+  "summary": "Define max_depth relative to every container root, remove fixed Smart capability admission and bind fresh evidence to the corrected exact candidate.",
+  "owner": "dev",
+  "lifecycle": "complete",
+  "readiness": "ready_for_independent_audit",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-06-docara-goal-s1-c2-depth-contract-correction.md"],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md",
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-C2-DEPTH-CONTRACT-CORRECTION.md"
+  ],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.s1.surface_runtime",
+  "allowed_scope": ["Relative subtree depth semantics", "Registry-owned Smart capability admission", "Production/direct admission parity", "Tests, specifications, graph, workflow, handoff and exact evidence"],
+  "forbidden_scope": ["Hero background media", "Homepage art direction", "Second pipeline", "Arbitrary executable or filesystem paths", "S2", "External repositories or sites", "Merge", "Push", "Tag", "Release", "Deploy"],
+  "checks": ["Canonical Surface Grid Card PageBuilder proof", "One-level registry overflow with exact location", "Full/full/single determinism", "Preview/static/browser", "Package and fresh consumer", "Graph/context/diff"],
+  "status": "ready_for_independent_audit",
+  "baseline_revision": "5c3a181ff1f641bd239eedc3ef62d39c469015fd",
+  "candidate_revision": "ac53ea4d372a47dc8278b595accca9e7b85c66a3",
+  "next_action": "independent_goal_s1_reverse_outcome_audit"
+}

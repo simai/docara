@@ -2,13 +2,14 @@
 
 Current state: `goal_s1_ready_for_independent_audit`
 
-Current candidate: `80b8102632c922ec44d16947456babeab6d15e25`
+Current candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
 Goal 1-3 and Goals A-C remain independently accepted. Independent Goal S1 audit
-rejected exact candidate `45276f6…`; candidate `80b8102…` contains the bounded
-S1-C1 correction and is ready only for a new independent audit. S2,
+rejected exact candidate `45276f6…`, while the next audit rejected `80b8102…`
+for document-global depth semantics. Candidate `ac53ea4…` contains the bounded
+S1-C2 relative-depth correction and is ready only for a new independent audit. S2,
 merge, push, tag, release, publication, deploy and live-site writes remain
 unauthorized.
 

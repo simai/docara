@@ -7,9 +7,9 @@
         "graph/dna/project-dna.json",
         "graph/specs/goals/unified-docara.json",
         "graph/specs/stages/s1-surface-runtime.json",
-        "graph/specs/batches/s1-pipeline-container-correction.json"
+        "graph/specs/batches/s1-depth-contract-correction.json"
     ],
-    "canonical_sha256": "f2980550ec206d2a115438eba81c96ba400b9b2a5c4b95085d1a3c7a223ec732",
+    "canonical_sha256": "761c1b396a646f2ae43cc88f9dcd8f3d9ac6cd932f3230829a2bd86ad05abe69",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -22,19 +22,19 @@
         "stage": "docara.stage.s1.surface_runtime",
         "stage_readiness": "ready_for_independent_audit",
         "stage_status": "ready_for_independent_audit",
-        "batch": "docara.batch.s1.pipeline_container_correction",
+        "batch": "docara.batch.s1.depth_contract_correction",
         "batch_readiness": "ready_for_independent_audit",
         "batch_status": "ready_for_independent_audit",
-        "completed_checkpoint": "goal_s1_c1_integrated_retest_complete",
-        "candidate_revision": "80b8102632c922ec44d16947456babeab6d15e25",
+        "completed_checkpoint": "goal_s1_c2_integrated_retest_complete",
+        "candidate_revision": "ac53ea4d372a47dc8278b595accca9e7b85c66a3",
         "next_action": "independent_goal_s1_reverse_outcome_audit",
         "evidence": "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md"
     },
     "roadmap": {
         "source": "source/workflow/2026-08-06-docara-surface-hero-track.md",
         "next_goal": {
-            "id": "docara.goal.s1_c1",
-            "title": "Goal S1-C1 pipeline and container correction",
+            "id": "docara.goal.s1_c2",
+            "title": "Goal S1-C2 relative depth contract correction",
             "status": "audit_pending",
             "authorized": false,
             "source": "source/handoff/docara-unified-architecture/NEXT.md"
@@ -81,7 +81,7 @@
         "source/workflow/2026-08-06-docara-surface-hero-track.md",
         "graph/graph.json",
         "graph/specs/stages/s1-surface-runtime.json",
-        "graph/specs/batches/s1-pipeline-container-correction.json",
+        "graph/specs/batches/s1-depth-contract-correction.json",
         "graph/generated/ai-context/docara-unified.json",
         "source/handoff/docara-unified-architecture/NEXT.md",
         "source/handoff/docara-unified-architecture/RESULT.md"

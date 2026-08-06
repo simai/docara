@@ -2,14 +2,18 @@
 
 Current state: `goal_s1_ready_for_independent_audit`
 
-Current candidate: `80b8102632c922ec44d16947456babeab6d15e25`
+Current candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
 ## Goal S1 current result
 
 Independent reverse-outcome audit returned `CORRECTION_REQUIRED` for historical
-candidate `45276f6…`. Candidate `80b8102…` closes the four reproduced defects:
+candidate `45276f6…`. Candidate `80b8102…` closed those four defects but
+was rejected because it applied `max_depth` as a document-global number.
+Candidate `ac53ea4…` additionally defines relative subtree semantics:
+Surface -> Grid -> Card is 3/3 for Surface and 2/2 for Grid, while a genuine
+one-level overflow remains fail-closed at the exact child location. It retains:
 nested Surface Smart is first-class typed IR, its artifacts are aggregated once,
 the registry contract governs slot/count/order/depth/capability, and failures
 carry exact file/line/column locations.
@@ -22,16 +26,16 @@ admitted fail-closed. Documentation full width remains inside `main`, while the
 landing outer Hero reaches the viewport and keeps aligned inner content.
 
 Two final full builds and a selected Surface rebuild contain 393 files and
-share exact canonical ledger `935fd289f9f9e4f95f010239f4897edf901d07b5de705a87ed10beca82192bda`;
+share exact canonical ledger `90bf637819d38456d745578011d2bf4f1e6e5cb6b349ebc230ee569da91f8b26`;
 static verification checks 266 HTML / 35,581 references with `broken=0`.
-Full PHPUnit is 491 tests / 10,444 assertions. Two clean clones produce the
-same verified 869-file ZIP `440931e0…`; the exact dist consumer passes init,
+Full PHPUnit is 493 tests / 10,465 assertions. Two clean clones produce the
+same verified 869-file ZIP `3433618e…`; the exact dist consumer passes init,
 doctor, full/single and 78-HTML static verification without package `.git` or
 Node. Browser and exact SF5 cross-host evidence are green. S1 awaits independent
 audit; Hero background media, homepage art direction and S2 are not implemented.
 
-The former ledgers `129eef82…` and `51718be2…` are rejected pre-correction
-evidence and are not exact-candidate proofs.
+The former ledgers `129eef82…`, `51718be2…` and `935fd289…` are rejected or
+superseded evidence and are not exact-candidate proofs.
 
 ## Goal C current result
 

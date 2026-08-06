@@ -35,14 +35,16 @@
   "evidence_refs": [
     "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-BASELINE-AND-SURFACE.md",
     "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-INTEGRATED-ACCEPTANCE.md",
-    "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-C1-PIPELINE-CONTAINER-CORRECTION.md"
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-C1-PIPELINE-CONTAINER-CORRECTION.md",
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-C2-DEPTH-CONTRACT-CORRECTION.md"
   ],
   "review_refs": ["docara.gate.architecture_acceptance"],
   "current_behavior": [
     "Landing direct-child full-bleed reaches the viewport while its inner container aligns with adjacent content.",
     "Documentation Surface full width is bounded to the main region and does not overlap sidebar or outline.",
     "Decorative media is project-local, published through the normal asset contour and hidden from accessibility APIs.",
-    "Full, single and isolated preview use one production renderer and PageBuilder path."
+    "Full, single and isolated preview use one production renderer and PageBuilder path.",
+    "Every container enforces max_depth relative to its own subtree root and resolves Smart child capabilities from its registry descriptor."
   ],
   "known_deviations": [
     "S2 Hero background media and homepage art direction remain unstarted."
@@ -51,5 +53,5 @@
     "No legacy Surface runtime was deleted; rollback is revert to entry boundary 8e4b71c58065a1f49382dd8077809363e0eed873."
   ],
   "status": "ready_for_independent_audit",
-  "mapped_revision": "80b8102632c922ec44d16947456babeab6d15e25"
+  "mapped_revision": "ac53ea4d372a47dc8278b595accca9e7b85c66a3"
 }

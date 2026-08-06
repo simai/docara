@@ -2,8 +2,8 @@
 
 Текущий статус архитектурного roadmap: Goal 1, Goal 2, Goal 3 и Goals A-C
 независимо приняты. Отдельно авторизованный post-roadmap track Surface & Hero
-Media активен только до Goal S1: implementation complete на exact candidate
-`80b8102632c922ec44d16947456babeab6d15e25`, следующий шаг — независимый
+Media активен только до Goal S1: relative-depth correction complete на exact
+candidate `ac53ea4d372a47dc8278b595accca9e7b85c66a3`, следующий шаг — независимый
 reverse-outcome audit. S2 не начат. Goal C C1 исправил projection/settings/journey defects на
 exact product candidate `eb35f5c6f18e5eb9be69e91887b09486f5703136`,
 который независимый reverse-outcome audit принял с `PASS`. Шесть входов компонентов,
@@ -22,10 +22,12 @@ baseline, а не текущим кандидатом или действием.
 
 ## Goal S1. Full-bleed Geometry & Shared Surface Runtime
 
-Статус: `ready_for_independent_audit`. Exact product candidate `80b8102…`.
+Статус: `ready_for_independent_audit`. Exact product candidate `ac53ea4…`.
 Один typed `docara.surface` использует существующий Markdown -> typed IR ->
 renderer registry -> Smart Gateway -> LayoutComposer -> PageBuilder path.
 Landing full-bleed и docs main-bounded geometry доказаны; Hero HTML не изменён.
+Глубина container contract считается относительно каждого container root;
+Surface -> Grid -> Card проходит точные границы 3/3 и 2/2.
 S2 Hero Media не начат до независимого S1 verdict.
 
 ## Нулевая точка

@@ -1,7 +1,7 @@
 # Goal S1-C1 — Pipeline and Container Contract Correction
 
 Date: 2026-08-06
-Status: `goal_s1_ready_for_independent_audit`
+Status: `superseded_after_relative_depth_audit`
 Track: `docara.track.surface-hero-media`
 Parent goal: Goal S1 — Full-bleed Geometry & Shared Surface Runtime
 Branch: `codex/docara-unified-architecture`
@@ -84,5 +84,7 @@ build, preview, package and consumer roots are not source.
 ## Result and next step
 
 Product candidate `80b8102632c922ec44d16947456babeab6d15e25`
-closes the reproduced defects. The only next action is an independent Goal S1
-reverse-outcome audit. S2 remains unstarted and unauthorized.
+was later rejected by independent audit for document-global `max_depth`
+semantics. It closed the earlier nested-IR defects, but its successor is now
+recorded by the active S1-C2 workflow. This file is historical and is not an
+executable current router. S2 remained unstarted and unauthorized.

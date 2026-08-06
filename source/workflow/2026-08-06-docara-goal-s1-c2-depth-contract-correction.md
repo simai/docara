@@ -1,7 +1,7 @@
 # Goal S1-C2 — Relative Depth Contract Semantics
 
 Date: 2026-08-06
-Status: `goal_s1_correction_in_progress`
+Status: `goal_s1_ready_for_independent_audit`
 Track: `docara.track.surface-hero-media`
 Parent goal: Goal S1 — Full-bleed Geometry & Shared Surface Runtime
 Branch: `codex/docara-unified-architecture`
@@ -44,10 +44,10 @@ contract and keep direct/production admission semantics aligned.
 
 | Batch | Work | Verification | Status |
 | --- | --- | --- | --- |
-| C2.0 | canonical production RED and registry overflow fixture | tests fail on `80b8102…` with exact reproduced code/location | in progress |
-| C2.1 | relative subtree depth and descriptor capability resolution | focused compiler/validator/direct renderer tests | planned |
-| C2.2 | proportional integrated retest | full, full/full/single, static, package/consumer/browser | planned |
-| C2.3 | evidence/spec/graph/handoff | context/graph/diff/clean commit | planned |
+| C2.0 | canonical production RED and registry overflow fixture | tests fail on `80b8102…` with exact reproduced code/location | complete |
+| C2.1 | relative subtree depth and descriptor capability resolution | focused compiler/validator/direct renderer tests | complete |
+| C2.2 | proportional integrated retest | full, full/full/single, static, package/consumer/browser | complete |
+| C2.3 | evidence/spec/graph/handoff | context/graph/diff/clean commit | complete |
 
 ## Routing and gate
 
@@ -63,6 +63,10 @@ Revert the bounded S1-C2 product and governance commits in reverse order to
 return to `5c3a181ff1f641bd239eedc3ef62d39c469015fd`. Disposable test, build,
 package, consumer and browser roots are not source.
 
-## Current next step
+## Result
 
-Commit a permanent canonical PageBuilder RED before changing validator logic.
+Exact product candidate:
+`ac53ea4d372a47dc8278b595accca9e7b85c66a3`. Fresh addressable evidence is
+`source/workflow/evidence/2026-08-06-docara-surface-hero/S1-C2-DEPTH-CONTRACT-CORRECTION.md`.
+The only next action is an independent read-only Goal S1 audit; S2 remains
+unstarted and unauthorized.

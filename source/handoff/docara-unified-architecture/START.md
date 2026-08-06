@@ -24,15 +24,15 @@ Current goal: `docara.goal.unified`
 
 Current stage: `docara.stage.s1.surface_runtime`
 
-Current batch: `docara.batch.s1.pipeline_container_correction`
+Current batch: `docara.batch.s1.depth_contract_correction`
 
 Current next action: `independent_goal_s1_reverse_outcome_audit`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
-Current candidate: `80b8102632c922ec44d16947456babeab6d15e25`
+Current candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
 
-Next roadmap goal: `docara.goal.s1_c1`
+Next roadmap goal: `docara.goal.s1_c2`
 
 Next roadmap status: `audit_pending`
 
@@ -40,10 +40,11 @@ Next roadmap authorized: `false`
 
 Goal 1-3 and Goals A-C remain independently accepted. The explicitly
 authorized post-roadmap Surface & Hero Media track is now active only at Goal
-S1. Independent audit rejected candidate `45276f6…`; correction candidate
-`80b8102…` now owns nested IR, container-contract, source-location and fresh
-evidence proofs. It awaits independent audit. S2 and all release/live actions
-remain unauthorized.
+S1. Independent audits rejected candidate `45276f6…` and then `80b8102…`.
+Correction candidate `ac53ea4…` now owns nested IR, relative subtree depth,
+registry-driven capability admission, exact source locations and fresh evidence
+proofs. It awaits independent audit. S2 and all release/live actions remain
+unauthorized.
 
 ## 3. Read in this order
 

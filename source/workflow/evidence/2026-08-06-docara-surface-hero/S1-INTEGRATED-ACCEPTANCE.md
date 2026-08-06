@@ -1,4 +1,9 @@
-# Goal S1 integrated acceptance evidence
+# Goal S1 integrated acceptance evidence — rejected pre-correction history
+
+This document records candidate `45276f6…` and is not current acceptance
+evidence. Independent audit rejected its nested pipeline/container/location and
+freshness claims. Current evidence is
+`S1-C1-PIPELINE-CONTAINER-CORRECTION.md`.
 
 Status: executor evidence complete; independent audit pending
 

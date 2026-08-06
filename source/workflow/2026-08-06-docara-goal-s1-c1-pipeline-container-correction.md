@@ -1,7 +1,7 @@
 # Goal S1-C1 — Pipeline and Container Contract Correction
 
 Date: 2026-08-06
-Status: `goal_s1_correction_in_progress`
+Status: `goal_s1_ready_for_independent_audit`
 Track: `docara.track.surface-hero-media`
 Parent goal: Goal S1 — Full-bleed Geometry & Shared Surface Runtime
 Branch: `codex/docara-unified-architecture`
@@ -69,11 +69,11 @@ evidence on one new exact candidate.
 | Batch | Work | Verification | Status |
 | --- | --- | --- | --- |
 | C1.0 | RED fixtures, IR/runtime/contract/source-span map | exact reproductions and focused RED tests | in progress |
-| C1.1 | nested compiler IR and artifact aggregation | compiler/PageBuilder/Smart integration tests | planned |
-| C1.2 | generic container contract validator and locations | full positive/negative matrix | planned |
-| C1.3 | docs/site real-project and browser hydration | preview/production/browser evidence | planned |
-| C1.4 | full/build/package/consumer retest | full PHPUnit, deterministic trees/packages | planned |
-| C1.5 | evidence/spec/graph/handoff | freshness/context/graph/diff, clean commits | planned |
+| C1.1 | nested compiler IR and artifact aggregation | compiler/PageBuilder/Smart integration tests | complete |
+| C1.2 | generic container contract validator and locations | full positive/negative matrix | complete |
+| C1.3 | docs/site real-project and browser hydration | preview/production/browser evidence | complete |
+| C1.4 | full/build/package/consumer retest | full PHPUnit, deterministic trees/packages | complete |
+| C1.5 | evidence/spec/graph/handoff | freshness/context/graph/diff, clean commits | complete |
 
 ## Rollback
 
@@ -81,7 +81,8 @@ The correction boundary is `f99ce6a653aeca9fc2ccf5434fc094b7cb8ca66e`.
 Each bounded correction commit can be reverted in reverse order. Disposable
 build, preview, package and consumer roots are not source.
 
-## Current next step
+## Result and next step
 
-Reproduce the compiler/renderer divergence as permanent RED tests, then replace
-the Surface mini-parser with nested typed IR and one artifact aggregation path.
+Product candidate `80b8102632c922ec44d16947456babeab6d15e25`
+closes the reproduced defects. The only next action is an independent Goal S1
+reverse-outcome audit. S2 remains unstarted and unauthorized.

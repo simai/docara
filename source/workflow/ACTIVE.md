@@ -1,7 +1,7 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-06
-Status: Goal S1-C1 correction in progress after independent audit
+Status: Goal S1-C1 complete and ready for independent audit
 Workflow ID: `2026-08-06-docara-goal-s1-c1-pipeline-container-correction`
 Graph goal: `docara.goal.unified`
 
@@ -25,16 +25,17 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `goal_s1_correction_in_progress`;
+- state: `goal_s1_ready_for_independent_audit`;
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.s1.surface_runtime`;
 - batch: `docara.batch.s1.pipeline_container_correction`;
-- candidate: `45276f63422e8b8465b33e415d3fc302dfeac570`;
+- candidate: `80b8102632c922ec44d16947456babeab6d15e25`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `execute_goal_s1_c1_pipeline_container_correction`;
+- next action: `independent_goal_s1_reverse_outcome_audit`;
 - Goal 1-3 and Goals A-C remain independently accepted. The separately
   authorized Surface & Hero Media track is active only through completed Goal
-  S1 correction; the first S1 candidate is rejected and S2 is unstarted.
+  S1 correction; the first S1 candidate is rejected, the correction awaits
+  independent audit, and S2 is unstarted.
 
 ## Accepted pipeline
 
@@ -49,14 +50,13 @@ IR/HTML remain disposable.
 
 ## Current result
 
-The first S1 candidate added one typed, registry-owned `docara.surface` and fixed landing
-direct-child full-bleed contract and keeps documentation full width bounded to
-its `main` region. Closed tokens and project-local media admission are
-fail-closed. Existing Hero HTML is unchanged. Full/full/single, preview,
-static, browser, package and fresh-consumer evidence pass on exact candidate
-`45276f6…`, but independent audit proved nested Smart reparse/artifact loss,
-container-contract drift, missing source locations and stale evidence. S1-C1
-must correct those outcomes before a new candidate can return to audit.
+The correction candidate compiles variable-length nested Surface directives
+once into typed IR, renders nested project Smart artifacts once through the
+existing Gateway, aggregates HTML/assets/hydration/provenance, and enforces the
+registry-owned slot/count/order/depth/capability contract with exact source
+locations. Landing Hero geometry and HTML semantics remain unchanged. Fresh
+full/full/single, static, browser, package, consumer and cross-host evidence is
+bound to exact candidate `80b8102…`.
 
 ## Boundary
 

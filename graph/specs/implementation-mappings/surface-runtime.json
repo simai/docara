@@ -19,6 +19,9 @@
   "code_refs": [
     "src/PortableSite/SurfacePresentation.php#SurfacePresentation",
     "src/PortableSite/PortableMarkdownRenderer.php#PortableMarkdownRenderer",
+    "src/Document/ContainerNode.php#ContainerNode",
+    "src/Document/ContainerContractValidator.php#ContainerContractValidator",
+    "src/Document/ContainerDocumentNodeRenderer.php#ContainerDocumentNodeRenderer",
     "src/ComponentCatalog/TypedRendererId.php#TypedRendererId",
     "resources/schemas/declarative-surface.schema.json",
     "resources/portable/declarative-shell.css",
@@ -31,7 +34,8 @@
   ],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-BASELINE-AND-SURFACE.md",
-    "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-INTEGRATED-ACCEPTANCE.md"
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-INTEGRATED-ACCEPTANCE.md",
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-C1-PIPELINE-CONTAINER-CORRECTION.md"
   ],
   "review_refs": ["docara.gate.architecture_acceptance"],
   "current_behavior": [
@@ -41,11 +45,11 @@
     "Full, single and isolated preview use one production renderer and PageBuilder path."
   ],
   "known_deviations": [
-    "Nested project Smart examples prove static rendering; interactive project asset contribution from nested source examples is not claimed by S1."
+    "S2 Hero background media and homepage art direction remain unstarted."
   ],
   "deletion_gates": [
     "No legacy Surface runtime was deleted; rollback is revert to entry boundary 8e4b71c58065a1f49382dd8077809363e0eed873."
   ],
   "status": "ready_for_independent_audit",
-  "mapped_revision": "45276f63422e8b8465b33e415d3fc302dfeac570"
+  "mapped_revision": "80b8102632c922ec44d16947456babeab6d15e25"
 }

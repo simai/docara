@@ -9,25 +9,25 @@
         "graph/specs/stages/s1-surface-runtime.json",
         "graph/specs/batches/s1-pipeline-container-correction.json"
     ],
-    "canonical_sha256": "c9cb2a2022b1ac331d2ef88d6dcaad083f74534e93e6a105e49fb696631433ff",
+    "canonical_sha256": "f2980550ec206d2a115438eba81c96ba400b9b2a5c4b95085d1a3c7a223ec732",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "goal_s1_correction_in_progress",
+        "state": "goal_s1_ready_for_independent_audit",
         "goal": "docara.goal.unified",
-        "goal_readiness": "goal_s1_correction_in_progress",
+        "goal_readiness": "goal_s1_ready_for_independent_audit",
         "stage": "docara.stage.s1.surface_runtime",
-        "stage_readiness": "correction_in_progress",
-        "stage_status": "correction_in_progress",
+        "stage_readiness": "ready_for_independent_audit",
+        "stage_status": "ready_for_independent_audit",
         "batch": "docara.batch.s1.pipeline_container_correction",
-        "batch_readiness": "correction_in_progress",
-        "batch_status": "correction_in_progress",
-        "completed_checkpoint": "goal_s1_independent_audit_correction_required",
-        "candidate_revision": "45276f63422e8b8465b33e415d3fc302dfeac570",
-        "next_action": "execute_goal_s1_c1_pipeline_container_correction",
+        "batch_readiness": "ready_for_independent_audit",
+        "batch_status": "ready_for_independent_audit",
+        "completed_checkpoint": "goal_s1_c1_integrated_retest_complete",
+        "candidate_revision": "80b8102632c922ec44d16947456babeab6d15e25",
+        "next_action": "independent_goal_s1_reverse_outcome_audit",
         "evidence": "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md"
     },
     "roadmap": {
@@ -35,8 +35,8 @@
         "next_goal": {
             "id": "docara.goal.s1_c1",
             "title": "Goal S1-C1 pipeline and container correction",
-            "status": "active",
-            "authorized": true,
+            "status": "audit_pending",
+            "authorized": false,
             "source": "source/handoff/docara-unified-architecture/NEXT.md"
         }
     },

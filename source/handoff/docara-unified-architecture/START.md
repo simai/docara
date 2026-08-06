@@ -18,7 +18,7 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal_s1_correction_in_progress`
+Current state: `goal_s1_ready_for_independent_audit`
 
 Current goal: `docara.goal.unified`
 
@@ -26,23 +26,24 @@ Current stage: `docara.stage.s1.surface_runtime`
 
 Current batch: `docara.batch.s1.pipeline_container_correction`
 
-Current next action: `execute_goal_s1_c1_pipeline_container_correction`
+Current next action: `independent_goal_s1_reverse_outcome_audit`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
-Current candidate: `45276f63422e8b8465b33e415d3fc302dfeac570`
+Current candidate: `80b8102632c922ec44d16947456babeab6d15e25`
 
 Next roadmap goal: `docara.goal.s1_c1`
 
-Next roadmap status: `active`
+Next roadmap status: `audit_pending`
 
-Next roadmap authorized: `true`
+Next roadmap authorized: `false`
 
 Goal 1-3 and Goals A-C remain independently accepted. The explicitly
 authorized post-roadmap Surface & Hero Media track is now active only at Goal
-S1. Independent audit rejected candidate `45276f6…`; the active S1-C1
-correction owns nested IR, container-contract, source-location and evidence
-freshness fixes. S2 and all release/live actions remain unauthorized.
+S1. Independent audit rejected candidate `45276f6…`; correction candidate
+`80b8102…` now owns nested IR, container-contract, source-location and fresh
+evidence proofs. It awaits independent audit. S2 and all release/live actions
+remain unauthorized.
 
 ## 3. Read in this order
 
@@ -61,8 +62,8 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only an explicitly authorized next action
 
-Execute only the bounded S1-C1 correction from its workflow. Do not self-accept
-or begin S2. This handoff does not authorize release review, merge, tag or
+Execute only an independent read-only Goal S1 audit. Do not self-accept or
+begin S2. This handoff does not authorize release review, merge, tag or
 deployment.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.

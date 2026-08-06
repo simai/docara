@@ -1,18 +1,18 @@
 # Current Docara result
 
-Current state: `goal_s1_correction_in_progress`
+Current state: `goal_s1_ready_for_independent_audit`
 
-Current candidate: `45276f63422e8b8465b33e415d3fc302dfeac570`
+Current candidate: `80b8102632c922ec44d16947456babeab6d15e25`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
 ## Goal S1 current result
 
-Independent reverse-outcome audit returned `CORRECTION_REQUIRED` for candidate
-`45276f6…`: nested Surface Smart bypasses typed IR and loses artifacts,
-registry count/depth metadata diverges from runtime, file-backed failures lack
-real locations, and the recorded tree digest/count is stale. Geometry and Hero
-parity remain accepted regression baselines while S1-C1 is in progress.
+Independent reverse-outcome audit returned `CORRECTION_REQUIRED` for historical
+candidate `45276f6…`. Candidate `80b8102…` closes the four reproduced defects:
+nested Surface Smart is first-class typed IR, its artifacts are aggregated once,
+the registry contract governs slot/count/order/depth/capability, and failures
+carry exact file/line/column locations.
 
 Goal S1 fixes the landing direct-child full-bleed geometry and adds one typed
 public `docara.surface` container through the existing registry/Gateway/
@@ -21,12 +21,17 @@ overlay, padding and tone values; local media and capability-owned children are
 admitted fail-closed. Documentation full width remains inside `main`, while the
 landing outer Hero reaches the viewport and keeps aligned inner content.
 
-Two full builds and a selected Surface rebuild share exact ledger
-`129eef82…`; static verification checks 266 HTML / 35,574 references with
-`broken=0`. Exact Hero section HTML remains byte-identical to baseline at
-`5a5e8996…`. Full PHPUnit, preview, browser, package and fresh-consumer evidence
-are bound to product candidate `45276f6…`. S1 awaits independent audit; Hero
-background media, homepage art direction and S2 are not implemented.
+Two final full builds and a selected Surface rebuild contain 393 files and
+share exact canonical ledger `935fd289f9f9e4f95f010239f4897edf901d07b5de705a87ed10beca82192bda`;
+static verification checks 266 HTML / 35,581 references with `broken=0`.
+Full PHPUnit is 491 tests / 10,444 assertions. Two clean clones produce the
+same verified 869-file ZIP `440931e0…`; the exact dist consumer passes init,
+doctor, full/single and 78-HTML static verification without package `.git` or
+Node. Browser and exact SF5 cross-host evidence are green. S1 awaits independent
+audit; Hero background media, homepage art direction and S2 are not implemented.
+
+The former ledgers `129eef82…` and `51718be2…` are rejected pre-correction
+evidence and are not exact-candidate proofs.
 
 ## Goal C current result
 

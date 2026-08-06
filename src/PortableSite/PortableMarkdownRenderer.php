@@ -134,6 +134,20 @@ final class PortableMarkdownRenderer
 
     public function render(string $markdown, ?string $sourceRoot = null, ?string $sourceFile = null): string
     {
+        return $this->renderAt(
+            $markdown,
+            $sourceRoot,
+            $sourceFile,
+            new SourceLocation($this->diagnosticSource($sourceRoot, $sourceFile), 1, 1, 1),
+        );
+    }
+
+    public function renderAt(
+        string $markdown,
+        ?string $sourceRoot,
+        ?string $sourceFile,
+        SourceLocation $location,
+    ): string {
         if (preg_match('//u', $markdown) !== 1) {
             throw new PortableConfigurationException(
                 'MARKDOWN_BLOCK_INPUT_INVALID',
@@ -142,11 +156,15 @@ final class PortableMarkdownRenderer
         }
         $this->assertRawHtmlPolicy($markdown, $this->diagnosticSource($sourceRoot, $sourceFile));
 
-        return $this->renderCompiled($markdown, $sourceRoot, $sourceFile);
+        return $this->renderCompiled($markdown, $sourceRoot, $sourceFile, $location->line);
     }
 
-    private function renderCompiled(string $markdown, ?string $sourceRoot = null, ?string $sourceFile = null): string
-    {
+    private function renderCompiled(
+        string $markdown,
+        ?string $sourceRoot = null,
+        ?string $sourceFile = null,
+        int $sourceLine = 1,
+    ): string {
 
         $nativeInspection = $this->inspector->inspect($markdown);
         $inline = $this->inlineComponents->extract(
@@ -174,7 +192,7 @@ final class PortableMarkdownRenderer
             $renderer = TypedRendererId::from($block['renderer']);
             $rendered = match ($renderer) {
                 TypedRendererId::Card => $this->renderCard(
-                    $this->renderCompiled($blockMarkdown, $sourceRoot, $sourceFile),
+                    $this->renderCompiled($blockMarkdown, $sourceRoot, $sourceFile, $sourceLine),
                     $block['attributes'],
                 ),
                 TypedRendererId::Columns => $this->renderColumns(
@@ -184,7 +202,14 @@ final class PortableMarkdownRenderer
                 TypedRendererId::Steps => $this->renderSteps($this->converter->convert($blockMarkdown), $block['attributes']),
                 TypedRendererId::Cta => $this->renderCta($this->converter->convert($blockMarkdown)),
                 TypedRendererId::Features => $this->renderFeatures($this->converter->convert($blockMarkdown)),
-                TypedRendererId::Hero => $this->renderHero($this->converter->convert($blockMarkdown), $block['attributes']),
+                TypedRendererId::Hero => $this->renderHero(
+                    $this->converter->convert($blockMarkdown),
+                    $block['attributes'],
+                    $block['markdown'],
+                    $sourceRoot,
+                    $sourceFile,
+                    $sourceLine,
+                ),
                 TypedRendererId::Logos => $this->renderLogos($this->converter->convert($blockMarkdown), $block['attributes']),
                 TypedRendererId::Promo => $this->renderPromo($this->converter->convert($blockMarkdown)),
                 TypedRendererId::Showcase => $this->renderShowcase($this->converter->convert($blockMarkdown)),
@@ -1619,10 +1644,24 @@ final class PortableMarkdownRenderer
     }
 
     /** @param array<string,string> $attributes */
-    private function renderHero(RenderedContentInterface $rendered, array $attributes): string
-    {
-        $this->assertAttributes($attributes, ['variant'], 'hero');
+    private function renderHero(
+        RenderedContentInterface $rendered,
+        array $attributes,
+        string $markdown,
+        ?string $sourceRoot,
+        ?string $sourceFile,
+        int $sourceLine,
+    ): string {
+        $backgroundAttributes = ['background_fit', 'background_x', 'background_y', 'overlay', 'overlay_strength'];
+        $this->assertAttributes($attributes, ['variant', 'media', ...$backgroundAttributes], 'hero');
         $variant = $this->attributeOneOf($attributes['variant'] ?? 'split', ['split', 'centered', 'compact'], 'hero', 'variant');
+        $mediaMode = $this->attributeOneOf($attributes['media'] ?? 'auto', ['auto', 'side', 'background', 'none'], 'hero', 'media');
+        if ($mediaMode !== 'background' && array_intersect(array_keys($attributes), $backgroundAttributes) !== []) {
+            throw new PortableConfigurationException('MARKDOWN_HERO_BACKGROUND_MODE_REQUIRED', 'Hero background props require media=background.');
+        }
+        if ($mediaMode === 'side' && $variant !== 'split') {
+            throw new PortableConfigurationException('MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE', 'Hero media=side requires variant=split.');
+        }
         $nodes = iterator_to_array($rendered->getDocument()->children());
         $heading = $nodes[0] ?? null;
         if (! $heading instanceof Heading || $heading->getLevel() !== 1) {
@@ -1643,6 +1682,8 @@ final class PortableMarkdownRenderer
         $descriptionCount = 0;
         $actionCount = 0;
         $imageCount = 0;
+        $imageUrl = '';
+        $imageAlt = '';
         $phase = 'description';
         foreach (array_slice($nodes, 1) as $index => $node) {
             if (! $node instanceof Paragraph) {
@@ -1654,7 +1695,13 @@ final class PortableMarkdownRenderer
 
             $first = $node->firstChild();
             if ($first instanceof Image && $first->next() === null) {
-                if ($imageCount > 0 || $index !== count($nodes) - 2) {
+                if ($imageCount > 0) {
+                    throw new PortableConfigurationException(
+                        'MARKDOWN_HERO_MEDIA_IMAGE_COUNT_INVALID',
+                        'A Hero accepts at most one Markdown image.',
+                    );
+                }
+                if ($index !== count($nodes) - 2) {
                     throw new PortableConfigurationException(
                         'MARKDOWN_HERO_STRUCTURE_INVALID',
                         'A hero block may end with at most one image.',
@@ -1662,6 +1709,8 @@ final class PortableMarkdownRenderer
                 }
                 $this->assertSafeUrl($first->getUrl(), 'MARKDOWN_HERO_IMAGE_UNSAFE');
                 $imageCount++;
+                $imageUrl = $first->getUrl();
+                $imageAlt = trim($this->inlineVisibleText($first));
                 $phase = 'image';
 
                 continue;
@@ -1703,6 +1752,53 @@ final class PortableMarkdownRenderer
             );
         }
 
+        if (in_array($mediaMode, ['side', 'background'], true) && $imageCount !== 1) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_HERO_MEDIA_IMAGE_REQUIRED',
+                "Hero media=$mediaMode requires exactly one Markdown image.",
+            );
+        }
+        if ($mediaMode === 'none' && $imageCount !== 0) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_HERO_MEDIA_IMAGE_FORBIDDEN',
+                'Hero media=none forbids an authored image.',
+            );
+        }
+        if ($mediaMode === 'side' && ! $this->containsVisibleText($imageAlt)) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_HERO_SIDE_ALT_REQUIRED',
+                'Hero media=side requires meaningful image alternative text.',
+            );
+        }
+        if ($mediaMode === 'background' && $this->containsVisibleText($imageAlt)) {
+            throw new PortableConfigurationException(
+                'MARKDOWN_HERO_BACKGROUND_ALT_FORBIDDEN',
+                'Hero media=background requires an empty Markdown image alt.',
+            );
+        }
+
+        $backgroundUrl = '';
+        if ($mediaMode === 'background' || $mediaMode === 'side') {
+            try {
+                $resolved = $this->localPublicImageAsset(
+                    $imageUrl,
+                    $sourceRoot,
+                    $sourceFile,
+                    $mediaMode === 'background' ? 'MARKDOWN_HERO_BACKGROUND' : 'MARKDOWN_HERO_SIDE_IMAGE',
+                    $mediaMode === 'background' ? 'Hero background image' : 'Hero side image',
+                );
+                $backgroundUrl = $mediaMode === 'background' ? $resolved : '';
+            } catch (PortableConfigurationException $exception) {
+                throw $this->locatedHeroException(
+                    $exception,
+                    $sourceRoot,
+                    $sourceFile,
+                    $this->heroImageLine($markdown, $sourceLine),
+                    '/document/hero/image',
+                );
+            }
+        }
+
         $content = trim((string) $rendered);
         $content = preg_replace_callback(
             '/^<h1(?<attributes>[^>]*)>/u',
@@ -1715,7 +1811,10 @@ final class PortableMarkdownRenderer
         if ($imageCount === 1) {
             $content = preg_replace_callback(
                 '/<p><img(?<attributes>[^>]*)\s*\/?><\/p>/u',
-                static function (array $match) use (&$image): string {
+                static function (array $match) use (&$image, $mediaMode): string {
+                    if ($mediaMode === 'background' || $mediaMode === 'none') {
+                        return '';
+                    }
                     $attributes = rtrim((string) $match['attributes']);
                     $decorative = preg_match('/\balt=""/u', $attributes) === 1
                         ? ' aria-hidden="true"'
@@ -1760,6 +1859,29 @@ final class PortableMarkdownRenderer
         $columns = $variant === 'split' && $image !== '' ? 'grid-col-1 lg:grid-col-2' : 'grid-col-1';
         $alignment = $variant === 'centered' ? ' text-center items-center' : '';
         $spacing = $variant === 'compact' ? ' p-3' : ' p-4';
+
+        if ($mediaMode === 'background') {
+            $overlay = $this->attributeOneOf($attributes['overlay'] ?? 'dark', ['light', 'dark'], 'hero', 'overlay');
+            $surfaceProps = [
+                'width' => 'full',
+                'content_width' => 'container',
+                'background_fit' => $this->attributeOneOf($attributes['background_fit'] ?? 'cover', ['cover', 'contain', 'auto'], 'hero', 'background_fit'),
+                'background_x' => $this->attributeOneOf($attributes['background_x'] ?? 'center', ['left', 'center', 'right'], 'hero', 'background_x'),
+                'background_y' => $this->attributeOneOf($attributes['background_y'] ?? 'center', ['top', 'center', 'bottom'], 'hero', 'background_y'),
+                'overlay' => $overlay,
+                'overlay_strength' => $this->attributeOneOf($attributes['overlay_strength'] ?? 'medium', ['soft', 'medium', 'strong'], 'hero', 'overlay_strength'),
+                'padding' => 'xl',
+                'tone' => $overlay === 'dark' ? 'contrast' : 'default',
+            ];
+
+            return $this->surfaces->renderSemanticBackground(
+                'hero',
+                $variant,
+                $surfaceProps,
+                '<div class="min-w-0 flex flex-col gap-2' . $alignment . '">' . $content . '</div>',
+                $backgroundUrl,
+            );
+        }
 
         return '<section data-docara-block="hero" data-variant="' . $variant
             . '" data-docara-width="full" class="bg-surface-container overflow-hidden m-bottom-1">'
@@ -1901,6 +2023,22 @@ final class PortableMarkdownRenderer
 
     private function localSurfaceAsset(string $url, ?string $sourceRoot, ?string $sourceFile): string
     {
+        return $this->localPublicImageAsset(
+            $url,
+            $sourceRoot,
+            $sourceFile,
+            'MARKDOWN_SURFACE_BACKGROUND',
+            'Surface background_image',
+        );
+    }
+
+    private function localPublicImageAsset(
+        string $url,
+        ?string $sourceRoot,
+        ?string $sourceFile,
+        string $codePrefix,
+        string $label,
+    ): string {
         if ($sourceRoot === null
             || str_contains($url, "\0")
             || preg_match('/[\x00-\x1F\x7F]/u', $url) === 1
@@ -1912,8 +2050,8 @@ final class PortableMarkdownRenderer
             || str_contains($url, '#')
         ) {
             throw new PortableConfigurationException(
-                'MARKDOWN_SURFACE_BACKGROUND_UNSAFE',
-                'Surface background_image must be a local /assets/ path.',
+                $codePrefix . '_UNSAFE',
+                "$label must be a local /assets/ path.",
             );
         }
         $root = realpath($sourceRoot);
@@ -1931,8 +2069,8 @@ final class PortableMarkdownRenderer
             || ((int) (lstat($lexical)['nlink'] ?? 0)) !== 1
         ) {
             throw new PortableConfigurationException(
-                'MARKDOWN_SURFACE_BACKGROUND_UNSAFE',
-                "Surface background asset [$url] is missing or outside the admitted asset root.",
+                $codePrefix . '_UNSAFE',
+                "$label [$url] is missing or outside the admitted asset root.",
             );
         }
         $relative = ltrim($url, '/');
@@ -1941,22 +2079,22 @@ final class PortableMarkdownRenderer
             $names = scandir($cursor);
             if (! is_array($names) || ! in_array($segment, $names, true)) {
                 throw new PortableConfigurationException(
-                    'MARKDOWN_SURFACE_BACKGROUND_CASE_MISMATCH',
-                    "Surface background asset [$url] does not match filesystem case.",
+                    $codePrefix . '_CASE_MISMATCH',
+                    "$label [$url] does not match filesystem case.",
                 );
             }
             $cursor .= DIRECTORY_SEPARATOR . $segment;
             if (is_link($cursor)) {
                 throw new PortableConfigurationException(
-                    'MARKDOWN_SURFACE_BACKGROUND_UNSAFE',
-                    "Surface background asset [$url] crosses a symbolic link.",
+                    $codePrefix . '_UNSAFE',
+                    "$label [$url] crosses a symbolic link.",
                 );
             }
         }
         if ($cursor !== $lexical) {
             throw new PortableConfigurationException(
-                'MARKDOWN_SURFACE_BACKGROUND_CASE_MISMATCH',
-                "Surface background asset [$url] does not match filesystem case.",
+                $codePrefix . '_CASE_MISMATCH',
+                "$label [$url] does not match filesystem case.",
             );
         }
 
@@ -1965,8 +2103,8 @@ final class PortableMarkdownRenderer
             : ltrim(str_replace('\\', '/', substr($sourceFile, strlen($root))), '/');
         if (preg_match('#^content/[^/]+/(?<route>.+)\.md$#D', $relativeSource, $match) !== 1) {
             throw new PortableConfigurationException(
-                'MARKDOWN_SURFACE_BACKGROUND_CONTEXT_INVALID',
-                'Surface background_image requires an authored locale page context.',
+                $codePrefix . '_CONTEXT_INVALID',
+                "$label requires an authored locale page context.",
             );
         }
         $route = (string) $match['route'];
@@ -1977,6 +2115,35 @@ final class PortableMarkdownRenderer
         $relativeUrl = str_repeat('../', count($segments)) . ltrim($url, '/');
 
         return $this->escapeHtml($relativeUrl);
+    }
+
+    private function heroImageLine(string $markdown, int $sourceLine): int
+    {
+        foreach (preg_split('/\R/u', $markdown) ?: [] as $offset => $line) {
+            if (preg_match('/^\s*!\[[^]]*]\(/u', $line) === 1) {
+                return $sourceLine + $offset;
+            }
+        }
+
+        return $sourceLine;
+    }
+
+    private function locatedHeroException(
+        PortableConfigurationException $exception,
+        ?string $sourceRoot,
+        ?string $sourceFile,
+        int $line,
+        string $pointer,
+    ): PortableConfigurationException {
+        return new PortableConfigurationException(
+            $exception->errorCode,
+            $exception->getMessage(),
+            $exception,
+            $this->diagnosticSource($sourceRoot, $sourceFile),
+            $pointer,
+            $line,
+            1,
+        );
     }
 
     private function renderPromo(RenderedContentInterface $rendered): string

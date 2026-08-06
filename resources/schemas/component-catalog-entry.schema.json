@@ -169,6 +169,9 @@
                 "validation": {
                     "$ref": "#/$defs/parameter_validation"
                 },
+                "available_when": {
+                    "$ref": "#/$defs/condition"
+                },
                 "mirrors": {
                     "type": "array",
                     "minItems": 1,

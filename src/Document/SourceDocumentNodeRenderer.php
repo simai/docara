@@ -20,7 +20,12 @@ final readonly class SourceDocumentNodeRenderer implements DocumentNodeRenderer
     {
         $html = $node->type() === 'html_comment'
             ? "\n"
-            : $this->markdown->render($node->raw(), $context->sourceRoot, $context->sourceFile);
+            : $this->markdown->renderAt(
+                $node->raw(),
+                $context->sourceRoot,
+                $context->sourceFile,
+                $node->location(),
+            );
         if ($html === '') {
             $html = "\n";
         }

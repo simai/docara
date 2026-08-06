@@ -665,7 +665,7 @@ function docaraCatalogEntryContractError(
         if (array_diff(['name', 'type', 'required'], $parameterKeys) !== []
             || array_diff(
                 $parameterKeys,
-                ['name', 'type', 'required', 'values', 'default', 'validation', 'mirrors'],
+                ['name', 'type', 'required', 'values', 'default', 'validation', 'mirrors', 'available_when'],
             ) !== []
             || ! is_string($parameter['name'])
             || preg_match('/\A[a-z][a-z0-9_-]*\z/D', $parameter['name']) !== 1
@@ -675,6 +675,8 @@ function docaraCatalogEntryContractError(
             || (array_key_exists('default', $parameter) && ! docaraCatalogScalar($parameter['default']))
             || (isset($parameter['validation'])
                 && ! docaraCatalogParameterValidation($parameter['validation'], (string) $parameter['type']))
+            || (isset($parameter['available_when'])
+                && ! docaraCatalogCondition($parameter['available_when']))
             || (isset($parameter['mirrors'])
                 && (! docaraCatalogStringList($parameter['mirrors'], true)
                     || array_filter(

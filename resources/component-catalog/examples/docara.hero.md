@@ -37,3 +37,16 @@ Markdown remains content while JSON describes composition.
 
 ![Docara flow](../../_docara/component-catalog/docara-flow.png)
 :::
+
+<!-- docara-variant:state.background_media -->
+<!-- The production-path background state is exercised in an isolated project
+fixture because its local /assets/ admission must be bound to a locale page. -->
+```markdown
+:::hero {media=background overlay=dark overlay_strength=medium}
+# A focused background Hero
+
+The image remains decorative while this content stays readable.
+
+![](/assets/docara-screen.png)
+:::
+```

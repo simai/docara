@@ -52,6 +52,8 @@
         "status": {"type": "string", "minLength": 1},
         "provider": {"type": "string", "minLength": 1},
         "capabilities": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "states": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "parameters": {"type": "array", "items": {"type": "object"}},
         "preview_supported": {"type": "boolean"},
         "schema": {"type": "string", "minLength": 1},
         "container_contract": {

@@ -27,6 +27,38 @@ Docara превращает Markdown и проверенные JSON-настро
 | `centered` | Текст и действие по центру |
 | `compact` | Короткое введение без изображения |
 
+## Изображение
+
+`media` задаёт семантику единственного Markdown-изображения:
+
+| Значение | Контракт |
+| --- | --- |
+| `auto` | Совместимый режим по умолчанию: сохраняет прежнее поведение Hero |
+| `side` | Одно смысловое изображение с непустым alt; только `variant=split` |
+| `background` | Одно декоративное локальное изображение с пустым alt |
+| `none` | Изображение запрещено |
+
+Фоновый режим использует уже написанное Markdown-изображение — отдельного
+`image` или `background_image` свойства у Hero нет. Файл должен существовать
+в `assets/`; внешние URL, data URI, переходы по каталогам, symlink и hardlink
+отклоняются до рендера.
+
+```markdown
+:::hero {media=background background_fit=cover background_x=center background_y=center overlay=dark overlay_strength=medium}
+# Документация без лишней сложности
+
+Содержимое остаётся читаемым поверх токенизированного затемнения.
+
+![](/assets/docara-screen.png)
+:::
+```
+
+Параметры `background_fit=cover|contain|auto`,
+`background_x=left|center|right`, `background_y=top|center|bottom`,
+`overlay=light|dark` и `overlay_strength=soft|medium|strong` доступны только
+при `media=background`. Их значения по умолчанию: `cover`, `center`, `center`,
+`dark` и `medium`.
+
 :::example {label="Компактный вариант"}
 ```markdown
 :::hero {variant=compact}
@@ -52,8 +84,9 @@ Docara превращает Markdown и проверенные JSON-настро
 ## Содержимое
 
 Блок начинается с одного H1, затем содержит один или два абзаца. После них
-можно добавить до двух безопасных ссылок-действий и одно изображение с
-осмысленным alt-текстом.
+можно добавить до двух безопасных ссылок-действий и одно изображение. Для
+`side` его alt осмысленный, для `background` — пустой, а `none` запрещает
+изображение.
 
 ## Вызов
 

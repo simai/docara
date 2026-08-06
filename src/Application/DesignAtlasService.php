@@ -310,6 +310,8 @@ final readonly class DesignAtlasService
             ),
             'authoring_kind' => $authoringKind,
             'capabilities' => $this->strings($entry['capabilities'] ?? $metadata['capabilities'] ?? $authoring['jobs'] ?? []),
+            'states' => $this->strings($entry['states'] ?? []),
+            'parameters' => is_array($authoring['parameters'] ?? null) ? array_values($authoring['parameters']) : [],
             'preview_supported' => $lifecycle === 'supported',
             'schema' => 'component-catalog-entry.schema.json',
             'container_contract' => $container,

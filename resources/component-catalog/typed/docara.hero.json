@@ -13,13 +13,22 @@
             "primary_landing_action"
         ],
     "parameters": [
-      {"name": "variant", "type": "enum", "required": false, "default": "split", "values": ["split", "centered", "compact"]}
+      {"name": "variant", "type": "enum", "required": false, "default": "split", "values": ["split", "centered", "compact"]},
+      {"name": "media", "type": "enum", "required": false, "default": "auto", "values": ["auto", "side", "background", "none"]},
+      {"name": "background_fit", "type": "enum", "required": false, "default": "cover", "values": ["cover", "contain", "auto"], "available_when": {"media": "background"}},
+      {"name": "background_x", "type": "enum", "required": false, "default": "center", "values": ["left", "center", "right"], "available_when": {"media": "background"}},
+      {"name": "background_y", "type": "enum", "required": false, "default": "center", "values": ["top", "center", "bottom"], "available_when": {"media": "background"}},
+      {"name": "overlay", "type": "enum", "required": false, "default": "dark", "values": ["light", "dark"], "available_when": {"media": "background"}},
+      {"name": "overlay_strength", "type": "enum", "required": false, "default": "medium", "values": ["soft", "medium", "strong"], "available_when": {"media": "background"}}
     ]
     },
     "states": [
         "text",
         "text_with_action",
-        "text_with_media"
+        "text_with_media",
+        "side_media",
+        "background_media",
+        "no_media"
     ],
     "verification": {
         "renderer": true,

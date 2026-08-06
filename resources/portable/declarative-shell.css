@@ -52,6 +52,7 @@ sf-alert,sf-button{display:block}
 .docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100cqw;margin-inline:calc(50% - 50cqw)}
 .docara-landing [data-docara-container]{box-sizing:border-box;width:100%}
 .docara-surface>[data-docara-surface-background],.docara-surface>[data-docara-surface-overlay]{position:absolute;inset:0;inline-size:100%;block-size:100%;pointer-events:none}
+.docara-surface>[data-docara-container]{box-sizing:border-box;max-inline-size:100%}
 .docara-surface>[data-docara-surface-background]{z-index:-2}
 .docara-surface>[data-docara-surface-background][data-fit="cover"]{object-fit:cover}
 .docara-surface>[data-docara-surface-background][data-fit="contain"]{object-fit:contain}

@@ -559,6 +559,7 @@ MD);
             'Direct and Section-wrapped full-width surfaces must reach only their admitted main-region boundary.',
         );
         self::assertStringContainsString('[data-docara-region="main"]{container-type:inline-size}', $shellCss);
+        self::assertStringContainsString('.docara-surface>[data-docara-container]{box-sizing:border-box;max-inline-size:100%}', $shellCss);
         self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:transparent;', $shellCss);
         self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre}', $shellCss);
         self::assertStringContainsString(

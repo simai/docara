@@ -70,7 +70,7 @@ final class GoalCPublicDocumentationTest extends TestCase
     {
         $root = dirname(__DIR__, 2) . '/docs/site';
         $atlas = (new DesignAtlasService)->atlas($root)->toArray()['data'];
-        self::assertSame(85, $atlas['count']);
+        self::assertSame(86, $atlas['count']);
         $groups = [
             'native' => [':::atlas_index {origin=native authoring=markdown support=supported}', ['native.code', 'native.table']],
             'inline' => [':::atlas_index {kind=block origin=docara authoring=inline support=supported}', ['docara.badge', 'docara.button', 'docara.icon', 'docara.kbd']],

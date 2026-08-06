@@ -629,6 +629,12 @@ final readonly class PortableSiteBuilder
                 ...$this->contentAssets($context['path'], array_keys($outputs), $context['prefix']),
             );
         }
+        $contentAssets = $this->withDocumentLocalAssets(
+            $contentAssets,
+            $contextPages,
+            $contentContexts,
+            $root,
+        );
         $redirectPublisher = new PortableRedirectPublisher($this->files);
         $redirectPlan = $redirectPublisher->plan(
             $root,
@@ -1682,6 +1688,69 @@ final readonly class PortableSiteBuilder
             $this->files->ensureDirectoryExists(dirname($target));
             $this->files->copy($asset['source'], $target);
         }
+    }
+
+    /**
+     * @param  list<array{source: string, relative: string}>  $assets
+     * @param  list<array<string, mixed>>  $pages
+     * @param  array<string, array<string, mixed>>  $contexts
+     * @return list<array{source: string, relative: string}>
+     */
+    private function withDocumentLocalAssets(
+        array $assets,
+        array $pages,
+        array $contexts,
+        string $root,
+    ): array {
+        $indexed = [];
+        foreach ($assets as $asset) {
+            $indexed[$asset['relative']] = $asset;
+        }
+        foreach ($pages as $page) {
+            $artifact = $page['document_artifact'] ?? null;
+            $locale = (string) ($page['locale'] ?? '');
+            $context = $contexts[$locale] ?? null;
+            if (! $artifact instanceof RenderArtifact || ! is_array($context)) {
+                continue;
+            }
+            $prefix = trim((string) ($context['prefix'] ?? ''), '/');
+            foreach ($artifact->hydration['local_public_assets'] ?? [] as $assetUrl) {
+                if (! is_string($assetUrl) || ! str_starts_with($assetUrl, '/assets/')) {
+                    throw new PortableConfigurationException(
+                        'PORTABLE_LOCAL_ASSET_RECEIPT_INVALID',
+                        'A document local-asset receipt must contain an admitted /assets/ path.',
+                    );
+                }
+                $source = $root . '/' . ltrim($assetUrl, '/');
+                $relative = implode('/', array_filter(
+                    [$prefix, ltrim($assetUrl, '/')],
+                    static fn (string $part): bool => $part !== '',
+                ));
+                if (is_link($source) || ! is_file($source) || ((int) (lstat($source)['nlink'] ?? 0)) !== 1) {
+                    throw new PortableConfigurationException(
+                        'PORTABLE_LOCAL_ASSET_RECEIPT_UNSAFE',
+                        "Document local asset [$assetUrl] is missing or unsafe.",
+                    );
+                }
+                if (isset($indexed[$relative])) {
+                    if (! hash_equals(
+                        hash_file('sha256', $indexed[$relative]['source']),
+                        hash_file('sha256', $source),
+                    )) {
+                        throw new PortableConfigurationException(
+                            'PORTABLE_ASSET_SOURCE_COLLISION',
+                            "Document local asset [$assetUrl] collides with a locale-owned asset.",
+                        );
+                    }
+
+                    continue;
+                }
+                $indexed[$relative] = ['source' => $source, 'relative' => $relative];
+            }
+        }
+        ksort($indexed, SORT_STRING);
+
+        return array_values($indexed);
     }
 
     /** @param array<string, mixed> $lock */

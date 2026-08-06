@@ -14,8 +14,12 @@ namespace Simai\Docara\PortableSite;
 final readonly class SurfacePresentation
 {
     /** @param array<string, string> $props */
-    public function render(array $props, string $content, string $backgroundUrl = ''): string
-    {
+    public function render(
+        array $props,
+        string $content,
+        string $backgroundUrl = '',
+        bool $publishBackgroundAsset = false,
+    ): string {
         return $this->compose(
             '<section data-docara-block="surface" data-docara-surface data-docara-width="'
                 . $props['width'] . '" data-docara-tone="' . $props['tone'] . '"',
@@ -23,6 +27,7 @@ final readonly class SurfacePresentation
             $props,
             $content,
             $backgroundUrl,
+            $publishBackgroundAsset,
             '<div data-docara-container data-docara-content-width="' . $props['content_width'] . '"',
             'docara-surface__content relative ' . $this->innerClass($props['content_width']) . ' '
                 . $this->paddingClass($props['padding']),
@@ -41,6 +46,7 @@ final readonly class SurfacePresentation
         array $props,
         string $content,
         string $backgroundUrl,
+        bool $publishBackgroundAsset,
     ): string {
         if (preg_match('/^[a-z][a-z0-9-]*$/D', $semanticBlock) !== 1
             || preg_match('/^[a-z][a-z0-9-]*$/D', $variant) !== 1
@@ -56,6 +62,7 @@ final readonly class SurfacePresentation
             $props,
             $content,
             $backgroundUrl,
+            $publishBackgroundAsset,
             '<div data-docara-container data-docara-content-width="container"',
             'docara-surface__content relative container m-inline-auto grid grid-col-1 gap-4 items-center '
                 . $this->paddingClass($props['padding']),
@@ -97,15 +104,17 @@ final readonly class SurfacePresentation
         array $props,
         string $content,
         string $backgroundUrl,
+        bool $publishBackgroundAsset,
         string $contentOpening,
         string $contentClass,
     ): string {
+        $assetReceipt = $publishBackgroundAsset ? ' data-docara-publish-local-asset' : '';
         $media = $backgroundUrl === '' ? ''
             : '<img data-docara-surface-background alt="" aria-hidden="true" src="' . $backgroundUrl
                 . '" data-fit="' . $props['background_fit']
                 . '" data-x="' . $props['background_x']
                 . '" data-y="' . $props['background_y']
-                . '" loading="lazy" decoding="async">';
+                . '" loading="lazy" decoding="async"' . $assetReceipt . '>';
         $overlay = $props['overlay'] === 'none' ? ''
             : '<span data-docara-surface-overlay data-overlay="' . $props['overlay']
                 . '" data-strength="' . $props['overlay_strength'] . '" aria-hidden="true"></span>';

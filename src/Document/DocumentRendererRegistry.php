@@ -47,15 +47,22 @@ final readonly class DocumentRendererRegistry
     {
         $componentArtifacts = [];
         $assets = [];
+        $localPublicAssets = [];
         $html = '';
         foreach ($document->nodes as $node) {
             [$artifact, $nestedComponents] = $this->renderTree($node, $context);
             $html .= $artifact->html;
             array_push($assets, ...$artifact->assets);
+            array_push(
+                $localPublicAssets,
+                ...array_values(array_filter($artifact->hydration['local_public_assets'] ?? [], 'is_string')),
+            );
             array_push($componentArtifacts, ...$nestedComponents);
         }
         $assets = array_values(array_unique($assets));
         sort($assets, SORT_STRING);
+        $localPublicAssets = array_values(array_unique($localPublicAssets));
+        sort($localPublicAssets, SORT_STRING);
 
         return [
             'document' => new RenderArtifact(
@@ -64,6 +71,7 @@ final readonly class DocumentRendererRegistry
                 [
                     'renderer_registry' => $this->types(),
                     'component_calls' => count($componentArtifacts),
+                    'local_public_assets' => $localPublicAssets,
                 ],
                 ['source' => $document->source],
             ),

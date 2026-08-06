@@ -26,11 +26,18 @@ final readonly class ContainerDocumentNodeRenderer implements DocumentNodeRender
     {
         $html = implode('', array_map(static fn (RenderArtifact $artifact): string => $artifact->html, $children));
         $assets = [];
+        $localPublicAssets = [];
         foreach ($children as $artifact) {
             array_push($assets, ...$artifact->assets);
+            array_push(
+                $localPublicAssets,
+                ...array_values(array_filter($artifact->hydration['local_public_assets'] ?? [], 'is_string')),
+            );
         }
         $assets = array_values(array_unique($assets));
         sort($assets, SORT_STRING);
+        $localPublicAssets = array_values(array_unique($localPublicAssets));
+        sort($localPublicAssets, SORT_STRING);
 
         return new RenderArtifact(
             $this->markdown->renderContainer($node, $html, $context->sourceRoot, $context->sourceFile),
@@ -39,6 +46,7 @@ final readonly class ContainerDocumentNodeRenderer implements DocumentNodeRender
                 'renderer' => $node->renderer,
                 'node_type' => 'container',
                 'child_artifacts' => count($children),
+                'local_public_assets' => $localPublicAssets,
             ],
             ['source' => $node->location()->toArray()],
         );

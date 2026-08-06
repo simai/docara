@@ -29,11 +29,20 @@ final readonly class SourceDocumentNodeRenderer implements DocumentNodeRenderer
         if ($html === '') {
             $html = "\n";
         }
+        $localPublicAssets = $this->markdown->localPublicImageDependencies(
+            $html,
+            $context->sourceRoot,
+            $context->sourceFile,
+        );
 
         return new RenderArtifact(
             $html,
             [],
-            ['renderer' => 'markdown', 'node_type' => $node->type()],
+            [
+                'renderer' => 'markdown',
+                'node_type' => $node->type(),
+                'local_public_assets' => $localPublicAssets,
+            ],
             ['source' => $node->location()->toArray()],
         );
     }

@@ -15,6 +15,7 @@ use Simai\Docara\Portable\ResolvedPagePlan;
 use Simai\Docara\PortableSite\PageBuilder;
 use Simai\Docara\PortableSite\PageBuilderResult;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
+use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Smart\Runtime\ProjectSmartRuntime;
 
 final class HeroMediaRuntimeTest extends TestCase
@@ -98,6 +99,63 @@ final class HeroMediaRuntimeTest extends TestCase
         self::assertSame(1, substr_count($built->contentHtml, 'data-docara-surface-background'));
         self::assertStringContainsString('data-fit="contain" data-x="right" data-y="bottom"', $built->contentHtml);
         self::assertStringContainsString('data-overlay="light" data-strength="soft"', $built->contentHtml);
+        self::assertSame(['/assets/docara-screen.png'], $built->documentArtifact->hydration['local_public_assets']);
+    }
+
+    #[Test]
+    public function production_build_publishes_a_receipted_root_asset_without_locale_duplication(): void
+    {
+        $files = new Filesystem;
+        $root = sys_get_temp_dir() . '/docara-hero-build-' . bin2hex(random_bytes(8));
+        self::assertTrue($files->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $root));
+        $root = (string) realpath($root);
+        self::assertTrue($files->copy(
+            $this->site . '/assets/docara-screen.png',
+            $root . '/assets/hero.png',
+        ));
+        file_put_contents(
+            $root . '/content/ru/components/hero.md',
+            "# Hero contract\n\n:::hero {media=background}\n# Background\n\nDescription.\n\n![](/assets/hero.png)\n:::\n",
+        );
+
+        try {
+            (new PortableSiteBuilder($files, new PortableMarkdownRenderer))->build($root, $root . '/build_test');
+
+            self::assertFileExists($root . '/build_test/ru/assets/hero.png');
+            self::assertSame(
+                hash_file('sha256', $root . '/assets/hero.png'),
+                hash_file('sha256', $root . '/build_test/ru/assets/hero.png'),
+            );
+            $html = (string) file_get_contents($root . '/build_test/ru/components/hero/index.html');
+            self::assertSame(1, substr_count($html, 'src="../../assets/hero.png"'));
+            self::assertSame(1, substr_count($html, 'data-docara-publish-local-asset'));
+        } finally {
+            $files->deleteDirectory($root);
+        }
+    }
+
+    #[Test]
+    public function a_receipted_root_asset_cannot_shadow_a_different_locale_owned_asset(): void
+    {
+        $files = new Filesystem;
+        $root = sys_get_temp_dir() . '/docara-hero-collision-' . bin2hex(random_bytes(8));
+        self::assertTrue($files->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $root));
+        $root = (string) realpath($root);
+        $files->ensureDirectoryExists($root . '/content/ru/assets');
+        file_put_contents($root . '/assets/hero.png', 'root');
+        file_put_contents($root . '/content/ru/assets/hero.png', 'locale');
+        file_put_contents(
+            $root . '/content/ru/components/hero.md',
+            "# Hero contract\n\n:::hero {media=background}\n# Background\n\nDescription.\n\n![](/assets/hero.png)\n:::\n",
+        );
+
+        try {
+            $this->expectException(PortableConfigurationException::class);
+            $this->expectExceptionMessage('[PORTABLE_ASSET_SOURCE_COLLISION]');
+            (new PortableSiteBuilder($files, new PortableMarkdownRenderer))->build($root, $root . '/build_test');
+        } finally {
+            $files->deleteDirectory($root);
+        }
     }
 
     #[Test]

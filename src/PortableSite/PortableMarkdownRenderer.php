@@ -94,6 +94,45 @@ final class PortableMarkdownRenderer
         return $this->smartRenderer;
     }
 
+    /** @return list<string> */
+    public function localPublicImageDependencies(
+        string $html,
+        ?string $sourceRoot,
+        ?string $sourceFile,
+    ): array {
+        preg_match_all('/<img\b(?<attributes>[^>]*)\bdata-docara-publish-local-asset(?:\s|>)/u', $html, $images);
+        $assets = [];
+        foreach ($images['attributes'] ?? [] as $attributes) {
+            if (preg_match('/\bsrc="(?<src>[^"]+)"/u', (string) $attributes, $match) !== 1) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_LOCAL_IMAGE_RECEIPT_INVALID',
+                    'A published local image receipt requires an admitted src.',
+                );
+            }
+            $source = $match['src'];
+            $source = html_entity_decode((string) $source, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+            if (str_starts_with($source, '/assets/')) {
+                $asset = $source;
+            } elseif (preg_match('#^(?:\.\./)+assets/(?<path>.+)$#D', $source, $match) === 1) {
+                $asset = '/assets/' . (string) $match['path'];
+            } else {
+                continue;
+            }
+            $this->localPublicImageAsset(
+                $asset,
+                $sourceRoot,
+                $sourceFile,
+                'MARKDOWN_LOCAL_IMAGE',
+                'Local Markdown image',
+            );
+            $assets[] = $asset;
+        }
+        $assets = array_values(array_unique($assets));
+        sort($assets, SORT_STRING);
+
+        return $assets;
+    }
+
     public function renderContainer(
         ContainerNode $node,
         string $contentHtml,
@@ -1880,6 +1919,7 @@ final class PortableMarkdownRenderer
                 $surfaceProps,
                 '<div class="min-w-0 flex flex-col gap-2' . $alignment . '">' . $content . '</div>',
                 $backgroundUrl,
+                true,
             );
         }
 
@@ -2018,7 +2058,12 @@ final class PortableMarkdownRenderer
             );
         }
 
-        return $this->surfaces->render($props, $content, $backgroundUrl);
+        return $this->surfaces->render(
+            $props,
+            $content,
+            $backgroundUrl,
+            $background !== '',
+        );
     }
 
     private function localSurfaceAsset(string $url, ?string $sourceRoot, ?string $sourceFile): string

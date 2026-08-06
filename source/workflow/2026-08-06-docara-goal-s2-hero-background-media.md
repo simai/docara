@@ -1,13 +1,14 @@
 # Goal S2 — Hero Background Media on the Shared Surface
 
 Date: 2026-08-06
-Status: `in_progress`
+Status: `ready_for_independent_audit`
 Workflow ID: `2026-08-06-docara-goal-s2-hero-background-media`
 Track: `docara.track.surface-hero-media`
 Entry product candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
 Entry governance HEAD: `4feb910b4d1a822dd323d559855c020ba4e3480d`
 Independent S1 verdict: `PASS`
 Branch: `codex/docara-unified-architecture`
+Exact product candidate: `794fac076be86ed4d03167120800ab0e91715aff`
 
 ## Authority and process selection
 
@@ -48,10 +49,21 @@ LayoutComposer or PageBuilder is allowed.
   package/consumer and browser matrices bind one exact candidate;
 - final state is `goal_s2_ready_for_independent_audit`; S3 stays unstarted.
 
+## Final result
+
+S2.0-S2.5 are complete on exact product candidate `794fac0…`. Full PHPUnit is
+501/10,594; fresh full/full/single share 393 files and canonical digest
+`7a8c5645…`; static checks 266 HTML / 35,583 references / broken=0. Two clean
+clones reproduce the verified ZIP `94bfda5a…`; the fresh dist consumer and
+20/20 browser matrix are green. Detailed commands and hashes are linked from
+`source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`.
+
+The result is executor-ready only. Next action is
+`independent_goal_s2_reverse_outcome_audit`; S3 remains unauthorized.
+
 ## Safety and rollback
 
 Only repository product, tests, specification, graph, workflow and handoff are
 in scope. External repositories/sites and release actions are forbidden.
 Rollback is the parent of each bounded S2 commit; the accepted S1 product
 candidate remains the immutable comparison boundary.
-

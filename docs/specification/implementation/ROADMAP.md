@@ -3,8 +3,9 @@
 Текущий статус архитектурного roadmap: Goal 1, Goal 2, Goal 3 и Goals A-C
 независимо приняты. Отдельно авторизованный post-roadmap track Surface & Hero
 Media независимо принял Goal S1 на exact candidate
-`ac53ea4d372a47dc8278b595accca9e7b85c66a3` (`PASS`). Goal S2 Hero Media —
-единственный активный scope; S3 не начат. Goal C C1 исправил projection/settings/journey defects на
+`ac53ea4d372a47dc8278b595accca9e7b85c66a3` (`PASS`). Goal S2 Hero Media
+реализован на exact candidate `794fac076be86ed4d03167120800ab0e91715aff` и
+готов к независимому аудиту; S3 не начат. Goal C C1 исправил projection/settings/journey defects на
 exact product candidate `eb35f5c6f18e5eb9be69e91887b09486f5703136`,
 который независимый reverse-outcome audit принял с `PASS`. Шесть входов компонентов,
 разделы дизайна и настроек, исполняемый safe agent journey и принятые extension
@@ -34,9 +35,12 @@ Independent verdict: `PASS`; Goal S2 entry gate открыт.
 
 ## Goal S2. Hero Background Media
 
-Статус: `in_progress`. Добавляется закрытый `media=auto|side|background|none`
-контракт существующего Hero. Default остаётся byte-identical, а background
-делегирует geometry/media/overlay принятому shared Surface presentation.
+Статус: `ready_for_independent_audit`. Закрытый
+`media=auto|side|background|none` контракт существующего Hero реализован на
+`794fac0…`. Default byte-identical, background делегирует geometry/media/overlay
+принятому shared Surface presentation. Full/full/single digest `7a8c5645…`,
+verified ZIP `94bfda5a…`, fresh consumer и browser 20/20 зелёные. Независимая
+приёмка ещё не заявлена; S3 остаётся unauthorized.
 
 ## Нулевая точка
 

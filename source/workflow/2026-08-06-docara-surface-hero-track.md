@@ -1,12 +1,12 @@
 # Docara Surface & Hero Media post-roadmap track
 
 Date: 2026-08-06
-Status: `goal_s2_in_progress`
+Status: `goal_s2_ready_for_independent_audit`
 Current stage: `docara.stage.s2.hero_media`
 Current batch: `docara.batch.s2.hero_background`
-Current product candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
-Next roadmap goal: `docara.goal.s2` (`in_progress`, authorized=`true`)
-Current next action: `execute_goal_s2_hero_background_media`
+Current product candidate: `794fac076be86ed4d03167120800ab0e91715aff`
+Next roadmap goal: `docara.goal.s2` (`ready_for_independent_audit`, authorized=`true`)
+Current next action: `independent_goal_s2_reverse_outcome_audit`
 Track ID: `docara.track.surface-hero-media`
 Repository: `/Users/rim/Documents/GitHub/docara-unified`
 Branch: `codex/docara-unified-architecture`
@@ -55,6 +55,13 @@ Goal S1 is independently accepted with `PASS` on product candidate
 reproduced canonical 393-file ledger is `650a678c...`; the former
 `90bf6378...` claim remains rejected. That verdict opens only Goal S2. Goal S3
 and release/live actions remain unauthorized.
+
+Goal S2 implementation is complete on exact product candidate `794fac0...` and
+stops at `ready_for_independent_audit`. Its executor evidence proves the closed
+Hero media contract, exact default parity, shared Surface presentation, local
+asset receipts, deterministic builds/package/consumer and the responsive
+browser matrix. This is not independent acceptance; Goal S3 remains unstarted
+and unauthorized.
 
 ## 1. Problem and factual baseline
 

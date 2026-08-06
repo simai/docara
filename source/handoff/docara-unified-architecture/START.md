@@ -18,7 +18,7 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `goal_s2_in_progress`
+Current state: `goal_s2_ready_for_independent_audit`
 
 Current goal: `docara.goal.unified`
 
@@ -26,23 +26,23 @@ Current stage: `docara.stage.s2.hero_media`
 
 Current batch: `docara.batch.s2.hero_background`
 
-Current next action: `execute_goal_s2_hero_background_media`
+Current next action: `independent_goal_s2_reverse_outcome_audit`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
-Current candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
+Current candidate: `794fac076be86ed4d03167120800ab0e91715aff`
 
 Next roadmap goal: `docara.goal.s2`
 
-Next roadmap status: `in_progress`
+Next roadmap status: `ready_for_independent_audit`
 
 Next roadmap authorized: `true`
 
 Goal 1-3 and Goals A-C remain independently accepted. The explicitly
 authorized post-roadmap Surface & Hero Media track has independently accepted
-Goal S1 at exact product `ac53ea4…` and governance `4feb910…`. Goal S2 is the
-only active scope: closed semantic Hero media modes through the accepted shared
-Surface presentation. S3 and all release/live actions remain unauthorized.
+Goal S1 at exact product `ac53ea4…` and governance `4feb910…`. Goal S2 is
+implemented on exact candidate `794fac0…` and awaits an independent audit.
+S3 and all release/live actions remain unauthorized.
 
 ## 3. Read in this order
 
@@ -62,7 +62,8 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only an explicitly authorized next action
 
-Execute only Goal S2 and stop for an independent audit. Do not begin S3. This
+Execute only the independent Goal S2 reverse-outcome audit. Do not implement
+more S2 work unless the audit requests correction, and do not begin S3. This
 handoff does not authorize release review, merge, tag or deployment.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.

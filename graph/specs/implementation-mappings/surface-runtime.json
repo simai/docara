@@ -4,8 +4,8 @@
   "kind": "relation",
   "subtype": "implementation_mapping",
   "tz_role": "traceability",
-  "title": "Surface runtime implementation mapping",
-  "summary": "Goal S1 mapping from the typed Surface contract to implementation, tests and exact-candidate evidence.",
+  "title": "Surface and Hero media runtime implementation mapping",
+  "summary": "Goal S1/S2 mapping from the typed Surface and Hero media contracts to implementation, tests and exact-candidate evidence.",
   "owner": "dev",
   "lifecycle": "active",
   "readiness": "ready_for_independent_audit",
@@ -24,11 +24,14 @@
     "src/Document/ContainerDocumentNodeRenderer.php#ContainerDocumentNodeRenderer",
     "src/ComponentCatalog/TypedRendererId.php#TypedRendererId",
     "resources/schemas/declarative-surface.schema.json",
+    "resources/schemas/declarative-hero.schema.json",
     "resources/portable/declarative-shell.css",
-    "docs/site/content/ru/components/surface.md"
+    "docs/site/content/ru/components/surface.md",
+    "docs/site/content/ru/components/hero.md"
   ],
   "test_refs": [
     "tests/Unit/SurfaceRuntimeTest.php",
+    "tests/Unit/HeroMediaRuntimeTest.php",
     "tests/Unit/GoalCPublicDocumentationTest.php",
     "tests/Unit/PortableSiteBuilderTest.php"
   ],
@@ -36,7 +39,9 @@
     "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-BASELINE-AND-SURFACE.md",
     "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-INTEGRATED-ACCEPTANCE.md",
     "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-C1-PIPELINE-CONTAINER-CORRECTION.md",
-    "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-C2-DEPTH-CONTRACT-CORRECTION.md"
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-C2-DEPTH-CONTRACT-CORRECTION.md",
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/S2-HERO-BACKGROUND.md",
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/S2-INTEGRATED-ACCEPTANCE.md"
   ],
   "review_refs": ["docara.gate.architecture_acceptance"],
   "current_behavior": [
@@ -44,14 +49,16 @@
     "Documentation Surface full width is bounded to the main region and does not overlap sidebar or outline.",
     "Decorative media is project-local, published through the normal asset contour and hidden from accessibility APIs.",
     "Full, single and isolated preview use one production renderer and PageBuilder path.",
-    "Every container enforces max_depth relative to its own subtree root and resolves Smart child capabilities from its registry descriptor."
+    "Every container enforces max_depth relative to its own subtree root and resolves Smart child capabilities from its registry descriptor.",
+    "Hero auto preserves S1 bytes; side, background and none use one typed renderer and the accepted Surface presentation.",
+    "Background media is one admitted local asset published through the normal deterministic build receipt."
   ],
   "known_deviations": [
-    "S2 Hero background media and homepage art direction remain unstarted."
+    "Homepage art direction remains unchanged; S3 Showcase/Promo adoption is unstarted."
   ],
   "deletion_gates": [
     "No legacy Surface runtime was deleted; rollback is revert to entry boundary 8e4b71c58065a1f49382dd8077809363e0eed873."
   ],
   "status": "ready_for_independent_audit",
-  "mapped_revision": "ac53ea4d372a47dc8278b595accca9e7b85c66a3"
+  "mapped_revision": "794fac076be86ed4d03167120800ab0e91715aff"
 }

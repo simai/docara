@@ -1,7 +1,7 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-06
-Status: Goal S2 in progress
+Status: Goal S2 ready for independent audit
 Workflow ID: `2026-08-06-docara-goal-s2-hero-background-media`
 Graph goal: `docara.goal.unified`
 
@@ -25,17 +25,17 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `goal_s2_in_progress`;
+- state: `goal_s2_ready_for_independent_audit`;
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.s2.hero_media`;
 - batch: `docara.batch.s2.hero_background`;
-- candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`;
+- candidate: `794fac076be86ed4d03167120800ab0e91715aff`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `execute_goal_s2_hero_background_media`;
+- next action: `independent_goal_s2_reverse_outcome_audit`;
 - Goal 1-3 and Goals A-C remain independently accepted. The separately
   authorized Surface & Hero Media track is active only through completed Goal
-  S1, which is independently accepted. Goal S2 is now the only authorized
-  implementation scope; S3 is unstarted.
+  S1, which is independently accepted. Goal S2 implementation is complete and
+  awaits an independent reverse-outcome audit; S3 is unstarted and unauthorized.
 
 ## Accepted pipeline
 
@@ -60,7 +60,9 @@ clone all produce 393 files at canonical digest `650a678c…`; both full roots
 pass 266 HTML / 35,581 references / broken=0.
 
 Goal S2 adds closed Hero media modes while keeping the default Hero bytes and
-delegating background presentation to the same Surface primitive.
+delegating background presentation to the same Surface primitive. Exact
+candidate `794fac0…` passes 501/10,594 PHPUnit, full/full/single digest
+`7a8c5645…`, verified ZIP `94bfda5a…`, fresh consumer and browser 20/20.
 
 ## Boundary
 

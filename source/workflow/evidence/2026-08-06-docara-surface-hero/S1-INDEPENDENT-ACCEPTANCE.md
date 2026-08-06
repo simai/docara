@@ -16,4 +16,3 @@ runtime, project Smart aggregation, package/consumer and browser evidence.
 
 This verdict authorizes only Goal S2. It does not authorize S3, release or site
 writes.
-

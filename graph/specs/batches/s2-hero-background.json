@@ -7,8 +7,8 @@
   "title": "Goal S2 Hero background media",
   "summary": "Implement and verify closed Hero media modes through the existing typed IR and shared Surface presentation.",
   "owner": "teamlead",
-  "lifecycle": "active",
-  "readiness": "in_progress",
+  "lifecycle": "audit_pending",
+  "readiness": "ready_for_independent_audit",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-06-docara-goal-s2-hero-background-media.md"],
   "evidence_refs": ["source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md"],
@@ -17,8 +17,8 @@
   "allowed_scope": ["Hero typed props", "Shared Surface presentation", "Local media admission", "Atlas and isolated demo", "Tests and evidence"],
   "forbidden_scope": ["S3", "Homepage art-direction change", "Second rendering path", "External repositories or sites", "Merge", "Push", "Tag", "Release", "Deploy"],
   "checks": ["Default Hero byte parity", "Focused and full PHPUnit", "Full/full/single determinism", "Static and browser matrix", "Package and consumer regression"],
-  "status": "in_progress",
+  "status": "ready_for_independent_audit",
   "baseline_revision": "ac53ea4d372a47dc8278b595accca9e7b85c66a3",
-  "candidate_revision": "ac53ea4d372a47dc8278b595accca9e7b85c66a3",
-  "next_action": "execute_goal_s2_hero_background_media"
+  "candidate_revision": "794fac076be86ed4d03167120800ab0e91715aff",
+  "next_action": "independent_goal_s2_reverse_outcome_audit"
 }

@@ -1,16 +1,17 @@
-# Next action: `execute_goal_s2_hero_background_media`
+# Next action: `independent_goal_s2_reverse_outcome_audit`
 
-Current state: `goal_s2_in_progress`
+Current state: `goal_s2_ready_for_independent_audit`
 
-Current candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
+Current candidate: `794fac076be86ed4d03167120800ab0e91715aff`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
-Goal 1-3, Goals A-C and Goal S1 are independently accepted. Goal S1 product
-candidate `ac53ea4…` and governance HEAD `4feb910…` are the frozen S2 entry
-boundary; its 393-file canonical digest is `650a678c…`. Execute only Goal S2
-Hero background media. S3, merge, push, tag, release, publication, deploy and
-live-site writes remain unauthorized.
+Goal 1-3, Goals A-C and Goal S1 are independently accepted. Goal S2 product
+candidate `794fac0…` is complete and has executor evidence for exact default
+Hero parity, shared Surface background media, 393-file canonical digest
+`7a8c5645…`, verified ZIP `94bfda5a…`, fresh consumer and browser 20/20.
+Perform only its independent reverse-outcome audit. S3, merge, push, tag,
+release, publication, deploy and live-site writes remain unauthorized.
 
 ## Historical deployment decision (parked, not executable)
 

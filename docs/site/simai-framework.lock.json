@@ -116,6 +116,44 @@
       }
     }
   },
+  "typography_projection": {
+    "schema": "docara.framework_typography_projection.v1",
+    "candidate": "5.4.0-rc.1",
+    "source": {
+      "provider": "simai/ui-loader",
+      "revision": "41cc7e01a3616bf245bf054917033397684d2093",
+      "rollback_parent": "36123543027d6b363c2242c747bf1fd8ec7d6c88"
+    },
+    "builder": {
+      "provider": "simai/ui-builder",
+      "revision": "367b3423f9707b850c6bef9476ab8d1ed44039e1"
+    },
+    "distribution": {
+      "provider": "simai/ui",
+      "revision": "2b2e6ea88ac5f30dc0c90c61104506e6c9541108",
+      "rollback_parent": "d1daa951dd08b94a9f209fd9f31a78d2b3779563",
+      "published": false
+    },
+    "packet_sha256": "d20a0ce7d97bbb3e9502236fa3cb73acd7ca3d74b2559a3120ea3496a4c98dad",
+    "files": {
+      "contract": {
+        "path": "portable/vendor/simai-framework/typography/5.4.0-rc.1/adaptive-sizing.v1.json",
+        "public": "_docara/vendor/simai-framework/typography/5.4.0-rc.1/adaptive-sizing.v1.json",
+        "sha256": "9180a5fe78a01890a8492b240d676b212ad73bccd6f7e9c8853984e4c590a7b3"
+      },
+      "core": {
+        "path": "portable/vendor/simai-framework/typography/5.4.0-rc.1/core.css",
+        "public": "_docara/vendor/simai-framework/typography/5.4.0-rc.1/core.css",
+        "sha256": "9c235fbdd02246def279e710bd92ee3c6fed4c3dcdcc859f0ebf9ab73afb20af"
+      },
+      "utility": {
+        "path": "portable/vendor/simai-framework/typography/5.4.0-rc.1/utility.full.css",
+        "public": "_docara/vendor/simai-framework/typography/5.4.0-rc.1/utility.full.css",
+        "sha256": "8918648d7ba8b4cf285bbc5d28b22240e05d5f2c47b48c68f9e8e9827e685709"
+      }
+    }
+  },
+
   "manifests": {
     "ui.button": {
       "provider": "larena/ui",

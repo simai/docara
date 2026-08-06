@@ -125,6 +125,9 @@
             },
             "additionalProperties": false
         },
+        "typography_projection": {
+            "$ref": "#/$defs/typography_projection"
+        },
         "nonclaims": {
             "type": "array",
             "minItems": 1,
@@ -137,6 +140,69 @@
     },
     "additionalProperties": false,
     "$defs": {
+        "typography_projection": {
+            "type": "object",
+            "required": ["schema", "candidate", "source", "builder", "distribution", "packet_sha256", "files"],
+            "properties": {
+                "schema": {"type": "string", "const": "docara.framework_typography_projection.v1"},
+                "candidate": {"type": "string", "const": "5.4.0-rc.1"},
+                "source": {"$ref": "#/$defs/typography_source"},
+                "builder": {"$ref": "#/$defs/typography_builder"},
+                "distribution": {"$ref": "#/$defs/typography_distribution"},
+                "packet_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+                "files": {
+                    "type": "object",
+                    "required": ["contract", "core", "utility"],
+                    "properties": {
+                        "contract": {"$ref": "#/$defs/typography_asset"},
+                        "core": {"$ref": "#/$defs/typography_asset"},
+                        "utility": {"$ref": "#/$defs/typography_asset"}
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
+        "typography_source": {
+            "type": "object",
+            "required": ["provider", "revision", "rollback_parent"],
+            "properties": {
+                "provider": {"type": "string", "const": "simai/ui-loader"},
+                "revision": {"type": "string", "format": "docara-immutable-revision"},
+                "rollback_parent": {"type": "string", "format": "docara-immutable-revision"}
+            },
+            "additionalProperties": false
+        },
+        "typography_builder": {
+            "type": "object",
+            "required": ["provider", "revision"],
+            "properties": {
+                "provider": {"type": "string", "const": "simai/ui-builder"},
+                "revision": {"type": "string", "format": "docara-immutable-revision"}
+            },
+            "additionalProperties": false
+        },
+        "typography_distribution": {
+            "type": "object",
+            "required": ["provider", "revision", "rollback_parent", "published"],
+            "properties": {
+                "provider": {"type": "string", "const": "simai/ui"},
+                "revision": {"type": "string", "format": "docara-immutable-revision"},
+                "rollback_parent": {"type": "string", "format": "docara-immutable-revision"},
+                "published": {"type": "boolean", "const": false}
+            },
+            "additionalProperties": false
+        },
+        "typography_asset": {
+            "type": "object",
+            "required": ["path", "public", "sha256"],
+            "properties": {
+                "path": {"type": "string", "format": "docara-relative-path"},
+                "public": {"type": "string", "format": "docara-relative-path"},
+                "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"}
+            },
+            "additionalProperties": false
+        },
         "projected_asset": {
             "type": "object",
             "required": ["sha256"],

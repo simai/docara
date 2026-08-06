@@ -62,6 +62,14 @@ final readonly class FrameworkLock
         return $this->data['asset_projection'];
     }
 
+    /** @return array<string, mixed>|null */
+    public function typographyProjection(): ?array
+    {
+        $projection = $this->data['typography_projection'] ?? null;
+
+        return is_array($projection) ? $projection : null;
+    }
+
     /** @return list<string> */
     public function nonclaims(): array
     {
@@ -177,6 +185,40 @@ final readonly class FrameworkLock
                 || ! $this->isSha256($record['sha256'] ?? null)
             ) {
                 throw new FrameworkComponentException('FRAMEWORK_ASSET_PROJECTION_FILE_INVALID', $relativePath);
+            }
+        }
+
+        $typography = $this->data['typography_projection'] ?? null;
+        if ($typography !== null) {
+            if (! is_array($typography)
+                || ($typography['schema'] ?? null) !== 'docara.framework_typography_projection.v1'
+                || ($typography['candidate'] ?? null) !== '5.4.0-rc.1'
+                || ($typography['source']['provider'] ?? null) !== 'simai/ui-loader'
+                || ! $this->isCommit($typography['source']['revision'] ?? null)
+                || ! $this->isCommit($typography['source']['rollback_parent'] ?? null)
+                || ($typography['builder']['provider'] ?? null) !== 'simai/ui-builder'
+                || ! $this->isCommit($typography['builder']['revision'] ?? null)
+                || ($typography['distribution']['provider'] ?? null) !== 'simai/ui'
+                || ! $this->isCommit($typography['distribution']['revision'] ?? null)
+                || ! $this->isCommit($typography['distribution']['rollback_parent'] ?? null)
+                || ($typography['distribution']['published'] ?? null) !== false
+                || ! $this->isSha256($typography['packet_sha256'] ?? null)
+                || ! is_array($typography['files'] ?? null)
+                || array_keys($typography['files']) !== ['contract', 'core', 'utility']
+            ) {
+                throw new FrameworkComponentException('FRAMEWORK_TYPOGRAPHY_PROJECTION_INVALID');
+            }
+            foreach ($typography['files'] as $key => $record) {
+                if (! is_array($record)
+                    || array_keys($record) !== ['path', 'public', 'sha256']
+                    || ! $this->isSafeRelativePath($record['path'] ?? null)
+                    || ! $this->isSafeRelativePath($record['public'] ?? null)
+                    || ! str_starts_with((string) $record['path'], 'portable/vendor/simai-framework/typography/')
+                    || ! str_starts_with((string) $record['public'], '_docara/vendor/simai-framework/typography/')
+                    || ! $this->isSha256($record['sha256'] ?? null)
+                ) {
+                    throw new FrameworkComponentException('FRAMEWORK_TYPOGRAPHY_ASSET_INVALID', (string) $key);
+                }
             }
         }
 

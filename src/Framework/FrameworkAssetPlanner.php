@@ -35,6 +35,7 @@ final readonly class FrameworkAssetPlanner
         $uiCommit = (string) $runtime['ui']['commit'];
         $smartCommit = (string) $runtime['ui_smart']['commit'];
         $uiBase = 'https://cdn.jsdelivr.net/gh/simai/ui@' . $uiCommit . '/distr';
+        $typography = $this->repository->typographyProjection();
         $boot = $runtime['boot'];
         $pairId = $this->repository->pairId();
         $projectionFingerprint = substr(
@@ -75,11 +76,29 @@ final readonly class FrameworkAssetPlanner
         ], [
             'key' => 'simai.framework.core.css',
             'kind' => 'css',
-            'url' => $this->uiUrl($uiCommit, (string) $boot['css']),
+            'url' => $typography === null
+                ? $this->uiUrl($uiCommit, (string) $boot['css'])
+                : '/' . (string) $typography['files']['core']['public']
+                    . '?sf_v=' . rawurlencode($cacheVersion),
+            'source_revision' => $typography === null
+                ? $uiCommit
+                : (string) $typography['distribution']['revision'],
+            'sha256' => $typography === null
+                ? null
+                : (string) $typography['files']['core']['sha256'],
         ], [
             'key' => 'simai.framework.utility.full.css',
             'kind' => 'css',
-            'url' => $uiBase . '/core/css/utility.full.css',
+            'url' => $typography === null
+                ? $uiBase . '/core/css/utility.full.css'
+                : '/' . (string) $typography['files']['utility']['public']
+                    . '?sf_v=' . rawurlencode($cacheVersion),
+            'source_revision' => $typography === null
+                ? $uiCommit
+                : (string) $typography['distribution']['revision'],
+            'sha256' => $typography === null
+                ? null
+                : (string) $typography['files']['utility']['sha256'],
         ], [
             'key' => 'simai.framework.icon_font.css',
             'kind' => 'inline_css',

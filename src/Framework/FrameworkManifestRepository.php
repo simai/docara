@@ -160,6 +160,49 @@ final readonly class FrameworkManifestRepository
         return $this->lock->assetProjection();
     }
 
+    /** @return array<string, mixed>|null */
+    public function typographyProjection(): ?array
+    {
+        return $this->lock->typographyProjection();
+    }
+
+    public function bundledTypographyAsset(string $key): string
+    {
+        $projection = $this->lock->typographyProjection();
+        $record = $projection['files'][$key] ?? null;
+        if (! is_array($record)
+            || ! is_string($record['path'] ?? null)
+            || ! is_string($record['sha256'] ?? null)
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_TYPOGRAPHY_ASSET_NOT_PROJECTED', $key);
+        }
+
+        $resources = dirname($this->resourceRoot);
+        $path = $resources . '/' . $record['path'];
+        $stat = @lstat($path);
+        $root = realpath($resources);
+        $real = realpath($path);
+        if (! is_array($stat)
+            || is_link($path)
+            || (($stat['mode'] ?? 0) & 0170000) !== 0100000
+            || ($stat['nlink'] ?? 1) !== 1
+            || $root === false
+            || $real === false
+            || ! FilesystemPath::isWithin($real, $root)
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_TYPOGRAPHY_ASSET_UNSAFE', $key);
+        }
+        $bytes = @file_get_contents($path);
+        if (! is_string($bytes) || $bytes === '') {
+            throw new FrameworkComponentException('FRAMEWORK_TYPOGRAPHY_ASSET_MISSING', $key);
+        }
+        if (! hash_equals($record['sha256'], hash('sha256', $bytes))) {
+            throw new FrameworkComponentException('FRAMEWORK_TYPOGRAPHY_ASSET_HASH_MISMATCH', $key);
+        }
+
+        return $bytes;
+    }
+
     public function bundledAsset(string $relativePath): string
     {
         $this->assertSafeRelativePath($relativePath);
@@ -214,6 +257,12 @@ final readonly class FrameworkManifestRepository
             || CanonicalJson::encode($runtime) !== CanonicalJson::encode($this->lock->runtime())
         ) {
             throw new FrameworkComponentException('FRAMEWORK_RUNTIME_PROJECTION_MISMATCH');
+        }
+
+        if ($this->lock->typographyProjection() !== null) {
+            foreach (['contract', 'core', 'utility'] as $key) {
+                $this->bundledTypographyAsset($key);
+            }
         }
     }
 

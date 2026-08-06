@@ -5,10 +5,10 @@
   "subtype": "milestone",
   "tz_role": "implementation_stage",
   "title": "Goal S1. Full-bleed Geometry and Shared Surface Runtime",
-  "summary": "Goal S1 implementation is complete on an exact candidate and awaits independent reverse-outcome audit.",
+  "summary": "Independent audit rejected the first S1 candidate; the bounded pipeline/container correction is in progress.",
   "owner": "teamlead",
   "lifecycle": "active",
-  "readiness": "ready_for_independent_audit",
+  "readiness": "correction_in_progress",
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-06-docara-surface-hero-track.md#8-goal-s1--full-bleed-geometry--shared-surface-runtime",
@@ -24,12 +24,12 @@
     "Full, single and preview share the accepted production path and deterministic evidence.",
     "Hero output remains byte-identical and S2 remains unstarted."
   ],
-  "batch_refs": ["docara.batch.s1.surface_runtime"],
+  "batch_refs": ["docara.batch.s1.surface_runtime", "docara.batch.s1.pipeline_container_correction"],
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Surface schema and security matrix", "Full/full/single determinism", "Preview and browser geometry", "Package and fresh consumer", "Independent reverse-outcome audit"],
   "next_stage_ref": null,
-  "status": "ready_for_independent_audit",
+  "status": "correction_in_progress",
   "baseline_revision": "8e4b71c58065a1f49382dd8077809363e0eed873",
   "candidate_revision": "45276f63422e8b8465b33e415d3fc302dfeac570",
-  "next_action": "independent_goal_s1_reverse_outcome_audit"
+  "next_action": "execute_goal_s1_c1_pipeline_container_correction"
 }

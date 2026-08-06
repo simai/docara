@@ -1,16 +1,16 @@
-# Next action: `independent_goal_s1_reverse_outcome_audit`
+# Next action: `execute_goal_s1_c1_pipeline_container_correction`
 
-Current state: `goal_s1_ready_for_independent_audit`
+Current state: `goal_s1_correction_in_progress`
 
 Current candidate: `45276f63422e8b8465b33e415d3fc302dfeac570`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
-Goal 1-3 and Goals A-C remain independently accepted. The separately
-authorized Surface & Hero Media track has completed only Goal S1 implementation
-on exact candidate `45276f6…`. The only next action is its independent
-reverse-outcome audit. S2, merge, push, tag, release, publication, deploy and
-live-site writes remain unauthorized.
+Goal 1-3 and Goals A-C remain independently accepted. Independent Goal S1 audit
+rejected exact candidate `45276f6…`; execute only the bounded S1-C1 correction
+for nested IR, container validation, source locations and exact evidence. S2,
+merge, push, tag, release, publication, deploy and live-site writes remain
+unauthorized.
 
 ## Historical deployment decision (parked, not executable)
 

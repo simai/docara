@@ -1,12 +1,18 @@
 # Current Docara result
 
-Current state: `goal_s1_ready_for_independent_audit`
+Current state: `goal_s1_correction_in_progress`
 
 Current candidate: `45276f63422e8b8465b33e415d3fc302dfeac570`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
 ## Goal S1 current result
+
+Independent reverse-outcome audit returned `CORRECTION_REQUIRED` for candidate
+`45276f6…`: nested Surface Smart bypasses typed IR and loses artifacts,
+registry count/depth metadata diverges from runtime, file-backed failures lack
+real locations, and the recorded tree digest/count is stale. Geometry and Hero
+parity remain accepted regression baselines while S1-C1 is in progress.
 
 Goal S1 fixes the landing direct-child full-bleed geometry and adds one typed
 public `docara.surface` container through the existing registry/Gateway/

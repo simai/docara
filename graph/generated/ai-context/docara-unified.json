@@ -7,36 +7,36 @@
         "graph/dna/project-dna.json",
         "graph/specs/goals/unified-docara.json",
         "graph/specs/stages/s1-surface-runtime.json",
-        "graph/specs/batches/s1-surface-runtime.json"
+        "graph/specs/batches/s1-pipeline-container-correction.json"
     ],
-    "canonical_sha256": "23f1b05b072c34cf904e28e30260cceabe66181bd4e2df02b7ecda410561720b",
+    "canonical_sha256": "c9cb2a2022b1ac331d2ef88d6dcaad083f74534e93e6a105e49fb696631433ff",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "goal_s1_ready_for_independent_audit",
+        "state": "goal_s1_correction_in_progress",
         "goal": "docara.goal.unified",
-        "goal_readiness": "goal_s1_ready_for_independent_audit",
+        "goal_readiness": "goal_s1_correction_in_progress",
         "stage": "docara.stage.s1.surface_runtime",
-        "stage_readiness": "ready_for_independent_audit",
-        "stage_status": "ready_for_independent_audit",
-        "batch": "docara.batch.s1.surface_runtime",
-        "batch_readiness": "ready_for_independent_audit",
-        "batch_status": "ready_for_independent_audit",
-        "completed_checkpoint": "goal_s1_implementation_complete_exact_candidate",
+        "stage_readiness": "correction_in_progress",
+        "stage_status": "correction_in_progress",
+        "batch": "docara.batch.s1.pipeline_container_correction",
+        "batch_readiness": "correction_in_progress",
+        "batch_status": "correction_in_progress",
+        "completed_checkpoint": "goal_s1_independent_audit_correction_required",
         "candidate_revision": "45276f63422e8b8465b33e415d3fc302dfeac570",
-        "next_action": "independent_goal_s1_reverse_outcome_audit",
+        "next_action": "execute_goal_s1_c1_pipeline_container_correction",
         "evidence": "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md"
     },
     "roadmap": {
         "source": "source/workflow/2026-08-06-docara-surface-hero-track.md",
         "next_goal": {
-            "id": "docara.audit.goal_s1",
-            "title": "Independent Goal S1 reverse-outcome audit",
-            "status": "ready",
-            "authorized": false,
+            "id": "docara.goal.s1_c1",
+            "title": "Goal S1-C1 pipeline and container correction",
+            "status": "active",
+            "authorized": true,
             "source": "source/handoff/docara-unified-architecture/NEXT.md"
         }
     },
@@ -64,12 +64,16 @@
     },
     "forbidden_now": [
         "Hero background media",
-        "Homepage art-direction change",
+        "Homepage art direction",
         "Second pipeline",
-        "Arbitrary CSS or executable paths",
+        "Arbitrary executable or filesystem paths",
         "S2",
         "External repositories or sites",
-        "Merge, Push, Tag, Release, Deploy"
+        "Merge",
+        "Push",
+        "Tag",
+        "Release",
+        "Deploy"
     ],
     "read_order": [
         "source/handoff/docara-unified-architecture/STATUS.yaml",
@@ -77,7 +81,7 @@
         "source/workflow/2026-08-06-docara-surface-hero-track.md",
         "graph/graph.json",
         "graph/specs/stages/s1-surface-runtime.json",
-        "graph/specs/batches/s1-surface-runtime.json",
+        "graph/specs/batches/s1-pipeline-container-correction.json",
         "graph/generated/ai-context/docara-unified.json",
         "source/handoff/docara-unified-architecture/NEXT.md",
         "source/handoff/docara-unified-architecture/RESULT.md"

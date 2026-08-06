@@ -6,6 +6,9 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Simai\Docara\Framework\FrameworkComponentRuntime;
+use Simai\Docara\Portable\PortableConfigurationLoader;
+use Simai\Docara\PortableSite\PageBuilder;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
 final class SharedSurfaceAdoptionTest extends TestCase
@@ -46,5 +49,38 @@ final class SharedSurfaceAdoptionTest extends TestCase
         self::assertSame(2, substr_count($source, '$this->surfaces->renderSemanticFrame('));
         self::assertStringNotContainsString("return '<section data-docara-block=\"' . \$block", $source);
         self::assertStringNotContainsString("return '<section data-docara-block=\"hero\"", $source);
+    }
+
+    #[Test]
+    public function production_page_builder_keeps_the_landing_typed_ir_and_exact_semantic_output(): void
+    {
+        $root = dirname(__DIR__, 2) . '/docs/site';
+        $plan = (new PortableConfigurationLoader($root))->resolve('content/ru/index.md');
+        $result = (new PageBuilder(new PortableMarkdownRenderer))->build(
+            $plan,
+            $root,
+            FrameworkComponentRuntime::fromLock($plan->frameworkLock),
+            3,
+        );
+        $typed = array_values(array_map(
+            static fn (array $node): string => (string) ($node['data']['component'] ?? ''),
+            array_filter(
+                $result->document->toArray()['nodes'],
+                static fn (array $node): bool => ($node['type'] ?? null) === 'typed_directive',
+            ),
+        ));
+
+        self::assertContains('docara.hero', $typed);
+        self::assertContains('docara.showcase', $typed);
+        self::assertContains('docara.promo', $typed);
+        self::assertSame(
+            '6ddf36545bd418eb503876bc712f66b415d068eb94bc477c645d6b4bfefadbfb',
+            hash('sha256', $result->contentHtml),
+        );
+        foreach (['hero', 'showcase', 'promo'] as $block) {
+            self::assertSame(1, substr_count($result->contentHtml, 'data-docara-block="' . $block . '"'));
+        }
+        self::assertSame([], $result->documentArtifact->assets);
+        self::assertSame([], $result->componentArtifacts);
     }
 }

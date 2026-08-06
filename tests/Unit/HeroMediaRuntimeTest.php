@@ -65,12 +65,19 @@ final class HeroMediaRuntimeTest extends TestCase
         $cases = [
             [":::hero {media=side}\n# Hero\n\nDescription.\n:::", 'MARKDOWN_HERO_MEDIA_IMAGE_REQUIRED', 1],
             [":::hero {media=side variant=centered}\n# Hero\n\nDescription.\n\n![Meaningful](/assets/docara-screen.png)\n:::", 'MARKDOWN_HERO_MEDIA_VARIANT_INCOMPATIBLE', 1],
-            [":::hero {media=side}\n# Hero\n\nDescription.\n\n![](/assets/docara-screen.png)\n:::", 'MARKDOWN_HERO_SIDE_ALT_REQUIRED', 1],
-            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![Meaningful](/assets/docara-screen.png)\n:::", 'MARKDOWN_HERO_BACKGROUND_ALT_FORBIDDEN', 1],
-            [":::hero {media=none}\n# Hero\n\nDescription.\n\n![Meaningful](/assets/docara-screen.png)\n:::", 'MARKDOWN_HERO_MEDIA_IMAGE_FORBIDDEN', 1],
+            [":::hero {media=side}\n# Hero\n\nDescription.\n\n![](/assets/docara-screen.png)\n:::", 'MARKDOWN_HERO_SIDE_ALT_REQUIRED', 5],
+            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![Meaningful](/assets/docara-screen.png)\n:::", 'MARKDOWN_HERO_BACKGROUND_ALT_FORBIDDEN', 5],
+            [":::hero {media=none}\n# Hero\n\nDescription.\n\n![Meaningful](/assets/docara-screen.png)\n:::", 'MARKDOWN_HERO_MEDIA_IMAGE_FORBIDDEN', 5],
+            [":::hero {media=background unsupported=value}\n# Hero\n\nDescription.\n\n![](/assets/docara-screen.png)\n:::", 'MARKDOWN_COMPONENT_ATTRIBUTE_UNKNOWN', 1],
+            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](/assets/docara-screen.png)\n\n![](/assets/docara-screen.png)\n:::", 'MARKDOWN_HERO_STRUCTURE_INVALID', 5],
             [":::hero {background_x=right}\n# Hero\n\nDescription.\n:::", 'MARKDOWN_HERO_BACKGROUND_MODE_REQUIRED', 1],
             [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](https://example.test/hero.png)\n:::", 'MARKDOWN_HERO_BACKGROUND_UNSAFE', 5],
+            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](//example.test/hero.png)\n:::", 'MARKDOWN_HERO_BACKGROUND_UNSAFE', 5],
+            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](data:image/png;base64,AA)\n:::", 'MARKDOWN_HERO_IMAGE_UNSAFE', 5],
+            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](javascript:alert(1))\n:::", 'MARKDOWN_HERO_IMAGE_UNSAFE', 5],
             [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](/assets/missing.png)\n:::", 'MARKDOWN_HERO_BACKGROUND_UNSAFE', 5],
+            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](/assets/../docara-screen.png)\n:::", 'MARKDOWN_HERO_BACKGROUND_UNSAFE', 5],
+            [":::hero {media=background}\n# Hero\n\nDescription.\n\n![](/assets/Docara-screen.png)\n:::", 'MARKDOWN_HERO_BACKGROUND_CASE_MISMATCH', 5],
         ];
 
         foreach ($cases as [$source, $code, $line]) {
@@ -199,6 +206,41 @@ final class HeroMediaRuntimeTest extends TestCase
     }
 
     #[Test]
+    public function production_page_builder_locates_symlink_and_hardlink_hero_images(): void
+    {
+        $files = new Filesystem;
+        $root = sys_get_temp_dir() . '/docara-hero-page-builder-' . bin2hex(random_bytes(8));
+        $outside = $root . '-outside';
+        self::assertTrue($files->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $root));
+        self::assertTrue($files->makeDirectory($outside, 0700, true));
+        file_put_contents($outside . '/outside.png', 'outside');
+        self::assertTrue(symlink($outside . '/outside.png', $root . '/assets/link.png'));
+        self::assertTrue(link($outside . '/outside.png', $root . '/assets/hard.png'));
+
+        try {
+            foreach (['/assets/link.png', '/assets/hard.png'] as $asset) {
+                try {
+                    $this->buildAt(
+                        $root,
+                        'content/ru/components/hero-s2-security.md',
+                        ":::hero {media=background}\n# Hero\n\nDescription.\n\n![]($asset)\n:::",
+                    );
+                    self::fail("Unsafe Hero asset [$asset] was accepted.");
+                } catch (PortableConfigurationException $exception) {
+                    self::assertSame('MARKDOWN_HERO_BACKGROUND_UNSAFE', $exception->errorCode);
+                    self::assertSame('content/ru/components/hero-s2-security.md', $exception->sourcePath());
+                    self::assertSame('/document/hero/image', $exception->sourcePointer());
+                    self::assertSame(5, $exception->sourceLine());
+                    self::assertSame(1, $exception->sourceColumn());
+                }
+            }
+        } finally {
+            $files->deleteDirectory($root);
+            $files->deleteDirectory($outside);
+        }
+    }
+
+    #[Test]
     public function atlas_derives_all_hero_media_states_and_conditional_props_from_the_definition(): void
     {
         $atlas = (new DesignAtlasService)->atlas($this->site)->data;
@@ -243,6 +285,27 @@ final class HeroMediaRuntimeTest extends TestCase
         return (new PageBuilder($renderer, smartRenderer: $project->renderer))->build(
             $plan,
             $this->site,
+            FrameworkComponentRuntime::fromLock($plan->frameworkLock),
+            3,
+        );
+    }
+
+    private function buildAt(string $site, string $source, string $markdown): PageBuilderResult
+    {
+        file_put_contents($site . '/' . $source, $markdown);
+        $base = (new PortableConfigurationLoader($site))->resolve($source);
+        $plan = new ResolvedPagePlan(
+            $source,
+            $markdown,
+            $base->configuration,
+            $base->frameworkLock,
+            $base->trace,
+            $base->provenance,
+        );
+
+        return (new PageBuilder(new PortableMarkdownRenderer))->build(
+            $plan,
+            $site,
             FrameworkComponentRuntime::fromLock($plan->frameworkLock),
             3,
         );

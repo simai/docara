@@ -1740,18 +1740,36 @@ final class PortableMarkdownRenderer
             $first = $node->firstChild();
             if ($first instanceof Image && $first->next() === null) {
                 if ($imageCount > 0) {
-                    throw new PortableConfigurationException(
+                    throw $this->locatedHeroImageError(
                         'MARKDOWN_HERO_MEDIA_IMAGE_COUNT_INVALID',
                         'A Hero accepts at most one Markdown image.',
+                        $markdown,
+                        $sourceRoot,
+                        $sourceFile,
+                        $sourceLine,
                     );
                 }
                 if ($index !== count($nodes) - 2) {
-                    throw new PortableConfigurationException(
+                    throw $this->locatedHeroImageError(
                         'MARKDOWN_HERO_STRUCTURE_INVALID',
                         'A hero block may end with at most one image.',
+                        $markdown,
+                        $sourceRoot,
+                        $sourceFile,
+                        $sourceLine,
                     );
                 }
-                $this->assertSafeUrl($first->getUrl(), 'MARKDOWN_HERO_IMAGE_UNSAFE');
+                try {
+                    $this->assertSafeUrl($first->getUrl(), 'MARKDOWN_HERO_IMAGE_UNSAFE');
+                } catch (PortableConfigurationException $exception) {
+                    throw $this->locatedHeroException(
+                        $exception,
+                        $sourceRoot,
+                        $sourceFile,
+                        $this->heroImageLine($markdown, $sourceLine),
+                        '/document/hero/image',
+                    );
+                }
                 $imageCount++;
                 $imageUrl = $first->getUrl();
                 $imageAlt = trim($this->inlineVisibleText($first));
@@ -1803,21 +1821,33 @@ final class PortableMarkdownRenderer
             );
         }
         if ($mediaMode === 'none' && $imageCount !== 0) {
-            throw new PortableConfigurationException(
+            throw $this->locatedHeroImageError(
                 'MARKDOWN_HERO_MEDIA_IMAGE_FORBIDDEN',
                 'Hero media=none forbids an authored image.',
+                $markdown,
+                $sourceRoot,
+                $sourceFile,
+                $sourceLine,
             );
         }
         if ($mediaMode === 'side' && ! $this->containsVisibleText($imageAlt)) {
-            throw new PortableConfigurationException(
+            throw $this->locatedHeroImageError(
                 'MARKDOWN_HERO_SIDE_ALT_REQUIRED',
                 'Hero media=side requires meaningful image alternative text.',
+                $markdown,
+                $sourceRoot,
+                $sourceFile,
+                $sourceLine,
             );
         }
         if ($mediaMode === 'background' && $this->containsVisibleText($imageAlt)) {
-            throw new PortableConfigurationException(
+            throw $this->locatedHeroImageError(
                 'MARKDOWN_HERO_BACKGROUND_ALT_FORBIDDEN',
                 'Hero media=background requires an empty Markdown image alt.',
+                $markdown,
+                $sourceRoot,
+                $sourceFile,
+                $sourceLine,
             );
         }
 
@@ -2192,6 +2222,25 @@ final class PortableMarkdownRenderer
             $this->diagnosticSource($sourceRoot, $sourceFile),
             $pointer,
             $line,
+            1,
+        );
+    }
+
+    private function locatedHeroImageError(
+        string $code,
+        string $message,
+        string $markdown,
+        ?string $sourceRoot,
+        ?string $sourceFile,
+        int $sourceLine,
+    ): PortableConfigurationException {
+        return new PortableConfigurationException(
+            $code,
+            $message,
+            null,
+            $this->diagnosticSource($sourceRoot, $sourceFile),
+            '/document/hero/image',
+            $this->heroImageLine($markdown, $sourceLine),
             1,
         );
     }

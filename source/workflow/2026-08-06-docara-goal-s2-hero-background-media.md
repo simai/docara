@@ -1,7 +1,7 @@
 # Goal S2 — Hero Background Media on the Shared Surface
 
 Date: 2026-08-06
-Status: `ready_for_independent_audit`
+Status: `correction_in_progress`
 Workflow ID: `2026-08-06-docara-goal-s2-hero-background-media`
 Track: `docara.track.surface-hero-media`
 Entry product candidate: `ac53ea4d372a47dc8278b595accca9e7b85c66a3`
@@ -60,6 +60,12 @@ clones reproduce the verified ZIP `94bfda5a…`; the fresh dist consumer and
 
 The result is executor-ready only. Next action is
 `independent_goal_s2_reverse_outcome_audit`; S3 remains unauthorized.
+
+Independent audit returned `CORRECTION_REQUIRED` for exact candidate
+`794fac0…`: early generic unsafe-protocol rejection lost the Markdown image
+line for `data:` and `javascript:` URLs in production PageBuilder. Bounded
+correction S2-C1 is tracked in
+`source/workflow/2026-08-06-docara-goal-s2-c1-hero-diagnostic-location.md`.
 
 ## Safety and rollback
 

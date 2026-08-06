@@ -111,6 +111,11 @@ final class ApplicationContractTest extends TestCase
             'inspect.malformed-manifest' => 'd',
         }, 64);
         $value = preg_replace('/sha256:[a-f0-9]{64}/', 'fixture-revision', $value) ?? $value;
+        $value = preg_replace(
+            '/("engine_revision":")[a-f0-9]{40}("?)/',
+            '$1fixture-revision$2',
+            $value,
+        ) ?? $value;
 
         return preg_replace('/[a-f0-9]{64}/', $hash, $value) ?? $value;
     }

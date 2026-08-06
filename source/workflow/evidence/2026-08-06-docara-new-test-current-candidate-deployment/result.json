@@ -1,0 +1,69 @@
+{
+  "schema": "docara.local_test_deployment_result.v1",
+  "status": "pass",
+  "site": "https://docara-new.test",
+  "deployed_at": "2026-08-06T12:03:03+03:00",
+  "product_revision": "eb35f5c6f18e5eb9be69e91887b09486f5703136",
+  "deployment_input_revision": "3d3006d1579f9b879d83f934b9bfca4fa88287cc",
+  "active": {
+    "path": "/Users/rim/Sites/docara-new.test",
+    "tree_sha256": "44d827a6576d16ec39a9787887ed123a5447ecb484c98780c696121584d2b7b4",
+    "files": 391,
+    "html_files": 264,
+    "routes": 132,
+    "symlinks": 0
+  },
+  "build": {
+    "independent_runs": 2,
+    "byte_identical": true,
+    "php": "8.4.20"
+  },
+  "static_verification": {
+    "html_pages": 264,
+    "local_references_checked": 35044,
+    "broken": []
+  },
+  "http": {
+    "https_routes_checked": 132,
+    "https_routes_200": 132,
+    "http_root_status": 301,
+    "representative_assets_200": true
+  },
+  "browser": {
+    "desktop_width": 1440,
+    "mobile_width": 390,
+    "horizontal_overflow": false,
+    "console_errors": 0,
+    "console_warnings": 0,
+    "search_escape_focus_return": true,
+    "settings_escape_focus_return": true,
+    "settings_default_modal_blur": "none",
+    "settings_ui_radius_options": [
+      "default",
+      "medium",
+      "large"
+    ]
+  },
+  "rollback": {
+    "path": "/Users/rim/Sites/.docara-new.test-backup-before-goalc-eb35f5c6-20260806",
+    "tree_sha256": "5dc4112d3a0424ca74fca1b73a27392532cfdff84011369a5c3b38984fc32e9d",
+    "files": 307,
+    "html_files": 208,
+    "symlinks": 0,
+    "inverse_preflight": "pass"
+  },
+  "caddy_reload": false,
+  "untouched": [
+    "docara.test",
+    "Caddy configuration",
+    "external repositories",
+    "existing historical backups"
+  ],
+  "nonclaims": [
+    "merge",
+    "push",
+    "tag",
+    "public release",
+    "production deployment"
+  ]
+}

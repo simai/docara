@@ -5,6 +5,12 @@
 (`full`); внутренний контент независимо остаётся в `.container` либо занимает
 полную ширину.
 
+Surface выбирают для общей контентной полосы: нескольких абзацев, Grid/Card
+композиции или admitted project Smart. Для первого экрана с H1, описанием и
+действиями используйте [Hero](/ru/components/hero/). Hero, Showcase и Promo уже
+используют ту же внутреннюю Surface presentation и **не требуют** внешней
+`:::surface`-обёртки. Такое двойное оборачивание запрещено container contract.
+
 :::surface {width=full content_width=container padding=lg tone=muted}
 ## Surface в границе main
 
@@ -72,3 +78,28 @@ Surface как уровня 1; вложенный Grid отдельно счит
 `background_y=top|center|bottom`, `overlay=none|light|dark`,
 `overlay_strength=soft|medium|strong`, `padding=none|sm|md|lg|xl` и
 `tone=default|muted|accent|contrast`.
+
+## Доступность и адаптивность
+
+- `full` достигает только границы разрешённого Layout region: на лендинге —
+  края страницы, в документации — края `main`, не sidebar или outline;
+- внутренний `container` сохраняет одну линию выравнивания с соседним текстом;
+- декоративное изображение выводится один раз с `alt=""` и
+  `aria-hidden="true"`, overlay не получает фокус и не перехватывает указатель;
+- `cover`, `contain` и `auto` не создают отдельный мобильный источник или
+  произвольный breakpoint; responsive geometry принадлежит общей presentation;
+- авторский текст и интерактивные children остаются поверх overlay в обычном
+  DOM-порядке и доступны с клавиатуры.
+
+## Fail-closed граница
+
+| Ошибка автора | Результат |
+| --- | --- |
+| Surface внутри Surface или вокруг Hero/Showcase/Promo | вложение отклоняется до render |
+| remote, `data:`, protocol-relative, traversal, symlink или hardlink media | локальная asset policy отклоняет путь |
+| `background_x/y/fit` без `background_image` | `MARKDOWN_SURFACE_BACKGROUND_REQUIRED` |
+| `overlay_strength` без overlay | `MARKDOWN_SURFACE_OVERLAY_REQUIRED` |
+| неизвестный prop, CSS class, style, callback или template path | schema/admission error |
+
+Глобальной настройки Surface нет: каждое значение выше принадлежит конкретной
+typed-директиве и публикуется в Atlas из admitted definition.

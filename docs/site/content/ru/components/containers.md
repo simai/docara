@@ -16,6 +16,11 @@ Atlas является источником правил `allowed_children`, `sl
 
 Для полноширинной контентной полосы используйте [Surface](/ru/components/surface/): её внешняя и внутренняя ширина, локальный декоративный фон и token-настройки проходят тот же typed runtime. Surface принимает только children с зарегистрированной capability `content.embeddable`; вложенные Surface и landing-блоки не допускаются.
 
+Hero, Showcase и Promo — самостоятельные semantic blocks на общей внутренней
+Surface presentation. Они не являются children Surface и не получают
+авторскую Surface-обёртку. Так registry сохраняет одну geometry/background
+construction без двойных media layers.
+
 ## Валидное вложение
 
 :::example {label="Grid with cards"}
@@ -44,5 +49,6 @@ Atlas является источником правил `allowed_children`, `sl
 | Неверный порядок/тип | `steps` содержит маркированный список | `MARKDOWN_STEPS_ORDERED_LIST_REQUIRED` |
 | Превышение contract | child/slot/count/depth не соответствует Atlas | registration/admission error до render |
 | Незакрытый fence | отсутствует завершающий `:::` | `MARKDOWN_BLOCK_UNCLOSED` |
+| Double wrapping | Surface содержит Hero/Showcase/Promo/Surface | `MARKDOWN_BLOCK_NESTING_UNSUPPORTED` |
 
 Для Framework container применяются его manifest slots: например, принятый `ui.dropdown` допускает в `options` только exact-pinned `ui.list-item`. Raw `items` и непроверенный HTML не допускаются.

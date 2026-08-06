@@ -65,6 +65,12 @@ Raw HTML удаляется. Если обычного Markdown недостат
 
 [Общие правила директив](/components/syntax/).
 
+Для общей оформленной полосы используйте
+[Surface](/components/surface/), а для первого экрана —
+[Hero](/components/hero/). Hero/Showcase/Promo уже используют общую Surface
+presentation: не вкладывайте их в Surface и не пытайтесь добавлять CSS,
+template path или отдельный background callback.
+
 Не копируйте параметры компонента из старой страницы или другого проекта:
 фактический технический contract принадлежит machine catalog текущей сборки,
 а объяснение — Markdown-owner страницы компонента.

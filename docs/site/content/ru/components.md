@@ -19,6 +19,9 @@
 ### [Контейнеры и композиция](/ru/components/containers/)
 
 Разрешённые вложения, slots, порядок, количество и глубина.
+Для общей полосы используйте [Surface](/ru/components/surface/); Hero,
+Showcase и Promo уже используют ту же presentation geometry без авторской
+обёртки.
 
 ### [SIMAI Framework](/ru/components/framework/)
 

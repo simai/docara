@@ -20,6 +20,7 @@ Content Markdown компилируется отдельно в typed in-memory 
 | Block | `resources/blocks/content.document.json`, `content.markdown.json`, `content.smart.json`, `shell.element.json`, `shell.smart.json` | payload schema/capability |
 | Smart | package, Framework или project artifact | props/views/presets/slots/assets/hydration |
 | View | registered view/preset/template | конечный HTML/assets/provenance |
+| Surface presentation | `src/PortableSite/SurfacePresentation.php` | единая admitted outer geometry для Surface, Hero, Showcase и Promo; semantic content остаётся у компонента |
 
 ```text
 Markdown owner
@@ -46,3 +47,12 @@ kind/tag/attribute/utility/region/slot до registration. Project config выб�
 
 :::atlas_index {kind=layout,section,block}
 :::
+
+## Общая presentation не меняет semantic owner
+
+Surface — authored content container. Hero, Showcase и Promo — отдельные typed
+semantic definitions. Их Atlas ownership, states, props и provenance берутся из
+реальных admitted definitions, но outer width/container/background frame
+собирает одна immutable Surface presentation. Оборачивать эти semantic blocks
+в Surface нельзя; page/head и границы region по-прежнему принадлежат
+LayoutComposer.

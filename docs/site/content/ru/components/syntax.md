@@ -38,6 +38,11 @@ Docara. SIMAI Framework отвечает за итоговый интерфей�
 Точные параметры каждого блока показываются на его странице в
 [справочнике компонентов](/ru/components/).
 
+Полноширинные semantic blocks не нужно оборачивать вручную. `hero`,
+`showcase` и `promo` сохраняют собственный content contract, но делегируют
+outer geometry общей Surface presentation. `surface` используйте только как
+общий контейнер для admitted Markdown, Grid/Card и content Smart.
+
 Уведомления также принадлежат Docara, поэтому автору не нужно писать JSON или
 знать внутренний идентификатор Framework:
 

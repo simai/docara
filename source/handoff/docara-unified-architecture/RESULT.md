@@ -1,12 +1,24 @@
 # Current Docara result
 
-Current state: `goal_s2_ready_for_independent_audit`
+Current state: `surface_hero_track_ready_for_user_decision`
 
-Current candidate: `7eeba4ad7b5acd00f833bf2022e45775444fb69c`
+Current candidate: `dd2c0d623f0757e172861fdac959b839a7fff495`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
-## Goal S2 result awaiting independent audit
+## Surface & Hero Media track result
+
+Goal S2/S2-C1 is independently accepted with `PASS_WITH_NOTES` on product
+`7eeba4a…`; its package reproduction uses exact tag parameter
+`--tag=v2.0.0-alpha1-s2c1`. Goal S3 routes Surface, Hero, Showcase and Promo
+outer presentation through one shared implementation while preserving frozen
+default bytes and semantic ownership. Exact product `dd2c0d6…` has 393-file
+full/full/single digest `99ab56df…`, static 266 HTML / 35,596 references /
+broken=0, verified 869-file ZIP `4c5496b3…`, fresh consumer and clean
+30-scenario browser evidence. No S4/Goal D exists; the track waits for an
+explicit user decision.
+
+## Accepted Goal S2 result
 
 Exact product candidate `7eeba4a…` retains the closed Hero
 `media=auto|side|background|none` contract. Default and explicit auto preserve
@@ -24,8 +36,8 @@ contain 393 files at canonical digest `108cba01…`; static checks 266 HTML /
 The accepted parent responsive matrix remains unchanged and proportional
 desktop/mobile browser regression has clean assets, console and overflow.
 Rejected candidate `794fac0…` and ledger `7a8c5645…` remain historical.
-S2 is not self-accepted; its only next action
-is independent audit, and S3 remains unstarted.
+Independent audit accepted S2 with `PASS_WITH_NOTES`; the S3 entry gate was
+opened and has now been completed above.
 
 ## Accepted Goal S1 result and Goal S2 entry
 

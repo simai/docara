@@ -1,0 +1,34 @@
+{
+  "id": "docara.stage.s3.shared_adoption",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "milestone",
+  "tz_role": "implementation_stage",
+  "title": "Goal S3. Shared Adoption, Public Documentation and Integrated Acceptance",
+  "summary": "Adopt one shared Surface presentation for Surface, Hero, Showcase and Promo while preserving semantic ownership and exact default output.",
+  "owner": "teamlead",
+  "lifecycle": "complete",
+  "readiness": "ready_for_user_decision",
+  "visibility": "repository",
+  "source_refs": [
+    "source/workflow/2026-08-06-docara-surface-hero-track.md#goal-s3--shared-adoption-public-documentation--integrated-acceptance",
+    "source/workflow/2026-08-06-docara-goal-s3-shared-adoption.md"
+  ],
+  "evidence_refs": ["source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md"],
+  "profile_refs": ["docara.unified"],
+  "parent_goal_ref": "docara.goal.unified",
+  "done_when": [
+    "Surface, Hero, Showcase and Promo use one shared Surface presentation implementation.",
+    "Default semantic HTML remains byte-identical to the accepted entry baseline.",
+    "Public documentation describes the admitted contract without duplicate prose ownership.",
+    "Build, package, consumer and browser evidence bind one exact candidate."
+  ],
+  "batch_refs": ["docara.batch.s3.integrated_acceptance"],
+  "required_gates": ["docara.gate.architecture_acceptance"],
+  "required_evidence": ["Default parity", "Zero duplicate construction", "Build determinism", "Package and consumer", "Browser matrix"],
+  "next_stage_ref": null,
+  "status": "complete_ready_for_user_decision",
+  "baseline_revision": "7eeba4ad7b5acd00f833bf2022e45775444fb69c",
+  "candidate_revision": "dd2c0d623f0757e172861fdac959b839a7fff495",
+  "next_action": "explicit_user_surface_hero_decision"
+}

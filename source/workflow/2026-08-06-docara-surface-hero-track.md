@@ -1,12 +1,12 @@
 # Docara Surface & Hero Media post-roadmap track
 
 Date: 2026-08-06
-Status: `goal_s2_ready_for_independent_audit`
-Current stage: `docara.stage.s2.hero_media`
-Current batch: `docara.batch.s2.hero_background`
-Current product candidate: `7eeba4ad7b5acd00f833bf2022e45775444fb69c`
-Next roadmap goal: `docara.goal.s2` (`ready_for_independent_audit`, authorized=`true`)
-Current next action: `independent_goal_s2_reverse_outcome_audit`
+Status: `surface_hero_track_ready_for_user_decision`
+Current stage: `docara.stage.s3.shared_adoption`
+Current batch: `docara.batch.s3.integrated_acceptance`
+Current product candidate: `dd2c0d623f0757e172861fdac959b839a7fff495`
+Next roadmap goal: `docara.track.surface-hero-media` (`complete`, authorized=`false`)
+Current next action: `explicit_user_surface_hero_decision`
 Track ID: `docara.track.surface-hero-media`
 Repository: `/Users/rim/Documents/GitHub/docara-unified`
 Branch: `codex/docara-unified-architecture`
@@ -56,13 +56,13 @@ reproduced canonical 393-file ledger is `650a678c...`; the former
 `90bf6378...` claim remains rejected. That verdict opens only Goal S2. Goal S3
 and release/live actions remain unauthorized.
 
-Goal S2 plus diagnostic-location correction S2-C1 is complete on exact product
-candidate `7eeba4a...` and stops at `ready_for_independent_audit`. Its executor
-evidence proves the closed Hero media contract, exact default parity, shared
-Surface presentation, local asset receipts, exact image diagnostics,
-deterministic builds/package/consumer and proportional browser regression.
-Rejected candidate `794fac0...` remains historical. This is not independent
-acceptance; Goal S3 remains unstarted and unauthorized.
+Goal S2 plus diagnostic-location correction S2-C1 is independently accepted on
+exact product candidate `7eeba4a...` with `PASS_WITH_NOTES`; its package
+reproduction uses exact tag input `v2.0.0-alpha1-s2c1`. Goal S3 is complete on
+exact product `dd2c0d6...`: Surface, Hero, Showcase and Promo share one outer
+presentation implementation with frozen default bytes, public docs and fresh
+integrated evidence. The track is terminal pending an explicit user decision;
+there is no S4/Goal D.
 
 ## 1. Problem and factual baseline
 
@@ -479,7 +479,8 @@ presentation model. Existing Hero authoring without `media` remains compatible.
 - focused/full tests, preview/production, full/full/single determinism, static,
   security and fresh browser accessibility/responsive matrices pass;
 - tracked worktree is clean and evidence is bound to one exact candidate;
-- state stops at `goal_s2_ready_for_independent_audit`; S3 is not started.
+- historical S2 execution stopped at its independent-audit gate before the
+  accepted S3 transition recorded at the top of this completed track.
 
 ### Goal S3 — Shared Adoption, Public Documentation & Integrated Acceptance
 

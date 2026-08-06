@@ -26,20 +26,20 @@
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
   "implementation_state": {
-    "state": "goal_s2_ready_for_independent_audit",
+    "state": "surface_hero_track_ready_for_user_decision",
     "current_goal": "docara.goal.unified",
-    "current_stage": "docara.stage.s2.hero_media",
-    "current_batch": "docara.batch.s2.hero_background",
-    "completed_checkpoint": "goal_s2_c1_diagnostic_location_complete",
-    "candidate_revision": "7eeba4ad7b5acd00f833bf2022e45775444fb69c",
-    "next_action": "independent_goal_s2_reverse_outcome_audit",
+    "current_stage": "docara.stage.s3.shared_adoption",
+    "current_batch": "docara.batch.s3.integrated_acceptance",
+    "completed_checkpoint": "surface_hero_track_complete",
+    "candidate_revision": "dd2c0d623f0757e172861fdac959b839a7fff495",
+    "next_action": "explicit_user_surface_hero_decision",
     "evidence": "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md",
     "roadmap_source": "source/workflow/2026-08-06-docara-surface-hero-track.md",
     "next_goal": {
-      "id": "docara.goal.s2",
-      "title": "Goal S2 Hero Background Media on the Shared Surface",
-      "status": "ready_for_independent_audit",
-      "authorized": true,
+      "id": "docara.track.surface-hero-media",
+      "title": "Surface and Hero Media track complete",
+      "status": "complete",
+      "authorized": false,
       "source": "source/handoff/docara-unified-architecture/NEXT.md"
     }
   },

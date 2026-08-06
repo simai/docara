@@ -1,8 +1,8 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-06
-Status: Goal S2 ready for independent audit
-Workflow ID: `2026-08-06-docara-goal-s2-c1-hero-diagnostic-location`
+Status: Surface & Hero Media track complete; ready for user decision
+Workflow ID: `2026-08-06-docara-goal-s3-shared-adoption`
 Graph goal: `docara.goal.unified`
 
 ## Source of truth
@@ -10,7 +10,7 @@ Graph goal: `docara.goal.unified`
 - start here: `source/handoff/docara-unified-architecture/START.md`;
 - human specification: `docs/specification/README.md`;
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
-- active workflow: `source/workflow/2026-08-06-docara-goal-s2-c1-hero-diagnostic-location.md`;
+- completed workflow: `source/workflow/2026-08-06-docara-goal-s3-shared-adoption.md`;
 - active track: `source/workflow/2026-08-06-docara-surface-hero-track.md`;
 - parent Goal 3 recovery:
   `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`;
@@ -25,17 +25,17 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `goal_s2_ready_for_independent_audit`;
+- state: `surface_hero_track_ready_for_user_decision`;
 - goal: `docara.goal.unified`;
-- stage: `docara.stage.s2.hero_media`;
-- batch: `docara.batch.s2.hero_background`;
-- candidate: `7eeba4ad7b5acd00f833bf2022e45775444fb69c`;
+- stage: `docara.stage.s3.shared_adoption`;
+- batch: `docara.batch.s3.integrated_acceptance`;
+- candidate: `dd2c0d623f0757e172861fdac959b839a7fff495`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `independent_goal_s2_reverse_outcome_audit`;
+- next action: `explicit_user_surface_hero_decision`;
 - Goal 1-3 and Goals A-C remain independently accepted. The separately
   authorized Surface & Hero Media track is active only through completed Goal
-  S1, which is independently accepted. Goal S2 implementation is complete and
-  awaits an independent reverse-outcome audit; S3 is unstarted and unauthorized.
+  S1 and S2, which are independently accepted. Goal S3 shared adoption,
+  documentation and integrated acceptance are complete. No S4 exists.
 
 ## Accepted pipeline
 
@@ -66,8 +66,14 @@ the authored image. Exact candidate `7eeba4a…` passes 502/10,650 PHPUnit,
 full/full/single digest `108cba01…`, verified ZIP `40d86ea6…`, fresh consumer
 and clean proportional desktop/mobile browser regression.
 
+Goal S3 routes Surface, Hero, Showcase and Promo outer presentation through one
+`SurfacePresentation`, while their default renderer bytes and semantic content
+remain unchanged. Fresh full/full/single trees contain 393 files at digest
+`99ab56df…`; verified package ZIP is `4c5496b3…`; a fresh dist consumer and
+30-scenario browser matrix pass.
+
 ## Boundary
 
-No S3, homepage art-direction change, mass rewrite,
+No S4/Goal D, homepage art-direction change, mass rewrite, release review,
 default-branch merge, tag, release or deploy is authorized. The installed stale
 Docara skill is not a source of truth for this track.

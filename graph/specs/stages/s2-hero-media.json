@@ -7,8 +7,8 @@
   "title": "Goal S2. Hero Background Media on the Shared Surface",
   "summary": "Extend the existing typed Hero with closed media modes while preserving default output and delegating background presentation to the accepted Surface primitive.",
   "owner": "teamlead",
-  "lifecycle": "audit_pending",
-  "readiness": "ready_for_independent_audit",
+  "lifecycle": "complete",
+  "readiness": "independently_accepted_pass_with_notes",
   "visibility": "repository",
   "source_refs": [
     "source/workflow/2026-08-06-docara-surface-hero-track.md#goal-s2--hero-background-media-on-the-shared-surface",
@@ -27,9 +27,9 @@
   "batch_refs": ["docara.batch.s2.hero_background"],
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Default Hero parity", "Hero mode and security matrix", "Build determinism", "Browser accessibility and responsive matrix"],
-  "next_stage_ref": null,
-  "status": "ready_for_independent_audit",
+  "next_stage_ref": "docara.stage.s3.shared_adoption",
+  "status": "independently_accepted_pass_with_notes",
   "baseline_revision": "ac53ea4d372a47dc8278b595accca9e7b85c66a3",
   "candidate_revision": "7eeba4ad7b5acd00f833bf2022e45775444fb69c",
-  "next_action": "independent_goal_s2_reverse_outcome_audit"
+  "next_action": "execute_goal_s3_shared_adoption"
 }

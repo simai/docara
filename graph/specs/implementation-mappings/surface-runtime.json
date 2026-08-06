@@ -41,7 +41,8 @@
     "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-C1-PIPELINE-CONTAINER-CORRECTION.md",
     "source/workflow/evidence/2026-08-06-docara-surface-hero/S1-C2-DEPTH-CONTRACT-CORRECTION.md",
     "source/workflow/evidence/2026-08-06-docara-surface-hero/S2-HERO-BACKGROUND.md",
-    "source/workflow/evidence/2026-08-06-docara-surface-hero/S2-INTEGRATED-ACCEPTANCE.md"
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/S2-INTEGRATED-ACCEPTANCE.md",
+    "source/workflow/evidence/2026-08-06-docara-surface-hero/S3-SHARED-ADOPTION.md"
   ],
   "review_refs": ["docara.gate.architecture_acceptance"],
   "current_behavior": [
@@ -51,14 +52,13 @@
     "Full, single and isolated preview use one production renderer and PageBuilder path.",
     "Every container enforces max_depth relative to its own subtree root and resolves Smart child capabilities from its registry descriptor.",
     "Hero auto preserves S1 bytes; side, background and none use one typed renderer and the accepted Surface presentation.",
-    "Background media is one admitted local asset published through the normal deterministic build receipt."
+    "Background media is one admitted local asset published through the normal deterministic build receipt.",
+    "Surface, Hero, Showcase and Promo delegate their outer presentation to one SurfacePresentation while keeping semantic ownership and frozen default bytes."
   ],
-  "known_deviations": [
-    "Homepage art direction remains unchanged; S3 Showcase/Promo adoption is unstarted."
-  ],
+  "known_deviations": ["Homepage art direction intentionally remains unchanged."],
   "deletion_gates": [
     "No legacy Surface runtime was deleted; rollback is revert to entry boundary 8e4b71c58065a1f49382dd8077809363e0eed873."
   ],
-  "status": "ready_for_independent_audit",
-  "mapped_revision": "7eeba4ad7b5acd00f833bf2022e45775444fb69c"
+  "status": "complete_ready_for_user_decision",
+  "mapped_revision": "dd2c0d623f0757e172861fdac959b839a7fff495"
 }

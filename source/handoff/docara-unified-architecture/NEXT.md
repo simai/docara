@@ -1,18 +1,17 @@
-# Next action: `independent_goal_s2_reverse_outcome_audit`
+# Next action: `explicit_user_surface_hero_decision`
 
-Current state: `goal_s2_ready_for_independent_audit`
+Current state: `surface_hero_track_ready_for_user_decision`
 
-Current candidate: `7eeba4ad7b5acd00f833bf2022e45775444fb69c`
+Current candidate: `dd2c0d623f0757e172861fdac959b839a7fff495`
 
 Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
 
-Goal 1-3, Goals A-C and Goal S1 are independently accepted. Goal S2/S2-C1
-product candidate `7eeba4a…` is complete and has executor evidence for exact
-default Hero parity, shared Surface background media, image diagnostics,
-393-file canonical digest `108cba01…`, verified ZIP `40d86ea6…`, fresh
-consumer and proportional browser regression. Perform only its independent
-reverse-outcome audit. S3, merge, push, tag,
-release, publication, deploy and live-site writes remain unauthorized.
+Goal 1-3, Goals A-C, S1 and S2 are independently accepted. Goal S3 is complete
+on exact candidate `dd2c0d6…`: Surface/Hero/Showcase/Promo share one outer
+presentation implementation with frozen default bytes, current docs and fresh
+build/package/consumer/browser proof. The only next action is an explicit user
+decision. No S4/Goal D, merge, push, tag, release, publication, deploy or
+live-site write is authorized.
 
 ## Historical deployment decision (parked, not executable)
 

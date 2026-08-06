@@ -6,37 +6,37 @@
         "graph/graph.json",
         "graph/dna/project-dna.json",
         "graph/specs/goals/unified-docara.json",
-        "graph/specs/stages/s2-hero-media.json",
-        "graph/specs/batches/s2-hero-background.json"
+        "graph/specs/stages/s3-shared-adoption.json",
+        "graph/specs/batches/s3-integrated-acceptance.json"
     ],
-    "canonical_sha256": "1fb852f24fe9d16c0c7cf68932393bd4093d9fb9ab5fb12b803d950d312f2752",
+    "canonical_sha256": "7e41d2c0649ac65bc9e889f81c2f54599a4ab9d053f16222533d24e4ede5c145",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "goal_s2_ready_for_independent_audit",
+        "state": "surface_hero_track_ready_for_user_decision",
         "goal": "docara.goal.unified",
-        "goal_readiness": "goal_s2_ready_for_independent_audit",
-        "stage": "docara.stage.s2.hero_media",
-        "stage_readiness": "ready_for_independent_audit",
-        "stage_status": "ready_for_independent_audit",
-        "batch": "docara.batch.s2.hero_background",
-        "batch_readiness": "ready_for_independent_audit",
-        "batch_status": "ready_for_independent_audit",
-        "completed_checkpoint": "goal_s2_c1_diagnostic_location_complete",
-        "candidate_revision": "7eeba4ad7b5acd00f833bf2022e45775444fb69c",
-        "next_action": "independent_goal_s2_reverse_outcome_audit",
+        "goal_readiness": "surface_hero_track_ready_for_user_decision",
+        "stage": "docara.stage.s3.shared_adoption",
+        "stage_readiness": "ready_for_user_decision",
+        "stage_status": "complete_ready_for_user_decision",
+        "batch": "docara.batch.s3.integrated_acceptance",
+        "batch_readiness": "ready_for_user_decision",
+        "batch_status": "complete_ready_for_user_decision",
+        "completed_checkpoint": "surface_hero_track_complete",
+        "candidate_revision": "dd2c0d623f0757e172861fdac959b839a7fff495",
+        "next_action": "explicit_user_surface_hero_decision",
         "evidence": "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md"
     },
     "roadmap": {
         "source": "source/workflow/2026-08-06-docara-surface-hero-track.md",
         "next_goal": {
-            "id": "docara.goal.s2",
-            "title": "Goal S2 Hero Background Media on the Shared Surface",
-            "status": "ready_for_independent_audit",
-            "authorized": true,
+            "id": "docara.track.surface-hero-media",
+            "title": "Surface and Hero Media track complete",
+            "status": "complete",
+            "authorized": false,
             "source": "source/handoff/docara-unified-architecture/NEXT.md"
         }
     },
@@ -63,8 +63,9 @@
         }
     },
     "forbidden_now": [
-        "S3",
-        "Homepage art-direction change",
+        "S4",
+        "Goal D",
+        "Homepage art redesign",
         "Second rendering path",
         "External repositories or sites",
         "Merge",
@@ -78,8 +79,8 @@
         "source/workflow/ACTIVE.md",
         "source/workflow/2026-08-06-docara-surface-hero-track.md",
         "graph/graph.json",
-        "graph/specs/stages/s2-hero-media.json",
-        "graph/specs/batches/s2-hero-background.json",
+        "graph/specs/stages/s3-shared-adoption.json",
+        "graph/specs/batches/s3-integrated-acceptance.json",
         "graph/generated/ai-context/docara-unified.json",
         "source/handoff/docara-unified-architecture/NEXT.md",
         "source/handoff/docara-unified-architecture/RESULT.md"

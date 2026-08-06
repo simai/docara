@@ -3,9 +3,11 @@
 Текущий статус архитектурного roadmap: Goal 1, Goal 2, Goal 3 и Goals A-C
 независимо приняты. Отдельно авторизованный post-roadmap track Surface & Hero
 Media независимо принял Goal S1 на exact candidate
-`ac53ea4d372a47dc8278b595accca9e7b85c66a3` (`PASS`). Goal S2 Hero Media
-реализован вместе с S2-C1 на exact candidate `7eeba4ad7b5acd00f833bf2022e45775444fb69c` и
-готов к независимому аудиту; S3 не начат. Goal C C1 исправил projection/settings/journey defects на
+`ac53ea4d372a47dc8278b595accca9e7b85c66a3` (`PASS`) и Goal S2 на
+`7eeba4ad7b5acd00f833bf2022e45775444fb69c` (`PASS_WITH_NOTES`). Goal S3
+завершает общий Surface runtime и публичную документацию на exact candidate
+`dd2c0d623f0757e172861fdac959b839a7fff495`; track готов к решению пользователя.
+Goal C C1 исправил projection/settings/journey defects на
 exact product candidate `eb35f5c6f18e5eb9be69e91887b09486f5703136`,
 который независимый reverse-outcome audit принял с `PASS`. Шесть входов компонентов,
 разделы дизайна и настроек, исполняемый safe agent journey и принятые extension
@@ -35,14 +37,24 @@ Independent verdict: `PASS`; Goal S2 entry gate открыт.
 
 ## Goal S2. Hero Background Media
 
-Статус: `ready_for_independent_audit`. Закрытый
+Статус: `independently_accepted_pass_with_notes`. Закрытый
 `media=auto|side|background|none` контракт существующего Hero реализован на
 `7eeba4a…`. Default byte-identical, background делегирует geometry/media/overlay
 принятому shared Surface presentation, а unsafe image diagnostics указывают на
 реальную строку Markdown image. Full/full/single digest `108cba01…`, verified
 ZIP `40d86ea6…`, fresh consumer и proportional browser regression зелёные.
-Rejected candidate `794fac0…` остаётся historical. Независимая
-приёмка ещё не заявлена; S3 остаётся unauthorized.
+Rejected candidate `794fac0…` остаётся historical. Независимый verdict —
+`PASS_WITH_NOTES`; exact package tag parameter — `v2.0.0-alpha1-s2c1`.
+
+## Goal S3. Shared Adoption, Public Documentation & Integrated Acceptance
+
+Статус: `complete_ready_for_user_decision`. Surface, Hero, Showcase и Promo
+используют один `SurfacePresentation`, сохраняя собственную семантику и frozen
+default bytes. Публичные authoring/component/design guides описывают Surface vs
+Hero, запрет double wrapping, safe local background и failure boundaries.
+Fresh full/full/single digest — `99ab56df…`, verified ZIP — `4c5496b3…`;
+fresh consumer и 30 browser scenarios зелёные. S4/Goal D не существует, release
+и deploy не авторизованы.
 
 ## Нулевая точка
 

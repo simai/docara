@@ -1,11 +1,14 @@
 # Goal S3 — Shared adoption, public documentation and integrated acceptance
 
 Date: 2026-08-06
-Status: `in_progress`
+Status: `complete`
 Track: `docara.track.surface-hero-media`
 Entry product: `7eeba4ad7b5acd00f833bf2022e45775444fb69c`
 Entry governance: `98934cb847de01180f1584908e3c7338ade17f2e`
 Target state: `surface_hero_track_ready_for_user_decision`
+
+Final product candidate: `dd2c0d623f0757e172861fdac959b839a7fff495`
+Exact evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/S3-SHARED-ADOPTION.md`
 
 ## Authority and routing
 

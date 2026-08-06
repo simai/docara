@@ -4,9 +4,11 @@
 отдельно авторизованный post-roadmap track Surface & Hero Media находится на
 Goal S1: exact product candidate
 `ac53ea4d372a47dc8278b595accca9e7b85c66a3` независимо принят с `PASS`,
-governance HEAD `4feb910b4d1a822dd323d559855c020ba4e3480d`. Goal S2 Hero Media реализован на
-exact candidate `7eeba4ad7b5acd00f833bf2022e45775444fb69c` и ожидает независимый аудит;
-S3 не начат. Exact accepted Goal A
+governance HEAD `4feb910b4d1a822dd323d559855c020ba4e3480d`. Goal S2 Hero Media независимо
+принят с `PASS_WITH_NOTES` на `7eeba4ad7b5acd00f833bf2022e45775444fb69c`.
+Goal S3 завершает shared adoption и public documentation на exact candidate
+`dd2c0d623f0757e172861fdac959b839a7fff495`; track готов к решению пользователя.
+Exact accepted Goal A
 product/runtime candidate —
 `8c04160ab50549b060fb933cf80f86193cd92113`. Goal B Full Interface Library &
 Useful Extension Demos принят на exact candidate
@@ -62,7 +64,18 @@ PASS ставится только по воспроизводимому evidenc
 - [x] Все unsafe Hero image diagnostics через PageBuilder указывают на точную
       строку Markdown image, включая data/javascript/symlink/hardlink.
 - [x] Build/package/browser evidence связано с exact candidate `7eeba4a…`.
-- [ ] Независимый reverse-outcome audit Goal S2.
+- [x] Независимый reverse-outcome audit Goal S2: `PASS_WITH_NOTES`.
+
+## Goal S3. Shared Adoption & Integrated Acceptance
+
+- [x] Surface, Hero, Showcase и Promo используют один `SurfacePresentation`.
+- [x] Frozen default Hero/Showcase/Promo output остаётся byte-identical.
+- [x] Публичные Surface/Hero/container/authoring docs описывают реальный typed
+      contract, локальные assets и запрет double wrapping.
+- [x] Full/full/single, static, package, fresh consumer и browser matrix
+      привязаны к exact candidate `dd2c0d6…`.
+- [x] Нет второго parser/renderer/registry/Gateway/LayoutComposer/PageBuilder,
+      S4/Goal D, release или deploy действий.
 
 ## Goal A. Shell Contract & Safe Configuration
 

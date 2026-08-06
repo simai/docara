@@ -554,10 +554,11 @@ MD);
             'The declarative main-region wrapper must not inset full-width landing blocks.',
         );
         self::assertStringContainsString(
-            '.docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100cqw;margin-inline:calc(50% - 50cqw)}',
+            '.docara-landing .docara-content>[data-docara-width="full"],.docara-landing .docara-content>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-width="full"],[data-docara-region="main"]>.docara-prose>[data-docara-section][data-docara-region-owner="main"]>[data-docara-width="full"]{box-sizing:border-box;width:100cqw;margin-inline:calc(50% - 50cqw)}',
             $shellCss,
-            'Direct and Section-wrapped full-width landing surfaces must escape the standard Framework container while their inner content stays aligned.',
+            'Direct and Section-wrapped full-width surfaces must reach only their admitted main-region boundary.',
         );
+        self::assertStringContainsString('[data-docara-region="main"]{container-type:inline-size}', $shellCss);
         self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:transparent;', $shellCss);
         self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre}', $shellCss);
         self::assertStringContainsString(

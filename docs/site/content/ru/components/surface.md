@@ -5,6 +5,13 @@
 (`full`); внутренний контент независимо остаётся в `.container` либо занимает
 полную ширину.
 
+:::surface {width=full content_width=container padding=lg tone=muted}
+## Surface в границе main
+
+Эта полоса достигает краёв только текущего `main` region: в документации она
+не перекрывает sidebar и outline, а внутренний текст остаётся в контейнере.
+:::
+
 :::example {label="Полоса с выровненным контентом"}
 ```markdown
 :::surface {width=full content_width=container padding=lg tone=muted}

@@ -2,30 +2,30 @@
 
 Current state: `local_framework_runtime_ready_for_independent_audit`
 
-Current candidate: `f07572fb15a5e2a71f3ab3e9207b4c9d54336b06`
+Current candidate: `ad147f32ec9854e5bb97ea635b349b3ce803ed43`
 
 Current evidence: `source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md`
 
 ## Local Framework runtime result
 
-The current Docara Framework closure is served entirely from one exact local
-117-file projection of `simai/ui@d1daa951…`; runtime packet `790b8014…` and
-manifest `8c917f69…` bind every byte before publication. No external runtime or
-font request is emitted. The C1 correction binds that same local outlined font
-to custom-element and direct `.sf-icon` hosts. Two full builds and representative
-single share the 649-file digest `0495614f…`; static is 266 HTML / 36,128
-references / broken=0. Two 997-file packages reproduce ZIP `60079839…`; a
-fresh dist consumer passes init/doctor/full/single/static. Full PHPUnit is
-510 / 11,534.
+The current Docara Framework closure serves its accepted `simai/ui@d1daa951…`
+projection locally and adds a Docara-owned exact projection of the official
+Material Symbols Rounded and Sharp variable fonts at
+`google/material-design-icons@50f0603…`. The lock, schema and manifest
+repository bind provider, revision, paths and every byte before publication;
+the existing asset planner publishes all three canonical families. Two full
+builds and representative Icon single share the 655-file digest
+`b6e0d9a7…`; static is 266 HTML / 36,128 references / broken=0. Two 1,000-file
+packages reproduce ZIP `1cfd3acf…`. Full PHPUnit is 511 / 11,521.
 
 The explicitly authorized local validation site `docara-new.test` was switched
-atomically from `4b35a921…` to exact `0495614f…`. Its immediately previous tree
-is retained in the C1 rollback backup documented by the evidence index.
-HTTPS/static/browser checks confirm direct button glyphs at 24px without
-ligature overflow, visible custom-element icons, working search/settings, no
-overflow, no external runtime requests and zero console warnings/errors. No
-write occurred to `docara.test`, and no merge, push, tag, release or
-publication occurred.
+atomically from C1 digest `0495614f…` to exact `b6e0d9a7…`. Its immediately
+previous tree is retained at
+`.docara-new.test-backup-before-icon-families-ad147f3-20260807`. HTTPS,
+static and browser checks confirm Outlined, Rounded and Sharp glyphs (including
+FILL) without ligature overflow, zero failed/external requests, no overflow and
+zero console warnings/errors. No write occurred to `docara.test`, and no merge,
+push, tag, release or publication occurred.
 
 ## SF5 5.4 typography integration result
 

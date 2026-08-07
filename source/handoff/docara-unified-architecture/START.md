@@ -30,7 +30,7 @@ Current next action: `independent_local_framework_runtime_audit`
 
 Current evidence: `source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md`
 
-Current candidate: `f07572fb15a5e2a71f3ab3e9207b4c9d54336b06`
+Current candidate: `ad147f32ec9854e5bb97ea635b349b3ce803ed43`
 
 Next roadmap goal: `docara.stage.lfr.local_framework_runtime`
 
@@ -44,8 +44,8 @@ Goal S1 at exact product `ac53ea4…` and governance `4feb910…`. Goal S2/S2-C1
 independently accepted on exact candidate `7eeba4a…`. Goal S3 is complete on
 `dd2c0d6…`; the Surface & Hero Media track now waits for an explicit user
 decision. SF5 5.4 typography is the accepted parent. The authorized local
-Framework runtime correction including standalone icon hosts is complete on
-`f07572f…`; `docara-new.test` is
+Framework runtime correction including all documented icon families is
+complete on `ad147f3…`; `docara-new.test` is
 already switched to that validation build with exact rollback preserved. It
 waits only for independent audit. No S4/Goal D, production or release action is
 authorized.

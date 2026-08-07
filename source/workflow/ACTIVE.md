@@ -29,7 +29,7 @@ Graph goal: `docara.goal.unified`
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.lfr.local_framework_runtime`;
 - batch: `docara.batch.lfr.integrated_retest`;
-- candidate: `f07572fb15a5e2a71f3ab3e9207b4c9d54336b06`;
+- candidate: `ad147f32ec9854e5bb97ea635b349b3ce803ed43`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
 - next action: `independent_local_framework_runtime_audit`;
 - Goal 1-3 and Goals A-C remain independently accepted. The separately
@@ -53,15 +53,15 @@ IR/HTML remain disposable.
 ## Current result
 
 Docara now publishes the exact required SIMAI Framework runtime, icons, fonts,
-lazy theme utility and authored highlight chunks from one content-addressed
-117-file local projection. Full/full/single, static, package and two same-lock
-consumers are deterministic on exact candidate `f07572f…`. Browser checks with
-external HTTPS blocked are clean. The authorized local validation site
-`docara-new.test` was atomically switched to the exact build with a preserved
-rollback backup; no production, release or external owner write occurred.
-The C1 correction additionally binds the exact local outlined font to direct
-`.sf-icon` hosts: standalone button ligatures now render as 24px glyphs instead
-of visible 84px text, while custom-element icons retain the same local family.
+lazy theme utility and authored highlight chunks from a content-addressed local
+projection. Full/full/single, static and package outputs are deterministic on
+exact candidate `ad147f3…`. Browser checks emit no external runtime requests.
+The authorized local validation site `docara-new.test` was atomically switched
+to the exact build with a preserved rollback backup; no production, release or
+external owner write occurred. C1 binds the local Outlined font to direct icon
+hosts; C2 adds exact source-pinned Rounded and Sharp variable fonts so every
+family demonstrated on the public Icon page renders as a glyph rather than a
+ligature string.
 
 The accepted S1 candidate counts depth relative to every container root, so the
 canonical Surface -> Grid -> Card chain passes both Surface 3/3 and Grid 2/2

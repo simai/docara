@@ -67,23 +67,25 @@ and atomically switch the explicitly authorized local validation site
 | 4 | Validation site | Backup and atomic `docara-new.test` cutover | HTTP/static/browser/rollback smoke | complete |
 | 5 | Handoff | Synchronize workflow/spec/graph/evidence | context/graph/diff/clean status | complete |
 | 6 | Standalone icon correction | Bind the local outlined font to both custom-element and direct icon hosts | red/green contract, browser glyph metrics, full retest and atomic recutover | complete |
+| 7 | Complete icon families | Admit exact official Rounded and Sharp variable fonts and publish all documented families locally | hash-bound projection, full/package/browser retest and atomic recutover | complete |
 
 ## Progress
 
 ### Batches 1-5
 
 - Status: complete; independent audit pending.
-- Product candidate: `f07572fb15a5e2a71f3ab3e9207b4c9d54336b06`.
+- Product candidate: `ad147f32ec9854e5bb97ea635b349b3ce803ed43`.
 - Exact owner projection: 117 files from `simai/ui@d1daa951…`, packet
   `790b8014…`, manifest `8c917f69…`; source fidelity is 117/117.
-- Build: two full roots and representative single are byte-identical at 649
-  files, digest `0495614f…`; static is 266 HTML / 36,128 references / broken=0.
-- Package: two 997-file artifacts reproduce ZIP `60079839…`; both repository
-  verifiers pass. A fresh dist consumer passes init/doctor/full/single/static.
-- Browser: standalone button icons and custom-element icons both use the local
-  canonical outlined font; the former `arrow_forward` overflow is reduced from
-  84px to its exact 24px host. Search/settings, blur, overflow and external
-  runtime request invariants remain clean with zero console warnings/errors.
+- Build: two full roots and representative Icon single are byte-identical at
+  655 files, digest `b6e0d9a7…`; static is 266 HTML / 36,128 references /
+  broken=0.
+- Package: two 1,000-file artifacts reproduce ZIP `1cfd3acf…`; both repository
+  verifiers pass.
+- Browser: Outlined, Rounded and Sharp standalone/custom icons use their exact
+  local canonical families; former ligature strings now occupy their 16/20/24px
+  hosts, including the filled Rounded state. Overflow and external runtime
+  request invariants remain clean with zero console warnings/errors.
 - Validation site: `docara-new.test` was atomically switched to the exact
   build; the former tree is retained under the rollback name documented in
   the evidence index.

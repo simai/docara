@@ -19,6 +19,6 @@
   "checks": ["Exact hashes", "Security", "PHPUnit", "Full/full/single", "Static and browser", "Package and consumers", "Atomic cutover"],
   "status": "ready_for_independent_audit",
   "baseline_revision": "1e1e093109cbd8956cbe9693cc2fd98dd8e1759f",
-  "candidate_revision": "f07572fb15a5e2a71f3ab3e9207b4c9d54336b06",
+  "candidate_revision": "ad147f32ec9854e5bb97ea635b349b3ce803ed43",
   "next_action": "independent_local_framework_runtime_audit"
 }

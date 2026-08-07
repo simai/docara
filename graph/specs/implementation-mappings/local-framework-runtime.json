@@ -32,5 +32,5 @@
   "known_deviations": ["Independent reverse-outcome acceptance is pending."],
   "deletion_gates": ["Rollback the validation site with the exact preserved backup and revert the bounded product commits."],
   "status": "ready_for_independent_audit",
-  "mapped_revision": "f07572fb15a5e2a71f3ab3e9207b4c9d54336b06"
+  "mapped_revision": "ad147f32ec9854e5bb97ea635b349b3ce803ed43"
 }

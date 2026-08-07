@@ -4,9 +4,14 @@ Date: 2026-08-07
 
 State: `local_framework_runtime_ready_for_independent_audit`
 
-Product candidate: `f07572fb15a5e2a71f3ab3e9207b4c9d54336b06`
+Product candidate: `ad147f32ec9854e5bb97ea635b349b3ce803ed43`
 
-Current correction evidence: [C1 standalone icons](C1-STANDALONE-ICONS.md).
+Current correction evidence:
+[C2 complete icon families](C2-COMPLETE-ICON-FAMILIES.md).
+
+The C1 standalone-icon result remains the accepted Outlined-family parent but
+its 649-file ledger and package are superseded by C2, which completes the
+Rounded and Sharp families used by the public Icon page.
 
 ## Immutable owner projection
 

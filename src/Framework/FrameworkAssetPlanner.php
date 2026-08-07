@@ -379,9 +379,10 @@ final readonly class FrameworkAssetPlanner
 
     private function iconFallbackCss(string $fontUrl): string
     {
-        return '@font-face{font-family:"Docara Material Symbols";src:url("' . $fontUrl
+        return '@font-face{font-family:"Material Symbols Outlined";src:url("' . $fontUrl
             . '") format("woff2");font-style:normal;font-weight:100 700;font-display:block}'
-            . 'html body sf-icon > .sf-icon{font-family:"Docara Material Symbols"!important;'
+            . 'html body .sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape){'
+            . '--sf-icon--font-family:"Material Symbols Outlined";font-family:"Material Symbols Outlined"!important;'
             . 'font-feature-settings:"liga"!important;font-variation-settings:"FILL" var(--sf-icon--fill,0),'
             . '"wght" var(--sf-icon--weight,400),"GRAD" var(--sf-icon--grade,0),'
             . '"opsz" var(--sf-icon--optical-size,24)}';
@@ -389,10 +390,10 @@ final readonly class FrameworkAssetPlanner
 
     private function iconFallbackReadyRuntime(): string
     {
-        return '(function(){var selector="sf-icon > .sf-icon:not(.sf-icon-loaded)";'
+        return '(function(){var selector=".sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape):not(.sf-icon-loaded)";'
             . 'function mark(root){if(root.nodeType===1&&root.matches(selector)){root.classList.add("sf-icon-loaded")}if(root.querySelectorAll){root.querySelectorAll(selector).forEach(function(icon){icon.classList.add("sf-icon-loaded")})}}'
             . 'function watch(){mark(document);if(!document.body)return;new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(mark)})}).observe(document.body,{childList:true,subtree:true})}'
-            . 'function start(){var ready=document.fonts&&document.fonts.load?document.fonts.load("400 24px \\"Docara Material Symbols\\""):Promise.resolve([true]);ready.then(function(faces){if(faces&&faces.length){document.documentElement.dataset.docaraFullFontReady="true";watch()}}).catch(function(){})}'
+            . 'function start(){var ready=document.fonts&&document.fonts.load?document.fonts.load("400 24px \\"Material Symbols Outlined\\""):Promise.resolve([true]);ready.then(function(faces){if(faces&&faces.length){document.documentElement.dataset.docaraFullFontReady="true";watch()}}).catch(function(){})}'
             . 'if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",start,{once:true})}else{start()}})();';
     }
 

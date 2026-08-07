@@ -70,6 +70,26 @@ final class FrameworkTypographyProjectionTest extends TestCase
             '/_docara/vendor/simai-framework/runtime/d1daa951dd08b94a9f209fd9f31a78d2b3779563/distr/component/icons/fonts/MaterialSymbols-Outlined.woff2',
             $assets['simai.framework.icon_font.css']['content'],
         );
+        self::assertStringContainsString(
+            '@font-face{font-family:"Material Symbols Outlined"',
+            $assets['simai.framework.icon_font.css']['content'],
+        );
+        self::assertStringContainsString(
+            'html body .sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape)',
+            $assets['simai.framework.icon_font.css']['content'],
+        );
+        self::assertStringNotContainsString(
+            'html body sf-icon > .sf-icon',
+            $assets['simai.framework.icon_font.css']['content'],
+        );
+        self::assertStringContainsString(
+            'document.fonts.load("400 24px \\"Material Symbols Outlined\\"")',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
+        self::assertStringContainsString(
+            '.sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape):not(.sf-icon-loaded)',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
         foreach ($plan->assets as $asset) {
             self::assertStringNotContainsString('cdn.jsdelivr.net', (string) ($asset['url'] ?? '') . (string) ($asset['content'] ?? ''));
         }

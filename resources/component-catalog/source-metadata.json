@@ -2,26 +2,26 @@
     "schema": "docara.component_source_metadata.v1",
     "version": 1,
     "repository": "https://github.com/simai/docara",
-    "revision": "1a91518ae33bc7fb04c53b045086e9d8742e127d",
+    "revision": "c969d7e6c14bff6b815a0260ccaba4b0fe112895",
     "entries": [
         {
             "source_ref": "docs/site/content/ru/authoring/markdown.md",
-            "source_sha256": "932a22ddabfcea0eff3654ffa522cde70fddef481cb323acfe3a63c3860b82c3",
-            "revision": "1021ba106c5400a7a32ab1302ff3f85861b6d5ff",
+            "source_sha256": "09a86a08c887be535b1095eb86efc67b459dff9b3a33e7aa2a3054893fd3d95b",
+            "revision": "c969d7e6c14bff6b815a0260ccaba4b0fe112895",
             "author": "Rim Zabarov",
-            "changed_at": "2026-08-06T23:39:00+03:00",
-            "source_url": "https://github.com/simai/docara/blob/1021ba106c5400a7a32ab1302ff3f85861b6d5ff/docs/site/content/ru/authoring/markdown.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/authoring/markdown.md",
+            "changed_at": "2026-08-07T19:24:02+03:00",
+            "source_url": "https://github.com/simai/docara/blob/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/authoring/markdown.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/authoring/markdown.md",
             "history_exact": true
         },
         {
             "source_ref": "docs/site/content/ru/components.md",
             "source_sha256": "8a5c39b385d441338600259121d983b018d59053ff8fa40e5a1c4511d1d50718",
-            "revision": "1021ba106c5400a7a32ab1302ff3f85861b6d5ff",
+            "revision": "c969d7e6c14bff6b815a0260ccaba4b0fe112895",
             "author": "Rim Zabarov",
-            "changed_at": "2026-08-06T23:39:00+03:00",
-            "source_url": "https://github.com/simai/docara/blob/1021ba106c5400a7a32ab1302ff3f85861b6d5ff/docs/site/content/ru/components.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components.md",
+            "changed_at": "2026-08-07T19:24:02+03:00",
+            "source_url": "https://github.com/simai/docara/blob/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components.md",
             "history_exact": true
         },
         {
@@ -31,7 +31,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:03:42+03:00",
             "source_url": "https://github.com/simai/docara/blob/b5cf224c99240d47bc28808c1abe8ecc3253933d/docs/site/content/ru/components/backlinks.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/backlinks.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/backlinks.md",
             "history_exact": true
         },
         {
@@ -41,7 +41,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:11:20+03:00",
             "source_url": "https://github.com/simai/docara/blob/0e16e544fd7300a071b8c6309f8efd06fed925a0/docs/site/content/ru/components/banner.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/banner.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/banner.md",
             "history_exact": true
         },
         {
@@ -51,7 +51,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:38:21+03:00",
             "source_url": "https://github.com/simai/docara/blob/ef7cf80d7edd619f56f736535cefd5b780fc0821/docs/site/content/ru/components/button.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/button.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/button.md",
             "history_exact": true
         },
         {
@@ -61,7 +61,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:54:53+03:00",
             "source_url": "https://github.com/simai/docara/blob/5cb1a5112711e9ea08d07841b06fceffee86a574/docs/site/content/ru/components/card.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/card.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/card.md",
             "history_exact": true
         },
         {
@@ -71,7 +71,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:52:16+03:00",
             "source_url": "https://github.com/simai/docara/blob/b2f695f819e1352ed7420050c94ab25555b2cb87/docs/site/content/ru/components/code-from-file.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/code-from-file.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/code-from-file.md",
             "history_exact": true
         },
         {
@@ -81,7 +81,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:03:42+03:00",
             "source_url": "https://github.com/simai/docara/blob/b5cf224c99240d47bc28808c1abe8ecc3253933d/docs/site/content/ru/components/details.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/details.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/details.md",
             "history_exact": true
         },
         {
@@ -91,7 +91,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:25:44+03:00",
             "source_url": "https://github.com/simai/docara/blob/c158a5e7aa42667823ed0ae9934d911a30539934/docs/site/content/ru/components/diagram.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/diagram.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/diagram.md",
             "history_exact": true
         },
         {
@@ -101,7 +101,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:11:20+03:00",
             "source_url": "https://github.com/simai/docara/blob/0e16e544fd7300a071b8c6309f8efd06fed925a0/docs/site/content/ru/components/download.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/download.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/download.md",
             "history_exact": true
         },
         {
@@ -111,7 +111,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T23:11:18+03:00",
             "source_url": "https://github.com/simai/docara/blob/5efab497e32e5c358670878ed72e16ceaa4f6369/docs/site/content/ru/components/embed.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/embed.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/embed.md",
             "history_exact": true
         },
         {
@@ -121,7 +121,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T23:11:18+03:00",
             "source_url": "https://github.com/simai/docara/blob/5efab497e32e5c358670878ed72e16ceaa4f6369/docs/site/content/ru/components/example.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/example.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/example.md",
             "history_exact": true
         },
         {
@@ -131,7 +131,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:05:59+03:00",
             "source_url": "https://github.com/simai/docara/blob/835df6db99ef214cb8427ac1dccb1a067ef0c45b/docs/site/content/ru/components/figure.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/figure.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/figure.md",
             "history_exact": true
         },
         {
@@ -141,7 +141,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:05:59+03:00",
             "source_url": "https://github.com/simai/docara/blob/835df6db99ef214cb8427ac1dccb1a067ef0c45b/docs/site/content/ru/components/grid.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/grid.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/grid.md",
             "history_exact": true
         },
         {
@@ -151,7 +151,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-06T23:39:00+03:00",
             "source_url": "https://github.com/simai/docara/blob/1021ba106c5400a7a32ab1302ff3f85861b6d5ff/docs/site/content/ru/components/hero.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/hero.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/hero.md",
             "history_exact": true
         },
         {
@@ -161,7 +161,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:52:16+03:00",
             "source_url": "https://github.com/simai/docara/blob/b2f695f819e1352ed7420050c94ab25555b2cb87/docs/site/content/ru/components/html.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/html.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/html.md",
             "history_exact": true
         },
         {
@@ -171,7 +171,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:38:21+03:00",
             "source_url": "https://github.com/simai/docara/blob/ef7cf80d7edd619f56f736535cefd5b780fc0821/docs/site/content/ru/components/icon.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/icon.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/icon.md",
             "history_exact": true
         },
         {
@@ -181,7 +181,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:38:21+03:00",
             "source_url": "https://github.com/simai/docara/blob/ef7cf80d7edd619f56f736535cefd5b780fc0821/docs/site/content/ru/components/kbd.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/kbd.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/kbd.md",
             "history_exact": true
         },
         {
@@ -191,7 +191,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:15:56+03:00",
             "source_url": "https://github.com/simai/docara/blob/0c3305c9d0ebc75574842c52ab36cdc1a3a72ec3/docs/site/content/ru/components/logos.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/logos.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/logos.md",
             "history_exact": true
         },
         {
@@ -201,7 +201,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:25:44+03:00",
             "source_url": "https://github.com/simai/docara/blob/c158a5e7aa42667823ed0ae9934d911a30539934/docs/site/content/ru/components/math.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/math.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/math.md",
             "history_exact": true
         },
         {
@@ -211,7 +211,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:15:56+03:00",
             "source_url": "https://github.com/simai/docara/blob/0c3305c9d0ebc75574842c52ab36cdc1a3a72ec3/docs/site/content/ru/components/media.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/media.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/media.md",
             "history_exact": true
         },
         {
@@ -221,7 +221,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T23:40:55+03:00",
             "source_url": "https://github.com/simai/docara/blob/585eab0405c7a63df7add0c09cdd579ac25090a8/docs/site/content/ru/components/steps.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/steps.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/steps.md",
             "history_exact": true
         },
         {
@@ -231,7 +231,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-06T23:39:00+03:00",
             "source_url": "https://github.com/simai/docara/blob/1021ba106c5400a7a32ab1302ff3f85861b6d5ff/docs/site/content/ru/components/surface.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/surface.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/surface.md",
             "history_exact": true
         },
         {
@@ -241,7 +241,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-02T00:59:09+03:00",
             "source_url": "https://github.com/simai/docara/blob/d243ec2ec8df3c5987b201cb4ccbdf277835680f/docs/site/content/ru/components/tabs.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/tabs.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/tabs.md",
             "history_exact": true
         },
         {
@@ -251,7 +251,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T23:40:55+03:00",
             "source_url": "https://github.com/simai/docara/blob/585eab0405c7a63df7add0c09cdd579ac25090a8/docs/site/content/ru/components/tree.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/components/tree.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/components/tree.md",
             "history_exact": true
         },
         {
@@ -261,7 +261,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-05T14:15:44+03:00",
             "source_url": "https://github.com/simai/docara/blob/0b67abcd3bc6a7618e96c50d6102e1f5f34d4242/docs/site/content/ru/examples.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/examples.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/examples.md",
             "history_exact": true
         },
         {
@@ -271,27 +271,27 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-05T14:55:00+03:00",
             "source_url": "https://github.com/simai/docara/blob/6d5f54ce63165b69b95ac7029af8a100835869df/docs/site/content/ru/settings.md",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/docs/site/content/ru/settings.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/settings.md",
             "history_exact": true
         },
         {
             "source_ref": "docs/site/content/ru/start/component-model.md",
-            "source_sha256": "b3b8e27965338fe2e77b9f42529b661e7a96cd3ec809a8155b5b391b1c369876",
-            "revision": "1a91518ae33bc7fb04c53b045086e9d8742e127d",
+            "source_sha256": "1fd372f5d8387f5fa48ae1038fc577e17dbb2d8d336981eab0a25e8462c3ac93",
+            "revision": "c969d7e6c14bff6b815a0260ccaba4b0fe112895",
             "author": "Rim Zabarov",
-            "changed_at": "2026-08-07T18:45:40+03:00",
-            "source_url": null,
-            "history_url": null,
-            "history_exact": false
+            "changed_at": "2026-08-07T19:24:02+03:00",
+            "source_url": "https://github.com/simai/docara/blob/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/start/component-model.md",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/docs/site/content/ru/start/component-model.md",
+            "history_exact": true
         },
         {
             "source_ref": "resources/component-catalog/inline/docara.badge.json",
             "source_sha256": "98ba9c30211889f8e5d65464797a02bfe589d3bfe6d7d5eaae063dff18eacf31",
-            "revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7",
+            "revision": "c969d7e6c14bff6b815a0260ccaba4b0fe112895",
             "author": "Rim Zabarov",
-            "changed_at": "2026-08-01T01:39:57+03:00",
-            "source_url": "https://github.com/simai/docara/blob/a3ba9a4d04429f1f2046b8415764fe7bc89962c7/resources/component-catalog/inline/docara.badge.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/inline/docara.badge.json",
+            "changed_at": "2026-08-07T19:24:02+03:00",
+            "source_url": "https://github.com/simai/docara/blob/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/inline/docara.badge.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/inline/docara.badge.json",
             "history_exact": true
         },
         {
@@ -301,7 +301,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:38:21+03:00",
             "source_url": "https://github.com/simai/docara/blob/ef7cf80d7edd619f56f736535cefd5b780fc0821/resources/component-catalog/inline/docara.button.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/inline/docara.button.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/inline/docara.button.json",
             "history_exact": true
         },
         {
@@ -311,7 +311,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:38:21+03:00",
             "source_url": "https://github.com/simai/docara/blob/ef7cf80d7edd619f56f736535cefd5b780fc0821/resources/component-catalog/inline/docara.icon.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/inline/docara.icon.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/inline/docara.icon.json",
             "history_exact": true
         },
         {
@@ -321,17 +321,17 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:38:21+03:00",
             "source_url": "https://github.com/simai/docara/blob/ef7cf80d7edd619f56f736535cefd5b780fc0821/resources/component-catalog/inline/docara.kbd.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/inline/docara.kbd.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/inline/docara.kbd.json",
             "history_exact": true
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.alert.json",
             "source_sha256": "6063e53a55e45ccbec761179b606b4d0d1936d3a57fe923ca0c617fe02ba6ece",
-            "revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7",
+            "revision": "c969d7e6c14bff6b815a0260ccaba4b0fe112895",
             "author": "Rim Zabarov",
-            "changed_at": "2026-08-01T01:39:57+03:00",
-            "source_url": "https://github.com/simai/docara/blob/a3ba9a4d04429f1f2046b8415764fe7bc89962c7/resources/component-catalog/typed/docara.alert.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.alert.json",
+            "changed_at": "2026-08-07T19:24:02+03:00",
+            "source_url": "https://github.com/simai/docara/blob/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.alert.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.alert.json",
             "history_exact": true
         },
         {
@@ -341,7 +341,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-05T15:58:33+03:00",
             "source_url": "https://github.com/simai/docara/blob/770cbed9759612c33f6106f7ba3c807cca770cdd/resources/component-catalog/typed/docara.atlas_index.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.atlas_index.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.atlas_index.json",
             "history_exact": true
         },
         {
@@ -351,7 +351,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:03:42+03:00",
             "source_url": "https://github.com/simai/docara/blob/b5cf224c99240d47bc28808c1abe8ecc3253933d/resources/component-catalog/typed/docara.backlinks.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.backlinks.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.backlinks.json",
             "history_exact": true
         },
         {
@@ -361,7 +361,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:11:20+03:00",
             "source_url": "https://github.com/simai/docara/blob/0e16e544fd7300a071b8c6309f8efd06fed925a0/resources/component-catalog/typed/docara.banner.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.banner.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.banner.json",
             "history_exact": true
         },
         {
@@ -371,7 +371,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-06T18:17:38+03:00",
             "source_url": "https://github.com/simai/docara/blob/ac53ea4d372a47dc8278b595accca9e7b85c66a3/resources/component-catalog/typed/docara.card.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.card.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.card.json",
             "history_exact": true
         },
         {
@@ -381,17 +381,17 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:52:16+03:00",
             "source_url": "https://github.com/simai/docara/blob/b2f695f819e1352ed7420050c94ab25555b2cb87/resources/component-catalog/typed/docara.code.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.code.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.code.json",
             "history_exact": true
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.columns.json",
             "source_sha256": "5484bc947ddc2738881aa0d9fcd3802e1b8dc3943c75d4ba6dac2ed7ffb688d0",
-            "revision": "e8aaac5c6b485e099dd6217687601bf64feb5323",
+            "revision": "c969d7e6c14bff6b815a0260ccaba4b0fe112895",
             "author": "Rim Zabarov",
-            "changed_at": "2026-07-21T18:17:07+03:00",
-            "source_url": "https://github.com/simai/docara/blob/e8aaac5c6b485e099dd6217687601bf64feb5323/resources/component-catalog/typed/docara.columns.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.columns.json",
+            "changed_at": "2026-08-07T19:24:02+03:00",
+            "source_url": "https://github.com/simai/docara/blob/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.columns.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.columns.json",
             "history_exact": true
         },
         {
@@ -401,17 +401,17 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-02T01:28:30+03:00",
             "source_url": "https://github.com/simai/docara/blob/fc3bd32c3453d863e278c7a61f07e794ccaeb1c7/resources/component-catalog/typed/docara.component_index.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.component_index.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.component_index.json",
             "history_exact": true
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.cta.json",
             "source_sha256": "a1562cf69fab9bfd8dace3e77338eb0deb9a6f2143be394046feea2d7483d158",
-            "revision": "e8aaac5c6b485e099dd6217687601bf64feb5323",
+            "revision": "c969d7e6c14bff6b815a0260ccaba4b0fe112895",
             "author": "Rim Zabarov",
-            "changed_at": "2026-07-21T18:17:07+03:00",
-            "source_url": "https://github.com/simai/docara/blob/e8aaac5c6b485e099dd6217687601bf64feb5323/resources/component-catalog/typed/docara.cta.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.cta.json",
+            "changed_at": "2026-08-07T19:24:02+03:00",
+            "source_url": "https://github.com/simai/docara/blob/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.cta.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.cta.json",
             "history_exact": true
         },
         {
@@ -421,7 +421,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:03:42+03:00",
             "source_url": "https://github.com/simai/docara/blob/b5cf224c99240d47bc28808c1abe8ecc3253933d/resources/component-catalog/typed/docara.details.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.details.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.details.json",
             "history_exact": true
         },
         {
@@ -431,7 +431,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:25:44+03:00",
             "source_url": "https://github.com/simai/docara/blob/c158a5e7aa42667823ed0ae9934d911a30539934/resources/component-catalog/typed/docara.diagram.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.diagram.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.diagram.json",
             "history_exact": true
         },
         {
@@ -441,7 +441,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T21:11:20+03:00",
             "source_url": "https://github.com/simai/docara/blob/0e16e544fd7300a071b8c6309f8efd06fed925a0/resources/component-catalog/typed/docara.download.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.download.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.download.json",
             "history_exact": true
         },
         {
@@ -451,7 +451,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T23:11:18+03:00",
             "source_url": "https://github.com/simai/docara/blob/5efab497e32e5c358670878ed72e16ceaa4f6369/resources/component-catalog/typed/docara.embed.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.embed.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.embed.json",
             "history_exact": true
         },
         {
@@ -461,17 +461,17 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T23:11:18+03:00",
             "source_url": "https://github.com/simai/docara/blob/5efab497e32e5c358670878ed72e16ceaa4f6369/resources/component-catalog/typed/docara.example.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.example.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.example.json",
             "history_exact": true
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.features.json",
             "source_sha256": "3c062bdd78b1f674ddac1e655fc56db62faa7acb79814207ea274952032867eb",
-            "revision": "e8aaac5c6b485e099dd6217687601bf64feb5323",
+            "revision": "c969d7e6c14bff6b815a0260ccaba4b0fe112895",
             "author": "Rim Zabarov",
-            "changed_at": "2026-07-21T18:17:07+03:00",
-            "source_url": "https://github.com/simai/docara/blob/e8aaac5c6b485e099dd6217687601bf64feb5323/resources/component-catalog/typed/docara.features.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.features.json",
+            "changed_at": "2026-08-07T19:24:02+03:00",
+            "source_url": "https://github.com/simai/docara/blob/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.features.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.features.json",
             "history_exact": true
         },
         {
@@ -481,7 +481,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:05:59+03:00",
             "source_url": "https://github.com/simai/docara/blob/835df6db99ef214cb8427ac1dccb1a067ef0c45b/resources/component-catalog/typed/docara.figure.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.figure.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.figure.json",
             "history_exact": true
         },
         {
@@ -491,7 +491,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-06T18:17:38+03:00",
             "source_url": "https://github.com/simai/docara/blob/ac53ea4d372a47dc8278b595accca9e7b85c66a3/resources/component-catalog/typed/docara.grid.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.grid.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.grid.json",
             "history_exact": true
         },
         {
@@ -501,7 +501,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-06T20:15:43+03:00",
             "source_url": "https://github.com/simai/docara/blob/071b12e0267d687ac7c3c0c589a3f4ebb603b7b3/resources/component-catalog/typed/docara.hero.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.hero.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.hero.json",
             "history_exact": true
         },
         {
@@ -511,7 +511,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:52:16+03:00",
             "source_url": "https://github.com/simai/docara/blob/b2f695f819e1352ed7420050c94ab25555b2cb87/resources/component-catalog/typed/docara.html.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.html.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.html.json",
             "history_exact": true
         },
         {
@@ -521,7 +521,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-02T04:55:58+03:00",
             "source_url": "https://github.com/simai/docara/blob/76a7239c8dd84541a8baac2c9414364fd9749fc1/resources/component-catalog/typed/docara.internal_preview.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.internal_preview.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.internal_preview.json",
             "history_exact": true
         },
         {
@@ -531,7 +531,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:15:56+03:00",
             "source_url": "https://github.com/simai/docara/blob/0c3305c9d0ebc75574842c52ab36cdc1a3a72ec3/resources/component-catalog/typed/docara.logos.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.logos.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.logos.json",
             "history_exact": true
         },
         {
@@ -541,7 +541,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:25:44+03:00",
             "source_url": "https://github.com/simai/docara/blob/c158a5e7aa42667823ed0ae9934d911a30539934/resources/component-catalog/typed/docara.math.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.math.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.math.json",
             "history_exact": true
         },
         {
@@ -551,17 +551,17 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T22:15:56+03:00",
             "source_url": "https://github.com/simai/docara/blob/0c3305c9d0ebc75574842c52ab36cdc1a3a72ec3/resources/component-catalog/typed/docara.media.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.media.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.media.json",
             "history_exact": true
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.promo.json",
             "source_sha256": "7a3eae919a9f7c51a891c73a5f8f0ec6bcddb213155edd217b722becc72bde22",
-            "revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7",
+            "revision": "c969d7e6c14bff6b815a0260ccaba4b0fe112895",
             "author": "Rim Zabarov",
-            "changed_at": "2026-08-01T01:39:57+03:00",
-            "source_url": "https://github.com/simai/docara/blob/a3ba9a4d04429f1f2046b8415764fe7bc89962c7/resources/component-catalog/typed/docara.promo.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.promo.json",
+            "changed_at": "2026-08-07T19:24:02+03:00",
+            "source_url": "https://github.com/simai/docara/blob/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.promo.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.promo.json",
             "history_exact": true
         },
         {
@@ -571,17 +571,17 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-05T14:12:22+03:00",
             "source_url": "https://github.com/simai/docara/blob/bc38cbb2c6ad44a4d3ea9ba98779907fbfcb7bf2/resources/component-catalog/typed/docara.schema_reference.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.schema_reference.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.schema_reference.json",
             "history_exact": true
         },
         {
             "source_ref": "resources/component-catalog/typed/docara.showcase.json",
             "source_sha256": "13249ff43bfd1efdd36e06a8c8965759bd76797fd704937023d99435e4eec8f6",
-            "revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7",
+            "revision": "c969d7e6c14bff6b815a0260ccaba4b0fe112895",
             "author": "Rim Zabarov",
-            "changed_at": "2026-08-01T01:39:57+03:00",
-            "source_url": "https://github.com/simai/docara/blob/a3ba9a4d04429f1f2046b8415764fe7bc89962c7/resources/component-catalog/typed/docara.showcase.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.showcase.json",
+            "changed_at": "2026-08-07T19:24:02+03:00",
+            "source_url": "https://github.com/simai/docara/blob/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.showcase.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.showcase.json",
             "history_exact": true
         },
         {
@@ -591,7 +591,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T23:40:55+03:00",
             "source_url": "https://github.com/simai/docara/blob/585eab0405c7a63df7add0c09cdd579ac25090a8/resources/component-catalog/typed/docara.steps.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.steps.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.steps.json",
             "history_exact": true
         },
         {
@@ -601,7 +601,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-06T18:17:38+03:00",
             "source_url": "https://github.com/simai/docara/blob/ac53ea4d372a47dc8278b595accca9e7b85c66a3/resources/component-catalog/typed/docara.surface.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.surface.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.surface.json",
             "history_exact": true
         },
         {
@@ -611,7 +611,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-02T00:59:09+03:00",
             "source_url": "https://github.com/simai/docara/blob/d243ec2ec8df3c5987b201cb4ccbdf277835680f/resources/component-catalog/typed/docara.tabs.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.tabs.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.tabs.json",
             "history_exact": true
         },
         {
@@ -621,7 +621,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T23:40:55+03:00",
             "source_url": "https://github.com/simai/docara/blob/585eab0405c7a63df7add0c09cdd579ac25090a8/resources/component-catalog/typed/docara.tree.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/component-catalog/typed/docara.tree.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/component-catalog/typed/docara.tree.json",
             "history_exact": true
         },
         {
@@ -631,7 +631,7 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T01:39:57+03:00",
             "source_url": "https://github.com/simai/docara/blob/a3ba9a4d04429f1f2046b8415764fe7bc89962c7/resources/framework/manifests/ui-alert.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/framework/manifests/ui-alert.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/framework/manifests/ui-alert.json",
             "history_exact": true
         },
         {
@@ -641,9 +641,9 @@
             "author": "Rim Zabarov",
             "changed_at": "2026-08-01T01:39:57+03:00",
             "source_url": "https://github.com/simai/docara/blob/a3ba9a4d04429f1f2046b8415764fe7bc89962c7/resources/framework/manifests/ui-button.json",
-            "history_url": "https://github.com/simai/docara/commits/1a91518ae33bc7fb04c53b045086e9d8742e127d/resources/framework/manifests/ui-button.json",
+            "history_url": "https://github.com/simai/docara/commits/c969d7e6c14bff6b815a0260ccaba4b0fe112895/resources/framework/manifests/ui-button.json",
             "history_exact": true
         }
     ],
-    "content_sha256": "de448cb30ceb325ba921bab278e8c8f014706d83d72cbd5793e136a09ab53f5c"
+    "content_sha256": "d2b8c5737987ed2ca922b7e9b802a07d889914cab30ed03f01029d88bb781988"
 }

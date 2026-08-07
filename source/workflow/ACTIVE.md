@@ -29,7 +29,7 @@ Graph goal: `docara.goal.unified`
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.lfr.local_framework_runtime`;
 - batch: `docara.batch.lfr.integrated_retest`;
-- candidate: `08cf9eb6b9dbd0175b87854dc9ec9652ebccc773`;
+- candidate: `f07572fb15a5e2a71f3ab3e9207b4c9d54336b06`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
 - next action: `independent_local_framework_runtime_audit`;
 - Goal 1-3 and Goals A-C remain independently accepted. The separately
@@ -55,10 +55,13 @@ IR/HTML remain disposable.
 Docara now publishes the exact required SIMAI Framework runtime, icons, fonts,
 lazy theme utility and authored highlight chunks from one content-addressed
 117-file local projection. Full/full/single, static, package and two same-lock
-consumers are deterministic on exact candidate `08cf9eb…`. Browser checks with
+consumers are deterministic on exact candidate `f07572f…`. Browser checks with
 external HTTPS blocked are clean. The authorized local validation site
 `docara-new.test` was atomically switched to the exact build with a preserved
 rollback backup; no production, release or external owner write occurred.
+The C1 correction additionally binds the exact local outlined font to direct
+`.sf-icon` hosts: standalone button ligatures now render as 24px glyphs instead
+of visible 84px text, while custom-element icons retain the same local family.
 
 The accepted S1 candidate counts depth relative to every container root, so the
 canonical Surface -> Grid -> Card chain passes both Surface 3/3 and Grid 2/2

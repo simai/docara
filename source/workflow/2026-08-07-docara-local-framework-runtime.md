@@ -66,21 +66,24 @@ and atomically switch the explicitly authorized local validation site
 | 3 | Integrated QA | Full builds, static, package/consumer and offline browser | deterministic ledgers and browser evidence | complete |
 | 4 | Validation site | Backup and atomic `docara-new.test` cutover | HTTP/static/browser/rollback smoke | complete |
 | 5 | Handoff | Synchronize workflow/spec/graph/evidence | context/graph/diff/clean status | complete |
+| 6 | Standalone icon correction | Bind the local outlined font to both custom-element and direct icon hosts | red/green contract, browser glyph metrics, full retest and atomic recutover | complete |
 
 ## Progress
 
 ### Batches 1-5
 
 - Status: complete; independent audit pending.
-- Product candidate: `08cf9eb6b9dbd0175b87854dc9ec9652ebccc773`.
+- Product candidate: `f07572fb15a5e2a71f3ab3e9207b4c9d54336b06`.
 - Exact owner projection: 117 files from `simai/ui@d1daa951…`, packet
   `790b8014…`, manifest `8c917f69…`; source fidelity is 117/117.
 - Build: two full roots and representative single are byte-identical at 649
-  files, digest `4b35a921…`; static is 266 HTML / 36,128 references / broken=0.
-- Package: two 997-file artifacts reproduce ZIP `79a56ec4…`; both repository
-  verifiers pass. Two same-lock consumers share tree `b46bbae5…`.
-- Browser: icons, search/settings focus return, blur=none and zero external
-  runtime requests are verified with zero console warnings/errors.
+  files, digest `0495614f…`; static is 266 HTML / 36,128 references / broken=0.
+- Package: two 997-file artifacts reproduce ZIP `60079839…`; both repository
+  verifiers pass. A fresh dist consumer passes init/doctor/full/single/static.
+- Browser: standalone button icons and custom-element icons both use the local
+  canonical outlined font; the former `arrow_forward` overflow is reduced from
+  84px to its exact 24px host. Search/settings, blur, overflow and external
+  runtime request invariants remain clean with zero console warnings/errors.
 - Validation site: `docara-new.test` was atomically switched to the exact
   build; the former tree is retained under the rollback name documented in
   the evidence index.
@@ -88,7 +91,7 @@ and atomically switch the explicitly authorized local validation site
 ## Final Result
 
 - Result: local Framework runtime and fonts are content-addressed and served
-  by Docara itself; `docara-new.test` uses the exact verified tree.
+  by Docara itself; `docara-new.test` uses the exact corrected verified tree.
 - Verification: see
   `source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md`.
 - Remaining: independent read-only reverse-outcome audit only.

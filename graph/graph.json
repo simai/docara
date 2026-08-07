@@ -31,7 +31,7 @@
     "current_stage": "docara.stage.lfr.local_framework_runtime",
     "current_batch": "docara.batch.lfr.integrated_retest",
     "completed_checkpoint": "local_framework_runtime_candidate_and_validation_site",
-    "candidate_revision": "08cf9eb6b9dbd0175b87854dc9ec9652ebccc773",
+    "candidate_revision": "f07572fb15a5e2a71f3ab3e9207b4c9d54336b06",
     "next_action": "independent_local_framework_runtime_audit",
     "evidence": "source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md",
     "roadmap_source": "source/workflow/2026-08-07-docara-local-framework-runtime.md",

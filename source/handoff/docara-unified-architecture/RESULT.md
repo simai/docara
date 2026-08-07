@@ -2,7 +2,7 @@
 
 Current state: `local_framework_runtime_ready_for_independent_audit`
 
-Current candidate: `08cf9eb6b9dbd0175b87854dc9ec9652ebccc773`
+Current candidate: `f07572fb15a5e2a71f3ab3e9207b4c9d54336b06`
 
 Current evidence: `source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md`
 
@@ -11,18 +11,21 @@ Current evidence: `source/workflow/evidence/2026-08-07-docara-local-framework-ru
 The current Docara Framework closure is served entirely from one exact local
 117-file projection of `simai/ui@d1daa951…`; runtime packet `790b8014…` and
 manifest `8c917f69…` bind every byte before publication. No external runtime or
-font request is emitted. Two full builds and representative single share the
-649-file digest `4b35a921…`; static is 266 HTML / 36,128 references / broken=0.
-Two 997-file packages reproduce ZIP `79a56ec4…`, and two same-lock consumers
-share tree `b46bbae5…`. Full PHPUnit is 510 / 11,513.
+font request is emitted. The C1 correction binds that same local outlined font
+to custom-element and direct `.sf-icon` hosts. Two full builds and representative
+single share the 649-file digest `0495614f…`; static is 266 HTML / 36,128
+references / broken=0. Two 997-file packages reproduce ZIP `60079839…`; a
+fresh dist consumer passes init/doctor/full/single/static. Full PHPUnit is
+510 / 11,534.
 
 The explicitly authorized local validation site `docara-new.test` was switched
-atomically from `e35f077c…` to exact `4b35a921…`. Its former tree remains at
-`/Users/rim/Sites/.docara-new.test-backup-before-local-runtime-08cf9eb-20260807`.
-HTTPS/static/browser checks confirm visible icon children, working search and
-settings focus return, blur=none, no overflow, no external runtime requests and
-zero console warnings/errors. No write occurred to `docara.test`, and no
-merge, push, tag, release or publication occurred.
+atomically from `4b35a921…` to exact `0495614f…`. Its immediately previous tree
+is retained in the C1 rollback backup documented by the evidence index.
+HTTPS/static/browser checks confirm direct button glyphs at 24px without
+ligature overflow, visible custom-element icons, working search/settings, no
+overflow, no external runtime requests and zero console warnings/errors. No
+write occurred to `docara.test`, and no merge, push, tag, release or
+publication occurred.
 
 ## SF5 5.4 typography integration result
 

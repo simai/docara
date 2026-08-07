@@ -4,7 +4,9 @@ Date: 2026-08-07
 
 State: `local_framework_runtime_ready_for_independent_audit`
 
-Product candidate: `08cf9eb6b9dbd0175b87854dc9ec9652ebccc773`
+Product candidate: `f07572fb15a5e2a71f3ab3e9207b4c9d54336b06`
+
+Current correction evidence: [C1 standalone icons](C1-STANDALONE-ICONS.md).
 
 ## Immutable owner projection
 
@@ -23,33 +25,34 @@ hardlinked, colliding or escaping paths fail closed.
 
 ## Repository verification
 
-- full PHPUnit: 510 tests / 11,513 assertions, PASS;
+- full PHPUnit: recorded in the current C1 evidence, PASS;
 - Pint, Composer strict, PHP lint, JSON and candidate-range `git diff --check`:
   PASS (Composer prints tool-owned PHP 8.4 deprecation notices only);
 - offline browser against a clean build with every external HTTPS request
   blocked: zero warnings/errors, zero external runtime requests, `sf-icon`
   defined, search/settings focus return, blur=none, overflow=false.
 
-## Deterministic public builds
+## Superseded pre-C1 build evidence
 
 Named roots:
 
 - `/tmp/docara-lfr-exact-a.ry3EVX/build_localruntime-a`;
 - `/tmp/docara-lfr-exact-b.Sl4KoG/build_localruntime-b`.
 
-Both full roots and representative single `/ru/components/button/` contain 649
+Both pre-C1 full roots and representative single `/ru/components/button/` contain 649
 files and share canonical path-sorted tree digest
 `4b35a9211184aab6b267dfd8a523eddc3bf8bde9ca69c37ccc6acbce594512b2`.
 Static verification for each full build reports 266 HTML, 36,128 local
-references and `broken=[]`.
+references and `broken=[]`. This ledger is historical because the direct icon
+font binding changed product output in C1; it is not the current deploy digest.
 
 Canonical digest formula: sort by relative path, concatenate
 `<file-sha256><two spaces><relative-path><newline>`, then SHA-256 the complete
 byte string.
 
-## Package and consumers
+## Superseded pre-C1 package and consumers
 
-Two exact builds used `--revision=08cf9eb6b9dbd0175b87854dc9ec9652ebccc773`,
+Two historical exact builds used `--revision=08cf9eb6b9dbd0175b87854dc9ec9652ebccc773`,
 `--version=2.0.0-alpha1` and
 `--tag=v2.0.0-alpha1-local-runtime` (evidence label only; no tag was created):
 
@@ -66,20 +69,20 @@ their 454-file trees are byte-identical at
 Static reports 78 HTML / 4,087 references / broken=0. Package `.git` and
 `node_modules` are absent.
 
-## Authorized local validation cutover
+## Superseded pre-C1 validation cutover
 
 The SIMAI action preflight passed and recorded
 `source/output/action-gates/action-gate-report-20260807110841.json`.
 
 - previous active digest: `e35f077cc1511b88270a28a8e616726543cbc67b5bc794b1a56e461364bc7934`;
-- new active digest: `4b35a9211184aab6b267dfd8a523eddc3bf8bde9ca69c37ccc6acbce594512b2`;
+- historical active digest: `4b35a9211184aab6b267dfd8a523eddc3bf8bde9ca69c37ccc6acbce594512b2`;
 - backup: `/Users/rim/Sites/.docara-new.test-backup-before-local-runtime-08cf9eb-20260807`;
 - active: `/Users/rim/Sites/docara-new.test`;
 - HTTPS smoke for every 266 generated HTML path: 266/266 return 200;
 - active static verification: 266 HTML / 36,128 references / broken=0;
-- real-browser `sf-icon` child width 24px, search/settings open and return
-  focus on Escape, both overlays have backdrop blur `none`, overflow=false,
-  external runtime requests=[], console warnings/errors=0.
+- the original check verified only an `sf-icon` child width and missed direct
+  `<i class="sf-icon">` ligatures. C1 preserves this record as the rejected
+  validation contour that allowed the visible `arrow_forward` text regression.
 
 Exact rollback keeps the current candidate under the former candidate name and
 restores the backup using `scripts/atomic-static-cutover.php rollback` with

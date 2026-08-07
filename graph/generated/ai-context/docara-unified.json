@@ -9,7 +9,7 @@
         "graph/specs/stages/lfr-local-framework-runtime.json",
         "graph/specs/batches/lfr-integrated-retest.json"
     ],
-    "canonical_sha256": "e8dc809505473e65a429d5dd4b80b11f40e63787f14bdfba2fe66f0dba686492",
+    "canonical_sha256": "895d44ededb0189d8cfc2664c6f7337c6b3dbcf93ad919c1ce7cab086f08b37f",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -26,7 +26,7 @@
         "batch_readiness": "ready_for_independent_audit",
         "batch_status": "ready_for_independent_audit",
         "completed_checkpoint": "local_framework_runtime_candidate_and_validation_site",
-        "candidate_revision": "08cf9eb6b9dbd0175b87854dc9ec9652ebccc773",
+        "candidate_revision": "f07572fb15a5e2a71f3ab3e9207b4c9d54336b06",
         "next_action": "independent_local_framework_runtime_audit",
         "evidence": "source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md"
     },

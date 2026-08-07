@@ -74,6 +74,35 @@ final class FrameworkTypographyProjectionTest extends TestCase
             '@font-face{font-family:"Material Symbols Outlined"',
             $assets['simai.framework.icon_font.css']['content'],
         );
+        $icons = $repository->iconProjection();
+        self::assertIsArray($icons);
+        self::assertSame('google/material-design-icons', $icons['source']['provider']);
+        self::assertSame('50f0603134ce7b70b2d71b686cc13e8b57ccb74c', $icons['source']['revision']);
+        self::assertSame('Apache-2.0', $icons['source']['license']);
+        self::assertSame('40e0591f40c190eddcabe6ad9c8ac385cb7501c54897fab5c993b7705ff0bd34', $icons['packet_sha256']);
+        foreach (['license', 'rounded', 'sharp'] as $key) {
+            self::assertSame($icons['files'][$key]['sha256'], hash('sha256', $repository->bundledIconAsset($key)));
+        }
+        self::assertStringContainsString(
+            '@font-face{font-family:"Material Symbols Rounded"',
+            $assets['simai.framework.icon_variant_fonts.css']['content'],
+        );
+        self::assertStringContainsString(
+            '@font-face{font-family:"Material Symbols Sharp"',
+            $assets['simai.framework.icon_variant_fonts.css']['content'],
+        );
+        self::assertStringContainsString(
+            '/_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsRounded.woff2',
+            $assets['simai.framework.icon_variant_fonts.css']['content'],
+        );
+        self::assertStringContainsString(
+            'html body .sf-icon.sf-icon-rounded',
+            $assets['simai.framework.icon_variant_fonts.css']['content'],
+        );
+        self::assertStringContainsString(
+            'html body .sf-icon.sf-icon-shape',
+            $assets['simai.framework.icon_variant_fonts.css']['content'],
+        );
         self::assertStringContainsString(
             'html body .sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape)',
             $assets['simai.framework.icon_font.css']['content'],
@@ -83,13 +112,10 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $assets['simai.framework.icon_font.css']['content'],
         );
         self::assertStringContainsString(
-            'document.fonts.load("400 24px \\"Material Symbols Outlined\\"")',
+            '["Material Symbols Outlined","Material Symbols Rounded","Material Symbols Sharp"]',
             $assets['simai.framework.icon_font.ready']['content'],
         );
-        self::assertStringContainsString(
-            '.sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape):not(.sf-icon-loaded)',
-            $assets['simai.framework.icon_font.ready']['content'],
-        );
+        self::assertStringContainsString('.sf-icon:not(.sf-icon-loaded)', $assets['simai.framework.icon_font.ready']['content']);
         foreach ($plan->assets as $asset) {
             self::assertStringNotContainsString('cdn.jsdelivr.net', (string) ($asset['url'] ?? '') . (string) ($asset['content'] ?? ''));
         }
@@ -163,6 +189,24 @@ final class FrameworkTypographyProjectionTest extends TestCase
     }
 
     #[Test]
+    public function changed_icon_variant_bytes_fail_before_render(): void
+    {
+        [$root, $lock] = $this->fixture();
+        $rounded = $root . '/resources/portable/vendor/google/material-symbols/'
+            . '50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsRounded.woff2';
+        file_put_contents($rounded, 'changed');
+
+        try {
+            new FrameworkManifestRepository($lock, $root . '/resources/framework');
+            self::fail('Changed icon variant bytes were admitted.');
+        } catch (FrameworkComponentException $exception) {
+            self::assertSame('FRAMEWORK_ICON_ASSET_HASH_MISMATCH', $exception->errorCode);
+        } finally {
+            $this->removeFixture($root);
+        }
+    }
+
+    #[Test]
     public function symlink_and_hardlink_runtime_assets_fail_closed(): void
     {
         foreach (['symlink', 'hardlink'] as $attack) {
@@ -215,6 +259,14 @@ final class FrameworkTypographyProjectionTest extends TestCase
                 . $runtime['source']['revision'] . '/distr/' . $relativePath;
             $source = dirname(__DIR__, 2) . '/resources/' . $relative;
             $target = $resources . '/' . $relative;
+            if (! is_dir(dirname($target))) {
+                mkdir(dirname($target), 0777, true);
+            }
+            copy($source, $target);
+        }
+        foreach ($lock->iconProjection()['files'] as $record) {
+            $source = dirname(__DIR__, 2) . '/resources/' . $record['path'];
+            $target = $resources . '/' . $record['path'];
             if (! is_dir(dirname($target))) {
                 mkdir(dirname($target), 0777, true);
             }

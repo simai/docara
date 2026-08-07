@@ -42,6 +42,7 @@ final readonly class FrameworkAssetPlanner
             ? 'https://cdn.jsdelivr.net/gh/simai/ui@' . $uiCommit . '/distr'
             : $this->projectedRuntimeBase((string) $runtimeProjection['mount']);
         $typography = $this->repository->typographyProjection();
+        $iconProjection = $this->repository->iconProjection();
         $boot = $runtime['boot'];
         $pairId = $this->repository->pairId();
         $projectionFingerprint = substr(
@@ -49,6 +50,7 @@ final readonly class FrameworkAssetPlanner
                 'smart' => $this->repository->assetProjection(),
                 'runtime' => $runtimeProjection,
                 'typography' => $typography,
+                'icons' => $iconProjection,
             ])),
             0,
             16,
@@ -117,10 +119,19 @@ final readonly class FrameworkAssetPlanner
             'sha256' => $runtimeProjection === null
                 ? null
                 : $this->runtimeAsset($iconFont)['sha256'],
-        ], [
+        ], ...($iconProjection === null ? [] : [[
+            'key' => 'simai.framework.icon_variant_fonts.css',
+            'kind' => 'inline_css',
+            'content' => $this->iconVariantCss(
+                $this->projectedPublicUrl((string) $iconProjection['files']['rounded']['public']),
+                $this->projectedPublicUrl((string) $iconProjection['files']['sharp']['public']),
+            ),
+            'source_revision' => $iconProjection['source']['revision'],
+            'sha256' => $iconProjection['packet_sha256'],
+        ]]), [
             'key' => 'simai.framework.icon_font.ready',
             'kind' => 'boot',
-            'content' => $this->iconFallbackReadyRuntime(),
+            'content' => $this->iconFallbackReadyRuntime($iconProjection !== null),
         ], [
             'key' => 'simai.framework.smart_base.js',
             'kind' => 'javascript',
@@ -298,6 +309,11 @@ final readonly class FrameworkAssetPlanner
 
     private function typographyUrl(string $publicPath): string
     {
+        return $this->projectedPublicUrl($publicPath);
+    }
+
+    private function projectedPublicUrl(string $publicPath): string
+    {
         $prefix = '_docara/';
         $frameworkSuffix = '/framework';
         if (! str_starts_with($publicPath, $prefix)
@@ -388,12 +404,35 @@ final readonly class FrameworkAssetPlanner
             . '"opsz" var(--sf-icon--optical-size,24)}';
     }
 
-    private function iconFallbackReadyRuntime(): string
+    private function iconVariantCss(string $roundedUrl, string $sharpUrl): string
     {
-        return '(function(){var selector=".sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape):not(.sf-icon-loaded)";'
+        $settings = 'font-feature-settings:"liga"!important;font-variation-settings:"FILL" var(--sf-icon--fill,0),'
+            . '"wght" var(--sf-icon--weight,400),"GRAD" var(--sf-icon--grade,0),'
+            . '"opsz" var(--sf-icon--optical-size,24)}';
+
+        return '@font-face{font-family:"Material Symbols Rounded";src:url("' . $roundedUrl
+            . '") format("woff2");font-style:normal;font-weight:100 700;font-display:block}'
+            . '@font-face{font-family:"Material Symbols Sharp";src:url("' . $sharpUrl
+            . '") format("woff2");font-style:normal;font-weight:100 700;font-display:block}'
+            . 'html body .sf-icon.sf-icon-rounded{--sf-icon--font-family:"Material Symbols Rounded";'
+            . 'font-family:"Material Symbols Rounded"!important;' . $settings
+            . 'html body .sf-icon.sf-icon-shape{--sf-icon--font-family:"Material Symbols Sharp";'
+            . 'font-family:"Material Symbols Sharp"!important;' . $settings;
+    }
+
+    private function iconFallbackReadyRuntime(bool $hasVariants): string
+    {
+        $selector = $hasVariants
+            ? '.sf-icon:not(.sf-icon-loaded)'
+            : '.sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape):not(.sf-icon-loaded)';
+        $loads = $hasVariants
+            ? '["Material Symbols Outlined","Material Symbols Rounded","Material Symbols Sharp"].map(function(family){return document.fonts.load(\'400 24px "\'+family+\'"\')})'
+            : '[document.fonts.load(\'400 24px "Material Symbols Outlined"\')]';
+
+        return '(function(){var selector=' . json_encode($selector, JSON_THROW_ON_ERROR) . ';'
             . 'function mark(root){if(root.nodeType===1&&root.matches(selector)){root.classList.add("sf-icon-loaded")}if(root.querySelectorAll){root.querySelectorAll(selector).forEach(function(icon){icon.classList.add("sf-icon-loaded")})}}'
             . 'function watch(){mark(document);if(!document.body)return;new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(mark)})}).observe(document.body,{childList:true,subtree:true})}'
-            . 'function start(){var ready=document.fonts&&document.fonts.load?document.fonts.load("400 24px \\"Material Symbols Outlined\\""):Promise.resolve([true]);ready.then(function(faces){if(faces&&faces.length){document.documentElement.dataset.docaraFullFontReady="true";watch()}}).catch(function(){})}'
+            . 'function start(){var ready=document.fonts&&document.fonts.load?Promise.all(' . $loads . '):Promise.resolve([[true]]);ready.then(function(faces){if(faces&&faces.every(function(face){return face&&face.length})){document.documentElement.dataset.docaraFullFontReady="true";watch()}}).catch(function(){})}'
             . 'if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",start,{once:true})}else{start()}})();';
     }
 
@@ -418,7 +457,7 @@ final readonly class FrameworkAssetPlanner
                     if (! is_string($revision)
                         || preg_match('/^[a-f0-9]{40}$/', $revision) !== 1
                         || (! str_contains((string) ($asset['content'] ?? ''), '@' . $revision . '/')
-                            && ! str_contains((string) ($asset['content'] ?? ''), '/runtime/' . $revision . '/'))
+                            && ! str_contains((string) ($asset['content'] ?? ''), '/' . $revision . '/'))
                     ) {
                         throw new FrameworkComponentException(
                             'FRAMEWORK_ASSET_SOURCE_REVISION_REQUIRED',

@@ -178,6 +178,12 @@ final readonly class FrameworkManifestRepository
         return $this->lock->runtimeProjection();
     }
 
+    /** @return array<string, mixed>|null */
+    public function iconProjection(): ?array
+    {
+        return $this->lock->iconProjection();
+    }
+
     /** @return array<string, mixed> */
     public function runtimeManifest(): array
     {
@@ -335,6 +341,37 @@ final readonly class FrameworkManifestRepository
         return $bytes;
     }
 
+    public function bundledIconAsset(string $key): string
+    {
+        $projection = $this->lock->iconProjection();
+        $record = $projection['files'][$key] ?? null;
+        if (! is_array($record)
+            || ! is_string($record['path'] ?? null)
+            || ! is_string($record['sha256'] ?? null)
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_ICON_ASSET_NOT_PROJECTED', $key);
+        }
+
+        $resources = dirname($this->resourceRoot);
+        $path = $resources . '/' . $record['path'];
+        $this->assertTrustedResourceFile(
+            $resources,
+            $path,
+            'FRAMEWORK_ICON_ASSET_UNSAFE',
+            'FRAMEWORK_ICON_ASSET_MISSING',
+            $key,
+        );
+        $bytes = @file_get_contents($path);
+        if (! is_string($bytes) || $bytes === '') {
+            throw new FrameworkComponentException('FRAMEWORK_ICON_ASSET_MISSING', $key);
+        }
+        if (! hash_equals($record['sha256'], hash('sha256', $bytes))) {
+            throw new FrameworkComponentException('FRAMEWORK_ICON_ASSET_HASH_MISMATCH', $key);
+        }
+
+        return $bytes;
+    }
+
     public function bundledAsset(string $relativePath): string
     {
         $this->assertSafeRelativePath($relativePath);
@@ -408,6 +445,18 @@ final readonly class FrameworkManifestRepository
             }
             if (! hash_equals((string) $projection['packet_sha256'], hash('sha256', $ledger))) {
                 throw new FrameworkComponentException('FRAMEWORK_RUNTIME_PACKET_HASH_MISMATCH');
+            }
+        }
+        if ($this->lock->iconProjection() !== null) {
+            $projection = $this->lock->iconProjection();
+            $ledger = '';
+            foreach (['license', 'rounded', 'sharp'] as $key) {
+                $record = $projection['files'][$key];
+                $bytes = $this->bundledIconAsset($key);
+                $ledger .= hash('sha256', $bytes) . '  ' . basename((string) $record['path']) . "\n";
+            }
+            if (! hash_equals((string) $projection['packet_sha256'], hash('sha256', $ledger))) {
+                throw new FrameworkComponentException('FRAMEWORK_ICON_PACKET_HASH_MISMATCH');
             }
         }
     }

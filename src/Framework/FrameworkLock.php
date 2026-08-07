@@ -78,6 +78,14 @@ final readonly class FrameworkLock
         return is_array($projection) ? $projection : null;
     }
 
+    /** @return array<string, mixed>|null */
+    public function iconProjection(): ?array
+    {
+        $projection = $this->data['icon_projection'] ?? null;
+
+        return is_array($projection) ? $projection : null;
+    }
+
     /** @return list<string> */
     public function nonclaims(): array
     {
@@ -272,6 +280,51 @@ final readonly class FrameworkLock
                     . $revision . '/runtime-manifest.json'
             ) {
                 throw new FrameworkComponentException('FRAMEWORK_RUNTIME_PROJECTION_INVALID');
+            }
+        }
+
+        $iconProjection = $this->data['icon_projection'] ?? null;
+        if ($iconProjection !== null) {
+            $revision = $iconProjection['source']['revision'] ?? null;
+            $base = is_string($revision)
+                ? 'portable/vendor/google/material-symbols/' . $revision
+                : '';
+            $publicBase = is_string($revision)
+                ? '_docara/vendor/google/material-symbols/' . $revision
+                : '';
+            if (! is_array($iconProjection)
+                || ($iconProjection['schema'] ?? null) !== 'docara.framework_icon_projection.v1'
+                || ($iconProjection['source']['provider'] ?? null) !== 'google/material-design-icons'
+                || ! $this->isCommit($revision)
+                || ($iconProjection['source']['license'] ?? null) !== 'Apache-2.0'
+                || ! $this->isSha256($iconProjection['packet_sha256'] ?? null)
+                || ! is_array($iconProjection['files'] ?? null)
+                || array_keys($iconProjection['files']) !== ['license', 'rounded', 'sharp']
+            ) {
+                throw new FrameworkComponentException('FRAMEWORK_ICON_PROJECTION_INVALID');
+            }
+            foreach ($iconProjection['files'] as $key => $record) {
+                if (! is_array($record)
+                    || array_keys($record) !== ['path', 'public', 'sha256']
+                    || ! $this->isSafeRelativePath($record['path'] ?? null)
+                    || ! $this->isSafeRelativePath($record['public'] ?? null)
+                    || ! $this->isSha256($record['sha256'] ?? null)
+                    || ! str_starts_with((string) $record['path'], $base . '/')
+                    || ! str_starts_with((string) $record['public'], $publicBase . '/')
+                ) {
+                    throw new FrameworkComponentException('FRAMEWORK_ICON_ASSET_INVALID', (string) $key);
+                }
+            }
+            foreach ([
+                'license' => 'LICENSE',
+                'rounded' => 'MaterialSymbolsRounded.woff2',
+                'sharp' => 'MaterialSymbolsSharp.woff2',
+            ] as $key => $filename) {
+                if ($iconProjection['files'][$key]['path'] !== $base . '/' . $filename
+                    || $iconProjection['files'][$key]['public'] !== $publicBase . '/' . $filename
+                ) {
+                    throw new FrameworkComponentException('FRAMEWORK_ICON_ASSET_INVALID', $key);
+                }
             }
         }
 

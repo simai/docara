@@ -131,6 +131,9 @@
         "runtime_projection": {
             "$ref": "#/$defs/runtime_projection"
         },
+        "icon_projection": {
+            "$ref": "#/$defs/icon_projection"
+        },
         "nonclaims": {
             "type": "array",
             "minItems": 1,
@@ -143,6 +146,35 @@
     },
     "additionalProperties": false,
     "$defs": {
+        "icon_projection": {
+            "type": "object",
+            "required": ["schema", "source", "packet_sha256", "files"],
+            "properties": {
+                "schema": {"type": "string", "const": "docara.framework_icon_projection.v1"},
+                "source": {
+                    "type": "object",
+                    "required": ["provider", "revision", "license"],
+                    "properties": {
+                        "provider": {"type": "string", "const": "google/material-design-icons"},
+                        "revision": {"type": "string", "format": "docara-immutable-revision"},
+                        "license": {"type": "string", "const": "Apache-2.0"}
+                    },
+                    "additionalProperties": false
+                },
+                "packet_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+                "files": {
+                    "type": "object",
+                    "required": ["license", "rounded", "sharp"],
+                    "properties": {
+                        "license": {"$ref": "#/$defs/typography_asset"},
+                        "rounded": {"$ref": "#/$defs/typography_asset"},
+                        "sharp": {"$ref": "#/$defs/typography_asset"}
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
         "runtime_projection": {
             "type": "object",
             "required": ["schema", "mount", "source", "icon_font", "packet_sha256", "files", "manifest"],

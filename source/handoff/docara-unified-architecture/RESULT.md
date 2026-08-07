@@ -2,11 +2,20 @@
 
 Current state: `local_framework_runtime_ready_for_independent_audit`
 
-Current candidate: `ad147f32ec9854e5bb97ea635b349b3ce803ed43`
+Current candidate: `75143bc9b6e978a167a20f87d5a26c469e0b415e`
 
-Current evidence: `source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md`
 
 ## Local Framework runtime result
+
+The exact local Framework runtime remains the unchanged parent `ad147f3…`.
+The current candidate `75143bc…` additionally simplifies only the component
+catalogue information architecture: two three-column tables link all 31 actual
+component/reference pages, one `/start/component-model/` page owns the former
+type explanations and seven retired overview URLs redirect to it. Full/full/
+single trees contain 650 files at digest `ead33689…`; static verification is
+261 HTML / 32,970 references / broken=0. The authorized validation site was
+atomically switched from `b6e0d9a7…`, which remains preserved as rollback.
 
 The current Docara Framework closure serves its accepted `simai/ui@d1daa951…`
 projection locally and adds a Docara-owned exact projection of the official
@@ -108,9 +117,11 @@ records instead of sorting records by canonical relative path.
 
 ## Goal C current result
 
-Goal B product `c3b91eee…` is independently accepted. Goal C C1 publishes 132
-physical Markdown owners and keeps the project redirect set empty. Its six
-component entry points use truthful admitted facets; all 13 settings guides use
+Goal B product `c3b91eee…` is independently accepted. Goal C C1 was accepted
+on its historical 132-owner/six-entry-point contour. The later authorized
+catalogue correction publishes 127 physical Markdown owners, one grouped
+component root and seven redirects to one consolidated authoring-model owner.
+All 13 settings guides use
 an exhaustive exact-pointer schema projection; the documented CLI/JSON/MCP
 journey executes in a disposable project through one PageBuilder path. Atlas
 and schema facts remain derived, hash-bound views rather than prose owners.

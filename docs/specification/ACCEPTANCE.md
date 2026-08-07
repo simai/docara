@@ -118,9 +118,11 @@ PASS ставится только по воспроизводимому evidenc
 
 ## Goal C. Public Documentation, Settings Reference & Agent Journey
 
-- [x] `/components/` публикует шесть Markdown-owned входов из одной admitted
-      Atlas projection; namespace, owner, origin, provider, authoring kind и
-      support независимы, а real-project tests проверяют rendered groups.
+- [x] `/components/` публикует две трёхколоночные Markdown-таблицы с
+      шестью понятными категориями и 31 exact ссылкой только на
+      реальные component/reference pages. Authoring-kind, owner и support
+      объяснены одним prose owner в `/start/component-model/`; семь старых
+      overview URL сохранены exact redirects.
 - [x] `/design/` объясняет реальную Layout -> region -> Section -> slot ->
       Block -> Smart -> View цепочку и границу application-owned page/head.
 - [x] Все 13 `/settings/` task guides используют одну exhaustive schema-derived
@@ -129,8 +131,9 @@ PASS ставится только по воспроизводимому evidenc
 - [x] CLI/JSON/MCP journey документирует и в disposable project исполняет один
       discover -> plan -> preview -> dry-run -> hash-bound apply -> validate
       service path.
-- [x] Все 132 route имеют один физический Markdown owner; redirects не нужны и
-      duplicate prose owners отсутствуют.
+- [x] 127 authored route имеют один физический Markdown owner; семь retired
+      component-overview URL имеют deterministic noindex redirects, duplicate prose
+      owners отсутствуют.
 - [x] Atlas/schema receipts hash-bound к production build receipt и
       fail-closed проверяются static verifier.
 - [x] Full/full/single, static, package/consumer, browser/SEO и cross-host

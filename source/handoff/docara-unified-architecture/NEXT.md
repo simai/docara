@@ -2,18 +2,17 @@
 
 Current state: `local_framework_runtime_ready_for_independent_audit`
 
-Current candidate: `ad147f32ec9854e5bb97ea635b349b3ce803ed43`
+Current candidate: `75143bc9b6e978a167a20f87d5a26c469e0b415e`
 
-Current evidence: `source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md`
 
 Goal 1-3, Goals A-C, S1 and S2 are independently accepted and Goal S3 remains
-complete. Exact candidate `ad147f3…` additionally serves the complete current
-Docara Framework runtime closure locally and has fresh test/build/browser/
-package/consumer proof. `docara-new.test` is already on this exact authorized
-validation build with rollback preserved and fixes Outlined, Rounded and Sharp
-icon ligatures through exact local fonts. The only next action is independent
-read-only audit. No S4/Goal D, merge, push, tag, release, publication, further
-site write or production deployment is authorized.
+complete. Exact candidate `75143bc…` retains the accepted `ad147f3…` local
+Framework closure and adds the grouped 31-page component catalogue, one start
+overview and seven exact redirects. `docara-new.test` is already on this exact
+authorized validation build with rollback preserved. The only next action is
+independent read-only audit. No S4/Goal D, merge, push, tag, release,
+publication, further site write or production deployment is authorized.
 
 ## Historical deployment decision (parked, not executable)
 

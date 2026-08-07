@@ -9,7 +9,11 @@ Media независимо принял Goal S1 на exact candidate
 `dd2c0d623f0757e172861fdac959b839a7fff495`; track готов к решению пользователя.
 Goal C C1 исправил projection/settings/journey defects на
 exact product candidate `eb35f5c6f18e5eb9be69e91887b09486f5703136`,
-который независимый reverse-outcome audit принял с `PASS`. Шесть входов компонентов,
+который независимый reverse-outcome audit принял с `PASS`. После этого
+component catalogue был упрощён без изменения runtime: корень содержит две
+трёхколоночные таблицы с 31 реальной component/reference page, а общая
+модель authoring живёт в `/start/component-model/`. Старые обзорные URL
+сохранены через redirects. Разделы дизайна
 разделы дизайна и настроек, исполняемый safe agent journey и принятые extension
 demos опубликованы из Markdown, admitted Atlas и exhaustive schema-derived
 проекций без второго publication path. Product track A-C завершён; release

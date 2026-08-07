@@ -18,7 +18,7 @@
   "profile_refs": ["docara.unified"],
   "parent_goal_ref": "docara.goal.unified",
   "done_when": [
-    "Components exposes six Atlas-backed entry points and complete supported Markdown/container coverage.",
+    "Components exposes one grouped Markdown-owned catalogue of exact component/reference pages, while one start-page model explains authoring kinds and preserved redirects cover retired overview URLs.",
     "Design documents the real registry-to-layout insertion chain and every replaceable shell surface.",
     "Settings combines task guides with exhaustive schema-derived scope, default, validation and provenance.",
     "CLI, JSON and optional MCP document one safe discover-plan-preview-apply-validate service path.",

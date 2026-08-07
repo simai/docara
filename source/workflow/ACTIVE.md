@@ -2,7 +2,7 @@
 
 Date: 2026-08-07
 Status: local Framework runtime deployed to validation site; ready for independent audit
-Workflow ID: `2026-08-07-docara-local-framework-runtime`
+Workflow ID: `2026-08-07-docara-components-information-architecture`
 Graph goal: `docara.goal.unified`
 
 ## Source of truth
@@ -10,11 +10,11 @@ Graph goal: `docara.goal.unified`
 - start here: `source/handoff/docara-unified-architecture/START.md`;
 - human specification: `docs/specification/README.md`;
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
-- active workflow: `source/workflow/2026-08-07-docara-local-framework-runtime.md`;
+- active workflow: `source/workflow/2026-08-07-docara-components-information-architecture.md`;
 - completed parent track: `source/workflow/2026-08-06-docara-surface-hero-track.md`;
 - parent Goal 3 recovery:
   `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`;
-- fresh evidence: `source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md`;
+- fresh evidence: `source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md`;
 - project-context freshness correction:
   `source/workflow/2026-08-03-docara-goal1d-project-context-correction.md`;
 - rejected audit candidate: `c5ea85f8d25deff99b671486fdc4d1e820a86491`;
@@ -29,7 +29,7 @@ Graph goal: `docara.goal.unified`
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.lfr.local_framework_runtime`;
 - batch: `docara.batch.lfr.integrated_retest`;
-- candidate: `ad147f32ec9854e5bb97ea635b349b3ce803ed43`;
+- candidate: `75143bc9b6e978a167a20f87d5a26c469e0b415e`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
 - next action: `independent_local_framework_runtime_audit`;
 - Goal 1-3 and Goals A-C remain independently accepted. The separately
@@ -54,8 +54,10 @@ IR/HTML remain disposable.
 
 Docara now publishes the exact required SIMAI Framework runtime, icons, fonts,
 lazy theme utility and authored highlight chunks from a content-addressed local
-projection. Full/full/single, static and package outputs are deterministic on
-exact candidate `ad147f3…`. Browser checks emit no external runtime requests.
+projection inherited unchanged from `ad147f3…`. Exact candidate `75143bc…`
+adds a grouped 31-page component catalogue, one start overview and seven exact
+redirects. Full/full/single and static outputs are deterministic. Browser checks
+emit no external runtime requests.
 The authorized local validation site `docara-new.test` was atomically switched
 to the exact build with a preserved rollback backup; no production, release or
 external owner write occurred. C1 binds the local Outlined font to direct icon

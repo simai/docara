@@ -9,7 +9,7 @@
         "graph/specs/stages/lfr-local-framework-runtime.json",
         "graph/specs/batches/lfr-integrated-retest.json"
     ],
-    "canonical_sha256": "9518fdde2e8939fbeb34d8242b6eb141acab8683f1c427db2ed936dbd8a77f9e",
+    "canonical_sha256": "9dc6205c531111ab6d8fb57e5310f731cb73f2cba86963b23b41bb064048a896",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -25,13 +25,13 @@
         "batch": "docara.batch.lfr.integrated_retest",
         "batch_readiness": "ready_for_independent_audit",
         "batch_status": "ready_for_independent_audit",
-        "completed_checkpoint": "local_framework_runtime_candidate_and_validation_site",
-        "candidate_revision": "ad147f32ec9854e5bb97ea635b349b3ce803ed43",
+        "completed_checkpoint": "local_framework_runtime_and_component_catalog_validation_site",
+        "candidate_revision": "75143bc9b6e978a167a20f87d5a26c469e0b415e",
         "next_action": "independent_local_framework_runtime_audit",
-        "evidence": "source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md"
+        "evidence": "source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md"
     },
     "roadmap": {
-        "source": "source/workflow/2026-08-07-docara-local-framework-runtime.md",
+        "source": "source/workflow/2026-08-07-docara-components-information-architecture.md",
         "next_goal": {
             "id": "docara.stage.lfr.local_framework_runtime",
             "title": "Independent local Framework runtime audit",
@@ -74,7 +74,7 @@
     "read_order": [
         "source/handoff/docara-unified-architecture/STATUS.yaml",
         "source/workflow/ACTIVE.md",
-        "source/workflow/2026-08-07-docara-local-framework-runtime.md",
+        "source/workflow/2026-08-07-docara-components-information-architecture.md",
         "graph/graph.json",
         "graph/specs/stages/lfr-local-framework-runtime.json",
         "graph/specs/batches/lfr-integrated-retest.json",

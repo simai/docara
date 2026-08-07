@@ -28,9 +28,9 @@ Current batch: `docara.batch.lfr.integrated_retest`
 
 Current next action: `independent_local_framework_runtime_audit`
 
-Current evidence: `source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md`
 
-Current candidate: `ad147f32ec9854e5bb97ea635b349b3ce803ed43`
+Current candidate: `75143bc9b6e978a167a20f87d5a26c469e0b415e`
 
 Next roadmap goal: `docara.stage.lfr.local_framework_runtime`
 
@@ -45,8 +45,9 @@ independently accepted on exact candidate `7eeba4a…`. Goal S3 is complete on
 `dd2c0d6…`; the Surface & Hero Media track now waits for an explicit user
 decision. SF5 5.4 typography is the accepted parent. The authorized local
 Framework runtime correction including all documented icon families is
-complete on `ad147f3…`; `docara-new.test` is
-already switched to that validation build with exact rollback preserved. It
+complete on parent `ad147f3…`. Candidate `75143bc…` preserves that runtime and
+adds the authorized component-catalogue information architecture correction;
+`docara-new.test` is switched to its exact build with rollback preserved. It
 waits only for independent audit. No S4/Goal D, production or release action is
 authorized.
 
@@ -54,8 +55,8 @@ authorized.
 
 1. `source/handoff/docara-unified-architecture/STATUS.yaml`;
 2. `source/workflow/ACTIVE.md`;
-3. `source/workflow/2026-08-07-docara-local-framework-runtime.md` and its
-   exact evidence index;
+3. `source/workflow/2026-08-07-docara-components-information-architecture.md`
+   and its exact evidence index, then the parent local Framework runtime;
 4. `graph/graph.json` and its current stage/batch specs;
 5. `graph/generated/ai-context/docara-unified.json` as a checked derived view;
 6. `source/handoff/docara-unified-architecture/NEXT.md` and `RESULT.md`;

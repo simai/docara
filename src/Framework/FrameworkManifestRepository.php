@@ -260,7 +260,7 @@ final readonly class FrameworkManifestRepository
         }
 
         if ($this->lock->typographyProjection() !== null) {
-            foreach (['contract', 'core', 'utility'] as $key) {
+            foreach (array_keys($this->lock->typographyProjection()['files']) as $key) {
                 $this->bundledTypographyAsset($key);
             }
         }

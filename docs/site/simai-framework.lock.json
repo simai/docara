@@ -150,6 +150,41 @@
         "path": "portable/vendor/simai-framework/typography/5.4.0-rc.1/utility.full.css",
         "public": "_docara/vendor/simai-framework/typography/5.4.0-rc.1/utility.full.css",
         "sha256": "8918648d7ba8b4cf285bbc5d28b22240e05d5f2c47b48c68f9e8e9827e685709"
+      },
+      "font_49594fb515ba00213fc3": {
+        "path": "portable/vendor/simai-framework/typography/49594fb515ba00213fc3.woff2",
+        "public": "_docara/vendor/simai-framework/typography/49594fb515ba00213fc3.woff2",
+        "sha256": "71d5ee93cc1e9f1d520a3a8b66456de18c7879d8df09d57fcd2eaff75fef0075"
+      },
+      "font_4f2981d82860061bca3e": {
+        "path": "portable/vendor/simai-framework/typography/4f2981d82860061bca3e.woff2",
+        "public": "_docara/vendor/simai-framework/typography/4f2981d82860061bca3e.woff2",
+        "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62"
+      },
+      "font_4f908aee8194b11d9c35": {
+        "path": "portable/vendor/simai-framework/typography/4f908aee8194b11d9c35.woff2",
+        "public": "_docara/vendor/simai-framework/typography/4f908aee8194b11d9c35.woff2",
+        "sha256": "1be3448e292fbf05ffe176fe1e43f135013d50b1e7d324ad1a558f623d3bb6f6"
+      },
+      "font_8bff79fbfaa8b8167a0b": {
+        "path": "portable/vendor/simai-framework/typography/8bff79fbfaa8b8167a0b.woff2",
+        "public": "_docara/vendor/simai-framework/typography/8bff79fbfaa8b8167a0b.woff2",
+        "sha256": "34b9c504cab7a73e37b746343a449132e56cf7b5481af2cb81dc74dcff25c956"
+      },
+      "font_ab4bb8dcda024fe6eff2": {
+        "path": "portable/vendor/simai-framework/typography/ab4bb8dcda024fe6eff2.woff2",
+        "public": "_docara/vendor/simai-framework/typography/ab4bb8dcda024fe6eff2.woff2",
+        "sha256": "5c66f9e07e90c6d4ac4922cc68d60de26c17b1858e677fb5e603fce3952b3ff2"
+      },
+      "font_b5cdd4765614e027c252": {
+        "path": "portable/vendor/simai-framework/typography/b5cdd4765614e027c252.woff2",
+        "public": "_docara/vendor/simai-framework/typography/b5cdd4765614e027c252.woff2",
+        "sha256": "ca157063339ac4ad418f214f3abfed119b0798ab4d377386ce5c9e5a7a435ebd"
+      },
+      "font_f4df85d151e5ee39bc2b": {
+        "path": "portable/vendor/simai-framework/typography/f4df85d151e5ee39bc2b.woff2",
+        "public": "_docara/vendor/simai-framework/typography/f4df85d151e5ee39bc2b.woff2",
+        "sha256": "6e9e020a25f9b56d418f2c085b1d3c09725a4da23fe693a5b463064606732190"
       }
     }
   },

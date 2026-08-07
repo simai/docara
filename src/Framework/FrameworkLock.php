@@ -204,7 +204,8 @@ final readonly class FrameworkLock
                 || ($typography['distribution']['published'] ?? null) !== false
                 || ! $this->isSha256($typography['packet_sha256'] ?? null)
                 || ! is_array($typography['files'] ?? null)
-                || array_keys($typography['files']) !== ['contract', 'core', 'utility']
+                || array_keys(array_intersect_key($typography['files'], array_flip(['contract', 'core', 'utility']))) !== ['contract', 'core', 'utility']
+                || count($typography['files']) !== 10
             ) {
                 throw new FrameworkComponentException('FRAMEWORK_TYPOGRAPHY_PROJECTION_INVALID');
             }
@@ -217,6 +218,17 @@ final readonly class FrameworkLock
                     || ! str_starts_with((string) $record['public'], '_docara/vendor/simai-framework/typography/')
                     || ! $this->isSha256($record['sha256'] ?? null)
                 ) {
+                    throw new FrameworkComponentException('FRAMEWORK_TYPOGRAPHY_ASSET_INVALID', (string) $key);
+                }
+                if (str_starts_with((string) $key, 'font_')) {
+                    $digestName = substr((string) $key, 5);
+                    if (preg_match('/\A[a-f0-9]{20}\z/D', $digestName) !== 1
+                        || $record['path'] !== 'portable/vendor/simai-framework/typography/' . $digestName . '.woff2'
+                        || $record['public'] !== '_docara/vendor/simai-framework/typography/' . $digestName . '.woff2'
+                    ) {
+                        throw new FrameworkComponentException('FRAMEWORK_TYPOGRAPHY_ASSET_INVALID', (string) $key);
+                    }
+                } elseif (! in_array($key, ['contract', 'core', 'utility'], true)) {
                     throw new FrameworkComponentException('FRAMEWORK_TYPOGRAPHY_ASSET_INVALID', (string) $key);
                 }
             }

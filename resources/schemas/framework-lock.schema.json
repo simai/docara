@@ -158,6 +158,9 @@
                         "core": {"$ref": "#/$defs/typography_asset"},
                         "utility": {"$ref": "#/$defs/typography_asset"}
                     },
+                    "patternProperties": {
+                        "^font_[a-f0-9]{20}$": {"$ref": "#/$defs/typography_asset"}
+                    },
                     "additionalProperties": false
                 }
             },

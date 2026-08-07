@@ -27,7 +27,8 @@ final class FrameworkTypographyProjectionTest extends TestCase
         self::assertSame('2b2e6ea88ac5f30dc0c90c61104506e6c9541108', $projection['distribution']['revision']);
         self::assertFalse($projection['distribution']['published']);
 
-        foreach (['contract', 'core', 'utility'] as $key) {
+        self::assertCount(10, $projection['files']);
+        foreach (array_keys($projection['files']) as $key) {
             self::assertSame(
                 $projection['files'][$key]['sha256'],
                 hash('sha256', $repository->bundledTypographyAsset($key)),
@@ -100,14 +101,17 @@ final class FrameworkTypographyProjectionTest extends TestCase
         mkdir($resources . '/framework', 0777, true);
         mkdir($resources . '/portable/vendor/simai-framework/typography/5.4.0-rc.1', 0777, true);
         copy(dirname(__DIR__, 2) . '/resources/framework/runtime-lock.json', $resources . '/framework/runtime-lock.json');
-        foreach (['adaptive-sizing.v1.json', 'core.css', 'utility.full.css'] as $file) {
-            copy(
-                dirname(__DIR__, 2) . '/resources/portable/vendor/simai-framework/typography/5.4.0-rc.1/' . $file,
-                $resources . '/portable/vendor/simai-framework/typography/5.4.0-rc.1/' . $file,
-            );
+        $lock = FrameworkLock::fromJsonFile(dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json');
+        foreach ($lock->typographyProjection()['files'] as $record) {
+            $source = dirname(__DIR__, 2) . '/resources/' . $record['path'];
+            $target = $resources . '/' . $record['path'];
+            if (! is_dir(dirname($target))) {
+                mkdir(dirname($target), 0777, true);
+            }
+            copy($source, $target);
         }
 
-        return [$root, FrameworkLock::fromJsonFile(dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json')];
+        return [$root, $lock];
     }
 
     private function removeFixture(string $root): void

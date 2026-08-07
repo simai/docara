@@ -164,9 +164,10 @@
                 "packet_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
                 "files": {
                     "type": "object",
-                    "required": ["license", "rounded", "sharp"],
+                    "required": ["license", "outlined", "rounded", "sharp"],
                     "properties": {
                         "license": {"$ref": "#/$defs/typography_asset"},
+                        "outlined": {"$ref": "#/$defs/typography_asset"},
                         "rounded": {"$ref": "#/$defs/typography_asset"},
                         "sharp": {"$ref": "#/$defs/typography_asset"}
                     },

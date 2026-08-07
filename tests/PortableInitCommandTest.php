@@ -164,6 +164,15 @@ class PortableInitCommandTest extends TestCase
             static fn (array $record): string => $record['sha256'],
             $lock['asset_projection']['files'],
         ));
+        $this->assertSame('docara.framework_icon_projection.v1', $lock['icon_projection']['schema']);
+        $this->assertSame(
+            '50f0603134ce7b70b2d71b686cc13e8b57ccb74c',
+            $lock['icon_projection']['source']['revision'],
+        );
+        $this->assertSame(
+            '5c0be48d07803e6eb6a993ad441f6fc92340ee0da9d1b57cc348f62569947ae5',
+            $lock['icon_projection']['files']['outlined']['sha256'],
+        );
 
         $encodedLock = json_encode($lock, JSON_THROW_ON_ERROR);
         $this->assertStringNotContainsString('latest', strtolower($encodedLock));

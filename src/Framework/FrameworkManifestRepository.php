@@ -450,7 +450,7 @@ final readonly class FrameworkManifestRepository
         if ($this->lock->iconProjection() !== null) {
             $projection = $this->lock->iconProjection();
             $ledger = '';
-            foreach (['license', 'rounded', 'sharp'] as $key) {
+            foreach (['license', 'outlined', 'rounded', 'sharp'] as $key) {
                 $record = $projection['files'][$key];
                 $bytes = $this->bundledIconAsset($key);
                 $ledger .= hash('sha256', $bytes) . '  ' . basename((string) $record['path']) . "\n";

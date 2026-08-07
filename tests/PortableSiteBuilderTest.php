@@ -789,7 +789,10 @@ MD);
             self::assertStringNotContainsString('cdn.jsdelivr.net', $html);
             self::assertStringNotContainsString('simai/ui-smart@', $html);
             self::assertStringContainsString('window.sfSmartPath="/_docara/framework"', $html);
-            self::assertStringContainsString('/distr/component/icons/fonts/MaterialSymbols-Outlined.woff2', $html);
+            self::assertStringContainsString(
+                '/_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsOutlined.woff2',
+                $html,
+            );
             self::assertDoesNotMatchRegularExpression('~@(?:main|master|latest)(?:/|$)~i', $html);
             self::assertStringContainsString('class="docara-brand-logo"', $html);
             self::assertStringContainsString('data-docara-view="compact"', $html);

@@ -35,6 +35,7 @@ final readonly class FrameworkAssetPlanner
         $uiCommit = (string) $runtime['ui']['commit'];
         $smartCommit = (string) $runtime['ui_smart']['commit'];
         $runtimeProjection = $this->repository->runtimeProjection();
+        $iconProjection = $this->repository->iconProjection();
         $iconFont = $runtimeProjection === null
             ? 'component/icons/fonts/MaterialSymbols-Outlined.woff2'
             : (string) $runtimeProjection['icon_font'];
@@ -42,7 +43,6 @@ final readonly class FrameworkAssetPlanner
             ? 'https://cdn.jsdelivr.net/gh/simai/ui@' . $uiCommit . '/distr'
             : $this->projectedRuntimeBase((string) $runtimeProjection['mount']);
         $typography = $this->repository->typographyProjection();
-        $iconProjection = $this->repository->iconProjection();
         $boot = $runtime['boot'];
         $pairId = $this->repository->pairId();
         $projectionFingerprint = substr(
@@ -114,11 +114,13 @@ final readonly class FrameworkAssetPlanner
         ], [
             'key' => 'simai.framework.icon_font.css',
             'kind' => 'inline_css',
-            'content' => $this->iconFallbackCss($uiBase . '/' . $iconFont),
-            'source_revision' => $uiCommit,
-            'sha256' => $runtimeProjection === null
-                ? null
-                : $this->runtimeAsset($iconFont)['sha256'],
+            'content' => $this->iconFallbackCss($iconProjection === null
+                ? $uiBase . '/' . $iconFont
+                : $this->projectedPublicUrl((string) $iconProjection['files']['outlined']['public'])),
+            'source_revision' => $iconProjection === null ? $uiCommit : $iconProjection['source']['revision'],
+            'sha256' => $iconProjection === null
+                ? ($runtimeProjection === null ? null : $this->runtimeAsset($iconFont)['sha256'])
+                : $iconProjection['files']['outlined']['sha256'],
         ], ...($iconProjection === null ? [] : [[
             'key' => 'simai.framework.icon_variant_fonts.css',
             'kind' => 'inline_css',

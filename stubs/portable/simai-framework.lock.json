@@ -133,6 +133,37 @@
       "sha256": "8c917f69a678df084260ded24c5e39e78aaa4fc12c317bf98afaf11ee2a29a8e"
     }
   },
+  "icon_projection": {
+    "schema": "docara.framework_icon_projection.v1",
+    "source": {
+      "provider": "google/material-design-icons",
+      "revision": "50f0603134ce7b70b2d71b686cc13e8b57ccb74c",
+      "license": "Apache-2.0"
+    },
+    "packet_sha256": "040d5a4c9fb0893e0333bd5d5020cc98929e21dad28f68273c8e306102213f5c",
+    "files": {
+      "license": {
+        "path": "portable/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/LICENSE",
+        "public": "_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/LICENSE",
+        "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd"
+      },
+      "outlined": {
+        "path": "portable/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsOutlined.woff2",
+        "public": "_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsOutlined.woff2",
+        "sha256": "5c0be48d07803e6eb6a993ad441f6fc92340ee0da9d1b57cc348f62569947ae5"
+      },
+      "rounded": {
+        "path": "portable/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsRounded.woff2",
+        "public": "_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsRounded.woff2",
+        "sha256": "3500043e8929d5140f34dff8f8687e1dd5fda3a33fff20bfcc96ecd0b2f99518"
+      },
+      "sharp": {
+        "path": "portable/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsSharp.woff2",
+        "public": "_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsSharp.woff2",
+        "sha256": "07120b2acb649946dd277ffeaefc745c576ef5bee05b4f2f07bd1f98b31fb6d8"
+      }
+    }
+  },
   "typography_projection": {
     "schema": "docara.framework_typography_projection.v1",
     "candidate": "5.4.0-rc.1",

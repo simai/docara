@@ -22,9 +22,10 @@ provider revision in `docara.framework_lock.v1`. A build verifies the bytes,
 copies them to the reserved `_docara/framework` namespace and appends one
 projection-aware cache version to each URL. SIMAI Framework Core remains an exact-commit jsDelivr
 dependency; there is no moving `main`/`latest` or `ui-smart` CDN fallback.
-The local consumer adapter waits for the exact full Material Symbols font from
-that Core revision before exposing Framework icon glyphs; it does not call the
-mutable icon-subset service.
+The local consumer adapter publishes exact full Material Symbols Outlined,
+Rounded and Sharp variable fonts from the source-pinned official Google
+projection before exposing Framework icon glyphs; it does not call the mutable
+icon-subset service.
 
 The projection supports only the named consumer components. It does not claim
 production readiness or readiness of every Framework component. It is not a

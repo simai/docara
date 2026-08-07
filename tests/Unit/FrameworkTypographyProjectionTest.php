@@ -67,7 +67,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $assets[$assetKey]['sha256']);
         }
         self::assertStringContainsString(
-            '/_docara/vendor/simai-framework/runtime/d1daa951dd08b94a9f209fd9f31a78d2b3779563/distr/component/icons/fonts/MaterialSymbols-Outlined.woff2',
+            '/_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsOutlined.woff2',
             $assets['simai.framework.icon_font.css']['content'],
         );
         self::assertStringContainsString(
@@ -79,10 +79,18 @@ final class FrameworkTypographyProjectionTest extends TestCase
         self::assertSame('google/material-design-icons', $icons['source']['provider']);
         self::assertSame('50f0603134ce7b70b2d71b686cc13e8b57ccb74c', $icons['source']['revision']);
         self::assertSame('Apache-2.0', $icons['source']['license']);
-        self::assertSame('40e0591f40c190eddcabe6ad9c8ac385cb7501c54897fab5c993b7705ff0bd34', $icons['packet_sha256']);
-        foreach (['license', 'rounded', 'sharp'] as $key) {
+        self::assertSame('040d5a4c9fb0893e0333bd5d5020cc98929e21dad28f68273c8e306102213f5c', $icons['packet_sha256']);
+        foreach (['license', 'outlined', 'rounded', 'sharp'] as $key) {
             self::assertSame($icons['files'][$key]['sha256'], hash('sha256', $repository->bundledIconAsset($key)));
         }
+        self::assertSame(
+            '5c0be48d07803e6eb6a993ad441f6fc92340ee0da9d1b57cc348f62569947ae5',
+            $icons['files']['outlined']['sha256'],
+        );
+        self::assertStringContainsString(
+            '/_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsOutlined.woff2',
+            $assets['simai.framework.icon_font.css']['content'],
+        );
         self::assertStringContainsString(
             '@font-face{font-family:"Material Symbols Rounded"',
             $assets['simai.framework.icon_variant_fonts.css']['content'],

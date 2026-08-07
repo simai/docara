@@ -52,7 +52,7 @@ final class PageBuilderTest extends TestCase
         self::assertStringContainsString('<sf-alert', $result->contentHtml);
     }
 
-    public function test_alert_uses_the_same_pagebuilder_with_five_typed_gateway_blocks(): void
+    public function test_alert_uses_the_same_pagebuilder_with_nine_typed_gateway_blocks(): void
     {
         $root = dirname(__DIR__, 2) . '/docs/site';
         $plan = (new PortableConfigurationLoader($root))->resolve('content/ru/components/alert.md');
@@ -64,7 +64,7 @@ final class PageBuilderTest extends TestCase
         );
 
         self::assertNotNull($result->document);
-        self::assertCount(5, $result->componentArtifacts);
+        self::assertCount(9, $result->componentArtifacts);
         self::assertSame(
             ['docara.alert'],
             array_values(array_unique(array_column(
@@ -72,13 +72,33 @@ final class PageBuilderTest extends TestCase
                 'smart',
             ))),
         );
-        self::assertSame(5, substr_count($result->contentHtml, 'data-docara-block="alert"'));
-        self::assertSame(2, substr_count($result->contentHtml, 'data-docara-code-block'));
+        self::assertSame(9, substr_count($result->contentHtml, 'data-docara-block="alert"'));
+        self::assertSame(3, substr_count($result->contentHtml, 'data-docara-code-block'));
         foreach ($result->componentArtifacts as $artifact) {
             self::assertSame('component_block', $artifact->hydration['node_type']);
             self::assertSame('content/ru/components/alert.md', $artifact->hydration['source']['file']);
             self::assertSame([], $artifact->assets);
         }
+
+        $source = (string) file_get_contents($root . '/content/ru/components/alert.md');
+        $typeHeading = strpos($source, '## Тип уведомления');
+        $typeTable = strpos($source, '| `clear` |', $typeHeading === false ? 0 : $typeHeading);
+        $typeExample = strpos($source, ':::example {label="Типы уведомлений"}', $typeTable === false ? 0 : $typeTable);
+        $variantHeading = strpos($source, '## Оформление');
+        $variantTable = strpos($source, '| `default` |', $variantHeading === false ? 0 : $variantHeading);
+        $variantExample = strpos($source, ':::example {label="Варианты оформления"}', $variantTable === false ? 0 : $variantTable);
+
+        self::assertIsInt($typeHeading);
+        self::assertIsInt($typeTable);
+        self::assertIsInt($typeExample);
+        self::assertLessThan($typeTable, $typeHeading);
+        self::assertLessThan($typeExample, $typeTable);
+        self::assertIsInt($variantHeading);
+        self::assertIsInt($variantTable);
+        self::assertIsInt($variantExample);
+        self::assertLessThan($variantTable, $variantHeading);
+        self::assertLessThan($variantExample, $variantTable);
+        self::assertSame(3, substr_count($result->contentHtml, 'data-docara-example='));
     }
 
     public function test_badge_uses_one_pagebuilder_with_typed_ir_and_sixteen_gateway_artifacts(): void

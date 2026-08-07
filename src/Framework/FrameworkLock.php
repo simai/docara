@@ -299,7 +299,7 @@ final readonly class FrameworkLock
                 || ($iconProjection['source']['license'] ?? null) !== 'Apache-2.0'
                 || ! $this->isSha256($iconProjection['packet_sha256'] ?? null)
                 || ! is_array($iconProjection['files'] ?? null)
-                || array_keys($iconProjection['files']) !== ['license', 'rounded', 'sharp']
+                || array_keys($iconProjection['files']) !== ['license', 'outlined', 'rounded', 'sharp']
             ) {
                 throw new FrameworkComponentException('FRAMEWORK_ICON_PROJECTION_INVALID');
             }
@@ -317,6 +317,7 @@ final readonly class FrameworkLock
             }
             foreach ([
                 'license' => 'LICENSE',
+                'outlined' => 'MaterialSymbolsOutlined.woff2',
                 'rounded' => 'MaterialSymbolsRounded.woff2',
                 'sharp' => 'MaterialSymbolsSharp.woff2',
             ] as $key => $filename) {

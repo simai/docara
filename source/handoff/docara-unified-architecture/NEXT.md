@@ -2,12 +2,12 @@
 
 Current state: `typography_54_docara_ready_for_independent_audit`
 
-Current candidate: `93a259f4a3c1691926c596dcdc8786e14206c72d`
+Current candidate: `d6e511c1ed73aa4d1a91b666340549a28ec1312f`
 
 Current evidence: `source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md`
 
 Goal 1-3, Goals A-C, S1 and S2 are independently accepted and Goal S3 remains
-complete. SF5 5.4 typography is integrated on exact candidate `93a259f…` with
+complete. SF5 5.4 typography is integrated on exact candidate `d6e511c…` with
 hash-bound local styles/fonts and fresh test/build/browser/package/consumer
 proof. The only next action is its independent read-only audit. No S4/Goal D,
 merge, push, tag, release, publication, deploy or live-site write is authorized.

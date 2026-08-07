@@ -2,7 +2,7 @@
 
 Текущий статус: Goal 1, Goal 2, Goal 3 и Goals A-C независимо приняты. Exact
 SF5 5.4 typography integration candidate
-`93a259f4a3c1691926c596dcdc8786e14206c72d` завершён и ожидает независимый
+`d6e511c1ed73aa4d1a91b666340549a28ec1312f` завершён и ожидает независимый
 аудит; self-acceptance, publication и deploy не заявлены. Новый
 отдельно авторизованный post-roadmap track Surface & Hero Media находится на
 Goal S1: exact product candidate

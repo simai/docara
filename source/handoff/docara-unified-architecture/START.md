@@ -30,7 +30,7 @@ Current next action: `independent_sf5_typography54_docara_audit`
 
 Current evidence: `source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md`
 
-Current candidate: `93a259f4a3c1691926c596dcdc8786e14206c72d`
+Current candidate: `d6e511c1ed73aa4d1a91b666340549a28ec1312f`
 
 Next roadmap goal: `docara.stage.t54.framework_typography`
 
@@ -44,7 +44,7 @@ Goal S1 at exact product `ac53ea4…` and governance `4feb910…`. Goal S2/S2-C1
 independently accepted on exact candidate `7eeba4a…`. Goal S3 is complete on
 `dd2c0d6…`; the Surface & Hero Media track now waits for an explicit user
 decision. The authorized SF5 5.4 typography integration is complete on
-`93a259f…` and waits only for independent audit. No S4/Goal D or release/live
+`d6e511c…` and waits only for independent audit. No S4/Goal D or release/live
 action is authorized.
 
 ## 3. Read in this order

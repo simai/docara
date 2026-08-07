@@ -9,7 +9,7 @@
         "graph/specs/stages/t54-framework-typography.json",
         "graph/specs/batches/t54-integrated-retest.json"
     ],
-    "canonical_sha256": "37f64e01ad2f10b5d6ab7f6e0305ab2b1ad57aab96b3fd9550c16b6a8110e987",
+    "canonical_sha256": "31319a74e15332474fdab95deb12543ad90d96287f62a1b0efedf67c4fe3d504",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -26,7 +26,7 @@
         "batch_readiness": "ready_for_independent_audit",
         "batch_status": "ready_for_independent_audit",
         "completed_checkpoint": "sf5_typography_54_docara_candidate",
-        "candidate_revision": "93a259f4a3c1691926c596dcdc8786e14206c72d",
+        "candidate_revision": "d6e511c1ed73aa4d1a91b666340549a28ec1312f",
         "next_action": "independent_sf5_typography54_docara_audit",
         "evidence": "source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md"
     },

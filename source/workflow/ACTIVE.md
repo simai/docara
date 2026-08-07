@@ -29,7 +29,7 @@ Graph goal: `docara.goal.unified`
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.t54.framework_typography`;
 - batch: `docara.batch.t54.integrated_retest`;
-- candidate: `93a259f4a3c1691926c596dcdc8786e14206c72d`;
+- candidate: `d6e511c1ed73aa4d1a91b666340549a28ec1312f`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
 - next action: `independent_sf5_typography54_docara_audit`;
 - Goal 1-3 and Goals A-C remain independently accepted. The separately
@@ -55,7 +55,7 @@ Docara now consumes the exact generated SF5 5.4 Core/Utility typography and
 all referenced Inter Variable subsets through one content-addressed Framework
 lock projection. Computed Heading, Display, Body and `.heading` roles match the
 owner contract. Full/full/single, static, package and two same-lock consumers
-are deterministic on exact candidate `93a259f…`. The accepted Framework
+are deterministic on exact candidate `d6e511c…`. The accepted Framework
 JavaScript/Smart pair remains unchanged; no publication or deployment occurred.
 
 The accepted S1 candidate counts depth relative to every container root, so the

@@ -31,7 +31,7 @@
     "current_stage": "docara.stage.t54.framework_typography",
     "current_batch": "docara.batch.t54.integrated_retest",
     "completed_checkpoint": "sf5_typography_54_docara_candidate",
-    "candidate_revision": "93a259f4a3c1691926c596dcdc8786e14206c72d",
+    "candidate_revision": "d6e511c1ed73aa4d1a91b666340549a28ec1312f",
     "next_action": "independent_sf5_typography54_docara_audit",
     "evidence": "source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md",
     "roadmap_source": "source/workflow/2026-08-07-docara-sf5-typography-54-integration.md",

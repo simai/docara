@@ -15,7 +15,7 @@ demos опубликованы из Markdown, admitted Atlas и exhaustive schem
 проекций без второго publication path. Product track A-C завершён; release
 review остаётся отдельным неавторизованным действием.
 Следующая отдельно авторизованная интеграция SF5 5.4 typography завершена на
-exact candidate `93a259f4a3c1691926c596dcdc8786e14206c72d` и находится в
+exact candidate `d6e511c1ed73aa4d1a91b666340549a28ec1312f` и находится в
 `ready_for_independent_audit`; merge/tag/release/deploy не разрешены.
 Исторический R2
 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release

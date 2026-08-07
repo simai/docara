@@ -32,5 +32,5 @@
   "known_deviations": ["The generated simai/ui candidate is unpublished; organizationally independent acceptance is pending."],
   "deletion_gates": ["Rollback by reverting the bounded projection commits to 3558ee8."],
   "status": "ready_for_independent_audit",
-  "mapped_revision": "93a259f4a3c1691926c596dcdc8786e14206c72d"
+  "mapped_revision": "d6e511c1ed73aa4d1a91b666340549a28ec1312f"
 }

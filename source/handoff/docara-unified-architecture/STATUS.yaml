@@ -6,7 +6,7 @@ state: typography_54_docara_ready_for_independent_audit
 current_stage: docara.stage.t54.framework_typography
 current_batch: docara.batch.t54.integrated_retest
 next_action: independent_sf5_typography54_docara_audit
-candidate_revision: 93a259f4a3c1691926c596dcdc8786e14206c72d
+candidate_revision: d6e511c1ed73aa4d1a91b666340549a28ec1312f
 evidence: source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md
 goal1_candidate_revision: 44acc1ff91233fa78140222fcb0589bf55b65ca0
 goal1_sf5_adapter_revision: b3cdff87563ff78e7eddf044048a4b298fc69036

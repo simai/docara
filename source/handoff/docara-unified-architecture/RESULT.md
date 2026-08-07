@@ -2,7 +2,7 @@
 
 Current state: `typography_54_docara_ready_for_independent_audit`
 
-Current candidate: `93a259f4a3c1691926c596dcdc8786e14206c72d`
+Current candidate: `d6e511c1ed73aa4d1a91b666340549a28ec1312f`
 
 Current evidence: `source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md`
 
@@ -13,8 +13,8 @@ consumed through the normal Framework lock, publisher and asset planner. Mobile
 and desktop Heading/Display/Body roles, spacing and `.heading` are verified in
 the real Docara build. Full/full/single share 413-file ledger `e35f077c…`;
 static is 266 HTML / 35,862 references / broken=0. Two clean clones reproduce
-879-file ZIP `d635413a…`, and two same-lock consumers share 218-file ledger
-`9f85a33b…`. Full PHPUnit is 508 / 10,758. The candidate remains audit-pending;
+879-file ZIP `f58ad747…`, and two same-lock consumers share 218-file ledger
+`0b18c09b…`. Full PHPUnit is 508 / 10,774. The candidate remains audit-pending;
 no release or site action occurred.
 
 ## Surface & Hero Media track result

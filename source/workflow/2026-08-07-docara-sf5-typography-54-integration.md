@@ -3,7 +3,7 @@
 Date: 2026-08-07
 Status: `typography_54_docara_ready_for_independent_audit`
 Entry Docara HEAD: `3558ee8a41873a60e261e74655b1032d33bc9f52`
-Exact Docara product candidate: `93a259f4a3c1691926c596dcdc8786e14206c72d`
+Exact Docara product candidate: `d6e511c1ed73aa4d1a91b666340549a28ec1312f`
 Current stage: `docara.stage.t54.framework_typography`
 Current batch: `docara.batch.t54.integrated_retest`
 Current next action: `independent_sf5_typography54_docara_audit`

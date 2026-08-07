@@ -45,6 +45,7 @@ html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-sect
 .docara-code-scroll{max-width:100%;background:transparent;border:0;border-radius:0;box-shadow:none;overscroll-behavior-inline:contain}
 .docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre}
 sf-alert,sf-button{display:block}
+.sf-alert.sf-alert--success>sf-icon>.sf-icon{--sf-icon--color:var(--sf-success)}
 .docara-prose sf-alert,.docara-prose sf-button{margin-block:var(--sf-space-2)}
 .docara-landing{display:block;min-height:auto;container-type:inline-size}
 .docara-landing .docara-content{width:100%}

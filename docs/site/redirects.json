@@ -1,5 +1,13 @@
 {
   "schema": "docara.redirects.v1",
   "version": 1,
-  "redirects": []
+  "redirects": [
+    {"from": "ru/components/block-docara", "to": "ru/start/component-model"},
+    {"from": "ru/components/containers", "to": "ru/start/component-model"},
+    {"from": "ru/components/framework", "to": "ru/start/component-model"},
+    {"from": "ru/components/inline-docara", "to": "ru/start/component-model"},
+    {"from": "ru/components/native-markdown", "to": "ru/start/component-model"},
+    {"from": "ru/components/project", "to": "ru/start/component-model"},
+    {"from": "ru/components/syntax", "to": "ru/start/component-model"}
+  ]
 }

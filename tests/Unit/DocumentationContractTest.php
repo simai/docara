@@ -153,7 +153,7 @@ final class DocumentationContractTest extends TestCase
                 'development/testing.md',
             ],
             'extension_developer_or_ai' => [
-                'components/syntax.md',
+                'start/component-model.md',
                 'development/framework-components.md',
                 'development/extensions.md',
             ],

@@ -367,10 +367,10 @@ final class EffectiveComponentCatalogTest extends TestCase
         $catalog = $this->builder()->build();
         $actual = array_column($catalog['entries'], 'docs_ref', 'id');
         $expected = [
-            'content.icon' => 'docs/site/content/ru/components/syntax.md',
-            'docara.alert' => 'docs/site/content/ru/components/syntax.md',
+            'content.icon' => 'docs/site/content/ru/start/component-model.md',
+            'docara.alert' => 'docs/site/content/ru/start/component-model.md',
             'docara.backlinks' => 'docs/site/content/ru/components/backlinks.md',
-            'docara.badge' => 'docs/site/content/ru/components/syntax.md',
+            'docara.badge' => 'docs/site/content/ru/start/component-model.md',
             'docara.banner' => 'docs/site/content/ru/components/banner.md',
             'docara.button' => 'docs/site/content/ru/components/button.md',
             'docara.card' => 'docs/site/content/ru/components/card.md',
@@ -394,17 +394,17 @@ final class EffectiveComponentCatalogTest extends TestCase
             'docara.tabs' => 'docs/site/content/ru/components/tabs.md',
             'docara.tree' => 'docs/site/content/ru/components/tree.md',
             'native.code' => 'docs/site/content/ru/authoring/markdown.md',
-            'native.code.enhanced' => 'docs/site/content/ru/components/syntax.md',
+            'native.code.enhanced' => 'docs/site/content/ru/start/component-model.md',
             'native.footnotes_and_sources' => 'docs/site/content/ru/authoring/markdown.md',
             'native.headings_and_text' => 'docs/site/content/ru/authoring/markdown.md',
             'native.links_and_images' => 'docs/site/content/ru/authoring/markdown.md',
             'native.lists_and_quotes' => 'docs/site/content/ru/authoring/markdown.md',
             'native.table' => 'docs/site/content/ru/authoring/markdown.md',
-            'ui.alert' => 'docs/site/content/ru/components/syntax.md',
-            'ui.badge' => 'docs/site/content/ru/components/syntax.md',
-            'ui.button' => 'docs/site/content/ru/components/syntax.md',
-            'ui.dataview' => 'docs/site/content/ru/components/syntax.md',
-            'ui.tabs' => 'docs/site/content/ru/components/syntax.md',
+            'ui.alert' => 'docs/site/content/ru/start/component-model.md',
+            'ui.badge' => 'docs/site/content/ru/start/component-model.md',
+            'ui.button' => 'docs/site/content/ru/start/component-model.md',
+            'ui.dataview' => 'docs/site/content/ru/start/component-model.md',
+            'ui.tabs' => 'docs/site/content/ru/start/component-model.md',
         ];
 
         self::assertSame($expected, $actual);

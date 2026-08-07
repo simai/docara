@@ -14,25 +14,31 @@ use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 final class GoalCPublicDocumentationTest extends TestCase
 {
     #[Test]
-    public function components_root_has_exactly_six_physical_entry_owners(): void
+    public function components_root_has_six_catalogue_categories_and_only_real_component_pages(): void
     {
         $root = dirname(__DIR__, 2) . '/docs/site/content/ru/components';
-        $entries = [
-            'native-markdown', 'inline-docara', 'block-docara',
-            'containers', 'framework', 'project',
+        $retired = [
+            'native-markdown', 'inline-docara', 'block-docara', 'containers',
+            'framework', 'project', 'syntax',
         ];
         $index = (string) file_get_contents(dirname($root) . '/components.md');
-        foreach ($entries as $entry) {
-            self::assertFileExists($root . '/' . $entry . '.md');
-            self::assertStringContainsString('/ru/components/' . $entry . '/', $index);
+        foreach ($retired as $entry) {
+            self::assertFileDoesNotExist($root . '/' . $entry . '.md');
+            self::assertStringNotContainsString('/ru/components/' . $entry . '/', $index);
         }
-        self::assertSame(6, preg_match_all('#/ru/components/(?:native-markdown|inline-docara|block-docara|containers|framework|project)/#', $index));
+        self::assertSame(31, count(glob($root . '/*.md') ?: []));
+        self::assertSame(31, preg_match_all('#/ru/components/[a-z0-9-]+/#', $index));
+        foreach (['Текст и Markdown', 'Содержательные блоки', 'Код и данные', 'Макет', 'Медиа', 'Inline и действия'] as $category) {
+            self::assertStringContainsString($category, $index);
+        }
+        self::assertSame(2, substr_count($index, '| --- | --- | --- |'));
+        self::assertStringContainsString('/ru/start/component-model/', $index);
     }
 
     #[Test]
     public function native_markdown_guide_covers_every_enabled_profile_capability(): void
     {
-        $guide = (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/content/ru/components/native-markdown.md');
+        $guide = (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/content/ru/components.md');
         $refs = [
             'native.code' => '/ru/components/code/',
             'native.footnotes_and_sources' => '/ru/components/footnotes-and-sources/',
@@ -45,24 +51,24 @@ final class GoalCPublicDocumentationTest extends TestCase
         foreach ($refs as $route) {
             self::assertStringContainsString($route, $guide);
         }
-        self::assertStringContainsString('MARKDOWN_RAW_HTML_FORBIDDEN', $guide);
+        self::assertStringContainsString(
+            'MARKDOWN_RAW_HTML_FORBIDDEN',
+            (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/content/ru/start/component-model.md'),
+        );
     }
 
     #[Test]
-    public function container_and_framework_guides_expose_registry_contract_and_nonclaims(): void
+    public function consolidated_component_model_exposes_container_and_framework_boundaries(): void
     {
-        $containers = (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/content/ru/components/containers.md');
-        foreach (['allowed_children', 'slots', 'min_children', 'max_children', 'order', 'max_depth', 'depth_semantics'] as $field) {
-            self::assertStringContainsString('`' . $field . '`', $containers);
+        $model = (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/content/ru/start/component-model.md');
+        foreach (['children', 'slots', 'min_children', 'max_children', 'order'] as $field) {
+            self::assertStringContainsString($field, $model);
         }
-        foreach (['MARKDOWN_GRID_CARD_REQUIRED', 'MARKDOWN_COLUMNS_REGION_COUNT_INVALID', 'MARKDOWN_STEPS_ORDERED_LIST_REQUIRED', 'MARKDOWN_BLOCK_UNCLOSED'] as $code) {
-            self::assertStringContainsString('`' . $code . '`', $containers);
-        }
-        $framework = (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/content/ru/components/framework.md');
-        self::assertStringContainsString('ui.dropdown', $framework);
-        self::assertStringContainsString('ui.list-item', $framework);
-        self::assertStringContainsString('icons, avatars, tags', $framework);
-        self::assertStringContainsString(':::atlas_index {kind=smart namespace=ui origin=framework support=supported}', $framework);
+        self::assertStringContainsString('ui.dropdown', $model);
+        self::assertStringContainsString('ui.list-item', $model);
+        self::assertStringContainsString('exact-pinned', $model);
+        self::assertStringContainsString('hash-bound plan', $model);
+        self::assertStringContainsString('MARKDOWN_RAW_HTML_FORBIDDEN', $model);
     }
 
     #[Test]

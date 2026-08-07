@@ -127,6 +127,7 @@ Starter задаёт `default_locale`, явный реестр `locales`, сим
 
 ## Что читать дальше
 
+- [Как устроены компоненты](/ru/start/component-model/)
 - [Файлы проекта](/authoring/project-files/)
 - [Конфигурация](/authoring/configuration/)
 - [Брендирование](/authoring/branding/)

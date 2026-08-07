@@ -15,6 +15,6 @@
   },
   "states": [],
   "verification": {"renderer": true, "tests": true, "docs": true, "demo": true},
-  "docs_ref": "docs/site/content/ru/components/syntax.md",
+  "docs_ref": "docs/site/content/ru/start/component-model.md",
   "provenance": {"source_kind": "inline_definition", "definition_ref": "resources/component-catalog/inline/docara.badge.json"}
 }

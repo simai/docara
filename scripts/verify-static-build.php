@@ -2848,8 +2848,6 @@ if ($manifestError === null) {
                 static fn (array $left, array $right): int => strnatcasecmp($left['title'], $right['title'])
                     ?: strcmp($left['url'], $right['url']),
             );
-            $expectedIndexes[$route] = $entries;
-
             $output = $page['output'] ?? null;
             if (! is_string($output) || ! docaraSafeRegularFile($root . '/' . $output)) {
                 throw new RuntimeException("Authored component index [$route] output is missing or unsafe.");
@@ -2866,20 +2864,44 @@ if ($manifestError === null) {
             if ($loaded !== true) {
                 throw new RuntimeException("Authored component index [$route] HTML is invalid.");
             }
-            $nodes = (new DOMXPath($document))->query(
-                '//*[@data-docara-component-index-view]//li/a',
-            );
-            if ($nodes === false || $nodes->length !== count($entries)) {
-                throw new RuntimeException("Authored component index [$route] rendered entry count is invalid.");
-            }
-            foreach ($entries as $position => $entry) {
-                $node = $nodes->item($position);
-                if (! $node instanceof DOMElement
-                    || $node->getAttribute('href') !== $entry['url']
-                    || trim($node->textContent) !== $entry['title']
-                ) {
-                    throw new RuntimeException("Authored component index [$route] rendered entry is invalid.");
+            $xpath = new DOMXPath($document);
+            if (is_array($componentIndexReceipt['indexes'][$route] ?? null)) {
+                $expectedIndexes[$route] = $entries;
+                $nodes = $xpath->query('//*[@data-docara-component-index-view]//li/a');
+                if ($nodes === false || $nodes->length !== count($entries)) {
+                    throw new RuntimeException("Authored component index [$route] rendered entry count is invalid.");
                 }
+                foreach ($entries as $position => $entry) {
+                    $node = $nodes->item($position);
+                    if (! $node instanceof DOMElement
+                        || $node->getAttribute('href') !== $entry['url']
+                        || trim($node->textContent) !== $entry['title']
+                    ) {
+                        throw new RuntimeException("Authored component index [$route] rendered entry is invalid.");
+                    }
+                }
+                continue;
+            }
+
+            $nodes = $xpath->query('//main//a[starts-with(@href, "' . $route . '")]');
+            $renderedUrls = [];
+            if ($nodes !== false) {
+                foreach ($nodes as $node) {
+                    if (! $node instanceof DOMElement) {
+                        continue;
+                    }
+                    $href = $node->getAttribute('href');
+                    if (preg_match('#\A' . preg_quote($route, '#') . '[^/]+/\z#D', $href) === 1) {
+                        $renderedUrls[$href] = true;
+                    }
+                }
+            }
+            $expectedUrls = array_column($entries, 'url');
+            $actualUrls = array_keys($renderedUrls);
+            sort($expectedUrls, SORT_STRING);
+            sort($actualUrls, SORT_STRING);
+            if ($actualUrls !== $expectedUrls) {
+                throw new RuntimeException("Authored component catalog [$route] does not link every exact component page once.");
             }
         }
         ksort($expectedIndexes, SORT_STRING);

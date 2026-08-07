@@ -83,7 +83,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             ),
         ));
 
-        self::assertCount(133, $pages);
+        self::assertCount(127, $pages);
         self::assertSame([
             'design_atlas_sha256' => $atlasProjection['content_sha256'],
             'schema_reference_sha256' => $schemaProjection['content_sha256'],
@@ -93,7 +93,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             self::assertSame('docara.document_ir.v1', $page['declarative_pipeline']['document_ir']['schema']);
             self::assertGreaterThan(0, $page['declarative_pipeline']['document_ir']['nodes']);
         }
-        self::assertCount(266, $htmlPages);
+        self::assertCount(261, $htmlPages);
         $nonIndexedOutput = $build . '/ru/demonstrator-results/composition-inheritance/page/index.html';
         $nonIndexedHash = hash_file('sha256', $nonIndexedOutput);
         $singleNonIndexed = (new PortableSiteBuilder(
@@ -103,7 +103,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(1, $singleNonIndexed);
         self::assertSame($nonIndexedHash, hash_file('sha256', $nonIndexedOutput));
         self::assertFileDoesNotExist($build . '/ru/lang.json');
-        self::assertCount(119, $search['documents']);
+        self::assertCount(113, $search['documents']);
         self::assertCount(38, $catalog['entries']);
         self::assertCount(31, $supported);
         self::assertCount(5, $unavailable);
@@ -117,8 +117,8 @@ final class PortableDocumentationSiteTest extends PHPUnit
                     && ($page['page_source_kind'] ?? null) === 'authored_markdown',
             )->count(),
         );
-        self::assertCount(0, $redirectReceipt['redirects']);
-        self::assertCount(133, $localeRouteReceipt['redirects']);
+        self::assertCount(7, $redirectReceipt['redirects']);
+        self::assertCount(127, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(
             $localeRouteReceipt['redirects'],
             static fn (array $redirect): bool => $redirect['kind'] === 'root',
@@ -143,25 +143,28 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertSame([], $projectedSupported);
         self::assertFileExists($build . '/ru/components/index.html');
 
-        $publicGroups = [
-            'native-markdown' => ['native.code', 'native.table'],
-            'inline-docara' => ['docara.badge', 'docara.kbd'],
-            'block-docara' => ['docara.alert', 'docara.card'],
-            'containers' => ['docara.grid'],
-            'framework' => ['ui.input', 'ui.dropdown', 'ui.checkbox', 'ui.list-item'],
-            'project' => ['project.install-builder', 'project.footer-links'],
+        $retiredComponentOverviews = [
+            'block-docara',
+            'containers',
+            'framework',
+            'inline-docara',
+            'native-markdown',
+            'project',
+            'syntax',
         ];
-        foreach ($publicGroups as $route => $ids) {
-            $group = (string) file_get_contents($build . '/ru/components/' . $route . '/index.html');
-            self::assertStringNotContainsString('В принятом Atlas нет элементов', $group, $route);
-            foreach ($ids as $id) {
-                self::assertStringContainsString('<code>' . $id . '</code>', $group, $route . ':' . $id);
-            }
+        foreach ($retiredComponentOverviews as $route) {
+            $redirect = collect($redirectReceipt['redirects'])->firstWhere('from', 'ru/components/' . $route);
+            self::assertIsArray($redirect, $route);
+            self::assertSame('ru/start/component-model', $redirect['to'], $route);
+            $redirectHtml = (string) file_get_contents($build . '/ru/components/' . $route . '/index.html');
+            self::assertStringContainsString('/ru/start/component-model/', $redirectHtml, $route);
+            self::assertStringContainsString('content="noindex,follow"', $redirectHtml, $route);
         }
-        $containers = (string) file_get_contents($build . '/ru/components/containers/index.html');
-        self::assertStringNotContainsString('<code>docara.docs</code>', $containers);
-        self::assertStringNotContainsString('<code>docara.article</code>', $containers);
-        self::assertStringContainsString('allowed_children=[docara.card]', $containers);
+        $componentModel = (string) file_get_contents($build . '/ru/start/component-model/index.html');
+        self::assertStringContainsString('Контейнеры и композиция', $componentModel);
+        self::assertStringContainsString('SIMAI Framework', $componentModel);
+        self::assertStringContainsString('Компоненты проекта', $componentModel);
+        self::assertStringContainsString('MARKDOWN_RAW_HTML_FORBIDDEN', $componentModel);
         $settingsReference = (string) file_get_contents($build . '/ru/settings/index.html');
         self::assertStringContainsString('/layout/regions/', $settingsReference);
         self::assertStringContainsString('uniqueItems=true', $settingsReference);
@@ -170,7 +173,16 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $catalogIndex = (string) file_get_contents($build . '/ru/components/index.html');
         $alertPage = (string) file_get_contents($build . '/ru/components/alert/index.html');
-        self::assertStringContainsString('data-docara-component-index-view', $catalogIndex);
+        self::assertSame(2, substr_count($catalogIndex, 'data-docara-table-scroll'));
+        preg_match_all('~href="(/ru/components/[a-z0-9-]+/)"~', $catalogIndex, $componentLinks);
+        self::assertSame(31, count(array_unique($componentLinks[1] ?? [])));
+        self::assertStringContainsString('Текст и Markdown', $catalogIndex);
+        self::assertStringContainsString('Содержательные блоки', $catalogIndex);
+        self::assertStringContainsString('Код и данные', $catalogIndex);
+        self::assertStringContainsString('Макет', $catalogIndex);
+        self::assertStringContainsString('Медиа', $catalogIndex);
+        self::assertStringContainsString('Inline и действия', $catalogIndex);
+        self::assertStringNotContainsString('data-docara-component-index-view', $catalogIndex);
         self::assertStringNotContainsString('data-docara-component-catalog-index', $catalogIndex);
         self::assertStringContainsString('"code.copy":"Скопировать"', $alertPage);
         self::assertStringContainsString('"code.copied":"Скопировано"', $alertPage);
@@ -252,7 +264,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             JSON_THROW_ON_ERROR,
         );
         self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
-        self::assertSame(266, $report['html_pages'] ?? null);
+        self::assertSame(261, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
 
@@ -292,7 +304,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         );
 
         $pages = $builder->build($site, $site . '/build_test');
-        self::assertCount(133, $pages);
+        self::assertCount(127, $pages);
         self::assertStringContainsString(
             'Поиск из content lang',
             (string) file_get_contents($site . '/build_test/ru/index.html'),
@@ -343,12 +355,12 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $firstFiles = $this->treeHashes($firstBuild);
         $secondFiles = $this->treeHashes($secondBuild);
-        self::assertCount(655, $firstFiles);
+        self::assertCount(650, $firstFiles);
         self::assertSame($firstFiles, $secondFiles);
         self::assertArrayHasKey('_docara/page-metadata.json', $firstFiles);
 
         $metadata = $this->json($firstBuild . '/_docara/page-metadata.json');
-        self::assertCount(133, $metadata['pages']);
+        self::assertCount(127, $metadata['pages']);
         foreach ($metadata['pages'] as $page) {
             self::assertNull($page['updated_at']);
             self::assertNull($page['revision']);

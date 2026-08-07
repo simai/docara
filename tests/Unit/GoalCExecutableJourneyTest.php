@@ -106,7 +106,7 @@ final class GoalCExecutableJourneyTest extends TestCase
         $documents = [
             (string) file_get_contents($root . '/development/agent-journey.md'),
             (string) file_get_contents($root . '/development/developer-sdk.md'),
-            (string) file_get_contents($root . '/components/project.md'),
+            (string) file_get_contents($root . '/start/component-model.md'),
         ];
         $combined = implode("\n", $documents);
 

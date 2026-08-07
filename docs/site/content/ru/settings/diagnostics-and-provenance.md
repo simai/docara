@@ -6,7 +6,7 @@
 docara doctor --json
 docara atlas --json
 docara inspect smart ui.dropdown --json
-docara inspect page /ru/components/framework/ --json
+docara inspect page /ru/start/component-model/ --json
 docara schema smart --json
 ```
 

@@ -6,35 +6,35 @@
         "graph/graph.json",
         "graph/dna/project-dna.json",
         "graph/specs/goals/unified-docara.json",
-        "graph/specs/stages/t54-framework-typography.json",
-        "graph/specs/batches/t54-integrated-retest.json"
+        "graph/specs/stages/lfr-local-framework-runtime.json",
+        "graph/specs/batches/lfr-integrated-retest.json"
     ],
-    "canonical_sha256": "31319a74e15332474fdab95deb12543ad90d96287f62a1b0efedf67c4fe3d504",
+    "canonical_sha256": "e8dc809505473e65a429d5dd4b80b11f40e63787f14bdfba2fe66f0dba686492",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "typography_54_docara_ready_for_independent_audit",
+        "state": "local_framework_runtime_ready_for_independent_audit",
         "goal": "docara.goal.unified",
-        "goal_readiness": "typography_54_docara_ready_for_independent_audit",
-        "stage": "docara.stage.t54.framework_typography",
+        "goal_readiness": "local_framework_runtime_ready_for_independent_audit",
+        "stage": "docara.stage.lfr.local_framework_runtime",
         "stage_readiness": "ready_for_independent_audit",
         "stage_status": "ready_for_independent_audit",
-        "batch": "docara.batch.t54.integrated_retest",
+        "batch": "docara.batch.lfr.integrated_retest",
         "batch_readiness": "ready_for_independent_audit",
         "batch_status": "ready_for_independent_audit",
-        "completed_checkpoint": "sf5_typography_54_docara_candidate",
-        "candidate_revision": "d6e511c1ed73aa4d1a91b666340549a28ec1312f",
-        "next_action": "independent_sf5_typography54_docara_audit",
-        "evidence": "source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md"
+        "completed_checkpoint": "local_framework_runtime_candidate_and_validation_site",
+        "candidate_revision": "08cf9eb6b9dbd0175b87854dc9ec9652ebccc773",
+        "next_action": "independent_local_framework_runtime_audit",
+        "evidence": "source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md"
     },
     "roadmap": {
-        "source": "source/workflow/2026-08-07-docara-sf5-typography-54-integration.md",
+        "source": "source/workflow/2026-08-07-docara-local-framework-runtime.md",
         "next_goal": {
-            "id": "docara.stage.t54.framework_typography",
-            "title": "Independent SF5 typography 5.4 Docara audit",
+            "id": "docara.stage.lfr.local_framework_runtime",
+            "title": "Independent local Framework runtime audit",
             "status": "audit_pending",
             "authorized": true,
             "source": "source/handoff/docara-unified-architecture/NEXT.md"
@@ -63,22 +63,21 @@
         }
     },
     "forbidden_now": [
-        "Framework JavaScript repin",
         "Second runtime",
+        "External owner write",
+        "Production",
         "Merge",
         "Push",
         "Tag",
-        "Release",
-        "Deploy",
-        "Site writes"
+        "Release"
     ],
     "read_order": [
         "source/handoff/docara-unified-architecture/STATUS.yaml",
         "source/workflow/ACTIVE.md",
-        "source/workflow/2026-08-07-docara-sf5-typography-54-integration.md",
+        "source/workflow/2026-08-07-docara-local-framework-runtime.md",
         "graph/graph.json",
-        "graph/specs/stages/t54-framework-typography.json",
-        "graph/specs/batches/t54-integrated-retest.json",
+        "graph/specs/stages/lfr-local-framework-runtime.json",
+        "graph/specs/batches/lfr-integrated-retest.json",
         "graph/generated/ai-context/docara-unified.json",
         "source/handoff/docara-unified-architecture/NEXT.md",
         "source/handoff/docara-unified-architecture/RESULT.md"

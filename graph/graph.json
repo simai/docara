@@ -26,18 +26,18 @@
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
   "implementation_state": {
-    "state": "typography_54_docara_ready_for_independent_audit",
+    "state": "local_framework_runtime_ready_for_independent_audit",
     "current_goal": "docara.goal.unified",
-    "current_stage": "docara.stage.t54.framework_typography",
-    "current_batch": "docara.batch.t54.integrated_retest",
-    "completed_checkpoint": "sf5_typography_54_docara_candidate",
-    "candidate_revision": "d6e511c1ed73aa4d1a91b666340549a28ec1312f",
-    "next_action": "independent_sf5_typography54_docara_audit",
-    "evidence": "source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md",
-    "roadmap_source": "source/workflow/2026-08-07-docara-sf5-typography-54-integration.md",
+    "current_stage": "docara.stage.lfr.local_framework_runtime",
+    "current_batch": "docara.batch.lfr.integrated_retest",
+    "completed_checkpoint": "local_framework_runtime_candidate_and_validation_site",
+    "candidate_revision": "08cf9eb6b9dbd0175b87854dc9ec9652ebccc773",
+    "next_action": "independent_local_framework_runtime_audit",
+    "evidence": "source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md",
+    "roadmap_source": "source/workflow/2026-08-07-docara-local-framework-runtime.md",
     "next_goal": {
-      "id": "docara.stage.t54.framework_typography",
-      "title": "Independent SF5 typography 5.4 Docara audit",
+      "id": "docara.stage.lfr.local_framework_runtime",
+      "title": "Independent local Framework runtime audit",
       "status": "audit_pending",
       "authorized": true,
       "source": "source/handoff/docara-unified-architecture/NEXT.md"

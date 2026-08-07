@@ -1,0 +1,30 @@
+{
+  "id": "docara.stage.lfr.local_framework_runtime",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "milestone",
+  "tz_role": "implementation_stage",
+  "title": "Local SIMAI Framework runtime",
+  "summary": "Publish the exact Framework runtime closure from Docara itself so icons, fonts and interactive components do not depend on a CDN.",
+  "owner": "dev",
+  "lifecycle": "complete",
+  "readiness": "ready_for_independent_audit",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-07-docara-local-framework-runtime.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md"],
+  "profile_refs": ["docara.unified"],
+  "parent_goal_ref": "docara.goal.unified",
+  "done_when": [
+    "Every required Framework runtime asset is immutable, local and verified before publication.",
+    "Full, single, package and fresh consumer outputs are deterministic.",
+    "The explicitly authorized validation site passes static and browser smoke without external runtime requests."
+  ],
+  "batch_refs": ["docara.batch.lfr.integrated_retest"],
+  "required_gates": ["docara.gate.architecture_acceptance"],
+  "required_evidence": ["Source fidelity", "Security", "Full tests", "Build determinism", "Package and consumers", "Offline and deployed browser smoke"],
+  "next_stage_ref": null,
+  "status": "ready_for_independent_audit",
+  "baseline_revision": "1e1e093109cbd8956cbe9693cc2fd98dd8e1759f",
+  "candidate_revision": "08cf9eb6b9dbd0175b87854dc9ec9652ebccc773",
+  "next_action": "independent_local_framework_runtime_audit"
+}

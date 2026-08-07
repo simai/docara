@@ -1,8 +1,8 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-07
-Status: SF5 5.4 typography integrated; ready for independent audit
-Workflow ID: `2026-08-07-docara-sf5-typography-54-integration`
+Status: local Framework runtime deployed to validation site; ready for independent audit
+Workflow ID: `2026-08-07-docara-local-framework-runtime`
 Graph goal: `docara.goal.unified`
 
 ## Source of truth
@@ -10,11 +10,11 @@ Graph goal: `docara.goal.unified`
 - start here: `source/handoff/docara-unified-architecture/START.md`;
 - human specification: `docs/specification/README.md`;
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
-- active workflow: `source/workflow/2026-08-07-docara-sf5-typography-54-integration.md`;
+- active workflow: `source/workflow/2026-08-07-docara-local-framework-runtime.md`;
 - completed parent track: `source/workflow/2026-08-06-docara-surface-hero-track.md`;
 - parent Goal 3 recovery:
   `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`;
-- fresh evidence: `source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md`;
+- fresh evidence: `source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md`;
 - project-context freshness correction:
   `source/workflow/2026-08-03-docara-goal1d-project-context-correction.md`;
 - rejected audit candidate: `c5ea85f8d25deff99b671486fdc4d1e820a86491`;
@@ -25,18 +25,19 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `typography_54_docara_ready_for_independent_audit`;
+- state: `local_framework_runtime_ready_for_independent_audit`;
 - goal: `docara.goal.unified`;
-- stage: `docara.stage.t54.framework_typography`;
-- batch: `docara.batch.t54.integrated_retest`;
-- candidate: `d6e511c1ed73aa4d1a91b666340549a28ec1312f`;
+- stage: `docara.stage.lfr.local_framework_runtime`;
+- batch: `docara.batch.lfr.integrated_retest`;
+- candidate: `08cf9eb6b9dbd0175b87854dc9ec9652ebccc773`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `independent_sf5_typography54_docara_audit`;
+- next action: `independent_local_framework_runtime_audit`;
 - Goal 1-3 and Goals A-C remain independently accepted. The separately
   authorized Surface & Hero Media track is active only through completed Goal
   S1 and S2, which are independently accepted. Goal S3 remains complete. The
-  separately authorized SF5 5.4 typography integration is audit-pending. No S4
-  exists.
+  SF5 5.4 typography integration remains the accepted parent candidate. The
+  explicitly authorized local Framework runtime correction is audit-pending.
+  No S4 exists.
 
 ## Accepted pipeline
 
@@ -51,12 +52,13 @@ IR/HTML remain disposable.
 
 ## Current result
 
-Docara now consumes the exact generated SF5 5.4 Core/Utility typography and
-all referenced Inter Variable subsets through one content-addressed Framework
-lock projection. Computed Heading, Display, Body and `.heading` roles match the
-owner contract. Full/full/single, static, package and two same-lock consumers
-are deterministic on exact candidate `d6e511c…`. The accepted Framework
-JavaScript/Smart pair remains unchanged; no publication or deployment occurred.
+Docara now publishes the exact required SIMAI Framework runtime, icons, fonts,
+lazy theme utility and authored highlight chunks from one content-addressed
+117-file local projection. Full/full/single, static, package and two same-lock
+consumers are deterministic on exact candidate `08cf9eb…`. Browser checks with
+external HTTPS blocked are clean. The authorized local validation site
+`docara-new.test` was atomically switched to the exact build with a preserved
+rollback backup; no production, release or external owner write occurred.
 
 The accepted S1 candidate counts depth relative to every container root, so the
 canonical Surface -> Grid -> Card chain passes both Surface 3/3 and Grid 2/2

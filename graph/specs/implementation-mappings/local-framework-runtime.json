@@ -1,0 +1,36 @@
+{
+  "id": "docara.mapping.local_framework_runtime",
+  "schema_version": "1.0.0",
+  "kind": "relation",
+  "subtype": "implementation_mapping",
+  "tz_role": "traceability",
+  "title": "Local Framework runtime mapping",
+  "summary": "Map the immutable owner projection to the existing Framework lock, publisher, asset planner and build receipts.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "ready_for_independent_audit",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-07-docara-local-framework-runtime.md"],
+  "profile_refs": ["docara.unified"],
+  "from_ref": "docara.stage.lfr.local_framework_runtime",
+  "to_refs": ["docara.feature.single_pagebuilder"],
+  "code_refs": [
+    "src/Framework/FrameworkLock.php",
+    "src/Framework/FrameworkManifestRepository.php",
+    "src/Framework/FrameworkAssetPlanner.php",
+    "resources/schemas/framework-lock.schema.json",
+    "resources/portable/vendor/simai-framework/runtime"
+  ],
+  "test_refs": ["tests/Unit/FrameworkTypographyProjectionTest.php", "tests/PortableDocumentationSiteTest.php", "tests/PortableSiteBuilderTest.php"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md"],
+  "review_refs": ["docara.gate.architecture_acceptance"],
+  "current_behavior": [
+    "Framework bootstrap, required chunks, icons and fonts are published from one verified local closure.",
+    "The existing Gateway, renderer and PageBuilder remain the only production path.",
+    "No external runtime fallback is emitted."
+  ],
+  "known_deviations": ["Independent reverse-outcome acceptance is pending."],
+  "deletion_gates": ["Rollback the validation site with the exact preserved backup and revert the bounded product commits."],
+  "status": "ready_for_independent_audit",
+  "mapped_revision": "08cf9eb6b9dbd0175b87854dc9ec9652ebccc773"
+}

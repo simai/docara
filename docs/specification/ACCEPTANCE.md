@@ -1,9 +1,11 @@
 # Приёмка единой архитектуры Docara
 
 Текущий статус: Goal 1, Goal 2, Goal 3 и Goals A-C независимо приняты. Exact
-SF5 5.4 typography integration candidate
-`d6e511c1ed73aa4d1a91b666340549a28ec1312f` завершён и ожидает независимый
-аудит; self-acceptance, publication и deploy не заявлены. Новый
+SF5 5.4 typography integration candidate `d6e511c1…` остаётся принятым
+родителем. Текущий local Framework runtime candidate
+`08cf9eb6b9dbd0175b87854dc9ec9652ebccc773` завершён, атомарно установлен
+только на явно разрешённый `docara-new.test` и ожидает независимый аудит;
+self-acceptance, publication, release и production deploy не заявлены. Новый
 отдельно авторизованный post-roadmap track Surface & Hero Media находится на
 Goal S1: exact product candidate
 `ac53ea4d372a47dc8278b595accca9e7b85c66a3` независимо принят с `PASS`,

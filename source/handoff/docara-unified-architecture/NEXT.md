@@ -1,16 +1,18 @@
-# Next action: `independent_sf5_typography54_docara_audit`
+# Next action: `independent_local_framework_runtime_audit`
 
-Current state: `typography_54_docara_ready_for_independent_audit`
+Current state: `local_framework_runtime_ready_for_independent_audit`
 
-Current candidate: `d6e511c1ed73aa4d1a91b666340549a28ec1312f`
+Current candidate: `08cf9eb6b9dbd0175b87854dc9ec9652ebccc773`
 
-Current evidence: `source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md`
 
 Goal 1-3, Goals A-C, S1 and S2 are independently accepted and Goal S3 remains
-complete. SF5 5.4 typography is integrated on exact candidate `d6e511c…` with
-hash-bound local styles/fonts and fresh test/build/browser/package/consumer
-proof. The only next action is its independent read-only audit. No S4/Goal D,
-merge, push, tag, release, publication, deploy or live-site write is authorized.
+complete. Exact candidate `08cf9eb…` additionally serves the complete current
+Docara Framework runtime closure locally and has fresh test/build/browser/
+package/consumer proof. `docara-new.test` is already on this exact authorized
+validation build with rollback preserved. The only next action is independent
+read-only audit. No S4/Goal D, merge, push, tag, release, publication, further
+site write or production deployment is authorized.
 
 ## Historical deployment decision (parked, not executable)
 

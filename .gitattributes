@@ -31,3 +31,4 @@ resources/framework/manifests/*.json -text
 resources/framework/assets/** -text
 resources/portable/vendor/simai-framework/typography/5.4.0-rc.1/core.css whitespace=-blank-at-eol,-blank-at-eof
 resources/portable/vendor/simai-framework/typography/5.4.0-rc.1/utility.full.css whitespace=-blank-at-eol,-blank-at-eof
+resources/portable/vendor/simai-framework/runtime/** whitespace=-blank-at-eol,-blank-at-eof

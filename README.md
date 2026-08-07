@@ -119,7 +119,7 @@ registries and PreviewKernel. The optional PHP stdio MCP adapter is
 - [Quick start](docs/site/content/ru/start.md)
 - [Project files and configuration](docs/site/content/ru/authoring/project-files.md)
 - [Layouts, regions and navigation](docs/site/content/ru/authoring/layout-and-navigation.md)
-- [Components](docs/site/content/ru/components/syntax.md)
+- [Components](docs/site/content/ru/components.md)
 - [Build and verification](docs/site/content/ru/build.md)
 - [Portable project format](docs/site/content/ru/authoring/project-files.md)
 

@@ -135,7 +135,6 @@ final class PageBuilderTest extends TestCase
             'lists-and-quotes' => ['heading', 'paragraph', 'list', 'blockquote', 'code_block', 'example'],
             'links-and-images' => ['heading', 'paragraph', 'list', 'image', 'table', 'code_block', 'example'],
             'table' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
-            'syntax' => ['heading', 'paragraph', 'list', 'code_block'],
         ] as $slug => $expectedTypes) {
             $plan = (new PortableConfigurationLoader($root))->resolve("content/ru/components/$slug.md");
             $result = (new PageBuilder(new PortableMarkdownRenderer))->build(

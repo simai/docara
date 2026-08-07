@@ -31,10 +31,10 @@
     "current_stage": "docara.stage.lfr.local_framework_runtime",
     "current_batch": "docara.batch.lfr.integrated_retest",
     "completed_checkpoint": "local_framework_runtime_and_component_catalog_validation_site",
-    "candidate_revision": "75143bc9b6e978a167a20f87d5a26c469e0b415e",
+    "candidate_revision": "d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f",
     "next_action": "independent_local_framework_runtime_audit",
-    "evidence": "source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md",
-    "roadmap_source": "source/workflow/2026-08-07-docara-components-information-architecture.md",
+    "evidence": "source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md",
+    "roadmap_source": "source/workflow/2026-08-07-docara-alert-page-correction.md",
     "next_goal": {
       "id": "docara.stage.lfr.local_framework_runtime",
       "title": "Independent local Framework runtime audit",

@@ -6,8 +6,8 @@ state: local_framework_runtime_ready_for_independent_audit
 current_stage: docara.stage.lfr.local_framework_runtime
 current_batch: docara.batch.lfr.integrated_retest
 next_action: independent_local_framework_runtime_audit
-candidate_revision: 75143bc9b6e978a167a20f87d5a26c469e0b415e
-evidence: source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md
+candidate_revision: d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f
+evidence: source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md
 goal1_candidate_revision: 44acc1ff91233fa78140222fcb0589bf55b65ca0
 goal1_sf5_adapter_revision: b3cdff87563ff78e7eddf044048a4b298fc69036
 goal1_cross_host_html_sha256: 7133c5dcd44aa85f351a85c61c280aa883abd5cdb3c91206168ad63ada497b38

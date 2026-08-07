@@ -2,17 +2,18 @@
 
 Current state: `local_framework_runtime_ready_for_independent_audit`
 
-Current candidate: `75143bc9b6e978a167a20f87d5a26c469e0b415e`
+Current candidate: `d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f`
 
-Current evidence: `source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md`
 
 Goal 1-3, Goals A-C, S1 and S2 are independently accepted and Goal S3 remains
-complete. Exact candidate `75143bc…` retains the accepted `ad147f3…` local
-Framework closure and adds the grouped 31-page component catalogue, one start
-overview and seven exact redirects. `docara-new.test` is already on this exact
-authorized validation build with rollback preserved. The only next action is
-independent read-only audit. No S4/Goal D, merge, push, tag, release,
-publication, further site write or production deployment is authorized.
+complete. Exact candidate `d5e9ecb…` retains the grouped component catalogue,
+completes the local Outlined font, restores the Success Alert icon color and
+aligns the Alert guide with the Badge reference sequence. `docara-new.test` is
+already on this exact authorized validation build with rollback preserved. The
+only next action is independent read-only audit. No S4/Goal D, merge, push,
+tag, release, publication, further site write or production deployment is
+authorized.
 
 ## Historical deployment decision (parked, not executable)
 

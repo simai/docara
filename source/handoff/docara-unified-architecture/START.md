@@ -28,9 +28,9 @@ Current batch: `docara.batch.lfr.integrated_retest`
 
 Current next action: `independent_local_framework_runtime_audit`
 
-Current evidence: `source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md`
 
-Current candidate: `75143bc9b6e978a167a20f87d5a26c469e0b415e`
+Current candidate: `d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f`
 
 Next roadmap goal: `docara.stage.lfr.local_framework_runtime`
 
@@ -45,8 +45,9 @@ independently accepted on exact candidate `7eeba4a…`. Goal S3 is complete on
 `dd2c0d6…`; the Surface & Hero Media track now waits for an explicit user
 decision. SF5 5.4 typography is the accepted parent. The authorized local
 Framework runtime correction including all documented icon families is
-complete on parent `ad147f3…`. Candidate `75143bc…` preserves that runtime and
-adds the authorized component-catalogue information architecture correction;
+complete. Candidate `d5e9ecb…` preserves the component-catalogue information
+architecture, completes the local Outlined font, restores the Success Alert
+icon color and aligns the Alert guide with the Badge reference sequence;
 `docara-new.test` is switched to its exact build with rollback preserved. It
 waits only for independent audit. No S4/Goal D, production or release action is
 authorized.
@@ -55,8 +56,9 @@ authorized.
 
 1. `source/handoff/docara-unified-architecture/STATUS.yaml`;
 2. `source/workflow/ACTIVE.md`;
-3. `source/workflow/2026-08-07-docara-components-information-architecture.md`
-   and its exact evidence index, then the parent local Framework runtime;
+3. `source/workflow/2026-08-07-docara-alert-page-correction.md`
+   and its exact evidence index, then the component information architecture
+   and parent local Framework runtime;
 4. `graph/graph.json` and its current stage/batch specs;
 5. `graph/generated/ai-context/docara-unified.json` as a checked derived view;
 6. `source/handoff/docara-unified-architecture/NEXT.md` and `RESULT.md`;

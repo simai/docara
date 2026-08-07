@@ -2,20 +2,21 @@
 
 Current state: `local_framework_runtime_ready_for_independent_audit`
 
-Current candidate: `75143bc9b6e978a167a20f87d5a26c469e0b415e`
+Current candidate: `d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f`
 
-Current evidence: `source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md`
 
 ## Local Framework runtime result
 
-The exact local Framework runtime remains the unchanged parent `ad147f3…`.
-The current candidate `75143bc…` additionally simplifies only the component
-catalogue information architecture: two three-column tables link all 31 actual
-component/reference pages, one `/start/component-model/` page owns the former
-type explanations and seven retired overview URLs redirect to it. Full/full/
-single trees contain 650 files at digest `ead33689…`; static verification is
-261 HTML / 32,970 references / broken=0. The authorized validation site was
-atomically switched from `b6e0d9a7…`, which remains preserved as rollback.
+The current candidate `d5e9ecb…` retains the grouped component information
+architecture and completes the local icon closure with exact full Outlined,
+Rounded and Sharp Material Symbols. It restores the Success Alert glyph color
+with `var(--sf-success)` after the immutable Framework rule made it transparent,
+and gives the Alert guide the same concise table/example sequence as Badge.
+Full/full/single trees contain 652 files at digest `db628b95…`; static
+verification is 261 HTML / 32,965 references / broken=0. The authorized
+validation site was atomically switched from `ead33689…`, which remains
+preserved as rollback.
 
 The current Docara Framework closure serves its accepted `simai/ui@d1daa951…`
 projection locally and adds a Docara-owned exact projection of the official

@@ -78,7 +78,7 @@ final readonly class FrameworkAssetPlanner
             'kind' => 'css',
             'url' => $typography === null
                 ? $this->uiUrl($uiCommit, (string) $boot['css'])
-                : '/' . (string) $typography['files']['core']['public']
+                : $this->typographyUrl((string) $typography['files']['core']['public'])
                     . '?sf_v=' . rawurlencode($cacheVersion),
             'source_revision' => $typography === null
                 ? $uiCommit
@@ -91,7 +91,7 @@ final readonly class FrameworkAssetPlanner
             'kind' => 'css',
             'url' => $typography === null
                 ? $uiBase . '/core/css/utility.full.css'
-                : '/' . (string) $typography['files']['utility']['public']
+                : $this->typographyUrl((string) $typography['files']['utility']['public'])
                     . '?sf_v=' . rawurlencode($cacheVersion),
             'source_revision' => $typography === null
                 ? $uiCommit
@@ -281,6 +281,21 @@ final readonly class FrameworkAssetPlanner
         }
 
         return 'https://cdn.jsdelivr.net/gh/simai/ui@' . $commit . '/distr/' . substr($lockedPath, strlen($prefix));
+    }
+
+    private function typographyUrl(string $publicPath): string
+    {
+        $prefix = '_docara/';
+        $frameworkSuffix = '/framework';
+        if (! str_starts_with($publicPath, $prefix)
+            || ! str_ends_with($this->assetBase, $frameworkSuffix)
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_TYPOGRAPHY_PUBLIC_PATH_INVALID', $publicPath);
+        }
+
+        $publisherBase = substr($this->assetBase, 0, -strlen($frameworkSuffix));
+
+        return $publisherBase . '/' . substr($publicPath, strlen($prefix));
     }
 
     /** @return array{url: string, sha256: string} */

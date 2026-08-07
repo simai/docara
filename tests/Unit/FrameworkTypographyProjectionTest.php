@@ -45,6 +45,13 @@ final class FrameworkTypographyProjectionTest extends TestCase
             '@d1daa951dd08b94a9f209fd9f31a78d2b3779563/distr',
             $assets['simai.framework.boot']['content'],
         );
+
+        $nested = (new FrameworkAssetPlanner($repository, '/project~/docs/_docara/framework'))->plan([]);
+        $nestedAssets = array_column($nested->assets, null, 'key');
+        self::assertStringStartsWith(
+            '/project~/docs/_docara/vendor/simai-framework/typography/5.4.0-rc.1/core.css?sf_v=',
+            $nestedAssets['simai.framework.core.css']['url'],
+        );
     }
 
     #[Test]

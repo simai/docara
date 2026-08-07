@@ -1,0 +1,31 @@
+{
+  "id": "docara.stage.t54.framework_typography",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "milestone",
+  "tz_role": "implementation_stage",
+  "title": "SF5 5.4 typography integration",
+  "summary": "Consume one exact generated SF5 typography candidate through the existing Framework lock and publisher without changing the accepted JavaScript runtime.",
+  "owner": "dev",
+  "lifecycle": "complete",
+  "readiness": "ready_for_independent_audit",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-07-docara-sf5-typography-54-integration.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md"],
+  "profile_refs": ["docara.unified"],
+  "parent_goal_ref": "docara.goal.unified",
+  "done_when": [
+    "Exact owner-generated contract, styles and Inter subsets are hash-bound before render.",
+    "Docara computed typography matches the 5.4 semantic role contract.",
+    "Full, single, package and fresh consumer results are deterministic.",
+    "No release, publication or deployment is performed."
+  ],
+  "batch_refs": ["docara.batch.t54.integrated_retest"],
+  "required_gates": ["docara.gate.architecture_acceptance"],
+  "required_evidence": ["Owner rebuild", "Security", "Full test", "Build determinism", "Browser", "Package and consumer"],
+  "next_stage_ref": null,
+  "status": "ready_for_independent_audit",
+  "baseline_revision": "3558ee8a41873a60e261e74655b1032d33bc9f52",
+  "candidate_revision": "93a259f4a3c1691926c596dcdc8786e14206c72d",
+  "next_action": "independent_sf5_typography54_docara_audit"
+}

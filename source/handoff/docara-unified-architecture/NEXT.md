@@ -1,17 +1,16 @@
-# Next action: `explicit_user_surface_hero_decision`
+# Next action: `independent_sf5_typography54_docara_audit`
 
-Current state: `surface_hero_track_ready_for_user_decision`
+Current state: `typography_54_docara_ready_for_independent_audit`
 
-Current candidate: `dd2c0d623f0757e172861fdac959b839a7fff495`
+Current candidate: `93a259f4a3c1691926c596dcdc8786e14206c72d`
 
-Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md`
 
-Goal 1-3, Goals A-C, S1 and S2 are independently accepted. Goal S3 is complete
-on exact candidate `dd2c0d6…`: Surface/Hero/Showcase/Promo share one outer
-presentation implementation with frozen default bytes, current docs and fresh
-build/package/consumer/browser proof. The only next action is an explicit user
-decision. No S4/Goal D, merge, push, tag, release, publication, deploy or
-live-site write is authorized.
+Goal 1-3, Goals A-C, S1 and S2 are independently accepted and Goal S3 remains
+complete. SF5 5.4 typography is integrated on exact candidate `93a259f…` with
+hash-bound local styles/fonts and fresh test/build/browser/package/consumer
+proof. The only next action is its independent read-only audit. No S4/Goal D,
+merge, push, tag, release, publication, deploy or live-site write is authorized.
 
 ## Historical deployment decision (parked, not executable)
 

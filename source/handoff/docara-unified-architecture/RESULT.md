@@ -1,10 +1,21 @@
 # Current Docara result
 
-Current state: `surface_hero_track_ready_for_user_decision`
+Current state: `typography_54_docara_ready_for_independent_audit`
 
-Current candidate: `dd2c0d623f0757e172861fdac959b839a7fff495`
+Current candidate: `93a259f4a3c1691926c596dcdc8786e14206c72d`
 
-Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md`
+
+## SF5 5.4 typography integration result
+
+Exact owner-generated Core/Utility CSS and all seven bundled Inter subsets are
+consumed through the normal Framework lock, publisher and asset planner. Mobile
+and desktop Heading/Display/Body roles, spacing and `.heading` are verified in
+the real Docara build. Full/full/single share 413-file ledger `e35f077c…`;
+static is 266 HTML / 35,862 references / broken=0. Two clean clones reproduce
+879-file ZIP `d635413a…`, and two same-lock consumers share 218-file ledger
+`9f85a33b…`. Full PHPUnit is 508 / 10,758. The candidate remains audit-pending;
+no release or site action occurred.
 
 ## Surface & Hero Media track result
 

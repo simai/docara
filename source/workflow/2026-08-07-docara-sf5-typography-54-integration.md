@@ -1,8 +1,13 @@
 # Docara / SF5 5.4 typography integration
 
 Date: 2026-08-07
-Status: in progress
+Status: `typography_54_docara_ready_for_independent_audit`
 Entry Docara HEAD: `3558ee8a41873a60e261e74655b1032d33bc9f52`
+Exact Docara product candidate: `93a259f4a3c1691926c596dcdc8786e14206c72d`
+Current stage: `docara.stage.t54.framework_typography`
+Current batch: `docara.batch.t54.integrated_retest`
+Current next action: `independent_sf5_typography54_docara_audit`
+Next roadmap goal: `docara.stage.t54.framework_typography` (`audit_pending`, authorized=`true`)
 
 ## User outcome
 
@@ -68,3 +73,16 @@ tag, publish, release or deploy. Do not write `docara.test` or
 Revert the Docara integration commits and restore the three Framework locks to
 their entry bytes. The generated distribution candidate rolls back to
 `d1daa951dd08b94a9f209fd9f31a78d2b3779563`.
+
+## Result
+
+The exact generated Core/Utility stylesheets and all seven referenced Inter
+Variable subsets are admitted by one optional Framework-lock projection. Every
+file is local, regular, single-link and SHA-256 checked before render. The
+normal publisher and asset planner preserve deployment-base URLs; the accepted
+Framework JavaScript/Smart runtime remains unchanged.
+
+Focused security, full PHPUnit, deterministic public builds, static, browser,
+package and same-lock consumer evidence are indexed in
+`source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md`.
+This executor result is ready for independent audit, not independently accepted.

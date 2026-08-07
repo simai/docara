@@ -1,0 +1,36 @@
+{
+  "id": "docara.mapping.framework_typography_54",
+  "schema_version": "1.0.0",
+  "kind": "relation",
+  "subtype": "implementation_mapping",
+  "tz_role": "traceability",
+  "title": "SF5 5.4 typography integration mapping",
+  "summary": "Map the exact generated typography contract to the Docara lock, publisher, tests and evidence.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "ready_for_independent_audit",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-07-docara-sf5-typography-54-integration.md"],
+  "profile_refs": ["docara.unified"],
+  "from_ref": "docara.stage.t54.framework_typography",
+  "to_refs": ["docara.feature.single_pagebuilder"],
+  "code_refs": [
+    "src/Framework/FrameworkLock.php",
+    "src/Framework/FrameworkManifestRepository.php",
+    "src/Framework/FrameworkAssetPlanner.php",
+    "resources/schemas/framework-lock.schema.json",
+    "resources/portable/vendor/simai-framework/typography"
+  ],
+  "test_refs": ["tests/Unit/FrameworkTypographyProjectionTest.php", "tests/PortableDocumentationSiteTest.php"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md"],
+  "review_refs": ["docara.gate.architecture_acceptance"],
+  "current_behavior": [
+    "Exact local typography bytes replace only the two Framework stylesheet URLs.",
+    "All referenced Inter subsets are published locally and verified before render.",
+    "Framework JavaScript and Smart runtime remain on the accepted immutable pair."
+  ],
+  "known_deviations": ["The generated simai/ui candidate is unpublished; organizationally independent acceptance is pending."],
+  "deletion_gates": ["Rollback by reverting the bounded projection commits to 3558ee8."],
+  "status": "ready_for_independent_audit",
+  "mapped_revision": "93a259f4a3c1691926c596dcdc8786e14206c72d"
+}

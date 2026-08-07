@@ -18,39 +18,41 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `surface_hero_track_ready_for_user_decision`
+Current state: `typography_54_docara_ready_for_independent_audit`
 
 Current goal: `docara.goal.unified`
 
-Current stage: `docara.stage.s3.shared_adoption`
+Current stage: `docara.stage.t54.framework_typography`
 
-Current batch: `docara.batch.s3.integrated_acceptance`
+Current batch: `docara.batch.t54.integrated_retest`
 
-Current next action: `explicit_user_surface_hero_decision`
+Current next action: `independent_sf5_typography54_docara_audit`
 
-Current evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md`
 
-Current candidate: `dd2c0d623f0757e172861fdac959b839a7fff495`
+Current candidate: `93a259f4a3c1691926c596dcdc8786e14206c72d`
 
-Next roadmap goal: `docara.track.surface-hero-media`
+Next roadmap goal: `docara.stage.t54.framework_typography`
 
-Next roadmap status: `complete`
+Next roadmap status: `audit_pending`
 
-Next roadmap authorized: `false`
+Next roadmap authorized: `true`
 
 Goal 1-3 and Goals A-C remain independently accepted. The explicitly
 authorized post-roadmap Surface & Hero Media track has independently accepted
 Goal S1 at exact product `ac53ea4…` and governance `4feb910…`. Goal S2/S2-C1 is
 independently accepted on exact candidate `7eeba4a…`. Goal S3 is complete on
 `dd2c0d6…`; the Surface & Hero Media track now waits for an explicit user
-decision. No S4/Goal D or release/live action is authorized.
+decision. The authorized SF5 5.4 typography integration is complete on
+`93a259f…` and waits only for independent audit. No S4/Goal D or release/live
+action is authorized.
 
 ## 3. Read in this order
 
 1. `source/handoff/docara-unified-architecture/STATUS.yaml`;
 2. `source/workflow/ACTIVE.md`;
-3. `source/workflow/2026-08-06-docara-surface-hero-track.md` and
-   `source/workflow/2026-08-06-docara-goal-s3-shared-adoption.md`;
+3. `source/workflow/2026-08-07-docara-sf5-typography-54-integration.md` and its
+   exact evidence index;
 4. `graph/graph.json` and its current stage/batch specs;
 5. `graph/generated/ai-context/docara-unified.json` as a checked derived view;
 6. `source/handoff/docara-unified-architecture/NEXT.md` and `RESULT.md`;
@@ -63,8 +65,9 @@ overrides canonical graph or workflow sources.
 
 ## 4. Execute only an explicitly authorized next action
 
-Wait for the explicit user decision. Do not invent S4/Goal D or begin release
-review. This handoff does not authorize merge, push, tag, release or deployment.
+Run only an independent read-only reverse-outcome audit of the exact typography
+candidate. Do not self-accept it, invent S4/Goal D or begin release review. This
+handoff does not authorize merge, push, tag, release or deployment.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,

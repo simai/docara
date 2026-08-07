@@ -6,37 +6,37 @@
         "graph/graph.json",
         "graph/dna/project-dna.json",
         "graph/specs/goals/unified-docara.json",
-        "graph/specs/stages/s3-shared-adoption.json",
-        "graph/specs/batches/s3-integrated-acceptance.json"
+        "graph/specs/stages/t54-framework-typography.json",
+        "graph/specs/batches/t54-integrated-retest.json"
     ],
-    "canonical_sha256": "7e41d2c0649ac65bc9e889f81c2f54599a4ab9d053f16222533d24e4ede5c145",
+    "canonical_sha256": "37f64e01ad2f10b5d6ab7f6e0305ab2b1ad57aab96b3fd9550c16b6a8110e987",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "surface_hero_track_ready_for_user_decision",
+        "state": "typography_54_docara_ready_for_independent_audit",
         "goal": "docara.goal.unified",
-        "goal_readiness": "surface_hero_track_ready_for_user_decision",
-        "stage": "docara.stage.s3.shared_adoption",
-        "stage_readiness": "ready_for_user_decision",
-        "stage_status": "complete_ready_for_user_decision",
-        "batch": "docara.batch.s3.integrated_acceptance",
-        "batch_readiness": "ready_for_user_decision",
-        "batch_status": "complete_ready_for_user_decision",
-        "completed_checkpoint": "surface_hero_track_complete",
-        "candidate_revision": "dd2c0d623f0757e172861fdac959b839a7fff495",
-        "next_action": "explicit_user_surface_hero_decision",
-        "evidence": "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md"
+        "goal_readiness": "typography_54_docara_ready_for_independent_audit",
+        "stage": "docara.stage.t54.framework_typography",
+        "stage_readiness": "ready_for_independent_audit",
+        "stage_status": "ready_for_independent_audit",
+        "batch": "docara.batch.t54.integrated_retest",
+        "batch_readiness": "ready_for_independent_audit",
+        "batch_status": "ready_for_independent_audit",
+        "completed_checkpoint": "sf5_typography_54_docara_candidate",
+        "candidate_revision": "93a259f4a3c1691926c596dcdc8786e14206c72d",
+        "next_action": "independent_sf5_typography54_docara_audit",
+        "evidence": "source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md"
     },
     "roadmap": {
-        "source": "source/workflow/2026-08-06-docara-surface-hero-track.md",
+        "source": "source/workflow/2026-08-07-docara-sf5-typography-54-integration.md",
         "next_goal": {
-            "id": "docara.track.surface-hero-media",
-            "title": "Surface and Hero Media track complete",
-            "status": "complete",
-            "authorized": false,
+            "id": "docara.stage.t54.framework_typography",
+            "title": "Independent SF5 typography 5.4 Docara audit",
+            "status": "audit_pending",
+            "authorized": true,
             "source": "source/handoff/docara-unified-architecture/NEXT.md"
         }
     },
@@ -63,24 +63,22 @@
         }
     },
     "forbidden_now": [
-        "S4",
-        "Goal D",
-        "Homepage art redesign",
-        "Second rendering path",
-        "External repositories or sites",
+        "Framework JavaScript repin",
+        "Second runtime",
         "Merge",
         "Push",
         "Tag",
         "Release",
-        "Deploy"
+        "Deploy",
+        "Site writes"
     ],
     "read_order": [
         "source/handoff/docara-unified-architecture/STATUS.yaml",
         "source/workflow/ACTIVE.md",
-        "source/workflow/2026-08-06-docara-surface-hero-track.md",
+        "source/workflow/2026-08-07-docara-sf5-typography-54-integration.md",
         "graph/graph.json",
-        "graph/specs/stages/s3-shared-adoption.json",
-        "graph/specs/batches/s3-integrated-acceptance.json",
+        "graph/specs/stages/t54-framework-typography.json",
+        "graph/specs/batches/t54-integrated-retest.json",
         "graph/generated/ai-context/docara-unified.json",
         "source/handoff/docara-unified-architecture/NEXT.md",
         "source/handoff/docara-unified-architecture/RESULT.md"

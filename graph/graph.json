@@ -26,20 +26,20 @@
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
   "implementation_state": {
-    "state": "surface_hero_track_ready_for_user_decision",
+    "state": "typography_54_docara_ready_for_independent_audit",
     "current_goal": "docara.goal.unified",
-    "current_stage": "docara.stage.s3.shared_adoption",
-    "current_batch": "docara.batch.s3.integrated_acceptance",
-    "completed_checkpoint": "surface_hero_track_complete",
-    "candidate_revision": "dd2c0d623f0757e172861fdac959b839a7fff495",
-    "next_action": "explicit_user_surface_hero_decision",
-    "evidence": "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md",
-    "roadmap_source": "source/workflow/2026-08-06-docara-surface-hero-track.md",
+    "current_stage": "docara.stage.t54.framework_typography",
+    "current_batch": "docara.batch.t54.integrated_retest",
+    "completed_checkpoint": "sf5_typography_54_docara_candidate",
+    "candidate_revision": "93a259f4a3c1691926c596dcdc8786e14206c72d",
+    "next_action": "independent_sf5_typography54_docara_audit",
+    "evidence": "source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md",
+    "roadmap_source": "source/workflow/2026-08-07-docara-sf5-typography-54-integration.md",
     "next_goal": {
-      "id": "docara.track.surface-hero-media",
-      "title": "Surface and Hero Media track complete",
-      "status": "complete",
-      "authorized": false,
+      "id": "docara.stage.t54.framework_typography",
+      "title": "Independent SF5 typography 5.4 Docara audit",
+      "status": "audit_pending",
+      "authorized": true,
       "source": "source/handoff/docara-unified-architecture/NEXT.md"
     }
   },

@@ -1,8 +1,8 @@
 # Active workflow: Docara unified architecture
 
-Date: 2026-08-06
-Status: Surface & Hero Media track complete; ready for user decision
-Workflow ID: `2026-08-06-docara-goal-s3-shared-adoption`
+Date: 2026-08-07
+Status: SF5 5.4 typography integrated; ready for independent audit
+Workflow ID: `2026-08-07-docara-sf5-typography-54-integration`
 Graph goal: `docara.goal.unified`
 
 ## Source of truth
@@ -10,11 +10,11 @@ Graph goal: `docara.goal.unified`
 - start here: `source/handoff/docara-unified-architecture/START.md`;
 - human specification: `docs/specification/README.md`;
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
-- completed workflow: `source/workflow/2026-08-06-docara-goal-s3-shared-adoption.md`;
-- active track: `source/workflow/2026-08-06-docara-surface-hero-track.md`;
+- active workflow: `source/workflow/2026-08-07-docara-sf5-typography-54-integration.md`;
+- completed parent track: `source/workflow/2026-08-06-docara-surface-hero-track.md`;
 - parent Goal 3 recovery:
   `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`;
-- fresh evidence: `source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md`;
+- fresh evidence: `source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md`;
 - project-context freshness correction:
   `source/workflow/2026-08-03-docara-goal1d-project-context-correction.md`;
 - rejected audit candidate: `c5ea85f8d25deff99b671486fdc4d1e820a86491`;
@@ -25,17 +25,18 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `surface_hero_track_ready_for_user_decision`;
+- state: `typography_54_docara_ready_for_independent_audit`;
 - goal: `docara.goal.unified`;
-- stage: `docara.stage.s3.shared_adoption`;
-- batch: `docara.batch.s3.integrated_acceptance`;
-- candidate: `dd2c0d623f0757e172861fdac959b839a7fff495`;
+- stage: `docara.stage.t54.framework_typography`;
+- batch: `docara.batch.t54.integrated_retest`;
+- candidate: `93a259f4a3c1691926c596dcdc8786e14206c72d`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `explicit_user_surface_hero_decision`;
+- next action: `independent_sf5_typography54_docara_audit`;
 - Goal 1-3 and Goals A-C remain independently accepted. The separately
   authorized Surface & Hero Media track is active only through completed Goal
-  S1 and S2, which are independently accepted. Goal S3 shared adoption,
-  documentation and integrated acceptance are complete. No S4 exists.
+  S1 and S2, which are independently accepted. Goal S3 remains complete. The
+  separately authorized SF5 5.4 typography integration is audit-pending. No S4
+  exists.
 
 ## Accepted pipeline
 
@@ -49,6 +50,13 @@ Every public route has one physical Markdown source. JSON controls composition,
 IR/HTML remain disposable.
 
 ## Current result
+
+Docara now consumes the exact generated SF5 5.4 Core/Utility typography and
+all referenced Inter Variable subsets through one content-addressed Framework
+lock projection. Computed Heading, Display, Body and `.heading` roles match the
+owner contract. Full/full/single, static, package and two same-lock consumers
+are deterministic on exact candidate `93a259f…`. The accepted Framework
+JavaScript/Smart pair remains unchanged; no publication or deployment occurred.
 
 The accepted S1 candidate counts depth relative to every container root, so the
 canonical Surface -> Grid -> Card chain passes both Surface 3/3 and Grid 2/2

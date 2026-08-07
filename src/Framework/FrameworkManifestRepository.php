@@ -13,11 +13,17 @@ final readonly class FrameworkManifestRepository
 {
     public const PROVIDER_REVISION = '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663';
 
+    /** @var array<string, mixed>|null */
+    private ?array $validatedRuntimeManifest;
+
     public function __construct(
         private FrameworkLock $lock,
         private string $resourceRoot,
         private SmartManifestValidator $commonValidator = new SmartManifestValidator,
     ) {
+        $this->validatedRuntimeManifest = $this->lock->runtimeProjection() === null
+            ? null
+            : $this->loadRuntimeManifest();
         $this->assertBundledRuntime();
     }
 
@@ -166,6 +172,132 @@ final readonly class FrameworkManifestRepository
         return $this->lock->typographyProjection();
     }
 
+    /** @return array<string, mixed>|null */
+    public function runtimeProjection(): ?array
+    {
+        return $this->lock->runtimeProjection();
+    }
+
+    /** @return array<string, mixed> */
+    public function runtimeManifest(): array
+    {
+        if ($this->validatedRuntimeManifest === null) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_MANIFEST_NOT_PROJECTED');
+        }
+
+        return $this->validatedRuntimeManifest;
+    }
+
+    /** @return array<string, mixed> */
+    private function loadRuntimeManifest(): array
+    {
+        $projection = $this->lock->runtimeProjection();
+        $record = $projection['manifest'] ?? null;
+        if (! is_array($projection)
+            || ! is_array($record)
+            || ! is_string($record['path'] ?? null)
+            || ! is_string($record['sha256'] ?? null)
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_MANIFEST_NOT_PROJECTED');
+        }
+        $resources = dirname($this->resourceRoot);
+        $path = $resources . '/' . $record['path'];
+        $this->assertTrustedResourceFile(
+            $resources,
+            $path,
+            'FRAMEWORK_RUNTIME_MANIFEST_UNSAFE',
+            'FRAMEWORK_RUNTIME_MANIFEST_MISSING',
+        );
+        $bytes = @file_get_contents($path);
+        if (! is_string($bytes) || $bytes === '') {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_MANIFEST_MISSING');
+        }
+        if (! hash_equals($record['sha256'], hash('sha256', $bytes))) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_MANIFEST_HASH_MISMATCH');
+        }
+        try {
+            $manifest = json_decode($bytes, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_MANIFEST_INVALID');
+        }
+        if (! is_array($manifest)
+            || ($manifest['schema'] ?? null) !== 'docara.framework_runtime_assets.v1'
+            || ($manifest['root'] ?? null) !== 'distr'
+            || ($manifest['source'] ?? null) !== $projection['source']
+            || ($manifest['packet_sha256'] ?? null) !== $projection['packet_sha256']
+            || ! is_array($manifest['files'] ?? null)
+            || array_is_list($manifest['files'])
+            || count($manifest['files']) !== $projection['files']
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_MANIFEST_INVALID');
+        }
+        foreach ($manifest['files'] as $relativePath => $file) {
+            if (! is_string($relativePath)
+                || ! $this->isSafeRelativePath($relativePath)
+                || ! is_array($file)
+                || array_keys($file) !== ['sha256']
+                || ! is_string($file['sha256'])
+                || preg_match('/^[a-f0-9]{64}$/', $file['sha256']) !== 1
+            ) {
+                throw new FrameworkComponentException(
+                    'FRAMEWORK_RUNTIME_MANIFEST_FILE_INVALID',
+                    is_string($relativePath) ? $relativePath : '',
+                );
+            }
+        }
+
+        return $manifest;
+    }
+
+    /** @return array{sha256: string} */
+    public function runtimeAssetRecord(string $relativePath): array
+    {
+        $this->assertSafeRelativePath($relativePath);
+        $record = $this->runtimeManifest()['files'][$relativePath] ?? null;
+        if (! is_array($record) || ! is_string($record['sha256'] ?? null)) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_ASSET_NOT_PROJECTED', $relativePath);
+        }
+
+        return $record;
+    }
+
+    public function bundledRuntimeAsset(string $relativePath): string
+    {
+        $this->assertSafeRelativePath($relativePath);
+        $projection = $this->lock->runtimeProjection();
+        if (! is_array($projection)) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_ASSET_NOT_PROJECTED', $relativePath);
+        }
+        $record = $this->runtimeAssetRecord($relativePath);
+        $revision = $projection['source']['revision'] ?? null;
+        if (! is_array($record)
+            || ! is_string($record['sha256'] ?? null)
+            || ! is_string($revision)
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_ASSET_NOT_PROJECTED', $relativePath);
+        }
+
+        $resources = dirname($this->resourceRoot);
+        $path = $resources . '/portable/vendor/simai-framework/runtime/'
+            . $revision . '/distr/' . $relativePath;
+        $this->assertTrustedResourceFile(
+            $resources,
+            $path,
+            'FRAMEWORK_RUNTIME_ASSET_UNSAFE',
+            'FRAMEWORK_RUNTIME_ASSET_MISSING',
+            $relativePath,
+        );
+        $bytes = @file_get_contents($path);
+        if (! is_string($bytes) || $bytes === '') {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_ASSET_MISSING', $relativePath);
+        }
+        if (! hash_equals($record['sha256'], hash('sha256', $bytes))) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_ASSET_HASH_MISMATCH', $relativePath);
+        }
+
+        return $bytes;
+    }
+
     public function bundledTypographyAsset(string $key): string
     {
         $projection = $this->lock->typographyProjection();
@@ -264,6 +396,20 @@ final readonly class FrameworkManifestRepository
                 $this->bundledTypographyAsset($key);
             }
         }
+        if ($this->lock->runtimeProjection() !== null) {
+            $projection = $this->lock->runtimeProjection();
+            $manifest = $this->runtimeManifest();
+            $paths = array_keys($manifest['files']);
+            sort($paths, SORT_STRING);
+            $ledger = '';
+            foreach ($paths as $relativePath) {
+                $bytes = $this->bundledRuntimeAsset($relativePath);
+                $ledger .= hash('sha256', $bytes) . '  ' . $relativePath . "\n";
+            }
+            if (! hash_equals((string) $projection['packet_sha256'], hash('sha256', $ledger))) {
+                throw new FrameworkComponentException('FRAMEWORK_RUNTIME_PACKET_HASH_MISMATCH');
+            }
+        }
     }
 
     private function assertSafeRelativePath(string $relativePath): void
@@ -282,6 +428,24 @@ final readonly class FrameworkManifestRepository
         }
     }
 
+    private function isSafeRelativePath(string $relativePath): bool
+    {
+        if ($relativePath === ''
+            || str_starts_with($relativePath, '/')
+            || str_contains($relativePath, '\\')
+            || str_contains($relativePath, "\0")
+        ) {
+            return false;
+        }
+        foreach (explode('/', $relativePath) as $segment) {
+            if ($segment === '' || $segment === '.' || $segment === '..') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private function assertTrustedRegularFile(
         string $path,
         string $unsafeCode,
@@ -293,6 +457,30 @@ final readonly class FrameworkManifestRepository
             throw new FrameworkComponentException($missingCode, $detail);
         }
         $root = realpath($this->resourceRoot);
+        $real = realpath($path);
+        if (is_link($path)
+            || (($stat['mode'] ?? 0) & 0170000) !== 0100000
+            || ($stat['nlink'] ?? 1) !== 1
+            || $root === false
+            || $real === false
+            || ! FilesystemPath::isWithin($real, $root)
+        ) {
+            throw new FrameworkComponentException($unsafeCode, $detail);
+        }
+    }
+
+    private function assertTrustedResourceFile(
+        string $rootPath,
+        string $path,
+        string $unsafeCode,
+        string $missingCode,
+        string $detail = '',
+    ): void {
+        $stat = @lstat($path);
+        if (! is_array($stat)) {
+            throw new FrameworkComponentException($missingCode, $detail);
+        }
+        $root = realpath($rootPath);
         $real = realpath($path);
         if (is_link($path)
             || (($stat['mode'] ?? 0) & 0170000) !== 0100000

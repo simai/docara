@@ -14,7 +14,7 @@ use Simai\Docara\Framework\FrameworkManifestRepository;
 final class FrameworkTypographyProjectionTest extends TestCase
 {
     #[Test]
-    public function exact_projection_replaces_only_the_two_framework_stylesheets(): void
+    public function exact_projections_publish_typography_and_framework_runtime_locally(): void
     {
         $lock = FrameworkLock::fromJsonFile(dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json');
         $repository = FrameworkManifestRepository::bundled($lock);
@@ -42,16 +42,47 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertSame($projection['files'][$fileKey]['sha256'], $assets[$assetKey]['sha256']);
             self::assertSame($projection['distribution']['revision'], $assets[$assetKey]['source_revision']);
         }
-        self::assertStringContainsString(
-            '@d1daa951dd08b94a9f209fd9f31a78d2b3779563/distr',
-            $assets['simai.framework.boot']['content'],
+        $runtime = $repository->runtimeProjection();
+        self::assertIsArray($runtime);
+        self::assertSame(117, $runtime['files']);
+        $runtimeFiles = $repository->runtimeManifest()['files'];
+        self::assertCount(117, $runtimeFiles);
+        self::assertArrayHasKey('utility/theme/default/css/default.css', $runtimeFiles);
+        self::assertArrayHasKey('component/highlight/js/156256801485311.js', $runtimeFiles);
+        self::assertArrayHasKey('component/highlight/js/22635021162243.js', $runtimeFiles);
+        self::assertArrayHasKey('component/icons/fonts/MaterialSymbols-Outlined.woff2', $runtimeFiles);
+        foreach (array_keys($runtimeFiles) as $relativePath) {
+            self::assertFalse(str_ends_with($relativePath, '.gz'), $relativePath);
+            self::assertStringNotContainsString('.min.', $relativePath);
+        }
+        self::assertSame(
+            '790b8014c4c1a0853e6a0650f30e0b4f33ab3b428f878b0fa010faf0c3f449c0',
+            $runtime['packet_sha256'],
         );
+        self::assertStringContainsString('/_docara/vendor/simai-framework/runtime/', $assets['simai.framework.boot']['content']);
+        self::assertStringNotContainsString('cdn.jsdelivr.net', $assets['simai.framework.boot']['content']);
+        foreach (['simai.framework.smart_base.js', 'simai.framework.core.js'] as $assetKey) {
+            self::assertStringStartsWith('/_docara/vendor/simai-framework/runtime/', $assets[$assetKey]['url']);
+            self::assertSame('d1daa951dd08b94a9f209fd9f31a78d2b3779563', $assets[$assetKey]['source_revision']);
+            self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $assets[$assetKey]['sha256']);
+        }
+        self::assertStringContainsString(
+            '/_docara/vendor/simai-framework/runtime/d1daa951dd08b94a9f209fd9f31a78d2b3779563/distr/component/icons/fonts/MaterialSymbols-Outlined.woff2',
+            $assets['simai.framework.icon_font.css']['content'],
+        );
+        foreach ($plan->assets as $asset) {
+            self::assertStringNotContainsString('cdn.jsdelivr.net', (string) ($asset['url'] ?? '') . (string) ($asset['content'] ?? ''));
+        }
 
         $nested = (new FrameworkAssetPlanner($repository, '/project~/docs/_docara/framework'))->plan([]);
         $nestedAssets = array_column($nested->assets, null, 'key');
         self::assertStringStartsWith(
             '/project~/docs/_docara/vendor/simai-framework/typography/5.4.0-rc.1/core.css?sf_v=',
             $nestedAssets['simai.framework.core.css']['url'],
+        );
+        self::assertStringStartsWith(
+            '/project~/docs/_docara/vendor/simai-framework/runtime/d1daa951dd08b94a9f209fd9f31a78d2b3779563/distr/core/js/core.js?sf_v=',
+            $nestedAssets['simai.framework.core.js']['url'],
         );
     }
 
@@ -93,6 +124,47 @@ final class FrameworkTypographyProjectionTest extends TestCase
         }
     }
 
+    #[Test]
+    public function changed_runtime_bytes_fail_before_render(): void
+    {
+        [$root, $lock] = $this->fixture();
+        $core = $root . '/resources/portable/vendor/simai-framework/runtime/'
+            . 'd1daa951dd08b94a9f209fd9f31a78d2b3779563/distr/core/js/core.js';
+        file_put_contents($core, 'changed');
+
+        try {
+            new FrameworkManifestRepository($lock, $root . '/resources/framework');
+            self::fail('Changed runtime bytes were admitted.');
+        } catch (FrameworkComponentException $exception) {
+            self::assertSame('FRAMEWORK_RUNTIME_ASSET_HASH_MISMATCH', $exception->errorCode);
+        } finally {
+            $this->removeFixture($root);
+        }
+    }
+
+    #[Test]
+    public function symlink_and_hardlink_runtime_assets_fail_closed(): void
+    {
+        foreach (['symlink', 'hardlink'] as $attack) {
+            [$root, $lock] = $this->fixture();
+            $core = $root . '/resources/portable/vendor/simai-framework/runtime/'
+                . 'd1daa951dd08b94a9f209fd9f31a78d2b3779563/distr/core/js/core.js';
+            $outside = $root . '/outside.js';
+            file_put_contents($outside, file_get_contents($core));
+            unlink($core);
+            $attack === 'symlink' ? symlink($outside, $core) : link($outside, $core);
+
+            try {
+                new FrameworkManifestRepository($lock, $root . '/resources/framework');
+                self::fail(ucfirst($attack) . ' runtime bytes were admitted.');
+            } catch (FrameworkComponentException $exception) {
+                self::assertSame('FRAMEWORK_RUNTIME_ASSET_UNSAFE', $exception->errorCode);
+            } finally {
+                $this->removeFixture($root);
+            }
+        }
+    }
+
     /** @return array{string, FrameworkLock} */
     private function fixture(): array
     {
@@ -105,6 +177,24 @@ final class FrameworkTypographyProjectionTest extends TestCase
         foreach ($lock->typographyProjection()['files'] as $record) {
             $source = dirname(__DIR__, 2) . '/resources/' . $record['path'];
             $target = $resources . '/' . $record['path'];
+            if (! is_dir(dirname($target))) {
+                mkdir(dirname($target), 0777, true);
+            }
+            copy($source, $target);
+        }
+        $runtime = $lock->runtimeProjection();
+        $manifestSource = dirname(__DIR__, 2) . '/resources/' . $runtime['manifest']['path'];
+        $manifestTarget = $resources . '/' . $runtime['manifest']['path'];
+        if (! is_dir(dirname($manifestTarget))) {
+            mkdir(dirname($manifestTarget), 0777, true);
+        }
+        copy($manifestSource, $manifestTarget);
+        $manifest = json_decode((string) file_get_contents($manifestSource), true, 512, JSON_THROW_ON_ERROR);
+        foreach (array_keys($manifest['files']) as $relativePath) {
+            $relative = 'portable/vendor/simai-framework/runtime/'
+                . $runtime['source']['revision'] . '/distr/' . $relativePath;
+            $source = dirname(__DIR__, 2) . '/resources/' . $relative;
+            $target = $resources . '/' . $relative;
             if (! is_dir(dirname($target))) {
                 mkdir(dirname($target), 0777, true);
             }

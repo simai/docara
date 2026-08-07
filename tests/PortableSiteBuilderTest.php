@@ -782,7 +782,11 @@ MD);
             self::assertStringNotContainsString('[data-docara-reader-settings-close]:focus-visible', $surface);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
-            self::assertStringContainsString('@d1daa951dd08b94a9f209fd9f31a78d2b3779563/', $html);
+            self::assertStringContainsString(
+                '/_docara/vendor/simai-framework/runtime/d1daa951dd08b94a9f209fd9f31a78d2b3779563/distr/',
+                $html,
+            );
+            self::assertStringNotContainsString('cdn.jsdelivr.net', $html);
             self::assertStringNotContainsString('simai/ui-smart@', $html);
             self::assertStringContainsString('window.sfSmartPath="/_docara/framework"', $html);
             self::assertStringContainsString('/distr/component/icons/fonts/MaterialSymbols-Outlined.woff2', $html);

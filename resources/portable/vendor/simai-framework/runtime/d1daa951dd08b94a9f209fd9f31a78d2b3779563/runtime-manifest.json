@@ -1,0 +1,363 @@
+{
+    "schema": "docara.framework_runtime_assets.v1",
+    "source": {
+        "provider": "simai/ui",
+        "revision": "d1daa951dd08b94a9f209fd9f31a78d2b3779563",
+        "tree_sha256": "8f28b6c5a09173f5502836506c64d2e0aa66c2099a4f95a1f26f47145981f7fe"
+    },
+    "root": "distr",
+    "packet_sha256": "790b8014c4c1a0853e6a0650f30e0b4f33ab3b428f878b0fa010faf0c3f449c0",
+    "files": {
+        "component/alerts/css/alerts.css": {
+            "sha256": "6ce8a19d025d53667672b18f0e5d0e70f2112c88a3e0b5c6200ec1f14815cf11"
+        },
+        "component/alerts/js/alerts.js": {
+            "sha256": "63a58735b29460069e36710f87ef24af39cc6bf8d59f2dab64932244ee3e483c"
+        },
+        "component/badges/css/badges.css": {
+            "sha256": "2d9c458a64543f97cc0bfd1e20ec6bb1d2f2e0f4e059c6d1c4b6d830e7b29d9e"
+        },
+        "component/badges/js/badges.js": {
+            "sha256": "b38ac2742b1aaec483425c3f646855a81e9891eb99652dd1e70819d8346729a8"
+        },
+        "component/breadcrumbs/css/breadcrumbs.css": {
+            "sha256": "9b0d10ea7e8e02714e8ec07e9732bab9df1dcd33a8a859ee270fcc476b1e5600"
+        },
+        "component/breadcrumbs/js/breadcrumbs.js": {
+            "sha256": "26ea0ad4995714e9afbbbfcadf8849630a07925df42358b401fb95f3e5348dbd"
+        },
+        "component/buttons/css/buttons.css": {
+            "sha256": "090183c9bfbec681983b9159649f0137aa6709a970919cd1d78a618761f1dac2"
+        },
+        "component/buttons/js/buttons.js": {
+            "sha256": "e82adf841a1090be29dc4e7c429c0eb015daa7b712bca9de1a95b9f050be6e5c"
+        },
+        "component/checkbox/css/checkbox.css": {
+            "sha256": "8527ee884279e16209c85f7f310e639c429f1b44a5414ddf3387aa3313bbfc80"
+        },
+        "component/checkbox/js/checkbox.js": {
+            "sha256": "be1334314a24f6ff8f6b33885f7fdf54eaeff70824059a8d2083acdf0a6f1fc3"
+        },
+        "component/clipboard/css/clipboard.css": {
+            "sha256": "6f211961786a24d9b66e8161aeb15790f57c6a50ddcb9af6e36c01345a1792bb"
+        },
+        "component/clipboard/js/clipboard.js": {
+            "sha256": "c2139f266de533dbf9cfebcbd79862fc39fa386ec9ce82566010db893b835ace"
+        },
+        "component/doc/css/doc.css": {
+            "sha256": "cf43a68288073bdee5bf997e649badee5d0459f40cc30c1470a5fa129f3fb9d0"
+        },
+        "component/doc/js/doc.js": {
+            "sha256": "e53314909c8bbb537c1ebd7068a49e32ddd08a02712b87201b61c75edfff32d6"
+        },
+        "component/dropdown/css/dropdown.css": {
+            "sha256": "7166b1d088077bf738a6ec0f5bb2ba9849de804d230bbd6523fa552bd2410cae"
+        },
+        "component/dropdown/js/dropdown.js": {
+            "sha256": "4bc1aa3902b92866529fe3fa54e00f5daf9ca163591c59155b66098deb513779"
+        },
+        "component/highlight/css/highlight.css": {
+            "sha256": "8c7f83fb0d8e807acf5a3db72665ceb6cfe6254dff955ca52a18da09c05e68ac"
+        },
+        "component/highlight/js/140718668072844.js": {
+            "sha256": "ff2634dd9eb9252bdb182017031427a393487f3045f529a70f05707aaf57be45"
+        },
+        "component/highlight/js/148983579446384.js": {
+            "sha256": "95a83bdb4f1a7447325b0fe127b23e2ddf30c156de86c2f27df2d21088ac2aee"
+        },
+        "component/highlight/js/156256801485311.js": {
+            "sha256": "dd7f3aac1b4279a272454ece4e9816353b7b3253fa8184a503eb7fa9fad8fa47"
+        },
+        "component/highlight/js/160782789864396.js": {
+            "sha256": "531063f5b2f5d7689940b6e0d1fc352c3b46dc936db0f9f4f52c4af7abc2d0c0"
+        },
+        "component/highlight/js/189739203835381.js": {
+            "sha256": "88fb3a9a619e8d85d0e102785b730a7e593322e9a8c986bdc5e8a1a61857ba2b"
+        },
+        "component/highlight/js/22635021162243.js": {
+            "sha256": "b6aaf80b8fcf81e4044df8d2cf41adfc3768d4963fdeb360d4db94a2e367b3d8"
+        },
+        "component/highlight/js/226880896384550.js": {
+            "sha256": "ea708c63386a4a9dfe15a0e9f045fbfb8858704e836d0575bf89d4645ddbfbf5"
+        },
+        "component/highlight/js/262063062518108.js": {
+            "sha256": "f3cb1936e5f47944be62846dcafd9d46324cbf4d8f1345ce6a28188e95638d28"
+        },
+        "component/highlight/js/highlight.js": {
+            "sha256": "0822409485bbe75f47e0c8ec1eb95a5a7d97ccc87883dcf7f455270570181fd9"
+        },
+        "component/icon-buttons/css/icon-buttons.css": {
+            "sha256": "5b2d0ec774bfd31e9a8a52a261fdf74034e0d751cc6c5033f955378bf5563c2b"
+        },
+        "component/icon-buttons/js/icon-buttons.js": {
+            "sha256": "c312e70091eb57a838cf353cec37bcce351676fad8516abc7c2c507fe59e3332"
+        },
+        "component/icons/css/icons.css": {
+            "sha256": "2092be8af186501ef912b7c4661414c4ee88252641a6c709950ac5ffed4d20b6"
+        },
+        "component/icons/fonts/MaterialSymbols-Outlined.woff2": {
+            "sha256": "0b9a2f47405692d3dff58a5f5797f48c5084c5808620423e0473eb567897afbe"
+        },
+        "component/icons/js/icons.js": {
+            "sha256": "b745d4e37314ce07dd7b9834bc653e643a3aaac5939889b73850253b4346bfa9"
+        },
+        "component/inputs/css/inputs.css": {
+            "sha256": "5dcd90a77008c162bdee1b4cae1bef63ade61d41738be8dfb9abda75d887dd19"
+        },
+        "component/inputs/js/inputs.js": {
+            "sha256": "49f91226f377d50ac68fa4e918855e89d4d54fcdfacf4dd685b2bc939c48c957"
+        },
+        "component/menu/css/menu.css": {
+            "sha256": "a8f293baee658de5d4d7c1adef989362c8dc4cc774d9c80704d6a602c5cc4265"
+        },
+        "component/menu/js/menu.js": {
+            "sha256": "86bfcbc5a905b7f5785baee94bc04e6103f9ce0fdf1b27f6056c003e03c28abd"
+        },
+        "component/modal/css/modal.css": {
+            "sha256": "4fd51b992b77ddbf4570a605c50000c52fdf70a56ff15e36eeebc1713a23257f"
+        },
+        "component/modal/js/modal.js": {
+            "sha256": "d81a2aec681709bae6592df28534083c615fae023e813245f4d6279237148c64"
+        },
+        "component/radio/css/radio.css": {
+            "sha256": "9d74d4fa7b754e380b35f65794167f95d5a18b96f68372788c278e307c124705"
+        },
+        "component/radio/js/radio.js": {
+            "sha256": "37bec6e52c8dad1a54243c0fc8420b3380586678727d01a57164016e9850eb73"
+        },
+        "component/scrollbar/css/scrollbar.css": {
+            "sha256": "89767e6ac1beb6b2e9f3f99597f3298b55e794d36f9c2ae83e0020506c29a299"
+        },
+        "component/scrollbar/js/scrollbar.js": {
+            "sha256": "c05deb56982985f32b108d72d9c171df833b6f90586c8c22f82274781cfe70f5"
+        },
+        "component/tab/css/tab.css": {
+            "sha256": "44bce3aba586ce08e9e360dfae62c957f8c860633096abb0dfe969f90b869109"
+        },
+        "component/tab/js/tab.js": {
+            "sha256": "1ae897a36b48860a85865d0fb59c160647dae82a9e2e7bf89ecb4d555fb1d9b7"
+        },
+        "core/js/159183670458118.js": {
+            "sha256": "07be4bf5e89a99763f157931d3cdb3aa52c1fb0c3dabe47968ca3c4e436754f5"
+        },
+        "core/js/33924592978152.js": {
+            "sha256": "1cbdf56648c6dcf312feb2a13a3b654090c55f865bdd9d45887676789bff4ad6"
+        },
+        "core/js/core-loader.js": {
+            "sha256": "c7644234127ae5c214602ef96beb5ad84dc5da82b35bab100d16161b08f04870"
+        },
+        "core/js/core-mask-imask.js": {
+            "sha256": "0d32bac2260d5973c658157538d7902f05841b73eec7a9765ece7889819c72c3"
+        },
+        "core/js/core-rules.js": {
+            "sha256": "d2d76ade1ae79f8c298d08401349e70c89c5986fdaa5fd513497dd1e92ba630a"
+        },
+        "core/js/core-system.js": {
+            "sha256": "0a9d491a5cae587de17dde7dc856a51430da2404ed6fc158a058a78c1c73df9a"
+        },
+        "core/js/core.js": {
+            "sha256": "07894271f09afca742ed746597fce029f16d7a48918bbe2c532947493451294e"
+        },
+        "core/js/smart-base.js": {
+            "sha256": "23e03f68f099a7850c10ebda93970064bbef419f3e0aec425d3aae3f4bb07a5d"
+        },
+        "utility/align-items/default/css/default.css": {
+            "sha256": "e05d0c888592d49116161410689c38896208a930ab9e348a9d748624b4791bdb"
+        },
+        "utility/align-items/md/css/md.css": {
+            "sha256": "3f30c66d1769713c44a14e47c1d95701884810d8b0920cf755548f2c787314c9"
+        },
+        "utility/align-self/sm/css/sm.css": {
+            "sha256": "efc2295503d61cff260887346871756c1681e287ef077b27c82609dcb304ad15"
+        },
+        "utility/backdrop-filter-blur/default/css/default.css": {
+            "sha256": "02e6b7911662f35510bc4fa309185f59b080b685df2321a8b86e61e35fbeb89b"
+        },
+        "utility/background-color/default/css/default.css": {
+            "sha256": "e572dc3d4826986a6cb098854122e690d7ecdc90c3dbb8c58dcc00de9d759f49"
+        },
+        "utility/border-color/default/css/default.css": {
+            "sha256": "d795223eeb4fd38c24da82b660dd593cc102196e6027f88203568c8275a60ce7"
+        },
+        "utility/border-radius/default/css/default.css": {
+            "sha256": "8679eb57ad1c48f1c174b4613472c10914148d876789521c9f389bf1bd726932"
+        },
+        "utility/border-style/default/css/default.css": {
+            "sha256": "6d89ada6bf95fd86f337f5cf5c2cb3ff363dc1e366040b0269d4cb547be7efaf"
+        },
+        "utility/border-width/default/css/default.css": {
+            "sha256": "a0f43529074ee558c5d88ccce4b2a2499f5ae956196948810ce3e6edd65d0814"
+        },
+        "utility/box-sizing/default/css/default.css": {
+            "sha256": "7e3cea8ef84801347ee23fc1c0b22ee170d4066c74653226d9c761326aa10bd1"
+        },
+        "utility/container/default/css/default.css": {
+            "sha256": "c384945d9a46e73422c1650e93d47e46f1a57a50f0952e4f517034f67133d331"
+        },
+        "utility/cursor/default/css/default.css": {
+            "sha256": "bed7aed5ee759f2e8ec465b6c38b4a4756219389434ec0df0823bf2d28c34358"
+        },
+        "utility/display/default/css/default.css": {
+            "sha256": "45b039d46e2a1a20765b5a60b135886e6544a2fc113af4d16bcb0f56bd97e0c9"
+        },
+        "utility/display/lg/css/lg.css": {
+            "sha256": "a991e3d2d236df6c12ad5f69fbd82cd011de76e65c8cd0fd0d3ab7708ef2c63e"
+        },
+        "utility/display/md/css/md.css": {
+            "sha256": "2e7f65bebce978cfa423414740f08b18b4a0581269d837773b7b66c3282e78d9"
+        },
+        "utility/element-position/default/css/default.css": {
+            "sha256": "020f781bbf85dee404a922e93d3561c78451ef169442e8844c563db525d3569a"
+        },
+        "utility/flex-direction/default/css/default.css": {
+            "sha256": "5beee1857f1217c3b2be6b836b0ae9cfc81dfea685bdb2f7dcaa30724923a81b"
+        },
+        "utility/flex-direction/md/css/md.css": {
+            "sha256": "005d3bdcd7a5ac35f98cf00a2efbf71738e11a5b24bff74285a2ddd61070d32c"
+        },
+        "utility/flex-wrap/default/css/default.css": {
+            "sha256": "11d360f0dc12ca0c59b24b2395f5d4221abb9d93ce0d945a812e241b367ea483"
+        },
+        "utility/flex-wrap/md/css/md.css": {
+            "sha256": "97fc2febc7092f6b1d8d77af4485a4a71ac1e72648bad2fa5208a85128d6c95d"
+        },
+        "utility/flex/default/css/default.css": {
+            "sha256": "e572e43e0fbca638036abdf54327e643ad1a769eba048ade6dedb372148d031d"
+        },
+        "utility/flex/md/css/md.css": {
+            "sha256": "0b0a095df80fd8efe5a506e7e95e3981af1faa61041104a192e379109ecf3b17"
+        },
+        "utility/font-family/default/css/default.css": {
+            "sha256": "b069f88b75217513604d114e570fc2d4fc4b83bba93c78fff81a3ecbe2f9bd05"
+        },
+        "utility/font-size/default/css/default.css": {
+            "sha256": "9de0d5bef0ca58a54c65169aa869b717953bd6a139c5390c7b06f6e965575d46"
+        },
+        "utility/font-weight/default/css/default.css": {
+            "sha256": "9f9b14b0a0da1f364ac002d8ab70f94e9abe521e79642ce5c5a343eac6accde2"
+        },
+        "utility/gap/default/css/default.css": {
+            "sha256": "72abc064e179644e57df64daf7cbff13239c289d4c2b5e303a94c65a23f87b0c"
+        },
+        "utility/gradient-stops/default/css/default.css": {
+            "sha256": "86e0b6a2811d62e1dff5c53c715fc2e589a31e648132267cb206f6609a6b4afd"
+        },
+        "utility/grid-template-columns/default/css/default.css": {
+            "sha256": "b03d94e9ec6b46cf630b041f4811045fa472bc7292e1f80c2e848fdbf400bdb3"
+        },
+        "utility/grid-template-columns/lg/css/lg.css": {
+            "sha256": "2266d59859d05689b15ae924a25105b8fd6d46d37aef50c5ff2c8cb3fa3211f2"
+        },
+        "utility/grid-template-columns/md/css/md.css": {
+            "sha256": "93e6f1e9662856503759bfd7905a6b86ffded152828a8658213ca3bc40f83ebf"
+        },
+        "utility/headers/default/css/default.css": {
+            "sha256": "ae447338fb5cd2b51238972b8018d6ff121f66edc581b8982c357cac7a81a98c"
+        },
+        "utility/height-ext/default/css/default.css": {
+            "sha256": "022762e025ed4aa83b3a239f2cd745bde3e1bbd76749ffbc3b58876cfde67c87"
+        },
+        "utility/height-ext/lg/css/lg.css": {
+            "sha256": "3355499ffa96dbb870069e5212d5cbf77d7cd82c65cec876e84924942566a39a"
+        },
+        "utility/height/default/css/default.css": {
+            "sha256": "fe3a8bdc8790fd95726a82e5d9580d00d81f61f3c00427fcedd19b3cb960ea11"
+        },
+        "utility/isolate/default/css/default.css": {
+            "sha256": "adb9dab7c6e54c55d1c9e230ec31bac1af20dbe066174850cab550816b6b8c9b"
+        },
+        "utility/justify-content/default/css/default.css": {
+            "sha256": "a00455294d08bc8b805450e3fe0e5cf32a293a8c1f8d017da2ee0bf8b1e68b36"
+        },
+        "utility/list-style-type/default/css/default.css": {
+            "sha256": "1355f1b5505d96742fc27d4f5b7c1c47841cfb23b1a540b9078099208bc7812d"
+        },
+        "utility/margin/default/css/default.css": {
+            "sha256": "e407aced3e13e503b620089bd590e07e19a80a5a9fc1a5652ced1073d7e29004"
+        },
+        "utility/max-container/default/css/default.css": {
+            "sha256": "fdb2c574a33a43734f317b8031c6e9cce47b998133cf237ca5a0c46859219462"
+        },
+        "utility/max-width/default/css/default.css": {
+            "sha256": "bf8d4200b4a1143528d9debe8c1070b995b16704947f44f721a5584556f638f2"
+        },
+        "utility/min-height/default/css/default.css": {
+            "sha256": "c1be584f18013d0aadcacb741624a92d918944d7efebda7a4d7c40215afce744"
+        },
+        "utility/min-width/default/css/default.css": {
+            "sha256": "ae4e8232c194e2a2d1c5487cbfac86c9ea9efc7463a0a944264d2a425fb35659"
+        },
+        "utility/object-fit/default/css/default.css": {
+            "sha256": "7b51412761a5d3b2b5012b5b6997909ac269cd9b46b3903ece8e396a68699dce"
+        },
+        "utility/overflow/default/css/default.css": {
+            "sha256": "5e0624991b2bdd39b0a4448e259d922270087cea8320af2f0fbf55cae206d603"
+        },
+        "utility/padding/default/css/default.css": {
+            "sha256": "65bc6f60ad356b8f9a1a9bffbc25d7e83283478b0ff34e8468fa23b5aba72311"
+        },
+        "utility/place-content/default/css/default.css": {
+            "sha256": "0fdf036f0e4d27682d7cf11d64a1d5ad365a7092acfc0d2bcf27d68f4c5f9f22"
+        },
+        "utility/place-items/default/css/default.css": {
+            "sha256": "c1eb633f577fecca1d404e96b964ca82d2af60ac98e079ac2f3e26a98975419e"
+        },
+        "utility/place-items/md/css/md.css": {
+            "sha256": "88cd3e97927b0c054843e0c6058546aecb7a21b7a039d2d0dc564fcb3d369409"
+        },
+        "utility/place-self/sm/css/sm.css": {
+            "sha256": "a8eb9aa461f2f67c10b1aafe6af75aa66e3f38896914bd462cde73af07e726f3"
+        },
+        "utility/pointer-events/default/css/default.css": {
+            "sha256": "3b3d14d44e95a83d3e06b8863c9c220ce5401aa63fb361647903c7f485014873"
+        },
+        "utility/position/default/css/default.css": {
+            "sha256": "8a4c434c16cef254580027ced2ec550f9163b20f30f49075e2ce7b1fef57c02d"
+        },
+        "utility/sr-only/default/css/default.css": {
+            "sha256": "2b6df97abff6a73f6ee743fb13cc2ad7d5c4c1677122344566078e6c3ce4cad5"
+        },
+        "utility/table-border/default/css/default.css": {
+            "sha256": "ac7f908441b1e7c3147943343076b564ad4f7832c17249a6701a2b7f73a4ba73"
+        },
+        "utility/table-stripe/default/css/default.css": {
+            "sha256": "fab00a745b23ac20641a77431bc6201e28790049711a5f6c863698306f29f11a"
+        },
+        "utility/table/default/css/default.css": {
+            "sha256": "57504621829eab57b5293cba858f437f4d6d9ec7054dd1724ea12e92e3d771ed"
+        },
+        "utility/text-align/default/css/default.css": {
+            "sha256": "5930b26cd30c69b127c123bbde1ed5e169e97c5913511fd87b53bfc26a6597b6"
+        },
+        "utility/text-color/default/css/default.css": {
+            "sha256": "0ca0818ec4f814376c7bff6a8c9122820bee01189f8bd6ca42329894b34ffaf4"
+        },
+        "utility/text-decoration/default/css/default.css": {
+            "sha256": "48dbbc7772c28cbf1e3c0babd63bc0375e80896ec9e7e1f001e91bea08936e7c"
+        },
+        "utility/theme/default/css/default.css": {
+            "sha256": "6a347bcb296c03f4c7e1f64030531c295a653155dd4fb8d20733fd9894e6629c"
+        },
+        "utility/title/default/css/default.css": {
+            "sha256": "7b44b8fe3701c794af7d4f6bd225bd90f2bb7f89b9e7de5c8ae1d1b2faa9793e"
+        },
+        "utility/transition-property/default/css/default.css": {
+            "sha256": "93b863b9f2153117ba7ecca5c8a7375007b7bcbffb828b48e567a0ec9ce638cf"
+        },
+        "utility/visibility/default/css/default.css": {
+            "sha256": "1cbba3001159bd2da0fba30e885337af9197fc4172c36f6caf5ca5883445316a"
+        },
+        "utility/white-space/default/css/default.css": {
+            "sha256": "4dbe29fc11b446974fec031d98cada22312ca4e9d36eb566b6c110fbaa15d84b"
+        },
+        "utility/width/default/css/default.css": {
+            "sha256": "895f71d87f8f8b5342a8578b02a085cb69167bfd6162270b071ec67fc7330ca6"
+        },
+        "utility/width/sm/css/sm.css": {
+            "sha256": "5273c5b8acdad81fb9dcf54b61b7644c62281bdad7889f2c8518e7c01363f89e"
+        },
+        "utility/z-index/default/css/default.css": {
+            "sha256": "991d1aa5e29c3a0dcc8625c51670dee487dc0ba60a8ad5a72438db873c45a7a4"
+        }
+    }
+}

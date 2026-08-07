@@ -10,6 +10,7 @@ build_production/
   _docara/search-index.json
   _docara/search.js
   _docara/framework/
+  _docara/vendor/simai-framework/runtime/<revision>/
   .docara/resolved-page-plans.json
   .docara/redirects.json
   old/route/index.html
@@ -52,8 +53,12 @@ source, locale, версию документации, `base_url`, source/target
 
 Любой из этих маркеров делает проверку артефакта неуспешной.
 
-Текущий lock загружает SIMAI Framework Core по exact commit из сети. Поэтому
-наличие всех локальных Smart-файлов не означает полностью offline-сайт.
+Текущий lock публикует необходимые Docara файлы SIMAI Framework локально:
+Core, используемые utilities, нужные Docara webpack/language chunks, Inter,
+Material Symbols и допущенные Smart assets. Страница не зависит от
+runtime-загрузки с CDN. Это не
+превращает произвольный upstream-компонент в поддерживаемый: admission
+по-прежнему определяется manifest, provider policy и exact lock.
 
 Публичную production или release готовность следует заявлять только после
 отдельной приёмки конкретного артефакта и условий распространения.

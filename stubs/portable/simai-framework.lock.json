@@ -116,6 +116,23 @@
       }
     }
   },
+  "runtime_projection": {
+    "schema": "docara.framework_runtime_projection.v1",
+    "mount": "_docara/vendor/simai-framework/runtime/d1daa951dd08b94a9f209fd9f31a78d2b3779563/distr",
+    "source": {
+      "provider": "simai/ui",
+      "revision": "d1daa951dd08b94a9f209fd9f31a78d2b3779563",
+      "tree_sha256": "8f28b6c5a09173f5502836506c64d2e0aa66c2099a4f95a1f26f47145981f7fe"
+    },
+    "icon_font": "component/icons/fonts/MaterialSymbols-Outlined.woff2",
+    "packet_sha256": "790b8014c4c1a0853e6a0650f30e0b4f33ab3b428f878b0fa010faf0c3f449c0",
+    "files": 117,
+    "manifest": {
+      "path": "portable/vendor/simai-framework/runtime/d1daa951dd08b94a9f209fd9f31a78d2b3779563/runtime-manifest.json",
+      "public": "_docara/vendor/simai-framework/runtime/d1daa951dd08b94a9f209fd9f31a78d2b3779563/runtime-manifest.json",
+      "sha256": "8c917f69a678df084260ded24c5e39e78aaa4fc12c317bf98afaf11ee2a29a8e"
+    }
+  },
   "typography_projection": {
     "schema": "docara.framework_typography_projection.v1",
     "candidate": "5.4.0-rc.1",

@@ -70,6 +70,14 @@ final readonly class FrameworkLock
         return is_array($projection) ? $projection : null;
     }
 
+    /** @return array<string, mixed>|null */
+    public function runtimeProjection(): ?array
+    {
+        $projection = $this->data['runtime_projection'] ?? null;
+
+        return is_array($projection) ? $projection : null;
+    }
+
     /** @return list<string> */
     public function nonclaims(): array
     {
@@ -231,6 +239,39 @@ final readonly class FrameworkLock
                 } elseif (! in_array($key, ['contract', 'core', 'utility'], true)) {
                     throw new FrameworkComponentException('FRAMEWORK_TYPOGRAPHY_ASSET_INVALID', (string) $key);
                 }
+            }
+        }
+
+        $runtimeProjection = $this->data['runtime_projection'] ?? null;
+        if ($runtimeProjection !== null) {
+            $revision = $runtime['ui']['commit'] ?? null;
+            $expectedMount = is_string($revision)
+                ? '_docara/vendor/simai-framework/runtime/' . $revision . '/distr'
+                : '';
+            if (! is_array($runtimeProjection)
+                || ($runtimeProjection['schema'] ?? null) !== 'docara.framework_runtime_projection.v1'
+                || ($runtimeProjection['mount'] ?? null) !== $expectedMount
+                || ($runtimeProjection['source']['provider'] ?? null) !== 'simai/ui'
+                || ($runtimeProjection['source']['revision'] ?? null) !== $revision
+                || ($runtimeProjection['source']['tree_sha256'] ?? null) !== ($runtime['ui']['sha256'] ?? null)
+                || ! $this->isSha256($runtimeProjection['packet_sha256'] ?? null)
+                || ! $this->isSafeRelativePath($runtimeProjection['icon_font'] ?? null)
+                || ! is_int($runtimeProjection['files'] ?? null)
+                || $runtimeProjection['files'] < 1
+                || ! is_array($runtimeProjection['manifest'] ?? null)
+                || array_keys($runtimeProjection['manifest']) !== ['path', 'public', 'sha256']
+                || ! $this->isSafeRelativePath($runtimeProjection['manifest']['path'] ?? null)
+                || ! $this->isSafeRelativePath($runtimeProjection['manifest']['public'] ?? null)
+                || ! $this->isSha256($runtimeProjection['manifest']['sha256'] ?? null)
+            ) {
+                throw new FrameworkComponentException('FRAMEWORK_RUNTIME_PROJECTION_INVALID');
+            }
+            $runtimeBase = 'portable/vendor/simai-framework/runtime/' . $revision;
+            if ($runtimeProjection['manifest']['path'] !== $runtimeBase . '/runtime-manifest.json'
+                || $runtimeProjection['manifest']['public'] !== '_docara/vendor/simai-framework/runtime/'
+                    . $revision . '/runtime-manifest.json'
+            ) {
+                throw new FrameworkComponentException('FRAMEWORK_RUNTIME_PROJECTION_INVALID');
             }
         }
 

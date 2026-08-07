@@ -1,7 +1,10 @@
 # Framework lock
 
 `simai-framework.lock.json` связывает точные Core/Smart revisions, registry
-identity, manifests, consumer policy, hashes и asset projection.
+identity, manifests, consumer policy, hashes и asset projections. Помимо
+Smart-артефактов и типографики, lock фиксирует локальный runtime-пакет Core:
+bootstrap JavaScript, необходимые webpack/language chunks, Material Symbols,
+admitted component assets и используемые Docara utilities.
 
 ## Почему lock отдельный
 
@@ -10,7 +13,10 @@ Smart-компонент. Runtime surface определяется отдель�
 который можно проверить и сравнить между сборками.
 
 `main`, `master`, `latest` и другие moving references запрещены. Локальные
-projected bytes сверяются по SHA-256 до публикации.
+projected bytes сверяются по SHA-256 до публикации. Manifest runtime-пакета
+фиксирует каждый distribution-relative путь и общий path-sorted ledger; путь
+сохраняется относительно `distr`, потому что Core разрешает ленивые chunks и
+utilities от `window.sfPath`.
 
 ## Что проверить
 
@@ -19,6 +25,11 @@ projected bytes сверяются по SHA-256 до публикации.
 3. Bundled manifest и provider revision совпадают с lock.
 4. Asset plan содержит только разрешённые зависимости и omission contracts.
 5. Build и `verify-static` проходят на одном exact input.
+
+Сборка Docara не требует jsDelivr, Google Fonts или другого внешнего asset
+host: Inter, Material Symbols, Core, utilities и допущенные Smart assets
+публикуются в `_docara/vendor` и `_docara/framework`. Ссылки на внешние сайты в
+самом содержимом остаются обычными ссылками и не являются runtime-зависимостью.
 
 Наличие имени компонента или runtime-файла не означает admission. Нужны полный
 authoring contract, manifest, dependencies, host renderer, accessibility,
@@ -45,5 +56,6 @@ SIMAI Framework.
 ## Граница
 
 Framework lock доказывает ограниченный consumer contract конкретной сборки. Он
-не доказывает готовность всей экосистемы, production, public release или право
-распространить все upstream bytes.
+не допускает произвольный raw Framework-компонент только потому, что его файл
+есть в локальном пакете, и не доказывает готовность всей экосистемы,
+production, public release или право распространить другие upstream bytes.

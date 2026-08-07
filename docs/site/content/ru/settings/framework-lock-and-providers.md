@@ -1,6 +1,11 @@
 # Framework lock и providers
 
-`simai-framework.lock.json` фиксирует immutable runtime tuple, admitted manifests и asset projection. Moving branch/latest запрещены; каждый Smart дополнительно проходит schema, provider ownership, namespace, template/assets/hydration и hash checks.
+`simai-framework.lock.json` фиксирует immutable runtime tuple, admitted
+manifests, Smart projection, typography projection и локальный Core/runtime
+packet. Moving branch/latest запрещены; manifest пакета проверяет каждый
+distribution-relative path и SHA-256 до публикации. Каждый Smart дополнительно
+проходит schema, provider ownership, namespace, template/assets/hydration и
+hash checks.
 
 :::schema_reference {schema=framework-lock scope=lock}
 :::

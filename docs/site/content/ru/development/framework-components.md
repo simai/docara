@@ -36,6 +36,12 @@ Static verifier сверяет каждый материализованный F
 До очистки каталога назначения build preflight проверяет bytes каждого
 зафиксированного файла и равенство проекции полному dependency closure всех
 допущенных компонентов.
+
+Core runtime и utilities публикуются отдельной hash-bound проекцией с
+сохранением путей относительно upstream `distr`. Это позволяет webpack и Core
+лениво находить chunks без сетевого fallback. Наличие файла в этой локальной
+проекции не является admission нового Smart-компонента: authoring support
+по-прежнему требует отдельный принятый manifest и consumer policy.
 Текущий portable-контур явно исключает Larena backend event bridge: Docara не
 допускает backend handlers, data binding или выполнение эффектов. Это
 ограничение отражается в машинном каталоге, а не скрывается.

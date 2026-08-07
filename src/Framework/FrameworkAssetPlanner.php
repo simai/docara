@@ -34,12 +34,22 @@ final readonly class FrameworkAssetPlanner
         $runtime = $this->repository->runtime();
         $uiCommit = (string) $runtime['ui']['commit'];
         $smartCommit = (string) $runtime['ui_smart']['commit'];
-        $uiBase = 'https://cdn.jsdelivr.net/gh/simai/ui@' . $uiCommit . '/distr';
+        $runtimeProjection = $this->repository->runtimeProjection();
+        $iconFont = $runtimeProjection === null
+            ? 'component/icons/fonts/MaterialSymbols-Outlined.woff2'
+            : (string) $runtimeProjection['icon_font'];
+        $uiBase = $runtimeProjection === null
+            ? 'https://cdn.jsdelivr.net/gh/simai/ui@' . $uiCommit . '/distr'
+            : $this->projectedRuntimeBase((string) $runtimeProjection['mount']);
         $typography = $this->repository->typographyProjection();
         $boot = $runtime['boot'];
         $pairId = $this->repository->pairId();
         $projectionFingerprint = substr(
-            hash('sha256', CanonicalJson::encode($this->repository->assetProjection())),
+            hash('sha256', CanonicalJson::encode([
+                'smart' => $this->repository->assetProjection(),
+                'runtime' => $runtimeProjection,
+                'typography' => $typography,
+            ])),
             0,
             16,
         );
@@ -102,8 +112,11 @@ final readonly class FrameworkAssetPlanner
         ], [
             'key' => 'simai.framework.icon_font.css',
             'kind' => 'inline_css',
-            'content' => $this->iconFallbackCss($uiBase . '/component/icons/fonts/MaterialSymbols-Outlined.woff2'),
+            'content' => $this->iconFallbackCss($uiBase . '/' . $iconFont),
             'source_revision' => $uiCommit,
+            'sha256' => $runtimeProjection === null
+                ? null
+                : $this->runtimeAsset($iconFont)['sha256'],
         ], [
             'key' => 'simai.framework.icon_font.ready',
             'kind' => 'boot',
@@ -111,11 +124,11 @@ final readonly class FrameworkAssetPlanner
         ], [
             'key' => 'simai.framework.smart_base.js',
             'kind' => 'javascript',
-            'url' => $this->uiUrl($uiCommit, (string) $boot['smart_base']),
+            ...$this->runtimeBootAsset($uiCommit, (string) $boot['smart_base'], $cacheVersion),
         ], [
             'key' => 'simai.framework.core.js',
             'kind' => 'javascript',
-            'url' => $this->uiUrl($uiCommit, (string) $boot['javascript']),
+            ...$this->runtimeBootAsset($uiCommit, (string) $boot['javascript'], $cacheVersion),
         ]];
 
         $tags = $additionalRuntimeTags;
@@ -298,6 +311,55 @@ final readonly class FrameworkAssetPlanner
         return $publisherBase . '/' . substr($publicPath, strlen($prefix));
     }
 
+    private function projectedRuntimeBase(string $mount): string
+    {
+        $prefix = '_docara/';
+        $frameworkSuffix = '/framework';
+        if (! str_starts_with($mount, $prefix)
+            || ! str_ends_with($this->assetBase, $frameworkSuffix)
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_PUBLIC_PATH_INVALID', $mount);
+        }
+        $publisherBase = substr($this->assetBase, 0, -strlen($frameworkSuffix));
+
+        return $publisherBase . '/' . substr($mount, strlen($prefix));
+    }
+
+    /** @return array{url: string, source_revision?: string, sha256?: string} */
+    private function runtimeBootAsset(string $commit, string $lockedPath, string $cacheVersion): array
+    {
+        if ($this->repository->runtimeProjection() === null) {
+            return ['url' => $this->uiUrl($commit, $lockedPath)];
+        }
+        $prefix = 'ui/distr/';
+        if (! str_starts_with($lockedPath, $prefix)) {
+            throw new FrameworkComponentException('FRAMEWORK_UI_ASSET_PATH_INVALID', $lockedPath);
+        }
+        $projected = $this->runtimeAsset(substr($lockedPath, strlen($prefix)));
+
+        return [
+            'url' => $projected['url'] . '?sf_v=' . rawurlencode($cacheVersion),
+            'source_revision' => $commit,
+            'sha256' => $projected['sha256'],
+        ];
+    }
+
+    /** @return array{url: string, sha256: string} */
+    private function runtimeAsset(string $relativePath): array
+    {
+        $projection = $this->repository->runtimeProjection();
+        if (! is_array($projection)) {
+            throw new FrameworkComponentException('FRAMEWORK_RUNTIME_ASSET_NOT_PROJECTED', $relativePath);
+        }
+        $record = $this->repository->runtimeAssetRecord($relativePath);
+        $this->repository->bundledRuntimeAsset($relativePath);
+
+        return [
+            'url' => $this->projectedRuntimeBase((string) $projection['mount']) . '/' . $relativePath,
+            'sha256' => $record['sha256'],
+        ];
+    }
+
     /** @return array{url: string, sha256: string} */
     private function smartAsset(string $lockedPath, string $cacheVersion): array
     {
@@ -354,7 +416,8 @@ final readonly class FrameworkAssetPlanner
                     $revision = $asset['source_revision'] ?? null;
                     if (! is_string($revision)
                         || preg_match('/^[a-f0-9]{40}$/', $revision) !== 1
-                        || ! str_contains((string) ($asset['content'] ?? ''), '@' . $revision . '/')
+                        || (! str_contains((string) ($asset['content'] ?? ''), '@' . $revision . '/')
+                            && ! str_contains((string) ($asset['content'] ?? ''), '/runtime/' . $revision . '/'))
                     ) {
                         throw new FrameworkComponentException(
                             'FRAMEWORK_ASSET_SOURCE_REVISION_REQUIRED',

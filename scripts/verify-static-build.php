@@ -2880,6 +2880,7 @@ if ($manifestError === null) {
                         throw new RuntimeException("Authored component index [$route] rendered entry is invalid.");
                     }
                 }
+
                 continue;
             }
 

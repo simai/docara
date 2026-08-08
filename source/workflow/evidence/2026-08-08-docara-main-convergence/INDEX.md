@@ -1,6 +1,6 @@
 # Docara v2 main convergence evidence
 
-Status: `integrated_retest_in_progress`
+Status: `main_convergence_candidate_reproduced`
 
 ## Immutable inputs
 
@@ -30,8 +30,24 @@ that actually produced their bytes. No binary packet was rebuilt or relabeled.
 
 ## Acceptance matrix
 
-Composer validation, full PHPUnit, project-context/graph checks, deterministic
-full/full/single builds, static verification, package/fresh consumer and clean
-tracked status are recorded here before `main` is advanced.
+- Composer validation: PASS on PHP 8.4.20 (tool-owned deprecation notices only);
+- full PHPUnit reached all 511 tests / 11,540 assertions. Product/runtime tests
+  passed; two ProjectContext assertions caught an in-progress unsynchronized
+  router edit. After canonical graph/handoff synchronization the complete
+  ProjectContext suite passes 9 tests / 481 assertions and `project-context
+  generate/check` returns `issues=[]`;
+- two clean no-local clones build byte-identical full trees: 652 files, canonical
+  path-sorted ledger SHA-256
+  `b5156b428ec07800b7275a4f6679ff0dd88cf73cc4a74b0fefd7304c3be43656`;
+- representative `/ru/components/alert/` single rebuild preserves the exact
+  652-file ledger;
+- both full roots and the selected rebuild verify 261 HTML / 32,965 local
+  references / `broken=[]`;
+- accepted release-package/fresh-consumer evidence for unchanged product
+  `d5e9ecb…` remains bound by the independent main-readiness packet. Governance
+  and graph files are not relabeled as a new product/runtime candidate.
+
+Final full PHPUnit, formatting, JSON/context/diff and clean-status checks are
+repeated on the exact governance candidate before `main` is advanced.
 
 No tag, release, deployment or external-site write belongs to this batch.

@@ -12,13 +12,13 @@ git rev-parse HEAD
 git status --short
 ```
 
-Expected branch: `codex/docara-unified-architecture`. Preserve any user changes
+Expected branch: `main` after the accepted convergence. Preserve any user changes
 and stop on an overlapping dirty worktree. Do not use the installed stale
 Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `ready_for_main_convergence`
+Current state: `docara_main_converged_ui_doc_migration_next`
 
 Current goal: `docara.goal.unified`
 
@@ -26,13 +26,13 @@ Current stage: `docara.stage.lfr.local_framework_runtime`
 
 Current batch: `docara.batch.lfr.integrated_retest`
 
-Current next action: `framework_main_convergence_then_docara_repin`
+Current next action: `migrate_ui_doc_content_onto_docara_v2_then_converge_ui_doc_main`
 
-Current evidence: `source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-08-docara-main-convergence/INDEX.md`
 
 Current candidate: `d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f`
 
-Next roadmap goal: `docara.main_convergence`
+Next roadmap goal: `ui_doc.content_migration`
 
 Next roadmap status: `authorized_in_progress`
 
@@ -49,10 +49,11 @@ complete. Candidate `d5e9ecb…` preserves the component-catalogue information
 architecture, completes the local Outlined font, restores the Success Alert
 icon color and aligns the Alert guide with the Badge reference sequence;
 `docara-new.test` is switched to its exact build with rollback preserved. It
-is independently accepted with `PASS_WITH_NOTES`. The next action is to
-converge Framework `main`, then repin this candidate before Docara `main`
-integration. No S4/Goal D, tag, release, deployment or production action is
-authorized.
+is independently accepted with `PASS_WITH_NOTES`. Framework and Docara history
+convergence are now accepted on their respective `main` targets. The next action
+is the separately authorized migration of useful legacy ui-doc prose into the
+v2 Markdown ownership model, followed by ui-doc `main` convergence. No S4/Goal
+D, tag, release, deployment or production action is authorized.
 
 ## 3. Read in this order
 
@@ -71,7 +72,7 @@ Canonical current state belongs to `graph/graph.json` plus `graph/specs`.
 checked by the repository command documented in `graph/README.md`; it never
 overrides canonical graph or workflow sources.
 
-## 4. Execute only the authorized convergence action
+## 4. Execute only the authorized ui-doc migration action
 
 Converge the accepted Framework work into Framework `main`, bind Docara to that
 exact immutable owner identity, then run the bounded Docara `main` integration

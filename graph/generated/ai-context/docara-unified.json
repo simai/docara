@@ -9,16 +9,16 @@
         "graph/specs/stages/lfr-local-framework-runtime.json",
         "graph/specs/batches/lfr-integrated-retest.json"
     ],
-    "canonical_sha256": "44535a31ac2b7f4c2895f1c472501e984e205d08598cadf54c163d53353712aa",
+    "canonical_sha256": "c251cc0d273b7871eb45524876ea9460703cbbaf9280b8615806641f4429e3d1",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "ready_for_main_convergence",
+        "state": "docara_main_converged_ui_doc_migration_next",
         "goal": "docara.goal.unified",
-        "goal_readiness": "ready_for_main_convergence",
+        "goal_readiness": "docara_main_converged_ui_doc_migration_next",
         "stage": "docara.stage.lfr.local_framework_runtime",
         "stage_readiness": "independently_accepted_pass_with_notes",
         "stage_status": "independently_accepted_pass_with_notes",
@@ -27,14 +27,14 @@
         "batch_status": "independently_accepted_pass_with_notes",
         "completed_checkpoint": "local_framework_runtime_independently_accepted",
         "candidate_revision": "d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f",
-        "next_action": "framework_main_convergence_then_docara_repin",
-        "evidence": "source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md"
+        "next_action": "migrate_ui_doc_content_onto_docara_v2_then_converge_ui_doc_main",
+        "evidence": "source/workflow/evidence/2026-08-08-docara-main-convergence/INDEX.md"
     },
     "roadmap": {
         "source": "source/workflow/2026-08-08-docara-main-convergence.md",
         "next_goal": {
-            "id": "docara.main_convergence",
-            "title": "Framework main convergence and Docara repin",
+            "id": "ui_doc.content_migration",
+            "title": "Migrate useful ui-doc content onto Docara v2",
             "status": "authorized_in_progress",
             "authorized": true,
             "source": "source/handoff/docara-unified-architecture/NEXT.md"

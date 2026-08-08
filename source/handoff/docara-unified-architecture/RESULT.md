@@ -1,12 +1,22 @@
 # Current Docara result
 
-Current state: `ready_for_main_convergence`
+Current state: `docara_main_converged_ui_doc_migration_next`
 
 Current candidate: `d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f`
 
-Current evidence: `source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-08-docara-main-convergence/INDEX.md`
 
 ## Local Framework runtime result
+
+## Main convergence result
+
+Framework source ownership is consolidated on `simai/ui-loader@adc75d4f…` with
+green hosted validation. Legacy Docara `main@ff48ea54…` is connected to the
+accepted v2 history through an `ours` merge whose pre/post tree is exactly
+`4a79423a…`; no retired legacy path or tracked build artifact returned. The
+current product/runtime candidate remains `d5e9ecb…`. Existing binary locks
+retain their real producer revisions and were not relabeled as new Framework
+main output.
 
 Independent audit verdict: `PASS_WITH_NOTES`. Exact product/runtime candidate
 `d5e9ecb…` is accepted for the bounded main-convergence track. Full PHPUnit,

@@ -1,13 +1,13 @@
 schema_version: 1
 goal: docara.goal.unified
-branch: codex/docara-unified-architecture
+branch: main
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: ready_for_main_convergence
+state: docara_main_converged_ui_doc_migration_next
 current_stage: docara.stage.lfr.local_framework_runtime
 current_batch: docara.batch.lfr.integrated_retest
-next_action: framework_main_convergence_then_docara_repin
+next_action: migrate_ui_doc_content_onto_docara_v2_then_converge_ui_doc_main
 candidate_revision: d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f
-evidence: source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md
+evidence: source/workflow/evidence/2026-08-08-docara-main-convergence/INDEX.md
 goal1_candidate_revision: 44acc1ff91233fa78140222fcb0589bf55b65ca0
 goal1_sf5_adapter_revision: b3cdff87563ff78e7eddf044048a4b298fc69036
 goal1_cross_host_html_sha256: 7133c5dcd44aa85f351a85c61c280aa883abd5cdb3c91206168ad63ada497b38

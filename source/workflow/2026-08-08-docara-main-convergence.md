@@ -1,15 +1,15 @@
 # Docara v2 main convergence
 
 Date: 2026-08-08
-Status: `ready_for_main_convergence`
+Status: `docara_main_converged_ui_doc_migration_next`
 
 Current stage: `docara.stage.lfr.local_framework_runtime`
 
 Current batch: `docara.batch.lfr.integrated_retest`
 
-Current next action: `framework_main_convergence_then_docara_repin`
+Current next action: `migrate_ui_doc_content_onto_docara_v2_then_converge_ui_doc_main`
 
-Next roadmap goal: `docara.main_convergence` (`authorized_in_progress`, authorized=`true`)
+Next roadmap goal: `ui_doc.content_migration` (`authorized_in_progress`, authorized=`true`)
 
 Execution progress: `docara_main_convergence_integrated_retest`.
 Planned terminal next action after acceptance:

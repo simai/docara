@@ -1,7 +1,7 @@
 # Active workflow: Docara unified architecture
 
 Date: 2026-08-08
-Status: local Framework runtime independently accepted; ready for main convergence
+Status: Docara main convergence accepted; ui-doc content migration next
 Workflow ID: `2026-08-08-docara-main-convergence`
 Graph goal: `docara.goal.unified`
 
@@ -14,24 +14,24 @@ Graph goal: `docara.goal.unified`
 - completed parent track: `source/workflow/2026-08-06-docara-surface-hero-track.md`;
 - parent Goal 3 recovery:
   `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`;
-- fresh evidence: `source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md`;
+- fresh evidence: `source/workflow/evidence/2026-08-08-docara-main-convergence/INDEX.md`;
 - project-context freshness correction:
   `source/workflow/2026-08-03-docara-goal1d-project-context-correction.md`;
 - rejected audit candidate: `c5ea85f8d25deff99b671486fdc4d1e820a86491`;
 - corrected implementation candidate: `44acc1ff91233fa78140222fcb0589bf55b65ca0`;
 - rejected Goal 2 candidate: `33a377758f12d02a34e50c2f4f6d2aa760cf678b`;
 - corrected Goal 2 candidate: `39f1e3f6e97d7f8138e892b5884ba194cc889a7f`;
-- branch: `codex/docara-unified-architecture`.
+- branch: `main` after the accepted convergence.
 
 ## Current state, stage and batch
 
-- state: `ready_for_main_convergence`;
+- state: `docara_main_converged_ui_doc_migration_next`;
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.lfr.local_framework_runtime`;
 - batch: `docara.batch.lfr.integrated_retest`;
 - candidate: `d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `framework_main_convergence_then_docara_repin`;
+- next action: `migrate_ui_doc_content_onto_docara_v2_then_converge_ui_doc_main`;
 - Goal 1-3 and Goals A-C remain independently accepted. The separately
   authorized Surface & Hero Media track is active only through completed Goal
   S1 and S2, which are independently accepted. Goal S3 remains complete. The

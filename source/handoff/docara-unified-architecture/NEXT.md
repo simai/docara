@@ -1,20 +1,18 @@
-# Next action: `framework_main_convergence_then_docara_repin`
+# Next action: `migrate_ui_doc_content_onto_docara_v2_then_converge_ui_doc_main`
 
-Current state: `ready_for_main_convergence`
+Current state: `docara_main_converged_ui_doc_migration_next`
 
 Current candidate: `d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f`
 
-Current evidence: `source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-08-docara-main-convergence/INDEX.md`
 
-Goal 1-3, Goals A-C, S1 and S2 are independently accepted and Goal S3 remains
-complete. Exact candidate `d5e9ecb…` retains the grouped component catalogue,
-completes the local Outlined font, restores the Success Alert icon color and
-aligns the Alert guide with the Badge reference sequence. `docara-new.test` is
-already on this exact authorized validation build with rollback preserved. The
-independent audit is accepted with `PASS_WITH_NOTES`. The authorized next action
-is Framework `main` convergence followed by an exact Docara Framework repin.
-No S4/Goal D, tag, release, publication, further site write or production
-deployment is authorized.
+Goal 1-3, Goals A-C and S1-S3 remain independently accepted. Exact product
+candidate `d5e9ecb…` is unchanged. Framework owner `main@adc75d4f…` and the
+Docara v2/legacy histories are converged; bundled runtime packets retain their
+truthful producer revisions. The authorized next action is to migrate only
+useful legacy ui-doc prose into Docara v2 physical Markdown owners and then
+converge ui-doc `main`. No S4/Goal D, tag, release, publication, further site
+write or production deployment is authorized.
 
 ## Historical deployment decision (parked, not executable)
 

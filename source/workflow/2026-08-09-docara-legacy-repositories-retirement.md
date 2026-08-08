@@ -78,7 +78,7 @@ remain in `/Users/rim/Documents/GitHub`.
 | 2 | Re-scan active default-branch consumers and decide template disposition | fresh clones/default refs, bounded reference matrix, retirement verdict | completed; template PASS, mix BLOCKED |
 | 3 | Run destructive/action gate and archive eligible GitHub repositories | gate evidence, GitHub archived state, remote fetch/read smoke | completed for template; mix blocked |
 | 4 | Remove local legacy working copies and stale recovery/worktree residue | reversible Trash move, workspace/ref/worktree inventory | completed for template; mix retained |
-| 5 | Synchronize evidence and close the workflow | repository checks, diff check, clean committed `main` | in-progress |
+| 5 | Synchronize evidence and close the workflow | repository checks, diff check, clean committed `main` | completed |
 
 ## Rollback Contract
 
@@ -121,5 +121,10 @@ Large bundles, patches, archives, clone scans and raw logs remain outside Git.
   `source/workflow/evidence/2026-08-09-docara-legacy-repositories-retirement/INDEX.md`.
 - Remaining: a separately governed five-consumer migration/retest batch, then
   a new zero-reference scan and retirement gate.
-- Next: commit the truthful retirement evidence to Docara `main`; do not
-  manufacture completion by archiving a still-consumed package.
+- Evidence commit: `5537ad942d4c4ad3acfd6face9a343ea97e1aab1` on
+  Docara `main`.
+- Verification: project-context check returns `issues=[]`, JSON inputs parse,
+  staged diff check passes, and the commit was pushed through the authenticated
+  GitHub access helper.
+- Next: do not manufacture completion by archiving a still-consumed package.
+  Resume only as a separately governed five-consumer migration/retest batch.

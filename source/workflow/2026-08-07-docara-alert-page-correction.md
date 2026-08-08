@@ -3,15 +3,15 @@
 Date: 2026-08-07
 Status: complete_ready_for_independent_audit
 
-Status: `local_framework_runtime_ready_for_independent_audit`
+Status: `ready_for_main_convergence`
 
 Current stage: `docara.stage.lfr.local_framework_runtime`
 
 Current batch: `docara.batch.lfr.integrated_retest`
 
-Current next action: `independent_local_framework_runtime_audit`
+Current next action: `framework_main_convergence_then_docara_repin`
 
-Next roadmap goal: `docara.stage.lfr.local_framework_runtime` (`audit_pending`, authorized=`true`)
+Next roadmap goal: `docara.main_convergence` (`authorized_in_progress`, authorized=`true`)
 
 ## Outcome
 

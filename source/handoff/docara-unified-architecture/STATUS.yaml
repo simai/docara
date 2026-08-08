@@ -2,12 +2,12 @@ schema_version: 1
 goal: docara.goal.unified
 branch: codex/docara-unified-architecture
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: local_framework_runtime_ready_for_independent_audit
+state: ready_for_main_convergence
 current_stage: docara.stage.lfr.local_framework_runtime
 current_batch: docara.batch.lfr.integrated_retest
-next_action: independent_local_framework_runtime_audit
+next_action: framework_main_convergence_then_docara_repin
 candidate_revision: d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f
-evidence: source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md
+evidence: source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md
 goal1_candidate_revision: 44acc1ff91233fa78140222fcb0589bf55b65ca0
 goal1_sf5_adapter_revision: b3cdff87563ff78e7eddf044048a4b298fc69036
 goal1_cross_host_html_sha256: 7133c5dcd44aa85f351a85c61c280aa883abd5cdb3c91206168ad63ada497b38
@@ -47,7 +47,7 @@ readiness:
   goal_s2_hero_media: independently_accepted_pass_with_notes
   goal_s3_shared_adoption: complete_ready_for_user_decision
   sf5_typography_54_docara: ready_for_independent_audit
-  local_framework_runtime: ready_for_independent_audit_validation_site_deployed
+  local_framework_runtime: independently_accepted_pass_with_notes
   release: blocked_explicit_user_action
   production: blocked_explicit_user_approval_and_live_preflight
 routing:
@@ -60,7 +60,7 @@ routing:
 forbidden:
   - mass_runtime_rewrite_during_m0
   - legacy_deletion_without_parity
-  - default_branch_merge
+  - default_branch_merge_without_convergence_acceptance
   - tag
   - release
   - deploy

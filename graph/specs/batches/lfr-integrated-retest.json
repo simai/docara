@@ -8,17 +8,17 @@
   "summary": "Bind one source-faithful local runtime projection to security, deterministic build, package, consumer and validation-site evidence.",
   "owner": "dev",
   "lifecycle": "complete",
-  "readiness": "ready_for_independent_audit",
+  "readiness": "independently_accepted_pass_with_notes",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-07-docara-local-framework-runtime.md", "source/workflow/2026-08-07-docara-components-information-architecture.md", "source/workflow/2026-08-07-docara-alert-page-correction.md"],
-  "evidence_refs": ["source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md", "source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md", "source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md", "source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md", "source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md", "source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md"],
   "profile_refs": ["docara.unified"],
   "parent_stage_ref": "docara.stage.lfr.local_framework_runtime",
   "allowed_scope": ["Framework runtime projection", "Lock and asset publication", "Component catalogue information architecture", "Tests", "Evidence", "Authorized local validation site"],
   "forbidden_scope": ["Second runtime", "External owner write", "Production", "Merge", "Push", "Tag", "Release"],
   "checks": ["Exact hashes", "Security", "PHPUnit", "Full/full/single", "Static and browser", "Package and consumers", "Atomic cutover"],
-  "status": "ready_for_independent_audit",
+  "status": "independently_accepted_pass_with_notes",
   "baseline_revision": "1e1e093109cbd8956cbe9693cc2fd98dd8e1759f",
   "candidate_revision": "d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f",
-  "next_action": "independent_local_framework_runtime_audit"
+  "next_action": "framework_main_convergence_then_docara_repin"
 }

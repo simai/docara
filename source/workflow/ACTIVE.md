@@ -1,8 +1,8 @@
 # Active workflow: Docara unified architecture
 
-Date: 2026-08-07
-Status: local Framework runtime deployed to validation site; ready for independent audit
-Workflow ID: `2026-08-07-docara-alert-page-correction`
+Date: 2026-08-08
+Status: local Framework runtime independently accepted; ready for main convergence
+Workflow ID: `2026-08-08-docara-main-convergence`
 Graph goal: `docara.goal.unified`
 
 ## Source of truth
@@ -10,11 +10,11 @@ Graph goal: `docara.goal.unified`
 - start here: `source/handoff/docara-unified-architecture/START.md`;
 - human specification: `docs/specification/README.md`;
 - machine-readable state: `graph/graph.json` and `graph/specs/`;
-- active workflow: `source/workflow/2026-08-07-docara-alert-page-correction.md`;
+- active workflow: `source/workflow/2026-08-08-docara-main-convergence.md`;
 - completed parent track: `source/workflow/2026-08-06-docara-surface-hero-track.md`;
 - parent Goal 3 recovery:
   `source/workflow/2026-08-03-docara-goal3-security-diagnostics-visual-correction.md`;
-- fresh evidence: `source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md`;
+- fresh evidence: `source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md`;
 - project-context freshness correction:
   `source/workflow/2026-08-03-docara-goal1d-project-context-correction.md`;
 - rejected audit candidate: `c5ea85f8d25deff99b671486fdc4d1e820a86491`;
@@ -25,19 +25,19 @@ Graph goal: `docara.goal.unified`
 
 ## Current state, stage and batch
 
-- state: `local_framework_runtime_ready_for_independent_audit`;
+- state: `ready_for_main_convergence`;
 - goal: `docara.goal.unified`;
 - stage: `docara.stage.lfr.local_framework_runtime`;
 - batch: `docara.batch.lfr.integrated_retest`;
 - candidate: `d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f`;
 - exact SF5 adapter: `b3cdff87563ff78e7eddf044048a4b298fc69036`;
-- next action: `independent_local_framework_runtime_audit`;
+- next action: `framework_main_convergence_then_docara_repin`;
 - Goal 1-3 and Goals A-C remain independently accepted. The separately
   authorized Surface & Hero Media track is active only through completed Goal
   S1 and S2, which are independently accepted. Goal S3 remains complete. The
   SF5 5.4 typography integration remains the accepted parent candidate. The
-  explicitly authorized local Framework runtime correction is audit-pending.
-  No S4 exists.
+  explicitly authorized local Framework runtime correction is independently
+  accepted with `PASS_WITH_NOTES`. No S4 exists.
 
 ## Accepted pipeline
 
@@ -90,6 +90,8 @@ remain unchanged. Fresh full/full/single trees contain 393 files at digest
 
 ## Boundary
 
-No S4/Goal D, homepage art-direction change, mass rewrite, release review,
-default-branch merge, tag, release or deploy is authorized. The installed stale
-Docara skill is not a source of truth for this track.
+No S4/Goal D, homepage art-direction change, mass rewrite, tag, release or
+deploy is authorized. The user has separately authorized the bounded
+Framework -> Docara -> ui-doc GitHub `main` convergence tracked by the external
+coordination workflow. The installed stale Docara skill is not a source of
+truth for this track.

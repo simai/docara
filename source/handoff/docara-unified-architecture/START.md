@@ -18,7 +18,7 @@ Docara skill and do not work in another checkout or site root.
 
 ## 2. Current router
 
-Current state: `local_framework_runtime_ready_for_independent_audit`
+Current state: `ready_for_main_convergence`
 
 Current goal: `docara.goal.unified`
 
@@ -26,15 +26,15 @@ Current stage: `docara.stage.lfr.local_framework_runtime`
 
 Current batch: `docara.batch.lfr.integrated_retest`
 
-Current next action: `independent_local_framework_runtime_audit`
+Current next action: `framework_main_convergence_then_docara_repin`
 
-Current evidence: `source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md`
 
 Current candidate: `d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f`
 
-Next roadmap goal: `docara.stage.lfr.local_framework_runtime`
+Next roadmap goal: `docara.main_convergence`
 
-Next roadmap status: `audit_pending`
+Next roadmap status: `authorized_in_progress`
 
 Next roadmap authorized: `true`
 
@@ -49,7 +49,9 @@ complete. Candidate `d5e9ecb…` preserves the component-catalogue information
 architecture, completes the local Outlined font, restores the Success Alert
 icon color and aligns the Alert guide with the Badge reference sequence;
 `docara-new.test` is switched to its exact build with rollback preserved. It
-waits only for independent audit. No S4/Goal D, production or release action is
+is independently accepted with `PASS_WITH_NOTES`. The next action is to
+converge Framework `main`, then repin this candidate before Docara `main`
+integration. No S4/Goal D, tag, release, deployment or production action is
 authorized.
 
 ## 3. Read in this order
@@ -69,12 +71,12 @@ Canonical current state belongs to `graph/graph.json` plus `graph/specs`.
 checked by the repository command documented in `graph/README.md`; it never
 overrides canonical graph or workflow sources.
 
-## 4. Execute only an explicitly authorized next action
+## 4. Execute only the authorized convergence action
 
-Run only an independent read-only reverse-outcome audit of the exact local
-runtime candidate and deployed validation outcome. Do not self-accept it,
-invent S4/Goal D or begin release review. This handoff does not authorize
-merge, push, tag, release or another deployment.
+Converge the accepted Framework work into Framework `main`, bind Docara to that
+exact immutable owner identity, then run the bounded Docara `main` integration
+and its complete checks. Follow the external coordination workflow; do not
+invent S4/Goal D or begin tag, release or deployment work.
 
 M0/M1/M2/M3/M4/M5/R1/R2 files and release artifacts are historical baselines.
 They may support regression analysis but cannot become the current stage,
@@ -86,8 +88,8 @@ explicitly accepted.
 - do not move public prose into JSON, PHP projectors or component manifests;
 - do not create a second parser, renderer, Gateway or PageBuilder;
 - do not delete legacy without parity and rollback evidence;
-- do not start release review from this handoff;
-- do not merge, push, tag, release, publish or deploy;
+- do not merge or push outside the exact accepted convergence candidates;
+- do not tag, release, publish or deploy;
 - do not write to `docara.test` or change the already verified
   `docara-new.test` validation tree;
-- do not claim independent acceptance from executor evidence.
+- do not weaken the independent evidence boundary for later candidates.

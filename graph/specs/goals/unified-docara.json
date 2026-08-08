@@ -8,7 +8,7 @@
   "summary": "Перевести Docara на один content-first конвейер, где каждая страница хранится в Markdown, композиция — в JSON, компоненты — в реестре, а HTML всегда является производным результатом.",
   "owner": "teamlead",
   "lifecycle": "active",
-  "readiness": "local_framework_runtime_ready_for_independent_audit",
+  "readiness": "ready_for_main_convergence",
   "visibility": "repository",
   "source_refs": [
     "docs/specification/DOCARA-TZ.md",
@@ -26,7 +26,8 @@
     "source/workflow/evidence/2026-08-06-docara-surface-hero/INDEX.md",
     "source/workflow/evidence/2026-08-07-docara-sf5-typography-54/INDEX.md",
     "source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md",
-    "source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md"
+    "source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md",
+    "source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md"
   ],
   "profile_refs": ["docara.unified"],
   "done_when": [

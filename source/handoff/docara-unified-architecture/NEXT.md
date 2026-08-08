@@ -1,19 +1,20 @@
-# Next action: `independent_local_framework_runtime_audit`
+# Next action: `framework_main_convergence_then_docara_repin`
 
-Current state: `local_framework_runtime_ready_for_independent_audit`
+Current state: `ready_for_main_convergence`
 
 Current candidate: `d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f`
 
-Current evidence: `source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md`
 
 Goal 1-3, Goals A-C, S1 and S2 are independently accepted and Goal S3 remains
 complete. Exact candidate `d5e9ecb…` retains the grouped component catalogue,
 completes the local Outlined font, restores the Success Alert icon color and
 aligns the Alert guide with the Badge reference sequence. `docara-new.test` is
 already on this exact authorized validation build with rollback preserved. The
-only next action is independent read-only audit. No S4/Goal D, merge, push,
-tag, release, publication, further site write or production deployment is
-authorized.
+independent audit is accepted with `PASS_WITH_NOTES`. The authorized next action
+is Framework `main` convergence followed by an exact Docara Framework repin.
+No S4/Goal D, tag, release, publication, further site write or production
+deployment is authorized.
 
 ## Historical deployment decision (parked, not executable)
 
@@ -67,4 +68,5 @@ The previous next action was to choose `deploy` or `do not deploy` for the rc.3
 candidate. It remains historical and unauthorized while Goal 1 changes product
 source. Any future deployment requires a new exact candidate and fresh dossier.
 
-No merge, push, tag, publication, release or live deployment is authorized.
+No tag, publication, release or live deployment is authorized. Ordinary merge
+and push are allowed only inside the accepted main-convergence workflow.

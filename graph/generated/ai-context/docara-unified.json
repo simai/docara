@@ -9,33 +9,33 @@
         "graph/specs/stages/lfr-local-framework-runtime.json",
         "graph/specs/batches/lfr-integrated-retest.json"
     ],
-    "canonical_sha256": "2ab4a881ef742791b3c0ad6730d242715393820cffa343fae291245116295d1f",
+    "canonical_sha256": "44535a31ac2b7f4c2895f1c472501e984e205d08598cadf54c163d53353712aa",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
     "active": {
-        "state": "local_framework_runtime_ready_for_independent_audit",
+        "state": "ready_for_main_convergence",
         "goal": "docara.goal.unified",
-        "goal_readiness": "local_framework_runtime_ready_for_independent_audit",
+        "goal_readiness": "ready_for_main_convergence",
         "stage": "docara.stage.lfr.local_framework_runtime",
-        "stage_readiness": "ready_for_independent_audit",
-        "stage_status": "ready_for_independent_audit",
+        "stage_readiness": "independently_accepted_pass_with_notes",
+        "stage_status": "independently_accepted_pass_with_notes",
         "batch": "docara.batch.lfr.integrated_retest",
-        "batch_readiness": "ready_for_independent_audit",
-        "batch_status": "ready_for_independent_audit",
-        "completed_checkpoint": "local_framework_runtime_and_component_catalog_validation_site",
+        "batch_readiness": "independently_accepted_pass_with_notes",
+        "batch_status": "independently_accepted_pass_with_notes",
+        "completed_checkpoint": "local_framework_runtime_independently_accepted",
         "candidate_revision": "d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f",
-        "next_action": "independent_local_framework_runtime_audit",
-        "evidence": "source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md"
+        "next_action": "framework_main_convergence_then_docara_repin",
+        "evidence": "source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md"
     },
     "roadmap": {
-        "source": "source/workflow/2026-08-07-docara-alert-page-correction.md",
+        "source": "source/workflow/2026-08-08-docara-main-convergence.md",
         "next_goal": {
-            "id": "docara.stage.lfr.local_framework_runtime",
-            "title": "Independent local Framework runtime audit",
-            "status": "audit_pending",
+            "id": "docara.main_convergence",
+            "title": "Framework main convergence and Docara repin",
+            "status": "authorized_in_progress",
             "authorized": true,
             "source": "source/handoff/docara-unified-architecture/NEXT.md"
         }
@@ -74,7 +74,7 @@
     "read_order": [
         "source/handoff/docara-unified-architecture/STATUS.yaml",
         "source/workflow/ACTIVE.md",
-        "source/workflow/2026-08-07-docara-alert-page-correction.md",
+        "source/workflow/2026-08-08-docara-main-convergence.md",
         "graph/graph.json",
         "graph/specs/stages/lfr-local-framework-runtime.json",
         "graph/specs/batches/lfr-integrated-retest.json",

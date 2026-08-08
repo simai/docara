@@ -1,12 +1,18 @@
 # Current Docara result
 
-Current state: `local_framework_runtime_ready_for_independent_audit`
+Current state: `ready_for_main_convergence`
 
 Current candidate: `d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f`
 
-Current evidence: `source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md`
+Current evidence: `source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md`
 
 ## Local Framework runtime result
+
+Independent audit verdict: `PASS_WITH_NOTES`. Exact product/runtime candidate
+`d5e9ecb…` is accepted for the bounded main-convergence track. Full PHPUnit,
+full/full/single determinism, static verification and two byte-identical release
+packages were reproduced; exact details are in the current evidence index.
+This acceptance is not a tag, release or deployment claim.
 
 The current candidate `d5e9ecb…` retains the grouped component information
 architecture and completes the local icon closure with exact full Outlined,

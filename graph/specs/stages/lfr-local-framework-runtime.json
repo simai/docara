@@ -8,10 +8,10 @@
   "summary": "Publish the exact Framework runtime closure from Docara itself so icons, fonts and interactive components do not depend on a CDN.",
   "owner": "dev",
   "lifecycle": "complete",
-  "readiness": "ready_for_independent_audit",
+  "readiness": "independently_accepted_pass_with_notes",
   "visibility": "repository",
   "source_refs": ["source/workflow/2026-08-07-docara-local-framework-runtime.md", "source/workflow/2026-08-07-docara-components-information-architecture.md", "source/workflow/2026-08-07-docara-alert-page-correction.md"],
-  "evidence_refs": ["source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md", "source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md", "source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md", "source/workflow/evidence/2026-08-07-docara-components-information-architecture/INDEX.md", "source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md", "source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md"],
   "profile_refs": ["docara.unified"],
   "parent_goal_ref": "docara.goal.unified",
   "done_when": [
@@ -23,8 +23,8 @@
   "required_gates": ["docara.gate.architecture_acceptance"],
   "required_evidence": ["Source fidelity", "Security", "Full tests", "Build determinism", "Package and consumers", "Offline and deployed browser smoke"],
   "next_stage_ref": null,
-  "status": "ready_for_independent_audit",
+  "status": "independently_accepted_pass_with_notes",
   "baseline_revision": "1e1e093109cbd8956cbe9693cc2fd98dd8e1759f",
   "candidate_revision": "d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f",
-  "next_action": "independent_local_framework_runtime_audit"
+  "next_action": "framework_main_convergence_then_docara_repin"
 }

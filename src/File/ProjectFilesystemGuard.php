@@ -39,9 +39,15 @@ final readonly class ProjectFilesystemGuard
         return $this->inspect($projectRoot, $relative, self::WRITABLE_ROOTS, $allowMissing);
     }
 
-    public function directoryPath(string $projectRoot, string $relative, bool $allowMissing = true): string
-    {
-        $path = $this->writablePath($projectRoot, $relative, $allowMissing);
+    public function directoryPath(
+        string $projectRoot,
+        string $relative,
+        bool $allowMissing = true,
+        ?string $caseCollisionCode = null,
+    ): string {
+        $path = $caseCollisionCode === null
+            ? $this->writablePath($projectRoot, $relative, $allowMissing)
+            : $this->inspect($projectRoot, $relative, self::WRITABLE_ROOTS, $allowMissing, $caseCollisionCode);
         if (file_exists($path) || is_link($path)) {
             $this->assertNode($this->root($projectRoot), $path, true);
         }
@@ -183,6 +189,7 @@ final readonly class ProjectFilesystemGuard
         string $relative,
         array $allowedRoots,
         bool $allowMissing,
+        ?string $caseCollisionCode = null,
     ): string {
         $root = $this->root($projectRoot);
         $segments = $this->segments($relative, $allowedRoots);
@@ -190,7 +197,7 @@ final readonly class ProjectFilesystemGuard
         $missing = false;
         foreach ($segments as $index => $segment) {
             if (! $missing) {
-                $this->assertCase($current, $segment);
+                $this->assertCase($current, $segment, $caseCollisionCode);
             }
             $current .= '/' . $segment;
             if ($missing || (! file_exists($current) && ! is_link($current))) {
@@ -234,7 +241,7 @@ final readonly class ProjectFilesystemGuard
         return $segments;
     }
 
-    private function assertCase(string $parent, string $segment): void
+    private function assertCase(string $parent, string $segment, ?string $collisionCode = null): void
     {
         if (! is_dir($parent) || is_link($parent)) {
             throw $this->unsafe('Generated path parent is missing or unsafe.');
@@ -245,6 +252,12 @@ final readonly class ProjectFilesystemGuard
         }
         foreach ($entries as $entry) {
             if ($entry !== $segment && strcasecmp($entry, $segment) === 0) {
+                if ($collisionCode !== null) {
+                    throw new PortableConfigurationException(
+                        $collisionCode,
+                        "Generated path has a case-colliding entry [$entry].",
+                    );
+                }
                 throw $this->unsafe("Generated path has a case-colliding entry [$entry].");
             }
         }

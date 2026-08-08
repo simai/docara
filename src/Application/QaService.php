@@ -26,7 +26,7 @@ final readonly class QaService
     {
         $runtime = ProjectRuntime::load($root);
         $this->writes->directoryPath($runtime->root, '.docara-preview');
-        $this->writes->directoryPath($runtime->root, '.docara-qa/plans');
+        $this->writes->directoryPath($runtime->root, '.docara-qa/plans', true, 'QA_PLAN_COLLISION');
         $target = match ($kind) {
             'smart' => PreviewTarget::Smart,
             'region' => PreviewTarget::Region,

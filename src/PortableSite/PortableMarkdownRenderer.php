@@ -2144,6 +2144,13 @@ final class PortableMarkdownRenderer
         $assetRoot = $assetLexical === false ? false : realpath($assetLexical);
         $path = $lexical === false ? false : realpath($lexical);
         $extension = strtolower(pathinfo($url, PATHINFO_EXTENSION));
+        if ($root !== false && $lexical !== false && $path === false
+            && $this->hasCaseInsensitivePathMatch($root, ltrim($url, '/'))) {
+            throw new PortableConfigurationException(
+                $codePrefix . '_CASE_MISMATCH',
+                "$label [$url] does not match filesystem case.",
+            );
+        }
         if ($root === false || $assetRoot === false || $path === false
             || $assetLexical === false || $lexical === false
             || is_link($assetLexical) || is_link($lexical) || ! is_file($path)
@@ -2199,6 +2206,38 @@ final class PortableMarkdownRenderer
         $relativeUrl = str_repeat('../', count($segments)) . ltrim($url, '/');
 
         return $this->escapeHtml($relativeUrl);
+    }
+
+    private function hasCaseInsensitivePathMatch(string $root, string $relative): bool
+    {
+        $cursor = $root;
+        $mismatched = false;
+        foreach (explode('/', $relative) as $segment) {
+            if (! is_dir($cursor) || is_link($cursor)) {
+                return false;
+            }
+            $names = scandir($cursor);
+            if (! is_array($names)) {
+                return false;
+            }
+            $match = null;
+            foreach ($names as $name) {
+                if ($name === $segment) {
+                    $match = $name;
+                    break;
+                }
+                if ($name !== '.' && $name !== '..' && strcasecmp($name, $segment) === 0) {
+                    $match = $name;
+                }
+            }
+            if ($match === null) {
+                return false;
+            }
+            $mismatched = $mismatched || $match !== $segment;
+            $cursor .= DIRECTORY_SEPARATOR . $match;
+        }
+
+        return $mismatched && (file_exists($cursor) || is_link($cursor));
     }
 
     private function heroImageLine(string $markdown, int $sourceLine): int

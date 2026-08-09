@@ -193,6 +193,11 @@ integrations, repeat zero-reference proof, then archive and locally retire
   removed only after main integration. Two replayed migrations were proven
   equivalent to their obsolete branches by stable patch-id; the other three
   old commits are ancestors of main.
+- Final branch cleanup removed the now-merged publications graph worktree,
+  the superseded `simai-env/codex/docs-restructure` branch and the obsolete
+  `ui-doc-core/detached` branch. The two non-ancestor tips remain recoverable
+  from the verified all-refs bundles. Every active repository in this scope
+  now exposes exactly one local/remote branch, `main`.
 - Direct exact-main Git scans return no active `laravel-mix-docara` or
   `github:simai/docara-mix` reference. GitHub Contents API independently
   confirms the last stale-search hit, `ui-doc-core`, has a clean package

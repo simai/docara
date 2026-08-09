@@ -182,5 +182,13 @@ can unlock `docara-mix` archival.
 - Cleanup: the five obsolete migration branches were deleted locally and
   remotely, their dedicated worktrees were removed, and the generated
   disposable integration roots were retired after evidence capture.
+- Branch closeout: the publications graph worktree was already an ancestor of
+  main and was removed. `simai-env/codex/docs-restructure` contained one
+  superseded documentation-layout draft while its PHP-FPM fix was
+  patch-equivalent to main; `ui-doc-core/detached` contained a 2025 parser/CSS
+  experiment against the retired `helpers/Parser.php` contour. Their exact
+  tips remain in verified all-refs bundles. Both branches were deleted, and
+  final `git ls-remote --heads` returned exactly `refs/heads/main` for Docara
+  plus all five consumers.
 - Safety: the action gate had no hard blocker; no force push, reset, history
   rewrite, tag, package publication or manual deploy was performed.

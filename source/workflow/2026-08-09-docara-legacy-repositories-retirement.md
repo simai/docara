@@ -1,11 +1,11 @@
 # Workflow: Docara legacy repositories retirement
 
 Date: 2026-08-09
-Status: blocked after partial completion
+Status: completed
 Process model: `general_delivery` with destructive/action gate
 Track ID: `docara-legacy-repositories-retirement`
-Current goal: preserve, verify, retire and remove the obsolete external
-`docara-mix` and `docara-template` working copies without losing recoverability.
+Current goal: terminal closeout; the five consumers are migrated and both
+obsolete external repositories are archived with verified rollback evidence.
 
 ## Final Outcome
 
@@ -98,6 +98,52 @@ Durable concise evidence is recorded under:
 
 Large bundles, patches, archives, clone scans and raw logs remain outside Git.
 
+## Authorized Resume: Five-consumer Migration
+
+User authorization: migrate the five active default-branch consumers to their
+existing Vite migration intent, independently retest the exact current-main
+integrations, repeat zero-reference proof, then archive and locally retire
+`docara-mix` only after the gate passes.
+
+### Resume Done When
+
+- `simai-env`, `publications`, `sf4-doc`, `ui-doc-core`, and `sitepack` each
+  have a verified rollback bundle covering current refs and any dirty state.
+- The migration intent is replayed onto each freshly fetched `origin/main`
+  without using stale branch history as current evidence.
+- Every repository passes its available focused install/build/test checks from
+  the integrated candidate; dirty primary worktrees remain untouched.
+- Exact integrated commits reach their GitHub `main` only after checks and an
+  action gate; no force push or history rewrite occurs.
+- Fresh default-branch scans and GitHub code search return zero active
+  `laravel-mix-docara`/`docara-mix` references.
+- Obsolete migration branches/worktrees are removed only after the matching
+  `main` contains and verifies the intended changes.
+- `docara-mix` is archived, remains readable, and its dirty local recovery
+  directory is removed from the workspace only after the zero-reference and
+  rollback gates pass.
+
+### Resume Stop Conditions
+
+- Stop an individual consumer if the existing migration does not replay cleanly
+  or its current main has materially changed the frontend contract.
+- Stop default-branch mutation if install/build/test fails, a dirty primary
+  worktree would be overwritten, or the candidate is not a fast-forward from
+  the current remote main.
+- Stop `docara-mix` retirement if any active default branch, CI path, generated
+  package or documented install path still requires it.
+
+### Resume Batch Plan
+
+| Batch | Work | Verification | Status |
+| --- | --- | --- | --- |
+| R1 | freeze five repos and migration refs | exact refs/status/worktrees plus verified bundles/patches | completed |
+| R2 | replay migrations in detached clean worktrees | diff review, no stale source replacement, candidate refs | completed |
+| R3 | install/build/test exact candidates | repository-specific checks and package output | completed |
+| R4 | fast-forward GitHub mains and clean migration refs/worktrees | remote SHA, merged ancestry, zero unique refs | completed |
+| R5 | zero-reference retest and `docara-mix` retirement | Git/default-branch/API scan, archive/read smoke, rollback | completed |
+| R6 | final evidence and Docara main synchronization | project-context/diff/clean-status checks | completed |
+
 ## Progress
 
 ### Batch 1
@@ -128,3 +174,35 @@ Large bundles, patches, archives, clone scans and raw logs remain outside Git.
   GitHub access helper.
 - Next: do not manufacture completion by archiving a still-consumed package.
   Resume only as a separately governed five-consumer migration/retest batch.
+
+### Authorized Resume Closeout
+
+- Status: completed.
+- The current-main migration candidates were installed and built with ServBay
+  PHP 8.2 plus Node 22/Yarn 1.22. The four locked Docara 1.3 sites received a
+  bounded Vite-to-legacy-manifest compatibility bridge; `ui-doc-core` uses its
+  native Vite helper and was verified through a disposable consumer fixture.
+- Exact GitHub and local `main` revisions are:
+  `simai-env@c9c7d88dc9fb787fb67c0d55b294220e440558f1`,
+  `publications@599a193c2b01690b68904427ecea6bdbe4a90855`,
+  `sf4-doc@b7ab42f5cfe591898c2295e92660c8fa4e204278`,
+  `ui-doc-core@e3420d565bd46a0e00337e0d7c61216176aabe16`, and
+  `sitepack@197f60ea19a3f02527b38b99e2dba702f3d30e6a`.
+- All pushes were fast-forwards. The five remote/local
+  `codex/docara-vite-migration` branches and their dedicated worktrees were
+  removed only after main integration. Two replayed migrations were proven
+  equivalent to their obsolete branches by stable patch-id; the other three
+  old commits are ancestors of main.
+- Direct exact-main Git scans return no active `laravel-mix-docara` or
+  `github:simai/docara-mix` reference. GitHub Contents API independently
+  confirms the last stale-search hit, `ui-doc-core`, has a clean package
+  manifest and no `webpack.mix.js` on main; the Code Search result still
+  naming those deleted paths is an indexing lag, not an active reference.
+- `simai/docara-mix` now reports `archived=true`; read-only `git ls-remote`
+  still resolves main to `cec3c648e5c1d465a589bbe37388227979c3820d`.
+  Its dirty recovery worktree was reversibly moved to
+  `/Users/rim/.Trash/docara-mix-retired-20260809T103851+0300` after backup
+  verification.
+- No force push, history rewrite, tag, package publication or manually
+  initiated deployment was performed. Push-triggered existing GitHub Actions
+  completed successfully for `simai-env`, `sf4-doc` and `sitepack`.

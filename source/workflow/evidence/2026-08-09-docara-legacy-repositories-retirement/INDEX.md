@@ -1,8 +1,8 @@
 # Docara legacy repositories retirement evidence
 
 Date: 2026-08-09
-Verdict: `PARTIAL` — `docara-template` retired; `docara-mix` blocked by active
-default-branch consumers.
+Verdict: `PASS` — five consumers migrated to Vite; `docara-template` and
+`docara-mix` archived with verified rollback.
 
 ## Canonical Product Boundary
 
@@ -142,10 +142,45 @@ can unlock `docara-mix` archival.
 
 ## Final Outcome Integrity
 
-- Outcome: partial; one obsolete repository retired, one correctly stopped.
-- Integration: GitHub archive state and local removal were independently
-  re-read after mutation.
-- Evidence freshness: all consumer refs and repository metadata were fetched
-  in this batch.
-- Simplicity: the obsolete second template source is gone; no compatibility
-  dependency was hidden or broken to manufacture a clean result.
+- Outcome: PASS; both obsolete repositories are archived and absent from the
+  active GitHub workspace, while their complete dirty states remain
+  recoverable.
+- Integration: the exact local and GitHub default revisions are
+  `simai-env@c9c7d88dc9fb787fb67c0d55b294220e440558f1`,
+  `publications@599a193c2b01690b68904427ecea6bdbe4a90855`,
+  `sf4-doc@b7ab42f5cfe591898c2295e92660c8fa4e204278`,
+  `ui-doc-core@e3420d565bd46a0e00337e0d7c61216176aabe16`, and
+  `sitepack@197f60ea19a3f02527b38b99e2dba702f3d30e6a`.
+- Candidate proof: exact Composer locks installed; Docara init and exact
+  Node 22/Yarn 1.22 production builds passed. Stable output ledgers were:
+  `simai-env` 95 files/77 HTML digest
+  `569080176fb21f8bf9124b541c5cdbd75c7a6134d9b4753880eba4a9abb93fe0`;
+  `publications` 67/49
+  `6b25ceb42c64572974d283b076358987535456d4c50d7f7a5635c5e23dfa423a`;
+  `sf4-doc` 159/141
+  `a8e1fcb4dd2b0617e0ada7181d080c6b1c11311815dc730f5e754abfcc6b8992`;
+  `sitepack` 71/52
+  `254f139cbc4603cc023797d2dbdfad423aabbe2eeeecf85940f66df53dcf884f`;
+  disposable `ui-doc-core` consumer 61/49
+  `ee3d916b23d39f7ee923d5c70555e38e0b060cc8372cf1542f6051660e656699`.
+- Runtime note: a generic post-build link probe also exposed existing
+  language self-links such as `/en/en` in several locked Docara 1.3 sites;
+  asset builds, generated manifests and CI passed. This is not an active
+  `docara-mix` dependency and was not hidden as part of retirement.
+- GitHub verification: push-triggered current-main Actions succeeded for
+  `simai-env`, `sf4-doc` and `sitepack`; `publications` is intentionally
+  manual-only and `ui-doc-core` has no current workflow.
+- Reference gate: exact local/remote main trees contain zero active package or
+  repository references. GitHub Search temporarily returned deleted
+  `ui-doc-core` paths; authoritative Contents API returned a clean
+  `package.json` and HTTP 404 for `webpack.mix.js`, proving index lag.
+- Retirement: `simai/docara-mix` was changed from `archived=false` to
+  `archived=true`, then re-read as archived; `git ls-remote` still resolves
+  main at `cec3c648e5c1d465a589bbe37388227979c3820d`. The original dirty local
+  directory is at
+  `/Users/rim/.Trash/docara-mix-retired-20260809T103851+0300`.
+- Cleanup: the five obsolete migration branches were deleted locally and
+  remotely, their dedicated worktrees were removed, and the generated
+  disposable integration roots were retired after evidence capture.
+- Safety: the action gate had no hard blocker; no force push, reset, history
+  rewrite, tag, package publication or manual deploy was performed.

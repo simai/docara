@@ -1,33 +1,26 @@
 # Дорожная карта упрощения Docara
 
-Текущий статус архитектурного roadmap: Goal 1, Goal 2, Goal 3 и Goals A-C
-независимо приняты. Отдельно авторизованный post-roadmap track Surface & Hero
-Media независимо принял Goal S1 на exact candidate
-`ac53ea4d372a47dc8278b595accca9e7b85c66a3` (`PASS`) и Goal S2 на
-`7eeba4ad7b5acd00f833bf2022e45775444fb69c` (`PASS_WITH_NOTES`). Goal S3
-завершает общий Surface runtime и публичную документацию на exact candidate
-`dd2c0d623f0757e172861fdac959b839a7fff495`; track готов к решению пользователя.
-Goal C C1 исправил projection/settings/journey defects на
-exact product candidate `eb35f5c6f18e5eb9be69e91887b09486f5703136`,
-который независимый reverse-outcome audit принял с `PASS`. После этого
-component catalogue был упрощён без изменения runtime: корень содержит две
-трёхколоночные таблицы с 31 реальной component/reference page, а общая
-модель authoring живёт в `/start/component-model/`. Старые обзорные URL
-сохранены через redirects. Разделы дизайна
-разделы дизайна и настроек, исполняемый safe agent journey и принятые extension
-demos опубликованы из Markdown, admitted Atlas и exhaustive schema-derived
-проекций без второго publication path. Product track A-C завершён; release
-review остаётся отдельным неавторизованным действием.
-Интеграция SF5 5.4 typography завершена на exact parent candidate
-`d6e511c1ed73aa4d1a91b666340549a28ec1312f`. Текущий отдельный local Framework
-runtime candidate `08cf9eb6b9dbd0175b87854dc9ec9652ebccc773` находится в
-`ready_for_independent_audit`; он развернут только на явно разрешённом
-`docara-new.test` с exact rollback. Merge/tag/release/production deploy не
-разрешены.
-Исторический R2
-`PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3` остаются parked release
-baseline, а не текущим кандидатом или действием. Tag, release и production не
-заявлены.
+Текущий статус: ограниченный lifecycle общих примеров и контроля переводов
+завершён и проверен. Он добавил `examples/<id>/`, receipt зависимостей,
+неблокирующий translation report и hash-bound acceptance, затем внедрил их в
+`ui-doc`. Активной implementation-задачи нет; commit, push, tag, release,
+publication и deploy требуют отдельного решения.
+
+Предыдущий roadmap и post-roadmap implementation завершены. Goal 1-3,
+Goals A-C, Surface/Hero Goals S1-S3, SF5 typography и local Framework runtime
+имеют принятую evidence chain. `ui-doc` мигрирован в content-only consumer,
+standalone Docara v2 сведена на `main`, а legacy repositories закрыты отдельным
+verified retirement workflow.
+
+Терминальное состояние и критерии нового входа находятся в
+`source/workflow/ACTIVE.md`. Исторические revision и baseline ниже остаются
+evidence прошлого closeout и не являются версией, tag или release
+authorization.
+
+Исторический R2 `PASS_DISPOSABLE_CORRECTED` и unpublished `2.0.0-rc.3`
+остаются parked evidence, а не текущим кандидатом или действием. Единственный
+вход в новый lifecycle-контур — отдельный `explicit_user_decision`; до него
+version, tag, release, publication и deploy не разрешены.
 
 Переход выполняется вертикальными срезами. Цель — не переписать весь код за
 один раз, а доказать новый единственный конвейер на одной реальной странице,
@@ -311,10 +304,14 @@ cutover/rollback матрицы повторены для exact rc.3. Live deplo
 
 ## Порядок продолжения
 
-Текущий recovery source —
-`source/workflow/2026-08-04-docara-goal-a-shell-contract.md`. M0–M5, R1-C, R2 и
-принятые Goal 1–3 не переигрываются. Следующее действие — A1 typed
-BindingRegistry. Goal B, release review и production gates пока не открыты.
+Текущий router — `source/workflow/ACTIVE.md`; terminal handoff —
+`source/handoff/2026-08-09-docara-current-main-onboarding/START.md`. M0-M5,
+R1-C/R2, Goals 1-3, Goals A-C и Surface/Hero Goals S1-S3 не переигрываются.
+
+Автоматического следующего implementation batch нет. Следующее действие —
+`explicit_user_decision`. Пользователь должен отдельно определить, нужен ли
+version/release action, exact revision/artifact, version/channel и scope
+tag/publication/deploy. До этого release gates закрыты.
 
 ## Запрещённые сокращения
 

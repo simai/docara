@@ -30,6 +30,9 @@
     "src/PortableSite/PortableAtlasIndexHydrator.php",
     "src/PortableSite/PortableSchemaReferenceProjector.php",
     "src/PortableSite/PortableSchemaReferenceHydrator.php",
+    "src/PortableSite/PortableMarkdownRenderer.php#PortableMarkdownRenderer::renderExampleDocument",
+    "resources/portable/declarative-shell.js",
+    "resources/portable/declarative-shell.css",
     "scripts/verify-static-build.php",
     "resources/legacy-public-source-allowlist.json",
     "resources/schemas/lang.schema.json",
@@ -79,7 +82,10 @@
     "tests/Unit/EffectiveComponentCatalogTest.php#every_entry_points_to_its_exact_authored_documentation_owner",
     "tests/Unit/GoalCPublicDocumentationTest.php",
     "tests/Unit/PortableAtlasIndexHydratorTest.php",
-    "tests/Unit/PortableSchemaReferenceProjectorTest.php"
+    "tests/Unit/PortableSchemaReferenceProjectorTest.php",
+    "tests/Unit/PortableMarkdownRendererTest.php",
+    "tests/PortableSiteBuilderTest.php",
+    "tests/PortableDocumentationSiteTest.php"
   ],
   "evidence_refs": [
     "docara.evidence.m0_inventory",
@@ -112,7 +118,11 @@
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.2-PHYSICAL-EXAMPLES.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.3-PROJECTOR-RETIREMENT.md",
     "source/workflow/evidence/2026-08-01-docara-unified-architecture/m4-public-ru-unification/M4.5-INTEGRATED-ACCEPTANCE.md",
-    "source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md"
+    "source/workflow/evidence/2026-08-05-docara-goal-c-c1-truthfulness-correction/INDEX.md",
+    "source/workflow/2026-08-25-example-auto-height.md",
+    "source/output/human-centered-simplicity/2026-08-25-example-auto-height/verdict.json",
+    "source/workflow/2026-08-25-framework-aware-example.md",
+    "source/output/human-centered-simplicity/2026-08-25-framework-aware-example/verdict.json"
   ],
   "review_refs": ["docara.gate.source_ownership"],
   "current_behavior": [
@@ -138,6 +148,8 @@
     "M3.3 batch 16 makes Diagram and Math physical, removes their Russian prose records/localized examples and preserves accessible Mermaid/TeX source behavior without new client engines.",
     "M3.3 batch 17 makes Code-from-file and HTML physical, removes their Russian prose records/localized examples and preserves external-source and sandbox boundaries through the shared typed-directive/example renderer path.",
     "M3.3 batch 18 makes Embed and Example physical, removes their Russian prose records/localized examples, repairs the shared consent activation and derives visible loading labels from the Markdown owner.",
+    "Native HTML/CSS/JavaScript Example previews report their sandboxed rendered height to the shared shell; source tabs and external internal-preview size presets retain their existing contracts.",
+    "Native Example previews receive only pinned Framework stylesheets plus the current theme and direction from the owning shell, preserving the sandbox while avoiding per-page preview CSS.",
     "M3.3 batch 19 makes Steps and Tree physical, removes their Russian prose records/localized examples and adds accessible branch keyboard behavior through the shared declarative shell.",
     "M3.3 batch 20 makes Tabs physical, removes its Russian prose record/localized example and leaves a valid hash-bound empty detail receipt while the generated component index remains verified.",
     "M3.4 batch 21 makes the component index physical and derives its ordered list from PageBuilder route/title/description metadata through one generic typed-directive placeholder and hash-bound isolated-build receipt.",

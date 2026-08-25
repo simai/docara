@@ -1,0 +1,52 @@
+{
+  "$schema": "https://mirai-graph.dev/schemas/graph-manifest.schema.json",
+  "aliases": [
+    "workspace.docara.local"
+  ],
+  "extensions": {
+    "mirai.project_technology": {
+      "context_policy": "task_scoped",
+      "contract_version": "1.0.0",
+      "enabled": true,
+      "source_boundary": "hybrid_sot"
+    }
+  },
+  "format": "mirai-graph",
+  "graph": {
+    "generated": [
+      "graph/generated"
+    ],
+    "objects": [
+      "graph/dna",
+      "graph/specs"
+    ],
+    "raw_sources": [
+      "README.md",
+      "docs",
+      "source"
+    ],
+    "relations": [
+      "graph/specs/technology/project-technology-mode.json"
+    ],
+    "root": "graph",
+    "schemas": [
+      "graph/schemas"
+    ],
+    "source_of_truth": [
+      "graph/specs"
+    ]
+  },
+  "id": "docara.unified",
+  "imports": [],
+  "kind": "repository_graph",
+  "owner": "teamlead",
+  "profiles": [
+    "project_management",
+    "software_specification",
+    "implementation_control",
+    "technology_quality_feedback"
+  ],
+  "schema_version": "2.0.0",
+  "scope": "repository",
+  "title": "Docara Unified Project Technology"
+}

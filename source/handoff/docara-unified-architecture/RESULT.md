@@ -1,10 +1,20 @@
-# Current Docara result
+# Historical Docara architecture result
 
-Current state: `docara_main_converged_ui_doc_migration_next`
+Routing status: `superseded_historical_result`
 
-Current candidate: `d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f`
+Terminal state: `docara_terminal_no_active_implementation`
+
+Active implementation: `false`
+
+Historical final implementation candidate: `d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f`
 
 Current evidence: `source/workflow/evidence/2026-08-08-docara-main-convergence/INDEX.md`
+
+Current router:
+`source/handoff/2026-08-09-docara-current-main-onboarding/START.md`.
+
+The chronology below is preserved as historical evidence. Its former next
+actions are not executable routing.
 
 ## Local Framework runtime result
 

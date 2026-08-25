@@ -136,3 +136,13 @@ php scripts/capture-component-source-metadata.php
 - physical component pages and receipts are verified against the same route set;
 - Framework implementation details remain replaceable without changing
   authored Markdown.
+
+## Reusable project examples
+
+An inline `:::example` remains the smallest option for a unique demonstration.
+A reusable demonstration lives under `examples/<id>/` with required
+`index.html`, optional `index.css`, `index.js`, and `assets/`, and is referenced
+as `:::example {id="<id>" label="Result"}`. One block uses either an ID or
+inline sources, never both. The build records source hashes, consumers, and
+published assets in `.docara/examples.json`; changing a referenced example
+requires a full build.

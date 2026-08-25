@@ -31,6 +31,7 @@ __pycache__/
 /.phpunit.cache/
 /composer.lock
 /.playwright-cli/
+/.mirai-graph/
 /figma_variables/
 /retype-badge.html
 /tools/figma-write-bridge/

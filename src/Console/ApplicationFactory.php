@@ -13,6 +13,7 @@ use Simai\Docara\Application\ScaffoldService;
 use Simai\Docara\Application\ValidationService;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\File\ProjectFilesystemGuard;
+use Simai\Docara\I18n\TranslationStatusService;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableProjectInitializer;
 use Simai\Docara\PortableSite\PortableProjectUpdater;
@@ -40,6 +41,7 @@ final class ApplicationFactory
             (new InitCommand($files, new PortableProjectInitializer($files)))->setBase($base),
             (new UpdateCommand(new PortableProjectUpdater($files)))->setBase($base),
             (new BuildCommand($builder))->setBase($base),
+            (new TranslationsCommand(new TranslationStatusService))->setBase($base),
             (new PreviewCommand($preview, new PreviewShell($files, $writes)))->setBase($base),
             (new ServeCommand)->setBase($base),
             (new VerifyStaticCommand)->setBase($base),

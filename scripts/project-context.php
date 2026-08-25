@@ -18,9 +18,9 @@ final class ProjectContext
         $root = rtrim($root, '/');
         $graph = self::json($root, 'graph/graph.json');
         $state = self::map($graph, 'implementation_state', 'graph/graph.json');
-        $goal = self::objectById($root, 'goals', self::string($state, 'current_goal', 'implementation_state'));
-        $stage = self::objectById($root, 'stages', self::string($state, 'current_stage', 'implementation_state'));
-        $batch = self::objectById($root, 'batches', self::string($state, 'current_batch', 'implementation_state'));
+        $goal = self::objectById($root, 'goals', self::string($state, 'completed_goal', 'implementation_state'));
+        $stage = self::objectById($root, 'stages', self::string($state, 'last_completed_stage', 'implementation_state'));
+        $batch = self::objectById($root, 'batches', self::string($state, 'last_completed_batch', 'implementation_state'));
         $goalData = $goal['data'];
         $stageData = $stage['data'];
         $batchData = $batch['data'];
@@ -34,8 +34,8 @@ final class ProjectContext
         ];
 
         return [
-            'schema_version' => '1.0.0',
-            'context_id' => 'docara.unified.active',
+            'schema_version' => '1.1.0',
+            'context_id' => 'docara.unified.terminal',
             'generated_by' => 'scripts/project-context.php',
             'canonical_sources' => $sources,
             'canonical_sha256' => self::digest($root, $sources),
@@ -44,38 +44,39 @@ final class ProjectContext
                 'title' => self::string($graph, 'title', 'graph/graph.json'),
                 'profile' => self::string($graph, 'graph_type', 'graph/graph.json'),
             ],
-            'active' => [
+            'terminal' => [
                 'state' => self::string($state, 'state', 'implementation_state'),
                 'goal' => self::string($goalData, 'id', $goal['path']),
                 'goal_readiness' => self::string($goalData, 'readiness', $goal['path']),
-                'stage' => self::string($stageData, 'id', $stage['path']),
-                'stage_readiness' => self::string($stageData, 'readiness', $stage['path']),
-                'stage_status' => self::string($stageData, 'status', $stage['path']),
-                'batch' => self::string($batchData, 'id', $batch['path']),
-                'batch_readiness' => self::string($batchData, 'readiness', $batch['path']),
-                'batch_status' => self::string($batchData, 'status', $batch['path']),
+                'goal_lifecycle' => self::string($goalData, 'lifecycle', $goal['path']),
+                'active_implementation' => self::boolean($state, 'active_implementation', 'implementation_state'),
+                'last_completed_stage' => self::string($stageData, 'id', $stage['path']),
+                'last_completed_stage_status' => self::string($stageData, 'status', $stage['path']),
+                'last_completed_batch' => self::string($batchData, 'id', $batch['path']),
+                'last_completed_batch_status' => self::string($batchData, 'status', $batch['path']),
                 'completed_checkpoint' => self::string($state, 'completed_checkpoint', 'implementation_state'),
-                'candidate_revision' => self::string($state, 'candidate_revision', 'implementation_state'),
+                'repository_revision' => self::string($state, 'repository_revision', 'implementation_state'),
+                'product_baseline_revision' => self::string($state, 'product_baseline_revision', 'implementation_state'),
                 'next_action' => self::string($state, 'next_action', 'implementation_state'),
                 'evidence' => self::string($state, 'evidence', 'implementation_state'),
             ],
             'roadmap' => [
                 'source' => $roadmapSource,
-                'next_goal' => self::map($state, 'next_goal', 'implementation_state'),
             ],
+            'release_boundary' => self::map($state, 'release_boundary', 'implementation_state'),
             'architecture' => self::map($graph, 'architecture_target', 'graph/graph.json'),
             'historical_context' => self::map($graph, 'historical_context', 'graph/graph.json'),
             'forbidden_now' => self::stringList($batchData['forbidden_scope'] ?? null, $batch['path'] . '.forbidden_scope'),
             'read_order' => [
-                'source/handoff/docara-unified-architecture/STATUS.yaml',
+                'source/handoff/2026-08-09-docara-current-main-onboarding/STATUS.yaml',
                 'source/workflow/ACTIVE.md',
                 $roadmapSource,
                 'graph/graph.json',
                 $stage['path'],
                 $batch['path'],
                 self::OUTPUT,
-                'source/handoff/docara-unified-architecture/NEXT.md',
-                'source/handoff/docara-unified-architecture/RESULT.md',
+                'source/handoff/2026-08-09-docara-current-main-onboarding/NEXT.md',
+                'source/handoff/2026-08-09-docara-current-main-onboarding/RESULT.md',
             ],
         ];
     }
@@ -129,32 +130,45 @@ final class ProjectContext
      */
     private static function canonicalConsistency(string $root, array $expected): array
     {
-        $active = self::map($expected, 'active', 'expected context');
+        $terminal = self::map($expected, 'terminal', 'expected context');
         $graph = self::json($root, 'graph/graph.json');
         $state = self::map($graph, 'implementation_state', 'graph/graph.json');
-        $stage = self::objectById($root, 'stages', self::string($state, 'current_stage', 'implementation_state'))['data'];
-        $batch = self::objectById($root, 'batches', self::string($state, 'current_batch', 'implementation_state'))['data'];
+        $goal = self::objectById($root, 'goals', self::string($state, 'completed_goal', 'implementation_state'))['data'];
+        $stage = self::objectById($root, 'stages', self::string($state, 'last_completed_stage', 'implementation_state'))['data'];
+        $batch = self::objectById($root, 'batches', self::string($state, 'last_completed_batch', 'implementation_state'))['data'];
         $issues = [];
 
-        if (self::string($state, 'state', 'implementation_state') !== self::string($active, 'goal_readiness', 'active')) {
+        if (self::string($state, 'state', 'implementation_state') !== self::string($terminal, 'goal_readiness', 'terminal')) {
             $issues[] = self::issue('canonical_state_goal_readiness_mismatch', 'implementation_state.state must equal current goal readiness');
         }
-        if (! in_array(self::string($state, 'current_batch', 'implementation_state'), self::stringList($stage['batch_refs'] ?? null, 'stage.batch_refs'), true)) {
-            $issues[] = self::issue('canonical_stage_batch_mismatch', 'current batch is not owned by current stage');
+        if (self::boolean($state, 'active_implementation', 'implementation_state')) {
+            $issues[] = self::issue('canonical_terminal_implementation_active', 'terminal state must not expose an active implementation');
+        }
+        if (($goal['lifecycle'] ?? null) !== 'complete') {
+            $issues[] = self::issue('canonical_goal_not_complete', 'terminal goal lifecycle must be complete');
+        }
+        if (! in_array(self::string($state, 'last_completed_batch', 'implementation_state'), self::stringList($stage['batch_refs'] ?? null, 'stage.batch_refs'), true)) {
+            $issues[] = self::issue('canonical_last_stage_batch_mismatch', 'last completed batch is not owned by last completed stage');
         }
         if (($batch['parent_stage_ref'] ?? null) !== ($stage['id'] ?? null)) {
-            $issues[] = self::issue('canonical_batch_parent_mismatch', 'batch parent_stage_ref does not match current stage');
+            $issues[] = self::issue('canonical_last_batch_parent_mismatch', 'last completed batch parent does not match last completed stage');
         }
-        if (self::string($state, 'candidate_revision', 'implementation_state') !== ($batch['candidate_revision'] ?? null)) {
-            $issues[] = self::issue('canonical_candidate_mismatch', 'implementation candidate differs from current batch candidate');
+        if (($stage['next_action'] ?? null) !== 'none' || ($batch['next_action'] ?? null) !== 'none') {
+            $issues[] = self::issue('canonical_last_work_still_routes', 'last completed stage and batch must not route new implementation');
         }
-        if (self::string($state, 'next_action', 'implementation_state') !== ($batch['next_action'] ?? null)) {
-            $issues[] = self::issue('canonical_next_action_mismatch', 'implementation next action differs from current batch next action');
+        $releaseBoundary = self::map($state, 'release_boundary', 'implementation_state');
+        if (($releaseBoundary['authorized'] ?? null) !== false
+            || self::string($releaseBoundary, 'required_decision', 'release_boundary') !== 'explicit_user_decision'
+            || self::string($state, 'next_action', 'implementation_state') !== 'explicit_user_decision') {
+            $issues[] = self::issue('canonical_release_boundary_invalid', 'release contour must remain closed pending explicit_user_decision');
         }
-        $evidence = self::string($state, 'evidence', 'implementation_state');
-        if (! in_array($evidence, self::stringList($stage['evidence_refs'] ?? null, 'stage.evidence_refs'), true)
-            || ! in_array($evidence, self::stringList($batch['evidence_refs'] ?? null, 'batch.evidence_refs'), true)) {
-            $issues[] = self::issue('canonical_evidence_mismatch', 'implementation evidence is not shared by current stage and batch');
+        foreach (['repository_revision', 'product_baseline_revision'] as $revisionField) {
+            if (preg_match('/^[0-9a-f]{40}$/', self::string($state, $revisionField, 'implementation_state')) !== 1) {
+                $issues[] = self::issue('canonical_revision_invalid', "implementation_state.$revisionField must be a full Git revision");
+            }
+        }
+        if (! is_file(rtrim($root, '/') . '/' . self::string($state, 'evidence', 'implementation_state'))) {
+            $issues[] = self::issue('canonical_terminal_evidence_missing', 'terminal evidence path must exist');
         }
 
         return $issues;
@@ -165,30 +179,28 @@ final class ProjectContext
      */
     private static function handoffConsistency(string $root, array $expected): array
     {
-        $active = self::map($expected, 'active', 'expected context');
-        $nextGoal = self::map(self::map($expected, 'roadmap', 'expected context'), 'next_goal', 'roadmap');
-        $candidate = self::string($active, 'candidate_revision', 'active');
-        $state = self::string($active, 'state', 'active');
-        $stage = self::string($active, 'stage', 'active');
-        $batch = self::string($active, 'batch', 'active');
-        $next = self::string($active, 'next_action', 'active');
-        $evidence = self::string($active, 'evidence', 'active');
-        $goal = self::string($active, 'goal', 'active');
-        $nextGoalId = self::string($nextGoal, 'id', 'next_goal');
-        $nextGoalStatus = self::string($nextGoal, 'status', 'next_goal');
-        $nextGoalAuthorized = ($nextGoal['authorized'] ?? null) === true ? 'true' : 'false';
+        $terminal = self::map($expected, 'terminal', 'expected context');
+        $state = self::string($terminal, 'state', 'terminal');
+        $stage = self::string($terminal, 'last_completed_stage', 'terminal');
+        $batch = self::string($terminal, 'last_completed_batch', 'terminal');
+        $next = self::string($terminal, 'next_action', 'terminal');
+        $evidence = self::string($terminal, 'evidence', 'terminal');
+        $goal = self::string($terminal, 'goal', 'terminal');
+        $repositoryRevision = self::string($terminal, 'repository_revision', 'terminal');
+        $productBaseline = self::string($terminal, 'product_baseline_revision', 'terminal');
         $roadmapSource = self::string(self::map($expected, 'roadmap', 'expected context'), 'source', 'roadmap');
         $issues = [];
 
-        $statusPath = 'source/handoff/docara-unified-architecture/STATUS.yaml';
+        $statusPath = 'source/handoff/2026-08-09-docara-current-main-onboarding/STATUS.yaml';
         $status = self::text($root, $statusPath);
         foreach ([
-            'goal' => $goal,
-            'state' => $state,
-            'current_stage' => $stage,
-            'current_batch' => $batch,
+            'terminal_state' => $state,
+            'completed_goal' => $goal,
+            'last_completed_stage' => $stage,
+            'last_completed_batch' => $batch,
             'next_action' => $next,
-            'candidate_revision' => $candidate,
+            'repository_revision' => $repositoryRevision,
+            'product_baseline_revision' => $productBaseline,
             'evidence' => $evidence,
         ] as $key => $value) {
             if (self::yamlScalar($status, $key) !== $value) {
@@ -197,44 +209,37 @@ final class ProjectContext
         }
 
         $required = [
-            'source/handoff/docara-unified-architecture/START.md' => [
-                "Current state: `$state`",
-                "Current goal: `$goal`",
-                "Current stage: `$stage`",
-                "Current batch: `$batch`",
-                "Current next action: `$next`",
-                "Current evidence: `$evidence`",
-                "Current candidate: `$candidate`",
-                "Next roadmap goal: `$nextGoalId`",
-                "Next roadmap status: `$nextGoalStatus`",
-                "Next roadmap authorized: `$nextGoalAuthorized`",
+            'source/handoff/2026-08-09-docara-current-main-onboarding/START.md' => [
+                "Terminal state: `$state`",
+                "Completed goal: `$goal`",
+                "Last completed stage: `$stage`",
+                "Last completed batch: `$batch`",
+                "Next action: `$next`",
+                "Repository revision: `$repositoryRevision`",
+                "Product baseline revision: `$productBaseline`",
             ],
             'source/workflow/ACTIVE.md' => [
-                "- state: `$state`;",
-                "- goal: `$goal`;",
-                "- stage: `$stage`;",
-                "- batch: `$batch`;",
+                "- terminal state: `$state`;",
+                "- completed goal: `$goal`;",
+                "- last completed stage: `$stage`;",
+                "- last completed batch: `$batch`;",
                 "- next action: `$next`;",
-                "- candidate: `$candidate`;",
-                "- fresh evidence: `$evidence`;",
+                "- repository revision: `$repositoryRevision`;",
+                "- product baseline revision: `$productBaseline`;",
             ],
-            'source/handoff/docara-unified-architecture/NEXT.md' => [
+            'source/handoff/2026-08-09-docara-current-main-onboarding/NEXT.md' => [
                 "# Next action: `$next`",
-                "Current state: `$state`",
-                "Current candidate: `$candidate`",
-                "Current evidence: `$evidence`",
+                "Terminal state: `$state`",
+                'Release authorized: `false`',
             ],
-            'source/handoff/docara-unified-architecture/RESULT.md' => [
-                "Current state: `$state`",
-                "Current candidate: `$candidate`",
-                "Current evidence: `$evidence`",
+            'source/handoff/2026-08-09-docara-current-main-onboarding/RESULT.md' => [
+                "Terminal state: `$state`",
+                "Repository revision: `$repositoryRevision`",
+                "Product baseline revision: `$productBaseline`",
             ],
             $roadmapSource => [
-                "Status: `$state`",
-                "Current stage: `$stage`",
-                "Current batch: `$batch`",
-                "Current next action: `$next`",
-                "Next roadmap goal: `$nextGoalId` (`$nextGoalStatus`, authorized=`$nextGoalAuthorized`)",
+                "Terminal state: `$state`",
+                "Next action: `$next`",
             ],
         ];
         foreach ($required as $relative => $needles) {
@@ -246,9 +251,9 @@ final class ProjectContext
             }
         }
 
-        foreach (['source/handoff/docara-unified-architecture/START.md'] as $relative) {
+        foreach (['source/handoff/2026-08-09-docara-current-main-onboarding/START.md'] as $relative) {
             $contents = self::text($root, $relative);
-            foreach (['Current state:', 'Current stage:', 'Current batch:', 'Current next action:'] as $label) {
+            foreach (['Terminal state:', 'Last completed stage:', 'Last completed batch:', 'Next action:'] as $label) {
                 if (substr_count($contents, $label) !== 1) {
                     $issues[] = self::issue('active_router_marker_cardinality_invalid', "$relative must contain exactly one [$label] marker");
                 }
@@ -328,6 +333,17 @@ final class ProjectContext
         $value = $source[$key] ?? null;
         if (! is_string($value) || $value === '') {
             throw new RuntimeException("PROJECT_CONTEXT_STRING_REQUIRED:$owner:$key");
+        }
+
+        return $value;
+    }
+
+    /** @param array<string, mixed> $source */
+    private static function boolean(array $source, string $key, string $owner): bool
+    {
+        $value = $source[$key] ?? null;
+        if (! is_bool($value)) {
+            throw new RuntimeException("PROJECT_CONTEXT_BOOLEAN_REQUIRED:$owner:$key");
         }
 
         return $value;

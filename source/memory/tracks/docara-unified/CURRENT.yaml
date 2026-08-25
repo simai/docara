@@ -1,0 +1,12 @@
+track_id: "docara-unified"
+status: "completed"
+owner_skill: "docara"
+current_goal: ""
+current_stage: ""
+current_workflow: "source/workflow/2026-08-25-framework-aware-example.md"
+workflow_status: "completed"
+last_completed_batch: "framework_aware_native_example"
+next_step: "explicit_user_decision"
+blockers: []
+related_tracks: []
+updated_at: "2026-08-25"

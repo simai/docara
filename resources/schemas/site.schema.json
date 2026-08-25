@@ -94,10 +94,27 @@
         },
         "smart": {
             "$ref": "#/$defs/projectSmart"
+        },
+        "translation_tracking": {
+            "$ref": "#/$defs/translationTracking"
         }
     },
     "additionalProperties": false,
     "$defs": {
+        "translationTracking": {
+            "type": "object",
+            "required": ["enabled", "source_locale", "mode", "lock_file"],
+            "properties": {
+                "enabled": {"type": "boolean"},
+                "source_locale": {"type": "string", "format": "docara-bcp47"},
+                "mode": {"type": "string", "const": "report"},
+                "lock_file": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.json$"
+                }
+            },
+            "additionalProperties": false
+        },
         "projectSmart": {
             "type": "object",
             "required": ["namespace"],

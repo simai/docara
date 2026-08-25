@@ -7,8 +7,8 @@
   "title": "Единая понятная архитектура Docara",
   "summary": "Перевести Docara на один content-first конвейер, где каждая страница хранится в Markdown, композиция — в JSON, компоненты — в реестре, а HTML всегда является производным результатом.",
   "owner": "teamlead",
-  "lifecycle": "active",
-  "readiness": "docara_main_converged_ui_doc_migration_next",
+  "lifecycle": "complete",
+  "readiness": "docara_terminal_no_active_implementation",
   "visibility": "repository",
   "source_refs": [
     "docs/specification/DOCARA-TZ.md",
@@ -28,7 +28,8 @@
     "source/workflow/evidence/2026-08-07-docara-local-framework-runtime/INDEX.md",
     "source/workflow/evidence/2026-08-07-docara-alert-page-correction/INDEX.md",
     "source/workflow/evidence/2026-08-08-docara-v2-independent-main-readiness/INDEX.md",
-    "source/workflow/evidence/2026-08-08-docara-main-convergence/INDEX.md"
+    "source/workflow/evidence/2026-08-08-docara-main-convergence/INDEX.md",
+    "source/workflow/evidence/2026-08-09-docara-legacy-repositories-retirement/INDEX.md"
   ],
   "profile_refs": ["docara.unified"],
   "done_when": [
@@ -90,5 +91,12 @@
     "Each stage needs code mapping, tests and exact-revision evidence.",
     "Legacy deletion requires positive parity and negative no-reference checks.",
     "Release readiness remains a separate gate."
-  ]
+  ],
+  "terminal_state": {
+    "active_implementation": false,
+    "repository_revision": "d514c536b8cf379b90a15be8aaf14bcb85b06f7e",
+    "product_baseline_revision": "c5f6140a85435913a9d5f7389bdf34967d4d70f8",
+    "next_action": "explicit_user_decision",
+    "release_authorized": false
+  }
 }

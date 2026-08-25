@@ -8,6 +8,9 @@
   "dna_path": "graph/dna",
   "generated_path": "graph/generated",
   "source_path": "graph/source",
+  "canonical_manifest": "graph.json",
+  "compatibility_role": "project_graph_index_under_root_manifest",
+  "technology_contract": "graph/specs/technology/project-technology-mode.json",
   "management_profile": {
     "primary_owner_skill": "teamlead",
     "structure_owner_skill": "graph",
@@ -26,21 +29,28 @@
     "baseline_revision": "a3ba9a4d04429f1f2046b8415764fe7bc89962c7"
   },
   "implementation_state": {
-    "state": "docara_main_converged_ui_doc_migration_next",
-    "current_goal": "docara.goal.unified",
-    "current_stage": "docara.stage.lfr.local_framework_runtime",
-    "current_batch": "docara.batch.lfr.integrated_retest",
-    "completed_checkpoint": "local_framework_runtime_independently_accepted",
-    "candidate_revision": "d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f",
-    "next_action": "migrate_ui_doc_content_onto_docara_v2_then_converge_ui_doc_main",
-    "evidence": "source/workflow/evidence/2026-08-08-docara-main-convergence/INDEX.md",
-    "roadmap_source": "source/workflow/2026-08-08-docara-main-convergence.md",
-    "next_goal": {
-      "id": "ui_doc.content_migration",
-      "title": "Migrate useful ui-doc content onto Docara v2",
-      "status": "authorized_in_progress",
-      "authorized": true,
-      "source": "source/handoff/docara-unified-architecture/NEXT.md"
+    "state": "docara_terminal_no_active_implementation",
+    "active_implementation": false,
+    "completed_goal": "docara.goal.unified",
+    "last_completed_stage": "docara.stage.lfr.local_framework_runtime",
+    "last_completed_batch": "docara.batch.lfr.integrated_retest",
+    "completed_checkpoint": "standalone_docara_v2_main_terminal",
+    "repository_revision": "d514c536b8cf379b90a15be8aaf14bcb85b06f7e",
+    "product_baseline_revision": "c5f6140a85435913a9d5f7389bdf34967d4d70f8",
+    "next_action": "explicit_user_decision",
+    "evidence": "source/workflow/evidence/2026-08-09-docara-legacy-repositories-retirement/INDEX.md",
+    "roadmap_source": "source/workflow/2026-08-09-docara-terminal-governance-sync.md",
+    "release_boundary": {
+      "status": "closed_pending_explicit_user_decision",
+      "authorized": false,
+      "required_decision": "explicit_user_decision",
+      "forbidden_without_decision": [
+        "version_change",
+        "tag",
+        "release",
+        "package_publication",
+        "deploy"
+      ]
     }
   },
   "historical_context": {
@@ -53,9 +63,38 @@
     }
   },
   "routing_gap": {
-    "status": "recorded",
-    "reason": "The installed Docara skill describes the retired architecture and is disabled for this work.",
-    "fallback": ["teamlead", "graph", "dev"]
+    "status": "resolved_in_canonical_source",
+    "reason": "The English Docara skill source now describes reusable project examples, translation tracking and the current Docara 2 architecture; its Skill Sync Gate completed without canonical federation writes.",
+    "remaining_external_blocker": "Three pre-existing untracked repository recipes use an unsupported schema and keep the repository-wide skill validator blocked.",
+    "fallback": ["docara", "teamlead", "graph", "dev"]
+  },
+  "project_technology": {
+    "enabled": true,
+    "mode": "mirai_graph_hybrid_sot",
+    "sync_policy": "on_relevant_task_boundary",
+    "private_source_policy": "local_only_no_content_copy",
+    "continuation_context": ".simai/project-technology/context.json",
+    "receipt": ".simai/project-technology/receipt.json",
+    "background_runtime": false
+  },
+  "local_runtime_state": {
+    "updated_at": "2026-08-09",
+    "workflow": "source/workflow/2026-08-09-docara-local-sites-maintenance.md",
+    "evidence": "source/workflow/evidence/2026-08-09-docara-local-sites-maintenance/verification-summary.json",
+    "docara_test": {
+      "status": "rebuilt_and_verified",
+      "served_path": "/Users/rim/Sites/docara.test/build_production",
+      "html_pages": 261,
+      "local_references_checked": 32965,
+      "broken_references": 0,
+      "digest": "f1480b2ec882766966bd1217e9344e5a18fee8df827af1a4b0397921005a7033"
+    },
+    "docara_new_test": {
+      "status": "removed",
+      "recovery_archive": "/Users/rim/Sites/.docara-backups/local-sites-20260809-225400/docara-new.test.tar.gz",
+      "archive_sha256": "5b20f8fb7267271b83bf449cba2e461f991b5b26e657fe4ceb450a2936513182"
+    },
+    "release_authorized": false
   },
   "federation": {
     "can_export": true,

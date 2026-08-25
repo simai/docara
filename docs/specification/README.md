@@ -4,6 +4,11 @@
 Docara. Он заменяет необходимость восстанавливать замысел по длинной истории
 чатов, временным прототипам и текущему коду.
 
+Текущее состояние: ограниченная implementation-задача по общим примерам и
+контролю переводов завершена и проверена. Активной implementation-задачи нет.
+Следующий переводческий batch, commit, push, tag, публикация пакета и deploy
+требуют отдельного явного решения.
+
 ## Порядок чтения
 
 1. [Техническое задание](DOCARA-TZ.md) — продукт, границы и итоговый результат.
@@ -58,7 +63,10 @@ Docara. Он заменяет необходимость восстанавли�
 
 ## Как начинать новую задачу
 
-Откройте [`source/handoff/docara-unified-architecture/START.md`](../../source/handoff/docara-unified-architecture/START.md),
-проверьте `STATUS.yaml` и выполняйте только указанный там следующий batch.
-Новый исполнитель не должен пытаться реализовать всю архитектуру одним
-изменением.
+Сначала откройте [`source/workflow/ACTIVE.md`](../../source/workflow/ACTIVE.md)
+и проверьте фактический Git state. Актуальный onboarding-пакет указан внутри
+активного workflow. Старый
+`source/handoff/docara-unified-architecture/` является архивной историей и не
+задаёт следующий batch. Если пользователь не сформулировал отдельное
+`explicit_user_decision`, implementation, version, tag, release, publication и
+deploy не начинаются.

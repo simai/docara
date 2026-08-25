@@ -1,0 +1,109 @@
+{
+  "id": "docara.technology.project_mode",
+  "schema_version": "1.0.0",
+  "kind": "technology",
+  "subtype": "project_technology_contract",
+  "tz_role": "project_process_control",
+  "title": "Docara project technology mode",
+  "summary": "Connects repository knowledge, specifications, decisions, implementation mappings, workflows, evidence and project memory through one task-boundary Mirai Graph Hybrid SOT process.",
+  "owner": "graph",
+  "lifecycle": "accepted",
+  "readiness": "enabled",
+  "visibility": "repository",
+  "source_refs": [
+    "graph.json",
+    "graph/dna/project-dna.json",
+    "graph/specs/documentation/specification-map.json",
+    "graph/specs/decisions/architecture-decisions.json",
+    "graph/specs/goals/unified-docara.json",
+    "docs/specification/README.md",
+    "source/memory/CURRENT.yaml",
+    "source/memory/TRACKS.yaml",
+    "source/workflow/ACTIVE.md"
+  ],
+  "evidence_refs": [
+    ".simai/project-technology/receipt.json",
+    "source/workflow/evidence/2026-08-09-docara-local-sites-maintenance/verification-summary.json"
+  ],
+  "profile_refs": [
+    "project_management",
+    "software_specification",
+    "implementation_control",
+    "technology_quality_feedback"
+  ],
+  "knowledge_domains": [
+    {
+      "id": "product_dna",
+      "canonical_refs": ["graph/dna", "docs/specification/DOCARA-TZ.md"]
+    },
+    {
+      "id": "technical_specification",
+      "canonical_refs": ["graph/specs/requirements", "docs/specification"]
+    },
+    {
+      "id": "decisions",
+      "canonical_refs": ["graph/specs/decisions"]
+    },
+    {
+      "id": "implementation_and_relations",
+      "canonical_refs": ["graph/specs/features", "graph/specs/implementation-mappings"]
+    },
+    {
+      "id": "delivery_process",
+      "canonical_refs": ["graph/specs/goals", "graph/specs/stages", "graph/specs/batches", "graph/specs/gates"]
+    },
+    {
+      "id": "quality_and_evidence",
+      "canonical_refs": ["graph/specs/metrics", "graph/specs/evidence", "source/workflow/evidence"]
+    },
+    {
+      "id": "continuation",
+      "canonical_refs": ["source/workflow", "source/memory", "source/handoff"]
+    }
+  ],
+  "relations": [
+    {"from": "docara.dna.unified", "type": "governs", "to": "docara.goal.unified"},
+    {"from": "docara.documentation.specification", "type": "projects", "to": "docara.dna.unified"},
+    {"from": "docara.decisions.architecture", "type": "constrains", "to": "docara.goal.unified"},
+    {"from": "docara.technology.project_mode", "type": "indexes", "to": "graph/specs"},
+    {"from": "docara.technology.project_mode", "type": "derives_context_from", "to": "source/workflow"},
+    {"from": "docara.technology.project_mode", "type": "derives_context_from", "to": "source/memory"},
+    {"from": "docara.technology.project_mode", "type": "records_evidence_in", "to": ".simai/project-technology/receipt.json"}
+    ,{"from": "docara.technology.project_mode", "type": "records_task_boundary", "to": "source/workflow/2026-08-09-docara-local-sites-maintenance.md"}
+  ],
+  "process": {
+    "id": "docara.process.project_technology_boundary_sync",
+    "trigger": "meaningful_task_start_or_completion",
+    "states": [
+      "inspect_live_repository",
+      "load_task_relevant_graph_context",
+      "load_raw_owner_sources_as_needed",
+      "execute_under_action_gates",
+      "update_workflow_graph_and_memory",
+      "synchronize_project_technology",
+      "verify_freshness_and_outcome"
+    ],
+    "terminal_state": "verify_freshness_and_outcome",
+    "required_evidence": [
+      "current_repository_revision",
+      "workflow_or_explicit_no_active_workflow",
+      "graph_validation",
+      "project_memory_validation",
+      "technology_sync_receipt",
+      "task_specific_acceptance"
+    ],
+    "false_transition_guards": [
+      "generated_context_is_not_canonical_truth",
+      "graph_context_does_not_grant_authorization",
+      "private_source_content_is_not_copied",
+      "task_completion_requires_fresh_sync",
+      "release_requires_separate_explicit_user_decision"
+    ]
+  },
+  "update_policy": {
+    "frequency": "on_relevant_task_boundary",
+    "background_runtime": false,
+    "same_inputs_must_produce_zero_diff": true,
+    "external_owner_changes": "proposal_only"
+  }
+}

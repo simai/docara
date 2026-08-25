@@ -234,6 +234,10 @@
                     "type": "integer",
                     "minimum": 0,
                     "maximum": 2147483647
+                },
+                "scope": {
+                    "type": "string",
+                    "enum": ["site", "section"]
                 }
             },
             "additionalProperties": false

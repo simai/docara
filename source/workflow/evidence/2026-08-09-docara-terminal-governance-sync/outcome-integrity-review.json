@@ -1,0 +1,17 @@
+{
+  "status": "pass",
+  "outcome": "All current governance routers describe one terminal Docara state with no active implementation and explicit_user_decision as the only future lifecycle entry.",
+  "integration": "CURRENT, TRACKS, ACTIVE, handoffs, graph specifications, generated context, specification routing, generator and focused contract tests agree on the terminal contract.",
+  "evidence_freshness": "Checks were run on 2026-08-09 against repository HEAD d514c536b8cf379b90a15be8aaf14bcb85b06f7e and product baseline c5f6140a85435913a9d5f7389bdf34967d4d70f8.",
+  "simplicity": "The state has one terminal marker, no synthetic active stage or batch, and one non-authorizing next action: explicit_user_decision.",
+  "blockers": [],
+  "evidence_refs": [
+    "source/workflow/2026-08-09-docara-terminal-governance-sync.md",
+    "source/memory/CURRENT.yaml",
+    "source/memory/TRACKS.yaml",
+    "source/workflow/ACTIVE.md",
+    "graph/graph.json",
+    "graph/generated/ai-context/docara-unified.json",
+    "source/handoff/2026-08-09-docara-current-main-onboarding/STATUS.yaml"
+  ]
+}

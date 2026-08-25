@@ -1,5 +1,10 @@
 # Docara v2 main convergence
 
+> Routing status: **superseded**. This workflow preserves the historical
+> convergence sequence and its then-current next action. Current routing is
+> terminal and lives in `source/workflow/ACTIVE.md`; the `ui-doc` migration and
+> repository closeout are complete. Do not execute this file as an active plan.
+
 Date: 2026-08-08
 Status: `docara_main_converged_ui_doc_migration_next`
 

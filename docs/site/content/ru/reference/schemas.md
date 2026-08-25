@@ -17,6 +17,8 @@ unknown fields, неверные типы и unsafe paths.
 | `docara.effective_component_catalog.v1` | `_docara/component-catalog.json` | Производный catalog exact build |
 | `docara.search_index.v1` | `_docara/search-index.json` | Локальный search index |
 | `docara.lang.v1` | `content/<locale>/lang.json` | Только общие UI-подписи локали |
+| `docara.translation_lock.v1` | `translations.lock.json` | Принятые hashes переводов, уровень проверки и исключения |
+| `docara.translation_status.v1` | `.docara/translation-status.json` | Детерминированный отчёт о страницах и ключах локали |
 
 ## Исполняемые примеры schema
 
@@ -53,7 +55,7 @@ Invalid-пример документирует ожидаемую ошибку;
 | `branding`, `layout`, `settings` | ✓ | ✓ | ✓ |
 | `navigation`, `search`, `reading` | ✓ | ✓ | ✓ |
 | `reader_preferences` | ✓ | — | — |
-| `framework_lock`, `content_root`, `base_url`, `default_locale`, `locales`, `locale_routing` | ✓ | — | — |
+| `framework_lock`, `content_root`, `base_url`, `default_locale`, `locales`, `locale_routing`, `translation_tracking` | ✓ | — | — |
 | `documentation_version`, `redirects_file` | ✓ | — | — |
 | `description`, `slug` | — | — | ✓ |
 

@@ -1,0 +1,62 @@
+{
+  "schema": "docara.shared_examples_translation_verification.v1",
+  "date": "2026-08-26",
+  "product": {
+    "shared_examples": "implemented",
+    "translation_tracking": "implemented",
+    "inline_example_compatibility": true,
+    "security_negative_cases": true,
+    "hash_bound_acceptance": true,
+    "report_mode_non_blocking": true,
+    "formatting": "passed"
+  },
+  "docara_documentation": {
+    "markdown_pages": 127,
+    "html_pages": 261,
+    "local_references_checked": 32979,
+    "broken_local_references": 0
+  },
+  "ui_doc": {
+    "evidence": "ui-doc://source/workflow/evidence/2026-08-25-shared-examples/verification-summary.json",
+    "markdown_pages": 939,
+    "html_pages": 1692,
+    "local_references_checked": 359545,
+    "broken_local_references": 0,
+    "shared_example_ids": 215,
+    "shared_example_consumers": 221,
+    "translation_items": 697,
+    "duplicate_translation_keys": 0
+  },
+  "regression": {
+    "targeted_new_and_adjacent_tests": "passed",
+    "new_example_translation_unit_tests": "passed: 9 tests, 54 assertions",
+    "shared_example_full_vs_point_build_test": "passed: 1 test, 5 assertions",
+    "documentation_determinism_test": "passed: 1 test, 1950 assertions",
+    "locale_and_landing_regressions": "passed in dedicated reruns after aligning stale assertions with the already accepted language-menu and code-surface contracts; the final landing rerun passed 1 test and 630 assertions",
+    "project_context_tests": "passed: 9 tests, 527 assertions",
+    "project_extension_tests": "passed: 4 tests, 68 assertions",
+    "full_unit_suite": "444 tests passed in the full run; two project-context assertions observed the intentionally active mid-task workflow before terminal synchronization. The current terminal state then passed the dedicated 9-test, 527-assertion rerun."
+  },
+  "technology": {
+    "docara_sync_verify": "passed",
+    "ui_doc_sync_verify": "passed",
+    "federation_fast_verify": "passed",
+    "skill_change_detect": "passed",
+    "skill_graph_sync": "passed",
+    "route_check": "passed",
+    "project_context_check": "passed"
+  },
+  "external_blockers": [
+    "The skill repository-wide validator includes three pre-existing untracked recipes with unsupported schemas: docara.embedded, docara.profile and documentation.site.",
+    "The pinned ui-doc Framework distribution requests nine absent utility CSS files in normal and minified forms during browser smoke; shared example resources load successfully.",
+    "Docara Project Technology sync and freshness verification pass, but task-scoped graph context reports no_verifiable_runtime_objects for the repository's legacy graph topology; the generated project-context contract itself is current and passes."
+  ],
+  "boundaries": {
+    "ui_play_modified": false,
+    "commit": false,
+    "push": false,
+    "tag": false,
+    "release": false,
+    "deploy": false
+  }
+}

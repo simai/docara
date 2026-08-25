@@ -2,11 +2,15 @@ schema_version: 1
 goal: docara.goal.unified
 branch: main
 baseline_revision: a3ba9a4d04429f1f2046b8415764fe7bc89962c7
-state: docara_main_converged_ui_doc_migration_next
-current_stage: docara.stage.lfr.local_framework_runtime
-current_batch: docara.batch.lfr.integrated_retest
-next_action: migrate_ui_doc_content_onto_docara_v2_then_converge_ui_doc_main
-candidate_revision: d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f
+state: archived
+routing_status: superseded
+superseded_by: source/handoff/2026-08-09-docara-current-main-onboarding/START.md
+terminal_state: docara_terminal_no_active_implementation
+active_implementation: false
+last_completed_stage: docara.stage.lfr.local_framework_runtime
+last_completed_batch: docara.batch.lfr.integrated_retest
+next_action: none
+historical_candidate_revision: d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f
 evidence: source/workflow/evidence/2026-08-08-docara-main-convergence/INDEX.md
 goal1_candidate_revision: 44acc1ff91233fa78140222fcb0589bf55b65ca0
 goal1_sf5_adapter_revision: b3cdff87563ff78e7eddf044048a4b298fc69036
@@ -29,7 +33,7 @@ historical_release_baseline:
 source_of_truth:
   human: docs/specification/README.md
   machine: graph/graph.json
-  start: source/handoff/docara-unified-architecture/START.md
+  start: source/handoff/2026-08-09-docara-current-main-onboarding/START.md
 readiness:
   architecture_contract: accepted
   implementation: m5_stabilization_complete

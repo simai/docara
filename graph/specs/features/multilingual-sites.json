@@ -13,5 +13,5 @@
   "source_refs": ["docs/specification/DOCARA-TZ.md#6-мультиязычность"],
   "evidence_refs": [],
   "profile_refs": ["docara.unified"],
-  "invariants": ["No implicit cross-locale prose fallback.", "Shared visible strings use content/<locale>/lang.json and article prose uses Markdown.", "Public resources/i18n and site.json compatibility are absent.", "Package-owned CLI/build localization is outside public builds.", "Translation pairing uses relative route or explicit translation_key."]
+  "invariants": ["No implicit cross-locale prose fallback.", "Shared visible strings use content/<locale>/lang.json and article prose uses Markdown.", "Public resources/i18n and site.json compatibility are absent.", "Package-owned CLI/build localization is outside public builds.", "Translation pairing uses relative route or explicit translation_key.", "Optional translation tracking reports fallback use separately and never blocks a report-mode build."]
 }

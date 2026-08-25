@@ -10,6 +10,38 @@ use Tests\TestCase;
 final class FrameworkNativeSurfaceTest extends TestCase
 {
     #[Test]
+    public function locale_navigation_uses_an_icon_disclosure_instead_of_a_form_select(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $template = file_get_contents($root . '/resources/publisher/components/header-actions.php');
+        $runtime = file_get_contents($root . '/resources/portable/declarative-shell.js');
+        $css = file_get_contents($root . '/resources/portable/declarative-shell.css');
+
+        self::assertIsString($template);
+        self::assertIsString($runtime);
+        self::assertIsString($css);
+        self::assertStringContainsString('data-docara-language-menu', $template);
+        self::assertStringContainsString('data-docara-language-trigger', $template);
+        self::assertStringContainsString('<sf-icon icon="language"', $template);
+        self::assertStringContainsString('data-docara-language-option', $template);
+        self::assertStringContainsString('aria-current="page"', $template);
+        self::assertStringNotContainsString('<select data-docara-language-switcher', $template);
+        self::assertStringContainsString("event.key==='Escape'", $runtime);
+        self::assertStringContainsString('.docara-language-menu__popup{position:absolute', $css);
+        self::assertStringContainsString('[data-docara-block="features"]>li>.docara-icon{align-self:flex-start}', $css);
+        self::assertStringContainsString("head.classList.add('docara-code-header')", $runtime);
+        self::assertStringContainsString('title&&title.textContent!==languageLabel', $runtime);
+        self::assertStringContainsString("button.classList.add('docara-code-copy','sf-icon-button'", $runtime);
+        self::assertStringContainsString("codeIcon.classList.add('sf-icon-regular')", $runtime);
+        self::assertStringContainsString("language||'code'", $runtime);
+        self::assertStringContainsString('.docara-code-header>span{display:inline-flex', $css);
+        self::assertStringNotContainsString('line-height:var(--sf-text-height-1);box-shadow:inset 0 -2px var(--sf-outline)', $css);
+        self::assertStringContainsString('.docara-code-block.bg-surface-container{background:var(--sf-surface-0)}', $css);
+        self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre;background:transparent}', $css);
+        self::assertStringContainsString('.docara-step:not(:last-child)::after{content:""', $css);
+    }
+
+    #[Test]
     public function declarative_shell_does_not_override_framework_component_geometry_or_prose_typography(): void
     {
         $root = dirname(__DIR__, 2);

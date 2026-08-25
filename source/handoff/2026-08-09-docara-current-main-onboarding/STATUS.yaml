@@ -1,0 +1,37 @@
+schema_version: 2
+package_id: docara-current-main-onboarding
+created_at: "2026-08-09"
+updated_at: "2026-08-25"
+state: done
+routing_status: canonical_terminal_onboarding
+repository: /Users/rim/Documents/GitHub/docara
+branch: main
+repository_revision: d514c536b8cf379b90a15be8aaf14bcb85b06f7e
+origin_main_at_sync: d514c536b8cf379b90a15be8aaf14bcb85b06f7e
+product_baseline_revision: c5f6140a85435913a9d5f7389bdf34967d4d70f8
+tracked_worktree_at_baseline: clean
+handoff_package_at_baseline: untracked
+github_branches_at_sync:
+  - main
+product_identity: standalone_static_docara_v2
+separate_larena_identity: larena/docara
+terminal_state: docara_terminal_no_active_implementation
+completed_goal: docara.goal.unified
+last_completed_stage: docara.stage.lfr.local_framework_runtime
+last_completed_batch: docara.batch.lfr.integrated_retest
+active_goal: null
+active_track: null
+active_implementation: false
+next_action: explicit_user_decision
+evidence: source/workflow/evidence/2026-08-09-docara-legacy-repositories-retirement/INDEX.md
+implementation_authorized: false
+release_authorized: false
+tag_authorized: false
+publication_authorized: false
+deploy_authorized: false
+known_router_drift: []
+last_completed_bounded_workflow: source/workflow/2026-08-25-shared-examples-translation-tracking.md
+working_tree_authoring_capabilities:
+  - reusable_project_examples
+  - translation_tracking
+working_tree_publication_status: uncommitted_not_published

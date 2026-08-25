@@ -69,6 +69,19 @@ final class BuildCommand extends Command
             $destination,
             microtime(true) - $startedAt,
         ));
+        $translationReport = $destination . '/.docara/translation-status.json';
+        if (is_file($translationReport) && ! is_link($translationReport)) {
+            $report = json_decode((string) file_get_contents($translationReport), true);
+            if (is_array($report)) {
+                $issues = array_sum(array_map(
+                    static fn (string $status): int => (int) ($report['summary'][$status] ?? 0),
+                    ['stale', 'missing', 'unverified', 'orphan', 'duplicate_key', 'structure_mismatch'],
+                ));
+                if ($issues > 0) {
+                    $this->console->comment("Translation tracking reported $issues item(s) that need attention; the build remains valid in report mode.");
+                }
+            }
+        }
 
         return self::SUCCESS;
     }

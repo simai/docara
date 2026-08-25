@@ -1,0 +1,18 @@
+{
+  "status": "pass",
+  "outcome": "docara.test rebuilt and verified; docara-new.test removed with a verified recovery path",
+  "integration": "The verified candidate was atomically installed at the stable local served path and the previous tree remains available for same-filesystem rollback.",
+  "evidence_freshness": "All static, filesystem, checksum, HTTP, Git and project-technology evidence was refreshed in the current task on 2026-08-09.",
+  "simplicity": "The operation touched only the two authorized local sites plus bounded workflow, graph, evidence and project-memory artifacts; no product source, ServBay configuration or Git lifecycle action was added.",
+  "blockers": [],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-09-docara-local-sites-maintenance/verification-summary.json",
+    "source/workflow/evidence/2026-08-09-docara-local-sites-maintenance/technology-evidence.json",
+    "source/workflow/evidence/2026-08-09-docara-local-sites-maintenance/control-plane-routing-gap.json"
+  ],
+  "notes": [
+    "Dedicated static and HTTP acceptance passed on the actual served tree.",
+    "Extended PHPUnit fixture suites were interrupted because they were disproportionate to this local maintenance batch.",
+    "A separate existing governance fixture failure does not affect the built site and was not changed in scope."
+  ]
+}

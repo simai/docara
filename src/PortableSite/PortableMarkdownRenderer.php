@@ -59,12 +59,15 @@ final class PortableMarkdownRenderer
 
     private SmartRenderer $smartRenderer;
 
+    private ?ProjectExampleRepository $projectExamples;
+
     public function __construct(
         ?PortableMarkdownProfile $profile = null,
         ?TypedComponentDefinitionRepository $definitions = null,
         ?SmartComponentGateway $components = null,
         ?SurfacePresentation $surfaces = null,
         ?SmartRenderer $smartRenderer = null,
+        ?ProjectExampleRepository $projectExamples = null,
     ) {
         $profile ??= PortableMarkdownProfile::bundled();
         $this->definitions = $definitions ?? TypedComponentDefinitionRepository::bundled();
@@ -82,6 +85,7 @@ final class PortableMarkdownRenderer
         $this->inlineComponents = new InlineComponentRenderer(components: $this->components);
         $this->attributes = new AuthoringAttributeParser;
         $this->examples = new PortableExampleRenderer;
+        $this->projectExamples = $projectExamples;
     }
 
     public function componentGateway(): SmartComponentGateway
@@ -376,11 +380,12 @@ final class PortableMarkdownRenderer
                 );
             }
             $renderer = TypedRendererId::from((string) $definition['renderer']);
+            $blockAttributes = $this->attributes->parse((string) ($directive['attributes'] ?? ''), $type);
             $allowsEmptyBody = in_array(
                 $renderer,
                 [TypedRendererId::Code, TypedRendererId::Backlinks, TypedRendererId::ComponentIndex, TypedRendererId::AtlasIndex, TypedRendererId::SchemaReference],
                 true,
-            );
+            ) || ($renderer === TypedRendererId::Example && trim($blockAttributes['id'] ?? '') !== '');
             if (trim($bodyMarkdown) === '' && ! $allowsEmptyBody) {
                 throw new PortableConfigurationException(
                     'MARKDOWN_BLOCK_EMPTY',
@@ -434,7 +439,7 @@ final class PortableMarkdownRenderer
                 'renderer' => (string) $definition['renderer'],
                 'markdown' => $bodyMarkdown,
                 'placeholder' => $placeholder,
-                'attributes' => $this->attributes->parse((string) ($directive['attributes'] ?? ''), $type),
+                'attributes' => $blockAttributes,
             ];
             $output[] = '';
             $output[] = $placeholder;
@@ -546,22 +551,28 @@ final class PortableMarkdownRenderer
         $content = (string) $rendered;
         if ($view === 'timeline') {
             $index = 0;
-            $content = preg_replace_callback('/<li>/u', static function () use (&$index, $current): string {
+            $content = preg_replace_callback('/<li>(?<content>.*?)<\/li>/su', static function (array $match) use (&$index, $current): string {
                 $index++;
                 $state = $index < $current ? 'complete' : ($index === $current ? 'current' : 'pending');
                 $marker = $index < $current ? '&#10003;' : (string) $index;
 
-                return '<li data-step-state="' . $state . '" class="relative list-none p-inline-start-4 p-block-end-2">'
-                    . '<span aria-hidden="true" class="absolute inset-inline-start-0 top-0 sf-badge sf-badge--main sf-badge--primary sf-badge--size-1 inline-flex items-center content-main-center">'
-                    . $marker . '</span>';
+                return '<li data-step-state="' . $state . '" class="docara-step grid items-start gap-1 list-none p-block-end-2">'
+                    . '<span aria-hidden="true" class="docara-step-marker inline-flex items-center content-main-center">'
+                    . '<span class="docara-step-marker-text">' . $marker . '</span></span>'
+                    . '<div class="docara-step-content">'
+                    . (string) $match['content'] . '</div></li>';
             }, $content) ?? $content;
             $content = preg_replace('/^<ol\b/', '<ol class="m-0 p-0"', $content, 1) ?? $content;
         } else {
             $content = preg_replace('/^<ol\b/', '<ol class="flex flex-col gap-1 p-inline-start-3"', $content, 1) ?? $content;
         }
 
+        $sectionClass = $view === 'timeline'
+            ? 'm-bottom-1'
+            : 'bg-surface-0 border border-outline-variant radius-2 p-3 m-bottom-1';
+
         return '<section data-docara-block="steps" data-view="' . $view
-            . '" class="bg-surface-0 border border-outline-variant radius-2 p-3 m-bottom-1">'
+            . '" class="' . $sectionClass . '">'
             . $content . '</section>';
     }
 
@@ -645,7 +656,7 @@ final class PortableMarkdownRenderer
         ?string $sourceRoot,
         ?string $sourceFile,
     ): string {
-        $this->assertAttributes($attributes, ['label'], 'example');
+        $this->assertAttributes($attributes, ['id', 'label'], 'example');
         $label = trim($attributes['label'] ?? 'Example');
         if ($label === '') {
             throw new PortableConfigurationException(
@@ -654,7 +665,27 @@ final class PortableMarkdownRenderer
             );
         }
 
-        $sources = $this->exampleSources($markdown);
+        $exampleId = trim($attributes['id'] ?? '');
+        $baseHref = null;
+        if ($exampleId !== '') {
+            if (trim($markdown) !== '') {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_EXAMPLE_ID_BODY_CONFLICT',
+                    'An id-based example cannot contain inline fenced sources.',
+                );
+            }
+            if (! $this->projectExamples instanceof ProjectExampleRepository) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_EXAMPLE_PROJECT_CONTEXT_REQUIRED',
+                    'An id-based example requires a project build context.',
+                );
+            }
+            $external = $this->projectExamples->load($exampleId, $sourceFile);
+            $sources = $external['sources'];
+            $baseHref = $external['base_href'];
+        } else {
+            $sources = $this->exampleSources($markdown);
+        }
         $hasMarkdown = isset($sources['Markdown']);
         if ($hasMarkdown && count($sources) !== 1) {
             throw new PortableConfigurationException(
@@ -671,7 +702,7 @@ final class PortableMarkdownRenderer
 
         $preview = $hasMarkdown
             ? $this->renderCompiled($sources['Markdown'], $sourceRoot, $sourceFile)
-            : $this->renderExampleDocument($sources);
+            : $this->renderExampleDocument($sources, $baseHref);
         $renderedSources = [];
         foreach ($sources as $language => $source) {
             $renderedSources[$language] = $this->renderCompiled(
@@ -681,7 +712,7 @@ final class PortableMarkdownRenderer
         }
 
         return $this->examples->render(
-            id: 'markdown-example-' . substr(hash('sha256', $markdown), 0, 12),
+            id: 'markdown-example-' . substr(hash('sha256', $exampleId !== '' ? $exampleId : $markdown), 0, 12),
             preview: $preview,
             sources: $renderedSources,
             exampleLabel: $label,
@@ -751,17 +782,80 @@ final class PortableMarkdownRenderer
     }
 
     /** @param array<string,string> $sources */
-    private function renderExampleDocument(array $sources): string
+    private function renderExampleDocument(array $sources, ?string $baseHref = null): string
     {
         $document = '<!doctype html><html><head><meta charset="utf-8">'
             . '<meta name="viewport" content="width=device-width,initial-scale=1">'
+            . ($baseHref === null ? '' : '<base href="' . $this->escapeHtml($baseHref) . '">')
             . (isset($sources['CSS']) ? '<style>' . $sources['CSS'] . '</style>' : '')
             . '</head><body>' . $sources['HTML']
             . (isset($sources['JavaScript']) ? '<script>' . str_replace('</script', '<\\/script', $sources['JavaScript']) . '</script>' : '')
+            . $this->exampleAutoHeightRuntime()
             . '</body></html>';
 
-        return '<iframe title="Example" class="w-full border-0 min-h-i5 bg-surface-0" sandbox="allow-scripts" srcdoc="'
+        return '<iframe title="Example" data-docara-example-frame data-sf-observer="ignore" class="w-full border-0 bg-surface-0" sandbox="allow-scripts" srcdoc="'
             . $this->escapeHtml($document) . '"></iframe>';
+    }
+
+    private function exampleAutoHeightRuntime(): string
+    {
+        return <<<'HTML'
+<script data-docara-example-resize>(function(){
+var body=document.body,lastHeight=0,scheduled=false;
+function applyEnvironment(data){
+var theme=data.theme==='dark'?'dark':'light',direction=data.direction==='rtl'?'rtl':'ltr';
+document.documentElement.classList.remove('theme-light','theme-dark');
+document.documentElement.classList.add('theme-'+theme);
+body.classList.remove('theme-light','theme-dark');
+body.classList.add('theme-'+theme);
+document.documentElement.dir=direction;
+body.dir=direction;
+var current=Array.from(document.querySelectorAll('link[data-docara-example-framework-style]')).map(function(link){return link.href});
+(Array.isArray(data.stylesheets)?data.stylesheets:[]).forEach(function(href){
+if(typeof href!=='string'||current.indexOf(href)!==-1)return;
+var link=document.createElement('link');
+link.rel='stylesheet';
+link.href=href;
+link.setAttribute('data-docara-example-framework-style','');
+link.addEventListener('load',measureSettled);
+document.head.appendChild(link);
+current.push(link.href);
+});
+}
+function measure(){
+if(scheduled)return;
+scheduled=true;
+requestAnimationFrame(function(){
+scheduled=false;
+var root=document.documentElement,style=getComputedStyle(body),rect=body.getBoundingClientRect();
+var marginTop=parseFloat(style.marginTop)||0,marginBottom=parseFloat(style.marginBottom)||0;
+var height=Math.ceil(Math.max(rect.height+marginTop+marginBottom,body.scrollHeight,root.scrollHeight));
+if(height===lastHeight)return;
+lastHeight=height;
+parent.postMessage({type:'docara:example-height',height:height},'*');
+});
+}
+function measureSettled(){
+measure();
+requestAnimationFrame(measure);
+setTimeout(measure,100);
+}
+addEventListener('load',measureSettled);
+addEventListener('resize',measureSettled);
+addEventListener('message',function(event){
+if(event.source===parent&&event.data&&event.data.type==='docara:example-measure'){
+applyEnvironment(event.data);
+lastHeight=-1;
+measureSettled();
+}
+});
+if(typeof ResizeObserver==='function')new ResizeObserver(measure).observe(body);
+if(typeof ResizeObserver==='function')new ResizeObserver(measure).observe(document.documentElement);
+if(typeof MutationObserver==='function')new MutationObserver(measure).observe(body,{childList:true,subtree:true,attributes:true,characterData:true});
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(measureSettled);
+measureSettled();
+})();</script>
+HTML;
     }
 
     /** @param array<string,string> $attributes */
@@ -1697,8 +1791,14 @@ final class PortableMarkdownRenderer
         int $sourceLine,
     ): string {
         $backgroundAttributes = ['background_fit', 'background_x', 'background_y', 'overlay', 'overlay_strength'];
-        $this->assertAttributes($attributes, ['variant', 'media', ...$backgroundAttributes], 'hero');
+        $this->assertAttributes($attributes, ['variant', 'media', 'padding', ...$backgroundAttributes], 'hero');
         $variant = $this->attributeOneOf($attributes['variant'] ?? 'split', ['split', 'centered', 'compact'], 'hero', 'variant');
+        $padding = $this->attributeOneOf(
+            $attributes['padding'] ?? ($variant === 'compact' ? 'lg' : 'xl'),
+            ['lg', 'xl'],
+            'hero',
+            'padding',
+        );
         $mediaMode = $this->attributeOneOf($attributes['media'] ?? 'auto', ['auto', 'side', 'background', 'none'], 'hero', 'media');
         if ($mediaMode !== 'background' && array_intersect(array_keys($attributes), $backgroundAttributes) !== []) {
             throw new PortableConfigurationException('MARKDOWN_HERO_BACKGROUND_MODE_REQUIRED', 'Hero background props require media=background.');
@@ -1932,8 +2032,6 @@ final class PortableMarkdownRenderer
 
         $columns = $variant === 'split' && $image !== '' ? 'grid-col-1 lg:grid-col-2' : 'grid-col-1';
         $alignment = $variant === 'centered' ? ' text-center items-center' : '';
-        $spacing = $variant === 'compact' ? ' p-3' : ' p-4';
-
         if ($mediaMode === 'background') {
             $overlay = $this->attributeOneOf($attributes['overlay'] ?? 'dark', ['light', 'dark'], 'hero', 'overlay');
             $surfaceProps = [
@@ -1944,7 +2042,7 @@ final class PortableMarkdownRenderer
                 'background_y' => $this->attributeOneOf($attributes['background_y'] ?? 'center', ['top', 'center', 'bottom'], 'hero', 'background_y'),
                 'overlay' => $overlay,
                 'overlay_strength' => $this->attributeOneOf($attributes['overlay_strength'] ?? 'medium', ['soft', 'medium', 'strong'], 'hero', 'overlay_strength'),
-                'padding' => 'xl',
+                'padding' => $padding,
                 'tone' => $overlay === 'dark' ? 'contrast' : 'default',
             ];
 
@@ -1962,7 +2060,7 @@ final class PortableMarkdownRenderer
             semanticBlock: 'hero',
             variant: $variant,
             tone: 'muted',
-            padding: $spacing === ' p-3' ? 'lg' : 'xl',
+            padding: $padding,
             twoColumns: $columns === 'grid-col-1 lg:grid-col-2',
             content: '<div class="min-w-0 flex flex-col gap-2' . $alignment . '">' . $content . '</div>',
             media: $image,

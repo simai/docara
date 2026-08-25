@@ -11,6 +11,13 @@ assets/
   logo.svg
   logo-dark.svg
   favicon.svg
+examples/
+  utilities/
+    animation-duration/
+      index.html
+      index.css
+      index.js
+      assets/
 content/
   ru/
     lang.json
@@ -21,6 +28,7 @@ content/
       section.json
       install.md
       install.page.json  # необязательная композиция только этой страницы
+translations.lock.json  # необязательное принятое состояние переводов
 .docara/
   engine/
     ownership.json
@@ -55,6 +63,10 @@ JSON нужен только когда требуется изменить slug
 генерируется. `content`, `assets`, корневые JSON и consumer-owned
 `composer.lock` остаются пользовательскими файлами и не являются update
 targets.
+`examples/` также является project-owned source: один каталог примера может
+обслуживать несколько страниц и локалей. `translations.lock.json` меняется
+только после защищённого `translations accept`; status и build его не
+перезаписывают.
 Корневой `assets/` удобен для логотипов и favicon; содержательные изображения
 можно хранить рядом с Markdown. Брендовые пути указываются в `docara.json` и
 проверяются до очистки предыдущей сборки.

@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0.0",
+  "status": "pass_with_notes",
+  "date": "2026-08-09",
+  "repository_head": "d514c536b8cf379b90a15be8aaf14bcb85b06f7e",
+  "product_baseline": "c5f6140a85435913a9d5f7389bdf34967d4d70f8",
+  "runtime": {
+    "php": "ServBay PHP 8.4.20",
+    "build_source": "docs/site",
+    "served_path": "/Users/rim/Sites/docara.test/build_production"
+  },
+  "build": {
+    "doctor": "pass",
+    "pages_reported_by_builder": 127,
+    "files": 652,
+    "html_pages": 261,
+    "local_references_checked": 32965,
+    "broken_references": 0,
+    "candidate_served_diff": "zero",
+    "canonical_digest": "f1480b2ec882766966bd1217e9344e5a18fee8df827af1a4b0397921005a7033"
+  },
+  "rollback": {
+    "independent_copy": "/Users/rim/Sites/docara.test/.docara-backups/local-sites-20260809-225400/build_production",
+    "served_before": "/Users/rim/Sites/docara.test/.docara-staging/local-sites-20260809-225400/served-before",
+    "copies_match": true,
+    "canonical_digest": "a3aced5396d2b031092afcf13f3687d37e0603539b24d1327f9b9d290b914581"
+  },
+  "removed_site": {
+    "path": "/Users/rim/Sites/docara-new.test",
+    "status": "absent",
+    "https_status": 404,
+    "recovery_archive": "/Users/rim/Sites/.docara-backups/local-sites-20260809-225400/docara-new.test.tar.gz",
+    "archive_sha256": "5b20f8fb7267271b83bf449cba2e461f991b5b26e657fe4ceb450a2936513182",
+    "archive_readable": true
+  },
+  "http_smoke": {
+    "passed_200": [
+      "https://docara.test/",
+      "https://docara.test/ru/",
+      "https://docara.test/ru/start/",
+      "https://docara.test/ru/components/alert/",
+      "https://docara.test/_docara/search-index.json"
+    ],
+    "expected_404": [
+      "https://docara.test/__codex_missing_20260809__/",
+      "https://docara-new.test/"
+    ],
+    "page_markers": ["html lang=ru", "title=Docara - Docara"]
+  },
+  "test_notes": {
+    "full_suite": "interrupted_after_slow_fixture_builds_without_observed_failure",
+    "focused_builder_subset": "interrupted_after_slow_fixture_builds_without_observed_failure",
+    "project_context_real_repository_check": "pass",
+    "project_context_unit_test": "one_existing_shadow_fixture_failure_for_missing_terminal_evidence_path"
+  },
+  "boundaries": {
+    "product_runtime_source_diff_from_task": "zero",
+    "git_ref_changes": false,
+    "commit": false,
+    "push": false,
+    "tag": false,
+    "release": false,
+    "public_deploy": false,
+    "legacy_docara_skill_used": false
+  }
+}

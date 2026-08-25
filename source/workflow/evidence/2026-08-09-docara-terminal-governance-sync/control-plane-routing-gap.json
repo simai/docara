@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "docara.governance.control_plane_routing_gap",
+  "recorded_at": "2026-08-09T09:00:00+03:00",
+  "task_scope": "local_governance_terminal_sync",
+  "requested_boundaries": {
+    "legacy_docara_skill_allowed": false,
+    "release_allowed": false,
+    "deploy_allowed": false
+  },
+  "process_resolution": {
+    "status": "fail",
+    "owner_skill": "docara",
+    "process_model_id": "release",
+    "technology_signature": "ba7057aecdcca93f9328293e61617c1c2082f8f9418548b781c146053bed2923",
+    "blockers": [
+      "skill_disabled:docara"
+    ]
+  },
+  "final_response_check": {
+    "status": "fail",
+    "outcome_integrity_review": "success",
+    "relevant_blockers": [
+      "skill_disabled:docara",
+      "release technology conformance is inapplicable to the governance-only batch",
+      "project memory guard resolved the workflow against the federation runtime instead of the Docara repository",
+      "terminal workflow was parsed as an active release goal"
+    ]
+  },
+  "decision": "not_applied",
+  "reason": "The resolved release packet conflicts with the bounded governance-only request, the explicit prohibition on the legacy Docara skill, and the no-release/no-deploy boundary.",
+  "conformance_claimed": false
+}

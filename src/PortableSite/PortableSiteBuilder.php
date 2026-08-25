@@ -32,6 +32,7 @@ use Simai\Docara\I18n\LocaleMissingPagePolicy;
 use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\LocaleRoutingPolicy;
 use Simai\Docara\I18n\LocaleUrlProjector;
+use Simai\Docara\I18n\TranslationStatusService;
 use Simai\Docara\I18n\Translator;
 use Simai\Docara\I18n\UiCopy;
 use Simai\Docara\Portable\CanonicalJson;
@@ -100,7 +101,12 @@ final readonly class PortableSiteBuilder
             designs: $designRegistry,
             bindings: BindingRegistry::bundled(),
         );
-        $markdown = new PortableMarkdownRenderer(components: $gateway, smartRenderer: $smartRenderer);
+        $projectExamples = new ProjectExampleRepository($root, (string) ($site['base_url'] ?? '/'));
+        $markdown = new PortableMarkdownRenderer(
+            components: $gateway,
+            smartRenderer: $smartRenderer,
+            projectExamples: $projectExamples,
+        );
         $pageBuilder = $this->pageBuilderInjected
             ? $this->pageBuilder
             : new PageBuilder($markdown, smartRenderer: $smartRenderer);
@@ -173,6 +179,7 @@ final readonly class PortableSiteBuilder
         $selectedPageUrl = $onlyPage === null ? null : $this->normalizePageSelector($onlyPage);
         $existingDiagnostics = [];
         $earlyPhysicalSelection = false;
+        $existingExampleReceipt = null;
         if ($selectedPageUrl !== null) {
             if (is_link($finalDestination) || ! $this->files->isDirectory($finalDestination)) {
                 throw new PortableConfigurationException(
@@ -182,6 +189,8 @@ final readonly class PortableSiteBuilder
             }
             $existingDiagnostics = $this->existingDiagnosticsByUrl($finalDestination);
             $existingBuild = $this->existingBuildProvenance($finalDestination);
+            $existingExampleReceipt = $this->existingExampleReceipt($finalDestination);
+            $projectExamples->assertIncrementalCompatible($existingExampleReceipt);
             if (($existingBuild['purpose'] ?? null) !== $purpose->value) {
                 throw new PortableConfigurationException(
                     'PORTABLE_INCREMENTAL_BUILD_PURPOSE_CHANGED',
@@ -749,13 +758,29 @@ final readonly class PortableSiteBuilder
         }
 
         $this->prepareDestination($root, $destination);
-        if ($selectedPageUrl !== null && ! $this->files->copyDirectory($finalDestination, $destination)) {
-            throw new PortableConfigurationException(
-                'PORTABLE_INCREMENTAL_BASE_COPY_FAILED',
-                'The existing complete build could not be copied into the atomic candidate.',
-            );
-        }
         try {
+            if ($selectedPageUrl !== null && ! $this->files->copyDirectory($finalDestination, $destination)) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_BASE_COPY_FAILED',
+                    'The existing complete build could not be copied into the atomic candidate.',
+                );
+            }
+            $selectedSource = $selectedPageUrl === null
+                ? null
+                : (string) ($existingDiagnostics[$selectedPageUrl]['page_path'] ?? '');
+            $exampleReceipt = $projectExamples->receipt($existingExampleReceipt, $selectedSource);
+            $this->files->ensureDirectoryExists(rtrim($destination, '/\\') . '/.docara');
+            $this->files->put(
+                rtrim($destination, '/\\') . '/.docara/examples.json',
+                $this->prettyCanonicalJson($exampleReceipt),
+            );
+            $this->copyProjectExampleAssets($projectExamples->publishedAssets(), $destination);
+            if (($site['translation_tracking']['enabled'] ?? false) === true) {
+                $this->files->put(
+                    rtrim($destination, '/\\') . '/.docara/translation-status.json',
+                    $this->prettyCanonicalJson((new TranslationStatusService)->report($root)),
+                );
+            }
             $result = collect();
             $diagnosticsByUrl = $selectedPageUrl === null
                 ? []
@@ -842,17 +867,20 @@ final readonly class PortableSiteBuilder
                 if ($page['reading_toc'] !== true) {
                     $page['outline'] = [];
                 }
-                $activeNavigation = $navigationBuilder->activate(
-                    $pageNavigation,
-                    ($page['component_catalog_kind'] ?? null) === 'detail'
+                $navigationActiveUrl = ($page['component_catalog_kind'] ?? null) === 'detail'
                         && ($page['navigation_hidden'] ?? false) === true
                         ? (string) $page['component_catalog_index_url']
                         : (($page['declarative_example_kind'] ?? null) === 'detail'
                             ? (string) $page['declarative_example_index_url']
-                            : (string) $page['url']),
-                );
+                            : (string) $page['url']);
                 /** @var ResolvedPagePlan $declarativePlan */
                 $declarativePlan = $page['plan'];
+                $pageNavigation = $navigationBuilder->scoped(
+                    $pageNavigation,
+                    $navigationActiveUrl,
+                    (string) data_get($declarativePlan->configuration, 'navigation.scope', 'site'),
+                );
+                $activeNavigation = $navigationBuilder->activate($pageNavigation, $navigationActiveUrl);
                 $composition = PageCompositionContext::fromBuilder(
                     $page['branding'],
                     (string) $page['home_url'],
@@ -1015,6 +1043,7 @@ final readonly class PortableSiteBuilder
                     'public_projections' => [
                         'design_atlas_sha256' => $atlasReceipt['content_sha256'],
                         'schema_reference_sha256' => $schemaReferenceReceipt['content_sha256'],
+                        'examples_sha256' => $exampleReceipt['content_sha256'],
                     ],
                     'component_catalog_sha256' => hash('sha256', CanonicalJson::encode($effectiveComponentCatalog)),
                     'publisher' => $publisher->id(),
@@ -1434,6 +1463,39 @@ final readonly class PortableSiteBuilder
         }
 
         return $document['build'];
+    }
+
+    /** @return array<string,mixed> */
+    private function existingExampleReceipt(string $destination): array
+    {
+        $path = rtrim($destination, '/\\') . '/.docara/examples.json';
+        try {
+            $document = json_decode((string) $this->files->get($path), true, 512, JSON_THROW_ON_ERROR);
+        } catch (\Throwable $exception) {
+            throw new PortableConfigurationException(
+                'PORTABLE_INCREMENTAL_EXAMPLE_BASE_INVALID',
+                'The complete build has no valid project example receipt. Run a full build.',
+                $exception,
+            );
+        }
+        if (! is_array($document) || ($document['schema'] ?? null) !== 'docara.example_receipt.v1') {
+            throw new PortableConfigurationException(
+                'PORTABLE_INCREMENTAL_EXAMPLE_BASE_INVALID',
+                'The complete build project example receipt is invalid. Run a full build.',
+            );
+        }
+
+        return $document;
+    }
+
+    /** @param list<array{source:string,relative:string}> $assets */
+    private function copyProjectExampleAssets(array $assets, string $destination): void
+    {
+        foreach ($assets as $asset) {
+            $target = rtrim($destination, '/\\') . '/' . $asset['relative'];
+            $this->files->ensureDirectoryExists(dirname($target));
+            $this->files->copy($asset['source'], $target);
+        }
     }
 
     /**

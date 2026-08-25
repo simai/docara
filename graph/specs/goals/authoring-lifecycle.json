@@ -1,0 +1,47 @@
+{
+  "id": "docara.goal.authoring_lifecycle",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "goal",
+  "tz_role": "primary_goal",
+  "title": "Reusable examples and translation lifecycle",
+  "summary": "Add shared project examples and non-blocking, hash-bound translation tracking, then adopt both capabilities in ui-doc and the English Docara skill.",
+  "owner": "teamlead",
+  "lifecycle": "completed",
+  "readiness": "accepted_with_external_blocker",
+  "visibility": "repository",
+  "source_refs": [
+    "source/workflow/2026-08-25-shared-examples-translation-tracking.md",
+    "docs/specification/DOCARA-TZ.md",
+    "docs/specification/implementation/ROADMAP.md"
+  ],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-25-shared-examples-translation-tracking/verification-summary.json"
+  ],
+  "profile_refs": ["docara.unified"],
+  "done_when": [
+    "Shared examples are confined, receipted, dependency-aware and compatible with inline examples.",
+    "Translation status and hash-bound acceptance cover pages and lang.json without mutating authored sources during status or build.",
+    "ui-doc migrates the imported examples, enables Russian-source reporting and verifies its complete static site.",
+    "The English skill, graph, documentation and project memory describe the same verified contract."
+  ],
+  "scope": [
+    "Docara example and translation runtime",
+    "Docara tests and documentation",
+    "ui-doc authoring migration",
+    "English Docara skill and project technology context"
+  ],
+  "non_goals": [
+    "Automatic translation by the builder",
+    "Silent matching of ambiguous locale pages",
+    "Commit, push, tag, release, package publication or deploy",
+    "Changes to ui-play"
+  ],
+  "stage_refs": ["docara.stage.authoring_lifecycle"],
+  "metric_refs": [],
+  "evidence_policy": [
+    "Build and translation status must not change Markdown or the translation lock.",
+    "Historical workflow and evidence remain immutable and may only be superseded by current routing.",
+    "Completion requires product, consumer, skill and graph verification."
+  ]
+}

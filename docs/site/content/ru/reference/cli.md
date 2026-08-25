@@ -65,6 +65,23 @@ php vendor/bin/docara verify-static [build-directory]
 Без аргумента проверяется `build_production`. Проверка не выполняет проектный
 PHP-код: она читает статический каталог, receipts и manifest.
 
+## `translations`
+
+```text
+php vendor/bin/docara translations status [--locale=en] [--status=stale] [--json]
+php vendor/bin/docara translations accept --locale=en --key=<key> --review=ai_verified --dry-run --json
+php vendor/bin/docara translations accept --apply=<plan-sha256> --json
+```
+
+`status` только читает исходники и lock-файл. При включённом
+`translation_tracking` обычная сборка также создаёт
+`.docara/translation-status.json`; найденные проблемы выводятся как
+предупреждение и не делают сборку неуспешной. `accept --dry-run` создаёт
+проверяемый план, а `--apply` атомарно меняет только указанный lock-файл, если
+все входные hashes остались прежними. Для ключа `lang.json` добавьте
+`--kind=lang`. Намеренное исключение задаётся через `--exclude-reason` и всегда
+требует содержательную причину.
+
 ## `serve`
 
 ```text

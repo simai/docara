@@ -31,7 +31,9 @@ docara.json                 site, locales, preset and Framework lock reference
 redirects.json              explicit redirects
 simai-framework.lock.json   immutable Framework revisions
 assets/                     project-owned public assets
+examples/                   reusable HTML/CSS/JS demonstrations for every locale
 content/<locale>/           Markdown and inherited JSON settings
+translations.lock.json      accepted translation hashes and review levels (optional)
 .docara/engine/             package-owned engine snapshot and ownership manifest
 ```
 
@@ -57,6 +59,9 @@ php vendor/bin/docara update [path] --dry-run
 php vendor/bin/docara update [path] --apply
 php vendor/bin/docara update [path] --rollback=latest
 php vendor/bin/docara build [environment] [--page=/public/url/]
+php vendor/bin/docara translations status [--locale=en] [--status=stale] [--json]
+php vendor/bin/docara translations accept --locale=en --key=<key> --review=ai_verified --dry-run --json
+php vendor/bin/docara translations accept --apply=<plan-sha256> --json
 php vendor/bin/docara serve [environment] [--no-build]
 php vendor/bin/docara verify-static [build-directory]
 php vendor/bin/docara doctor [--json]
@@ -105,7 +110,15 @@ After one complete build, changing one Markdown owner and using `--page`
 atomically rebuilds only that existing route through the same PageBuilder.
 Adding, renaming or deleting a route requires a complete build so navigation,
 search, redirects and receipts change together. Run a complete build after
-other structural, global configuration or Framework lock changes as well.
+other structural, global configuration, Framework lock or reusable example
+changes as well. Reusable examples live in `examples/<id>/` and are referenced
+with `:::example {id="<id>"}`; inline examples remain supported.
+
+Optional `translation_tracking` compares every locale with a configured source
+locale and writes a non-blocking `.docara/translation-status.json` report.
+Docara never translates or edits content. Accepting a reviewed translation is a
+separate hash-bound dry-run/apply transaction that changes only the configured
+lock file.
 
 The developer SDK uses one operation result for human and `--json` output.
 Scaffolding is never a one-step write: review the deterministic dry-run diff,
@@ -121,6 +134,8 @@ registries and PreviewKernel. The optional PHP stdio MCP adapter is
 - [Developer and AI SDK](docs/site/content/ru/development/developer-sdk.md)
 - [Quick start](docs/site/content/ru/start.md)
 - [Project files and configuration](docs/site/content/ru/authoring/project-files.md)
+- [Reusable examples](docs/site/content/ru/components/example.md)
+- [Translation tracking](docs/site/content/ru/authoring/multilingual-site.md)
 - [Layouts, regions and navigation](docs/site/content/ru/authoring/layout-and-navigation.md)
 - [Components](docs/site/content/ru/components.md)
 - [Build and verification](docs/site/content/ru/build.md)

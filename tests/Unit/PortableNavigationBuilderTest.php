@@ -38,6 +38,18 @@ final class PortableNavigationBuilderTest extends TestCase
     }
 
     #[Test]
+    public function section_scope_projects_only_the_active_top_level_branch_children(): void
+    {
+        $builder = new PortableNavigationBuilder;
+        $visible = $builder->visible($this->topology());
+
+        $scoped = $builder->scoped($visible, '/guide/advanced/', 'section');
+
+        self::assertSame(['intro', 'advanced'], array_column($scoped, 'key'));
+        self::assertSame($visible, $builder->scoped($visible, '/guide/advanced/', 'site'));
+    }
+
+    #[Test]
     public function breadcrumbs_and_adjacency_come_from_the_same_topology(): void
     {
         $context = (new PortableNavigationBuilder)->readingContextForUrl(

@@ -14,6 +14,7 @@
         ],
     "parameters": [
       {"name": "variant", "type": "enum", "required": false, "default": "split", "values": ["split", "centered", "compact"]},
+      {"name": "padding", "type": "enum", "required": false, "values": ["lg", "xl"]},
       {"name": "media", "type": "enum", "required": false, "default": "auto", "values": ["auto", "side", "background", "none"]},
       {"name": "background_fit", "type": "enum", "required": false, "default": "cover", "values": ["cover", "contain", "auto"], "available_when": {"media": "background"}},
       {"name": "background_x", "type": "enum", "required": false, "default": "center", "values": ["left", "center", "right"], "available_when": {"media": "background"}},

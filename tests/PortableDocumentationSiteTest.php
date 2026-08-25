@@ -61,6 +61,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $resolvedPlans = $this->json($build . '/.docara/resolved-page-plans.json');
         $atlasProjection = $this->json($build . '/.docara/design-atlas.json');
         $schemaProjection = $this->json($build . '/.docara/schema-reference.json');
+        $exampleProjection = $this->json($build . '/.docara/examples.json');
         $supported = array_values(array_filter(
             $catalog['entries'],
             static fn (array $entry): bool => $entry['lifecycle'] === 'supported'
@@ -86,6 +87,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(127, $pages);
         self::assertSame([
             'design_atlas_sha256' => $atlasProjection['content_sha256'],
+            'examples_sha256' => $exampleProjection['content_sha256'],
             'schema_reference_sha256' => $schemaProjection['content_sha256'],
         ], $resolvedPlans['build']['public_projections']);
         foreach ($pages as $page) {
@@ -190,6 +192,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $shellJs = (string) file_get_contents($build . '/_docara/declarative-shell.js');
         self::assertStringContainsString('localizeCodeCopy', $shellJs);
         self::assertStringContainsString('showCopyState(false);', $shellJs);
+        self::assertStringContainsString("event.data.type!=='docara:example-height'", $shellJs);
+        self::assertStringContainsString("frame.style.blockSize=Math.max(32,Math.min(4096,Math.ceil(height)))+'px'", $shellJs);
+        self::assertStringContainsString('link[data-docara-framework-asset][rel="stylesheet"]', $shellJs);
+        self::assertStringContainsString("Object.assign({type:'docara:example-measure'},exampleEnvironment())", $shellJs);
         self::assertSame(1, substr_count($catalogIndex, 'class="docara-navigation docara-header-navigation"'));
         self::assertStringContainsString('docara-header-navigation-link h-d0', $catalogIndex);
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-primary-navigation'));
@@ -355,9 +361,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $firstFiles = $this->treeHashes($firstBuild);
         $secondFiles = $this->treeHashes($secondBuild);
-        self::assertCount(652, $firstFiles);
+        self::assertCount(653, $firstFiles);
         self::assertSame($firstFiles, $secondFiles);
         self::assertArrayHasKey('_docara/page-metadata.json', $firstFiles);
+        self::assertArrayHasKey('.docara/examples.json', $firstFiles);
 
         $metadata = $this->json($firstBuild . '/_docara/page-metadata.json');
         self::assertCount(127, $metadata['pages']);

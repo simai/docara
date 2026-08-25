@@ -26,5 +26,6 @@
   "status": "independently_accepted_pass_with_notes",
   "baseline_revision": "1e1e093109cbd8956cbe9693cc2fd98dd8e1759f",
   "candidate_revision": "d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f",
-  "next_action": "migrate_ui_doc_content_onto_docara_v2_then_converge_ui_doc_main"
+  "next_action": "none",
+  "terminal_role": "last_completed_implementation_stage"
 }

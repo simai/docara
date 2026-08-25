@@ -692,7 +692,7 @@ final class EffectiveComponentCatalogTest extends TestCase
                 'role="math"',
             ],
             'docara.steps' => [
-                '<section data-docara-block="steps" data-view="timeline" class="bg-surface-0 border border-outline-variant radius-2 p-3 m-bottom-1">',
+                '<section data-docara-block="steps" data-view="timeline" class="m-bottom-1">',
                 '<ol class="m-0 p-0">',
             ],
             'docara.surface' => [

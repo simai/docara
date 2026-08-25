@@ -1,0 +1,32 @@
+{
+  "schema_version": "1.0.0",
+  "status": "pass_with_recorded_control_plane_gap",
+  "technology_contract": "graph/specs/technology/project-technology-mode.json",
+  "workflow": "source/workflow/2026-08-09-docara-local-sites-maintenance.md",
+  "process_states_completed": [
+    "inspect_live_repository",
+    "load_task_relevant_graph_context",
+    "load_raw_owner_sources_as_needed",
+    "execute_under_action_gates",
+    "update_workflow_graph_and_memory",
+    "synchronize_project_technology",
+    "verify_freshness_and_outcome"
+  ],
+  "action_gate_evidence": {
+    "backup_and_destructive_preflight": "passed_with_explicit_command_approval",
+    "recovery_archive_verified": true,
+    "same_filesystem_rollback_verified": true
+  },
+  "task_specific_acceptance": "source/workflow/evidence/2026-08-09-docara-local-sites-maintenance/verification-summary.json",
+  "outcome_integrity_review": "source/workflow/evidence/2026-08-09-docara-local-sites-maintenance/outcome-integrity-review.json",
+  "routing_gap": "source/workflow/evidence/2026-08-09-docara-local-sites-maintenance/control-plane-routing-gap.json",
+  "project_technology": {
+    "status": "ready",
+    "freshness": "current",
+    "continuation": "ready",
+    "active_track": null,
+    "repeat_sync_zero_diff": true,
+    "private_source_content_copied": false
+  },
+  "kaizen": "The permanent project rule is to preserve terminal memory when generic keyword inference treats closed release-boundary wording as an active release track. The gap remains local evidence, not a legacy skill activation or central policy rewrite."
+}

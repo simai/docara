@@ -1,0 +1,27 @@
+{
+  "id": "docara.feature.translation_tracking",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "feature",
+  "tz_role": "product_contract",
+  "title": "Translation freshness tracking",
+  "summary": "Compare Markdown and locale UI keys with a source locale, emit a non-blocking report and accept reviewed hashes through a stale-safe plan.",
+  "owner": "content",
+  "lifecycle": "validated",
+  "readiness": "R5_operational",
+  "evidence_status": "validated",
+  "visibility": "repository",
+  "source_refs": ["docs/site/content/ru/authoring/multilingual-site.md", "src/I18n/TranslationStatusService.php"],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-25-shared-examples-translation-tracking/verification-summary.json",
+    "ui-doc://source/workflow/evidence/2026-08-25-shared-examples/verification-summary.json"
+  ],
+  "profile_refs": ["docara.unified"],
+  "invariants": [
+    "Tracking does not change locale routing, fallback or missing-page policy.",
+    "Status and build never edit Markdown or the translation lock.",
+    "Different page paths require an identical explicit translation_key.",
+    "Fallback use is visible and is not a completed translation.",
+    "Acceptance is hash-bound and distinguishes ai_verified from human_reviewed."
+  ]
+}

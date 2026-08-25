@@ -2,6 +2,34 @@
 
 All notable changes to Docara are documented in this file.
 
+## [2.1.0] - 2026-08-26
+
+### Added
+
+- Project-owned reusable examples under `examples/<id>/` with automatic
+  Result, HTML, CSS, and JavaScript tabs, confined assets, dependency-aware
+  partial builds, and deterministic example receipts.
+- Non-blocking translation tracking for Markdown pages and locale dictionaries,
+  including stable human/JSON status reports and hash-bound review acceptance.
+- Section-scoped secondary navigation and compact language selection for sites
+  that use top-level product navigation.
+
+### Changed
+
+- Example previews report their rendered height to the parent shell so short
+  results no longer reserve a large empty frame and source tabs size naturally.
+- Fenced code blocks share the same visual language, syntax highlighting, and
+  copy control as Example source tabs.
+- Hero spacing, step layouts, navigation controls, and related documentation
+  components have clearer responsive defaults.
+
+### Security
+
+- Reusable example IDs, source files, assets, links, encodings, sizes, symlinks,
+  hardlinks, and case collisions are validated before publication.
+- Translation acceptance plans are invalidated whenever an input page,
+  dictionary, or lock file changes.
+
 ## [2.0.0] - 2026-08-25
 
 ### Added
@@ -44,3 +72,4 @@ All notable changes to Docara are documented in this file.
   complete build and `verify-static`.
 
 [2.0.0]: https://github.com/simai/docara/releases/tag/v2.0.0
+[2.1.0]: https://github.com/simai/docara/releases/tag/v2.1.0

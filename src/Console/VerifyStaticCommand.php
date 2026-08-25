@@ -41,7 +41,14 @@ final class VerifyStaticCommand extends Command
             return self::FAILURE;
         }
 
-        $process = new Process([PHP_BINARY, $script, (string) $this->input->getArgument('directory')], $this->base);
+        $memoryLimit = (string) ini_get('memory_limit');
+        $process = new Process([
+            PHP_BINARY,
+            '-d',
+            'memory_limit=' . ($memoryLimit === '' ? '-1' : $memoryLimit),
+            $script,
+            (string) $this->input->getArgument('directory'),
+        ], $this->base);
         $process->run(function (string $type, string $buffer): void {
             $target = $type === Process::ERR && $this->output instanceof ConsoleOutputInterface
                 ? $this->output->getErrorOutput()

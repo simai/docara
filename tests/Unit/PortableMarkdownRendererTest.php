@@ -184,6 +184,15 @@ document.querySelector('#hello').dataset.ready = 'true';
 MD);
 
         self::assertStringContainsString('sandbox="allow-scripts"', $web);
+        self::assertStringContainsString('data-docara-example-frame', $web);
+        self::assertStringContainsString('data-sf-observer="ignore"', $web);
+        self::assertStringContainsString('type:&apos;docara:example-height&apos;', $web);
+        self::assertStringContainsString('type===&apos;docara:example-measure&apos;', $web);
+        self::assertStringContainsString('lastHeight=-1;', $web);
+        self::assertStringContainsString('Math.max(rect.height+marginTop+marginBottom,body.scrollHeight,root.scrollHeight)', $web);
+        self::assertStringContainsString('function measureSettled()', $web);
+        self::assertStringContainsString('link.setAttribute(&apos;data-docara-example-framework-style&apos;,&apos;&apos;)', $web);
+        self::assertStringContainsString('document.documentElement.classList.add(&apos;theme-&apos;+theme)', $web);
         self::assertStringContainsString('data-docara-example-tab="html"', $web);
         self::assertStringContainsString('data-docara-example-tab="css"', $web);
         self::assertStringContainsString('data-docara-example-tab="javascript"', $web);
@@ -400,6 +409,10 @@ MD;
             '<ol class="m-0 p-0">',
             $html,
         );
+        self::assertStringContainsString('class="docara-step grid items-start gap-1 list-none p-block-end-2"', $html);
+        self::assertStringContainsString('class="docara-step-marker inline-flex items-center content-main-center"', $html);
+        self::assertStringContainsString('<div class="docara-step-content">Установите PHP-зависимости.</div>', $html);
+        self::assertStringNotContainsString('absolute inset-inline-start-0', $html);
         self::assertStringContainsString(
             '<div data-docara-table-scroll class="overflow-auto m-bottom-1"><table class="table table-border table-stripe">',
             $html,
@@ -542,6 +555,21 @@ MD);
         self::assertSame(2, substr_count($html, 'data-docara-hero-action class='));
         self::assertStringContainsString('>Начать</span></a>', $html);
         self::assertStringContainsString('>Компоненты</span></a>', $html);
+    }
+
+    #[Test]
+    public function compact_hero_accepts_explicit_large_padding(): void
+    {
+        $html = (new PortableMarkdownRenderer)->render(<<<'MD'
+:::hero {variant=compact padding=xl}
+# Docara
+
+Пишите содержимое в Markdown.
+:::
+MD);
+
+        self::assertStringContainsString('data-docara-block="hero"', $html);
+        self::assertStringContainsString(' p-4', $html);
     }
 
     #[Test]

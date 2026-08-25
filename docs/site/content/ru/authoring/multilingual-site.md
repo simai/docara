@@ -78,6 +78,12 @@ content/
     "detect_browser_language": false,
     "legacy_unprefixed_redirects": true
   },
+  "translation_tracking": {
+    "enabled": true,
+    "source_locale": "ru",
+    "mode": "report",
+    "lock_file": "translations.lock.json"
+  },
   "branding": {
     "title": "Acme",
     "label": "Docs",
@@ -131,7 +137,39 @@ Markdown-контент не переводится fallback-механизмо�
 Docara не требует одинакового количества пунктов и не переводит подписи
 автоматически.
 
-## 3. Соберите и проверьте все языки
+## 3. Контролируйте актуальность переводов
+
+`translation_tracking` не меняет routing, fallback или `missing_page_policy`.
+Он сравнивает исходный Markdown и `lang.json` с базовым русским языком и
+формирует отчёт, не останавливая сборку:
+
+```bash
+php vendor/bin/docara translations status
+php vendor/bin/docara translations status --locale=en
+php vendor/bin/docara translations status --status=stale --json
+```
+
+Страницы с одинаковым относительным путём связываются автоматически. Если пути
+различаются, задайте обеим страницам одинаковый `translation_key`. Docara не
+связывает страницы по похожим заголовкам. Намеренное исключение хранится в
+`translations.lock.json` вместе с обязательной причиной.
+
+После проверки перевода сначала создайте hash-bound план, затем примените
+именно его идентификатор:
+
+```bash
+php vendor/bin/docara translations accept \
+  --locale=en --key=guide/install.md --review=ai_verified --dry-run --json
+php vendor/bin/docara translations accept --apply=<plan-sha256> --json
+```
+
+Если Markdown, `lang.json`, конфигурация или lock-файл изменились между
+командами, применение остановится. `ai_verified` означает технически и
+содержательно проверенный ИИ перевод; `human_reviewed` выставляется после
+отдельной редакционной проверки. Сборщик не вызывает ИИ, сеть и не изменяет
+исходники.
+
+## 4. Соберите и проверьте все языки
 
 ```bash
 php vendor/bin/docara build production
@@ -139,8 +177,9 @@ php vendor/bin/docara verify-static build_production
 php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 ```
 
-Проверьте redirect `/`, затем `/ru/`, `/en/` и `/ar/`. На связанных страницах должны работать
-переключатель языка и `hreflang`; у арабской страницы корневой HTML должен
+Проверьте redirect `/`, затем `/ru/`, `/en/` и `/ar/`. На связанных страницах
+должны работать переключатель языка в виде кнопки со значком, меню локалей и
+`hreflang`; у арабской страницы корневой HTML должен
 иметь `lang="ar"` и `dir="rtl"`. Поиск хранит locale каждой записи и не
 смешивает одинаковые маршруты разных языков.
 
@@ -150,6 +189,8 @@ php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 отсутствует, арабская страница установки не создаётся и переключатель не ведёт
 на выдуманный URL. Для строгой симметрии выберите `"error"`: сборка остановится
 с точным ожидаемым путём. Не копируйте русский Markdown как скрытый fallback.
+Если UI-подпись реально берётся из `fallbacks`, translation report показывает
+локаль fallback отдельно и всё равно считает собственный перевод отсутствующим.
 
 Далее: [модель локалей](/authoring/localization/) и
 [общие подписи локали](/authoring/language-packs/).

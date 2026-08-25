@@ -18,11 +18,16 @@
     ><kbd slot="icon-right" class="docara-search-shortcut text-1 color-on-surface-variant m-inline-start-1/2" data-docara-search-shortcut>⌘K</kbd></sf-button>
 <?php } ?>
 <?php if (count($view->languageOptions) > 1) { ?>
-    <label class="sf-select sf-select--size-1"><span class="sr-only"><?= $view->copy['language.label'] ?></span><select data-docara-language-switcher aria-label="<?= $view->copy['language.label'] ?>">
+    <details data-docara-language-menu class="docara-language-menu relative">
+        <summary data-docara-language-trigger aria-label="<?= $view->copy['language.label'] ?>" aria-expanded="false" class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 radius-default cursor-pointer"><sf-icon icon="language" aria-hidden="true"></sf-icon></summary>
+        <nav class="docara-language-menu__popup" aria-label="<?= $view->copy['language.label'] ?>">
+            <ul class="list-none m-0 p-1 flex flex-col gap-1/3">
 <?php foreach ($view->languageOptions as $option) { ?>
-        <option value="<?= $option['url'] ?>" lang="<?= $option['locale'] ?>"<?php if ($option['current']) { ?> selected<?php } ?>><?= $option['label'] ?></option>
+                <li><a data-docara-language-option href="<?= $option['url'] ?>" lang="<?= $option['locale'] ?>" hreflang="<?= $option['locale'] ?>"<?php if ($option['current']) { ?> aria-current="page"<?php } ?> class="docara-language-menu__option flex items-center content-main-between gap-2 radius-default p-inline-1 p-block-1/2 decoration-none color-on-surface"><span><?= $option['label'] ?></span><?php if ($option['current']) { ?><sf-icon icon="check" aria-hidden="true"></sf-icon><?php } ?></a></li>
 <?php } ?>
-    </select></label>
+            </ul>
+        </nav>
+    </details>
 <?php } ?>
 <?php if ($view->readerPreferencesEnabled) { ?>
     <button class="sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 radius-default" data-docara-reader-settings-trigger type="button" aria-haspopup="dialog" aria-controls="docara-reader-settings-dialog" aria-expanded="false" aria-label="<?= $view->copy['reader.open'] ?>"><sf-icon icon="tune" aria-hidden="true"></sf-icon></button>

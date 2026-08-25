@@ -1,0 +1,36 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.federation.technology_execution_packet",
+  "status": "success",
+  "technology_signature": "b5cc41628e4bcebf472a73cd2de1857ea018ca8ccb12196e349e34f1edb5adc6",
+  "owner_skill": "graph",
+  "process_model_id": "project_technology_management",
+  "source_refs": [
+    {"id":"d404a5e0dd51d662","repo":"ai-codex-skill-graph","repo_revision":"02b7bdb0fd9ef88f35644600b82eff21b87d6d7b","relative_path":"skills/graph/SKILL.md","role":"skill_entrypoint","required":true,"sha256":"a979e209b37e72e2708f8789e09acc45c919c4cf20752bc8909f2f58c4bae87c"},
+    {"id":"6e240758c51edbdc","repo":"ai-codex-skill-graph","repo_revision":"02b7bdb0fd9ef88f35644600b82eff21b87d6d7b","relative_path":"graph/generated/mirai-graph/federation-control-plane/federation-registry-20260530/federation-skill-registry.json","role":"process_registry","required":true,"sha256":"662859fa60b7c0660b6e203aafdabc44b5a18e93b55666623d98f3d79083de52"}
+  ],
+  "steps": [
+    {"id":"project_technology_inspect","required":true},
+    {"id":"project_technology_plan_or_apply","required":true},
+    {"id":"project_technology_synchronize","required":true},
+    {"id":"project_technology_capture_continuation","required":true},
+    {"id":"project_technology_verify","required":true}
+  ],
+  "required_checks": [
+    {"id":"graph_manifest_schema","required":true},
+    {"id":"project_technology_freshness","required":true},
+    {"id":"technology_conformance_check","required":true}
+  ],
+  "conformance_required": true,
+  "evidence_policy": {
+    "schema_version": "2.0.0",
+    "max_age_seconds": 86400,
+    "verification_run_binding_required": true,
+    "target_revision_binding_required": true,
+    "typed_result_artifacts_required": true,
+    "empty_write_diff_allowed": false,
+    "read_only_mode_must_be_explicit": true
+  },
+  "blockers": [],
+  "warnings": []
+}

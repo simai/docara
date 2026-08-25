@@ -1,5 +1,9 @@
 # Context for the architecture reset
 
+> Routing status: **superseded historical context**. Use
+> `source/handoff/2026-08-09-docara-current-main-onboarding/START.md` for the
+> terminal state. The body below is retained for architecture provenance only.
+
 ## What was achieved before this branch
 
 The existing Docara implementation demonstrates a portable PHP build, SIMAI

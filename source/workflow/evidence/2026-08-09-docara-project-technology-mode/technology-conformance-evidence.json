@@ -1,0 +1,53 @@
+{
+  "schema_version": "2.0.0",
+  "operation_id": "simai.federation.technology_conformance_evidence",
+  "technology_signature": "b5cc41628e4bcebf472a73cd2de1857ea018ca8ccb12196e349e34f1edb5adc6",
+  "verification_run_id": "docara-project-technology-20260809T094000Z",
+  "created_at": "2026-08-09T09:40:00Z",
+  "target": {
+    "repo": "docara",
+    "revision": "d514c536b8cf379b90a15be8aaf14bcb85b06f7e"
+  },
+  "evidence": [
+    {"id":"source-d404a5e0dd51d662","type":"source_load","subject_id":"d404a5e0dd51d662","path":"source/workflow/evidence/2026-08-09-docara-project-technology-mode/technology/source-d404a5e0dd51d662.json","sha256":"033bf8cff91074b703edc6a34ff69cb83a91dd9a319300a28a656ea5f4a476d5","verification_run_id":"docara-project-technology-20260809T094000Z","created_at":"2026-08-09T09:40:00Z","target_revision":"d514c536b8cf379b90a15be8aaf14bcb85b06f7e"},
+    {"id":"source-6e240758c51edbdc","type":"source_load","subject_id":"6e240758c51edbdc","path":"source/workflow/evidence/2026-08-09-docara-project-technology-mode/technology/source-6e240758c51edbdc.json","sha256":"56d9df93b8321a258a5d062421e198afcbc0d45134d89f60c6aa530aa9c8f678","verification_run_id":"docara-project-technology-20260809T094000Z","created_at":"2026-08-09T09:40:00Z","target_revision":"d514c536b8cf379b90a15be8aaf14bcb85b06f7e"},
+    {"id":"step-project-technology-inspect","type":"step_result","subject_id":"project_technology_inspect","path":"source/workflow/evidence/2026-08-09-docara-project-technology-mode/technology/step-project-technology-inspect.json","sha256":"714615a89b837443e43deb43b23bda6f4661853a2fe42f841f9b6c1993d7d56d","verification_run_id":"docara-project-technology-20260809T094000Z","created_at":"2026-08-09T09:40:00Z","target_revision":"d514c536b8cf379b90a15be8aaf14bcb85b06f7e"},
+    {"id":"step-project-technology-plan-or-apply","type":"step_result","subject_id":"project_technology_plan_or_apply","path":"source/workflow/evidence/2026-08-09-docara-project-technology-mode/technology/step-project-technology-plan-or-apply.json","sha256":"bfb93280c967679eac642889087b62fab2e8824ef899e5df9a58a0e7dbb53ac7","verification_run_id":"docara-project-technology-20260809T094000Z","created_at":"2026-08-09T09:40:00Z","target_revision":"d514c536b8cf379b90a15be8aaf14bcb85b06f7e"},
+    {"id":"step-project-technology-synchronize","type":"step_result","subject_id":"project_technology_synchronize","path":"source/workflow/evidence/2026-08-09-docara-project-technology-mode/technology/step-project-technology-synchronize.json","sha256":"3b95f36d13cb00b3d3322f2116bbaf4026ea9f438e7ae4e1f309ef84f435e076","verification_run_id":"docara-project-technology-20260809T094000Z","created_at":"2026-08-09T09:40:00Z","target_revision":"d514c536b8cf379b90a15be8aaf14bcb85b06f7e"},
+    {"id":"step-project-technology-capture-continuation","type":"step_result","subject_id":"project_technology_capture_continuation","path":"source/workflow/evidence/2026-08-09-docara-project-technology-mode/technology/step-project-technology-capture-continuation.json","sha256":"8310d858607320b706b6562fc230dfce257374e504265fdb705ba53e9f27b288","verification_run_id":"docara-project-technology-20260809T094000Z","created_at":"2026-08-09T09:40:00Z","target_revision":"d514c536b8cf379b90a15be8aaf14bcb85b06f7e"},
+    {"id":"step-project-technology-verify","type":"step_result","subject_id":"project_technology_verify","path":"source/workflow/evidence/2026-08-09-docara-project-technology-mode/technology/step-project-technology-verify.json","sha256":"7c69d45b47c7be9285a0f5276a7a54ebfd602873d474e3a62498f1ec4fe3c5e3","verification_run_id":"docara-project-technology-20260809T094000Z","created_at":"2026-08-09T09:40:00Z","target_revision":"d514c536b8cf379b90a15be8aaf14bcb85b06f7e"},
+    {"id":"check-graph-manifest-schema","type":"validator_result","subject_id":"graph_manifest_schema","path":"source/workflow/evidence/2026-08-09-docara-project-technology-mode/technology/check-graph-manifest-schema.json","sha256":"809f7e1eb34d1c93a2a5c7018b6d42f18be16df890afe5c0314209a8df4d0f99","verification_run_id":"docara-project-technology-20260809T094000Z","created_at":"2026-08-09T09:40:00Z","target_revision":"d514c536b8cf379b90a15be8aaf14bcb85b06f7e","exit_code":0},
+    {"id":"check-project-technology-freshness","type":"validator_result","subject_id":"project_technology_freshness","path":"source/workflow/evidence/2026-08-09-docara-project-technology-mode/technology/check-project-technology-freshness.json","sha256":"05d3243395e2a979df0fadf0f9e42260f456de1063baed54d88401b845841b35","verification_run_id":"docara-project-technology-20260809T094000Z","created_at":"2026-08-09T09:40:00Z","target_revision":"d514c536b8cf379b90a15be8aaf14bcb85b06f7e","exit_code":0},
+    {"id":"check-technology-conformance","type":"validator_result","subject_id":"technology_conformance_check","path":"source/workflow/evidence/2026-08-09-docara-project-technology-mode/technology/check-technology-conformance.json","sha256":"c352ddae2bec318cfa112de50d8868da989995d2bc97000b16e7392f2cfefb7f","verification_run_id":"docara-project-technology-20260809T094000Z","created_at":"2026-08-09T09:40:00Z","target_revision":"d514c536b8cf379b90a15be8aaf14bcb85b06f7e","exit_code":0}
+  ],
+  "sources_loaded": [
+    {"id":"d404a5e0dd51d662","sha256":"a979e209b37e72e2708f8789e09acc45c919c4cf20752bc8909f2f58c4bae87c","repo_revision":"02b7bdb0fd9ef88f35644600b82eff21b87d6d7b","verification_run_id":"docara-project-technology-20260809T094000Z","loaded_at":"2026-08-09T09:40:00Z","evidence_ref":"source-d404a5e0dd51d662"},
+    {"id":"6e240758c51edbdc","sha256":"662859fa60b7c0660b6e203aafdabc44b5a18e93b55666623d98f3d79083de52","repo_revision":"02b7bdb0fd9ef88f35644600b82eff21b87d6d7b","verification_run_id":"docara-project-technology-20260809T094000Z","loaded_at":"2026-08-09T09:40:00Z","evidence_ref":"source-6e240758c51edbdc"}
+  ],
+  "steps": [
+    {"id":"project_technology_inspect","status":"success","evidence_refs":["step-project-technology-inspect"]},
+    {"id":"project_technology_plan_or_apply","status":"success","evidence_refs":["step-project-technology-plan-or-apply"]},
+    {"id":"project_technology_synchronize","status":"success","evidence_refs":["step-project-technology-synchronize"]},
+    {"id":"project_technology_capture_continuation","status":"success","evidence_refs":["step-project-technology-capture-continuation"]},
+    {"id":"project_technology_verify","status":"success","evidence_refs":["step-project-technology-verify"]}
+  ],
+  "checks": [
+    {"id":"graph_manifest_schema","status":"success","evidence_refs":["check-graph-manifest-schema"]},
+    {"id":"project_technology_freshness","status":"success","evidence_refs":["check-project-technology-freshness"]},
+    {"id":"technology_conformance_check","status":"success","evidence_refs":["check-technology-conformance"]}
+  ],
+  "deviations": [],
+  "diff": {
+    "mode": "write",
+    "base_revision": "d514c536b8cf379b90a15be8aaf14bcb85b06f7e",
+    "head_revision": "d514c536b8cf379b90a15be8aaf14bcb85b06f7e",
+    "changed_files": [
+      {"path":"graph.json","status":"added","sha256":"690e199ff1de8535d0644ca676cf604ab720fcb596d52d8dcc6363d5a220a40b"},
+      {"path":"graph/graph.json","status":"modified","sha256":"afa2ebbd85de77bcbd8cc05f1d0ef58827c32daffce5853523570b073ce90b0c"},
+      {"path":"source/memory/CURRENT.yaml","status":"modified","sha256":"0e237eca3981278a2734b2fac66b79fa6fd9ef5c000e75023a272f6d8baf95a2"},
+      {"path":"source/memory/TRACKS.yaml","status":"modified","sha256":"2a2a62b75e95cc3b7ba749984051f7ff01f176582d7213e260b5cb5598de17b8"},
+      {"path":"source/memory/index.jsonl","status":"modified","sha256":"53c85fbc1959e5b68db03a76bca38222c8f45214ea62565d79405ab21261f5e1"},
+      {"path":"source/workflow/2026-08-09-docara-project-technology-mode.md","status":"added","sha256":"01eb03673501c7ee08c2ff040f8c2d8569909f21b79267da315f615dcb128953"}
+    ]
+  }
+}

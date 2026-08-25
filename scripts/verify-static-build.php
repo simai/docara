@@ -2967,9 +2967,69 @@ if (is_array($manifestBuild['public_projections'] ?? null)) {
                 throw new RuntimeException("Public schema-reference source [$name] differs from the trusted package schema.");
             }
         }
+
+        $examplesPath = $root . '/.docara/examples.json';
+        $examplesReceipt = json_decode((string) file_get_contents($examplesPath), true, 512, JSON_THROW_ON_ERROR);
+        if (! docaraSafeRegularFile($examplesPath)
+            || ! is_array($examplesReceipt)
+            || ! docaraExactKeys($examplesReceipt, ['schema', 'examples', 'content_sha256'])
+            || ($examplesReceipt['schema'] ?? null) !== 'docara.example_receipt.v1'
+            || ! is_array($examplesReceipt['examples'] ?? null)
+            || ! hash_equals(
+                (string) ($examplesReceipt['content_sha256'] ?? ''),
+                hash('sha256', docaraCanonicalJson([
+                    'schema' => 'docara.example_receipt.v1',
+                    'examples' => $examplesReceipt['examples'],
+                ])),
+            )
+        ) {
+            throw new RuntimeException('Project example receipt is invalid.');
+        }
+        $previousExample = null;
+        foreach ($examplesReceipt['examples'] as $example) {
+            if (! is_array($example)
+                || ! docaraExactKeys($example, ['id', 'content_sha256', 'sources', 'assets', 'consumers'])
+                || preg_match('#\A[a-z0-9][a-z0-9._-]*(?:/[a-z0-9][a-z0-9._-]*)*\z#D', (string) ($example['id'] ?? '')) !== 1
+                || ! is_array($example['sources'] ?? null)
+                || ! is_array($example['assets'] ?? null)
+                || ! is_array($example['consumers'] ?? null)
+                || ($previousExample !== null && strcmp($previousExample, $example['id']) >= 0)
+            ) {
+                throw new RuntimeException('Project example records are invalid or unsorted.');
+            }
+            $previousExample = $example['id'];
+            $previousConsumer = null;
+            foreach ($example['consumers'] as $consumer) {
+                if (! is_string($consumer) || $consumer === ''
+                    || ($previousConsumer !== null && strcmp($previousConsumer, $consumer) >= 0)
+                ) {
+                    throw new RuntimeException("Project example [{$example['id']}] consumers are invalid or unsorted.");
+                }
+                $previousConsumer = $consumer;
+            }
+            $previousAsset = null;
+            foreach ($example['assets'] as $asset) {
+                if (! is_array($asset)
+                    || ! docaraExactKeys($asset, ['path', 'output', 'size', 'sha256'])
+                    || ! is_string($asset['output'] ?? null)
+                    || ($previousAsset !== null && strcmp($previousAsset, $asset['output']) >= 0)
+                ) {
+                    throw new RuntimeException("Project example [{$example['id']}] assets are invalid or unsorted.");
+                }
+                $previousAsset = $asset['output'];
+                $assetPath = $root . '/' . $asset['output'];
+                if (! docaraSafeRegularFile($assetPath)
+                    || filesize($assetPath) !== $asset['size']
+                    || ! hash_equals((string) ($asset['sha256'] ?? ''), (string) hash_file('sha256', $assetPath))
+                ) {
+                    throw new RuntimeException("Project example asset [{$asset['output']}] differs from its receipt.");
+                }
+            }
+        }
         $projectionContract = $manifestBuild['public_projections'];
-        if (! docaraExactKeys($projectionContract, ['design_atlas_sha256', 'schema_reference_sha256'])
+        if (! docaraExactKeys($projectionContract, ['design_atlas_sha256', 'examples_sha256', 'schema_reference_sha256'])
             || ! hash_equals((string) ($projectionContract['design_atlas_sha256'] ?? ''), $atlasReceipt['content_sha256'])
+            || ! hash_equals((string) ($projectionContract['examples_sha256'] ?? ''), $examplesReceipt['content_sha256'])
             || ! hash_equals((string) ($projectionContract['schema_reference_sha256'] ?? ''), $schemaReceipt['content_sha256'])
         ) {
             throw new RuntimeException('Public projections do not match the accepted build receipt.');

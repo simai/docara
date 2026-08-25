@@ -1,0 +1,22 @@
+{
+  "id": "docara.batch.authoring_product",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "Reusable examples and translation runtime",
+  "summary": "Implement the product runtime, schemas, CLI, documentation and regression coverage.",
+  "owner": "dev",
+  "lifecycle": "completed",
+  "readiness": "accepted",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-25-shared-examples-translation-tracking.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-25-shared-examples-translation-tracking/verification-summary.json"],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.authoring_lifecycle",
+  "allowed_scope": ["src", "resources/schemas", "tests", "docs", "README.md", "graph", "source"],
+  "forbidden_scope": ["Release metadata", "Git history", "Package publication", "Deployment"],
+  "checks": ["Unit and integration tests", "Docara documentation build", "Static verification", "No-write and deterministic receipts"],
+  "status": "completed",
+  "next_action": "none"
+}

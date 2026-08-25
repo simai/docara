@@ -1,6 +1,6 @@
 {
-    "schema_version": "1.0.0",
-    "context_id": "docara.unified.active",
+    "schema_version": "1.1.0",
+    "context_id": "docara.unified.terminal",
     "generated_by": "scripts/project-context.php",
     "canonical_sources": [
         "graph/graph.json",
@@ -9,36 +9,42 @@
         "graph/specs/stages/lfr-local-framework-runtime.json",
         "graph/specs/batches/lfr-integrated-retest.json"
     ],
-    "canonical_sha256": "c251cc0d273b7871eb45524876ea9460703cbbaf9280b8615806641f4429e3d1",
+    "canonical_sha256": "3cf672722c1eca71ab7b5c665cf966c63657c98a92a0c2e7d9d0df9b6c4862d9",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
         "profile": "project_management"
     },
-    "active": {
-        "state": "docara_main_converged_ui_doc_migration_next",
+    "terminal": {
+        "state": "docara_terminal_no_active_implementation",
         "goal": "docara.goal.unified",
-        "goal_readiness": "docara_main_converged_ui_doc_migration_next",
-        "stage": "docara.stage.lfr.local_framework_runtime",
-        "stage_readiness": "independently_accepted_pass_with_notes",
-        "stage_status": "independently_accepted_pass_with_notes",
-        "batch": "docara.batch.lfr.integrated_retest",
-        "batch_readiness": "independently_accepted_pass_with_notes",
-        "batch_status": "independently_accepted_pass_with_notes",
-        "completed_checkpoint": "local_framework_runtime_independently_accepted",
-        "candidate_revision": "d5e9ecbb1b65904b4015c4a8b8db3aa66d7fe30f",
-        "next_action": "migrate_ui_doc_content_onto_docara_v2_then_converge_ui_doc_main",
-        "evidence": "source/workflow/evidence/2026-08-08-docara-main-convergence/INDEX.md"
+        "goal_readiness": "docara_terminal_no_active_implementation",
+        "goal_lifecycle": "complete",
+        "active_implementation": false,
+        "last_completed_stage": "docara.stage.lfr.local_framework_runtime",
+        "last_completed_stage_status": "independently_accepted_pass_with_notes",
+        "last_completed_batch": "docara.batch.lfr.integrated_retest",
+        "last_completed_batch_status": "independently_accepted_pass_with_notes",
+        "completed_checkpoint": "standalone_docara_v2_main_terminal",
+        "repository_revision": "d514c536b8cf379b90a15be8aaf14bcb85b06f7e",
+        "product_baseline_revision": "c5f6140a85435913a9d5f7389bdf34967d4d70f8",
+        "next_action": "explicit_user_decision",
+        "evidence": "source/workflow/evidence/2026-08-09-docara-legacy-repositories-retirement/INDEX.md"
     },
     "roadmap": {
-        "source": "source/workflow/2026-08-08-docara-main-convergence.md",
-        "next_goal": {
-            "id": "ui_doc.content_migration",
-            "title": "Migrate useful ui-doc content onto Docara v2",
-            "status": "authorized_in_progress",
-            "authorized": true,
-            "source": "source/handoff/docara-unified-architecture/NEXT.md"
-        }
+        "source": "source/workflow/2026-08-09-docara-terminal-governance-sync.md"
+    },
+    "release_boundary": {
+        "status": "closed_pending_explicit_user_decision",
+        "authorized": false,
+        "required_decision": "explicit_user_decision",
+        "forbidden_without_decision": [
+            "version_change",
+            "tag",
+            "release",
+            "package_publication",
+            "deploy"
+        ]
     },
     "architecture": {
         "human_spec": "docs/specification/DOCARA-TZ.md",
@@ -72,14 +78,14 @@
         "Release"
     ],
     "read_order": [
-        "source/handoff/docara-unified-architecture/STATUS.yaml",
+        "source/handoff/2026-08-09-docara-current-main-onboarding/STATUS.yaml",
         "source/workflow/ACTIVE.md",
-        "source/workflow/2026-08-08-docara-main-convergence.md",
+        "source/workflow/2026-08-09-docara-terminal-governance-sync.md",
         "graph/graph.json",
         "graph/specs/stages/lfr-local-framework-runtime.json",
         "graph/specs/batches/lfr-integrated-retest.json",
         "graph/generated/ai-context/docara-unified.json",
-        "source/handoff/docara-unified-architecture/NEXT.md",
-        "source/handoff/docara-unified-architecture/RESULT.md"
+        "source/handoff/2026-08-09-docara-current-main-onboarding/NEXT.md",
+        "source/handoff/2026-08-09-docara-current-main-onboarding/RESULT.md"
     ]
 }

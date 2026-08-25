@@ -147,7 +147,7 @@ final class PageBuilderTest extends TestCase
         foreach ([
             'backlinks' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
             'banner' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
-            'code' => ['heading', 'paragraph', 'table', 'code_block', 'example'],
+            'code' => ['heading', 'paragraph', 'table', 'code_block'],
             'details' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
             'download' => ['heading', 'paragraph', 'table', 'code_block', 'example', 'typed_directive'],
             'footnotes-and-sources' => ['heading', 'paragraph', 'table', 'code_block', 'example'],

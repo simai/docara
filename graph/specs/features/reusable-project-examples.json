@@ -1,0 +1,26 @@
+{
+  "id": "docara.feature.reusable_project_examples",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "feature",
+  "tz_role": "product_contract",
+  "title": "Reusable project examples",
+  "summary": "One confined examples/<id> source can serve multiple pages and locales with generated source tabs, assets and dependency receipts.",
+  "owner": "docara",
+  "lifecycle": "validated",
+  "readiness": "R5_operational",
+  "evidence_status": "validated",
+  "visibility": "repository",
+  "source_refs": ["docs/site/content/ru/components/example.md", "src/PortableSite/ProjectExampleRepository.php"],
+  "evidence_refs": [
+    "source/workflow/evidence/2026-08-25-shared-examples-translation-tracking/verification-summary.json",
+    "ui-doc://source/workflow/evidence/2026-08-25-shared-examples/verification-summary.json"
+  ],
+  "profile_refs": ["docara.unified"],
+  "invariants": [
+    "index.html is required; index.css, index.js and assets are optional.",
+    "An example uses either an id or inline code, never both.",
+    "Traversal, symlink, hardlink, case collision, unknown types, invalid UTF-8 and size overflow fail closed.",
+    "Changing a referenced shared example requires a complete build."
+  ]
+}

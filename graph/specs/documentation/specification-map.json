@@ -17,6 +17,8 @@
     {"path": "docs/specification/DOCARA-TZ.md", "purpose": "Product and system requirements"},
     {"path": "docs/specification/architecture/UNIFIED-ARCHITECTURE.md", "purpose": "Modules, ownership and data flow"},
     {"path": "docs/specification/authoring/AUTHORING-CONTRACT.md", "purpose": "Author-facing Markdown and component rules"},
+    {"path": "docs/site/content/ru/components/example.md", "purpose": "Inline and reusable project example authoring"},
+    {"path": "docs/site/content/ru/authoring/multilingual-site.md", "purpose": "Locale trees and translation tracking workflow"},
     {"path": "docs/specification/implementation/ROADMAP.md", "purpose": "Bounded migration order"},
     {"path": "docs/specification/ACCEPTANCE.md", "purpose": "Done conditions and nonclaims"}
   ],

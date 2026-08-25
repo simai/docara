@@ -122,6 +122,39 @@ final readonly class PortableNavigationBuilder
     }
 
     /**
+     * Project only the active top-level branch into the documentation rail.
+     * Canonical topology remains available to breadcrumbs and adjacency.
+     *
+     * @param  list<array<string, mixed>>  $nodes
+     * @return list<array<string, mixed>>
+     */
+    public function scoped(array $nodes, string $activeUrl, string $scope): array
+    {
+        if ($scope === 'site') {
+            return $nodes;
+        }
+        if ($scope !== 'section') {
+            throw new \LogicException('NAVIGATION_SCOPE_INVALID');
+        }
+
+        foreach ($nodes as $node) {
+            if (($node['key'] ?? null) === '@home') {
+                continue;
+            }
+            $children = is_array($node['children'] ?? null)
+                ? array_values($node['children'])
+                : [];
+            if (($node['url'] ?? null) !== $activeUrl && ! $this->containsUrl($children, $activeUrl)) {
+                continue;
+            }
+
+            return $children !== [] ? $children : [$node];
+        }
+
+        return $nodes;
+    }
+
+    /**
      * @param  list<array<string, mixed>>  $nodes
      * @return list<array<string, mixed>>
      */
@@ -251,6 +284,22 @@ final readonly class PortableNavigationBuilder
     {
         foreach ($nodes as $node) {
             if (($node['active'] ?? false) === true || ($node['active_ancestor'] ?? false) === true) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /** @param list<array<string, mixed>> $nodes */
+    private function containsUrl(array $nodes, string $url): bool
+    {
+        foreach ($nodes as $node) {
+            if (($node['url'] ?? null) === $url) {
+                return true;
+            }
+            $children = is_array($node['children'] ?? null) ? array_values($node['children']) : [];
+            if ($this->containsUrl($children, $url)) {
                 return true;
             }
         }

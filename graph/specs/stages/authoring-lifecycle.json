@@ -1,0 +1,39 @@
+{
+  "id": "docara.stage.authoring_lifecycle",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "milestone",
+  "tz_role": "implementation_stage",
+  "title": "Shared examples and translation tracking",
+  "summary": "Implement, document, adopt and verify the reusable authoring lifecycle across Docara, ui-doc and the English skill.",
+  "owner": "teamlead",
+  "lifecycle": "completed",
+  "readiness": "accepted_with_external_blocker",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-25-shared-examples-translation-tracking.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-25-shared-examples-translation-tracking/verification-summary.json"],
+  "profile_refs": ["docara.unified"],
+  "parent_goal_ref": "docara.goal.authoring_lifecycle",
+  "done_when": [
+    "Product runtime and negative security contracts pass.",
+    "Docara and ui-doc full builds and static verification pass.",
+    "Translation report reconciles the actual locale corpus without duplicate keys.",
+    "Skill Sync Gate and project technology freshness checks complete or expose an external blocker."
+  ],
+  "batch_refs": [
+    "docara.batch.authoring_product",
+    "docara.batch.authoring_consumer",
+    "docara.batch.authoring_knowledge"
+  ],
+  "required_gates": ["docara.gate.architecture_acceptance"],
+  "required_evidence": [
+    "Unit and integration tests",
+    "Static build receipts",
+    "Translation reconciliation",
+    "Browser smoke",
+    "Skill and graph verification"
+  ],
+  "next_stage_ref": null,
+  "status": "completed",
+  "next_action": "explicit_user_decision"
+}

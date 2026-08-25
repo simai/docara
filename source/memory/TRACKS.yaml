@@ -1,6 +1,21 @@
 tracks:
-  docara-consolidation:
-    status: "active"
-    owner_skill: "teamlead"
-    current_workflow: "source/workflow/2026-07-24-docara-product-homepage-visual-refinement.md"
-    last_updated: "2026-07-24"
+  docara-authoring-lifecycle:
+    status: "completed"
+    owner_skill: "docara"
+    current_workflow: "source/workflow/2026-08-25-shared-examples-translation-tracking.md"
+    last_updated: "2026-08-25"
+  docara-local-sites-maintenance:
+    status: "completed"
+    owner_skill: "dev"
+    current_workflow: "source/workflow/2026-08-09-docara-local-sites-maintenance.md"
+    last_updated: "2026-08-09"
+  docara-project-technology:
+    status: "completed"
+    owner_skill: "graph"
+    current_workflow: "source/workflow/2026-08-09-docara-project-technology-mode.md"
+    last_updated: "2026-08-09"
+  docara-unified:
+    status: "completed"
+    owner_skill: "docara"
+    current_workflow: "source/workflow/2026-08-25-framework-aware-example.md"
+    last_updated: "2026-08-25"

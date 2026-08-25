@@ -21,6 +21,37 @@ use Symfony\Component\Process\Process;
 final class PortableSiteBuilderTest extends TestCase
 {
     #[Test]
+    public function project_examples_publish_assets_and_force_a_full_build_when_shared_input_changes(): void
+    {
+        $this->copyPortableFixture($this->tmp, false);
+        file_put_contents(
+            $this->tmpPath('content/ru/index.md'),
+            "# Общий пример\n\n:::example {id=utilities/card label=Результат}\n:::\n",
+        );
+        $this->createSource([
+            'examples/utilities/card/index.html' => '<article><img src="assets/icon.svg" alt=""></article>',
+            'examples/utilities/card/index.css' => 'article { padding: 1rem; }',
+            'examples/utilities/card/assets/icon.svg' => '<svg xmlns="http://www.w3.org/2000/svg"></svg>',
+        ]);
+        $destination = $this->tmpPath('build_local');
+        $this->builder()->build($this->tmp, $destination);
+
+        $receipt = $this->jsonFile($destination . '/.docara/examples.json');
+        self::assertSame('utilities/card', $receipt['examples'][0]['id']);
+        self::assertSame(['content/ru/index.md'], $receipt['examples'][0]['consumers']);
+        self::assertFileExists($destination . '/_docara/examples/utilities/card/assets/icon.svg');
+        self::assertStringContainsString('data-docara-example-tab="html"', (string) file_get_contents($destination . '/ru/index.html'));
+
+        file_put_contents($this->tmpPath('examples/utilities/card/index.css'), 'article { padding: 2rem; }');
+        try {
+            $this->builder()->build($this->tmp, $destination, '/ru/');
+            self::fail('A single-page build accepted changed shared example input.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('PORTABLE_INCREMENTAL_EXAMPLE_CHANGED', $exception->errorCode);
+        }
+    }
+
+    #[Test]
     public function front_matter_controls_public_metadata_without_entering_rendered_markdown(): void
     {
         $this->copyPortableFixture($this->tmp, false);
@@ -327,7 +358,10 @@ MD);
         ] as $alternate) {
             self::assertStringContainsString($alternate, $arabic);
         }
-        self::assertStringContainsString('<option value="/ar/" lang="ar" selected>', $arabic);
+        self::assertStringContainsString(
+            'data-docara-language-option href="/ar/" lang="ar" hreflang="ar" aria-current="page"',
+            $arabic,
+        );
 
         $search = $this->jsonFile($this->tmpPath('build_local/_docara/search-index.json'));
         self::assertSame(
@@ -560,8 +594,8 @@ MD);
         );
         self::assertStringContainsString('[data-docara-region="main"]{container-type:inline-size}', $shellCss);
         self::assertStringContainsString('.docara-surface>[data-docara-container]{box-sizing:border-box;max-inline-size:100%}', $shellCss);
-        self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:transparent;', $shellCss);
-        self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre}', $shellCss);
+        self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:var(--sf-surface-0);', $shellCss);
+        self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre;background:transparent}', $shellCss);
         self::assertStringContainsString(
             '[data-docara-table-scroll]{border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius-2,var(--sf-radius-default));background:var(--sf-surface-0)}',
             $shellCss,
@@ -586,6 +620,8 @@ MD);
         self::assertStringContainsString('.docara-example-preview__panel>:last-child{margin-block-end:0}', $shellCss);
         self::assertStringContainsString('.docara-example-preview__panel--source{padding:0}', $shellCss);
         self::assertStringContainsString('.docara-example-preview__panel.is-active{display:block}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview iframe[data-docara-example-frame]{block-size:12rem;transition:block-size 180ms ease}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview iframe:not([data-docara-example-frame]){block-size:32rem}', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll{box-sizing:border-box;block-size:auto;margin:0', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll code{background:transparent}', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] [data-docara-code-block]{block-size:auto;margin:0;', $shellCss);
@@ -760,7 +796,7 @@ MD);
             self::assertStringNotContainsString('data-docara-code-copy', $html);
             self::assertStringNotContainsString('navigator.clipboard.writeText(text)', $surface);
             self::assertStringContainsString("document.execCommand('copy')", $surface);
-            self::assertStringContainsString('background:transparent;border:0;border-radius:0;box-shadow:none', $surface);
+            self::assertStringContainsString('background:var(--sf-surface-0);border:0;border-radius:0;box-shadow:none', $surface);
             self::assertStringNotContainsString('.docara-code-block>.sf--highlight-head button{min-inline-size:', $surface);
             self::assertStringNotContainsString('.docara-mobile-navigation-trigger{min-inline-size:', $surface);
             self::assertStringNotContainsString('.docara-outline-trigger{min-block-size:', $surface);

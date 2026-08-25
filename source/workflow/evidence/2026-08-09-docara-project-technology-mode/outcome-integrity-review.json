@@ -1,0 +1,16 @@
+{
+  "status": "pass",
+  "outcome": "Docara has one enabled Mirai Graph project technology mode with a root v2 manifest and task-boundary synchronization.",
+  "integration": "Repository knowledge, specifications, decisions, implementation mappings, workflow, handoff and project memory are connected through the canonical manifest and a typed technology contract.",
+  "evidence_freshness": "The final project-technology sync and verification are bound to the current dirty worktree at repository HEAD d514c536b8cf379b90a15be8aaf14bcb85b06f7e.",
+  "simplicity": "The solution extends the existing graph and uses one local continuation context; it creates no second graph, skill, daemon or background loop.",
+  "blockers": [],
+  "evidence_refs": [
+    "graph.json",
+    "graph/specs/technology/project-technology-mode.json",
+    "source/memory/CURRENT.yaml",
+    "source/memory/TRACKS.yaml",
+    "source/workflow/2026-08-09-docara-project-technology-mode.md",
+    ".simai/project-technology/receipt.json"
+  ]
+}

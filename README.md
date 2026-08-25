@@ -125,7 +125,7 @@ registries and PreviewKernel. The optional PHP stdio MCP adapter is
 - [Components](docs/site/content/ru/components.md)
 - [Build and verification](docs/site/content/ru/build.md)
 - [Portable project format](docs/site/content/ru/authoring/project-files.md)
-- [Release notes](docs/releases/README.md)
+- [Release notes](https://github.com/simai/docara/releases)
 
 The component index, menu, search, outline and previous/next links are derived
 from the same physical Markdown route set; there is no separate public page
@@ -142,7 +142,7 @@ php ../../docara verify-static build_production
 ```
 
 The stable release identity is recorded in `VERSION`, `CHANGELOG.md`, the
-matching `vX.Y.Z` tag, and [release notes](docs/releases/README.md).
+matching `vX.Y.Z` tag, and [release notes](https://github.com/simai/docara/releases).
 
 ## Local release-readiness check
 

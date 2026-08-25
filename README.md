@@ -6,16 +6,19 @@ authors do not need Node.js or a frontend toolchain.
 
 ## Quick start
 
-Until Docara 2 is published, run these commands from an exact source checkout:
+Install the stable engine package, then initialize a separate empty site
+directory:
 
 ```bash
-git rev-parse HEAD
-composer install
-php docara init /path/to/my-docara
+mkdir /path/to/docara-engine
+cd /path/to/docara-engine
+composer require simai/docara:^2.0
+php vendor/bin/docara init /path/to/my-docara
 cd /path/to/my-docara
-php /path/to/docara/docara build production
-php /path/to/docara/docara verify-static build_production
-php /path/to/docara/docara serve production --host=127.0.0.1 --port=8000 --no-build
+php /path/to/docara-engine/vendor/bin/docara doctor --json
+php /path/to/docara-engine/vendor/bin/docara build production
+php /path/to/docara-engine/vendor/bin/docara verify-static build_production
+php /path/to/docara-engine/vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 ```
 
 Open `http://127.0.0.1:8000`. Do not use `file://`: routes, search and assets
@@ -122,6 +125,7 @@ registries and PreviewKernel. The optional PHP stdio MCP adapter is
 - [Components](docs/site/content/ru/components.md)
 - [Build and verification](docs/site/content/ru/build.md)
 - [Portable project format](docs/site/content/ru/authoring/project-files.md)
+- [Release notes](docs/releases/README.md)
 
 The component index, menu, search, outline and previous/next links are derived
 from the same physical Markdown route set; there is no separate public page
@@ -137,8 +141,8 @@ php ../../docara build production
 php ../../docara verify-static build_production
 ```
 
-This branch is a Docara 2 candidate. It does not itself claim a public release
-or production readiness.
+The stable release identity is recorded in `VERSION`, `CHANGELOG.md`, the
+matching `vX.Y.Z` tag, and [release notes](docs/releases/README.md).
 
 ## Local release-readiness check
 

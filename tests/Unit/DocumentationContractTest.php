@@ -226,8 +226,13 @@ final class DocumentationContractTest extends TestCase
     }
 
     #[Test]
-    public function portable_installation_surfaces_use_the_same_local_source_candidate_until_release(): void
+    public function portable_installation_surfaces_use_the_stable_package_after_release(): void
     {
+        self::assertSame(
+            '2.0.0',
+            trim((string) file_get_contents($this->repositoryRoot() . '/VERSION')),
+        );
+
         $surfaces = [
             $this->repositoryRoot() . '/README.md',
             $this->contentRoot() . '/start.md',
@@ -237,17 +242,12 @@ final class DocumentationContractTest extends TestCase
         foreach ($surfaces as $path) {
             $contents = (string) file_get_contents($path);
 
-            self::assertStringContainsString('git rev-parse HEAD', $contents);
-            self::assertStringContainsString('composer install', $contents);
+            self::assertStringContainsString('composer require simai/docara:^2.0', $contents);
+            self::assertStringNotContainsString('dev-main', $contents);
             self::assertDoesNotMatchRegularExpression(
                 '/dev-codex\/docara-consolidation#[0-9a-f]{40}/',
                 $contents,
                 $this->relativeToRepository($path) . ' must not embed an obsolete candidate SHA.',
-            );
-            self::assertDoesNotMatchRegularExpression(
-                '/composer require simai\/docara\h*\Rphp vendor\/bin\/docara init --portable/u',
-                $contents,
-                $this->relativeToRepository($path) . ' pairs the legacy stable package with portable init.',
             );
         }
 

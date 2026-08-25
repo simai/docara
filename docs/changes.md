@@ -1,9 +1,9 @@
-# Docara 2 candidate
+# Docara 2
 
 Docara now has one supported product path: validated JSON settings, Markdown
 content and deterministic static publication through SIMAI Framework.
 
-The candidate provides:
+Docara 2 provides:
 
 - one `init`, builder, starter and CLI;
 - arbitrary locale registries and symmetric locale routes;
@@ -16,5 +16,6 @@ The candidate provides:
 The former Jigsaw/Mix runtime and the transition-only renderer, preview and
 template mirror are not part of Docara 2.
 
-Public release, package publication and production deployment remain separate
-owner-approved operations.
+The public package is installed through Composer. Static-site deployment
+remains a separate owner-approved operation with its own rollback and smoke
+checks.

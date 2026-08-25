@@ -77,11 +77,12 @@ php vendor/bin/docara serve [environment] --host=127.0.0.1 --port=8000 [--no-bui
 ## Первый проверяемый запуск
 
 ```bash
-git rev-parse HEAD
-composer install
-php docara init /path/to/site
+mkdir /path/to/docara-engine
+cd /path/to/docara-engine
+composer require simai/docara:^2.0
+php vendor/bin/docara init /path/to/site
 cd /path/to/site
-php /path/to/docara/docara build production
-php /path/to/docara/docara verify-static build_production
-php /path/to/docara/docara serve production --host=127.0.0.1 --port=8000 --no-build
+php /path/to/docara-engine/vendor/bin/docara build production
+php /path/to/docara-engine/vendor/bin/docara verify-static build_production
+php /path/to/docara-engine/vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 ```

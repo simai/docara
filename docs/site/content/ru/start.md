@@ -5,19 +5,25 @@ HTTP. Для пользовательской сборки достаточно 
 
 ## 1. Создайте проект
 
-До публичного выпуска Docara 2 используйте точный исходный candidate.
+Установите стабильный пакет Docara 2 через Composer.
 
 ```bash
-cd /path/to/docara
-git rev-parse HEAD
-composer install
-php docara init /path/to/my-docara
+mkdir /path/to/docara-installer
+cd /path/to/docara-installer
+composer require simai/docara:^2.0
+php vendor/bin/docara init /path/to/my-docara
 ```
 
-Первая команда фиксирует точный commit локального candidate. Не используйте
-старый SHA из документации и не считайте feature branch стабильной версией.
-После init выполняйте остальные команды из каталога созданного сайта, указывая
-путь к `docara` из того же checkout.
+Composer фиксирует точную установленную версию в
+`/path/to/docara-installer/composer.lock`. Каталог нового сайта должен
+оставаться пустым до `init`. После инициализации перейдите в созданный сайт, но
+вызывайте Docara через бинарник установленного движка:
+
+```bash
+cd /path/to/my-docara
+php /path/to/docara-installer/vendor/bin/docara doctor --json
+php /path/to/docara-installer/vendor/bin/docara build production
+```
 
 Init создаёт starter только в пустом каталоге. Для безопасного обновления
 package-owned engine state позднее используйте отдельный workflow:

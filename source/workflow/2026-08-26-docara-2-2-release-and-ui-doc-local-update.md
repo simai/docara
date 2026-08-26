@@ -1,7 +1,7 @@
 # Workflow: Docara 2.2 release and local ui-doc update
 
 Date: 2026-08-26
-Status: completed_with_github_release_asset_followup
+Status: completed
 Owner: Docara
 Companions: Development, Tester, Operations, Mirai Graph
 
@@ -60,11 +60,10 @@ source changes.
   `origin/main`, and tagged with the immutable `v2.2.0` tag at that revision.
 - GitHub Actions run `33001226144` completed successfully. Composer/Packagist
   resolves `simai/docara` `v2.2.0` to the exact release revision.
-- The GitHub Releases REST endpoint rejects the registered OPS fine-grained
-  token with `403 Resource not accessible by personal access token`, despite
-  repository admin/push access. Therefore the optional GitHub Release page and
-  its three assets remain a bounded external publication follow-up; no browser
-  workaround is part of the terminal implementation state.
+- GitHub Release `v2.2.0` is public, non-draft, non-prerelease and marked
+  Latest. Its three project assets were downloaded through the public release
+  API and compared byte-for-byte with the independently verified local
+  artifacts.
 - `ui-doc` now requires `simai/docara:^2.2` and its lock resolves the exact
   release revision. All pre-existing non-Composer source changes were
   preserved byte-for-byte at the Git diff/status boundary.

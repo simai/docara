@@ -16,7 +16,7 @@ Current workflow: none
 
 ## Last completed bounded work
 
-- state: `completed_with_github_release_asset_followup`;
+- state: `completed`;
 - goal: publish verified Docara `2.2.0` and refresh local `ui-doc.test`;
 - workflow: `source/workflow/2026-08-26-docara-2-2-release-and-ui-doc-local-update.md`;
 - repository revision at start: `9cd1e114b3ae795cf53e849ad7e8756cec7582b9`;
@@ -33,8 +33,7 @@ Current workflow: none
 - The prior Docara 2.1 release and ui-doc update remain completed history.
 - Existing dirty `ui-doc` source changes are preserved and excluded from the
   release/update allowlist.
-- The package and immutable tag are public. Creating the GitHub Release page
-  with its three assets remains blocked only by the registered token's missing
-  Releases endpoint permission.
+- The package, immutable tag and GitHub Release with three verified project
+  assets are public and resolve to the exact release revision.
 - There is no active implementation task. Public deployment and Codex restart
   remain unauthorized.

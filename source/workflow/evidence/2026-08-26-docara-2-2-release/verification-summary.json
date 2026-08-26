@@ -10,8 +10,15 @@
     "github_actions_status": "success",
     "composer_package_available": true,
     "composer_source_revision_verified": true,
-    "github_release_page": "blocked_by_token_permission",
-    "github_release_api_status": 403,
+    "github_release_page": "published",
+    "github_release_api_status": 200,
+    "github_release_id": 377385682,
+    "github_release_url": "https://github.com/simai/docara/releases/tag/v2.2.0",
+    "github_release_latest": true,
+    "github_release_draft": false,
+    "github_release_prerelease": false,
+    "release_assets_public_readback": "byte_identical",
+    "release_asset_count": 3,
     "artifact_sha256": "c25fbb6b566cf680526e6e8ec3bb6dc5af3322497a2649887e01bb961c08d8c8"
   },
   "docara_checks": {

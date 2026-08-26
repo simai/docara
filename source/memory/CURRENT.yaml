@@ -4,6 +4,5 @@ status: "docara_terminal_no_active_implementation"
 primary_goal: "No active implementation task."
 active_tracks: []
 current_focus: "Docara 2.2.0 is published through Git/Composer and ui-doc.test uses the verified build."
-important_blockers:
-  - "GitHub Release asset publication requires a token accepted by the Releases API; the registered OPS fine-grained token returns HTTP 403."
+important_blockers: []
 next_global_step: "explicit_user_decision"

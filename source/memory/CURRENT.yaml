@@ -1,9 +1,9 @@
 project_id: "docara-unified"
-updated_at: "2026-08-25"
+updated_at: "2026-08-26"
 status: "docara_terminal_no_active_implementation"
 primary_goal: null
 active_tracks: []
-current_focus: "Shared examples and translation tracking are verified; await explicit_user_decision."
+current_focus: "Docara 2.1.0 and the ui-doc migration are published and verified; await explicit_user_decision."
 important_blockers:
   - "The Docara skill repository validator is blocked by three pre-existing untracked recipes with unsupported schemas; the updated canonical Docara skill source itself completed Skill Sync Gate."
   - "Task-scoped Mirai Graph context has a legacy graph-coverage gap (no_verifiable_runtime_objects), while technology sync/verify and the generated project-context check are current."

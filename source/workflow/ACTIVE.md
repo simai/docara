@@ -1,8 +1,8 @@
 # Active workflow: terminal state
 
-Date: 2026-08-25
+Date: 2026-08-26
 Status: no active implementation
-Last workflow: `2026-08-25-shared-examples-translation-tracking`
+Last workflow: `2026-08-26-docara-2-1-release-and-ui-doc-update`
 
 ## Canonical terminal markers
 
@@ -15,7 +15,8 @@ Last workflow: `2026-08-25-shared-examples-translation-tracking`
 - product baseline revision: `c5f6140a85435913a9d5f7389bdf34967d4d70f8`;
 - release authorized: `false`;
 
-The bounded authoring lifecycle is complete. Its goal, stage and batches are
+The bounded Docara 2.1 release and ui-doc update are complete. Their commits,
+tag, package publication, local-site verification and release evidence are
 recorded as completed history without replacing the repository's canonical
 terminal identity above.
 
@@ -27,8 +28,8 @@ terminal identity above.
 - Existing unrelated dirty changes in all repositories must be preserved.
 - Historical workflows and evidence remain historical; their old routing is
   superseded by this current workflow.
-- No commit, push, tag, release, package publication or deployment is
-  authorized.
+- The completed 2.1.0 release authorization is consumed. No further commit,
+  push, tag, release, package publication or deployment is authorized.
 
 The only next inputs are an explicit translation-review batch, a separately
 authorized new implementation goal, or a separately authorized Git/release

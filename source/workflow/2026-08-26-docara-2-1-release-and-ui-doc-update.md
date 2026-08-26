@@ -1,7 +1,7 @@
 # Workflow: Docara 2.1 release and ui-doc update
 
 Date: 2026-08-26
-Status: in progress
+Status: completed
 Owner: Docara
 Companions: Development, Tester, Operations, Teamlead, Mirai Graph
 
@@ -38,11 +38,30 @@ deployment is explicitly excluded.
 | Stage | Verification | Status |
 | --- | --- | --- |
 | Reconcile local Docara changes with public v2.0.0 main | fast-forward plus preserved working diff | completed |
-| Audit product and documentation changes | formatter, complete tests, schema and context checks | in progress |
-| Freeze and reproduce v2.1.0 candidate | clean clones, deterministic archives, PHP 8.2 consumer | pending |
-| Publish Docara | main push, immutable tag, GitHub/Packagist readback | pending |
-| Update and verify ui-doc | public Composer package, build, static and browser smoke | pending |
-| Commit and push ui-doc | clean allowlist and remote readback | pending |
+| Audit product and documentation changes | formatter, complete tests, schema and context checks | completed |
+| Freeze and reproduce v2.1.0 candidate | clean clones, deterministic archives, PHP 8.2 consumer | completed |
+| Publish Docara | main push, immutable tag, GitHub/Packagist readback | completed |
+| Update and verify ui-doc | public Composer package, build, static and browser smoke | completed |
+| Commit and push ui-doc | clean allowlist and remote readback | completed |
+
+## Completion Evidence
+
+- Docara release commit: `0e58cc56e6da733d7a534e9e0330936034f86715`.
+- Immutable tag: `v2.1.0`.
+- GitHub Release: <https://github.com/simai/docara/releases/tag/v2.1.0>.
+- Packagist `simai/docara` version `v2.1.0` resolves to the release commit.
+- GitHub Actions run `32908920184` completed successfully.
+- The release ZIP was produced twice with identical bytes; SHA-256 is
+  `5dda70251c412c343a4f106c8b015c4ffe37bc84cec7d58b320196d07d9f9dd8`.
+- All three public GitHub Release assets were downloaded and compared byte for
+  byte with the verified local artifacts.
+- ui-doc commit `45adb59ef1742f3aee99b4dbcb9ca22dca04c3df` was pushed to `main`.
+- ui-doc GitHub Actions run `32911042231` completed successfully.
+- The local ui-doc build contains 1,692 HTML pages; static verification checked
+  359,226 local references with no broken references.
+- HTTP and browser smoke passed for RU/EN, desktop/mobile, light/dark themes,
+  and adaptive Example tabs. No persistent rollback directory remains.
+- No public documentation hosting or production deployment was changed.
 
 ## Safety And Rollback
 

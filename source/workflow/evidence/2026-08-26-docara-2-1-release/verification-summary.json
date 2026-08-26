@@ -1,0 +1,29 @@
+{
+  "schema": "docara.release_verification.v1",
+  "status": "pass",
+  "version": "2.1.0",
+  "docara": {
+    "commit": "0e58cc56e6da733d7a534e9e0330936034f86715",
+    "tag": "v2.1.0",
+    "release_url": "https://github.com/simai/docara/releases/tag/v2.1.0",
+    "github_actions_run": 32908920184,
+    "packagist_version": "v2.1.0",
+    "zip_sha256": "5dda70251c412c343a4f106c8b015c4ffe37bc84cec7d58b320196d07d9f9dd8",
+    "archive_files": 1002,
+    "public_assets_byte_equal": true
+  },
+  "ui_doc": {
+    "commit": "45adb59ef1742f3aee99b4dbcb9ca22dca04c3df",
+    "github_actions_run": 32911042231,
+    "markdown_pages": 939,
+    "html_pages": 1692,
+    "local_references_checked": 359226,
+    "broken_references": 0,
+    "shared_examples": 214,
+    "example_consumers": 221,
+    "local_http_smoke": "pass",
+    "browser_smoke": "pass",
+    "persistent_rollback_present": false
+  },
+  "public_deploy_performed": false
+}

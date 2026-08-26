@@ -1,4 +1,9 @@
 tracks:
+  docara-2-1-release-and-ui-doc-update:
+    status: "completed"
+    owner_skill: "docara"
+    current_workflow: "source/workflow/2026-08-26-docara-2-1-release-and-ui-doc-update.md"
+    last_updated: "2026-08-26"
   docara-authoring-lifecycle:
     status: "completed"
     owner_skill: "docara"

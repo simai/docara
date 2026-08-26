@@ -1,7 +1,7 @@
 # Workflow: Docara 2.2 release and local ui-doc update
 
 Date: 2026-08-26
-Status: active
+Status: completed_with_github_release_asset_followup
 Owner: Docara
 Companions: Development, Tester, Operations, Mirai Graph
 
@@ -52,6 +52,31 @@ source changes.
    candidate, then perform rollback-safe local cutover.
 5. Record final evidence and restore the terminal state to no active
    implementation task.
+
+## Result
+
+- Docara `2.2.0` was fully tested, packaged twice, consumer-tested on PHP 8.2,
+  committed as `c24cb112bb3f46b82ba1d60391a0d78d5dcf5f9d`, pushed to
+  `origin/main`, and tagged with the immutable `v2.2.0` tag at that revision.
+- GitHub Actions run `33001226144` completed successfully. Composer/Packagist
+  resolves `simai/docara` `v2.2.0` to the exact release revision.
+- The GitHub Releases REST endpoint rejects the registered OPS fine-grained
+  token with `403 Resource not accessible by personal access token`, despite
+  repository admin/push access. Therefore the optional GitHub Release page and
+  its three assets remain a bounded external publication follow-up; no browser
+  workaround is part of the terminal implementation state.
+- `ui-doc` now requires `simai/docara:^2.2` and its lock resolves the exact
+  release revision. All pre-existing non-Composer source changes were
+  preserved byte-for-byte at the Git diff/status boundary.
+- A disposable build produced 939 source pages and 1692 HTML pages, checked
+  359237 local references with no broken links, and passed HTTP and browser
+  smoke before and after the local `ui-doc.test` cutover.
+- The already-existing SIMAI Framework loader requests for nine absent utility
+  CSS surfaces reproduce identically before and after the cutover and are not
+  a Docara 2.2 regression.
+- The one temporary rollback directory was removed after final smoke. No
+  permanent backup under `/Users/rim/Sites`, no public deploy, and no Codex
+  restart occurred.
 
 ## Safety And Stop Conditions
 

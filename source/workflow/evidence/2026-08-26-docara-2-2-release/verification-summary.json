@@ -1,0 +1,60 @@
+{
+  "schema": "docara.release_verification.v1",
+  "release": {
+    "version": "2.2.0",
+    "revision": "c24cb112bb3f46b82ba1d60391a0d78d5dcf5f9d",
+    "tag": "v2.2.0",
+    "tag_pushed": true,
+    "main_pushed": true,
+    "github_actions_run": "33001226144",
+    "github_actions_status": "success",
+    "composer_package_available": true,
+    "composer_source_revision_verified": true,
+    "github_release_page": "blocked_by_token_permission",
+    "github_release_api_status": 403,
+    "artifact_sha256": "c25fbb6b566cf680526e6e8ec3bb6dc5af3322497a2649887e01bb961c08d8c8"
+  },
+  "docara_checks": {
+    "formatter": "passed",
+    "phpunit": {
+      "tests": 533,
+      "assertions": 11810,
+      "status": "passed"
+    },
+    "documentation_source_pages": 127,
+    "documentation_html_pages": 261,
+    "documentation_local_references": 32983,
+    "documentation_broken_references": 0,
+    "deterministic_double_package": "passed",
+    "php82_consumers": 2,
+    "browser_smoke": "passed"
+  },
+  "ui_doc": {
+    "composer_constraint": "^2.2",
+    "resolved_version": "v2.2.0",
+    "resolved_revision": "c24cb112bb3f46b82ba1d60391a0d78d5dcf5f9d",
+    "source_pages": 939,
+    "html_pages": 1692,
+    "local_references": 359237,
+    "broken_references": 0,
+    "http_routes": {
+      "/ru/": 200,
+      "/en/": 200,
+      "/ru/utilities/animation/animation-duration/": 200
+    },
+    "desktop_smoke": "passed",
+    "mobile_smoke": "passed",
+    "example_tabs_smoke": "passed",
+    "unrelated_diff_preserved": true,
+    "temporary_rollback_removed": true,
+    "known_preexisting_runtime_404_requests": 18,
+    "known_preexisting_runtime_warnings": 9
+  },
+  "safety": {
+    "codex_restarted": false,
+    "public_site_deployed": false,
+    "persistent_sites_backup_created": false,
+    "ui_doc_committed": false,
+    "ui_doc_pushed": false
+  }
+}

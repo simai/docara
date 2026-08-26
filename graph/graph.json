@@ -51,6 +51,16 @@
         "package_publication",
         "deploy"
       ]
+    },
+    "last_bounded_work": {
+      "state": "completed",
+      "goal": "docara.goal.page_authoring_sdk",
+      "stage": "docara.stage.page_authoring_sdk",
+      "batch": "docara.batch.page_authoring_sdk",
+      "workflow": "source/workflow/2026-08-26-page-authoring-sdk.md",
+      "evidence": "source/workflow/evidence/2026-08-26-page-authoring-sdk/verification-summary.json",
+      "next_action": "none",
+      "release_authorized": false
     }
   },
   "historical_context": {

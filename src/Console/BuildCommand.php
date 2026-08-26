@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Console;
 
+use Simai\Docara\Application\PageInspectionService;
+use Simai\Docara\Authoring\AuthoringContract;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -69,6 +71,20 @@ final class BuildCommand extends Command
             $destination,
             microtime(true) - $startedAt,
         ));
+        try {
+            $contract = AuthoringContract::load($this->base);
+            if ($contract->present) {
+                $profileIssues = count(array_filter(
+                    (new PageInspectionService)->validateAll($this->base),
+                    static fn (array $check): bool => ($check['status'] ?? 'pass') !== 'pass',
+                ));
+                if ($profileIssues > 0) {
+                    $this->console->comment("Page authoring reported $profileIssues item(s) for structural or editorial review; the build remains valid in report mode.");
+                }
+            }
+        } catch (Throwable $exception) {
+            $this->console->comment('Page authoring contract warning: ' . $exception->getMessage() . ' The build remains valid in report mode.');
+        }
         $translationReport = $destination . '/.docara/translation-status.json';
         if (is_file($translationReport) && ! is_link($translationReport)) {
             $report = json_decode((string) file_get_contents($translationReport), true);

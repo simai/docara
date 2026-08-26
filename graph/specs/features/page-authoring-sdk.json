@@ -1,0 +1,23 @@
+{
+  "id": "docara.feature.page_authoring_sdk",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "product_feature",
+  "tz_role": "developer_surface",
+  "title": "Page authoring profiles and inspection",
+  "summary": "Optional page profiles enrich the existing SDK with deterministic page inventory, inspection, validation and create-only scaffolding without a second knowledge store.",
+  "owner": "dev",
+  "lifecycle": "completed",
+  "readiness": "accepted",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-26-page-authoring-sdk.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-26-page-authoring-sdk/verification-summary.json"],
+  "profile_refs": ["docara.unified"],
+  "requirements": [
+    "docara.authoring.json is optional and contains no page state, versions or hashes.",
+    "Six built-in profiles expose measurable structure and a review_required semantic checklist.",
+    "Page list, inspect, validate and scaffold reuse the existing SDK and OperationResult.",
+    "No knowledge directory, knowledge lock, knowledge commands or new Mirai profile are introduced."
+  ],
+  "status": "completed"
+}

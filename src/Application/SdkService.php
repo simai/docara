@@ -24,7 +24,11 @@ final readonly class SdkService
             'inspect' => $this->discovery->inspect($root, $this->string($arguments, 'kind'), $this->string($arguments, 'id')),
             'schema' => $this->discovery->schema($root, $this->string($arguments, 'kind')),
             'atlas' => $this->atlas->atlas($root),
-            'scaffold.plan' => $this->scaffold->plan($root, $this->string($arguments, 'kind'), $this->string($arguments, 'id')),
+            'scaffold.plan' => $this->scaffold->plan($root, $this->string($arguments, 'kind'), $this->string($arguments, 'id'), [
+                'locale' => $this->optionalString($arguments, 'locale'),
+                'title' => $this->optionalString($arguments, 'title'),
+                'profile' => $this->optionalString($arguments, 'profile'),
+            ]),
             'scaffold.apply' => $this->scaffold->apply($root, $this->string($arguments, 'plan_id')),
             'validate' => $this->validation->validate($root, $this->string($arguments, 'kind'), $this->optionalString($arguments, 'id')),
             'test' => $this->test->test($root, $this->string($arguments, 'kind'), $this->string($arguments, 'id'), $this->string($arguments, 'page')),

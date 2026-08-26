@@ -14,6 +14,11 @@ tracks:
     owner_skill: "dev"
     current_workflow: "source/workflow/2026-08-09-docara-local-sites-maintenance.md"
     last_updated: "2026-08-09"
+  docara-page-authoring-sdk:
+    status: "completed"
+    owner_skill: "docara"
+    current_workflow: "source/workflow/2026-08-26-page-authoring-sdk.md"
+    last_updated: "2026-08-26"
   docara-project-technology:
     status: "completed"
     owner_skill: "graph"

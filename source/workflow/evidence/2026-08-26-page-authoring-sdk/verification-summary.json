@@ -1,0 +1,37 @@
+{
+  "schema": "docara.page_authoring_sdk_verification.v1",
+  "date": "2026-08-26",
+  "status": "accepted",
+  "repository_head": "365c26d7933cf9ab854aceffb9b3bcc160a370c9",
+  "engine_revision": "d514c536b8cf379b90a15be8aaf14bcb85b06f7e",
+  "product_baseline_revision": "c5f6140a85435913a9d5f7389bdf34967d4d70f8",
+  "verification": {
+    "pint": {"status": "passed"},
+    "phpunit": {"status": "passed", "tests": 533, "assertions": 11809},
+    "page_sdk_targeted": {"status": "passed", "tests": 12, "assertions": 73},
+    "validate_project": {"status": "passed", "passed": 128, "errors": 0, "not_declared": 0, "review_required": 4},
+    "documentation_build": {"status": "passed", "source_pages": 127},
+    "verify_static": {"status": "passed", "html_pages": 261, "local_references_checked": 32983, "broken": 0},
+    "browser_smoke": {
+      "status": "passed",
+      "routes": ["/ru/", "/ru/start/", "/ru/reference/cli/", "/ru/development/architecture/"],
+      "desktop": "one H1, title and body present; no broken images",
+      "mobile": "376px client width equals scroll width on every route"
+    },
+    "json_and_project_context": {"status": "passed"},
+    "skill_contract_and_smoke": {"status": "passed", "references": 8, "graph_objects": 12, "graph_relations": 18},
+    "skill_graph_sync": {"status": "passed", "sync_fingerprint": "56d8deaf632f905eb715e5f4737d6fdd0526b941fd05a2e7226a9c61a992bc63"},
+    "federation_route_check": {"status": "passed", "scenarios": 292, "failed": 0},
+    "federation_verify": {
+      "status": "partial",
+      "implementation_blocker": false,
+      "reason": "The pre-existing installed Docara override is not the symlink expected by federation release 9.2.3; read-only simai-settings skill status and verify both pass. Activation of this uncommitted skill revision is intentionally out of scope."
+    }
+  },
+  "boundaries": {
+    "ui_doc_changed": false,
+    "active_sites_changed": false,
+    "knowledge_surface_created": false,
+    "commit_push_release_deploy_performed": false
+  }
+}

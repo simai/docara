@@ -114,7 +114,8 @@ final readonly class McpAdapter
         return match ($operation) {
             'doctor', 'atlas' => [],
             'list', 'schema' => ['kind' => $string],
-            'inspect', 'scaffold.plan', 'validate' => ['kind' => $string, 'id' => $string],
+            'inspect', 'validate' => ['kind' => $string, 'id' => $string],
+            'scaffold.plan' => ['kind' => $string, 'id' => $string, 'locale' => $string, 'title' => $string, 'profile' => $string],
             'scaffold.apply', 'qa.finalize_reference', 'qa.verify' => ['plan_id' => $string],
             'test', 'qa.plan' => ['kind' => $string, 'id' => $string, 'page' => $string],
             default => [],

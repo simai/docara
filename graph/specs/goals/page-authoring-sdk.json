@@ -1,0 +1,28 @@
+{
+  "id": "docara.goal.page_authoring_sdk",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "goal",
+  "tz_role": "primary_goal",
+  "title": "Profiles and page support in the Docara SDK",
+  "summary": "Implement the approved optional authoring contract and page SDK, pilot it in Docara documentation and synchronize specifications, graph and skill.",
+  "owner": "teamlead",
+  "lifecycle": "completed",
+  "readiness": "accepted",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-26-page-authoring-sdk.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-26-page-authoring-sdk/verification-summary.json"],
+  "profile_refs": ["docara.unified"],
+  "done_when": [
+    "All six profiles, inheritance and conflicts are covered.",
+    "CLI and MCP page operations share application services and deterministic results.",
+    "Docara documentation pilot, full build, verify-static and browser smoke pass.",
+    "Specifications, graph, generated context and English skill describe the same verified contract."
+  ],
+  "scope": ["Docara runtime", "Docara tests and own documentation", "Docara graph and English skill"],
+  "non_goals": ["ui-doc", "knowledge subsystem", "commit", "push", "release", "deployment"],
+  "stage_refs": ["docara.stage.page_authoring_sdk"],
+  "metric_refs": [],
+  "evidence_policy": ["Technical failures are distinct from report-only profile gaps and editorial review."],
+  "status": "completed"
+}

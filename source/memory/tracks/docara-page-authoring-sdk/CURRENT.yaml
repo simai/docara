@@ -1,0 +1,12 @@
+track_id: "docara-page-authoring-sdk"
+status: "completed"
+owner_skill: "docara"
+current_goal: "Add optional page authoring profiles and page-level SDK operations without a second knowledge store or status engine."
+current_stage: "verified_and_closed"
+current_workflow: "source/workflow/2026-08-26-page-authoring-sdk.md"
+last_completed_batch: "full_qa_and_bounded_diff_audit"
+next_step: "none"
+blockers:
+  - "Non-product environment warning: global federation verify sees the pre-existing installed Docara override symlink; local skill verification is green."
+related_tracks: []
+updated_at: "2026-08-26"

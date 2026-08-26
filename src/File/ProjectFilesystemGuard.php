@@ -21,6 +21,64 @@ final readonly class ProjectFilesystemGuard
         'smart',
     ];
 
+    public function authoringPath(string $projectRoot, string $relative, string $contentRoot, bool $allowMissing = true): string
+    {
+        $relative = str_replace('\\', '/', $relative);
+        $contentRoot = trim(str_replace('\\', '/', $contentRoot), '/');
+        if ($contentRoot === '' || ($relative !== $contentRoot && ! str_starts_with($relative, $contentRoot . '/'))) {
+            throw $this->unsafe("Authoring path [$relative] is outside configured content root [$contentRoot].");
+        }
+
+        return $this->inspect($projectRoot, $relative, [explode('/', $contentRoot)[0]], $allowMissing);
+    }
+
+    public function putNewAuthoring(string $projectRoot, string $relative, string $contentRoot, string $contents, string $collisionCode): string
+    {
+        $directory = dirname(str_replace('\\', '/', $relative));
+        $root = $this->root($projectRoot);
+        $segments = $this->segments($directory, [explode('/', trim($contentRoot, '/'))[0]]);
+        $current = $root;
+        foreach ($segments as $segment) {
+            $this->assertCase($current, $segment);
+            $current .= '/' . $segment;
+            if (file_exists($current) || is_link($current)) {
+                $this->assertNode($root, $current, true);
+
+                continue;
+            }
+            if (! mkdir($current, 0755)) {
+                throw $this->unsafe("Authoring directory [$directory] could not be created safely.");
+            }
+        }
+        $path = $this->authoringPath($projectRoot, $relative, $contentRoot);
+        if (file_exists($path) || is_link($path)) {
+            throw new PortableConfigurationException($collisionCode, "Generated path [$relative] already exists.");
+        }
+        $temporary = dirname($path) . '/.docara-tmp-' . bin2hex(random_bytes(12));
+        if (file_put_contents($temporary, $contents, LOCK_EX) !== strlen($contents)) {
+            @unlink($temporary);
+            throw $this->unsafe("Authoring path [$relative] could not be written completely.");
+        }
+        $this->assertNode($root, $temporary, false);
+        if (! @link($temporary, $path)) {
+            @unlink($temporary);
+            throw new PortableConfigurationException($collisionCode, "Generated path [$relative] appeared before atomic publish.");
+        }
+        @unlink($temporary);
+        $this->assertNode($root, $path, false);
+
+        return $path;
+    }
+
+    public function deleteAuthoringFile(string $projectRoot, string $relative, string $contentRoot): void
+    {
+        $path = $this->authoringPath($projectRoot, $relative, $contentRoot, false);
+        $this->assertNode($this->root($projectRoot), $path, false);
+        if (! unlink($path)) {
+            throw $this->unsafe("Authoring file [$relative] could not be removed safely.");
+        }
+    }
+
     public function root(string $projectRoot): string
     {
         $lexical = rtrim($projectRoot, '/\\');

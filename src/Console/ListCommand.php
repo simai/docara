@@ -18,8 +18,8 @@ final class ListCommand extends ApplicationCommand
 
     protected function configure(): void
     {
-        $this->setName('list')->setDescription('List registered Smart, binding, design, provider, fixture, state or schema subjects.')
-            ->addArgument('kind', InputArgument::REQUIRED, 'smart|binding|layout|view|section|block|provider|fixture|state|schema')
+        $this->setName('list')->setDescription('List registered SDK subjects, including physical Markdown pages.')
+            ->addArgument('kind', InputArgument::REQUIRED, 'page|smart|binding|layout|view|section|block|provider|fixture|state|schema')
             ->addOption('json', null, InputOption::VALUE_NONE, 'Emit the stable operation result as JSON.');
     }
 

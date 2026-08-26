@@ -20,7 +20,8 @@ final class McpAdapterTest extends TestCase
     #[Test]
     public function capabilities_and_read_tools_delegate_the_same_application_results(): void
     {
-        $adapter = new McpAdapter(SdkServiceFactory::create(), $this->tmp);
+        $service = SdkServiceFactory::create();
+        $adapter = new McpAdapter($service, $this->tmp);
         $initialize = $adapter->handle(['jsonrpc' => '2.0', 'id' => 1, 'method' => 'initialize']);
         self::assertSame('docara-local-sdk', $initialize['result']['serverInfo']['name']);
 
@@ -35,6 +36,13 @@ final class McpAdapterTest extends TestCase
         self::assertFalse($call['result']['isError']);
         self::assertSame('inspect', $call['result']['structuredContent']['operation']);
         self::assertSame('framework.lock', $call['result']['structuredContent']['data']['provider']);
+
+        $page = $adapter->handle(['jsonrpc' => '2.0', 'id' => 4, 'method' => 'tools/call', 'params' => [
+            'name' => 'docara_inspect', 'arguments' => ['kind' => 'page', 'id' => '/ru/'],
+        ]]);
+        $direct = $service->invoke($this->tmp, 'inspect', ['kind' => 'page', 'id' => '/ru/'])->toArray();
+        self::assertSame($direct, $page['result']['structuredContent']);
+        self::assertSame('docara.page_inspection.v1', $page['result']['structuredContent']['data']['schema']);
     }
 
     #[Test]
@@ -58,6 +66,13 @@ final class McpAdapterTest extends TestCase
         ]]);
         self::assertFalse($applied['result']['isError']);
         self::assertFileExists($this->tmpPath('smart/project.card/manifest.json'));
+
+        $pagePlan = $readOnly->handle(['jsonrpc' => '2.0', 'id' => 4, 'method' => 'tools/call', 'params' => [
+            'name' => 'docara_scaffold_plan',
+            'arguments' => ['kind' => 'page', 'id' => 'mcp-page', 'locale' => 'ru', 'title' => 'MCP page', 'profile' => 'article'],
+        ]]);
+        self::assertFalse($pagePlan['result']['isError']);
+        self::assertSame('content/ru/mcp-page.md', $pagePlan['result']['structuredContent']['data']['diff'][0]['path']);
     }
 
     #[Test]

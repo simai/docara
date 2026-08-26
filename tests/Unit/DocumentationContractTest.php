@@ -614,6 +614,19 @@ final class DocumentationContractTest extends TestCase
                 ? (string) file_get_contents($path)
                 : '';
         }
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(
+            $this->repositoryRoot() . '/docs',
+            \FilesystemIterator::SKIP_DOTS,
+        ));
+        foreach ($iterator as $file) {
+            if (! $file->isFile() || strtolower($file->getExtension()) !== 'md') {
+                continue;
+            }
+            $relative = $this->relativeToRepository($file->getPathname());
+            if (! isset($inventory[$relative]) && ! str_starts_with($relative, 'docs/site/build_')) {
+                $inventory[$relative] = (string) file_get_contents($file->getPathname());
+            }
+        }
 
         return $inventory;
     }

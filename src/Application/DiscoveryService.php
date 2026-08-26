@@ -62,6 +62,7 @@ final readonly class DiscoveryService
             'provider' => $this->providers($runtime),
             'schema' => array_map(static fn (string $name): array => ['id' => $name, 'kind' => 'schema'], $this->schemaNames()),
             'fixture', 'state' => $this->fixtures($runtime, $kind),
+            'page' => (new PageInspectionService)->list($runtime->root),
             default => throw new \InvalidArgumentException('SDK_DISCOVERY_KIND_UNKNOWN:' . $kind),
         };
         usort($items, static fn (array $left, array $right): int => [$left['id'], $left['kind']] <=> [$right['id'], $right['kind']]);
@@ -87,6 +88,7 @@ final readonly class DiscoveryService
             'provider' => $this->oneById($this->providers($runtime), $id),
             'schema' => ['id' => $id, 'schema' => (new SchemaRepository($this->schemaRoot))->get($id)],
             'fixture', 'state' => $this->oneById($this->fixtures($runtime, $kind), $id),
+            'page' => (new PageInspectionService)->inspect($runtime->root, $id),
             default => throw new \InvalidArgumentException('SDK_DISCOVERY_KIND_UNKNOWN:' . $kind),
         };
 
@@ -103,6 +105,7 @@ final readonly class DiscoveryService
             'section' => DesignArtifactKind::Section->schema(),
             'block' => DesignArtifactKind::Block->schema(),
             'binding' => 'binding-descriptor.schema.json',
+            'authoring' => 'authoring.schema.json',
             default => str_ends_with($kind, '.schema.json') ? $kind : throw new \InvalidArgumentException('SDK_SCHEMA_KIND_UNKNOWN:' . $kind),
         };
 

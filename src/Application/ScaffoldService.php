@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Application;
 
+use Simai\Docara\Authoring\AuthoringProfileRegistry;
 use Simai\Docara\File\ProjectFilesystemGuard;
+use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\SchemaRepository;
@@ -14,14 +16,21 @@ final readonly class ScaffoldService
 {
     public function __construct(private ProjectFilesystemGuard $writes = new ProjectFilesystemGuard) {}
 
-    public function plan(string $root, string $kind, string $id): OperationResult
+    /** @param array<string, mixed> $options */
+    public function plan(string $root, string $kind, string $id, array $options = []): OperationResult
     {
         $runtime = ProjectRuntime::load($root);
-        $this->assertIdentity($runtime, $kind, $id);
-        $files = $kind === 'smart' ? $this->smartFiles($id) : $this->designFiles($id);
+        $this->assertIdentity($runtime, $kind, $id, $options);
+        $files = match ($kind) {
+            'smart' => $this->smartFiles($id),
+            'design' => $this->designFiles($id),
+            'page' => $this->pageFiles($runtime, $id, $options),
+        };
         $inputHashes = ['docara.json' => hash_file('sha256', $runtime->root . '/docara.json') ?: 'absent'];
         foreach (array_keys($files) as $path) {
-            $absolute = $this->writes->writablePath($runtime->root, $path);
+            $absolute = $kind === 'page'
+                ? $this->writes->authoringPath($runtime->root, $path, LocaleRegistry::fromSite($runtime->site)->get((string) $options['locale'])->contentRoot)
+                : $this->writes->writablePath($runtime->root, $path);
             if (file_exists($absolute) || is_link($absolute)) {
                 throw new PortableConfigurationException('SCAFFOLD_TARGET_EXISTS', "Scaffold target [$path] already exists.");
             }
@@ -36,10 +45,13 @@ final readonly class ScaffoldService
             'schema' => 'docara.scaffold_plan.v1',
             'kind' => $kind,
             'id' => $id,
-            'namespace' => (string) $runtime->namespace,
+            'namespace' => $runtime->namespace,
             'input_hashes' => $inputHashes,
             'files' => $records,
         ];
+        if ($kind === 'page') {
+            $core['options'] = ['locale' => (string) ($options['locale'] ?? ''), 'title' => (string) ($options['title'] ?? ''), 'profile' => (string) ($options['profile'] ?? '')];
+        }
         $planId = hash('sha256', CanonicalJson::encode($core));
         $plan = ['plan_id' => $planId] + $core;
         (new SchemaRepository)->assertValid($plan, 'scaffold-plan.schema.json');
@@ -81,7 +93,9 @@ final readonly class ScaffoldService
         foreach ($plan['input_hashes'] as $path => $expected) {
             $absolute = $path === 'docara.json'
                 ? $runtime->root . '/docara.json'
-                : $this->writes->writablePath($runtime->root, (string) $path);
+                : (($plan['kind'] ?? null) === 'page'
+                    ? $this->writes->authoringPath($runtime->root, (string) $path, LocaleRegistry::fromSite($runtime->site)->get((string) $plan['options']['locale'])->contentRoot)
+                    : $this->writes->writablePath($runtime->root, (string) $path));
             $actual = is_file($absolute) && ! is_link($absolute) ? (hash_file('sha256', $absolute) ?: 'absent') : 'absent';
             if ($actual !== $expected) {
                 throw new PortableConfigurationException('SCAFFOLD_PLAN_STALE', "Input [$path] changed after dry-run.");
@@ -91,7 +105,10 @@ final readonly class ScaffoldService
         try {
             foreach ($plan['files'] as $file) {
                 $path = (string) $file['path'];
-                $target = $this->writes->writablePath($runtime->root, $path);
+                $contentRoot = ($plan['kind'] ?? null) === 'page'
+                    ? LocaleRegistry::fromSite($runtime->site)->get((string) $plan['options']['locale'])->contentRoot
+                    : null;
+                $target = $contentRoot === null ? $this->writes->writablePath($runtime->root, $path) : $this->writes->authoringPath($runtime->root, $path, $contentRoot);
                 if (file_exists($target) || is_link($target)) {
                     throw new PortableConfigurationException('SCAFFOLD_TARGET_EXISTS', "Scaffold target [$path] already exists.");
                 }
@@ -99,13 +116,28 @@ final readonly class ScaffoldService
                 if (! is_string($content) || hash('sha256', $content) !== $file['sha256']) {
                     throw new PortableConfigurationException('SCAFFOLD_CONTENT_HASH_MISMATCH', "Scaffold content [$path] is invalid.");
                 }
-                $this->writes->putNew($runtime->root, $path, $content, 'SCAFFOLD_TARGET_EXISTS');
+                if ($contentRoot === null) {
+                    $this->writes->putNew($runtime->root, $path, $content, 'SCAFFOLD_TARGET_EXISTS');
+                } else {
+                    $this->writes->putNewAuthoring($runtime->root, $path, $contentRoot, $content, 'SCAFFOLD_TARGET_EXISTS');
+                }
                 $created[] = $path;
             }
             ProjectRuntime::load($runtime->root);
+            if (($plan['kind'] ?? null) === 'page') {
+                $locale = (string) ($plan['options']['locale'] ?? '');
+                $route = (string) ($plan['id'] ?? '');
+                $definition = LocaleRegistry::fromSite($runtime->site)->get($locale);
+                $public = '/' . implode('/', array_filter([$definition->publicPrefix, trim($route, '/')])) . '/';
+                (new PageInspectionService)->inspect($runtime->root, preg_replace('#/+#', '/', $public) ?: '/');
+            }
         } catch (Throwable $exception) {
             foreach (array_reverse($created) as $createdPath) {
-                $this->writes->deleteFile($runtime->root, $createdPath);
+                if (($plan['kind'] ?? null) === 'page') {
+                    $this->writes->deleteAuthoringFile($runtime->root, $createdPath, LocaleRegistry::fromSite($runtime->site)->get((string) $plan['options']['locale'])->contentRoot);
+                } else {
+                    $this->writes->deleteFile($runtime->root, $createdPath);
+                }
             }
             throw $exception;
         }
@@ -118,15 +150,46 @@ final readonly class ScaffoldService
         ], $runtime->provenance());
     }
 
-    private function assertIdentity(ProjectRuntime $runtime, string $kind, string $id): void
+    /** @param array<string, mixed> $options */
+    private function assertIdentity(ProjectRuntime $runtime, string $kind, string $id, array $options): void
     {
-        if (! in_array($kind, ['smart', 'design'], true)) {
-            throw new PortableConfigurationException('SCAFFOLD_KIND_INVALID', 'Scaffold kind must be smart or design.');
+        if (! in_array($kind, ['smart', 'design', 'page'], true)) {
+            throw new PortableConfigurationException('SCAFFOLD_KIND_INVALID', 'Scaffold kind must be smart, design or page.');
+        }
+        if ($kind === 'page') {
+            if (preg_match('#^(?!/)(?!.*(?:^|/)\.\.(?:/|$))[a-z0-9][a-z0-9_-]*(?:/[a-z0-9][a-z0-9_-]*)*$#D', $id) !== 1) {
+                throw new PortableConfigurationException('SCAFFOLD_PAGE_ROUTE_INVALID', 'Page route must be a safe lowercase locale-relative route.');
+            }
+            $locale = $options['locale'] ?? null;
+            $title = $options['title'] ?? null;
+            $profile = $options['profile'] ?? null;
+            if (! is_string($locale) || ! is_string($title) || trim($title) === '') {
+                throw new PortableConfigurationException('SCAFFOLD_PAGE_ARGUMENT_REQUIRED', 'Page scaffold requires locale and title.');
+            }
+            LocaleRegistry::fromSite($runtime->site)->get($locale);
+            if (! is_string($profile) || ! in_array($profile, AuthoringProfileRegistry::IDS, true)) {
+                throw new PortableConfigurationException('SCAFFOLD_PAGE_PROFILE_INVALID', 'Page scaffold requires a built-in profile.');
+            }
+
+            return;
         }
         if ($runtime->namespace === null || ! str_starts_with($id, $runtime->namespace . '.')
             || preg_match('/^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9_-]*)+$/D', $id) !== 1) {
             throw new PortableConfigurationException('SCAFFOLD_NAMESPACE_FORBIDDEN', 'Scaffold id must belong to smart.namespace from docara.json.');
         }
+    }
+
+    /** @param array<string, mixed> $options @return array<string, string> */
+    private function pageFiles(ProjectRuntime $runtime, string $id, array $options): array
+    {
+        $locale = (string) $options['locale'];
+        $title = trim((string) $options['title']);
+        $profile = (string) $options['profile'];
+        $contentRoot = LocaleRegistry::fromSite($runtime->site)->get($locale)->contentRoot;
+        $path = $contentRoot . '/' . trim($id, '/') . '.md';
+        $quotedTitle = json_encode($title, JSON_THROW_ON_ERROR | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+        return [$path => "---\ntitle: {$quotedTitle}\ndraft: true\nprofile: {$profile}\n---\n\n# {$title}\n\nDraft.\n"];
     }
 
     /** @return array<string, string> */

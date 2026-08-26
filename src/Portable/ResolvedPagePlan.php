@@ -11,7 +11,7 @@ final readonly class ResolvedPagePlan
      * @param  array<string, mixed>  $frameworkLock
      * @param  list<array<string, mixed>>  $trace
      * @param  array<string, string>  $provenance
-     * @param  array{title?:string,description?:string,tags?:list<string>,draft?:bool,translation_key?:string}  $frontMatter
+     * @param  array{title?:string,description?:string,tags?:list<string>,draft?:bool,translation_key?:string,profile?:string}  $frontMatter
      */
     public function __construct(
         public string $page,

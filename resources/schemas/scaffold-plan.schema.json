@@ -7,9 +7,19 @@
   "properties": {
     "schema": {"const": "docara.scaffold_plan.v1"},
     "plan_id": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
-    "kind": {"enum": ["smart", "design"]},
-    "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*(?:\\.[a-z][a-z0-9_-]*)+$"},
-    "namespace": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+    "kind": {"enum": ["smart", "design", "page"]},
+    "id": {"type": "string", "pattern": "^[a-z][a-z0-9_./-]*$"},
+    "namespace": {"type": ["string", "null"], "pattern": "^[a-z][a-z0-9-]*$"},
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["locale", "title", "profile"],
+      "properties": {
+        "locale": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "profile": {"enum": ["landing", "article", "tutorial", "how_to", "reference", "explanation"]}
+      }
+    },
     "input_hashes": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^(?:absent|[a-f0-9]{64})$"}},
     "files": {
       "type": "array",
@@ -19,7 +29,7 @@
         "additionalProperties": false,
         "required": ["path", "sha256", "content_base64"],
         "properties": {
-          "path": {"type": "string", "pattern": "^(?:smart|design)/[a-zA-Z0-9._/-]+$"},
+          "path": {"type": "string", "pattern": "^(?:smart|design|content)/[a-zA-Z0-9._/-]+$"},
           "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
           "content_base64": {"type": "string", "minLength": 1}
         }

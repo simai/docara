@@ -14,6 +14,16 @@ final readonly class ValidationService
         $checks = [];
         if ($kind === 'project') {
             $checks[] = $this->pass('PROJECT_REGISTRIES_VALID', count($runtime->smarts->keys()) + count($runtime->designs->all()));
+            array_push($checks, ...(new PageInspectionService)->validateAll($runtime->root));
+        } elseif ($kind === 'page') {
+            if ($id === null) {
+                throw new \InvalidArgumentException('SDK_ARGUMENT_REQUIRED:id');
+            }
+            $inspection = (new PageInspectionService)->inspect($runtime->root, $id);
+            $checks[] = ['code' => 'PAGE_MARKDOWN_VALID', 'subject' => $id, 'status' => 'pass'];
+            foreach ($inspection['diagnostics'] as $diagnostic) {
+                $checks[] = $diagnostic + ['subject' => $id];
+            }
         } elseif ($kind === 'smart') {
             $ids = $id === null ? $runtime->smarts->keys() : [$id];
             foreach ($ids as $smartId) {
@@ -47,11 +57,18 @@ final readonly class ValidationService
             throw new \InvalidArgumentException('SDK_VALIDATION_KIND_UNKNOWN:' . $kind);
         }
 
-        return OperationResult::success('validate', $id ?? $kind, [
+        $data = [
             'checks' => $checks,
             'passed' => count(array_filter($checks, static fn (array $check): bool => $check['status'] === 'pass')),
             'not_declared' => count(array_filter($checks, static fn (array $check): bool => $check['status'] === 'not_declared')),
-        ], $runtime->provenance());
+            'review_required' => count(array_filter($checks, static fn (array $check): bool => $check['status'] === 'review_required')),
+            'errors' => count(array_filter($checks, static fn (array $check): bool => $check['status'] === 'error')),
+        ];
+        if ($data['errors'] > 0) {
+            return new OperationResult('validate', 'error', 2, $id ?? $kind, $data, [], $runtime->provenance());
+        }
+
+        return OperationResult::success('validate', $id ?? $kind, $data, $runtime->provenance());
     }
 
     /** @return array{code:string,status:string,count:int} */

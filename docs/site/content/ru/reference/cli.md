@@ -67,6 +67,35 @@ PHP-код: она читает статический каталог, receipts 
 
 ## `translations`
 
+## Страницы в Developer/AI SDK
+
+```bash
+php vendor/bin/docara list page --json
+php vendor/bin/docara inspect page /ru/start/ --json
+php vendor/bin/docara schema authoring --json
+php vendor/bin/docara validate page /ru/start/ --json
+php vendor/bin/docara validate project --json
+```
+
+Необязательный `docara.authoring.json` назначает страницам один из встроенных
+профилей: `landing`, `article`, `tutorial`, `how_to`, `reference` или
+`explanation`. Без него прежнее поведение проекта сохраняется. Проверка
+сообщает измеримые структурные пробелы и оставляет смысловой checklist со
+статусом `review_required`; она не вызывает ИИ и не меняет Markdown.
+
+Новую draft-страницу создают через тот же hash-bound plan/apply:
+
+```bash
+php vendor/bin/docara scaffold page guides/new-page \
+  --locale=ru --title="Новая страница" --profile=how_to --dry-run --json
+php vendor/bin/docara scaffold --apply=<plan-sha256> --json
+```
+
+Scaffold работает только для отсутствующего Markdown. Существующую страницу
+редактируют напрямую, затем запускают `validate`, build и `verify-static`.
+
+## `translations`
+
 ```text
 php vendor/bin/docara translations status [--locale=en] [--status=stale] [--json]
 php vendor/bin/docara translations accept --locale=en --key=<key> --review=ai_verified --dry-run --json

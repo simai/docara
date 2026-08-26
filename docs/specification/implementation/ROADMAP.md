@@ -1,10 +1,10 @@
 # Дорожная карта упрощения Docara
 
-Текущий статус: ограниченный lifecycle общих примеров и контроля переводов
-завершён и проверен. Он добавил `examples/<id>/`, receipt зависимостей,
-неблокирующий translation report и hash-bound acceptance, затем внедрил их в
-`ui-doc`. Активной implementation-задачи нет; commit, push, tag, release,
-publication и deploy требуют отдельного решения.
+Текущий статус: выполняется bounded batch профилей страниц и page SDK по
+`source/workflow/2026-08-26-page-authoring-sdk.md`. Он добавляет один
+необязательный `docara.authoring.json`, шесть встроенных профилей и тип `page`
+в существующие SDK-операции. Отдельный knowledge subsystem, `ui-doc`, commit,
+push, release и deploy исключены.
 
 Предыдущий roadmap и post-roadmap implementation завершены. Goal 1-3,
 Goals A-C, Surface/Hero Goals S1-S3, SF5 typography и local Framework runtime

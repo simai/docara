@@ -32,6 +32,24 @@ final class ProjectContext
             $stage['path'],
             $batch['path'],
         ];
+        $boundedWork = is_array($state['last_bounded_work'] ?? null) ? self::map($state, 'last_bounded_work', 'implementation_state') : null;
+        $boundedContext = null;
+        if ($boundedWork !== null) {
+            $boundedGoal = self::objectById($root, 'goals', self::string($boundedWork, 'goal', 'last_bounded_work'));
+            $boundedStage = self::objectById($root, 'stages', self::string($boundedWork, 'stage', 'last_bounded_work'));
+            $boundedBatch = self::objectById($root, 'batches', self::string($boundedWork, 'batch', 'last_bounded_work'));
+            array_push($sources, $boundedGoal['path'], $boundedStage['path'], $boundedBatch['path']);
+            $boundedContext = [
+                'state' => self::string($boundedWork, 'state', 'last_bounded_work'),
+                'goal' => self::string($boundedGoal['data'], 'id', $boundedGoal['path']),
+                'stage' => self::string($boundedStage['data'], 'id', $boundedStage['path']),
+                'batch' => self::string($boundedBatch['data'], 'id', $boundedBatch['path']),
+                'workflow' => self::string($boundedWork, 'workflow', 'last_bounded_work'),
+                'evidence' => self::string($boundedWork, 'evidence', 'last_bounded_work'),
+                'next_action' => self::string($boundedWork, 'next_action', 'last_bounded_work'),
+                'release_authorized' => self::boolean($boundedWork, 'release_authorized', 'last_bounded_work'),
+            ];
+        }
 
         return [
             'schema_version' => '1.1.0',
@@ -60,6 +78,7 @@ final class ProjectContext
                 'next_action' => self::string($state, 'next_action', 'implementation_state'),
                 'evidence' => self::string($state, 'evidence', 'implementation_state'),
             ],
+            'last_bounded_work' => $boundedContext,
             'roadmap' => [
                 'source' => $roadmapSource,
             ],

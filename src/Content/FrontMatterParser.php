@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Content;
 
+use Simai\Docara\Authoring\AuthoringProfileRegistry;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final readonly class FrontMatterParser
 {
-    private const KEYS = ['title', 'description', 'tags', 'draft', 'translation_key'];
+    private const KEYS = ['title', 'description', 'tags', 'draft', 'translation_key', 'profile'];
 
     public function parse(string $markdown, string $source): FrontMatterDocument
     {
@@ -104,6 +105,9 @@ final readonly class FrontMatterParser
             && preg_match('/^[a-z0-9](?:[a-z0-9._-]{0,126}[a-z0-9])?$/D', $value) !== 1
         ) {
             $this->fail('FRONT_MATTER_TRANSLATION_KEY_INVALID', $source, $line, $column, 'Use a stable lowercase identifier.');
+        }
+        if ($key === 'profile' && ! in_array($value, AuthoringProfileRegistry::IDS, true)) {
+            $this->fail('FRONT_MATTER_PROFILE_INVALID', $source, $line, $column, 'Use a built-in Docara authoring profile.');
         }
 
         return $value;

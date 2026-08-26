@@ -2,6 +2,33 @@
 
 All notable changes to Docara are documented in this file.
 
+## [2.2.0] - 2026-08-26
+
+### Added
+
+- Six optional authoring profiles for landing pages, articles, tutorials,
+  how-to guides, reference pages and explanations.
+- Optional `docara.authoring.json` path rules and per-page `profile` overrides
+  without introducing a separate knowledge store or status engine.
+- Page-aware SDK operations in the existing `list`, `inspect`, `validate` and
+  `scaffold` command families, including stable JSON results shared by CLI and
+  MCP consumers.
+- Hash-bound page scaffold plans and a unified page inspection payload with
+  source, route, effective configuration, examples, links, translations,
+  revisions, provenance and diagnostics.
+
+### Changed
+
+- Project validation can aggregate measurable page-profile signals while
+  keeping semantic editorial judgment explicitly review-only.
+- Projects without `docara.authoring.json` retain their existing build and
+  authoring behavior.
+
+### Security
+
+- Page scaffolding rejects traversal, existing targets, symlinks, hardlinks,
+  case conflicts, unknown locales/profiles and stale apply plans.
+
 ## [2.1.0] - 2026-08-26
 
 ### Added
@@ -73,3 +100,4 @@ All notable changes to Docara are documented in this file.
 
 [2.0.0]: https://github.com/simai/docara/releases/tag/v2.0.0
 [2.1.0]: https://github.com/simai/docara/releases/tag/v2.1.0
+[2.2.0]: https://github.com/simai/docara/releases/tag/v2.2.0

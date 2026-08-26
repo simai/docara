@@ -1,9 +1,9 @@
 project_id: "docara-unified"
 updated_at: "2026-08-26"
-status: "docara_terminal_no_active_implementation"
-primary_goal: null
-active_tracks: []
-current_focus: "Page authoring profiles and page SDK are implemented and verified; no implementation task is active."
-important_blockers:
-  - "Global federation verify still reports the pre-existing Docara installed-override symlink mismatch; local skill status and verification pass, and activating the uncommitted revision is outside the authorized scope."
-next_global_step: "explicit_user_decision"
+status: "active_release_workflow"
+primary_goal: "Publish verified Docara 2.2.0 and refresh local ui-doc.test without public deploy or Codex restart."
+active_tracks:
+  - "docara-2.2-release-and-ui-doc-local-update"
+current_focus: "Release-readiness audit and exact-revision publication for the completed page-authoring SDK."
+important_blockers: []
+next_global_step: "complete_release_audit"

@@ -64,12 +64,23 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           version="${RELEASE_TAG#v}"
+          awk -v heading="## [$version]" '
+            index($0, heading) == 1 { capture = 1; next }
+            capture && /^## \[/ { exit }
+            capture { print }
+          ' CHANGELOG.md > release-notes.md
+          test -s release-notes.md
           assets=(
             "release-out/docara-$version.zip"
             "release-out/docara-$version.release-manifest.json"
             "release-out/docara-$version.sha256"
           )
           if gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            gh release edit "$RELEASE_TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "Docara $version" \
+              --notes-file release-notes.md \
+              --latest
             gh release upload "$RELEASE_TAG" "${assets[@]}" \
               --repo "$GITHUB_REPOSITORY" \
               --clobber
@@ -78,6 +89,6 @@ jobs:
               --repo "$GITHUB_REPOSITORY" \
               --verify-tag \
               --title "Docara $version" \
-              --generate-notes \
+              --notes-file release-notes.md \
               --latest
           fi

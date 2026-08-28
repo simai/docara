@@ -432,6 +432,28 @@ MD);
     }
 
     #[Test]
+    public function explicit_content_gap_keeps_the_opt_in_vertical_stack(): void
+    {
+        $this->copyPortableFixture($this->tmp);
+        $site = $this->jsonFile($this->tmpPath('docara.json'));
+        $site['layout']['content']['gap'] = 2;
+        file_put_contents($this->tmpPath('docara.json'), CanonicalJson::encodePretty($site));
+
+        $this->builder()->build($this->tmp, $this->tmpPath('build_local'));
+
+        $guide = (string) file_get_contents($this->tmpPath('build_local/guides/getting-started/index.html'));
+        $landing = (string) file_get_contents($this->tmpPath('build_local/landing/index.html'));
+        self::assertStringContainsString(
+            'class="docara-prose min-w-0 flex flex-col gap-2"',
+            $guide,
+        );
+        self::assertStringContainsString(
+            'class="docara-content docara-prose container w-full m-inline-auto min-w-0 flex flex-col gap-2"',
+            $landing,
+        );
+    }
+
+    #[Test]
     public function it_builds_docs_landing_inheritance_components_and_explainable_plans(): void
     {
         $this->copyPortableFixture($this->tmp);
@@ -553,9 +575,12 @@ MD);
         );
         self::assertStringContainsString('class="docara-landing"', $landing);
         self::assertStringContainsString(
-            'class="docara-content docara-prose container w-full m-inline-auto flex min-w-0 flex-col gap-0"',
+            'class="docara-content docara-prose container w-full m-inline-auto min-w-0"',
             $landing,
         );
+        self::assertStringContainsString('class="docara-prose min-w-0"', $guide);
+        self::assertStringNotContainsString('docara-prose flex', $guide);
+        self::assertStringNotContainsString('docara-prose container w-full m-inline-auto flex', $landing);
         self::assertStringNotContainsString(
             'docara-content docara-prose bg-surface-0 border radius-3',
             $landing,
@@ -650,7 +675,7 @@ MD);
         );
         self::assertStringNotContainsString('html[dir="ltr"] .docara-outline-rail>[data-docara-section]{direction:rtl}', $shellCss);
         self::assertMatchesRegularExpression(
-            '#href="/_docara/declarative-shell\.css\?docara_v=[a-f0-9]{64}" data-docara-declarative-shell-style#',
+            '#href="/_docara/docara-shell\.[a-f0-9]{64}\.css" data-docara-declarative-shell-style#',
             $landing,
         );
         self::assertMatchesRegularExpression(
@@ -695,11 +720,35 @@ MD);
         self::assertStringContainsString('rel="prev" href="/guides/"', $guide);
         self::assertStringContainsString('rel="next" href="/guides/platform/"', $guide);
         self::assertStringContainsString(
-            'docara-document-link--next flex flex-1 items-cross-center content-main-between gap-1 bg-surface-container border border-outline-variant radius-2 p-y-2 p-inline-start-2 p-inline-end-1',
+            'docara-document-link--next flex flex-1 items-cross-center gap-1 radius-1 p-1',
             $guide,
         );
         self::assertStringContainsString(
-            '.docara-document-link--next{order:-1;text-align:start}',
+            'docara-document-link__text flex flex-col min-w-0',
+            $guide,
+        );
+        self::assertStringNotContainsString(
+            'docara-document-link--next flex flex-1 items-cross-center content-main-between',
+            $guide,
+        );
+        self::assertStringNotContainsString(
+            'docara-document-link--next flex flex-1 items-cross-center gap-1 bg-surface-container',
+            $guide,
+        );
+        self::assertStringContainsString(
+            '.docara-previous-next{margin-block-start:var(--sf-space-4);padding-block-start:var(--sf-space-2);border-block-start:1px solid var(--sf-outline-variant)}',
+            $shellCss,
+        );
+        self::assertStringContainsString(
+            '.docara-document-link:hover{background:var(--sf-surface-container-hover)}',
+            $shellCss,
+        );
+        self::assertStringContainsString(
+            '.docara-document-link--next{justify-content:flex-end;text-align:end}',
+            $shellCss,
+        );
+        self::assertStringContainsString(
+            '.docara-document-link--next{order:-1;justify-content:flex-start;text-align:start}',
             $shellCss,
         );
         self::assertStringNotContainsString('data-docara-breadcrumbs', $landing);
@@ -783,7 +832,8 @@ MD);
             self::assertStringContainsString('"theme":false', $html);
             self::assertStringContainsString('docara.framework.storage.compatibility', $html);
             self::assertStringContainsString('docaraFrameworkStorage', $html);
-            self::assertStringContainsString("function revealFrameworkBody(){if(document.body)document.body.style.opacity='1'}", $html);
+            self::assertStringContainsString('data-docara-shell', $html);
+            self::assertStringNotContainsString('revealFrameworkBody', $html);
             self::assertTrue(
                 strpos($html, 'docara.framework.storage.compatibility') < strpos($html, 'data-docara-preferences-bootstrap'),
                 'The volatile Framework storage guard must run before Docara reads the reader preference.',
@@ -793,7 +843,6 @@ MD);
             self::assertStringContainsString('railRect.width<=0||railRect.height<=0', $surface);
             self::assertStringContainsString("addEventListener('resize',reveal", $surface);
             self::assertStringContainsString("customElements.whenDefined('sf-icon')", $surface);
-            self::assertStringNotContainsString('data-docara-code-copy', $html);
             self::assertStringNotContainsString('navigator.clipboard.writeText(text)', $surface);
             self::assertStringContainsString("document.execCommand('copy')", $surface);
             self::assertStringContainsString('background:var(--sf-surface-0);border:0;border-radius:0;box-shadow:none', $surface);
@@ -820,7 +869,7 @@ MD);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
             self::assertStringContainsString(
-                '/_docara/vendor/simai-framework/runtime/d1daa951dd08b94a9f209fd9f31a78d2b3779563/distr/',
+                '/_docara/vendor/simai-framework/runtime/b2e8444659ae0d213296c2d349257259d3ed0c9c/distr/',
                 $html,
             );
             self::assertStringNotContainsString('cdn.jsdelivr.net', $html);
@@ -838,16 +887,13 @@ MD);
             self::assertStringNotContainsString('alt="Docara"', $html);
             self::assertStringContainsString('<link rel="icon" href="/_docara/brand/', $html);
         }
+        self::assertStringContainsString('data-docara-code-copy', $landing);
         foreach ([$index, $guide, $fourthLevel] as $html) {
-            self::assertStringContainsString('<sf-button', $html);
             self::assertMatchesRegularExpression(
-                '~<sf-button\s+[^>]*data-docara-search-trigger[^>]*size="1"[^>]*type="outline"[^>]*scheme="on-surface"[^>]*icon-left="search"[^>]*>~s',
+                '~<button\s+[^>]*data-docara-search-trigger[^>]*class="[^"]*sf-button--size-1[^"]*sf-button--outline[^"]*sf-button--on-surface[^"]*"[^>]*>~s',
                 $html,
             );
-            self::assertDoesNotMatchRegularExpression(
-                '~<button[^>]*data-docara-search-trigger~',
-                $html,
-            );
+            self::assertStringNotContainsString('<sf-button data-docara-search-trigger', $html);
             self::assertStringContainsString('data-docara-search-dialog', $html);
             self::assertStringContainsString('<sf-modal', $html);
             self::assertStringContainsString('overlay="true"', $html);
@@ -866,9 +912,8 @@ MD);
             self::assertStringContainsString('docara-search-help border-top-1 border-outline-variant p-1 flex content-main-center items-cross-center gap-2 color-on-surface-variant label-medium', $html);
             self::assertSame(3, substr_count($html, 'class="inline-flex items-cross-center p-x-1/2 p-y-1/4"'));
             self::assertStringNotContainsString('docara-search-status label-small', $html);
-            self::assertStringContainsString('root-class="docara-search-trigger h-d0"', $html);
             self::assertStringContainsString(
-                'slot="icon-right" class="docara-search-shortcut text-1 color-on-surface-variant m-inline-start-1/2"',
+                'class="docara-search-shortcut text-1 color-on-surface-variant m-inline-start-1/2"',
                 $html,
             );
             self::assertStringNotContainsString(
@@ -892,6 +937,11 @@ MD);
         self::assertStringNotContainsString('data-docara-search-runtime', $landing);
         self::assertStringContainsString('id="docara-mobile-navigation"', $guide);
         self::assertStringContainsString('id="docara-mobile-navigation-title"', $guide);
+        self::assertStringContainsString('class="docara-sidebar" data-docara-region="sidebar" data-sf-observer="ignore"', $guide);
+        self::assertMatchesRegularExpression('~id="docara-mobile-navigation"[^>]*data-sf-observer="ignore"~', $guide);
+        self::assertStringContainsString('data-docara-sheet-lazy-content', $guide);
+        self::assertStringContainsString('template data-docara-sheet-template', $guide);
+        self::assertStringContainsString('function hydrateSheet()', $shellRuntime);
         self::assertStringContainsString('id="docara-outline-dialog"', $guide);
         self::assertStringContainsString('data-docara-sheet-trigger', $guide);
         self::assertMatchesRegularExpression(
@@ -1092,9 +1142,9 @@ MD);
         self::assertContains(hash_file('sha256', $this->tmpPath('assets/favicon.ico')), $publishedBrandHashes);
 
         foreach ([
-            'smart/alert/js/alert.js' => '6720a3dd126f35c46fc09ecb6aeb0f2d9ebfcce82388ba8cc031c24cead426a7',
-            'smart/buttons/js/buttons.js' => 'f9d400cd9d88c23243f75b313e9d0040ebee4e12e763d12a5ba86e556cf5c48b',
-            'smart/icons/js/icons.js' => '6fe9a1ac7436ba6017addd7c9d389633e1fe4be4ae86cc0cd7fb45c0b31902d1',
+            'smart/alert/js/alert.js' => '9fa2e29f067379f8400ee4a5bd0ef34832baee42f5a8394f48796719d07e75fa',
+            'smart/buttons/js/buttons.js' => 'b9804afcf05c718ed51ee0b8b5e04e946c422d2fb8b8fed112e552824054087b',
+            'smart/icons/js/icons.js' => '362cef3368003672166a0a99d5026a1712fe4f716f9e614a55037d2429430da5',
         ] as $relativePath => $sha256) {
             $published = $this->tmpPath('build_local/_docara/framework/' . $relativePath);
             self::assertFileExists($published);
@@ -1107,6 +1157,23 @@ MD);
         self::assertDoesNotMatchRegularExpression('/"navigation":\s*\[\]/', $diagnosticJson);
         $diagnostics = $this->jsonFile($diagnosticPath);
         self::assertSame('docara.resolved_page_plans.v1', $diagnostics['schema']);
+        $shellReceipt = $diagnostics['build']['framework']['shell'];
+        self::assertSame('docara.framework_asset_plans.v1', $shellReceipt['schema']);
+        self::assertSame('production_exact', $shellReceipt['mode']);
+        self::assertCount(39, $shellReceipt['plans']);
+        $indexShellReceipt = $shellReceipt['plans']['index.html'];
+        self::assertSame('production_exact', $indexShellReceipt['preload']['mode']);
+        self::assertCount(1, $indexShellReceipt['generated_assets']);
+        $generatedShell = $indexShellReceipt['generated_assets'][0];
+        self::assertSame('/_docara/' . $generatedShell['filename'], $generatedShell['url']);
+        self::assertSame(
+            $generatedShell['sha256'],
+            hash_file('sha256', $this->tmpPath('build_local/_docara/' . $generatedShell['filename'])),
+        );
+        self::assertStringNotContainsString(
+            'utility.full.css',
+            (string) file_get_contents($this->tmpPath('build_local/index.html')),
+        );
         self::assertCount(39, $diagnostics['pages']);
         $indexPlan = collect($diagnostics['pages'])->firstWhere('output', 'index.html');
         self::assertIsArray($indexPlan);
@@ -1149,7 +1216,7 @@ MD);
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('sf-v5.3.2-d1daa951-aa9f34a4', $componentCatalog['framework_pair']);
+        self::assertSame('sf-v5.4.0-b2e84446-23d00d92', $componentCatalog['framework_pair']);
         self::assertCount(38, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -1256,7 +1323,8 @@ MD);
         self::assertStringContainsString("medium:'var(--sf-radius-1\\\\/2)'", $html);
         self::assertStringContainsString("'sf-modal[data-docara-transient-dialog]'", $html);
         self::assertStringContainsString("modal.setAttribute('overlay-class',value)", $html);
-        self::assertStringContainsString("document.addEventListener('DOMContentLoaded',function(){applyAll(initialSource);revealFrameworkBody()},{once:true})", $html);
+        self::assertStringContainsString("document.addEventListener('DOMContentLoaded',function(){applyAll(initialSource)},{once:true})", $html);
+        self::assertStringNotContainsString('revealFrameworkBody', $html);
     }
 
     #[Test]
@@ -1630,7 +1698,7 @@ MD;
             $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.3\.2-d1daa951-aa9f34a4-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.4\.0-b2e84446-23d00d92-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework/smart/alert/js/alert.js'));
@@ -1903,7 +1971,7 @@ MD;
         self::assertFileDoesNotExist($this->tmpPath('build_local/_docara/search-index.json'));
         self::assertFileDoesNotExist($this->tmpPath('build_local/_docara/search.js'));
         $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
-        self::assertStringNotContainsString('<button type="button" data-docara-search-trigger', $html);
+        self::assertStringNotContainsString('data-docara-search-trigger', $html);
         self::assertStringNotContainsString('data-docara-search-dialog', $html);
         self::assertStringNotContainsString('data-docara-search-runtime', $html);
     }

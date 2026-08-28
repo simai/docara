@@ -409,8 +409,8 @@ MD;
             '<ol class="m-0 p-0">',
             $html,
         );
-        self::assertStringContainsString('class="docara-step grid items-start gap-1 list-none p-block-end-2"', $html);
-        self::assertStringContainsString('class="docara-step-marker inline-flex items-center content-main-center"', $html);
+        self::assertStringContainsString('class="docara-step grid items-cross-start gap-1 list-none p-block-end-2"', $html);
+        self::assertStringContainsString('class="docara-step-marker inline-flex items-cross-center content-main-center"', $html);
         self::assertStringContainsString('<div class="docara-step-content">Установите PHP-зависимости.</div>', $html);
         self::assertStringNotContainsString('absolute inset-inline-start-0', $html);
         self::assertStringContainsString(
@@ -418,11 +418,11 @@ MD;
             $html,
         );
         self::assertStringContainsString(
-            '<div data-docara-code-block class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">',
+            '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="php" class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">',
             $html,
         );
-        self::assertStringNotContainsString('data-docara-code-language', $html);
-        self::assertStringNotContainsString('data-docara-code-copy', $html);
+        self::assertStringContainsString('data-docara-code-fallback', $html);
+        self::assertStringContainsString('data-docara-code-copy', $html);
         self::assertStringContainsString(
             '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code class="language-php">',
             $html,
@@ -453,8 +453,9 @@ MD;
         self::assertSame(1, substr_count($html, '<div data-docara-code-block'));
         self::assertSame(1, substr_count($html, ' border border-outline-variant'));
         self::assertStringContainsString('class="source init docara-code-block', $html);
-        self::assertStringNotContainsString('data-docara-code-language', $html);
-        self::assertStringNotContainsString('data-docara-code-copy', $html);
+        self::assertStringContainsString('data-docara-code-language="shell"', $html);
+        self::assertStringContainsString('data-docara-code-fallback', $html);
+        self::assertStringContainsString('data-docara-code-copy', $html);
         self::assertStringContainsString(
             "<code class=\"language-shell\">printf '&lt;Docara&gt; &amp; exact'\n  second line\n</code>",
             $html,
@@ -481,7 +482,7 @@ MD;
         $html = (new PortableMarkdownRenderer)->render($markdown);
 
         self::assertStringContainsString(
-            '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start m-bottom-1" href="/start/" title="Быстрый старт"><span class="sf-button-text-container">Начать работу</span></a>',
+            '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-cross-center content-main-center decoration-none w-full sm:w-auto sm:self-cross-start m-bottom-1" href="/start/" title="Быстрый старт"><span class="sf-button-text-container">Начать работу</span></a>',
             $html,
         );
         self::assertStringNotContainsString('bg-primary color-on-primary p-1/2 line-none', $html);
@@ -549,7 +550,7 @@ MD);
 MD);
 
         self::assertStringContainsString(
-            '<div data-docara-hero-actions class="flex flex-wrap items-center gap-1">',
+            '<div data-docara-hero-actions class="flex flex-wrap items-cross-center gap-1">',
             $html,
         );
         self::assertSame(2, substr_count($html, 'data-docara-hero-action class='));
@@ -629,7 +630,7 @@ MD);
         );
         self::assertSame(3, substr_count(
             $html,
-            '<li class="min-w-0 flex items-center content-main-center">',
+            '<li class="min-w-0 flex items-cross-center content-main-center">',
         ));
         self::assertStringContainsString('<a href="https://simai.io/">SIMAI</a>', $html);
         self::assertStringContainsString(

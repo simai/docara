@@ -7,7 +7,7 @@
     return value;
   }
   function localizeCodeCopy(root){
-    var selector='[data-docara-code-block] button[data-clipboard-target]';
+    var selector='[data-docara-code-block] button[data-clipboard-target],[data-docara-code-block] button[data-docara-code-copy]';
     var scope=root&&root.querySelectorAll?root:document,buttons=[];
     var direct=root&&root.nodeType===1&&root.closest?root.closest(selector):null;
     if(direct){buttons.push(direct)}
@@ -17,7 +17,7 @@
       if(block&&!block.closest('[data-docara-example-panel]')){
         var code=block.querySelector('code');
         var language=(code&&code.dataset.requestedLang||'').trim().toLowerCase();
-        var head=block.querySelector(':scope > .sf--highlight-head');
+        var head=block.querySelector(':scope > .sf--highlight-head,:scope > [data-docara-code-fallback]');
         var title=head&&head.querySelector(':scope > span');
         var languageLabels={html:'HTML',xhtml:'HTML',css:'CSS',js:'JavaScript',javascript:'JavaScript',json:'JSON',php:'PHP',bash:'Bash',shell:'Shell',markdown:'Markdown',md:'Markdown',text:'Code',plaintext:'Code'};
         var languageLabel=languageLabels[language]||language||'Code';
@@ -34,6 +34,30 @@
       var label=message(copied?'code.copied':'code.copy');
       if(text&&text.textContent!==label){text.textContent=label}
       button.setAttribute('aria-label',label);
+      if(button.dataset.docaraCodeCopy!==undefined&&!button.dataset.docaraCodeCopyBound){
+        button.dataset.docaraCodeCopyBound='1';
+        button.addEventListener('click',function(){
+          var code=button.closest('[data-docara-code-block]')&&button.closest('[data-docara-code-block]').querySelector('code');
+          if(!code)return;
+          var value=code.textContent||'',done=function(){
+            var text=button.querySelector('.sf-button-text-container'),icon=button.querySelector('.sf-icon');
+            if(text){text.textContent=message('code.copied')}
+            if(icon){icon.textContent='check'}
+            button.setAttribute('aria-label',message('code.copied'));
+            window.setTimeout(function(){
+              if(text){text.textContent=message('code.copy')}
+              if(icon){icon.textContent='content_copy'}
+              button.setAttribute('aria-label',message('code.copy'));
+            },1600);
+          };
+          if(navigator.clipboard&&typeof navigator.clipboard.writeText==='function'){
+            navigator.clipboard.writeText(value).then(done).catch(function(){});
+            return;
+          }
+          var input=document.createElement('textarea');input.value=value;input.setAttribute('readonly','');input.style.position='fixed';input.style.inset='0 auto auto -9999px';document.body.appendChild(input);input.select();
+          try{if(document.execCommand('copy'))done()}finally{input.remove()}
+        });
+      }
     });
   }
   function closeTransientExcept(id){
@@ -73,11 +97,22 @@
     var trigger=document.querySelector('[data-docara-sheet-trigger][aria-controls="'+dialog.id+'"]');
     var closeButton=dialog.querySelector('[data-docara-sheet-close]');
     if(!trigger||!closeButton)return;
+    var linksBound=false;
+    function hydrateSheet(){
+      var template=dialog.querySelector('template[data-docara-sheet-template]');
+      var target=dialog.querySelector('[data-docara-sheet-lazy-content]');
+      if(template&&target){target.replaceWith(template.content.cloneNode(true));template.remove()}
+      if(!linksBound){
+        linksBound=true;
+        dialog.querySelectorAll('a[href]').forEach(function(link){link.addEventListener('click',closeSheet)});
+      }
+    }
     function closeSheet(){
       if(typeof dialog.close==='function'&&dialog.open){dialog.close()}
       else{dialog.removeAttribute('open');trigger.setAttribute('aria-expanded','false');trigger.focus()}
     }
     function openSheet(){
+      hydrateSheet();
       requestTransient(dialog);
       if(!dialog.open){
         if(typeof dialog.showModal==='function'){dialog.showModal()}
@@ -91,7 +126,6 @@
     }
     trigger.addEventListener('click',openSheet);
     closeButton.addEventListener('click',closeSheet);
-    dialog.querySelectorAll('a[href]').forEach(function(link){link.addEventListener('click',closeSheet)});
     dialog.addEventListener('click',function(event){if(event.target===dialog){closeSheet()}});
     dialog.addEventListener('cancel',function(event){event.preventDefault();closeSheet()});
     dialog.addEventListener('keydown',function(event){trapDialogTab(dialog,event)});
@@ -214,7 +248,7 @@
       if(!firstTextNode)return;
       var labelText=String(firstTextNode.textContent||'').trim();
       var label=document.createElement('span');
-      label.className='inline-flex items-center gap-1 min-w-0';
+      label.className='inline-flex items-cross-center gap-1 min-w-0';
       var icon=document.createElement('sf-icon');
       var fileIcon=/\.(?:png|jpe?g|gif|webp|svg|avif)$/i.test(labelText)
         ?'image'
@@ -227,7 +261,7 @@
       if(!nested||tree.dataset.interactive!=='true')return;
       var toggle=document.createElement('button');
       toggle.type='button';
-      toggle.className='sf-button sf-button--text sf-button--on-surface sf-button--size-1 inline-flex items-center content-main-center';
+      toggle.className='sf-button sf-button--text sf-button--on-surface sf-button--size-1 inline-flex items-cross-center content-main-center';
       toggle.setAttribute('aria-expanded','true');
       toggle.setAttribute('aria-label','Toggle folder');
       toggle.innerHTML='<sf-icon icon="expand_more" size="1"></sf-icon>';

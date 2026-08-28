@@ -5,7 +5,9 @@ declare(strict_types=1);
 
 use League\CommonMark\Environment\Environment;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
+use Simai\Docara\Framework\FrameworkAssetPlanner;
 use Simai\Docara\Framework\FrameworkLock;
+use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\Framework\FrameworkPortableAssetProjection;
 use Simai\Docara\I18n\LocaleTag;
 use Simai\Docara\Portable\JsonSchemaValidator;
@@ -1652,6 +1654,7 @@ $manifestDirectory = $root . '/.docara';
 $manifestPath = $root . '/.docara/resolved-page-plans.json';
 $manifestError = null;
 $manifestOutputs = [];
+$contentPageOutputs = [];
 $manifestPageRecords = [];
 $searchEnabled = false;
 $expectedSearchSurfaceCount = 0;
@@ -1870,6 +1873,7 @@ if (is_link($manifestDirectory)
             }
             $manifestOutputs = array_keys($outputs);
             sort($manifestOutputs, SORT_STRING);
+            $contentPageOutputs = $manifestOutputs;
             if (count($bases) !== 1) {
                 throw new RuntimeException('Resolved plans must contain one deployment base.');
             }
@@ -1956,7 +1960,7 @@ if (is_link($manifestDirectory)
             }
             $frameworkBuild = $manifestBuild['framework'] ?? null;
             if (! is_array($frameworkBuild)
-                || ! docaraExactKeys($frameworkBuild, ['lock_sha256', 'runtime', 'manifests', 'asset_projection', 'portable_smart_asset_projection'])
+                || ! docaraExactKeys($frameworkBuild, ['lock_sha256', 'runtime', 'manifests', 'asset_projection', 'shell', 'portable_smart_asset_projection'])
                 || ! is_string($frameworkBuild['lock_sha256'] ?? null)
                 || ! hash_equals(
                     $frameworkBuild['lock_sha256'],
@@ -2226,6 +2230,92 @@ if ($manifestError !== null) {
         if (! is_array($portableFiles) || ($portableFiles !== [] && array_is_list($portableFiles))) {
             throw new RuntimeException('Exact portable Framework asset projection is missing.');
         }
+        $assetBase = ($deploymentBase === '/' ? '' : rtrim($deploymentBase, '/')) . '/_docara/framework';
+        $frameworkPlanner = new FrameworkAssetPlanner(
+            FrameworkManifestRepository::bundled(FrameworkLock::fromArray($expectedFrameworkLock)),
+            $assetBase,
+        );
+        $shellReceipt = $manifestBuild['framework']['shell'] ?? null;
+        if (! is_array($shellReceipt)
+            || ! docaraExactKeys($shellReceipt, ['schema', 'mode', 'plans'])
+            || ($shellReceipt['schema'] ?? null) !== 'docara.framework_asset_plans.v1'
+            || ($shellReceipt['mode'] ?? null) !== 'production_exact'
+            || ! is_array($shellReceipt['plans'] ?? null)
+            || array_is_list($shellReceipt['plans'])
+        ) {
+            throw new RuntimeException('Generated Framework page asset-plan receipt is invalid.');
+        }
+        $expectedShellUrls = [];
+        $expectedShellAssetOrders = [];
+        $expectedPreloadModes = [];
+        foreach ($manifestPageRecords as $pageRecord) {
+            $output = is_array($pageRecord) ? ($pageRecord['output'] ?? null) : null;
+            if (! is_string($output) || ! isset($shellReceipt['plans'][$output])) {
+                throw new RuntimeException('Generated Framework page asset plan is missing.');
+            }
+            $pagePath = $root . '/' . $output;
+            $pageHtml = docaraSafeRegularFile($pagePath) ? file_get_contents($pagePath) : false;
+            if (! is_string($pageHtml)) {
+                throw new RuntimeException('Generated Framework page asset plan references an unsafe page.');
+            }
+            $expectedPlan = $frameworkPlanner->planForHtml($pageHtml, []);
+            $pageReceipt = $shellReceipt['plans'][$output];
+            if (! is_array($pageReceipt)
+                || ! hash_equals(
+                    hash('sha256', docaraCanonicalJson($expectedPlan->receipt())),
+                    hash('sha256', docaraCanonicalJson($pageReceipt)),
+                )
+            ) {
+                throw new RuntimeException("Generated Framework page asset plan [$output] does not match final HTML.");
+            }
+            $generatedShellAssets = $pageReceipt['generated_assets'] ?? null;
+            if (! is_array($generatedShellAssets)
+                || ! array_is_list($generatedShellAssets)
+                || count($generatedShellAssets) !== 1
+            ) {
+                throw new RuntimeException('Generated Framework page asset plan must contain exactly one stylesheet.');
+            }
+            $generatedShellAsset = $generatedShellAssets[0];
+            if (! is_array($generatedShellAsset)
+                || ! docaraExactKeys($generatedShellAsset, ['key', 'kind', 'filename', 'url', 'sha256', 'inputs'])
+                || ($generatedShellAsset['key'] ?? null) !== 'docara.framework.shell.css'
+                || ($generatedShellAsset['kind'] ?? null) !== 'shell_css'
+                || ! is_string($generatedShellAsset['filename'] ?? null)
+                || preg_match('/\Adocara-shell\.[a-f0-9]{64}\.css\z/D', $generatedShellAsset['filename']) !== 1
+                || ! is_string($generatedShellAsset['sha256'] ?? null)
+                || $generatedShellAsset['filename'] !== 'docara-shell.' . $generatedShellAsset['sha256'] . '.css'
+                || ($generatedShellAsset['url'] ?? null) !== (($deploymentBase === '/' ? '' : rtrim($deploymentBase, '/')) . '/_docara/' . $generatedShellAsset['filename'])
+                || ! is_array($generatedShellAsset['inputs'] ?? null)
+                || ! array_is_list($generatedShellAsset['inputs'])
+                || $generatedShellAsset['inputs'] === []
+            ) {
+                throw new RuntimeException('Generated Framework page stylesheet metadata is invalid.');
+            }
+            foreach ($generatedShellAsset['inputs'] as $input) {
+                if (! is_array($input)
+                    || ! docaraExactKeys($input, ['source', 'sha256'])
+                    || ! is_string($input['source'] ?? null)
+                    || ! is_string($input['sha256'] ?? null)
+                    || preg_match('/\A[a-f0-9]{64}\z/D', $input['sha256']) !== 1
+                ) {
+                    throw new RuntimeException('Generated Framework page stylesheet input metadata is invalid.');
+                }
+            }
+            $generatedShellPath = $root . '/_docara/' . $generatedShellAsset['filename'];
+            if (! docaraSafeRegularFile($generatedShellPath)
+                || ! hash_equals($generatedShellAsset['sha256'], (string) hash_file('sha256', $generatedShellPath))
+            ) {
+                throw new RuntimeException('Generated Framework page stylesheet is missing, unsafe or hash-mismatched.');
+            }
+            $expectedShellUrls[$output] = $generatedShellAsset['url'];
+            $expectedShellAssetOrders[$output] = is_array($pageReceipt['preload']['asset_order'] ?? null)
+                ? $pageReceipt['preload']['asset_order']
+                : [];
+            $expectedPreloadModes[$output] = $pageReceipt['preload']['mode'] ?? null;
+        }
+        if (count($shellReceipt['plans']) !== count($manifestPageRecords)) {
+            throw new RuntimeException('Generated Framework page asset plans contain stale entries.');
+        }
         foreach ($portableFiles as $relativePath => $record) {
             if (isset($files[$relativePath])) {
                 throw new RuntimeException("Portable Framework asset [$relativePath] collides with the base projection.");
@@ -2288,14 +2378,19 @@ if ($manifestError !== null) {
             );
         }
     } catch (Throwable $exception) {
+        $reference = str_starts_with($exception->getMessage(), 'Generated Framework shell')
+            || str_starts_with($exception->getMessage(), 'Generated Framework page stylesheet')
+            ? '@framework-shell-asset'
+            : '@framework-asset-projection';
         $broken[] = [
             'page' => '@build',
-            'reference' => '@framework-asset-projection',
+            'reference' => $reference,
             'target' => $exception->getMessage(),
         ];
     }
 }
 foreach ($htmlFiles as $htmlFile) {
+    $relativeHtmlFile = str_replace('\\', '/', substr($htmlFile, strlen($root) + 1));
     $html = file_get_contents($htmlFile);
     if (! is_string($html)) {
         $broken[] = ['page' => $htmlFile, 'reference' => '@unreadable'];
@@ -2307,6 +2402,49 @@ foreach ($htmlFiles as $htmlFile) {
             'page' => str_replace('\\', '/', substr($htmlFile, strlen($root) + 1)),
             'reference' => '@html-base-element',
         ];
+    }
+    $expectedShellUrl = $expectedShellUrls[$relativeHtmlFile] ?? null;
+    if (is_string($expectedShellUrl)
+        && in_array($relativeHtmlFile, $contentPageOutputs, true)
+    ) {
+        $escapedShellUrl = htmlspecialchars($expectedShellUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+        if (substr_count($html, 'href="' . $escapedShellUrl . '"') !== 1
+            || str_contains($html, 'href="' . (($deploymentBase === '/' ? '' : rtrim($deploymentBase, '/')) . '/_docara/declarative-shell.css') . '"')
+        ) {
+            $broken[] = [
+                'page' => $relativeHtmlFile,
+                'reference' => '@framework-shell-stylesheet',
+                'target' => 'The page does not reference exactly one generated shell stylesheet.',
+            ];
+        }
+        $lastAssetOffset = -1;
+        foreach (($expectedShellAssetOrders[$relativeHtmlFile] ?? []) as $assetKey) {
+            if (! is_string($assetKey)) {
+                continue;
+            }
+            $needle = 'data-docara-framework-asset="' . htmlspecialchars($assetKey, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') . '"';
+            $offset = strpos($html, $needle);
+            if ($offset === false || $offset <= $lastAssetOffset || substr_count($html, $needle) !== 1) {
+                $broken[] = [
+                    'page' => $relativeHtmlFile,
+                    'reference' => '@framework-preload-order',
+                    'target' => "Preloaded Framework asset [$assetKey] is missing, duplicated or out of order.",
+                ];
+                break;
+            }
+            $lastAssetOffset = $offset;
+        }
+        $preloadOffset = strpos($html, 'data-docara-framework-asset="simai.framework.preloaded"');
+        $coreOffset = strpos($html, 'data-docara-framework-asset="simai.framework.core.js"');
+        if (($expectedPreloadModes[$relativeHtmlFile] ?? null) === 'production_exact'
+            && ($preloadOffset === false || $coreOffset === false || $preloadOffset >= $coreOffset)
+        ) {
+            $broken[] = [
+                'page' => $relativeHtmlFile,
+                'reference' => '@framework-preload-contract',
+                'target' => 'SF_PRELOADED must be declared exactly before Framework Core.',
+            ];
+        }
     }
     preg_match_all(
         '/\bdata-docara-search-index\s*=\s*(?:"([^"]*)"|\'([^\']*)\')/i',

@@ -7,8 +7,11 @@ namespace Tests\Unit;
 use PHPUnit\Framework\Attributes\Test;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
 use Simai\Docara\File\Filesystem;
+use Simai\Docara\Framework\FrameworkAssetPlan;
+use Simai\Docara\Framework\FrameworkAssetPlanner;
 use Simai\Docara\Framework\FrameworkConsumerPolicy;
 use Simai\Docara\Framework\FrameworkLock;
+use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\Framework\FrameworkPortableAssetProjection;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
@@ -21,11 +24,11 @@ use Tests\TestCase;
 
 final class StaticBuildVerifierTest extends TestCase
 {
-    private const FRAMEWORK_PAIR = 'sf-v5.3.2-d1daa951-aa9f34a4';
+    private const FRAMEWORK_PAIR = 'sf-v5.4.0-b2e84446-23d00d92';
 
     private const FRAMEWORK_PROVIDER_REVISION = '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663';
 
-    private const FRAMEWORK_SMART_REVISION = 'aa9f34a4d2bf421e20970ab4eb0418f017c62059';
+    private const FRAMEWORK_SMART_REVISION = '23d00d92346717b8f835297d142a14458f806602';
 
     private const SUPPORTED_COMPONENTS = ['ui.alert', 'ui.button'];
 
@@ -511,6 +514,31 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertStringContainsString('do not exactly match', $unexpectedAsset->getOutput());
         unlink($build . '/_docara/framework/unexpected.js');
 
+        $plans = json_decode($originalPlans, true, flags: JSON_THROW_ON_ERROR);
+        $shellRecord = $plans['build']['framework']['shell']['plans']['index.html']['generated_assets'][0];
+        $shellPath = $build . '/_docara/' . $shellRecord['filename'];
+        $shellBytes = (string) file_get_contents($shellPath);
+        file_put_contents($shellPath, $shellBytes . "\n/* tampered */\n");
+        $tamperedShell = $this->verify($build, false);
+        self::assertSame(1, $tamperedShell->getExitCode(), $tamperedShell->getOutput());
+        self::assertStringContainsString('@framework-shell-asset', $tamperedShell->getOutput());
+        file_put_contents($shellPath, $shellBytes);
+
+        $indexPath = $build . '/index.html';
+        $indexHtml = (string) file_get_contents($indexPath);
+        file_put_contents(
+            $indexPath,
+            str_replace(
+                'data-docara-framework-asset="simai.framework.preloaded"',
+                'data-docara-framework-asset="simai.framework.preloaded-tampered"',
+                $indexHtml,
+            ),
+        );
+        $missingPreload = $this->verify($build, false);
+        self::assertSame(1, $missingPreload->getExitCode(), $missingPreload->getOutput());
+        self::assertStringContainsString('@framework-preload-contract', $missingPreload->getOutput());
+        file_put_contents($indexPath, $indexHtml);
+
         unlink($catalogPath);
         $missing = $this->verify($build);
         self::assertSame(1, $missing->getExitCode(), $missing->getErrorOutput() . $missing->getOutput());
@@ -926,6 +954,9 @@ final class StaticBuildVerifierTest extends TestCase
     /** @param array<string, mixed> $manifest */
     private function writeManifest(string $build, array $manifest): void
     {
+        $frameworkAssetPlanner = null;
+        $frameworkAssetPlans = [];
+        $decorateSyntheticPages = false;
         if (is_array($manifest['pages'] ?? null)) {
             foreach ($manifest['pages'] as &$page) {
                 if (! is_array($page)) {
@@ -981,7 +1012,14 @@ final class StaticBuildVerifierTest extends TestCase
             && ! array_key_exists('build', $manifest)
         ) {
             $configuration = $manifest['pages'][0]['resolved_page_plan']['configuration'] ?? null;
-            if (is_array($configuration)) {
+            if (is_array($configuration)
+                && is_string($configuration['base_url'] ?? null)
+                && (($configuration['base_url'] ?? null) === '/'
+                    || preg_match(
+                        '#^/(?:[A-Za-z0-9._~-]+/)*[A-Za-z0-9._~-]+/?$#D',
+                        (string) $configuration['base_url'],
+                    ) === 1)
+            ) {
                 $metadata = new PortableRuntimeMetadata(dirname(__DIR__, 2));
                 $frameworkLock = $this->frameworkLock();
                 $catalog = EffectiveComponentCatalogBuilder::bundled(
@@ -991,6 +1029,14 @@ final class StaticBuildVerifierTest extends TestCase
                     ?? $configuration['locale']
                     ?? 'en';
                 $requiredPortableAssets = $this->requiredPortableAssets($manifest['pages']);
+                $deploymentBase = ($configuration['base_url'] ?? '/') === '/'
+                    ? ''
+                    : '/' . trim((string) $configuration['base_url'], '/');
+                $frameworkAssetPlanner = new FrameworkAssetPlanner(
+                    FrameworkManifestRepository::bundled(FrameworkLock::fromArray($frameworkLock)),
+                    $deploymentBase . '/_docara/framework',
+                );
+                $decorateSyntheticPages = true;
                 $manifest['build'] = [
                     'purpose' => 'production',
                     'documentation_version' => $configuration['documentation_version'] ?? 'current',
@@ -1004,6 +1050,7 @@ final class StaticBuildVerifierTest extends TestCase
                         'asset_projection' => $frameworkLock['asset_projection'],
                         'portable_smart_asset_projection' => (new FrameworkPortableAssetProjection(SmartRegistry::bundled()))
                             ->forKeys($requiredPortableAssets),
+                        'shell' => [],
                     ],
                     'production_inputs' => $metadata->productionInputGroups(),
                     'component_catalog_sha256' => hash('sha256', CanonicalJson::encode($catalog)),
@@ -1017,12 +1064,103 @@ final class StaticBuildVerifierTest extends TestCase
                 ];
             }
         }
+        if ($decorateSyntheticPages && $frameworkAssetPlanner instanceof FrameworkAssetPlanner) {
+            $receipts = [];
+            foreach ($manifest['pages'] as $page) {
+                $output = is_array($page) ? ($page['output'] ?? null) : null;
+                if (! is_string($output) || ! is_file($build . '/' . $output)) {
+                    continue;
+                }
+                $html = (string) file_get_contents($build . '/' . $output);
+                $html = preg_replace(
+                    '~<(?:script|style)\b[^>]*data-docara-framework-(?:asset|boot|preloaded-smart)\b[^>]*>.*?</(?:script|style)>~is',
+                    '',
+                    $html,
+                ) ?? $html;
+                $html = preg_replace(
+                    '~<link\b[^>]*(?:data-docara-declarative-shell-style|data-docara-framework-asset)\b[^>]*>~is',
+                    '',
+                    $html,
+                ) ?? $html;
+                if (preg_match('/<html\b/i', $html) !== 1) {
+                    $configuration = $page['resolved_page_plan']['configuration'] ?? [];
+                    $locale = is_array($configuration)
+                        ? ($configuration['locale'] ?? $configuration['default_locale'] ?? 'en')
+                        : 'en';
+                    $documentationVersion = is_array($configuration)
+                        ? ($configuration['documentation_version'] ?? 'current')
+                        : 'current';
+                    $html = '<!doctype html><html lang="'
+                        . htmlspecialchars((string) $locale, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+                        . '" data-docara-documentation-version="'
+                        . htmlspecialchars((string) $documentationVersion, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+                        . '"><head><meta name="docara:documentation-version" content="'
+                        . htmlspecialchars((string) $documentationVersion, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+                        . '"></head><body>' . $html . '</body></html>';
+                }
+                $plan = $frameworkAssetPlanner->planForHtml($html, []);
+                $frameworkAssetPlans[] = $plan;
+                $receipts[$output] = $plan->receipt();
+                $shellCssUrl = $plan->shellCssUrl();
+                self::assertIsString($shellCssUrl);
+                $frameworkHead = '<link rel="stylesheet" href="'
+                    . htmlspecialchars($shellCssUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+                    . '" data-docara-declarative-shell-style>'
+                    . $plan->headHtml();
+                file_put_contents(
+                    $build . '/' . $output,
+                    preg_replace('/<\/head>/i', $frameworkHead . '</head>', $html, 1),
+                );
+            }
+            ksort($receipts, SORT_STRING);
+            $manifest['build']['framework']['shell'] = [
+                'schema' => 'docara.framework_asset_plans.v1',
+                'mode' => 'production_exact',
+                'plans' => $receipts,
+            ];
+        }
         $this->filesystem->ensureDirectoryExists($build . '/.docara');
         $this->writeJson($build . '/.docara/resolved-page-plans.json', $manifest);
         $this->writeComponentCatalog($build);
         $requiredPortableAssets = $this->requiredPortableAssets($manifest['pages'] ?? []);
         $this->writeFrameworkAssets($build, $requiredPortableAssets);
-        (new PortablePublisherAssetPublisher($this->filesystem))->publish($build, $requiredPortableAssets);
+        (new PortablePublisherAssetPublisher($this->filesystem))->publish(
+            $build,
+            $requiredPortableAssets,
+            null,
+        );
+        if ($frameworkAssetPlans !== []) {
+            (new PortablePublisherAssetPublisher($this->filesystem))
+                ->publishFrameworkAssetPlans($build, $frameworkAssetPlans);
+        }
+    }
+
+    /** @param list<array<string, mixed>> $pages */
+    private function decorateSyntheticPagesWithFrameworkShell(
+        string $build,
+        array $pages,
+        FrameworkAssetPlan $plan,
+    ): void {
+        $shellCssUrl = $plan->shellCssUrl();
+        self::assertIsString($shellCssUrl);
+        $head = '<link rel="stylesheet" href="'
+            . htmlspecialchars($shellCssUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+            . '" data-docara-declarative-shell-style>' . $plan->headHtml();
+        foreach ($pages as $page) {
+            $output = $page['output'] ?? null;
+            if (! is_string($output) || $output === '') {
+                continue;
+            }
+            $path = $build . '/' . $output;
+            if (! is_file($path) || is_link($path)) {
+                continue;
+            }
+            $html = (string) file_get_contents($path);
+            if (str_contains($html, 'data-docara-declarative-shell-style')) {
+                continue;
+            }
+            file_put_contents($path, $head . $html);
+        }
     }
 
     private function writeComponentCatalog(string $build): void
@@ -1157,6 +1295,31 @@ final class StaticBuildVerifierTest extends TestCase
         if (! is_array($pages) || ! array_is_list($pages)) {
             return;
         }
+        $firstConfiguration = $pages[0]['resolved_page_plan']['configuration'] ?? null;
+        $firstLock = $pages[0]['resolved_page_plan']['framework_lock'] ?? null;
+        $fixturePlanner = null;
+        $firstBaseUrl = is_array($firstConfiguration) ? ($firstConfiguration['base_url'] ?? null) : null;
+        if (is_array($firstConfiguration)
+            && is_array($firstLock)
+            && is_string($firstBaseUrl)
+            && ($firstBaseUrl === '/'
+                || preg_match('#^/(?:[A-Za-z0-9._~-]+/)*[A-Za-z0-9._~-]+/?$#D', $firstBaseUrl) === 1)
+        ) {
+            $deploymentBase = ($firstConfiguration['base_url'] ?? '/') === '/'
+                ? ''
+                : '/' . trim((string) $firstConfiguration['base_url'], '/');
+            try {
+                $fixturePlanner = new FrameworkAssetPlanner(
+                    FrameworkManifestRepository::bundled(FrameworkLock::fromArray($firstLock)),
+                    $deploymentBase . '/_docara/framework',
+                );
+            } catch (\Throwable) {
+                // The verifier, rather than fixture normalization, owns the
+                // fail-closed diagnostic for intentionally malformed locks.
+            }
+        }
+        $fixturePlans = [];
+        $fixtureReceipts = [];
         foreach ($pages as $page) {
             if (! is_array($page) || ! is_string($page['output'] ?? null)) {
                 continue;
@@ -1171,9 +1334,16 @@ final class StaticBuildVerifierTest extends TestCase
                 continue;
             }
             $html = (string) file_get_contents($path);
-            if (preg_match('/<html\b/i', $html) === 1) {
-                continue;
-            }
+            $html = preg_replace(
+                '~<(?:script|style)\b[^>]*data-docara-framework-(?:asset|boot|preloaded-smart)\b[^>]*>.*?</(?:script|style)>~is',
+                '',
+                $html,
+            ) ?? $html;
+            $html = preg_replace(
+                '~<link\b[^>]*(?:data-docara-declarative-shell-style|data-docara-framework-asset)\b[^>]*>~is',
+                '',
+                $html,
+            ) ?? $html;
             $configuration = $page['resolved_page_plan']['configuration'] ?? [];
             $locale = is_array($configuration)
                 ? ($configuration['locale'] ?? $configuration['default_locale'] ?? 'en')
@@ -1181,15 +1351,39 @@ final class StaticBuildVerifierTest extends TestCase
             $documentationVersion = is_array($configuration)
                 ? ($configuration['documentation_version'] ?? 'current')
                 : 'current';
-            file_put_contents(
-                $path,
-                '<!doctype html><html lang="' . htmlspecialchars((string) $locale, ENT_QUOTES)
+            if (preg_match('/<html\b/i', $html) !== 1) {
+                $html = '<!doctype html><html lang="' . htmlspecialchars((string) $locale, ENT_QUOTES)
                 . '" data-docara-documentation-version="'
                 . htmlspecialchars((string) $documentationVersion, ENT_QUOTES)
                 . '"><head><meta name="docara:documentation-version" content="'
                 . htmlspecialchars((string) $documentationVersion, ENT_QUOTES)
-                . '"></head><body>' . $html . '</body></html>',
-            );
+                . '"></head><body>' . $html . '</body></html>';
+            }
+            if ($fixturePlanner instanceof FrameworkAssetPlanner) {
+                $plan = $fixturePlanner->planForHtml($html, []);
+                $shellCssUrl = $plan->shellCssUrl();
+                if (is_string($shellCssUrl)) {
+                    $frameworkHead = '<link rel="stylesheet" href="'
+                        . htmlspecialchars($shellCssUrl, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8')
+                        . '" data-docara-declarative-shell-style>'
+                        . $plan->headHtml();
+                    $html = preg_replace('/<\/head>/i', $frameworkHead . '</head>', $html, 1) ?? $html;
+                    $fixturePlans[] = $plan;
+                    $fixtureReceipts[(string) $page['output']] = $plan->receipt();
+                }
+            }
+            file_put_contents($path, $html);
+        }
+        if ($fixturePlans !== []) {
+            ksort($fixtureReceipts, SORT_STRING);
+            $manifest['build']['framework']['shell'] = [
+                'schema' => 'docara.framework_asset_plans.v1',
+                'mode' => 'production_exact',
+                'plans' => $fixtureReceipts,
+            ];
+            $this->writeJson($manifestPath, $manifest);
+            (new PortablePublisherAssetPublisher($this->filesystem))
+                ->publishFrameworkAssetPlans($build, $fixturePlans);
         }
     }
 

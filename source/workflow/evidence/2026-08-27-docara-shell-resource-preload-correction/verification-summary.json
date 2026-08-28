@@ -1,0 +1,65 @@
+{
+  "schema": "docara.workflow_verification.v1",
+  "workflow": "2026-08-27-docara-shell-resource-preload-correction",
+  "status": "pass",
+  "tests": {
+    "phpunit": {
+      "tests": 537,
+      "assertions": 11911,
+      "status": "pass"
+    },
+    "post_correction_regression": {
+      "tests": 74,
+      "assertions": 3789,
+      "status": "pass"
+    },
+    "docara_static": {
+      "source_pages": 127,
+      "html_pages": 261,
+      "local_references_checked": 34634,
+      "broken": []
+    },
+    "ui_doc_static": {
+      "source_pages": 912,
+      "html_pages": 1665,
+      "local_references_checked": 368128,
+      "broken": []
+    }
+  },
+  "browser": {
+    "desktop_header_first_px": 73,
+    "desktop_header_final_px": 73,
+    "mobile_header_first_px": 65,
+    "mobile_header_final_px": 65,
+    "maximum_live_cold_cls": 0.00321972085774561,
+    "warm_cls": 0,
+    "shell_layout_shift_sources": [],
+    "failed_requests": [],
+    "console_errors": [],
+    "duplicate_exact_resource_urls": []
+  },
+  "local_cutover": {
+    "site": "ui-doc.test",
+    "active_tree_sha256": "9812351a4b72fc48c4ad84f6599dab2ffdef08f2a270d8d1c8f7ffc8a26a3cb7",
+    "http_status": 200,
+    "browser_smoke": "pass",
+    "temporary_rollback_removed": true
+  },
+  "ui_doc_source_boundary": {
+    "head": "de9b5619d0a4ee91e692eb47d7c97fd6d5baee3f",
+    "composer_lock_sha256": "3c183032fb9dd67f096a5b5d88f0e948690cfb0281eb1ae64706b4752ca9649a",
+    "framework_lock_sha256": "0d0112c747824efa890759951161d5ef0acff2fcf4ab8d09cd7f4b1a2a99bff4",
+    "content_or_lock_written": false
+  },
+  "publication": {
+    "commit": false,
+    "push": false,
+    "tag": false,
+    "release": false,
+    "public_deploy": false
+  },
+  "project_context": {
+    "generated": true,
+    "issues": []
+  }
+}

@@ -1,0 +1,64 @@
+schema_version: 1.0.0
+workflow_id: 2026-08-28-docara-2-3-release-and-ui-doc-5-4
+process_model_id: release
+cycle_id: release_cycle
+state: repository_prepared
+owner_skill: docara
+companion_skills:
+  - docs
+  - tester
+  - ux
+  - dev
+  - ops
+  - sf5
+approved_by_user: true
+approval_note: User explicitly authorized the proposed stable Docara release, ui-doc Framework 5.4 integration, local verification, commits and pushes; public site deployment remains excluded.
+repository: /Users/rim/Documents/GitHub/docara
+branch: main
+base_revision: 8ab5bc48c251283c00f1de23ab4f04384a1021a3
+allowed_files:
+  - /Users/rim/Documents/GitHub/docara/**
+  - /Users/rim/Documents/GitHub/ui-doc/**
+  - /Users/rim/Sites/ui-doc.test/**
+  - /private/tmp/**
+allowed_actions:
+  - audit_and_finish_docara_release_candidate
+  - build_test_and_verify_docara
+  - commit_push_tag_and_publish_docara
+  - update_ui_doc_dependency_and_framework_lock
+  - correct_framework_version_wording
+  - build_verify_and_refresh_local_ui_doc_test
+  - commit_and_push_ui_doc
+forbidden_actions:
+  - public_documentation_deploy
+  - force_push_or_history_rewrite
+  - destructive_cleanup
+  - create_branch_or_worktree
+  - translate_documentation
+  - expose_or_commit_secrets
+required_gates:
+  - publication_check
+  - repo_hygiene_gate
+  - secret_safety_gate
+  - source_policy_gate
+  - release_readiness
+  - tester_acceptance
+  - local_site_rollback_and_smoke
+required_evidence:
+  - workflow
+  - dirty_baseline_inventory
+  - temporary_backup_and_rollback
+  - docara_release_verification
+  - release_publication_receipt
+  - ui_doc_dependency_and_content_audit
+  - ui_doc_static_and_browser_acceptance
+  - focused_commit_and_push_receipts
+evidence_path: source/workflow/evidence/2026-08-28-docara-2-3-release-and-ui-doc-5-4
+stop_conditions:
+  - unexplained_dirty_surface
+  - release_test_failure
+  - immutable_framework_5_4_contract_missing
+  - secret_or_access_ambiguity
+  - non_fast_forward_push
+  - tag_or_package_collision
+  - public_deployment_required

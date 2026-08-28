@@ -1,0 +1,11 @@
+track_id: "docara-prose-margin-collapse"
+status: "completed"
+owner_skill: "docara"
+current_goal: "Restore predictable vertical rhythm while preserving explicit non-zero content gaps."
+current_stage: ""
+current_workflow: "source/workflow/2026-08-27-docara-prose-margin-collapse.md"
+last_completed_batch: ""
+next_step: "explicit_user_decision"
+blockers: []
+related_tracks: []
+updated_at: "2026-08-27"

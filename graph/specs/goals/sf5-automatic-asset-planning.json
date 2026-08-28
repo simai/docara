@@ -1,0 +1,27 @@
+{
+  "id": "docara.goal.sf5_automatic_asset_planning",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "goal",
+  "tz_role": "primary_goal",
+  "title": "Automatic stable loading through the shared SIMAI Framework asset plan",
+  "summary": "Move exact first-frame planning into the existing Framework registry and Loader contract, then verify Docara as the first production consumer.",
+  "owner": "teamlead",
+  "lifecycle": "completed",
+  "readiness": "accepted",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-27-sf5-automatic-asset-planning.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-27-sf5-automatic-asset-planning/verification-summary.json"],
+  "profile_refs": ["docara.unified"],
+  "done_when": [
+    "Final HTML resolves exact Framework CSS, JavaScript and dependencies without a second registry.",
+    "No-build projects retain the dynamic Loader and existing developer connection contract.",
+    "Docara and ui-doc static and browser acceptance prove stable first-paint shell geometry."
+  ],
+  "scope": ["SIMAI Framework planner and runtime contracts", "Docara integration", "local ui-doc pilot"],
+  "non_goals": ["ui-doc content changes", "SPA router", "global skeleton", "commit", "push", "release", "public deployment"],
+  "stage_refs": ["docara.stage.sf5_automatic_asset_planning"],
+  "metric_refs": [],
+  "evidence_policy": ["Acceptance distinguishes first-paint layout shifts from normal full-document navigation."],
+  "status": "completed"
+}

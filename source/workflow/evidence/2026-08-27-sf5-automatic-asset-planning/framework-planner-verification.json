@@ -1,0 +1,27 @@
+{
+  "schema": "docara.framework_planner_verification.v1",
+  "date": "2026-08-27",
+  "framework_repository": "/Users/rim/Documents/GitHub/ui",
+  "planner": "scripts/plan-framework-assets.py",
+  "registry": "distr/rule/rule.json",
+  "tests": {
+    "command": "python3 -m unittest tests/framework-registry/test_framework_asset_planner.py",
+    "passed": 6,
+    "failed": 0
+  },
+  "compatibility": {
+    "sfPath": "unchanged",
+    "sfSmartPath": "unchanged",
+    "dynamic_loader": "retained",
+    "new_registry": false,
+    "required_project_configuration": false
+  },
+  "safety_cases": [
+    "invalid_regex",
+    "unknown_dependency",
+    "symlink",
+    "hardlink",
+    "unknown_explicit_requirement",
+    "head_and_code_sample_exclusion"
+  ]
+}

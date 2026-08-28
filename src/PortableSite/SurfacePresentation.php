@@ -64,7 +64,7 @@ final readonly class SurfacePresentation
             $backgroundUrl,
             $publishBackgroundAsset,
             '<div data-docara-container data-docara-content-width="container"',
-            'docara-surface__content relative container m-inline-auto grid grid-col-1 gap-4 items-center '
+            'docara-surface__content relative container m-inline-auto grid grid-col-1 gap-4 items-cross-center '
                 . $this->paddingClass($props['padding']),
         );
     }
@@ -106,7 +106,7 @@ final readonly class SurfacePresentation
         return '<section data-docara-block="' . $semanticBlock . '"' . $variantAttribute
             . ' data-docara-width="full" class="' . $surfaceClass . ' overflow-hidden m-bottom-1">'
             . '<div data-docara-container class="container m-inline-auto grid ' . $columns
-            . ' gap-4 items-center ' . $paddingClass . '">' . $content . $media . '</div></section>';
+            . ' gap-4 items-cross-center ' . $paddingClass . '">' . $content . $media . '</div></section>';
     }
 
     private function toneClass(string $tone): string

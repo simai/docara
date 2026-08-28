@@ -8,11 +8,11 @@
         "graph/specs/goals/unified-docara.json",
         "graph/specs/stages/lfr-local-framework-runtime.json",
         "graph/specs/batches/lfr-integrated-retest.json",
-        "graph/specs/goals/page-authoring-sdk.json",
-        "graph/specs/stages/page-authoring-sdk.json",
-        "graph/specs/batches/page-authoring-sdk.json"
+        "graph/specs/goals/sf5-automatic-asset-planning.json",
+        "graph/specs/stages/sf5-automatic-asset-planning.json",
+        "graph/specs/batches/sf5-automatic-asset-planning.json"
     ],
-    "canonical_sha256": "1557a752d0b45137996a047f39f749c8476f798eb31a0a23b2afd46a63f015e7",
+    "canonical_sha256": "17748957b4bfc1ebbf18d5e1ccce181ae16bb64bbfb287e60731a3ae285627ba",
     "project": {
         "id": "docara.unified",
         "title": "Docara Unified Architecture Graph",
@@ -36,13 +36,13 @@
     },
     "last_bounded_work": {
         "state": "completed",
-        "goal": "docara.goal.page_authoring_sdk",
-        "stage": "docara.stage.page_authoring_sdk",
-        "batch": "docara.batch.page_authoring_sdk",
-        "workflow": "source/workflow/2026-08-26-page-authoring-sdk.md",
-        "evidence": "source/workflow/evidence/2026-08-26-page-authoring-sdk/verification-summary.json",
-        "next_action": "none",
-        "release_authorized": false
+        "goal": "docara.goal.sf5_automatic_asset_planning",
+        "stage": "docara.stage.sf5_automatic_asset_planning",
+        "batch": "docara.batch.sf5_automatic_asset_planning",
+        "workflow": "source/workflow/2026-08-27-sf5-automatic-asset-planning.md",
+        "evidence": "source/workflow/evidence/2026-08-27-sf5-automatic-asset-planning/verification-summary.json",
+        "next_action": "publish_v2.3.0_and_update_ui_doc",
+        "release_authorized": true
     },
     "roadmap": {
         "source": "source/workflow/2026-08-09-docara-terminal-governance-sync.md"

@@ -1,0 +1,11 @@
+track_id: "docara-shell-resource-preload-correction"
+status: "completed"
+owner_skill: "teamlead"
+current_goal: "Keep the Docara shell stable from first paint through Framework readiness"
+current_stage: ""
+current_workflow: "source/workflow/2026-08-27-docara-shell-resource-preload-correction.md"
+last_completed_batch: "C5-local-publication"
+next_step: "explicit_user_decision"
+blockers: []
+related_tracks: []
+updated_at: "2026-08-27"

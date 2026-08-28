@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="vendor/autoload.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.0/phpunit.xsd" cacheDirectory=".phpunit.cache">
   <php>
-    <ini name="memory_limit" value="256M"/>
+    <ini name="memory_limit" value="1G"/>
   </php>
   <testsuites>
     <testsuite name="Docara Tests">

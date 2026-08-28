@@ -1,4 +1,9 @@
 tracks:
+  docara-native-view-transitions:
+    status: "proposed"
+    owner_skill: "docara"
+    current_workflow: "source/workflow/2026-08-28-docara-native-view-transitions-plan.md"
+    last_updated: "2026-08-28"
   docara-2-1-release-and-ui-doc-update:
     status: "completed"
     owner_skill: "docara"
@@ -21,11 +26,31 @@ tracks:
     last_updated: "2026-08-26"
   docara-project-technology:
     status: "completed"
-    owner_skill: "graph"
-    current_workflow: "source/workflow/2026-08-09-docara-project-technology-mode.md"
-    last_updated: "2026-08-09"
+    owner_skill: "teamlead"
+    current_workflow: "source/workflow/2026-08-27-sf5-automatic-asset-planning.md"
+    last_updated: "2026-08-28"
+  docara-prose-margin-collapse:
+    status: "completed"
+    owner_skill: "docara"
+    current_workflow: "source/workflow/2026-08-27-docara-prose-margin-collapse.md"
+    last_updated: "2026-08-27"
+  docara-shell-resource-preload-correction:
+    status: "completed"
+    owner_skill: "teamlead"
+    current_workflow: "source/workflow/2026-08-27-docara-shell-resource-preload-correction.md"
+    last_updated: "2026-08-27"
+  docara-stable-shell-loading:
+    status: "completed_superseded_routing"
+    owner_skill: "teamlead"
+    current_workflow: "source/workflow/2026-08-27-docara-stable-shell-loading.md"
+    last_updated: "2026-08-27"
   docara-unified:
     status: "completed"
     owner_skill: "docara"
     current_workflow: "source/workflow/2026-08-25-framework-aware-example.md"
     last_updated: "2026-08-25"
+  release:
+    status: "completed_without_release"
+    owner_skill: "teamlead"
+    current_workflow: "source/workflow/2026-08-27-sf5-automatic-asset-planning.md"
+    last_updated: "2026-08-28"

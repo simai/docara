@@ -54,13 +54,13 @@
     },
     "last_bounded_work": {
       "state": "completed",
-      "goal": "docara.goal.page_authoring_sdk",
-      "stage": "docara.stage.page_authoring_sdk",
-      "batch": "docara.batch.page_authoring_sdk",
-      "workflow": "source/workflow/2026-08-26-page-authoring-sdk.md",
-      "evidence": "source/workflow/evidence/2026-08-26-page-authoring-sdk/verification-summary.json",
-      "next_action": "none",
-      "release_authorized": false
+      "goal": "docara.goal.sf5_automatic_asset_planning",
+      "stage": "docara.stage.sf5_automatic_asset_planning",
+      "batch": "docara.batch.sf5_automatic_asset_planning",
+      "workflow": "source/workflow/2026-08-27-sf5-automatic-asset-planning.md",
+      "evidence": "source/workflow/evidence/2026-08-27-sf5-automatic-asset-planning/verification-summary.json",
+      "next_action": "publish_v2.3.0_and_update_ui_doc",
+      "release_authorized": true
     }
   },
   "historical_context": {

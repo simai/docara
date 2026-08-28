@@ -14,15 +14,20 @@
 3. Один раз скомпилировать Markdown и Smart-вызовы в типизированный `DocumentIr`
    в памяти.
 4. Разрешить `Layout -> Region -> Section -> Block -> Smart`.
-5. Построить маршруты, каноническую топологию и asset plan.
+5. Построить маршруты и каноническую топологию.
 6. Получить из одной топологии видимое меню, breadcrumbs и previous/next.
 7. Отрендерить содержимое через единый registry/Smart gateway, а regions —
    через зарегистрированные templates и immutable view models.
 8. Построить производные индекс, меню, breadcrumbs, outline, previous/next,
    search и эффективный machine-readable каталог из результатов PageBuilder.
-9. Собрать полный документ через зарегистрированный publisher template.
-10. Записать кандидатный HTML, общие shell assets, search index, receipts и plans.
-11. Только после полного успеха транзакционно заменить действующий `build_*`.
+9. Собрать кандидатный полный документ через зарегистрированный publisher
+   template и передать его общему Framework Asset Planner.
+10. По существующему Loader registry определить точные CSS/JS и зависимости
+    первого кадра, повторно собрать документ с этим планом и проверить его
+    устойчивость по финальному HTML.
+11. Записать HTML, content-hashed CSS, отдельные Framework receipts страниц,
+    search index и остальные plans.
+12. Только после полного успеха транзакционно заменить действующий `build_*`.
 
 :::
 

@@ -35,7 +35,7 @@ final readonly class FrameworkAdmissionPreflight
                     continue;
                 }
                 $assetKey = (string) ($asset['key'] ?? '');
-                if (! isset($plannedAssets[$assetKey]) && ! isset($omittedAssets[$assetKey])) {
+                if (! $this->isPlanned($assetKey, $plannedAssets) && ! isset($omittedAssets[$assetKey])) {
                     throw new FrameworkComponentException(
                         'FRAMEWORK_CRITICAL_ASSET_UNACCOUNTED',
                         $key . ':' . $assetKey,
@@ -78,6 +78,19 @@ final readonly class FrameworkAdmissionPreflight
                 );
             }
         }
+    }
+
+    /** @param array<string, true> $plannedAssets */
+    private function isPlanned(string $assetKey, array $plannedAssets): bool
+    {
+        if (isset($plannedAssets[$assetKey])) {
+            return true;
+        }
+        if (preg_match('/^simai\.framework\.(sf_[a-z0-9_]+)\.js$/D', $assetKey, $matches) !== 1) {
+            return false;
+        }
+
+        return isset($plannedAssets['simai.framework.preloaded.' . $matches[1] . '.js']);
     }
 
     /** @param array<string, mixed> $manifest @param array<string, mixed> $props */

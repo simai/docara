@@ -22,6 +22,17 @@
     "src/Declarative/DeclarativePageCompiler.php#DeclarativePageCompiler",
     "src/Declarative/Composition/RegionCompositionResolver.php#RegionCompositionResolver",
     "src/Design/Registry/DesignRegistry.php#DesignRegistry",
+    "resources/publisher/templates/page.php",
+    "resources/publisher/components/mobile-navigation.php",
+    "resources/portable/declarative-shell.css",
+    "resources/portable/declarative-shell.js",
+    "src/Framework/FrameworkAssetPlanner.php",
+    "src/Framework/FrameworkAssetPlan.php",
+    "src/Framework/FrameworkManifestRepository.php",
+    "src/PortableSite/DeclarativePortablePagePublisher.php",
+    "src/PortableSite/PortablePublisherAssetPublisher.php",
+    "src/PortableSite/PortableMarkdownRenderer.php",
+    "scripts/verify-static-build.php",
     "resources/schemas/declarative-section.schema.json",
     "resources/smart/docara.navigation/manifest.json"
   ],
@@ -30,21 +41,36 @@
     "tests/Unit/DeclarativeViewCompositionTest.php",
     "tests/Unit/ProjectDesignCompositionTest.php",
     "tests/Unit/PreviewKernelTest.php",
-    "tests/Unit/DeveloperDiscoveryCommandTest.php"
+    "tests/Unit/DeveloperDiscoveryCommandTest.php",
+    "tests/PortableSiteBuilderTest.php",
+    "tests/Unit/FrameworkTypographyProjectionTest.php",
+    "tests/Unit/StaticBuildVerifierTest.php"
   ],
   "evidence_refs": [
     "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A0-CONTRACT-AND-BASELINE.md",
     "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A1-BINDING-REGISTRY.md",
     "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A2-NAVIGATION-VARIANTS.md",
     "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A3-PROJECT-SHELL.md",
-    "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A4-INTEGRATED-ACCEPTANCE.md"
+    "source/workflow/evidence/2026-08-04-docara-content-design-settings-goal-a/A4-INTEGRATED-ACCEPTANCE.md",
+    "source/workflow/evidence/2026-08-27-docara-prose-margin-collapse/verification-summary.json",
+    "source/workflow/evidence/2026-08-27-docara-stable-shell-loading/verification-summary.json",
+    "source/workflow/evidence/2026-08-27-sf5-automatic-asset-planning/INDEX.md",
+    "source/workflow/evidence/2026-08-27-sf5-automatic-asset-planning/verification-summary.json"
   ],
   "review_refs": ["docara.gate.architecture_acceptance"],
   "current_behavior": [
     "One typed provider-owned BindingRegistry resolves built-ins with provenance, capabilities and schemas.",
     "docara.navigation owns header, tree and compact Views through one Gateway and composition path.",
     "Project design artifacts contribute shell content through admitted capabilities without engine source edits.",
-    "Default runtime output is preserved; only two intentional documentation pages and their derived search/provenance files differ."
+    "The default zero-gap prose surface uses normal block flow so adjacent Markdown margins collapse, while non-zero content gaps retain the explicit flex stack.",
+    "Default shell topology and presentation IDs remain stable; the verified zero-gap fix intentionally changes prose article classes without changing routes or content ownership.",
+    "The shell is kept visible throughout Framework readiness, mobile documentation navigation is hydrated on first open, and static navigation is excluded from dynamic utility discovery.",
+    "FrameworkAssetPlanner derives exact critical shell dependencies from the package-owned runtime lock, emits one content-hashed CSS asset and declares only fully materialized modules through SF_PRELOADED.",
+    "verify-static independently recomputes the shell receipt and validates the generated asset, preload marker and JavaScript dependency order on authored pages.",
+    "The active outlined Material Symbols font and RU/EN Inter subsets are preloaded from exact local projections; optional rounded or sharp variants remain demand-loaded.",
+    "Fenced code renders a language-labelled geometry fallback that is replaced by the Framework highlighter without changing the block height.",
+    "The shared Framework Asset Planner derives first-frame resources from final HTML and the existing rule registry; no-build projects retain dynamic Loader behavior.",
+    "Undefined Framework icon hosts reserve their final geometry, and Menu hydration reuses server-rendered text so registration does not introduce a flex gap."
   ],
   "known_deviations": [],
   "deletion_gates": [

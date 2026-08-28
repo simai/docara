@@ -1,8 +1,8 @@
 project_id: "docara-unified"
-updated_at: "2026-08-26"
-status: "docara_terminal_no_active_implementation"
-primary_goal: "No active implementation task."
+updated_at: "2026-08-28"
+status: "completed"
+primary_goal: "No active implementation task; common SF5 automatic asset planning is complete and an optional View Transition pilot is available for explicit approval."
 active_tracks: []
-current_focus: "Docara 2.2.0 is published through Git/Composer and ui-doc.test uses the verified build."
+current_focus: ""
 important_blockers: []
 next_global_step: "explicit_user_decision"

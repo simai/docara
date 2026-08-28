@@ -49,6 +49,10 @@ final class VerifyStaticCommand extends Command
             $script,
             (string) $this->input->getArgument('directory'),
         ], $this->base);
+        // Large documentation trees can legitimately require more than
+        // Symfony Process' 60-second default while checking every local
+        // reference and rebuilding every page asset plan.
+        $process->setTimeout(600);
         $process->run(function (string $type, string $buffer): void {
             $target = $type === Process::ERR && $this->output instanceof ConsoleOutputInterface
                 ? $this->output->getErrorOutput()

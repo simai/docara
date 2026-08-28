@@ -1,0 +1,35 @@
+{
+  "schema": "docara.prose_margin_collapse.v1",
+  "date": "2026-08-27",
+  "status": "passed",
+  "repository_head": "8ab5bc48c251283c00f1de23ab4f04384a1021a3",
+  "contract": {
+    "zero_gap": "normal_block_flow",
+    "nonzero_gap": "explicit_flex_column_with_framework_gap"
+  },
+  "browser_measurement": {
+    "route": "https://ui-doc.test/ru/utilities/background/background-attachment/",
+    "article_class": "docara-prose min-w-0",
+    "article_display": "block",
+    "previous_element": "P",
+    "previous_margin_bottom_px": 12,
+    "heading_margin_top_px": 24,
+    "physical_gap_px": 24,
+    "expected_collapsed_gap_px": 24
+  },
+  "tests": {
+    "focused_portable_site": {"tests": 2, "assertions": 641, "status": "passed"},
+    "framework_native_surface": {"tests": 8, "assertions": 72, "status": "passed"}
+  },
+  "builds": {
+    "docara_docs": {"source_pages": 127, "html_pages": 261, "references": 32983, "broken": 0},
+    "ui_doc": {"source_pages": 912, "html_pages": 1665, "references": 356272, "broken": 0}
+  },
+  "publication": {
+    "commit": false,
+    "push": false,
+    "tag": false,
+    "release": false,
+    "public_deploy": false
+  }
+}

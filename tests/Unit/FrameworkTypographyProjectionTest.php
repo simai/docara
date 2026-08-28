@@ -14,6 +14,61 @@ use Simai\Docara\Framework\FrameworkManifestRepository;
 final class FrameworkTypographyProjectionTest extends TestCase
 {
     #[Test]
+    public function known_same_runtime_projection_is_upgraded_without_editing_the_project_lock(): void
+    {
+        $path = dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json';
+        $current = FrameworkLock::fromJsonFile($path)->toArray();
+        $legacy = $current;
+        $legacy['runtime_projection']['packet_sha256'] = '790b8014c4c1a0853e6a0650f30e0b4f33ab3b428f878b0fa010faf0c3f449c0';
+        $legacy['runtime_projection']['files'] = 117;
+        $legacy['runtime_projection']['manifest']['sha256'] = '8c917f69a678df084260ded24c5e39e78aaa4fc12c317bf98afaf11ee2a29a8e';
+
+        $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($legacy));
+        self::assertSame(823, $repository->runtimeProjection()['files']);
+        self::assertArrayHasKey('rule/rule.json', $repository->runtimeManifest()['files']);
+        self::assertSame(117, $legacy['runtime_projection']['files']);
+
+        $legacy['runtime_projection']['packet_sha256'] = str_repeat('f', 64);
+        $this->expectException(FrameworkComponentException::class);
+        $this->expectExceptionMessage('FRAMEWORK_RUNTIME_MANIFEST_HASH_MISMATCH');
+        FrameworkManifestRepository::bundled(FrameworkLock::fromArray($legacy));
+    }
+
+    #[Test]
+    public function known_typography_projection_is_upgraded_to_metric_fallback_without_editing_project_lock(): void
+    {
+        $path = dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json';
+        $current = FrameworkLock::fromJsonFile($path)->toArray();
+        $legacy = $current;
+        $legacy['typography_projection']['packet_sha256'] = 'd20a0ce7d97bbb3e9502236fa3cb73acd7ca3d74b2559a3120ea3496a4c98dad';
+        $legacy['typography_projection']['files']['core']['sha256'] = '9c235fbdd02246def279e710bd92ee3c6fed4c3dcdcc859f0ebf9ab73afb20af';
+
+        $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($legacy));
+        $projection = $repository->typographyProjection();
+        self::assertSame(
+            $current['typography_projection']['packet_sha256'],
+            $projection['packet_sha256'],
+        );
+        self::assertSame(
+            $current['typography_projection']['files']['core']['sha256'],
+            $projection['files']['core']['sha256'],
+        );
+        self::assertStringContainsString(
+            'font-family: "Inter Fallback"',
+            $repository->bundledTypographyAsset('core'),
+        );
+        self::assertSame(
+            'd20a0ce7d97bbb3e9502236fa3cb73acd7ca3d74b2559a3120ea3496a4c98dad',
+            $legacy['typography_projection']['packet_sha256'],
+        );
+
+        $legacy['typography_projection']['files']['core']['sha256'] = str_repeat('f', 64);
+        $this->expectException(FrameworkComponentException::class);
+        $this->expectExceptionMessage('FRAMEWORK_TYPOGRAPHY_ASSET_HASH_MISMATCH');
+        FrameworkManifestRepository::bundled(FrameworkLock::fromArray($legacy));
+    }
+
+    #[Test]
     public function exact_projections_publish_typography_and_framework_runtime_locally(): void
     {
         $lock = FrameworkLock::fromJsonFile(dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json');
@@ -21,11 +76,11 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $projection = $repository->typographyProjection();
 
         self::assertIsArray($projection);
-        self::assertSame('5.4.0-rc.1', $projection['candidate']);
-        self::assertSame('41cc7e01a3616bf245bf054917033397684d2093', $projection['source']['revision']);
+        self::assertSame('5.4.0', $projection['candidate']);
+        self::assertSame('c94a214fb727f0468863d10a94d4388e0f111852', $projection['source']['revision']);
         self::assertSame('367b3423f9707b850c6bef9476ab8d1ed44039e1', $projection['builder']['revision']);
-        self::assertSame('2b2e6ea88ac5f30dc0c90c61104506e6c9541108', $projection['distribution']['revision']);
-        self::assertFalse($projection['distribution']['published']);
+        self::assertSame('b2e8444659ae0d213296c2d349257259d3ed0c9c', $projection['distribution']['revision']);
+        self::assertTrue($projection['distribution']['published']);
 
         self::assertCount(10, $projection['files']);
         foreach (array_keys($projection['files']) as $key) {
@@ -37,6 +92,30 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $plan = (new FrameworkAssetPlanner($repository, '/_docara/framework'))->plan([]);
         $assets = array_column($plan->assets, null, 'key');
+        self::assertCount(1, $plan->generatedAssets);
+        $shell = $plan->generatedAssets[0];
+        self::assertMatchesRegularExpression('/^docara-shell\.[a-f0-9]{64}\.css$/D', $shell['filename']);
+        self::assertSame('/_docara/' . $shell['filename'], $shell['url']);
+        self::assertSame($shell['sha256'], hash('sha256', $shell['content']));
+        self::assertStringContainsString('docara-shell-source: portable/declarative-shell.css', $shell['content']);
+        self::assertSame('static_shell', $plan->preload['mode']);
+        self::assertContains('cl-buttons', $plan->preload['modules']);
+        self::assertContains('cl-icons', $plan->preload['modules']);
+        self::assertContains('cl-modal', $plan->preload['modules']);
+        self::assertStringContainsString('window.SF_PRELOADED=', $plan->headHtml());
+        $assetKeys = array_column($plan->assets, 'key');
+        self::assertLessThan(
+            array_search('simai.framework.preloaded.component.buttons.js', $assetKeys, true),
+            array_search('simai.framework.smart_base.js', $assetKeys, true),
+        );
+        self::assertLessThan(
+            array_search('simai.framework.preloaded.sf_button.js', $assetKeys, true),
+            array_search('simai.framework.preloaded.component.buttons.js', $assetKeys, true),
+        );
+        self::assertLessThan(
+            array_search('simai.framework.core.js', $assetKeys, true),
+            array_search('simai.framework.preloaded.sf_modal.js', $assetKeys, true),
+        );
         foreach (['simai.framework.core.css' => 'core', 'simai.framework.utility.full.css' => 'utility'] as $assetKey => $fileKey) {
             self::assertStringStartsWith('/' . $projection['files'][$fileKey]['public'] . '?sf_v=', $assets[$assetKey]['url']);
             self::assertSame($projection['files'][$fileKey]['sha256'], $assets[$assetKey]['sha256']);
@@ -44,9 +123,10 @@ final class FrameworkTypographyProjectionTest extends TestCase
         }
         $runtime = $repository->runtimeProjection();
         self::assertIsArray($runtime);
-        self::assertSame(117, $runtime['files']);
+        self::assertSame(823, $runtime['files']);
         $runtimeFiles = $repository->runtimeManifest()['files'];
-        self::assertCount(117, $runtimeFiles);
+        self::assertCount(823, $runtimeFiles);
+        self::assertArrayHasKey('rule/rule.json', $runtimeFiles);
         self::assertArrayHasKey('utility/theme/default/css/default.css', $runtimeFiles);
         self::assertArrayHasKey('component/highlight/js/156256801485311.js', $runtimeFiles);
         self::assertArrayHasKey('component/highlight/js/22635021162243.js', $runtimeFiles);
@@ -56,14 +136,14 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertStringNotContainsString('.min.', $relativePath);
         }
         self::assertSame(
-            '790b8014c4c1a0853e6a0650f30e0b4f33ab3b428f878b0fa010faf0c3f449c0',
+            '9be0219fa97ec48ad6b60fa18e3a8c6786895d704460144a3e9e19206cb6dd84',
             $runtime['packet_sha256'],
         );
         self::assertStringContainsString('/_docara/vendor/simai-framework/runtime/', $assets['simai.framework.boot']['content']);
         self::assertStringNotContainsString('cdn.jsdelivr.net', $assets['simai.framework.boot']['content']);
         foreach (['simai.framework.smart_base.js', 'simai.framework.core.js'] as $assetKey) {
             self::assertStringStartsWith('/_docara/vendor/simai-framework/runtime/', $assets[$assetKey]['url']);
-            self::assertSame('d1daa951dd08b94a9f209fd9f31a78d2b3779563', $assets[$assetKey]['source_revision']);
+            self::assertSame('b2e8444659ae0d213296c2d349257259d3ed0c9c', $assets[$assetKey]['source_revision']);
             self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $assets[$assetKey]['sha256']);
         }
         self::assertStringContainsString(
@@ -120,22 +200,49 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $assets['simai.framework.icon_font.css']['content'],
         );
         self::assertStringContainsString(
-            '["Material Symbols Outlined","Material Symbols Rounded","Material Symbols Sharp"]',
+            '{rounded:"Material Symbols Rounded",shape:"Material Symbols Sharp"}',
             $assets['simai.framework.icon_font.ready']['content'],
         );
-        self::assertStringContainsString('.sf-icon:not(.sf-icon-loaded)', $assets['simai.framework.icon_font.ready']['content']);
+        self::assertStringContainsString('function family(icon)', $assets['simai.framework.icon_font.ready']['content']);
+        self::assertStringNotContainsString(
+            '["Material Symbols Outlined","Material Symbols Rounded","Material Symbols Sharp"].map',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
         foreach ($plan->assets as $asset) {
             self::assertStringNotContainsString('cdn.jsdelivr.net', (string) ($asset['url'] ?? '') . (string) ($asset['content'] ?? ''));
         }
 
+        $productionPlan = (new FrameworkAssetPlanner($repository, '/_docara/framework'))->planForHtml(
+            '<main class="flex p-1"><sf-button>Save</sf-button></main>',
+            [],
+        );
+        self::assertSame('production_exact', $productionPlan->preload['mode']);
+        self::assertSame('simai.framework.asset_plan.v1', $productionPlan->preload['schema']);
+        self::assertContains('display/default', $productionPlan->preload['modules']);
+        self::assertContains('padding/default', $productionPlan->preload['modules']);
+        self::assertContains('cl-buttons', $productionPlan->preload['modules']);
+        self::assertContains('pointer-events/default', $productionPlan->preload['modules']);
+        self::assertContains('text-align/default', $productionPlan->preload['modules']);
+        self::assertNotContains('simai.framework.utility.full.css', array_column($productionPlan->assets, 'key'));
+        self::assertStringContainsString(
+            'docara-shell-source: runtime/utility/display/default/css/default.css',
+            $productionPlan->generatedAssets[0]['content'],
+        );
+
+        $bodyPlan = (new FrameworkAssetPlanner($repository, '/_docara/framework'))->planForHtml(
+            '<!doctype html><html><body class="max-container-7"><main>Content</main></body></html>',
+            [],
+        );
+        self::assertContains('max-container/default', $bodyPlan->preload['modules']);
+
         $nested = (new FrameworkAssetPlanner($repository, '/project~/docs/_docara/framework'))->plan([]);
         $nestedAssets = array_column($nested->assets, null, 'key');
         self::assertStringStartsWith(
-            '/project~/docs/_docara/vendor/simai-framework/typography/5.4.0-rc.1/core.css?sf_v=',
+            '/project~/docs/_docara/vendor/simai-framework/typography/5.4.0/core.css?sf_v=',
             $nestedAssets['simai.framework.core.css']['url'],
         );
         self::assertStringStartsWith(
-            '/project~/docs/_docara/vendor/simai-framework/runtime/d1daa951dd08b94a9f209fd9f31a78d2b3779563/distr/core/js/core.js?sf_v=',
+            '/project~/docs/_docara/vendor/simai-framework/runtime/b2e8444659ae0d213296c2d349257259d3ed0c9c/distr/core/js/core.js?sf_v=',
             $nestedAssets['simai.framework.core.js']['url'],
         );
     }
@@ -144,7 +251,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
     public function changed_projected_bytes_fail_before_render(): void
     {
         [$root, $lock] = $this->fixture();
-        file_put_contents($root . '/resources/portable/vendor/simai-framework/typography/5.4.0-rc.1/core.css', 'changed');
+        file_put_contents($root . '/resources/portable/vendor/simai-framework/typography/5.4.0/core.css', 'changed');
 
         try {
             new FrameworkManifestRepository($lock, $root . '/resources/framework');
@@ -161,7 +268,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
     {
         foreach (['symlink', 'hardlink'] as $attack) {
             [$root, $lock] = $this->fixture();
-            $core = $root . '/resources/portable/vendor/simai-framework/typography/5.4.0-rc.1/core.css';
+            $core = $root . '/resources/portable/vendor/simai-framework/typography/5.4.0/core.css';
             $outside = $root . '/outside.css';
             file_put_contents($outside, file_get_contents($core));
             unlink($core);
@@ -183,7 +290,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
     {
         [$root, $lock] = $this->fixture();
         $core = $root . '/resources/portable/vendor/simai-framework/runtime/'
-            . 'd1daa951dd08b94a9f209fd9f31a78d2b3779563/distr/core/js/core.js';
+            . 'b2e8444659ae0d213296c2d349257259d3ed0c9c/distr/core/js/core.js';
         file_put_contents($core, 'changed');
 
         try {
@@ -220,7 +327,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         foreach (['symlink', 'hardlink'] as $attack) {
             [$root, $lock] = $this->fixture();
             $core = $root . '/resources/portable/vendor/simai-framework/runtime/'
-                . 'd1daa951dd08b94a9f209fd9f31a78d2b3779563/distr/core/js/core.js';
+                . 'b2e8444659ae0d213296c2d349257259d3ed0c9c/distr/core/js/core.js';
             $outside = $root . '/outside.js';
             file_put_contents($outside, file_get_contents($core));
             unlink($core);
@@ -237,13 +344,120 @@ final class FrameworkTypographyProjectionTest extends TestCase
         }
     }
 
+    #[Test]
+    public function older_locks_without_loader_metadata_use_the_package_owned_contract(): void
+    {
+        [$root] = $this->fixture();
+        $lock = json_decode(
+            (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        foreach (FrameworkAssetPlanner::DOCARA_SHELL_RUNTIME_TAGS as $tag) {
+            unset($lock['runtime']['components'][$tag]['loader']);
+        }
+
+        try {
+            $plan = (new FrameworkAssetPlanner(
+                new FrameworkManifestRepository(FrameworkLock::fromArray($lock), $root . '/resources/framework'),
+                '/_docara/framework',
+            ))->plan([]);
+            self::assertSame('static_shell', $plan->preload['mode']);
+            self::assertSame([], $plan->diagnostics);
+            self::assertStringContainsString('window.SF_PRELOADED=', $plan->headHtml());
+            self::assertArrayNotHasKey('simai.framework.sf_icon.js', array_column($plan->assets, null, 'key'));
+            self::assertCount(1, $plan->generatedAssets);
+        } finally {
+            $this->removeFixture($root);
+        }
+    }
+
+    #[Test]
+    public function runtimes_without_any_shell_metadata_keep_the_dynamic_fallback(): void
+    {
+        [$root] = $this->fixture();
+        $lock = json_decode(
+            (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        unset($lock['runtime']['shell']);
+        foreach (FrameworkAssetPlanner::DOCARA_SHELL_RUNTIME_TAGS as $tag) {
+            unset($lock['runtime']['components'][$tag]['loader']);
+        }
+        $bundledRuntime = $lock['runtime'];
+        file_put_contents(
+            $root . '/resources/framework/runtime-lock.json',
+            json_encode($bundledRuntime, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR) . "\n",
+        );
+
+        try {
+            $plan = (new FrameworkAssetPlanner(
+                new FrameworkManifestRepository(FrameworkLock::fromArray($lock), $root . '/resources/framework'),
+                '/_docara/framework',
+            ))->plan([]);
+            self::assertSame('dynamic_fallback', $plan->preload['mode']);
+            self::assertSame('FRAMEWORK_SHELL_PRELOAD_METADATA_MISSING', $plan->diagnostics[0]['code']);
+            self::assertStringNotContainsString('window.SF_PRELOADED=', $plan->headHtml());
+        } finally {
+            $this->removeFixture($root);
+        }
+    }
+
+    #[Test]
+    public function changed_loader_metadata_and_unsafe_shell_sources_fail_closed(): void
+    {
+        [$root] = $this->fixture();
+        $lock = json_decode(
+            (string) file_get_contents(dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $lock['runtime']['components']['sf-icon']['loader']['plugin'] = 'cl-forged';
+        try {
+            new FrameworkManifestRepository(FrameworkLock::fromArray($lock), $root . '/resources/framework');
+            self::fail('Changed loader metadata was admitted.');
+        } catch (FrameworkComponentException $exception) {
+            self::assertSame('FRAMEWORK_RUNTIME_PROJECTION_MISMATCH', $exception->errorCode);
+        } finally {
+            $this->removeFixture($root);
+        }
+
+        foreach (['symlink', 'hardlink'] as $attack) {
+            [$root, $exactLock] = $this->fixture();
+            $shell = $root . '/resources/portable/declarative-shell.css';
+            $outside = $root . '/outside-shell.css';
+            file_put_contents($outside, file_get_contents($shell));
+            unlink($shell);
+            $attack === 'symlink' ? symlink($outside, $shell) : link($outside, $shell);
+            try {
+                (new FrameworkAssetPlanner(
+                    new FrameworkManifestRepository($exactLock, $root . '/resources/framework'),
+                    '/_docara/framework',
+                ))->plan([]);
+                self::fail(ucfirst($attack) . ' shell CSS was admitted.');
+            } catch (FrameworkComponentException $exception) {
+                self::assertSame('FRAMEWORK_PORTABLE_ASSET_UNSAFE', $exception->errorCode);
+            } finally {
+                $this->removeFixture($root);
+            }
+        }
+    }
+
     /** @return array{string, FrameworkLock} */
     private function fixture(): array
     {
         $root = sys_get_temp_dir() . '/docara-typography-' . bin2hex(random_bytes(8));
         $resources = $root . '/resources';
         mkdir($resources . '/framework', 0777, true);
-        mkdir($resources . '/portable/vendor/simai-framework/typography/5.4.0-rc.1', 0777, true);
+        mkdir($resources . '/portable/vendor/simai-framework/typography/5.4.0', 0777, true);
+        copy(
+            dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css',
+            $resources . '/portable/declarative-shell.css',
+        );
         copy(dirname(__DIR__, 2) . '/resources/framework/runtime-lock.json', $resources . '/framework/runtime-lock.json');
         $lock = FrameworkLock::fromJsonFile(dirname(__DIR__, 2) . '/docs/site/simai-framework.lock.json');
         foreach ($lock->typographyProjection()['files'] as $record) {
@@ -275,6 +489,14 @@ final class FrameworkTypographyProjectionTest extends TestCase
         foreach ($lock->iconProjection()['files'] as $record) {
             $source = dirname(__DIR__, 2) . '/resources/' . $record['path'];
             $target = $resources . '/' . $record['path'];
+            if (! is_dir(dirname($target))) {
+                mkdir(dirname($target), 0777, true);
+            }
+            copy($source, $target);
+        }
+        foreach (array_keys($lock->assetProjection()['files']) as $relativePath) {
+            $source = dirname(__DIR__, 2) . '/resources/framework/assets/' . $relativePath;
+            $target = $resources . '/framework/assets/' . $relativePath;
             if (! is_dir(dirname($target))) {
                 mkdir(dirname($target), 0777, true);
             }

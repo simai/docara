@@ -2,6 +2,45 @@
 
 All notable changes to Docara are documented in this file.
 
+## [Unreleased]
+
+## [2.3.0] - 2026-08-29
+
+### Fixed
+
+- Docara now consumes the common SIMAI Framework production Asset Planner.
+  Final HTML is analysed through the existing Loader rule registry, exact
+  first-frame CSS is emitted as content-hashed stylesheets, scripts keep
+  dependency order, and truthful `SF_PRELOADED` data hands late content back to
+  the dynamic Loader. Exact builds no longer include `utility.full.css` or a
+  Docara-owned component preload list.
+- Static verification recalculates every page asset plan from final HTML and
+  rejects stale receipts, missing or changed generated CSS, duplicated or
+  reordered modules and false preload claims.
+- Inter and the active Material Symbols font are preloaded from their exact
+  local projections, and fenced code emits a geometry-compatible server
+  header before interactive highlighting, preventing late font and code-tool
+  upgrades from shifting the page.
+- The Framework typography projection uses a metric-compatible local Inter
+  fallback with `font-display: optional`, so cold font loading does not reflow
+  header, navigation, or page columns and Docara does not need fixed shell
+  heights.
+- Fenced code uses the generic Framework static-highlight chrome contract:
+  syntax highlighting no longer replaces the server-rendered header, scroll
+  surface, or copy control after the first paint.
+- Framework icon and menu hydration now preserves the server-rendered geometry:
+  undefined icons reserve their final size, and Menu registration reuses the
+  existing label instead of inserting an additional flex item.
+- The documentation shell now remains visible while Framework becomes ready,
+  mobile documentation navigation hydrates on first open, static navigation
+  labels no longer trigger speculative utility requests, and optional icon
+  fonts load only when their variants are used.
+- Previous/next page links now keep their text and arrows together, use a
+  quieter footer treatment, and preserve clear hover, focus and mobile states.
+- Documentation content with the default zero gap now uses normal block flow,
+  so adjacent vertical margins collapse instead of accumulating inside a flex
+  column. Explicit non-zero content gaps retain the vertical stack behavior.
+
 ## [2.2.0] - 2026-08-26
 
 ### Added
@@ -101,3 +140,4 @@ All notable changes to Docara are documented in this file.
 [2.0.0]: https://github.com/simai/docara/releases/tag/v2.0.0
 [2.1.0]: https://github.com/simai/docara/releases/tag/v2.1.0
 [2.2.0]: https://github.com/simai/docara/releases/tag/v2.2.0
+[2.3.0]: https://github.com/simai/docara/releases/tag/v2.3.0

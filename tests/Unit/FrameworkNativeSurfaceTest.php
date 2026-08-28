@@ -34,7 +34,10 @@ final class FrameworkNativeSurfaceTest extends TestCase
         self::assertStringContainsString("button.classList.add('docara-code-copy','sf-icon-button'", $runtime);
         self::assertStringContainsString("codeIcon.classList.add('sf-icon-regular')", $runtime);
         self::assertStringContainsString("language||'code'", $runtime);
-        self::assertStringContainsString('.docara-code-header>span{display:inline-flex', $css);
+        self::assertStringContainsString(
+            '.docara-code-header>span,.docara-code-block>.sf--highlight-head>span{display:inline-flex',
+            $css,
+        );
         self::assertStringNotContainsString('line-height:var(--sf-text-height-1);box-shadow:inset 0 -2px var(--sf-outline)', $css);
         self::assertStringContainsString('.docara-code-block.bg-surface-container{background:var(--sf-surface-0)}', $css);
         self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre;background:transparent}', $css);
@@ -63,7 +66,7 @@ final class FrameworkNativeSurfaceTest extends TestCase
         }
 
         self::assertDoesNotMatchRegularExpression(
-            '~\.(?:sf-button|sf-icon-button|sf-input|sf-radio-button|sf-breadcrumbs|sf--highlight-head)[^{]*\{[^}]*(?:min-(?:inline|block)-size|(?:inline|block)-size|font-size|line-height|font-weight|padding)~',
+            '~\.(?:sf-button|sf-icon-button|sf-input|sf-radio-button|sf-breadcrumbs)(?=[\s.#:{>,])[^{}]*\{[^}]*(?:min-(?:inline|block)-size|(?:inline|block)-size|font-size|line-height|font-weight|padding)~',
             $css,
         );
     }
@@ -90,7 +93,7 @@ final class FrameworkNativeSurfaceTest extends TestCase
     }
 
     #[Test]
-    public function search_trigger_uses_the_framework_smart_button_contract(): void
+    public function search_trigger_uses_static_framework_button_geometry(): void
     {
         $root = dirname(__DIR__, 2);
         $template = file_get_contents(
@@ -98,19 +101,28 @@ final class FrameworkNativeSurfaceTest extends TestCase
         );
 
         self::assertIsString($template);
-        self::assertStringContainsString('<sf-button', $template);
-        self::assertStringContainsString('size="1"', $template);
-        self::assertStringContainsString('type="outline"', $template);
-        self::assertStringContainsString('scheme="on-surface"', $template);
-        self::assertStringContainsString('icon-left="search"', $template);
-        self::assertStringContainsString('slot="icon-right"', $template);
+        self::assertStringContainsString('<button', $template);
+        self::assertStringContainsString('type="button"', $template);
+        self::assertStringContainsString('data-docara-search-trigger', $template);
+        self::assertStringContainsString(
+            'class="sf-button sf-button--size-1 sf-button--outline sf-button--on-surface flex items-cross-center docara-search-trigger h-d0"',
+            $template,
+        );
+        self::assertStringContainsString(
+            '<span class="sf-button-text-container text-center pointer-event-none"><?= $view->copy[\'search.label\'] ?></span>',
+            $template,
+        );
+        self::assertStringContainsString(
+            '<span class="sf-icon sf-icon-regular pointer-event-none" aria-hidden="true">search</span>',
+            $template,
+        );
         self::assertStringContainsString(
             'docara-search-shortcut text-1 color-on-surface-variant m-inline-start-1/2',
             $template,
         );
         self::assertStringNotContainsString('docara-search-shortcut label-small', $template);
         self::assertStringNotContainsString('docara-search-shortcut text-1 color-on-surface-variant border', $template);
-        self::assertStringNotContainsString('<button type="button" data-docara-search-trigger', $template);
+        self::assertStringNotContainsString('<sf-button', $template);
         self::assertStringNotContainsString('items-center gap-1 radius-default', $template);
     }
 

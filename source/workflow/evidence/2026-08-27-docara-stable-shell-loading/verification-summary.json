@@ -1,0 +1,52 @@
+{
+  "schema": "docara.stable_shell_loading.v1",
+  "date": "2026-08-27",
+  "status": "passed",
+  "repository_head": "8ab5bc48c251283c00f1de23ab4f04384a1021a3",
+  "scope": {
+    "shell_visibility": "always_visible_after_blocking_shell_css",
+    "mobile_navigation": "hydrate_once_on_first_open",
+    "navigation_dynamic_scan": "ignored_as_statically_planned",
+    "icon_variants": "load_on_demand",
+    "examples": "unchanged"
+  },
+  "tests": {
+    "main_regression": {"tests": 53, "assertions": 1272, "status": "passed_after_current-code_rerun"},
+    "affected_scenarios": {"tests": 2, "assertions": 659, "status": "passed"}
+  },
+  "builds": {
+    "docara_docs": {"source_pages": 127, "html_pages": 261, "references": 32983, "broken": 0},
+    "ui_doc": {"source_pages": 912, "html_pages": 1665, "references": 356272, "broken": 0}
+  },
+  "validation": {
+    "docara_docs": {"passed": 128, "errors": 0, "review_required": 4},
+    "ui_doc": {
+      "passed": 913,
+      "errors": 11,
+      "review_required": 0,
+      "scope": "pre_existing_content_links",
+      "subject": "/ru/fundamentals/colors-and-themes/",
+      "code": "PAGE_LINK_TARGET_MISSING"
+    }
+  },
+  "browser": {
+    "route": "https://ui-doc.test/ru/utilities/background/background-attachment/",
+    "responses": 116,
+    "failed_requests": 0,
+    "http_errors": 0,
+    "render_errors": 0,
+    "loaded_icon_fonts": ["MaterialSymbolsOutlined.woff2"],
+    "active_dom_nodes": 2172,
+    "body_opacity": "1",
+    "mobile_links_before_open": 5,
+    "mobile_links_after_open": 280,
+    "adjacent_navigation_ms": 401
+  },
+  "publication": {
+    "commit": false,
+    "push": false,
+    "tag": false,
+    "release": false,
+    "public_deploy": false
+  }
+}

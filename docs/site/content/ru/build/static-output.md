@@ -9,6 +9,7 @@ build_production/
   section/page/index.html
   _docara/search-index.json
   _docara/search.js
+  _docara/docara-shell.<sha256>.css
   _docara/framework/
   _docara/vendor/simai-framework/runtime/<revision>/
   .docara/resolved-page-plans.json
@@ -56,7 +57,50 @@ source, locale, версию документации, `base_url`, source/target
 Текущий lock публикует необходимые Docara файлы SIMAI Framework локально:
 Core, используемые utilities, нужные Docara webpack/language chunks, Inter,
 Material Symbols и допущенные Smart assets. Страница не зависит от
-runtime-загрузки с CDN. Это не
+runtime-загрузки с CDN.
+
+Перед первым отображением общий production Asset Planner SIMAI Framework
+анализирует готовый HTML страницы по тем же правилам `distr/rule/rule.json`,
+которые использует динамический Loader. Он раскрывает зависимости и создаёт
+небольшой `docara-shell.<sha256>.css` из точных CSS страницы и геометрии Docara.
+Нужные JavaScript-модули подключаются в порядке зависимостей до Core, а
+`window.SF_PRELOADED` перечисляет только фактически опубликованные ресурсы.
+Поэтому Loader не загружает их повторно после первого отображения и остаётся
+ответственным только за содержимое, появившееся позднее.
+
+Docara является первым потребителем этого общего build-time механизма, а не
+владельцем отдельного списка Framework-компонентов. Проект без production
+планирования продолжает работать по прежней динамической схеме через `sfPath`,
+`sfSmartPath`, `core.css` и `core.js`. Редкий ресурс первого кадра, который
+невозможно увидеть в итоговом HTML, можно явно назвать через необязательный
+`data-sf-require`.
+
+Те же ранние ресурсы включают используемые подмножества Inter и Material
+Symbols. Обычный fenced code-блок сразу получает серверный заголовок языка той
+же геометрии, что и итоговая интерактивная панель копирования. Это не глобальный
+скелетон: содержимое страницы доступно сразу, а поздняя регистрация компонентов
+не меняет размеры каркаса и кодовых блоков.
+
+Пока Inter загружается, Framework использует локальный метрически совместимый
+fallback. Он сохраняет естественные размеры текста и элементов управления,
+поэтому подмена шрифта не перестраивает шапку, меню и колонки. Фиксированная
+высота шапки, скрытие страницы или отдельный проектный кеш для этого не нужны.
+
+`.docara/resolved-page-plans.json` содержит отдельный Framework asset receipt
+для каждого HTML-output: входные файлы и их SHA-256, порядок JavaScript, список
+preload-модулей, hash HTML-содержимого и публичное имя generated CSS.
+`verify-static` повторно вычисляет каждый план по финальному HTML и отклоняет
+ложный preload, изменённый CSS, отсутствующий ресурс, stale receipt или другой
+порядок подключения. В точном production-режиме `utility.full.css` не
+публикуется.
+
+На статическом хостинге рекомендуется разделить кеширование:
+
+- файлы с SHA-256 в имени — `Cache-Control: public, max-age=31536000, immutable`;
+- HTML — без `immutable`, с обычной проверкой актуальности (`ETag` или
+  `Last-Modified`).
+
+Это не
 превращает произвольный upstream-компонент в поддерживаемый: admission
 по-прежнему определяется manifest, provider policy и exact lock.
 

@@ -1,0 +1,22 @@
+{
+  "id": "docara.batch.sf5_automatic_asset_planning",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "Deliver and verify shared Framework production asset planning",
+  "summary": "Add exact HTML-driven planning, truthful Loader handoff and geometry-preserving Smart component hydration, then validate the Docara/ui-doc pilot.",
+  "owner": "dev",
+  "lifecycle": "completed",
+  "readiness": "accepted",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-27-sf5-automatic-asset-planning.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-27-sf5-automatic-asset-planning/verification-summary.json"],
+  "profile_refs": ["docara.unified"],
+  "parent_stage_ref": "docara.stage.sf5_automatic_asset_planning",
+  "allowed_scope": ["ui planner and distribution", "ui-loader runtime sources", "Docara runtime, tests, docs and graph", "generated ui-doc build only"],
+  "forbidden_scope": ["ui-doc content and dependency locks", "Git history", "release", "public deployment"],
+  "checks": ["Planner fixtures", "Component build diagnostics", "Docara tests", "Full ui-doc build", "verify-static", "HTTP and browser smoke"],
+  "status": "completed",
+  "next_action": "explicit_user_decision"
+}

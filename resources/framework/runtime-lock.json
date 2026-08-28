@@ -1,116 +1,403 @@
 {
-  "schema": "larena.ui.frontend_runtime_lock.v3",
-  "runtime": "simai-framework",
-  "pair_id": "sf-v5.3.2-d1daa951-aa9f34a4",
-  "bundle_id": "sf-v5.3.2-d1daa951-aa9f34a4-registry-2c596327-verified-commit-candidate-v1",
-  "publication_profile": "verified-commit-candidate-v1",
-  "tag": "v5.3.2",
-  "ui": {
-    "tag": "v5.3.2",
-    "commit": "d1daa951dd08b94a9f209fd9f31a78d2b3779563",
-    "tree": "distr",
-    "mount": "ui",
-    "sha256": "8f28b6c5a09173f5502836506c64d2e0aa66c2099a4f95a1f26f47145981f7fe",
-    "files": 6238
-  },
-  "ui_smart": {
-    "tag": "v5.3.1",
-    "commit": "aa9f34a4d2bf421e20970ab4eb0418f017c62059",
-    "tree": "smart",
-    "mount": "smart",
-    "sha256": "92c2fe902cd2d0383459c7d4925fbd75b5b987e045c09674640a3cbab4b97ee8",
-    "files": 362
-  },
-  "framework_registry": {
-    "schema_id": "simai.framework.contract-registry",
-    "compatibility_id": "sf-v5.3.2-d1daa951-aa9f34a4",
-    "profile": "plain-assets-v1",
-    "relative_path": "contract/contracts/generated/framework-contract-registry.json",
-    "file_sha256": "2c5963276d31af09770fe41cad04826c04b634f7b2d798d9b0e32864517346b7",
-    "source": {
-      "commit": "b7e8a2e810c0d49e31cb749a7ab34c373dd48bc6",
-      "tree": "contracts/generated",
-      "tree_oid": "ed200af53182334542b48fb7402e219068091bd4",
-      "mount": "contract",
-      "sha256": "0f915061c3664571f8ce522793ed7192889b8eb19e4c62490440926449a13f9b",
-      "files": 1
+    "schema": "larena.ui.frontend_runtime_lock.v3",
+    "asset_planner": {
+        "schema": "simai.framework.asset_planner_compatibility.v1",
+        "superseded_runtime_projections": [
+            {
+                "packet_sha256": "790b8014c4c1a0853e6a0650f30e0b4f33ab3b428f878b0fa010faf0c3f449c0",
+                "files": 117,
+                "manifest_sha256": "8c917f69a678df084260ded24c5e39e78aaa4fc12c317bf98afaf11ee2a29a8e"
+            }
+        ],
+        "superseded_typography_projections": [
+            {
+                "packet_sha256": "d20a0ce7d97bbb3e9502236fa3cb73acd7ca3d74b2559a3120ea3496a4c98dad",
+                "core_sha256": "9c235fbdd02246def279e710bd92ee3c6fed4c3dcdcc859f0ebf9ab73afb20af"
+            },
+            {
+                "packet_sha256": "61f5ee6a505b210d5733d599b13f35bffe6ee728156ea3ec736bcfebb5258cb7",
+                "core_sha256": "e9ee7377478c87b8941ec78ac5f35249c5acc767d9b5d75c7c00f69fd27a7212"
+            }
+        ]
+    },
+    "runtime": "simai-framework",
+    "pair_id": "sf-v5.4.0-b2e84446-23d00d92",
+    "bundle_id": "sf-v5.4.0-b2e84446-23d00d92-registry-525b0210-verified-release-artifact-v1",
+    "publication_profile": "verified-release-artifact-v1",
+    "tag": "v5.4.0",
+    "ui": {
+        "tag": "v5.4.0",
+        "commit": "b2e8444659ae0d213296c2d349257259d3ed0c9c",
+        "tree": "distr",
+        "mount": "ui",
+        "sha256": "474a6a3294b050076e76c814308541050bec776e5d3f7476c6f89fcb8afe0820",
+        "files": 6781
+    },
+    "ui_smart": {
+        "tag": "v5.4.0",
+        "commit": "23d00d92346717b8f835297d142a14458f806602",
+        "tree": "smart",
+        "mount": "smart",
+        "sha256": "465b61a678be195aabb3890385b6080908b3d7a5298abaf7a9ea96705638addc",
+        "files": 645
+    },
+    "framework_registry": {
+        "schema_id": "simai.framework.contract-registry",
+        "compatibility_id": "sf-v5.4.0-b2e84446-23d00d92",
+        "profile": "plain-assets-v1",
+        "relative_path": "contract/contracts/generated/framework-contract-registry.json",
+        "file_sha256": "525b0210b70dbf94ad44e9151e87424eae13c0ca33c7e67a04fa6c827cfc727d",
+        "source": {
+            "commit": "b2e8444659ae0d213296c2d349257259d3ed0c9c",
+            "tree": "contracts/generated",
+            "tree_oid": "e0b2c6e4b5e2cf6c57ed65c73892bba5d677f70e",
+            "mount": "contract",
+            "sha256": "399068a0d6bbbe6bb07905693970e1cf20416b533928760cdd63360d54d9ebd6",
+            "files": 1
+        }
+    },
+    "boot": {
+        "css": "ui/distr/core/css/core.css",
+        "javascript": "ui/distr/core/js/core.js",
+        "smart_base": "ui/distr/core/js/smart-base.js",
+        "ui_base": "ui/distr/",
+        "smart_base_path": "smart/"
+    },
+    "shell": {
+        "relations": [
+            {
+                "plugin": "menu",
+                "type": "component",
+                "css": "component/menu/css/menu.css",
+                "javascript": "component/menu/js/menu.js"
+            },
+            {
+                "plugin": "breadcrumbs",
+                "type": "component",
+                "css": "component/breadcrumbs/css/breadcrumbs.css",
+                "javascript": "component/breadcrumbs/js/breadcrumbs.js"
+            },
+            {
+                "plugin": "scrollbar",
+                "type": "component",
+                "css": "component/scrollbar/css/scrollbar.css",
+                "javascript": "component/scrollbar/js/scrollbar.js"
+            }
+        ]
+    },
+    "components": {
+        "sf-icon": {
+            "source": "smart/icons",
+            "javascript": "smart/smart/icons/js/icons.js",
+            "css": null,
+            "loader": {
+                "plugin": "cl-icons",
+                "relations": [
+                    {
+                        "plugin": "icons",
+                        "type": "component",
+                        "css": "component/icons/css/icons.css",
+                        "javascript": "component/icons/js/icons.js"
+                    }
+                ]
+            },
+            "attributes": [
+                "icon",
+                "size",
+                "scheme",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-button": {
+            "source": "smart/buttons",
+            "javascript": "smart/smart/buttons/js/buttons.js",
+            "css": null,
+            "loader": {
+                "plugin": "cl-buttons",
+                "relations": [
+                    {
+                        "plugin": "buttons",
+                        "type": "component",
+                        "css": "component/buttons/css/buttons.css",
+                        "javascript": "component/buttons/js/buttons.js"
+                    }
+                ]
+            },
+            "attributes": [
+                "template",
+                "size",
+                "type",
+                "scheme",
+                "text",
+                "icon",
+                "icon-left",
+                "icon-right",
+                "icon-position",
+                "text-position",
+                "tightness",
+                "radius",
+                "root-class",
+                "loading",
+                "disabled",
+                "native-type",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-table": {
+            "source": "smart/table",
+            "javascript": "smart/smart/table/js/table.js",
+            "css": "smart/smart/table/css/table.css",
+            "attributes": [
+                "template",
+                "root-class",
+                "selectable",
+                "settings",
+                "actions",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-badge": {
+            "source": "smart/badges",
+            "javascript": "smart/smart/badges/js/badges.js",
+            "css": null,
+            "core_css": "ui/distr/component/badges/css/badges.css",
+            "attributes": [
+                "template",
+                "size",
+                "type",
+                "scheme",
+                "text",
+                "icon",
+                "icon-left",
+                "icon-right",
+                "icon-position",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-alert": {
+            "source": "smart/alert",
+            "javascript": "smart/smart/alert/js/alert.js",
+            "css": null,
+            "requires": [
+                "sf-icon"
+            ],
+            "attributes": [
+                "type",
+                "variant",
+                "icon",
+                "title",
+                "supporting-text",
+                "action-text",
+                "action",
+                "secondary-action-text",
+                "secondary-action",
+                "closable",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-pagination": {
+            "source": "smart/pagination",
+            "javascript": "smart/smart/pagination/js/pagination.js",
+            "css": null,
+            "attributes": [
+                "current",
+                "total",
+                "top",
+                "main",
+                "bottom",
+                "top-class",
+                "main-class",
+                "bottom-class",
+                "show-more-text",
+                "page-sizes",
+                "page-size-label",
+                "actions",
+                "action",
+                "action-apply-text",
+                "action-for-all-label",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-input": {
+            "source": "smart/inputs",
+            "javascript": "smart/smart/inputs/js/inputs.js",
+            "css": "smart/smart/inputs/css/inputs.css",
+            "attributes": [
+                "template",
+                "size",
+                "type",
+                "label",
+                "required",
+                "placeholder",
+                "hint",
+                "name",
+                "value",
+                "default-value",
+                "input-type",
+                "autocomplete",
+                "left-icon",
+                "right-text",
+                "hint-icon",
+                "disabled",
+                "error",
+                "min",
+                "max",
+                "step",
+                "mask",
+                "mask-pattern",
+                "mask-options",
+                "mask-placeholder-char",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-modal": {
+            "source": "smart/modal",
+            "javascript": "smart/smart/modal/js/modal.js",
+            "css": null,
+            "loader": {
+                "plugin": "cl-modal",
+                "relations": [
+                    {
+                        "plugin": "modal",
+                        "type": "component",
+                        "css": "component/modal/css/modal.css",
+                        "javascript": "component/modal/js/modal.js"
+                    },
+                    {
+                        "plugin": "icon-buttons",
+                        "type": "component",
+                        "css": "component/icon-buttons/css/icon-buttons.css",
+                        "javascript": "component/icon-buttons/js/icon-buttons.js"
+                    }
+                ]
+            },
+            "attributes": [
+                "template",
+                "modal-id",
+                "title",
+                "text",
+                "open",
+                "autoload",
+                "unclose",
+                "hide",
+                "hide-modifier",
+                "minimized",
+                "overlay",
+                "overlay-preset",
+                "show-header",
+                "show-close",
+                "show-footer",
+                "close-on-esc",
+                "close-on-overlay",
+                "preserve-scroll-gap",
+                "position",
+                "mode",
+                "display",
+                "src",
+                "preload",
+                "fullscreen",
+                "width",
+                "height",
+                "blur",
+                "blur-type",
+                "overlay-class",
+                "close-class",
+                "surface-class",
+                "surface-padding",
+                "panel-class",
+                "header-class",
+                "body-class",
+                "content-class",
+                "footer-class",
+                "slot",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-textarea": {
+            "source": "smart/textarea",
+            "javascript": "smart/smart/textarea/js/textarea.js",
+            "css": null,
+            "attributes": [
+                "template",
+                "size",
+                "type",
+                "label",
+                "required",
+                "rows",
+                "placeholder",
+                "hint",
+                "name",
+                "value",
+                "disabled",
+                "error",
+                "mask",
+                "mask-pattern",
+                "mask-options",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-dropdown": {
+            "source": "smart/dropdown",
+            "javascript": "smart/smart/dropdown/js/dropdown.js",
+            "css": null,
+            "attributes": [
+                "template",
+                "size",
+                "type",
+                "mode",
+                "multiple",
+                "portal",
+                "value",
+                "name",
+                "label",
+                "required",
+                "placeholder",
+                "search-placeholder",
+                "search",
+                "disabled",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-checkbox": {
+            "source": "smart/checkbox",
+            "javascript": "smart/smart/checkbox/js/checkbox.js",
+            "css": "smart/smart/checkbox/css/checkbox.css",
+            "attributes": [
+                "size",
+                "label",
+                "description",
+                "help",
+                "position",
+                "root-class",
+                "checked",
+                "disabled",
+                "indeterminate",
+                "name",
+                "value",
+                "error",
+                "id",
+                "class"
+            ]
+        }
     }
-  },
-  "boot": {
-    "css": "ui/distr/core/css/core.css",
-    "javascript": "ui/distr/core/js/core.js",
-    "smart_base": "ui/distr/core/js/smart-base.js",
-    "ui_base": "ui/distr/",
-    "smart_base_path": "smart/"
-  },
-  "components": {
-    "sf-icon": {
-      "source": "smart/icons",
-      "javascript": "smart/smart/icons/js/icons.js",
-      "css": null,
-      "attributes": ["icon", "size", "scheme", "aria-label", "id", "class"]
-    },
-    "sf-button": {
-      "source": "smart/buttons",
-      "javascript": "smart/smart/buttons/js/buttons.js",
-      "css": null,
-      "attributes": ["template", "size", "type", "scheme", "text", "icon", "icon-left", "icon-right", "icon-position", "text-position", "tightness", "radius", "root-class", "loading", "disabled", "native-type", "aria-label", "id", "class"]
-    },
-    "sf-table": {
-      "source": "smart/table",
-      "javascript": "smart/smart/table/js/table.js",
-      "css": "smart/smart/table/css/table.css",
-      "attributes": ["template", "root-class", "selectable", "settings", "actions", "aria-label", "id", "class"]
-    },
-    "sf-badge": {
-      "source": "smart/badges",
-      "javascript": "smart/smart/badges/js/badges.js",
-      "css": null,
-      "core_css": "ui/distr/component/badges/css/badges.css",
-      "attributes": ["template", "size", "type", "scheme", "text", "icon", "icon-left", "icon-right", "icon-position", "aria-label", "id", "class"]
-    },
-    "sf-alert": {
-      "source": "smart/alert",
-      "javascript": "smart/smart/alert/js/alert.js",
-      "css": null,
-      "requires": ["sf-icon"],
-      "attributes": ["type", "variant", "icon", "title", "supporting-text", "action-text", "action", "secondary-action-text", "secondary-action", "closable", "aria-label", "id", "class"]
-    },
-    "sf-pagination": {
-      "source": "smart/pagination",
-      "javascript": "smart/smart/pagination/js/pagination.js",
-      "css": null,
-      "attributes": ["current", "total", "top", "main", "bottom", "top-class", "main-class", "bottom-class", "show-more-text", "page-sizes", "page-size-label", "actions", "action", "action-apply-text", "action-for-all-label", "aria-label", "id", "class"]
-    },
-    "sf-input": {
-      "source": "smart/inputs",
-      "javascript": "smart/smart/inputs/js/inputs.js",
-      "css": "smart/smart/inputs/css/inputs.css",
-      "attributes": ["template", "size", "type", "label", "required", "placeholder", "hint", "name", "value", "default-value", "input-type", "autocomplete", "left-icon", "right-text", "hint-icon", "disabled", "error", "min", "max", "step", "mask", "mask-pattern", "mask-options", "mask-placeholder-char", "aria-label", "id", "class"]
-    },
-    "sf-modal": {
-      "source": "smart/modal",
-      "javascript": "smart/smart/modal/js/modal.js",
-      "css": null,
-      "attributes": ["template", "modal-id", "title", "text", "open", "autoload", "unclose", "hide", "hide-modifier", "minimized", "overlay", "overlay-preset", "show-header", "show-close", "show-footer", "close-on-esc", "close-on-overlay", "preserve-scroll-gap", "position", "mode", "display", "src", "preload", "fullscreen", "width", "height", "blur", "blur-type", "overlay-class", "close-class", "surface-class", "surface-padding", "panel-class", "header-class", "body-class", "content-class", "footer-class", "slot", "aria-label", "id", "class"]
-    },
-    "sf-textarea": {
-      "source": "smart/textarea",
-      "javascript": "smart/smart/textarea/js/textarea.js",
-      "css": null,
-      "attributes": ["template", "size", "type", "label", "required", "rows", "placeholder", "hint", "name", "value", "disabled", "error", "mask", "mask-pattern", "mask-options", "aria-label", "id", "class"]
-    },
-    "sf-dropdown": {
-      "source": "smart/dropdown",
-      "javascript": "smart/smart/dropdown/js/dropdown.js",
-      "css": null,
-      "attributes": ["template", "size", "type", "mode", "multiple", "portal", "value", "name", "label", "required", "placeholder", "search-placeholder", "search", "disabled", "aria-label", "id", "class"]
-    },
-    "sf-checkbox": {
-      "source": "smart/checkbox",
-      "javascript": "smart/smart/checkbox/js/checkbox.js",
-      "css": "smart/smart/checkbox/css/checkbox.css",
-      "attributes": ["size", "label", "description", "help", "position", "root-class", "checked", "disabled", "indeterminate", "name", "value", "error", "id", "class"]
-    }
-  }
 }

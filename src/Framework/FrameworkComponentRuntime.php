@@ -70,6 +70,18 @@ final readonly class FrameworkComponentRuntime
     }
 
     /**
+     * @param  list<string>  $componentKeys
+     * @param  list<string>  $additionalRuntimeTags
+     */
+    public function planAssetsForHtml(
+        string $html,
+        array $componentKeys = [],
+        array $additionalRuntimeTags = [],
+    ): FrameworkAssetPlan {
+        return $this->assetPlanner->planForHtml($html, $componentKeys, $additionalRuntimeTags);
+    }
+
+    /**
      * Records Framework calls that have already been resolved and rendered by
      * the shared SmartComponentGateway. This method never renders page HTML.
      *

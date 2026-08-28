@@ -20,15 +20,15 @@ final class SharedSurfaceAdoptionTest extends TestCase
         $cases = [
             'hero' => [
                 ":::hero\n# Hero\n\nDescription.\n\n![Meaningful image](/assets/docara-screen.png)\n:::\n",
-                '886d1e4b0b2066004431427c1f69e2b0d34b2ce71b4960db16ebf1e667cb9684',
+                '73c2e3a980e8321c8453e6ee23a6affaa629ce62415b55dc67cde75a60b5045c',
             ],
             'showcase' => [
                 ":::showcase\n## Проверяемый результат\n\nСобранная документация видна до публикации.\n\n[Открыть пример](/landing/)\n\n![Интерфейс Docara](/assets/screen.png)\n:::\n",
-                '402551dc2dd75537370a195b67099d7e12a9e9394cee0ab2c2460bff6d0a6405',
+                '6d855e4f010a536d947894d3fa6bebaeddd7f59641995fc36119416953349522',
             ],
             'promo' => [
                 ":::promo\n## Соберите первый сайт\n\nСоздайте проект и получите статический результат.\n\n[Начать](/start/)\n\n![](/assets/promo.png)\n:::\n",
-                '50a55ea25e32533c84a0d2e3f1fd21fdf5082cccfe702243eacdfa2bc8b73648',
+                '5b90543cae3c8960ff8c066267dcd49363c9f8079075cbc3b0672f91e611e273',
             ],
         ];
 
@@ -74,7 +74,7 @@ final class SharedSurfaceAdoptionTest extends TestCase
         self::assertContains('docara.showcase', $typed);
         self::assertContains('docara.promo', $typed);
         self::assertSame(
-            '0e4345e02928e98e23b9aeb0ef0aae62b149d62595b1a485b498fff25e29624c',
+            '36dae8dc57076dfe7e86aad231b061a36e18f63ddb974e62cb172397d0ffccbe',
             hash('sha256', $result->contentHtml),
         );
         foreach (['hero', 'showcase', 'promo'] as $block) {

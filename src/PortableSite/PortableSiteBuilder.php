@@ -180,6 +180,7 @@ final readonly class PortableSiteBuilder
         $existingDiagnostics = [];
         $earlyPhysicalSelection = false;
         $existingExampleReceipt = null;
+        $existingFrameworkAssetPlanReceipts = [];
         if ($selectedPageUrl !== null) {
             if (is_link($finalDestination) || ! $this->files->isDirectory($finalDestination)) {
                 throw new PortableConfigurationException(
@@ -189,6 +190,19 @@ final readonly class PortableSiteBuilder
             }
             $existingDiagnostics = $this->existingDiagnosticsByUrl($finalDestination);
             $existingBuild = $this->existingBuildProvenance($finalDestination);
+            $existingFrameworkShell = $existingBuild['framework']['shell'] ?? null;
+            if (! is_array($existingFrameworkShell)
+                || ($existingFrameworkShell['schema'] ?? null) !== 'docara.framework_asset_plans.v1'
+                || ($existingFrameworkShell['mode'] ?? null) !== 'production_exact'
+                || ! is_array($existingFrameworkShell['plans'] ?? null)
+                || array_is_list($existingFrameworkShell['plans'])
+            ) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_INCREMENTAL_FRAMEWORK_ASSET_BASE_INVALID',
+                    'The complete build has no valid Framework asset-plan receipts for an isolated page rebuild.',
+                );
+            }
+            $existingFrameworkAssetPlanReceipts = $existingFrameworkShell['plans'];
             $existingExampleReceipt = $this->existingExampleReceipt($finalDestination);
             $projectExamples->assertIncrementalCompatible($existingExampleReceipt);
             if (($existingBuild['purpose'] ?? null) !== $purpose->value) {
@@ -344,6 +358,8 @@ final readonly class PortableSiteBuilder
                 'The build requires at least one authored page and an initialized component runtime.',
             );
         }
+        $frameworkAssetPlans = [];
+        $frameworkAssetPlanReceipts = $existingFrameworkAssetPlanReceipts;
         $effectiveComponentCatalog = EffectiveComponentCatalogBuilder::bundled(
             FrameworkLock::fromArray($buildBasePlan->frameworkLock),
         )->build();
@@ -961,14 +977,56 @@ final readonly class PortableSiteBuilder
                 array_push($requiredSmartAssets, ...$declarative->artifact->assets);
                 $outputPath = rtrim($destination, '/\\') . '/' . $page['output'];
                 $this->files->ensureDirectoryExists(dirname($outputPath));
-                $rendered = $publisher->render(
+                $draft = $publisher->render(
                     $page,
                     $activeNavigation,
                     $siteTitle,
                     $page['components']->assetPlan,
                     $declarative,
                 );
+                $draft = $localeLinkProjectors[$pageLocale]->project($draft);
+                $componentKeys = [];
+                foreach ($page['components']->normalizedCalls as $call) {
+                    if (is_array($call) && is_string($call['id'] ?? null)) {
+                        $componentKeys[] = $call['id'];
+                    }
+                }
+                $exactFrameworkPlan = $runtime->planAssetsForHtml($draft, $componentKeys);
+                $page['components'] = $page['components']->withAssetPlan($exactFrameworkPlan);
+                $rendered = $publisher->render(
+                    $page,
+                    $activeNavigation,
+                    $siteTitle,
+                    $exactFrameworkPlan,
+                    $declarative,
+                );
                 $rendered = $localeLinkProjectors[$pageLocale]->project($rendered);
+                $finalFrameworkPlan = $runtime->planAssetsForHtml($rendered, $componentKeys);
+                if ($finalFrameworkPlan->headHtml() !== $exactFrameworkPlan->headHtml()
+                    || $finalFrameworkPlan->shellCssUrl() !== $exactFrameworkPlan->shellCssUrl()
+                ) {
+                    $page['components'] = $page['components']->withAssetPlan($finalFrameworkPlan);
+                    $rendered = $publisher->render(
+                        $page,
+                        $activeNavigation,
+                        $siteTitle,
+                        $finalFrameworkPlan,
+                        $declarative,
+                    );
+                    $rendered = $localeLinkProjectors[$pageLocale]->project($rendered);
+                    $verifiedFrameworkPlan = $runtime->planAssetsForHtml($rendered, $componentKeys);
+                    if ($verifiedFrameworkPlan->headHtml() !== $finalFrameworkPlan->headHtml()
+                        || $verifiedFrameworkPlan->shellCssUrl() !== $finalFrameworkPlan->shellCssUrl()
+                    ) {
+                        throw new PortableConfigurationException(
+                            'FRAMEWORK_ASSET_PLAN_NOT_STABLE',
+                            "Framework assets for [{$page['output']}] do not converge after rendering.",
+                        );
+                    }
+                    $finalFrameworkPlan = $verifiedFrameworkPlan;
+                }
+                $frameworkAssetPlans[$finalFrameworkPlan->generatedAssets[0]['sha256']] = $finalFrameworkPlan;
+                $frameworkAssetPlanReceipts[(string) $page['output']] = $finalFrameworkPlan->receipt();
                 $this->files->put($outputPath, $rendered);
 
                 /** @var ResolvedPagePlan $plan */
@@ -1014,12 +1072,16 @@ final readonly class PortableSiteBuilder
             $localeRoutePublisher->publish($localeRoutePlan, $destination);
             $this->copyContentAssets($contentAssets, $destination);
             $brandPublisher->publish($brandPlan['assets'], $destination);
+            ksort($frameworkAssetPlanReceipts, SORT_STRING);
+            $frameworkAssetPlans = array_values($frameworkAssetPlans);
             foreach ($localeDestinations as $localeDestination) {
                 $this->publishFrameworkAssets($buildBasePlan->frameworkLock, $localeDestination);
-                (new PortablePublisherAssetPublisher($this->files, $smartRegistry))->publish(
+                $assetPublisher = new PortablePublisherAssetPublisher($this->files, $smartRegistry);
+                $assetPublisher->publish(
                     $localeDestination,
                     $requiredSmartAssets,
                 );
+                $assetPublisher->publishFrameworkAssetPlans($localeDestination, $frameworkAssetPlans);
             }
             $diagnosticPath = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
             $this->files->ensureDirectoryExists(dirname($diagnosticPath));
@@ -1036,6 +1098,11 @@ final readonly class PortableSiteBuilder
                         'runtime' => $buildBasePlan->frameworkLock['runtime'],
                         'manifests' => $buildBasePlan->frameworkLock['manifests'],
                         'asset_projection' => $buildBasePlan->frameworkLock['asset_projection'],
+                        'shell' => [
+                            'schema' => 'docara.framework_asset_plans.v1',
+                            'mode' => 'production_exact',
+                            'plans' => $frameworkAssetPlanReceipts,
+                        ],
                         'portable_smart_asset_projection' => (new FrameworkPortableAssetProjection($smartRegistry))
                             ->forKeys($requiredSmartAssets),
                     ],

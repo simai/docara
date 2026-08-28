@@ -1,0 +1,16 @@
+PHP:  syntax error, unexpected '(' in /Applications/ServBay/package/etc/php/8.4/php.ini on line 145
+██████╗  ██████╗  ██████╗ █████╗ ██████╗  █████╗
+██╔══██╗██╔═══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗
+██║  ██║██║   ██║██║     ███████║██████╔╝███████║
+██║  ██║██║   ██║██║     ██╔══██║██╔══██╗██╔══██║
+██████╔╝╚██████╔╝╚██████╗██║  ██║██║  ██║██║  ██║
+╚═════╝  ╚═════╝  ╚═════╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝
+
+PHP:  syntax error, unexpected '(' in /Applications/ServBay/package/etc/php/8.4/php.ini on line 145
+{
+    "schema": "docara.static_build_verification.v1",
+    "deployment_base": "/",
+    "html_pages": 1665,
+    "local_references_checked": 370385,
+    "broken": []
+}

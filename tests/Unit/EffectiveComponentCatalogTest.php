@@ -134,7 +134,7 @@ final class EffectiveComponentCatalogTest extends TestCase
         self::assertSame(CanonicalJson::encodePretty($first), CanonicalJson::encodePretty($second));
         self::assertSame('docara.effective_component_catalog.v1', $first['schema']);
         self::assertSame(1, $first['version']);
-        self::assertSame('sf-v5.3.2-d1daa951-aa9f34a4', $first['framework_pair']);
+        self::assertSame('sf-v5.4.0-b2e84446-23d00d92', $first['framework_pair']);
         self::assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $first['provider_revision']);
         self::assertSame([
             'catalog_is_canonical_framework_registry' => false,
@@ -625,7 +625,7 @@ final class EffectiveComponentCatalogTest extends TestCase
         $typedIdentity = [
             'docara.alert' => [
                 '<section data-docara-block="alert"',
-                'class="sf-alert sf-alert--info sf-alert--default flex items-start m-bottom-1"',
+                'class="sf-alert sf-alert--info sf-alert--default flex items-cross-start m-bottom-1"',
             ],
             'docara.card' => [
                 '<section data-docara-block="card" data-docara-card-variant="default" class="bg-surface-0 border border-outline-variant radius-2 p-3 flex flex-col gap-1 m-bottom-1">',
@@ -649,7 +649,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             ],
             'docara.details' => [
                 '<details data-docara-block="details"',
-                '<summary class="flex items-center gap-1 cursor-pointer',
+                '<summary class="flex items-cross-center gap-1 cursor-pointer',
             ],
             'docara.download' => [
                 '<section data-docara-block="download" data-action="download"',
@@ -681,7 +681,7 @@ final class EffectiveComponentCatalogTest extends TestCase
             ],
             'docara.logos' => [
                 '<ul data-docara-block="logos" data-tone="normal" class="grid grid-col-2 md:grid-col-3 lg:grid-col-6',
-                '<li class="min-w-0 flex items-center content-main-center">',
+                '<li class="min-w-0 flex items-cross-center content-main-center">',
             ],
             'docara.media' => [
                 '<section data-docara-block="media"',

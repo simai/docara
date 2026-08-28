@@ -16,6 +16,9 @@ final readonly class FrameworkManifestRepository
     /** @var array<string, mixed>|null */
     private ?array $validatedRuntimeManifest;
 
+    /** @var array<string, mixed> */
+    private array $effectiveRuntime;
+
     public function __construct(
         private FrameworkLock $lock,
         private string $resourceRoot,
@@ -29,7 +32,119 @@ final readonly class FrameworkManifestRepository
 
     public static function bundled(FrameworkLock $lock): self
     {
-        return new self($lock, dirname(__DIR__, 2) . '/resources/framework');
+        $packageRoot = dirname(__DIR__, 2);
+        $packageLock = FrameworkLock::fromJsonFile(
+            $packageRoot . '/stubs/portable/simai-framework.lock.json',
+        );
+        $effectiveLock = self::effectiveBundledLock(
+            $lock,
+            $packageLock,
+            $packageRoot . '/resources/framework/runtime-lock.json',
+        );
+
+        return new self($effectiveLock, $packageRoot . '/resources/framework');
+    }
+
+    private static function effectiveBundledLock(
+        FrameworkLock $projectLock,
+        FrameworkLock $packageLock,
+        string $runtimeLockPath,
+    ): FrameworkLock {
+        if ($projectLock->pairId() !== $packageLock->pairId()) {
+            return $projectLock;
+        }
+        $packageProjection = $packageLock->runtimeProjection();
+        $projectProjection = $projectLock->runtimeProjection();
+        if (! is_array($packageProjection)
+            || ! self::sameRuntimeProjectionSource($packageProjection, $packageLock->runtime())
+            || (is_array($projectProjection)
+                && ! self::sameRuntimeProjectionSource($projectProjection, $projectLock->runtime()))
+        ) {
+            return $projectLock;
+        }
+        $bytes = @file_get_contents($runtimeLockPath);
+        try {
+            $runtimeLock = is_string($bytes)
+                ? json_decode($bytes, true, 512, JSON_THROW_ON_ERROR)
+                : null;
+        } catch (\JsonException) {
+            $runtimeLock = null;
+        }
+        $admitted = $projectProjection === null
+            || CanonicalJson::encode($projectProjection) === CanonicalJson::encode($packageProjection);
+        if (! $admitted && is_array($projectProjection)) {
+            $compatibility = is_array($runtimeLock)
+                ? ($runtimeLock['asset_planner'] ?? null)
+                : null;
+            $superseded = is_array($compatibility)
+                && ($compatibility['schema'] ?? null) === 'simai.framework.asset_planner_compatibility.v1'
+                && is_array($compatibility['superseded_runtime_projections'] ?? null)
+                && array_is_list($compatibility['superseded_runtime_projections'])
+                    ? $compatibility['superseded_runtime_projections']
+                    : [];
+            foreach ($superseded as $record) {
+                if (is_array($record)
+                    && array_keys($record) === ['packet_sha256', 'files', 'manifest_sha256']
+                    && ($record['packet_sha256'] ?? null) === ($projectProjection['packet_sha256'] ?? null)
+                    && ($record['files'] ?? null) === ($projectProjection['files'] ?? null)
+                    && ($record['manifest_sha256'] ?? null) === ($projectProjection['manifest']['sha256'] ?? null)
+                ) {
+                    $admitted = true;
+                    break;
+                }
+            }
+        }
+        if (! $admitted) {
+            return $projectLock;
+        }
+        $data = $projectLock->toArray();
+        $data['runtime_projection'] = $packageProjection;
+
+        $projectTypography = $projectLock->typographyProjection();
+        $packageTypography = $packageLock->typographyProjection();
+        if (is_array($projectTypography)
+            && is_array($packageTypography)
+            && CanonicalJson::encode($projectTypography) !== CanonicalJson::encode($packageTypography)
+        ) {
+            $compatibleTypography = false;
+            $compatibility = is_array($runtimeLock)
+                ? ($runtimeLock['asset_planner'] ?? null)
+                : null;
+            $superseded = is_array($compatibility)
+                && is_array($compatibility['superseded_typography_projections'] ?? null)
+                && array_is_list($compatibility['superseded_typography_projections'])
+                    ? $compatibility['superseded_typography_projections']
+                    : [];
+            foreach ($superseded as $record) {
+                if (! is_array($record)
+                    || array_keys($record) !== ['packet_sha256', 'core_sha256']
+                    || ($record['packet_sha256'] ?? null) !== ($projectTypography['packet_sha256'] ?? null)
+                    || ($record['core_sha256'] ?? null) !== ($projectTypography['files']['core']['sha256'] ?? null)
+                ) {
+                    continue;
+                }
+                $candidate = $projectTypography;
+                $candidate['packet_sha256'] = $packageTypography['packet_sha256'];
+                $candidate['files']['core']['sha256'] = $packageTypography['files']['core']['sha256'];
+                if (CanonicalJson::encode($candidate) === CanonicalJson::encode($packageTypography)) {
+                    $compatibleTypography = true;
+                    break;
+                }
+            }
+            if ($compatibleTypography) {
+                $data['typography_projection'] = $packageTypography;
+            }
+        }
+
+        return FrameworkLock::fromArray($data);
+    }
+
+    /** @param array<string, mixed> $projection @param array<string, mixed> $runtime */
+    private static function sameRuntimeProjectionSource(array $projection, array $runtime): bool
+    {
+        return ($projection['source']['provider'] ?? null) === 'simai/ui'
+            && ($projection['source']['revision'] ?? null) === ($runtime['ui']['commit'] ?? null)
+            && ($projection['source']['tree_sha256'] ?? null) === ($runtime['ui']['sha256'] ?? null);
     }
 
     /** @return array<string, mixed> */
@@ -152,7 +267,7 @@ final readonly class FrameworkManifestRepository
     /** @return array<string, mixed> */
     public function runtime(): array
     {
-        return $this->lock->runtime();
+        return $this->effectiveRuntime;
     }
 
     public function pairId(): string
@@ -304,6 +419,29 @@ final readonly class FrameworkManifestRepository
         return $bytes;
     }
 
+    public function bundledPortableAsset(string $relativePath): string
+    {
+        $this->assertSafeRelativePath($relativePath);
+        $resources = dirname($this->resourceRoot);
+        $path = $resources . '/portable/' . $relativePath;
+        $this->assertTrustedResourceFile(
+            $resources,
+            $path,
+            'FRAMEWORK_PORTABLE_ASSET_UNSAFE',
+            'FRAMEWORK_PORTABLE_ASSET_MISSING',
+            $relativePath,
+        );
+        $bytes = @file_get_contents($path);
+        if (! is_string($bytes) || $bytes === '') {
+            throw new FrameworkComponentException('FRAMEWORK_PORTABLE_ASSET_MISSING', $relativePath);
+        }
+        if (preg_match('//u', $bytes) !== 1) {
+            throw new FrameworkComponentException('FRAMEWORK_PORTABLE_ASSET_ENCODING_INVALID', $relativePath);
+        }
+
+        return $bytes;
+    }
+
     public function bundledTypographyAsset(string $key): string
     {
         $projection = $this->lock->typographyProjection();
@@ -422,11 +560,18 @@ final readonly class FrameworkManifestRepository
         } catch (\JsonException $exception) {
             throw new FrameworkComponentException('FRAMEWORK_BUNDLED_RUNTIME_INVALID');
         }
+        $lockedRuntime = $this->lock->runtime();
         if (! is_array($runtime)
-            || CanonicalJson::encode($runtime) !== CanonicalJson::encode($this->lock->runtime())
+            || CanonicalJson::encode($this->runtimeCompatibilityView($runtime, $lockedRuntime))
+                !== CanonicalJson::encode($lockedRuntime)
         ) {
             throw new FrameworkComponentException('FRAMEWORK_RUNTIME_PROJECTION_MISMATCH');
         }
+        // The shell loader contract is package-owned metadata. Older project
+        // locks may omit it, but after the compatibility view proves that the
+        // pinned runtime identity and every supplied field match exactly, the
+        // bundled contract is the authoritative effective runtime.
+        $this->effectiveRuntime = $runtime;
 
         if ($this->lock->typographyProjection() !== null) {
             foreach (array_keys($this->lock->typographyProjection()['files']) as $key) {
@@ -459,6 +604,39 @@ final readonly class FrameworkManifestRepository
                 throw new FrameworkComponentException('FRAMEWORK_ICON_PACKET_HASH_MISMATCH');
             }
         }
+    }
+
+    /**
+     * Older project locks predate the optional package-owned loader metadata.
+     * Admit only that exact omission; supplied metadata must still match the
+     * bundled contract byte-for-byte.
+     *
+     * @param  array<string, mixed>  $bundled
+     * @param  array<string, mixed>  $locked
+     * @return array<string, mixed>
+     */
+    private function runtimeCompatibilityView(array $bundled, array $locked): array
+    {
+        unset($bundled['asset_planner']);
+        if (! array_key_exists('shell', $locked)) {
+            unset($bundled['shell']);
+        }
+        $lockedComponents = $locked['components'] ?? null;
+        if (! is_array($lockedComponents) || ! is_array($bundled['components'] ?? null)) {
+            return $bundled;
+        }
+        foreach ($lockedComponents as $tag => $component) {
+            if (! is_string($tag)
+                || ! is_array($component)
+                || array_key_exists('loader', $component)
+                || ! is_array($bundled['components'][$tag] ?? null)
+            ) {
+                continue;
+            }
+            unset($bundled['components'][$tag]['loader']);
+        }
+
+        return $bundled;
     }
 
     private function assertSafeRelativePath(string $relativePath): void

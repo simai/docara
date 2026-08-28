@@ -76,7 +76,7 @@ final class PortableAtlasIndexHydrator
                 ? $this->containerContract($entry['container_contract'])
                 : '';
             $items .= '<li class="p-block-2 border-bottom border-outline-variant">'
-                . '<div class="flex flex-wrap gap-1 items-center"><code>' . $this->escape((string) $entry['id']) . '</code>'
+                . '<div class="flex flex-wrap gap-1 items-cross-center"><code>' . $this->escape((string) $entry['id']) . '</code>'
                 . '<span class="text-label-small">' . $this->escape((string) $entry['kind']) . '</span>'
                 . '<span class="text-label-small">' . $this->escape((string) $entry['support']) . '</span></div>'
                 . '<p class="m-block-start-1 m-block-end-0 color-on-surface-variant">Владелец: '

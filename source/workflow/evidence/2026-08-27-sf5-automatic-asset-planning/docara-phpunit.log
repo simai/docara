@@ -1,0 +1,8 @@
+PHP:  syntax error, unexpected '(' in /Applications/ServBay/package/etc/php/8.4/php.ini on line 145
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.20
+Configuration: /Users/rim/Documents/GitHub/docara/phpunit.xml
+
+..F.F
+Fatal error: Allowed memory size of 268435456 bytes exhausted (tried to allocate 143360 bytes) in /Users/rim/Documents/GitHub/docara/src/Framework/FrameworkManifestRepository.php on line 529

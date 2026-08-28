@@ -208,7 +208,7 @@ final readonly class FrameworkLock
         if ($typography !== null) {
             if (! is_array($typography)
                 || ($typography['schema'] ?? null) !== 'docara.framework_typography_projection.v1'
-                || ($typography['candidate'] ?? null) !== '5.4.0-rc.1'
+                || ! in_array($typography['candidate'] ?? null, ['5.4.0-rc.1', '5.4.0'], true)
                 || ($typography['source']['provider'] ?? null) !== 'simai/ui-loader'
                 || ! $this->isCommit($typography['source']['revision'] ?? null)
                 || ! $this->isCommit($typography['source']['rollback_parent'] ?? null)
@@ -217,7 +217,11 @@ final readonly class FrameworkLock
                 || ($typography['distribution']['provider'] ?? null) !== 'simai/ui'
                 || ! $this->isCommit($typography['distribution']['revision'] ?? null)
                 || ! $this->isCommit($typography['distribution']['rollback_parent'] ?? null)
-                || ($typography['distribution']['published'] ?? null) !== false
+                || ! is_bool($typography['distribution']['published'] ?? null)
+                || (($typography['candidate'] ?? null) === '5.4.0-rc.1'
+                    && ($typography['distribution']['published'] ?? null) !== false)
+                || (($typography['candidate'] ?? null) === '5.4.0'
+                    && ($typography['distribution']['published'] ?? null) !== true)
                 || ! $this->isSha256($typography['packet_sha256'] ?? null)
                 || ! is_array($typography['files'] ?? null)
                 || array_keys(array_intersect_key($typography['files'], array_flip(['contract', 'core', 'utility']))) !== ['contract', 'core', 'utility']

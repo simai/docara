@@ -1,0 +1,240 @@
+{
+  "pages": [
+    {
+      "scenario": "desktop-light",
+      "route": "/ru/",
+      "cls": 0.001093,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "desktop-light",
+      "route": "/ru/start/",
+      "cls": 0.001451,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "desktop-light",
+      "route": "/ru/fundamentals/",
+      "cls": 0.00104,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "desktop-light",
+      "route": "/ru/fundamentals/modifiers/",
+      "cls": 0.003002,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "desktop-dark",
+      "route": "/ru/",
+      "cls": 0.001093,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "desktop-dark",
+      "route": "/ru/start/",
+      "cls": 0.001625,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "desktop-dark",
+      "route": "/ru/fundamentals/",
+      "cls": 0.00104,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "desktop-dark",
+      "route": "/ru/fundamentals/modifiers/",
+      "cls": 0.060138,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "mobile-light",
+      "route": "/ru/",
+      "cls": 0.001732,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "mobile-light",
+      "route": "/ru/start/",
+      "cls": 0.002925,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "mobile-light",
+      "route": "/ru/fundamentals/",
+      "cls": 0.00189,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "mobile-light",
+      "route": "/ru/fundamentals/modifiers/",
+      "cls": 0.00605,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "desktop-large-serif",
+      "route": "/ru/",
+      "cls": 0.002169,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "desktop-large-serif",
+      "route": "/ru/start/",
+      "cls": 0.002409,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "desktop-large-serif",
+      "route": "/ru/fundamentals/",
+      "cls": 0.00255,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    },
+    {
+      "scenario": "desktop-large-serif",
+      "route": "/ru/fundamentals/modifiers/",
+      "cls": 0.004731,
+      "shellShiftSources": 0,
+      "lateStyles": 0,
+      "duplicates": 0,
+      "utilityFull": false
+    }
+  ],
+  "maxCls": 0.060138,
+  "consoleErrors": [
+    {
+      "scenario": "desktop-light",
+      "count": 4,
+      "items": [
+        "Access to font at 'https://ui-doc.test/_docara/vendor/simai-framework/typography/49594fb515ba00213fc3.woff2' from origin 'null' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+        "Failed to load resource: net::ERR_FAILED",
+        "Access to font at 'https://ui-doc.test/_docara/vendor/simai-framework/typography/4f2981d82860061bca3e.woff2' from origin 'null' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+      ]
+    },
+    {
+      "scenario": "desktop-dark",
+      "count": 4,
+      "items": [
+        "Access to font at 'https://ui-doc.test/_docara/vendor/simai-framework/typography/49594fb515ba00213fc3.woff2' from origin 'null' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+        "Failed to load resource: net::ERR_FAILED",
+        "Access to font at 'https://ui-doc.test/_docara/vendor/simai-framework/typography/4f2981d82860061bca3e.woff2' from origin 'null' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+      ]
+    },
+    {
+      "scenario": "mobile-light",
+      "count": 4,
+      "items": [
+        "Access to font at 'https://ui-doc.test/_docara/vendor/simai-framework/typography/49594fb515ba00213fc3.woff2' from origin 'null' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+        "Failed to load resource: net::ERR_FAILED",
+        "Access to font at 'https://ui-doc.test/_docara/vendor/simai-framework/typography/4f2981d82860061bca3e.woff2' from origin 'null' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource."
+      ]
+    },
+    {
+      "scenario": "desktop-large-serif",
+      "count": 2,
+      "items": [
+        "Access to CSS stylesheet at 'https://ui-doc.test/_docara/vendor/simai-framework/typography/5.4.0-rc.1/core.css?sf_v=sf-v5.3.2-d1daa951-aa9f34a4-384d2cf4a184eb00' from origin 'null' has been blocked by CORS policy: Permission was denied for this request to access the `loopback` address space.",
+        "Failed to load resource: net::ERR_FAILED"
+      ]
+    }
+  ],
+  "failedRequests": [
+    {
+      "scenario": "desktop-light",
+      "count": 2,
+      "items": [
+        {
+          "url": "https://ui-doc.test/_docara/vendor/simai-framework/typography/49594fb515ba00213fc3.woff2",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "https://ui-doc.test/_docara/vendor/simai-framework/typography/4f2981d82860061bca3e.woff2",
+          "error": "net::ERR_FAILED"
+        }
+      ]
+    },
+    {
+      "scenario": "desktop-dark",
+      "count": 2,
+      "items": [
+        {
+          "url": "https://ui-doc.test/_docara/vendor/simai-framework/typography/49594fb515ba00213fc3.woff2",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "https://ui-doc.test/_docara/vendor/simai-framework/typography/4f2981d82860061bca3e.woff2",
+          "error": "net::ERR_FAILED"
+        }
+      ]
+    },
+    {
+      "scenario": "mobile-light",
+      "count": 2,
+      "items": [
+        {
+          "url": "https://ui-doc.test/_docara/vendor/simai-framework/typography/49594fb515ba00213fc3.woff2",
+          "error": "net::ERR_FAILED"
+        },
+        {
+          "url": "https://ui-doc.test/_docara/vendor/simai-framework/typography/4f2981d82860061bca3e.woff2",
+          "error": "net::ERR_FAILED"
+        }
+      ]
+    },
+    {
+      "scenario": "desktop-large-serif",
+      "count": 1,
+      "items": [
+        {
+          "url": "https://ui-doc.test/_docara/vendor/simai-framework/typography/5.4.0-rc.1/core.css?sf_v=sf-v5.3.2-d1daa951-aa9f34a4-384d2cf4a184eb00",
+          "error": "net::ERR_FAILED"
+        }
+      ]
+    }
+  ]
+}

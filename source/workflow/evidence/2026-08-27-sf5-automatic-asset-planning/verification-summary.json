@@ -1,0 +1,35 @@
+{
+  "schema": "docara.sf5_automatic_asset_planning_verification.v1",
+  "status": "pass_with_notes",
+  "completed_at": "2026-08-28",
+  "planner": {"tests": 8, "failures": 0},
+  "framework_runtime_contracts": {"tests": 4, "failures": 0},
+  "docara": {
+    "tests": 80,
+    "assertions": 2139,
+    "failures": 0,
+    "authored_pages": 127,
+    "html_outputs": 261,
+    "local_references_checked": 35025,
+    "broken": 0
+  },
+  "ui_doc": {"authored_pages": 912, "html_outputs": 1665, "local_references_checked": 370385, "broken": 0},
+  "browser": {
+    "maximum_cls": 0.0013362911522633745,
+    "corrected_control_cls": 0,
+    "late_framework_styles": 0,
+    "utility_full_css": false,
+    "console_errors": 0,
+    "failed_requests": 0,
+    "shell_shift_sources": []
+  },
+  "protected_ui_doc": {"content_examples_unchanged": true, "dependency_locks_unchanged": true},
+  "local_site": {"http_smoke": "pass", "temporary_rollback_removed": true, "permanent_sites_backup_created": false},
+  "notes": [
+    "The complete legacy UI registry suite still requires its external smart manifest and contains a pre-existing compatibility fixture mismatch; the new planner's focused eight-test suite passes.",
+    "The original 912-page ui-doc build exposed an insufficient CLI memory configuration. After ServBay CLI PHP was configured to 2 GiB, the full build completed without a command-line memory override; see post-servbay-memory-rebuild.json.",
+    "Translation tracking reports 693 report-only items; translation work was explicitly outside this task.",
+    "Project Technology sync and verify pass, but the central final-response route classifies this SF5 product task as skill_management_change and requires an unconfigured accepted target binding. The independent process resolver also fails while parsing the historical 2026-07-30 launch record. These are recorded as control-plane graph gaps and do not change the product acceptance verdict."
+  ],
+  "publication": {"commit": false, "push": false, "tag": false, "release": false, "public_deploy": false}
+}

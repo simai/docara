@@ -1,0 +1,21 @@
+{
+  "schema": "docara.framework_consumer_verification.v1",
+  "date": "2026-08-27",
+  "build": {
+    "authored_pages": 127,
+    "mode": "production_exact",
+    "page_asset_receipts": 127,
+    "generated_stylesheets": 29,
+    "utility_full_css_present": false
+  },
+  "verify_static": {
+    "schema": "docara.static_build_verification.v1",
+    "html_pages": 261,
+    "local_references_checked": 35022,
+    "broken": 0
+  },
+  "environment_observations": [
+    "ServBay PHP 8.4 reports an unrelated php.ini syntax warning at line 145",
+    "successful full build used memory_limit=1G; default 128M compatibility remains under review"
+  ]
+}

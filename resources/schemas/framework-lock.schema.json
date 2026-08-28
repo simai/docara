@@ -68,6 +68,9 @@
                 "boot": {
                     "$ref": "#/$defs/boot"
                 },
+                "shell": {
+                    "$ref": "#/$defs/runtime_shell"
+                },
                 "components": {
                     "type": "object",
                     "minProperties": 1,
@@ -204,7 +207,10 @@
             "required": ["schema", "candidate", "source", "builder", "distribution", "packet_sha256", "files"],
             "properties": {
                 "schema": {"type": "string", "const": "docara.framework_typography_projection.v1"},
-                "candidate": {"type": "string", "const": "5.4.0-rc.1"},
+                "candidate": {
+                    "type": "string",
+                    "enum": ["5.4.0-rc.1", "5.4.0"]
+                },
                 "source": {"$ref": "#/$defs/typography_source"},
                 "builder": {"$ref": "#/$defs/typography_builder"},
                 "distribution": {"$ref": "#/$defs/typography_distribution"},
@@ -251,7 +257,7 @@
                 "provider": {"type": "string", "const": "simai/ui"},
                 "revision": {"type": "string", "format": "docara-immutable-revision"},
                 "rollback_parent": {"type": "string", "format": "docara-immutable-revision"},
-                "published": {"type": "boolean", "const": false}
+                "published": {"type": "boolean"}
             },
             "additionalProperties": false
         },
@@ -485,6 +491,9 @@
                         "minLength": 1
                     }
                 },
+                "loader": {
+                    "$ref": "#/$defs/runtime_component_loader"
+                },
                 "attributes": {
                     "type": "array",
                     "uniqueItems": true,
@@ -492,6 +501,61 @@
                         "type": "string",
                         "minLength": 1
                     }
+                }
+            },
+            "additionalProperties": false
+        },
+        "runtime_component_loader": {
+            "type": "object",
+            "required": ["plugin", "relations"],
+            "properties": {
+                "plugin": {
+                    "type": "string",
+                    "pattern": "^cl-[a-z][a-z0-9-]*$"
+                },
+                "relations": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/$defs/runtime_component_relation"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "runtime_shell": {
+            "type": "object",
+            "required": ["relations"],
+            "properties": {
+                "relations": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/$defs/runtime_component_relation"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "runtime_component_relation": {
+            "type": "object",
+            "required": ["plugin", "type", "css", "javascript"],
+            "properties": {
+                "plugin": {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9-]*$"
+                },
+                "type": {
+                    "type": "string",
+                    "const": "component"
+                },
+                "css": {
+                    "type": "string",
+                    "format": "docara-relative-path"
+                },
+                "javascript": {
+                    "type": "string",
+                    "format": "docara-relative-path"
                 }
             },
             "additionalProperties": false

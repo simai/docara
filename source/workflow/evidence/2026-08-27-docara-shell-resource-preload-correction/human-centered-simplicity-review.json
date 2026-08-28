@@ -1,0 +1,219 @@
+{
+  "schema_version": "2.0.0",
+  "operation_id": "simai.human_centered_simplicity.review",
+  "quality_control_id": "human_centered_simplicity",
+  "applicable": true,
+  "evidence_level": "full",
+  "review_mode": "change",
+  "reuse_review": {
+    "mode": "modify_existing",
+    "stage": "post_change",
+    "status": "ready",
+    "required_capabilities": [
+      {
+        "id": "stable_framework_shell_loading",
+        "outcome": "stable natural shell geometry before first paint",
+        "requirement_refs": ["workflow:done-when"],
+        "criticality": "required"
+      }
+    ],
+    "source_snapshots": [
+      {
+        "repository_revision": "8ab5bc48c251283c00f1de23ab4f04384a1021a3",
+        "catalog_digest": "f6dffc979b3c3885d065f3b56f43e35693951888ecb95f35354461a53a0a808e"
+      }
+    ],
+    "candidates": [
+      {
+        "ref": "project.framework_asset_planner",
+        "owner": "docara",
+        "coverage": "covered",
+        "matched_requirement_refs": ["workflow:done-when"],
+        "fit_gaps": [],
+        "decision": "extend",
+        "readiness": "ready",
+        "source_refs": ["src/Framework/FrameworkAssetPlanner.php"],
+        "extension_points": [
+          {
+            "id": "framework_shell_resource_closure",
+            "kind": "extend",
+            "source_ref": "src/Framework/FrameworkAssetPlanner.php",
+            "validator_ref": "scripts/verify-static-build.php"
+          }
+        ]
+      }
+    ],
+    "decision": "extend",
+    "selected_refs": ["project.framework_asset_planner"],
+    "allowed_new_surfaces": ["content_hashed_shell_asset"],
+    "semantic_duplicate_status": "none",
+    "capability_inventory_digest": "f6dffc979b3c3885d065f3b56f43e35693951888ecb95f35354461a53a0a808e",
+    "discovery_digest": "91b6acfa85d86b17142251ba693e419f425c2716555f94a2e14ff02cb6b4ca84"
+  },
+  "task": "Make the Docara header, navigation, outline and main layout reach their final geometry before first paint by statically planning the exact Framework shell resources, without a fixed header height, a global skeleton, partial navigation or a second cache or asset registry.",
+  "primary_user_outcome": {
+    "id": "UO-DOCARA-STABLE-SHELL",
+    "actor": "documentation reader",
+    "job": "move between pages without the header, menu or columns jumping",
+    "success_condition": "the shell has final natural geometry from first paint and total CLS remains below 0.01"
+  },
+  "changed_surface_inventory": {
+    "mode": "artifact_comparison",
+    "baseline_ref": "docara-shell:before",
+    "target_ref": "docara-shell:verified",
+    "diff_sha256": "7929dd68aeb095255f7d1982dfb35679aab4cf5d929d5f9c46347efa380a9601",
+    "evidence_paths": [
+      "src/Framework/FrameworkAssetPlanner.php",
+      "resources/framework/runtime-lock.json",
+      "resources/portable/declarative-shell.css",
+      "scripts/verify-static-build.php"
+    ],
+    "files": [
+      {"path": "src/Framework/FrameworkAssetPlanner.php", "surface_ids": ["shell_asset_plan"]},
+      {"path": "resources/framework/runtime-lock.json", "surface_ids": ["truthful_preload"]},
+      {"path": "resources/portable/declarative-shell.css", "surface_ids": ["natural_shell_geometry"]},
+      {"path": "scripts/verify-static-build.php", "surface_ids": ["static_integrity_verifier"]}
+    ]
+  },
+  "necessity_map": [
+    {
+      "id": "shell_asset_plan",
+      "surface_type": "code_layer",
+      "description": "Existing asset planner compiles one exact shell resource closure.",
+      "disposition": "retain",
+      "disclosure": "internal",
+      "justification": {"type": "user_outcome", "ref": "UO-DOCARA-STABLE-SHELL"}
+    },
+    {
+      "id": "truthful_preload",
+      "surface_type": "protective_control",
+      "description": "Runtime lock and receipt prevent partial or false SF_PRELOADED claims.",
+      "disposition": "retain",
+      "disclosure": "internal",
+      "justification": {"type": "data_integrity", "ref": "scripts/verify-static-build.php"}
+    },
+    {
+      "id": "natural_shell_geometry",
+      "surface_type": "ui_element",
+      "description": "Header and navigation use Framework size 1 and natural typography-dependent height.",
+      "disposition": "retain",
+      "disclosure": "visible",
+      "justification": {"type": "user_outcome", "ref": "UO-DOCARA-STABLE-SHELL"}
+    },
+    {
+      "id": "static_integrity_verifier",
+      "surface_type": "protective_control",
+      "description": "Static verification rejects hash, order, path and preload drift.",
+      "disposition": "retain",
+      "disclosure": "internal",
+      "justification": {"type": "error_handling", "ref": "scripts/verify-static-build.php"}
+    }
+  ],
+  "removal_review": {
+    "challenged_ids": ["shell_asset_plan", "truthful_preload", "natural_shell_geometry", "static_integrity_verifier"],
+    "removed_ids": [],
+    "merged_ids": [],
+    "summary": "The existing planner, lock and verifier were extended; a second cache, registry, builder, fixed header and global skeleton were rejected."
+  },
+  "simplest_complete_alternative": "Extend the existing planner, lock, receipt and verifier, and server-render only the fallback geometry needed before dynamic content enhancement.",
+  "progressive_disclosure": {
+    "required": false,
+    "strategy": "",
+    "discoverability_evidence": "",
+    "not_required_reason": "The work changes loading order and geometry, not the information architecture or visible controls."
+  },
+  "complexity_delta": [
+    {
+      "measure": "parallel_asset_registries",
+      "before": 0,
+      "after": 0,
+      "unit": "registries",
+      "interpretation": "No second registry or cache was introduced.",
+      "justification_ref": "src/Framework/FrameworkAssetPlanner.php"
+    },
+    {
+      "measure": "global_loading_skeletons",
+      "before": 0,
+      "after": 0,
+      "unit": "skeletons",
+      "interpretation": "The shell is rendered directly in final geometry.",
+      "justification_ref": "resources/portable/declarative-shell.css"
+    },
+    {
+      "measure": "content_hashed_shell_assets",
+      "before": 0,
+      "after": 1,
+      "unit": "assets",
+      "interpretation": "One deterministic asset replaces multiple late shell style insertions.",
+      "justification_ref": "src/Framework/FrameworkAssetPlanner.php"
+    }
+  ],
+  "automation_review": {
+    "present": false,
+    "simplified_before_automation": false,
+    "stable_process_proven": false,
+    "evidence_ref": ""
+  },
+  "scenario_evidence": [
+    {
+      "scenario": "SC-DOCARA-SHELL-COLD-WARM",
+      "actor": "documentation reader",
+      "steps": ["Open Start", "Move to Fundamentals", "Navigate within Fundamentals", "Use back and forward"],
+      "expected": "Header, sidebar, outline and main layout do not shift after first paint.",
+      "actual": "Header stayed 73 px desktop and 65 px mobile; shell shift sources were empty; maximum live cold CLS was 0.00321972085774561.",
+      "evidence_ref": "source/workflow/evidence/2026-08-27-docara-shell-resource-preload-correction/verification-summary.json",
+      "result": "PASS"
+    }
+  ],
+  "protected_complexity_review": [
+    {"category": "accessibility", "status": "PRESERVED", "evidence_ref": "tests/PortableDocumentationSiteTest.php"},
+    {"category": "security", "status": "PRESERVED", "evidence_ref": "tests/Unit/FrameworkTypographyProjectionTest.php"},
+    {"category": "data_integrity", "status": "PRESERVED", "evidence_ref": "scripts/verify-static-build.php"},
+    {"category": "permissions", "status": "NOT_APPLICABLE", "evidence_ref": "source/workflow/2026-08-27-docara-shell-resource-preload-correction.md"},
+    {"category": "error_handling", "status": "PRESERVED", "evidence_ref": "scripts/verify-static-build.php"},
+    {"category": "observability", "status": "PRESERVED", "evidence_ref": "source/workflow/evidence/2026-08-27-docara-shell-resource-preload-correction/verification-summary.json"},
+    {"category": "migrations", "status": "PRESERVED", "evidence_ref": "tests/PortableSiteBuilderTest.php"},
+    {"category": "rollback", "status": "PRESERVED", "evidence_ref": "source/workflow/evidence/2026-08-27-docara-shell-resource-preload-correction/verification-summary.json"}
+  ],
+  "tester_evidence_review": {
+    "status": "VERIFIED",
+    "verdict_ref": "source/workflow/evidence/2026-08-27-docara-shell-resource-preload-correction/human-centered-simplicity-tester-verdict.json",
+    "verdict_sha256": "4334d062ea60b74f0f078c7e1634e18ff845019c8bb47229eb8bd4499795943b",
+    "reviewed_surface_ids": ["shell_asset_plan", "truthful_preload", "natural_shell_geometry", "static_integrity_verifier"],
+    "surface_classifications": [
+      {"surface_id": "shell_asset_plan", "classification": "ordinary", "protected_categories": [], "evidence_ref": "src/Framework/FrameworkAssetPlanner.php"},
+      {"surface_id": "truthful_preload", "classification": "protective", "protected_categories": ["data_integrity", "error_handling"], "evidence_ref": "scripts/verify-static-build.php"},
+      {"surface_id": "natural_shell_geometry", "classification": "ordinary", "protected_categories": [], "evidence_ref": "resources/portable/declarative-shell.css"},
+      {"surface_id": "static_integrity_verifier", "classification": "protective", "protected_categories": ["data_integrity", "error_handling"], "evidence_ref": "scripts/verify-static-build.php"}
+    ],
+    "evidence_paths": [
+      "src/Framework/FrameworkAssetPlanner.php",
+      "resources/framework/runtime-lock.json",
+      "resources/portable/declarative-shell.css",
+      "scripts/verify-static-build.php",
+      "tests/Unit/FrameworkTypographyProjectionTest.php",
+      "tests/PortableDocumentationSiteTest.php",
+      "tests/PortableSiteBuilderTest.php",
+      "source/workflow/2026-08-27-docara-shell-resource-preload-correction.md",
+      "source/workflow/evidence/2026-08-27-docara-shell-resource-preload-correction/verification-summary.json"
+    ],
+    "evidence_fingerprints": [
+      {"path": "src/Framework/FrameworkAssetPlanner.php", "sha256": "91b6acfa85d86b17142251ba693e419f425c2716555f94a2e14ff02cb6b4ca84"},
+      {"path": "resources/framework/runtime-lock.json", "sha256": "f6dffc979b3c3885d065f3b56f43e35693951888ecb95f35354461a53a0a808e"},
+      {"path": "resources/portable/declarative-shell.css", "sha256": "5d194d4b7251980fd56a74c943ff59e10678126c2897048c65db94e5b7a212e0"},
+      {"path": "scripts/verify-static-build.php", "sha256": "abbf31230e8700b7af46f44e2f2652773f76834fe98895f6ef7d76b900d3308b"},
+      {"path": "tests/Unit/FrameworkTypographyProjectionTest.php", "sha256": "8be7267524e21955c0a6d1e8cc7458f92c3fd0e9c318a68f7b98c31c2f72e729"},
+      {"path": "tests/PortableDocumentationSiteTest.php", "sha256": "71671b64088872136791bd4db8de4878eb98e1273494e37966a0786a6a5f1a85"},
+      {"path": "tests/PortableSiteBuilderTest.php", "sha256": "ff5f3322620777684473bb88e52d3a6fb7c79ca958224ed22df08c77610a71e1"},
+      {"path": "source/workflow/2026-08-27-docara-shell-resource-preload-correction.md", "sha256": "5432662c76f34ce44009ec37fb0a9497a7f8afa458c6008e8c64f15ac8720b22"},
+      {"path": "source/workflow/evidence/2026-08-27-docara-shell-resource-preload-correction/verification-summary.json", "sha256": "bd86a0e927f2980ed07933406fdc00e190754ae322a3efffcf1b9aae5405df9b"}
+    ],
+    "contradictions": [],
+    "verdict": "PASS"
+  },
+  "residual_complexity": [
+    {"description": "Non-critical Framework components remain dynamically loaded.", "category": "observability", "evidence_ref": "scripts/verify-static-build.php"}
+  ],
+  "blocking_findings": [],
+  "verdict": "PASS"
+}

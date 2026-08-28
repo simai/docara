@@ -1,0 +1,11 @@
+track_id: "release"
+status: "completed_without_release"
+owner_skill: "teamlead"
+current_goal: ""
+current_stage: "completed_without_release"
+current_workflow: "source/workflow/2026-08-27-sf5-automatic-asset-planning.md"
+last_completed_batch: "A4"
+next_step: "explicit_user_decision"
+blockers: []
+related_tracks: []
+updated_at: "2026-08-27"

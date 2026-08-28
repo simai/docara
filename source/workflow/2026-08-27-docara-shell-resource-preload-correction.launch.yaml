@@ -1,0 +1,73 @@
+schema_version: 1.0.0
+workflow_id: 2026-08-27-docara-shell-resource-preload-correction
+process_model_id: docara_documentation_site_publication
+cycle_id: implementation_and_publication_cycle
+state: completed
+owner_skill: teamlead
+companion_skills:
+  - docara
+  - dev
+  - tester
+  - ops
+  - graph
+approved_by_user: true
+approval_note: User explicitly requested implementation of the stable Docara shell loading plan on 2026-08-27.
+repository: /Users/rim/Documents/GitHub/docara
+worktree: /Users/rim/Documents/GitHub/docara
+branch: main
+revision: 8ab5bc48c251283c00f1de23ab4f04384a1021a3
+allowed_files:
+  - /Users/rim/Documents/GitHub/docara/**
+  - /Users/rim/Documents/GitHub/ui-doc/build_production/**
+  - /Users/rim/Documents/GitHub/ui-doc/.docara/**
+  - /Users/rim/Sites/ui-doc.test/**
+  - /private/tmp/**
+forbidden_files:
+  - /Users/rim/Documents/GitHub/ui-doc/content/**
+  - /Users/rim/Documents/GitHub/ui-doc/docara.json
+  - /Users/rim/Documents/GitHub/ui-doc/composer.lock
+  - '**/.env'
+  - '**/.env.*'
+allowed_actions:
+  - extend_existing_framework_asset_planner
+  - extend_package_owned_runtime_lock
+  - generate_content_hashed_shell_css
+  - emit_and_verify_truthful_sf_preloaded
+  - add_tests_and_static_verification
+  - build_docara_and_ui_doc
+  - run_browser_performance_matrix
+  - atomically_refresh_local_ui_doc_test_with_temporary_rollback
+  - update_repository_specification_graph_workflow_and_memory
+forbidden_actions:
+  - change_ui_doc_content_or_dependency_lock
+  - add_global_skeleton_or_fixed_header_height
+  - add_partial_navigation_or_second_cache_registry
+  - commit_push_tag_release_or_public_deploy
+  - expose_or_commit_secrets
+required_gates:
+  - env_policy_gate
+  - repo_hygiene_gate
+  - source_policy_gate
+  - secret_boundary
+  - framework_asset_integrity
+  - static_output_verification
+  - browser_shell_stability_acceptance
+  - local_site_rollback_and_smoke
+required_evidence:
+  - workflow_and_launch_record
+  - dirty_baseline_inventory
+  - cold_and_warm_layout_shift_sources
+  - asset_input_order_and_hash_receipt
+  - preload_dependency_and_negative_matrix
+  - docara_build_and_static_verification
+  - ui_doc_consumer_build_and_browser_matrix
+  - local_site_swap_smoke_and_rollback_cleanup
+  - graph_context_memory_and_simplicity_review
+evidence_path: source/workflow/evidence/2026-08-27-docara-shell-resource-preload-correction
+stop_conditions:
+  - loader_identity_or_dependency_must_be_guessed
+  - false_or_partial_preload_required
+  - ui_doc_content_or_dependency_lock_change_required
+  - product_or_runtime_source_overlap_cannot_be_preserved
+  - local_site_rollback_or_smoke_unavailable
+  - public_deployment_or_release_required

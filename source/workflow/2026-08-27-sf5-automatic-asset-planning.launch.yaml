@@ -1,0 +1,91 @@
+schema_version: 1.0.0
+workflow_id: 2026-08-27-sf5-automatic-asset-planning
+process_model_id: docara_documentation_site_publication
+cycle_id: implementation_and_publication_cycle
+state: completed
+owner_skill: sf5
+companion_skills:
+  - docara
+  - dev
+  - tester
+  - ops
+  - graph
+approved_by_user: true
+approval_note: User explicitly requested implementation of the automatic stable SIMAI Framework asset planning plan on 2026-08-27.
+repository: /Users/rim/Documents/GitHub/docara
+worktree: /Users/rim/Documents/GitHub/docara
+branch: main
+revision: 8ab5bc48c251283c00f1de23ab4f04384a1021a3
+allowed_files:
+  - /Users/rim/Documents/GitHub/ui/scripts/**
+  - /Users/rim/Documents/GitHub/ui/contracts/generated/**
+  - /Users/rim/Documents/GitHub/ui/tests/**
+  - /Users/rim/Documents/GitHub/ui-loader/docs/developer/typography-5.4.md
+  - /Users/rim/Documents/GitHub/ui-loader/scripts/validate-highlight-contract.mjs
+  - /Users/rim/Documents/GitHub/ui-loader/scripts/validate-root-typography-contract.mjs
+  - /Users/rim/Documents/GitHub/ui-loader/src/component/clipboard/rule.js
+  - /Users/rim/Documents/GitHub/ui-loader/src/component/highlight/js/index.js
+  - /Users/rim/Documents/GitHub/ui-loader/src/component/icon-buttons/scss/_css_icon_buttons.scss
+  - /Users/rim/Documents/GitHub/ui-loader/src/component/icons/scss/_css__icons.scss
+  - /Users/rim/Documents/GitHub/ui-loader/src/component/menu/js/_menu.js
+  - /Users/rim/Documents/GitHub/ui-loader/src/component/menu/scss/_css__menu_element.scss
+  - /Users/rim/Documents/GitHub/ui-loader/src/core/js/loader.js
+  - /Users/rim/Documents/GitHub/ui-loader/src/core/js/rule.src.js
+  - /Users/rim/Documents/GitHub/ui-loader/src/core/scss/index.scss
+  - /Users/rim/Documents/GitHub/ui-loader/src/smart/buttons/rule.js
+  - /Users/rim/Documents/GitHub/ui-loader/src/smart/icon-buttons/rule.js
+  - /Users/rim/Documents/GitHub/ui-loader/src/utility/visibility/default/rule.js
+  - /Users/rim/Documents/GitHub/ui-loader/tests/production-asset-plan-loader.contract.test.mjs
+  - /Users/rim/Documents/GitHub/docara/**
+  - /Users/rim/Documents/GitHub/ui-doc/build_production/**
+  - /Users/rim/Documents/GitHub/ui-doc/.docara/**
+  - /Users/rim/Sites/ui-doc.test/**
+  - /private/tmp/**
+forbidden_files:
+  - /Users/rim/Documents/GitHub/ui-builder/**
+  - /Users/rim/Documents/GitHub/ui-doc/content/**
+  - /Users/rim/Documents/GitHub/ui-doc/docara.json
+  - /Users/rim/Documents/GitHub/ui-doc/composer.lock
+  - '**/.env'
+  - '**/.env.*'
+allowed_actions:
+  - extend_existing_framework_registry
+  - add_generic_framework_asset_planner
+  - integrate_docara_as_first_consumer
+  - add_tests_and_static_verification
+  - build_docara_and_ui_doc
+  - run_browser_performance_matrix
+  - atomically_refresh_local_ui_doc_test_with_temporary_rollback
+  - update_repository_specification_graph_workflow_and_memory
+forbidden_actions:
+  - overwrite_unrelated_existing_dirty_work
+  - change_ui_doc_content_or_dependency_lock
+  - add_spa_router_html_cache_global_skeleton_or_second_registry
+  - commit_push_tag_release_package_publish_or_public_deploy
+  - expose_or_commit_secrets
+required_gates:
+  - env_policy_gate
+  - repo_hygiene_gate
+  - source_policy_gate
+  - secret_boundary
+  - framework_asset_integrity
+  - static_output_verification
+  - browser_shell_stability_acceptance
+  - local_site_rollback_and_smoke
+required_evidence:
+  - workflow_and_launch_record
+  - dirty_baseline_inventory
+  - registry_and_loader_reuse_inventory
+  - planner_dependency_order_and_safety_matrix
+  - docara_build_and_static_verification
+  - ui_doc_consumer_build_and_browser_matrix
+  - local_site_swap_smoke_and_rollback_cleanup
+  - graph_context_memory_and_simplicity_review
+evidence_path: source/workflow/evidence/2026-08-27-sf5-automatic-asset-planning
+stop_conditions:
+  - second_registry_or_loader_fork_required
+  - existing_developer_interface_must_change
+  - ui_loader_dirty_work_must_be_overwritten
+  - ui_doc_content_or_dependency_lock_change_required
+  - local_site_rollback_or_smoke_unavailable
+  - public_deployment_or_release_required

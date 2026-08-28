@@ -1,3 +1,3 @@
-<a class="docara-brand docara-brand--logo docara-brand--size-<?= $view->size ?> inline-flex items-center color-on-surface decoration-none" href="<?= $view->homeUrl ?>" aria-label="<?= $view->title ?>" data-docara-smart="docara.brand" data-docara-view="logo">
+<a class="docara-brand docara-brand--logo docara-brand--size-<?= $view->size ?> inline-flex items-cross-center color-on-surface decoration-none" href="<?= $view->homeUrl ?>" aria-label="<?= $view->title ?>" data-docara-smart="docara.brand" data-docara-view="logo">
     <span class="docara-brand-mark"><img src="<?= $view->logo ?>"<?php if ($view->logoDark !== null) { ?> class="docara-brand-logo docara-brand-logo--light"<?php } else { ?> class="docara-brand-logo"<?php } ?> alt=""><?php if ($view->logoDark !== null) { ?><img src="<?= $view->logoDark ?>" class="docara-brand-logo docara-brand-logo--dark" alt=""><?php } ?></span>
 </a>

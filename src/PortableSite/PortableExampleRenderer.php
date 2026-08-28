@@ -61,7 +61,7 @@ final class PortableExampleRenderer
             . '" data-copy-label="' . $this->escape($copyLabel) . '" data-copied-label="'
             . $this->escape($copiedLabel)
             . '" data-copy-icon="content_copy" data-copied-icon="check"'
-            . ' class="docara-example-preview__copy sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-center content-main-center m-0">'
+            . ' class="docara-example-preview__copy sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
             . '<sf-icon icon="content_copy" aria-hidden="true"></sf-icon>'
             . '</button><span class="docara-example-preview__indicator" aria-hidden="true"></span></div>'
             . '<div class="docara-example-preview__panels">' . implode('', $panels) . '</div></section>';

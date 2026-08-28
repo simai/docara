@@ -141,13 +141,13 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);
-        $this->assertSame('sf-v5.3.2-d1daa951-aa9f34a4', $lock['runtime']['pair_id']);
-        $this->assertSame('d1daa951dd08b94a9f209fd9f31a78d2b3779563', $lock['runtime']['ui']['commit']);
-        $this->assertSame('aa9f34a4d2bf421e20970ab4eb0418f017c62059', $lock['runtime']['ui_smart']['commit']);
-        $this->assertSame('b7e8a2e810c0d49e31cb749a7ab34c373dd48bc6', $lock['runtime']['framework_registry']['source']['commit']);
+        $this->assertSame('sf-v5.4.0-b2e84446-23d00d92', $lock['runtime']['pair_id']);
+        $this->assertSame('b2e8444659ae0d213296c2d349257259d3ed0c9c', $lock['runtime']['ui']['commit']);
+        $this->assertSame('23d00d92346717b8f835297d142a14458f806602', $lock['runtime']['ui_smart']['commit']);
+        $this->assertSame('b2e8444659ae0d213296c2d349257259d3ed0c9c', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);
-        $this->assertSame('16657a8d75efc86383039ec746ffe7b291c8669569995f5fd1c6161eba55d9e9', $lock['manifests']['ui.button']['sha256']);
-        $this->assertSame('b6e7c91da1157335ac2a017571aeed8b518a95bb41c88688e6ef122bf39efc29', $lock['manifests']['ui.alert']['sha256']);
+        $this->assertSame('ce04f11f88da1b7e1a4edffffd2937b9ea6f337c2f3f70937e45e80cc6616008', $lock['manifests']['ui.button']['sha256']);
+        $this->assertSame('27c0393aa7b23318486bdc0008a349dfa7b95cc044ebde1cac92794065beeb75', $lock['manifests']['ui.alert']['sha256']);
         $this->assertSame('docara.framework_asset_projection.v1', $lock['asset_projection']['schema']);
         $this->assertSame('_docara/framework', $lock['asset_projection']['mount']);
         $this->assertSame('simai/ui-smart', $lock['asset_projection']['source']['provider']);
@@ -156,10 +156,10 @@ class PortableInitCommandTest extends TestCase
             $lock['asset_projection']['source']['revision'],
         );
         $this->assertSame([
-            'smart/alert/js/alert.js' => '6720a3dd126f35c46fc09ecb6aeb0f2d9ebfcce82388ba8cc031c24cead426a7',
-            'smart/buttons/js/buttons.js' => 'f9d400cd9d88c23243f75b313e9d0040ebee4e12e763d12a5ba86e556cf5c48b',
-            'smart/icons/js/icons.js' => '6fe9a1ac7436ba6017addd7c9d389633e1fe4be4ae86cc0cd7fb45c0b31902d1',
-            'smart/modal/js/modal.js' => '7ddde60f8a85cc9496685e6d70299d84e67b4cfecde845714ba7e2825b61a045',
+            'smart/alert/js/alert.js' => '9fa2e29f067379f8400ee4a5bd0ef34832baee42f5a8394f48796719d07e75fa',
+            'smart/buttons/js/buttons.js' => 'b9804afcf05c718ed51ee0b8b5e04e946c422d2fb8b8fed112e552824054087b',
+            'smart/icons/js/icons.js' => '362cef3368003672166a0a99d5026a1712fe4f716f9e614a55037d2429430da5',
+            'smart/modal/js/modal.js' => 'a14cc8fca8e803328cc082a6290695ded7c7baf97373a6353b765116a2b89cb5',
         ], array_map(
             static fn (array $record): string => $record['sha256'],
             $lock['asset_projection']['files'],

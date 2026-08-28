@@ -1,0 +1,11 @@
+PHP:  syntax error, unexpected '(' in /Applications/ServBay/package/etc/php/8.4/php.ini on line 145
+PHPUnit 11.5.56 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.4.20
+
+................................................................. 65 / 66 ( 98%)
+.                                                                 66 / 66 (100%)
+
+Time: 14:56.319, Memory: 322.91 MB
+
+OK (66 tests, 2751 assertions)

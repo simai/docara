@@ -1,0 +1,11 @@
+track_id: "docara-stable-shell-loading"
+status: "completed"
+owner_skill: "docara"
+current_goal: "Keep the visible Docara shell stable from the first paint through Framework"
+current_stage: ""
+current_workflow: "source/workflow/2026-08-27-docara-stable-shell-loading.md"
+last_completed_batch: "stable-shell-loading-verified"
+next_step: "explicit_user_decision"
+blockers: []
+related_tracks: []
+updated_at: "2026-08-27"

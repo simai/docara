@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0.0",
+  "operation_id": "simai.human_centered_simplicity.tester_verdict",
+  "quality_control_id": "human_centered_simplicity",
+  "reviewer": {
+    "role": "tester",
+    "source": "tester_skill",
+    "identity": "docara-shell-resource-preload-correction-acceptance"
+  },
+  "scope_binding": {
+    "task_sha256": "1df6d48f69b7405745b78b7ed0328e2a4ce0e1e1eff92e2fe3e939dcbd576ee1",
+    "review_payload_sha256": "bcc8c47ecdf09ecda81777a9c58b2c32721b31f91a05f9faf6db0025c88c418a",
+    "workflow_ref": "",
+    "workflow_sha256": "",
+    "repository_refs": ["repo://docara"],
+    "repository_baselines": []
+  },
+  "status": "VERIFIED",
+  "reviewed_surface_ids": ["shell_asset_plan", "truthful_preload", "natural_shell_geometry", "static_integrity_verifier"],
+  "surface_classifications": [
+    {"surface_id": "shell_asset_plan", "classification": "ordinary", "protected_categories": [], "evidence_ref": "src/Framework/FrameworkAssetPlanner.php"},
+    {"surface_id": "truthful_preload", "classification": "protective", "protected_categories": ["data_integrity", "error_handling"], "evidence_ref": "scripts/verify-static-build.php"},
+    {"surface_id": "natural_shell_geometry", "classification": "ordinary", "protected_categories": [], "evidence_ref": "resources/portable/declarative-shell.css"},
+    {"surface_id": "static_integrity_verifier", "classification": "protective", "protected_categories": ["data_integrity", "error_handling"], "evidence_ref": "scripts/verify-static-build.php"}
+  ],
+  "evidence_paths": [
+    "src/Framework/FrameworkAssetPlanner.php",
+    "resources/framework/runtime-lock.json",
+    "resources/portable/declarative-shell.css",
+    "scripts/verify-static-build.php",
+    "tests/Unit/FrameworkTypographyProjectionTest.php",
+    "tests/PortableDocumentationSiteTest.php",
+    "tests/PortableSiteBuilderTest.php",
+    "source/workflow/2026-08-27-docara-shell-resource-preload-correction.md",
+    "source/workflow/evidence/2026-08-27-docara-shell-resource-preload-correction/verification-summary.json"
+  ],
+  "evidence_fingerprints": [
+    {"path": "src/Framework/FrameworkAssetPlanner.php", "sha256": "91b6acfa85d86b17142251ba693e419f425c2716555f94a2e14ff02cb6b4ca84"},
+    {"path": "resources/framework/runtime-lock.json", "sha256": "f6dffc979b3c3885d065f3b56f43e35693951888ecb95f35354461a53a0a808e"},
+    {"path": "resources/portable/declarative-shell.css", "sha256": "5d194d4b7251980fd56a74c943ff59e10678126c2897048c65db94e5b7a212e0"},
+    {"path": "scripts/verify-static-build.php", "sha256": "abbf31230e8700b7af46f44e2f2652773f76834fe98895f6ef7d76b900d3308b"},
+    {"path": "tests/Unit/FrameworkTypographyProjectionTest.php", "sha256": "8be7267524e21955c0a6d1e8cc7458f92c3fd0e9c318a68f7b98c31c2f72e729"},
+    {"path": "tests/PortableDocumentationSiteTest.php", "sha256": "71671b64088872136791bd4db8de4878eb98e1273494e37966a0786a6a5f1a85"},
+    {"path": "tests/PortableSiteBuilderTest.php", "sha256": "ff5f3322620777684473bb88e52d3a6fb7c79ca958224ed22df08c77610a71e1"},
+    {"path": "source/workflow/2026-08-27-docara-shell-resource-preload-correction.md", "sha256": "5432662c76f34ce44009ec37fb0a9497a7f8afa458c6008e8c64f15ac8720b22"},
+    {"path": "source/workflow/evidence/2026-08-27-docara-shell-resource-preload-correction/verification-summary.json", "sha256": "bd86a0e927f2980ed07933406fdc00e190754ae322a3efffcf1b9aae5405df9b"}
+  ],
+  "commands": [
+    {
+      "command": "Docara and ui-doc regression matrix",
+      "exit_code": 0,
+      "result": "PASS",
+      "output_ref": "source/workflow/evidence/2026-08-27-docara-shell-resource-preload-correction/verification-summary.json",
+      "output_sha256": "bd86a0e927f2980ed07933406fdc00e190754ae322a3efffcf1b9aae5405df9b"
+    }
+  ],
+  "contradictions": [],
+  "verdict": "PASS"
+}

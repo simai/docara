@@ -556,8 +556,8 @@ final class PortableMarkdownRenderer
                 $state = $index < $current ? 'complete' : ($index === $current ? 'current' : 'pending');
                 $marker = $index < $current ? '&#10003;' : (string) $index;
 
-                return '<li data-step-state="' . $state . '" class="docara-step grid items-start gap-1 list-none p-block-end-2">'
-                    . '<span aria-hidden="true" class="docara-step-marker inline-flex items-center content-main-center">'
+                return '<li data-step-state="' . $state . '" class="docara-step grid items-cross-start gap-1 list-none p-block-end-2">'
+                    . '<span aria-hidden="true" class="docara-step-marker inline-flex items-cross-center content-main-center">'
                     . '<span class="docara-step-marker-text">' . $marker . '</span></span>'
                     . '<div class="docara-step-content">'
                     . (string) $match['content'] . '</div></li>';
@@ -605,7 +605,7 @@ final class PortableMarkdownRenderer
             : 'bg-surface-0 border border-outline-variant radius-2 p-2 m-bottom-1';
 
         return '<details data-docara-block="details" data-view="' . $view . '" class="' . $classes . '"'
-            . ($open ? ' open' : '') . '><summary class="flex items-center gap-1 cursor-pointer font-bold">'
+            . ($open ? ' open' : '') . '><summary class="flex items-cross-center gap-1 cursor-pointer font-bold">'
             . $this->escapeHtml($title) . '</summary><div class="p-block-start-1">' . $content . '</div></details>';
     }
 
@@ -633,18 +633,18 @@ final class PortableMarkdownRenderer
 
         if ($name === '' && $meta === []) {
             return '<a data-docara-block="download" data-action="' . $action
-                . '" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 inline-flex items-center gap-1 decoration-none m-bottom-1"'
+                . '" class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 inline-flex items-cross-center gap-1 decoration-none m-bottom-1"'
                 . $match['attributes'] . $download . '><i class="sf-icon sf-icon-loaded" aria-hidden="true">' . $icon . '</i>'
                 . '<span class="sf-button-text-container">' . $match['label'] . '</span></a>';
         }
 
         return '<section data-docara-block="download" data-action="' . $action
-            . '" class="bg-surface-0 border border-outline-variant radius-2 p-2 flex flex-col md:flex-row md:items-center content-main-between gap-2 m-bottom-1">'
-            . '<div class="min-w-0 flex items-start gap-1"><i class="sf-icon sf-icon-loaded color-primary" aria-hidden="true">description</i>'
+            . '" class="bg-surface-0 border border-outline-variant radius-2 p-2 flex flex-col md:flex-row md:items-cross-center content-main-between gap-2 m-bottom-1">'
+            . '<div class="min-w-0 flex items-cross-start gap-1"><i class="sf-icon sf-icon-loaded color-primary" aria-hidden="true">description</i>'
             . '<div class="min-w-0 flex flex-col gap-1/3">'
             . ($name !== '' ? '<strong>' . $this->escapeHtml($name) . '</strong>' : '')
             . ($meta !== [] ? '<span class="color-on-surface-variant">' . $this->escapeHtml(implode(' · ', $meta)) . '</span>' : '')
-            . '</div></div><a class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 inline-flex items-center gap-1 decoration-none"'
+            . '</div></div><a class="sf-button sf-button--outline sf-button--on-surface sf-button--size-1 inline-flex items-cross-center gap-1 decoration-none"'
             . $match['attributes'] . $download . '><i class="sf-icon sf-icon-loaded" aria-hidden="true">' . $icon . '</i>'
             . '<span class="sf-button-text-container">' . $match['label'] . '</span></a></section>';
     }
@@ -804,6 +804,10 @@ final class PortableMarkdownRenderer
 var body=document.body,lastHeight=0,scheduled=false;
 function applyEnvironment(data){
 var theme=data.theme==='dark'?'dark':'light',direction=data.direction==='rtl'?'rtl':'ltr';
+/* Sandboxed srcdoc has an opaque origin, so it must not request parent webfonts. */
+document.documentElement.style.setProperty('--sf-text--family','Arial,sans-serif');
+document.documentElement.style.setProperty('--sf-heading--family','Arial,sans-serif');
+document.documentElement.style.setProperty('--sf-display--family','Arial,sans-serif');
 document.documentElement.classList.remove('theme-light','theme-dark');
 document.documentElement.classList.add('theme-'+theme);
 body.classList.remove('theme-light','theme-dark');
@@ -893,7 +897,7 @@ HTML;
             . '" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" sandbox="allow-scripts allow-same-origin allow-presentation" allowfullscreen';
         $content = $consent === 'none'
             ? '<iframe src="' . $url . '"' . $common . '></iframe>'
-            : '<div class="w-full h-full flex flex-col items-center content-main-center gap-1 p-2 text-center" data-docara-embed-consent>'
+            : '<div class="w-full h-full flex flex-col items-cross-center content-main-center gap-1 p-2 text-center" data-docara-embed-consent>'
                 . '<button type="button" class="sf-button sf-button--main sf-button--primary sf-button--size-1" data-docara-embed-load>'
                 . $this->escapeHtml($loadLabel) . '</button>'
                 . '</div><template data-docara-embed-template><iframe data-src="' . $url . '"' . $common . '></iframe></template>';
@@ -1322,7 +1326,7 @@ HTML;
         $text = '<div class="min-w-0 flex flex-col gap-1">' . $content . '</div>';
 
         return '<section data-docara-block="media" data-side="' . $side
-            . '" class="grid grid-col-1 lg:grid-col-2 gap-3 items-center m-bottom-1">'
+            . '" class="grid grid-col-1 lg:grid-col-2 gap-3 items-cross-center m-bottom-1">'
             . ($side === 'left' ? $image . $text : $text . $image) . '</section>';
     }
 
@@ -1467,7 +1471,7 @@ HTML;
         };
 
         return '<aside data-docara-block="banner" role="status" class="sf-alert sf-alert--' . $type
-            . ' sf-alert--flat flex items-start m-bottom-1"><sf-icon icon="' . $icon . '" aria-hidden="true"></sf-icon>'
+            . ' sf-alert--flat flex items-cross-start m-bottom-1"><sf-icon icon="' . $icon . '" aria-hidden="true"></sf-icon>'
             . '<div class="sf-alert-wrap flex-1"><div class="sf-alert-content">' . $content . '</div></div></aside>';
     }
 
@@ -1651,7 +1655,7 @@ HTML;
             );
         }
 
-        return '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start m-bottom-1"'
+        return '<a data-docara-block="cta" class="docara-cta-link sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-cross-center content-main-center decoration-none w-full sm:w-auto sm:self-cross-start m-bottom-1"'
             . $match['attributes'] . '><span class="sf-button-text-container">'
             . $match['label'] . '</span></a>';
     }
@@ -1993,7 +1997,7 @@ HTML;
                     $decorative = preg_match('/\balt=""/u', $attributes) === 1
                         ? ' aria-hidden="true"'
                         : '';
-                    $image = '<div class="min-w-0 flex items-center content-main-center">'
+                    $image = '<div class="min-w-0 flex items-cross-center content-main-center">'
                         . '<img data-docara-media="hero" loading="eager" fetchpriority="high" decoding="async"'
                         . $decorative . $attributes . '>'
                         . '</div>';
@@ -2015,7 +2019,7 @@ HTML;
 
                     return '<a data-docara-hero-action class="sf-button sf-button--default sf-button--'
                         . $type
-                        . ' sf-button--size-1 box-border h-c8 lg:h-d0 radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start"'
+                        . ' sf-button--size-1 box-border h-c8 lg:h-d0 radius-default inline-flex items-cross-center content-main-center decoration-none w-full sm:w-auto sm:self-cross-start"'
                         . (string) $match['attributes'] . '><span class="sf-button-text-container">'
                         . (string) $match['label'] . '</span></a>';
                 },
@@ -2024,14 +2028,14 @@ HTML;
             ) ?? $content;
             $content = preg_replace(
                 '/(?<actions>(?:<a data-docara-hero-action\b.*?<\/a>\s*){1,2})/su',
-                '<div data-docara-hero-actions class="flex flex-wrap items-center gap-1">$1</div>',
+                '<div data-docara-hero-actions class="flex flex-wrap items-cross-center gap-1">$1</div>',
                 $content,
                 1,
             ) ?? $content;
         }
 
         $columns = $variant === 'split' && $image !== '' ? 'grid-col-1 lg:grid-col-2' : 'grid-col-1';
-        $alignment = $variant === 'centered' ? ' text-center items-center' : '';
+        $alignment = $variant === 'centered' ? ' text-center items-cross-center' : '';
         if ($mediaMode === 'background') {
             $overlay = $this->attributeOneOf($attributes['overlay'] ?? 'dark', ['light', 'dark'], 'hero', 'overlay');
             $surfaceProps = [
@@ -2125,7 +2129,7 @@ HTML;
 
         return preg_replace(
             '/<li>/u',
-            '<li class="min-w-0 flex items-center content-main-center' . ($tone === 'muted' ? ' color-on-surface-variant' : '') . '">',
+            '<li class="min-w-0 flex items-cross-center content-main-center' . ($tone === 'muted' ? ' color-on-surface-variant' : '') . '">',
             $content,
         ) ?? $content;
     }
@@ -2519,7 +2523,7 @@ HTML;
                     $decorative = preg_match('/\balt=""/u', $attributes) === 1
                         ? ' aria-hidden="true"'
                         : '';
-                    $image = '<div class="min-w-0 flex items-center content-main-center">'
+                    $image = '<div class="min-w-0 flex items-cross-center content-main-center">'
                         . '<img data-docara-media="' . $block . '" loading="lazy" decoding="async"'
                         . $decorative . $attributes . '>'
                         . '</div>';
@@ -2534,7 +2538,7 @@ HTML;
             $content = preg_replace_callback(
                 '/<p><a(?<attributes>[^>]*)>(?<label>.*?)<\/a><\/p>/su',
                 static fn (array $match): string => '<a data-docara-' . $block
-                    . '-action class="sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-center content-main-center decoration-none w-full sm:w-auto sm:self-start"'
+                    . '-action class="sf-button sf-button--default sf-button--primary sf-button--size-1 radius-default inline-flex items-cross-center content-main-center decoration-none w-full sm:w-auto sm:self-cross-start"'
                     . (string) $match['attributes'] . '><span class="sf-button-text-container">'
                     . (string) $match['label'] . '</span></a>',
                 $content,
@@ -2722,8 +2726,25 @@ HTML;
             '/<pre><code(?P<attributes>[^>]*)>(?P<content>.*?)<\/code><\/pre>/s',
             function (array $matches): string {
                 $attributes = (string) ($matches['attributes'] ?? '');
+                $language = 'code';
+                if (preg_match('/(?:language|lang)-([a-z0-9_+-]+)/i', $attributes, $languageMatch) === 1) {
+                    $language = strtolower((string) $languageMatch[1]);
+                }
+                $labels = [
+                    'html' => 'HTML', 'xhtml' => 'HTML', 'css' => 'CSS', 'js' => 'JavaScript',
+                    'javascript' => 'JavaScript', 'json' => 'JSON', 'php' => 'PHP', 'bash' => 'Bash',
+                    'shell' => 'Shell', 'markdown' => 'Markdown', 'md' => 'Markdown',
+                    'text' => 'Code', 'plaintext' => 'Code', 'code' => 'Code',
+                ];
+                $label = $labels[$language] ?? $language;
 
-                return '<div data-docara-code-block class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">'
+                return '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="' . $this->escapeHtml($language)
+                    . '" class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">'
+                    . '<div data-docara-code-fallback class="docara-code-header flex content-main-between border-outline-variant items-cross-center bg-surface-overlay">'
+                    . '<span class="flex sf-text-1/3 weight-5">' . $this->escapeHtml($label) . '</span>'
+                    . '<button type="button" data-docara-code-copy class="docara-code-copy sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0" aria-label="Copy">'
+                    . '<span aria-hidden="true" class="sf-icon sf-icon-regular">content_copy</span>'
+                    . '<span class="sf-button-text-container visually-hidden">Copy</span></button></div>'
                     . '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code'
                     . $attributes . '>' . (string) ($matches['content'] ?? '') . '</code></pre>'
                     . '</div>';

@@ -1,0 +1,62 @@
+{
+  "schema": "docara.post_servbay_memory_rebuild.v1",
+  "status": "pass_with_notes",
+  "completed_at": "2026-08-28",
+  "php_cli": {
+    "binary": "/Applications/ServBay/package/php/8.4/current/bin/php",
+    "memory_limit": "2G",
+    "timezone": "Europe/Istanbul",
+    "manual_memory_override": false
+  },
+  "doctor": {
+    "status": "pass",
+    "project_config_valid": true,
+    "smart_registry_entries": 13,
+    "design_registry_entries": 15,
+    "binding_registry_entries": 3,
+    "schema_catalog_entries": 41
+  },
+  "build": {
+    "command": "/Applications/ServBay/package/php/8.4/current/bin/php /Users/rim/Documents/GitHub/docara/docara build production",
+    "authored_pages": 912,
+    "duration_seconds": 228.0,
+    "status": "pass"
+  },
+  "static_verification": {
+    "html_outputs": 1665,
+    "local_references_checked": 370385,
+    "broken": 0,
+    "status": "pass"
+  },
+  "http_smoke": {
+    "status": "pass",
+    "routes": [
+      "/ru/",
+      "/ru/start/",
+      "/ru/fundamentals/modifiers/",
+      "/ru/utilities/background/background-attachment/"
+    ]
+  },
+  "browser_smoke": {
+    "status": "pass_with_notes",
+    "routes_checked": 3,
+    "header_height_css_px": 73,
+    "horizontal_overflow": false,
+    "console_errors": 0,
+    "warnings": [
+      "Two preloaded typography WOFF2 resources were not used within the browser warning window."
+    ]
+  },
+  "protected_ui_doc": {
+    "content_examples_sha256": "095b4a6ea95eff49d9bfd35f418238cb7b47c53bc687d4cf234c4651f18b6a4f",
+    "content_examples_unchanged": true,
+    "dependency_locks_unchanged": true
+  },
+  "publication": {
+    "commit": false,
+    "push": false,
+    "tag": false,
+    "release": false,
+    "public_deploy": false
+  }
+}

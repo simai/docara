@@ -1,41 +1,39 @@
 # Docara Framework consumer projection
 
-This directory is a bounded, consumer-verified projection for the portable
-Docara prototype. It contains byte-identical copies of the accepted
+This directory is a bounded, consumer-verified projection for portable Docara
+sites. It contains byte-identical copies of the accepted
 `larena/ui` manifests for `ui.alert` and `ui.button`, the exact accepted Simai
 Framework runtime lock and four locally projected Smart assets from the
 published Framework pair
-`ui@d1daa951dd08b94a9f209fd9f31a78d2b3779563` /
-`ui-smart@aa9f34a4d2bf421e20970ab4eb0418f017c62059`:
+`ui@b2e8444659ae0d213296c2d349257259d3ed0c9c` /
+`ui-smart@23d00d92346717b8f835297d142a14458f806602`:
 
 - `smart/alert/js/alert.js` —
-  `6720a3dd126f35c46fc09ecb6aeb0f2d9ebfcce82388ba8cc031c24cead426a7`;
+  `9fa2e29f067379f8400ee4a5bd0ef34832baee42f5a8394f48796719d07e75fa`;
 - `smart/buttons/js/buttons.js` —
-  `f9d400cd9d88c23243f75b313e9d0040ebee4e12e763d12a5ba86e556cf5c48b`;
+  `b9804afcf05c718ed51ee0b8b5e04e946c422d2fb8b8fed112e552824054087b`;
 - `smart/icons/js/icons.js` —
-  `6fe9a1ac7436ba6017addd7c9d389633e1fe4be4ae86cc0cd7fb45c0b31902d1`;
+  `362cef3368003672166a0a99d5026a1712fe4f716f9e614a55037d2429430da5`;
 - `smart/modal/js/modal.js` —
-  `7ddde60f8a85cc9496685e6d70299d84e67b4cfecde845714ba7e2825b61a045`.
+  `a14cc8fca8e803328cc082a6290695ded7c7baf97373a6353b765116a2b89cb5`.
 
 Project sites repeat those hashes, the source revision and the manifest
 provider revision in `docara.framework_lock.v1`. A build verifies the bytes,
 copies them to the reserved `_docara/framework` namespace and appends one
-projection-aware cache version to each URL. SIMAI Framework Core remains an exact-commit jsDelivr
-dependency; there is no moving `main`/`latest` or `ui-smart` CDN fallback.
+projection-aware cache version to each URL. Core and Smart are taken from the
+immutable published `v5.4.0` pair; there is no moving `main`/`latest` fallback.
 The local consumer adapter publishes exact full Material Symbols Outlined,
 Rounded and Sharp variable fonts from the source-pinned official Google
 projection before exposing Framework icon glyphs; it does not call the mutable
 icon-subset service.
 
 The projection supports only the named consumer components. It does not claim
-production readiness or readiness of every Framework component. It is not a
-new component registry, a moving release channel, or an independent source of
-Framework truth.
+standalone production readiness or readiness of every Framework component. It
+is not a new component registry, a moving release channel, or an independent
+source of Framework truth.
 
 `ui.alert` with `closable: true` is outside this bounded pair because its
 `sf-icon-button` dependency is absent and therefore fails closed.
 
-The inspected `ui-smart` revision has no license file in its source tree. These
-bytes are retained only for the local non-release prototype. Do not publish,
-tag or distribute a package containing them until the owner has explicitly
-approved the redistribution terms.
+The projected bytes belong to the owner-published Framework 5.4.0 release and
+remain tied to its immutable Core and Smart revisions.

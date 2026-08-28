@@ -60,6 +60,9 @@ class SfBaseElement extends HTMLElement {
   static externalTemplateChecks = new Map();
   static externalTemplateCssLoaded = new Set();
   static externalTemplateCssMisses = new Set();
+  static waitForStylesBeforeRenderReady = true;
+  static styleReadyTimeout = 3000;
+  static styleReadinessCssId = "sf-smart-style-readiness";
 
   static get props() {
     return {};
@@ -144,6 +147,17 @@ class SfBaseElement extends HTMLElement {
     return this;
   }
 
+  static ensureStyleReadinessCss() {
+    if (typeof document === "undefined" || document.getElementById(this.styleReadinessCssId)) {
+      return;
+    }
+
+    const style = document.createElement("style");
+    style.id = this.styleReadinessCssId;
+    style.textContent = "[data-sf-style-pending],[data-sf-style-pending] *{visibility:hidden!important;}";
+    document.head.append(style);
+  }
+
   constructor() {
     super();
     this._updateScheduled = false;
@@ -164,11 +178,14 @@ class SfBaseElement extends HTMLElement {
     this._activeRefEffects = null;
     this._hostStyle = "";
     this._syncingHostStyle = false;
+    this._styleReady = false;
+    this._styleReadyPromise = null;
     this.__sfSmartElement = true;
     this.__sfSourceCaptured = false;
   }
 
   connectedCallback() {
+    this.constructor.ensureStyleReadinessCss();
     this.captureHostStyle();
     this.applyHostDisplayStyle();
     this.captureSlotTemplates();
@@ -650,8 +667,15 @@ class SfBaseElement extends HTMLElement {
     }
 
     this.prepareRenderContainer(changedAttributes);
+    this.markStylePending(this);
     (0,lit__WEBPACK_IMPORTED_MODULE_0__.render)(templateResult, this);
     this.flushRefEffects();
+    await this.whenRenderedStylesReady(this);
+
+    if (!this._isMounted || renderToken !== this._renderToken) {
+      return;
+    }
+
     this._hasRendered = true;
     this.afterRender(changedAttributes);
     this._childrenDefinedPromise = null;
@@ -662,6 +686,55 @@ class SfBaseElement extends HTMLElement {
     this.emitComponentEvent("after-render", {
       changedAttributes
     });
+  }
+
+  shouldWaitForStylesReady() {
+    return this.constructor.waitForStylesBeforeRenderReady !== false;
+  }
+
+  markStylePending(target = this) {
+    if (this.shouldWaitForStylesReady() && !this._styleReady && target?.setAttribute) {
+      target.setAttribute("data-sf-style-pending", "");
+      target.removeAttribute("data-sf-style-ready");
+    }
+
+    return this;
+  }
+
+  markStyleReady(target = this) {
+    this._styleReady = true;
+    [target, this].forEach(element => {
+      if (element?.removeAttribute && element?.setAttribute) {
+        element.removeAttribute("data-sf-style-pending");
+        element.setAttribute("data-sf-style-ready", "");
+      }
+    });
+    return this;
+  }
+
+  async whenRenderedStylesReady(target = this) {
+    if (!this.shouldWaitForStylesReady()) {
+      return;
+    }
+
+    const loader = window.SF?.Loader;
+
+    if (!loader || typeof loader.ensureStylesReady !== "function") {
+      this.markStyleReady(target);
+      return;
+    }
+
+    const readiness = Promise.resolve().then(() => loader.ensureStylesReady(target || this, {
+      autoLoad: true
+    }));
+    const timeout = Number(this.constructor.styleReadyTimeout ?? 3000);
+    this._styleReadyPromise = timeout > 0 ? Promise.race([readiness, new Promise(resolve => {
+      setTimeout(resolve, timeout);
+    })]) : readiness;
+    await this._styleReadyPromise.catch(error => {
+      console.warn(`${this.componentTagName || "sf-element"}: style readiness failed`, error);
+    });
+    this.markStyleReady(target);
   }
 
   getChildCustomElements() {
@@ -1848,6 +1921,8 @@ function renderModalTemplate(context) {
   const hasRemoteContent = Boolean(context.src) && (context.mode === 'ajax' || context.mode === 'iframe');
   const showHeader = context.showHeader !== false;
   const hasHeaderSlot = context.hasHeaderContent;
+  const titleId = `${context.modalId}-title`;
+  const accessibleLabel = context.ariaLabel || (hasHeaderSlot || !showHeader ? context.title : '');
   const hasContentSlot = context.hasContentContent;
   const hasFooterSlot = context.hasFooterContent && context.showFooter;
   const hasHeaderActions = context.showClose || context.hide && !isInline;
@@ -1862,6 +1937,8 @@ function renderModalTemplate(context) {
                 role=${isInline ? 'region' : 'dialog'}
                 aria-modal=${isInline ? 'false' : 'true'}
                 aria-hidden=${context.open ? 'false' : 'true'}
+                aria-label=${accessibleLabel || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+                aria-labelledby=${accessibleLabel ? lit__WEBPACK_IMPORTED_MODULE_0__.nothing : titleId}
                 data-sf-modal-id=${context.modalId}
                 data-sf-modal-position=${context.position}
                 data-sf-modal-fullscreen=${String(context.fullscreen)}
@@ -1893,7 +1970,7 @@ function renderModalTemplate(context) {
                                 <header
                                         class=${joinClasses('sf-modal-header flex content-main-between items-cross-center', hasHeaderActions && 'p-right-2', context.headerClass)}
                                 >
-                                    ${hasHeaderSlot ? context.headerContent : (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<h2 class="title-3 m-0">${context.title}</h2>`}
+                                    ${hasHeaderSlot ? context.headerContent : (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<h2 id=${titleId} class="title-3 m-0">${context.title}</h2>`}
                                     ${context.hide && !isInline ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
                                                 <button
                                                         type="button"
@@ -2459,6 +2536,10 @@ class SfModal extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODUL
       title: {
         default: "Modal"
       },
+      ariaLabel: {
+        attribute: "aria-label",
+        default: ""
+      },
       text: {
         default: ""
       },
@@ -2644,6 +2725,10 @@ class SfModal extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODUL
     return this.getAttribute("title") || "Modal";
   }
 
+  get ariaLabel() {
+    return this.getAttribute("aria-label") || "";
+  }
+
   get text() {
     return this.getAttribute("text") || "";
   }
@@ -2795,6 +2880,7 @@ class SfModal extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODUL
     return {
       modalId: this.modalId,
       title: this.title,
+      ariaLabel: this.ariaLabel,
       text: this.text,
       open: this.openState,
       autoload: this.autoload,
@@ -2828,7 +2914,13 @@ class SfModal extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODUL
       headerClass: this.headerClass,
       bodyClass: this.bodyClass,
       contentClass: this.contentClass,
-      footerClass: this.footerClass
+      footerClass: this.footerClass,
+      lifecycle: this.renderModalState,
+      remote: {
+        error: this._remoteError,
+        status: this._isLoadingRemote ? "loading" : this._remoteError ? "error" : this._remoteLoaded ? "success" : "idle"
+      },
+      stackIndex: this._stackIndex
     };
   }
 
@@ -3490,6 +3582,7 @@ class SfModal extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODUL
     this.abortRemoteContent();
     this._isLoadingRemote = true;
     this._remoteError = "";
+    let aborted = false;
     this.requestComponentUpdate("remote-loading");
     this.emitContentEvent("modal:before-content-upload");
     this._fetchController = new AbortController();
@@ -3516,15 +3609,20 @@ class SfModal extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODUL
       }
 
       this._remoteLoaded = true;
-      this.emitContentEvent("modal:after-content-upload");
     } catch (error) {
-      if (error.name !== "AbortError") {
+      if (error.name === "AbortError") {
+        aborted = true;
+      } else {
         this._remoteError = error.message || "Failed to load content";
       }
     } finally {
       this._fetchController = null;
       this._isLoadingRemote = false;
       this.requestComponentUpdate("remote-content");
+
+      if (!aborted) {
+        this.emitContentEvent("modal:after-content-upload");
+      }
     }
   }
 
@@ -3544,7 +3642,8 @@ class SfModal extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODUL
         component: this,
         modal: this,
         modalId: this.modalId,
-        src: this.src
+        src: this.src,
+        remote: this.state.remote
       }
     }));
   }

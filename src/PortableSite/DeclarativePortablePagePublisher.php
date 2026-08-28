@@ -221,7 +221,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             $searchEnabled,
             $searchEnabled ? $this->escape((string) $page['search_runtime_url']) : null,
             $searchEnabled ? $this->escape((string) $page['search_index_url']) : null,
-            $this->publisherAssetUrl($assetBase, 'declarative-shell.css'),
+            $this->shellCssUrl($assets),
             $this->publisherAssetUrl($assetBase, 'declarative-shell.js'),
             $regions,
             $breadcrumbs,
@@ -236,6 +236,24 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
         );
 
         return $this->templates->render('publisher.docara.page', ['view' => $view]);
+    }
+
+    private function shellCssUrl(FrameworkAssetPlan $assets): string
+    {
+        $url = $assets->shellCssUrl();
+        if (! is_string($url)
+            || preg_match(
+                '#^/(?:[A-Za-z0-9._~-]+/)*_docara/docara-shell\.[a-f0-9]{64}\.css$#D',
+                $url,
+            ) !== 1
+        ) {
+            throw new PortableConfigurationException(
+                'DECLARATIVE_SHELL_ASSET_MISSING',
+                'The Framework asset plan has no safe generated Docara shell stylesheet.',
+            );
+        }
+
+        return $this->escape($url);
     }
 
     private function publisherAssetUrl(string $assetBase, string $name): string
@@ -396,8 +414,7 @@ final readonly class DeclarativePortablePagePublisher implements PortablePagePub
             . "var initialSource=Object.keys(stored()).length?'reader':'site';applyModalBlur(defaults['appearance.modal_blur']||'none','site');applyUiRadius(defaults['appearance.ui_radius']||'default','site');applyAll(initialSource);"
             . 'window.DocaraReaderPreferences={manifest:manifest,key:key,current:current,set:set,reset:reset,syncExternal:syncExternal,hasOverride:hasOverride};'
             . "document.dispatchEvent(new CustomEvent('docara:preferences-ready'));"
-            . "function revealFrameworkBody(){if(document.body)document.body.style.opacity='1'}"
-            . "if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){applyAll(initialSource);revealFrameworkBody()},{once:true})}else{applyAll(initialSource);revealFrameworkBody()}"
+            . "if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){applyAll(initialSource)},{once:true})}else{applyAll(initialSource)}"
             . "var media=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)');if(media&&media.addEventListener){media.addEventListener('change',function(){if(current('appearance.theme')==='system')applyField('appearance.theme',document.documentElement.dataset.docaraThemeSource||'site')})}"
             . 'window.SF_BOOT_CONFIG=window.SF_BOOT_CONFIG||{};window.SF_BOOT_CONFIG.preloader={enabled:false};})();</script>';
     }

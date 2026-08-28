@@ -1,0 +1,48 @@
+{
+  "schema": "docara.reuse_inventory.v1",
+  "status": "ready",
+  "decision": "extend_existing",
+  "user_outcome": "Stable first paint is a reusable Framework build capability rather than a Docara-only cache.",
+  "scopes": {
+    "project": [
+      "src/Framework/FrameworkAssetPlanner.php",
+      "src/Framework/FrameworkManifestRepository.php",
+      "scripts/verify-static-build.php"
+    ],
+    "target": [
+      "/Users/rim/Documents/GitHub/ui/contracts/generated/framework-contract-registry.json",
+      "/Users/rim/Documents/GitHub/ui/distr/rule/rule.json",
+      "/Users/rim/Documents/GitHub/ui/scripts/build-framework-registry.py"
+    ],
+    "owner_patterns": [
+      "Framework Registry owns identities, resources and dependency relations",
+      "Framework Loader owns late dynamic discovery",
+      "project build adapters own HTML input and generated output publication"
+    ],
+    "federation": [
+      "sf5 owner",
+      "docara first consumer",
+      "tester acceptance",
+      "graph project technology"
+    ],
+    "dependencies": [
+      "browser HTTP cache",
+      "existing sfPath and sfSmartPath roots",
+      "existing SF_PRELOADED Loader handoff"
+    ]
+  },
+  "rejected_duplicates": [
+    "second asset registry",
+    "Docara-only cache",
+    "HTML cache",
+    "SPA router",
+    "global skeleton",
+    "LocalStorage correctness contract"
+  ],
+  "selected_extension_points": [
+    "/Users/rim/Documents/GitHub/ui/scripts/build-framework-registry.py",
+    "/Users/rim/Documents/GitHub/ui/scripts/plan-framework-assets.py",
+    "src/Framework/FrameworkAssetPlanner.php"
+  ],
+  "implementation_allowed": true
+}

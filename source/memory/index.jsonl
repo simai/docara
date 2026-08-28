@@ -1,8 +1,8 @@
-{"path": "source/memory/CURRENT.yaml", "kind": "project", "bytes": 544, "sha256": "ab6572083aa5c1620cc7919e732c1894bd84ef1574ff09c947a8945ea1fd229d", "title": "CURRENT"}
+{"path": "source/memory/CURRENT.yaml", "kind": "project", "bytes": 345, "sha256": "6dcb11392df21372bfd595108591651ee8afdeca3f41597f69e264c5b9582150", "title": "CURRENT"}
 {"path": "source/memory/DECISIONS.md", "kind": "project", "bytes": 152, "sha256": "a0c4cf43fca18103e2308bed224f485975ec7cb1dfde53b00860b427859bfb70", "title": "Project Decisions"}
 {"path": "source/memory/PROJECT.md", "kind": "project", "bytes": 502, "sha256": "cd2003b955e6123e0a226d80f5c207d6914ebf47b8211ed3c5b3614277a9c26c", "title": "Project: docara-consolidation"}
 {"path": "source/memory/RISKS.md", "kind": "project", "bytes": 77, "sha256": "dccd4435e7103a98e7d995f4b2062fffbf9166ab28eecacedc081dd87525c68e", "title": "Project Risks"}
-{"path": "source/memory/TRACKS.yaml", "kind": "project", "bytes": 1173, "sha256": "e615baca614f92eb92cc323d45f442c71f37c5a3edb20d2f259487ad9182152a", "title": "TRACKS"}
+{"path": "source/memory/TRACKS.yaml", "kind": "project", "bytes": 2204, "sha256": "4382d1fceb929bd799796bd022c18ea79e4bcd80c5f69fd4922dd80d6b866f00", "title": "TRACKS"}
 {"path": "source/memory/tracks/docara-consolidation/CURRENT.yaml", "kind": "track", "bytes": 419, "sha256": "8d82fc00925e7138cd6b14cb0f1e1a52e347fc8075b62abd8301ac43bae8514a", "title": "CURRENT"}
 {"path": "source/memory/tracks/docara-consolidation/DECISIONS.md", "kind": "track", "bytes": 1876, "sha256": "13373e8aaee212fbd7c71241bef195e11f954135770dd818749a9a8f5577a08a", "title": "Track Decisions"}
 {"path": "source/memory/tracks/docara-consolidation/EVIDENCE.md", "kind": "track", "bytes": 2180, "sha256": "5ba96ccb0d291f6ec67e87bf7d6cb0a1638d9eaf3b672f6dddd3fed6818c5535", "title": "Track Evidence"}
@@ -18,19 +18,40 @@
 {"path": "source/memory/tracks/docara-local-sites-maintenance/STALE.md", "kind": "track", "bytes": 146, "sha256": "855771b9bbddbaef8122f92e96dc0dbf158f89d4cfb0335dee41b52648ebb17b", "title": "Stale Track Memory"}
 {"path": "source/memory/tracks/docara-local-sites-maintenance/TRACK.md", "kind": "track", "bytes": 193, "sha256": "06235b9726c14ab5e5f6abb2a543378984b1f56f2729392483b853dd23fcef4d", "title": "Track: Docara local sites maintenance"}
 {"path": "source/memory/tracks/docara-page-authoring-sdk/CURRENT.yaml", "kind": "track", "bytes": 603, "sha256": "650007fd1d4f6ae835c9b5d9e0e3ceb8c04969e832bac3cc5a81d3714728e8c5", "title": "CURRENT"}
-{"path": "source/memory/tracks/docara-page-authoring-sdk/DECISIONS.md", "kind": "track", "bytes": 19, "sha256": "bc499bf5b0a16e500376ebe57251da49627787420ba214e93cf7f1887ccef3a7", "title": "Track Decisions"}
-{"path": "source/memory/tracks/docara-page-authoring-sdk/EVIDENCE.md", "kind": "track", "bytes": 18, "sha256": "0567a4e2d0641a6795d079fbcd0ab521975f00964f75bd43e52a3be2f71b5fab", "title": "Track Evidence"}
+{"path": "source/memory/tracks/docara-page-authoring-sdk/DECISIONS.md", "kind": "track", "bytes": 18, "sha256": "5b69f823d8754346c52f76991da9291cac3fed751aa6176a4c1c9aaa1257799b", "title": "Track Decisions"}
+{"path": "source/memory/tracks/docara-page-authoring-sdk/EVIDENCE.md", "kind": "track", "bytes": 17, "sha256": "d6a1f65be7d4a63984f74fd495382a4707846d20d4a129b87bbc367272a4d2c5", "title": "Track Evidence"}
 {"path": "source/memory/tracks/docara-page-authoring-sdk/NEXT.md", "kind": "track", "bytes": 669, "sha256": "3568d0dae82e640e93af3a8837977b777f2e5c4227277766097e49b2eb5b1061", "title": "Next Step"}
-{"path": "source/memory/tracks/docara-page-authoring-sdk/RISKS.md", "kind": "track", "bytes": 15, "sha256": "ba147dd353d6f462bca2689267940e65a7fb988591b5e089bcb479e3bd533f58", "title": "Track Risks"}
+{"path": "source/memory/tracks/docara-page-authoring-sdk/RISKS.md", "kind": "track", "bytes": 14, "sha256": "62d5016c2e9cc3889e59eb3517105fe138eb462bd6e3c587d3aac25365beba6d", "title": "Track Risks"}
 {"path": "source/memory/tracks/docara-page-authoring-sdk/STALE.md", "kind": "track", "bytes": 127, "sha256": "fc7666eba95affaab443f0fb0b578d4a34641441f2f584d3891e7ca57a10ab04", "title": "Stale Track Memory"}
 {"path": "source/memory/tracks/docara-page-authoring-sdk/TRACK.md", "kind": "track", "bytes": 266, "sha256": "d58a243594f768db3017308af2183a717bed972b8bca06dfa6e56480723bd996", "title": "Track: docara-page-authoring-sdk"}
-{"path": "source/memory/tracks/docara-project-technology/CURRENT.yaml", "kind": "track", "bytes": 524, "sha256": "164cdb1a6c856eda323488233ba245173babfb090cbdf6c0793b65ac55bfc1a9", "title": "CURRENT"}
+{"path": "source/memory/tracks/docara-project-technology/CURRENT.yaml", "kind": "track", "bytes": 325, "sha256": "543b441f95e9da900e2c262f4c791f5f37ea0853c72a4ff4bbda802b99823473", "title": "CURRENT"}
 {"path": "source/memory/tracks/docara-project-technology/DECISIONS.md", "kind": "track", "bytes": 429, "sha256": "7e0400a40ac6db9816eb273187c28e99f8949b46d686132e92813f2f1a5712b3", "title": "Track Decisions"}
 {"path": "source/memory/tracks/docara-project-technology/EVIDENCE.md", "kind": "track", "bytes": 380, "sha256": "0c31e34eef71a00acefc8d0ef21464ab305c9abbaf0efac2ca37ced96269da18", "title": "Track Evidence"}
-{"path": "source/memory/tracks/docara-project-technology/NEXT.md", "kind": "track", "bytes": 342, "sha256": "9f47bb357c8a839d2cf91ebb63728cb2a705a6ad0be4f0468dc02ef82172383f", "title": "Next Step"}
+{"path": "source/memory/tracks/docara-project-technology/NEXT.md", "kind": "track", "bytes": 785, "sha256": "e8bd55255ecd86e990bc0ba1f771a2ae8cada0d929a1ff6c0bf965d73bc7629e", "title": "Terminal Track State"}
 {"path": "source/memory/tracks/docara-project-technology/RISKS.md", "kind": "track", "bytes": 315, "sha256": "4789474501b169f9501c7ad6d7b30de7e3b7db3e75b215d33009faa5abd788e0", "title": "Track Risks"}
 {"path": "source/memory/tracks/docara-project-technology/STALE.md", "kind": "track", "bytes": 185, "sha256": "6352c9f0e1d7f9e352cd8e9defe578e257d95f4e1aaa7c520e274f3946844c36", "title": "Stale Track Memory"}
 {"path": "source/memory/tracks/docara-project-technology/TRACK.md", "kind": "track", "bytes": 409, "sha256": "aa2402ac174ece65507158292b17e48fee683a79db19506d51dab50ab8398058", "title": "Track: Docara project technology"}
+{"path": "source/memory/tracks/docara-prose-margin-collapse/CURRENT.yaml", "kind": "track", "bytes": 399, "sha256": "d233753d291575a46fe1e39387f5f774d949707575f05af5b53a4cf12124ca53", "title": "CURRENT"}
+{"path": "source/memory/tracks/docara-prose-margin-collapse/DECISIONS.md", "kind": "track", "bytes": 19, "sha256": "bc499bf5b0a16e500376ebe57251da49627787420ba214e93cf7f1887ccef3a7", "title": "Track Decisions"}
+{"path": "source/memory/tracks/docara-prose-margin-collapse/EVIDENCE.md", "kind": "track", "bytes": 18, "sha256": "0567a4e2d0641a6795d079fbcd0ab521975f00964f75bd43e52a3be2f71b5fab", "title": "Track Evidence"}
+{"path": "source/memory/tracks/docara-prose-margin-collapse/NEXT.md", "kind": "track", "bytes": 855, "sha256": "016750fffb8b59fb87b708c19aa5f0ebbb4a67d55df1b55dfa3b4108d6d5efea", "title": "Next Step"}
+{"path": "source/memory/tracks/docara-prose-margin-collapse/RISKS.md", "kind": "track", "bytes": 15, "sha256": "ba147dd353d6f462bca2689267940e65a7fb988591b5e089bcb479e3bd533f58", "title": "Track Risks"}
+{"path": "source/memory/tracks/docara-prose-margin-collapse/STALE.md", "kind": "track", "bytes": 127, "sha256": "fc7666eba95affaab443f0fb0b578d4a34641441f2f584d3891e7ca57a10ab04", "title": "Stale Track Memory"}
+{"path": "source/memory/tracks/docara-prose-margin-collapse/TRACK.md", "kind": "track", "bytes": 269, "sha256": "fa836c5d6b6da0eb16a5dafff1dde0efecba85d7d111c59bf9d8b165f67fac1e", "title": "Track: docara-prose-margin-collapse"}
+{"path": "source/memory/tracks/docara-shell-resource-preload-correction/CURRENT.yaml", "kind": "track", "bytes": 434, "sha256": "a322c5776d13a55d369419279a9747842d16c12936d14519a0826a8cf9d7a3f6", "title": "CURRENT"}
+{"path": "source/memory/tracks/docara-shell-resource-preload-correction/DECISIONS.md", "kind": "track", "bytes": 361, "sha256": "185e64cd660a56b64cee14b5697e834a3087e6cfd9117447f1d7022bbf30dfdf", "title": "Track Decisions"}
+{"path": "source/memory/tracks/docara-shell-resource-preload-correction/EVIDENCE.md", "kind": "track", "bytes": 337, "sha256": "b8ccab8eb8bd167b0d3aee0a6d4af069286ca511cff1a06ac08c1884603f5813", "title": "Track Evidence"}
+{"path": "source/memory/tracks/docara-shell-resource-preload-correction/NEXT.md", "kind": "track", "bytes": 825, "sha256": "423b53ac69f78f90dfe65eb087f47168dbf12fabcf7de174aa0be84ecfbf019b", "title": "Next Step"}
+{"path": "source/memory/tracks/docara-shell-resource-preload-correction/RISKS.md", "kind": "track", "bytes": 15, "sha256": "ba147dd353d6f462bca2689267940e65a7fb988591b5e089bcb479e3bd533f58", "title": "Track Risks"}
+{"path": "source/memory/tracks/docara-shell-resource-preload-correction/STALE.md", "kind": "track", "bytes": 127, "sha256": "fc7666eba95affaab443f0fb0b578d4a34641441f2f584d3891e7ca57a10ab04", "title": "Stale Track Memory"}
+{"path": "source/memory/tracks/docara-shell-resource-preload-correction/TRACK.md", "kind": "track", "bytes": 567, "sha256": "3fdac9b9d0a28e521e22187065170a4ebdb18fbd2c00bd0aaa8cec23f3c62052", "title": "Track: docara-shell-resource-preload-correction"}
+{"path": "source/memory/tracks/docara-stable-shell-loading/CURRENT.yaml", "kind": "track", "bytes": 417, "sha256": "9675dd8d9c9124cc1a5b01cea75269ca8dd72ff6e4b864daff9f8c3eaaaa575d", "title": "CURRENT"}
+{"path": "source/memory/tracks/docara-stable-shell-loading/DECISIONS.md", "kind": "track", "bytes": 332, "sha256": "444e583c4a93687d724b26bf0902e7231209774e921ca763103cb5ef0a6981ec", "title": "Track Decisions"}
+{"path": "source/memory/tracks/docara-stable-shell-loading/EVIDENCE.md", "kind": "track", "bytes": 333, "sha256": "17e39c27666e5b37f91200f905d2d36c808e0a3b0dca1edb0fab1ced4ec7f544", "title": "Track Evidence"}
+{"path": "source/memory/tracks/docara-stable-shell-loading/NEXT.md", "kind": "track", "bytes": 821, "sha256": "1e6ef0a8f4e9d5950258d2d98ce78b2614a89d0dc6d5849f5c4df3e0158c5fbf", "title": "Next Step"}
+{"path": "source/memory/tracks/docara-stable-shell-loading/RISKS.md", "kind": "track", "bytes": 15, "sha256": "ba147dd353d6f462bca2689267940e65a7fb988591b5e089bcb479e3bd533f58", "title": "Track Risks"}
+{"path": "source/memory/tracks/docara-stable-shell-loading/STALE.md", "kind": "track", "bytes": 127, "sha256": "fc7666eba95affaab443f0fb0b578d4a34641441f2f584d3891e7ca57a10ab04", "title": "Stale Track Memory"}
+{"path": "source/memory/tracks/docara-stable-shell-loading/TRACK.md", "kind": "track", "bytes": 268, "sha256": "d4c3fbd2c4667fb0ba3cb0d06234e4310b3010efde5fe58655e64b75e44e25df", "title": "Track: docara-stable-shell-loading"}
 {"path": "source/memory/tracks/docara-unified/CURRENT.yaml", "kind": "track", "bytes": 355, "sha256": "e59406d8f21091c005537bfb0cf1f0eacedd5db6dbdf5832bc076e390036eceb", "title": "CURRENT"}
 {"path": "source/memory/tracks/docara-unified/DECISIONS.md", "kind": "track", "bytes": 18, "sha256": "5b69f823d8754346c52f76991da9291cac3fed751aa6176a4c1c9aaa1257799b", "title": "Track Decisions"}
 {"path": "source/memory/tracks/docara-unified/EVIDENCE.md", "kind": "track", "bytes": 17, "sha256": "d6a1f65be7d4a63984f74fd495382a4707846d20d4a129b87bbc367272a4d2c5", "title": "Track Evidence"}
@@ -38,3 +59,10 @@
 {"path": "source/memory/tracks/docara-unified/RISKS.md", "kind": "track", "bytes": 14, "sha256": "62d5016c2e9cc3889e59eb3517105fe138eb462bd6e3c587d3aac25365beba6d", "title": "Track Risks"}
 {"path": "source/memory/tracks/docara-unified/STALE.md", "kind": "track", "bytes": 127, "sha256": "fc7666eba95affaab443f0fb0b578d4a34641441f2f584d3891e7ca57a10ab04", "title": "Stale Track Memory"}
 {"path": "source/memory/tracks/docara-unified/TRACK.md", "kind": "track", "bytes": 255, "sha256": "984e1e142b8eb27885af73df54c56c6b7bb81897032f22e54c9cd8eb41803e43", "title": "Track: docara-unified"}
+{"path": "source/memory/tracks/release/CURRENT.yaml", "kind": "track", "bytes": 339, "sha256": "bd3afa64be0aee031bd387c48c2fc95d6fa647918f10840a1bc0f9ee9e986930", "title": "CURRENT"}
+{"path": "source/memory/tracks/release/DECISIONS.md", "kind": "track", "bytes": 19, "sha256": "bc499bf5b0a16e500376ebe57251da49627787420ba214e93cf7f1887ccef3a7", "title": "Track Decisions"}
+{"path": "source/memory/tracks/release/EVIDENCE.md", "kind": "track", "bytes": 18, "sha256": "0567a4e2d0641a6795d079fbcd0ab521975f00964f75bd43e52a3be2f71b5fab", "title": "Track Evidence"}
+{"path": "source/memory/tracks/release/NEXT.md", "kind": "track", "bytes": 832, "sha256": "62e03d9ac54992cb450d46bb93120c6ef2ea17944fe113c6e271f4cb046a3fdf", "title": "Next Step"}
+{"path": "source/memory/tracks/release/RISKS.md", "kind": "track", "bytes": 15, "sha256": "ba147dd353d6f462bca2689267940e65a7fb988591b5e089bcb479e3bd533f58", "title": "Track Risks"}
+{"path": "source/memory/tracks/release/STALE.md", "kind": "track", "bytes": 127, "sha256": "fc7666eba95affaab443f0fb0b578d4a34641441f2f584d3891e7ca57a10ab04", "title": "Stale Track Memory"}
+{"path": "source/memory/tracks/release/TRACK.md", "kind": "track", "bytes": 248, "sha256": "ecba6a8809708641b04c0c0c0316ff34e0105eff7acdcecd443efdb750e3db01", "title": "Track: release"}

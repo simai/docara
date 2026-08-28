@@ -1,6 +1,6 @@
 name: Publish verified release
 
-run-name: Publish ${{ inputs.tag }}
+run-name: Publish verified Docara release
 
 on:
   workflow_dispatch:
@@ -9,12 +9,16 @@ on:
         description: Existing stable tag to publish (for example v2.3.0)
         required: true
         type: string
+  push:
+    branches: [main]
+    paths:
+      - .github/release-request.json
 
 permissions:
   contents: write
 
 concurrency:
-  group: docara-release-${{ inputs.tag }}
+  group: docara-release-${{ github.event.inputs.tag || github.sha }}
   cancel-in-progress: false
 
 jobs:
@@ -23,24 +27,28 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: ${{ inputs.tag }}
           fetch-depth: 0
       - uses: shivammathur/setup-php@f3e473d116dcccaddc5834248c87452386958240
         with:
           php-version: "8.3"
           coverage: none
-      - name: Verify requested tag and checkout
+      - name: Resolve and verify requested tag
         env:
           RELEASE_TAG: ${{ inputs.tag }}
         run: |
-          if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            echo "Unsupported stable tag: $RELEASE_TAG" >&2
+          tag="$RELEASE_TAG"
+          if [[ -z "$tag" ]]; then
+            tag="$(jq -er 'select(.schema == "docara.release_request.v1") | .tag' .github/release-request.json)"
+          fi
+          if [[ ! "$tag" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "Unsupported stable tag: $tag" >&2
             exit 1
           fi
-          test "$(git rev-list -n 1 "$RELEASE_TAG")" = "$(git rev-parse HEAD)"
+          git rev-parse --verify "refs/tags/$tag" >/dev/null
+          git checkout --detach "$tag"
+          test "$(git rev-list -n 1 "$tag")" = "$(git rev-parse HEAD)"
+          echo "RELEASE_TAG=$tag" >> "$GITHUB_ENV"
       - name: Build and verify release package
-        env:
-          RELEASE_TAG: ${{ inputs.tag }}
         run: |
           version="${RELEASE_TAG#v}"
           revision="$(git rev-parse HEAD)"
@@ -54,7 +62,6 @@ jobs:
       - name: Publish immutable GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ inputs.tag }}
         run: |
           version="${RELEASE_TAG#v}"
           assets=(

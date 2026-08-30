@@ -14,6 +14,22 @@ use Simai\Docara\Framework\FrameworkManifestRepository;
 final class FrameworkTypographyProjectionTest extends TestCase
 {
     #[Test]
+    public function project_documentation_source_pointer_does_not_change_runtime_identity(): void
+    {
+        $path = dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json';
+        $project = FrameworkLock::fromJsonFile($path)->toArray();
+        $project['runtime']['framework_registry']['documentation_source'] = [
+            'schema' => 'docara.documentation_source.v1',
+            'relative_path' => 'contract/contracts/generated/documentation-source.json',
+            'file_sha256' => str_repeat('a', 64),
+        ];
+
+        $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($project));
+
+        self::assertSame('sf-v5.4.1-185ca062-23d00d92', $repository->runtime()['pair_id']);
+    }
+
+    #[Test]
     public function known_same_runtime_projection_is_upgraded_without_editing_the_project_lock(): void
     {
         $path = dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json';

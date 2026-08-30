@@ -1,5 +1,8 @@
 # Docara releases
 
+- [Docara 2.4.1](v2.4.1.md) — exact project-owned documentation contracts are
+  compatible with the immutable bundled Framework runtime.
+
 - [Docara 2.4.0](v2.4.0.md) — source-backed documentation tracking, exact
   Framework 5.4.1 contracts, and complete reusable Example environments.
 - [Docara 2.3.0](v2.3.0.md) — automatic Framework asset planning, stable

@@ -4,6 +4,15 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.4.1] - 2026-08-30
+
+### Fixed
+
+- Treat the exact project-owned Framework `documentation_source` pointer as
+  source-tracking metadata rather than as a mutation of the bundled runtime
+  identity. The referenced contract remains independently schema- and
+  SHA-256-verified before use.
+
 ## [2.4.0] - 2026-08-30
 
 ### Added

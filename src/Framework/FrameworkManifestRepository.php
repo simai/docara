@@ -618,6 +618,10 @@ final readonly class FrameworkManifestRepository
     private function runtimeCompatibilityView(array $bundled, array $locked): array
     {
         unset($bundled['asset_planner']);
+        $documentationSource = $locked['framework_registry']['documentation_source'] ?? null;
+        if (is_array($documentationSource) && is_array($bundled['framework_registry'] ?? null)) {
+            $bundled['framework_registry']['documentation_source'] = $documentationSource;
+        }
         if (! array_key_exists('shell', $locked)) {
             unset($bundled['shell']);
         }

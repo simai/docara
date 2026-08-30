@@ -28,6 +28,7 @@
     "Project-owned authoring inputs are hash-bound and never rewritten.",
     "Previous dependencies, engine and verified build are locally restorable before promotion.",
     "The canonical skill discovers actual package capabilities instead of copying product registries.",
+    "The first AI contract transition accepts only the exact package-owned absence baseline for Docara 2.4.1; later releases compare adjacent real capabilities outputs.",
     "Federation owns physical skill installation and exact release binding."
   ]
 }

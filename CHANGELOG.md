@@ -20,6 +20,10 @@ All notable changes to Docara are documented in this file.
 - `init` accepts a directory containing only a verified project-local Composer
   runtime for `simai/docara`, making the canonical install and upgrade path
   possible without a separate shared engine checkout.
+- The AI release gate accepts one exact package-owned bootstrap record for the
+  transition from Docara 2.4.1, which had no `capabilities` command, while
+  rejecting malformed evidence or reuse by later AI contract versions.
+
 ## [2.4.1] - 2026-08-30
 
 ### Fixed

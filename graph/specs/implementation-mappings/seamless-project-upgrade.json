@@ -7,7 +7,10 @@
     "src/Application/ProjectUpgradeService.php",
     "src/Application/CapabilitiesService.php",
     "src/Console/UpgradeCommand.php",
-    "src/Console/CapabilitiesCommand.php"
+    "src/Console/CapabilitiesCommand.php",
+    "src/Release/AiContractReleaseGate.php",
+    "scripts/verify-ai-contract-release.php",
+    "resources/release-baselines/docara-2.4.1-ai-contract-absent.json"
   ],
   "schema_refs": [
     "resources/schemas/capabilities.schema.json",
@@ -17,6 +20,7 @@
   ],
   "test_refs": [
     "tests/ProjectUpgradeServiceTest.php",
+    "tests/Unit/AiContractReleaseGateTest.php",
     "tests/Unit/CapabilitiesServiceTest.php",
     "tests/Unit/McpAdapterTest.php",
     "tests/PortableInitCommandTest.php"

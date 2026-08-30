@@ -180,7 +180,7 @@ from a clean checkout and pass a planned version/tag as parameters:
 ```bash
 php vendor/bin/docara capabilities --json > current-capabilities.json
 php scripts/verify-ai-contract-release.php \
-  --previous=/path/to/previous-capabilities.json \
+  --previous=/path/to/previous-capabilities-or-bootstrap.json \
   --current=current-capabilities.json \
   --skill-dna=/path/to/ai-codex-skill-docara/graph/dna/skill-dna.json \
   --federation-lock=/path/to/ai-codex/federation/releases/stable.json \
@@ -197,6 +197,11 @@ php scripts/build-release-package.php \
 php scripts/verify-release-package.php \
   "build_release/docara-$PLANNED_VERSION.release-manifest.json"
 ```
+
+For an initial transition from a release that predates `capabilities`, use the
+package-owned bootstrap baseline described in the upgrade and AI contract
+specification. Subsequent releases must pass the real capabilities output from
+the immediately previous release.
 
 The AI gate blocks a changed public capability surface without an incremented
 `docara.ai_contract`, a compatible canonical skill range, and the exact skill

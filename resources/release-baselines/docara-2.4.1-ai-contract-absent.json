@@ -1,0 +1,11 @@
+{
+    "schema": "docara.ai_contract_bootstrap.v1",
+    "previous_release": {
+        "version": "2.4.1",
+        "tag": "v2.4.1",
+        "revision": "48e614ef0037715d002c9fea7e40aa05a12bd5a5",
+        "capabilities": "absent"
+    },
+    "introduced_ai_contract": "1.1.0",
+    "reason": "Docara 2.4.1 predates the capabilities command and package-owned AI contract."
+}

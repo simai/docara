@@ -69,5 +69,13 @@ publication until the canonical skill, its graph and Federation exact binding
 pass Skill Sync Gate. Internal changes that do not alter the contract reuse the
 same skill revision.
 
+The first release with this contract uses the package-owned
+`resources/release-baselines/docara-2.4.1-ai-contract-absent.json`. The baseline
+does not invent a capabilities surface for 2.4.1: it records the exact tag and
+revision where the command was absent and binds that one-time transition to AI
+contract 1.1.0. A malformed baseline, another current contract version, or a
+later attempt to reuse it fails closed. Every following release compares real
+`docara.capabilities.v1` outputs from adjacent releases.
+
 Build, serve and normal SDK operations never access the network. Only an
 explicit upgrade may invoke Composer/network resolution.

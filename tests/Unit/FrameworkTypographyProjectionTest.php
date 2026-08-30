@@ -24,7 +24,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $legacy['runtime_projection']['manifest']['sha256'] = '8c917f69a678df084260ded24c5e39e78aaa4fc12c317bf98afaf11ee2a29a8e';
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($legacy));
-        self::assertSame(823, $repository->runtimeProjection()['files']);
+        self::assertSame(826, $repository->runtimeProjection()['files']);
         self::assertArrayHasKey('rule/rule.json', $repository->runtimeManifest()['files']);
         self::assertSame(117, $legacy['runtime_projection']['files']);
 
@@ -123,9 +123,9 @@ final class FrameworkTypographyProjectionTest extends TestCase
         }
         $runtime = $repository->runtimeProjection();
         self::assertIsArray($runtime);
-        self::assertSame(823, $runtime['files']);
+        self::assertSame(826, $runtime['files']);
         $runtimeFiles = $repository->runtimeManifest()['files'];
-        self::assertCount(823, $runtimeFiles);
+        self::assertCount(826, $runtimeFiles);
         self::assertArrayHasKey('rule/rule.json', $runtimeFiles);
         self::assertArrayHasKey('utility/theme/default/css/default.css', $runtimeFiles);
         self::assertArrayHasKey('component/highlight/js/156256801485311.js', $runtimeFiles);
@@ -136,14 +136,14 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertStringNotContainsString('.min.', $relativePath);
         }
         self::assertSame(
-            '9be0219fa97ec48ad6b60fa18e3a8c6786895d704460144a3e9e19206cb6dd84',
+            'e6c8c03005b94497c02691ec9a49b23dd91421a0ed5816978a8b423636cf1fba',
             $runtime['packet_sha256'],
         );
         self::assertStringContainsString('/_docara/vendor/simai-framework/runtime/', $assets['simai.framework.boot']['content']);
         self::assertStringNotContainsString('cdn.jsdelivr.net', $assets['simai.framework.boot']['content']);
         foreach (['simai.framework.smart_base.js', 'simai.framework.core.js'] as $assetKey) {
             self::assertStringStartsWith('/_docara/vendor/simai-framework/runtime/', $assets[$assetKey]['url']);
-            self::assertSame('b2e8444659ae0d213296c2d349257259d3ed0c9c', $assets[$assetKey]['source_revision']);
+            self::assertSame('185ca0620df6b46b9e2c9c92231a46c9b79a786b', $assets[$assetKey]['source_revision']);
             self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $assets[$assetKey]['sha256']);
         }
         self::assertStringContainsString(
@@ -242,7 +242,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $nestedAssets['simai.framework.core.css']['url'],
         );
         self::assertStringStartsWith(
-            '/project~/docs/_docara/vendor/simai-framework/runtime/b2e8444659ae0d213296c2d349257259d3ed0c9c/distr/core/js/core.js?sf_v=',
+            '/project~/docs/_docara/vendor/simai-framework/runtime/185ca0620df6b46b9e2c9c92231a46c9b79a786b/distr/core/js/core.js?sf_v=',
             $nestedAssets['simai.framework.core.js']['url'],
         );
     }
@@ -290,7 +290,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
     {
         [$root, $lock] = $this->fixture();
         $core = $root . '/resources/portable/vendor/simai-framework/runtime/'
-            . 'b2e8444659ae0d213296c2d349257259d3ed0c9c/distr/core/js/core.js';
+            . '185ca0620df6b46b9e2c9c92231a46c9b79a786b/distr/core/js/core.js';
         file_put_contents($core, 'changed');
 
         try {
@@ -327,7 +327,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         foreach (['symlink', 'hardlink'] as $attack) {
             [$root, $lock] = $this->fixture();
             $core = $root . '/resources/portable/vendor/simai-framework/runtime/'
-                . 'b2e8444659ae0d213296c2d349257259d3ed0c9c/distr/core/js/core.js';
+                . '185ca0620df6b46b9e2c9c92231a46c9b79a786b/distr/core/js/core.js';
             $outside = $root . '/outside.js';
             file_put_contents($outside, file_get_contents($core));
             unlink($core);

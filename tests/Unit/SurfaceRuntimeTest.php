@@ -49,11 +49,15 @@ MD, $this->site, $this->site . '/content/ru/components/surface.md');
     }
 
     #[Test]
-    public function registry_owned_capability_admits_grid_and_card_but_rejects_surface_and_landing_children(): void
+    public function registry_owned_capability_admits_steps_grid_and_card_but_rejects_surface_and_landing_children(): void
     {
         $renderer = new PortableMarkdownRenderer;
         $html = $renderer->render(<<<'MD'
 :::::surface {width=full}
+:::steps {view=timeline current=1}
+1. First step.
+2. Second step.
+:::
 ::::grid {columns=1}
 :::card
 #### Card
@@ -64,6 +68,8 @@ Body.
 :::::
 MD);
         self::assertStringContainsString('data-docara-block="surface"', $html);
+        self::assertStringContainsString('data-docara-block="steps"', $html);
+        self::assertStringContainsString('docara-step-marker', $html);
         self::assertStringContainsString('data-docara-block="grid"', $html);
         self::assertStringContainsString('data-docara-block="card"', $html);
 

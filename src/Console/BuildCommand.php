@@ -98,6 +98,19 @@ final class BuildCommand extends Command
                 }
             }
         }
+        $documentationReport = $destination . '/.docara/documentation-status.json';
+        if (is_file($documentationReport) && ! is_link($documentationReport)) {
+            $report = json_decode((string) file_get_contents($documentationReport), true);
+            if (is_array($report)) {
+                $issues = array_sum(array_map(
+                    static fn (string $status): int => (int) ($report['summary'][$status] ?? 0),
+                    ['new', 'changed', 'missing', 'missing_example', 'unverified', 'orphan'],
+                ));
+                if ($issues > 0) {
+                    $this->console->comment("Documentation tracking reported $issues item(s) that need attention; the build remains valid in report mode.");
+                }
+            }
+        }
 
         return self::SUCCESS;
     }

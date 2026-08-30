@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Simai\Docara\Application;
 
 use Simai\Docara\Design\Artifact\DesignArtifactKind;
+use Simai\Docara\Documentation\DocumentationSourceRepository;
+use Simai\Docara\Documentation\DocumentationStatusService;
 
 final readonly class ValidationService
 {
@@ -15,6 +17,15 @@ final readonly class ValidationService
         if ($kind === 'project') {
             $checks[] = $this->pass('PROJECT_REGISTRIES_VALID', count($runtime->smarts->keys()) + count($runtime->designs->all()));
             array_push($checks, ...(new PageInspectionService)->validateAll($runtime->root));
+            if (($runtime->site['documentation_tracking']['enabled'] ?? false) === true) {
+                $report = (new DocumentationStatusService)->report($runtime->root);
+                $checks[] = ['code' => 'DOCUMENTATION_SOURCES_VALID', 'status' => 'pass', 'count' => count((new DocumentationSourceRepository)->all($runtime->root))];
+                foreach ($report['items'] as $item) {
+                    if (! in_array($item['status'], ['current', 'excluded'], true)) {
+                        $checks[] = ['code' => 'DOCUMENTATION_' . strtoupper($item['status']), 'subject' => $item['source'] . ':' . $item['key'], 'status' => 'review_required'];
+                    }
+                }
+            }
         } elseif ($kind === 'page') {
             if ($id === null) {
                 throw new \InvalidArgumentException('SDK_ARGUMENT_REQUIRED:id');
@@ -24,6 +35,17 @@ final readonly class ValidationService
             foreach ($inspection['diagnostics'] as $diagnostic) {
                 $checks[] = $diagnostic + ['subject' => $id];
             }
+        } elseif ($kind === 'source') {
+            if ($id === null) {
+                throw new \InvalidArgumentException('SDK_ARGUMENT_REQUIRED:id');
+            }
+            $parts = explode(':', $id, 2);
+            $repository = new DocumentationSourceRepository;
+            $source = $repository->source($runtime->root, $parts[0]);
+            if (isset($parts[1])) {
+                $repository->entity($runtime->root, $parts[0], $parts[1]);
+            }
+            $checks[] = ['code' => 'DOCUMENTATION_SOURCE_VALID', 'subject' => $id, 'status' => 'pass', 'revision' => $source['revision']];
         } elseif ($kind === 'smart') {
             $ids = $id === null ? $runtime->smarts->keys() : [$id];
             foreach ($ids as $smartId) {

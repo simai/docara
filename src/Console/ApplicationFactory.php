@@ -11,6 +11,7 @@ use Simai\Docara\Application\DiscoveryService;
 use Simai\Docara\Application\QaService;
 use Simai\Docara\Application\ScaffoldService;
 use Simai\Docara\Application\ValidationService;
+use Simai\Docara\Documentation\DocumentationStatusService;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\File\ProjectFilesystemGuard;
 use Simai\Docara\I18n\TranslationStatusService;
@@ -42,6 +43,7 @@ final class ApplicationFactory
             (new UpdateCommand(new PortableProjectUpdater($files)))->setBase($base),
             (new BuildCommand($builder))->setBase($base),
             (new TranslationsCommand(new TranslationStatusService))->setBase($base),
+            (new DocumentationCommand(new DocumentationStatusService))->setBase($base),
             (new PreviewCommand($preview, new PreviewShell($files, $writes)))->setBase($base),
             (new ServeCommand)->setBase($base),
             (new VerifyStaticCommand)->setBase($base),

@@ -11,6 +11,7 @@ use Simai\Docara\Content\PageSource;
 use Simai\Docara\Content\PageSourceLocator;
 use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Document\MarkdownCompiler;
+use Simai\Docara\Documentation\DocumentationStatusService;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\I18n\LocaleRegistry;
 use Simai\Docara\I18n\LocaleRoutingPolicy;
@@ -29,16 +30,29 @@ final readonly class PageInspectionService
         $contract = AuthoringContract::load($runtime->root);
         $items = [];
         foreach ($this->sources($runtime) as $source) {
-            $inspection = $this->inspectSource($runtime, $contract, $source, false, null, false);
+            $raw = (string) file_get_contents($runtime->root . '/' . $source->path);
+            $document = (new FrontMatterParser)->parse($raw, $source->path);
+            $contentRoot = LocaleRegistry::fromSite($runtime->site)->get($source->locale)->contentRoot;
+            $relative = substr($source->path, strlen($contentRoot) + 1);
+            $resolution = $contract->resolve(
+                $relative,
+                is_string($document->metadata['profile'] ?? null) ? $document->metadata['profile'] : null,
+            );
+            $diagnostics = $this->profileDiagnostics(
+                $resolution['profile'],
+                $this->facts($document->markdown),
+                $contract->present || isset($document->metadata['profile']),
+            );
+            $route = $this->publicRoute($runtime, $source);
             $items[] = [
-                'id' => $inspection['route'],
+                'id' => $route,
                 'kind' => 'page',
-                'source' => $inspection['source']['path'],
-                'locale' => $inspection['locale'],
-                'route' => $inspection['route'],
-                'profile' => $inspection['profile']['id'],
-                'profile_source' => $inspection['profile']['source'],
-                'status' => $inspection['diagnostics'] === [] ? 'current' : 'needs_attention',
+                'source' => $source->path,
+                'locale' => $source->locale,
+                'route' => $route,
+                'profile' => $resolution['profile'],
+                'profile_source' => $resolution['source'],
+                'status' => $diagnostics === [] ? 'current' : 'needs_attention',
             ];
         }
 
@@ -70,12 +84,46 @@ final readonly class PageInspectionService
         foreach ($sources as $candidate) {
             $routeSet[$this->publicRoute($runtime, $candidate)] = true;
         }
+        $frameworkPath = (string) ($runtime->site['framework_lock'] ?? '');
+        if ($frameworkPath === '') {
+            throw new PortableConfigurationException('FRAMEWORK_LOCK_PATH_INVALID', 'Page validation requires the configured Framework lock.');
+        }
+        $framework = FrameworkLock::fromJsonFile($runtime->root . '/' . ltrim($frameworkPath, '/'))->toArray();
+        $project = ProjectSmartRuntime::fromSite($runtime->root, $runtime->site, $framework);
+        $compiler = new MarkdownCompiler(smarts: $project?->gateway ?? SmartComponentGateway::bundled($framework));
+        $exampleRepository = new ProjectExampleRepository($runtime->root, (string) ($runtime->site['base_url'] ?? '/'));
         foreach ($sources as $source) {
-            $inspection = $this->inspectSource($runtime, $contract, $source, true, $routeSet, false);
-            foreach ($inspection['diagnostics'] as $diagnostic) {
-                $checks[] = $diagnostic + ['subject' => $inspection['route']];
+            $raw = (string) file_get_contents($runtime->root . '/' . $source->path);
+            $document = (new FrontMatterParser)->parse($raw, $source->path);
+            $contentRoot = LocaleRegistry::fromSite($runtime->site)->get($source->locale)->contentRoot;
+            $relative = substr($source->path, strlen($contentRoot) + 1);
+            $resolution = $contract->resolve(
+                $relative,
+                is_string($document->metadata['profile'] ?? null) ? $document->metadata['profile'] : null,
+            );
+            $diagnostics = $this->profileDiagnostics(
+                $resolution['profile'],
+                $this->facts($document->markdown),
+                $contract->present || isset($document->metadata['profile']),
+            );
+            $compiler->compile($document->markdown, $source->path);
+            foreach ($this->examples($document->markdown) as $example) {
+                if ($example['mode'] === 'reusable') {
+                    $exampleRepository->load($example['id'], $source->path);
+                }
             }
-            $checks[] = ['code' => 'PAGE_MARKDOWN_VALID', 'status' => 'pass', 'subject' => $inspection['route']];
+            array_push($diagnostics, ...$this->technicalDiagnostics(
+                $runtime,
+                $source,
+                $document->markdown,
+                $this->links($document->markdown),
+                $routeSet,
+            ));
+            $route = $this->publicRoute($runtime, $source);
+            foreach ($diagnostics as $diagnostic) {
+                $checks[] = $diagnostic + ['subject' => $route];
+            }
+            $checks[] = ['code' => 'PAGE_MARKDOWN_VALID', 'status' => 'pass', 'subject' => $route];
         }
 
         return $checks;
@@ -97,8 +145,15 @@ final readonly class PageInspectionService
 
     /** @return array<string, mixed> */
     /** @param array<string, true>|null $routeSet */
-    private function inspectSource(ProjectRuntime $runtime, AuthoringContract $contract, PageSource $source, bool $full, ?array $routeSet = null, bool $resolveSettings = true): array
-    {
+    private function inspectSource(
+        ProjectRuntime $runtime,
+        AuthoringContract $contract,
+        PageSource $source,
+        bool $full,
+        ?array $routeSet = null,
+        bool $resolveSettings = true,
+        bool $includeRelations = true,
+    ): array {
         $absolute = $runtime->root . '/' . $source->path;
         $raw = (string) file_get_contents($absolute);
         $document = (new FrontMatterParser)->parse($raw, $source->path);
@@ -121,7 +176,7 @@ final readonly class PageInspectionService
         }
         $profile = $resolution['profile'] === null ? null : (new AuthoringProfileRegistry)->all()[$resolution['profile']];
         $resolved = $resolveSettings ? (new PortableConfigurationLoader($runtime->root))->resolve($source->path) : null;
-        $translation = $full
+        $translation = $full && $includeRelations
             ? $this->translationRelation($runtime, $source, $document->metadata['translation_key'] ?? null)
             : ['key' => $document->metadata['translation_key'] ?? null, 'source_locale' => $this->translationSourceLocale($runtime, $source), 'peers' => []];
         $data = [
@@ -142,6 +197,7 @@ final readonly class PageInspectionService
             'provenance' => ['profile_rule_matches' => $resolution['matches'], 'content_root_relative_path' => $relative, 'effective_settings' => $resolved?->provenance ?? []],
             'diagnostics' => $diagnostics,
         ];
+        $data['documentation'] = $this->documentationRelation($runtime, $route, $full && $includeRelations);
         if (! $full) {
             unset($data['effective_settings']['configuration']);
         }
@@ -275,7 +331,19 @@ final readonly class PageInspectionService
             $path = preg_replace('/[?#].*$/', '', $url) ?: '/';
             $localized = '/' . implode('/', array_filter([$locale->publicPrefix, trim($path, '/')])) . '/';
             $localized = preg_replace('#/+#', '/', $localized) ?: '/';
-            if (! isset($routeSet[$path]) && ! isset($routeSet[$localized]) && ! is_file($runtime->root . '/' . ltrim($path, '/'))) {
+            $publicPrefix = trim($locale->publicPrefix, '/');
+            $pathRelative = ltrim($path, '/');
+            $localeRelative = $publicPrefix !== '' && str_starts_with($pathRelative, $publicPrefix . '/')
+                ? substr($pathRelative, strlen($publicPrefix) + 1)
+                : null;
+            $localeAsset = is_string($localeRelative)
+                ? $runtime->root . '/' . trim($locale->contentRoot, '/') . '/' . $localeRelative
+                : null;
+            if (! isset($routeSet[$path])
+                && ! isset($routeSet[$localized])
+                && ! is_file($runtime->root . '/' . $pathRelative)
+                && (! is_string($localeAsset) || ! is_file($localeAsset))
+            ) {
                 $diagnostics[] = ['code' => 'PAGE_LINK_TARGET_MISSING', 'status' => 'error', 'severity' => 'error', 'url' => $url];
             }
         }
@@ -360,12 +428,29 @@ final readonly class PageInspectionService
     private function locks(ProjectRuntime $runtime): array
     {
         $translationTracking = is_array($runtime->site['translation_tracking'] ?? null) ? $runtime->site['translation_tracking'] : [];
+        $documentationTracking = is_array($runtime->site['documentation_tracking'] ?? null) ? $runtime->site['documentation_tracking'] : [];
 
         return [
             'framework' => $this->lockDescriptor($runtime->root, (string) ($runtime->site['framework_lock'] ?? '')),
             'translations' => $this->lockDescriptor($runtime->root, (string) ($translationTracking['lock_file'] ?? '')),
+            'documentation' => $this->lockDescriptor($runtime->root, (string) ($documentationTracking['lock_file'] ?? '')),
             'composer' => $this->lockDescriptor($runtime->root, 'composer.lock'),
         ];
+    }
+
+    /** @return array{enabled:bool,source_locale:?string,relations:list<array<string,mixed>>} */
+    private function documentationRelation(ProjectRuntime $runtime, string $route, bool $full): array
+    {
+        $tracking = is_array($runtime->site['documentation_tracking'] ?? null) ? $runtime->site['documentation_tracking'] : [];
+        if (($tracking['enabled'] ?? false) !== true || ! $full) {
+            return ['enabled' => ($tracking['enabled'] ?? false) === true, 'source_locale' => $tracking['source_locale'] ?? null, 'relations' => []];
+        }
+        $relations = array_values(array_filter(
+            (new DocumentationStatusService)->report($runtime->root)['items'],
+            static fn (array $item): bool => isset($item['route']) && trim((string) $item['route'], '/') === trim($route, '/'),
+        ));
+
+        return ['enabled' => true, 'source_locale' => $tracking['source_locale'], 'relations' => $relations];
     }
 
     /** @return array{path:string,sha256:string}|null */

@@ -181,4 +181,17 @@ final class PageAuthoringSdkTest extends TestCase
         $this->expectException(PortableConfigurationException::class);
         (new ValidationService)->validate($this->tmp, 'page', '/ru/');
     }
+
+    #[Test]
+    public function page_validation_resolves_absolute_locale_assets_from_the_locale_content_root(): void
+    {
+        $this->filesystem->ensureDirectoryExists($this->tmpPath('content/ru/assets/reference'));
+        $this->filesystem->put($this->tmpPath('content/ru/assets/reference/example.png'), 'png');
+        $this->filesystem->put(
+            $this->tmpPath('content/ru/index.md'),
+            "# Asset page\n\n![Example](/ru/assets/reference/example.png)\n",
+        );
+
+        self::assertSame(0, (new ValidationService)->validate($this->tmp, 'page', '/ru/')->exitCode);
+    }
 }

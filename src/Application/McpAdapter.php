@@ -41,7 +41,7 @@ final readonly class McpAdapter
                 return $this->error($id, -32602, 'MCP_TOOL_UNKNOWN');
             }
             $operation = $this->operations()[$name];
-            if ($operation === 'scaffold.apply' && ! $this->allowWrites) {
+            if (in_array($operation, ['scaffold.apply', 'documentation.apply'], true) && ! $this->allowWrites) {
                 $result = (new OperationFailureMapper)->map(
                     $this->root,
                     $operation,
@@ -83,7 +83,7 @@ final readonly class McpAdapter
                 'description' => 'Delegate Docara application operation ' . $operation . '.',
                 'inputSchema' => ['type' => 'object', 'additionalProperties' => false, 'properties' => $this->properties($operation)],
                 'annotations' => [
-                    'readOnlyHint' => ! in_array($operation, ['scaffold.plan', 'scaffold.apply', 'qa.plan', 'qa.finalize_reference'], true),
+                    'readOnlyHint' => ! in_array($operation, ['scaffold.plan', 'scaffold.apply', 'qa.plan', 'qa.finalize_reference', 'documentation.plan', 'documentation.apply'], true),
                     'destructiveHint' => false,
                     'idempotentHint' => true,
                     'openWorldHint' => false,
@@ -103,6 +103,8 @@ final readonly class McpAdapter
             'docara_scaffold_plan' => 'scaffold.plan', 'docara_scaffold_apply' => 'scaffold.apply',
             'docara_validate' => 'validate', 'docara_test' => 'test', 'docara_qa_plan' => 'qa.plan',
             'docara_qa_finalize_reference' => 'qa.finalize_reference', 'docara_qa_verify' => 'qa.verify',
+            'docara_documentation_status' => 'documentation.status', 'docara_documentation_plan' => 'documentation.plan',
+            'docara_documentation_apply' => 'documentation.apply',
         ];
     }
 
@@ -115,9 +117,12 @@ final readonly class McpAdapter
             'doctor', 'atlas' => [],
             'list', 'schema' => ['kind' => $string],
             'inspect', 'validate' => ['kind' => $string, 'id' => $string],
-            'scaffold.plan' => ['kind' => $string, 'id' => $string, 'locale' => $string, 'title' => $string, 'profile' => $string],
+            'scaffold.plan' => ['kind' => $string, 'id' => $string, 'locale' => $string, 'title' => $string, 'profile' => $string, 'source' => $string, 'entity' => $string],
             'scaffold.apply', 'qa.finalize_reference', 'qa.verify' => ['plan_id' => $string],
             'test', 'qa.plan' => ['kind' => $string, 'id' => $string, 'page' => $string],
+            'documentation.status' => ['source' => $string, 'kind' => $string, 'status' => $string],
+            'documentation.plan' => ['source' => $string, 'key' => $string, 'route' => $string, 'review' => $string, 'examples' => ['type' => 'object'], 'exclude_reason' => $string],
+            'documentation.apply' => ['plan_id' => $string],
             default => [],
         };
     }

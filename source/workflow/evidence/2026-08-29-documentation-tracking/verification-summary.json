@@ -1,0 +1,121 @@
+{
+  "schema": "docara.documentation_tracking_verification.v1",
+  "date": "2026-08-29",
+  "result": "implemented_and_locally_verified",
+  "scope": {
+    "docara": "optional neutral source tracking, status, inspect, validate, accept, scaffold, CLI and MCP",
+    "framework": "generated neutral contract and semantic radius ownership",
+    "ui_doc": "Russian pilot and legacy component audit migration",
+    "skill": "canonical source updated; revision-bound activation follows the Docara release"
+  },
+  "documentation_status": {
+    "source": "simai-framework",
+    "total": 334,
+    "current": 0,
+    "new": 119,
+    "changed": 215,
+    "missing": 0,
+    "missing_example": 0,
+    "unverified": 0,
+    "orphan": 0,
+    "excluded": 0,
+    "provider_mode": "exact_pinned_neutral_contract_for_ui_5_4_1"
+  },
+  "framework_contract": {
+    "schema": "docara.documentation_source.v1",
+    "entities": 334,
+    "core": 1,
+    "utility": 226,
+    "component": 63,
+    "smart_component": 43,
+    "recipe": 1,
+    "deterministic_test": "pass",
+    "loader_rule_inventory": 60,
+    "restored_components": [
+      "component.file-preview",
+      "component.link"
+    ],
+    "release_binding": "sf-v5.4.1-185ca062-23d00d92"
+  },
+  "tests": {
+    "documentation_focused": {
+      "status": "pass",
+      "tests": 24,
+      "assertions": 151
+    },
+    "framework_documentation_contract": {
+      "status": "pass",
+      "tests": 1
+    },
+    "docara_full_suite": {
+      "status": "pass_with_environment_skip",
+      "tests": 552,
+      "assertions": 16502,
+      "skipped": 1,
+      "environment_skip": "optional Node executable is not runnable because the current Homebrew binary cannot load libsimdjson.30.dylib",
+      "bundled_node_recheck": {
+        "status": "pass",
+        "tests": 4,
+        "assertions": 68
+      }
+    }
+  },
+  "builds": {
+    "docara_docs": {
+      "pages": 128,
+      "verify_html_pages": 263,
+      "references_checked": 35553,
+      "broken": 0
+    },
+    "ui_doc": {
+      "markdown_pages": 909,
+      "ru": 479,
+      "en": 430,
+      "verify_html_pages": 1788,
+      "references_checked": 370061,
+      "broken": 0
+    }
+  },
+  "browser_smoke": {
+    "buttons_icons_and_examples": "pass",
+    "radius_semantic_table": "pass",
+    "mobile_dark_theme": "pass",
+    "design_token_radius_semantics": "pass",
+    "console_errors": 0,
+    "console_warnings": 0,
+    "failed_requests": 0
+  },
+  "safety": {
+    "network_or_ai_from_builder": false,
+    "status_validate_build_edit_markdown_or_lock": false,
+    "persistent_rollbacks_in_users_sites": 0,
+    "commit": "authorized_pending",
+    "push": "authorized_pending",
+    "release": "authorized_pending",
+    "public_deploy": false
+  },
+  "skill_sync_gate": {
+    "source_validators": "pass",
+    "federation_verify": "pass",
+    "route_check": "328_of_328_pass",
+    "graph_proposals_generated": true,
+    "status": "blocked_until_revision_bound_commit",
+    "blockers": [
+      "project_technology_verify_failed",
+      "project_technology_context_failed",
+      "runtime_verify_ref_missing",
+      "runtime_context_ref_missing"
+    ]
+  },
+  "project_memory": {
+    "canonical_spec_updated": true,
+    "generated_context": "pass",
+    "continuity_receipt": "blocked",
+    "blockers": [
+      "continuity_outcome_missing_or_unsafe",
+      "continuity_requirement_refs_missing",
+      "continuity_task_digest_invalid",
+      "continuity_verification_missing"
+    ]
+  }
+}

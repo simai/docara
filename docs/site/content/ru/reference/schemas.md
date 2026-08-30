@@ -19,6 +19,9 @@ unknown fields, неверные типы и unsafe paths.
 | `docara.lang.v1` | `content/<locale>/lang.json` | Только общие UI-подписи локали |
 | `docara.translation_lock.v1` | `translations.lock.json` | Принятые hashes переводов, уровень проверки и исключения |
 | `docara.translation_status.v1` | `.docara/translation-status.json` | Детерминированный отчёт о страницах и ключах локали |
+| `docara.documentation_source.v1` | Source-owned JSON или встроенный provider | Нейтральный публичный контракт документируемых сущностей |
+| `docara.documentation_lock.v1` | `documentation.lock.json` | Принятые связи страниц, примеров и отпечатков исходного API |
+| `docara.documentation_status.v1` | `.docara/documentation-status.json` | Производный отчёт актуальности документации по исходному коду |
 
 ## Исполняемые примеры schema
 
@@ -55,7 +58,7 @@ Invalid-пример документирует ожидаемую ошибку;
 | `branding`, `layout`, `settings` | ✓ | ✓ | ✓ |
 | `navigation`, `search`, `reading` | ✓ | ✓ | ✓ |
 | `reader_preferences` | ✓ | — | — |
-| `framework_lock`, `content_root`, `base_url`, `default_locale`, `locales`, `locale_routing`, `translation_tracking` | ✓ | — | — |
+| `framework_lock`, `content_root`, `base_url`, `default_locale`, `locales`, `locale_routing`, `translation_tracking`, `documentation_tracking` | ✓ | — | — |
 | `documentation_version`, `redirects_file` | ✓ | — | — |
 | `description`, `slug` | — | — | ✓ |
 

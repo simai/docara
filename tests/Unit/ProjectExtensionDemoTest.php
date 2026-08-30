@@ -11,6 +11,7 @@ use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Preview\PreviewKernel;
 use Simai\Docara\Preview\PreviewTarget;
+use Symfony\Component\Process\Exception\ProcessSignaledException;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 use Tests\TestCase;
@@ -92,6 +93,15 @@ final class ProjectExtensionDemoTest extends TestCase
         $node = (new ExecutableFinder)->find('node');
         if (! is_string($node)) {
             self::markTestSkipped('Node is optional for consumers and required only for this developer semantic contract test.');
+        }
+        $probe = new Process([$node, '--version']);
+        try {
+            $probe->run();
+        } catch (ProcessSignaledException) {
+            self::markTestSkipped('The discovered optional Node executable is not runnable in this developer environment.');
+        }
+        if (! $probe->isSuccessful()) {
+            self::markTestSkipped('The discovered optional Node executable is not runnable in this developer environment.');
         }
 
         $runner = $this->tmpPath('project-demo-contract.mjs');

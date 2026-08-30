@@ -16,6 +16,7 @@
       {"name": "current", "type": "integer", "required": false, "default": 1}
     ]
     },
+    "capabilities": ["content.embeddable"],
     "states": [],
     "verification": {
         "renderer": true,

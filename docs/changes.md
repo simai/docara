@@ -13,7 +13,9 @@ Docara 2 provides:
 - deterministic build receipts and fail-closed static verification;
 - safe starter updates with explicit ownership rules;
 - reusable project examples with dependency and asset receipts;
-- non-blocking translation freshness reports and hash-bound review acceptance.
+- non-blocking translation freshness reports and hash-bound review acceptance;
+- optional source-backed documentation status for pages and examples, neutral
+  project contracts and stale-safe review acceptance shared by CLI and MCP.
 
 The former Jigsaw/Mix runtime and the transition-only renderer, preview and
 template mirror are not part of Docara 2.

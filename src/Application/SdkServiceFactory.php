@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Application;
 
+use Simai\Docara\Documentation\DocumentationStatusService;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\File\ProjectFilesystemGuard;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
@@ -27,6 +28,7 @@ final class SdkServiceFactory
             new ArtifactTestService($preview),
             new QaService($preview, new PreviewShell($files, $writes), $writes),
             new DesignAtlasService,
+            new DocumentationStatusService,
         );
     }
 }

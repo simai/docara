@@ -97,10 +97,56 @@
         },
         "translation_tracking": {
             "$ref": "#/$defs/translationTracking"
+        },
+        "documentation_tracking": {
+            "$ref": "#/$defs/documentationTracking"
         }
     },
     "additionalProperties": false,
     "$defs": {
+        "documentationTracking": {
+            "type": "object",
+            "required": ["enabled", "source_locale", "mode", "lock_file", "sources"],
+            "properties": {
+                "enabled": {"type": "boolean"},
+                "source_locale": {"type": "string", "format": "docara-bcp47"},
+                "mode": {"type": "string", "const": "report"},
+                "lock_file": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]*\\.json$"
+                },
+                "sources": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {"$ref": "#/$defs/documentationSource"}
+                }
+            },
+            "additionalProperties": false
+        },
+        "documentationSource": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "required": ["id", "provider", "framework_lock"],
+                    "properties": {
+                        "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+                        "provider": {"const": "simai_framework"},
+                        "framework_lock": {"type": "string", "format": "docara-relative-path"}
+                    },
+                    "additionalProperties": false
+                },
+                {
+                    "type": "object",
+                    "required": ["id", "provider", "file"],
+                    "properties": {
+                        "id": {"type": "string", "pattern": "^[a-z][a-z0-9-]*$"},
+                        "provider": {"const": "contract_json"},
+                        "file": {"type": "string", "format": "docara-relative-path"}
+                    },
+                    "additionalProperties": false
+                }
+            ]
+        },
         "translationTracking": {
             "type": "object",
             "required": ["enabled", "source_locale", "mode", "lock_file"],

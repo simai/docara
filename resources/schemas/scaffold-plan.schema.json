@@ -13,13 +13,16 @@
     "options": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["locale", "title", "profile"],
+      "required": ["locale", "title", "profile", "source", "entity"],
       "properties": {
         "locale": {"type": "string", "minLength": 1},
         "title": {"type": "string", "minLength": 1},
-        "profile": {"enum": ["landing", "article", "tutorial", "how_to", "reference", "explanation"]}
+        "profile": {"enum": ["landing", "article", "tutorial", "how_to", "reference", "explanation"]},
+        "source": {"type": ["string", "null"], "pattern": "^[a-z][a-z0-9-]*$"},
+        "entity": {"type": ["string", "null"], "minLength": 1}
       }
     },
+    "source_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
     "input_hashes": {"type": "object", "additionalProperties": {"type": "string", "pattern": "^(?:absent|[a-f0-9]{64})$"}},
     "files": {
       "type": "array",
@@ -29,7 +32,7 @@
         "additionalProperties": false,
         "required": ["path", "sha256", "content_base64"],
         "properties": {
-          "path": {"type": "string", "pattern": "^(?:smart|design|content)/[a-zA-Z0-9._/-]+$"},
+          "path": {"type": "string", "pattern": "^(?:smart|design|content|examples)/[a-zA-Z0-9._/-]+$"},
           "sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
           "content_base64": {"type": "string", "minLength": 1}
         }

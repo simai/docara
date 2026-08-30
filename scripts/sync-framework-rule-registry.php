@@ -107,7 +107,7 @@ foreach (preg_split('/\R/', trim($componentTree)) ?: [] as $line) {
     $sourcePath = $match[2];
     if ($size === 0
         || $size > 4 * 1024 * 1024
-        || preg_match('#^distr/component/([a-z0-9-]+)/(css|js)/\1\.(css|js)$#D', $sourcePath) !== 1
+        || preg_match('#^distr/component/([A-Za-z0-9-]+)/(css|js)/\1\.(css|js)$#D', $sourcePath) !== 1
         || str_contains($sourcePath, '.min.')
     ) {
         continue;
@@ -184,7 +184,7 @@ foreach (new RecursiveIteratorIterator(
         continue;
     }
     $relativePath = str_replace('\\', '/', substr($file->getPathname(), strlen($distribution) + 1));
-    if (preg_match('#^component/([a-z0-9-]+)/(css|js)/\1\.(css|js)$#D', $relativePath) !== 1) {
+    if (preg_match('#^component/([A-Za-z0-9-]+)/(css|js)/\1\.(css|js)$#D', $relativePath) !== 1) {
         continue;
     }
     $manifest['files'][$relativePath] = ['sha256' => hash_file('sha256', $file->getPathname())];

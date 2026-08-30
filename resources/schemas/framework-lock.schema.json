@@ -401,6 +401,28 @@
                 },
                 "source": {
                     "$ref": "#/$defs/framework_registry_source"
+                },
+                "documentation_source": {
+                    "$ref": "#/$defs/framework_documentation_source"
+                }
+            },
+            "additionalProperties": false
+        },
+        "framework_documentation_source": {
+            "type": "object",
+            "required": ["schema", "relative_path", "file_sha256"],
+            "properties": {
+                "schema": {
+                    "type": "string",
+                    "const": "docara.documentation_source.v1"
+                },
+                "relative_path": {
+                    "type": "string",
+                    "format": "docara-relative-path"
+                },
+                "file_sha256": {
+                    "type": "string",
+                    "pattern": "^[a-f0-9]{64}$"
                 }
             },
             "additionalProperties": false
@@ -431,7 +453,7 @@
                 },
                 "files": {
                     "type": "integer",
-                    "const": 1
+                    "minimum": 1
                 }
             },
             "additionalProperties": false

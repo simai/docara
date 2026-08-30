@@ -131,7 +131,7 @@ PASS ставится только по воспроизводимому evidenc
 - [x] CLI/JSON/MCP journey документирует и в disposable project исполняет один
       discover -> plan -> preview -> dry-run -> hash-bound apply -> validate
       service path.
-- [x] 127 authored route имеют один физический Markdown owner; семь retired
+- [x] 128 authored route имеют один физический Markdown owner; семь retired
       component-overview URL имеют deterministic noindex redirects, duplicate prose
       owners отсутствуют.
 - [x] Atlas/schema receipts hash-bound к production build receipt и

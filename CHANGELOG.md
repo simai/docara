@@ -4,6 +4,43 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.4.0] - 2026-08-30
+
+### Added
+
+- Optional `documentation_tracking` connects Markdown pages and reusable
+  examples to exact public source contracts without creating a second product
+  catalogue. Neutral JSON contracts and the built-in SIMAI Framework provider
+  share deterministic `list`, `inspect`, `validate`, `scaffold`, status and
+  hash-bound acceptance services across CLI and MCP.
+- Documentation status distinguishes current, new, changed, missing,
+  missing-example, unverified, orphan and excluded entities. Report mode
+  writes a stable `.docara/documentation-status.json` but never blocks a build,
+  calls AI or edits Markdown and lock files.
+- SIMAI Framework 5.4.1 is pinned with 226 utility families, 63 ordinary
+  components, 43 Smart Components and a neutral 334-entity documentation
+  contract. The semantic roles of compact-control and large-surface radius
+  tokens are now explicit.
+
+### Changed
+
+- Source-aware page scaffolding can derive a minimal reference draft from a
+  verified provider template while retaining create-only filesystem and stale
+  plan protections.
+- Reusable Example sandboxes receive the exact planned Framework styles,
+  component scripts and local icon fonts needed by the example. Dynamic
+  `data-sf-require` declarations are honoured without treating prose code
+  fragments as runtime requirements.
+- `docara.steps` is explicitly embeddable in `Surface`, allowing step timelines
+  to retain their numbered markers inside full-width content bands.
+
+### Fixed
+
+- Example result height is measured from real content bounds after styles and
+  fonts settle, so short results no longer inherit document-height whitespace.
+- Example icon and component assets remain local, theme-aware and confined to
+  the existing sandbox contract.
+
 ## [2.3.0] - 2026-08-29
 
 ### Fixed

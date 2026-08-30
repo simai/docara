@@ -293,15 +293,55 @@
   }
   var docaraExamples=Array.from(document.querySelectorAll('[data-docara-example]'));
   var docaraExampleFrames=Array.from(document.querySelectorAll('iframe[data-docara-example-frame]'));
-  function exampleEnvironment(){
-    return{
-      stylesheets:Array.from(document.querySelectorAll('link[data-docara-framework-asset][rel="stylesheet"]')).map(function(link){return link.href}),
+  var exampleFontAssets=Object.create(null);
+  function exampleFontAsset(url){
+    var resolved;
+    try{resolved=new URL(url,document.baseURI)}catch(error){return Promise.resolve(null)}
+    if(resolved.origin!==location.origin){return Promise.resolve(null)}
+    if(!exampleFontAssets[resolved.href]){
+      exampleFontAssets[resolved.href]=fetch(resolved.href,{credentials:'same-origin'}).then(function(response){
+        if(!response.ok)throw new Error('Font request failed');
+        return response.arrayBuffer().then(function(bytes){return{bytes:bytes,type:response.headers.get('content-type')||'font/woff2'}});
+      }).catch(function(){return null});
+    }
+    return exampleFontAssets[resolved.href];
+  }
+  function portableExampleStyle(content){
+    var matches=[],pattern=/url\(\s*(["']?)([^"')]+)\1\s*\)/g,match;
+    while((match=pattern.exec(content))!==null){matches.push({token:match[0],url:match[2]})}
+    return Promise.all(matches.map(function(item){return exampleFontAsset(item.url)})).then(function(assets){
+      var result=content,fonts=[];
+      matches.forEach(function(item,index){
+        if(!assets[index])return;
+        var token='__DOCARA_FONT_'+index+'__';
+        result=result.split(item.token).join('url("'+token+'")');
+        fonts.push({token:token,bytes:assets[index].bytes,type:assets[index].type});
+      });
+      return{content:result,fonts:fonts};
+    });
+  }
+  function exampleEnvironment(frame){
+    var source=frame.getAttribute('srcdoc')||'',needsIcons=source.indexOf('sf-icon')!==-1;
+    var inlineStyles=needsIcons?Array.from(document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_font.css"]')):[];
+    if(source.indexOf('sf-icon-rounded')!==-1||source.indexOf('sf-icon-shape')!==-1){
+      document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_variant_fonts.css"]').forEach(function(style){inlineStyles.push(style)});
+    }
+    var environment={
+      stylesheets:Array.from(document.querySelectorAll('link[data-docara-framework-asset][rel="stylesheet"],link[data-docara-declarative-shell-style][rel="stylesheet"]')).map(function(link){return link.href}),
+      scripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset^="simai.framework.preloaded.component."][src]')).map(function(script){return script.src}),
+      inlineScripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset="simai.framework.icon_font.ready"]:not([src])')).map(function(script){return{key:script.getAttribute('data-docara-framework-asset'),content:script.textContent||''}}),
       theme:document.documentElement.classList.contains('theme-dark')?'dark':'light',
       direction:document.documentElement.dir==='rtl'?'rtl':'ltr'
     };
+    return Promise.all(inlineStyles.map(function(style){return portableExampleStyle(style.textContent||'').then(function(portable){
+      return{key:style.getAttribute('data-docara-framework-asset')||'',content:portable.content,fonts:portable.fonts};
+    })})).then(function(styles){environment.inlineStyles=styles;return environment});
   }
   function requestExampleHeight(frame){
-    if(frame.contentWindow){frame.contentWindow.postMessage(Object.assign({type:'docara:example-measure'},exampleEnvironment()),'*')}
+    if(!frame.contentWindow)return;
+    exampleEnvironment(frame).then(function(environment){
+      if(frame.contentWindow){frame.contentWindow.postMessage(Object.assign({type:'docara:example-measure'},environment),'*')}
+    });
   }
   window.addEventListener('message',function(event){
     if(!event.data||event.data.type!=='docara:example-height')return;

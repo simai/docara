@@ -869,7 +869,7 @@ MD);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
             self::assertStringContainsString(
-                '/_docara/vendor/simai-framework/runtime/b2e8444659ae0d213296c2d349257259d3ed0c9c/distr/',
+                '/_docara/vendor/simai-framework/runtime/185ca0620df6b46b9e2c9c92231a46c9b79a786b/distr/',
                 $html,
             );
             self::assertStringNotContainsString('cdn.jsdelivr.net', $html);
@@ -1216,7 +1216,7 @@ MD);
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('sf-v5.4.0-b2e84446-23d00d92', $componentCatalog['framework_pair']);
+        self::assertSame('sf-v5.4.1-185ca062-23d00d92', $componentCatalog['framework_pair']);
         self::assertCount(38, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -1698,7 +1698,7 @@ MD;
             $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.4\.0-b2e84446-23d00d92-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.4\.1-185ca062-23d00d92-[a-f0-9]{16}#',
             $diagnostics,
         );
         self::assertFileExists($this->tmpPath('build_local/_docara/framework/smart/alert/js/alert.js'));

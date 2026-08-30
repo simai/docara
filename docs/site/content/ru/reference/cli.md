@@ -65,8 +65,6 @@ php vendor/bin/docara verify-static [build-directory]
 Без аргумента проверяется `build_production`. Проверка не выполняет проектный
 PHP-код: она читает статический каталог, receipts и manifest.
 
-## `translations`
-
 ## Страницы в Developer/AI SDK
 
 ```bash
@@ -93,6 +91,36 @@ php vendor/bin/docara scaffold --apply=<plan-sha256> --json
 
 Scaffold работает только для отсутствующего Markdown. Существующую страницу
 редактируют напрямую, затем запускают `validate`, build и `verify-static`.
+
+## `documentation`
+
+```bash
+php vendor/bin/docara list source --json
+php vendor/bin/docara inspect source simai-framework:component.buttons --json
+php vendor/bin/docara validate source simai-framework:component.buttons --json
+php vendor/bin/docara documentation status --source=simai-framework --kind=component --json
+php vendor/bin/docara documentation accept \
+  --source=simai-framework --key=component.buttons \
+  --route=/ru/components/buttons/ \
+  --example=default=components/buttons/basic \
+  --review=ai_verified --dry-run --json
+php vendor/bin/docara documentation accept --apply=<plan-sha256> --json
+```
+
+Необязательный `documentation_tracking` сопоставляет Markdown и общие примеры
+с публичным контрактом исходного проекта. `status`, `validate` и build только
+читают входы; сборка создаёт `.docara/documentation-status.json`, но не
+останавливается из-за редакционных статусов. Изменить
+`documentation.lock.json` можно только неизменившимся hash-bound планом.
+
+Source-aware scaffold получает заголовок и измеримую структуру из контракта,
+но не сочиняет неизвестный API или пример:
+
+```bash
+php vendor/bin/docara scaffold page /ru/components/new-component/ \
+  --source=simai-framework --entity=component.new-component \
+  --locale=ru --profile=reference --dry-run --json
+```
 
 ## `translations`
 

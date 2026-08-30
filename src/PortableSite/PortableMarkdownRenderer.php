@@ -808,6 +808,10 @@ var theme=data.theme==='dark'?'dark':'light',direction=data.direction==='rtl'?'r
 document.documentElement.style.setProperty('--sf-text--family','Arial,sans-serif');
 document.documentElement.style.setProperty('--sf-heading--family','Arial,sans-serif');
 document.documentElement.style.setProperty('--sf-display--family','Arial,sans-serif');
+document.documentElement.style.minHeight='0';
+document.documentElement.style.height='auto';
+body.style.minHeight='0';
+body.style.height='auto';
 document.documentElement.classList.remove('theme-light','theme-dark');
 document.documentElement.classList.add('theme-'+theme);
 body.classList.remove('theme-light','theme-dark');
@@ -815,15 +819,61 @@ body.classList.add('theme-'+theme);
 document.documentElement.dir=direction;
 body.dir=direction;
 var current=Array.from(document.querySelectorAll('link[data-docara-example-framework-style]')).map(function(link){return link.href});
+var styleLoads=[];
 (Array.isArray(data.stylesheets)?data.stylesheets:[]).forEach(function(href){
 if(typeof href!=='string'||current.indexOf(href)!==-1)return;
 var link=document.createElement('link');
 link.rel='stylesheet';
 link.href=href;
 link.setAttribute('data-docara-example-framework-style','');
-link.addEventListener('load',measureSettled);
+styleLoads.push(new Promise(function(resolve){
+link.addEventListener('load',function(){measureSettled();resolve()},{once:true});
+link.addEventListener('error',resolve,{once:true});
+}));
 document.head.appendChild(link);
 current.push(link.href);
+});
+Promise.all(styleLoads).then(function(){
+var currentInlineStyles=Array.from(document.querySelectorAll('style[data-docara-example-framework-inline-style]')).map(function(style){return style.getAttribute('data-docara-example-framework-inline-style')});
+(Array.isArray(data.inlineStyles)?data.inlineStyles:[]).forEach(function(item){
+if(!item||typeof item.key!=='string'||typeof item.content!=='string'||item.content===''||currentInlineStyles.indexOf(item.key)!==-1)return;
+var style=document.createElement('style');
+var content=item.content;
+(Array.isArray(item.fonts)?item.fonts:[]).forEach(function(font){
+if(!font||typeof font.token!=='string'||!(font.bytes instanceof ArrayBuffer))return;
+var blobUrl=URL.createObjectURL(new Blob([font.bytes],{type:typeof font.type==='string'?font.type:'font/woff2'}));
+content=content.split(font.token).join(blobUrl);
+});
+style.textContent=content;
+style.setAttribute('data-docara-example-framework-inline-style',item.key);
+document.head.appendChild(style);
+currentInlineStyles.push(item.key);
+});
+var currentInline=Array.from(document.querySelectorAll('script[data-docara-example-framework-inline-script]')).map(function(script){return script.getAttribute('data-docara-example-framework-inline-script')});
+(Array.isArray(data.inlineScripts)?data.inlineScripts:[]).forEach(function(item){
+if(!item||typeof item.key!=='string'||typeof item.content!=='string'||item.content===''||currentInline.indexOf(item.key)!==-1)return;
+var script=document.createElement('script');
+script.textContent=item.content;
+script.setAttribute('data-docara-example-framework-inline-script',item.key);
+document.head.appendChild(script);
+currentInline.push(item.key);
+});
+measureSettled();
+});
+var currentScripts=Array.from(document.querySelectorAll('script[data-docara-example-framework-script]')).map(function(script){return script.src});
+var scriptQueue=Promise.resolve();
+(Array.isArray(data.scripts)?data.scripts:[]).forEach(function(src){
+if(typeof src!=='string'||currentScripts.indexOf(src)!==-1)return;
+scriptQueue=scriptQueue.then(function(){return new Promise(function(resolve){
+var script=document.createElement('script');
+script.src=src;
+script.async=false;
+script.setAttribute('data-docara-example-framework-script','');
+script.addEventListener('load',function(){measureSettled();resolve()},{once:true});
+script.addEventListener('error',resolve,{once:true});
+document.head.appendChild(script);
+currentScripts.push(script.src);
+})});
 });
 }
 function measure(){
@@ -831,9 +881,15 @@ if(scheduled)return;
 scheduled=true;
 requestAnimationFrame(function(){
 scheduled=false;
-var root=document.documentElement,style=getComputedStyle(body),rect=body.getBoundingClientRect();
+var style=getComputedStyle(body),rect=body.getBoundingClientRect();
 var marginTop=parseFloat(style.marginTop)||0,marginBottom=parseFloat(style.marginBottom)||0;
-var height=Math.ceil(Math.max(rect.height+marginTop+marginBottom,body.scrollHeight,root.scrollHeight));
+var contentTop=rect.top-marginTop,contentBottom=rect.bottom+marginBottom;
+Array.from(body.children).forEach(function(child){
+var childRect=child.getBoundingClientRect(),childStyle=getComputedStyle(child);
+contentTop=Math.min(contentTop,childRect.top-(parseFloat(childStyle.marginTop)||0));
+contentBottom=Math.max(contentBottom,childRect.bottom+(parseFloat(childStyle.marginBottom)||0));
+});
+var height=Math.ceil(Math.max(0,contentBottom-contentTop));
 if(height===lastHeight)return;
 lastHeight=height;
 parent.postMessage({type:'docara:example-height',height:height},'*');

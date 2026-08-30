@@ -21,6 +21,60 @@ final readonly class ProjectFilesystemGuard
         'smart',
     ];
 
+    public function examplePath(string $projectRoot, string $relative, bool $allowMissing = true): string
+    {
+        return $this->inspect($projectRoot, $relative, ['examples'], $allowMissing);
+    }
+
+    public function putNewExample(string $projectRoot, string $relative, string $contents, string $collisionCode): string
+    {
+        $directory = dirname(str_replace('\\', '/', $relative));
+        $root = $this->root($projectRoot);
+        $segments = $this->segments($directory, ['examples']);
+        $current = $root;
+        foreach ($segments as $segment) {
+            $this->assertCase($current, $segment);
+            $current .= '/' . $segment;
+            if (file_exists($current) || is_link($current)) {
+                $this->assertNode($root, $current, true);
+
+                continue;
+            }
+            if (! mkdir($current, 0755)) {
+                throw $this->unsafe("Example directory [$directory] could not be created safely.");
+            }
+        }
+        $path = $this->examplePath($projectRoot, $relative);
+        if (file_exists($path) || is_link($path)) {
+            throw new PortableConfigurationException($collisionCode, "Generated path [$relative] already exists.");
+        }
+        $temporary = dirname($path) . '/.docara-tmp-' . bin2hex(random_bytes(12));
+        if (file_put_contents($temporary, $contents, LOCK_EX) !== strlen($contents)) {
+            @unlink($temporary);
+            throw $this->unsafe("Example path [$relative] could not be written completely.");
+        }
+        try {
+            $this->assertNode($root, $temporary, false);
+            if (! @link($temporary, $path)) {
+                throw new PortableConfigurationException($collisionCode, "Generated path [$relative] appeared before atomic publish.");
+            }
+        } finally {
+            @unlink($temporary);
+        }
+        $this->assertNode($root, $path, false);
+
+        return $path;
+    }
+
+    public function deleteExampleFile(string $projectRoot, string $relative): void
+    {
+        $path = $this->examplePath($projectRoot, $relative, false);
+        $this->assertNode($this->root($projectRoot), $path, false);
+        if (! unlink($path)) {
+            throw $this->unsafe("Example file [$relative] could not be removed safely.");
+        }
+    }
+
     public function authoringPath(string $projectRoot, string $relative, string $contentRoot, bool $allowMissing = true): string
     {
         $relative = str_replace('\\', '/', $relative);

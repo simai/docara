@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Application;
 
 use Simai\Docara\Design\Artifact\DesignArtifactKind;
+use Simai\Docara\Documentation\DocumentationSourceRepository;
 use Simai\Docara\Portable\SchemaRepository;
 use Simai\Docara\Smart\Artifact\DocaraPortableSmartAdmissionPolicy;
 use Simai\Docara\Smart\Artifact\Sf5SmartArtifactV1Contract;
@@ -63,6 +64,14 @@ final readonly class DiscoveryService
             'schema' => array_map(static fn (string $name): array => ['id' => $name, 'kind' => 'schema'], $this->schemaNames()),
             'fixture', 'state' => $this->fixtures($runtime, $kind),
             'page' => (new PageInspectionService)->list($runtime->root),
+            'source' => array_map(
+                static fn (array $source): array => [
+                    'id' => $source['id'], 'kind' => 'source', 'provider' => $source['provider'],
+                    'revision' => $source['revision'], 'entities' => count($source['entities']),
+                    'sha256' => $source['contract_sha256'], 'compatibility_adapter' => $source['compatibility_adapter'],
+                ],
+                (new DocumentationSourceRepository)->all($runtime->root),
+            ),
             default => throw new \InvalidArgumentException('SDK_DISCOVERY_KIND_UNKNOWN:' . $kind),
         };
         usort($items, static fn (array $left, array $right): int => [$left['id'], $left['kind']] <=> [$right['id'], $right['kind']]);
@@ -89,6 +98,7 @@ final readonly class DiscoveryService
             'schema' => ['id' => $id, 'schema' => (new SchemaRepository($this->schemaRoot))->get($id)],
             'fixture', 'state' => $this->oneById($this->fixtures($runtime, $kind), $id),
             'page' => (new PageInspectionService)->inspect($runtime->root, $id),
+            'source' => $this->documentationSource($runtime->root, $id),
             default => throw new \InvalidArgumentException('SDK_DISCOVERY_KIND_UNKNOWN:' . $kind),
         };
 
@@ -106,12 +116,18 @@ final readonly class DiscoveryService
             'block' => DesignArtifactKind::Block->schema(),
             'binding' => 'binding-descriptor.schema.json',
             'authoring' => 'authoring.schema.json',
+            'documentation-source' => 'documentation-source.schema.json',
+            'documentation-tracking' => 'site.schema.json',
             default => str_ends_with($kind, '.schema.json') ? $kind : throw new \InvalidArgumentException('SDK_SCHEMA_KIND_UNKNOWN:' . $kind),
         };
 
+        $resolvedSchema = (new SchemaRepository($this->schemaRoot))->get($schema);
+        if ($kind === 'documentation-tracking') {
+            $resolvedSchema = $resolvedSchema['$defs']['documentationTracking'];
+        }
         $data = [
             'schema_id' => $schema,
-            'schema' => (new SchemaRepository($this->schemaRoot))->get($schema),
+            'schema' => $resolvedSchema,
         ];
         if ($kind === 'smart') {
             $data['contract'] = [
@@ -242,5 +258,22 @@ final readonly class DiscoveryService
         sort($names, SORT_STRING);
 
         return $names;
+    }
+
+    /** @return array<string,mixed> */
+    private function documentationSource(string $root, string $id): array
+    {
+        $parts = explode(':', $id, 2);
+        $repository = new DocumentationSourceRepository;
+        if (count($parts) === 1) {
+            return $repository->source($root, $parts[0]);
+        }
+        $source = $repository->source($root, $parts[0]);
+        $entity = $repository->entity($root, $parts[0], $parts[1]);
+
+        return ['source' => [
+            'id' => $source['id'], 'provider' => $source['provider'], 'revision' => $source['revision'],
+            'path' => $source['path'], 'sha256' => $source['contract_sha256'],
+        ], 'entity' => $entity];
     }
 }

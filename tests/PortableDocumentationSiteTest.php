@@ -84,7 +84,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             ),
         ));
 
-        self::assertCount(127, $pages);
+        self::assertCount(128, $pages);
         self::assertSame([
             'design_atlas_sha256' => $atlasProjection['content_sha256'],
             'examples_sha256' => $exampleProjection['content_sha256'],
@@ -95,7 +95,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             self::assertSame('docara.document_ir.v1', $page['declarative_pipeline']['document_ir']['schema']);
             self::assertGreaterThan(0, $page['declarative_pipeline']['document_ir']['nodes']);
         }
-        self::assertCount(261, $htmlPages);
+        self::assertCount(263, $htmlPages);
         $nonIndexedOutput = $build . '/ru/demonstrator-results/composition-inheritance/page/index.html';
         $nonIndexedHash = hash_file('sha256', $nonIndexedOutput);
         $singleNonIndexed = (new PortableSiteBuilder(
@@ -105,7 +105,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertCount(1, $singleNonIndexed);
         self::assertSame($nonIndexedHash, hash_file('sha256', $nonIndexedOutput));
         self::assertFileDoesNotExist($build . '/ru/lang.json');
-        self::assertCount(113, $search['documents']);
+        self::assertCount(114, $search['documents']);
         self::assertCount(38, $catalog['entries']);
         self::assertCount(31, $supported);
         self::assertCount(5, $unavailable);
@@ -120,7 +120,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             )->count(),
         );
         self::assertCount(7, $redirectReceipt['redirects']);
-        self::assertCount(127, $localeRouteReceipt['redirects']);
+        self::assertCount(128, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(
             $localeRouteReceipt['redirects'],
             static fn (array $redirect): bool => $redirect['kind'] === 'root',
@@ -195,7 +195,9 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertStringContainsString("event.data.type!=='docara:example-height'", $shellJs);
         self::assertStringContainsString("frame.style.blockSize=Math.max(32,Math.min(4096,Math.ceil(height)))+'px'", $shellJs);
         self::assertStringContainsString('link[data-docara-framework-asset][rel="stylesheet"]', $shellJs);
-        self::assertStringContainsString("Object.assign({type:'docara:example-measure'},exampleEnvironment())", $shellJs);
+        self::assertStringContainsString('exampleEnvironment(frame).then(function(environment)', $shellJs);
+        self::assertStringContainsString("Object.assign({type:'docara:example-measure'},environment)", $shellJs);
+        self::assertStringContainsString('link[data-docara-declarative-shell-style][rel="stylesheet"]', $shellJs);
         self::assertSame(1, substr_count($catalogIndex, 'class="docara-navigation docara-header-navigation"'));
         self::assertStringContainsString('docara-header-navigation-link h-d0', $catalogIndex);
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-primary-navigation'));
@@ -270,7 +272,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             JSON_THROW_ON_ERROR,
         );
         self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
-        self::assertSame(261, $report['html_pages'] ?? null);
+        self::assertSame(263, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
 
@@ -310,7 +312,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         );
 
         $pages = $builder->build($site, $site . '/build_test');
-        self::assertCount(127, $pages);
+        self::assertCount(128, $pages);
         self::assertStringContainsString(
             'Поиск из content lang',
             (string) file_get_contents($site . '/build_test/ru/index.html'),
@@ -361,13 +363,13 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $firstFiles = $this->treeHashes($firstBuild);
         $secondFiles = $this->treeHashes($secondBuild);
-        self::assertCount(2121, $firstFiles);
+        self::assertCount(2129, $firstFiles);
         self::assertSame($firstFiles, $secondFiles);
         self::assertArrayHasKey('_docara/page-metadata.json', $firstFiles);
         self::assertArrayHasKey('.docara/examples.json', $firstFiles);
 
         $metadata = $this->json($firstBuild . '/_docara/page-metadata.json');
-        self::assertCount(127, $metadata['pages']);
+        self::assertCount(128, $metadata['pages']);
         foreach ($metadata['pages'] as $page) {
             self::assertNull($page['updated_at']);
             self::assertNull($page['revision']);

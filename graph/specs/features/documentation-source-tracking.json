@@ -1,0 +1,31 @@
+{
+  "id": "docara.feature.documentation_source_tracking",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "feature",
+  "tz_role": "product_contract",
+  "title": "Source-backed documentation tracking",
+  "summary": "Compare source-locale Markdown and reusable examples with a project-owned public API contract, emit a non-blocking report and accept reviewed fingerprints through a stale-safe plan.",
+  "owner": "docs",
+  "lifecycle": "implemented",
+  "readiness": "R4_verified",
+  "evidence_status": "partial",
+  "visibility": "repository",
+  "source_refs": [
+    "docs/site/content/ru/authoring/documentation-tracking.md",
+    "src/Documentation/DocumentationStatusService.php",
+    "resources/schemas/documentation-source.schema.json"
+  ],
+  "evidence_refs": [
+    "source/workflow/2026-08-29-documentation-tracking.md"
+  ],
+  "profile_refs": ["docara.unified"],
+  "invariants": [
+    "The feature is optional and does not change projects without documentation_tracking.",
+    "The source project owns the public contract; Docara owns matching, statuses, reporting, scaffold and acceptance.",
+    "Status, validation and build do not edit Markdown, examples or the documentation lock.",
+    "Acceptance is hash-bound to configuration, source contract, page, examples and the previous lock.",
+    "Translation freshness remains a separate capability.",
+    "Docara never invokes a network or model for documentation tracking."
+  ]
+}

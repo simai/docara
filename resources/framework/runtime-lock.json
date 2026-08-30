@@ -21,17 +21,17 @@
         ]
     },
     "runtime": "simai-framework",
-    "pair_id": "sf-v5.4.0-b2e84446-23d00d92",
-    "bundle_id": "sf-v5.4.0-b2e84446-23d00d92-registry-525b0210-verified-release-artifact-v1",
+    "pair_id": "sf-v5.4.1-185ca062-23d00d92",
+    "bundle_id": "sf-v5.4.1-185ca062-23d00d92-registry-983204b9-verified-release-artifact-v1",
     "publication_profile": "verified-release-artifact-v1",
-    "tag": "v5.4.0",
+    "tag": "v5.4.1",
     "ui": {
-        "tag": "v5.4.0",
-        "commit": "b2e8444659ae0d213296c2d349257259d3ed0c9c",
+        "tag": "v5.4.1",
+        "commit": "185ca0620df6b46b9e2c9c92231a46c9b79a786b",
         "tree": "distr",
         "mount": "ui",
-        "sha256": "474a6a3294b050076e76c814308541050bec776e5d3f7476c6f89fcb8afe0820",
-        "files": 6781
+        "sha256": "1c57b3d20e1acf0c9145caef6e796aebea3506b4fc8df620380f81e3d22cce8c",
+        "files": 6771
     },
     "ui_smart": {
         "tag": "v5.4.0",
@@ -43,17 +43,17 @@
     },
     "framework_registry": {
         "schema_id": "simai.framework.contract-registry",
-        "compatibility_id": "sf-v5.4.0-b2e84446-23d00d92",
+        "compatibility_id": "sf-v5.4.1-185ca062-23d00d92",
         "profile": "plain-assets-v1",
         "relative_path": "contract/contracts/generated/framework-contract-registry.json",
-        "file_sha256": "525b0210b70dbf94ad44e9151e87424eae13c0ca33c7e67a04fa6c827cfc727d",
+        "file_sha256": "983204b912635a2ee44d72d6837cffd4212afaa455dbee8da396ef2de168851a",
         "source": {
-            "commit": "b2e8444659ae0d213296c2d349257259d3ed0c9c",
+            "commit": "185ca0620df6b46b9e2c9c92231a46c9b79a786b",
             "tree": "contracts/generated",
-            "tree_oid": "e0b2c6e4b5e2cf6c57ed65c73892bba5d677f70e",
+            "tree_oid": "7dedb026e01df5053a8e59e1d86b2d5ee11bc0b7",
             "mount": "contract",
-            "sha256": "399068a0d6bbbe6bb07905693970e1cf20416b533928760cdd63360d54d9ebd6",
-            "files": 1
+            "sha256": "41ffa37c2451e66d8ccc9536c0462aff20fbb905aa764047433e8fed5c5cd6a1",
+            "files": 2
         }
     },
     "boot": {

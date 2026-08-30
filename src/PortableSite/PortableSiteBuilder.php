@@ -21,6 +21,7 @@ use Simai\Docara\Declarative\Smart\CompositeSmartPlanResolver;
 use Simai\Docara\Declarative\Smart\SmartComponentGateway;
 use Simai\Docara\Design\Registry\DesignRegistry;
 use Simai\Docara\Document\DocumentIr;
+use Simai\Docara\Documentation\DocumentationStatusService;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
 use Simai\Docara\Framework\FrameworkLock;
@@ -795,6 +796,12 @@ final readonly class PortableSiteBuilder
                 $this->files->put(
                     rtrim($destination, '/\\') . '/.docara/translation-status.json',
                     $this->prettyCanonicalJson((new TranslationStatusService)->report($root)),
+                );
+            }
+            if (($site['documentation_tracking']['enabled'] ?? false) === true) {
+                $this->files->put(
+                    rtrim($destination, '/\\') . '/.docara/documentation-status.json',
+                    $this->prettyCanonicalJson((new DocumentationStatusService)->report($root)),
                 );
             }
             $result = collect();

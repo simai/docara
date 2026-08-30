@@ -19,7 +19,7 @@ final class ValidateCommand extends ApplicationCommand
     protected function configure(): void
     {
         $this->setName('validate')->setDescription('Validate the project, a page, Smart or design artifact through production services.')
-            ->addArgument('kind', InputArgument::REQUIRED, 'project|page|smart|layout|view|section|block')
+            ->addArgument('kind', InputArgument::REQUIRED, 'project|page|source|smart|layout|view|section|block')
             ->addArgument('id', InputArgument::OPTIONAL)
             ->addOption('json', null, InputOption::VALUE_NONE, 'Emit the stable operation result as JSON.');
     }

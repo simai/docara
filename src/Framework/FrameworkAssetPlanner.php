@@ -646,16 +646,33 @@ final readonly class FrameworkAssetPlanner
         $scanHtml = preg_match('~<body\b[^>]*>.*</body\s*>~is', $html, $bodyMatch) === 1
             ? (string) $bodyMatch[0]
             : $html;
+        $exampleHtml = '';
+        if (preg_match_all(
+            '~<iframe\b(?=[^>]*\bdata-docara-example-frame\b)[^>]*\bsrcdoc\s*=\s*(["\'])(.*?)\1[^>]*>~is',
+            $scanHtml,
+            $exampleMatches,
+            PREG_SET_ORDER,
+        ) === false) {
+            throw new FrameworkComponentException('FRAMEWORK_ASSET_PLAN_HTML_INVALID');
+        }
+        foreach ($exampleMatches as $exampleMatch) {
+            $exampleHtml .= "\n" . html_entity_decode(
+                (string) ($exampleMatch[2] ?? ''),
+                ENT_QUOTES | ENT_HTML5,
+                'UTF-8',
+            );
+        }
         $scanHtml = preg_replace(
-            '~<(pre|code|script|style)\b[^>]*>.*?</\1\s*>~is',
+            '/\bsrcdoc\s*=\s*(?:"[^"]*"|\'[^\']*\')/is',
             '',
             $scanHtml,
         );
         if (! is_string($scanHtml)) {
             throw new FrameworkComponentException('FRAMEWORK_ASSET_PLAN_HTML_INVALID');
         }
+        $scanHtml .= $exampleHtml;
         $scanHtml = preg_replace(
-            '/\bsrcdoc\s*=\s*(?:"[^"]*"|\'[^\']*\')/is',
+            '~<(pre|code|script|style)\b[^>]*>.*?</\1\s*>~is',
             '',
             $scanHtml,
         );

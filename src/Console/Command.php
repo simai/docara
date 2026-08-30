@@ -35,7 +35,7 @@ abstract class Command extends SymfonyCommand
 
     protected function printBanner(): void
     {
-        if (self::$bannerShown) {
+        if (self::$bannerShown || ($this->input->hasOption('json') && (bool) $this->input->getOption('json'))) {
             return;
         }
 

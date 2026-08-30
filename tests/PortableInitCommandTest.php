@@ -14,6 +14,26 @@ use Symfony\Component\Console\Tester\CommandTester;
 class PortableInitCommandTest extends TestCase
 {
     #[Test]
+    public function portable_init_accepts_only_a_verified_project_local_composer_runtime(): void
+    {
+        $target = $this->tmpPath('project-local');
+        $this->filesystem->ensureDirectoryExists($target . '/vendor/bin');
+        $this->filesystem->put($target . '/vendor/bin/docara', "#!/usr/bin/env php\n");
+        $this->filesystem->put($target . '/composer.json', json_encode(['require' => ['simai/docara' => '^2.0']], JSON_THROW_ON_ERROR));
+        $this->filesystem->put($target . '/composer.lock', json_encode(['packages' => [['name' => 'simai/docara', 'version' => '2.4.0']], 'packages-dev' => []], JSON_THROW_ON_ERROR));
+
+        $command = new InitCommand($this->filesystem, new PortableProjectInitializer($this->filesystem));
+        $command->setApplication(new Application);
+        $command->setBase($target);
+        $console = new CommandTester($command);
+
+        self::assertSame(Command::SUCCESS, $console->execute([]), $console->getDisplay());
+        self::assertFileExists($target . '/docara.json');
+        self::assertFileExists($target . '/composer.lock');
+        self::assertFileExists($target . '/vendor/bin/docara');
+    }
+
+    #[Test]
     public function portable_init_creates_only_the_json_and_markdown_site_surface(): void
     {
         [$status, $console] = $this->executeInit([]);

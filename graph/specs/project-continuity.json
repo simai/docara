@@ -1,0 +1,74 @@
+{
+  "objects": [
+    {
+      "changed_surfaces": [
+        "graph/specs/features/seamless-project-upgrade.json",
+        "resources/ai-contract.json",
+        "resources/schemas/capabilities.schema.json",
+        "resources/schemas/upgrade-journal.schema.json",
+        "resources/schemas/upgrade-plan.schema.json",
+        "resources/schemas/upgrade-result.schema.json",
+        "src/Application/CapabilitiesService.php",
+        "src/Application/ProjectUpgradeService.php",
+        "src/Console/CapabilitiesCommand.php",
+        "src/Console/UpgradeCommand.php"
+      ],
+      "checks": [
+        {
+          "evidence_ref": "repo://tests/ProjectUpgradeServiceTest.php",
+          "id": "check.docara.full_phpunit",
+          "verdict": "pass"
+        },
+        {
+          "evidence_ref": "repo://tests/Unit/DocumentationContractTest.php",
+          "id": "check.docara.production_build",
+          "verdict": "pass"
+        },
+        {
+          "evidence_ref": "repo://tests/Unit/DocumentationContractTest.php",
+          "id": "check.docara.static_verification",
+          "verdict": "pass"
+        }
+      ],
+      "evidence_refs": [
+        "repo://tests/ProjectUpgradeServiceTest.php",
+        "repo://tests/Unit/AiContractReleaseGateTest.php",
+        "repo://tests/Unit/CapabilitiesServiceTest.php",
+        "repo://tests/Unit/DocumentationContractTest.php"
+      ],
+      "id": "evidence.continuity.98161c74504c323f",
+      "kind": "evidence",
+      "profile": "project_management",
+      "provenance_digest": "sha256:98161c74504c323ff42ccd39062ae041e1f34996cedbc117b135e4ff502eb44b",
+      "readiness": "accepted",
+      "requirement_refs": [
+        "repo://docs/specification/UPGRADE-AND-AI-CONTRACT.md",
+        "repo://graph/specs/features/seamless-project-upgrade.json"
+      ],
+      "source_revision": null,
+      "summary": "Transactional project-local Docara upgrades and the adaptive AI capabilities contract were implemented and verified from an isolated staged snapshot.",
+      "task_digest": "sha256:968de78220151dff23863e8fed854ca3e9b83855df7b9a29a5e36dba89d24e78",
+      "title": "Verified task result 98161c74504c323f"
+    },
+    {
+      "boundary": "task_complete",
+      "case_signature": "case.docara.transactional-project-upgrade-ai-contract",
+      "evidence_refs": [
+        "evidence.continuity.98161c74504c323f"
+      ],
+      "id": "regression_case.continuity.98161c74504c323f",
+      "kind": "regression_case",
+      "profile": "implementation_control",
+      "provenance_digest": "sha256:98161c74504c323ff42ccd39062ae041e1f34996cedbc117b135e4ff502eb44b",
+      "readiness": "accepted",
+      "requirement_refs": [
+        "repo://docs/specification/UPGRADE-AND-AI-CONTRACT.md",
+        "repo://graph/specs/features/seamless-project-upgrade.json"
+      ],
+      "summary": "Transactional project-local Docara upgrades and the adaptive AI capabilities contract were implemented and verified from an isolated staged snapshot.",
+      "task_digest": "sha256:968de78220151dff23863e8fed854ca3e9b83855df7b9a29a5e36dba89d24e78",
+      "title": "Verified reusable case 98161c74504c323f"
+    }
+  ],
+  "schema_version": "1.0.0"
+}

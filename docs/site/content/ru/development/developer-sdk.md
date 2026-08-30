@@ -16,6 +16,7 @@ registries, `SmartComponentGateway`, `LayoutComposer` и `PageBuilder`, что �
 Запускайте команды из корня инициализированного проекта:
 
 ```bash
+docara capabilities --json
 docara doctor
 docara list smart
 docara inspect smart ui.alert --json
@@ -27,6 +28,11 @@ docara validate smart project.notice-card
 docara preview smart --page=/ru/project-demos/ --selector=ui.dropdown
 docara test smart ui.dropdown --page=/ru/project-demos/ --json
 ```
+
+`capabilities` — первая команда для любого AI-агента. Она сообщает фактические
+операции, параметры, schemas и lifecycle-возможности именно установленной в
+этом проекте версии. Агент не должен переносить предположения из другого
+проекта или из более новой Docara.
 
 `--dry-run` возвращает список создаваемых файлов, SHA-256 их содержимого,
 текущие hashes входов и `plan_id`. Apply принимает только этот plan и ещё раз
@@ -106,7 +112,7 @@ SHA-256 каждого изображения.
 php tools/mcp-docara/server.php
 ```
 
-Он публикует те же doctor/list/inspect/schema/plan/validate/test/QA operations и
+Он публикует те же capabilities/doctor/list/inspect/schema/plan/validate/test/QA operations и
 не содержит собственной логики validation или rendering. По умолчанию apply
 запрещён. После ручного просмотра plan можно запустить локальный процесс с
 `--allow-writes`; root всё равно фиксируется текущим project directory, а apply

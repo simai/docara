@@ -1,0 +1,24 @@
+{
+  "id": "docara.mapping.seamless_project_upgrade",
+  "schema_version": "1.0.0",
+  "kind": "implementation_mapping",
+  "feature_ref": "docara.feature.seamless_project_upgrade",
+  "source_refs": [
+    "src/Application/ProjectUpgradeService.php",
+    "src/Application/CapabilitiesService.php",
+    "src/Console/UpgradeCommand.php",
+    "src/Console/CapabilitiesCommand.php"
+  ],
+  "schema_refs": [
+    "resources/schemas/capabilities.schema.json",
+    "resources/schemas/upgrade-plan.schema.json",
+    "resources/schemas/upgrade-result.schema.json",
+    "resources/schemas/upgrade-journal.schema.json"
+  ],
+  "test_refs": [
+    "tests/ProjectUpgradeServiceTest.php",
+    "tests/Unit/CapabilitiesServiceTest.php",
+    "tests/Unit/McpAdapterTest.php",
+    "tests/PortableInitCommandTest.php"
+  ]
+}

@@ -1,93 +1,95 @@
 # Обновление Docara без потери сайта
 
-Docara обновляет только package-owned state. Пользовательский контент,
-настройки сайта и dependency lock принадлежат проекту и не перезаписываются.
-Операция всегда разделена на проверку, preview, явный apply и rollback.
+Обычное обновление выполняется из самого проекта одной явно запущенной
+командой. Docara не обновляется в фоне и не использует сеть при build или
+serve.
 
-## 1. Зафиксируйте желаемую версию engine
-
-Команду update запускают из точной новой версии Docara. До выпуска это exact
-source checkout:
-
-```bash
-cd /path/to/exact-docara-candidate
-git rev-parse HEAD
-composer install --no-interaction
-php docara update /path/to/my-docara --verify
-```
-
-После выпуска consumer выбирает точную package-версию средствами Composer и
-фиксирует результат в своём `composer.lock`. Moving branch и `latest`
-запрещены. Сам `docara update` не меняет Composer dependencies или lock.
-
-## 2. Проверьте текущее состояние
+## Обычное обновление
 
 ```bash
 git status --short
-php vendor/bin/docara verify-static build_production
-php vendor/bin/docara update --verify
+php vendor/bin/docara upgrade
 ```
 
-Ownership manifest различает:
+Docara автоматически:
 
-- engine-owned `.docara/engine/**`;
-- project-owned `content/**`, `assets/**`, `docara.json`, redirects,
-  `section.json`, `.page.json`, locale files и `composer.lock`;
-- generated `build_*/**`, update plan и rollback packages.
+1. проверяет project-local Composer runtime, PHP, ownership, Framework lock и
+   незавершённые транзакции;
+2. выбирает максимальную стабильную patch/minor-версию внутри текущего major и
+   ограничения из `composer.json`;
+3. собирает отдельный кандидат под `.docara/upgrades/<id>/`;
+4. запускает кандидатом `doctor`, `validate project`, синхронизацию engine,
+   production build и `verify-static` на изолированной копии проекта;
+5. повторно сверяет hashes всех входов;
+6. заменяет dependencies, engine и verified build только после зелёной
+   проверки.
 
-Unknown files, локальные изменения engine state, symlinks, ownership conflict
-или несовпадающий immutable package/Framework/dependency tuple дают ошибку без
-изменения проекта.
+Если любой шаг завершается ошибкой, прежние `composer.lock`, `vendor/`, engine
+и последний проверенный build восстанавливаются локально. Markdown, примеры,
+assets, настройки, переводы, Smart/design-источники и Framework lock не
+редактируются.
 
-## 3. Создайте и прочитайте план
+## Проверка и точный план
 
 ```bash
-php vendor/bin/docara update --dry-run
+php vendor/bin/docara upgrade --check --json
+php vendor/bin/docara upgrade --to=2.5.0 --dry-run --json
+php vendor/bin/docara upgrade --apply=<plan-sha256> --json
 ```
 
-Команда записывает hash-bound plan и печатает точные `add`, `replace` и
-`delete` только внутри engine-owned state. `--diff` означает то же самое. Для
-автоматизации добавьте `--json`.
+`--to` принимает только точную стабильную версию `X.Y.Z`. Ветка, `dev`,
+`latest`, диапазон или prerelease отклоняются. Версия должна находиться в
+текущем major и удовлетворять Composer constraint проекта. Любое изменение
+`composer.json`, `composer.lock`, engine, контента, examples, assets, настроек,
+Framework lock либо старого verified build делает план stale.
 
-Не продолжайте, если в плане есть пользовательский путь или непонятная
-операция. После preview не меняйте package, Framework lock, plan или текущее
-engine state: apply обязан отказаться от stale-плана.
-
-## 4. Примените план
+## Rollback без сети
 
 ```bash
-php vendor/bin/docara update --apply
+php vendor/bin/docara upgrade --rollback=latest
+# или точный rollback_id из результата apply
+php vendor/bin/docara upgrade --rollback=<id>
 ```
 
-Apply сначала собирает новое состояние во временном каталоге, затем атомарно
-заменяет `.docara/engine`. Предыдущее состояние, ownership manifest, Framework
-lock и hashes сохраняются в `.docara/rollbacks/<id>/`. Команда сообщает
-`rollback_id`.
+До применения локально сохраняются обе dependency-сборки. Поэтому rollback не
+зависит от Packagist или другого внешнего сервиса. Если текущий runtime был
+изменён после apply, автоматический rollback останавливается, чтобы не затереть
+новую работу.
 
-## 5. Соберите и проверьте сайт
+## Major-версия
+
+Major не применяется автоматически. `upgrade --to=3.0.0` для проекта Docara
+2.x возвращает `MAJOR_UPGRADE_REQUIRED`. Сначала нужен отдельный migration
+report и явное решение по project-owned изменениям.
+
+## Старый проект с отдельным engine
+
+Старый engine не удаляется и не перемещается автоматически. Один раз создайте
+project-local runtime в корне сайта:
 
 ```bash
-php vendor/bin/docara build production
-php vendor/bin/docara verify-static build_production
-php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
+composer require simai/docara:^2.0
+php vendor/bin/docara capabilities --json
+php vendor/bin/docara update --verify --json
 ```
 
-Проверьте главную страницу, вложенное меню, поиск, темы, локали и ключевые
-компоненты. Только проверенный каталог переносите в staging по
-[сценарию публикации](/build/publish/).
+После этого следующие совместимые обновления выполняются через `upgrade`.
 
-## Rollback
+## Низкоуровневый `update`
+
+`update` сохранён для синхронизации только package-owned `.docara/engine` из
+уже выбранной точной версии по проверяемому ownership manifest:
 
 ```bash
+php vendor/bin/docara update --verify --json
+php vendor/bin/docara update --dry-run --json
+php vendor/bin/docara update --apply --json
 php vendor/bin/docara update --rollback=latest
-# или точный id из apply
-php vendor/bin/docara update --rollback=20260802000000-012345abcdef
 ```
 
-Rollback проверяет manifest, hashes и Framework lock до изменения текущего
-state. Повреждённый package fail-closed. После восстановления снова выполните
-полную сборку, `verify-static` и HTTP smoke.
+Он не запускает Composer и не меняет dependency lock. Не редактируйте
+`.docara`, `vendor/` или `build_production` вручную. Его `--dry-run` и
+`--apply` по-прежнему связаны неизменяемым hash-bound plan.
 
 `init --update` не является сокращением этого процесса: команда отключена и
-только подсказывает безопасный update workflow. Не редактируйте `.docara`,
-`vendor/` или `build_production` вручную.
+только подсказывает безопасный `upgrade`/`update` workflow.

@@ -26,7 +26,8 @@ final class McpAdapterTest extends TestCase
         self::assertSame('docara-local-sdk', $initialize['result']['serverInfo']['name']);
 
         $tools = $adapter->handle(['jsonrpc' => '2.0', 'id' => 2, 'method' => 'tools/list']);
-        self::assertCount(15, $tools['result']['tools']);
+        self::assertCount(16, $tools['result']['tools']);
+        self::assertContains('docara_capabilities', array_column($tools['result']['tools'], 'name'));
         self::assertContains('docara_inspect', array_column($tools['result']['tools'], 'name'));
         self::assertContains('docara_atlas', array_column($tools['result']['tools'], 'name'));
         self::assertContains('docara_documentation_status', array_column($tools['result']['tools'], 'name'));
@@ -51,6 +52,13 @@ final class McpAdapterTest extends TestCase
         $documentationDirect = $service->invoke($this->tmp, 'documentation.status', [])->toArray();
         self::assertSame($documentationDirect, $documentation['result']['structuredContent']);
         self::assertSame('docara.documentation_status.v1', $documentation['result']['structuredContent']['data']['schema']);
+
+        $capabilities = $adapter->handle(['jsonrpc' => '2.0', 'id' => 6, 'method' => 'tools/call', 'params' => [
+            'name' => 'docara_capabilities', 'arguments' => [],
+        ]]);
+        $capabilitiesDirect = $service->invoke($this->tmp, 'capabilities', [])->toArray();
+        self::assertSame($capabilitiesDirect, $capabilities['result']['structuredContent']);
+        self::assertSame('docara.capabilities.v1', $capabilities['result']['structuredContent']['data']['schema']);
     }
 
     #[Test]

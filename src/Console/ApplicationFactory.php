@@ -6,8 +6,10 @@ namespace Simai\Docara\Console;
 
 use Composer\InstalledVersions;
 use Simai\Docara\Application\ArtifactTestService;
+use Simai\Docara\Application\CapabilitiesService;
 use Simai\Docara\Application\DesignAtlasService;
 use Simai\Docara\Application\DiscoveryService;
+use Simai\Docara\Application\ProjectUpgradeService;
 use Simai\Docara\Application\QaService;
 use Simai\Docara\Application\ScaffoldService;
 use Simai\Docara\Application\ValidationService;
@@ -39,7 +41,9 @@ final class ApplicationFactory
         $discovery = new DiscoveryService;
         $preview = new PreviewKernel($builder, $files, $writes);
         $application->addCommands([
+            (new CapabilitiesCommand(new CapabilitiesService))->setBase($base),
             (new InitCommand($files, new PortableProjectInitializer($files)))->setBase($base),
+            (new UpgradeCommand(new ProjectUpgradeService($files)))->setBase($base),
             (new UpdateCommand(new PortableProjectUpdater($files)))->setBase($base),
             (new BuildCommand($builder))->setBase($base),
             (new TranslationsCommand(new TranslationStatusService))->setBase($base),

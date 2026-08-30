@@ -55,4 +55,18 @@ final class SchemaRepository
     {
         (new JsonSchemaValidator($this))->assertValid($data, $schema);
     }
+
+    /** @return list<string> */
+    public function names(): array
+    {
+        $paths = glob(rtrim($this->schemaPath, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '*.schema.json');
+        if ($paths === false) {
+            return [];
+        }
+
+        $names = array_map(static fn (string $path): string => basename($path), $paths);
+        sort($names, SORT_STRING);
+
+        return $names;
+    }
 }

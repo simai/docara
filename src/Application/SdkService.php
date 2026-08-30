@@ -16,12 +16,14 @@ final readonly class SdkService
         public QaService $qa,
         public DesignAtlasService $atlas,
         public DocumentationStatusService $documentation,
+        public CapabilitiesService $capabilities,
     ) {}
 
     /** @param array<string, mixed> $arguments */
     public function invoke(string $root, string $operation, array $arguments): OperationResult
     {
         return match ($operation) {
+            'capabilities' => $this->capabilities->capabilities($root),
             'doctor' => $this->discovery->doctor($root),
             'list' => $this->discovery->list($root, $this->string($arguments, 'kind')),
             'inspect' => $this->discovery->inspect($root, $this->string($arguments, 'kind'), $this->string($arguments, 'id')),

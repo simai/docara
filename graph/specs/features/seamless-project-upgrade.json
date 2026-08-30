@@ -1,0 +1,33 @@
+{
+  "id": "docara.feature.seamless_project_upgrade",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "feature",
+  "tz_role": "product_contract",
+  "title": "Seamless project-local upgrade and adaptive AI contract",
+  "summary": "An explicit same-major Composer upgrade verifies an isolated candidate before compensating promotion, while capabilities exposes the exact installed AI surface.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "implementation_in_progress",
+  "visibility": "repository",
+  "source_refs": [
+    "docs/specification/UPGRADE-AND-AI-CONTRACT.md",
+    "source/workflow/2026-08-30-docara-seamless-upgrade-and-skill-contract.md"
+  ],
+  "profile_refs": ["docara.unified"],
+  "schemas": [
+    "docara.capabilities.v1",
+    "docara.upgrade_plan.v1",
+    "docara.upgrade_result.v1",
+    "docara.upgrade_journal.v1"
+  ],
+  "invariants": [
+    "Build and ordinary Docara operations never use the network.",
+    "Only an explicitly invoked upgrade may resolve Composer packages.",
+    "Automatic upgrade is limited to an exact stable patch or minor target in the current major and project constraint.",
+    "Project-owned authoring inputs are hash-bound and never rewritten.",
+    "Previous dependencies, engine and verified build are locally restorable before promotion.",
+    "The canonical skill discovers actual package capabilities instead of copying product registries.",
+    "Federation owns physical skill installation and exact release binding."
+  ]
+}

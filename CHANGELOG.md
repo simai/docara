@@ -4,6 +4,22 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Project-local `upgrade` resolves and independently verifies a compatible
+  stable patch/minor Docara candidate, then promotes dependencies, engine and a
+  verified build with stale-input protection and offline compensating rollback.
+- `capabilities --json` publishes the exact installed application, schema,
+  receipt, tracking and lifecycle contract for CLI and MCP consumers without a
+  second hand-maintained command catalogue.
+- Upgrade plan, result and journal schemas bind dependency graphs, project
+  inputs, verification evidence and interruption recovery.
+
+### Fixed
+
+- `init` accepts a directory containing only a verified project-local Composer
+  runtime for `simai/docara`, making the canonical install and upgrade path
+  possible without a separate shared engine checkout.
 ## [2.4.1] - 2026-08-30
 
 ### Fixed

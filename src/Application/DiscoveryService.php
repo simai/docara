@@ -118,6 +118,10 @@ final readonly class DiscoveryService
             'authoring' => 'authoring.schema.json',
             'documentation-source' => 'documentation-source.schema.json',
             'documentation-tracking' => 'site.schema.json',
+            'capabilities' => 'capabilities.schema.json',
+            'upgrade-plan' => 'upgrade-plan.schema.json',
+            'upgrade-result' => 'upgrade-result.schema.json',
+            'upgrade-journal' => 'upgrade-journal.schema.json',
             default => str_ends_with($kind, '.schema.json') ? $kind : throw new \InvalidArgumentException('SDK_SCHEMA_KIND_UNKNOWN:' . $kind),
         };
 

@@ -9,10 +9,38 @@
 php vendor/bin/docara init [path]
 ```
 
-Команда создаёт проект только в пустом каталоге. Путь может быть абсолютным или
-относительным к текущему каталогу. Если он не передан, используется текущий
-каталог. `init --update` намеренно отключён: обновление имеет отдельный
-транзакционный контракт.
+Команда создаёт проект в пустом каталоге или в каталоге, где находятся только
+проверенные project-local `composer.json`, `composer.lock` и `vendor/` с
+`simai/docara`. Путь может быть абсолютным или относительным. `init --update`
+намеренно отключён.
+
+## `capabilities`
+
+```bash
+php vendor/bin/docara capabilities --json
+```
+
+Возвращает точную версию и revision установленной Docara, версию
+`docara.ai_contract`, фактические команды и параметры, schemas, типы SDK,
+receipts, tracking и update/rollback-возможности. Данные строятся из реального
+Application и schema registry; отдельного списка команд для ИИ нет.
+
+## `upgrade`
+
+```bash
+php vendor/bin/docara upgrade
+php vendor/bin/docara upgrade --check --json
+php vendor/bin/docara upgrade --to=2.5.0 --dry-run --json
+php vendor/bin/docara upgrade --apply=<plan-sha256> --json
+php vendor/bin/docara upgrade --rollback=<id|latest> --json
+```
+
+Явно запущенный `upgrade` выбирает и проверяет совместимую стабильную
+patch/minor-версию внутри текущего major и Composer constraint. До apply
+кандидат проходит doctor, validation, engine sync, production build и
+`verify-static`. Ошибка вызывает компенсирующее восстановление прежних lock,
+dependencies, engine и verified build. Major, moving reference и stale plan
+отклоняются.
 
 ## `update`
 
@@ -151,12 +179,12 @@ php vendor/bin/docara serve [environment] --host=127.0.0.1 --port=8000 [--no-bui
 ## Первый проверяемый запуск
 
 ```bash
-mkdir /path/to/docara-engine
-cd /path/to/docara-engine
-composer require simai/docara:^2.0
-php vendor/bin/docara init /path/to/site
+mkdir /path/to/site
 cd /path/to/site
-php /path/to/docara-engine/vendor/bin/docara build production
-php /path/to/docara-engine/vendor/bin/docara verify-static build_production
-php /path/to/docara-engine/vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
+composer require simai/docara:^2.0
+php vendor/bin/docara init .
+php vendor/bin/docara capabilities --json
+php vendor/bin/docara build production
+php vendor/bin/docara verify-static build_production
+php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 ```

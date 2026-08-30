@@ -6,19 +6,18 @@ authors do not need Node.js or a frontend toolchain.
 
 ## Quick start
 
-Install the stable engine package, then initialize a separate empty site
+Create one project-local Composer runtime, then initialize Docara in the same
 directory:
 
 ```bash
-mkdir /path/to/docara-engine
-cd /path/to/docara-engine
-composer require simai/docara:^2.0
-php vendor/bin/docara init /path/to/my-docara
+mkdir /path/to/my-docara
 cd /path/to/my-docara
-php /path/to/docara-engine/vendor/bin/docara doctor --json
-php /path/to/docara-engine/vendor/bin/docara build production
-php /path/to/docara-engine/vendor/bin/docara verify-static build_production
-php /path/to/docara-engine/vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
+composer require simai/docara:^2.0
+php vendor/bin/docara init .
+php vendor/bin/docara doctor --json
+php vendor/bin/docara build production
+php vendor/bin/docara verify-static build_production
+php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build
 ```
 
 Open `http://127.0.0.1:8000`. Do not use `file://`: routes, search and assets
@@ -28,6 +27,9 @@ The starter contains one product model:
 
 ```text
 docara.json                 site, locales, preset and Framework lock reference
+composer.json               compatible Docara dependency constraint
+composer.lock               exact project-local Docara and dependency graph
+vendor/                     project-local executable runtime
 redirects.json              explicit redirects
 simai-framework.lock.json   immutable Framework revisions
 assets/                     project-owned public assets
@@ -54,6 +56,10 @@ version is a separate site variant and output with its own `base_url`.
 
 ```bash
 php vendor/bin/docara init [path]
+php vendor/bin/docara capabilities --json
+php vendor/bin/docara upgrade [--check] [--to=2.x.y] [--dry-run] [--json]
+php vendor/bin/docara upgrade --apply=<plan-sha256> [--json]
+php vendor/bin/docara upgrade --rollback=<id|latest> [--json]
 php vendor/bin/docara update [path] --verify
 php vendor/bin/docara update [path] --dry-run
 php vendor/bin/docara update [path] --apply
@@ -94,13 +100,17 @@ plan may produce a report or pass `qa --verify`. Verification recalculates the
 full reference identity and manifest seal, re-hashes the preview and PNG bytes,
 and never trusts a reported zero pixel count on its own.
 
-`init` accepts only an empty target. Updating is an explicit transaction:
-verify ownership, write and review a hash-bound dry-run plan, then apply that
-unchanged plan. Apply replaces only `.docara/engine`, records an immutable
-rollback package and never targets `content/**`, `assets/**`, `docara.json`,
-section/page settings, locale files or the consumer-owned `composer.lock`.
-Unknown, dirty, conflicting or symlinked ownership fails closed. Generated
-`build_*` files and package-owned `.docara` state must not be edited manually.
+`init` accepts an empty target or a target containing only a verified
+project-local Composer runtime for `simai/docara`. `upgrade` is the normal
+high-level update: after the user starts it, Docara resolves only a stable
+patch/minor release inside the current major and project constraint, verifies
+an isolated candidate, then promotes dependencies, engine and a verified build
+as one compensating transaction. Any failure restores the previous local
+runtime without changing authored files. Major upgrades require a separate
+migration. The lower-level `update` command remains available when only
+package-owned `.docara/engine` must be synchronized from an already selected
+exact package. Generated `build_*` files and package-owned `.docara` state must
+not be edited manually.
 
 The optional `path` may be absolute or relative to the current directory. If it
 is omitted, `init` and `update` use the current directory. `init --update` is a
@@ -121,6 +131,9 @@ separate hash-bound dry-run/apply transaction that changes only the configured
 lock file.
 
 The developer SDK uses one operation result for human and `--json` output.
+`capabilities --json` derives the exact commands, options, schemas, receipts
+and lifecycle support from the installed package; AI tools must read it instead
+of assuming the newest Docara surface.
 Scaffolding is never a one-step write: review the deterministic dry-run diff,
 then apply its exact SHA-256 plan. Only project-owned `smart/` and `design/`
 sources can be created. Validation, test and QA delegate the production
@@ -165,6 +178,14 @@ Release packaging is an exact-revision, non-publishing operation. Run it only
 from a clean checkout and pass a planned version/tag as parameters:
 
 ```bash
+php vendor/bin/docara capabilities --json > current-capabilities.json
+php scripts/verify-ai-contract-release.php \
+  --previous=/path/to/previous-capabilities.json \
+  --current=current-capabilities.json \
+  --skill-dna=/path/to/ai-codex-skill-docara/graph/dna/skill-dna.json \
+  --federation-lock=/path/to/ai-codex/federation/releases/stable.json \
+  --skill-revision=<exact-compatible-skill-commit>
+
 REVISION=$(git rev-parse HEAD)
 PLANNED_VERSION="replace-with-approved-version"
 PLANNED_TAG="replace-with-approved-tag"
@@ -176,6 +197,10 @@ php scripts/build-release-package.php \
 php scripts/verify-release-package.php \
   "build_release/docara-$PLANNED_VERSION.release-manifest.json"
 ```
+
+The AI gate blocks a changed public capability surface without an incremented
+`docara.ai_contract`, a compatible canonical skill range, and the exact skill
+revision in the Federation stable release lock.
 
 The command reads only committed blobs from that exact revision. It writes a
 deterministic ZIP, a paired manifest containing the archive checksum and full

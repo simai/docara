@@ -24,7 +24,9 @@ Commit, push, tag, публикация пакета и deploy в неё не в
 7. [Контроль документации по исходному коду](authoring/DOCUMENTATION-SOURCE-TRACKING.md) —
    нейтральный source contract, статусы и hash-bound принятие.
 8. [План реализации](implementation/ROADMAP.md) — безопасный порядок перехода.
-9. [Приёмка](ACCEPTANCE.md) — проверяемые критерии завершения.
+9. [Upgrade и AI capability contract](UPGRADE-AND-AI-CONTRACT.md) —
+   project-local Composer, транзакция обновления, rollback и связь со skill.
+10. [Приёмка](ACCEPTANCE.md) — проверяемые критерии завершения.
 
 Машинный источник состояния находится в [`graph/specs`](../../graph/specs).
 Если этот текст и объект графа расходятся, изменение сначала оформляется как
@@ -53,6 +55,10 @@ Commit, push, tag, публикация пакета и deploy в неё не в
   registries или статусы;
 - `documentation_tracking` необязателен, не заменяет source-owned API registry
   и не смешивается с контролем переводов;
+- project-local Composer является точным runtime проекта; `upgrade` меняет
+  только совместимую package/dependency часть после независимой проверки;
+- canonical skill читает package-owned `capabilities` и не копирует реестр
+  команд или schemas;
 - старые Jigsaw/Mix/projector/trusted-HTML пути не являются целевой
   архитектурой и удаляются после доказанной замены;
 - обратная совместимость с неопубликованной экспериментальной архитектурой не

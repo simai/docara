@@ -29,6 +29,7 @@ final class SdkServiceFactory
             new QaService($preview, new PreviewShell($files, $writes), $writes),
             new DesignAtlasService,
             new DocumentationStatusService,
+            new CapabilitiesService,
         );
     }
 }

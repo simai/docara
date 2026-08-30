@@ -98,6 +98,7 @@ final readonly class McpAdapter
     private function operations(): array
     {
         return [
+            'docara_capabilities' => 'capabilities',
             'docara_doctor' => 'doctor', 'docara_list' => 'list', 'docara_inspect' => 'inspect', 'docara_schema' => 'schema',
             'docara_atlas' => 'atlas',
             'docara_scaffold_plan' => 'scaffold.plan', 'docara_scaffold_apply' => 'scaffold.apply',
@@ -114,7 +115,7 @@ final readonly class McpAdapter
         $string = ['type' => 'string', 'minLength' => 1];
 
         return match ($operation) {
-            'doctor', 'atlas' => [],
+            'capabilities', 'doctor', 'atlas' => [],
             'list', 'schema' => ['kind' => $string],
             'inspect', 'validate' => ['kind' => $string, 'id' => $string],
             'scaffold.plan' => ['kind' => $string, 'id' => $string, 'locale' => $string, 'title' => $string, 'profile' => $string, 'source' => $string, 'entity' => $string],

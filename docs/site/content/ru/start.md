@@ -5,47 +5,44 @@ HTTP. Для пользовательской сборки достаточно 
 
 ## 1. Создайте проект
 
-Установите стабильный пакет Docara 2 через Composer.
+Установите стабильный пакет Docara 2 прямо в каталог будущего проекта.
 
 ```bash
-mkdir /path/to/docara-installer
-cd /path/to/docara-installer
-composer require simai/docara:^2.0
-php vendor/bin/docara init /path/to/my-docara
-```
-
-Composer фиксирует точную установленную версию в
-`/path/to/docara-installer/composer.lock`. Каталог нового сайта должен
-оставаться пустым до `init`. После инициализации перейдите в созданный сайт, но
-вызывайте Docara через бинарник установленного движка:
-
-```bash
+mkdir /path/to/my-docara
 cd /path/to/my-docara
-php /path/to/docara-installer/vendor/bin/docara doctor --json
-php /path/to/docara-installer/vendor/bin/docara build production
+composer require simai/docara:^2.0
+php vendor/bin/docara init .
 ```
 
-Init создаёт starter только в пустом каталоге. Для безопасного обновления
-package-owned engine state позднее используйте отдельный workflow:
+Composer фиксирует точную установленную версию в `composer.lock`, а
+`vendor/bin/docara` всегда относится именно к этому проекту. `init` допускает
+пустой каталог или каталог, где уже находятся только проверенные
+`composer.json`, `composer.lock` и `vendor/` с `simai/docara`.
 
 ```bash
-php vendor/bin/docara update --verify
-php vendor/bin/docara update --dry-run
-# прочитайте список операций
-php vendor/bin/docara update --apply
+php vendor/bin/docara capabilities --json
+php vendor/bin/docara doctor --json
+php vendor/bin/docara build production
 ```
 
-Apply разрешён только для неизменившегося hash-bound плана и создаёт проверяемый
-rollback package. Вернуться к последнему состоянию можно командой
-`php vendor/bin/docara update --rollback=latest`. Project-owned Markdown,
-assets, `docara.json`, section/page settings, locale files и consumer-owned
-`composer.lock` не являются целями update. Dirty, unknown, conflicting или
-symlinked engine state останавливает операцию до записи.
+Для обычного совместимого обновления patch/minor позднее достаточно явно
+запустить одну команду:
+
+```bash
+php vendor/bin/docara upgrade
+```
+
+Команда сама готовит независимый Composer-кандидат, запускает doctor,
+validation, engine sync, production build и `verify-static`, повторно проверяет
+hashes входов и только затем применяет результат. Вернуться к предыдущей
+проверенной версии без сети можно командой
+`php vendor/bin/docara upgrade --rollback=latest`. Markdown, examples, assets,
+настройки, переводы и Framework lock не редактируются. Для просмотра плана
+используйте `upgrade --dry-run --json`; низкоуровневый `update` нужен только
+для синхронизации `.docara/engine` уже выбранной точной версии.
 
 Путь может быть абсолютным или относительным к текущему каталогу. Если путь не
-указан, `init` и `update` работают с текущим каталогом. Проверить тот же проект
-извне можно командой
-`php /path/to/docara/docara update /path/to/my-docara --verify`.
+указан, `init`, `upgrade` и `update` работают с текущим каталогом.
 
 ## 2. Соберите production-каталог
 
@@ -88,6 +85,9 @@ Server started on http://127.0.0.1:8000
 
 ```text
 docara.json
+composer.json
+composer.lock
+vendor/
 redirects.json
 simai-framework.lock.json
 assets/

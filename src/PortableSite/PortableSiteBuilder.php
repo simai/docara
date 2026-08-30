@@ -1090,6 +1090,12 @@ final readonly class PortableSiteBuilder
                 );
                 $assetPublisher->publishFrameworkAssetPlans($localeDestination, $frameworkAssetPlans);
             }
+            $orderedDiagnostics = $this->orderedDiagnostics($contextPages, $diagnosticsByUrl);
+            $performanceReceipt = (new PortablePerformanceReceipt($this->files))->publish(
+                $destination,
+                (string) ($site['base_url'] ?? '/'),
+                $orderedDiagnostics,
+            );
             $diagnosticPath = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
             $this->files->ensureDirectoryExists(dirname($diagnosticPath));
             $this->files->put($diagnosticPath, $this->prettyCanonicalJson([
@@ -1118,12 +1124,13 @@ final readonly class PortableSiteBuilder
                         'design_atlas_sha256' => $atlasReceipt['content_sha256'],
                         'schema_reference_sha256' => $schemaReferenceReceipt['content_sha256'],
                         'examples_sha256' => $exampleReceipt['content_sha256'],
+                        'performance_sha256' => $performanceReceipt['content_sha256'],
                     ],
                     'component_catalog_sha256' => hash('sha256', CanonicalJson::encode($effectiveComponentCatalog)),
                     'publisher' => $publisher->id(),
                     'locale_sources' => $this->localeSourceHashes($root, $contentContexts),
                 ],
-                'pages' => $this->orderedDiagnostics($contextPages, $diagnosticsByUrl),
+                'pages' => $orderedDiagnostics,
             ]));
             $this->promoteCandidate($root, $destination, $finalDestination);
         } catch (\Throwable $exception) {

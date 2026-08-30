@@ -619,6 +619,16 @@ MD);
         );
         self::assertStringContainsString('[data-docara-region="main"]{container-type:inline-size}', $shellCss);
         self::assertStringContainsString('.docara-surface>[data-docara-container]{box-sizing:border-box;max-inline-size:100%}', $shellCss);
+        self::assertStringContainsString('.docara-prose img{max-inline-size:100%}', $shellCss);
+        self::assertStringContainsString('.aspect-21x9{aspect-ratio:21/9}', $shellCss);
+        self::assertStringContainsString(
+            '.docara-prose>p>img:only-child,.docara-prose>p>a:only-child>img:only-child{display:block;block-size:auto}',
+            $shellCss,
+        );
+        self::assertStringContainsString('.docara-prose figure>img,.docara-prose picture>img{display:block}', $shellCss);
+        self::assertStringNotContainsString('.docara-prose img{max-inline-size:100%;block-size:auto}', $shellCss);
+        self::assertStringContainsString('.docara-prose figure,.docara-prose picture{max-inline-size:100%}', $shellCss);
+        self::assertStringNotContainsString('.docara-prose img{inline-size:100%', $shellCss);
         self::assertStringContainsString('.docara-code-scroll{max-width:100%;background:var(--sf-surface-0);', $shellCss);
         self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre;background:transparent}', $shellCss);
         self::assertStringContainsString(
@@ -1161,6 +1171,18 @@ MD);
         self::assertSame('docara.framework_asset_plans.v1', $shellReceipt['schema']);
         self::assertSame('production_exact', $shellReceipt['mode']);
         self::assertCount(39, $shellReceipt['plans']);
+        $performance = $this->jsonFile($this->tmpPath('build_local/.docara/performance.json'));
+        self::assertSame('docara.performance_receipt.v1', $performance['schema']);
+        self::assertSame(39, $performance['site']['page_count']);
+        self::assertSame(
+            $performance['content_sha256'],
+            $diagnostics['build']['public_projections']['performance_sha256'],
+        );
+        self::assertSame(
+            hash('sha256', CanonicalJson::encode(array_diff_key($performance, ['content_sha256' => true]))),
+            $performance['content_sha256'],
+        );
+        self::assertNotEmpty($performance['site']['largest_initial_local_resources']);
         $indexShellReceipt = $shellReceipt['plans']['index.html'];
         self::assertSame('production_exact', $indexShellReceipt['preload']['mode']);
         self::assertCount(1, $indexShellReceipt['generated_assets']);

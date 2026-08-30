@@ -85,9 +85,15 @@ final class PortableDocumentationSiteTest extends PHPUnit
         ));
 
         self::assertCount(128, $pages);
+        $performanceProjection = json_decode(
+            (string) file_get_contents($build . '/.docara/performance.json'),
+            true,
+            flags: JSON_THROW_ON_ERROR,
+        );
         self::assertSame([
             'design_atlas_sha256' => $atlasProjection['content_sha256'],
             'examples_sha256' => $exampleProjection['content_sha256'],
+            'performance_sha256' => $performanceProjection['content_sha256'],
             'schema_reference_sha256' => $schemaProjection['content_sha256'],
         ], $resolvedPlans['build']['public_projections']);
         foreach ($pages as $page) {
@@ -363,10 +369,11 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $firstFiles = $this->treeHashes($firstBuild);
         $secondFiles = $this->treeHashes($secondBuild);
-        self::assertCount(2129, $firstFiles);
+        self::assertCount(2132, $firstFiles);
         self::assertSame($firstFiles, $secondFiles);
         self::assertArrayHasKey('_docara/page-metadata.json', $firstFiles);
         self::assertArrayHasKey('.docara/examples.json', $firstFiles);
+        self::assertArrayHasKey('.docara/performance.json', $firstFiles);
 
         $metadata = $this->json($firstBuild . '/_docara/page-metadata.json');
         self::assertCount(128, $metadata['pages']);

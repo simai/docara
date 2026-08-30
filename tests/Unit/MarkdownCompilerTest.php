@@ -453,7 +453,7 @@ MD, 'content/ru/components/links-and-images.md');
             new DocumentRenderContext(null, null),
         )['document']->html;
         self::assertStringContainsString('alt="Знак Docara"', $html);
-        self::assertStringContainsString('ratio-16-9', $html);
+        self::assertStringContainsString('aspect-16x9', $html);
         self::assertStringContainsString('object-contain', $html);
     }
 

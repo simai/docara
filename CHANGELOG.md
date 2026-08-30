@@ -15,6 +15,12 @@ All notable changes to Docara are documented in this file.
 - Upgrade plan, result and journal schemas bind dependency graphs, project
   inputs, verification evidence and interruption recovery.
 
+- Production builds publish a deterministic, report-only
+  `.docara/performance.json` receipt with per-page initial request counts,
+  transfer sizes, inline CSS/JavaScript sizes and the largest shared local
+  resources. `verify-static` recomputes and hash-binds the receipt without
+  imposing project-specific performance budgets.
+
 ### Fixed
 
 - `init` accepts a directory containing only a verified project-local Composer
@@ -23,6 +29,13 @@ All notable changes to Docara are documented in this file.
 - The AI release gate accepts one exact package-owned bootstrap record for the
   transition from Docara 2.4.1, which had no `capabilities` command, while
   rejecting malformed evidence or reuse by later AI contract versions.
+
+- Ordinary Markdown images are constrained by the prose column while
+  preserving their intrinsic aspect ratio. Linked, figure and picture images
+  no longer overflow narrow content, and small images are not stretched.
+- Image, figure, media and embed ratios now compile to the real Framework
+  `aspect-*` utilities, so declared proportions are applied instead of
+  producing inert `ratio-*` classes. The documented 21:9 ratio remains exact.
 
 ## [2.4.1] - 2026-08-30
 

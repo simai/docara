@@ -960,7 +960,7 @@ HTML;
 
         return '<div data-docara-block="embed" data-provider="' . $provider . '" data-consent="' . $consent
             . '"' . ($id !== '' ? ' id="' . $this->escapeHtml($id) . '"' : '')
-            . ' class="ratio-' . str_replace('/', '-', $ratio)
+            . ' class="' . $this->aspectRatioClass($ratio)
             . ' overflow-hidden bg-surface-container radius-2 m-bottom-1">' . $content . '</div>';
     }
 
@@ -1269,7 +1269,7 @@ HTML;
                 'A figure block must contain one Markdown image and an optional caption paragraph.',
             );
         }
-        $ratioClass = $ratio === 'auto' ? '' : ' ratio-' . str_replace('/', '-', $ratio);
+        $ratioClass = $ratio === 'auto' ? '' : ' ' . $this->aspectRatioClass($ratio);
 
         $imageClasses = 'w-full' . ($ratio === 'auto' ? '' : ' h-full') . ' object-' . $fit;
 
@@ -1364,8 +1364,8 @@ HTML;
         $image = '';
         $content = preg_replace_callback(
             '/<p><img(?<attributes>[^>]*)\s*\/><\/p>/u',
-            static function (array $match) use (&$image, $ratio): string {
-                $image = '<div class="ratio-' . str_replace('/', '-', $ratio) . ' overflow-hidden radius-2">'
+            function (array $match) use (&$image, $ratio): string {
+                $image = '<div class="' . $this->aspectRatioClass($ratio) . ' overflow-hidden radius-2">'
                     . '<img' . rtrim((string) $match['attributes']) . ' loading="lazy" decoding="async"></div>';
 
                 return '';
@@ -2759,7 +2759,7 @@ HTML;
                 $ratio = str_replace('x', '/', $attributes['ratio'] ?? 'auto');
                 $ratio = $this->attributeOneOf($ratio, ['auto', '1/1', '4/3', '3/2', '16/9', '21/9'], 'image', 'ratio');
                 $fit = $this->attributeOneOf($attributes['fit'] ?? 'cover', ['cover', 'contain'], 'image', 'fit');
-                $ratioClass = $ratio === 'auto' ? '' : ' ratio-' . str_replace('/', '-', $ratio);
+                $ratioClass = $ratio === 'auto' ? '' : ' ' . $this->aspectRatioClass($ratio);
                 $imageClasses = 'w-full' . ($ratio === 'auto' ? '' : ' h-full') . ' object-' . $fit;
 
                 return '<figure data-docara-native-image data-fit="' . $fit
@@ -2820,6 +2820,11 @@ HTML;
                 $exception->getMessage(),
             );
         }
+    }
+
+    private function aspectRatioClass(string $ratio): string
+    {
+        return 'aspect-' . str_replace('/', 'x', $ratio);
     }
 
     /** @return array<string, mixed> */

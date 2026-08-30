@@ -281,7 +281,7 @@ MD);
 :::
 MD);
         self::assertStringContainsString('data-provider="external" data-consent="required"', $embed);
-        self::assertStringContainsString('class="ratio-16-9 ', $embed);
+        self::assertStringContainsString('class="aspect-16x9 ', $embed);
         self::assertStringContainsString('data-docara-embed-consent', $embed);
         self::assertStringContainsString('data-docara-embed-template', $embed);
         self::assertStringContainsString('data-docara-embed-load>Open widget</button>', $embed);
@@ -289,6 +289,13 @@ MD);
         self::assertStringNotContainsString('>Load content</button>', $embed);
         self::assertStringNotContainsString(' src="https://example.com/widget"', $embed);
         self::assertStringContainsString(' data-src="https://example.com/widget"', $embed);
+
+        $cinemaEmbed = $renderer->render(<<<'MD'
+:::embed {provider=external ratio=21/9 title="Cinema widget"}
+[Open widget](https://example.com/widget)
+:::
+MD);
+        self::assertStringContainsString('class="aspect-21x9 ', $cinemaEmbed);
     }
 
     #[Test]

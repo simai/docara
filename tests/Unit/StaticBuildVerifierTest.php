@@ -15,6 +15,7 @@ use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\Framework\FrameworkPortableAssetProjection;
 use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
+use Simai\Docara\PortableSite\PortablePerformanceReceipt;
 use Simai\Docara\PortableSite\PortablePublisherAssetPublisher;
 use Simai\Docara\PortableSite\PortableRuntimeMetadata;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
@@ -31,6 +32,9 @@ final class StaticBuildVerifierTest extends TestCase
     private const FRAMEWORK_SMART_REVISION = '23d00d92346717b8f835297d142a14458f806602';
 
     private const SUPPORTED_COMPONENTS = ['ui.alert', 'ui.button'];
+
+    /** @var array<string, true> */
+    private array $normalizedBuilds = [];
 
     #[Test]
     public function empty_or_broken_builds_fail_and_complete_builds_pass(): void
@@ -467,8 +471,18 @@ final class StaticBuildVerifierTest extends TestCase
         $plansPath = $build . '/.docara/resolved-page-plans.json';
         $originalCatalog = (string) file_get_contents($catalogPath);
         $originalPlans = (string) file_get_contents($plansPath);
+        $performancePath = $build . '/.docara/performance.json';
+        $originalPerformance = (string) file_get_contents($performancePath);
         $valid = $this->verify($build);
         self::assertSame(0, $valid->getExitCode(), $valid->getErrorOutput() . $valid->getOutput());
+
+        $performance = json_decode($originalPerformance, true, flags: JSON_THROW_ON_ERROR);
+        $performance['pages'][0]['html_bytes']++;
+        $this->writeJson($performancePath, $performance);
+        $tamperedPerformance = $this->verify($build);
+        self::assertSame(1, $tamperedPerformance->getExitCode(), $tamperedPerformance->getOutput());
+        self::assertStringContainsString('Performance receipt', $tamperedPerformance->getOutput());
+        file_put_contents($performancePath, $originalPerformance);
 
         $plans = json_decode($originalPlans, true, flags: JSON_THROW_ON_ERROR);
         foreach ($plans['pages'] as &$page) {
@@ -1251,8 +1265,9 @@ final class StaticBuildVerifierTest extends TestCase
 
     private function verify(string $build, bool $normalizeBuildIdentity = true): Process
     {
-        if ($normalizeBuildIdentity) {
+        if ($normalizeBuildIdentity && ! isset($this->normalizedBuilds[$build])) {
             $this->normalizeBuildIdentityFixture($build);
+            $this->normalizedBuilds[$build] = true;
         }
         $process = new Process([
             PHP_BINARY,
@@ -1384,6 +1399,15 @@ final class StaticBuildVerifierTest extends TestCase
             $this->writeJson($manifestPath, $manifest);
             (new PortablePublisherAssetPublisher($this->filesystem))
                 ->publishFrameworkAssetPlans($build, $fixturePlans);
+        }
+        if (is_file($build . '/.docara/performance.json')) {
+            $performance = (new PortablePerformanceReceipt($this->filesystem))->publish(
+                $build,
+                is_string($firstBaseUrl) ? $firstBaseUrl : '/',
+                $pages,
+            );
+            $manifest['build']['public_projections']['performance_sha256'] = $performance['content_sha256'];
+            $this->writeJson($manifestPath, $manifest);
         }
     }
 

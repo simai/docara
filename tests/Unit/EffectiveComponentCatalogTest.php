@@ -595,7 +595,7 @@ final class EffectiveComponentCatalogTest extends TestCase
                     '<a href="../">Back to the catalog</a>',
                     '<img src="../../_docara/component-catalog/docara-mark.svg" alt="Docara mark" />',
                     'data-docara-native-image',
-                    'ratio-16-9',
+                    'aspect-16x9',
                 ],
             ],
             'native.lists_and_quotes' => [

@@ -37,6 +37,11 @@ html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-sect
 .docara-document-link--next{justify-content:flex-end;text-align:end}
 .docara-prose h1[id],.docara-prose h2[id],.docara-prose h3[id],.docara-prose h4[id],.docara-prose h5[id],.docara-prose h6[id]{scroll-margin-block-start:4.5rem}
 .docara-prose p,.docara-prose li{max-width:var(--sf-text--measure-wide)}
+.docara-prose img{max-inline-size:100%}
+.aspect-21x9{aspect-ratio:21/9}
+.docara-prose>p>img:only-child,.docara-prose>p>a:only-child>img:only-child{display:block;block-size:auto}
+.docara-prose figure>img,.docara-prose picture>img{display:block}
+.docara-prose figure,.docara-prose picture{max-inline-size:100%}
 [data-docara-table-scroll]{border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius-2,var(--sf-radius-default));background:var(--sf-surface-0)}
 [data-docara-table-scroll]>.table{inline-size:100%;margin:0;border:0;border-radius:0;border-collapse:separate;border-spacing:0}
 [data-docara-table-scroll]>.table>thead{background:var(--sf-surface-container)}

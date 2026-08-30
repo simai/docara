@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 use League\CommonMark\Environment\Environment;
 use Simai\Docara\ComponentCatalog\EffectiveComponentCatalogBuilder;
+use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkAssetPlanner;
 use Simai\Docara\Framework\FrameworkLock;
 use Simai\Docara\Framework\FrameworkManifestRepository;
@@ -12,6 +13,7 @@ use Simai\Docara\Framework\FrameworkPortableAssetProjection;
 use Simai\Docara\I18n\LocaleTag;
 use Simai\Docara\Portable\JsonSchemaValidator;
 use Simai\Docara\Portable\SchemaRepository;
+use Simai\Docara\PortableSite\PortablePerformanceReceipt;
 use Simai\Docara\PortableSite\PortableRedirectPublisher;
 use Simai\Docara\Smart\SmartRegistry;
 
@@ -3164,10 +3166,36 @@ if (is_array($manifestBuild['public_projections'] ?? null)) {
                 }
             }
         }
+        $performancePath = $root . '/.docara/performance.json';
+        if (! docaraSafeRegularFile($performancePath)) {
+            throw new RuntimeException('Performance receipt is missing or unsafe.');
+        }
+        $performanceReceipt = json_decode(
+            (string) file_get_contents($performancePath),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        (new SchemaRepository)->assertValid($performanceReceipt, 'performance-receipt.schema.json');
+        $expectedPerformanceReceipt = (new PortablePerformanceReceipt(new Filesystem))->build(
+            $root,
+            $deploymentBase,
+            $manifestPageRecords,
+        );
+        if (! is_array($performanceReceipt)
+            || ! hash_equals(
+                hash('sha256', docaraCanonicalJson($expectedPerformanceReceipt)),
+                hash('sha256', docaraCanonicalJson($performanceReceipt)),
+            )
+        ) {
+            throw new RuntimeException('Performance receipt does not match generated initial resources.');
+        }
+
         $projectionContract = $manifestBuild['public_projections'];
-        if (! docaraExactKeys($projectionContract, ['design_atlas_sha256', 'examples_sha256', 'schema_reference_sha256'])
+        if (! docaraExactKeys($projectionContract, ['design_atlas_sha256', 'examples_sha256', 'performance_sha256', 'schema_reference_sha256'])
             || ! hash_equals((string) ($projectionContract['design_atlas_sha256'] ?? ''), $atlasReceipt['content_sha256'])
             || ! hash_equals((string) ($projectionContract['examples_sha256'] ?? ''), $examplesReceipt['content_sha256'])
+            || ! hash_equals((string) ($projectionContract['performance_sha256'] ?? ''), $performanceReceipt['content_sha256'])
             || ! hash_equals((string) ($projectionContract['schema_reference_sha256'] ?? ''), $schemaReceipt['content_sha256'])
         ) {
             throw new RuntimeException('Public projections do not match the accepted build receipt.');

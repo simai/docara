@@ -23,6 +23,7 @@
     "tests/Unit/AiContractReleaseGateTest.php",
     "tests/Unit/CapabilitiesServiceTest.php",
     "tests/Unit/McpAdapterTest.php",
-    "tests/PortableInitCommandTest.php"
+    "tests/PortableInitCommandTest.php",
+    "tests/PortableUpdateCommandTest.php"
   ]
 }

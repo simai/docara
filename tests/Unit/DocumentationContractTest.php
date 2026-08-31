@@ -434,8 +434,10 @@ final class DocumentationContractTest extends TestCase
         self::assertStringContainsString('init --update', $update);
         self::assertStringContainsString('update --verify', $update);
         self::assertStringContainsString('update --dry-run', $update);
+        self::assertStringContainsString('update --dry-run --adopt --json', $update);
         self::assertStringContainsString('update --apply', $update);
         self::assertStringContainsString('update --rollback=latest', $update);
+        self::assertStringContainsString('UPGRADE_ENGINE_ADOPTION_REQUIRED', $update);
         self::assertStringContainsString('ownership manifest', $update);
         self::assertStringContainsString('composer.lock', $update);
         self::assertStringContainsString('Rollback', $update);

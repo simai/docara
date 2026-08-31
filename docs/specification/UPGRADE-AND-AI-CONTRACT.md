@@ -48,6 +48,16 @@ the plan stale; a changed applied runtime makes automatic rollback stale.
 - A different major returns `MAJOR_UPGRADE_REQUIRED`; migration is a separate
   project-owned decision.
 
+## Pre-manifest project adoption
+
+A project-local Composer runtime may predate the package-owned
+`.docara/engine` ownership manifest. Upgrade discovery must not classify that
+recoverable state as a generic invalid project and must not adopt it silently.
+It returns `UPGRADE_ENGINE_ADOPTION_REQUIRED` with the existing hash-bound
+route: `update --dry-run --adopt --json`, explicit `update --apply --json`,
+then `upgrade` again. Adoption changes only package-owned engine state and
+remains independently reversible.
+
 ## AI contract
 
 `docara.capabilities.v1` is generated from the actual Symfony Application,

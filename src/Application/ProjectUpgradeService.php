@@ -429,6 +429,9 @@ final class ProjectUpgradeService
         $root = str_replace('\\', '/', $real);
         foreach (['composer.json', 'composer.lock', 'vendor/bin/docara', 'docara.json', 'simai-framework.lock.json', '.docara/engine'] as $relative) {
             $path = $root . '/' . $relative;
+            if ($relative === '.docara/engine' && ! is_dir($path) && ! is_link($path)) {
+                throw new RuntimeException('UPGRADE_ENGINE_ADOPTION_REQUIRED:This pre-manifest project needs one explicit engine adoption. Run `php vendor/bin/docara update --dry-run --adopt --json`, review the plan, then run `php vendor/bin/docara update --apply --json` and retry upgrade.');
+            }
             if ((str_ends_with($relative, 'engine') ? ! is_dir($path) : ! is_file($path)) || is_link($path)) {
                 if (str_starts_with($relative, 'composer') || str_starts_with($relative, 'vendor/')) {
                     throw new RuntimeException('PROJECT_LOCAL_RUNTIME_REQUIRED:Create project-local composer.json, composer.lock and vendor with `composer require simai/docara:^2.0`, then run upgrade again. The legacy engine is left untouched.');

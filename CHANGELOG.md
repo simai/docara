@@ -4,6 +4,13 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- Pre-manifest projects with a project-local Composer runtime but no
+  `.docara/engine` now receive `UPGRADE_ENGINE_ADOPTION_REQUIRED` and the exact
+  hash-bound `update --dry-run --adopt` route instead of a generic invalid
+  project error.
+
 ## [2.5.0] - 2026-08-31
 
 ### Added

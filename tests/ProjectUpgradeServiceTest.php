@@ -95,6 +95,25 @@ final class ProjectUpgradeServiceTest extends TestCase
     }
 
     #[Test]
+    public function project_local_runtime_without_engine_gets_the_explicit_adoption_path(): void
+    {
+        $project = $this->consumer();
+        self::assertTrue($this->filesystem->deleteDirectory($project . '/.docara/engine'));
+
+        try {
+            $this->service()->check($project);
+            self::fail('A pre-manifest project must receive the explicit adoption path.');
+        } catch (\RuntimeException $exception) {
+            self::assertStringContainsString('UPGRADE_ENGINE_ADOPTION_REQUIRED', $exception->getMessage());
+            self::assertStringContainsString('update --dry-run --adopt --json', $exception->getMessage());
+            self::assertStringContainsString('update --apply --json', $exception->getMessage());
+        }
+
+        self::assertDirectoryDoesNotExist($project . '/.docara/engine');
+        self::assertFileExists($project . '/content/ru/index.md');
+    }
+
+    #[Test]
     public function failed_promotion_compensates_dependencies_lock_engine_and_verified_build(): void
     {
         $project = $this->consumer();

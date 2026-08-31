@@ -61,7 +61,7 @@ php vendor/bin/docara upgrade [--check] [--to=2.x.y] [--dry-run] [--json]
 php vendor/bin/docara upgrade --apply=<plan-sha256> [--json]
 php vendor/bin/docara upgrade --rollback=<id|latest> [--json]
 php vendor/bin/docara update [path] --verify
-php vendor/bin/docara update [path] --dry-run
+php vendor/bin/docara update [path] --dry-run [--adopt]
 php vendor/bin/docara update [path] --apply
 php vendor/bin/docara update [path] --rollback=latest
 php vendor/bin/docara build [environment] [--page=/public/url/]
@@ -111,6 +111,12 @@ migration. The lower-level `update` command remains available when only
 package-owned `.docara/engine` must be synchronized from an already selected
 exact package. Generated `build_*` files and package-owned `.docara` state must
 not be edited manually.
+
+An existing project-local runtime without `.docara/engine` is a recoverable
+pre-manifest project. `upgrade` reports `UPGRADE_ENGINE_ADOPTION_REQUIRED`
+with the explicit one-time route: `update --dry-run --adopt --json`, review,
+`update --apply --json`, then retry `upgrade`. Docara never adopts this state
+silently or edits project-owned content during adoption.
 
 The optional `path` may be absolute or relative to the current directory. If it
 is omitted, `init` and `update` use the current directory. `init --update` is a

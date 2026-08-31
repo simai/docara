@@ -62,18 +62,26 @@ Major не применяется автоматически. `upgrade --to=3.0.
 2.x возвращает `MAJOR_UPGRADE_REQUIRED`. Сначала нужен отдельный migration
 report и явное решение по project-owned изменениям.
 
-## Старый проект с отдельным engine
+## Старый проект без ownership manifest
 
-Старый engine не удаляется и не перемещается автоматически. Один раз создайте
-project-local runtime в корне сайта:
+Старый engine не удаляется и не перемещается автоматически. Если проект уже
+содержит документацию, но ещё не имеет `.docara/engine`, один раз создайте
+project-local runtime и явно примите package-owned engine:
 
 ```bash
 composer require simai/docara:^2.0
 php vendor/bin/docara capabilities --json
+php vendor/bin/docara update --dry-run --adopt --json
+php vendor/bin/docara update --apply --json
 php vendor/bin/docara update --verify --json
+php vendor/bin/docara upgrade --check --json
 ```
 
-После этого следующие совместимые обновления выполняются через `upgrade`.
+Перед `--apply` просмотрите операции dry-run. Принятие создаёт только
+package-owned `.docara/engine`; Markdown, настройки, примеры и assets не
+изменяются. Если запустить `upgrade` раньше, Docara возвращает
+`UPGRADE_ENGINE_ADOPTION_REQUIRED` с этим же маршрутом. После принятия все
+следующие совместимые обновления выполняются через `upgrade`.
 
 ## Низкоуровневый `update`
 

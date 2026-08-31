@@ -1,0 +1,111 @@
+{
+  "axes": {
+    "FILL": [
+      0
+    ],
+    "GRAD": [
+      0
+    ],
+    "opsz": [
+      24
+    ],
+    "wght": [
+      400
+    ]
+  },
+  "family": "outlined",
+  "files": {
+    "css": {
+      "path": "material-symbols-outlined.995fbf08c43fe8ae9c3b.css",
+      "sha256": "3001eb11be9a9124c69cb9bcfcde02aea30a0d2a58e7584678ee547860d2d49d"
+    },
+    "font": {
+      "path": "material-symbols-outlined.995fbf08c43fe8ae9c3b.woff2",
+      "sha256": "995fbf08c43fe8ae9c3bc7fa8364eebda7d1726036d405723b5788a87df57f2d",
+      "size": 244368
+    }
+  },
+  "font_family": "Material Symbols Outlined Subset 995fbf08c43f",
+  "generator": {
+    "id": "@simai/ui-builder/subset-font@2.6.0",
+    "revision": "sha256:1ffe5e6ef676c31b96a405a5bcc1e84c07a127c4460ae90020e5d698faa79bc5"
+  },
+  "icons": [
+    "add",
+    "analytics",
+    "arrow_back",
+    "arrow_downward",
+    "arrow_forward",
+    "arrow_upward",
+    "article",
+    "check",
+    "check_circle",
+    "chevron_left",
+    "chevron_right",
+    "circle",
+    "close",
+    "cloud_upload",
+    "content_copy",
+    "dangerous",
+    "dark_mode",
+    "delete",
+    "description",
+    "download",
+    "edit",
+    "error",
+    "expand_less",
+    "expand_more",
+    "favorite",
+    "folder",
+    "foundation",
+    "health_and_safety",
+    "help",
+    "home",
+    "image",
+    "imagesmode",
+    "info",
+    "key",
+    "keyboard_arrow_down",
+    "keyboard_arrow_left",
+    "keyboard_arrow_right",
+    "keyboard_arrow_up",
+    "keyboard_double_arrow_left",
+    "language",
+    "light_mode",
+    "link",
+    "link_off",
+    "location_on",
+    "lock",
+    "mail",
+    "menu",
+    "more_vert",
+    "navigation",
+    "notifications",
+    "people",
+    "person",
+    "photo_camera",
+    "remove",
+    "search",
+    "settings",
+    "share",
+    "smart_toy",
+    "star",
+    "stethoscope",
+    "table_chart",
+    "toc",
+    "tune",
+    "upload_file",
+    "warning",
+    "widgets",
+    "work"
+  ],
+  "license": "Apache-2.0",
+  "packet_sha256": "1da7a11c755697447b5ed8d556b8ceb6f19c5ee86b805c1893b30a763e57bd54",
+  "provenance": "google/material-design-icons",
+  "schema": "sf.icon_subset.v1",
+  "selector": ".sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape)",
+  "source": {
+    "revision": "50f0603134ce7b70b2d71b686cc13e8b57ccb74c",
+    "sha256": "5c0be48d07803e6eb6a993ad441f6fc92340ee0da9d1b57cc348f62569947ae5"
+  }
+}

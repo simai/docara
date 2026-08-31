@@ -1,0 +1,17 @@
+{
+  "id": "docara.feature.framework_icon_subsets",
+  "schema_version": "1.0.0",
+  "kind": "capability",
+  "subtype": "feature",
+  "tz_role": "architecture_contract",
+  "title": "Framework-owned icon subsets",
+  "summary": "Use one deterministic Framework generator and family-aware Loader runtime while Docara preloads a package-owned offline shell subset.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "ready",
+  "visibility": "repository",
+  "source_refs": ["docs/specification/architecture/SHELL-CONTRACT.md#icon-resources", "source/workflow/2026-08-31-framework-icon-subsets.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-31-framework-icon-subsets/verification-summary.json"],
+  "profile_refs": ["docara.unified"],
+  "invariants": ["No required runtime network dependency.", "No moving icon-font reference.", "Icon families remain separate.", "The full local font is lazy fallback only.", "The existing Framework asset receipt owns verification."]
+}

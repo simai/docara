@@ -50,9 +50,6 @@ final readonly class FrameworkManifestRepository
         FrameworkLock $packageLock,
         string $runtimeLockPath,
     ): FrameworkLock {
-        if ($projectLock->pairId() !== $packageLock->pairId()) {
-            return $projectLock;
-        }
         $packageProjection = $packageLock->runtimeProjection();
         $projectProjection = $projectLock->runtimeProjection();
         if (! is_array($packageProjection)
@@ -69,6 +66,18 @@ final readonly class FrameworkManifestRepository
                 : null;
         } catch (\JsonException) {
             $runtimeLock = null;
+        }
+        if ($projectLock->pairId() !== $packageLock->pairId()) {
+            if (! self::isSupersededFrameworkLock($projectLock, $runtimeLock)) {
+                return $projectLock;
+            }
+            $data = $packageLock->toArray();
+            $documentationSource = $projectLock->runtime()['framework_registry']['documentation_source'] ?? null;
+            if (is_array($documentationSource)) {
+                $data['runtime']['framework_registry']['documentation_source'] = $documentationSource;
+            }
+
+            return FrameworkLock::fromArray($data);
         }
         $admitted = $projectProjection === null
             || CanonicalJson::encode($projectProjection) === CanonicalJson::encode($packageProjection);
@@ -137,6 +146,35 @@ final readonly class FrameworkManifestRepository
         }
 
         return FrameworkLock::fromArray($data);
+    }
+
+    /** @param array<string,mixed>|null $runtimeLock */
+    private static function isSupersededFrameworkLock(FrameworkLock $projectLock, ?array $runtimeLock): bool
+    {
+        $projection = $projectLock->runtimeProjection();
+        $records = $runtimeLock['asset_planner']['superseded_framework_locks'] ?? null;
+        if (! is_array($projection) || ! is_array($records) || ! array_is_list($records)) {
+            return false;
+        }
+        $runtimeSha256 = hash('sha256', CanonicalJson::encode($projectLock->runtime()));
+        foreach ($records as $record) {
+            if (is_array($record)
+                && array_keys($record) === [
+                    'runtime_sha256',
+                    'runtime_projection_packet_sha256',
+                    'runtime_projection_files',
+                    'runtime_projection_manifest_sha256',
+                ]
+                && ($record['runtime_sha256'] ?? null) === $runtimeSha256
+                && ($record['runtime_projection_packet_sha256'] ?? null) === ($projection['packet_sha256'] ?? null)
+                && ($record['runtime_projection_files'] ?? null) === ($projection['files'] ?? null)
+                && ($record['runtime_projection_manifest_sha256'] ?? null) === ($projection['manifest']['sha256'] ?? null)
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /** @param array<string, mixed> $projection @param array<string, mixed> $runtime */
@@ -442,6 +480,32 @@ final readonly class FrameworkManifestRepository
         return $bytes;
     }
 
+    public function bundledPortableBinaryAsset(string $relativePath, string $sha256): string
+    {
+        $this->assertSafeRelativePath($relativePath);
+        if (preg_match('/^[a-f0-9]{64}$/D', $sha256) !== 1) {
+            throw new FrameworkComponentException('FRAMEWORK_PORTABLE_ASSET_HASH_INVALID', $relativePath);
+        }
+        $resources = dirname($this->resourceRoot);
+        $path = $resources . '/portable/' . $relativePath;
+        $this->assertTrustedResourceFile(
+            $resources,
+            $path,
+            'FRAMEWORK_PORTABLE_ASSET_UNSAFE',
+            'FRAMEWORK_PORTABLE_ASSET_MISSING',
+            $relativePath,
+        );
+        $bytes = @file_get_contents($path);
+        if (! is_string($bytes) || $bytes === '') {
+            throw new FrameworkComponentException('FRAMEWORK_PORTABLE_ASSET_MISSING', $relativePath);
+        }
+        if (! hash_equals($sha256, hash('sha256', $bytes))) {
+            throw new FrameworkComponentException('FRAMEWORK_PORTABLE_ASSET_HASH_MISMATCH', $relativePath);
+        }
+
+        return $bytes;
+    }
+
     public function bundledTypographyAsset(string $key): string
     {
         $projection = $this->lock->typographyProjection();
@@ -573,6 +637,26 @@ final readonly class FrameworkManifestRepository
         // bundled contract is the authoritative effective runtime.
         $this->effectiveRuntime = $runtime;
 
+        // Package resources are immutable for the lifetime of one Docara
+        // process. Validate their complete ledgers once, while arbitrary
+        // project/fixture roots continue to be checked on every construction.
+        // A new build or verify-static invocation starts a new process and
+        // therefore revalidates every byte again.
+        $packageRoot = realpath(dirname(__DIR__, 2) . '/resources/framework');
+        $resourceRoot = realpath($this->resourceRoot);
+        $packageVerificationKey = $packageRoot !== false && $resourceRoot === $packageRoot
+            ? hash('sha256', CanonicalJson::encode([
+                'runtime_lock' => hash('sha256', $json),
+                'runtime_projection' => $this->lock->runtimeProjection(),
+                'typography_projection' => $this->lock->typographyProjection(),
+                'icon_projection' => $this->lock->iconProjection(),
+            ]))
+            : null;
+        static $verifiedPackageResources = [];
+        if ($packageVerificationKey !== null && isset($verifiedPackageResources[$packageVerificationKey])) {
+            return;
+        }
+
         if ($this->lock->typographyProjection() !== null) {
             foreach (array_keys($this->lock->typographyProjection()['files']) as $key) {
                 $this->bundledTypographyAsset($key);
@@ -603,6 +687,9 @@ final readonly class FrameworkManifestRepository
             if (! hash_equals((string) $projection['packet_sha256'], hash('sha256', $ledger))) {
                 throw new FrameworkComponentException('FRAMEWORK_ICON_PACKET_HASH_MISMATCH');
             }
+        }
+        if ($packageVerificationKey !== null) {
+            $verifiedPackageResources[$packageVerificationKey] = true;
         }
     }
 

@@ -1,0 +1,69 @@
+{
+  "schema_version": "1.0.0",
+  "workflow": "framework-icon-subsets",
+  "date": "2026-08-31",
+  "verdict": "PASS",
+  "scope": {
+    "repositories": [
+      "ui-builder",
+      "ui-loader",
+      "ui",
+      "docara",
+      "ui-doc"
+    ],
+    "released": false,
+    "live_service_changed": false,
+    "public_deploy_performed": false
+  },
+  "generator": {
+    "manifest_schema": "sf.icon_subset.v1",
+    "engine": "subset-font 2.6.0 with HarfBuzz WASM",
+    "features_preserved": [
+      "rclt",
+      "rlig"
+    ],
+    "source_font_bytes": 3964532,
+    "subset_font_bytes": 244368,
+    "reduction_percent": 93.84,
+    "icon_count": 67,
+    "subset_woff2_sha256": "995fbf08c43fe8ae9c3bc7fa8364eebda7d1726036d405723b5788a87df57f2d",
+    "manifest_sha256": "f93668e2b688af2fcdd6e1d78f2ea1abb2c38a3ab49bfab8fae251d9f729bfec",
+    "packet_sha256": "1da7a11c755697447b5ed8d556b8ceb6f19c5ee86b805c1893b30a763e57bd54",
+    "cross_platform": {
+      "macos_linux_byte_identical": true,
+      "python_fonttools_reference_bytes": 243220,
+      "wasm_reference_bytes": 244368
+    }
+  },
+  "runtime": {
+    "family_separation": true,
+    "cumulative_late_icons": true,
+    "atomic_font_replacement": true,
+    "moving_latest_reference": false,
+    "default_icon_service_request": false,
+    "unknown_icon_fallback": "exact local full font",
+    "packaged_fallback_families": [
+      "outlined",
+      "rounded",
+      "sharp"
+    ],
+    "fallback_fonts_requested_in_first_frame": false
+  },
+  "verification": {
+    "ui_builder": "PASS: repository policy checks, 121 icon and reproducibility tests, diagnostics-clean Component product build",
+    "ui_loader": "PASS: 8 focused runtime tests and targeted ESLint",
+    "docara_unit": "PASS: 60 tests, 2782 assertions",
+    "docara_docs": "PASS: 128 source pages, 263 HTML pages, 35556 local references, none broken",
+    "ui_doc": "PASS: 911 source pages, 1792 HTML pages, 370679 local references, none broken",
+    "linux": "PASS: 9 icon tests in node:24-alpine",
+    "browser_desktop": "PASS: shell CLS 0, no missing glyphs, no external icon request",
+    "browser_mobile": "PASS: dark theme and reduced motion, CLS 0, no console errors",
+    "browser_dynamic_unknown_icon": "PASS: exact local full-font fallback, no @latest or service request"
+  },
+  "limitations": [
+    "The source repository that owns the live simai-font-service was not available locally, so the live service was not switched.",
+    "A visual icon catalogue is intentionally deferred to a later stage.",
+    "A completely offline first HTML navigation remains a hosting or service-worker concern, not an icon-runtime requirement.",
+    "Release publication requires commits in dependency order and a fresh Docara projection from the resulting exact Framework commit and tree hash."
+  ]
+}

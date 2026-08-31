@@ -1,0 +1,21 @@
+{
+  "id": "docara.batch.framework_icon_subsets_release",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "Publish universal Framework icon subsets",
+  "summary": "Publish the generator, Loader and Framework in dependency order, then bind and release Docara and update ui-doc without unrelated changes.",
+  "owner": "teamlead",
+  "lifecycle": "active",
+  "readiness": "in_progress",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-09-01-framework-icon-subsets-release.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-09-01-framework-icon-subsets-release/release-status.json"],
+  "profile_refs": ["docara.unified"],
+  "allowed_scope": ["focused commits", "immutable compatible tags and releases", "generated dependent artifacts", "ui-doc dependency update"],
+  "forbidden_scope": ["unrelated View Transition work", "live icon service switch", "public documentation deployment", "history rewrite"],
+  "checks": ["exact remote refs", "deterministic builds", "Docara package and AI gates", "ui-doc build and browser smoke"],
+  "status": "in_progress",
+  "next_action": "complete_docara_release_audit"
+}

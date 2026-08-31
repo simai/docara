@@ -1,0 +1,21 @@
+{
+  "id": "docara.batch.framework_icon_subsets",
+  "schema_version": "1.0.0",
+  "kind": "work",
+  "subtype": "batch",
+  "tz_role": "execution_batch",
+  "title": "Implement and verify universal Framework icon subsets",
+  "summary": "Add the shared WASM generator, family-aware Loader behavior and the offline Docara shell pilot without releasing or changing a live service.",
+  "owner": "dev",
+  "lifecycle": "active",
+  "readiness": "ready",
+  "visibility": "repository",
+  "source_refs": ["source/workflow/2026-08-31-framework-icon-subsets.md"],
+  "evidence_refs": ["source/workflow/evidence/2026-08-31-framework-icon-subsets/verification-summary.json"],
+  "profile_refs": ["docara.unified"],
+  "allowed_scope": ["ui-builder generator", "ui-loader icon runtime", "Docara assets, planner, tests, docs and graph", "generated local ui-doc build"],
+  "forbidden_scope": ["ui-doc authored content", "Git history", "release", "live icon service", "public deployment"],
+  "checks": ["Generator reproducibility", "Loader runtime tests", "Docara tests", "Docara and ui-doc builds", "verify-static", "HTTP and browser smoke"],
+  "status": "completed",
+  "next_action": "separate_release_audits_when_authorized"
+}

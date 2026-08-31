@@ -1,0 +1,14 @@
+@font-face {
+  font-family: 'Material Symbols Outlined Subset 995fbf08c43f';
+  src: url('/_docara/vendor/docara/icon-subset/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-outlined.995fbf08c43fe8ae9c3b.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+}
+
+.sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape) {
+  --sf-icon--font-family: 'Material Symbols Outlined Subset 995fbf08c43f';
+  font-family: 'Material Symbols Outlined Subset 995fbf08c43f';
+  font-feature-settings: 'liga';
+  font-variation-settings: 'FILL' var(--sf-icon--fill, 0), 'wght' var(--sf-icon--weight, 400), 'GRAD' var(--sf-icon--grade, 0), 'opsz' var(--sf-icon--optical-size, 24);
+}

@@ -1,18 +1,42 @@
-# Active workflow: Docara stable release and ui-doc Framework 5.4 integration
+# Active workflow: universal SIMAI Framework icon subset release
 
-Date: 2026-08-28
+Date: 2026-09-01
 Status: `in-progress`
-Workflow: `source/workflow/2026-08-28-docara-2-3-release-and-ui-doc-5-4.md`
+Workflow: `source/workflow/2026-09-01-framework-icon-subsets-release.md`
 
-## Current execution
+## Active release execution
 
-- the user authorized completion and publication of the already implemented
-  common Framework Asset Planner as a stable Docara release;
-- after publication, ui-doc will be updated to the stable Docara package and
-  published Framework 5.4.0, rebuilt and verified locally;
-- Docara and ui-doc receive separate focused commits and pushes;
-- public documentation deployment remains forbidden;
-- current batch: freeze rollback packages and audit the Docara dirty baseline.
+- implementation and local acceptance are complete in
+  `source/workflow/2026-08-31-framework-icon-subsets.md`;
+- the user explicitly authorized focused commits, pushes, immutable tags,
+  compatible Framework and Docara releases, and the `ui-doc` lock update;
+- public documentation deployment and live `icons.simai.io` switching remain
+  excluded;
+- completed dependencies: `ui-builder@96b56d2a4e5b`,
+  `ui-loader@a1f523bf43aa` and Framework `v5.5.0@286e48b8ce2b`;
+- current batch: Docara exact projection, compatibility and release audit;
+- next dependency action: publish the verified Docara release, then update
+  `ui-doc` to the exact Framework and Docara versions.
+
+## Completed execution
+
+- the user authorized implementation of the approved universal icon-subset
+  plan across `ui-builder`, `ui-loader` and Docara;
+- the existing Framework generator, Loader runtime and Docara Asset Planner
+  remain the only owners; no parallel registry or status engine is created;
+- all five batches are complete: generator, Loader runtime, exact local
+  distribution, Docara integration and consumer acceptance;
+- final subset contains 67 discovered icons and is 244,368 bytes versus the
+  3,964,532-byte full source font;
+- Docara documentation and `ui-doc.test` pass `verify-static`; browser checks
+  show shell CLS `0`, no icon-service request and an exact local fallback for
+  unknown late icons;
+- the user later authorized focused commit, push and compatible package
+  publication; live service switching and public site deployment remain out
+  of scope.
+
+Evidence:
+`source/workflow/evidence/2026-08-31-framework-icon-subsets/verification-summary.json`.
 
 ## Previous terminal state
 

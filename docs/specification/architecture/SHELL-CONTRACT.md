@@ -85,6 +85,24 @@ binding-owned prop collisions, unknown bindings, invalid output/final props,
 traversal, symlink escape, case collisions and executable configuration keys or
 values. Preview cannot bypass these checks or create a production receipt.
 
+## Icon resources
+
+The permanent shell uses a package-owned `sf.icon_subset.v1` packet generated
+from the exact Material Symbols source by `ui-builder`. The first frame
+preloads the content-addressed subset, not the 3.96 MB full outlined font. Its
+receipt records the sorted icon names, source hash, subset font hash and size,
+manifest hash, packet hash and fallback mode.
+
+Docara does not call `icons.simai.io`. An icon outside the admitted shell set
+causes one exact local full font to be loaded lazily, after which the outlined
+family is replaced atomically. Rounded and sharp families remain separate and
+are loaded only when their selectors occur. The full fonts stay package-owned
+for offline correctness and are never addressed through `@latest`.
+
+`verify-static` reconstructs the same Framework asset plan and therefore
+rejects a missing subset, changed WOFF2, stale manifest, incorrect preload or
+network-based moving fallback. No new project setting or lock file is created.
+
 ## Non-goals
 
 Goal A does not migrate search, breadcrumbs, pager or the full publisher chrome;

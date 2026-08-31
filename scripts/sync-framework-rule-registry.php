@@ -128,42 +128,106 @@ foreach (preg_split('/\R/', trim($componentTree)) ?: [] as $line) {
     chmod($assetTarget, 0644);
 }
 
-// Working-tree corrections are deliberately projected last so the pinned
-// revision copy above cannot overwrite the exact files under verification.
-if ($useWorkingRegistry) {
-    foreach ([
-        'core/js/core-rules.js',
-        'core/js/core-loader.js',
-        'component/icons/css/icons.css',
-        'component/icon-buttons/css/icon-buttons.css',
-        'component/menu/css/menu.css',
-        'component/menu/js/menu.js',
-        'component/highlight/js/highlight.js',
-    ] as $runtimeFile) {
-        $workingRuntime = realpath($uiRoot) . '/distr/' . $runtimeFile;
-        $runtimeTarget = $distribution . '/' . $runtimeFile;
-        $runtimeBytes = file_get_contents($workingRuntime);
-        if (! is_string($runtimeBytes) || $runtimeBytes === '' || preg_match('//u', $runtimeBytes) !== 1) {
-            throw new RuntimeException('FRAMEWORK_CORE_RUNTIME_SOURCE_UNAVAILABLE: ' . $runtimeFile);
-        }
-        if (! is_dir(dirname($runtimeTarget))
-            && ! mkdir(dirname($runtimeTarget), 0755, true)
-            && ! is_dir(dirname($runtimeTarget))
-        ) {
-            throw new RuntimeException('FRAMEWORK_CORE_RUNTIME_DIRECTORY_FAILED: ' . $runtimeFile);
-        }
-        file_put_contents($runtimeTarget, $runtimeBytes, LOCK_EX);
-        chmod($runtimeTarget, 0644);
+// Core and icon fallback assets are always projected from one exact source.
+// The maintainer-only working-tree mode remains available for pre-release
+// verification; normal release projection reads immutable Git objects.
+$readRuntime = static function (string $runtimeFile) use (
+    $git,
+    $revision,
+    $uiRoot,
+    $useWorkingRegistry,
+): string {
+    $bytes = $useWorkingRegistry
+        ? file_get_contents(realpath($uiRoot) . '/distr/' . $runtimeFile)
+        : $git(['show', $revision . ':distr/' . $runtimeFile]);
+    if (! is_string($bytes) || $bytes === '') {
+        throw new RuntimeException('FRAMEWORK_CORE_RUNTIME_SOURCE_UNAVAILABLE: ' . $runtimeFile);
     }
+
+    return $bytes;
+};
+
+$coreFiles = [];
+if ($useWorkingRegistry) {
+    foreach (new DirectoryIterator(realpath($uiRoot) . '/distr/core/js') as $file) {
+        if ($file->isFile() && ! $file->isLink()) {
+            $coreFiles[] = 'core/js/' . $file->getFilename();
+        }
+    }
+} else {
+    $coreTree = $git(['ls-tree', '-r', '--name-only', $revision, 'distr/core/js']);
+    foreach (preg_split('/\R/', trim($coreTree)) ?: [] as $sourcePath) {
+        $coreFiles[] = substr($sourcePath, strlen('distr/'));
+    }
+}
+$coreFiles = array_values(array_filter(
+    $coreFiles,
+    static fn (string $runtimeFile): bool => preg_match(
+        '#^core/js/(?:[0-9]+|core(?:-[a-z0-9-]+)?|smart-base)\.js$#D',
+        $runtimeFile,
+    ) === 1,
+));
+sort($coreFiles, SORT_STRING);
+if ($coreFiles === []) {
+    throw new RuntimeException('FRAMEWORK_CORE_RUNTIME_SOURCE_UNAVAILABLE');
+}
+
+$runtimeCoreJsRoot = $distribution . '/core/js';
+$coreNames = array_fill_keys(array_map('basename', $coreFiles), true);
+foreach (glob($runtimeCoreJsRoot . '/*.js') ?: [] as $existingCoreFile) {
+    $fileName = basename($existingCoreFile);
+    if (! isset($coreNames[$fileName])) {
+        if (is_link($existingCoreFile) || ! is_file($existingCoreFile) || ! unlink($existingCoreFile)) {
+            throw new RuntimeException('FRAMEWORK_CORE_RUNTIME_PRUNE_FAILED: ' . $fileName);
+        }
+    }
+}
+
+foreach (array_merge($coreFiles, [
+    'component/icons/css/icons.css',
+    'component/icons/fonts/MaterialSymbols-Outlined.woff2',
+    'component/icons/fonts/MaterialIconsRound-Regular.otf',
+    'component/icons/fonts/MaterialIconsSharp-Regular.otf',
+    'component/icon-buttons/css/icon-buttons.css',
+    'component/menu/css/menu.css',
+    'component/menu/js/menu.js',
+    'component/highlight/js/highlight.js',
+]) as $runtimeFile) {
+    $runtimeTarget = $distribution . '/' . $runtimeFile;
+    $runtimeBytes = $readRuntime($runtimeFile);
+    if (! is_dir(dirname($runtimeTarget))
+        && ! mkdir(dirname($runtimeTarget), 0755, true)
+        && ! is_dir(dirname($runtimeTarget))
+    ) {
+        throw new RuntimeException('FRAMEWORK_CORE_RUNTIME_DIRECTORY_FAILED: ' . $runtimeFile);
+    }
+    file_put_contents($runtimeTarget, $runtimeBytes, LOCK_EX);
+    chmod($runtimeTarget, 0644);
 }
 
 $manifestPath = $runtimeBase . '/runtime-manifest.json';
 $manifest = json_decode((string) file_get_contents($manifestPath), true, 512, JSON_THROW_ON_ERROR);
+$manifest['source'] = $projection['source'];
 $manifest['files'] = array_filter(
     $manifest['files'],
-    static fn (string $relativePath): bool => ! str_starts_with($relativePath, 'utility/'),
+    static fn (string $relativePath): bool => ! str_starts_with($relativePath, 'utility/')
+        && ! str_starts_with($relativePath, 'core/js/'),
     ARRAY_FILTER_USE_KEY,
 );
+$coreJsRoot = $distribution . '/core/js';
+foreach (glob($coreJsRoot . '/*.js') ?: [] as $coreFile) {
+    if (is_link($coreFile) || ! is_file($coreFile) || str_contains(basename($coreFile), '.min.')) {
+        continue;
+    }
+    $manifest['files']['core/js/' . basename($coreFile)] = ['sha256' => hash_file('sha256', $coreFile)];
+}
+foreach ([
+    'component/icons/fonts/MaterialSymbols-Outlined.woff2',
+    'component/icons/fonts/MaterialIconsRound-Regular.otf',
+    'component/icons/fonts/MaterialIconsSharp-Regular.otf',
+] as $fontFile) {
+    $manifest['files'][$fontFile] = ['sha256' => hash_file('sha256', $distribution . '/' . $fontFile)];
+}
 $manifest['files']['rule/rule.json'] = ['sha256' => hash('sha256', $bytes)];
 foreach (new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator($distribution . '/utility', FilesystemIterator::SKIP_DOTS),
@@ -221,6 +285,23 @@ foreach ([$lockPath, $root . '/stubs/portable/simai-framework.lock.json'] as $pr
     $lockBytes = json_encode($projectLock, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n";
     file_put_contents($projectLockPath, $lockBytes, LOCK_EX);
 }
+
+$runtimeLockPath = $root . '/resources/framework/runtime-lock.json';
+$runtimeLock = json_decode((string) file_get_contents($runtimeLockPath), true, 512, JSON_THROW_ON_ERROR);
+$assetPlannerCompatibility = $runtimeLock['asset_planner'] ?? null;
+$runtimeLock = $lock['runtime'];
+if (is_array($assetPlannerCompatibility)) {
+    $runtimeLock = [
+        'schema' => $runtimeLock['schema'],
+        'asset_planner' => $assetPlannerCompatibility,
+        ...array_diff_key($runtimeLock, ['schema' => true]),
+    ];
+}
+$runtimeLockBytes = json_encode(
+    $runtimeLock,
+    JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES,
+) . "\n";
+file_put_contents($runtimeLockPath, $runtimeLockBytes, LOCK_EX);
 
 fwrite(STDOUT, json_encode([
     'schema' => 'docara.framework_rule_projection.v1',

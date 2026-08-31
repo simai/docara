@@ -1,0 +1,34 @@
+{
+  "schema_version": "1.0.0",
+  "workflow": "framework-icon-subsets-release",
+  "date": "2026-09-01",
+  "status": "in_progress",
+  "published": {
+    "ui_builder": {
+      "commit": "96b56d2a4e5bd4e3be3f839ffebf205ba7fa77c2",
+      "verification": "121 icon and reproducibility tests; two byte-identical product waves"
+    },
+    "ui_loader": {
+      "commit": "a1f523bf43aa546b2946d435c7bfe2ccedd7b133",
+      "verification": "8 runtime tests; ESLint; two byte-identical product waves"
+    },
+    "framework": {
+      "tag": "v5.5.0",
+      "commit": "286e48b8ce2b8e765eb5794d74b711f5b8f78783",
+      "distribution_archive_sha256": "cb00ed30c117e60353bb07644b83aa978391a2a2113842770751dd2df3e2e301",
+      "verification": "two byte-identical builds; 30 contract tests; immutable remote tag"
+    }
+  },
+  "docara_candidate": {
+    "framework_pair": "sf-v5.5.0-286e48b8-23d00d92",
+    "runtime_files": 840,
+    "runtime_packet_sha256": "42228b12e7cf63930d3872977b0e3b8fb64d12ddb6261cb5574df6b1bb97b80c",
+    "subset_bytes": 244368,
+    "focused_framework_tests": "PASS: 14 tests, 1835 assertions",
+    "affected_contract_tests": "PASS: 62 tests, 1590 assertions",
+    "documentation_build": "PASS: 128 sources, 263 HTML pages",
+    "static_verification": "PASS: 35556 local references, none broken"
+  },
+  "remaining": ["full PHPUnit", "deterministic release package", "AI contract gate", "Docara publication", "ui-doc update and browser smoke"],
+  "excluded": ["unrelated View Transition files", "live icon service switch", "public documentation deployment"]
+}

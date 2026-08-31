@@ -14,6 +14,12 @@ final readonly class FrameworkAssetPlanner
 
     private const SHELL_CSS_SOURCE = 'declarative-shell.css';
 
+    private const ICON_SUBSET_MANIFEST = 'vendor/docara/icon-subset/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/material-symbols-outlined.995fbf08c43fe8ae9c3b.manifest.json';
+
+    private const ICON_SUBSET_MANIFEST_SHA256 = 'f93668e2b688af2fcdd6e1d78f2ea1abb2c38a3ab49bfab8fae251d9f729bfec';
+
+    private const ICON_SUBSET_PACKET_SHA256 = '1da7a11c755697447b5ed8d556b8ceb6f19c5ee86b805c1893b30a763e57bd54';
+
     public function __construct(
         private FrameworkManifestRepository $repository,
         private string $assetBase,
@@ -71,6 +77,7 @@ final readonly class FrameworkAssetPlanner
         $smartCommit = (string) $runtime['ui_smart']['commit'];
         $runtimeProjection = $this->repository->runtimeProjection();
         $iconProjection = $this->repository->iconProjection();
+        $iconSubset = $this->iconShellSubset();
         $iconFont = $runtimeProjection === null
             ? 'component/icons/fonts/MaterialSymbols-Outlined.woff2'
             : (string) $runtimeProjection['icon_font'];
@@ -111,6 +118,7 @@ final readonly class FrameworkAssetPlanner
         $shell = $html === null
             ? $this->shellPlan($runtime, $cacheVersion)
             : $this->productionHtmlPlan($html, $runtime, $cacheVersion);
+        $shell['preload']['icons'] = $iconSubset['receipt'];
         $assets = [[
             'key' => 'docara.framework.storage.compatibility',
             'kind' => 'boot',
@@ -129,7 +137,7 @@ final readonly class FrameworkAssetPlanner
             'kind' => 'boot',
             'content' => $shell['preload_boot'],
         ]]), ...($typography === null ? [] : $this->typographyFontPreloads($typography)),
-            ...($iconProjection === null ? [] : $this->iconFontPreloads($iconProjection)), [
+            $this->iconSubsetFontPreload($iconSubset), [
                 'key' => 'simai.framework.core.css',
                 'kind' => 'css',
                 'url' => $typography === null
@@ -158,13 +166,9 @@ final readonly class FrameworkAssetPlanner
             ]] : []), [
                 'key' => 'simai.framework.icon_font.css',
                 'kind' => 'inline_css',
-                'content' => $this->iconFallbackCss($iconProjection === null
-                    ? $uiBase . '/' . $iconFont
-                    : $this->projectedPublicUrl((string) $iconProjection['files']['outlined']['public'])),
-                'source_revision' => $iconProjection === null ? $uiCommit : $iconProjection['source']['revision'],
-                'sha256' => $iconProjection === null
-                    ? ($runtimeProjection === null ? null : $this->runtimeAsset($iconFont)['sha256'])
-                    : $iconProjection['files']['outlined']['sha256'],
+                'content' => $this->iconSubsetCss($iconSubset),
+                'source_revision' => $iconSubset['manifest']['source']['revision'],
+                'sha256' => $iconSubset['manifest']['files']['font']['sha256'],
             ], ...($iconProjection === null ? [] : [[
                 'key' => 'simai.framework.icon_variant_fonts.css',
                 'kind' => 'inline_css',
@@ -177,7 +181,13 @@ final readonly class FrameworkAssetPlanner
             ]]), [
                 'key' => 'simai.framework.icon_font.ready',
                 'kind' => 'boot',
-                'content' => $this->iconFallbackReadyRuntime($iconProjection !== null),
+                'content' => $this->iconFallbackReadyRuntime(
+                    $iconProjection !== null,
+                    $iconSubset,
+                    $iconProjection === null
+                        ? $uiBase . '/' . $iconFont
+                        : $this->projectedPublicUrl((string) $iconProjection['files']['outlined']['public']),
+                ),
             ], [
                 'key' => 'simai.framework.smart_base.js',
                 'kind' => 'javascript',
@@ -268,6 +278,98 @@ final readonly class FrameworkAssetPlanner
         }
 
         return $assets;
+    }
+
+    /**
+     * @return array{
+     *   manifest:array<string,mixed>,
+     *   font_url:string,
+     *   receipt:array<string,mixed>
+     * }
+     */
+    private function iconShellSubset(): array
+    {
+        $manifestBytes = $this->repository->bundledPortableAsset(self::ICON_SUBSET_MANIFEST);
+        if (! hash_equals(self::ICON_SUBSET_MANIFEST_SHA256, hash('sha256', $manifestBytes))) {
+            throw new FrameworkComponentException('FRAMEWORK_ICON_SUBSET_MANIFEST_HASH_MISMATCH');
+        }
+        try {
+            $manifest = json_decode($manifestBytes, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            throw new FrameworkComponentException('FRAMEWORK_ICON_SUBSET_MANIFEST_INVALID');
+        }
+        if (! is_array($manifest)
+            || ($manifest['schema'] ?? null) !== 'sf.icon_subset.v1'
+            || ($manifest['family'] ?? null) !== 'outlined'
+            || ! is_array($manifest['icons'] ?? null)
+            || ! array_is_list($manifest['icons'])
+            || $manifest['icons'] === []
+            || ! is_string($manifest['font_family'] ?? null)
+            || ! is_array($manifest['files']['font'] ?? null)
+            || ! is_array($manifest['files']['css'] ?? null)
+            || ! is_string($manifest['files']['css']['path'] ?? null)
+            || ! is_string($manifest['files']['css']['sha256'] ?? null)
+            || ! is_string($manifest['files']['font']['path'] ?? null)
+            || ! is_string($manifest['files']['font']['sha256'] ?? null)
+            || ! is_int($manifest['files']['font']['size'] ?? null)
+            || ! is_string($manifest['source']['sha256'] ?? null)
+            || ! is_string($manifest['packet_sha256'] ?? null)
+            || ! hash_equals(self::ICON_SUBSET_PACKET_SHA256, $manifest['packet_sha256'])
+        ) {
+            throw new FrameworkComponentException('FRAMEWORK_ICON_SUBSET_MANIFEST_INVALID');
+        }
+        $icons = $manifest['icons'];
+        $sortedIcons = $icons;
+        sort($sortedIcons, SORT_STRING);
+        if ($icons !== $sortedIcons || count($icons) !== count(array_unique($icons))) {
+            throw new FrameworkComponentException('FRAMEWORK_ICON_SUBSET_MANIFEST_INVALID');
+        }
+
+        $directory = dirname(self::ICON_SUBSET_MANIFEST);
+        $cssRelative = $directory . '/' . $manifest['files']['css']['path'];
+        $cssBytes = $this->repository->bundledPortableAsset($cssRelative);
+        if (! hash_equals($manifest['files']['css']['sha256'], hash('sha256', $cssBytes))) {
+            throw new FrameworkComponentException('FRAMEWORK_ICON_SUBSET_CSS_HASH_MISMATCH');
+        }
+        $fontRelative = $directory . '/' . $manifest['files']['font']['path'];
+        $fontBytes = $this->repository->bundledPortableBinaryAsset(
+            $fontRelative,
+            $manifest['files']['font']['sha256'],
+        );
+        if (strlen($fontBytes) !== $manifest['files']['font']['size']) {
+            throw new FrameworkComponentException('FRAMEWORK_ICON_SUBSET_FONT_SIZE_MISMATCH');
+        }
+        $public = '_docara/' . $fontRelative;
+
+        return [
+            'manifest' => $manifest,
+            'font_url' => $this->projectedPublicUrl($public),
+            'receipt' => [
+                'schema' => 'sf.icon_subset.v1',
+                'family' => 'outlined',
+                'icons' => $icons,
+                'source_sha256' => $manifest['source']['sha256'],
+                'font_sha256' => $manifest['files']['font']['sha256'],
+                'font_size' => $manifest['files']['font']['size'],
+                'font_url' => $this->projectedPublicUrl($public),
+                'css_sha256' => $manifest['files']['css']['sha256'],
+                'manifest_sha256' => hash('sha256', $manifestBytes),
+                'packet_sha256' => $manifest['packet_sha256'],
+                'fallback' => 'local_full_font_on_unknown_icon',
+            ],
+        ];
+    }
+
+    /** @param array<string,mixed> $subset @return array<string,mixed> */
+    private function iconSubsetFontPreload(array $subset): array
+    {
+        return [
+            'key' => 'simai.framework.icons.preload.outlined_subset',
+            'kind' => 'font_preload',
+            'url' => $subset['font_url'],
+            'source_revision' => $subset['manifest']['source']['revision'],
+            'sha256' => $subset['manifest']['files']['font']['sha256'],
+        ];
     }
 
     /**
@@ -1349,6 +1451,20 @@ final readonly class FrameworkAssetPlanner
             . '"opsz" var(--sf-icon--optical-size,24)}';
     }
 
+    /** @param array<string,mixed> $subset */
+    private function iconSubsetCss(array $subset): string
+    {
+        $family = (string) $subset['manifest']['font_family'];
+
+        return '@font-face{font-family:"' . $family . '";src:url("' . $subset['font_url']
+            . '") format("woff2");font-style:normal;font-weight:400;font-display:block}'
+            . 'html body .sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape){'
+            . '--sf-icon--font-family:"' . $family . '";font-family:"' . $family . '"!important;'
+            . 'font-feature-settings:"liga"!important;font-variation-settings:"FILL" var(--sf-icon--fill,0),'
+            . '"wght" var(--sf-icon--weight,400),"GRAD" var(--sf-icon--grade,0),'
+            . '"opsz" var(--sf-icon--optical-size,24)}';
+    }
+
     private function iconVariantCss(string $roundedUrl, string $sharpUrl): string
     {
         $settings = 'font-feature-settings:"liga"!important;font-variation-settings:"FILL" var(--sf-icon--fill,0),'
@@ -1365,18 +1481,35 @@ final readonly class FrameworkAssetPlanner
             . 'font-family:"Material Symbols Sharp"!important;' . $settings;
     }
 
-    private function iconFallbackReadyRuntime(bool $hasVariants): string
+    /** @param array<string,mixed> $subset */
+    private function iconFallbackReadyRuntime(bool $hasVariants, array $subset, string $fullFontUrl): string
     {
         $variants = $hasVariants
             ? '{rounded:"Material Symbols Rounded",shape:"Material Symbols Sharp"}'
             : '{}';
+        $subsetFamily = json_encode(
+            $subset['manifest']['font_family'],
+            JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES,
+        );
+        $subsetIcons = json_encode(
+            $subset['manifest']['icons'],
+            JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES,
+        );
+        $fallbackCss = json_encode(
+            $this->iconFallbackCss($fullFontUrl),
+            JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES,
+        );
 
-        return '(function(){var variants=' . $variants . ',loaded={};'
-            . 'function family(icon){if(icon.classList.contains("sf-icon-rounded"))return variants.rounded||null;if(icon.classList.contains("sf-icon-shape"))return variants.shape||null;return "Material Symbols Outlined"}'
+        return '(function(){var variants=' . $variants . ',loaded={},subsetFamily=' . $subsetFamily
+            . ',subsetIcons=new Set(' . $subsetIcons . '),fallbackCss=' . $fallbackCss . ',fallbackPending=null;'
+            . 'function iconName(icon){return String(icon.getAttribute("icon")||icon.textContent||"").trim()}'
+            . 'function ensureFullFont(){if(fallbackPending)return fallbackPending;var style=document.createElement("style");style.dataset.docaraIconFallback="outlined";style.textContent=fallbackCss;document.head.appendChild(style);fallbackPending=document.fonts&&document.fonts.load?document.fonts.load(\'400 24px "Material Symbols Outlined"\'):Promise.resolve([true]);return fallbackPending}'
+            . 'function family(icon){if(icon.classList.contains("sf-icon-rounded"))return variants.rounded||null;if(icon.classList.contains("sf-icon-shape"))return variants.shape||null;return subsetIcons.has(iconName(icon))?subsetFamily:"Material Symbols Outlined"}'
             . 'function ready(icon){if(icon.classList.contains("sf-icon-loaded"))return;var name=family(icon);if(!name)return;var promise=loaded[name]||(loaded[name]=document.fonts&&document.fonts.load?document.fonts.load(\'400 24px "\'+name+\'"\'):Promise.resolve([true]));promise.then(function(faces){if(faces&&faces.length)icon.classList.add("sf-icon-loaded")}).catch(function(){})}'
+            . 'var originalReady=ready;ready=function(icon){if(family(icon)==="Material Symbols Outlined"){ensureFullFont().then(function(){originalReady(icon)})}else{originalReady(icon)}};'
             . 'function mark(root){if(root.nodeType===1&&root.matches(".sf-icon"))ready(root);if(root.querySelectorAll){root.querySelectorAll(".sf-icon").forEach(ready)}}'
             . 'function watch(){mark(document);if(!document.body)return;new MutationObserver(function(records){records.forEach(function(record){record.addedNodes.forEach(mark)})}).observe(document.body,{childList:true,subtree:true})}'
-            . 'function start(){document.documentElement.dataset.docaraFullFontReady="true";watch()}'
+            . 'function start(){document.documentElement.dataset.docaraIconSubsetReady="true";watch()}'
             . 'if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",start,{once:true})}else{start()}})();';
     }
 
@@ -1421,7 +1554,7 @@ final readonly class FrameworkAssetPlanner
                     && is_string($asset['sha256'] ?? null)
                     && preg_match('/^[a-f0-9]{64}$/', $asset['sha256']) === 1
                     && preg_match(
-                        '#^/(?:[A-Za-z0-9._~-]+/)*_docara/vendor/(?:simai-framework/typography/[a-f0-9]{20}|google/material-symbols/[a-f0-9]{40}/MaterialSymbolsOutlined)\.woff2$#D',
+                        '#^/(?:[A-Za-z0-9._~-]+/)*_docara/vendor/(?:simai-framework/typography/[a-f0-9]{20}|google/material-symbols/[a-f0-9]{40}/MaterialSymbolsOutlined|docara/icon-subset/[a-f0-9]{40}/material-symbols-outlined\.[a-f0-9]{20})\.woff2$#D',
                         $url,
                     ) === 1
                 ) {

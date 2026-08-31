@@ -1,7 +1,7 @@
 # Docara local release-readiness audit
 
 Date: 2026-08-31
-Status: local candidate verified; public release blocked by the Federation skill binding
+Status: release candidate verified; Federation skill binding resolved
 
 ## Outcome
 
@@ -33,17 +33,15 @@ responsive-image geometry.
   aspect ratios and zero document-level horizontal overflow.
 - Pint, `git diff --check` and strict Composer validation passed. Composer
   printed only deprecation notices from its own bundled PHP 8.4 dependencies.
-- The canonical Docara skill contract validator and smoke suite passed at
-  `59aa0d6a60727aaaa99cea738f82c41a31a4aadd`.
+- The canonical Docara skill contract validator, smoke suite, graph sync and
+  bilingual outcome benchmark passed at
+  `7c0ebc4b0982f2d2ccd75fb759d50042f5ef7b0c`.
 - Federation route-check passed all 358 scenarios.
-- Full Federation verification run `federation-verify-20260830T223412Z`
-  completed successfully for runtime 9.9.2: 26 installed skills, runtime
-  health, clean-room installation and technology-contract checks passed with
-  no blockers.
-- The public AI release gate was run against the actual stable Federation
-  lock and the canonical skill revision. It failed closed with exit code `1`
-  and `AI_RELEASE_FEDERATION_BINDING_STALE`, exactly matching the unresolved
-  release boundary below.
+- Full verification of installed Federation 9.9.3 completed successfully: 26
+  installed skills, runtime health, clean-room installation and technology
+  contract checks passed with no blockers.
+- The public AI release gate passed against the actual stable Federation lock,
+  package-owned 2.4.1 bootstrap baseline and exact canonical skill revision.
 - The action-gate report
   `source/output/action-gates/action-gate-report-20260830222205.json` has no
   blocking finding. Its remaining warnings concern Federation graph schema
@@ -52,7 +50,7 @@ responsive-image geometry.
 ## Skill Sync Gate
 
 The canonical skill repository is clean and its `main` and `origin/main` both
-point to `59aa0d6a60727aaaa99cea738f82c41a31a4aadd`. That revision:
+point to `7c0ebc4b0982f2d2ccd75fb759d50042f5ef7b0c`. That revision:
 
 - discovers the exact project-local `vendor/bin/docara`;
 - reads `capabilities --json` instead of copying the product command registry;
@@ -65,11 +63,11 @@ No additional skill source change is required for the performance receipt:
 the receipt and its schema are discovered through the package capabilities
 contract.
 
-The currently installed Federation stable release still pins the Docara skill
-to `42b441cf70e7ba96185a591d88f723e595d36ceb`. Therefore a public Docara package
-release that exposes the new AI contract must fail closed until a separate
-Federation release atomically pins the exact canonical revision `59aa0d6...`.
-The stable release lock and installed runtime were not edited manually.
+Federation 9.9.3 now pins that exact revision, is installed atomically and has
+passed the full installed and clean-room verification with no blockers. Its
+stable GitHub Release is public. The Docara AI release gate consequently passes
+for the exact 2.4.1 bootstrap baseline, AI contract 1.1.0 and skill revision
+`7c0ebc4...`; no stable lock or installed runtime was edited manually.
 
 ## Human-centered simplicity review
 
@@ -111,9 +109,9 @@ traversal and link protections, exact skill revision binding and offline
 rollback remain protected because removing them would weaken correctness or
 recovery.
 
-Verdict: `PASS_WITH_NOTES` for the local Docara candidate. Public release is
-`BLOCKED` until the Federation stable release pins the verified canonical
-Docara skill revision.
+Verdict: `PASS` for the Docara 2.5.0 candidate. The former Federation binding
+blocker is resolved; package publication remains subject to the exact release
+tests, deterministic packaging and immutable tag checks.
 
 ## Preserved unrelated work
 
@@ -131,5 +129,7 @@ separate planned feature into the release candidate.
 
 ## Release boundary
 
-No push, tag, GitHub release, Composer publication, Federation stable-lock
-change, skill installation or public deployment is performed by this audit.
+Federation 9.9.3 binding, installation and publication were completed as a
+separate verified release. At this candidate checkpoint no Docara push, tag,
+GitHub release, Composer publication or public deployment had yet been
+performed.

@@ -1,5 +1,7 @@
 # Docara releases
 
+- [Docara 2.5.0](v2.5.0.md) — transactional project-local upgrades, generated
+  AI capabilities and deterministic static-site performance evidence.
 - [Docara 2.4.1](v2.4.1.md) — exact project-owned documentation contracts are
   compatible with the immutable bundled Framework runtime.
 

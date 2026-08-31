@@ -4,6 +4,8 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.5.0] - 2026-08-31
+
 ### Added
 
 - Project-local `upgrade` resolves and independently verifies a compatible
@@ -220,3 +222,6 @@ All notable changes to Docara are documented in this file.
 [2.1.0]: https://github.com/simai/docara/releases/tag/v2.1.0
 [2.2.0]: https://github.com/simai/docara/releases/tag/v2.2.0
 [2.3.0]: https://github.com/simai/docara/releases/tag/v2.3.0
+[2.4.0]: https://github.com/simai/docara/releases/tag/v2.4.0
+[2.4.1]: https://github.com/simai/docara/releases/tag/v2.4.1
+[2.5.0]: https://github.com/simai/docara/releases/tag/v2.5.0

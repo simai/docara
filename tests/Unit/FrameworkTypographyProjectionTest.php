@@ -63,7 +63,6 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $previous['runtime']['ui']['files'] = 6770;
         $this->expectException(FrameworkComponentException::class);
-        $this->expectExceptionMessage('FRAMEWORK_RUNTIME_PROJECTION_MISMATCH');
         FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
     }
 

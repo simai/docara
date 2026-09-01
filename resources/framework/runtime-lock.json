@@ -15,6 +15,12 @@
                 "runtime_projection_packet_sha256": "e6c8c03005b94497c02691ec9a49b23dd91421a0ed5816978a8b423636cf1fba",
                 "runtime_projection_files": 826,
                 "runtime_projection_manifest_sha256": "91b1fdad622c6c107a2f49a396f04bf8d4549e486e7df3edbc0b3eeaa16cf6b8"
+            },
+            {
+                "runtime_sha256": "e9a120f728e00ff8481835bdf457d1ccdf309233328cbca2a88dbd91315e1af3",
+                "runtime_projection_packet_sha256": "42228b12e7cf63930d3872977b0e3b8fb64d12ddb6261cb5574df6b1bb97b80c",
+                "runtime_projection_files": 840,
+                "runtime_projection_manifest_sha256": "dfd6221a7f4159c80aee96c34f4d57840fedd8a6b9aa1b78ad381d20ada097b1"
             }
         ],
         "superseded_typography_projections": [
@@ -29,16 +35,16 @@
         ]
     },
     "runtime": "simai-framework",
-    "pair_id": "sf-v5.5.0-286e48b8-23d00d92",
-    "bundle_id": "sf-v5.5.0-286e48b8-23d00d92-registry-707d0a3b-verified-release-artifact-v1",
+    "pair_id": "sf-v5.6.0-ce1735ef-23d00d92",
+    "bundle_id": "sf-v5.6.0-ce1735ef-23d00d92-registry-a6cb71d2-verified-release-artifact-v1",
     "publication_profile": "verified-release-artifact-v1",
-    "tag": "v5.5.0",
+    "tag": "v5.6.0",
     "ui": {
-        "tag": "v5.5.0",
-        "commit": "286e48b8ce2b8e765eb5794d74b711f5b8f78783",
+        "tag": "v5.6.0",
+        "commit": "ce1735ef3427723cdd356126e24d030272edae86",
         "tree": "distr",
         "mount": "ui",
-        "sha256": "cb00ed30c117e60353bb07644b83aa978391a2a2113842770751dd2df3e2e301",
+        "sha256": "9d5222cfbedb21231c24973d7bb2592522dcffb71899baac8b0c4c35cd276587",
         "files": 6773
     },
     "ui_smart": {
@@ -51,16 +57,16 @@
     },
     "framework_registry": {
         "schema_id": "simai.framework.contract-registry",
-        "compatibility_id": "sf-v5.5.0-286e48b8-23d00d92",
+        "compatibility_id": "sf-v5.6.0-ce1735ef-23d00d92",
         "profile": "plain-assets-v1",
         "relative_path": "contract/contracts/generated/framework-contract-registry.json",
-        "file_sha256": "707d0a3b661d1add375f522e6545bd43713718ff65d3b90236dde5ae38f1ad43",
+        "file_sha256": "a6cb71d24b85bd0d31104d6a82850c001ad591ef939724ac6142b933db729f6f",
         "source": {
-            "commit": "286e48b8ce2b8e765eb5794d74b711f5b8f78783",
+            "commit": "ce1735ef3427723cdd356126e24d030272edae86",
             "tree": "contracts/generated",
-            "tree_oid": "1b0e75b76af144d5e6807fcfe870df58f62348f8",
+            "tree_oid": "8341e27e918fa090d933e70350799a9d6c18d2c5",
             "mount": "contract",
-            "sha256": "073594a4721d48db235eaa2832b3d4c1c7f0982efa9210264fc41a6fdd975aad",
+            "sha256": "989697638cd850264d035c3ea4330a0633732859583146d8bcc11195f1135ba3",
             "files": 2
         }
     },

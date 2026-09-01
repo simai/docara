@@ -5,7 +5,7 @@ sites. It contains byte-identical copies of the accepted
 `larena/ui` manifests for `ui.alert` and `ui.button`, the exact accepted Simai
 Framework runtime lock and four locally projected Smart assets from the
 published Framework pair
-`ui@286e48b8ce2b8e765eb5794d74b711f5b8f78783` /
+`ui@ce1735ef3427723cdd356126e24d030272edae86` /
 `ui-smart@23d00d92346717b8f835297d142a14458f806602`:
 
 - `smart/alert/js/alert.js` —

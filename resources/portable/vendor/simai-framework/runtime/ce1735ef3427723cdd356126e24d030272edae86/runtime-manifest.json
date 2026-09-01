@@ -2,17 +2,17 @@
     "schema": "docara.framework_runtime_assets.v1",
     "source": {
         "provider": "simai/ui",
-        "revision": "286e48b8ce2b8e765eb5794d74b711f5b8f78783",
-        "tree_sha256": "cb00ed30c117e60353bb07644b83aa978391a2a2113842770751dd2df3e2e301"
+        "revision": "ce1735ef3427723cdd356126e24d030272edae86",
+        "tree_sha256": "9d5222cfbedb21231c24973d7bb2592522dcffb71899baac8b0c4c35cd276587"
     },
     "root": "distr",
-    "packet_sha256": "42228b12e7cf63930d3872977b0e3b8fb64d12ddb6261cb5574df6b1bb97b80c",
+    "packet_sha256": "4ecb5edbe459fec45f39a9e89b6ff85e41ee8b0ba04a92c7972ece1ff24430cd",
     "files": {
         "component/accordion/css/accordion.css": {
-            "sha256": "b8894f05362cfdb07c885314f6930af7712cd0f051c5bc7b86056f47354e16d9"
+            "sha256": "120f52ce2d0d7c5d824c31a4fbdb01c68ddcdde653e9a895b35d32ccb39f4009"
         },
         "component/accordion/js/accordion.js": {
-            "sha256": "c0035859cffc17e6df9a0d04492327697a8c1d47b0b9dd699ab808a922768bb3"
+            "sha256": "1ad4d42f170741d9a637a5440df95eb4cb3f24a5da97dcafe47bce5fd958a985"
         },
         "component/admin-menu/css/admin-menu.css": {
             "sha256": "593a361ba7577858e541d293445bb81e9e1129043c5b1829914b6dea73b38295"

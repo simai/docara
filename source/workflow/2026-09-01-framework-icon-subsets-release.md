@@ -1,7 +1,7 @@
 # Release workflow: universal Framework icon subsets
 
 Date: 2026-09-01
-Status: in-progress
+Status: completed
 Mode: product release across dependent repositories
 
 ## Goal
@@ -79,9 +79,9 @@ Explicitly excluded:
 | 2 | Commit/push `ui-builder` | repository checks, icon and reproducibility suites | completed |
 | 3 | Commit/push `ui-loader` | ESLint and runtime unit tests | completed |
 | 4 | Rebuild/release `ui` from exact source commits | two-wave build comparison, distribution audit, tag/release checks | completed |
-| 5 | Reproject, test, package and release Docara | PHPUnit, Composer/package/AI gates, two clean packages, docs build | in-progress |
-| 6 | Update and push `ui-doc` | dependency lock, documentation tracking, build, verify-static, browser smoke | planned |
-| 7 | Verify public refs and close evidence | remote commit/tag/release/package checks, rollback proof | planned |
+| 5 | Reproject, test, package and release Docara | PHPUnit, Composer/package/AI gates, two clean packages, docs build | completed |
+| 6 | Update and push `ui-doc` | dependency lock, documentation tracking, build, verify-static, browser smoke | completed |
+| 7 | Verify public refs and close evidence | remote commit/tag/release/package checks, rollback proof | completed |
 
 ## Rollback And Stop Conditions
 
@@ -114,9 +114,18 @@ blocker. `ui-builder` is published at `96b56d2a4e5b`, `ui-loader` at
 `a1f523bf43aa`, and the deterministic Framework distribution is published as
 immutable `v5.5.0` at `286e48b8ce2b`.
 
-Docara now projects that exact Framework release, preloads the 244,368-byte
-package-owned shell subset, retains exact local full-font fallbacks and admits
-the exact previous Framework 5.4.1 lock without editing the project file. The
-focused Framework and compatibility gates, the 128-page documentation build
-and `verify-static` are green. Next: finish the full PHPUnit/package/AI release
-audit, publish Docara, then update `ui-doc`.
+Docara 2.6.0 is published from immutable tag `v2.6.0` at
+`43db3aaa3cd8f9f335b2bd15896ac012c3719969`. Two independent clean checkouts
+produced the same verified release ZIP, and the GitHub asset is byte-identical
+to that candidate. The AI contract did not change and remains compatible with
+the exact Docara skill revision pinned by Federation 8.6.0.
+
+`ui-doc` is published at
+`c3e1717e4f448eb22176fb8f815f28350ee058a5`, pins Framework 5.5.0 and Docara
+2.6.0, and reports all 63 accepted component documentation entities current.
+Its post-commit production build, static verification, browser smoke and remote
+Quality workflow are green. The browser loaded the 244,368-byte initial subset,
+all visible icons resolved, and neither the full outlined fallback nor
+`icons.simai.io` was requested. The excluded View Transition and local graph
+files remain outside every release commit; no public documentation deployment
+or live icon-service switch was performed.

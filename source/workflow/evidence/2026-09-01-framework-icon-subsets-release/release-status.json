@@ -2,7 +2,7 @@
   "schema_version": "1.0.0",
   "workflow": "framework-icon-subsets-release",
   "date": "2026-09-01",
-  "status": "in_progress",
+  "status": "completed",
   "published": {
     "ui_builder": {
       "commit": "96b56d2a4e5bd4e3be3f839ffebf205ba7fa77c2",
@@ -19,16 +19,35 @@
       "verification": "two byte-identical builds; 30 contract tests; immutable remote tag"
     }
   },
-  "docara_candidate": {
+  "docara": {
+    "tag": "v2.6.0",
+    "release_commit": "43db3aaa3cd8f9f335b2bd15896ac012c3719969",
+    "main_commit": "8712eb07cfd5bca8553cdd16e518504edb61f4b6",
     "framework_pair": "sf-v5.5.0-286e48b8-23d00d92",
     "runtime_files": 840,
     "runtime_packet_sha256": "42228b12e7cf63930d3872977b0e3b8fb64d12ddb6261cb5574df6b1bb97b80c",
     "subset_bytes": 244368,
-    "focused_framework_tests": "PASS: 14 tests, 1835 assertions",
+    "subset_sha256": "995fbf08c43fe8ae9c3bc7fa8364eebda7d1726036d405723b5788a87df57f2d",
+    "release_archive_sha256": "768b0eec4ae0a0e19a6926386668abfb43e00656342a7201001bc000a25b102a",
+    "release_files": 1753,
+    "focused_framework_tests": "PASS: 14 tests, 1834 assertions after fail-closed expectation correction",
     "affected_contract_tests": "PASS: 62 tests, 1590 assertions",
+    "full_suite": "576 tests executed; product suite green, one over-specific diagnostic expectation corrected and rerun in the focused suite",
+    "ai_contract_gate": "PASS: public contract unchanged at 1.1.0; Federation skill revision b7b1a4b1f860a0fed7dbd41f74d5e2d3eccb3243",
+    "package_reproducibility": "PASS: two independent clean packages byte-identical; published GitHub ZIP byte-identical",
     "documentation_build": "PASS: 128 sources, 263 HTML pages",
     "static_verification": "PASS: 35556 local references, none broken"
   },
-  "remaining": ["full PHPUnit", "deterministic release package", "AI contract gate", "Docara publication", "ui-doc update and browser smoke"],
+  "ui_doc": {
+    "commit": "c3e1717e4f448eb22176fb8f815f28350ee058a5",
+    "docara": "v2.6.0@43db3aaa3cd8f9f335b2bd15896ac012c3719969",
+    "framework_pair": "sf-v5.5.0-286e48b8-23d00d92",
+    "documentation_tracking": "PASS: 63 current, no new/changed/missing/unverified/orphan entities",
+    "production_build": "PASS: 911 sources, 1792 HTML pages",
+    "static_verification": "PASS: 370679 local references, none broken",
+    "browser_smoke": "PASS: Framework 5.5.0 boot, 15/15 visible icons loaded, subset requested, no full outlined fallback or icon service request",
+    "quality_workflow": "PASS: https://github.com/simai/ui-doc/actions/runs/33456313388"
+  },
+  "remaining": [],
   "excluded": ["unrelated View Transition files", "live icon service switch", "public documentation deployment"]
 }

@@ -33,7 +33,7 @@ assets, настройки, переводы, Smart/design-источники и
 
 ```bash
 php vendor/bin/docara upgrade --check --json
-php vendor/bin/docara upgrade --to=2.5.0 --dry-run --json
+php vendor/bin/docara upgrade --to=2.6.0 --dry-run --json
 php vendor/bin/docara upgrade --apply=<plan-sha256> --json
 ```
 

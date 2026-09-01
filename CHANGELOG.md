@@ -4,6 +4,16 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.6.0] - 2026-09-01
+
+### Added
+
+- Production builds preload a package-owned, content-addressed Material
+  Symbols subset for the documentation shell and lazily fall back to the exact
+  local full font when previously unknown icons appear.
+- Framework build receipts and `verify-static` bind the icon subset manifest,
+  CSS, WOFF2, source font and fallback contract without a new project lock.
+
 ### Fixed
 
 - Pre-manifest projects with a project-local Composer runtime but no
@@ -232,3 +242,4 @@ All notable changes to Docara are documented in this file.
 [2.4.0]: https://github.com/simai/docara/releases/tag/v2.4.0
 [2.4.1]: https://github.com/simai/docara/releases/tag/v2.4.1
 [2.5.0]: https://github.com/simai/docara/releases/tag/v2.5.0
+[2.6.0]: https://github.com/simai/docara/releases/tag/v2.6.0

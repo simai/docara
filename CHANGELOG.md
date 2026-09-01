@@ -4,6 +4,17 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.6.1] - 2026-09-02
+
+### Changed
+
+- The package-owned SIMAI Framework runtime is updated to immutable `v5.6.0`,
+  including the accessible Accordion contract, independent/single-open modes
+  and filled, outline and flush surfaces.
+- Existing Docara projects pinned to the exact Framework 5.5.0 lock are
+  admitted through the bounded compatibility ledger and upgraded without
+  editing project-owned documentation or configuration.
+
 ## [2.6.0] - 2026-09-01
 
 ### Added
@@ -242,4 +253,5 @@ All notable changes to Docara are documented in this file.
 [2.4.0]: https://github.com/simai/docara/releases/tag/v2.4.0
 [2.4.1]: https://github.com/simai/docara/releases/tag/v2.4.1
 [2.5.0]: https://github.com/simai/docara/releases/tag/v2.5.0
+[2.6.1]: https://github.com/simai/docara/releases/tag/v2.6.1
 [2.6.0]: https://github.com/simai/docara/releases/tag/v2.6.0

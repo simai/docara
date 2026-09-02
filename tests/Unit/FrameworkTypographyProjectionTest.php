@@ -26,7 +26,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($project));
 
-        self::assertSame('sf-v5.6.0-ce1735ef-23d00d92', $repository->runtime()['pair_id']);
+        self::assertSame('sf-v5.6.1-34f5ff45-23d00d92', $repository->runtime()['pair_id']);
     }
 
     #[Test]
@@ -57,7 +57,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $previous['runtime_projection']['manifest']['sha256'] = 'dfd6221a7f4159c80aee96c34f4d57840fedd8a6b9aa1b78ad381d20ada097b1';
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
-        self::assertSame('sf-v5.6.0-ce1735ef-23d00d92', $repository->runtime()['pair_id']);
+        self::assertSame('sf-v5.6.1-34f5ff45-23d00d92', $repository->runtime()['pair_id']);
         self::assertSame(840, $repository->runtimeProjection()['files']);
         self::assertSame('sf-v5.5.0-286e48b8-23d00d92', $previous['runtime']['pair_id']);
 
@@ -189,7 +189,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertStringNotContainsString('.min.', $relativePath);
         }
         self::assertSame(
-            '4ecb5edbe459fec45f39a9e89b6ff85e41ee8b0ba04a92c7972ece1ff24430cd',
+            'ff712e595a9e95beefda72a9f7886f9e62c44c4492799f7a9be284024f05ade7',
             $runtime['packet_sha256'],
         );
         $coreLoader = $repository->bundledRuntimeAsset('core/js/core-loader.js');
@@ -199,7 +199,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         self::assertStringNotContainsString('cdn.jsdelivr.net', $assets['simai.framework.boot']['content']);
         foreach (['simai.framework.smart_base.js', 'simai.framework.core.js'] as $assetKey) {
             self::assertStringStartsWith('/_docara/vendor/simai-framework/runtime/', $assets[$assetKey]['url']);
-            self::assertSame('ce1735ef3427723cdd356126e24d030272edae86', $assets[$assetKey]['source_revision']);
+            self::assertSame('34f5ff453f324ce08d0a0b55e45fa4239a09f2b1', $assets[$assetKey]['source_revision']);
             self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $assets[$assetKey]['sha256']);
         }
         self::assertStringContainsString(
@@ -302,7 +302,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $nestedAssets['simai.framework.core.css']['url'],
         );
         self::assertStringStartsWith(
-            '/project~/docs/_docara/vendor/simai-framework/runtime/ce1735ef3427723cdd356126e24d030272edae86/distr/core/js/core.js?sf_v=',
+            '/project~/docs/_docara/vendor/simai-framework/runtime/34f5ff453f324ce08d0a0b55e45fa4239a09f2b1/distr/core/js/core.js?sf_v=',
             $nestedAssets['simai.framework.core.js']['url'],
         );
     }
@@ -350,7 +350,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
     {
         [$root, $lock] = $this->fixture();
         $core = $root . '/resources/portable/vendor/simai-framework/runtime/'
-            . 'ce1735ef3427723cdd356126e24d030272edae86/distr/core/js/core.js';
+            . '34f5ff453f324ce08d0a0b55e45fa4239a09f2b1/distr/core/js/core.js';
         file_put_contents($core, 'changed');
 
         try {
@@ -416,7 +416,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         foreach (['symlink', 'hardlink'] as $attack) {
             [$root, $lock] = $this->fixture();
             $core = $root . '/resources/portable/vendor/simai-framework/runtime/'
-                . 'ce1735ef3427723cdd356126e24d030272edae86/distr/core/js/core.js';
+                . '34f5ff453f324ce08d0a0b55e45fa4239a09f2b1/distr/core/js/core.js';
             $outside = $root . '/outside.js';
             file_put_contents($outside, file_get_contents($core));
             unlink($core);

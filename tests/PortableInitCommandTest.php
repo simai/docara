@@ -161,10 +161,10 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);
-        $this->assertSame('sf-v5.6.0-ce1735ef-23d00d92', $lock['runtime']['pair_id']);
-        $this->assertSame('ce1735ef3427723cdd356126e24d030272edae86', $lock['runtime']['ui']['commit']);
+        $this->assertSame('sf-v5.6.1-34f5ff45-23d00d92', $lock['runtime']['pair_id']);
+        $this->assertSame('34f5ff453f324ce08d0a0b55e45fa4239a09f2b1', $lock['runtime']['ui']['commit']);
         $this->assertSame('23d00d92346717b8f835297d142a14458f806602', $lock['runtime']['ui_smart']['commit']);
-        $this->assertSame('ce1735ef3427723cdd356126e24d030272edae86', $lock['runtime']['framework_registry']['source']['commit']);
+        $this->assertSame('34f5ff453f324ce08d0a0b55e45fa4239a09f2b1', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);
         $this->assertSame('ce04f11f88da1b7e1a4edffffd2937b9ea6f337c2f3f70937e45e80cc6616008', $lock['manifests']['ui.button']['sha256']);
         $this->assertSame('27c0393aa7b23318486bdc0008a349dfa7b95cc044ebde1cac92794065beeb75', $lock['manifests']['ui.alert']['sha256']);

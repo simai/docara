@@ -30,7 +30,7 @@ Application и schema registry; отдельного списка команд �
 ```bash
 php vendor/bin/docara upgrade
 php vendor/bin/docara upgrade --check --json
-php vendor/bin/docara upgrade --to=2.6.1 --dry-run --json
+php vendor/bin/docara upgrade --to=2.7.0 --dry-run --json
 php vendor/bin/docara upgrade --apply=<plan-sha256> --json
 php vendor/bin/docara upgrade --rollback=<id|latest> --json
 ```

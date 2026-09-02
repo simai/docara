@@ -4,6 +4,8 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.7.0] - 2026-09-02
+
 ### Added
 
 - Example previews use deterministic `auto` placement by default, with
@@ -18,6 +20,14 @@ All notable changes to Docara are documented in this file.
 - Result tabs expand sandboxed examples to their measured content height
   without nested scrollbars, an artificial height cap or a second shell
   animation that could temporarily change the available inline size.
+
+### Changed
+
+- The package-owned SIMAI Framework runtime is updated to immutable `v5.6.1`,
+  including base Accordion typography, keyboard-only visible focus, joined
+  focus geometry and the optional plus/minus indicator.
+- Projects pinned to the exact Framework 5.6.0 lock remain admitted while new
+  projects receive the 5.6.1 runtime and source-backed documentation contract.
 
 ## [2.6.1] - 2026-09-02
 
@@ -268,5 +278,6 @@ All notable changes to Docara are documented in this file.
 [2.4.0]: https://github.com/simai/docara/releases/tag/v2.4.0
 [2.4.1]: https://github.com/simai/docara/releases/tag/v2.4.1
 [2.5.0]: https://github.com/simai/docara/releases/tag/v2.5.0
+[2.7.0]: https://github.com/simai/docara/releases/tag/v2.7.0
 [2.6.1]: https://github.com/simai/docara/releases/tag/v2.6.1
 [2.6.0]: https://github.com/simai/docara/releases/tag/v2.6.0

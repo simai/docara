@@ -1,5 +1,7 @@
 # Docara releases
 
+- [Docara 2.7.0](v2.7.0.md) — automatic Example preview placement and exact
+  SIMAI Framework 5.6.1 runtime.
 - [Docara 2.6.1](v2.6.1.md) — exact SIMAI Framework 5.6.0 Accordion runtime
 - [Docara 2.6.0](v2.6.0.md) — local, content-addressed Framework icon subsets
   with exact offline fallbacks and static verification.

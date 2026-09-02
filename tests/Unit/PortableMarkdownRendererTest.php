@@ -1474,7 +1474,7 @@ MD);
     #[Test]
     public function source_directive_marker_count_is_bounded_before_extraction(): void
     {
-        $markdown = str_repeat(":::card\nBody\n:::\n", 65);
+        $markdown = str_repeat(":::card\nBody\n:::\n", 129);
 
         try {
             (new PortableMarkdownRenderer)->render($markdown);
@@ -1491,11 +1491,11 @@ MD);
         $framework = ":::ui.button\n{}\n:::\n";
         $cases = [
             [
-                str_repeat($portable, 32) . str_repeat($framework, 33),
+                str_repeat($portable, 64) . str_repeat($framework, 65),
                 'FRAMEWORK_DIRECTIVE_LIMIT_EXCEEDED',
             ],
             [
-                str_repeat($framework, 32) . str_repeat($portable, 33),
+                str_repeat($framework, 64) . str_repeat($portable, 65),
                 'MARKDOWN_BLOCK_LIMIT_EXCEEDED',
             ],
         ];

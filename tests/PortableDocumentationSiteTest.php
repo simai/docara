@@ -375,7 +375,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $firstFiles = $this->treeHashes($firstBuild);
         $secondFiles = $this->treeHashes($secondBuild);
-        self::assertCount(2166, $firstFiles);
+        self::assertCount(3848, $firstFiles);
         self::assertSame($firstFiles, $secondFiles);
         self::assertArrayHasKey('_docara/page-metadata.json', $firstFiles);
         self::assertArrayHasKey('.docara/examples.json', $firstFiles);

@@ -19,7 +19,7 @@ use League\CommonMark\Parser\MarkdownParser;
 
 final class CommonMarkInspector
 {
-    public const MAX_SOURCE_DIRECTIVE_MARKERS = 64;
+    public const MAX_SOURCE_DIRECTIVE_MARKERS = 128;
 
     private MarkdownParser $parser;
 

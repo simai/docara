@@ -20,6 +20,9 @@ All notable changes to Docara are documented in this file.
 - Result tabs expand sandboxed examples to their measured content height
   without nested scrollbars, an artificial height cap or a second shell
   animation that could temporarily change the available inline size.
+- Reference indexes may contain up to 128 bounded Docara and Smart directive
+  openings, so a complete component catalog is validated without weakening
+  the parser's source budget.
 
 ### Changed
 

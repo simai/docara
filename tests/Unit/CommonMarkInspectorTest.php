@@ -37,10 +37,10 @@ final class CommonMarkInspectorTest extends TestCase
         $portable = ":::card\nBody\n:::\n";
         $framework = ":::ui.button\n{}\n:::\n";
         $cases = [
-            [str_repeat($portable, 32) . str_repeat($framework, 33), DirectiveBlockStartParser::FRAMEWORK],
-            [str_repeat($framework, 32) . str_repeat($portable, 33), DirectiveBlockStartParser::PORTABLE],
-            [str_repeat($framework, 65), DirectiveBlockStartParser::FRAMEWORK],
-            [str_repeat($portable, 65), DirectiveBlockStartParser::PORTABLE],
+            [str_repeat($portable, 64) . str_repeat($framework, 65), DirectiveBlockStartParser::FRAMEWORK],
+            [str_repeat($framework, 64) . str_repeat($portable, 65), DirectiveBlockStartParser::PORTABLE],
+            [str_repeat($framework, 129), DirectiveBlockStartParser::FRAMEWORK],
+            [str_repeat($portable, 129), DirectiveBlockStartParser::PORTABLE],
         ];
 
         foreach ($cases as [$markdown, $expectedFamily]) {

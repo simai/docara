@@ -32,6 +32,9 @@ final class ProjectExampleRepository
     /** @var array<string,array<string,true>> */
     private array $consumers = [];
 
+    /** @var array<string,array<string,mixed>> */
+    private array $previews = [];
+
     public function __construct(
         private readonly string $root,
         private readonly string $baseUrl = '/',
@@ -75,6 +78,26 @@ final class ProjectExampleRepository
         return $assets;
     }
 
+    public function recordPreview(
+        string $id,
+        string $consumer,
+        string $requested,
+        string $resolved,
+        string $reason,
+        string $sourceSha256,
+    ): void {
+        $consumer = $this->relativeConsumer($consumer);
+        $key = $consumer . "\0" . $id;
+        $this->previews[$key] = [
+            'id' => $id,
+            'consumer' => $consumer,
+            'requested_preview' => $requested,
+            'resolved_preview' => $resolved,
+            'reason' => $reason,
+            'source_sha256' => $sourceSha256,
+        ];
+    }
+
     /** @param array<string,mixed>|null $existing */
     public function receipt(?array $existing = null, ?string $replacedConsumer = null): array
     {
@@ -94,6 +117,22 @@ final class ProjectExampleRepository
                 $consumerMap[$id][$consumer] = true;
             }
         }
+
+        $previews = [];
+        foreach (($existing['previews'] ?? []) as $preview) {
+            if (! is_array($preview)
+                || ! is_string($preview['id'] ?? null)
+                || ! is_string($preview['consumer'] ?? null)
+                || $preview['consumer'] === $replacedConsumer
+            ) {
+                continue;
+            }
+            $previews[$preview['consumer'] . "\0" . $preview['id']] = $preview;
+        }
+        foreach ($this->previews as $key => $preview) {
+            $previews[$key] = $preview;
+        }
+        ksort($previews, SORT_STRING);
 
         $ids = array_values(array_unique([...array_keys($consumerMap), ...array_keys($this->consumers)]));
         sort($ids, SORT_STRING);
@@ -121,7 +160,11 @@ final class ProjectExampleRepository
                 'consumers' => $consumers,
             ];
         }
-        $core = ['schema' => 'docara.example_receipt.v1', 'examples' => $records];
+        $core = [
+            'schema' => 'docara.example_receipt.v1',
+            'examples' => $records,
+            'previews' => array_values($previews),
+        ];
 
         return $core + ['content_sha256' => hash('sha256', CanonicalJson::encode($core))];
     }
@@ -157,6 +200,17 @@ final class ProjectExampleRepository
         }
 
         return $id;
+    }
+
+    private function relativeConsumer(string $consumer): string
+    {
+        $relative = str_replace('\\', '/', $consumer);
+        $prefix = rtrim(FilesystemPath::normalize($this->root), '/') . '/';
+        if (str_starts_with(FilesystemPath::normalize($consumer), $prefix)) {
+            $relative = substr(FilesystemPath::normalize($consumer), strlen($prefix));
+        }
+
+        return $relative;
     }
 
     /** @return array<string,mixed> */

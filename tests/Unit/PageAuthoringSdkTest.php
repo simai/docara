@@ -49,6 +49,25 @@ final class PageAuthoringSdkTest extends TestCase
     }
 
     #[Test]
+    public function page_inspection_reports_the_resolved_example_preview_contract(): void
+    {
+        $this->filesystem->put($this->tmpPath('content/ru/preview-mode.md'), <<<'MD'
+# Preview mode
+
+:::example {label="Result"}
+```html
+<strong>Inline result</strong>
+```
+:::
+MD);
+
+        $inspection = (new DiscoveryService)->inspect($this->tmp, 'page', '/ru/preview-mode/')->toArray()['data'];
+        self::assertSame('auto', $inspection['examples'][0]['requested_preview']);
+        self::assertSame('inline', $inspection['examples'][0]['resolved_preview']);
+        self::assertSame('admitted_html', $inspection['examples'][0]['reason']);
+    }
+
+    #[Test]
     public function page_scaffold_is_create_only_and_hash_bound(): void
     {
         $service = new ScaffoldService;

@@ -20,6 +20,12 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('exampleFontAsset', $shell);
         self::assertStringContainsString('simai.framework.icon_font.css', $shell);
         self::assertStringContainsString('inlineStyles=styles', $shell);
+        self::assertStringContainsString('function exampleDesignTokens()', $shell);
+        self::assertStringContainsString('function collectExampleTokenNames(rules,names)', $shell);
+        self::assertStringContainsString("names=new Set(['--sf-text--size','--sf-text--height'])", $shell);
+        self::assertStringContainsString('collectExampleTokenNames(sheet.cssRules,names)', $shell);
+        self::assertStringContainsString('designTokens:exampleDesignTokens()', $shell);
+        self::assertStringContainsString('rootFontSize:getComputedStyle(document.documentElement).fontSize', $shell);
         self::assertStringContainsString('Array.isArray(data.scripts)?data.scripts:[]', $renderer);
         self::assertStringContainsString('Array.isArray(data.inlineScripts)?data.inlineScripts:[]', $renderer);
         self::assertStringContainsString('Array.isArray(data.inlineStyles)?data.inlineStyles:[]', $renderer);
@@ -33,11 +39,19 @@ final class ExampleRuntimeContractTest extends TestCase
 
     public function test_example_height_measures_content_instead_of_its_current_viewport(): void
     {
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
         $renderer = (string) file_get_contents(dirname(__DIR__, 2) . '/src/PortableSite/PortableMarkdownRenderer.php');
 
+        self::assertStringContainsString('scrolling="no"', $renderer);
         self::assertStringContainsString("document.documentElement.style.minHeight='0'", $renderer);
         self::assertStringContainsString("body.style.minHeight='0'", $renderer);
+        self::assertStringContainsString("document.documentElement.style.overflow='hidden'", $renderer);
+        self::assertStringContainsString("body.style.overflow='hidden'", $renderer);
+        self::assertStringContainsString('function applyDesignEnvironment(data)', $renderer);
+        self::assertStringContainsString('Object.keys(tokens).sort().slice(0,4096)', $renderer);
         self::assertStringContainsString('contentBottom-contentTop', $renderer);
         self::assertStringNotContainsString('body.scrollHeight,root.scrollHeight', $renderer);
+        self::assertStringContainsString("frame.style.blockSize=Math.max(32,Math.ceil(height))+'px'", $shell);
+        self::assertStringNotContainsString('Math.min(4096', $shell);
     }
 }

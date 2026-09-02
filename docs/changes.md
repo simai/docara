@@ -13,6 +13,8 @@ Docara 2 provides:
 - deterministic build receipts and fail-closed static verification;
 - safe starter updates with explicit ownership rules;
 - reusable project examples with dependency and asset receipts;
+- deterministic automatic Example placement with explicit inline and sandbox
+  modes recorded in build receipts and page inspection;
 - non-blocking translation freshness reports and hash-bound review acceptance;
 - optional source-backed documentation status for pages and examples, neutral
   project contracts and stale-safe review acceptance shared by CLI and MCP.

@@ -320,6 +320,32 @@
       return{content:result,fonts:fonts};
     });
   }
+  function collectExampleTokenNames(rules,names){
+    Array.from(rules||[]).forEach(function(rule){
+      if(rule.style){
+        for(var index=0;index<rule.style.length;index++){
+          var name=rule.style[index];
+          if(typeof name==='string'&&name.indexOf('--sf-')===0&&/^--sf-[a-z0-9_\\/.-]+$/.test(name)){names.add(name)}
+        }
+      }
+      try{if(rule.cssRules){collectExampleTokenNames(rule.cssRules,names)}}catch(error){}
+    });
+  }
+  function exampleDesignTokens(){
+    var computed=getComputedStyle(document.documentElement),names=new Set(['--sf-text--size','--sf-text--height']);
+    for(var index=0;index<computed.length;index++){
+      var name=computed[index];
+      if(typeof name==='string'&&name.indexOf('--sf-')===0&&/^--sf-[a-z0-9_\\/.-]+$/.test(name)){names.add(name)}
+    }
+    Array.from(document.styleSheets).forEach(function(sheet){try{collectExampleTokenNames(sheet.cssRules,names)}catch(error){}});
+    var tokens=Object.create(null);
+    Array.from(names).sort().slice(0,4096).forEach(function(name){
+      var value=computed.getPropertyValue(name).trim();
+      if(!value||value.length>512||/url\s*\(|@import|expression\s*\(/i.test(value))return;
+      tokens[name]=value;
+    });
+    return tokens;
+  }
   function exampleEnvironment(frame){
     var source=frame.getAttribute('srcdoc')||'',needsIcons=source.indexOf('sf-icon')!==-1;
     var inlineStyles=needsIcons?Array.from(document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_font.css"]')):[];
@@ -331,7 +357,9 @@
       scripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset^="simai.framework.preloaded.component."][src]')).map(function(script){return script.src}),
       inlineScripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset="simai.framework.icon_font.ready"]:not([src])')).map(function(script){return{key:script.getAttribute('data-docara-framework-asset'),content:script.textContent||''}}),
       theme:document.documentElement.classList.contains('theme-dark')?'dark':'light',
-      direction:document.documentElement.dir==='rtl'?'rtl':'ltr'
+      direction:document.documentElement.dir==='rtl'?'rtl':'ltr',
+      rootFontSize:getComputedStyle(document.documentElement).fontSize,
+      designTokens:exampleDesignTokens()
     };
     return Promise.all(inlineStyles.map(function(style){return portableExampleStyle(style.textContent||'').then(function(portable){
       return{key:style.getAttribute('data-docara-framework-asset')||'',content:portable.content,fonts:portable.fonts};
@@ -348,7 +376,7 @@
     var frame=docaraExampleFrames.find(function(candidate){return candidate.contentWindow===event.source})||null;
     var height=Number(event.data.height);
     if(!frame||!Number.isFinite(height))return;
-    frame.style.blockSize=Math.max(32,Math.min(4096,Math.ceil(height)))+'px';
+    frame.style.blockSize=Math.max(32,Math.ceil(height))+'px';
   });
   docaraExampleFrames.forEach(function(frame){
     frame.addEventListener('load',function(){requestExampleHeight(frame)});
@@ -356,6 +384,17 @@
   });
   if(docaraExampleFrames.length&&typeof MutationObserver==='function'){
     new MutationObserver(function(){docaraExampleFrames.forEach(requestExampleHeight)}).observe(document.documentElement,{attributes:true,attributeFilter:['class','dir']});
+  }
+  if(docaraExampleFrames.length){
+    var exampleEnvironmentScheduled=false;
+    addEventListener('resize',function(){
+      if(exampleEnvironmentScheduled)return;
+      exampleEnvironmentScheduled=true;
+      requestAnimationFrame(function(){
+        exampleEnvironmentScheduled=false;
+        docaraExampleFrames.forEach(requestExampleHeight);
+      });
+    });
   }
   docaraExamples.forEach(function(example){
     function owned(selector){

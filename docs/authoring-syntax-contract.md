@@ -86,6 +86,16 @@ Markdown cannot be mixed with HTML/CSS/JavaScript in one example. Browser
 examples require HTML. Unknown source types, duplicate sources and additional
 free text fail closed.
 
+`preview=auto` is the default. Typed Markdown and admitted HTML-only examples
+render inline; reusable examples and examples containing CSS, JavaScript or
+non-admitted HTML render in a sandboxed iframe. `preview=sandbox` forces
+isolation. `preview=inline` requests direct rendering but still fails closed
+when the inline policy requires isolation. The build receipt and page
+inspection expose the requested mode, resolved mode and decision reason.
+Sandboxed results expand to their measured content height without nested
+scrolling or a second shell height animation; the documentation page owns
+vertical scrolling.
+
 ## Parameters and naming
 
 All components use the same attribute grammar:

@@ -35,6 +35,7 @@ use Simai\Docara\Markdown\DirectiveBlockStartParser;
 use Simai\Docara\Markdown\DirectiveLimitExceeded;
 use Simai\Docara\Markdown\DirectiveOpeningMatcher;
 use Simai\Docara\Markdown\InlineComponentRenderer;
+use Simai\Docara\Portable\CanonicalJson;
 use Simai\Docara\Portable\PortableConfigurationException;
 
 final class PortableMarkdownRenderer
@@ -61,6 +62,8 @@ final class PortableMarkdownRenderer
 
     private ?ProjectExampleRepository $projectExamples;
 
+    private ExamplePreviewPolicy $examplePreviewPolicy;
+
     public function __construct(
         ?PortableMarkdownProfile $profile = null,
         ?TypedComponentDefinitionRepository $definitions = null,
@@ -86,6 +89,7 @@ final class PortableMarkdownRenderer
         $this->attributes = new AuthoringAttributeParser;
         $this->examples = new PortableExampleRenderer;
         $this->projectExamples = $projectExamples;
+        $this->examplePreviewPolicy = new ExamplePreviewPolicy;
     }
 
     public function componentGateway(): SmartComponentGateway
@@ -656,7 +660,7 @@ final class PortableMarkdownRenderer
         ?string $sourceRoot,
         ?string $sourceFile,
     ): string {
-        $this->assertAttributes($attributes, ['id', 'label'], 'example');
+        $this->assertAttributes($attributes, ['id', 'label', 'preview'], 'example');
         $label = trim($attributes['label'] ?? 'Example');
         if ($label === '') {
             throw new PortableConfigurationException(
@@ -666,6 +670,7 @@ final class PortableMarkdownRenderer
         }
 
         $exampleId = trim($attributes['id'] ?? '');
+        $requestedPreview = trim($attributes['preview'] ?? 'auto');
         $baseHref = null;
         if ($exampleId !== '') {
             if (trim($markdown) !== '') {
@@ -700,9 +705,30 @@ final class PortableMarkdownRenderer
             );
         }
 
-        $preview = $hasMarkdown
+        $previewDecision = $this->examplePreviewPolicy->resolve($sources, $exampleId !== '', $requestedPreview);
+        $renderId = 'markdown-example-' . substr(hash('sha256', $exampleId !== '' ? $exampleId : $markdown), 0, 12);
+        if ($this->projectExamples instanceof ProjectExampleRepository && is_string($sourceFile) && $sourceFile !== '') {
+            $hashSources = $sources;
+            ksort($hashSources, SORT_STRING);
+            $this->projectExamples->recordPreview(
+                $renderId,
+                $sourceFile,
+                $previewDecision['requested'],
+                $previewDecision['resolved'],
+                $previewDecision['reason'],
+                hash('sha256', CanonicalJson::encode($hashSources)),
+            );
+        }
+
+        $compiledPreview = $hasMarkdown
             ? $this->renderCompiled($sources['Markdown'], $sourceRoot, $sourceFile)
-            : $this->renderExampleDocument($sources, $baseHref);
+            : $sources['HTML'];
+        $preview = $previewDecision['resolved'] === 'inline'
+            ? '<div data-docara-example-inline-preview>' . $compiledPreview . '</div>'
+            : $this->renderExampleDocument(
+                $hasMarkdown ? ['HTML' => $compiledPreview] : $sources,
+                $baseHref,
+            );
         $renderedSources = [];
         foreach ($sources as $language => $source) {
             $renderedSources[$language] = $this->renderCompiled(
@@ -712,13 +738,81 @@ final class PortableMarkdownRenderer
         }
 
         return $this->examples->render(
-            id: 'markdown-example-' . substr(hash('sha256', $exampleId !== '' ? $exampleId : $markdown), 0, 12),
+            id: $renderId,
             preview: $preview,
             sources: $renderedSources,
             exampleLabel: $label,
             copyLabel: 'Copy code',
             copiedLabel: 'Code copied',
+            requestedPreview: $previewDecision['requested'],
+            resolvedPreview: $previewDecision['resolved'],
+            previewReason: $previewDecision['reason'],
         );
+    }
+
+    /** @return list<array{id:string,mode:string,requested_preview:string,resolved_preview:string,reason:string}> */
+    public function examplePreviews(string $markdown, ?string $sourceRoot = null, ?string $sourceFile = null): array
+    {
+        $inspection = $this->inspector->inspectDirectives($markdown, DirectiveBlockStartParser::PORTABLE);
+        $previews = [];
+        foreach ($inspection['directives'] as $directive) {
+            if (($directive['name'] ?? null) !== 'example') {
+                continue;
+            }
+            $attributes = $this->attributes->parse((string) ($directive['attributes'] ?? ''), 'example');
+            $this->assertAttributes($attributes, ['id', 'label', 'preview'], 'example');
+            if (trim($attributes['label'] ?? 'Example') === '') {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_EXAMPLE_LABEL_INVALID',
+                    'An example label must contain visible text.',
+                );
+            }
+            $exampleId = trim($attributes['id'] ?? '');
+            if ($exampleId !== '') {
+                if (trim((string) ($directive['body'] ?? '')) !== '') {
+                    throw new PortableConfigurationException(
+                        'MARKDOWN_EXAMPLE_ID_BODY_CONFLICT',
+                        'An id-based example cannot contain inline fenced sources.',
+                    );
+                }
+                if (! $this->projectExamples instanceof ProjectExampleRepository) {
+                    throw new PortableConfigurationException(
+                        'MARKDOWN_EXAMPLE_PROJECT_CONTEXT_REQUIRED',
+                        'An id-based example requires a project build context.',
+                    );
+                }
+                $sources = $this->projectExamples->load($exampleId, $sourceFile)['sources'];
+            } else {
+                $sources = $this->exampleSources((string) ($directive['body'] ?? ''));
+            }
+            $hasMarkdown = isset($sources['Markdown']);
+            if ($hasMarkdown && count($sources) !== 1) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_EXAMPLE_SOURCE_COMBINATION_INVALID',
+                    'A Markdown example cannot be combined with HTML, CSS or JavaScript sources.',
+                );
+            }
+            if (! $hasMarkdown && ! isset($sources['HTML'])) {
+                throw new PortableConfigurationException(
+                    'MARKDOWN_EXAMPLE_HTML_REQUIRED',
+                    'An HTML/CSS/JavaScript example must include an HTML source.',
+                );
+            }
+            $decision = $this->examplePreviewPolicy->resolve(
+                $sources,
+                $exampleId !== '',
+                trim($attributes['preview'] ?? 'auto'),
+            );
+            $previews[] = [
+                'id' => $exampleId,
+                'mode' => $exampleId === '' ? 'inline' : 'reusable',
+                'requested_preview' => $decision['requested'],
+                'resolved_preview' => $decision['resolved'],
+                'reason' => $decision['reason'],
+            ];
+        }
+
+        return $previews;
     }
 
     private function sourceFence(string $source): string
@@ -793,7 +887,7 @@ final class PortableMarkdownRenderer
             . $this->exampleAutoHeightRuntime()
             . '</body></html>';
 
-        return '<iframe title="Example" data-docara-example-frame data-sf-observer="ignore" class="w-full border-0 bg-surface-0" sandbox="allow-scripts" srcdoc="'
+        return '<iframe title="Example" data-docara-example-frame data-sf-observer="ignore" class="w-full border-0 bg-surface-0" sandbox="allow-scripts" scrolling="no" srcdoc="'
             . $this->escapeHtml($document) . '"></iframe>';
     }
 
@@ -802,12 +896,24 @@ final class PortableMarkdownRenderer
         return <<<'HTML'
 <script data-docara-example-resize>(function(){
 var body=document.body,lastHeight=0,scheduled=false;
+document.documentElement.style.overflow='hidden';
+body.style.overflow='hidden';
+function applyDesignEnvironment(data){
+var root=document.documentElement,tokens=data&&data.designTokens&&typeof data.designTokens==='object'?data.designTokens:{},names=Object.keys(tokens).sort().slice(0,4096);
+names.forEach(function(name){
+var value=tokens[name];
+if(!/^--sf-[a-z0-9_\\/.-]+$/.test(name)||typeof value!=='string'||value===''||value.length>512||/url\s*\(|@import|expression\s*\(/i.test(value))return;
+root.style.setProperty(name,value);
+});
+if(typeof data.rootFontSize==='string'&&/^\d+(?:\.\d+)?px$/.test(data.rootFontSize)){root.style.fontSize=data.rootFontSize}
+/* Sandboxed srcdoc keeps local fallback families while inheriting semantic sizes, spacing, radii and colors. */
+root.style.setProperty('--sf-text--family','Arial,sans-serif');
+root.style.setProperty('--sf-heading--family','Arial,sans-serif');
+root.style.setProperty('--sf-display--family','Arial,sans-serif');
+}
 function applyEnvironment(data){
 var theme=data.theme==='dark'?'dark':'light',direction=data.direction==='rtl'?'rtl':'ltr';
-/* Sandboxed srcdoc has an opaque origin, so it must not request parent webfonts. */
-document.documentElement.style.setProperty('--sf-text--family','Arial,sans-serif');
-document.documentElement.style.setProperty('--sf-heading--family','Arial,sans-serif');
-document.documentElement.style.setProperty('--sf-display--family','Arial,sans-serif');
+applyDesignEnvironment(data);
 document.documentElement.style.minHeight='0';
 document.documentElement.style.height='auto';
 body.style.minHeight='0';
@@ -849,6 +955,7 @@ style.setAttribute('data-docara-example-framework-inline-style',item.key);
 document.head.appendChild(style);
 currentInlineStyles.push(item.key);
 });
+applyDesignEnvironment(data);
 var currentInline=Array.from(document.querySelectorAll('script[data-docara-example-framework-inline-script]')).map(function(script){return script.getAttribute('data-docara-example-framework-inline-script')});
 (Array.isArray(data.inlineScripts)?data.inlineScripts:[]).forEach(function(item){
 if(!item||typeof item.key!=='string'||typeof item.content!=='string'||item.content===''||currentInline.indexOf(item.key)!==-1)return;

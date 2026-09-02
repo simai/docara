@@ -18,6 +18,9 @@ final class PortableExampleRenderer
         string $copyLabel,
         string $copiedLabel,
         string $legacyComponentId = '',
+        string $requestedPreview = 'auto',
+        string $resolvedPreview = 'inline',
+        string $previewReason = 'typed_markdown',
     ): string {
         $safeId = preg_replace('/[^a-z0-9_-]+/i', '-', $id) ?: 'example';
         $previewTabId = $safeId . '-tab-example';
@@ -52,6 +55,9 @@ final class PortableExampleRenderer
         }
 
         return '<section data-docara-example="' . $this->escape($safeId)
+            . '" data-docara-example-preview-requested="' . $this->escape($requestedPreview)
+            . '" data-docara-example-preview-resolved="' . $this->escape($resolvedPreview)
+            . '" data-docara-example-preview-reason="' . $this->escape($previewReason)
             . '" data-docara-outline-exclude data-source-active="false" class="docara-example-preview"'
             . ($legacyComponentId === '' ? '' : ' data-docara-component-example="' . $this->escape($legacyComponentId) . '"')
             . '><div class="docara-example-preview__header">'

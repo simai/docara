@@ -132,8 +132,8 @@ sf-alert,sf-button{display:block}
 .docara-example-preview__panel>:last-child{margin-block-end:0}
 .docara-example-preview__panel--source{padding:0}
 .docara-example-preview__panel.is-active{display:block}
-.docara-example-preview iframe{display:block;inline-size:100%;border:0;background:var(--sf-surface-0)}
-.docara-example-preview iframe[data-docara-example-frame]{block-size:12rem;transition:block-size 180ms ease}
+.docara-example-preview iframe{display:block;inline-size:100%;border:0;overflow:hidden;background:var(--sf-surface-0)}
+.docara-example-preview iframe[data-docara-example-frame]{block-size:12rem}
 .docara-example-preview iframe:not([data-docara-example-frame]){block-size:32rem}
 .docara-example-preview[data-preview-size="compact"] iframe:not([data-docara-example-frame]){block-size:22rem}
 .docara-example-preview[data-preview-size="tall"] iframe:not([data-docara-example-frame]){block-size:44rem}

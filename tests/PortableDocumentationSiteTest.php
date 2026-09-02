@@ -199,9 +199,15 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertStringContainsString('localizeCodeCopy', $shellJs);
         self::assertStringContainsString('showCopyState(false);', $shellJs);
         self::assertStringContainsString("event.data.type!=='docara:example-height'", $shellJs);
-        self::assertStringContainsString("frame.style.blockSize=Math.max(32,Math.min(4096,Math.ceil(height)))+'px'", $shellJs);
+        self::assertStringContainsString("frame.style.blockSize=Math.max(32,Math.ceil(height))+'px'", $shellJs);
         self::assertStringContainsString('link[data-docara-framework-asset][rel="stylesheet"]', $shellJs);
         self::assertStringContainsString('exampleEnvironment(frame).then(function(environment)', $shellJs);
+        self::assertStringContainsString('function exampleDesignTokens()', $shellJs);
+        self::assertStringContainsString('function collectExampleTokenNames(rules,names)', $shellJs);
+        self::assertStringContainsString('collectExampleTokenNames(sheet.cssRules,names)', $shellJs);
+        self::assertStringContainsString('designTokens:exampleDesignTokens()', $shellJs);
+        self::assertStringContainsString('rootFontSize:getComputedStyle(document.documentElement).fontSize', $shellJs);
+        self::assertStringContainsString("addEventListener('resize',function()", $shellJs);
         self::assertStringContainsString("Object.assign({type:'docara:example-measure'},environment)", $shellJs);
         self::assertStringContainsString('link[data-docara-declarative-shell-style][rel="stylesheet"]', $shellJs);
         self::assertSame(1, substr_count($catalogIndex, 'class="docara-navigation docara-header-navigation"'));

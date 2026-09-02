@@ -39,6 +39,13 @@ final class PortableSiteBuilderTest extends TestCase
         $receipt = $this->jsonFile($destination . '/.docara/examples.json');
         self::assertSame('utilities/card', $receipt['examples'][0]['id']);
         self::assertSame(['content/ru/index.md'], $receipt['examples'][0]['consumers']);
+        $preview = array_values(array_filter(
+            $receipt['previews'],
+            static fn (array $record): bool => $record['consumer'] === 'content/ru/index.md',
+        ))[0];
+        self::assertSame('auto', $preview['requested_preview']);
+        self::assertSame('sandbox', $preview['resolved_preview']);
+        self::assertSame('reusable_example', $preview['reason']);
         self::assertFileExists($destination . '/_docara/examples/utilities/card/assets/icon.svg');
         self::assertStringContainsString('data-docara-example-tab="html"', (string) file_get_contents($destination . '/ru/index.html'));
 
@@ -655,7 +662,9 @@ MD);
         self::assertStringContainsString('.docara-example-preview__panel>:last-child{margin-block-end:0}', $shellCss);
         self::assertStringContainsString('.docara-example-preview__panel--source{padding:0}', $shellCss);
         self::assertStringContainsString('.docara-example-preview__panel.is-active{display:block}', $shellCss);
-        self::assertStringContainsString('.docara-example-preview iframe[data-docara-example-frame]{block-size:12rem;transition:block-size 180ms ease}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview iframe{display:block;inline-size:100%;border:0;overflow:hidden;background:var(--sf-surface-0)}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview iframe[data-docara-example-frame]{block-size:12rem}', $shellCss);
+        self::assertStringNotContainsString('iframe[data-docara-example-frame]{block-size:12rem;transition:', $shellCss);
         self::assertStringContainsString('.docara-example-preview iframe:not([data-docara-example-frame]){block-size:32rem}', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll{box-sizing:border-box;block-size:auto;margin:0', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll code{background:transparent}', $shellCss);

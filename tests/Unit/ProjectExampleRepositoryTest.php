@@ -43,6 +43,10 @@ final class ProjectExampleRepositoryTest extends TestCase
         $receipt = $repository->receipt();
         self::assertSame('docara.example_receipt.v1', $receipt['schema']);
         self::assertSame(['content/ru/page.md'], $receipt['examples'][0]['consumers']);
+        self::assertSame('auto', $receipt['previews'][0]['requested_preview']);
+        self::assertSame('sandbox', $receipt['previews'][0]['resolved_preview']);
+        self::assertSame('reusable_example', $receipt['previews'][0]['reason']);
+        self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $receipt['previews'][0]['source_sha256']);
         self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $receipt['content_sha256']);
     }
 

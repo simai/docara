@@ -49,7 +49,7 @@ final class PortableMarkdownRendererTest extends TestCase
 ```
 :::
 
-:::example {label=Source}
+:::example {label=Source preview=sandbox}
 ```html
 <strong>Safe source</strong>
 ```
@@ -57,6 +57,71 @@ final class PortableMarkdownRendererTest extends TestCase
 MD);
         self::assertStringContainsString('sandbox srcdoc=', $sandboxed);
         self::assertStringContainsString('sandbox="allow-scripts"', $sandboxed);
+    }
+
+    #[Test]
+    public function example_preview_mode_is_selected_deterministically_and_can_be_overridden_safely(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+
+        $automatic = $renderer->render(<<<'MD'
+:::example {label="Safe HTML"}
+```html
+<button class="sf-button" type="button">Continue</button>
+```
+:::
+MD);
+        self::assertStringContainsString('data-docara-example-preview-requested="auto"', $automatic);
+        self::assertStringContainsString('data-docara-example-preview-resolved="inline"', $automatic);
+        self::assertStringContainsString('data-docara-example-preview-reason="admitted_html"', $automatic);
+        self::assertStringContainsString('data-docara-example-inline-preview', $automatic);
+        self::assertStringNotContainsString('data-docara-example-frame', $automatic);
+
+        $isolated = $renderer->render(<<<'MD'
+:::example {label="Interactive"}
+```html
+<button type="button">Run</button>
+```
+```javascript
+document.querySelector('button').dataset.ready = 'true';
+```
+:::
+MD);
+        self::assertStringContainsString('data-docara-example-preview-resolved="sandbox"', $isolated);
+        self::assertStringContainsString('data-docara-example-preview-reason="javascript"', $isolated);
+        self::assertStringContainsString('data-docara-example-frame', $isolated);
+
+        $forced = $renderer->render(<<<'MD'
+:::example {label="Isolated HTML" preview=sandbox}
+```html
+<strong>Safe source</strong>
+```
+:::
+MD);
+        self::assertStringContainsString('data-docara-example-preview-requested="sandbox"', $forced);
+        self::assertStringContainsString('data-docara-example-preview-reason="forced_sandbox"', $forced);
+        self::assertStringContainsString('data-docara-example-frame', $forced);
+    }
+
+    #[Test]
+    public function explicit_inline_example_fails_closed_when_isolation_is_required(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        foreach ([
+            ":::example {preview=inline}\n```html\n<button id=unsafe>Run</button>\n```\n:::\n",
+            ":::example {preview=inline}\n```html\n<button>Run</button>\n```\n```css\nbutton { color: red; }\n```\n:::\n",
+            ":::example {preview=unknown}\n```html\n<strong>Example</strong>\n```\n:::\n",
+        ] as $index => $markdown) {
+            try {
+                $renderer->render($markdown);
+                self::fail('An inadmissible preview mode unexpectedly rendered.');
+            } catch (PortableConfigurationException $exception) {
+                self::assertSame(
+                    $index === 2 ? 'MARKDOWN_EXAMPLE_PREVIEW_INVALID' : 'MARKDOWN_EXAMPLE_INLINE_NOT_ADMITTED',
+                    $exception->errorCode,
+                );
+            }
+        }
     }
 
     #[Test]
@@ -191,6 +256,11 @@ MD);
         self::assertStringContainsString('lastHeight=-1;', $web);
         self::assertStringContainsString('contentBottom-contentTop', $web);
         self::assertStringContainsString('document.documentElement.style.minHeight=&apos;0&apos;', $web);
+        self::assertStringContainsString('document.documentElement.style.overflow=&apos;hidden&apos;', $web);
+        self::assertStringContainsString('body.style.overflow=&apos;hidden&apos;', $web);
+        self::assertStringContainsString('function applyDesignEnvironment(data)', $web);
+        self::assertStringContainsString('data&amp;&amp;data.designTokens', $web);
+        self::assertStringContainsString('root.style.fontSize=data.rootFontSize', $web);
         self::assertStringNotContainsString('body.scrollHeight,root.scrollHeight', $web);
         self::assertStringContainsString('function measureSettled()', $web);
         self::assertStringContainsString('link.setAttribute(&apos;data-docara-example-framework-style&apos;,&apos;&apos;)', $web);

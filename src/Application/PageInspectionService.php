@@ -18,6 +18,7 @@ use Simai\Docara\I18n\LocaleRoutingPolicy;
 use Simai\Docara\I18n\LocaleUrlProjector;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\PortableConfigurationLoader;
+use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\ProjectExampleRepository;
 use Simai\Docara\Smart\Runtime\ProjectSmartRuntime;
 
@@ -107,7 +108,7 @@ final readonly class PageInspectionService
                 $contract->present || isset($document->metadata['profile']),
             );
             $compiler->compile($document->markdown, $source->path);
-            foreach ($this->examples($document->markdown) as $example) {
+            foreach ($this->examples($runtime, $source, $document->markdown) as $example) {
                 if ($example['mode'] === 'reusable') {
                     $exampleRepository->load($example['id'], $source->path);
                 }
@@ -163,7 +164,7 @@ final readonly class PageInspectionService
         $diagnostics = $this->profileDiagnostics($resolution['profile'], $facts, $contract->present || isset($document->metadata['profile']));
         $route = $this->publicRoute($runtime, $source);
         $components = $this->components($document->markdown);
-        $examples = $this->examples($document->markdown);
+        $examples = $this->examples($runtime, $source, $document->markdown);
         $links = $this->links($document->markdown);
         if ($full) {
             $this->compileMarkdown($runtime, $source, $document->markdown);
@@ -284,18 +285,19 @@ final readonly class PageInspectionService
         return null;
     }
 
-    /** @return list<array{id:string,mode:string}> */
-    private function examples(string $markdown): array
+    /** @return list<array{id:string,mode:string,requested_preview:string,resolved_preview:string,reason:string}> */
+    private function examples(ProjectRuntime $runtime, PageSource $source, string $markdown): array
     {
-        $markdown = $this->withoutFencedCode($markdown);
-        preg_match_all('/^:::example(?:\s+\{[^}]*\bid="([^"]+)"[^}]*})?/mi', $markdown, $matches);
-        $items = [];
-        foreach ($matches[0] ?? [] as $index => $_opening) {
-            $id = $matches[1][$index] ?? '';
-            $items[] = ['id' => $id, 'mode' => $id === '' ? 'inline' : 'reusable'];
-        }
-
-        return $items;
+        return (new PortableMarkdownRenderer(
+            projectExamples: new ProjectExampleRepository(
+                $runtime->root,
+                (string) ($runtime->site['base_url'] ?? '/'),
+            ),
+        ))->examplePreviews(
+            $markdown,
+            $runtime->root,
+            $runtime->root . '/' . $source->path,
+        );
     }
 
     /** @return list<array{url:string}> */

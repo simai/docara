@@ -3112,14 +3112,16 @@ if (is_array($manifestBuild['public_projections'] ?? null)) {
         $examplesReceipt = json_decode((string) file_get_contents($examplesPath), true, 512, JSON_THROW_ON_ERROR);
         if (! docaraSafeRegularFile($examplesPath)
             || ! is_array($examplesReceipt)
-            || ! docaraExactKeys($examplesReceipt, ['schema', 'examples', 'content_sha256'])
+            || ! docaraExactKeys($examplesReceipt, ['schema', 'examples', 'previews', 'content_sha256'])
             || ($examplesReceipt['schema'] ?? null) !== 'docara.example_receipt.v1'
             || ! is_array($examplesReceipt['examples'] ?? null)
+            || ! is_array($examplesReceipt['previews'] ?? null)
             || ! hash_equals(
                 (string) ($examplesReceipt['content_sha256'] ?? ''),
                 hash('sha256', docaraCanonicalJson([
                     'schema' => 'docara.example_receipt.v1',
                     'examples' => $examplesReceipt['examples'],
+                    'previews' => $examplesReceipt['previews'],
                 ])),
             )
         ) {
@@ -3165,6 +3167,26 @@ if (is_array($manifestBuild['public_projections'] ?? null)) {
                     throw new RuntimeException("Project example asset [{$asset['output']}] differs from its receipt.");
                 }
             }
+        }
+        $previousPreview = null;
+        foreach ($examplesReceipt['previews'] as $preview) {
+            if (! is_array($preview)
+                || ! docaraExactKeys($preview, ['id', 'consumer', 'requested_preview', 'resolved_preview', 'reason', 'source_sha256'])
+                || preg_match('/\Amarkdown-example-[a-f0-9]{12}\z/D', (string) ($preview['id'] ?? '')) !== 1
+                || ! is_string($preview['consumer'] ?? null)
+                || $preview['consumer'] === ''
+                || ! in_array($preview['requested_preview'] ?? null, ['auto', 'inline', 'sandbox'], true)
+                || ! in_array($preview['resolved_preview'] ?? null, ['inline', 'sandbox'], true)
+                || preg_match('/\A[a-z][a-z0-9_]*\z/D', (string) ($preview['reason'] ?? '')) !== 1
+                || preg_match('/\A[a-f0-9]{64}\z/D', (string) ($preview['source_sha256'] ?? '')) !== 1
+            ) {
+                throw new RuntimeException('Project example preview records are invalid.');
+            }
+            $previewOrder = $preview['consumer'] . "\0" . $preview['id'];
+            if ($previousPreview !== null && strcmp($previousPreview, $previewOrder) >= 0) {
+                throw new RuntimeException('Project example preview records are unsorted or duplicated.');
+            }
+            $previousPreview = $previewOrder;
         }
         $performancePath = $root . '/.docara/performance.json';
         if (! docaraSafeRegularFile($performancePath)) {

@@ -4,6 +4,21 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Example previews use deterministic `auto` placement by default, with
+  fail-closed `inline` and forced `sandbox` overrides. Build receipts and page
+  inspection expose the requested mode, resolved mode and decision reason.
+
+### Fixed
+
+- Sandboxed Example previews now inherit the active semantic Framework tokens
+  from the documentation shell and keep a stable inline size while their
+  automatic height follows interactive content.
+- Result tabs expand sandboxed examples to their measured content height
+  without nested scrollbars, an artificial height cap or a second shell
+  animation that could temporarily change the available inline size.
+
 ## [2.6.1] - 2026-09-02
 
 ### Changed

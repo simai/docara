@@ -253,6 +253,14 @@ final class FrameworkTypographyProjectionTest extends TestCase
             'data-docara-example-framework-inline-style="simai.framework.icon_fallback_font.css"',
             $assets['simai.framework.icon_font.ready']['content'],
         );
+        self::assertStringContainsString(
+            '@font-face{font-family:"Material Symbols Outlined Full"',
+            $assets['simai.framework.icon_fallback_font.css']['content'],
+        );
+        self::assertStringContainsString(
+            'return "Material Symbols Outlined Full"',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
         self::assertStringNotContainsString('@latest', $plan->headHtml());
         self::assertStringContainsString(
             '@font-face{font-family:"Material Symbols Rounded"',

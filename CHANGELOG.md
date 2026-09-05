@@ -4,6 +4,14 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.7.4] - 2026-09-06
+
+### Fixed
+
+- The local full-font fallback uses a distinct family name, preventing an
+  unreachable Framework font face with the legacy family name from rejecting
+  an otherwise loaded sandbox blob.
+
 ## [2.7.3] - 2026-09-06
 
 ### Fixed

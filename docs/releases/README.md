@@ -1,5 +1,7 @@
 # Docara releases
 
+- [Docara 2.7.4](v2.7.4.md) — collision-free offline icon fallback in
+  sandboxed Example previews.
 - [Docara 2.7.3](v2.7.3.md) — complete offline icon fallback for isolated
   Example previews.
 - [Docara 2.7.2](v2.7.2.md) — corrected Admin Menu runtime plus isolated,

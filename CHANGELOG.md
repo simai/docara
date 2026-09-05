@@ -4,6 +4,14 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.7.2] - 2026-09-06
+
+### Fixed
+
+- Unknown outlined icons now opt into the local full-font fallback individually,
+  so one dynamic icon no longer overrides the prepared subset for every icon in
+  the page or in an isolated Example preview.
+
 ## [2.7.1] - 2026-09-06
 
 ### Changed

@@ -1,5 +1,7 @@
 # Docara releases
 
+- [Docara 2.7.2](v2.7.2.md) — corrected Admin Menu runtime plus isolated,
+  per-icon fallback for sandboxed Example previews.
 - [Docara 2.7.1](v2.7.1.md) — corrected Admin Menu and Context Menu from the
   exact SIMAI Framework UI 5.6.2 / Smart 5.4.1 pair.
 - [Docara 2.7.0](v2.7.0.md) — automatic Example preview placement and exact

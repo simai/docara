@@ -1444,7 +1444,7 @@ final readonly class FrameworkAssetPlanner
     {
         return '@font-face{font-family:"Material Symbols Outlined";src:url("' . $fontUrl
             . '") format("woff2");font-style:normal;font-weight:100 700;font-display:block}'
-            . 'html body .sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape){'
+            . 'html body .sf-icon.sf-icon-full-font:not(.sf-icon-rounded):not(.sf-icon-shape){'
             . '--sf-icon--font-family:"Material Symbols Outlined";font-family:"Material Symbols Outlined"!important;'
             . 'font-feature-settings:"liga"!important;font-variation-settings:"FILL" var(--sf-icon--fill,0),'
             . '"wght" var(--sf-icon--weight,400),"GRAD" var(--sf-icon--grade,0),'
@@ -1458,7 +1458,7 @@ final readonly class FrameworkAssetPlanner
 
         return '@font-face{font-family:"' . $family . '";src:url("' . $subset['font_url']
             . '") format("woff2");font-style:normal;font-weight:400;font-display:block}'
-            . 'html body .sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape){'
+            . 'html body .sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape):not(.sf-icon-full-font){'
             . '--sf-icon--font-family:"' . $family . '";font-family:"' . $family . '"!important;'
             . 'font-feature-settings:"liga"!important;font-variation-settings:"FILL" var(--sf-icon--fill,0),'
             . '"wght" var(--sf-icon--weight,400),"GRAD" var(--sf-icon--grade,0),'
@@ -1504,7 +1504,7 @@ final readonly class FrameworkAssetPlanner
             . ',subsetIcons=new Set(' . $subsetIcons . '),fallbackCss=' . $fallbackCss . ',fallbackPending=null;'
             . 'function iconName(icon){return String(icon.getAttribute("icon")||icon.textContent||"").trim()}'
             . 'function ensureFullFont(){if(fallbackPending)return fallbackPending;var style=document.createElement("style");style.dataset.docaraIconFallback="outlined";style.textContent=fallbackCss;document.head.appendChild(style);fallbackPending=document.fonts&&document.fonts.load?document.fonts.load(\'400 24px "Material Symbols Outlined"\'):Promise.resolve([true]);return fallbackPending}'
-            . 'function family(icon){if(icon.classList.contains("sf-icon-rounded"))return variants.rounded||null;if(icon.classList.contains("sf-icon-shape"))return variants.shape||null;return subsetIcons.has(iconName(icon))?subsetFamily:"Material Symbols Outlined"}'
+            . 'function family(icon){if(icon.classList.contains("sf-icon-rounded"))return variants.rounded||null;if(icon.classList.contains("sf-icon-shape"))return variants.shape||null;if(subsetIcons.has(iconName(icon))){icon.classList.remove("sf-icon-full-font");return subsetFamily}icon.classList.add("sf-icon-full-font");return "Material Symbols Outlined"}'
             . 'function ready(icon){if(icon.classList.contains("sf-icon-loaded"))return;var name=family(icon);if(!name)return;var promise=loaded[name]||(loaded[name]=document.fonts&&document.fonts.load?document.fonts.load(\'400 24px "\'+name+\'"\'):Promise.resolve([true]));promise.then(function(faces){if(faces&&faces.length)icon.classList.add("sf-icon-loaded")}).catch(function(){})}'
             . 'var originalReady=ready;ready=function(icon){if(family(icon)==="Material Symbols Outlined"){ensureFullFont().then(function(){originalReady(icon)})}else{originalReady(icon)}};'
             . 'function mark(root){if(root.nodeType===1&&root.matches(".sf-icon"))ready(root);if(root.querySelectorAll){root.querySelectorAll(".sf-icon").forEach(ready)}}'

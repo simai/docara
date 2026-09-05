@@ -233,6 +233,18 @@ final class FrameworkTypographyProjectionTest extends TestCase
         self::assertSame(244368, $plan->preload['icons']['font_size']);
         self::assertSame('local_full_font_on_unknown_icon', $plan->preload['icons']['fallback']);
         self::assertStringContainsString('ensureFullFont()', $assets['simai.framework.icon_font.ready']['content']);
+        self::assertStringContainsString(
+            '.sf-icon:not(.sf-icon-rounded):not(.sf-icon-shape):not(.sf-icon-full-font)',
+            $assets['simai.framework.icon_font.css']['content'],
+        );
+        self::assertStringContainsString(
+            '.sf-icon.sf-icon-full-font:not(.sf-icon-rounded):not(.sf-icon-shape)',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
+        self::assertStringContainsString(
+            'icon.classList.add("sf-icon-full-font")',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
         self::assertStringNotContainsString('@latest', $plan->headHtml());
         self::assertStringContainsString(
             '@font-face{font-family:"Material Symbols Rounded"',

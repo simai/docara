@@ -5,8 +5,8 @@ sites. It contains byte-identical copies of the accepted
 `larena/ui` manifests for `ui.alert` and `ui.button`, the exact accepted Simai
 Framework runtime lock and four locally projected Smart assets from the
 published Framework pair
-`ui@34f5ff453f324ce08d0a0b55e45fa4239a09f2b1` /
-`ui-smart@23d00d92346717b8f835297d142a14458f806602`:
+`ui@47a0f496574bd0af0f03e4b332a2a35a65d77d05` /
+`ui-smart@b07ee0178a1dbc6cb9b1fd49d106f2c12d3ec778`:
 
 - `smart/alert/js/alert.js` —
   `9fa2e29f067379f8400ee4a5bd0ef34832baee42f5a8394f48796719d07e75fa`;
@@ -21,7 +21,7 @@ Project sites repeat those hashes, the source revision and the manifest
 provider revision in `docara.framework_lock.v1`. A build verifies the bytes,
 copies them to the reserved `_docara/framework` namespace and appends one
 projection-aware cache version to each URL. Core and Smart are taken from the
-immutable published UI `v5.5.0` / Smart `v5.4.0` pair; there is no moving
+immutable published UI `v5.6.2` / Smart `v5.4.1` pair; there is no moving
 `main`/`latest` fallback.
 The local consumer adapter preloads a package-owned outlined shell subset and
 keeps exact full Material Symbols Outlined, Rounded and Sharp fonts as lazy
@@ -35,5 +35,5 @@ source of Framework truth.
 `ui.alert` with `closable: true` is outside this bounded pair because its
 `sf-icon-button` dependency is absent and therefore fails closed.
 
-The projected bytes belong to the owner-published Framework 5.5.0 release and
+The projected bytes belong to the owner-published Framework 5.6.2 release and
 remain tied to its immutable Core and Smart revisions.

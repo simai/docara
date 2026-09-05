@@ -578,6 +578,12 @@
       },
       {
         "name": "badges"
+      },
+      {
+        "name": "cl-buttons"
+      },
+      {
+        "name": "cl-context-menu"
       }
     ],
     "tags": [
@@ -747,6 +753,9 @@
     "relation": [
       {
         "name": "context-menu"
+      },
+      {
+        "name": "cl-buttons"
       }
     ],
     "tags": [
@@ -1645,16 +1654,17 @@
     "type": "component"
   },
   {
+    "name": "file-preview",
+    "css": true,
+    "js": false,
+    "regex": "/class\\s*=\\s*[\"'][^\"']*\\bsf-file-preview\\b/i",
+    "type": "component"
+  },
+  {
     "name": "file-upload",
     "css": true,
     "js": true,
     "regex": "/class\\s*=\\s*[\"'][^\"']*\\bsf-file-upload\\b/i",
-    "type": "component"
-  },
-  {
-    "name": "file-preview",
-    "css": true,
-    "regex": "/class\\s*=\\s*[\"'][^\"']*\\bsf-file-preview\\b/i",
     "type": "component"
   },
   {
@@ -2485,7 +2495,7 @@
     "name": "link",
     "css": true,
     "js": false,
-    "regex": "/sf-link/",
+    "regex": "/class\\s*=\\s*[\"'][^\"']*\\bsf-link\\b/i",
     "type": "component"
   },
   {

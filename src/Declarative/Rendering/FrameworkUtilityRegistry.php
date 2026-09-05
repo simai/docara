@@ -79,8 +79,8 @@ final class FrameworkUtilityRegistry
         }
         if (! is_array($document)
             || ($document['schema'] ?? null) !== 'docara.framework_view_utilities.v1'
-            || ($document['compatibility_id'] ?? null) !== 'sf-v5.6.1-34f5ff45-23d00d92'
-            || ($document['registry_sha256'] ?? null) !== '1f75df7241e47e4a62cc91e0846cd8604bb045ae83e5497f493c410d7736cb54'
+            || ($document['compatibility_id'] ?? null) !== 'sf-v5.6.2-47a0f496-b07ee017'
+            || ($document['registry_sha256'] ?? null) !== '619eed990832ae29a4f70865913c4efa06d5eb211c2877b0412be90b225c4e82'
         ) {
             throw new PortableConfigurationException(
                 'DECLARATIVE_VIEW_UTILITY_REGISTRY_INVALID',

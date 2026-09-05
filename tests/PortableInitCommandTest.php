@@ -161,13 +161,13 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);
-        $this->assertSame('sf-v5.6.1-34f5ff45-23d00d92', $lock['runtime']['pair_id']);
-        $this->assertSame('34f5ff453f324ce08d0a0b55e45fa4239a09f2b1', $lock['runtime']['ui']['commit']);
-        $this->assertSame('23d00d92346717b8f835297d142a14458f806602', $lock['runtime']['ui_smart']['commit']);
-        $this->assertSame('34f5ff453f324ce08d0a0b55e45fa4239a09f2b1', $lock['runtime']['framework_registry']['source']['commit']);
+        $this->assertSame('sf-v5.6.2-47a0f496-b07ee017', $lock['runtime']['pair_id']);
+        $this->assertSame('47a0f496574bd0af0f03e4b332a2a35a65d77d05', $lock['runtime']['ui']['commit']);
+        $this->assertSame('b07ee0178a1dbc6cb9b1fd49d106f2c12d3ec778', $lock['runtime']['ui_smart']['commit']);
+        $this->assertSame('47a0f496574bd0af0f03e4b332a2a35a65d77d05', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);
-        $this->assertSame('ce04f11f88da1b7e1a4edffffd2937b9ea6f337c2f3f70937e45e80cc6616008', $lock['manifests']['ui.button']['sha256']);
-        $this->assertSame('27c0393aa7b23318486bdc0008a349dfa7b95cc044ebde1cac92794065beeb75', $lock['manifests']['ui.alert']['sha256']);
+        $this->assertSame('236b1aeb0e8d2543eb3f5edf702e6891bf994baf03e9c7398090d13bec9cdeed', $lock['manifests']['ui.button']['sha256']);
+        $this->assertSame('e91a4a8f4277e6f19b3179f530a9070ccb811280c17f22019a8e66c60e2f4970', $lock['manifests']['ui.alert']['sha256']);
         $this->assertSame('docara.framework_asset_projection.v1', $lock['asset_projection']['schema']);
         $this->assertSame('_docara/framework', $lock['asset_projection']['mount']);
         $this->assertSame('simai/ui-smart', $lock['asset_projection']['source']['provider']);

@@ -1,5 +1,7 @@
 # Docara releases
 
+- [Docara 2.7.1](v2.7.1.md) — corrected Admin Menu and Context Menu from the
+  exact SIMAI Framework UI 5.6.2 / Smart 5.4.1 pair.
 - [Docara 2.7.0](v2.7.0.md) — automatic Example preview placement and exact
   SIMAI Framework 5.6.1 runtime.
 - [Docara 2.6.1](v2.6.1.md) — exact SIMAI Framework 5.6.0 Accordion runtime

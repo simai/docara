@@ -26,7 +26,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($project));
 
-        self::assertSame('sf-v5.6.1-34f5ff45-23d00d92', $repository->runtime()['pair_id']);
+        self::assertSame('sf-v5.6.2-47a0f496-b07ee017', $repository->runtime()['pair_id']);
     }
 
     #[Test]
@@ -35,31 +35,34 @@ final class FrameworkTypographyProjectionTest extends TestCase
         $path = dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json';
         $current = FrameworkLock::fromJsonFile($path)->toArray();
         $previous = $current;
-        $previous['runtime']['pair_id'] = 'sf-v5.5.0-286e48b8-23d00d92';
-        $previous['runtime']['bundle_id'] = 'sf-v5.5.0-286e48b8-23d00d92-registry-707d0a3b-verified-release-artifact-v1';
-        $previous['runtime']['tag'] = 'v5.5.0';
-        $previous['runtime']['ui']['tag'] = 'v5.5.0';
-        $previous['runtime']['ui']['commit'] = '286e48b8ce2b8e765eb5794d74b711f5b8f78783';
-        $previous['runtime']['ui']['sha256'] = 'cb00ed30c117e60353bb07644b83aa978391a2a2113842770751dd2df3e2e301';
-        $previous['runtime']['ui']['files'] = 6773;
-        $previous['runtime']['framework_registry']['compatibility_id'] = 'sf-v5.5.0-286e48b8-23d00d92';
-        $previous['runtime']['framework_registry']['file_sha256'] = '707d0a3b661d1add375f522e6545bd43713718ff65d3b90236dde5ae38f1ad43';
-        $previous['runtime']['framework_registry']['source']['commit'] = '286e48b8ce2b8e765eb5794d74b711f5b8f78783';
-        $previous['runtime']['framework_registry']['source']['tree_oid'] = '1b0e75b76af144d5e6807fcfe870df58f62348f8';
-        $previous['runtime']['framework_registry']['source']['sha256'] = '073594a4721d48db235eaa2832b3d4c1c7f0982efa9210264fc41a6fdd975aad';
-        $previous['runtime_projection']['mount'] = '_docara/vendor/simai-framework/runtime/286e48b8ce2b8e765eb5794d74b711f5b8f78783/distr';
-        $previous['runtime_projection']['source']['revision'] = '286e48b8ce2b8e765eb5794d74b711f5b8f78783';
-        $previous['runtime_projection']['source']['tree_sha256'] = 'cb00ed30c117e60353bb07644b83aa978391a2a2113842770751dd2df3e2e301';
-        $previous['runtime_projection']['packet_sha256'] = '42228b12e7cf63930d3872977b0e3b8fb64d12ddb6261cb5574df6b1bb97b80c';
+        $previous['runtime']['pair_id'] = 'sf-v5.6.1-34f5ff45-23d00d92';
+        $previous['runtime']['bundle_id'] = 'sf-v5.6.1-34f5ff45-23d00d92-registry-1f75df72-verified-release-artifact-v1';
+        $previous['runtime']['tag'] = 'v5.6.1';
+        $previous['runtime']['ui']['tag'] = 'v5.6.1';
+        $previous['runtime']['ui']['commit'] = '34f5ff453f324ce08d0a0b55e45fa4239a09f2b1';
+        $previous['runtime']['ui']['sha256'] = 'dbc9d927d125fc47538a6cb56485e47faf4350cdd8b92186f1121b6288470069';
+        $previous['runtime']['ui_smart']['tag'] = 'v5.4.0';
+        $previous['runtime']['ui_smart']['commit'] = '23d00d92346717b8f835297d142a14458f806602';
+        $previous['runtime']['ui_smart']['sha256'] = '465b61a678be195aabb3890385b6080908b3d7a5298abaf7a9ea96705638addc';
+        $previous['asset_projection']['source']['revision'] = '23d00d92346717b8f835297d142a14458f806602';
+        $previous['runtime']['framework_registry']['compatibility_id'] = 'sf-v5.6.1-34f5ff45-23d00d92';
+        $previous['runtime']['framework_registry']['file_sha256'] = '1f75df7241e47e4a62cc91e0846cd8604bb045ae83e5497f493c410d7736cb54';
+        $previous['runtime']['framework_registry']['source']['commit'] = '34f5ff453f324ce08d0a0b55e45fa4239a09f2b1';
+        $previous['runtime']['framework_registry']['source']['tree_oid'] = '778769e6174360bdb0523dc0a71c62d0c592171a';
+        $previous['runtime']['framework_registry']['source']['sha256'] = '0a6580182b2c495c4f52a65cda34dd5e2b8ff57e3e169bd24be522f105bfd1b9';
+        $previous['runtime_projection']['mount'] = '_docara/vendor/simai-framework/runtime/34f5ff453f324ce08d0a0b55e45fa4239a09f2b1/distr';
+        $previous['runtime_projection']['source']['revision'] = '34f5ff453f324ce08d0a0b55e45fa4239a09f2b1';
+        $previous['runtime_projection']['source']['tree_sha256'] = 'dbc9d927d125fc47538a6cb56485e47faf4350cdd8b92186f1121b6288470069';
+        $previous['runtime_projection']['packet_sha256'] = 'ff712e595a9e95beefda72a9f7886f9e62c44c4492799f7a9be284024f05ade7';
         $previous['runtime_projection']['files'] = 840;
-        $previous['runtime_projection']['manifest']['path'] = 'portable/vendor/simai-framework/runtime/286e48b8ce2b8e765eb5794d74b711f5b8f78783/runtime-manifest.json';
-        $previous['runtime_projection']['manifest']['public'] = '_docara/vendor/simai-framework/runtime/286e48b8ce2b8e765eb5794d74b711f5b8f78783/runtime-manifest.json';
-        $previous['runtime_projection']['manifest']['sha256'] = 'dfd6221a7f4159c80aee96c34f4d57840fedd8a6b9aa1b78ad381d20ada097b1';
+        $previous['runtime_projection']['manifest']['path'] = 'portable/vendor/simai-framework/runtime/34f5ff453f324ce08d0a0b55e45fa4239a09f2b1/runtime-manifest.json';
+        $previous['runtime_projection']['manifest']['public'] = '_docara/vendor/simai-framework/runtime/34f5ff453f324ce08d0a0b55e45fa4239a09f2b1/runtime-manifest.json';
+        $previous['runtime_projection']['manifest']['sha256'] = 'cb0ed3ade20775c8a229319336c8c44a532c1f1a177f6cdf933d2ff101620c92';
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
-        self::assertSame('sf-v5.6.1-34f5ff45-23d00d92', $repository->runtime()['pair_id']);
+        self::assertSame('sf-v5.6.2-47a0f496-b07ee017', $repository->runtime()['pair_id']);
         self::assertSame(840, $repository->runtimeProjection()['files']);
-        self::assertSame('sf-v5.5.0-286e48b8-23d00d92', $previous['runtime']['pair_id']);
+        self::assertSame('sf-v5.6.1-34f5ff45-23d00d92', $previous['runtime']['pair_id']);
 
         $previous['runtime']['ui']['files'] = 6772;
         $this->expectException(FrameworkComponentException::class);
@@ -189,7 +192,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertStringNotContainsString('.min.', $relativePath);
         }
         self::assertSame(
-            'ff712e595a9e95beefda72a9f7886f9e62c44c4492799f7a9be284024f05ade7',
+            'c25dc24ce2ce24ac1d1f8862782c43441d58bf55f3207edacd8f90d2395b9ba7',
             $runtime['packet_sha256'],
         );
         $coreLoader = $repository->bundledRuntimeAsset('core/js/core-loader.js');
@@ -199,7 +202,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         self::assertStringNotContainsString('cdn.jsdelivr.net', $assets['simai.framework.boot']['content']);
         foreach (['simai.framework.smart_base.js', 'simai.framework.core.js'] as $assetKey) {
             self::assertStringStartsWith('/_docara/vendor/simai-framework/runtime/', $assets[$assetKey]['url']);
-            self::assertSame('34f5ff453f324ce08d0a0b55e45fa4239a09f2b1', $assets[$assetKey]['source_revision']);
+            self::assertSame('47a0f496574bd0af0f03e4b332a2a35a65d77d05', $assets[$assetKey]['source_revision']);
             self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $assets[$assetKey]['sha256']);
         }
         self::assertStringContainsString(
@@ -302,7 +305,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $nestedAssets['simai.framework.core.css']['url'],
         );
         self::assertStringStartsWith(
-            '/project~/docs/_docara/vendor/simai-framework/runtime/34f5ff453f324ce08d0a0b55e45fa4239a09f2b1/distr/core/js/core.js?sf_v=',
+            '/project~/docs/_docara/vendor/simai-framework/runtime/47a0f496574bd0af0f03e4b332a2a35a65d77d05/distr/core/js/core.js?sf_v=',
             $nestedAssets['simai.framework.core.js']['url'],
         );
     }
@@ -350,7 +353,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
     {
         [$root, $lock] = $this->fixture();
         $core = $root . '/resources/portable/vendor/simai-framework/runtime/'
-            . '34f5ff453f324ce08d0a0b55e45fa4239a09f2b1/distr/core/js/core.js';
+            . '47a0f496574bd0af0f03e4b332a2a35a65d77d05/distr/core/js/core.js';
         file_put_contents($core, 'changed');
 
         try {
@@ -416,7 +419,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         foreach (['symlink', 'hardlink'] as $attack) {
             [$root, $lock] = $this->fixture();
             $core = $root . '/resources/portable/vendor/simai-framework/runtime/'
-                . '34f5ff453f324ce08d0a0b55e45fa4239a09f2b1/distr/core/js/core.js';
+                . '47a0f496574bd0af0f03e4b332a2a35a65d77d05/distr/core/js/core.js';
             $outside = $root . '/outside.js';
             file_put_contents($outside, file_get_contents($core));
             unlink($core);

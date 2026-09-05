@@ -506,13 +506,23 @@ final readonly class PageInspectionService
         $head = trim($head);
         if (str_starts_with($head, 'ref: ')) {
             $ref = trim(substr($head, 5));
-            $value = @file_get_contents($git . '/' . $ref);
-            if (is_string($value)) {
-                return trim($value);
+            $gitDirectories = [$git];
+            $commonDirectory = @file_get_contents($git . '/commondir');
+            if (is_string($commonDirectory)) {
+                $common = realpath($git . '/' . trim($commonDirectory));
+                if (is_string($common) && is_dir($common)) {
+                    $gitDirectories[] = $common;
+                }
             }
-            $packed = @file_get_contents($git . '/packed-refs');
-            if (is_string($packed) && preg_match('/^([a-f0-9]{40})\s+' . preg_quote($ref, '/') . '$/m', $packed, $match) === 1) {
-                return $match[1];
+            foreach ($gitDirectories as $directory) {
+                $value = @file_get_contents($directory . '/' . $ref);
+                if (is_string($value) && preg_match('/^[a-f0-9]{40}$/D', trim($value)) === 1) {
+                    return trim($value);
+                }
+                $packed = @file_get_contents($directory . '/packed-refs');
+                if (is_string($packed) && preg_match('/^([a-f0-9]{40})\s+' . preg_quote($ref, '/') . '$/m', $packed, $match) === 1) {
+                    return $match[1];
+                }
             }
 
             return null;

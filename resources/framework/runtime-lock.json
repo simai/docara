@@ -16,12 +16,18 @@
                 "runtime_projection_files": 826,
                 "runtime_projection_manifest_sha256": "91b1fdad622c6c107a2f49a396f04bf8d4549e486e7df3edbc0b3eeaa16cf6b8"
             },
-            {
-                "runtime_sha256": "e9a120f728e00ff8481835bdf457d1ccdf309233328cbca2a88dbd91315e1af3",
-                "runtime_projection_packet_sha256": "42228b12e7cf63930d3872977b0e3b8fb64d12ddb6261cb5574df6b1bb97b80c",
-                "runtime_projection_files": 840,
-                "runtime_projection_manifest_sha256": "dfd6221a7f4159c80aee96c34f4d57840fedd8a6b9aa1b78ad381d20ada097b1"
-            }
+    {
+      "runtime_sha256": "e9a120f728e00ff8481835bdf457d1ccdf309233328cbca2a88dbd91315e1af3",
+      "runtime_projection_packet_sha256": "42228b12e7cf63930d3872977b0e3b8fb64d12ddb6261cb5574df6b1bb97b80c",
+      "runtime_projection_files": 840,
+      "runtime_projection_manifest_sha256": "dfd6221a7f4159c80aee96c34f4d57840fedd8a6b9aa1b78ad381d20ada097b1"
+    },
+    {
+      "runtime_sha256": "317bc0d956983b7fc0c4fd3467bd5c3124cff54edfb5fcaca921deaa1e6457f7",
+      "runtime_projection_packet_sha256": "ff712e595a9e95beefda72a9f7886f9e62c44c4492799f7a9be284024f05ade7",
+      "runtime_projection_files": 840,
+      "runtime_projection_manifest_sha256": "cb0ed3ade20775c8a229319336c8c44a532c1f1a177f6cdf933d2ff101620c92"
+    }
         ],
         "superseded_typography_projections": [
             {
@@ -35,38 +41,38 @@
         ]
     },
     "runtime": "simai-framework",
-    "pair_id": "sf-v5.6.1-34f5ff45-23d00d92",
-    "bundle_id": "sf-v5.6.1-34f5ff45-23d00d92-registry-1f75df72-verified-release-artifact-v1",
+    "pair_id": "sf-v5.6.2-47a0f496-b07ee017",
+    "bundle_id": "sf-v5.6.2-47a0f496-b07ee017-registry-619eed99-verified-release-artifact-v1",
     "publication_profile": "verified-release-artifact-v1",
-    "tag": "v5.6.1",
+    "tag": "v5.6.2",
     "ui": {
-        "tag": "v5.6.1",
-        "commit": "34f5ff453f324ce08d0a0b55e45fa4239a09f2b1",
+        "tag": "v5.6.2",
+        "commit": "47a0f496574bd0af0f03e4b332a2a35a65d77d05",
         "tree": "distr",
         "mount": "ui",
-        "sha256": "dbc9d927d125fc47538a6cb56485e47faf4350cdd8b92186f1121b6288470069",
+        "sha256": "0b72a5045af8b9ec337485bce9dedb8d1ecd6c38bc384a4a9a6afc7f7f01e7a7",
         "files": 6773
     },
     "ui_smart": {
-        "tag": "v5.4.0",
-        "commit": "23d00d92346717b8f835297d142a14458f806602",
+        "tag": "v5.4.1",
+        "commit": "b07ee0178a1dbc6cb9b1fd49d106f2c12d3ec778",
         "tree": "smart",
         "mount": "smart",
-        "sha256": "465b61a678be195aabb3890385b6080908b3d7a5298abaf7a9ea96705638addc",
+        "sha256": "ffe57af2b22ce46ac660eec4c8ec22a04b7382d10a514648a530bea4b9ace856",
         "files": 645
     },
     "framework_registry": {
         "schema_id": "simai.framework.contract-registry",
-        "compatibility_id": "sf-v5.6.1-34f5ff45-23d00d92",
+        "compatibility_id": "sf-v5.6.2-47a0f496-b07ee017",
         "profile": "plain-assets-v1",
         "relative_path": "contract/contracts/generated/framework-contract-registry.json",
-        "file_sha256": "1f75df7241e47e4a62cc91e0846cd8604bb045ae83e5497f493c410d7736cb54",
+        "file_sha256": "619eed990832ae29a4f70865913c4efa06d5eb211c2877b0412be90b225c4e82",
         "source": {
-            "commit": "34f5ff453f324ce08d0a0b55e45fa4239a09f2b1",
+            "commit": "47a0f496574bd0af0f03e4b332a2a35a65d77d05",
             "tree": "contracts/generated",
-            "tree_oid": "778769e6174360bdb0523dc0a71c62d0c592171a",
+            "tree_oid": "d8348ec27ddf2997dc0a51031fed7beb36d5d8e7",
             "mount": "contract",
-            "sha256": "0a6580182b2c495c4f52a65cda34dd5e2b8ff57e3e169bd24be522f105bfd1b9",
+            "sha256": "b426c5500a34e5031b2158f76c8e850cc92539c76f2ae657dc5b1befb584d519",
             "files": 2
         }
     },

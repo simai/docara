@@ -4,6 +4,22 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.7.1] - 2026-09-06
+
+### Changed
+
+- The package-owned SIMAI Framework runtime is updated to immutable UI Core
+  `v5.6.2` and Smart `v5.4.1` releases.
+- New projects and rebuilt sites receive the corrected Admin Menu and Context
+  Menu runtime without changing project-owned content or configuration.
+
+### Fixed
+
+- Admin Menu grows to its natural content height unless its host supplies a
+  finite height, where the component takes explicit ownership of overflow.
+- The Framework projection preserves discovery for all 63 public components,
+  including the bounded `file-preview` and `link` compatibility entries.
+
 ## [2.7.0] - 2026-09-02
 
 ### Added
@@ -281,6 +297,7 @@ All notable changes to Docara are documented in this file.
 [2.4.0]: https://github.com/simai/docara/releases/tag/v2.4.0
 [2.4.1]: https://github.com/simai/docara/releases/tag/v2.4.1
 [2.5.0]: https://github.com/simai/docara/releases/tag/v2.5.0
+[2.7.1]: https://github.com/simai/docara/releases/tag/v2.7.1
 [2.7.0]: https://github.com/simai/docara/releases/tag/v2.7.0
 [2.6.1]: https://github.com/simai/docara/releases/tag/v2.6.1
 [2.6.0]: https://github.com/simai/docara/releases/tag/v2.6.0

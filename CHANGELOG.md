@@ -4,6 +4,14 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.7.3] - 2026-09-06
+
+### Fixed
+
+- Sandboxed Example previews receive the exact local full outlined font as a
+  transferable blob alongside the prepared subset, so per-icon fallback works
+  offline without an opaque-origin network request.
+
 ## [2.7.2] - 2026-09-06
 
 ### Fixed

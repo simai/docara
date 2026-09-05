@@ -245,6 +245,14 @@ final class FrameworkTypographyProjectionTest extends TestCase
             'icon.classList.add("sf-icon-full-font")',
             $assets['simai.framework.icon_font.ready']['content'],
         );
+        self::assertStringContainsString(
+            '/_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsOutlined.woff2',
+            $assets['simai.framework.icon_fallback_font.css']['content'],
+        );
+        self::assertStringContainsString(
+            'data-docara-example-framework-inline-style="simai.framework.icon_fallback_font.css"',
+            $assets['simai.framework.icon_font.ready']['content'],
+        );
         self::assertStringNotContainsString('@latest', $plan->headHtml());
         self::assertStringContainsString(
             '@font-face{font-family:"Material Symbols Rounded"',

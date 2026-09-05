@@ -20,6 +20,7 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('exampleFontAsset', $shell);
         self::assertStringContainsString('simai.framework.icon_font.css', $shell);
         self::assertStringContainsString('inlineStyles=styles', $shell);
+        self::assertStringContainsString('simai.framework.icon_fallback_font.css', $shell);
         self::assertStringContainsString('function exampleDesignTokens()', $shell);
         self::assertStringContainsString('function collectExampleTokenNames(rules,names)', $shell);
         self::assertStringContainsString("names=new Set(['--sf-text--size','--sf-text--height'])", $shell);

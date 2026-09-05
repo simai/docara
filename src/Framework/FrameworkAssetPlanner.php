@@ -169,6 +169,20 @@ final readonly class FrameworkAssetPlanner
                 'content' => $this->iconSubsetCss($iconSubset),
                 'source_revision' => $iconSubset['manifest']['source']['revision'],
                 'sha256' => $iconSubset['manifest']['files']['font']['sha256'],
+            ], [
+                'key' => 'simai.framework.icon_fallback_font.css',
+                'kind' => 'inline_css',
+                'content' => $this->iconFallbackCss(
+                    $iconProjection === null
+                        ? $uiBase . '/' . $iconFont
+                        : $this->projectedPublicUrl((string) $iconProjection['files']['outlined']['public']),
+                ),
+                'source_revision' => $iconProjection === null
+                    ? $uiCommit
+                    : (string) $iconProjection['source']['revision'],
+                'sha256' => $iconProjection === null
+                    ? null
+                    : (string) $iconProjection['files']['outlined']['sha256'],
             ], ...($iconProjection === null ? [] : [[
                 'key' => 'simai.framework.icon_variant_fonts.css',
                 'kind' => 'inline_css',
@@ -1503,7 +1517,7 @@ final readonly class FrameworkAssetPlanner
         return '(function(){var variants=' . $variants . ',loaded={},subsetFamily=' . $subsetFamily
             . ',subsetIcons=new Set(' . $subsetIcons . '),fallbackCss=' . $fallbackCss . ',fallbackPending=null;'
             . 'function iconName(icon){return String(icon.getAttribute("icon")||icon.textContent||"").trim()}'
-            . 'function ensureFullFont(){if(fallbackPending)return fallbackPending;var style=document.createElement("style");style.dataset.docaraIconFallback="outlined";style.textContent=fallbackCss;document.head.appendChild(style);fallbackPending=document.fonts&&document.fonts.load?document.fonts.load(\'400 24px "Material Symbols Outlined"\'):Promise.resolve([true]);return fallbackPending}'
+            . 'function ensureFullFont(){if(fallbackPending)return fallbackPending;var style=document.querySelector(\'style[data-docara-framework-asset="simai.framework.icon_fallback_font.css"],style[data-docara-example-framework-inline-style="simai.framework.icon_fallback_font.css"]\');if(!style){style=document.createElement("style");style.dataset.docaraIconFallback="outlined";style.textContent=fallbackCss;document.head.appendChild(style)}fallbackPending=document.fonts&&document.fonts.load?document.fonts.load(\'400 24px "Material Symbols Outlined"\'):Promise.resolve([true]);return fallbackPending}'
             . 'function family(icon){if(icon.classList.contains("sf-icon-rounded"))return variants.rounded||null;if(icon.classList.contains("sf-icon-shape"))return variants.shape||null;if(subsetIcons.has(iconName(icon))){icon.classList.remove("sf-icon-full-font");return subsetFamily}icon.classList.add("sf-icon-full-font");return "Material Symbols Outlined"}'
             . 'function ready(icon){if(icon.classList.contains("sf-icon-loaded"))return;var name=family(icon);if(!name)return;var promise=loaded[name]||(loaded[name]=document.fonts&&document.fonts.load?document.fonts.load(\'400 24px "\'+name+\'"\'):Promise.resolve([true]));promise.then(function(faces){if(faces&&faces.length)icon.classList.add("sf-icon-loaded")}).catch(function(){})}'
             . 'var originalReady=ready;ready=function(icon){if(family(icon)==="Material Symbols Outlined"){ensureFullFont().then(function(){originalReady(icon)})}else{originalReady(icon)}};'

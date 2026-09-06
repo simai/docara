@@ -1,5 +1,7 @@
 # Docara releases
 
+- [Docara 2.7.5](v2.7.5.md) — CORS-free ordering of local fonts in sandboxed
+  Example previews.
 - [Docara 2.7.4](v2.7.4.md) — collision-free offline icon fallback in
   sandboxed Example previews.
 - [Docara 2.7.3](v2.7.3.md) — complete offline icon fallback for isolated

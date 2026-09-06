@@ -4,6 +4,14 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.7.5] - 2026-09-06
+
+### Fixed
+
+- Sandboxed Example previews install their transferred local font styles before
+  external Framework stylesheets, preventing transient opaque-origin WOFF2
+  requests and their CORS errors.
+
 ## [2.7.4] - 2026-09-06
 
 ### Fixed

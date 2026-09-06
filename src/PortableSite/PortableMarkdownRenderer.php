@@ -924,6 +924,21 @@ body.classList.remove('theme-light','theme-dark');
 body.classList.add('theme-'+theme);
 document.documentElement.dir=direction;
 body.dir=direction;
+var currentInlineStyles=Array.from(document.querySelectorAll('style[data-docara-example-framework-inline-style]')).map(function(style){return style.getAttribute('data-docara-example-framework-inline-style')});
+(Array.isArray(data.inlineStyles)?data.inlineStyles:[]).forEach(function(item){
+if(!item||typeof item.key!=='string'||typeof item.content!=='string'||item.content===''||currentInlineStyles.indexOf(item.key)!==-1)return;
+var style=document.createElement('style');
+var content=item.content;
+(Array.isArray(item.fonts)?item.fonts:[]).forEach(function(font){
+if(!font||typeof font.token!=='string'||!(font.bytes instanceof ArrayBuffer))return;
+var blobUrl=URL.createObjectURL(new Blob([font.bytes],{type:typeof font.type==='string'?font.type:'font/woff2'}));
+content=content.split(font.token).join(blobUrl);
+});
+style.textContent=content;
+style.setAttribute('data-docara-example-framework-inline-style',item.key);
+document.head.appendChild(style);
+currentInlineStyles.push(item.key);
+});
 var current=Array.from(document.querySelectorAll('link[data-docara-example-framework-style]')).map(function(link){return link.href});
 var styleLoads=[];
 (Array.isArray(data.stylesheets)?data.stylesheets:[]).forEach(function(href){
@@ -940,21 +955,6 @@ document.head.appendChild(link);
 current.push(link.href);
 });
 Promise.all(styleLoads).then(function(){
-var currentInlineStyles=Array.from(document.querySelectorAll('style[data-docara-example-framework-inline-style]')).map(function(style){return style.getAttribute('data-docara-example-framework-inline-style')});
-(Array.isArray(data.inlineStyles)?data.inlineStyles:[]).forEach(function(item){
-if(!item||typeof item.key!=='string'||typeof item.content!=='string'||item.content===''||currentInlineStyles.indexOf(item.key)!==-1)return;
-var style=document.createElement('style');
-var content=item.content;
-(Array.isArray(item.fonts)?item.fonts:[]).forEach(function(font){
-if(!font||typeof font.token!=='string'||!(font.bytes instanceof ArrayBuffer))return;
-var blobUrl=URL.createObjectURL(new Blob([font.bytes],{type:typeof font.type==='string'?font.type:'font/woff2'}));
-content=content.split(font.token).join(blobUrl);
-});
-style.textContent=content;
-style.setAttribute('data-docara-example-framework-inline-style',item.key);
-document.head.appendChild(style);
-currentInlineStyles.push(item.key);
-});
 applyDesignEnvironment(data);
 var currentInline=Array.from(document.querySelectorAll('script[data-docara-example-framework-inline-script]')).map(function(script){return script.getAttribute('data-docara-example-framework-inline-script')});
 (Array.isArray(data.inlineScripts)?data.inlineScripts:[]).forEach(function(item){

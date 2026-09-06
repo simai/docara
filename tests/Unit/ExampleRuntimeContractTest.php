@@ -34,6 +34,11 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('URL.createObjectURL(new Blob([font.bytes]', $renderer);
         self::assertStringContainsString('data-docara-example-framework-inline-script', $renderer);
         self::assertStringContainsString('Promise.all(styleLoads)', $renderer);
+        self::assertLessThan(
+            strpos($renderer, "var current=Array.from(document.querySelectorAll('link[data-docara-example-framework-style]')"),
+            strpos($renderer, "var currentInlineStyles=Array.from(document.querySelectorAll('style[data-docara-example-framework-inline-style]')"),
+            'Portable font styles must be installed before external Framework stylesheets can trigger opaque-origin font requests.',
+        );
         self::assertStringContainsString('data-docara-example-framework-script', $renderer);
         self::assertStringContainsString('script.async=false', $renderer);
     }

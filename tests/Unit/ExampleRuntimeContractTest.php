@@ -68,7 +68,8 @@ final class ExampleRuntimeContractTest extends TestCase
         $styles = (string) file_get_contents($root . '/resources/portable/declarative-shell.css');
 
         self::assertStringContainsString("example.dataset.sourceActive=key==='example'?'false':'true'", $shell);
-        self::assertStringContainsString('fullscreenButton.hidden=!active&&!selected', $shell);
+        self::assertStringContainsString('fullscreenButton.hidden=false', $shell);
+        self::assertStringNotContainsString('fullscreenButton.hidden=!active&&!selected', $shell);
         self::assertStringContainsString("wrapButton.hidden=example.dataset.sourceActive!=='true'", $shell);
         self::assertStringContainsString('document.fullscreenElement===example', $shell);
         self::assertStringContainsString('example.requestFullscreen()', $shell);

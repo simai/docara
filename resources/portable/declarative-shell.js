@@ -474,8 +474,8 @@
     function isFullscreen(){return document.fullscreenElement===example}
     function syncFullscreen(){
       if(!fullscreenButton)return;
-      var active=isFullscreen(),selected=example.dataset.sourceActive!=='true';
-      fullscreenButton.hidden=!active&&!selected;
+      var active=isFullscreen();
+      fullscreenButton.hidden=false;
       fullscreenButton.setAttribute('aria-pressed',active?'true':'false');
       fullscreenButton.setAttribute('aria-label',message(active?'examples.fullscreen_exit':'examples.fullscreen'));
       var icon=fullscreenButton.querySelector('sf-icon');

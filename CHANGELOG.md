@@ -4,6 +4,13 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.8.1] - 2026-09-07
+
+### Fixed
+
+- The Example fullscreen action now remains available on source tabs, matching
+  the whole-surface fullscreen contract documented in 2.8.0.
+
 ## [2.8.0] - 2026-09-07
 
 ### Added

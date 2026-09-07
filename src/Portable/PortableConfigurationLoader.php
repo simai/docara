@@ -158,6 +158,13 @@ final class PortableConfigurationLoader
                 'toc_depth' => 3,
                 'previous_next' => true,
             ],
+            'examples' => [
+                'fullscreen' => true,
+                'wrap' => true,
+            ],
+            'code' => [
+                'wrap' => true,
+            ],
         ], '@defaults');
         $configuration = $result->configuration;
         $provenance = $result->provenance;

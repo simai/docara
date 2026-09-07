@@ -669,12 +669,12 @@ MD);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll{box-sizing:border-box;block-size:auto;margin:0', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll code{background:transparent}', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] [data-docara-code-block]{block-size:auto;margin:0;', $shellCss);
-        self::assertStringContainsString('.docara-example-preview__copy{justify-self:end;margin:0;color:var(--sf-on-surface-variant)}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview__action,.docara-example-preview__copy{margin:0;color:var(--sf-on-surface-variant)}', $shellCss);
         self::assertStringContainsString('.sf-alert.sf-alert--success>sf-icon>.sf-icon{--sf-icon--color:var(--sf-success)}', $shellCss);
-        self::assertStringContainsString('.docara-example-preview__copy .sf-icon{--sf-icon--color:var(--sf-on-surface-variant)}', $shellCss);
-        self::assertStringContainsString('.docara-example-preview__copy:hover,.docara-example-preview__copy:focus-visible{color:var(--sf-on-surface)}', $shellCss);
-        self::assertStringContainsString('.docara-example-preview__copy:hover .sf-icon,.docara-example-preview__copy:focus-visible .sf-icon{--sf-icon--color:var(--sf-on-surface)}', $shellCss);
-        self::assertStringContainsString('.docara-example-preview .docara-example-preview__copy:focus,.docara-example-preview .docara-example-preview__copy:focus-visible{outline:0;box-shadow:none}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview__action .sf-icon,.docara-example-preview__copy .sf-icon{--sf-icon--color:var(--sf-on-surface-variant)}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview__action:hover,.docara-example-preview__action:focus-visible,.docara-example-preview__copy:hover,.docara-example-preview__copy:focus-visible{color:var(--sf-on-surface)}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview__action:hover .sf-icon,.docara-example-preview__action:focus-visible .sf-icon,.docara-example-preview__copy:hover .sf-icon,.docara-example-preview__copy:focus-visible .sf-icon{--sf-icon--color:var(--sf-on-surface)}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview .docara-example-preview__action:focus:not(:focus-visible),.docara-example-preview .docara-example-preview__copy:focus:not(:focus-visible){--sf-icon-button--box-shadow:none;outline:0;box-shadow:none}', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll .hljs-ln-numbers{display:none}', $shellCss);
         self::assertStringContainsString(
             '.docara-outline-rail{position:relative;align-self:stretch;box-shadow:inset var(--sf-px) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}',

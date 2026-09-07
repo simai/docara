@@ -101,7 +101,7 @@ final class DocumentationContractTest extends TestCase
             JSON_THROW_ON_ERROR,
         );
         self::assertSame([
-            'accessibility', 'code', 'common', 'copy', 'language', 'navigation',
+            'accessibility', 'code', 'common', 'copy', 'examples', 'language', 'navigation',
             'reader', 'redirect', 'search', 'shell', 'toc', 'transitions',
         ], $this->langNamespaces($langSchema));
 
@@ -229,7 +229,7 @@ final class DocumentationContractTest extends TestCase
     public function portable_installation_surfaces_use_the_stable_package_after_release(): void
     {
         self::assertSame(
-            '2.7.5',
+            '2.8.0',
             trim((string) file_get_contents($this->repositoryRoot() . '/VERSION')),
         );
 

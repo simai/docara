@@ -40,7 +40,16 @@ final readonly class PageBuilder
         $document = $this->compiler->compile($plan->markdown, $plan->page);
         $rendered = $this->renderers->render(
             $document,
-            new DocumentRenderContext($root, $root . '/' . ltrim($plan->page, '/')),
+            new DocumentRenderContext(
+                $root,
+                $root . '/' . ltrim($plan->page, '/'),
+                is_array($plan->configuration['examples'] ?? null)
+                    ? $plan->configuration['examples']
+                    : [],
+                is_array($plan->configuration['code'] ?? null)
+                    ? $plan->configuration['code']
+                    : [],
+            ),
         );
         $renderedMarkdown = $rendered['document']->html;
         $componentArtifacts = $rendered['components'];

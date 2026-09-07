@@ -21,6 +21,8 @@ final class PortableExampleRenderer
         string $requestedPreview = 'auto',
         string $resolvedPreview = 'inline',
         string $previewReason = 'typed_markdown',
+        bool $fullscreen = true,
+        bool $wrap = true,
     ): string {
         $safeId = preg_replace('/[^a-z0-9_-]+/i', '-', $id) ?: 'example';
         $previewTabId = $safeId . '-tab-example';
@@ -58,18 +60,29 @@ final class PortableExampleRenderer
             . '" data-docara-example-preview-requested="' . $this->escape($requestedPreview)
             . '" data-docara-example-preview-resolved="' . $this->escape($resolvedPreview)
             . '" data-docara-example-preview-reason="' . $this->escape($previewReason)
+            . '" data-docara-example-fullscreen="' . ($fullscreen ? 'true' : 'false')
+            . '" data-docara-example-wrap="' . ($wrap ? 'true' : 'false')
             . '" data-docara-outline-exclude data-source-active="false" class="docara-example-preview"'
             . ($legacyComponentId === '' ? '' : ' data-docara-component-example="' . $this->escape($legacyComponentId) . '"')
             . '><div class="docara-example-preview__header">'
             . '<div role="tablist" aria-label="' . $this->escape($exampleLabel)
             . '" class="docara-example-preview__tabs">' . implode('', $tabs) . '</div>'
+            . '<div class="docara-example-preview__actions">'
+            . ($fullscreen ? '<button type="button" data-docara-example-fullscreen hidden aria-pressed="false" aria-label="Open example fullscreen"'
+                . ' data-fullscreen-icon="fullscreen" data-fullscreen-exit-icon="fullscreen_exit"'
+                . ' class="docara-example-preview__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
+                . '<sf-icon icon="fullscreen" aria-hidden="true"></sf-icon></button>' : '')
+            . ($wrap ? '<button type="button" data-docara-example-wrap hidden aria-pressed="false" aria-label="Wrap source lines"'
+                . ' data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow"'
+                . ' class="docara-example-preview__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
+                . '<sf-icon icon="wrap_text" aria-hidden="true"></sf-icon></button>' : '')
             . '<button type="button" data-docara-example-copy hidden aria-label="' . $this->escape($copyLabel)
             . '" data-copy-label="' . $this->escape($copyLabel) . '" data-copied-label="'
             . $this->escape($copiedLabel)
             . '" data-copy-icon="content_copy" data-copied-icon="check"'
             . ' class="docara-example-preview__copy sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
             . '<sf-icon icon="content_copy" aria-hidden="true"></sf-icon>'
-            . '</button><span class="docara-example-preview__indicator" aria-hidden="true"></span></div>'
+            . '</button></div><span class="docara-example-preview__indicator" aria-hidden="true"></span></div>'
             . '<div class="docara-example-preview__panels">' . implode('', $panels) . '</div></section>';
     }
 

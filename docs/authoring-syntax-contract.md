@@ -96,6 +96,17 @@ Sandboxed results expand to their measured content height without nested
 scrolling or a second shell height animation; the documentation page owns
 vertical scrolling.
 
+The result tab can expose a fullscreen action for the whole Example surface,
+including its tabs. Source tabs can expose CSS-only soft wrapping without
+changing source or copied bytes. Both controls default to enabled. The
+`examples.fullscreen` and `examples.wrap` booleans inherit through site,
+section and page configuration; `fullscreen=true|false` and `wrap=true|false`
+on an individual `example` block are the final override. Standalone fenced and
+external code blocks expose the same soft-wrap action when inherited
+`code.wrap` is enabled. The reader preference is shared between standalone code
+and Example source tabs, while the settings independently control where the
+action is available.
+
 ## Parameters and naming
 
 All components use the same attribute grammar:

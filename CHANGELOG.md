@@ -4,6 +4,24 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.8.0] - 2026-09-07
+
+### Added
+
+- Example surfaces can expand to the browser fullscreen area while preserving
+  access to both the rendered result and every source tab.
+- Example source tabs and standalone code blocks provide optional CSS-only
+  soft wrapping without changing copied source bytes.
+- Fullscreen and wrapping availability can be configured at site, section or
+  page level and overridden for an individual Example block.
+
+### Changed
+
+- Source wrapping uses one persisted reader preference across Example sources
+  and standalone code blocks, with responsive enablement on narrow screens.
+- Example and code toolbar actions expose keyboard-only visible focus and
+  state-specific labels and icons.
+
 ## [2.7.5] - 2026-09-06
 
 ### Fixed

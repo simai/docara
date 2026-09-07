@@ -77,6 +77,12 @@
         "settings": {
             "$ref": "presentation.schema.json#/$defs/settings"
         },
+        "examples": {
+            "$ref": "presentation.schema.json#/$defs/examples"
+        },
+        "code": {
+            "$ref": "presentation.schema.json#/$defs/code"
+        },
         "reader_preferences": {
             "$ref": "#/$defs/readerPreferences"
         },

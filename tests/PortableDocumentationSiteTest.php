@@ -181,6 +181,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $catalogIndex = (string) file_get_contents($build . '/ru/components/index.html');
         $alertPage = (string) file_get_contents($build . '/ru/components/alert/index.html');
+        $examplePage = (string) file_get_contents($build . '/ru/components/example/index.html');
         self::assertSame(2, substr_count($catalogIndex, 'data-docara-table-scroll'));
         preg_match_all('~href="(/ru/components/[a-z0-9-]+/)"~', $catalogIndex, $componentLinks);
         self::assertSame(31, count(array_unique($componentLinks[1] ?? [])));
@@ -194,6 +195,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertStringNotContainsString('data-docara-component-catalog-index', $catalogIndex);
         self::assertStringContainsString('"code.copy":"Скопировать"', $alertPage);
         self::assertStringContainsString('"code.copied":"Скопировано"', $alertPage);
+        self::assertStringContainsString('"code.wrap":"Переносить длинные строки"', $alertPage);
+        self::assertStringContainsString('"examples.fullscreen":"Развернуть пример на весь экран"', $alertPage);
+        self::assertStringContainsString('data-docara-example-fullscreen="true"', $examplePage);
+        self::assertStringContainsString('data-docara-example-wrap="true"', $examplePage);
         $shellCss = (string) file_get_contents($build . '/_docara/declarative-shell.css');
         $shellJs = (string) file_get_contents($build . '/_docara/declarative-shell.js');
         self::assertStringContainsString('localizeCodeCopy', $shellJs);

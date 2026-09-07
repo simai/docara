@@ -68,8 +68,9 @@ final class ExampleRuntimeContractTest extends TestCase
         $styles = (string) file_get_contents($root . '/resources/portable/declarative-shell.css');
 
         self::assertStringContainsString("example.dataset.sourceActive=key==='example'?'false':'true'", $shell);
-        self::assertStringContainsString('fullscreenButton.hidden=false', $shell);
-        self::assertStringNotContainsString('fullscreenButton.hidden=!active&&!selected', $shell);
+        self::assertStringContainsString("var selected=example.dataset.sourceActive!=='true'", $shell);
+        self::assertStringContainsString('fullscreenButton.hidden=!active&&!selected', $shell);
+        self::assertStringNotContainsString('fullscreenButton.hidden=false', $shell);
         self::assertStringContainsString("wrapButton.hidden=example.dataset.sourceActive!=='true'", $shell);
         self::assertStringContainsString('document.fullscreenElement===example', $shell);
         self::assertStringContainsString('example.requestFullscreen()', $shell);
@@ -86,6 +87,7 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString("window.matchMedia('(max-width: 640px)').matches", $shell);
         self::assertStringContainsString("var lines=Array.from(code.querySelectorAll('.hljs-ln-code'))", $shell);
         self::assertStringContainsString('[data-docara-example-wrap-active="true"]', $styles);
+        self::assertStringContainsString('[data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll code{min-inline-size:0;white-space:pre-wrap;overflow-wrap:anywhere}', $styles);
         self::assertStringContainsString('white-space:pre-wrap', $styles);
         self::assertStringContainsString('.docara-example-preview:fullscreen', $styles);
         self::assertStringContainsString('.docara-example-preview .docara-example-preview__action:focus:not(:focus-visible)', $styles);

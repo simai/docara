@@ -155,7 +155,7 @@ sf-alert,sf-button{display:block}
 [data-docara-example-panel] .docara-code-scroll .hljs-ln-numbers{display:none}
 [data-docara-example-panel] .docara-code-scroll .hljs-ln-code{padding-inline:0}
 [data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll{overflow-x:hidden}
-[data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll code{white-space:pre-wrap;overflow-wrap:anywhere}
+[data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll code{min-inline-size:0;white-space:pre-wrap;overflow-wrap:anywhere}
 [data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll .hljs-ln{inline-size:100%;table-layout:fixed}
 [data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll .hljs-ln-code{white-space:pre-wrap;overflow-wrap:anywhere}
 [data-docara-example-copy][hidden],[data-docara-example-fullscreen][hidden],[data-docara-example-wrap][hidden]{display:none}

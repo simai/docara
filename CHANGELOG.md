@@ -4,6 +4,15 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.8.2] - 2026-09-07
+
+### Fixed
+
+- Example source tabs hide the fullscreen entry action while preserving the
+  exit action for an Example that is already fullscreen.
+- Soft wrapping now removes the source element's intrinsic `max-content`
+  width, so long highlighted lines visibly wrap instead of being clipped.
+
 ## [2.8.1] - 2026-09-07
 
 ### Fixed

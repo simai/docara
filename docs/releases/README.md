@@ -1,5 +1,8 @@
 # Docara releases
 
+- [Docara 2.8.2](v2.8.2.md) — result-only fullscreen entry and effective
+  visual source wrapping.
+- [Docara 2.8.1](v2.8.1.md) — fullscreen exit access across Example tabs.
 - [Docara 2.8.0](v2.8.0.md) — fullscreen Example surfaces and shared CSS-only
   source wrapping.
 - [Docara 2.7.5](v2.7.5.md) — CORS-free ordering of local fonts in sandboxed

@@ -5,7 +5,7 @@ sites. It contains byte-identical copies of the accepted
 `larena/ui` manifests for `ui.alert` and `ui.button`, the exact accepted Simai
 Framework runtime lock and four locally projected Smart assets from the
 published Framework pair
-`ui@47a0f496574bd0af0f03e4b332a2a35a65d77d05` /
+`ui@833b9ab11ed59c8ee3443ce365faf00e2d9fcaea` /
 `ui-smart@b07ee0178a1dbc6cb9b1fd49d106f2c12d3ec778`:
 
 - `smart/alert/js/alert.js` —
@@ -21,7 +21,7 @@ Project sites repeat those hashes, the source revision and the manifest
 provider revision in `docara.framework_lock.v1`. A build verifies the bytes,
 copies them to the reserved `_docara/framework` namespace and appends one
 projection-aware cache version to each URL. Core and Smart are taken from the
-immutable published UI `v5.6.2` / Smart `v5.4.1` pair; there is no moving
+immutable published UI `v5.6.4` / Smart `v5.4.1` pair; there is no moving
 `main`/`latest` fallback.
 The local consumer adapter preloads a package-owned outlined shell subset and
 keeps exact full Material Symbols Outlined, Rounded and Sharp fonts as lazy

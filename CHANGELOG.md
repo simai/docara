@@ -4,6 +4,14 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.8.3] - 2026-09-08
+
+### Changed
+
+- The portable Framework runtime is pinned to SIMAI UI Core `v5.6.4` with
+  SIMAI UI Smart `v5.4.1`, including the complete restored Utility/Loader
+  contract and exact generated registry.
+
 ## [2.8.2] - 2026-09-07
 
 ### Fixed

@@ -1,0 +1,66 @@
+{
+  "id": "sf5.foundation.target.2026-09",
+  "tz_role": "contract",
+  "subtype": "architecture_contract",
+  "lifecycle": "accepted",
+  "title": "Фундамент SF5: принятый объём и границы исполнения",
+  "semantic_digest": "sha256:2574c2560cf5a2cd7873debddc3d1937e01dae1ed6406b30b22c0dbb62d30233",
+  "source_refs": ["docs/strategy/foundation-plan.md", "docs/strategy/foundation-decision-packet.md"],
+  "requirements": {
+    "sf5.foundation.names": "Единый каталог имён и типов; start/end, spacing и совместимые aliases, физические исключения.",
+    "sf5.foundation.sizing": "Token-only размеры, rem, UI Heights: сохранить mobile, desktop size=1/3/default 1.75rem; проверить все матрицы и потребителей.",
+    "sf5.foundation.utilities": "Полнота CSS, Loader, registry, docs; отрицательные и state/responsive формы, изолированная загрузка, отсутствие ложных совпадений.",
+    "sf5.foundation.modern": "Конечные предсобранные container conditions, subgrid, text-wrap, viewport; совместимые col-gap ownership и display-table.",
+    "sf5.foundation.smart": "Измеренное сравнение общей JS-основы; input/menu/table, фильтр/диалог, lifecycle, внешний template, декларативная композиция и один backend consumer без полной Larena.",
+    "sf5.foundation.docs": "Документация соответствует исполнению; источник, выпуск, lock и сайт различены; Docara authoring/source discovery и примеры через Loader.",
+    "sf5.foundation.delivery": "Полные тесты и геометрия, доступность/LTR/RTL/темы, две чистые идентичные сборки, точные locks, проверяемая поставка docara.test/ui-doc.test и rollback."
+  },
+  "provider_execution_contract": {
+    "decision_refs": ["sf5.foundation.acceptance.2026-09-09"],
+    "goal_binding": {
+      "goal_id": "sf5.foundation.goal.2026-09",
+      "done_when_ids": ["sf5.foundation.names", "sf5.foundation.sizing", "sf5.foundation.utilities", "sf5.foundation.modern", "sf5.foundation.smart", "sf5.foundation.docs", "sf5.foundation.delivery"]
+    },
+    "requirement_bindings": [
+      {"requirement_id": "sf5.foundation.names", "acceptance_ids": ["sf5.foundation.names.acceptance"], "done_when_ids": ["sf5.foundation.names"]},
+      {"requirement_id": "sf5.foundation.sizing", "acceptance_ids": ["sf5.foundation.sizing.acceptance"], "done_when_ids": ["sf5.foundation.sizing"]},
+      {"requirement_id": "sf5.foundation.utilities", "acceptance_ids": ["sf5.foundation.utilities.acceptance"], "done_when_ids": ["sf5.foundation.utilities"]},
+      {"requirement_id": "sf5.foundation.modern", "acceptance_ids": ["sf5.foundation.modern.acceptance"], "done_when_ids": ["sf5.foundation.modern"]},
+      {"requirement_id": "sf5.foundation.smart", "acceptance_ids": ["sf5.foundation.smart.acceptance"], "done_when_ids": ["sf5.foundation.smart"]},
+      {"requirement_id": "sf5.foundation.docs", "acceptance_ids": ["sf5.foundation.docs.acceptance"], "done_when_ids": ["sf5.foundation.docs"]},
+      {"requirement_id": "sf5.foundation.delivery", "acceptance_ids": ["sf5.foundation.delivery.acceptance"], "done_when_ids": ["sf5.foundation.delivery"]}
+    ],
+    "constraint_ids": ["sf5.foundation.preserve-foreign-work", "sf5.foundation.prebuilt", "sf5.foundation.compatibility", "sf5.foundation.token-only", "sf5.foundation.release-gates"],
+    "non_goal_ids": ["sf5.foundation.no-full-larena", "sf5.foundation.no-ai-first-implementation", "sf5.foundation.no-federation-changes", "sf5.foundation.no-all-smart-rewrite"],
+    "deferred_boundary_ids": ["sf5.foundation.publication-after-release-gates"],
+    "allowed_change_scope": [
+      {"repository_id": "ui-loader", "owner_id": "sf5", "package_id": "ui-loader", "file_patterns": ["src/**", "scripts/**", "tests/**", "docs/**"], "actions": ["create", "modify", "test", "document"]},
+      {"repository_id": "ui-builder", "owner_id": "sf5", "package_id": "ui-builder", "file_patterns": ["src/**", "scripts/**", "tests/**", "docs/**"], "actions": ["create", "modify", "test", "document"]},
+      {"repository_id": "ui", "owner_id": "sf5", "package_id": "ui", "file_patterns": ["**"], "actions": ["modify", "test", "document"]},
+      {"repository_id": "ui-smart", "owner_id": "sf5", "package_id": "ui-smart", "file_patterns": ["**"], "actions": ["modify", "test", "document"]},
+      {"repository_id": "docara", "owner_id": "docara", "package_id": "docara", "file_patterns": ["src/**", "tests/**", "scripts/**", "docs/**", "graph/specs/**", "content/**", "*.json", "*.lock"], "actions": ["create", "modify", "test", "document"]},
+      {"repository_id": "ui-doc", "owner_id": "sf5", "package_id": "ui-doc", "file_patterns": ["content/**", "docs/**", "tests/**", "scripts/**", "*.json", "*.lock"], "actions": ["create", "modify", "test", "document"]},
+      {"repository_id": "ui-control", "owner_id": "sf5", "package_id": "ui-control", "file_patterns": ["control/**", "graph/specs/**", "README.md"], "actions": ["modify", "document"]}
+    ],
+    "architecture_contract": {
+      "contract_ref": "sf5.foundation.target.2026-09",
+      "acceptance_ref": "sf5.foundation.acceptance.2026-09-09",
+      "architecture_owner_id": "rim-zabarov",
+      "lifecycle": "accepted",
+      "owner_ids": ["sf5", "docara", "larena", "tester", "ops"],
+      "component_ids": ["sf5.core", "sf5.loader", "sf5.utilities", "sf5.components", "sf5.smart", "sf5.blocks"],
+      "package_ids": ["ui-loader", "ui-builder", "ui", "ui-smart", "docara", "ui-doc", "ui-control"],
+      "capability_ids": ["sf5.prebuilt-modules", "sf5.smart-templates", "docara.declarative-composition"],
+      "ownership_boundaries": [
+        {"subject_ref": "ui-loader", "data_owner": "sf5", "access_owner": "sf5", "lifecycle_owner": "sf5", "interface_owner": "sf5", "runtime_owner": "sf5"},
+        {"subject_ref": "ui-builder", "data_owner": "sf5", "access_owner": "sf5", "lifecycle_owner": "sf5", "interface_owner": "sf5", "runtime_owner": "sf5"},
+        {"subject_ref": "docara", "data_owner": "docara", "access_owner": "docara", "lifecycle_owner": "docara", "interface_owner": "docara", "runtime_owner": "docara"}
+      ],
+      "required_relations": ["ui-loader->ui-builder", "ui-builder->ui", "ui-builder->ui-smart", "docara->ui-doc"],
+      "allowed_relations": ["sf5.blocks->sf5.smart", "sf5.smart->sf5.components", "sf5.components->sf5.utilities"],
+      "forbidden_relations": ["ui->manual-runtime-source", "ui-smart->manual-runtime-source"],
+      "required_dependencies": ["ui-builder->ui-loader", "ui-doc->docara", "ui-doc->ui", "docara->ui"],
+      "forbidden_dependencies": ["sf5.core->product-ui", "sf5.utilities->react", "sf5.utilities->vue"]
+    }
+  }
+}

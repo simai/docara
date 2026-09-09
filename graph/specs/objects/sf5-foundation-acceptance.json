@@ -1,0 +1,25 @@
+{
+  "id": "sf5.foundation.acceptance.2026-09-09",
+  "tz_role": "decision",
+  "subtype": "architecture_baseline_acceptance",
+  "lifecycle": "accepted",
+  "owner": "rim-zabarov",
+  "baseline_digest": "sha256:2574c2560cf5a2cd7873debddc3d1937e01dae1ed6406b30b22c0dbb62d30233",
+  "title": "Принятие четырёх решений фундамента SF5",
+  "human_receipt": {
+    "source": "user-message",
+    "thread_id": "019fe5a5-539c-72a0-827e-380391e9780b",
+    "date": "2026-09-09",
+    "statement": "согласен - делай",
+    "accepted_proposal": "Четыре решения: контейнерная адаптация; subgrid/text-wrap/dynamic viewport; совместимые Loader ownership и display-table; сохранить mobile и исправить desktop size=1/3 normal на 1.75rem."
+  },
+  "source_refs": [
+    "docs/strategy/foundation-plan.md",
+    "docs/strategy/foundation-decision-packet.md"
+  ],
+  "constraints": [
+    "Не является приёмкой реализации, тестов или публикации.",
+    "Предсборка, выборочная загрузка, токены и существующие границы владельцев сохраняются.",
+    "Не разрешает смешивать чужие изменения или изменять Федерацию."
+  ]
+}

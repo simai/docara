@@ -4,7 +4,7 @@
   "subtype": "architecture_contract",
   "lifecycle": "accepted",
   "title": "Фундамент SF5: принятый объём и границы исполнения",
-  "semantic_digest": "sha256:f92e736ff6f599c426c599ed47693fa770e549f2f681b19000f11e162c555e5e",
+  "semantic_digest": "sha256:f3e067b0831c544cdf47b544f4007bfee64ee55c02e2c5e1b6787b6574f31bff",
   "source_refs": ["docs/strategy/foundation-plan.md", "docs/strategy/foundation-decision-packet.md"],
   "requirements": {
     "sf5.foundation.names": "Единый каталог имён и типов; start/end, spacing и совместимые aliases, физические исключения.",
@@ -34,13 +34,14 @@
     "non_goal_ids": ["sf5.foundation.no-full-larena", "sf5.foundation.no-ai-first-implementation", "sf5.foundation.no-federation-changes", "sf5.foundation.no-all-smart-rewrite"],
     "deferred_boundary_ids": ["sf5.foundation.publication-after-release-gates"],
     "allowed_change_scope": [
-      {"repository_id": "ui-loader", "owner_id": "sf5", "package_id": "ui-loader", "file_patterns": ["src/**", "scripts/**", "tests/**", "docs/**"], "actions": ["create", "modify", "test", "document"]},
+      {"repository_id": "project.sf5-utility-release-source.6d9a86713bf8", "owner_id": "sf5", "package_id": "ui-loader", "file_patterns": ["src/**", "scripts/**", "tests/**", "docs/**"], "actions": ["create", "modify", "test", "document"]},
+      {"repository_id": "project.ui-loader.3dcd25947162", "owner_id": "sf5", "package_id": "ui-loader", "file_patterns": ["src/**", "scripts/**", "tests/**", "docs/**"], "actions": ["create", "modify", "test", "document"]},
       {"repository_id": "ui-builder", "owner_id": "sf5", "package_id": "ui-builder", "file_patterns": ["src/**", "scripts/**", "tests/**", "docs/**"], "actions": ["create", "modify", "test", "document"]},
-      {"repository_id": "ui", "owner_id": "sf5", "package_id": "ui", "file_patterns": ["distr/**", "contracts/**", "docs/**", "scripts/**", "tests/**", "VERSION", "CHANGELOG.md", "README.md"], "actions": ["modify", "test", "document"]},
+      {"repository_id": "project.ui.44300acfa12a", "owner_id": "sf5", "package_id": "ui", "file_patterns": ["distr/**", "contracts/**", "docs/**", "scripts/**", "tests/**", "VERSION", "CHANGELOG.md", "README.md"], "actions": ["modify", "test", "document"]},
       {"repository_id": "ui-smart", "owner_id": "sf5", "package_id": "ui-smart", "file_patterns": ["smart/**", "contracts/**", "docs/**", "tests/**", "VERSION", "CHANGELOG.md", "README.md"], "actions": ["modify", "test", "document"]},
-      {"repository_id": "docara", "owner_id": "docara", "package_id": "docara", "file_patterns": ["src/**", "tests/**", "scripts/**", "docs/**", "graph/specs/**", "content/**", "composer.json", "composer.lock"], "actions": ["create", "modify", "test", "document"]},
-      {"repository_id": "ui-doc", "owner_id": "sf5", "package_id": "ui-doc", "file_patterns": ["content/**", "docs/**", "tests/**", "scripts/**", "composer.json", "composer.lock", "docara.json", "docara.authoring.json", "documentation.lock.json", "simai-framework.lock.json", "translations.lock.json", "redirects.json"], "actions": ["create", "modify", "test", "document"]},
-      {"repository_id": "ui-control", "owner_id": "sf5", "package_id": "ui-control", "file_patterns": ["control/**", "graph/specs/**", "README.md"], "actions": ["modify", "document"]}
+      {"repository_id": "docara.unified", "owner_id": "docara", "package_id": "docara", "file_patterns": ["src/**", "tests/**", "scripts/**", "docs/**", "graph/specs/**", "content/**", "composer.json", "composer.lock"], "actions": ["create", "modify", "test", "document"]},
+      {"repository_id": "project.ui-doc", "owner_id": "sf5", "package_id": "ui-doc", "file_patterns": ["content/**", "docs/**", "tests/**", "scripts/**", "composer.json", "composer.lock", "docara.json", "docara.authoring.json", "documentation.lock.json", "simai-framework.lock.json", "translations.lock.json", "redirects.json"], "actions": ["create", "modify", "test", "document"]},
+      {"repository_id": "simai.framework.frontend_ecosystem", "owner_id": "sf5", "package_id": "ui-control", "file_patterns": ["control/**", "graph/specs/**", "README.md"], "actions": ["modify", "document"]}
     ],
     "architecture_contract": {
       "contract_ref": "sf5.foundation.target.2026-09",

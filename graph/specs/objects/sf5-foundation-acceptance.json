@@ -4,7 +4,7 @@
   "subtype": "architecture_baseline_acceptance",
   "lifecycle": "accepted",
   "owner": "rim-zabarov",
-  "baseline_digest": "sha256:2574c2560cf5a2cd7873debddc3d1937e01dae1ed6406b30b22c0dbb62d30233",
+  "baseline_digest": "sha256:f92e736ff6f599c426c599ed47693fa770e549f2f681b19000f11e162c555e5e",
   "title": "Принятие четырёх решений фундамента SF5",
   "human_receipt": {
     "source": "user-message",

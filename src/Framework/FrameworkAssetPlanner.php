@@ -1038,6 +1038,13 @@ final readonly class FrameworkAssetPlanner
                 $component = $record['component'];
                 $tag = (string) $record['tag'];
                 $projectedSmartFiles = $this->repository->assetProjection()['files'] ?? [];
+                $dynamicProjection = $this->repository->dynamicAssetProjection();
+                if (is_array($dynamicProjection)) {
+                    $projectedSmartFiles = [
+                        ...$projectedSmartFiles,
+                        ...($dynamicProjection['files'] ?? []),
+                    ];
+                }
                 $requiredSmartPaths = [];
                 foreach ([$component['css'] ?? null, $component['javascript'] ?? null] as $lockedPath) {
                     if (! is_string($lockedPath) || $lockedPath === '') {
@@ -1401,7 +1408,7 @@ final readonly class FrameworkAssetPlanner
 
     private function publisherBase(): string
     {
-        $suffix = '/framework';
+        $suffix = '/' . basename((string) $this->repository->assetProjection()['mount']);
         if (! str_ends_with($this->assetBase, $suffix)) {
             throw new FrameworkComponentException('FRAMEWORK_SHELL_PUBLIC_PATH_INVALID', $this->assetBase);
         }
@@ -1427,7 +1434,7 @@ final readonly class FrameworkAssetPlanner
     private function projectedPublicUrl(string $publicPath): string
     {
         $prefix = '_docara/';
-        $frameworkSuffix = '/framework';
+        $frameworkSuffix = '/' . basename((string) $this->repository->assetProjection()['mount']);
         if (! str_starts_with($publicPath, $prefix)
             || ! str_ends_with($this->assetBase, $frameworkSuffix)
         ) {
@@ -1442,7 +1449,7 @@ final readonly class FrameworkAssetPlanner
     private function projectedRuntimeBase(string $mount): string
     {
         $prefix = '_docara/';
-        $frameworkSuffix = '/framework';
+        $frameworkSuffix = '/' . basename((string) $this->repository->assetProjection()['mount']);
         if (! str_starts_with($mount, $prefix)
             || ! str_ends_with($this->assetBase, $frameworkSuffix)
         ) {

@@ -4,7 +4,13 @@
 
 ## Актуальный остаток приёмки
 
-Статус продолжения: **активное автономное выполнение**, не завершение фундамента. Ранее зафиксированное ожидание решения владельца исторически снято его явным согласием. Контракты имён/aliases, UI Heights, token-only размеры, Utilities↔Loader и принятые современные семейства реализованы в изолированном кандидате. Размерный strict gate:4381 файл,604 классифицированных записи, unresolved0. Полный suite после последнего Smart lifecycle изменения:261tests/258PASS/3FAIL; все три — один manifest provenance drift административного меню, который должен закрываться от точной ревизии, а не ручным хешем.
+Статус продолжения: **локальный release candidate принят тестами, выпускной контур остаётся активным**. Контракты имён/aliases, UI Heights, token-only размеры, Utilities↔Loader и принятые современные семейства реализованы в изолированном кандидате. Размерный strict gate: 4381 файл, 604 классифицированных записи, unresolved 0. Последний полный Docara suite: **582 теста, 30 754 проверки, 0 errors/failures, 2 штатных skip**. Ранее описанные ниже manifest drift и промежуточные FAIL сохранены как историческая трасса и не являются текущим состоянием кандидата.
+
+Immutable inputs: utility source `89bc310aae06480c797aee9fbd067b5f64eff6c0`, builder `e302a1c8816ecd5668c31f69f81dc7f378ae87fc`, UI `d328491bc805439f200866f7e04c0e5e853a4998`, Smart `9e94abc6b10c82f770820807343cecb9a0e27f77`. Двойная чистая сборка совпала: Core 65, Component 1917, Utility 3860, Smart 621 файл. Registry: 228 utilities, 63 components, 43 Smart, 1 recipe; SHA-256 `2ddbcd7077c6fa2b2f1918726f16c9c213f3a6db5d717539244bcad01abd83b3`.
+
+Docara проецирует 64 точных Smart runtime-файла в отдельный `_docara/framework-runtime`, сохраняя portable ABI `_docara/framework`; генератор прошёл двукратную проверку идемпотентности. `ui-doc`: 914 страниц; static verifier — 1798 HTML, 371 766 ссылок, `broken=[]`; Input/Admin Menu/Table рендерятся в sandbox без ослабления origin-изоляции, повторных script URL, ошибок и предупреждений.
+
+Остаток: локальные коммиты → доступный точный release Docara → штатный Composer lock потребителя → release/deploy action gate с backup/rollback → публикация обоих сайтов → live read-back ресурсов, locks и computed behavior → указатель в `ui-control`. До выполнения этой цепочки локальный кандидат не называется опубликованным фундаментом.
 
 [Решение по JS-основе](foundation-smart-runtime-decision.md): сохранить HTMLElement+Lit и извлекать только доказанно повторяемую механику. Воспроизводимый source-аудит baseline4b55b4d2→pilot:7728→7815 поддерживаемых строк, gzip52094→53382 байта, native lifecycle overrides7→2, ручная child factory таблицы1→0; новая обязательная зависимость и миграция markup отсутствуют. Focused23/23PASS. Production bytes, запросы и median init/update ещё не измерены на immutable сборке; бюджет записан заранее и остаётся release-gate.
 

@@ -63,6 +63,14 @@ final readonly class FrameworkLock
     }
 
     /** @return array<string, mixed>|null */
+    public function dynamicAssetProjection(): ?array
+    {
+        $projection = $this->data['dynamic_asset_projection'] ?? null;
+
+        return is_array($projection) ? $projection : null;
+    }
+
+    /** @return array<string, mixed>|null */
     public function typographyProjection(): ?array
     {
         $projection = $this->data['typography_projection'] ?? null;
@@ -183,7 +191,7 @@ final readonly class FrameworkLock
         $projection = $this->data['asset_projection'] ?? null;
         if (! is_array($projection)
             || ($projection['schema'] ?? null) !== 'docara.framework_asset_projection.v1'
-            || ($projection['mount'] ?? null) !== '_docara/framework'
+            || ! in_array($projection['mount'] ?? null, ['_docara/framework', '_docara/framework-runtime'], true)
             || ($projection['source']['provider'] ?? null) !== 'simai/ui-smart'
             || ($projection['source']['revision'] ?? null) !== ($runtime['ui_smart']['commit'] ?? null)
             || ! is_array($projection['files'] ?? null)
@@ -201,6 +209,36 @@ final readonly class FrameworkLock
                 || ! $this->isSha256($record['sha256'] ?? null)
             ) {
                 throw new FrameworkComponentException('FRAMEWORK_ASSET_PROJECTION_FILE_INVALID', $relativePath);
+            }
+        }
+
+        $dynamicProjection = $this->data['dynamic_asset_projection'] ?? null;
+        if ($dynamicProjection !== null) {
+            if (! is_array($dynamicProjection)
+                || ($dynamicProjection['schema'] ?? null) !== 'docara.framework_dynamic_asset_projection.v1'
+                || ($dynamicProjection['mount'] ?? null) !== $projection['mount']
+                || ($dynamicProjection['source']['provider'] ?? null) !== 'simai/ui-smart'
+                || ($dynamicProjection['source']['revision'] ?? null) !== ($runtime['ui_smart']['commit'] ?? null)
+                || ! is_array($dynamicProjection['files'] ?? null)
+                || $dynamicProjection['files'] === []
+                || array_is_list($dynamicProjection['files'])
+            ) {
+                throw new FrameworkComponentException('FRAMEWORK_DYNAMIC_ASSET_PROJECTION_INVALID');
+            }
+            foreach ($dynamicProjection['files'] as $relativePath => $record) {
+                if (! is_string($relativePath)
+                    || ! $this->isSafeRelativePath($relativePath)
+                    || ! str_starts_with($relativePath, 'smart/')
+                    || isset($projection['files'][$relativePath])
+                    || ! is_array($record)
+                    || array_keys($record) !== ['sha256']
+                    || ! $this->isSha256($record['sha256'] ?? null)
+                ) {
+                    throw new FrameworkComponentException(
+                        'FRAMEWORK_DYNAMIC_ASSET_PROJECTION_FILE_INVALID',
+                        $relativePath,
+                    );
+                }
             }
         }
 

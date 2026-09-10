@@ -1111,6 +1111,7 @@ final readonly class PortableSiteBuilder
                         'runtime' => $buildBasePlan->frameworkLock['runtime'],
                         'manifests' => $buildBasePlan->frameworkLock['manifests'],
                         'asset_projection' => $buildBasePlan->frameworkLock['asset_projection'],
+                        'dynamic_asset_projection' => $buildBasePlan->frameworkLock['dynamic_asset_projection'] ?? null,
                         'shell' => [
                             'schema' => 'docara.framework_asset_plans.v1',
                             'mode' => 'production_exact',
@@ -1932,6 +1933,33 @@ final readonly class PortableSiteBuilder
                 throw new PortableConfigurationException(
                     'FRAMEWORK_ASSET_PUBLICATION_FAILED',
                     "Framework asset [$relativePath] could not be published deterministically.",
+                );
+            }
+        }
+
+        $dynamicProjection = $frameworkLock->dynamicAssetProjection();
+        if (! is_array($dynamicProjection)) {
+            return;
+        }
+        $dynamicRelativePaths = array_keys($dynamicProjection['files']);
+        sort($dynamicRelativePaths, SORT_STRING);
+        foreach ($dynamicRelativePaths as $relativePath) {
+            $record = $dynamicProjection['files'][$relativePath];
+            if (! is_string($relativePath) || ! is_array($record) || ! is_string($record['sha256'] ?? null)) {
+                throw new PortableConfigurationException(
+                    'FRAMEWORK_DYNAMIC_ASSET_PROJECTION_INVALID',
+                    'The Framework dynamic asset projection contains an invalid record.',
+                );
+            }
+            $bytes = $repository->bundledDynamicAsset($relativePath);
+            $target = rtrim($destination, '/\\') . '/' . $mount . '/' . $relativePath;
+            $this->files->ensureDirectoryExists(dirname($target));
+            if ($this->files->put($target, $bytes) === false
+                || ! hash_equals($record['sha256'], hash('sha256', (string) $this->files->get($target)))
+            ) {
+                throw new PortableConfigurationException(
+                    'FRAMEWORK_DYNAMIC_ASSET_PUBLICATION_FAILED',
+                    "Framework dynamic asset [$relativePath] could not be published deterministically.",
                 );
             }
         }

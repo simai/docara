@@ -356,10 +356,10 @@
     if(text&&text.textContent!==label){text.textContent=label}
     syncSourceWrapIcon(button,active);
   }
-  var exampleFontAssets=Object.create(null);
-  function exampleFontAsset(url){
+  var exampleFontAssets=Object.create(null),exampleStylesheets=Object.create(null);
+  function exampleFontAsset(url,baseHref){
     var resolved;
-    try{resolved=new URL(url,document.baseURI)}catch(error){return Promise.resolve(null)}
+    try{resolved=new URL(url,baseHref||document.baseURI)}catch(error){return Promise.resolve(null)}
     if(resolved.origin!==location.origin){return Promise.resolve(null)}
     if(!exampleFontAssets[resolved.href]){
       exampleFontAssets[resolved.href]=fetch(resolved.href,{credentials:'same-origin'}).then(function(response){
@@ -369,10 +369,10 @@
     }
     return exampleFontAssets[resolved.href];
   }
-  function portableExampleStyle(content){
+  function portableExampleStyle(content,baseHref){
     var matches=[],pattern=/url\(\s*(["']?)([^"')]+)\1\s*\)/g,match;
     while((match=pattern.exec(content))!==null){matches.push({token:match[0],url:match[2]})}
-    return Promise.all(matches.map(function(item){return exampleFontAsset(item.url)})).then(function(assets){
+    return Promise.all(matches.map(function(item){return exampleFontAsset(item.url,baseHref)})).then(function(assets){
       var result=content,fonts=[];
       matches.forEach(function(item,index){
         if(!assets[index])return;
@@ -382,6 +382,19 @@
       });
       return{content:result,fonts:fonts};
     });
+  }
+  function portableExampleStylesheet(link){
+    if(!link||typeof link.href!=='string')return Promise.resolve(null);
+    var resolved;
+    try{resolved=new URL(link.href,document.baseURI)}catch(error){return Promise.resolve(null)}
+    if(resolved.origin!==location.origin)return Promise.resolve(null);
+    if(!exampleStylesheets[resolved.href]){
+      exampleStylesheets[resolved.href]=fetch(resolved.href,{credentials:'same-origin'}).then(function(response){
+        if(!response.ok)throw new Error('Stylesheet request failed');
+        return response.text();
+      }).then(function(content){return portableExampleStyle(content,resolved.href)}).catch(function(){return null});
+    }
+    return exampleStylesheets[resolved.href];
   }
   function collectExampleTokenNames(rules,names){
     Array.from(rules||[]).forEach(function(rule){
@@ -410,23 +423,32 @@
     return tokens;
   }
   function exampleEnvironment(frame){
-    var source=frame.getAttribute('srcdoc')||'',needsIcons=source.indexOf('sf-icon')!==-1;
+    var inlineScripts=Array.from(document.querySelectorAll('script[data-docara-framework-asset="simai.framework.icon_font.ready"]:not([src])'));
+    var source=frame.getAttribute('srcdoc')||'',needsIcons=source.indexOf('sf-icon')!==-1||inlineScripts.length>0;
     var inlineStyles=needsIcons?Array.from(document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_font.css"],style[data-docara-framework-asset="simai.framework.icon_fallback_font.css"]')):[];
     if(source.indexOf('sf-icon-rounded')!==-1||source.indexOf('sf-icon-shape')!==-1){
       document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_variant_fonts.css"]').forEach(function(style){inlineStyles.push(style)});
     }
+    var stylesheetLinks=Array.from(document.querySelectorAll('link[data-docara-framework-asset][rel="stylesheet"],link[data-docara-declarative-shell-style][rel="stylesheet"]'));
     var environment={
-      stylesheets:Array.from(document.querySelectorAll('link[data-docara-framework-asset][rel="stylesheet"],link[data-docara-declarative-shell-style][rel="stylesheet"]')).map(function(link){return link.href}),
-      scripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset^="simai.framework.preloaded.component."][src]')).map(function(script){return script.src}),
-      inlineScripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset="simai.framework.icon_font.ready"]:not([src])')).map(function(script){return{key:script.getAttribute('data-docara-framework-asset'),content:script.textContent||''}}),
+      stylesheets:[],
+      scripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset][src]')).filter(function(script){return script.getAttribute('data-docara-framework-asset')!=='simai.framework.core.js'}).map(function(script){return script.src}),
+      inlineScripts:[],
       theme:document.documentElement.classList.contains('theme-dark')?'dark':'light',
       direction:document.documentElement.dir==='rtl'?'rtl':'ltr',
       rootFontSize:getComputedStyle(document.documentElement).fontSize,
       designTokens:exampleDesignTokens()
     };
-    return Promise.all(inlineStyles.map(function(style){return portableExampleStyle(style.textContent||'').then(function(portable){
+    return Promise.all(inlineStyles.map(function(style){return portableExampleStyle(style.textContent||'',document.baseURI).then(function(portable){
       return{key:style.getAttribute('data-docara-framework-asset')||'',content:portable.content,fonts:portable.fonts};
-    })})).then(function(styles){environment.inlineStyles=styles;return environment});
+    })})).then(function(styles){return Promise.all(inlineScripts.map(function(script){return portableExampleStyle(script.textContent||'',document.baseURI).then(function(portable){
+      return{key:script.getAttribute('data-docara-framework-asset')||'',content:portable.content,fonts:portable.fonts};
+    })})).then(function(scripts){environment.inlineScripts=scripts;return styles})}).then(function(styles){
+      return Promise.all(stylesheetLinks.map(function(link){return portableExampleStylesheet(link).then(function(portable){
+        if(!portable){environment.stylesheets.push(link.href);return null}
+        return{key:'stylesheet:'+link.href,content:portable.content,fonts:portable.fonts};
+      })})).then(function(linkedStyles){environment.inlineStyles=styles.concat(linkedStyles.filter(Boolean));return environment});
+    });
   }
   function requestExampleHeight(frame){
     if(!frame.contentWindow)return;

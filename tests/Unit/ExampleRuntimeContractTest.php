@@ -14,9 +14,11 @@ final class ExampleRuntimeContractTest extends TestCase
         $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
         $renderer = (string) file_get_contents($root . '/src/PortableSite/PortableMarkdownRenderer.php');
 
-        self::assertStringContainsString("scripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset^=\"simai.framework.preloaded.component.\"][src]'))", $shell);
+        self::assertStringContainsString("scripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset][src]'))", $shell);
         self::assertStringContainsString('simai.framework.icon_font.ready', $shell);
+        self::assertStringContainsString("source.indexOf('sf-icon')!==-1||inlineScripts.length>0", $shell);
         self::assertStringContainsString('inlineScripts:', $shell);
+        self::assertStringContainsString('portableExampleStyle(script.textContent', $shell);
         self::assertStringContainsString('exampleFontAsset', $shell);
         self::assertStringContainsString('simai.framework.icon_font.css', $shell);
         self::assertStringContainsString('inlineStyles=styles', $shell);
@@ -33,6 +35,7 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('data-docara-example-framework-inline-style', $renderer);
         self::assertStringContainsString('URL.createObjectURL(new Blob([font.bytes]', $renderer);
         self::assertStringContainsString('data-docara-example-framework-inline-script', $renderer);
+        self::assertStringContainsString('script.textContent=content', $renderer);
         self::assertStringContainsString('Promise.all(styleLoads)', $renderer);
         self::assertLessThan(
             strpos($renderer, "var current=Array.from(document.querySelectorAll('link[data-docara-example-framework-style]')"),

@@ -15,26 +15,33 @@ final readonly class FrameworkComponentRuntime
     ) {}
 
     /** @param array<string, mixed> $lock */
-    public static function fromLock(array $lock, string $assetBase = '/_docara/framework'): self
+    public static function fromLock(array $lock, ?string $assetBase = null): self
     {
         $frameworkLock = FrameworkLock::fromArray($lock);
+        $repository = FrameworkManifestRepository::bundled($frameworkLock);
 
         return self::create(
-            FrameworkManifestRepository::bundled($frameworkLock),
+            $repository,
             FrameworkConsumerPolicy::fromLock($frameworkLock),
-            $assetBase,
+            $assetBase ?? self::assetBaseFromRepository($repository),
         );
     }
 
-    public static function fromLockFile(string $path, string $assetBase = '/_docara/framework'): self
+    public static function fromLockFile(string $path, ?string $assetBase = null): self
     {
         $frameworkLock = FrameworkLock::fromJsonFile($path);
+        $repository = FrameworkManifestRepository::bundled($frameworkLock);
 
         return self::create(
-            FrameworkManifestRepository::bundled($frameworkLock),
+            $repository,
             FrameworkConsumerPolicy::fromLock($frameworkLock),
-            $assetBase,
+            $assetBase ?? self::assetBaseFromRepository($repository),
         );
+    }
+
+    private static function assetBaseFromRepository(FrameworkManifestRepository $repository): string
+    {
+        return '/' . trim((string) $repository->assetProjection()['mount'], '/');
     }
 
     private static function create(

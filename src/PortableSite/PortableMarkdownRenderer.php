@@ -915,7 +915,7 @@ final class PortableMarkdownRenderer
     {
         return <<<'HTML'
 <script data-docara-example-resize>(function(){
-var body=document.body,lastHeight=0,scheduled=false;
+var body=document.body,lastHeight=0,scheduled=false,frameworkScriptSources={};
 document.documentElement.style.overflow='hidden';
 body.style.overflow='hidden';
 function applyDesignEnvironment(data){
@@ -980,7 +980,13 @@ var currentInline=Array.from(document.querySelectorAll('script[data-docara-examp
 (Array.isArray(data.inlineScripts)?data.inlineScripts:[]).forEach(function(item){
 if(!item||typeof item.key!=='string'||typeof item.content!=='string'||item.content===''||currentInline.indexOf(item.key)!==-1)return;
 var script=document.createElement('script');
-script.textContent=item.content;
+var content=item.content;
+(Array.isArray(item.fonts)?item.fonts:[]).forEach(function(font){
+if(!font||typeof font.token!=='string'||!(font.bytes instanceof ArrayBuffer))return;
+var blobUrl=URL.createObjectURL(new Blob([font.bytes],{type:typeof font.type==='string'?font.type:'font/woff2'}));
+content=content.split(font.token).join(blobUrl);
+});
+script.textContent=content;
 script.setAttribute('data-docara-example-framework-inline-script',item.key);
 document.head.appendChild(script);
 currentInline.push(item.key);
@@ -988,9 +994,11 @@ currentInline.push(item.key);
 measureSettled();
 });
 var currentScripts=Array.from(document.querySelectorAll('script[data-docara-example-framework-script]')).map(function(script){return script.src});
+currentScripts.forEach(function(src){frameworkScriptSources[src]=true});
 var scriptQueue=Promise.resolve();
 (Array.isArray(data.scripts)?data.scripts:[]).forEach(function(src){
-if(typeof src!=='string'||currentScripts.indexOf(src)!==-1)return;
+if(typeof src!=='string'||frameworkScriptSources[src])return;
+frameworkScriptSources[src]=true;
 scriptQueue=scriptQueue.then(function(){return new Promise(function(resolve){
 var script=document.createElement('script');
 script.src=src;
@@ -999,7 +1007,6 @@ script.setAttribute('data-docara-example-framework-script','');
 script.addEventListener('load',function(){measureSettled();resolve()},{once:true});
 script.addEventListener('error',resolve,{once:true});
 document.head.appendChild(script);
-currentScripts.push(script.src);
 })});
 });
 }

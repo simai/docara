@@ -368,7 +368,10 @@ final readonly class EffectiveComponentCatalogBuilder
             $this->manifests,
             $this->consumerPolicy,
             new FrameworkPropsValidator,
-            new FrameworkAssetPlanner($this->manifests, '/_docara/framework'),
+            new FrameworkAssetPlanner(
+                $this->manifests,
+                '/' . (string) $this->manifests->assetProjection()['mount'],
+            ),
         ))->assertReady();
     }
 

@@ -26,7 +26,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($project));
 
-        self::assertSame('sf-v5.7.0-202fa232-4dda05d5', $repository->runtime()['pair_id']);
+        self::assertSame('sf-v5.7.0-d328491b-9e94abc6', $repository->runtime()['pair_id']);
     }
 
     #[Test]
@@ -40,7 +40,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         );
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
-        self::assertSame('sf-v5.7.0-202fa232-4dda05d5', $repository->runtime()['pair_id']);
+        self::assertSame('sf-v5.7.0-d328491b-9e94abc6', $repository->runtime()['pair_id']);
         self::assertSame(843, $repository->runtimeProjection()['files']);
         self::assertSame('sf-v5.6.1-34f5ff45-23d00d92', $previous['runtime']['pair_id']);
 
@@ -126,7 +126,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             );
         }
 
-        $plan = (new FrameworkAssetPlanner($repository, '/_docara/framework'))->plan([]);
+        $plan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->plan([]);
         $assets = array_column($plan->assets, null, 'key');
         self::assertCount(1, $plan->generatedAssets);
         $shell = $plan->generatedAssets[0];
@@ -183,7 +183,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         self::assertStringNotContainsString('cdn.jsdelivr.net', $assets['simai.framework.boot']['content']);
         foreach (['simai.framework.smart_base.js', 'simai.framework.core.js'] as $assetKey) {
             self::assertStringStartsWith('/_docara/vendor/simai-framework/runtime/', $assets[$assetKey]['url']);
-            self::assertSame('202fa232de9ab135127f1ec6e723a3dcf966c879', $assets[$assetKey]['source_revision']);
+            self::assertSame('d328491bc805439f200866f7e04c0e5e853a4998', $assets[$assetKey]['source_revision']);
             self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $assets[$assetKey]['sha256']);
         }
         self::assertStringContainsString(
@@ -284,7 +284,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertStringNotContainsString('cdn.jsdelivr.net', (string) ($asset['url'] ?? '') . (string) ($asset['content'] ?? ''));
         }
 
-        $productionPlan = (new FrameworkAssetPlanner($repository, '/_docara/framework'))->planForHtml(
+        $productionPlan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->planForHtml(
             '<main class="flex p-1"><sf-button>Save</sf-button></main>',
             [],
         );
@@ -301,32 +301,49 @@ final class FrameworkTypographyProjectionTest extends TestCase
             $productionPlan->generatedAssets[0]['content'],
         );
 
-        $singleGapClass = (new FrameworkAssetPlanner($repository, '/_docara/framework'))->planForHtml(
+        $singleGapClass = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->planForHtml(
             '<div class="gap-2">Gap</div>',
             [],
         );
         self::assertContains('gap/default', $singleGapClass->preload['modules']);
 
-        $substringCollision = (new FrameworkAssetPlanner($repository, '/_docara/framework'))->planForHtml(
+        $substringCollision = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->planForHtml(
             '<div class="docara-gap-2x">No utility</div>',
             [],
         );
         self::assertNotContains('gap/default', $substringCollision->preload['modules']);
 
-        $bodyPlan = (new FrameworkAssetPlanner($repository, '/_docara/framework'))->planForHtml(
+        $bodyPlan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->planForHtml(
             '<!doctype html><html><body class="max-container-7"><main>Content</main></body></html>',
             [],
         );
         self::assertContains('max-container/default', $bodyPlan->preload['modules']);
 
-        $nested = (new FrameworkAssetPlanner($repository, '/project~/docs/_docara/framework'))->plan([]);
+        foreach (['sf-input' => 'inputs', 'sf-admin-menu' => 'admin-menu', 'sf-table' => 'table'] as $tag => $module) {
+            $smartPlan = (new FrameworkAssetPlanner($repository, '/_docara/framework-runtime'))->planForHtml(
+                "<$tag></$tag>",
+                [],
+            );
+            self::assertSame([], $smartPlan->diagnostics, "$tag must not fall back to an unavailable dynamic URL.");
+            self::assertNotEmpty(
+                array_filter(
+                    array_column($smartPlan->assets, 'url'),
+                    static fn (string $url): bool => str_starts_with(
+                        $url,
+                        "/_docara/framework-runtime/smart/$module/js/$module.js?sf_v=",
+                    ),
+                ),
+            );
+        }
+
+        $nested = (new FrameworkAssetPlanner($repository, '/project~/docs/_docara/framework-runtime'))->plan([]);
         $nestedAssets = array_column($nested->assets, null, 'key');
         self::assertStringStartsWith(
             '/project~/docs/_docara/vendor/simai-framework/typography/5.4.0/core.css?sf_v=',
             $nestedAssets['simai.framework.core.css']['url'],
         );
         self::assertStringStartsWith(
-            '/project~/docs/_docara/vendor/simai-framework/runtime/202fa232de9ab135127f1ec6e723a3dcf966c879/distr/core/js/core.js?sf_v=',
+            '/project~/docs/_docara/vendor/simai-framework/runtime/d328491bc805439f200866f7e04c0e5e853a4998/distr/core/js/core.js?sf_v=',
             $nestedAssets['simai.framework.core.js']['url'],
         );
     }
@@ -424,7 +441,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             try {
                 (new FrameworkAssetPlanner(
                     new FrameworkManifestRepository($lock, $root . '/resources/framework'),
-                    '/_docara/framework',
+                    '/_docara/framework-runtime',
                 ))->plan([]);
                 self::fail('Changed shell icon subset file was admitted: ' . $file);
             } catch (FrameworkComponentException $exception) {
@@ -476,7 +493,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         try {
             $plan = (new FrameworkAssetPlanner(
                 new FrameworkManifestRepository(FrameworkLock::fromArray($lock), $root . '/resources/framework'),
-                '/_docara/framework',
+                '/_docara/framework-runtime',
             ))->plan([]);
             self::assertSame('static_shell', $plan->preload['mode']);
             self::assertSame([], $plan->diagnostics);
@@ -511,7 +528,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         try {
             $plan = (new FrameworkAssetPlanner(
                 new FrameworkManifestRepository(FrameworkLock::fromArray($lock), $root . '/resources/framework'),
-                '/_docara/framework',
+                '/_docara/framework-runtime',
             ))->plan([]);
             self::assertSame('dynamic_fallback', $plan->preload['mode']);
             self::assertSame('FRAMEWORK_SHELL_PRELOAD_METADATA_MISSING', $plan->diagnostics[0]['code']);
@@ -551,7 +568,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
             try {
                 (new FrameworkAssetPlanner(
                     new FrameworkManifestRepository($exactLock, $root . '/resources/framework'),
-                    '/_docara/framework',
+                    '/_docara/framework-runtime',
                 ))->plan([]);
                 self::fail(ucfirst($attack) . ' shell CSS was admitted.');
             } catch (FrameworkComponentException $exception) {
@@ -618,9 +635,16 @@ final class FrameworkTypographyProjectionTest extends TestCase
             }
             copy($source, $target);
         }
-        foreach (array_keys($lock->assetProjection()['files']) as $relativePath) {
-            $source = dirname(__DIR__, 2) . '/resources/framework/assets/' . $relativePath;
-            $target = $resources . '/framework/assets/' . $relativePath;
+        $smartRevision = $lock->assetProjection()['source']['revision'];
+        $smartFiles = $lock->assetProjection()['files'];
+        $dynamicProjection = $lock->dynamicAssetProjection();
+        if (is_array($dynamicProjection)) {
+            $smartFiles = [...$smartFiles, ...$dynamicProjection['files']];
+        }
+        foreach (array_keys($smartFiles) as $relativePath) {
+            $source = dirname(__DIR__, 2) . '/resources/framework/runtime-smart/'
+                . $smartRevision . '/' . $relativePath;
+            $target = $resources . '/framework/runtime-smart/' . $smartRevision . '/' . $relativePath;
             if (! is_dir(dirname($target))) {
                 mkdir(dirname($target), 0777, true);
             }

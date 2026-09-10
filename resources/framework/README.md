@@ -3,24 +3,31 @@
 This directory is a bounded, consumer-verified projection for portable Docara
 sites. It contains byte-identical copies of the accepted
 `larena/ui` manifests for `ui.alert` and `ui.button`, the exact accepted Simai
-Framework runtime lock and four locally projected Smart assets from the
-published Framework pair
-`ui@202fa232de9ab135127f1ec6e723a3dcf966c879` /
-`ui-smart@4dda05d566d774bc90f2631d9c21bd5f26bf082e`:
+Framework runtime lock and an exact revision-scoped Smart runtime projection
+from the published Framework pair
+`ui@d328491bc805439f200866f7e04c0e5e853a4998` /
+`ui-smart@9e94abc6b10c82f770820807343cecb9a0e27f77`:
 
 - `smart/alert/js/alert.js` —
-  `4b4005fd348d4121732e3b19bef85a67ca4d121f3efd4146ce5ce4ea130ef901`;
+  `8a755992504633901ac986e6b2d2be5e19591724f6b6eb4e6be1b52374c9f583`;
 - `smart/buttons/js/buttons.js` —
-  `b51493a921b5a63cdccb055b5e5261b89c143790c5ccbf2b99e1055cf63e6fd0`;
+  `43078e2958646216ded7e73893c7952c4a49caf75d929e09e76a4107f3bc4e6c`;
 - `smart/icons/js/icons.js` —
-  `3f014eff4c9176b7586fd8652b500f9505588223072f00b5ed3586320607c52b`;
+  `84800076a4a6d99274189114831797ac71a895d332661672f59ba50a3a9002eb`;
 - `smart/modal/js/modal.js` —
-  `c5e4714eb95ae88575fbec27381903c7bd15257a0505fc9568ddb44a2da49a0a`.
+  `275a848667c001d9e4ce357723ee6325ac6fe45db9866fe2294ca10d0fb2daa7`.
 
-Project sites repeat those hashes, the source revision and the manifest
-provider revision in `docara.framework_lock.v1`. A build verifies the bytes,
-copies them to the reserved `_docara/framework` namespace and appends one
-projection-aware cache version to each URL. Core and Smart are taken from the
+The four shell files form the eager `asset_projection`. All other conventional
+unminified Smart entrypoints are recorded separately in
+`dynamic_asset_projection` and published without being loaded eagerly, so the
+browser Loader can resolve elements created after initial HTML planning. Exact
+bytes live in `runtime-smart/<revision>/`; the legacy portable Smart ABI under
+`assets/` is intentionally not overwritten.
+
+Project sites repeat the hashes, source revision and manifest provider revision
+in `docara.framework_lock.v1`. A build verifies the bytes, copies them to the
+reserved `_docara/framework-runtime` namespace and appends one projection-aware cache
+version to each URL. Core and Smart are taken from the
 immutable published UI `v5.7.0` / Smart `v5.5.0` pair; there is no moving
 `main`/`latest` fallback.
 The local consumer adapter preloads a package-owned outlined shell subset and

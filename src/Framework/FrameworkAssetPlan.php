@@ -87,6 +87,17 @@ final readonly class FrameworkAssetPlan
         return null;
     }
 
+    public function withoutGeneratedAssetContent(): self
+    {
+        return new self(
+            $this->runtimePair,
+            $this->assets,
+            array_map($this->generatedAssetMetadata(...), $this->generatedAssets),
+            $this->preload,
+            $this->diagnostics,
+        );
+    }
+
     /** @return array<string, mixed> */
     public function receipt(): array
     {

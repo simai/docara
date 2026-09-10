@@ -359,7 +359,6 @@ final readonly class PortableSiteBuilder
                 'The build requires at least one authored page and an initialized component runtime.',
             );
         }
-        $frameworkAssetPlans = [];
         $frameworkAssetPlanReceipts = $existingFrameworkAssetPlanReceipts;
         $effectiveComponentCatalog = EffectiveComponentCatalogBuilder::bundled(
             FrameworkLock::fromArray($buildBasePlan->frameworkLock),
@@ -688,6 +687,7 @@ final readonly class PortableSiteBuilder
             (string) ($site['base_url'] ?? '/'),
             $siteTitle,
         );
+        $initialFrameworkPlans = [];
         foreach ($pages as &$page) {
             $componentKeys = array_values(array_unique(array_map(
                 static fn (array $call): string => (string) ($call['id'] ?? ''),
@@ -697,8 +697,15 @@ final readonly class PortableSiteBuilder
             if ($page['search_enabled'] === true) {
                 array_push($shellRuntimeTags, 'sf-button', 'sf-modal');
             }
+            $initialPlanKey = hash('sha256', CanonicalJson::encode([
+                'components' => $componentKeys,
+                'shell_runtime_tags' => $shellRuntimeTags,
+            ]));
+            $initialFrameworkPlans[$initialPlanKey] ??= $runtime
+                ->planAssets($componentKeys, $shellRuntimeTags)
+                ->withoutGeneratedAssetContent();
             $page['components'] = $page['components']->withAssetPlan(
-                $runtime->planAssets($componentKeys, $shellRuntimeTags),
+                $initialFrameworkPlans[$initialPlanKey],
             );
         }
         unset($page);
@@ -849,6 +856,7 @@ final readonly class PortableSiteBuilder
             }
 
             $requiredSmartAssets = [];
+            $publishedFrameworkAssetPlans = [];
             foreach ($pagesToRender as $pageIndex => $page) {
                 $declarative = null;
                 $pageLocale = (string) $page['locale'];
@@ -1032,7 +1040,22 @@ final readonly class PortableSiteBuilder
                     }
                     $finalFrameworkPlan = $verifiedFrameworkPlan;
                 }
-                $frameworkAssetPlans[$finalFrameworkPlan->generatedAssets[0]['sha256']] = $finalFrameworkPlan;
+                $generatedAssetSha256 = $finalFrameworkPlan->generatedAssets[0]['sha256'] ?? null;
+                if (! is_string($generatedAssetSha256)
+                    || preg_match('/^[a-f0-9]{64}$/D', $generatedAssetSha256) !== 1
+                ) {
+                    throw new PortableConfigurationException(
+                        'DECLARATIVE_GENERATED_ASSET_INVALID',
+                        "Framework assets for [{$page['output']}] have no immutable generated asset identity.",
+                    );
+                }
+                if (! isset($publishedFrameworkAssetPlans[$generatedAssetSha256])) {
+                    foreach ($localeDestinations as $localeDestination) {
+                        (new PortablePublisherAssetPublisher($this->files, $smartRegistry))
+                            ->publishFrameworkAssetPlans($localeDestination, [$finalFrameworkPlan]);
+                    }
+                    $publishedFrameworkAssetPlans[$generatedAssetSha256] = true;
+                }
                 $frameworkAssetPlanReceipts[(string) $page['output']] = $finalFrameworkPlan->receipt();
                 $this->files->put($outputPath, $rendered);
 
@@ -1067,6 +1090,9 @@ final readonly class PortableSiteBuilder
                 $diagnosticsByUrl[(string) $page['url']] = $record;
                 $result->put((string) $page['url'], $record);
             }
+            $orderedDiagnostics = $this->orderedDiagnostics($contextPages, $diagnosticsByUrl);
+            unset($pagesToRender, $pages, $contextPages, $initialFrameworkPlans);
+            gc_collect_cycles();
             foreach ($diagnosticsByUrl as $diagnosticRecord) {
                 foreach (($diagnosticRecord['declarative_pipeline']['assets'] ?? []) as $assetKey) {
                     if (is_string($assetKey)) {
@@ -1080,7 +1106,6 @@ final readonly class PortableSiteBuilder
             $this->copyContentAssets($contentAssets, $destination);
             $brandPublisher->publish($brandPlan['assets'], $destination);
             ksort($frameworkAssetPlanReceipts, SORT_STRING);
-            $frameworkAssetPlans = array_values($frameworkAssetPlans);
             foreach ($localeDestinations as $localeDestination) {
                 $this->publishFrameworkAssets($buildBasePlan->frameworkLock, $localeDestination);
                 $assetPublisher = new PortablePublisherAssetPublisher($this->files, $smartRegistry);
@@ -1088,9 +1113,7 @@ final readonly class PortableSiteBuilder
                     $localeDestination,
                     $requiredSmartAssets,
                 );
-                $assetPublisher->publishFrameworkAssetPlans($localeDestination, $frameworkAssetPlans);
             }
-            $orderedDiagnostics = $this->orderedDiagnostics($contextPages, $diagnosticsByUrl);
             $performanceReceipt = (new PortablePerformanceReceipt($this->files))->publish(
                 $destination,
                 (string) ($site['base_url'] ?? '/'),
@@ -1098,41 +1121,52 @@ final readonly class PortableSiteBuilder
             );
             $diagnosticPath = rtrim($destination, '/\\') . '/.docara/resolved-page-plans.json';
             $this->files->ensureDirectoryExists(dirname($diagnosticPath));
-            $this->files->put($diagnosticPath, $this->prettyCanonicalJson([
-                'schema' => 'docara.resolved_page_plans.v1',
-                'build' => [
-                    'purpose' => $purpose->value,
-                    'locale' => $buildLocale,
-                    'documentation_version' => $documentationVersion,
-                    'engine' => $engineRevision,
-                    'dependencies' => $dependencyLock,
-                    'framework' => [
-                        'lock_sha256' => hash('sha256', CanonicalJson::encode($buildBasePlan->frameworkLock)),
-                        'runtime' => $buildBasePlan->frameworkLock['runtime'],
-                        'manifests' => $buildBasePlan->frameworkLock['manifests'],
-                        'asset_projection' => $buildBasePlan->frameworkLock['asset_projection'],
-                        'dynamic_asset_projection' => $buildBasePlan->frameworkLock['dynamic_asset_projection'] ?? null,
-                        'shell' => [
-                            'schema' => 'docara.framework_asset_plans.v1',
-                            'mode' => 'production_exact',
-                            'plans' => $frameworkAssetPlanReceipts,
+            $diagnosticStream = @fopen($diagnosticPath, 'wb');
+            if (! is_resource($diagnosticStream)) {
+                throw new PortableConfigurationException(
+                    'PORTABLE_DIAGNOSTIC_WRITE_FAILED',
+                    'The resolved page plans could not be opened for writing.',
+                );
+            }
+            try {
+                CanonicalJson::writePretty($diagnosticStream, [
+                    'schema' => 'docara.resolved_page_plans.v1',
+                    'build' => [
+                        'purpose' => $purpose->value,
+                        'locale' => $buildLocale,
+                        'documentation_version' => $documentationVersion,
+                        'engine' => $engineRevision,
+                        'dependencies' => $dependencyLock,
+                        'framework' => [
+                            'lock_sha256' => hash('sha256', CanonicalJson::encode($buildBasePlan->frameworkLock)),
+                            'runtime' => $buildBasePlan->frameworkLock['runtime'],
+                            'manifests' => $buildBasePlan->frameworkLock['manifests'],
+                            'asset_projection' => $buildBasePlan->frameworkLock['asset_projection'],
+                            'dynamic_asset_projection' => $buildBasePlan->frameworkLock['dynamic_asset_projection'] ?? null,
+                            'shell' => [
+                                'schema' => 'docara.framework_asset_plans.v1',
+                                'mode' => 'production_exact',
+                                'plans' => $frameworkAssetPlanReceipts,
+                            ],
+                            'portable_smart_asset_projection' => (new FrameworkPortableAssetProjection($smartRegistry))
+                                ->forKeys($requiredSmartAssets),
                         ],
-                        'portable_smart_asset_projection' => (new FrameworkPortableAssetProjection($smartRegistry))
-                            ->forKeys($requiredSmartAssets),
+                        'production_inputs' => $runtimeMetadata->productionInputGroups(),
+                        'public_projections' => [
+                            'design_atlas_sha256' => $atlasReceipt['content_sha256'],
+                            'schema_reference_sha256' => $schemaReferenceReceipt['content_sha256'],
+                            'examples_sha256' => $exampleReceipt['content_sha256'],
+                            'performance_sha256' => $performanceReceipt['content_sha256'],
+                        ],
+                        'component_catalog_sha256' => hash('sha256', CanonicalJson::encode($effectiveComponentCatalog)),
+                        'publisher' => $publisher->id(),
+                        'locale_sources' => $this->localeSourceHashes($root, $contentContexts),
                     ],
-                    'production_inputs' => $runtimeMetadata->productionInputGroups(),
-                    'public_projections' => [
-                        'design_atlas_sha256' => $atlasReceipt['content_sha256'],
-                        'schema_reference_sha256' => $schemaReferenceReceipt['content_sha256'],
-                        'examples_sha256' => $exampleReceipt['content_sha256'],
-                        'performance_sha256' => $performanceReceipt['content_sha256'],
-                    ],
-                    'component_catalog_sha256' => hash('sha256', CanonicalJson::encode($effectiveComponentCatalog)),
-                    'publisher' => $publisher->id(),
-                    'locale_sources' => $this->localeSourceHashes($root, $contentContexts),
-                ],
-                'pages' => $orderedDiagnostics,
-            ]));
+                    'pages' => $orderedDiagnostics,
+                ]);
+            } finally {
+                fclose($diagnosticStream);
+            }
             $this->promoteCandidate($root, $destination, $finalDestination);
         } catch (\Throwable $exception) {
             if ($this->files->isDirectory($destination) && ! is_link($destination)) {

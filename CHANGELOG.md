@@ -4,6 +4,12 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- Large documentation builds release generated Framework CSS as pages are
+  rendered, reuse identical preliminary plans and stream the final diagnostic
+  receipt, avoiding memory exhaustion without changing deterministic output.
+
 ## [2.9.0] - 2026-09-10
 
 ### Added

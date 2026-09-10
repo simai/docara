@@ -1,0 +1,70 @@
+{
+  "browser": "151.0.7922.34",
+  "scope": "Actual Loader and explicit utility assets through intercepted HTTP; no full utility bundle",
+  "core": "/private/tmp/sf5-foundation-core-style-recovery",
+  "utilityRoot": "/private/tmp/sf5-foundation-utility-product",
+  "initial": [
+    "core/css/core.css",
+    "core/js/core.js",
+    "core/4f2981d82860061bca3e.woff2",
+    "core/js/core-rules.js",
+    "core/js/core-system.js",
+    "core/js/115905220673108.js",
+    "core/js/core-loader.js"
+  ],
+  "requests": [
+    "core/css/core.css",
+    "core/js/core.js",
+    "core/4f2981d82860061bca3e.woff2",
+    "core/js/core-rules.js",
+    "core/js/core-system.js",
+    "core/js/115905220673108.js",
+    "core/js/core-loader.js",
+    "utility/display/default/css/default.css",
+    "utility/gap/default/css/default.css",
+    "utility/justify-content/default/css/default.css",
+    "utility/column-gap/md/css/md.css",
+    "utility/gap/md/css/md.css",
+    "utility/justify-content/default/css/default.min.css",
+    "core/css/core.css",
+    "core/js/core.js",
+    "core/4f2981d82860061bca3e.woff2",
+    "core/js/core-rules.js",
+    "core/js/core-system.js",
+    "core/js/115905220673108.js",
+    "core/js/core-loader.js",
+    "utility/display/default/css/default.css",
+    "utility/gap/default/css/default.css",
+    "utility/justify-content/default/css/default.css",
+    "utility/column-gap/md/css/md.css",
+    "utility/gap/md/css/md.css"
+  ],
+  "missing": [],
+  "errors": [],
+  "computed": {
+    "display": "flex",
+    "justify": "center",
+    "gap": "20px"
+  },
+  "themes": [
+    {
+      "theme": "theme-light",
+      "dir": "ltr",
+      "justify": "center",
+      "direction": "ltr"
+    },
+    {
+      "theme": "theme-dark",
+      "dir": "rtl",
+      "justify": "center",
+      "direction": "rtl"
+    }
+  ],
+  "injectedFailure": true,
+  "duplicateUtilityRequests": [
+    "utility/gap/default/css/default.css",
+    "utility/justify-content/default/css/default.css",
+    "utility/gap/md/css/md.css"
+  ],
+  "pass": true
+}

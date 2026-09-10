@@ -1,0 +1,17 @@
+{
+  "scope": "Byte comparison of supplied output trees; input identity and clean-build provenance must be verified separately; not immutable-commit release reproducibility",
+  "builds": [
+    {
+      "root": "/private/tmp/sf5-foundation-smart-modal-attribute-product",
+      "files": 621,
+      "digest": "657cfb80fb419b7ef93a5e2869771b8f66fe3bc2c26fa43b6dea7aec5af7b0dd"
+    },
+    {
+      "root": "/private/tmp/sf5-foundation-smart-modal-attribute-repro",
+      "files": 621,
+      "digest": "657cfb80fb419b7ef93a5e2869771b8f66fe3bc2c26fa43b6dea7aec5af7b0dd"
+    }
+  ],
+  "identical": true,
+  "differences": []
+}

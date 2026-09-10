@@ -1,0 +1,17 @@
+{
+  "scope": "Byte comparison of supplied output trees; input identity and clean-build provenance must be verified separately; not immutable-commit release reproducibility",
+  "builds": [
+    {
+      "root": "/private/tmp/sf5-foundation-smart-product",
+      "files": 621,
+      "digest": "c86b79f46c492550a624726546a0714be47d56f37441f542355b1c9c25f3708f"
+    },
+    {
+      "root": "/private/tmp/sf5-foundation-smart-repro",
+      "files": 621,
+      "digest": "c86b79f46c492550a624726546a0714be47d56f37441f542355b1c9c25f3708f"
+    }
+  ],
+  "identical": true,
+  "differences": []
+}

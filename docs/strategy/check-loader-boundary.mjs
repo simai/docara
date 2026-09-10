@@ -1,0 +1,17 @@
+import fs from 'node:fs';
+import vm from 'node:vm';
+const root='/private/tmp/sf5-utility-release-source';
+const source=fs.readFileSync(`${root}/src/core/js/loader.js`,'utf8');
+const start=source.indexOf('SFLoaderPlugin.prototype.doesClassRuleMatchTokens = function');
+const end=source.indexOf('\nSFLoaderPlugin.prototype.extractRuleAttributeTargets',start);
+if(start<0||end<0)throw new Error('Reviewed function boundary changed');
+const ctx=vm.createContext({SFLoaderPlugin:function(){},SF:{RuleLoader:{}}});
+vm.runInContext(source.slice(start,end),ctx);
+for(const variant of ['default','md'])vm.runInContext(fs.readFileSync(`${root}/src/utility/gap/${variant}/rule.js`,'utf8'),ctx);
+const cases=[['gap/default','gap-1',true],['gap/default','sibling gap-1 sibling',true],['gap/default','x-gap-1',false],['gap/default','gap-1-unrelated',false],['gap/default','gap-nonexistent',false],['gap/md','md:gap-1',true],['gap/md','md:gap-1-unrelated',false]];
+const results=cases.map(([rule,token,expected])=>{ctx.ruleKey=rule;ctx.token=token;const actual=vm.runInContext('SFLoaderPlugin.prototype.doesClassRuleMatchTokens(SF.RuleLoader[ruleKey],token)',ctx);return{rule,token,expected,actual,pass:expected===actual};});
+const report={scope:'Exact source function, gap family only. Expected whole-valid-class boundary from accepted utility plan. Not browser module fetch.',failures:results.filter(x=>!x.pass).length,results};
+const text=JSON.stringify(report,null,2)+'\n';
+if(process.argv[2])fs.writeFileSync(process.argv[2],text);
+process.stdout.write(text);
+process.exitCode=report.failures?1:0;

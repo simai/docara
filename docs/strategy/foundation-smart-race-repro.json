@@ -1,0 +1,17 @@
+{
+  "scope": "Byte comparison of supplied output trees; input identity and clean-build provenance must be verified separately; not immutable-commit release reproducibility",
+  "builds": [
+    {
+      "root": "/private/tmp/sf5-foundation-smart-race-product",
+      "files": 621,
+      "digest": "64d0ef136feb47885a5bdaf9f584eca92dc6b9a439f7b10674a63ef395fb8eed"
+    },
+    {
+      "root": "/private/tmp/sf5-foundation-smart-race-repro",
+      "files": 621,
+      "digest": "64d0ef136feb47885a5bdaf9f584eca92dc6b9a439f7b10674a63ef395fb8eed"
+    }
+  ],
+  "identical": true,
+  "differences": []
+}

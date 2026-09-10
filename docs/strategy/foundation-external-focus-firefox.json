@@ -1,0 +1,247 @@
+{
+  "scope": "Core Loader + Smart integration with explicit local asset roots; local container CSS, not release acceptance",
+  "coreRuntime": true,
+  "strictCandidate": true,
+  "requestedAssets": [
+    {
+      "relative": "core/js/core.js",
+      "file": "/private/tmp/sf5-foundation-core-network-repro/core/js/core.js"
+    },
+    {
+      "relative": "core/js/core-rules.js",
+      "file": "/private/tmp/sf5-foundation-core-network-repro/core/js/core-rules.js"
+    },
+    {
+      "relative": "core/js/core-system.js",
+      "file": "/private/tmp/sf5-foundation-core-network-repro/core/js/core-system.js"
+    },
+    {
+      "relative": "core/js/115905220673108.js",
+      "file": "/private/tmp/sf5-foundation-core-network-repro/core/js/115905220673108.js"
+    },
+    {
+      "relative": "core/js/core-loader.js",
+      "file": "/private/tmp/sf5-foundation-core-network-repro/core/js/core-loader.js"
+    },
+    {
+      "relative": "component/icon-buttons/js/icon-buttons.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icon-buttons/js/icon-buttons.js"
+    },
+    {
+      "relative": "component/icon-buttons/css/icon-buttons.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icon-buttons/css/icon-buttons.css"
+    },
+    {
+      "relative": "component/dropdown/css/dropdown.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/dropdown/css/dropdown.css"
+    },
+    {
+      "relative": "component/icons/js/icons.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icons/js/icons.js"
+    },
+    {
+      "relative": "component/icons/css/icons.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icons/css/icons.css"
+    },
+    {
+      "relative": "component/checkbox/js/checkbox.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/checkbox/js/checkbox.js"
+    },
+    {
+      "relative": "component/checkbox/css/checkbox.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/checkbox/css/checkbox.css"
+    },
+    {
+      "relative": "component/avatars/js/avatars.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/avatars/js/avatars.js"
+    },
+    {
+      "relative": "component/avatars/css/avatars.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/avatars/css/avatars.css"
+    },
+    {
+      "relative": "component/tags/js/tags.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/tags/js/tags.js"
+    },
+    {
+      "relative": "component/tags/css/tags.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/tags/css/tags.css"
+    },
+    {
+      "relative": "component/dropdown/js/dropdown.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/dropdown/js/dropdown.js"
+    },
+    {
+      "relative": "smart/list-item/js/list-item.js",
+      "file": "/private/tmp/sf5-foundation-smart-product/smart/list-item/js/list-item.js"
+    }
+  ],
+  "missingAssets": [],
+  "smartFile": "/private/tmp/sf5-foundation-smart-product/smart/list-item/js/list-item.min.js",
+  "productSmart": true,
+  "external": true,
+  "sharedDOM": true,
+  "lifecycle": true,
+  "source": "/private/tmp/sf5-utility-release-source",
+  "core": "/private/tmp/sf5-foundation-core-network-repro",
+  "work": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-ib0hna",
+  "browserName": "firefox",
+  "browser": "153.0",
+  "query": "@layer sf.overrides {\n  @container foundation-panel (min-width: 520px) {\n    .proof-item .sf-list-item-wrap {\n      flex-direction: row;\n      align-items: center;\n    }\n  }\n}",
+  "checks": [
+    {
+      "theme": "theme-light",
+      "dir": "ltr",
+      "rows": [
+        {
+          "id": "wide",
+          "direction": "row",
+          "width": 768,
+          "scroll": 768,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ],
+      "screenshot": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-ib0hna/container-ltr.png"
+    },
+    {
+      "theme": "theme-dark",
+      "dir": "rtl",
+      "rows": [
+        {
+          "id": "wide",
+          "direction": "row",
+          "width": 768,
+          "scroll": 768,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ],
+      "screenshot": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-ib0hna/container-rtl.png"
+    },
+    {
+      "textScale": 2,
+      "fontBefore": "16px",
+      "fontAfter": "32px",
+      "rows": [
+        {
+          "id": "wide",
+          "direction": "row",
+          "width": 768,
+          "scroll": 768,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ]
+    },
+    {
+      "localResize": [
+        {
+          "id": "wide",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ]
+    },
+    {
+      "keyboardFocusAfterExternalProps": {
+        "sameNode": true,
+        "active": true,
+        "visible": true
+      }
+    },
+    {
+      "externalText": "Изменённый текст",
+      "mirror": "Изменённый текст"
+    },
+    {
+      "resourcesAfterDefault": {
+        "active": 0,
+        "destroyCalls": 2
+      }
+    },
+    {
+      "externalTemplate": {
+        "differentDOM": true,
+        "props": {
+          "selected": "true",
+          "disabled": "true",
+          "tabindex": -1
+        },
+        "slotPreserved": true,
+        "remount": true,
+        "returnToDefault": true
+      }
+    }
+  ],
+  "errors": [],
+  "pass": true,
+  "screenshot": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-ib0hna/container-proof.png"
+}

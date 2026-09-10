@@ -25,11 +25,11 @@ use Tests\TestCase;
 
 final class StaticBuildVerifierTest extends TestCase
 {
-    private const FRAMEWORK_PAIR = 'sf-v5.6.4-833b9ab1-b07ee017';
+    private const FRAMEWORK_PAIR = 'sf-v5.7.0-202fa232-4dda05d5';
 
     private const FRAMEWORK_PROVIDER_REVISION = '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663';
 
-    private const FRAMEWORK_SMART_REVISION = 'b07ee0178a1dbc6cb9b1fd49d106f2c12d3ec778';
+    private const FRAMEWORK_SMART_REVISION = '4dda05d566d774bc90f2631d9c21bd5f26bf082e';
 
     private const SUPPORTED_COMPONENTS = ['ui.alert', 'ui.button'];
 

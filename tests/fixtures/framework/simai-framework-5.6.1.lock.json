@@ -1,0 +1,582 @@
+{
+    "schema": "docara.framework_lock.v1",
+    "runtime": {
+        "schema": "larena.ui.frontend_runtime_lock.v3",
+        "runtime": "simai-framework",
+        "pair_id": "sf-v5.6.1-34f5ff45-23d00d92",
+        "bundle_id": "sf-v5.6.1-34f5ff45-23d00d92-registry-1f75df72-verified-release-artifact-v1",
+        "publication_profile": "verified-release-artifact-v1",
+        "tag": "v5.6.1",
+        "ui": {
+            "tag": "v5.6.1",
+            "commit": "34f5ff453f324ce08d0a0b55e45fa4239a09f2b1",
+            "tree": "distr",
+            "mount": "ui",
+            "sha256": "dbc9d927d125fc47538a6cb56485e47faf4350cdd8b92186f1121b6288470069",
+            "files": 6773
+        },
+        "ui_smart": {
+            "tag": "v5.4.0",
+            "commit": "23d00d92346717b8f835297d142a14458f806602",
+            "tree": "smart",
+            "mount": "smart",
+            "sha256": "465b61a678be195aabb3890385b6080908b3d7a5298abaf7a9ea96705638addc",
+            "files": 645
+        },
+        "framework_registry": {
+            "schema_id": "simai.framework.contract-registry",
+            "compatibility_id": "sf-v5.6.1-34f5ff45-23d00d92",
+            "profile": "plain-assets-v1",
+            "relative_path": "contract/contracts/generated/framework-contract-registry.json",
+            "file_sha256": "1f75df7241e47e4a62cc91e0846cd8604bb045ae83e5497f493c410d7736cb54",
+            "source": {
+                "commit": "34f5ff453f324ce08d0a0b55e45fa4239a09f2b1",
+                "tree": "contracts/generated",
+                "tree_oid": "778769e6174360bdb0523dc0a71c62d0c592171a",
+                "mount": "contract",
+                "sha256": "0a6580182b2c495c4f52a65cda34dd5e2b8ff57e3e169bd24be522f105bfd1b9",
+                "files": 2
+            }
+        },
+        "boot": {
+            "css": "ui/distr/core/css/core.css",
+            "javascript": "ui/distr/core/js/core.js",
+            "smart_base": "ui/distr/core/js/smart-base.js",
+            "ui_base": "ui/distr/",
+            "smart_base_path": "smart/"
+        },
+        "shell": {
+            "relations": [
+                {
+                    "plugin": "menu",
+                    "type": "component",
+                    "css": "component/menu/css/menu.css",
+                    "javascript": "component/menu/js/menu.js"
+                },
+                {
+                    "plugin": "breadcrumbs",
+                    "type": "component",
+                    "css": "component/breadcrumbs/css/breadcrumbs.css",
+                    "javascript": "component/breadcrumbs/js/breadcrumbs.js"
+                },
+                {
+                    "plugin": "scrollbar",
+                    "type": "component",
+                    "css": "component/scrollbar/css/scrollbar.css",
+                    "javascript": "component/scrollbar/js/scrollbar.js"
+                }
+            ]
+        },
+        "components": {
+            "sf-icon": {
+                "source": "smart/icons",
+                "javascript": "smart/smart/icons/js/icons.js",
+                "css": null,
+                "loader": {
+                    "plugin": "cl-icons",
+                    "relations": [
+                        {
+                            "plugin": "icons",
+                            "type": "component",
+                            "css": "component/icons/css/icons.css",
+                            "javascript": "component/icons/js/icons.js"
+                        }
+                    ]
+                },
+                "attributes": [
+                    "icon",
+                    "size",
+                    "scheme",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-button": {
+                "source": "smart/buttons",
+                "javascript": "smart/smart/buttons/js/buttons.js",
+                "css": null,
+                "loader": {
+                    "plugin": "cl-buttons",
+                    "relations": [
+                        {
+                            "plugin": "buttons",
+                            "type": "component",
+                            "css": "component/buttons/css/buttons.css",
+                            "javascript": "component/buttons/js/buttons.js"
+                        }
+                    ]
+                },
+                "attributes": [
+                    "template",
+                    "size",
+                    "type",
+                    "scheme",
+                    "text",
+                    "icon",
+                    "icon-left",
+                    "icon-right",
+                    "icon-position",
+                    "text-position",
+                    "tightness",
+                    "radius",
+                    "root-class",
+                    "loading",
+                    "disabled",
+                    "native-type",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-table": {
+                "source": "smart/table",
+                "javascript": "smart/smart/table/js/table.js",
+                "css": "smart/smart/table/css/table.css",
+                "attributes": [
+                    "template",
+                    "root-class",
+                    "selectable",
+                    "settings",
+                    "actions",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-badge": {
+                "source": "smart/badges",
+                "javascript": "smart/smart/badges/js/badges.js",
+                "css": null,
+                "core_css": "ui/distr/component/badges/css/badges.css",
+                "attributes": [
+                    "template",
+                    "size",
+                    "type",
+                    "scheme",
+                    "text",
+                    "icon",
+                    "icon-left",
+                    "icon-right",
+                    "icon-position",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-alert": {
+                "source": "smart/alert",
+                "javascript": "smart/smart/alert/js/alert.js",
+                "css": null,
+                "requires": [
+                    "sf-icon"
+                ],
+                "attributes": [
+                    "type",
+                    "variant",
+                    "icon",
+                    "title",
+                    "supporting-text",
+                    "action-text",
+                    "action",
+                    "secondary-action-text",
+                    "secondary-action",
+                    "closable",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-pagination": {
+                "source": "smart/pagination",
+                "javascript": "smart/smart/pagination/js/pagination.js",
+                "css": null,
+                "attributes": [
+                    "current",
+                    "total",
+                    "top",
+                    "main",
+                    "bottom",
+                    "top-class",
+                    "main-class",
+                    "bottom-class",
+                    "show-more-text",
+                    "page-sizes",
+                    "page-size-label",
+                    "actions",
+                    "action",
+                    "action-apply-text",
+                    "action-for-all-label",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-input": {
+                "source": "smart/inputs",
+                "javascript": "smart/smart/inputs/js/inputs.js",
+                "css": "smart/smart/inputs/css/inputs.css",
+                "attributes": [
+                    "template",
+                    "size",
+                    "type",
+                    "label",
+                    "required",
+                    "placeholder",
+                    "hint",
+                    "name",
+                    "value",
+                    "default-value",
+                    "input-type",
+                    "autocomplete",
+                    "left-icon",
+                    "right-text",
+                    "hint-icon",
+                    "disabled",
+                    "error",
+                    "min",
+                    "max",
+                    "step",
+                    "mask",
+                    "mask-pattern",
+                    "mask-options",
+                    "mask-placeholder-char",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-modal": {
+                "source": "smart/modal",
+                "javascript": "smart/smart/modal/js/modal.js",
+                "css": null,
+                "loader": {
+                    "plugin": "cl-modal",
+                    "relations": [
+                        {
+                            "plugin": "modal",
+                            "type": "component",
+                            "css": "component/modal/css/modal.css",
+                            "javascript": "component/modal/js/modal.js"
+                        },
+                        {
+                            "plugin": "icon-buttons",
+                            "type": "component",
+                            "css": "component/icon-buttons/css/icon-buttons.css",
+                            "javascript": "component/icon-buttons/js/icon-buttons.js"
+                        }
+                    ]
+                },
+                "attributes": [
+                    "template",
+                    "modal-id",
+                    "title",
+                    "text",
+                    "open",
+                    "autoload",
+                    "unclose",
+                    "hide",
+                    "hide-modifier",
+                    "minimized",
+                    "overlay",
+                    "overlay-preset",
+                    "show-header",
+                    "show-close",
+                    "show-footer",
+                    "close-on-esc",
+                    "close-on-overlay",
+                    "preserve-scroll-gap",
+                    "position",
+                    "mode",
+                    "display",
+                    "src",
+                    "preload",
+                    "fullscreen",
+                    "width",
+                    "height",
+                    "blur",
+                    "blur-type",
+                    "overlay-class",
+                    "close-class",
+                    "surface-class",
+                    "surface-padding",
+                    "panel-class",
+                    "header-class",
+                    "body-class",
+                    "content-class",
+                    "footer-class",
+                    "slot",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-textarea": {
+                "source": "smart/textarea",
+                "javascript": "smart/smart/textarea/js/textarea.js",
+                "css": null,
+                "attributes": [
+                    "template",
+                    "size",
+                    "type",
+                    "label",
+                    "required",
+                    "rows",
+                    "placeholder",
+                    "hint",
+                    "name",
+                    "value",
+                    "disabled",
+                    "error",
+                    "mask",
+                    "mask-pattern",
+                    "mask-options",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-dropdown": {
+                "source": "smart/dropdown",
+                "javascript": "smart/smart/dropdown/js/dropdown.js",
+                "css": null,
+                "attributes": [
+                    "template",
+                    "size",
+                    "type",
+                    "mode",
+                    "multiple",
+                    "portal",
+                    "value",
+                    "name",
+                    "label",
+                    "required",
+                    "placeholder",
+                    "search-placeholder",
+                    "search",
+                    "disabled",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-checkbox": {
+                "source": "smart/checkbox",
+                "javascript": "smart/smart/checkbox/js/checkbox.js",
+                "css": "smart/smart/checkbox/css/checkbox.css",
+                "attributes": [
+                    "size",
+                    "label",
+                    "description",
+                    "help",
+                    "position",
+                    "root-class",
+                    "checked",
+                    "disabled",
+                    "indeterminate",
+                    "name",
+                    "value",
+                    "error",
+                    "id",
+                    "class"
+                ]
+            }
+        }
+    },
+    "runtime_projection": {
+        "schema": "docara.framework_runtime_projection.v1",
+        "mount": "_docara/vendor/simai-framework/runtime/34f5ff453f324ce08d0a0b55e45fa4239a09f2b1/distr",
+        "source": {
+            "provider": "simai/ui",
+            "revision": "34f5ff453f324ce08d0a0b55e45fa4239a09f2b1",
+            "tree_sha256": "dbc9d927d125fc47538a6cb56485e47faf4350cdd8b92186f1121b6288470069"
+        },
+        "icon_font": "component/icons/fonts/MaterialSymbols-Outlined.woff2",
+        "packet_sha256": "ff712e595a9e95beefda72a9f7886f9e62c44c4492799f7a9be284024f05ade7",
+        "files": 840,
+        "manifest": {
+            "path": "portable/vendor/simai-framework/runtime/34f5ff453f324ce08d0a0b55e45fa4239a09f2b1/runtime-manifest.json",
+            "public": "_docara/vendor/simai-framework/runtime/34f5ff453f324ce08d0a0b55e45fa4239a09f2b1/runtime-manifest.json",
+            "sha256": "cb0ed3ade20775c8a229319336c8c44a532c1f1a177f6cdf933d2ff101620c92"
+        }
+    },
+    "icon_projection": {
+        "schema": "docara.framework_icon_projection.v1",
+        "source": {
+            "provider": "google/material-design-icons",
+            "revision": "50f0603134ce7b70b2d71b686cc13e8b57ccb74c",
+            "license": "Apache-2.0"
+        },
+        "packet_sha256": "040d5a4c9fb0893e0333bd5d5020cc98929e21dad28f68273c8e306102213f5c",
+        "files": {
+            "license": {
+                "path": "portable/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/LICENSE",
+                "public": "_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/LICENSE",
+                "sha256": "58d1e17ffe5109a7ae296caafcadfdbe6a7d176f0bc4ab01e12a689b0499d8bd"
+            },
+            "outlined": {
+                "path": "portable/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsOutlined.woff2",
+                "public": "_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsOutlined.woff2",
+                "sha256": "5c0be48d07803e6eb6a993ad441f6fc92340ee0da9d1b57cc348f62569947ae5"
+            },
+            "rounded": {
+                "path": "portable/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsRounded.woff2",
+                "public": "_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsRounded.woff2",
+                "sha256": "3500043e8929d5140f34dff8f8687e1dd5fda3a33fff20bfcc96ecd0b2f99518"
+            },
+            "sharp": {
+                "path": "portable/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsSharp.woff2",
+                "public": "_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsSharp.woff2",
+                "sha256": "07120b2acb649946dd277ffeaefc745c576ef5bee05b4f2f07bd1f98b31fb6d8"
+            }
+        }
+    },
+    "typography_projection": {
+        "schema": "docara.framework_typography_projection.v1",
+        "candidate": "5.4.0",
+        "source": {
+            "provider": "simai/ui-loader",
+            "revision": "c94a214fb727f0468863d10a94d4388e0f111852",
+            "rollback_parent": "4f1beecdbc40cfcf5e4962ec350663ccd3272056"
+        },
+        "builder": {
+            "provider": "simai/ui-builder",
+            "revision": "367b3423f9707b850c6bef9476ab8d1ed44039e1"
+        },
+        "distribution": {
+            "provider": "simai/ui",
+            "revision": "b2e8444659ae0d213296c2d349257259d3ed0c9c",
+            "rollback_parent": "7e836d8a9414d5da553fb1ab0404721e5b48769a",
+            "published": true
+        },
+        "packet_sha256": "7ea124c1ff931987d50020b33c2defb2e0c5363478a02f95a37db3a2af39c8e4",
+        "files": {
+            "contract": {
+                "path": "portable/vendor/simai-framework/typography/5.4.0/adaptive-sizing.v1.json",
+                "public": "_docara/vendor/simai-framework/typography/5.4.0/adaptive-sizing.v1.json",
+                "sha256": "b70d02d6902345e17954eafb44f24052b7478439184286bed5a8df6c69c1fe45"
+            },
+            "core": {
+                "path": "portable/vendor/simai-framework/typography/5.4.0/core.css",
+                "public": "_docara/vendor/simai-framework/typography/5.4.0/core.css",
+                "sha256": "d3d3a108e9384638f6bd3ba245a80d98a3934d29a1c6e66ae24317bfe8749653"
+            },
+            "font_49594fb515ba00213fc3": {
+                "path": "portable/vendor/simai-framework/typography/49594fb515ba00213fc3.woff2",
+                "public": "_docara/vendor/simai-framework/typography/49594fb515ba00213fc3.woff2",
+                "sha256": "71d5ee93cc1e9f1d520a3a8b66456de18c7879d8df09d57fcd2eaff75fef0075"
+            },
+            "font_4f2981d82860061bca3e": {
+                "path": "portable/vendor/simai-framework/typography/4f2981d82860061bca3e.woff2",
+                "public": "_docara/vendor/simai-framework/typography/4f2981d82860061bca3e.woff2",
+                "sha256": "3100e775e8616cd2611beecfa23a4263d7037586789b43f035236a2e6fbd4c62"
+            },
+            "font_4f908aee8194b11d9c35": {
+                "path": "portable/vendor/simai-framework/typography/4f908aee8194b11d9c35.woff2",
+                "public": "_docara/vendor/simai-framework/typography/4f908aee8194b11d9c35.woff2",
+                "sha256": "1be3448e292fbf05ffe176fe1e43f135013d50b1e7d324ad1a558f623d3bb6f6"
+            },
+            "font_8bff79fbfaa8b8167a0b": {
+                "path": "portable/vendor/simai-framework/typography/8bff79fbfaa8b8167a0b.woff2",
+                "public": "_docara/vendor/simai-framework/typography/8bff79fbfaa8b8167a0b.woff2",
+                "sha256": "34b9c504cab7a73e37b746343a449132e56cf7b5481af2cb81dc74dcff25c956"
+            },
+            "font_ab4bb8dcda024fe6eff2": {
+                "path": "portable/vendor/simai-framework/typography/ab4bb8dcda024fe6eff2.woff2",
+                "public": "_docara/vendor/simai-framework/typography/ab4bb8dcda024fe6eff2.woff2",
+                "sha256": "5c66f9e07e90c6d4ac4922cc68d60de26c17b1858e677fb5e603fce3952b3ff2"
+            },
+            "font_b5cdd4765614e027c252": {
+                "path": "portable/vendor/simai-framework/typography/b5cdd4765614e027c252.woff2",
+                "public": "_docara/vendor/simai-framework/typography/b5cdd4765614e027c252.woff2",
+                "sha256": "ca157063339ac4ad418f214f3abfed119b0798ab4d377386ce5c9e5a7a435ebd"
+            },
+            "font_f4df85d151e5ee39bc2b": {
+                "path": "portable/vendor/simai-framework/typography/f4df85d151e5ee39bc2b.woff2",
+                "public": "_docara/vendor/simai-framework/typography/f4df85d151e5ee39bc2b.woff2",
+                "sha256": "6e9e020a25f9b56d418f2c085b1d3c09725a4da23fe693a5b463064606732190"
+            },
+            "utility": {
+                "path": "portable/vendor/simai-framework/typography/5.4.0/utility.full.css",
+                "public": "_docara/vendor/simai-framework/typography/5.4.0/utility.full.css",
+                "sha256": "39643e7f46115fdee634acab8a268813f502e7055b6a27c55faad0a5a198716b"
+            }
+        }
+    },
+    "manifests": {
+        "ui.button": {
+            "provider": "larena/ui",
+            "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+            "sha256": "ce04f11f88da1b7e1a4edffffd2937b9ea6f337c2f3f70937e45e80cc6616008",
+            "consumer_policy": {
+                "managed": [],
+                "blocked": [],
+                "omitted_assets": {
+                    "simai.framework.bridge.js": "portable_backend_bridge_not_admitted"
+                },
+                "excluded_states": []
+            }
+        },
+        "ui.alert": {
+            "provider": "larena/ui",
+            "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
+            "sha256": "27c0393aa7b23318486bdc0008a349dfa7b95cc044ebde1cac92794065beeb75",
+            "consumer_policy": {
+                "managed": {
+                    "id": "deterministic_id"
+                },
+                "blocked": [
+                    {
+                        "prop": "closable",
+                        "value": true,
+                        "code": "FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME"
+                    },
+                    {
+                        "prop": "type",
+                        "value": "success",
+                        "code": "FRAMEWORK_PROP_UNSUPPORTED_IN_BOUNDED_RUNTIME"
+                    }
+                ],
+                "omitted_assets": {
+                    "simai.framework.bridge.js": "portable_backend_bridge_not_admitted"
+                },
+                "excluded_states": {
+                    "closable": {
+                        "prop": "closable",
+                        "value": true
+                    },
+                    "success": {
+                        "prop": "type",
+                        "value": "success"
+                    }
+                }
+            }
+        }
+    },
+    "asset_projection": {
+        "schema": "docara.framework_asset_projection.v1",
+        "mount": "_docara/framework",
+        "source": {
+            "provider": "simai/ui-smart",
+            "revision": "23d00d92346717b8f835297d142a14458f806602"
+        },
+        "files": {
+            "smart/alert/js/alert.js": {
+                "sha256": "9fa2e29f067379f8400ee4a5bd0ef34832baee42f5a8394f48796719d07e75fa"
+            },
+            "smart/buttons/js/buttons.js": {
+                "sha256": "b9804afcf05c718ed51ee0b8b5e04e946c422d2fb8b8fed112e552824054087b"
+            },
+            "smart/icons/js/icons.js": {
+                "sha256": "362cef3368003672166a0a99d5026a1712fe4f716f9e614a55037d2429430da5"
+            },
+            "smart/modal/js/modal.js": {
+                "sha256": "a14cc8fca8e803328cc082a6290695ded7c7baf97373a6353b765116a2b89cb5"
+            }
+        }
+    },
+    "nonclaims": [
+        "production_ready",
+        "all_framework_components_ready"
+    ]
+}

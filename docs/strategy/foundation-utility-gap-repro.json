@@ -1,0 +1,17 @@
+{
+  "scope": "Byte comparison of supplied output trees; input identity and clean-build provenance must be verified separately; not immutable-commit release reproducibility",
+  "builds": [
+    {
+      "root": "/private/tmp/sf5-foundation-utility-gap-product",
+      "files": 3842,
+      "digest": "da1c9ae1563125e573d46e2d94a28a8802269ea38e45c327d62b8a69ad31708f"
+    },
+    {
+      "root": "/private/tmp/sf5-foundation-utility-gap-repro",
+      "files": 3842,
+      "digest": "da1c9ae1563125e573d46e2d94a28a8802269ea38e45c327d62b8a69ad31708f"
+    }
+  ],
+  "identical": true,
+  "differences": []
+}

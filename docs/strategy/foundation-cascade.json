@@ -1,0 +1,15 @@
+{
+  "browser": "151.0.7922.34",
+  "scope": "Isolated document using exact release core.css; no live site mutation",
+  "declaration": "@layer sf.reset, sf.tokens, sf.base, sf.utilities, sf.components, sf.overrides, sf.states;",
+  "results": [
+    {
+      "name": "published-order",
+      "color": "rgb(0, 0, 255)"
+    },
+    {
+      "name": "declaration-first",
+      "color": "rgb(255, 0, 0)"
+    }
+  ]
+}

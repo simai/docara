@@ -4,6 +4,25 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.9.0] - 2026-09-10
+
+### Added
+
+- The portable documentation package now carries the exact generated
+  Framework contract registry and documentation-source projection alongside
+  the immutable runtime lock.
+- Framework projection discovers and includes local component CSS dependencies
+  and the finite syntax-highlighting chunks used by Docara sites.
+
+### Changed
+
+- The bundled runtime is updated to SIMAI UI Core `v5.7.0` and SIMAI UI Smart
+  `v5.5.0`, including the completed SF5 utility, sizing and Smart contracts.
+- Utility planning evaluates Loader rules against complete class tokens,
+  matching the browser Loader and preventing accidental substring matches.
+- The accepted SF5 foundation decisions, evidence matrix and release plan are
+  retained as one linked, portable strategy packet.
+
 ## [2.8.3] - 2026-09-08
 
 ### Changed

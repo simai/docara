@@ -1,0 +1,55 @@
+{
+  "scope": "Exact source function, gap family only. Expected whole-valid-class boundary from accepted utility plan. Not browser module fetch.",
+  "failures": 0,
+  "results": [
+    {
+      "rule": "gap/default",
+      "token": "gap-1",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "rule": "gap/default",
+      "token": "sibling gap-1 sibling",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "rule": "gap/default",
+      "token": "x-gap-1",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "rule": "gap/default",
+      "token": "gap-1-unrelated",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "rule": "gap/default",
+      "token": "gap-nonexistent",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    },
+    {
+      "rule": "gap/md",
+      "token": "md:gap-1",
+      "expected": true,
+      "actual": true,
+      "pass": true
+    },
+    {
+      "rule": "gap/md",
+      "token": "md:gap-1-unrelated",
+      "expected": false,
+      "actual": false,
+      "pass": true
+    }
+  ]
+}

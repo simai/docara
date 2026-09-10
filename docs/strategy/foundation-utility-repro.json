@@ -1,0 +1,16 @@
+{
+  "scope": "Two empty output directories, same uncommitted source/builder inputs; not immutable-commit release reproducibility",
+  "builds": [
+    {
+      "root": "/private/tmp/sf5-foundation-utility-product",
+      "files": 3842,
+      "digest": "d0fd9c713655bd70d722eb3dd5437c23a2ceb5c047567b2b2952528402311173"
+    },
+    {
+      "root": "/private/tmp/sf5-foundation-utility-repro",
+      "files": 3842,
+      "digest": "d0fd9c713655bd70d722eb3dd5437c23a2ceb5c047567b2b2952528402311173"
+    }
+  ],
+  "identical": true
+}

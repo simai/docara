@@ -1003,10 +1003,8 @@ MD);
             '.docara-header-navigation-link:focus-visible,[data-docara-disclosure]:focus-visible{outline:var(--sf-focus-outline-width,var(--sf-a4)) solid var(--sf-primary,Highlight);outline-offset:var(--sf-a2)',
             $smartSurface,
         );
-        self::assertStringContainsString(
-            '[data-docara-disclosure]{order:-1;flex:0 0 auto;',
-            $smartSurface,
-        );
+        self::assertStringContainsString('[data-docara-disclosure]{flex:0 0 auto;}', $smartSurface);
+        self::assertStringNotContainsString('[data-docara-disclosure]{order:-1;', $smartSurface);
         self::assertStringNotContainsString('min-inline-size:var(--sf-d1)', $smartSurface);
         self::assertStringNotContainsString('margin-inline:calc(var(--sf-b0) * -1)', $smartSurface);
         self::assertStringNotContainsString('min-inline-size:44px', $smartSurface);
@@ -1136,9 +1134,9 @@ MD);
             $navigationXpath->query(
                 '//nav[@data-docara-smart="docara.navigation"]'
                 . '//div[contains(concat(" ", normalize-space(@class), " "), " sf-menu-element ")]'
-                . '/button[@data-docara-disclosure][following-sibling::*[1][self::a or self::span]]',
+                . '/*[self::a or self::span][following-sibling::*[1][self::button[@data-docara-disclosure]]]',
             )?->length ?? 0,
-            'Framework disclosure must precede the menu text as in the Simple Menu design.',
+            'Framework disclosure must follow the menu text as its trailing control.',
         );
         self::assertSame(
             0,

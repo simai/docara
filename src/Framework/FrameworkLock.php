@@ -209,7 +209,7 @@ final readonly class FrameworkLock
             if (! is_array($typography)
                 || ($typography['schema'] ?? null) !== 'docara.framework_typography_projection.v1'
                 || ! in_array($typography['candidate'] ?? null, ['5.4.0-rc.1', '5.4.0'], true)
-                || ($typography['source']['provider'] ?? null) !== 'simai/ui-loader'
+                || ! in_array($typography['source']['provider'] ?? null, ['simai/ui-source', 'simai/ui-loader'], true)
                 || ! $this->isCommit($typography['source']['revision'] ?? null)
                 || ! $this->isCommit($typography['source']['rollback_parent'] ?? null)
                 || ($typography['builder']['provider'] ?? null) !== 'simai/ui-builder'

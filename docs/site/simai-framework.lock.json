@@ -435,7 +435,7 @@
         "schema": "docara.framework_typography_projection.v1",
         "candidate": "5.4.0",
         "source": {
-            "provider": "simai/ui-loader",
+            "provider": "simai/ui-source",
             "revision": "c94a214fb727f0468863d10a94d4388e0f111852",
             "rollback_parent": "4f1beecdbc40cfcf5e4962ec350663ccd3272056"
         },

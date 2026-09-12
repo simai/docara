@@ -235,7 +235,7 @@
             "type": "object",
             "required": ["provider", "revision", "rollback_parent"],
             "properties": {
-                "provider": {"type": "string", "const": "simai/ui-loader"},
+                "provider": {"type": "string", "enum": ["simai/ui-source", "simai/ui-loader"]},
                 "revision": {"type": "string", "format": "docara-immutable-revision"},
                 "rollback_parent": {"type": "string", "format": "docara-immutable-revision"}
             },

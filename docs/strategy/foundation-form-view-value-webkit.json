@@ -1,0 +1,255 @@
+{
+  "scope": "Core Loader + Smart integration with explicit local asset roots; local container CSS, not release acceptance",
+  "coreRuntime": true,
+  "strictCandidate": true,
+  "requestedAssets": [
+    {
+      "relative": "core/js/core.js",
+      "file": "/private/tmp/sf5-foundation-core-race-product/core/js/core.js"
+    },
+    {
+      "relative": "core/js/core-rules.js",
+      "file": "/private/tmp/sf5-foundation-core-race-product/core/js/core-rules.js"
+    },
+    {
+      "relative": "core/js/core-system.js",
+      "file": "/private/tmp/sf5-foundation-core-race-product/core/js/core-system.js"
+    },
+    {
+      "relative": "core/js/115905220673108.js",
+      "file": "/private/tmp/sf5-foundation-core-race-product/core/js/115905220673108.js"
+    },
+    {
+      "relative": "core/js/core-loader.js",
+      "file": "/private/tmp/sf5-foundation-core-race-product/core/js/core-loader.js"
+    },
+    {
+      "relative": "component/icon-buttons/js/icon-buttons.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icon-buttons/js/icon-buttons.js"
+    },
+    {
+      "relative": "component/icon-buttons/css/icon-buttons.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icon-buttons/css/icon-buttons.css"
+    },
+    {
+      "relative": "component/dropdown/css/dropdown.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/dropdown/css/dropdown.css"
+    },
+    {
+      "relative": "component/icons/js/icons.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icons/js/icons.js"
+    },
+    {
+      "relative": "component/icons/css/icons.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icons/css/icons.css"
+    },
+    {
+      "relative": "component/checkbox/js/checkbox.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/checkbox/js/checkbox.js"
+    },
+    {
+      "relative": "component/checkbox/css/checkbox.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/checkbox/css/checkbox.css"
+    },
+    {
+      "relative": "component/avatars/js/avatars.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/avatars/js/avatars.js"
+    },
+    {
+      "relative": "component/avatars/css/avatars.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/avatars/css/avatars.css"
+    },
+    {
+      "relative": "component/tags/js/tags.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/tags/js/tags.js"
+    },
+    {
+      "relative": "component/tags/css/tags.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/tags/css/tags.css"
+    },
+    {
+      "relative": "component/inputs/js/inputs.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/inputs/js/inputs.js"
+    },
+    {
+      "relative": "component/inputs/css/inputs.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/inputs/css/inputs.css"
+    },
+    {
+      "relative": "smart/inputs/css/inputs.css",
+      "file": "/private/tmp/sf5-foundation-smart-value-product/smart/inputs/css/inputs.css"
+    },
+    {
+      "relative": "component/dropdown/js/dropdown.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/dropdown/js/dropdown.js"
+    },
+    {
+      "relative": "smart/list-item/js/list-item.js",
+      "file": "/private/tmp/sf5-foundation-smart-value-product/smart/list-item/js/list-item.js"
+    },
+    {
+      "relative": "smart/inputs/js/inputs.js",
+      "file": "/private/tmp/sf5-foundation-smart-value-product/smart/inputs/js/inputs.js"
+    }
+  ],
+  "missingAssets": [],
+  "smartFile": "/private/tmp/sf5-foundation-smart-value-product/smart/list-item/js/list-item.min.js",
+  "productSmart": true,
+  "external": false,
+  "sharedDOM": false,
+  "lifecycle": false,
+  "source": "/private/tmp/sf5-utility-release-source",
+  "core": "/private/tmp/sf5-foundation-core-race-product",
+  "work": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-RxMHB9",
+  "browserName": "webkit",
+  "browser": "26.5",
+  "query": "@layer sf.overrides {\n  @container foundation-panel (min-width: 520px) {\n    .proof-item .sf-list-item-wrap {\n      flex-direction: row;\n      align-items: center;\n    }\n  }\n}",
+  "checks": [
+    {
+      "theme": "theme-light",
+      "dir": "ltr",
+      "rows": [
+        {
+          "id": "wide",
+          "direction": "row",
+          "width": 768,
+          "scroll": 768,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ],
+      "screenshot": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-RxMHB9/container-ltr.png"
+    },
+    {
+      "theme": "theme-dark",
+      "dir": "rtl",
+      "rows": [
+        {
+          "id": "wide",
+          "direction": "row",
+          "width": 768,
+          "scroll": 768,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ],
+      "screenshot": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-RxMHB9/container-rtl.png"
+    },
+    {
+      "textScale": 2,
+      "fontBefore": "16px",
+      "fontAfter": "32px",
+      "rows": [
+        {
+          "id": "wide",
+          "direction": "row",
+          "width": 768,
+          "scroll": 768,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ]
+    },
+    {
+      "localResize": [
+        {
+          "id": "wide",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ]
+    },
+    {
+      "form": {
+        "nativeRequired": true,
+        "submission": true,
+        "errorState": {
+          "same": true,
+          "value": "Документация",
+          "focused": true,
+          "start": 2,
+          "end": 5,
+          "error": "Исправьте название"
+        },
+        "disabledExcluded": true,
+        "readonlyIncluded": true,
+        "remountEventOnce": true
+      }
+    },
+    {
+      "formView": {
+        "valuePreservedBothDirections": true
+      }
+    }
+  ],
+  "errors": [],
+  "pass": true,
+  "screenshot": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-RxMHB9/container-proof.png"
+}

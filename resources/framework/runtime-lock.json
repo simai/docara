@@ -16,18 +16,18 @@
                 "runtime_projection_files": 826,
                 "runtime_projection_manifest_sha256": "91b1fdad622c6c107a2f49a396f04bf8d4549e486e7df3edbc0b3eeaa16cf6b8"
             },
-    {
-      "runtime_sha256": "e9a120f728e00ff8481835bdf457d1ccdf309233328cbca2a88dbd91315e1af3",
-      "runtime_projection_packet_sha256": "42228b12e7cf63930d3872977b0e3b8fb64d12ddb6261cb5574df6b1bb97b80c",
-      "runtime_projection_files": 840,
-      "runtime_projection_manifest_sha256": "dfd6221a7f4159c80aee96c34f4d57840fedd8a6b9aa1b78ad381d20ada097b1"
-    },
-    {
-      "runtime_sha256": "317bc0d956983b7fc0c4fd3467bd5c3124cff54edfb5fcaca921deaa1e6457f7",
-      "runtime_projection_packet_sha256": "ff712e595a9e95beefda72a9f7886f9e62c44c4492799f7a9be284024f05ade7",
-      "runtime_projection_files": 840,
-      "runtime_projection_manifest_sha256": "cb0ed3ade20775c8a229319336c8c44a532c1f1a177f6cdf933d2ff101620c92"
-    }
+            {
+                "runtime_sha256": "e9a120f728e00ff8481835bdf457d1ccdf309233328cbca2a88dbd91315e1af3",
+                "runtime_projection_packet_sha256": "42228b12e7cf63930d3872977b0e3b8fb64d12ddb6261cb5574df6b1bb97b80c",
+                "runtime_projection_files": 840,
+                "runtime_projection_manifest_sha256": "dfd6221a7f4159c80aee96c34f4d57840fedd8a6b9aa1b78ad381d20ada097b1"
+            },
+            {
+                "runtime_sha256": "317bc0d956983b7fc0c4fd3467bd5c3124cff54edfb5fcaca921deaa1e6457f7",
+                "runtime_projection_packet_sha256": "ff712e595a9e95beefda72a9f7886f9e62c44c4492799f7a9be284024f05ade7",
+                "runtime_projection_files": 840,
+                "runtime_projection_manifest_sha256": "cb0ed3ade20775c8a229319336c8c44a532c1f1a177f6cdf933d2ff101620c92"
+            }
         ],
         "superseded_typography_projections": [
             {
@@ -41,39 +41,44 @@
         ]
     },
     "runtime": "simai-framework",
-    "pair_id": "sf-v5.6.2-47a0f496-b07ee017",
-    "bundle_id": "sf-v5.6.2-47a0f496-b07ee017-registry-619eed99-verified-release-artifact-v1",
+    "pair_id": "sf-v5.7.0-d328491b-9e94abc6",
+    "bundle_id": "sf-v5.7.0-d328491b-9e94abc6-registry-2ddbcd70-verified-release-artifact-v1",
     "publication_profile": "verified-release-artifact-v1",
-    "tag": "v5.6.2",
+    "tag": "v5.7.0",
     "ui": {
-        "tag": "v5.6.2",
-        "commit": "47a0f496574bd0af0f03e4b332a2a35a65d77d05",
+        "tag": "v5.7.0",
+        "commit": "d328491bc805439f200866f7e04c0e5e853a4998",
         "tree": "distr",
         "mount": "ui",
-        "sha256": "0b72a5045af8b9ec337485bce9dedb8d1ecd6c38bc384a4a9a6afc7f7f01e7a7",
-        "files": 6773
+        "sha256": "394ccc4d8e7698e8ceaea41cc8cc943ff50f203aea276499e9a66d3c7b53b4db",
+        "files": 6809
     },
     "ui_smart": {
-        "tag": "v5.4.1",
-        "commit": "b07ee0178a1dbc6cb9b1fd49d106f2c12d3ec778",
+        "tag": "v5.5.0",
+        "commit": "9e94abc6b10c82f770820807343cecb9a0e27f77",
         "tree": "smart",
         "mount": "smart",
-        "sha256": "ffe57af2b22ce46ac660eec4c8ec22a04b7382d10a514648a530bea4b9ace856",
+        "sha256": "92ef286697a2f7b32e673a54fde6e1cd61f18d1cab386e7a40032ecf56cfe24c",
         "files": 645
     },
     "framework_registry": {
         "schema_id": "simai.framework.contract-registry",
-        "compatibility_id": "sf-v5.6.2-47a0f496-b07ee017",
+        "compatibility_id": "sf-v5.7.0-d328491b-9e94abc6",
         "profile": "plain-assets-v1",
-        "relative_path": "contract/contracts/generated/framework-contract-registry.json",
-        "file_sha256": "619eed990832ae29a4f70865913c4efa06d5eb211c2877b0412be90b225c4e82",
+        "relative_path": "contracts/generated/framework-contract-registry.json",
+        "file_sha256": "2ddbcd7077c6fa2b2f1918726f16c9c213f3a6db5d717539244bcad01abd83b3",
         "source": {
-            "commit": "47a0f496574bd0af0f03e4b332a2a35a65d77d05",
+            "commit": "d328491bc805439f200866f7e04c0e5e853a4998",
             "tree": "contracts/generated",
-            "tree_oid": "d8348ec27ddf2997dc0a51031fed7beb36d5d8e7",
+            "tree_oid": "b94efe4a43bd048b9c83dbff3031d5a8dbd30774",
             "mount": "contract",
-            "sha256": "b426c5500a34e5031b2158f76c8e850cc92539c76f2ae657dc5b1befb584d519",
+            "sha256": "d598fdd30267a744650b7cb2ab4b11e4da076a122eb8000a830afc968e358b02",
             "files": 2
+        },
+        "documentation_source": {
+            "schema": "docara.documentation_source.v1",
+            "relative_path": "contracts/generated/documentation-source.json",
+            "file_sha256": "049fe291c95d93b5050d838c493b62cfb00c2a34a7a1609c36ea6cfecfb784cc"
         }
     },
     "boot": {
@@ -106,100 +111,19 @@
         ]
     },
     "components": {
-        "sf-icon": {
-            "source": "smart/icons",
-            "javascript": "smart/smart/icons/js/icons.js",
+        "sf-admin-menu": {
+            "source": "smart/admin-menu",
+            "javascript": "smart/smart/admin-menu/js/admin-menu.js",
             "css": null,
-            "loader": {
-                "plugin": "cl-icons",
-                "relations": [
-                    {
-                        "plugin": "icons",
-                        "type": "component",
-                        "css": "component/icons/css/icons.css",
-                        "javascript": "component/icons/js/icons.js"
-                    }
-                ]
-            },
-            "attributes": [
-                "icon",
-                "size",
-                "scheme",
-                "aria-label",
-                "id",
-                "class"
-            ]
-        },
-        "sf-button": {
-            "source": "smart/buttons",
-            "javascript": "smart/smart/buttons/js/buttons.js",
-            "css": null,
-            "loader": {
-                "plugin": "cl-buttons",
-                "relations": [
-                    {
-                        "plugin": "buttons",
-                        "type": "component",
-                        "css": "component/buttons/css/buttons.css",
-                        "javascript": "component/buttons/js/buttons.js"
-                    }
-                ]
-            },
-            "attributes": [
-                "template",
-                "size",
-                "type",
-                "scheme",
-                "text",
-                "icon",
-                "icon-left",
-                "icon-right",
-                "icon-position",
-                "text-position",
-                "tightness",
-                "radius",
-                "root-class",
-                "loading",
-                "disabled",
-                "native-type",
-                "aria-label",
-                "id",
-                "class"
-            ]
-        },
-        "sf-table": {
-            "source": "smart/table",
-            "javascript": "smart/smart/table/js/table.js",
-            "css": "smart/smart/table/css/table.css",
-            "attributes": [
-                "template",
-                "root-class",
-                "selectable",
-                "settings",
-                "actions",
-                "aria-label",
-                "id",
-                "class"
-            ]
-        },
-        "sf-badge": {
-            "source": "smart/badges",
-            "javascript": "smart/smart/badges/js/badges.js",
-            "css": null,
-            "core_css": "ui/distr/component/badges/css/badges.css",
-            "attributes": [
-                "template",
-                "size",
-                "type",
-                "scheme",
-                "text",
-                "icon",
-                "icon-left",
-                "icon-right",
-                "icon-position",
-                "aria-label",
-                "id",
-                "class"
+            "attributes": [],
+            "requires": [
+                "sf-badge",
+                "sf-button",
+                "sf-context-menu",
+                "sf-icon",
+                "sf-icon-button",
+                "sf-input",
+                "sf-modal"
             ]
         },
         "sf-alert": {
@@ -225,30 +149,214 @@
                 "class"
             ]
         },
-        "sf-pagination": {
-            "source": "smart/pagination",
-            "javascript": "smart/smart/pagination/js/pagination.js",
+        "sf-avatar": {
+            "source": "smart/avatar",
+            "javascript": "smart/smart/avatar/js/avatar.js",
             "css": null,
+            "attributes": []
+        },
+        "sf-avatars": {
+            "source": "smart/avatars",
+            "javascript": "smart/smart/avatars/js/avatars.js",
+            "css": "smart/smart/avatars/css/avatars.css",
+            "attributes": []
+        },
+        "sf-badge": {
+            "source": "smart/badges",
+            "javascript": "smart/smart/badges/js/badges.js",
+            "css": null,
+            "core_css": "ui/distr/component/badges/css/badges.css",
             "attributes": [
-                "current",
-                "total",
-                "top",
-                "main",
-                "bottom",
-                "top-class",
-                "main-class",
-                "bottom-class",
-                "show-more-text",
-                "page-sizes",
-                "page-size-label",
-                "actions",
-                "action",
-                "action-apply-text",
-                "action-for-all-label",
+                "template",
+                "size",
+                "type",
+                "scheme",
+                "text",
+                "icon",
+                "icon-start",
+                "icon-end",
+                "icon-left",
+                "icon-right",
+                "icon-position",
                 "aria-label",
                 "id",
                 "class"
             ]
+        },
+        "sf-breadcrumbs": {
+            "source": "smart/breadcrumbs",
+            "javascript": "smart/smart/breadcrumbs/js/breadcrumbs.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-button": {
+            "source": "smart/buttons",
+            "javascript": "smart/smart/buttons/js/buttons.js",
+            "css": null,
+            "loader": {
+                "plugin": "cl-buttons",
+                "relations": [
+                    {
+                        "plugin": "buttons",
+                        "type": "component",
+                        "css": "component/buttons/css/buttons.css",
+                        "javascript": "component/buttons/js/buttons.js"
+                    }
+                ]
+            },
+            "attributes": [
+                "template",
+                "size",
+                "type",
+                "scheme",
+                "text",
+                "icon",
+                "icon-start",
+                "icon-end",
+                "icon-left",
+                "icon-right",
+                "icon-position",
+                "text-position",
+                "spacing",
+                "tightness",
+                "radius",
+                "root-class",
+                "loading",
+                "disabled",
+                "native-type",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-button-group": {
+            "source": "smart/button-group",
+            "javascript": "smart/smart/button-group/js/button-group.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-checkbox": {
+            "source": "smart/checkbox",
+            "javascript": "smart/smart/checkbox/js/checkbox.js",
+            "css": "smart/smart/checkbox/css/checkbox.css",
+            "attributes": [
+                "size",
+                "label",
+                "description",
+                "help",
+                "position",
+                "root-class",
+                "checked",
+                "disabled",
+                "indeterminate",
+                "name",
+                "value",
+                "error",
+                "id",
+                "class"
+            ]
+        },
+        "sf-close": {
+            "source": "smart/close",
+            "javascript": "smart/smart/close/js/close.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-context-menu": {
+            "source": "smart/context-menu",
+            "javascript": "smart/smart/context-menu/js/context-menu.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-country-code": {
+            "source": "smart/country-code",
+            "javascript": "smart/smart/country-code/js/country-code.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-datepicker": {
+            "source": "smart/datepicker",
+            "javascript": "smart/smart/datepicker/js/datepicker.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-download-file": {
+            "source": "smart/download-file",
+            "javascript": "smart/smart/download-file/js/download-file.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-drawer": {
+            "source": "smart/drawer",
+            "javascript": "smart/smart/drawer/js/drawer.js",
+            "css": "smart/smart/drawer/css/drawer.css",
+            "attributes": []
+        },
+        "sf-dropdown": {
+            "source": "smart/dropdown",
+            "javascript": "smart/smart/dropdown/js/dropdown.js",
+            "css": null,
+            "attributes": [
+                "template",
+                "size",
+                "type",
+                "mode",
+                "multiple",
+                "portal",
+                "value",
+                "name",
+                "label",
+                "required",
+                "placeholder",
+                "search-placeholder",
+                "search",
+                "disabled",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-file-upload": {
+            "source": "smart/file-upload",
+            "javascript": "smart/smart/file-upload/js/file-upload.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-gallery": {
+            "source": "smart/gallery",
+            "javascript": "smart/smart/gallery/js/gallery.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-icon": {
+            "source": "smart/icons",
+            "javascript": "smart/smart/icons/js/icons.js",
+            "css": null,
+            "loader": {
+                "plugin": "cl-icons",
+                "relations": [
+                    {
+                        "plugin": "icons",
+                        "type": "component",
+                        "css": "component/icons/css/icons.css",
+                        "javascript": "component/icons/js/icons.js"
+                    }
+                ]
+            },
+            "attributes": [
+                "icon",
+                "size",
+                "scheme",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-icon-button": {
+            "source": "smart/icon-buttons",
+            "javascript": "smart/smart/icon-buttons/js/icon-buttons.js",
+            "css": "smart/smart/icon-buttons/css/icon-buttons.css",
+            "attributes": []
         },
         "sf-input": {
             "source": "smart/inputs",
@@ -267,6 +375,8 @@
                 "default-value",
                 "input-type",
                 "autocomplete",
+                "icon-start",
+                "text-end",
                 "left-icon",
                 "right-text",
                 "hint-icon",
@@ -283,6 +393,12 @@
                 "id",
                 "class"
             ]
+        },
+        "sf-list-item": {
+            "source": "smart/list-item",
+            "javascript": "smart/smart/list-item/js/list-item.js",
+            "css": null,
+            "attributes": []
         },
         "sf-modal": {
             "source": "smart/modal",
@@ -349,6 +465,134 @@
                 "class"
             ]
         },
+        "sf-pagination": {
+            "source": "smart/pagination",
+            "javascript": "smart/smart/pagination/js/pagination.js",
+            "css": null,
+            "attributes": [
+                "current",
+                "total",
+                "top",
+                "main",
+                "bottom",
+                "top-class",
+                "main-class",
+                "bottom-class",
+                "show-more-text",
+                "page-sizes",
+                "page-size-label",
+                "actions",
+                "action",
+                "action-apply-text",
+                "action-for-all-label",
+                "aria-label",
+                "id",
+                "class"
+            ]
+        },
+        "sf-progress-bar": {
+            "source": "smart/progress-bar",
+            "javascript": "smart/smart/progress-bar/js/progress-bar.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-progress-scale": {
+            "source": "smart/progress-scale",
+            "javascript": "smart/smart/progress-scale/js/progress-scale.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-radio": {
+            "source": "smart/radio",
+            "javascript": "smart/smart/radio/js/radio.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-range-slider": {
+            "source": "smart/range-slider",
+            "javascript": "smart/smart/range-slider/js/range-slider.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-reference-link": {
+            "source": "smart/reference-link",
+            "javascript": "smart/smart/reference-link/js/reference-link.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-skeleton": {
+            "source": "smart/skeleton",
+            "javascript": "smart/smart/skeleton/js/skeleton.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-slider": {
+            "source": "smart/slider",
+            "javascript": "smart/smart/slider/js/slider.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-spinner": {
+            "source": "smart/spinner",
+            "javascript": "smart/smart/spinner/js/spinner.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-steps": {
+            "source": "smart/steps",
+            "javascript": "smart/smart/steps/js/steps.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-switch": {
+            "source": "smart/switch",
+            "javascript": "smart/smart/switch/js/switch.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-table": {
+            "source": "smart/table",
+            "javascript": "smart/smart/table/js/table.js",
+            "css": "smart/smart/table/css/table.css",
+            "attributes": [
+                "template",
+                "root-class",
+                "selectable",
+                "settings",
+                "actions",
+                "aria-label",
+                "id",
+                "class"
+            ],
+            "requires": [
+                "sf-avatar",
+                "sf-button",
+                "sf-checkbox",
+                "sf-context-menu",
+                "sf-datepicker",
+                "sf-dropdown",
+                "sf-icon-button",
+                "sf-input",
+                "sf-list-item",
+                "sf-modal",
+                "sf-pagination",
+                "sf-range-slider",
+                "sf-tabs",
+                "sf-tag"
+            ]
+        },
+        "sf-tabs": {
+            "source": "smart/tabs",
+            "javascript": "smart/smart/tabs/js/tabs.js",
+            "css": "smart/smart/tabs/css/tabs.css",
+            "attributes": []
+        },
+        "sf-tag": {
+            "source": "smart/tags",
+            "javascript": "smart/smart/tags/js/tags.js",
+            "css": "smart/smart/tags/css/tags.css",
+            "attributes": []
+        },
         "sf-textarea": {
             "source": "smart/textarea",
             "javascript": "smart/smart/textarea/js/textarea.js",
@@ -374,50 +618,35 @@
                 "class"
             ]
         },
-        "sf-dropdown": {
-            "source": "smart/dropdown",
-            "javascript": "smart/smart/dropdown/js/dropdown.js",
+        "sf-toast": {
+            "source": "smart/toast",
+            "javascript": "smart/smart/toast/js/toast.js",
             "css": null,
-            "attributes": [
-                "template",
-                "size",
-                "type",
-                "mode",
-                "multiple",
-                "portal",
-                "value",
-                "name",
-                "label",
-                "required",
-                "placeholder",
-                "search-placeholder",
-                "search",
-                "disabled",
-                "aria-label",
-                "id",
-                "class"
-            ]
+            "attributes": []
         },
-        "sf-checkbox": {
-            "source": "smart/checkbox",
-            "javascript": "smart/smart/checkbox/js/checkbox.js",
-            "css": "smart/smart/checkbox/css/checkbox.css",
-            "attributes": [
-                "size",
-                "label",
-                "description",
-                "help",
-                "position",
-                "root-class",
-                "checked",
-                "disabled",
-                "indeterminate",
-                "name",
-                "value",
-                "error",
-                "id",
-                "class"
-            ]
+        "sf-toggle": {
+            "source": "smart/toggle",
+            "javascript": "smart/smart/toggle/js/toggle.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-tooltip": {
+            "source": "smart/tooltip",
+            "javascript": "smart/smart/tooltip/js/tooltip.js",
+            "css": null,
+            "attributes": []
+        },
+        "sf-tree": {
+            "source": "smart/tree",
+            "javascript": "smart/smart/tree/js/tree.js",
+            "css": "smart/smart/tree/css/tree.css",
+            "attributes": []
+        },
+        "sf-tree-item": {
+            "source": "smart/tree-item",
+            "javascript": "smart/smart/tree-item/js/tree-item.js",
+            "css": null,
+            "attributes": []
         }
     }
 }

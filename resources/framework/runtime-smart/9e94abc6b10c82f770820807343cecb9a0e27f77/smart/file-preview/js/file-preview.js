@@ -1,0 +1,38 @@
+(()=>{"use strict";const e="undefined"!=typeof window&&(window.SF?.smart||window.SF)||{},t="undefined"!=typeof window?window:{},i=e.SfBaseElement||t.SfBaseElement;if(!i)throw new Error("SF smart runtime is not loaded. Load smart-base before smart components.");const n=e.html||t.html,a=e.nothing||t.nothing,o=(e.render||t.render,e.litProps||t.litProps,e.toBoolean,e.toAttributeName,e.toNumber,e.normalizeEnum,e.parseJsonAttribute,i);function s(e){e.component.toggleOpen()}function r({icon:e,label:t,disabled:i,ref:a,onClick:o}){return n`
+        <button
+                type="button"
+                class="sf-icon-button radius-rounded sf-icon-button--icon sf-icon-button--default sf-icon-button--on-surface sf-icon-button--size-1/2"
+                ?disabled=${i}
+                aria-label=${t}
+                :ref=${a}
+                @click=${o}
+        >
+            <i class="sf-icon">${e}</i>
+        </button>
+    `}function l(e){const{open:t}=e,i=function(e){return e.name||e.fileName||"File"}(e),o=function(e){return e.size||e.fileSize||""}(e),l=e.actions&&(e.downloadAction||e.removeAction),d=["sf-file-preview","inline-flex","flex-col","items-cross-center","max-w-full","min-w-0","relative",e.disabled?"disabled":"transition"].filter(Boolean);return n`
+        <div
+                class=${d.join(" ")}
+                aria-label=${e.ariaLabel||i}
+                :ref=${e.refs.root}
+        >
+            ${l?n`
+                        <div class="sf-file-preview-actions flex items-cross-center absolute translate-y-half inline-start-1/2 bottom-full ${t?"":"hidden"}">
+                            ${e.downloadAction?r({icon:"download",label:"Download",disabled:e.disabled,ref:e.refs.download,onClick:e.onDownload}):a}
+                            ${e.removeAction?r({icon:"delete",label:"Delete",disabled:e.disabled,ref:e.refs.remove,onClick:e.onRemove}):a}
+                        </div>
+                    `:a}
+            ${function(e,t){return e.isImage?n`
+        <sf-avatar
+                template="default"
+                @click="${()=>s(e)}"
+                size=${e.avatarSize||"2"}
+                title=${t}
+                image-url=${e.imageUrl||e.href||a}
+        ></sf-avatar>
+    `:n`<div class="sf-file-preview-holder cursor-pointer" @click="${()=>s(e)}"><i class="sf-icon">${e.icon}</i></div>`}(e,i)}
+            ${!i&&!o||"avatar"===e.type?a:n`<div class="sf-file-preview-main flex flex-col items-cross-center w-full min-w-0">
+                ${i?n`<span class="sf-file-preview-name w-full min-w-0 overflow-hidden t-ellipsis text-center" title=${i}>${i}</span>`:a}
+                ${o?n`<span class="sf-file-preview-size w-full min-w-0 overflow-hidden t-ellipsis text-center">${o}</span>`:a}
+            </div>`}
+        </div>
+    `}(class extends o{static get props(){return{templateName:{attribute:"template",default:"default"},name:{default:""},fileName:{default:""},size:{default:""},fileSize:{default:""},icon:{default:"save"},href:{default:""},type:{default:"default"},mimeType:{attribute:"mime-type",default:""},imageUrl:{attribute:"image-url",default:""},avatarSize:{attribute:"avatar-size",default:"3"},open:{type:Boolean,default:!1},download:{type:Boolean,default:!0},target:{default:"_blank"},actions:{type:Boolean,default:!0},downloadAction:{attribute:"download-action",type:Boolean,default:!0},removeAction:{attribute:"remove-action",type:Boolean,default:!0},disabled:{type:Boolean,default:!1},ariaLabel:{default:""}}}constructor(){super(),this.refs={root:this.createRef(),download:this.createRef(),remove:this.createRef()},this._documentClickBound=!1,this.handleDocumentClick=this.handleDocumentClick.bind(this)}get componentName(){return"file-preview"}get templateName(){return this.getAttribute("template")||"default"}get name(){return this.getAttribute("name")||this.fileName||"File"}get fileName(){return this.getAttribute("file-name")||""}get size(){return this.getAttribute("size")||this.fileSize||""}get open(){return void 0!==this.state?.open?this.toBoolean(this.state.open,!1):this.getBooleanAttr("open",!1)}setOpen(e){return this.setState({open:Boolean(e)}),this}toggleOpen(){return this.setOpen(!this.open)}get fileSize(){return this.getAttribute("file-size")||""}get icon(){return this.getAttribute("icon")||"save"}get href(){return this.getAttribute("href")||""}get mimeType(){return this.getAttribute("mime-type")||""}get imageUrl(){return this.getAttribute("image-url")||""}get avatarSize(){return this.getAttribute("avatar-size")||"3"}get isImage(){const e=this.mimeType.toLowerCase(),t=`${this.href||""} ${this.imageUrl||""} ${this.fileName||""} ${this.name||""}`.toLowerCase();return e.startsWith("image/")||/\.(png|jpe?g|gif|webp|svg|bmp|avif)(\?.*)?$/.test(t)}get download(){return this.getBooleanAttr("download",!0)}get target(){return this.getAttribute("target")||"_blank"}get actions(){return this.getBooleanAttr("actions",!0)}get downloadAction(){return this.getBooleanAttr("download-action",!0)}get removeAction(){return this.getBooleanAttr("remove-action",!0)}get disabled(){return this.getBooleanAttr("disabled",!1)}get ariaLabel(){return this.getAttribute("aria-label")||this.name}templateContext(){const e=this.getPropsContext();return this.createTemplateContext({...e,component:this,refs:this.refs,name:this.name,fileName:this.fileName,size:this.size,fileSize:this.fileSize,icon:this.icon,href:this.href,mimeType:this.mimeType,imageUrl:this.imageUrl,avatarSize:this.avatarSize,isImage:this.isImage,open:this.open,download:this.download,target:this.target,actions:this.actions,downloadAction:this.downloadAction,removeAction:this.removeAction,disabled:this.disabled,ariaLabel:this.ariaLabel,onDownload:e=>this.handleDownload(e),onRemove:e=>this.handleRemove(e)})}template(){return l(this.templateContext())}get data(){return{name:this.name,fileName:this.fileName,size:this.size,fileSize:this.fileSize,icon:this.icon,href:this.href,mimeType:this.mimeType,imageUrl:this.imageUrl,avatarSize:this.avatarSize,open:this.open,download:this.download,target:this.target,actions:this.actions,downloadAction:this.downloadAction,removeAction:this.removeAction,disabled:this.disabled,ariaLabel:this.ariaLabel}}getValue(){return{name:this.name,fileName:this.fileName,size:this.size,fileSize:this.fileSize,icon:this.icon,href:this.href,mimeType:this.mimeType,imageUrl:this.imageUrl,target:this.target}}afterRender(){requestAnimationFrame(()=>{this.bindDocumentClick()})}onDisconnected(){this.unbindDocumentClick()}bindDocumentClick(){this._documentClickBound||"undefined"==typeof document||(document.addEventListener("click",this.handleDocumentClick),this._documentClickBound=!0)}unbindDocumentClick(){this._documentClickBound&&"undefined"!=typeof document&&(document.removeEventListener("click",this.handleDocumentClick),this._documentClickBound=!1)}handleDocumentClick(e){if(!this.open)return;const t=e?.target,i=this.refs.root?.value;this.contains(t)||i?.contains?.(t)||this.setOpen(!1)}handleDownload(e){if(this.disabled)return void e?.preventDefault?.();if(!this.dispatchFilePreviewEvent("download")||!this.href)return;const t=document.createElement("a");t.href=this.href,this.download?t.download=this.fileName||this.name||"":(t.target=this.target,t.rel="noopener noreferrer"),t.click()}handleRemove(e){e?.preventDefault?.(),this.disabled||this.dispatchFilePreviewEvent("remove")}dispatchFilePreviewEvent(e){const t={action:e,value:this.getValue()};return this.dispatchEvent(new CustomEvent(`sf-file-preview:${e}`,{bubbles:!0,cancelable:!0,composed:!0,detail:t}))}}).define("sf-file-preview")})();

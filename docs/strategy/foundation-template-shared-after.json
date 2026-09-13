@@ -1,0 +1,153 @@
+{
+  "scope": "Existing Smart source, local container CSS experiment; no Loader/product/release claim",
+  "external": true,
+  "sharedDOM": true,
+  "source": "/private/tmp/sf5-utility-release-source",
+  "core": "/private/tmp/sf5-foundation-core-network-recovery",
+  "work": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-vohGqL",
+  "browser": "151.0.7922.34",
+  "query": "@layer sf.overrides {\n  @container foundation-panel (min-width: 520px) {\n    .proof-item .sf-list-item-wrap {\n      flex-direction: row;\n      align-items: center;\n    }\n  }\n}",
+  "checks": [
+    {
+      "theme": "theme-light",
+      "dir": "ltr",
+      "rows": [
+        {
+          "id": "wide",
+          "direction": "row",
+          "width": 768,
+          "scroll": 768,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ],
+      "screenshot": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-vohGqL/container-ltr.png"
+    },
+    {
+      "theme": "theme-dark",
+      "dir": "rtl",
+      "rows": [
+        {
+          "id": "wide",
+          "direction": "row",
+          "width": 768,
+          "scroll": 768,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ],
+      "screenshot": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-vohGqL/container-rtl.png"
+    },
+    {
+      "textScale": 2,
+      "fontBefore": "16px",
+      "fontAfter": "32px",
+      "rows": [
+        {
+          "id": "wide",
+          "direction": "row",
+          "width": 768,
+          "scroll": 768,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ]
+    },
+    {
+      "localResize": [
+        {
+          "id": "wide",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ]
+    },
+    {
+      "externalText": "Изменённый текст",
+      "mirror": "Изменённый текст"
+    },
+    {
+      "externalTemplate": {
+        "differentDOM": true,
+        "props": {
+          "selected": "true",
+          "disabled": "true",
+          "tabindex": -1
+        },
+        "slotPreserved": true,
+        "remount": true,
+        "returnToDefault": true
+      }
+    }
+  ],
+  "errors": [],
+  "pass": true,
+  "screenshot": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-vohGqL/container-proof.png"
+}

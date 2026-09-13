@@ -1,0 +1,16 @@
+{
+  "browser": "151.0.7922.34",
+  "scope": "Isolated document; no live site mutation",
+  "input": "/private/tmp/sf5-foundation-core.css",
+  "declaration": "@layer sf.reset, sf.tokens, sf.base, sf.utilities, sf.components, sf.overrides, sf.states;",
+  "results": [
+    {
+      "name": "input-order",
+      "color": "rgb(255, 0, 0)"
+    },
+    {
+      "name": "declaration-first",
+      "color": "rgb(255, 0, 0)"
+    }
+  ]
+}

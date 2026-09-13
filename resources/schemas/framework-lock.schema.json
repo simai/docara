@@ -101,7 +101,44 @@
                 },
                 "mount": {
                     "type": "string",
-                    "const": "_docara/framework"
+                    "enum": ["_docara/framework", "_docara/framework-runtime"]
+                },
+                "source": {
+                    "type": "object",
+                    "required": ["provider", "revision"],
+                    "properties": {
+                        "provider": {
+                            "type": "string",
+                            "const": "simai/ui-smart"
+                        },
+                        "revision": {
+                            "type": "string",
+                            "format": "docara-immutable-revision"
+                        }
+                    },
+                    "additionalProperties": false
+                },
+                "files": {
+                    "type": "object",
+                    "minProperties": 1,
+                    "additionalProperties": {
+                        "$ref": "#/$defs/projected_asset"
+                    }
+                }
+            },
+            "additionalProperties": false
+        },
+        "dynamic_asset_projection": {
+            "type": "object",
+            "required": ["schema", "mount", "source", "files"],
+            "properties": {
+                "schema": {
+                    "type": "string",
+                    "const": "docara.framework_dynamic_asset_projection.v1"
+                },
+                "mount": {
+                    "type": "string",
+                    "const": "_docara/framework-runtime"
                 },
                 "source": {
                     "type": "object",

@@ -82,7 +82,7 @@ final class PreviewKernelTest extends TestCase
             'ru/_docara/declarative-shell.js',
             'ru/_docara/smart/navigation.js',
             'ru/_docara/smart/preferences.js',
-            'ru/_docara/framework/smart/alert/js/alert.js',
+            'ru/_docara/framework-runtime/smart/alert/js/alert.js',
         ] as $asset) {
             $published = $this->tmpPath('.docara-preview/output/smart/' . $asset);
             $production = $this->tmpPath('build_preview-cache/' . $asset);

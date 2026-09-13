@@ -3,39 +3,44 @@
     "runtime": {
         "schema": "larena.ui.frontend_runtime_lock.v3",
         "runtime": "simai-framework",
-        "pair_id": "sf-v5.6.2-47a0f496-b07ee017",
-        "bundle_id": "sf-v5.6.2-47a0f496-b07ee017-registry-619eed99-verified-release-artifact-v1",
+        "pair_id": "sf-v5.7.0-d328491b-9e94abc6",
+        "bundle_id": "sf-v5.7.0-d328491b-9e94abc6-registry-2ddbcd70-verified-release-artifact-v1",
         "publication_profile": "verified-release-artifact-v1",
-        "tag": "v5.6.2",
+        "tag": "v5.7.0",
         "ui": {
-            "tag": "v5.6.2",
-            "commit": "47a0f496574bd0af0f03e4b332a2a35a65d77d05",
+            "tag": "v5.7.0",
+            "commit": "d328491bc805439f200866f7e04c0e5e853a4998",
             "tree": "distr",
             "mount": "ui",
-            "sha256": "0b72a5045af8b9ec337485bce9dedb8d1ecd6c38bc384a4a9a6afc7f7f01e7a7",
-            "files": 6773
+            "sha256": "394ccc4d8e7698e8ceaea41cc8cc943ff50f203aea276499e9a66d3c7b53b4db",
+            "files": 6809
         },
         "ui_smart": {
-            "tag": "v5.4.1",
-            "commit": "b07ee0178a1dbc6cb9b1fd49d106f2c12d3ec778",
+            "tag": "v5.5.0",
+            "commit": "9e94abc6b10c82f770820807343cecb9a0e27f77",
             "tree": "smart",
             "mount": "smart",
-            "sha256": "ffe57af2b22ce46ac660eec4c8ec22a04b7382d10a514648a530bea4b9ace856",
+            "sha256": "92ef286697a2f7b32e673a54fde6e1cd61f18d1cab386e7a40032ecf56cfe24c",
             "files": 645
         },
         "framework_registry": {
             "schema_id": "simai.framework.contract-registry",
-            "compatibility_id": "sf-v5.6.2-47a0f496-b07ee017",
+            "compatibility_id": "sf-v5.7.0-d328491b-9e94abc6",
             "profile": "plain-assets-v1",
-            "relative_path": "contract/contracts/generated/framework-contract-registry.json",
-            "file_sha256": "619eed990832ae29a4f70865913c4efa06d5eb211c2877b0412be90b225c4e82",
+            "relative_path": "contracts/generated/framework-contract-registry.json",
+            "file_sha256": "2ddbcd7077c6fa2b2f1918726f16c9c213f3a6db5d717539244bcad01abd83b3",
             "source": {
-                "commit": "47a0f496574bd0af0f03e4b332a2a35a65d77d05",
+                "commit": "d328491bc805439f200866f7e04c0e5e853a4998",
                 "tree": "contracts/generated",
-                "tree_oid": "d8348ec27ddf2997dc0a51031fed7beb36d5d8e7",
+                "tree_oid": "b94efe4a43bd048b9c83dbff3031d5a8dbd30774",
                 "mount": "contract",
-                "sha256": "b426c5500a34e5031b2158f76c8e850cc92539c76f2ae657dc5b1befb584d519",
+                "sha256": "d598fdd30267a744650b7cb2ab4b11e4da076a122eb8000a830afc968e358b02",
                 "files": 2
+            },
+            "documentation_source": {
+                "schema": "docara.documentation_source.v1",
+                "relative_path": "contracts/generated/documentation-source.json",
+                "file_sha256": "049fe291c95d93b5050d838c493b62cfb00c2a34a7a1609c36ea6cfecfb784cc"
             }
         },
         "boot": {
@@ -68,100 +73,19 @@
             ]
         },
         "components": {
-            "sf-icon": {
-                "source": "smart/icons",
-                "javascript": "smart/smart/icons/js/icons.js",
+            "sf-admin-menu": {
+                "source": "smart/admin-menu",
+                "javascript": "smart/smart/admin-menu/js/admin-menu.js",
                 "css": null,
-                "loader": {
-                    "plugin": "cl-icons",
-                    "relations": [
-                        {
-                            "plugin": "icons",
-                            "type": "component",
-                            "css": "component/icons/css/icons.css",
-                            "javascript": "component/icons/js/icons.js"
-                        }
-                    ]
-                },
-                "attributes": [
-                    "icon",
-                    "size",
-                    "scheme",
-                    "aria-label",
-                    "id",
-                    "class"
-                ]
-            },
-            "sf-button": {
-                "source": "smart/buttons",
-                "javascript": "smart/smart/buttons/js/buttons.js",
-                "css": null,
-                "loader": {
-                    "plugin": "cl-buttons",
-                    "relations": [
-                        {
-                            "plugin": "buttons",
-                            "type": "component",
-                            "css": "component/buttons/css/buttons.css",
-                            "javascript": "component/buttons/js/buttons.js"
-                        }
-                    ]
-                },
-                "attributes": [
-                    "template",
-                    "size",
-                    "type",
-                    "scheme",
-                    "text",
-                    "icon",
-                    "icon-left",
-                    "icon-right",
-                    "icon-position",
-                    "text-position",
-                    "tightness",
-                    "radius",
-                    "root-class",
-                    "loading",
-                    "disabled",
-                    "native-type",
-                    "aria-label",
-                    "id",
-                    "class"
-                ]
-            },
-            "sf-table": {
-                "source": "smart/table",
-                "javascript": "smart/smart/table/js/table.js",
-                "css": "smart/smart/table/css/table.css",
-                "attributes": [
-                    "template",
-                    "root-class",
-                    "selectable",
-                    "settings",
-                    "actions",
-                    "aria-label",
-                    "id",
-                    "class"
-                ]
-            },
-            "sf-badge": {
-                "source": "smart/badges",
-                "javascript": "smart/smart/badges/js/badges.js",
-                "css": null,
-                "core_css": "ui/distr/component/badges/css/badges.css",
-                "attributes": [
-                    "template",
-                    "size",
-                    "type",
-                    "scheme",
-                    "text",
-                    "icon",
-                    "icon-left",
-                    "icon-right",
-                    "icon-position",
-                    "aria-label",
-                    "id",
-                    "class"
+                "attributes": [],
+                "requires": [
+                    "sf-badge",
+                    "sf-button",
+                    "sf-context-menu",
+                    "sf-icon",
+                    "sf-icon-button",
+                    "sf-input",
+                    "sf-modal"
                 ]
             },
             "sf-alert": {
@@ -187,30 +111,214 @@
                     "class"
                 ]
             },
-            "sf-pagination": {
-                "source": "smart/pagination",
-                "javascript": "smart/smart/pagination/js/pagination.js",
+            "sf-avatar": {
+                "source": "smart/avatar",
+                "javascript": "smart/smart/avatar/js/avatar.js",
                 "css": null,
+                "attributes": []
+            },
+            "sf-avatars": {
+                "source": "smart/avatars",
+                "javascript": "smart/smart/avatars/js/avatars.js",
+                "css": "smart/smart/avatars/css/avatars.css",
+                "attributes": []
+            },
+            "sf-badge": {
+                "source": "smart/badges",
+                "javascript": "smart/smart/badges/js/badges.js",
+                "css": null,
+                "core_css": "ui/distr/component/badges/css/badges.css",
                 "attributes": [
-                    "current",
-                    "total",
-                    "top",
-                    "main",
-                    "bottom",
-                    "top-class",
-                    "main-class",
-                    "bottom-class",
-                    "show-more-text",
-                    "page-sizes",
-                    "page-size-label",
-                    "actions",
-                    "action",
-                    "action-apply-text",
-                    "action-for-all-label",
+                    "template",
+                    "size",
+                    "type",
+                    "scheme",
+                    "text",
+                    "icon",
+                    "icon-start",
+                    "icon-end",
+                    "icon-left",
+                    "icon-right",
+                    "icon-position",
                     "aria-label",
                     "id",
                     "class"
                 ]
+            },
+            "sf-breadcrumbs": {
+                "source": "smart/breadcrumbs",
+                "javascript": "smart/smart/breadcrumbs/js/breadcrumbs.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-button": {
+                "source": "smart/buttons",
+                "javascript": "smart/smart/buttons/js/buttons.js",
+                "css": null,
+                "loader": {
+                    "plugin": "cl-buttons",
+                    "relations": [
+                        {
+                            "plugin": "buttons",
+                            "type": "component",
+                            "css": "component/buttons/css/buttons.css",
+                            "javascript": "component/buttons/js/buttons.js"
+                        }
+                    ]
+                },
+                "attributes": [
+                    "template",
+                    "size",
+                    "type",
+                    "scheme",
+                    "text",
+                    "icon",
+                    "icon-start",
+                    "icon-end",
+                    "icon-left",
+                    "icon-right",
+                    "icon-position",
+                    "text-position",
+                    "spacing",
+                    "tightness",
+                    "radius",
+                    "root-class",
+                    "loading",
+                    "disabled",
+                    "native-type",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-button-group": {
+                "source": "smart/button-group",
+                "javascript": "smart/smart/button-group/js/button-group.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-checkbox": {
+                "source": "smart/checkbox",
+                "javascript": "smart/smart/checkbox/js/checkbox.js",
+                "css": "smart/smart/checkbox/css/checkbox.css",
+                "attributes": [
+                    "size",
+                    "label",
+                    "description",
+                    "help",
+                    "position",
+                    "root-class",
+                    "checked",
+                    "disabled",
+                    "indeterminate",
+                    "name",
+                    "value",
+                    "error",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-close": {
+                "source": "smart/close",
+                "javascript": "smart/smart/close/js/close.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-context-menu": {
+                "source": "smart/context-menu",
+                "javascript": "smart/smart/context-menu/js/context-menu.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-country-code": {
+                "source": "smart/country-code",
+                "javascript": "smart/smart/country-code/js/country-code.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-datepicker": {
+                "source": "smart/datepicker",
+                "javascript": "smart/smart/datepicker/js/datepicker.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-download-file": {
+                "source": "smart/download-file",
+                "javascript": "smart/smart/download-file/js/download-file.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-drawer": {
+                "source": "smart/drawer",
+                "javascript": "smart/smart/drawer/js/drawer.js",
+                "css": "smart/smart/drawer/css/drawer.css",
+                "attributes": []
+            },
+            "sf-dropdown": {
+                "source": "smart/dropdown",
+                "javascript": "smart/smart/dropdown/js/dropdown.js",
+                "css": null,
+                "attributes": [
+                    "template",
+                    "size",
+                    "type",
+                    "mode",
+                    "multiple",
+                    "portal",
+                    "value",
+                    "name",
+                    "label",
+                    "required",
+                    "placeholder",
+                    "search-placeholder",
+                    "search",
+                    "disabled",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-file-upload": {
+                "source": "smart/file-upload",
+                "javascript": "smart/smart/file-upload/js/file-upload.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-gallery": {
+                "source": "smart/gallery",
+                "javascript": "smart/smart/gallery/js/gallery.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-icon": {
+                "source": "smart/icons",
+                "javascript": "smart/smart/icons/js/icons.js",
+                "css": null,
+                "loader": {
+                    "plugin": "cl-icons",
+                    "relations": [
+                        {
+                            "plugin": "icons",
+                            "type": "component",
+                            "css": "component/icons/css/icons.css",
+                            "javascript": "component/icons/js/icons.js"
+                        }
+                    ]
+                },
+                "attributes": [
+                    "icon",
+                    "size",
+                    "scheme",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-icon-button": {
+                "source": "smart/icon-buttons",
+                "javascript": "smart/smart/icon-buttons/js/icon-buttons.js",
+                "css": "smart/smart/icon-buttons/css/icon-buttons.css",
+                "attributes": []
             },
             "sf-input": {
                 "source": "smart/inputs",
@@ -229,6 +337,8 @@
                     "default-value",
                     "input-type",
                     "autocomplete",
+                    "icon-start",
+                    "text-end",
                     "left-icon",
                     "right-text",
                     "hint-icon",
@@ -245,6 +355,12 @@
                     "id",
                     "class"
                 ]
+            },
+            "sf-list-item": {
+                "source": "smart/list-item",
+                "javascript": "smart/smart/list-item/js/list-item.js",
+                "css": null,
+                "attributes": []
             },
             "sf-modal": {
                 "source": "smart/modal",
@@ -311,6 +427,134 @@
                     "class"
                 ]
             },
+            "sf-pagination": {
+                "source": "smart/pagination",
+                "javascript": "smart/smart/pagination/js/pagination.js",
+                "css": null,
+                "attributes": [
+                    "current",
+                    "total",
+                    "top",
+                    "main",
+                    "bottom",
+                    "top-class",
+                    "main-class",
+                    "bottom-class",
+                    "show-more-text",
+                    "page-sizes",
+                    "page-size-label",
+                    "actions",
+                    "action",
+                    "action-apply-text",
+                    "action-for-all-label",
+                    "aria-label",
+                    "id",
+                    "class"
+                ]
+            },
+            "sf-progress-bar": {
+                "source": "smart/progress-bar",
+                "javascript": "smart/smart/progress-bar/js/progress-bar.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-progress-scale": {
+                "source": "smart/progress-scale",
+                "javascript": "smart/smart/progress-scale/js/progress-scale.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-radio": {
+                "source": "smart/radio",
+                "javascript": "smart/smart/radio/js/radio.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-range-slider": {
+                "source": "smart/range-slider",
+                "javascript": "smart/smart/range-slider/js/range-slider.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-reference-link": {
+                "source": "smart/reference-link",
+                "javascript": "smart/smart/reference-link/js/reference-link.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-skeleton": {
+                "source": "smart/skeleton",
+                "javascript": "smart/smart/skeleton/js/skeleton.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-slider": {
+                "source": "smart/slider",
+                "javascript": "smart/smart/slider/js/slider.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-spinner": {
+                "source": "smart/spinner",
+                "javascript": "smart/smart/spinner/js/spinner.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-steps": {
+                "source": "smart/steps",
+                "javascript": "smart/smart/steps/js/steps.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-switch": {
+                "source": "smart/switch",
+                "javascript": "smart/smart/switch/js/switch.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-table": {
+                "source": "smart/table",
+                "javascript": "smart/smart/table/js/table.js",
+                "css": "smart/smart/table/css/table.css",
+                "attributes": [
+                    "template",
+                    "root-class",
+                    "selectable",
+                    "settings",
+                    "actions",
+                    "aria-label",
+                    "id",
+                    "class"
+                ],
+                "requires": [
+                    "sf-avatar",
+                    "sf-button",
+                    "sf-checkbox",
+                    "sf-context-menu",
+                    "sf-datepicker",
+                    "sf-dropdown",
+                    "sf-icon-button",
+                    "sf-input",
+                    "sf-list-item",
+                    "sf-modal",
+                    "sf-pagination",
+                    "sf-range-slider",
+                    "sf-tabs",
+                    "sf-tag"
+                ]
+            },
+            "sf-tabs": {
+                "source": "smart/tabs",
+                "javascript": "smart/smart/tabs/js/tabs.js",
+                "css": "smart/smart/tabs/css/tabs.css",
+                "attributes": []
+            },
+            "sf-tag": {
+                "source": "smart/tags",
+                "javascript": "smart/smart/tags/js/tags.js",
+                "css": "smart/smart/tags/css/tags.css",
+                "attributes": []
+            },
             "sf-textarea": {
                 "source": "smart/textarea",
                 "javascript": "smart/smart/textarea/js/textarea.js",
@@ -336,68 +580,53 @@
                     "class"
                 ]
             },
-            "sf-dropdown": {
-                "source": "smart/dropdown",
-                "javascript": "smart/smart/dropdown/js/dropdown.js",
+            "sf-toast": {
+                "source": "smart/toast",
+                "javascript": "smart/smart/toast/js/toast.js",
                 "css": null,
-                "attributes": [
-                    "template",
-                    "size",
-                    "type",
-                    "mode",
-                    "multiple",
-                    "portal",
-                    "value",
-                    "name",
-                    "label",
-                    "required",
-                    "placeholder",
-                    "search-placeholder",
-                    "search",
-                    "disabled",
-                    "aria-label",
-                    "id",
-                    "class"
-                ]
+                "attributes": []
             },
-            "sf-checkbox": {
-                "source": "smart/checkbox",
-                "javascript": "smart/smart/checkbox/js/checkbox.js",
-                "css": "smart/smart/checkbox/css/checkbox.css",
-                "attributes": [
-                    "size",
-                    "label",
-                    "description",
-                    "help",
-                    "position",
-                    "root-class",
-                    "checked",
-                    "disabled",
-                    "indeterminate",
-                    "name",
-                    "value",
-                    "error",
-                    "id",
-                    "class"
-                ]
+            "sf-toggle": {
+                "source": "smart/toggle",
+                "javascript": "smart/smart/toggle/js/toggle.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-tooltip": {
+                "source": "smart/tooltip",
+                "javascript": "smart/smart/tooltip/js/tooltip.js",
+                "css": null,
+                "attributes": []
+            },
+            "sf-tree": {
+                "source": "smart/tree",
+                "javascript": "smart/smart/tree/js/tree.js",
+                "css": "smart/smart/tree/css/tree.css",
+                "attributes": []
+            },
+            "sf-tree-item": {
+                "source": "smart/tree-item",
+                "javascript": "smart/smart/tree-item/js/tree-item.js",
+                "css": null,
+                "attributes": []
             }
         }
     },
     "runtime_projection": {
         "schema": "docara.framework_runtime_projection.v1",
-        "mount": "_docara/vendor/simai-framework/runtime/47a0f496574bd0af0f03e4b332a2a35a65d77d05/distr",
+        "mount": "_docara/vendor/simai-framework/runtime/d328491bc805439f200866f7e04c0e5e853a4998/distr",
         "source": {
             "provider": "simai/ui",
-            "revision": "47a0f496574bd0af0f03e4b332a2a35a65d77d05",
-            "tree_sha256": "0b72a5045af8b9ec337485bce9dedb8d1ecd6c38bc384a4a9a6afc7f7f01e7a7"
+            "revision": "d328491bc805439f200866f7e04c0e5e853a4998",
+            "tree_sha256": "394ccc4d8e7698e8ceaea41cc8cc943ff50f203aea276499e9a66d3c7b53b4db"
         },
         "icon_font": "component/icons/fonts/MaterialSymbols-Outlined.woff2",
-        "packet_sha256": "c25dc24ce2ce24ac1d1f8862782c43441d58bf55f3207edacd8f90d2395b9ba7",
-        "files": 840,
+        "packet_sha256": "721f207fedfec6290076d3b820a872187b429de3cf99f5c44a3afce57c3be507",
+        "files": 843,
         "manifest": {
-            "path": "portable/vendor/simai-framework/runtime/47a0f496574bd0af0f03e4b332a2a35a65d77d05/runtime-manifest.json",
-            "public": "_docara/vendor/simai-framework/runtime/47a0f496574bd0af0f03e4b332a2a35a65d77d05/runtime-manifest.json",
-            "sha256": "77cc4bf577e4f45fa45d9e012e30c65994fccba1760fb85e8d181615ff724964"
+            "path": "portable/vendor/simai-framework/runtime/d328491bc805439f200866f7e04c0e5e853a4998/runtime-manifest.json",
+            "public": "_docara/vendor/simai-framework/runtime/d328491bc805439f200866f7e04c0e5e853a4998/runtime-manifest.json",
+            "sha256": "1f1daa92bae868662c8b767a660baaa4ed00c2247381ee20ac46eb305faea625"
         }
     },
     "icon_projection": {
@@ -507,7 +736,7 @@
         "ui.button": {
             "provider": "larena/ui",
             "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
-            "sha256": "236b1aeb0e8d2543eb3f5edf702e6891bf994baf03e9c7398090d13bec9cdeed",
+            "sha256": "5e0d9497ba5b28b1327afd6f324e9eb058d5a55d017292b37f658185b1b7d2ab",
             "consumer_policy": {
                 "managed": [],
                 "blocked": [],
@@ -520,7 +749,7 @@
         "ui.alert": {
             "provider": "larena/ui",
             "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
-            "sha256": "e91a4a8f4277e6f19b3179f530a9070ccb811280c17f22019a8e66c60e2f4970",
+            "sha256": "340439b0cf48ef4ce74dfd177c6f427c3c158bbeb9c8cef7419c45eac06a1295",
             "consumer_policy": {
                 "managed": {
                     "id": "deterministic_id"
@@ -555,28 +784,218 @@
     },
     "asset_projection": {
         "schema": "docara.framework_asset_projection.v1",
-        "mount": "_docara/framework",
+        "mount": "_docara/framework-runtime",
         "source": {
             "provider": "simai/ui-smart",
-            "revision": "b07ee0178a1dbc6cb9b1fd49d106f2c12d3ec778"
+            "revision": "9e94abc6b10c82f770820807343cecb9a0e27f77"
         },
         "files": {
             "smart/alert/js/alert.js": {
-                "sha256": "9fa2e29f067379f8400ee4a5bd0ef34832baee42f5a8394f48796719d07e75fa"
+                "sha256": "8a755992504633901ac986e6b2d2be5e19591724f6b6eb4e6be1b52374c9f583"
             },
             "smart/buttons/js/buttons.js": {
-                "sha256": "b9804afcf05c718ed51ee0b8b5e04e946c422d2fb8b8fed112e552824054087b"
+                "sha256": "43078e2958646216ded7e73893c7952c4a49caf75d929e09e76a4107f3bc4e6c"
             },
             "smart/icons/js/icons.js": {
-                "sha256": "362cef3368003672166a0a99d5026a1712fe4f716f9e614a55037d2429430da5"
+                "sha256": "84800076a4a6d99274189114831797ac71a895d332661672f59ba50a3a9002eb"
             },
             "smart/modal/js/modal.js": {
-                "sha256": "a14cc8fca8e803328cc082a6290695ded7c7baf97373a6353b765116a2b89cb5"
+                "sha256": "275a848667c001d9e4ce357723ee6325ac6fe45db9866fe2294ca10d0fb2daa7"
             }
         }
     },
     "nonclaims": [
         "production_ready",
         "all_framework_components_ready"
-    ]
+    ],
+    "dynamic_asset_projection": {
+        "schema": "docara.framework_dynamic_asset_projection.v1",
+        "mount": "_docara/framework-runtime",
+        "source": {
+            "provider": "simai/ui-smart",
+            "revision": "9e94abc6b10c82f770820807343cecb9a0e27f77"
+        },
+        "files": {
+            "smart/admin-menu/js/admin-menu.js": {
+                "sha256": "108f6aa371ad1f0469a34e72c3a63a4bc603143e94b3ea5fc090f86eaa20578f"
+            },
+            "smart/alert/css/alert.css": {
+                "sha256": "7289431cc8bcb14738c729d70446e5a8557609909100e6b7bddb05cf18bd18e3"
+            },
+            "smart/avatar/js/avatar.js": {
+                "sha256": "79f7e562949b48bf82d245ae0631b47ee7adf2e6230e51f1a014f95530340333"
+            },
+            "smart/avatars/css/avatars.css": {
+                "sha256": "866006e67c31c707ac81434fa63b8c58fbacaa62e7dc52ba2be6249657aaa301"
+            },
+            "smart/avatars/js/avatars.js": {
+                "sha256": "c18ac85dab3e7b856a3e9a36e97fdf3ef84a505b0a720a2a3dce38f554847550"
+            },
+            "smart/badges/js/badges.js": {
+                "sha256": "14f1ff185bd23ed333f9864f8fecb7ac138743cb421634904d2a9cb72e266d09"
+            },
+            "smart/breadcrumbs/js/breadcrumbs.js": {
+                "sha256": "3d1684ba19ae42824bd32a99bc3ef345dcde9f4387747dc7fb85af1403329f93"
+            },
+            "smart/button-group/js/button-group.js": {
+                "sha256": "0d584e7a1131bacea5bb043c24834494c430c41b879ca065837dc2acf0f9703e"
+            },
+            "smart/checkbox/css/checkbox.css": {
+                "sha256": "ae9457f4fb3a0f5a8bce4578583fdfef3a081e7503af9dbe2b805c5860771e6a"
+            },
+            "smart/checkbox/js/checkbox.js": {
+                "sha256": "03575acc440ada79f5dd4ac48a286d9459332dd24f6a8d0ce5911dc3e4bec037"
+            },
+            "smart/close/js/close.js": {
+                "sha256": "5b45135ba9e50a6796137a37575da10eb62835299d6a2f26346079f35943aa29"
+            },
+            "smart/context-menu/js/context-menu.js": {
+                "sha256": "1ee1fd358914ca272e37199f3966f17179185ef7453223c184eab10d59a1ad71"
+            },
+            "smart/country-code/js/country-code.js": {
+                "sha256": "f587109a697339fd70e5d1875c9a8acaa9f79f2cf0ce8d44e401685a81353f8b"
+            },
+            "smart/datepicker/js/datepicker.js": {
+                "sha256": "c172de605211909f7fcb17d4ddca2ec292fa5520a51bb8012802a37569c94791"
+            },
+            "smart/download-file/js/download-file.js": {
+                "sha256": "85a95ebdb2eba13628d32f87a77bd311a968038be9319710f739ed348710762d"
+            },
+            "smart/drawer/css/drawer.css": {
+                "sha256": "9f6006e5efaac289c40ff8191234f5368974fb6908c04ff301b7099440341952"
+            },
+            "smart/drawer/js/drawer.js": {
+                "sha256": "dc5bec005cfda199c353afe73fcdfc4b093b30ae5255f332e9b0b4f431b8156a"
+            },
+            "smart/dropdown/js/dropdown.js": {
+                "sha256": "80081428371738dc69b0be91c80e01443e588d42dc18d3968debf0d77a7a8f06"
+            },
+            "smart/editor/css/editor.css": {
+                "sha256": "94c5e75a3d62354d315ffb2097e730d2f3e2314d376561292646ce8b1ed3bd0d"
+            },
+            "smart/editor/js/editor.js": {
+                "sha256": "bf2b319464564ee2adbec66130c651c91d80c4a9cb5ed8493c40f675b1270e46"
+            },
+            "smart/fab/js/fab.js": {
+                "sha256": "dd56b2a7e70a1653a7e21134c6839670e35581f94a75c4b4206eeb689cae6656"
+            },
+            "smart/file-preview/js/file-preview.js": {
+                "sha256": "0f96e8f901d9fbaf6152ad9a62c66080e300d3dcc0b74c0e370a0044971338b7"
+            },
+            "smart/file-upload/js/file-upload.js": {
+                "sha256": "97f9cf06050fcf622a1bac3cdae34d9ecb50ba740816d565e21027dfb54085d6"
+            },
+            "smart/flags/js/flags.js": {
+                "sha256": "d071dd4225ee3655015505dd2f97d8025d3353d2a556b7cca006aed6d4a4ae38"
+            },
+            "smart/form/js/form.js": {
+                "sha256": "39bc339ccbf471fc5967760ad88516a8f61be9d6d1e14789c60d656e2559d210"
+            },
+            "smart/gallery/js/gallery.js": {
+                "sha256": "c24217ff0a8e3275720f1134b530c017c17ef31796b2c69be13b8087b09225c4"
+            },
+            "smart/icon-buttons/css/icon-buttons.css": {
+                "sha256": "8dcec6c3d61b82fe533da22728d76ba5a0ea5a1732f02da4dec09b97d51728fe"
+            },
+            "smart/icon-buttons/js/icon-buttons.js": {
+                "sha256": "1639f1aaa1ccc839a2c726ef2ba952b73bbc626e6cd84d285eee58269334073c"
+            },
+            "smart/inputs/css/inputs.css": {
+                "sha256": "86d652b11e1a5db20ddaa2c0964a71da85793b9a26538b6ed0a78e0e43ed266e"
+            },
+            "smart/inputs/js/inputs.js": {
+                "sha256": "687124e71dcad604a08b788d838005ef0a24b5e40a6c678509b9a4c73c550919"
+            },
+            "smart/link/js/link.js": {
+                "sha256": "cd8075106658634f620f8e27dab46f2ca5982b3f20461b67ddc9757278e1849c"
+            },
+            "smart/list-item/js/list-item.js": {
+                "sha256": "61eadcb411e72cf1aa707007f57f542fb4567c8d0f2d1b08ee1b12453b52ce64"
+            },
+            "smart/list/js/list.js": {
+                "sha256": "a632809fc8168ddd3224084fcb0bceb540f299567117a7a7c6d1bd37579c4af6"
+            },
+            "smart/menu/js/menu.js": {
+                "sha256": "32a8d8e7ac55023103480e59918fba0c766a0457287daa5ae35ef264386dc8ee"
+            },
+            "smart/pagination/js/pagination.js": {
+                "sha256": "4f4c10df6524760fbc8a1447b5a94ebcf07e9b5fca3ae238b56d67b89b472121"
+            },
+            "smart/progress-bar/js/progress-bar.js": {
+                "sha256": "1580e98e8ce502b1e8a7eee7807eee69fabb542c713eac22d5782f90489adbcb"
+            },
+            "smart/progress-scale/js/progress-scale.js": {
+                "sha256": "227d4bf5f5cd1b4392f92e93015d21a92a943c33faa012d450eb6dab24d30ff9"
+            },
+            "smart/radio/js/radio.js": {
+                "sha256": "3c64729f0258744a0cc8f10a325e806651d6f3ab247cc200b092732b82947ec8"
+            },
+            "smart/range-slider/js/range-slider.js": {
+                "sha256": "f79db597e94300ddf7697b9fad9d7c073fbe62fa159ef09aa39a31fade0a6d9a"
+            },
+            "smart/rating/js/rating.js": {
+                "sha256": "8cf1bdec1972241bb6707dce5d5c1d4f5ccbff4aacb6302250bd9fe5735b9f9c"
+            },
+            "smart/reference-link/js/reference-link.js": {
+                "sha256": "f3128192bfba6a8db8c880183973703cb1541281696c8a7c05044b9b8f69e74b"
+            },
+            "smart/settings/js/settings.js": {
+                "sha256": "b651391fde7c4ca03ca774bff5c89036739613dd8c23c0a74e7900cc9aeaab2b"
+            },
+            "smart/skeleton/js/skeleton.js": {
+                "sha256": "e6acc96084402e4b20ec4a37bb14f913245d3b1d7116193b0c462a5e2678fd33"
+            },
+            "smart/slider/js/slider.js": {
+                "sha256": "1257d90d151375b2f98ef330f4fe2de80b003556fd92e2ac6ecb30beb70126d0"
+            },
+            "smart/spinner/js/spinner.js": {
+                "sha256": "050a2f2efc54af6f1dc0e7d0809dbcd909e1f67faa76dc8b8f1a2146e2e36186"
+            },
+            "smart/steps/js/steps.js": {
+                "sha256": "aa0d497e0ed681f119315fbc1719058f9dcaef9c48bb67ef447489054b10f770"
+            },
+            "smart/switch/js/switch.js": {
+                "sha256": "60f0b6e1e225f71712cf5d824f966e03c0f6f20d24bd41d5fcdbd5aef59cdd40"
+            },
+            "smart/table/css/table.css": {
+                "sha256": "80ecda772383118c7e4e01de9a6ae39694fda6f896dc9cd63ec166ea4f529a2e"
+            },
+            "smart/table/js/table.js": {
+                "sha256": "6bcd359211e7e1ad9ce7cd9b9d913b803ebcf233bc18ce120803b8f5a535a251"
+            },
+            "smart/tabs/css/tabs.css": {
+                "sha256": "c939ad25f64864cd77fee780b15266ab2d540873a835d3c3953dc8075922d8f4"
+            },
+            "smart/tabs/js/tabs.js": {
+                "sha256": "52300469bebd0faccf15923254e0c21f930388d70a7839dd138d617641c5c737"
+            },
+            "smart/tags/css/tags.css": {
+                "sha256": "419da36bb37c0cff61cf57098993ebc5c136ea0d085a48b38069634777a2f081"
+            },
+            "smart/tags/js/tags.js": {
+                "sha256": "42fb4e5c92a79a88c8f22cc462c49e63d6f514385e4c8c2726d62611ee17a873"
+            },
+            "smart/textarea/js/textarea.js": {
+                "sha256": "a0f9b936f2b3064f05c9f2d3f66f48bd979108f6a7a61c0c3bf5f1a1138af31c"
+            },
+            "smart/toast/js/toast.js": {
+                "sha256": "afd3281875fdf94643129fb6028017c24f1efb4ea1a7db37533b28ce5e5cafb2"
+            },
+            "smart/toggle/js/toggle.js": {
+                "sha256": "c352dba2431bf8a2b0f24056111e33107f81391ab70732351d60d0cb237c488d"
+            },
+            "smart/tooltip/js/tooltip.js": {
+                "sha256": "8173d756b49aab7d785e958f5455b32ae85199e8fe37fc6ba6cbf65196c78d5d"
+            },
+            "smart/tree-item/js/tree-item.js": {
+                "sha256": "38bc20d9654cdcc14635cc4387e20287a04f71e0895c63e918d9f12d254b6666"
+            },
+            "smart/tree/css/tree.css": {
+                "sha256": "9dde1f4d650751f761f79f8d320a0b7b354e5f497fb1600cf6c2e16bcf2260f9"
+            },
+            "smart/tree/js/tree.js": {
+                "sha256": "f9d375a7185338a3943a471f91986cdb95dd51f340b493062fd7c1b74f7035e2"
+            }
+        }
+    }
 }

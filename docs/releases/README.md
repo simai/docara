@@ -1,5 +1,14 @@
 # Docara releases
 
+- [Docara 2.9.0](v2.9.0.md) — exact SF5 foundation runtime, generated
+  contracts and complete portable asset projection.
+- [Docara 2.8.3](v2.8.3.md) — complete restored Utility/Loader contract from
+  Framework 5.6.4.
+- [Docara 2.8.2](v2.8.2.md) — result-only fullscreen entry and effective
+  visual source wrapping.
+- [Docara 2.8.1](v2.8.1.md) — fullscreen exit access across Example tabs.
+- [Docara 2.8.0](v2.8.0.md) — fullscreen Example surfaces and shared CSS-only
+  source wrapping.
 - [Docara 2.7.5](v2.7.5.md) — CORS-free ordering of local fonts in sandboxed
   Example previews.
 - [Docara 2.7.4](v2.7.4.md) — collision-free offline icon fallback in

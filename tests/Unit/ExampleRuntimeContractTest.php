@@ -14,9 +14,11 @@ final class ExampleRuntimeContractTest extends TestCase
         $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
         $renderer = (string) file_get_contents($root . '/src/PortableSite/PortableMarkdownRenderer.php');
 
-        self::assertStringContainsString("scripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset^=\"simai.framework.preloaded.component.\"][src]'))", $shell);
+        self::assertStringContainsString("scripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset][src]'))", $shell);
         self::assertStringContainsString('simai.framework.icon_font.ready', $shell);
+        self::assertStringContainsString("source.indexOf('sf-icon')!==-1||inlineScripts.length>0", $shell);
         self::assertStringContainsString('inlineScripts:', $shell);
+        self::assertStringContainsString('portableExampleStyle(script.textContent', $shell);
         self::assertStringContainsString('exampleFontAsset', $shell);
         self::assertStringContainsString('simai.framework.icon_font.css', $shell);
         self::assertStringContainsString('inlineStyles=styles', $shell);
@@ -33,6 +35,7 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('data-docara-example-framework-inline-style', $renderer);
         self::assertStringContainsString('URL.createObjectURL(new Blob([font.bytes]', $renderer);
         self::assertStringContainsString('data-docara-example-framework-inline-script', $renderer);
+        self::assertStringContainsString('script.textContent=content', $renderer);
         self::assertStringContainsString('Promise.all(styleLoads)', $renderer);
         self::assertLessThan(
             strpos($renderer, "var current=Array.from(document.querySelectorAll('link[data-docara-example-framework-style]')"),
@@ -59,5 +62,38 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringNotContainsString('body.scrollHeight,root.scrollHeight', $renderer);
         self::assertStringContainsString("frame.style.blockSize=Math.max(32,Math.ceil(height))+'px'", $shell);
         self::assertStringNotContainsString('Math.min(4096', $shell);
+    }
+
+    public function test_example_controls_keep_fullscreen_and_soft_wrap_scopes_separate(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
+        $styles = (string) file_get_contents($root . '/resources/portable/declarative-shell.css');
+
+        self::assertStringContainsString("example.dataset.sourceActive=key==='example'?'false':'true'", $shell);
+        self::assertStringContainsString("var selected=example.dataset.sourceActive!=='true'", $shell);
+        self::assertStringContainsString('fullscreenButton.hidden=!active&&!selected', $shell);
+        self::assertStringNotContainsString('fullscreenButton.hidden=false', $shell);
+        self::assertStringContainsString("wrapButton.hidden=example.dataset.sourceActive!=='true'", $shell);
+        self::assertStringContainsString('document.fullscreenElement===example', $shell);
+        self::assertStringContainsString('example.requestFullscreen()', $shell);
+        self::assertStringContainsString('document.exitFullscreen()', $shell);
+        self::assertStringContainsString("localStorage.setItem(sourceWrapStorageKey,sourceWrapActive?'true':'false')", $shell);
+        self::assertStringContainsString("sourceWrapStorageKey='docara.source.wrap'", $shell);
+        self::assertStringNotContainsString("message(active?'examples.unwrap':'examples.wrap')", $shell);
+        self::assertStringContainsString("document.addEventListener('docara:source-wrap-change'", $shell);
+        self::assertStringContainsString('if(text&&text.textContent!==label){text.textContent=label}', $shell);
+        self::assertStringContainsString("button.dataset.unwrapIcon||'format_text_overflow'", $shell);
+        self::assertStringContainsString('syncSourceWrapIcon(button,active)', $shell);
+        self::assertStringContainsString('syncSourceWrapIcon(wrapButton,active)', $shell);
+        self::assertStringContainsString("block.dataset.docaraCodeWrapActive=active?'true':'false'", $shell);
+        self::assertStringContainsString("window.matchMedia('(max-width: 640px)').matches", $shell);
+        self::assertStringContainsString("var lines=Array.from(code.querySelectorAll('.hljs-ln-code'))", $shell);
+        self::assertStringContainsString('[data-docara-example-wrap-active="true"]', $styles);
+        self::assertStringContainsString('[data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll code{min-inline-size:0;white-space:pre-wrap;overflow-wrap:anywhere}', $styles);
+        self::assertStringContainsString('white-space:pre-wrap', $styles);
+        self::assertStringContainsString('.docara-example-preview:fullscreen', $styles);
+        self::assertStringContainsString('.docara-example-preview .docara-example-preview__action:focus:not(:focus-visible)', $styles);
+        self::assertStringNotContainsString('.docara-example-preview .docara-example-preview__action:focus,.docara-example-preview .docara-example-preview__action:focus-visible', $styles);
     }
 }

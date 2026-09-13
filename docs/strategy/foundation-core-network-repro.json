@@ -1,0 +1,42 @@
+{
+  "scope": "Byte comparison of supplied output trees; input identity and clean-build provenance must be verified separately; not immutable-commit release reproducibility",
+  "builds": [
+    {
+      "root": "/private/tmp/sf5-foundation-core-network-recovery",
+      "files": 59,
+      "digest": "0ff652a485facf50168b0107a4c846f05a61766ead3900a2fc6b35e89d47b8de"
+    },
+    {
+      "root": "/private/tmp/sf5-foundation-core-network-repro",
+      "files": 59,
+      "digest": "d4bdf8f07d51d8a86015ab10eaf312f0574ec5a982c6f663c00c8fd8229dd48d"
+    }
+  ],
+  "identical": false,
+  "differences": [
+    {
+      "path": "core/js/smart-base.js",
+      "kind": "changed",
+      "left": "b7f73b732b5b56e49051e9686d1aecb8f74fbe58dff0dbf50e537fed36d493da",
+      "right": "315e3df2b8c2e5e8f5ffa7ebc153460aa1d68fa3cbc2b2253a6ace203a0b1cca"
+    },
+    {
+      "path": "core/js/smart-base.js.gz",
+      "kind": "changed",
+      "left": "6719cfa48481cbdb72e171b391d6cac6b2481a3c2787fd094bbe3ad693c2054d",
+      "right": "dcbe71dfecda1e47a885caf73d6d2b9144c0b94545bc816d75ff2a78ef6dde69"
+    },
+    {
+      "path": "core/js/smart-base.min.js",
+      "kind": "changed",
+      "left": "db071319b0df47a7c9adbf66dafcf93927a698ed78fea17439e0bccfcae63f0e",
+      "right": "dd5afcc9135faa59d1577ab77468c79b0769b32d84a188b73e63fb81f80730d8"
+    },
+    {
+      "path": "core/js/smart-base.min.js.gz",
+      "kind": "changed",
+      "left": "1cf38c1398e79187d3b0d3fc1805aef8095c1fa8849299a57893e26a051c1c7a",
+      "right": "00ac4a79cce0fa6c286e39dd68cbc7b253bf037761b32bb4876338c8247e89f7"
+    }
+  ]
+}

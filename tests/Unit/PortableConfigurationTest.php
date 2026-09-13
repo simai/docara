@@ -68,6 +68,8 @@ final class PortableConfigurationTest extends TestCase
             'toc_depth' => 3,
             'previous_next' => true,
         ], $plan->configuration['reading']);
+        self::assertSame(['fullscreen' => true, 'wrap' => true], $plan->configuration['examples']);
+        self::assertSame(['wrap' => true], $plan->configuration['code']);
         self::assertSame('@defaults', $plan->provenance['/search/enabled']);
         self::assertSame('@defaults', $plan->provenance['/search/indexed']);
         self::assertSame('@defaults', $plan->provenance['/reading/breadcrumbs']);
@@ -75,6 +77,9 @@ final class PortableConfigurationTest extends TestCase
         self::assertSame('@defaults', $plan->provenance['/reading/mobile_toc']);
         self::assertSame('@defaults', $plan->provenance['/reading/toc_depth']);
         self::assertSame('@defaults', $plan->provenance['/reading/previous_next']);
+        self::assertSame('@defaults', $plan->provenance['/examples/fullscreen']);
+        self::assertSame('@defaults', $plan->provenance['/examples/wrap']);
+        self::assertSame('@defaults', $plan->provenance['/code/wrap']);
         self::assertSame('content/docs/deep/install.page.json', $plan->provenance['/layout/container/max']);
         self::assertSame('@defaults', $plan->provenance['/layout/scrollbar/preset']);
         self::assertSame('content/docs/deep/section.json', $plan->provenance['/settings/theme']);
@@ -345,6 +350,8 @@ final class PortableConfigurationTest extends TestCase
                     ],
                 ],
                 'settings' => ['theme' => 'system'],
+                'examples' => ['fullscreen' => true, 'wrap' => false],
+                'code' => ['wrap' => false],
                 'navigation' => ['hidden' => false, 'order' => 2147483647],
                 'search' => ['enabled' => true, 'indexed' => true],
                 'reading' => [
@@ -367,6 +374,8 @@ final class PortableConfigurationTest extends TestCase
                 'schema' => 'docara.section.v1',
                 'layout' => ['$reset' => true, 'container' => ['max' => 4]],
                 'settings' => ['theme' => 'dark'],
+                'examples' => ['fullscreen' => false],
+                'code' => ['wrap' => true],
                 'navigation' => ['hidden' => true, 'order' => 20],
                 'header_navigation' => [
                     'enabled' => true,
@@ -386,6 +395,8 @@ final class PortableConfigurationTest extends TestCase
                     'scrollbar' => ['preset' => 'persistent'],
                 ],
                 'settings' => ['$reset' => true, 'theme' => 'light'],
+                'examples' => ['$reset' => true, 'wrap' => true],
+                'code' => ['$reset' => true, 'wrap' => false],
                 'navigation' => ['$reset' => true, 'order' => 5],
                 'search' => ['enabled' => false],
                 'reading' => ['breadcrumbs' => false, 'toc' => false, 'previous_next' => false],
@@ -462,6 +473,12 @@ final class PortableConfigurationTest extends TestCase
             [['schema' => 'docara.page.v1', 'branding' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'layout' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'settings' => []], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'examples' => []], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'examples' => ['fullscreen' => 'true']], 'page.schema.json'],
+            [['schema' => 'docara.section.v1', 'examples' => ['unknown' => true]], 'section.schema.json'],
+            [['schema' => 'docara.page.v1', 'code' => []], 'page.schema.json'],
+            [['schema' => 'docara.page.v1', 'code' => ['wrap' => 'true']], 'page.schema.json'],
+            [['schema' => 'docara.section.v1', 'code' => ['unknown' => true]], 'section.schema.json'],
             [['schema' => 'docara.page.v1', 'navigation' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'search' => []], 'page.schema.json'],
             [['schema' => 'docara.page.v1', 'reading' => []], 'page.schema.json'],

@@ -6,5 +6,14 @@ namespace Simai\Docara\Document;
 
 final readonly class DocumentRenderContext
 {
-    public function __construct(public ?string $sourceRoot, public ?string $sourceFile) {}
+    /**
+     * @param  array<string, mixed>  $examples
+     * @param  array<string, mixed>  $code
+     */
+    public function __construct(
+        public ?string $sourceRoot,
+        public ?string $sourceFile,
+        public array $examples = [],
+        public array $code = [],
+    ) {}
 }

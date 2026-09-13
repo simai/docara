@@ -199,6 +199,8 @@ final class PortableMarkdownRenderer
         ?string $sourceRoot,
         ?string $sourceFile,
         SourceLocation $location,
+        array $exampleSettings = [],
+        array $codeSettings = [],
     ): string {
         if (preg_match('//u', $markdown) !== 1) {
             throw new PortableConfigurationException(
@@ -208,7 +210,7 @@ final class PortableMarkdownRenderer
         }
         $this->assertRawHtmlPolicy($markdown, $this->diagnosticSource($sourceRoot, $sourceFile));
 
-        return $this->renderCompiled($markdown, $sourceRoot, $sourceFile, $location->line);
+        return $this->renderCompiled($markdown, $sourceRoot, $sourceFile, $location->line, $exampleSettings, $codeSettings);
     }
 
     private function renderCompiled(
@@ -216,6 +218,8 @@ final class PortableMarkdownRenderer
         ?string $sourceRoot = null,
         ?string $sourceFile = null,
         int $sourceLine = 1,
+        array $exampleSettings = [],
+        array $codeSettings = [],
     ): string {
 
         $nativeInspection = $this->inspector->inspect($markdown);
@@ -244,7 +248,7 @@ final class PortableMarkdownRenderer
             $renderer = TypedRendererId::from($block['renderer']);
             $rendered = match ($renderer) {
                 TypedRendererId::Card => $this->renderCard(
-                    $this->renderCompiled($blockMarkdown, $sourceRoot, $sourceFile, $sourceLine),
+                    $this->renderCompiled($blockMarkdown, $sourceRoot, $sourceFile, $sourceLine, $exampleSettings, $codeSettings),
                     $block['attributes'],
                 ),
                 TypedRendererId::Columns => $this->renderColumns(
@@ -277,6 +281,7 @@ final class PortableMarkdownRenderer
                     $block['attributes'],
                     $sourceRoot,
                     $sourceFile,
+                    $exampleSettings,
                 ),
                 TypedRendererId::Figure => $this->renderFigure($this->converter->convert($blockMarkdown), $block['attributes']),
                 TypedRendererId::Grid => $this->renderGrid($block['markdown'], $block['attributes']),
@@ -292,7 +297,7 @@ final class PortableMarkdownRenderer
                 TypedRendererId::Diagram => $this->renderDiagram($block['markdown'], $block['attributes']),
                 TypedRendererId::Math => $this->renderMath($block['markdown'], $block['attributes']),
                 TypedRendererId::Html => $this->renderHtml($block['markdown']),
-                TypedRendererId::Code => $this->renderCode($block['attributes'], $sourceRoot, $sourceFile),
+                TypedRendererId::Code => $this->renderCode($block['attributes'], $sourceRoot, $sourceFile, $codeSettings),
                 TypedRendererId::Backlinks => $this->renderBacklinks($block['attributes']),
                 TypedRendererId::ComponentIndex => $this->renderComponentIndex($block['attributes']),
                 TypedRendererId::AtlasIndex => $this->renderAtlasIndex($block['attributes']),
@@ -324,7 +329,7 @@ final class PortableMarkdownRenderer
             $html = str_replace($placeholder, $replacement, $html);
         }
 
-        return $this->decorateNativeMarkdown($html);
+        return $this->decorateNativeMarkdown($html, (bool) ($codeSettings['wrap'] ?? true));
     }
 
     /**
@@ -659,8 +664,9 @@ final class PortableMarkdownRenderer
         array $attributes,
         ?string $sourceRoot,
         ?string $sourceFile,
+        array $exampleSettings = [],
     ): string {
-        $this->assertAttributes($attributes, ['id', 'label', 'preview'], 'example');
+        $this->assertAttributes($attributes, ['id', 'label', 'preview', 'fullscreen', 'wrap'], 'example');
         $label = trim($attributes['label'] ?? 'Example');
         if ($label === '') {
             throw new PortableConfigurationException(
@@ -671,6 +677,12 @@ final class PortableMarkdownRenderer
 
         $exampleId = trim($attributes['id'] ?? '');
         $requestedPreview = trim($attributes['preview'] ?? 'auto');
+        $fullscreen = array_key_exists('fullscreen', $attributes)
+            ? $this->attributeBoolean($attributes['fullscreen'], 'example', 'fullscreen')
+            : (bool) ($exampleSettings['fullscreen'] ?? true);
+        $wrap = array_key_exists('wrap', $attributes)
+            ? $this->attributeBoolean($attributes['wrap'], 'example', 'wrap')
+            : (bool) ($exampleSettings['wrap'] ?? true);
         $baseHref = null;
         if ($exampleId !== '') {
             if (trim($markdown) !== '') {
@@ -747,6 +759,8 @@ final class PortableMarkdownRenderer
             requestedPreview: $previewDecision['requested'],
             resolvedPreview: $previewDecision['resolved'],
             previewReason: $previewDecision['reason'],
+            fullscreen: $fullscreen,
+            wrap: $wrap,
         );
     }
 
@@ -760,7 +774,13 @@ final class PortableMarkdownRenderer
                 continue;
             }
             $attributes = $this->attributes->parse((string) ($directive['attributes'] ?? ''), 'example');
-            $this->assertAttributes($attributes, ['id', 'label', 'preview'], 'example');
+            $this->assertAttributes($attributes, ['id', 'label', 'preview', 'fullscreen', 'wrap'], 'example');
+            if (array_key_exists('fullscreen', $attributes)) {
+                $this->attributeBoolean($attributes['fullscreen'], 'example', 'fullscreen');
+            }
+            if (array_key_exists('wrap', $attributes)) {
+                $this->attributeBoolean($attributes['wrap'], 'example', 'wrap');
+            }
             if (trim($attributes['label'] ?? 'Example') === '') {
                 throw new PortableConfigurationException(
                     'MARKDOWN_EXAMPLE_LABEL_INVALID',
@@ -895,7 +915,7 @@ final class PortableMarkdownRenderer
     {
         return <<<'HTML'
 <script data-docara-example-resize>(function(){
-var body=document.body,lastHeight=0,scheduled=false;
+var body=document.body,lastHeight=0,scheduled=false,frameworkScriptSources={};
 document.documentElement.style.overflow='hidden';
 body.style.overflow='hidden';
 function applyDesignEnvironment(data){
@@ -960,7 +980,13 @@ var currentInline=Array.from(document.querySelectorAll('script[data-docara-examp
 (Array.isArray(data.inlineScripts)?data.inlineScripts:[]).forEach(function(item){
 if(!item||typeof item.key!=='string'||typeof item.content!=='string'||item.content===''||currentInline.indexOf(item.key)!==-1)return;
 var script=document.createElement('script');
-script.textContent=item.content;
+var content=item.content;
+(Array.isArray(item.fonts)?item.fonts:[]).forEach(function(font){
+if(!font||typeof font.token!=='string'||!(font.bytes instanceof ArrayBuffer))return;
+var blobUrl=URL.createObjectURL(new Blob([font.bytes],{type:typeof font.type==='string'?font.type:'font/woff2'}));
+content=content.split(font.token).join(blobUrl);
+});
+script.textContent=content;
 script.setAttribute('data-docara-example-framework-inline-script',item.key);
 document.head.appendChild(script);
 currentInline.push(item.key);
@@ -968,9 +994,11 @@ currentInline.push(item.key);
 measureSettled();
 });
 var currentScripts=Array.from(document.querySelectorAll('script[data-docara-example-framework-script]')).map(function(script){return script.src});
+currentScripts.forEach(function(src){frameworkScriptSources[src]=true});
 var scriptQueue=Promise.resolve();
 (Array.isArray(data.scripts)?data.scripts:[]).forEach(function(src){
-if(typeof src!=='string'||currentScripts.indexOf(src)!==-1)return;
+if(typeof src!=='string'||frameworkScriptSources[src])return;
+frameworkScriptSources[src]=true;
 scriptQueue=scriptQueue.then(function(){return new Promise(function(resolve){
 var script=document.createElement('script');
 script.src=src;
@@ -979,7 +1007,6 @@ script.setAttribute('data-docara-example-framework-script','');
 script.addEventListener('load',function(){measureSettled();resolve()},{once:true});
 script.addEventListener('error',resolve,{once:true});
 document.head.appendChild(script);
-currentScripts.push(script.src);
 })});
 });
 }
@@ -1238,7 +1265,7 @@ HTML;
     }
 
     /** @param array<string,string> $attributes */
-    private function renderCode(array $attributes, ?string $sourceRoot, ?string $sourceFile): string
+    private function renderCode(array $attributes, ?string $sourceRoot, ?string $sourceFile, array $codeSettings = []): string
     {
         $this->assertAttributes($attributes, ['src', 'lang', 'lines', 'title'], 'code');
         $src = trim($attributes['src'] ?? '');
@@ -1281,7 +1308,7 @@ HTML;
         }
         $title = trim($attributes['title'] ?? basename($path));
         $markdown = '```' . $lang . "\n" . rtrim($source) . "\n```\n";
-        $rendered = $this->renderCompiled($markdown);
+        $rendered = $this->renderCompiled($markdown, codeSettings: $codeSettings);
 
         if ($title === '') {
             return $rendered;
@@ -2822,7 +2849,7 @@ HTML;
         return $this->containsVisibleText($visible);
     }
 
-    private function decorateNativeMarkdown(string $html): string
+    private function decorateNativeMarkdown(string $html, bool $wrap = true): string
     {
         $html = preg_replace_callback(
             '/<blockquote>\s*<p>(?<content>.*?)\s*\{(?<config>(?=[^{}]*(?:author|source)\s*=)[^{}]+)\}<\/p>\s*<\/blockquote>/su',
@@ -2887,7 +2914,7 @@ HTML;
 
         return preg_replace_callback(
             '/<pre><code(?P<attributes>[^>]*)>(?P<content>.*?)<\/code><\/pre>/s',
-            function (array $matches): string {
+            function (array $matches) use ($wrap): string {
                 $attributes = (string) ($matches['attributes'] ?? '');
                 $language = 'code';
                 if (preg_match('/(?:language|lang)-([a-z0-9_+-]+)/i', $attributes, $languageMatch) === 1) {
@@ -2902,12 +2929,17 @@ HTML;
                 $label = $labels[$language] ?? $language;
 
                 return '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="' . $this->escapeHtml($language)
+                    . '" data-docara-code-wrap="' . ($wrap ? 'true' : 'false')
                     . '" class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">'
                     . '<div data-docara-code-fallback class="docara-code-header flex content-main-between border-outline-variant items-cross-center bg-surface-overlay">'
                     . '<span class="flex sf-text-1/3 weight-5">' . $this->escapeHtml($label) . '</span>'
+                    . '<div data-docara-code-actions class="docara-code-actions flex items-cross-center gap-1/3">'
+                    . ($wrap ? '<button type="button" data-docara-code-wrap-toggle hidden data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow" class="docara-code-wrap sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0" aria-label="Wrap source lines" aria-pressed="false">'
+                        . '<span aria-hidden="true" class="sf-icon sf-icon-regular">wrap_text</span>'
+                        . '<span class="sf-button-text-container visually-hidden">Wrap source lines</span></button>' : '')
                     . '<button type="button" data-docara-code-copy class="docara-code-copy sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0" aria-label="Copy">'
                     . '<span aria-hidden="true" class="sf-icon sf-icon-regular">content_copy</span>'
-                    . '<span class="sf-button-text-container visually-hidden">Copy</span></button></div>'
+                    . '<span class="sf-button-text-container visually-hidden">Copy</span></button></div></div>'
                     . '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code'
                     . $attributes . '>' . (string) ($matches['content'] ?? '') . '</code></pre>'
                     . '</div>';

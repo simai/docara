@@ -38,6 +38,14 @@ final class FrameworkNativeSurfaceTest extends TestCase
             '.docara-code-header>span,.docara-code-block>.sf--highlight-head>span{display:inline-flex',
             $css,
         );
+        self::assertStringContainsString(
+            '.docara-code-header,.docara-code-block>.sf--highlight-head,.docara-example-preview__header{position:relative;box-sizing:border-box;display:grid;',
+            $css,
+        );
+        self::assertStringContainsString(
+            '.docara-code-header>[data-docara-code-actions],.docara-code-block>.sf--highlight-head>[data-docara-code-actions]{margin:0}',
+            $css,
+        );
         self::assertStringNotContainsString('line-height:var(--sf-text-height-1);box-shadow:inset 0 -2px var(--sf-outline)', $css);
         self::assertStringContainsString('.docara-code-block.bg-surface-container{background:var(--sf-surface-0)}', $css);
         self::assertStringContainsString('.docara-code-scroll code{display:block;min-inline-size:max-content;white-space:pre;background:transparent}', $css);
@@ -172,11 +180,14 @@ final class FrameworkNativeSurfaceTest extends TestCase
         self::assertIsString($css);
         self::assertIsString($template);
         self::assertStringContainsString('sf-icon-button--size-1/3', $template);
+        self::assertStringContainsString('nextIcon=icon.cloneNode(false)', file_get_contents($root . '/resources/smart/assets/navigation.js'));
+        self::assertStringContainsString('icon.replaceWith(nextIcon)', file_get_contents($root . '/resources/smart/assets/navigation.js'));
 
         self::assertMatchesRegularExpression(
             '~\[data-docara-disclosure\]\{[^}]*flex:0 0 auto;[^}]*\}~',
             $css,
         );
+        self::assertStringNotContainsString('[data-docara-disclosure]{order:-1;', $css);
         self::assertDoesNotMatchRegularExpression(
             '~\[data-docara-disclosure\]\{[^}]*(?:min-(?:inline|block)-size|margin-(?:inline|block)|flex:0 0 var\()~',
             $css,

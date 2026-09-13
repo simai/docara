@@ -4,6 +4,73 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+
+- Large documentation builds release generated Framework CSS as pages are
+  rendered, reuse identical preliminary plans and stream the final diagnostic
+  receipt, avoiding memory exhaustion without changing deterministic output.
+
+## [2.9.0] - 2026-09-10
+
+### Added
+
+- The portable documentation package now carries the exact generated
+  Framework contract registry and documentation-source projection alongside
+  the immutable runtime lock.
+- Framework projection discovers and includes local component CSS dependencies
+  and the finite syntax-highlighting chunks used by Docara sites.
+
+### Changed
+
+- The bundled runtime is updated to SIMAI UI Core `v5.7.0` and SIMAI UI Smart
+  `v5.5.0`, including the completed SF5 utility, sizing and Smart contracts.
+- Utility planning evaluates Loader rules against complete class tokens,
+  matching the browser Loader and preventing accidental substring matches.
+- The accepted SF5 foundation decisions, evidence matrix and release plan are
+  retained as one linked, portable strategy packet.
+
+## [2.8.3] - 2026-09-08
+
+### Changed
+
+- The portable Framework runtime is pinned to SIMAI UI Core `v5.6.4` with
+  SIMAI UI Smart `v5.4.1`, including the complete restored Utility/Loader
+  contract and exact generated registry.
+
+## [2.8.2] - 2026-09-07
+
+### Fixed
+
+- Example source tabs hide the fullscreen entry action while preserving the
+  exit action for an Example that is already fullscreen.
+- Soft wrapping now removes the source element's intrinsic `max-content`
+  width, so long highlighted lines visibly wrap instead of being clipped.
+
+## [2.8.1] - 2026-09-07
+
+### Fixed
+
+- The Example fullscreen action now remains available on source tabs, matching
+  the whole-surface fullscreen contract documented in 2.8.0.
+
+## [2.8.0] - 2026-09-07
+
+### Added
+
+- Example surfaces can expand to the browser fullscreen area while preserving
+  access to both the rendered result and every source tab.
+- Example source tabs and standalone code blocks provide optional CSS-only
+  soft wrapping without changing copied source bytes.
+- Fullscreen and wrapping availability can be configured at site, section or
+  page level and overridden for an individual Example block.
+
+### Changed
+
+- Source wrapping uses one persisted reader preference across Example sources
+  and standalone code blocks, with responsive enablement on narrow screens.
+- Example and code toolbar actions expose keyboard-only visible focus and
+  state-specific labels and icons.
+
 ## [2.7.5] - 2026-09-06
 
 ### Fixed

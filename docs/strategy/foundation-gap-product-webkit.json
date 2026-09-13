@@ -1,0 +1,28 @@
+{
+  "scope": "Computed gap matrix at wide viewport; not breakpoint boundary or Loader network test",
+  "files": [
+    "/private/tmp/sf5-foundation-utility-gap-product/utility/gap/default/css/default.css",
+    "/private/tmp/sf5-foundation-utility-gap-product/utility/gap/sm/css/sm.css",
+    "/private/tmp/sf5-foundation-utility-gap-product/utility/gap/md/css/md.css",
+    "/private/tmp/sf5-foundation-utility-gap-product/utility/gap/lg/css/lg.css",
+    "/private/tmp/sf5-foundation-utility-gap-product/utility/gap/xl/css/xl.css"
+  ],
+  "browser": "webkit",
+  "pass": true,
+  "count": 8640,
+  "values": {
+    "0": "0px",
+    "1": "16px",
+    "2": "20px",
+    "3": "24px",
+    "4": "32px",
+    "5": "40px",
+    "6": "48px",
+    "7": "64px",
+    "8": "80px",
+    "1/4": "4px",
+    "1/3": "8px",
+    "1/2": "12px"
+  },
+  "failures": []
+}

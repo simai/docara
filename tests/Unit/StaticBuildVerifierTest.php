@@ -25,11 +25,11 @@ use Tests\TestCase;
 
 final class StaticBuildVerifierTest extends TestCase
 {
-    private const FRAMEWORK_PAIR = 'sf-v5.6.2-47a0f496-b07ee017';
+    private const FRAMEWORK_PAIR = 'sf-v5.7.0-d328491b-9e94abc6';
 
     private const FRAMEWORK_PROVIDER_REVISION = '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663';
 
-    private const FRAMEWORK_SMART_REVISION = 'b07ee0178a1dbc6cb9b1fd49d106f2c12d3ec778';
+    private const FRAMEWORK_SMART_REVISION = '9e94abc6b10c82f770820807343cecb9a0e27f77';
 
     private const SUPPORTED_COMPONENTS = ['ui.alert', 'ui.button'];
 
@@ -512,7 +512,7 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertStringContainsString('incorrect SHA-256', $tamperedPortableAsset->getOutput());
         file_put_contents($inputAssetPath, $inputAsset);
 
-        $buttonAssetPath = $build . '/_docara/framework/smart/buttons/js/buttons.js';
+        $buttonAssetPath = $build . '/_docara/framework-runtime/smart/buttons/js/buttons.js';
         $buttonAsset = (string) file_get_contents($buttonAssetPath);
         unlink($buttonAssetPath);
         $missingAsset = $this->verify($build);
@@ -521,12 +521,12 @@ final class StaticBuildVerifierTest extends TestCase
         self::assertStringContainsString('missing or unsafe', $missingAsset->getOutput());
         file_put_contents($buttonAssetPath, $buttonAsset);
 
-        file_put_contents($build . '/_docara/framework/unexpected.js', 'unexpected');
+        file_put_contents($build . '/_docara/framework-runtime/unexpected.js', 'unexpected');
         $unexpectedAsset = $this->verify($build);
         self::assertSame(1, $unexpectedAsset->getExitCode(), $unexpectedAsset->getOutput());
         self::assertStringContainsString('@framework-asset-projection', $unexpectedAsset->getOutput());
         self::assertStringContainsString('do not exactly match', $unexpectedAsset->getOutput());
-        unlink($build . '/_docara/framework/unexpected.js');
+        unlink($build . '/_docara/framework-runtime/unexpected.js');
 
         $plans = json_decode($originalPlans, true, flags: JSON_THROW_ON_ERROR);
         $shellRecord = $plans['build']['framework']['shell']['plans']['index.html']['generated_assets'][0];
@@ -1048,7 +1048,7 @@ final class StaticBuildVerifierTest extends TestCase
                     : '/' . trim((string) $configuration['base_url'], '/');
                 $frameworkAssetPlanner = new FrameworkAssetPlanner(
                     FrameworkManifestRepository::bundled(FrameworkLock::fromArray($frameworkLock)),
-                    $deploymentBase . '/_docara/framework',
+                    $deploymentBase . '/_docara/framework-runtime',
                 );
                 $decorateSyntheticPages = true;
                 $manifest['build'] = [
@@ -1062,6 +1062,7 @@ final class StaticBuildVerifierTest extends TestCase
                         'runtime' => $frameworkLock['runtime'],
                         'manifests' => $frameworkLock['manifests'],
                         'asset_projection' => $frameworkLock['asset_projection'],
+                        'dynamic_asset_projection' => $frameworkLock['dynamic_asset_projection'] ?? null,
                         'portable_smart_asset_projection' => (new FrameworkPortableAssetProjection(SmartRegistry::bundled()))
                             ->forKeys($requiredPortableAssets),
                         'shell' => [],
@@ -1213,9 +1214,15 @@ final class StaticBuildVerifierTest extends TestCase
     private function writeFrameworkAssets(string $build, array $requiredPortableAssets): void
     {
         $root = dirname(__DIR__, 2);
-        foreach (array_keys($this->frameworkLock()['asset_projection']['files']) as $relativePath) {
-            $source = $root . '/resources/framework/assets/' . $relativePath;
-            $target = $build . '/_docara/framework/' . $relativePath;
+        $frameworkLock = $this->frameworkLock();
+        $smartRevision = $frameworkLock['asset_projection']['source']['revision'];
+        $smartFiles = [
+            ...$frameworkLock['asset_projection']['files'],
+            ...($frameworkLock['dynamic_asset_projection']['files'] ?? []),
+        ];
+        foreach (array_keys($smartFiles) as $relativePath) {
+            $source = $root . '/resources/framework/runtime-smart/' . $smartRevision . '/' . $relativePath;
+            $target = $build . '/_docara/framework-runtime/' . $relativePath;
             $this->filesystem->ensureDirectoryExists(dirname($target));
             file_put_contents($target, (string) file_get_contents($source));
         }
@@ -1326,7 +1333,7 @@ final class StaticBuildVerifierTest extends TestCase
             try {
                 $fixturePlanner = new FrameworkAssetPlanner(
                     FrameworkManifestRepository::bundled(FrameworkLock::fromArray($firstLock)),
-                    $deploymentBase . '/_docara/framework',
+                    $deploymentBase . '/_docara/framework-runtime',
                 );
             } catch (\Throwable) {
                 // The verifier, rather than fixture normalization, owns the

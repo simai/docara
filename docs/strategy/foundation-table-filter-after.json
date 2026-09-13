@@ -1,0 +1,692 @@
+{
+  "scope": "Core Loader + Smart integration with explicit local asset roots; local container CSS, not release acceptance",
+  "coreRuntime": true,
+  "strictCandidate": true,
+  "requestedAssets": [
+    {
+      "relative": "core/js/core.js",
+      "file": "/private/tmp/sf5-foundation-core-fields-product/core/js/core.js"
+    },
+    {
+      "relative": "core/js/core-rules.js",
+      "file": "/private/tmp/sf5-foundation-core-fields-product/core/js/core-rules.js"
+    },
+    {
+      "relative": "core/js/core-system.js",
+      "file": "/private/tmp/sf5-foundation-core-fields-product/core/js/core-system.js"
+    },
+    {
+      "relative": "core/js/115905220673108.js",
+      "file": "/private/tmp/sf5-foundation-core-fields-product/core/js/115905220673108.js"
+    },
+    {
+      "relative": "core/js/core-loader.js",
+      "file": "/private/tmp/sf5-foundation-core-fields-product/core/js/core-loader.js"
+    },
+    {
+      "relative": "component/icon-buttons/js/icon-buttons.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icon-buttons/js/icon-buttons.js"
+    },
+    {
+      "relative": "component/icon-buttons/css/icon-buttons.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icon-buttons/css/icon-buttons.css"
+    },
+    {
+      "relative": "component/dropdown/css/dropdown.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/dropdown/css/dropdown.css"
+    },
+    {
+      "relative": "component/icons/js/icons.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icons/js/icons.js"
+    },
+    {
+      "relative": "component/icons/css/icons.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icons/css/icons.css"
+    },
+    {
+      "relative": "component/checkbox/js/checkbox.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/checkbox/js/checkbox.js"
+    },
+    {
+      "relative": "component/checkbox/css/checkbox.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/checkbox/css/checkbox.css"
+    },
+    {
+      "relative": "component/avatars/js/avatars.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/avatars/js/avatars.js"
+    },
+    {
+      "relative": "component/avatars/css/avatars.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/avatars/css/avatars.css"
+    },
+    {
+      "relative": "component/tags/js/tags.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/tags/js/tags.js"
+    },
+    {
+      "relative": "component/tags/css/tags.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/tags/css/tags.css"
+    },
+    {
+      "relative": "component/dropdown/js/dropdown.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/dropdown/js/dropdown.js"
+    },
+    {
+      "relative": "smart/list-item/js/list-item.js",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/list-item/js/list-item.js"
+    },
+    {
+      "relative": "component/buttons/js/buttons.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/buttons/js/buttons.js"
+    },
+    {
+      "relative": "component/buttons/css/buttons.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/buttons/css/buttons.css"
+    },
+    {
+      "relative": "component/inputs/js/inputs.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/inputs/js/inputs.js"
+    },
+    {
+      "relative": "component/inputs/css/inputs.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/inputs/css/inputs.css"
+    },
+    {
+      "relative": "component/pagination/js/pagination.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/pagination/js/pagination.js"
+    },
+    {
+      "relative": "component/pagination/css/pagination.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/pagination/css/pagination.css"
+    },
+    {
+      "relative": "component/datepicker/css/datepicker.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/datepicker/css/datepicker.css"
+    },
+    {
+      "relative": "smart/inputs/css/inputs.css",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/inputs/css/inputs.css"
+    },
+    {
+      "relative": "utility/pointer-events/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/pointer-events/default/css/default.css"
+    },
+    {
+      "relative": "utility/text-align/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/text-align/default/css/default.css"
+    },
+    {
+      "relative": "smart/icon-buttons/css/icon-buttons.css",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/icon-buttons/css/icon-buttons.css"
+    },
+    {
+      "relative": "smart/table/css/table.css",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/table/css/table.css"
+    },
+    {
+      "relative": "utility/align-items/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/align-items/default/css/default.css"
+    },
+    {
+      "relative": "utility/cursor/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/cursor/default/css/default.css"
+    },
+    {
+      "relative": "utility/display/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/display/default/css/default.css"
+    },
+    {
+      "relative": "utility/transition-property/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/transition-property/default/css/default.css"
+    },
+    {
+      "relative": "utility/flex/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/flex/default/css/default.css"
+    },
+    {
+      "relative": "utility/theme/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/theme/default/css/default.css"
+    },
+    {
+      "relative": "smart/icons/js/icons.js",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/icons/js/icons.js"
+    },
+    {
+      "relative": "smart/buttons/js/buttons.js",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/buttons/js/buttons.js"
+    },
+    {
+      "relative": "smart/inputs/js/inputs.js",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/inputs/js/inputs.js"
+    },
+    {
+      "relative": "smart/icon-buttons/js/icon-buttons.js",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/icon-buttons/js/icon-buttons.js"
+    },
+    {
+      "relative": "smart/datepicker/js/datepicker.js",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/datepicker/js/datepicker.js"
+    },
+    {
+      "relative": "smart/table/js/table.js",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/table/js/table.js"
+    },
+    {
+      "relative": "utility/backdrop-filter-blur/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/backdrop-filter-blur/default/css/default.css"
+    },
+    {
+      "relative": "component/modal/css/modal.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/modal/css/modal.css"
+    },
+    {
+      "relative": "smart/checkbox/css/checkbox.css",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/checkbox/css/checkbox.css"
+    },
+    {
+      "relative": "smart/checkbox/js/checkbox.js",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/checkbox/js/checkbox.js"
+    },
+    {
+      "relative": "component/modal/js/modal.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/modal/js/modal.js"
+    },
+    {
+      "relative": "component/icons/a5f1f832a64baed42867.woff2",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icons/a5f1f832a64baed42867.woff2"
+    },
+    {
+      "relative": "component/icons/fonts/MaterialSymbols-Outlined.woff2",
+      "file": "/private/tmp/sf5-foundation-component-product/component/icons/fonts/MaterialSymbols-Outlined.woff2"
+    },
+    {
+      "relative": "smart/modal/js/modal.js",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/modal/js/modal.js"
+    },
+    {
+      "relative": "component/tab/js/tab.js",
+      "file": "/private/tmp/sf5-foundation-component-product/component/tab/js/tab.js"
+    },
+    {
+      "relative": "component/tab/css/tab.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/tab/css/tab.css"
+    },
+    {
+      "relative": "component/close/css/close.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/close/css/close.css"
+    },
+    {
+      "relative": "utility/flex-direction/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/flex-direction/default/css/default.css"
+    },
+    {
+      "relative": "utility/gap/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/gap/default/css/default.css"
+    },
+    {
+      "relative": "utility/min-height/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/min-height/default/css/default.css"
+    },
+    {
+      "relative": "utility/min-width/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/min-width/default/css/default.css"
+    },
+    {
+      "relative": "utility/justify-content/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/justify-content/default/css/default.css"
+    },
+    {
+      "relative": "utility/flex-wrap/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/flex-wrap/default/css/default.css"
+    },
+    {
+      "relative": "utility/margin/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/margin/default/css/default.css"
+    },
+    {
+      "relative": "utility/max-width/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/max-width/default/css/default.css"
+    },
+    {
+      "relative": "utility/overflow/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/overflow/default/css/default.css"
+    },
+    {
+      "relative": "utility/position/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/position/default/css/default.css"
+    },
+    {
+      "relative": "utility/border-collapse/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/border-collapse/default/css/default.css"
+    },
+    {
+      "relative": "utility/border-spacing/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/border-spacing/default/css/default.css"
+    },
+    {
+      "relative": "utility/table/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/table/default/css/default.css"
+    },
+    {
+      "relative": "utility/table-layout/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/table-layout/default/css/default.css"
+    },
+    {
+      "relative": "utility/width/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/width/default/css/default.css"
+    },
+    {
+      "relative": "utility/element-position/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/element-position/default/css/default.css"
+    },
+    {
+      "relative": "utility/z-index/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/z-index/default/css/default.css"
+    },
+    {
+      "relative": "utility/height/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/height/default/css/default.css"
+    },
+    {
+      "relative": "utility/user-select/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/user-select/default/css/default.css"
+    },
+    {
+      "relative": "utility/border-radius/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/border-radius/default/css/default.css"
+    },
+    {
+      "relative": "utility/transform-translate/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/transform-translate/default/css/default.css"
+    },
+    {
+      "relative": "utility/padding/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/padding/default/css/default.css"
+    },
+    {
+      "relative": "utility/title/default/css/default.css",
+      "file": "/private/tmp/sf5-foundation-utility-gap-product/utility/title/default/css/default.css"
+    },
+    {
+      "relative": "component/dot/css/dot.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/dot/css/dot.css"
+    },
+    {
+      "relative": "smart/tags/css/tags.css",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/tags/css/tags.css"
+    },
+    {
+      "relative": "smart/tags/js/tags.js",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/tags/js/tags.js"
+    },
+    {
+      "relative": "smart/close/js/close.js",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/close/js/close.js"
+    },
+    {
+      "relative": "component/context-menu/css/context-menu.css",
+      "file": "/private/tmp/sf5-foundation-component-product/component/context-menu/css/context-menu.css"
+    },
+    {
+      "relative": "smart/context-menu/js/context-menu.js",
+      "file": "/private/tmp/sf5-foundation-smart-filter-product/smart/context-menu/js/context-menu.js"
+    }
+  ],
+  "missingAssets": [],
+  "smartFile": "/private/tmp/sf5-foundation-smart-filter-product/smart/list-item/js/list-item.min.js",
+  "productSmart": true,
+  "external": false,
+  "sharedDOM": false,
+  "lifecycle": false,
+  "source": "/private/tmp/sf5-utility-release-source",
+  "core": "/private/tmp/sf5-foundation-core-fields-product",
+  "work": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-cKAtH0",
+  "browserName": "chromium",
+  "browser": "151.0.7922.34",
+  "query": "@layer sf.overrides {\n  @container foundation-panel (min-width: 520px) {\n    .proof-item .sf-list-item-wrap {\n      flex-direction: row;\n      align-items: center;\n    }\n  }\n}",
+  "checks": [
+    {
+      "theme": "theme-light",
+      "dir": "ltr",
+      "rows": [
+        {
+          "id": "wide",
+          "direction": "row",
+          "width": 768,
+          "scroll": 768,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ],
+      "screenshot": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-cKAtH0/container-ltr.png"
+    },
+    {
+      "theme": "theme-dark",
+      "dir": "rtl",
+      "rows": [
+        {
+          "id": "wide",
+          "direction": "row",
+          "width": 768,
+          "scroll": 768,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ],
+      "screenshot": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-cKAtH0/container-rtl.png"
+    },
+    {
+      "textScale": 2,
+      "fontBefore": "16px",
+      "fontAfter": "32px",
+      "rows": [
+        {
+          "id": "wide",
+          "direction": "row",
+          "width": 768,
+          "scroll": 768,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ]
+    },
+    {
+      "localResize": [
+        {
+          "id": "wide",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "narrow",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        },
+        {
+          "id": "nested",
+          "direction": "column",
+          "width": 288,
+          "scroll": 288,
+          "text": "Согласование обновлённой документации и параметров отображения пользовательского интерфейса",
+          "meta": "Готово к проверке"
+        }
+      ]
+    },
+    {
+      "tableData": {
+        "names": [
+          "Документация",
+          "Компоненты"
+        ],
+        "columns": [
+          "name"
+        ]
+      }
+    },
+    {
+      "tableTabNavigation": {
+        "key": "Tab",
+        "trace": [
+          {
+            "tag": "DIV",
+            "label": null
+          },
+          {
+            "tag": "DIV",
+            "label": null
+          },
+          {
+            "tag": "DIV",
+            "label": null
+          },
+          {
+            "tag": "BUTTON",
+            "label": null
+          },
+          {
+            "tag": "INPUT",
+            "label": null
+          },
+          {
+            "tag": "BUTTON",
+            "label": null
+          },
+          {
+            "tag": "BUTTON",
+            "label": null
+          },
+          {
+            "tag": "BUTTON",
+            "label": null
+          },
+          {
+            "tag": "BUTTON",
+            "label": null
+          },
+          {
+            "tag": "INPUT",
+            "label": null
+          },
+          {
+            "tag": "BUTTON",
+            "label": "Настройки"
+          },
+          {
+            "tag": "INPUT",
+            "label": null
+          },
+          {
+            "tag": "BUTTON",
+            "label": "Меню"
+          },
+          {
+            "tag": "BUTTON",
+            "label": "Редактировать"
+          },
+          {
+            "tag": "BUTTON",
+            "label": "Посмотреть"
+          }
+        ],
+        "target": {
+          "tag": "BUTTON",
+          "tabIndex": 0,
+          "disabled": false
+        }
+      }
+    },
+    {
+      "tableFocusAtOpen": {
+        "triggerConnected": true,
+        "savedIsTrigger": true,
+        "savedTag": "BUTTON",
+        "savedConnected": true
+      }
+    },
+    {
+      "tableDialog": {
+        "openedByRowAction": true,
+        "tabReachable": true,
+        "tabKey": "Tab",
+        "openedWithEnter": true,
+        "escapeClosed": true,
+        "originalTriggerFocusRestored": true,
+        "keyboardReopenCycles": 2
+      }
+    },
+    {
+      "tableFilter": {
+        "pending": {
+          "values": {},
+          "events": []
+        },
+        "reset": {
+          "values": {},
+          "events": []
+        },
+        "applied": {
+          "values": {
+            "name": {
+              "value": "Документация",
+              "operator": "contains"
+            }
+          },
+          "events": [
+            {
+              "tags": {
+                "name": {
+                  "label": "Название",
+                  "active": true,
+                  "control": "text"
+                }
+              },
+              "values": {
+                "name": {
+                  "value": "Документация",
+                  "operator": "contains"
+                }
+              },
+              "templateKey": "default",
+              "templateLabel": "Все"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tableFilterCancel": {
+        "canceled": {
+          "values": {
+            "name": {
+              "value": "Документация",
+              "operator": "contains"
+            }
+          },
+          "events": [
+            {
+              "tags": {
+                "name": {
+                  "label": "Название",
+                  "active": true,
+                  "control": "text"
+                }
+              },
+              "values": {
+                "name": {
+                  "value": "Документация",
+                  "operator": "contains"
+                }
+              },
+              "templateKey": "default",
+              "templateLabel": "Все"
+            }
+          ]
+        },
+        "reopened": "Документация"
+      }
+    },
+    {
+      "tableFilterReapply": {
+        "values": {
+          "name": {
+            "value": "Компоненты",
+            "operator": "contains"
+          }
+        },
+        "events": [
+          {
+            "tags": {
+              "name": {
+                "label": "Название",
+                "active": true,
+                "control": "text"
+              }
+            },
+            "values": {
+              "name": {
+                "value": "Документация",
+                "operator": "contains"
+              }
+            },
+            "templateKey": "default",
+            "templateLabel": "Все"
+          },
+          {
+            "tags": {
+              "name": {
+                "label": "Название",
+                "active": true,
+                "control": "text"
+              }
+            },
+            "values": {
+              "name": {
+                "value": "Компоненты",
+                "operator": "contains"
+              }
+            },
+            "templateKey": "default",
+            "templateLabel": "Все"
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "pass": true,
+  "screenshot": "/var/folders/5h/9qj7mywd5170nxnv1v7_72pc0000gn/T/sf-container-proof-cKAtH0/container-proof.png"
+}

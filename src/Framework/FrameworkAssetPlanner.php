@@ -795,6 +795,7 @@ final readonly class FrameworkAssetPlanner
         if (! is_string($scanHtml)) {
             throw new FrameworkComponentException('FRAMEWORK_ASSET_PLAN_HTML_INVALID');
         }
+        $classTokens = $this->htmlClassTokens($scanHtml);
         $ruleBytes = $this->repository->bundledRuntimeAsset('rule/rule.json');
         try {
             $rules = json_decode($ruleBytes, true, 512, JSON_THROW_ON_ERROR);
@@ -837,7 +838,12 @@ final readonly class FrameworkAssetPlanner
             }
 
             $loaderRegex = $rule['regex'] ?? null;
-            if ($loaderRegex !== null && $this->loaderRegexMatches($loaderRegex, $name, $scanHtml)) {
+            if ($loaderRegex !== null && $this->loaderRegexMatches(
+                $loaderRegex,
+                $name,
+                $scanHtml,
+                ($rule['type'] ?? 'utility') === 'utility' ? $classTokens : [],
+            )) {
                 $selected[$name] = true;
             }
         }
@@ -1032,6 +1038,13 @@ final readonly class FrameworkAssetPlanner
                 $component = $record['component'];
                 $tag = (string) $record['tag'];
                 $projectedSmartFiles = $this->repository->assetProjection()['files'] ?? [];
+                $dynamicProjection = $this->repository->dynamicAssetProjection();
+                if (is_array($dynamicProjection)) {
+                    $projectedSmartFiles = [
+                        ...$projectedSmartFiles,
+                        ...($dynamicProjection['files'] ?? []),
+                    ];
+                }
                 $requiredSmartPaths = [];
                 foreach ([$component['css'] ?? null, $component['javascript'] ?? null] as $lockedPath) {
                     if (! is_string($lockedPath) || $lockedPath === '') {
@@ -1202,8 +1215,13 @@ final readonly class FrameworkAssetPlanner
         ];
     }
 
-    private function loaderRegexMatches(mixed $value, string $name, string $html): bool
-    {
+    /** @param list<string> $classTokens */
+    private function loaderRegexMatches(
+        mixed $value,
+        string $name,
+        string $html,
+        array $classTokens = [],
+    ): bool {
         if (! is_string($value) || ! str_starts_with($value, '/')) {
             throw new FrameworkComponentException('FRAMEWORK_RULE_REGISTRY_REGEX_INVALID', $name);
         }
@@ -1217,12 +1235,52 @@ final readonly class FrameworkAssetPlanner
             throw new FrameworkComponentException('FRAMEWORK_RULE_REGISTRY_REGEX_INVALID', $name);
         }
         $pattern = '~' . str_replace('~', '\\~', $expression) . '~' . $flags;
+        foreach ($classTokens as $classToken) {
+            $tokenResult = @preg_match($pattern, $classToken);
+            if ($tokenResult === false) {
+                throw new FrameworkComponentException('FRAMEWORK_RULE_REGISTRY_REGEX_INVALID', $name);
+            }
+            if ($tokenResult === 1) {
+                return true;
+            }
+        }
+
+        // Older component rules were matched against the full HTML fragment.
+        // Current utility rules follow the browser Loader's class-token semantics.
         $result = @preg_match($pattern, $html);
         if ($result === false) {
             throw new FrameworkComponentException('FRAMEWORK_RULE_REGISTRY_REGEX_INVALID', $name);
         }
 
         return $result === 1;
+    }
+
+    /** @return list<string> */
+    private function htmlClassTokens(string $html): array
+    {
+        $matched = preg_match_all(
+            '/\\bclass\\s*=\\s*(?:"([^"]*)"|\'([^\']*)\'|([^\\s"\'=<>`]+))/i',
+            $html,
+            $matches,
+            PREG_SET_ORDER,
+        );
+        if ($matched === false) {
+            throw new FrameworkComponentException('FRAMEWORK_ASSET_PLAN_HTML_INVALID');
+        }
+
+        $tokens = [];
+        foreach ($matches as $match) {
+            $value = (string) (($match[1] ?? '') !== ''
+                ? $match[1]
+                : (($match[2] ?? '') !== '' ? $match[2] : ($match[3] ?? '')));
+            foreach (preg_split('/\\s+/', trim($value)) ?: [] as $token) {
+                if ($token !== '') {
+                    $tokens[$token] = true;
+                }
+            }
+        }
+
+        return array_keys($tokens);
     }
 
     /** @param array<string, mixed> $value @param list<string> $expected */
@@ -1350,7 +1408,7 @@ final readonly class FrameworkAssetPlanner
 
     private function publisherBase(): string
     {
-        $suffix = '/framework';
+        $suffix = '/' . basename((string) $this->repository->assetProjection()['mount']);
         if (! str_ends_with($this->assetBase, $suffix)) {
             throw new FrameworkComponentException('FRAMEWORK_SHELL_PUBLIC_PATH_INVALID', $this->assetBase);
         }
@@ -1376,7 +1434,7 @@ final readonly class FrameworkAssetPlanner
     private function projectedPublicUrl(string $publicPath): string
     {
         $prefix = '_docara/';
-        $frameworkSuffix = '/framework';
+        $frameworkSuffix = '/' . basename((string) $this->repository->assetProjection()['mount']);
         if (! str_starts_with($publicPath, $prefix)
             || ! str_ends_with($this->assetBase, $frameworkSuffix)
         ) {
@@ -1391,7 +1449,7 @@ final readonly class FrameworkAssetPlanner
     private function projectedRuntimeBase(string $mount): string
     {
         $prefix = '_docara/';
-        $frameworkSuffix = '/framework';
+        $frameworkSuffix = '/' . basename((string) $this->repository->assetProjection()['mount']);
         if (! str_starts_with($mount, $prefix)
             || ! str_ends_with($this->assetBase, $frameworkSuffix)
         ) {

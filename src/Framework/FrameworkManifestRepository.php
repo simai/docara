@@ -320,6 +320,12 @@ final readonly class FrameworkManifestRepository
     }
 
     /** @return array<string, mixed>|null */
+    public function dynamicAssetProjection(): ?array
+    {
+        return $this->lock->dynamicAssetProjection();
+    }
+
+    /** @return array<string, mixed>|null */
     public function typographyProjection(): ?array
     {
         return $this->lock->typographyProjection();
@@ -579,11 +585,17 @@ final readonly class FrameworkManifestRepository
         $this->assertSafeRelativePath($relativePath);
         $projection = $this->lock->assetProjection();
         $record = $projection['files'][$relativePath] ?? null;
+        if (! is_array($record)) {
+            $dynamicProjection = $this->lock->dynamicAssetProjection();
+            $record = is_array($dynamicProjection)
+                ? ($dynamicProjection['files'][$relativePath] ?? null)
+                : null;
+        }
         if (! is_array($record) || ! is_string($record['sha256'] ?? null)) {
             throw new FrameworkComponentException('FRAMEWORK_ASSET_NOT_PROJECTED', $relativePath);
         }
 
-        $path = $this->resourceRoot . '/assets/' . $relativePath;
+        $path = $this->projectedSmartAssetPath($relativePath);
         $this->assertTrustedRegularFile(
             $path,
             'FRAMEWORK_BUNDLED_ASSET_UNSAFE',
@@ -599,6 +611,41 @@ final readonly class FrameworkManifestRepository
         }
 
         return $bytes;
+    }
+
+    public function bundledDynamicAsset(string $relativePath): string
+    {
+        $this->assertSafeRelativePath($relativePath);
+        $projection = $this->lock->dynamicAssetProjection();
+        $record = is_array($projection) ? ($projection['files'][$relativePath] ?? null) : null;
+        if (! is_array($record) || ! is_string($record['sha256'] ?? null)) {
+            throw new FrameworkComponentException('FRAMEWORK_DYNAMIC_ASSET_NOT_PROJECTED', $relativePath);
+        }
+
+        $path = $this->projectedSmartAssetPath($relativePath);
+        $this->assertTrustedRegularFile(
+            $path,
+            'FRAMEWORK_BUNDLED_DYNAMIC_ASSET_UNSAFE',
+            'FRAMEWORK_BUNDLED_DYNAMIC_ASSET_MISSING',
+            $relativePath,
+        );
+        $bytes = @file_get_contents($path);
+        if (! is_string($bytes)) {
+            throw new FrameworkComponentException('FRAMEWORK_BUNDLED_DYNAMIC_ASSET_MISSING', $relativePath);
+        }
+        if (! hash_equals($record['sha256'], hash('sha256', $bytes))) {
+            throw new FrameworkComponentException('FRAMEWORK_BUNDLED_DYNAMIC_ASSET_HASH_MISMATCH', $relativePath);
+        }
+
+        return $bytes;
+    }
+
+    private function projectedSmartAssetPath(string $relativePath): string
+    {
+        $revision = (string) ($this->lock->assetProjection()['source']['revision'] ?? '');
+        $versioned = $this->resourceRoot . '/runtime-smart/' . $revision . '/' . $relativePath;
+
+        return is_file($versioned) ? $versioned : $this->resourceRoot . '/assets/' . $relativePath;
     }
 
     /** @return list<string> */

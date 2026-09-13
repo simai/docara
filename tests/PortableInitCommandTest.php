@@ -161,29 +161,37 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);
-        $this->assertSame('sf-v5.6.2-47a0f496-b07ee017', $lock['runtime']['pair_id']);
-        $this->assertSame('47a0f496574bd0af0f03e4b332a2a35a65d77d05', $lock['runtime']['ui']['commit']);
-        $this->assertSame('b07ee0178a1dbc6cb9b1fd49d106f2c12d3ec778', $lock['runtime']['ui_smart']['commit']);
-        $this->assertSame('47a0f496574bd0af0f03e4b332a2a35a65d77d05', $lock['runtime']['framework_registry']['source']['commit']);
+        $this->assertSame('sf-v5.7.0-d328491b-9e94abc6', $lock['runtime']['pair_id']);
+        $this->assertSame('d328491bc805439f200866f7e04c0e5e853a4998', $lock['runtime']['ui']['commit']);
+        $this->assertSame('9e94abc6b10c82f770820807343cecb9a0e27f77', $lock['runtime']['ui_smart']['commit']);
+        $this->assertSame('d328491bc805439f200866f7e04c0e5e853a4998', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);
-        $this->assertSame('236b1aeb0e8d2543eb3f5edf702e6891bf994baf03e9c7398090d13bec9cdeed', $lock['manifests']['ui.button']['sha256']);
-        $this->assertSame('e91a4a8f4277e6f19b3179f530a9070ccb811280c17f22019a8e66c60e2f4970', $lock['manifests']['ui.alert']['sha256']);
+        $this->assertSame('5e0d9497ba5b28b1327afd6f324e9eb058d5a55d017292b37f658185b1b7d2ab', $lock['manifests']['ui.button']['sha256']);
+        $this->assertSame('340439b0cf48ef4ce74dfd177c6f427c3c158bbeb9c8cef7419c45eac06a1295', $lock['manifests']['ui.alert']['sha256']);
         $this->assertSame('docara.framework_asset_projection.v1', $lock['asset_projection']['schema']);
-        $this->assertSame('_docara/framework', $lock['asset_projection']['mount']);
+        $this->assertSame('_docara/framework-runtime', $lock['asset_projection']['mount']);
         $this->assertSame('simai/ui-smart', $lock['asset_projection']['source']['provider']);
         $this->assertSame(
             $lock['runtime']['ui_smart']['commit'],
             $lock['asset_projection']['source']['revision'],
         );
         $this->assertSame([
-            'smart/alert/js/alert.js' => '9fa2e29f067379f8400ee4a5bd0ef34832baee42f5a8394f48796719d07e75fa',
-            'smart/buttons/js/buttons.js' => 'b9804afcf05c718ed51ee0b8b5e04e946c422d2fb8b8fed112e552824054087b',
-            'smart/icons/js/icons.js' => '362cef3368003672166a0a99d5026a1712fe4f716f9e614a55037d2429430da5',
-            'smart/modal/js/modal.js' => 'a14cc8fca8e803328cc082a6290695ded7c7baf97373a6353b765116a2b89cb5',
+            'smart/alert/js/alert.js' => '8a755992504633901ac986e6b2d2be5e19591724f6b6eb4e6be1b52374c9f583',
+            'smart/buttons/js/buttons.js' => '43078e2958646216ded7e73893c7952c4a49caf75d929e09e76a4107f3bc4e6c',
+            'smart/icons/js/icons.js' => '84800076a4a6d99274189114831797ac71a895d332661672f59ba50a3a9002eb',
+            'smart/modal/js/modal.js' => '275a848667c001d9e4ce357723ee6325ac6fe45db9866fe2294ca10d0fb2daa7',
         ], array_map(
             static fn (array $record): string => $record['sha256'],
             $lock['asset_projection']['files'],
         ));
+        $this->assertSame('docara.framework_dynamic_asset_projection.v1', $lock['dynamic_asset_projection']['schema']);
+        $this->assertSame('_docara/framework-runtime', $lock['dynamic_asset_projection']['mount']);
+        $this->assertSame($lock['runtime']['ui_smart']['commit'], $lock['dynamic_asset_projection']['source']['revision']);
+        $this->assertCount(60, $lock['dynamic_asset_projection']['files']);
+        $this->assertSame(
+            '687124e71dcad604a08b788d838005ef0a24b5e40a6c678509b9a4c73c550919',
+            $lock['dynamic_asset_projection']['files']['smart/inputs/js/inputs.js']['sha256'],
+        );
         $this->assertSame('docara.framework_icon_projection.v1', $lock['icon_projection']['schema']);
         $this->assertSame(
             '50f0603134ce7b70b2d71b686cc13e8b57ccb74c',

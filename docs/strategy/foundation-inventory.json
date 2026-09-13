@@ -1,0 +1,462 @@
+{
+  "date": "2026-09-09",
+  "method": "literal CSS/SCSS evidence, comments stripped; no claim of runtime support or exhaustive generated API",
+  "targets": {
+    "source_main": {
+      "root": "<SIMAI_GIT_ROOT>/ui-loader/src",
+      "fileCount": 2418,
+      "contentDigest": "bc1e2df1f37291dd051071b70741e8c725c7556774461ead2add2e0a67d7cbb4",
+      "features": {
+        "container_queries": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "subgrid": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "cascade_layers": {
+          "files": 798,
+          "utilityFiles": 640,
+          "samples": [
+            "component/admin-menu/scss/_css__admin_menu.scss",
+            "component/avatars/scss/_css__add-button.scss",
+            "component/avatars/scss/_css__avatar_company.scss"
+          ]
+        },
+        "registered_properties": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "color_mix": {
+          "files": 15,
+          "utilityFiles": 10,
+          "samples": [
+            "component/buttons/scss/_css__buttons_custom.scss",
+            "component/scrollbar/scss/_css__scrollbar.scss",
+            "core/scss/_sf_css__shadow.scss"
+          ]
+        },
+        "oklch": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "logical_layout": {
+          "files": 145,
+          "utilityFiles": 57,
+          "samples": [
+            "component/accordion/scss/_css__accordion.scss",
+            "component/admin-menu/scss/_css__admin_menu.scss",
+            "component/alerts/scss/_css__alerts.scss"
+          ]
+        },
+        "relational_has": {
+          "files": 23,
+          "utilityFiles": 0,
+          "samples": [
+            "component/button-group/scss/_css__button-group.scss",
+            "component/buttons/scss/_css__buttons_custom.scss",
+            "component/checkbox/scss/_css__checkbox.scss"
+          ]
+        },
+        "viewport_units": {
+          "files": 1,
+          "utilityFiles": 0,
+          "samples": [
+            "smart/gallery/js/templates/default.css"
+          ]
+        },
+        "text_wrap": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "scrollbar_gutter": {
+          "files": 3,
+          "utilityFiles": 1,
+          "samples": [
+            "component/scrollbar/scss/_css__scrollbar.scss",
+            "core/scss/_sf_css__scroll.scss",
+            "utility/scroll-subtle/default/scss/_sf_css__scroll_subtle.scss"
+          ]
+        },
+        "reduced_motion": {
+          "files": 26,
+          "utilityFiles": 0,
+          "samples": [
+            "component/accordion/scss/_css__accordion.scss",
+            "component/alerts/scss/_css__alerts.scss",
+            "component/button-group/scss/_css__button-group.scss"
+          ]
+        },
+        "forced_colors": {
+          "files": 54,
+          "utilityFiles": 1,
+          "samples": [
+            "component/accordion/scss/_css__accordion.scss",
+            "component/alerts/scss/_css__alerts.scss",
+            "component/breadcrumbs/scss/_css__breadcrumbs_item.scss"
+          ]
+        },
+        "focus_visible": {
+          "files": 49,
+          "utilityFiles": 1,
+          "samples": [
+            "component/accordion/scss/_css__accordion.scss",
+            "component/avatars/scss/_css__avatars_group.scss",
+            "component/avatars/scss/_css__avatars.scss"
+          ]
+        },
+        "supports": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "anchor_positioning": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "view_transitions": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "scroll_timeline": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        }
+      }
+    },
+    "source_release": {
+      "root": "/private/tmp/sf5-utility-release-source/src",
+      "fileCount": 2417,
+      "contentDigest": "453c2c8ebb05faaa522712222e51970843c7389817b051432740e9b3a6106623",
+      "features": {
+        "container_queries": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "subgrid": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "cascade_layers": {
+          "files": 795,
+          "utilityFiles": 640,
+          "samples": [
+            "component/admin-menu/scss/_css__admin_menu.scss",
+            "component/avatars/scss/_css__add-button.scss",
+            "component/avatars/scss/_css__avatar_company.scss"
+          ]
+        },
+        "registered_properties": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "color_mix": {
+          "files": 15,
+          "utilityFiles": 10,
+          "samples": [
+            "component/scrollbar/scss/_css__scrollbar.scss",
+            "core/scss/_sf_css__shadow.scss",
+            "core/scss/vars/_sf_var__color.scss"
+          ]
+        },
+        "oklch": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "logical_layout": {
+          "files": 132,
+          "utilityFiles": 57,
+          "samples": [
+            "component/accordion/scss/_css__accordion.scss",
+            "component/admin-menu/scss/_css__admin_menu.scss",
+            "component/alerts/scss/_css__alerts.scss"
+          ]
+        },
+        "relational_has": {
+          "files": 16,
+          "utilityFiles": 0,
+          "samples": [
+            "component/button-group/scss/_css__button-group.scss",
+            "component/buttons/scss/_css__buttons_custom.scss",
+            "component/checkbox/scss/_css__checkbox.scss"
+          ]
+        },
+        "viewport_units": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "text_wrap": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "scrollbar_gutter": {
+          "files": 3,
+          "utilityFiles": 1,
+          "samples": [
+            "component/scrollbar/scss/_css__scrollbar.scss",
+            "core/scss/_sf_css__scroll.scss",
+            "utility/scroll-subtle/default/scss/_sf_css__scroll_subtle.scss"
+          ]
+        },
+        "reduced_motion": {
+          "files": 3,
+          "utilityFiles": 0,
+          "samples": [
+            "component/accordion/scss/_css__accordion.scss",
+            "component/button-group/scss/_css__button-group.scss",
+            "component/scrollbar/scss/_css__scrollbar.scss"
+          ]
+        },
+        "forced_colors": {
+          "files": 4,
+          "utilityFiles": 1,
+          "samples": [
+            "component/accordion/scss/_css__accordion.scss",
+            "component/context-menu/scss/_css__context_menu.scss",
+            "component/scrollbar/scss/_css__scrollbar.scss"
+          ]
+        },
+        "focus_visible": {
+          "files": 12,
+          "utilityFiles": 1,
+          "samples": [
+            "component/accordion/scss/_css__accordion.scss",
+            "component/avatars/scss/_css__avatars_group.scss",
+            "component/breadcrumbs/scss/_css__breadcrumbs_item.scss"
+          ]
+        },
+        "supports": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "anchor_positioning": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "view_transitions": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "scroll_timeline": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        }
+      }
+    },
+    "distribution_release": {
+      "root": "/private/tmp/sf5-ui-release/distr",
+      "fileCount": 733,
+      "contentDigest": "1a448e34f43cb21a2d9abb738261c21ef18aaf19d319a24d63dee7f3698fca02",
+      "features": {
+        "container_queries": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "subgrid": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "cascade_layers": {
+          "files": 698,
+          "utilityFiles": 640,
+          "samples": [
+            "component/admin-menu/css/admin-menu.css",
+            "component/avatars/css/avatars.css",
+            "component/badges/css/badges.css"
+          ]
+        },
+        "registered_properties": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "color_mix": {
+          "files": 13,
+          "utilityFiles": 10,
+          "samples": [
+            "component/scrollbar/css/scrollbar.css",
+            "core/css/core.css",
+            "core/css/utility.full.css"
+          ]
+        },
+        "oklch": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "logical_layout": {
+          "files": 106,
+          "utilityFiles": 56,
+          "samples": [
+            "component/accordion/css/accordion.css",
+            "component/admin-menu/css/admin-menu.css",
+            "component/alerts/css/alerts.css"
+          ]
+        },
+        "relational_has": {
+          "files": 15,
+          "utilityFiles": 0,
+          "samples": [
+            "component/button-group/css/button-group.css",
+            "component/buttons/css/buttons.css",
+            "component/checkbox/css/checkbox.css"
+          ]
+        },
+        "viewport_units": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "text_wrap": {
+          "files": 1,
+          "utilityFiles": 0,
+          "samples": [
+            "component/monaco/css/monaco.css"
+          ]
+        },
+        "scrollbar_gutter": {
+          "files": 4,
+          "utilityFiles": 1,
+          "samples": [
+            "component/scrollbar/css/scrollbar.css",
+            "core/css/core.css",
+            "core/css/utility.full.css"
+          ]
+        },
+        "reduced_motion": {
+          "files": 3,
+          "utilityFiles": 0,
+          "samples": [
+            "component/accordion/css/accordion.css",
+            "component/button-group/css/button-group.css",
+            "component/scrollbar/css/scrollbar.css"
+          ]
+        },
+        "forced_colors": {
+          "files": 5,
+          "utilityFiles": 1,
+          "samples": [
+            "component/accordion/css/accordion.css",
+            "component/context-menu/css/context-menu.css",
+            "component/scrollbar/css/scrollbar.css"
+          ]
+        },
+        "focus_visible": {
+          "files": 9,
+          "utilityFiles": 1,
+          "samples": [
+            "component/accordion/css/accordion.css",
+            "component/avatars/css/avatars.css",
+            "component/button-group/css/button-group.css"
+          ]
+        },
+        "supports": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "anchor_positioning": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "view_transitions": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        },
+        "scroll_timeline": {
+          "files": 0,
+          "utilityFiles": 0,
+          "samples": []
+        }
+      }
+    }
+  },
+  "repos": {
+    "source": {
+      "root": "<SIMAI_GIT_ROOT>/ui-loader",
+      "head": "5365ecc48bcaf4dabf4484812a9b0b81ba2d44d5",
+      "dirtyEntries": 659
+    },
+    "releaseSource": {
+      "root": "/private/tmp/sf5-utility-release-source",
+      "head": "19db6d2d786a06e2718c3bb848d616a987e81a44",
+      "dirtyEntries": 1
+    },
+    "distribution": {
+      "root": "/private/tmp/sf5-ui-release",
+      "head": "833b9ab11ed59c8ee3443ce365faf00e2d9fcaea",
+      "dirtyEntries": 0
+    },
+    "builder": {
+      "root": "<SIMAI_GIT_ROOT>/ui-builder",
+      "head": "96b56d2a4e5bd4e3be3f839ffebf205ba7fa77c2",
+      "dirtyEntries": 4
+    },
+    "docara": {
+      "root": "<SIMAI_GIT_ROOT>/docara",
+      "head": "69cb9421e66d1cf7362b2a76635019e544f291dd",
+      "dirtyEntries": 86
+    },
+    "uiDoc": {
+      "root": "<SIMAI_GIT_ROOT>/ui-doc",
+      "head": "1dc8e0537fc3d4cde3b68b3bbf92a51f5ab9b567",
+      "dirtyEntries": 985
+    },
+    "uiDocRelease": {
+      "root": "/private/tmp/sf5-utility-docs",
+      "head": "1210825f7f9ff574e4c617dc7ab542b528c7bc68",
+      "dirtyEntries": 4
+    }
+  },
+  "locks": {
+    "docara": {
+      "file": "<SIMAI_GIT_ROOT>/docara/docs/site/simai-framework.lock.json",
+      "sha256": "d8b77a14fa74d32fa643914ce0359a163cb8e67ef7a8f7e3d04ca50081df18c5",
+      "tag": "v5.6.1",
+      "ui": "34f5ff453f324ce08d0a0b55e45fa4239a09f2b1",
+      "smart": "23d00d92346717b8f835297d142a14458f806602"
+    },
+    "uiDoc": {
+      "file": "<SIMAI_GIT_ROOT>/ui-doc/simai-framework.lock.json",
+      "sha256": "3844e643ee2431d71a5b3f36b94961e065106e4288b0863562c948284dfa58b5",
+      "tag": "v5.6.2",
+      "ui": "47a0f496574bd0af0f03e4b332a2a35a65d77d05",
+      "smart": "b07ee0178a1dbc6cb9b1fd49d106f2c12d3ec778"
+    },
+    "uiDocRelease": {
+      "file": "/private/tmp/sf5-utility-docs/simai-framework.lock.json",
+      "sha256": "6a298460a2605d2813613e65c6b86ce7a603c3afde4c6fdc12f94582e7f483dd",
+      "tag": "v5.6.4",
+      "ui": "833b9ab11ed59c8ee3443ce365faf00e2d9fcaea",
+      "smart": "b07ee0178a1dbc6cb9b1fd49d106f2c12d3ec778"
+    }
+  },
+  "ruleParity": {
+    "sourceRules": 640,
+    "distribution": "distr/rule/rule.json",
+    "mismatches": []
+  }
+}

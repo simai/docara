@@ -669,12 +669,12 @@ MD);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll{box-sizing:border-box;block-size:auto;margin:0', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll code{background:transparent}', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] [data-docara-code-block]{block-size:auto;margin:0;', $shellCss);
-        self::assertStringContainsString('.docara-example-preview__copy{justify-self:end;margin:0;color:var(--sf-on-surface-variant)}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview__action,.docara-example-preview__copy{margin:0;color:var(--sf-on-surface-variant)}', $shellCss);
         self::assertStringContainsString('.sf-alert.sf-alert--success>sf-icon>.sf-icon{--sf-icon--color:var(--sf-success)}', $shellCss);
-        self::assertStringContainsString('.docara-example-preview__copy .sf-icon{--sf-icon--color:var(--sf-on-surface-variant)}', $shellCss);
-        self::assertStringContainsString('.docara-example-preview__copy:hover,.docara-example-preview__copy:focus-visible{color:var(--sf-on-surface)}', $shellCss);
-        self::assertStringContainsString('.docara-example-preview__copy:hover .sf-icon,.docara-example-preview__copy:focus-visible .sf-icon{--sf-icon--color:var(--sf-on-surface)}', $shellCss);
-        self::assertStringContainsString('.docara-example-preview .docara-example-preview__copy:focus,.docara-example-preview .docara-example-preview__copy:focus-visible{outline:0;box-shadow:none}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview__action .sf-icon,.docara-example-preview__copy .sf-icon{--sf-icon--color:var(--sf-on-surface-variant)}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview__action:hover,.docara-example-preview__action:focus-visible,.docara-example-preview__copy:hover,.docara-example-preview__copy:focus-visible{color:var(--sf-on-surface)}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview__action:hover .sf-icon,.docara-example-preview__action:focus-visible .sf-icon,.docara-example-preview__copy:hover .sf-icon,.docara-example-preview__copy:focus-visible .sf-icon{--sf-icon--color:var(--sf-on-surface)}', $shellCss);
+        self::assertStringContainsString('.docara-example-preview .docara-example-preview__action:focus:not(:focus-visible),.docara-example-preview .docara-example-preview__copy:focus:not(:focus-visible){--sf-icon-button--box-shadow:none;outline:0;box-shadow:none}', $shellCss);
         self::assertStringContainsString('[data-docara-example-panel] .docara-code-scroll .hljs-ln-numbers{display:none}', $shellCss);
         self::assertStringContainsString(
             '.docara-outline-rail{position:relative;align-self:stretch;box-shadow:inset var(--sf-px) var(--sf-0) var(--sf-0) var(--sf-outline-variant)}',
@@ -888,12 +888,12 @@ MD);
             self::assertStringContainsString('[data-docara-component-details-summary]:focus-visible', $surface);
             self::assertStringNotContainsString('sf-button>button:focus-visible', $surface);
             self::assertStringContainsString(
-                '/_docara/vendor/simai-framework/runtime/47a0f496574bd0af0f03e4b332a2a35a65d77d05/distr/',
+                '/_docara/vendor/simai-framework/runtime/d328491bc805439f200866f7e04c0e5e853a4998/distr/',
                 $html,
             );
             self::assertStringNotContainsString('cdn.jsdelivr.net', $html);
             self::assertStringNotContainsString('simai/ui-smart@', $html);
-            self::assertStringContainsString('window.sfSmartPath="/_docara/framework"', $html);
+            self::assertStringContainsString('window.sfSmartPath="/_docara/framework-runtime"', $html);
             self::assertStringContainsString(
                 '/_docara/vendor/google/material-symbols/50f0603134ce7b70b2d71b686cc13e8b57ccb74c/MaterialSymbolsOutlined.woff2',
                 $html,
@@ -1003,10 +1003,8 @@ MD);
             '.docara-header-navigation-link:focus-visible,[data-docara-disclosure]:focus-visible{outline:var(--sf-focus-outline-width,var(--sf-a4)) solid var(--sf-primary,Highlight);outline-offset:var(--sf-a2)',
             $smartSurface,
         );
-        self::assertStringContainsString(
-            '[data-docara-disclosure]{order:-1;flex:0 0 auto;',
-            $smartSurface,
-        );
+        self::assertStringContainsString('[data-docara-disclosure]{flex:0 0 auto;}', $smartSurface);
+        self::assertStringNotContainsString('[data-docara-disclosure]{order:-1;', $smartSurface);
         self::assertStringNotContainsString('min-inline-size:var(--sf-d1)', $smartSurface);
         self::assertStringNotContainsString('margin-inline:calc(var(--sf-b0) * -1)', $smartSurface);
         self::assertStringNotContainsString('min-inline-size:44px', $smartSurface);
@@ -1136,9 +1134,9 @@ MD);
             $navigationXpath->query(
                 '//nav[@data-docara-smart="docara.navigation"]'
                 . '//div[contains(concat(" ", normalize-space(@class), " "), " sf-menu-element ")]'
-                . '/button[@data-docara-disclosure][following-sibling::*[1][self::a or self::span]]',
+                . '/*[self::a or self::span][following-sibling::*[1][self::button[@data-docara-disclosure]]]',
             )?->length ?? 0,
-            'Framework disclosure must precede the menu text as in the Simple Menu design.',
+            'Framework disclosure must follow the menu text as its trailing control.',
         );
         self::assertSame(
             0,
@@ -1169,11 +1167,11 @@ MD);
         self::assertContains(hash_file('sha256', $this->tmpPath('assets/favicon.ico')), $publishedBrandHashes);
 
         foreach ([
-            'smart/alert/js/alert.js' => '9fa2e29f067379f8400ee4a5bd0ef34832baee42f5a8394f48796719d07e75fa',
-            'smart/buttons/js/buttons.js' => 'b9804afcf05c718ed51ee0b8b5e04e946c422d2fb8b8fed112e552824054087b',
-            'smart/icons/js/icons.js' => '362cef3368003672166a0a99d5026a1712fe4f716f9e614a55037d2429430da5',
+            'smart/alert/js/alert.js' => '8a755992504633901ac986e6b2d2be5e19591724f6b6eb4e6be1b52374c9f583',
+            'smart/buttons/js/buttons.js' => '43078e2958646216ded7e73893c7952c4a49caf75d929e09e76a4107f3bc4e6c',
+            'smart/icons/js/icons.js' => '84800076a4a6d99274189114831797ac71a895d332661672f59ba50a3a9002eb',
         ] as $relativePath => $sha256) {
-            $published = $this->tmpPath('build_local/_docara/framework/' . $relativePath);
+            $published = $this->tmpPath('build_local/_docara/framework-runtime/' . $relativePath);
             self::assertFileExists($published);
             self::assertSame($sha256, hash_file('sha256', $published));
         }
@@ -1255,7 +1253,7 @@ MD);
         );
         $componentCatalog = $this->jsonFile($this->tmpPath('build_local/_docara/component-catalog.json'));
         self::assertSame('docara.effective_component_catalog.v1', $componentCatalog['schema']);
-        self::assertSame('sf-v5.6.2-47a0f496-b07ee017', $componentCatalog['framework_pair']);
+        self::assertSame('sf-v5.7.0-d328491b-9e94abc6', $componentCatalog['framework_pair']);
         self::assertCount(38, $componentCatalog['entries']);
         self::assertEquals(
             [
@@ -1673,7 +1671,7 @@ MD);
         self::assertFileExists($site . '/build_local/landing/index.html');
         self::assertFileExists($site . '/build_local/_docara/component-catalog.json');
         self::assertFileExists($site . '/build_local/.docara/resolved-page-plans.json');
-        self::assertFileExists($site . '/build_local/_docara/framework/smart/alert/js/alert.js');
+        self::assertFileExists($site . '/build_local/_docara/framework-runtime/smart/alert/js/alert.js');
         self::assertCount(2, glob($site . '/build_local/_docara/brand/*') ?: []);
     }
 
@@ -1717,7 +1715,7 @@ MD;
         $html = (string) file_get_contents($this->tmpPath('build_local/index.html'));
         self::assertStringContainsString('href="/project~/docs/"', $html);
         self::assertStringContainsString(
-            'window.sfSmartPath="/project~/docs/_docara/framework"',
+            'window.sfSmartPath="/project~/docs/_docara/framework-runtime"',
             $html,
         );
         self::assertStringContainsString('href="/project~/docs/_docara/brand/', $html);
@@ -1737,10 +1735,10 @@ MD;
             $this->tmpPath('build_local/.docara/resolved-page-plans.json'),
         );
         self::assertMatchesRegularExpression(
-            '#/project~/docs/_docara/framework/smart/alert/js/alert\.js\?sf_v=sf-v5\.6\.2-47a0f496-b07ee017-[a-f0-9]{16}#',
+            '#/project~/docs/_docara/framework-runtime/smart/alert/js/alert\.js\?sf_v=sf-v5\.7\.0-d328491b-9e94abc6-[a-f0-9]{16}#',
             $diagnostics,
         );
-        self::assertFileExists($this->tmpPath('build_local/_docara/framework/smart/alert/js/alert.js'));
+        self::assertFileExists($this->tmpPath('build_local/_docara/framework-runtime/smart/alert/js/alert.js'));
     }
 
     #[Test]

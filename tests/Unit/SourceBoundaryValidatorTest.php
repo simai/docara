@@ -69,7 +69,9 @@ final class SourceBoundaryValidatorTest extends TestCase
         self::assertArrayHasKey('navigation', $language);
         self::assertArrayHasKey('reader', $language);
         self::assertArrayNotHasKey('catalog', $language);
-        self::assertArrayNotHasKey('examples', $language);
+        self::assertArrayHasKey('examples', $language);
+        self::assertSame('Развернуть пример на весь экран', $language['examples']['fullscreen'] ?? null);
+        self::assertSame('Выйти из полноэкранного режима', $language['examples']['fullscreen_exit'] ?? null);
         self::assertSame('Скопировать', $language['code']['copy'] ?? null);
         self::assertSame('Скопировано', $language['code']['copied'] ?? null);
         self::assertArrayNotHasKey('components', $language);

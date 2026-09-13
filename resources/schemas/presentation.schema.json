@@ -220,6 +220,35 @@
             },
             "additionalProperties": false
         },
+        "examples": {
+            "type": "object",
+            "minProperties": 1,
+            "properties": {
+                "$reset": {
+                    "const": true
+                },
+                "fullscreen": {
+                    "type": "boolean"
+                },
+                "wrap": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false
+        },
+        "code": {
+            "type": "object",
+            "minProperties": 1,
+            "properties": {
+                "$reset": {
+                    "const": true
+                },
+                "wrap": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": false
+        },
         "navigation": {
             "type": "object",
             "minProperties": 1,

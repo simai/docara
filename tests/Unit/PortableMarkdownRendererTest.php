@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
+use Simai\Docara\Document\SourceLocation;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 
@@ -194,6 +195,13 @@ MD);
         self::assertStringContainsString('data-docara-example-tab="example" class="docara-example-preview__tab"', $markdown);
         self::assertStringContainsString('data-docara-example-tab="markdown" class="docara-example-preview__tab"', $markdown);
         self::assertStringContainsString('data-docara-example-copy', $markdown);
+        self::assertStringContainsString('data-docara-example-fullscreen="true"', $markdown);
+        self::assertStringContainsString('data-docara-example-wrap="true"', $markdown);
+        self::assertStringContainsString('data-docara-example-fullscreen', $markdown);
+        self::assertStringContainsString('data-docara-example-wrap', $markdown);
+        self::assertStringContainsString('<sf-icon icon="fullscreen" aria-hidden="true"></sf-icon>', $markdown);
+        self::assertStringContainsString('<sf-icon icon="wrap_text" aria-hidden="true"></sf-icon>', $markdown);
+        self::assertStringContainsString('data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow"', $markdown);
         self::assertStringContainsString('sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1', $markdown);
         self::assertStringContainsString('content-main-center m-0', $markdown);
         self::assertStringContainsString('data-copy-icon="content_copy" data-copied-icon="check"', $markdown);
@@ -207,6 +215,18 @@ MD);
         self::assertStringNotContainsString('sf-tabs sf-tabs--underline', $markdown);
         self::assertStringNotContainsString('style=', $markdown);
         self::assertStringContainsString('sf-badge--success', $markdown);
+
+        $withoutControls = $renderer->render(<<<'MD'
+:::example {label=Пример fullscreen=false wrap=false}
+```markdown
+Текст
+```
+:::
+MD);
+        self::assertStringContainsString('data-docara-example-fullscreen="false"', $withoutControls);
+        self::assertStringContainsString('data-docara-example-wrap="false"', $withoutControls);
+        self::assertStringNotContainsString('data-docara-example-fullscreen hidden', $withoutControls);
+        self::assertStringNotContainsString('data-docara-example-wrap hidden', $withoutControls);
 
         $table = $renderer->render(<<<'MD'
 :::example {label=Таблица}
@@ -269,6 +289,32 @@ MD);
         self::assertStringContainsString('data-docara-example-tab="css"', $web);
         self::assertStringContainsString('data-docara-example-tab="javascript"', $web);
         self::assertStringContainsString('&lt;style&gt;#hello { color: red; }&lt;/style&gt;', $web);
+    }
+
+    #[Test]
+    public function example_controls_inherit_document_settings_and_allow_a_block_override(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $source = ":::example {label=Example}\n```markdown\nText\n```\n:::\n";
+        $location = new SourceLocation('content/en/example.md', 1, 1, 1);
+        $disabled = $renderer->renderAt($source, null, null, $location, [
+            'fullscreen' => false,
+            'wrap' => false,
+        ]);
+        self::assertStringContainsString('data-docara-example-fullscreen="false"', $disabled);
+        self::assertStringContainsString('data-docara-example-wrap="false"', $disabled);
+        self::assertStringNotContainsString('data-docara-example-fullscreen hidden', $disabled);
+        self::assertStringNotContainsString('data-docara-example-wrap hidden', $disabled);
+
+        $override = str_replace('{label=Example}', '{label=Example fullscreen=true wrap=true}', $source);
+        $enabled = $renderer->renderAt($override, null, null, $location, [
+            'fullscreen' => false,
+            'wrap' => false,
+        ]);
+        self::assertStringContainsString('data-docara-example-fullscreen="true"', $enabled);
+        self::assertStringContainsString('data-docara-example-wrap="true"', $enabled);
+        self::assertStringContainsString('data-docara-example-fullscreen hidden', $enabled);
+        self::assertStringContainsString('data-docara-example-wrap hidden', $enabled);
     }
 
     #[Test]
@@ -497,10 +543,12 @@ MD;
             $html,
         );
         self::assertStringContainsString(
-            '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="php" class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">',
+            '<div data-docara-code-block data-sf-highlight-chrome="static" data-docara-code-language="php" data-docara-code-wrap="true" class="source init docara-code-block min-w-0 overflow-hidden bg-surface-container border border-outline-variant radius-2 m-bottom-1">',
             $html,
         );
         self::assertStringContainsString('data-docara-code-fallback', $html);
+        self::assertStringContainsString('data-docara-code-actions', $html);
+        self::assertStringContainsString('data-docara-code-wrap-toggle', $html);
         self::assertStringContainsString('data-docara-code-copy', $html);
         self::assertStringContainsString(
             '<pre class="docara-code-scroll overflow-auto m-0 p-2"><code class="language-php">',
@@ -513,6 +561,23 @@ MD;
         ));
         self::assertStringNotContainsString('class="docara-card', $html);
         self::assertStringNotContainsString('docara-steps', $html);
+    }
+
+    #[Test]
+    public function standalone_code_wrap_control_inherits_document_settings(): void
+    {
+        $renderer = new PortableMarkdownRenderer;
+        $source = "```text\nA long source line\n```\n";
+        $location = new SourceLocation('content/en/code.md', 1, 1, 1);
+
+        $enabled = $renderer->renderAt($source, null, null, $location, [], ['wrap' => true]);
+        self::assertStringContainsString('data-docara-code-wrap="true"', $enabled);
+        self::assertStringContainsString('data-docara-code-wrap-toggle', $enabled);
+
+        $disabled = $renderer->renderAt($source, null, null, $location, [], ['wrap' => false]);
+        self::assertStringContainsString('data-docara-code-wrap="false"', $disabled);
+        self::assertStringNotContainsString('data-docara-code-wrap-toggle', $disabled);
+        self::assertStringContainsString("<code class=\"language-text\">A long source line\n</code>", $disabled);
     }
 
     #[Test]

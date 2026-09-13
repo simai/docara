@@ -1,0 +1,17 @@
+{
+  "scope": "Byte comparison of supplied output trees; input identity and clean-build provenance must be verified separately; not immutable-commit release reproducibility",
+  "builds": [
+    {
+      "root": "/private/tmp/sf5-foundation-core-network-repro",
+      "files": 59,
+      "digest": "d4bdf8f07d51d8a86015ab10eaf312f0574ec5a982c6f663c00c8fd8229dd48d"
+    },
+    {
+      "root": "/private/tmp/sf5-foundation-core-current-repro",
+      "files": 59,
+      "digest": "d4bdf8f07d51d8a86015ab10eaf312f0574ec5a982c6f663c00c8fd8229dd48d"
+    }
+  ],
+  "identical": true,
+  "differences": []
+}

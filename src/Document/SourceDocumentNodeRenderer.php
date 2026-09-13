@@ -25,6 +25,8 @@ final readonly class SourceDocumentNodeRenderer implements DocumentNodeRenderer
                 $context->sourceRoot,
                 $context->sourceFile,
                 $node->location(),
+                $context->examples,
+                $context->code,
             );
         if ($html === '') {
             $html = "\n";

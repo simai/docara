@@ -1,0 +1,74 @@
+{
+  "browser": "26.5",
+  "scope": "Native HTML controls only; no Framework, network or system settings changes",
+  "traces": {
+    "Tab": [
+      {
+        "tag": "INPUT",
+        "id": "before"
+      },
+      {
+        "tag": "INPUT",
+        "id": "after"
+      },
+      {
+        "tag": "BODY",
+        "id": ""
+      },
+      {
+        "tag": "INPUT",
+        "id": "before"
+      },
+      {
+        "tag": "INPUT",
+        "id": "after"
+      },
+      {
+        "tag": "BODY",
+        "id": ""
+      },
+      {
+        "tag": "INPUT",
+        "id": "before"
+      },
+      {
+        "tag": "INPUT",
+        "id": "after"
+      }
+    ],
+    "Alt+Tab": [
+      {
+        "tag": "INPUT",
+        "id": "before"
+      },
+      {
+        "tag": "BUTTON",
+        "id": "native"
+      },
+      {
+        "tag": "A",
+        "id": "link"
+      },
+      {
+        "tag": "INPUT",
+        "id": "after"
+      },
+      {
+        "tag": "BODY",
+        "id": ""
+      },
+      {
+        "tag": "INPUT",
+        "id": "before"
+      },
+      {
+        "tag": "BUTTON",
+        "id": "native"
+      },
+      {
+        "tag": "A",
+        "id": "link"
+      }
+    ]
+  }
+}

@@ -83,6 +83,10 @@ final readonly class UiCopy
     private const OPTIONAL_IDS = [
         'code.copy' => 'Copy',
         'code.copied' => 'Copied',
+        'code.wrap' => 'Wrap source lines',
+        'code.unwrap' => 'Keep original source lines',
+        'examples.fullscreen' => 'Open example fullscreen',
+        'examples.fullscreen_exit' => 'Exit fullscreen',
     ];
 
     public function __construct(private Translator $translator) {}

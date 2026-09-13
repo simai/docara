@@ -1,0 +1,188 @@
+{
+  "scope": "Working-source byte snapshot for review; not commit approval, provenance refresh or immutable release proof",
+  "root": "/private/tmp/sf5-utility-release-source",
+  "head": "19db6d2d786a06e2718c3bb848d616a987e81a44",
+  "files": [
+    {
+      "path": "scripts/audit-utility-loader-contract.mjs",
+      "sha256": "5bddd9b6309b8dfb4ca62671d8b8082769a8e16f451bd1c5081c0f54a116d60f"
+    },
+    {
+      "path": "scripts/utility-exact-rule.mjs",
+      "sha256": "a0032686f0056e33eead91f596858b21649e8659140b813e098514968b678dfe"
+    },
+    {
+      "path": "src/cl/classes/template/sfBaseElement.js",
+      "sha256": "c4e0596ef8f63feacd498b35be817edea6ad6dc67d097ec9686715d6ec1cd7a9"
+    },
+    {
+      "path": "src/core/js/loader.js",
+      "sha256": "d578e0bd18e3eb265a7d3a76ca9114b65d3b12b8ac83a7b90d4f9bee8810ce21"
+    },
+    {
+      "path": "src/core/scss/_sf_layer_order.scss",
+      "sha256": "8a65c30f3489f32bc5ca1160593ff6a469b0c312e79e010fd6b268d5337b73ce"
+    },
+    {
+      "path": "src/core/scss/index.scss",
+      "sha256": "9fd8f69165fb089e33cebc3cef46bd88d85d8df5d0321ef3cbb7382509ae21da"
+    },
+    {
+      "path": "src/smart/inputs/index.js",
+      "sha256": "ce724982dc9b52efb0969814d6a6f58ebd2cf6d9cbbe51c4f60806a490407658"
+    },
+    {
+      "path": "src/smart/inputs/js/templates/default.js",
+      "sha256": "4a3d4c22cf35ddec4a93217fafc48fcbc74f295050e5cf98bd4479e172d1df38"
+    },
+    {
+      "path": "src/smart/modal/index.js",
+      "sha256": "2c7df0e448398bf1faebf21f18000f4fe9ed63df822e6bff523d4606fc38819d"
+    },
+    {
+      "path": "src/smart/table/index.js",
+      "sha256": "d9ef7f3b7e7415aa4181c0ee7bcb5e67abd5d22abcbf6c978fa6ff1e2f4326fa"
+    },
+    {
+      "path": "src/smart/table/js/smart-element.js",
+      "sha256": "ab1f7c6efb0dfc036c15e78fb6bf7c8fd4b722a2a07db650b8816b25207e5e6e"
+    },
+    {
+      "path": "src/smart/table/js/templates/default.js",
+      "sha256": "7991e0c1b426d45ba0bbde4ea8634159196af776cf1a0fd0e41c073ec49510f1"
+    },
+    {
+      "path": "src/smart/textarea/index.js",
+      "sha256": "46f8b9de6c4a04b3489e53c9b91237cfba0341f0490120f94fceffc8857c1081"
+    },
+    {
+      "path": "src/utility/gap/default/rule.js",
+      "sha256": "3ef63f7bbf2b83a019771d07ed31ee65ca01d4608e865d3e69aa86dd3044162d"
+    },
+    {
+      "path": "src/utility/gap/default/scss/_sf_css__gap.scss",
+      "sha256": "f1d81f17bfce903d6c62ac4887f34d96afd1234aa96460ad913d051a2cd4698a"
+    },
+    {
+      "path": "src/utility/gap/lg/rule.js",
+      "sha256": "73641ebb9a3bfee7550a53d645381808e0c05016f6a91135061daab0c8cf7be4"
+    },
+    {
+      "path": "src/utility/gap/lg/scss/_sf_css__gap.scss",
+      "sha256": "0b758cc5c73476a801ac1a7e41d624cc495f254ec0b7e7bca9d1002df2e5fff0"
+    },
+    {
+      "path": "src/utility/gap/md/rule.js",
+      "sha256": "199418d6b6fdee2462217dcd62fd1b69c413417e6817309ff76603c006337e7d"
+    },
+    {
+      "path": "src/utility/gap/md/scss/_sf_css__gap.scss",
+      "sha256": "201b3bfda8156a6a1f325d472b0536ca402012140f3512d1a5c6929005efd6dc"
+    },
+    {
+      "path": "src/utility/gap/sm/rule.js",
+      "sha256": "755dddb4801984307352b1098e1d036b5e864cd72815312d99fcc9dcac6d2ca5"
+    },
+    {
+      "path": "src/utility/gap/sm/scss/_sf_css__gap.scss",
+      "sha256": "e751bce5dbf52799997be8dce38bbc32b154748045bd5b76dad107e9f60ededb"
+    },
+    {
+      "path": "src/utility/gap/xl/rule.js",
+      "sha256": "acb32ecca4a6762a4f70cbcb491ab25af8b96b6cfd3be56fd56cd5254eb6b2f7"
+    },
+    {
+      "path": "src/utility/gap/xl/scss/_sf_css__gap.scss",
+      "sha256": "666c085d9a2814cb43d480cfbfdd92884f419cdd87a4a4324751b22e807ab7b4"
+    },
+    {
+      "path": "src/utility/isolate/default/rule.js",
+      "sha256": "06cb19e36ef1e84b4c1ade30079290358e65dd8b3d6a5e07f50516d483bdd886"
+    },
+    {
+      "path": "src/utility/justify-content/default/rule.js",
+      "sha256": "857a3d67918d94392b4a38b8eef519c8689485e6db100e1a635e20b8e37817a9"
+    },
+    {
+      "path": "src/utility/justify-content/lg/rule.js",
+      "sha256": "cd32fe0eb9f9e96809f06246aebf8cfc571c6daf50221bad8d4664d028521900"
+    },
+    {
+      "path": "src/utility/justify-content/md/rule.js",
+      "sha256": "b6bf5167e0da2c6034449b77cd7f25e743b84c17c46e3b5a2e306a20537938b9"
+    },
+    {
+      "path": "src/utility/justify-content/sm/rule.js",
+      "sha256": "83dd938deca545659c0ca31915ef2056173fe6c6bf2bd61a94eac08c6d21e5fc"
+    },
+    {
+      "path": "src/utility/justify-content/xl/rule.js",
+      "sha256": "540fd66b5ea13eeb534dfc55fb83b7b5f09326ff5733c4b420c8fae2c78ae62c"
+    },
+    {
+      "path": "tests/core-layer-order.contract.test.mjs",
+      "sha256": "583c386fcc176629d3cfc4d7cbac483a07cdbc56f677beb80f6d14681075cfbe"
+    },
+    {
+      "path": "tests/gap-axis-priority.contract.test.mjs",
+      "sha256": "9a854ee2c338d0a1e2ccc9b8b6b952d9b58ee2fc49019fb501f74be08ac93cac"
+    },
+    {
+      "path": "tests/loader-style-failure.test.mjs",
+      "sha256": "f157480234ff09f92aa16da026c3a27097ddd3bc1b41cb6785b24d4969f4ae9e"
+    },
+    {
+      "path": "tests/modal-open-attribute.test.mjs",
+      "sha256": "0074de76679c0f2fef108a53f2fb06edd97dbd85f390e049e0a08222aceb98eb"
+    },
+    {
+      "path": "tests/smart-external-view-race.test.mjs",
+      "sha256": "a86b952708e3c9b833fe53a9500d5f59c5f103f5d78271df0ddbfd6e7ee9a8cb"
+    },
+    {
+      "path": "tests/smart-external-view-update.test.mjs",
+      "sha256": "816d8c0d605a800e4026b8959ed23a22b71371004cc4e6698a8499677448ca59"
+    },
+    {
+      "path": "tests/smart-input-view-value.test.mjs",
+      "sha256": "13f0f5c0e4f289315905c9cfcd0abcdb2a5d20a721cc148f58a9f90d0ab5c0bd"
+    },
+    {
+      "path": "tests/smart-template-observation.test.mjs",
+      "sha256": "df7b06afb760f6093b07304f23f26f628d84cb45faca38f14838ed7099736b2c"
+    },
+    {
+      "path": "tests/smart-textarea-view-value.test.mjs",
+      "sha256": "03399ef78af9b599e41914f56d8275d7db62d1c07f0251a6b21084d9e8f373a1"
+    },
+    {
+      "path": "tests/table-cell-identity.test.mjs",
+      "sha256": "60f66a1cb9c75313a751ddce6b5443d7e01fc75c345430348a98ad65618d814e"
+    },
+    {
+      "path": "tests/table-filter-dismiss.test.mjs",
+      "sha256": "8617378c03a98c97854ba8056f30f143b522457721bc9f3d3dfac6c30a059b56"
+    },
+    {
+      "path": "tests/table-lifecycle.test.mjs",
+      "sha256": "9a3142c086235b0c9715042301f7c2518710f9888ae3c864972a4f7c375a4756"
+    },
+    {
+      "path": "tests/table-smart-element.test.mjs",
+      "sha256": "3992ba97788de5aa603f436d8ca38ba1eb833b30fb523a0421a79da0737f80aa"
+    },
+    {
+      "path": "tests/utility-exact-rule.test.mjs",
+      "sha256": "3683248cb4cb4887edaf7e9a7a0b56f38bf5d34c439f244489547d5b87040226"
+    },
+    {
+      "path": "tests/utility-loader-contract.test.mjs",
+      "sha256": "e95d3660e28a40dca88b1d889a388db6b4a6d88d4567051814f68a2d0fc0957c"
+    }
+  ],
+  "excluded": [
+    "node_modules",
+    "tests/admin-menu-navigation.contract.test.mjs"
+  ],
+  "digest": "cb832382e8be5e94641ca8ea2768d2fb802819e6836bbacfecfa655a925818b5"
+}

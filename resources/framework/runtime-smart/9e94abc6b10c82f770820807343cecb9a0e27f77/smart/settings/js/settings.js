@@ -1,0 +1,45 @@
+(()=>{"use strict";const t="undefined"!=typeof window&&(window.SF?.smart||window.SF)||{},e="undefined"!=typeof window?window:{},s=t.SfBaseElement||e.SfBaseElement;if(!s)throw new Error("SF smart runtime is not loaded. Load smart-base before smart components.");const o=t.html||e.html,l=t.nothing||e.nothing,a=(t.render||e.render,t.litProps||e.litProps,t.toBoolean,t.toAttributeName,t.toNumber,t.normalizeEnum,t.parseJsonAttribute,s);function n(...t){return t.filter(Boolean).join(" ").trim()}function r(t){return!1!==t}let i=0;class d extends a{static defaultTrueAttributes=new Set(["overlay","show-header","show-close","show-footer","close-on-esc","close-on-overlay","preserve-scroll-gap","preload"]);static get props(){return{templateName:{attribute:"template",default:"default"},settingsId:{attribute:"settings-id",default:""},title:{default:"Settings"},text:{default:""},open:{type:Boolean,default:!1},autoload:{type:Boolean,default:!1},unclose:{type:Boolean,default:!1},hide:{type:Boolean,default:!1},overlay:{type:Boolean,default:!0},showHeader:{attribute:"show-header",type:Boolean,default:!0},showClose:{attribute:"show-close",type:Boolean,default:!0},showFooter:{attribute:"show-footer",type:Boolean,default:!0},closeOnEsc:{attribute:"close-on-esc",type:Boolean,default:!0},closeOnOverlay:{attribute:"close-on-overlay",type:Boolean,default:!0},preserveScrollGap:{attribute:"preserve-scroll-gap",type:Boolean,default:!0},position:{default:"right",values:["left","right"]},mode:{default:"inline",values:["inline","ajax","iframe"]},display:{default:"modal",values:["modal","inline"]},src:{default:""},preload:{type:Boolean,default:!0},fullscreen:{type:Boolean,default:!1},width:{default:"420px"},height:{default:"100%"},blur:{type:Boolean,default:!1},blurType:{attribute:"blur-type",default:"medium",values:["none","small","medium","large"]},rootClass:{attribute:"root-class",default:""},overlayClass:{attribute:"overlay-class",default:""},closeClass:{attribute:"close-class",default:""},surfaceClass:{attribute:"surface-class",default:""},surfacePadding:{attribute:"surface-padding",default:""},panelClass:{attribute:"panel-class",default:""},headerClass:{attribute:"header-class",default:""},bodyClass:{attribute:"body-class",default:""},contentClass:{attribute:"content-class",default:""},footerClass:{attribute:"footer-class",default:""}}}constructor(){super(),this._settingsId="",this._syncingOpenAttribute=!1,this.refs={...this.refs||{},modal:{value:null}}}connectedCallback(){this._settingsId||(this._settingsId=this.getAttribute("settings-id")||this.id||"sf-settings-"+ ++i),super.connectedCallback()}get templateName(){return this.getAttribute("template")||"default"}get settingsId(){return this.getAttribute("settings-id")||this._settingsId||this.id||""}get position(){return this.getEnumAttr("position",["left","right"],"right")}get width(){return this.getAttribute("width")||"420px"}get height(){return this.getAttribute("height")||"100%"}get modal(){return this.refs.modal?.value||this.querySelector("sf-modal")}templateContext(){return this.createTemplateContext({...this.getPropsContext(),component:this,settingsId:this.settingsId,position:this.position,width:this.width,height:this.height,rootClass:this.getRootClass(),rootStyle:this.getRootStyle(),hasHeaderContent:this.hasSlotContent("header"),hasContentContent:this.hasSlotContent("content"),hasFooterContent:this.hasSlotContent("footer"),headerContent:this.getSlotContent("header"),contentContent:this.getSlotContent("content"),footerContent:this.getSlotContent("footer"),onAfterOpen:this.handleModalAfterOpen,onAfterClose:this.handleModalAfterClose})}template(){return function(t){const e=t.settingsId,s=n("sf-settings",t.rootClass),a=n("sf-settings-panel h-full",t.panelClass),i=n("sf-settings-surface h-full",t.surfaceClass),d=n("sf-settings-body h-full",t.bodyClass),u=n("sf-settings-content h-full",t.contentClass);return o`
+    <sf-modal
+      :ref=${t.component.refs.modal}
+      modal-id=${e}
+      title=${t.title||"Settings"}
+      text=${t.text||""}
+      ?open=${Boolean(t.open)}
+      ?autoload=${Boolean(t.autoload)}
+      ?unclose=${Boolean(t.unclose)}
+      ?hide=${Boolean(t.hide)}
+      ?overlay=${r(t.overlay)}
+      ?show-header=${r(t.showHeader)}
+      ?show-close=${r(t.showClose)}
+      ?show-footer=${r(t.showFooter)}
+      ?close-on-esc=${r(t.closeOnEsc)}
+      ?close-on-overlay=${r(t.closeOnOverlay)}
+      ?preserve-scroll-gap=${r(t.preserveScrollGap)}
+      position=${t.position||"right"}
+      mode=${t.mode||"inline"}
+      display=${t.display||"modal"}
+      src=${t.src||l}
+      ?preload=${r(t.preload)}
+      ?fullscreen=${Boolean(t.fullscreen)}
+      width=${t.width||"420px"}
+      height=${t.height||"100%"}
+      ?blur=${Boolean(t.blur)}
+      blur-type=${t.blurType||"medium"}
+      root-class=${s}
+      overlay-class=${t.overlayClass||l}
+      close-class=${t.closeClass||l}
+      surface-class=${i}
+      surface-padding=${t.surfacePadding||l}
+      panel-class=${a}
+      header-class=${t.headerClass||l}
+      body-class=${d}
+      content-class=${u}
+      footer-class=${t.footerClass||l}
+      .headerTemplate=${t.hasHeaderContent?t.headerContent:l}
+      .contentTemplate=${t.hasContentContent?t.contentContent:l}
+      @modal:after-open=${t.onAfterOpen}
+      @modal:after-close=${t.onAfterClose}
+    >
+      ${t.hasFooterContent?o`<div slot="footer">${t.footerContent}</div>`:l}
+    </sf-modal>
+  `}(this.templateContext())}open(t={}){return this.syncOpenAttribute(!0),this.modal?.open?.(t),this}close(){return this.syncOpenAttribute(!1),this.modal?.close?.(),this}toggle(){return this.modal?.toggle?.(),this}hide(){return this.modal?.hide?.(),this}show(){return this.modal?.show?.(),this}getModalRoot(){return this.modal?.getModalRoot?.()||null}syncOpenAttribute(t){return this._syncingOpenAttribute=!0,t?this.setAttribute("open",""):this.removeAttribute("open"),this._syncingOpenAttribute=!1,this}handleModalAfterOpen=()=>{this.syncOpenAttribute(!0)};handleModalAfterClose=()=>{this.syncOpenAttribute(!1)};attributeChangedCallback(t,e,s){this._syncingOpenAttribute&&"open"===t||super.attributeChangedCallback(t,e,s)}}d.define("sf-settings")})();

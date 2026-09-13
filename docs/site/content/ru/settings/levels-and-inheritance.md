@@ -10,6 +10,10 @@ Effective configuration собирается в порядке `site → section
 
 Чтобы сбросить override, удалите поле на более близком уровне: значение снова придёт из parent/default. Не копируйте весь effective object вниз — это скрывает provenance и мешает будущим default updates.
 
+Та же иерархия действует для `examples.fullscreen`, `examples.wrap` и
+`code.wrap`. Параметры `fullscreen` и `wrap` конкретного `:::example`
+применяются после effective configuration и управляют только этим блоком.
+
 ```bash
 docara inspect page /ru/components/alert/ --json
 docara build production --page=/ru/components/alert/

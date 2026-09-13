@@ -1,0 +1,16 @@
+{
+  "scope": "Two empty output directories, same uncommitted source/builder inputs; not immutable-commit release reproducibility",
+  "builds": [
+    {
+      "root": "/private/tmp/sf5-foundation-core-retry",
+      "files": 59,
+      "digest": "48b20d108ddb575fca2fe5a4400c21d245ec2eecd0071584c1bec2422a0a5ad4"
+    },
+    {
+      "root": "/private/tmp/sf5-foundation-core-repro",
+      "files": 59,
+      "digest": "48b20d108ddb575fca2fe5a4400c21d245ec2eecd0071584c1bec2422a0a5ad4"
+    }
+  ],
+  "identical": true
+}

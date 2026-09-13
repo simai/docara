@@ -2,6 +2,63 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "c018fde8145d"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   resolveControlSpacing: () => (/* binding */ resolveControlSpacing)
+/* harmony export */ });
+const spacingToTightness = Object.freeze({
+  compact: 'low',
+  normal: '',
+  comfortable: 'high',
+  spacious: 'highest'
+});
+const legacyToSpacing = Object.freeze({
+  '': 'normal',
+  default: 'normal',
+  low: 'compact',
+  high: 'comfortable',
+  highest: 'spacious'
+}); // Canonical presence wins even when invalid: a malformed new setting must not
+// silently reactivate a conflicting legacy setting. Removing it restores legacy.
+// Diagnostics are returned, not logged repeatedly on every component render.
+
+function resolveControlSpacing({
+  spacing,
+  tightness
+} = {}) {
+  const diagnostics = [];
+  const canonicalPresent = spacing !== undefined && spacing !== null;
+
+  const normalize = value => String(value ?? '').trim().toLowerCase();
+
+  const legacy = normalize(tightness);
+  let value;
+
+  if (canonicalPresent) {
+    const canonical = normalize(spacing);
+    value = Object.hasOwn(spacingToTightness, canonical) ? canonical : 'normal';
+    if (!Object.hasOwn(spacingToTightness, canonical)) diagnostics.push('invalid-spacing');
+
+    if (tightness !== undefined && tightness !== null && Object.hasOwn(legacyToSpacing, legacy) && legacyToSpacing[legacy] !== value) {
+      diagnostics.push('spacing-overrides-tightness');
+    }
+  } else {
+    value = Object.hasOwn(legacyToSpacing, legacy) ? legacyToSpacing[legacy] : 'normal';
+    if (!Object.hasOwn(legacyToSpacing, legacy)) diagnostics.push('invalid-tightness');
+  }
+
+  return {
+    spacing: value,
+    tightness: spacingToTightness[value],
+    diagnostics
+  };
+}
+
+/***/ },
+
 /***/ "7aae0f825ba6"
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
@@ -69,7 +126,7 @@ class SfBaseElement extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return Array.from(new Set([...this.propsToAttributes(), "root-class", "root-style", "style"]));
+    return Array.from(new Set([...this.propsToAttributes(), "template", "root-class", "root-style", "style"]));
   }
 
   static propsToAttributes(props = this.props) {
@@ -191,13 +248,20 @@ class SfBaseElement extends HTMLElement {
     this.captureSlotTemplates();
     this.__sfSourceCaptured = true;
     this._isMounted = true;
+    this.onConnected();
     this.emitComponentEvent("connected");
     this.requestComponentUpdate("connected");
   }
 
   disconnectedCallback() {
     this._isMounted = false;
-    this.onDisconnected();
+
+    try {
+      this.onDisconnected();
+    } finally {
+      this._releaseExternalTemplate();
+    }
+
     this.emitComponentEvent("disconnected");
   }
 
@@ -623,7 +687,9 @@ class SfBaseElement extends HTMLElement {
   }
 
   async performComponentUpdate(changedAttributes = []) {
-    const mode = this.resolveUpdateMode(changedAttributes);
+    // Component DOM patches describe its built-in view, not a project's
+    // external template (which may reuse only some of the same selectors).
+    const mode = this.hasBuiltInTemplate(this.componentTemplateName) && !this._externalTemplateModule ? this.resolveUpdateMode(changedAttributes) : "lit";
 
     if (mode === "dom" && this.updateDom(changedAttributes) !== false) {
       this.afterUpdate(changedAttributes, mode);
@@ -1635,13 +1701,25 @@ class SfBaseElement extends HTMLElement {
 
   async resolveTemplateResult(changedAttributes = []) {
     const templateName = this.componentTemplateName;
+    const renderToken = this._renderToken;
 
     if (this.hasBuiltInTemplate(templateName)) {
-      this._externalTemplateModule = null;
+      this._releaseExternalTemplate();
+
       return this.template();
     }
 
-    const externalModule = await this.resolveExternalTemplateModule(templateName);
+    const externalModule = await this.resolveExternalTemplateModule(templateName); // An obsolete import must not acquire ownership, release the current
+    // view, or invoke project rendering code before renderComponent's guard.
+
+    if (!this._isMounted || renderToken !== this._renderToken || templateName !== this.componentTemplateName) {
+      return lit__WEBPACK_IMPORTED_MODULE_0__.nothing;
+    }
+
+    if (externalModule !== this._externalTemplateModule) {
+      this._releaseExternalTemplate();
+    }
+
     this._externalTemplateModule = externalModule || null;
 
     if (externalModule) {
@@ -1809,13 +1887,22 @@ class SfBaseElement extends HTMLElement {
     });
   }
 
-  runExternalHook(hookName, detail = {}) {
-    if (typeof this._externalTemplateModule?.[hookName] !== "function") {
+  _releaseExternalTemplate() {
+    const externalModule = this._externalTemplateModule;
+    if (!externalModule) return; // Clear ownership before invoking user code: disconnect/re-entry must not
+    // destroy the same template twice.
+
+    this._externalTemplateModule = null;
+    this.runExternalHook("destroy", {}, externalModule);
+  }
+
+  runExternalHook(hookName, detail = {}, externalModule = this._externalTemplateModule) {
+    if (typeof externalModule?.[hookName] !== "function") {
       return;
     }
 
     try {
-      this._externalTemplateModule[hookName]({
+      externalModule[hookName]({
         component: this,
         root: this,
         html: lit__WEBPACK_IMPORTED_MODULE_0__.html,
@@ -1860,8 +1947,10 @@ class SfBaseElement extends HTMLElement {
 
   afterUpdate() {}
 
+  onConnected() {}
+
   onDisconnected() {
-    this.runExternalHook("destroy");
+    this._releaseExternalTemplate();
   }
 
 }
@@ -1928,11 +2017,11 @@ function renderButtonTemplate(context) {
   } = context;
   const normalizedIconPosition = String(iconPosition || 'start').toLowerCase();
   const isIconEnd = ['right', 'end'].includes(normalizedIconPosition);
-  const leftIconName = iconLeft || (icon && !isIconEnd ? icon : '');
-  const rightIconName = iconRight || (icon && isIconEnd ? icon : '');
+  const leftIconName = context.iconStart ?? (iconLeft || (icon && !isIconEnd ? icon : ''));
+  const rightIconName = context.iconEnd ?? (iconRight || (icon && isIconEnd ? icon : ''));
   const component = context.component;
-  const leftIconContent = component?.hasSlotContent?.('icon-left') ? component.getSlotContent('icon-left') : component.createIcon(leftIconName);
-  const rightIconContent = component?.hasSlotContent?.('icon-right') ? component.getSlotContent('icon-right') : component.createIcon(rightIconName);
+  const leftIconContent = component?.hasSlotContent?.('icon-start') ? component.getSlotContent('icon-start') : component?.hasSlotContent?.('icon-left') ? component.getSlotContent('icon-left') : component.createIcon(leftIconName);
+  const rightIconContent = component?.hasSlotContent?.('icon-end') ? component.getSlotContent('icon-end') : component?.hasSlotContent?.('icon-right') ? component.getSlotContent('icon-right') : component.createIcon(rightIconName);
   const textContent = component?.hasSlotContent?.('text') ? component.getSlotContent('text') : text;
   const fullText = !leftIconContent && !rightIconContent;
   const rootClasses = ['sf-button', `sf-button--size-${size}`, `sf-button--${type}`, `sf-button--${scheme}`, 'flex', 'items-cross-center', segment ? `segment-${segment}` : '', tightness ? `tightness-${tightness}` : '', radius ? `radius-${radius}` : '', rootClass, loading ? 'loading sf-button-state-loading' : ''].filter(Boolean);
@@ -2315,10 +2404,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("7aae0f825ba6");
 /* harmony import */ var _js_templates_default__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("5168bdf4a1f9");
 /* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("fef8077ac919");
+/* harmony import */ var _cl_classes_template_controlSpacing__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("c018fde8145d");
 
 
 
-const COMPONENT_ATTRIBUTES = new Set(["template", "size", "type", "scheme", "text", "icon", "icon-left", "icon-right", "icon-position", "text-position", "tightness", "radius", "root-class", "loading", "segment", "disabled", "native-type", "aria-label", "class", "style", "id", "slot"]);
+
+const COMPONENT_ATTRIBUTES = new Set(["template", "size", "type", "scheme", "text", "icon", "icon-start", "icon-end", "icon-left", "icon-right", "icon-position", "text-position", "spacing", "tightness", "radius", "root-class", "loading", "segment", "disabled", "native-type", "aria-label", "class", "style", "id", "slot"]);
 
 function applyButtonAttributes(host, button) {
   host?.forwardHostAttributes(button, {
@@ -2363,6 +2454,14 @@ class SfButton extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODU
       icon: {
         default: ""
       },
+      iconStart: {
+        type: String,
+        default: null
+      },
+      iconEnd: {
+        type: String,
+        default: null
+      },
       iconLeft: {
         default: ""
       },
@@ -2371,6 +2470,10 @@ class SfButton extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODU
       },
       iconPosition: {
         default: "start"
+      },
+      spacing: {
+        type: String,
+        default: null
       },
       tightness: {
         default: "",
@@ -2425,11 +2528,19 @@ class SfButton extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODU
   }
 
   get iconLeft() {
-    return this.getAttribute("icon-left") || "";
+    return this.getAttribute('icon-start') ?? this.getAttribute('icon-left') ?? '';
   }
 
   get iconRight() {
-    return this.getAttribute("icon-right") || "";
+    return this.getAttribute('icon-end') ?? this.getAttribute('icon-right') ?? '';
+  }
+
+  get iconStart() {
+    return this.iconLeft;
+  }
+
+  get iconEnd() {
+    return this.iconRight;
   }
 
   get iconPosition() {
@@ -2437,7 +2548,17 @@ class SfButton extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODU
   }
 
   get tightness() {
-    return this.getEnumAttr("tightness", ["low", "high", "highest"], "");
+    return (0,_cl_classes_template_controlSpacing__WEBPACK_IMPORTED_MODULE_3__.resolveControlSpacing)({
+      spacing: this.getAttribute('spacing'),
+      tightness: this.getAttribute('tightness')
+    }).tightness;
+  }
+
+  get spacing() {
+    return (0,_cl_classes_template_controlSpacing__WEBPACK_IMPORTED_MODULE_3__.resolveControlSpacing)({
+      spacing: this.getAttribute('spacing'),
+      tightness: this.getAttribute('tightness')
+    }).spacing;
   }
 
   get radius() {
@@ -2467,6 +2588,12 @@ class SfButton extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODU
   templateContext() {
     const props = this.getPropsContext();
     return this.createTemplateContext({ ...props,
+      iconLeft: props.iconStart ?? props.iconLeft,
+      iconRight: props.iconEnd ?? props.iconRight,
+      ...(0,_cl_classes_template_controlSpacing__WEBPACK_IMPORTED_MODULE_3__.resolveControlSpacing)({
+        spacing: this.getAttribute('spacing'),
+        tightness: this.getAttribute('tightness')
+      }),
       component: this
     });
   }
@@ -2503,8 +2630,11 @@ class SfButton extends _cl_classes_template_sfBaseElement__WEBPACK_IMPORTED_MODU
       icon: this.icon,
       iconLeft: this.iconLeft,
       iconRight: this.iconRight,
+      iconStart: this.iconStart,
+      iconEnd: this.iconEnd,
       iconPosition: this.iconPosition,
       tightness: this.tightness,
+      spacing: this.spacing,
       radius: this.radius,
       rootClass: this.rootClass,
       loading: this.loading,

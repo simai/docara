@@ -44,6 +44,26 @@ $git = static function (array $arguments) use ($uiRoot): string {
 
     return $output;
 };
+
+$normalizeRelativePath = static function (string $path): ?string {
+    $segments = [];
+    foreach (explode('/', str_replace('\\', '/', $path)) as $segment) {
+        if ($segment === '' || $segment === '.') {
+            continue;
+        }
+        if ($segment === '..') {
+            if ($segments === []) {
+                return null;
+            }
+            array_pop($segments);
+
+            continue;
+        }
+        $segments[] = $segment;
+    }
+
+    return $segments === [] ? null : implode('/', $segments);
+};
 $bytes = $useWorkingRegistry
     ? file_get_contents(realpath($uiRoot) . '/distr/rule/rule.json')
     : $git(['show', $revision . ':distr/rule/rule.json']);
@@ -99,6 +119,7 @@ foreach (preg_split('/\R/', trim($tree)) ?: [] as $sourcePath) {
 // runtimes remain dynamic; the planner reports that fallback instead of
 // turning every documentation build into a monolithic JavaScript bundle.
 $componentTree = $git(['ls-tree', '-r', '-l', $revision, 'distr/component']);
+$projectedComponentCss = [];
 foreach (preg_split('/\R/', trim($componentTree)) ?: [] as $line) {
     if (preg_match('/^[0-9]+\s+blob\s+[a-f0-9]{40}\s+([0-9-]+)\t(.+)$/D', $line, $match) !== 1) {
         continue;
@@ -126,6 +147,58 @@ foreach (preg_split('/\R/', trim($componentTree)) ?: [] as $line) {
     }
     file_put_contents($assetTarget, $assetBytes, LOCK_EX);
     chmod($assetTarget, 0644);
+    if (str_ends_with($relativePath, '.css')) {
+        $projectedComponentCss[] = $relativePath;
+    }
+}
+
+// Conventional component styles may reference sibling fonts or images. Those
+// dependencies are part of the same immutable component contract and must be
+// projected with the stylesheet; otherwise a locally valid CSS entrypoint can
+// produce a broken standalone Docara build.
+$componentDependencies = [];
+foreach ($projectedComponentCss as $cssRelativePath) {
+    $cssPath = $distribution . '/' . $cssRelativePath;
+    $cssBytes = file_get_contents($cssPath);
+    if (! is_string($cssBytes) || $cssBytes === '') {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_ASSET_INVALID: ' . $cssRelativePath);
+    }
+    preg_match_all('#url\(\s*(["\']?)([^"\')]+)\1\s*\)#i', $cssBytes, $urlMatches);
+    foreach ($urlMatches[2] ?? [] as $url) {
+        $url = trim((string) $url);
+        if ($url === ''
+            || str_starts_with($url, '#')
+            || str_starts_with($url, '/')
+            || preg_match('#^(?:data:|https?:|//)#i', $url) === 1
+        ) {
+            continue;
+        }
+        $urlPath = preg_split('/[?#]/', $url, 2)[0] ?? '';
+        $dependency = $normalizeRelativePath(dirname($cssRelativePath) . '/' . $urlPath);
+        if (! is_string($dependency)
+            || preg_match('#^component/([A-Za-z0-9-]+)/#D', $cssRelativePath, $componentMatch) !== 1
+            || ! str_starts_with($dependency, 'component/' . $componentMatch[1] . '/')
+        ) {
+            throw new RuntimeException('FRAMEWORK_RUNTIME_DEPENDENCY_PATH_INVALID: ' . $cssRelativePath . ' -> ' . $url);
+        }
+        $componentDependencies[$dependency] = true;
+    }
+}
+ksort($componentDependencies, SORT_STRING);
+foreach (array_keys($componentDependencies) as $relativePath) {
+    $assetBytes = $git(['show', $revision . ':distr/' . $relativePath]);
+    if ($assetBytes === '') {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_DEPENDENCY_MISSING: ' . $relativePath);
+    }
+    $assetTarget = $distribution . '/' . $relativePath;
+    if (! is_dir(dirname($assetTarget))
+        && ! mkdir(dirname($assetTarget), 0755, true)
+        && ! is_dir(dirname($assetTarget))
+    ) {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_DIRECTORY_FAILED: ' . $relativePath);
+    }
+    file_put_contents($assetTarget, $assetBytes, LOCK_EX);
+    chmod($assetTarget, 0644);
 }
 
 // Core and icon fallback assets are always projected from one exact source.
@@ -146,6 +219,25 @@ $readRuntime = static function (string $runtimeFile) use (
 
     return $bytes;
 };
+
+// Docara highlights this finite public language set. Resolve the emitted
+// webpack chunk names from the exact entrypoint instead of pinning build-time
+// chunk ids in this repository.
+$highlightEntrypoint = $readRuntime('component/highlight/js/highlight.js');
+$highlightChunkFiles = [];
+foreach (['javascript', 'markdown', 'bash', 'xml', 'css', 'plaintext', 'json', 'php'] as $language) {
+    if (preg_match(
+        '#(?:^|\R)\s*[\'\"]?' . preg_quote($language, '#')
+            . '[\'\"]?\s*:\s*\(\)\s*=>\s*__webpack_require__\.e\([^0-9]*([0-9]+)\)#',
+        $highlightEntrypoint,
+        $chunkMatch,
+    ) !== 1) {
+        throw new RuntimeException('FRAMEWORK_HIGHLIGHT_LANGUAGE_CHUNK_MISSING: ' . $language);
+    }
+    $highlightChunkFiles[] = 'component/highlight/js/' . $chunkMatch[1] . '.js';
+}
+$highlightChunkFiles = array_values(array_unique($highlightChunkFiles));
+sort($highlightChunkFiles, SORT_STRING);
 
 $coreFiles = [];
 if ($useWorkingRegistry) {
@@ -192,7 +284,7 @@ foreach (array_merge($coreFiles, [
     'component/menu/css/menu.css',
     'component/menu/js/menu.js',
     'component/highlight/js/highlight.js',
-]) as $runtimeFile) {
+], $highlightChunkFiles) as $runtimeFile) {
     $runtimeTarget = $distribution . '/' . $runtimeFile;
     $runtimeBytes = $readRuntime($runtimeFile);
     if (! is_dir(dirname($runtimeTarget))
@@ -228,6 +320,11 @@ foreach ([
 ] as $fontFile) {
     $manifest['files'][$fontFile] = ['sha256' => hash_file('sha256', $distribution . '/' . $fontFile)];
 }
+foreach ($highlightChunkFiles as $highlightChunkFile) {
+    $manifest['files'][$highlightChunkFile] = [
+        'sha256' => hash_file('sha256', $distribution . '/' . $highlightChunkFile),
+    ];
+}
 $manifest['files']['rule/rule.json'] = ['sha256' => hash('sha256', $bytes)];
 foreach (new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator($distribution . '/utility', FilesystemIterator::SKIP_DOTS),
@@ -252,6 +349,11 @@ foreach (new RecursiveIteratorIterator(
         continue;
     }
     $manifest['files'][$relativePath] = ['sha256' => hash_file('sha256', $file->getPathname())];
+}
+foreach (array_keys($componentDependencies) as $relativePath) {
+    $manifest['files'][$relativePath] = [
+        'sha256' => hash_file('sha256', $distribution . '/' . $relativePath),
+    ];
 }
 ksort($manifest['files'], SORT_STRING);
 $ledger = '';

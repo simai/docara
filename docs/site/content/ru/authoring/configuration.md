@@ -34,6 +34,9 @@ Resolver начинает с небольшого встроенного наб�
 | `reading.mobile_toc` | `"auto"` |
 | `reading.toc_depth` | `3` |
 | `reading.previous_next` | `true` |
+| `examples.fullscreen` | `true` |
+| `examples.wrap` | `true` |
+| `code.wrap` | `true` |
 
 Поставляемый starter затем задаёт свои project-owned значения в
 `docara.json`: preset `docs`, русский locale, корневой `base_url`, бренд,
@@ -89,6 +92,13 @@ Resolver начинает с небольшого встроенного наб�
     "modal_blur": "none",
     "ui_radius": "default"
   },
+  "examples": {
+    "fullscreen": true,
+    "wrap": true
+  },
+  "code": {
+    "wrap": true
+  },
   "reader_preferences": {
     "enabled": true,
     "view": "side-panel",
@@ -120,7 +130,7 @@ Resolver начинает с небольшого встроенного наб�
 | Поле | Site | Section | Page |
 | --- | :---: | :---: | :---: |
 | `preset`, `title`, `locale` | ✓ | ✓ | ✓ |
-| `branding`, `layout`, `settings` | ✓ | ✓ | ✓ |
+| `branding`, `layout`, `settings`, `examples`, `code` | ✓ | ✓ | ✓ |
 | `navigation`, `search`, `reading` | ✓ | ✓ | ✓ |
 | `reader_preferences` | ✓ | — | — |
 | `framework_lock`, `content_root`, `base_url`, `default_locale` | ✓ | — | — |
@@ -188,6 +198,11 @@ URL, query, fragment, self redirect, chain, cycle, collision со страниц
   размытие выключено (`none`), остаётся штатное затемнение подложки;
 - `settings.ui_radius`: `default`, `medium`, `large`; безопасно выбирает общий
   токен Framework `--sf-radius--ui`, без произвольного CSS;
+- `examples.fullscreen`: показывать полноэкранное действие на всех вкладках
+  примера, чтобы в полноэкранном режиме переключаться между результатом и
+  исходниками;
+- `examples.wrap`: показывать CSS-перенос длинных строк на вкладках исходников;
+- `code.wrap`: показывать такое же действие в самостоятельных блоках кода;
 - `reader_preferences`: включение и состав зарегистрированных настроек
   читателя; ветка разрешена только в `docara.json`;
 - `navigation.hidden`: убрать страницу из меню;

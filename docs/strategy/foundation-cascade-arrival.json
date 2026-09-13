@@ -1,0 +1,42 @@
+{
+  "scope": "Sequential stylesheet attachment across animation frames, not network Loader E2E",
+  "browser": "151.0.7922.34",
+  "results": [
+    {
+      "name": "core-utility-component",
+      "negativeControl": false,
+      "color": "rgb(0, 0, 255)",
+      "importantColor": "rgb(255, 0, 0)",
+      "pass": true
+    },
+    {
+      "name": "core-component-utility",
+      "negativeControl": false,
+      "color": "rgb(0, 0, 255)",
+      "importantColor": "rgb(255, 0, 0)",
+      "pass": true
+    },
+    {
+      "name": "early-order-late-core",
+      "negativeControl": false,
+      "color": "rgb(0, 0, 255)",
+      "importantColor": "rgb(255, 0, 0)",
+      "pass": true
+    },
+    {
+      "name": "host-unlayered",
+      "negativeControl": false,
+      "color": "rgb(0, 128, 0)",
+      "importantColor": "rgb(255, 0, 0)",
+      "pass": true
+    },
+    {
+      "name": "missing-bootstrap-negative-control",
+      "negativeControl": true,
+      "color": "rgb(255, 0, 0)",
+      "importantColor": "rgb(0, 0, 255)",
+      "pass": true
+    }
+  ],
+  "failures": 0
+}

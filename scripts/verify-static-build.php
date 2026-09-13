@@ -1962,7 +1962,7 @@ if (is_link($manifestDirectory)
             }
             $frameworkBuild = $manifestBuild['framework'] ?? null;
             if (! is_array($frameworkBuild)
-                || ! docaraExactKeys($frameworkBuild, ['lock_sha256', 'runtime', 'manifests', 'asset_projection', 'shell', 'portable_smart_asset_projection'])
+                || ! docaraExactKeys($frameworkBuild, ['lock_sha256', 'runtime', 'manifests', 'asset_projection', 'dynamic_asset_projection', 'shell', 'portable_smart_asset_projection'])
                 || ! is_string($frameworkBuild['lock_sha256'] ?? null)
                 || ! hash_equals(
                     $frameworkBuild['lock_sha256'],
@@ -1971,6 +1971,7 @@ if (is_link($manifestDirectory)
                 || ($frameworkBuild['runtime'] ?? null) !== ($expectedFrameworkLock['runtime'] ?? null)
                 || ($frameworkBuild['manifests'] ?? null) !== ($expectedFrameworkLock['manifests'] ?? null)
                 || ($frameworkBuild['asset_projection'] ?? null) !== ($expectedFrameworkLock['asset_projection'] ?? null)
+                || ($frameworkBuild['dynamic_asset_projection'] ?? null) !== ($expectedFrameworkLock['dynamic_asset_projection'] ?? null)
             ) {
                 throw new RuntimeException('Resolved build Framework tuple does not match its page plans.');
             }
@@ -2227,12 +2228,32 @@ if ($manifestError !== null) {
         if (! is_array($files) || array_is_list($files) || $files === []) {
             throw new RuntimeException('Exact Framework asset projection is missing.');
         }
+        $dynamicProjection = is_array($expectedFrameworkLock)
+            ? ($expectedFrameworkLock['dynamic_asset_projection'] ?? null)
+            : null;
+        $dynamicFiles = is_array($dynamicProjection) ? ($dynamicProjection['files'] ?? null) : [];
+        if (! is_array($dynamicFiles)
+            || array_is_list($dynamicFiles)
+            || (is_array($dynamicProjection) && $dynamicFiles === [])
+        ) {
+            throw new RuntimeException('Exact dynamic Framework asset projection is missing.');
+        }
+        foreach ($dynamicFiles as $relativePath => $record) {
+            if (isset($files[$relativePath])) {
+                throw new RuntimeException("Dynamic Framework asset [$relativePath] collides with the eager projection.");
+            }
+            $files[$relativePath] = $record;
+        }
         $portableProjection = $manifestBuild['framework']['portable_smart_asset_projection'] ?? null;
         $portableFiles = is_array($portableProjection) ? ($portableProjection['files'] ?? null) : null;
         if (! is_array($portableFiles) || ($portableFiles !== [] && array_is_list($portableFiles))) {
             throw new RuntimeException('Exact portable Framework asset projection is missing.');
         }
-        $assetBase = ($deploymentBase === '/' ? '' : rtrim($deploymentBase, '/')) . '/_docara/framework';
+        $runtimeMount = (string) ($projection['mount'] ?? '');
+        if (! in_array($runtimeMount, ['_docara/framework', '_docara/framework-runtime'], true)) {
+            throw new RuntimeException('Exact Framework runtime mount is invalid.');
+        }
+        $assetBase = ($deploymentBase === '/' ? '' : rtrim($deploymentBase, '/')) . '/' . $runtimeMount;
         $frameworkPlanner = new FrameworkAssetPlanner(
             FrameworkManifestRepository::bundled(FrameworkLock::fromArray($expectedFrameworkLock)),
             $assetBase,
@@ -2318,66 +2339,64 @@ if ($manifestError !== null) {
         if (count($shellReceipt['plans']) !== count($manifestPageRecords)) {
             throw new RuntimeException('Generated Framework page asset plans contain stale entries.');
         }
-        foreach ($portableFiles as $relativePath => $record) {
-            if (isset($files[$relativePath])) {
-                throw new RuntimeException("Portable Framework asset [$relativePath] collides with the base projection.");
-            }
-            $files[$relativePath] = $record;
-        }
-
-        $frameworkRoot = $root . '/_docara/framework';
-        $frameworkRootStat = @lstat($frameworkRoot);
-        if (is_link($frameworkRoot)
-            || ! is_array($frameworkRootStat)
-            || (($frameworkRootStat['mode'] ?? 0) & 0170000) !== 0040000
-        ) {
-            throw new RuntimeException('Materialized Framework asset directory is missing or unsafe.');
-        }
-
-        $expectedAssets = [];
-        foreach ($files as $relativePath => $record) {
-            if (! is_string($relativePath)
-                || ! docaraCatalogSafePath($relativePath)
-                || ! is_array($record)
-                || array_is_list($record)
-                || ! is_string($record['sha256'] ?? null)
-                || preg_match('/\A[a-f0-9]{64}\z/D', $record['sha256']) !== 1
+        $verifyProjection = static function (string $projectionRoot, array $projectedFiles, string $label): void {
+            $rootStat = @lstat($projectionRoot);
+            if (is_link($projectionRoot)
+                || ! is_array($rootStat)
+                || (($rootStat['mode'] ?? 0) & 0170000) !== 0040000
             ) {
-                throw new RuntimeException('Exact Framework asset projection contains an invalid record.');
+                throw new RuntimeException("Materialized $label asset directory is missing or unsafe.");
             }
-            $path = $frameworkRoot . '/' . $relativePath;
-            if (! docaraSafeRegularFile($path)) {
-                throw new RuntimeException("Projected Framework asset [$relativePath] is missing or unsafe.");
-            }
-            $actualSha = hash_file('sha256', $path);
-            if (! is_string($actualSha) || ! hash_equals($record['sha256'], $actualSha)) {
-                throw new RuntimeException("Projected Framework asset [$relativePath] has an incorrect SHA-256.");
-            }
-            $expectedAssets[] = $relativePath;
-        }
-        sort($expectedAssets, SORT_STRING);
 
-        $actualAssets = [];
-        $frameworkIterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($frameworkRoot, FilesystemIterator::SKIP_DOTS),
-            RecursiveIteratorIterator::LEAVES_ONLY,
-        );
-        foreach ($frameworkIterator as $file) {
-            $path = $file->getPathname();
-            $relativePath = str_replace('\\', '/', substr($path, strlen($frameworkRoot) + 1));
-            if (! $file->isFile() || ! docaraSafeRegularFile($path)) {
-                throw new RuntimeException("Materialized Framework asset [$relativePath] is unsafe.");
+            $expectedAssets = [];
+            foreach ($projectedFiles as $relativePath => $record) {
+                if (! is_string($relativePath)
+                    || ! docaraCatalogSafePath($relativePath)
+                    || ! is_array($record)
+                    || array_is_list($record)
+                    || ! is_string($record['sha256'] ?? null)
+                    || preg_match('/\A[a-f0-9]{64}\z/D', $record['sha256']) !== 1
+                ) {
+                    throw new RuntimeException("Exact $label asset projection contains an invalid record.");
+                }
+                $path = $projectionRoot . '/' . $relativePath;
+                if (! docaraSafeRegularFile($path)) {
+                    throw new RuntimeException("Projected $label asset [$relativePath] is missing or unsafe.");
+                }
+                $actualSha = hash_file('sha256', $path);
+                if (! is_string($actualSha) || ! hash_equals($record['sha256'], $actualSha)) {
+                    throw new RuntimeException("Projected $label asset [$relativePath] has an incorrect SHA-256.");
+                }
+                $expectedAssets[] = $relativePath;
             }
-            $actualAssets[] = $relativePath;
-        }
-        sort($actualAssets, SORT_STRING);
-        if ($actualAssets !== $expectedAssets) {
-            throw new RuntimeException(
-                'Materialized Framework assets do not exactly match the locked projection. Missing: '
-                . json_encode(array_values(array_diff($expectedAssets, $actualAssets)), JSON_UNESCAPED_SLASHES)
-                . '; unexpected: '
-                . json_encode(array_values(array_diff($actualAssets, $expectedAssets)), JSON_UNESCAPED_SLASHES),
+            sort($expectedAssets, SORT_STRING);
+
+            $actualAssets = [];
+            $iterator = new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($projectionRoot, FilesystemIterator::SKIP_DOTS),
+                RecursiveIteratorIterator::LEAVES_ONLY,
             );
+            foreach ($iterator as $file) {
+                $path = $file->getPathname();
+                $relativePath = str_replace('\\', '/', substr($path, strlen($projectionRoot) + 1));
+                if (! $file->isFile() || ! docaraSafeRegularFile($path)) {
+                    throw new RuntimeException("Materialized $label asset [$relativePath] is unsafe.");
+                }
+                $actualAssets[] = $relativePath;
+            }
+            sort($actualAssets, SORT_STRING);
+            if ($actualAssets !== $expectedAssets) {
+                throw new RuntimeException(
+                    "Materialized $label assets do not exactly match the locked projection. Missing: "
+                    . json_encode(array_values(array_diff($expectedAssets, $actualAssets)), JSON_UNESCAPED_SLASHES)
+                    . '; unexpected: '
+                    . json_encode(array_values(array_diff($actualAssets, $expectedAssets)), JSON_UNESCAPED_SLASHES),
+                );
+            }
+        };
+        $verifyProjection($root . '/' . $runtimeMount, $files, 'Framework runtime');
+        if ($portableFiles !== []) {
+            $verifyProjection($root . '/_docara/framework', $portableFiles, 'portable Framework');
         }
     } catch (Throwable $exception) {
         $reference = str_starts_with($exception->getMessage(), 'Generated Framework shell')

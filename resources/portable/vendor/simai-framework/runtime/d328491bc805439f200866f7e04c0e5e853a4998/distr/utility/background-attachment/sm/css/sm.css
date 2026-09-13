@@ -1,0 +1,13 @@
+@layer sf.utilities {
+  @media (min-width: 32.5rem) {
+    .sm\:bg-fixed {
+      background-attachment: fixed;
+    }
+    .sm\:bg-local {
+      background-attachment: local;
+    }
+    .sm\:bg-scroll {
+      background-attachment: scroll;
+    }
+  }
+}

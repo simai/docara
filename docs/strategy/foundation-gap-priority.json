@@ -1,0 +1,56 @@
+{
+  "scope": "Actual product CSS, same-layer gap shorthand/longhand order probe; no live mutation",
+  "inputs": {
+    "core": "/private/tmp/sf5-foundation-core-network-repro/core/css/core.css",
+    "gap": "/private/tmp/sf5-foundation-utility-product/utility/gap/default/css/default.css",
+    "column": "/private/tmp/sf5-foundation-utility-product/utility/column-gap/default/css/default.css"
+  },
+  "rows": [
+    {
+      "name": "gap-only",
+      "values": [
+        {
+          "classes": "gap-8 col-gap-2",
+          "row": "80px",
+          "column": "80px"
+        },
+        {
+          "classes": "gap-2 col-gap-8",
+          "row": "20px",
+          "column": "80px"
+        }
+      ]
+    },
+    {
+      "name": "gap-then-column",
+      "values": [
+        {
+          "classes": "gap-8 col-gap-2",
+          "row": "80px",
+          "column": "20px"
+        },
+        {
+          "classes": "gap-2 col-gap-8",
+          "row": "20px",
+          "column": "80px"
+        }
+      ]
+    },
+    {
+      "name": "column-then-gap",
+      "values": [
+        {
+          "classes": "gap-8 col-gap-2",
+          "row": "80px",
+          "column": "80px"
+        },
+        {
+          "classes": "gap-2 col-gap-8",
+          "row": "20px",
+          "column": "80px"
+        }
+      ]
+    }
+  ],
+  "orderIndependent": false
+}

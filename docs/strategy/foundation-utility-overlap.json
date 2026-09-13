@@ -1,0 +1,3096 @@
+{
+  "scope": "Cross-module duplicate exact selectors with identical at-rule contexts; different declarations are not necessarily conflicting CSS properties",
+  "root": "/private/tmp/sf5-foundation-utility-product/utility",
+  "files": 640,
+  "overlaps": 61,
+  "differentDefinitions": 1,
+  "rows": [
+    {
+      "conditions": [
+        "@layer sf.utilities"
+      ],
+      "selector": ".col-gap-0",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-0)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-0)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities"
+      ],
+      "selector": ".col-gap-1\\/4",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities"
+      ],
+      "selector": ".col-gap-1\\/3",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities"
+      ],
+      "selector": ".col-gap-1\\/2",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities"
+      ],
+      "selector": ".col-gap-1",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities"
+      ],
+      "selector": ".col-gap-2",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-2)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-2)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities"
+      ],
+      "selector": ".col-gap-3",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-3)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-3)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities"
+      ],
+      "selector": ".col-gap-4",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-4)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-4)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities"
+      ],
+      "selector": ".col-gap-5",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-5)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-5)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities"
+      ],
+      "selector": ".col-gap-6",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-6)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-6)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities"
+      ],
+      "selector": ".col-gap-7",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-7)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-7)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities"
+      ],
+      "selector": ".col-gap-8",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-8)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/default/css/default.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-8)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 960px)"
+      ],
+      "selector": ".lg\\:col-gap-0",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-0)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-0)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 960px)"
+      ],
+      "selector": ".lg\\:col-gap-1\\/4",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 960px)"
+      ],
+      "selector": ".lg\\:col-gap-1\\/3",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 960px)"
+      ],
+      "selector": ".lg\\:col-gap-1\\/2",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 960px)"
+      ],
+      "selector": ".lg\\:col-gap-1",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 960px)"
+      ],
+      "selector": ".lg\\:col-gap-2",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-2)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-2)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 960px)"
+      ],
+      "selector": ".lg\\:col-gap-3",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-3)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-3)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 960px)"
+      ],
+      "selector": ".lg\\:col-gap-4",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-4)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-4)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 960px)"
+      ],
+      "selector": ".lg\\:col-gap-5",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-5)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-5)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 960px)"
+      ],
+      "selector": ".lg\\:col-gap-6",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-6)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-6)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 960px)"
+      ],
+      "selector": ".lg\\:col-gap-7",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-7)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-7)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 960px)"
+      ],
+      "selector": ".lg\\:col-gap-8",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-8)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/lg/css/lg.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-8)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 720px)"
+      ],
+      "selector": ".md\\:col-gap-0",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-0)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-0)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 720px)"
+      ],
+      "selector": ".md\\:col-gap-1\\/4",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 720px)"
+      ],
+      "selector": ".md\\:col-gap-1\\/3",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 720px)"
+      ],
+      "selector": ".md\\:col-gap-1\\/2",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 720px)"
+      ],
+      "selector": ".md\\:col-gap-1",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 720px)"
+      ],
+      "selector": ".md\\:col-gap-2",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-2)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-2)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 720px)"
+      ],
+      "selector": ".md\\:col-gap-3",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-3)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-3)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 720px)"
+      ],
+      "selector": ".md\\:col-gap-4",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-4)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-4)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 720px)"
+      ],
+      "selector": ".md\\:col-gap-5",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-5)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-5)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 720px)"
+      ],
+      "selector": ".md\\:col-gap-6",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-6)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-6)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 720px)"
+      ],
+      "selector": ".md\\:col-gap-7",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-7)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-7)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 720px)"
+      ],
+      "selector": ".md\\:col-gap-8",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-8)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/md/css/md.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-8)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 520px)"
+      ],
+      "selector": ".sm\\:col-gap-0",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-0)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-0)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 520px)"
+      ],
+      "selector": ".sm\\:col-gap-1\\/4",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 520px)"
+      ],
+      "selector": ".sm\\:col-gap-1\\/3",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 520px)"
+      ],
+      "selector": ".sm\\:col-gap-1\\/2",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 520px)"
+      ],
+      "selector": ".sm\\:col-gap-1",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 520px)"
+      ],
+      "selector": ".sm\\:col-gap-2",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-2)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-2)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 520px)"
+      ],
+      "selector": ".sm\\:col-gap-3",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-3)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-3)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 520px)"
+      ],
+      "selector": ".sm\\:col-gap-4",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-4)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-4)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 520px)"
+      ],
+      "selector": ".sm\\:col-gap-5",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-5)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-5)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 520px)"
+      ],
+      "selector": ".sm\\:col-gap-6",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-6)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-6)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 520px)"
+      ],
+      "selector": ".sm\\:col-gap-7",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-7)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-7)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 520px)"
+      ],
+      "selector": ".sm\\:col-gap-8",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-8)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/sm/css/sm.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-8)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 1140px)"
+      ],
+      "selector": ".xl\\:col-gap-0",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-0)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-0)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-0)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 1140px)"
+      ],
+      "selector": ".xl\\:col-gap-1\\/4",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/4)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 1140px)"
+      ],
+      "selector": ".xl\\:col-gap-1\\/3",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/3)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 1140px)"
+      ],
+      "selector": ".xl\\:col-gap-1\\/2",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1\\/2)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 1140px)"
+      ],
+      "selector": ".xl\\:col-gap-1",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-1)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-1)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 1140px)"
+      ],
+      "selector": ".xl\\:col-gap-2",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-2)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-2)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-2)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 1140px)"
+      ],
+      "selector": ".xl\\:col-gap-3",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-3)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-3)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-3)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 1140px)"
+      ],
+      "selector": ".xl\\:col-gap-4",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-4)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-4)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-4)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 1140px)"
+      ],
+      "selector": ".xl\\:col-gap-5",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-5)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-5)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-5)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 1140px)"
+      ],
+      "selector": ".xl\\:col-gap-6",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-6)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-6)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-6)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 1140px)"
+      ],
+      "selector": ".xl\\:col-gap-7",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-7)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-7)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-7)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities",
+        "@media (min-width: 1140px)"
+      ],
+      "selector": ".xl\\:col-gap-8",
+      "identical": true,
+      "rows": [
+        {
+          "file": "column-gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-8)",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "gap/xl/css/xl.css",
+          "declarations": [
+            [
+              "-webkit-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "-moz-column-gap",
+              "var(--sf-space-8)",
+              false
+            ],
+            [
+              "column-gap",
+              "var(--sf-space-8)",
+              false
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "conditions": [
+        "@layer sf.utilities"
+      ],
+      "selector": ".table",
+      "identical": false,
+      "rows": [
+        {
+          "file": "display/default/css/default.css",
+          "declarations": [
+            [
+              "display",
+              "table",
+              false
+            ]
+          ]
+        },
+        {
+          "file": "table/default/css/default.css",
+          "declarations": [
+            [
+              "--sf-table-color",
+              "var(--sf-color--text-primary)",
+              false
+            ],
+            [
+              "--sf-table-border-color",
+              "var(--sf-outline-variant)",
+              false
+            ],
+            [
+              "--sf-table-accent-bg",
+              "rgba(0, 0, 0, 0)",
+              false
+            ],
+            [
+              "--sf-table-stripe-color",
+              "var(--sf-color--text-primary)",
+              false
+            ],
+            [
+              "--sf-table-stripe-bg",
+              "var(--sf-surface-transparent-select)",
+              false
+            ],
+            [
+              "--sf-table-active-color",
+              "var(--sf-color--text-primary)",
+              false
+            ],
+            [
+              "--sf-table-active-bg",
+              "var(--sf-surface-transparent-select)",
+              false
+            ],
+            [
+              "--sf-table-hover-color",
+              "var(--sf-color--text-primary)",
+              false
+            ],
+            [
+              "--sf-table-hover-bg",
+              "var(--sf-surface-transparent-hover)",
+              false
+            ],
+            [
+              "width",
+              "100%",
+              false
+            ],
+            [
+              "margin-bottom",
+              "1rem",
+              false
+            ],
+            [
+              "color",
+              "var(--sf-table-color)",
+              false
+            ],
+            [
+              "vertical-align",
+              "top",
+              false
+            ],
+            [
+              "border-color",
+              "var(--sf-table-border-color)",
+              false
+            ],
+            [
+              "text-align",
+              "start",
+              false
+            ]
+          ]
+        }
+      ]
+    }
+  ]
+}

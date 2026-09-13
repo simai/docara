@@ -202,7 +202,7 @@ final class DocumentationTrackingTest extends TestCase
     }
 
     #[Test]
-    public function framework_adapter_groups_public_rules_and_radius_semantics(): void
+    public function exact_framework_contract_groups_public_rules_and_radius_semantics(): void
     {
         $this->createSource([
             'docara.json' => json_encode([
@@ -218,17 +218,20 @@ final class DocumentationTrackingTest extends TestCase
                 ],
             ], JSON_THROW_ON_ERROR),
             'simai-framework.lock.json' => (string) file_get_contents(dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json'),
+            'contracts/generated/documentation-source.json' => (string) file_get_contents(
+                dirname(__DIR__, 2) . '/stubs/portable/contracts/generated/documentation-source.json',
+            ),
             'content/ru/index.md' => "# Framework\n",
             'content/ru/lang.json' => '{}',
         ]);
         $source = (new DocumentationSourceRepository)->source($this->tmp, 'simai-framework');
-        self::assertTrue($source['compatibility_adapter']);
-        self::assertSame('sf-v5.6.2-47a0f496-b07ee017', $source['revision']);
+        self::assertFalse($source['compatibility_adapter']);
+        self::assertSame('ui-ad7f6bfaf355-smart-577bd99f8c6d', $source['revision']);
         $entities = array_column($source['entities'], null, 'key');
         self::assertArrayHasKey('component.buttons', $entities);
-        self::assertArrayHasKey('smart.cl-buttons', $entities);
+        self::assertArrayHasKey('smart.buttons', $entities);
         self::assertArrayHasKey('utility.display', $entities);
-        $radius = $entities['core.design-tokens']['public_contract']['rules'][0]['semantic_radius'];
+        $radius = $entities['core.design-tokens']['public_contract']['semantic_radius'];
         self::assertSame('compact_controls', $radius['--sf-radius--ui']['scope']);
         self::assertSame('large_surfaces', $radius['--sf-radius-default']['scope']);
     }

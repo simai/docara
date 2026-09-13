@@ -97,7 +97,12 @@
         "unwrap": "Не переносить длинные строки"
     },
     "examples": {
-        "fullscreen": "Развернуть пример на весь экран",
-        "fullscreen_exit": "Выйти из полноэкранного режима"
+        "viewer": "Проверить адаптивность",
+        "viewer_exit": "Выйти из режима просмотра",
+        "viewer_dialog": "Адаптивный просмотр примера",
+        "viewport_group": "Ширина примера",
+        "viewport_desktop": "Десктоп",
+        "viewport_tablet": "Планшет",
+        "viewport_mobile": "Телефон"
     }
 }

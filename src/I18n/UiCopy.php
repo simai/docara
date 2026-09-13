@@ -85,8 +85,13 @@ final readonly class UiCopy
         'code.copied' => 'Copied',
         'code.wrap' => 'Wrap source lines',
         'code.unwrap' => 'Keep original source lines',
-        'examples.fullscreen' => 'Open example fullscreen',
-        'examples.fullscreen_exit' => 'Exit fullscreen',
+        'examples.viewer' => 'Check responsive preview',
+        'examples.viewer_exit' => 'Exit responsive preview',
+        'examples.viewer_dialog' => 'Responsive example preview',
+        'examples.viewport_group' => 'Preview width',
+        'examples.viewport_desktop' => 'Desktop',
+        'examples.viewport_tablet' => 'Tablet',
+        'examples.viewport_mobile' => 'Mobile',
     ];
 
     public function __construct(private Translator $translator) {}

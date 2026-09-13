@@ -96,14 +96,20 @@ Sandboxed results expand to their measured content height without nested
 scrolling or a second shell height animation; the documentation page owns
 vertical scrolling.
 
-The result tab can expose a fullscreen action for the whole Example surface,
-including its tabs. The action is hidden on source tabs unless the Example is
-already fullscreen, where it remains available only as the exit action. Source
-tabs can expose CSS-only soft wrapping without changing source or copied bytes.
-Both controls default to enabled. The
+An isolated result can expose one responsive-preview action. It opens the whole
+Example surface and then reveals Desktop (1280 px), Tablet (768 px) and Mobile
+(390 px) viewport choices. The choices change the real iframe width, so media
+queries are evaluated against the selected viewport. Inline results do not
+expose this action because narrowing their wrapper would not change the browser
+viewport and would produce misleading responsive behaviour. On narrow reader
+screens the entry action is hidden because the example already uses the
+available mobile width. Source tabs can expose CSS-only soft wrapping without
+changing source or copied bytes. Both controls default to enabled. The
 `examples.fullscreen` and `examples.wrap` booleans inherit through site,
 section and page configuration; `fullscreen=true|false` and `wrap=true|false`
-on an individual `example` block are the final override. Standalone fenced and
+on an individual `example` block are the final override. The `fullscreen` name
+is retained for configuration compatibility; it now controls responsive
+preview availability. Standalone fenced and
 external code blocks expose the same soft-wrap action when inherited
 `code.wrap` is enabled. The reader preference is shared between standalone code
 and Example source tabs, while the settings independently control where the

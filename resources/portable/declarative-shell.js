@@ -322,6 +322,16 @@
   }
   var docaraExamples=Array.from(document.querySelectorAll('[data-docara-example]'));
   var docaraExampleFrames=Array.from(document.querySelectorAll('iframe[data-docara-example-frame]'));
+  var exampleViewportStorageKey='docara.example.viewport';
+  var exampleViewportWidths={desktop:1280,tablet:768,mobile:390};
+  function storedExampleViewport(){
+    try{
+      var stored=sessionStorage.getItem(exampleViewportStorageKey);
+      if(Object.prototype.hasOwnProperty.call(exampleViewportWidths,stored)){return stored}
+    }catch(error){}
+    return'desktop';
+  }
+  var sharedExampleViewport=storedExampleViewport();
   var sourceWrapStorageKey='docara.source.wrap';
   function storedSourceWrap(){
     try{
@@ -490,21 +500,79 @@
     var tabs=owned('[data-docara-example-tab]');
     var panels=owned('[data-docara-example-panel]');
     var copyButton=owned('[data-docara-example-copy]')[0]||null;
-    var fullscreenButton=owned('[data-docara-example-fullscreen]')[0]||null;
+    var viewerButton=owned('[data-docara-example-viewer]')[0]||null;
+    var viewportControls=owned('[data-docara-example-viewports]')[0]||null;
+    var viewportButtons=owned('[data-docara-example-viewport]');
+    var previewFrame=owned('iframe[data-docara-example-frame]')[0]||null;
     var wrapButton=owned('[data-docara-example-wrap]')[0]||null;
     if(!tabs.length||!panels.length)return;
-    function isFullscreen(){return document.fullscreenElement===example}
-    function syncFullscreen(){
-      if(!fullscreenButton)return;
-      var active=isFullscreen();
+    var viewerDialog=null,viewerPlaceholder=null;
+    var activeViewport=sharedExampleViewport;
+    function isViewerOpen(){return Boolean(viewerDialog&&viewerDialog.open&&example.parentElement===viewerDialog)}
+    function setViewport(viewport,persist){
+      if(!previewFrame||!Object.prototype.hasOwnProperty.call(exampleViewportWidths,viewport))return;
+      activeViewport=viewport;
+      sharedExampleViewport=viewport;
+      example.dataset.docaraExampleViewport=viewport;
+      previewFrame.style.inlineSize=exampleViewportWidths[viewport]+'px';
+      previewFrame.style.maxInlineSize='none';
+      viewportButtons.forEach(function(button){
+        var active=button.dataset.docaraExampleViewport===viewport;
+        var label=message('examples.viewport_'+button.dataset.docaraExampleViewport);
+        if(button.textContent!==label){button.textContent=label}
+        button.setAttribute('aria-pressed',active?'true':'false');
+        button.setAttribute('aria-label',label+' · '+exampleViewportWidths[button.dataset.docaraExampleViewport]+' px');
+      });
+      if(persist){
+        try{sessionStorage.setItem(exampleViewportStorageKey,viewport)}catch(error){}
+        document.dispatchEvent(new CustomEvent('docara:example-viewport-change',{detail:{viewport:viewport}}));
+      }
+      requestExampleHeight(previewFrame);
+    }
+    function resetViewport(){
+      if(!previewFrame)return;
+      delete example.dataset.docaraExampleViewport;
+      previewFrame.style.removeProperty('inline-size');
+      previewFrame.style.removeProperty('max-inline-size');
+      requestExampleHeight(previewFrame);
+    }
+    function syncViewer(){
+      if(!viewerButton)return;
+      var active=isViewerOpen();
       var selected=example.dataset.sourceActive!=='true';
-      fullscreenButton.hidden=!active&&!selected;
-      fullscreenButton.setAttribute('aria-pressed',active?'true':'false');
-      fullscreenButton.setAttribute('aria-label',message(active?'examples.fullscreen_exit':'examples.fullscreen'));
-      var icon=fullscreenButton.querySelector('sf-icon');
+      viewerButton.hidden=!active&&!selected;
+      viewerButton.setAttribute('aria-pressed',active?'true':'false');
+      viewerButton.setAttribute('aria-label',message(active?'examples.viewer_exit':'examples.viewer'));
+      if(viewportControls){
+        viewportControls.hidden=!active||!selected;
+        viewportControls.setAttribute('aria-label',message('examples.viewport_group'));
+      }
+      if(active){setViewport(activeViewport,false)}else{resetViewport()}
+      var icon=viewerButton.querySelector('sf-icon');
       if(icon){icon.setAttribute('icon',active
-        ?(fullscreenButton.dataset.fullscreenExitIcon||'fullscreen_exit')
-        :(fullscreenButton.dataset.fullscreenIcon||'fullscreen'))}
+        ?(viewerButton.dataset.viewerExitIcon||'close')
+        :(viewerButton.dataset.viewerIcon||'devices'))}
+    }
+    function restoreViewer(){
+      delete example.dataset.docaraExampleViewerActive;
+      if(viewerPlaceholder&&viewerPlaceholder.parentNode){viewerPlaceholder.parentNode.insertBefore(example,viewerPlaceholder);viewerPlaceholder.remove()}
+      viewerPlaceholder=null;
+      if(viewerDialog&&viewerDialog.parentNode){viewerDialog.remove()}
+      syncViewer();
+      if(viewerButton){viewerButton.focus()}
+    }
+    function openViewer(){
+      if(!viewerDialog||isViewerOpen())return;
+      viewerPlaceholder=document.createComment('docara-example-viewer');
+      example.parentNode.insertBefore(viewerPlaceholder,example);
+      document.body.appendChild(viewerDialog);
+      viewerDialog.appendChild(example);
+      example.dataset.docaraExampleViewerActive='true';
+      viewerDialog.setAttribute('aria-label',message('examples.viewer_dialog'));
+      try{viewerDialog.showModal()}catch(error){restoreViewer();return}
+      syncViewer();
+      var selectedViewport=viewportButtons.find(function(button){return button.dataset.docaraExampleViewport===activeViewport});
+      if(selectedViewport){selectedViewport.focus()}
     }
     function syncWrap(active){
       if(!wrapButton)return;
@@ -528,7 +596,7 @@
       });
       example.dataset.sourceActive=key==='example'?'false':'true';
       if(copyButton){copyButton.hidden=key==='example'}
-      syncFullscreen();
+      syncViewer();
       syncWrap(sourceWrapActive);
       positionExampleIndicator(example,true);
       if(moveFocus){tab.focus()}
@@ -545,16 +613,27 @@
         event.preventDefault();selectTab(tabs[next],true);
       });
     });
-    if(fullscreenButton){
-      if(typeof example.requestFullscreen!=='function'){
-        fullscreenButton.remove();
-        fullscreenButton=null;
+    viewportButtons.forEach(function(button){
+      button.addEventListener('click',function(){setViewport(button.dataset.docaraExampleViewport,true)});
+    });
+    document.addEventListener('docara:example-viewport-change',function(event){
+      var viewport=event.detail&&event.detail.viewport;
+      if(!Object.prototype.hasOwnProperty.call(exampleViewportWidths,viewport))return;
+      activeViewport=viewport;
+      if(isViewerOpen()){setViewport(viewport,false)}
+    });
+    if(viewerButton){
+      viewerDialog=document.createElement('dialog');
+      viewerDialog.className='docara-example-viewer-dialog';
+      if(typeof viewerDialog.showModal!=='function'){
+        if(viewportControls){viewportControls.remove();viewportControls=null}
+        viewerButton.remove();
+        viewerButton=null;
       }else{
-        fullscreenButton.addEventListener('click',function(){
-          var operation=isFullscreen()?document.exitFullscreen():example.requestFullscreen();
-          if(operation&&typeof operation.catch==='function'){operation.catch(syncFullscreen)}
+        viewerButton.addEventListener('click',function(){
+          if(isViewerOpen()){viewerDialog.close()}else{openViewer()}
         });
-        document.addEventListener('fullscreenchange',syncFullscreen);
+        viewerDialog.addEventListener('close',restoreViewer);
       }
     }
     if(wrapButton){
@@ -612,7 +691,7 @@
         }).catch(function(){showCopyState(false)});
       });
     }
-    syncFullscreen();
+    syncViewer();
     syncWrap(sourceWrapActive);
     positionExampleIndicator(example,false);
   });

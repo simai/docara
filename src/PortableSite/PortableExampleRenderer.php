@@ -68,10 +68,14 @@ final class PortableExampleRenderer
             . '<div role="tablist" aria-label="' . $this->escape($exampleLabel)
             . '" class="docara-example-preview__tabs">' . implode('', $tabs) . '</div>'
             . '<div class="docara-example-preview__actions">'
-            . ($fullscreen ? '<button type="button" data-docara-example-fullscreen hidden aria-pressed="false" aria-label="Open example fullscreen"'
-                . ' data-fullscreen-icon="fullscreen" data-fullscreen-exit-icon="fullscreen_exit"'
+            . ($fullscreen && $resolvedPreview === 'sandbox' ? '<div data-docara-example-viewports hidden role="group" aria-label="Preview width" class="docara-example-preview__viewports">'
+                . '<button type="button" data-docara-example-viewport="desktop" aria-pressed="true" class="docara-example-preview__viewport">Desktop</button>'
+                . '<button type="button" data-docara-example-viewport="tablet" aria-pressed="false" class="docara-example-preview__viewport">Tablet</button>'
+                . '<button type="button" data-docara-example-viewport="mobile" aria-pressed="false" class="docara-example-preview__viewport">Mobile</button>'
+                . '</div><button type="button" data-docara-example-viewer hidden aria-pressed="false" aria-label="Check responsive preview"'
+                . ' data-viewer-icon="devices" data-viewer-exit-icon="close"'
                 . ' class="docara-example-preview__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'
-                . '<sf-icon icon="fullscreen" aria-hidden="true"></sf-icon></button>' : '')
+                . '<sf-icon icon="devices" aria-hidden="true"></sf-icon></button>' : '')
             . ($wrap ? '<button type="button" data-docara-example-wrap hidden aria-pressed="false" aria-label="Wrap source lines"'
                 . ' data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow"'
                 . ' class="docara-example-preview__action sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 inline-grid items-cross-center content-main-center m-0">'

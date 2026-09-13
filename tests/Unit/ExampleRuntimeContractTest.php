@@ -64,7 +64,7 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringNotContainsString('Math.min(4096', $shell);
     }
 
-    public function test_example_controls_keep_fullscreen_and_soft_wrap_scopes_separate(): void
+    public function test_example_controls_keep_responsive_viewer_and_soft_wrap_scopes_separate(): void
     {
         $root = dirname(__DIR__, 2);
         $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
@@ -72,12 +72,20 @@ final class ExampleRuntimeContractTest extends TestCase
 
         self::assertStringContainsString("example.dataset.sourceActive=key==='example'?'false':'true'", $shell);
         self::assertStringContainsString("var selected=example.dataset.sourceActive!=='true'", $shell);
-        self::assertStringContainsString('fullscreenButton.hidden=!active&&!selected', $shell);
-        self::assertStringNotContainsString('fullscreenButton.hidden=false', $shell);
+        self::assertStringContainsString('viewerButton.hidden=!active&&!selected', $shell);
+        self::assertStringNotContainsString('viewerButton.hidden=false', $shell);
         self::assertStringContainsString("wrapButton.hidden=example.dataset.sourceActive!=='true'", $shell);
-        self::assertStringContainsString('document.fullscreenElement===example', $shell);
-        self::assertStringContainsString('example.requestFullscreen()', $shell);
-        self::assertStringContainsString('document.exitFullscreen()', $shell);
+        self::assertStringContainsString("viewerDialog=document.createElement('dialog')", $shell);
+        self::assertStringContainsString('viewerDialog.showModal()', $shell);
+        self::assertStringContainsString("viewerDialog.addEventListener('close',restoreViewer)", $shell);
+        self::assertStringContainsString("example.dataset.docaraExampleViewerActive='true'", $shell);
+        self::assertStringContainsString('var exampleViewportWidths={desktop:1280,tablet:768,mobile:390}', $shell);
+        self::assertStringContainsString('sessionStorage.setItem(exampleViewportStorageKey,viewport)', $shell);
+        self::assertStringContainsString("previewFrame.style.inlineSize=exampleViewportWidths[viewport]+'px'", $shell);
+        self::assertStringContainsString("document.dispatchEvent(new CustomEvent('docara:example-viewport-change'", $shell);
+        self::assertStringContainsString("previewFrame.style.removeProperty('inline-size')", $shell);
+        self::assertStringContainsString("message('examples.viewport_'+button.dataset.docaraExampleViewport)", $shell);
+        self::assertStringContainsString('viewportControls.hidden=!active||!selected', $shell);
         self::assertStringContainsString("localStorage.setItem(sourceWrapStorageKey,sourceWrapActive?'true':'false')", $shell);
         self::assertStringContainsString("sourceWrapStorageKey='docara.source.wrap'", $shell);
         self::assertStringNotContainsString("message(active?'examples.unwrap':'examples.wrap')", $shell);
@@ -92,7 +100,10 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('[data-docara-example-wrap-active="true"]', $styles);
         self::assertStringContainsString('[data-docara-example-wrap-active="true"] [data-docara-example-panel] .docara-code-scroll code{min-inline-size:0;white-space:pre-wrap;overflow-wrap:anywhere}', $styles);
         self::assertStringContainsString('white-space:pre-wrap', $styles);
-        self::assertStringContainsString('.docara-example-preview:fullscreen', $styles);
+        self::assertStringContainsString('.docara-example-viewer-dialog', $styles);
+        self::assertStringContainsString('.docara-example-preview[data-docara-example-viewer-active="true"]', $styles);
+        self::assertStringContainsString('[data-docara-example-viewer]{display:none!important}', $styles);
+        self::assertStringContainsString('.docara-example-preview__viewport[aria-pressed="true"]', $styles);
         self::assertStringContainsString('.docara-example-preview .docara-example-preview__action:focus:not(:focus-visible)', $styles);
         self::assertStringNotContainsString('.docara-example-preview .docara-example-preview__action:focus,.docara-example-preview .docara-example-preview__action:focus-visible', $styles);
     }

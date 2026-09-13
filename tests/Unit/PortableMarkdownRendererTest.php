@@ -197,9 +197,9 @@ MD);
         self::assertStringContainsString('data-docara-example-copy', $markdown);
         self::assertStringContainsString('data-docara-example-fullscreen="true"', $markdown);
         self::assertStringContainsString('data-docara-example-wrap="true"', $markdown);
-        self::assertStringContainsString('data-docara-example-fullscreen', $markdown);
+        self::assertStringNotContainsString('data-docara-example-viewer', $markdown);
+        self::assertStringNotContainsString('data-docara-example-viewports', $markdown);
         self::assertStringContainsString('data-docara-example-wrap', $markdown);
-        self::assertStringContainsString('<sf-icon icon="fullscreen" aria-hidden="true"></sf-icon>', $markdown);
         self::assertStringContainsString('<sf-icon icon="wrap_text" aria-hidden="true"></sf-icon>', $markdown);
         self::assertStringContainsString('data-wrap-icon="wrap_text" data-unwrap-icon="format_text_overflow"', $markdown);
         self::assertStringContainsString('sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1', $markdown);
@@ -289,13 +289,19 @@ MD);
         self::assertStringContainsString('data-docara-example-tab="css"', $web);
         self::assertStringContainsString('data-docara-example-tab="javascript"', $web);
         self::assertStringContainsString('&lt;style&gt;#hello { color: red; }&lt;/style&gt;', $web);
+        self::assertStringContainsString('data-docara-example-viewer', $web);
+        self::assertStringContainsString('data-docara-example-viewports', $web);
+        self::assertStringContainsString('data-docara-example-viewport="desktop"', $web);
+        self::assertStringContainsString('data-docara-example-viewport="tablet"', $web);
+        self::assertStringContainsString('data-docara-example-viewport="mobile"', $web);
+        self::assertStringContainsString('<sf-icon icon="devices" aria-hidden="true"></sf-icon>', $web);
     }
 
     #[Test]
     public function example_controls_inherit_document_settings_and_allow_a_block_override(): void
     {
         $renderer = new PortableMarkdownRenderer;
-        $source = ":::example {label=Example}\n```markdown\nText\n```\n:::\n";
+        $source = ":::example {label=Example preview=sandbox}\n```html\n<p>Text</p>\n```\n:::\n";
         $location = new SourceLocation('content/en/example.md', 1, 1, 1);
         $disabled = $renderer->renderAt($source, null, null, $location, [
             'fullscreen' => false,
@@ -303,17 +309,17 @@ MD);
         ]);
         self::assertStringContainsString('data-docara-example-fullscreen="false"', $disabled);
         self::assertStringContainsString('data-docara-example-wrap="false"', $disabled);
-        self::assertStringNotContainsString('data-docara-example-fullscreen hidden', $disabled);
+        self::assertStringNotContainsString('data-docara-example-viewer', $disabled);
         self::assertStringNotContainsString('data-docara-example-wrap hidden', $disabled);
 
-        $override = str_replace('{label=Example}', '{label=Example fullscreen=true wrap=true}', $source);
+        $override = str_replace('{label=Example preview=sandbox}', '{label=Example preview=sandbox fullscreen=true wrap=true}', $source);
         $enabled = $renderer->renderAt($override, null, null, $location, [
             'fullscreen' => false,
             'wrap' => false,
         ]);
         self::assertStringContainsString('data-docara-example-fullscreen="true"', $enabled);
         self::assertStringContainsString('data-docara-example-wrap="true"', $enabled);
-        self::assertStringContainsString('data-docara-example-fullscreen hidden', $enabled);
+        self::assertStringContainsString('data-docara-example-viewer', $enabled);
         self::assertStringContainsString('data-docara-example-wrap hidden', $enabled);
     }
 

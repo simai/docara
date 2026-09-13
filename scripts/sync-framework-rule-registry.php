@@ -225,16 +225,18 @@ $readRuntime = static function (string $runtimeFile) use (
 // chunk ids in this repository.
 $highlightEntrypoint = $readRuntime('component/highlight/js/highlight.js');
 $highlightChunkFiles = [];
-foreach (['javascript', 'markdown', 'bash', 'xml', 'css', 'plaintext', 'json', 'php'] as $language) {
-    if (preg_match(
-        '#(?:^|\R)\s*[\'\"]?' . preg_quote($language, '#')
-            . '[\'\"]?\s*:\s*\(\)\s*=>\s*__webpack_require__\.e\([^0-9]*([0-9]+)\)#',
-        $highlightEntrypoint,
-        $chunkMatch,
-    ) !== 1) {
-        throw new RuntimeException('FRAMEWORK_HIGHLIGHT_LANGUAGE_CHUNK_MISSING: ' . $language);
+if (str_contains($highlightEntrypoint, '__webpack_require__.e')) {
+    foreach (['javascript', 'markdown', 'bash', 'xml', 'css', 'plaintext', 'json', 'php'] as $language) {
+        if (preg_match(
+            '#(?:^|\R)\s*[\'\"]?' . preg_quote($language, '#')
+                . '[\'\"]?\s*:\s*\(\)\s*=>\s*__webpack_require__\.e\([^0-9]*([0-9]+)\)#',
+            $highlightEntrypoint,
+            $chunkMatch,
+        ) !== 1) {
+            throw new RuntimeException('FRAMEWORK_HIGHLIGHT_LANGUAGE_CHUNK_MISSING: ' . $language);
+        }
+        $highlightChunkFiles[] = 'component/highlight/js/' . $chunkMatch[1] . '.js';
     }
-    $highlightChunkFiles[] = 'component/highlight/js/' . $chunkMatch[1] . '.js';
 }
 $highlightChunkFiles = array_values(array_unique($highlightChunkFiles));
 sort($highlightChunkFiles, SORT_STRING);

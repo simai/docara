@@ -218,4 +218,22 @@ final class FrameworkNativeSurfaceTest extends TestCase
             $css,
         );
     }
+
+    #[Test]
+    public function header_navigation_uses_the_horizontal_menu_presentation(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $css = file_get_contents($root . '/resources/smart/assets/navigation.css');
+        $template = file_get_contents(
+            $root . '/resources/smart/docara.navigation/templates/header.php',
+        );
+
+        self::assertIsString($css);
+        self::assertIsString($template);
+        self::assertStringContainsString('sf-menu sf-menu--horizontal docara-header-navigation-list', $template);
+        self::assertStringContainsString(
+            '.docara-header-navigation-list{flex-direction:row;justify-content:center;white-space:nowrap}',
+            $css,
+        );
+    }
 }

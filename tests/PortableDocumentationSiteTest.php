@@ -217,6 +217,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertStringContainsString('link[data-docara-declarative-shell-style][rel="stylesheet"]', $shellJs);
         self::assertSame(1, substr_count($catalogIndex, 'class="docara-navigation docara-header-navigation"'));
         self::assertStringContainsString('docara-header-navigation-link h-d0', $catalogIndex);
+        self::assertStringContainsString('sf-menu sf-menu--horizontal docara-header-navigation-list', $catalogIndex);
         self::assertSame(1, substr_count($catalogIndex, 'data-docara-primary-navigation'));
         self::assertSame(1, substr_count($catalogIndex, 'id="docara-mobile-navigation"'));
         self::assertSame(

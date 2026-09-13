@@ -4,18 +4,18 @@ This directory is a bounded, consumer-verified projection for portable Docara
 sites. It contains byte-identical copies of the accepted
 `larena/ui` manifests for `ui.alert` and `ui.button`, the exact accepted Simai
 Framework runtime lock and an exact revision-scoped Smart runtime projection
-from the published Framework pair
-`ui@d328491bc805439f200866f7e04c0e5e853a4998` /
-`ui-smart@9e94abc6b10c82f770820807343cecb9a0e27f77`:
+from the accepted Framework pair
+`ui@122b478ab68d8d7be02febe4a87016eb677a69e8` /
+`ui-smart@1de6c70ed455fa2d4d568795452b63431fdd73a1`:
 
 - `smart/alert/js/alert.js` —
-  `8a755992504633901ac986e6b2d2be5e19591724f6b6eb4e6be1b52374c9f583`;
+  `6d0d710cc655135d7845528a2f10ec2d93a9bb1bb40112a9fc8771c7b2ea1da3`;
 - `smart/buttons/js/buttons.js` —
-  `43078e2958646216ded7e73893c7952c4a49caf75d929e09e76a4107f3bc4e6c`;
+  `34ab330dd760390f61492785c29f2970a624ba05886de20396455240ef7e0e46`;
 - `smart/icons/js/icons.js` —
-  `84800076a4a6d99274189114831797ac71a895d332661672f59ba50a3a9002eb`;
+  `f5e2e71aa72416158db4d13cfae945ad6c1a6b7620f3f36353a4972d478ed64d`;
 - `smart/modal/js/modal.js` —
-  `275a848667c001d9e4ce357723ee6325ac6fe45db9866fe2294ca10d0fb2daa7`.
+  `92a56cbfbd7dcac4c102a6eb9b6d936fe7e8c16fb2d7fa0cb90339aad8727903`.
 
 The four shell files form the eager `asset_projection`. All other conventional
 unminified Smart entrypoints are recorded separately in
@@ -28,7 +28,7 @@ Project sites repeat the hashes, source revision and manifest provider revision
 in `docara.framework_lock.v1`. A build verifies the bytes, copies them to the
 reserved `_docara/framework-runtime` namespace and appends one projection-aware cache
 version to each URL. Core and Smart are taken from the
-immutable published UI `v5.7.0` / Smart `v5.5.0` pair; there is no moving
+immutable accepted UI `v5.7.0` / Smart `v5.5.0` candidate; there is no moving
 `main`/`latest` fallback.
 The local consumer adapter preloads a package-owned outlined shell subset and
 keeps exact full Material Symbols Outlined, Rounded and Sharp fonts as lazy
@@ -39,8 +39,4 @@ standalone production readiness or readiness of every Framework component. It
 is not a new component registry, a moving release channel, or an independent
 source of Framework truth.
 
-`ui.alert` with `closable: true` is outside this bounded pair because its
-`sf-icon-button` dependency is absent and therefore fails closed.
-
-The projected bytes belong to the owner-published Framework 5.7.0 release and
-remain tied to its immutable Core and Smart revisions.
+The projected bytes remain tied to the exact Core and Smart revisions above.

@@ -405,6 +405,24 @@ $runtimeLockBytes = json_encode(
 ) . "\n";
 file_put_contents($runtimeLockPath, $runtimeLockBytes, LOCK_EX);
 
+$viewUtilitiesPath = $root . '/resources/framework/view-utilities.json';
+$viewUtilities = json_decode((string) file_get_contents($viewUtilitiesPath), true, 512, JSON_THROW_ON_ERROR);
+$compatibilityId = $lock['runtime']['pair_id'] ?? null;
+$contractRegistrySha256 = $lock['runtime']['framework_registry']['file_sha256'] ?? null;
+if (! is_string($compatibilityId)
+    || ! is_string($contractRegistrySha256)
+    || preg_match('/^[a-f0-9]{64}$/D', $contractRegistrySha256) !== 1
+) {
+    throw new RuntimeException('FRAMEWORK_VIEW_UTILITY_PROVENANCE_INVALID');
+}
+$viewUtilities['compatibility_id'] = $compatibilityId;
+$viewUtilities['registry_sha256'] = $contractRegistrySha256;
+file_put_contents(
+    $viewUtilitiesPath,
+    json_encode($viewUtilities, JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n",
+    LOCK_EX,
+);
+
 fwrite(STDOUT, json_encode([
     'schema' => 'docara.framework_rule_projection.v1',
     'revision' => $revision,

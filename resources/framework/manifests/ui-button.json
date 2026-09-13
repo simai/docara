@@ -1,142 +1,447 @@
 {
-  "schema": "larena.ui.smart_manifest.v1",
-  "key": "ui.button",
-  "version": "1.0.0",
-  "owner_package": "larena/ui",
-  "kind": "smart",
-  "props": {
-    "type": "object",
-    "properties": {
-      "text": {"type": "string", "minLength": 1, "maxLength": 120, "pattern": "\\S"},
-      "size": {"type": "string", "enum": ["1/3", "1/2", "1", "2", "3"]},
-      "type": {"type": "string", "enum": ["default", "tonal", "outline", "link"]},
-      "scheme": {"type": "string", "enum": ["primary", "secondary", "on-surface"]},
-      "radius": {"type": "string", "enum": ["", "default", "square", "rounded"]},
-      "loading": {"type": "boolean"},
-      "disabled": {"type": "boolean"},
-      "native-type": {"type": "string", "enum": ["button", "submit", "reset"]},
-      "aria-label": {"type": "string", "minLength": 1, "maxLength": 120, "pattern": "\\S"}
+    "schema": "larena.ui.smart_manifest.v1",
+    "key": "ui.button",
+    "version": "1.0.0",
+    "owner_package": "larena/ui",
+    "kind": "smart",
+    "props": {
+        "type": "object",
+        "properties": {
+            "text": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120,
+                "pattern": "\\S"
+            },
+            "size": {
+                "type": "string",
+                "enum": [
+                    "1/3",
+                    "1/2",
+                    "1",
+                    "2",
+                    "3"
+                ]
+            },
+            "type": {
+                "type": "string",
+                "enum": [
+                    "default",
+                    "tonal",
+                    "outline",
+                    "link"
+                ]
+            },
+            "scheme": {
+                "type": "string",
+                "enum": [
+                    "primary",
+                    "secondary",
+                    "on-surface"
+                ]
+            },
+            "radius": {
+                "type": "string",
+                "enum": [
+                    "",
+                    "default",
+                    "square",
+                    "rounded"
+                ]
+            },
+            "loading": {
+                "type": "boolean"
+            },
+            "disabled": {
+                "type": "boolean"
+            },
+            "native-type": {
+                "type": "string",
+                "enum": [
+                    "button",
+                    "submit",
+                    "reset"
+                ]
+            },
+            "aria-label": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120,
+                "pattern": "\\S"
+            }
+        },
+        "required": [
+            "text",
+            "size",
+            "type",
+            "scheme",
+            "loading",
+            "disabled",
+            "native-type",
+            "aria-label"
+        ],
+        "additionalProperties": false
     },
-    "required": ["text", "size", "type", "scheme", "loading", "disabled", "native-type", "aria-label"],
-    "additionalProperties": false
-  },
-  "slots": {},
-  "events": {
-    "click": {"kind": "dom", "backend_handler_binding": false},
-    "focusin": {"kind": "dom", "backend_handler_binding": false},
-    "focusout": {"kind": "dom", "backend_handler_binding": false},
-    "mouseenter": {"kind": "dom", "backend_handler_binding": false},
-    "mouseleave": {"kind": "dom", "backend_handler_binding": false},
-    "sf-connected": {"kind": "lifecycle", "backend_handler_binding": false},
-    "sf-before-render": {"kind": "lifecycle", "backend_handler_binding": false},
-    "sf-after-render": {"kind": "lifecycle", "backend_handler_binding": false},
-    "sf-updated": {"kind": "lifecycle", "backend_handler_binding": false},
-    "sf-props-change": {"kind": "lifecycle", "backend_handler_binding": false},
-    "sf-disconnected": {"kind": "lifecycle", "backend_handler_binding": false}
-  },
-  "views": {"default": {}, "admin": {}},
-  "presets": {
-    "primary": {"props": {"type": "default", "scheme": "primary"}},
-    "on_surface": {"props": {"type": "default", "scheme": "on-surface"}},
-    "secondary": {"props": {"type": "tonal", "scheme": "secondary"}},
-    "tonal_on_surface": {"props": {"type": "tonal", "scheme": "on-surface"}},
-    "outline": {"props": {"type": "outline", "scheme": "primary"}},
-    "outline_on_surface": {"props": {"type": "outline", "scheme": "on-surface"}},
-    "link": {"props": {"type": "link", "scheme": "primary"}},
-    "link_on_surface": {"props": {"type": "link", "scheme": "on-surface"}}
-  },
-  "constraints": {
-    "allowed_combinations": [
-      {
-        "keys": ["type", "scheme"],
-        "values": [
-          ["default", "primary"],
-          ["default", "on-surface"],
-          ["tonal", "secondary"],
-          ["tonal", "on-surface"],
-          ["outline", "primary"],
-          ["outline", "on-surface"],
-          ["link", "primary"],
-          ["link", "on-surface"]
+    "slots": [],
+    "events": {
+        "click": {
+            "kind": "dom",
+            "backend_handler_binding": false
+        },
+        "focusin": {
+            "kind": "dom",
+            "backend_handler_binding": false
+        },
+        "focusout": {
+            "kind": "dom",
+            "backend_handler_binding": false
+        },
+        "mouseenter": {
+            "kind": "dom",
+            "backend_handler_binding": false
+        },
+        "mouseleave": {
+            "kind": "dom",
+            "backend_handler_binding": false
+        },
+        "sf-connected": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-before-render": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-after-render": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-updated": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-props-change": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        },
+        "sf-disconnected": {
+            "kind": "lifecycle",
+            "backend_handler_binding": false
+        }
+    },
+    "views": {
+        "default": [],
+        "admin": []
+    },
+    "presets": {
+        "primary": {
+            "props": {
+                "type": "default",
+                "scheme": "primary"
+            }
+        },
+        "on_surface": {
+            "props": {
+                "type": "default",
+                "scheme": "on-surface"
+            }
+        },
+        "secondary": {
+            "props": {
+                "type": "tonal",
+                "scheme": "secondary"
+            }
+        },
+        "tonal_on_surface": {
+            "props": {
+                "type": "tonal",
+                "scheme": "on-surface"
+            }
+        },
+        "outline": {
+            "props": {
+                "type": "outline",
+                "scheme": "primary"
+            }
+        },
+        "outline_on_surface": {
+            "props": {
+                "type": "outline",
+                "scheme": "on-surface"
+            }
+        },
+        "link": {
+            "props": {
+                "type": "link",
+                "scheme": "primary"
+            }
+        },
+        "link_on_surface": {
+            "props": {
+                "type": "link",
+                "scheme": "on-surface"
+            }
+        }
+    },
+    "constraints": {
+        "allowed_combinations": [
+            {
+                "keys": [
+                    "type",
+                    "scheme"
+                ],
+                "values": [
+                    [
+                        "default",
+                        "primary"
+                    ],
+                    [
+                        "default",
+                        "on-surface"
+                    ],
+                    [
+                        "tonal",
+                        "secondary"
+                    ],
+                    [
+                        "tonal",
+                        "on-surface"
+                    ],
+                    [
+                        "outline",
+                        "primary"
+                    ],
+                    [
+                        "outline",
+                        "on-surface"
+                    ],
+                    [
+                        "link",
+                        "primary"
+                    ],
+                    [
+                        "link",
+                        "on-surface"
+                    ]
+                ]
+            }
+        ],
+        "requires": [
+            {
+                "when": {
+                    "loading": true
+                },
+                "then": {
+                    "disabled": true
+                }
+            }
         ]
-      }
-    ],
-    "requires": [
-      {"when": {"loading": true}, "then": {"disabled": true}}
-    ]
-  },
-  "render": {"strategy": "host", "renderer": "ui.sf.element"},
-  "frontend": {"runtime": "simai-framework", "tag": "sf-button"},
-  "assets": [
-    {"key": "simai.framework.core.css", "kind": "css", "critical": true},
-    {"key": "simai.framework.core.js", "kind": "javascript", "critical": true},
-    {"key": "simai.framework.smart_base.js", "kind": "javascript", "critical": true},
-    {"key": "simai.framework.bridge.js", "kind": "javascript", "critical": true},
-    {"key": "simai.framework.sf_button.js", "kind": "javascript", "critical": true}
-  ],
-  "atlas": {
-    "visible": true,
-    "title": "Button",
-    "description": "Starts an action such as save, create, or navigate.",
-    "category": "actions",
-    "order": 10,
-    "status": "developer_testable",
-    "readiness": {
-      "safe_to_suggest": true,
-      "safe_to_render": true,
-      "safe_to_bind_data": false,
-      "safe_to_execute_effect": false
     },
-    "states": ["default", "hover", "focus", "active", "loading", "disabled"],
-    "accessibility": ["native_button", "visible_focus", "disabled_semantics", "accessible_name"],
-    "product_href": "/admin/docara/pages/create",
-    "example_props": {
-      "text": "Save",
-      "size": "1",
-      "type": "default",
-      "scheme": "primary",
-      "loading": false,
-      "disabled": false,
-      "native-type": "button",
-      "aria-label": "Save"
+    "render": {
+        "strategy": "host",
+        "renderer": "ui.sf.element"
     },
-    "controls": [
-      {"key": "text", "source": "prop", "widget": "text", "min_length": 1, "max_length": 120, "mirror_props": ["aria-label"]},
-      {"key": "variant", "source": "preset", "widget": "select", "default": "primary"},
-      {"key": "size", "source": "prop", "widget": "select"},
-      {"key": "radius", "source": "prop", "widget": "select", "options": ["", "square", "rounded"], "default": "", "omit_empty": true},
-      {"key": "loading", "source": "prop", "widget": "boolean", "linked_props": {"disabled": true}},
-      {"key": "disabled", "source": "prop", "widget": "boolean"}
+    "frontend": {
+        "runtime": "simai-framework",
+        "tag": "sf-button"
+    },
+    "assets": [
+        {
+            "key": "simai.framework.core.css",
+            "kind": "css",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.core.js",
+            "kind": "javascript",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.smart_base.js",
+            "kind": "javascript",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.bridge.js",
+            "kind": "javascript",
+            "critical": true
+        },
+        {
+            "key": "simai.framework.sf_button.js",
+            "kind": "javascript",
+            "critical": true
+        }
     ],
-    "code_preview": {"adapter": "smart_manager_php_v1", "omit_defaults": false},
-    "i18n": {
-      "en": {
+    "atlas": {
+        "visible": true,
         "title": "Button",
         "description": "Starts an action such as save, create, or navigate.",
-        "controls": {"text": "Text", "variant": "Variant", "size": "Size", "radius": "Corner radius", "loading": "Loading", "disabled": "Disabled"},
-        "options": {
-          "variant": {"primary": "Primary", "on_surface": "Default on surface", "secondary": "Secondary tonal", "tonal_on_surface": "Tonal on surface", "outline": "Outline primary", "outline_on_surface": "Outline on surface", "link": "Link primary", "link_on_surface": "Link on surface"},
-          "size": {"1/3": "Extra small · 1/3", "1/2": "Small · 1/2", "1": "Default · 1", "2": "Large · 2", "3": "Extra large · 3"},
-          "radius": {"": "Simai Framework default", "square": "Square", "rounded": "Rounded"}
+        "category": "actions",
+        "order": 10,
+        "status": "developer_testable",
+        "readiness": {
+            "safe_to_suggest": true,
+            "safe_to_render": true,
+            "safe_to_bind_data": false,
+            "safe_to_execute_effect": false
+        },
+        "states": [
+            "default",
+            "hover",
+            "focus",
+            "active",
+            "loading",
+            "disabled"
+        ],
+        "accessibility": [
+            "native_button",
+            "visible_focus",
+            "disabled_semantics",
+            "accessible_name"
+        ],
+        "product_href": "/admin/docara/pages/create",
+        "example_props": {
+            "text": "Save",
+            "size": "1",
+            "type": "default",
+            "scheme": "primary",
+            "loading": false,
+            "disabled": false,
+            "native-type": "button",
+            "aria-label": "Save"
+        },
+        "controls": [
+            {
+                "key": "text",
+                "source": "prop",
+                "widget": "text",
+                "min_length": 1,
+                "max_length": 120,
+                "mirror_props": [
+                    "aria-label"
+                ]
+            },
+            {
+                "key": "variant",
+                "source": "preset",
+                "widget": "select",
+                "default": "primary"
+            },
+            {
+                "key": "size",
+                "source": "prop",
+                "widget": "select"
+            },
+            {
+                "key": "radius",
+                "source": "prop",
+                "widget": "select",
+                "options": [
+                    "",
+                    "square",
+                    "rounded"
+                ],
+                "default": "",
+                "omit_empty": true
+            },
+            {
+                "key": "loading",
+                "source": "prop",
+                "widget": "boolean",
+                "linked_props": {
+                    "disabled": true
+                }
+            },
+            {
+                "key": "disabled",
+                "source": "prop",
+                "widget": "boolean"
+            }
+        ],
+        "code_preview": {
+            "adapter": "smart_manager_php_v1",
+            "omit_defaults": false
+        },
+        "i18n": {
+            "en": {
+                "title": "Button",
+                "description": "Starts an action such as save, create, or navigate.",
+                "controls": {
+                    "text": "Text",
+                    "variant": "Variant",
+                    "size": "Size",
+                    "radius": "Corner radius",
+                    "loading": "Loading",
+                    "disabled": "Disabled"
+                },
+                "options": {
+                    "variant": {
+                        "primary": "Primary",
+                        "on_surface": "Default on surface",
+                        "secondary": "Secondary tonal",
+                        "tonal_on_surface": "Tonal on surface",
+                        "outline": "Outline primary",
+                        "outline_on_surface": "Outline on surface",
+                        "link": "Link primary",
+                        "link_on_surface": "Link on surface"
+                    },
+                    "size": {
+                        "1/3": "Extra small \u00b7 1/3",
+                        "1/2": "Small \u00b7 1/2",
+                        "1": "Default \u00b7 1",
+                        "2": "Large \u00b7 2",
+                        "3": "Extra large \u00b7 3"
+                    },
+                    "radius": {
+                        "": "Simai Framework default",
+                        "square": "Square",
+                        "rounded": "Rounded"
+                    }
+                }
+            },
+            "ru": {
+                "title": "\u041a\u043d\u043e\u043f\u043a\u0430",
+                "description": "\u0417\u0430\u043f\u0443\u0441\u043a\u0430\u0435\u0442 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u0435: \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c, \u0441\u043e\u0437\u0434\u0430\u0442\u044c \u0438\u043b\u0438 \u043f\u0435\u0440\u0435\u0439\u0442\u0438.",
+                "controls": {
+                    "text": "\u0422\u0435\u043a\u0441\u0442",
+                    "variant": "\u0412\u0430\u0440\u0438\u0430\u043d\u0442",
+                    "size": "\u0420\u0430\u0437\u043c\u0435\u0440",
+                    "radius": "\u0421\u043a\u0440\u0443\u0433\u043b\u0435\u043d\u0438\u0435",
+                    "loading": "\u0417\u0430\u0433\u0440\u0443\u0437\u043a\u0430",
+                    "disabled": "\u041e\u0442\u043a\u043b\u044e\u0447\u0435\u043d\u0430"
+                },
+                "options": {
+                    "variant": {
+                        "primary": "\u041e\u0441\u043d\u043e\u0432\u043d\u0430\u044f",
+                        "on_surface": "\u041e\u0431\u044b\u0447\u043d\u0430\u044f \u043d\u0430 \u043f\u043e\u0432\u0435\u0440\u0445\u043d\u043e\u0441\u0442\u0438",
+                        "secondary": "\u0412\u0442\u043e\u0440\u0438\u0447\u043d\u0430\u044f \u0442\u043e\u043d\u0430\u043b\u044c\u043d\u0430\u044f",
+                        "tonal_on_surface": "\u0422\u043e\u043d\u0430\u043b\u044c\u043d\u0430\u044f \u043d\u0430 \u043f\u043e\u0432\u0435\u0440\u0445\u043d\u043e\u0441\u0442\u0438",
+                        "outline": "\u041a\u043e\u043d\u0442\u0443\u0440\u043d\u0430\u044f \u043e\u0441\u043d\u043e\u0432\u043d\u0430\u044f",
+                        "outline_on_surface": "\u041a\u043e\u043d\u0442\u0443\u0440\u043d\u0430\u044f \u043d\u0430 \u043f\u043e\u0432\u0435\u0440\u0445\u043d\u043e\u0441\u0442\u0438",
+                        "link": "\u0421\u0441\u044b\u043b\u043a\u0430 \u043e\u0441\u043d\u043e\u0432\u043d\u0430\u044f",
+                        "link_on_surface": "\u0421\u0441\u044b\u043b\u043a\u0430 \u043d\u0430 \u043f\u043e\u0432\u0435\u0440\u0445\u043d\u043e\u0441\u0442\u0438"
+                    },
+                    "size": {
+                        "1/3": "\u041e\u0447\u0435\u043d\u044c \u043c\u0430\u043b\u0435\u043d\u044c\u043a\u0430\u044f \u00b7 1/3",
+                        "1/2": "\u041c\u0430\u043b\u0435\u043d\u044c\u043a\u0430\u044f \u00b7 1/2",
+                        "1": "\u041e\u0431\u044b\u0447\u043d\u0430\u044f \u00b7 1",
+                        "2": "\u0411\u043e\u043b\u044c\u0448\u0430\u044f \u00b7 2",
+                        "3": "\u041e\u0447\u0435\u043d\u044c \u0431\u043e\u043b\u044c\u0448\u0430\u044f \u00b7 3"
+                    },
+                    "radius": {
+                        "": "\u041f\u043e \u0443\u043c\u043e\u043b\u0447\u0430\u043d\u0438\u044e Simai Framework",
+                        "square": "\u0411\u0435\u0437 \u0441\u043a\u0440\u0443\u0433\u043b\u0435\u043d\u0438\u044f",
+                        "rounded": "\u041f\u043e\u043b\u043d\u043e\u0441\u0442\u044c\u044e \u0441\u043a\u0440\u0443\u0433\u043b\u0451\u043d\u043d\u0430\u044f"
+                    }
+                }
+            }
         }
-      },
-      "ru": {
-        "title": "Кнопка",
-        "description": "Запускает действие: сохранить, создать или перейти.",
-        "controls": {"text": "Текст", "variant": "Вариант", "size": "Размер", "radius": "Скругление", "loading": "Загрузка", "disabled": "Отключена"},
-        "options": {
-          "variant": {"primary": "Основная", "on_surface": "Обычная на поверхности", "secondary": "Вторичная тональная", "tonal_on_surface": "Тональная на поверхности", "outline": "Контурная основная", "outline_on_surface": "Контурная на поверхности", "link": "Ссылка основная", "link_on_surface": "Ссылка на поверхности"},
-          "size": {"1/3": "Очень маленькая · 1/3", "1/2": "Маленькая · 1/2", "1": "Обычная · 1", "2": "Большая · 2", "3": "Очень большая · 3"},
-          "radius": {"": "По умолчанию Simai Framework", "square": "Без скругления", "rounded": "Полностью скруглённая"}
-        }
-      }
+    },
+    "provenance": {
+        "source": "larena/ui",
+        "runtime_lock": "resources/sf/runtime-lock.json",
+        "upstream_component": "simai/ui-smart:smart/buttons",
+        "upstream_revision": "1de6c70ed455fa2d4d568795452b63431fdd73a1",
+        "reference_status": "source_backed"
     }
-  },
-  "provenance": {
-    "source": "larena/ui",
-    "runtime_lock": "resources/sf/runtime-lock.json",
-    "upstream_component": "simai/ui-smart:smart/buttons",
-    "upstream_revision": "9e94abc6b10c82f770820807343cecb9a0e27f77",
-    "reference_status": "source_backed"
-  }
 }

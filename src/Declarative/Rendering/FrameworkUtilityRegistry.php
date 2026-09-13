@@ -13,6 +13,7 @@ final class FrameworkUtilityRegistry
 
     public function __construct(
         private readonly string $path = __DIR__ . '/../../../resources/framework/view-utilities.json',
+        private readonly string $runtimeLockPath = __DIR__ . '/../../../resources/framework/runtime-lock.json',
     ) {}
 
     /** @param list<string> $utilities */
@@ -70,6 +71,7 @@ final class FrameworkUtilityRegistry
         }
         try {
             $document = json_decode((string) file_get_contents($this->path), true, 512, JSON_THROW_ON_ERROR);
+            $runtime = json_decode((string) file_get_contents($this->runtimeLockPath), true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $exception) {
             throw new PortableConfigurationException(
                 'DECLARATIVE_VIEW_UTILITY_REGISTRY_INVALID',
@@ -78,9 +80,10 @@ final class FrameworkUtilityRegistry
             );
         }
         if (! is_array($document)
+            || ! is_array($runtime)
             || ($document['schema'] ?? null) !== 'docara.framework_view_utilities.v1'
-            || ($document['compatibility_id'] ?? null) !== 'sf-v5.7.0-d328491b-9e94abc6'
-            || ($document['registry_sha256'] ?? null) !== '2ddbcd7077c6fa2b2f1918726f16c9c213f3a6db5d717539244bcad01abd83b3'
+            || ($document['compatibility_id'] ?? null) !== ($runtime['pair_id'] ?? null)
+            || ($document['registry_sha256'] ?? null) !== ($runtime['framework_registry']['file_sha256'] ?? null)
         ) {
             throw new PortableConfigurationException(
                 'DECLARATIVE_VIEW_UTILITY_REGISTRY_INVALID',

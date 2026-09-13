@@ -41,44 +41,44 @@
         ]
     },
     "runtime": "simai-framework",
-    "pair_id": "sf-v5.7.0-d328491b-9e94abc6",
-    "bundle_id": "sf-v5.7.0-d328491b-9e94abc6-registry-2ddbcd70-verified-release-artifact-v1",
-    "publication_profile": "verified-release-artifact-v1",
+    "pair_id": "sf-v5.7.0-122b478a-1de6c70e",
+    "bundle_id": "sf-v5.7.0-122b478a-1de6c70e-registry-93d4212b-verified-commit-candidate-v1",
+    "publication_profile": "verified-commit-candidate-v1",
     "tag": "v5.7.0",
     "ui": {
         "tag": "v5.7.0",
-        "commit": "d328491bc805439f200866f7e04c0e5e853a4998",
+        "commit": "122b478ab68d8d7be02febe4a87016eb677a69e8",
         "tree": "distr",
         "mount": "ui",
-        "sha256": "394ccc4d8e7698e8ceaea41cc8cc943ff50f203aea276499e9a66d3c7b53b4db",
-        "files": 6809
+        "sha256": "decacb4eee21fc713a633dd603a12f5eb8666e918c29feff9dc9d16a13d208bb",
+        "files": 6325
     },
     "ui_smart": {
         "tag": "v5.5.0",
-        "commit": "9e94abc6b10c82f770820807343cecb9a0e27f77",
+        "commit": "1de6c70ed455fa2d4d568795452b63431fdd73a1",
         "tree": "smart",
         "mount": "smart",
-        "sha256": "92ef286697a2f7b32e673a54fde6e1cd61f18d1cab386e7a40032ecf56cfe24c",
-        "files": 645
+        "sha256": "cd35bb00602975ce617bac13425dc868f3b1c596b7443f3c5e5dcb321e62e79e",
+        "files": 642
     },
     "framework_registry": {
         "schema_id": "simai.framework.contract-registry",
-        "compatibility_id": "sf-v5.7.0-d328491b-9e94abc6",
+        "compatibility_id": "sf-v5.7.0-122b478a-1de6c70e",
         "profile": "plain-assets-v1",
         "relative_path": "contracts/generated/framework-contract-registry.json",
-        "file_sha256": "2ddbcd7077c6fa2b2f1918726f16c9c213f3a6db5d717539244bcad01abd83b3",
+        "file_sha256": "93d4212b77aefe5118136dfdf146b875a09c8dafb5c708d6f876804e8068c174",
         "source": {
-            "commit": "d328491bc805439f200866f7e04c0e5e853a4998",
+            "commit": "6f44893d0f3c0c707476dfeaa340ebdae8453786",
             "tree": "contracts/generated",
-            "tree_oid": "b94efe4a43bd048b9c83dbff3031d5a8dbd30774",
+            "tree_oid": "5d0e391b53721fa52d7ffa011d37f40a2eea1ee2",
             "mount": "contract",
-            "sha256": "d598fdd30267a744650b7cb2ab4b11e4da076a122eb8000a830afc968e358b02",
+            "sha256": "39e72a7e6008d265de0e7b757f3523da5cfd95047ce2bdb0391b09a3e3fa2c7f",
             "files": 2
         },
         "documentation_source": {
             "schema": "docara.documentation_source.v1",
             "relative_path": "contracts/generated/documentation-source.json",
-            "file_sha256": "049fe291c95d93b5050d838c493b62cfb00c2a34a7a1609c36ea6cfecfb784cc"
+            "file_sha256": "5428873c108d995fa6c99baaefc89efb8c1420c71ee6fbfe47f99790abd46647"
         }
     },
     "boot": {
@@ -315,6 +315,12 @@
                 "id",
                 "class"
             ]
+        },
+        "sf-file-preview": {
+            "source": "smart/file-preview",
+            "javascript": "smart/smart/file-preview/js/file-preview.js",
+            "css": null,
+            "attributes": []
         },
         "sf-file-upload": {
             "source": "smart/file-upload",

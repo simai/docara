@@ -1,20 +1,20 @@
 {
-  "schema": "docara.framework_view_utilities.v1",
-  "compatibility_id": "sf-v5.7.0-122b478a-1de6c70e",
-  "registry_sha256": "93d4212b77aefe5118136dfdf146b875a09c8dafb5c708d6f876804e8068c174",
-  "utilities": [
-    "border-bottom",
-    "border-outline-variant",
-    "flex",
-    "flex-col",
-    "gap-1",
-    "gap-2",
-    "lg:flex-row",
-    "m-0",
-    "min-h-screen",
-    "p-0",
-    "p-2",
-    "surface-0",
-    "w-full"
-  ]
+    "schema": "docara.framework_view_utilities.v1",
+    "compatibility_id": "sf-v5.8.0-d813107a-548c11cd",
+    "registry_sha256": "e21b85267310b410df74e3ca73568c6d824ebac1e5505e9b66630490160afbf3",
+    "utilities": [
+        "border-bottom",
+        "border-outline-variant",
+        "flex",
+        "flex-col",
+        "gap-1",
+        "gap-2",
+        "lg:flex-row",
+        "m-0",
+        "min-h-screen",
+        "p-0",
+        "p-2",
+        "surface-0",
+        "w-full"
+    ]
 }

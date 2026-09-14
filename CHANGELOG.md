@@ -4,11 +4,23 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.9.1] - 2026-09-14
+
+### Changed
+
+- The bundled SIMAI Framework projection is refreshed to the Loader-fixed
+  `v5.7.0` / Smart `v5.5.0` commit pair while retaining exact immutable locks.
+- Framework locks produced from the canonical `ui-source` repository identity
+  are accepted alongside the existing `ui` identity.
+
 ### Fixed
 
 - Large documentation builds release generated Framework CSS as pages are
   rendered, reuse identical preliminary plans and stream the final diagnostic
   receipt, avoiding memory exhaustion without changing deterministic output.
+- Documentation navigation keeps disclosure controls after their labels and
+  safely refreshes Framework icons; code and Example headers now share the
+  intended alignment and spacing.
 
 ## [2.9.0] - 2026-09-10
 

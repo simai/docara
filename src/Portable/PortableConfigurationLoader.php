@@ -452,12 +452,9 @@ final class PortableConfigurationLoader
         $ui = $runtime['ui'];
         $smart = $runtime['ui_smart'];
         $registry = $runtime['framework_registry'];
-        $legacyPair = sprintf(
-            'sf-%s-%s-%s',
-            $runtime['tag'],
-            substr($ui['commit'], 0, 8),
-            substr($smart['commit'], 0, 8),
-        );
+        $legacyPair = is_string($runtime['tag'])
+            ? sprintf('sf-%s-%s-%s', $runtime['tag'], substr($ui['commit'], 0, 8), substr($smart['commit'], 0, 8))
+            : null;
         $exactPair = sprintf(
             'ui-%s-smart-%s',
             substr($ui['commit'], 0, 12),

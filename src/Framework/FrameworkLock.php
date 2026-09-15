@@ -387,6 +387,9 @@ final readonly class FrameworkLock
             '/runtime/ui/tag' => $runtime['ui']['tag'] ?? null,
             '/runtime/ui_smart/tag' => $runtime['ui_smart']['tag'] ?? null,
         ] as $path => $reference) {
+            if ($reference === null && ($runtime['publication_profile'] ?? null) === 'verified-commit-candidate-v1') {
+                continue;
+            }
             $this->assertPinnedReleaseReference($reference, $path);
         }
     }

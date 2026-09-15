@@ -44,9 +44,9 @@
     "pair_id": "ui-8c22fe2b80bb-smart-400d80e501ca",
     "bundle_id": "ui-8c22fe2b80bb-smart-400d80e501ca-registry-1e5dcbf8-verified-commit-candidate-v1",
     "publication_profile": "verified-commit-candidate-v1",
-    "tag": "v5.8.0",
+    "tag": null,
     "ui": {
-        "tag": "v5.8.0",
+        "tag": null,
         "commit": "8c22fe2b80bb3bb88ec40dd34bbcddffb65f27d2",
         "tree": "distr",
         "mount": "ui",
@@ -54,7 +54,7 @@
         "files": 5087
     },
     "ui_smart": {
-        "tag": "v5.6.0",
+        "tag": null,
         "commit": "400d80e501ca5e6816ba8f96b0ca18f01c0626c9",
         "tree": "smart",
         "mount": "smart",

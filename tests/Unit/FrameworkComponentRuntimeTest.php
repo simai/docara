@@ -59,6 +59,21 @@ final class FrameworkComponentRuntimeTest extends TestCase
         FrameworkComponentRuntime::fromLock($lock);
     }
 
+    public function test_exact_commit_candidate_can_have_no_release_tag_but_release_profile_cannot(): void
+    {
+        $candidate = $this->lock();
+        self::assertNull($candidate['runtime']['tag']);
+        self::assertSame(
+            'ui-8c22fe2b80bb-smart-400d80e501ca',
+            FrameworkLock::fromArray($candidate)->pairId(),
+        );
+
+        $candidate['runtime']['publication_profile'] = 'verified-release-artifact-v1';
+        $this->expectException(FrameworkComponentException::class);
+        $this->expectExceptionMessage('FRAMEWORK_RUNTIME_RELEASE_REFERENCE_INVALID');
+        FrameworkLock::fromArray($candidate);
+    }
+
     public function test_the_retired_preprocessor_and_host_renderer_are_absent(): void
     {
         self::assertFalse(method_exists(FrameworkComponentRuntime::class, 'extract'));

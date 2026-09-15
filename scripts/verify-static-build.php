@@ -2199,8 +2199,53 @@ if ($manifestError !== null) {
         $htmlFiles,
     );
     sort($actualHtmlOutputs, SORT_STRING);
+    $standaloneHtmlOutputs = [];
+    $standaloneManifestPath = $root . '/.docara/standalone-examples.json';
+    if (file_exists($standaloneManifestPath) || is_link($standaloneManifestPath)) {
+        try {
+            if (! docaraSafeRegularFile($standaloneManifestPath)) {
+                throw new RuntimeException('Standalone example manifest is unsafe.');
+            }
+            $standalone = json_decode((string) file_get_contents($standaloneManifestPath), true, 512, JSON_THROW_ON_ERROR);
+            if (! is_array($standalone)
+                || ($standalone['schema'] ?? null) !== 'docara.standalone_examples.v1'
+                || preg_match('/^[a-f0-9]{64}$/D', $standalone['generator_sha256'] ?? '') !== 1
+                || preg_match('/^[a-f0-9]{64}$/D', $standalone['inputs_sha256'] ?? '') !== 1
+                || ! is_array($standalone['files'] ?? null)
+                || ! array_is_list($standalone['files'])
+                || $standalone['files'] === []
+            ) {
+                throw new RuntimeException('Standalone example manifest is invalid.');
+            }
+            $seenExamplePaths = [];
+            foreach ($standalone['files'] as $record) {
+                $path = is_array($record) ? ($record['path'] ?? null) : null;
+                $sha256 = is_array($record) ? ($record['sha256'] ?? null) : null;
+                if (! is_string($path)
+                    || ! docaraCatalogSafePath($path)
+                    || ! str_starts_with($path, 'demos/')
+                    || isset($seenExamplePaths[$path])
+                    || ! is_string($sha256)
+                    || preg_match('/^[a-f0-9]{64}$/D', $sha256) !== 1
+                ) {
+                    throw new RuntimeException('Standalone example path or digest is invalid or duplicated.');
+                }
+                $seenExamplePaths[$path] = true;
+                $artifact = $root . '/' . $path;
+                if (! docaraSafeRegularFile($artifact) || hash_file('sha256', $artifact) !== $sha256) {
+                    throw new RuntimeException("Standalone example [$path] is missing, unsafe or changed.");
+                }
+                if (str_ends_with($path, '.html')) {
+                    $standaloneHtmlOutputs[] = $path;
+                }
+            }
+        } catch (Throwable $exception) {
+            $broken[] = ['page' => '@build', 'reference' => '@standalone-examples', 'target' => $exception->getMessage()];
+        }
+    }
     $expectedHtmlOutputs = array_values(array_unique([
         ...$manifestOutputs,
+        ...$standaloneHtmlOutputs,
     ]));
     sort($expectedHtmlOutputs, SORT_STRING);
     if ($actualHtmlOutputs !== $expectedHtmlOutputs) {

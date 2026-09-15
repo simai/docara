@@ -25,11 +25,9 @@ use Tests\TestCase;
 
 final class StaticBuildVerifierTest extends TestCase
 {
-    private const FRAMEWORK_PAIR = 'sf-v5.8.0-d813107a-548c11cd';
+    private const FRAMEWORK_PAIR = 'ui-8c22fe2b80bb-smart-400d80e501ca';
 
     private const FRAMEWORK_PROVIDER_REVISION = '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663';
-
-    private const FRAMEWORK_SMART_REVISION = '548c11cd6ec071d171ca8da4fb5bc66c6d9552c0';
 
     private const SUPPORTED_COMPONENTS = ['ui.alert', 'ui.button'];
 
@@ -69,6 +67,44 @@ final class StaticBuildVerifierTest extends TestCase
         $broken = $this->verify($build);
         self::assertSame(1, $broken->getExitCode());
         self::assertStringContainsString('asset.css', $broken->getOutput());
+    }
+
+    #[Test]
+    public function standalone_example_receipt_admits_only_exact_verified_demo_files(): void
+    {
+        $build = $this->tmpPath('standalone-build');
+        $this->filesystem->ensureDirectoryExists($build);
+        file_put_contents($build . '/index.html', '<a href="/asset.css">Asset</a>');
+        file_put_contents($build . '/asset.css', 'body{}');
+        $this->writeResolvedPlans($build, '/');
+        $baseline = $this->verify($build);
+        self::assertSame(0, $baseline->getExitCode(), $baseline->getOutput());
+        $this->filesystem->ensureDirectoryExists($build . '/demos/guide/recipe');
+        $examplePath = 'demos/guide/recipe/index.html';
+        file_put_contents($build . '/' . $examplePath, '<h1>Recipe demo</h1>');
+        $receipt = [
+            'schema' => 'docara.standalone_examples.v1',
+            'generator_sha256' => str_repeat('a', 64),
+            'inputs_sha256' => str_repeat('b', 64),
+            'files' => [[
+                'path' => $examplePath,
+                'sha256' => hash_file('sha256', $build . '/' . $examplePath),
+            ]],
+        ];
+        $this->writeJson($build . '/.docara/standalone-examples.json', $receipt);
+        $valid = $this->verify($build);
+        self::assertSame(0, $valid->getExitCode(), $valid->getOutput());
+
+        file_put_contents($build . '/' . $examplePath, '<h1>Changed demo</h1>');
+        $changed = $this->verify($build);
+        self::assertSame(1, $changed->getExitCode());
+        self::assertStringContainsString('@standalone-examples', $changed->getOutput());
+
+        $receipt['files'][] = $receipt['files'][0];
+        $this->writeJson($build . '/.docara/standalone-examples.json', $receipt);
+        $duplicated = $this->verify($build);
+        self::assertSame(1, $duplicated->getExitCode());
+        self::assertStringContainsString('@standalone-examples', $duplicated->getOutput());
     }
 
     #[Test]

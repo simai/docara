@@ -41,3 +41,7 @@ Docara first builds the complete candidate site in an isolated directory. An
 invalid Recipe fails the page build and leaves the previously accepted static
 site unchanged. The generated site is therefore the active immutable snapshot;
 Docara does not create a second active-pointer system inside the source project.
+
+A [complete portable page example](../examples/composition-recipe-site/README.md)
+contains the Markdown front matter, Recipe, inputs, template and both header
+fragments. Copy it into a newly initialized site to try the normal build.

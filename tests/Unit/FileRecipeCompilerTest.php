@@ -17,6 +17,36 @@ use Tests\TestCase;
 final class FileRecipeCompilerTest extends TestCase
 {
     #[Test]
+    public function checked_portable_example_builds_with_one_primary_heading(): void
+    {
+        $node = (new ExecutableFinder)->find('node');
+        $frameworkRoot = getenv('SIMAI_UI_ROOT');
+        if (! is_string($node) || ! is_string($frameworkRoot) || $frameworkRoot === '') {
+            self::markTestSkipped('The exact Framework candidate is required for the checked example.');
+        }
+
+        $project = $this->tmpPath('portable-recipe-example');
+        $files = new Filesystem;
+        $files->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $project);
+        $example = dirname(__DIR__, 2) . '/examples/composition-recipe-site';
+        $files->copyDirectory($example . '/content', $project . '/content');
+        $files->copyDirectory($example . '/composition', $project . '/composition');
+        $destination = $project . '/build_local';
+
+        (new PortableSiteBuilder(
+            $files,
+            new PortableMarkdownRenderer,
+            recipeCompiler: FileRecipeCompiler::fromFrameworkDistribution($node, $frameworkRoot),
+        ))->build($project, $destination);
+
+        $html = (string) file_get_contents($destination . '/ru/catalogue/index.html');
+        self::assertSame(1, substr_count($html, '<h1'));
+        self::assertStringContainsString('Краткая шапка', $html);
+        self::assertStringContainsString('Файловый контент Docara.', $html);
+        self::assertStringNotContainsString('Расширенная шапка', $html);
+    }
+
+    #[Test]
     public function portable_site_pipeline_publishes_a_recipe_page_transactionally(): void
     {
         $node = (new ExecutableFinder)->find('node');

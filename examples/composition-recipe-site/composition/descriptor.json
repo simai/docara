@@ -1,0 +1,15 @@
+{
+  "recipe": "composition/recipe.json",
+  "inputs": "composition/inputs.json",
+  "scope": "docara-site",
+  "executionContract": {
+    "contractDigest": "sha256:894de36b030bebdcc539c3616f29f0ca97d20f5aed07b9cd07d0d5448eda1cc2",
+    "registryDigest": "sha256:docara-registry",
+    "rendererDigest": "sha256:docara-renderer"
+  },
+  "sources": [
+    { "kind": "template", "owner": "docara/files", "ref": "page", "revision": "1", "path": "composition/page.json" },
+    { "kind": "fragment", "owner": "docara/files", "ref": "header.compact", "revision": "1", "path": "composition/header-compact.json" },
+    { "kind": "fragment", "owner": "docara/files", "ref": "header.expanded", "revision": "1", "path": "composition/header-expanded.json" }
+  ]
+}

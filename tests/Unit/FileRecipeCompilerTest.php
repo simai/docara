@@ -17,11 +17,11 @@ final class FileRecipeCompilerTest extends TestCase
     public function it_compiles_only_the_selected_file_variant_with_the_framework_recipe_runtime(): void
     {
         $node = (new ExecutableFinder)->find('node');
-        $frameworkRoot = getenv('SIMAI_UI_SOURCE_ROOT');
+        $frameworkRoot = getenv('SIMAI_UI_ROOT');
         if (! is_string($node) || ! is_string($frameworkRoot) || $frameworkRoot === '') {
             self::markTestSkipped('The exact Framework candidate is required for the cross-product Recipe check.');
         }
-        $entry = realpath($frameworkRoot . '/src/core/js/composition/index.mjs');
+        $entry = realpath($frameworkRoot . '/distr/core/js/composition/index.mjs');
         if (! is_string($entry)) {
             self::markTestSkipped('The exact Framework candidate entry is unavailable.');
         }
@@ -35,7 +35,7 @@ final class FileRecipeCompilerTest extends TestCase
         $this->writeJson($project . '/composition/header-expanded.json', $this->header('Расширенная шапка'));
         $this->writeJson($project . '/composition/descriptor.json', $this->descriptor());
 
-        $compiler = new FileRecipeCompiler($node, $entry, 'sha256:' . hash_file('sha256', $entry));
+        $compiler = FileRecipeCompiler::fromFrameworkDistribution($node, $frameworkRoot);
         $compact = $compiler->compile($project, 'composition/descriptor.json');
         self::assertStringContainsString('Краткая шапка', $compact['html']);
         self::assertStringNotContainsString('Расширенная шапка', $compact['html']);
@@ -57,11 +57,11 @@ final class FileRecipeCompilerTest extends TestCase
     public function it_fails_closed_for_a_stale_framework_or_invalid_selected_source(): void
     {
         $node = (new ExecutableFinder)->find('node');
-        $frameworkRoot = getenv('SIMAI_UI_SOURCE_ROOT');
+        $frameworkRoot = getenv('SIMAI_UI_ROOT');
         if (! is_string($node) || ! is_string($frameworkRoot) || $frameworkRoot === '') {
             self::markTestSkipped('The exact Framework candidate is required for the cross-product Recipe check.');
         }
-        $entry = realpath($frameworkRoot . '/src/core/js/composition/index.mjs');
+        $entry = realpath($frameworkRoot . '/distr/core/js/composition/index.mjs');
         if (! is_string($entry)) {
             self::markTestSkipped('The exact Framework candidate entry is unavailable.');
         }
@@ -83,18 +83,18 @@ final class FileRecipeCompilerTest extends TestCase
         }
 
         $this->expectException(\RuntimeException::class);
-        (new FileRecipeCompiler($node, $entry, 'sha256:' . hash_file('sha256', $entry)))->compile($project, 'composition/descriptor.json');
+        FileRecipeCompiler::fromFrameworkDistribution($node, $frameworkRoot)->compile($project, 'composition/descriptor.json');
     }
 
     #[Test]
     public function it_activates_and_rolls_back_a_complete_recipe_snapshot_with_revision_control(): void
     {
         $node = (new ExecutableFinder)->find('node');
-        $frameworkRoot = getenv('SIMAI_UI_SOURCE_ROOT');
+        $frameworkRoot = getenv('SIMAI_UI_ROOT');
         if (! is_string($node) || ! is_string($frameworkRoot) || $frameworkRoot === '') {
             self::markTestSkipped('The exact Framework candidate is required for the cross-product Recipe check.');
         }
-        $entry = realpath($frameworkRoot . '/src/core/js/composition/index.mjs');
+        $entry = realpath($frameworkRoot . '/distr/core/js/composition/index.mjs');
         if (! is_string($entry)) {
             self::markTestSkipped('The exact Framework candidate entry is unavailable.');
         }
@@ -108,7 +108,7 @@ final class FileRecipeCompilerTest extends TestCase
         $this->writeJson($project . '/composition/header-expanded.json', $this->header('Расширенная шапка'));
         $this->writeJson($project . '/composition/descriptor.json', $this->descriptor());
 
-        $publisher = new FileRecipeSnapshotPublisher(new FileRecipeCompiler($node, $entry, 'sha256:' . hash_file('sha256', $entry)));
+        $publisher = new FileRecipeSnapshotPublisher(FileRecipeCompiler::fromFrameworkDistribution($node, $frameworkRoot));
         $compact = $publisher->compileAndActivate($project, 'guide.home', 'composition/descriptor.json', null);
         self::assertSame(1, $compact['activation_revision']);
         self::assertStringContainsString('Краткая шапка', $compact['html']);

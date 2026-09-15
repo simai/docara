@@ -1636,7 +1636,10 @@ final readonly class FrameworkAssetPlanner
                     || preg_match('/^[a-f0-9]{40}$/', $asset['source_revision']) !== 1
                     || ! is_string($asset['sha256'] ?? null)
                     || preg_match('/^[a-f0-9]{64}$/', $asset['sha256']) !== 1
-                    || preg_match('/\?sf_v=sf-v[0-9.]+-[a-f0-9]{8}-[a-f0-9]{8}-[a-f0-9]{16}$/', $url) !== 1
+                    || preg_match(
+                        '/\?sf_v=(?:sf-v[0-9.]+-[a-f0-9]{8}-[a-f0-9]{8}|ui-[a-f0-9]{12}-smart-[a-f0-9]{12})-[a-f0-9]{16}$/',
+                        $url,
+                    ) !== 1
                 ) {
                     throw new FrameworkComponentException('FRAMEWORK_ASSET_SOURCE_REVISION_REQUIRED', (string) $asset['key']);
                 }

@@ -452,17 +452,26 @@ final class PortableConfigurationLoader
         $ui = $runtime['ui'];
         $smart = $runtime['ui_smart'];
         $registry = $runtime['framework_registry'];
-        $pair = sprintf(
+        $legacyPair = sprintf(
             'sf-%s-%s-%s',
             $runtime['tag'],
             substr($ui['commit'], 0, 8),
             substr($smart['commit'], 0, 8),
         );
+        $exactPair = sprintf(
+            'ui-%s-smart-%s',
+            substr($ui['commit'], 0, 12),
+            substr($smart['commit'], 0, 12),
+        );
+        $allowedPairs = $runtime['publication_profile'] === 'verified-commit-candidate-v1'
+            ? [$legacyPair, $exactPair]
+            : [$legacyPair];
+        $pair = $runtime['pair_id'];
         $bundle = $pair
             . '-registry-' . substr($registry['file_sha256'], 0, 8)
             . '-' . $runtime['publication_profile'];
 
-        if ($runtime['pair_id'] !== $pair
+        if (! in_array($pair, $allowedPairs, true)
             || $runtime['bundle_id'] !== $bundle
             || $runtime['ui']['tag'] !== $runtime['tag']
             || $registry['compatibility_id'] !== $pair

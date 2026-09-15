@@ -41,44 +41,44 @@
         ]
     },
     "runtime": "simai-framework",
-    "pair_id": "sf-v5.8.0-d813107a-548c11cd",
-    "bundle_id": "sf-v5.8.0-d813107a-548c11cd-registry-e21b8526-verified-commit-candidate-v1",
+    "pair_id": "ui-8c22fe2b80bb-smart-400d80e501ca",
+    "bundle_id": "ui-8c22fe2b80bb-smart-400d80e501ca-registry-1e5dcbf8-verified-commit-candidate-v1",
     "publication_profile": "verified-commit-candidate-v1",
     "tag": "v5.8.0",
     "ui": {
         "tag": "v5.8.0",
-        "commit": "d813107a11873cf76fcd3bcddc2fa32df0cb1611",
+        "commit": "8c22fe2b80bb3bb88ec40dd34bbcddffb65f27d2",
         "tree": "distr",
         "mount": "ui",
-        "sha256": "793e351d0270b2265eece567c8eae67b3bc6244788862a20aa68c320a7929b9b",
-        "files": 5055
+        "sha256": "300b752341b7075eda26815a729e598f6e5b3ae53213d3225db431a8b1b08c81",
+        "files": 5087
     },
     "ui_smart": {
         "tag": "v5.6.0",
-        "commit": "548c11cd6ec071d171ca8da4fb5bc66c6d9552c0",
+        "commit": "400d80e501ca5e6816ba8f96b0ca18f01c0626c9",
         "tree": "smart",
         "mount": "smart",
-        "sha256": "13a31454a4a0b83472cb9821f9a039c3501ffb2e48d8c494ce2b5de93610219a",
+        "sha256": "085f08503472b7d05214decd65d01e6d2abb004c1a2d7a0b556ea6e9acf8e4a5",
         "files": 642
     },
     "framework_registry": {
         "schema_id": "simai.framework.contract-registry",
-        "compatibility_id": "sf-v5.8.0-d813107a-548c11cd",
+        "compatibility_id": "ui-8c22fe2b80bb-smart-400d80e501ca",
         "profile": "plain-assets-v1",
         "relative_path": "contracts/generated/framework-contract-registry.json",
-        "file_sha256": "e21b85267310b410df74e3ca73568c6d824ebac1e5505e9b66630490160afbf3",
+        "file_sha256": "1e5dcbf84fd7188f22f68b93cb7f1f400f881275fe3bff2609fc6f844a7fc7b5",
         "source": {
-            "commit": "42c1a6d2c2370c95bb6e6e2b925f2d17065ac60c",
+            "commit": "4665ecb607b009eae88e77d41cfb46d05d8e4af0",
             "tree": "contracts/generated",
-            "tree_oid": "6ba17b6fce2593e18b2cd8f7ada872e4da49b62d",
+            "tree_oid": "7719fc4107f5943e89e8b3f13ea02e3cea563a0e",
             "mount": "contract",
-            "sha256": "0237a0f52fa80a0cd201df64ca6b848551f630f73f558899b9a8f160ff86cace",
+            "sha256": "08e20b711995cb9b2bd53cf41905fe30385ece15250edb390cbe6bacb3ac29a6",
             "files": 2
         },
         "documentation_source": {
             "schema": "docara.documentation_source.v1",
             "relative_path": "contracts/generated/documentation-source.json",
-            "file_sha256": "3089d58425319f11bc5227e35d8f84cc3318f280f30910194c175ca85643b06c"
+            "file_sha256": "6c63d8b8e47c67114311486cfdcfa78d9d0617fce88f3f3b2c66d8dbc85cf211"
         }
     },
     "boot": {

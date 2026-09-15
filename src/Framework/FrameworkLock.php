@@ -246,7 +246,8 @@ final readonly class FrameworkLock
         if ($typography !== null) {
             if (! is_array($typography)
                 || ($typography['schema'] ?? null) !== 'docara.framework_typography_projection.v1'
-                || ! in_array($typography['candidate'] ?? null, ['5.4.0-rc.1', '5.4.0'], true)
+                || ! is_string($typography['candidate'] ?? null)
+                || preg_match('/\A[0-9]+\.[0-9]+\.[0-9]+(?:-rc\.[0-9]+)?\z/D', $typography['candidate']) !== 1
                 || ! in_array($typography['source']['provider'] ?? null, ['simai/ui-source', 'simai/ui-loader'], true)
                 || ! $this->isCommit($typography['source']['revision'] ?? null)
                 || ! $this->isCommit($typography['source']['rollback_parent'] ?? null)

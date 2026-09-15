@@ -246,7 +246,7 @@
                 "schema": {"type": "string", "const": "docara.framework_typography_projection.v1"},
                 "candidate": {
                     "type": "string",
-                    "enum": ["5.4.0-rc.1", "5.4.0"]
+                    "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+(?:-rc\\.[0-9]+)?$"
                 },
                 "source": {"$ref": "#/$defs/typography_source"},
                 "builder": {"$ref": "#/$defs/typography_builder"},

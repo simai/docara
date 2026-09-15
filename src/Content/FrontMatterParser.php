@@ -9,7 +9,7 @@ use Simai\Docara\Portable\PortableConfigurationException;
 
 final readonly class FrontMatterParser
 {
-    private const KEYS = ['title', 'description', 'tags', 'draft', 'translation_key', 'profile'];
+    private const KEYS = ['title', 'description', 'tags', 'draft', 'translation_key', 'profile', 'composition_recipe'];
 
     public function parse(string $markdown, string $source): FrontMatterDocument
     {
@@ -108,6 +108,19 @@ final readonly class FrontMatterParser
         }
         if ($key === 'profile' && ! in_array($value, AuthoringProfileRegistry::IDS, true)) {
             $this->fail('FRONT_MATTER_PROFILE_INVALID', $source, $line, $column, 'Use a built-in Docara authoring profile.');
+        }
+        if ($key === 'composition_recipe'
+            && (preg_match('~^[A-Za-z0-9][A-Za-z0-9._/-]{0,498}\.json$~D', $value) !== 1
+                || str_contains('/' . $value . '/', '/../')
+                || str_contains($value, '//'))
+        ) {
+            $this->fail(
+                'FRONT_MATTER_COMPOSITION_RECIPE_INVALID',
+                $source,
+                $line,
+                $column,
+                'Use a safe project-relative JSON descriptor path.',
+            );
         }
 
         return $value;

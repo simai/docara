@@ -36,8 +36,12 @@ final readonly class PageBuilder
         string $root,
         FrameworkComponentRuntime $runtime,
         int $tocDepth,
+        ?array $compositionRecipe = null,
     ): PageBuilderResult {
-        $document = $this->compiler->compile($plan->markdown, $plan->page);
+        $document = $this->compiler->compile(
+            $compositionRecipe === null ? $plan->markdown : '<!-- Content is supplied by Composition Recipe. -->',
+            $plan->page,
+        );
         $rendered = $this->renderers->render(
             $document,
             new DocumentRenderContext(
@@ -52,6 +56,17 @@ final readonly class PageBuilder
             ),
         );
         $renderedMarkdown = $rendered['document']->html;
+        if ($compositionRecipe !== null) {
+            if (! is_string($compositionRecipe['html'] ?? null)
+                || $compositionRecipe['html'] === ''
+                || ! is_array($compositionRecipe['document'] ?? null)
+                || ! is_array($compositionRecipe['dependencyReceipt'] ?? null)
+                || ! is_string($compositionRecipe['dependencyReceipt']['documentDigest'] ?? null)
+            ) {
+                throw new \InvalidArgumentException('COMPOSITION_RECIPE_PAGE_RESULT_INVALID');
+            }
+            $renderedMarkdown = $compositionRecipe['html'];
+        }
         $componentArtifacts = $rendered['components'];
         $outline = (new PortableDocumentOutlineBuilder)->build(
             $renderedMarkdown,
@@ -79,6 +94,12 @@ final readonly class PageBuilder
             ];
         }
         $framework = $runtime->recordGatewayCalls($plan->markdown, $frameworkCalls);
+        $recipeProvenance = $compositionRecipe === null ? [] : [
+            'composition_recipe' => [
+                'document_digest' => $compositionRecipe['dependencyReceipt']['documentDigest'],
+                'dependency_receipt' => $compositionRecipe['dependencyReceipt'],
+            ],
+        ];
         $documentArtifact = new RenderArtifact(
             $contentHtml,
             $rendered['document']->assets,
@@ -89,7 +110,7 @@ final readonly class PageBuilder
                     $componentArtifacts,
                 ),
             ],
-            $rendered['document']->provenance + [
+            $rendered['document']->provenance + $recipeProvenance + [
                 'document_ir_sha256' => hash('sha256', json_encode($document->toArray(), JSON_THROW_ON_ERROR)),
             ],
         );

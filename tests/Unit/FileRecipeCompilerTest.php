@@ -7,12 +7,80 @@ namespace Tests\Unit;
 use PHPUnit\Framework\Attributes\Test;
 use Simai\Docara\Declarative\Composition\Recipe\FileRecipeCompiler;
 use Simai\Docara\Declarative\Composition\Recipe\FileRecipeSnapshotPublisher;
+use Simai\Docara\File\Filesystem;
 use Simai\Docara\Portable\PortableConfigurationException;
+use Simai\Docara\PortableSite\PortableMarkdownRenderer;
+use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Symfony\Component\Process\ExecutableFinder;
 use Tests\TestCase;
 
 final class FileRecipeCompilerTest extends TestCase
 {
+    #[Test]
+    public function portable_site_pipeline_publishes_a_recipe_page_transactionally(): void
+    {
+        $node = (new ExecutableFinder)->find('node');
+        $frameworkRoot = getenv('SIMAI_UI_ROOT');
+        if (! is_string($node) || ! is_string($frameworkRoot) || $frameworkRoot === '') {
+            self::markTestSkipped('The exact Framework candidate is required for the cross-product Recipe check.');
+        }
+
+        $project = $this->tmpPath('portable-recipe-project');
+        (new Filesystem)->copyDirectory(dirname(__DIR__, 2) . '/stubs/portable', $project);
+        file_put_contents($project . '/content/ru/index.md', <<<'MD'
+---
+title: Страница из Recipe
+description: Проверка штатной сборки.
+composition_recipe: composition/descriptor.json
+---
+MD);
+        mkdir($project . '/composition', 0777, true);
+        $this->writeJson($project . '/composition/recipe.json', $this->recipe());
+        $this->writeJson($project . '/composition/inputs.json', $this->inputs('compact'));
+        $this->writeJson($project . '/composition/page.json', $this->template());
+        $this->writeJson($project . '/composition/header-compact.json', $this->header('Краткая шапка'));
+        $this->writeJson($project . '/composition/header-expanded.json', $this->header('Расширенная шапка'));
+        $this->writeJson($project . '/composition/descriptor.json', $this->descriptor());
+        $destination = $project . '/build_local';
+        $builder = new PortableSiteBuilder(
+            new Filesystem,
+            new PortableMarkdownRenderer,
+            recipeCompiler: FileRecipeCompiler::fromFrameworkDistribution($node, $frameworkRoot),
+        );
+
+        $result = $builder->build($project, $destination);
+        $page = $result->get('/ru/');
+        self::assertIsArray($page);
+        self::assertSame('composition_recipe', $page['page_source_kind']);
+        $html = (string) file_get_contents($destination . '/ru/index.html');
+        self::assertStringContainsString('Краткая шапка', $html);
+        self::assertStringContainsString('Файловый контент Docara.', $html);
+        self::assertStringNotContainsString('Расширенная шапка', $html);
+        $receipt = json_decode(
+            (string) file_get_contents($destination . '/.docara/resolved-page-plans.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $home = array_values(array_filter(
+            $receipt['pages'],
+            static fn (array $record): bool => ($record['url'] ?? null) === '/ru/',
+        ))[0];
+        self::assertSame('composition/descriptor.json', $home['composition_recipe']['descriptor']);
+        self::assertSame(2, count($home['composition_recipe']['dependency_receipt']['references']));
+        self::assertDirectoryDoesNotExist($project . '/.docara/composition-recipe');
+
+        $accepted = hash_file('sha256', $destination . '/ru/index.html');
+        file_put_contents($project . '/composition/descriptor.json', '{}');
+        try {
+            $builder->build($project, $destination);
+            self::fail('An invalid Recipe unexpectedly replaced the accepted portable site.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('PAGE_BUILDER_FAILED', $exception->errorCode);
+        }
+        self::assertSame($accepted, hash_file('sha256', $destination . '/ru/index.html'));
+    }
+
     #[Test]
     public function it_compiles_only_the_selected_file_variant_with_the_framework_recipe_runtime(): void
     {

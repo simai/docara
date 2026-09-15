@@ -12,6 +12,7 @@ use Simai\Docara\Content\PageSource;
 use Simai\Docara\Content\PageSourceLocator;
 use Simai\Docara\Declarative\Binding\BindingRegistry;
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
+use Simai\Docara\Declarative\Composition\Recipe\FileRecipeCompiler;
 use Simai\Docara\Declarative\DeclarativePipeline;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Rendering\RenderArtifact;
@@ -65,6 +66,7 @@ final readonly class PortableSiteBuilder
         ?PortablePagePublisher $publisher = null,
         ?PageBuilder $pageBuilder = null,
         ?\Closure $observer = null,
+        private ?FileRecipeCompiler $recipeCompiler = null,
     ) {
         $this->publisherInjected = $publisher !== null;
         $this->pageBuilderInjected = $pageBuilder !== null;
@@ -286,11 +288,13 @@ final readonly class PortableSiteBuilder
                 $this->frameworkAssetBase($plan->frameworkLock, (string) ($site['base_url'] ?? '/')),
             );
             try {
+                $compositionRecipe = $this->compositionRecipe($root, $plan);
                 $pageResult = $pageBuilder->build(
                     $plan,
                     $root,
                     $runtime,
                     (int) data_get($plan->configuration, 'reading.toc_depth', 3),
+                    $compositionRecipe,
                 );
             } catch (\Throwable $exception) {
                 throw new PortableConfigurationException(
@@ -313,7 +317,7 @@ final readonly class PortableSiteBuilder
             $pages[] = [
                 'plan' => $plan,
                 'page_path' => $pagePath,
-                'page_source_kind' => 'authored_markdown',
+                'page_source_kind' => $compositionRecipe === null ? 'authored_markdown' : 'composition_recipe',
                 'title' => $title,
                 'description' => $this->pageDescription($plan),
                 'locale' => $pageLocale,
@@ -349,6 +353,11 @@ final readonly class PortableSiteBuilder
                 'document_ir' => $pageResult->document,
                 'components' => $components,
                 'component_calls' => $components->normalizedCalls,
+                'composition_recipe' => $compositionRecipe === null ? null : [
+                    'descriptor' => $plan->frontMatter['composition_recipe'],
+                    'document_digest' => $compositionRecipe['dependencyReceipt']['documentDigest'],
+                    'dependency_receipt' => $compositionRecipe['dependencyReceipt'],
+                ],
             ];
         }
 
@@ -1079,6 +1088,7 @@ final readonly class PortableSiteBuilder
                         'html_sha256' => hash('sha256', $rendered),
                     ],
                     'declarative_pipeline' => $page['declarative_pipeline'],
+                    'composition_recipe' => $page['composition_recipe'] ?? null,
                     'input_chain' => [
                         'resolved_plan_sha256' => $plan->canonicalHash(),
                         'trace' => $plan->trace,
@@ -1176,6 +1186,29 @@ final readonly class PortableSiteBuilder
         }
 
         return $result;
+    }
+
+    /** @return array<string, mixed>|null */
+    private function compositionRecipe(string $root, ResolvedPagePlan $plan): ?array
+    {
+        $descriptor = $plan->frontMatter['composition_recipe'] ?? null;
+        if (! is_string($descriptor)) {
+            return null;
+        }
+        if (trim($plan->markdown) !== '') {
+            throw new PortableConfigurationException(
+                'COMPOSITION_RECIPE_PAGE_CONTENT_CONFLICT',
+                "Recipe page [{$plan->page}] must keep its visible content in the Recipe sources.",
+            );
+        }
+        if (! $this->recipeCompiler instanceof FileRecipeCompiler) {
+            throw new PortableConfigurationException(
+                'COMPOSITION_RECIPE_RUNTIME_REQUIRED',
+                "Recipe page [{$plan->page}] requires an exact Simai Framework distribution.",
+            );
+        }
+
+        return $this->recipeCompiler->compile($root, $descriptor);
     }
 
     /** @return array<string, mixed> */

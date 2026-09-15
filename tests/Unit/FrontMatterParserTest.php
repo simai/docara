@@ -12,6 +12,20 @@ use Simai\Docara\Portable\PortableConfigurationException;
 final class FrontMatterParserTest extends TestCase
 {
     #[Test]
+    public function composition_recipe_accepts_only_a_safe_project_relative_json_path(): void
+    {
+        $document = (new FrontMatterParser)->parse("---\ncomposition_recipe: composition/page.json\n---\n", 'content/page.md');
+        self::assertSame('composition/page.json', $document->metadata['composition_recipe']);
+
+        try {
+            (new FrontMatterParser)->parse("---\ncomposition_recipe: ../private.json\n---\n", 'content/page.md');
+            self::fail('An escaping Recipe descriptor unexpectedly passed.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('FRONT_MATTER_COMPOSITION_RECIPE_INVALID', $exception->errorCode);
+        }
+    }
+
+    #[Test]
     public function it_parses_the_bounded_contract_and_preserves_source_line_numbers(): void
     {
         $document = (new FrontMatterParser)->parse(<<<'MD'

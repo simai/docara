@@ -2,7 +2,7 @@
 
 Docara builds static documentation, reference sites and small landing pages
 from Markdown and validated JSON. SIMAI Framework supplies the interface;
-authors do not need Node.js or a frontend toolchain.
+ordinary Markdown authors do not need Node.js or a frontend toolchain.
 
 ## Quick start
 
@@ -158,6 +158,7 @@ registries and PreviewKernel. The optional PHP stdio MCP adapter is
 - [Layouts, regions and navigation](docs/site/content/ru/authoring/layout-and-navigation.md)
 - [Components](docs/site/content/ru/components.md)
 - [Build and verification](docs/site/content/ru/build.md)
+- [Composition Recipe pages](docs/composition-recipe.md)
 - [Portable project format](docs/site/content/ru/authoring/project-files.md)
 - [Release notes](https://github.com/simai/docara/releases)
 

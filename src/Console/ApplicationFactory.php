@@ -13,6 +13,7 @@ use Simai\Docara\Application\ProjectUpgradeService;
 use Simai\Docara\Application\QaService;
 use Simai\Docara\Application\ScaffoldService;
 use Simai\Docara\Application\ValidationService;
+use Simai\Docara\Declarative\Composition\Recipe\FileRecipeCompiler;
 use Simai\Docara\Documentation\DocumentationStatusService;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\File\ProjectFilesystemGuard;
@@ -24,6 +25,7 @@ use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Preview\PreviewKernel;
 use Simai\Docara\Preview\PreviewShell;
 use Symfony\Component\Console\Application;
+use Symfony\Component\Process\ExecutableFinder;
 
 final class ApplicationFactory
 {
@@ -32,7 +34,23 @@ final class ApplicationFactory
         $base ??= getcwd() ?: '.';
         $files = new Filesystem;
         $writes = new ProjectFilesystemGuard;
-        $builder = new PortableSiteBuilder($files, new PortableMarkdownRenderer);
+        $frameworkRoot = getenv('DOCARA_SIMAI_UI_ROOT');
+        $nodeBinary = getenv('DOCARA_NODE_BINARY');
+        $recipeCompiler = null;
+        if (is_string($frameworkRoot) && $frameworkRoot !== '') {
+            $nodeBinary = is_string($nodeBinary) && $nodeBinary !== ''
+                ? $nodeBinary
+                : (new ExecutableFinder)->find('node');
+            if (! is_string($nodeBinary) || $nodeBinary === '') {
+                throw new \RuntimeException('docara_composition_recipe_node_unavailable');
+            }
+            $recipeCompiler = FileRecipeCompiler::fromFrameworkDistribution($nodeBinary, $frameworkRoot);
+        }
+        $builder = new PortableSiteBuilder(
+            $files,
+            new PortableMarkdownRenderer,
+            recipeCompiler: $recipeCompiler,
+        );
         $version = InstalledVersions::isInstalled('simai/docara')
             ? (InstalledVersions::getPrettyVersion('simai/docara') ?? 'dev')
             : 'dev';

@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Simai\Docara\Application\DesignAtlasService;
 use Simai\Docara\ComponentCatalog\TypedComponentDefinitionRepository;
+use Simai\Docara\Declarative\Composition\Recipe\FileRecipeCompiler;
 use Simai\Docara\Document\MarkdownCompiler;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Framework\FrameworkComponentRuntime;
@@ -19,6 +20,7 @@ use Simai\Docara\PortableSite\PageBuilderResult;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use Simai\Docara\Smart\Runtime\ProjectSmartRuntime;
+use Symfony\Component\Process\ExecutableFinder;
 
 final class SurfaceRuntimeTest extends TestCase
 {
@@ -231,7 +233,15 @@ MD);
             ));
             self::assertSame('project.project', $projectArtifacts[0]->provenance['provider']);
 
-            (new PortableSiteBuilder(new Filesystem, new PortableMarkdownRenderer))->build($this->site, $destination);
+            $frameworkRoot = getenv('SIMAI_UI_ROOT');
+            $node = (new ExecutableFinder)->find('node');
+            self::assertIsString($frameworkRoot);
+            self::assertIsString($node);
+            (new PortableSiteBuilder(
+                new Filesystem,
+                new PortableMarkdownRenderer,
+                recipeCompiler: FileRecipeCompiler::fromFrameworkDistribution($node, $frameworkRoot),
+            ))->build($this->site, $destination);
 
             $html = (string) file_get_contents($destination . '/ru/components/surface/index.html');
             self::assertSame(1, substr_count($html, 'data-project-product-configurator'));

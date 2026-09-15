@@ -9,11 +9,13 @@ use PHPUnit\Framework\TestCase as PHPUnit;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Simai\Docara\ComponentCatalog\PublicComponentPage;
+use Simai\Docara\Declarative\Composition\Recipe\FileRecipeCompiler;
 use Simai\Docara\File\Filesystem;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
 use SplFileInfo;
+use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
 final class PortableDocumentationSiteTest extends PHPUnit
@@ -48,10 +50,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         self::assertNotEmpty($this->filesWithExtension($source . '/content', 'md'));
 
-        $pages = (new PortableSiteBuilder(
-            $filesystem,
-            new PortableMarkdownRenderer,
-        ))->build($site, $build);
+        $pages = $this->documentationBuilder($filesystem)->build($site, $build);
 
         $htmlPages = $this->filesWithExtension($build, 'html');
         $catalog = $this->json($build . '/_docara/component-catalog.json');
@@ -84,7 +83,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             ),
         ));
 
-        self::assertCount(128, $pages);
+        self::assertCount(130, $pages);
         $performanceProjection = json_decode(
             (string) file_get_contents($build . '/.docara/performance.json'),
             true,
@@ -101,17 +100,15 @@ final class PortableDocumentationSiteTest extends PHPUnit
             self::assertSame('docara.document_ir.v1', $page['declarative_pipeline']['document_ir']['schema']);
             self::assertGreaterThan(0, $page['declarative_pipeline']['document_ir']['nodes']);
         }
-        self::assertCount(263, $htmlPages);
+        self::assertCount(267, $htmlPages);
         $nonIndexedOutput = $build . '/ru/demonstrator-results/composition-inheritance/page/index.html';
         $nonIndexedHash = hash_file('sha256', $nonIndexedOutput);
-        $singleNonIndexed = (new PortableSiteBuilder(
-            $filesystem,
-            new PortableMarkdownRenderer,
-        ))->build($site, $build, '/ru/demonstrator-results/composition-inheritance/page/');
+        $singleNonIndexed = $this->documentationBuilder($filesystem)
+            ->build($site, $build, '/ru/demonstrator-results/composition-inheritance/page/');
         self::assertCount(1, $singleNonIndexed);
         self::assertSame($nonIndexedHash, hash_file('sha256', $nonIndexedOutput));
         self::assertFileDoesNotExist($build . '/ru/lang.json');
-        self::assertCount(114, $search['documents']);
+        self::assertCount(116, $search['documents']);
         self::assertCount(38, $catalog['entries']);
         self::assertCount(31, $supported);
         self::assertCount(5, $unavailable);
@@ -126,7 +123,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             )->count(),
         );
         self::assertCount(7, $redirectReceipt['redirects']);
-        self::assertCount(128, $localeRouteReceipt['redirects']);
+        self::assertCount(130, $localeRouteReceipt['redirects']);
         $rootLocaleRoutes = array_values(array_filter(
             $localeRouteReceipt['redirects'],
             static fn (array $redirect): bool => $redirect['kind'] === 'root',
@@ -292,7 +289,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             JSON_THROW_ON_ERROR,
         );
         self::assertSame('docara.static_build_verification.v1', $report['schema'] ?? null);
-        self::assertSame(263, $report['html_pages'] ?? null);
+        self::assertSame(267, $report['html_pages'] ?? null);
         self::assertSame([], $report['broken'] ?? null);
         self::assertGreaterThan(0, $report['local_references_checked'] ?? 0);
 
@@ -318,7 +315,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         $filesystem->copyDirectory($root . '/docs/site', $site);
         $site = realpath($site);
         self::assertIsString($site);
-        $builder = new PortableSiteBuilder($filesystem, new PortableMarkdownRenderer);
+        $builder = $this->documentationBuilder($filesystem);
         $builder->build($site, $site . '/build_baseline');
         $baseline = (string) file_get_contents($site . '/build_baseline/ru/index.html');
         self::assertStringContainsString('Поиск', $baseline);
@@ -332,7 +329,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
         );
 
         $pages = $builder->build($site, $site . '/build_test');
-        self::assertCount(128, $pages);
+        self::assertCount(130, $pages);
         self::assertStringContainsString(
             'Поиск из content lang',
             (string) file_get_contents($site . '/build_test/ru/index.html'),
@@ -375,7 +372,7 @@ final class PortableDocumentationSiteTest extends PHPUnit
             self::assertTrue(touch($path, $secondTimestamp));
         }
 
-        $builder = new PortableSiteBuilder($filesystem, new PortableMarkdownRenderer);
+        $builder = $this->documentationBuilder($filesystem);
         $firstBuild = $firstSite . '/build_dist';
         $secondBuild = $secondSite . '/build_dist';
         $builder->build($firstSite, $firstBuild);
@@ -383,14 +380,14 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $firstFiles = $this->treeHashes($firstBuild);
         $secondFiles = $this->treeHashes($secondBuild);
-        self::assertCount(4196, $firstFiles);
+        self::assertCount(4200, $firstFiles);
         self::assertSame($firstFiles, $secondFiles);
         self::assertArrayHasKey('_docara/page-metadata.json', $firstFiles);
         self::assertArrayHasKey('.docara/examples.json', $firstFiles);
         self::assertArrayHasKey('.docara/performance.json', $firstFiles);
 
         $metadata = $this->json($firstBuild . '/_docara/page-metadata.json');
-        self::assertCount(128, $metadata['pages']);
+        self::assertCount(130, $metadata['pages']);
         foreach ($metadata['pages'] as $page) {
             self::assertNull($page['updated_at']);
             self::assertNull($page['revision']);
@@ -414,6 +411,21 @@ final class PortableDocumentationSiteTest extends PHPUnit
         sort($paths, SORT_STRING);
 
         return $paths;
+    }
+
+    private function documentationBuilder(Filesystem $filesystem): PortableSiteBuilder
+    {
+        $frameworkRoot = getenv('SIMAI_UI_ROOT');
+        $node = (new ExecutableFinder)->find('node');
+        self::assertIsString($frameworkRoot);
+        self::assertNotSame('', $frameworkRoot);
+        self::assertIsString($node);
+
+        return new PortableSiteBuilder(
+            $filesystem,
+            new PortableMarkdownRenderer,
+            recipeCompiler: FileRecipeCompiler::fromFrameworkDistribution($node, $frameworkRoot),
+        );
     }
 
     /** @return array<string, string> */

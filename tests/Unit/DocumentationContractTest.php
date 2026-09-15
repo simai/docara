@@ -177,11 +177,14 @@ final class DocumentationContractTest extends TestCase
         foreach ($documents as $path) {
             $markdown = (string) file_get_contents($path);
             preg_match_all('/^#(?!#)\h+\S.*$/mu', $this->withoutFencedCode($markdown), $matches);
+            $recipeOwned = preg_match('/^composition_recipe:\h*\S+/mu', $markdown) === 1;
 
             self::assertCount(
-                1,
+                $recipeOwned ? 0 : 1,
                 $matches[0],
-                $this->relativeToRepository($path) . ' must contain exactly one authored H1.',
+                $this->relativeToRepository($path) . ($recipeOwned
+                    ? ' must leave its H1 to the checked Recipe document.'
+                    : ' must contain exactly one authored H1.'),
             );
         }
     }

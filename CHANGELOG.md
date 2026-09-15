@@ -4,6 +4,12 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Standalone file-backed Composition Recipe builds can be saved as complete
+  immutable snapshots, activated with revision comparison and rolled back
+  without depending on Larena services or storage.
+
 ### Fixed
 
 - Large documentation builds release generated Framework CSS as pages are

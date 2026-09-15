@@ -6,6 +6,8 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
 use Simai\Docara\Declarative\Composition\Recipe\FileRecipeCompiler;
+use Simai\Docara\Declarative\Composition\Recipe\FileRecipeSnapshotPublisher;
+use Simai\Docara\Portable\PortableConfigurationException;
 use Symfony\Component\Process\ExecutableFinder;
 use Tests\TestCase;
 
@@ -82,6 +84,71 @@ final class FileRecipeCompilerTest extends TestCase
 
         $this->expectException(\RuntimeException::class);
         (new FileRecipeCompiler($node, $entry, 'sha256:' . hash_file('sha256', $entry)))->compile($project, 'composition/descriptor.json');
+    }
+
+    #[Test]
+    public function it_activates_and_rolls_back_a_complete_recipe_snapshot_with_revision_control(): void
+    {
+        $node = (new ExecutableFinder)->find('node');
+        $frameworkRoot = getenv('SIMAI_UI_SOURCE_ROOT');
+        if (! is_string($node) || ! is_string($frameworkRoot) || $frameworkRoot === '') {
+            self::markTestSkipped('The exact Framework candidate is required for the cross-product Recipe check.');
+        }
+        $entry = realpath($frameworkRoot . '/src/core/js/composition/index.mjs');
+        if (! is_string($entry)) {
+            self::markTestSkipped('The exact Framework candidate entry is unavailable.');
+        }
+
+        $project = $this->tmpPath('recipe-snapshot-project');
+        mkdir($project . '/composition', 0777, true);
+        $this->writeJson($project . '/composition/recipe.json', $this->recipe());
+        $this->writeJson($project . '/composition/inputs.json', $this->inputs('compact'));
+        $this->writeJson($project . '/composition/page.json', $this->template());
+        $this->writeJson($project . '/composition/header-compact.json', $this->header('Краткая шапка'));
+        $this->writeJson($project . '/composition/header-expanded.json', $this->header('Расширенная шапка'));
+        $this->writeJson($project . '/composition/descriptor.json', $this->descriptor());
+
+        $publisher = new FileRecipeSnapshotPublisher(new FileRecipeCompiler($node, $entry, 'sha256:' . hash_file('sha256', $entry)));
+        $compact = $publisher->compileAndActivate($project, 'guide.home', 'composition/descriptor.json', null);
+        self::assertSame(1, $compact['activation_revision']);
+        self::assertStringContainsString('Краткая шапка', $compact['html']);
+
+        $this->writeJson($project . '/composition/inputs.json', $this->inputs('expanded'));
+        $expanded = $publisher->compileAndActivate($project, 'guide.home', 'composition/descriptor.json', 1);
+        self::assertSame(2, $expanded['activation_revision']);
+        self::assertNotSame($compact['snapshot_digest'], $expanded['snapshot_digest']);
+        self::assertStringContainsString('Расширенная шапка', $expanded['html']);
+
+        $rolledBack = $publisher->rollback($project, 'guide.home', $compact['snapshot_digest'], 2);
+        self::assertSame(3, $rolledBack['activation_revision']);
+        self::assertSame($compact['snapshot_digest'], $rolledBack['snapshot_digest']);
+        self::assertStringContainsString('Краткая шапка', $publisher->active($project, 'guide.home')['html']);
+
+        try {
+            $publisher->compileAndActivate($project, 'guide.home', 'composition/descriptor.json', 2);
+            self::fail('A stale activation revision was accepted.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('COMPOSITION_RECIPE_ACTIVATION_CONFLICT', $exception->errorCode);
+        }
+        self::assertSame(3, $publisher->active($project, 'guide.home')['activation_revision']);
+
+        $broken = new FileRecipeSnapshotPublisher(new FileRecipeCompiler($node, $entry, 'sha256:' . str_repeat('0', 64)));
+        try {
+            $broken->compileAndActivate($project, 'guide.home', 'composition/descriptor.json', 3);
+            self::fail('A failed compilation changed the active snapshot.');
+        } catch (\RuntimeException $exception) {
+            self::assertSame('docara_composition_recipe_framework_digest_mismatch', $exception->getMessage());
+        }
+        self::assertSame($compact['snapshot_digest'], $publisher->active($project, 'guide.home')['snapshot_digest']);
+
+        $head = $project . '/.docara/composition-recipe/' . hash('sha256', 'guide.home') . '/active.json';
+        file_put_contents($head, '{}');
+        try {
+            $publisher->active($project, 'guide.home');
+            self::fail('A malformed active pointer was accepted.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('COMPOSITION_RECIPE_HEAD_INVALID', $exception->errorCode);
+        }
     }
 
     /** @param array<string, mixed> $value */

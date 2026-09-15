@@ -1,5 +1,7 @@
 # Docara releases
 
+- [Docara 2.9.1](v2.9.1.md) — Loader-fixed Framework projection, bounded
+  large-build memory and aligned documentation controls.
 - [Docara 2.9.0](v2.9.0.md) — exact SF5 foundation runtime, generated
   contracts and complete portable asset projection.
 - [Docara 2.8.3](v2.8.3.md) — complete restored Utility/Loader contract from

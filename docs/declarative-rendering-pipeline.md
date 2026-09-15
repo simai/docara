@@ -28,7 +28,7 @@ than a second preview site or generated public page path.
 ## Composition Recipe snapshot
 
 The optional file-backed Recipe adapter assembles an approved Recipe with the
-pinned Simai Framework resolver. It stores the resulting Document, HTML and
+pinned SIMAI Framework resolver. It stores the resulting Document, HTML and
 dependency receipt as one immutable snapshot under the project-owned `.docara`
 directory. The active pointer changes only when its expected revision still
 matches. Rollback selects an earlier verified snapshot and advances that

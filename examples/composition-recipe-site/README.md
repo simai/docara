@@ -21,10 +21,8 @@ This example is a checked input, not generated HTML. The accepted Framework
 contract and renderer live in `ui-source`; Docara executes their packaged copy
 from `ui`.
 
-For a local smoke check, this example can be copied into `stubs/portable`. That
-stub currently locks an older Framework shell while the Recipe compiler uses
-the candidate selected by `DOCARA_SIMAI_UI_ROOT`. The smoke check proves page
-assembly and Docara publication behavior; it does not certify a unified
-Core/Smart package pair. Before adopting the page in a real site, pin the site
-shell and Recipe compiler to one verified Framework delivery and rerun its
-browser and static checks.
+For a local smoke check, copy this example into `stubs/portable`. The stub now
+locks the same exact Core/Smart candidate used by the Recipe compiler. Set
+`DOCARA_SIMAI_UI_ROOT` to that Core distribution before building. This is a
+verified commit candidate rather than a tagged Framework release; a site that
+adopts it should keep the lock, browser check and static verification together.

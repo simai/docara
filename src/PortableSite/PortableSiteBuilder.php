@@ -1204,7 +1204,7 @@ final readonly class PortableSiteBuilder
         if (! $this->recipeCompiler instanceof FileRecipeCompiler) {
             throw new PortableConfigurationException(
                 'COMPOSITION_RECIPE_RUNTIME_REQUIRED',
-                "Recipe page [{$plan->page}] requires an exact Simai Framework distribution.",
+                "Recipe page [{$plan->page}] requires an exact SIMAI Framework distribution.",
             );
         }
 

@@ -20,3 +20,11 @@ Each variant supplies the page's single `H1`.
 This example is a checked input, not generated HTML. The accepted Framework
 contract and renderer live in `ui-source`; Docara executes their packaged copy
 from `ui`.
+
+For a local smoke check, this example can be copied into `stubs/portable`. That
+stub currently locks an older Framework shell while the Recipe compiler uses
+the candidate selected by `DOCARA_SIMAI_UI_ROOT`. The smoke check proves page
+assembly and Docara publication behavior; it does not certify a unified
+Core/Smart package pair. Before adopting the page in a real site, pin the site
+shell and Recipe compiler to one verified Framework delivery and rerun its
+browser and static checks.

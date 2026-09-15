@@ -8,6 +8,16 @@
 accepted form controls, install builder, product configurator и footer без
 backend side effects.
 
+:::card
+### Страница из Composition Recipe
+
+**Сборка.** Один шаблон страницы получает содержимое из файлов, а настройка
+выбирает компактную или расширенную шапку до создания HTML.
+
+[Компактная шапка](/ru/examples/composition-recipe-compact/) ·
+[Расширенная шапка](/ru/examples/composition-recipe-expanded/)
+:::
+
 :::columns
 ### Явная композиция областей
 

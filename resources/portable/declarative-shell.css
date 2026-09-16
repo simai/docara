@@ -254,3 +254,14 @@ sf-alert,sf-button{display:block}
 .docara-icon[data-docara-icon-size="1/2"]:not([data-docara-icon-container="none"]) { padding: var(--sf-space-1\/3); }
 .docara-icon[data-docara-icon-size="2"]:not([data-docara-icon-container="none"]),
 .docara-icon[data-docara-icon-size="3"]:not([data-docara-icon-container="none"]) { padding: var(--sf-space-1); }
+
+/* Breadcrumbs describe location; use the secondary text tone in the docs shell. */
+[data-docara-breadcrumbs] .sf-breadcrumbs-item--link .sf-breadcrumbs-item-container {
+    --sf-breadcrumbs-item-container--color: var(--sf-on-surface-variant);
+}
+[data-docara-breadcrumbs] .sf-breadcrumbs-item--link:hover .sf-breadcrumbs-item-container,
+[data-docara-breadcrumbs] .sf-breadcrumbs-item--link:focus-visible .sf-breadcrumbs-item-container {
+    --sf-breadcrumbs-item-container--color: var(--sf-on-surface);
+    text-decoration: underline;
+    text-underline-offset: .2em;
+}

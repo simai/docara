@@ -14,8 +14,11 @@ composer install
 composer validate --strict --no-check-publish
 ```
 
-Не добавляйте Node.js в portable-проверки. Он нужен только при изменении
-исходных ассетов canonical theme scaffold.
+Для проверок сборки нужен Node.js и точная generated-поставка Framework.
+Настройте `DOCARA_SIMAI_UI_ROOT` по [быстрому старту](/start/), используя
+`resources/contracts/composition/runtime-lock.json` этого checkout.
+Если Node.js отсутствует в `PATH`, задайте `DOCARA_NODE_BINARY`.
+Отдельная установка npm-зависимостей сайта не требуется.
 
 ## Запустите узкие проверки
 

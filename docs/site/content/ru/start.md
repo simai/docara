@@ -1,7 +1,9 @@
 # Быстрый старт
 
 Этот путь начинается в пустом каталоге и заканчивается страницей, открытой по
-HTTP. Для пользовательской сборки достаточно PHP и Composer.
+HTTP. Для сборки нужны PHP 8.2+, Composer, Node.js и точная поставка SIMAI Framework.
+Готовый сайт остаётся статическим; эти инструменты нужны только на компьютере
+или сервере сборки.
 
 ## 1. Создайте проект
 
@@ -18,6 +20,22 @@ Composer фиксирует точную установленную версию
 `vendor/bin/docara` всегда относится именно к этому проекту. `init` допускает
 пустой каталог или каталог, где уже находятся только проверенные
 `composer.json`, `composer.lock` и `vendor/` с `simai/docara`.
+
+Подготовьте Framework отдельно от каталога документации. Нужная ревизия
+записана в пакете Docara; команда ниже читает её из установленного lock,
+чтобы не выбирать случайную версию `main`:
+
+```bash
+git clone --no-checkout https://github.com/simai/ui.git /path/to/simai-ui
+DOCARA_FRAMEWORK_REVISION=$(php -r 'echo json_decode(file_get_contents("vendor/simai/docara/resources/contracts/composition/runtime-lock.json"), true)["framework_revision"];')
+git -C /path/to/simai-ui checkout --detach "$DOCARA_FRAMEWORK_REVISION"
+export DOCARA_SIMAI_UI_ROOT=/path/to/simai-ui
+```
+
+Node.js должен быть доступен командой `node`. Если он установлен отдельно,
+задайте `export DOCARA_NODE_BINARY=/path/to/node`. Эти настройки сохраняйте
+в окружении сборки, включая автоматические проверки и обновление Docara.
+После обновления пакета снова выберите ревизию из его lock.
 
 ```bash
 php vendor/bin/docara capabilities --json

@@ -25,7 +25,7 @@ Preview блокирует терминал до `Ctrl+C`. Не использу
 
 ## Руководства
 
-- [PHP-only сборка](/build/php-only/)
+- [Сборка статического сайта](/build/php-only/)
 - [Локальный просмотр](/build/local-preview/)
 - [Статический результат](/build/static-output/)
 - [Воспроизводимость](/build/determinism/)

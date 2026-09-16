@@ -4,6 +4,14 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- Align build, quick-start and developer documentation with mandatory Recipe,
+  Node.js and the exact Framework execution lock.
+- Restore neutral breadcrumb link tones from the reviewed documentation branch.
+
+### Removed
+- Unreferenced superseded bundled Framework projection `d813107a`.
+
 ## [2.10.0] - 2026-09-16
 
 ### Added

@@ -135,7 +135,7 @@ docara preview region --page=/ru/components/alert/ --selector=main
 docara preview smart --page=/ru/components/alert/ --selector=ui.alert
 ```
 
-Для автоматизации добавьте `--json`. PHP-only watch следит за effective input
+Для автоматизации добавьте `--json`. Команда watch следит за effective input
 chain выбранного route, locale UI-copy и реально разрешёнными layout, section,
 block, Smart, template и asset dependencies из package/project providers:
 

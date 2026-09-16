@@ -10,7 +10,8 @@
   -> resolved configuration
   -> typed Document IR
   -> validated render artifacts
-  -> layout composition
+  -> page plan -> Composition Recipe -> resolved Composition Document
+  -> checked renderer projection
   -> HTML + indexes + diagnostics
 ```
 
@@ -218,7 +219,7 @@ layout или page из production HTML/diagnostics. Receipt содержит о
 её fragment, manifest и проверенные local runtime/assets, но не переносит
 `.docara` receipt и другие HTML routes. Поэтому documented preview root
 самостоятельно обслуживается по HTTP, но не может быть принят как full build.
-PHP-only watch получает effective page/config/lang, реально разрешённые
+PHP watch с Recipe resolver на Node.js получает effective page/config/lang, реально разрешённые
 Design/Smart artifacts, templates и assets. Project/package tree dependency
 отслеживает edit/create/delete; нерелевантный artifact отсутствует в closure.
 Каждая пересборка всё равно проходит тот же выбранный route и один PageBuilder.

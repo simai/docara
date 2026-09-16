@@ -1,5 +1,8 @@
 # Docara releases
 
+- [Docara 2.10.0](https://github.com/simai/docara/releases/tag/v2.10.0) —
+  mandatory Composition Recipe page pipeline and verified clean installation.
+
 - [Docara 2.9.1](v2.9.1.md) — Loader-fixed Framework projection, bounded
   large-build memory and aligned documentation controls.
 - [Docara 2.9.0](v2.9.0.md) — exact SF5 foundation runtime, generated

@@ -1,0 +1,20 @@
+{
+  "id": "docara.recipe_primary.acceptance.2026-09-16",
+  "tz_role": "decision",
+  "subtype": "architecture_baseline_acceptance",
+  "lifecycle": "accepted",
+  "owner": "rim-zabarov",
+  "title": "Принятие Composition Recipe как внутреннего стандарта сборки Docara",
+  "human_receipt": {
+    "source": "user-message",
+    "date": "2026-09-16",
+    "statement": "делай",
+    "accepted_proposal": "Сохранить Markdown и небольшие JSON-файлы для автора, преобразовывать их в Composition Recipe, затем в Composition Document и HTML; подтвердить паритет на Docara и ui-doc до удаления старого пути."
+  },
+  "constraints": [
+    "Нормативный контракт Composition Recipe остаётся в ui-source.",
+    "Docara реализует только продуктовый адаптер и не создаёт конкурирующий стандарт.",
+    "Старый путь нельзя удалить до подтверждённого паритета Docara и ui-doc.",
+    "Push, тег, внешний релиз и переключение работающих сайтов не входят в эту работу."
+  ]
+}

@@ -1,0 +1,73 @@
+schema_version: 1.0.0
+workflow_id: 2026-09-16-docara-composition-recipe-primary
+process_model_id: docara_documentation_site_publication
+cycle_id: implementation_and_consumer_acceptance
+state: in_progress
+owner_skill: docara
+companion_skills:
+  - framework
+  - dev
+  - tester
+  - ux
+  - teamlead
+approved_by_user: true
+approval_note: User approved the complete migration plan and instructed implementation on 2026-09-16.
+repository: /Users/rim/Documents/GitHub/docara
+worktree: /Users/rim/Documents/GitHub/.worktrees/docara-recipe-primary
+branch: codex/recipe-primary-pipeline
+revision: 2117d9b9a5577f2c6ea34db480b4709e65515f32
+allowed_files:
+  - src/**
+  - resources/**
+  - tests/**
+  - docs/**
+  - graph/specs/**
+  - source/workflow/**
+  - README.md
+  - CHANGELOG.md
+  - composer.json
+  - phpunit.xml
+allowed_actions:
+  - project_docara_sources_to_recipe
+  - reuse_exact_framework_recipe_runtime
+  - add_product_type_manifests_and_renderers
+  - compare_and_retire_legacy_composition
+  - build_and_verify_docara_and_ui_doc
+  - browser_acceptance_and_local_immutable_rollback
+  - commit_integrate_and_push_verified_changes
+forbidden_actions:
+  - rewrite_project_markdown_or_json_during_build
+  - create_second_editable_page_store
+  - move_normative_recipe_standard_out_of_ui_source
+  - reset_stash_or_overwrite_unrelated_dirty_work
+  - modify_generated_framework_repositories_manually
+  - expose_or_commit_secrets
+  - create_tag_or_public_release
+  - deploy_public_or_production_site
+required_gates:
+  - source_ownership
+  - exact_framework_contract
+  - authoring_compatibility
+  - recipe_document_validation
+  - full_and_single_pipeline_parity
+  - static_output_verification
+  - browser_acceptance
+  - local_rollback_readback
+  - human_centered_simplicity
+required_evidence:
+  - baseline_and_capability_inventory
+  - source_to_recipe_mapping
+  - changed_surface_inventory
+  - parity_report
+  - docara_build_and_static_verification
+  - ui_doc_build_and_static_verification
+  - browser_matrix
+  - rollback_readback
+  - outcome_integrity_verdict
+evidence_path: source/workflow/evidence/2026-09-16-docara-composition-recipe-primary
+stop_conditions:
+  - normative_owner_change_required
+  - arbitrary_html_or_executable_recipe_required
+  - second_editable_source_of_truth_required
+  - unrelated_dirty_work_must_be_overwritten
+  - public_release_or_production_deploy_required

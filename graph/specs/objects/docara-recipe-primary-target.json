@@ -1,0 +1,201 @@
+{
+  "id": "docara.recipe_primary.target.2026-09",
+  "tz_role": "contract",
+  "subtype": "architecture_contract",
+  "lifecycle": "accepted",
+  "title": "Composition Recipe как основной внутренний путь сборки Docara",
+  "semantic_digest": "sha256:391346c22573f866e6a8da632f92299a6a6da6bca6f28a33c10003799d83486e",
+  "source_refs": [
+    "source/workflow/2026-09-16-docara-composition-recipe-primary.md",
+    "graph/specs/features/declarative-composition.json"
+  ],
+  "provider_execution_contract": {
+    "decision_refs": [
+      "docara.recipe_primary.acceptance.2026-09-16"
+    ],
+    "goal_binding": {
+      "goal_id": "docara.recipe_primary.goal.2026-09",
+      "done_when_ids": [
+        "docara.recipe_primary.standard_path",
+        "docara.recipe_primary.parity",
+        "docara.recipe_primary.performance",
+        "docara.recipe_primary.documentation",
+        "docara.recipe_primary.delivery"
+      ]
+    },
+    "requirement_bindings": [
+      {
+        "requirement_id": "docara.recipe_primary.standard_path",
+        "acceptance_ids": [
+          "docara.recipe_primary.standard_path.acceptance"
+        ],
+        "done_when_ids": [
+          "docara.recipe_primary.standard_path"
+        ]
+      },
+      {
+        "requirement_id": "docara.recipe_primary.parity",
+        "acceptance_ids": [
+          "docara.recipe_primary.parity.acceptance"
+        ],
+        "done_when_ids": [
+          "docara.recipe_primary.parity"
+        ]
+      },
+      {
+        "requirement_id": "docara.recipe_primary.performance",
+        "acceptance_ids": [
+          "docara.recipe_primary.performance.acceptance"
+        ],
+        "done_when_ids": [
+          "docara.recipe_primary.performance"
+        ]
+      },
+      {
+        "requirement_id": "docara.recipe_primary.documentation",
+        "acceptance_ids": [
+          "docara.recipe_primary.documentation.acceptance"
+        ],
+        "done_when_ids": [
+          "docara.recipe_primary.documentation"
+        ]
+      },
+      {
+        "requirement_id": "docara.recipe_primary.delivery",
+        "acceptance_ids": [
+          "docara.recipe_primary.delivery.acceptance"
+        ],
+        "done_when_ids": [
+          "docara.recipe_primary.delivery"
+        ]
+      }
+    ],
+    "constraint_ids": [
+      "docara.recipe_primary.preserve_authoring",
+      "docara.recipe_primary.exact_framework",
+      "docara.recipe_primary.preserve_foreign_work",
+      "docara.recipe_primary.no_partial_document"
+    ],
+    "non_goal_ids": [
+      "docara.recipe_primary.no_framework_contract_rewrite",
+      "docara.recipe_primary.no_database",
+      "docara.recipe_primary.no_live_deploy"
+    ],
+    "deferred_boundary_ids": [
+      "docara.recipe_primary.publication_after_acceptance"
+    ],
+    "allowed_change_scope": [
+      {
+        "repository_id": "docara.unified",
+        "owner_id": "docara",
+        "package_id": "docara",
+        "file_patterns": [
+          "src/**",
+          "resources/**",
+          "tests/**",
+          "docs/**",
+          "graph/specs/**",
+          "source/workflow/**",
+          "composer.json",
+          "composer.lock"
+        ],
+        "actions": [
+          "create",
+          "modify",
+          "test",
+          "document"
+        ]
+      },
+      {
+        "repository_id": "project.ui-doc",
+        "owner_id": "sf5",
+        "package_id": "ui-doc",
+        "file_patterns": [
+          "content/**",
+          "docs/**",
+          "tests/**",
+          "scripts/**",
+          "composer.json",
+          "composer.lock",
+          "docara.json",
+          "documentation.lock.json",
+          "simai-framework.lock.json"
+        ],
+        "actions": [
+          "modify",
+          "test",
+          "document"
+        ]
+      }
+    ],
+    "architecture_contract": {
+      "contract_ref": "docara.recipe_primary.target.2026-09",
+      "acceptance_ref": "docara.recipe_primary.acceptance.2026-09-16",
+      "architecture_owner_id": "rim-zabarov",
+      "lifecycle": "accepted",
+      "owner_ids": [
+        "docara",
+        "sf5",
+        "tester"
+      ],
+      "component_ids": [
+        "docara.authoring",
+        "docara.recipe_adapter",
+        "sf5.composition_recipe",
+        "sf5.composition_document",
+        "docara.renderer"
+      ],
+      "package_ids": [
+        "docara",
+        "ui-source",
+        "ui",
+        "ui-doc"
+      ],
+      "capability_ids": [
+        "docara.declarative-composition",
+        "sf5.composition-recipe",
+        "sf5.composition-document"
+      ],
+      "ownership_boundaries": [
+        {
+          "subject_ref": "sf5.composition_recipe",
+          "data_owner": "sf5",
+          "access_owner": "sf5",
+          "lifecycle_owner": "sf5",
+          "interface_owner": "sf5",
+          "runtime_owner": "sf5"
+        },
+        {
+          "subject_ref": "docara.recipe_adapter",
+          "data_owner": "docara",
+          "access_owner": "docara",
+          "lifecycle_owner": "docara",
+          "interface_owner": "docara",
+          "runtime_owner": "docara"
+        }
+      ],
+      "required_relations": [
+        "docara.authoring->docara.recipe_adapter",
+        "docara.recipe_adapter->sf5.composition_recipe",
+        "sf5.composition_recipe->sf5.composition_document",
+        "sf5.composition_document->docara.renderer"
+      ],
+      "allowed_relations": [
+        "docara.renderer->sf5.utilities",
+        "docara.renderer->sf5.components"
+      ],
+      "forbidden_relations": [
+        "docara.recipe_adapter->private_framework_fork",
+        "ui->manual_runtime_source"
+      ],
+      "required_dependencies": [
+        "docara->ui",
+        "ui-doc->docara"
+      ],
+      "forbidden_dependencies": [
+        "sf5.composition_recipe->docara",
+        "sf5.composition_recipe->ui-doc"
+      ]
+    }
+  }
+}

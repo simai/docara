@@ -5,6 +5,7 @@
     "README.md",
     "composer.json",
     "docara",
+    "docs/composition-recipe.md",
     "docs/site/",
     "resources/",
     "scripts/verify-static-build.php",
@@ -12,7 +13,10 @@
     "stubs/",
     "tools/mcp-docara/"
   ],
-  "executable": ["docara", "tools/mcp-docara/server.php"],
+  "executable": [
+    "docara",
+    "tools/mcp-docara/server.php"
+  ],
   "forbidden_prefixes": [
     ".git/",
     ".github/",

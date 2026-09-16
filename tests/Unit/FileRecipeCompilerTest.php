@@ -112,7 +112,7 @@ MD);
             static fn (array $record): bool => ($record['url'] ?? null) === '/ru/',
         ))[0];
         $executionContract = $home['declarative_pipeline']['composition_recipe_primary']['dependency_receipt']['executionContract'];
-        self::assertSame('sha256:894de36b030bebdcc539c3616f29f0ca97d20f5aed07b9cd07d0d5448eda1cc2', $executionContract['contractDigest']);
+        self::assertSame('sha256:63daf55cb7d7c39d55f59a5ba3f5d7e511ace3f16d344879cbc877782ff3dcfd', $executionContract['contractDigest']);
         self::assertSame('sha256:' . $receipt['build']['engine']['tree_sha256'], $executionContract['rendererDigest']);
         self::assertSame('composition/descriptor.json', $home['composition_recipe']['descriptor']);
         self::assertSame(2, count($home['composition_recipe']['dependency_receipt']['references']));

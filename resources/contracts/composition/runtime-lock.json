@@ -1,7 +1,9 @@
 {
   "schema": "docara.composition_runtime_lock.v1",
   "framework_revision": "4665ecb607b009eae88e77d41cfb46d05d8e4af0",
-  "contract_digest": "sha256:894de36b030bebdcc539c3616f29f0ca97d20f5aed07b9cd07d0d5448eda1cc2",
+  "contract_edition": "1.0.1",
+  "contract_source_revision": "8d3438aa9c2e054580fa1eab97916aed010ec545",
+  "contract_digest": "sha256:63daf55cb7d7c39d55f59a5ba3f5d7e511ace3f16d344879cbc877782ff3dcfd",
   "files": {
     "distr/core/js/composition/index.mjs": "sha256:ab7c520156e25a600caa9a1f168202f04d6c6689cefa666f6983b1ff5ec06cde",
     "distr/core/js/composition/builtins.mjs": "sha256:999b7b49f6e5aec5418be1119b8cd634ead6f317154bc771971bbda3fd82355b",

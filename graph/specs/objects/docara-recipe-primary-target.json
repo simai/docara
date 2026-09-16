@@ -4,7 +4,7 @@
   "subtype": "architecture_contract",
   "lifecycle": "accepted",
   "title": "Composition Recipe как основной внутренний путь сборки Docara",
-  "semantic_digest": "sha256:391346c22573f866e6a8da632f92299a6a6da6bca6f28a33c10003799d83486e",
+  "semantic_digest": "sha256:5ce49162af82c8517d8dc7584751e28ab8ee81b86b3f8cff1a553cec0707a37d",
   "source_refs": [
     "source/workflow/2026-09-16-docara-composition-recipe-primary.md",
     "graph/specs/features/declarative-composition.json"
@@ -95,7 +95,6 @@
           "tests/**",
           "docs/**",
           "graph/specs/**",
-          "source/workflow/**",
           "composer.json",
           "composer.lock"
         ],

@@ -6,6 +6,7 @@
     "composer.json",
     "docara",
     "docs/composition-recipe.md",
+    "docs/smart-component-terminology.md",
     "docs/site/",
     "examples/composition-recipe-site/",
     "resources/",

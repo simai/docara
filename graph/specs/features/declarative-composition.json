@@ -4,16 +4,22 @@
   "kind": "capability",
   "subtype": "feature",
   "tz_role": "product_contract",
-  "title": "Declarative layouts and regions",
-  "summary": "Site, section and page JSON select layouts, regions, presets and behavior without owning article prose or CSS templates.",
+  "title": "Composition Recipe page pipeline",
+  "summary": "Markdown and inherited project settings are projected into the Framework Recipe contract, resolved into a Composition Document and rendered by Docara without changing the authoring surface.",
   "owner": "dev",
   "lifecycle": "accepted",
-  "readiness": "R2_contract",
+  "readiness": "implementation_candidate",
   "visibility": "repository",
   "source_refs": ["docs/specification/DOCARA-TZ.md#11-layout-и-области"],
   "evidence_refs": [],
   "profile_refs": ["docara.unified"],
   "config_layers": ["docara.json", "section.json", "<page>.page.json"],
   "resolution_order": ["engine defaults", "site", "ancestor sections", "page override"],
-  "invariants": ["Merge is deterministic.", "Unknown keys fail validation.", "A disabled region does not render or load its assets."]
+  "invariants": [
+    "Merge is deterministic.",
+    "Unknown keys fail validation.",
+    "Every published page has Recipe and Document digests in its build receipt.",
+    "The renderer consumes a plan hydrated from the resolved Composition Document.",
+    "A disabled region does not render or load its assets."
+  ]
 }

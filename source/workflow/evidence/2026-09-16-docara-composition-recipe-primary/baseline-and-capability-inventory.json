@@ -1,0 +1,46 @@
+{
+  "schema": "docara.recipe_primary.baseline.v1",
+  "captured_at": "2026-09-16T07:03:55Z",
+  "repository": "docara.unified",
+  "base_revision": "2117d9b9a5577f2c6ea34db480b4709e65515f32",
+  "governance_revision": "1b5d74e89c5162dc87968136ff237cb133cc71ef",
+  "branch": "codex/recipe-primary-pipeline",
+  "worktree": "/Users/rim/Documents/GitHub/.worktrees/docara-recipe-primary",
+  "protected_checkout": {
+    "path": "/Users/rim/Documents/GitHub/docara",
+    "state": "detached_with_233_dirty_paths",
+    "modified": false
+  },
+  "accepted_target": {
+    "id": "docara.recipe_primary.target.2026-09",
+    "semantic_digest": "sha256:5ce49162af82c8517d8dc7584751e28ab8ee81b86b3f8cff1a553cec0707a37d",
+    "acceptance": "docara.recipe_primary.acceptance.2026-09-16"
+  },
+  "framework_runtime": {
+    "source_revision": "4665ecb607b009eae88e77d41cfb46d05d8e4af0",
+    "entry": "distr/core/js/composition/index.mjs",
+    "entry_sha256": "ab7c520156e25a600caa9a1f168202f04d6c6689cefa666f6983b1ff5ec06cde",
+    "recipe_contract_digest": "sha256:894de36b030bebdcc539c3616f29f0ca97d20f5aed07b9cd07d0d5448eda1cc2"
+  },
+  "authoring_inputs": [
+    "Markdown",
+    "docara.json",
+    "section.json",
+    "page sidecar JSON",
+    "optional explicit composition_recipe descriptor"
+  ],
+  "production_chain_before": [
+    "authoring sources",
+    "docara.document_ir.v1",
+    "docara.resolved_render_plan.v2",
+    "HTML"
+  ],
+  "production_chain_candidate": [
+    "authoring sources",
+    "docara.document_ir.v1",
+    "simai.composition.recipe.v1",
+    "simai.composition.document.v1",
+    "typed PHP renderer projection",
+    "HTML"
+  ]
+}

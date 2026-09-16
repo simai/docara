@@ -13,7 +13,10 @@
 2. Разрешить наследование и provenance каждой страницы.
 3. Один раз скомпилировать Markdown и Smart-вызовы в типизированный `DocumentIr`
    в памяти.
-4. Разрешить `Layout -> Region -> Section -> Block -> Smart`.
+4. Подготовить страницу, области, секции и блоки из проверенных настроек.
+   Превратить эту структуру в Recipe, передать стандартному сборщику
+   SIMAI Framework и получить готовый Composition Document.
+   Вход PHP-рендерера восстановить из этого проверенного документа.
 5. Построить маршруты и каноническую топологию.
 6. Получить из одной топологии видимое меню, breadcrumbs и previous/next.
 7. Отрендерить содержимое через единый registry/Smart gateway, а regions —
@@ -58,8 +61,12 @@ lifecycle. Текст каждой русской публичной стран�
 а повторяющиеся интерфейсные подписи — в `content/ru/lang.json`. Package-owned
 fixtures и данные других локалей не являются владельцами русской страницы.
 
-Все 103 текущих русских route проходят через один PageBuilder и один typed
-Document IR renderer registry. Layout composer принимает типизированный
+Все страницы проходят через один PageBuilder и общий Composition Recipe
+resolver Framework. Markdown сначала получает типизированное представление
+`DocumentIr`, а готовая структура всей страницы — Composition Document.
+Это разные документы: первый описывает прочитанный Markdown, второй —
+результат сборки страницы вместе с областями, секциями и блоками.
+Layout composer принимает типизированный
 PageBuilder artifact; сырого `trustedMainHtml`, generated-page bypass и
 публичных page projector больше нет.
 
@@ -72,5 +79,22 @@ PageBuilder artifact; сырого `trustedMainHtml`, generated-page bypass и
 — в `resources/smart`. В `resources/portable` остаётся общая геометрия shell и
 поведение уровня документа. Builder не содержит HTML, CSS или client runtime.
 
-Пользовательская сборка остаётся PHP-only. Browser JavaScript в готовом
-статическом сайте не означает, что автору нужен Node.js.
+Для сборки нужны PHP, Node.js и точная generated-поставка Framework.
+Node.js запускает общий Recipe resolver один раз на всю сборку; автору не
+нужно заводить отдельный frontend-проект. Готовый сайт остаётся статическим:
+для его публикации PHP и Node.js не нужны.
+
+Перед сборкой задайте путь к Framework и, если `node` отсутствует в `PATH`,
+путь к Node.js:
+
+```bash
+export DOCARA_SIMAI_UI_ROOT=/path/to/exact/ui
+export DOCARA_NODE_BINARY=/path/to/node
+php vendor/bin/docara build production
+```
+
+Каждая страница получает отпечатки Recipe и готового Document в отчёте сборки.
+Ошибка проверки останавливает создание кандидата и сохраняет предыдущий
+результат. [Два варианта страницы](/ru/examples/) показывают явную Recipe,
+которая выбирает шапку по настройке; для обычных страниц Recipe создаётся
+автоматически.

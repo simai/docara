@@ -2,8 +2,13 @@
 
 Страница документации начинается с обычного Markdown. Компонент нужен только
 тогда, когда у фрагмента есть отдельный смысл, параметры, состояние или правила
-композиции. Все варианты проходят один путь: Markdown → typed Document IR →
-renderer registry → Smart Gateway → LayoutComposer → PageBuilder.
+композиции. Все варианты проходят один путь: Markdown и настройки → Recipe →
+готовый Composition Document → HTML. Docara создаёт Recipe автоматически,
+а общий сборщик SIMAI Framework проверяет структуру страницы.
+
+Типизированный `DocumentIr` нужен Docara для чтения Markdown. Он не заменяет
+Composition Document: тот описывает готовую страницу с областями, секциями
+и блоками. [Архитектура](/ru/development/architecture/) объясняет этапы сборки.
 
 ## Как выбрать
 

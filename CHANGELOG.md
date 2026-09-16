@@ -6,9 +6,22 @@ All notable changes to Docara are documented in this file.
 
 ### Added
 
+- Every portable page now passes through the exact Simai Framework Composition
+  Recipe runtime. Markdown and inherited JSON remain the authoring surface,
+  while build receipts expose the Recipe, Document and dependency digests.
+- A single managed Node session resolves all Recipe documents in one build,
+  including automatically projected Markdown pages and explicit file-backed
+  Recipe pages.
 - Standalone file-backed Composition Recipe builds can be saved as complete
   immutable snapshots, activated with revision comparison and rolled back
   without depending on Larena services or storage.
+
+### Changed
+
+- The declarative renderer now receives its layout, regions, sections and
+  blocks from the resolved Composition Document. The former render plan remains
+  an internal typed projection for PHP renderers rather than the composition
+  authority.
 
 ## [2.9.1] - 2026-09-14
 

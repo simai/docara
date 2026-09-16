@@ -8,6 +8,11 @@
 
 Content Markdown компилируется отдельно в typed in-memory Document IR. Длина `:::` fence не выбирает уровень архитектуры.
 
+Проверенные настройки и прочитанный Markdown превращаются в общий Recipe.
+Стандартный сборщик SIMAI Framework создаёт Composition Document — готовое
+дерево страницы. Docara восстанавливает из него вход своих рендереров и
+создаёт HTML. Авторские файлы при этом не переписываются.
+
 ## Реальная insertion chain
 
 | Шаг | Реальный зарегистрированный файл | Ответственность |
@@ -30,6 +35,10 @@ Markdown owner
   -> Section docara.article
   -> slot content
   -> Block content.document
+  -> generated Composition Recipe
+  -> Framework resolveRecipe
+  -> Composition Document
+  -> Docara renderer projection
   -> SmartComponentGateway when a Smart leaf is present
   -> registered View
   -> LayoutComposer

@@ -1,13 +1,19 @@
 # Docara
 
 Docara builds static documentation, reference sites and small landing pages
-from Markdown and validated JSON. SIMAI Framework supplies the interface;
-ordinary Markdown authors do not need Node.js or a frontend toolchain.
+from Markdown and validated JSON. SIMAI Framework supplies the interface and
+the common Composition Recipe resolver. Authors write Markdown and JSON; the
+build environment needs PHP, Node.js and an exact Framework distribution, but
+no project frontend toolchain.
 
 ## Quick start
 
 Create one project-local Composer runtime, then initialize Docara in the same
 directory:
+
+For the current development pipeline, configure the exact generated Framework
+distribution before building. Released Docara packages keep their own stated
+requirements; this README describes the current source revision.
 
 ```bash
 mkdir /path/to/my-docara
@@ -15,6 +21,8 @@ cd /path/to/my-docara
 composer require simai/docara:^2.0
 php vendor/bin/docara init .
 php vendor/bin/docara doctor --json
+export DOCARA_SIMAI_UI_ROOT=/path/to/exact/ui
+export DOCARA_NODE_BINARY=/path/to/node
 php vendor/bin/docara build production
 php vendor/bin/docara verify-static build_production
 php vendor/bin/docara serve production --host=127.0.0.1 --port=8000 --no-build

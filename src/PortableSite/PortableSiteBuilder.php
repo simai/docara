@@ -13,6 +13,7 @@ use Simai\Docara\Content\PageSourceLocator;
 use Simai\Docara\Declarative\Binding\BindingRegistry;
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
 use Simai\Docara\Declarative\Composition\Recipe\FileRecipeCompiler;
+use Simai\Docara\Declarative\Composition\Recipe\ResolvedPlanRecipeBridge;
 use Simai\Docara\Declarative\DeclarativePipeline;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Rendering\RenderArtifact;
@@ -46,6 +47,7 @@ use Simai\Docara\Portable\SchemaRepository;
 use Simai\Docara\Preferences\ReaderPreferenceCompiler;
 use Simai\Docara\Smart\Runtime\ProjectSmartRuntime;
 use Simai\Docara\Smart\SmartRegistry;
+use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
 final readonly class PortableSiteBuilder
@@ -60,19 +62,22 @@ final readonly class PortableSiteBuilder
 
     private bool $pageBuilderInjected;
 
+    private ?FileRecipeCompiler $recipeCompiler;
+
     public function __construct(
         private Filesystem $files,
         private PortableMarkdownRenderer $markdown,
         ?PortablePagePublisher $publisher = null,
         ?PageBuilder $pageBuilder = null,
         ?\Closure $observer = null,
-        private ?FileRecipeCompiler $recipeCompiler = null,
+        ?FileRecipeCompiler $recipeCompiler = null,
     ) {
         $this->publisherInjected = $publisher !== null;
         $this->pageBuilderInjected = $pageBuilder !== null;
         $this->publisher = $publisher ?? new DeclarativePortablePagePublisher;
         $this->pageBuilder = $pageBuilder ?? new PageBuilder($markdown);
         $this->observer = $observer;
+        $this->recipeCompiler = $recipeCompiler ?? $this->recipeCompilerFromEnvironment();
     }
 
     /** @return Collection<string, array<string, mixed>> */
@@ -86,6 +91,12 @@ final readonly class PortableSiteBuilder
         // link, link/ and link/. cannot hide the same symbolic-link root.
         $loader = new PortableConfigurationLoader($root);
         $root = $this->realDirectory($root, 'PORTABLE_ROOT_INVALID');
+        if (! $this->recipeCompiler instanceof FileRecipeCompiler) {
+            throw new PortableConfigurationException(
+                'COMPOSITION_RECIPE_RUNTIME_REQUIRED',
+                'Docara build requires the exact SIMAI Framework Composition Recipe runtime.',
+            );
+        }
         $site = $this->siteConfiguration($root);
         $frameworkLock = FrameworkLock::fromJsonFile(
             $root . '/' . ltrim((string) $site['framework_lock'], '/'),
@@ -941,6 +952,9 @@ final readonly class PortableSiteBuilder
                     $projectSmart?->gateway,
                     $projectSmart?->renderer,
                     $definitions,
+                    $this->recipeCompiler instanceof FileRecipeCompiler
+                        ? new ResolvedPlanRecipeBridge($this->recipeCompiler, $root)
+                        : null,
                 );
                 $outlineDepth = (int) data_get($declarativePlan->configuration, 'reading.toc_depth', 3);
                 $layoutConfiguration = is_array($declarativePlan->configuration['layout'] ?? null)
@@ -997,6 +1011,7 @@ final readonly class PortableSiteBuilder
                         'nodes' => count($documentIr->allNodes()),
                         'sha256' => $documentIr->canonicalHash(),
                     ],
+                    'composition_recipe_primary' => $declarative->plan->provenance['composition_recipe_primary'] ?? null,
                 ];
                 array_push($requiredSmartAssets, ...$declarative->artifact->assets);
                 $outputPath = rtrim($destination, '/\\') . '/' . $page['output'];
@@ -1209,6 +1224,29 @@ final readonly class PortableSiteBuilder
         }
 
         return $this->recipeCompiler->compile($root, $descriptor);
+    }
+
+    private function recipeCompilerFromEnvironment(): ?FileRecipeCompiler
+    {
+        $frameworkRoot = getenv('DOCARA_SIMAI_UI_ROOT');
+        if (! is_string($frameworkRoot) || $frameworkRoot === '') {
+            $frameworkRoot = getenv('SIMAI_UI_ROOT');
+        }
+        if (! is_string($frameworkRoot) || $frameworkRoot === '') {
+            return null;
+        }
+        $node = getenv('DOCARA_NODE_BINARY');
+        if (! is_string($node) || $node === '') {
+            $node = (new ExecutableFinder)->find('node');
+        }
+        if (! is_string($node) || $node === '') {
+            throw new PortableConfigurationException(
+                'COMPOSITION_RECIPE_RUNTIME_REQUIRED',
+                'Docara build requires a Node.js binary for the exact Composition Recipe runtime.',
+            );
+        }
+
+        return FileRecipeCompiler::fromFrameworkDistribution($node, $frameworkRoot);
     }
 
     /** @return array<string, mixed> */

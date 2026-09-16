@@ -82,6 +82,21 @@ MD);
         $page = $result->get('/ru/');
         self::assertIsArray($page);
         self::assertSame('composition_recipe', $page['page_source_kind']);
+        self::assertSame(
+            'docara.composition_recipe_primary.v1',
+            $page['declarative_pipeline']['composition_recipe_primary']['schema'],
+        );
+        self::assertStringStartsWith(
+            'sha256:',
+            $page['declarative_pipeline']['composition_recipe_primary']['document_digest'],
+        );
+        $ordinary = $result->get('/ru/components/');
+        self::assertIsArray($ordinary);
+        self::assertSame('authored_markdown', $ordinary['page_source_kind']);
+        self::assertSame(
+            'docara.composition_recipe_primary.v1',
+            $ordinary['declarative_pipeline']['composition_recipe_primary']['schema'],
+        );
         $html = (string) file_get_contents($destination . '/ru/index.html');
         self::assertStringContainsString('Краткая шапка', $html);
         self::assertStringContainsString('Файловый контент Docara.', $html);

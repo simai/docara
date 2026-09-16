@@ -1,0 +1,31 @@
+{
+  "schema": "docara.recipe_primary.parity.v1",
+  "checked_at": "2026-09-16T07:03:55Z",
+  "baseline": {
+    "root": "/private/tmp/docara-foundation-integration/docs/site/build_production",
+    "docara_revision": "2117d9b9a5577f2c6ea34db480b4709e65515f32"
+  },
+  "candidate": {
+    "root": "docs/site/build_recipe_candidate",
+    "branch": "codex/recipe-primary-pipeline"
+  },
+  "pages": 130,
+  "html_files": 267,
+  "html_changed": [],
+  "public_files_baseline": 4200,
+  "public_files_candidate": 4200,
+  "public_assets_changed": [
+    "_docara/page-metadata.json"
+  ],
+  "files_only_in_baseline": [],
+  "files_only_in_candidate": [],
+  "recipe_primary_receipts": 130,
+  "missing_recipe_primary_receipts": [],
+  "static_verification": {
+    "html_pages": 267,
+    "local_references_checked": 36152,
+    "broken": []
+  },
+  "verdict": "visible_and_public_asset_parity_passed",
+  "note": "Only generated metadata changed because every page now records Recipe and Document digests."
+}

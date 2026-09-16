@@ -1,0 +1,62 @@
+[
+  {
+    "schema": "simai.composition.type-manifest.v1",
+    "type": "docara.page",
+    "version": "1.0.0",
+    "category": "layout",
+    "mode": "composite",
+    "profiles": ["ui-layout"],
+    "data_schema": {"type": "object"},
+    "props_schema": {"type": "object", "additionalProperties": false, "properties": {}},
+    "presentation": {"views": ["default"], "presets": [], "modifiers": []},
+    "slots": {"regions": {"min": 1, "max": 32, "types": ["docara.region"]}},
+    "renderer": {"kind": "builtin", "name": "docara.page"},
+    "assets": [],
+    "capabilities": ["html"]
+  },
+  {
+    "schema": "simai.composition.type-manifest.v1",
+    "type": "docara.region",
+    "version": "1.0.0",
+    "category": "layout",
+    "mode": "composite",
+    "profiles": ["ui-layout"],
+    "data_schema": {"type": "object"},
+    "props_schema": {"type": "object", "additionalProperties": false, "properties": {}},
+    "presentation": {"views": ["default"], "presets": [], "modifiers": []},
+    "slots": {"sections": {"min": 0, "max": 500, "types": ["docara.section"]}},
+    "renderer": {"kind": "builtin", "name": "docara.region"},
+    "assets": [],
+    "capabilities": ["html"]
+  },
+  {
+    "schema": "simai.composition.type-manifest.v1",
+    "type": "docara.section",
+    "version": "1.0.0",
+    "category": "layout",
+    "mode": "composite",
+    "profiles": ["ui-layout"],
+    "data_schema": {"type": "object"},
+    "props_schema": {"type": "object", "additionalProperties": false, "properties": {}},
+    "presentation": {"views": ["default"], "presets": [], "modifiers": []},
+    "slots": {"blocks": {"min": 0, "max": 500, "types": ["docara.block"]}},
+    "renderer": {"kind": "builtin", "name": "docara.section"},
+    "assets": [],
+    "capabilities": ["html"]
+  },
+  {
+    "schema": "simai.composition.type-manifest.v1",
+    "type": "docara.block",
+    "version": "1.0.0",
+    "category": "content",
+    "mode": "leaf",
+    "profiles": ["ui-layout"],
+    "data_schema": {"type": "object"},
+    "props_schema": {"type": "object", "additionalProperties": false, "properties": {}},
+    "presentation": {"views": ["default"], "presets": [], "modifiers": []},
+    "slots": {},
+    "renderer": {"kind": "builtin", "name": "docara.block"},
+    "assets": [],
+    "capabilities": ["html"]
+  }
+]

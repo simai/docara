@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simai\Docara\Declarative;
 
 use Simai\Docara\Declarative\Composition\PageCompositionContext;
+use Simai\Docara\Declarative\Composition\Recipe\ResolvedPlanRecipeBridge;
 use Simai\Docara\Declarative\Definition\DefinitionRepository;
 use Simai\Docara\Declarative\Document\DocumentParser;
 use Simai\Docara\Declarative\Rendering\DeclarativePageRenderer;
@@ -21,6 +22,7 @@ final readonly class DeclarativePipeline
         private DocumentParser $parser,
         private DeclarativePageCompiler $compiler,
         private DeclarativePageRenderer $renderer,
+        private ?ResolvedPlanRecipeBridge $recipeBridge = null,
     ) {}
 
     /**
@@ -35,6 +37,7 @@ final readonly class DeclarativePipeline
         ?SmartComponentGateway $gateway = null,
         ?SmartRenderer $smartRenderer = null,
         ?DefinitionRepository $definitions = null,
+        ?ResolvedPlanRecipeBridge $recipeBridge = null,
     ): self {
         return new self(
             new DocumentParser($smarts ?? SmartRegistry::bundled()),
@@ -44,6 +47,7 @@ final readonly class DeclarativePipeline
                 $smartRenderer ?? new SmartRenderer,
                 reservedDocumentIds: $reservedDocumentIds,
             ),
+            $recipeBridge,
         );
     }
 
@@ -67,6 +71,7 @@ final readonly class DeclarativePipeline
             $layoutConfiguration,
             $configurationProvenance,
         );
+        $plan = $this->recipeBridge?->resolve($plan) ?? $plan;
 
         return new DeclarativePageResult($plan, $this->renderer->render($plan));
     }
@@ -90,6 +95,7 @@ final readonly class DeclarativePipeline
             $layoutConfiguration,
             $configurationProvenance,
         );
+        $plan = $this->recipeBridge?->resolve($plan) ?? $plan;
 
         return new DeclarativePageResult(
             $plan,

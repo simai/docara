@@ -237,3 +237,7 @@ smoke plan. See [publishing and rollback](docs/site/content/ru/build/publish.md)
 ## License
 
 MIT
+
+## Smart component terminology
+
+[Composite Smart Component / составной смарт-компонент](docs/smart-component-terminology.md) describes components that coordinate their children. Public identifiers and schemas are unchanged.

@@ -4,6 +4,8 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.10.0] - 2026-09-16
+
 ### Added
 
 - Every portable page now passes through the exact Simai Framework Composition
@@ -22,6 +24,15 @@ All notable changes to Docara are documented in this file.
   blocks from the resolved Composition Document. The former render plan remains
   an internal typed projection for PHP renderers rather than the composition
   authority.
+- The page pipeline requires the Composition Recipe resolver explicitly;
+  there is no silent fallback to the former page assembly path. Production
+  builds require PHP, Node.js and the exact pinned Framework distribution.
+
+### Fixed
+
+- Clean CLI installation tests preserve the exact Node.js executable even
+  when testing with a minimal PATH. Quality and release-readiness jobs provide
+  the supported Node.js runtime and pinned Framework dependency.
 
 ## [2.9.1] - 2026-09-14
 

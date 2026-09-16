@@ -22,7 +22,7 @@ final readonly class DeclarativePipeline
         private DocumentParser $parser,
         private DeclarativePageCompiler $compiler,
         private DeclarativePageRenderer $renderer,
-        private ?ResolvedPlanRecipeBridge $recipeBridge = null,
+        private ResolvedPlanRecipeBridge $recipeBridge,
     ) {}
 
     /**
@@ -30,6 +30,7 @@ final readonly class DeclarativePipeline
      * @param  list<string>  $reservedDocumentIds
      */
     public static function bundled(
+        ResolvedPlanRecipeBridge $recipeBridge,
         array $frameworkLock,
         PortableMarkdownRenderer $markdown,
         array $reservedDocumentIds = [],
@@ -37,7 +38,6 @@ final readonly class DeclarativePipeline
         ?SmartComponentGateway $gateway = null,
         ?SmartRenderer $smartRenderer = null,
         ?DefinitionRepository $definitions = null,
-        ?ResolvedPlanRecipeBridge $recipeBridge = null,
     ): self {
         return new self(
             new DocumentParser($smarts ?? SmartRegistry::bundled()),
@@ -71,7 +71,7 @@ final readonly class DeclarativePipeline
             $layoutConfiguration,
             $configurationProvenance,
         );
-        $plan = $this->recipeBridge?->resolve($plan) ?? $plan;
+        $plan = $this->recipeBridge->resolve($plan);
 
         return new DeclarativePageResult($plan, $this->renderer->render($plan));
     }
@@ -95,7 +95,7 @@ final readonly class DeclarativePipeline
             $layoutConfiguration,
             $configurationProvenance,
         );
-        $plan = $this->recipeBridge?->resolve($plan) ?? $plan;
+        $plan = $this->recipeBridge->resolve($plan);
 
         return new DeclarativePageResult(
             $plan,

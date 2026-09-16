@@ -945,6 +945,7 @@ final readonly class PortableSiteBuilder
                 );
                 $page['header_navigation'] = $composition->headerNavigation;
                 $declarativePipeline ??= DeclarativePipeline::bundled(
+                    new ResolvedPlanRecipeBridge($this->recipeCompiler, $root, 'sha256:' . $engineRevision['tree_sha256']),
                     $declarativePlan->frameworkLock,
                     $markdown,
                     PortableDocumentIds::reserved(),
@@ -952,9 +953,6 @@ final readonly class PortableSiteBuilder
                     $projectSmart?->gateway,
                     $projectSmart?->renderer,
                     $definitions,
-                    $this->recipeCompiler instanceof FileRecipeCompiler
-                        ? new ResolvedPlanRecipeBridge($this->recipeCompiler, $root, 'sha256:' . $engineRevision['tree_sha256'])
-                        : null,
                 );
                 $outlineDepth = (int) data_get($declarativePlan->configuration, 'reading.toc_depth', 3);
                 $layoutConfiguration = is_array($declarativePlan->configuration['layout'] ?? null)

@@ -25,6 +25,9 @@ jobs:
           tools: composer
       - run: composer validate --strict --no-check-publish
       - run: composer install --no-interaction --prefer-dist
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
       - run: vendor/bin/pint --test
       - run: vendor/bin/phpunit
       - run: php ../../docara build production

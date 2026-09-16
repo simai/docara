@@ -16,6 +16,7 @@ use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\PortablePagePublisher;
 use Simai\Docara\PortableSite\PortableSiteBuilder;
+use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
 
 final class PortableSiteBuilderTest extends TestCase
@@ -1654,6 +1655,9 @@ MD);
         $this->filesystem->ensureDirectoryExists($site);
         $binary = dirname(__DIR__) . '/docara';
         $environment = ['TZ' => 'UTC', 'PATH' => dirname(PHP_BINARY) . ':/usr/bin:/bin:/usr/sbin:/sbin'];
+        $node = getenv('DOCARA_NODE_BINARY') ?: (new ExecutableFinder)->find('node');
+        self::assertIsString($node, 'The clean installation scenario requires the supported Node.js build dependency.');
+        $environment['DOCARA_NODE_BINARY'] = $node;
 
         $init = new Process([PHP_BINARY, $binary, 'init', '--no-interaction'], $site, $environment);
         $init->run();

@@ -34,6 +34,7 @@
     "src/Declarative/Composition/Recipe/FileRecipeCompiler.php#FileRecipeCompiler::resolve",
     "resources/runtime/composition-recipe-file-adapter.mjs",
     "resources/contracts/composition/docara-type-manifests.json",
+    "resources/contracts/composition/runtime-lock.json",
     "src/Design/Registry/DesignRegistry.php#DesignRegistry",
     "src/Preview/PreviewKernel.php#PreviewKernel",
     "src/Preferences/CoreReaderPreferenceContribution.php",

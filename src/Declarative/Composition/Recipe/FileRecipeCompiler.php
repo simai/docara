@@ -25,7 +25,23 @@ final class FileRecipeCompiler
             throw new RuntimeException('docara_composition_recipe_distribution_invalid');
         }
 
-        return new self($nodeBinary, $entry, 'sha256:' . hash_file('sha256', $entry));
+        $lock = json_decode((string) file_get_contents(dirname(__DIR__, 4) . '/resources/contracts/composition/runtime-lock.json'), true, 512, JSON_THROW_ON_ERROR);
+        if (($lock['schema'] ?? null) !== 'docara.composition_runtime_lock.v1'
+            || ! is_array($lock['files'] ?? null)
+            || ! is_string($lock['contract_digest'] ?? null)
+        ) {
+            throw new RuntimeException('docara_composition_recipe_runtime_lock_invalid');
+        }
+        $files = [];
+        foreach ($lock['files'] as $path => $digest) {
+            $file = rtrim($frameworkRoot, '/\\\\') . '/' . $path;
+            if (! is_file($file) || is_link($file) || 'sha256:' . hash_file('sha256', $file) !== $digest) {
+                throw new RuntimeException('docara_composition_recipe_framework_digest_mismatch');
+            }
+            $files[$file] = $digest;
+        }
+
+        return new self($nodeBinary, $entry, $lock['files']['distr/core/js/composition/index.mjs'], expectedFrameworkFiles: $files, recipeContractDigest: $lock['contract_digest']);
     }
 
     public function __construct(
@@ -33,6 +49,8 @@ final class FileRecipeCompiler
         private readonly string $frameworkEntry,
         private readonly string $expectedFrameworkEntryDigest,
         private readonly ?string $runner = null,
+        private readonly array $expectedFrameworkFiles = [],
+        private readonly string $recipeContractDigest = '',
     ) {}
 
     /** @return array<string, mixed> */
@@ -53,7 +71,7 @@ final class FileRecipeCompiler
      * @param  list<array<string, mixed>>  $manifests
      * @return array<string, mixed>
      */
-    public function resolve(string $projectRoot, array $recipe, array $inputs, array $manifests): array
+    public function resolve(string $projectRoot, array $recipe, array $inputs, array $manifests, string $rendererDigest): array
     {
         [$root, $entry, $runner] = $this->runtime($projectRoot);
         $output = $this->request($root, $entry, $runner, [
@@ -62,9 +80,8 @@ final class FileRecipeCompiler
             'inputs' => $inputs,
             'manifests' => $manifests,
             'executionContract' => [
-                'contractDigest' => $this->expectedFrameworkEntryDigest,
-                'registryDigest' => 'sha256:' . hash('sha256', json_encode($manifests, JSON_THROW_ON_ERROR)),
-                'rendererDigest' => $this->expectedFrameworkEntryDigest,
+                'contractDigest' => $this->recipeContractDigest,
+                'rendererDigest' => $rendererDigest,
             ],
         ]);
 
@@ -82,6 +99,11 @@ final class FileRecipeCompiler
         }
         if ($this->expectedFrameworkEntryDigest !== 'sha256:' . hash_file('sha256', $entry)) {
             throw new RuntimeException('docara_composition_recipe_framework_digest_mismatch');
+        }
+        foreach ($this->expectedFrameworkFiles as $file => $digest) {
+            if (! is_file($file) || is_link($file) || 'sha256:' . hash_file('sha256', $file) !== $digest) {
+                throw new RuntimeException('docara_composition_recipe_framework_digest_mismatch');
+            }
         }
 
         return [$root, $entry, $runner];

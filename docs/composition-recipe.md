@@ -55,10 +55,17 @@ php vendor/bin/docara build production
 
 `DOCARA_NODE_BINARY` is optional when `node` is available on `PATH`. The
 existing `SIMAI_UI_ROOT` variable is accepted when `DOCARA_SIMAI_UI_ROOT` is
-not set, including in package checks and CI. The
-Framework entry file is checked before the build session starts. One managed
+not set, including in package checks and CI.
+The [runtime lock](../resources/contracts/composition/runtime-lock.json)
+pins the accepted Framework module files and the normative Recipe contract.
+All module files are checked before requests are admitted. One managed
 Node process is reused for the complete build. The build receipt records the
 generated or selected Recipe, its Document digest and all dependencies.
+
+The execution receipt distinguishes the normative contract digest, the
+canonical digest of type manifests sorted by type, and Docara's own immutable
+engine tree as the renderer digest. The Framework entry hash is module
+integrity evidence; it is not substituted for these three identities.
 
 Docara first builds the complete candidate site in an isolated directory. An
 invalid Recipe or a mismatch between the resolved Document and the Docara

@@ -19,6 +19,7 @@ final readonly class ResolvedPlanRecipeBridge
     public function __construct(
         private FileRecipeCompiler $runtime,
         private string $projectRoot,
+        private string $rendererDigest,
     ) {}
 
     public function resolve(ResolvedRenderPlan $plan): ResolvedRenderPlan
@@ -29,7 +30,7 @@ final readonly class ResolvedPlanRecipeBridge
             'scope' => 'docara:portable-site',
             'values' => (object) [],
         ];
-        $result = $this->runtime->resolve($this->projectRoot, $recipe, $inputs, self::manifests());
+        $result = $this->runtime->resolve($this->projectRoot, $recipe, $inputs, self::manifests(), $this->rendererDigest);
         $document = $result['document'];
         $actualProjection = is_array($document) ? $this->projection($document['root'] ?? null) : [];
         $expectedProjection = $this->expectedProjection($plan);

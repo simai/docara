@@ -1,4 +1,5 @@
 import { readFile, realpath } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
 import { isAbsolute, relative, resolve } from 'node:path';
 import { createInterface } from 'node:readline';
 import { pathToFileURL } from 'node:url';
@@ -57,13 +58,17 @@ async function compile(descriptorArgument) {
 }
 
 async function resolveGenerated(request) {
-  const manifests = Array.isArray(request.manifests) ? request.manifests : [];
+  const manifests = (Array.isArray(request.manifests) ? request.manifests : [])
+    .slice().sort((left, right) => left.type < right.type ? -1 : left.type > right.type ? 1 : 0);
   const registry = framework.createRegistry(manifests);
   return framework.resolveRecipe(request.recipe, {
     registry,
     trustedContext: { scope: request.inputs?.scope },
     inputs: request.inputs,
-    executionContract: request.executionContract,
+    executionContract: {
+      ...request.executionContract,
+      registryDigest: `sha256:${createHash('sha256').update(framework.stableStringify(manifests)).digest('hex')}`,
+    },
     ports: {
       readReference: async () => ({ status: 'missing' }),
     },

@@ -111,6 +111,9 @@ MD);
             $receipt['pages'],
             static fn (array $record): bool => ($record['url'] ?? null) === '/ru/',
         ))[0];
+        $executionContract = $home['declarative_pipeline']['composition_recipe_primary']['dependency_receipt']['executionContract'];
+        self::assertSame('sha256:894de36b030bebdcc539c3616f29f0ca97d20f5aed07b9cd07d0d5448eda1cc2', $executionContract['contractDigest']);
+        self::assertSame('sha256:' . $receipt['build']['engine']['tree_sha256'], $executionContract['rendererDigest']);
         self::assertSame('composition/descriptor.json', $home['composition_recipe']['descriptor']);
         self::assertSame(2, count($home['composition_recipe']['dependency_receipt']['references']));
         self::assertDirectoryDoesNotExist($project . '/.docara/composition-recipe');
@@ -197,6 +200,23 @@ MD);
 
         $this->expectException(\RuntimeException::class);
         FileRecipeCompiler::fromFrameworkDistribution($node, $frameworkRoot)->compile($project, 'composition/descriptor.json');
+    }
+
+    #[Test]
+    public function a_changed_transitive_framework_module_is_rejected_before_starting_the_runtime(): void
+    {
+        $node = (new ExecutableFinder)->find('node');
+        $frameworkRoot = getenv('SIMAI_UI_ROOT');
+        if (! is_string($node) || ! is_string($frameworkRoot) || $frameworkRoot === '') {
+            self::markTestSkipped('The exact Framework candidate is required for the module integrity check.');
+        }
+        $candidate = $this->tmpPath('changed-framework');
+        (new Filesystem)->copyDirectory($frameworkRoot . '/distr/core/js/composition', $candidate . '/distr/core/js/composition');
+        file_put_contents($candidate . '/distr/core/js/composition/builtins.mjs', "\n// changed after the accepted build\n", FILE_APPEND);
+
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage('docara_composition_recipe_framework_digest_mismatch');
+        FileRecipeCompiler::fromFrameworkDistribution($node, $candidate);
     }
 
     #[Test]

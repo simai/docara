@@ -102,6 +102,8 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('white-space:pre-wrap', $styles);
         self::assertStringContainsString('.docara-example-viewer-dialog', $styles);
         self::assertStringContainsString('.docara-example-preview[data-docara-example-viewer-active="true"]', $styles);
+        // Full-screen examples fill the viewing area, so fixed overlays such as a modal drawer are visible.
+        self::assertStringContainsString('iframe[data-docara-example-frame]{flex:0 0 auto;min-block-size:100%;', $styles);
         self::assertStringContainsString('[data-docara-example-viewer]{display:none!important}', $styles);
         self::assertStringContainsString('.docara-example-preview__viewport[aria-pressed="true"]', $styles);
         self::assertStringContainsString('.docara-example-preview .docara-example-preview__action:focus:not(:focus-visible)', $styles);

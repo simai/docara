@@ -12,6 +12,8 @@ All notable changes to Docara are documented in this file.
   lock stays on Framework `4665ecb`.
 
 ### Fixed
+- Full-screen example viewer frames fill the viewing area, so modal drawers,
+  dialogs and other fixed overlays are shown at full height.
 - Align build, quick-start and developer documentation with mandatory Recipe,
   Node.js and the exact Framework execution lock.
 - Restore neutral breadcrumb link tones from the reviewed documentation branch.

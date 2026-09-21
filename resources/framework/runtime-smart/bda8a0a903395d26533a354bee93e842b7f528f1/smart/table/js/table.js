@@ -2875,6 +2875,8 @@ function renderTableTemplate(context) {
 
     if (column.key === 'actions' && (!Array.isArray(value) || !value.length) && context.component?.getActionRowItems) {
       value = context.component.getActionRowItems(row);
+    } else if (column.key === 'actions' && Array.isArray(value) && context.component?.getActionRowItems) {
+      value = context.component.getActionRowItems(row, value);
     }
 
     if (column.component) {
@@ -2937,6 +2939,7 @@ function renderTableTemplate(context) {
                 aria-busy=${context.dataState === 'loading' ? 'true' : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
         >
             ${renderToolbar(context)}
+            ${context.component.renderBulkActions()}
 
             <div class="table-wrap min-w-0 max-w-full flex flex-col flex-1 min-h-0">
                 <div class="min-h-0 min-w-0 overflow-auto flex-1 relative m-bottom-2">
@@ -3444,9 +3447,40 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+ // Published Composition ports (simai.composition.port-manifest.v1, sf-table@1.0.0).
 
+const SF_TABLE_PORTS = Object.freeze({
+  outputs: Object.freeze({
+    selection: "record-ids.v1"
+  }),
+  inputs: Object.freeze({
+    context: "record-ids.v1"
+  })
+});
+const MAX_PORT_RECORD_IDS = 1000;
+
+function hasControlCharacter(value) {
+  for (let index = 0; index < value.length; index += 1) {
+    const code = value.charCodeAt(index);
+    if (code < 32 || code === 127) return true;
+  }
+
+  return false;
+}
+
+function checkedRecordIds(value) {
+  if (!Array.isArray(value) || value.length > MAX_PORT_RECORD_IDS || Array.from(value).some(id => !(typeof id === "string" && id.length > 0 && id.length <= 256 && !hasControlCharacter(id) || Number.isSafeInteger(id))) || new Set(Array.from(value, id => `${typeof id}:${id}`)).size !== value.length) {
+    throw new TypeError("Record identities must be unique nonempty strings or safe integers");
+  }
+
+  return Object.freeze([...value]);
+}
 
 class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"] {
+  static get sfPorts() {
+    return SF_TABLE_PORTS;
+  }
+
   static get props() {
     return {
       templateName: {
@@ -3539,6 +3573,11 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
   constructor() {
     super();
     this._portalContainer = null;
+    this._selectionPortKey = "[]";
+    this._routeContext = null;
+    this._querySequence = 0;
+    this._pendingQuerySequence = null;
+    this._abandonedQuery = false;
     this._contextViewportBound = false;
     this._filterTemplateDragCleanups = [];
     this.contextKeyEvent = this.contextKeyEvent.bind(this);
@@ -3570,13 +3609,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
           scheme: 'on-surface',
           icon: 'visibility',
           ariaLabel: 'Посмотреть',
-          value: 'view',
-          "@click": () => {
-            console.log("CLICK");
-            this.set({
-              modalOpen: true
-            });
-          }
+          value: 'view'
         }
       }
     }, {
@@ -3654,6 +3687,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     this.tempSettings = null;
     this.state = {
       settingsChecked: false,
+      bulkActions: [],
       modalOpen: false,
       saveInputValue: '',
       search: {
@@ -3690,18 +3724,16 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
           position: 'end',
           rootClass: 'content-main-between',
           size: 1,
-          '@change': e => {
-            const {
-              checked
-            } = e.target;
+          '@change': event => {
+            const checked = Boolean(event.target.checked);
             this.set({
               selectIndeterminate: false,
               settingsChecked: checked
             });
             this.updateRows(row => ({ ...row,
-              select: this.createRowComponentCell(this.TABLE_SELECT_COLUMN.rowComponent, {
-                checked: checked,
-                value: row.id ?? row.value ?? ""
+              select: this.getDefaultRowCell(this.TABLE_SELECT_COLUMN, { ...row,
+                selected: checked,
+                checked
               })
             }), "select-all");
           },
@@ -3714,22 +3746,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
         props: {
           position: 'end',
           rootClass: 'content-main-between',
-          size: 1,
-          "@change": e => {
-            const {
-              checked
-            } = e.target;
-            let key = e.target.closest('td').dataset.item;
-            key = key.split('_');
-            this.updateRowCellProps("id", +key[0], key[1], {
-              checked
-            });
-            const indeterminate = this.setIndeterminate();
-            this.set({
-              settingsChecked: !indeterminate && this.state.settingsChecked ? false : this.state.settingsChecked,
-              selectIndeterminate: indeterminate
-            });
-          }
+          size: 1
         }
       }
     };
@@ -3840,6 +3857,140 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       detail
     }));
     return this;
+  }
+
+  requestActionIntent(actionId, recordIds) {
+    if (typeof actionId !== 'string' || !actionId.trim() || !Array.isArray(recordIds) || recordIds.length === 0 || Array.from(recordIds).some(id => !(typeof id === 'string' && id.length > 0 || Number.isSafeInteger(id)))) {
+      throw new TypeError('Action intent requires an opaque action ID and nonempty typed record IDs');
+    }
+
+    const detail = Object.freeze({
+      action_id: actionId,
+      record_ids: Object.freeze([...recordIds])
+    });
+    return this.dispatchTableEvent('sf-table-action-intent', detail);
+  }
+
+  getSelectedRecordIds() {
+    return this.getTableData().rows.filter(row => row.select?.component?.props?.checked === true).map(row => row.id);
+  }
+
+  setBulkActions(actions = []) {
+    if (!Array.isArray(actions) || Array.from(actions).some(action => !action || typeof action !== 'object' || typeof action.id !== 'string' || !action.id.trim() || typeof action.name !== 'string' || !action.name.trim() || Object.keys(action).some(key => key !== 'id' && key !== 'name'))) {
+      throw new TypeError('Bulk actions require opaque id and name only');
+    }
+
+    return this.set({
+      bulkActions: actions.map(({
+        id,
+        name
+      }) => ({
+        id,
+        name
+      }))
+    });
+  }
+
+  renderBulkActions() {
+    if (!this.state.bulkActions?.length) return lit__WEBPACK_IMPORTED_MODULE_2__.nothing;
+    const selected = this.getSelectedRecordIds();
+    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`<div class="flex flex-wrap gap-1/3">
+            ${this.state.bulkActions.map(action => (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`<sf-button
+                text=${action.name} ?disabled=${selected.length === 0}
+                @click=${() => {
+      const ids = this.getSelectedRecordIds();
+      if (ids.length) this.requestActionIntent(action.id, ids);
+    }}></sf-button>`)}
+        </div>`;
+  } // Emits the selection output once per change of the explicit selection.
+
+
+  syncSelectionPort() {
+    if (!this._isMounted) return this;
+    const ids = this.getSelectedRecordIds();
+    const key = JSON.stringify(ids.map(id => [typeof id, id]));
+    if (key === this._selectionPortKey) return this;
+    this._selectionPortKey = key;
+    this.dispatchEvent(new CustomEvent("sf-port-output", {
+      bubbles: true,
+      composed: true,
+      detail: Object.freeze({
+        port: "selection",
+        value: Object.freeze([...ids])
+      })
+    }));
+    return this;
+  }
+
+  clearSelection() {
+    this.set({
+      settingsChecked: false,
+      selectIndeterminate: false
+    });
+    if (!this.getSelectedRecordIds().length) return this;
+    return this.updateRows(row => ({ ...row,
+      selected: false,
+      checked: false,
+      select: this.getDefaultRowCell(this.TABLE_SELECT_COLUMN, { ...row,
+        selected: false,
+        checked: false
+      })
+    }), "select-clear");
+  } // Composition input port. Only declared ports are accepted; the table never
+  // resolves a relation itself. It asks the host through a typed query intent.
+
+
+  sfPortInput(port, value, meta = {}) {
+    if (!Object.hasOwn(SF_TABLE_PORTS.inputs, port)) {
+      throw new TypeError(`sf-table has no input port ${String(port)}`);
+    }
+
+    const recordIds = checkedRecordIds(value);
+    const sequence = Number.isSafeInteger(meta?.sequence) && meta.sequence > this._querySequence ? meta.sequence : this._querySequence + 1;
+    this._routeContext = Object.freeze({
+      record_ids: recordIds
+    });
+    this._querySequence = sequence;
+    this.clearSelection();
+    this.requestContextQuery(sequence);
+    return undefined;
+  }
+
+  requestContextQuery(sequence) {
+    this._pendingQuerySequence = sequence;
+    this._abandonedQuery = false;
+    this.setDataState("loading");
+    return this.dispatchTableEvent("sf-table-query-intent", Object.freeze({
+      reason: "context",
+      context: this._routeContext,
+      sequence
+    }));
+  }
+
+  onConnected() {
+    super.onConnected();
+
+    if (this._abandonedQuery && this._routeContext) {
+      this._querySequence += 1;
+      this.requestContextQuery(this._querySequence);
+    }
+  } // Latest result wins: only the answer to the newest pending context query
+  // is applied, and at most once.
+
+
+  applyQueryResult(sequence, rows) {
+    if (!Number.isSafeInteger(sequence) || sequence !== this._pendingQuerySequence || !Array.isArray(rows)) {
+      return false;
+    }
+
+    this._pendingQuerySequence = null;
+    this.setRows(rows);
+    this.setDataState("auto");
+    return true;
+  }
+
+  getQueryContext() {
+    return this._routeContext;
   }
 
   getItemRef(id) {
@@ -4588,7 +4739,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     })}
                     style="
             position: fixed;
-            inset-inline-start: ${x}px;
+            left: ${x}px;
             inset-block-start: calc(${y}px + calc(var(--sf-focus-outline-width) * 2));
             z-index: var(--sf-table-context-menu--z-index, var(--sf-z-index-9));
           "
@@ -4692,45 +4843,19 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       position,
       tempVisible,
       transform,
-      items = [{
+      items = this.getActionRowItems(data.row || {}).map(action => ({
         component: "sf-button",
         props: {
           type: "link",
           scheme: "on-surface",
-          iconLeft: "save",
-          text: "Сохранить",
-          "@click": () => {// this.saveMenuSettings();
+          text: action.name,
+          "@click": event => {
+            const handler = action.component.props["@click"] || action.component.props.onClick;
+            handler?.(event);
+            this.closeContextMenu();
           }
         }
-      }, {
-        component: "sf-button",
-        props: {
-          type: "link",
-          scheme: "on-surface",
-          iconLeft: "edit",
-          text: "Изменить"
-        }
-      }, {
-        component: "sf-button",
-        props: {
-          type: "link",
-          scheme: "on-surface",
-          iconLeft: `visibility${!tempVisible ? "_off" : ""}`,
-          text: `${!tempVisible ? "Скрыть" : "Показать"}`,
-          "@click": () => {// this.toggleItemVisibility(id, tempVisible);
-          }
-        }
-      }, {
-        component: "sf-button",
-        props: {
-          type: "link",
-          scheme: "on-surface",
-          iconLeft: "delete",
-          text: "Удалить",
-          "@click": () => {// this.deleteItem(id);
-          }
-        }
-      }]
+      }))
     } = data;
     let pos = `translateY(calc(${transform !== undefined ? transform : -50}%))`;
 
@@ -4751,7 +4876,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     })}
                     style="
             position: fixed;
-            inset-inline-start: calc(${x}px + var(--sf-context-menu-tail-corner-offset));
+            left: calc(${x}px + var(--sf-context-menu-tail-corner-offset));
             inset-block-start: ${y}px;
             transform: ${pos};
             z-index: var(--sf-table-context-menu--z-index, var(--sf-z-index-9));
@@ -5624,7 +5749,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     })}
                     style="
             position: fixed;
-            inset-inline-start: ${x}px;
+            left: ${x}px;
             inset-block-start: calc(${y}px + calc(var(--sf-focus-outline-width) * 2));
             transform: ${pos};
             z-index: var(--sf-table-context-menu--z-index, var(--sf-z-index-9));
@@ -5713,7 +5838,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     })}
                     style="
             position: fixed;
-            inset-inline-start: ${x}px;
+            left: ${x}px;
             inset-block-start: calc(${y}px + calc(var(--sf-focus-outline-width) * 2));
             z-index: var(--sf-table-context-menu--z-index, var(--sf-z-index-9));
           "
@@ -5849,7 +5974,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     })}
                     style="
             position: fixed;
-            inset-inline-start: ${x}px;
+            left: ${x}px;
             inset-block-start: calc(${y}px + calc(var(--sf-focus-outline-width) * 2));
             transform: ${pos};
             z-index: var(--sf-table-context-menu--z-index, var(--sf-z-index-9));
@@ -5957,7 +6082,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     })}
                     style="
           position: fixed;
-        inset-inline-start: calc(${x}px + var(--sf-context-menu-tail-corner-offset));
+        left: calc(${x}px + var(--sf-context-menu-tail-corner-offset));
             inset-block-start: ${y}px;
           z-index: var(--sf-table-context-submenu--z-index, var(--sf-z-index-9));
           transform: ${pos}
@@ -6969,9 +7094,12 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
 
     if (!target) {
       return;
-    }
+    } // Custom-element hosts use display:contents and have no positioning box.
+    // Anchor to the native control on the event path within this opener.
 
-    this.contextTarget = target;
+
+    const nativeTarget = (event.composedPath?.() || []).filter(node => node instanceof Element).map(node => node.closest?.('button, input, select, textarea, a[href], [role="button"]')).find(node => node && (node === target || target.contains(node)));
+    this.contextTarget = nativeTarget || target;
     this.contextTarget.classList.add("active");
     let pos = this.contextTarget.getBoundingClientRect();
     event.preventDefault();
@@ -7149,8 +7277,8 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     };
   }
 
-  getActionRowItems(row = {}) {
-    return this.ACTIONS_SETTINGS_ROW.map(action => {
+  getActionRowItems(row = {}, actions = this.ACTIONS_SETTINGS_ROW) {
+    return actions.map(action => {
       const component = action.component || {};
       const props = { ...(action.props || {}),
         ...(component.props || {})
@@ -7170,6 +7298,8 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
             ...menuOptions
           });
         };
+      } else if (!hasClickHandler) {
+        props["@click"] = () => this.requestActionIntent(action.id, [row.id]);
       }
 
       return { ...action,
@@ -7188,7 +7318,18 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     if (column.key === "select") {
       return this.createRowComponentCell(column.rowComponent, {
         checked: this.state.settingsChecked ? true : Boolean(row?.selected || row?.checked),
-        value: row?.id ?? row?.value ?? ""
+        value: row?.id ?? row?.value ?? "",
+        "@change": event => {
+          this.updateRowCellProps("id", row.id, "select", {
+            checked: Boolean(event.target.checked)
+          });
+          const count = this.getSelectedRecordIds().length;
+          const total = this.getTableData().rows.length;
+          this.set({
+            settingsChecked: total > 0 && count === total,
+            selectIndeterminate: count > 0 && count < total
+          });
+        }
       });
     }
 
@@ -7205,7 +7346,8 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
           "@click": e => {
             this.openContextMenu(e, {
               type: 'left',
-              menu: 'row-settings'
+              menu: 'row-settings',
+              row
             });
           }
         }
@@ -7252,11 +7394,13 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       return this;
     }
 
-    return this.set({
+    const result = this.set({
       data: { ...currentData,
         ...nextPatch
       }
     }, reason);
+    this.syncSelectionPort();
+    return result;
   }
 
   setColumns(columns = [], reason = "columns") {
@@ -7420,10 +7564,32 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     this.clearColumnDragState(false);
     this.onColumnResizePointerUp();
     this.tempSettings = null;
+    this._selectionPortKey = "[]"; // A removed table abandons its pending answer; a remount asks again.
+
+    this._abandonedQuery = this._pendingQuerySequence !== null;
+    this._pendingQuerySequence = null;
     this.state.contextMenu = {
       open: false
     };
     this.state.modalOpen = false;
+    this.state.settingsChecked = false;
+    this.state.selectIndeterminate = false;
+    const data = this.getTableData();
+    this.state.data = { ...data,
+      rows: data.rows.map(row => ({ ...row,
+        selected: false,
+        checked: false,
+        ...(row.select?.component ? {
+          select: { ...row.select,
+            component: { ...row.select.component,
+              props: { ...row.select.component.props,
+                checked: false
+              }
+            }
+          }
+        } : {})
+      }))
+    };
 
     if (this.refs.contextMenu) {
       this.refs.contextMenu.value = null;

@@ -377,9 +377,93 @@
   .sf-drawer[data-sf-drawer-placement=inline-end] .sf-drawer-close--outside {
     inset-inline-end: calc(100% + var(--sf-space-1\/2));
   }
+  /* Docked drawers are modeless page columns: no scrim, no shadow, square edges. */
+  .sf-drawer[data-sf-drawer-docked=true] .sf-drawer-overlay {
+    display: none;
+  }
+  .sf-drawer[data-sf-drawer-docked=true] .sf-drawer-panel {
+    top: 0;
+    inset-block-start: 0;
+    top: 0;
+    top: var(--sf-drawer-dock-block-start, 0);
+    inset-block-start: var(--sf-drawer-dock-block-start, 0);
+    height: auto;
+    border-radius: var(--sf-0);
+    box-shadow: none;
+  }
+  /* The host layout reserves the width of open docked panels on each side. */
+  _:-ms-input-placeholder, html:not([dir="rtl"]) [data-sf-drawer-dock-host] {
+    padding-left: var(--sf-0);
+    padding-left: var(--sf-drawer-dock-inline-start, var(--sf-0));
+  }
+  @supports not (padding-inline-start: initial) {
+  html:not([dir="rtl"]) [data-sf-drawer-dock-host] {
+    padding-left: var(--sf-0);
+    padding-left: var(--sf-drawer-dock-inline-start, var(--sf-0));
+    }
+  }
+  [data-sf-drawer-dock-host]:where(:dir(ltr)) {
+    padding-left: var(--sf-0);
+    padding-left: var(--sf-drawer-dock-inline-start, var(--sf-0));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] [data-sf-drawer-dock-host] {
+    padding-right: var(--sf-0);
+    padding-right: var(--sf-drawer-dock-inline-start, var(--sf-0));
+  }
+  @supports not (padding-inline-start: initial) {
+  [dir="rtl"] [data-sf-drawer-dock-host] {
+    padding-right: var(--sf-0);
+    padding-right: var(--sf-drawer-dock-inline-start, var(--sf-0));
+    }
+  }
+  [data-sf-drawer-dock-host]:where(:dir(rtl)) {
+    padding-right: var(--sf-0);
+    padding-right: var(--sf-drawer-dock-inline-start, var(--sf-0));
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) [data-sf-drawer-dock-host] {
+    padding-right: var(--sf-0);
+    padding-right: var(--sf-drawer-dock-inline-end, var(--sf-0));
+  }
+  @supports not (padding-inline-end: initial) {
+  html:not([dir="rtl"]) [data-sf-drawer-dock-host] {
+    padding-right: var(--sf-0);
+    padding-right: var(--sf-drawer-dock-inline-end, var(--sf-0));
+    }
+  }
+  [data-sf-drawer-dock-host]:where(:dir(ltr)) {
+    padding-right: var(--sf-0);
+    padding-right: var(--sf-drawer-dock-inline-end, var(--sf-0));
+  }
+  _:-ms-input-placeholder, [dir="rtl"] [data-sf-drawer-dock-host] {
+    padding-left: var(--sf-0);
+    padding-left: var(--sf-drawer-dock-inline-end, var(--sf-0));
+  }
+  @supports not (padding-inline-end: initial) {
+  [dir="rtl"] [data-sf-drawer-dock-host] {
+    padding-left: var(--sf-0);
+    padding-left: var(--sf-drawer-dock-inline-end, var(--sf-0));
+    }
+  }
+  [data-sf-drawer-dock-host]:where(:dir(rtl)) {
+    padding-left: var(--sf-0);
+    padding-left: var(--sf-drawer-dock-inline-end, var(--sf-0));
+  }
+  [data-sf-drawer-dock-host] {
+    box-sizing: border-box;
+    -webkit-padding-start: var(--sf-0);
+            padding-inline-start: var(--sf-0);
+    -webkit-padding-start: var(--sf-drawer-dock-inline-start, var(--sf-0));
+            padding-inline-start: var(--sf-drawer-dock-inline-start, var(--sf-0));
+    -webkit-padding-end: var(--sf-0);
+            padding-inline-end: var(--sf-0);
+    -webkit-padding-end: var(--sf-drawer-dock-inline-end, var(--sf-0));
+            padding-inline-end: var(--sf-drawer-dock-inline-end, var(--sf-0));
+    transition: padding var(--sf-duration-normal) var(--sf-animation);
+  }
   @media (prefers-reduced-motion: reduce) {
     .sf-drawer-overlay,
-    .sf-drawer-panel {
+    .sf-drawer-panel,
+    [data-sf-drawer-dock-host] {
       transition: none;
     }
   }

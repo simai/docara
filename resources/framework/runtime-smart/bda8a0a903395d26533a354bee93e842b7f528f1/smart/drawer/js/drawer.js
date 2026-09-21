@@ -2399,7 +2399,10 @@ __webpack_require__.r(__webpack_exports__);
 const DRAWER_SELECTOR = 'sf-drawer';
 const PORTAL_ATTRIBUTE = 'data-sf-drawer-portal';
 const FOCUSABLE_SELECTOR = ['a[href]', 'button:not([disabled])', 'input:not([disabled])', 'select:not([disabled])', 'textarea:not([disabled])', '[tabindex]:not([tabindex="-1"])'].join(',');
-const drawerStack = [];
+const drawerStack = []; // Below this viewport width docked panels overlay the page instead of
+// narrowing it.
+
+const DOCK_MEDIA_QUERY = '(min-width: 48rem)';
 
 function joinClasses(...parts) {
   return parts.flat().filter(Boolean).join(' ');
@@ -2441,6 +2444,39 @@ const drawerManager = {
 
   sync() {
     drawerStack.forEach((drawer, index) => drawer.applyStackPosition(index));
+    this.syncDock();
+  },
+
+  // Docked drawers reserve page space: the summed widths of open docked panels
+  // per logical side are published as CSS custom properties on the root; any
+  // element with data-sf-drawer-dock-host pads itself by them.
+  syncDock() {
+    const root = document.documentElement;
+    if (!root) return;
+    this.bindDockMedia();
+    const sides = {
+      start: 0,
+      end: 0
+    };
+    const reserve = this.dockMedia ? this.dockMedia.matches : true;
+
+    for (const drawer of reserve ? drawerStack : []) {
+      if (!drawer.openState || !drawer.docked) continue;
+      const panel = drawer.getDrawerRoot()?.querySelector('[data-sf-drawer-panel]');
+      const width = panel ? Math.round(panel.getBoundingClientRect().width) : 0;
+      sides[drawer.dockSide] += width;
+    }
+
+    for (const side of ['start', 'end']) {
+      const name = `--sf-drawer-dock-inline-${side}`;
+      if (sides[side] > 0) root.style.setProperty(name, `${sides[side]}px`);else root.style.removeProperty(name);
+    }
+  },
+
+  bindDockMedia() {
+    if (this.dockMedia !== undefined) return;
+    this.dockMedia = typeof globalThis.matchMedia === 'function' ? globalThis.matchMedia(DOCK_MEDIA_QUERY) : null;
+    this.dockMedia?.addEventListener?.('change', () => this.syncDock());
   },
 
   syncPageLock() {
@@ -2519,6 +2555,10 @@ class SfDrawer extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__["default
       modal: {
         type: Boolean,
         default: true
+      },
+      docked: {
+        type: Boolean,
+        default: false
       },
       size: {
         default: 'medium',
@@ -2604,6 +2644,7 @@ class SfDrawer extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__["default
     this._stackIndex = -1;
     this._focusAfterRender = false;
     this._emitAfterOpen = false;
+    this._dockObserver = null;
     this.onKeyDown = this.onKeyDown.bind(this);
     this.handleRootClick = this.handleRootClick.bind(this);
   }
@@ -2623,6 +2664,8 @@ class SfDrawer extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__["default
 
   disconnectedCallback() {
     document.removeEventListener('keydown', this.onKeyDown);
+    this._dockObserver?.disconnect();
+    this._dockObserver = null;
     drawerManager.remove(this);
     this.clearPortal();
     super.disconnectedCallback();
@@ -2636,7 +2679,12 @@ class SfDrawer extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__["default
       return;
     }
 
-    if (name === 'modal' && this.openState) drawerManager.syncPageLock();
+    if ((name === 'modal' || name === 'docked') && this.openState) drawerManager.syncPageLock();
+
+    if ((name === 'docked' || name === 'placement' || name === 'size' || name === 'width') && this.openState) {
+      requestAnimationFrame(() => drawerManager.syncDock());
+    }
+
     super.attributeChangedCallback(name, oldValue, newValue);
   }
 
@@ -2653,7 +2701,21 @@ class SfDrawer extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__["default
   }
 
   get modal() {
-    return this.getBooleanAttr('modal', true);
+    // A docked drawer is part of the page layout and is always modeless.
+    return !this.docked && this.getBooleanAttr('modal', true);
+  }
+
+  get docked() {
+    return this.getBooleanAttr('docked', false);
+  }
+
+  get dockSide() {
+    const placement = this.placement;
+    if (placement === 'inline-start') return 'start';
+    if (placement === 'inline-end') return 'end';
+    const rtl = globalThis.getComputedStyle?.(document.documentElement).direction === 'rtl';
+    if (placement === 'left') return rtl ? 'end' : 'start';
+    return rtl ? 'start' : 'end';
   }
 
   get size() {
@@ -2701,6 +2763,7 @@ class SfDrawer extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__["default
       placement: this.placement,
       overlay: this.overlay,
       modal: this.modal,
+      docked: this.docked,
       size: this.size,
       showClose: this.showClose,
       closePlacement: this.closePlacement,
@@ -2757,6 +2820,7 @@ class SfDrawer extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__["default
     root.removeEventListener('click', this.handleRootClick);
     root.addEventListener('click', this.handleRootClick);
     this.applyStackPosition();
+    this.observeDock(root);
     const eventName = this._hasEmittedReady ? 'drawer:update' : 'drawer:ready';
     this.dispatchEvent(new CustomEvent(eventName, {
       detail: {
@@ -2799,13 +2863,14 @@ class SfDrawer extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__["default
       data-sf-drawer-placement=${context.placement}
       data-sf-drawer-size=${context.size}
       data-sf-drawer-modal=${context.modal ? 'true' : 'false'}
+      data-sf-drawer-docked=${context.docked ? 'true' : 'false'}
       aria-hidden=${context.open ? 'false' : 'true'}
     >
       <div class=${joinClasses('sf-drawer-overlay', context.overlayClass)} data-sf-drawer-overlay ?hidden=${!context.modal || !context.overlay}></div>
       <section
         class=${joinClasses('sf-drawer-panel', context.panelClass)}
         style=${context.width ? `--sf-drawer-width:${context.width}` : ''}
-        role="dialog"
+        role=${context.docked ? 'region' : 'dialog'}
         aria-modal=${context.modal ? 'true' : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
         aria-label=${context.label || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
         aria-labelledby=${context.title ? `${context.drawerId}-title` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
@@ -2896,6 +2961,25 @@ class SfDrawer extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__["default
     return this._portalRoot?.querySelector('[data-sf-drawer-root]') || null;
   }
 
+  observeDock(root) {
+    const panel = root.querySelector('[data-sf-drawer-panel]');
+
+    if (!this.docked || !panel || typeof ResizeObserver !== 'function') {
+      this._dockObserver?.disconnect();
+      this._dockObserver = null;
+      if (this.docked) drawerManager.syncDock();
+      return;
+    }
+
+    if (!this._dockObserver) this._dockObserver = new ResizeObserver(() => drawerManager.syncDock());
+
+    this._dockObserver.disconnect();
+
+    this._dockObserver.observe(panel);
+
+    drawerManager.syncDock();
+  }
+
   applyStackPosition(index = drawerStack.indexOf(this)) {
     this._stackIndex = index;
     const root = this.getDrawerRoot();
@@ -2930,7 +3014,8 @@ class SfDrawer extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__["default
   }
 
   onKeyDown(event) {
-    if (!this.openState || !drawerManager.isTop(this)) return;
+    // An editor or drag operation that handled Escape keeps it.
+    if (event.defaultPrevented || !this.openState || !drawerManager.isTop(this)) return;
 
     if (event.key === 'Escape' && this.closeOnEsc) {
       event.preventDefault();

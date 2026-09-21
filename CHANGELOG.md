@@ -4,6 +4,13 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Changed
+- Bundle Framework pair `ui-44c4ecc09ba0-smart-bda8a0a90339` (Core `44c4ecc0`,
+  Smart `bda8a0a9`, contracts `f9f08647`): editor surfaces are on-demand Smart
+  components (`sf-composition-overlay`, `sf-sortable`, `sf-inline-editor`), so
+  the dynamic Smart projection grows from 50 to 56 files. The Recipe renderer
+  lock stays on Framework `4665ecb`.
+
 ### Fixed
 - Align build, quick-start and developer documentation with mandatory Recipe,
   Node.js and the exact Framework execution lock.
@@ -11,6 +18,7 @@ All notable changes to Docara are documented in this file.
 
 ### Removed
 - Unreferenced superseded bundled Framework projection `d813107a`.
+- Superseded bundled Framework runtime `8c22fe2b` and Smart runtime `400d80e5`.
 
 ## [2.10.0] - 2026-09-16
 

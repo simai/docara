@@ -618,9 +618,14 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BUILTIN_EDITOR_MANIFESTS: () => (/* binding */ BUILTIN_EDITOR_MANIFESTS),
+/* harmony export */   BUILTIN_PORT_MANIFESTS: () => (/* binding */ BUILTIN_PORT_MANIFESTS),
 /* harmony export */   BUILTIN_TYPE_MANIFESTS: () => (/* binding */ BUILTIN_TYPE_MANIFESTS),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+/* harmony import */ var _regions_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("68efac8c1b57");
+
+
 const inlineContentSchema = {
   type: 'array',
   items: {
@@ -669,6 +674,16 @@ const inlineContentSchema = {
     ],
   },
 };
+
+const routeEnd = {
+          type: 'object',
+          required: ['endpoint', 'port'],
+          additionalProperties: false,
+          properties: {
+            endpoint: { type: 'string', pattern: '^[a-z][a-z0-9-]{0,31}$' },
+            port: { type: 'string', pattern: '^[a-z][a-z0-9-]{0,31}$' },
+          },
+        };
 
 const emptyObjectSchema = {
   type: 'object',
@@ -781,6 +796,256 @@ const BUILTIN_TYPE_MANIFESTS = Object.freeze([
     assets: [],
     capabilities: ['html', 'rich-text'],
   },
+  {
+    schema: 'simai.composition.type-manifest.v1',
+    type: 'layout.regions',
+    version: '1.0.0',
+    category: 'layout',
+    mode: 'composite',
+    profiles: ['ui-layout'],
+    data_schema: emptyObjectSchema,
+    props_schema: emptyObjectSchema,
+    presentation: { views: ['default'], presets: [], modifiers: [] },
+    slots: {
+      regions: { min: 1, max: 12, types: ['layout.region'] },
+    },
+    renderer: { kind: 'builtin', name: 'layout.regions' },
+    assets: [],
+    capabilities: ['html', 'regions'],
+  },
+  {
+    schema: 'simai.composition.type-manifest.v1',
+    type: 'layout.region',
+    version: '1.0.0',
+    category: 'layout',
+    mode: 'composite',
+    profiles: ['ui-layout'],
+    data_schema: emptyObjectSchema,
+    props_schema: {
+      type: 'object',
+      required: ['name', 'landmark'],
+      additionalProperties: false,
+      properties: {
+        name: { type: 'string', pattern: '^[a-z][a-z0-9-]{0,31}$' },
+        landmark: { enum: [..._regions_mjs__WEBPACK_IMPORTED_MODULE_0__.REGION_LANDMARKS] },
+        placement: { enum: [..._regions_mjs__WEBPACK_IMPORTED_MODULE_0__.REGION_PLACEMENTS] },
+        label: { type: 'string', minLength: 1, maxLength: 120 },
+        sticky: { type: 'boolean' },
+        accepts: { type: 'array', minItems: 1, uniqueItems: true, items: { enum: [..._regions_mjs__WEBPACK_IMPORTED_MODULE_0__.REGION_ACCEPTS] } },
+        min_items: { type: 'integer', minimum: 0, maximum: 500 },
+        max_items: { type: 'integer', minimum: 0, maximum: 500 },
+      },
+    },
+    presentation: { views: ['default'], presets: [], modifiers: [] },
+    slots: {
+      default: { min: 0, max: 500, categories: ['layout', 'content', 'smart'] },
+    },
+    renderer: { kind: 'builtin', name: 'layout.region' },
+    assets: [],
+    capabilities: ['html', 'regions'],
+  },  {
+    schema: 'simai.composition.type-manifest.v1',
+    type: 'layout.scope',
+    version: '1.0.0',
+    category: 'layout',
+    mode: 'composite',
+    profiles: ['ui-layout'],
+    data_schema: emptyObjectSchema,
+    props_schema: {
+      type: 'object',
+      required: ['routes'],
+      additionalProperties: false,
+      properties: {
+        routes: {
+          type: 'array',
+          minItems: 1,
+          maxItems: 32,
+          items: {
+            type: 'object',
+            required: ['id', 'from', 'to'],
+            additionalProperties: false,
+            properties: {
+              id: { type: 'string', pattern: '^[a-z][a-z0-9-]{0,63}$' },
+              from: routeEnd,
+              to: routeEnd,
+            },
+          },
+        },
+      },
+    },
+    presentation: { views: ['default'], presets: [], modifiers: [] },
+    slots: {
+      default: { min: 1, max: 500, categories: ['layout', 'content', 'smart'] },
+    },
+    renderer: { kind: 'builtin', name: 'layout.scope' },
+    assets: [],
+    capabilities: ['html', 'hydration', 'routing'],
+  },
+]);
+
+// Published typed ports. Framework owns the element protocol; the product owns
+// what a request means, data access and authorization.
+const BUILTIN_PORT_MANIFESTS = Object.freeze([
+  {
+    schema: 'simai.composition.port-manifest.v1',
+    element: 'sf-table',
+    version: '1.0.0',
+    component: 'smart.data-view',
+    component_version: '1.2.0',
+    outputs: {
+      selection: {
+        value: 'record-ids.v1',
+        summary: 'Explicit current-result selection of this instance, emitted once per change, including clearing.',
+      },
+    },
+    inputs: {
+      context: {
+        value: 'record-ids.v1',
+        effect: 'request',
+        summary: 'Restricts this collection to records related to the given identities. The table clears its selection, enters loading and emits sf-table-query-intent with the route sequence; the host resolves the relation and access and answers with applyQueryResult.',
+        request_event: 'sf-table-query-intent',
+        result_method: 'applyQueryResult',
+      },
+    },
+  },
+]);
+
+
+
+const BUILTIN_EDITOR_MANIFESTS = Object.freeze([
+  {
+    schema: 'simai.composition.editor-manifest.v1',
+    type: 'layout.section',
+    type_version: '1.0.0',
+    fields: [
+      {
+        key: 'surface',
+        plane: 'presentation',
+        target: 'preset',
+        property: { type: 'string', version: 2 },
+        constraints: { min_length: 1, max_length: 32 },
+        group: 'preset',
+        visibility: 'visible',
+        choices: ['surface', 'contrast'],
+        default: 'surface',
+        label_key: 'sf.composition.layout_section.surface',
+        help_key: 'sf.composition.layout_section.surface_help',
+        capability_hints: ['composition.presentation.preset'],
+        permission_hints: ['composition.node.update'],
+        owner: 'simai/framework',
+      },
+    ],
+  },
+  {
+    schema: 'simai.composition.editor-manifest.v1',
+    type: 'layout.columns',
+    type_version: '1.0.0',
+    fields: [
+      {
+        key: 'columns',
+        plane: 'props',
+        target: 'columns',
+        property: { type: 'integer', version: 1 },
+        constraints: { min: 1, max: 12 },
+        group: 'basic',
+        visibility: 'visible',
+        default: 2,
+        label_key: 'sf.composition.layout_columns.columns',
+        help_key: 'sf.composition.layout_columns.columns_help',
+        capability_hints: ['composition.props.columns'],
+        permission_hints: ['composition.node.update'],
+        owner: 'simai/framework',
+      },
+    ],
+  },
+  {
+    schema: 'simai.composition.editor-manifest.v1',
+    type: 'content.heading',
+    type_version: '1.0.0',
+    fields: [
+      {
+        key: 'level',
+        plane: 'data',
+        target: 'level',
+        property: { type: 'integer', version: 1 },
+        constraints: { min: 1, max: 6 },
+        group: 'advanced',
+        visibility: 'collapsed',
+        default: 2,
+        label_key: 'sf.composition.content_heading.level',
+        help_key: 'sf.composition.content_heading.level_help',
+        capability_hints: ['composition.data.level'],
+        permission_hints: ['composition.node.update'],
+        owner: 'simai/framework',
+      },
+    ],
+  },  {
+    schema: 'simai.composition.editor-manifest.v1',
+    type: 'layout.region',
+    type_version: '1.0.0',
+    fields: [
+      {
+        key: 'placement',
+        plane: 'props',
+        target: 'placement',
+        property: { type: 'string', version: 2 },
+        constraints: { min_length: 1, max_length: 16 },
+        group: 'basic',
+        visibility: 'visible',
+        choices: [..._regions_mjs__WEBPACK_IMPORTED_MODULE_0__.REGION_PLACEMENTS],
+        default: 'block',
+        label_key: 'sf.composition.layout_region.placement',
+        help_key: 'sf.composition.layout_region.placement_help',
+        capability_hints: ['composition.props.placement'],
+        permission_hints: ['composition.node.update'],
+        owner: 'simai/framework',
+      },
+      {
+        key: 'label',
+        plane: 'props',
+        target: 'label',
+        property: { type: 'string', version: 2 },
+        constraints: { min_length: 1, max_length: 120 },
+        group: 'basic',
+        visibility: 'visible',
+        label_key: 'sf.composition.layout_region.label',
+        help_key: 'sf.composition.layout_region.label_help',
+        capability_hints: ['composition.props.label'],
+        permission_hints: ['composition.node.update'],
+        owner: 'simai/framework',
+      },
+      {
+        key: 'landmark',
+        plane: 'props',
+        target: 'landmark',
+        property: { type: 'string', version: 2 },
+        constraints: { min_length: 1, max_length: 16 },
+        group: 'advanced',
+        visibility: 'collapsed',
+        choices: [..._regions_mjs__WEBPACK_IMPORTED_MODULE_0__.REGION_LANDMARKS],
+        label_key: 'sf.composition.layout_region.landmark',
+        help_key: 'sf.composition.layout_region.landmark_help',
+        capability_hints: ['composition.props.landmark'],
+        permission_hints: ['composition.node.update'],
+        owner: 'simai/framework',
+      },
+      {
+        key: 'sticky',
+        plane: 'props',
+        target: 'sticky',
+        property: { type: 'boolean', version: 1 },
+        constraints: {},
+        group: 'advanced',
+        visibility: 'collapsed',
+        default: false,
+        label_key: 'sf.composition.layout_region.sticky',
+        help_key: 'sf.composition.layout_region.sticky_help',
+        capability_hints: ['composition.props.sticky'],
+        permission_hints: ['composition.node.update'],
+        owner: 'simai/framework',
+      },
+    ],
+  },
 ]);
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (BUILTIN_TYPE_MANIFESTS);
@@ -821,34 +1086,610 @@ function stableStringify(value) {
 
 /***/ },
 
+/***/ "3765e2c966fd"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   projectDocumentEditorFields: () => (/* binding */ projectDocumentEditorFields),
+/* harmony export */   projectEditorFields: () => (/* binding */ projectEditorFields),
+/* harmony export */   validateEditorManifest: () => (/* binding */ validateEditorManifest)
+/* harmony export */ });
+/* harmony import */ var _canonical_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("6f489cc65b77");
+
+
+const SCHEMA = 'simai.composition.editor-manifest.v1';
+const MANIFEST_FIELDS = new Set(['schema', 'type', 'type_version', 'applies_to', 'fields']);
+const APPLIES_FIELDS = new Set(['views', 'presets', 'modifiers']);
+const FIELD_FIELDS = new Set([
+  'key', 'plane', 'target', 'property', 'constraints', 'group', 'visibility',
+  'choices', 'default', 'label_key', 'help_key', 'capability_hints',
+  'permission_hints', 'owner',
+]);
+const PROPERTY_FIELDS = new Set(['type', 'version']);
+const PLANES = new Set(['props', 'data', 'presentation']);
+const GROUPS = new Set(['preset', 'basic', 'advanced']);
+const VISIBILITIES = new Set(['visible', 'collapsed', 'hidden']);
+const PRESENTATION_TARGETS = new Set(['view', 'preset']);
+const FORBIDDEN_KEYS = new Set([
+  'actor', 'authorization', 'class', 'classname', 'cookie', 'endpoint', 'eval',
+  'expression', 'function', 'handler', 'html', 'innerhtml', 'javascript', 'method',
+  'password', 'php', 'query', 'request', 'script', 'secret', 'sql', 'token',
+]);
+
+const diagnostic = (code, path, message) => ({ code, path, message });
+const stableKey = (value) => typeof value === 'string' && /^[a-z][a-z0-9_]*(?:\.[a-z][a-z0-9_]*)*$/u.test(value);
+const componentType = (value) => typeof value === 'string' && /^[a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+$/u.test(value);
+const version = (value) => typeof value === 'string' && /^[0-9]+\.[0-9]+\.[0-9]+$/u.test(value);
+const owner = (value) => typeof value === 'string' && /^[a-z][a-z0-9.-]*\/[a-z][a-z0-9.-]*$/u.test(value);
+const scalar = (value) => value === null
+  || typeof value === 'string'
+  || typeof value === 'boolean'
+  || (typeof value === 'number' && Number.isFinite(value));
+const forbiddenIdentity = (value) => typeof value === 'string'
+  && value.split('.').some((part) => FORBIDDEN_KEYS.has(part.toLowerCase().replaceAll('-', '').replaceAll('_', '')));
+
+function unknownFields(value, allowed, path, diagnostics) {
+  if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(value)) return;
+  for (const key of Object.keys(value)) {
+    if (!allowed.has(key)) diagnostics.push(diagnostic('editor_unknown_field', `${path}.${key}`, `Unknown editor field ${key}`));
+  }
+}
+
+function scanForbidden(value, path, diagnostics) {
+  if (Array.isArray(value)) {
+    value.forEach((entry, index) => scanForbidden(entry, `${path}[${index}]`, diagnostics));
+    return;
+  }
+  if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(value)) return;
+  for (const [key, entry] of Object.entries(value)) {
+    const normalized = key.toLowerCase().replaceAll('-', '').replaceAll('_', '');
+    if (FORBIDDEN_KEYS.has(normalized)) {
+      diagnostics.push(diagnostic('editor_executable_or_secret_field_forbidden', `${path}.${key}`, `Field ${key} is not portable editor metadata`));
+    }
+    scanForbidden(entry, `${path}.${key}`, diagnostics);
+  }
+}
+
+function propertyIdentities(propertyTypes) {
+  if (propertyTypes === undefined) return null;
+  const identities = new Set();
+  for (const entry of propertyTypes) {
+    if (typeof entry === 'string') identities.add(entry);
+    else if ((0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(entry)) identities.add(`${entry.type}@${entry.version}`);
+  }
+  return identities;
+}
+
+function validateHintList(value, path, diagnostics) {
+  if (value === undefined) return;
+  if (!Array.isArray(value) || value.length > 50 || value.some((entry) => !stableKey(entry)) || new Set(value).size !== value.length) {
+    diagnostics.push(diagnostic('editor_hint_list_invalid', path, 'Hints must be a bounded unique stable-key list'));
+  }
+}
+
+function selectionValues(typeManifest, target) {
+  if (target === 'view') return typeManifest.presentation?.views || [];
+  if (target === 'preset') return typeManifest.presentation?.presets || [];
+  return [];
+}
+
+function validateAppliesTo(value, typeManifest, diagnostics) {
+  if (value === undefined) return;
+  if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(value)) {
+    diagnostics.push(diagnostic('editor_applies_to_invalid', '$.applies_to', 'applies_to must be an object'));
+    return;
+  }
+  unknownFields(value, APPLIES_FIELDS, '$.applies_to', diagnostics);
+  for (const [key, registeredKey] of [['views', 'views'], ['presets', 'presets'], ['modifiers', 'modifiers']]) {
+    if (value[key] === undefined) continue;
+    if (!Array.isArray(value[key]) || value[key].length === 0 || value[key].some((entry) => typeof entry !== 'string') || new Set(value[key]).size !== value[key].length) {
+      diagnostics.push(diagnostic('editor_applies_to_invalid', `$.applies_to.${key}`, `${key} must be a non-empty unique string list`));
+      continue;
+    }
+    const registered = new Set(typeManifest.presentation?.[registeredKey] || []);
+    for (const entry of value[key]) {
+      if (!registered.has(entry)) diagnostics.push(diagnostic('editor_presentation_choice_unknown', `$.applies_to.${key}`, `${entry} is not registered by the type manifest`));
+    }
+  }
+}
+
+function validateEditorManifest(editorManifest, typeManifest, options = {}) {
+  const diagnostics = [];
+  if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(editorManifest)) return { valid: false, diagnostics: [diagnostic('editor_manifest_invalid', '$', 'Editor manifest must be an object')] };
+  unknownFields(editorManifest, MANIFEST_FIELDS, '$', diagnostics);
+  scanForbidden(editorManifest, '$', diagnostics);
+  if (editorManifest.schema !== SCHEMA) diagnostics.push(diagnostic('editor_schema_unknown', '$.schema', `Expected ${SCHEMA}`));
+  if (!componentType(editorManifest.type)) diagnostics.push(diagnostic('editor_type_invalid', '$.type', 'Component type is invalid'));
+  if (!version(editorManifest.type_version)) diagnostics.push(diagnostic('editor_type_version_invalid', '$.type_version', 'Component type version is invalid'));
+  if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(typeManifest) || typeManifest.type !== editorManifest.type || typeManifest.version !== editorManifest.type_version) {
+    diagnostics.push(diagnostic('editor_type_registration_mismatch', '$.type', 'Editor manifest must bind one exact registered type revision'));
+  }
+  validateAppliesTo(editorManifest.applies_to, typeManifest || {}, diagnostics);
+  if (!Array.isArray(editorManifest.fields) || editorManifest.fields.length > 200) {
+    diagnostics.push(diagnostic('editor_fields_invalid', '$.fields', 'fields must be a bounded array'));
+    return { valid: false, diagnostics };
+  }
+
+  const keys = new Set();
+  const destinations = new Set();
+  const availablePropertyTypes = propertyIdentities(options.propertyTypes);
+  editorManifest.fields.forEach((field, index) => {
+    const path = `$.fields[${index}]`;
+    if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(field)) {
+      diagnostics.push(diagnostic('editor_field_invalid', path, 'Editor field must be an object'));
+      return;
+    }
+    unknownFields(field, FIELD_FIELDS, path, diagnostics);
+    if (!stableKey(field.key)) diagnostics.push(diagnostic('editor_field_key_invalid', `${path}.key`, 'Field key must be stable'));
+    else if (keys.has(field.key)) diagnostics.push(diagnostic('editor_field_key_duplicate', `${path}.key`, `Duplicate field key ${field.key}`));
+    else keys.add(field.key);
+    if (!PLANES.has(field.plane)) diagnostics.push(diagnostic('editor_plane_unknown', `${path}.plane`, 'Field plane is unknown'));
+    if (!stableKey(field.target)) diagnostics.push(diagnostic('editor_target_invalid', `${path}.target`, 'Field target must be stable'));
+    if (forbiddenIdentity(field.key)) diagnostics.push(diagnostic('editor_executable_or_secret_field_forbidden', `${path}.key`, 'Field key names executable or secret data'));
+    if (forbiddenIdentity(field.target)) diagnostics.push(diagnostic('editor_executable_or_secret_field_forbidden', `${path}.target`, 'Field target names executable or secret data'));
+    const destination = `${field.plane}.${field.target}`;
+    if (destinations.has(destination)) diagnostics.push(diagnostic('editor_destination_duplicate', `${path}.target`, `Duplicate destination ${destination}`));
+    else destinations.add(destination);
+    if (!GROUPS.has(field.group)) diagnostics.push(diagnostic('editor_group_unknown', `${path}.group`, 'Field group is unknown'));
+    if (!VISIBILITIES.has(field.visibility)) diagnostics.push(diagnostic('editor_visibility_unknown', `${path}.visibility`, 'Field visibility is unknown'));
+    if (!stableKey(field.label_key)) diagnostics.push(diagnostic('editor_label_key_invalid', `${path}.label_key`, 'Localization key must be stable'));
+    if (field.help_key !== undefined && !stableKey(field.help_key)) diagnostics.push(diagnostic('editor_help_key_invalid', `${path}.help_key`, 'Help localization key must be stable'));
+    validateHintList(field.capability_hints, `${path}.capability_hints`, diagnostics);
+    validateHintList(field.permission_hints, `${path}.permission_hints`, diagnostics);
+    if (!owner(field.owner)) diagnostics.push(diagnostic('editor_owner_invalid', `${path}.owner`, 'Owner must be a portable owner id'));
+    if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(field.constraints)) diagnostics.push(diagnostic('editor_constraints_invalid', `${path}.constraints`, 'Constraints must be an object'));
+
+    if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(field.property)) diagnostics.push(diagnostic('editor_property_invalid', `${path}.property`, 'Property identity must be an object'));
+    else {
+      unknownFields(field.property, PROPERTY_FIELDS, `${path}.property`, diagnostics);
+      if (!stableKey(field.property.type)) diagnostics.push(diagnostic('editor_property_type_invalid', `${path}.property.type`, 'Property type must be stable'));
+      if (!Number.isInteger(field.property.version) || field.property.version < 1) diagnostics.push(diagnostic('editor_property_version_invalid', `${path}.property.version`, 'Property version must be positive'));
+      if (availablePropertyTypes && !availablePropertyTypes.has(`${field.property.type}@${field.property.version}`)) {
+        diagnostics.push(diagnostic('editor_property_registration_unknown', `${path}.property`, 'Property type and version are not registered by the host'));
+      }
+    }
+
+    if (field.choices !== undefined && (!Array.isArray(field.choices) || field.choices.length === 0 || field.choices.length > 200 || field.choices.some((entry) => !scalar(entry)) || new Set(field.choices.map(_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.stableStringify)).size !== field.choices.length)) {
+      diagnostics.push(diagnostic('editor_choices_invalid', `${path}.choices`, 'Choices must be a bounded unique scalar list'));
+    }
+    if ('default' in field && !scalar(field.default)) diagnostics.push(diagnostic('editor_default_invalid', `${path}.default`, 'Default must be scalar'));
+    if ('default' in field && Array.isArray(field.choices) && !field.choices.some((choice) => (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.stableStringify)(choice) === (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.stableStringify)(field.default))) {
+      diagnostics.push(diagnostic('editor_default_choice_unknown', `${path}.default`, 'Default must be one of the allowed choices'));
+    }
+
+    if (field.plane === 'presentation') {
+      if (!PRESENTATION_TARGETS.has(field.target)) diagnostics.push(diagnostic('editor_presentation_target_unsupported', `${path}.target`, 'Only view and preset are scalar editable presentation targets'));
+      const registered = new Set(selectionValues(typeManifest || {}, field.target));
+      for (const choice of field.choices || []) {
+        if (typeof choice !== 'string' || !registered.has(choice)) diagnostics.push(diagnostic('editor_presentation_choice_unknown', `${path}.choices`, `${String(choice)} is not registered by the type manifest`));
+      }
+    } else if (PLANES.has(field.plane) && (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(typeManifest)) {
+      const schema = field.plane === 'props' ? typeManifest.props_schema : typeManifest.data_schema;
+      if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(schema?.properties) || !(field.target in schema.properties)) diagnostics.push(diagnostic('editor_destination_unknown', `${path}.target`, `${destination} is not declared by the type manifest`));
+    }
+  });
+  return { valid: diagnostics.length === 0, diagnostics };
+}
+
+function nodeValue(node, field) {
+  const plane = node?.[field.plane];
+  if ((0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(plane) && field.target in plane) return { value: plane[field.target], source: 'node' };
+  if ('default' in field) return { value: field.default, source: 'default' };
+  return { value: null, source: 'unset' };
+}
+
+function projectEditorFields(editorManifest, typeManifest, node, options = {}) {
+  const checked = validateEditorManifest(editorManifest, typeManifest, options);
+  if (!checked.valid) return { valid: false, fields: [], diagnostics: checked.diagnostics };
+  const diagnostics = [];
+  const fields = editorManifest.fields.map((field) => {
+    const current = nodeValue(node, field);
+    if (current.source !== 'unset' && field.choices && !field.choices.some((choice) => (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.stableStringify)(choice) === (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.stableStringify)(current.value))) {
+      diagnostics.push(diagnostic('editor_choice_unknown', `node:${node?.id || ''}.${field.plane}.${field.target}`, 'Current value is not an allowed choice'));
+    }
+    return (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.canonical)({ ...field, destination: `${field.plane}.${field.target}`, ...current });
+  });
+  return { valid: diagnostics.length === 0, fields, diagnostics };
+}
+
+function projectDocumentEditorFields(document, typeRegistry, editorManifests, options = {}) {
+  const byType = new Map();
+  for (const manifest of editorManifests || []) {
+    const identity = `${manifest.type}@${manifest.type_version}`;
+    if (byType.has(identity)) return { valid: false, instances: [], diagnostics: [diagnostic('editor_manifest_duplicate', '$', `Duplicate editor manifest ${identity}`)] };
+    byType.set(identity, manifest);
+  }
+  const instances = [];
+  const diagnostics = [];
+  const visit = (node) => {
+    const typeManifest = typeRegistry?.types instanceof Map ? typeRegistry.types.get(node.type) : undefined;
+    if (typeManifest) {
+      const editorManifest = byType.get(`${typeManifest.type}@${typeManifest.version}`);
+      if (editorManifest) {
+        const projected = projectEditorFields(editorManifest, typeManifest, node, options);
+        diagnostics.push(...projected.diagnostics.map((entry) => ({ ...entry, instance: node.id })));
+        instances.push({ id: node.id, type: node.type, fields: projected.fields });
+      }
+    }
+    for (const children of Object.values(node.slots || {})) for (const child of children) visit(child);
+  };
+  if (document?.root) visit(document.root);
+  return { valid: diagnostics.length === 0, instances, diagnostics };
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ projectDocumentEditorFields, projectEditorFields, validateEditorManifest });
+
+
+/***/ },
+
+/***/ "4e6fc63bed81"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BUILTIN_FIELD_KINDS: () => (/* binding */ BUILTIN_FIELD_KINDS),
+/* harmony export */   applyFieldValue: () => (/* binding */ applyFieldValue),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   fieldKindRegistry: () => (/* binding */ fieldKindRegistry),
+/* harmony export */   parseFieldSubmission: () => (/* binding */ parseFieldSubmission),
+/* harmony export */   renderFieldFallback: () => (/* binding */ renderFieldFallback),
+/* harmony export */   resolveFieldKind: () => (/* binding */ resolveFieldKind),
+/* harmony export */   validateFieldKinds: () => (/* binding */ validateFieldKinds),
+/* harmony export */   validateFieldValue: () => (/* binding */ validateFieldValue)
+/* harmony export */ });
+/* harmony import */ var _canonical_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("6f489cc65b77");
+
+
+// Editor field kinds. A kind is derived from the exact host Property identity
+// and the presence of choices in a simai.composition.editor-manifest.v1 field;
+// the editor manifest schema is unchanged. Each kind fixes value schema,
+// default, normalization, validation, accessibility, themes, localization and
+// the server-rendered fallback control. Hosts keep persistence and access.
+
+const STABLE_SEGMENT = /^[a-z][a-z0-9_]*$/u;
+const INTEGER_TEXT = /^-?(?:0|[1-9][0-9]*)$/u;
+
+const BUILTIN_FIELD_KINDS = Object.freeze([
+  {
+    schema: 'simai.composition.editor-field-kind.v1',
+    kind: 'choice',
+    version: 1,
+    status: 'formalized-existing',
+    match: { property: [{ type: 'string', version: 1 }, { type: 'string', version: 2 }], choices: 'required' },
+    value_schema: { type: 'string', minLength: 1 },
+    default: { kind: null, field: 'must-be-a-choice' },
+    constraints: { allowed: ['min_length', 'max_length'] },
+    normalization: { form: 'exact-string', unset: 'absent-field', stored: 'value' },
+    validation: ['choice-member'],
+    accessibility: { control: 'select', role: 'combobox', name: 'label_key', description: 'help_key via aria-describedby', keyboard: ['Tab', 'ArrowUp', 'ArrowDown', 'Enter', 'Space', 'Escape'] },
+    themes: { modes: ['light', 'dark'], tokens: ['--sf-surface-1', '--sf-on-surface', '--sf-outline', '--sf-primary'], contrast: 'WCAG 2.2 AA' },
+    localization: { label: 'label_key', help: 'help_key', value_labels: '<label_key>.<choice> when the choice is a stable segment, otherwise the raw choice', direction: 'logical' },
+    server_fallback: { element: 'select', value: 'option value', enhanced_control: 'sf-dropdown' },
+  },
+  {
+    schema: 'simai.composition.editor-field-kind.v1',
+    kind: 'integer',
+    version: 1,
+    status: 'formalized-existing',
+    match: { property: [{ type: 'integer', version: 1 }], choices: 'forbidden' },
+    value_schema: { type: 'integer', minimum: -9007199254740991, maximum: 9007199254740991 },
+    default: { kind: null, field: 'must-satisfy-constraints' },
+    constraints: { allowed: ['min', 'max'], required: ['min', 'max'] },
+    normalization: { form: 'decimal-integer-text', unset: 'empty-text', stored: 'safe-integer' },
+    validation: ['integer-text', 'range'],
+    accessibility: { control: 'input[type=number]', role: 'spinbutton', name: 'label_key', description: 'help_key via aria-describedby', keyboard: ['Tab', 'ArrowUp', 'ArrowDown', 'digits'] },
+    themes: { modes: ['light', 'dark'], tokens: ['--sf-surface-1', '--sf-on-surface', '--sf-outline', '--sf-primary'], contrast: 'WCAG 2.2 AA' },
+    localization: { label: 'label_key', help: 'help_key', value_labels: 'none', direction: 'logical', digits: 'ASCII decimal' },
+    server_fallback: { element: 'input', type: 'number', attributes: ['min', 'max', 'step=1', 'inputmode=numeric'], enhanced_control: 'sf-input' },
+  },
+  {
+    schema: 'simai.composition.editor-field-kind.v1',
+    kind: 'text',
+    version: 1,
+    status: 'new',
+    match: { property: [{ type: 'string', version: 2 }], choices: 'forbidden' },
+    value_schema: { type: 'string', minLength: 1, maxLength: 2000 },
+    default: { kind: null, field: 'must-satisfy-constraints' },
+    constraints: { allowed: ['min_length', 'max_length'], required: ['max_length'] },
+    normalization: { form: 'exact-string-no-trim-no-unicode-normalization', unset: 'empty-text', stored: 'value' },
+    validation: ['code-point-length', 'no-control-characters', 'well-formed-unicode'],
+    accessibility: { control: 'input[type=text]', role: 'textbox', name: 'label_key', description: 'help_key via aria-describedby', keyboard: ['Tab', 'text entry'], attributes: ['dir=auto', 'maxlength'] },
+    themes: { modes: ['light', 'dark'], tokens: ['--sf-surface-1', '--sf-on-surface', '--sf-outline', '--sf-primary'], contrast: 'WCAG 2.2 AA' },
+    localization: { label: 'label_key', help: 'help_key', value_labels: 'none', direction: 'dir=auto per value; value is author content in the Document locale' },
+    server_fallback: { element: 'input', type: 'text', attributes: ['maxlength', 'dir=auto'], enhanced_control: 'sf-input' },
+  },
+  {
+    schema: 'simai.composition.editor-field-kind.v1',
+    kind: 'toggle',
+    version: 1,
+    status: 'new',
+    match: { property: [{ type: 'boolean', version: 1 }], choices: 'forbidden' },
+    value_schema: { type: 'boolean' },
+    default: { kind: false, field: 'false-or-absent' },
+    constraints: { allowed: [] },
+    normalization: { form: 'present-true-absent-false', unset: 'false', stored: 'true only; false removes the key' },
+    validation: ['strict-boolean'],
+    accessibility: { control: 'input[type=checkbox][role=switch]', role: 'switch', name: 'label_key', description: 'help_key via aria-describedby', keyboard: ['Tab', 'Space'], states: ['checked'] },
+    themes: { modes: ['light', 'dark'], tokens: ['--sf-surface-1', '--sf-on-surface', '--sf-outline', '--sf-primary'], contrast: 'WCAG 2.2 AA' },
+    localization: { label: 'label_key', help: 'help_key', value_labels: 'none', direction: 'logical' },
+    server_fallback: { element: 'input', type: 'checkbox', attributes: ['role=switch', 'value=true'], enhanced_control: 'sf-switch' },
+  },
+]);
+
+const diagnostic = (code, path, message) => ({ code, path, message });
+
+function codePoints(value) {
+  return [...value].length;
+}
+
+function wellFormed(value) {
+  for (let index = 0; index < value.length; index += 1) {
+    const code = value.charCodeAt(index);
+    if (code >= 0xd800 && code <= 0xdbff) {
+      const next = value.charCodeAt(index + 1);
+      if (!(next >= 0xdc00 && next <= 0xdfff)) return false;
+      index += 1;
+    } else if (code >= 0xdc00 && code <= 0xdfff) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function hasControl(value) {
+  for (let index = 0; index < value.length; index += 1) {
+    const code = value.charCodeAt(index);
+    if (code < 32 || code === 127) return true;
+  }
+  return false;
+}
+
+/** Returns the kind manifest that governs an editor field, or null. */
+function resolveFieldKind(field, kinds = BUILTIN_FIELD_KINDS) {
+  if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(field?.property)) return null;
+  const hasChoices = Array.isArray(field.choices);
+  const matches = kinds.filter((kind) => kind.match.property.some((property) => property.type === field.property.type && property.version === field.property.version)
+    && (kind.match.choices === 'required' ? hasChoices : !hasChoices));
+  return matches.length === 1 ? matches[0] : null;
+}
+
+/** Checks one normalized value against its field; returns diagnostics. */
+function validateFieldValue(field, value, path = '$') {
+  const kind = resolveFieldKind(field);
+  if (!kind) return [diagnostic('field_kind_unknown', path, 'The field does not map to exactly one published kind')];
+  const constraints = (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(field.constraints) ? field.constraints : {};
+  const problems = [];
+  if (kind.kind === 'choice') {
+    if (typeof value !== 'string' || !field.choices.includes(value)) problems.push(diagnostic('field_value_choice', path, 'Value is not an allowed choice'));
+  } else if (kind.kind === 'integer') {
+    if (!Number.isSafeInteger(value)) problems.push(diagnostic('field_value_type', path, 'Value must be a safe integer'));
+    else if ((Number.isInteger(constraints.min) && value < constraints.min) || (Number.isInteger(constraints.max) && value > constraints.max)) problems.push(diagnostic('field_value_range', path, 'Value is outside the allowed range'));
+  } else if (kind.kind === 'text') {
+    if (typeof value !== 'string') problems.push(diagnostic('field_value_type', path, 'Value must be a string'));
+    else if (!wellFormed(value)) problems.push(diagnostic('field_value_unicode', path, 'Value must be well-formed Unicode'));
+    else if (hasControl(value)) problems.push(diagnostic('field_value_control', path, 'Value cannot contain control characters'));
+    else {
+      const length = codePoints(value);
+      const min = Math.max(1, Number.isInteger(constraints.min_length) ? constraints.min_length : 1);
+      const max = Math.min(2000, Number.isInteger(constraints.max_length) ? constraints.max_length : 2000);
+      if (length < min || length > max) problems.push(diagnostic('field_value_length', path, 'Value length is outside the allowed range'));
+    }
+  } else if (kind.kind === 'toggle' && typeof value !== 'boolean') {
+    problems.push(diagnostic('field_value_type', path, 'Value must be a boolean'));
+  }
+  return problems;
+}
+
+/** Kind-specific manifest rules added on top of validateEditorManifest. */
+function validateFieldKinds(editorManifest) {
+  const problems = [];
+  (Array.isArray(editorManifest?.fields) ? editorManifest.fields : []).forEach((field, index) => {
+    const path = `$.fields[${index}]`;
+    const kind = resolveFieldKind(field);
+    if (!kind) {
+      problems.push(diagnostic('field_kind_unknown', path, 'The field does not map to exactly one published kind'));
+      return;
+    }
+    const constraints = (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(field.constraints) ? field.constraints : {};
+    for (const key of Object.keys(constraints)) {
+      if (!kind.constraints.allowed.includes(key)) problems.push(diagnostic('field_constraint_unknown', `${path}.constraints.${key}`, `${key} is not a ${kind.kind} constraint`));
+    }
+    for (const key of kind.constraints.required || []) {
+      if (!Number.isInteger(constraints[key])) problems.push(diagnostic('field_constraint_required', `${path}.constraints.${key}`, `${kind.kind} requires ${key}`));
+    }
+    if (kind.kind === 'choice') {
+      const min = Number.isInteger(constraints.min_length) ? constraints.min_length : 0;
+      const max = Number.isInteger(constraints.max_length) ? constraints.max_length : Infinity;
+      if (min > max) problems.push(diagnostic('field_constraint_invalid', `${path}.constraints`, 'min_length must not exceed max_length'));
+      for (const choice of field.choices) {
+        if (typeof choice !== 'string' || codePoints(choice) < min || codePoints(choice) > max) problems.push(diagnostic('field_choice_invalid', `${path}.choices`, `${String(choice)} violates the choice constraints`));
+      }
+    }
+    if (kind.kind === 'integer' && Number.isInteger(constraints.min) && Number.isInteger(constraints.max) && constraints.min > constraints.max) {
+      problems.push(diagnostic('field_constraint_invalid', `${path}.constraints`, 'min must not exceed max'));
+    }
+    if (kind.kind === 'text' && Number.isInteger(constraints.min_length) && Number.isInteger(constraints.max_length) && constraints.min_length > constraints.max_length) {
+      problems.push(diagnostic('field_constraint_invalid', `${path}.constraints`, 'min_length must not exceed max_length'));
+    }
+    if (kind.kind === 'toggle' && 'default' in field && field.default !== false) problems.push(diagnostic('field_default_invalid', `${path}.default`, 'A toggle default must be false or absent'));
+    if (kind.kind !== 'toggle' && 'default' in field) problems.push(...validateFieldValue(field, field.default, `${path}.default`).map((entry) => ({ ...entry, code: 'field_default_invalid' })));
+  });
+  return problems;
+}
+
+/**
+ * Normalizes one submitted form value. raw is the submitted string, or null
+ * when the control sent nothing. Returns {value} or {unset: true} or {error}.
+ */
+function parseFieldSubmission(field, raw) {
+  const kind = resolveFieldKind(field);
+  if (!kind) return { error: diagnostic('field_kind_unknown', '$', 'The field does not map to exactly one published kind') };
+  if (raw !== null && typeof raw !== 'string') return { error: diagnostic('field_submission_invalid', '$', 'A submission must be a string or absent') };
+  let value;
+  if (kind.kind === 'toggle') {
+    if (raw !== null && raw !== 'true') return { error: diagnostic('field_submission_invalid', '$', 'A toggle submits only true') };
+    return raw === 'true' ? { value: true } : { unset: true };
+  }
+  if (raw === null || raw === '') return { unset: true };
+  if (kind.kind === 'integer') {
+    if (!INTEGER_TEXT.test(raw)) return { error: diagnostic('field_value_type', '$', 'Value must be a decimal integer') };
+    value = Number(raw);
+  } else {
+    value = raw;
+  }
+  const problems = validateFieldValue(field, value);
+  return problems.length ? { error: problems[0] } : { value };
+}
+
+/** Returns a new node with the field value set, or the key removed when unset. */
+function applyFieldValue(node, field, result) {
+  if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(result) || result.error || (result.unset !== true && !('value' in result))) {
+    throw new TypeError('applyFieldValue requires a successful parseFieldSubmission result');
+  }
+  const next = (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.canonical)(JSON.parse(JSON.stringify(node)));
+  const plane = (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(next[field.plane]) ? { ...next[field.plane] } : {};
+  if (result.unset || (resolveFieldKind(field)?.kind === 'toggle' && result.value === false)) delete plane[field.target];
+  else plane[field.target] = result.value;
+  if (Object.keys(plane).length) next[field.plane] = plane;
+  else delete next[field.plane];
+  return (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.canonical)(next);
+}
+
+function escapeHtml(value) {
+  return String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#39;');
+}
+
+function controlId(instance, field) {
+  return `sf-field-${instance}-${field.key}`.replace(/[^A-Za-z0-9_-]/gu, '-');
+}
+
+/**
+ * Server-rendered fallback control for one projected field (the output of
+ * projectEditorFields plus its instance id). Works without JavaScript; the
+ * submitted name is "<instance>.<destination>". Missing translations fall back
+ * to the stable key text.
+ */
+function renderFieldFallback(field, { instance, messages = {} } = {}) {
+  const kind = resolveFieldKind(field);
+  if (!kind) throw new TypeError('field_kind_unknown');
+  // Hidden fields are not rendered; a form handler must skip them so that
+  // their stored values stay unchanged.
+  if (field.visibility === 'hidden') return '';
+  const id = controlId(instance, field);
+  const name = escapeHtml(`${instance}.${field.plane}.${field.target}`);
+  const label = escapeHtml(messages[field.label_key] ?? field.label_key);
+  const helpId = field.help_key ? `${id}-help` : null;
+  const described = helpId ? ` aria-describedby="${helpId}"` : '';
+  const help = helpId ? `<small class="sf-editor-field-help" id="${helpId}">${escapeHtml(messages[field.help_key] ?? field.help_key)}</small>` : '';
+  const value = field.value ?? field.default ?? null;
+  const constraints = field.constraints || {};
+  let control;
+  if (kind.kind === 'toggle') {
+    control = `<input class="sf-editor-field-control" type="checkbox" role="switch" id="${id}" name="${name}" value="true"${value === true ? ' checked' : ''}${described}><label for="${id}">${label}</label>`;
+  } else if (kind.kind === 'choice') {
+    const options = field.choices.map((choice) => {
+      const text = STABLE_SEGMENT.test(choice) ? (messages[`${field.label_key}.${choice}`] ?? choice) : choice;
+      return `<option value="${escapeHtml(choice)}"${choice === value ? ' selected' : ''}>${escapeHtml(text)}</option>`;
+    }).join('');
+    control = `<label for="${id}">${label}</label><select class="sf-editor-field-control" id="${id}" name="${name}"${described}>${value === null ? '<option value="" selected></option>' : ''}${options}</select>`;
+  } else if (kind.kind === 'integer') {
+    const bounds = `${Number.isInteger(constraints.min) ? ` min="${constraints.min}"` : ''}${Number.isInteger(constraints.max) ? ` max="${constraints.max}"` : ''}`;
+    control = `<label for="${id}">${label}</label><input class="sf-editor-field-control" type="number" inputmode="numeric" step="1"${bounds} id="${id}" name="${name}" value="${value === null ? '' : escapeHtml(value)}"${described}>`;
+  } else {
+    const max = Math.min(2000, Number.isInteger(constraints.max_length) ? constraints.max_length : 2000);
+    control = `<label for="${id}">${label}</label><input class="sf-editor-field-control" type="text" dir="auto" maxlength="${max}" id="${id}" name="${name}" value="${value === null ? '' : escapeHtml(value)}"${described}>`;
+  }
+  const html = `<div class="sf-editor-field" data-sf-field-kind="${kind.kind}" data-sf-field-group="${escapeHtml(field.group)}">${control}${help}</div>`;
+  return field.visibility === 'collapsed'
+    ? `<details class="sf-editor-field-disclosure"><summary>${label}</summary>${html}</details>`
+    : html;
+}
+
+function fieldKindRegistry() {
+  return JSON.parse((0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.stableStringify)({ schema: 'simai.composition.editor-field-kind-registry.v1', entries: BUILTIN_FIELD_KINDS }));
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ BUILTIN_FIELD_KINDS, applyFieldValue, parseFieldSubmission, renderFieldFallback, resolveFieldKind, validateFieldKinds, validateFieldValue });
+
+
+/***/ },
+
 /***/ "32dfc4431a24"
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BUILTIN_EDITOR_MANIFESTS: () => (/* reexport safe */ _builtins_mjs__WEBPACK_IMPORTED_MODULE_0__.BUILTIN_EDITOR_MANIFESTS),
+/* harmony export */   BUILTIN_FIELD_KINDS: () => (/* reexport safe */ _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.BUILTIN_FIELD_KINDS),
+/* harmony export */   BUILTIN_PORT_MANIFESTS: () => (/* reexport safe */ _builtins_mjs__WEBPACK_IMPORTED_MODULE_0__.BUILTIN_PORT_MANIFESTS),
 /* harmony export */   Composition: () => (/* binding */ Composition),
-/* harmony export */   Recipe: () => (/* reexport safe */ _recipe_mjs__WEBPACK_IMPORTED_MODULE_2__.Recipe),
+/* harmony export */   INLINE_MARKS: () => (/* reexport safe */ _inline_model_mjs__WEBPACK_IMPORTED_MODULE_6__.INLINE_MARKS),
+/* harmony export */   Recipe: () => (/* reexport safe */ _recipe_mjs__WEBPACK_IMPORTED_MODULE_4__.Recipe),
+/* harmony export */   VALUE_TYPES: () => (/* reexport safe */ _routing_mjs__WEBPACK_IMPORTED_MODULE_7__.VALUE_TYPES),
+/* harmony export */   applyFieldValue: () => (/* reexport safe */ _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.applyFieldValue),
+/* harmony export */   checkPortValue: () => (/* reexport safe */ _routing_mjs__WEBPACK_IMPORTED_MODULE_7__.checkPortValue),
 /* harmony export */   compositionTypeFromSmartManifest: () => (/* binding */ compositionTypeFromSmartManifest),
+/* harmony export */   createPortRegistry: () => (/* reexport safe */ _routing_mjs__WEBPACK_IMPORTED_MODULE_7__.createPortRegistry),
 /* harmony export */   createRegistry: () => (/* binding */ createRegistry),
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   defineCompositionScope: () => (/* reexport safe */ _routing_mjs__WEBPACK_IMPORTED_MODULE_7__.defineCompositionScope),
+/* harmony export */   describeRegions: () => (/* reexport safe */ _regions_mjs__WEBPACK_IMPORTED_MODULE_5__.describeRegions),
+/* harmony export */   inlineText: () => (/* reexport safe */ _inline_model_mjs__WEBPACK_IMPORTED_MODULE_6__.inlineText),
+/* harmony export */   marksIn: () => (/* reexport safe */ _inline_model_mjs__WEBPACK_IMPORTED_MODULE_6__.marksIn),
 /* harmony export */   normalize: () => (/* binding */ normalize),
-/* harmony export */   parseRecipeJson: () => (/* reexport safe */ _recipe_mjs__WEBPACK_IMPORTED_MODULE_2__.parseRecipeJson),
-/* harmony export */   recipeDigest: () => (/* reexport safe */ _recipe_mjs__WEBPACK_IMPORTED_MODULE_2__.recipeDigest),
-/* harmony export */   recipeNodeId: () => (/* reexport safe */ _recipe_mjs__WEBPACK_IMPORTED_MODULE_2__.recipeNodeId),
+/* harmony export */   normalizeInline: () => (/* reexport safe */ _inline_model_mjs__WEBPACK_IMPORTED_MODULE_6__.normalizeInline),
+/* harmony export */   parseFieldSubmission: () => (/* reexport safe */ _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.parseFieldSubmission),
+/* harmony export */   parseRecipeJson: () => (/* reexport safe */ _recipe_mjs__WEBPACK_IMPORTED_MODULE_4__.parseRecipeJson),
+/* harmony export */   projectDocumentEditorFields: () => (/* reexport safe */ _editor_mjs__WEBPACK_IMPORTED_MODULE_2__.projectDocumentEditorFields),
+/* harmony export */   projectEditorFields: () => (/* reexport safe */ _editor_mjs__WEBPACK_IMPORTED_MODULE_2__.projectEditorFields),
+/* harmony export */   recipeDigest: () => (/* reexport safe */ _recipe_mjs__WEBPACK_IMPORTED_MODULE_4__.recipeDigest),
+/* harmony export */   recipeNodeId: () => (/* reexport safe */ _recipe_mjs__WEBPACK_IMPORTED_MODULE_4__.recipeNodeId),
 /* harmony export */   render: () => (/* binding */ render),
-/* harmony export */   resolveRecipe: () => (/* reexport safe */ _recipe_mjs__WEBPACK_IMPORTED_MODULE_2__.resolveRecipe),
+/* harmony export */   renderFieldFallback: () => (/* reexport safe */ _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.renderFieldFallback),
+/* harmony export */   replaceRange: () => (/* reexport safe */ _inline_model_mjs__WEBPACK_IMPORTED_MODULE_6__.replaceRange),
+/* harmony export */   resolveFieldKind: () => (/* reexport safe */ _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.resolveFieldKind),
+/* harmony export */   resolveRecipe: () => (/* reexport safe */ _recipe_mjs__WEBPACK_IMPORTED_MODULE_4__.resolveRecipe),
+/* harmony export */   setLink: () => (/* reexport safe */ _inline_model_mjs__WEBPACK_IMPORTED_MODULE_6__.setLink),
 /* harmony export */   stableStringify: () => (/* reexport safe */ _canonical_mjs__WEBPACK_IMPORTED_MODULE_1__.stableStringify),
-/* harmony export */   validate: () => (/* binding */ validate)
+/* harmony export */   startInlineEdit: () => (/* binding */ startInlineEdit),
+/* harmony export */   toggleMark: () => (/* reexport safe */ _inline_model_mjs__WEBPACK_IMPORTED_MODULE_6__.toggleMark),
+/* harmony export */   validate: () => (/* binding */ validate),
+/* harmony export */   validateEditorManifest: () => (/* reexport safe */ _editor_mjs__WEBPACK_IMPORTED_MODULE_2__.validateEditorManifest),
+/* harmony export */   validateFieldKinds: () => (/* reexport safe */ _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.validateFieldKinds),
+/* harmony export */   validateFieldValue: () => (/* reexport safe */ _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.validateFieldValue)
 /* harmony export */ });
 /* harmony import */ var _builtins_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("08e5033c490a");
 /* harmony import */ var _canonical_mjs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("6f489cc65b77");
-/* harmony import */ var _recipe_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("6770fb69bd04");
+/* harmony import */ var _editor_mjs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("3765e2c966fd");
+/* harmony import */ var _fields_mjs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("4e6fc63bed81");
+/* harmony import */ var _recipe_mjs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("6770fb69bd04");
+/* harmony import */ var _regions_mjs__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("68efac8c1b57");
+/* harmony import */ var _inline_model_mjs__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("e66d878fb4f8");
+/* harmony import */ var _routing_mjs__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("4aea5d6d49c7");
+
+
+
+
+
 
 
 
 
 const DOCUMENT_SCHEMA = 'simai.composition.document.v1';
+
+// The editor surfaces (sf-composition-overlay, sf-sortable, sf-inline-editor)
+// are Smart components loaded on demand, so pages that only render stay small.
+// startInlineEdit keeps its Core name and delegates to the loaded editor.
+function startInlineEdit(element, options) {
+  const editor = globalThis.SF?.InlineEditor;
+  if (typeof editor?.startInlineEdit !== 'function') throw new TypeError('inline_editor_not_loaded');
+  return editor.startInlineEdit(element, options);
+}
 const PROFILES = new Set(['ui-layout', 'structured-content']);
 const DOCUMENT_FIELDS = new Set(['schema', 'id', 'profile', 'locale', 'root', 'extensions']);
 const NODE_FIELDS = new Set(['id', 'type', 'data', 'props', 'slots', 'presentation', 'bindings', 'extensions']);
@@ -974,7 +1815,8 @@ function validateJsonSchema(value, schema, path, diagnostics) {
 }
 
 function validUrl(value) {
-  if (/^(?:\/|\.?\.\/|#)/u.test(value)) return !value.startsWith('//');
+  // Browsers read "/\\host" like "//host": backslashes never form a local link.
+  if (/^(?:\/|\.?\.\/|#)/u.test(value)) return !value.startsWith('//') && !value.includes('\\');
   try {
     return SAFE_SCHEMES.has(new globalThis.URL(value).protocol);
   } catch {
@@ -990,6 +1832,16 @@ function validateInlineContent(value, path, diagnostics) {
       diagnostics.push(diagnostic('unsafe_url', `${path}[${index}].href`, 'Link protocol is not allowed'));
     }
   }
+}
+
+let defaultPorts = null;
+
+function normalizePorts(ports) {
+  if (ports?.elements instanceof Map) return ports;
+  if (Array.isArray(ports)) return (0,_routing_mjs__WEBPACK_IMPORTED_MODULE_7__.createPortRegistry)(ports);
+  if (ports && Array.isArray(ports.manifests)) return (0,_routing_mjs__WEBPACK_IMPORTED_MODULE_7__.createPortRegistry)(ports.manifests, { bindings: ports.bindings });
+  defaultPorts = defaultPorts || (0,_routing_mjs__WEBPACK_IMPORTED_MODULE_7__.createPortRegistry)(_builtins_mjs__WEBPACK_IMPORTED_MODULE_0__.BUILTIN_PORT_MANIFESTS);
+  return defaultPorts;
 }
 
 function normalizeRegistry(registry) {
@@ -1033,7 +1885,7 @@ function validate(document, registry = undefined, options = {}) {
   const diagnostics = [];
   const resolvedRegistry = normalizeRegistry(registry);
   const limits = { ...DEFAULT_LIMITS, ...(options.limits || {}) };
-  const supportedExtensions = new Set(options.supportedExtensions || []);
+  const supportedExtensions = new Set([_routing_mjs__WEBPACK_IMPORTED_MODULE_7__.ENDPOINT_EXTENSION, ...(options.supportedExtensions || [])]);
   let serialized;
   try {
     serialized = JSON.stringify(document);
@@ -1129,6 +1981,10 @@ function validate(document, registry = undefined, options = {}) {
   };
   visit(document.root, '$.root', 1);
   if (nodeCount > limits.maxNodes) diagnostics.push(diagnostic('node_limit', '$.root', 'Composition has too many nodes'));
+  else {
+    (0,_regions_mjs__WEBPACK_IMPORTED_MODULE_5__.validateRegionRules)(document.root, resolvedRegistry, diagnostics);
+    (0,_routing_mjs__WEBPACK_IMPORTED_MODULE_7__.resolveRoutes)(document.root, resolvedRegistry, normalizePorts(options.ports), diagnostics);
+  }
   return { valid: diagnostics.length === 0, diagnostics };
 }
 
@@ -1175,9 +2031,21 @@ function renderInline(content) {
 const BUILTIN_RENDERERS = {
   'layout.page': ({ node, slots }) => `<main data-sf-composition-id="${escapeHtml(node.id)}">${slots.default || ''}</main>`,
   'layout.section': ({ node, slots }) => `<section data-sf-composition-id="${escapeHtml(node.id)}">${slots.default || ''}</section>`,
-  'layout.columns': ({ node, slots }) => `<div class="sf-composition-columns" data-sf-composition-id="${escapeHtml(node.id)}">${(slots.columnsList || []).map((child) => `<div class="sf-composition-column">${child}</div>`).join('')}</div>`,
+  'layout.columns': ({ node, slots }) => {
+    const columns = Number.isInteger(node.props?.columns) ? ` data-composition-columns="${node.props.columns}"` : '';
+    return `<div class="sf-composition-columns" data-sf-composition-id="${escapeHtml(node.id)}"${columns}>${(slots.columnsList || []).map((child) => `<div class="sf-composition-column">${child}</div>`).join('')}</div>`;
+  },
   'content.heading': ({ node }) => `<h${node.data.level || 2} data-sf-composition-id="${escapeHtml(node.id)}">${renderInline(node.data.content)}</h${node.data.level || 2}>`,
   'content.paragraph': ({ node }) => `<p data-sf-composition-id="${escapeHtml(node.id)}">${renderInline(node.data.content)}</p>`,
+  'layout.regions': ({ node, slots }) => `<div class="sf-composition-regions" data-sf-composition-id="${escapeHtml(node.id)}"><div class="sf-composition-regions-grid">${slots.regions || ''}</div></div>`,
+  'layout.region': ({ node, slots }) => {
+    const props = node.props;
+    const element = _regions_mjs__WEBPACK_IMPORTED_MODULE_5__.REGION_ELEMENTS[props.landmark];
+    const sticky = props.sticky === true ? ' data-sf-region-sticky=""' : '';
+    const label = props.label !== undefined ? ` aria-label="${escapeHtml(props.label)}"` : '';
+    return `<${element} class="sf-composition-region" data-sf-composition-id="${escapeHtml(node.id)}" data-sf-region="${escapeHtml(props.name)}" data-sf-region-placement="${escapeHtml(props.placement ?? 'block')}"${sticky}${label}>${slots.default || ''}</${element}>`;
+  },
+  'layout.scope': ({ node, slots, routes }) => `<sf-composition-scope data-sf-composition-id="${escapeHtml(node.id)}" data-sf-routes="${escapeHtml((0,_routing_mjs__WEBPACK_IMPORTED_MODULE_7__.routesAttribute)(routes || []))}">${slots.default || ''}</sf-composition-scope>`,
 };
 
 async function render(document, context = {}) {
@@ -1186,6 +2054,7 @@ async function render(document, context = {}) {
   if (!normalized.document) return { html: '', assets: [], hydration: [], diagnostics: normalized.diagnostics, digest: null };
   const diagnostics = [];
   const hydration = [];
+  const routes = (0,_routing_mjs__WEBPACK_IMPORTED_MODULE_7__.resolveRoutes)(normalized.document.root, registry, normalizePorts(context.options?.ports), []);
   const renderNode = async (node) => {
     const manifest = registry.types.get(node.type);
     const slots = {};
@@ -1201,8 +2070,9 @@ async function render(document, context = {}) {
     }
     let renderer = registry.renderers.get(manifest.renderer.name) || BUILTIN_RENDERERS[manifest.renderer.name];
     if (!renderer && manifest.renderer.kind === 'custom-element' && manifest.renderer.name) {
-      renderer = ({ node: current, slots: currentSlots }) => {
-        const attributes = Object.entries(current.props || {}).map(([key, value]) => ` ${escapeHtml(key)}="${escapeHtml(value)}"`).join('');
+      renderer = ({ node: current, slots: currentSlots, endpoint }) => {
+        const endpointAttribute = endpoint ? ` data-sf-endpoint="${escapeHtml(endpoint)}"` : '';
+        const attributes = Object.entries(current.props || {}).map(([key, value]) => ` ${escapeHtml(key)}="${escapeHtml(value)}"`).join('') + endpointAttribute;
         hydration.push({ id: current.id, type: current.type, element: manifest.renderer.name });
         return `<${manifest.renderer.name}${attributes}>${Object.values(currentSlots).filter((value) => typeof value === 'string').join('')}</${manifest.renderer.name}>`;
       };
@@ -1211,33 +2081,221 @@ async function render(document, context = {}) {
       diagnostics.push(diagnostic('renderer_unavailable', `node:${node.id}`, `Renderer ${manifest.renderer.name} is unavailable`));
       return '';
     }
-    return renderer({ node, slots, context, resolvedBindings, manifest });
+    if (node.type === 'layout.scope') hydration.push({ id: node.id, type: node.type, element: 'sf-composition-scope' });
+    return renderer({ node, slots, context, resolvedBindings, manifest, routes: routes.get(node.id), endpoint: (0,_routing_mjs__WEBPACK_IMPORTED_MODULE_7__.endpointName)(node) });
   };
   const html = await renderNode(normalized.document.root);
   return { html, assets: normalized.dependencies.assets, hydration, diagnostics, digest: normalized.digest };
 }
 
 const Composition = Object.freeze({
-  Recipe: _recipe_mjs__WEBPACK_IMPORTED_MODULE_2__.Recipe,
+  BUILTIN_EDITOR_MANIFESTS: _builtins_mjs__WEBPACK_IMPORTED_MODULE_0__.BUILTIN_EDITOR_MANIFESTS,
+  BUILTIN_FIELD_KINDS: _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.BUILTIN_FIELD_KINDS,
+  BUILTIN_PORT_MANIFESTS: _builtins_mjs__WEBPACK_IMPORTED_MODULE_0__.BUILTIN_PORT_MANIFESTS,
+  Recipe: _recipe_mjs__WEBPACK_IMPORTED_MODULE_4__.Recipe,
+  applyFieldValue: _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.applyFieldValue,
+  parseFieldSubmission: _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.parseFieldSubmission,
+  renderFieldFallback: _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.renderFieldFallback,
+  resolveFieldKind: _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.resolveFieldKind,
+  validateFieldKinds: _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.validateFieldKinds,
+  validateFieldValue: _fields_mjs__WEBPACK_IMPORTED_MODULE_3__.validateFieldValue,
+  VALUE_TYPES: _routing_mjs__WEBPACK_IMPORTED_MODULE_7__.VALUE_TYPES,
+  checkPortValue: _routing_mjs__WEBPACK_IMPORTED_MODULE_7__.checkPortValue,
+  createPortRegistry: _routing_mjs__WEBPACK_IMPORTED_MODULE_7__.createPortRegistry,
+  defineCompositionScope: _routing_mjs__WEBPACK_IMPORTED_MODULE_7__.defineCompositionScope,
+  startInlineEdit,
+  normalizeInline: _inline_model_mjs__WEBPACK_IMPORTED_MODULE_6__.normalizeInline,
+  inlineText: _inline_model_mjs__WEBPACK_IMPORTED_MODULE_6__.inlineText,
   createRegistry,
   compositionTypeFromSmartManifest,
+  describeRegions: _regions_mjs__WEBPACK_IMPORTED_MODULE_5__.describeRegions,
   normalize,
+  projectDocumentEditorFields: _editor_mjs__WEBPACK_IMPORTED_MODULE_2__.projectDocumentEditorFields,
+  projectEditorFields: _editor_mjs__WEBPACK_IMPORTED_MODULE_2__.projectEditorFields,
   render,
-  resolveRecipe: _recipe_mjs__WEBPACK_IMPORTED_MODULE_2__.resolveRecipe,
-  parseRecipeJson: _recipe_mjs__WEBPACK_IMPORTED_MODULE_2__.parseRecipeJson,
+  resolveRecipe: _recipe_mjs__WEBPACK_IMPORTED_MODULE_4__.resolveRecipe,
+  parseRecipeJson: _recipe_mjs__WEBPACK_IMPORTED_MODULE_4__.parseRecipeJson,
   stableStringify: _canonical_mjs__WEBPACK_IMPORTED_MODULE_1__.stableStringify,
   validate,
+  validateEditorManifest: _editor_mjs__WEBPACK_IMPORTED_MODULE_2__.validateEditorManifest,
 });
 
 if (typeof globalThis !== 'undefined') {
   globalThis.SF = globalThis.SF || {};
   globalThis.SF.Composition = Composition;
+  (0,_routing_mjs__WEBPACK_IMPORTED_MODULE_7__.defineCompositionScope)();
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Composition);
 
 
 
+
+
+
+
+
+
+/***/ },
+
+/***/ "e66d878fb4f8"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   INLINE_LIMITS: () => (/* binding */ INLINE_LIMITS),
+/* harmony export */   INLINE_MARKS: () => (/* binding */ INLINE_MARKS),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   fromSegments: () => (/* binding */ fromSegments),
+/* harmony export */   inlineText: () => (/* binding */ inlineText),
+/* harmony export */   marksIn: () => (/* binding */ marksIn),
+/* harmony export */   normalizeInline: () => (/* binding */ normalizeInline),
+/* harmony export */   replaceRange: () => (/* binding */ replaceRange),
+/* harmony export */   safeHref: () => (/* binding */ safeHref),
+/* harmony export */   setLink: () => (/* binding */ setLink),
+/* harmony export */   toSegments: () => (/* binding */ toSegments),
+/* harmony export */   toggleMark: () => (/* binding */ toggleMark)
+/* harmony export */ });
+// Pure operations on the Composition inline content model used by
+// content.heading and content.paragraph: text runs with strong, em and code
+// marks, and links whose children are text runs. No DOM access here.
+
+const INLINE_MARKS = Object.freeze(['strong', 'em', 'code']);
+const MARK_ORDER = new Map(INLINE_MARKS.map((mark, index) => [mark, index]));
+const SAFE_SCHEMES = new Set(['http:', 'https:', 'mailto:', 'tel:']);
+const INLINE_LIMITS = Object.freeze({ maxTextLength: 100000, maxHrefLength: 2048 });
+
+/** Same link rule as Document validation: relative, fragment or http(s)/mailto/tel. */
+function safeHref(value) {
+  if (typeof value !== 'string' || value.length < 1 || value.length > INLINE_LIMITS.maxHrefLength) return false;
+  // Browsers read "/\\host" like "//host": backslashes never form a local link.
+  if (/^(?:\/|\.?\.\/|#)/u.test(value)) return !value.startsWith('//') && !value.includes('\\');
+  try {
+    return SAFE_SCHEMES.has(new globalThis.URL(value).protocol);
+  } catch {
+    return false;
+  }
+}
+
+function sortMarks(marks) {
+  return [...new Set(marks)].filter((mark) => MARK_ORDER.has(mark)).sort((left, right) => MARK_ORDER.get(left) - MARK_ORDER.get(right));
+}
+
+/** Flat segments: {text, marks: string[], href: string|null}. */
+function toSegments(content) {
+  const segments = [];
+  const push = (run, href) => {
+    if (run?.type !== 'text' || typeof run.value !== 'string' || !run.value) return;
+    segments.push({ text: run.value, marks: sortMarks(Array.isArray(run.marks) ? run.marks : []), href });
+  };
+  for (const entry of Array.isArray(content) ? content : []) {
+    if (entry?.type === 'link') {
+      const href = safeHref(entry.href) ? entry.href : null;
+      for (const child of Array.isArray(entry.children) ? entry.children : []) push(child, href);
+    } else push(entry, null);
+  }
+  return segments;
+}
+
+const sameStyle = (left, right) => left.href === right.href && left.marks.join() === right.marks.join();
+
+/** Builds normalized content: merged runs, canonical marks, no empty parts. */
+function fromSegments(segments) {
+  const merged = [];
+  for (const segment of segments) {
+    if (!segment.text) continue;
+    const clean = { text: segment.text, marks: sortMarks(segment.marks || []), href: segment.href && safeHref(segment.href) ? segment.href : null };
+    const previous = merged.at(-1);
+    if (previous && sameStyle(previous, clean)) previous.text += clean.text;
+    else merged.push(clean);
+  }
+  const content = [];
+  for (const segment of merged) {
+    const run = { type: 'text', value: segment.text, ...(segment.marks.length ? { marks: segment.marks } : {}) };
+    const previous = content.at(-1);
+    if (segment.href) {
+      if (previous?.type === 'link' && previous.href === segment.href) previous.children.push(run);
+      else content.push({ type: 'link', href: segment.href, children: [run] });
+    } else content.push(run);
+  }
+  return content;
+}
+
+function normalizeInline(content) {
+  return fromSegments(toSegments(content));
+}
+
+function inlineText(content) {
+  return toSegments(content).map(({ text }) => text).join('');
+}
+
+function split(segments, offset) {
+  const output = [];
+  let position = 0;
+  for (const segment of segments) {
+    const end = position + segment.text.length;
+    if (offset > position && offset < end) {
+      output.push({ ...segment, text: segment.text.slice(0, offset - position) }, { ...segment, text: segment.text.slice(offset - position) });
+    } else output.push(segment);
+    position = end;
+  }
+  return output;
+}
+
+function range(content, start, end) {
+  const segments = split(split(toSegments(content), start), end);
+  let position = 0;
+  return segments.map((segment) => {
+    const from = position;
+    position += segment.text.length;
+    return { segment, inside: from >= start && position <= end && position > from };
+  });
+}
+
+/** Marks and link shared by every character in [start, end). */
+function marksIn(content, start, end) {
+  const inside = range(content, Math.min(start, end), Math.max(start, end)).filter(({ inside: isInside }) => isInside).map(({ segment }) => segment);
+  if (!inside.length) return { marks: [], href: null };
+  const marks = INLINE_MARKS.filter((mark) => inside.every((segment) => segment.marks.includes(mark)));
+  const href = inside.every((segment) => segment.href === inside[0].href) ? inside[0].href : null;
+  return { marks, href };
+}
+
+/** Adds the mark to [start, end) unless every character already has it. */
+function toggleMark(content, start, end, mark) {
+  if (!MARK_ORDER.has(mark) || start === end) return normalizeInline(content);
+  const [from, to] = [Math.min(start, end), Math.max(start, end)];
+  const remove = marksIn(content, from, to).marks.includes(mark);
+  return fromSegments(range(content, from, to).map(({ segment, inside }) => (inside
+    ? { ...segment, marks: remove ? segment.marks.filter((entry) => entry !== mark) : [...segment.marks, mark] }
+    : segment)));
+}
+
+/** Sets or removes (href null) a link on [start, end); unsafe links are refused. */
+function setLink(content, start, end, href) {
+  if (href !== null && !safeHref(href)) throw new TypeError('inline_link_unsafe');
+  const [from, to] = [Math.min(start, end), Math.max(start, end)];
+  if (from === to) return normalizeInline(content);
+  return fromSegments(range(content, from, to).map(({ segment, inside }) => (inside ? { ...segment, href } : segment)));
+}
+
+/** Replaces [start, end) with segments (typing, paste or deletion). */
+function replaceRange(content, start, end, inserted) {
+  const [from, to] = [Math.min(start, end), Math.max(start, end)];
+  const parts = range(content, from, to);
+  const before = parts.filter((_, index) => parts.slice(0, index + 1).reduce((sum, part) => sum + part.segment.text.length, 0) <= from).map(({ segment }) => segment);
+  let consumed = 0;
+  const after = [];
+  for (const { segment } of parts) {
+    const segmentStart = consumed;
+    consumed += segment.text.length;
+    if (segmentStart >= to) after.push(segment);
+  }
+  return fromSegments([...before, ...inserted, ...after]);
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ INLINE_MARKS, fromSegments, inlineText, marksIn, normalizeInline, replaceRange, safeHref, setLink, toSegments, toggleMark });
 
 
 /***/ },
@@ -1805,7 +2863,7 @@ async function resolveRecipe(recipe, context = {}) {
     const outputBytes = utf8Size(document);
     if (outputBytes > limits.maxOutputBytes) throw Object.assign(new RangeError('Output byte limit exceeded'), { code: 'limit_exceeded', sourcePath: '/root' });
     const { normalize } = await Promise.resolve(/* import() */).then(__webpack_require__.bind(__webpack_require__, "32dfc4431a24"));
-    const normalized = await normalize(document, context.registry, { limits: { maxDocumentBytes: limits.maxOutputBytes, maxDepth: limits.maxOutputDepth, maxNodes: limits.maxOutputNodes, maxChildrenPerSlot: limits.maxChildrenPerSlot }, supportedExtensions: context.supportedExtensions });
+    const normalized = await normalize(document, context.registry, { limits: { maxDocumentBytes: limits.maxOutputBytes, maxDepth: limits.maxOutputDepth, maxNodes: limits.maxOutputNodes, maxChildrenPerSlot: limits.maxChildrenPerSlot }, supportedExtensions: context.supportedExtensions, ports: context.compositionPorts });
     if (!normalized.document) throw Object.assign(new Error('Resolved document is invalid'), { code: 'invalid_resolved_document', sourcePath: '/root', details: normalized.diagnostics });
     const executionContract = context.executionContract;
     if (!executionContract?.contractDigest || !executionContract?.registryDigest || !executionContract?.rendererDigest) throw Object.assign(new Error('Execution contract is required'), { code: 'invalid_value', sourcePath: '/executionContract' });
@@ -1836,6 +2894,713 @@ const Recipe = Object.freeze({
 });
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Recipe);
+
+
+/***/ },
+
+/***/ "68efac8c1b57"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   REGION_ACCEPTS: () => (/* binding */ REGION_ACCEPTS),
+/* harmony export */   REGION_ELEMENTS: () => (/* binding */ REGION_ELEMENTS),
+/* harmony export */   REGION_LANDMARKS: () => (/* binding */ REGION_LANDMARKS),
+/* harmony export */   REGION_LIMITS: () => (/* binding */ REGION_LIMITS),
+/* harmony export */   REGION_PLACEMENTS: () => (/* binding */ REGION_PLACEMENTS),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   describeRegions: () => (/* binding */ describeRegions),
+/* harmony export */   validateRegionRules: () => (/* binding */ validateRegionRules)
+/* harmony export */ });
+/* harmony import */ var _canonical_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("6f489cc65b77");
+
+
+// Declared-region layout rules. Region names are chosen by the document author;
+// Framework owns only landmark semantics, placement, cardinality and nesting.
+const REGION_LANDMARKS = Object.freeze(['banner', 'navigation', 'main', 'complementary', 'contentinfo', 'region', 'none']);
+const REGION_PLACEMENTS = Object.freeze(['block', 'start', 'center', 'end']);
+const REGION_ACCEPTS = Object.freeze(['layout', 'content', 'smart']);
+const REGION_LIMITS = Object.freeze({ maxRegionsPerLayout: 12, maxRegionLayoutNesting: 4 });
+const REGION_ELEMENTS = Object.freeze({
+  banner: 'header',
+  navigation: 'nav',
+  main: 'main',
+  complementary: 'aside',
+  contentinfo: 'footer',
+  region: 'section',
+  none: 'div',
+});
+
+const DOCUMENT_LEVEL_LANDMARKS = new Set(['banner', 'main', 'contentinfo']);
+const PLACEMENT_RANK = { start: 0, center: 1, end: 2 };
+
+const diagnostic = (code, path, message) => ({ code, path, message });
+
+function landmarkOf(node) {
+  return node?.type === 'layout.region' && typeof node.props?.landmark === 'string' ? node.props.landmark : null;
+}
+
+function validateRegionList(node, path, diagnostics) {
+  const regions = Array.isArray(node.slots?.regions) ? node.slots.regions : [];
+  const names = new Set();
+  let bandRank = -1;
+  regions.forEach((region, index) => {
+    const regionPath = `${path}.slots.regions[${index}]`;
+    if (region?.type !== 'layout.region') return;
+    const name = region.props?.name;
+    if (typeof name === 'string') {
+      if (names.has(name)) diagnostics.push(diagnostic('region_name_duplicate', `${regionPath}.props.name`, `Region ${name} is declared twice in one layout`));
+      names.add(name);
+    }
+    const placement = region.props?.placement ?? 'block';
+    if (placement === 'block') {
+      bandRank = -1;
+      return;
+    }
+    const rank = PLACEMENT_RANK[placement];
+    if (rank === undefined) return;
+    if (rank < bandRank) diagnostics.push(diagnostic('region_order_invalid', `${regionPath}.props.placement`, 'Side-by-side regions must be declared in start, center, end order'));
+    bandRank = Math.max(bandRank, rank);
+  });
+}
+
+function validateRegionNode(node, path, context, diagnostics) {
+  const props = (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(node.props) ? node.props : {};
+  const landmark = landmarkOf(node);
+  if (landmark && DOCUMENT_LEVEL_LANDMARKS.has(landmark) && (context.insideLandmark || context.insidePage)) {
+    diagnostics.push(diagnostic('region_landmark_context', `${path}.props.landmark`, `${landmark} is only allowed outside other landmarks and layout.page`));
+  }
+  if (landmark === 'region' && props.label === undefined) {
+    diagnostics.push(diagnostic('region_label_required', `${path}.props.label`, 'A region landmark requires an accessible label'));
+  }
+  if (landmark === 'none' && props.label !== undefined) {
+    diagnostics.push(diagnostic('region_label_forbidden', `${path}.props.label`, 'A region without a landmark cannot carry an accessible label'));
+  }
+  const children = Array.isArray(node.slots?.default) ? node.slots.default : [];
+  const min = Number.isInteger(props.min_items) ? props.min_items : 0;
+  const max = Number.isInteger(props.max_items) ? props.max_items : 500;
+  if (min > max) diagnostics.push(diagnostic('region_bounds_invalid', `${path}.props`, 'min_items must not exceed max_items'));
+  else if (children.length < min || children.length > max) diagnostics.push(diagnostic('region_cardinality', `${path}.slots.default`, 'Region child count is outside its declared range'));
+  if (Array.isArray(props.accepts)) {
+    const accepted = new Set(props.accepts);
+    children.forEach((child, index) => {
+      const manifest = context.registry.types.get(child?.type);
+      if (manifest && !accepted.has(manifest.category)) {
+        diagnostics.push(diagnostic('region_child_category_forbidden', `${path}.slots.default[${index}]`, `${manifest.category} is not accepted by this region`));
+      }
+    });
+  }
+}
+
+/**
+ * Applies declared-region rules to a structurally valid Document root.
+ * The generic validator has already checked manifests, props and slot types.
+ */
+function validateRegionRules(root, registry, diagnostics) {
+  const landmarkUse = new Map();
+  const visit = (node, path, context) => {
+    if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(node)) return;
+    if (node.type === 'layout.region' && context.parentType !== 'layout.regions') {
+      diagnostics.push(diagnostic('region_parent_invalid', path, 'layout.region must be a direct child of layout.regions'));
+    }
+    let next = { ...context, parentType: node.type };
+    if (node.type === 'layout.page') next.insidePage = true;
+    if (node.type === 'layout.regions') {
+      next.regionDepth = context.regionDepth + 1;
+      if (next.regionDepth > REGION_LIMITS.maxRegionLayoutNesting) diagnostics.push(diagnostic('region_nesting_limit', path, 'Region layouts are nested too deeply'));
+      validateRegionList(node, path, diagnostics);
+    }
+    if (node.type === 'layout.region') {
+      validateRegionNode(node, path, { ...context, registry }, diagnostics);
+      const landmark = landmarkOf(node);
+      if (landmark && landmark !== 'none') {
+        if (!landmarkUse.has(landmark)) landmarkUse.set(landmark, []);
+        landmarkUse.get(landmark).push({ path, label: node.props?.label });
+        next = { ...next, insideLandmark: true };
+      }
+    }
+    for (const [slotName, children] of Object.entries((0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(node.slots) ? node.slots : {})) {
+      if (!Array.isArray(children)) continue;
+      children.forEach((child, index) => visit(child, `${path}.slots.${slotName}[${index}]`, next));
+    }
+  };
+  visit(root, '$.root', { parentType: null, insidePage: false, insideLandmark: false, regionDepth: 0 });
+  for (const [landmark, uses] of landmarkUse) {
+    if (landmark === 'main' && uses.length > 1) {
+      for (const use of uses.slice(1)) diagnostics.push(diagnostic('region_landmark_duplicate', `${use.path}.props.landmark`, 'A document can contain only one main region'));
+      continue;
+    }
+    if (uses.length < 2) continue;
+    const labels = new Set();
+    for (const use of uses) {
+      if (use.label === undefined) {
+        // A region landmark without a label is already reported once above.
+        if (landmark !== 'region') diagnostics.push(diagnostic('region_label_required', `${use.path}.props.label`, `Repeated ${landmark} regions require distinct labels`));
+        continue;
+      }
+      if (labels.has(use.label)) diagnostics.push(diagnostic('region_label_duplicate', `${use.path}.props.label`, `Repeated ${landmark} regions require distinct labels`));
+      else labels.add(use.label);
+    }
+  }
+}
+
+async function sha256(value) {
+  const bytes = new globalThis.TextEncoder().encode(value);
+  const hash = await globalThis.crypto.subtle.digest('SHA-256', bytes);
+  return [...new Uint8Array(hash)].map((byte) => byte.toString(16).padStart(2, '0')).join('');
+}
+
+/**
+ * Lists every declared region of an already normalized Document with a
+ * digest of its canonical subtree. Products use the digest to invalidate only
+ * outputs that depend on a changed region; the list order is document order.
+ */
+async function describeRegions(document) {
+  const regions = [];
+  const visit = async (node, path, layout) => {
+    if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(node)) return;
+    if (node.type === 'layout.region' && layout) {
+      const props = node.props || {};
+      regions.push({
+        layout,
+        node: node.id,
+        name: props.name,
+        landmark: props.landmark,
+        placement: props.placement ?? 'block',
+        path,
+        digest: `sha256:${await sha256((0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.stableStringify)((0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.canonical)(node)))}`,
+      });
+    }
+    const nextLayout = node.type === 'layout.regions' ? node.id : null;
+    for (const [slotName, children] of Object.entries((0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(node.slots) ? node.slots : {})) {
+      if (!Array.isArray(children)) continue;
+      for (let index = 0; index < children.length; index += 1) await visit(children[index], `${path}.slots.${slotName}[${index}]`, nextLayout);
+    }
+  };
+  await visit(document?.root, '$.root', null);
+  return regions;
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ describeRegions, validateRegionRules });
+
+
+/***/ },
+
+/***/ "4aea5d6d49c7"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   CompositionRouteController: () => (/* binding */ CompositionRouteController),
+/* harmony export */   ENDPOINT_EXTENSION: () => (/* binding */ ENDPOINT_EXTENSION),
+/* harmony export */   PORT_OUTPUT_EVENT: () => (/* binding */ PORT_OUTPUT_EVENT),
+/* harmony export */   ROUTE_STATE_EVENT: () => (/* binding */ ROUTE_STATE_EVENT),
+/* harmony export */   ROUTING_LIMITS: () => (/* binding */ ROUTING_LIMITS),
+/* harmony export */   VALUE_TYPES: () => (/* binding */ VALUE_TYPES),
+/* harmony export */   checkPortValue: () => (/* binding */ checkPortValue),
+/* harmony export */   createPortRegistry: () => (/* binding */ createPortRegistry),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   defineCompositionScope: () => (/* binding */ defineCompositionScope),
+/* harmony export */   endpointName: () => (/* binding */ endpointName),
+/* harmony export */   parseRoutesAttribute: () => (/* binding */ parseRoutesAttribute),
+/* harmony export */   portsForType: () => (/* binding */ portsForType),
+/* harmony export */   resolveRoutes: () => (/* binding */ resolveRoutes),
+/* harmony export */   routesAttribute: () => (/* binding */ routesAttribute)
+/* harmony export */ });
+/* harmony import */ var _canonical_mjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("6f489cc65b77");
+
+
+// Generic cross-composite routing. A layout.scope node is the common parent
+// that declares typed routes between endpoint descendants. Routes name only
+// endpoints and published ports; they never carry endpoints, methods, actions,
+// expressions or transformations. Products keep data access and authorization.
+
+const ENDPOINT_EXTENSION = 'simai.composition:endpoint';
+const PORT_OUTPUT_EVENT = 'sf-port-output';
+const ROUTE_STATE_EVENT = 'sf-composition-route-state';
+const ROUTING_LIMITS = Object.freeze({
+  maxRoutesPerScope: 32,
+  maxEndpointsPerScope: 64,
+  maxFanOut: 8,
+  maxScopeNesting: 4,
+  maxReentrancy: 8,
+  maxValueBytes: 65536,
+});
+
+const NAME_PATTERN = /^[a-z][a-z0-9-]{0,31}$/u;
+const ROUTE_ID_PATTERN = /^[a-z][a-z0-9-]{0,63}$/u;
+const CONTROL = /[\u0000-\u001f\u007f]/u;
+
+const diagnostic = (code, path, message) => ({ code, path, message });
+
+function checkedRecordId(value) {
+  if (typeof value === 'string') return value.length > 0 && value.length <= 256 && !CONTROL.test(value);
+  return Number.isSafeInteger(value);
+}
+
+function freezeList(list) {
+  return Object.freeze([...list]);
+}
+
+// Closed value-type vocabulary. Each validator returns an immutable copy or
+// throws TypeError; there is no coercion between types.
+const VALUE_TYPES = Object.freeze({
+  'record-ids.v1': Object.freeze({
+    summary: 'Ordered unique opaque record identities: nonempty strings up to 256 code units without control characters, or safe integers. Up to 1000 items; empty means no selection.',
+    schema: {
+      type: 'array',
+      maxItems: 1000,
+      uniqueItems: true,
+      items: { oneOf: [{ type: 'string', minLength: 1, maxLength: 256 }, { type: 'integer', minimum: -9007199254740991, maximum: 9007199254740991 }] },
+    },
+    check(value) {
+      if (!Array.isArray(value) || value.length > 1000 || !value.every(checkedRecordId)) throw new TypeError('record-ids.v1 value is invalid');
+      const seen = new Set(value.map((entry) => `${typeof entry}:${entry}`));
+      if (seen.size !== value.length) throw new TypeError('record-ids.v1 value has duplicates');
+      return freezeList(value);
+    },
+  }),
+  'record-id.v1': Object.freeze({
+    summary: 'One opaque record identity or null for none.',
+    schema: { oneOf: [{ type: 'null' }, { type: 'string', minLength: 1, maxLength: 256 }, { type: 'integer', minimum: -9007199254740991, maximum: 9007199254740991 }] },
+    check(value) {
+      if (value !== null && !checkedRecordId(value)) throw new TypeError('record-id.v1 value is invalid');
+      return value;
+    },
+  }),
+  'text.v1': Object.freeze({
+    summary: 'Plain text up to 2000 code units; never interpreted as markup or a query language.',
+    schema: { type: 'string', maxLength: 2000 },
+    check(value) {
+      if (typeof value !== 'string' || value.length > 2000) throw new TypeError('text.v1 value is invalid');
+      return value;
+    },
+  }),
+  'boolean.v1': Object.freeze({
+    summary: 'A strict boolean.',
+    schema: { type: 'boolean' },
+    check(value) {
+      if (typeof value !== 'boolean') throw new TypeError('boolean.v1 value is invalid');
+      return value;
+    },
+  }),
+});
+
+const own = (object, key) => (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(object) && typeof key === 'string' && Object.hasOwn(object, key);
+const knownValueType = (name) => own(VALUE_TYPES, name);
+
+function checkPortValue(valueType, value) {
+  if (!knownValueType(valueType)) throw new TypeError(`Unknown value type ${valueType}`);
+  const type = VALUE_TYPES[valueType];
+  const checked = type.check(value);
+  if (new globalThis.TextEncoder().encode(JSON.stringify(checked)).byteLength > ROUTING_LIMITS.maxValueBytes) throw new TypeError('Port value is too large');
+  return checked;
+}
+
+function createPortRegistry(manifests = [], options = {}) {
+  const elements = new Map();
+  for (const manifest of manifests) {
+    if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(manifest) || manifest.schema !== 'simai.composition.port-manifest.v1') throw new TypeError('composition_port_manifest_invalid');
+    if (elements.has(manifest.element)) throw new TypeError(`composition_port_manifest_duplicate:${manifest.element}`);
+    for (const port of [...Object.values(manifest.outputs || {}), ...Object.values(manifest.inputs || {})]) {
+      if (!knownValueType(port.value)) throw new TypeError(`composition_port_value_type_unknown:${port.value}`);
+    }
+    elements.set(manifest.element, (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.canonical)(manifest));
+  }
+  const bindings = new Map(Object.entries(options.bindings || {}));
+  for (const [type, element] of bindings) {
+    if (!elements.has(element)) throw new TypeError(`composition_port_binding_unknown:${type}`);
+  }
+  return { elements, bindings };
+}
+
+function portsForType(typeManifest, ports) {
+  if (!typeManifest || !ports) return null;
+  const bound = ports.bindings.get(typeManifest.type);
+  if (bound) return ports.elements.get(bound) || null;
+  if (typeManifest.renderer?.kind === 'custom-element') return ports.elements.get(typeManifest.renderer.name) || null;
+  return null;
+}
+
+function validEndpointExtension(extension) {
+  return (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(extension) && Object.keys(extension).length === 1
+    && typeof extension.name === 'string' && NAME_PATTERN.test(extension.name);
+}
+
+function endpointName(node) {
+  const extension = own(node?.extensions, ENDPOINT_EXTENSION) ? node.extensions[ENDPOINT_EXTENSION] : undefined;
+  return validEndpointExtension(extension) ? extension.name : undefined;
+}
+
+function collectScope(scopeNode, path) {
+  const endpoints = new Map();
+  const problems = [];
+  const visit = (node, nodePath, nested) => {
+    if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(node)) return;
+    if (node !== scopeNode) {
+      const extension = own(node.extensions, ENDPOINT_EXTENSION) ? node.extensions[ENDPOINT_EXTENSION] : undefined;
+      // Shape errors are reported once for every node by resolveRoutes.
+      if (validEndpointExtension(extension) && !nested) {
+        if (endpoints.has(extension.name)) {
+          problems.push(diagnostic('route_endpoint_duplicate', `${nodePath}.extensions.${ENDPOINT_EXTENSION}`, `Endpoint ${extension.name} is declared twice in one scope`));
+        } else {
+          endpoints.set(extension.name, { node, path: nodePath });
+        }
+      }
+      // A nested scope encapsulates its own endpoints.
+      if (node.type === 'layout.scope') nested = true;
+    }
+    for (const [slotName, children] of Object.entries((0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(node.slots) ? node.slots : {})) {
+      if (Array.isArray(children)) children.forEach((child, index) => visit(child, `${nodePath}.slots.${slotName}[${index}]`, nested));
+    }
+  };
+  visit(scopeNode, path, false);
+  return { endpoints, problems };
+}
+
+function findCycle(edges) {
+  const graph = new Map();
+  for (const [from, to] of edges) {
+    if (!graph.has(from)) graph.set(from, new Set());
+    graph.get(from).add(to);
+  }
+  const state = new Map();
+  const walk = (node) => {
+    state.set(node, 'active');
+    for (const next of graph.get(node) || []) {
+      if (state.get(next) === 'active') return true;
+      if (!state.has(next) && walk(next)) return true;
+    }
+    state.set(node, 'done');
+    return false;
+  };
+  return [...graph.keys()].some((node) => !state.has(node) && walk(node));
+}
+
+/**
+ * Resolves and validates every layout.scope in a Document. Returns a map of
+ * scope node id to typed routes; problems are appended to diagnostics.
+ */
+function resolveRoutes(root, registry, ports, diagnostics = []) {
+  const resolved = new Map();
+  const visit = (node, path, scopeDepth) => {
+    if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(node)) return;
+    if (own(node.extensions, ENDPOINT_EXTENSION) && !validEndpointExtension(node.extensions[ENDPOINT_EXTENSION])) {
+      diagnostics.push(diagnostic('route_endpoint_invalid', `${path}.extensions.${ENDPOINT_EXTENSION}`, 'Endpoint extension must contain only a valid name'));
+    }
+    let depth = scopeDepth;
+    if (node.type === 'layout.scope') {
+      depth += 1;
+      if (depth > ROUTING_LIMITS.maxScopeNesting) diagnostics.push(diagnostic('scope_nesting_limit', path, 'Routing scopes are nested too deeply'));
+      const routes = Array.isArray(node.props?.routes) ? node.props.routes : [];
+      const { endpoints, problems } = collectScope(node, path);
+      diagnostics.push(...problems);
+      if (endpoints.size > ROUTING_LIMITS.maxEndpointsPerScope) diagnostics.push(diagnostic('route_limit', path, 'Scope declares too many endpoints'));
+      const ids = new Set();
+      const inputs = new Set();
+      const fanOut = new Map();
+      const edges = [];
+      const typed = [];
+      routes.forEach((route, index) => {
+        const routePath = `${path}.props.routes[${index}]`;
+        if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(route) || !(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(route.from) || !(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(route.to)) return;
+        if (ids.has(route.id)) diagnostics.push(diagnostic('route_id_duplicate', `${routePath}.id`, `Route ${route.id} is declared twice`));
+        ids.add(route.id);
+        const ends = {};
+        for (const side of ['from', 'to']) {
+          const endpoint = typeof route[side].endpoint === 'string' ? endpoints.get(route[side].endpoint) : undefined;
+          if (!endpoint) {
+            diagnostics.push(diagnostic('route_endpoint_unknown', `${routePath}.${side}.endpoint`, `Endpoint ${route[side].endpoint} is not declared in this scope`));
+            continue;
+          }
+          const portManifest = portsForType(registry.types.get(endpoint.node.type), ports);
+          const direction = side === 'from' ? 'outputs' : 'inputs';
+          const opposite = side === 'from' ? 'inputs' : 'outputs';
+          const port = own(portManifest?.[direction], route[side].port) ? portManifest[direction][route[side].port] : undefined;
+          if (!port) {
+            const wrongDirection = own(portManifest?.[opposite], route[side].port);
+            diagnostics.push(wrongDirection
+              ? diagnostic('route_port_direction', `${routePath}.${side}.port`, `${route[side].port} is not ${side === 'from' ? 'an output' : 'an input'}`)
+              : diagnostic('route_port_unknown', `${routePath}.${side}.port`, `${endpoint.node.type} publishes no ${side === 'from' ? 'output' : 'input'} ${route[side].port}`));
+            continue;
+          }
+          ends[side] = { endpoint: route[side].endpoint, port: route[side].port, value: port.value, element: portManifest.element };
+        }
+        if (route.from.endpoint === route.to.endpoint) diagnostics.push(diagnostic('route_self', routePath, 'A route cannot connect an endpoint to itself'));
+        const inputKey = `${route.to.endpoint}.${route.to.port}`;
+        if (inputs.has(inputKey)) diagnostics.push(diagnostic('route_input_conflict', `${routePath}.to`, `Input ${inputKey} already has a route`));
+        inputs.add(inputKey);
+        const outputKey = `${route.from.endpoint}.${route.from.port}`;
+        fanOut.set(outputKey, (fanOut.get(outputKey) || 0) + 1);
+        if (fanOut.get(outputKey) > ROUTING_LIMITS.maxFanOut) diagnostics.push(diagnostic('route_fanout_limit', `${routePath}.from`, `Output ${outputKey} feeds too many routes`));
+        edges.push([route.from.endpoint, route.to.endpoint]);
+        if (ends.from && ends.to) {
+          if (ends.from.value !== ends.to.value) diagnostics.push(diagnostic('route_type_mismatch', routePath, `${ends.from.value} cannot feed ${ends.to.value}`));
+          else typed.push({ id: route.id, from: ends.from, to: ends.to });
+        }
+      });
+      if (findCycle(edges.filter(([from, to]) => from !== to))) diagnostics.push(diagnostic('route_cycle', `${path}.props.routes`, 'Routes form a cycle between endpoints'));
+      resolved.set(node.id, typed);
+    }
+    for (const [slotName, children] of Object.entries((0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(node.slots) ? node.slots : {})) {
+      if (Array.isArray(children)) children.forEach((child, index) => visit(child, `${path}.slots.${slotName}[${index}]`, depth));
+    }
+  };
+  visit(root, '$.root', 0);
+  return resolved;
+}
+
+/**
+ * DOM-independent route controller used by sf-composition-scope. The host is
+ * any EventTarget; endpoints are resolved lazily on every delivery so that
+ * removed and remounted children never keep stale references.
+ */
+class CompositionRouteController {
+  constructor(host, routes, options = {}) {
+    this.host = host;
+    this.routes = Object.freeze(routes.map((route) => Object.freeze({ ...route, from: Object.freeze({ ...route.from }), to: Object.freeze({ ...route.to }) })));
+    this.options = options;
+    this.sequence = 0;
+    this.depth = 0;
+    this.states = new Map();
+    this.pending = new Map();
+    this.counters = { outputs: 0, deliveries: 0, settled: 0, stale: 0, rejected: 0 };
+    this.connection = null;
+    this.onOutput = this.onOutput.bind(this);
+  }
+
+  get connected() {
+    return this.connection !== null;
+  }
+
+  connect() {
+    if (this.connection) return false;
+    this.connection = new AbortController();
+    this.host.addEventListener(PORT_OUTPUT_EVENT, this.onOutput, { signal: this.connection.signal });
+    for (const route of this.routes) this.setState(route.id, { status: 'idle', sequence: 0 });
+    return true;
+  }
+
+  disconnect() {
+    if (!this.connection) return false;
+    this.connection.abort();
+    this.connection = null;
+    for (const controller of this.pending.values()) controller.abort();
+    this.pending.clear();
+    for (const route of this.routes) this.setState(route.id, { status: 'disposed', sequence: this.states.get(route.id)?.sequence || 0 });
+    return true;
+  }
+
+  getState(routeId) {
+    const state = this.states.get(routeId);
+    return state ? { ...state } : null;
+  }
+
+  setState(routeId, state) {
+    const next = Object.freeze({ route: routeId, ...state });
+    this.states.set(routeId, next);
+    this.options.onState?.(next);
+  }
+
+  onOutput(event) {
+    const source = this.options.sourceEndpoint?.(event);
+    if (!source) return;
+    const detail = event.detail;
+    if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(detail) || typeof detail.port !== 'string') return;
+    this.counters.outputs += 1;
+    for (const route of this.routes) {
+      if (route.from.endpoint !== source || route.from.port !== detail.port) continue;
+      let value;
+      try {
+        value = checkPortValue(route.from.value, detail.value);
+      } catch {
+        // The newest output wins even when invalid: an older pending delivery
+        // for this route becomes stale and cannot settle afterwards.
+        this.counters.rejected += 1;
+        this.pending.get(route.id)?.abort();
+        this.pending.delete(route.id);
+        this.setState(route.id, { status: 'error', error: 'value_invalid', sequence: ++this.sequence });
+        continue;
+      }
+      this.deliver(route, value);
+    }
+  }
+
+  deliver(route, value) {
+    if (!this.connection) return;
+    const sequence = ++this.sequence;
+    this.pending.get(route.id)?.abort();
+    const abort = new AbortController();
+    this.pending.set(route.id, abort);
+    this.setState(route.id, { status: 'pending', sequence });
+    const isLatest = () => this.connection !== null && !abort.signal.aborted && this.states.get(route.id)?.sequence === sequence;
+    const meta = Object.freeze({ route: route.id, sequence, signal: abort.signal, isLatest });
+    const attempt = () => {
+      if (!isLatest()) return;
+      const target = this.options.targetEndpoint?.(route.to.endpoint);
+      if (!target) {
+        this.setState(route.id, { status: 'error', error: 'endpoint_unresolved', sequence });
+        return;
+      }
+      if (typeof target.sfPortInput !== 'function') {
+        const ready = this.options.whenReady?.(target);
+        if (ready) {
+          this.setState(route.id, { status: 'waiting', sequence });
+          ready.then(attempt, () => this.setState(route.id, { status: 'error', error: 'endpoint_unavailable', sequence }));
+        } else {
+          this.setState(route.id, { status: 'error', error: 'port_unsupported', sequence });
+        }
+        return;
+      }
+      const declared = target.constructor?.sfPorts?.inputs?.[route.to.port];
+      if (declared !== route.to.value) {
+        this.counters.rejected += 1;
+        this.setState(route.id, { status: 'error', error: 'port_mismatch', sequence });
+        return;
+      }
+      if (this.depth >= ROUTING_LIMITS.maxReentrancy) {
+        this.counters.rejected += 1;
+        this.setState(route.id, { status: 'error', error: 'reentrancy_limit', sequence });
+        return;
+      }
+      this.depth += 1;
+      let result;
+      try {
+        this.counters.deliveries += 1;
+        result = target.sfPortInput(route.to.port, value, meta);
+      } catch {
+        this.depth -= 1;
+        this.counters.rejected += 1;
+        this.setState(route.id, { status: 'error', error: 'port_rejected', sequence });
+        return;
+      }
+      this.depth -= 1;
+      if (result && typeof result.then === 'function') {
+        this.setState(route.id, { status: 'pending', sequence });
+        result.then(() => {
+          if (!isLatest()) { this.counters.stale += 1; return; }
+          this.counters.settled += 1;
+          this.pending.delete(route.id);
+          this.setState(route.id, { status: 'settled', sequence });
+        }, () => {
+          if (!isLatest()) { this.counters.stale += 1; return; }
+          this.setState(route.id, { status: 'error', error: 'port_rejected', sequence });
+        });
+      } else {
+        this.counters.settled += 1;
+        this.pending.delete(route.id);
+        this.setState(route.id, { status: 'settled', sequence });
+      }
+    };
+    attempt();
+  }
+}
+
+function nearestScope(element) {
+  return element?.parentElement?.closest?.('sf-composition-scope') || null;
+}
+
+const isCustom = (element) => typeof element?.localName === 'string' && element.localName.includes('-');
+const upgradePending = (element) => isCustom(element) && !globalThis.customElements?.get(element.localName);
+
+// The endpoint element either implements the port protocol itself or wraps
+// exactly one port element that belongs to the same scope.
+function portElement(endpointElement, scope) {
+  if (typeof endpointElement.sfPortInput === 'function' || upgradePending(endpointElement)) return endpointElement;
+  const candidates = [...endpointElement.querySelectorAll('*')]
+    .filter((element) => isCustom(element) && element.localName !== 'sf-composition-scope' && nearestScope(element) === scope);
+  const implemented = candidates.filter((element) => typeof element.sfPortInput === 'function');
+  if (implemented.length === 1) return implemented[0];
+  const pending = candidates.filter(upgradePending);
+  return implemented.length === 0 && pending.length === 1 ? pending[0] : null;
+}
+
+function parseRoutesAttribute(value) {
+  let parsed;
+  try { parsed = JSON.parse(value || '[]'); } catch { return null; }
+  if (!Array.isArray(parsed) || parsed.length > ROUTING_LIMITS.maxRoutesPerScope) return null;
+  const ids = new Set();
+  for (const route of parsed) {
+    if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(route) || typeof route.id !== 'string' || !ROUTE_ID_PATTERN.test(route.id)) return null;
+    for (const side of ['from', 'to']) {
+      const end = route[side];
+      if (!(0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.isPlainObject)(end) || typeof end.endpoint !== 'string' || typeof end.port !== 'string'
+        || !NAME_PATTERN.test(end.endpoint) || !NAME_PATTERN.test(end.port) || !knownValueType(end.value)) return null;
+    }
+    if (route.from.value !== route.to.value || ids.has(route.id)) return null;
+    ids.add(route.id);
+  }
+  return parsed;
+}
+
+function defineCompositionScope(registry = globalThis.customElements) {
+  if (!registry || typeof globalThis.HTMLElement !== 'function') return null;
+  const existing = registry.get('sf-composition-scope');
+  if (existing) return existing;
+  class SfCompositionScope extends globalThis.HTMLElement {
+    constructor() {
+      super();
+      this.routeController = null;
+      this.routeDiagnostics = [];
+    }
+
+    connectedCallback() {
+      if (!this.routeController) {
+        const routes = parseRoutesAttribute(this.getAttribute('data-sf-routes'));
+        if (!routes) {
+          this.routeDiagnostics = [{ code: 'routes_invalid', path: 'data-sf-routes', message: 'Rendered routes are invalid' }];
+          this.setAttribute('data-sf-routing', 'error');
+          return;
+        }
+        this.routeController = new CompositionRouteController(this, routes, {
+          sourceEndpoint: (event) => {
+            const origin = event.target?.closest?.('[data-sf-endpoint]');
+            if (!origin || nearestScope(origin) !== this || portElement(origin, this) !== event.target) return null;
+            return origin.getAttribute('data-sf-endpoint');
+          },
+          targetEndpoint: (name) => {
+            const matches = [...this.querySelectorAll('[data-sf-endpoint]')]
+              .filter((element) => element.getAttribute('data-sf-endpoint') === name && nearestScope(element) === this);
+            return matches.length === 1 ? portElement(matches[0], this) : null;
+          },
+          whenReady: (element) => (element.localName?.includes('-') && globalThis.customElements
+            ? globalThis.customElements.whenDefined(element.localName)
+            : null),
+          onState: (state) => this.dispatchEvent(new globalThis.CustomEvent(ROUTE_STATE_EVENT, { detail: state })),
+        });
+      }
+      this.routeController.connect();
+      this.setAttribute('data-sf-routing', 'connected');
+    }
+
+    disconnectedCallback() {
+      this.routeController?.disconnect();
+      if (this.routeController) this.setAttribute('data-sf-routing', 'disposed');
+    }
+
+    getRouteState(routeId) {
+      return this.routeController?.getState(routeId) || null;
+    }
+
+    getRoutingCounters() {
+      return this.routeController ? { ...this.routeController.counters } : null;
+    }
+  }
+  registry.define('sf-composition-scope', SfCompositionScope);
+  return SfCompositionScope;
+}
+
+function routesAttribute(routes) {
+  return (0,_canonical_mjs__WEBPACK_IMPORTED_MODULE_0__.stableStringify)(routes.map((route) => ({
+    id: route.id,
+    from: { endpoint: route.from.endpoint, port: route.from.port, value: route.from.value },
+    to: { endpoint: route.to.endpoint, port: route.to.port, value: route.to.value },
+  })));
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({ CompositionRouteController, checkPortValue, createPortRegistry, defineCompositionScope, resolveRoutes });
 
 
 /***/ }

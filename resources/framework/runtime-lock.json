@@ -41,44 +41,44 @@
         ]
     },
     "runtime": "simai-framework",
-    "pair_id": "ui-8c22fe2b80bb-smart-400d80e501ca",
-    "bundle_id": "ui-8c22fe2b80bb-smart-400d80e501ca-registry-1e5dcbf8-verified-commit-candidate-v1",
+    "pair_id": "ui-44c4ecc09ba0-smart-bda8a0a90339",
+    "bundle_id": "ui-44c4ecc09ba0-smart-bda8a0a90339-registry-e71c077a-verified-commit-candidate-v1",
     "publication_profile": "verified-commit-candidate-v1",
     "tag": null,
     "ui": {
         "tag": null,
-        "commit": "8c22fe2b80bb3bb88ec40dd34bbcddffb65f27d2",
+        "commit": "44c4ecc09ba0eea059ea47a644a330773e683790",
         "tree": "distr",
         "mount": "ui",
-        "sha256": "300b752341b7075eda26815a729e598f6e5b3ae53213d3225db431a8b1b08c81",
-        "files": 5087
+        "sha256": "f1fd4075837cb521f3b5055dd038ad42044e128a2c9970fcba3073979f307a69",
+        "files": 5131
     },
     "ui_smart": {
         "tag": null,
-        "commit": "400d80e501ca5e6816ba8f96b0ca18f01c0626c9",
+        "commit": "bda8a0a903395d26533a354bee93e842b7f528f1",
         "tree": "smart",
         "mount": "smart",
-        "sha256": "085f08503472b7d05214decd65d01e6d2abb004c1a2d7a0b556ea6e9acf8e4a5",
-        "files": 642
+        "sha256": "1709c508b6297ac6f54d47ece9769e73f02de66b55555295286f200b48fe95f3",
+        "files": 684
     },
     "framework_registry": {
         "schema_id": "simai.framework.contract-registry",
-        "compatibility_id": "ui-8c22fe2b80bb-smart-400d80e501ca",
+        "compatibility_id": "ui-44c4ecc09ba0-smart-bda8a0a90339",
         "profile": "plain-assets-v1",
         "relative_path": "contracts/generated/framework-contract-registry.json",
-        "file_sha256": "1e5dcbf84fd7188f22f68b93cb7f1f400f881275fe3bff2609fc6f844a7fc7b5",
+        "file_sha256": "e71c077a4c2952b9ad9ae0ab740f083c8e000da493c6f15226fc8b2818309591",
         "source": {
-            "commit": "4665ecb607b009eae88e77d41cfb46d05d8e4af0",
+            "commit": "f9f0864785ac212df77ca54016ceac4250ffec9b",
             "tree": "contracts/generated",
-            "tree_oid": "7719fc4107f5943e89e8b3f13ea02e3cea563a0e",
+            "tree_oid": "60691ef2c71889f82351590e3bf453f8b2270c23",
             "mount": "contract",
-            "sha256": "08e20b711995cb9b2bd53cf41905fe30385ece15250edb390cbe6bacb3ac29a6",
+            "sha256": "2c0d8a1aeac37772996992ac608dfc1fe92cfecc9dad9b86e4337db31607b540",
             "files": 2
         },
         "documentation_source": {
             "schema": "docara.documentation_source.v1",
             "relative_path": "contracts/generated/documentation-source.json",
-            "file_sha256": "6c63d8b8e47c67114311486cfdcfa78d9d0617fce88f3f3b2c66d8dbc85cf211"
+            "file_sha256": "f8685dbd0957bb1f5ff7aca4e705f2b7fe47bffaef7fa0d869db106073cd24cc"
         }
     },
     "boot": {
@@ -262,6 +262,12 @@
             "css": null,
             "attributes": []
         },
+        "sf-composition-overlay": {
+            "source": "smart/composition-overlay",
+            "javascript": "smart/smart/composition-overlay/js/composition-overlay.js",
+            "css": "smart/smart/composition-overlay/css/composition-overlay.css",
+            "attributes": []
+        },
         "sf-context-menu": {
             "source": "smart/context-menu",
             "javascript": "smart/smart/context-menu/js/context-menu.js",
@@ -362,6 +368,12 @@
             "source": "smart/icon-buttons",
             "javascript": "smart/smart/icon-buttons/js/icon-buttons.js",
             "css": "smart/smart/icon-buttons/css/icon-buttons.css",
+            "attributes": []
+        },
+        "sf-inline-editor": {
+            "source": "smart/inline-editor",
+            "javascript": "smart/smart/inline-editor/js/inline-editor.js",
+            "css": "smart/smart/inline-editor/css/inline-editor.css",
             "attributes": []
         },
         "sf-input": {
@@ -536,6 +548,12 @@
             "source": "smart/slider",
             "javascript": "smart/smart/slider/js/slider.js",
             "css": null,
+            "attributes": []
+        },
+        "sf-sortable": {
+            "source": "smart/sortable",
+            "javascript": "smart/smart/sortable/js/sortable.js",
+            "css": "smart/smart/sortable/css/sortable.css",
             "attributes": []
         },
         "sf-spinner": {

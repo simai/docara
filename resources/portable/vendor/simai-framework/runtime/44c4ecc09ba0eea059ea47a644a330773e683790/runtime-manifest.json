@@ -3,8 +3,8 @@
     "root": "distr",
     "source": {
         "provider": "simai/ui",
-        "revision": "8c22fe2b80bb3bb88ec40dd34bbcddffb65f27d2",
-        "tree_sha256": "300b752341b7075eda26815a729e598f6e5b3ae53213d3225db431a8b1b08c81"
+        "revision": "44c4ecc09ba0eea059ea47a644a330773e683790",
+        "tree_sha256": "f1fd4075837cb521f3b5055dd038ad42044e128a2c9970fcba3073979f307a69"
     },
     "files": {
         "component/accordion/css/accordion.css": {
@@ -497,19 +497,19 @@
             "sha256": "de044ff979fa13ebc9f28018d640563d4afa1467bc63b007138b9e48c95f3548"
         },
         "core/js/core-rules.js": {
-            "sha256": "d59f6e8e127b3f7dd58986a7b1ae40ac1fb5c754a7c52ef8c52820cd42875673"
+            "sha256": "9b86a33ed3e4b5d13c312f5d7d352c4e65de970de9f7c4de779ae44e6a0179cc"
         },
         "core/js/core-system.js": {
             "sha256": "0a9d491a5cae587de17dde7dc856a51430da2404ed6fc158a058a78c1c73df9a"
         },
         "core/js/core.js": {
-            "sha256": "1d5c249ba2e42a12d3e085679387eb2647c671579add9b847dfdffea357e790c"
+            "sha256": "23f27cd5cbf6d34bfa83cea678c78b6dd61c75b1f469c96504fc608d0a83cda6"
         },
         "core/js/smart-base.js": {
             "sha256": "be27a6ff159577bb3dbf5378a861761417445bb782b21ebd7ac802f8d3b6cb6d"
         },
         "rule/rule.json": {
-            "sha256": "f467c38afb1f6f6b590163bee1399894f3a8f0c196ae71a2e540efc621eb8e47"
+            "sha256": "d2c017378b509cf07539f5c438cec590e4013afa871577778723654721aa65ee"
         },
         "utility/accent-color/default/css/default.css": {
             "sha256": "2cedebc331465fc60c8c735d4a823cae38183f63548fbba1f4b9107725b118ac"
@@ -2699,5 +2699,5 @@
             "sha256": "75103d0e845a91a641a573c7d293986251ca927a89f02ff2a56d9c25f149298d"
         }
     },
-    "packet_sha256": "71626621aeaf43cf3ea5e6bfe772b62ff5d7efa65a265ebdd4fc3f9f96fda50d"
+    "packet_sha256": "84c13562a77fe631d908b66e83c7a3a0f2ba3ba3d8881d622f66bc79957f3cb7"
 }

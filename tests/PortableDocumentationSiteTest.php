@@ -380,7 +380,8 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $firstFiles = $this->treeHashes($firstBuild);
         $secondFiles = $this->treeHashes($secondBuild);
-        self::assertCount(4200, $firstFiles);
+        // Complete tree after 9c866586 retired the unused runtime projection.
+        self::assertCount(2414, $firstFiles);
         self::assertSame($firstFiles, $secondFiles);
         self::assertArrayHasKey('_docara/page-metadata.json', $firstFiles);
         self::assertArrayHasKey('.docara/examples.json', $firstFiles);

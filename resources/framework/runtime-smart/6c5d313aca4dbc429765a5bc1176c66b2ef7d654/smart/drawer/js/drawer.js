@@ -2823,6 +2823,8 @@ class SfDrawer extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__["default
     this.observeDock(root);
     const eventName = this._hasEmittedReady ? 'drawer:update' : 'drawer:ready';
     this.dispatchEvent(new CustomEvent(eventName, {
+      bubbles: true,
+      composed: true,
       detail: {
         component: this,
         drawer: this,
@@ -3051,7 +3053,12 @@ class SfDrawer extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__["default
   }
 
   emitDrawerEvent(type, cancelable = false) {
+    // Drawer events bubble like other sf-* events, so hosts can listen on the
+    // document. detail.drawer names the panel; nested drawers bubble through
+    // their ancestors.
     return this.dispatchEvent(new CustomEvent(type, {
+      bubbles: true,
+      composed: true,
       cancelable,
       detail: {
         component: this,
@@ -3060,25 +3067,33 @@ class SfDrawer extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_1__["default
         root: this.getDrawerRoot()
       }
     }));
+  } // The on* helpers keep their original meaning: only this drawer's events,
+  // not those bubbling up from a nested drawer.
+
+
+  ownDrawerHandler(handler) {
+    return event => {
+      if (event.detail?.drawer === this) handler.call(this, event);
+    };
   }
 
   onBeforeOpen(handler, options) {
-    if (typeof handler === 'function') this.addEventListener('drawer:before-open', handler, options);
+    if (typeof handler === 'function') this.addEventListener('drawer:before-open', this.ownDrawerHandler(handler), options);
     return this;
   }
 
   onAfterOpen(handler, options) {
-    if (typeof handler === 'function') this.addEventListener('drawer:after-open', handler, options);
+    if (typeof handler === 'function') this.addEventListener('drawer:after-open', this.ownDrawerHandler(handler), options);
     return this;
   }
 
   onBeforeClose(handler, options) {
-    if (typeof handler === 'function') this.addEventListener('drawer:before-close', handler, options);
+    if (typeof handler === 'function') this.addEventListener('drawer:before-close', this.ownDrawerHandler(handler), options);
     return this;
   }
 
   onAfterClose(handler, options) {
-    if (typeof handler === 'function') this.addEventListener('drawer:after-close', handler, options);
+    if (typeof handler === 'function') this.addEventListener('drawer:after-close', this.ownDrawerHandler(handler), options);
     return this;
   }
 

@@ -185,6 +185,51 @@
   sf-table th.hover {
     border-inline-end-color: inherit;
   }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table .sf-table-sort-button {
+    text-align: left;
+  }
+  @supports not (text-align: start) {
+  html:not([dir="rtl"]) sf-table .sf-table-sort-button {
+    text-align: left;
+    }
+  }
+  sf-table .sf-table-sort-button:where(:dir(ltr)) {
+    text-align: left;
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table .sf-table-sort-button {
+    text-align: right;
+  }
+  @supports not (text-align: start) {
+  [dir="rtl"] sf-table .sf-table-sort-button {
+    text-align: right;
+    }
+  }
+  sf-table .sf-table-sort-button:where(:dir(rtl)) {
+    text-align: right;
+  }
+  sf-table .sf-table-sort-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+  sf-table .sf-table-sort-icon {
+    --sf-icon--font-size: var(--sf-icon-size-1);
+    opacity: 0;
+  }
+  sf-table .sf-table-sort-button[data-direction] .sf-table-sort-icon,
+  sf-table th:hover .sf-table-sort-icon,
+  sf-table .sf-table-sort-button.focus-visible .sf-table-sort-icon {
+    opacity: 1;
+  }
+  sf-table .sf-table-sort-button[data-direction] .sf-table-sort-icon,
+  sf-table th:hover .sf-table-sort-icon,
+  sf-table .sf-table-sort-button:focus-visible .sf-table-sort-icon {
+    opacity: 1;
+  }
   sf-table .sidebar-resizer-button {
     opacity: 0;
   }

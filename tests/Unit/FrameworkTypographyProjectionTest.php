@@ -26,7 +26,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($project));
 
-        self::assertSame('ui-1f1c9d42d964-smart-121e8882d016', $repository->runtime()['pair_id']);
+        self::assertSame('ui-1f1c9d42d964-smart-6c5d313aca4d', $repository->runtime()['pair_id']);
     }
 
     #[Test]
@@ -40,7 +40,7 @@ final class FrameworkTypographyProjectionTest extends TestCase
         );
 
         $repository = FrameworkManifestRepository::bundled(FrameworkLock::fromArray($previous));
-        self::assertSame('ui-1f1c9d42d964-smart-121e8882d016', $repository->runtime()['pair_id']);
+        self::assertSame('ui-1f1c9d42d964-smart-6c5d313aca4d', $repository->runtime()['pair_id']);
         self::assertSame(897, $repository->runtimeProjection()['files']);
         self::assertSame('sf-v5.6.1-34f5ff45-23d00d92', $previous['runtime']['pair_id']);
 

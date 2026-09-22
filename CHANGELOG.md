@@ -5,6 +5,9 @@ All notable changes to Docara are documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Bundle Framework pair `ui-1f1c9d42d964-smart-6c5d313aca4d` (Core `1f1c9d42` unchanged, Smart
+  `6c5d313a`, contracts `7c8a7659`): Smart Table host intents,
+  badge filter options and anchored table menus; bubbling Drawer events.
 - Bundle Framework pair `ui-1f1c9d42d964-smart-121e8882d016` (Core `1f1c9d42`, Smart
   `121e8882`, contracts `405d9e96`): shared anchored positioning
   also for the country code, menu flyouts, tooltips and the Admin Menu flyout.
@@ -28,7 +31,7 @@ All notable changes to Docara are documented in this file.
 ### Removed
 - Unreferenced superseded bundled Framework projection `d813107a`.
 - Superseded bundled Framework runtimes `8c22fe2b`, `44c4ecc0` and `5b4289bd`,
-  Smart runtimes `400d80e5`, `bda8a0a9` and `89e4e531`.
+  Smart runtimes `400d80e5`, `bda8a0a9`, `89e4e531` and `121e8882`.
 
 ## [2.10.0] - 2026-09-16
 

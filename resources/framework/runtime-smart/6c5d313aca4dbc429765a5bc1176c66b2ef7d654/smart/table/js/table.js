@@ -2,6 +2,284 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
+/***/ "a2a9d3c2841e"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   BADGE_SCHEMES: () => (/* binding */ BADGE_SCHEMES),
+/* harmony export */   BADGE_SIZES: () => (/* binding */ BADGE_SIZES),
+/* harmony export */   BADGE_TYPES: () => (/* binding */ BADGE_TYPES),
+/* harmony export */   BADGE_VARIANTS: () => (/* binding */ BADGE_VARIANTS),
+/* harmony export */   normalizeBadgeContract: () => (/* binding */ normalizeBadgeContract)
+/* harmony export */ });
+const BADGE_TYPES = Object.freeze(['main', 'tonal', 'outline']);
+const BADGE_SCHEMES = Object.freeze(['neutral', 'primary', 'secondary', 'tertiary', 'info', 'success', 'warning', 'danger', 'on-surface']);
+const BADGE_SIZES = Object.freeze(['1/3', '1/2', '1']);
+const DEFAULT_BADGE_TYPE = 'main';
+const DEFAULT_BADGE_SCHEME = 'neutral';
+const DEFAULT_BADGE_SIZE = '1/3';
+
+const normalizeEnum = (value, allowed, fallback) => {
+  const normalized = String(value ?? fallback).trim().toLowerCase();
+  return allowed.includes(normalized) ? normalized : fallback;
+};
+
+const BADGE_VARIANTS = Object.freeze(BADGE_SCHEMES.flatMap(scheme => BADGE_TYPES.filter(type => !(scheme === 'on-surface' && type === 'tonal')).flatMap(type => BADGE_SIZES.map(size => Object.freeze({
+  type,
+  scheme,
+  size
+})))));
+function normalizeBadgeContract({
+  type,
+  scheme,
+  size
+} = {}) {
+  let normalizedType = normalizeEnum(type, BADGE_TYPES, DEFAULT_BADGE_TYPE);
+  const normalizedScheme = normalizeEnum(scheme, BADGE_SCHEMES, DEFAULT_BADGE_SCHEME);
+  const normalizedSize = normalizeEnum(size, BADGE_SIZES, DEFAULT_BADGE_SIZE);
+
+  if (normalizedType === 'tonal' && normalizedScheme === 'on-surface') {
+    normalizedType = 'main';
+  }
+
+  return {
+    type: normalizedType,
+    scheme: normalizedScheme,
+    size: normalizedSize
+  };
+}
+
+/***/ },
+
+/***/ "14baf2d02711"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   logicalSide: () => (/* binding */ logicalSide),
+/* harmony export */   physicalPlacement: () => (/* binding */ physicalPlacement)
+/* harmony export */ });
+// Pure logical ⇄ physical placement mapping for SF.Position. No DOM and no
+// dependencies, so it is testable without Floating UI installed.
+const SIDES = ['block-start', 'block-end', 'inline-start', 'inline-end'];
+const ALIGNS = ['start', 'center', 'end'];
+/** Maps a logical side and alignment to a Floating UI placement. */
+
+function physicalPlacement(side = 'block-end', align = 'start', rtl = false) {
+  if (!SIDES.includes(side)) throw new TypeError(`Unknown placement side: ${side}`);
+  if (!ALIGNS.includes(align)) throw new TypeError(`Unknown placement alignment: ${align}`);
+  const physical = side === 'block-start' ? 'top' : side === 'block-end' ? 'bottom' : side === 'inline-start' ? rtl ? 'right' : 'left' : rtl ? 'left' : 'right'; // Floating UI mirrors start/end alignment itself for right-to-left elements.
+
+  return align === 'center' ? physical : `${physical}-${align}`;
+}
+/** Maps a Floating UI placement back to the logical side. */
+
+function logicalSide(placement, rtl = false) {
+  const physical = String(placement).split('-')[0];
+  if (physical === 'top') return 'block-start';
+  if (physical === 'bottom') return 'block-end';
+  if (physical === 'left') return rtl ? 'inline-end' : 'inline-start';
+  return rtl ? 'inline-start' : 'inline-end';
+}
+
+/***/ },
+
+/***/ "2e9112dbdda9"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   anchor: () => (/* binding */ anchor),
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__),
+/* harmony export */   resolveLength: () => (/* binding */ resolveLength)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("6d338aa773af");
+/* harmony import */ var _position_placement_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("14baf2d02711");
+// One anchored-positioning contract for Framework floating surfaces (dropdown
+// lists, date panels, menus, tooltips). Geometry comes from Floating UI; this
+// module adds logical placements, Framework token lengths and the author's
+// size caps, so every component opens, flips and shifts the same way.
+
+
+
+function isRtl(element) {
+  return getComputedStyle(element).direction === 'rtl';
+}
+/** Resolves a number or CSS length (tokens included) to pixels in context. */
+
+
+function resolveLength(value, context = document.body) {
+  if (typeof value === 'number') return Number.isFinite(value) ? value : 0;
+  if (typeof value !== 'string' || value.trim() === '') return 0;
+  const probe = document.createElement('span');
+  probe.style.cssText = 'position:absolute;visibility:hidden;pointer-events:none;block-size:0;padding:0;border:0';
+  probe.style.inlineSize = value;
+  (context?.isConnected ? context : document.body).append(probe);
+  const pixels = parseFloat(getComputedStyle(probe).width) || 0;
+  probe.remove();
+  return pixels;
+}
+/**
+ * Keeps `floating` anchored to `reference`.
+ * options: {side, align, offset, alignmentOffset, padding, flip, shift,
+ *           matchWidth, fitHeight, autoUpdate, onPosition({side, placement, x, y})}
+ * Returns {update(): Promise, stop(), side}.
+ */
+
+function anchor(reference, floating, options = {}) {
+  if (!(reference instanceof Element) || !(floating instanceof HTMLElement)) {
+    throw new TypeError('Anchored positioning needs a reference element and a floating element');
+  }
+
+  const settings = {
+    side: 'block-end',
+    align: 'start',
+    offset: 'var(--sf-space-1\\/4)',
+    alignmentOffset: 0,
+    padding: 'var(--sf-space-1\\/2)',
+    flip: true,
+    shift: true,
+    matchWidth: false,
+    fitHeight: true,
+    autoUpdate: true,
+    onPosition: null,
+    ...options
+  }; // Inline styles this helper writes are restored on stop(); the author's caps
+  // are kept, so viewport fitting may only tighten them.
+
+  const written = ['position', 'left', 'top', 'right', 'bottom', 'margin', 'max-height', 'max-width', ...(settings.matchWidth ? ['width'] : [])];
+  const saved = written.map(name => [name, floating.style.getPropertyValue(name), floating.style.getPropertyPriority(name)]);
+  const authored = {
+    maxHeight: floating.style.getPropertyValue('max-height')
+  };
+  const computedCap = parseFloat(getComputedStyle(floating).maxHeight);
+  const heightCap = Number.isFinite(computedCap) ? computedCap : Infinity;
+  const controller = {
+    side: settings.side,
+    stopped: false
+  };
+  let running = null;
+  let pending = false;
+
+  const run = async () => {
+    const rtl = isRtl(reference);
+    const gap = resolveLength(settings.offset, reference.parentElement);
+    const padding = resolveLength(settings.padding, reference.parentElement); // Measure the natural size so flipping compares the real panel height.
+
+    if (settings.fitHeight) floating.style.maxHeight = authored.maxHeight || ''; // alignmentOffset moves a start/end-aligned panel along its edge (mirrored
+    // for end), e.g. so a tail points at the middle of a small trigger.
+
+    const middleware = [(0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.offset)({
+      mainAxis: gap,
+      alignmentAxis: resolveLength(settings.alignmentOffset, reference.parentElement)
+    })];
+    if (settings.flip) middleware.push((0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.flip)({
+      padding,
+      crossAxis: false
+    })); // Shift before size: a panel near the inline edge moves inside the viewport
+    // instead of being squeezed to the space left of its field.
+
+    if (settings.shift) middleware.push((0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.shift)({
+      padding,
+      crossAxis: false
+    }));
+    middleware.push((0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.size)({
+      padding,
+
+      apply({
+        availableWidth,
+        availableHeight,
+        rects,
+        elements
+      }) {
+        if (controller.stopped) return;
+        const viewportWidth = document.documentElement.clientWidth - padding * 2;
+        if (settings.matchWidth) elements.floating.style.width = `${Math.max(0, Math.min(rects.reference.width, viewportWidth))}px`;
+        elements.floating.style.maxWidth = `${Math.max(0, Math.min(availableWidth, viewportWidth))}px`;
+        if (settings.fitHeight) elements.floating.style.maxHeight = `${Math.max(0, Math.min(availableHeight, heightCap))}px`;
+      }
+
+    }));
+    const result = await (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.computePosition)(reference, floating, {
+      strategy: 'fixed',
+      placement: (0,_position_placement_js__WEBPACK_IMPORTED_MODULE_1__.physicalPlacement)(settings.side, settings.align, rtl),
+      middleware
+    });
+    if (controller.stopped) return result; // right/bottom are cleared so logical insets from the component stylesheet
+    // (for example inset-inline-start in RTL) cannot over-constrain the box.
+
+    Object.assign(floating.style, {
+      position: 'fixed',
+      left: `${result.x}px`,
+      top: `${result.y}px`,
+      right: 'auto',
+      bottom: 'auto',
+      margin: '0'
+    });
+    controller.side = (0,_position_placement_js__WEBPACK_IMPORTED_MODULE_1__.logicalSide)(result.placement, rtl);
+    floating.dataset.sfSide = controller.side;
+    settings.onPosition?.({
+      side: controller.side,
+      placement: result.placement,
+      x: result.x,
+      y: result.y
+    });
+    return result;
+  }; // Coalesce bursts (scroll, resize, observers) into one computation at a time.
+
+
+  controller.update = () => {
+    if (controller.stopped) return Promise.resolve(null);
+
+    if (running) {
+      pending = true;
+      return running;
+    }
+
+    running = run().finally(() => {
+      running = null;
+
+      if (pending && !controller.stopped) {
+        pending = false;
+        controller.update();
+      }
+    });
+    return running;
+  };
+
+  const cleanup = settings.autoUpdate ? (0,_floating_ui_dom__WEBPACK_IMPORTED_MODULE_0__.autoUpdate)(reference, floating, controller.update) : null;
+
+  controller.stop = () => {
+    controller.stopped = true;
+    cleanup?.();
+    delete floating.dataset.sfSide;
+
+    for (const [name, value, priority] of saved) {
+      if (value) floating.style.setProperty(name, value, priority);else floating.style.removeProperty(name);
+    }
+  };
+
+  if (!settings.autoUpdate) controller.update();
+  return controller;
+}
+const Position = Object.freeze({
+  anchor,
+  logicalSide: _position_placement_js__WEBPACK_IMPORTED_MODULE_1__.logicalSide,
+  physicalPlacement: _position_placement_js__WEBPACK_IMPORTED_MODULE_1__.physicalPlacement,
+  resolveLength
+}); // Core publishes the helper; component bundles that carry their own copy reuse
+// an already published one instead of replacing it.
+
+if (typeof globalThis !== 'undefined') {
+  globalThis.SF = globalThis.SF || {};
+  if (!globalThis.SF.Position) globalThis.SF.Position = Position;
+}
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (Position);
+
+/***/ },
+
 /***/ "0845ef25b9de"
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
@@ -2434,6 +2712,46 @@ function setLoaderDragState(value) {
 
 /***/ },
 
+/***/ "aaa5e760767f"
+(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   optionBadgeProps: () => (/* binding */ optionBadgeProps)
+/* harmony export */ });
+/* harmony import */ var _component_badges_js_contract_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("a2a9d3c2841e");
+
+const HEX_COLOR = /^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+/**
+ * Badge look for a filter option with optionRenderer 'badge'. option.color is
+ * a Framework badge scheme (success, danger, info...) or a hex colour; a hex
+ * colour tints the tonal background and keeps the text on the surface colour,
+ * so the label stays readable in both themes. Anything else is neutral.
+ */
+
+function optionBadgeProps(option = {}) {
+  const color = typeof option?.color === "string" ? option.color.trim() : "";
+  const scheme = color.toLowerCase();
+  if (_component_badges_js_contract_js__WEBPACK_IMPORTED_MODULE_0__.BADGE_SCHEMES.includes(scheme)) return {
+    scheme,
+    rootStyle: ""
+  };
+
+  if (HEX_COLOR.test(color)) {
+    return {
+      scheme: "neutral",
+      rootStyle: `--sf-badge--background-color: color-mix(in srgb, ${color} 24%, transparent); --sf-badge--color: var(--sf-on-surface)`
+    };
+  }
+
+  return {
+    scheme: "neutral",
+    rootStyle: ""
+  };
+}
+
+/***/ },
+
 /***/ "b53fd744fdaf"
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
@@ -2629,16 +2947,26 @@ function renderToolbar(context) {
                                         type="outline"
                                         scheme="on-surface"
                                         text=${context.createText}
-                                        segment="start"
+                                        segment=${state.createItems?.length ? 'start' : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+                                        @click=${() => context.component.requestCreateIntent(null)}
                                 ></sf-button>
-                                <sf-icon-button
-                                        size="1"
-                                        type="outline"
-                                        scheme="primary"
-                                        segment="end"
-                                        icon="keyboard_arrow_down"
-                                        aria-label="Дополнительные действия создания"
-                                ></sf-icon-button>
+                                ${state.createItems?.length ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+                                    <sf-icon-button
+                                            size="1"
+                                            type="outline"
+                                            scheme="primary"
+                                            segment="end"
+                                            icon="keyboard_arrow_down"
+                                            aria-label="Дополнительные действия создания"
+                                            aria-haspopup="menu"
+                                            @click=${e => {
+    context.component.openContextMenu(e, {
+      type: 'bottom',
+      menu: 'create'
+    });
+  }}
+                                    ></sf-icon-button>
+                                ` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
                             </div>
                         ` : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
 
@@ -2661,6 +2989,32 @@ function renderToolbar(context) {
     `;
 }
 
+function renderHeadLabel(context, column) {
+  const content = column.component ? context.component.renderSmartElement(column.component.type, column.component.props) : column.label;
+
+  if (column.sortable !== true || column.system) {
+    return content;
+  }
+
+  const sort = context.component.state.sort || {};
+  const direction = sort.key === column.key ? sort.direction : null;
+  const icon = direction === 'asc' ? 'arrow_upward' : direction === 'desc' ? 'arrow_downward' : 'unfold_more';
+  return (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
+        <button type="button" class="sf-table-sort-button flex items-cross-center gap-1/4 min-w-0"
+                data-direction=${direction || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}>
+            <span class="truncate">${content}</span>
+            <i class="sf-icon sf-table-sort-icon" aria-hidden="true">${icon}</i>
+        </button>
+    `;
+}
+
+function ariaSort(context, column) {
+  if (column.sortable !== true || column.system) return lit__WEBPACK_IMPORTED_MODULE_0__.nothing;
+  const sort = context.component.state.sort || {};
+  if (sort.key !== column.key) return 'none';
+  return sort.direction === 'asc' ? 'ascending' : 'descending';
+}
+
 function renderHead(context) {
   if (context.component?.hasSlotContent?.("head")) {
     return context.component.getSlotContent("head");
@@ -2676,17 +3030,13 @@ function renderHead(context) {
                                     class="relative"
                                     data-key="${column.key}"
                                     data-label="${column.label || column.key || ''}"
+                                    aria-sort=${ariaSort(context, column)}
+                                    @click=${column.sortable === true ? event => context.component.handleHeaderSortClick(event, column) : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
                             >
-                                ${column.system || k === columns.length - 1 ? column.component ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
-                                        ${context.component.renderSmartElement(column.component.type, column.component.props)}
-                                    ` : (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
-                                        ${column.label} </th>` : (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<div
+                                ${column.system || k === columns.length - 1 ? renderHeadLabel(context, column) : (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`<div
                                         class="sidebar-resizer flex items-cross-center h-full select-none"
                                 >
-                                    ${column.component ? (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
-                                        ${context.component.renderSmartElement(column.component.type, column.component.props)}
-                                    ` : (0,lit__WEBPACK_IMPORTED_MODULE_0__.html)`
-                                        ${column.label}`}
+                                    ${renderHeadLabel(context, column)}
                                     <sf-icon-button size="1/3"
                                                     radius="default"
                                                     root-class="sidebar-resizer-button absolute top-1/2 -translate-y-half translate-x-half inline-end-0 z-1 cursor-col-resize"
@@ -2698,9 +3048,8 @@ function renderHead(context) {
                                                     icon="drag_handle"
                                                     @keydown=${event => context.component.resizeColumnByKeyboard(event, column.key)}
                                     ></sf-icon-button>
-                                </div>
-                            </th>`}
-                        `);
+                                </div>`}
+                            </th>`);
   })}
         </tr>
         </thead>
@@ -3039,6 +3388,2248 @@ function normalizeTableLinkCell(value) {
 
 __webpack_require__.r(__webpack_exports__);
 // extracted by mini-css-extract-plugin
+
+
+/***/ },
+
+/***/ "b4b2e395e4eb"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   arrow: () => (/* binding */ arrow),
+/* harmony export */   autoPlacement: () => (/* binding */ autoPlacement),
+/* harmony export */   computePosition: () => (/* binding */ computePosition),
+/* harmony export */   detectOverflow: () => (/* binding */ detectOverflow),
+/* harmony export */   flip: () => (/* binding */ flip),
+/* harmony export */   hide: () => (/* binding */ hide),
+/* harmony export */   inline: () => (/* binding */ inline),
+/* harmony export */   limitShift: () => (/* binding */ limitShift),
+/* harmony export */   offset: () => (/* binding */ offset),
+/* harmony export */   rectToClientRect: () => (/* reexport safe */ _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect),
+/* harmony export */   shift: () => (/* binding */ shift),
+/* harmony export */   size: () => (/* binding */ size)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("56345afd9e11");
+
+
+
+function computeCoordsFromPlacement(_ref, placement, rtl) {
+  let {
+    reference,
+    floating
+  } = _ref;
+  const sideAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(placement);
+  const alignmentAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignmentAxis)(placement);
+  const alignLength = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAxisLength)(alignmentAxis);
+  const side = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement);
+  const isVertical = sideAxis === 'y';
+  const commonX = reference.x + reference.width / 2 - floating.width / 2;
+  const commonY = reference.y + reference.height / 2 - floating.height / 2;
+  const commonAlign = reference[alignLength] / 2 - floating[alignLength] / 2;
+  let coords;
+  switch (side) {
+    case 'top':
+      coords = {
+        x: commonX,
+        y: reference.y - floating.height
+      };
+      break;
+    case 'bottom':
+      coords = {
+        x: commonX,
+        y: reference.y + reference.height
+      };
+      break;
+    case 'right':
+      coords = {
+        x: reference.x + reference.width,
+        y: commonY
+      };
+      break;
+    case 'left':
+      coords = {
+        x: reference.x - floating.width,
+        y: commonY
+      };
+      break;
+    default:
+      coords = {
+        x: reference.x,
+        y: reference.y
+      };
+  }
+  const alignment = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement);
+  if (alignment) {
+    coords[alignmentAxis] += commonAlign * (alignment === 'end' ? 1 : -1) * (rtl && isVertical ? -1 : 1);
+  }
+  return coords;
+}
+
+/**
+ * Resolves with an object of overflow side offsets that determine how much the
+ * element is overflowing a given clipping boundary on each side.
+ * - positive = overflowing the boundary by that number of pixels
+ * - negative = how many pixels left before it will overflow
+ * - 0 = lies flush with the boundary
+ * @see https://floating-ui.com/docs/detectOverflow
+ */
+async function detectOverflow(state, options) {
+  var _await$platform$isEle;
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    x,
+    y,
+    platform,
+    rects,
+    elements,
+    strategy
+  } = state;
+  const {
+    boundary = 'clippingAncestors',
+    rootBoundary = 'viewport',
+    elementContext = 'floating',
+    altBoundary = false,
+    padding = 0
+  } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+  const paddingObject = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getPaddingObject)(padding);
+  const altContext = elementContext === 'floating' ? 'reference' : 'floating';
+  const element = elements[altBoundary ? altContext : elementContext];
+  const clippingClientRect = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect)(await platform.getClippingRect({
+    element: ((_await$platform$isEle = await (platform.isElement == null ? void 0 : platform.isElement(element))) != null ? _await$platform$isEle : true) ? element : element.contextElement || (await (platform.getDocumentElement == null ? void 0 : platform.getDocumentElement(elements.floating))),
+    boundary,
+    rootBoundary,
+    strategy
+  }));
+  const rect = elementContext === 'floating' ? {
+    x,
+    y,
+    width: rects.floating.width,
+    height: rects.floating.height
+  } : rects.reference;
+  const offsetParent = await (platform.getOffsetParent == null ? void 0 : platform.getOffsetParent(elements.floating));
+  const offsetScale = (await (platform.isElement == null ? void 0 : platform.isElement(offsetParent))) && (await (platform.getScale == null ? void 0 : platform.getScale(offsetParent))) || {
+    x: 1,
+    y: 1
+  };
+  const elementClientRect = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect)(platform.convertOffsetParentRelativeRectToViewportRelativeRect ? await platform.convertOffsetParentRelativeRectToViewportRelativeRect({
+    elements,
+    rect,
+    offsetParent,
+    strategy
+  }) : rect);
+  return {
+    top: (clippingClientRect.top - elementClientRect.top + paddingObject.top) / offsetScale.y,
+    bottom: (elementClientRect.bottom - clippingClientRect.bottom + paddingObject.bottom) / offsetScale.y,
+    left: (clippingClientRect.left - elementClientRect.left + paddingObject.left) / offsetScale.x,
+    right: (elementClientRect.right - clippingClientRect.right + paddingObject.right) / offsetScale.x
+  };
+}
+
+// Maximum number of resets that can occur before bailing to avoid infinite reset loops.
+const MAX_RESET_COUNT = 50;
+
+/**
+ * Computes the `x` and `y` coordinates that will place the floating element
+ * next to a given reference element.
+ *
+ * This export does not have any `platform` interface logic. You will need to
+ * write one for the platform you are using Floating UI with.
+ */
+const computePosition = async (reference, floating, config) => {
+  const {
+    placement = 'bottom',
+    strategy = 'absolute',
+    middleware = [],
+    platform
+  } = config;
+  const platformWithDetectOverflow = platform.detectOverflow ? platform : {
+    ...platform,
+    detectOverflow
+  };
+  const rtl = await (platform.isRTL == null ? void 0 : platform.isRTL(floating));
+  let rects = await platform.getElementRects({
+    reference,
+    floating,
+    strategy
+  });
+  let {
+    x,
+    y
+  } = computeCoordsFromPlacement(rects, placement, rtl);
+  let statefulPlacement = placement;
+  let resetCount = 0;
+  const middlewareData = {};
+  for (let i = 0; i < middleware.length; i++) {
+    const currentMiddleware = middleware[i];
+    if (!currentMiddleware) {
+      continue;
+    }
+    const {
+      name,
+      fn
+    } = currentMiddleware;
+    const {
+      x: nextX,
+      y: nextY,
+      data,
+      reset
+    } = await fn({
+      x,
+      y,
+      initialPlacement: placement,
+      placement: statefulPlacement,
+      strategy,
+      middlewareData,
+      rects,
+      platform: platformWithDetectOverflow,
+      elements: {
+        reference,
+        floating
+      }
+    });
+    x = nextX != null ? nextX : x;
+    y = nextY != null ? nextY : y;
+    middlewareData[name] = {
+      ...middlewareData[name],
+      ...data
+    };
+    if (reset && resetCount < MAX_RESET_COUNT) {
+      resetCount++;
+      if (typeof reset === 'object') {
+        if (reset.placement) {
+          statefulPlacement = reset.placement;
+        }
+        if (reset.rects) {
+          rects = reset.rects === true ? await platform.getElementRects({
+            reference,
+            floating,
+            strategy
+          }) : reset.rects;
+        }
+        ({
+          x,
+          y
+        } = computeCoordsFromPlacement(rects, statefulPlacement, rtl));
+      }
+      i = -1;
+    }
+  }
+  return {
+    x,
+    y,
+    placement: statefulPlacement,
+    strategy,
+    middlewareData
+  };
+};
+
+/**
+ * Provides data to position an inner element of the floating element so that it
+ * appears centered to the reference element.
+ * @see https://floating-ui.com/docs/arrow
+ */
+const arrow = options => ({
+  name: 'arrow',
+  options,
+  async fn(state) {
+    const {
+      x,
+      y,
+      placement,
+      rects,
+      platform,
+      elements,
+      middlewareData
+    } = state;
+    // Since `element` is required, we don't Partial<> the type.
+    const {
+      element,
+      padding = 0
+    } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state) || {};
+    if (element == null) {
+      return {};
+    }
+    const paddingObject = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getPaddingObject)(padding);
+    const coords = {
+      x,
+      y
+    };
+    const axis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignmentAxis)(placement);
+    const length = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAxisLength)(axis);
+    const arrowDimensions = await platform.getDimensions(element);
+    const isYAxis = axis === 'y';
+    const minProp = isYAxis ? 'top' : 'left';
+    const maxProp = isYAxis ? 'bottom' : 'right';
+    const clientProp = isYAxis ? 'clientHeight' : 'clientWidth';
+    const endDiff = rects.reference[length] + rects.reference[axis] - coords[axis] - rects.floating[length];
+    const startDiff = coords[axis] - rects.reference[axis];
+    const arrowOffsetParent = await (platform.getOffsetParent == null ? void 0 : platform.getOffsetParent(element));
+    let clientSize = arrowOffsetParent ? arrowOffsetParent[clientProp] : 0;
+
+    // DOM platform can return `window` as the `offsetParent`.
+    if (!clientSize || !(await (platform.isElement == null ? void 0 : platform.isElement(arrowOffsetParent)))) {
+      clientSize = elements.floating[clientProp] || rects.floating[length];
+    }
+    const centerToReference = endDiff / 2 - startDiff / 2;
+
+    // If the padding is large enough that it causes the arrow to no longer be
+    // centered, modify the padding so that it is centered.
+    const largestPossiblePadding = clientSize / 2 - arrowDimensions[length] / 2 - 1;
+    const minPadding = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(paddingObject[minProp], largestPossiblePadding);
+    const maxPadding = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(paddingObject[maxProp], largestPossiblePadding);
+
+    // Make sure the arrow doesn't overflow the floating element if the center
+    // point is outside the floating element's bounds.
+    const max = clientSize - arrowDimensions[length] - maxPadding;
+    const center = clientSize / 2 - arrowDimensions[length] / 2 + centerToReference;
+    const offset = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.clamp)(minPadding, center, max);
+
+    // If the reference is small enough that the arrow's padding causes it to
+    // to point to nothing for an aligned placement, adjust the offset of the
+    // floating element itself. To ensure `shift()` continues to take action,
+    // a single reset is performed when this is true.
+    const shouldAddOffset = !middlewareData.arrow && (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement) != null && center !== offset && rects.reference[length] / 2 - (center < minPadding ? minPadding : maxPadding) - arrowDimensions[length] / 2 < 0;
+    const alignmentOffset = shouldAddOffset ? center < minPadding ? center - minPadding : center - max : 0;
+    return {
+      [axis]: coords[axis] + alignmentOffset,
+      data: {
+        [axis]: offset,
+        centerOffset: center - offset - alignmentOffset,
+        ...(shouldAddOffset && {
+          alignmentOffset
+        })
+      },
+      reset: shouldAddOffset
+    };
+  }
+});
+
+function getPlacementList(alignment, autoAlignment, allowedPlacements) {
+  const allowedPlacementsSortedByAlignment = alignment ? [...allowedPlacements.filter(placement => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement) === alignment), ...allowedPlacements.filter(placement => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement) !== alignment)] : allowedPlacements.filter(placement => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement) === placement);
+  return allowedPlacementsSortedByAlignment.filter(placement => {
+    if (alignment) {
+      return (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement) === alignment || (autoAlignment ? (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getOppositeAlignmentPlacement)(placement) !== placement : false);
+    }
+    return true;
+  });
+}
+/**
+ * Optimizes the visibility of the floating element by choosing the placement
+ * that has the most space available automatically, without needing to specify a
+ * preferred placement. Alternative to `flip`.
+ * @see https://floating-ui.com/docs/autoPlacement
+ */
+const autoPlacement = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: 'autoPlacement',
+    options,
+    async fn(state) {
+      var _middlewareData$autoP, _middlewareData$autoP2, _placementsThatFitOnE;
+      const {
+        rects,
+        middlewareData,
+        placement,
+        platform,
+        elements
+      } = state;
+      const {
+        crossAxis = false,
+        alignment,
+        allowedPlacements = _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.placements,
+        autoAlignment = true,
+        ...detectOverflowOptions
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+      const placements$1 = alignment !== undefined || allowedPlacements === _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.placements ? getPlacementList(alignment || null, autoAlignment, allowedPlacements) : allowedPlacements;
+      const currentIndex = ((_middlewareData$autoP = middlewareData.autoPlacement) == null ? void 0 : _middlewareData$autoP.index) || 0;
+      const currentPlacement = placements$1[currentIndex];
+      if (currentPlacement == null) {
+        return {};
+      }
+
+      // Make `computeCoords` start from the right place.
+      if (placement !== currentPlacement) {
+        return {
+          reset: {
+            placement: placements$1[0]
+          }
+        };
+      }
+      const overflow = await platform.detectOverflow(state, detectOverflowOptions);
+      const alignmentSides = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignmentSides)(currentPlacement, rects, await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating)));
+      const currentOverflows = [overflow[(0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(currentPlacement)], overflow[alignmentSides[0]], overflow[alignmentSides[1]]];
+      const allOverflows = [...(((_middlewareData$autoP2 = middlewareData.autoPlacement) == null ? void 0 : _middlewareData$autoP2.overflows) || []), {
+        placement: currentPlacement,
+        overflows: currentOverflows
+      }];
+      const nextPlacement = placements$1[currentIndex + 1];
+
+      // There are more placements to check.
+      if (nextPlacement) {
+        return {
+          data: {
+            index: currentIndex + 1,
+            overflows: allOverflows
+          },
+          reset: {
+            placement: nextPlacement
+          }
+        };
+      }
+      const placementsSortedByMostSpace = allOverflows.map(d => {
+        const alignment = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(d.placement);
+        return [d.placement, alignment && crossAxis ?
+        // Check along the mainAxis and main crossAxis side.
+        d.overflows.slice(0, 2).reduce((acc, v) => acc + v, 0) :
+        // Check only the mainAxis.
+        d.overflows[0], d.overflows];
+      }).sort((a, b) => a[1] - b[1]);
+      const placementsThatFitOnEachSide = placementsSortedByMostSpace.filter(d => d[2].slice(0,
+      // Aligned placements should not check their opposite crossAxis
+      // side.
+      (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(d[0]) ? 2 : 3).every(v => v <= 0));
+      const resetPlacement = ((_placementsThatFitOnE = placementsThatFitOnEachSide[0]) == null ? void 0 : _placementsThatFitOnE[0]) || placementsSortedByMostSpace[0][0];
+      if (resetPlacement !== placement) {
+        return {
+          data: {
+            index: currentIndex + 1,
+            overflows: allOverflows
+          },
+          reset: {
+            placement: resetPlacement
+          }
+        };
+      }
+      return {};
+    }
+  };
+};
+
+/**
+ * Optimizes the visibility of the floating element by flipping the `placement`
+ * in order to keep it in view when the preferred placement(s) will overflow the
+ * clipping boundary. Alternative to `autoPlacement`.
+ * @see https://floating-ui.com/docs/flip
+ */
+const flip = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: 'flip',
+    options,
+    async fn(state) {
+      var _middlewareData$arrow, _middlewareData$flip;
+      const {
+        placement,
+        middlewareData,
+        rects,
+        initialPlacement,
+        platform,
+        elements
+      } = state;
+      const {
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = true,
+        fallbackPlacements: specifiedFallbackPlacements,
+        fallbackStrategy = 'bestFit',
+        fallbackAxisSideDirection = 'none',
+        flipAlignment = true,
+        ...detectOverflowOptions
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+
+      // If a reset by the arrow was caused due to an alignment offset being
+      // added, we should skip any logic now since `flip()` has already done its
+      // work.
+      // https://github.com/floating-ui/floating-ui/issues/2549#issuecomment-1719601643
+      if ((_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
+      const side = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement);
+      const initialSideAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(initialPlacement);
+      const isBasePlacement = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(initialPlacement) === initialPlacement;
+      const rtl = await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating));
+      const fallbackPlacements = specifiedFallbackPlacements || (isBasePlacement || !flipAlignment ? [(0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getOppositePlacement)(initialPlacement)] : (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getExpandedPlacements)(initialPlacement));
+      const hasFallbackAxisSideDirection = fallbackAxisSideDirection !== 'none';
+      if (!specifiedFallbackPlacements && hasFallbackAxisSideDirection) {
+        fallbackPlacements.push(...(0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getOppositeAxisPlacements)(initialPlacement, flipAlignment, fallbackAxisSideDirection, rtl));
+      }
+      const placements = [initialPlacement, ...fallbackPlacements];
+      const overflow = await platform.detectOverflow(state, detectOverflowOptions);
+      const overflows = [];
+      let overflowsData = ((_middlewareData$flip = middlewareData.flip) == null ? void 0 : _middlewareData$flip.overflows) || [];
+      if (checkMainAxis) {
+        overflows.push(overflow[side]);
+      }
+      if (checkCrossAxis) {
+        const sides = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignmentSides)(placement, rects, rtl);
+        overflows.push(overflow[sides[0]], overflow[sides[1]]);
+      }
+      overflowsData = [...overflowsData, {
+        placement,
+        overflows
+      }];
+
+      // One or more sides is overflowing.
+      if (!overflows.every(side => side <= 0)) {
+        var _middlewareData$flip2, _overflowsData$filter;
+        const nextIndex = (((_middlewareData$flip2 = middlewareData.flip) == null ? void 0 : _middlewareData$flip2.index) || 0) + 1;
+        const nextPlacement = placements[nextIndex];
+        if (nextPlacement) {
+          const ignoreCrossAxisOverflow = checkCrossAxis === 'alignment' ? initialSideAxis !== (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(nextPlacement) : false;
+          if (!ignoreCrossAxisOverflow ||
+          // We leave the current main axis only if every placement on that axis
+          // overflows the main axis.
+          overflowsData.every(d => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(d.placement) === initialSideAxis ? d.overflows[0] > 0 : true)) {
+            // Try next placement and re-run the lifecycle.
+            return {
+              data: {
+                index: nextIndex,
+                overflows: overflowsData
+              },
+              reset: {
+                placement: nextPlacement
+              }
+            };
+          }
+        }
+
+        // First, find the candidates that fit on the mainAxis side of overflow,
+        // then find the placement that fits the best on the main crossAxis side.
+        let resetPlacement = (_overflowsData$filter = overflowsData.filter(d => d.overflows[0] <= 0).sort((a, b) => a.overflows[1] - b.overflows[1])[0]) == null ? void 0 : _overflowsData$filter.placement;
+
+        // Otherwise fallback.
+        if (!resetPlacement) {
+          switch (fallbackStrategy) {
+            case 'bestFit':
+              {
+                var _overflowsData$filter2;
+                const placement = (_overflowsData$filter2 = overflowsData.filter(d => {
+                  if (hasFallbackAxisSideDirection) {
+                    const currentSideAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(d.placement);
+                    return currentSideAxis === initialSideAxis ||
+                    // Create a bias to the `y` side axis due to horizontal
+                    // reading directions favoring greater width.
+                    currentSideAxis === 'y';
+                  }
+                  return true;
+                }).map(d => [d.placement, d.overflows.filter(overflow => overflow > 0).reduce((acc, overflow) => acc + overflow, 0)]).sort((a, b) => a[1] - b[1])[0]) == null ? void 0 : _overflowsData$filter2[0];
+                if (placement) {
+                  resetPlacement = placement;
+                }
+                break;
+              }
+            case 'initialPlacement':
+              resetPlacement = initialPlacement;
+              break;
+          }
+        }
+        if (placement !== resetPlacement) {
+          return {
+            reset: {
+              placement: resetPlacement
+            }
+          };
+        }
+      }
+      return {};
+    }
+  };
+};
+
+function getSideOffsets(overflow, rect) {
+  return {
+    top: overflow.top - rect.height,
+    right: overflow.right - rect.width,
+    bottom: overflow.bottom - rect.height,
+    left: overflow.left - rect.width
+  };
+}
+function isAnySideFullyClipped(overflow) {
+  return _floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.sides.some(side => overflow[side] >= 0);
+}
+/**
+ * Provides data to hide the floating element in applicable situations, such as
+ * when it is not in the same clipping context as the reference element.
+ * @see https://floating-ui.com/docs/hide
+ */
+const hide = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: 'hide',
+    options,
+    async fn(state) {
+      const {
+        rects,
+        platform
+      } = state;
+      const {
+        strategy = 'referenceHidden',
+        ...detectOverflowOptions
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+      switch (strategy) {
+        case 'referenceHidden':
+          {
+            const overflow = await platform.detectOverflow(state, {
+              ...detectOverflowOptions,
+              elementContext: 'reference'
+            });
+            const offsets = getSideOffsets(overflow, rects.reference);
+            return {
+              data: {
+                referenceHiddenOffsets: offsets,
+                referenceHidden: isAnySideFullyClipped(offsets)
+              }
+            };
+          }
+        case 'escaped':
+          {
+            const overflow = await platform.detectOverflow(state, {
+              ...detectOverflowOptions,
+              altBoundary: true
+            });
+            const offsets = getSideOffsets(overflow, rects.floating);
+            return {
+              data: {
+                escapedOffsets: offsets,
+                escaped: isAnySideFullyClipped(offsets)
+              }
+            };
+          }
+        default:
+          {
+            return {};
+          }
+      }
+    }
+  };
+};
+
+function getBoundingRect(rects) {
+  const minX = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(...rects.map(rect => rect.left));
+  const minY = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(...rects.map(rect => rect.top));
+  const maxX = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.max)(...rects.map(rect => rect.right));
+  const maxY = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.max)(...rects.map(rect => rect.bottom));
+  return {
+    x: minX,
+    y: minY,
+    width: maxX - minX,
+    height: maxY - minY
+  };
+}
+function getRectsByLine(rects) {
+  const sortedRects = rects.slice().sort((a, b) => a.y - b.y);
+  const groups = [];
+  let prevRect = null;
+  for (let i = 0; i < sortedRects.length; i++) {
+    const rect = sortedRects[i];
+    if (!prevRect || rect.y - prevRect.y > prevRect.height / 2) {
+      groups.push([rect]);
+    } else {
+      groups[groups.length - 1].push(rect);
+    }
+    prevRect = rect;
+  }
+  return groups.map(rect => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect)(getBoundingRect(rect)));
+}
+/**
+ * Provides improved positioning for inline reference elements that can span
+ * over multiple lines, such as hyperlinks or range selections.
+ * @see https://floating-ui.com/docs/inline
+ */
+const inline = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: 'inline',
+    options,
+    async fn(state) {
+      const {
+        placement,
+        elements,
+        rects,
+        platform,
+        strategy
+      } = state;
+      // A MouseEvent's client{X,Y} coords can be up to 2 pixels off a
+      // ClientRect's bounds, despite the event listener being triggered. A
+      // padding of 2 seems to handle this issue.
+      const {
+        padding = 2,
+        x,
+        y
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+      const nativeClientRects = Array.from((await (platform.getClientRects == null ? void 0 : platform.getClientRects(elements.reference))) || []);
+
+      // No rects (e.g. a hidden or detached reference, or a collapsed range) —
+      // keep the existing reference rect rather than resetting to an invalid
+      // one with non-finite values.
+      if (!nativeClientRects.length) {
+        return {};
+      }
+      const clientRects = getRectsByLine(nativeClientRects);
+      const fallback = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect)(getBoundingRect(nativeClientRects));
+      const paddingObject = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getPaddingObject)(padding);
+      function getBoundingClientRect() {
+        // There are two rects and they are disjoined.
+        if (clientRects.length === 2 && (clientRects[0].left > clientRects[1].right || clientRects[1].left > clientRects[0].right) && x != null && y != null) {
+          // Find the first rect in which the point is fully inside.
+          return clientRects.find(rect => x > rect.left - paddingObject.left && x < rect.right + paddingObject.right && y > rect.top - paddingObject.top && y < rect.bottom + paddingObject.bottom) || fallback;
+        }
+
+        // There are 2 or more connected rects.
+        if (clientRects.length >= 2) {
+          if ((0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(placement) === 'y') {
+            const firstRect = clientRects[0];
+            const lastRect = clientRects[clientRects.length - 1];
+            const isTop = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement) === 'top';
+            const top = firstRect.top;
+            const bottom = lastRect.bottom;
+            const left = isTop ? firstRect.left : lastRect.left;
+            const right = isTop ? firstRect.right : lastRect.right;
+            return (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect)({
+              x: left,
+              y: top,
+              width: right - left,
+              height: bottom - top
+            });
+          }
+          const isLeftSide = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement) === 'left';
+          const maxRight = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.max)(...clientRects.map(rect => rect.right));
+          const minLeft = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(...clientRects.map(rect => rect.left));
+          const measureRects = clientRects.filter(rect => isLeftSide ? rect.left === minLeft : rect.right === maxRight);
+          const top = measureRects[0].top;
+          const bottom = measureRects[measureRects.length - 1].bottom;
+          return (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.rectToClientRect)({
+            x: minLeft,
+            y: top,
+            width: maxRight - minLeft,
+            height: bottom - top
+          });
+        }
+        return fallback;
+      }
+      const resetRects = await platform.getElementRects({
+        reference: {
+          getBoundingClientRect
+        },
+        floating: elements.floating,
+        strategy
+      });
+      if (rects.reference.x !== resetRects.reference.x || rects.reference.y !== resetRects.reference.y || rects.reference.width !== resetRects.reference.width || rects.reference.height !== resetRects.reference.height) {
+        return {
+          reset: {
+            rects: resetRects
+          }
+        };
+      }
+      return {};
+    }
+  };
+};
+
+const originSides = /*#__PURE__*/new Set(['left', 'top']);
+
+// For type backwards-compatibility, the `OffsetOptions` type was also
+// Derivable.
+
+async function convertValueToCoords(state, options) {
+  const {
+    placement,
+    platform,
+    elements
+  } = state;
+  const rtl = await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating));
+  const side = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement);
+  const alignment = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement);
+  const isVertical = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(placement) === 'y';
+  const mainAxisMulti = originSides.has(side) ? -1 : 1;
+  const crossAxisMulti = rtl && isVertical ? -1 : 1;
+  const rawValue = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+
+  // eslint-disable-next-line prefer-const
+  let {
+    mainAxis,
+    crossAxis,
+    alignmentAxis
+  } = typeof rawValue === 'number' ? {
+    mainAxis: rawValue,
+    crossAxis: 0,
+    alignmentAxis: null
+  } : {
+    mainAxis: rawValue.mainAxis || 0,
+    crossAxis: rawValue.crossAxis || 0,
+    alignmentAxis: rawValue.alignmentAxis
+  };
+  if (alignment && typeof alignmentAxis === 'number') {
+    crossAxis = alignment === 'end' ? alignmentAxis * -1 : alignmentAxis;
+  }
+  return isVertical ? {
+    x: crossAxis * crossAxisMulti,
+    y: mainAxis * mainAxisMulti
+  } : {
+    x: mainAxis * mainAxisMulti,
+    y: crossAxis * crossAxisMulti
+  };
+}
+
+/**
+ * Modifies the placement by translating the floating element along the
+ * specified axes.
+ * A number (shorthand for `mainAxis` or distance), or an axes configuration
+ * object may be passed.
+ * @see https://floating-ui.com/docs/offset
+ */
+const offset = function (options) {
+  if (options === void 0) {
+    options = 0;
+  }
+  return {
+    name: 'offset',
+    options,
+    async fn(state) {
+      var _middlewareData$offse, _middlewareData$arrow;
+      const {
+        x,
+        y,
+        placement,
+        middlewareData
+      } = state;
+      const diffCoords = await convertValueToCoords(state, options);
+
+      // If the placement is the same and the arrow caused an alignment offset
+      // then we don't need to change the positioning coordinates.
+      if (placement === ((_middlewareData$offse = middlewareData.offset) == null ? void 0 : _middlewareData$offse.placement) && (_middlewareData$arrow = middlewareData.arrow) != null && _middlewareData$arrow.alignmentOffset) {
+        return {};
+      }
+      return {
+        x: x + diffCoords.x,
+        y: y + diffCoords.y,
+        data: {
+          ...diffCoords,
+          placement
+        }
+      };
+    }
+  };
+};
+
+/**
+ * Optimizes the visibility of the floating element by shifting it in order to
+ * keep it in view when it will overflow the clipping boundary.
+ * @see https://floating-ui.com/docs/shift
+ */
+const shift = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: 'shift',
+    options,
+    async fn(state) {
+      const {
+        x,
+        y,
+        placement,
+        platform
+      } = state;
+      const {
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = false,
+        limiter = {
+          fn: _ref => {
+            let {
+              x,
+              y
+            } = _ref;
+            return {
+              x,
+              y
+            };
+          }
+        },
+        ...detectOverflowOptions
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+      const coords = {
+        x,
+        y
+      };
+      const overflow = await platform.detectOverflow(state, detectOverflowOptions);
+      const crossAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(placement);
+      const mainAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getOppositeAxis)(crossAxis);
+      let mainAxisCoord = coords[mainAxis];
+      let crossAxisCoord = coords[crossAxis];
+      const clampCoord = (axis, coord) => (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.clamp)(coord + overflow[axis === 'y' ? 'top' : 'left'], coord, coord - overflow[axis === 'y' ? 'bottom' : 'right']);
+      if (checkMainAxis) {
+        mainAxisCoord = clampCoord(mainAxis, mainAxisCoord);
+      }
+      if (checkCrossAxis) {
+        crossAxisCoord = clampCoord(crossAxis, crossAxisCoord);
+      }
+      const limitedCoords = limiter.fn({
+        ...state,
+        [mainAxis]: mainAxisCoord,
+        [crossAxis]: crossAxisCoord
+      });
+      return {
+        ...limitedCoords,
+        data: {
+          x: limitedCoords.x - x,
+          y: limitedCoords.y - y,
+          enabled: {
+            [mainAxis]: checkMainAxis,
+            [crossAxis]: checkCrossAxis
+          }
+        }
+      };
+    }
+  };
+};
+/**
+ * Built-in `limiter` that will stop `shift()` at a certain point.
+ */
+const limitShift = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    options,
+    fn(state) {
+      var _rawOffset$mainAxis, _rawOffset$crossAxis;
+      const {
+        x,
+        y,
+        placement,
+        rects,
+        middlewareData
+      } = state;
+      const {
+        offset = 0,
+        mainAxis: checkMainAxis = true,
+        crossAxis: checkCrossAxis = true
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+      const coords = {
+        x,
+        y
+      };
+      const crossAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(placement);
+      const mainAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getOppositeAxis)(crossAxis);
+      let mainAxisCoord = coords[mainAxis];
+      let crossAxisCoord = coords[crossAxis];
+      const rawOffset = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(offset, state);
+      const computedOffset = typeof rawOffset === 'number' ? {
+        mainAxis: rawOffset,
+        crossAxis: 0
+      } : {
+        mainAxis: (_rawOffset$mainAxis = rawOffset.mainAxis) != null ? _rawOffset$mainAxis : 0,
+        crossAxis: (_rawOffset$crossAxis = rawOffset.crossAxis) != null ? _rawOffset$crossAxis : 0
+      };
+      if (checkMainAxis) {
+        const len = mainAxis === 'y' ? 'height' : 'width';
+        const limitMin = rects.reference[mainAxis] - rects.floating[len] + computedOffset.mainAxis;
+        const limitMax = rects.reference[mainAxis] + rects.reference[len] - computedOffset.mainAxis;
+        if (mainAxisCoord < limitMin) {
+          mainAxisCoord = limitMin;
+        } else if (mainAxisCoord > limitMax) {
+          mainAxisCoord = limitMax;
+        }
+      }
+      if (checkCrossAxis) {
+        var _middlewareData$offse, _middlewareData$offse2;
+        const len = mainAxis === 'y' ? 'width' : 'height';
+        const isOriginSide = originSides.has((0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement));
+        const limitMin = rects.reference[crossAxis] - rects.floating[len] + (isOriginSide ? ((_middlewareData$offse = middlewareData.offset) == null ? void 0 : _middlewareData$offse[crossAxis]) || 0 : 0) + (isOriginSide ? 0 : computedOffset.crossAxis);
+        const limitMax = rects.reference[crossAxis] + rects.reference[len] + (isOriginSide ? 0 : ((_middlewareData$offse2 = middlewareData.offset) == null ? void 0 : _middlewareData$offse2[crossAxis]) || 0) - (isOriginSide ? computedOffset.crossAxis : 0);
+        if (crossAxisCoord < limitMin) {
+          crossAxisCoord = limitMin;
+        } else if (crossAxisCoord > limitMax) {
+          crossAxisCoord = limitMax;
+        }
+      }
+      return {
+        [mainAxis]: mainAxisCoord,
+        [crossAxis]: crossAxisCoord
+      };
+    }
+  };
+};
+
+// Method syntax keeps callback parameters bivariant, but expressing the
+// explicit `| undefined` required by `exactOptionalPropertyTypes` needs
+// property syntax, which is contravariant under `strictFunctionTypes`.
+// Extracting the function from a method position restores that bivariance so
+// consumers can still assign callbacks with narrower parameter types.
+
+/**
+ * Provides data that allows you to change the size of the floating element —
+ * for instance, prevent it from overflowing the clipping boundary or match the
+ * width of the reference element.
+ * @see https://floating-ui.com/docs/size
+ */
+const size = function (options) {
+  if (options === void 0) {
+    options = {};
+  }
+  return {
+    name: 'size',
+    options,
+    async fn(state) {
+      const {
+        placement,
+        rects,
+        platform,
+        elements
+      } = state;
+      const {
+        apply = () => {},
+        ...detectOverflowOptions
+      } = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.evaluate)(options, state);
+      const overflow = await platform.detectOverflow(state, detectOverflowOptions);
+      const side = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSide)(placement);
+      const alignment = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getAlignment)(placement);
+      const isYAxis = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.getSideAxis)(placement) === 'y';
+      const {
+        width,
+        height
+      } = rects.floating;
+      let heightSide;
+      let widthSide;
+      if (side === 'top' || side === 'bottom') {
+        heightSide = side;
+        widthSide = alignment === ((await (platform.isRTL == null ? void 0 : platform.isRTL(elements.floating))) ? 'start' : 'end') ? 'left' : 'right';
+      } else {
+        widthSide = side;
+        heightSide = alignment === 'end' ? 'top' : 'bottom';
+      }
+      const maximumClippingHeight = height - overflow.top - overflow.bottom;
+      const maximumClippingWidth = width - overflow.left - overflow.right;
+      const overflowAvailableHeight = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(height - overflow[heightSide], maximumClippingHeight);
+      const overflowAvailableWidth = (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.min)(width - overflow[widthSide], maximumClippingWidth);
+      const shiftData = state.middlewareData.shift;
+      const noShift = !shiftData;
+      let availableHeight = overflowAvailableHeight;
+      let availableWidth = overflowAvailableWidth;
+      if (shiftData != null && shiftData.enabled.x) {
+        availableWidth = maximumClippingWidth;
+      }
+      if (shiftData != null && shiftData.enabled.y) {
+        availableHeight = maximumClippingHeight;
+      }
+      if (noShift && !alignment) {
+        if (isYAxis) {
+          availableWidth = width - 2 * (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.max)(overflow.left, overflow.right);
+        } else {
+          availableHeight = height - 2 * (0,_floating_ui_utils__WEBPACK_IMPORTED_MODULE_0__.max)(overflow.top, overflow.bottom);
+        }
+      }
+      await apply({
+        ...state,
+        availableWidth,
+        availableHeight
+      });
+      const nextDimensions = await platform.getDimensions(elements.floating);
+      if (width !== nextDimensions.width || height !== nextDimensions.height) {
+        return {
+          reset: {
+            rects: true
+          }
+        };
+      }
+      return {};
+    }
+  };
+};
+
+
+
+
+/***/ },
+
+/***/ "6d338aa773af"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* empty/unused harmony star reexport */
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   arrow: () => (/* binding */ arrow),
+/* harmony export */   autoPlacement: () => (/* binding */ autoPlacement),
+/* harmony export */   autoUpdate: () => (/* binding */ autoUpdate),
+/* harmony export */   computePosition: () => (/* binding */ computePosition),
+/* harmony export */   detectOverflow: () => (/* binding */ detectOverflow),
+/* harmony export */   flip: () => (/* binding */ flip),
+/* harmony export */   hide: () => (/* binding */ hide),
+/* harmony export */   inline: () => (/* binding */ inline),
+/* harmony export */   limitShift: () => (/* binding */ limitShift),
+/* harmony export */   offset: () => (/* binding */ offset),
+/* harmony export */   platform: () => (/* binding */ platform),
+/* harmony export */   shift: () => (/* binding */ shift),
+/* harmony export */   size: () => (/* binding */ size)
+/* harmony export */ });
+/* harmony import */ var _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("b4b2e395e4eb");
+/* harmony import */ var _floating_ui_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("56345afd9e11");
+/* harmony import */ var _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("d7f28916ed76");
+
+
+
+
+
+function getCssDimensions(element) {
+  const css = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(element);
+  // In testing environments, the `width` and `height` properties are empty
+  // strings for SVG elements, returning NaN. Fallback to `0` in this case.
+  let width = parseFloat(css.width) || 0;
+  let height = parseFloat(css.height) || 0;
+  const hasOffset = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isHTMLElement)(element);
+  const offsetWidth = hasOffset ? element.offsetWidth : width;
+  const offsetHeight = hasOffset ? element.offsetHeight : height;
+  const shouldFallback = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.round)(width) !== offsetWidth || (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.round)(height) !== offsetHeight;
+  if (shouldFallback) {
+    width = offsetWidth;
+    height = offsetHeight;
+  }
+  return {
+    width,
+    height,
+    $: shouldFallback
+  };
+}
+
+function unwrapElement(element) {
+  return !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(element) ? element.contextElement : element;
+}
+
+function getScale(element) {
+  const domElement = unwrapElement(element);
+  if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isHTMLElement)(domElement)) {
+    return (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(1);
+  }
+  const rect = domElement.getBoundingClientRect();
+  const {
+    width,
+    height,
+    $
+  } = getCssDimensions(domElement);
+  let x = ($ ? (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.round)(rect.width) : rect.width) / width;
+  let y = ($ ? (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.round)(rect.height) : rect.height) / height;
+
+  // 0, NaN, or Infinity should always fallback to 1.
+
+  if (!x || !Number.isFinite(x)) {
+    x = 1;
+  }
+  if (!y || !Number.isFinite(y)) {
+    y = 1;
+  }
+  return {
+    x,
+    y
+  };
+}
+
+const noOffsets = /*#__PURE__*/(0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(0);
+function getVisualOffsets(element) {
+  const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(element);
+  if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isWebKit)() || !win.visualViewport) {
+    return noOffsets;
+  }
+  return {
+    x: win.visualViewport.offsetLeft,
+    y: win.visualViewport.offsetTop
+  };
+}
+function shouldAddVisualOffsets(element, isFixed, floatingOffsetParent) {
+  if (isFixed === void 0) {
+    isFixed = false;
+  }
+  return !!floatingOffsetParent && isFixed && floatingOffsetParent === (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(element);
+}
+
+function getBoundingClientRect(element, includeScale, isFixedStrategy, offsetParent) {
+  if (includeScale === void 0) {
+    includeScale = false;
+  }
+  if (isFixedStrategy === void 0) {
+    isFixedStrategy = false;
+  }
+  const clientRect = element.getBoundingClientRect();
+  const domElement = unwrapElement(element);
+  let scale = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(1);
+  if (includeScale) {
+    if (offsetParent) {
+      if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(offsetParent)) {
+        scale = getScale(offsetParent);
+      }
+    } else {
+      scale = getScale(element);
+    }
+  }
+  const visualOffsets = shouldAddVisualOffsets(domElement, isFixedStrategy, offsetParent) ? getVisualOffsets(domElement) : (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(0);
+  let x = (clientRect.left + visualOffsets.x) / scale.x;
+  let y = (clientRect.top + visualOffsets.y) / scale.y;
+  let width = clientRect.width / scale.x;
+  let height = clientRect.height / scale.y;
+  if (domElement && offsetParent) {
+    const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(domElement);
+    const offsetWin = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(offsetParent) ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(offsetParent) : offsetParent;
+    let currentWin = win;
+    let currentIFrame = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getFrameElement)(currentWin);
+    while (currentIFrame && offsetWin !== currentWin) {
+      const iframeScale = getScale(currentIFrame);
+      const iframeRect = currentIFrame.getBoundingClientRect();
+      const css = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(currentIFrame);
+      const left = iframeRect.left + (currentIFrame.clientLeft + parseFloat(css.paddingLeft)) * iframeScale.x;
+      const top = iframeRect.top + (currentIFrame.clientTop + parseFloat(css.paddingTop)) * iframeScale.y;
+      x *= iframeScale.x;
+      y *= iframeScale.y;
+      width *= iframeScale.x;
+      height *= iframeScale.y;
+      x += left;
+      y += top;
+      currentWin = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(currentIFrame);
+      currentIFrame = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getFrameElement)(currentWin);
+    }
+  }
+  return (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.rectToClientRect)({
+    width,
+    height,
+    x,
+    y
+  });
+}
+
+// If <html> has a CSS width greater than the viewport, then this will be
+// incorrect for RTL.
+function getWindowScrollBarX(element, rect) {
+  const leftScroll = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeScroll)(element).scrollLeft;
+  if (!rect) {
+    return getBoundingClientRect((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(element)).left + leftScroll;
+  }
+  return rect.left + leftScroll;
+}
+
+function getHTMLOffset(documentElement, scroll) {
+  const htmlRect = documentElement.getBoundingClientRect();
+  const x = htmlRect.left + scroll.scrollLeft - getWindowScrollBarX(documentElement, htmlRect);
+  const y = htmlRect.top + scroll.scrollTop;
+  return {
+    x,
+    y
+  };
+}
+
+function convertOffsetParentRelativeRectToViewportRelativeRect(_ref) {
+  let {
+    elements,
+    rect,
+    offsetParent,
+    strategy
+  } = _ref;
+  const isFixed = strategy === 'fixed';
+  const documentElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(offsetParent);
+  const topLayer = elements ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isTopLayer)(elements.floating) : false;
+  if (offsetParent === documentElement || topLayer && isFixed) {
+    return rect;
+  }
+  let scroll = {
+    scrollLeft: 0,
+    scrollTop: 0
+  };
+  let scale = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(1);
+  const offsets = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(0);
+  const isOffsetParentAnElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isHTMLElement)(offsetParent);
+  if (isOffsetParentAnElement || !isFixed) {
+    if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeName)(offsetParent) !== 'body' || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isOverflowElement)(documentElement)) {
+      scroll = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeScroll)(offsetParent);
+    }
+    if (isOffsetParentAnElement) {
+      const offsetRect = getBoundingClientRect(offsetParent);
+      scale = getScale(offsetParent);
+      offsets.x = offsetRect.x + offsetParent.clientLeft;
+      offsets.y = offsetRect.y + offsetParent.clientTop;
+    }
+  }
+  const htmlOffset = documentElement && !isOffsetParentAnElement && !isFixed ? getHTMLOffset(documentElement, scroll) : (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(0);
+  return {
+    width: rect.width * scale.x,
+    height: rect.height * scale.y,
+    x: rect.x * scale.x - scroll.scrollLeft * scale.x + offsets.x + htmlOffset.x,
+    y: rect.y * scale.y - scroll.scrollTop * scale.y + offsets.y + htmlOffset.y
+  };
+}
+
+function getClientRects(element) {
+  return element.getClientRects ? Array.from(element.getClientRects()) : [];
+}
+
+// Gets the entire size of the scrollable document area, even extending outside
+// of the `<html>` and `<body>` rect bounds if horizontally scrollable.
+function getDocumentRect(html) {
+  const scroll = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeScroll)(html);
+  const body = html.ownerDocument.body;
+  const width = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.max)(html.scrollWidth, html.clientWidth, body.scrollWidth, body.clientWidth);
+  const height = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.max)(html.scrollHeight, html.clientHeight, body.scrollHeight, body.clientHeight);
+  let x = -scroll.scrollLeft + getWindowScrollBarX(html);
+  const y = -scroll.scrollTop;
+  if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(body).direction === 'rtl') {
+    x += (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.max)(html.clientWidth, body.clientWidth) - width;
+  }
+  return {
+    width,
+    height,
+    x,
+    y
+  };
+}
+
+// Safety check: ensure the scrollbar space is reasonable in case this
+// calculation is affected by unusual styles.
+// Most scrollbars leave 15-18px of space.
+const SCROLLBAR_MAX = 25;
+function getViewportRect(element, strategy, rootBoundary) {
+  if (rootBoundary === void 0) {
+    rootBoundary = 'viewport';
+  }
+  const isLayoutViewport = rootBoundary === 'layoutViewport';
+  const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(element);
+  const html = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(element);
+  const visualViewport = win.visualViewport;
+  let width = html.clientWidth;
+  let height = html.clientHeight;
+  let x = 0;
+  let y = 0;
+  if (visualViewport) {
+    // Client coordinates are relative to the layout viewport, except in
+    // WebKit with an `absolute` strategy, where they are relative to the
+    // visual viewport.
+    const layoutRelativeClientCoords = !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isWebKit)() || strategy === 'fixed';
+    if (isLayoutViewport) {
+      if (!layoutRelativeClientCoords) {
+        x = -visualViewport.offsetLeft;
+        y = -visualViewport.offsetTop;
+      }
+    } else {
+      width = visualViewport.width;
+      height = visualViewport.height;
+      if (layoutRelativeClientCoords) {
+        x = visualViewport.offsetLeft;
+        y = visualViewport.offsetTop;
+      }
+    }
+  }
+  const windowScrollbarX = getWindowScrollBarX(html);
+  // `scrollbar-gutter: stable` on the <html> reserves gutter space that shrinks
+  // the visual width but isn't reflected in `html.clientWidth`, so subtract it.
+  // Only the inline-end (right) gutter can hold the scrollbar; `both-edges` also
+  // reserves an empty inline-start gutter that clips nothing, so exclude just
+  // the one scrollbar-side gutter — halve the measured (two-gutter) total. A
+  // left-side scrollbar (`windowScrollbarX > 0`) is already handled by
+  // `getHTMLOffset`/`visualViewport.width`; skip it here.
+  if (windowScrollbarX <= 0) {
+    const doc = html.ownerDocument;
+    const body = doc.body;
+    const bodyStyles = getComputedStyle(body);
+    const bodyMarginInline = doc.compatMode === 'CSS1Compat' ? parseFloat(bodyStyles.marginLeft) + parseFloat(bodyStyles.marginRight) || 0 : 0;
+    const reservedWidth = Math.abs(html.clientWidth - body.clientWidth - bodyMarginInline);
+    const gutter = getComputedStyle(html).scrollbarGutter === 'stable both-edges' ? reservedWidth / 2 : reservedWidth;
+    if (gutter <= SCROLLBAR_MAX) {
+      width -= gutter;
+    }
+  }
+  return {
+    width,
+    height,
+    x,
+    y
+  };
+}
+
+// Returns the inner client rect, subtracting scrollbars if present.
+function getInnerBoundingClientRect(element, strategy) {
+  const clientRect = getBoundingClientRect(element, true, strategy === 'fixed');
+  const top = clientRect.top + element.clientTop;
+  const left = clientRect.left + element.clientLeft;
+  const scale = getScale(element);
+  const width = element.clientWidth * scale.x;
+  const height = element.clientHeight * scale.y;
+  const x = left * scale.x;
+  const y = top * scale.y;
+  return {
+    width,
+    height,
+    x,
+    y
+  };
+}
+function getClientRectFromClippingAncestor(element, clippingAncestor, strategy) {
+  let rect;
+  if (clippingAncestor === 'viewport' || clippingAncestor === 'layoutViewport') {
+    rect = getViewportRect(element, strategy, clippingAncestor);
+  } else if (clippingAncestor === 'document') {
+    rect = getDocumentRect((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(element));
+  } else if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(clippingAncestor)) {
+    rect = getInnerBoundingClientRect(clippingAncestor, strategy);
+  } else {
+    const visualOffsets = getVisualOffsets(element);
+    rect = {
+      x: clippingAncestor.x - visualOffsets.x,
+      y: clippingAncestor.y - visualOffsets.y,
+      width: clippingAncestor.width,
+      height: clippingAncestor.height
+    };
+  }
+  return (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.rectToClientRect)(rect);
+}
+
+// A "clipping ancestor" is an `overflow` element with the characteristic of
+// clipping (or hiding) child elements. This returns all clipping ancestors
+// of the given element up the tree.
+function getClippingElementAncestors(element, cache) {
+  const cachedResult = cache.get(element);
+  if (cachedResult) {
+    return cachedResult;
+  }
+  let result = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getOverflowAncestors)(element, [], false).filter(el => (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(el) && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeName)(el) !== 'body');
+  let lastKeptComputedStyle = null;
+  const elementIsFixed = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(element).position === 'fixed';
+  let currentNode = elementIsFixed ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getParentNode)(element) : element;
+
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
+  while ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(currentNode) && !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isLastTraversableNode)(currentNode)) {
+    const computedStyle = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(currentNode);
+    const currentNodeIsContaining = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isContainingBlock)(currentNode);
+    // Position of the containing block chain below the current node. A fixed
+    // element whose containing block hasn't been found yet is a fixed chain.
+    const lastPosition = lastKeptComputedStyle ? lastKeptComputedStyle.position : elementIsFixed ? 'fixed' : '';
+
+    // A non-containing ancestor does not clip the element when the chain
+    // below it escapes it: a fixed chain escapes all ancestors up to the
+    // next containing block, an absolute chain escapes static ancestors.
+    const shouldDropCurrentNode = !currentNodeIsContaining && (lastPosition === 'fixed' || lastPosition === 'absolute' && computedStyle.position === 'static');
+    if (shouldDropCurrentNode) {
+      // Drop non-containing blocks.
+      result = result.filter(ancestor => ancestor !== currentNode);
+    } else {
+      // The kept node carries the chain position for the next iteration.
+      lastKeptComputedStyle = computedStyle;
+    }
+    currentNode = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getParentNode)(currentNode);
+  }
+  cache.set(element, result);
+  return result;
+}
+
+// Gets the maximum area that the element is visible in due to any number of
+// clipping ancestors.
+function getClippingRect(_ref) {
+  let {
+    element,
+    boundary,
+    rootBoundary,
+    strategy
+  } = _ref;
+  const elementClippingAncestors = boundary === 'clippingAncestors' ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isTopLayer)(element) ? [] : getClippingElementAncestors(element, this._c) : [].concat(boundary);
+  const clippingAncestors = [...elementClippingAncestors, rootBoundary];
+  const firstRect = getClientRectFromClippingAncestor(element, clippingAncestors[0], strategy);
+  let top = firstRect.top;
+  let right = firstRect.right;
+  let bottom = firstRect.bottom;
+  let left = firstRect.left;
+  for (let i = 1; i < clippingAncestors.length; i++) {
+    const rect = getClientRectFromClippingAncestor(element, clippingAncestors[i], strategy);
+    top = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.max)(rect.top, top);
+    right = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.min)(rect.right, right);
+    bottom = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.min)(rect.bottom, bottom);
+    left = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.max)(rect.left, left);
+  }
+  return {
+    width: right - left,
+    height: bottom - top,
+    x: left,
+    y: top
+  };
+}
+
+function getDimensions(element) {
+  const {
+    width,
+    height
+  } = getCssDimensions(element);
+  return {
+    width,
+    height
+  };
+}
+
+function getRectRelativeToOffsetParent(element, offsetParent, strategy) {
+  const isOffsetParentAnElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isHTMLElement)(offsetParent);
+  const documentElement = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(offsetParent);
+  const isFixed = strategy === 'fixed';
+  const rect = getBoundingClientRect(element, true, isFixed, offsetParent);
+  let scroll = {
+    scrollLeft: 0,
+    scrollTop: 0
+  };
+  const offsets = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(0);
+  if (isOffsetParentAnElement || !isFixed) {
+    if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeName)(offsetParent) !== 'body' || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isOverflowElement)(documentElement)) {
+      scroll = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getNodeScroll)(offsetParent);
+    }
+    if (isOffsetParentAnElement) {
+      const offsetRect = getBoundingClientRect(offsetParent, true, isFixed, offsetParent);
+      offsets.x = offsetRect.x + offsetParent.clientLeft;
+      offsets.y = offsetRect.y + offsetParent.clientTop;
+    }
+  }
+
+  // If the <body> scrollbar appears on the left (e.g. RTL systems). Use
+  // Firefox with layout.scrollbar.side = 3 in about:config to test this.
+  if (!isOffsetParentAnElement && documentElement) {
+    offsets.x = getWindowScrollBarX(documentElement);
+  }
+  const htmlOffset = documentElement && !isOffsetParentAnElement && !isFixed ? getHTMLOffset(documentElement, scroll) : (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.createCoords)(0);
+  const x = rect.left + scroll.scrollLeft - offsets.x - htmlOffset.x;
+  const y = rect.top + scroll.scrollTop - offsets.y - htmlOffset.y;
+  return {
+    x,
+    y,
+    width: rect.width,
+    height: rect.height
+  };
+}
+
+function isStaticPositioned(element) {
+  return (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(element).position === 'static';
+}
+
+function getTrueOffsetParent(element, polyfill) {
+  if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isHTMLElement)(element) || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(element).position === 'fixed') {
+    return null;
+  }
+  if (polyfill) {
+    return polyfill(element);
+  }
+  let rawOffsetParent = element.offsetParent;
+
+  // Firefox returns the <html> element as the offsetParent if it's non-static,
+  // while Chrome and Safari return the <body> element. The <body> element must
+  // be used to perform the correct calculations even if the <html> element is
+  // non-static.
+  if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(element) === rawOffsetParent) {
+    rawOffsetParent = rawOffsetParent.ownerDocument.body;
+  }
+  return rawOffsetParent;
+}
+
+// Gets the closest ancestor positioned element. Handles some edge cases,
+// such as table ancestors and cross browser bugs.
+function getOffsetParent(element, polyfill) {
+  const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(element);
+  if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isTopLayer)(element)) {
+    return win;
+  }
+  if (!(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isHTMLElement)(element)) {
+    let svgOffsetParent = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getParentNode)(element);
+    while (svgOffsetParent && !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isLastTraversableNode)(svgOffsetParent)) {
+      if ((0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement)(svgOffsetParent) && !isStaticPositioned(svgOffsetParent)) {
+        return svgOffsetParent;
+      }
+      svgOffsetParent = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getParentNode)(svgOffsetParent);
+    }
+    return win;
+  }
+  let offsetParent = getTrueOffsetParent(element, polyfill);
+  while (offsetParent && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isTableElement)(offsetParent) && isStaticPositioned(offsetParent)) {
+    offsetParent = getTrueOffsetParent(offsetParent, polyfill);
+  }
+  if (offsetParent && (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isLastTraversableNode)(offsetParent) && isStaticPositioned(offsetParent) && !(0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isContainingBlock)(offsetParent)) {
+    return win;
+  }
+  return offsetParent || (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getContainingBlock)(element) || win;
+}
+
+const getElementRects = async function (data) {
+  const getOffsetParentFn = this.getOffsetParent || getOffsetParent;
+  const getDimensionsFn = this.getDimensions;
+  const floatingDimensions = await getDimensionsFn(data.floating);
+  return {
+    reference: getRectRelativeToOffsetParent(data.reference, await getOffsetParentFn(data.floating), data.strategy),
+    floating: {
+      x: 0,
+      y: 0,
+      width: floatingDimensions.width,
+      height: floatingDimensions.height
+    }
+  };
+};
+
+function isRTL(element) {
+  return (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getComputedStyle)(element).direction === 'rtl';
+}
+
+const platform = {
+  convertOffsetParentRelativeRectToViewportRelativeRect,
+  getDocumentElement: _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement,
+  getClippingRect,
+  getOffsetParent,
+  getElementRects,
+  getClientRects,
+  getDimensions,
+  getScale,
+  isElement: _floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.isElement,
+  isRTL
+};
+
+function rectsAreEqual(a, b) {
+  return a.x === b.x && a.y === b.y && a.width === b.width && a.height === b.height;
+}
+
+// https://samthor.au/2021/observing-dom/
+function observeMove(element, onMove, ancestorResize) {
+  let io = null;
+  let timeoutId;
+  const root = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getDocumentElement)(element);
+  function cleanup() {
+    var _io;
+    clearTimeout(timeoutId);
+    (_io = io) == null || _io.disconnect();
+    io = null;
+  }
+  function refresh(skip, threshold) {
+    if (skip === void 0) {
+      skip = false;
+    }
+    if (threshold === void 0) {
+      threshold = 1;
+    }
+    cleanup();
+    const elementRectForRootMargin = element.getBoundingClientRect();
+    const {
+      left,
+      top,
+      width,
+      height
+    } = elementRectForRootMargin;
+    if (!skip) {
+      onMove();
+    }
+    if (!width || !height) {
+      return;
+    }
+    const insetTop = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.floor)(top);
+    const insetRight = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.floor)(root.clientWidth - (left + width));
+    const insetBottom = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.floor)(root.clientHeight - (top + height));
+    const insetLeft = (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.floor)(left);
+    const rootMargin = -insetTop + "px " + -insetRight + "px " + -insetBottom + "px " + -insetLeft + "px";
+    const options = {
+      rootMargin,
+      threshold: (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.max)(0, (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_1__.min)(1, threshold)) || 1
+    };
+    let isFirstUpdate = true;
+    function handleObserve(entries) {
+      const ratio = entries[0].intersectionRatio;
+
+      // The entry is a snapshot, so the reference may have moved since the
+      // intersection was computed (under performance constraints, or between
+      // consecutive frames of a multi-frame layout shift). The reported ratio
+      // and the observed area are stale in that case and cannot be trusted to
+      // detect subsequent movement, so refresh regardless of the ratio.
+      if (!rectsAreEqual(elementRectForRootMargin, element.getBoundingClientRect())) {
+        return refresh();
+      }
+      if (ratio !== threshold) {
+        if (!isFirstUpdate) {
+          return refresh();
+        }
+        if (!ratio) {
+          // If the reference is clipped in place, the ratio is 0. Throttle
+          // the refresh to prevent an infinite loop of updates.
+          timeoutId = setTimeout(() => {
+            refresh(false, 1e-7);
+          }, 1000);
+        } else {
+          refresh(false, ratio);
+        }
+      }
+      isFirstUpdate = false;
+    }
+
+    // Older browsers don't support a `document` as the root and will throw an
+    // error.
+    try {
+      io = new IntersectionObserver(handleObserve, {
+        ...options,
+        // Handle <iframe>s
+        root: root.ownerDocument
+      });
+    } catch (_e) {
+      io = new IntersectionObserver(handleObserve, options);
+    }
+    io.observe(element);
+  }
+  const win = (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getWindow)(element);
+  // The window is a resize ancestor, so when `ancestorResize` is enabled its
+  // listener already runs the update on resize. Here we only need to rebuild
+  // the `IntersectionObserver` for the new root size, skipping a redundant
+  // update. When `ancestorResize` is disabled, this becomes the sole update.
+  const handleResize = () => refresh(ancestorResize);
+  win.addEventListener('resize', handleResize);
+  refresh(true);
+  return () => {
+    win.removeEventListener('resize', handleResize);
+    cleanup();
+  };
+}
+
+/**
+ * Automatically updates the position of the floating element when necessary.
+ * Should only be called when the floating element is mounted on the DOM or
+ * visible on the screen.
+ * @returns cleanup function that should be invoked when the floating element is
+ * removed from the DOM or hidden from the screen.
+ * @see https://floating-ui.com/docs/autoUpdate
+ */
+function autoUpdate(reference, floating, update, options) {
+  if (options === void 0) {
+    options = {};
+  }
+  const {
+    ancestorScroll = true,
+    ancestorResize = true,
+    elementResize = typeof ResizeObserver === 'function',
+    layoutShift = typeof IntersectionObserver === 'function',
+    animationFrame = false
+  } = options;
+  const referenceEl = unwrapElement(reference);
+  const ancestors = ancestorScroll || ancestorResize ? [...(referenceEl ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getOverflowAncestors)(referenceEl) : []), ...(floating ? (0,_floating_ui_utils_dom__WEBPACK_IMPORTED_MODULE_2__.getOverflowAncestors)(floating) : [])] : [];
+  ancestors.forEach(ancestor => {
+    ancestorScroll && ancestor.addEventListener('scroll', update);
+    ancestorResize && ancestor.addEventListener('resize', update);
+  });
+  const cleanupIo = referenceEl && layoutShift ? observeMove(referenceEl, update, ancestorResize) : null;
+  let reobserveFrame = -1;
+  let resizeObserver = null;
+  if (elementResize) {
+    resizeObserver = new ResizeObserver(_ref => {
+      let [firstEntry] = _ref;
+      if (firstEntry && firstEntry.target === referenceEl && resizeObserver && floating) {
+        // Prevent update loops when using the `size` middleware.
+        // https://github.com/floating-ui/floating-ui/issues/1740
+        resizeObserver.unobserve(floating);
+        cancelAnimationFrame(reobserveFrame);
+        reobserveFrame = requestAnimationFrame(() => {
+          var _resizeObserver;
+          (_resizeObserver = resizeObserver) == null || _resizeObserver.observe(floating);
+        });
+      }
+      update();
+    });
+    if (referenceEl && !animationFrame) {
+      resizeObserver.observe(referenceEl);
+    }
+    if (floating) {
+      resizeObserver.observe(floating);
+    }
+  }
+  let frameId;
+  let prevRefRect = animationFrame ? getBoundingClientRect(reference) : null;
+  if (animationFrame) {
+    frameLoop();
+  }
+  function frameLoop() {
+    const nextRefRect = getBoundingClientRect(reference);
+    if (prevRefRect && !rectsAreEqual(prevRefRect, nextRefRect)) {
+      update();
+    }
+    prevRefRect = nextRefRect;
+    frameId = requestAnimationFrame(frameLoop);
+  }
+  update();
+  return () => {
+    var _resizeObserver2;
+    ancestors.forEach(ancestor => {
+      ancestorScroll && ancestor.removeEventListener('scroll', update);
+      ancestorResize && ancestor.removeEventListener('resize', update);
+    });
+    cleanupIo == null || cleanupIo();
+    (_resizeObserver2 = resizeObserver) == null || _resizeObserver2.disconnect();
+    resizeObserver = null;
+    if (animationFrame) {
+      cancelAnimationFrame(frameId);
+    }
+  };
+}
+
+/**
+ * Resolves with an object of overflow side offsets that determine how much the
+ * element is overflowing a given clipping boundary on each side.
+ * - positive = overflowing the boundary by that number of pixels
+ * - negative = how many pixels left before it will overflow
+ * - 0 = lies flush with the boundary
+ * @see https://floating-ui.com/docs/detectOverflow
+ */
+const detectOverflow = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.detectOverflow;
+
+/**
+ * Modifies the placement by translating the floating element along the
+ * specified axes.
+ * A number (shorthand for `mainAxis` or distance), or an axes configuration
+ * object may be passed.
+ * @see https://floating-ui.com/docs/offset
+ */
+const offset = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.offset;
+
+/**
+ * Optimizes the visibility of the floating element by choosing the placement
+ * that has the most space available automatically, without needing to specify a
+ * preferred placement. Alternative to `flip`.
+ * @see https://floating-ui.com/docs/autoPlacement
+ */
+const autoPlacement = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.autoPlacement;
+
+/**
+ * Optimizes the visibility of the floating element by shifting it in order to
+ * keep it in view when it will overflow the clipping boundary.
+ * @see https://floating-ui.com/docs/shift
+ */
+const shift = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.shift;
+
+/**
+ * Optimizes the visibility of the floating element by flipping the `placement`
+ * in order to keep it in view when the preferred placement(s) will overflow the
+ * clipping boundary. Alternative to `autoPlacement`.
+ * @see https://floating-ui.com/docs/flip
+ */
+const flip = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.flip;
+
+/**
+ * Provides data that allows you to change the size of the floating element —
+ * for instance, prevent it from overflowing the clipping boundary or match the
+ * width of the reference element.
+ * @see https://floating-ui.com/docs/size
+ */
+const size = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.size;
+
+/**
+ * Provides data to hide the floating element in applicable situations, such as
+ * when it is not in the same clipping context as the reference element.
+ * @see https://floating-ui.com/docs/hide
+ */
+const hide = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.hide;
+
+/**
+ * Provides data to position an inner element of the floating element so that it
+ * appears centered to the reference element.
+ * @see https://floating-ui.com/docs/arrow
+ */
+const arrow = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.arrow;
+
+/**
+ * Provides improved positioning for inline reference elements that can span
+ * over multiple lines, such as hyperlinks or range selections.
+ * @see https://floating-ui.com/docs/inline
+ */
+const inline = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.inline;
+
+/**
+ * Built-in `limiter` that will stop `shift()` at a certain point.
+ */
+const limitShift = _floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.limitShift;
+
+/**
+ * Computes the `x` and `y` coordinates that will place the floating element
+ * next to a given reference element.
+ */
+const computePosition = (reference, floating, options) => {
+  // This caches the expensive `getClippingElementAncestors` function so that
+  // multiple lifecycle resets re-use the same result. It only lives for a
+  // single call. If other functions become expensive, we can add them as well.
+  const cache = new Map();
+  const mergedOptions = options != null ? options : {};
+  const platformWithCache = {
+    ...platform,
+    ...mergedOptions.platform,
+    _c: cache
+  };
+  return (0,_floating_ui_core__WEBPACK_IMPORTED_MODULE_0__.computePosition)(reference, floating, {
+    ...mergedOptions,
+    platform: platformWithCache
+  });
+};
+
+
+
+
+/***/ },
+
+/***/ "d7f28916ed76"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   getComputedStyle: () => (/* binding */ getComputedStyle),
+/* harmony export */   getContainingBlock: () => (/* binding */ getContainingBlock),
+/* harmony export */   getDocumentElement: () => (/* binding */ getDocumentElement),
+/* harmony export */   getFrameElement: () => (/* binding */ getFrameElement),
+/* harmony export */   getNearestOverflowAncestor: () => (/* binding */ getNearestOverflowAncestor),
+/* harmony export */   getNodeName: () => (/* binding */ getNodeName),
+/* harmony export */   getNodeScroll: () => (/* binding */ getNodeScroll),
+/* harmony export */   getOverflowAncestors: () => (/* binding */ getOverflowAncestors),
+/* harmony export */   getParentNode: () => (/* binding */ getParentNode),
+/* harmony export */   getWindow: () => (/* binding */ getWindow),
+/* harmony export */   isContainingBlock: () => (/* binding */ isContainingBlock),
+/* harmony export */   isElement: () => (/* binding */ isElement),
+/* harmony export */   isHTMLElement: () => (/* binding */ isHTMLElement),
+/* harmony export */   isLastTraversableNode: () => (/* binding */ isLastTraversableNode),
+/* harmony export */   isNode: () => (/* binding */ isNode),
+/* harmony export */   isOverflowElement: () => (/* binding */ isOverflowElement),
+/* harmony export */   isShadowRoot: () => (/* binding */ isShadowRoot),
+/* harmony export */   isTableElement: () => (/* binding */ isTableElement),
+/* harmony export */   isTopLayer: () => (/* binding */ isTopLayer),
+/* harmony export */   isWebKit: () => (/* binding */ isWebKit)
+/* harmony export */ });
+function hasWindow() {
+  return typeof window !== 'undefined';
+}
+function getNodeName(node) {
+  if (isNode(node)) {
+    return (node.nodeName || '').toLowerCase();
+  }
+  // Mocked nodes in testing environments may not be instances of Node. By
+  // returning `#document` an infinite loop won't occur.
+  // https://github.com/floating-ui/floating-ui/issues/2317
+  return '#document';
+}
+function getWindow(node) {
+  var _node$ownerDocument;
+  return (node == null || (_node$ownerDocument = node.ownerDocument) == null ? void 0 : _node$ownerDocument.defaultView) || window;
+}
+function getDocumentElement(node) {
+  var _ref;
+  return (_ref = (isNode(node) ? node.ownerDocument : node.document) || window.document) == null ? void 0 : _ref.documentElement;
+}
+function isNode(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof Node || value instanceof getWindow(value).Node;
+}
+function isElement(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof Element || value instanceof getWindow(value).Element;
+}
+function isHTMLElement(value) {
+  if (!hasWindow()) {
+    return false;
+  }
+  return value instanceof HTMLElement || value instanceof getWindow(value).HTMLElement;
+}
+function isShadowRoot(value) {
+  if (!hasWindow() || typeof ShadowRoot === 'undefined') {
+    return false;
+  }
+  return value instanceof ShadowRoot || value instanceof getWindow(value).ShadowRoot;
+}
+function isOverflowElement(element) {
+  const {
+    overflow,
+    overflowX,
+    overflowY,
+    display
+  } = getComputedStyle(element);
+  return /auto|scroll|overlay|hidden|clip/.test(overflow + overflowY + overflowX) && display !== 'inline' && display !== 'contents';
+}
+function isTableElement(element) {
+  return /^(table|td|th)$/.test(getNodeName(element));
+}
+function isTopLayer(element) {
+  try {
+    if (element.matches(':popover-open')) {
+      return true;
+    }
+  } catch (_e) {
+    // no-op
+  }
+  try {
+    return element.matches(':modal');
+  } catch (_e) {
+    return false;
+  }
+}
+const willChangeRe = /transform|translate|scale|rotate|perspective|filter/;
+const containRe = /paint|layout|strict|content/;
+const isNotNone = value => !!value && value !== 'none';
+let isWebKitValue;
+function isContainingBlock(elementOrCss) {
+  const css = isElement(elementOrCss) ? getComputedStyle(elementOrCss) : elementOrCss;
+
+  // https://developer.mozilla.org/en-US/docs/Web/CSS/Containing_block#identifying_the_containing_block
+  // https://drafts.csswg.org/css-transforms-2/#individual-transforms
+  return isNotNone(css.transform) || isNotNone(css.translate) || isNotNone(css.scale) || isNotNone(css.rotate) || isNotNone(css.perspective) || !isWebKit() && (isNotNone(css.backdropFilter) || isNotNone(css.filter)) || willChangeRe.test(css.willChange || '') || containRe.test(css.contain || '');
+}
+function getContainingBlock(element) {
+  let currentNode = getParentNode(element);
+  while (isHTMLElement(currentNode) && !isLastTraversableNode(currentNode)) {
+    if (isContainingBlock(currentNode)) {
+      return currentNode;
+    } else if (isTopLayer(currentNode)) {
+      return null;
+    }
+    currentNode = getParentNode(currentNode);
+  }
+  return null;
+}
+function isWebKit() {
+  if (isWebKitValue == null) {
+    isWebKitValue = typeof CSS !== 'undefined' && CSS.supports && CSS.supports('-webkit-backdrop-filter', 'none');
+  }
+  return isWebKitValue;
+}
+function isLastTraversableNode(node) {
+  return /^(html|body|#document)$/.test(getNodeName(node));
+}
+function getComputedStyle(element) {
+  return getWindow(element).getComputedStyle(element);
+}
+function getNodeScroll(element) {
+  if (isElement(element)) {
+    return {
+      scrollLeft: element.scrollLeft,
+      scrollTop: element.scrollTop
+    };
+  }
+  return {
+    scrollLeft: element.scrollX,
+    scrollTop: element.scrollY
+  };
+}
+function getParentNode(node) {
+  if (getNodeName(node) === 'html') {
+    return node;
+  }
+  const result =
+  // Step into the shadow DOM of the parent of a slotted node.
+  node.assignedSlot ||
+  // DOM Element detected.
+  node.parentNode ||
+  // ShadowRoot detected.
+  isShadowRoot(node) && node.host ||
+  // Fallback.
+  getDocumentElement(node);
+  return isShadowRoot(result) ? result.host : result;
+}
+function getNearestOverflowAncestor(node) {
+  const parentNode = getParentNode(node);
+  if (isLastTraversableNode(parentNode)) {
+    return (node.ownerDocument || node).body;
+  }
+  if (isHTMLElement(parentNode) && isOverflowElement(parentNode)) {
+    return parentNode;
+  }
+  return getNearestOverflowAncestor(parentNode);
+}
+function getOverflowAncestors(node, list, traverseIframes) {
+  var _node$ownerDocument2;
+  if (list === void 0) {
+    list = [];
+  }
+  if (traverseIframes === void 0) {
+    traverseIframes = true;
+  }
+  const scrollableAncestor = getNearestOverflowAncestor(node);
+  const isBody = scrollableAncestor === ((_node$ownerDocument2 = node.ownerDocument) == null ? void 0 : _node$ownerDocument2.body);
+  const win = getWindow(scrollableAncestor);
+  if (isBody) {
+    const frameElement = getFrameElement(win);
+    return list.concat(win, win.visualViewport || [], isOverflowElement(scrollableAncestor) ? scrollableAncestor : [], frameElement && traverseIframes ? getOverflowAncestors(frameElement) : []);
+  } else {
+    return list.concat(scrollableAncestor, getOverflowAncestors(scrollableAncestor, [], traverseIframes));
+  }
+}
+function getFrameElement(win) {
+  return win.parent && Object.getPrototypeOf(win.parent) ? win.frameElement : null;
+}
+
+
+
+
+/***/ },
+
+/***/ "56345afd9e11"
+(__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
+
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   alignments: () => (/* binding */ alignments),
+/* harmony export */   clamp: () => (/* binding */ clamp),
+/* harmony export */   createCoords: () => (/* binding */ createCoords),
+/* harmony export */   evaluate: () => (/* binding */ evaluate),
+/* harmony export */   expandPaddingObject: () => (/* binding */ expandPaddingObject),
+/* harmony export */   floor: () => (/* binding */ floor),
+/* harmony export */   getAlignment: () => (/* binding */ getAlignment),
+/* harmony export */   getAlignmentAxis: () => (/* binding */ getAlignmentAxis),
+/* harmony export */   getAlignmentSides: () => (/* binding */ getAlignmentSides),
+/* harmony export */   getAxisLength: () => (/* binding */ getAxisLength),
+/* harmony export */   getExpandedPlacements: () => (/* binding */ getExpandedPlacements),
+/* harmony export */   getOppositeAlignmentPlacement: () => (/* binding */ getOppositeAlignmentPlacement),
+/* harmony export */   getOppositeAxis: () => (/* binding */ getOppositeAxis),
+/* harmony export */   getOppositeAxisPlacements: () => (/* binding */ getOppositeAxisPlacements),
+/* harmony export */   getOppositePlacement: () => (/* binding */ getOppositePlacement),
+/* harmony export */   getPaddingObject: () => (/* binding */ getPaddingObject),
+/* harmony export */   getSide: () => (/* binding */ getSide),
+/* harmony export */   getSideAxis: () => (/* binding */ getSideAxis),
+/* harmony export */   max: () => (/* binding */ max),
+/* harmony export */   min: () => (/* binding */ min),
+/* harmony export */   placements: () => (/* binding */ placements),
+/* harmony export */   rectToClientRect: () => (/* binding */ rectToClientRect),
+/* harmony export */   round: () => (/* binding */ round),
+/* harmony export */   sides: () => (/* binding */ sides)
+/* harmony export */ });
+/**
+ * Custom positioning reference element.
+ * @see https://floating-ui.com/docs/virtual-elements
+ */
+
+const sides = ['top', 'right', 'bottom', 'left'];
+const alignments = ['start', 'end'];
+const placements = /*#__PURE__*/sides.reduce((acc, side) => acc.concat(side, side + "-" + alignments[0], side + "-" + alignments[1]), []);
+const min = Math.min;
+const max = Math.max;
+const round = Math.round;
+const floor = Math.floor;
+const createCoords = v => ({
+  x: v,
+  y: v
+});
+const oppositeSideMap = {
+  left: 'right',
+  right: 'left',
+  bottom: 'top',
+  top: 'bottom'
+};
+function clamp(start, value, end) {
+  return max(start, min(value, end));
+}
+function evaluate(value, param) {
+  return typeof value === 'function' ? value(param) : value;
+}
+function getSide(placement) {
+  return placement.split('-')[0];
+}
+function getAlignment(placement) {
+  return placement.split('-')[1];
+}
+function getOppositeAxis(axis) {
+  return axis === 'x' ? 'y' : 'x';
+}
+function getAxisLength(axis) {
+  return axis === 'y' ? 'height' : 'width';
+}
+function getSideAxis(placement) {
+  const firstChar = placement[0];
+  return firstChar === 't' || firstChar === 'b' ? 'y' : 'x';
+}
+function getAlignmentAxis(placement) {
+  return getOppositeAxis(getSideAxis(placement));
+}
+function getAlignmentSides(placement, rects, rtl) {
+  if (rtl === void 0) {
+    rtl = false;
+  }
+  const alignment = getAlignment(placement);
+  const alignmentAxis = getAlignmentAxis(placement);
+  const length = getAxisLength(alignmentAxis);
+  let mainAlignmentSide = alignmentAxis === 'x' ? alignment === (rtl ? 'end' : 'start') ? 'right' : 'left' : alignment === 'start' ? 'bottom' : 'top';
+  if (rects.reference[length] > rects.floating[length]) {
+    mainAlignmentSide = getOppositePlacement(mainAlignmentSide);
+  }
+  return [mainAlignmentSide, getOppositePlacement(mainAlignmentSide)];
+}
+function getExpandedPlacements(placement) {
+  const oppositePlacement = getOppositePlacement(placement);
+  return [getOppositeAlignmentPlacement(placement), oppositePlacement, getOppositeAlignmentPlacement(oppositePlacement)];
+}
+function getOppositeAlignmentPlacement(placement) {
+  return placement.includes('start') ? placement.replace('start', 'end') : placement.replace('end', 'start');
+}
+const lrPlacement = ['left', 'right'];
+const rlPlacement = ['right', 'left'];
+const tbPlacement = ['top', 'bottom'];
+const btPlacement = ['bottom', 'top'];
+function getSideList(side, isStart, rtl) {
+  switch (side) {
+    case 'top':
+    case 'bottom':
+      if (rtl) return isStart ? rlPlacement : lrPlacement;
+      return isStart ? lrPlacement : rlPlacement;
+    case 'left':
+    case 'right':
+      return isStart ? tbPlacement : btPlacement;
+    default:
+      return [];
+  }
+}
+function getOppositeAxisPlacements(placement, flipAlignment, direction, rtl) {
+  const alignment = getAlignment(placement);
+  let list = getSideList(getSide(placement), direction === 'start', rtl);
+  if (alignment) {
+    list = list.map(side => side + "-" + alignment);
+    if (flipAlignment) {
+      list = list.concat(list.map(getOppositeAlignmentPlacement));
+    }
+  }
+  return list;
+}
+function getOppositePlacement(placement) {
+  const side = getSide(placement);
+  return oppositeSideMap[side] + placement.slice(side.length);
+}
+function expandPaddingObject(padding) {
+  var _padding$top, _padding$right, _padding$bottom, _padding$left;
+  return {
+    top: (_padding$top = padding.top) != null ? _padding$top : 0,
+    right: (_padding$right = padding.right) != null ? _padding$right : 0,
+    bottom: (_padding$bottom = padding.bottom) != null ? _padding$bottom : 0,
+    left: (_padding$left = padding.left) != null ? _padding$left : 0
+  };
+}
+function getPaddingObject(padding) {
+  return typeof padding !== 'number' ? expandPaddingObject(padding) : {
+    top: padding,
+    right: padding,
+    bottom: padding,
+    left: padding
+  };
+}
+function rectToClientRect(rect) {
+  const {
+    x,
+    y,
+    width,
+    height
+  } = rect;
+  return {
+    width,
+    height,
+    top: y,
+    left: x,
+    right: x + width,
+    bottom: y + height,
+    x,
+    y
+  };
+}
+
+
 
 
 /***/ },
@@ -3436,18 +6027,25 @@ let __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("0845ef25b9de");
 /* harmony import */ var _js_templates_default__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("b53fd744fdaf");
-/* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("fef8077ac919");
-/* harmony import */ var lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("7fcbcc00731e");
-/* harmony import */ var _helpers_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("926043d18700");
-/* harmony import */ var _helpers_draggable__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("2d094259808e");
-/* harmony import */ var _helpers_loaderDragState__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("870b5dfddc25");
+/* harmony import */ var _js_option_badge_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__("aaa5e760767f");
+/* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__("fef8077ac919");
+/* harmony import */ var lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__("7fcbcc00731e");
+/* harmony import */ var _helpers_dom__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__("926043d18700");
+/* harmony import */ var _helpers_draggable__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__("2d094259808e");
+/* harmony import */ var _helpers_loaderDragState__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__("870b5dfddc25");
+/* harmony import */ var _core_js_position_js__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__("2e9112dbdda9");
 
 
 
 
 
 
- // Published Composition ports (simai.composition.port-manifest.v1, sf-table@1.0.0).
+
+
+
+
+const positioning = () => globalThis.SF?.Position || _core_js_position_js__WEBPACK_IMPORTED_MODULE_8__["default"]; // Published Composition ports (simai.composition.port-manifest.v1, sf-table@1.0.0).
+
 
 const SF_TABLE_PORTS = Object.freeze({
   outputs: Object.freeze({
@@ -3627,10 +6225,13 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
           value: 'delete'
         }
       }
-    }];
+    }]; // Row actions are a system column like select and settings: always last,
+    // not resizable or draggable, and never part of saved column settings.
+
     this.TABLE_ACTIONS_COLUMN = {
       key: "actions",
-      label: "Действия"
+      label: "Действия",
+      system: true
     };
     this.TABLE_SETTINGS_COLUMN = {
       key: "settings",
@@ -3688,6 +6289,11 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     this.state = {
       settingsChecked: false,
       bulkActions: [],
+      createItems: [],
+      sort: {
+        key: null,
+        direction: null
+      },
       modalOpen: false,
       saveInputValue: '',
       search: {
@@ -3892,16 +6498,134 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
   }
 
   renderBulkActions() {
-    if (!this.state.bulkActions?.length) return lit__WEBPACK_IMPORTED_MODULE_2__.nothing;
+    if (!this.state.bulkActions?.length) return lit__WEBPACK_IMPORTED_MODULE_3__.nothing;
     const selected = this.getSelectedRecordIds();
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`<div class="flex flex-wrap gap-1/3">
-            ${this.state.bulkActions.map(action => (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`<sf-button
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`<div class="flex flex-wrap gap-1/3">
+            ${this.state.bulkActions.map(action => (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`<sf-button
                 text=${action.name} ?disabled=${selected.length === 0}
                 @click=${() => {
       const ids = this.getSelectedRecordIds();
       if (ids.length) this.requestActionIntent(action.id, ids);
     }}></sf-button>`)}
         </div>`;
+  } // Items for the create split button menu. Choosing one (or the main
+  // button, with item null) emits sf-table-create-intent; the host opens its form.
+
+
+  setCreateItems(items = []) {
+    if (!Array.isArray(items) || Array.from(items).some(item => !item || typeof item !== 'object' || typeof item.id !== 'string' || !item.id.trim() || typeof item.name !== 'string' || !item.name.trim() || Object.keys(item).some(key => key !== 'id' && key !== 'name'))) {
+      throw new TypeError('Create items require opaque id and name only');
+    }
+
+    return this.set({
+      createItems: items.map(({
+        id,
+        name
+      }) => ({
+        id,
+        name
+      }))
+    });
+  }
+
+  requestCreateIntent(itemId = null) {
+    if (itemId !== null && !this.state.createItems.some(item => item.id === itemId)) {
+      throw new TypeError(`sf-table has no create item ${String(itemId)}`);
+    }
+
+    return this.dispatchTableEvent('sf-table-create-intent', Object.freeze({
+      item: itemId
+    }));
+  }
+
+  renderCreateContextMenu(data) {
+    const {
+      x,
+      y
+    } = data;
+    const items = this.state.createItems.map(item => ({
+      component: "sf-button",
+      props: {
+        type: "link",
+        scheme: "on-surface",
+        text: item.name,
+        "@click": () => {
+          this.closeContextMenu();
+          this.requestCreateIntent(item.id);
+        }
+      }
+    }));
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
+            <sf-context-menu
+                    :key=${x + y}
+                    aria-label=${this.getContextMenuLabel({ ...data,
+      menu: 'create'
+    })}
+                    style="
+            position: fixed;
+            left: ${x}px;
+            inset-block-start: calc(${y}px + calc(var(--sf-focus-outline-width) * 2));
+            z-index: var(--sf-table-context-menu--z-index, var(--sf-z-index-9));
+          "
+                    data-context-main-menu
+                    .items=${items}
+            ></sf-context-menu>
+        `;
+  } // Sorting reports intent only: the table marks the header and emits
+  // sf-table-sort-change; the host reorders or reloads the rows.
+
+
+  getSort() {
+    return { ...this.state.sort
+    };
+  }
+
+  setSort(key = null, direction = null) {
+    if (key === null || direction === null) {
+      return this.set({
+        sort: {
+          key: null,
+          direction: null
+        }
+      });
+    }
+
+    if (typeof key !== 'string' || !key || !['asc', 'desc'].includes(direction)) {
+      throw new TypeError('Sort requires a column key and direction asc or desc');
+    }
+
+    return this.set({
+      sort: {
+        key,
+        direction
+      }
+    });
+  }
+
+  toggleSort(key) {
+    const current = this.state.sort || {};
+    const direction = current.key !== key ? 'asc' : current.direction === 'asc' ? 'desc' : current.direction === 'desc' ? null : 'asc';
+    this.setSort(direction ? key : null, direction);
+    return this.dispatchTableEvent('sf-table-sort-change', Object.freeze({
+      key,
+      direction
+    }));
+  } // Pointer capture sends the click that ends a column drag or resize to the
+  // header cell; that click must not also sort the column.
+
+
+  suppressNextHeaderClick() {
+    this._suppressHeaderClick = true;
+    setTimeout(() => {
+      this._suppressHeaderClick = false;
+    }, 0);
+  }
+
+  handleHeaderSortClick(event, column = {}) {
+    if (column.sortable !== true || column.system || this._suppressHeaderClick) return;
+    const target = event.composedPath?.()[0] || event.target;
+    if (target instanceof Element && target.closest('.sidebar-resizer-button')) return;
+    this.toggleSort(column.key);
   } // Emits the selection output once per change of the explicit selection.
 
 
@@ -4516,7 +7240,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     if (!container) return;
     container.querySelectorAll("[data-filter-template-key]").forEach(item => {
       const handle = item.querySelector("[data-move]");
-      const cleanup = (0,_helpers_draggable__WEBPACK_IMPORTED_MODULE_5__.bindSortableDrag)({
+      const cleanup = (0,_helpers_draggable__WEBPACK_IMPORTED_MODULE_6__.bindSortableDrag)({
         handle,
         item,
         container,
@@ -4548,7 +7272,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
   }
 
   getFilterTemplateDragAfterElement(container, y, pinned = false, itemsLayout = null) {
-    return (0,_helpers_draggable__WEBPACK_IMPORTED_MODULE_5__.getVerticalDragAfterElement)(container, y, {
+    return (0,_helpers_draggable__WEBPACK_IMPORTED_MODULE_6__.getVerticalDragAfterElement)(container, y, {
       itemsLayout: Array.isArray(itemsLayout) ? itemsLayout.filter(layout => layout.item?.dataset?.filterTemplateKey && layout.item?.dataset?.pinned === (pinned ? "1" : "0") && !layout.item.classList.contains("hidden")) : null,
       accept: item => item.dataset.filterTemplateKey && item.dataset.pinned === (pinned ? "1" : "0") && !item.classList.contains("hidden")
     });
@@ -4718,6 +7442,9 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       case 'row-settings':
         return 'Действия со строкой';
 
+      case 'create':
+        return 'Варианты создания';
+
       case 'table-settings':
       default:
         return 'Настройки таблицы';
@@ -4731,7 +7458,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       position
     } = data;
     const template = this.getSelectedFilterTemplate();
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
             <sf-context-menu
                     :key=${x + y + this._renderToken}
                     aria-label=${this.getContextMenuLabel({ ...data,
@@ -4750,7 +7477,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
                 <div class="flex flex-col flex-1 gap-2" slot="content">
                     <div class="sf-table-context-top"><span class="sf-text-2 bold">Сохранение шаблона</span></div>
                     <div class="sf-table-context-main">
-                        <form ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_3__.ref)(this.refs.templateForm)} id="save_template" class="flex flex-col gap-1/2">
+                        <form ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_4__.ref)(this.refs.templateForm)} id="save_template" class="flex flex-col gap-1/2">
                             <sf-input
                                     size="1"
                                     type="filled"
@@ -4868,7 +7595,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       }
     }
 
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
             <sf-context-menu
                     :key=${x + y}
                     aria-label=${this.getContextMenuLabel({ ...data,
@@ -5156,14 +7883,14 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     return this.getColumnItems().map(col => {
       const itemRef = this.getItemRef(`${refPrefix}:${col.key}`) || false;
       const isChecked = typeof checked === "function" ? Boolean(checked(col)) : Boolean(checked);
-      return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+      return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                 <sf-checkbox
                     size="1"
                     label=${col.label}
                     position="end"
                     root-class="content-main-between"
                     ?checked=${isChecked}
-                    ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_3__.ref)(itemRef)}
+                    ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_4__.ref)(itemRef)}
                     @change=${event => onChange?.(col, event)}
                 ></sf-checkbox>
             `;
@@ -5317,7 +8044,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
 
   renderTextFilterControl(field = {}) {
     const value = this.getFilterControlValue(field.key);
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
             <sf-input
                     size="1"
                     type="filled"
@@ -5340,7 +8067,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     const selectedOperator = control.operator || field.filter?.defaultOperator || operators[0];
     const isBetween = selectedOperator === 'between';
     const rangeValue = isBetween ? control.value : Array.isArray(control.value) ? control.value[0] : control.value;
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
             <div class="flex gap-1/3 flex-col">
                 <div class="sf-filter-operator-range flex gap-1/3 items-cross-center">
                     <sf-range-slider
@@ -5373,7 +8100,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       });
     }}
                 >
-                    ${operators.map(operator => (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+                    ${operators.map(operator => (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                         <sf-list-item
                                 type="text"
                                 size="1"
@@ -5412,7 +8139,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       });
     };
 
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
             <div class="flex gap-1/3 flex-col">
                 <div class="sf-filter-operator-inputs flex gap-1/3 items-cross-center">
                     <sf-input
@@ -5426,7 +8153,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       patchNumberValue(0, event.target?.value);
     }}
                     ></sf-input>
-                    ${isBetween ? (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+                    ${isBetween ? (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                         <sf-input
                                 size="1"
                                 type="bordered"
@@ -5437,7 +8164,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
                                 @change=${event => {
       patchNumberValue(1, event.target?.value);
     }}
-                        ></sf-input>` : lit__WEBPACK_IMPORTED_MODULE_2__.nothing}
+                        ></sf-input>` : lit__WEBPACK_IMPORTED_MODULE_3__.nothing}
                 </div>
                 <sf-dropdown
                         size="1"
@@ -5453,7 +8180,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       });
     }}
                 >
-                    ${operators.map(operator => (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+                    ${operators.map(operator => (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                         <sf-list-item
                                 type="text"
                                 size="1"
@@ -5473,7 +8200,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     const selectedOperator = control.operator || field.filter?.defaultOperator || operators[0];
     const isBetween = selectedOperator === 'between';
     const dateValue = isBetween && Array.isArray(control.value) ? control.value : isBetween ? ['', ''] : control.value || '';
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
             <div class="flex flex-col gap-1/3">
                 <sf-datepicker
                         .value=${dateValue}
@@ -5501,7 +8228,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       });
     }}
                 >
-                    ${operators.map(operator => (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+                    ${operators.map(operator => (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                         <sf-list-item
                                 type="text"
                                 size="1"
@@ -5520,9 +8247,9 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     const value = this.getFilterControlValue(field.key);
     const search = this.getFilterOptionSearch(field.key);
     const selected = new Set(value.values || []);
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
             <div class="flex flex-col gap-1/2">
-                ${field.filter?.searchable ? (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+                ${field.filter?.searchable ? (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                     <sf-input
                             size="1"
                             type="filled"
@@ -5551,13 +8278,24 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
   renderFilterOption(field = {}, option = {}, selected = new Set()) {
     const value = option.value ?? option.id ?? option.key ?? option.label ?? option.title;
     const label = option.label || option.title || String(value || '');
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    const badge = field.filter?.optionRenderer === 'badge' ? (0,_js_option_badge_js__WEBPACK_IMPORTED_MODULE_2__.optionBadgeProps)(option) : null;
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
             <div
-                    ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_3__.ref)(this.getItemRef(option.label))}
+                    ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_4__.ref)(this.getItemRef(option.label))}
                     class="flex items-cross-center gap-1/2 content-main-between">
                 <div class="flex items-cross-center gap-1/2 min-w-0">
-                    ${this.renderFilterOptionVisual(field, option)}
-                    <span class="sf-text-1 truncate">${label}</span>
+                    ${badge ? (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
+                        <sf-badge
+                                type="tonal"
+                                scheme=${badge.scheme}
+                                root-style=${badge.rootStyle || lit__WEBPACK_IMPORTED_MODULE_3__.nothing}
+                                icon=${option.icon || lit__WEBPACK_IMPORTED_MODULE_3__.nothing}
+                                text=${label}
+                        ></sf-badge>
+                    ` : (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
+                        ${this.renderFilterOptionVisual(field, option)}
+                        <span class="sf-text-1 truncate">${label}</span>
+                    `}
                 </div>
                 <sf-checkbox
                         size="1"
@@ -5589,7 +8327,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     }
 
     if (option.imageUrl) {
-      return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+      return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                 <sf-avatar
                         size="1"
                         image-url="${option.imageUrl}"
@@ -5598,7 +8336,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
             `;
     }
 
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
             <sf-avatar
                     size="1"
                     title="${option.avatarText || option.title || option.label || ''}"
@@ -5656,9 +8394,9 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
         };
         component = this.renderSmartElement(data.type, data.props);
       } else {
-        component = (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+        component = (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                     <div class="flex items-cross-center gap-1/4 flex-1">
-                        <sf-input ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_3__.ref)(this.refs.renameInput)} root-class="flex-1"
+                        <sf-input ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_4__.ref)(this.refs.renameInput)} root-class="flex-1"
                                   default-value="${col.label}"></sf-input>
                         <div class="flex items-cross-center flex-none">
                             <sf-icon-button segment="start" type="outline" scheme="on-surface" @click="${() => {
@@ -5684,15 +8422,15 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
                     </div>`;
       }
 
-      return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+      return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                 <div
                         :key=${col.key}
-                        ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_3__.ref)(this.getItemRef(col.label))}
+                        ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_4__.ref)(this.getItemRef(col.label))}
                         class="sf-settings-context-menu-item flex items-cross-center flex-1 gap-1/3 ${col.deleted ? 'opacity-3' : ''}"
                         data-filter-template-key="${col.key}"
                         data-pinned="${col.pinned ? "1" : "0"}"
                 >
-                    ${!isActiveEdit ? (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+                    ${!isActiveEdit ? (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                         <sf-icon-button
                                 id="${col.label}_move"
                                 type="link"
@@ -5701,9 +8439,9 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
                                 aria-label="Set order"
                                 icon="drag_indicator"
                                 root-class="cursor-move"
-                        ></sf-icon-button>` : lit__WEBPACK_IMPORTED_MODULE_2__.nothing}
+                        ></sf-icon-button>` : lit__WEBPACK_IMPORTED_MODULE_3__.nothing}
                     ${component}
-                    ${!isActiveEdit ? (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+                    ${!isActiveEdit ? (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                         <div class="flex items-cross-center m-inline-start-auto gap-1/3">
                             <sf-icon-button
                                     type="link"
@@ -5734,14 +8472,14 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
         });
       }}
                             ></sf-icon-button>
-                        </div>` : lit__WEBPACK_IMPORTED_MODULE_2__.nothing}
+                        </div>` : lit__WEBPACK_IMPORTED_MODULE_3__.nothing}
                 </div>`;
     });
     const menuColumnCount = columnCount ?? columnsCount ?? this.contextMenuColumns ?? 1;
     const colsData = this.getFilterTagColsData();
     const columnGroups = this.splitItemsByColumns(colsData, menuColumnCount);
     let contextItems = 'Шаблоны|Поля';
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
             <sf-context-menu
                     :key=${x + y + this._renderToken}
                     aria-label=${this.getContextMenuLabel({ ...data,
@@ -5769,7 +8507,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
                         </div>
                         <div slot="panel-1">
                             <div class="sf-context-menu-columns flex flex-1 gap-1 overflow-auto">
-                                ${columnGroups.map(group => (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+                                ${columnGroups.map(group => (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                                             <div class="flex flex-col gap-1 flex-1">
                                                 ${group}
                                             </div>
@@ -5789,12 +8527,15 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
 
       if (tempFilter) {
         let changedTemplates = [];
+        let selectedKey = null;
         this.set(prevState => {
           const hasDataChanges = this.hasPendingFilterDataChanges(prevState.filter || {});
           const filter = this.mergeFilterState(prevState.filter || {}, tempFilter);
           const selectedTemplate = this.getSelectedFilterTemplate(filter);
           changedTemplates = tempFilter.templates ? this.getChangedFilterTemplates(prevState.filter || {}, filter, ['order', 'pinned', 'deleted', 'selected', 'default']) : [];
           filter.templates = filter.templates.filter(el => !el.deleted);
+          const previousKey = this.getSelectedFilterTemplate(prevState.filter || {})?.key || null;
+          selectedKey = selectedTemplate?.key && selectedTemplate.key !== previousKey ? selectedTemplate.key : null;
           return {
             filter,
             filterDataDirty: prevState.filterDataDirty || hasDataChanges,
@@ -5803,6 +8544,12 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
         }, () => {
           if (changedTemplates.length) {
             this.dispatchFilterTemplatesSave(changedTemplates);
+          }
+
+          if (selectedKey) {
+            this.dispatchTableEvent('sf-table-template-select', Object.freeze({
+              key: selectedKey
+            }));
           }
         });
       }
@@ -5830,7 +8577,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
         control: this.getCurrentFilterTags()?.[fieldKey]?.control || 'text'
       }
     };
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
             <sf-context-menu
                     :key=${x + y + this._renderToken}
                     aria-label=${this.getContextMenuLabel({ ...data,
@@ -5966,7 +8713,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       actions = this.getActionItems();
     }
 
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
             <sf-context-menu
                     :key=${x + y + this._renderToken}
                     aria-label=${this.getContextMenuLabel({ ...data,
@@ -5986,17 +8733,17 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
                     <sf-tabs items="${contextItems}" type="underline">
                         <div slot="panel-0" class="flex gap-1">
                             <div class="sf-context-menu-columns flex flex-1 gap-1 overflow-auto">
-                                ${columnGroups.map(group => (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+                                ${columnGroups.map(group => (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                                             <div class="flex flex-col gap-1 flex-1">
                                                 ${group}
                                             </div>
                                         `)}
                             </div>
                         </div>
-                        ${actionEnable ? (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+                        ${actionEnable ? (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                                     <div slot="panel-1">
                                         <div class="flex flex-col gap-1 flex-1 p-2">
-                                            ${actions.map(action => (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+                                            ${actions.map(action => (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                                                         ${action}
                                                     `)}
                                         </div>
@@ -6045,6 +8792,9 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       case 'row-settings':
         return this.renderRowSettingsContextMenu(data);
 
+      case 'create':
+        return this.renderCreateContextMenu(data);
+
       case 'filter-favorites':
         return this.renderFilterFavoritesContextMenu(data);
 
@@ -6074,7 +8824,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     const temp = this.getFilterTemplateByKey(template.key, this.tempSettings?.filter || null);
     let isDeleted = (temp || template).deleted;
     const isDefaultTemplate = (temp || template).default === true;
-    return (0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    return (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
             <sf-context-menu
                     :key=${`${template.key || ''}-${x}-${y}`}
                     aria-label=${this.getContextMenuLabel({ ...data,
@@ -6125,24 +8875,24 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
         return this.renderTemplateActionsContextSubmenu(data);
 
       default:
-        return lit__WEBPACK_IMPORTED_MODULE_2__.nothing;
+        return lit__WEBPACK_IMPORTED_MODULE_3__.nothing;
     }
   }
 
   renderContextMenu(data) {
     if (!data?.open) {
-      (0,lit__WEBPACK_IMPORTED_MODULE_2__.render)(null, this.getPortalContainer());
-      return lit__WEBPACK_IMPORTED_MODULE_2__.nothing;
+      (0,lit__WEBPACK_IMPORTED_MODULE_3__.render)(null, this.getPortalContainer());
+      return lit__WEBPACK_IMPORTED_MODULE_3__.nothing;
     }
 
-    (0,lit__WEBPACK_IMPORTED_MODULE_2__.render)((0,lit__WEBPACK_IMPORTED_MODULE_2__.html)`
+    (0,lit__WEBPACK_IMPORTED_MODULE_3__.render)((0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                 <div
                         class="sf-table-context-layer"
-                        ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_3__.ref)(this.refs.contextMenu)}
+                        ${(0,lit_directives_ref_js__WEBPACK_IMPORTED_MODULE_4__.ref)(this.refs.contextMenu)}
                         @click=${event => this.handleContextLayerClick(event)}
                 >
                     ${this.renderMainContextMenu(data)}
-                    ${data.submenu?.open ? this.renderContextSubmenu(data.submenu) : lit__WEBPACK_IMPORTED_MODULE_2__.nothing}
+                    ${data.submenu?.open ? this.renderContextSubmenu(data.submenu) : lit__WEBPACK_IMPORTED_MODULE_3__.nothing}
                 </div>
             `, this.getPortalContainer());
     this.bindContextEvent();
@@ -6151,7 +8901,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       this.bindFilterTemplateDrag();
       this.clampContextMenusToViewport();
     });
-    return lit__WEBPACK_IMPORTED_MODULE_2__.nothing;
+    return lit__WEBPACK_IMPORTED_MODULE_3__.nothing;
   }
 
   getActionItems() {
@@ -6702,7 +9452,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     if (!state) {
       this.clearColumnAnimationStyles();
       this.clearColumnDragDom();
-      (0,_helpers_loaderDragState__WEBPACK_IMPORTED_MODULE_6__.setLoaderDragState)(false);
+      (0,_helpers_loaderDragState__WEBPACK_IMPORTED_MODULE_7__.setLoaderDragState)(false);
       return;
     }
 
@@ -6711,6 +9461,11 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     }
 
     state.handle?.releasePointerCapture?.(event?.pointerId);
+
+    if (state.started) {
+      this.suppressNextHeaderClick();
+    }
+
     state.ghost?.remove();
     this.clearColumnAnimationStyles(state.table);
     this.setColumnDragPlaceholderClass(state.key, false, state.table);
@@ -6722,17 +9477,40 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     const shouldCommit = commit && state.started && nextKeys.length && nextKeys.join('|') !== state.originalKeys?.join('|');
     this._columnDragState = null;
     this.clearColumnDragDom(state.table);
-    (0,_helpers_loaderDragState__WEBPACK_IMPORTED_MODULE_6__.setLoaderDragState)(false);
+    (0,_helpers_loaderDragState__WEBPACK_IMPORTED_MODULE_7__.setLoaderDragState)(false); // The preview moved header and body cells by hand, between Lit's part
+    // markers. Put every node back exactly as it was, so a committed order
+    // renders over the DOM Lit knows (otherwise moved cells stay and the
+    // columns appear twice) and a cancelled drag leaves nothing behind.
+    // The order update runs in a microtask, before the next paint.
+
+    if (state.started) {
+      this.restoreColumnDom(state.domSnapshot);
+    }
 
     if (!shouldCommit) {
-      if (state.started && !commit && state.originalKeys?.length) {
-        this.reorderColumnDomByKeys(state.table, state.originalKeys);
-      }
-
       return;
     }
 
     this.applyColumnOrder(nextKeys, state.frozenWidths);
+  }
+
+  snapshotColumnDom(table) {
+    if (!table) return [];
+    const containers = [table.querySelector('colgroup'), table.tHead?.rows?.[0], ...Array.from(table.tBodies || []).flatMap(tbody => Array.from(tbody.rows || []))].filter(Boolean);
+    return containers.map(container => ({
+      container,
+      nodes: Array.from(container.childNodes)
+    }));
+  }
+
+  restoreColumnDom(snapshot = []) {
+    for (const {
+      container,
+      nodes
+    } of snapshot || []) {
+      if (!container.isConnected || nodes.some(node => node.parentNode !== container)) continue;
+      container.append(...nodes);
+    }
   }
 
   applyColumnOrder(userKeys = [], frozenWidths = {}) {
@@ -6835,7 +9613,8 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       event.preventDefault();
       event.stopPropagation();
       state.started = true;
-      (0,_helpers_loaderDragState__WEBPACK_IMPORTED_MODULE_6__.setLoaderDragState)(true);
+      state.domSnapshot = this.snapshotColumnDom(state.table);
+      (0,_helpers_loaderDragState__WEBPACK_IMPORTED_MODULE_7__.setLoaderDragState)(true);
       state.frozenWidths = this.freezeColumnsWidthForResize(state.table);
       state.ghost = this.createColumnDragGhost(state.th);
       this.setColumnDragPlaceholderClass(state.key, true, state.table);
@@ -6911,7 +9690,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       ...limits
     }; // this.setColumnResizeClasses(th);
 
-    (0,_helpers_loaderDragState__WEBPACK_IMPORTED_MODULE_6__.setLoaderDragState)(true);
+    (0,_helpers_loaderDragState__WEBPACK_IMPORTED_MODULE_7__.setLoaderDragState)(true);
     document.documentElement.classList.add('sf-table-column-resizing');
     document.addEventListener('pointermove', this.onColumnResizePointerMove);
     document.addEventListener('pointerup', this.onColumnResizePointerUp, {
@@ -6959,7 +9738,8 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       return;
     }
 
-    (0,_helpers_loaderDragState__WEBPACK_IMPORTED_MODULE_6__.setLoaderDragState)(false); // this.clearColumnResizeClasses(state.th);
+    (0,_helpers_loaderDragState__WEBPACK_IMPORTED_MODULE_7__.setLoaderDragState)(false);
+    this.suppressNextHeaderClick(); // this.clearColumnResizeClasses(state.th);
 
     this._columnResizeState = null;
     this.outEvent({
@@ -7032,7 +9812,13 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     const viewport = this.getVisualViewportRect();
     const rootStyle = getComputedStyle(document.documentElement);
     const inset = parseFloat(rootStyle.getPropertyValue('--sf-space-1/3')) || 0;
+    const anchored = new Set();
     portal.querySelectorAll('sf-context-menu').forEach(menu => {
+      if (this.anchorContextMenu(menu, viewport, inset)) {
+        anchored.add(menu);
+        return;
+      }
+
       const availableInlineSize = Math.max(0, viewport.right - viewport.left - inset * 2);
       const availableBlockSize = Math.max(0, viewport.bottom - viewport.top - inset * 2);
       menu.style.setProperty('--sf-table-context-menu--available-inline-size', `${availableInlineSize}px`);
@@ -7059,6 +9845,141 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
         menu.style.translate = `${offsetX}px ${offsetY}px`;
       }
     });
+
+    for (const [menu, entry] of this._contextPositions || []) {
+      if (!anchored.has(menu)) {
+        entry.controller.stop();
+
+        this._contextPositions.delete(menu);
+      }
+    }
+  } // Placement of an open menu relative to the element it was opened from:
+  // menus with a tail (row actions, template actions) open beside it, the
+  // others below it. null keeps the static click-coordinate placement.
+  // Cells re-render their controls, so an opener can be replaced while its
+  // menu is open. Remember where it sits (row cell, header, toolbar id) to
+  // find its replacement.
+
+
+  describeContextAnchor(anchor) {
+    if (!(anchor instanceof Element)) return null;
+    const host = anchor.closest('[data-item], th[data-key], [id]');
+    if (!host || !this.contains(host)) return null;
+    const selector = host.dataset.item !== undefined ? `[data-item="${this.escapeColumnKey(host.dataset.item)}"]` : host.matches('th[data-key]') ? `th[data-key="${this.escapeColumnKey(host.dataset.key)}"]` : `[id="${this.escapeColumnKey(host.id)}"]`;
+    const tag = anchor.tagName.toLowerCase();
+    return {
+      selector,
+      tag,
+      index: host === anchor ? -1 : Array.from(host.querySelectorAll(tag)).indexOf(anchor)
+    };
+  }
+
+  resolveContextAnchor(data) {
+    if (data?.anchor instanceof Element && data.anchor.isConnected) return data.anchor;
+    const ref = data?.anchorRef;
+    const host = ref ? this.querySelector(ref.selector) : null;
+    const anchor = host && (ref.index < 0 ? host : host.querySelectorAll(ref.tag)[ref.index]);
+    if (!anchor) return null;
+    data.anchor = anchor;
+    return anchor;
+  }
+
+  getContextMenuPlacement(menu) {
+    const isSubmenu = menu.hasAttribute('data-context-submenu');
+    const data = isSubmenu ? this.state.contextMenu?.submenu : this.state.contextMenu;
+    const anchor = this.resolveContextAnchor(data);
+    if (!anchor) return null;
+    const position = String(data.position || (isSubmenu || data.type === 'left' ? 'left' : ''));
+    const family = /^(left|right)(-top|-bottom)?$/.exec(position);
+    if (!family) return {
+      anchor,
+      side: 'block-end',
+      align: 'start',
+      tail: null
+    };
+    const suffix = family[2] || '';
+    return {
+      anchor,
+      side: family[1] === 'left' ? 'inline-end' : 'inline-start',
+      align: suffix === '-top' ? 'start' : suffix === '-bottom' ? 'end' : 'center',
+      tail: suffix
+    };
+  } // Shared Framework geometry (SF.Position): the menu flips when its side
+  // does not fit, shifts inside the viewport and follows its opener while
+  // the page scrolls. Sizes are written to the rendered surface, not the
+  // boxless host, so they never re-render the menu over this placement.
+
+
+  anchorContextMenu(menu, viewport, inset) {
+    const placement = this.getContextMenuPlacement(menu);
+    if (!placement) return false;
+    const surface = menu.querySelector(':scope > .sf-context-menu');
+    if (!surface) return false;
+    this._contextPositions = this._contextPositions || new Map();
+
+    const current = this._contextPositions.get(menu); // SF.Position writes an inline max-width from the free space, which
+    // would override the menu's stylesheet cap; keep that cap in the width.
+
+
+    const cssCap = current?.cssCap ?? (parseFloat(getComputedStyle(surface).maxWidth) || Infinity);
+    const inlineSize = `${Math.max(0, Math.min(viewport.right - viewport.left - inset * 2, cssCap))}px`;
+    surface.style.setProperty('--sf-table-context-menu--available-inline-size', inlineSize);
+    surface.style.setProperty('--sf-context-menu-available-inline-size', inlineSize);
+    const key = `${placement.side}|${placement.align}`;
+
+    if (current && current.anchor === placement.anchor && current.surface === surface && current.key === key) {
+      current.controller.update();
+      return true;
+    }
+
+    current?.controller.stop();
+    surface.style.transform = 'none';
+    surface.style.translate = 'none';
+    surface.style.setProperty('--sf-context-menu-available-block-size', `${Math.max(0, viewport.bottom - viewport.top - inset * 2)}px`);
+    const Position = positioning();
+    const gap = placement.tail === null ? Position.resolveLength('calc(var(--sf-focus-outline-width) * 2)', surface) : Position.resolveLength('var(--sf-context-menu-tail-corner-offset)', surface);
+    const anchorBox = placement.anchor.getBoundingClientRect();
+    const controller = Position.anchor(placement.anchor, surface, {
+      side: placement.side,
+      align: placement.align,
+      offset: gap,
+      alignmentOffset: placement.align === 'center' || placement.tail === null ? 0 : Math.max(0, anchorBox.height / 2 - gap),
+      padding: inset,
+      fitHeight: false,
+      onPosition: ({
+        side
+      }) => {
+        const box = placement.anchor.getBoundingClientRect();
+        const view = this.getVisualViewportRect();
+        const blockSize = side === 'block-end' ? view.bottom - inset - box.bottom - gap : side === 'block-start' ? box.top - gap - inset - view.top : view.bottom - view.top - inset * 2;
+        const value = `${Math.max(0, Math.floor(blockSize))}px`;
+
+        if (surface.style.getPropertyValue('--sf-context-menu-available-block-size') !== value) {
+          surface.style.setProperty('--sf-context-menu-available-block-size', value);
+        }
+
+        if (placement.tail !== null) {
+          const next = `${side === 'inline-end' ? 'left' : 'right'}${placement.tail}`;
+          if (menu.getAttribute('position') !== next) menu.setAttribute('position', next);
+        }
+      }
+    });
+
+    this._contextPositions.set(menu, {
+      controller,
+      anchor: placement.anchor,
+      surface,
+      key,
+      cssCap
+    });
+
+    return true;
+  }
+
+  stopContextMenuPositions() {
+    for (const entry of this._contextPositions?.values() || []) entry.controller.stop();
+
+    this._contextPositions?.clear();
   }
 
   contextViewportEvent() {
@@ -7098,10 +10019,19 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     // Anchor to the native control on the event path within this opener.
 
 
-    const nativeTarget = (event.composedPath?.() || []).filter(node => node instanceof Element).map(node => node.closest?.('button, input, select, textarea, a[href], [role="button"]')).find(node => node && (node === target || target.contains(node)));
-    this.contextTarget = nativeTarget || target;
+    const nativeTarget = (event.composedPath?.() || []).filter(node => node instanceof Element).map(node => node.closest?.('button, input, select, textarea, a[href], [role="button"]')).find(node => node && (node === target || target.contains(node))); // Without a native control (for example a clicked sf-tag), anchor to the
+    // first rendered box inside the opener instead of its boxless host.
+
+    const hasBox = node => {
+      const rect = node.getBoundingClientRect();
+      return rect.width > 0 || rect.height > 0;
+    };
+
+    const boxedTarget = nativeTarget || hasBox(target) ? target : Array.from((target.shadowRoot || target).querySelectorAll?.('*') || []).find(hasBox) || target;
+    this.contextTarget = nativeTarget || boxedTarget;
     this.contextTarget.classList.add("active");
     let pos = this.contextTarget.getBoundingClientRect();
+    let anchor = this.contextTarget;
     event.preventDefault();
     event.stopPropagation();
     let data = {
@@ -7124,8 +10054,9 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
           let parent = null;
 
           if (opts.parent) {
-            parent = (0,_helpers_dom__WEBPACK_IMPORTED_MODULE_4__.getParent)(event.target);
+            parent = (0,_helpers_dom__WEBPACK_IMPORTED_MODULE_5__.getParent)(event.target);
             pos = parent.getBoundingClientRect();
+            anchor = parent;
           }
 
           tempData = {
@@ -7143,7 +10074,9 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     }
 
     data = { ...data,
-      ...tempData
+      ...tempData,
+      anchor,
+      anchorRef: this.describeContextAnchor(anchor)
     };
     this.set({
       contextMenu: { ...data
@@ -7177,7 +10110,9 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       y: rect.y + rect.height / 2,
       position: opts.position || 'left',
       transform: -50,
-      ...opts
+      ...opts,
+      anchor: anchorTarget,
+      anchorRef: this.describeContextAnchor(anchorTarget)
     };
     this.set(state => ({
       contextMenu: { ...(state.contextMenu || {}),
@@ -7511,7 +10446,8 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
         open: false
       }
     });
-    (0,lit__WEBPACK_IMPORTED_MODULE_2__.render)(null, this.getPortalContainer());
+    this.stopContextMenuPositions();
+    (0,lit__WEBPACK_IMPORTED_MODULE_3__.render)(null, this.getPortalContainer());
 
     if (this.refs.contextMenu) {
       this.refs.contextMenu.value = null;
@@ -7556,6 +10492,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     this._searchPendingProps = null;
     this._searchHoldKey = '';
     this.clearFilterTemplateDragBindings();
+    this.stopContextMenuPositions();
     this.unbindContextEvent();
     this.unbindContextViewport();
     this.unBindHoverEvent();
@@ -7599,7 +10536,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     this.contextTarget = null;
 
     if (this._portalContainer) {
-      (0,lit__WEBPACK_IMPORTED_MODULE_2__.render)(null, this._portalContainer);
+      (0,lit__WEBPACK_IMPORTED_MODULE_3__.render)(null, this._portalContainer);
 
       this._portalContainer.remove();
 
@@ -7626,7 +10563,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
         return;
       }
 
-      const parentSpace = (0,_helpers_dom__WEBPACK_IMPORTED_MODULE_4__.setParentSpace)(this.refs.items);
+      const parentSpace = (0,_helpers_dom__WEBPACK_IMPORTED_MODULE_5__.setParentSpace)(this.refs.items);
 
       if (!parentSpace) {
         return;

@@ -3,8 +3,8 @@
     "root": "distr",
     "source": {
         "provider": "simai/ui",
-        "revision": "44c4ecc09ba0eea059ea47a644a330773e683790",
-        "tree_sha256": "f1fd4075837cb521f3b5055dd038ad42044e128a2c9970fcba3073979f307a69"
+        "revision": "5b4289bda9a9969ca2b28879883d794740d08ef6",
+        "tree_sha256": "313b35afcfb7c967d6298702b857900e3af2dcf62a6dfe3955cd861a5e526771"
     },
     "files": {
         "component/accordion/css/accordion.css": {
@@ -119,7 +119,7 @@
             "sha256": "6680098d6a4a902a7cfd93890dac612aee8d0f2f0d518e4326ca2deb27d682ef"
         },
         "component/dropdown/js/dropdown.js": {
-            "sha256": "f6271c3fed441068159265510762705940d84a9e3a3fb9234604cd0a96aac082"
+            "sha256": "5de67b284bf0d610e13688ff2e32c9518c9197229177f4d52ab06f63f9befb7b"
         },
         "component/emoji/css/emoji.css": {
             "sha256": "2dd61f740274027b874e911e68393e422a55403e5bc14a73232eb3519488216f"
@@ -503,7 +503,7 @@
             "sha256": "0a9d491a5cae587de17dde7dc856a51430da2404ed6fc158a058a78c1c73df9a"
         },
         "core/js/core.js": {
-            "sha256": "23f27cd5cbf6d34bfa83cea678c78b6dd61c75b1f469c96504fc608d0a83cda6"
+            "sha256": "d0cd313f417722db25c8af36ee8500c1d9e91ac58036d241e454a4ba3ccc7f83"
         },
         "core/js/smart-base.js": {
             "sha256": "be27a6ff159577bb3dbf5378a861761417445bb782b21ebd7ac802f8d3b6cb6d"
@@ -2699,5 +2699,5 @@
             "sha256": "75103d0e845a91a641a573c7d293986251ca927a89f02ff2a56d9c25f149298d"
         }
     },
-    "packet_sha256": "84c13562a77fe631d908b66e83c7a3a0f2ba3ba3d8881d622f66bc79957f3cb7"
+    "packet_sha256": "db13c4f4f63592790e6aa93a669c71f1751b68e0aa9852040ded64a55c0158ca"
 }

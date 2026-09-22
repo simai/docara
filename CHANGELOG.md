@@ -5,6 +5,10 @@ All notable changes to Docara are documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Bundle Framework pair `ui-5b4289bda9a9-smart-89e4e531ea81` (Core `5b4289bd`, Smart
+  `89e4e531`, contracts `fabe4f6e`): shared anchored positioning
+  on Floating UI (`SF.Position`) for Dropdown and Datepicker, which also position
+  inside isolated example frames.
 - Bundle Framework pair `ui-44c4ecc09ba0-smart-bda8a0a90339` (Core `44c4ecc0`,
   Smart `bda8a0a9`, contracts `f9f08647`): editor surfaces are on-demand Smart
   components (`sf-composition-overlay`, `sf-sortable`, `sf-inline-editor`), so
@@ -20,7 +24,8 @@ All notable changes to Docara are documented in this file.
 
 ### Removed
 - Unreferenced superseded bundled Framework projection `d813107a`.
-- Superseded bundled Framework runtime `8c22fe2b` and Smart runtime `400d80e5`.
+- Superseded bundled Framework runtimes `8c22fe2b` and `44c4ecc0`, Smart runtimes
+  `400d80e5` and `bda8a0a9`.
 
 ## [2.10.0] - 2026-09-16
 

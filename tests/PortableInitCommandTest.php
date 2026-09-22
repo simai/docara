@@ -161,13 +161,13 @@ class PortableInitCommandTest extends TestCase
 
         $this->assertSame('docara.framework_lock.v1', $lock['schema']);
         $this->assertSame('larena.ui.frontend_runtime_lock.v3', $lock['runtime']['schema']);
-        $this->assertSame('ui-44c4ecc09ba0-smart-bda8a0a90339', $lock['runtime']['pair_id']);
-        $this->assertSame('44c4ecc09ba0eea059ea47a644a330773e683790', $lock['runtime']['ui']['commit']);
-        $this->assertSame('bda8a0a903395d26533a354bee93e842b7f528f1', $lock['runtime']['ui_smart']['commit']);
-        $this->assertSame('f9f0864785ac212df77ca54016ceac4250ffec9b', $lock['runtime']['framework_registry']['source']['commit']);
+        $this->assertSame('ui-5b4289bda9a9-smart-89e4e531ea81', $lock['runtime']['pair_id']);
+        $this->assertSame('5b4289bda9a9969ca2b28879883d794740d08ef6', $lock['runtime']['ui']['commit']);
+        $this->assertSame('89e4e531ea81bf9c5f03bed0b774ff3edeff29bb', $lock['runtime']['ui_smart']['commit']);
+        $this->assertSame('fabe4f6e867d88afacb8c52117a3b4b333299d7e', $lock['runtime']['framework_registry']['source']['commit']);
         $this->assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $lock['manifests']['ui.button']['provider_revision']);
-        $this->assertSame('9e419e39623e2b9dc4eb0562bae7bde6b29ef349d431860b91228598d9d08688', $lock['manifests']['ui.button']['sha256']);
-        $this->assertSame('07656a806c460d0efb7c0f076e0f584790adbb9f67571e6aadb56239b550da08', $lock['manifests']['ui.alert']['sha256']);
+        $this->assertSame('254a028aaa309898a2572714c46970e33c09d26a3d8060b91dd8f795e7981311', $lock['manifests']['ui.button']['sha256']);
+        $this->assertSame('c0c7d4c8310c487c0243f7f9c33370d9bff43e6105861632a1a16120f38bf3ab', $lock['manifests']['ui.alert']['sha256']);
         $this->assertSame('docara.framework_asset_projection.v1', $lock['asset_projection']['schema']);
         $this->assertSame('_docara/framework-runtime', $lock['asset_projection']['mount']);
         $this->assertSame('simai/ui-smart', $lock['asset_projection']['source']['provider']);

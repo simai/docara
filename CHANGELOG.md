@@ -5,6 +5,9 @@ All notable changes to Docara are documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Bundle Framework pair `ui-1f1c9d42d964-smart-121e8882d016` (Core `1f1c9d42`, Smart
+  `121e8882`, contracts `405d9e96`): shared anchored positioning
+  also for the country code, menu flyouts, tooltips and the Admin Menu flyout.
 - Bundle Framework pair `ui-5b4289bda9a9-smart-89e4e531ea81` (Core `5b4289bd`, Smart
   `89e4e531`, contracts `fabe4f6e`): shared anchored positioning
   on Floating UI (`SF.Position`) for Dropdown and Datepicker, which also position
@@ -24,8 +27,8 @@ All notable changes to Docara are documented in this file.
 
 ### Removed
 - Unreferenced superseded bundled Framework projection `d813107a`.
-- Superseded bundled Framework runtimes `8c22fe2b` and `44c4ecc0`, Smart runtimes
-  `400d80e5` and `bda8a0a9`.
+- Superseded bundled Framework runtimes `8c22fe2b`, `44c4ecc0` and `5b4289bd`,
+  Smart runtimes `400d80e5`, `bda8a0a9` and `89e4e531`.
 
 ## [2.10.0] - 2026-09-16
 

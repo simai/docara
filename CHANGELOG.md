@@ -5,6 +5,9 @@ All notable changes to Docara are documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Bundle Framework pair `ui-d81ccde2bdd5-smart-d448fb5563cc` (Core `d81ccde2` unchanged, Smart
+  `d448fb55`, contracts `a6cc2015`): the pagination
+  action-for-all option follows the checkbox state.
 - Bundle Framework pair `ui-d81ccde2bdd5-smart-b100a5faf6a2` (Core `d81ccde2`, Smart
   `b100a5fa`, contracts `ae77c3ec`): keyboard filter chips,
   stylesheet width caps in shared positioning and bubbling Modal events.
@@ -35,7 +38,7 @@ All notable changes to Docara are documented in this file.
 - Unreferenced superseded bundled Framework projection `d813107a`.
 - Superseded bundled Framework runtimes `8c22fe2b`, `44c4ecc0`, `5b4289bd` and
   `1f1c9d42`, Smart runtimes `400d80e5`, `bda8a0a9`, `89e4e531`, `121e8882` and
-  `6c5d313a`.
+  `6c5d313a` and `b100a5fa`.
 
 ## [2.10.0] - 2026-09-16
 

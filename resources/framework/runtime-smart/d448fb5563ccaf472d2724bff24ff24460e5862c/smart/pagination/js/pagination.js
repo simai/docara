@@ -2215,7 +2215,7 @@ function renderPaginationTemplate(context) {
                           <sf-checkbox
                             label=${context.actionForAllLabel}
                             ?checked=${Boolean(context.actionForAll)}
-                            @click=${() => component.setActionForAll(!context.actionForAll)}
+                            @change=${event => component.setActionForAll(Boolean(event.target?.checked))}
                           ></sf-checkbox>
                         ` : ""}
                   ` : ""}

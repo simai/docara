@@ -5,6 +5,9 @@ All notable changes to Docara are documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Bundle Framework pair `ui-56cd91e1d7a3-smart-903ad66c4f4f` (Core `56cd91e1`, Smart
+  `903ad66c`, contracts `2d5ebda3`): the data view declares its
+  host port, and a product may name its own components.
 - Bundle Framework pair `ui-cb1cda301648-smart-81741eac168d` (Core `cb1cda30`, Smart
   `81741eac` unchanged, contracts `a8e60bb3`): Framework contracts
   declare their own version, so a pinned reference cannot name two byte sets.

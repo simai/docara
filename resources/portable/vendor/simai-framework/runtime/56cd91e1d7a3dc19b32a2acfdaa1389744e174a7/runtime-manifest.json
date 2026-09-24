@@ -3,8 +3,8 @@
     "root": "distr",
     "source": {
         "provider": "simai/ui",
-        "revision": "cb1cda3016487e6b2be8c36b60bba0eea062d6a1",
-        "tree_sha256": "bf52c7cb9a337bb54a5d29ae9cf1f479cf1380b8d3c8296685266343fba98a61"
+        "revision": "56cd91e1d7a3dc19b32a2acfdaa1389744e174a7",
+        "tree_sha256": "7bc0168242fc4e0dd2b1d8e0c88820e570bcfc2fc9a489e58dc39537a862babf"
     },
     "files": {
         "component/accordion/css/accordion.css": {

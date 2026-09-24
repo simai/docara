@@ -2762,7 +2762,8 @@ function optionBadgeProps(option = {}) {
 
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   renderTableTemplate: () => (/* binding */ renderTableTemplate)
+/* harmony export */   renderTableTemplate: () => (/* binding */ renderTableTemplate),
+/* harmony export */   resolvedDataState: () => (/* binding */ resolvedDataState)
 /* harmony export */ });
 /* harmony import */ var lit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__("fef8077ac919");
 /* harmony import */ var lit_directives_keyed_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__("707122d76f9d");
@@ -2994,6 +2995,13 @@ function renderToolbar(context) {
             </div>
         </div>
     `;
+} // The state the region is actually in: the author's data-state, or what the
+// rows resolve to. It is declared on the region, not guessed from the markup.
+
+
+function resolvedDataState(context) {
+  if (context.dataState !== 'auto') return context.dataState;
+  return (context.component?.getTableData?.().rows || []).length ? 'populated' : 'empty';
 }
 
 function renderHeadLabel(context, column) {
@@ -3047,7 +3055,7 @@ function renderHead(context) {
                                     <sf-icon-button size="1/3"
                                                     radius="default"
                                                     root-class="sidebar-resizer-button absolute top-1/2 -translate-y-half translate-x-half inline-end-0 z-1 cursor-col-resize"
-                                                    id="column_resizer_${column.key}"
+                                                    id=${context.component.getColumnResizerId(column.key)}
                                                     aria-label="Изменить ширину столбца: ${column.label || column.key}"
                                                     aria-keyshortcuts="ArrowLeft ArrowRight"
                                                     type="link"
@@ -3171,7 +3179,7 @@ function renderTableTemplate(context) {
     const {
       rows = []
     } = state.data || {};
-    const dataState = context.dataState === 'auto' ? rows.length ? 'populated' : 'empty' : context.dataState;
+    const dataState = resolvedDataState(context);
 
     if (dataState !== 'populated') {
       const stateContent = {
@@ -3292,7 +3300,9 @@ function renderTableTemplate(context) {
                 class="sf-table min-w-0 flex flex-col gap-1/3 flex-1 min-h-0 ${context.rootClass || ""}"
                 style=${context.rootStyle || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
                 aria-label=${context.ariaLabel || lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
-                aria-busy=${context.dataState === 'loading' ? 'true' : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
+                data-sf-instance=${context.component.getInstanceId()}
+                data-state=${resolvedDataState(context)}
+                aria-busy=${resolvedDataState(context) === 'loading' ? 'true' : lit__WEBPACK_IMPORTED_MODULE_0__.nothing}
         >
             ${renderToolbar(context)}
             ${context.component.renderBulkActions()}
@@ -6080,7 +6090,11 @@ function checkedRecordIds(value) {
   }
 
   return Object.freeze([...value]);
-}
+} // Two tables on one page share nothing: ids, the settings key fallback and the
+// portal are all derived from this counter, never from the component name.
+
+
+let tableInstances = 0;
 
 class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"] {
   static get sfPorts() {
@@ -6179,6 +6193,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
   constructor() {
     super();
     this._portalContainer = null;
+    this._instanceId = `sf-table-${++tableInstances}`;
     this._selectionPortKey = "[]";
     this._routeContext = null;
     this._querySequence = 0;
@@ -7408,10 +7423,21 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
         saveInputValue: selectedTemplate?.label || ""
       };
     });
+  } // The identity of this instance: the author's id when there is one, its own
+  // counter otherwise. Never the component name, so a second table on the page
+  // cannot inherit the first one's ids or preferences.
+
+
+  getInstanceId() {
+    return this.id || this._instanceId;
+  }
+
+  getColumnResizerId(columnKey) {
+    return `${this.getInstanceId()}--column-resizer--${columnKey}`;
   }
 
   getTableSettingsKey() {
-    return this.tableSettingsKey || this.getAttribute?.("table-settings-key") || this.id || "users";
+    return this.tableSettingsKey || this.getAttribute?.("table-settings-key") || this.id || this.getInstanceId();
   }
 
   normalizeTableSettings(data = {}, tableSettingsKey = this.getTableSettingsKey()) {
@@ -8440,7 +8466,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
                 >
                     ${!isActiveEdit ? (0,lit__WEBPACK_IMPORTED_MODULE_3__.html)`
                         <sf-icon-button
-                                id="${col.label}_move"
+                                id="${this.getInstanceId()}--template-move--${col.key}"
                                 type="link"
                                 data-move
                                 scheme="on-surface"
@@ -8535,12 +8561,14 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
 
       if (tempFilter) {
         let changedTemplates = [];
+        let deletedKeys = [];
         let selectedKey = null;
         this.set(prevState => {
           const hasDataChanges = this.hasPendingFilterDataChanges(prevState.filter || {});
           const filter = this.mergeFilterState(prevState.filter || {}, tempFilter);
           const selectedTemplate = this.getSelectedFilterTemplate(filter);
           changedTemplates = tempFilter.templates ? this.getChangedFilterTemplates(prevState.filter || {}, filter, ['order', 'pinned', 'deleted', 'selected', 'default']) : [];
+          deletedKeys = filter.templates.filter(template => template.deleted && template.key).map(template => template.key);
           filter.templates = filter.templates.filter(el => !el.deleted);
           const previousKey = this.getSelectedFilterTemplate(prevState.filter || {})?.key || null;
           selectedKey = selectedTemplate?.key && selectedTemplate.key !== previousKey ? selectedTemplate.key : null;
@@ -8552,6 +8580,12 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
         }, () => {
           if (changedTemplates.length) {
             this.dispatchFilterTemplatesSave(changedTemplates);
+          }
+
+          for (const key of deletedKeys) {
+            this.dispatchTableEvent('sf-table-template-delete', Object.freeze({
+              key
+            }));
           }
 
           if (selectedKey) {
@@ -8964,7 +8998,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       return;
     }
 
-    const button = th.querySelector(`#column_resizer_${th.dataset.key}`);
+    const button = th.querySelector(`[id="${this.getColumnResizerId(th.dataset.key)}"]`);
 
     if (button) {
       button.setHidden(false);
@@ -8990,7 +9024,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
       return;
     }
 
-    const button = th.querySelector(`#column_resizer_${th.dataset.key}`);
+    const button = th.querySelector(`[id="${this.getColumnResizerId(th.dataset.key)}"]`);
 
     if (button) {
       button.setHidden(true);
@@ -9151,7 +9185,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     const nextWidth = Math.min(Math.max(currentWidth + step * direction * keyDirection, minWidth), maxWidth);
     this.applyColumnResizeWidths(key, nextWidth);
     requestAnimationFrame(() => {
-      const handle = this.querySelector(`#column_resizer_${escapedKey}`);
+      const handle = this.querySelector(`th[data-key="${escapedKey}"] .sidebar-resizer-button`);
       const focusTarget = handle?.matches?.('button, [href], input, select, textarea, [tabindex]') ? handle : handle?.querySelector?.('button, [href], input, select, textarea, [tabindex]');
       focusTarget?.focus?.();
     });
@@ -9795,6 +9829,7 @@ class SfTable extends _core_js_smart_base__WEBPACK_IMPORTED_MODULE_0__["default"
     const portal = document.createElement("div");
     portal.className = "sf-table-portal";
     portal.dataset.tableSettingsKey = this.getTableSettingsKey();
+    portal.dataset.sfInstance = this.getInstanceId();
     document.body.append(portal);
     this._portalContainer = portal;
     return portal;

@@ -5,6 +5,9 @@ All notable changes to Docara are documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Bundle Framework pair `ui-cb1cda301648-smart-81741eac168d` (Core `cb1cda30`, Smart
+  `81741eac` unchanged, contracts `a8e60bb3`): Framework contracts
+  declare their own version, so a pinned reference cannot name two byte sets.
 - Bundle Framework pair `ui-bc8dfd7e4bdb-smart-81741eac168d` (Core `bc8dfd7e`, Smart
   `81741eac`, contracts `76c74e94`): a composition type carries
   the data, intents and settings of its Smart component.

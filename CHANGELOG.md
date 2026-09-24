@@ -5,6 +5,9 @@ All notable changes to Docara are documented in this file.
 ## [Unreleased]
 
 ### Changed
+- Bundle Framework pair `ui-bc8dfd7e4bdb-smart-81741eac168d` (Core `bc8dfd7e`, Smart
+  `81741eac`, contracts `76c74e94`): a composition type carries
+  the data, intents and settings of its Smart component.
 - Bundle Framework pair `ui-d81ccde2bdd5-smart-a916bbadf3aa` (Core `d81ccde2` unchanged, Smart
   `a916bbad`, contracts `d7d5536c`): the data view raises a
   delete intent, isolates its instances and declares its data state.
@@ -44,7 +47,8 @@ All notable changes to Docara are documented in this file.
 - Unreferenced superseded bundled Framework projection `d813107a`.
 - Superseded bundled Framework runtimes `8c22fe2b`, `44c4ecc0`, `5b4289bd` and
   `1f1c9d42`, Smart runtimes `400d80e5`, `bda8a0a9`, `89e4e531`, `121e8882` and
-  `6c5d313a`, `b100a5fa`, `d448fb55` and `004424a4`.
+  `6c5d313a`, `b100a5fa`, `d448fb55`, `004424a4` and `a916bbad`; Framework runtime
+  `d81ccde2`.
 
 ## [2.10.0] - 2026-09-16
 

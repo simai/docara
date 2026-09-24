@@ -226,7 +226,7 @@ final class DocumentationTrackingTest extends TestCase
         ]);
         $source = (new DocumentationSourceRepository)->source($this->tmp, 'simai-framework');
         self::assertFalse($source['compatibility_adapter']);
-        self::assertSame('ui-d81ccde2bdd5-smart-a916bbadf3aa', $source['revision']);
+        self::assertSame('ui-bc8dfd7e4bdb-smart-81741eac168d', $source['revision']);
         $entities = array_column($source['entities'], null, 'key');
         self::assertArrayHasKey('component.buttons', $entities);
         self::assertArrayHasKey('smart.buttons', $entities);

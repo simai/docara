@@ -3,8 +3,8 @@
     "root": "distr",
     "source": {
         "provider": "simai/ui",
-        "revision": "d81ccde2bdd5230f20ca0811c0812d2eff1f6064",
-        "tree_sha256": "04635d8c4b3a0f182f461013929c4777e4b8e5979783e4d5d975b753a6e1d82b"
+        "revision": "bc8dfd7e4bdbb688acaff393e77f809c78679220",
+        "tree_sha256": "57ddf0230fd774d44ef3b291b1381f58af7073bf8ddb8605af7ec1ddef1537e6"
     },
     "files": {
         "component/accordion/css/accordion.css": {
@@ -503,7 +503,7 @@
             "sha256": "0a9d491a5cae587de17dde7dc856a51430da2404ed6fc158a058a78c1c73df9a"
         },
         "core/js/core.js": {
-            "sha256": "932b3580dddaa8bf337967211fe1da8f4a03f4b6d452632b432ea91a3eddbc10"
+            "sha256": "70e6f3b360f1a52aeecfe6df4db052fd55650ae568d7e75000cdf37d7f0b0f74"
         },
         "core/js/smart-base.js": {
             "sha256": "be27a6ff159577bb3dbf5378a861761417445bb782b21ebd7ac802f8d3b6cb6d"
@@ -2699,5 +2699,5 @@
             "sha256": "75103d0e845a91a641a573c7d293986251ca927a89f02ff2a56d9c25f149298d"
         }
     },
-    "packet_sha256": "910ed7c462765755eaaa2cc8773ee73c208c1dccc9c1c648b562dc2654a499d7"
+    "packet_sha256": "2fdb1bceee64d68eb7ef0f92ce034e8536c6a51d1ba02424025a218395469102"
 }

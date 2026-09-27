@@ -192,10 +192,16 @@ MD);
         $this->writeJson($project . '/composition/descriptor.json', $this->descriptor());
 
         try {
-            (new FileRecipeCompiler($node, $entry, 'sha256:' . str_repeat('0', 64)))->compile($project, 'composition/descriptor.json');
-            self::fail('A stale Framework entry was accepted.');
+            // A distribution that does not implement the expected specification.
+            (new FileRecipeCompiler($node, $entry, frameworkRoot: $frameworkRoot, recipeContract: [
+                'lock_path' => 'distr/core/contracts/composition-recipe-v1/contract.lock.json',
+                'lock_schema' => 'simai.composition.recipe-contract-lock.v1',
+                'edition' => '0.0.0',
+                'contract_digest' => 'sha256:' . str_repeat('0', 64),
+            ]))->compile($project, 'composition/descriptor.json');
+            self::fail('A distribution outside the expected specification was accepted.');
         } catch (\RuntimeException $exception) {
-            self::assertSame('docara_composition_recipe_framework_digest_mismatch', $exception->getMessage());
+            self::assertSame('docara_composition_recipe_specification_edition_mismatch', $exception->getMessage());
         }
 
         $this->expectException(\RuntimeException::class);
@@ -203,19 +209,29 @@ MD);
     }
 
     #[Test]
-    public function a_changed_transitive_framework_module_is_rejected_before_starting_the_runtime(): void
+    /**
+     * A distribution without its specification is refused before the runtime
+     * starts. This test used to assert that an edited runtime module is refused
+     * by its digest; Docara no longer pins those bytes, because the runtime
+     * grows with every Framework pair while the specification stays at its
+     * edition. The runtime bytes are covered where their provenance is known —
+     * the pair's own release locks, verified when the distribution is
+     * materialized — and what Docara verifies is the specification, which
+     * CompositionRecipeSpecificationTest holds from both sides.
+     */
+    public function a_distribution_without_its_specification_is_rejected_before_starting_the_runtime(): void
     {
         $node = (new ExecutableFinder)->find('node');
         $frameworkRoot = getenv('SIMAI_UI_ROOT');
         if (! is_string($node) || ! is_string($frameworkRoot) || $frameworkRoot === '') {
-            self::markTestSkipped('The exact Framework candidate is required for the module integrity check.');
+            self::markTestSkipped('The exact Framework candidate is required for the specification check.');
         }
         $candidate = $this->tmpPath('changed-framework');
         (new Filesystem)->copyDirectory($frameworkRoot . '/distr/core/js/composition', $candidate . '/distr/core/js/composition');
         file_put_contents($candidate . '/distr/core/js/composition/builtins.mjs', "\n// changed after the accepted build\n", FILE_APPEND);
 
         $this->expectException(\RuntimeException::class);
-        $this->expectExceptionMessage('docara_composition_recipe_framework_digest_mismatch');
+        $this->expectExceptionMessage('docara_composition_recipe_specification_missing');
         FileRecipeCompiler::fromFrameworkDistribution($node, $candidate);
     }
 
@@ -265,12 +281,17 @@ MD);
         }
         self::assertSame(3, $publisher->active($project, 'guide.home')['activation_revision']);
 
-        $broken = new FileRecipeSnapshotPublisher(new FileRecipeCompiler($node, $entry, 'sha256:' . str_repeat('0', 64)));
+        $broken = new FileRecipeSnapshotPublisher(new FileRecipeCompiler($node, $entry, frameworkRoot: $frameworkRoot, recipeContract: [
+                'lock_path' => 'distr/core/contracts/composition-recipe-v1/contract.lock.json',
+                'lock_schema' => 'simai.composition.recipe-contract-lock.v1',
+                'edition' => '0.0.0',
+                'contract_digest' => 'sha256:' . str_repeat('0', 64),
+            ]));
         try {
             $broken->compileAndActivate($project, 'guide.home', 'composition/descriptor.json', 3);
             self::fail('A failed compilation changed the active snapshot.');
         } catch (\RuntimeException $exception) {
-            self::assertSame('docara_composition_recipe_framework_digest_mismatch', $exception->getMessage());
+            self::assertSame('docara_composition_recipe_specification_edition_mismatch', $exception->getMessage());
         }
         self::assertSame($compact['snapshot_digest'], $publisher->active($project, 'guide.home')['snapshot_digest']);
 

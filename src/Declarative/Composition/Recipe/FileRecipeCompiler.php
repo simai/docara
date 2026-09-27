@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simai\Docara\Declarative\Composition\Recipe;
 
+use JsonException;
 use RuntimeException;
 use Symfony\Component\Process\InputStream;
 use Symfony\Component\Process\Process;
@@ -18,38 +19,125 @@ final class FileRecipeCompiler
 
     private ?string $sessionRoot = null;
 
+    /**
+     * Accept a Framework distribution that implements the Recipe specification
+     * this Docara was built against.
+     *
+     * What is verified is the specification, not the runtime bytes. The runtime
+     * grows with every Framework pair — regions, routing, field kinds, editor
+     * surfaces — while the specification stays at its edition, so pinning the
+     * bytes made every pair unusable until Docara was released again. The
+     * distribution's own contract lock is read, its declared edition and digest
+     * must be the expected ones, and that digest is recomputed here from the
+     * normative files the distribution carries, so a lock claiming an edition it
+     * does not implement is rejected. Runtime modules only have to be real files.
+     */
     public static function fromFrameworkDistribution(string $nodeBinary, string $frameworkRoot): self
     {
-        $entry = rtrim($frameworkRoot, '/\\\\') . '/distr/core/js/composition/index.mjs';
-        if (! is_file($entry) || is_link($entry)) {
-            throw new RuntimeException('docara_composition_recipe_distribution_invalid');
-        }
-
+        $root = rtrim($frameworkRoot, '/\\\\');
         $lock = json_decode((string) file_get_contents(dirname(__DIR__, 4) . '/resources/contracts/composition/runtime-lock.json'), true, 512, JSON_THROW_ON_ERROR);
-        if (($lock['schema'] ?? null) !== 'docara.composition_runtime_lock.v1'
-            || ! is_array($lock['files'] ?? null)
-            || ! is_string($lock['contract_digest'] ?? null)
+        $contract = $lock['contract'] ?? null;
+        $runtime = $lock['runtime'] ?? null;
+        if (($lock['schema'] ?? null) !== 'docara.composition_runtime_lock.v2'
+            || ! is_array($contract)
+            || ! is_string($contract['lock_path'] ?? null)
+            || ! is_string($contract['lock_schema'] ?? null)
+            || ! is_string($contract['edition'] ?? null)
+            || ! is_string($contract['contract_digest'] ?? null)
+            || ! is_array($runtime)
+            || ! is_string($runtime['entry'] ?? null)
+            || ! is_array($runtime['modules'] ?? null)
         ) {
             throw new RuntimeException('docara_composition_recipe_runtime_lock_invalid');
         }
-        $files = [];
-        foreach ($lock['files'] as $path => $digest) {
-            $file = rtrim($frameworkRoot, '/\\\\') . '/' . $path;
-            if (! is_file($file) || is_link($file) || 'sha256:' . hash_file('sha256', $file) !== $digest) {
-                throw new RuntimeException('docara_composition_recipe_framework_digest_mismatch');
+
+        $entry = $root . '/' . $runtime['entry'];
+        if (! is_file($entry) || is_link($entry)) {
+            throw new RuntimeException('docara_composition_recipe_distribution_invalid');
+        }
+        foreach ($runtime['modules'] as $module) {
+            $file = $root . '/' . $module;
+            if (! is_file($file) || is_link($file)) {
+                throw new RuntimeException('docara_composition_recipe_distribution_invalid');
             }
-            $files[$file] = $digest;
         }
 
-        return new self($nodeBinary, $entry, $lock['files']['distr/core/js/composition/index.mjs'], expectedFrameworkFiles: $files, recipeContractDigest: $lock['contract_digest']);
+        self::verifySpecification($root, $contract);
+
+        return new self(
+            $nodeBinary,
+            $entry,
+            frameworkRoot: $root,
+            recipeContract: $contract,
+            recipeContractDigest: $contract['contract_digest'],
+        );
     }
 
+    /**
+     * The distribution must implement the expected specification, and prove it.
+     *
+     * @param  array<string, mixed>  $contract
+     */
+    private static function verifySpecification(string $frameworkRoot, array $contract): void
+    {
+        $path = $frameworkRoot . '/' . $contract['lock_path'];
+        if (! is_file($path) || is_link($path)) {
+            throw new RuntimeException('docara_composition_recipe_specification_missing');
+        }
+        try {
+            $declared = json_decode((string) file_get_contents($path), true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            throw new RuntimeException('docara_composition_recipe_specification_invalid');
+        }
+        if (! is_array($declared)
+            || ($declared['schema'] ?? null) !== $contract['lock_schema']
+            || ! is_array($declared['normativeFiles'] ?? null)
+        ) {
+            throw new RuntimeException('docara_composition_recipe_specification_invalid');
+        }
+        if (($declared['version'] ?? null) !== $contract['edition']
+            || ($declared['contractDigest'] ?? null) !== $contract['contract_digest']
+        ) {
+            throw new RuntimeException('docara_composition_recipe_specification_edition_mismatch');
+        }
+        if (self::normativeDigest($frameworkRoot, $contract['lock_path'], $declared['normativeFiles']) !== $contract['contract_digest']) {
+            throw new RuntimeException('docara_composition_recipe_specification_digest_mismatch');
+        }
+    }
+
+    /**
+     * The Recipe digest: sha256 of the canonical map of normative file paths to
+     * the sha256 of their bytes, as the Framework computes it. Recomputing it
+     * here is what turns the distribution's claim into a verified fact.
+     *
+     * @param  array<string, mixed>  $normativeFiles
+     */
+    private static function normativeDigest(string $frameworkRoot, string $lockPath, array $normativeFiles): string
+    {
+        $base = dirname($frameworkRoot . '/' . $lockPath);
+        $map = [];
+        foreach ($normativeFiles as $relative => $expected) {
+            if (! is_string($relative) || ! is_string($expected)) {
+                throw new RuntimeException('docara_composition_recipe_specification_invalid');
+            }
+            $file = $base . '/' . $relative;
+            if (! is_file($file) || is_link($file)) {
+                throw new RuntimeException('docara_composition_recipe_specification_incomplete');
+            }
+            $map[$relative] = 'sha256:' . hash_file('sha256', $file);
+        }
+        ksort($map);
+
+        return 'sha256:' . hash('sha256', (string) json_encode($map, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_THROW_ON_ERROR));
+    }
+
+    /** @param array<string, mixed> $recipeContract */
     public function __construct(
         private readonly string $nodeBinary,
         private readonly string $frameworkEntry,
-        private readonly string $expectedFrameworkEntryDigest,
         private readonly ?string $runner = null,
-        private readonly array $expectedFrameworkFiles = [],
+        private readonly string $frameworkRoot = '',
+        private readonly array $recipeContract = [],
         private readonly string $recipeContractDigest = '',
     ) {}
 
@@ -97,13 +185,10 @@ final class FileRecipeCompiler
         if (! is_string($root) || ! is_dir($root) || ! is_string($entry) || ! is_file($entry) || ! is_string($runner) || ! is_file($runner)) {
             throw new RuntimeException('docara_composition_recipe_runtime_unavailable');
         }
-        if ($this->expectedFrameworkEntryDigest !== 'sha256:' . hash_file('sha256', $entry)) {
-            throw new RuntimeException('docara_composition_recipe_framework_digest_mismatch');
-        }
-        foreach ($this->expectedFrameworkFiles as $file => $digest) {
-            if (! is_file($file) || is_link($file) || 'sha256:' . hash_file('sha256', $file) !== $digest) {
-                throw new RuntimeException('docara_composition_recipe_framework_digest_mismatch');
-            }
+        // The specification is re-verified before every session, so a
+        // distribution swapped under a running build cannot slip through.
+        if ($this->frameworkRoot !== '' && $this->recipeContract !== []) {
+            self::verifySpecification($this->frameworkRoot, $this->recipeContract);
         }
 
         return [$root, $entry, $runner];

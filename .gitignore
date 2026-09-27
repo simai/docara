@@ -1,6 +1,6 @@
 /build_*/
 node_modules
-/vendor/
+/vendor
 /source/assets/build/
 /source/output/
 /composer.json

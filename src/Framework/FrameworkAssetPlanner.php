@@ -137,33 +137,24 @@ final readonly class FrameworkAssetPlanner
             'kind' => 'boot',
             'content' => $shell['preload_boot'],
         ]]), ...($typography === null ? [] : $this->typographyFontPreloads($typography)),
-            $this->iconSubsetFontPreload($iconSubset), [
-                'key' => 'simai.framework.core.css',
-                'kind' => 'css',
-                'url' => $typography === null
-                    ? $this->uiUrl($uiCommit, (string) $boot['css'])
-                    : $this->typographyUrl((string) $typography['files']['core']['public'])
-                        . '?sf_v=' . rawurlencode($cacheVersion),
-                'source_revision' => $typography === null
-                    ? $uiCommit
-                    : (string) $typography['distribution']['revision'],
-                'sha256' => $typography === null
-                    ? null
-                    : (string) $typography['files']['core']['sha256'],
-            ], ...($html === null ? [[
-                'key' => 'simai.framework.utility.full.css',
-                'kind' => 'css',
-                'url' => $typography === null
-                    ? $uiBase . '/core/css/utility.full.css'
-                    : $this->typographyUrl((string) $typography['files']['utility']['public'])
-                        . '?sf_v=' . rawurlencode($cacheVersion),
-                'source_revision' => $typography === null
-                    ? $uiCommit
-                    : (string) $typography['distribution']['revision'],
-                'sha256' => $typography === null
-                    ? null
-                    : (string) $typography['files']['utility']['sha256'],
-            ]] : []), [
+            $this->iconSubsetFontPreload($iconSubset),
+            $this->foundationStylesheet(
+                'simai.framework.core.css',
+                $typography,
+                'core',
+                $runtimeProjection === null ? null : 'core/css/core.css',
+                fn (): string => $this->uiUrl($uiCommit, (string) $boot['css']),
+                $uiCommit,
+                $cacheVersion,
+            ), ...($html === null ? [$this->foundationStylesheet(
+                'simai.framework.utility.full.css',
+                $typography,
+                'utility',
+                $runtimeProjection === null ? null : 'core/css/utility.full.css',
+                static fn (): string => $uiBase . '/core/css/utility.full.css',
+                $uiCommit,
+                $cacheVersion,
+            )] : []), [
                 'key' => 'simai.framework.icon_font.css',
                 'kind' => 'inline_css',
                 'content' => $this->iconSubsetCss($iconSubset),
@@ -1414,6 +1405,60 @@ final readonly class FrameworkAssetPlanner
         }
 
         return substr($this->assetBase, 0, -strlen($suffix));
+    }
+
+    /**
+     * Describe one of the two foundation stylesheets.
+     *
+     * A site that projects the Framework runtime locally must take its
+     * foundation from that projection, like every other runtime file: the
+     * typography packet is a separate delivery that a site may pin instead, and
+     * when it did, the foundation quietly stayed at whatever pair that packet
+     * was built from while the rest of the page moved with the locked pair. The
+     * remote distribution stays the fallback for a site that projects nothing.
+     *
+     * @param  array<string, mixed>|null  $typography
+     * @param  callable(): string  $remoteUrl
+     * @return array<string, mixed>
+     */
+    private function foundationStylesheet(
+        string $key,
+        ?array $typography,
+        string $typographyFile,
+        ?string $runtimeRelativePath,
+        callable $remoteUrl,
+        string $uiCommit,
+        string $cacheVersion,
+    ): array {
+        if ($typography !== null) {
+            return [
+                'key' => $key,
+                'kind' => 'css',
+                'url' => $this->typographyUrl((string) $typography['files'][$typographyFile]['public'])
+                    . '?sf_v=' . rawurlencode($cacheVersion),
+                'source_revision' => (string) $typography['distribution']['revision'],
+                'sha256' => (string) $typography['files'][$typographyFile]['sha256'],
+            ];
+        }
+        if ($runtimeRelativePath !== null) {
+            $projected = $this->runtimeAsset($runtimeRelativePath);
+
+            return [
+                'key' => $key,
+                'kind' => 'css',
+                'url' => $projected['url'] . '?sf_v=' . rawurlencode($cacheVersion),
+                'source_revision' => $uiCommit,
+                'sha256' => $projected['sha256'],
+            ];
+        }
+
+        return [
+            'key' => $key,
+            'kind' => 'css',
+            'url' => $remoteUrl(),
+            'source_revision' => $uiCommit,
+            'sha256' => null,
+        ];
     }
 
     private function uiUrl(string $commit, string $lockedPath): string

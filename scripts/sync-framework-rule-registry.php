@@ -278,6 +278,12 @@ foreach (glob($runtimeCoreJsRoot . '/*.js') ?: [] as $existingCoreFile) {
 }
 
 foreach (array_merge($coreFiles, [
+    // The foundation a page loads first. It used to come from the separately
+    // pinned typography packet shipped inside this repository, which left a site
+    // serving whatever pair that packet was cut from while every other asset
+    // moved with the locked pair.
+    'core/css/core.css',
+    'core/css/utility.full.css',
     'component/icons/css/icons.css',
     'component/icons/fonts/MaterialSymbols-Outlined.woff2',
     'component/icons/fonts/MaterialIconsRound-Regular.otf',
@@ -305,7 +311,8 @@ $manifest['source'] = $projection['source'];
 $manifest['files'] = array_filter(
     $manifest['files'],
     static fn (string $relativePath): bool => ! str_starts_with($relativePath, 'utility/')
-        && ! str_starts_with($relativePath, 'core/js/'),
+        && ! str_starts_with($relativePath, 'core/js/')
+        && ! str_starts_with($relativePath, 'core/css/'),
     ARRAY_FILTER_USE_KEY,
 );
 $coreJsRoot = $distribution . '/core/js';
@@ -314,6 +321,11 @@ foreach (glob($coreJsRoot . '/*.js') ?: [] as $coreFile) {
         continue;
     }
     $manifest['files']['core/js/' . basename($coreFile)] = ['sha256' => hash_file('sha256', $coreFile)];
+}
+foreach (['core/css/core.css', 'core/css/utility.full.css'] as $foundationFile) {
+    $manifest['files'][$foundationFile] = [
+        'sha256' => hash_file('sha256', $distribution . '/' . $foundationFile),
+    ];
 }
 foreach ([
     'component/icons/fonts/MaterialSymbols-Outlined.woff2',

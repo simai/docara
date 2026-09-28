@@ -11,9 +11,11 @@ use Simai\Docara\Smart\SmartRegistry;
 
 final readonly class PortablePublisherAssetPublisher
 {
+    /** @param array<string, mixed>|null $frameworkLock */
     public function __construct(
         private Filesystem $files,
         private SmartRegistry $smarts = new SmartRegistry([]),
+        private ?array $frameworkLock = null,
     ) {}
 
     /** @param list<string>|null $requiredSmartAssets */
@@ -149,6 +151,68 @@ final readonly class PortablePublisherAssetPublisher
         }
     }
 
+    /**
+     * Which versioned Framework packets this site's lock actually names.
+     *
+     * The package ships every packet any consumer might pin — several pairs of
+     * the runtime, several editions of the typography packet. Publishing the
+     * whole tree put all of them into every site: a site that pins one pair
+     * still carried the others, and after a site moved its foundation to the
+     * runtime projection the packets it had stopped loading were still
+     * published. A packet is published only when this lock names it.
+     *
+     * @return array{lock_supplied: bool, typography: list<string>|null, runtime: string|null}
+     */
+    private function lockedPackets(): array
+    {
+        if ($this->frameworkLock === null) {
+            return ['lock_supplied' => false, 'typography' => null, 'runtime' => null];
+        }
+        $typography = null;
+        $typographyProjection = $this->frameworkLock['typography_projection'] ?? null;
+        if (is_array($typographyProjection) && is_array($typographyProjection['files'] ?? null)) {
+            $typography = [];
+            foreach ($typographyProjection['files'] as $record) {
+                // The lock names a path inside the package's portable tree; the
+                // walk below is relative to that tree's own root.
+                if (is_array($record) && is_string($record['path'] ?? null)) {
+                    $typography[] = str_starts_with($record['path'], 'portable/')
+                        ? substr($record['path'], strlen('portable/'))
+                        : $record['path'];
+                }
+            }
+        }
+        $runtime = null;
+        $runtimeProjection = $this->frameworkLock['runtime_projection'] ?? null;
+        if (is_array($runtimeProjection) && is_string($runtimeProjection['source']['revision'] ?? null)) {
+            $runtime = $runtimeProjection['source']['revision'];
+        }
+
+        return ['lock_supplied' => true, 'typography' => $typography, 'runtime' => $runtime];
+    }
+
+    /** @param array{lock_supplied: bool, typography: list<string>|null, runtime: string|null} $locked */
+    private function publishable(string $relative, array $locked): bool
+    {
+        if (str_starts_with($relative, 'vendor/simai-framework/typography/')) {
+            if (! $locked['lock_supplied']) {
+                // A caller that published without a lock — a tool, a test — gets
+                // the whole tree, as before.
+                return true;
+            }
+            // A lock with no typography projection means the site takes its
+            // foundation from the runtime projection, so no edition of the packet
+            // belongs to it.
+            return $locked['typography'] !== null && in_array($relative, $locked['typography'], true);
+        }
+        if (str_starts_with($relative, 'vendor/simai-framework/runtime/')) {
+            return $locked['runtime'] === null
+                || str_starts_with($relative, 'vendor/simai-framework/runtime/' . $locked['runtime'] . '/');
+        }
+
+        return true;
+    }
+
     /** @return list<string> */
     private function assetNames(): array
     {
@@ -158,6 +222,7 @@ final readonly class PortablePublisherAssetPublisher
         if (! is_dir($vendor) || is_link($vendor)) {
             return $names;
         }
+        $locked = $this->lockedPackets();
 
         $iterator = new \RecursiveIteratorIterator(
             new \RecursiveDirectoryIterator($vendor, \FilesystemIterator::SKIP_DOTS),
@@ -172,6 +237,9 @@ final readonly class PortablePublisherAssetPublisher
                     'DECLARATIVE_PUBLISHER_ASSET_INVALID',
                     'A portable vendor asset has an unsafe path.',
                 );
+            }
+            if (! $this->publishable($relative, $locked)) {
+                continue;
             }
             $names[] = $relative;
         }

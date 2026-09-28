@@ -1131,7 +1131,11 @@ final readonly class PortableSiteBuilder
             ksort($frameworkAssetPlanReceipts, SORT_STRING);
             foreach ($localeDestinations as $localeDestination) {
                 $this->publishFrameworkAssets($buildBasePlan->frameworkLock, $localeDestination);
-                $assetPublisher = new PortablePublisherAssetPublisher($this->files, $smartRegistry);
+                $assetPublisher = new PortablePublisherAssetPublisher(
+                    $this->files,
+                    $smartRegistry,
+                    $buildBasePlan->frameworkLock,
+                );
                 $assetPublisher->publish(
                     $localeDestination,
                     $requiredSmartAssets,

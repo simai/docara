@@ -157,6 +157,48 @@ final class FrameworkPortableWaveTest extends TestCase
     }
 
     #[Test]
+    public function a_site_publishes_only_the_framework_packets_its_lock_names(): void
+    {
+        $stub = json_decode(
+            (string) file_get_contents(dirname(__DIR__, 2) . '/stubs/portable/simai-framework.lock.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $runtimeRevision = (string) $stub['runtime_projection']['source']['revision'];
+        $pinnedEdition = (string) $stub['typography_projection']['candidate'];
+
+        // A lock that pins the typography packet still gets that edition, and only
+        // that one: the package ships more than one.
+        $withPacket = $this->tmpPath('packet-pinned');
+        (new PortablePublisherAssetPublisher(new Filesystem, SmartRegistry::bundled(), $stub))
+            ->publish($withPacket, []);
+        $typographyRoot = $withPacket . '/_docara/vendor/simai-framework/typography';
+        self::assertFileExists($typographyRoot . '/' . $pinnedEdition . '/core.css');
+        foreach (glob($typographyRoot . '/*', GLOB_ONLYDIR) ?: [] as $edition) {
+            self::assertSame($pinnedEdition, basename($edition), 'an edition nobody pinned was published');
+        }
+
+        // A lock that takes its foundation from the runtime projection gets no
+        // edition of the packet at all, and no font that only it declared.
+        $withoutPacket = $this->tmpPath('packet-dropped');
+        $lock = $stub;
+        unset($lock['typography_projection']);
+        (new PortablePublisherAssetPublisher(new Filesystem, SmartRegistry::bundled(), $lock))
+            ->publish($withoutPacket, []);
+        self::assertDirectoryDoesNotExist($withoutPacket . '/_docara/vendor/simai-framework/typography');
+        self::assertDirectoryExists(
+            $withoutPacket . '/_docara/vendor/simai-framework/runtime/' . $runtimeRevision,
+            'the runtime the lock does name must still be published',
+        );
+
+        // Another pair's runtime stays out of this site.
+        foreach (glob($withoutPacket . '/_docara/vendor/simai-framework/runtime/*', GLOB_ONLYDIR) ?: [] as $runtime) {
+            self::assertSame($runtimeRevision, basename($runtime), 'a runtime nobody pinned was published');
+        }
+    }
+
+    #[Test]
     public function exact_framework_assets_are_published_only_when_the_page_uses_the_portable_wave(): void
     {
         $build = $this->tmpPath('unused-assets');

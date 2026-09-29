@@ -166,12 +166,25 @@ final class FrameworkPortableWaveTest extends TestCase
             JSON_THROW_ON_ERROR,
         );
         $runtimeRevision = (string) $stub['runtime_projection']['source']['revision'];
-        $pinnedEdition = (string) $stub['typography_projection']['candidate'];
+
+        // The stub no longer pins a typography edition: a new site takes its
+        // foundation from the runtime projection. The pinned case therefore
+        // comes from a consumer lock that still names an edition, the way
+        // larena-doc does.
+        $pinned = json_decode(
+            (string) file_get_contents(dirname(__DIR__) . '/fixtures/framework/simai-framework-5.6.1.lock.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $pinnedEdition = (string) $pinned['typography_projection']['candidate'];
+        $withPacketLock = $stub;
+        $withPacketLock['typography_projection'] = $pinned['typography_projection'];
 
         // A lock that pins the typography packet still gets that edition, and only
         // that one: the package ships more than one.
         $withPacket = $this->tmpPath('packet-pinned');
-        (new PortablePublisherAssetPublisher(new Filesystem, SmartRegistry::bundled(), $stub))
+        (new PortablePublisherAssetPublisher(new Filesystem, SmartRegistry::bundled(), $withPacketLock))
             ->publish($withPacket, []);
         $typographyRoot = $withPacket . '/_docara/vendor/simai-framework/typography';
         self::assertFileExists($typographyRoot . '/' . $pinnedEdition . '/core.css');

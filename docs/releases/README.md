@@ -1,5 +1,9 @@
 # Docara releases
 
+- [Docara 2.11.0](https://github.com/simai/docara/releases/tag/v2.11.0) — the
+  Framework foundation comes from the runtime projection, and a site publishes
+  only the packets its own lock names.
+
 - [Docara 2.10.0](https://github.com/simai/docara/releases/tag/v2.10.0) —
   mandatory Composition Recipe page pipeline and verified clean installation.
 

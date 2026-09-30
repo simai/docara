@@ -1,0 +1,13 @@
+@layer sf.utilities {
+  @media (min-width: 520px) {
+    .sm\:isolate {
+      isolation: isolate;
+    }
+    .sm\:isolation-auto {
+      isolation: auto;
+    }
+    .sm\:auto {
+      isolation: auto;
+    }
+  }
+}

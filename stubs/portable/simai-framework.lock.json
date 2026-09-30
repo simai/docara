@@ -688,7 +688,7 @@
         "ui.button": {
             "provider": "larena/ui",
             "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
-            "sha256": "9c14a40883a64f03b0b8b827e2fbb1426ec25f2c0beadc34eccac76242afbd81",
+            "sha256": "c2fad944a4bdd647a08d5bc17c253c705fe56a0bbe0b59a8e362993c6a7c141c",
             "consumer_policy": {
                 "managed": [],
                 "blocked": [],
@@ -701,7 +701,7 @@
         "ui.alert": {
             "provider": "larena/ui",
             "provider_revision": "4b055d09926fec4c32f2ae43b2e7e0a6f64d7663",
-            "sha256": "fd1339523c111057c815c06640b9ab41e4569d9200c0797047ef1faa94f3d14b",
+            "sha256": "22bf213d842744450c365ae66850ca8f0e886ff9005c645b1d822775d72ef0d4",
             "consumer_policy": {
                 "managed": {
                     "id": "deterministic_id"

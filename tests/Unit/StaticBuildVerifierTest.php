@@ -25,7 +25,7 @@ use Tests\TestCase;
 
 final class StaticBuildVerifierTest extends TestCase
 {
-    private const FRAMEWORK_PAIR = 'ui-56cd91e1d7a3-smart-903ad66c4f4f';
+    private const FRAMEWORK_PAIR = 'ui-f0b69761c5f6-smart-2eb98f0e62a3';
 
     private const FRAMEWORK_PROVIDER_REVISION = '4b055d09926fec4c32f2ae43b2e7e0a6f64d7663';
 

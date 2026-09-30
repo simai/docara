@@ -4,7 +4,29 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.11.0] - 2026-09-30
+
 ### Changed
+- A Framework distribution is accepted by its specification rather than by its
+  bytes, so a distribution that satisfies the Recipe contract is admitted even
+  when its byte layout differs from the one first seen.
+- The runtime projection carries the Framework foundation
+  (`distr/core/css/core.css` and `distr/core/css/utility.full.css`), and the
+  asset planner serves the foundation from the projection whenever a site does
+  not pin a typography package.
+- A site publishes only the Framework packets its own lock names. Docara carries
+  every packet any consumer may pin — several runtime pairs and several
+  typography editions — and each site used to receive all of them.
+- The own documentation site and the portable stub take their foundation from
+  the runtime projection instead of pinning typography package `5.8.0`. While
+  the stub pinned a package, every new portable site was born with its
+  foundation on the pair the package was cut from, while everything else moved
+  with the pinned pair — and the cache key still carried the current pair, so
+  the drift was invisible.
+- Canonical Composite Smart Component terminology is documented, and the Smart
+  component terminology guide ships inside release packages.
+
+### Changed (Framework pairs)
 - Bundle Framework pair `ui-56cd91e1d7a3-smart-903ad66c4f4f` (Core `56cd91e1`, Smart
   `903ad66c`, contracts `2d5ebda3`): the data view declares its
   host port, and a product may name its own components.
@@ -55,6 +77,9 @@ All notable changes to Docara are documented in this file.
   `1f1c9d42`, Smart runtimes `400d80e5`, `bda8a0a9`, `89e4e531`, `121e8882` and
   `6c5d313a`, `b100a5fa`, `d448fb55`, `004424a4` and `a916bbad`; Framework runtime
   `d81ccde2`.
+- Bundled typography package `5.8.0`, which no lock names any more. The seven
+  fonts in the typography root and edition `5.4.0` stay in the package: a
+  consumer still pins them.
 
 ## [2.10.0] - 2026-09-16
 

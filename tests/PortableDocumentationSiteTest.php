@@ -380,9 +380,20 @@ final class PortableDocumentationSiteTest extends PHPUnit
 
         $firstFiles = $this->treeHashes($firstBuild);
         $secondFiles = $this->treeHashes($secondBuild);
-        // Complete tree after 9c866586 retired the unused runtime projection.
-        self::assertCount(2414, $firstFiles);
+        // The guarantee is that two independent builds of the same source agree
+        // whatever the file dates are, so that is asserted first: a stale count
+        // must not hide a tree that drifted.
         self::assertSame($firstFiles, $secondFiles);
+        // Complete tree after the publisher stopped copying packets no lock
+        // names and the own site took its foundation from the runtime
+        // projection. 2414 was the count while every bundled packet was copied
+        // into every site; the typography packet is not published any more, and
+        // the projection carries the foundation instead.
+        self::assertCount(2392, $firstFiles);
+        self::assertSame([], array_values(array_filter(
+            array_keys($firstFiles),
+            static fn (string $path): bool => str_contains($path, 'vendor/simai-framework/typography/'),
+        )), 'no typography packet is published into a site that does not name one');
         self::assertArrayHasKey('_docara/page-metadata.json', $firstFiles);
         self::assertArrayHasKey('.docara/examples.json', $firstFiles);
         self::assertArrayHasKey('.docara/performance.json', $firstFiles);

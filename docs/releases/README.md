@@ -1,5 +1,10 @@
 # Docara releases
 
+- [Docara 2.12.0](https://github.com/simai/docara/releases/tag/v2.12.0) — the
+  bundled Framework pair moves to a current build, so a new site gets
+  light-dark themes, the neutral alpha ramp, the quiet appearances and a
+  visible focus ring.
+
 - [Docara 2.11.0](https://github.com/simai/docara/releases/tag/v2.11.0) — the
   Framework foundation comes from the runtime projection, and a site publishes
   only the packets its own lock names.

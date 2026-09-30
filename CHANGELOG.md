@@ -4,6 +4,25 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.12.0] - 2026-09-30
+
+### Changed
+- Bundle Framework pair `ui-f0b69761c5f6-smart-2eb98f0e62a3` (Core `f0b69761`,
+  Smart `2eb98f0e`, contracts `a50da72f`), built from ui-source `62ac6ba9`. The
+  bundled pair had stood on the 24 September build, so every new portable site
+  was born without `light-dark()`, without the neutral alpha ramp, without the
+  `surface` and `ghost` appearances, and with a focus ring that read 1.4:1
+  against a light surface where an indicator needs 3:1. All of that arrives
+  with this pair. The runtime projection grows from 899 to 908 files and the
+  Smart projection from 44 runtime components to 47.
+- The Smart component manifests name the bundled Smart runtime as their
+  upstream revision again, and their recorded digests match their bytes.
+
+### Removed
+- The superseded `56cd91e1` runtime projection packet. A site whose lock still
+  names it — larena-doc, as of 2.11.0 — stays admitted through
+  `superseded_framework_locks` until it repins.
+
 ## [2.11.0] - 2026-09-30
 
 ### Changed

@@ -1001,7 +1001,9 @@ MD);
         self::assertStringContainsString('--sf-menu-element--border-bottom-width:var(--sf-0)', $smartSurface);
         self::assertStringContainsString('--sf-menu-element--border-left-width:var(--sf-0)', $smartSurface);
         self::assertStringContainsString(
-            '.docara-header-navigation-link:focus-visible,[data-docara-disclosure]:focus-visible{outline:var(--sf-focus-outline-width,var(--sf-a4)) solid var(--sf-primary,Highlight);outline-offset:var(--sf-a2)',
+            '.docara-header-navigation-link:focus-visible,[data-docara-disclosure]:focus-visible'
+            . '{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight)'
+            . ';outline-offset:var(--sf-a2)',
             $smartSurface,
         );
         self::assertStringContainsString('[data-docara-disclosure]{flex:0 0 auto;}', $smartSurface);

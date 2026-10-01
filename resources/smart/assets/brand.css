@@ -11,5 +11,5 @@
 .docara-brand--size-small .docara-brand-title{font-size:var(--sf-text-small--size);line-height:var(--sf-text-small--height)}
 .docara-brand--size-large .docara-brand-title{font-size:var(--sf-text-large--size);line-height:var(--sf-text-large--height)}
 .docara-brand--compact .docara-brand-label{display:none}
-.docara-brand:focus-visible{outline:3px solid var(--sf-primary,Highlight);outline-offset:3px}
+.docara-brand:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-focus--width)}
 @media(max-width:700px){.docara-brand-label{display:none}}

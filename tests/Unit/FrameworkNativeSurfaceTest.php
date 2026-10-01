@@ -213,8 +213,12 @@ final class FrameworkNativeSurfaceTest extends TestCase
             '[data-docara-disclosure]:focus{box-shadow:none}',
             $css,
         );
+        // The ring reads the shared tokens, so re-theming the focus role reaches
+        // it; ShellFocusRingTest holds every stylesheet this repository writes
+        // to that, and this case keeps the disclosure's own selector named.
         self::assertStringContainsString(
-            '[data-docara-disclosure]:focus-visible{outline:var(--sf-focus-outline-width,var(--sf-a4)) solid',
+            '[data-docara-disclosure]:focus-visible{outline:var(--sf-focus--width) '
+            . 'var(--sf-focus--style) var(--sf-focus--color',
             $css,
         );
     }

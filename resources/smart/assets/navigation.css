@@ -15,7 +15,7 @@
 .docara-navigation .sf-menu-element:not(.disabled):hover [data-docara-disclosure] .sf-icon{--sf-icon--color:var(--sf-on-surface)}
 .docara-navigation--compact .sf-menu-element{min-block-size:var(--sf-d0)}
 .docara-navigation--compact .sf-menu-element-wrap{min-block-size:var(--sf-c6)}
-.docara-navigation-link:focus-visible,.docara-header-navigation-link:focus-visible,[data-docara-disclosure]:focus-visible{outline:var(--sf-focus-outline-width,var(--sf-a4)) solid var(--sf-primary,Highlight);outline-offset:var(--sf-a2)}
+.docara-navigation-link:focus-visible,.docara-header-navigation-link:focus-visible,[data-docara-disclosure]:focus-visible{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight);outline-offset:var(--sf-a2)}
 .docara-navigation [data-docara-disclosure]:focus{box-shadow:none}
 .docara-header-navigation{min-inline-size:0;flex:1 1 auto}
 .docara-header-navigation-list{flex-direction:row;justify-content:center;white-space:nowrap}

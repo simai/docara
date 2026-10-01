@@ -282,11 +282,11 @@ MD);
         self::assertSame(3, $publisher->active($project, 'guide.home')['activation_revision']);
 
         $broken = new FileRecipeSnapshotPublisher(new FileRecipeCompiler($node, $entry, frameworkRoot: $frameworkRoot, recipeContract: [
-                'lock_path' => 'distr/core/contracts/composition-recipe-v1/contract.lock.json',
-                'lock_schema' => 'simai.composition.recipe-contract-lock.v1',
-                'edition' => '0.0.0',
-                'contract_digest' => 'sha256:' . str_repeat('0', 64),
-            ]));
+            'lock_path' => 'distr/core/contracts/composition-recipe-v1/contract.lock.json',
+            'lock_schema' => 'simai.composition.recipe-contract-lock.v1',
+            'edition' => '0.0.0',
+            'contract_digest' => 'sha256:' . str_repeat('0', 64),
+        ]));
         try {
             $broken->compileAndActivate($project, 'guide.home', 'composition/descriptor.json', 3);
             self::fail('A failed compilation changed the active snapshot.');

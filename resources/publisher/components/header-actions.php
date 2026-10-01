@@ -1,6 +1,6 @@
 <div class="flex flex-none items-cross-center gap-1">
 <?php if ($view->mobileNavigationEnabled) { ?>
-    <button type="button" data-docara-sheet-trigger aria-haspopup="dialog" aria-controls="docara-mobile-navigation" aria-expanded="false" class="docara-mobile-navigation-trigger<?= $view->primaryNavigationEnabled ? ' docara-mobile-navigation-trigger--primary' : '' ?> sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 radius-default" aria-label="<?= $view->copy['navigation.open'] ?>"><sf-icon icon="menu" aria-hidden="true"></sf-icon></button>
+    <button type="button" data-docara-sheet-trigger aria-haspopup="dialog" aria-controls="docara-mobile-navigation" aria-expanded="false" class="docara-mobile-navigation-trigger<?= $view->primaryNavigationEnabled ? ' docara-mobile-navigation-trigger--primary' : '' ?> sf-icon-button sf-icon-button--icon sf-icon-button--on-surface sf-icon-button--link sf-icon-button--size-1 radius-default flex items-cross-center content-main-center" aria-label="<?= $view->copy['navigation.open'] ?>"><sf-icon icon="menu" aria-hidden="true"></sf-icon></button>
 <?php } ?>
 <?php if ($view->searchEnabled) { ?>
     <button
@@ -10,7 +10,7 @@
         aria-controls="docara-search-dialog"
         aria-expanded="false"
         aria-label="<?= $view->copy['search.open'] ?>"
-        class="sf-button sf-button--size-1 sf-button--outline sf-button--on-surface flex items-cross-center docara-search-trigger h-d0"
+        class="sf-button sf-button--size-1 sf-button--outline sf-button--on-surface flex items-cross-center content-main-center docara-search-trigger h-d0"
     ><span class="sf-icon sf-icon-regular pointer-event-none" aria-hidden="true">search</span><span class="sf-button-text-container text-center pointer-event-none"><?= $view->copy['search.label'] ?></span><kbd class="docara-search-shortcut text-1 color-on-surface-variant m-inline-start-1/2" data-docara-search-shortcut>⌘K</kbd></button>
 <?php } ?>
 <?php if (count($view->languageOptions) > 1) { ?>

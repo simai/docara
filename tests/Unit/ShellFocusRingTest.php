@@ -100,6 +100,31 @@ final class ShellFocusRingTest extends TestCase
         self::assertSame([], $offenders, 'the ring is drawn in the focus role, not in another one');
     }
 
+    /**
+     * Where the ring sits is the element's own geometry, but the gap outside it
+     * is the system's: an outward ring reads --sf-focus--offset. A ring drawn
+     * inwards, flush against its neighbours, insets by exactly its own width.
+     */
+    #[Test]
+    public function an_outward_ring_keeps_the_shared_gap(): void
+    {
+        $offenders = [];
+        foreach ($this->ownedStylesheets() as $relativePath => $css) {
+            foreach ($this->focusRules($css) as $selector => $body) {
+                if (preg_match('/(?:^|;)\s*outline-offset\s*:\s*([^;]+)/i', $body, $offset) !== 1) {
+                    continue;
+                }
+                $value = preg_replace('/\s+/', ' ', trim($offset[1])) ?? '';
+                if (in_array($value, ['var(--sf-focus--offset)', 'calc(var(--sf-focus--width) * -1)'], true)) {
+                    continue;
+                }
+                $offenders[] = sprintf('%s: %s { outline-offset: %s }', $relativePath, $selector, $value);
+            }
+        }
+
+        self::assertSame([], $offenders, 'an outward ring keeps --sf-focus--offset; an inward one insets by its width');
+    }
+
     /** @return array<string, string> */
     private function ownedStylesheets(): array
     {

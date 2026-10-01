@@ -434,6 +434,7 @@
   }
   function exampleEnvironment(frame){
     var inlineScripts=Array.from(document.querySelectorAll('script[data-docara-framework-asset="simai.framework.icon_font.ready"]:not([src])'));
+    var bootScripts=Array.from(document.querySelectorAll('script[data-docara-framework-asset="docara.framework.storage.compatibility"]:not([src]),script[data-docara-framework-asset="simai.framework.boot"]:not([src]),script[data-docara-framework-asset="simai.framework.preloaded"]:not([src])'));
     var source=frame.getAttribute('srcdoc')||'',needsIcons=source.indexOf('sf-icon')!==-1||inlineScripts.length>0;
     var inlineStyles=needsIcons?Array.from(document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_font.css"],style[data-docara-framework-asset="simai.framework.icon_fallback_font.css"]')):[];
     if(source.indexOf('sf-icon-rounded')!==-1||source.indexOf('sf-icon-shape')!==-1){
@@ -442,7 +443,8 @@
     var stylesheetLinks=Array.from(document.querySelectorAll('link[data-docara-framework-asset][rel="stylesheet"],link[data-docara-declarative-shell-style][rel="stylesheet"]'));
     var environment={
       stylesheets:[],
-      scripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset][src]')).filter(function(script){return script.getAttribute('data-docara-framework-asset')!=='simai.framework.core.js'}).map(function(script){return script.src}),
+      bootScripts:bootScripts.map(function(script){return{key:script.getAttribute('data-docara-framework-asset')||'',content:script.textContent||''}}),
+      scripts:Array.from(document.querySelectorAll('script[data-docara-framework-asset][src]')).map(function(script){return script.src}),
       inlineScripts:[],
       theme:document.documentElement.classList.contains('theme-dark')?'dark':'light',
       direction:document.documentElement.dir==='rtl'?'rtl':'ltr',

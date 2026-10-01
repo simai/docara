@@ -993,6 +993,16 @@ currentInline.push(item.key);
 });
 measureSettled();
 });
+var currentBoot=Array.from(document.querySelectorAll('script[data-docara-example-framework-boot]')).map(function(script){return script.getAttribute('data-docara-example-framework-boot')});
+/* Boot state (storage fallback, sfPath, boot config, preloaded registry) must exist before Core runs. */
+(Array.isArray(data.bootScripts)?data.bootScripts:[]).forEach(function(item){
+if(!item||typeof item.key!=='string'||typeof item.content!=='string'||item.content===''||currentBoot.indexOf(item.key)!==-1)return;
+var script=document.createElement('script');
+script.textContent=item.content;
+script.setAttribute('data-docara-example-framework-boot',item.key);
+document.head.appendChild(script);
+currentBoot.push(item.key);
+});
 var currentScripts=Array.from(document.querySelectorAll('script[data-docara-example-framework-script]')).map(function(script){return script.src});
 currentScripts.forEach(function(src){frameworkScriptSources[src]=true});
 var scriptQueue=Promise.resolve();
@@ -1015,6 +1025,11 @@ if(scheduled)return;
 scheduled=true;
 requestAnimationFrame(function(){
 scheduled=false;
+measureNow();
+});
+}
+/* Offscreen sandboxed frames get no animation frames, so timers measure directly to size them before they scroll into view. */
+function measureNow(){
 var style=getComputedStyle(body),rect=body.getBoundingClientRect();
 var marginTop=parseFloat(style.marginTop)||0,marginBottom=parseFloat(style.marginBottom)||0;
 var contentTop=rect.top-marginTop,contentBottom=rect.bottom+marginBottom;
@@ -1027,12 +1042,11 @@ var height=Math.ceil(Math.max(0,contentBottom-contentTop));
 if(height===lastHeight)return;
 lastHeight=height;
 parent.postMessage({type:'docara:example-height',height:height},'*');
-});
 }
 function measureSettled(){
 measure();
 requestAnimationFrame(measure);
-setTimeout(measure,100);
+setTimeout(measureNow,100);
 }
 addEventListener('load',measureSettled);
 addEventListener('resize',measureSettled);

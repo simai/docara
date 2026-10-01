@@ -283,6 +283,8 @@ MD);
         self::assertStringContainsString('root.style.fontSize=data.rootFontSize', $web);
         self::assertStringNotContainsString('body.scrollHeight,root.scrollHeight', $web);
         self::assertStringContainsString('function measureSettled()', $web);
+        self::assertStringContainsString('setTimeout(measureNow,100)', $web);
+        self::assertStringContainsString('script.setAttribute(&apos;data-docara-example-framework-boot&apos;,item.key)', $web);
         self::assertStringContainsString('link.setAttribute(&apos;data-docara-example-framework-style&apos;,&apos;&apos;)', $web);
         self::assertStringContainsString('document.documentElement.classList.add(&apos;theme-&apos;+theme)', $web);
         self::assertStringContainsString('data-docara-example-tab="html"', $web);

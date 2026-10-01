@@ -1003,7 +1003,7 @@ MD);
         self::assertStringContainsString(
             '.docara-header-navigation-link:focus-visible,[data-docara-disclosure]:focus-visible'
             . '{outline:var(--sf-focus--width) var(--sf-focus--style) var(--sf-focus--color,Highlight)'
-            . ';outline-offset:var(--sf-a2)',
+            . ';outline-offset:var(--sf-focus--offset)',
             $smartSurface,
         );
         self::assertStringContainsString('[data-docara-disclosure]{flex:0 0 auto;}', $smartSurface);

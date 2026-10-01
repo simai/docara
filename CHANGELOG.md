@@ -4,6 +4,15 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Fixed
+- Sandboxed examples boot the Framework: the frame now receives Core together
+  with the storage fallback, boot configuration and preloaded registry, so
+  components bind and state written into the markup is shown.
+- An example below the fold is sized before it scrolls into view, so the page
+  no longer jumps when the reader reaches it.
+- Outward focus rings in the shell, brand, navigation and outline keep the
+  shared `--sf-focus--offset` gap.
+
 ## [2.12.0] - 2026-09-30
 
 ### Changed

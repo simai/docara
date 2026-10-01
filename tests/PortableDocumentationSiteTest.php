@@ -206,6 +206,10 @@ final class PortableDocumentationSiteTest extends PHPUnit
         self::assertStringContainsString("frame.style.blockSize=Math.max(32,Math.ceil(height))+'px'", $shellJs);
         self::assertStringContainsString('link[data-docara-framework-asset][rel="stylesheet"]', $shellJs);
         self::assertStringContainsString('exampleEnvironment(frame).then(function(environment)', $shellJs);
+        self::assertStringContainsString('script[data-docara-framework-asset="simai.framework.boot"]:not([src])', $shellJs);
+        self::assertStringContainsString('script[data-docara-framework-asset="docara.framework.storage.compatibility"]:not([src])', $shellJs);
+        self::assertStringContainsString('script[data-docara-framework-asset="simai.framework.preloaded"]:not([src])', $shellJs);
+        self::assertStringNotContainsString("!=='simai.framework.core.js'", $shellJs);
         self::assertStringContainsString('function exampleDesignTokens()', $shellJs);
         self::assertStringContainsString('function collectExampleTokenNames(rules,names)', $shellJs);
         self::assertStringContainsString('collectExampleTokenNames(sheet.cssRules,names)', $shellJs);

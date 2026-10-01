@@ -200,6 +200,7 @@ final readonly class PortablePublisherAssetPublisher
                 // the whole tree, as before.
                 return true;
             }
+
             // A lock with no typography projection means the site takes its
             // foundation from the runtime projection, so no edition of the packet
             // belongs to it.

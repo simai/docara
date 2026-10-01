@@ -208,7 +208,7 @@ final class FileRecipeCompiler
     {
         try {
             $result = json_decode($output, true, 512, JSON_THROW_ON_ERROR);
-        } catch (\JsonException $exception) {
+        } catch (JsonException $exception) {
             throw new RuntimeException('docara_composition_recipe_result_invalid', previous: $exception);
         }
         if (is_array($result['sessionError'] ?? null)) {

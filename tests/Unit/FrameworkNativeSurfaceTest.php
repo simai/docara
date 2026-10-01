@@ -113,7 +113,7 @@ final class FrameworkNativeSurfaceTest extends TestCase
         self::assertStringContainsString('type="button"', $template);
         self::assertStringContainsString('data-docara-search-trigger', $template);
         self::assertStringContainsString(
-            'class="sf-button sf-button--size-1 sf-button--outline sf-button--on-surface flex items-cross-center docara-search-trigger h-d0"',
+            'class="sf-button sf-button--size-1 sf-button--outline sf-button--on-surface flex items-cross-center content-main-center docara-search-trigger h-d0"',
             $template,
         );
         self::assertStringContainsString(

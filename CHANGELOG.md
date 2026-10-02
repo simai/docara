@@ -13,6 +13,28 @@ All notable changes to Docara are documented in this file.
 - Outward focus rings in the shell, brand, navigation and outline keep the
   shared `--sf-focus--offset` gap.
 
+### Changed
+- Bundle Framework pair `ui-c6f98eb4cb29-smart-bb8f3cc5c329` (Core `c6f98eb4`,
+  Smart `bb8f3cc5`, contracts `1c40964b`), built from ui-source `c18b4b4a`. The
+  runtime projection goes from 908 to 884 files: the 27 files of the Font
+  Awesome Pro icon component leave, the new `flag` component's stylesheet and
+  script arrive, and the third-party notices join. The Smart projection stays
+  at 47 runtime components.
+- Every projected runtime carries the Framework's third-party notices
+  (`distr/core/contracts/third-party-notices.v1.json`: the Framework's own MIT
+  licence and the notices for Lit, Floating UI, Material Symbols and
+  flag-icons), so a built site publishes them under
+  `_docara/vendor/simai-framework/runtime/<revision>/distr/`. Nothing loads the
+  file, so the projection names it explicitly.
+- CI checks out simai/ui at `c6f98eb4`, the revision the lock names.
+
+### Removed
+- Font Awesome Pro 5.15.3 is no longer bundled. The `f0b69761` runtime
+  projection packet shipped its commercially licensed fonts and stylesheet as
+  `distr/component/icon/`; the Framework has removed that component and Docara
+  no longer carries the packet. A site whose lock still names `f0b69761` stays
+  admitted through `superseded_framework_locks` until it repins.
+
 ## [2.12.0] - 2026-09-30
 
 ### Changed

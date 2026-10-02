@@ -266,6 +266,17 @@ if ($coreFiles === []) {
     throw new RuntimeException('FRAMEWORK_CORE_RUNTIME_SOURCE_UNAVAILABLE');
 }
 
+// The distribution's third-party notices: the licences of the code and fonts
+// it bundles (Lit, Floating UI, Material Symbols, flag-icons) and of the
+// Framework itself. Nothing loads them, so the entrypoint and url() walks above
+// never reach them; they are named here so every projected runtime carries
+// them. An explicit list, not a glob over core/contracts, and never the .gz
+// variants. The .min.js.LICENSE.txt files stay out with the .min.js they
+// annotate, which this projection does not ship.
+$noticeFiles = [
+    'core/contracts/third-party-notices.v1.json',
+];
+
 $runtimeCoreJsRoot = $distribution . '/core/js';
 $coreNames = array_fill_keys(array_map('basename', $coreFiles), true);
 foreach (glob($runtimeCoreJsRoot . '/*.js') ?: [] as $existingCoreFile) {
@@ -292,7 +303,7 @@ foreach (array_merge($coreFiles, [
     'component/menu/css/menu.css',
     'component/menu/js/menu.js',
     'component/highlight/js/highlight.js',
-], $highlightChunkFiles) as $runtimeFile) {
+], $highlightChunkFiles, $noticeFiles) as $runtimeFile) {
     $runtimeTarget = $distribution . '/' . $runtimeFile;
     $runtimeBytes = $readRuntime($runtimeFile);
     if (! is_dir(dirname($runtimeTarget))
@@ -312,7 +323,8 @@ $manifest['files'] = array_filter(
     $manifest['files'],
     static fn (string $relativePath): bool => ! str_starts_with($relativePath, 'utility/')
         && ! str_starts_with($relativePath, 'core/js/')
-        && ! str_starts_with($relativePath, 'core/css/'),
+        && ! str_starts_with($relativePath, 'core/css/')
+        && ! str_starts_with($relativePath, 'core/contracts/'),
     ARRAY_FILTER_USE_KEY,
 );
 $coreJsRoot = $distribution . '/core/js';
@@ -333,6 +345,9 @@ foreach ([
     'component/icons/fonts/MaterialIconsSharp-Regular.otf',
 ] as $fontFile) {
     $manifest['files'][$fontFile] = ['sha256' => hash_file('sha256', $distribution . '/' . $fontFile)];
+}
+foreach ($noticeFiles as $noticeFile) {
+    $manifest['files'][$noticeFile] = ['sha256' => hash_file('sha256', $distribution . '/' . $noticeFile)];
 }
 foreach ($highlightChunkFiles as $highlightChunkFile) {
     $manifest['files'][$highlightChunkFile] = [

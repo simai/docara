@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           repository: simai/ui
-          ref: f0b69761c5f64775ec4fbc760863b6a1f00e91f9
+          ref: c6f98eb4cb29bdc892d4df6ce31c014479eb37fb
           path: .dependencies/ui
       - uses: actions/setup-node@v4
         with:

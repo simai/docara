@@ -134,7 +134,7 @@ final class EffectiveComponentCatalogTest extends TestCase
         self::assertSame(CanonicalJson::encodePretty($first), CanonicalJson::encodePretty($second));
         self::assertSame('docara.effective_component_catalog.v1', $first['schema']);
         self::assertSame(1, $first['version']);
-        self::assertSame('ui-f0b69761c5f6-smart-2eb98f0e62a3', $first['framework_pair']);
+        self::assertSame('ui-c6f98eb4cb29-smart-bb8f3cc5c329', $first['framework_pair']);
         self::assertSame('4b055d09926fec4c32f2ae43b2e7e0a6f64d7663', $first['provider_revision']);
         self::assertSame([
             'catalog_is_canonical_framework_registry' => false,

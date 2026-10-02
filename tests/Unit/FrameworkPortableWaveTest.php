@@ -205,6 +205,30 @@ final class FrameworkPortableWaveTest extends TestCase
             'the runtime the lock does name must still be published',
         );
 
+        // The Framework's third-party notices travel with the runtime they
+        // describe, byte for byte as the manifest records them; the commercially
+        // licensed component/icon the Framework dropped is not published at all.
+        $publishedDistribution = $withoutPacket . '/_docara/vendor/simai-framework/runtime/'
+            . $runtimeRevision . '/distr';
+        $manifest = json_decode(
+            (string) file_get_contents(dirname($publishedDistribution) . '/runtime-manifest.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $notices = $publishedDistribution . '/core/contracts/third-party-notices.v1.json';
+        self::assertFileExists($notices);
+        self::assertSame(
+            $manifest['files']['core/contracts/third-party-notices.v1.json']['sha256'],
+            hash_file('sha256', $notices),
+        );
+        self::assertSame(
+            'simai.framework.third-party-notices.v1',
+            json_decode((string) file_get_contents($notices), true, 512, JSON_THROW_ON_ERROR)['schema'],
+        );
+        self::assertFileDoesNotExist($notices . '.gz');
+        self::assertDirectoryDoesNotExist($publishedDistribution . '/component/icon');
+
         // Another pair's runtime stays out of this site.
         foreach (glob($withoutPacket . '/_docara/vendor/simai-framework/runtime/*', GLOB_ONLYDIR) ?: [] as $runtime) {
             self::assertSame($runtimeRevision, basename($runtime), 'a runtime nobody pinned was published');

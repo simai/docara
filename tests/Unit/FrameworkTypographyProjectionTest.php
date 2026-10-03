@@ -191,6 +191,18 @@ final class FrameworkTypographyProjectionTest extends TestCase
             self::assertSame($projection['files'][$fileKey]['sha256'], $assets[$assetKey]['sha256']);
             self::assertSame($projection['distribution']['revision'], $assets[$assetKey]['source_revision']);
         }
+        // Sandboxed example frames receive every Framework stylesheet link as
+        // bytes, with the font files its faces name; the typography faces
+        // therefore have to sit in that link and point at packet files.
+        self::assertMatchesRegularExpression(
+            '#<link rel="stylesheet" href="/_docara/vendor/simai-framework/typography/5\.4\.0/core\.css\?sf_v=[^"]+" data-docara-framework-asset="simai\.framework\.core\.css">#',
+            $plan->headHtml(),
+        );
+        preg_match_all('/url\(\.\.\/([a-f0-9]{20})\.woff2\)/', $repository->bundledTypographyAsset('core'), $faces);
+        self::assertCount(7, $faces[1]);
+        foreach ($faces[1] as $font) {
+            self::assertArrayHasKey('font_' . $font, $projection['files']);
+        }
         $runtime = $repository->runtimeProjection();
         self::assertIsArray($runtime);
         self::assertSame(1379, $runtime['files']);

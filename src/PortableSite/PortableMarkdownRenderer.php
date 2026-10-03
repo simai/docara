@@ -938,10 +938,7 @@ if(!/^--sf-[a-z0-9_\\/.-]+$/.test(name)||typeof value!=='string'||value===''||va
 root.style.setProperty(name,value);
 });
 if(typeof data.rootFontSize==='string'&&/^\d+(?:\.\d+)?px$/.test(data.rootFontSize)){root.style.fontSize=data.rootFontSize}
-/* Sandboxed srcdoc keeps local fallback families while inheriting semantic sizes, spacing, radii and colors. */
-root.style.setProperty('--sf-text--family','Arial,sans-serif');
-root.style.setProperty('--sf-heading--family','Arial,sans-serif');
-root.style.setProperty('--sf-display--family','Arial,sans-serif');
+/* The frame takes the page's font families with the other tokens. Its opaque origin cannot fetch site fonts without CORS, so the shell sends the faces the frame's text needs as bytes; a face it cannot send falls back to the family's local faces. */
 }
 function applyEnvironment(data){
 var theme=data.theme==='dark'?'dark':'light',direction=data.direction==='rtl'?'rtl':'ltr';

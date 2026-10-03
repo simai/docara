@@ -27,6 +27,17 @@ All notable changes to Docara are documented in this file.
   example, so a demo form never navigates or reloads the documentation page.
 
 ### Fixed
+- Sandboxed example frames render text in the page's Framework typography
+  instead of Arial. The frame runtime no longer forces `--sf-text--family`,
+  `--sf-heading--family` and `--sf-display--family` to `Arial,sans-serif`
+  (since 2.3.0); the frame takes the page's families with the other tokens.
+  Where the page declares web faces (a pinned typography packet's
+  `core.css`), the shell already sent that stylesheet into the frame with its
+  font files as bytes, so no host CORS is needed. It now sends only the faces
+  whose `unicode-range` covers characters in the frame's source: two of the
+  seven Inter Variable faces (67,004 bytes) for Latin and Cyrillic text, where
+  all seven used to be sent. A same-origin face whose file cannot be sent is
+  dropped, so the family falls back to its local faces (`Inter Fallback`).
 - Sandboxed examples boot the Framework: the frame now receives Core together
   with the storage fallback, boot configuration and preloaded registry, so
   components bind and state written into the markup is shown.

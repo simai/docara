@@ -63,6 +63,29 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('.docara-prose h2[id]:not(:where(.docara-example-inline *))', $css);
     }
 
+    public function test_framed_examples_take_the_page_typography_with_its_faces_sent_as_bytes(): void
+    {
+        $root = dirname(__DIR__, 2);
+        $shell = (string) file_get_contents($root . '/resources/portable/declarative-shell.js');
+        $renderer = (string) file_get_contents($root . '/src/PortableSite/PortableMarkdownRenderer.php');
+
+        self::assertStringNotContainsString('Arial', $renderer);
+        self::assertStringNotContainsString("root.style.setProperty('--sf-text--family'", $renderer);
+        self::assertStringNotContainsString("root.style.setProperty('--sf-heading--family'", $renderer);
+        self::assertStringNotContainsString("root.style.setProperty('--sf-display--family'", $renderer);
+        self::assertStringContainsString('The frame takes the page\'s font families with the other tokens.', $renderer);
+
+        // Typography faces live in the Framework foundation stylesheet link,
+        // which the frame receives as text with its font files as bytes.
+        self::assertStringContainsString('link[data-docara-framework-asset][rel="stylesheet"]', $shell);
+        self::assertStringContainsString('codepoints=exampleCodepoints(source)', $shell);
+        self::assertStringContainsString('portableExampleStylesheet(link,codepoints)', $shell);
+        self::assertStringContainsString('return exampleFaceNeeded(rule,codepoints)?rule:\'\'', $shell);
+        self::assertStringContainsString('function exampleFaceNeeded(rule,codepoints)', $shell);
+        self::assertStringContainsString('missing.some(function(token){return rule.indexOf(token)!==-1})?\'\':rule', $shell);
+        self::assertStringContainsString("exampleFontAssets[resolved.href]=fetch(resolved.href,{credentials:'same-origin'})", $shell);
+    }
+
     public function test_example_height_measures_content_instead_of_its_current_viewport(): void
     {
         $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');

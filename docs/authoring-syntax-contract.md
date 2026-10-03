@@ -102,6 +102,8 @@ attributes. Beyond the basic list it admits:
   scheme;
 - `id`, written in kebab case with at least one hyphen (`save-tooltip`) and
   not starting with `docara-`, so it cannot shadow a global script name;
+- `slot` with a plain kebab-case token (`content`, `footer`); it only names
+  the part of a Smart component the element fills;
 - `form` without `action`, `method`, `target`, `enctype` or `name`; the shell
   cancels every `submit` that starts inside an inline example, so a demo form
   never navigates or reloads the documentation page;

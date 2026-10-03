@@ -383,21 +383,51 @@
     }
     return exampleFontAssets[resolved.href];
   }
-  function portableExampleStyle(content,baseHref){
+  /* A face whose unicode-range covers none of the frame's characters is never used there, so it is dropped before its file is fetched or sent. */
+  function exampleFaceNeeded(rule,codepoints){
+    var range=/unicode-range\s*:\s*([^;}]+)/i.exec(rule);
+    if(!range||!codepoints)return true;
+    return range[1].split(',').some(function(part){
+      var bounds=/^\s*U\+([0-9a-f?]{1,6})(?:-([0-9a-f]{1,6}))?\s*$/i.exec(part);
+      if(!bounds)return true;
+      var low=parseInt(bounds[1].replace(/\?/g,'0'),16),high=parseInt((bounds[2]||bounds[1]).replace(/\?/g,'f'),16);
+      return codepoints.some(function(codepoint){return codepoint>=low&&codepoint<=high});
+    });
+  }
+  function exampleCodepoints(text){
+    var seen=Object.create(null),codepoints=[];
+    for(var index=0;index<text.length;index++){
+      var codepoint=text.codePointAt(index);
+      if(codepoint>0xffff)index++;
+      if(!seen[codepoint]){seen[codepoint]=true;codepoints.push(codepoint)}
+    }
+    return codepoints;
+  }
+  /* Font files reach the opaque-origin frame as bytes, so no host has to send CORS headers. A same-origin face whose file cannot be transferred is dropped, so the family stack falls back to its local faces; a cross-origin face keeps its URL for hosts that serve fonts with CORS. */
+  function portableExampleStyle(content,baseHref,codepoints){
+    content=content.replace(/@font-face\s*\{[^}]*\}/gi,function(rule){return exampleFaceNeeded(rule,codepoints)?rule:''});
     var matches=[],pattern=/url\(\s*(["']?)([^"')]+)\1\s*\)/g,match;
     while((match=pattern.exec(content))!==null){matches.push({token:match[0],url:match[2]})}
     return Promise.all(matches.map(function(item){return exampleFontAsset(item.url,baseHref)})).then(function(assets){
-      var result=content,fonts=[];
+      var result=content,fonts=[],missing=[];
       matches.forEach(function(item,index){
-        if(!assets[index])return;
+        if(!assets[index]){
+          try{if(new URL(item.url,baseHref||document.baseURI).origin===location.origin)missing.push(item.token)}catch(error){}
+          return;
+        }
         var token='__DOCARA_FONT_'+index+'__';
         result=result.split(item.token).join('url("'+token+'")');
         fonts.push({token:token,bytes:assets[index].bytes,type:assets[index].type});
       });
+      if(missing.length){
+        result=result.replace(/@font-face\s*\{[^}]*\}/gi,function(rule){
+          return missing.some(function(token){return rule.indexOf(token)!==-1})?'':rule;
+        });
+      }
       return{content:result,fonts:fonts};
     });
   }
-  function portableExampleStylesheet(link){
+  function portableExampleStylesheet(link,codepoints){
     if(!link||typeof link.href!=='string')return Promise.resolve(null);
     var resolved;
     try{resolved=new URL(link.href,document.baseURI)}catch(error){return Promise.resolve(null)}
@@ -406,9 +436,11 @@
       exampleStylesheets[resolved.href]=fetch(resolved.href,{credentials:'same-origin'}).then(function(response){
         if(!response.ok)throw new Error('Stylesheet request failed');
         return response.text();
-      }).then(function(content){return portableExampleStyle(content,resolved.href)}).catch(function(){return null});
+      }).catch(function(){return null});
     }
-    return exampleStylesheets[resolved.href];
+    return exampleStylesheets[resolved.href].then(function(content){
+      return content===null?null:portableExampleStyle(content,resolved.href,codepoints);
+    });
   }
   function collectExampleTokenNames(rules,names){
     Array.from(rules||[]).forEach(function(rule){
@@ -439,7 +471,7 @@
   function exampleEnvironment(frame){
     var inlineScripts=Array.from(document.querySelectorAll('script[data-docara-framework-asset="simai.framework.icon_font.ready"]:not([src])'));
     var bootScripts=Array.from(document.querySelectorAll('script[data-docara-framework-asset="docara.framework.storage.compatibility"]:not([src]),script[data-docara-framework-asset="simai.framework.boot"]:not([src]),script[data-docara-framework-asset="simai.framework.preloaded"]:not([src])'));
-    var source=frame.getAttribute('srcdoc')||'',needsIcons=source.indexOf('sf-icon')!==-1||inlineScripts.length>0;
+    var source=frame.getAttribute('srcdoc')||'',needsIcons=source.indexOf('sf-icon')!==-1||inlineScripts.length>0,codepoints=exampleCodepoints(source);
     var inlineStyles=needsIcons?Array.from(document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_font.css"],style[data-docara-framework-asset="simai.framework.icon_fallback_font.css"]')):[];
     if(source.indexOf('sf-icon-rounded')!==-1||source.indexOf('sf-icon-shape')!==-1){
       document.querySelectorAll('style[data-docara-framework-asset="simai.framework.icon_variant_fonts.css"]').forEach(function(style){inlineStyles.push(style)});
@@ -455,12 +487,12 @@
       rootFontSize:getComputedStyle(document.documentElement).fontSize,
       designTokens:exampleDesignTokens()
     };
-    return Promise.all(inlineStyles.map(function(style){return portableExampleStyle(style.textContent||'',document.baseURI).then(function(portable){
+    return Promise.all(inlineStyles.map(function(style){return portableExampleStyle(style.textContent||'',document.baseURI,codepoints).then(function(portable){
       return{key:style.getAttribute('data-docara-framework-asset')||'',content:portable.content,fonts:portable.fonts};
     })})).then(function(styles){return Promise.all(inlineScripts.map(function(script){return portableExampleStyle(script.textContent||'',document.baseURI).then(function(portable){
       return{key:script.getAttribute('data-docara-framework-asset')||'',content:portable.content,fonts:portable.fonts};
     })})).then(function(scripts){environment.inlineScripts=scripts;return styles})}).then(function(styles){
-      return Promise.all(stylesheetLinks.map(function(link){return portableExampleStylesheet(link).then(function(portable){
+      return Promise.all(stylesheetLinks.map(function(link){return portableExampleStylesheet(link,codepoints).then(function(portable){
         if(!portable){environment.stylesheets.push(link.href);return null}
         return{key:'stylesheet:'+link.href,content:portable.content,fonts:portable.fonts};
       })})).then(function(linkedStyles){environment.inlineStyles=styles.concat(linkedStyles.filter(Boolean));return environment});

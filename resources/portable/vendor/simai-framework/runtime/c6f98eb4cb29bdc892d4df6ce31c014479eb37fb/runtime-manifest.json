@@ -154,6 +154,1491 @@
         "component/flag/css/flag.css": {
             "sha256": "44c91c334a4693a75ed51c4ee9444a0662e6d8df296412732f6a216a500ebb68"
         },
+        "component/flag/flags/circle/ad.svg": {
+            "sha256": "20b8c2fb63aaaeaa055e8e816da5f51376deda11c48398686d87d98a6a94177a"
+        },
+        "component/flag/flags/circle/ae.svg": {
+            "sha256": "69f59671e9b7aefbb6d9aea39f5457c8f2f442ec05d4e94081995944cfa9af0a"
+        },
+        "component/flag/flags/circle/af.svg": {
+            "sha256": "182e19ffb1233cd845bf2826895ca813bf84da5e26b1ac653cb6bb9913839556"
+        },
+        "component/flag/flags/circle/ag.svg": {
+            "sha256": "04647e7c033a31aac594c79dcb2b668b3cd5c33d22649a9bbb98a465baf8b919"
+        },
+        "component/flag/flags/circle/ai.svg": {
+            "sha256": "02357c693feec58f5685c8b847e6a91397479d440b44a9a50fea8fb259fbd0c4"
+        },
+        "component/flag/flags/circle/al.svg": {
+            "sha256": "2a5beb44510360dc4e6683d1c3724a2f86b31bd04eaf3af04e98a8502e8516f1"
+        },
+        "component/flag/flags/circle/am.svg": {
+            "sha256": "604f3a09b62a5b99b33a5967956845c3097e3b1bb2d8487ade76f5d66e047180"
+        },
+        "component/flag/flags/circle/an.svg": {
+            "sha256": "363d8914288bec766f38c1cd5c5bcd850b8a785c4a93d97f22a46dde36886cf5"
+        },
+        "component/flag/flags/circle/ao.svg": {
+            "sha256": "6ab462aaef935fa55452ca40da668a3a089ff5a9ab475ebafaaaf52603226615"
+        },
+        "component/flag/flags/circle/ar.svg": {
+            "sha256": "1d6cc6644a7395d60efdbe23524aff7733849d8366b32ee5a96543bf16482d41"
+        },
+        "component/flag/flags/circle/as.svg": {
+            "sha256": "1f705b131e1ff9cc13d0099f7b3da7a553c9533922e5fbfdaac8fb4726beb841"
+        },
+        "component/flag/flags/circle/at.svg": {
+            "sha256": "7facb497c72226966914c5c6f849fb2649b2c83193a522d8c38ede6a0ac85863"
+        },
+        "component/flag/flags/circle/au.svg": {
+            "sha256": "5b15f07fe321dd0be990521fd20d5682cfc9e8e4abfd80356416e5fa94743fbc"
+        },
+        "component/flag/flags/circle/aw.svg": {
+            "sha256": "7237562968e40b29733c1a164d5263d0e495f83b330df982860464c5f2be1d01"
+        },
+        "component/flag/flags/circle/ax.svg": {
+            "sha256": "07f3e87f121742fcf15d3d63855b9f036425330f1125ad60c0815634a543bccc"
+        },
+        "component/flag/flags/circle/az.svg": {
+            "sha256": "3a8cb71ddcda6dab5ce1bc7217fba9d1e05d469da5566ae9e9ec390a68957827"
+        },
+        "component/flag/flags/circle/ba.svg": {
+            "sha256": "95837acead25ced90e9fe5bf4731fb82c29db72ce583a190d2d8a92fe257de5b"
+        },
+        "component/flag/flags/circle/bb.svg": {
+            "sha256": "7a2efcf6b74ac0a680964f2efe949d6f72e6d9c4967a5fa3cf4434163ecd2d4a"
+        },
+        "component/flag/flags/circle/bd.svg": {
+            "sha256": "d85f17db1d68ab07d76d83ebe2ed4674f745b5d1319a5ff5ff05ee1587044457"
+        },
+        "component/flag/flags/circle/be.svg": {
+            "sha256": "6e714420c3bf4b4c0bdd58523937f6243666f73bb0323f51317eca6bd2b9c9a6"
+        },
+        "component/flag/flags/circle/bf.svg": {
+            "sha256": "caf7459143556433c1ea2f906f148095bf81f103ee42a4174aa3a65b7c2147ec"
+        },
+        "component/flag/flags/circle/bg.svg": {
+            "sha256": "4e8ee2582896a759c67c9c0f66e1baa1bc32105567154d798b0b8fa9995dd719"
+        },
+        "component/flag/flags/circle/bh.svg": {
+            "sha256": "f63b8ba945e039c8cc23ba8c31afe9387267da767d4219479f8ccb30b671f2f6"
+        },
+        "component/flag/flags/circle/bi.svg": {
+            "sha256": "3e0aaaf10eb886351a487130f8c69fb775a59f0c0cd7a41c1323dbf4d21a2ad1"
+        },
+        "component/flag/flags/circle/bj.svg": {
+            "sha256": "130706d2a097bfc9bd2e3502eb721ebce378d24eb9704549f2a041e68dbfe737"
+        },
+        "component/flag/flags/circle/bl.svg": {
+            "sha256": "e47747e0c9ef6e3b520aebb69575ea133a8a3544be44781cbb0770327fbf94c2"
+        },
+        "component/flag/flags/circle/bm.svg": {
+            "sha256": "73fedb5fae4f5551a4ec46c4aa5723c07f5ab444bffc85ca725028b90366308b"
+        },
+        "component/flag/flags/circle/bn.svg": {
+            "sha256": "340e0fc9e3d99a3ad72d31f16734ee82e3de5c43a26c843341536beb00cc1b4c"
+        },
+        "component/flag/flags/circle/bo.svg": {
+            "sha256": "fd4c1c06781dfc1fbc8f102a2d17c869b5612bcce9fb25ba886ae217ee9fff27"
+        },
+        "component/flag/flags/circle/bq.svg": {
+            "sha256": "bc1884e40917410faf4716253074cdf667f62f652ba9f9d0e0c1619eaff81290"
+        },
+        "component/flag/flags/circle/br.svg": {
+            "sha256": "61719723d94d4fb4c41db484278ff3d2da3aa146707e0bdf4f0d12eb08a5e5be"
+        },
+        "component/flag/flags/circle/bs.svg": {
+            "sha256": "ee99e97d40d865be4b3f59c1fb8b0eaf7c214c01bea14118980a39c540aed1da"
+        },
+        "component/flag/flags/circle/bt.svg": {
+            "sha256": "0d9f11034bda8dc0f3dfde6a4600ef720d608a412d4d76db6d5053eb8158eb50"
+        },
+        "component/flag/flags/circle/bw.svg": {
+            "sha256": "bebb43f3d231f1e89d75877af69a5fe0768b535868c9b5f9e1aa20ddc6957895"
+        },
+        "component/flag/flags/circle/by.svg": {
+            "sha256": "3cc7805bd74ce3a80ce86c6a0f93175c28de39c9e1ece46fd5f82bc5d34834ed"
+        },
+        "component/flag/flags/circle/bz.svg": {
+            "sha256": "bcfb1d8ea433afcc05026d728f9eaff0331a3fa75b26792bf29ec0cfe9941e37"
+        },
+        "component/flag/flags/circle/ca.svg": {
+            "sha256": "d91b5b624ca181e6b894b37f172fdf6d39a1ce2f5933890fb80b30d03e66bba7"
+        },
+        "component/flag/flags/circle/cc.svg": {
+            "sha256": "2d23627c6bab3c07f81cde9c0d5fa693a4607098f7a7c04853783205b2d67a10"
+        },
+        "component/flag/flags/circle/cd.svg": {
+            "sha256": "6454fb1b5fd5823a23e9c729068bfcf25dc7f7352b78a9b73fb1888a23220e0f"
+        },
+        "component/flag/flags/circle/cf.svg": {
+            "sha256": "fdcf8c35535f476c7beec9d92c370eced78c0fdb0f87d647b8310d8b09353d9a"
+        },
+        "component/flag/flags/circle/cg.svg": {
+            "sha256": "d5f0b2d24a2e910102222a20ed5463d4f15864b6c1e862af1acca59808991fd2"
+        },
+        "component/flag/flags/circle/ch.svg": {
+            "sha256": "5fda8870b39a284577c23a46ff8a4de2d96b6d5bb6aa9ed37a30fad6cd4617ee"
+        },
+        "component/flag/flags/circle/ci.svg": {
+            "sha256": "7aba5134258187a05d0127a457945fb54c25a6d9230da50e8608186e8e89b6bd"
+        },
+        "component/flag/flags/circle/ck.svg": {
+            "sha256": "ed3ee4a161eab29d63987a8261bf950d2fcd9e30ac104bace74fcff048195004"
+        },
+        "component/flag/flags/circle/cl.svg": {
+            "sha256": "547d6811eec135f4a472e8d2efd5bb27ee7356a111672b8a6178fdbd6ab7c9b5"
+        },
+        "component/flag/flags/circle/cm.svg": {
+            "sha256": "ced1e8fc868227ba7688c4276bff7c6abff206b72df7e42f0ac5e3ed5087a3a0"
+        },
+        "component/flag/flags/circle/cn.svg": {
+            "sha256": "f0f9ed6e4d65e8cffe660b2dddc59b571192f187f63a7486a034fc208854b27f"
+        },
+        "component/flag/flags/circle/co.svg": {
+            "sha256": "c235fc79caebb2233b78efdcfeef702faf4edf510591e5298188bb4456eafc7e"
+        },
+        "component/flag/flags/circle/cr.svg": {
+            "sha256": "62c07ab94ae3cfbce368d90bc1919d6b0925a0d5a876ab0408c56c2d746c6b11"
+        },
+        "component/flag/flags/circle/cu.svg": {
+            "sha256": "95238da7e4c09d321a755c9acf03afa0667a7ddaf4734a0feb095cb87d65e204"
+        },
+        "component/flag/flags/circle/cv.svg": {
+            "sha256": "9313badd20f3ca097393378c05a5f46b9a8f3692b579a9033dc92e611aa74b6f"
+        },
+        "component/flag/flags/circle/cw.svg": {
+            "sha256": "74318808c0cbb65f8a6ee010a02ca18c42cab50266ae0f2a11a6668a335f247c"
+        },
+        "component/flag/flags/circle/cx.svg": {
+            "sha256": "82f3f6989b22a454a95e2c78030f7f85c7d7c747e2a8870182c6e9cab020b867"
+        },
+        "component/flag/flags/circle/cy.svg": {
+            "sha256": "788a24d4043bf92ce2b8d043e5f30b763a20864cbf934599ff2d15799b0f9094"
+        },
+        "component/flag/flags/circle/cz.svg": {
+            "sha256": "e6700538918f6b304d3019807233a1b88cea40c85ef8967ef213b3a1badb12f7"
+        },
+        "component/flag/flags/circle/de.svg": {
+            "sha256": "e7b2540ea9a755f3bb4806c58acc21013df76c1322252c649c3efb9392805843"
+        },
+        "component/flag/flags/circle/dj.svg": {
+            "sha256": "3a1b96d0f7c0aa510136a8a4b7b6bfc00d7592bd4a62c6252facb07018054f28"
+        },
+        "component/flag/flags/circle/dk.svg": {
+            "sha256": "5b3594b4f6bdae14a992c2ef449986b2886cde6ee46e06a16b2d91f6f792a2fd"
+        },
+        "component/flag/flags/circle/dm.svg": {
+            "sha256": "15b617a88f07e1f5634b88027f13987daa06d77a567ca038ffde63299bc5a592"
+        },
+        "component/flag/flags/circle/do.svg": {
+            "sha256": "a06c7bdf1fd61fde5af35cfbbd258e07e1f6270db85c1f484704666f7ee53390"
+        },
+        "component/flag/flags/circle/dz.svg": {
+            "sha256": "d0de1657d41d4615c2a4ba5df3c00a64dcf475f00ed141ad7d4daa31a7319311"
+        },
+        "component/flag/flags/circle/ec.svg": {
+            "sha256": "065673dcbdef1c16e98a1f79d721324ffced9aa890a5a98f7581bee82ae8e976"
+        },
+        "component/flag/flags/circle/ee.svg": {
+            "sha256": "43f6af00d945b83051a103341d6664ce6c859a30e3b7dab848431807c3acd1de"
+        },
+        "component/flag/flags/circle/eg.svg": {
+            "sha256": "c51196717350607c1c5f1dfe785c8f369dc042ce1221f606fa52021e251806a7"
+        },
+        "component/flag/flags/circle/eh.svg": {
+            "sha256": "1bf0891b51e07102df63151a48c0a54c37b702a4feece8778b9081e1a238ff68"
+        },
+        "component/flag/flags/circle/er.svg": {
+            "sha256": "6bdd744d44d71f59b978372b0b47a5654274739725d01aa9eb2394bf84cd2b3b"
+        },
+        "component/flag/flags/circle/es.svg": {
+            "sha256": "551d7a122991f01688f73773cd4c7eea5558fc91f25a68a438b4de7e39cab122"
+        },
+        "component/flag/flags/circle/et.svg": {
+            "sha256": "55fb3fd85fb071599dfd77ffe7311b60d72aee77dc9c1107b572ca3f9a8d2a67"
+        },
+        "component/flag/flags/circle/eu.svg": {
+            "sha256": "8c7c6c5a3a1f5a746aa39ccc2aee339ba2e44f1878ddba9cbc36b7b1ae9190c0"
+        },
+        "component/flag/flags/circle/fi.svg": {
+            "sha256": "d1e5461d3268973c8f94dbd788f6984f8e6652db8e8baf9f448af14c0921e436"
+        },
+        "component/flag/flags/circle/fj.svg": {
+            "sha256": "57f80e26c389601c6c7bf0e547a071681f278c74a0933a3b0ac2ec279407e108"
+        },
+        "component/flag/flags/circle/fk.svg": {
+            "sha256": "5962b66e702cf58b0af89843fbcce3e7c2aea9f7b75f58504e3aba35c75b9c36"
+        },
+        "component/flag/flags/circle/fm.svg": {
+            "sha256": "2cbc18e7ab8ed7c68b7c5d8c4f84e736ee431cc16153460efb4e5ed95d3d1483"
+        },
+        "component/flag/flags/circle/fo.svg": {
+            "sha256": "92293e58e8f099501f1e8c31530a030e0d1420e524556c0e33fe03517ca26b5d"
+        },
+        "component/flag/flags/circle/fr.svg": {
+            "sha256": "b034fb896a7616374bd7fbe7fbb361cb9d3afaf3519f964214f8695de5f1fdf3"
+        },
+        "component/flag/flags/circle/ga.svg": {
+            "sha256": "252d5a5e7cee5a084575fa1690d8dcc197e4648a8861aab4841c1151bac29959"
+        },
+        "component/flag/flags/circle/gb.svg": {
+            "sha256": "ef5eea56cf0f3b946e5f0c19936ebca5ef57b79795fcdf94b21649e6a17cb8f6"
+        },
+        "component/flag/flags/circle/gd.svg": {
+            "sha256": "c52f5bbb69fd83e4a24b2d8f79d5ba21a142709c29ee430048bfdc88840b8db7"
+        },
+        "component/flag/flags/circle/ge.svg": {
+            "sha256": "5c4624385f4f12043fecce41707f5075f1bfafab46729ffa5da1e93e4b89959f"
+        },
+        "component/flag/flags/circle/gf.svg": {
+            "sha256": "d69df44fdc71be517586e42fc5f06862b390c3c9c648f05dde35b792c8d64cc0"
+        },
+        "component/flag/flags/circle/gg.svg": {
+            "sha256": "f6f20e932b9939e90a6666f1e2e1f9ee4e8e2b08f3600d71587ec6ac1e42b861"
+        },
+        "component/flag/flags/circle/gh.svg": {
+            "sha256": "cdd519a3174b73f1e5b74228b78804948be76de8b33ea21190298aef33dd24b4"
+        },
+        "component/flag/flags/circle/gi.svg": {
+            "sha256": "07dda0746df7a5b0c7e95ac919f111dce9f89d50be0ff4f111fd34ff591e128a"
+        },
+        "component/flag/flags/circle/gl.svg": {
+            "sha256": "6f42dd9b4534338ccbf489c96bac688b5ec5e12f80583e9c4b865c75893e091f"
+        },
+        "component/flag/flags/circle/gm.svg": {
+            "sha256": "72a6bfc931bfcbad89de498a1e87c51e61e7cd9dd762a1ea27c0d8343b10f3ce"
+        },
+        "component/flag/flags/circle/gn.svg": {
+            "sha256": "8b00c70bcdd97dbfec23f20bfa2a3a8d07e1430935474f2fca7769eac98b2993"
+        },
+        "component/flag/flags/circle/gp.svg": {
+            "sha256": "8aaaa0b7569e2385774964ffc4b0dd89fe5ae1f329bea09069a14d2ac0bc5e77"
+        },
+        "component/flag/flags/circle/gq.svg": {
+            "sha256": "17c5c28d12f2ad425579fc5a47fe68669caf82ce353871e13484ed5022bd0b19"
+        },
+        "component/flag/flags/circle/gr.svg": {
+            "sha256": "bcfb4c6e09011b787716aff088c2eb4f12f0c84bc2632a8f6833ee17cfeb2f0c"
+        },
+        "component/flag/flags/circle/gt.svg": {
+            "sha256": "674e8305ee9d7004366d1133226432eb2395a9efcfafa94d97aa7362379badd7"
+        },
+        "component/flag/flags/circle/gu.svg": {
+            "sha256": "e1e9b5dee32b301fa8305621e60bdbc5b8457d58b925791925f41de1d1fce4a4"
+        },
+        "component/flag/flags/circle/gw.svg": {
+            "sha256": "f8be2109b4ab48ae3198e78e955bcc61f354cfc48e30eb1cab79bc93cf837579"
+        },
+        "component/flag/flags/circle/gy.svg": {
+            "sha256": "beef20841ca24b461a11f7e19aeb4126aba834f76dd010316ffb5bf3aea3e783"
+        },
+        "component/flag/flags/circle/hk.svg": {
+            "sha256": "5407a6c596bf6e6429bb9b938d57e56741e4e06cb1a014646373bcc7f34a6b44"
+        },
+        "component/flag/flags/circle/hn.svg": {
+            "sha256": "8511517cdd345d402af2ddd982797a413794c4e54e028bb3de5bba05323d4674"
+        },
+        "component/flag/flags/circle/hr.svg": {
+            "sha256": "4454415fc33a522542acc6db1fea494cf54f0a42a44c89fd61fc9e1fcdd78853"
+        },
+        "component/flag/flags/circle/ht.svg": {
+            "sha256": "e4a97ee8e6d43cd64bf5b3af00ecc3f988b9c0f73c00acec65fa111b2b4fd62e"
+        },
+        "component/flag/flags/circle/hu.svg": {
+            "sha256": "3f585f01f6198ed8c0c774e2a055802269463c0887c3b13528f2b582be25b8e0"
+        },
+        "component/flag/flags/circle/id.svg": {
+            "sha256": "ce29d5fd4fc368f581be4743e6e40a7ffc54e4430e63911ba9cbb9751e00f1a6"
+        },
+        "component/flag/flags/circle/ie.svg": {
+            "sha256": "1406f2e039f9e19484863fb4b2392902515d072069be0ac2d38eba98246cb600"
+        },
+        "component/flag/flags/circle/il.svg": {
+            "sha256": "7bbcbfefafc91b162448c4049b1c052953998499dcf1e0c29cde63ee63e7967c"
+        },
+        "component/flag/flags/circle/im.svg": {
+            "sha256": "3f9aac1dc615b3580267f480a4f9700ee7103d3852c71505c03475041ad30b49"
+        },
+        "component/flag/flags/circle/in.svg": {
+            "sha256": "b15347962e58f658c555da41a5f064207094f3de6d9a01d85b566de9c21293d4"
+        },
+        "component/flag/flags/circle/io.svg": {
+            "sha256": "48671babaed8bb8b9630a180cd242a4d5c9bfd51d8baa63d23138f96c0640d23"
+        },
+        "component/flag/flags/circle/iq.svg": {
+            "sha256": "07ded0fd7c027df15447facef97baa765bfb06d55a820881c89183470f4eb29c"
+        },
+        "component/flag/flags/circle/ir.svg": {
+            "sha256": "70393d5302c616d8c8ad5397882605f6e657aafe1b5cd7c5c0215be462bb45e3"
+        },
+        "component/flag/flags/circle/is.svg": {
+            "sha256": "517f0adddd1fa2642749e9685faf36cf56471e00b78808651c78b698fc7f7c63"
+        },
+        "component/flag/flags/circle/it.svg": {
+            "sha256": "bbe92f5889d4b4e6a8d66bdf58e53f294a5c49bbe4cf8ce049eedd56bbc1ca88"
+        },
+        "component/flag/flags/circle/je.svg": {
+            "sha256": "a4a907e8c680d783a30d8e2a3c7feed4945ecc6c03dcb90f69991e445c5dee73"
+        },
+        "component/flag/flags/circle/jm.svg": {
+            "sha256": "05877f93e10d517e7b3325579fba8df51b8474c35ae49017e80fb2d96e28b2f9"
+        },
+        "component/flag/flags/circle/jo.svg": {
+            "sha256": "82a9f5fc53fd2a52f65962c9c92ba708f31955b2170009697ffd75aaf91fdc52"
+        },
+        "component/flag/flags/circle/jp.svg": {
+            "sha256": "007816e8a63c76901c4cdffb0101b8ede8a784a0809cc39b78de225fdea38441"
+        },
+        "component/flag/flags/circle/ke.svg": {
+            "sha256": "0656c9d6dccfd8a17e3a17bcec341aa6392f6d658f985aac6340e766ef3e909d"
+        },
+        "component/flag/flags/circle/kg.svg": {
+            "sha256": "c5d89da020e0a37d1edf3ccc8b10c3aef86b44443a8ba323fb290a67da5d0293"
+        },
+        "component/flag/flags/circle/kh.svg": {
+            "sha256": "a5bb0e49008273fdcd6dee9e4461212df0a940eb0ccdc937d3a90f89f81a4fe4"
+        },
+        "component/flag/flags/circle/ki.svg": {
+            "sha256": "51442413a97857146934b2d8aac89ac9172f1cdd174c0e262b86512daed793ef"
+        },
+        "component/flag/flags/circle/km.svg": {
+            "sha256": "4892f58643f948837b10f28dc3748b5c8948ba8f3a4243b4481e7c3c8fd08602"
+        },
+        "component/flag/flags/circle/kn.svg": {
+            "sha256": "305eab8acd34fbfa59faa4797134c0d0cfb9895fd978ce13ed0d8fc4d8452dce"
+        },
+        "component/flag/flags/circle/kp.svg": {
+            "sha256": "3c702c33da3bf0c51dfab06be7ad3ff03b5d6b11556bfc1fe57f4127ef9e4b0f"
+        },
+        "component/flag/flags/circle/kr.svg": {
+            "sha256": "2c5b6eba9176d9f6070eabcb445f0d6ad01ad4b9e534c34b75f5a672cca25624"
+        },
+        "component/flag/flags/circle/kw.svg": {
+            "sha256": "e230986d729587d0ce3593b37ad1d29971f962faff529ce98feccb381d339cd6"
+        },
+        "component/flag/flags/circle/ky.svg": {
+            "sha256": "defc523f9f73a0e31c9810c471b34e2d968591f274e18cfb3bd7aa03eed0e5cb"
+        },
+        "component/flag/flags/circle/kz.svg": {
+            "sha256": "7ae1a90001a2556edd8b8a151ec24e58c4b8f7664c2528eacea3f5bbc8ae671d"
+        },
+        "component/flag/flags/circle/la.svg": {
+            "sha256": "78e320f1a28ee1be00381967faabdd060c191809d1d15f52009edf7f12a3fad7"
+        },
+        "component/flag/flags/circle/lb.svg": {
+            "sha256": "d3a59de354e9edb028eb2bbd3835cdd2dc1c648ef2edfb1c40ff5b3ceae79311"
+        },
+        "component/flag/flags/circle/lc.svg": {
+            "sha256": "6bf3c9120a663158381b8f2bcddbbc0620c31fa3660a814336ab905baa6bb71d"
+        },
+        "component/flag/flags/circle/li.svg": {
+            "sha256": "be132b9b702f72c094f47ac3966479d6436b34a57c38386f158f29458ee3dbed"
+        },
+        "component/flag/flags/circle/lk.svg": {
+            "sha256": "9288640f1d690a531dded84d1c119dcfd4db5fa6fc23e15ec633d1beff48adff"
+        },
+        "component/flag/flags/circle/lr.svg": {
+            "sha256": "8d3be9a03faf700d6ef11f1c16aea582877d41fc0dc8b34bc2c19986bddf1636"
+        },
+        "component/flag/flags/circle/ls.svg": {
+            "sha256": "cfea273291fad9e00882ff7e43e33a4371f6bf2a5a487ee13dde055e54a027d0"
+        },
+        "component/flag/flags/circle/lt.svg": {
+            "sha256": "03ae1ee1bf347d09bf3a7b9a259ebb16decbc5a28ad4a49e053ad2b402cbfd82"
+        },
+        "component/flag/flags/circle/lu.svg": {
+            "sha256": "b167e7d04f9392a3a7fa17f9fd279e0a4c81a6ebbffb944ae7938d3d99d8e87e"
+        },
+        "component/flag/flags/circle/lv.svg": {
+            "sha256": "85baf7615aa3d47155116710f22b0ebdb043e9b0dc93399bb1d06558140ec921"
+        },
+        "component/flag/flags/circle/ly.svg": {
+            "sha256": "e922c3a8a5c8fe9218ce3706357e1126f4f760cf71d2ab9b7649e7ebb96a86b0"
+        },
+        "component/flag/flags/circle/ma.svg": {
+            "sha256": "961bfdf7217c4b0745a56ced85e838648f0ce1c576b9d6d0084d75447e19a067"
+        },
+        "component/flag/flags/circle/mc.svg": {
+            "sha256": "5dc455dc200fe6be78c1cda22764bf60ba1e46a4de80857ede8e7174d659a5d8"
+        },
+        "component/flag/flags/circle/md.svg": {
+            "sha256": "d4b5be92bf92b7135558f83ebb30708bec6867fc5d8541398cff702b3aa984d5"
+        },
+        "component/flag/flags/circle/me.svg": {
+            "sha256": "7b321860c3b7f2deaa1d61b7cb02c80c349d17e57463800a9cd2c46ebd52d194"
+        },
+        "component/flag/flags/circle/mf.svg": {
+            "sha256": "0333a7d79cfb62aeddff047d2d39c165cbdb03c45d6712cafb32989d2e479508"
+        },
+        "component/flag/flags/circle/mg.svg": {
+            "sha256": "9b52bb3661baa5cfdceb824d2ce61f7d6274d89372c8fd30f9595fa939fda222"
+        },
+        "component/flag/flags/circle/mh.svg": {
+            "sha256": "d14aa75b6e3112ebff05dda31a97080a53f9ed8703a587d5bc6720e062b899a2"
+        },
+        "component/flag/flags/circle/mk.svg": {
+            "sha256": "834b7841c8269f4d1ef3caa6c3ca413518db7a6c7f032c802a36bcfc08565047"
+        },
+        "component/flag/flags/circle/ml.svg": {
+            "sha256": "d1c00e5e206308118f13b8a6bf1b70f6b3a472300382cea78940919966a8b3aa"
+        },
+        "component/flag/flags/circle/mm.svg": {
+            "sha256": "8c3c38ef513c1c1e566c5fc528d9ba82b0e593d2274f281543dfd1fcd102b380"
+        },
+        "component/flag/flags/circle/mn.svg": {
+            "sha256": "8c000905efa9f661dc927e89c2b66ae4d22dd3ece81d58421f6b9a7dd87ef419"
+        },
+        "component/flag/flags/circle/mo.svg": {
+            "sha256": "a848fe1989b939261f165f23a794d80bd707b0e0cf0165cb9819ed2bc3ff6ad2"
+        },
+        "component/flag/flags/circle/mp.svg": {
+            "sha256": "518a8ca79d57781672f6dc275495523f3ef9d1a0f75a911a19e0186819d9bdd6"
+        },
+        "component/flag/flags/circle/mq.svg": {
+            "sha256": "f60208a677f3d14a6e8c8f6ff3a63adab3deec727daf095e2798ad0cf4604626"
+        },
+        "component/flag/flags/circle/mr.svg": {
+            "sha256": "0f97781d3326adf6b843511605127b235ab2b85a674406c53b7ab704dab2d181"
+        },
+        "component/flag/flags/circle/ms.svg": {
+            "sha256": "efddf15aafac5004d1d8702a808498f90b797de68415076e33783349db657a08"
+        },
+        "component/flag/flags/circle/mt.svg": {
+            "sha256": "5e3d1268a2deb3e6be40d8662e3bfe8df3719509be0ac92e115f011a047f9f87"
+        },
+        "component/flag/flags/circle/mu.svg": {
+            "sha256": "d7263245957c160912320c3b45842c6934a7f1dfc0382bd463d858928a527533"
+        },
+        "component/flag/flags/circle/mv.svg": {
+            "sha256": "b9747b12ed7f62cf1ebc818893bc0880384902cb1184ae9ed43c15bbe1254984"
+        },
+        "component/flag/flags/circle/mw.svg": {
+            "sha256": "ca19c8e0a64d5145fcf7c8567d8b3f9f701d6680663cb872d0298b5f2e6cb3f2"
+        },
+        "component/flag/flags/circle/mx.svg": {
+            "sha256": "b142326a740386a8286b92ffd65c77cc08f47e2a50439d0000d709c082e83ada"
+        },
+        "component/flag/flags/circle/my.svg": {
+            "sha256": "15ac378ae275e122584967058919bcf5df1076e2eefa7a9ae68fc5cfda764ebd"
+        },
+        "component/flag/flags/circle/mz.svg": {
+            "sha256": "6c7ad9ec90a3177aae257f929c77afe0054bba0d0be514fdec69642dd5fce65f"
+        },
+        "component/flag/flags/circle/na.svg": {
+            "sha256": "8677ecd01512794ba202436d01f3dd51ddabe16c2a7c45a8fd3f1be7b4848bd2"
+        },
+        "component/flag/flags/circle/nc.svg": {
+            "sha256": "be5da2f19fa7ccfce260e79f9ac18c25dfc21ce5647fd27559a867c20114803b"
+        },
+        "component/flag/flags/circle/ne.svg": {
+            "sha256": "7321bdc08e86a026608453e2d3435e7e3ffe62d88d0febe93b61dd854385bfa3"
+        },
+        "component/flag/flags/circle/nf.svg": {
+            "sha256": "12ebdd30b02bf93850f629ff6d98d510faa6b6c25438450984576e4346906df3"
+        },
+        "component/flag/flags/circle/ng.svg": {
+            "sha256": "e0f4b823ff8a1ec9b67b431ae4ce1c9cee6d99f3ec9b2da096d842ddcbd69924"
+        },
+        "component/flag/flags/circle/ni.svg": {
+            "sha256": "76fe442a119f120ebb45dc2e419ad3776b99b30ec52cc6f80ecd3eb7247017e3"
+        },
+        "component/flag/flags/circle/nl.svg": {
+            "sha256": "575c8e1ba5f123dc8e68fdb2e5b106c2ba2a03e5576db97f3d8dd0ac492aba9c"
+        },
+        "component/flag/flags/circle/no.svg": {
+            "sha256": "d1274bf872544c60c692f13f49df123bbc8c59fb2f50201b8bf40f39be9602b9"
+        },
+        "component/flag/flags/circle/np.svg": {
+            "sha256": "34375ea03fbc0679964a4b05e024704b2c6759c3229caba3ac3a16908d3b41c4"
+        },
+        "component/flag/flags/circle/nr.svg": {
+            "sha256": "782cac74873ceea0b6b0f7450fe5152ca27546e29e983ef6d96fa13509dce224"
+        },
+        "component/flag/flags/circle/nu.svg": {
+            "sha256": "d99dd92d7252b8f323f3713269eb8c4232264d53323b2bd89dbae1aaf94ee3ff"
+        },
+        "component/flag/flags/circle/nz.svg": {
+            "sha256": "99e66ded8bd2d97dfcc08c2e0d07bd12f68966503030ca4ac6bea78116493149"
+        },
+        "component/flag/flags/circle/om.svg": {
+            "sha256": "181eee54460a68f36d12dc1a4bee63c5014804828bf59ce21962d17876bb711f"
+        },
+        "component/flag/flags/circle/pa.svg": {
+            "sha256": "3d05e826ff78d5e5dc90dec9397d4e160f28ba6222e54350633bdcba4db5a32c"
+        },
+        "component/flag/flags/circle/pe.svg": {
+            "sha256": "0bee926d5398cee097bd4b188e1d6e8f716228e88f8a50dd016d32d29264feac"
+        },
+        "component/flag/flags/circle/pf.svg": {
+            "sha256": "495dade5f79cd39a985005e0944c03353d7e6308101dec103caa1593898c4d6e"
+        },
+        "component/flag/flags/circle/pg.svg": {
+            "sha256": "760fe706391915be2ea16b0f374f00566a34018a506843042d94a9ce71b882b8"
+        },
+        "component/flag/flags/circle/ph.svg": {
+            "sha256": "016877848e72e83b081e7d65398dfedcdcb6f8970e60140a6233c5bc8be47e9e"
+        },
+        "component/flag/flags/circle/pk.svg": {
+            "sha256": "a355b5e888264ce0c9fd4a15a1030034e74ca410eff3feac0a888984abea3d84"
+        },
+        "component/flag/flags/circle/pl.svg": {
+            "sha256": "12399b347660267727429f72c38cf22a87b8fd274dc99a0eeaad2a13d8999c2c"
+        },
+        "component/flag/flags/circle/pm.svg": {
+            "sha256": "4700bc31d59a284ea9353cc65ca2c22f76cc0e0150209e177d375dfd37c9778b"
+        },
+        "component/flag/flags/circle/pn.svg": {
+            "sha256": "fc0e46f60caea7733df37f1f0123e999af241407fc0263b1201f99125655ec72"
+        },
+        "component/flag/flags/circle/pr.svg": {
+            "sha256": "78ba3b2ce92e9413af537d61df5cd09364b2ee1701ae83624c8fc63ce0d2485e"
+        },
+        "component/flag/flags/circle/ps.svg": {
+            "sha256": "194f21c3a9b082f2459aeb06e5a14d93f9cbcdd08d3378c7558218f326a63c87"
+        },
+        "component/flag/flags/circle/pt.svg": {
+            "sha256": "ae3b87d3062c2460ef5c5b93cdfd842bd532cab8c8e6931597766470124a6be8"
+        },
+        "component/flag/flags/circle/pw.svg": {
+            "sha256": "911193aed256739ccce05ba5cfdcef83de5cbc9aa30d5733d47c5b95f8984be6"
+        },
+        "component/flag/flags/circle/py.svg": {
+            "sha256": "4e13ce17fa45510e4aca6e666d530d487e656d618944c24aa58ad6cdec54b10e"
+        },
+        "component/flag/flags/circle/qa.svg": {
+            "sha256": "873ebfba201d68d5d3d4b62b8fe795500664247d4610300030a55f32d8098a75"
+        },
+        "component/flag/flags/circle/re.svg": {
+            "sha256": "e29d959cdca8b2b4e283c4abbdf59bb0111086cc24d15e3fb6bd610fe431035f"
+        },
+        "component/flag/flags/circle/ro.svg": {
+            "sha256": "e06fc922c15c82bc406c66b85ebd49313b668d7d2a6f76e1c8c139d82212f539"
+        },
+        "component/flag/flags/circle/rs.svg": {
+            "sha256": "68c0eea747b30f1bfa8e3ad4c48837741e96e400596a19ca65701fc62f424874"
+        },
+        "component/flag/flags/circle/ru.svg": {
+            "sha256": "706b3b2472bf6ace69e2e431da0489adc811de805bb39c765cef915be831ced5"
+        },
+        "component/flag/flags/circle/rw.svg": {
+            "sha256": "61281dc499d214baa62d1af155cb9bc31777206f50a0d3a3700cf637db864297"
+        },
+        "component/flag/flags/circle/sa.svg": {
+            "sha256": "90ae87a3013ad9d2c775126f3a3204a657d6f127d17cbc94b23f66fce2f600b8"
+        },
+        "component/flag/flags/circle/sb.svg": {
+            "sha256": "008c3be985031f200fd4fa8e3db8f651f9c1a7a1611281ac672cd5307ddeefc3"
+        },
+        "component/flag/flags/circle/sc.svg": {
+            "sha256": "dd7b0ecfefdbf1d031cda03d2771bbf1f3776c207a7eb0ebdbb54c2e2264a5f2"
+        },
+        "component/flag/flags/circle/sd.svg": {
+            "sha256": "9a959ded162746fde430f0681432c1bd3b24c6bcf73de4e68c37b517d80a6ee2"
+        },
+        "component/flag/flags/circle/se.svg": {
+            "sha256": "9518acc58f1441ec159d76f57e932d392399d7df53a6d3a0776e7ce951afd9e8"
+        },
+        "component/flag/flags/circle/sg.svg": {
+            "sha256": "02c7fcd651939fa5e172e46fda83931093c8d07a296016bd03a3c9501b2d41ef"
+        },
+        "component/flag/flags/circle/sh.svg": {
+            "sha256": "4de4d0df4e7a466b617dff4de1e1034efb06d75e91ee03f5f72ac11e0761f033"
+        },
+        "component/flag/flags/circle/si.svg": {
+            "sha256": "cbb2f1dcd69ac3cfd9574121dc4332884fb426f1911661a4e8d8923e24ec1562"
+        },
+        "component/flag/flags/circle/sj.svg": {
+            "sha256": "11eb31233ba370329bc2500dabcb97c87b1024ed3376f0dc680138cafaef1c53"
+        },
+        "component/flag/flags/circle/sk.svg": {
+            "sha256": "22fbe7b3f44a8aaa0a15296cac5fee0999ebce0eea88c5fdfd0d3cff8295aea2"
+        },
+        "component/flag/flags/circle/sl.svg": {
+            "sha256": "9929e3d059c4a3d530ecaea8ff69f73e3eaf7aea174beb497cce06313c8b4ae4"
+        },
+        "component/flag/flags/circle/sm.svg": {
+            "sha256": "8b24c18ba510ec6716e7f89ece9467e0dc2bb24610d7a8141f602693e46d09da"
+        },
+        "component/flag/flags/circle/sn.svg": {
+            "sha256": "5c6cef39286059274b5c2e4f4db0f8e6488e1339bb040483b2699e04f43b612a"
+        },
+        "component/flag/flags/circle/so.svg": {
+            "sha256": "3f874b111c8e68fae617938e47d8d1e86ff21283defab8a50cb2353eb2c826a2"
+        },
+        "component/flag/flags/circle/sr.svg": {
+            "sha256": "5d53cafaebf6be5c9a83ceadacf248634020842e0b079e9e1f7a86631a261664"
+        },
+        "component/flag/flags/circle/ss.svg": {
+            "sha256": "4010512d3444333ee95161c7019bbf9748f8b046053f47e1aab45a3a1af5d5d5"
+        },
+        "component/flag/flags/circle/st.svg": {
+            "sha256": "94deef2a5c08f03442d9db7385f6c771a8d4b21db4e0b6e7b94cbbb5519046a6"
+        },
+        "component/flag/flags/circle/sv.svg": {
+            "sha256": "635f7091b24cc6d6bd6955009f6ce83baf8c705c716b13ffa23c6dcc6baf7d83"
+        },
+        "component/flag/flags/circle/sx.svg": {
+            "sha256": "133adaf9297504f6b587e657e5969bfa097eea6f1efa5246fed872e09a014abf"
+        },
+        "component/flag/flags/circle/sy.svg": {
+            "sha256": "be9dae783719a0cd57047f04cf0c33224ba2b96f8cdc7d9386aa60dde6684afc"
+        },
+        "component/flag/flags/circle/sz.svg": {
+            "sha256": "38165e4c707bfd04d94f4e3d422e81efcde36151366a23480364bd5e8225e82c"
+        },
+        "component/flag/flags/circle/tc.svg": {
+            "sha256": "c662890906e11ea6f90fa026f0a61d2748df58a4d57c628fa8ea0a22ef73c947"
+        },
+        "component/flag/flags/circle/td.svg": {
+            "sha256": "0cd8b52ffa176b183830975b9f5f610c99b2fa8cbcda37228915d76c4d96f94c"
+        },
+        "component/flag/flags/circle/tg.svg": {
+            "sha256": "3ed856aa077801ec39f6cc3e4d9984889e324aa463f3e08f2bdac84d262db2e8"
+        },
+        "component/flag/flags/circle/th.svg": {
+            "sha256": "91b5727f3ddf0961f5e9bec12f5fe64b0742a4a437d1db2e4ae268bcdd6c6ec0"
+        },
+        "component/flag/flags/circle/tj.svg": {
+            "sha256": "bf4afba944ead0f3f06c753b280b19c96f7c214fad3c0c82c344811223cd9ccb"
+        },
+        "component/flag/flags/circle/tk.svg": {
+            "sha256": "e464e4c202121e0ddc5d524d0f8f07feb5d8d8d3f5a2718bdf57a709fadc5d90"
+        },
+        "component/flag/flags/circle/tl.svg": {
+            "sha256": "b4df0ebf75d16b4af0d7d9cdc2cca6a45e6caac3da2e540a983b017056699ed9"
+        },
+        "component/flag/flags/circle/tm.svg": {
+            "sha256": "adfa423e12366ea185b52bdb0c466fb54262670715007084c364d233bb769e83"
+        },
+        "component/flag/flags/circle/tn.svg": {
+            "sha256": "01a2dfa938ddb4152974b3bd5db597f80eb025e4a4ccbc27917274c63791b7d9"
+        },
+        "component/flag/flags/circle/to.svg": {
+            "sha256": "97d2366a536ca58db1eb8b95ecf560a4d20face90a1d91476b33a7f0d7f500d4"
+        },
+        "component/flag/flags/circle/tr.svg": {
+            "sha256": "4083c0928e442ece67c32d26569f3ccfbb966dde19afabcd8e7edb5b3e09723f"
+        },
+        "component/flag/flags/circle/tt.svg": {
+            "sha256": "fe1c57c2033f3e99d9d0f21d0e2085a1a9509ecebae8ab0d5e036339fa6f594c"
+        },
+        "component/flag/flags/circle/tv.svg": {
+            "sha256": "b1ce8919ce84865fbb6849bc579df7e74dd620f358ffbd98cf5eac4efcfb7f0e"
+        },
+        "component/flag/flags/circle/tw.svg": {
+            "sha256": "c9ece3568dc8a4b321181981e80e3fba10d30f02455d3cf73a0ddd4af756f4c3"
+        },
+        "component/flag/flags/circle/tz.svg": {
+            "sha256": "1ce2553bc60b2d2bb90a19586c5f94f9a478af6eb039ec42a5c16c8a04b0700b"
+        },
+        "component/flag/flags/circle/ua.svg": {
+            "sha256": "3b105df8a25c4bfae41e90ee5caf707449edb0dab181140a70f17ea13e94f9fc"
+        },
+        "component/flag/flags/circle/ug.svg": {
+            "sha256": "e20ac12bf011f3414424fa99f1e0de4cd7ad54cd9a0e8e63334610f897d62da8"
+        },
+        "component/flag/flags/circle/us.svg": {
+            "sha256": "10537184f7743b1b41e8f34d33894713b123717ace6e1e130270c96b6885b1ae"
+        },
+        "component/flag/flags/circle/uy.svg": {
+            "sha256": "5530c438d3b691b07863aef22ebc16e1ba1e241326c6c9118e779161922db02e"
+        },
+        "component/flag/flags/circle/uz.svg": {
+            "sha256": "ccd15b319f135110bebfdb1f9f63a01108baac9cab5117b387c38372ae497ff3"
+        },
+        "component/flag/flags/circle/va.svg": {
+            "sha256": "37dfc23113b369e9b06788a31ce014c8ae0fa8a58a3fd4e156277e91557c9efe"
+        },
+        "component/flag/flags/circle/vc.svg": {
+            "sha256": "ececc604e7ae9d487288d28d8c251cd1f1cbce60ac1656df1840e0c3f2e13cbe"
+        },
+        "component/flag/flags/circle/ve.svg": {
+            "sha256": "3c9f1f5e02ddfc560675b8042635a55ce13a91a3df17028e88b3905d3b311560"
+        },
+        "component/flag/flags/circle/vg.svg": {
+            "sha256": "be16f8b2238f4b7e252b7d089c40c2f27cb40dfed0f3aaa16c09d8080dca8547"
+        },
+        "component/flag/flags/circle/vi.svg": {
+            "sha256": "f690e43b09582217aa4eac6d6f1e766e860e9c9d5bba782965b708ce6cd7703d"
+        },
+        "component/flag/flags/circle/vn.svg": {
+            "sha256": "6b964dee0ed11e0cd51277372612effe3af0f4fade1642f91d1bed45e8d4d24f"
+        },
+        "component/flag/flags/circle/vu.svg": {
+            "sha256": "ad08e72980d3851e7332729bdabd352f9919e90bbfa48f63d47fcdcf482a06ca"
+        },
+        "component/flag/flags/circle/wf.svg": {
+            "sha256": "a67e84d3f2449da7e60245b3212701dfb3af9f361ddf38a80b3ff2a5a27a1501"
+        },
+        "component/flag/flags/circle/ws.svg": {
+            "sha256": "5f2fb731888679c4942ece5459ab0aea9b4707b02d0eef174a664659b5d8382f"
+        },
+        "component/flag/flags/circle/ww.svg": {
+            "sha256": "c9623963f8cb46f356998ba06bdc9219a6b4e9de42370933118745118cf1856c"
+        },
+        "component/flag/flags/circle/xk.svg": {
+            "sha256": "ed6e5f66b3387878e4882acc0f65803eb1d9c43f3be60acfa68601c67bf33be5"
+        },
+        "component/flag/flags/circle/ye.svg": {
+            "sha256": "551282e09752ae31c0b9484bf8997c3cfa7fac987c6c01390b3c3944a04d846c"
+        },
+        "component/flag/flags/circle/yt.svg": {
+            "sha256": "ba29f09afb6f3cc12f84d768e32d262a9ea2c1605e5882af5a0b260059e9aa72"
+        },
+        "component/flag/flags/circle/za.svg": {
+            "sha256": "6bee860addb5482370bdddda36aba0904f2643d6f20fd198c162bbda023e83e6"
+        },
+        "component/flag/flags/circle/zm.svg": {
+            "sha256": "4f1077f83173dfceaab7ebcf1a74c322decf0247a6952b4f1f04c4afc3def64e"
+        },
+        "component/flag/flags/circle/zw.svg": {
+            "sha256": "801d0ed16a56d8d3854aeac0b176cfbb30605a3c55a257e2723a58057818810e"
+        },
+        "component/flag/flags/index.json": {
+            "sha256": "bef2c6392dbb61beb8428ea2edde80e0646056d7d02a1636e265476aea706f24"
+        },
+        "component/flag/flags/rect/ad.svg": {
+            "sha256": "5568e7c4b48e4a8194e86184a45382bb01397be511d2cb85a630b60f0172bb5a"
+        },
+        "component/flag/flags/rect/ae.svg": {
+            "sha256": "a56d10df19aa0f7a70f50a1d26988ec269ab8b49b19218dc6fe95d9be74c44c0"
+        },
+        "component/flag/flags/rect/af.svg": {
+            "sha256": "87b0d0bb783e925f6a7df0bae58d574e8663f8d6657bae84abae59a217607875"
+        },
+        "component/flag/flags/rect/ag.svg": {
+            "sha256": "ed95b5ad0a46721d08925a0587560db0836a7d0db63e0e4c0637da88a3dd50b2"
+        },
+        "component/flag/flags/rect/ai.svg": {
+            "sha256": "5247848d8c3f8336af1a02c45b1a2ec0ad6e2a75e3064296ca1c488ca44d7865"
+        },
+        "component/flag/flags/rect/al.svg": {
+            "sha256": "f2af3bd4d3b42b94b84d3f21b594988aa7d4b228e8613bd9a3aa7b058c8c2bb3"
+        },
+        "component/flag/flags/rect/am.svg": {
+            "sha256": "93dc50125d8256423ab3286c63afc3a3860f66dfaba969fe8c05b1a0405e51af"
+        },
+        "component/flag/flags/rect/an.svg": {
+            "sha256": "129ed0c169a6d550ae37d6a4e1a26792b7f5a730f594cc3c1455f76873cb7d22"
+        },
+        "component/flag/flags/rect/ao.svg": {
+            "sha256": "c8f104e50a9503a99e1978c5327823c6f7ef96b94cafdd30c3765192cc3e74a3"
+        },
+        "component/flag/flags/rect/ar.svg": {
+            "sha256": "33878b7711c2e4117586cd8c606809327dd7790b8fead8615d15e6de758fe6eb"
+        },
+        "component/flag/flags/rect/as.svg": {
+            "sha256": "705c77e078a3fd0f7ae48d8b60a64d9859f125ff8251082a564fb33b0c936f8d"
+        },
+        "component/flag/flags/rect/at.svg": {
+            "sha256": "9779ad477617bdc473d70148b4a43a9c820d775be646f9d2848c1312e21e36dd"
+        },
+        "component/flag/flags/rect/au.svg": {
+            "sha256": "a0d587eb238171f3afb92089cc3124a7093ea60136bc36eb66b30b136491709e"
+        },
+        "component/flag/flags/rect/aw.svg": {
+            "sha256": "cf7332057388df1622fdff853b26198feae3667df58b23a3729d135af95f2d3f"
+        },
+        "component/flag/flags/rect/ax.svg": {
+            "sha256": "1759cdfdc7f45b10caaf328777e2bee6b28a52ce851e559fe9c51ed7c4d5401d"
+        },
+        "component/flag/flags/rect/az.svg": {
+            "sha256": "bc97ff81c4c1cff83587570165020d4cf891217cbd7809b111a65b545d6a3c71"
+        },
+        "component/flag/flags/rect/ba.svg": {
+            "sha256": "9a08266b21ab5ef2d16463a5c94445062a8a759ae195c26eb80dce6d059c4cb2"
+        },
+        "component/flag/flags/rect/bb.svg": {
+            "sha256": "de07cd4067724ce65a9fa3b341d65924f85783921a6ea231887006a218bb0461"
+        },
+        "component/flag/flags/rect/bd.svg": {
+            "sha256": "807c3fa02129ef87a1abb3146e9d6915b29cf61644bbce43997e99f3e83bffd3"
+        },
+        "component/flag/flags/rect/be.svg": {
+            "sha256": "3ff29922b1c25c20082ce24570e98d2b3d3dd17ac75551952db576b8a0b441bd"
+        },
+        "component/flag/flags/rect/bf.svg": {
+            "sha256": "21cea5f7e35b332cb2363edbe2ea66144544d7eec0de125273b258205508a64f"
+        },
+        "component/flag/flags/rect/bg.svg": {
+            "sha256": "d6f05b6588634d236d0912bb426dcb0f6be0a5c29c3ef6e4905eaf808810a2a4"
+        },
+        "component/flag/flags/rect/bh.svg": {
+            "sha256": "743eac93ba51556a6950155fddd0e6ee3962a17978a153f1a62337ef9bbb2d91"
+        },
+        "component/flag/flags/rect/bi.svg": {
+            "sha256": "3a815ad9b98d6a02357daccddb3e6df367ceb5fba77c8873ca18f1c2e72a234f"
+        },
+        "component/flag/flags/rect/bj.svg": {
+            "sha256": "894d4281e07e24c244eb23d2e0c9f75b2942a3559980b8a31ce886f221b0787b"
+        },
+        "component/flag/flags/rect/bl.svg": {
+            "sha256": "490eaca2b5600cc4955ff1607f075fc7d97897cd69dc5a1ab331a4d2901261f3"
+        },
+        "component/flag/flags/rect/bm.svg": {
+            "sha256": "e51243d594777f2fc24f57b8bffe99e6e81a8d0bd2fbba8e4a81dd57ef624c89"
+        },
+        "component/flag/flags/rect/bn.svg": {
+            "sha256": "20f3748839f16b0ecdfee0cf7250bc5cdad4fb32bc1ccc6d5cf6829c9ec8fbcf"
+        },
+        "component/flag/flags/rect/bo.svg": {
+            "sha256": "24de95fd006e7af560ca7de45935a31fe8ded9b81edafd073ef26cb1e82b024b"
+        },
+        "component/flag/flags/rect/bq.svg": {
+            "sha256": "487928477a9e5a6036e4e9c282df728d49ecdd674dc1ed14c22d7f3f83f0e279"
+        },
+        "component/flag/flags/rect/br.svg": {
+            "sha256": "2c526e5ae2cb28ec617d78d18603267037335e37d2a0d08568a514538be7390c"
+        },
+        "component/flag/flags/rect/bs.svg": {
+            "sha256": "84f464f5c7f9d6ef655e2e262ab4cc60b07ad6338ee5a9140cc45c5ca0542829"
+        },
+        "component/flag/flags/rect/bt.svg": {
+            "sha256": "9a75d51e96f54b0f32042f5734df5d38b10a75af64f65a88169823cc27938108"
+        },
+        "component/flag/flags/rect/bw.svg": {
+            "sha256": "709ca98b06cca688be62ddedd5ac010ff0212be7ef4fb14165536f6b399cb0d4"
+        },
+        "component/flag/flags/rect/by.svg": {
+            "sha256": "5dc5f8841e4a20a5263654f5ecea1048d261eefc04adfb871943ef1c7ff108e1"
+        },
+        "component/flag/flags/rect/bz.svg": {
+            "sha256": "4dd7806111f2014d4d7dc1777c9fddc8282469a3f3d414a795529defcefcb7af"
+        },
+        "component/flag/flags/rect/ca.svg": {
+            "sha256": "b370667c4ba44b133939d6c4886c2c8f7198316fa7aa874eec24885e53b65a22"
+        },
+        "component/flag/flags/rect/cc.svg": {
+            "sha256": "7fa99eaae8574385cec298260ddf834df2cb26f1d59fc1d24f28eda806a95649"
+        },
+        "component/flag/flags/rect/cd.svg": {
+            "sha256": "58e4629c707135e9bd7827c96c622c4ead6f1917ad0930eeda640ec3e08e3ef2"
+        },
+        "component/flag/flags/rect/cf.svg": {
+            "sha256": "d68ab182146a15b6cf667ce963e544bf49155a5e6550532242bd9675bfdab491"
+        },
+        "component/flag/flags/rect/cg.svg": {
+            "sha256": "6068640089160ddca728de551f31f97bc3a7c99ce448734a44f306c51004323d"
+        },
+        "component/flag/flags/rect/ch.svg": {
+            "sha256": "e855c77c938c624bc5da95bc503ed004eb4c023273c70020408bf668c386f89a"
+        },
+        "component/flag/flags/rect/ci.svg": {
+            "sha256": "631b0c764974963b02de79b2f7240213e4d08e1c49293fa3029c27ec0236d997"
+        },
+        "component/flag/flags/rect/ck.svg": {
+            "sha256": "1984062fe766b8126fc7a2c45fde1639b262881337bf9cd8d2ef46ad46768b24"
+        },
+        "component/flag/flags/rect/cl.svg": {
+            "sha256": "bf0bcf4e9d93c62c301364cf97b33acb941823c5d798bcddb7ce59faa89a8b3d"
+        },
+        "component/flag/flags/rect/cm.svg": {
+            "sha256": "72be44ea5912d2e76535c62044d0b1d8911ad3b976bea1acae1a0a09e1a53f83"
+        },
+        "component/flag/flags/rect/cn.svg": {
+            "sha256": "317ea4aa6300249b90e0f5e7bcb83b81fb6200477d08c7d6d35080206e1e33aa"
+        },
+        "component/flag/flags/rect/co.svg": {
+            "sha256": "6cd44c6fb041db03bc694c7486e323b17436121fb3b01d8d86a865db2c80ee4a"
+        },
+        "component/flag/flags/rect/cr.svg": {
+            "sha256": "646eeeae440b0c5f2cead9694f240a9fab8bf9fb367186c2806f6c37b36d4f31"
+        },
+        "component/flag/flags/rect/cu.svg": {
+            "sha256": "e426230d634b4f9ef8aee3c2ad251b783039af95f99f1a87eb9fd8885a967aa0"
+        },
+        "component/flag/flags/rect/cv.svg": {
+            "sha256": "e067415c816e73afa5aba10f4787d5c2a8e642a171a12900779c2e3b0c8c8e4d"
+        },
+        "component/flag/flags/rect/cw.svg": {
+            "sha256": "87ce6449bf9f9eaa9e95d1fea386dba6a9069c49b2590f1153c5224b6dd1e6dd"
+        },
+        "component/flag/flags/rect/cx.svg": {
+            "sha256": "0581670d63ae597e1eba2f72710e85261bbf3df1713b35b093ae518b1f6f8fab"
+        },
+        "component/flag/flags/rect/cy.svg": {
+            "sha256": "7ea94ce8eabdf8ed3a16bd209964108a751726e6fcfcc44adbba89f994cd324e"
+        },
+        "component/flag/flags/rect/cz.svg": {
+            "sha256": "c2cdb46acda3441c7eb2ba0906d59568386a7635983bc25cc6d9510736cf9bfd"
+        },
+        "component/flag/flags/rect/de.svg": {
+            "sha256": "d163007f92803fd02b0fe8985914e9db1cbc6f184a81e9c3f1acdd58b661c68c"
+        },
+        "component/flag/flags/rect/dj.svg": {
+            "sha256": "2bc76eb8d679e293a10a21cd3f2cc668b0ed98360f21873f95d37ef11e55b048"
+        },
+        "component/flag/flags/rect/dk.svg": {
+            "sha256": "77e24e756d648254e32dc3b2fa8cb51126d21dab0c84081d4ba37c08a8a59f61"
+        },
+        "component/flag/flags/rect/dm.svg": {
+            "sha256": "110cf5f08a7aef7ed2136eea8e13bc0bc9108a2cd37f5b9c1959fc29eef63384"
+        },
+        "component/flag/flags/rect/do.svg": {
+            "sha256": "8bdbfb318e4a8dc710019f20c516c461a560ff9b09a32204bc46c28eaf6dc97e"
+        },
+        "component/flag/flags/rect/dz.svg": {
+            "sha256": "f719ea9d6cb39ce684d7ff14dae85ff8a994590971616c674a75281e0b2a2a79"
+        },
+        "component/flag/flags/rect/ec.svg": {
+            "sha256": "117cc4ed79b8caf217a1ed9783ba49606d09d055bd1693dc19ef3725fab5e139"
+        },
+        "component/flag/flags/rect/ee.svg": {
+            "sha256": "9f691cf82f71c7534d588984911c2ff12c74d3df7a5ffb62022578005b28da41"
+        },
+        "component/flag/flags/rect/eg.svg": {
+            "sha256": "1fc3b9a804605184a10db4555e6dd634f716937a0a5eae6d53b36d9f36f08000"
+        },
+        "component/flag/flags/rect/eh.svg": {
+            "sha256": "0ace5ed616050c0b69b0a1d9c3d9ff1751edac2488946b5cd03c6cfcb4d8d760"
+        },
+        "component/flag/flags/rect/er.svg": {
+            "sha256": "0a59b3ca5095225e9d48f78de54aa869279a031ba2216be63bfca04d78b68bd7"
+        },
+        "component/flag/flags/rect/es.svg": {
+            "sha256": "2b16330e2b2efd9e4e2091574b6e131bd654cbaff5bca8d931dbec8078dc8d1e"
+        },
+        "component/flag/flags/rect/et.svg": {
+            "sha256": "cd4fe5e267a50463d1b1000c0d3e45e97710e02b46d6304800733813f6993449"
+        },
+        "component/flag/flags/rect/eu.svg": {
+            "sha256": "2f280511dc6a67f6f972df25a945b100370c6bb9222a5eff5c4ee3db8133d710"
+        },
+        "component/flag/flags/rect/fi.svg": {
+            "sha256": "d491c65de6886d78555a03b7d689e63d496ad164e6b89fc3431a1cf8740c65ee"
+        },
+        "component/flag/flags/rect/fj.svg": {
+            "sha256": "30b51bdbbcfb5af3cf150d7b31a991f31a39929a5bf45e0b27ab87e8388fc30e"
+        },
+        "component/flag/flags/rect/fk.svg": {
+            "sha256": "524b54e2339b4c04d5fec62deccd3d0f499d921e9d75a3e13a1de9426f348f59"
+        },
+        "component/flag/flags/rect/fm.svg": {
+            "sha256": "8ca8ea7d42e20a75f6f4730e32a5eb79de503d263add5860fa788a5081bb1fa3"
+        },
+        "component/flag/flags/rect/fo.svg": {
+            "sha256": "f105290c7150df70b5f4d265aa2b9858c7d279a004e9d5540bf99ee64ec20fae"
+        },
+        "component/flag/flags/rect/fr.svg": {
+            "sha256": "8068184e3bbcd5a405784900262c81818e5fdbd121a943a037c02c1cf57e9154"
+        },
+        "component/flag/flags/rect/ga.svg": {
+            "sha256": "40cde139f347d5769266868a8945e9136a989ea46edb599d7fe767bc6b42c8c7"
+        },
+        "component/flag/flags/rect/gb.svg": {
+            "sha256": "fe9392a44780f7e90051a6a374cfdf3cb866435b8ce8a64427a6fe35e4be8409"
+        },
+        "component/flag/flags/rect/gd.svg": {
+            "sha256": "b436e0ab65b8440244217bac79489bb3385821f2d6235016bea7beafe1627fca"
+        },
+        "component/flag/flags/rect/ge.svg": {
+            "sha256": "b46c36d55bc3072bdbd4bdef59310cb4badb234f0959c70ad43a9a1a5bc99e22"
+        },
+        "component/flag/flags/rect/gf.svg": {
+            "sha256": "82cb69ceb3ec7d19e2365b49522a275facade4965431c26269869906ae6037f9"
+        },
+        "component/flag/flags/rect/gg.svg": {
+            "sha256": "63f4c17be7e68f51320a3e48655d828116c9b65f07f195fd79e092c13fdef519"
+        },
+        "component/flag/flags/rect/gh.svg": {
+            "sha256": "a13ce5cb6a1749e32232cc15f4816f5a0178aa67e49d14a4465494c1939d065d"
+        },
+        "component/flag/flags/rect/gi.svg": {
+            "sha256": "e1a9fe702445d91d1429c86846f3cc883b4fb47961dadf19f124044f219ad5cc"
+        },
+        "component/flag/flags/rect/gl.svg": {
+            "sha256": "695e568d0f701e3df5f1f99bdf91337d4794892d0f7f622cdcb281e6ed345dbc"
+        },
+        "component/flag/flags/rect/gm.svg": {
+            "sha256": "54ef615c5567eb2923f4638cd460b4672717836d826c982f1145aa76daa1cb92"
+        },
+        "component/flag/flags/rect/gn.svg": {
+            "sha256": "0e8f6adec46d9ddb1a335454f9a8fd8b89b3f8f7816849e8f53acb43a80e7296"
+        },
+        "component/flag/flags/rect/gp.svg": {
+            "sha256": "2b079d1747246693c5d2f08319ca31d11013694c698fc5f1212991f9a08ba69a"
+        },
+        "component/flag/flags/rect/gq.svg": {
+            "sha256": "e4df0f1659d74c3b2ea4904be9e8e390a8241c978c0abb0b7b55b472be7a3030"
+        },
+        "component/flag/flags/rect/gr.svg": {
+            "sha256": "9919004a36edcbede840b6e40926ba1f321f228656f8563336c57a1099b477b8"
+        },
+        "component/flag/flags/rect/gt.svg": {
+            "sha256": "6f84680260410a131ad5605c53a7f2004001936f76b54560563d5448ebfd80a9"
+        },
+        "component/flag/flags/rect/gu.svg": {
+            "sha256": "a8de1321e3fc042310f82be249332286ff3110bebe833dd117487667b7295ca9"
+        },
+        "component/flag/flags/rect/gw.svg": {
+            "sha256": "76ffeb2fac25449db67f88ba4d75e6ab9346e49f73bf4a08ea4a44a3bdcb5102"
+        },
+        "component/flag/flags/rect/gy.svg": {
+            "sha256": "396690e46235a58004719fe06dd873d2ba5437455253a27202e59aa1e4fd8acb"
+        },
+        "component/flag/flags/rect/hk.svg": {
+            "sha256": "0ad464388de30346df0e7666f3dae81d6a7ae71eb3a2472940a0ec3d5dd9bf9d"
+        },
+        "component/flag/flags/rect/hn.svg": {
+            "sha256": "6e27a7aaa01247a102f596e8acc0ad0e30ad489f7a971d0af469a7a16615e37a"
+        },
+        "component/flag/flags/rect/hr.svg": {
+            "sha256": "a348308085323083181903cacd241973d3e53fe6e328fc54f27647c06cb508a7"
+        },
+        "component/flag/flags/rect/ht.svg": {
+            "sha256": "c6ae32e8eac48e3ceec46e5354ff3bee066d21680c65a6bf90e6d05937dbc1f6"
+        },
+        "component/flag/flags/rect/hu.svg": {
+            "sha256": "32347baf0c80c741f31384d5c3c4fabc623172d59bf5cd86b7e71286a0b70fab"
+        },
+        "component/flag/flags/rect/id.svg": {
+            "sha256": "909cdddad9d7ea1a69bd50d28b440bc0328ac1ea1e692fc547a8be30ef0a6427"
+        },
+        "component/flag/flags/rect/ie.svg": {
+            "sha256": "97c65e7e71ec4b223fe35fe01c5c7a865d131a8342dc11488424f06c9760eb2c"
+        },
+        "component/flag/flags/rect/il.svg": {
+            "sha256": "3461da95961ae3b27e472cce9c977765623b003c467fcf0365e359b607c6e106"
+        },
+        "component/flag/flags/rect/im.svg": {
+            "sha256": "3fd9b2bf0ab4d1565296ad01319f35f4b06a46ffe314d3aefb4f09f3fe8bd182"
+        },
+        "component/flag/flags/rect/in.svg": {
+            "sha256": "34e745905cd1a03d19bcdf2d958f1479a8b195e7d13c009b0496a2df5398be7c"
+        },
+        "component/flag/flags/rect/io.svg": {
+            "sha256": "1a5bda8deba99b0d877e2dcf2610b038b403086a783fda3dab797107895ec898"
+        },
+        "component/flag/flags/rect/iq.svg": {
+            "sha256": "e605b90adb18906b2d9d8bd08ad3f800ed360278d1462f872a45b925ab4ef0a0"
+        },
+        "component/flag/flags/rect/ir.svg": {
+            "sha256": "f5e37d6744abe993bc4360a200c229119e4f7ed39168b3bb46568f1a07dc198d"
+        },
+        "component/flag/flags/rect/is.svg": {
+            "sha256": "f2bda8cbf2985222f874147b98613aa551cb0fbd9c051820e30f0c44fe73b431"
+        },
+        "component/flag/flags/rect/it.svg": {
+            "sha256": "3cf1e26a8500b3bc25373034429466706f8721a46e250a4e2378bc84091c3feb"
+        },
+        "component/flag/flags/rect/je.svg": {
+            "sha256": "f0a021ef0c2381199c1b7a83fa3ba1e896319b674f6920fe66e5edd11390714b"
+        },
+        "component/flag/flags/rect/jm.svg": {
+            "sha256": "fedf60a07813aaeb86a0cc8804a7f055d7e206749fe166f2b01f84f2e944cf64"
+        },
+        "component/flag/flags/rect/jo.svg": {
+            "sha256": "257ea6ab0f31bc3d2300616a2d5a613817559cffa0bead01fa02b6f7c5690b08"
+        },
+        "component/flag/flags/rect/jp.svg": {
+            "sha256": "250a7471e1200751b8c49eccfdbb2fd20cf1808b55b28afcf324d4dd03c6cdc7"
+        },
+        "component/flag/flags/rect/ke.svg": {
+            "sha256": "8d66e16a0c23304fc095ae66215f2c035a043c9bc8f3d44a7a5f8d3e9394e50e"
+        },
+        "component/flag/flags/rect/kg.svg": {
+            "sha256": "4af070c2fb2fd8e0d9963532edad956c23762b4e4437720de442d266bc59d4d8"
+        },
+        "component/flag/flags/rect/kh.svg": {
+            "sha256": "e6557d081b9866d5b883612e2318deae8d8f354690281da6df2601dd3ddb6b21"
+        },
+        "component/flag/flags/rect/ki.svg": {
+            "sha256": "985a357f20760113b03480540114026cbab81c4766ae36d04fec62420287ae9e"
+        },
+        "component/flag/flags/rect/km.svg": {
+            "sha256": "01e1f76a56591265ac6167d1790f28638895bf9601180097a31f58369a86145b"
+        },
+        "component/flag/flags/rect/kn.svg": {
+            "sha256": "3eb378398cadbecc308eb14f6944c5b09c05e1f13c79dc5b626ee46b98ea4c8d"
+        },
+        "component/flag/flags/rect/kp.svg": {
+            "sha256": "71565f973d1b8e13baea7e346fc0f8a1a0f68a0034c685cacb832b9f7f56d89d"
+        },
+        "component/flag/flags/rect/kr.svg": {
+            "sha256": "dea960d45f2937aba0fb23b5220c2929565d3e235a433772c2da533edfad7b2c"
+        },
+        "component/flag/flags/rect/kw.svg": {
+            "sha256": "32b61408cdaed66cae1648e989edf12f9148e504ddf2159561ede06098f828c7"
+        },
+        "component/flag/flags/rect/ky.svg": {
+            "sha256": "3230281b03ce8de2bdce526b5362772ab5499a0818b0df246f1a2a0a208d93ab"
+        },
+        "component/flag/flags/rect/kz.svg": {
+            "sha256": "28d26f5c18637d856a788f4bfcec034a04c793bd97cfec2901d593f392455a4e"
+        },
+        "component/flag/flags/rect/la.svg": {
+            "sha256": "ddf81f5ba34e846c761e262bda786a64aed8efaddc5b5ecc38cbfe8bd2c2fd44"
+        },
+        "component/flag/flags/rect/lb.svg": {
+            "sha256": "fe93e93f19ea78e5fb640e02a9056161065b3440da272921a4e4f84518cae43f"
+        },
+        "component/flag/flags/rect/lc.svg": {
+            "sha256": "63827bf7f57d8697f2bab92d2a543c59cd3f3bd524e44928f40e8aa9054d42a0"
+        },
+        "component/flag/flags/rect/li.svg": {
+            "sha256": "2fbde535433e0eeb43e2c74135d159a1bccc68fe57361ef2ac56b9be41eb3053"
+        },
+        "component/flag/flags/rect/lk.svg": {
+            "sha256": "31d8ffbeefb6d8206d88b921cd9c4abf7a3072833c59fada9f5524da84e25921"
+        },
+        "component/flag/flags/rect/lr.svg": {
+            "sha256": "bd0ec7ad724c05c6552583b311308da375d5d13743405b1d69d2e212d1557f09"
+        },
+        "component/flag/flags/rect/ls.svg": {
+            "sha256": "97ecaf53c462c007d68dcdf89dd44907e0cf17473451b3bbbd47298d45e34b12"
+        },
+        "component/flag/flags/rect/lt.svg": {
+            "sha256": "b54d79484e9783998b6cb2ab8c494af289f86fba8e7c756e927e7eb6135bdfdd"
+        },
+        "component/flag/flags/rect/lu.svg": {
+            "sha256": "bb62936f9f98c832c2707ba2d24355fa02a7b4535571189ae0d4eac1525c3e53"
+        },
+        "component/flag/flags/rect/lv.svg": {
+            "sha256": "5aed1024f23592a5b2271ca66f54937f66314d16debceefff8aa47e36783a412"
+        },
+        "component/flag/flags/rect/ly.svg": {
+            "sha256": "29402861bd59cb227cb5deb6a0606c450c0255c2be1f5501dc5370fb75181f7c"
+        },
+        "component/flag/flags/rect/ma.svg": {
+            "sha256": "2b22b5e67b319b350399350461bc04dc9bd75ff113181da4d6fbba56e51943eb"
+        },
+        "component/flag/flags/rect/mc.svg": {
+            "sha256": "459c2fc276cb56437295a4dcff5c4969b26df221ac0e6c6c95327d79afb7bc6b"
+        },
+        "component/flag/flags/rect/md.svg": {
+            "sha256": "a5d0e4e5b16ff0d5cc87d82f415fa7620e94f04f7360b89c645fe870f9167d2b"
+        },
+        "component/flag/flags/rect/me.svg": {
+            "sha256": "f40d8cda128edc92f9701272e25405d8942785ae5689c4818893571019070c5a"
+        },
+        "component/flag/flags/rect/mf.svg": {
+            "sha256": "24c29efc3cf4588170e2d825909463e934e95e271e1d0cf8c25bbff927041f82"
+        },
+        "component/flag/flags/rect/mg.svg": {
+            "sha256": "94ea53580726f6429d2d4c806e6e81cb22f699454f45561710dd60a522bba8ee"
+        },
+        "component/flag/flags/rect/mh.svg": {
+            "sha256": "b5c2ee1fca8d5f7f2f46d62b18d7d2fec5ed59582fcbafa4c0c795a13fe7fd0e"
+        },
+        "component/flag/flags/rect/mk.svg": {
+            "sha256": "77e7d072b92ec395938373a361b089d6d1ba10ecba4dfe148dabc3e55cb72853"
+        },
+        "component/flag/flags/rect/ml.svg": {
+            "sha256": "0879858bf287163c456f319c647c36ced71b2764d5546e8e62a10205e1f68349"
+        },
+        "component/flag/flags/rect/mm.svg": {
+            "sha256": "75fc015b613b850f83ebe4104d6749ce7f55f50a659ef3577361eeae8d901bb4"
+        },
+        "component/flag/flags/rect/mn.svg": {
+            "sha256": "0ef7f4b284c991951901cd0be3c1562851f945ecbe4272c3b3a3936af3c4db6f"
+        },
+        "component/flag/flags/rect/mo.svg": {
+            "sha256": "cdd364eb51774c3d2c11c3c45cce7bf73e356c67389af7da9aa9fde76dbcb6df"
+        },
+        "component/flag/flags/rect/mp.svg": {
+            "sha256": "67acc196266b9e01885158961048c4c43401962b10bfdc6b7d30a9578a6af0c6"
+        },
+        "component/flag/flags/rect/mq.svg": {
+            "sha256": "b1af20598a4923d547375a7b5799047b760c447db9979faf7f533bc5bfe8cf0b"
+        },
+        "component/flag/flags/rect/mr.svg": {
+            "sha256": "05a064d21aa6504e00a9a20b8bab61d00d4a3f86ffc54154ad95298a20f84c17"
+        },
+        "component/flag/flags/rect/ms.svg": {
+            "sha256": "feedcf8c1d942f9ee263722b06204e76f9e4cc23df250c48f55ea25b74c94cc2"
+        },
+        "component/flag/flags/rect/mt.svg": {
+            "sha256": "5bcd9017b18bb8f0f20c2ee286ee68535612ac3e741a3c3608f899e67dfae177"
+        },
+        "component/flag/flags/rect/mu.svg": {
+            "sha256": "09d5657726320be3e59b9570038262c27307f1c4fa0d5267a452a95604f63da5"
+        },
+        "component/flag/flags/rect/mv.svg": {
+            "sha256": "e16a793a912af7d30c0068ed43f42166e3542d9be1445a1871087cac1b592534"
+        },
+        "component/flag/flags/rect/mw.svg": {
+            "sha256": "98bfe2f29c733dee6a2ca9c38abff6ad6eaf7d599e4d0e68369bb72e5e5088d3"
+        },
+        "component/flag/flags/rect/mx.svg": {
+            "sha256": "fc88568c15d685ab90ff3791db923d23ff1943868471f7abafa4130e73f3639c"
+        },
+        "component/flag/flags/rect/my.svg": {
+            "sha256": "2f591036fd35d9386bfcd78cf11f980cbd1048abe800aa2e9f128f7d425687b6"
+        },
+        "component/flag/flags/rect/mz.svg": {
+            "sha256": "eb9191d0124bdd93a2e5ba76804d1fa58ea0122200e127fb9f1154caf941d644"
+        },
+        "component/flag/flags/rect/na.svg": {
+            "sha256": "cf6f562300b4076139904f7d4fb970bc03a25ba8a4db544420005737a9a1d71b"
+        },
+        "component/flag/flags/rect/nc.svg": {
+            "sha256": "a08c37790f243b2af57ec7d511b12496b9eb74bb5ef59100e89e7f829ede39d3"
+        },
+        "component/flag/flags/rect/ne.svg": {
+            "sha256": "f42c4f8e6ad2e71d833058f18146ee1a1c3a8bb75017209acb53d57d2ea7d8f3"
+        },
+        "component/flag/flags/rect/nf.svg": {
+            "sha256": "c71968495ef678c2589dc57dafdeace1fa66bb6dd8f4cde5933183b3a6548031"
+        },
+        "component/flag/flags/rect/ng.svg": {
+            "sha256": "037d8febc0e3c59e6c3bf41c617dfdb87b0b232c21392f1d968267bf8b9a0b3f"
+        },
+        "component/flag/flags/rect/ni.svg": {
+            "sha256": "797dccb10f84459010d39aa953c4aa1c3a420fe187993d22cd5e3d3da23cf5af"
+        },
+        "component/flag/flags/rect/nl.svg": {
+            "sha256": "ac3e750037748d04e91d58c626d76773e52ebb1564ae300a03ae0c201c7cdb3e"
+        },
+        "component/flag/flags/rect/no.svg": {
+            "sha256": "770aabbd41d9811f6a6d14c8ec6c82ecbc0f4b33bcb0e1a4e05a0ed250114661"
+        },
+        "component/flag/flags/rect/np.svg": {
+            "sha256": "661c2459a1db7678bf32fea7a33f84013f6f3e73ea95bc3b8a06c84aa2e25916"
+        },
+        "component/flag/flags/rect/nr.svg": {
+            "sha256": "59535e76d49a5f47d73ad881920f3e9752418fc1d5e3e36de5b9c79c0b599bc0"
+        },
+        "component/flag/flags/rect/nu.svg": {
+            "sha256": "dce35c34a0bd89d82569a1bc489f8f249e9e371ed383bf9d62060786a0b8cf36"
+        },
+        "component/flag/flags/rect/nz.svg": {
+            "sha256": "a12b440c9b03965c9b67628586dea131e7eeca81a2e3b5b676521f410ccf2efb"
+        },
+        "component/flag/flags/rect/om.svg": {
+            "sha256": "90634938a23d097db59bceb3ce828411275c8424708c765f0071309e2c9a9c51"
+        },
+        "component/flag/flags/rect/pa.svg": {
+            "sha256": "16e384eaf48b4b33ecb66ea959ac7dfb65e31e513bfbbe28d2976c18724b53da"
+        },
+        "component/flag/flags/rect/pe.svg": {
+            "sha256": "922babd0c3885f89985eab88896b97502f9c7ca8a93507c4cfbf8f0464178af5"
+        },
+        "component/flag/flags/rect/pf.svg": {
+            "sha256": "1268ae17b737254ee84067f7cf358e81c27774dd899b413e605c4700b07e1dd4"
+        },
+        "component/flag/flags/rect/pg.svg": {
+            "sha256": "ed719420bb8db7ae7191dcb87f331a0c070d9a41f98b3798f7d2071647e7c154"
+        },
+        "component/flag/flags/rect/ph.svg": {
+            "sha256": "a4199f9b7e92e2d8e036a502b029b0412e70e8df1eebfc0ecc64eb3e8e1d232b"
+        },
+        "component/flag/flags/rect/pk.svg": {
+            "sha256": "b065f363b99b2a2c7a48066bdcb6395a127190751db73b6620049b131e30e45d"
+        },
+        "component/flag/flags/rect/pl.svg": {
+            "sha256": "700499ee42ac8544d99e3ba8a644ed8b81e5efd26f992fb394b80e2972911cb6"
+        },
+        "component/flag/flags/rect/pm.svg": {
+            "sha256": "d6e2bf8e8147f30ba745561bf472af58e98ce39b97cf0d3e6100bd6a6711b28e"
+        },
+        "component/flag/flags/rect/pn.svg": {
+            "sha256": "ef5c8b3cd5d614459f6fdee69bbc4a756b8350b1a0b3e293281d9ecbbf4e5f08"
+        },
+        "component/flag/flags/rect/pr.svg": {
+            "sha256": "499d7c9b5abab634b70444a6e3b894cec352d416db76cb8700a5e99410b7afb7"
+        },
+        "component/flag/flags/rect/ps.svg": {
+            "sha256": "c7d9298e4729b18bf369f1efb023d71ba35bb8e3a17b910f0ba47b9456bc2423"
+        },
+        "component/flag/flags/rect/pt.svg": {
+            "sha256": "0316421a78c4864c802cb923a768b89947c7903a57be26b746a27636f935a8fd"
+        },
+        "component/flag/flags/rect/pw.svg": {
+            "sha256": "6427baca82b933939efc10d93598351f2147ee9a86028007c2bd78191538793e"
+        },
+        "component/flag/flags/rect/py.svg": {
+            "sha256": "44c7b0f1c626e7ec01e12fc673cbb063dd7857e9c6616d7c9b44f1053809d681"
+        },
+        "component/flag/flags/rect/qa.svg": {
+            "sha256": "38a00c21e121f4e243832f7864fb7f56d2135d9d735de3772c7a4c3c97d07a17"
+        },
+        "component/flag/flags/rect/re.svg": {
+            "sha256": "9c3322e3a9eb39f85f7c89a78f50c073df753a6445bd2e4623aa62fd9e17d219"
+        },
+        "component/flag/flags/rect/ro.svg": {
+            "sha256": "130c959cb0d6bef0dcde943d97d4b5f963582903f05b3f87b0004fe142bde4d4"
+        },
+        "component/flag/flags/rect/rs.svg": {
+            "sha256": "9f5dcd1a1f01b1a987ade968198da5000e7c934b5d30394f04951950d05d01dc"
+        },
+        "component/flag/flags/rect/ru.svg": {
+            "sha256": "10148842318e23cd1d1dbfd92f47598ae2cbbde987fd5414fd7e3aa875dd873e"
+        },
+        "component/flag/flags/rect/rw.svg": {
+            "sha256": "08a7c602165996b19db2038ab086c65f63150369791803b364c81a5990743d1b"
+        },
+        "component/flag/flags/rect/sa.svg": {
+            "sha256": "4bbae258fe1ad4655a6763d171d8fc8726c3675b284327d9f51cf98427419b88"
+        },
+        "component/flag/flags/rect/sb.svg": {
+            "sha256": "3c0eec7434a1c024644892b2c7e2566d50c844489eaa8fcc3c524e7c7f843647"
+        },
+        "component/flag/flags/rect/sc.svg": {
+            "sha256": "d5351f0a461070f15ba386524ee1baff4dd2fa52fcf27012bbd6309acdc6c00f"
+        },
+        "component/flag/flags/rect/sd.svg": {
+            "sha256": "cddcf27d017f38680a4e5e600954414e15164dc0303f18dbb12bacfe1ce6a3f5"
+        },
+        "component/flag/flags/rect/se.svg": {
+            "sha256": "8793d190d6904ca6416a9f0d997e06f5b50593648506c5434a562ffe10c0ac2b"
+        },
+        "component/flag/flags/rect/sg.svg": {
+            "sha256": "d4974ae5612a7c16ffb337338f3c81c14bf20d73323c4757dee4b28334df2114"
+        },
+        "component/flag/flags/rect/sh.svg": {
+            "sha256": "fd028132eee7e59f2668b99e170fae3eb50df5033c1f417ba9075479b528748e"
+        },
+        "component/flag/flags/rect/si.svg": {
+            "sha256": "a75baa1eedf54e259306881e15b82325e9c1ac5153a84a95180251a83b5a1e9e"
+        },
+        "component/flag/flags/rect/sj.svg": {
+            "sha256": "9f102332a28b093671b127fcc7e46911a12c0f6789518a587e1bec045e1d5d41"
+        },
+        "component/flag/flags/rect/sk.svg": {
+            "sha256": "9a279d6c36e67efd53be003995f78dd5a1d18d1257672cb9cdb0b4cf20524443"
+        },
+        "component/flag/flags/rect/sl.svg": {
+            "sha256": "9daa732a9a630d6780c5c0e850bcc6b31e3d1ec6669feec6089572116258442a"
+        },
+        "component/flag/flags/rect/sm.svg": {
+            "sha256": "18b9d3553e5c52f7d0120a878c299efd30e1c7a695aed010e6e032106e5ffc3d"
+        },
+        "component/flag/flags/rect/sn.svg": {
+            "sha256": "fd09aa7e730882b1a93994005c2b6481009e75bd9e968dc499c8685ab39912e0"
+        },
+        "component/flag/flags/rect/so.svg": {
+            "sha256": "e9ce21af4194b45cf1efe7ed209f3db1ff3516f97b7fa2ffaedaf571dbb575e3"
+        },
+        "component/flag/flags/rect/sr.svg": {
+            "sha256": "bb26f21e9dd5ea15b981caebaa12e97d14843f082494ad7cf85ffe351af8d4d6"
+        },
+        "component/flag/flags/rect/ss.svg": {
+            "sha256": "10ab53be08c5199c98037553fd811e3d77ab4b828deee0caa180aa6cb4077610"
+        },
+        "component/flag/flags/rect/st.svg": {
+            "sha256": "99d18457db61ccd1fc01e21641febcf3d13a00f28d0edace78d1e7d738d10164"
+        },
+        "component/flag/flags/rect/sv.svg": {
+            "sha256": "30ebe08c246e9f90e2aa2f1004e60abd9d3ba50866f48aacb9712fe05dc61431"
+        },
+        "component/flag/flags/rect/sx.svg": {
+            "sha256": "4c106744fe666954a6e201499db087ff717bfa975947cd011613904993f580ab"
+        },
+        "component/flag/flags/rect/sy.svg": {
+            "sha256": "9f635041eab9e15dc746a038b0a415464b5d13d35219b1a93a3857c04041bd6e"
+        },
+        "component/flag/flags/rect/sz.svg": {
+            "sha256": "dfdd92603964a3ecd18544b6eb6069b353ea56e6d1c66d40c8ac96002da51da9"
+        },
+        "component/flag/flags/rect/tc.svg": {
+            "sha256": "5d850c8351e69dc61d7cd20c85049a9e3934acf15dd55681faa49a62b3444a74"
+        },
+        "component/flag/flags/rect/td.svg": {
+            "sha256": "31e2fba14431dd13200ad18b78565b099063f671ac08000f4883f84affd8cb73"
+        },
+        "component/flag/flags/rect/tg.svg": {
+            "sha256": "428caf5b339d7bfdbb21a2cbd04971beb09fbe137fc2c9b85b6590a0f748c684"
+        },
+        "component/flag/flags/rect/th.svg": {
+            "sha256": "ff00df55b4e46d9502299a803dd677e84d1b3b657147c8f3f62c9cec582f6dac"
+        },
+        "component/flag/flags/rect/tj.svg": {
+            "sha256": "d56191463a2c57b64d9971fcdc57f83e6bf1c82fbec4949762c07c3885cfef62"
+        },
+        "component/flag/flags/rect/tk.svg": {
+            "sha256": "84b830dc43b77b46cd1301508e79d51ded8b4cc17a036601de1c9a4dd202c14c"
+        },
+        "component/flag/flags/rect/tl.svg": {
+            "sha256": "c124008a783b5ec43838654b3443d06633c77e69073f440cba5b7ed90b4b40da"
+        },
+        "component/flag/flags/rect/tm.svg": {
+            "sha256": "5c633942b470fb876034055bd6a0a8c2b324a12048548e12afec694e4d714398"
+        },
+        "component/flag/flags/rect/tn.svg": {
+            "sha256": "cf0654378eab4c31e40b486df17390a532c7c684b4dfcc80bbd93896aef65087"
+        },
+        "component/flag/flags/rect/to.svg": {
+            "sha256": "d997146c032467567de0403be32cf4aff988975efd8e23c2d0f0b3ffa8465c86"
+        },
+        "component/flag/flags/rect/tr.svg": {
+            "sha256": "cbe663901f0b50faf9af0391ca7a5c7d8c5d9e6246c255444d78612ec87a33cd"
+        },
+        "component/flag/flags/rect/tt.svg": {
+            "sha256": "0f7902bbe7bac62915bb266d8ed8a6d354769c4f5f93299bf96cbfb6d1fba55c"
+        },
+        "component/flag/flags/rect/tv.svg": {
+            "sha256": "ab79ce5a6c3db5549bc3186d7f6f026c94c9d32488ad72b4ff6ebaf864f415ae"
+        },
+        "component/flag/flags/rect/tw.svg": {
+            "sha256": "6e8e35bf26f4998155aacc1cafdf53a72608a47f2f61f39327ae2b1ebcf59b99"
+        },
+        "component/flag/flags/rect/tz.svg": {
+            "sha256": "fd566fd68db4edb134a9f3e779b767787f9d5d31702f6bcd91a689be5bfb4aa4"
+        },
+        "component/flag/flags/rect/ua.svg": {
+            "sha256": "137c6e451ff23d699e35e760589dfc0fabc43f7327deb270848d097f041cd353"
+        },
+        "component/flag/flags/rect/ug.svg": {
+            "sha256": "48c349253d2b38cea912bacc6fc8b2bbd86d31aeb987a2ea8ef9886d45ca5a1e"
+        },
+        "component/flag/flags/rect/us.svg": {
+            "sha256": "9b749408b414c42fb20da3f3d8c5c010baa789e5eb3e6272d72732d7380fbc70"
+        },
+        "component/flag/flags/rect/uy.svg": {
+            "sha256": "21b6c90216aad29c7ddbb82836f09d478d563d08f830671364351711281b1439"
+        },
+        "component/flag/flags/rect/uz.svg": {
+            "sha256": "19acee8c103c8d49e7515bc7259aced90e1bd05baf9b7e2cc5d91581b320c412"
+        },
+        "component/flag/flags/rect/va.svg": {
+            "sha256": "a2ddd97914b6a7cd4d11afabd357cce4481c9c6ea588f17982a1d38f61069dc1"
+        },
+        "component/flag/flags/rect/vc.svg": {
+            "sha256": "d540d73258f151bc8147ab936d9e2a816d651107dde72865b914f8f559dc739b"
+        },
+        "component/flag/flags/rect/ve.svg": {
+            "sha256": "42cdde1efff50ac78cc25263567b677ab1b4f49be562aafbaf0a6792c2163534"
+        },
+        "component/flag/flags/rect/vg.svg": {
+            "sha256": "7df09171fbe029f6374d9522a5c22aa1b234e4721c467a21384e482cc8a1c6a1"
+        },
+        "component/flag/flags/rect/vi.svg": {
+            "sha256": "526bac3a623827029f50eb36a5bce201842a4beb5a134fb7d349c7cb1ca5262d"
+        },
+        "component/flag/flags/rect/vn.svg": {
+            "sha256": "66c4a97c2f2b9329ce603f612bdb62bccb3dfe48f4d6745bd6d1aacb82da383b"
+        },
+        "component/flag/flags/rect/vu.svg": {
+            "sha256": "e7abcda059463d743c0a2765b18eb51b3ab6bbd84bcca6997fe2d0f3e2942bec"
+        },
+        "component/flag/flags/rect/wf.svg": {
+            "sha256": "b50dcb1c69d8d425d750c0546acb6bc0d6db33c084789bf2b8908bea1cfbeb3c"
+        },
+        "component/flag/flags/rect/ws.svg": {
+            "sha256": "773f474fcba0e4532e33e239c158a82e94e69e76af95241e4f36a8f345aa964b"
+        },
+        "component/flag/flags/rect/ww.svg": {
+            "sha256": "9239cb44aa5e4726c2ba84f77340d0714464720edd90c53379184989cdab99cb"
+        },
+        "component/flag/flags/rect/xk.svg": {
+            "sha256": "a3acd1abfe8851d4ae71e39a65825b93ef896a9e7b175ad0b633b4c8ed0ce6ec"
+        },
+        "component/flag/flags/rect/ye.svg": {
+            "sha256": "7901bae2db07868bbd2aaedef3f2af83899ea7ba9b6d9e2e36459ac7fce35e66"
+        },
+        "component/flag/flags/rect/yt.svg": {
+            "sha256": "d94d39dc79dc338c24c1ecc0a7a9a854287b55944072dba668067ffeaf9d93ae"
+        },
+        "component/flag/flags/rect/za.svg": {
+            "sha256": "8bdf825dfa59bce12bd23a9cbd682646c290f5faafd0db5c078438a695b65c17"
+        },
+        "component/flag/flags/rect/zm.svg": {
+            "sha256": "bcfa3262e39b0f4e6c6e2e2ee6ef38de6873eb8e58c3fcb580d9ba866066705e"
+        },
+        "component/flag/flags/rect/zw.svg": {
+            "sha256": "90cd0626d35081d7ddfdc6c6806edb14f131645dbde7fb03f6becedaa9120ebc"
+        },
         "component/flag/js/flag.js": {
             "sha256": "99fa7d72c076f2d2db65ae1ce1891e57b5245f13ba4f8905d8ffc641e96c42be"
         },
@@ -2660,5 +4145,5 @@
             "sha256": "75103d0e845a91a641a573c7d293986251ca927a89f02ff2a56d9c25f149298d"
         }
     },
-    "packet_sha256": "58d3893974dd083b074eb325445ac590f8154b8f1e3eda70fe0ea45deabf35c4"
+    "packet_sha256": "92419a793ab56ebff25c7828d90ff2e29a1aa8e4a1ee99208359257176b86bb6"
 }

@@ -277,6 +277,38 @@ $noticeFiles = [
     'core/contracts/third-party-notices.v1.json',
 ];
 
+// Asset directories a component fetches by a URL it builds from sfPath at run
+// time: sf-flag requests component/flag/flags/index.json and the rect/ and
+// circle/ SVGs itself, and no stylesheet names them, so the walks above never
+// reach them. An explicit list of directories, never the .gz variants.
+$componentAssetDirectories = [
+    'component/flag/flags',
+];
+$componentAssetFiles = [];
+foreach ($componentAssetDirectories as $assetDirectory) {
+    if ($useWorkingRegistry) {
+        $assetRoot = realpath($uiRoot) . '/distr/' . $assetDirectory;
+        foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($assetRoot, FilesystemIterator::SKIP_DOTS)) as $file) {
+            if ($file->isFile() && ! $file->isLink()) {
+                $componentAssetFiles[] = $assetDirectory . '/' . str_replace('\\', '/', substr($file->getPathname(), strlen($assetRoot) + 1));
+            }
+        }
+    } else {
+        $assetTree = $git(['ls-tree', '-r', '--name-only', $revision, 'distr/' . $assetDirectory]);
+        foreach (preg_split('/\R/', trim($assetTree)) ?: [] as $sourcePath) {
+            $componentAssetFiles[] = substr($sourcePath, strlen('distr/'));
+        }
+    }
+}
+$componentAssetFiles = array_values(array_filter(
+    $componentAssetFiles,
+    static fn (string $runtimeFile): bool => ! str_ends_with($runtimeFile, '.gz'),
+));
+sort($componentAssetFiles, SORT_STRING);
+if ($componentAssetFiles === []) {
+    throw new RuntimeException('FRAMEWORK_COMPONENT_ASSET_SOURCE_UNAVAILABLE');
+}
+
 $runtimeCoreJsRoot = $distribution . '/core/js';
 $coreNames = array_fill_keys(array_map('basename', $coreFiles), true);
 foreach (glob($runtimeCoreJsRoot . '/*.js') ?: [] as $existingCoreFile) {
@@ -303,7 +335,7 @@ foreach (array_merge($coreFiles, [
     'component/menu/css/menu.css',
     'component/menu/js/menu.js',
     'component/highlight/js/highlight.js',
-], $highlightChunkFiles, $noticeFiles) as $runtimeFile) {
+], $highlightChunkFiles, $noticeFiles, $componentAssetFiles) as $runtimeFile) {
     $runtimeTarget = $distribution . '/' . $runtimeFile;
     $runtimeBytes = $readRuntime($runtimeFile);
     if (! is_dir(dirname($runtimeTarget))
@@ -324,7 +356,11 @@ $manifest['files'] = array_filter(
     static fn (string $relativePath): bool => ! str_starts_with($relativePath, 'utility/')
         && ! str_starts_with($relativePath, 'core/js/')
         && ! str_starts_with($relativePath, 'core/css/')
-        && ! str_starts_with($relativePath, 'core/contracts/'),
+        && ! str_starts_with($relativePath, 'core/contracts/')
+        && array_filter(
+            $componentAssetDirectories,
+            static fn (string $assetDirectory): bool => str_starts_with($relativePath, $assetDirectory . '/'),
+        ) === [],
     ARRAY_FILTER_USE_KEY,
 );
 $coreJsRoot = $distribution . '/core/js';
@@ -348,6 +384,11 @@ foreach ([
 }
 foreach ($noticeFiles as $noticeFile) {
     $manifest['files'][$noticeFile] = ['sha256' => hash_file('sha256', $distribution . '/' . $noticeFile)];
+}
+foreach ($componentAssetFiles as $componentAssetFile) {
+    $manifest['files'][$componentAssetFile] = [
+        'sha256' => hash_file('sha256', $distribution . '/' . $componentAssetFile),
+    ];
 }
 foreach ($highlightChunkFiles as $highlightChunkFile) {
     $manifest['files'][$highlightChunkFile] = [

@@ -7,6 +7,11 @@
                 "packet_sha256": "790b8014c4c1a0853e6a0650f30e0b4f33ab3b428f878b0fa010faf0c3f449c0",
                 "files": 117,
                 "manifest_sha256": "8c917f69a678df084260ded24c5e39e78aaa4fc12c317bf98afaf11ee2a29a8e"
+            },
+            {
+                "packet_sha256": "58d3893974dd083b074eb325445ac590f8154b8f1e3eda70fe0ea45deabf35c4",
+                "files": 884,
+                "manifest_sha256": "df814b06ed2b3eb19da3a920ff427da3d3611754c27e7833638b5f7c31e5d478"
             }
         ],
         "superseded_framework_locks": [

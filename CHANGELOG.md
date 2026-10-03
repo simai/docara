@@ -4,6 +4,28 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+### Added
+- A reusable project example whose content is HTML only now renders inline
+  when its markup passes the inline policy, the same rule examples written in
+  the page follow, so dropdowns, context menus, datepickers, tooltips and
+  modals open over the page instead of inside a frame. An example with
+  `index.css` or `index.js` stays sandboxed, and `preview=inline` on it still
+  fails with `MARKDOWN_EXAMPLE_INLINE_NOT_ADMITTED`. The `reusable_example`
+  preview reason is gone; receipts and `inspect page` report the real reason.
+- The inline policy admits `data-*` attributes (not `data-docara-*`, and no
+  `javascript:`, `vbscript:` or `data:` value), kebab-case `id` attributes
+  with at least one hyphen, and `form` without `action`, `method`, `target`,
+  `enctype` or `name`. On a Smart element it admits the attributes the
+  project's Framework lock declares for that tag. `on*`, `href`, `src`,
+  `srcdoc`, `style`, `action`, `formaction`, the `form` attribute,
+  `autofocus` and `contenteditable` stay forbidden even when declared.
+- The site builder checks every finished page: an id inside an inline example
+  that appears more than once on the page fails the build with
+  `MARKDOWN_EXAMPLE_INLINE_ID_DUPLICATE`, naming the id, the example and the
+  page.
+- The shell cancels any form submission that starts inside an inline
+  example, so a demo form never navigates or reloads the documentation page.
+
 ### Fixed
 - Sandboxed examples boot the Framework: the frame now receives Core together
   with the storage fallback, boot configuration and preloaded registry, so
@@ -14,6 +36,16 @@ All notable changes to Docara are documented in this file.
   shared `--sf-focus--offset` gap.
 
 ### Changed
+- Inline HTML examples sit inside a `.docara-example-inline` root. Shell prose
+  rules (paragraph measure, Smart element margins, heading scroll margins) no
+  longer reach into it, so the markup is styled as it is in a frame.
+- The Smart sync script derives each runtime component's `attributes` from the
+  pinned ui-smart revision's `smart/<name>/smart.manifest.json`: the keys of
+  `inputs.properties`, plus `template` and `root-class` for a tag that declares
+  any input. A tag without a manifest or without inputs keeps an empty list.
+  The bundled runtime lock, the site lock and the stub lock carry the derived
+  lists; 46 of 47 components now declare attributes (`sf-inline-editor` has no
+  inputs).
 - Bundle Framework pair `ui-c6f98eb4cb29-smart-bb8f3cc5c329` (Core `c6f98eb4`,
   Smart `bb8f3cc5`, contracts `1c40964b`), built from ui-source `c18b4b4a`. The
   runtime projection goes from 908 to 884 files: the 27 files of the Font

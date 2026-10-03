@@ -141,7 +141,7 @@ Receipt `.docara/examples.json` связывает hashes примера, стр
 
 Параметр `preview` принимает `auto`, `inline` или `sandbox`; по умолчанию
 используется `auto`. Markdown и допущенный политикой HTML-only результат
-встраиваются в страницу. Общие примеры, CSS, JavaScript и недопущенный HTML
+встраиваются в страницу. CSS, JavaScript и недопущенный HTML
 изолируются в iframe. Явный `inline` не обходит политику и при необходимости
 изоляции завершает сборку ошибкой. Receipt и `inspect page` возвращают
 requested/resolved mode, причину решения и hash исходников.

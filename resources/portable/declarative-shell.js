@@ -322,6 +322,10 @@
   }
   var docaraExamples=Array.from(document.querySelectorAll('[data-docara-example]'));
   var docaraExampleFrames=Array.from(document.querySelectorAll('iframe[data-docara-example-frame]'));
+  /* An inline example may hold a demo form. Capturing on the example root cancels every submission that starts inside it before any other listener runs, so the form can never navigate or reload the documentation page. */
+  Array.from(document.querySelectorAll('[data-docara-example-inline-preview]')).forEach(function(root){
+    root.addEventListener('submit',function(event){event.preventDefault()},true);
+  });
   var exampleViewportStorageKey='docara.example.viewport';
   var exampleViewportWidths={desktop:1280,tablet:768,mobile:390};
   function storedExampleViewport(){

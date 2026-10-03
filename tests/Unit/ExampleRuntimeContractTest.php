@@ -46,6 +46,23 @@ final class ExampleRuntimeContractTest extends TestCase
         self::assertStringContainsString('script.async=false', $renderer);
     }
 
+    public function test_inline_examples_cannot_submit_a_form_through_the_documentation_page(): void
+    {
+        $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');
+        $css = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.css');
+
+        self::assertStringContainsString(
+            "Array.from(document.querySelectorAll('[data-docara-example-inline-preview]')).forEach(function(root){\n"
+            . "    root.addEventListener('submit',function(event){event.preventDefault()},true);",
+            $shell,
+        );
+        self::assertStringContainsString('.docara-prose p:not(:where(.docara-example-inline *))', $css);
+        self::assertStringContainsString('.docara-prose sf-button:not(:where(.docara-example-inline *))', $css);
+        self::assertStringContainsString('.docara-example-inline{display:flow-root;min-inline-size:0}', $css);
+        self::assertStringContainsString('.docara-prose li:not(:where(.docara-example-inline *))', $css);
+        self::assertStringContainsString('.docara-prose h2[id]:not(:where(.docara-example-inline *))', $css);
+    }
+
     public function test_example_height_measures_content_instead_of_its_current_viewport(): void
     {
         $shell = (string) file_get_contents(dirname(__DIR__, 2) . '/resources/portable/declarative-shell.js');

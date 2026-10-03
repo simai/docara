@@ -120,6 +120,7 @@ final readonly class PortableSiteBuilder
             components: $gateway,
             smartRenderer: $smartRenderer,
             projectExamples: $projectExamples,
+            examplePreviewPolicy: ExamplePreviewPolicy::fromFrameworkLock($frameworkLock),
         );
         $pageBuilder = $this->pageBuilderInjected
             ? $this->pageBuilder
@@ -623,6 +624,7 @@ final readonly class PortableSiteBuilder
             $contextPages = $pages;
         }
         $outlineBuilder = new PortableDocumentOutlineBuilder;
+        $inlineExampleIds = new InlineExampleIdGuard;
         foreach ($pages as &$hydratedPage) {
             $hydratedPlan = $hydratedPage['plan'] ?? null;
             if (! $hydratedPlan instanceof ResolvedPagePlan) {
@@ -1079,6 +1081,7 @@ final readonly class PortableSiteBuilder
                     $publishedFrameworkAssetPlans[$generatedAssetSha256] = true;
                 }
                 $frameworkAssetPlanReceipts[(string) $page['output']] = $finalFrameworkPlan->receipt();
+                $inlineExampleIds->assertUnique($rendered, (string) $page['page_path']);
                 $this->files->put($outputPath, $rendered);
 
                 /** @var ResolvedPagePlan $plan */

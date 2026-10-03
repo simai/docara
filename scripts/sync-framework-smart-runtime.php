@@ -64,6 +64,43 @@ if ($files === []) {
     throw new RuntimeException('FRAMEWORK_SMART_ENTRYPOINTS_MISSING');
 }
 
+// Each Smart manifest names its custom element and declares its inputs; the
+// input keys are the element's attribute names. A tag with declared inputs
+// also accepts the two base-element attributes every Smart element observes
+// and that carry no URL or style: template and root-class. A tag without a
+// manifest, or with no declared inputs, keeps an empty list (fail-closed).
+$baseAttributes = ['root-class', 'template'];
+$declaredAttributes = [];
+foreach (preg_split('/\R/', trim($tree)) ?: [] as $relativePath) {
+    if (preg_match('#^smart/[a-z][a-z0-9-]*/smart\.manifest\.json$#D', $relativePath) !== 1) {
+        continue;
+    }
+    $manifest = json_decode($git(['show', $revision . ':' . $relativePath]), true, 512, JSON_THROW_ON_ERROR);
+    $tag = is_array($manifest) ? ($manifest['custom_element'] ?? null) : null;
+    $properties = is_array($manifest) ? ($manifest['inputs']['properties'] ?? null) : null;
+    if (! is_string($tag) || preg_match('/^sf-[a-z][a-z0-9-]*$/D', $tag) !== 1 || ! is_array($properties)) {
+        throw new RuntimeException('FRAMEWORK_SMART_MANIFEST_INVALID: ' . $relativePath);
+    }
+    if (isset($declaredAttributes[$tag])) {
+        throw new RuntimeException('FRAMEWORK_SMART_MANIFEST_TAG_DUPLICATE: ' . $tag);
+    }
+    $attributes = [];
+    foreach (array_keys($properties) as $attribute) {
+        if (! is_string($attribute) || preg_match('/^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$/D', $attribute) !== 1) {
+            throw new RuntimeException('FRAMEWORK_SMART_MANIFEST_ATTRIBUTE_INVALID: ' . $relativePath);
+        }
+        $attributes[] = $attribute;
+    }
+    if ($attributes !== []) {
+        $attributes = array_values(array_unique([...$attributes, ...$baseAttributes]));
+    }
+    sort($attributes, SORT_STRING);
+    $declaredAttributes[$tag] = $attributes;
+}
+if ($declaredAttributes === []) {
+    throw new RuntimeException('FRAMEWORK_SMART_MANIFESTS_MISSING');
+}
+
 $targetRoot = $root . '/resources/framework/runtime-smart/' . $revision;
 foreach ($files as $relativePath => $bytes) {
     $target = $targetRoot . '/' . $relativePath;
@@ -212,6 +249,9 @@ foreach ([$lockPath, $root . '/stubs/portable/simai-framework.lock.json'] as $pr
         }
         sort($requires, SORT_STRING);
         $projectLock['runtime']['components'][$tag]['requires'] = $requires;
+    }
+    foreach (array_keys($projectLock['runtime']['components']) as $tag) {
+        $projectLock['runtime']['components'][$tag]['attributes'] = $declaredAttributes[$tag] ?? [];
     }
     ksort($projectLock['runtime']['components'], SORT_STRING);
     $synchronizedRuntime = $projectLock['runtime'];

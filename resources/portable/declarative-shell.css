@@ -35,8 +35,8 @@ html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-sect
 .docara-document-link>sf-icon{flex:none}
 .docara-previous-next{margin-block-start:var(--sf-space-4);padding-block-start:var(--sf-space-2);border-block-start:1px solid var(--sf-outline-variant)}
 .docara-document-link--next{justify-content:flex-end;text-align:end}
-.docara-prose h1[id],.docara-prose h2[id],.docara-prose h3[id],.docara-prose h4[id],.docara-prose h5[id],.docara-prose h6[id]{scroll-margin-block-start:4.5rem}
-.docara-prose p,.docara-prose li{max-width:var(--sf-text--measure-wide)}
+.docara-prose h1[id]:not(:where(.docara-example-inline *)),.docara-prose h2[id]:not(:where(.docara-example-inline *)),.docara-prose h3[id]:not(:where(.docara-example-inline *)),.docara-prose h4[id]:not(:where(.docara-example-inline *)),.docara-prose h5[id]:not(:where(.docara-example-inline *)),.docara-prose h6[id]:not(:where(.docara-example-inline *)){scroll-margin-block-start:4.5rem}
+.docara-prose p:not(:where(.docara-example-inline *)),.docara-prose li:not(:where(.docara-example-inline *)){max-width:var(--sf-text--measure-wide)}
 .docara-prose img{max-inline-size:100%}
 .aspect-21x9{aspect-ratio:21/9}
 .docara-prose>p>img:only-child,.docara-prose>p>a:only-child>img:only-child{display:block;block-size:auto}
@@ -81,7 +81,7 @@ html[dir="rtl"] .docara-outline-scroll>.sf-scrollbar__viewport>[data-docara-sect
 [data-docara-code-wrap-active="true"] .docara-code-scroll .hljs-ln-code{white-space:pre-wrap;overflow-wrap:anywhere}
 sf-alert,sf-button{display:block}
 .sf-alert.sf-alert--success>sf-icon>.sf-icon{--sf-icon--color:var(--sf-success)}
-.docara-prose sf-alert,.docara-prose sf-button{margin-block:var(--sf-space-2)}
+.docara-prose sf-alert:not(:where(.docara-example-inline *)),.docara-prose sf-button:not(:where(.docara-example-inline *)){margin-block:var(--sf-space-2)}
 .docara-landing{display:block;min-height:auto;container-type:inline-size}
 .docara-landing [data-docara-block="hero"]:not([data-docara-surface]){background:radial-gradient(circle at 12% 18%,color-mix(in srgb,var(--sf-primary-container) 72%,transparent),transparent 46%),radial-gradient(circle at 88% 12%,color-mix(in srgb,var(--sf-tertiary-container) 58%,transparent),transparent 38%),color-mix(in srgb,var(--sf-surface-container) 76%,transparent)}
 .docara-landing .docara-content{width:100%}
@@ -123,6 +123,7 @@ sf-alert,sf-button{display:block}
 .docara-example-grid .sf-button{margin-block-start:auto;align-self:flex-start}
 .docara-example-preview{overflow:hidden;margin-block-end:var(--sf-space-1);border:1px solid var(--sf-outline-variant);border-radius:var(--sf-radius-2,var(--sf-radius-default));background:var(--sf-surface-0)}
 .docara-example-preview__header{border-block-end:1px solid var(--sf-outline-variant)}
+.docara-example-inline{display:flow-root;min-inline-size:0}
 .docara-example-preview__tabs{display:inline-flex;inline-size:max-content;max-inline-size:100%;align-items:center;gap:0;overflow-x:auto}
 .docara-example-preview__tab{display:inline-flex;align-items:center;justify-content:center;min-block-size:var(--sf-ui-1--control-height);margin:0;padding-inline:var(--sf-space-1);border:0;border-radius:0;background:transparent;color:var(--sf-on-surface-variant);font-size:var(--sf-text-size-1);line-height:var(--sf-text-height-1);cursor:pointer}
 .docara-example-preview__tab[aria-selected="true"]{color:var(--sf-on-surface)}
@@ -196,7 +197,7 @@ sf-alert,sf-button{display:block}
   .docara-sidebar{display:none}
   .docara-reading-column{padding:var(--sf-space-2)}
   .docara-content{scroll-margin-block-start:4rem}
-  .docara-prose h1[id],.docara-prose h2[id],.docara-prose h3[id],.docara-prose h4[id],.docara-prose h5[id],.docara-prose h6[id]{scroll-margin-block-start:4rem}
+  .docara-prose h1[id]:not(:where(.docara-example-inline *)),.docara-prose h2[id]:not(:where(.docara-example-inline *)),.docara-prose h3[id]:not(:where(.docara-example-inline *)),.docara-prose h4[id]:not(:where(.docara-example-inline *)),.docara-prose h5[id]:not(:where(.docara-example-inline *)),.docara-prose h6[id]:not(:where(.docara-example-inline *)){scroll-margin-block-start:4rem}
   .docara-landing [data-docara-container]{padding:var(--sf-space-2)}
 }
 @media(max-width:600px){

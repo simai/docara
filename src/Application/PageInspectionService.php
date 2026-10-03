@@ -18,6 +18,7 @@ use Simai\Docara\I18n\LocaleRoutingPolicy;
 use Simai\Docara\I18n\LocaleUrlProjector;
 use Simai\Docara\Portable\PortableConfigurationException;
 use Simai\Docara\Portable\PortableConfigurationLoader;
+use Simai\Docara\PortableSite\ExamplePreviewPolicy;
 use Simai\Docara\PortableSite\PortableMarkdownRenderer;
 use Simai\Docara\PortableSite\ProjectExampleRepository;
 use Simai\Docara\Smart\Runtime\ProjectSmartRuntime;
@@ -293,11 +294,27 @@ final readonly class PageInspectionService
                 $runtime->root,
                 (string) ($runtime->site['base_url'] ?? '/'),
             ),
+            examplePreviewPolicy: $this->examplePreviewPolicy($runtime),
         ))->examplePreviews(
             $markdown,
             $runtime->root,
             $runtime->root . '/' . $source->path,
         );
+    }
+
+    /**
+     * Inspection resolves example previews with the same Framework lock the
+     * build uses, so `inspect` reports the preview mode the build will emit.
+     */
+    private function examplePreviewPolicy(ProjectRuntime $runtime): ExamplePreviewPolicy
+    {
+        $frameworkPath = (string) ($runtime->site['framework_lock'] ?? '');
+        $lockPath = $runtime->root . '/' . ltrim($frameworkPath, '/');
+        if ($frameworkPath === '' || ! is_file($lockPath)) {
+            return new ExamplePreviewPolicy;
+        }
+
+        return ExamplePreviewPolicy::fromFrameworkLock(FrameworkLock::fromJsonFile($lockPath)->toArray());
     }
 
     /** @return list<array{url:string}> */

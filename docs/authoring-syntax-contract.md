@@ -87,11 +87,47 @@ examples require HTML. Unknown source types, duplicate sources and additional
 free text fail closed.
 
 `preview=auto` is the default. Typed Markdown and admitted HTML-only examples
-render inline; reusable examples and examples containing CSS, JavaScript or
-non-admitted HTML render in a sandboxed iframe. `preview=sandbox` forces
-isolation. `preview=inline` requests direct rendering but still fails closed
-when the inline policy requires isolation. The build receipt and page
-inspection expose the requested mode, resolved mode and decision reason.
+render inline; examples containing CSS, JavaScript or non-admitted HTML render
+in a sandboxed iframe. Reusable project examples follow the same rule as
+examples written in the page. `preview=sandbox` forces isolation.
+`preview=inline` requests direct rendering but still fails closed when the
+inline policy requires isolation. The build receipt and page inspection expose
+the requested mode, resolved mode and decision reason.
+
+The inline policy admits a fixed set of non-executable elements and
+attributes. Beyond the basic list it admits:
+
+- any `data-*` attribute except `data-docara-*`, which belongs to the shell;
+  no attribute value may start with a `javascript:`, `vbscript:` or `data:`
+  scheme;
+- `id`, written in kebab case with at least one hyphen (`save-tooltip`) and
+  not starting with `docara-`, so it cannot shadow a global script name;
+- `form` without `action`, `method`, `target`, `enctype` or `name`; the shell
+  cancels every `submit` that starts inside an inline example, so a demo form
+  never navigates or reloads the documentation page;
+- on a Smart element (`sf-*`), the attributes the project's Framework lock
+  declares for that tag in `runtime.components["sf-…"].attributes`. A tag
+  with an empty or missing list admits only the basic attributes.
+
+`on*`, `href`, `src`, `srcdoc`, `srcset`, `style`, `action`, `formaction` and
+the other `form*` overrides, the `form` attribute, `autofocus` and
+`contenteditable` are never admitted, even when a lock declares them. `script`,
+`style`, `link`, `iframe`, `object`, `embed`, `a`, `img` and every other
+element outside the list keep the example in the sandbox.
+
+Ids in an inline example share the page's id space. Heading anchors already
+avoid ids that the page uses; every other collision fails the build with
+`MARKDOWN_EXAMPLE_INLINE_ID_DUPLICATE`, naming the id, the example and the
+page. The check runs on the finished page, so it sees the shell, other
+inline examples and repeated uses of the same reusable example.
+
+An inline HTML example sits inside a `.docara-example-inline` root. Shell
+prose rules stop at that root, so the markup gets the same Framework styles it
+gets in a frame, and its floating surfaces (lists, menus, tooltips) open over
+the page instead of inside the frame's box. Framework components in
+the inline markup load with the page: the asset planner reads the finished
+page HTML, so the same set the frame would receive is planned at build time.
+Author CSS and JavaScript never run in the documentation page.
 Sandboxed results expand to their measured content height without nested
 scrolling or a second shell height animation; the documentation page owns
 vertical scrolling.

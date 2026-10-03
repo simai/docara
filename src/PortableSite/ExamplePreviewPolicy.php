@@ -203,6 +203,7 @@ final class ExamplePreviewPolicy
             return 'html_shell_attribute_not_admitted';
         }
         $generic = in_array($name, self::ATTRIBUTES, true)
+            || $name === 'slot'
             || preg_match('/\Aaria-[a-z0-9-]+\z/D', $name) === 1
             || preg_match('/\Adata-[a-z0-9][a-z0-9._-]*\z/D', $name) === 1;
         $declared = $smart && in_array($name, $this->smartAttributes[$element] ?? [], true);
@@ -226,6 +227,11 @@ final class ExamplePreviewPolicy
             if (str_starts_with(strtolower($value), 'docara-')) {
                 return 'html_shell_id_not_admitted';
             }
+        }
+        if ($name === 'slot' && preg_match('/\A[a-z][a-z0-9]*(?:-[a-z0-9]+)*\z/D', $value) !== 1) {
+            // A slot only names the part of a Smart component a child fills
+            // (content, footer, title); anything but a plain token is refused.
+            return 'html_attribute_value_not_admitted';
         }
         if ($name === 'class') {
             foreach (preg_split('/\s+/u', trim($value)) ?: [] as $class) {

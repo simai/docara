@@ -14,7 +14,7 @@ All notable changes to Docara are documented in this file.
   preview reason is gone; receipts and `inspect page` report the real reason.
 - The inline policy admits `data-*` attributes (not `data-docara-*`, and no
   `javascript:`, `vbscript:` or `data:` value), kebab-case `id` attributes
-  with at least one hyphen, and `form` without `action`, `method`, `target`,
+  with at least one hyphen, `slot` with a plain kebab-case token, and `form` without `action`, `method`, `target`,
   `enctype` or `name`. On a Smart element it admits the attributes the
   project's Framework lock declares for that tag. `on*`, `href`, `src`,
   `srcdoc`, `style`, `action`, `formaction`, the `form` attribute,

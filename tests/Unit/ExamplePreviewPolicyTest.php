@@ -58,13 +58,14 @@ final class ExamplePreviewPolicyTest extends TestCase
     }
 
     #[Test]
-    public function data_attributes_ids_and_forms_without_a_destination_are_admitted_inline(): void
+    public function data_attributes_ids_slots_and_forms_without_a_destination_are_admitted_inline(): void
     {
         $policy = new ExamplePreviewPolicy;
         foreach ([
             '<div data-value="kazan" data-tooltip="save-tooltip" data-sf-modal-open="demo-modal">City</div>',
             '<span id="save-tooltip" class="sf-tooltip" hidden>Save</span>',
             '<form class="grid gap-3"><input type="text" name="status"><button type="submit">Check</button><button type="reset">Reset</button></form>',
+            '<sf-modal><div slot="content"><p>Body</p></div><div slot="modal-footer">Footer</div></sf-modal>',
         ] as $html) {
             self::assertSame('admitted_html', $policy->resolve(['HTML' => $html], true, 'auto')['reason'], $html);
         }
@@ -92,6 +93,8 @@ final class ExamplePreviewPolicyTest extends TestCase
             '<div id="tooltip">Single word</div>' => 'html_id_not_admitted',
             '<div id="docara-main">Shell id</div>' => 'html_shell_id_not_admitted',
             '<div class="docara-prose">Shell class</div>' => 'html_shell_class_not_admitted',
+            '<div slot="Content Footer">Slot</div>' => 'html_attribute_value_not_admitted',
+            '<div slot="javascript:alert(1)">Slot</div>' => 'html_attribute_value_not_admitted',
         ] as $html => $reason) {
             self::assertSame(
                 ['requested' => 'auto', 'resolved' => 'sandbox', 'reason' => $reason],

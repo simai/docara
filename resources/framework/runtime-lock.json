@@ -44,49 +44,55 @@
                 "runtime_projection_packet_sha256": "96e04cd6a0111b8331cb6ef6ffb079305e3f0804b4c8e417305433aa2689b944",
                 "runtime_projection_files": 908,
                 "runtime_projection_manifest_sha256": "f3c9106091e97e3612b8f67e112cb0abc4744f09b84dea77cf3545346e0cb1a1"
+            },
+            {
+                "runtime_sha256": "a16e03e37059c8e3e4321c3b90a66d03b852330cd2fba0492020409e1c27d96b",
+                "runtime_projection_packet_sha256": "92419a793ab56ebff25c7828d90ff2e29a1aa8e4a1ee99208359257176b86bb6",
+                "runtime_projection_files": 1379,
+                "runtime_projection_manifest_sha256": "0b17da9c160b00b56ea0a41fdf1c786b82c05d03350a6eacd690ac3840d3aeee"
             }
         ],
         "superseded_typography_projections": []
     },
     "runtime": "simai-framework",
-    "pair_id": "ui-c6f98eb4cb29-smart-bb8f3cc5c329",
-    "bundle_id": "ui-c6f98eb4cb29-smart-bb8f3cc5c329-registry-464a7151-verified-commit-candidate-v1",
+    "pair_id": "ui-ed549e7282ef-smart-6a58ac134bdb",
+    "bundle_id": "ui-ed549e7282ef-smart-6a58ac134bdb-registry-65f2a16a-verified-commit-candidate-v1",
     "publication_profile": "verified-commit-candidate-v1",
     "tag": null,
     "ui": {
         "tag": null,
-        "commit": "c6f98eb4cb29bdc892d4df6ce31c014479eb37fb",
+        "commit": "ed549e7282efbc0c4af0a2750abc38e2615e7696",
         "tree": "distr",
         "mount": "ui",
-        "sha256": "2de35782fd49035f61b6127e179bac4157219d529e02bff8e3a646e57a1a1c43",
+        "sha256": "60309eb73ca559985d23530449d04c116457a5c149ce0c72948c784cafc43f2a",
         "files": 6129
     },
     "ui_smart": {
         "tag": null,
-        "commit": "bb8f3cc5c329f59fae2dab33ac63f5012821dcd5",
+        "commit": "6a58ac134bdb7dabe1ec77dd671f925ddb065721",
         "tree": "smart",
         "mount": "smart",
-        "sha256": "2b8fff3be80e8bbc29cac28222ce5b5cc6846aba5d45c97a58662efbebf78036",
-        "files": 785
+        "sha256": "3c6a2e61f5130eef255d157d56d265d1f78df2379af2f8ebea7c86ac8e2aee09",
+        "files": 829
     },
     "framework_registry": {
         "schema_id": "simai.framework.contract-registry",
-        "compatibility_id": "ui-c6f98eb4cb29-smart-bb8f3cc5c329",
+        "compatibility_id": "ui-ed549e7282ef-smart-6a58ac134bdb",
         "profile": "plain-assets-v1",
         "relative_path": "contracts/generated/framework-contract-registry.json",
-        "file_sha256": "464a7151a442b2f9dbe36f2447e77a70a02d8f4d9457218c05ffc9816d475da6",
+        "file_sha256": "65f2a16a7f0f76dcfa67dcb5f0519680c6d51cb777c29b89ec1927d60d655215",
         "source": {
-            "commit": "1c40964b715a6b36f70e397cf24b1eb8dcef09e8",
+            "commit": "c434bbc20a5c6c03057501e836c404643d5be60f",
             "tree": "contracts/generated",
-            "tree_oid": "6ca2fe8ec0b11011a163ef8eb04d0edb4dfb77fa",
+            "tree_oid": "885a1f113665600c9280dee1bc29f03b00f40021",
             "mount": "contract",
-            "sha256": "a8f0d97402034d8b237e273f1fb0cab7e60a4321f70a8b130c88c8be6dc0b9b6",
+            "sha256": "7701a2e3fed988d9ed274bdc4c932b131757e64daaa2600f45ef38b211bfc169",
             "files": 2
         },
         "documentation_source": {
             "schema": "docara.documentation_source.v1",
             "relative_path": "contracts/generated/documentation-source.json",
-            "file_sha256": "fdf3e4b059bbb07fc51c63330cbef40ad80e5ffd00fed499bb5a791117bfd872"
+            "file_sha256": "daa64e3d53f093f66c9bb40b2a28efe13e3724af55badf421d361dc6c00651eb"
         }
     },
     "boot": {
@@ -522,6 +528,7 @@
                 "mode",
                 "multiple",
                 "name",
+                "options",
                 "placeholder",
                 "portal",
                 "required",
@@ -828,13 +835,16 @@
             "attributes": [
                 "action",
                 "action-apply-text",
+                "action-choose-label",
                 "action-for-all",
                 "action-for-all-label",
                 "actions",
                 "actions-label",
+                "actions-region-label",
                 "aria-label",
                 "bottom",
                 "bottom-class",
+                "clear-selection-label",
                 "current",
                 "last-label",
                 "main-class",

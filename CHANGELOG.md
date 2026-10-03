@@ -36,6 +36,31 @@ All notable changes to Docara are documented in this file.
   shared `--sf-focus--offset` gap.
 
 ### Changed
+- Bundle Framework pair `ui-ed549e7282ef-smart-6a58ac134bdb` (Core `ed549e72`,
+  Smart `6a58ac13`, contracts `c434bbc2`), built from ui-source `0993cfc8`.
+  Over `c6f98eb4` the pair brings: the rule registry loads every component a
+  component is built from and every element its template renders; ARIA where
+  assistive technology reads it and names for unnamed controls; floating
+  panels (dropdown, datepicker, tooltip) stay aligned with fields near the
+  viewport edge, and the dropdown list gets the context menu's surface and
+  shadow; component stylesheets read only tokens the theme declares; the
+  data view table gains sorting, row state and interaction, pinned columns,
+  a resize guide, a page switcher and a bulk panel over the page. The runtime
+  projection keeps its 1379 files, with new bytes, and the Smart projection
+  keeps 47 components. `sf-dropdown` now declares `options`, and
+  `sf-pagination` declares `action-choose-label`, `actions-region-label` and
+  `clear-selection-label`. CI checks out simai/ui at `ed549e72`.
+- The `c6f98eb4` runtime packet is no longer carried. A site whose lock names
+  it with the 1379-file packet stays admitted through
+  `superseded_framework_locks` until it repins.
+- The runtime projection sync fails when the packet it rebuilds holds anything
+  the pinned revision does not: `FRAMEWORK_RUNTIME_UPSTREAM_MISSING` for a
+  manifest entry the revision lacks, `FRAMEWORK_RUNTIME_UPSTREAM_MISMATCH` for
+  bytes that differ from it, and `FRAMEWORK_RUNTIME_UNMANIFESTED_FILE` for a
+  file on disk with no manifest entry. The packet is seeded from the one it
+  replaces, so a component the Framework removed used to survive into the new
+  packet with a freshly computed digest. The Smart sync, which writes every
+  file from the revision, now reports the leftover files it prunes.
 - Inline HTML examples sit inside a `.docara-example-inline` root. Shell prose
   rules (paragraph measure, Smart element margins, heading scroll margins) no
   longer reach into it, so the markup is styled as it is in a frame.

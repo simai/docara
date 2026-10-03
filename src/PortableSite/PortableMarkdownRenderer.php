@@ -71,6 +71,7 @@ final class PortableMarkdownRenderer
         ?SurfacePresentation $surfaces = null,
         ?SmartRenderer $smartRenderer = null,
         ?ProjectExampleRepository $projectExamples = null,
+        ?ExamplePreviewPolicy $examplePreviewPolicy = null,
     ) {
         $profile ??= PortableMarkdownProfile::bundled();
         $this->definitions = $definitions ?? TypedComponentDefinitionRepository::bundled();
@@ -89,7 +90,7 @@ final class PortableMarkdownRenderer
         $this->attributes = new AuthoringAttributeParser;
         $this->examples = new PortableExampleRenderer;
         $this->projectExamples = $projectExamples;
-        $this->examplePreviewPolicy = new ExamplePreviewPolicy;
+        $this->examplePreviewPolicy = $examplePreviewPolicy ?? new ExamplePreviewPolicy;
     }
 
     public function componentGateway(): SmartComponentGateway
@@ -735,12 +736,23 @@ final class PortableMarkdownRenderer
         $compiledPreview = $hasMarkdown
             ? $this->renderCompiled($sources['Markdown'], $sourceRoot, $sourceFile)
             : $sources['HTML'];
-        $preview = $previewDecision['resolved'] === 'inline'
-            ? '<div data-docara-example-inline-preview>' . $compiledPreview . '</div>'
-            : $this->renderExampleDocument(
+        // An inline HTML example's root is the boundary between the shell and
+        // the author's markup: shell prose rules stop at it, the shell cancels
+        // any form submission that starts inside it, and the site builder
+        // checks its ids against the whole page. Typed Markdown examples are
+        // Docara's own prose and keep the plain root.
+        if ($previewDecision['resolved'] !== 'inline') {
+            $preview = $this->renderExampleDocument(
                 $hasMarkdown ? ['HTML' => $compiledPreview] : $sources,
                 $baseHref,
             );
+        } elseif ($hasMarkdown) {
+            $preview = '<div data-docara-example-inline-preview>' . $compiledPreview . '</div>';
+        } else {
+            $preview = '<div data-docara-example-inline-preview="html"'
+                . ($exampleId === '' ? '' : ' data-docara-example-source="' . $this->escapeHtml($exampleId) . '"')
+                . ' class="docara-example-inline">' . $compiledPreview . '</div>';
+        }
         $renderedSources = [];
         foreach ($sources as $language => $source) {
             $renderedSources[$language] = $this->renderCompiled(

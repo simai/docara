@@ -45,9 +45,50 @@ final class ProjectExampleRepositoryTest extends TestCase
         self::assertSame(['content/ru/page.md'], $receipt['examples'][0]['consumers']);
         self::assertSame('auto', $receipt['previews'][0]['requested_preview']);
         self::assertSame('sandbox', $receipt['previews'][0]['resolved_preview']);
-        self::assertSame('reusable_example', $receipt['previews'][0]['reason']);
+        self::assertSame('javascript', $receipt['previews'][0]['reason']);
         self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $receipt['previews'][0]['source_sha256']);
         self::assertMatchesRegularExpression('/^[a-f0-9]{64}$/', $receipt['content_sha256']);
+    }
+
+    #[Test]
+    public function an_html_only_project_example_renders_inline_inside_a_boundary_root(): void
+    {
+        $this->createSource([
+            'content/ru/page.md' => '# Page',
+            'examples/components/tooltip/index.html' => '<span id="save-tooltip" data-tooltip="save" class="sf-tooltip">Save</span>'
+                . '<form class="grid"><input type="text" name="q"><button type="submit">Find</button></form>',
+            'examples/components/script/index.html' => '<button type="button">Run</button>',
+            'examples/components/script/index.js' => 'document.body.dataset.ready = "true";',
+        ]);
+        $repository = new ProjectExampleRepository($this->tmp, '/docs/');
+        $renderer = new PortableMarkdownRenderer(projectExamples: $repository);
+        $html = $renderer->render(
+            ":::example {id=\"components/tooltip\" label=\"Result\"}\n:::\n\n:::example {id=\"components/script\" label=\"Result\"}\n:::\n",
+            $this->tmp,
+            $this->tmpPath('content/ru/page.md'),
+        );
+
+        self::assertStringContainsString(
+            '<div data-docara-example-inline-preview="html" data-docara-example-source="components/tooltip" class="docara-example-inline">'
+            . '<span id="save-tooltip" data-tooltip="save" class="sf-tooltip">Save</span><form class="grid">',
+            $html,
+        );
+        self::assertSame(1, substr_count($html, '<iframe title="Example" data-docara-example-frame'));
+        self::assertStringNotContainsString('data-docara-example-source="components/script"', $html);
+        self::assertStringNotContainsString('&lt;base href=&quot;/docs/_docara/examples/components/tooltip/', $html);
+        $outsideFrames = (string) preg_replace('/\ssrcdoc="[^"]*"/', '', $html);
+        self::assertStringNotContainsString('<style', $outsideFrames);
+        self::assertStringNotContainsString('<script', $outsideFrames);
+
+        $reasons = [];
+        foreach ($repository->receipt()['previews'] as $preview) {
+            $reasons[$preview['id']] = [$preview['resolved_preview'], $preview['reason']];
+        }
+        ksort($reasons);
+        self::assertSame([
+            'markdown-example-' . substr(hash('sha256', 'components/script'), 0, 12) => ['sandbox', 'javascript'],
+            'markdown-example-' . substr(hash('sha256', 'components/tooltip'), 0, 12) => ['inline', 'admitted_html'],
+        ], $reasons);
     }
 
     #[Test]

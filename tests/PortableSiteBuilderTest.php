@@ -46,7 +46,7 @@ final class PortableSiteBuilderTest extends TestCase
         ))[0];
         self::assertSame('auto', $preview['requested_preview']);
         self::assertSame('sandbox', $preview['resolved_preview']);
-        self::assertSame('reusable_example', $preview['reason']);
+        self::assertSame('custom_css', $preview['reason']);
         self::assertFileExists($destination . '/_docara/examples/utilities/card/assets/icon.svg');
         self::assertStringContainsString('data-docara-example-tab="html"', (string) file_get_contents($destination . '/ru/index.html'));
 
@@ -56,6 +56,46 @@ final class PortableSiteBuilderTest extends TestCase
             self::fail('A single-page build accepted changed shared example input.');
         } catch (PortableConfigurationException $exception) {
             self::assertSame('PORTABLE_INCREMENTAL_EXAMPLE_CHANGED', $exception->errorCode);
+        }
+    }
+
+    #[Test]
+    public function html_only_project_examples_render_inline_and_their_ids_must_be_unique_on_the_page(): void
+    {
+        $this->copyPortableFixture($this->tmp, false);
+        file_put_contents(
+            $this->tmpPath('content/ru/index.md'),
+            "# Подсказка\n\n:::example {id=components/tooltip label=Результат}\n:::\n",
+        );
+        $this->createSource([
+            'examples/components/tooltip/index.html' => '<span class="sf-tooltip-anchor"><button type="button" class="sf-button" data-tooltip="save-tooltip">Save</button>'
+                . '<span id="save-tooltip" class="sf-tooltip" hidden>Save changes</span></span>',
+        ]);
+        $destination = $this->tmpPath('build_local');
+        $this->builder()->build($this->tmp, $destination);
+
+        $receipt = $this->jsonFile($destination . '/.docara/examples.json');
+        $preview = array_values(array_filter(
+            $receipt['previews'],
+            static fn (array $record): bool => $record['consumer'] === 'content/ru/index.md',
+        ))[0];
+        self::assertSame('inline', $preview['resolved_preview']);
+        self::assertSame('admitted_html', $preview['reason']);
+        $page = (string) file_get_contents($destination . '/ru/index.html');
+        self::assertStringContainsString('data-docara-example-source="components/tooltip" class="docara-example-inline"><span class="sf-tooltip-anchor">', $page);
+        self::assertSame(1, substr_count($page, '<span id="save-tooltip"'));
+
+        file_put_contents(
+            $this->tmpPath('content/ru/index.md'),
+            "# Подсказка\n\n:::example {id=components/tooltip label=Первый}\n:::\n\n:::example {id=components/tooltip label=Второй}\n:::\n",
+        );
+        try {
+            $this->builder()->build($this->tmp, $this->tmpPath('build_duplicate'));
+            self::fail('A page with a duplicated inline example id was built.');
+        } catch (PortableConfigurationException $exception) {
+            self::assertSame('MARKDOWN_EXAMPLE_INLINE_ID_DUPLICATE', $exception->errorCode);
+            self::assertStringContainsString('[save-tooltip]', $exception->getMessage());
+            self::assertStringContainsString('[components/tooltip]', $exception->getMessage());
         }
     }
 

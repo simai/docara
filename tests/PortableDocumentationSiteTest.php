@@ -388,14 +388,16 @@ final class PortableDocumentationSiteTest extends PHPUnit
         // whatever the file dates are, so that is asserted first: a stale count
         // must not hide a tree that drifted.
         self::assertSame($firstFiles, $secondFiles);
-        // Complete tree for the bundled pair. It was 2392 on the pair before
-        // this one, and the 22 it gained were accounted for rather than
-        // accepted: the runtime projection grew by 9 files and the Smart
-        // runtime by the data view's stylesheet and script, each published once
-        // per locale — 9 * 2 + 2 * 2. The number of shell stylesheets did not
-        // move, 70 before and 70 after; only their content hashes did, because
-        // the foundation they embed changed.
-        self::assertCount(2414, $firstFiles);
+        // Complete tree for the bundled pair. It was 2414 on the pair before
+        // this one, and the 50 it lost were accounted for rather than accepted.
+        // Ignoring the revision in the projection path, the tree lost 54 files
+        // and gained 4, and both sides are published once per locale: the
+        // Framework rebuilt `component/icon` into `component/icons`, so 27
+        // files under the old directory no longer exist in the revision and are
+        // no longer projected, while the flag component's stylesheet and script
+        // arrived. (27 - 2) * 2 is the 50. The number of shell stylesheets did
+        // not move, 70 before and 70 after; only their content hashes did.
+        self::assertCount(2364, $firstFiles);
         self::assertSame([], array_values(array_filter(
             array_keys($firstFiles),
             static fn (string $path): bool => str_contains($path, 'vendor/simai-framework/typography/'),

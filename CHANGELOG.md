@@ -4,6 +4,34 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.13.0] - 2026-10-03
+
+### Changed
+- Bundle Framework pair `ui-3b0f4adecf3e-smart-ff82c2636e0e` (Core `3b0f4ade`,
+  Smart `ff82c263`, contracts `e34e0264`), built from ui-source `4213ecfc`. Two
+  pairs are folded in: one where a dropdown takes its options as data, so the
+  rows-per-page list of a pagination is no longer empty, and one where every
+  component's rule fetches what its templates render.
+- What a component needs loaded with it is read from the bundled Framework
+  contract registry instead of a hand-written map in
+  `scripts/sync-framework-smart-runtime.php`. That map named two components and
+  was a patch over the Framework under-declaring its own dependencies — the
+  admin menu rendered four Smart elements its rule never fetched, and the table
+  five. The Framework declares them now, so the registry answers for all 24
+  components that have dependencies, and this repository stops holding a second
+  copy that could disagree.
+- The eagerly projected Smart assets grow from four to seven. The alert renders
+  an icon button and the icon button a close; both were always needed and only
+  arrived when something else on the page happened to pull them in.
+- The runtime projection carries 883 files, down from 908: the Framework
+  rebuilt `component/icon` into `component/icons`, so 27 files under the old
+  directory no longer exist in the revision and are no longer projected, while
+  the flag component arrived.
+
+### Removed
+- The superseded `f0b69761` runtime projection packet. A site whose lock still
+  names it stays admitted through `superseded_framework_locks` until it repins.
+
 ### Fixed
 - Sandboxed examples boot the Framework: the frame now receives Core together
   with the storage fallback, boot configuration and preloaded registry, so

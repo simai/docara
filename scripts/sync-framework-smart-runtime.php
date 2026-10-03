@@ -152,33 +152,51 @@ foreach (($registry['entries'] ?? []) as $entry) {
     }
 }
 ksort($smartEntries, SORT_STRING);
-$runtimeDependencyOverrides = [
-    'sf-admin-menu' => [
-        'sf-badge',
-        'sf-button',
-        'sf-context-menu',
-        'sf-icon',
-        'sf-icon-button',
-        'sf-input',
-        'sf-modal',
-    ],
-    'sf-table' => [
-        'sf-avatar',
-        'sf-button',
-        'sf-checkbox',
-        'sf-context-menu',
-        'sf-datepicker',
-        'sf-dropdown',
-        'sf-icon-button',
-        'sf-input',
-        'sf-list-item',
-        'sf-modal',
-        'sf-pagination',
-        'sf-range-slider',
-        'sf-tabs',
-        'sf-tag',
-    ],
-];
+// What each component needs loaded with it is read from the Framework contract
+// registry this repository bundles, not kept by hand here. The hand-written map
+// named two components and was a patch over the Framework under-declaring its
+// own dependencies: the admin menu rendered four Smart elements its rule never
+// fetched, and the table five. That is fixed upstream, so the registry now
+// carries the answer for every component, and this file stops holding a second
+// copy that could disagree with it.
+$registryPath = $root . '/docs/site/contracts/generated/framework-contract-registry.json';
+$registry = json_decode((string) file_get_contents($registryPath), true, 512, JSON_THROW_ON_ERROR);
+if (! is_array($registry['entries'] ?? null)) {
+    throw new RuntimeException('FRAMEWORK_SMART_REGISTRY_INVALID');
+}
+$registryTags = [];
+foreach ($registry['entries'] as $entry) {
+    if (($entry['kind'] ?? null) !== 'smart-component') {
+        continue;
+    }
+    $registryTags[$entry['id']] = $entry['runtime']['tags'] ?? [];
+}
+$runtimeDependencies = [];
+foreach ($registry['entries'] as $entry) {
+    if (($entry['kind'] ?? null) !== 'smart-component') {
+        continue;
+    }
+    $required = [];
+    foreach ($entry['requires'] ?? [] as $requiredId) {
+        // Only another Smart component is a custom element the Loader fetches;
+        // the component and utility layers arrive as assets of their own.
+        if (! str_starts_with((string) $requiredId, 'smart.')) {
+            continue;
+        }
+        foreach ($registryTags[$requiredId] ?? [] as $requiredTag) {
+            $required[$requiredTag] = true;
+        }
+    }
+    foreach ($registryTags[$entry['id']] as $tag) {
+        unset($required[$tag]);
+        if ($required !== []) {
+            $tags = array_keys($required);
+            sort($tags, SORT_STRING);
+            $runtimeDependencies[$tag] = $tags;
+        }
+    }
+}
+ksort($runtimeDependencies, SORT_STRING);
 
 $synchronizedRuntime = null;
 foreach ([$lockPath, $root . '/stubs/portable/simai-framework.lock.json'] as $projectLockPath) {
@@ -201,7 +219,7 @@ foreach ([$lockPath, $root . '/stubs/portable/simai-framework.lock.json'] as $pr
             $projectLock['runtime']['components'][$tag] = $component;
         }
     }
-    foreach ($runtimeDependencyOverrides as $tag => $requires) {
+    foreach ($runtimeDependencies as $tag => $requires) {
         if (! isset($projectLock['runtime']['components'][$tag])) {
             throw new RuntimeException('FRAMEWORK_SMART_RUNTIME_DEPENDENCY_OWNER_MISSING: ' . $tag);
         }

@@ -27,6 +27,11 @@ All notable changes to Docara are documented in this file.
   `_docara/vendor/simai-framework/runtime/<revision>/distr/`. Nothing loads the
   file, so the projection names it explicitly.
 - CI checks out simai/ui at `c6f98eb4`, the revision the lock names.
+- The runtime projection carries the flag catalogue, `component/flag/flags/`
+  (`index.json` and 494 SVGs, no `.gz`), which `sf-flag` fetches from a URL it
+  builds from `sfPath`; without it a built site showed emoji instead of flags.
+  The projection grows from 884 to 1379 files; the 884-file packet stays
+  admitted through `superseded_runtime_projections`.
 
 ### Removed
 - Font Awesome Pro 5.15.3 is no longer bundled. The `f0b69761` runtime

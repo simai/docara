@@ -1,0 +1,1021 @@
+@charset "UTF-8";
+@layer sf.components {
+  /* The toolbar answers focus in CSS, not by re-rendering.
+     It used to re-render on focusin to widen the search field and hide the
+     left side. A render around a focused field makes the browser lose the
+     caret, and text inserted without keystrokes — layout switchers, dictation,
+     on-screen keyboards — came out reversed. Nothing here changes the DOM, so
+     the caret stays where the person left it. */
+  sf-table .sf-table-toolbar[\:has\(.sf-search-input\%20\:focus\)] {
+    align-items: stretch;
+  }
+  sf-table .sf-table-toolbar:has(.sf-search-input :focus) {
+    align-items: stretch;
+  }
+  sf-table .sf-table-toolbar[data-sf-filter-tags="1"][\:has\(.sf-search-input\%20\:focus\)] {
+    flex-direction: column-reverse;
+  }
+  sf-table .sf-table-toolbar[data-sf-filter-tags="1"]:has(.sf-search-input :focus) {
+    flex-direction: column-reverse;
+  }
+  sf-table .sf-table-toolbar[data-sf-filter-tags="0"][\:has\(.sf-search-input\%20\:focus\)] .sf-table-toolbar-start {
+    display: none;
+  }
+  sf-table .sf-table-toolbar[data-sf-filter-tags="0"]:has(.sf-search-input :focus) .sf-table-toolbar-start {
+    display: none;
+  }
+  sf-table .sf-table-toolbar[\:has\(.sf-search-input\%20\:focus\)] .sf-search-input {
+    flex: 1 1 0%;
+  }
+  sf-table .sf-table-toolbar:has(.sf-search-input :focus) .sf-search-input {
+    flex: 1 1 0%;
+  }
+  /* The field animates when it collapses and jumps when it expands, on
+     purpose. A width transition running under a focused field leaves the
+     caret uncommitted in Chrome: text inserted without keystrokes — layout
+     switchers, dictation, on-screen keyboards — then lands at position 0 and
+     comes out reversed. The transition property is read from the state being
+     entered, so naming it only on the unfocused state animates the collapse
+     and leaves the expansion instant. */
+  sf-table .sf-table-toolbar .sf-search-input {
+    transition-property: flex-grow, flex-shrink, flex-basis;
+    transition-duration: var(--sf-duration-fast);
+    transition-timing-function: var(--sf-ease-exit);
+  }
+  sf-table .sf-table-toolbar[\:has\(.sf-search-input\%20\:focus\)] .sf-search-input {
+    transition-property: none;
+  }
+  sf-table .sf-table-toolbar:has(.sf-search-input :focus) .sf-search-input {
+    transition-property: none;
+  }
+  sf-table > * .table > :not(caption) > * > * {
+    vertical-align: middle;
+    padding-top: var(--sf-space-1);
+    padding-bottom: var(--sf-space-1);
+    padding-block: var(--sf-space-1);
+  }
+  .sf-table-context-menu {
+    max-width: var(--sf-g2);
+    max-width: var(--sf-table-context-menu--max-width, var(--sf-g2));
+    width: 100%;
+    width: var(--sf-table-context-menu--available-inline-size, 100%);
+  }
+  sf-table > .sf-table thead th[data-key=select] {
+    --sf-table--select-column-width: var(--sf-text-height-1);
+    width: var(--sf-table--select-column-width);
+  }
+  sf-table > .sf-table thead th[data-key=settings] {
+    --sf-table--settigs-column-width: calc(var(--sf-text-height-1) + var(--sf-ui-1--space-y-tightness-default));
+    width: var(--sf-table--settigs-column-width);
+    text-align: center;
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table th{
+    border-left-width: var(--sf-px);
+  }
+  @supports not (border-inline-start-width: initial){
+  html:not([dir="rtl"]) sf-table th{
+    border-left-width: var(--sf-px);
+    }
+  }
+  sf-table th:where(:dir(ltr)){
+    border-left-width: var(--sf-px);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table th{
+    border-right-width: var(--sf-px);
+  }
+  @supports not (border-inline-start-width: initial){
+  [dir="rtl"] sf-table th{
+    border-right-width: var(--sf-px);
+    }
+  }
+  sf-table th:where(:dir(rtl)){
+    border-right-width: var(--sf-px);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table th{
+    border-left-style: solid;
+  }
+  @supports not (border-inline-start-style: initial){
+  html:not([dir="rtl"]) sf-table th{
+    border-left-style: solid;
+    }
+  }
+  sf-table th:where(:dir(ltr)){
+    border-left-style: solid;
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table th{
+    border-right-style: solid;
+  }
+  @supports not (border-inline-start-style: initial){
+  [dir="rtl"] sf-table th{
+    border-right-style: solid;
+    }
+  }
+  sf-table th:where(:dir(rtl)){
+    border-right-style: solid;
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table th{
+    border-left-color: transparent;
+  }
+  @supports not (border-inline-start-color: initial){
+  html:not([dir="rtl"]) sf-table th{
+    border-left-color: transparent;
+    }
+  }
+  sf-table th:where(:dir(ltr)){
+    border-left-color: transparent;
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table th{
+    border-right-color: transparent;
+  }
+  @supports not (border-inline-start-color: initial){
+  [dir="rtl"] sf-table th{
+    border-right-color: transparent;
+    }
+  }
+  sf-table th:where(:dir(rtl)){
+    border-right-color: transparent;
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table th{
+    border-right-width: var(--sf-px);
+  }
+  @supports not (border-inline-end-width: initial){
+  html:not([dir="rtl"]) sf-table th{
+    border-right-width: var(--sf-px);
+    }
+  }
+  sf-table th:where(:dir(ltr)){
+    border-right-width: var(--sf-px);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table th{
+    border-left-width: var(--sf-px);
+  }
+  @supports not (border-inline-end-width: initial){
+  [dir="rtl"] sf-table th{
+    border-left-width: var(--sf-px);
+    }
+  }
+  sf-table th:where(:dir(rtl)){
+    border-left-width: var(--sf-px);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table th{
+    border-right-style: solid;
+  }
+  @supports not (border-inline-end-style: initial){
+  html:not([dir="rtl"]) sf-table th{
+    border-right-style: solid;
+    }
+  }
+  sf-table th:where(:dir(ltr)){
+    border-right-style: solid;
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table th{
+    border-left-style: solid;
+  }
+  @supports not (border-inline-end-style: initial){
+  [dir="rtl"] sf-table th{
+    border-left-style: solid;
+    }
+  }
+  sf-table th:where(:dir(rtl)){
+    border-left-style: solid;
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table th{
+    border-right-color: transparent;
+  }
+  @supports not (border-inline-end-color: initial){
+  html:not([dir="rtl"]) sf-table th{
+    border-right-color: transparent;
+    }
+  }
+  sf-table th:where(:dir(ltr)){
+    border-right-color: transparent;
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table th{
+    border-left-color: transparent;
+  }
+  @supports not (border-inline-end-color: initial){
+  [dir="rtl"] sf-table th{
+    border-left-color: transparent;
+    }
+  }
+  sf-table th:where(:dir(rtl)){
+    border-left-color: transparent;
+  }
+  sf-table th {
+    border-inline-start-width: var(--sf-px);
+    border-inline-start-style: solid;
+    border-inline-start-color: transparent;
+    border-inline-end-width: var(--sf-px);
+    border-inline-end-style: solid;
+    border-inline-end-color: transparent;
+  }
+  /* The head's own separator on hover: a neutral line, not `inherit`, which
+     took whatever colour the head text happened to carry and read as a blue bar
+     wherever that was the primary colour. */
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table th.hover{
+    border-right-color: var(--sf-outline);
+  }
+  @supports not (border-inline-end-color: initial){
+  html:not([dir="rtl"]) sf-table th.hover{
+    border-right-color: var(--sf-outline);
+    }
+  }
+  sf-table th.hover:where(:dir(ltr)){
+    border-right-color: var(--sf-outline);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table th.hover{
+    border-left-color: var(--sf-outline);
+  }
+  @supports not (border-inline-end-color: initial){
+  [dir="rtl"] sf-table th.hover{
+    border-left-color: var(--sf-outline);
+    }
+  }
+  sf-table th.hover:where(:dir(rtl)){
+    border-left-color: var(--sf-outline);
+  }
+  sf-table th.hover {
+    border-inline-end-color: var(--sf-outline);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table .sf-table-sort-button{
+    text-align: left;
+  }
+  @supports not (text-align: start){
+  html:not([dir="rtl"]) sf-table .sf-table-sort-button{
+    text-align: left;
+    }
+  }
+  sf-table .sf-table-sort-button:where(:dir(ltr)){
+    text-align: left;
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table .sf-table-sort-button{
+    text-align: right;
+  }
+  @supports not (text-align: start){
+  [dir="rtl"] sf-table .sf-table-sort-button{
+    text-align: right;
+    }
+  }
+  sf-table .sf-table-sort-button:where(:dir(rtl)){
+    text-align: right;
+  }
+  sf-table .sf-table-sort-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+  }
+  sf-table .sf-table-sort-icon {
+    --sf-icon--font-size: var(--sf-icon-size-1);
+    opacity: 0;
+  }
+  sf-table .sf-table-sort-button[data-direction] .sf-table-sort-icon,
+  sf-table th:hover .sf-table-sort-icon,
+  sf-table .sf-table-sort-button.focus-visible .sf-table-sort-icon {
+    opacity: 1;
+  }
+  sf-table .sf-table-sort-button[data-direction] .sf-table-sort-icon,
+  sf-table th:hover .sf-table-sort-icon,
+  sf-table .sf-table-sort-button:focus-visible .sf-table-sort-icon {
+    opacity: 1;
+  }
+  sf-table .sidebar-resizer-button {
+    opacity: 0;
+  }
+  sf-table th:hover .sidebar-resizer-button,
+  sf-table th[focus-within] .sidebar-resizer-button {
+    opacity: 1;
+  }
+  sf-table th:hover .sidebar-resizer-button,
+  sf-table th:focus-within .sidebar-resizer-button {
+    opacity: 1;
+  }
+  @media (forced-colors: active) {
+    sf-table th:hover .sidebar-resizer-button,
+    sf-table th[focus-within] .sidebar-resizer-button {
+      forced-color-adjust: auto;
+    }
+    sf-table th:hover .sidebar-resizer-button,
+    sf-table th:focus-within .sidebar-resizer-button {
+      forced-color-adjust: auto;
+    }
+  }
+  sf-table th.is-resizing {
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table th.is-resizing-forward{
+    border-right-color: var(--sf-primary);
+  }
+  @supports not (border-inline-end-color: initial){
+  html:not([dir="rtl"]) sf-table th.is-resizing-forward{
+    border-right-color: var(--sf-primary);
+    }
+  }
+  sf-table th.is-resizing-forward:where(:dir(ltr)){
+    border-right-color: var(--sf-primary);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table th.is-resizing-forward{
+    border-left-color: var(--sf-primary);
+  }
+  @supports not (border-inline-end-color: initial){
+  [dir="rtl"] sf-table th.is-resizing-forward{
+    border-left-color: var(--sf-primary);
+    }
+  }
+  sf-table th.is-resizing-forward:where(:dir(rtl)){
+    border-left-color: var(--sf-primary);
+  }
+  sf-table th.is-resizing-forward {
+    border-inline-end-color: var(--sf-primary);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table th.is-resizing-backward{
+    border-left-color: var(--sf-primary);
+  }
+  @supports not (border-inline-start-color: initial){
+  html:not([dir="rtl"]) sf-table th.is-resizing-backward{
+    border-left-color: var(--sf-primary);
+    }
+  }
+  sf-table th.is-resizing-backward:where(:dir(ltr)){
+    border-left-color: var(--sf-primary);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table th.is-resizing-backward{
+    border-right-color: var(--sf-primary);
+  }
+  @supports not (border-inline-start-color: initial){
+  [dir="rtl"] sf-table th.is-resizing-backward{
+    border-right-color: var(--sf-primary);
+    }
+  }
+  sf-table th.is-resizing-backward:where(:dir(rtl)){
+    border-right-color: var(--sf-primary);
+  }
+  sf-table th.is-resizing-backward {
+    border-inline-start-color: var(--sf-primary);
+  }
+  sf-table th.is-column-dragging,
+  sf-table td.is-column-dragging {
+    background-color: color-mix(in srgb, var(--sf-primary) 14%, transparent);
+    color: transparent;
+  }
+  sf-table th.is-column-dragging > *,
+  sf-table td.is-column-dragging > * {
+    opacity: 0;
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table th.is-column-drag-before{
+    border-left-color: var(--sf-primary);
+  }
+  @supports not (border-inline-start-color: initial){
+  html:not([dir="rtl"]) sf-table th.is-column-drag-before{
+    border-left-color: var(--sf-primary);
+    }
+  }
+  sf-table th.is-column-drag-before:where(:dir(ltr)){
+    border-left-color: var(--sf-primary);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table th.is-column-drag-before{
+    border-right-color: var(--sf-primary);
+  }
+  @supports not (border-inline-start-color: initial){
+  [dir="rtl"] sf-table th.is-column-drag-before{
+    border-right-color: var(--sf-primary);
+    }
+  }
+  sf-table th.is-column-drag-before:where(:dir(rtl)){
+    border-right-color: var(--sf-primary);
+  }
+  sf-table th.is-column-drag-before {
+    border-inline-start-color: var(--sf-primary);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table th.is-column-drag-after{
+    border-right-color: var(--sf-primary);
+  }
+  @supports not (border-inline-end-color: initial){
+  html:not([dir="rtl"]) sf-table th.is-column-drag-after{
+    border-right-color: var(--sf-primary);
+    }
+  }
+  sf-table th.is-column-drag-after:where(:dir(ltr)){
+    border-right-color: var(--sf-primary);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table th.is-column-drag-after{
+    border-left-color: var(--sf-primary);
+  }
+  @supports not (border-inline-end-color: initial){
+  [dir="rtl"] sf-table th.is-column-drag-after{
+    border-left-color: var(--sf-primary);
+    }
+  }
+  sf-table th.is-column-drag-after:where(:dir(rtl)){
+    border-left-color: var(--sf-primary);
+  }
+  sf-table th.is-column-drag-after {
+    border-inline-end-color: var(--sf-primary);
+  }
+  sf-table th.is-column-drag-before::before,
+  sf-table th.is-column-drag-after::after {
+    background-color: var(--sf-primary);
+    height: 100%;
+    block-size: 100%;
+    content: "";
+    width: calc(var(--sf-px) * 2);
+    inline-size: calc(var(--sf-px) * 2);
+    top: 0;
+    inset-block-start: 0;
+    pointer-events: none;
+    position: absolute;
+    z-index: var(--sf-z-index-1);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table th.is-column-drag-before::before{
+    left: 0;
+  }
+  @supports not (inset-inline-start: initial){
+  html:not([dir="rtl"]) sf-table th.is-column-drag-before::before{
+    left: 0;
+    }
+  }
+  sf-table th.is-column-drag-before::before:where(:dir(ltr)){
+    left: 0;
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table th.is-column-drag-before::before{
+    right: 0;
+  }
+  @supports not (inset-inline-start: initial){
+  [dir="rtl"] sf-table th.is-column-drag-before::before{
+    right: 0;
+    }
+  }
+  sf-table th.is-column-drag-before::before:where(:dir(rtl)){
+    right: 0;
+  }
+  sf-table th.is-column-drag-before::before {
+    inset-inline-start: 0;
+    -webkit-transform: translateX(-50%);
+            transform: translateX(-50%);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table th.is-column-drag-after::after{
+    right: 0;
+  }
+  @supports not (inset-inline-end: initial){
+  html:not([dir="rtl"]) sf-table th.is-column-drag-after::after{
+    right: 0;
+    }
+  }
+  sf-table th.is-column-drag-after::after:where(:dir(ltr)){
+    right: 0;
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table th.is-column-drag-after::after{
+    left: 0;
+  }
+  @supports not (inset-inline-end: initial){
+  [dir="rtl"] sf-table th.is-column-drag-after::after{
+    left: 0;
+    }
+  }
+  sf-table th.is-column-drag-after::after:where(:dir(rtl)){
+    left: 0;
+  }
+  sf-table th.is-column-drag-after::after {
+    inset-inline-end: 0;
+    -webkit-transform: translateX(50%);
+            transform: translateX(50%);
+  }
+  .sf-table-column-drag-ghost {
+    align-items: center;
+    background-color: var(--sf-primary-container);
+    border: var(--sf-px) solid var(--sf-primary);
+    box-shadow: var(--sf-ui-shadow-3);
+    display: flex;
+    opacity: 0.92;
+    padding-top: var(--sf-space-1);
+    padding-bottom: var(--sf-space-1);
+    padding-block: var(--sf-space-1);
+    padding-left: var(--sf-space-1);
+    padding-right: var(--sf-space-1);
+    padding-inline: var(--sf-space-1);
+  }
+  .sf-table-column-dragging,
+  .sf-table-column-dragging * {
+    cursor: -webkit-grabbing !important;
+    cursor: grabbing !important;
+    -webkit-user-select: none !important;
+       -moz-user-select: none !important;
+        -ms-user-select: none !important;
+            user-select: none !important;
+  }
+  .sf-table-column-resizing,
+  .sf-table-column-resizing * {
+    cursor: col-resize !important;
+    -webkit-user-select: none !important;
+       -moz-user-select: none !important;
+        -ms-user-select: none !important;
+            user-select: none !important;
+  }
+  sf-table > .sf-table thead th[data-key=actions] {
+    --sf-table--actions-column-width: var(--sf-f0);
+    width: var(--sf-table--actions-column-width);
+  }
+  /* The head paints its own surface, and the colour has a role behind it.
+     Until now it sat on `thead` alone, under a custom property nothing defines,
+     so the head was transparent — invisible while the table rested on a surface
+     of the same colour, and plainly wrong once the head became sticky: a sticky
+     `th` leaves the box `thead` paints, and the rows scrolled through the
+     labels. The fallback is `--sf-surface-0`, the surface `body` itself paints,
+     because a table that is not inside a raised box rests on that one; a host
+     that puts the table on another surface names it through the property. */
+  sf-table > .sf-table thead,
+  sf-table > .sf-table thead th {
+    background-color: var(--sf-surface-0);
+    background-color: var(--sf-table-head--background-color, var(--sf-surface-0));
+  }
+  sf-table > * .sf-table-avatar {
+    max-width: var(--sf-table-avatar--max-width);
+  }
+  sf-table .sf-table-link-cell {
+    color: inherit;
+    display: inline-flex;
+    max-width: 100%;
+    min-width: 0;
+    text-decoration: none;
+  }
+  sf-table a.sf-table-link-cell:hover .sf-table-link-cell-text,
+  sf-table a.sf-table-link-cell.focus-visible .sf-table-link-cell-text {
+    color: var(--sf-primary);
+    text-decoration: underline;
+  }
+  sf-table a.sf-table-link-cell:hover .sf-table-link-cell-text,
+  sf-table a.sf-table-link-cell:focus-visible .sf-table-link-cell-text {
+    color: var(--sf-primary);
+    text-decoration: underline;
+  }
+  sf-table .sf-table-link-cell-text,
+  sf-table .sf-table-link-cell-subtext {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  sf-table .sf-table-link-cell-subtext {
+    color: var(--sf-on-surface-variant);
+  }
+  .sf-table-context-menu .sf-tabs-top-container {
+    --sf-tabs-top-container--padding-inline-end: var(--sf-space-2);
+    --sf-tabs-top-container--padding-inline-start: var(--sf-space-2);
+    --sf-tabs-top-container--padding-top: var(--sf-space-2);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-table-context-menu .sf-table-context-top{
+    padding-right: var(--sf-table-context-top--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial){
+  html:not([dir="rtl"]) .sf-table-context-menu .sf-table-context-top{
+    padding-right: var(--sf-table-context-top--padding-inline-end);
+    }
+  }
+  .sf-table-context-menu .sf-table-context-top:where(:dir(ltr)){
+    padding-right: var(--sf-table-context-top--padding-inline-end);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-table-context-menu .sf-table-context-top{
+    padding-left: var(--sf-table-context-top--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial){
+  [dir="rtl"] .sf-table-context-menu .sf-table-context-top{
+    padding-left: var(--sf-table-context-top--padding-inline-end);
+    }
+  }
+  .sf-table-context-menu .sf-table-context-top:where(:dir(rtl)){
+    padding-left: var(--sf-table-context-top--padding-inline-end);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-table-context-menu .sf-table-context-top{
+    padding-left: var(--sf-table-context-top--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial){
+  html:not([dir="rtl"]) .sf-table-context-menu .sf-table-context-top{
+    padding-left: var(--sf-table-context-top--padding-inline-start);
+    }
+  }
+  .sf-table-context-menu .sf-table-context-top:where(:dir(ltr)){
+    padding-left: var(--sf-table-context-top--padding-inline-start);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-table-context-menu .sf-table-context-top{
+    padding-right: var(--sf-table-context-top--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial){
+  [dir="rtl"] .sf-table-context-menu .sf-table-context-top{
+    padding-right: var(--sf-table-context-top--padding-inline-start);
+    }
+  }
+  .sf-table-context-menu .sf-table-context-top:where(:dir(rtl)){
+    padding-right: var(--sf-table-context-top--padding-inline-start);
+  }
+  .sf-table-context-menu .sf-table-context-top {
+    --sf-table-context-top--padding-inline-end: var(--sf-space-2);
+    --sf-table-context-top--padding-inline-start: var(--sf-space-2);
+    --sf-table-context-top--padding-top: var(--sf-space-2);
+    padding-bottom: 0;
+    padding-bottom: var(--sf-table-context-top--padding-bottom, 0);
+    padding-top: var(--sf-table-context-top--padding-top);
+    -webkit-padding-end: var(--sf-table-context-top--padding-inline-end);
+            padding-inline-end: var(--sf-table-context-top--padding-inline-end);
+    -webkit-padding-start: var(--sf-table-context-top--padding-inline-start);
+            padding-inline-start: var(--sf-table-context-top--padding-inline-start);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-table-context-menu .sf-table-context-main{
+    padding-right: var(--sf-table-context-main--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial){
+  html:not([dir="rtl"]) .sf-table-context-menu .sf-table-context-main{
+    padding-right: var(--sf-table-context-main--padding-inline-end);
+    }
+  }
+  .sf-table-context-menu .sf-table-context-main:where(:dir(ltr)){
+    padding-right: var(--sf-table-context-main--padding-inline-end);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-table-context-menu .sf-table-context-main{
+    padding-left: var(--sf-table-context-main--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial){
+  [dir="rtl"] .sf-table-context-menu .sf-table-context-main{
+    padding-left: var(--sf-table-context-main--padding-inline-end);
+    }
+  }
+  .sf-table-context-menu .sf-table-context-main:where(:dir(rtl)){
+    padding-left: var(--sf-table-context-main--padding-inline-end);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-table-context-menu .sf-table-context-main{
+    padding-left: var(--sf-table-context-main--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial){
+  html:not([dir="rtl"]) .sf-table-context-menu .sf-table-context-main{
+    padding-left: var(--sf-table-context-main--padding-inline-start);
+    }
+  }
+  .sf-table-context-menu .sf-table-context-main:where(:dir(ltr)){
+    padding-left: var(--sf-table-context-main--padding-inline-start);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-table-context-menu .sf-table-context-main{
+    padding-right: var(--sf-table-context-main--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial){
+  [dir="rtl"] .sf-table-context-menu .sf-table-context-main{
+    padding-right: var(--sf-table-context-main--padding-inline-start);
+    }
+  }
+  .sf-table-context-menu .sf-table-context-main:where(:dir(rtl)){
+    padding-right: var(--sf-table-context-main--padding-inline-start);
+  }
+  .sf-table-context-menu .sf-table-context-main {
+    --sf-table-context-main--padding-inline-end: var(--sf-space-2);
+    --sf-table-context-main--padding-inline-start: var(--sf-space-2);
+    padding-bottom: 0;
+    padding-bottom: var(--sf-table-context-main--padding-bottom, 0);
+    padding-top: 0;
+    padding-top: var(--sf-table-context-main--padding-top, 0);
+    -webkit-padding-end: var(--sf-table-context-main--padding-inline-end);
+            padding-inline-end: var(--sf-table-context-main--padding-inline-end);
+    -webkit-padding-start: var(--sf-table-context-main--padding-inline-start);
+            padding-inline-start: var(--sf-table-context-main--padding-inline-start);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-table-context-menu .sf-table-context-bottom{
+    padding-right: var(--sf-table-context-bottom--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial){
+  html:not([dir="rtl"]) .sf-table-context-menu .sf-table-context-bottom{
+    padding-right: var(--sf-table-context-bottom--padding-inline-end);
+    }
+  }
+  .sf-table-context-menu .sf-table-context-bottom:where(:dir(ltr)){
+    padding-right: var(--sf-table-context-bottom--padding-inline-end);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-table-context-menu .sf-table-context-bottom{
+    padding-left: var(--sf-table-context-bottom--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial){
+  [dir="rtl"] .sf-table-context-menu .sf-table-context-bottom{
+    padding-left: var(--sf-table-context-bottom--padding-inline-end);
+    }
+  }
+  .sf-table-context-menu .sf-table-context-bottom:where(:dir(rtl)){
+    padding-left: var(--sf-table-context-bottom--padding-inline-end);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-table-context-menu .sf-table-context-bottom{
+    padding-left: var(--sf-table-context-bottom--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial){
+  html:not([dir="rtl"]) .sf-table-context-menu .sf-table-context-bottom{
+    padding-left: var(--sf-table-context-bottom--padding-inline-start);
+    }
+  }
+  .sf-table-context-menu .sf-table-context-bottom:where(:dir(ltr)){
+    padding-left: var(--sf-table-context-bottom--padding-inline-start);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-table-context-menu .sf-table-context-bottom{
+    padding-right: var(--sf-table-context-bottom--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial){
+  [dir="rtl"] .sf-table-context-menu .sf-table-context-bottom{
+    padding-right: var(--sf-table-context-bottom--padding-inline-start);
+    }
+  }
+  .sf-table-context-menu .sf-table-context-bottom:where(:dir(rtl)){
+    padding-right: var(--sf-table-context-bottom--padding-inline-start);
+  }
+  .sf-table-context-menu .sf-table-context-bottom {
+    --sf-table-context-bottom--padding-inline-end: var(--sf-space-2);
+    --sf-table-context-bottom--padding-inline-start: var(--sf-space-2);
+    --sf-table-context-bottom--padding-bottom: var(--sf-space-2);
+    padding-bottom: var(--sf-table-context-bottom--padding-bottom);
+    padding-top: 0;
+    padding-top: var(--sf-table-context-bottom--padding-top, 0);
+    -webkit-padding-end: var(--sf-table-context-bottom--padding-inline-end);
+            padding-inline-end: var(--sf-table-context-bottom--padding-inline-end);
+    -webkit-padding-start: var(--sf-table-context-bottom--padding-inline-start);
+            padding-inline-start: var(--sf-table-context-bottom--padding-inline-start);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-table-context-menu .sf-context-menu-columns{
+    padding-right: var(--sf-context-menu-columns--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial){
+  html:not([dir="rtl"]) .sf-table-context-menu .sf-context-menu-columns{
+    padding-right: var(--sf-context-menu-columns--padding-inline-end);
+    }
+  }
+  .sf-table-context-menu .sf-context-menu-columns:where(:dir(ltr)){
+    padding-right: var(--sf-context-menu-columns--padding-inline-end);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-table-context-menu .sf-context-menu-columns{
+    padding-left: var(--sf-context-menu-columns--padding-inline-end);
+  }
+  @supports not (padding-inline-end: initial){
+  [dir="rtl"] .sf-table-context-menu .sf-context-menu-columns{
+    padding-left: var(--sf-context-menu-columns--padding-inline-end);
+    }
+  }
+  .sf-table-context-menu .sf-context-menu-columns:where(:dir(rtl)){
+    padding-left: var(--sf-context-menu-columns--padding-inline-end);
+  }
+  _:-ms-input-placeholder, html:not([dir="rtl"]) .sf-table-context-menu .sf-context-menu-columns{
+    padding-left: var(--sf-context-menu-columns--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial){
+  html:not([dir="rtl"]) .sf-table-context-menu .sf-context-menu-columns{
+    padding-left: var(--sf-context-menu-columns--padding-inline-start);
+    }
+  }
+  .sf-table-context-menu .sf-context-menu-columns:where(:dir(ltr)){
+    padding-left: var(--sf-context-menu-columns--padding-inline-start);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] .sf-table-context-menu .sf-context-menu-columns{
+    padding-right: var(--sf-context-menu-columns--padding-inline-start);
+  }
+  @supports not (padding-inline-start: initial){
+  [dir="rtl"] .sf-table-context-menu .sf-context-menu-columns{
+    padding-right: var(--sf-context-menu-columns--padding-inline-start);
+    }
+  }
+  .sf-table-context-menu .sf-context-menu-columns:where(:dir(rtl)){
+    padding-right: var(--sf-context-menu-columns--padding-inline-start);
+  }
+  .sf-table-context-menu .sf-context-menu-columns {
+    --sf-context-menu-columns--padding-inline-end: var(--sf-space-2);
+    --sf-context-menu-columns--padding-inline-start: var(--sf-space-2);
+    --sf-context-menu-columns--padding-top: var(--sf-space-2);
+    --sf-context-menu-columns--padding-bottom: var(--sf-space-2);
+    padding-bottom: 0;
+    padding-bottom: var(--sf-context-menu-columns--padding-bottom, 0);
+    padding-top: var(--sf-context-menu-columns--padding-top);
+    -webkit-padding-end: var(--sf-context-menu-columns--padding-inline-end);
+            padding-inline-end: var(--sf-context-menu-columns--padding-inline-end);
+    -webkit-padding-start: var(--sf-context-menu-columns--padding-inline-start);
+            padding-inline-start: var(--sf-context-menu-columns--padding-inline-start);
+  }
+  .sf-table-context-menu .sf-tabs-main-container {
+    --sf-tabs-main-container--padding-top: 0;
+    --sf-tabs-main-container--padding-bottom: 0;
+  }
+  .sf-table-context-menu .sf-settings-context-menu-item [data-keep]:not(.sf-button-pinned) {
+    opacity: 0;
+  }
+  .sf-table-context-menu .sf-settings-context-menu-item.is-dragging {
+    opacity: 0.8;
+    box-shadow: var(--sf-ui-shadow-3);
+  }
+  .sf-table-context-menu .sf-settings-context-menu-item.drag-placeholder {
+    opacity: 0.32;
+    pointer-events: none;
+  }
+}
+@layer sf.states {
+  .sf-table-context-menu .sf-settings-context-menu-item:hover [data-keep] {
+    opacity: 1;
+  }
+}
+@layer sf.overrides {
+  .sf-icon-button.sf-button-pinned .sf-icon {
+    --sf-button-pinned--color: var(--sf-primary);
+    --sf-icon--color: var(--sf-button-pinned--color);
+  }
+  .sf-table-context-menu .sf-context-menu-content {
+    /*--sf-context-menu-content--padding-bottom: var(--sf-space-2);*/
+    /*--sf-context-menu-content--padding-inline-end: var(--sf-space-2);*/
+    /*--sf-context-menu-content--padding-inline-start: var(--sf-space-2);*/
+    /*--sf-context-menu-content--padding-top: var(--sf-space-2);*/
+    --sf-context-menu-content--padding-bottom: 0;
+    --sf-context-menu-content--padding-inline-end: 0;
+    --sf-context-menu-content--padding-inline-start: 0;
+    --sf-context-menu-content--padding-top: 0;
+  }
+  .sf-table-context-menu .sf-settings-context-menu-item .sf-icon-button {
+    --sf-icon-button--padding-top: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-icon-button--padding-bottom: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-icon-button--padding-inline-start: var(--sf-ui-1\/2--space-y-tightness-default);
+    --sf-icon-button--padding-inline-end: var(--sf-ui-1\/2--space-y-tightness-default);
+  }
+  sf-table > * .sf-search-input.sf-input.sf-input--size-1 .sf-input-field {
+    --sf-input-field--padding-bottom: var(
+            --sf-ui-1\/3--space-y-tightness-default
+    );
+    --sf-input-field--padding-top: var(--sf-ui-1\/3--space-y-tightness-default);
+  }
+  sf-table > * .sf-search-input.sf-input.sf-input--size-1 .sf-icon-button--size-1 {
+    --sf-icon-button--padding-bottom: var(
+            --sf-ui-1\/3--space-y-tightness-default
+    );
+    --sf-icon-button--padding-inline-end: var(
+            --sf-ui-1\/3--space-y-tightness-default
+    );
+    --sf-icon-button--padding-inline-start: var(
+            --sf-ui-1\/3--space-y-tightness-default
+    );
+    --sf-icon-button--padding-top: var(--sf-ui-1\/3--space-y-tightness-default);
+  }
+  sf-table .sf-avatar-label-group-container {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  sf-table .sf-avatar-label-group-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  /* Who the head sticks to follows who owns the scroll. A sticky element binds
+     to its nearest scroll container, so while the rows scroll in their own area
+     the head sticks to that area — right when the host bounds the table's
+     height, useless when it does not: the area never scrolls, the page does,
+     and the head leaves with it.
+
+     In `page` mode the area stops being a scroll container at all, so the head
+     resolves against the viewport. Measured rather than assumed: with the head
+     sticky and the page scrolled by 600px, `overflow: auto` leaves it at
+     -398px, `overflow-x: auto` with `overflow-y: clip` also leaves it at -398
+     because the clip axis computes to `hidden` and still makes a scroll
+     container, a bounded height leaves it at -398 as well, and only
+     `overflow: visible` holds it at 0. The cost is that a table wider than the
+     page scrolls the page sideways instead of scrolling inside its own box. */
+  sf-table .sf-table-scroll[data-sf-vertical-scroll=page] {
+    overflow: visible;
+  }
+  /* The pinned block keeps the box, the row menu and the title column in place
+     while the rest of the row scrolls sideways. The edge of the block carries a
+     soft shadow, and only while something is actually hidden behind it — the
+     scroll handler sets the attribute. The shadow is drawn by the cell that
+     ends the block, over the rows it overlaps, which is why it is a
+     pseudo-element and not a border: a border would move the cell's content. */
+  _:-ms-input-placeholder, html:not([dir="rtl"]) sf-table .sf-table-scroll[data-sf-pin-scrolled] [data-sf-pin-edge]::after{
+    right: calc(var(--sf-a4) * -1);
+  }
+  @supports not (inset-inline-end: initial){
+  html:not([dir="rtl"]) sf-table .sf-table-scroll[data-sf-pin-scrolled] [data-sf-pin-edge]::after{
+    right: calc(var(--sf-a4) * -1);
+    }
+  }
+  sf-table .sf-table-scroll[data-sf-pin-scrolled] [data-sf-pin-edge]::after:where(:dir(ltr)){
+    right: calc(var(--sf-a4) * -1);
+  }
+  _:-ms-input-placeholder, [dir="rtl"] sf-table .sf-table-scroll[data-sf-pin-scrolled] [data-sf-pin-edge]::after{
+    left: calc(var(--sf-a4) * -1);
+  }
+  @supports not (inset-inline-end: initial){
+  [dir="rtl"] sf-table .sf-table-scroll[data-sf-pin-scrolled] [data-sf-pin-edge]::after{
+    left: calc(var(--sf-a4) * -1);
+    }
+  }
+  sf-table .sf-table-scroll[data-sf-pin-scrolled] [data-sf-pin-edge]::after:where(:dir(rtl)){
+    left: calc(var(--sf-a4) * -1);
+  }
+  sf-table .sf-table-scroll[data-sf-pin-scrolled] [data-sf-pin-edge]::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    inset-block: 0;
+    inset-inline-end: calc(var(--sf-a4) * -1);
+    width: var(--sf-a4);
+    inline-size: var(--sf-a4);
+    pointer-events: none;
+    /* `--sf-alpha-8` is the neutral ink of the current theme at 8%, so the
+       shadow follows light and dark without a colour of its own. The direction
+       is written physically because a gradient takes no logical keyword; the
+       RTL pipeline mirrors it, as it does for the row's focus bar. */
+    background-image: linear-gradient(to right, var(--sf-alpha-8), transparent);
+  }
+  /* A row says whether it is selected, so the look is a rule rather than a
+     reading of the checkbox in its cell. `data-selected` and not
+     `aria-selected`: this is a plain table, its rows are not grid rows, and the
+     checkbox already carries the state for assistive technology — claiming it
+     twice, once invalidly, would be worse than not claiming it here.
+
+     The colour sits on the row, not on its cells. A pinned cell has to be
+     opaque or the rows it overlaps read through it, and it has to be opaque in
+     the colour of its own row — painting it with the table surface, as the
+     pinned placement first did, left the pinned columns white under a selected
+     or a hovered row. So the row paints and the pinned cells inherit. */
+  sf-table tbody tr {
+    background-color: var(--sf-surface-0);
+    background-color: var(--sf-table-row--background-color, var(--sf-surface-0));
+  }
+  sf-table .sf-table-scroll tbody [data-sf-pinned] {
+    background-color: inherit;
+  }
+  sf-table tbody tr:hover {
+    background-color: var(--sf-surface-container-hover);
+  }
+  sf-table tbody tr[data-selected] {
+    background-color: var(--sf-primary-container);
+  }
+  /* The row the person is on. It is a different answer from being marked:
+     marking is what a bulk action runs on, this only says where the person is,
+     so it is a bar in the first cell rather than a fill across the row. The
+     attribute is `data-current` and not `data-focused` on purpose — this is row
+     state, not a focus ring, and the ring stays an outline drawn by
+     :focus-visible, which a click-driven focus does not raise. The bar is
+     written physically because box-shadow has no logical form; the RTL pipeline
+     mirrors it. */
+  sf-table tbody tr[data-current] > td:first-child {
+    box-shadow: inset var(--sf-a2) 0 0 0 var(--sf-primary);
+  }
+  sf-table tbody tr[data-selected]:hover {
+    background-color: var(--sf-primary-container-hover);
+  }
+  /* Sorting is answered in the header, not by shading the column: a sorted
+     column keeps the background of every other one. */
+  sf-table th:hover .sf-table-sort-icon {
+    --sf-icon--color: var(--sf-on-surface-muted);
+  }
+  sf-table th[aria-sort]:not([aria-sort=none]) .sf-table-sort-button {
+    color: var(--sf-primary);
+  }
+  sf-table th[aria-sort]:not([aria-sort=none]) .sf-table-sort-icon {
+    --sf-icon--color: var(--sf-primary);
+  }
+  /* The mark under a sorted header is drawn rather than bordered, so it does not
+     move the cell or fight the separator the resize handle uses. */
+  sf-table th[aria-sort]:not([aria-sort=none]) {
+    position: relative;
+  }
+  sf-table th[aria-sort]:not([aria-sort=none])::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    inset-inline: 0;
+    bottom: 0;
+    inset-block-end: 0;
+    height: var(--sf-a2);
+    block-size: var(--sf-a2);
+    background-color: var(--sf-primary);
+    pointer-events: none;
+  }
+  @media (forced-colors: active) {
+    sf-table th[aria-sort]:not([aria-sort=none])::after {
+      background-color: Highlight;
+    }
+    sf-table tbody tr[data-selected] > td {
+      background-color: Highlight;
+      color: HighlightText;
+    }
+  }
+  /* The guide is one line, 1px in the colour of every other line in the table —
+     not the primary colour, which would read as a selection. It runs through the
+     rows only: the head keeps its own short separator below. */
+  sf-table .sf-table-resize-guide {
+    position: absolute;
+    width: var(--sf-px);
+    inline-size: var(--sf-px);
+    background-color: var(--sf-outline-variant);
+    pointer-events: none;
+    z-index: 4;
+  }
+  sf-table .sf-table-resize-guide[hidden] {
+    display: none;
+  }
+  @media (forced-colors: active) {
+    sf-table .sf-table-resize-guide {
+      background-color: CanvasText;
+    }
+  }
+}

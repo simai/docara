@@ -426,6 +426,84 @@ foreach (array_keys($componentDependencies) as $relativePath) {
     ];
 }
 ksort($manifest['files'], SORT_STRING);
+
+// Missing-upstream guard. The packet directory is seeded from the packet it
+// replaces and every manifest entry is re-hashed from disk, so a file the
+// pinned revision no longer has (a component the Framework removed, a renamed
+// font) would otherwise survive into the new packet with a freshly computed
+// digest. Every entry must exist at the pinned revision with the same bytes,
+// and no file may sit in the distribution without a manifest entry. The sync
+// fails and names the paths instead of pruning, so a maintainer sees what the
+// seed carried and removes it deliberately.
+$upstreamBlobs = [];
+if (! $useWorkingRegistry) {
+    foreach (preg_split('/\R/', trim($git(['ls-tree', '-r', $revision, 'distr']))) ?: [] as $line) {
+        if (preg_match('/^[0-9]+\s+blob\s+([a-f0-9]{40})\t(distr\/.+)$/D', $line, $blobMatch) === 1) {
+            $upstreamBlobs[substr($blobMatch[2], strlen('distr/'))] = $blobMatch[1];
+        }
+    }
+    if ($upstreamBlobs === []) {
+        throw new RuntimeException('FRAMEWORK_RUNTIME_UPSTREAM_TREE_UNAVAILABLE: ' . $revision);
+    }
+}
+$missingUpstream = [];
+$divergedFromUpstream = [];
+foreach (array_keys($manifest['files']) as $relativePath) {
+    $path = $distribution . '/' . $relativePath;
+    $bytes = is_file($path) && ! is_link($path) ? file_get_contents($path) : false;
+    if ($useWorkingRegistry) {
+        $upstreamPath = realpath($uiRoot) . '/distr/' . $relativePath;
+        if (! is_file($upstreamPath) || is_link($upstreamPath)) {
+            $missingUpstream[] = $relativePath;
+        } elseif (! is_string($bytes) || $bytes !== file_get_contents($upstreamPath)) {
+            $divergedFromUpstream[] = $relativePath;
+        }
+
+        continue;
+    }
+    if (! isset($upstreamBlobs[$relativePath])) {
+        $missingUpstream[] = $relativePath;
+    } elseif (! is_string($bytes)
+        || sha1('blob ' . strlen($bytes) . "\0" . $bytes) !== $upstreamBlobs[$relativePath]
+    ) {
+        $divergedFromUpstream[] = $relativePath;
+    }
+}
+$unmanifested = [];
+foreach (new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($distribution, FilesystemIterator::SKIP_DOTS),
+) as $file) {
+    $relativePath = str_replace('\\', '/', substr($file->getPathname(), strlen($distribution) + 1));
+    if (! isset($manifest['files'][$relativePath])) {
+        $unmanifested[] = $relativePath;
+    }
+}
+sort($unmanifested, SORT_STRING);
+$describePaths = static function (array $paths): string {
+    $shown = array_slice($paths, 0, 20);
+
+    return count($paths) . ' file(s): ' . implode(', ', $shown)
+        . (count($paths) > count($shown) ? ', ...' : '');
+};
+if ($missingUpstream !== []) {
+    throw new RuntimeException(
+        'FRAMEWORK_RUNTIME_UPSTREAM_MISSING: not present at ' . $revision . ': '
+            . $describePaths($missingUpstream),
+    );
+}
+if ($divergedFromUpstream !== []) {
+    throw new RuntimeException(
+        'FRAMEWORK_RUNTIME_UPSTREAM_MISMATCH: bytes differ from ' . $revision . ': '
+            . $describePaths($divergedFromUpstream),
+    );
+}
+if ($unmanifested !== []) {
+    throw new RuntimeException(
+        'FRAMEWORK_RUNTIME_UNMANIFESTED_FILE: on disk but not in the manifest: '
+            . $describePaths($unmanifested),
+    );
+}
+
 $ledger = '';
 foreach (array_keys($manifest['files']) as $relativePath) {
     $path = $distribution . '/' . $relativePath;

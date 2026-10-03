@@ -64,7 +64,7 @@ final class FrameworkComponentRuntimeTest extends TestCase
         $candidate = $this->lock();
         self::assertNull($candidate['runtime']['tag']);
         self::assertSame(
-            'ui-c6f98eb4cb29-smart-bb8f3cc5c329',
+            'ui-ed549e7282ef-smart-6a58ac134bdb',
             FrameworkLock::fromArray($candidate)->pairId(),
         );
 

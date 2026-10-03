@@ -115,7 +115,11 @@ foreach ($files as $relativePath => $bytes) {
 }
 
 // Prune only obsolete regular files under this explicit revision directory.
+// Every file the sync owns there comes from `git show <revision>:<path>`, so a
+// file the revision does not have can only be left over from an earlier run;
+// it is removed and reported rather than kept.
 $expected = array_fill_keys(array_keys($files), true);
+$pruned = [];
 $iterator = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator($targetRoot, FilesystemIterator::SKIP_DOTS),
     RecursiveIteratorIterator::CHILD_FIRST,
@@ -131,10 +135,14 @@ foreach ($iterator as $entry) {
         continue;
     }
     $relativePath = str_replace('\\', '/', substr($path, strlen($targetRoot) + 1));
-    if (! isset($expected[$relativePath]) && (! $entry->isFile() || ! unlink($path))) {
-        throw new RuntimeException('FRAMEWORK_SMART_PROJECTION_PRUNE_FAILED: ' . $relativePath);
+    if (! isset($expected[$relativePath])) {
+        if (! $entry->isFile() || ! unlink($path)) {
+            throw new RuntimeException('FRAMEWORK_SMART_PROJECTION_PRUNE_FAILED: ' . $relativePath);
+        }
+        $pruned[] = $relativePath;
     }
 }
+sort($pruned, SORT_STRING);
 
 $staticPaths = array_keys($lock['asset_projection']['files'] ?? []);
 sort($staticPaths, SORT_STRING);
@@ -288,4 +296,5 @@ fwrite(STDOUT, json_encode([
     'dynamic_files' => count($dynamicProjection),
     'total_files' => count($files),
     'runtime_components' => count($smartEntries),
+    'pruned' => $pruned,
 ], JSON_THROW_ON_ERROR | JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . "\n");

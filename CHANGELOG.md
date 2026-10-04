@@ -4,6 +4,16 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.14.1] - 2026-10-04
+
+### Fixed
+- `scripts/sync-framework-smart-runtime.php` loads the consumer's Composer
+  autoloader when Docara is installed as a dependency. Since 2.14.0 the script
+  needs Docara classes and required only `vendor/autoload.php` beside the
+  package, which does not exist under `vendor/simai/docara`, so a project's own
+  runtime materializer stopped with a PHP fatal. Without any autoloader the
+  script now fails with `FRAMEWORK_SYNC_AUTOLOAD_UNAVAILABLE`.
+
 ## [2.14.0] - 2026-10-04
 
 ### Changed

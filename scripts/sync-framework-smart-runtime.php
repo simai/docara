@@ -9,7 +9,20 @@ declare(strict_types=1);
  * files are published for the dynamic Loader without being loaded eagerly.
  */
 $root = dirname(__DIR__);
-require $root . '/vendor/autoload.php';
+// The package's own autoloader in a checkout; the consumer's when Docara is
+// installed as a dependency (vendor/simai/docara/scripts -> vendor/).
+$autoload = null;
+foreach ([$root . '/vendor/autoload.php', dirname(__DIR__, 3) . '/autoload.php'] as $candidate) {
+    if (is_file($candidate)) {
+        $autoload = $candidate;
+        break;
+    }
+}
+if ($autoload === null) {
+    fwrite(STDERR, "FRAMEWORK_SYNC_AUTOLOAD_UNAVAILABLE: no Composer autoloader beside the package or in the consumer's vendor directory\n");
+    exit(1);
+}
+require $autoload;
 
 use Simai\Docara\Framework\FrameworkManifestRepository;
 use Simai\Docara\Framework\FrameworkRuntimeClosure;

@@ -136,7 +136,9 @@ final readonly class FrameworkAssetPlanner
             'key' => 'simai.framework.preloaded',
             'kind' => 'boot',
             'content' => $shell['preload_boot'],
-        ]]), ...($typography === null ? [] : $this->typographyFontPreloads($typography)),
+        ]]), ...($typography === null
+            ? $this->runtimeFontPreloads($runtimeProjection, $uiBase, $uiCommit, $html)
+            : $this->typographyFontPreloads($typography)),
             $this->iconSubsetFontPreload($iconSubset),
             $this->foundationStylesheet(
                 'simai.framework.core.css',
@@ -283,6 +285,167 @@ final readonly class FrameworkAssetPlanner
         }
 
         return $assets;
+    }
+
+    /**
+     * Preloads for the text faces the runtime foundation declares.
+     *
+     * The faces are read from the pinned core.css, never from a list: the
+     * family is the first one in --sf-text--family, the Latin face is the one
+     * whose unicode-range covers A-Z and a-z, and the Cyrillic face, preloaded
+     * only on a page whose language is written in Cyrillic, is the one that
+     * covers А-я. Each href is the URL the stylesheet's url() resolves to, so
+     * the browser reuses the preload instead of fetching the face again. A
+     * pair whose core.css declares no such faces gets no preload.
+     *
+     * @param  array<string, mixed>|null  $runtimeProjection
+     * @return list<array<string, mixed>>
+     */
+    private function runtimeFontPreloads(
+        ?array $runtimeProjection,
+        string $uiBase,
+        string $uiCommit,
+        ?string $html,
+    ): array {
+        $stylesheet = 'core/css/core.css';
+        if ($runtimeProjection === null
+            || ! isset($this->repository->runtimeManifest()['files'][$stylesheet])
+        ) {
+            return [];
+        }
+        $paths = self::foundationFontPreloadPaths(
+            $this->repository->bundledRuntimeAsset($stylesheet),
+            $stylesheet,
+            $html !== null && self::pageUsesCyrillic($html),
+        );
+        $assets = [];
+        foreach ($paths as $script => $relativePath) {
+            $assets[] = [
+                'key' => 'simai.framework.foundation.preload.' . $script,
+                'kind' => 'font_preload',
+                'url' => $uiBase . '/' . $relativePath,
+                'source_revision' => $uiCommit,
+                'sha256' => $this->repository->runtimeAssetRecord($relativePath)['sha256'],
+            ];
+        }
+
+        return $assets;
+    }
+
+    /**
+     * The distribution paths of the text faces worth preloading, read from a
+     * foundation stylesheet: the family is the first one in --sf-text--family,
+     * the Latin face covers A-Z and a-z, and the Cyrillic face, asked for only
+     * when the page needs it, covers А-я. A stylesheet without such faces
+     * yields nothing.
+     *
+     * @return array<string, string> script => path relative to distr/
+     */
+    public static function foundationFontPreloadPaths(string $css, string $stylesheet, bool $cyrillic): array
+    {
+        if (preg_match('/--sf-text--family\s*:\s*([^;{}]+)/', $css, $familyMatch) !== 1) {
+            return [];
+        }
+        $family = trim(explode(',', $familyMatch[1])[0], " \t\n\r\"'");
+        if ($family === '') {
+            return [];
+        }
+
+        $scripts = ['latin' => [[0x41, 0x5A], [0x61, 0x7A]]];
+        if ($cyrillic) {
+            $scripts['cyrillic'] = [[0x410, 0x44F]];
+        }
+
+        preg_match_all('/@font-face\s*\{([^}]*)\}/i', $css, $faces);
+        $paths = [];
+        foreach ($scripts as $script => $required) {
+            foreach ($faces[1] as $face) {
+                if (preg_match('/font-family\s*:\s*([^;]+)/i', $face, $faceFamily) !== 1
+                    || trim($faceFamily[1], " \t\n\r\"'") !== $family
+                    || preg_match('/unicode-range\s*:\s*([^;]+)/i', $face, $range) !== 1
+                    || preg_match('/url\(\s*(["\']?)([^"\')]+)\1\s*\)\s*format\(\s*["\']woff2["\']\s*\)/i', $face, $source) !== 1
+                    || ! self::unicodeRangeCovers($range[1], $required)
+                ) {
+                    continue;
+                }
+                $relativePath = self::resolveRuntimeReference(dirname($stylesheet), $source[2]);
+                if ($relativePath === null || ! str_starts_with($relativePath, 'core/')) {
+                    throw new FrameworkComponentException('FRAMEWORK_RUNTIME_FONT_PRELOAD_INVALID', $source[2]);
+                }
+                $paths[$script] = $relativePath;
+                break;
+            }
+        }
+
+        return $paths;
+    }
+
+    public static function pageUsesCyrillic(string $html): bool
+    {
+        if (preg_match('~<html\b[^>]*\blang\s*=\s*(["\']?)([A-Za-z]{2,3})(?:[-_][A-Za-z0-9-]*)?\1~i', $html, $match) !== 1) {
+            return false;
+        }
+
+        return in_array(strtolower($match[2]), [
+            'ab', 'av', 'ba', 'be', 'bg', 'ce', 'cv', 'kk', 'kv', 'ky', 'mk', 'mn',
+            'os', 'ru', 'sah', 'sr', 'tg', 'tt', 'udm', 'uk',
+        ], true);
+    }
+
+    /** @param list<array{int, int}> $required */
+    private static function unicodeRangeCovers(string $range, array $required): bool
+    {
+        $spans = [];
+        foreach (explode(',', $range) as $part) {
+            if (preg_match('/^\s*U\+([0-9a-f?]{1,6})(?:-([0-9a-f]{1,6}))?\s*$/i', $part, $bounds) !== 1) {
+                continue;
+            }
+            $spans[] = [
+                (int) hexdec(str_replace('?', '0', $bounds[1])),
+                (int) hexdec(str_replace('?', 'f', $bounds[2] ?? '' ?: $bounds[1])),
+            ];
+        }
+        foreach ($required as [$low, $high]) {
+            for ($codepoint = $low; $codepoint <= $high; $codepoint++) {
+                $covered = false;
+                foreach ($spans as [$from, $to]) {
+                    if ($codepoint >= $from && $codepoint <= $to) {
+                        $covered = true;
+                        break;
+                    }
+                }
+                if (! $covered) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private static function resolveRuntimeReference(string $directory, string $reference): ?string
+    {
+        $reference = preg_split('/[?#]/', trim($reference), 2)[0] ?? '';
+        if ($reference === '' || str_starts_with($reference, '/') || preg_match('#^[a-z][a-z0-9+.-]*:#i', $reference) === 1) {
+            return null;
+        }
+        $segments = [];
+        foreach (explode('/', $directory . '/' . $reference) as $segment) {
+            if ($segment === '' || $segment === '.') {
+                continue;
+            }
+            if ($segment === '..') {
+                if ($segments === []) {
+                    return null;
+                }
+                array_pop($segments);
+
+                continue;
+            }
+            $segments[] = $segment;
+        }
+
+        return $segments === [] ? null : implode('/', $segments);
     }
 
     /**
@@ -1621,7 +1784,7 @@ final readonly class FrameworkAssetPlanner
                     && is_string($asset['sha256'] ?? null)
                     && preg_match('/^[a-f0-9]{64}$/', $asset['sha256']) === 1
                     && preg_match(
-                        '#^/(?:[A-Za-z0-9._~-]+/)*_docara/vendor/(?:simai-framework/typography/[a-f0-9]{20}|google/material-symbols/[a-f0-9]{40}/MaterialSymbolsOutlined|docara/icon-subset/[a-f0-9]{40}/material-symbols-outlined\.[a-f0-9]{20})\.woff2$#D',
+                        '#^/(?:[A-Za-z0-9._~-]+/)*_docara/vendor/(?:simai-framework/typography/[a-f0-9]{20}|simai-framework/runtime/[a-f0-9]{40}/distr/core/[a-f0-9]{20}|google/material-symbols/[a-f0-9]{40}/MaterialSymbolsOutlined|docara/icon-subset/[a-f0-9]{40}/material-symbols-outlined\.[a-f0-9]{20})\.woff2$#D',
                         $url,
                     ) === 1
                 ) {

@@ -5,21 +5,40 @@ All notable changes to Docara are documented in this file.
 ## [Unreleased]
 
 ### Changed
-- Bundle Framework pair `ui-128601792cf9-smart-e235dc4f7627` (Core `12860179`,
-  Smart `e235dc4f`, contracts `0afe5cce`), built from ui-source `97ca0e02`.
+- Bundle Framework pair `ui-26434c2bab11-smart-f0b1097df368` (Core `26434c2b`,
+  Smart `f0b1097d`, contracts `82e326c2`), built from ui-source `4675ff9c`.
   Core ships Inter again: `core.css` declares seven "Inter Variable" faces
   (weights 100 to 900, one per script, `font-display: optional`) and an
   "Inter Fallback" face with metric overrides, and the family tokens lead
   with them. The data view table gains count on request, column moves and
   pinned-column labels, a row tint and a page row that holds the window
   bottom; the pagination renders a short wait; the admin menu searches from a
-  panel. `sf-admin-menu` declares `search-hint`, `search-keys-hint`,
-  `search-label`, `search-mode` and `search-shortcut`. `sf-pagination`
-  declares `can-count`, `count-known`, `counting`, `counting-label`,
-  `first-label`, `has-next`, `page-field-label` and `show-count-label`, and
-  now requires `sf-input` and `sf-spinner`. `sf-table` declares
-  `pin-column-label` and `unpin-column-label`. CI checks out simai/ui at
-  `12860179`.
+  panel. An anchored context menu keeps each item on one line at the
+  viewport edge and is placed again once the font has arrived, and the page
+  number field shows its number instead of clipping it. `sf-admin-menu`
+  declares `search-hint`, `search-keys-hint`, `search-label`, `search-mode`
+  and `search-shortcut`. `sf-pagination` declares `can-count`,
+  `count-known`, `counting`, `counting-label`, `first-label`, `has-next`,
+  `page-field-label` and `show-count-label`, and now requires `sf-input` and
+  `sf-spinner`. `sf-table` declares `pin-column-label` and
+  `unpin-column-label`. CI checks out simai/ui at `26434c2b`.
+- The unreleased pair `ui-128601792cf9-smart-e235dc4f7627`, bundled on main
+  before this one, is superseded and never reaches a release: its admin menu
+  sized the search panel's waiting rows with the undeclared `--sf-f0` and
+  spaced a sheet with `--sf-space-1/6`. A lock that names it stays admitted
+  through `superseded_framework_locks` until it repins.
+- Every page preloads the Inter face for Latin script, and a page whose
+  language is written in Cyrillic (`lang="ru"` and other Cyrillic-script
+  languages) also preloads the Cyrillic face. The faces are read from the
+  pinned runtime `core.css`, never from a list: the family named first in
+  `--sf-text--family`, and the `@font-face` whose `unicode-range` covers A-Z
+  and a-z, or А-я. Each `href` is exactly the URL the stylesheet's `url()`
+  resolves to, so the browser reuses the preload for the face instead of
+  fetching it again. Latin-ext, Cyrillic-ext, Greek and Vietnamese faces are
+  not preloaded, and a pair whose `core.css` declares no faces gets no
+  preload. The preloads are planned assets with digests, so build receipts
+  record them. With `font-display: optional`, a first visit now renders in
+  Inter instead of the fallback.
 - The runtime projection carries the files the foundation stylesheets name
   through `url()`: the seven hashed Inter woff2 files beside `core/css/`. The
   sync reads them from `core.css` rather than from a list, resolves each one

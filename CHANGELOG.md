@@ -4,6 +4,8 @@ All notable changes to Docara are documented in this file.
 
 ## [Unreleased]
 
+## [2.13.0] - 2026-10-04
+
 ### Added
 - A reusable project example whose content is HTML only now renders inline
   when its markup passes the inline policy, the same rule examples written in
@@ -14,8 +16,8 @@ All notable changes to Docara are documented in this file.
   preview reason is gone; receipts and `inspect page` report the real reason.
 - The inline policy admits `data-*` attributes (not `data-docara-*`, and no
   `javascript:`, `vbscript:` or `data:` value), kebab-case `id` attributes
-  with at least one hyphen, `slot` with a plain kebab-case token, and `form` without `action`, `method`, `target`,
-  `enctype` or `name`. On a Smart element it admits the attributes the
+  with at least one hyphen, `slot` with a plain kebab-case token, and `form`
+  without `action`, `method`, `target`, `enctype` or `name`. On a Smart element it admits the attributes the
   project's Framework lock declares for that tag. `on*`, `href`, `src`,
   `srcdoc`, `style`, `action`, `formaction`, the `form` attribute,
   `autofocus` and `contenteditable` stay forbidden even when declared.
@@ -108,7 +110,6 @@ All notable changes to Docara are documented in this file.
   flag-icons), so a built site publishes them under
   `_docara/vendor/simai-framework/runtime/<revision>/distr/`. Nothing loads the
   file, so the projection names it explicitly.
-- CI checks out simai/ui at `c6f98eb4`, the revision the lock names.
 - The runtime projection carries the flag catalogue, `component/flag/flags/`
   (`index.json` and 494 SVGs, no `.gz`), which `sf-flag` fetches from a URL it
   builds from `sfPath`; without it a built site showed emoji instead of flags.

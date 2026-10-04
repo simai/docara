@@ -1,5 +1,11 @@
 # Docara releases
 
+- [Docara 2.13.0](https://github.com/simai/docara/releases/tag/v2.13.0) — HTML-only
+  reusable examples render inline so floating components open over the page,
+  sandboxed examples boot the Framework in the page typography, Font Awesome
+  Pro is no longer bundled, and the bundled Framework pair moves to
+  `ui-ed549e7282ef-smart-6a58ac134bdb` with third-party notices and flags.
+
 - [Docara 2.12.0](https://github.com/simai/docara/releases/tag/v2.12.0) — the
   bundled Framework pair moves to a current build, so a new site gets
   light-dark themes, the neutral alpha ramp, the quiet appearances and a

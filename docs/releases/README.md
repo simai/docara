@@ -1,5 +1,11 @@
 # Docara releases
 
+- [Docara 2.14.0](https://github.com/simai/docara/releases/tag/v2.14.0) — Core
+  ships Inter and Docara preloads the faces a page needs, the separate
+  typography packet is retired, the eager Smart set is derived rather than
+  kept by hand, and the bundled pair moves to
+  `ui-26434c2bab11-smart-f0b1097df368`.
+
 - [Docara 2.13.0](https://github.com/simai/docara/releases/tag/v2.13.0) — HTML-only
   reusable examples render inline so floating components open over the page,
   sandboxed examples boot the Framework in the page typography, Font Awesome

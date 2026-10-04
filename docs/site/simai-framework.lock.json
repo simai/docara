@@ -1435,6 +1435,15 @@
             "smart/buttons/js/buttons.js": {
                 "sha256": "63b8ff99f2b6f8127aad62a089ccf1df3901976a1b2101cf3e3756f9263ed5c0"
             },
+            "smart/close/js/close.js": {
+                "sha256": "63946be9c4719bccbe7da5311c26d05c393b4a668c6d75c1f941ddf1e7b6b264"
+            },
+            "smart/icon-buttons/css/icon-buttons.css": {
+                "sha256": "8dcec6c3d61b82fe533da22728d76ba5a0ea5a1732f02da4dec09b97d51728fe"
+            },
+            "smart/icon-buttons/js/icon-buttons.js": {
+                "sha256": "48d5f4b69961b8001fe1bd4fd8e40a261a3b1859008090d25addb6aeb42022d7"
+            },
             "smart/icons/js/icons.js": {
                 "sha256": "a1f7508fc5e6adfd2e8d0a4f0a2721d782990453ff897bc2d71080dcbd65c0fd"
             },
@@ -1482,9 +1491,6 @@
             "smart/checkbox/js/checkbox.js": {
                 "sha256": "9cbb6606bb7b1a6c9b92c48349da7d029360121ab121c52f79f4df2ab43e2a15"
             },
-            "smart/close/js/close.js": {
-                "sha256": "63946be9c4719bccbe7da5311c26d05c393b4a668c6d75c1f941ddf1e7b6b264"
-            },
             "smart/composition-overlay/css/composition-overlay.css": {
                 "sha256": "dac0632faa6a7a9b3c12d6baf378a60badf7e64cb034954444467444e7ab0cc6"
             },
@@ -1529,12 +1535,6 @@
             },
             "smart/gallery/js/gallery.js": {
                 "sha256": "8b00c33db30dc2fc8f53862e4e5e997de991c75eac29b24755fef22fe532878a"
-            },
-            "smart/icon-buttons/css/icon-buttons.css": {
-                "sha256": "8dcec6c3d61b82fe533da22728d76ba5a0ea5a1732f02da4dec09b97d51728fe"
-            },
-            "smart/icon-buttons/js/icon-buttons.js": {
-                "sha256": "48d5f4b69961b8001fe1bd4fd8e40a261a3b1859008090d25addb6aeb42022d7"
             },
             "smart/inline-editor/css/inline-editor.css": {
                 "sha256": "b825d71cddc0be5fe359e8802ba900806c97ff331921b10256400da83caf779f"
